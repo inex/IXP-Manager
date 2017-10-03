@@ -5,8 +5,10 @@ namespace Repositories;
 use Doctrine\ORM\EntityRepository;
 
 use Entities\{
+    Layer2Address as Layer2AddressEntity,
     Router as RouterEntity,
-    Vlan as VlanEntity
+    Vlan as VlanEntity,
+    VlanInterface as VlanInterfaceEntity
 };
 
 /**
@@ -559,6 +561,42 @@ class VlanInterface extends EntityRepository
 
 
     /**
+     * Provide array of vlan interfaces for the list Action
+     *
+     * @param int $id The VlanInterface to find
+     * @return array array of vlan interfaces
+     */
+    public function getForList( int $id = null )
+    {
+        $dql = "SELECT vli.id AS id, vli.mcastenabled AS mcastenabled,
+                 vli.ipv4enabled AS ipv4enabled, vli.ipv4hostname AS ipv4hostname, vli.ipv4canping AS ipv4canping,
+                     vli.ipv4monitorrcbgp AS ipv4monitorrcbgp, vli.ipv4bgpmd5secret AS ipv4bgpmd5secret,
+                 vli.ipv6enabled AS ipv6enabled, vli.ipv6hostname AS ipv6hostname, vli.ipv6canping AS ipv6canping,
+                     vli.ipv6monitorrcbgp AS ipv6monitorrcbgp, vli.ipv6bgpmd5secret AS ipv6bgpmd5secret,
+                 vli.irrdbfilter AS irrdbfilter, vli.bgpmd5secret AS bgpmd5secret, vli.maxbgpprefix AS maxbgpprefix,
+                 vli.as112client AS as112client, vli.busyhost AS busyhost, vli.notes AS notes,
+                 vli.rsclient AS rsclient,
+                 ip4.address AS ipv4, ip6.address AS ipv6,
+                 v.id AS vlanid, v.name AS vlan,
+                 vi.id AS vintid,
+                 c.name AS customer, c.id AS custid
+                    FROM \\Entities\\VlanInterface vli
+                        LEFT JOIN vli.VirtualInterface vi
+                        LEFT JOIN vli.Vlan v
+                        LEFT JOIN vli.IPv4Address ip4
+                        LEFT JOIN vli.IPv6Address ip6
+                        LEFT JOIN vi.Customer c";
+
+        if( $id ){
+            $dql .= " WHERE vli.id = $id ";
+        }
+
+
+        $q = $this->getEntityManager()->createQuery( $dql );
+        return $q->getArrayResult();
+    }
+
+    /**
      * Get vli id / vi id / vlan tag / cust name matrix for sflow data processing
      *
      * Returns an array as follows:
@@ -603,6 +641,26 @@ class VlanInterface extends EntityRepository
                     WHERE l2a.mac IS NOT NULL
                     ORDER BY viid"
         )->getArrayResult();
+    }
+
+
+    /**
+     * Utility function to copy all l2a's from one vli to another
+     *
+     * @param VlanInterfaceEntity $s Source VLI for l2a's
+     * @param VlanInterfaceEntity $d Destinatin VLI for copied l2a's
+     * @return VlanInterface
+     */
+    public function copyLayer2Addresses( VlanInterfaceEntity $s, VlanInterfaceEntity $d ): VlanInterface {
+        foreach( $s->getLayer2Addresses() as $l2a ) {
+            $n = new Layer2AddressEntity();
+            $n->setVlanInterface( $d );
+            $d->addLayer2Address( $n );
+            $n->setMac( $l2a->getMac() );
+            $this->getEntityManager()->persist( $n );
+        }
+
+        return $this;
     }
 
 }

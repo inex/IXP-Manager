@@ -342,7 +342,7 @@ class PatchPanelPortHistoryFile
     /**
      * Get patchPanelPortHistory
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return PatchPanelPortHistory
      */
     public function getPatchPanelPortHistory()
     {

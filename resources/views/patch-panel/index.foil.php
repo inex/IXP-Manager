@@ -15,10 +15,10 @@
             <a id="btn-filter-options" class="btn btn-default" href="<?= url()->current() ?>">
                 Filter Options
             </a>
-            <a class="btn btn-default" href="<?= url('patch-panel/list' . ( $t->active ? '/inactive' : '' ) ) ?>">
+            <a class="btn btn-default" href="<?= route ('patch-panel/list' . ( $t->active ? '/inactive' : '' ) ) ?>">
                 Show <?= $t->active ? 'Inactive' : 'Active' ?>
             </a>
-            <a type="button" class="btn btn-default" href="<?= url('patch-panel/add') ?>">
+            <a type="button" class="btn btn-default" href="<?= route ('patch-panel/add') ?>">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
         </div>
@@ -29,7 +29,7 @@
 
     <div id="filter-row" class="row" style="display: none">
         <div class="well pull-right">
-            <form class="form-inline" method="post" action="<?= url('patch-panel-port/advanced-list' ) ?>">
+            <form class="form-inline" method="post" action="<?= action ('PatchPanel\PatchPanelPortController@advancedIndex' ) ?>">
                 <div class="form-group">
                     <select id="adv-search-select-locations" name="location">
                         <option value="all">All Locations</option>
@@ -67,10 +67,10 @@
     <?= $t->alerts() ?>
     <?php if( !count( $t->patchPanels ) && $t->active ): ?>
         <div class="alert alert-info" role="alert">
-            <b>No active patch panels exist.</b> <a href="<?= url( 'patch-panel/add' ) ?>">Add one...</a>
+            <b>No active patch panels exist.</b> <a href="<?= route ( 'patch-panel/add' ) ?>">Add one...</a>
         </div>
     <?php else:  /* !count( $t->patchPanels ) */ ?>
-        <table id='patch-panel-list' class="table">
+        <table id='patch-panel-list' class="table collapse" >
             <thead>
                 <tr>
                     <td>
@@ -102,18 +102,18 @@
                     ?>
                     <tr>
                         <td>
-                            <a href="<?= url( '/patch-panel-port/list/patch-panel' ).'/'.$pp->getId()?>">
-                                <?= $pp->getName() ?>
+                            <a href="<?= route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $pp->getId() ] ) ?>">
+                                <?= $t->ee( $pp->getName() ) ?>
                             </a>
 
                         </td>
                         <td>
                             <a href="<?= url( '/cabinet/view/id' ).'/'.$pp->getCabinet()->getId()?>">
-                                <?= $pp->getCabinet()->getName() ?>
+                                <?= $t->ee( $pp->getCabinet()->getName() ) ?>
                             </a>
                         </td>
                         <td>
-                            <?= $pp->getColoReference() ?>
+                            <?= $t->ee( $pp->getColoReference() ) ?>
                         </td>
                         <td>
                             <?= $pp->resolveCableType() ?> / <?= $pp->resolveConnectorType() ?>
@@ -139,25 +139,23 @@
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn btn-default" href="<?= url( '/patch-panel/view' ).'/'.$pp->getId()?>" title="Preview">
+                                <a class="btn btn btn-default" href="<?= action ( 'PatchPanel\PatchPanelController@view' , [ 'id' =>  $pp->getId() ] ) ?>" title="Preview">
                                     <i class="glyphicon glyphicon-eye-open"></i>
                                 </a>
-                                <a class="btn btn btn-default" href="<?= url( '/patch-panel/edit' ).'/'.$pp->getId()?>" title="Edit">
+                                <a class="btn btn btn-default" href="<?= action ( 'PatchPanel\PatchPanelController@edit' , [ 'id' =>  $pp->getId() ] ) ?>" title="Edit">
                                     <i class="glyphicon glyphicon-pencil"></i>
                                 </a>
 
                                 <?php if( $pp->getActive() ): ?>
-                                    <a class="btn btn btn-default" id='list-delete-<?= $pp->getId() ?>' href="<?= url( 'patch-panel/change-status/' . $pp->getId()
-                                            . '/' . ( $pp->getActive() ? '0' : '1' ) ) ?>" title="Make Inactive">
+                                    <a class="btn btn btn-default" id='list-delete-<?= $pp->getId() ?>' href="<?= action ( 'PatchPanel\PatchPanelController@changeStatus' , [ 'id' => $pp->getId(), 'status' => ( $pp->getActive() ? '0' : '1' ) ] ) ?>" title="Make Inactive">
                                         <i class="glyphicon glyphicon-trash"></i>
                                     </a>
                                 <?php else: ?>
-                                    <a class="btn btn btn-default" id='list-reactivate-<?= $pp->getId() ?>' href="<?= url( 'patch-panel/change-status/' . $pp->getId()
-                                        . '/' . ( $pp->getActive() ? '0' : '1' ) ) ?>" title="Reactive">
+                                    <a class="btn btn btn-default" id='list-reactivate-<?= $pp->getId() ?>' href="<?= action ( 'PatchPanel\PatchPanelController@changeStatus' , [ 'id' => $pp->getId(), 'status' => ( $pp->getActive() ? '0' : '1' ) ] ) ?>" title="Reactive">
                                         <i class="glyphicon glyphicon-repeat"></i>
                                     </a>
                                 <?php endif; ?>
-                                <a class="btn btn btn-default" href="<?= url( '/patch-panel-port/list/patch-panel' ).'/'.$pp->getId()?>" title="See Ports">
+                                <a class="btn btn btn-default" href="<?= route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $pp->getId() ] ) ?>" title="See Ports">
                                     <i class="glyphicon glyphicon-th"></i>
                                 </a>
                             </div>
@@ -175,13 +173,10 @@
 
     var locations = JSON.parse( '<?= json_encode( $t->locations ) ?>' );
 
-    //console.log( locations[1]['cabinets'] );
-
     $(document).ready( function() {
-        $( '#patch-panel-list' ).dataTable( {
-            "autoWidth": false
-        } );
+        $( '#patch-panel-list' ).dataTable( { "autoWidth": false } );
 
+        $( '#patch-panel-list' ).show();
 
         $('#btn-filter-options').on( 'click', function( e ) {
             e.preventDefault();
@@ -189,12 +184,11 @@
         });
 
         $('#adv-search-select-locations').on( 'change', function( e ) {
-            var opts = '<option value="all">All Cabinets</option>';
+            let opts = `<option value="all">All Cabinets</option>` ;
 
             if( $('#adv-search-select-locations').val() != 'all' ) {
-                for (var i in locations[$('#adv-search-select-locations').val()]['cabinets']) {
-                    opts += '<option value="' + i
-                        + '">' + locations[$('#adv-search-select-locations').val()]['cabinets'][i]['name'] + '</option>';
+                for ( let i in locations[ $( '#adv-search-select-locations' ).val() ][ 'cabinets' ] ) {
+                    opts += `<option value='${i}'> ${ locations[ $( '#adv-search-select-locations' ).val() ][ 'cabinets' ][ i ][ 'name' ] }</option>`;
                 }
             }
 

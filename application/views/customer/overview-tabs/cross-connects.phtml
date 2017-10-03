@@ -7,6 +7,8 @@
                 <th>Ticket Ref</th>
             {/if}
             <th>State</th>
+            <th>Cabinet</th>
+            <th>Location</th>
             <th>Assigned At</th>
             <th>Chargeable</th>
             <th>Owned By</th>
@@ -45,6 +47,12 @@
                             {$patchPanelPort->resolveStates()}
                         </span>
 
+                    </td>
+                    <td>
+                        {$patchPanelPort->getPatchPanel()->getCabinet()->getLocation()->getName()}
+                    </td>
+                    <td>
+                        {$patchPanelPort->getPatchPanel()->getCabinet()->getName()}
                     </td>
                     <td>
                         {$patchPanelPort->getAssignedAtFormated()}

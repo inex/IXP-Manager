@@ -5,6 +5,9 @@
       <generator strategy="AUTO"/>
     </id>
     <field name="address" type="string" length="40" nullable="true"/>
+    <unique-constraints>
+      <unique-constraint name="vlan_address" columns="vlanid,address"/>
+    </unique-constraints>
     <many-to-one field="Vlan" target-entity="Entities\Vlan" inversed-by="IPv6Addresses">
       <join-columns>
         <join-column name="vlanid" referenced-column-name="id"/>

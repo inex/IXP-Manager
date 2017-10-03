@@ -807,6 +807,17 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
+    public function isTypeUnset()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeUnset', []);
+
+        return parent::isTypeUnset();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function isTypePeering()
     {
 

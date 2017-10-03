@@ -57,7 +57,7 @@ class ApiAuthenticate {
 	{
 		// are we already logged in?
 		if( !Auth::check() ) {
-			
+
 			// find API key. Prefer header to URL:
 			$apikey = false;
 			if( $request->header('X-IXP-Manager-API-Key') ) {

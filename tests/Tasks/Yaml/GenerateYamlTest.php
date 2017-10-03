@@ -47,7 +47,7 @@ class GenerateYamlTest extends TestCase
             $s = D2EM::getRepository('Entities\Switcher')->find($id);
             /** @var Switcher $s */
 
-            $conf = ( new SwitchConfigurationGenerator( $s ) )->render();
+            $conf = ( new SwitchConfigurationGenerator( $s ) )->render()->render();
 
             $knownGoodConf = file_get_contents( base_path() . "/data/travis-ci/known-good/ci-apiv4-yaml-{$id}.yaml" );
             $this->assertFalse( $knownGoodConf === false, "YAML Switch Configuration - could not load known good file ci-apiv4-yaml-{$id}.yaml" );
@@ -62,7 +62,7 @@ class GenerateYamlTest extends TestCase
             $s = D2EM::getRepository('Entities\Switcher')->findOneBy(['name'=>$name]);
             /** @var Switcher $s */
 
-            $conf = ( new SwitchConfigurationGenerator( $s ) )->render();
+            $conf = ( new SwitchConfigurationGenerator( $s ) )->render()->render();
 
             $knownGoodConf = file_get_contents( base_path() . "/data/travis-ci/known-good/ci-apiv4-yaml-{$name}.yaml" );
             $this->assertFalse( $knownGoodConf === false, "YAML Switch Configuration - could not load known good file ci-apiv4-yaml-{$name}.yaml" );

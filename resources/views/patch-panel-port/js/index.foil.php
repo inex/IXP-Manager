@@ -1,25 +1,95 @@
 <script>
 
-    var notesIntro = "### <?= date("Y-m-d" ) . ' - ' . Auth::user()->getUsername() ?> \n\n\n";
+    //////////////////////////////////////////////////////////////////////////////////////
+    // we'll need these handles to html elements in a few places:
 
-    var pagination = true;
+    const publicNotes               = $('#notes-modal-body-public-notes' );
+    const privateNotes              = $('#notes-modal-body-private-notes' );
+    const toggle_potential_slave    = $('#toggle-potential-slaves' );
+    const note_model_intro          = $('#notes-modal-body-intro' );
+
+    let notesIntro = "### <?= date("Y-m-d" ) . ' - ' . Auth::user()->getUsername() ?> \n\n\n";
+    let pagination = true;
+
     <?php if($t->pp || isset( $t->data()['summary'] )): ?>
-    // unless we have a single patch panel in which case we disable:
+        // unless we have a single patch panel in which case we disable:
         pagination = false;
     <?php endif; ?>
 
+    //////////////////////////////////////////////////////////////////////////////////////
+    // action bindings:
+
     $(document).ready(function(){
         loadDataTable( 'ppp' );
-        $('#table-ppp').on('draw.dt', function() {
-            unbindEvent()
-            loadEvent();
-        });
+        $( '#area-ppp' ).show();
 
     });
 
 
 
+    $( "a[id|='edit-notes']" ).on( 'click', function(e){
+        e.preventDefault();
+        let pppid = (this.id).substring(11);
+        popup( pppid, 'edit-notes', $(this).attr('href') );
+    });
 
+    $( "a[id|='set-connected']" ).on( 'click', function(e){
+        e.preventDefault();
+        let pppid = (this.id).substring(14);
+        popup( pppid, 'set-connected', $(this).attr('href') );
+    });
+
+    $( "a[id|='request-cease']" ).on( 'click', function(e){
+        e.preventDefault();
+        let pppid = (this.id).substring(14);
+        popup( pppid, 'request-cease', $(this).attr('href') );
+    });
+
+    $( "a[id|='set-ceased']" ).on( 'click', function(e){
+        e.preventDefault();
+        let pppid = (this.id).substring(11);
+        popup( pppid, 'set-ceased', $(this).attr('href') );
+    });
+
+
+    $( "a[id|='attach-file']" ).on( 'click', function(e){
+        e.preventDefault();
+        console.log( 'dfsfsd' );
+        let pppid = (this.id).substring(12);
+        uploadPopup( pppid );
+    });
+
+    $( "a[id|='delete-ppp']" ).on( 'click', function(e){
+        e.preventDefault();
+        let pppid = (this.id).substring(11);
+        dangerAction( 'delete', pppid );
+    });
+
+    $( "a[id|='split-ppp']" ).on( 'click', function(e){
+        e.preventDefault();
+        let pppid = (this.id).substring(10);
+        dangerAction( 'split', pppid );
+    });
+
+    $('[data-toggle="tooltip"]').tooltip();
+
+    toggle_potential_slave.click( () => { $('.potential-slave').toggle(); } );
+
+    $('.dropdown-submenu a.submenu').on("click", function(e){
+        $(this).next('ul').toggle();
+        e.stopPropagation();
+        e.preventDefault();
+    });
+
+
+    function unbindEvent(){
+        $( ".dropdown-submenu a.submenu").unbind( "click" );
+        toggle_potential_slave.unbind( "click" );
+    }
+
+
+    //////////////////////////////////////////////////////////////////////////////////////
+    // functions:
 
     /**
      * initialise the datatable table
@@ -35,75 +105,8 @@
             }],
             "order": [[ 0, "asc" ]]
         });
-        unbindEvent()
-        loadEvent();
-    }
-
-    /**
-     * initialise all the event
-     */
-    function loadEvent(){
-
-        $( "a[id|='edit-notes']" ).on( 'click', function(e){
-            e.preventDefault();
-            var pppid = (this.id).substring(11);
-            popup( pppid, 'edit-notes', $(this).attr('href') );
-        });
-
-        $( "a[id|='set-connected']" ).on( 'click', function(e){
-            e.preventDefault();
-            var pppid = (this.id).substring(14);
-            popup( pppid, 'set-connected', $(this).attr('href') );
-        });
-
-        $( "a[id|='request-cease']" ).on( 'click', function(e){
-            e.preventDefault();
-            var pppid = (this.id).substring(14);
-            popup( pppid, 'request-cease', $(this).attr('href') );
-        });
-
-        $( "a[id|='set-ceased']" ).on( 'click', function(e){
-            e.preventDefault();
-            var pppid = (this.id).substring(11);
-            popup( pppid, 'set-ceased', $(this).attr('href') );
-        });
-
-
-        $( "a[id|='attach-file']" ).on( 'click', function(e){
-            e.preventDefault();
-            var pppid = (this.id).substring(12);
-            uploadPopup( pppid );
-        });
-
-        $( "a[id|='delete-ppp']" ).on( 'click', function(e){
-            e.preventDefault();
-            var pppid = (this.id).substring(11);
-            dangerAction( 'delete', pppid );
-        });
-
-        $( "a[id|='split-ppp']" ).on( 'click', function(e){
-            e.preventDefault();
-            var pppid = (this.id).substring(10);
-            dangerAction( 'split', pppid );
-        });
-
-        $('[data-toggle="tooltip"]').tooltip()
-
-        $('#toggle-potential-slaves').on( 'click', function(e) {
-            $('.potential-slave').toggle();
-        });
-        
-        $('.dropdown-submenu a.submenu').on("click", function(e){
-            $(this).next('ul').toggle();
-            e.stopPropagation();
-            e.preventDefault();
-        });
-
-    }
-
-    function unbindEvent(){
-        $( ".dropdown-submenu a.submenu").unbind( "click" );
-        $( "#toggle-potential-slaves").unbind( "click" );
+        //unbindEvent();
+        //loadEvent();
     }
 
     /**
@@ -155,13 +158,10 @@
     function popupSetUp( ppp, action ) {
 
         if( action != 'edit-notes' ) {
-            $('#notes-modal-body-intro').show();
+            note_model_intro.show();
         } else {
-            $('#notes-modal-body-intro').hide();
+            note_model_intro.hide();
         }
-
-        var publicNotes  = $('#notes-modal-body-public-notes' );
-        var privateNotes = $('#notes-modal-body-private-notes' );
 
         $('#notes-modal-ppp-id').val(ppp.id);
         publicNotes.val( ppp.notes );
@@ -190,13 +190,11 @@
      * Reset the popup for adding / editing notes.
      */
     function popupTearDown() {
-
-        var publicNotes  = $('#notes-modal-body-public-notes' );
-        var privateNotes = $('#notes-modal-body-private-notes' );
-
         $('#notes-modal-ppp-id').val('');
+
         publicNotes.val('');
         privateNotes.val('');
+
         $('#notes-modal-body-pi-status').html('');
         $('#notes-modal-body-div-pi-status').hide();
 
@@ -227,7 +225,7 @@
 
                 $('#notes-modal-btn-confirm').attr("disabled", true);
 
-                $.ajax( "<?= url('api/v4/patch-panel-port/notes')?>/" + ppp.id, {
+                $.ajax( "<?= url('patch-panel-port/notes')?>/" + ppp.id, {
                         data: {
                             pppId: ppp.id,
                             notes: $('#notes-modal-body-public-notes').val(),
@@ -268,7 +266,7 @@
 
     function uploadPopup( pppid ){
 
-        var html = '<form id="upload" method="post" action="<?= url("api/v4/patch-panel-port/upload-file" )?>/' + pppid + '" enctype="multipart/form-data">' +
+        let html = '<form id="upload" method="post" action="<?= url("patch-panel-port/upload-file" )?>/' + pppid + '" enctype="multipart/form-data">' +
             '<div id="drop">Drop Files Here &nbsp;' +
             '    <a id="upload-drop-a" class="btn btn-success">' +
             '        <i class="glyphicon glyphicon-upload"></i> Browse</a> <br/>' +
@@ -276,9 +274,9 @@
             '        <input type="file" name="upl" multiple />' +
             '</div>' +
             '<ul id="upload-ul"><!-- The file uploads will be shown here --> </ul>' +
-            '<input type="hidden" name="_token" value="<?= csrf_token() ?>"> </form>';
+            '</form>';
 
-        var dialog = bootbox.dialog({
+        let dialog = bootbox.dialog({
             message: html,
             title: "Files Upload (Files will be public by default)",
             onEscape: function() {
@@ -298,7 +296,7 @@
 
         dialog.init( function(){
 
-            var ul = $('#upload-ul');
+            let ul = $('#upload-ul');
 
             $('#upload-drop-a').click( function(){
                 // Simulate a click on the file input button
@@ -316,7 +314,7 @@
                 // either via the browse button, or via drag/drop:
                 add: function (e, data) {
 
-                    var tpl = $('<li><input type="text" value="0" data-width="48" data-height="48"'+
+                    let tpl = $('<li><input type="text" value="0" data-width="48" data-height="48"'+
                         ' data-fgColor="#0788a5" data-readOnly="1" data-bgColor="#3e4043" /><p></p><span></span></li>');
 
                     // Append the file name and file size
@@ -353,7 +351,7 @@
                 progress: function(e, data){
 
                     // Calculate the completion percentage of the upload
-                    var progress = parseInt(data.loaded / data.total * 100, 10);
+                    let progress = parseInt(data.loaded / data.total * 100, 10);
 
                     // Update the hidden input field and trigger a change
                     // so that the jQuery knob plugin knows to update the dial
@@ -383,41 +381,46 @@
      * Delete a file that has been just uploaded via uploadPopup
      */
     function deleteFile(e) {
-        var pppFileId = (this.id).substring(21);
+        let pppFileId = (this.id).substring(21);
 
-        $.ajax( "<?= url('api/v4/patch-panel-port/delete-file') ?>/" + pppFileId )
-            .done( function( data ) {
-                if( data.success ) {
-                    $('#uploaded-file-' + pppFileId).fadeOut( "medium", function() {
-                        $('#uploaded-file-' + pppFileId).remove();
-                    });
-                } else {
-                    $( '#message-' + pppFileId ).removeClass('success').addClass( 'error' ).html( data.message );
-                }
-            });
+        $.ajax( "<?= url('api/v4/patch-panel-port/delete-file') ?>/" + pppFileId, {
+            type : 'POST'
+        } )
+        .done( function( data ) {
+            if( data.success ) {
+                $('#uploaded-file-' + pppFileId).fadeOut( "medium", function() {
+                    $('#uploaded-file-' + pppFileId).remove();
+                });
+            } else {
+                $( '#message-' + pppFileId ).removeClass('success').addClass( 'error' ).html( data.message );
+            }
+        });
     }
 
     /**
      * Toggle privacy of a file that has been just uploaded via uploadPopup
      */
     function toggleFilePrivacy(e) {
-        var pppFileId = (this.id).substring(29);
-        $.ajax( "<?= url('api/v4/patch-panel-port/toggle-file-privacy') ?>/" + pppFileId )
-            .done( function( data ) {
-                if( data.isPrivate ) {
-                    $( '#uploaded-file-toggle-private-' + pppFileId ).removeClass('fa-unlock').addClass('fa-lock');
-                } else {
-                    $( '#uploaded-file-toggle-private-' + pppFileId ).removeClass('fa-lock').addClass('fa-unlock');
-                }
-            });
+        let pppFileId = (this.id).substring(29);
+        $.ajax( "<?= url('api/v4/patch-panel-port/toggle-file-privacy') ?>/" + pppFileId ,{
+            type: 'POST'
+        })
+        .done( function( data ) {
+            if( data.isPrivate ) {
+                $( '#uploaded-file-toggle-private-' + pppFileId ).removeClass('fa-unlock').addClass('fa-lock');
+            } else {
+                $( '#uploaded-file-toggle-private-' + pppFileId ).removeClass('fa-lock').addClass('fa-unlock');
+            }
+        });
     }
 
 
     function dangerAction( action, pppid){
+        let message, urlAction;
 
         if( action == 'delete' ){
             message = "WARNING: Deletion is permanent and will remove the port from the patch panel including all history and files.";
-            urlAction = "<?= url('api/v4/patch-panel-port/delete') ?>/" + pppid;
+            urlAction = "<?= url('patch-panel-port/delete') ?>/" + pppid;
 
             if( $('#danger-dropdown-'+pppid).data("slave-port") ){
                 message += "<b> As this is a duplex port, both individual ports will be deleted. </b> If you do not want this, then split the port first."
@@ -427,15 +430,12 @@
         if( action == 'split' ){
             prefix = $('#danger-dropdown-'+pppid).data("port-prefix");
 
-            slavePort = $('#danger-dropdown-'+pppid).data("slave-port");
-            masterPort = prefix+$('#danger-dropdown-'+pppid).data("master-port");
+            let slavePort = $('#danger-dropdown-'+pppid).data("slave-port");
+            let masterPort = prefix+$('#danger-dropdown-'+pppid).data("master-port");
 
-            message = "Are you sure you want to split this port? The slave port ("+ slavePort +") will be removed from the master port ("+ masterPort +") and marked as available. If you want to split the other way ("+ slavePort +" as master), split now and then use the move function on ("+ masterPort +") afterwards.";
-            urlAction = "<?= url('api/v4/patch-panel-port/split') ?>/" + pppid;
+            message = `Are you sure you want to split this port? The slave port (${slavePort}) will be removed from the master port (${masterPort}) and marked as available. If you want to split the other way (${slavePort} as master), split now and then use the move function on (${masterPort}) afterwards.`;
+            urlAction = "<?= url('patch-panel-port/split') ?>/" + pppid;
         }
-
-
-
 
         bootbox.confirm({
             title: "Danger Action",
@@ -451,32 +451,22 @@
             callback: function (result) {
                 if (result) {
                     $.ajax( urlAction, {
-                        type: 'GET'
+                        type: 'POST'
                     })
-                        .done( function( data ) {
-                            nameClass = ( data.success ) ? 'success': 'danger';
-                            messageReturned = ( data.success ) ? 'The port has been deleted.': 'Error';
-                            if( result ) {
-                                $("#message-ppp").html("<div class='alert alert-" + nameClass + "' role='alert'>" + messageReturned + "</div>");
-                                if( action == 'split' ){
-                                    $("#breadcrumb-area").load( $(location).attr('pathname')+" .breadcrumb");
-                                }
-                                refreshDataTable('ppp');
-
-                            }
-                        })
-                        .fail( function(){
-                            alert( 'Could not update notes. API / AJAX / network error' );
-                            throw new Error("Error running ajax query for "+urlAction);
-                        })
-                        .always( function() {
-                            $('#notes-modal').modal('hide');
-                        });
+                    .done( function(  ) {
+                        if( result ) {
+                            window.location.reload();
+                        }
+                    })
+                    .fail( function(){
+                        alert( 'Could not update notes. API / AJAX / network error' );
+                        throw new Error("Error running ajax query for "+urlAction);
+                    })
+                    .always( function() {
+                        $('#notes-modal').modal('hide');
+                    });
                 }
             }
         });
-
-
     }
-
 </script>

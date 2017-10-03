@@ -24,6 +24,16 @@ namespace IXP\Http\Controllers\Api\V4;
  */
 
 use Illuminate\Http\Request;
+use Illuminate\Http\JsonResponse;
+
+use D2EM;
+
+use Entities\{
+    SflowReceiver as SflowReceiverEntity
+};
+
+
+
 
 class SflowReceiverController extends Controller {
 

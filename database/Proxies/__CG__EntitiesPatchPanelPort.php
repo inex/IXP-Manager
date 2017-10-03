@@ -928,6 +928,17 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
+    public function getCabinet()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCabinet', []);
+
+        return parent::getCabinet();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getCustomerId()
     {
 
@@ -1275,17 +1286,6 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCircuitReference', []);
 
         return parent::getCircuitReference();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function movePort(\Entities\PatchPanelPort $masterPort, $slavePort = NULL)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'movePort', [$masterPort, $slavePort]);
-
-        return parent::movePort($masterPort, $slavePort);
     }
 
 }
