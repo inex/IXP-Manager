@@ -23,14 +23,14 @@ class PhysicalInterface
         self::STATUS_QUARANTINE   => 'Quarantine'
     );
 
-    public static $SPEED = array(
+    public static $SPEED = [
         10    => '10 Mbps',
         100   => '100 Mbps',
         1000  => '1 Gbps',
         10000 => '10 Gbps',
         40000 => '40 Gbps',
         100000 => '100 Gbps'
-    );
+    ];
 
     public static $DUPLEX = array(
         'full'   => 'full',
@@ -93,6 +93,11 @@ class PhysicalInterface
      * @var \Entities\PhysicalInterface
      */
     protected $PeeringPhysicalInterface;
+
+    /**
+     * @var \Entities\CoreInterface
+     */
+    protected $coreInterface;
 
     /**
      * Set status
@@ -346,6 +351,49 @@ class PhysicalInterface
     }
 
     /**
+     * Get CoreInterface
+     *
+     * @return \Entities\CoreInterface
+     */
+    public function getCoreInterface()
+    {
+        return $this->coreInterface;
+    }
+
+    /**
+     * Get the core bundle if the physical interface is associated to a core bundle
+     *
+     * @return \Entities\CoreBundle
+     */
+    public function getCoreBundle()
+    {
+        if( $ci = $this->getCoreInterface() ){
+            return $ci->getCoreLink()->getCoreBundle();
+        }
+        return false;
+    }
+
+    /**
+     * Get the other physical interface associated to the core link of the current Physical Interface
+     *
+     * @return \Entities\PhysicalInterface
+     */
+    public function getOtherPICoreLink(){
+
+        if( $ci = $this->getCoreInterface() ){
+            if( $this->getId() == $ci->getCoreLink()->getCoreInterfaceSideA()->getPhysicalInterface()->getId() ){
+                return $ci->getCoreLink()->getCoreInterfaceSideB()->getPhysicalInterface();
+            } else {
+                return $ci->getCoreLink()->getCoreInterfaceSideA()->getPhysicalInterface();
+            }
+        }
+
+        return false;
+
+
+    }
+
+    /**
      * Gets the related peering / fanout port for the current fanout / peering port
      *
      * For reseller functionality, we have the option of having fanout ports connectted to
@@ -356,12 +404,17 @@ class PhysicalInterface
      */
     public function getRelatedInterface()
     {
-        if( $this->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_FANOUT && $this->getPeeringPhysicalInterface() )
-            return $this->getPeeringPhysicalInterface();
-        else if( $this->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_PEERING && $this->getFanoutPhysicalInterface() )
-            return $this->getFanoutPhysicalInterface();
-        else
+        if( $this->getSwitchPort() ){
+            if( $this->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_FANOUT && $this->getPeeringPhysicalInterface() )
+                return $this->getPeeringPhysicalInterface();
+            else if( $this->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_PEERING && $this->getFanoutPhysicalInterface() )
+                return $this->getFanoutPhysicalInterface();
+            else
+                return false;
+        } else{
             return false;
+        }
+
     }
 
 
@@ -426,9 +479,18 @@ class PhysicalInterface
      *
      * @return int
      */
-    public function resolveSpeed() {
+    public function resolveDetectedSpeed() {
         // try the actual SNMP-discovered port speed first, otherwise use the configured speed:
         return $this->getSwitchPort()->getIfHighSpeed() > 0 ? $this->getSwitchPort()->getIfHighSpeed() : $this->getSpeed();
+    }
+
+    /**
+     * Turn the database integer representation of the speed into text as
+     * defined in the self::$SPEEDS array (or 'Unknown')
+     * @return string
+     */
+    public function resolveSpeed(): string {
+        return self::$SPEED[ $this->getSpeed() ] ?? 'Unknown';
     }
 
     /**
@@ -439,4 +501,5 @@ class PhysicalInterface
     public function resolveStatus(): string {
         return self::$STATES[ $this->getStatus() ] ?? 'Unknown';
     }
+
 }

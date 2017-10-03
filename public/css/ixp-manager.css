@@ -669,3 +669,12 @@ a.delInputRow {
     left: -163px;
     margin-top: -1px;
 }
+
+td a:hover{
+    text-decoration: none;
+}
+
+
+.help-block {
+    display: none;
+}

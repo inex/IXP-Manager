@@ -5,25 +5,28 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'patch-panel/list' )?>">
+    <a href="<?= action ( 'PatchPanel\PatchPanelController@index' )?>">
         Patch Panels
     </a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <li>
-        View : <?= $t->pp->getId().' '.$t->pp->getName()?>
+        View : <?= $t->pp->getId().' '. $t->ee( $t->pp->getName() )?>
     </li>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= url('patch-panel-port/list/patch-panel/' . $t->pp->getId() ) ?>" title="list">
+            <a type="button" class="btn btn-default" href="<?= route('patch-panel/list' ) ?>" title="Patch panel list">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
-            <a type="button" class="btn btn-default" href="<?= url('patch-panel/edit').'/'.$t->pp->getId() ?>" title="edit">
+            <a type="button" class="btn btn-default" href="<?= route ('patch-panel/edit' , [ 'id' => $t->pp->getId() ] ) ?>" title="Edit">
                 <span class="glyphicon glyphicon-pencil"></span>
+            </a>
+            <a type="button" class="btn btn-default" href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'id' => $t->pp->getId() ]  ) ?>" title="Ports list">
+                <span class="glyphicon glyphicon-th"></span>
             </a>
         </div>
     </li>
@@ -44,8 +47,8 @@
                             </b>
                         </td>
                         <td>
-                            <a href="<?= url( '/patch-panel-port/list/patch-panel' ).'/'.$t->pp->getId()?>">
-                                <?= $t->pp->getName() ?>
+                            <a href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'id' => $t->pp->getId() ]  ) ?>">
+                                <?= $t->ee( $t->pp->getName() ) ?>
                             </a>
                         </td>
                     </tr>
@@ -56,7 +59,7 @@
                             </b>
                         </td>
                         <td>
-                            <?= $t->pp->getColoReference() ?>
+                            <?= $t->ee( $t->pp->getColoReference() )?>
                         </td>
                     </tr>
                     <tr>
@@ -67,7 +70,7 @@
                         </td>
                         <td>
                             <a href="<?= url( '/cabinet/view'  ).'/'.$t->pp->getCabinet()->getId()?>">
-                                <?= $t->pp->getCabinet()->getName() ?>
+                                <?= $t->ee( $t->pp->getCabinet()->getName() ) ?>
                             </a>
                         </td>
                     </tr>
@@ -98,7 +101,7 @@
                             </b>
                         </td>
                         <td>
-                            <a href="<?= url( '/patch-panel-port/list/patch-panel' ).'/'.$t->pp->getId()?>">
+                            <a href="<?= route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->pp->getId() ] ) ?>">
                             <span title="" class="label label-<?= $t->pp->getCssClassPortCount() ?>">
                                     <?php if( $t->pp->hasDuplexPort() ): ?>
                                         <?= $t->pp->getAvailableOnTotalPort(true) ?>
@@ -178,7 +181,7 @@
                             </b>
                         </td>
                         <td>
-                            <?= Markdown::parse( $t->pp->getLocationDescription() ) ?>
+                            <?= Markdown::parse( $t->ee( $t->pp->getLocationDescription() ) ) ?>
                         </td>
                     </tr>
                     <tr>
@@ -188,7 +191,7 @@
                             </b>
                         </td>
                         <td>
-                            <?= Markdown::parse( $t->pp->getLocationNotes() ) ?>
+                            <?= Markdown::parse( $t->ee( $t->pp->getLocationNotes() ) ) ?>
                         </td>
                     </tr>
                 </table>

@@ -2,9 +2,9 @@
 <module type="WEB_MODULE" version="4">
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
-      <sourceFolder url="file://$MODULE_DIR$/database" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/app" isTestSource="false" packagePrefix="IXP" />
+      <sourceFolder url="file://$MODULE_DIR$/tests" isTestSource="true" packagePrefix="Tests\" />
+      <sourceFolder url="file://$MODULE_DIR$/library" isTestSource="false" packagePrefix="IXP_" />
+      <sourceFolder url="file://$MODULE_DIR$/app" isTestSource="false" packagePrefix="IXP\" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/anahkiasen/former" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/anahkiasen/html-object" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/aura/html" />

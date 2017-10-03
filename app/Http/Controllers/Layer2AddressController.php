@@ -1,4 +1,7 @@
 <?php
+
+namespace IXP\Http\Controllers;
+
 /*
  * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -20,8 +23,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace IXP\Http\Controllers;
-
 use D2EM;
 
 use Illuminate\View\View;
@@ -33,6 +34,11 @@ use Entities\{
     OUI as OUIEntity,
     Vlan as VlanEntity
 };
+
+use Illuminate\Http\JsonResponse;
+
+use IXP\Utils\View\Alert\Alert;
+use IXP\Utils\View\Alert\Container as AlertContainer;
 
 /**
  * Layer2Address Controller
@@ -84,5 +90,27 @@ class Layer2AddressController extends Controller
             'Vlans'             => D2EM::getRepository( VlanEntity::class )->findAll(),
             'Vlan'              => $vlan
         ]);
+    }
+
+
+    /**
+     * Delete a mac address from a Vlan Interface
+     *
+     * @param   int $id ID of the Layer2Address
+     * @return  JsonResponse
+     */
+    public function delete( int $id ): JsonResponse{
+        /** @var Layer2AddressEntity $l2a */
+        if( !( $l2a = D2EM::getRepository( Layer2AddressEntity::class )->find( $id ) ) ) {
+            return abort( '404' );
+        }
+
+        $l2a->getVlanInterface()->removeLayer2Address( $l2a );
+        D2EM::remove( $l2a );
+        D2EM::flush();
+
+        AlertContainer::push( 'The MAC address has been deleted successfully.', Alert::SUCCESS );
+
+        return response()->json( [ 'success' => true ] );
     }
 }

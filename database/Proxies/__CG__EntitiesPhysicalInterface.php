@@ -64,10 +64,10 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'monitorindex', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface'];
+            return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'monitorindex', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface'];
         }
 
-        return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'monitorindex', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface'];
+        return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'monitorindex', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface'];
     }
 
     /**
@@ -422,6 +422,39 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
     /**
      * {@inheritDoc}
      */
+    public function getCoreInterface()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreInterface', []);
+
+        return parent::getCoreInterface();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCoreBundle()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreBundle', []);
+
+        return parent::getCoreBundle();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOtherPICoreLink()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOtherPICoreLink', []);
+
+        return parent::getOtherPICoreLink();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getRelatedInterface()
     {
 
@@ -499,7 +532,18 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function resolveSpeed()
+    public function resolveDetectedSpeed()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveDetectedSpeed', []);
+
+        return parent::resolveDetectedSpeed();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveSpeed(): string
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveSpeed', []);

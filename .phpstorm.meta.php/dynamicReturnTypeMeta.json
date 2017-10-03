@@ -1,0 +1,24 @@
+{
+  "methodCalls": [
+    {
+      "class": "\\Doctrine\\ORM\\EntityManager",
+      "method": "getRepository",
+      "position": 0,
+      "fileReturnTypeReplacementCall": ["dynamicReturnTypeMeta.js", "replaceWithRepository"]
+    },
+    {
+      "class": "\\D2EM",
+      "method": "getRepository",
+      "position": 0,
+      "fileReturnTypeReplacementCall": ["dynamicReturnTypeMeta.js", "replaceWithRepository"]
+    },
+    {
+      "class": "\\LaravelDoctrine\\ORM\\Facades\\EntityManager",
+      "method": "getRepository",
+      "position": 0,
+      "fileReturnTypeReplacementCall": ["dynamicReturnTypeMeta.js", "replaceWithRepository"]
+    }
+
+
+  ]
+}

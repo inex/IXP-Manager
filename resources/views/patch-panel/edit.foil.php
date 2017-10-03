@@ -5,15 +5,24 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'patch-panel/list' )?>">Patch Panels</a>
+    <a href="<?= action ( 'PatchPanel\PatchPanelController@index' )?>">Patch Panels</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <li>
-        <?= $t->pp ? 'Editing Patch Panel: ' . $t->pp->getName() : 'Add New Patch Panel' ?>
+        <?= $t->pp ? 'Editing Patch Panel: ' . $t->ee( $t->pp->getName() ) : 'Add New Patch Panel' ?>
     </li>
 <?php $this->append() ?>
 
+<?php $this->section( 'page-header-preamble' ) ?>
+    <li class="pull-right">
+        <div class="btn-group btn-group-xs" role="group">
+            <a type="button" class="btn btn-default" href="<?= route('patch-panel/list' ) ?>" title="Patch panel list">
+                <span class="glyphicon glyphicon-th-list"></span>
+            </a>
+        </div>
+    </li>
+<?php $this->append() ?>
 
 <?php $this->section('content') ?>
 
@@ -26,7 +35,7 @@
 
     <?= Former::open()
         ->method( 'post' )
-        ->action( url( 'patch-panel/store' ) )
+        ->action( action ( 'PatchPanel\PatchPanelController@store' ) )
         ->customWidthClass( 'col-sm-3' );
     ?>
 
@@ -78,6 +87,7 @@
         <?= Former::number( 'numberOfPorts' )
             ->label( ( $t->pp ? 'Add ' : '' ) . 'Number of Ports' )
             ->appendIcon( 'nb-port glyphicon glyphicon-info-sign' )
+            ->min( 0 )
             ->blockHelp(
                 $t->pp ? 'There are ' . $t->pp->getPortCount() . " ports in this panel already. Enter the number of ports <b> you want to add</b> above."
                         . "<b>Note that duplex ports should be entered as two ports.</b>"
@@ -112,7 +122,6 @@
         <?= Former::textarea( 'location_notes' )
             ->label( 'Location Notes' )
             ->rows( 5 )
-//            ->style( 'width:500px' )
             ->blockHelp( 'These notes are included on connection and other emails to help co-location providers correctly '
                 . 'identify their own co-location references. Unfortunately, it has been the experience of the authors '
                 . 'that co-location providers change identifiers (and ownership) like the wind changes direction. These '
@@ -126,7 +135,7 @@
 
         <?= Former::actions(
                 Former::primary_submit( 'Save Changes' ),
-                Former::default_link( 'Cancel' )->href( url( 'patch-panel/list' ) ),
+                Former::default_link( 'Cancel' )->href(  action ( 'PatchPanel\PatchPanelController@index' ) ),
                 Former::success_button( 'Help' )->id( 'help-btn' )
             );
         ?>
@@ -138,40 +147,31 @@
 <?php $this->section( 'scripts' ) ?>
 
     <script>
-
-        /**
-         * hide the help block at loading
-         */
-        $('p.help-block').hide();
-
-        /**
-         * display / hide help sections on click on the help button
-         */
-        $( "#help-btn" ).click( function() {
-            $( "p.help-block" ).toggle();
-        });
         $( document ).ready( function() {
+            //////////////////////////////////////////////////////////////////////////////////////
+            // we'll need these handles to html elements in a few places:
+
+            const input_name              = $( '#name' );
+            const input_colo_ref          = $( '#colo_reference' );
+
             /**
              * set the today date on click on the today button
              */
-            $( "#date-today" ).click( function() {
-                $( "#installation_date" ).val( '<?= date( "Y-m-d" ) ?>' );
-            });
+            $( "#date-today" ).click( () => { $( "#installation_date" ).val( '<?= date( "Y-m-d" ) ?>' ) } );
 
             /**
              * set the colo_reference in empty input by the name input value
              */
-            $( "#name" ).blur( function() {
-                if( $( "#colo_reference" ).val() == '' ){
-                    $( "#colo_reference" ).val( $("#name" ).val() );
+            input_name.blur( function() {
+                if( input_colo_ref.val() == '' ){
+                    input_colo_ref.val( input_name.val() );
                 }
             });
 
             /**
             * set data to the tooltip
             */
-            $( ".glyphicon-nb-port" ).parent().attr( 'data-toggle','popover' ).attr( 'title' , 'Help - Number of Ports' ).attr( 'data-content' ,
-                '<b>Note that duplex ports should be entered as two ports.</b>' );
+            $( ".glyphicon-nb-port" ).parent().attr( 'data-toggle','popover' ).attr( 'title' , 'Help - Number of Ports' ).attr( 'data-content' , '<b>Note that duplex ports should be entered as two ports.</b>' );
 
             /**
              * configuration of the tooltip

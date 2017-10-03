@@ -120,7 +120,30 @@ class IXP_Form_Switch extends IXP_Form
             ->setUncheckedValue( '0' )
             ->setValue( '1' );
         $this->addElement( $active );
-        
+
+        $asn = $this->createElement( 'text', 'asn' );
+        $asn->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
+            ->addValidator( 'greaterThan', false, array( 0 ) )
+            ->setLabel( 'ASN' )
+            ->setAttrib( 'class', 'span3' );
+        $this->addElement( $asn );
+
+        $loopback_ip = $this->createElement( 'text', 'loopback_ip' );
+        $loopback_ip->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
+            ->setLabel( 'Loopback IP' )
+            ->setAttrib( 'class', 'span3' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $loopback_ip );
+
+        $loopback_name = $this->createElement( 'text', 'loopback_name' );
+        $loopback_name->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
+            ->setLabel( 'Loopback Name' )
+            ->setAttrib( 'class', 'span3' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( new OSS_Filter_StripSlashes() );
+        $this->addElement( $loopback_name );
+
 
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );
         $this->addElement( $this->createCancelElement() );

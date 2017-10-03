@@ -55,7 +55,18 @@ $(document).ready(function() {
                 {/if}
             {/foreach}
             { 'bSortable': false, "bSearchable": false, "sWidth": "150px" }
-        ]
+        ],
+        'columnDefs': [
+            {assign var=count value=0}
+            {foreach $feParams->listColumns as $col => $cconf}
+                {if not is_array( $cconf ) or not isset( $cconf.display ) or $cconf.display}
+                    {if $col == active }
+                        { "type": "string", "targets": {$count} },
+                    {/if}
+                {/if}
+                {assign var=count value=$count + 1}
+            {/foreach}
+        ],
     });
     
     $( '#frontend-list-table' ).show();

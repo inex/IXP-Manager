@@ -17,28 +17,33 @@
                     <a href="<?= url( 'customer/list' ) ?>">Customers</a>
                 </li>
 
-                <li>
-                    <?php /*
-                    {if $controller eq 'virtual-interface' or $controller eq 'vlan-interface' or $controller eq 'physical-interface'}
-                        <a href="{genUrl controller='virtual-interface' action='list'}">Interfaces (Virtual)</a>
-                        <ul class="nav nav-list">
-                            <li {if $controller eq 'physical-interface'}class="active"{/if}>
-                                <a href="{genUrl controller='physical-interface' action='list'}">Physical Interfaces</a>
-                            </li>
-                            <li {if $controller eq 'vlan-interface' and $action neq 'quick-add'}class="active"{/if}>
-                                <a href="{genUrl controller='vlan-interface' action='list'}">Vlan Interfaces</a>
-                            </li>
-                        </ul>
-                    {else} */ ?>
+                <li <?php if( $t->controller == 'VirtualInterfaceController' ): ?> class="active" <?php endif; ?> >
 
-                    <a href="<?= url( 'virtual-interface/list' ) ?>">Interfaces</a>
+                    <a href="<?= route( 'interfaces/virtual/list' ) ?>" >
+                        Interfaces / Ports
+                    </a>
 
-                    <?php /* {/if} */ ?>
                 </li>
-                <li <?php if($t->controller == 'PatchPanelController'):?> class="active" <?php endif;?> >
-                    <a href="<?= url('patch-panel/list') ?>">Patch Panels</a>
 
-                    <?php if($t->controller == 'PatchPanelController' or $t->controller == 'PatchPanelPortController') :?>
+                    <?php if( substr( $t->controller, -19 ) == 'InterfaceController' ): ?>
+
+                        <li class="sub-menu <?php if($t->controller == 'PhysicalInterfaceController'):?> active <?php endif;?> " >
+                            <a href="<?= route('interfaces/physical/list') ?>">Physical Interface</a>
+                        </li>
+
+                        <li class="sub-menu <?php if($t->controller == 'VlanInterfaceController'):?> active <?php endif;?> " >
+                            <a href="<?= route('interfaces/vlan/list') ?>">Vlan Interface</a>
+                        </li>
+
+                    <?php endif; ?>
+
+                <li class="<?= $t->controller != 'SflowReceiverController' ?: 'active' ?>" >
+                    <a href="<?= url('interfaces/sflow-receiver/list') ?>">Sflow Receivers</a>
+                </li>
+
+                <li <?php if( $t->controller == 'PatchPanelController' ):?> class="active" <?php endif;?> >
+                    <a href="<?= url('patch-panel/list') ?>">Patch Panels</a>
+                    <?php if( $t->controller == 'PatchPanelPortController' || $t->controller == 'PatchPanelController' ):?>
                         <li class="sub-menu <?php if($t->controller == 'PatchPanelPortController'):?> active <?php endif;?> " >
                             <a href="<?= url('patch-panel-port/list') ?>">Patch Panel Port</a>
                         </li>
@@ -113,6 +118,26 @@
 
                 </li>
 
+
+                <li>
+                    <a href="<?= url('/switch/list') ?>">Switches</a>
+                    <?php /*
+                    {if $controller eq 'switch' or $controller eq 'switch-port'}
+                        <ul class="nav nav-list">
+                            <li {if $controller eq 'switch-port' and $action neq 'unused-optics'}class="active"{/if}>
+                                <a href="{genUrl controller='switch-port' action='list'}">Switch Ports</a>
+                            </li>
+                            <li {if $controller eq 'switch-port' and $action eq 'unused-optics'}class="active"{/if}>
+                                <a href="{genUrl controller='switch-port' action='unused-optics'}">Unused Optics</a>
+                            </li>
+                        </ul>
+                    {/if}
+                    */ ?>
+                </li>
+
+                <li class="<?= $t->controller != 'CoreBundleController' ?: "active" ?>" >
+                    <a href="<?= url('interfaces/core-bundle/list') ?>">Core Bundles</a>
+                </li>
 
                 <li>
                     <a href="<?= url('/switch/list') ?>">Switches</a>

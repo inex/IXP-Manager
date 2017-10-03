@@ -9,14 +9,14 @@
 
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= url( 'patch-panel-port/list/patch-panel/'.$t->ppp->getPatchPanel()->getId() )?>">
+    <a href="<?= route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) ?>">
         Patch Panel Port
     </a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <li>
-        Email : <?= $t->ppp->getName()?>
+        Email : <?= $t->ee( $t->ppp->getName() )?>
     </li>
 <?php $this->append() ?>
 
@@ -25,7 +25,7 @@
     <?= $t->alerts() ?>
 
     <?= Former::open()->method( 'POST' )
-        ->action( url( 'patch-panel-port/send-email/' . $t->ppp->getId() . '/' . $t->emailType ) )
+        ->action( action ( 'PatchPanel\PatchPanelPortController@sendEmail' , [ 'id' =>  $t->ppp->getId() , 'type' => $t->emailType  ] ) )
         ->addClass( 'col-md-10' );
     ?>
         <?= Former::text( 'email_to' )
@@ -62,7 +62,7 @@
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="body">
-                    <textarea class="form-control" style="font-family:monospace;" rows="30" id="email_text" name="email_text"><?= $t->mailable->getBody() ?></textarea>
+                    <textarea class="form-control" style="font-family:monospace;" rows="30" id="email_text" name="email_text"><?= $t->ee( $t->mailable->getBody() ) ?></textarea>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="preview">
                     <div id="well-preview" class="well" style="background: rgb(255,255,255);">
@@ -76,7 +76,7 @@
 
         <?= Former::actions(
                 Former::primary_submit( 'Send Email' ),
-                Former::default_link( 'Cancel' )->href( url( 'patch-panel-port/list/patch-panel/'.$t->ppp->getPatchPanel()->getId() ) )
+                Former::default_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) )
             );
         ?>
 
@@ -100,7 +100,6 @@
         //$('#email_cc').on(  'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
         //$('#email_to').on(  'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
 
-
         $('#tab-link-body').on( 'click', function(e) {
             e.preventDefault();
             $(this).tab('show');
@@ -111,7 +110,7 @@
             $('#well-preview').html('Loading...');
             $(this).tab('show');
 
-            $.ajax( "<?= url('api/v4/utils/markdown')?>", {
+            $.ajax( "<?= action ('Api\V4\UtilsController@markdown')?>", {
                 data: {
                     text: $('#email_text').val()
                 },
@@ -138,7 +137,7 @@
      * check if the value is an email
      */
     function checkEmail(text){
-        var filter = /^[\w-.+]+@[a-zA-Z0-9.-]+.[a-zA-z0-9]{2,4}$/;
+        let filter = /^[\w-.+]+@[a-zA-Z0-9.-]+.[a-zA-z0-9]{2,4}$/;
 
         if (!filter.test(text)) {
            return true;
