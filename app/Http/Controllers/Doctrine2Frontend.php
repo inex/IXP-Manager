@@ -23,9 +23,12 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Illuminate\Http\Request;
 use Redirect;
 
 use Illuminate\Support\Facades\View as ViewFacade;
+
+
 
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
@@ -176,10 +179,9 @@ abstract class Doctrine2Frontend extends Controller {
     /**
      * Edit a physical interface (set all the data needed)
      */
-    public function storeAction( StoreCustKit $request )
+    public function storeAction( Request $request )
     {
-        dd( $request );
-
+       dd($request);
         return redirect( $this->listAction() );
     }
 

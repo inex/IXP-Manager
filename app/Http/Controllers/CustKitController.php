@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former;
+use D2EM, Former, Redirect, Validator;
 
 use Illuminate\View\View;
 
@@ -32,6 +32,8 @@ use Entities\{
     Cabinet             as CabinetEntity,
     Customer            as CustomerEntity
 };
+use Illuminate\Http\Request;
+
 
 /**
  * CustKit Controller
@@ -144,7 +146,18 @@ class CustKitController extends Doctrine2Frontend {
     }
 
 
-    public function storeAction( StoreCustKit $request ){
+    public function storeAction( Request $request ){
+
+        $validator = Validator::make($request->all(), [
+            'name'              => 'required|string|max:255',
+            'cust'              => 'required|integer|exists:Entities\Customer,id',
+            'cabinet'           => 'required|integer|exists:Entities\Cabinet,id',
+            'description'       => 'nullable|string|max:255',
+        ]);
+
+        if ($validator->fails()) {
+            return redirect::back()->withErrors($validator)->withInput();
+        }
 
     }
 }
