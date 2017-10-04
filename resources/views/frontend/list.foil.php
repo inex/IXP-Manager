@@ -45,6 +45,7 @@ $this->layout( 'layouts/ixpv4' );
                 </tr>
             </thead>
             <tbody>
+            <tr>
             <?php foreach( $t->data[ 'data' ] as $idx => $row ):?>
                 <?php foreach( $t->data[ 'feParams' ]->listColumns as $col => $cconf ):?>
                     <?php if( !is_array( $cconf ) ):?>
@@ -111,6 +112,7 @@ $this->layout( 'layouts/ixpv4' );
                         <?php endif;?>
                     </div>
                 </td>
+            </tr>
             <?php endforeach;?>
             <tbody>
         </table>

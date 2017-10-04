@@ -24,11 +24,11 @@ namespace IXP\Http\Controllers;
  */
 
 use Illuminate\Http\Request;
-use Redirect;
+use D2EM;
+
+use Illuminate\View\View;
 
 use Illuminate\Support\Facades\View as ViewFacade;
-
-
 
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
@@ -62,9 +62,6 @@ abstract class Doctrine2Frontend extends Controller {
      * This function is called from the Action's contructor and it passes those
      * same variables used for construction to the traits' init methods.
      *
-     * @param object $request See Parent class constructor
-     * @param object $response See Parent class constructor
-     * @param object $invokeArgs See Parent class constructor
      */
     public function __construct( ){
         $this->feInit();
@@ -86,16 +83,16 @@ abstract class Doctrine2Frontend extends Controller {
 
     /**
      * This is meant to be overridden.
-     *
-     * @throws OSS_Exception
      */
     protected function feInit(){
-        //throw new OSS_Exception( 'FrontEnd controllers require an feInit() function' );
+        abort( 'FrontEnd controllers require an feInit() function' );
     }
 
 
     /**
      * List the contents of a database table.
+     *
+     * @return View
      */
     public function listAction(){
         $this->data[ 'data' ]           = $this->listGetData() ;
@@ -107,10 +104,8 @@ abstract class Doctrine2Frontend extends Controller {
     /**
      * Prepares data for view and AJAX view
      *
-     * @return void
      */
-    protected function addPrepareData()
-    {
+    protected function addPrepareData(){
 
     }
 
@@ -142,8 +137,7 @@ abstract class Doctrine2Frontend extends Controller {
     /**
      * Add (or edit) an object
      */
-    public function viewAction( $id )
-    {
+    public function viewAction( $id ){
         $this->data[ 'data' ]           = $this->viewGetData( $id ) ;
 
         return $this->display( 'view' );
@@ -152,26 +146,46 @@ abstract class Doctrine2Frontend extends Controller {
     /**
      * Add (or edit) an object
      */
-    public function prepapreEditAction()
-    {
+    public function prepapreEditAction(){
 
     }
 
 
     /**
      * Add (or edit) an object
+     * @param int $id ID of the object to edit
+     * @return view
      */
-    protected function editAction( $id )
-    {
+    public function editAction( $id ){
         $this->params = $this->addPrepareData( $id );
 
         return $this->display( 'edit' );
     }
 
     /**
-     * Add (or edit) an object
+     * Delete an object
+     *
+     * @param int $id ID of the object to delete
+     * @return redirect
      */
-    public function deleteAction()
+    public function deleteAction( $id ){
+        $entity = $this->feParams->entity;
+        if( !( $object = D2EM::getRepository( $entity )->find( $id ) ) ) {
+            return abort( '404' );
+        }
+
+        D2EM::remove($object);
+        D2EM::flush();
+
+        AlertContainer::push(  $this->feParams->titleSingular." deleted." , Alert::SUCCESS );
+
+        return redirect()->action( $this->feParams->defaultController.'@'.$this->feParams->defaultAction );
+    }
+
+    /**
+     * Edit a physical interface (set all the data needed)
+     */
+    public function storePrepareAction( Request $request )
     {
 
     }
@@ -181,8 +195,11 @@ abstract class Doctrine2Frontend extends Controller {
      */
     public function storeAction( Request $request )
     {
-       dd($request);
-        return redirect( $this->listAction() );
+       $this->storePrepareAction( $request );
+
+       AlertContainer::push(  $this->feParams->titleSingular." ".($request->input( 'id')  ? "edited." : "added." ), Alert::SUCCESS );
+
+       return redirect()->action( $this->feParams->defaultController.'@'.$this->feParams->defaultAction );
     }
 
     /**
@@ -190,7 +207,7 @@ abstract class Doctrine2Frontend extends Controller {
      *
      * @see _resolveTemplate()
      * @param string $tpl The template to display
-     * @return void
+     * @return view
      */
     protected function display( $tpl ){
         return view( $this->resolveTemplate( $tpl, true ) )->with( [ 'data' => $this->data , 'view' => $this->view, 'params' => $this->params ]);
@@ -207,11 +224,9 @@ abstract class Doctrine2Frontend extends Controller {
      * This will also work for subdirectories: e.g. `$tpl = forms/add.phtml` is also valid.
      *
      * @param string $tpl The template to display
-     * @param bool $throw If true, throws an exception is no template is found
      * @return string|bool The template to use of false if none found
-     * @throws OSS_Exception
      */
-    protected function resolveTemplate( $tpl, $throw = false ){
+    protected function resolveTemplate( $tpl ){
         if( ViewFacade::exists ( $this->feParams->viewFolderName . "/{$tpl}" ) ) {
             return $this->feParams->viewFolderName . "/{$tpl}";
         } else if( ViewFacade::exists( "frontend/{$tpl}"  ) ) {

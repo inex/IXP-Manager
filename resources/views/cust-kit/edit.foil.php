@@ -4,7 +4,9 @@
 ?>
 
     <?php $this->section( 'title' ) ?>
-        <?= $t->data[ 'feParams' ]->pagetitle  ?>
+        <a href="<?= action ($t->controller.'@listAction') ?>">
+            <?= $t->data[ 'feParams' ]->pagetitle  ?>
+        </a>
     <?php $this->append() ?>
 
     <?php $this->section( 'page-header-postamble' ) ?>
@@ -61,6 +63,10 @@
                 Former::default_link( 'Cancel' )->href( action ($t->controller.'@listAction') ),
                 Former::success_button( 'Help' )->id( 'help-btn' )
             );
+            ?>
+
+            <?= Former::hidden( 'id' )
+                ->value( $t->params[ 'ce'] ? $t->params[ 'ce']->getId() : '' )
             ?>
 
             <?= Former::close() ?>

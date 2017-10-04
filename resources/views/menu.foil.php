@@ -65,8 +65,8 @@
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.cust-kit', false ) ): ?>
-                    <li>
-                        <a href="<?= url( 'cust-kit' ) ?>">Colocated Equipment</a>
+                    <li <?php if( $t->controller == 'CustKitController' ):?> class="active" <?php endif;?> >
+                        <a href="<?= url( 'cust-kit/list' ) ?>">Colocated Equipment</a>
                     </li>
                 <?php endif; ?>
 

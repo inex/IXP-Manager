@@ -81,8 +81,7 @@ $this->layout( 'layouts/ixpv4' );
                                             <?php endif; ?>
                                         <?php elseif( $cconf[ 'type'] ==  $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
                                             <?php if( $t->data[ 'data' ][ $col ] ) ?>
-                                                <?= date('Y-m-d H:M:S', strtotime($t->data[ $col ] ) ) ?>
-                                            <?php endif; ?>
+                                            <?= date('Y-m-d H:M:S', strtotime($t->data[ $col ] ) ) ?>
                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
                                             <?php if ( $t->data[ 'data' ][ $col ] ): ?>
                                                 <?= date('Y-m-d', strtotime( $t->data[ $col ] ) ) ?>
@@ -91,11 +90,22 @@ $this->layout( 'layouts/ixpv4' );
                                             <?php if( $t->data[ 'data' ][ $col ] ): ?>
                                                 <?= date('H:M:S', strtotime($t->data[ $col ] ) ) ?>
                                             <?php endif; ?>
+                                        <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
+                                            <?php if( $t->data[ 'data' ][ $col ] ): ?>
+                                                <?= str_replace( '%%COL%%', $t->data[ 'data' ][ $col ] , $cconf[ 'subject' ] ) ?>
+                                            <?php endif; ?>
+                                        <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'YES_NO'] ): ?>
+                                            <?php if( $t->data[ 'data' ][ $col ] ): ?>
+                                                YES
+                                            <?php else: ?>
+                                                NO
+                                            <?php endif; ?>
                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
-                                            {tmplinclude file=$cconf.script}
-                                        <?php else: ?>
-                                                Type?
+
                                         <?php endif; ?>
+                                    <?php else: ?>
+                                            Type?
+                                    <?php endif; ?>
                                 </td>
 
                             <?php endif; ?>

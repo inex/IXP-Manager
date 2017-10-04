@@ -115,6 +115,38 @@ class Infrastructure extends EntityRepository
 
         return $infras;
     }
+
+    /**
+     * Get all infrastructures for an IXP
+     *
+     * @param \Entities\IXP $ixp The IXP to find the infrastuctures for
+     * @return \Entities\Infrastructure[] The infrastructures for a given IXP
+     */
+    public function getAllForList( $id = null, $ixp = null , $feParams ){
+        $dql =  "SELECT i.id AS id, i.name AS name, i.isPrimary AS isPrimary,
+                i.shortname AS shortname, ix.shortname AS ixp_name,
+                ix.id AS ixp_id, i.ixf_ix_id AS ixf_ix_id, i.peeringdb_ix_id AS peeringdb_ix_id
+                FROM Entities\\Infrastructure i
+                LEFT JOIN i.IXP ix
+                WHERE 1 = 1";
+
+        if( $id  ){
+            $dql .= " AND i.id = ".$id;
+        }
+
+        if( $ixp ){
+            $dql .= " AND ix.id = ".$ixp;
+        }
+
+        if( isset( $feParams->listOrderBy ) ){
+            $dql .= " ORDER BY ". $feParams->listOrderBy.' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getArrayResult();
+    }
     
     
     /**

@@ -34,6 +34,11 @@ use Entities\{
 };
 use Illuminate\Http\Request;
 
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
+
 
 /**
  * CustKit Controller
@@ -54,19 +59,20 @@ class CustKitController extends Doctrine2Frontend {
         //$this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
 
         $this->data[ 'feParams' ] =  $this->feParams = (object)[
-            'entity'        => '\\Entities\\CustomerEquipment',
+            'entity'            => '\\Entities\\CustomerEquipment',
 
-            'pagetitle'     => 'Customer Equipment',
+            'pagetitle'         => 'Customer Equipment',
 
-            'titleSingular' => 'Customer Equipment',
-            'nameSingular'  => 'customer equipment',
+            'titleSingular'     => 'Customer Equipment',
+            'nameSingular'      => 'customer equipment',
 
-            'defaultAction' => 'list',                    // OPTIONAL; defaults to 'list'
+            'defaultAction'     => 'listAction',                    // OPTIONAL; defaults to 'list'
+            'defaultController' => 'CustKitController',                    // OPTIONAL; defaults to 'list'
 
-            'listOrderBy'    => 'name',
-            'listOrderByDir' => 'ASC',
+            'listOrderBy'       => 'name',
+            'listOrderByDir'    => 'ASC',
 
-            'viewFolderName' => 'cust-kit',
+            'viewFolderName'    => 'cust-kit',
 
             'listColumns'    => [
 
@@ -111,25 +117,25 @@ class CustKitController extends Doctrine2Frontend {
      * @return View
      */
     public function addPrepareData( int $id = null ) {
-        /** @var CustomerEquipmentEntity $custKit */
-        $custKit = false;
+        /** @var CustomerEquipmentEntity $ce */
+        $ce = false;
 
         if( $id != null ) {
-            if( !( $custKit = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $id) ) ) {
+            if( !( $ce = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $id) ) ) {
                 abort(404);
             }
 
             Former::populate([
-                'name'                  => $custKit->getName(),
-                'cust'                  => $custKit->getCustomer()->getId(),
-                'cabinet'               => $custKit->getCabinet()->getId(),
-                'description'           => $custKit->getDescription(),
+                'name'                  => $ce->getName(),
+                'cust'                  => $ce->getCustomer()->getId(),
+                'cabinet'               => $ce->getCabinet()->getId(),
+                'description'           => $ce->getDescr(),
             ]);
         }
 
         return [
             'data'                              => $this->data,
-            'custKit'                           => $custKit,
+            'ce'                                => $ce,
             'cabinets'                          => D2EM::getRepository( CabinetEntity::class )->getAsArray(),
             'custs'                             => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
         ];
@@ -146,8 +152,8 @@ class CustKitController extends Doctrine2Frontend {
     }
 
 
-    public function storeAction( Request $request ){
-
+    public function storePrepareAction( Request $request ){
+        D2EM::flush('dd');
         $validator = Validator::make($request->all(), [
             'name'              => 'required|string|max:255',
             'cust'              => 'required|integer|exists:Entities\Customer,id',
@@ -159,5 +165,28 @@ class CustKitController extends Doctrine2Frontend {
             return redirect::back()->withErrors($validator)->withInput();
         }
 
+        /** @var CustomerEquipmentEntity $ce  */
+        if( $request->input( 'id', false ) ) {
+            // get the existing Cust Kit object for that ID
+            if( !( $ce = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $request->input( 'id' ) ) ) ) {
+                Log::notice( 'Unknown Customer Equipment' );
+                abort(404);
+            }
+        } else {
+            $ce = new CustomerEquipmentEntity;
+            D2EM::persist( $ce );
+        }
+
+        $cabinet = D2EM::getRepository( CabinetEntity::class )->find( $request->input( 'cabinet' ) );
+        $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'cust' ) );
+
+        $ce->setName( $request->input( 'name' ) );
+        $ce->setCabinet( $cabinet );
+        $ce->setCustomer( $cust );
+        $ce->setDescr( $request->input( 'description' ) );
+
+        D2EM::flush($ce);
+
+        return true;
     }
 }
