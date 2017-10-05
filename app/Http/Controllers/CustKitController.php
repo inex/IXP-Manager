@@ -153,7 +153,7 @@ class CustKitController extends Doctrine2Frontend {
 
 
     public function storePrepareAction( Request $request ){
-   
+
         $validator = Validator::make($request->all(), [
             'name'              => 'required|string|max:255',
             'cust'              => 'required|integer|exists:Entities\Customer,id',

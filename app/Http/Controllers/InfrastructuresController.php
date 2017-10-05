@@ -29,7 +29,8 @@ use Illuminate\View\View;
 
 use Entities\{
     Infrastructure      as InfrastructureEntity,
-    User                as UserEntity
+    User                as UserEntity,
+    IXP                 as IXPEntity
 };
 use Illuminate\Http\Request;
 
@@ -66,7 +67,7 @@ class InfrastructuresController extends Doctrine2Frontend {
             'nameSingular'      => 'an infrastructure',
 
             'defaultAction'     => 'listAction',                    // OPTIONAL; defaults to 'list'
-            'defaultController' => 'CustKitController',                    // OPTIONAL; defaults to 'list'
+            'defaultController' => 'InfrastructuresController',                    // OPTIONAL; defaults to 'list'
 
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
@@ -129,6 +130,7 @@ class InfrastructuresController extends Doctrine2Frontend {
         /** @var InfrastructureEntity $inf */
         $inf = false;
 
+
         if( $id != null ) {
             if( !( $inf = D2EM::getRepository( InfrastructureEntity::class )->find( $id) ) ) {
                 abort(404);
@@ -138,12 +140,15 @@ class InfrastructuresController extends Doctrine2Frontend {
                 'name'                  => $inf->getName(),
                 'sname'                 => $inf->getShortname(),
                 'primary'               => $inf->getIsPrimary() ?? false,
+                'ixp'                   => $this->multiIXP() ? $inf->getIXP() : 1 ,
             ]);
         }
 
         return [
             'data'                              => $this->data,
             'inf'                               => $inf,
+            'multiIXP'                          => $this->multiIXP(),
+            'listIXP'                           => $this->multiIXP() ? D2EM::getRepository( IXPEntity::class )->getNames( Auth::user() ) : 1,
         ];
     }
 
@@ -161,37 +166,37 @@ class InfrastructuresController extends Doctrine2Frontend {
     public function storePrepareAction( Request $request ){
 
         $validator = Validator::make($request->all(), [
-            'name'              => 'required|string|max:255',
-            'cust'              => 'required|integer|exists:Entities\Customer,id',
-            'cabinet'           => 'required|integer|exists:Entities\Cabinet,id',
-            'description'       => 'nullable|string|max:255',
+            'name'                  => 'required|string|max:255',
+            'sname'                 => 'required|string|max:255',
+            'ixp'                   => 'required|int|exists:Entities\IXP,id',
+
         ]);
 
         if ($validator->fails()) {
             return redirect::back()->withErrors($validator)->withInput();
         }
 
-        /** @var CustomerEquipmentEntity $ce  */
+        /** @var InfrastructureEntity $inf  */
         if( $request->input( 'id', false ) ) {
             // get the existing Cust Kit object for that ID
-            if( !( $ce = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                Log::notice( 'Unknown Customer Equipment' );
+            if( !( $inf = D2EM::getRepository( InfrastructureEntity::class )->find( $request->input( 'id' ) ) ) ) {
+                Log::notice( 'Unknown Infrastructure' );
                 abort(404);
             }
         } else {
-            $ce = new CustomerEquipmentEntity;
-            D2EM::persist( $ce );
+            $inf = new InfrastructureEntity;
+            D2EM::persist( $inf );
         }
 
-        $cabinet = D2EM::getRepository( CabinetEntity::class )->find( $request->input( 'cabinet' ) );
-        $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'cust' ) );
+        $inf->setName(              $request->input( 'name'         ) );
+        $inf->setShortname(         $request->input( 'sname'        ) );
+        $inf->setIxfIxId(           $request->input( 'ixf_ix_id'    ) );
+        $inf->setPeeringdbIxId(     $request->input( 'pdb_ixp'      ) );
+        $inf->setIsPrimary(         $request->input( 'primary'      ) ?? false );
+        $inf->setIXP(               D2EM::getRepository( IXPEntity::class )->find( $request->input( 'ixp' ) ) );
 
-        $ce->setName( $request->input( 'name' ) );
-        $ce->setCabinet( $cabinet );
-        $ce->setCustomer( $cust );
-        $ce->setDescr( $request->input( 'description' ) );
 
-        D2EM::flush($ce);
+        D2EM::flush($inf);
 
         return true;
     }
