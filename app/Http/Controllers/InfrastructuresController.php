@@ -23,14 +23,13 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Redirect, Validator;
+use Auth, D2EM, Former, Redirect, Validator;
 
 use Illuminate\View\View;
 
 use Entities\{
-    CustomerEquipment   as CustomerEquipmentEntity,
-    Cabinet             as CabinetEntity,
-    Customer            as CustomerEntity
+    Infrastructure      as InfrastructureEntity,
+    User                as UserEntity
 };
 use Illuminate\Http\Request;
 
@@ -48,7 +47,7 @@ use IXP\Utils\View\Alert\{
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class CustKitController extends Doctrine2Frontend {
+class InfrastructuresController extends Doctrine2Frontend {
 
 
 
@@ -59,12 +58,12 @@ class CustKitController extends Doctrine2Frontend {
         //$this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
 
         $this->data[ 'feParams' ] =  $this->feParams = (object)[
-            'entity'            => '\\Entities\\CustomerEquipment',
+            'entity'        => '\\Entities\\Infrastructure',
 
-            'pagetitle'         => 'Customer Equipment',
+            'pagetitle'         => 'Infrastructures',
 
-            'titleSingular'     => 'Customer Equipment',
-            'nameSingular'      => 'customer equipment',
+            'titleSingular'     => 'Infrastructure',
+            'nameSingular'      => 'an infrastructure',
 
             'defaultAction'     => 'listAction',                    // OPTIONAL; defaults to 'list'
             'defaultController' => 'CustKitController',                    // OPTIONAL; defaults to 'list'
@@ -72,40 +71,50 @@ class CustKitController extends Doctrine2Frontend {
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
 
-            'viewFolderName'    => 'cust-kit',
+            'viewFolderName'    => 'infrastructure'
+            ];
 
-            'listColumns'    => [
 
-                'id'        => [ 'title' => 'UID', 'display' => false ],
+        switch( Auth::user()->getPrivs() )
+        {
+            case UserEntity::AUTH_SUPERUSER:
+                $this->feParams->listColumns = [
+                    'id'        => [ 'title' => 'DB ID' , 'display' => false ],
+                ];
 
-                'customer'  => [
-                    'title'      => 'Customer',
-                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'customer',
-                    'action'     => 'overview',
-                    'idField'    => 'custid'
-                ],
+                if( $this->multiIXP() )
+                    $this->feParams->listColumns = array_merge( $this->feParams->listColumns, [ 'ixp_name' => 'IXP' ] );
 
-                'cabinet'  => [
-                    'title'      => 'Cabinet',
-                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'cabinet',
-                    'action'     => 'view',
-                    'idField'    => 'cabinetid'
-                ],
+                $this->feParams->listColumns = array_merge( $this->feParams->listColumns, [
+                        'name'      => 'Name',
+                        'shortname'       => 'Shortname',
+                        'isPrimary'       => [ 'title' => 'Primary', 'type' => self::$FE_COL_TYPES[ 'YES_NO' ] ],
 
-                'name'      => 'Name'
-            ]
-        ];
+                        'ixf_ix_id' => [
+                            'title'    => 'IXF-ID',
+                            'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
+                            'subject'  => '<a href="https://db.ix-f.net/api/ixp/%%COL%%" target="_blank">%%COL%%</a>'
+                        ],
 
-        // display the same information in the view as the list
-        $this->feParams->viewColumns = array_merge(
-            $this->feParams->listColumns,
-            [
-                'descr'      => 'Description'
-            ]
-        );
+                        'peeringdb_ix_id' => [
+                            'title'    => 'PeeringDB ID',
+                            'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
+                            'subject'  => '<a href="https://www.peeringdb.com/api/ix/%%COL%%" target="_blank">%%COL%%</a>'
+                        ],
 
+                    ]
+                );
+
+                // display the same information in the view as the list
+                $this->feParams->viewColumns = $this->feParams->listColumns;
+
+                $this->feParams->defaultAction = 'listAction';
+
+                break;
+
+            default:
+                abort( 'error/insufficient-permissions' );
+        }
 
     }
 
@@ -117,27 +126,24 @@ class CustKitController extends Doctrine2Frontend {
      * @return View
      */
     public function addPrepareData( int $id = null ) {
-        /** @var CustomerEquipmentEntity $ce */
-        $ce = false;
+        /** @var InfrastructureEntity $inf */
+        $inf = false;
 
         if( $id != null ) {
-            if( !( $ce = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $id) ) ) {
+            if( !( $inf = D2EM::getRepository( InfrastructureEntity::class )->find( $id) ) ) {
                 abort(404);
             }
 
             Former::populate([
-                'name'                  => $ce->getName(),
-                'cust'                  => $ce->getCustomer()->getId(),
-                'cabinet'               => $ce->getCabinet()->getId(),
-                'description'           => $ce->getDescr(),
+                'name'                  => $inf->getName(),
+                'sname'                 => $inf->getShortname(),
+                'primary'               => $inf->getIsPrimary() ?? false,
             ]);
         }
 
         return [
             'data'                              => $this->data,
-            'ce'                                => $ce,
-            'cabinets'                          => D2EM::getRepository( CabinetEntity::class )->getAsArray(),
-            'custs'                             => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
+            'inf'                               => $inf,
         ];
     }
 
@@ -148,12 +154,12 @@ class CustKitController extends Doctrine2Frontend {
      * @return array
      */
     protected function listGetData( $id = null ) {
-        return D2EM::getRepository( CustomerEquipmentEntity::class)->getAll( $id, $this->feParams );
+        return D2EM::getRepository( InfrastructureEntity::class)->getAllForList( $id, '', $this->feParams );
     }
 
 
     public function storePrepareAction( Request $request ){
-   
+
         $validator = Validator::make($request->all(), [
             'name'              => 'required|string|max:255',
             'cust'              => 'required|integer|exists:Entities\Customer,id',
