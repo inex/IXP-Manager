@@ -11,7 +11,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
     <div class="btn-group btn-group-xs" role="group">
-        <a type="button" class="btn btn-default" href="<?= action ($t->controller.'@addAction') ?>">
+        <a type="button" class="btn btn-default" href="<?= action($t->controller.'@add') ?>">
             <span class="glyphicon glyphicon-plus"></span>
         </a>
     </div>
@@ -23,7 +23,7 @@ $this->layout( 'layouts/ixpv4' );
 
     <?php if( !count( $t->data[ 'data' ] ) ): ?>
         <div class="alert alert-info" role="alert">
-            <b>No active <?= $t->data[ 'feParams' ]->nameSingular ?> exist.</b> <a href="<?= action ($t->controller.'@addAction') ?>">Add one...</a>
+            <b>No active <?= $t->data[ 'feParams' ]->nameSingular ?> exist.</b> <a href="<?= action($t->controller.'@add') ?>">Add one...</a>
         </div>
     <?php else:  /* !count( $t->patchPanels ) */ ?>
         <table id='table-list' class="table collapse" >
@@ -105,10 +105,10 @@ $this->layout( 'layouts/ixpv4' );
                 <?php endforeach;?>
                 <td>
                     <div class="btn-group">
-                        <a class="btn btn btn-default" href="<?= action ($t->controller.'@viewAction' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
+                        <a class="btn btn btn-default" href="<?= action($t->controller.'@view' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
                         <?php if( !isset( $t->data[ 'feParams' ]->readonly ) or !$t->data[ 'feParams' ]->readonly ): ?>
-                            <a class="btn btn btn-default" href="<?= action ($t->controller.'@editAction' , [ 'id' => $row[ 'id' ] ] ) ?> " title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
-                            <a class="btn btn btn-default" id='list-delete-<?= $row[ 'id' ] ?>' href="<?= action ($t->controller.'@deleteAction' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Delete"><i class="glyphicon glyphicon-trash"></i></a>
+                            <a class="btn btn btn-default" href="<?= action($t->controller.'@edit' , [ 'id' => $row[ 'id' ] ] ) ?> " title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                            <a class="btn btn btn-default" id='list-delete-<?= $row[ 'id' ] ?>' href="<?= action($t->controller.'@delete' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Delete"><i class="glyphicon glyphicon-trash"></i></a>
                         <?php endif;?>
                     </div>
                 </td>

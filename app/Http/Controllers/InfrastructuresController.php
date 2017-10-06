@@ -48,7 +48,7 @@ use IXP\Utils\View\Alert\{
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class InfrastructuresController extends Doctrine2Frontend {
+class InfrastructureController extends Doctrine2Frontend {
 
 
 
@@ -59,37 +59,34 @@ class InfrastructuresController extends Doctrine2Frontend {
         //$this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
 
         $this->data[ 'feParams' ] =  $this->feParams = (object)[
-            'entity'        => '\\Entities\\Infrastructure',
 
+            'entity'            => InfrastructureEntity::class,
             'pagetitle'         => 'Infrastructures',
 
             'titleSingular'     => 'Infrastructure',
             'nameSingular'      => 'an infrastructure',
 
-            'defaultAction'     => 'listAction',                    // OPTIONAL; defaults to 'list'
-            'defaultController' => 'InfrastructuresController',                    // OPTIONAL; defaults to 'list'
+            'defaultAction'     => 'list',                        // OPTIONAL; defaults to 'list'
+            'defaultController' => 'InfrastructureController',   // OPTIONAL; defaults to 'list'
 
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
 
             'viewFolderName'    => 'infrastructure'
-            ];
+        ];
 
 
-        switch( Auth::user()->getPrivs() )
-        {
+        switch( Auth::user()->getPrivs() ) {
+
             case UserEntity::AUTH_SUPERUSER:
                 $this->feParams->listColumns = [
                     'id'        => [ 'title' => 'DB ID' , 'display' => false ],
                 ];
 
-                if( $this->multiIXP() )
-                    $this->feParams->listColumns = array_merge( $this->feParams->listColumns, [ 'ixp_name' => 'IXP' ] );
-
                 $this->feParams->listColumns = array_merge( $this->feParams->listColumns, [
                         'name'      => 'Name',
-                        'shortname'       => 'Shortname',
-                        'isPrimary'       => [ 'title' => 'Primary', 'type' => self::$FE_COL_TYPES[ 'YES_NO' ] ],
+                        'shortname' => 'Shortname',
+                        'isPrimary' => [ 'title' => 'Primary', 'type' => self::$FE_COL_TYPES[ 'YES_NO' ] ],
 
                         'ixf_ix_id' => [
                             'title'    => 'IXF-ID',
@@ -109,7 +106,7 @@ class InfrastructuresController extends Doctrine2Frontend {
                 // display the same information in the view as the list
                 $this->feParams->viewColumns = $this->feParams->listColumns;
 
-                $this->feParams->defaultAction = 'listAction';
+                $this->feParams->defaultAction = 'list';
 
                 break;
 
@@ -126,7 +123,7 @@ class InfrastructuresController extends Doctrine2Frontend {
      *
      * @return View
      */
-    public function addPrepareData( int $id = null ) {
+    public function addPrepareData( $id = null ) {
         /** @var InfrastructureEntity $inf */
         $inf = false;
 

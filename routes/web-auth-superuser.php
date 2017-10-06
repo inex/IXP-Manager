@@ -128,19 +128,19 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
 });
 
 Route::group( [ 'prefix' => 'cust-kit' ], function() {
-    Route::get(     'list',                'CustKitController@listAction'   );
-    Route::get(     'add',                 'CustKitController@addAction'    );
-    Route::get(     'edit/{id}',           'CustKitController@editAction'   );
-    Route::get(     'view/{id}',           'CustKitController@viewAction'   );
-    Route::get(     'delete/{id}',         'CustKitController@deleteAction' );
-    Route::post(    'store',               'CustKitController@storeAction'  );
+    Route::get(     'list',                'CustKitController@list'   );
+    Route::get(     'add',                 'CustKitController@add'    );
+    Route::get(     'edit/{id}',           'CustKitController@edit'   );
+    Route::get(     'view/{id}',           'CustKitController@view'   );
+    Route::get(     'delete/{id}',         'CustKitController@delete' );
+    Route::post(    'store',               'CustKitController@store'  );
 });
 
-Route::group( [ 'prefix' => 'infrastructure2' ], function() {
-    Route::get(     'list',                'InfrastructuresController@listAction'   );
-    Route::get(     'add',                 'InfrastructuresController@addAction'    );
-    Route::get(     'edit/{id}',           'InfrastructuresController@editAction'   );
-    Route::get(     'view/{id}',           'InfrastructuresController@viewAction'   );
-    Route::get(     'delete/{id}',         'InfrastructuresController@deleteAction' );
-    Route::post(    'store',               'InfrastructuresController@storeAction'  );
+Route::group( [ 'prefix' => 'infrastructure' ], function() {
+    Route::get(     'list',                'InfrastructureController@list'   );
+    Route::get(     'add',                 'InfrastructureController@add'    );
+    Route::get(     'edit/{id}',           'InfrastructureController@edit'   );
+    Route::get(     'view/{id}',           'InfrastructureController@view'   );
+    Route::get(     'delete/{id}',         'InfrastructureController@delete' );
+    Route::post(    'store',               'InfrastructureController@store'  );
 });

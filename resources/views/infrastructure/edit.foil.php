@@ -4,7 +4,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= action ($t->controller.'@listAction') ?>">
+    <a href="<?= action($t->controller.'@list') ?>">
         <?=  $t->data[ 'feParams' ]->pagetitle  ?>
     </a>
 <?php $this->append() ?>
@@ -16,7 +16,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= action ($t->controller.'@listAction') ?>">
+            <a type="button" class="btn btn-default" href="<?= action($t->controller.'@list') ?>">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
         </div>
@@ -29,7 +29,7 @@ $this->layout( 'layouts/ixpv4' );
     <div class="well col-sm-12">
         <?= Former::open()->method( 'POST' )
             ->id( 'form' )
-            ->action( action ( $t->controller.'@storeAction' ) )
+            ->action( action( $t->controller.'@store' ) )
             ->customWidthClass( 'col-sm-3' )
         ?>
 
@@ -80,7 +80,7 @@ $this->layout( 'layouts/ixpv4' );
 
         <?= Former::actions(
             Former::primary_submit( 'Save Changes' ),
-            Former::default_link( 'Cancel' )->href( action ($t->controller.'@listAction') ),
+            Former::default_link( 'Cancel' )->href( action ($t->controller.'@list') ),
             Former::success_button( 'Help' )->id( 'help-btn' )
         );
         ?>
