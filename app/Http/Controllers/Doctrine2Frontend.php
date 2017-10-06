@@ -92,9 +92,7 @@ abstract class Doctrine2Frontend extends Controller {
     /**
      * This must be overridden.
      */
-    protected function feInit(){
-        abort( 'FrontEnd controllers require an feInit() function' );
-    }
+    abstract protected function feInit();
 
     /**
      * Provide array of users for the list action and view action
@@ -111,9 +109,8 @@ abstract class Doctrine2Frontend extends Controller {
      * @return View
      */
     public function list() {
-        $this->data[ 'data' ]           = $this->listGetData() ;
+        $this->data[ 'data' ]           = $this->listGetData();
         $this->view[ 'listScript' ]     = $this->resolveTemplate( 'js/list' );
-
         return $this->display( 'list' );
     }
 
@@ -133,16 +130,18 @@ abstract class Doctrine2Frontend extends Controller {
     }
 
     /**
-     * Provide single object for view. Uses `listGetData()`
+     * Provide single object for view.
      *
      * @param int $id The `id` of the row to load for `view` action.
      * @return array
      */
     protected function viewGetData( $id ) {
+
         $data = $this->listGetData( $id );
 
-        if( is_array( $data ) && isset( $data[0] ) )
-            return $data[0];
+        if( is_array( $data ) && isset( $data[0] ) ) {
+            return $data[ 0 ];
+        }
 
         abort( 404);
     }

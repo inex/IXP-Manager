@@ -80,28 +80,23 @@ class InfrastructureController extends Doctrine2Frontend {
 
             case UserEntity::AUTH_SUPERUSER:
                 $this->feParams->listColumns = [
-                    'id'        => [ 'title' => 'DB ID' , 'display' => false ],
+                    'id'        => [ 'title' => 'DB ID' , 'display' => true ],
+                    'name'      => 'Name',
+                    'shortname' => 'Shortname',
+                    'isPrimary' => [ 'title' => 'Primary', 'type' => self::$FE_COL_TYPES[ 'YES_NO' ] ],
+
+                    'ixf_ix_id' => [
+                        'title'    => 'IXF-ID',
+                        'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
+                        'subject'  => '<a href="https://db.ix-f.net/api/ixp/%%COL%%" target="_blank">%%COL%%</a>'
+                    ],
+
+                    'peeringdb_ix_id' => [
+                        'title'    => 'PeeringDB ID',
+                        'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
+                        'subject'  => '<a href="https://www.peeringdb.com/api/ix/%%COL%%" target="_blank">%%COL%%</a>'
+                    ],
                 ];
-
-                $this->feParams->listColumns = array_merge( $this->feParams->listColumns, [
-                        'name'      => 'Name',
-                        'shortname' => 'Shortname',
-                        'isPrimary' => [ 'title' => 'Primary', 'type' => self::$FE_COL_TYPES[ 'YES_NO' ] ],
-
-                        'ixf_ix_id' => [
-                            'title'    => 'IXF-ID',
-                            'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
-                            'subject'  => '<a href="https://db.ix-f.net/api/ixp/%%COL%%" target="_blank">%%COL%%</a>'
-                        ],
-
-                        'peeringdb_ix_id' => [
-                            'title'    => 'PeeringDB ID',
-                            'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
-                            'subject'  => '<a href="https://www.peeringdb.com/api/ix/%%COL%%" target="_blank">%%COL%%</a>'
-                        ],
-
-                    ]
-                );
 
                 // display the same information in the view as the list
                 $this->feParams->viewColumns = $this->feParams->listColumns;
@@ -115,6 +110,18 @@ class InfrastructureController extends Doctrine2Frontend {
         }
 
     }
+
+    /**
+     * Provide array of users for the list action and view action
+     *
+     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @return array
+     */
+    protected function listGetData( $id = null ) {
+        return D2EM::getRepository( InfrastructureEntity::class )->getAllForFeList( $this->feParams, $id );
+    }
+
+
 
     /**
      * Display the form to edit a physical interface
@@ -148,17 +155,6 @@ class InfrastructureController extends Doctrine2Frontend {
             'listIXP'                           => $this->multiIXP() ? D2EM::getRepository( IXPEntity::class )->getNames( Auth::user() ) : 1,
         ];
     }
-
-    /**
-     * Provide array of users for the listAction and viewAction
-     *
-     * @param int $id The `id` of the row to load for `viewAction`. `null` if `listAction`
-     * @return array
-     */
-    protected function listGetData( $id = null ) {
-        return D2EM::getRepository( InfrastructureEntity::class)->getAllForList( $id, '', $this->feParams );
-    }
-
 
     public function storePrepareAction( Request $request ){
 
