@@ -870,4 +870,15 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
         return parent::getPatchPanelPort();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveType(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveType', []);
+
+        return parent::resolveType();
+    }
+
 }

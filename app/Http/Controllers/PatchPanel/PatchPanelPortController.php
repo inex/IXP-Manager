@@ -187,10 +187,19 @@ class PatchPanelPortController extends Controller
         // If we're allocating this port, set the chargable flag to the patch panel's default:
         $chargeable = ( $allocating and $ppp->isStateAvailable()) ? $ppp->getPatchPanel()->getChargeable() : $ppp->getChargeable();
 
+
         if( $ppp->getSwitchPort() ) {
             // FIXME: Queries and logic could be improved.
             /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
             $switchPorts = D2EM::getRepository(SwitcherEntity::class)->getAllPortsNotAssignedToPI( $ppp->getSwitchPort()->getSwitcher()->getId(), [], $ppp->getSwitchPort()->getId() );
+
+            // we add the current switch port in the list to display it
+            $switchPorts[ ] = [  "name" => $ppp->getSwitchPort()->getName(),
+                                 "typeid" => $ppp->getSwitchPort()->getType(),
+                                 "type" => $ppp->getSwitchPort()->resolveType(),
+                                 "id" => $ppp->getSwitchPort()->getId() ];
+
+            array_multisort( array_column( $switchPorts, 'id' ), SORT_ASC, $switchPorts );
         }
 
         // fill the form with patch panel port data
