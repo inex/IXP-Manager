@@ -51,7 +51,7 @@
         if( this.checked ){
             if( $( '#partner_port option[value="<?= $t->ppp->getId() + 1 ?>"]' ).length ) {
                 dd_partner_port.val( <?= $t->ppp->getId() + 1 ?> );
-                dd_partner_port.trigger("changed");
+                dd_partner_port.trigger('change.select2');
             }
             div_duplex_port.show();
         } else {
@@ -68,7 +68,7 @@
 
         <?php if( $t->allocating ): ?>
         $('#pi_status').val('');
-        $('#pi_status').trigger("changed");
+        $('#pi_status').trigger('change.select2');
 
         if( dd_switch_port.val() != '' ){
             let spid = dd_switch_port.val();
@@ -77,7 +77,7 @@
                 $( "#pi_status_area" ).hide();
                 if( data.physInt != undefined ) {
                     $('#pi_status').val(data.physInt.status);
-                    $('#pi_status').trigger("changed");
+                    $('#pi_status').trigger('change.select2');
                     $("#pi_status_area").show();
                 }
             })
@@ -94,8 +94,8 @@
      * set data to the switch dropdown related to the customer selected
      */
     dd_customer.change( function(){
-        dd_switch.html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "changed" );
-        dd_switch_port.html("").trigger("changed");
+        dd_switch.html( "<option value=\"\">Loading please wait</option>\n" ).trigger('change.select2');
+        dd_switch_port.html("").trigger('change.select2');
 
         let customerId = dd_customer.val();
 
@@ -123,7 +123,7 @@
             alert( "Error running ajax query for api/v4/customer/$id/switches" );
         })
         .always( function() {
-            dd_switch.trigger( "changed" );
+            dd_switch.trigger('change.select2');
         });
     });
 
@@ -139,8 +139,8 @@
             options += "<option value=\"" + <?= $id ?> + "\">" + $switch  + "</option>\n";
         <?php endforeach; ?>
 
-        dd_switch.html( options ).trigger( "changed" );
-        dd_switch_port.html('').trigger( "changed" );
+        dd_switch.html( options ).trigger('change.select2');
+        dd_switch_port.html('').trigger('change.select2');
         resetCustomer();
         $( "#pi_status_area" ).hide();
     });
@@ -160,7 +160,7 @@
         let url, datas, option;
         let switchId        = dd_switch.val();
 
-        dd_switch_port.html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "changed" );
+        dd_switch_port.html( "<option value=\"\">Loading please wait</option>\n" ).trigger('change.select2');
 
         <?php if ($t->prewired): ?>
         url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port-prewired";
@@ -195,7 +195,7 @@
             dd_customer.html("");
         })
         .always( function() {
-            dd_switch_port.trigger( "changed" );
+            dd_switch_port.trigger('change.select2');
         });
     }
 
@@ -206,7 +206,7 @@
         if( dd_switch.val() != ''){
             let switchPortId = dd_switch_port.val();
             dd_customer.html( "<option value=\"\">Loading please wait</option>\n" );
-            dd_customer.trigger( "changed" );
+            dd_customer.trigger('change.select2');
             $.ajax( "<?= url( '/api/v4/switch-port' ) ?>/" + switchPortId + "/customer" )
             .done( function( data ) {
                 if( data.customerFound ) {
@@ -220,7 +220,7 @@
                 dd_customer.html("");
             })
             .always( function() {
-                dd_customer.trigger( "changed" );
+                dd_customer.trigger('change.select2');
             });
         }
     }
@@ -236,7 +236,7 @@
             customer = '<?= $customer ?>';
             options += "<option value=\"" + <?= $id ?> + "\">" + customer  + "</option>\n";
         <?php endforeach; ?>
-        dd_customer.html( options ).trigger( "changed" );
+        dd_customer.html( options ).trigger('change.select2');
     }
 
     /**
