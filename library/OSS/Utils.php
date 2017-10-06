@@ -327,15 +327,10 @@ class OSS_Utils
      * This will be used for the API call request
      * @return string
      */
-    public static function csrfToken(){
-
-        if( !isset ( $_SESSION[ 'request-time' ] ) ){
-            $_SESSION[ 'request-time' ] = $_SERVER[ 'REQUEST_TIME_FLOAT' ];
-        }
-
-        if( $_SERVER[ 'REQUEST_TIME_FLOAT' ] != $_SESSION[ 'request-time' ] ){
-            $_SESSION['csrf-token'] = bin2hex( random_bytes(16) );
-            $_SESSION[ 'request-time' ] = $_SERVER[ 'REQUEST_TIME_FLOAT' ];
+    public static function csrfToken()
+    {
+        if( !isset( $_SESSION[ 'csrf-token' ] ) ) {
+            $_SESSION['csrf-token'] = bin2hex( random_bytes(8) );
         }
 
         return $_SESSION[ 'csrf-token' ];

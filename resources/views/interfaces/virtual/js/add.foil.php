@@ -26,50 +26,54 @@ btn_advanced.click( () => { div_advanced.slideToggle(); btn_delete.slideToggle()
 // display or hide the fastlapc area
 cb_lag_framing.change( () => { cb_lag_framing.is(":checked") ? div_fastlacp.slideDown() : div_fastlacp.slideUp() } );
 
-/**
- * on click even allow to delete a Sflow receiver
- */
-$("a[id|='delete-vi']").on('click', function(e){
-    e.preventDefault();
-    let viid = (this.id).substring(10);
-    deletePopup( viid, <?= $t->vi->getId() ?> , 'vi' );
-});
+<?php if( $t->vi ): ?>
+    /**
+     * on click even allow to delete a Sflow receiver
+     */
+    $("a[id|='delete-vi']").on('click', function(e){
+        e.preventDefault();
+        let viid = (this.id).substring(10);
+        deletePopup( viid, <?= $t->vi->getId() ?> , 'vi' );
+    });
 
-/**
- * on click even allow to delete a Sflow receiver
- */
-$("a[id|='delete-pi']").on('click', function(e){
-    e.preventDefault();
-    let piid = (this.id).substring(10);
-    deletePopup( piid, <?= $t->vi->getId() ?> , 'pi' );
-});
+    /**
+     * on click even allow to delete a Sflow receiver
+     */
+    $("a[id|='delete-pi']").on('click', function(e){
+        e.preventDefault();
+        let piid = (this.id).substring(10);
+        deletePopup( piid, <?= $t->vi->getId() ?> , 'pi' );
+    });
 
-/**
- * on click even allow to delete a VLI
- */
-$("a[id|='delete-vli']").on( 'click', function(e) {
-    e.preventDefault();
-    let vliid = (this.id).substring(11);
-    deletePopup( vliid, <?= $t->vi->getId() ?>, 'vli' );
-});
+    /**
+     * on click even allow to delete a VLI
+     */
+    $("a[id|='delete-vli']").on( 'click', function(e) {
+        e.preventDefault();
+        let vliid = (this.id).substring(11);
+        deletePopup( vliid, <?= $t->vi->getId() ?>, 'vli' );
+    });
 
-/**
- * on click even allow to delete a Sflow receiver
- */
-$( "a[id|='duplicate-vli']" ).on( 'click', function(e) {
-    e.preventDefault();
-    let vliid = (this.id).substring(14);
-    duplicateVliPopup( vliid, <?= $t->vi->getId() ?> );
-});
+    /**
+     * on click even allow to delete a Sflow receiver
+     */
+    $( "a[id|='duplicate-vli']" ).on( 'click', function(e) {
+        e.preventDefault();
+        let vliid = (this.id).substring(14);
+        duplicateVliPopup( vliid, <?= $t->vi->getId() ?> );
+    });
 
-/**
- * on click even allow to delete a Sflow receiver
- */
-$( "a[id|='delete-sflr']" ).on( 'click', function(e) {
-    e.preventDefault();
-    let sflrid = (this.id).substring(12);
-    deletePopup( sflrid, <?= $t->vi->getId() ?>, 'sflr' );
-});
+    /**
+     * on click even allow to delete a Sflow receiver
+     */
+    $( "a[id|='delete-sflr']" ).on( 'click', function(e) {
+        e.preventDefault();
+        let sflrid = (this.id).substring(12);
+        deletePopup( sflrid, <?= $t->vi->getId() ?>, 'sflr' );
+    });
+<?php endif; ?>
+
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 ///
