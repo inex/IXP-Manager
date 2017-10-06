@@ -16,7 +16,7 @@
         let nextPort = parseInt( dd_master.val()) + parseInt(1);
         if( $( '#slave-port option[value="'+nextPort+'"]' ).length ) {
             dd_slave.val( nextPort );
-            dd_slave.trigger("changed");
+            dd_slave.trigger('change.select2');
         }
     });
     <?php endif; ?>
@@ -33,9 +33,9 @@
         let datas   = {pppId: <?= $t->ppp->getId() ?> };
 
 
-        $( "#master-port" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "changed" );
+        $( "#master-port" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger('change.select2');
         <?php if( $t->ppp->hasSlavePort() ): ?>
-        $( "#slave-port" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "changed" );
+        $( "#slave-port" ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger('change.select2');
         <?php endif; ?>
 
         $.ajax( url , {
@@ -57,9 +57,9 @@
                 alert( `Error running ajax query for ${url}` );
             })
             .always( function() {
-                dd_master.trigger( "changed" );
+                dd_master.trigger('change.select2');
                 <?php if( $t->ppp->hasSlavePort() ): ?>
-                dd_slave.trigger("changed");
+                dd_slave.trigger('change.select2');
                 <?php endif; ?>
             });
     }

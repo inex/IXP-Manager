@@ -7,7 +7,7 @@
         let switchId = $( "#switch-" + sside ).val();
 
         if( $("#nb-core-links").val() > 0 || edit ){
-            $( "#sp-" + sside + "-"+ id ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "changed" );
+            $( "#sp-" + sside + "-"+ id ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger('change.select2');
             if( !edit ) {
                 excludedSwitchPort();
             }
@@ -46,7 +46,7 @@
                     alert( `Error running ajax query for ${url}` );
                 })
                 .always( function() {
-                    $( "#sp-" + sside + "-"+ id ).trigger( "changed" );
+                    $( "#sp-" + sside + "-"+ id ).trigger('change.select2');
                 });
             }
         }
@@ -59,7 +59,7 @@
         let lastIdSwitchPort = id - 1;
         let nextValue = parseInt($( '#sp-' + side + '-'+ lastIdSwitchPort ).val()) + parseInt(1);
         if( $( "#sp-" + side + "-" + id + " option[value='"+nextValue+"']" ).length ) {
-            $( '#sp-' + side + '-'+ id).val( nextValue ).trigger("changed");
+            $( '#sp-' + side + '-'+ id).val( nextValue ).trigger('change.select2');
         }
 
         $("#hidden-sp-"+ side + '-' + id).val( $("#sp-"+ side + "-" + id).val() );
