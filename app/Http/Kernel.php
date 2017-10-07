@@ -48,6 +48,11 @@ class Kernel extends HttpKernel {
             'apiauth'
         ],
 
+        'd2frontend' => [
+            'web',
+            'doctrine2frontend',
+        ],
+
         'grapher' => [
             \IXP\Http\Middleware\Services\Grapher::class,
         ],
@@ -70,11 +75,12 @@ class Kernel extends HttpKernel {
         'guest'      => \IXP\Http\Middleware\RedirectIfAuthenticated::class,
         'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 
-        'apiauth'          => \IXP\Http\Middleware\ApiAuthenticate::class,
-        'apimaybeauth'     => \IXP\Http\Middleware\ApiMaybeAuthenticate::class,
-        'assert.privilege' => \IXP\Http\Middleware\AssertUserPrivilege::class,
-        'grapher'          => \IXP\Http\Middleware\Services\Grapher::class,
-        'patch-panel-port' => \IXP\Http\Middleware\PatchPanelPort::class,
+        'apiauth'           => \IXP\Http\Middleware\ApiAuthenticate::class,
+        'apimaybeauth'      => \IXP\Http\Middleware\ApiMaybeAuthenticate::class,
+        'assert.privilege'  => \IXP\Http\Middleware\AssertUserPrivilege::class,
+        'doctrine2frontend' => \IXP\Http\Middleware\Doctrine2Frontend::class,
+        'grapher'           => \IXP\Http\Middleware\Services\Grapher::class,
+        'patch-panel-port'  => \IXP\Http\Middleware\PatchPanelPort::class,
     ];
 
 }
