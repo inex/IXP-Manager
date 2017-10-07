@@ -54,6 +54,11 @@ class ControllerEnabled
      */
     public function handle( $request, Closure $next )
     {
+        // not everything belongs here:
+        if( !strpos( Route::currentRouteAction(), '@' ) ) {
+            return $next($request);
+        }
+
         // get the class and method that has been called:
         list( $controller, $method ) = explode('@', Route::currentRouteAction() );
 

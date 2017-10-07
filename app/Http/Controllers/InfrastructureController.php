@@ -112,35 +112,31 @@ class InfrastructureController extends Doctrine2Frontend {
 
 
     /**
-     * Display the form to edit a physical interface
-     *
-     * @param   int $id ID of the customer equipment
-     *
-     * @return View
+     * Display the form to add/edit an object
+     * @param   int $id ID of the row to edit
+     * @return array
      */
-    public function addPrepareData( $id = null ) {
+    protected function addEditPrepareForm( $id = null ): array {
+
         /** @var InfrastructureEntity $inf */
         $inf = false;
 
+        if( $id !== null ) {
 
-        if( $id != null ) {
             if( !( $inf = D2EM::getRepository( InfrastructureEntity::class )->find( $id) ) ) {
                 abort(404);
             }
 
             Former::populate([
-                'name'                  => $inf->getName(),
-                'sname'                 => $inf->getShortname(),
-                'primary'               => $inf->getIsPrimary() ?? false,
-                'ixp'                   => $this->multiIXP() ? $inf->getIXP() : 1 ,
+                'name'             => $inf->getName(),
+                'shortname'        => $inf->getShortname(),
+                'isPrimary'        => $inf->getIsPrimary() ?? false,
             ]);
         }
 
         return [
-            'data'                              => $this->data,
-            'inf'                               => $inf,
-            'multiIXP'                          => $this->multiIXP(),
-            'listIXP'                           => $this->multiIXP() ? D2EM::getRepository( IXPEntity::class )->getNames( Auth::user() ) : 1,
+            'data'         => $this->data,
+            'inf'          => $inf
         ];
     }
 

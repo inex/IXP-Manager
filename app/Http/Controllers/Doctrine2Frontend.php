@@ -162,7 +162,8 @@ abstract class Doctrine2Frontend extends Controller {
      *
      * @return View
      */
-    public function list(): View {
+    public function list(): View
+    {
         $this->data[ 'data' ]           = $this->listGetData();
 
         $this->view[ 'listPreamble']    = $this->resolveTemplate( 'list-preamble',  false );
@@ -178,7 +179,8 @@ abstract class Doctrine2Frontend extends Controller {
      * @param int $id The `id` of the row to load for `view` action.
      * @return array
      */
-    protected function viewGetData( $id ): array {
+    protected function viewGetData( $id ): array
+    {
 
         $data = $this->listGetData( $id );
 
@@ -195,7 +197,8 @@ abstract class Doctrine2Frontend extends Controller {
      * @param int $id The `id` of the row to load for `view` action.
      * @return View
      */
-    public function view( $id ): View {
+    public function view( $id ): View
+    {
         $this->data[ 'data' ]           = $this->viewGetData( $id ) ;
 
         $this->view[ 'viewPreamble']    = $this->resolveTemplate( 'view-preamble',      false );
@@ -207,20 +210,48 @@ abstract class Doctrine2Frontend extends Controller {
 
 
     /**
-     * Prepares data for view and AJAX view
+     * Prepares data for the add / edit form
+     * @param int|null $id
+     * @return array
      */
-    protected function addPrepareData( $id = null ) {}
+    abstract protected function addEditPrepareForm( $id = null ): array;
 
     /**
-     * Add (or edit) an object
+     * Common set up tasks for add and edit actions.
+     */
+    protected function addEditSetup()
+    {
+        $this->view[ 'editForm']        = $this->resolveTemplate( 'edit-form' );
+
+        $this->view[ 'editPreamble']    = $this->resolveTemplate( 'edit-preamble',      false );
+        $this->view[ 'editPostamble']   = $this->resolveTemplate( 'edit-postamble',     false );
+        $this->view[ 'editScript' ]     = $this->resolveTemplate( 'js/edit',            false );
+    }
+
+    /**
+     * Add an object
      */
     public function add()
     {
-        $this->params           = $this->addPrepareData();
+        $this->params = $this->addEditPrepareForm();
+        $this->params['isAdd'] = true;
+        $this->addEditSetup();
 
         return $this->display( 'edit' );
     }
 
+    /**
+     * Edit an object
+     * @param int $id ID of the object to edit
+     * @return view
+     */
+    public function edit( $id ){
+        $this->params = $this->addEditPrepareForm( $id );
+        $this->params['isAdd'] = false;
+        $this->addEditSetup();
+
+        return $this->display( 'edit' );
+    }
 
     /**
      * Add (or edit) an object
@@ -228,16 +259,6 @@ abstract class Doctrine2Frontend extends Controller {
     public function prepareEditAction() {}
 
 
-    /**
-     * Add (or edit) an object
-     * @param int $id ID of the object to edit
-     * @return view
-     */
-    public function edit( $id ){
-        $this->params = $this->addPrepareData( $id );
-
-        return $this->display( 'edit' );
-    }
 
     /**
      * Delete an object
