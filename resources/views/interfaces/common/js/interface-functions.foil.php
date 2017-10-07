@@ -15,8 +15,8 @@ function updateIpAddresses() {
 
         console.debug( selectedIPv4 );
 
-        $( dd_ipv6 ).html( "<option value=\"\">Loading, please wait...</option>\n" ).trigger( "changed" );
-        $( dd_ipv4 ).html( "<option value=\"\">Loading, please wait...</option>\n" ).trigger( "changed" );
+        $( dd_ipv6 ).html( "<option value=\"\">Loading, please wait...</option>\n" ).trigger('change.select2');
+        $( dd_ipv4 ).html( "<option value=\"\">Loading, please wait...</option>\n" ).trigger('change.select2');
 
         // Hide and clear the 'already used in another VLAN' warning (if it is displayed):
         $( '.ip-is-used-alert' ).html( '' ).hide();
@@ -58,18 +58,18 @@ function updateIpAddresses() {
             })
             .fail( function() {
                 let options = "<option value=\"\">ERROR</option>\n";
-                dd_ipv6.html( options ).trigger( "changed" );
-                dd_ipv4.html( options ).trigger( "changed" );
+                dd_ipv6.html( options ).trigger('change.select2');
+                dd_ipv4.html( options ).trigger('change.select2');
                 throw new Error( "Error running ajax query for " + url );
             })
             .always( function() {
-                dd_ipv6.trigger( "changed" );
-                dd_ipv4.trigger( "changed" );
+                dd_ipv6.trigger('change.select2');
+                dd_ipv4.trigger('change.select2');
             })
     ); // ajaxRequests.push()
     } else {
-        dd_ipv6.html( "<option value=\"\">Select a VLAN above!</option>\n" ).trigger( "changed" );
-        dd_ipv4.html( "<option value=\"\">Select a VLAN above!</option>\n" ).trigger( "changed" );
+        dd_ipv6.html( "<option value=\"\">Select a VLAN above!</option>\n" ).trigger('change.select2');
+        dd_ipv4.html( "<option value=\"\">Select a VLAN above!</option>\n" ).trigger('change.select2');
     }
 }
 
@@ -187,7 +187,7 @@ function updateSwitchPort(e) {
 
     let url = "<?= url( '/api/v4/switch' )?>/" + sw.val() + "/ports";
 
-    dd_sp.html( "<option value=\"\">Loading, please wait...</option>\n" ).trigger( "changed" );
+    dd_sp.html( "<option value=\"\">Loading, please wait...</option>\n" ).trigger('change.select2');
 
     $.ajax( url )
         .done( function( data ) {
@@ -211,7 +211,7 @@ function updateSwitchPort(e) {
             throw new Error( "Error running ajax query for " + url );
         })
         .always( function() {
-            dd_sp.trigger( "changed" );
+            dd_sp.trigger('change.select2');
         });
 }
 

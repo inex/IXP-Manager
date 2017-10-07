@@ -24,7 +24,7 @@ $(document).ready( function() {
                 dd_ipv6.append(newOption);
             }
 
-            dd_ipv6.val( ipv6 ).trigger('change');
+            dd_ipv6.val( ipv6 ).trigger('change.select2');
 
             // do these exist in the dropdown?
             if( !dd_ipv4.find( `option[value='${ipv4}']` ).length > 0 ) {
@@ -32,7 +32,7 @@ $(document).ready( function() {
                 dd_ipv4.append(newOption);
             }
 
-            dd_ipv4.val( ipv4 ).trigger('change');
+            dd_ipv4.val( ipv4 ).trigger('change.select2');
         });
     }
 

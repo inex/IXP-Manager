@@ -140,22 +140,6 @@
                 </li>
 
                 <li>
-                    <a href="<?= url('/switch/list') ?>">Switches</a>
-                    <?php /*
-                    {if $controller eq 'switch' or $controller eq 'switch-port'}
-                        <ul class="nav nav-list">
-                            <li {if $controller eq 'switch-port' and $action neq 'unused-optics'}class="active"{/if}>
-                                <a href="{genUrl controller='switch-port' action='list'}">Switch Ports</a>
-                            </li>
-                            <li {if $controller eq 'switch-port' and $action eq 'unused-optics'}class="active"{/if}>
-                                <a href="{genUrl controller='switch-port' action='unused-optics'}">Unused Optics</a>
-                            </li>
-                        </ul>
-                    {/if}
-                    */ ?>
-                </li>
-
-                <li>
                     <a href="<?= url('/ipv6-address/list') ?>">IP Addressing</a>
                     <?php /*{if $controller eq 'ipv4-address' or $controller eq 'ipv6-address'}
                         <ul class="nav nav-list">
