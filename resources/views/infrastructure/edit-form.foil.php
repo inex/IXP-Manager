@@ -11,8 +11,8 @@
         ->blockHelp( "The name of this infrastructure. Displayed in a number of places. Examples at INEX are: INEX LAN1, INEX LAN2, INEX Cork." );
     ?>
 
-    <?= Former::text( 'sname' )
-        ->label( 'Short Name' )
+    <?= Former::text( 'shortname' )
+        ->label( 'Shortname' )
         ->blockHelp( "A lowercase single word to represent the infrastructure." );
     ?>
 

@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Route;
+use Auth, D2EM, Log, Route;
 
 use Entities\{
     User as UserEntity
@@ -66,6 +66,11 @@ abstract class Doctrine2Frontend extends Controller {
     protected $params   = null;
 
     protected $view     = null;
+
+    /**
+     * The object being added / edited
+     */
+    protected $object = null;
 
     /**
      * The URL prefix to use.
@@ -255,11 +260,33 @@ abstract class Doctrine2Frontend extends Controller {
         return $this->display( 'edit' );
     }
 
-    /**
-     * Add (or edit) an object
-     */
-    public function prepareEditAction() {}
 
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     * @param Request $request
+     */
+    abstract public function doStore( Request $request );
+
+    /**
+     * Action for storing a new/updated object
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function store( Request $request )
+    {
+       $storeResult = $this->doStore( $request );
+
+       if( $storeResult !== true ) {
+           return $storeResult;
+       }
+
+       $action = $request->input( 'id', '' )  ? "edited" : "added";
+
+       Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action
+           . ' ' . $this->data['feParams']->nameSingular . ' with ID ' . $this->object->getId() );
+       AlertContainer::push(  $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
+       return redirect()->action( $this->feParams->defaultController . '@' . $this->feParams->defaultAction );
+    }
 
 
     /**
@@ -282,22 +309,7 @@ abstract class Doctrine2Frontend extends Controller {
         return redirect()->action( $this->feParams->defaultController.'@'.$this->feParams->defaultAction );
     }
 
-    /**
-     * Edit a physical interface (set all the data needed)
-     */
-    public function storePrepareAction( Request $request ) {}
 
-    /**
-     * Edit a physical interface (set all the data needed)
-     */
-    public function store( Request $request )
-    {
-       $this->storePrepareAction( $request );
-
-       AlertContainer::push(  $this->feParams->titleSingular." ".($request->input( 'id')  ? "edited." : "added." ), Alert::SUCCESS );
-
-       return redirect()->action( $this->feParams->defaultController.'@'.$this->feParams->defaultAction );
-    }
 
     /**
      * Displays the standard Frontend template or the controllers overridden version.

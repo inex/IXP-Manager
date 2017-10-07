@@ -273,7 +273,7 @@ class Infrastructure
      * @param int $id
      * @return \Entities\Infrastructure
      */
-    public function setPeeringdbIxId( int $id ): Infrastructure {
+    public function setPeeringdbIxId( $id ): Infrastructure {
         $this->peeringdb_ix_id = $id;
         return $this;
     }
@@ -298,7 +298,7 @@ class Infrastructure
      * @param int $id
      * @return \Entities\Infrastructure
      */
-    public function setIxfIxId( int $id ): Infrastructure {
+    public function setIxfIxId( $id ): Infrastructure {
         $this->ixf_ix_id = $id;
         return $this;
     }

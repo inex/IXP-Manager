@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers;
 
 use Auth, D2EM, Former, Redirect, Route, Validator;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 use Entities\{
@@ -139,24 +140,25 @@ class InfrastructureController extends Doctrine2Frontend {
         ];
     }
 
-    public function storePrepareAction( Request $request ){
 
-        $validator = Validator::make($request->all(), [
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     * @param Request $request
+     * @return bool|RedirectResponse
+     */
+    public function doStore( Request $request )
+    {
+        $validator = Validator::make( $request->all(), [
             'name'                  => 'required|string|max:255',
-            'sname'                 => 'required|string|max:255',
-            'ixp'                   => 'required|int|exists:Entities\IXP,id',
-
+            'shortname'             => 'required|string|max:255',
         ]);
 
-        if ($validator->fails()) {
-            return redirect::back()->withErrors($validator)->withInput();
+        if( $validator->fails() ) {
+            return Redirect::back()->withErrors($validator)->withInput();
         }
 
-        /** @var InfrastructureEntity $inf  */
         if( $request->input( 'id', false ) ) {
-            // get the existing Cust Kit object for that ID
             if( !( $inf = D2EM::getRepository( InfrastructureEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                Log::notice( 'Unknown Infrastructure' );
                 abort(404);
             }
         } else {
@@ -165,15 +167,26 @@ class InfrastructureController extends Doctrine2Frontend {
         }
 
         $inf->setName(              $request->input( 'name'         ) );
-        $inf->setShortname(         $request->input( 'sname'        ) );
-        $inf->setIxfIxId(           $request->input( 'ixf_ix_id'    ) );
-        $inf->setPeeringdbIxId(     $request->input( 'pdb_ixp'      ) );
+        $inf->setShortname(         $request->input( 'shortname'    ) );
+        $inf->setIxfIxId(           $request->input( 'ixf_ix_id'    ) ? $request->input( 'ixf_ix_id'    ) : null );
+        $inf->setPeeringdbIxId(     $request->input( 'pdb_ixp'      ) ? $request->input( 'pdb_ixp'      ) : null );
         $inf->setIsPrimary(         $request->input( 'primary'      ) ?? false );
-        $inf->setIXP(               D2EM::getRepository( IXPEntity::class )->find( $request->input( 'ixp' ) ) );
-
+        $inf->setIXP(               D2EM::getRepository( IXPEntity::class )->getDefault() );
 
         D2EM::flush($inf);
 
+        if( $inf->getIsPrimary() ) {
+            // reset the rest:
+            foreach( D2EM::getRepository( InfrastructureEntity::class )->findAll() as $i ) {
+                if( $i->getId() == $inf->getId() || !$i->getIsPrimary() ) {
+                    continue;
+                }
+                $i->setIsPrimary( false );
+            }
+            D2EM::flush();
+        }
+
+        $this->object = $inf;
         return true;
     }
 }

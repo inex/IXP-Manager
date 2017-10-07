@@ -36,11 +36,14 @@ $( 'document' ).ready( function(){
     // Activate the Bootstrap menubar
     $('.dropdown-toggle').dropdown();
 
+    // show form errors. FIXME: shouldn;t need this. Interference with help text logic...
+    $( "span.help-block" ).show();
+
     /**
      * display / hide help sections on click on the help button
      */
     $( "#help-btn" ).click( function() {
-        $( ".help-block" ).toggle();
+        $( "p.help-block" ).toggle();
         $( "#instructions-alert").toggle();
     });
 

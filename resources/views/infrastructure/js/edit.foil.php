@@ -10,7 +10,7 @@
                 let selectedixp, selectNow;
                 let options = `<option value=''>Choose the matching IX-F IXP...</option>\n`;
 
-                <?php if( $t->params[ 'inf' ] ): ?>
+                <?php if( $t->params[ 'inf' ] && $t->params[ 'inf' ]->getIxfIxId() ): ?>
                     selectedixp = <?= $t->params[ 'inf' ]->getIxfIxId() ?>;
                 <?php else: ?>
                     selectedixp = false;
@@ -24,6 +24,7 @@
                     options += `<option ${selectNow} value="${ixp.ixf_id}">${ixp.name}</option>\n`;
                 });
                 dd_ixp.html( options );
+                dd_ixp.attr("placeholder", "Choose the matching IX-F IXP...");
             })
             .fail( function() {
                 throw new Error("Error running ajax query for IX-F IXPs");
@@ -38,7 +39,7 @@
                 let selectedpdb, selectNow;
                 let options = `<option value=''>Choose the matching PeeringDB IXP...</option>\n`;
 
-                <?php if( $t->params[ 'inf' ] ): ?>
+                <?php if( $t->params[ 'inf' ] && $t->params[ 'inf' ]->getPeeringdbIxId() ): ?>
                     selectedpdb = <?= $t->params[ 'inf' ]->getPeeringdbIxId() ?>;
                 <?php else: ?>
                     selectedpdb = false;
