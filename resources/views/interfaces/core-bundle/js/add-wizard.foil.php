@@ -94,7 +94,7 @@
         setSwitchPort( sside , hidden_nb_cls.val(), false );
         if( sside == 'a'){
             setDropDownSwitchSideB( );
-            $( "#sp-b-1" ).html( "<option value=\"\">Choose a switch port</option>\n" ).trigger( "changed" );
+            $( "#sp-b-1" ).html( "<option value=\"\">Choose a switch port</option>\n" ).trigger('change.select2');
         }
     });
 
@@ -250,8 +250,8 @@
                             $( "#remove-core-link-" + oldNbLink ).prop( 'disabled', true );
 
                             // set the switcher dropdown (A/B) with the value of the first core link
-                            dd_switch_a.val( dd_switch_a.val() ).prop('disabled', true).trigger( "changed" );
-                            dd_switch_b.val( dd_switch_b.val() ).prop('disabled', true).trigger( "changed" );
+                            dd_switch_a.val( dd_switch_a.val() ).prop('disabled', true).trigger('change.select2');
+                            dd_switch_b.val( dd_switch_b.val() ).prop('disabled', true).trigger('change.select2');
 
                             // set the setting from the first core link to the other
                             setSettingsToLinks( data.nbCoreLinks );
@@ -291,24 +291,24 @@
      * Copy the switch dropdown from the side A to B excluding the switch selected in side A
      */
     function setDropDownSwitchSideB( sid ){
-        dd_switch_b.html( "<option value=\"\">Loading please wait</option>\n" ).trigger( "changed" );
+        dd_switch_b.html( "<option value=\"\">Loading please wait</option>\n" ).trigger('change.select2');
         let options = "";
         $( "#switch-a option").each( function( ) {
             if( this.value != dd_switch_a.val() ){
                 options += "<option value=\"" + this.value + "\">" + this.text + " </option>\n";
             }
         });
-        dd_switch_b.html( options ).trigger( "changed" );
+        dd_switch_b.html( options ).trigger('change.select2');
     }
 
     /**
      * Disable the switch/switch port of the both side
      */
     function disableDropDown( id, disable){
-        dd_switch_a.prop('disabled', disable).trigger( "changed" );
-        dd_switch_b.prop('disabled', disable).trigger( "changed" );
-        $( "#sp-a-"+ id ).prop('disabled', disable).trigger( "changed" );
-        $( "#sp-b-"+ id ).prop('disabled', disable).trigger( "changed" );
+        dd_switch_a.prop('disabled', disable).trigger('change.select2');
+        dd_switch_b.prop('disabled', disable).trigger('change.select2');
+        $( "#sp-a-"+ id ).prop('disabled', disable).trigger('change.select2');
+        $( "#sp-b-"+ id ).prop('disabled', disable).trigger('change.select2');
     }
 
     /**

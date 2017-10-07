@@ -971,4 +971,13 @@ class SwitchPort
     {
         return $this->patchPanelPort;
     }
+
+    /**
+     * Turn the database integer representation of the type into text as
+     * defined in the self::$TYPES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveType(): string {
+        return self::$TYPES[ $this->getType() ];
+    }
 }
