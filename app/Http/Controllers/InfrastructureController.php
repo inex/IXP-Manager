@@ -50,7 +50,6 @@ use IXP\Utils\View\Alert\{
  */
 class InfrastructureController extends Doctrine2Frontend {
 
-
     /**
      * This function sets up the frontend controller
      */
@@ -71,44 +70,31 @@ class InfrastructureController extends Doctrine2Frontend {
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
 
-            'viewFolderName'    => 'infrastructure'
+            'viewFolderName'    => 'infrastructure',
+
+            'listColumns'       => [
+                'id'        => [ 'title' => 'DB ID' , 'display' => true ],
+                'name'      => 'Name',
+                'shortname' => 'Shortname',
+                'isPrimary' => [ 'title' => 'Primary', 'type' => self::$FE_COL_TYPES[ 'YES_NO' ] ],
+
+                'ixf_ix_id' => [
+                    'title'    => 'IXF-ID',
+                    'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
+                    'subject'  => '<a href="https://db.ix-f.net/api/ixp/%%COL%%" target="_blank">%%COL%%</a>'
+                ],
+
+                'peeringdb_ix_id' => [
+                    'title'    => 'PeeringDB ID',
+                    'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
+                    'subject'  => '<a href="https://www.peeringdb.com/api/ix/%%COL%%" target="_blank">%%COL%%</a>'
+                ],
+            ]
         ];
 
+        // display the same information in the view as the list
+        $this->feParams->viewColumns = $this->feParams->listColumns;
 
-        switch( Auth::user() ? Auth::user()->getPrivs() : UserEntity::AUTH_PUBLIC ) {
-
-            case UserEntity::AUTH_SUPERUSER:
-                $this->feParams->listColumns = [
-                    'id'        => [ 'title' => 'DB ID' , 'display' => true ],
-                    'name'      => 'Name',
-                    'shortname' => 'Shortname',
-                    'isPrimary' => [ 'title' => 'Primary', 'type' => self::$FE_COL_TYPES[ 'YES_NO' ] ],
-
-                    'ixf_ix_id' => [
-                        'title'    => 'IXF-ID',
-                        'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
-                        'subject'  => '<a href="https://db.ix-f.net/api/ixp/%%COL%%" target="_blank">%%COL%%</a>'
-                    ],
-
-                    'peeringdb_ix_id' => [
-                        'title'    => 'PeeringDB ID',
-                        'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
-                        'subject'  => '<a href="https://www.peeringdb.com/api/ix/%%COL%%" target="_blank">%%COL%%</a>'
-                    ],
-                ];
-
-                // display the same information in the view as the list
-                $this->feParams->viewColumns = $this->feParams->listColumns;
-
-                $this->feParams->defaultAction = 'list';
-
-                break;
-
-            default:
-                if( php_sapi_name() !== "cli" ) {
-                    abort( 'error/insufficient-permissions' );
-                }
-        }
 
     }
 

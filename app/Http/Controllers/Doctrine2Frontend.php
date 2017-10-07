@@ -25,6 +25,10 @@ namespace IXP\Http\Controllers;
 
 use D2EM, Route;
 
+use Entities\{
+    User as UserEntity
+};
+
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 
@@ -41,6 +45,8 @@ use IXP\Utils\View\Alert\Container as AlertContainer;
  * Based on Barry's original code from:
  *     https://github.com/opensolutions/OSS-Framework/blob/master/src/OSS/Controller/Action/Trait/Doctrine2Frontend.php
  *
+ *
+ * @see        http://docs.ixpmanager.org/dev/frotnend-crud/
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Http\Controllers
@@ -62,9 +68,23 @@ abstract class Doctrine2Frontend extends Controller {
     protected $view     = null;
 
     /**
+     * The URL prefix to use.
+     *
+     * Automatically dertermined based on the crontroller name if not set.
+     *
      * @var string
      */
     protected static $route_prefix = null;
+
+    /**
+     * The minimum privileges required to access this controller.
+     *
+     * If you set this to less than the superuser, you need to manage privileges and access
+     * within your own implementation yourself.
+     *
+     * @var int
+     */
+    public static $minimum_privilege = UserEntity::AUTH_SUPERUSER;
 
     /**
      * Column / table data types when displaying data.
