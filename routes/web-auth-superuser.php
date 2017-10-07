@@ -127,13 +127,3 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::post(    'members',         'StatisticsController@members' )->name( 'statistics/members' );
 });
 
-//Route::group( [ 'prefix' => 'cust-kit' ], function() {
-//    Route::get(     'list',                'CustKitController@list'   );
-//    Route::get(     'add',                 'CustKitController@add'    );
-//    Route::get(     'edit/{id}',           'CustKitController@edit'   );
-//    Route::get(     'view/{id}',           'CustKitController@view'   );
-//    Route::get(     'delete/{id}',         'CustKitController@delete' );
-//    Route::post(    'store',               'CustKitController@store'  );
-//});
-
-IXP\Http\Controllers\InfrastructureController::routes();
