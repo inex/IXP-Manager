@@ -34,7 +34,7 @@ use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
 /**
- * Middleware: Manage Doctrine2Frontend filters, etc
+ * Middleware: Ensure the controller has not been disabled
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   IXP
@@ -43,7 +43,7 @@ use IXP\Utils\View\Alert\Container as AlertContainer;
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 
-class Doctrine2Frontend
+class ControllerEnabled
 {
     /**
      * Handle an incoming request.
@@ -57,14 +57,32 @@ class Doctrine2Frontend
         // get the class and method that has been called:
         list( $controller, $method ) = explode('@', Route::currentRouteAction() );
 
+        // reformat controller name to exclude 'IXP\Http\Controllers' and then replace remaining '\' with -
+        if( substr( $controller, 0, 20 ) == 'IXP\\Http\\Controllers' ) {
+            $controller = substr( $controller, 21 );
+        } else if( substr( $controller, 0, 21 ) == '\\IXP\\Http\\Controllers' ) {
+            $controller = substr( $controller, 22 );
+        }
 
-        // what's the user's privilege?
-        $user_priv = Auth::check() ? Auth::user()->getPrivs() : UserEntity::AUTH_PUBLIC;
+        if( substr( $controller, -10 ) == 'Controller' ) {
+            $controller = substr( $controller, 0, -10 );
+        }
 
-        // first check - do we have the necessary privileges to access this?
-        if( $user_priv < $controller::$minimum_privilege ) {
-            AlertContainer::push(  "You do not have the required privileges to access this function.", Alert::DANGER );
-            Log::info( ( Auth::check() ? Auth::user()->getUsername() : 'Anonymous user' ) . " tried to access {$controller}@{$method} but does not have the required privileges" );
+        $bits = explode( '\\', $controller );
+
+        $name = '';
+        foreach( $bits as $b ) {
+            if( $b === '' ) {
+                continue;
+            }
+
+            $name .= kebab_case( strtolower( $b ) ) . '-';
+        }
+        $name = substr( $name, 0, -1 );
+
+        // is the controller enabled?
+        if( config( 'ixp_fe.frontend.disabled.' . $name, false ) ) {
+            AlertContainer::push(  "This controller has been disabled (see: config/ixp_fe.php).", Alert::DANGER );
             return redirect( '' );
         }
 
