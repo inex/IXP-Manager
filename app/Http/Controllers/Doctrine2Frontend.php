@@ -162,7 +162,7 @@ abstract class Doctrine2Frontend extends Controller {
      *
      * @return View
      */
-    public function list() {
+    public function list(): View {
         $this->data[ 'data' ]           = $this->listGetData();
 
         $this->view[ 'listPreamble']    = $this->resolveTemplate( 'list-preamble',  false );
@@ -171,6 +171,40 @@ abstract class Doctrine2Frontend extends Controller {
 
         return $this->display( 'list' );
     }
+
+    /**
+     * Provide single object for view.
+     *
+     * @param int $id The `id` of the row to load for `view` action.
+     * @return array
+     */
+    protected function viewGetData( $id ): array {
+
+        $data = $this->listGetData( $id );
+
+        if( is_array( $data ) && isset( $data[0] ) ) {
+            return $data[ 0 ];
+        }
+
+        abort( 404);
+    }
+
+    /**
+     * View an object
+     *
+     * @param int $id The `id` of the row to load for `view` action.
+     * @return View
+     */
+    public function view( $id ): View {
+        $this->data[ 'data' ]           = $this->viewGetData( $id ) ;
+
+        $this->view[ 'viewPreamble']    = $this->resolveTemplate( 'view-preamble',      false );
+        $this->view[ 'viewPostamble']   = $this->resolveTemplate( 'view-postamble', false );
+        $this->view[ 'viewScript' ]     = $this->resolveTemplate( 'js/view',            false );
+
+        return $this->display( 'view' );
+    }
+
 
     /**
      * Prepares data for view and AJAX view
@@ -187,31 +221,6 @@ abstract class Doctrine2Frontend extends Controller {
         return $this->display( 'edit' );
     }
 
-    /**
-     * Provide single object for view.
-     *
-     * @param int $id The `id` of the row to load for `view` action.
-     * @return array
-     */
-    protected function viewGetData( $id ) {
-
-        $data = $this->listGetData( $id );
-
-        if( is_array( $data ) && isset( $data[0] ) ) {
-            return $data[ 0 ];
-        }
-
-        abort( 404);
-    }
-
-    /**
-     * Add (or edit) an object
-     */
-    public function view( $id ){
-        $this->data[ 'data' ]           = $this->viewGetData( $id ) ;
-
-        return $this->display( 'view' );
-    }
 
     /**
      * Add (or edit) an object
@@ -272,9 +281,9 @@ abstract class Doctrine2Frontend extends Controller {
      *
      * @see _resolveTemplate()
      * @param string $tpl The template to display
-     * @return view
+     * @return View
      */
-    protected function display( $tpl ){
+    protected function display( $tpl ): View {
         return view( $this->resolveTemplate( $tpl ) )->with( [ 'data' => $this->data , 'view' => $this->view, 'params' => $this->params ]);
     }
 
