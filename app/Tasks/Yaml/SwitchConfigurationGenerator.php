@@ -89,9 +89,12 @@ class SwitchConfigurationGenerator
         foreach( $this->getSwitch()->getPorts() as $sp ) {
 
             /** @var \Entities\SwitchPort $sp */
+/*
+            if( !$sp->isTypePeering() ) {
             if( !$sp->isTypeUnset() && !$sp->isTypePeering() && !$sp->isTypeCore() ) {
                 continue;
             }
+*/
 
             // is the port in use?
             if( !($pi = $sp->getPhysicalInterface()) ) {

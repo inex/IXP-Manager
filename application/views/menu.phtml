@@ -107,9 +107,13 @@
 
         </li>
 
-        <li>
-            <a href="{genUrl controller='interfaces/core-bundle' action='list'}">Core Bundles</a>
-        </li>
+        {if config( 'ixp_fe.frontend.beta.core_bundles', false )}
+
+            <li>
+                <a href="{genUrl controller='interfaces/core-bundle' action='list'}">Core Bundles</a>
+            </li>
+
+        {/if}
 
         <li>
             <a href="{genUrl controller='ipv6-address' action='list'}">IPv4/6 Addresses</a>

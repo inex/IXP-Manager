@@ -61,12 +61,24 @@ use IXP\Utils\View\Alert\Container as AlertContainer;
  */
 class CoreBundleController extends Common
 {
+
+    public function __construct() {
+
+        if( !config( 'ixp_fe.frontend.beta.core_bundles', false ) ) {
+            AlertContainer::push( 'The core bundle functionality is not ready for production use.', Alert::DANGER );
+            Redirect::to('')->send();
+        }
+
+    }
+
     /**
      * Display the core bundles list
      *
      * @return  View
      */
     public function list(): View {
+        AlertContainer::push( 'The core bundle functionality is not ready for production use.', Alert::DANGER );
+
         return view( 'interfaces/core-bundle/list' )->with([
             'cbs'       => D2EM::getRepository( CoreBundleEntity::class )->findAll( )
         ]);
