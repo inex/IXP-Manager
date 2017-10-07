@@ -20,6 +20,8 @@
 <?php $this->section('content') ?>
     <?= $t->alerts() ?>
 
+    <?= $t->view['listPreamble'] ? $t->insert( $t->view['listPreamble'] ) : '' ?>
+
     <?php if( !count( $t->data[ 'data' ] ) ): ?>
 
         <div class="alert alert-info" role="alert">
@@ -155,6 +157,9 @@
         </table>
 
     <?php endif;  /* /* !count( $t->data[ 'data' ] ) */ ?>
+
+    <?= $t->view['listPostamble'] ? $t->insert( $t->view['listPostamble'] ) : '' ?>
+
 
 <?php $this->append() ?>
 

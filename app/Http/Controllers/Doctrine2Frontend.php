@@ -149,7 +149,7 @@ abstract class Doctrine2Frontend extends Controller {
 
 
     /**
-     * Provide array of users for the list action and view action
+     * Provide array of table rows for the list action (and view action)
      *
      * @param int $id The `id` of the row to load for `view` action. `null` if `list` action.
      * @return array
@@ -164,7 +164,11 @@ abstract class Doctrine2Frontend extends Controller {
      */
     public function list() {
         $this->data[ 'data' ]           = $this->listGetData();
+
+        $this->view[ 'listPreamble']    = $this->resolveTemplate( 'list-preamble',  false );
+        $this->view[ 'listPostamble']   = $this->resolveTemplate( 'list-postamble', false );
         $this->view[ 'listScript' ]     = $this->resolveTemplate( 'js/list' );
+
         return $this->display( 'list' );
     }
 
@@ -285,16 +289,19 @@ abstract class Doctrine2Frontend extends Controller {
      * This will also work for subdirectories: e.g. `$tpl = forms/add.phtml` is also valid.
      *
      * @param string $tpl The template to display
-     * @return string|bool The template to use of false if none found
+     * @param bool $quitOnMissing If a template is not found, this normally throws a 404. If this is set to false, the function returns false instead.
+     * @return bool|string The template to use of false if none found
      */
-    protected function resolveTemplate( $tpl ){
+    protected function resolveTemplate( $tpl, $quitOnMissing = true ) {
         if( ViewFacade::exists ( $this->feParams->viewFolderName . "/{$tpl}" ) ) {
             return $this->feParams->viewFolderName . "/{$tpl}";
         } else if( ViewFacade::exists( "frontend/{$tpl}"  ) ) {
             return "frontend/{$tpl}";
         }
 
-        abort(404, "No template exists in frontend or controller's view directory for ".$tpl);
+        if( $quitOnMissing ) {
+            abort( 404, "No template exists in frontend or controller's view directory for " . $tpl );
+        }
 
         return false;
     }
