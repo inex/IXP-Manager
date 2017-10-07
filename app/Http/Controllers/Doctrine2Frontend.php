@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM;
+use D2EM, Route;
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -62,6 +62,11 @@ abstract class Doctrine2Frontend extends Controller {
     protected $view     = null;
 
     /**
+     * @var string
+     */
+    protected static $route_prefix = null;
+
+    /**
      * Column / table data types when displaying data.
      * @var array
      */
@@ -93,6 +98,35 @@ abstract class Doctrine2Frontend extends Controller {
      * This must be overridden.
      */
     abstract protected function feInit();
+
+
+    public static function routes() {
+
+        $class = get_called_class();
+
+        if( $class::$route_prefix ) {
+            $route_prefix = $class::$route_prefix;
+        } else {
+            $route_prefix = kebab_case( substr( class_basename( get_called_class() ), 0, -10 ) );
+        }
+
+        // add leading slash to class name for absolute resolution:
+        $class = '\\' . $class;
+
+        Route::group( [ 'prefix' => $route_prefix ], function() use ( $class ) {
+            Route::get(     'list',        $class . '@list'   );
+            Route::get(     'add',         $class . '@add'    );
+            Route::get(     'edit/{id}',   $class . '@edit'   );
+            Route::get(     'view/{id}',   $class . '@view'   );
+            Route::get(     'delete/{id}', $class . '@delete' );
+            Route::post(    'store',       $class . '@store'  );
+        });
+
+        if( function_exists( 'additionalRoutes' ) ) {
+            self::additionalRoutes( $route_prefix );
+        }
+    }
+
 
     /**
      * Provide array of users for the list action and view action

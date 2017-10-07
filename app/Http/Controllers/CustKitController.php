@@ -116,7 +116,7 @@ class CustKitController extends Doctrine2Frontend {
      *
      * @return View
      */
-    public function addPrepareData( int $id = null ) {
+    public function addPrepareData( $id = null ) {
         /** @var CustomerEquipmentEntity $ce */
         $ce = false;
 

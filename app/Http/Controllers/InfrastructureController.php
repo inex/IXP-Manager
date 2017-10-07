@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Former, Redirect, Validator;
+use Auth, D2EM, Former, Redirect, Route, Validator;
 
 use Illuminate\View\View;
 
@@ -51,7 +51,6 @@ use IXP\Utils\View\Alert\{
 class InfrastructureController extends Doctrine2Frontend {
 
 
-
     /**
      * This function sets up the frontend controller
      */
@@ -66,8 +65,8 @@ class InfrastructureController extends Doctrine2Frontend {
             'titleSingular'     => 'Infrastructure',
             'nameSingular'      => 'an infrastructure',
 
-            'defaultAction'     => 'list',                        // OPTIONAL; defaults to 'list'
-            'defaultController' => 'InfrastructureController',   // OPTIONAL; defaults to 'list'
+            'defaultAction'     => 'list',
+            'defaultController' => 'InfrastructureController',
 
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
@@ -76,7 +75,7 @@ class InfrastructureController extends Doctrine2Frontend {
         ];
 
 
-        switch( Auth::user()->getPrivs() ) {
+        switch( Auth::user() ? Auth::user()->getPrivs() : UserEntity::AUTH_PUBLIC ) {
 
             case UserEntity::AUTH_SUPERUSER:
                 $this->feParams->listColumns = [
@@ -106,10 +105,13 @@ class InfrastructureController extends Doctrine2Frontend {
                 break;
 
             default:
-                abort( 'error/insufficient-permissions' );
+                if( php_sapi_name() !== "cli" ) {
+                    abort( 'error/insufficient-permissions' );
+                }
         }
 
     }
+
 
     /**
      * Provide array of users for the list action and view action

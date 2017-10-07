@@ -119,11 +119,7 @@
 
                                     <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'YES_NO'] ): ?>
 
-                                        <?php if( $t->data[ 'data' ][ $col ] ): ?>
-                                            YES
-                                        <?php else: ?>
-                                            NO
-                                        <?php endif; ?>
+                                        <?= $t->data[ 'data' ][ $col ] ? 'Yes' : 'No' ?>
 
                                     <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
 
