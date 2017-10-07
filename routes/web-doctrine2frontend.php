@@ -8,5 +8,6 @@
 |
 */
 
+IXP\Http\Controllers\CustKitController::routes();
 IXP\Http\Controllers\InfrastructureController::routes();
 

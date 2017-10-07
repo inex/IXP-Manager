@@ -55,7 +55,6 @@ class InfrastructureController extends Doctrine2Frontend {
      * This function sets up the frontend controller
      */
     public function feInit(){
-        //$this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
 
         $this->data[ 'feParams' ] =  $this->feParams = (object)[
 
@@ -101,7 +100,7 @@ class InfrastructureController extends Doctrine2Frontend {
 
 
     /**
-     * Provide array of users for the list action and view action
+     * Provide array of rows for the list action and view action
      *
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
      * @return array
@@ -119,7 +118,6 @@ class InfrastructureController extends Doctrine2Frontend {
      */
     protected function addEditPrepareForm( $id = null ): array {
 
-        /** @var InfrastructureEntity $inf */
         $inf = false;
 
         if( $id !== null ) {

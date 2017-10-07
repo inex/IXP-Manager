@@ -14,27 +14,35 @@ class CustomerEquipment extends EntityRepository{
 
 
     /**
-     * Get all the Customer equipments
+     * Get all CustomerEquipment (or a particular one) for listing on the frontend CRUD
      *
-     * if $id is not null get the customer equipment of the provided ID
+     * @see \IXP\Http\Controllers\Doctrine2Frontend
      *
-     * @param   int     $id ID of customer equipment
-     * @param   array   $feParams array of param to ORDER BY or not
      *
-     * @return  array
+     * @param \stdClass $feParams
+     * @param int|null $id
+     * @return array Array of CustomerEquipment (as associated arrays) (or single element if `$id` passed)
      */
-    public function getAll( $id = null, $feParams ){
-        $dql =  "SELECT ck.id AS id, ck.name AS name, ck.descr AS descr, c.name AS customer, c.id AS custid, cab.name AS cabinet, cab.id AS cabinetid
+    public function getAllForFeList( \stdClass $feParams, int $id = null )
+    {
+        $dql =  "SELECT ck.id AS id, 
+                    ck.name AS name, 
+                    ck.descr AS descr, 
+                    c.name AS customer, 
+                    c.id AS custid, 
+                    cab.name AS cabinet, 
+                    cab.id AS cabinetid
                 FROM Entities\\CustomerEquipment ck
-                LEFT JOIN ck.Customer c
-                LEFT JOIN ck.Cabinet cab ";
+                    LEFT JOIN ck.Customer c
+                    LEFT JOIN ck.Cabinet cab 
+                WHERE 1=1 ";
 
-        if( $id !== null ){
-            $dql .= " WHERE ck.id = ".$id;
+        if( $id ) {
+            $dql .= " AND ck.id = " . (int)$id;
         }
 
-        if( isset( $feParams->listOrderBy ) ){
-            $dql .= " ORDER BY ". $feParams->listOrderBy.' ';
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
             $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
         }
 
