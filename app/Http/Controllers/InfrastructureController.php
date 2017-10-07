@@ -135,7 +135,6 @@ class InfrastructureController extends Doctrine2Frontend {
         }
 
         return [
-            'data'         => $this->data,
             'inf'          => $inf
         ];
     }
