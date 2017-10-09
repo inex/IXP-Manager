@@ -5,6 +5,10 @@ namespace Entities;
 use D2EM;
 use Doctrine\Common\Collections\ArrayCollection;
 
+use Entities\{
+    PatchPanelPort              as PatchPanelPortEntity
+};
+
 /**
  * Entities\PatchPanel
  */
@@ -540,8 +544,16 @@ class PatchPanel
     public function getAvailableForUsePortCount(): int {
         $cnt = 0;
         foreach( $this->patchPanelPorts as $ppp ) {
+            /** @var PatchPanelPortEntity $ppp */
             if( $ppp->isAvailableForUse() ) {
-                $cnt++;
+                if( $ppp->getDuplexMasterPort() ){
+                    if( $ppp->getDuplexMasterPort()->getState() == $ppp->getState() ){
+                        $cnt++;
+                    }
+                }else{
+                    $cnt++;
+                }
+
             }
         }
         return $cnt;
