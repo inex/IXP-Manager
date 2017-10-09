@@ -135,16 +135,24 @@
 
                         <td>
 
-                            <div class="btn-group">
+                            <?php if( $t->view['listRowMenu'] ): ?>
 
-                                <a class="btn btn-sm btn-default" href="<?= action($t->controller.'@view' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
+                                <?= $t->insert( $t->view['listRowMenu'], [ 'row' => $row ] ) ?>
 
-                                <?php if( !isset( $t->data[ 'feParams' ]->readonly ) || !$t->data[ 'feParams' ]->readonly ): ?>
-                                    <a class="btn btn-sm btn-default" href="<?= action($t->controller.'@edit' , [ 'id' => $row[ 'id' ] ] ) ?> " title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
-                                    <a class="btn btn-sm btn-default" id='list-delete-<?= $row[ 'id' ] ?>' href="<?= action($t->controller.'@delete' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Delete"><i class="glyphicon glyphicon-trash"></i></a>
-                                <?php endif;?>
+                            <?php else: ?>
 
-                            </div>
+                                <div class="btn-group">
+
+                                    <a class="btn btn-sm btn-default" href="<?= action($t->controller.'@view' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
+
+                                    <?php if( !isset( $t->data[ 'feParams' ]->readonly ) || !$t->data[ 'feParams' ]->readonly ): ?>
+                                        <a class="btn btn-sm btn-default" href="<?= action($t->controller.'@edit' , [ 'id' => $row[ 'id' ] ] ) ?> " title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                                        <a class="btn btn-sm btn-default" id='list-delete-<?= $row[ 'id' ] ?>' href="<?= action($t->controller.'@delete' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Delete"><i class="glyphicon glyphicon-trash"></i></a>
+                                    <?php endif;?>
+
+                                </div>
+
+                            <?php endif; ?>
 
                         </td>
 

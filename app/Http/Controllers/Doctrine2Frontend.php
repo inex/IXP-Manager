@@ -173,6 +173,7 @@ abstract class Doctrine2Frontend extends Controller {
 
         $this->view[ 'listPreamble']    = $this->resolveTemplate( 'list-preamble',  false );
         $this->view[ 'listPostamble']   = $this->resolveTemplate( 'list-postamble', false );
+        $this->view[ 'listRowMenu']     = $this->resolveTemplate( 'list-row-menu',  false );
         $this->view[ 'listScript' ]     = $this->resolveTemplate( 'js/list' );
 
         return $this->display( 'list' );
