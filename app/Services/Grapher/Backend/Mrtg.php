@@ -154,6 +154,11 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
 
             foreach( $c->getVirtualInterfaces() as $vi ) {
 
+                // we do not include core bundle interfaces here
+                if( $vi->getCoreBundle() !== false ) {
+                    continue;
+                }
+
                 foreach( $vi->getPhysicalInterfaces() as $pi ) {
 
                     if( $pi->getId() > $maxPiID ) {
