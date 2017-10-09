@@ -1,18 +1,19 @@
+
 <div class="panel panel-default" id="core-link-<?= $t->nbLink ?>">
     <div class="panel-heading">
-        <h3 class="panel-title">Link <?= $t->nbLink ?> : </h3>
+        <h3 class="panel-title">Link <?= $t->nbLink ?>: </h3>
     </div>
     <div class="form-horizontal">
         <div class="panel-body">
             <div id="message-<?= $t->nbLink ?>"></div>
             <div class="col-sm-3">
                 <h5>
-                    Side A :
+                    Side A Switch Port<sup>*</sup>:
                 </h5>
                 <hr>
                 <?= Former::select( 'sp-a-'.$t->nbLink )
                     ->id( 'sp-a-'.$t->nbLink )
-                    ->label( 'Switch Port<sup>*</sup>' )
+                    ->label( '' )
                     ->placeholder( 'Choose a switch port' )
                     ->addClass( 'chzn-select' )
                 ?>
@@ -23,12 +24,12 @@
             </div>
             <div class="col-sm-3">
                 <h5>
-                    Side B :
+                    Side B Switch Port<sup>*</sup>:
                 </h5>
                 <hr>
                 <?= Former::select( 'sp-b-'.$t->nbLink )
                     ->id( 'sp-b-'.$t->nbLink )
-                    ->label( 'Switch Port<sup>*</sup>' )
+                    ->label( '' )
                     ->placeholder( 'Choose a switch port' )
                     ->addClass( 'chzn-select' )
                 ?>
@@ -40,7 +41,7 @@
 
             <div class="col-sm-1">
                 <h5>
-                    Enabled :
+                    Enabled:
                 </h5>
                 <hr>
                 <?= Former::checkbox( 'enabled-cl-'.$t->nbLink )
@@ -53,7 +54,7 @@
             <div class="col-sm-1">
                 <?php if( $t->bundleType == \Entities\CoreBundle::TYPE_ECMP ): ?>
                     <h5>
-                        BFD :
+                        BFD:
                     </h5>
                     <hr>
                     <?= Former::checkbox( 'bfd-'.$t->nbLink )
@@ -67,7 +68,7 @@
             <div class="col-sm-3">
                 <?php if( $t->bundleType == \Entities\CoreBundle::TYPE_ECMP ): ?>
                     <h5>
-                        Link SubNet :
+                        Subnet:
                     </h5>
                     <hr>
                     <?= Former::text( 'subnet-'.$t->nbLink )
