@@ -142,6 +142,8 @@
             ->placeholder( 'Choose a switch' )
             ->addClass( 'chzn-select' );
         ?>
+        <?php if( $t->ppp ) : ?><?php if( $t->ppp->getSwitchPort() ) : ?><div  class="label label-info" style="margin-left: 17%"> Was  <?= $t->ppp->getSwitchPort()->getSwitcher()->getName() ?> </div> <br/><br/><?php endif; ?><?php endif; ?>
+
 
         <?= Former::select( 'switch_port' )
             ->label( 'Switch Port' )
@@ -149,6 +151,7 @@
             ->placeholder( 'Choose a switch port' )
             ->addClass( 'chzn-select' );
         ?>
+        <?php if( $t->ppp ) : ?><?php if( $t->ppp->getSwitchPort() ) : ?><span class="label label-info" style="margin-left: 17%"> Was  <?= $t->ppp->getSwitchPort()->getName() ?> </span> <?php endif; ?><?php endif; ?>
     </div>
 
     <?php if ( !$t->prewired ): ?>
@@ -166,6 +169,8 @@
                 ->placeholder( 'Choose a customer' )
                 ->addClass( 'chzn-select' );
             ?>
+
+            <?php if( $t->ppp ) : ?><?php if( $t->ppp->getCustomer() ) : ?><span class="label label-info" style="margin-left: 17%"> Was  <?= $t->ppp->getCustomer()->getName() ?> </span> <?php endif; ?><?php endif; ?>
         </div>
     <?php endif; ?>
 

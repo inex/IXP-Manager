@@ -158,7 +158,11 @@
      */
     function setSwitchPort(){
         let url, datas, option;
-        let switchId        = dd_switch.val();
+        let switchId            = dd_switch.val();
+        let currentSId          = false;
+        let currentSpId         = false;
+        let spOption            = false;
+        let spOptionset         = false;
 
         dd_switch_port.html( "<option value=\"\">Loading please wait</option>\n" ).trigger('change.select2');
 
@@ -175,6 +179,13 @@
                 };
         <?php endif; ?>
 
+        <?php if( $t->ppp ) : ?>
+            <?php if( $t->ppp->getSwitchPort() ) : ?>
+                currentSId = <?= $t->ppp->getSwitchPort()->getSwitcher()->getId() ?>;
+                currentSpId = <?= $t->ppp->getSwitchPort()->getId() ?>;
+                spOption =  `<option value='<?= $t->ppp->getSwitchPort()->getId() ?>' > <?= $t->ppp->getSwitchPort()->getName() ?> ( <?= $t->ppp->getSwitchPort()->resolveType() ?> ) </option>`;
+            <?php endif; ?>
+        <?php endif; ?>
 
         $.ajax( url , {
             data: datas,
@@ -183,7 +194,44 @@
         .done( function( data ) {
             options = "<option value=\"\">Choose a switch port</option>\n";
             $.each( data.listPorts, function( key, value ){
-                options += "<option value=\"" + value.id + "\">" + value.name + " (" + value.type + ")</option>\n";
+
+                if( currentSId && !spOptionset ){
+                    if( currentSId == switchId ){
+                        if( typeof data.listPorts[ key + 1 ] !== 'undefined' ) {
+                            if (currentSpId < data.listPorts[key]['id'] ) {
+                                spOptionset = true;
+                                options += spOption;
+                            }
+                        }
+                    }
+                }
+
+                options += "<option value=\"" + value.id + "\">" + value.name + " (" + value.type + ")</option>\n"
+
+                if( currentSId && !spOptionset ){
+                    if( currentSId == switchId ){
+                        if( typeof data.listPorts[ key + 1 ] !== 'undefined' ){
+                            if( ( currentSpId > data.listPorts[ key ][ 'id' ]   && currentSpId < data.listPorts[ key + 1 ][ 'id' ]  ) ){
+                                spOptionset = true;
+                                options += spOption ;
+                            }
+                        }
+
+                    }
+                }
+
+                if( currentSId && !spOptionset ){
+                    if( currentSId == switchId ){
+                        if( typeof data.listPorts[ key + 1 ] === 'undefined' ) {
+                            if (currentSpId > data.listPorts[key]['id'] ) {
+                                spOptionset = true;
+                                options += spOption;
+                            }
+                        }
+                    }
+                }
+
+
             });
             dd_switch_port.html( options );
         })
