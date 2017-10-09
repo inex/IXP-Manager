@@ -340,7 +340,7 @@ class CoreBundleController extends Common
         foreach( $vis as $side => $vi ){
             /** @var SwitchPortEntity $spa */
             /** @var SwitchPortEntity $spb */
-            if( !( ${ 'sp'.$side } = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( "sp-$side-$clNumber" ) ) ) ) {
+            if( !( ${ 'sp'.$side } = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( "hidden-sp-$side-$clNumber" ) ) ) ) {
                 return Redirect::back()->withInput( Input::all() );
             }
 
