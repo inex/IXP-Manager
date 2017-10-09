@@ -23,21 +23,22 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Former, Redirect, Route, Validator;
-
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
+use Cache, D2EM, Former, Redirect, Validator;
 
 use Entities\{
     Infrastructure      as InfrastructureEntity,
-    User                as UserEntity,
     IXP                 as IXPEntity
 };
 use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
+};
+
+use Repositories\{
+    Infrastructure as InfrastructureRepository
 };
 
 
@@ -50,6 +51,12 @@ use IXP\Utils\View\Alert\{
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class InfrastructureController extends Doctrine2Frontend {
+
+    /**
+     * The object being added / edited
+     * @var InfrastructureEntity
+     */
+    protected $object = null;
 
     /**
      * This function sets up the frontend controller
@@ -81,15 +88,15 @@ class InfrastructureController extends Doctrine2Frontend {
                 'ixf_ix_id' => [
                     'title'    => 'IXF-ID',
                     'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
-                    'subject'  => '<a href="https://db.ix-f.net/api/ixp/%%COL%%" target="_blank">%%COL%%</a>'
+                    'subject'  => '<a href="https://db.ix-f.net/api/ixp/%%COL%%" target="_blank">%%COL%%</a>',
                 ],
 
                 'peeringdb_ix_id' => [
                     'title'    => 'PeeringDB ID',
                     'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
-                    'subject'  => '<a href="https://www.peeringdb.com/api/ix/%%COL%%" target="_blank">%%COL%%</a>'
+                    'subject'  => '<a href="https://www.peeringdb.com/api/ix/%%COL%%" target="_blank">%%COL%%</a>',
                 ],
-            ]
+            ],
         ];
 
         // display the same information in the view as the list
@@ -134,7 +141,7 @@ class InfrastructureController extends Doctrine2Frontend {
         }
 
         return [
-            'inf'          => $inf
+            'inf'          => $inf,
         ];
     }
 
@@ -156,27 +163,28 @@ class InfrastructureController extends Doctrine2Frontend {
         }
 
         if( $request->input( 'id', false ) ) {
-            if( !( $inf = D2EM::getRepository( InfrastructureEntity::class )->find( $request->input( 'id' ) ) ) ) {
+            if( !( $this->object = D2EM::getRepository( InfrastructureEntity::class )->find( $request->input( 'id' ) ) ) ) {
                 abort(404);
             }
         } else {
-            $inf = new InfrastructureEntity;
-            D2EM::persist( $inf );
+            $this->object = new InfrastructureEntity;
+            D2EM::persist( $this->object );
         }
 
-        $inf->setName(              $request->input( 'name'         ) );
-        $inf->setShortname(         $request->input( 'shortname'    ) );
-        $inf->setIxfIxId(           $request->input( 'ixf_ix_id'    ) ? $request->input( 'ixf_ix_id'    ) : null );
-        $inf->setPeeringdbIxId(     $request->input( 'pdb_ixp'      ) ? $request->input( 'pdb_ixp'      ) : null );
-        $inf->setIsPrimary(         $request->input( 'primary'      ) ?? false );
-        $inf->setIXP(               D2EM::getRepository( IXPEntity::class )->getDefault() );
+        $this->object->setName(              $request->input( 'name'         ) );
+        $this->object->setShortname(         $request->input( 'shortname'    ) );
+        $this->object->setIxfIxId(           $request->input( 'ixf_ix_id'    ) ? $request->input( 'ixf_ix_id'    ) : null );
+        $this->object->setPeeringdbIxId(     $request->input( 'pdb_ixp'      ) ? $request->input( 'pdb_ixp'      ) : null );
+        $this->object->setIsPrimary(         $request->input( 'primary'      ) ?? false );
+        $this->object->setIXP(               D2EM::getRepository( IXPEntity::class )->getDefault() );
 
-        D2EM::flush($inf);
+        D2EM::flush($this->object);
 
-        if( $inf->getIsPrimary() ) {
+        if( $this->object->getIsPrimary() ) {
             // reset the rest:
+            /** @var InfrastructureEntity $i */
             foreach( D2EM::getRepository( InfrastructureEntity::class )->findAll() as $i ) {
-                if( $i->getId() == $inf->getId() || !$i->getIsPrimary() ) {
+                if( $i->getId() == $this->object->getId() || !$i->getIsPrimary() ) {
                     continue;
                 }
                 $i->setIsPrimary( false );
@@ -184,7 +192,36 @@ class InfrastructureController extends Doctrine2Frontend {
             D2EM::flush();
         }
 
-        $this->object = $inf;
         return true;
     }
+
+    /**
+     * Overriding optional method to clear cached entries:
+     *
+     * @param string $action Either 'add', 'edit', 'delete'
+     * @return bool
+     */
+    protected function postFlush( string $action ): bool
+    {
+        // wipe cached entries
+        Cache::forget( InfrastructureRepository::CACHE_KEY_PRIMARY );
+        Cache::forget( InfrastructureRepository::CACHE_KEY_ALL     );
+        return true;
+    }
+
+
+
+    /**
+     * @inheritdoc
+     */
+    protected function preDelete(): bool {
+        if( ( $cnt = count( $this->object->getSwitchers() ) ) ) {
+            AlertContainer::push( "Could not delete this infrastructure as {$cnt} switch(es) are assigned to it", Alert::DANGER );
+            return false;
+        }
+
+        return true;
+    }
+
+
 }

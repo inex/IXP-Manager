@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Log, Route;
+use Auth, Cache, D2EM, Log, Route;
 
 use Entities\{
     User as UserEntity
@@ -274,20 +274,48 @@ abstract class Doctrine2Frontend extends Controller {
      */
     public function store( Request $request )
     {
-       $storeResult = $this->doStore( $request );
+        $storeResult = $this->doStore( $request );
 
-       if( $storeResult !== true ) {
-           return $storeResult;
-       }
+        if( $storeResult !== true ) {
+            return $storeResult;
+        }
 
-       $action = $request->input( 'id', '' )  ? "edited" : "added";
+        $action = $request->input( 'id', '' )  ? "edited" : "added";
+        $this->postFlush( $action );
 
-       Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action
-           . ' ' . $this->data['feParams']->nameSingular . ' with ID ' . $this->object->getId() );
-       AlertContainer::push(  $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
-       return redirect()->action( $this->feParams->defaultController . '@' . $this->feParams->defaultAction );
+        Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action
+            . ' ' . $this->data['feParams']->nameSingular . ' with ID ' . $this->object->getId() );
+        AlertContainer::push(  $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
+
+        return redirect()->action( $this->feParams->defaultController . '@' . $this->feParams->defaultAction );
     }
 
+    /**
+     * Optional method to be oiverridden if a D2F controllers needs to perform post-database flush actions
+     *
+     * @param string $action Either 'add', 'edit', 'delete'
+     * @return bool
+     */
+    protected function postFlush( string $action ): bool
+    {
+        return true;
+    }
+
+
+
+    /**
+     * Function which can be over-ridden to perform any pre-deletion tasks
+     *
+     * You can stop the deletion by returning false but you should also add a
+     * message to explain why (to the AlertContainer).
+     *
+     * The object to be deleted is available via `$this->>object`
+     *
+     * @return bool Return false to stop / cancel the deletion
+     */
+    protected function preDelete(): bool {
+        return true;
+    }
 
     /**
      * Delete an object
@@ -296,16 +324,18 @@ abstract class Doctrine2Frontend extends Controller {
      * @return RedirectResponse
      */
     public function delete( $id ) {
-        $entity = $this->feParams->entity;
 
-        if( !( $object = D2EM::getRepository( $entity )->find( $id ) ) ) {
+        if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( $id ) ) ) {
             return abort( '404' );
         }
 
-        D2EM::remove( $object );
-        D2EM::flush();
+        if( $this->preDelete() ) {
+            D2EM::remove( $this->object );
+            D2EM::flush();
+            $this->postFlush( 'delete' );
+            AlertContainer::push( $this->feParams->titleSingular . " deleted.", Alert::SUCCESS );
+        }
 
-        AlertContainer::push(  $this->feParams->titleSingular." deleted." , Alert::SUCCESS );
         return redirect()->action( $this->feParams->defaultController.'@'.$this->feParams->defaultAction );
     }
 
