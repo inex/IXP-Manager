@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Cache, D2EM, Log, Route;
+use Auth, D2EM, Log, Route;
 
 use Entities\{
     User as UserEntity

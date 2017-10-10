@@ -7,24 +7,36 @@
 
             let objectId = $( "#" + this.id).attr( "data-related" );
 
-            bootbox.confirm({
-                message: `Do you really want to delete this object ?` ,
+            let html = `<form id='form-delete' method='POST' action='<?= action($t->controller.'@delete' ) ?>' >
+                            <div>Do you really want to delete this <?= $t->data[ 'feParams' ]->titleSingular ?></div>
+                            <input type='hidden' name="_token" value="<?= csrf_token() ?>">
+                            <input type='hidden' name="id" value="${objectId}">
+                        </form>`;
+
+            let dialog = bootbox.dialog({
+                message: html,
+                title: "Delete action",
+                onEscape: function() {
+                    location.reload();
+                },
                 buttons: {
                     cancel: {
-                        label: 'Cancel',
-                        className: 'btn-primary'
+                        label: '<i class="fa fa-times"></i> Close',
+                        callback: function () {
+                            $('.bootbox.modal').modal('hide');
+
+                            return false;
+                        }
                     },
-                    confirm: {
-                        label: 'Delete',
-                        className: 'btn-danger'
-                    }
-                },
-                callback: function ( result ) {
-                    if( result) {
-                        $( '#form-delete-'+ objectId ).submit();
-                    }
+                    submit: {
+                        label: '<i class="fa fa-times"></i> Submit',
+                        callback: function () {
+                            $('#form-delete').submit();
+                        }
+                    },
                 }
             });
+
 
         });
 
