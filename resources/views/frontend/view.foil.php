@@ -54,15 +54,15 @@
 
                     <?php foreach( $t->data[ 'feParams' ]->viewColumns as $col => $cconf ): ?>
 
-                        <tr>
+                        <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display'] ) || $cconf[ 'display'] ): ?>
 
-                            <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display'] ) || $cconf[ 'display'] ): ?>
+                            <tr>
 
                                 <th>
                                     <?php if( !is_array( $cconf ) ): ?>
-                                        <?= $t->ee( $cconf ) ?>
+                                        <?= $cconf ?>
                                     <?php else: ?>
-                                        <?= $t->ee( $cconf[ 'title' ] ) ?>
+                                        <?= $cconf[ 'title' ] ?>
                                     <?php endif; ?>
                                 </th>
 
@@ -89,7 +89,7 @@
                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'XLATE'] ): ?>
 
                                             <?php if( isset($cconf[ 'xlator'][ $t->data[ 'data' ][ $col ] ]) ): ?>
-                                                <?= $t->ee( $cconf[ 'xlator' ][ $t->data[ 'data' ][ $col] ] ) ?>
+                                                <?= $cconf[ 'xlator' ][ $t->data[ 'data' ][ $col] ] ?>
                                             <?php else: ?>
                                                 <?= $t->ee( $t->data[ 'data' ][ $col ] ) ?>
                                             <?php endif; ?>
@@ -97,25 +97,25 @@
                                         <?php elseif( $cconf[ 'type'] ==  $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
 
                                             <?php if( $t->data[ 'data' ][ $col ] ): ?>
-                                                <?= $t->ee( date('Y-m-d H:M:S', strtotime($t->data[ $col ] ) ) ) ?>
+                                                <?= date('Y-m-d H:M:S', strtotime( $t->data[ $col ] ) ) ?>
                                             <?php endif; ?>
 
                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
 
                                             <?php if ( $t->data[ 'data' ][ $col ] ): ?>
-                                                <?= $t->ee( date('Y-m-d', strtotime( $t->data[ $col ] ) ) ) ?>
+                                                <?= date('Y-m-d', strtotime( $t->data[ $col ] ) ) ?>
                                             <?php endif; ?>
 
                                         <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'TIME'] ): ?>
 
                                             <?php if( $t->data[ 'data' ][ $col ] ): ?>
-                                                <?= $t->ee( date('H:M:S', strtotime($t->data[ $col ] ) ) ) ?>
+                                                <?= date('H:M:S', strtotime($t->data[ $col ] ) ) ?>
                                             <?php endif; ?>
 
                                         <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
 
                                             <?php if( $t->data[ 'data' ][ $col ] ): ?>
-                                                <?= str_replace( '%%COL%%', $t->data[ 'data' ][ $col ] , $cconf[ 'subject' ] ) ?>
+                                                <?= str_replace( '%%COL%%', $t->ee( $t->data[ 'data' ][ $col ] ) , $cconf[ 'subject' ] ) ?>
                                             <?php endif; ?>
 
                                         <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'YES_NO'] ): ?>
@@ -139,9 +139,10 @@
                                     <?php endif; ?>
                                 </td>
 
-                            <?php endif; ?>
+                            </tr>
 
-                        </tr>
+                        <?php endif; ?>
+
 
                     <?php endforeach; ?>
 
