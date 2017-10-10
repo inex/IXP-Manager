@@ -64,7 +64,7 @@
                             <?php if( !is_array( $cconf ) ): ?>
 
                                 <td>
-                                     <?= $row[ $col ] ?>
+                                     <?= $t->ee( $row[ $col ] ) ?>
                                 </td>
 
                             <?php elseif( !isset( $cconf[ 'display'] ) || $cconf[ 'display']  ): ?>
@@ -76,7 +76,7 @@
                                         <?php if( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'HAS_ONE'] ): ?>
 
                                             <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . '/id/' . $row[ $cconf['idField'] ] ) ?>">
-                                                <?= $row[$col] ?>
+                                                <?= $t->ee( $row[$col] ) ?>
                                             </a>
 
                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'XLATE'] ): ?>
@@ -84,7 +84,7 @@
                                             <?php if( isset( $cconf[ 'xlator' ][ $row[ $col ] ] ) ): ?>
                                                 <?= $cconf[ 'xlator' ][ $row.$col ] ?>
                                             <?php else: ?>
-                                                <?= $row[ $col ] ?>
+                                                <?= $t->ee( $row[ $col ] ) ?>
                                             <?php endif; ?>
 
                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'YES_NO'] ): ?>
@@ -93,11 +93,11 @@
 
                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
 
-                                            <?= str_replace( '%%COL%%', $row[ $col ], $cconf[ 'subject' ] ) ?>
+                                            <?= str_replace( '%%COL%%', $t->ee( $row[ $col ] ), $cconf[ 'subject' ] ) ?>
 
                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SPRINTF'] ): ?>
 
-                                            <?= sprintf( $cconf[ 'sprintf' ], $row[ $col ] ) ?>
+                                            <?= sprintf( $cconf[ 'sprintf' ], $t->ee( $row[ $col ] ) ) ?>
 
                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
 
@@ -123,7 +123,7 @@
 
                                     <?php else: ?>
 
-                                        <?= $row[ $col ] ?>
+                                        <?= $t->ee( $row[ $col ] ) ?>
 
                                     <?php endif;  /*  if(isset( $cconf[ 'type'] ) ) */ ?>
 
