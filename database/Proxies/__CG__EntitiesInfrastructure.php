@@ -356,7 +356,7 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function setPeeringdbIxId(int $id): \Entities\Infrastructure
+    public function setPeeringdbIxId($id): \Entities\Infrastructure
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPeeringdbIxId', [$id]);
@@ -378,7 +378,7 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function setIxfIxId(int $id): \Entities\Infrastructure
+    public function setIxfIxId($id): \Entities\Infrastructure
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIxfIxId', [$id]);

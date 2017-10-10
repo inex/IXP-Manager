@@ -4,7 +4,8 @@
         $( 'a[id|="list-delete"]' ).on( 'click', function( event ){
 
             event.preventDefault();
-            url = $(this).attr("href");
+
+            let objectId = $( "#" + this.id).attr( "data-related" );
 
             bootbox.confirm({
                 message: `Do you really want to delete this object ?` ,
@@ -20,7 +21,7 @@
                 },
                 callback: function ( result ) {
                     if( result) {
-                        document.location.href = url;
+                        $( '#form-delete-'+ objectId ).submit();
                     }
                 }
             });

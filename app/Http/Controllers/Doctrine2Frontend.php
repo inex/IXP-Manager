@@ -143,7 +143,7 @@ abstract class Doctrine2Frontend extends Controller {
             Route::get(     'add',         $class . '@add'    );
             Route::get(     'edit/{id}',   $class . '@edit'   );
             Route::get(     'view/{id}',   $class . '@view'   );
-            Route::get(     'delete/{id}', $class . '@delete' );
+            Route::post(    'delete',      $class . '@delete' );
             Route::post(    'store',       $class . '@store'  );
         });
 
@@ -321,12 +321,12 @@ abstract class Doctrine2Frontend extends Controller {
     /**
      * Delete an object
      *
-     * @param int $id ID of the object to delete
+     * @param Request $request
      * @return RedirectResponse
      */
-    public function delete( $id ) {
+    public function delete( Request $request ) {
 
-        if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( $id ) ) ) {
+        if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( $request->input( 'id' ) ) ) ) {
             return abort( '404' );
         }
 
