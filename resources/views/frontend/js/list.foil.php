@@ -1,71 +1,73 @@
 <script>
     $(document).ready(function() {
 
-        $( 'a[id|="list-delete"]' ).on( 'click', function( event ){
+        $( 'a[id|="d2f-list-delete"]' ).on( 'click', function( event ) {
 
             event.preventDefault();
 
-            let objectId = $( "#" + this.id).attr( "data-related" );
+            let objectId = $( "#" + this.id ).attr( "data-object-id" );
 
-            let html = `<form id='form-delete' method='POST' action='<?= action($t->controller.'@delete' ) ?>' >
-                            <div>Do you really want to delete this <?= $t->data[ 'feParams' ]->titleSingular ?></div>
-                            <input type='hidden' name="_token" value="<?= csrf_token() ?>">
-                            <input type='hidden' name="id" value="${objectId}">
+            let html = `<form id="d2f-form-delete" method="POST" action="<?= action($t->controller.'@delete' ) ?>">
+                            <div>Do you really want to delete this <?= $t->data[ 'feParams' ]->nameSingular ?>?</div>
+                            <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                            <input type="hidden" name="id" value="${objectId}">
                         </form>`;
 
-            let dialog = bootbox.dialog({
+            bootbox.dialog({
                 message: html,
-                title: "Delete action",
-                onEscape: function() {
-                    location.reload();
-                },
+                title: "Delete <?= $t->data[ 'feParams' ]->titleSingular ?>",
                 buttons: {
                     cancel: {
                         label: '<i class="fa fa-times"></i> Close',
                         callback: function () {
                             $('.bootbox.modal').modal('hide');
-
                             return false;
                         }
                     },
                     submit: {
-                        label: '<i class="fa fa-times"></i> Submit',
+                        label: 'Submit',
                         callback: function () {
-                            $('#form-delete').submit();
+                            $('#d2f-form-delete').submit();
                         }
                     },
                 }
             });
-
-
         });
 
-        $( '#table-list' ).dataTable({
-            "aLengthMenu": [ [ 10, 25, 50, 100, 500, -1 ], [ 10, 25, 50, 100, 500, "All" ] ],
-            "sDom": "<'row-fluid'<'span6'l><'span6'f>r>t<'row-fluid'<'span6'i><'span6'p>>",
+        let tableList = $( '#table-list' );
+
+        tableList.dataTable({
+
+            "aLengthMenu": [ [ 20, 50, 100, 500, -1 ], [ 20, 50, 100, 500, "All" ] ],
+
             "bAutoWidth": false,
-            <?php $count=0 ?>
-            <?php if( isset( $t->data[ 'feParams']->listOrderBy ) ): ?>
-            <?php foreach( $t->data[ 'feParams']->listColumns as $col => $cconf ): ?>
-            <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display' ] ) || $cconf[ 'display' ] ): ?>
-            <?php if( isset( $t->data[ 'feParams']->listOrderBy ) && $t->data[ 'feParams']->listOrderBy == $col ): ?>
-            'aaSorting': [[ <?= $count ?> , <?php if( isset( $t->data[ 'feParams']->listOrderByDir ) && $t->data[ 'feParams']->listOrderByDir =="DESC" ): ?> 'desc'<?php else: ?> 'asc' <?php endif;?> ]],
-            <?php endif; ?>
-            <?php $count = $count + 1 ?>
-            <?php endif; ?>
-            <?php endforeach; ?>
-            <?php endif; ?>
-            'aoColumns': [
-                <?php foreach( $t->data[ 'feParams']->listColumns as $col => $cconf ): ?>
-                <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display' ] ) || $cconf[ 'display' ] ): ?>
-                null ,
-                <?php endif; ?>
-                <?php endforeach; ?>
+
+            <?php
+                $count = 0;
+                if( isset( $t->data[ 'feParams']->listOrderBy ) ) {
+                    foreach( $t->data[ 'feParams']->listColumns as $col => $cconf ) {
+                        if( !is_array( $cconf ) || !isset( $cconf[ 'display' ] ) || $cconf[ 'display' ] ) {
+                            if( isset( $t->data[ 'feParams' ]->listOrderBy ) && $t->data[ 'feParams' ]->listOrderBy == $col ) { ?>
+                                "aaSorting": [[ <?= $count ?>, "<?= isset( $t->data[ 'feParams' ]->listOrderByDir ) && $t->data[ 'feParams' ]->listOrderByDir == "DESC" ? 'desc' : 'asc' ?>" ]], <?php
+                            } // endif
+                        } // endif
+                        $count++;
+                    } //endforeach
+                } // endif
+            ?>
+
+            "aoColumns": [
+                <?php
+                    foreach( $t->data[ 'feParams']->listColumns as $col => $cconf ) {
+                        if( !is_array( $cconf ) || !isset( $cconf[ 'display' ] ) || $cconf[ 'display' ] ) {
+                            echo "null, ";
+                        }
+                    }
+                ?>
                 { 'bSortable': false, "bSearchable": false, "sWidth": "150px" }
             ]
         });
 
-        $( '#table-list' ).show();
-
+        tableList.show();
     });
 </script>

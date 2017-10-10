@@ -69,7 +69,7 @@ class InfrastructureController extends Doctrine2Frontend {
             'pagetitle'         => 'Infrastructures',
 
             'titleSingular'     => 'Infrastructure',
-            'nameSingular'      => 'an infrastructure',
+            'nameSingular'      => 'infrastructure',
 
             'defaultAction'     => 'list',
             'defaultController' => 'InfrastructureController',
