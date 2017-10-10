@@ -159,6 +159,7 @@
     function setSwitchPort(){
         let url, datas, option;
         let switchId            = dd_switch.val();
+
         let currentSId          = false;
         let currentSpId         = false;
         let spOption            = false;
@@ -181,8 +182,12 @@
 
         <?php if( $t->ppp ) : ?>
             <?php if( $t->ppp->getSwitchPort() ) : ?>
+                // if we edit a ppp and this ppp has a switch port set
+                // we keep the value in order tu use them later
                 currentSId = <?= $t->ppp->getSwitchPort()->getSwitcher()->getId() ?>;
                 currentSpId = <?= $t->ppp->getSwitchPort()->getId() ?>;
+
+                // create the option for the switch port dropdown
                 spOption =  `<option value='<?= $t->ppp->getSwitchPort()->getId() ?>' > <?= $t->ppp->getSwitchPort()->getName() ?> ( <?= $t->ppp->getSwitchPort()->resolveType() ?> ) </option>`;
             <?php endif; ?>
         <?php endif; ?>
@@ -193,24 +198,31 @@
         })
         .done( function( data ) {
             options = "<option value=\"\">Choose a switch port</option>\n";
+
             $.each( data.listPorts, function( key, value ){
 
+                // if we have a switch port foe the ppp and we did not already insert the option ( let spOption ) in the select
                 if( currentSId && !spOptionset ){
+                    // if the selected switch egal the the ppp switch
                     if( currentSId == switchId ){
-                        if( typeof data.listPorts[ key + 1 ] !== 'undefined' ) {
-                            if (currentSpId < data.listPorts[key]['id'] ) {
-                                spOptionset = true;
-                                options += spOption;
-                            }
+                        // if the switch port ID setted to the pppp in lower than the first Switch port id of the list We need to insert the option ( spOption ) at the first position in the select
+                        if (currentSpId < data.listPorts[key]['id'] ) {
+                            spOptionset = true;
+                            options += spOption;
                         }
+
                     }
                 }
 
                 options += "<option value=\"" + value.id + "\">" + value.name + " (" + value.type + ")</option>\n"
 
+                // if we have a switch port foe the ppp and we did not already insert the option ( let spOption ) in the select
                 if( currentSId && !spOptionset ){
+                    // if the selected switch egal the the ppp switch
                     if( currentSId == switchId ){
+                        // check if it is not the last value of the list of switch port ( data.listPorts )
                         if( typeof data.listPorts[ key + 1 ] !== 'undefined' ){
+                            // if the switch port ID setted to the ppp is greather than the current Switch port id of the list and lower than the next Switch port id we have to insert the option here
                             if( ( currentSpId > data.listPorts[ key ][ 'id' ]   && currentSpId < data.listPorts[ key + 1 ][ 'id' ]  ) ){
                                 spOptionset = true;
                                 options += spOption ;
@@ -220,9 +232,13 @@
                     }
                 }
 
+                // if we have a switch port foe the ppp and we did not already insert the option ( let spOption ) in the select
                 if( currentSId && !spOptionset ){
+                    // if the selected switch egal the the ppp switch
                     if( currentSId == switchId ){
+                        // If it is the last switch port of the list ( data.listPorts )
                         if( typeof data.listPorts[ key + 1 ] === 'undefined' ) {
+                            // if the switch port ID setted to the ppp is greather the current Switch port id of the list we insert here
                             if (currentSpId > data.listPorts[key]['id'] ) {
                                 spOptionset = true;
                                 options += spOption;
@@ -233,6 +249,15 @@
 
 
             });
+
+            // if we in edit mode with a switch port set to the ppp
+            if( currentSId ){
+                // if the list of port was empty we have to insert the option
+                if( data.listPorts.length === 0 ){
+                    options += spOption
+                }
+            }
+
             dd_switch_port.html( options );
         })
         .fail( function() {
