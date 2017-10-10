@@ -293,6 +293,13 @@
         ->value( $t->ppp->getPatchPanel()->getId() )
     ?>
 
+    <?php if ( $t->prewired ): ?>
+        <?= Former::hidden( 'state' )
+            ->id( 'state' )
+            ->value( $t->ppp->getState() )
+        ?>
+    <?php endif; ?>
+
     <?=Former::actions( Former::primary_submit( 'Save Changes' ),
         Former::default_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) ),
         Former::success_button( 'Help' )->id( 'help-btn' )
