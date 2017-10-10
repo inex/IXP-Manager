@@ -271,7 +271,7 @@ class PatchPanel
     /**
      * Get patchPanelPorts
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|\Entities\PatchPanelPort[]
      */
     public function getPatchPanelPorts()
     {
@@ -543,19 +543,18 @@ class PatchPanel
      */
     public function getAvailableForUsePortCount(): int {
         $cnt = 0;
-        foreach( $this->patchPanelPorts as $ppp ) {
-            /** @var PatchPanelPortEntity $ppp */
-            if( $ppp->isAvailableForUse() ) {
-                if( $ppp->getDuplexMasterPort() ){
-                    if( $ppp->getDuplexMasterPort()->getState() == $ppp->getState() ){
-                        $cnt++;
-                    }
-                }else{
+        foreach( $this->getPatchPanelPorts() as $ppp ) {
+
+            if( $ppp->getDuplexMasterPort() ) {
+                if( $ppp->getDuplexMasterPort()->isAvailableForUse() ) {
                     $cnt++;
                 }
-
+            } else if( $ppp->isAvailableForUse() ) {
+                $cnt++;
             }
+
         }
+
         return $cnt;
     }
 
