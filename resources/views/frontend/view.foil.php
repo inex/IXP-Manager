@@ -60,9 +60,9 @@
 
                                 <th>
                                     <?php if( !is_array( $cconf ) ): ?>
-                                        <?= $cconf ?>
+                                        <?= $t->ee( $cconf ) ?>
                                     <?php else: ?>
-                                        <?= $cconf[ 'title' ] ?>
+                                        <?= $t->ee( $cconf[ 'title' ] ) ?>
                                     <?php endif; ?>
                                 </th>
 
@@ -75,7 +75,7 @@
                                         <?php if( $t->data[ 'data' ][ $col ] == false ): ?>
                                             0
                                         <?php else: ?>
-                                            <?= $t->data[ 'data' ][ $col ] ?>
+                                            <?= $t->ee( $t->data[ 'data' ][ $col ] ) ?>
                                         <?php endif; ?>
 
                                     <?php elseif( isset( $cconf[ 'type' ] ) ): ?>
@@ -83,33 +83,33 @@
                                         <?php if( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'HAS_ONE'] ): ?>
 
                                             <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . '/id/' . $t->data[ 'data' ][ $cconf['idField'] ] ) ?>">
-                                                <?= $t->data[ 'data' ][ $col ] ?>
+                                                <?= $t->ee( $t->data[ 'data' ][ $col ] ) ?>
                                             </a>
 
                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'XLATE'] ): ?>
 
                                             <?php if( isset($cconf[ 'xlator'][ $t->data[ 'data' ][ $col ] ]) ): ?>
-                                                <?= $cconf[ 'xlator' ][ $t->data[ 'data' ][ $col] ] ?>
+                                                <?= $t->ee( $cconf[ 'xlator' ][ $t->data[ 'data' ][ $col] ] ) ?>
                                             <?php else: ?>
-                                                <?= $t->data[ 'data' ][ $col ] ?>
+                                                <?= $t->ee( $t->data[ 'data' ][ $col ] ) ?>
                                             <?php endif; ?>
 
                                         <?php elseif( $cconf[ 'type'] ==  $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
 
                                             <?php if( $t->data[ 'data' ][ $col ] ): ?>
-                                                <?= date('Y-m-d H:M:S', strtotime($t->data[ $col ] ) ) ?>
+                                                <?= $t->ee( date('Y-m-d H:M:S', strtotime($t->data[ $col ] ) ) ) ?>
                                             <?php endif; ?>
 
                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
 
                                             <?php if ( $t->data[ 'data' ][ $col ] ): ?>
-                                                <?= date('Y-m-d', strtotime( $t->data[ $col ] ) ) ?>
+                                                <?= $t->ee( date('Y-m-d', strtotime( $t->data[ $col ] ) ) ) ?>
                                             <?php endif; ?>
 
                                         <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'TIME'] ): ?>
 
                                             <?php if( $t->data[ 'data' ][ $col ] ): ?>
-                                                <?= date('H:M:S', strtotime($t->data[ $col ] ) ) ?>
+                                                <?= $t->ee( date('H:M:S', strtotime($t->data[ $col ] ) ) ) ?>
                                             <?php endif; ?>
 
                                         <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
@@ -134,7 +134,7 @@
 
                                     <?php else: ?>
 
-                                        <?= $t->data[ 'data' ][ $col ] ?>
+                                        <?= $t->ee( $t->data[ 'data' ][ $col ] ) ?>
 
                                     <?php endif; ?>
                                 </td>
