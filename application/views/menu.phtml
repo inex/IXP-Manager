@@ -47,6 +47,10 @@
             </li>
         {/if}
 
+        <li {if $controller eq 'cust-kit'}class="active"{/if}>
+            <a href="{genUrl controller='cust-kit2' action='list'}">new Colocated Equipment</a>
+        </li>
+
     {if not isset( $options['frontend']['disabled']['meeting'] ) or not $options['frontend']['disabled']['meeting'] }
             <li {if $controller eq 'meeting' and $controller neq 'meeting-item' and $action neq 'read'}class="active"{/if}>
                 <a href="{genUrl controller='meeting' action='list'}">Meetings</a>

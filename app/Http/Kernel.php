@@ -15,9 +15,9 @@ class Kernel extends HttpKernel {
      */
     protected $middleware = [
         \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
-        \IXP\Http\Middleware\UrlResolver::class,
+        Middleware\UrlResolver::class,
         \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
-        \IXP\Http\Middleware\TrimStrings::class,
+        Middleware\TrimStrings::class,
         \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
     ];
 
@@ -28,32 +28,42 @@ class Kernel extends HttpKernel {
      */
     protected $middlewareGroups = [
         'web' => [
-            \IXP\Http\Middleware\EncryptCookies::class,
+            Middleware\EncryptCookies::class,
             \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
             \Illuminate\Session\Middleware\StartSession::class,
             \Illuminate\View\Middleware\ShareErrorsFromSession::class,
-            \IXP\Http\Middleware\VerifyCsrfToken::class,
+            Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            Middleware\ControllerEnabled::class,
         ],
 
         'public/api/v4' => [
             'throttle:60,1',
             'bindings',
-            'apimaybeauth'
+            'apimaybeauth',
+            Middleware\ControllerEnabled::class,
         ],
 
         'api/v4' => [
             'throttle:60,1',
             'bindings',
-            'apiauth'
+            'apiauth',
+            Middleware\ControllerEnabled::class,
+        ],
+
+        'd2frontend' => [
+            'web',
+            'doctrine2frontend',
         ],
 
         'grapher' => [
-            \IXP\Http\Middleware\Services\Grapher::class,
+            Middleware\ControllerEnabled::class,
+            Middleware\Services\Grapher::class,
         ],
 
         'lookingglass' => [
-            \IXP\Http\Middleware\Services\LookingGlass::class,
+            Middleware\ControllerEnabled::class,
+            Middleware\Services\LookingGlass::class,
         ],
     ];
 
@@ -63,18 +73,20 @@ class Kernel extends HttpKernel {
      * @var array
      */
     protected $routeMiddleware = [
-        'auth'       => \IXP\Http\Middleware\Authenticate::class,
+        'auth'       => Middleware\Authenticate::class,
         'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
         'bindings'   => \Illuminate\Routing\Middleware\SubstituteBindings::class,
         'can'        => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest'      => \IXP\Http\Middleware\RedirectIfAuthenticated::class,
+        'guest'      => Middleware\RedirectIfAuthenticated::class,
         'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
 
-        'apiauth'          => \IXP\Http\Middleware\ApiAuthenticate::class,
-        'apimaybeauth'     => \IXP\Http\Middleware\ApiMaybeAuthenticate::class,
-        'assert.privilege' => \IXP\Http\Middleware\AssertUserPrivilege::class,
-        'grapher'          => \IXP\Http\Middleware\Services\Grapher::class,
-        'patch-panel-port' => \IXP\Http\Middleware\PatchPanelPort::class,
+        'apiauth'            => Middleware\ApiAuthenticate::class,
+        'apimaybeauth'       => Middleware\ApiMaybeAuthenticate::class,
+        'assert.privilege'   => Middleware\AssertUserPrivilege::class,
+        'controller-enabled' => Middleware\ControllerEnabled::class,
+        'doctrine2frontend'  => Middleware\Doctrine2Frontend::class,
+        'grapher'            => Middleware\Services\Grapher::class,
+        'patch-panel-port'   => Middleware\PatchPanelPort::class,
     ];
 
 }
