@@ -3,6 +3,9 @@
     let dd_ixp = $( '#ixf_ix_id' );
     let dd_pdb = $( '#pdb_ixp' );
 
+    let ixp_req_finish = false;
+    let pdb_req_finish = false;
+
     $(document).ready(function() {
 
         $.ajax( "<?= url('api/v4/ix-f/ixp') ?>" )
@@ -31,6 +34,11 @@
             })
             .always( function() {
                 dd_ixp.trigger( "changed.select2" );
+                ixp_req_finish = true;
+
+                if( pdb_req_finish ){
+                    $( '#btn-submit' ).prop('disabled', false);
+                }
             });
 
 
@@ -59,6 +67,11 @@
             })
             .always( function() {
                 dd_pdb.trigger( "changed.select2" );
+                pdb_req_finish = true;
+
+                if( ixp_req_finish ){
+                    $( '#btn-submit' ).prop('disabled', false);
+                }
             });
     });
 
