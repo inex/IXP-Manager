@@ -41,7 +41,7 @@
                         <th>
                             Peering Port
                         </th>
-                        <?php if( $t->resellerMode() && !$t->cb ): ?>
+                        <?php if( $t->resellerMode() && !$t->cb && $t->vi->getCustomer()->isResoldCustomer() ): ?>
                             <th>
                                 Fanout Port
                             </th>
@@ -88,7 +88,7 @@
 
                             </td>
 
-                            <?php if( $t->resellerMode() && !$t->cb ): ?>
+                            <?php if( $t->resellerMode() && !$t->cb && $t->vi->getCustomer()->isResoldCustomer() ): ?>
                                 <td>
                                     <?php if ( $pi->getSwitchPort()->getType() == \Entities\SwitchPort::TYPE_FANOUT ): ?>
                                         <?= $pi->getSwitchPort()->getSwitcher()->getName() ?> :: <?= $pi->getSwitchPort()->getIfName() ?>

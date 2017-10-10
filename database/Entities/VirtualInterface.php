@@ -702,7 +702,7 @@ class VirtualInterface
      *
      * @return \Entities\CoreBundle
      */
-    public function getCoreBundle( ) {
+    public function getCoreBundle() {
         /** @var PhysicalInterface $pi */
         foreach( $this->getPhysicalInterfaces() as $pi ) {
             if( $ci = $pi->getCoreInterface() ) {

@@ -154,6 +154,11 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
 
             foreach( $c->getVirtualInterfaces() as $vi ) {
 
+                // we do not include core bundle interfaces here
+                if( $vi->getCoreBundle() !== false ) {
+                    continue;
+                }
+
                 foreach( $vi->getPhysicalInterfaces() as $pi ) {
 
                     if( $pi->getId() > $maxPiID ) {
@@ -195,7 +200,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                     $data['infraports'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ][] = $pi->getId();
                     $data['ixpports'][] = $pi->getId();
 
-                    $maxbytes = $pi->resolveSpeed() * 1000000 / 8; // Mbps * bps / to bytes
+                    $maxbytes = $pi->resolveDetectedSpeed() * 1000000 / 8; // Mbps * bps / to bytes
                     $data['swports_maxbytes'   ][ $pi->getSwitchPort()->getSwitcher()->getId() ] += $maxbytes;
                     $data['infraports_maxbytes'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ] += $maxbytes;
                     $data['ixpports_maxbytes'] += $maxbytes;
@@ -218,7 +223,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                             $data['swports_maxbytes'][$switch->getId()] = 0;
                         }
 
-                        $data['swports_maxbytes'][$switch->getId()] += ( ( $pi->resolveSpeed() > 0 ) ? $pi->resolveSpeed() : 1 ) * 1000000 / 8;
+                        $data['swports_maxbytes'][$switch->getId()] += ( ( $pi->resolveDetectedSpeed() > 0 ) ? $pi->resolveDetectedSpeed() : 1 ) * 1000000 / 8;
                     }
                 }
             }

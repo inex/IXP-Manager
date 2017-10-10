@@ -61,12 +61,24 @@ use IXP\Utils\View\Alert\Container as AlertContainer;
  */
 class CoreBundleController extends Common
 {
+
+    public function __construct() {
+
+        if( !config( 'ixp_fe.frontend.beta.core_bundles', false ) ) {
+            AlertContainer::push( 'The core bundle functionality is not ready for production use.', Alert::DANGER );
+            Redirect::to('')->send();
+        }
+
+    }
+
     /**
      * Display the core bundles list
      *
      * @return  View
      */
     public function list(): View {
+        AlertContainer::push( 'The core bundle functionality is not ready for production use.', Alert::DANGER );
+
         return view( 'interfaces/core-bundle/list' )->with([
             'cbs'       => D2EM::getRepository( CoreBundleEntity::class )->findAll( )
         ]);
@@ -328,7 +340,7 @@ class CoreBundleController extends Common
         foreach( $vis as $side => $vi ){
             /** @var SwitchPortEntity $spa */
             /** @var SwitchPortEntity $spb */
-            if( !( ${ 'sp'.$side } = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( "sp-$side-$clNumber" ) ) ) ) {
+            if( !( ${ 'sp'.$side } = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( "hidden-sp-$side-$clNumber" ) ) ) ) {
                 return Redirect::back()->withInput( Input::all() );
             }
 
