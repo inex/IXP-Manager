@@ -161,6 +161,15 @@ abstract class Doctrine2Frontend extends Controller {
      */
     abstract protected function listGetData( $id = null );
 
+    /**
+     * Function which can be over-ridden to perform any pre-list tasks
+     *
+     * E.g. adding elements to $this->view for the pre/post-amble templates.
+     *
+     * @return void
+     */
+    protected function preList() {}
+
 
     /**
      * List the contents of a database table.
@@ -175,6 +184,8 @@ abstract class Doctrine2Frontend extends Controller {
         $this->view[ 'listPostamble']   = $this->resolveTemplate( 'list-postamble', false );
         $this->view[ 'listRowMenu']     = $this->resolveTemplate( 'list-row-menu',  false );
         $this->view[ 'listScript' ]     = $this->resolveTemplate( 'js/list' );
+
+        $this->preList();
 
         return $this->display( 'list' );
     }
