@@ -485,7 +485,7 @@ class Switcher extends EntityRepository
     public function getAllVlan( int $id ): array {
 
         /** @noinspection SqlNoDataSourceInspection */
-        $dql = "SELECT vl.name, vl.private, vl.number
+        $dql = "SELECT vl.name, vl.private, vl.number, vl.config_name
                     FROM Entities\\VlanInterface vli
                     LEFT JOIN vli.Vlan vl
                     LEFT JOIN vli.VirtualInterface vi
@@ -687,7 +687,7 @@ class Switcher extends EntityRepository
     public function getAllVlansInInfrastructure( int $id ): array {
 
         /** @noinspection SqlNoDataSourceInspection */
-        $dql = "SELECT vl.name, vl.number as tag, vl.private
+        $dql = "SELECT vl.name, vl.number as tag, vl.private, vl.config_name
                     FROM Entities\\Infrastructure inf
                         LEFT JOIN inf.Switchers s
                         LEFT JOIN inf.Vlans vl
