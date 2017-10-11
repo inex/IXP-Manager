@@ -131,29 +131,27 @@ class CabinetController extends Doctrine2Frontend {
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
-        $c = false;
-
         if( $id !== null ) {
-            /** @var CabinetEntity $c */
-            if( !( $c = D2EM::getRepository( CabinetEntity::class )->find( $id ) ) ) {
+
+            if( !( $this->object = D2EM::getRepository( CabinetEntity::class )->find( $id ) ) ) {
                 abort(404);
             }
 
             Former::populate([
-                'name'                  => $c->getName(),
-                'location'              => $c->getLocation()->getId(),
-                'colocation'            => $c->getCololocation(),
-                'type'                  => $c->getType(),
-                'height'                => $c->getHeight(),
-                'u-count'               => $c->getUCountsFrom(),
-                'notes'                 => $c->getNotes(),
+                'name'                  => $this->object->getName(),
+                'location'              => $this->object->getLocation()->getId(),
+                'colocation'            => $this->object->getCololocation(),
+                'type'                  => $this->object->getType(),
+                'height'                => $this->object->getHeight(),
+                'u-count'               => $this->object->getUCountsFrom(),
+                'notes'                 => $this->object->getNotes(),
             ]);
         }
 
         return [
-            'c'             => $c,
-            'locations'     => D2EM::getRepository( LocationEntity::class )->getAsArray(),
-            'u-count-from'  => D2EM::getRepository( LocationEntity::class )->getAsArray(),
+            'object'                => $this->object,
+            'locations'             => D2EM::getRepository( LocationEntity::class )->getAsArray(),
+            'u-count-from'          => D2EM::getRepository( LocationEntity::class )->getAsArray(),
         ];
     }
 
@@ -170,7 +168,7 @@ class CabinetController extends Doctrine2Frontend {
             'location'              => 'required|integer|exists:Entities\Location,id',
             'colocation'            => 'required|string|max:255',
             'height'                => 'nullable|integer',
-            'location'              => 'required|integer|in:' . implode( ',', array_keys( CabinetEntity::$U_COUNTS_FROM ) ),
+            'u-count'               => 'required|integer|in:' . implode( ',', array_keys( CabinetEntity::$U_COUNTS_FROM ) ),
         ]);
 
         if( $validator->fails() ) {
@@ -192,7 +190,7 @@ class CabinetController extends Doctrine2Frontend {
         $this->object->setHeight(            $request->input( 'height'          ) );
         $this->object->setUCountsFrom(       $request->input( 'u-count'         ) );
         $this->object->setNotes(             $request->input( 'notes'           ) );
-        $this->object->setLocation(         D2EM::getRepository( LocationEntity::class )->find( $request->input( 'location' ) ) );
+        $this->object->setLocation(          D2EM::getRepository( LocationEntity::class )->find( $request->input( 'location' ) ) );
 
         D2EM::flush($this->object);
 

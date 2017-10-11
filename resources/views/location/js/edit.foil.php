@@ -10,8 +10,8 @@
                 let selectedpdb, selectNow;
                 let options = `<option value=''>Choose the matching PeeringDB Facility...</option>\n`;
 
-                <?php if( $t->params[ 'l' ] && $t->params[ 'l' ]->getPdbFacilityId() ): ?>
-                    selectedpdb = <?= $t->params[ 'l' ]->getPdbFacilityId() ?>;
+                <?php if( $t->params[ 'object' ] && $t->params[ 'object' ]->getPdbFacilityId() ): ?>
+                    selectedpdb = <?= $t->params[ 'object' ]->getPdbFacilityId() ?>;
                 <?php else: ?>
                     selectedpdb = false;
                 <?php endif; ?>

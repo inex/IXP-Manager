@@ -58,7 +58,7 @@
     ?>
 
     <?= Former::hidden( 'id' )
-        ->value( $t->params[ 'c'] ? $t->params[ 'c']->getId() : '' )
+        ->value( $t->params[ 'object'] ? $t->params[ 'object']->getId() : '' )
     ?>
 
     <?= Former::close() ?>

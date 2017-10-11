@@ -43,6 +43,11 @@ use Illuminate\Http\RedirectResponse;
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CustKitController extends Doctrine2Frontend {
+    /**
+     * The object being added / edited
+     * @var CustomerEquipmentEntity
+     */
+    protected $object = null;
 
     /**
      * This function sets up the frontend controller
@@ -118,27 +123,24 @@ class CustKitController extends Doctrine2Frontend {
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
-
-        $ck = false;
-
         if( $id != null ) {
 
-            if( !( $ck = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $id ) ) ) {
+            if( !( $this->object = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $id ) ) ) {
                 abort(404);
             }
 
             Former::populate([
-                'name'                  => $ck->getName(),
-                'cust'                  => $ck->getCustomer()->getId(),
-                'cabinet'               => $ck->getCabinet()->getId(),
-                'description'           => $ck->getDescr(),
+                'name'                  => $this->object ->getName(),
+                'cust'                  => $this->object ->getCustomer()->getId(),
+                'cabinet'               => $this->object ->getCabinet()->getId(),
+                'description'           => $this->object ->getDescr(),
             ]);
         }
 
         return [
-            'ck'       => $ck,
-            'cabinets' => D2EM::getRepository( CabinetEntity::class )->getAsArray(),
-            'custs'    => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
+            'object'        => $this->object ,
+            'cabinets'      => D2EM::getRepository( CabinetEntity::class )->getAsArray(),
+            'custs'         => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
         ];
     }
 

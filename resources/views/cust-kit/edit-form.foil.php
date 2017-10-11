@@ -39,7 +39,7 @@
     ?>
 
     <?= Former::hidden( 'id' )
-        ->value( $t->params[ 'ck'] ? $t->params[ 'ck']->getId() : '' )
+        ->value( $t->params[ 'object'] ? $t->params[ 'object']->getId() : '' )
     ?>
 
     <?= Former::close() ?>

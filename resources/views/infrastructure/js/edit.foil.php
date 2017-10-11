@@ -13,8 +13,8 @@
                 let selectedixp, selectNow;
                 let options = `<option value=''>Choose the matching IX-F IXP...</option>\n`;
 
-                <?php if( $t->params[ 'inf' ] && $t->params[ 'inf' ]->getIxfIxId() ): ?>
-                    selectedixp = <?= $t->params[ 'inf' ]->getIxfIxId() ?>;
+                <?php if( $t->params[ 'object' ] && $t->params[ 'object' ]->getIxfIxId() ): ?>
+                    selectedixp = <?= $t->params[ 'object' ]->getIxfIxId() ?>;
                 <?php else: ?>
                     selectedixp = false;
                 <?php endif; ?>
@@ -47,8 +47,8 @@
                 let selectedpdb, selectNow;
                 let options = `<option value=''>Choose the matching PeeringDB IXP...</option>\n`;
 
-                <?php if( $t->params[ 'inf' ] && $t->params[ 'inf' ]->getPeeringdbIxId() ): ?>
-                    selectedpdb = <?= $t->params[ 'inf' ]->getPeeringdbIxId() ?>;
+                <?php if( $t->params[ 'object' ] && $t->params[ 'object' ]->getPeeringdbIxId() ): ?>
+                    selectedpdb = <?= $t->params[ 'object' ]->getPeeringdbIxId() ?>;
                 <?php else: ?>
                     selectedpdb = false;
                 <?php endif; ?>

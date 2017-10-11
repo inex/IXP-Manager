@@ -119,31 +119,28 @@ class LocationController extends Doctrine2Frontend {
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
-        $l = false;
-
         if( $id != null ) {
-            /** @var LocationEntity $l */
-            if( !( $l = D2EM::getRepository( LocationEntity::class )->find( $id ) ) ) {
+            if( !( $this->object = D2EM::getRepository( LocationEntity::class )->find( $id ) ) ) {
                 abort(404);
             }
 
             Former::populate([
-                'name'                  => $l->getName(),
-                'shortname'             => $l->getShortname(),
-                'tag'                   => $l->getTag(),
-                'address'               => $l->getAddress(),
-                'nocphone'              => $l->getNocphone(),
-                'nocfax'                => $l->getNocfax(),
-                'nocemail'              => $l->getNocemail(),
-                'officephone'           => $l->getOfficephone(),
-                'officefax'             => $l->getOfficefax(),
-                'officeemail'           => $l->getOfficeemail(),
-                'notes'                 => $l->getNotes(),
+                'name'                  => $this->object->getName(),
+                'shortname'             => $this->object->getShortname(),
+                'tag'                   => $this->object->getTag(),
+                'address'               => $this->object->getAddress(),
+                'nocphone'              => $this->object->getNocphone(),
+                'nocfax'                => $this->object->getNocfax(),
+                'nocemail'              => $this->object->getNocemail(),
+                'officephone'           => $this->object->getOfficephone(),
+                'officefax'             => $this->object->getOfficefax(),
+                'officeemail'           => $this->object->getOfficeemail(),
+                'notes'                 => $this->object->getNotes(),
             ]);
         }
 
         return [
-            'l'       => $l,
+            'object'       => $this->object,
         ];
     }
 

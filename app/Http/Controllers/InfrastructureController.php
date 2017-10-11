@@ -124,24 +124,21 @@ class InfrastructureController extends Doctrine2Frontend {
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
-
-        $inf = false;
-
         if( $id !== null ) {
 
-            if( !( $inf = D2EM::getRepository( InfrastructureEntity::class )->find( $id) ) ) {
+            if( !( $this->object = D2EM::getRepository( InfrastructureEntity::class )->find( $id) ) ) {
                 abort(404);
             }
 
             Former::populate([
-                'name'             => $inf->getName(),
-                'shortname'        => $inf->getShortname(),
-                'isPrimary'        => $inf->getIsPrimary() ?? false,
+                'name'             => $this->object->getName(),
+                'shortname'        => $this->object->getShortname(),
+                'isPrimary'        => $this->object->getIsPrimary() ?? false,
             ]);
         }
 
         return [
-            'inf'          => $inf,
+            'object'          => $this->object,
         ];
     }
 
