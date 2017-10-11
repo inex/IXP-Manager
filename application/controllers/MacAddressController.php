@@ -42,7 +42,7 @@ class MacAddressController extends IXP_Controller_FrontEnd
     
         $this->view->feParams = $this->_feParams = (object)[
             'entity'        => '\\Entities\\MacAddress',
-            'pagetitle'     => 'Known MAC Addresses',
+            'pagetitle'     => 'Discovered MAC Addresses',
     
             'titleSingular' => 'MAC Address',
             'nameSingular'  => 'a MAC address',

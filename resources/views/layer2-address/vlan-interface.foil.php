@@ -10,7 +10,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <li>
-        Layer2 Address Management
+        Configured MAC Address Management
     </li>
 
     <span class="pull-right">
@@ -26,7 +26,10 @@
 <?php $this->section( 'content' ) ?>
     <?= $t->alerts() ?>
     <div class="well">
-        <h3>Layer2 Address Management for <?= $t->ee( $t->vli->getVirtualInterface()->getCustomer()->getName() ) ?>'s VLAN Interface:</h3>
+        <h3>
+            Configured MAC Address Management
+            <small>for <?= $t->ee( $t->vli->getVirtualInterface()->getCustomer()->getName() ) ?>'s VLAN Interface:</small>
+        </h3>
 
         <dl>
             <dt>VLAN</dt>
