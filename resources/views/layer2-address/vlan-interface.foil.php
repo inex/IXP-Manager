@@ -88,3 +88,4 @@
     <?= $t->insert( 'layer2-address/js/clipboard' ); ?>
     <?= $t->insert( 'layer2-address/js/vlan-interface' ); ?>
 <?php $this->append() ?>
+
