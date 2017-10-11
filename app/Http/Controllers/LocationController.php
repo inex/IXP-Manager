@@ -159,6 +159,8 @@ class LocationController extends Doctrine2Frontend {
             'name'              => 'required|string|max:255',
             'shortname'         => 'required|string|max:255',
             'tag'               => 'required|string|max:255',
+            'nocemail'          => 'nullable|email',
+            'officeemail'       => 'nullable|email',
         ]);
 
         if( $validator->fails() ) {
@@ -166,31 +168,30 @@ class LocationController extends Doctrine2Frontend {
         }
 
         if( $request->input( 'id', false ) ) {
-            if( !( $l = D2EM::getRepository( LocationEntity::class )->find( $request->input( 'id' ) ) ) ) {
+            if( !( $this->object = D2EM::getRepository( LocationEntity::class )->find( $request->input( 'id' ) ) ) ) {
                 abort(404);
             }
         } else {
-            $l = new LocationEntity;
-            D2EM::persist( $l );
+            $this->object = new LocationEntity;
+            D2EM::persist( $this->object );
         }
 
-        $l->setName(            $request->input( 'name'             ) );
-        $l->setShortname(       $request->input( 'shortname'        ) );
-        $l->setTag(             $request->input( 'tag'              ) );
-        $l->setTag(             $request->input( 'tag'              ) );
-        $l->setAddress(         $request->input( 'address'          ) );
-        $l->setNocphone(        $request->input( 'nocphone'         ) );
-        $l->setNocfax(          $request->input( 'nocfax'           ) );
-        $l->setNocemail(        $request->input( 'nocemail'         ) );
-        $l->setOfficephone(     $request->input( 'officephone'      ) );
-        $l->setOfficefax(       $request->input( 'officefax'        ) );
-        $l->setOfficeemail(     $request->input( 'officeemail'      ) );
-        $l->setNotes(           $request->input( 'notes'            ) );
-        $l->setPdbFacilityId(   $request->input( 'pdb_facility_id'  ) );
+        $this->object->setName(            $request->input( 'name'             ) );
+        $this->object->setShortname(       $request->input( 'shortname'        ) );
+        $this->object->setTag(             $request->input( 'tag'              ) );
+        $this->object->setTag(             $request->input( 'tag'              ) );
+        $this->object->setAddress(         $request->input( 'address'          ) );
+        $this->object->setNocphone(        $request->input( 'nocphone'         ) );
+        $this->object->setNocfax(          $request->input( 'nocfax'           ) );
+        $this->object->setNocemail(        $request->input( 'nocemail'         ) );
+        $this->object->setOfficephone(     $request->input( 'officephone'      ) );
+        $this->object->setOfficefax(       $request->input( 'officefax'        ) );
+        $this->object->setOfficeemail(     $request->input( 'officeemail'      ) );
+        $this->object->setNotes(           $request->input( 'notes'            ) );
+        $this->object->setPdbFacilityId(   $request->input( 'pdb_facility_id'  ) );
 
-        D2EM::flush( $l );
+        D2EM::flush( $this->object );
 
-        $this->object = $l;
         return true;
     }
 
