@@ -633,12 +633,16 @@
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="947c18c6-133a-42ba-a7e2-1346d7cc7e44"/>
       <field name="infrastructureid" type="integer" required="true" uuid="6bd09753-b303-4f0d-b85d-0324f9728200"/>
       <field name="name" type="string" size="255" uuid="34caf8b1-714c-4ffd-87d9-c5e6b3834c70"/>
+      <field name="config_name" type="string" size="32" uuid="c00532e8-2959-4a0e-b0f2-6d753a2424cb"/>
       <field name="number" type="integer" uuid="156b2f6b-7ce1-4558-9e7e-27f484e0a95f"/>
-      <field name="rcvrfname" type="string" size="255" uuid="dc73bea4-6ccb-48cc-831f-a1a1116a3d0b"/>
       <field name="private" type="boolean" default="0" required="true" uuid="0dab2335-8f1b-446e-a53e-b669a132cf09"/>
       <field name="peering_matrix" type="boolean" default="0" required="true" uuid="c2635dd8-8b82-420d-b0c4-a688b52cfc39"/>
       <field name="peering_manager" type="boolean" default="0" required="true" uuid="8ccb17e4-b4f3-4a01-91e1-a639a49b6445"/>
       <field name="notes" type="text" uuid="6f0d5a85-0441-4611-97a7-af2596fab0d0"/>
+      <index name="infra_config_name" unique="true">
+        <index-field name="infrastructureid"/>
+        <index-field name="config_name"/>
+      </index>
       <orm-attributes>
         <attribute name="repository-class">Repositories\Vlan</attribute>
         <attribute name="table">vlan</attribute>
@@ -1470,7 +1474,7 @@
     <entity uuid="1363c8e6-52d8-4d98-b6e9-b01eccad244d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1261" position-y="1038" size-x="0" size-x2="128" size-y="0" size-y2="101"/>
     <entity uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189" bg-color="4294967295" hdr-color="4292006610" position-x="1417" position-y="16" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
     <entity uuid="1b16625d-8c68-489f-b0ca-a1969276df51" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1049" position-y="-512" size-x="0" size-x2="141" size-y="0" size-y2="115"/>
-    <entity uuid="1b90f411-dfed-48a8-acd0-97cbf599e069" bg-color="4294967295" hdr-color="4292006610" position-x="1236" position-y="186" size-x="0" size-x2="135" size-y="0" size-y2="143"/>
+    <entity uuid="1b90f411-dfed-48a8-acd0-97cbf599e069" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1236" position-y="186" size-x="0" size-x2="135" size-y="0" size-y2="143"/>
     <entity uuid="274aaa49-9d19-4458-8f91-386f5b9a44cd" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1165" position-y="8" size-x="0" size-x2="106" size-y="0" size-y2="59"/>
     <entity uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8" bg-color="4294967295" hdr-color="4292006610" position-x="421" position-y="186" size-x="0" size-x2="128" size-y="0" size-y2="171"/>
     <entity uuid="2bc6f199-c9b6-4ee7-aba0-7aa9856b7291" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="777" position-y="-344" size-x="0" size-x2="163" size-y="0" size-y2="325"/>

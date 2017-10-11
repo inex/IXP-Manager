@@ -85,7 +85,7 @@ $this->layout( 'layouts/ixpv4' );
                             <?= $t->ee( $cb->getSwitchSideX( false )->getName() )  ?>
                         </td>
                         <td>
-                            <?= $t->ee( count( $cb->getCoreLinks() ) * $cb->getSpeedPi() )  ?>
+                            <?= $t->scaleBits( count( $cb->getCoreLinks() ) * $cb->getSpeedPi() * 1000000, 0 )  ?>
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">

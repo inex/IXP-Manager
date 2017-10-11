@@ -136,17 +136,17 @@
         </li>
 
         <li>
-            <a href="{genUrl controller='layer2-address' action='list'}">MAC/L2 Addresses</a>
+            <a href="{genUrl controller='layer2-address' action='list'}">MAC Addresses</a>
 
             {if not isset( $options['frontend']['disabled']['mac-address'] ) or not $options['frontend']['disabled']['mac-address'] }
 
                 {if $controller eq 'mac-address'}
                     <ul class="nav nav-list">
                         <li>
-                            <a href="{genUrl controller='layer2-address' action='list'}">Layer2 Addresses</a>
+                            <a href="{genUrl controller='layer2-address' action='list'}">Configured Addresses</a>
                         </li>
                         <li {if $controller eq 'mac-address'}class="active"{/if}>
-                            <a href="{genUrl controller='mac-address' action='list'}">MAC Addresses</a>
+                            <a href="{genUrl controller='mac-address' action='list'}">Discovered Addresses</a>
                         </li>
                     </ul>
                 {/if}

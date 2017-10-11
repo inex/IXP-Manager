@@ -55,10 +55,11 @@ class VlanController extends IXP_Controller_FrontEnd
 
             'listColumns'    => [
 
-                'id'        => [ 'title' => 'DB ID' ],
-                'name'      => 'Name',
-                'number'    => '802.1q Tag',
-                'ixp'    => 'IXP',
+                'id'          => [ 'title' => 'DB ID' ],
+                'name'        => 'Description',
+                'config_name' => 'Config Name',
+                'number'      => '802.1q Tag',
+                'ixp'         => 'IXP',
                 'infrastructure'    => 'Infrastructure',
 
                 'private'        => [
@@ -67,7 +68,6 @@ class VlanController extends IXP_Controller_FrontEnd
                     'xlator'         => \Entities\Vlan::$PRIVATE_YES_NO
                 ],
 
-                'rcvrfname' => 'VRF Name'
             ]
         ];
 
@@ -104,7 +104,7 @@ class VlanController extends IXP_Controller_FrontEnd
     {
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'v.id AS id, v.name AS name, v.number AS number,
-                    v.rcvrfname AS rcvrfname, v.notes AS notes,
+                    v.config_name AS config_name, v.notes AS notes,
                     v.private AS private, v.peering_matrix AS peering_matrix,
                     v.peering_manager AS peering_manager,
                     i.shortname AS infrastructure,

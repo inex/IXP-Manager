@@ -1,4 +1,6 @@
 <script>
+    let table; // datatable handle
+
     $( document ).ready( function() {
         loadDataTable();
         $( "#list-area").show();
@@ -47,8 +49,7 @@
      */
     $(document).on('click', "button[id|='delete-l2a']" ,function(e){
         e.preventDefault();
-        var l2aId = (this.id).substring(11);
-        deleteL2a( l2aId );
+        deleteL2a( (this.id).substring(11), this );
     });
 
     /**
@@ -65,9 +66,9 @@
     /**
      * function to delete a mac address using a confirm popup
      */
-    function deleteL2a(l2aId){
+    function deleteL2a( l2aId, deleteBtn ){
         bootbox.confirm({
-            message: "Do you really want to delete this MAC Address ?",
+            message: "Do you really want to delete this MAC Address?",
             buttons: {
                 confirm: {
                     label: 'Delete',
@@ -86,8 +87,10 @@
                         .done( function( data ) {
                             $('.bootbox.modal').modal( 'hide' );
                             result = ( data.success ) ? 'success': 'danger';
+
                             if( result ){
-                                location.reload();
+                                table.row( $(deleteBtn).parents('tr') ).remove().draw();
+                                $( "#message" ).html( "<div class='alert alert-"+result+"' role='alert'>"+ data.message +"</div>" );
                             }
 
                             //$( "#message" ).html( "<div class='alert alert-"+result+"' role='alert'>"+ data.message +"</div>" );
