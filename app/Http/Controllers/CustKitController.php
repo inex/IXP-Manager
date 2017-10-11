@@ -25,8 +25,6 @@ namespace IXP\Http\Controllers;
 
 use D2EM, Former, Redirect, Validator;
 
-use Illuminate\View\View;
-
 use Entities\{
     CustomerEquipment   as CustomerEquipmentEntity,
     Cabinet             as CabinetEntity,
@@ -34,11 +32,6 @@ use Entities\{
 };
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-
-use IXP\Utils\View\Alert\{
-    Alert,
-    Container as AlertContainer
-};
 
 
 /**
@@ -170,22 +163,21 @@ class CustKitController extends Doctrine2Frontend {
         }
 
         if( $request->input( 'id', false ) ) {
-            if( !( $ck = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $request->input( 'id' ) ) ) ) {
+            if( !( $this->object = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $request->input( 'id' ) ) ) ) {
                 abort(404);
             }
         } else {
-            $ck = new CustomerEquipmentEntity;
-            D2EM::persist( $ck );
+            $this->object = new CustomerEquipmentEntity;
+            D2EM::persist( $this->object );
         }
 
-        $ck->setName(     $request->input( 'name' ) );
-        $ck->setCabinet(  D2EM::getRepository( CabinetEntity::class  )->find( $request->input( 'cabinet' ) ) );
-        $ck->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'cust' ) ) );
-        $ck->setDescr(    $request->input( 'description' ) );
+        $this->object->setName(     $request->input( 'name' ) );
+        $this->object->setCabinet(  D2EM::getRepository( CabinetEntity::class  )->find( $request->input( 'cabinet' ) ) );
+        $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'cust' ) ) );
+        $this->object->setDescr(    $request->input( 'description' ) );
 
-        D2EM::flush($ck);
+        D2EM::flush( $this->object );
 
-        $this->object = $ck;
         return true;
     }
 }

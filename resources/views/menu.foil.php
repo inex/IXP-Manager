@@ -66,7 +66,7 @@
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.cust-kit', false ) ): ?>
                     <li <?php if( $t->controller == 'CustKitController' ):?> class="active" <?php endif;?> >
-                        <a href="<?= url( 'cust-kit/list' ) ?>">Colocated Equipment</a>
+                        <a href="<?= action( 'CustKitController@list' ) ?>">Colocated Equipment</a>
                     </li>
                 <?php endif; ?>
 
@@ -93,12 +93,12 @@
                     IXP Admin Actions
                 </li>
 
-                <li>
-                    <a href="<?= url('infrastructure/list') ?>">Infrastructures</a>
+                <li <?php if( $t->controller == 'InfrastructureController' ):?> class="active" <?php endif;?> >
+                    <a href="<?= action('InfrastructureController@list') ?>">Infrastructures</a>
                 </li>
 
-                <li>
-                    <a href="<?= url( 'location/list' ) ?>">Locations</a>
+                <li <?php if( $t->controller == 'LocationController' ):?> class="active" <?php endif;?> >
+                    <a href="<?= action( 'LocationController@list' ) ?>">Locations</a>
                 </li>
 
                 <li>
