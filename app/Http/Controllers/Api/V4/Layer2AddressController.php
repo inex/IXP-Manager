@@ -33,7 +33,6 @@ use Entities\{
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
-
 /**
  * Layer2Address API Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
@@ -88,4 +87,24 @@ class Layer2AddressController extends Controller {
         /** @var Layer2AddressEntity $l2a */
         return response()->json( $l2a->jsonArray() );
     }
+
+    /**
+     * Delete a mac address from a Vlan Interface
+     *
+     * @param   int $id ID of the Layer2Address
+     * @return  JsonResponse
+     */
+    public function delete( int $id ): JsonResponse{
+        /** @var Layer2AddressEntity $l2a */
+        if( !( $l2a = D2EM::getRepository( Layer2AddressEntity::class )->find( $id ) ) ) {
+            return abort( '404' );
+        }
+
+        $l2a->getVlanInterface()->removeLayer2Address( $l2a );
+        D2EM::remove( $l2a );
+        D2EM::flush();
+
+        return response()->json( [ 'success' => true, 'message' => 'The MAC address has been deleted.' ] );
+    }
+
 }

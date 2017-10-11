@@ -36,7 +36,7 @@
                             VLAN Tag
                         </th>
                         <th>
-                            Layer2 Address
+                            Configured MAC Address(es)
                         </th>
                         <th>
                             IPv4 Address

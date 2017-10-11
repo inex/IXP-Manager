@@ -93,24 +93,4 @@ class Layer2AddressController extends Controller
     }
 
 
-    /**
-     * Delete a mac address from a Vlan Interface
-     *
-     * @param   int $id ID of the Layer2Address
-     * @return  JsonResponse
-     */
-    public function delete( int $id ): JsonResponse{
-        /** @var Layer2AddressEntity $l2a */
-        if( !( $l2a = D2EM::getRepository( Layer2AddressEntity::class )->find( $id ) ) ) {
-            return abort( '404' );
-        }
-
-        $l2a->getVlanInterface()->removeLayer2Address( $l2a );
-        D2EM::remove( $l2a );
-        D2EM::flush();
-
-        AlertContainer::push( 'The MAC address has been deleted successfully.', Alert::SUCCESS );
-
-        return response()->json( [ 'success' => true ] );
-    }
 }

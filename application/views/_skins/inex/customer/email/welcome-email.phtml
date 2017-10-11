@@ -1,21 +1,15 @@
 
 Dear New INEX Member,
 
-Firstly, welcome to {$options.identity.orgname}! This is your {$options.identity.name} welcome e-mail.
+Firstly, welcome to INEX! This is your INEX welcome e-mail.
 
-Please take some time to read this email -- it contains important information concerning your {$options.identity.orgname} membership.
-
-Several sections of this email require your input; these are all clearly marked by the heading "Your Input".  We would appreciate if you could provide us with all the details requested as this will allow us to provide you and other {$options.identity.orgname} members with a better quality of service.
+If you are unfamiliar with how IXPs work, please grab a cup of coffee and take some time to read this email -- it contains important information concerning your INEX membership.
 
 
 Connection Details
 ==================
 
-You have opted to connect to {$options.identity.orgname} using {$customer->getVirtualInterfaces()|@count} Ethernet ports.
-
-Unless you have been advised otherwise, you have been assigned an untagged port on the primary peering LAN(s).
-
-We have assigned the following IP addresses and switch-ports for your exclusive use:
+You have opted to connect to INEX using {$customer->getVirtualInterfaces()|@count} ports. We have assigned the following IP addresses and switch ports for your connections:
 
 {foreach $customer->getVirtualInterfaces() as $connection}
 ============================================
@@ -24,10 +18,11 @@ Connection {counter name=numconnections}
 
 LAG Port:        {if $connection->getPhysicalinterfaces()|@count > 1}Yes, comprising of:{else}No{/if}
 
+802.1q Tagged:   {if $connection->getTrunk()}Yes{else}No{/if}
+
 {foreach $connection->getPhysicalinterfaces() as $pi}
 Switch Port:     {$pi->getSwitchPort()->getSwitcher()->getName()}.inex.ie, {$pi->getSwitchPort()->getName()}
-Speed:           {$pi->getSpeed()}Mbps
-Duplex:          {$pi->getDuplex()}
+Speed:           {$pi->resolveSpeed()} ({$pi->getDuplex()} duplex)
 Location:        {$pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName()}
 Colo Cabinet ID: {$pi->getSwitchPort()->getSwitcher()->getCabinet()->getName()}
 
@@ -37,6 +32,10 @@ Colo Cabinet ID: {$pi->getSwitchPort()->getSwitcher()->getCabinet()->getName()}
 {$vlanid = $vi->getVlan()->getId()}
 {$vi->getVlan()->getName()}
 ---------------------------------------------
+
+{if $connection->getTrunk()}
+802.1q Tag:    {$vi->getVLAN()->getNumber()}
+{/if}
 
 {if $vi->getIpv6enabled()}
 IPv6 Address:  {$vi->getIPv6Address()->getAddress()}/{$netinfo.$vlanid.6.masklen}
@@ -56,20 +55,13 @@ IPv4:          Please contact us at {$options.identity.email} to enable IPv4
 
 {/foreach}
 
-Your Input
-----------
-
-As a matter of policy, {$options.identity.orgname} hard-wires all switch ports to a specific speed and duplex setting.  Should you require a different duplex setting to the one specified above, or should you require your reverse DNS hostnames changed for either IPv4 or IPv6, please contact {$options.identity.email}.
-
-**If you are connecting to {$options.identity.orgname} via a switch using UTP, please ensure to use a cross over cable on your end.**
-
 
 Member Portal :: IXP Manager
 ============================
 
-{$options.identity.orgname} provides a portal for members which provides traffic graphs for your ports, the ability to self-provision some services, the contact and peering details of all other members, a Peering Manager tool, documentation, support information, mailing list subscription management and much more.
+INEX provides a portal for members which provides traffic graphs for your ports, peer to peer graphs (who much traffic you are sending and receiving from each member), the contact and peering details of all other members, a Peering Manager tool, documentation, support information, mailing list subscription management and much more.
 
-Every member is assigned an Administration account with which you then create individual user accounts. The Administration account is only meant for this purpose and as such, all functionality is only available through user accounts.
+Every member is assigned an administration account with which you then create individual user accounts. The administration account is only meant for this purpose and as such, all functionality is only available through user accounts.
 
 {if $admins|@count}
 We have created your administration account(s) with the following username(s) and email address(es):
@@ -90,64 +82,31 @@ Please contact us for your account details at {$options.identity.email}.
 Route Servers
 =============
 
-{$options.identity.orgname} operates a Route Server cluster; this facility allows all members who connect to the cluster to see all routing prefixes sent to the cluster by any other member.  I.e. it provides a quick, safe and easy way to peer with any other route server user.
+INEX operates a Route Server cluster; this facility allows all members who connect to the cluster to see all routing prefixes sent to the cluster by any other member.  I.e. it provides a quick, safe and easy way to peer with any other route server user.
 
-The {$options.identity.orgname} route server cluster is aimed at:
+The service is designed to be reliable. It operates on two physical servers, each located in a different data centre. The service is available on all networks (public peering lans #1 and #2, and INEX Cork), on both ipv4 and ipv6.  The route servers also filter inbound routing prefixes based on published RIPE IRR policies, which means that using the route servers for peering is generally much safer than peering directly with other members.
 
-o  small to medium sized members of the exchange who don't have the time or resources to aggressively manage their peering relationships.
+See https://www.inex.ie/technical/route-servers/ for full details.
 
-o  larger members of the exchange who have an open peering policy, but where it may not be worth their while managing peering relationships with smaller members of the exchange.
+Your connection to the route servers will be brought live during standard provisioning of your new port(s).
 
-If you don't have any good reasons not to use the route server cluster, you should probably use it.
-
-The service is designed to be reliable. It operates on two physical servers, each located in a different data centre. The service is available on all {$options.identity.orgname} networks (public peering lans #1 and #2, and voip peering lans #1 and #2), on both ipv4 and ipv6.  The route servers also filter inbound routing prefixes based on published RIPE IRR policies, which means that using the route servers for peering is generally much safer than peering directly with other members.
-
-See {genUrl controller="dashboard" action="rs-info"} for more information.
-
-Your Input
-----------
-
-If you wish to use the {$options.identity.orgname} route server system, please email {$options.identity.email} or you can enable the sessions yourself via the IXP Manager.
-
-
-Hosting Routers in the {$options.identity.orgname} Cage
-================================
-
-If your company does not have a presence in any of the {$options.identity.orgname}'s co-location facilities, {$options.identity.orgname} can provide rack space for the purpose of housing routers, NTU's and other equipment whose purpose is to facilitate the transmission of IP packets through the exchange.  {$options.identity.orgname} also permits its members to install modems for the purpose of out-of-band access to their equipment.  Each member is assigned 4U of cabinet space by default.  If your company needs more space than this, {$options.identity.orgname} needs to know about it.
-
-
-Your Input
-----------
-
-If you wish to house router equipment in the {$options.identity.orgname} cage, please inform {$options.identity.orgname} operations immediately and provide full details on all the equipment you intend to house in the facility.  We can liaise with you directly to get your equipment installed safely.
-
-If you wish to bring a PSTN phone line into the {$options.identity.orgname} cage to connect a modem to your routing equipment, please let {$options.identity.orgname} Operations know immediately.
-
------------
 
 
 External Connections to the {$options.identity.orgname} Infrastructure
 ===============================================
 
-Many {$options.identity.orgname} members already have a presence in the co-location facilities which house {$options.identity.orgname} points of presence.  If you are such a member and wish to keep your routing equipment in your own cabinet space, {$options.identity.orgname} is happy to accept cross-connects from your cabinet to the {$options.identity.orgname} cage.  Please note that all connections into the {$options.identity.orgname} cage are paid for directly by {$options.identity.orgname} members, not by {$options.identity.orgname} itself.
+Cross-connect termination points are provided under separate cover including LoAs (letters of authority - normally required by data centres before they will install a cross connect to INEX).
 
-{$options.identity.orgname} considers metro ethernet connections as standard external connections. When ordering your metro ethernet circuit, please specify the correct {$options.identity.orgname} termination point to your provider.
+Getting cross connects installed is normally the more common delay in bringing your new INEX service live. Please order it/them as soon as possible and from your co-lo / metro ethernet provider.
 
-Cross-connect cabinet termination points are provided in the "Connection Details" section above.
+Please also notify INEX Operations once it is complete as we often do not get notified by the co-lo providers.
 
-
-Your Input
-----------
-
-If you want to connect to {$options.identity.orgname} using a cross-connect, you must order it directly from your co-lo / metro ethernet provider and inform {$options.identity.orgname} Operations immediately.  Please ensure that you include full details on the connection type and termination cabinet when ordering the cross-connect from your co-lo provider.
-
-----------
 
 
 Mailing Lists
 =============
 
-To encourage co-operation between {$options.identity.orgname} members, {$options.identity.orgname} provides mailing list services.  There are currently three mailing lists:
+To encourage co-operation between INEX members, INEX provides two mailing list services:
 
 Name:                   tech@inex.ie
 Purpose:                INEX technical discussion
@@ -155,43 +114,33 @@ Subscription Policy:    individuals, roles, aliases,
                         no limit per organisation
 Distribution:           private
 
-Name:                   committee@inex.ie
-Purpose:                The INEX Executive Committee
-Subscription Policy:    elected committee members only
-Distribution:           private & confidential
-
 Name:                   members@inex.ie
 Purpose:                Non-technical discussions relevant to INEX
 Subscription Policy:    individuals only, no limit per organisation
 Distribution:           private & confidential
 
-
-Your Input
-----------
-
 Should you wish to subscribe to either or both mailing lists, please create a user account on the IXP Manager (as explained above) and then browse to the 'Profile' page where you can subscribe to the above and more mailing lists.
 
-----------
 
 
 INEX Operations
 ===============
 
-Technical Operations for INEX are provided by Network Ability Ltd (with additional support from Open Source Solutions Ltd). Technical support contact details for INEX can be found at:
+Technical support contact details for INEX can be found at:
 
-        {genUrl controller="static" action="support"}
+        https://www.inex.ie/support/
 
-In general, the best way to contact INEX operations is by email at: operations@inex.ie.  If there is an emergency requiring immediate assistance, please contact one of us on the mobile phones listed on the web page.
+In general, the best way to contact INEX operations is by email at: operations@inex.ie.  If there is a genuine emergency requiring immediate assistance, please use the 24/7 phone number listed on the web page.
 
 
 Peering
 =======
 
-INEX facilitates peering between its members, but other than the minimum current peering requirements (4 members or 10%, whichever is larger) does not mandate peering with any particular member apart from INEX itself.
+INEX facilitates peering between its members, but other than the minimum current peering requirements (2 other members per LAN) does not mandate peering with any particular member apart from INEX itself.
 
 You will find a full list of members on the IXP Manager, along with the correct email addresses to use for peering requests.
 
-When emailing other INEX members about peering requests, please include all technical details relevant to the peering session, including your IP address, your AS number, and an estimate of the number of prefixes you intend to announce to that candidate peer.  Several members require written legal contracts to be signed as a part of their peering procedures.  If you require a written contract, please specify this on your peering request; similarly, it may be often useful to indicate your willingness (or otherwise) to sign legal contracts when approaching other members about peering.
+When emailing other INEX members about peering requests, please include all technical details relevant to the peering session, including your IP address, your AS number, and an estimate of the number of prefixes you intend to announce to that candidate peer.
 
 The My Peering Manager tool in the IXP Manager will compose mails with the above details for you automatically.
 
@@ -248,7 +197,6 @@ Member name:                    {$customer->getName()}
 Primary corporate web page:     {$customer->getCorpwww()}
 Peering Email Address:          {$customer->getPeeringemail()}
 NOC Phone number:               {$customer->getNocphone()}
-NOC Fax number:                 {$customer->getNocfax()}
 General NOC email address:      {$customer->getNocemail()}
 NOC Hours:                      {$customer->getNochours()}
 Dedicated NOC web page:         {$customer->getNocwww()}
@@ -257,8 +205,8 @@ AS Number:                      {$customer->getAutsys()}
 ----------
 
 
-Router Configuration
-====================
+Router and Switch Configuration
+=================================
 
 If you are new to internet exchanges, we would ask you to note that all members are expected to adhere to the technical requirements of the INEX MoU.  In particular, we would draw your attention to section 2 of these requirements which outline what types of traffic may and may not be forwarded to the INEX peering LAN.
 
@@ -276,35 +224,19 @@ If you intend to use IPv6 with a Cisco IOS based router, please also consider th
  no ipv6 redirects
  ipv6 nd suppress-ra
 
+As part of standard provisioning for your new connection(s), INEX operations will put your new port through our quarantine process. This involves checking your port to ensure:
 
-Connecting Switches to INEX
-===========================
+* no *-discover protocols are enabled (CDP, LLDP, etc)
+* keepalive, MOP, etc are disabled
+* there are no spanning tree BPDUs
+* no 802.1q tagging (or, if your port is to be tagged, then tagged appropriately)
 
-Many members choose to connect their INEX port to a layer 2 switch and then forward their peering traffic to a router virtual interface hosted elsewhere on their network.  While connecting layer 2 switches to the INEX peering LAN is not actively discouraged, incorrect configuration can cause serious and unexpected connectivity problems.
+We will also get you to connect to the INEX quarantine route collector and advertise your prefixes over BGP. The details are exactly the same as the produciton route collector details above.
 
-The primary concern is to ensure that only traffic from the router subinterface is presented to the INEX port. INEX implements per port mac address counting: if more than 1 mac address is seen on any switch port at any time, that port will automatically be disabled for a cooling off period, and your connectivity to INEX will temporarily be lost.
+If you are connecting to INEX through a switch, please additionally read: https://www.inex.ie/ixp/static/switches
 
-This policy prevents two potential problems: firstly, it ensures that layer 2 traffic loops are prevented and secondly, it ensures that no other traffic escapes to the INEX peering LAN which shouldn't be seen there.
+It would aid us greatly if you could prepare your new connection(s) for quarantine by configuring the appropriate IP addresses from the "Connection Details" section above and set up the route collector BGP session as per the details in the "Peering" section above.
 
-If you choose to connect your INEX port or ports to a switch, it is critically important to assign one unique vlan for each INEX connection.  If you share an INEX facing VLAN between multiple INEX ports or share a INEX-facing VLAN with any other network, your connection will automatically be shut down due to the security mechanisms implemented by INEX.
-
-Please also note that by default, several switch models send link-local traffic to all ports.  On Cisco switches, this can be disabled using the following interface commands:
-
-interface GigabitEthernetx/x
- spanning-tree bpdufilter enable
- no keepalive
- no cdp enable
- udld port disable
-
-For further details please see the following URL:
-
-        {genUrl controller="static" action="switches"}
-
-
-Monitoring
-==========
-
-By default, INEX actively monitors all ports on its peering LANs using ICMP PING for both connectivity and host latency.  This monitoring causes about 25 PING packets to be sent to each IP address on the peering LAN every 5 minutes.  If you do not wish for your router to be actively monitored, please mail operations@inex.ie and we can disable this facility.
 
 
 IRC
@@ -318,9 +250,11 @@ Although this IRC server is secured with SSL, INEX does not recommend swapping p
 AS112 Service
 =============
 
-For the benefit of its members, INEX hosts an AS112 nameserver which answers bogus requests to private IP address space.  This service is available as a regular peering host on both INEX peering LANs.  Its IP addresses are: 185.6.36.6 and 194.88.240.6.  Should you wish to peer directly with the AS112 server, please contact INEX operations, and we can set up a peering session on the unit.  Otherwise, AS112 is also visible on the INEX route server system.
+For the benefit of its members, INEX hosts an AS112 nameserver which answers bogus requests to private IP address space.  This service is available as a regular peering host on both INEX peering LANs.
 
-Please see {genUrl controller="dashboard" action="as112"} for more details and further explanation.
+Full details are at: https://www.inex.ie/technical/as112-service/
+
+Your session to the AS112 service will be brought up during normal the standard INEX provisioning of your new connection(s).
 
 
 
@@ -331,7 +265,15 @@ PeeringDB ( http://www.peeringdb.com/ ) facilitates the exchange of information 
 
 More and more organisations are using PeeringDB to make decisions on where they should open POPs, provision new links, etc.
 
-We would very much appreciate it if you could mark your new INEX peering under the "Public Peering Locations" section of your PeeringDB page. We are listed as 'INEX'. If you do not yet have a PeeringDB account, we would suggest that you register for one on their site.
+We would very much appreciate it if you could mark your new INEX peering under the "Public Peering Locations" section of your PeeringDB page. If you do not yet have a PeeringDB account, we would suggest that you register for one on their site.
+
+INEX's PeeringDB entries are:
+
+- INEX LAN1: https://www.peeringdb.com/ix/48
+- INEX LAN2: https://www.peeringdb.com/ix/387
+- INEX Cork: https://www.peeringdb.com/ix/1262
+
+Note that a number of INEX members now require any network they peer with to have a PeeringDB entry.
 
 
 Welcome to INEX, Ireland's Internet hub.

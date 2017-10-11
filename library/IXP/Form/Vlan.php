@@ -61,9 +61,9 @@ class IXP_Form_VLAN extends IXP_Form
             ->setAttrib( 'class', 'chzn-select' );
         $this->addElement( $infrastructure );
 
-        $rcvrfname = $this->createElement( 'text', 'rcvrfname' );
-        $rcvrfname->addValidator( 'stringLength', false, array( 1, 255, 'UTF-8' ) )
-            ->setLabel( 'RC VRF Name' )
+        $rcvrfname = $this->createElement( 'text', 'config_name' );
+        $rcvrfname->addValidator( 'stringLength', false, array( 1, 32, 'UTF-8' ) )
+            ->setLabel( 'Config Name' )
             ->addFilter( 'StringTrim' )
             ->setAttrib( 'class', 'span3' )
             ->addFilter( new OSS_Filter_StripSlashes() );

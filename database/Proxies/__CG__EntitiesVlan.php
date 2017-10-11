@@ -64,10 +64,10 @@ class Vlan extends \Entities\Vlan implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'number', 'rcvrfname', 'notes', 'id', 'VlanInterfaces', 'IPv4Addresses', 'IPv6Addresses', 'NetworkInfo', 'NetInfo', '' . "\0" . 'Entities\\Vlan' . "\0" . 'Infrastructure', '' . "\0" . 'Entities\\Vlan' . "\0" . 'routers', 'private', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_matrix', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_manager'];
+            return ['__isInitialized__', 'name', 'number', 'config_name', 'notes', 'id', 'VlanInterfaces', 'IPv4Addresses', 'IPv6Addresses', 'NetworkInfo', 'NetInfo', '' . "\0" . 'Entities\\Vlan' . "\0" . 'Infrastructure', '' . "\0" . 'Entities\\Vlan' . "\0" . 'routers', 'private', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_matrix', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_manager'];
         }
 
-        return ['__isInitialized__', 'name', 'number', 'rcvrfname', 'notes', 'id', 'VlanInterfaces', 'IPv4Addresses', 'IPv6Addresses', 'NetworkInfo', 'NetInfo', '' . "\0" . 'Entities\\Vlan' . "\0" . 'Infrastructure', '' . "\0" . 'Entities\\Vlan' . "\0" . 'routers', 'private', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_matrix', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_manager'];
+        return ['__isInitialized__', 'name', 'number', 'config_name', 'notes', 'id', 'VlanInterfaces', 'IPv4Addresses', 'IPv6Addresses', 'NetworkInfo', 'NetInfo', '' . "\0" . 'Entities\\Vlan' . "\0" . 'Infrastructure', '' . "\0" . 'Entities\\Vlan' . "\0" . 'routers', 'private', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_matrix', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_manager'];
     }
 
     /**
@@ -220,23 +220,23 @@ class Vlan extends \Entities\Vlan implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setRcvrfname($rcvrfname)
+    public function setConfigName($config_name)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRcvrfname', [$rcvrfname]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setConfigName', [$config_name]);
 
-        return parent::setRcvrfname($rcvrfname);
+        return parent::setConfigName($config_name);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getRcvrfname()
+    public function getConfigName()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRcvrfname', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getConfigName', []);
 
-        return parent::getRcvrfname();
+        return parent::getConfigName();
     }
 
     /**

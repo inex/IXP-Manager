@@ -158,17 +158,17 @@
                 </li>
 
                 <li>
-                    <a href="<?= url( '/layer2-address/list' ) ?>">MAC/L2 Addresses</a>
+                    <a href="<?= url( '/layer2-address/list' ) ?>">MAC Addresses</a>
                 </li>
 
                 <?php if( Request::is('layer2-address/list') ): ?>
                     <li class="<?= Request::is('layer2-address/list') ? 'active' : '' ?>">
-                        <a href="<?= url( '/layer2-address/list' ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;Layer2 Addresses</a>
+                        <a href="<?= url( '/layer2-address/list' ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;Configured Addresses</a>
                     </li>
 
                     <?php if( !config( 'ixp_fe.frontend.disabled.mac-address', false ) ): ?>
                         <li>
-                            <a href="<?= url( '/mac-address/list' ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;MAC Addresses</a>
+                            <a href="<?= url( '/mac-address/list' ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;Discovered Addresses</a>
                         </li>
                     <?php endif; ?>
                 <?php endif; ?>
