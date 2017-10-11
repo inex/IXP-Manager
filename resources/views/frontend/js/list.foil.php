@@ -18,7 +18,7 @@
                 title: "Delete <?= $t->data[ 'feParams' ]->titleSingular ?>",
                 buttons: {
                     cancel: {
-                        label: '<i class="fa fa-times"></i> Close',
+                        label: 'Close',
                         callback: function () {
                             $('.bootbox.modal').modal('hide');
                             return false;

@@ -25,8 +25,6 @@ namespace IXP\Http\Controllers;
 
 use D2EM, Former, Redirect, Validator;
 
-use Illuminate\View\View;
-
 use Entities\{
     CustomerEquipment   as CustomerEquipmentEntity,
     Cabinet             as CabinetEntity,
@@ -34,11 +32,6 @@ use Entities\{
 };
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-
-use IXP\Utils\View\Alert\{
-    Alert,
-    Container as AlertContainer
-};
 
 
 /**

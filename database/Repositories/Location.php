@@ -33,4 +33,46 @@ class Location extends EntityRepository
         return $locations;
     }
 
+    /**
+     * Get all lcoation (or a particular one) for listing on the frontend CRUD
+     *
+     * @see \IXP\Http\Controller\Doctrine2Frontend
+     *
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     * @return array Array of lcoation (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeList( \stdClass $feParams, int $id = null )
+    {
+        $dql = "SELECT  l.id AS id, 
+                        l.name AS name, 
+                        l.shortname AS shortname, 
+                        l.tag AS tag,
+                        l.nocphone AS nocphone, 
+                        l.nocemail AS nocemail, 
+                        l.address AS address,
+                        l.nocfax AS nocfax, 
+                        l.officephone AS officephone, 
+                        l.officefax AS officefax,
+                        l.officeemail AS officeemail, 
+                        l.notes AS notes, 
+                        l.pdb_facility_id AS pdb_facility_id
+                FROM Entities\\Location l
+                WHERE 1 = 1";
+
+        if( $id ) {
+            $dql .= " AND l.id = " . (int)$id;
+        }
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getArrayResult();
+    }
+
 }
