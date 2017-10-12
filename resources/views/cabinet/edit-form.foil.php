@@ -12,7 +12,7 @@
     ?>
 
     <?= Former::select( 'location' )
-        ->id( 'lcoation' )
+        ->id( 'location' )
         ->label( 'Location' )
         ->placeholder( 'Select a location' )
         ->fromQuery( $t->params[ 'locations' ], 'name' )
