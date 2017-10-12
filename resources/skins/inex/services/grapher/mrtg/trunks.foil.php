@@ -110,12 +110,12 @@ Directory[core-swi1-deg1-1_swi1-deg1-3-lan1]: trunks
 Title[core-swi1-deg1-1_swi1-deg1-3-lan1]: Inter-POP Trunk Core - DEGKCP - swi1-deg1-1 swi1-deg1-3 - LAN1
 
 
-# swi1-tcy1-1 - swi1-tcy1-3
-Target[core-swi1-tcy1-1_swi1-tcy1-3-lan1]: #1\:31:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
-					+ #1\:32:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-tcy1-1.inex.ie:::::2
-MaxBytes[core-swi1-tcy1-1_swi1-tcy1-3-lan1]: 2500000000
-Directory[core-swi1-tcy1-1_swi1-tcy1-3-lan1]: trunks
-Title[core-swi1-tcy1-1_swi1-tcy1-3-lan1]: Intra-POP Trunk Core - TCYDUB1 - swi1-tcy1-1 swi1-tcy1-3 - LAN1
+# swi1-cwt1-2 - swi1-cwt1-3
+Target[core-swi1-cwt1-2_swi1-cwt1-3-lan1]: #1\:33:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-2.mgmt.inex.ie:::::2
+					+ #1\:34:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-2.mgmt.inex.ie:::::2
+MaxBytes[core-swi1-cwt1-2_swi1-cwt1-3-lan1]: 2500000000
+Directory[core-swi1-cwt1-2_swi1-cwt1-3-lan1]: trunks
+Title[core-swi1-cwt1-2_swi1-cwt1-3-lan1]: Intra-POP Trunk Core - TCYDUB1 - swi1-cwt1-2 swi1-cwt1-3 - LAN1
 
 
 # swi1-cwt1-1 - swi1-cls1-1

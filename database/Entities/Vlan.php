@@ -33,9 +33,9 @@ class Vlan
     protected $number;
 
     /**
-     * @var string $rcvrfname
+     * @var string $config_name
      */
-    protected $rcvrfname;
+    protected $config_name;
 
     /**
      * @var string $notes
@@ -140,26 +140,26 @@ class Vlan
     }
 
     /**
-     * Set rcvrfname
+     * Set $config_name
      *
-     * @param string $rcvrfname
+     * @param string $config_name
      * @return Vlan
      */
-    public function setRcvrfname($rcvrfname)
+    public function setConfigName($config_name)
     {
-        $this->rcvrfname = $rcvrfname;
+        $this->config_name = $config_name;
 
         return $this;
     }
 
     /**
-     * Get rcvrfname
+     * Get $config_name
      *
      * @return string
      */
-    public function getRcvrfname()
+    public function getConfigName()
     {
-        return $this->rcvrfname;
+        return $this->config_name;
     }
 
     /**

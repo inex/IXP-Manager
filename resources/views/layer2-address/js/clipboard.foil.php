@@ -67,10 +67,10 @@
         e.preventDefault();
         if($( ".mac-input" ).hasClass( 'upperCase' ) ){
             $( ".mac-input" ).removeClass( 'upperCase' ).addClass( 'lowerCase' );
-            $( "#notes-modal-btn-case" ).html( '<i class="glyphicon glyphicon-text-size"></i>UpperCase' );
+            $( "#notes-modal-btn-case" ).html( '<i class="glyphicon glyphicon-text-size"></i>Uppercase' );
         }  else {
             $( ".mac-input" ).removeClass( 'lowerCase' ).addClass( 'upperCase' );
-            $( "#notes-modal-btn-case" ).html( '<i class="glyphicon glyphicon-text-size"></i>LowerCase' );
+            $( "#notes-modal-btn-case" ).html( '<i class="glyphicon glyphicon-text-size"></i>Lowercase' );
         }
     });
 </script>

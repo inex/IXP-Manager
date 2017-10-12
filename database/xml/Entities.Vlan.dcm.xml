@@ -5,8 +5,8 @@
       <generator strategy="AUTO"/>
     </id>
     <field name="name" type="string" length="255" nullable="true"/>
+    <field name="config_name" type="string" length="32" nullable="true"/>
     <field name="number" type="integer" nullable="true"/>
-    <field name="rcvrfname" type="string" length="255" nullable="true"/>
     <field name="private" type="boolean" nullable="false">
       <options>
         <option name="default">0</option>
@@ -23,6 +23,9 @@
       </options>
     </field>
     <field name="notes" type="text" nullable="true"/>
+    <unique-constraints>
+      <unique-constraint name="infra_config_name" columns="infrastructureid,config_name"/>
+    </unique-constraints>
     <many-to-one field="Infrastructure" target-entity="Entities\Infrastructure" inversed-by="Vlans">
       <join-columns>
         <join-column name="infrastructureid" referenced-column-name="id" nullable="false"/>
