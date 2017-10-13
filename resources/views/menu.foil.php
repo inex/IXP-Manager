@@ -102,7 +102,7 @@
                 </li>
 
                 <li>
-                    <a href="<?= url('/cabinet/list') ?>">Cabinets</a>
+                    <a href="<?= route('cabinet@list') ?>">Cabinets</a>
                 </li>
 
                 <li <?= $t->controller == 'RouterController' && $t->action != 'status' ? 'class="active"' : '' ?>>
