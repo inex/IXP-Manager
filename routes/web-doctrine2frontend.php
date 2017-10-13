@@ -14,4 +14,5 @@ IXP\Http\Controllers\LocationController::routes();
 IXP\Http\Controllers\CabinetController::routes();
 IXP\Http\Controllers\VendorController::routes();
 IXP\Http\Controllers\ConsoleServerConnectionController::routes();
+IXP\Http\Controllers\VlanController::routes();
 

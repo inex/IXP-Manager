@@ -79,10 +79,11 @@
                                                 <?= $t->ee( $row[$col] ) ?>
                                             </a>
 
+
                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'XLATE'] ): ?>
 
-                                            <?php if( isset( $cconf[ 'xlator' ][ $row[ $col ] ] ) ): ?>
-                                                <?= $cconf[ 'xlator' ][ $row.$col ] ?>
+                                            <?php if( isset($cconf[ 'xlator'][ $row[ $col ] ] ) ): ?>
+                                                <?= $cconf[ 'xlator' ][ $row[ $col ] ] ?>
                                             <?php else: ?>
                                                 <?= $t->ee( $row[ $col ] ) ?>
                                             <?php endif; ?>

@@ -531,4 +531,45 @@ class Vlan extends EntityRepository
         return $vlis;
     }
 
+    /**
+     * Get all vlans (or a particular one) for listing on the frontend CRUD
+     *
+     * @see \IXP\Http\Controller\Doctrine2Frontend
+     *
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     * @return array Array of vlans (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeList( \stdClass $feParams, int $id = null )
+    {
+        $dql = "SELECT  v.id AS id, 
+                        v.name AS name, 
+                        v.number AS number,
+                        v.config_name AS config_name, 
+                        v.notes AS notes,
+                        v.private AS private, 
+                        v.peering_matrix AS peering_matrix,
+                        v.peering_manager AS peering_manager,
+                        i.shortname AS infrastructure,
+                        ix.shortname AS ixp
+                FROM Entities\\Vlan v
+                LEFT JOIN v.Infrastructure i
+                LEFT JOIN i.IXP ix
+                WHERE 1 = 1";
+
+        if( $id ) {
+            $dql .= " AND v.id = " . (int)$id;
+        }
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getArrayResult();
+    }
+
 }
