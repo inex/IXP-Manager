@@ -20,7 +20,8 @@ class Location extends EntityRepository
      */
     public function getAsArray(): array {
         $locations = [];
-        foreach( $this->findAll() as $l ) {
+
+        foreach( $this->findBy( [], [ 'name' => 'ASC' ] ) as $l ) {
             /** @var LocationEntity $l */
             $locations[$l->getId()] = [
                 'id' => $l->getId(),
