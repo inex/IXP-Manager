@@ -15,7 +15,7 @@ class ConsoleServerConnection extends EntityRepository
     /**
      * Get all console server connections (or a particular one) for listing on the frontend CRUD
      *
-     * @see \IXP\Http\Controller\Doctrine2Frontend
+     * @see \IXP\Http\Controllers\Doctrine2Frontend
      *
      *
      * @param \stdClass $feParams

@@ -11,7 +11,7 @@
         ->blockHelp( "" );
     ?>
 
-    <?= Former::select( 'cust' )
+    <?= Former::select( 'customerid' )
         ->id( 'cust' )
         ->label( 'Customer' )
         ->placeholder( 'Select a customer' )
@@ -20,7 +20,7 @@
         ->blockHelp( "");
     ?>
 
-    <?= Former::select( 'switch' )
+    <?= Former::select( 'switchid' )
         ->id( 'switch' )
         ->label( 'Switch' )
         ->placeholder( 'Select a switch' )
@@ -55,8 +55,11 @@
         ->blockHelp( "" );
     ?>
 
-    <?= Former::text( 'autobaud' )
-        ->label( 'Autobaud' )
+    <?= Former::checkbox( 'autobaud' )
+        ->label( '&nbsp;' )
+        ->text( 'Autobaud' )
+        ->checked_value( 1 )
+        ->unchecked_value( 0 )
         ->blockHelp( "" );
     ?>
 

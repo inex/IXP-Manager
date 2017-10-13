@@ -78,7 +78,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
 
             'listColumns'    => [
 
-                'id'        => [ 'title' => 'UID', 'display' => false ],
+                'id'        => [ 'title' => 'DB ID', 'display' => true ],
 
                 'customer'  => [
                     'title'      => 'Customer',
@@ -143,17 +143,19 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
                 abort(404);
             }
 
+            $old = request()->old();
+
             Former::populate([
-                'description'               => $this->object->getDescription(),
-                'cust'                      => $this->object->getCustomer()->getId(),
-                'switch'                    => $this->object->getSwitcher()->getId(),
-                'port'                      => $this->object->getPort(),
-                'speed'                     => $this->object->getSpeed(),
-                'parity'                    => $this->object->getParity(),
-                'stopbits'                  => $this->object->getStopbits(),
-                'flowcontrol'               => $this->object->getFlowcontrol(),
-                'autobaud'                  => $this->object->getAutobaud(),
-                'notes'                     => $this->object->getNotes(),
+                'description'               => array_key_exists( 'description', $old ) ? $old['description'] : $this->object->getDescription(),
+                'customerid'                => request()->old( 'customerid' )  ?? $this->object->getCustomer()->getId(),
+                'switchid'                  => request()->old( 'switchid' )    ?? $this->object->getSwitcher()->getId(),
+                'port'                      => request()->old( 'port' )        ?? $this->object->getPort(),
+                'speed'                     => request()->old( 'speed' )       ?? $this->object->getSpeed(),
+                'parity'                    => request()->old( 'parity' )      ?? $this->object->getParity(),
+                'stopbits'                  => request()->old( 'stopbits' )    ?? $this->object->getStopbits(),
+                'flowcontrol'               => request()->old( 'flowcontrol' ) ?? $this->object->getFlowcontrol(),
+                'autobaud'                  => request()->old( 'autobaud' )    ?? $this->object->getAutobaud(),
+                'notes'                     => request()->old( 'notes' )       ?? $this->object->getNotes(),
             ]);
         }
 
@@ -172,15 +174,18 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
      */
     public function doStore( Request $request )
     {
+        dd($request->all());
         $validator = Validator::make( $request->all(), [
             'description'           => 'required|string|max:255',
-            'cust'                  => 'required|int|exists:Entities\Customer,id',
-            'switch'                => 'required|int|exists:Entities\Switcher,id',
+            'customerid'            => 'required|int|exists:Entities\Customer,id',
+            'switchid'              => 'required|int|exists:Entities\Switcher,id',
             'port'                  => 'required|string|max:255',
             'speed'                 => 'nullable|integer',
             'parity'                => 'nullable|integer',
             'stopbits'              => 'nullable|integer',
             'flowcontrol'           => 'nullable|integer',
+            'autobaud'              => 'nullable|boolean',
+            'notes'                 => 'nullable|string|max:65535',
         ]);
 
         if( $validator->fails() ) {
@@ -204,25 +209,11 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
         $this->object->setFlowcontrol(  $request->input( 'flowcontrol'  ) );
         $this->object->setAutobaud(     $request->input( 'autobaud'     ) );
         $this->object->setNotes(        $request->input( 'notes'        ) );
-        $this->object->setCustomer(     D2EM::getRepository( CustomerEntity::class  )->find( $request->input( 'cust'    ) ) );
-        $this->object->setSwitcher(     D2EM::getRepository( SwitcherEntity::class  )->find( $request->input( 'switch'  ) ) );
+        $this->object->setCustomer(     D2EM::getRepository( CustomerEntity::class  )->find( $request->input( 'customerid' ) ) );
+        $this->object->setSwitcher(     D2EM::getRepository( SwitcherEntity::class  )->find( $request->input( 'switchid'   ) ) );
 
         D2EM::flush($this->object);
 
         return true;
     }
-
-    protected function preList()
-    {
-        $switchesWithoutConsole = [];
-        foreach( D2EM::getRepository( SwitcherEntity::class )->getAndCache( true, SwitcherEntity::TYPE_SWITCH  ) as $switch ) {
-            if( count( $switch->getConsoleServerConnections() ) == 0 )
-                $switchesWithoutConsole[] = $switch->getName();
-        }
-
-        if( count( $switchesWithoutConsole ) > 0 ) {
-            AlertContainer::push( "Warning: the following switch(es) have no recorded console server connection: ". implode( ', ', $switchesWithoutConsole ) ."." , Alert::DANGER );
-        }
-    }
-
 }
