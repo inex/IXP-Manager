@@ -11,7 +11,7 @@
         ->blockHelp( "" );
     ?>
 
-    <?= Former::select( 'location' )
+    <?= Former::select( 'locationid' )
         ->id( 'location' )
         ->label( 'Location' )
         ->placeholder( 'Select a location' )
@@ -35,7 +35,7 @@
         ->blockHelp( "" );
     ?>
 
-    <?= Former::select( 'u-count' )
+    <?= Former::select( 'u_counts_from' )
         ->label( "U's Count From")
         ->placeholder( 'Select an option' )
         ->fromQuery( Entities\Cabinet::$U_COUNTS_FROM )

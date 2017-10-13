@@ -78,7 +78,7 @@ class CabinetController extends Doctrine2Frontend {
 
             'listColumns'    => [
 
-                'id'        => [ 'title' => 'UID', 'display' => false ],
+                'id'        => [ 'title' => 'DB ID', 'display' => true ],
 
                 'location'  => [
                     'title'      => 'Location',
@@ -138,20 +138,19 @@ class CabinetController extends Doctrine2Frontend {
             }
 
             Former::populate([
-                'name'                  => $this->object->getName(),
-                'location'              => $this->object->getLocation()->getId(),
-                'colocation'            => $this->object->getCololocation(),
-                'type'                  => $this->object->getType(),
-                'height'                => $this->object->getHeight(),
-                'u-count'               => $this->object->getUCountsFrom(),
-                'notes'                 => $this->object->getNotes(),
+                'name'                  => request()->old( 'name' )          ?? $this->object->getName(),
+                'locationid'            => request()->old( 'location' )      ?? $this->object->getLocation()->getId(),
+                'colocation'            => request()->old( 'colocation' )    ?? $this->object->getCololocation(),
+                'type'                  => request()->old( 'type' )          ?? $this->object->getType(),
+                'height'                => request()->old( 'height' )        ?? $this->object->getHeight(),
+                'u_counts_from'         => request()->old( 'u_counts_from' ) ?? $this->object->getUCountsFrom(),
+                'notes'                 => request()->old( 'notes' )         ?? $this->object->getNotes(),
             ]);
         }
 
         return [
             'object'                => $this->object,
             'locations'             => D2EM::getRepository( LocationEntity::class )->getAsArray(),
-            'u-count-from'          => D2EM::getRepository( LocationEntity::class )->getAsArray(),
         ];
     }
 
@@ -165,10 +164,12 @@ class CabinetController extends Doctrine2Frontend {
     {
         $validator = Validator::make( $request->all(), [
             'name'                  => 'required|string|max:255',
-            'location'              => 'required|integer|exists:Entities\Location,id',
+            'locationid'            => 'required|integer|exists:Entities\Location,id',
             'colocation'            => 'required|string|max:255',
             'height'                => 'nullable|integer',
-            'u-count'               => 'required|integer|in:' . implode( ',', array_keys( CabinetEntity::$U_COUNTS_FROM ) ),
+            'type'                  => 'nullable|string|max:255',
+            'notes'                 => 'nullable|string|max:65535',
+            'u_counts_from'         => 'required|integer|in:' . implode( ',', array_keys( CabinetEntity::$U_COUNTS_FROM ) ),
         ]);
 
         if( $validator->fails() ) {
@@ -188,9 +189,9 @@ class CabinetController extends Doctrine2Frontend {
         $this->object->setCololocation(      $request->input( 'colocation'      ) );
         $this->object->setType(              $request->input( 'type'            ) );
         $this->object->setHeight(            $request->input( 'height'          ) );
-        $this->object->setUCountsFrom(       $request->input( 'u-count'         ) );
+        $this->object->setUCountsFrom(       $request->input( 'u_counts_from'   ) );
         $this->object->setNotes(             $request->input( 'notes'           ) );
-        $this->object->setLocation(          D2EM::getRepository( LocationEntity::class )->find( $request->input( 'location' ) ) );
+        $this->object->setLocation(          D2EM::getRepository( LocationEntity::class )->find( $request->input( 'locationid' ) ) );
 
         D2EM::flush($this->object);
 
@@ -202,17 +203,19 @@ class CabinetController extends Doctrine2Frontend {
      * @inheritdoc
      */
     protected function preDelete(): bool {
+        $okay = true;
+
         if( ( $cnt = count( $this->object->getCustomerEquipment() ) ) ) {
             AlertContainer::push( "Could not delete the cabinet as at least one piece of customer equipment is located here. Reassign or delete that kit first.", Alert::DANGER );
-            return false;
+            $okay = false;
         }
 
         if( ( $cnt = count( $this->object->getSwitches() ) ) ) {
             AlertContainer::push( "Could not delete the cabinet as at least one switch is located here. Reassign or delete the switch first.", Alert::DANGER );
-            return false;
+            $okay = false;
         }
 
-        return true;
+        return $okay;
     }
 
 

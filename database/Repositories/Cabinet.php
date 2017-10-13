@@ -72,7 +72,7 @@ class Cabinet extends EntityRepository
     /**
      * Get all cabinets (or a particular one) for listing on the frontend CRUD
      *
-     * @see \IXP\Http\Controller\Doctrine2Frontend
+     * @see \IXP\Http\Controllers\Doctrine2Frontend
      *
      *
      * @param \stdClass $feParams
