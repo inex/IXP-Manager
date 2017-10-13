@@ -138,19 +138,28 @@ abstract class Doctrine2Frontend extends Controller {
         // add leading slash to class name for absolute resolution:
         $class = '\\' . $class;
 
-        Route::group( [ 'prefix' => $route_prefix ], function() use ( $class ) {
-            Route::get(     'list',        $class . '@list'   );
-            Route::get(     'add',         $class . '@add'    );
-            Route::get(     'edit/{id}',   $class . '@edit'   );
-            Route::get(     'view/{id}',   $class . '@view'   );
-            Route::post(    'delete',      $class . '@delete' );
-            Route::post(    'store',       $class . '@store'  );
+        Route::group( [ 'prefix' => $route_prefix ], function() use ( $class, $route_prefix ) {
+            Route::get(     'list',        $class . '@list'   )->name( $route_prefix . '@list'   );
+            Route::get(     'add',         $class . '@add'    )->name( $route_prefix . '@add'    );
+            Route::get(     'edit/{id}',   $class . '@edit'   )->name( $route_prefix . '@edit'   );
+            Route::get(     'view/{id}',   $class . '@view'   )->name( $route_prefix . '@view'   );
+            Route::post(    'delete',      $class . '@delete' )->name( $route_prefix . '@delete' );
+            Route::post(    'store',       $class . '@store'  )->name( $route_prefix . '@store'  );
         });
 
-        if( function_exists( 'additionalRoutes' ) ) {
-            self::additionalRoutes( $route_prefix );
-        }
+        self::additionalRoutes( $route_prefix );
     }
+
+    /**
+     * Function which can be over-ridden to add additional routes
+     *
+     * If you don't want to use the defaults as well as some additionals, override
+     * `routes()` instead.
+     *
+     * $string $route_prefix
+     * @return void
+     */
+    protected static function additionalRoutes( string $route_prefix ) {}
 
 
     /**
