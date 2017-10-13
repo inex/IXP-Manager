@@ -130,10 +130,12 @@ class InfrastructureController extends Doctrine2Frontend {
                 abort(404);
             }
 
+            $old = request()->old();
+
             Former::populate([
-                'name'             => $this->object->getName(),
-                'shortname'        => $this->object->getShortname(),
-                'isPrimary'        => $this->object->getIsPrimary() ?? false,
+                'name'             => array_key_exists( 'name',      $old ) ? $old['name']      : $this->object->getName(),
+                'shortname'        => array_key_exists( 'shortname', $old ) ? $old['shortname'] : $this->object->getShortname(),
+                'isPrimary'        => array_key_exists( 'isPrimary', $old ) ? $old['isPrimary'] : ( $this->object->getIsPrimary() ?? false ),
             ]);
         }
 

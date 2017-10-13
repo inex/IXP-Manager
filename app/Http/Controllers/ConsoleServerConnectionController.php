@@ -146,16 +146,16 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
             $old = request()->old();
 
             Former::populate([
-                'description'               => array_key_exists( 'description', $old ) ? $old['description'] : $this->object->getDescription(),
-                'customerid'                => request()->old( 'customerid' )  ?? $this->object->getCustomer()->getId(),
-                'switchid'                  => request()->old( 'switchid' )    ?? $this->object->getSwitcher()->getId(),
-                'port'                      => request()->old( 'port' )        ?? $this->object->getPort(),
-                'speed'                     => request()->old( 'speed' )       ?? $this->object->getSpeed(),
-                'parity'                    => request()->old( 'parity' )      ?? $this->object->getParity(),
-                'stopbits'                  => request()->old( 'stopbits' )    ?? $this->object->getStopbits(),
-                'flowcontrol'               => request()->old( 'flowcontrol' ) ?? $this->object->getFlowcontrol(),
-                'autobaud'                  => request()->old( 'autobaud' )    ?? $this->object->getAutobaud(),
-                'notes'                     => request()->old( 'notes' )       ?? $this->object->getNotes(),
+                'description'  => array_key_exists( 'description', $old ) ? $old['description'] : $this->object->getDescription(),
+                'customerid'   => array_key_exists( 'customerid',  $old ) ? $old['customerid']  : $this->object->getCustomer()->getId(),
+                'switchid'     => array_key_exists( 'switchid',    $old ) ? $old['switchid']    : $this->object->getSwitcher()->getId(),
+                'port'         => array_key_exists( 'port',        $old ) ? $old['port']        : $this->object->getPort(),
+                'speed'        => array_key_exists( 'speed',       $old ) ? $old['speed']       : $this->object->getSpeed(),
+                'parity'       => array_key_exists( 'parity',      $old ) ? $old['parity']      : $this->object->getParity(),
+                'stopbits'     => array_key_exists( 'stopbits',    $old ) ? $old['stopbits']    : $this->object->getStopbits(),
+                'flowcontrol'  => array_key_exists( 'flowcontrol', $old ) ? $old['flowcontrol'] : $this->object->getFlowcontrol(),
+                'autobaud'     => array_key_exists( 'autobaud',    $old ) ? $old['autobaud']    : ( $this->object->getAutobaud() ?? false ),
+                'notes'        => array_key_exists( 'notes',       $old ) ? $old['notes']       : $this->object->getNotes(),
             ]);
         }
 

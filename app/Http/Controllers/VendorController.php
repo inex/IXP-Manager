@@ -108,11 +108,13 @@ class VendorController extends Doctrine2Frontend {
                 abort(404);
             }
 
+            $old = request()->old();
+
             Former::populate([
-                'name'                      => $this->object->getName(),
-                'shortname'                 => $this->object->getShortname(),
-                'nagios-name'               => $this->object->getNagiosName(),
-                'bundle-name'               => $this->object->getBundleName(),
+                'name'        => array_key_exists( 'name',        $old ) ? $old['name']        : $this->object->getName(),
+                'shortname'   => array_key_exists( 'shortname',   $old ) ? $old['shortname']   : $this->object->getShortname(),
+                'nagios-name' => array_key_exists( 'nagios-name', $old ) ? $old['nagios-name'] : $this->object->getNagiosName(),
+                'bundle-name' => array_key_exists( 'bundle-name', $old ) ? $old['bundle-name'] : $this->object->getBundleName(),
             ]);
         }
 

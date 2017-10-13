@@ -129,11 +129,13 @@ class CustKitController extends Doctrine2Frontend {
                 abort(404);
             }
 
+            $old = request()->old();
+
             Former::populate([
-                'name'                  => $this->object ->getName(),
-                'cust'                  => $this->object ->getCustomer()->getId(),
-                'cabinet'               => $this->object ->getCabinet()->getId(),
-                'description'           => $this->object ->getDescr(),
+                'name'        => array_key_exists( 'name',        $old ) ? $old['name']        : $this->object ->getName(),
+                'cust'        => array_key_exists( 'cust',        $old ) ? $old['cust']        : $this->object ->getCustomer()->getId(),
+                'cabinet'     => array_key_exists( 'cabinet',     $old ) ? $old['cabinet']     : $this->object ->getCabinet()->getId(),
+                'description' => array_key_exists( 'description', $old ) ? $old['description'] : $this->object ->getDescr(),
             ]);
         }
 

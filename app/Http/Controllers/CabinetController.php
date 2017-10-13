@@ -137,14 +137,16 @@ class CabinetController extends Doctrine2Frontend {
                 abort(404);
             }
 
+            $old = request()->old();
+
             Former::populate([
-                'name'                  => request()->old( 'name' )          ?? $this->object->getName(),
-                'locationid'            => request()->old( 'location' )      ?? $this->object->getLocation()->getId(),
-                'colocation'            => request()->old( 'colocation' )    ?? $this->object->getCololocation(),
-                'type'                  => request()->old( 'type' )          ?? $this->object->getType(),
-                'height'                => request()->old( 'height' )        ?? $this->object->getHeight(),
-                'u_counts_from'         => request()->old( 'u_counts_from' ) ?? $this->object->getUCountsFrom(),
-                'notes'                 => request()->old( 'notes' )         ?? $this->object->getNotes(),
+                'name'                  => array_key_exists( 'name',          $old ) ? $old['name']          : $this->object->getName(),
+                'locationid'            => array_key_exists( 'locationid',    $old ) ? $old['locationid']    : $this->object->getLocation()->getId(),
+                'colocation'            => array_key_exists( 'colocation',    $old ) ? $old['colocation']    : $this->object->getCololocation(),
+                'type'                  => array_key_exists( 'type',          $old ) ? $old['type']          : $this->object->getType(),
+                'height'                => array_key_exists( 'height',        $old ) ? $old['height']        : $this->object->getHeight(),
+                'u_counts_from'         => array_key_exists( 'u_counts_from', $old ) ? $old['u_counts_from'] : $this->object->getUCountsFrom(),
+                'notes'                 => array_key_exists( 'notes',         $old ) ? $old['notes']         : $this->object->getNotes(),
             ]);
         }
 

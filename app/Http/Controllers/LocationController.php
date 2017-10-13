@@ -124,18 +124,20 @@ class LocationController extends Doctrine2Frontend {
                 abort(404);
             }
 
+            $old = request()->old();
+
             Former::populate([
-                'name'                  => $this->object->getName(),
-                'shortname'             => $this->object->getShortname(),
-                'tag'                   => $this->object->getTag(),
-                'address'               => $this->object->getAddress(),
-                'nocphone'              => $this->object->getNocphone(),
-                'nocfax'                => $this->object->getNocfax(),
-                'nocemail'              => $this->object->getNocemail(),
-                'officephone'           => $this->object->getOfficephone(),
-                'officefax'             => $this->object->getOfficefax(),
-                'officeemail'           => $this->object->getOfficeemail(),
-                'notes'                 => $this->object->getNotes(),
+                'name'                  => array_key_exists( 'name',        $old ) ? $old['name']        : $this->object->getName(),
+                'shortname'             => array_key_exists( 'shortname',   $old ) ? $old['shortname']   : $this->object->getShortname(),
+                'tag'                   => array_key_exists( 'tag',         $old ) ? $old['tag']         : $this->object->getTag(),
+                'address'               => array_key_exists( 'address',     $old ) ? $old['address']     : $this->object->getAddress(),
+                'nocphone'              => array_key_exists( 'nocphone',    $old ) ? $old['nocphone']    : $this->object->getNocphone(),
+                'nocfax'                => array_key_exists( 'nocfax',      $old ) ? $old['nocfax']      : $this->object->getNocfax(),
+                'nocemail'              => array_key_exists( 'nocemail',    $old ) ? $old['nocemail']    : $this->object->getNocemail(),
+                'officephone'           => array_key_exists( 'officephone', $old ) ? $old['officephone'] : $this->object->getOfficephone(),
+                'officefax'             => array_key_exists( 'officefax',   $old ) ? $old['officefax']   : $this->object->getOfficefax(),
+                'officeemail'           => array_key_exists( 'officeemail', $old ) ? $old['officeemail'] : $this->object->getOfficeemail(),
+                'notes'                 => array_key_exists( 'notes',       $old ) ? $old['notes']       : $this->object->getNotes(),
             ]);
         }
 
