@@ -94,7 +94,7 @@ class CustomerEquipment
     /**
      * Set Customer
      *
-     * @param Entities\Customer $customer
+     * @param \Entities\Customer $customer
      * @return CustomerEquipment
      */
     public function setCustomer(\Entities\Customer $customer = null)
@@ -107,7 +107,7 @@ class CustomerEquipment
     /**
      * Get Customer
      *
-     * @return Entities\Customer 
+     * @return \Entities\Customer
      */
     public function getCustomer()
     {
@@ -117,7 +117,7 @@ class CustomerEquipment
     /**
      * Set Cabinet
      *
-     * @param Entities\Cabinet $cabinet
+     * @param \Entities\Cabinet $cabinet
      * @return CustomerEquipment
      */
     public function setCabinet(\Entities\Cabinet $cabinet = null)
@@ -130,7 +130,7 @@ class CustomerEquipment
     /**
      * Get Cabinet
      *
-     * @return Entities\Cabinet 
+     * @return \Entities\Cabinet
      */
     public function getCabinet()
     {

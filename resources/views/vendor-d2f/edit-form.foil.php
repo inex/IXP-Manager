@@ -16,12 +16,12 @@
         ->blockHelp( "" );
     ?>
 
-    <?= Former::text( 'nagios-name' )
+    <?= Former::text( 'nagios_name' )
         ->label( 'Nagios Name' )
         ->blockHelp( "" );
     ?>
 
-    <?= Former::text( 'bundle-name' )
+    <?= Former::text( 'bundle_name' )
         ->label( 'Bundle Name' )
         ->blockHelp( "" );
     ?>

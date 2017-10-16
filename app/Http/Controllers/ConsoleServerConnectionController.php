@@ -30,10 +30,6 @@ use Entities\{
     Customer                    as CustomerEntity,
     Switcher                    as SwitcherEntity
 };
-use IXP\Utils\View\Alert\{
-    Alert,
-    Container as AlertContainer
-};
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
@@ -146,16 +142,16 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
             $old = request()->old();
 
             Former::populate([
-                'description'  => array_key_exists( 'description', $old ) ? $old['description'] : $this->object->getDescription(),
-                'customerid'   => array_key_exists( 'customerid',  $old ) ? $old['customerid']  : $this->object->getCustomer()->getId(),
-                'switchid'     => array_key_exists( 'switchid',    $old ) ? $old['switchid']    : $this->object->getSwitcher()->getId(),
-                'port'         => array_key_exists( 'port',        $old ) ? $old['port']        : $this->object->getPort(),
-                'speed'        => array_key_exists( 'speed',       $old ) ? $old['speed']       : $this->object->getSpeed(),
-                'parity'       => array_key_exists( 'parity',      $old ) ? $old['parity']      : $this->object->getParity(),
-                'stopbits'     => array_key_exists( 'stopbits',    $old ) ? $old['stopbits']    : $this->object->getStopbits(),
-                'flowcontrol'  => array_key_exists( 'flowcontrol', $old ) ? $old['flowcontrol'] : $this->object->getFlowcontrol(),
-                'autobaud'     => array_key_exists( 'autobaud',    $old ) ? $old['autobaud']    : ( $this->object->getAutobaud() ?? false ),
-                'notes'        => array_key_exists( 'notes',       $old ) ? $old['notes']       : $this->object->getNotes(),
+                'description'   => array_key_exists( 'description', $old ) ? $old['description']    : $this->object->getDescription(),
+                'custid'        => array_key_exists( 'custid',      $old ) ? $old['custid']         : $this->object->getCustomer()->getId(),
+                'switchid'      => array_key_exists( 'switchid',    $old ) ? $old['switchid']       : $this->object->getSwitcher()->getId(),
+                'port'          => array_key_exists( 'port',        $old ) ? $old['port']           : $this->object->getPort(),
+                'speed'         => array_key_exists( 'speed',       $old ) ? $old['speed']          : $this->object->getSpeed(),
+                'parity'        => array_key_exists( 'parity',      $old ) ? $old['parity']         : $this->object->getParity(),
+                'stopbits'      => array_key_exists( 'stopbits',    $old ) ? $old['stopbits']       : $this->object->getStopbits(),
+                'flowcontrol'   => array_key_exists( 'flowcontrol', $old ) ? $old['flowcontrol']    : $this->object->getFlowcontrol(),
+                'autobaud'      => array_key_exists( 'autobaud',    $old ) ? $old['autobaud']       : ( $this->object->getAutobaud() ?? false ),
+                'notes'         => array_key_exists( 'notes',       $old ) ? $old['notes']          : $this->object->getNotes(),
             ]);
         }
 
@@ -174,10 +170,9 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
      */
     public function doStore( Request $request )
     {
-        dd($request->all());
         $validator = Validator::make( $request->all(), [
             'description'           => 'required|string|max:255',
-            'customerid'            => 'required|int|exists:Entities\Customer,id',
+            'custid'                => 'required|int|exists:Entities\Customer,id',
             'switchid'              => 'required|int|exists:Entities\Switcher,id',
             'port'                  => 'required|string|max:255',
             'speed'                 => 'nullable|integer',
@@ -209,8 +204,8 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
         $this->object->setFlowcontrol(  $request->input( 'flowcontrol'  ) );
         $this->object->setAutobaud(     $request->input( 'autobaud'     ) );
         $this->object->setNotes(        $request->input( 'notes'        ) );
-        $this->object->setCustomer(     D2EM::getRepository( CustomerEntity::class  )->find( $request->input( 'customerid' ) ) );
-        $this->object->setSwitcher(     D2EM::getRepository( SwitcherEntity::class  )->find( $request->input( 'switchid'   ) ) );
+        $this->object->setCustomer(     D2EM::getRepository( CustomerEntity::class  )->find( $request->input( 'custid'      ) ) );
+        $this->object->setSwitcher(     D2EM::getRepository( SwitcherEntity::class  )->find( $request->input( 'switchid'    ) ) );
 
         D2EM::flush($this->object);
 

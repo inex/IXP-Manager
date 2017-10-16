@@ -16,7 +16,7 @@
         ->blockHelp( "" );
     ?>
 
-    <?= Former::select( 'infrastructure' )
+    <?= Former::select( 'infrastructureid' )
         ->label( 'Infrastructure' )
         ->fromQuery( $t->params[ 'infrastructure'], 'name' )
         ->placeholder( 'Choose an infrastructure' )

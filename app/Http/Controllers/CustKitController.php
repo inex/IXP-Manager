@@ -132,17 +132,17 @@ class CustKitController extends Doctrine2Frontend {
             $old = request()->old();
 
             Former::populate([
-                'name'        => array_key_exists( 'name',        $old ) ? $old['name']        : $this->object ->getName(),
-                'cust'        => array_key_exists( 'cust',        $old ) ? $old['cust']        : $this->object ->getCustomer()->getId(),
-                'cabinet'     => array_key_exists( 'cabinet',     $old ) ? $old['cabinet']     : $this->object ->getCabinet()->getId(),
-                'description' => array_key_exists( 'description', $old ) ? $old['description'] : $this->object ->getDescr(),
+                'name'          => array_key_exists( 'name',        $old ) ? $old['name']           : $this->object->getName(),
+                'custid'        => array_key_exists( 'custid',      $old ) ? $old['custid']         : $this->object->getCustomer()->getId(),
+                'cabinetid'     => array_key_exists( 'cabinetid',   $old ) ? $old['cabinetid']      : $this->object->getCabinet()->getId(),
+                'descr'         => array_key_exists( 'descr',       $old ) ? $old['descr']          : $this->object->getDescr(),
             ]);
         }
 
         return [
             'object'        => $this->object ,
-            'cabinets'      => D2EM::getRepository( CabinetEntity::class )->getAsArray(),
-            'custs'         => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
+            'cabinets'      => D2EM::getRepository( CabinetEntity::class    )->getAsArray(),
+            'custs'         => D2EM::getRepository( CustomerEntity::class   )->getAsArray(),
         ];
     }
 
@@ -156,10 +156,10 @@ class CustKitController extends Doctrine2Frontend {
     {
 
         $validator = Validator::make( $request->all(), [
-            'name'              => 'required|string|max:255',
-            'cust'              => 'required|integer|exists:Entities\Customer,id',
-            'cabinet'           => 'required|integer|exists:Entities\Cabinet,id',
-            'description'       => 'nullable|string|max:255',
+            'name'                  => 'required|string|max:255',
+            'custid'                => 'required|integer|exists:Entities\Customer,id',
+            'cabinetid'             => 'required|integer|exists:Entities\Cabinet,id',
+            'descr'                 => 'nullable|string|max:255',
         ]);
 
         if( $validator->fails() ) {
@@ -176,9 +176,9 @@ class CustKitController extends Doctrine2Frontend {
         }
 
         $this->object->setName(     $request->input( 'name' ) );
-        $this->object->setCabinet(  D2EM::getRepository( CabinetEntity::class  )->find( $request->input( 'cabinet' ) ) );
-        $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'cust' ) ) );
-        $this->object->setDescr(    $request->input( 'description' ) );
+        $this->object->setCabinet(  D2EM::getRepository( CabinetEntity::class  )->find( $request->input( 'cabinetid'    ) ) );
+        $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid'       ) ) );
+        $this->object->setDescr(    $request->input( 'descr' ) );
 
         D2EM::flush( $this->object );
 

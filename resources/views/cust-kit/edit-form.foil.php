@@ -11,21 +11,21 @@
         ->blockHelp( "Descriptive name of the co-located equipment." );
     ?>
 
-    <?= Former::select( 'cust' )
+    <?= Former::select( 'custid' )
         ->label( 'Customer' )
         ->fromQuery( $t->params[ 'custs'], 'name' )
         ->placeholder( 'Choose a customer' )
         ->addClass( 'chzn-select' );
     ?>
 
-    <?= Former::select( 'cabinet' )
+    <?= Former::select( 'cabinetid' )
         ->label( 'Cabinet' )
         ->fromQuery( $t->params[ 'cabinets'], 'name' )
         ->placeholder( 'Choose a Cabinet' )
         ->addClass( 'chzn-select' );
     ?>
 
-    <?= Former::textarea( 'description' )
+    <?= Former::textarea( 'descr' )
         ->label( 'Description' )
         ->rows( 5 )
         ->blockHelp( 'Detailed description of the co-located equipment.' );

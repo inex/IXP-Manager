@@ -111,10 +111,10 @@ class VendorController extends Doctrine2Frontend {
             $old = request()->old();
 
             Former::populate([
-                'name'        => array_key_exists( 'name',        $old ) ? $old['name']        : $this->object->getName(),
-                'shortname'   => array_key_exists( 'shortname',   $old ) ? $old['shortname']   : $this->object->getShortname(),
-                'nagios-name' => array_key_exists( 'nagios-name', $old ) ? $old['nagios-name'] : $this->object->getNagiosName(),
-                'bundle-name' => array_key_exists( 'bundle-name', $old ) ? $old['bundle-name'] : $this->object->getBundleName(),
+                'name'        => array_key_exists( 'name',        $old ) ? $old[ 'name' ]        : $this->object->getName(),
+                'shortname'   => array_key_exists( 'shortname',   $old ) ? $old[ 'shortname' ]   : $this->object->getShortname(),
+                'nagios_name' => array_key_exists( 'nagios_name', $old ) ? $old[ 'nagios_name' ] : $this->object->getNagiosName(),
+                'bundle_name' => array_key_exists( 'bundle_name', $old ) ? $old[ 'bundle_name' ] : $this->object->getBundleName(),
             ]);
         }
 
@@ -134,7 +134,7 @@ class VendorController extends Doctrine2Frontend {
         $validator = Validator::make( $request->all(), [
             'name'              => 'required|string|max:255',
             'shortname'         => 'required|string|max:255',
-            'nagios-name'       => 'required|string|max:255',
+            'nagios_name'       => 'required|string|max:255',
 
         ]);
 
@@ -153,8 +153,8 @@ class VendorController extends Doctrine2Frontend {
 
         $this->object->setName(             $request->input( 'name'             ) );
         $this->object->setShortname(        $request->input( 'shortname'        ) );
-        $this->object->setNagiosName(       $request->input( 'nagios-name'      ) );
-        $this->object->setBundleName(       $request->input( 'bundle-name'      ) );
+        $this->object->setNagiosName(       $request->input( 'nagios_name'      ) );
+        $this->object->setBundleName(       $request->input( 'bundle_name'      ) );
 
         D2EM::flush( $this->object );
 

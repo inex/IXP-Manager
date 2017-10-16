@@ -11,7 +11,7 @@
         ->blockHelp( "" );
     ?>
 
-    <?= Former::select( 'customerid' )
+    <?= Former::select( 'custid' )
         ->id( 'cust' )
         ->label( 'Customer' )
         ->placeholder( 'Select a customer' )

@@ -23,11 +23,16 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Redirect, Validator;
+use Cache, D2EM, Former, Redirect, Validator;
 
 use Entities\{
     Vlan                as VlanEntity,
     Infrastructure      as InfrastructureEntity
+};
+
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
 };
 
 use Illuminate\Http\Request;
@@ -136,7 +141,7 @@ class VlanController extends Doctrine2Frontend {
             Former::populate([
                 'name'                      => $this->object->getName(),
                 'number'                    => $this->object->getNumber(),
-                'infrastructure'            => $this->object->getInfrastructure()->getId(),
+                'infrastructureid'          => $this->object->getInfrastructure()->getId(),
                 'config_name'               => $this->object->getConfigName(),
                 'private'                   => $this->object->getPrivate()          ? 1 : 0,
                 'peering_matrix'            => $this->object->getPeeringMatrix()    ? 1 : 0,
@@ -163,7 +168,7 @@ class VlanController extends Doctrine2Frontend {
         $validator = Validator::make( $request->all(), [
             'name'              => 'required|string|max:255',
             'number'            => 'required|integer',
-            'infrastructure'    => 'required|integer|exists:Entities\Infrastructure,id',
+            'infrastructureid'  => 'required|integer|exists:Entities\Infrastructure,id',
 
         ]);
 
@@ -187,8 +192,43 @@ class VlanController extends Doctrine2Frontend {
         $this->object->setPrivate(          $request->input( 'private'              ) ?? false );
         $this->object->setPeeringManager(   $request->input( 'peering_manager'      ) ?? false );
         $this->object->setPeeringMatrix(    $request->input( 'peering_matrix'       ) ?? false );
-        $this->object->setInfrastructure(   D2EM::getRepository( InfrastructureEntity::class )->find( $request->input( 'infrastructure' ) ) );
+        $this->object->setInfrastructure(   D2EM::getRepository( InfrastructureEntity::class )->find( $request->input( 'infrastructureid' ) ) );
         D2EM::flush( $this->object );
+
+        return true;
+    }
+
+    /**
+     * Overriding optional method to clear cached entries:
+     *
+     * @param string $action Either 'add', 'edit', 'delete'
+     * @return bool
+     */
+    protected function postFlush( string $action ): bool
+    {
+        // this is created in Repositories\Vlan::getNames()
+        Cache::forget( VlanEntity::ALL_CACHE_KEY );
+        return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function preDelete(): bool {
+        if( ( $cnt = count( $this->object->getRouters() ) ) ) {
+            AlertContainer::push( "Could not delete this Vlan as {$cnt} router(s) are assigned to it", Alert::DANGER );
+            return false;
+        }
+
+        if( ( $cnt = count( $this->object->getIPv4Addresses() ) ) ) {
+            AlertContainer::push( "Could not delete this Vlan as {$cnt} IPv4 address(es) are assigned to it", Alert::DANGER );
+            return false;
+        }
+
+        if( ( $cnt = count( $this->object->getIPv6Addresses() ) ) ) {
+            AlertContainer::push( "Could not delete this Vlan as {$cnt} IPv6 address(es) are assigned to it", Alert::DANGER );
+            return false;
+        }
 
         return true;
     }
