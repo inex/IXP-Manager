@@ -187,6 +187,7 @@ return [
          * Third party providers
          */
         LaravelDoctrine\ORM\DoctrineServiceProvider::class,
+        LaravelDoctrine\Extensions\BeberleiExtensionsServiceProvider::class,
 
         Intervention\Image\ImageServiceProvider::class,
 
