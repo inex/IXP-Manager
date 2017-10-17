@@ -134,7 +134,7 @@ class MacAddressController extends Doctrine2Frontend {
      * @param Request $request
      * @return bool|RedirectResponse
      */
-    public function doStore( Request $request ) {}
+    public function doStore( Request $request ) { }
 
     protected function preList()
     {

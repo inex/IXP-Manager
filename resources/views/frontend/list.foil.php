@@ -172,10 +172,13 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
+
     <?php if( isset( $t->view[ 'listScript' ] ) ): ?>
         <?= $t->insert( $t->view[ 'listScript' ] ); ?>
     <?php endif; ?>
+
     <?php if( isset( $t->view[ 'script' ] ) ): ?>
         <?= $t->insert( $t->view[ 'script' ] ); ?>
     <?php endif; ?>
+
 <?php $this->append() ?>
