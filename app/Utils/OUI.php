@@ -91,7 +91,7 @@ class OUI
         $this->ouis = [];
         foreach( explode( "\n", $data ) as $line ) {
             if( preg_match( "/^\s*([0-9A-F]{6})\s+\(base 16\)\s+(.*)$/", $line, $matches ) )
-                $this->ouis[ strtolower( $matches[1] ) ] = $matches[2];
+                $this->ouis[ strtolower( trim( $matches[1] ) ) ] = trim( $matches[2] );
         }
 
         return $this->ouis;
