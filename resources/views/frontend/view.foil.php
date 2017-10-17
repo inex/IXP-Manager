@@ -24,12 +24,14 @@
             <a type="button" class="btn btn-default" href="<?= action($t->controller.'@list') ?>">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
-            <a type="button" class="btn btn-default" href="<?= action($t->controller.'@edit' , [ 'id' => $t->data[ 'data' ][ 'id' ] ]) ?>">
-                <span class="glyphicon glyphicon-pencil"></span>
-            </a>
-            <a type="button" class="btn btn-default" href="<?= action($t->controller.'@add') ?>">
-                <span class="glyphicon glyphicon-plus"></span>
-            </a>
+            <?php if( !isset( $t->data[ 'feParams' ]->readonly ) || !$t->data[ 'feParams' ]->readonly ): ?>
+                <a type="button" class="btn btn-default" href="<?= action($t->controller.'@edit' , [ 'id' => $t->data[ 'data' ][ 'id' ] ]) ?>">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                </a>
+                <a type="button" class="btn btn-default" href="<?= action($t->controller.'@add') ?>">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </a>
+            <?php endif; ?>
         </div>
     </li>
 

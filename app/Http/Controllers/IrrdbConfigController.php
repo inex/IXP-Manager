@@ -34,7 +34,7 @@ use Illuminate\Http\RedirectResponse;
 
 
 /**
- * IrrdbConfig Controller
+ * Irrdb Config Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
@@ -52,7 +52,7 @@ class IrrdbConfigController extends Doctrine2Frontend {
     /**
      * This function sets up the frontend controller
      */
-    public function feInit(){
+    public function feInit() {
 
         $this->data[ 'feParams' ] =  $this->feParams = (object)[
 

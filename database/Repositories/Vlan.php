@@ -562,6 +562,19 @@ class Vlan extends EntityRepository
             $dql .= " AND v.id = " . (int)$id;
         }
 
+        /*if( $this->getParam( 'infra', false ) && $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $this->getParam( 'infra' ) ) )
+        {
+            $dql .= " i.id = ". (int)$infraid ;
+            $qb->andWhere( 'i = :infra' )->setParameter( 'infra', $infra );
+            $this->view->infra = $infra;
+        }
+
+        if( $this->getParam( 'publiconly', false ) )
+        {
+            $qb->andWhere( 'v.private = 0' );
+            $this->view->publiconly = 1;
+        }*/
+
         if( isset( $feParams->listOrderBy ) ) {
             $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
             $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';

@@ -2,6 +2,12 @@
 
 namespace Repositories;
 
+use D2EM;
+
+use Entities\{
+    OUI as  OUIEntity
+};
+
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -30,5 +36,85 @@ class MACAddress extends EntityRepository
             )
             ->setParameter( 'mac', strtolower( str_replace( ':', '', $mac ) ) )
             ->getResult();
+    }
+
+    /**
+     * Get all infrastructures (or a particular one) for listing on the frontend CRUD
+     *
+     * @see \IXP\Http\Controller\Doctrine2Frontend
+     *
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     * @return array Array of infrastructures (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeList( \stdClass $feParams, int $id = null )
+    {
+        $dql = "SELECT m
+                FROM Entities\\MACAddress m
+                JOIN m.VirtualInterface vi
+                JOIN vi.VlanInterfaces vli
+                JOIN vi.Customer c
+                JOIN vi.PhysicalInterfaces pi
+                JOIN pi.SwitchPort sp
+                JOIN sp.Switcher s
+                WHERE 1 = 1";
+
+        if( $id ) {
+            $dql .= " AND m.id = " . (int)$id;
+        }
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY c.name ";
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        $objects = $query->getResult();
+
+        $data = [];
+        $datas = [];
+
+        foreach( $objects as $m ) {
+            $data[ $m->getId() ]['id']          = $m->getId();
+            $data[ $m->getId() ]['firstseen']   = $m->getFirstseen();
+            $data[ $m->getId() ]['lastseen']    = $m->getLastseen();
+            $data[ $m->getId() ]['mac']         = $m->getMac();
+            $data[ $m->getId() ]['customerid']  = $m->getVirtualInterface()->getCustomer()->getId();
+            $data[ $m->getId() ]['customer']    = $m->getVirtualInterface()->getCustomer()->getName();
+            $data[ $m->getId() ]['interfaceid'] = $m->getVirtualInterface()->getId();
+
+            $data[ $m->getId() ]['interface']   =
+                $m->getVirtualInterface()->getPhysicalInterfaces()[0]->getSwitchport()->getSwitcher()->getName() . " - "
+                . $m->getVirtualInterface()->getPhysicalInterfaces()[0]->getSwitchport()->getName();
+
+            if( $m->getVirtualInterface()->getVlanInterfaces() ) {
+                foreach( $m->getVirtualInterface()->getVlanInterfaces() as $vli ) {
+                    if( !$vli->getVlan()->getPrivate() ) {
+                        if( $vli->getIpv4Address() )
+                            $data[ $m->getId() ]['ipv4'] = $vli->getIpv4Address()->getAddress();
+
+                        if( $vli->getIpv6Address() )
+                            $data[ $m->getId() ]['ipv6'] = $vli->getIpv6Address()->getAddress();
+
+                        break;
+                    }
+                }
+
+                if( !isset( $data[ $m->getId() ]['ipv4'] ) )
+                    $data[ $m->getId() ]['ipv4'] = '';
+
+                if( !isset( $data[ $m->getId() ]['ipv6'] ) )
+                    $data[ $m->getId() ]['ipv6'] = '';
+            }
+
+            if( $m->getMac() ){
+                $data[ $m->getId() ]['manufacturer'] = D2EM::getRepository( OUIEntity::class )->getOrganisation(  strtolower( substr( $m->getMac(), 0, 6 ) ) );
+            }
+
+        }
+
+        return $data;
     }
 }

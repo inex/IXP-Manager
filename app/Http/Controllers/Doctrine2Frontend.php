@@ -96,15 +96,16 @@ abstract class Doctrine2Frontend extends Controller {
      * @var array
      */
     static public $FE_COL_TYPES = [
-        'HAS_ONE'  => 'hasOne',
-        'DATETIME' => 'datetime',
-        'DATE'     => 'date',
-        'TIME'     => 'time',
-        'SCRIPT'   => 'script',
-        'SPRINTF'  => 'sprintf',
-        'REPLACE'  => 'replace',
-        'XLATE'    => 'xlate',
-        'YES_NO'   => 'yes_no'
+        'HAS_ONE'           => 'hasOne',
+        'CUSTOM_HAS_ONE'    => 'customHasOne',
+        'DATETIME'          => 'datetime',
+        'DATE'              => 'date',
+        'TIME'              => 'time',
+        'SCRIPT'            => 'script',
+        'SPRINTF'           => 'sprintf',
+        'REPLACE'           => 'replace',
+        'XLATE'             => 'xlate',
+        'YES_NO'            => 'yes_no'
     ];
 
 
@@ -156,7 +157,7 @@ abstract class Doctrine2Frontend extends Controller {
      * If you don't want to use the defaults as well as some additionals, override
      * `routes()` instead.
      *
-     * $string $route_prefix
+     * @param string $route_prefix
      * @return void
      */
     protected static function additionalRoutes( string $route_prefix ) {}
@@ -205,13 +206,13 @@ abstract class Doctrine2Frontend extends Controller {
      * @param int $id The `id` of the row to load for `view` action.
      * @return array
      */
-    protected function viewGetData( $id ): array
-    {
+    protected function viewGetData( $id ): array {
 
         $data = $this->listGetData( $id );
 
-        if( is_array( $data ) && isset( $data[0] ) ) {
-            return $data[ 0 ];
+        if( is_array( $data ) && reset( $data ) ) {
+            // get first value of the array
+            return reset($data);
         }
 
         abort( 404);
@@ -228,7 +229,7 @@ abstract class Doctrine2Frontend extends Controller {
         $this->data[ 'data' ]           = $this->viewGetData( $id ) ;
 
         $this->view[ 'viewPreamble']    = $this->resolveTemplate( 'view-preamble',      false );
-        $this->view[ 'viewPostamble']   = $this->resolveTemplate( 'view-postamble', false );
+        $this->view[ 'viewPostamble']   = $this->resolveTemplate( 'view-postamble',     false );
         $this->view[ 'viewScript' ]     = $this->resolveTemplate( 'js/view',            false );
 
         return $this->display( 'view' );
@@ -392,6 +393,8 @@ abstract class Doctrine2Frontend extends Controller {
             return $this->feParams->viewFolderName . "/{$tpl}";
         } else if( ViewFacade::exists( "frontend/{$tpl}"  ) ) {
             return "frontend/{$tpl}";
+        } else if( ViewFacade::exists( $tpl  ) ) {
+            return $tpl;
         }
 
         if( $quitOnMissing ) {

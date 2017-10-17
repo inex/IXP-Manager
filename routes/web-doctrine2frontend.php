@@ -16,4 +16,5 @@ IXP\Http\Controllers\VendorController::routes();
 IXP\Http\Controllers\ConsoleServerConnectionController::routes();
 IXP\Http\Controllers\VlanController::routes();
 IXP\Http\Controllers\IrrdbConfigController::routes();
+IXP\Http\Controllers\MacAddressController::routes();
 

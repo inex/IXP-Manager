@@ -8,13 +8,15 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
-        <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= action($t->controller.'@add') ?>">
-                <span class="glyphicon glyphicon-plus"></span>
-            </a>
-        </div>
-    </li>
+    <?php if( !isset( $t->data[ 'feParams' ]->readonly ) || !$t->data[ 'feParams' ]->readonly ): ?>
+        <li class="pull-right">
+            <div class="btn-group btn-group-xs" role="group">
+                <a type="button" class="btn btn-default" href="<?= action($t->controller.'@add') ?>">
+                    <span class="glyphicon glyphicon-plus"></span>
+                </a>
+            </div>
+        </li>
+    <?php endif;?>
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -79,7 +81,6 @@
                                                 <?= $t->ee( $row[$col] ) ?>
                                             </a>
 
-
                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'XLATE'] ): ?>
 
                                             <?php if( isset($cconf[ 'xlator'][ $row[ $col ] ] ) ): ?>
@@ -113,9 +114,7 @@
                                             <?= date('H:M:S', strtotime($row[ $col ] ) ) ?>
 
                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
-
-                                            <?= $t->insert( $cconf['script'] ) ?>
-
+                                            <?= $t->insert( $cconf['script'], [ 'row' => $row, 'col' => $col ] ) ?>
                                         <?php else: ?>
 
                                             Type?
@@ -175,5 +174,8 @@
 <?php $this->section( 'scripts' ) ?>
     <?php if( isset( $t->view[ 'listScript' ] ) ): ?>
         <?= $t->insert( $t->view[ 'listScript' ] ); ?>
+    <?php endif; ?>
+    <?php if( isset( $t->view[ 'script' ] ) ): ?>
+        <?= $t->insert( $t->view[ 'script' ] ); ?>
     <?php endif; ?>
 <?php $this->append() ?>
