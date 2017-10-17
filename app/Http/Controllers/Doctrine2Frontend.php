@@ -36,6 +36,7 @@ use Illuminate\View\View;
 
 use Illuminate\Support\Facades\View as ViewFacade;
 
+use IXP\Exceptions\GeneralException;
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
@@ -92,6 +93,13 @@ abstract class Doctrine2Frontend extends Controller {
     public static $minimum_privilege = UserEntity::AUTH_SUPERUSER;
 
     /**
+     * Is this a read only controller?
+     *
+     * @var boolean
+     */
+    public static $read_only = false;
+
+    /**
      * Column / table data types when displaying data.
      * @var array
      */
@@ -133,7 +141,7 @@ abstract class Doctrine2Frontend extends Controller {
         if( $class::$route_prefix ) {
             $route_prefix = $class::$route_prefix;
         } else {
-            $route_prefix = kebab_case( substr( class_basename( get_called_class() ), 0, -10 ) );
+            $route_prefix = kebab_case( substr( class_basename( $class ), 0, -10 ) );
         }
 
         // add leading slash to class name for absolute resolution:
@@ -141,14 +149,17 @@ abstract class Doctrine2Frontend extends Controller {
 
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $class, $route_prefix ) {
             Route::get(     'list',        $class . '@list'   )->name( $route_prefix . '@list'   );
-            Route::get(     'add',         $class . '@add'    )->name( $route_prefix . '@add'    );
-            Route::get(     'edit/{id}',   $class . '@edit'   )->name( $route_prefix . '@edit'   );
             Route::get(     'view/{id}',   $class . '@view'   )->name( $route_prefix . '@view'   );
-            Route::post(    'delete',      $class . '@delete' )->name( $route_prefix . '@delete' );
-            Route::post(    'store',       $class . '@store'  )->name( $route_prefix . '@store'  );
+
+            if( !static::$read_only ) {
+                Route::get(  'add', $class . '@add' )->name( $route_prefix . '@add' );
+                Route::get(  'edit/{id}', $class . '@edit' )->name( $route_prefix . '@edit' );
+                Route::post( 'delete', $class . '@delete' )->name( $route_prefix . '@delete' );
+                Route::post( 'store', $class . '@store' )->name( $route_prefix . '@store' );
+            }
         });
 
-        self::additionalRoutes( $route_prefix );
+        static::additionalRoutes( $route_prefix );
     }
 
     /**
@@ -212,7 +223,7 @@ abstract class Doctrine2Frontend extends Controller {
 
         if( is_array( $data ) && reset( $data ) ) {
             // get first value of the array
-            return reset($data);
+            return $data[0];
         }
 
         abort( 404);
@@ -240,8 +251,11 @@ abstract class Doctrine2Frontend extends Controller {
      * Prepares data for the add / edit form
      * @param int|null $id
      * @return array
+     * @throws GeneralException
      */
-    abstract protected function addEditPrepareForm( $id = null ): array;
+    protected function addEditPrepareForm( $id = null ): array {
+        throw new GeneralException( 'For non-read-only Doctrine2Frontend controllers, you must override this method.' );
+    }
 
     /**
      * Common set up tasks for add and edit actions.
@@ -286,8 +300,11 @@ abstract class Doctrine2Frontend extends Controller {
     /**
      * Function to do the actual validation and storing of the submitted object.
      * @param Request $request
+     * @throws GeneralException
      */
-    abstract public function doStore( Request $request );
+    public function doStore( Request $request ) {
+        throw new GeneralException( 'For non-read-only Doctrine2Frontend controllers, you must override this method.' );
+    }
 
     /**
      * Action for storing a new/updated object

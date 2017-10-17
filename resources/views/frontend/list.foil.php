@@ -114,7 +114,9 @@
                                             <?= date('H:M:S', strtotime($row[ $col ] ) ) ?>
 
                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
+
                                             <?= $t->insert( $cconf['script'], [ 'row' => $row, 'col' => $col ] ) ?>
+
                                         <?php else: ?>
 
                                             Type?
@@ -175,10 +177,6 @@
 
     <?php if( isset( $t->view[ 'listScript' ] ) ): ?>
         <?= $t->insert( $t->view[ 'listScript' ] ); ?>
-    <?php endif; ?>
-
-    <?php if( isset( $t->view[ 'script' ] ) ): ?>
-        <?= $t->insert( $t->view[ 'script' ] ); ?>
     <?php endif; ?>
 
 <?php $this->append() ?>

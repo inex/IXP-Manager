@@ -117,7 +117,7 @@ class VlanController extends Doctrine2Frontend {
 
     protected static function additionalRoutes( string $route_prefix )
     {
-        dd( $route_prefix );
+        // dd( $route_prefix );
     }
     /**
      * Provide array of rows for the list and view

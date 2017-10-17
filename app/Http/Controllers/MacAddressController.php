@@ -51,6 +51,13 @@ class MacAddressController extends Doctrine2Frontend {
     protected $object = null;
 
     /**
+     * Is this a read only controller?
+     *
+     * @var boolean
+     */
+    public static $read_only = true;
+
+    /**
      * This function sets up the frontend controller
      */
     public function feInit(){
@@ -71,7 +78,7 @@ class MacAddressController extends Doctrine2Frontend {
 
             'viewFolderName'    => 'mac-address',
 
-            'readonly'      => true,
+            'readonly'          => self::$read_only,
 
             'listColumns'       => [
                 'id'        => [ 'title' => 'DB ID', 'display' => false ],
@@ -95,10 +102,10 @@ class MacAddressController extends Doctrine2Frontend {
                 'ipv4'           => 'IPv4',
                 'ipv6'           => 'IPv6',
                 'mac'            => [
-                        'title'         => 'Mac Address',
-                        'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
-                        'script'        => 'mac-address/list-mac-format.foil.php'
-                    ],
+                                        'title'         => 'MAC Address',
+                                        'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
+                                        'script'        => 'mac-address/list-mac-format.foil.php'
+                                    ],
 
                 'manufacturer'   => 'Manufacturer'
             ],
@@ -120,26 +127,4 @@ class MacAddressController extends Doctrine2Frontend {
     protected function listGetData( $id = null ) {
         return D2EM::getRepository( MACAddressEntity::class )->getAllForFeList( $this->feParams, $id );
     }
-
-    /**
-     * Display the form to add/edit an object
-     * @param   int $id ID of the row to edit
-     * @return array
-     */
-    protected function addEditPrepareForm( $id = null ): array { }
-
-
-    /**
-     * Function to do the actual validation and storing of the submitted object.
-     * @param Request $request
-     * @return bool|RedirectResponse
-     */
-    public function doStore( Request $request ) { }
-
-    protected function preList()
-    {
-        $this->view[ 'script' ]     = $this->resolveTemplate( 'layer2-address/js/clipboard' );
-        return true;
-    }
-
 }
