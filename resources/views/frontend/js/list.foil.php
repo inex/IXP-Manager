@@ -1,38 +1,45 @@
 <script>
+
+    let d2f_read_only = <?= ( !isset( $t->data[ 'feParams' ]->readonly ) || !$t->data[ 'feParams' ]->readonly ) ? 'false' : 'true' ?>;
+
     $(document).ready(function() {
 
-        $( 'a[id|="d2f-list-delete"]' ).on( 'click', function( event ) {
+        <?php if( !isset( $t->data[ 'feParams' ]->readonly ) || !$t->data[ 'feParams' ]->readonly ): ?>
+        
+            $( 'a[id|="d2f-list-delete"]' ).on( 'click', function( event ) {
 
-            event.preventDefault();
+                event.preventDefault();
 
-            let objectId = $( "#" + this.id ).attr( "data-object-id" );
+                let objectId = $( "#" + this.id ).attr( "data-object-id" );
 
-            let html = `<form id="d2f-form-delete" method="POST" action="<?= action($t->controller.'@delete' ) ?>">
-                            <div>Do you really want to delete this <?= $t->data[ 'feParams' ]->nameSingular ?>?</div>
-                            <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                            <input type="hidden" name="id" value="${objectId}">
-                        </form>`;
+                let html = `<form id="d2f-form-delete" method="POST" action="<?= action($t->controller.'@delete' ) ?>">
+                                <div>Do you really want to delete this <?= $t->data[ 'feParams' ]->nameSingular ?>?</div>
+                                <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                                <input type="hidden" name="id" value="${objectId}">
+                            </form>`;
 
-            bootbox.dialog({
-                message: html,
-                title: "Delete <?= $t->data[ 'feParams' ]->titleSingular ?>",
-                buttons: {
-                    cancel: {
-                        label: 'Close',
-                        callback: function () {
-                            $('.bootbox.modal').modal('hide');
-                            return false;
-                        }
-                    },
-                    submit: {
-                        label: 'Submit',
-                        callback: function () {
-                            $('#d2f-form-delete').submit();
-                        }
-                    },
-                }
+                bootbox.dialog({
+                    message: html,
+                    title: "Delete <?= $t->data[ 'feParams' ]->titleSingular ?>",
+                    buttons: {
+                        cancel: {
+                            label: 'Close',
+                            callback: function () {
+                                $('.bootbox.modal').modal('hide');
+                                return false;
+                            }
+                        },
+                        submit: {
+                            label: 'Submit',
+                            callback: function () {
+                                $('#d2f-form-delete').submit();
+                            }
+                        },
+                    }
+                });
             });
-        });
+
+        <?php endif; ?>
 
         let tableList = $( '#table-list' );
 
