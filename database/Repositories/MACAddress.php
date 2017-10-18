@@ -66,9 +66,9 @@ class MACAddress extends EntityRepository
      */
     public function getAllForFeList( \stdClass $feParams, int $id = null )
     {
-        $dql = "SELECT m.id AS id, m.firstseen AS firstseen, m.lastseen AS lastseen, m.mac AS mac, 
+        $dql = "SELECT m.mac AS mac, vi.id AS viid, m.id AS id, m.firstseen AS firstseen, m.lastseen AS lastseen,  
                     c.id AS customerid, c.abbreviatedName AS customer,
-                    vi.id AS viid, s.name AS switchname, 
+                    s.name AS switchname, 
                     GROUP_CONCAT( sp.name ) AS switchport, 
                     GROUP_CONCAT( DISTINCT ipv4.address ) AS ip4, 
                     GROUP_CONCAT( DISTINCT ipv6.address ) AS ip6,
@@ -91,10 +91,10 @@ class MACAddress extends EntityRepository
             $dql .= " AND m.id = " . (int)$id;
         }
 
-        $dql .= " GROUP BY m.id, m.firstseen, m.lastseen, m.mac, c.id, c.abbreviatedName, vi.id, s.name, o.organisation";
+        $dql .= " GROUP BY m.mac, vi.id, m.id, m.firstseen, m.lastseen, c.id, c.abbreviatedName, s.name, o.organisation";
 
         if( isset( $feParams->listOrderBy ) ) {
-            $dql .= " ORDER BY c.name ";
+            $dql .= " ORDER BY c.abbreviatedName ";
             $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
         }
 

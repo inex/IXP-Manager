@@ -81,18 +81,13 @@ class MacAddressController extends Doctrine2Frontend {
             'readonly'          => self::$read_only,
 
             'listColumns'       => [
-                'id'        => [ 'title' => 'DB ID', 'display' => false ],
 
-                'customer'  => 'Customer',
-
+                'id'             => [ 'title' => 'DB ID', 'display' => false ],
+                'customer'       => 'Customer',
+                'switchport'     => 'Interface(s)',
                 'ip4'            => 'IPv4',
                 'ip6'            => 'IPv6',
-                'mac'            => [
-                                        'title'         => 'MAC Address',
-                                        'type'          => self::$FE_COL_TYPES[ 'SCRIPT' ],
-                                        'script'        => 'mac-address/list-mac-format.foil.php'
-                                    ],
-
+                'mac'            => 'MAC Address',
                 'organisation'   => 'Manufacturer'
             ],
         ];
