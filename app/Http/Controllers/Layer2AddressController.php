@@ -23,22 +23,15 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM;
+use D2EM, Route;
 
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Cache;
 
 use Entities\{
     VlanInterface as VlanInterfaceEntity,
-    Layer2Address as Layer2AddressEntity,
-    OUI as OUIEntity,
-    Vlan as VlanEntity
+    Layer2Address as Layer2AddressEntity
 };
 
-use Illuminate\Http\JsonResponse;
-
-use IXP\Utils\View\Alert\Alert;
-use IXP\Utils\View\Alert\Container as AlertContainer;
 
 /**
  * Layer2Address Controller
@@ -48,8 +41,87 @@ use IXP\Utils\View\Alert\Container as AlertContainer;
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Layer2AddressController extends Controller
-{
+class Layer2AddressController extends Doctrine2Frontend {
+
+    /**
+     * The object being added / edited
+     * @var Layer2AddressEntity
+     */
+    protected $object = null;
+
+    /**
+     * Is this a read only controller?
+     *
+     * @var boolean
+     */
+    public static $read_only = true;
+
+    /**
+     * This function sets up the frontend controller
+     */
+    public function feInit(){
+
+        $this->data[ 'feParams' ] =  $this->feParams = (object)[
+
+            'entity'            => Layer2AddressEntity::class,
+            'pagetitle'         => 'Layer2 Addresses',
+
+            'titleSingular'     => 'Layer2 Addresses',
+            'nameSingular'      => 'a layer2 Addresses',
+
+            'defaultAction'     => 'list',
+            'defaultController' => 'Layer2AddressController',
+
+            'listOrderBy'       => 'customer',
+            'listOrderByDir'    => 'ASC',
+
+            'viewFolderName'    => 'layer2-address',
+
+            'readonly'          => self::$read_only,
+
+            'listColumns'       => [
+
+                'id'                => [ 'title' => 'DB ID', 'display' => false ],
+                'customer'          => 'Customer',
+                'switchport'        => 'Interface(s)',
+                'vlan'              => 'VLAN',
+                'ip4'               => 'IPv4',
+                'ip6'               => 'IPv6',
+                'mac'               => 'MAC Address',
+                'organisation'      => 'Manufacturer'
+            ],
+        ];
+
+        // display the same information in the view as the list
+        $this->feParams->viewColumns = $this->feParams->listColumns;
+
+
+    }
+
+    /**
+     * Additional routes
+     *
+     *
+     * @param string $route_prefix
+     * @return void
+     */
+    protected static function additionalRoutes( string $route_prefix )
+    {
+        Route::group( [ 'prefix' => $route_prefix ], function() {
+            Route::get(     'vlan-interface/{vliid}',   'Layer2AddressController@forVlanInterface' );
+            Route::post(    'delete/{id}',              'Layer2AddressController@delete' );
+        });
+    }
+
+    /**
+     * Provide array of rows for the list action and view action
+     *
+     * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     * @return array
+     */
+    protected function listGetData( $id = null ) {
+        return D2EM::getRepository( Layer2AddressEntity::class )->getAllForFeList( $this->feParams, $id );
+    }
 
     /**
      * Display all the layer2addresses for a VlanInterface
@@ -57,7 +129,7 @@ class Layer2AddressController extends Controller
      * @param  int $vliid ID if the VlanInterface
      * @return  View
      */
-    public function index( int $vliid ): View {
+    public function forVlanInterface( int $vliid ): View {
         if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $vliid ) ) ) {
             return abort( '404' );
         }
@@ -66,31 +138,5 @@ class Layer2AddressController extends Controller
             'vli'       => $vli
         ]);
     }
-
-    /**
-     * Display known MAC addresses
-     *
-     * @param  int $vlid display only the mac addresses of this vlan
-     * @return  View
-     */
-    public function list( int $vlid = null) : View {
-        $vlan = false;
-        if( $vlid != null and !( $vlan = D2EM::getRepository( VlanEntity::class )->find( $vlid ) ) ) {
-            abort( 404 );
-        }
-
-        // get all layer2addresses:
-        $l2as    = D2EM::getRepository( Layer2AddressEntity::class )->getAll( $vlid );
-        // and turn the OUI/MAC into a manufacturer:
-        $listOui = D2EM::getRepository( OUIEntity::class )->getForLayer2Addresses( $l2as );
-
-        return view( 'layer2-address/list' )->with([
-            'list'              => $l2as,
-            'listOui'           => $listOui,
-            'Vlans'             => D2EM::getRepository( VlanEntity::class )->findAll(),
-            'Vlan'              => $vlan
-        ]);
-    }
-
 
 }

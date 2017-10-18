@@ -2,24 +2,17 @@
 <?php
 // due to how PHP Foil passes data, we reassign this so we can copy and paste normal list code if we want.
 // see http://www.foilphp.it/docs/DATA/PASS-DATA.html
-$row = $t->data[ 'data' ];
+$row = $t->row;
 ?>
 
 <tr>
-    <th>
-            Customer
-    </th>
+
     <td>
-        <a href="<?= url( 'customer/view/id/'. $row[ 'customerid' ] )?>">
+        <a href="<?= url( 'customer/view/id/'.$row[ 'customerid' ] )?>">
             <?= $row['customer'] ?>
         </a>
     </td>
-<tr/>
 
-<tr>
-    <th>
-        Interface
-    </th>
     <td>
         <?php if( strpos( $row['switchport'], ',' ) !== false ) {
 
@@ -27,52 +20,47 @@ $row = $t->data[ 'data' ];
             asort( $ports, SORT_NATURAL );
 
             foreach( $ports as $port ) {
-                echo "<a href=".route('interfaces/virtual/edit', [ 'id' => $row['viid'] ] ).">".$row['switchname'] . '::' . $port."</a><br/>";
+                echo $row['switchname'] . '::' . $port . '<br>';
             }
 
         } else {
 
-            echo "<a href=".route('interfaces/virtual/edit', [ 'id' => $row['viid'] ] ).">".$row['switchname'] . '::' . $row[ 'switchport' ]."</a>";
+            echo $row['switchname'] . '::' . $row[ 'switchport' ];
 
         } ?>
     </td>
-<tr/>
-
-<tr>
-    <th>
-        IPv4
-    </th>
+    <td>
+        <a href="<?= action( 'VlanController@view' , [ 'id' => $row[ 'vlanid' ] ])?>">
+            <?= $row['vlan'] ?>
+        </a>
+    </td>
     <td>
         <?= $row['ip4'] ?>
     </td>
-<tr/>
 
-<tr>
-    <th>
-        IPv6
-    </th>
     <td>
         <?= $row['ip6'] ?>
     </td>
-<tr/>
 
-<tr>
-    <th>
-        MAC Address
-    </th>
     <td>
         <a id="view-l2a-<?= $row[ 'id' ] ?>" name="<?= $t->ee( $row[ 'mac' ] ) ?>" href="#" title="View">
             <?= $t->ee( $row[ 'mac' ] ) ?>
         </a>
     </td>
-<tr/>
 
-<tr>
-    <th>
-        Manufacturer
-    </th>
     <td>
         <?= $row['organisation'] ?>
     </td>
-<tr/>
-<?= $t->insert( 'layer2-address/modal-mac' ); ?>
+
+
+    <td>
+
+        <div class="btn-group">
+
+            <a class="btn btn-sm btn-default" href="<?= action($t->controller.'@forVlanInterface' , [ 'id' => $row[ 'vliid' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
+
+        </div>
+
+    </td>
+
+</tr>

@@ -8,7 +8,9 @@ $row = $t->row;
 <tr>
 
     <td>
-        <?= $row['customer'] ?>
+        <a href="<?= url( 'customer/view/id/'. $row[ 'customerid' ] )?>">
+            <?= $row['customer'] ?>
+        </a>
     </td>
 
     <td>
@@ -18,12 +20,12 @@ $row = $t->row;
             asort( $ports, SORT_NATURAL );
 
             foreach( $ports as $port ) {
-                echo $row['switchname'] . '::' . $port . '<br>';
+                echo "<a href=".route('interfaces/virtual/edit', [ 'id' => $row['viid'] ] ).">".$row['switchname'] . '::' . $port."</a><br/>";
             }
 
         } else {
 
-            echo $row['switchname'] . '::' . $row[ 'switchport' ];
+            echo "<a href=".route('interfaces/virtual/edit', [ 'id' => $row['viid'] ] ).">".$row['switchname'] . '::' . $row[ 'switchport' ]."</a>";
 
         } ?>
     </td>
