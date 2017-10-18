@@ -5,7 +5,7 @@
     $(document).ready(function() {
 
         <?php if( !isset( $t->data[ 'feParams' ]->readonly ) || !$t->data[ 'feParams' ]->readonly ): ?>
-        
+
             $( 'a[id|="d2f-list-delete"]' ).on( 'click', function( event ) {
 
                 event.preventDefault();
