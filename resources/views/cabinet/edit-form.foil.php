@@ -8,7 +8,9 @@
 
     <?= Former::text( 'name' )
         ->label( 'Name' )
-        ->blockHelp( "" );
+        ->blockHelp( "A cabinet name / reference. Usually as assigned by the data centre and the same as colocation reference below. You can also assign your own "
+            . "which has the advantage of surviving data centre acquisitions and renumbering! Should be a short all capital alphanumeric reference with dashes as "
+            . "necessary.");
     ?>
 
     <?= Former::select( 'locationid' )
@@ -17,22 +19,23 @@
         ->placeholder( 'Select a location' )
         ->fromQuery( $t->params[ 'locations' ], 'name' )
         ->addClass( 'chzn-select' )
-        ->blockHelp( "");
+        ->blockHelp( "Chose the location where this cabinet resides." );
     ?>
 
     <?= Former::text( 'colocation' )
-        ->label( 'Colo Location' )
-        ->blockHelp( "" );
+        ->label( 'Colocation Ref' )
+        ->blockHelp( "The reference for this cabinet as provided by / is known to your co-location provider. In other words, if you ring up for remote hands, this is "
+            . "the cabinet reference you would give the remote engineer.");
     ?>
 
     <?= Former::text( 'type' )
         ->label( 'Type' )
-        ->blockHelp( "" );
+        ->blockHelp( "Free text - may allow you to manage different makes / models / half/full / owned/shared etc." );
     ?>
 
     <?= Former::text( 'height' )
         ->label( 'Height (U)' )
-        ->blockHelp( "" );
+        ->blockHelp( "The height of the rack in standard rack U(nits)." );
     ?>
 
     <?= Former::select( 'u_counts_from' )
@@ -40,7 +43,7 @@
         ->placeholder( 'Select an option' )
         ->fromQuery( Entities\Cabinet::$U_COUNTS_FROM )
         ->addClass( 'chzn-select' )
-        ->blockHelp( "");
+        ->blockHelp( "Some racks have their U's labelled - please indicate if you count these from top to bottom or from bottom to top." );
     ?>
 
     <?= Former::textarea( 'notes' )
