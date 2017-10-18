@@ -201,10 +201,12 @@ abstract class Doctrine2Frontend extends Controller {
     {
         $this->data[ 'data' ]           = $this->listGetData();
 
-        $this->view[ 'listPreamble']    = $this->resolveTemplate( 'list-preamble',  false );
-        $this->view[ 'listPostamble']   = $this->resolveTemplate( 'list-postamble', false );
-        $this->view[ 'listRowMenu']     = $this->resolveTemplate( 'list-row-menu',  false );
-        $this->view[ 'listScript' ]     = $this->resolveTemplate( 'js/list' );
+        $this->view[ 'listHeadOverride'] = $this->resolveTemplate( 'list-head-override', false );
+        $this->view[ 'listRowOverride']  = $this->resolveTemplate( 'list-row-override',  false );
+        $this->view[ 'listPreamble']     = $this->resolveTemplate( 'list-preamble',      false );
+        $this->view[ 'listPostamble']    = $this->resolveTemplate( 'list-postamble',     false );
+        $this->view[ 'listRowMenu']      = $this->resolveTemplate( 'list-row-menu',      false );
+        $this->view[ 'listScript' ]      = $this->resolveTemplate( 'js/list' );
 
         $this->preList();
 

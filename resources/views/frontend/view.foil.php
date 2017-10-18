@@ -126,7 +126,7 @@
 
                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
 
-                                            <?= $t->insert( $cconf['script'] ) ?>
+                                            <?= $t->insert( $cconf['script'], [ 'row' => $t->data['data'], 'col' => $col ] ) ?>
 
                                         <?php else: ?>
 

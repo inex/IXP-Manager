@@ -34,131 +34,149 @@
 
         <table id="table-list" class="table collapse">
 
-            <thead>
-                <tr>
-                    <?php foreach( $t->data[ 'feParams' ]->listColumns as $col => $cconf ):?>
+            <?php if( $t->view['listHeadOverride'] ): ?>
 
-                        <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display'] ) ||  $cconf[ 'display']   ):?>
-                            <th>
-                                <?php if( is_array( $cconf ) ) :?>
-                                    <?= $cconf[ 'title' ] ?>
-                                <?php else: ?>
-                                    <?= $cconf ?>
-                                <?php endif;?>
-                            </th>
-                        <?php endif;?>
+                <?= $t->insert( $t->view['listHeadOverride'] ) ?>
 
-                    <?php endforeach;?>
+            <?php else: ?>
 
-                    <th></th> <!-- actions column -->
+                <thead>
 
-                </tr>
-            </thead>
+                    <tr>
+                        <?php foreach( $t->data[ 'feParams' ]->listColumns as $col => $cconf ):?>
+
+                            <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display'] ) ||  $cconf[ 'display']   ):?>
+                                <th>
+                                    <?php if( is_array( $cconf ) ) :?>
+                                        <?= $cconf[ 'title' ] ?>
+                                    <?php else: ?>
+                                        <?= $cconf ?>
+                                    <?php endif;?>
+                                </th>
+                            <?php endif;?>
+
+                        <?php endforeach;?>
+
+                        <th></th> <!-- actions column -->
+
+                    </tr>
+
+                </thead>
+
+            <?php endif; ?>
 
             <tbody>
 
                 <?php foreach( $t->data[ 'data' ] as $idx => $row ): ?>
 
-                    <tr>
+                    <?php if( $t->view['listRowOverride'] ): ?>
 
-                        <?php foreach( $t->data[ 'feParams' ]->listColumns as $col => $cconf ): ?>
+                        <?= $t->insert( $t->view['listRowOverride'], [ 'row' => $row ] ) ?>
 
-                            <?php if( !is_array( $cconf ) ): ?>
+                    <?php else: ?>
 
-                                <td>
-                                     <?= $t->ee( $row[ $col ] ) ?>
-                                </td>
+                        <tr>
 
-                            <?php elseif( !isset( $cconf[ 'display'] ) || $cconf[ 'display']  ): ?>
+                            <?php foreach( $t->data[ 'feParams' ]->listColumns as $col => $cconf ): ?>
 
-                                <td>
+                                <?php if( !is_array( $cconf ) ): ?>
 
-                                    <?php if(isset( $cconf[ 'type'] ) ): ?>
+                                    <td>
+                                         <?= $t->ee( $row[ $col ] ) ?>
+                                    </td>
 
-                                        <?php if( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'HAS_ONE'] ): ?>
+                                <?php elseif( !isset( $cconf[ 'display'] ) || $cconf[ 'display']  ): ?>
 
-                                            <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . '/id/' . $row[ $cconf['idField'] ] ) ?>">
-                                                <?= $t->ee( $row[$col] ) ?>
-                                            </a>
+                                    <td>
 
-                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'XLATE'] ): ?>
+                                        <?php if(isset( $cconf[ 'type'] ) ): ?>
 
-                                            <?php if( isset($cconf[ 'xlator'][ $row[ $col ] ] ) ): ?>
-                                                <?= $cconf[ 'xlator' ][ $row[ $col ] ] ?>
+                                            <?php if( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'HAS_ONE'] ): ?>
+
+                                                <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . '/id/' . $row[ $cconf['idField'] ] ) ?>">
+                                                    <?= $t->ee( $row[$col] ) ?>
+                                                </a>
+
+                                            <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'XLATE'] ): ?>
+
+                                                <?php if( isset($cconf[ 'xlator'][ $row[ $col ] ] ) ): ?>
+                                                    <?= $cconf[ 'xlator' ][ $row[ $col ] ] ?>
+                                                <?php else: ?>
+                                                    <?= $t->ee( $row[ $col ] ) ?>
+                                                <?php endif; ?>
+
+                                            <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'YES_NO'] ): ?>
+
+                                                <?= $row[ $col ] ? 'Yes' : 'No' ?>
+
+                                            <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
+
+                                                <?= str_replace( '%%COL%%', $t->ee( $row[ $col ] ), $cconf[ 'subject' ] ) ?>
+
+                                            <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SPRINTF'] ): ?>
+
+                                                <?= sprintf( $cconf[ 'sprintf' ], $t->ee( $row[ $col ] ) ) ?>
+
+                                            <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
+
+                                                <?= date('Y-m-d H:M:S', strtotime($row[ $col ] ) ) ?>
+
+                                            <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
+
+                                                <?= date('Y-m-d', strtotime( $row[ $col ] ) ) ?>
+
+                                            <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'TIME'] ): ?>
+
+                                                <?= date('H:M:S', strtotime($row[ $col ] ) ) ?>
+
+                                            <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
+
+                                                <?= $t->insert( $cconf['script'], [ 'row' => $row, 'col' => $col ] ) ?>
+
                                             <?php else: ?>
-                                                <?= $t->ee( $row[ $col ] ) ?>
-                                            <?php endif; ?>
 
-                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'YES_NO'] ): ?>
+                                                Type?
 
-                                            <?= $row[ $col ] ? 'Yes' : 'No' ?>
-
-                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
-
-                                            <?= str_replace( '%%COL%%', $t->ee( $row[ $col ] ), $cconf[ 'subject' ] ) ?>
-
-                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SPRINTF'] ): ?>
-
-                                            <?= sprintf( $cconf[ 'sprintf' ], $t->ee( $row[ $col ] ) ) ?>
-
-                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
-
-                                            <?= date('Y-m-d H:M:S', strtotime($row[ $col ] ) ) ?>
-
-                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
-
-                                            <?= date('Y-m-d', strtotime( $row[ $col ] ) ) ?>
-
-                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'TIME'] ): ?>
-
-                                            <?= date('H:M:S', strtotime($row[ $col ] ) ) ?>
-
-                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
-
-                                            <?= $t->insert( $cconf['script'], [ 'row' => $row, 'col' => $col ] ) ?>
+                                            <?php endif; /* if( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'HAS_ONE'] ) */ ?>
 
                                         <?php else: ?>
 
-                                            Type?
+                                            <?= $t->ee( $row[ $col ] ) ?>
 
-                                        <?php endif; /* if( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'HAS_ONE'] ) */ ?>
+                                        <?php endif;  /*  if(isset( $cconf[ 'type'] ) ) */ ?>
 
-                                    <?php else: ?>
+                                    </td>
 
-                                        <?= $t->ee( $row[ $col ] ) ?>
+                                <?php endif; /* if( !is_array( $cconf ) ) */ ?>
 
-                                    <?php endif;  /*  if(isset( $cconf[ 'type'] ) ) */ ?>
+                            <?php endforeach; ?>
 
-                                </td>
+                            <td>
 
-                            <?php endif; /* if( !is_array( $cconf ) ) */ ?>
+                                <?php if( $t->view['listRowMenu'] ): ?>
 
-                        <?php endforeach; ?>
+                                    <?= $t->insert( $t->view['listRowMenu'], [ 'row' => $row ] ) ?>
 
-                        <td>
+                                <?php else: ?>
 
-                            <?php if( $t->view['listRowMenu'] ): ?>
+                                    <div class="btn-group">
 
-                                <?= $t->insert( $t->view['listRowMenu'], [ 'row' => $row ] ) ?>
+                                        <a class="btn btn-sm btn-default" href="<?= action($t->controller.'@view' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
 
-                            <?php else: ?>
+                                        <?php if( !isset( $t->data[ 'feParams' ]->readonly ) || !$t->data[ 'feParams' ]->readonly ): ?>
+                                            <a class="btn btn-sm btn-default" href="<?= action($t->controller.'@edit' , [ 'id' => $row[ 'id' ] ] ) ?> " title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                                            <a class="btn btn-sm btn-default" id='d2f-list-delete-<?= $row[ 'id' ] ?>' href="#" data-object-id="<?= $row[ 'id' ] ?>" title="Delete"><i class="glyphicon glyphicon-trash"></i></a>
+                                        <?php endif;?>
 
-                                <div class="btn-group">
+                                    </div>
 
-                                    <a class="btn btn-sm btn-default" href="<?= action($t->controller.'@view' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
+                                <?php endif; ?>
 
-                                    <?php if( !isset( $t->data[ 'feParams' ]->readonly ) || !$t->data[ 'feParams' ]->readonly ): ?>
-                                        <a class="btn btn-sm btn-default" href="<?= action($t->controller.'@edit' , [ 'id' => $row[ 'id' ] ] ) ?> " title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
-                                        <a class="btn btn-sm btn-default" id='d2f-list-delete-<?= $row[ 'id' ] ?>' href="#" data-object-id="<?= $row[ 'id' ] ?>" title="Delete"><i class="glyphicon glyphicon-trash"></i></a>
-                                    <?php endif;?>
+                            </td>
 
-                                </div>
+                        </tr>
 
-                            <?php endif; ?>
-
-                        </td>
-
-                    </tr>
+                    <?php endif; /* if( $t->view['listRowOverride'] ): */ ?>
 
                 <?php endforeach; ?>
 
