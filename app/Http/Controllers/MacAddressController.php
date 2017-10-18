@@ -28,9 +28,6 @@ use D2EM;
 use Entities\{
     MACAddress      as MACAddressEntity
 };
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
-
 
 
 

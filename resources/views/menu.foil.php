@@ -161,13 +161,13 @@
                     <a href="<?= url( '/layer2-address/list' ) ?>">MAC Addresses</a>
                 </li>
 
-                <?php if( Request::is('layer2-address/list') || Request::is('mac-address/list') ): ?>
-                    <li class="sub-menu <?= Request::is('layer2-address/list') ? 'active' : '' ?>">
+                <?php if(  $t->controller == 'MacAddressController' ||  $t->controller == 'Layer2AddressController' ): ?>
+                    <li class="sub-menu <?= $t->controller == 'Layer2AddressController' ? 'active' : '' ?>">
                         <a href="<?= url( '/layer2-address/list' ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;Configured Addresses</a>
                     </li>
 
                     <?php if( !config( 'ixp_fe.frontend.disabled.mac-address', false ) ): ?>
-                        <li class="sub-menu <?= Request::is('mac-address/list') ? 'active' : '' ?>">
+                        <li class="sub-menu <?= $t->controller == 'MacAddressController' ? 'active' : '' ?>">
                             <a href="<?= action('MacAddressController@list') ?>">&nbsp;&nbsp;&nbsp;&nbsp;Discovered Addresses</a>
                         </li>
                     <?php endif; ?>

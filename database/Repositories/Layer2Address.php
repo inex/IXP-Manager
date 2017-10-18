@@ -57,4 +57,71 @@ class Layer2Address extends EntityRepository
 
         return $query->getResult();
     }
+
+    /**
+     * Get all Layer2Address with interface and OUI organisation details (or a particular one) for listing on the frontend CRUD
+     *
+     * Returns an array of the form:
+     *
+     *     array:12 [
+     *         "id" "           => 4848209
+     *         "firstseen"      => DateTime object
+     *         "lastseen"       => null
+     *         "mac"            => "00d0ffaaaaaa"
+     *         "customerid"     => 101
+     *         "customer"       => "Someone"
+     *         "viid"           => 203
+     *         "switchname"     => "swi2-deg1-4"
+     *         "switchport"     => "GigabitEthernet1/1,GigabitEthernet1/2"  // ** NB: multiple's separated by comma
+     *         "vlan"           =>  "Peering VLAN #1"
+     *         "vlanid"         =>  "2"
+     *         "vliid"          =>  "219"
+     *         "ip4"            => "194.88.240.33"                                 // ** NB: multiple's separated by comma
+     *         "ip6"            => "2001:7f8:18:12::33"                            // ** NB: multiple's separated by comma
+     *         "organisation"   => "Cisco Systems, Inc"
+     *     ]
+     *
+     * @see \IXP\Http\Controllers\Doctrine2Frontend
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     * @return array Array of Layer2Address entries (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeList( \stdClass $feParams, int $id = null )
+    {
+        $dql = "SELECT l.mac AS mac, vi.id AS viid, l.id AS id, l.firstseen AS firstseen, l.lastseen AS lastseen,  
+                    c.id AS customerid, c.abbreviatedName AS customer,
+                    s.name AS switchname, vl.name as vlan, vl.id as vlanid, vli.id as vliid,
+                    GROUP_CONCAT( sp.name ) AS switchport, 
+                    GROUP_CONCAT( DISTINCT ipv4.address ) AS ip4, 
+                    GROUP_CONCAT( DISTINCT ipv6.address ) AS ip6,
+                    COALESCE( o.organisation, 'Unknown' ) AS organisation
+
+                FROM Entities\\Layer2Address l
+                    JOIN l.vlanInterface vli
+                    JOIN vli.Vlan vl
+                    JOIN vli.IPv4Address ipv4
+                    JOIN vli.IPv6Address ipv6
+                    JOIN vli.VirtualInterface vi
+                    JOIN vi.Customer c
+                    JOIN vi.PhysicalInterfaces pi
+                    JOIN pi.SwitchPort sp
+                    JOIN sp.Switcher s
+                    LEFT JOIN Entities\\OUI o WITH SUBSTRING( l.mac, 1, 6 ) = o.oui
+                    
+                WHERE 1 = 1";
+
+        if( $id ) {
+            $dql .= " AND l.id = " . (int)$id;
+        }
+
+        $dql .= " GROUP BY l.mac, vi.id, l.id, l.firstseen, l.lastseen, c.id, c.abbreviatedName, s.name, o.organisation";
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY c.abbreviatedName ";
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
+    }
 }
