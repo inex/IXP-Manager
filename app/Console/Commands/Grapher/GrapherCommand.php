@@ -6,7 +6,7 @@ use IXP\Console\Commands\Command as IXPCommand;
 use IXP\Console\Commands\Command;
 
 
-class GrapherCommand extends IXPCommand {
+abstract class GrapherCommand extends IXPCommand {
 
     /**
      * @var Grapher

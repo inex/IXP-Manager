@@ -3,24 +3,26 @@
 use Exception;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
-use Illuminate\Auth\Access\AuthorizationException;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
-use Symfony\Component\HttpKernel\Exception\HttpException;
-use Illuminate\Foundation\Validation\ValidationException;
 
-class Handler extends ExceptionHandler {
-
+class Handler extends ExceptionHandler
+{
     /**
-     * A list of the exception types that should not be reported.
+     * A list of the exception types that are not reported.
      *
      * @var array
      */
     protected $dontReport = [
-        Symfony\Component\HttpKernel\Exception\HttpException::class,
-        AuthorizationException::class,
-        HttpException::class,
-        ModelNotFoundException::class,
-        ValidationException::class,
+        //
+    ];
+
+    /**
+     * A list of the inputs that are never flashed for validation exceptions.
+     *
+     * @var array
+     */
+    protected $dontFlash = [
+        'password',
+        'password_confirmation',
     ];
 
     /**
@@ -41,7 +43,7 @@ class Handler extends ExceptionHandler {
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Exception  $e
-     * @return \Illuminate\Http\Response
+     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
      */
     public function render($request, Exception $e)
     {
@@ -56,16 +58,18 @@ class Handler extends ExceptionHandler {
          * We'll revert to ZF1 handling when Laravel throws a 404:
          */
         if( $e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException ) {
+
             \App::make('ZendFramework')->run();
             die();
-        }
-        else if ($this->isHttpException($e))
-        {
+
+        } else if ($this->isHttpException($e)) {
+
             return $this->renderHttpException($e);
-        }
-        else
-        {
+
+        } else {
+
             return parent::render($request, $e);
+
         }
     }
 

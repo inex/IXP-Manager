@@ -108,4 +108,6 @@ storage/files/*
 .idea/composerJson.xml
 .idea/misc.xml
 mrtg/
+npm-debug.log
+yarn-error.log
 
