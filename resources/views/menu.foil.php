@@ -101,8 +101,8 @@
                     <a href="<?= action( 'LocationController@list' ) ?>">Locations</a>
                 </li>
 
-                <li>
-                    <a href="<?= route('cabinet@list') ?>">Cabinets</a>
+                <li <?php if( $t->controller == 'CabinetController' ):?> class="active" <?php endif;?> >
+                    <a href="<?= action('CabinetController@list') ?>">Cabinets</a>
                 </li>
 
                 <li <?= $t->controller == 'RouterController' && $t->action != 'status' ? 'class="active"' : '' ?>>
@@ -174,18 +174,18 @@
                 <?php endif; ?>
 
 
-                <li>
-                    <a href="<?= url('/vendor/list' ) ?>">Vendors</a>
+                <li <?php if( $t->controller == 'VendorController' ):?> class="active" <?php endif;?> >
+                    <a href="<?= action('VendorController@list' ) ?>">Vendors</a>
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection', false ) ): ?>
-                    <li>
-                        <a href="<?= url('/console-server-connection/list') ?>">Console Server Connections</a>
+                    <li <?php if( $t->controller == 'ConsoleServerConnectionController' ):?> class="active" <?php endif;?>>
+                        <a href="<?= action('ConsoleServerConnectionController@list') ?>">Console Server Connections</a>
                     </li>
                 <?php endif; ?>
 
-                <li>
-                    <a href="<?= url('/vlan/list' ) ?>">VLANs</a>
+                <li <?php if( $t->controller == 'VlanController' ):?> class="active" <?php endif;?> >
+                    <a href="<?= action('VlanController@list' ) ?>">VLANs</a>
                     <?php /* {if $controller eq 'vlan'}
                         <ul class="nav nav-list">
                             <li {if $controller eq 'vlan' and $action eq 'private'}class="active"{/if}>
@@ -195,8 +195,8 @@
                     {/if} */ ?>
                 </li>
 
-                <li>
-                    <a href="<?= url( '/irrdb-config/list' ) ?>">IRRDB Configuration</a>
+                <li <?php if( $t->controller == 'IrrdbConfigController' ):?> class="active" <?php endif;?> >
+                    <a href="<?= action( 'IrrdbConfigController@list' ) ?>">IRRDB Configuration</a>
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) ): ?>
