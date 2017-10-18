@@ -4,7 +4,7 @@ use App;
 
 use IXP\Console\Commands\Command as IXPCommand;
 
-class HelpdeskCommand extends IXPCommand {
+abstract class HelpdeskCommand extends IXPCommand {
 
 
     private $helpdesk = null;

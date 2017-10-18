@@ -39,13 +39,15 @@
     ],
     "require": {
         "php": "7.0.*",
+
         "zendframework/zendframework1": "~1.12",
         "komola/bootstrap-zend-framework": "dev-master",
         "opensolutions/oss-snmp": "dev-master",
 
-        "laravel/framework": "5.4.*",
+        "fideloper/proxy": "~3.3",
+        "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
-        "laravel-doctrine/orm": "1.3.*",
+        "laravel-doctrine/orm": "1.4.*",
         "oss2/doctrine2": "dev-master",
         "oss2/var-utils": "dev-master",
         
@@ -60,18 +62,19 @@
         "anahkiasen/former": "^4.0",
         "barryvdh/laravel-debugbar": "^2.3",
         "maxhoffmann/parsedown-laravel": "dev-master",
-        "graham-campbell/flysystem": "^3.6",
         "barryvdh/laravel-dompdf": "^0.8.0",
-        "luketowers/purifier": "dev-master",
+        "luketowers/purifier": "~3.0",
         "php-ds/php-ds": "^1.1",
         "beberlei/DoctrineExtensions": "^1.0",
-        "laravel-doctrine/extensions": "1.0.*"
+        "laravel-doctrine/extensions": "1.0.*",
+        "graham-campbell/flysystem": "^4.0"
 
     },
     "require-dev": {
-        "phpunit/phpunit": "~5.7",
+        "filp/whoops": "~2.0",
+        "phpunit/phpunit": "~6.0",
         "fzaninotto/faker": "~1.4",
-        "mockery/mockery": "0.9.*",
+        "mockery/mockery": "~1.0",
         "barryvdh/laravel-ide-helper": "^2.3"
      },
     "support": {
@@ -81,6 +84,8 @@
     },
     "autoload": {
         "classmap": [
+            "database/seeds",
+            "database/factories",
             "database"
         ],
         "psr-0": {
@@ -102,25 +107,36 @@
              "Tests\\": "tests/"
          }
     },
+    "extra": {
+        "laravel": {
+            "dont-discover": [
+            ]
+        }
+    },
     "scripts": {
-         "post-install-cmd": [
-             "php artisan clear-compiled",
-             "php artisan optimize"
-         ],
-         "post-update-cmd": [
-             "Illuminate\\Foundation\\ComposerScripts::postUpdate",
-             "php artisan clear-compiled",
-             "php artisan ide-helper:generate",
-             "php artisan ide-helper:meta --filename=.phpstorm.meta.php/laravel.meta.php",
-             "php artisan optimize"
-         ],
-         "post-create-project-cmd": [
-             "php -r \"copy('.env.example', '.env');\"",
-             "php artisan key:generate"
-         ]
+        "post-root-package-install": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-create-project-cmd": [
+            "@php artisan key:generate"
+        ],
+        "post-autoload-dump": [
+            "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
+            "@php artisan package:discover"
+        ],
+
+        "post-update-cmd": [
+            "@php artisan clear-compiled",
+            "@php artisan ide-helper:generate",
+            "@php artisan ide-helper:meta --filename=.phpstorm.meta.php/laravel.meta.php"
+        ]
     },
     "config": {
-        "preferred-install": "dist",
+        "config": {
+            "preferred-install": "dist",
+            "sort-packages": true,
+            "optimize-autoloader": true
+        },
         "platform": {
             "php": "7.0.10"
         }

@@ -1,6 +1,6 @@
 <?php namespace IXP\Services;
 
-use Illuminate\View\Engines\EngineInterface;
+use Illuminate\Contracts\View\Engine as EngineInterface;
 
 use Foil\Engine as EngineFoil;
 
