@@ -239,11 +239,12 @@ abstract class Doctrine2Frontend extends Controller {
      */
     public function view( $id ): View
     {
-        $this->data[ 'data' ]           = $this->viewGetData( $id ) ;
+        $this->data[ 'data' ]               = $this->viewGetData( $id ) ;
 
-        $this->view[ 'viewPreamble']    = $this->resolveTemplate( 'view-preamble',      false );
-        $this->view[ 'viewPostamble']   = $this->resolveTemplate( 'view-postamble',     false );
-        $this->view[ 'viewScript' ]     = $this->resolveTemplate( 'js/view',            false );
+        $this->view[ 'viewPreamble']        = $this->resolveTemplate( 'view-preamble',      false );
+        $this->view[ 'viewPostamble']       = $this->resolveTemplate( 'view-postamble',     false );
+        $this->view[ 'viewRowOverride']     = $this->resolveTemplate( 'view-row-override',  false );
+        $this->view[ 'viewScript' ]         = $this->resolveTemplate( 'js/view',            false );
 
         return $this->display( 'view' );
     }
