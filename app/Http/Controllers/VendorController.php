@@ -74,7 +74,7 @@ class VendorController extends Doctrine2Frontend {
                 'id'             => [ 'title' => 'UID', 'display' => false ],
                 'name'           => 'Name',
                 'shortname'      => 'Short Name',
-                'nagios_name'    => 'Nagios Name',
+//                'nagios_name'    => 'Nagios Name',
                 'bundle_name'    => 'Bundle Name'
             ]
         ];
@@ -134,7 +134,7 @@ class VendorController extends Doctrine2Frontend {
         $validator = Validator::make( $request->all(), [
             'name'              => 'required|string|max:255',
             'shortname'         => 'required|string|max:255',
-            'nagios_name'       => 'required|string|max:255',
+            'nagios_name'       => 'nullable|string|max:255',
 
         ]);
 
