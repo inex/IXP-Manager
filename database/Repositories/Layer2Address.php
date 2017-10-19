@@ -72,10 +72,10 @@ class Layer2Address extends EntityRepository
      *         "customer"       => "Someone"
      *         "viid"           => 203
      *         "switchname"     => "swi2-deg1-4"
-     *         "switchport"     => "GigabitEthernet1/1,GigabitEthernet1/2"  // ** NB: multiple's separated by comma
-     *         "vlan"           =>  "Peering VLAN #1"
-     *         "vlanid"         =>  "2"
-     *         "vliid"          =>  "219"
+     *         "switchport"     => "GigabitEthernet1/1,GigabitEthernet1/2"         // ** NB: multiple's separated by comma
+     *         "vlan"           => "Peering VLAN #1"
+     *         "vlanid"         => "2"
+     *         "vliid"          => "219"
      *         "ip4"            => "194.88.240.33"                                 // ** NB: multiple's separated by comma
      *         "ip6"            => "2001:7f8:18:12::33"                            // ** NB: multiple's separated by comma
      *         "organisation"   => "Cisco Systems, Inc"
@@ -115,7 +115,8 @@ class Layer2Address extends EntityRepository
             $dql .= " AND l.id = " . (int)$id;
         }
 
-        $dql .= " GROUP BY l.mac, vi.id, l.id, l.firstseen, l.lastseen, c.id, c.abbreviatedName, s.name, o.organisation";
+        $dql .= " GROUP BY l.mac, vi.id, l.id, l.firstseen, l.lastseen, c.id, c.abbreviatedName, s.name, 
+                    vl.name, vl.id, vli.id, o.organisation ";
 
         if( isset( $feParams->listOrderBy ) ) {
             $dql .= " ORDER BY c.abbreviatedName ";
