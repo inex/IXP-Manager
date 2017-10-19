@@ -201,6 +201,7 @@ abstract class Doctrine2Frontend extends Controller {
     {
         $this->data[ 'data' ]           = $this->listGetData();
 
+        $this->view[ 'listEmptyMessage'] = $this->resolveTemplate( 'list-empty-message', false );
         $this->view[ 'listHeadOverride'] = $this->resolveTemplate( 'list-head-override', false );
         $this->view[ 'listRowOverride']  = $this->resolveTemplate( 'list-row-override',  false );
         $this->view[ 'listPreamble']     = $this->resolveTemplate( 'list-preamble',      false );

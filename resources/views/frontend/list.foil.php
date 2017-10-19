@@ -26,9 +26,17 @@
 
     <?php if( !count( $t->data[ 'data' ] ) ): ?>
 
-        <div class="alert alert-info" role="alert">
-            <b>No <?= ucfirst( $t->data[ 'feParams' ]->pagetitle ) ?> exist.</b> <a href="<?= action($t->controller.'@add') ?>">Add one...</a>
-        </div>
+        <?php if( $t->view['listEmptyMessage'] ): ?>
+
+            <?= $t->insert( $t->view['listEmptyMessage'] ) ?>
+
+        <?php else: ?>
+
+            <div class="alert alert-info" role="alert">
+                <b>No <?= ucfirst( $t->data[ 'feParams' ]->pagetitle ) ?> exist.</b> <a href="<?= action($t->controller.'@add') ?>">Add one...</a>
+            </div>
+
+        <?php endif; /* listEmptyMessage */ ?>
 
     <?php else:  /* !count( $t->data[ 'data' ] ) */ ?>
 

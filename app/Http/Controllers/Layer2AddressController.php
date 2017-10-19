@@ -64,10 +64,10 @@ class Layer2AddressController extends Doctrine2Frontend {
         $this->data[ 'feParams' ] =  $this->feParams = (object)[
 
             'entity'            => Layer2AddressEntity::class,
-            'pagetitle'         => 'Layer2 Addresses',
+            'pagetitle'         => 'Configured MAC Addresses',
 
-            'titleSingular'     => 'Layer2 Addresses',
-            'nameSingular'      => 'a layer2 Addresses',
+            'titleSingular'     => 'Configured MAC Address',
+            'nameSingular'      => 'a configured MAC address',
 
             'defaultAction'     => 'list',
             'defaultController' => 'Layer2AddressController',
@@ -109,6 +109,8 @@ class Layer2AddressController extends Doctrine2Frontend {
     {
         Route::group( [ 'prefix' => $route_prefix ], function() {
             Route::get(     'vlan-interface/{vliid}',   'Layer2AddressController@forVlanInterface' );
+
+            // adding delete route as controller is marked as read only to avoid normal d2f crud actions
             Route::post(    'delete/{id}',              'Layer2AddressController@delete' );
         });
     }

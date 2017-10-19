@@ -8,22 +8,23 @@
 
     <?= Former::text( 'name' )
         ->label( 'Name' )
-        ->blockHelp( "" );
+        ->blockHelp( "The full name of the vendor (e.g. <code>Cisco Systems</code>." );
     ?>
 
     <?= Former::text( 'shortname' )
         ->label( 'Shortname' )
-        ->blockHelp( "" );
+        ->blockHelp( "A single work short form version of vendor name (e.g. <code>Cisco</code>." );
     ?>
 
-    <?= Former::text( 'nagios_name' )
-        ->label( 'Nagios Name' )
-        ->blockHelp( "" );
-    ?>
+    <!-- DEPRECATED: Nagios name is deprecated and no longer used - will be removed in a future version -->
+    <?= Former::hidden( 'nagios_name' ) ?>
 
     <?= Former::text( 'bundle_name' )
         ->label( 'Bundle Name' )
-        ->blockHelp( "" );
+        ->blockHelp( "The bundle name is used for orchastration / automated switch configuration. Some switches / routers use a "
+            . "specific bundle name for port channels / LAGs / aggregate ports. On Cisco this would be <code>Port-channel</code> "
+            . "for example. If your device has such a naming convention, please add the base name here (i.e. no trailing "
+            . "number as this will be added when creating the interface)." );
     ?>
 
     <?= Former::actions(

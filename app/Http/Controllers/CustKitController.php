@@ -57,10 +57,10 @@ class CustKitController extends Doctrine2Frontend {
         $this->data[ 'feParams' ] =  $this->feParams = (object)[
             'entity'            => CustomerEquipmentEntity::class,
 
-            'pagetitle'         => 'Customer Equipment',
+            'pagetitle'         => 'Colocated Equipment',
 
-            'titleSingular'     => 'Customer Equipment',
-            'nameSingular'      => 'customer equipment',
+            'titleSingular'     => 'Colocated Equipment',
+            'nameSingular'      => 'colocated equipment',
 
             'defaultAction'     => 'list',
             'defaultController' => 'CustKitController',

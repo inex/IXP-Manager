@@ -30,13 +30,15 @@ use Entities\{
     Infrastructure      as InfrastructureEntity
 };
 
+use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
+
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
 
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
+use Repositories\Vlan as VlanRepository;
 
 
 /**
@@ -178,6 +180,7 @@ class VlanController extends Doctrine2Frontend {
             'name'              => 'required|string|max:255',
             'number'            => 'required|integer',
             'infrastructureid'  => 'required|integer|exists:Entities\Infrastructure,id',
+            'config_name'       => 'required|string|max:32|alpha_dash'
 
         ]);
 
@@ -216,7 +219,7 @@ class VlanController extends Doctrine2Frontend {
     protected function postFlush( string $action ): bool
     {
         // this is created in Repositories\Vlan::getNames()
-        Cache::forget( VlanEntity::ALL_CACHE_KEY );
+        Cache::forget( VlanRepository::ALL_CACHE_KEY );
         return true;
     }
 
@@ -224,22 +227,24 @@ class VlanController extends Doctrine2Frontend {
      * @inheritdoc
      */
     protected function preDelete(): bool {
+        $okay = true;
+
         if( ( $cnt = count( $this->object->getRouters() ) ) ) {
             AlertContainer::push( "Could not delete this Vlan as {$cnt} router(s) are assigned to it", Alert::DANGER );
-            return false;
+            $okay = false;
         }
 
         if( ( $cnt = count( $this->object->getIPv4Addresses() ) ) ) {
             AlertContainer::push( "Could not delete this Vlan as {$cnt} IPv4 address(es) are assigned to it", Alert::DANGER );
-            return false;
+            $okay = false;
         }
 
         if( ( $cnt = count( $this->object->getIPv6Addresses() ) ) ) {
             AlertContainer::push( "Could not delete this Vlan as {$cnt} IPv6 address(es) are assigned to it", Alert::DANGER );
-            return false;
+            $okay = false;
         }
 
-        return true;
+        return $okay;
     }
 
     /**

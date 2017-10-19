@@ -8,7 +8,7 @@
 
     <?= Former::text( 'description' )
         ->label( 'Description' )
-        ->blockHelp( "" );
+        ->blockHelp( "Description of the device that this console port connects to. Usually a switch hostname." );
     ?>
 
     <?= Former::select( 'custid' )
@@ -17,42 +17,43 @@
         ->placeholder( 'Select a customer' )
         ->fromQuery( $t->params[ 'custs' ], 'name' )
         ->addClass( 'chzn-select' )
-        ->blockHelp( "");
+        ->blockHelp( "This field exists as you may colocate some equipment for your customers." );
     ?>
 
     <?= Former::select( 'switchid' )
         ->id( 'switch' )
-        ->label( 'Switch' )
-        ->placeholder( 'Select a switch' )
+        ->label( 'Console Server' )
+        ->placeholder( 'Select the console server' )
         ->fromQuery( $t->params[ 'switches' ], 'name' )
         ->addClass( 'chzn-select' )
-        ->blockHelp( "");
+        ->blockHelp( "Select the console server to which this device is connected.<br><br>"
+            . "Console servers are added via the <em>Switches</em> menu option. This is scheduled to change.");
     ?>
 
     <?= Former::text( 'port' )
         ->label( 'Port' )
-        ->blockHelp( "" );
+        ->blockHelp( "Enter the port number." );
     ?>
 
     <?= Former::number( 'speed' )
         ->label( 'Speed' )
-        ->blockHelp( "" );
+        ->blockHelp( "Enter the baud speed - just used for your own informational purposes." );
     ?>
 
     <?= Former::number( 'parity' )
         ->label( 'parity' )
-        ->blockHelp( "" );
+        ->blockHelp( "Enter the parity - just used for your own informational purposes." );
     ?>
 
 
     <?= Former::number( 'stopbits' )
         ->label( 'Stopbits' )
-        ->blockHelp( "" );
+        ->blockHelp( "Enter the number of stop bits - just used for your own informational purposes." );
     ?>
 
     <?= Former::number( 'flowcontrol' )
         ->label( 'Flow Control' )
-        ->blockHelp( "" );
+        ->blockHelp( "Enter the flowcontrol status - just used for your own informational purposes." );
     ?>
 
     <?= Former::checkbox( 'autobaud' )
@@ -60,7 +61,7 @@
         ->text( 'Autobaud' )
         ->checked_value( 1 )
         ->unchecked_value( 0 )
-        ->blockHelp( "" );
+        ->blockHelp( "Indicate is autobaud is supported - just used for your own informational purposes." );
     ?>
 
     <?= Former::textarea( 'notes' )
