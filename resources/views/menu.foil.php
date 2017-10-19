@@ -184,7 +184,7 @@
                     </li>
                 <?php endif; ?>
 
-                <li <?php if( $t->controller == 'VlanController' ):?> class="active" <?php endif;?> >
+                <li <?php if( $t->controller == 'VlanController' && !strpos( strtolower($t->action) , 'private') ):?> class="active" <?php endif;?> >
                     <a href="<?= action('VlanController@list' ) ?>">VLANs</a>
                     <?php /* {if $controller eq 'vlan'}
                         <ul class="nav nav-list">
@@ -194,6 +194,12 @@
                         </ul>
                     {/if} */ ?>
                 </li>
+
+                <?php if(  $t->controller == 'VlanController' ): ?>
+                    <li class="sub-menu <?= $t->controller == 'VlanController' && strpos( strtolower($t->action) , 'private')  ? 'active' : '' ?>">
+                        <a href="<?= route( 'vlan@private' ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;Private VLANs</a>
+                    </li>
+                <?php endif; ?>
 
                 <li <?php if( $t->controller == 'IrrdbConfigController' ):?> class="active" <?php endif;?> >
                     <a href="<?= action( 'IrrdbConfigController@list' ) ?>">IRRDB Configuration</a>

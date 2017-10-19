@@ -562,6 +562,14 @@ class Vlan extends EntityRepository
             $dql .= " AND v.id = " . (int)$id;
         }
 
+        if( isset( $feParams->privateList) && $feParams->privateList ){
+            $dql .= " AND v.private = 1";
+        }
+
+        if( isset( $feParams->infra) && $feParams->infra ){
+            $dql .= " AND i.id = ".$feParams->infra->getId();
+        }
+
         /*if( $this->getParam( 'infra', false ) && $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $this->getParam( 'infra' ) ) )
         {
             $dql .= " i.id = ". (int)$infraid ;

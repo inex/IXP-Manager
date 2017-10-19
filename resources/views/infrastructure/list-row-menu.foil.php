@@ -14,9 +14,9 @@
     <ul class="dropdown-menu dropdown-menu-right">
         <li>
             <a href="<?= url( '/switch/list/infra/' . $t->row['id'] ) ?>">View Switches</a>
-            <a href="<?= url( '/vlan/list/infra/' . $t->row['id'] ) ?>">View All VLANs</a>
-            <a href="<?= url( '/vlan/list/infra/' . $t->row['id'] . '/publiconly/1' ) ?>">View Public VLANs</a>
-            <a href="<?= url( '/vlan/private/infra/' . $t->row['id'] ) ?>">View Private VLANs</a>
+            <a href="<?= route( 'vlan@infra' ,          [ 'id' => $t->row['id'] ]   ) ?>">View All VLANs</a>
+            <a href="<?= route( "vlan@infraPublic",     [ 'id' => $t->row['id'], 'public' => 1 ]   ) ?>">View Public VLANs</a>
+            <a href="<?= route( "vlan@privateInfra",    [ 'id' => $t->row['id'] ]   ) ?>">View Private VLANs</a>
         </li>
     </ul>
 </div>

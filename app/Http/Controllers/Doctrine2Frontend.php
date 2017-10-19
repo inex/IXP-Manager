@@ -152,14 +152,14 @@ abstract class Doctrine2Frontend extends Controller {
             Route::get(     'view/{id}',   $class . '@view'   )->name( $route_prefix . '@view'   );
 
             if( !static::$read_only ) {
-                Route::get(  'add', $class . '@add' )->name( $route_prefix . '@add' );
-                Route::get(  'edit/{id}', $class . '@edit' )->name( $route_prefix . '@edit' );
-                Route::post( 'delete', $class . '@delete' )->name( $route_prefix . '@delete' );
-                Route::post( 'store', $class . '@store' )->name( $route_prefix . '@store' );
+                Route::get(  'add',         $class . '@add'     )->name( $route_prefix . '@add'     );
+                Route::get(  'edit/{id}',   $class . '@edit'    )->name( $route_prefix . '@edit'    );
+                Route::post( 'delete',      $class . '@delete'  )->name( $route_prefix . '@delete'  );
+                Route::post( 'store',       $class . '@store'   )->name( $route_prefix . '@store'   );
             }
         });
 
-        static::additionalRoutes( $route_prefix );
+        $class::additionalRoutes( $route_prefix );
     }
 
     /**
@@ -409,6 +409,7 @@ abstract class Doctrine2Frontend extends Controller {
      * @return bool|string The template to use of false if none found
      */
     protected function resolveTemplate( $tpl, $quitOnMissing = true ) {
+
         if( ViewFacade::exists ( $this->feParams->viewFolderName . "/{$tpl}" ) ) {
             return $this->feParams->viewFolderName . "/{$tpl}";
         } else if( ViewFacade::exists( "frontend/{$tpl}"  ) ) {

@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Cache, D2EM, Former, Redirect, Validator;
+use Cache, D2EM, Former, Redirect, Route, Validator;
 
 use Entities\{
     Vlan                as VlanEntity,
@@ -117,7 +117,13 @@ class VlanController extends Doctrine2Frontend {
 
     protected static function additionalRoutes( string $route_prefix )
     {
-        // dd( $route_prefix );
+        Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
+            Route::get(     'privates',                         'VlanController@listPrivate'    )->name( $route_prefix . '@private'        );
+            Route::get(     'privates/infra/{id}',              'VlanController@listPrivate'    )->name( $route_prefix . '@privateInfra'   );
+            Route::get(     'list/infra/{id}',                  'VlanController@listInfra'      )->name( $route_prefix . '@infra'          );
+            Route::get(     'list/infra/{id}/public/{public}',  'VlanController@listInfra'      )->name( $route_prefix . '@infraPublic'    );
+
+        });
     }
     /**
      * Provide array of rows for the list and view
@@ -234,6 +240,47 @@ class VlanController extends Doctrine2Frontend {
         }
 
         return true;
+    }
+
+    /**
+     * Display the private Vlan
+     *
+     * @param int $id ID of the vlan to display
+     * @return View
+     */
+    public function listPrivate( int $id = null ){
+        $infra = null;
+        if( $id && !( $infra = D2EM::getRepository( InfrastructureEntity::class )->find( $id ) ) ) {
+            abort(404);
+        }
+
+        $this->data[ 'data' ]           = D2EM::getRepository( VlanEntity::class )->getPrivateVlanDetails( $infra );
+        $this->params                   = [ 'infra' => $infra ];
+
+        return $this->display( 'private' );
+    }
+
+    /**
+     * Display the Vlan for an Infrastructure
+     *
+     * @param int $id ID of the Infrastructure
+     * @param bool $public only the public vlan ?
+     *
+     * @return View
+     */
+    public function listInfra( int $id, $public = null ){
+
+        if( !( $infra = D2EM::getRepository( InfrastructureEntity::class )->find( $id ) ) ) {
+            abort(404);
+        }
+
+        if( $public ){
+            $this->feParams->public = true;
+        }
+
+        $this->feParams->infra = $infra;
+
+        return $this->list();
     }
 
 
