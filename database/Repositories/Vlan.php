@@ -5,7 +5,9 @@ namespace Repositories;
 use Doctrine\ORM\EntityRepository;
 
 use Entities\{
+    Infrastructure as InfrastructureEntity,
     Router as RouterEntity,
+    Vlan as VlanEntity,
     VlanInterface as VlanInterfaceEntity
 };
 
@@ -269,88 +271,72 @@ class Vlan extends EntityRepository
      *                 [764] => [            // cust ID
      *                     [id] => 764
      *                     [name] => CustA
-     *                     [vintid] => 169   // virtual interface ID
+     *                     [viid] => 169   // virtual interface ID
      *                 ]
      *                 [60] => [
      *                     [id] => 60
      *                     [name] => CustB
-     *                     [vintid] => 212
+     *                     [viid] => 212
      *                 ]
-     *             ]
+     *             ],
+     *             [locations] => [
+     *                 [locationid] => location name
+     *                 ...
+     *             ],
+     *             [switches] => [
+     *                 [switchid] => switch name
+     *                 ...
+     *             ],
      *         ]
      *         [....]
      *         [....]
      *     ]
      *
+     * @param InfrastructureEntity $infra
      * @return array
      */
     public function getPrivateVlanDetails( $infra = null )
     {
-        $q = "SELECT vli, v, vi, pi, sp, s, l, cab, c, i, ixp
-                FROM \\Entities\\Vlan v
-                    LEFT JOIN v.VlanInterfaces vli
-                    LEFT JOIN v.Infrastructure i
-                    LEFT JOIN i.IXP ixp
-                    LEFT JOIN vli.VirtualInterface vi
-                    LEFT JOIN vi.Customer c
-                    LEFT JOIN vi.PhysicalInterfaces pi
-                    LEFT JOIN pi.SwitchPort sp
-                    LEFT JOIN sp.Switcher s
-                    LEFT JOIN s.Cabinet cab
-                    LEFT JOIN cab.Location l
+        $pvs = []; // private vlans
+        /** @var VlanEntity $pv */
+        foreach( $this->findBy( [ 'private' => 1 ] ) as $pv ) {
 
-                WHERE
+            if( $infra && $pv->getInfrastructure()->getId() != $infra->getId() ) {
+                continue;
+            }
 
-                    v.private = 1 ";
+            $pvs[ $pv->getId() ]['vlanid']         = $pv->getId();
+            $pvs[ $pv->getId() ]['name']           = $pv->getName();
+            $pvs[ $pv->getId() ]['number']         = $pv->getNumber();
+            $pvs[ $pv->getId() ]['infrastructure'] = $pv->getInfrastructure()->getName();
 
-        if( $infra )
-            $q .= ' AND i = :infra ';
+            $members   = [];
+            $locations = [];
+            $switches  = [];
 
-        $q .= 'ORDER BY v.number ASC';
+            foreach( $pv->getVlanInterfaces() as $vli ) {
 
-        $q = $this->getEntityManager()->createQuery( $q );
+                $custid = $vli->getVirtualInterface()->getCustomer()->getId();
 
-        if( $infra )
-            $q->setParameter( 'infra', $infra );
-
-        $vlans = $q->getArrayResult();
-
-        if( !$vlans || !count( $vlans ) )
-            return [];
-
-        $pvs = [];
-
-        foreach( $vlans as $v )
-        {
-            $pvs[ $v['id'] ]['vlanid']   = $v['id'];
-            $pvs[ $v['id'] ]['name']     = $v['name'];
-            $pvs[ $v['id'] ]['number']   = $v['number'];
-            $pvs[ $v['id'] ]['members']  = [];
-            $pvs[ $v['id'] ]['infrastructure']    = $v['Infrastructure']['shortname'];
-            $pvs[ $v['id'] ]['ixp']      = $v['Infrastructure']['IXP']['shortname'];
-
-            foreach( $v['VlanInterfaces'] as $vli )
-            {
-                if( !isset( $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ] ) )
-                {
-                    $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ] = [];
-                    $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['id']     = $vli['VirtualInterface']['Customer']['id'];
-                    $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['name']   = $vli['VirtualInterface']['Customer']['name'];
-                    $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['vintid'] = $vli['VirtualInterface']['id'];
+                if( !isset( $members[ $custid ] ) ) {
+                    $members[ $custid ]['id']     = $custid;
+                    $members[ $custid ]['name']   = $vli->getVirtualInterface()->getCustomer()->getName();
+                    $members[ $custid ]['viid']   = $vli->getVirtualInterface()->getId();
                 }
 
-                $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['locations'] = [];
-                $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['switches']  = [];
-
-                foreach( $vli['VirtualInterface']['PhysicalInterfaces'] as $pi )
-                {
-                    $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['locations'][]
-                        = $pi['SwitchPort']['Switcher']['Cabinet']['Location']['name'];
-
-                    $pvs[ $v['id'] ]['members'][ $vli['VirtualInterface']['Customer']['id'] ]['switches'][]
-                        = $pi['SwitchPort']['Switcher']['name'];
+                foreach( $vli->getVirtualInterface()->getPhysicalInterfaces() as $pi ) {
+                    if( !isset( $locations[ $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getId() ] ) ) {
+                        $locations[ $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getId() ] = $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName();
+                    }
+                    if( !isset( $switches[ $pi->getSwitchPort()->getSwitcher()->getId() ] ) ) {
+                        $switches[ $pi->getSwitchPort()->getSwitcher()->getId() ] = $pi->getSwitchPort()->getSwitcher()->getName();
+                    }
                 }
             }
+
+            $pvs[ $pv->getId() ]['members']   = $members;
+            $pvs[ $pv->getId() ]['locations'] = $locations;
+            $pvs[ $pv->getId() ]['switches']  = $switches;
         }
 
         return $pvs;
@@ -507,21 +493,21 @@ class Vlan extends EntityRepository
                         'id'                    => $vli->getVirtualInterface()->getCustomer()->getId(),
                         'name'                  => $vli->getVirtualInterface()->getCustomer()->getName(),
                         'autsys'                => $vli->getVirtualInterface()->getCustomer()->getAutsys(),
-                        'abbreviated_name'      => $vli->getVirtualInterface()->getCustomer()->getAbbreviatedName()
+                        'abbreviated_name'      => $vli->getVirtualInterface()->getCustomer()->getAbbreviatedName(),
                 ],
 
                 'virtualinterface'  => [
-                        'id'                    => $vli->getVirtualInterface()->getId()
+                        'id'                    => $vli->getVirtualInterface()->getId(),
                 ],
 
                 'vlaninterface'     => [
-                        'id'                    => $vli->getId()
+                        'id'                    => $vli->getId(),
                 ],
 
                 'vlan'              => [
                         'id'                    => $vli->getVlan()->getId(),
                         'name'                  => $vli->getVlan()->getName(),
-                        'number'                => $vli->getVlan()->getNumber()
+                        'number'                => $vli->getVlan()->getNumber(),
                 ],
 
             ];

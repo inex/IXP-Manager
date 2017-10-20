@@ -295,7 +295,7 @@ class VirtualInterface
     /**
      * Get PhysicalInterfaces
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|PhysicalInterface[]
      */
     public function getPhysicalInterfaces()
     {
@@ -357,7 +357,7 @@ class VirtualInterface
     /**
      * Get VlanInterfaces
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|VlanInterface[]
      */
     public function getVlanInterfaces()
     {

@@ -87,27 +87,18 @@ $this->layout( 'layouts/ixpv4' );
 
                     <td>
                         <?php foreach( $row[ "members" ] as $custid => $cust ): ?>
-                            <a href="<?= url('' ) . 'customer/overview/id/' . $custid ?>"><?= $cust[ 'name' ] ?></a>
-                            (<a href="">interface details</a>)<br />
-                            <?php if( count( $row[ 'members'][ $custid ][ 'locations' ] ) > 1 ) : ?>
-                                <?php for( $i=2; $i <= count( $row[ 'members'][ $custid ][ 'locations' ] ) ; $i++ ):  ?>
-                                    <br />
-                                <?php endfor; ?>
-                            <?php endif; ?>
+                            <a href="<?= url('' ) . '/customer/overview/id/' . $custid ?>"><?= $cust[ 'name' ] ?></a>
+                            (<a href=" <?= route( 'interfaces/virtual/edit', [ 'id' => $cust['viid'] ] ) ?>">interface details</a>)<br />
                         <?php endforeach; ?>
                     </td>
                     <td>
-                        <?php foreach( $row[ 'members'] as $custid => $cust ): ?>
-                            <?php foreach( $cust[ 'locations' ] as $l ): ?>
-                                <?= $l ?><br />
-                            <?php endforeach; ?>
+                        <?php foreach( $row[ 'locations'] as $locid => $locname ): ?>
+                            <?= $locname ?><br />
                         <?php endforeach; ?>
                     </td>
                     <td>
-                        <?php foreach( $row[ 'members'] as $custid => $cust ): ?>
-                            <?php foreach( $cust[ 'switches' ] as $s ): ?>
-                                <?= $s ?><br />
-                            <?php endforeach; ?>
+                        <?php foreach( $row[ 'switches'] as $swid => $swname ): ?>
+                            <?= $swname ?><br />
                         <?php endforeach; ?>
                     </td>
 
