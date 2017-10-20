@@ -179,7 +179,7 @@ class VlanController extends Doctrine2Frontend {
     {
         $validator = Validator::make( $request->all(), [
             'name'              => 'required|string|max:255',
-            'number'            => 'required|integer',
+            'number'            => 'required|integer|min:1|max:4096',
             'infrastructureid'  => 'required|integer|exists:Entities\Infrastructure,id',
             'config_name'       => 'required|string|max:32|alpha_dash'
 
