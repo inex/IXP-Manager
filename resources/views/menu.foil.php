@@ -27,25 +27,25 @@
 
                     <?php if( substr( $t->controller, -19 ) == 'InterfaceController' ): ?>
 
-                        <li class="sub-menu <?php if($t->controller == 'PhysicalInterfaceController'):?> active <?php endif;?> " >
-                            <a href="<?= route('interfaces/physical/list') ?>">Physical Interface</a>
+                        <li class="sub-menu <?php if( $t->controller == 'PhysicalInterfaceController' ):?> active <?php endif;?> " >
+                            <a href="<?= route('interfaces/physical/list' ) ?>">Physical Interface</a>
                         </li>
 
-                        <li class="sub-menu <?php if($t->controller == 'VlanInterfaceController'):?> active <?php endif;?> " >
-                            <a href="<?= route('interfaces/vlan/list') ?>">Vlan Interface</a>
+                        <li class="sub-menu <?php if( $t->controller == 'VlanInterfaceController' ):?> active <?php endif;?> " >
+                            <a href="<?= route('interfaces/vlan/list' ) ?>">Vlan Interface</a>
                         </li>
 
                     <?php endif; ?>
 
                 <li class="<?= $t->controller != 'SflowReceiverController' ?: 'active' ?>" >
-                    <a href="<?= url('interfaces/sflow-receiver/list') ?>">Sflow Receivers</a>
+                    <a href="<?= route('interfaces/sflow-receiver/list') ?>">Sflow Receivers</a>
                 </li>
 
                 <li <?php if( $t->controller == 'PatchPanelController' ):?> class="active" <?php endif;?> >
-                    <a href="<?= url('patch-panel/list') ?>">Patch Panels</a>
+                    <a href="<?= route('patch-panel/list' ) ?>">Patch Panels</a>
                     <?php if( $t->controller == 'PatchPanelPortController' || $t->controller == 'PatchPanelController' ):?>
-                        <li class="sub-menu <?php if($t->controller == 'PatchPanelPortController'):?> active <?php endif;?> " >
-                            <a href="<?= url('patch-panel-port/list') ?>">Patch Panel Port</a>
+                        <li class="sub-menu <?php if( $t->controller == 'PatchPanelPortController' ):?> active <?php endif;?> " >
+                            <a href="<?= route('patch-panel-port/list' ) ?>">Patch Panel Port</a>
                         </li>
                     <?php endif;?>
                 </li>
@@ -66,7 +66,7 @@
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.cust-kit', false ) ): ?>
                     <li <?php if( $t->controller == 'CustKitController' ):?> class="active" <?php endif;?> >
-                        <a href="<?= action( 'CustKitController@list' ) ?>">Colocated Equipment</a>
+                        <a href="<?= route( 'cust-kit@list' ) ?>">Colocated Equipment</a>
                     </li>
                 <?php endif; ?>
 
@@ -94,25 +94,25 @@
                 </li>
 
                 <li <?php if( $t->controller == 'InfrastructureController' ):?> class="active" <?php endif;?> >
-                    <a href="<?= action('InfrastructureController@list') ?>">Infrastructures</a>
+                    <a href="<?= route('infrastructure@list') ?>">Infrastructures</a>
                 </li>
 
                 <li <?php if( $t->controller == 'LocationController' ):?> class="active" <?php endif;?> >
-                    <a href="<?= action( 'LocationController@list' ) ?>">Locations</a>
+                    <a href="<?= route( 'location@list' ) ?>">Locations</a>
                 </li>
 
                 <li <?php if( $t->controller == 'CabinetController' ):?> class="active" <?php endif;?> >
-                    <a href="<?= action('CabinetController@list') ?>">Cabinets</a>
+                    <a href="<?= route('cabinet@list') ?>">Cabinets</a>
                 </li>
 
                 <li <?= $t->controller == 'RouterController' && $t->action != 'status' ? 'class="active"' : '' ?>>
-                    <a href="<?= url('/router/list') ?>">
+                    <a href="<?= route('router/list' ) ?>">
                         Routers
                     </a>
 
                     <?php if( $t->controller == 'RouterController' ): ?>
                         <li class="sub-menu <?php if( $t->controller == 'RouterController' && $t->action == 'status'):?> active <?php endif;?> " >
-                            <a href="<?= route('router/status') ?>">Live Status</a>
+                            <a href="<?= route('router/status' ) ?>">Live Status</a>
                         </li>
                     <?php endif;?>
 
@@ -139,7 +139,7 @@
                 <?php if( config( 'ixp_fe.frontend.beta.core_bundles', false ) ): ?>
 
                     <li class="<?= $t->controller != 'CoreBundleController' ?: "active" ?>" >
-                        <a href="<?= url('interfaces/core-bundle/list') ?>">Core Bundles</a>
+                        <a href="<?= route('core-bundle/list' ) ?>">Core Bundles</a>
                     </li>
 
                 <?php endif; ?>
@@ -158,34 +158,34 @@
                 </li>
 
                 <li>
-                    <a href="<?= url( '/layer2-address/list' ) ?>">MAC Addresses</a>
+                    <a href="<?= route( 'layer2-address@list' ) ?>">MAC Addresses</a>
                 </li>
 
                 <?php if(  $t->controller == 'MacAddressController' ||  $t->controller == 'Layer2AddressController' ): ?>
                     <li class="sub-menu <?= $t->controller == 'Layer2AddressController' ? 'active' : '' ?>">
-                        <a href="<?= url( '/layer2-address/list' ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;Configured Addresses</a>
+                        <a href="<?= route( 'layer2-address@list' ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;Configured Addresses</a>
                     </li>
 
                     <?php if( !config( 'ixp_fe.frontend.disabled.mac-address', false ) ): ?>
                         <li class="sub-menu <?= $t->controller == 'MacAddressController' ? 'active' : '' ?>">
-                            <a href="<?= action('MacAddressController@list') ?>">&nbsp;&nbsp;&nbsp;&nbsp;Discovered Addresses</a>
+                            <a href="<?= route('mac-address@list') ?>">&nbsp;&nbsp;&nbsp;&nbsp;Discovered Addresses</a>
                         </li>
                     <?php endif; ?>
                 <?php endif; ?>
 
 
                 <li <?php if( $t->controller == 'VendorController' ):?> class="active" <?php endif;?> >
-                    <a href="<?= action('VendorController@list' ) ?>">Vendors</a>
+                    <a href="<?= route('vendor@list' ) ?>">Vendors</a>
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection', false ) ): ?>
                     <li <?php if( $t->controller == 'ConsoleServerConnectionController' ):?> class="active" <?php endif;?>>
-                        <a href="<?= action('ConsoleServerConnectionController@list') ?>">Console Server Connections</a>
+                        <a href="<?= route('console-server-connection@list' ) ?>">Console Server Connections</a>
                     </li>
                 <?php endif; ?>
 
                 <li <?php if( $t->controller == 'VlanController' && !strpos( strtolower($t->action) , 'private') ):?> class="active" <?php endif;?> >
-                    <a href="<?= action('VlanController@list' ) ?>">VLANs</a>
+                    <a href="<?= route('vlan@list' ) ?>">VLANs</a>
                     <?php /* {if $controller eq 'vlan'}
                         <ul class="nav nav-list">
                             <li {if $controller eq 'vlan' and $action eq 'private'}class="active"{/if}>
@@ -202,7 +202,7 @@
                 <?php endif; ?>
 
                 <li <?php if( $t->controller == 'IrrdbConfigController' ):?> class="active" <?php endif;?> >
-                    <a href="<?= action( 'IrrdbConfigController@list' ) ?>">IRRDB Configuration</a>
+                    <a href="<?= route( 'irrdb-config@list' ) ?>">IRRDB Configuration</a>
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) ): ?>
