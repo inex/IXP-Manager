@@ -221,7 +221,7 @@ class Vlan
     /**
      * Get VlanInterfaces
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|VlanInterface[]
      */
     public function getVlanInterfaces()
     {
