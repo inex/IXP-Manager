@@ -534,7 +534,7 @@ class Vlan extends EntityRepository
     /**
      * Get all vlans (or a particular one) for listing on the frontend CRUD
      *
-     * @see \IXP\Http\Controller\Doctrine2Frontend
+     * @see \IXP\Http\Controllers\Doctrine2Frontend
      *
      *
      * @param \stdClass $feParams
@@ -553,17 +553,21 @@ class Vlan extends EntityRepository
                         v.peering_manager AS peering_manager,
                         i.shortname AS infrastructure,
                         ix.shortname AS ixp
+                        
                 FROM Entities\\Vlan v
-                LEFT JOIN v.Infrastructure i
-                LEFT JOIN i.IXP ix
+                    LEFT JOIN v.Infrastructure i
+                    LEFT JOIN i.IXP ix
+                    
                 WHERE 1 = 1";
 
         if( $id ) {
             $dql .= " AND v.id = " . (int)$id;
         }
 
-        if( isset( $feParams->privateList) && $feParams->privateList ){
+        if( isset( $feParams->privateList ) && $feParams->privateList ){
             $dql .= " AND v.private = 1";
+        } else if( isset( $feParams->publicOnly ) && $feParams->publicOnly === true ) {
+            $dql .= " AND v.private != 1";
         }
 
         if( isset( $feParams->infra) && $feParams->infra ){

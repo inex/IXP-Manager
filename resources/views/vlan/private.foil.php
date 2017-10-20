@@ -87,7 +87,7 @@ $this->layout( 'layouts/ixpv4' );
 
                     <td>
                         <?php foreach( $row[ "members" ] as $custid => $cust ): ?>
-                            <a href=""><?= $cust[ 'name' ] ?></a>
+                            <a href="<?= url('' ) . 'customer/overview/id/' . $custid ?>"><?= $cust[ 'name' ] ?></a>
                             (<a href="">interface details</a>)<br />
                             <?php if( count( $row[ 'members'][ $custid ][ 'locations' ] ) > 1 ) : ?>
                                 <?php for( $i=2; $i <= count( $row[ 'members'][ $custid ][ 'locations' ] ) ; $i++ ):  ?>
