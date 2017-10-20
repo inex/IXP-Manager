@@ -1,0 +1,59 @@
+
+<div class="well col-sm-12">
+    <?= Former::open()->method( 'POST' )
+        ->id( 'form' )
+        ->action( action ( $t->controller.'@store' ) )
+        ->customWidthClass( 'col-sm-3' )
+    ?>
+
+    <?= Former::text( 'name' )
+        ->label( 'Name' )
+        ->blockHelp( "" );
+    ?>
+
+    <?= Former::text( 'shortname' )
+        ->label( 'Shortname' )
+        ->blockHelp( "" );
+    ?>
+
+    <?= Former::text( 'address1' )
+        ->label( 'Address' )
+        ->blockHelp( "" );
+    ?>
+
+    <?= Former::text( 'address2' )
+        ->label( ' ' )
+        ->blockHelp( "" );
+    ?>
+
+    <?= Former::text( 'address3' )
+        ->label( ' ' )
+        ->blockHelp( "" );
+    ?>
+
+    <?= Former::text( 'address4' )
+        ->label( ' ' )
+        ->blockHelp( "" );
+    ?>
+
+    <?= Former::select( 'country' )
+        ->label( 'Country' )
+        ->fromQuery( $t->params[ 'countries'], 'name' )
+        ->placeholder( 'Choose a country' )
+        ->addClass( 'chzn-select' );
+    ?>
+
+    <?= Former::actions(
+        Former::primary_submit( 'Save Changes' ),
+        Former::default_link( 'Cancel' )->href( route ('infrastructure@list') ),
+        Former::success_button( 'Help' )->id( 'help-btn' )
+    );
+    ?>
+
+    <?= Former::hidden( 'id' )
+        ->value( $t->params[ 'object'] ? $t->params[ 'object']->getId() : '' )
+    ?>
+
+    <?= Former::close() ?>
+
+</div>
