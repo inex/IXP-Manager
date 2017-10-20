@@ -32,6 +32,7 @@ use Entities\{
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -120,8 +121,8 @@ class VlanController extends Doctrine2Frontend {
     protected static function additionalRoutes( string $route_prefix )
     {
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get(     'privates',                         'VlanController@listPrivate'    )->name( $route_prefix . '@private'        );
-            Route::get(     'privates/infra/{id}',              'VlanController@listPrivate'    )->name( $route_prefix . '@privateInfra'   );
+            Route::get(     'private',                          'VlanController@listPrivate'    )->name( $route_prefix . '@private'        );
+            Route::get(     'private/infra/{id}',               'VlanController@listPrivate'    )->name( $route_prefix . '@privateInfra'   );
             Route::get(     'list/infra/{id}',                  'VlanController@listInfra'      )->name( $route_prefix . '@infra'          );
             Route::get(     'list/infra/{id}/public/{public}',  'VlanController@listInfra'      )->name( $route_prefix . '@infraPublic'    );
 
@@ -279,8 +280,8 @@ class VlanController extends Doctrine2Frontend {
             abort(404);
         }
 
-        if( $public ){
-            $this->feParams->public = true;
+        if( $public ) {
+            $this->feParams->publicOnly = true;
         }
 
         $this->feParams->infra = $infra;
