@@ -52,6 +52,13 @@ class IxpController extends Doctrine2Frontend {
     protected $object = null;
 
     /**
+     * Is this a edit only controller?
+     *
+     * @var boolean
+     */
+    public static $edit_only = true;
+
+    /**
      * This function sets up the frontend controller
      */
     public function feInit() {
@@ -71,6 +78,8 @@ class IxpController extends Doctrine2Frontend {
             'listOrderByDir'    => 'ASC',
 
             'viewFolderName'    => 'ixp',
+
+            'editonly'          => self::$edit_only,
         ];
     }
 

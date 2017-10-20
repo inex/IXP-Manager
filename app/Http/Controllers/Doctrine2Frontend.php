@@ -100,6 +100,13 @@ abstract class Doctrine2Frontend extends Controller {
     public static $read_only = false;
 
     /**
+     * Is this a edit only controller?
+     *
+     * @var boolean
+     */
+    public static $edit_only = false;
+
+    /**
      * Column / table data types when displaying data.
      * @var array
      */
@@ -148,13 +155,19 @@ abstract class Doctrine2Frontend extends Controller {
         $class = '\\' . $class;
 
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $class, $route_prefix ) {
-            Route::get(     'list',        $class . '@list'   )->name( $route_prefix . '@list'   );
-            Route::get(     'view/{id}',   $class . '@view'   )->name( $route_prefix . '@view'   );
+
+            if( !static::$edit_only ) {
+                Route::get( 'list', $class . '@list' )->name( $route_prefix . '@list' );
+                Route::get( 'view/{id}', $class . '@view' )->name( $route_prefix . '@view' );
+            }
 
             if( !static::$read_only ) {
-                Route::get(  'add',         $class . '@add'     )->name( $route_prefix . '@add'     );
+                if( !static::$edit_only ) {
+                    Route::get(  'add',         $class . '@add'     )->name( $route_prefix . '@add'     );
+                    Route::post( 'delete',      $class . '@delete'  )->name( $route_prefix . '@delete'  );
+                }
+
                 Route::get(  'edit/{id}',   $class . '@edit'    )->name( $route_prefix . '@edit'    );
-                Route::post( 'delete',      $class . '@delete'  )->name( $route_prefix . '@delete'  );
                 Route::post( 'store',       $class . '@store'   )->name( $route_prefix . '@store'   );
             }
         });
