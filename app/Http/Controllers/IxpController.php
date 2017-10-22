@@ -153,6 +153,13 @@ class IxpController extends Doctrine2Frontend {
     }
 
     /**
+     * @inheritdoc
+     */
+    public function postStoreRedirect() {
+        return 'infrastructure@list';
+    }
+
+    /**
      * Overriding optional method to clear cached entries:
      *
      * @param string $action Either 'add', 'edit', 'delete'

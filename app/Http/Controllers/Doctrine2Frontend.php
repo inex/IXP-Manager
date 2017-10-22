@@ -343,7 +343,18 @@ abstract class Doctrine2Frontend extends Controller {
             . ' ' . $this->data['feParams']->nameSingular . ' with ID ' . $this->object->getId() );
         AlertContainer::push(  $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
 
-        return redirect()->action( $this->feParams->defaultController . '@' . $this->feParams->defaultAction );
+        return redirect()->route( $this->postStoreRedirect() ?? self::route_prefix() . '@' . 'list' );
+    }
+
+    /**
+     * Allow D2F implementations to override where the post-store redirect goes.
+     *
+     * To implement this, have it return a valid route name
+     *
+     * @return string|null
+     */
+    public function postStoreRedirect() {
+        return null;
     }
 
     /**
@@ -392,9 +403,19 @@ abstract class Doctrine2Frontend extends Controller {
             AlertContainer::push( $this->feParams->titleSingular . " deleted.", Alert::SUCCESS );
         }
 
-        return redirect()->action( $this->feParams->defaultController.'@'.$this->feParams->defaultAction );
+        return redirect()->route( $this->postDeleteRedirect() ?? self::route_prefix() . '@' . 'list' );
     }
 
+    /**
+     * Allow D2F implementations to override where the post-delete redirect goes.
+     *
+     * To implement this, have it return a valid route name
+     *
+     * @return string|null
+     */
+    public function postDeleteRedirect() {
+        return null;
+    }
 
 
     /**
