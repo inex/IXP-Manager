@@ -94,23 +94,21 @@ class IxpController extends Doctrine2Frontend {
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
-        if( $id != null ) {
-            if( !( $this->object = D2EM::getRepository( IXPEntity::class )->find( $id ) ) ) {
-                abort(404);
-            }
-
-            $old = request()->old();
-
-            Former::populate([
-                'name'          => array_key_exists( 'name',        $old ) ? $old[ 'name' ]         : $this->object->getName(),
-                'shortname'     => array_key_exists( 'shortname',   $old ) ? $old[ 'shortname' ]    : $this->object->getShortname(),
-                'address1'      => array_key_exists( 'address1',    $old ) ? $old[ 'address1' ]     : $this->object->getAddress1(),
-                'address2'      => array_key_exists( 'address2',    $old ) ? $old[ 'address2' ]     : $this->object->getAddress2(),
-                'address3'      => array_key_exists( 'address3',    $old ) ? $old[ 'address3' ]     : $this->object->getAddress3(),
-                'address4'      => array_key_exists( 'address4',    $old ) ? $old[ 'address4' ]     : $this->object->getAddress4(),
-                'country'       => array_key_exists( 'country',     $old ) ? $old[ 'country' ]      : $this->object->getCountry(),
-            ]);
+        if( $id === null || !( $this->object = D2EM::getRepository( IXPEntity::class )->find( $id ) ) ) {
+            abort(404);
         }
+
+        $old = request()->old();
+
+        Former::populate([
+            'name'          => array_key_exists( 'name',        $old ) ? $old[ 'name' ]         : $this->object->getName(),
+            'shortname'     => array_key_exists( 'shortname',   $old ) ? $old[ 'shortname' ]    : $this->object->getShortname(),
+            'address1'      => array_key_exists( 'address1',    $old ) ? $old[ 'address1' ]     : $this->object->getAddress1(),
+            'address2'      => array_key_exists( 'address2',    $old ) ? $old[ 'address2' ]     : $this->object->getAddress2(),
+            'address3'      => array_key_exists( 'address3',    $old ) ? $old[ 'address3' ]     : $this->object->getAddress3(),
+            'address4'      => array_key_exists( 'address4',    $old ) ? $old[ 'address4' ]     : $this->object->getAddress4(),
+            'country'       => array_key_exists( 'country',     $old ) ? $old[ 'country' ]      : $this->object->getCountry(),
+        ]);
 
         return [
             'object'            => $this->object,
@@ -137,13 +135,8 @@ class IxpController extends Doctrine2Frontend {
             return Redirect::back()->withErrors( $validator )->withInput();
         }
 
-        if( $request->input( 'id', false ) ) {
-            if( !( $this->object = D2EM::getRepository( IXPEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404);
-            }
-        } else {
-            $this->object = new IXPEntity;
-            D2EM::persist( $this->object );
+        if( !$request->input( 'id', false ) || !( $this->object = D2EM::getRepository( IXPEntity::class )->find( $request->input( 'id' ) ) ) ) {
+            abort(404);
         }
 
         $this->object->setName(             $request->input( 'name'          ) );
