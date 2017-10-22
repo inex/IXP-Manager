@@ -3,27 +3,30 @@
     $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php if( !isset( $t->data[ 'feParams' ]->editonly ) || !$t->data[ 'feParams' ]->editonly ): ?>
-    <?php $this->section( 'title' ) ?>
-            <a href="<?= action($t->controller.'@list') ?>">
-                <?=  $t->data[ 'feParams' ]->pagetitle  ?>
-            </a>
-    <?php $this->append() ?>
-<?php endif; ?>
+<?php $this->section( 'title' ) ?>
+    <?php if( Route::has( $t->data['feParams']->route_prefix . '@list' ) ): ?>
+        <a href="<?= action($t->controller.'@list') ?>">
+    <?php endif; ?>
+    <?=  $t->data[ 'feParams' ]->pagetitle  ?>
+    <?php if( Route::has( $t->data['feParams']->route_prefix . '@list' ) ): ?>
+        </a>
+    <?php endif; ?>
+<?php $this->append() ?>
+
 <?php $this->section( 'page-header-postamble' ) ?>
     <li> <?= $t->params['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->data[ 'feParams' ]->titleSingular  ?> </li>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if( !isset( $t->data[ 'feParams' ]->editonly ) || !$t->data[ 'feParams' ]->editonly ): ?>
-        <li class="pull-right">
-            <div class="btn-group btn-group-xs" role="group">
+    <li class="pull-right">
+        <div class="btn-group btn-group-xs" role="group">
+            <?php if( Route::has( $t->data['feParams']->route_prefix . '@list' ) ): ?>
                 <a type="button" class="btn btn-default" href="<?= action($t->controller.'@list') ?>">
                     <span class="glyphicon glyphicon-th-list"></span>
                 </a>
-            </div>
-        </li>
-    <?php endif; ?>
+            <?php endif; ?>
+        </div>
+    </li>
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>

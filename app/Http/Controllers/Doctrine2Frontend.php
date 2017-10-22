@@ -100,13 +100,6 @@ abstract class Doctrine2Frontend extends Controller {
     public static $read_only = false;
 
     /**
-     * Is this a edit only controller?
-     *
-     * @var boolean
-     */
-    public static $edit_only = false;
-
-    /**
      * Column / table data types when displaying data.
      * @var array
      */
@@ -141,38 +134,45 @@ abstract class Doctrine2Frontend extends Controller {
     abstract protected function feInit();
 
 
+    /**
+     * The default routes for a Doctrine2Frontend class
+     */
     public static function routes() {
 
-        $class = get_called_class();
-
-        if( $class::$route_prefix ) {
-            $route_prefix = $class::$route_prefix;
-        } else {
-            $route_prefix = kebab_case( substr( class_basename( $class ), 0, -10 ) );
-        }
 
         // add leading slash to class name for absolute resolution:
-        $class = '\\' . $class;
+        $class = '\\' . get_called_class();
+        $route_prefix = self::route_prefix();
 
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $class, $route_prefix ) {
 
-            if( !static::$edit_only ) {
-                Route::get( 'list', $class . '@list' )->name( $route_prefix . '@list' );
-                Route::get( 'view/{id}', $class . '@view' )->name( $route_prefix . '@view' );
-            }
+            Route::get( 'list', $class . '@list' )->name( $route_prefix . '@list' );
+            Route::get( 'view/{id}', $class . '@view' )->name( $route_prefix . '@view' );
 
             if( !static::$read_only ) {
-                if( !static::$edit_only ) {
-                    Route::get(  'add',         $class . '@add'     )->name( $route_prefix . '@add'     );
-                    Route::post( 'delete',      $class . '@delete'  )->name( $route_prefix . '@delete'  );
-                }
-
+                Route::get(  'add',         $class . '@add'     )->name( $route_prefix . '@add'     );
+                Route::post( 'delete',      $class . '@delete'  )->name( $route_prefix . '@delete'  );
                 Route::get(  'edit/{id}',   $class . '@edit'    )->name( $route_prefix . '@edit'    );
                 Route::post( 'store',       $class . '@store'   )->name( $route_prefix . '@store'   );
             }
         });
 
         $class::additionalRoutes( $route_prefix );
+    }
+
+    /**
+     * Work out the route prefix
+     */
+    public static function route_prefix() {
+
+        $class = get_called_class();
+
+        if( $class::$route_prefix ) {
+            return $class::$route_prefix;
+        } else {
+            return kebab_case( substr( class_basename( $class ), 0, -10 ) );
+        }
+
     }
 
     /**
@@ -405,7 +405,14 @@ abstract class Doctrine2Frontend extends Controller {
      * @return View
      */
     protected function display( $tpl ): View {
-        return view( $this->resolveTemplate( $tpl ) )->with( [ 'data' => $this->data , 'view' => $this->view, 'params' => $this->params ]);
+
+        $this->data['feParams']->route_prefix = self::route_prefix();
+
+        return view( $this->resolveTemplate( $tpl ) )->with( [
+            'data'   => $this->data ,
+            'view'   => $this->view,
+            'params' => $this->params
+        ]);
     }
 
     /**

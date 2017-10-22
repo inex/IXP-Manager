@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use cache, D2EM, Former, Redirect, Validator;
+use cache, D2EM, Former, Redirect, Route, Validator;
 
 use Entities\{
     IXP   as IXPEntity
@@ -52,13 +52,6 @@ class IxpController extends Doctrine2Frontend {
     protected $object = null;
 
     /**
-     * Is this a edit only controller?
-     *
-     * @var boolean
-     */
-    public static $edit_only = true;
-
-    /**
      * This function sets up the frontend controller
      */
     public function feInit() {
@@ -71,18 +64,17 @@ class IxpController extends Doctrine2Frontend {
             'titleSingular'     => 'IXP',
             'nameSingular'      => 'a IXP',
 
-            'defaultAction'     => 'list',
-            'defaultController' => 'IxpController',
-
-            'listOrderBy'       => 'name',
-            'listOrderByDir'    => 'ASC',
-
             'viewFolderName'    => 'ixp',
-
-            'editonly'          => self::$edit_only,
         ];
     }
 
+    public static function routes() {
+
+        Route::group( [ 'prefix' => 'ixp' ], function() {
+            Route::get(  'edit/{id}',   'IxpController@edit'    )->name( 'ixp@edit'    );
+            Route::post( 'store',       'IxpController@store'   )->name( 'ixp@store'   );
+        });
+    }
 
 
     /**
