@@ -62,9 +62,6 @@ class IrrdbConfigController extends Doctrine2Frontend {
             'titleSingular'     => 'IRRDB Source',
             'nameSingular'      => 'an IRRDB Sources',
 
-            'defaultAction'     => 'list',
-            'defaultController' => 'IrrdbConfigController',
-
             'listOrderBy'       => 'host',
             'listOrderByDir'    => 'ASC',
 

@@ -62,9 +62,6 @@ class CustKitController extends Doctrine2Frontend {
             'titleSingular'     => 'Colocated Equipment',
             'nameSingular'      => 'colocated equipment',
 
-            'defaultAction'     => 'list',
-            'defaultController' => 'CustKitController',
-
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
 

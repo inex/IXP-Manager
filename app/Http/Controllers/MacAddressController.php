@@ -67,9 +67,6 @@ class MacAddressController extends Doctrine2Frontend {
             'titleSingular'     => 'MAC Address',
             'nameSingular'      => 'a MAC address',
 
-            'defaultAction'     => 'list',
-            'defaultController' => 'MacAddressController',
-
             'listOrderBy'       => 'customer',
             'listOrderByDir'    => 'ASC',
 

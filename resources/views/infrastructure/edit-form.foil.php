@@ -47,7 +47,7 @@
 
     <?= Former::actions(
         Former::primary_submit( 'Save Changes' )->id( 'btn-submit' )->disabled( true ),
-        Former::default_link( 'Cancel' )->href( action ($t->controller.'@list') ),
+        Former::default_link( 'Cancel' )->href( action($t->controller.'@list') ),
         Former::success_button( 'Help' )->id( 'help-btn' )
     );
     ?>

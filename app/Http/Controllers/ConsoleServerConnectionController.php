@@ -64,9 +64,6 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
             'titleSingular'     => 'Console Server Connection',
             'nameSingular'      => 'a console server connection',
 
-            'defaultAction'     => 'list',
-            'defaultController' => 'ConsoleServerConnectionController',
-
             'listOrderBy'       => 'description',
             'listOrderByDir'    => 'ASC',
 

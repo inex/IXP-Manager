@@ -69,9 +69,6 @@ class Layer2AddressController extends Doctrine2Frontend {
             'titleSingular'     => 'Configured MAC Address',
             'nameSingular'      => 'a configured MAC address',
 
-            'defaultAction'     => 'list',
-            'defaultController' => 'Layer2AddressController',
-
             'listOrderBy'       => 'customer',
             'listOrderByDir'    => 'ASC',
 

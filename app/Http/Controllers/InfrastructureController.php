@@ -71,9 +71,6 @@ class InfrastructureController extends Doctrine2Frontend {
             'titleSingular'     => 'Infrastructure',
             'nameSingular'      => 'infrastructure',
 
-            'defaultAction'     => 'list',
-            'defaultController' => 'InfrastructureController',
-
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
 

@@ -62,9 +62,6 @@ class VendorController extends Doctrine2Frontend {
             'titleSingular'     => 'Vendor',
             'nameSingular'      => 'a vendor',
 
-            'defaultAction'     => 'list',
-            'defaultController' => 'VendorController',
-
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
 
