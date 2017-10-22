@@ -353,7 +353,7 @@ abstract class Doctrine2Frontend extends Controller {
      *
      * @return string|null
      */
-    public function postStoreRedirect() {
+    protected function postStoreRedirect() {
         return null;
     }
 
@@ -413,7 +413,7 @@ abstract class Doctrine2Frontend extends Controller {
      *
      * @return string|null
      */
-    public function postDeleteRedirect() {
+    protected function postDeleteRedirect() {
         return null;
     }
 
