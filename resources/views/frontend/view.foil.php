@@ -18,7 +18,6 @@
 
 
 <?php $this->section( 'page-header-preamble' ) ?>
-
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
             <a type="button" class="btn btn-default" href="<?= action($t->controller.'@list') ?>">
@@ -41,7 +40,7 @@
 
     <?= $t->alerts() ?>
 
-    <?= $t->view['viewPreamble'] ? $t->insert( $t->view['viewPreamble'] ) : '' ?>
+    <?= $t->data[ 'view' ]['viewPreamble'] ? $t->insert( $t->data[ 'view' ]['viewPreamble'] ) : '' ?>
 
     <div class="panel panel-default">
         <div class="panel-heading">
@@ -51,9 +50,9 @@
         <div class="panel-body">
 
             <table class="table_view_info">
-                <?php if( $t->view['viewRowOverride'] ): ?>
+                <?php if( $t->data[ 'view' ]['viewRowOverride'] ): ?>
 
-                    <?= $t->insert( $t->view['viewRowOverride'], [ 'row' => $t->data ] ) ?>
+                    <?= $t->insert( $t->data[ 'view' ]['viewRowOverride'], [ 'row' => $t->data ] ) ?>
 
                 <?php else: ?>
 
@@ -165,14 +164,14 @@
 
     </div>
 
-    <?= $t->view['viewPostamble'] ? $t->insert( $t->view['viewPostamble'] ) : '' ?>
+    <?= $t->data[ 'view' ]['viewPostamble'] ? $t->insert( $t->data[ 'view' ]['viewPostamble'] ) : '' ?>
 
 
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
 
-    <?= $t->view[ 'viewScript' ] ? $t->insert( $t->view[ 'viewScript' ] ) : '' ?>
+    <?= $t->data[ 'view' ][ 'viewScript' ] ? $t->insert( $t->data[ 'view' ][ 'viewScript' ] ) : '' ?>
 
 <?php $this->append() ?>
 

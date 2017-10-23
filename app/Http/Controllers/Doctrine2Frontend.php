@@ -64,9 +64,6 @@ abstract class Doctrine2Frontend extends Controller {
 
     protected $data     = null;
 
-    protected $params   = null;
-
-    protected $view     = null;
 
     /**
      * The object being added / edited
@@ -214,13 +211,13 @@ abstract class Doctrine2Frontend extends Controller {
     {
         $this->data[ 'data' ]           = $this->listGetData();
 
-        $this->view[ 'listEmptyMessage'] = $this->resolveTemplate( 'list-empty-message', false );
-        $this->view[ 'listHeadOverride'] = $this->resolveTemplate( 'list-head-override', false );
-        $this->view[ 'listRowOverride']  = $this->resolveTemplate( 'list-row-override',  false );
-        $this->view[ 'listPreamble']     = $this->resolveTemplate( 'list-preamble',      false );
-        $this->view[ 'listPostamble']    = $this->resolveTemplate( 'list-postamble',     false );
-        $this->view[ 'listRowMenu']      = $this->resolveTemplate( 'list-row-menu',      false );
-        $this->view[ 'listScript' ]      = $this->resolveTemplate( 'js/list' );
+        $this->data[ 'view' ][ 'listEmptyMessage'] = $this->resolveTemplate( 'list-empty-message', false );
+        $this->data[ 'view' ][ 'listHeadOverride'] = $this->resolveTemplate( 'list-head-override', false );
+        $this->data[ 'view' ][ 'listRowOverride']  = $this->resolveTemplate( 'list-row-override',  false );
+        $this->data[ 'view' ][ 'listPreamble']     = $this->resolveTemplate( 'list-preamble',      false );
+        $this->data[ 'view' ][ 'listPostamble']    = $this->resolveTemplate( 'list-postamble',     false );
+        $this->data[ 'view' ][ 'listRowMenu']      = $this->resolveTemplate( 'list-row-menu',      false );
+        $this->data[ 'view' ][ 'listScript' ]      = $this->resolveTemplate( 'js/list' );
 
         $this->preList();
 
@@ -255,10 +252,10 @@ abstract class Doctrine2Frontend extends Controller {
     {
         $this->data[ 'data' ]               = $this->viewGetData( $id ) ;
 
-        $this->view[ 'viewPreamble']        = $this->resolveTemplate( 'view-preamble',      false );
-        $this->view[ 'viewPostamble']       = $this->resolveTemplate( 'view-postamble',     false );
-        $this->view[ 'viewRowOverride']     = $this->resolveTemplate( 'view-row-override',  false );
-        $this->view[ 'viewScript' ]         = $this->resolveTemplate( 'js/view',            false );
+        $this->data[ 'view' ][ 'viewPreamble']        = $this->resolveTemplate( 'view-preamble',      false );
+        $this->data[ 'view' ][ 'viewPostamble']       = $this->resolveTemplate( 'view-postamble',     false );
+        $this->data[ 'view' ][ 'viewRowOverride']     = $this->resolveTemplate( 'view-row-override',  false );
+        $this->data[ 'view' ][ 'viewScript' ]         = $this->resolveTemplate( 'js/view',            false );
 
         return $this->display( 'view' );
     }
@@ -279,13 +276,13 @@ abstract class Doctrine2Frontend extends Controller {
      */
     protected function addEditSetup()
     {
-        $this->view[ 'editForm']        = $this->resolveTemplate( 'edit-form' );
+        $this->data[ 'view' ][ 'editForm']        = $this->resolveTemplate( 'edit-form' );
 
-        $this->view[ 'editPreamble']    = $this->resolveTemplate( 'edit-preamble',      false );
-        $this->view[ 'editPostamble']   = $this->resolveTemplate( 'edit-postamble',     false );
-        $this->view[ 'editScript' ]     = $this->resolveTemplate( 'js/edit',            false );
+        $this->data[ 'view' ][ 'editPreamble']    = $this->resolveTemplate( 'edit-preamble',      false );
+        $this->data[ 'view' ][ 'editPostamble']   = $this->resolveTemplate( 'edit-postamble',     false );
+        $this->data[ 'view' ][ 'editScript' ]     = $this->resolveTemplate( 'js/edit',            false );
 
-        $this->params['data'] = $this->data;
+        $this->data[ 'params' ]['data'] = $this->data;
     }
 
     /**
@@ -293,8 +290,8 @@ abstract class Doctrine2Frontend extends Controller {
      */
     public function add()
     {
-        $this->params = $this->addEditPrepareForm();
-        $this->params['isAdd'] = true;
+        $this->data[ 'params' ] = $this->addEditPrepareForm();
+        $this->data[ 'params' ]['isAdd'] = true;
         $this->addEditSetup();
 
         return $this->display( 'edit' );
@@ -306,8 +303,8 @@ abstract class Doctrine2Frontend extends Controller {
      * @return view
      */
     public function edit( $id ){
-        $this->params = $this->addEditPrepareForm( $id );
-        $this->params['isAdd'] = false;
+        $this->data[ 'params' ] = $this->addEditPrepareForm( $id );
+        $this->data[ 'params' ]['isAdd'] = false;
         $this->addEditSetup();
 
         return $this->display( 'edit' );
@@ -431,9 +428,7 @@ abstract class Doctrine2Frontend extends Controller {
 
         return view( $this->resolveTemplate( $tpl ) )->with( [
             'data'          => $this->data ,
-            'feParams'      => $this->feParams ,
-            'view'          => $this->view,
-            'params'        => $this->params
+            'feParams'      => $this->feParams
         ]);
     }
 

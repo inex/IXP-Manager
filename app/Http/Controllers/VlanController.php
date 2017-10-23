@@ -258,7 +258,7 @@ class VlanController extends Doctrine2Frontend {
         }
 
         $this->data[ 'data' ]           = D2EM::getRepository( VlanEntity::class )->getPrivateVlanDetails( $infra );
-        $this->params                   = [ 'infra' => $infra ];
+        $this->data[ 'params' ]         = [ 'infra' => $infra ];
 
         return $this->display( 'private' );
     }

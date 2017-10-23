@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    ff
+    <?= $t->feParams->pagetitle  ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -22,13 +22,13 @@
 <?php $this->section('content') ?>
     <?= $t->alerts() ?>
 
-    <?= $t->view['listPreamble'] ? $t->insert( $t->view['listPreamble'] ) : '' ?>
+    <?= $t->data[ 'view' ]['listPreamble'] ? $t->insert( $t->data[ 'view' ]['listPreamble'] ) : '' ?>
 
     <?php if( !count( $t->data[ 'data' ] ) ): ?>
 
-        <?php if( $t->view['listEmptyMessage'] ): ?>
+        <?php if( $t->data[ 'view' ]['listEmptyMessage'] ): ?>
 
-            <?= $t->insert( $t->view['listEmptyMessage'] ) ?>
+            <?= $t->insert( $t->data[ 'view' ]['listEmptyMessage'] ) ?>
 
         <?php else: ?>
 
@@ -42,7 +42,7 @@
 
         <table id="table-list" class="table collapse">
 
-            <?php if( $t->view['listHeadOverride'] ): ?>
+            <?php if( $t->data[ 'view' ]['listHeadOverride'] ): ?>
 
                 <?= $t->insert( $t->view['listHeadOverride'] ) ?>
 
@@ -77,9 +77,9 @@
 
                 <?php foreach( $t->data[ 'data' ] as $idx => $row ): ?>
 
-                    <?php if( $t->view['listRowOverride'] ): ?>
+                    <?php if( $t->data[ 'view' ]['listRowOverride'] ): ?>
 
-                        <?= $t->insert( $t->view['listRowOverride'], [ 'row' => $row ] ) ?>
+                        <?= $t->insert( $t->data[ 'view' ]['listRowOverride'], [ 'row' => $row ] ) ?>
 
                     <?php else: ?>
 
@@ -164,9 +164,9 @@
 
                             <td>
 
-                                <?php if( $t->view['listRowMenu'] ): ?>
+                                <?php if( $t->data[ 'view' ]['listRowMenu'] ): ?>
 
-                                    <?= $t->insert( $t->view['listRowMenu'], [ 'row' => $row ] ) ?>
+                                    <?= $t->insert( $t->data[ 'view' ]['listRowMenu'], [ 'row' => $row ] ) ?>
 
                                 <?php else: ?>
 
@@ -187,7 +187,7 @@
 
                         </tr>
 
-                    <?php endif; /* if( $t->view['listRowOverride'] ): */ ?>
+                    <?php endif; /* if( $t->data[ 'view' ]['listRowOverride'] ): */ ?>
 
                 <?php endforeach; ?>
 
@@ -197,15 +197,15 @@
 
     <?php endif;  /* /* !count( $t->data[ 'data' ] ) */ ?>
 
-    <?= $t->view['listPostamble'] ? $t->insert( $t->view['listPostamble'] ) : '' ?>
+    <?= $t->data[ 'view' ]['listPostamble'] ? $t->insert( $t->data[ 'view' ]['listPostamble'] ) : '' ?>
 
 
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
 
-    <?php if( isset( $t->view[ 'listScript' ] ) ): ?>
-        <?= $t->insert( $t->view[ 'listScript' ] ); ?>
+    <?php if( isset( $t->data[ 'view' ][ 'listScript' ] ) ): ?>
+        <?= $t->insert( $t->data[ 'view' ][ 'listScript' ] ); ?>
     <?php endif; ?>
 
 <?php $this->append() ?>

@@ -15,7 +15,7 @@
         ->id( 'cust' )
         ->label( 'Customer' )
         ->placeholder( 'Select a customer' )
-        ->fromQuery( $t->params[ 'custs' ], 'name' )
+        ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
         ->addClass( 'chzn-select' )
         ->blockHelp( "This field exists as you may colocate some equipment for your customers." );
     ?>
@@ -24,7 +24,7 @@
         ->id( 'switch' )
         ->label( 'Console Server' )
         ->placeholder( 'Select the console server' )
-        ->fromQuery( $t->params[ 'switches' ], 'name' )
+        ->fromQuery( $t->data[ 'params'][ 'switches' ], 'name' )
         ->addClass( 'chzn-select' )
         ->blockHelp( "Select the console server to which this device is connected.<br><br>"
             . "Console servers are added via the <em>Switches</em> menu option. This is scheduled to change.");
@@ -79,7 +79,7 @@
     ?>
 
     <?= Former::hidden( 'id' )
-        ->value( $t->params[ 'object'] ? $t->params[ 'object']->getId() : '' )
+        ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
     ?>
 
     <?= Former::close() ?>

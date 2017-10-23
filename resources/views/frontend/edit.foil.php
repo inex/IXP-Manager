@@ -14,7 +14,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li> <?= $t->params['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->feParams->titleSingular  ?> </li>
+    <li> <?= $t->data[ 'params']['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->feParams->titleSingular  ?> </li>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -33,13 +33,13 @@
 
     <?= $t->alerts() ?>
 
-    <?= $t->view['editPreamble'] ? $t->insert( $t->view['editPreamble'] ) : '' ?>
-    <?= $t->insert( $t->view['editForm' ] ) ?>
-    <?= $t->view['editPostamble'] ? $t->insert( $t->view['editPostamble'] ) : '' ?>
+    <?= $t->data[ 'view' ]['editPreamble'] ? $t->insert( $t->data[ 'view' ]['editPreamble'] ) : '' ?>
+    <?= $t->insert( $t->data[ 'view' ]['editForm' ] ) ?>
+    <?= $t->data[ 'view' ]['editPostamble'] ? $t->insert( $t->data[ 'view' ]['editPostamble'] ) : '' ?>
 
 <?php $this->append() ?>
 
 
 <?php $this->section( 'scripts' ) ?>
-    <?= $t->view['editScript'] ? $t->insert( $t->view['editScript'] ) : '' ?>
+    <?= $t->data[ 'view' ]['editScript'] ? $t->insert( $t->data[ 'view' ]['editScript'] ) : '' ?>
 <?php $this->append() ?>

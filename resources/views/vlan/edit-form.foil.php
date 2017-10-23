@@ -18,7 +18,7 @@
 
     <?= Former::select( 'infrastructureid' )
         ->label( 'Infrastructure' )
-        ->fromQuery( $t->params[ 'infrastructure'], 'name' )
+        ->fromQuery( $t->data[ 'params'][ 'infrastructure'], 'name' )
         ->placeholder( 'Choose an infrastructure' )
         ->addClass( 'chzn-select' );
     ?>
@@ -65,14 +65,14 @@
     ?>
 
     <?= Former::actions(
-        Former::primary_submit( $t->params['isAdd'] ? 'Add' : 'Save Changes' ),
+        Former::primary_submit( $t->data[ 'params']['isAdd'] ? 'Add' : 'Save Changes' ),
         Former::default_link( 'Cancel' )->href( action ($t->controller.'@list') ),
         Former::success_button( 'Help' )->id( 'help-btn' )
     );
     ?>
 
     <?= Former::hidden( 'id' )
-        ->value( $t->params[ 'object'] ? $t->params[ 'object']->getId() : '' )
+        ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
     ?>
 
     <?= Former::close() ?>

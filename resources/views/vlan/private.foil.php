@@ -17,11 +17,11 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section('content') ?>
 <?= $t->alerts() ?>
-    <?php if( $t->params[ 'infra' ] ): ?>
+    <?php if( $t->data[ 'params'][ 'infra' ] ): ?>
         <div class="row-fluid">
             <div class="alert alert-info">
                 Only showing
-                VLANs for: <strong><?=  $t->params[ 'infra' ]->getName() ?></strong>.
+                VLANs for: <strong><?=  $t->data[ 'params'][ 'infra' ]->getName() ?></strong>.
 
                 <div class="pull-right">
                     <div class="btn-group btn-group-xs" role="group">

@@ -13,14 +13,14 @@
 
     <?= Former::select( 'custid' )
         ->label( 'Customer' )
-        ->fromQuery( $t->params[ 'custs'], 'name' )
+        ->fromQuery( $t->data[ 'params'][ 'custs'], 'name' )
         ->placeholder( 'Choose a customer' )
         ->addClass( 'chzn-select' );
     ?>
 
     <?= Former::select( 'cabinetid' )
         ->label( 'Cabinet' )
-        ->fromQuery( $t->params[ 'cabinets'], 'name' )
+        ->fromQuery( $t->data[ 'params'][ 'cabinets'], 'name' )
         ->placeholder( 'Choose a cabinet' )
         ->addClass( 'chzn-select' );
     ?>
@@ -39,7 +39,7 @@
     ?>
 
     <?= Former::hidden( 'id' )
-        ->value( $t->params[ 'object'] ? $t->params[ 'object']->getId() : '' )
+        ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
     ?>
 
     <?= Former::close() ?>

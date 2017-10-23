@@ -38,7 +38,7 @@
 
     <?= Former::select( 'country' )
         ->label( 'Country' )
-        ->fromQuery( $t->params[ 'countries'], 'name' )
+        ->fromQuery( $t->data[ 'params'][ 'countries'], 'name' )
         ->placeholder( 'Choose a country' )
         ->addClass( 'chzn-select' );
     ?>
@@ -51,7 +51,7 @@
     ?>
 
     <?= Former::hidden( 'id' )
-        ->value( $t->params[ 'object'] ? $t->params[ 'object']->getId() : '' )
+        ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
     ?>
 
     <?= Former::close() ?>

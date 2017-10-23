@@ -17,7 +17,7 @@
         ->id( 'location' )
         ->label( 'Location' )
         ->placeholder( 'Select a location' )
-        ->fromQuery( $t->params[ 'locations' ], 'name' )
+        ->fromQuery( $t->data[ 'params'][ 'locations' ], 'name' )
         ->addClass( 'chzn-select' )
         ->blockHelp( "Chose the location where this cabinet resides." );
     ?>
@@ -61,7 +61,7 @@
     ?>
 
     <?= Former::hidden( 'id' )
-        ->value( $t->params[ 'object'] ? $t->params[ 'object']->getId() : '' )
+        ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
     ?>
 
     <?= Former::close() ?>
