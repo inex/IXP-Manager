@@ -11,7 +11,7 @@
         ->blockHelp( "The name of your VLAN as presented in IXP Manager - e.g. <code>Peering LAN #1</code>" );
     ?>
 
-    <?= Former::text( 'number' )
+    <?= Former::number( 'number' )
         ->label( '802.1q Tag' )
         ->blockHelp( "The VLAN number / 802.1q tag for this VLAN. (A number between 1 and 4096 but some switch platforms may have reserved numbers)." );
     ?>

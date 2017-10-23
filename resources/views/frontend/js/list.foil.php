@@ -30,7 +30,8 @@
                             }
                         },
                         submit: {
-                            label: 'Submit',
+                            label: 'Delete',
+                            className: 'btn-danger',
                             callback: function () {
                                 $('#d2f-form-delete').submit();
                             }
