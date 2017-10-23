@@ -2,7 +2,7 @@
 
     <a class="btn btn-sm btn-default" href="<?= action($t->controller.'@view' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
 
-    <?php if( !isset( $t->data[ 'feParams' ]->readonly ) || !$t->data[ 'feParams' ]->readonly ): ?>
+    <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
         <a class="btn btn-sm btn-default" href="<?= action($t->controller.'@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?> " title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
         <a class="btn btn-sm btn-default" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>" title="Delete"><i class="glyphicon glyphicon-trash"></i></a>
     <?php endif;?>

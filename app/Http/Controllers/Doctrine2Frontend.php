@@ -340,7 +340,7 @@ abstract class Doctrine2Frontend extends Controller {
         $this->postFlush( $action );
 
         Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action
-            . ' ' . $this->data['feParams']->nameSingular . ' with ID ' . $this->object->getId() );
+            . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
         AlertContainer::push(  $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
 
         return redirect()->route( $this->postStoreRedirect() ?? self::route_prefix() . '@' . 'list' );
@@ -427,12 +427,13 @@ abstract class Doctrine2Frontend extends Controller {
      */
     protected function display( $tpl ): View {
 
-        $this->data['feParams']->route_prefix = self::route_prefix();
+        $this->feParams->route_prefix = self::route_prefix();
 
         return view( $this->resolveTemplate( $tpl ) )->with( [
-            'data'   => $this->data ,
-            'view'   => $this->view,
-            'params' => $this->params
+            'data'          => $this->data ,
+            'feParams'      => $this->feParams ,
+            'view'          => $this->view,
+            'params'        => $this->params
         ]);
     }
 

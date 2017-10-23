@@ -56,7 +56,7 @@ class IxpController extends Doctrine2Frontend {
      */
     public function feInit() {
 
-        $this->data[ 'feParams' ] =  $this->feParams = (object)[
+        $this->feParams = (object)[
             'entity'            => IXPEntity::class,
 
             'pagetitle'         => 'IXPs',

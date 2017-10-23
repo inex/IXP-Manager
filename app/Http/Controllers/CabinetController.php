@@ -60,7 +60,7 @@ class CabinetController extends Doctrine2Frontend {
      */
     public function feInit(){
 
-        $this->data[ 'feParams' ] =  $this->feParams = ( object )[
+        $this->feParams         = ( object )[
 
             'entity'            => CabinetEntity::class,
             'pagetitle'         => 'Cabinets',

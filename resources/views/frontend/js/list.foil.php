@@ -1,10 +1,10 @@
 <script>
 
-    let d2f_read_only = <?= ( !isset( $t->data[ 'feParams' ]->readonly ) || !$t->data[ 'feParams' ]->readonly ) ? 'false' : 'true' ?>;
+    let d2f_read_only = <?= ( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ) ? 'false' : 'true' ?>;
 
     $(document).ready(function() {
 
-        <?php if( !isset( $t->data[ 'feParams' ]->readonly ) || !$t->data[ 'feParams' ]->readonly ): ?>
+        <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
 
             $( 'a[id|="d2f-list-delete"]' ).on( 'click', function( event ) {
 
@@ -13,14 +13,14 @@
                 let objectId = $( "#" + this.id ).attr( "data-object-id" );
 
                 let html = `<form id="d2f-form-delete" method="POST" action="<?= action($t->controller.'@delete' ) ?>">
-                                <div>Do you really want to delete this <?= $t->data[ 'feParams' ]->nameSingular ?>?</div>
+                                <div>Do you really want to delete this <?= $t->feParams->nameSingular ?>?</div>
                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                                 <input type="hidden" name="id" value="${objectId}">
                             </form>`;
 
                 bootbox.dialog({
                     message: html,
-                    title: "Delete <?= $t->data[ 'feParams' ]->titleSingular ?>",
+                    title: "Delete <?= $t->feParams->titleSingular ?>",
                     buttons: {
                         cancel: {
                             label: 'Close',
@@ -51,11 +51,11 @@
 
             <?php
                 $count = 0;
-                if( isset( $t->data[ 'feParams']->listOrderBy ) ) {
-                    foreach( $t->data[ 'feParams']->listColumns as $col => $cconf ) {
+                if( isset( $t->feParams->listOrderBy ) ) {
+                    foreach( $t->feParams->listColumns as $col => $cconf ) {
                         if( !is_array( $cconf ) || !isset( $cconf[ 'display' ] ) || $cconf[ 'display' ] ) {
-                            if( isset( $t->data[ 'feParams' ]->listOrderBy ) && $t->data[ 'feParams' ]->listOrderBy == $col ) { ?>
-                                "aaSorting": [[ <?= $count ?>, "<?= isset( $t->data[ 'feParams' ]->listOrderByDir ) && $t->data[ 'feParams' ]->listOrderByDir == "DESC" ? 'desc' : 'asc' ?>" ]], <?php
+                            if( isset( $t->feParams->listOrderBy ) && $t->feParams->listOrderBy == $col ) { ?>
+                                "aaSorting": [[ <?= $count ?>, "<?= isset( $t->feParams->listOrderByDir ) && $t->feParams->listOrderByDir == "DESC" ? 'desc' : 'asc' ?>" ]], <?php
                             } // endif
                         } // endif
                         $count++;
@@ -65,7 +65,7 @@
 
             "aoColumns": [
                 <?php
-                    foreach( $t->data[ 'feParams']->listColumns as $col => $cconf ) {
+                    foreach( $t->feParams->listColumns as $col => $cconf ) {
                         if( !is_array( $cconf ) || !isset( $cconf[ 'display' ] ) || $cconf[ 'display' ] ) {
                             echo "null, ";
                         }

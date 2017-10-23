@@ -4,11 +4,11 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <?= $t->data[ 'feParams' ]->pagetitle  ?>
+    ff
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if( !isset( $t->data[ 'feParams' ]->readonly ) || !$t->data[ 'feParams' ]->readonly ): ?>
+    <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
         <li class="pull-right">
             <div class="btn-group btn-group-xs" role="group">
                 <a type="button" class="btn btn-default" href="<?= action($t->controller.'@add') ?>">
@@ -33,7 +33,7 @@
         <?php else: ?>
 
             <div class="alert alert-info" role="alert">
-                <b>No <?= ucfirst( $t->data[ 'feParams' ]->pagetitle ) ?> exist.</b> <a href="<?= action($t->controller.'@add') ?>">Add one...</a>
+                <b>No <?= ucfirst( $t->feParams->pagetitle ) ?> exist.</b> <a href="<?= action($t->controller.'@add') ?>">Add one...</a>
             </div>
 
         <?php endif; /* listEmptyMessage */ ?>
@@ -51,7 +51,7 @@
                 <thead>
 
                     <tr>
-                        <?php foreach( $t->data[ 'feParams' ]->listColumns as $col => $cconf ):?>
+                        <?php foreach( $t->feParams->listColumns as $col => $cconf ):?>
 
                             <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display'] ) ||  $cconf[ 'display']   ):?>
                                 <th>
@@ -85,7 +85,7 @@
 
                         <tr>
 
-                            <?php foreach( $t->data[ 'feParams' ]->listColumns as $col => $cconf ): ?>
+                            <?php foreach( $t->feParams->listColumns as $col => $cconf ): ?>
 
                                 <?php if( !is_array( $cconf ) ): ?>
 
@@ -100,8 +100,11 @@
                                         <?php if(isset( $cconf[ 'type'] ) ): ?>
 
                                             <?php if( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'HAS_ONE'] ): ?>
-
-                                                <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . '/id/' . $row[ $cconf['idField'] ] ) ?>">
+                                                <?php $nameIdParam = '' ; ?>
+                                                <?php if( isset( $cconf['nameIdParam'] ) ): ?>
+                                                    <?php $nameIdParam = $cconf['nameIdParam'].'/'; ?>
+                                                <?php endif; ?>
+                                                <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . '/' . $nameIdParam . $row[ $cconf['idField'] ] ) ?>">
                                                     <?= $t->ee( $row[$col] ) ?>
                                                 </a>
 
@@ -171,7 +174,7 @@
 
                                         <a class="btn btn-sm btn-default" href="<?= action($t->controller.'@view' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
 
-                                        <?php if( !isset( $t->data[ 'feParams' ]->readonly ) || !$t->data[ 'feParams' ]->readonly ): ?>
+                                        <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
                                             <a class="btn btn-sm btn-default" href="<?= action($t->controller.'@edit' , [ 'id' => $row[ 'id' ] ] ) ?> " title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
                                             <a class="btn btn-sm btn-default" id='d2f-list-delete-<?= $row[ 'id' ] ?>' href="#" data-object-id="<?= $row[ 'id' ] ?>" title="Delete"><i class="glyphicon glyphicon-trash"></i></a>
                                         <?php endif;?>

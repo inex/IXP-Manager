@@ -59,7 +59,7 @@ class LocationController extends Doctrine2Frontend {
      */
     public function feInit() {
 
-        $this->data[ 'feParams' ] =  $this->feParams = (object)[
+        $this->feParams = (object)[
             'entity'            => LocationEntity::class,
 
             'pagetitle'         => 'Locations',

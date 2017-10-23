@@ -54,7 +54,7 @@ class CustKitController extends Doctrine2Frontend {
      */
     public function feInit(){
 
-        $this->data[ 'feParams' ] =  $this->feParams = (object)[
+        $this->feParams         = (object)[
             'entity'            => CustomerEquipmentEntity::class,
 
             'pagetitle'         => 'Colocated Equipment',
@@ -74,11 +74,12 @@ class CustKitController extends Doctrine2Frontend {
                 'name'      => 'Name',
 
                 'customer'  => [
-                    'title'      => 'Customer',
-                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'customer',
-                    'action'     => 'overview',
-                    'idField'    => 'custid'
+                    'title'         => 'Customer',
+                    'type'          => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller'    => 'customer',
+                    'action'        => 'overview',
+                    'idField'       => 'custid',
+                    'nameIdParam'   => 'id',
                 ],
 
                 'cabinet'  => [

@@ -4,23 +4,23 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <?php if( Route::has( $t->data['feParams']->route_prefix . '@list' ) ): ?>
+    <?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
         <a href="<?= action($t->controller.'@list') ?>">
     <?php endif; ?>
-    <?=  $t->data[ 'feParams' ]->pagetitle  ?>
-    <?php if( Route::has( $t->data['feParams']->route_prefix . '@list' ) ): ?>
+    <?=  $t->feParams->pagetitle  ?>
+    <?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
         </a>
     <?php endif; ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li> <?= $t->params['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->data[ 'feParams' ]->titleSingular  ?> </li>
+    <li> <?= $t->params['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->feParams->titleSingular  ?> </li>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-            <?php if( Route::has( $t->data['feParams']->route_prefix . '@list' ) ): ?>
+            <?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
                 <a type="button" class="btn btn-default" href="<?= action($t->controller.'@list') ?>">
                     <span class="glyphicon glyphicon-th-list"></span>
                 </a>

@@ -63,7 +63,7 @@ class VlanController extends Doctrine2Frontend {
      */
     public function feInit() {
 
-        $this->data[ 'feParams' ] =  $this->feParams = (object)[
+        $this->feParams         = (object)[
             'entity'            => VlanEntity::class,
 
             'pagetitle'         => 'VLANs',

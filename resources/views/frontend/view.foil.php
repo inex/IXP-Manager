@@ -5,13 +5,13 @@
 
 <?php $this->section( 'title' ) ?>
     <a href="<?= action($t->controller.'@list') ?>">
-        <?=  $t->data[ 'feParams' ]->pagetitle  ?>
+        <?=  $t->feParams->pagetitle  ?>
     </a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <li>
-        View <?=  $t->data[ 'feParams' ]->titleSingular  ?>
+        View <?=  $t->feParams->titleSingular  ?>
     </li>
 <?php $this->append() ?>
 
@@ -24,7 +24,7 @@
             <a type="button" class="btn btn-default" href="<?= action($t->controller.'@list') ?>">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
-            <?php if( !isset( $t->data[ 'feParams' ]->readonly ) || !$t->data[ 'feParams' ]->readonly ): ?>
+            <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
                 <a type="button" class="btn btn-default" href="<?= action($t->controller.'@edit' , [ 'id' => $t->data[ 'data' ][ 'id' ] ]) ?>">
                     <span class="glyphicon glyphicon-pencil"></span>
                 </a>
@@ -45,7 +45,7 @@
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            Details for <?=  $t->data[ 'feParams' ]->titleSingular  ?> <?= !isset( $t->data[ 'data' ]['id'] ) ?: '(DB ID: ' . $t->data[ 'data' ]['id'] . ')' ?>
+            Details for <?=  $t->feParams->titleSingular  ?> <?= !isset( $t->data[ 'data' ]['id'] ) ?: '(DB ID: ' . $t->data[ 'data' ]['id'] . ')' ?>
         </div>
 
         <div class="panel-body">
@@ -57,9 +57,9 @@
 
                 <?php else: ?>
 
-                    <?php if( isset( $t->data[ 'feParams' ]->viewColumns ) ): ?>
+                    <?php if( isset( $t->feParams->viewColumns ) ): ?>
 
-                        <?php foreach( $t->data[ 'feParams' ]->viewColumns as $col => $cconf ): ?>
+                        <?php foreach( $t->feParams->viewColumns as $col => $cconf ): ?>
 
                             <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display'] ) || $cconf[ 'display'] ): ?>
 
@@ -88,8 +88,11 @@
                                         <?php elseif( isset( $cconf[ 'type' ] ) ): ?>
 
                                             <?php if( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'HAS_ONE'] ): ?>
-
-                                                <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . '/id/' . $t->data[ 'data' ][ $cconf['idField'] ] ) ?>">
+                                                <?php $nameIdParam = '' ; ?>
+                                                <?php if( isset( $cconf['nameIdParam'] ) ): ?>
+                                                    <?php $nameIdParam = $cconf['nameIdParam'].'/'; ?>
+                                                <?php endif; ?>
+                                                <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . '/'.$nameIdParam . $t->data[ 'data' ][ $cconf['idField'] ] ) ?>">
                                                     <?= $t->ee( $t->data[ 'data' ][ $col ] ) ?>
                                                 </a>
 

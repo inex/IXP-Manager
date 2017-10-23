@@ -59,7 +59,7 @@ class MacAddressController extends Doctrine2Frontend {
      */
     public function feInit(){
 
-        $this->data[ 'feParams' ] =  $this->feParams = (object)[
+        $this->feParams         = (object)[
 
             'entity'            => MACAddressEntity::class,
             'pagetitle'         => 'Discovered MAC Addresses',

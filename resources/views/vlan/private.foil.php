@@ -5,7 +5,7 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'title' ) ?>
 <a href="<?= action($t->controller.'@list') ?>">
-    <?=  $t->data[ 'feParams' ]->pagetitle  ?>
+    <?=  $t->feParams->pagetitle  ?>
 </a>
 <?php $this->append() ?>
 

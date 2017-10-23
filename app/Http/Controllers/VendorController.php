@@ -54,7 +54,7 @@ class VendorController extends Doctrine2Frontend {
      */
     public function feInit() {
 
-        $this->data[ 'feParams' ] =  $this->feParams = (object)[
+        $this->feParams         = (object)[
             'entity'            => VendorEntity::class,
 
             'pagetitle'         => 'Vendors',
