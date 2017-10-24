@@ -1,9 +1,9 @@
 
-<?php if( isset( $t->data[ 'feParams' ]->infra ) ): ?>
+<?php if( isset( $t->feParams->infra ) ): ?>
     <div class="row-fluid">
         <div class="alert alert-info">
             Only showing <?php if( isset( $t->feParams->publicOnly ) and $t->feParams->publicOnly ): ?> public <?php endif; ?>
-            VLANs for: <strong><?=  $t->data[ 'feParams' ]->infra->getName() ?></strong>.
+            VLANs for: <strong><?=  $t->feParams->infra->getName() ?></strong>.
 
             <div class="pull-right">
                 <div class="btn-group btn-group-xs" role="group">
