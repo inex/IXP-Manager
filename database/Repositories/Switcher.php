@@ -521,7 +521,7 @@ class Switcher extends EntityRepository
 
         foreach( [ 'A', 'B' ] as $side ) {
             /** @noinspection SqlNoDataSourceInspection */
-            $dql = "SELECT cb.type, cb.ipv4_subnet as cbSubnet, cb.enabled, cb.description, cl.bfd, sp$side.name, pi$side.speed, cl.ipv4_subnet as clSubnet, s$side.id as saId
+            $dql = "SELECT cb.type, cb.ipv4_subnet as cbSubnet, cl.enabled, cb.description, cl.bfd, sp$side.name, pi$side.speed, cl.ipv4_subnet as clSubnet, s$side.id as saId
                         FROM Entities\\CoreLink cl
                         LEFT JOIN cl.coreBundle cb
 
@@ -547,7 +547,7 @@ class Switcher extends EntityRepository
                 $export = [];
                 $subnet = ( $ci[ 'type' ] == CoreBundle::TYPE_ECMP ) ? $ci['clSubnet'] : $ci['cbSubnet'];
 
-                $export[ 'ipv4' ]         = $this->linkAddr( $subnet, $side, true );
+                $export[ 'ipv4' ]         = '';
                 $export[ 'description' ]  = $ci[ 'description' ];
                 $export[ 'bfd' ]          = $ci[ 'bfd' ];
                 $export[ 'speed' ]        = $ci[ 'speed' ];
