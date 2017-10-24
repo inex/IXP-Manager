@@ -9,7 +9,7 @@ $row = $t->row;
 
     <td>
         <a href="<?= url( 'customer/view/id/'.$row[ 'customerid' ] )?>">
-            <?= $row['customer'] ?>
+            <?= $t->ee( $row['customer'] ) ?>
         </a>
     </td>
 
@@ -20,12 +20,12 @@ $row = $t->row;
             asort( $ports, SORT_NATURAL );
 
             foreach( $ports as $port ) {
-                echo $row['switchname'] . '::' . $port . '<br>';
+                echo $t->ee( $row['switchname'] ) . '::' . $t->ee( $port ) . '<br>';
             }
 
         } else {
 
-            echo $row['switchname'] . '::' . $row[ 'switchport' ];
+            echo $t->ee( $row['switchname'] ) . '::' . $t->ee( $row[ 'switchport' ] ) ;
 
         } ?>
     </td>
@@ -35,11 +35,11 @@ $row = $t->row;
         </a>
     </td>
     <td>
-        <?= $row['ip4'] ?>
+        <?= $t->ee( $row['ip4'] ) ?>
     </td>
 
     <td>
-        <?= $row['ip6'] ?>
+        <?= $t->ee( $row['ip6'] ) ?>
     </td>
 
     <td>
@@ -49,7 +49,7 @@ $row = $t->row;
     </td>
 
     <td>
-        <?= $row['organisation'] ?>
+        <?= $t->ee( $row['organisation'] ) ?>
     </td>
 
 
