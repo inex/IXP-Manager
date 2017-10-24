@@ -44,7 +44,7 @@
 
             <?php if( $t->data[ 'view' ]['listHeadOverride'] ): ?>
 
-                <?= $t->insert( $t->view['listHeadOverride'] ) ?>
+                <?= $t->insert( $t->data[ 'view' ]['listHeadOverride'] ) ?>
 
             <?php else: ?>
 
