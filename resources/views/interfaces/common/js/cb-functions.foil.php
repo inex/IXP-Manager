@@ -17,7 +17,7 @@
 
                 if( !edit ){
                     datas = {
-                        spIdsexcluded: exludedSwitchPort
+                        spIdsexcluded: exludedSwitchPortSideA.concat( exludedSwitchPortSideB )
                     };
                 } else {
                     datas = {
