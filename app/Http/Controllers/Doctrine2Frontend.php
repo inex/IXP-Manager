@@ -62,11 +62,15 @@ abstract class Doctrine2Frontend extends Controller {
      */
     protected $feParams = null;
 
-    protected $data     = null;
+    /**
+     * Array for data that is passed to the templates
+     * @var array
+     */
+    protected $data     = [];
 
 
     /**
-     * The object being added / edited
+     * The object being added / edited / viewed
      */
     protected $object = null;
 
@@ -209,7 +213,7 @@ abstract class Doctrine2Frontend extends Controller {
      */
     public function list(): View
     {
-        $this->data[ 'data' ]           = $this->listGetData();
+        $this->data[ 'rows' ] = $this->listGetData();
 
         $this->data[ 'view' ][ 'listEmptyMessage'] = $this->resolveTemplate( 'list-empty-message', false );
         $this->data[ 'view' ][ 'listHeadOverride'] = $this->resolveTemplate( 'list-head-override', false );
@@ -250,7 +254,7 @@ abstract class Doctrine2Frontend extends Controller {
      */
     public function view( $id ): View
     {
-        $this->data[ 'data' ]               = $this->viewGetData( $id ) ;
+        $this->data[ 'item' ]               = $this->viewGetData( $id ) ;
 
         $this->data[ 'view' ][ 'viewPreamble']        = $this->resolveTemplate( 'view-preamble',      false );
         $this->data[ 'view' ][ 'viewPostamble']       = $this->resolveTemplate( 'view-postamble',     false );
@@ -281,8 +285,6 @@ abstract class Doctrine2Frontend extends Controller {
         $this->data[ 'view' ][ 'editPreamble']    = $this->resolveTemplate( 'edit-preamble',      false );
         $this->data[ 'view' ][ 'editPostamble']   = $this->resolveTemplate( 'edit-postamble',     false );
         $this->data[ 'view' ][ 'editScript' ]     = $this->resolveTemplate( 'js/edit',            false );
-
-        $this->data[ 'params' ]['data'] = $this->data;
     }
 
     /**

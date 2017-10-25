@@ -35,7 +35,7 @@
     ?>
 
     <?= Former::actions(
-        Former::primary_submit( 'Save Changes' ),
+        Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' ),
         Former::default_link( 'Cancel' )->href( action ($t->controller.'@list') ),
         Former::success_button( 'Help' )->id( 'help-btn' )
     );

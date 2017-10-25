@@ -24,7 +24,7 @@
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
             <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-                <a type="button" class="btn btn-default" href="<?= action($t->controller.'@edit' , [ 'id' => $t->data[ 'data' ][ 'id' ] ]) ?>">
+                <a type="button" class="btn btn-default" href="<?= action($t->controller.'@edit' , [ 'id' => $t->data[ 'item' ][ 'id' ] ]) ?>">
                     <span class="glyphicon glyphicon-pencil"></span>
                 </a>
                 <a type="button" class="btn btn-default" href="<?= action($t->controller.'@add') ?>">
@@ -44,7 +44,7 @@
 
     <div class="panel panel-default">
         <div class="panel-heading">
-            Details for <?=  $t->feParams->titleSingular  ?> <?= !isset( $t->data[ 'data' ]['id'] ) ?: '(DB ID: ' . $t->data[ 'data' ]['id'] . ')' ?>
+            Details for <?=  $t->feParams->titleSingular  ?> <?= !isset( $t->data[ 'item' ]['id'] ) ?: '(DB ID: ' . $t->data[ 'item' ]['id'] . ')' ?>
         </div>
 
         <div class="panel-body">
@@ -78,10 +78,10 @@
 
                                         <?php if( !is_array( $cconf ) ): ?>
 
-                                            <?php if( $t->data[ 'data' ][ $col ] == false ): ?>
+                                            <?php if( $t->data[ 'item' ][ $col ] == false ): ?>
                                                 0
                                             <?php else: ?>
-                                                <?= $t->ee( $t->data[ 'data' ][ $col ] ) ?>
+                                                <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
                                             <?php endif; ?>
 
                                         <?php elseif( isset( $cconf[ 'type' ] ) ): ?>
@@ -91,49 +91,49 @@
                                                 <?php if( isset( $cconf['nameIdParam'] ) ): ?>
                                                     <?php $nameIdParam = $cconf['nameIdParam'].'/'; ?>
                                                 <?php endif; ?>
-                                                <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . '/'.$nameIdParam . $t->data[ 'data' ][ $cconf['idField'] ] ) ?>">
-                                                    <?= $t->ee( $t->data[ 'data' ][ $col ] ) ?>
+                                                <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . '/'.$nameIdParam . $t->data[ 'item' ][ $cconf['idField'] ] ) ?>">
+                                                    <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
                                                 </a>
 
                                             <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'XLATE'] ): ?>
 
-                                                <?php if( isset($cconf[ 'xlator'][ $t->data[ 'data' ][ $col ] ]) ): ?>
-                                                    <?= $cconf[ 'xlator' ][ $t->data[ 'data' ][ $col] ] ?>
+                                                <?php if( isset($cconf[ 'xlator'][ $t->data[ 'item' ][ $col ] ]) ): ?>
+                                                    <?= $cconf[ 'xlator' ][ $t->data[ 'item' ][ $col] ] ?>
                                                 <?php else: ?>
-                                                    <?= $t->ee( $t->data[ 'data' ][ $col ] ) ?>
+                                                    <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
                                                 <?php endif; ?>
 
                                             <?php elseif( $cconf[ 'type'] ==  $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
 
-                                                <?php if( $t->data[ 'data' ][ $col ] ): ?>
+                                                <?php if( $t->data[ 'item' ][ $col ] ): ?>
                                                     <?= date('Y-m-d H:M:S', strtotime( $t->data[ $col ] ) ) ?>
                                                 <?php endif; ?>
 
                                             <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
 
-                                                <?php if ( $t->data[ 'data' ][ $col ] ): ?>
+                                                <?php if ( $t->data[ 'item' ][ $col ] ): ?>
                                                     <?= date('Y-m-d', strtotime( $t->data[ $col ] ) ) ?>
                                                 <?php endif; ?>
 
                                             <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'TIME'] ): ?>
 
-                                                <?php if( $t->data[ 'data' ][ $col ] ): ?>
+                                                <?php if( $t->data[ 'item' ][ $col ] ): ?>
                                                     <?= date('H:M:S', strtotime($t->data[ $col ] ) ) ?>
                                                 <?php endif; ?>
 
                                             <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
 
-                                                <?php if( $t->data[ 'data' ][ $col ] ): ?>
-                                                    <?= str_replace( '%%COL%%', $t->ee( $t->data[ 'data' ][ $col ] ) , $cconf[ 'subject' ] ) ?>
+                                                <?php if( $t->data[ 'item' ][ $col ] ): ?>
+                                                    <?= str_replace( '%%COL%%', $t->ee( $t->data[ 'item' ][ $col ] ) , $cconf[ 'subject' ] ) ?>
                                                 <?php endif; ?>
 
                                             <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'YES_NO'] ): ?>
 
-                                                <?= $t->data[ 'data' ][ $col ] ? 'Yes' : 'No' ?>
+                                                <?= $t->data[ 'item' ][ $col ] ? 'Yes' : 'No' ?>
 
                                             <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
 
-                                                <?= $t->insert( $cconf['script'], [ 'row' => $t->data['data'], 'col' => $col ] ) ?>
+                                                <?= $t->insert( $cconf['script'], [ 'row' => $t->data['item'], 'col' => $col ] ) ?>
 
                                             <?php else: ?>
 
@@ -143,7 +143,7 @@
 
                                         <?php else: ?>
 
-                                            <?= $t->ee( $t->data[ 'data' ][ $col ] ) ?>
+                                            <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
 
                                         <?php endif; ?>
                                     </td>

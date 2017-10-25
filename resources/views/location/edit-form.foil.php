@@ -93,7 +93,7 @@
 
 
     <?= Former::actions(
-        Former::primary_submit( 'Save Changes' )->id( 'btn-submit' )->disabled( true ),
+        Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' )->disabled( true ),
         Former::default_link( 'Cancel' )->href( action ($t->controller.'@list') ),
         Former::success_button( 'Help' )->id( 'help-btn' )
     );
