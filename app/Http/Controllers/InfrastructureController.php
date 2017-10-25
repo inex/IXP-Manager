@@ -43,10 +43,10 @@ use Repositories\{
 
 
 /**
- * CustKit Controller
+ * Infrastructure Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   VlanInterface
+ * @category   Controller
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -63,16 +63,13 @@ class InfrastructureController extends Doctrine2Frontend {
      */
     public function feInit(){
 
-        $this->data[ 'feParams' ] =  $this->feParams = (object)[
+        $this->feParams         = (object)[
 
             'entity'            => InfrastructureEntity::class,
             'pagetitle'         => 'Infrastructures',
 
             'titleSingular'     => 'Infrastructure',
             'nameSingular'      => 'infrastructure',
-
-            'defaultAction'     => 'list',
-            'defaultController' => 'InfrastructureController',
 
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
@@ -124,24 +121,23 @@ class InfrastructureController extends Doctrine2Frontend {
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
-
-        $inf = false;
-
         if( $id !== null ) {
 
-            if( !( $inf = D2EM::getRepository( InfrastructureEntity::class )->find( $id) ) ) {
+            if( !( $this->object = D2EM::getRepository( InfrastructureEntity::class )->find( $id) ) ) {
                 abort(404);
             }
 
+            $old = request()->old();
+
             Former::populate([
-                'name'             => $inf->getName(),
-                'shortname'        => $inf->getShortname(),
-                'isPrimary'        => $inf->getIsPrimary() ?? false,
+                'name'             => array_key_exists( 'name',      $old ) ? $old['name']      : $this->object->getName(),
+                'shortname'        => array_key_exists( 'shortname', $old ) ? $old['shortname'] : $this->object->getShortname(),
+                'isPrimary'        => array_key_exists( 'isPrimary', $old ) ? $old['isPrimary'] : ( $this->object->getIsPrimary() ?? false ),
             ]);
         }
 
         return [
-            'inf'          => $inf,
+            'object'          => $this->object,
         ];
     }
 

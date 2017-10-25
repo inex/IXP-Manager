@@ -129,7 +129,10 @@ return [
     | DQL custom string functions
     |--------------------------------------------------------------------------
     */
-    'custom_string_functions'   => [],
+    'custom_string_functions'   => [
+        'GROUP_CONCAT'   => DoctrineExtensions\Query\Mysql\GroupConcat::class,
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Enable query logging with laravel file logging,

@@ -25,8 +25,6 @@ namespace IXP\Http\Controllers;
 
 use D2EM, Former, Redirect, Validator;
 
-use Illuminate\View\View;
-
 use Entities\{
     CustomerEquipment   as CustomerEquipmentEntity,
     Cabinet             as CabinetEntity,
@@ -34,11 +32,6 @@ use Entities\{
 };
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-
-use IXP\Utils\View\Alert\{
-    Alert,
-    Container as AlertContainer
-};
 
 
 /**
@@ -50,22 +43,24 @@ use IXP\Utils\View\Alert\{
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CustKitController extends Doctrine2Frontend {
+    /**
+     * The object being added / edited
+     * @var CustomerEquipmentEntity
+     */
+    protected $object = null;
 
     /**
      * This function sets up the frontend controller
      */
     public function feInit(){
 
-        $this->data[ 'feParams' ] =  $this->feParams = (object)[
+        $this->feParams         = (object)[
             'entity'            => CustomerEquipmentEntity::class,
 
-            'pagetitle'         => 'Customer Equipment',
+            'pagetitle'         => 'Colocated Equipment',
 
-            'titleSingular'     => 'Customer Equipment',
-            'nameSingular'      => 'customer equipment',
-
-            'defaultAction'     => 'list',
-            'defaultController' => 'CustKitController',
+            'titleSingular'     => 'Colocated Equipment',
+            'nameSingular'      => 'colocated equipment',
 
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
@@ -79,11 +74,12 @@ class CustKitController extends Doctrine2Frontend {
                 'name'      => 'Name',
 
                 'customer'  => [
-                    'title'      => 'Customer',
-                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'customer',
-                    'action'     => 'overview',
-                    'idField'    => 'custid'
+                    'title'         => 'Customer',
+                    'type'          => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller'    => 'customer',
+                    'action'        => 'overview',
+                    'idField'       => 'custid',
+                    'nameIdParam'   => 'id',
                 ],
 
                 'cabinet'  => [
@@ -125,27 +121,26 @@ class CustKitController extends Doctrine2Frontend {
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
-
-        $ck = false;
-
         if( $id != null ) {
 
-            if( !( $ck = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $id ) ) ) {
+            if( !( $this->object = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $id ) ) ) {
                 abort(404);
             }
 
+            $old = request()->old();
+
             Former::populate([
-                'name'                  => $ck->getName(),
-                'cust'                  => $ck->getCustomer()->getId(),
-                'cabinet'               => $ck->getCabinet()->getId(),
-                'description'           => $ck->getDescr(),
+                'name'          => array_key_exists( 'name',        $old ) ? $old['name']           : $this->object->getName(),
+                'custid'        => array_key_exists( 'custid',      $old ) ? $old['custid']         : $this->object->getCustomer()->getId(),
+                'cabinetid'     => array_key_exists( 'cabinetid',   $old ) ? $old['cabinetid']      : $this->object->getCabinet()->getId(),
+                'descr'         => array_key_exists( 'descr',       $old ) ? $old['descr']          : $this->object->getDescr(),
             ]);
         }
 
         return [
-            'ck'       => $ck,
-            'cabinets' => D2EM::getRepository( CabinetEntity::class )->getAsArray(),
-            'custs'    => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
+            'object'        => $this->object ,
+            'cabinets'      => D2EM::getRepository( CabinetEntity::class    )->getAsArray(),
+            'custs'         => D2EM::getRepository( CustomerEntity::class   )->getAsArray(),
         ];
     }
 
@@ -159,10 +154,10 @@ class CustKitController extends Doctrine2Frontend {
     {
 
         $validator = Validator::make( $request->all(), [
-            'name'              => 'required|string|max:255',
-            'cust'              => 'required|integer|exists:Entities\Customer,id',
-            'cabinet'           => 'required|integer|exists:Entities\Cabinet,id',
-            'description'       => 'nullable|string|max:255',
+            'name'                  => 'required|string|max:255',
+            'custid'                => 'required|integer|exists:Entities\Customer,id',
+            'cabinetid'             => 'required|integer|exists:Entities\Cabinet,id',
+            'descr'                 => 'nullable|string|max:255',
         ]);
 
         if( $validator->fails() ) {
@@ -170,22 +165,21 @@ class CustKitController extends Doctrine2Frontend {
         }
 
         if( $request->input( 'id', false ) ) {
-            if( !( $ck = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $request->input( 'id' ) ) ) ) {
+            if( !( $this->object = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $request->input( 'id' ) ) ) ) {
                 abort(404);
             }
         } else {
-            $ck = new CustomerEquipmentEntity;
-            D2EM::persist( $ck );
+            $this->object = new CustomerEquipmentEntity;
+            D2EM::persist( $this->object );
         }
 
-        $ck->setName(     $request->input( 'name' ) );
-        $ck->setCabinet(  D2EM::getRepository( CabinetEntity::class  )->find( $request->input( 'cabinet' ) ) );
-        $ck->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'cust' ) ) );
-        $ck->setDescr(    $request->input( 'description' ) );
+        $this->object->setName(     $request->input( 'name' ) );
+        $this->object->setCabinet(  D2EM::getRepository( CabinetEntity::class  )->find( $request->input( 'cabinetid'    ) ) );
+        $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid'       ) ) );
+        $this->object->setDescr(    $request->input( 'descr' ) );
 
-        D2EM::flush($ck);
+        D2EM::flush( $this->object );
 
-        $this->object = $ck;
         return true;
     }
 }

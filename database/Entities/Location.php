@@ -2,7 +2,6 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Entities\Location
@@ -323,7 +322,7 @@ class Location
      * @param Entities\Cabinet $cabinets
      * @return Location
      */
-    public function addCabinet(\Entities\Cabinet $cabinets)
+    public function addCabinet( \Entities\Cabinet $cabinets)
     {
         $this->Cabinets[] = $cabinets;
     
@@ -343,7 +342,7 @@ class Location
     /**
      * Get Cabinets
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection|\Doctrine\Common\Collections\Collection|array
      */
     public function getCabinets()
     {

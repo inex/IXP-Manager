@@ -57,7 +57,7 @@
      * reloading only a part of the DOM
      */
     function refreshDataTable() {
-        $( "#list-area").load( "<?= action ('Layer2AddressController@index' , [ 'id' => $t->vli->getId() ] ) ?> #layer-2-interface-list " ,function( ) {
+        $( "#list-area").load( "<?= action ('Layer2AddressController@forVlanInterface' , [ 'id' => $t->vli->getId() ] ) ?> #layer-2-interface-list " ,function( ) {
             table.destroy();
             loadDataTable();
         });

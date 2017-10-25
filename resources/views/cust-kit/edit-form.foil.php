@@ -11,35 +11,35 @@
         ->blockHelp( "Descriptive name of the co-located equipment." );
     ?>
 
-    <?= Former::select( 'cust' )
+    <?= Former::select( 'custid' )
         ->label( 'Customer' )
-        ->fromQuery( $t->params[ 'custs'], 'name' )
+        ->fromQuery( $t->data[ 'params'][ 'custs'], 'name' )
         ->placeholder( 'Choose a customer' )
         ->addClass( 'chzn-select' );
     ?>
 
-    <?= Former::select( 'cabinet' )
+    <?= Former::select( 'cabinetid' )
         ->label( 'Cabinet' )
-        ->fromQuery( $t->params[ 'cabinets'], 'name' )
-        ->placeholder( 'Choose a Cabinet' )
+        ->fromQuery( $t->data[ 'params'][ 'cabinets'], 'name' )
+        ->placeholder( 'Choose a cabinet' )
         ->addClass( 'chzn-select' );
     ?>
 
-    <?= Former::textarea( 'description' )
+    <?= Former::textarea( 'descr' )
         ->label( 'Description' )
         ->rows( 5 )
         ->blockHelp( 'Detailed description of the co-located equipment.' );
     ?>
 
     <?= Former::actions(
-        Former::primary_submit( 'Save Changes' ),
+        Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' ),
         Former::default_link( 'Cancel' )->href( action ($t->controller.'@list') ),
         Former::success_button( 'Help' )->id( 'help-btn' )
     );
     ?>
 
     <?= Former::hidden( 'id' )
-        ->value( $t->params[ 'ck'] ? $t->params[ 'ck']->getId() : '' )
+        ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
     ?>
 
     <?= Former::close() ?>

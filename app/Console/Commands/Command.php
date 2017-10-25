@@ -3,7 +3,7 @@
 use Symfony\Component\Console\Output\OutputInterface;
 use Entities\IXP;
 
-class Command extends \Illuminate\Console\Command {
+abstract class Command extends \Illuminate\Console\Command {
 
     /**
      * Checks if reseller mode is enabled.

@@ -69,4 +69,43 @@ class Cabinet extends EntityRepository
         return $locations;
     }
 
+    /**
+     * Get all cabinets (or a particular one) for listing on the frontend CRUD
+     *
+     * @see \IXP\Http\Controllers\Doctrine2Frontend
+     *
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     * @return array Array of cabinets (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeList( \stdClass $feParams, int $id = null )
+    {
+        $dql = "SELECT  c.id as id, 
+                        c.name as name, 
+                        c.cololocation as cololocation, 
+                        c.height AS height,
+                        c.type AS type, 
+                        c.notes AS notes, 
+                        c.u_counts_from AS u_counts_from, 
+                        l.id AS locationid, 
+                        l.name AS location
+                FROM Entities\\Cabinet c
+                LEFT JOIN c.Location l
+                WHERE 1 = 1";
+
+        if( $id ) {
+            $dql .= " AND c.id = " . (int)$id;
+        }
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getArrayResult();
+    }
+
 }

@@ -12,6 +12,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/barryvdh/laravel-dompdf" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/barryvdh/laravel-ide-helper" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/barryvdh/reflection-docblock" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/beberlei/DoctrineExtensions" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/classpreloader/classpreloader" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/composer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dnoegel/php-xdg-base-dir" />
@@ -26,9 +27,12 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/migrations" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/doctrine/orm" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/dompdf/dompdf" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/egulias/email-validator" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/erusev/parsedown" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/evenement/evenement" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ezyang/htmlpurifier" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/fideloper/proxy" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/filp/whoops" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/foil/foil" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/fzaninotto/faker" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/graham-campbell/flysystem" />
@@ -42,6 +46,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/jakub-onderka/php-console-color" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/jakub-onderka/php-console-highlighter" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/komola/bootstrap-zend-framework" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/laravel-doctrine/extensions" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laravel-doctrine/migrations" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laravel-doctrine/orm" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/laravel/framework" />
@@ -64,6 +69,8 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/oss2/doctrine2" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/oss2/var-utils" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phar-io/manifest" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/phar-io/version" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phenx/php-font-lib" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phenx/php-svg-lib" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/php-ds/php-ds" />
@@ -82,6 +89,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/container" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/http-message" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psr/log" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/psr/simple-cache" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/psy/psysh" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ramsey/uuid" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sabberworm/php-css-parser" />
@@ -92,6 +100,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/exporter" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/global-state" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/object-enumerator" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/object-reflector" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/recursion-context" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/resource-operations" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/sebastian/version" />
@@ -111,7 +120,7 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/serializer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/translation" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/var-dumper" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/symfony/yaml" />
+      <excludeFolder url="file://$MODULE_DIR$/vendor/theseer/tokenizer" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/tijsverkoyen/css-to-inline-styles" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/vlucas/phpdotenv" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/webmozart/assert" />
@@ -133,6 +142,7 @@
           <root url="file://$MODULE_DIR$/vendor/barryvdh/laravel-dompdf" />
           <root url="file://$MODULE_DIR$/vendor/barryvdh/laravel-ide-helper" />
           <root url="file://$MODULE_DIR$/vendor/barryvdh/reflection-docblock" />
+          <root url="file://$MODULE_DIR$/vendor/beberlei/DoctrineExtensions" />
           <root url="file://$MODULE_DIR$/vendor/composer" />
           <root url="file://$MODULE_DIR$/vendor/dnoegel/php-xdg-base-dir" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/annotations" />
@@ -145,9 +155,12 @@
           <root url="file://$MODULE_DIR$/vendor/doctrine/lexer" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/orm" />
           <root url="file://$MODULE_DIR$/vendor/dompdf/dompdf" />
+          <root url="file://$MODULE_DIR$/vendor/egulias/email-validator" />
           <root url="file://$MODULE_DIR$/vendor/erusev/parsedown" />
           <root url="file://$MODULE_DIR$/vendor/evenement/evenement" />
           <root url="file://$MODULE_DIR$/vendor/ezyang/htmlpurifier" />
+          <root url="file://$MODULE_DIR$/vendor/fideloper/proxy" />
+          <root url="file://$MODULE_DIR$/vendor/filp/whoops" />
           <root url="file://$MODULE_DIR$/vendor/foil/foil" />
           <root url="file://$MODULE_DIR$/vendor/fzaninotto/faker" />
           <root url="file://$MODULE_DIR$/vendor/graham-campbell/flysystem" />
@@ -161,6 +174,7 @@
           <root url="file://$MODULE_DIR$/vendor/jakub-onderka/php-console-color" />
           <root url="file://$MODULE_DIR$/vendor/jakub-onderka/php-console-highlighter" />
           <root url="file://$MODULE_DIR$/vendor/komola/bootstrap-zend-framework" />
+          <root url="file://$MODULE_DIR$/vendor/laravel-doctrine/extensions" />
           <root url="file://$MODULE_DIR$/vendor/laravel-doctrine/orm" />
           <root url="file://$MODULE_DIR$/vendor/laravel/framework" />
           <root url="file://$MODULE_DIR$/vendor/laravel/tinker" />
@@ -180,6 +194,8 @@
           <root url="file://$MODULE_DIR$/vendor/oss2/doctrine2" />
           <root url="file://$MODULE_DIR$/vendor/oss2/var-utils" />
           <root url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
+          <root url="file://$MODULE_DIR$/vendor/phar-io/manifest" />
+          <root url="file://$MODULE_DIR$/vendor/phar-io/version" />
           <root url="file://$MODULE_DIR$/vendor/phenx/php-font-lib" />
           <root url="file://$MODULE_DIR$/vendor/phenx/php-svg-lib" />
           <root url="file://$MODULE_DIR$/vendor/php-ds/php-ds" />
@@ -198,6 +214,7 @@
           <root url="file://$MODULE_DIR$/vendor/psr/container" />
           <root url="file://$MODULE_DIR$/vendor/psr/http-message" />
           <root url="file://$MODULE_DIR$/vendor/psr/log" />
+          <root url="file://$MODULE_DIR$/vendor/psr/simple-cache" />
           <root url="file://$MODULE_DIR$/vendor/psy/psysh" />
           <root url="file://$MODULE_DIR$/vendor/ramsey/uuid" />
           <root url="file://$MODULE_DIR$/vendor/sabberworm/php-css-parser" />
@@ -208,6 +225,7 @@
           <root url="file://$MODULE_DIR$/vendor/sebastian/exporter" />
           <root url="file://$MODULE_DIR$/vendor/sebastian/global-state" />
           <root url="file://$MODULE_DIR$/vendor/sebastian/object-enumerator" />
+          <root url="file://$MODULE_DIR$/vendor/sebastian/object-reflector" />
           <root url="file://$MODULE_DIR$/vendor/sebastian/recursion-context" />
           <root url="file://$MODULE_DIR$/vendor/sebastian/resource-operations" />
           <root url="file://$MODULE_DIR$/vendor/sebastian/version" />
@@ -227,6 +245,7 @@
           <root url="file://$MODULE_DIR$/vendor/symfony/serializer" />
           <root url="file://$MODULE_DIR$/vendor/symfony/translation" />
           <root url="file://$MODULE_DIR$/vendor/symfony/var-dumper" />
+          <root url="file://$MODULE_DIR$/vendor/theseer/tokenizer" />
           <root url="file://$MODULE_DIR$/vendor/tijsverkoyen/css-to-inline-styles" />
           <root url="file://$MODULE_DIR$/vendor/vlucas/phpdotenv" />
           <root url="file://$MODULE_DIR$/vendor/webmozart/assert" />
@@ -243,6 +262,7 @@
           <root url="file://$MODULE_DIR$/vendor/barryvdh/laravel-dompdf" />
           <root url="file://$MODULE_DIR$/vendor/barryvdh/laravel-ide-helper" />
           <root url="file://$MODULE_DIR$/vendor/barryvdh/reflection-docblock" />
+          <root url="file://$MODULE_DIR$/vendor/beberlei/DoctrineExtensions" />
           <root url="file://$MODULE_DIR$/vendor/composer" />
           <root url="file://$MODULE_DIR$/vendor/dnoegel/php-xdg-base-dir" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/annotations" />
@@ -255,9 +275,12 @@
           <root url="file://$MODULE_DIR$/vendor/doctrine/lexer" />
           <root url="file://$MODULE_DIR$/vendor/doctrine/orm" />
           <root url="file://$MODULE_DIR$/vendor/dompdf/dompdf" />
+          <root url="file://$MODULE_DIR$/vendor/egulias/email-validator" />
           <root url="file://$MODULE_DIR$/vendor/erusev/parsedown" />
           <root url="file://$MODULE_DIR$/vendor/evenement/evenement" />
           <root url="file://$MODULE_DIR$/vendor/ezyang/htmlpurifier" />
+          <root url="file://$MODULE_DIR$/vendor/fideloper/proxy" />
+          <root url="file://$MODULE_DIR$/vendor/filp/whoops" />
           <root url="file://$MODULE_DIR$/vendor/foil/foil" />
           <root url="file://$MODULE_DIR$/vendor/fzaninotto/faker" />
           <root url="file://$MODULE_DIR$/vendor/graham-campbell/flysystem" />
@@ -271,6 +294,7 @@
           <root url="file://$MODULE_DIR$/vendor/jakub-onderka/php-console-color" />
           <root url="file://$MODULE_DIR$/vendor/jakub-onderka/php-console-highlighter" />
           <root url="file://$MODULE_DIR$/vendor/komola/bootstrap-zend-framework" />
+          <root url="file://$MODULE_DIR$/vendor/laravel-doctrine/extensions" />
           <root url="file://$MODULE_DIR$/vendor/laravel-doctrine/orm" />
           <root url="file://$MODULE_DIR$/vendor/laravel/framework" />
           <root url="file://$MODULE_DIR$/vendor/laravel/tinker" />
@@ -290,6 +314,8 @@
           <root url="file://$MODULE_DIR$/vendor/oss2/doctrine2" />
           <root url="file://$MODULE_DIR$/vendor/oss2/var-utils" />
           <root url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
+          <root url="file://$MODULE_DIR$/vendor/phar-io/manifest" />
+          <root url="file://$MODULE_DIR$/vendor/phar-io/version" />
           <root url="file://$MODULE_DIR$/vendor/phenx/php-font-lib" />
           <root url="file://$MODULE_DIR$/vendor/phenx/php-svg-lib" />
           <root url="file://$MODULE_DIR$/vendor/php-ds/php-ds" />
@@ -308,6 +334,7 @@
           <root url="file://$MODULE_DIR$/vendor/psr/container" />
           <root url="file://$MODULE_DIR$/vendor/psr/http-message" />
           <root url="file://$MODULE_DIR$/vendor/psr/log" />
+          <root url="file://$MODULE_DIR$/vendor/psr/simple-cache" />
           <root url="file://$MODULE_DIR$/vendor/psy/psysh" />
           <root url="file://$MODULE_DIR$/vendor/ramsey/uuid" />
           <root url="file://$MODULE_DIR$/vendor/sabberworm/php-css-parser" />
@@ -318,6 +345,7 @@
           <root url="file://$MODULE_DIR$/vendor/sebastian/exporter" />
           <root url="file://$MODULE_DIR$/vendor/sebastian/global-state" />
           <root url="file://$MODULE_DIR$/vendor/sebastian/object-enumerator" />
+          <root url="file://$MODULE_DIR$/vendor/sebastian/object-reflector" />
           <root url="file://$MODULE_DIR$/vendor/sebastian/recursion-context" />
           <root url="file://$MODULE_DIR$/vendor/sebastian/resource-operations" />
           <root url="file://$MODULE_DIR$/vendor/sebastian/version" />
@@ -337,6 +365,7 @@
           <root url="file://$MODULE_DIR$/vendor/symfony/serializer" />
           <root url="file://$MODULE_DIR$/vendor/symfony/translation" />
           <root url="file://$MODULE_DIR$/vendor/symfony/var-dumper" />
+          <root url="file://$MODULE_DIR$/vendor/theseer/tokenizer" />
           <root url="file://$MODULE_DIR$/vendor/tijsverkoyen/css-to-inline-styles" />
           <root url="file://$MODULE_DIR$/vendor/vlucas/phpdotenv" />
           <root url="file://$MODULE_DIR$/vendor/webmozart/assert" />
