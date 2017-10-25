@@ -1,18 +1,20 @@
 
 <script>
-    $( '#pdb_facility_id' ).select2({
-        placeholder: 'Choose the matching PeeringDB Facility...',
-        allowClear: true
-    });
 
     let dd_pdb = $( '#pdb_facility_id' );
     let errorOption = `<option value="0">Error</option>\n`;
 
     $(document).ready(function() {
 
+        dd_pdb.select2({
+            placeholder: 'Please wait, loading...',
+            allowClear: true
+        });
+
         $.ajax( "<?= url('api/v4/peering-db/fac') ?>" )
             .done( function( data ) {
                 let selectedpdb, selectNow;
+                dd_pdb.select2({allowClear: true,placeholder: 'Choose the matching PeeringDB Facility...'});
                 let options = `<option value=''>Choose the matching PeeringDB Facility...</option>\n`;
 
                 <?php if( $t->data[ 'params'][ 'object' ] && $t->data[ 'params'][ 'object' ]->getPdbFacilityId() ): ?>
