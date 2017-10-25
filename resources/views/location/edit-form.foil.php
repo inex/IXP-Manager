@@ -91,6 +91,12 @@
         ->blockHelp( '' );
     ?>
 
+    <?php if( !$t->data['params']['isAdd'] ): ?>
+        <?= Former::hidden( 'pdb_facility_id' )
+            ->value( $t->data[ 'params'][ 'object']->getPdbFacilityId() )
+        ?>
+    <?php endif; ?>
+
 
     <?= Former::actions(
         Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' )->disabled( true ),

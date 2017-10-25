@@ -6,7 +6,6 @@
 
         $.ajax( "<?= url('api/v4/peering-db/fac') ?>" )
             .done( function( data ) {
-                console.log( 'dd');
                 let selectedpdb, selectNow;
                 let options = `<option value=''>Choose the matching PeeringDB Facility...</option>\n`;
 
@@ -27,7 +26,11 @@
                 dd_pdb.attr("placeholder", "Choose the matching PeeringDB Facility...");
             })
             .fail( function() {
-                throw new Error("Error running ajax query for PeeringDB Facility");
+                dd_pdb.html( `<option value="0">Error</option>\n` );
+                dd_pdb.prop('disabled', true);
+                $( '#form' ).prepend( `<div class="alert alert-danger" role="alert"> We could not load the list of facilities from PeeringDB.
+                                        This is usually a transient network / service issue and should work again at a later stage.
+                                        Please try again later and set the PeeringDB facility ID. </div>` );
             })
             .always( function() {
                 dd_pdb.trigger( "changed.select2" );
