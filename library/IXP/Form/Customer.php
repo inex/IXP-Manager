@@ -178,7 +178,7 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( $peeringmacrov6 );
 
 
-        $this->addElement( IXP_Form_IrrdbConfig::getPopulatedSelect() );
+        $this->addElement( self::getPopulatedSelectIrrdb() );
 
 
         $activepeeringmatrix = $this->createElement( 'checkbox', 'activepeeringmatrix' );
@@ -336,12 +336,52 @@ class IXP_Form_Customer extends IXP_Form
         }
         else if( !$isEdit )
         {
-            $ixp = IXP_Form_IXP::getPopulatedSelect( 'ixp' );
+            $ixp = self::getPopulatedSelectIXP( 'ixp' );
             $ixp->setLabel( "Intial IXP" );
             $this->addElement( $ixp  );
         }
 
         return $this;
+    }
+
+    /**
+
+     * Create a SELECT / dropdown element of all IRRDB names indexed by their id.
+     *
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelectIrrdb( )
+    {
+        $e = new Zend_Form_Element_Select( 'irrdb' );
+
+        $maxId = self::populateSelectFromDatabase( $e, '\\Entities\\IRRDBConfig', 'id', 'source', 'source', 'ASC' );
+
+        $e->setRegisterInArrayValidator( true )
+            ->setLabel( _( 'IRRDB Source' ) )
+            ->setAttrib( 'class', 'span8 chzn-select' )
+            ->setErrorMessages( array( _( 'Please select an IRRDB source' ) ) );
+
+        return $e;
+
+     * Create a SELECT / dropdown element of all IXP names indexed by their id.
+     *
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelectIXP( )
+    {
+        $sw = new Zend_Form_Element_Select( 'ixp' );
+
+        $maxId = self::populateSelectFromDatabase( $sw, '\\Entities\\IXP', 'id', 'name', 'name', 'ASC' );
+
+        $sw->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( _( 'IXP' ) )
+            ->setAttrib( 'class', 'chzn-select' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( [ 'Please select an IXP' ] );
+
+        return $sw;
+
     }
 
 }

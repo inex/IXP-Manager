@@ -63,9 +63,9 @@ class IXP_Form_Switch extends IXP_Form
             ->setErrorMessages( array( 'Please set the switch type' ) );
         $this->addElement( $switchtype );
 
-        $this->addElement( IXP_Form_Cabinet::getPopulatedSelect( 'cabinetid' ) );
+        $this->addElement( self::getPopulatedSelectCabinet( ) );
 
-        $infrastructure = IXP_Form_Infrastructure::getPopulatedSelect( 'infrastructure' );
+        $infrastructure = self::getPopulatedSelectInfra( );
         $this->addElement( $infrastructure );
 
         $ipv4addr = $this->createElement( 'text', 'ipv4addr' );
@@ -93,7 +93,7 @@ class IXP_Form_Switch extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $snmppasswd );
 
-        $this->addElement( IXP_Form_Vendor::getPopulatedSelect( 'vendorid' ) );
+        $this->addElement( self::getPopulatedSelectVendor( 'vendorid' ) );
         
 
         $model = $this->createElement( 'text', 'model' );
@@ -183,6 +183,82 @@ class IXP_Form_Switch extends IXP_Form
     
         return $sw;
     }
-    
+
+    /**
+     * Create a SELECT / dropdown element of all cabinet names indexed by their id.
+     *
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelectCabinet( )
+    {
+        $cab = new Zend_Form_Element_Select( 'cabinetid' );
+
+        $maxId = self::populateSelectFromDatabase( $cab, '\\Entities\\Cabinet', 'id', 'name', 'name', 'ASC' );
+
+        $cab->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( _( 'Cabinet' ) )
+            ->setAttrib( 'class', 'span2 chzn-select' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( array( _( 'Please select a cabinet' ) ) );
+
+        return $cab;
+    }
+
+    /**
+     * Create a SELECT / dropdown element of all infrastructures indexed by their id.
+     *
+     * Drop down list will be appended like this:
+     *  ixp1 - inf1
+     *  ixp1 - inf3
+     *  ixp2 - inf2
+     *
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelectInfra( )
+    {
+        $sw = new Zend_Form_Element_Select( 'infrastructure' );
+
+        $qb = Zend_Registry::get( 'd2em' )['default']->createQueryBuilder()
+            ->select( 'e.id AS id, e.name AS name, ix.shortname AS ixp' )
+            ->from( '\\Entities\\Infrastructure', 'e' )
+            ->join( 'e.IXP', 'ix' )
+            ->add( 'orderBy', "ixp ASC, name ASC" );
+
+        $maxId = self::populateSelectFromDatabaseQuery( $qb->getQuery(), $sw, '\\Entities\\Infrastructure', 'id', [ 'ixp', 'name' ], 'ixp', 'ASC' );
+
+        $sw->setRegisterInArrayValidator( true )
+            ->setRequired( false )
+            ->setAttrib( 'data-maxId', $maxId )
+            ->setLabel( _( 'infrastructure' ) )
+            ->setAttrib( 'class', 'chzn-select-deselect' )
+            //->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( [ 'Please select an infrastructure' ] );
+
+        return $sw;
+    }
+
+    /**
+     * Create a SELECT / dropdown element of all vendor names indexed by their id.
+     *
+     * @param string $name The element name
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelectVendor( )
+    {
+        $v = new Zend_Form_Element_Select( 'vendorid' );
+
+        $maxId = self::populateSelectFromDatabase( $v, '\\Entities\\Vendor', 'id', 'name', 'name', 'ASC' );
+
+        $v->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( _( 'Vendor' ) )
+            ->setAttrib( 'class', 'span3 chzn-select' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( array( _( 'Please select a vendor' ) ) );
+
+        return $v;
+    }
+
 
 }

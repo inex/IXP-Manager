@@ -78,9 +78,7 @@
 
                                         <?php if( !is_array( $cconf ) ): ?>
 
-                                            <?php if( $t->data[ 'item' ][ $col ] == false ): ?>
-                                                0
-                                            <?php else: ?>
+                                            <?php if( $t->data[ 'item' ][ $col ] ): ?>
                                                 <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
                                             <?php endif; ?>
 
