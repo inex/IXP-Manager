@@ -1,6 +1,12 @@
 
 <script>
+    $( '#pdb_facility_id' ).select2({
+        placeholder: 'Choose the matching PeeringDB Facility...',
+        allowClear: true
+    });
+
     let dd_pdb = $( '#pdb_facility_id' );
+    let errorOption = `<option value="0">Error</option>\n`;
 
     $(document).ready(function() {
 
@@ -26,8 +32,15 @@
                 dd_pdb.attr("placeholder", "Choose the matching PeeringDB Facility...");
             })
             .fail( function() {
-                dd_pdb.html( `<option value="0">Error</option>\n` );
-                dd_pdb.prop('disabled', true);
+                dd_pdb.prop( 'disabled', true );
+                <?php if( !$t->data[ 'params' ][ 'isAdd' ] ): ?>
+                    <?php if( $t->data[ 'params'][ 'object']->getPdbFacilityId() ): ?>
+                        errorOption = `<option value="<?= $t->data[ 'params'][ 'object']->getPdbFacilityId() ?>"> PeeringDB ID: <?= $t->data[ 'params'][ 'object']->getPdbFacilityId() ?></option>` ;
+                        dd_pdb.prop( 'disabled', false );
+                    <?php endif; ?>
+                <?php endif; ?>
+                dd_pdb.html( errorOption );
+
                 $( '#form' ).prepend( `<div class="alert alert-danger" role="alert"> We could not load the list of facilities from PeeringDB.
                                         This is usually a transient network / service issue and should work again at a later stage.
                                         Please try again later and set the PeeringDB facility ID. </div>` );
