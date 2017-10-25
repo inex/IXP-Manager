@@ -70,7 +70,7 @@ $this->layout( 'layouts/ixpv4' );
 
         <tbody>
 
-            <?php foreach( $t->data[ 'data' ] as $idx => $row ): ?>
+            <?php foreach( $t->data[ 'rows' ] as $idx => $row ): ?>
                 <tr>
 
                     <td>
