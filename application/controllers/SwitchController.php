@@ -347,7 +347,7 @@ class SwitchController extends IXP_Controller_FrontEnd
      * @param bool $isEdit True of we are editing an object, false otherwise
      * @param array $options Options passed onto Zend_Form
      * @param string $cancelLocation Where to redirect to if 'Cancal' is clicked
-     * @return void
+     * @return bool
      */
     protected function formPostProcess( $form, $object, $isEdit, $options = null, $cancelLocation = null )
     {
@@ -371,7 +371,7 @@ class SwitchController extends IXP_Controller_FrontEnd
      * @param IXP_Form_Switch $form The form object
      * @param \Entities\Switcher $object The Doctrine2 entity (being edited or blank for add)
      * @param bool $isEdit True of we are editing an object, false otherwise
-     * @return void
+     * @return bool
      */
     protected function addPostValidate( $form, $object, $isEdit )
     {
@@ -414,6 +414,39 @@ class SwitchController extends IXP_Controller_FrontEnd
 
         return true;
     }
+
+    /**
+     * Pre db flush hook that can be overridden by subclasses for add and edit.
+     *
+     * This is called if the user POSTs a valid form after the posted
+     * data has been assigned to the object and just before it is (persisted
+     * if adding) and the database is flushed.
+     *
+     * This hook can prevent flushing by returning false.
+     *
+     * **NB: You should not `flush()` here unless you know what you are doing**
+     *
+     * A call to `flush()` is made after this method returns true ensuring a
+     * transactional `flush()` for all.
+     *
+     * @param OSS_Form $form The Send form object
+     * @param object $object The Doctrine2 entity (being edited or blank for add)
+     * @param bool $isEdit True if we are editing, otherwise false
+     * @return bool If false, the form is not persisted
+     */
+    protected function addPreFlush( $form, $object, $isEdit )
+    {
+        if( $form->getElement( 'loopback_ip' )->getValue() == "" ) {
+            $object->setLoopbackIp( null );
+        }
+
+        if( $form->getElement( 'loopback_name' )->getValue() == "" ) {
+            $object->setLoopbackName( null );
+        }
+
+        return true;
+    }
+
 
     /**
      * Clear the cache after a change to a switch
