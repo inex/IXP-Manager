@@ -79,7 +79,7 @@
                                         <?php if( !is_array( $cconf ) ): ?>
 
                                             <?php if( $t->data[ 'item' ][ $col ] == false ): ?>
-                                                0
+
                                             <?php else: ?>
                                                 <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
                                             <?php endif; ?>
