@@ -9,7 +9,7 @@ $row = $t->row;
 
     <td>
         <a href="<?= url( 'customer/view/id/'. $row[ 'customerid' ] )?>">
-            <?= $row['customer'] ?>
+            <?= $t->ee( $row['customer'] ) ?>
         </a>
     </td>
 
@@ -20,22 +20,22 @@ $row = $t->row;
             asort( $ports, SORT_NATURAL );
 
             foreach( $ports as $port ) {
-                echo "<a href=".route('interfaces/virtual/edit', [ 'id' => $row['viid'] ] ).">".$row['switchname'] . '::' . $port."</a><br/>";
+                echo "<a href=".route('interfaces/virtual/edit', [ 'id' => $row['viid'] ] ).">". $t->ee( $row['switchname'] ) . '::' . $t->ee( $port )."</a><br/>";
             }
 
         } else {
 
-            echo "<a href=".route('interfaces/virtual/edit', [ 'id' => $row['viid'] ] ).">".$row['switchname'] . '::' . $row[ 'switchport' ]."</a>";
+            echo "<a href=".route('interfaces/virtual/edit', [ 'id' => $row['viid'] ] ).">". $t->ee( $row['switchname'] ) . '::' . $t->ee( $row[ 'switchport' ] ) ."</a>";
 
         } ?>
     </td>
 
     <td>
-        <?= $row['ip4'] ?>
+        <?= $t->ee( $row['ip4'] ) ?>
     </td>
 
     <td>
-        <?= $row['ip6'] ?>
+        <?= $t->ee( $row['ip6'] ) ?>
     </td>
 
     <td>
@@ -45,7 +45,7 @@ $row = $t->row;
     </td>
 
     <td>
-        <?= $row['organisation'] ?>
+        <?= $t->ee( $row['organisation'] ) ?>
     </td>
 
 

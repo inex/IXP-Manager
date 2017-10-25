@@ -21,7 +21,7 @@ $this->layout( 'layouts/ixpv4' );
         <div class="row-fluid">
             <div class="alert alert-info">
                 Only showing
-                VLANs for: <strong><?=  $t->data[ 'params'][ 'infra' ]->getName() ?></strong>.
+                VLANs for: <strong><?=  $t->ee( $t->data[ 'params'][ 'infra' ]->getName() ) ?></strong>.
 
                 <div class="pull-right">
                     <div class="btn-group btn-group-xs" role="group">
@@ -74,31 +74,31 @@ $this->layout( 'layouts/ixpv4' );
                 <tr>
 
                     <td>
-                        <?= $row[ 'name' ]?>
+                        <?= $t->ee( $row[ 'name' ] ) ?>
                     </td>
 
                     <td>
-                        <?= $row[ 'number' ]?>
+                        <?= $t->ee( $row[ 'number' ] ) ?>
                     </td>
 
                     <td>
-                        <?= $row[ 'infrastructure' ]?>
+                        <?= $t->ee( $row[ 'infrastructure' ] ) ?>
                     </td>
 
                     <td>
                         <?php foreach( $row[ "members" ] as $custid => $cust ): ?>
-                            <a href="<?= url('' ) . '/customer/overview/id/' . $custid ?>"><?= $cust[ 'name' ] ?></a>
+                            <a href="<?= url('' ) . '/customer/overview/id/' . $custid ?>"><?= $t->ee( $cust[ 'name' ] ) ?></a>
                             (<a href=" <?= route( 'interfaces/virtual/edit', [ 'id' => $cust['viid'] ] ) ?>">interface details</a>)<br />
                         <?php endforeach; ?>
                     </td>
                     <td>
                         <?php foreach( $row[ 'locations'] as $locid => $locname ): ?>
-                            <?= $locname ?><br />
+                            <?= $t->ee( $locname ) ?><br />
                         <?php endforeach; ?>
                     </td>
                     <td>
                         <?php foreach( $row[ 'switches'] as $swid => $swname ): ?>
-                            <?= $swname ?><br />
+                            <?= $t->ee( $swname ) ?><br />
                         <?php endforeach; ?>
                     </td>
 
@@ -109,15 +109,8 @@ $this->layout( 'layouts/ixpv4' );
 
     </table>
 
-
-
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-
-
-
-
 
 <?php $this->append() ?>
