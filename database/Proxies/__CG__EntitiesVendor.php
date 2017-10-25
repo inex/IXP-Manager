@@ -323,7 +323,7 @@ class Vendor extends \Entities\Vendor implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setBundleName(string $bundle_name)
+    public function setBundleName(string $bundle_name = NULL)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBundleName', [$bundle_name]);

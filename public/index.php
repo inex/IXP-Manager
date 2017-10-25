@@ -22,6 +22,7 @@
  */
 
 // let's time how long it takes to execute
+define('LARAVEL_START', microtime(true));
 define( 'APPLICATION_STARTTIME', microtime( true ) );
 
 
@@ -48,7 +49,7 @@ if( !extension_loaded('xml') ) {
 |
 */
 
-require __DIR__.'/../bootstrap/autoload.php';
+require __DIR__.'/../vendor/autoload.php';
 
 /*
 |--------------------------------------------------------------------------

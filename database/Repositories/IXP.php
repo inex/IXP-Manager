@@ -108,5 +108,38 @@ class IXP extends EntityRepository
         
         return $ixps;
     }
+
+
+    /**
+     * Get all ixp (or a particular one) for listing on the frontend CRUD
+     *
+     * @see \IXP\Http\Controller\Doctrine2Frontend
+     *
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     * @return array Array of ixp (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeList( \stdClass $feParams, int $id = null )
+    {
+        $dql = "SELECT  i.id AS id, i.name AS name, 
+                        i.shortname AS shortname, i.address1 AS address1, i.address2 AS address2,
+                        i.address3 AS address3, i.address4 AS address4, i.country AS country
+                FROM Entities\\IXP i
+                WHERE 1 = 1";
+
+        if( $id ) {
+            $dql .= " AND i.id = " . (int)$id;
+        }
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getArrayResult();
+    }
     
 }

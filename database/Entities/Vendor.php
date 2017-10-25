@@ -194,7 +194,7 @@ class Vendor
     /**
      * @param string $bundle_name
      */
-    public function setBundleName( string $bundle_name ) {
+    public function setBundleName( string $bundle_name = null ) {
         $this->bundle_name = $bundle_name;
     }
 }

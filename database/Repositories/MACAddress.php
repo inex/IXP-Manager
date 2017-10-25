@@ -2,6 +2,12 @@
 
 namespace Repositories;
 
+use D2EM;
+
+use Entities\{
+    OUI as  OUIEntity
+};
+
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -30,5 +36,68 @@ class MACAddress extends EntityRepository
             )
             ->setParameter( 'mac', strtolower( str_replace( ':', '', $mac ) ) )
             ->getResult();
+    }
+
+    /**
+     * Get all MAC addresses with interface and OUI organisation details (or a particular one) for listing on the frontend CRUD
+     *
+     * Returns an array of the form:
+     *
+     *     array:12 [
+     *         "id" => 4848209
+     *         "firstseen" => DateTime object
+     *         "lastseen" => null
+     *         "mac" => "00d0ffaaaaaa"
+     *         "customerid" => 101
+     *         "customer" => "Someone"
+     *         "viid" => 203
+     *         "switchname" => "swi2-deg1-4"
+     *         "switchport" => "GigabitEthernet1/1,GigabitEthernet1/2"  // ** NB: multiple's separated by comma
+     *         "ip4" => "194.88.240.33"                                 // ** NB: multiple's separated by comma
+     *         "ip6" => "2001:7f8:18:12::33"                            // ** NB: multiple's separated by comma
+     *         "organisation" => "Cisco Systems, Inc"
+     *     ]
+     *
+     * @see \IXP\Http\Controllers\Doctrine2Frontend
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     * @return array Array of MAC address entries (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeList( \stdClass $feParams, int $id = null )
+    {
+        $dql = "SELECT m.mac AS mac, vi.id AS viid, m.id AS id, m.firstseen AS firstseen, m.lastseen AS lastseen,  
+                    c.id AS customerid, c.abbreviatedName AS customer,
+                    s.name AS switchname, 
+                    GROUP_CONCAT( sp.name ) AS switchport, 
+                    GROUP_CONCAT( DISTINCT ipv4.address ) AS ip4, 
+                    GROUP_CONCAT( DISTINCT ipv6.address ) AS ip6,
+                    COALESCE( o.organisation, 'Unknown' ) AS organisation
+
+                FROM Entities\\MACAddress m
+                    JOIN m.VirtualInterface vi
+                    JOIN vi.VlanInterfaces vli
+                    JOIN vli.IPv4Address ipv4
+                    JOIN vli.IPv6Address ipv6
+                    JOIN vi.Customer c
+                    JOIN vi.PhysicalInterfaces pi
+                    JOIN pi.SwitchPort sp
+                    JOIN sp.Switcher s
+                    LEFT JOIN Entities\\OUI o WITH SUBSTRING( m.mac, 1, 6 ) = o.oui
+                    
+                WHERE 1 = 1";
+
+        if( $id ) {
+            $dql .= " AND m.id = " . (int)$id;
+        }
+
+        $dql .= " GROUP BY m.mac, vi.id, m.id, m.firstseen, m.lastseen, c.id, c.abbreviatedName, s.name, o.organisation";
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY c.abbreviatedName ";
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
     }
 }

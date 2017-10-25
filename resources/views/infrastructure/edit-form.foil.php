@@ -46,14 +46,14 @@
     ?>
 
     <?= Former::actions(
-        Former::primary_submit( 'Save Changes' )->id( 'btn-submit' )->disabled( true ),
-        Former::default_link( 'Cancel' )->href( action ($t->controller.'@list') ),
+        Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' )->disabled( true ),
+        Former::default_link( 'Cancel' )->href( action($t->controller.'@list') ),
         Former::success_button( 'Help' )->id( 'help-btn' )
     );
     ?>
 
     <?= Former::hidden( 'id' )
-        ->value( $t->params[ 'inf'] ? $t->params[ 'inf']->getId() : '' )
+        ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
     ?>
 
     <?= Former::close() ?>

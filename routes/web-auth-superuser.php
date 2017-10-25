@@ -41,13 +41,6 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
     Route::post(    'notes/{id}',                       'PatchPanelPortController@setNotes'             );
 });
 
-
-Route::group( [ 'prefix' => 'layer2-address' ], function() {
-    Route::get(     'vlan-interface/{vliid}',            'Layer2AddressController@index'    );
-    Route::get(     'list/{vlid?}',                      'Layer2AddressController@list'     );
-    Route::post(    'delete/{id}',                       'Layer2AddressController@delete'   );
-});
-
 Route::group( [ 'prefix' => 'router' ], function() {
     Route::get(     'list',                             'RouterController@list'     )->name( 'router/list'  );
     Route::get(     'status',                           'RouterController@status'   )->name('router/status' );
