@@ -285,8 +285,6 @@ abstract class Doctrine2Frontend extends Controller {
         $this->data[ 'view' ][ 'editPreamble']    = $this->resolveTemplate( 'edit-preamble',      false );
         $this->data[ 'view' ][ 'editPostamble']   = $this->resolveTemplate( 'edit-postamble',     false );
         $this->data[ 'view' ][ 'editScript' ]     = $this->resolveTemplate( 'js/edit',            false );
-
-        $this->data[ 'params' ]['data'] = $this->data;
     }
 
     /**
