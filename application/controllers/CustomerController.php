@@ -389,6 +389,14 @@ class CustomerController extends IXP_Controller_FrontEnd
             );
         }
 
+        if( $form->getValue( 'autsys' ) == '' ) {
+            $form->getElement( 'autsys' )->setValue( null );
+        }
+
+        if( $form->getValue( 'maxprefixes' ) == '' ) {
+            $form->getElement( 'maxprefixes' )->setValue( null );
+        }
+
         return $this->_setReseller( $form, $object );
     }
 
