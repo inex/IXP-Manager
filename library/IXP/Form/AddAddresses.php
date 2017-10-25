@@ -37,7 +37,7 @@ class IXP_Form_AddAddresses extends IXP_Form
     {
         $this->setDecorators( [ [ 'ViewScript', [ 'viewScript' => 'ipv4-address/forms/add-addresses.phtml' ] ] ] );
         
-        $this->addElement( IXP_Form_Vlan::getPopulatedSelect( 'vlanid', true ) );
+        $this->addElement( self::getPopulatedSelectVlan( 'vlanid', true ) );
                 
 
         $type = $this->createElement( 'select', 'type' );
@@ -48,5 +48,38 @@ class IXP_Form_AddAddresses extends IXP_Form
             ->setLabel( 'Address Family' );
         $this->addElement( $type );
     }
+
+    /**
+     * Create a SELECT / dropdown element of all VLAN names indexed by their id.
+     *
+     * @param string $name The element name
+     * @param bool $publicOnly If true, exclude private VLANs from the dropdown
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelectVlan( $name = 'vlanid', $publicOnly = false )
+    {
+        $vlan = new Zend_Form_Element_Select( $name );
+
+
+        $qb = Zend_Registry::get( 'd2em' )['default']->createQueryBuilder()
+            ->select( 'v.id AS id, v.name AS name' )
+            ->from( '\\Entities\\Vlan', 'v' )
+            ->orderBy( "v.name", 'ASC' );
+
+        if( $publicOnly )
+            $qb->where( "v.private = 0" );
+
+        $maxId = self::populateSelectFromDatabaseQuery( $qb->getQuery(), $vlan, '\\Entities\\Vlan', 'id', 'name', 'name', 'ASC' );
+
+        $vlan->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( _( 'VLAN' ) )
+            ->setAttrib( 'class', 'span3 chzn-select' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( array( _( 'Please select a VLAN' ) ) );
+
+        return $vlan;
+    }
+
 }
 

@@ -336,12 +336,33 @@ class IXP_Form_Customer extends IXP_Form
         }
         else if( !$isEdit )
         {
-            $ixp = IXP_Form_IXP::getPopulatedSelect( 'ixp' );
+            $ixp = self::getPopulatedSelectIXP( 'ixp' );
             $ixp->setLabel( "Intial IXP" );
             $this->addElement( $ixp  );
         }
 
         return $this;
+    }
+
+    /**
+     * Create a SELECT / dropdown element of all IXP names indexed by their id.
+     *
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelectIXP( )
+    {
+        $sw = new Zend_Form_Element_Select( 'ixp' );
+
+        $maxId = self::populateSelectFromDatabase( $sw, '\\Entities\\IXP', 'id', 'name', 'name', 'ASC' );
+
+        $sw->setRegisterInArrayValidator( true )
+            ->setRequired( true )
+            ->setLabel( _( 'IXP' ) )
+            ->setAttrib( 'class', 'chzn-select' )
+            ->addValidator( 'between', false, array( 1, $maxId ) )
+            ->setErrorMessages( [ 'Please select an IXP' ] );
+
+        return $sw;
     }
 
 }
