@@ -178,7 +178,7 @@ class IXP_Form_Customer extends IXP_Form
         $this->addElement( $peeringmacrov6 );
 
 
-        $this->addElement( IXP_Form_IrrdbConfig::getPopulatedSelect() );
+        $this->addElement( self::getPopulatedSelectIrrdb() );
 
 
         $activepeeringmatrix = $this->createElement( 'checkbox', 'activepeeringmatrix' );
@@ -342,6 +342,25 @@ class IXP_Form_Customer extends IXP_Form
         }
 
         return $this;
+    }
+
+    /**
+     * Create a SELECT / dropdown element of all IRRDB names indexed by their id.
+     *
+     * @return Zend_Form_Element_Select The select element
+     */
+    public static function getPopulatedSelectIrrdb( )
+    {
+        $e = new Zend_Form_Element_Select( 'irrdb' );
+
+        $maxId = self::populateSelectFromDatabase( $e, '\\Entities\\IRRDBConfig', 'id', 'source', 'source', 'ASC' );
+
+        $e->setRegisterInArrayValidator( true )
+            ->setLabel( _( 'IRRDB Source' ) )
+            ->setAttrib( 'class', 'span8 chzn-select' )
+            ->setErrorMessages( array( _( 'Please select an IRRDB source' ) ) );
+
+        return $e;
     }
 
 }
