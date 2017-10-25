@@ -84,7 +84,7 @@
         </li>
 
         <li {if $controller eq 'cabinet'}class="active"{/if}>
-            <a href="{genUrl controller='cabinet' action='list'}">Cabinets</a>
+            <a href="{route('cabinet@list')}">Cabinets</a>
         </li>
 
         <li {if $controller eq 'router'}class="active"{/if}>

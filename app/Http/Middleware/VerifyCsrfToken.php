@@ -1,9 +1,9 @@
 <?php namespace IXP\Http\Middleware;
 
 use Closure;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as BaseVerifier;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 
-class VerifyCsrfToken extends BaseVerifier {
+class VerifyCsrfToken extends Middleware {
 
 	/**
 	 * Handle an incoming request.

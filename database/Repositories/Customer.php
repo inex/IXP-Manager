@@ -474,7 +474,7 @@ class Customer extends EntityRepository
             $request .= " AND c.type IN (" . implode( ',', $types ) . ")";
         }
 
-
+        $request .= " ORDER BY c.name ASC ";
 
         $listCustomers = $this->getEntityManager()->createQuery( $request )->getResult();
 

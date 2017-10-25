@@ -12,4 +12,37 @@ use Doctrine\ORM\EntityRepository;
  */
 class IRRDBConfig extends EntityRepository
 {
+    /**
+     * Get all infrastructures (or a particular one) for listing on the frontend CRUD
+     *
+     * @see \IXP\Http\Controller\Doctrine2Frontend
+     *
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     * @return array Array of infrastructures (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeList( \stdClass $feParams, int $id = null )
+    {
+        $dql = "SELECT  o.id AS id,
+                        o.host AS host,
+                        o.protocol AS protocol,
+                        o.source AS source, 
+                        o.notes AS notes
+                FROM Entities\\IRRDBConfig o
+                WHERE 1 = 1";
+
+        if( $id ) {
+            $dql .= " AND o.id = " . (int)$id;
+        }
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getArrayResult();
+    }
 }

@@ -262,7 +262,7 @@ class ConsoleServerConnection
     /**
      * Set Customer
      *
-     * @param Entities\Customer $customer
+     * @param \Entities\Customer $customer
      * @return ConsoleServerConnection
      */
     public function setCustomer(\Entities\Customer $customer = null)
@@ -275,7 +275,7 @@ class ConsoleServerConnection
     /**
      * Get Customer
      *
-     * @return Entities\Customer 
+     * @return \Entities\Customer
      */
     public function getCustomer()
     {
@@ -285,7 +285,7 @@ class ConsoleServerConnection
     /**
      * Set Switcher
      *
-     * @param Entities\Switcher $switcher
+     * @param \Entities\Switcher $switcher
      * @return ConsoleServerConnection
      */
     public function setSwitcher(\Entities\Switcher $switcher = null)
@@ -298,7 +298,7 @@ class ConsoleServerConnection
     /**
      * Get Switcher
      *
-     * @return Entities\Switcher 
+     * @return \Entities\Switcher
      */
     public function getSwitcher()
     {

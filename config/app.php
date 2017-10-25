@@ -11,6 +11,7 @@ return [
     | This value is the name of your application. This value is used when the
     | framework needs to place the application's name in a notification or
     | any other location as required by the application or its packages.
+    |
     */
     'name' => env('APP_NAME', 'IXP Manager'),
 
@@ -37,7 +38,7 @@ return [
     |
     */
 
-    'debug' => env('APP_DEBUG'),
+    'debug' => env('APP_DEBUG',false),
 
     /*
     |--------------------------------------------------------------------------
@@ -161,8 +162,6 @@ return [
          Illuminate\Validation\ValidationServiceProvider::class,
          Illuminate\View\ViewServiceProvider::class,
 
-         Laravel\Tinker\TinkerServiceProvider::class,
-
          /*
           * Debug
           */
@@ -186,17 +185,9 @@ return [
         /*
          * Third party providers
          */
-        LaravelDoctrine\ORM\DoctrineServiceProvider::class,
-
-        Intervention\Image\ImageServiceProvider::class,
-
-        Barryvdh\LaravelIdeHelper\IdeHelperServiceProvider::class,
+        LaravelDoctrine\Extensions\BeberleiExtensionsServiceProvider::class,
 
         Former\FormerServiceProvider::class,
-
-        GrahamCampbell\Flysystem\FlysystemServiceProvider::class,
-
-        Barryvdh\DomPDF\ServiceProvider::class,
 
         LukeTowers\Purifier\PurifierServiceProvider::class,
 

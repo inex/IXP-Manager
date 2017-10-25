@@ -36,6 +36,7 @@ class RouteServiceProvider extends ServiceProvider {
     public function map()
     {
         $this->mapWebRoutes();
+        $this->mapWebDoctrine2FrontendRoutes();
         $this->mapWebAuthRoutes();
         $this->mapWebAuthSuperuserRoutes();
         $this->mapApiV4Routes();
@@ -60,6 +61,23 @@ class RouteServiceProvider extends ServiceProvider {
             'namespace' => $this->namespace,
         ], function ($router) {
             require base_path('routes/web.php');
+        });
+    }
+
+    /**
+     * Define the "web" routes using Doctrine2Frontend for the application.
+     *
+     * These routes all receive session state, CSRF protection, etc.
+     *
+     * @return void
+     */
+    protected function mapWebDoctrine2FrontendRoutes()
+    {
+        Route::group([
+            'middleware' => 'd2frontend',
+            'namespace' => $this->namespace,
+        ], function ($router) {
+            require base_path('routes/web-doctrine2frontend.php');
         });
     }
 

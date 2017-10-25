@@ -326,7 +326,7 @@
                                 <?= $t->ee( $vli->getVlan()->getNumber() ) ?>
                             </td>
                             <td>
-                                <a href="<?= action ( 'Layer2AddressController@index' , [ 'id' => $vli->getId() ] )?> " >
+                                <a href="<?= action ( 'Layer2AddressController@forVlanInterface' , [ 'id' => $vli->getId() ] )?> " >
                                     <?php if ( !count( $vli->getLayer2Addresses() ) ) : ?>
                                         <span class="label label-warning">(none)</span>
                                     <?php elseif ( count( $vli->getLayer2Addresses() ) > 1 ) : ?>

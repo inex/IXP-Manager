@@ -221,7 +221,7 @@ class Vlan
     /**
      * Get VlanInterfaces
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|VlanInterface[]
      */
     public function getVlanInterfaces()
     {
@@ -231,7 +231,7 @@ class Vlan
     /**
      * Add IPv4Addresses
      *
-     * @param Entities\IPv4Address $iPv4Addresses
+     * @param \Entities\IPv4Address $iPv4Addresses
      * @return Vlan
      */
     public function addIPv4Addresses(\Entities\IPv4Address $iPv4Addresses)
@@ -244,7 +244,7 @@ class Vlan
     /**
      * Remove IPv4Addresses
      *
-     * @param Entities\IPv4Address $iPv4Addresses
+     * @param \Entities\IPv4Address $iPv4Addresses
      */
     public function removeIPv4Addresses(\Entities\IPv4Address $iPv4Addresses)
     {
@@ -254,7 +254,7 @@ class Vlan
     /**
      * Get IPv4Addresses
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|IPv4Address[]
      */
     public function getIPv4Addresses()
     {
@@ -264,7 +264,7 @@ class Vlan
     /**
      * Add IPv6Addresses
      *
-     * @param Entities\IPv6Address $iPv6Addresses
+     * @param \Entities\IPv6Address $iPv6Addresses
      * @return Vlan
      */
     public function addIPv6Addresses(\Entities\IPv6Address $iPv6Addresses)
@@ -277,7 +277,7 @@ class Vlan
     /**
      * Remove IPv6Addresses
      *
-     * @param Entities\IPv6Address $iPv6Addresses
+     * @param \Entities\IPv6Address $iPv6Addresses
      */
     public function removeIPv6Addresses(\Entities\IPv6Address $iPv6Addresses)
     {
@@ -287,7 +287,7 @@ class Vlan
     /**
      * Get IPv6Addresses
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|IPv6Address[]
      */
     public function getIPv6Addresses()
     {
@@ -1009,7 +1009,7 @@ class Vlan
      */
     public function addRouter( Router $router ): Vlan
     {
-        $this->IPv4Addresses[] = $iPv4Addresses;
+        $this->routers[] = $router;
         return $this;
     }
 
@@ -1026,7 +1026,7 @@ class Vlan
     /**
      * Get routers
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|Router[]
      */
     public function getRouters()
     {

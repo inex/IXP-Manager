@@ -13,16 +13,16 @@ use Doctrine\ORM\EntityRepository;
 class Infrastructure extends EntityRepository
 {
     /**
-     * The cache key for the primary infrastructure (append IXP id)
-     * @var string The cache key for the primary infrastructure (append IXP id)
+     * The cache key for the primary infrastructure
+     * @var string The cache key for the primary infrastructure
      */
-    const CACHE_KEY_PRIMARY = 'infrastructure_primary_';
+    const CACHE_KEY_PRIMARY = 'infrastructure_primary';
     
     /**
-     * The cache key for the all infrastructures (append IXP id)
-     * @var string The cache key for all infrastructures (append IXP id)
+     * The cache key for the all infrastructures
+     * @var string The cache key for all infrastructures
      */
-    const CACHE_KEY_ALL = 'infrastructure_all_';
+    const CACHE_KEY_ALL = 'infrastructure_all';
     
     /**
      * Return an array of infrastructure names where the array key is the infrastructure id.
@@ -74,7 +74,7 @@ class Infrastructure extends EntityRepository
                         AND ixp = :ixp"
             )
             ->setParameter( 'ixp', $ixp )
-            ->useResultCache( true, 7200, self::CACHE_KEY_PRIMARY . $ixp->getId() )
+            ->useResultCache( true, 7200, self::CACHE_KEY_PRIMARY )
             ->getResult();
         
         if( !$infra || count( $infra ) > 1 )
@@ -102,7 +102,7 @@ class Infrastructure extends EntityRepository
     {
         if( $ixp == null )
             $ixp = $this->getEntityManager()->getRepository( '\\Entities\\IXP' )->getDefault();
-                            
+
         $infras = $this->getEntityManager()->createQuery(
                 "SELECT i
                     FROM Entities\\Infrastructure i
@@ -110,10 +110,45 @@ class Infrastructure extends EntityRepository
                     WHERE ixp = :ixp"
             )
             ->setParameter( 'ixp', $ixp )
-            ->useResultCache( true, 7200, self::CACHE_KEY_ALL . $ixp->getId() )
+            ->useResultCache( true, 7200, self::CACHE_KEY_ALL )
             ->getResult();
 
         return $infras;
+    }
+
+    /**
+     * Get all infrastructures (or a particular one) for listing on the frontend CRUD
+     *
+     * @see \IXP\Http\Controller\Doctrine2Frontend
+     *
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     * @return array Array of infrastructures (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeList( \stdClass $feParams, int $id = null )
+    {
+        $dql = "SELECT i.id AS id, 
+                  i.name AS name, 
+                  i.isPrimary AS isPrimary,
+                  i.shortname AS shortname,
+                  i.ixf_ix_id AS ixf_ix_id, 
+                  i.peeringdb_ix_id AS peeringdb_ix_id
+                FROM Entities\\Infrastructure i
+                WHERE 1 = 1";
+
+        if( $id ) {
+            $dql .= " AND i.id = " . (int)$id;
+        }
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getArrayResult();
     }
     
     
