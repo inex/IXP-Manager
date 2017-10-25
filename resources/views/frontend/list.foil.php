@@ -24,7 +24,7 @@
 
     <?= $t->data[ 'view' ]['listPreamble'] ? $t->insert( $t->data[ 'view' ]['listPreamble'] ) : '' ?>
 
-    <?php if( !count( $t->data[ 'data' ] ) ): ?>
+    <?php if( !count( $t->data[ 'rows' ] ) ): ?>
 
         <?php if( $t->data[ 'view' ]['listEmptyMessage'] ): ?>
 
@@ -38,7 +38,7 @@
 
         <?php endif; /* listEmptyMessage */ ?>
 
-    <?php else:  /* !count( $t->data[ 'data' ] ) */ ?>
+    <?php else:  /* !count( $t->data[ 'rows' ] ) */ ?>
 
         <table id="table-list" class="table collapse">
 
@@ -75,7 +75,7 @@
 
             <tbody>
 
-                <?php foreach( $t->data[ 'data' ] as $idx => $row ): ?>
+                <?php foreach( $t->data[ 'rows' ] as $idx => $row ): ?>
 
                     <?php if( $t->data[ 'view' ]['listRowOverride'] ): ?>
 
@@ -195,7 +195,7 @@
 
         </table>
 
-    <?php endif;  /* /* !count( $t->data[ 'data' ] ) */ ?>
+    <?php endif;  /* /* !count( $t->data[ 'rows' ] ) */ ?>
 
     <?= $t->data[ 'view' ]['listPostamble'] ? $t->insert( $t->data[ 'view' ]['listPostamble'] ) : '' ?>
 

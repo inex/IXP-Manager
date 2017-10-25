@@ -2,7 +2,7 @@
 <?php
 // due to how PHP Foil passes data, we reassign this so we can copy and paste normal list code if we want.
 // see http://www.foilphp.it/docs/DATA/PASS-DATA.html
-$row = $t->data[ 'data' ];
+$row = $t->data[ 'item' ];
 ?>
 
 <tr>
