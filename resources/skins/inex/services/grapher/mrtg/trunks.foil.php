@@ -132,6 +132,10 @@ Title[core-nwb1-cls1-lan1]: Inter-POP Trunk Core - Vodafone - swi1-tcy3-1 swi1-v
 # degkcp-tcydub1 - LAN2
 Target[core-degkcp-tcydub1-lan2]: #1\:41:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
 				+ #1\:42:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
+				+ #1\:37:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
+				+ #1\:38:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
+				+ #1\:39:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
+				+ #1\:40:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
 MaxBytes[core-degkcp-tcydub1-lan2]: 2500000000
 Directory[core-degkcp-tcydub1-lan2]: trunks
 Title[core-degkcp-tcydub1-lan2]: Trunk Core - DEGKCP-TCYDUB1 - LAN2
