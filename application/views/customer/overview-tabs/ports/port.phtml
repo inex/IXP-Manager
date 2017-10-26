@@ -90,7 +90,7 @@
             <tr>
                 <td><strong>Speed:</strong></td>
                 <td id="value">
-                    {$pi->getSpeed()} Mbps {if $pi->getDuplex() neq 'full'}(HD){/if}
+                    {$pi->resolveSpeed()} {if $pi->getDuplex() neq 'full'}(HD){/if}
                 </td>
                 <td></td>
                 {if $pi->getSwitchPort()->getSwitcher()->getMauSupported()}

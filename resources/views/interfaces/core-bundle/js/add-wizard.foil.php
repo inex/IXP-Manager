@@ -19,7 +19,10 @@
     // Some global variable
     let actionRunnig            = false;
     let nbCoreLink              = 0;
-    let exludedSwitchPort       = [];
+    let exludedSwitchPortSideA  = [];
+    let exludedSwitchPortSideB  = [];
+
+    let switchArray             = <?php echo json_encode( $t->switches ) ; ?>;
 
 
     $(document).ready( function() {
@@ -92,9 +95,11 @@
         e.preventDefault();
         let sside = ( this.id ).substring( 7 );
         setSwitchPort( sside , hidden_nb_cls.val(), false );
-        if( sside == 'a'){
-            setDropDownSwitchSideB( );
-            $( "#sp-b-1" ).html( "<option value=\"\">Choose a switch port</option>\n" ).trigger('change.select2');
+        setDropDownSwitchSideX( sside );
+        if( sside == 'a' ){
+            exludedSwitchPortSideA = []
+        } else {
+            exludedSwitchPortSideB = []
         }
     });
 
@@ -109,7 +114,7 @@
 
         $( "#hidden-sp-" + sside + '-' + sid ).val( $("#sp-"+ sside + "-" + sid).val() );
 
-        excludedSwitchPort();
+        excludedSwitchPort( sside );
     });
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -278,10 +283,15 @@
      * insert in array all the switch port selected from all the switch port dropdown
      * in order the exclude them from the new switch port dropdown that could be added
      */
-    function excludedSwitchPort(){
+    function excludedSwitchPort( sside ){
         $("[id|='sp'] :selected").each( function( ) {
             if( this.value != '' ){
-                exludedSwitchPort.push( this.value );
+                if( sside == 'a' ){
+                    exludedSwitchPortSideA.push( this.value );
+                } else{
+                    exludedSwitchPortSideB.push( this.value );
+                }
+
             }
         });
     }
@@ -290,15 +300,35 @@
     /**
      * Copy the switch dropdown from the side A to B excluding the switch selected in side A
      */
-    function setDropDownSwitchSideB( sid ){
-        dd_switch_b.html( "<option value=\"\">Loading please wait</option>\n" ).trigger('change.select2');
+    function setDropDownSwitchSideX( sid ){
+        if( sid == 'a'){
+            otherSwitch = dd_switch_b;
+            currentSwitch = dd_switch_a;
+        } else {
+            otherSwitch = dd_switch_a;
+            currentSwitch = dd_switch_b;
+        }
+
         let options = "";
-        $( "#switch-a option").each( function( ) {
-            if( this.value != dd_switch_a.val() ){
-                options += "<option value=\"" + this.value + "\">" + this.text + " </option>\n";
+        let oldvalue = otherSwitch.val();
+
+        if( oldvalue == null || oldvalue == '' ){
+            options = "<option value=\"\">Choose a switch</option>\n";
+        }
+        console.log( oldvalue );
+        jQuery.each(switchArray, function( id , val ) {
+            let select = '';
+
+            if( oldvalue != null && id == oldvalue ){
+                select = "selected= 'selected'";
+            }
+
+            if( id != currentSwitch.val() ){
+                options += "<option " + select + " value=\"" + id + "\">" + val + " </option>\n";
             }
         });
-        dd_switch_b.html( options ).trigger('change.select2');
+
+        otherSwitch.html( options ).trigger('change.select2');
     }
 
     /**

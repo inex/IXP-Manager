@@ -2,14 +2,15 @@
     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Documentation<b class="caret"></b></a>
     <ul class="dropdown-menu">
         <li>
-            <a href="https://www.inex.ie/become-a-member/inex-price-list/">Fees and Charges</a>
+            <a href="https://www.inex.ie/meetings/">Members' Meetings</a>
         </li>
         <li>
-            <a href="<?= url('/static/housing' ) ?>">Equipment Housing</a>
+            <a href="https://www.inex.ie/become-a-member/inex-price-list/">Fees and Charges</a>
         </li>
         <li>
             <a href="<?= url('/static/misc-benefits' ) ?>">Miscellaneous Benefits</a>
         </li>
+        <li class="divider"></li>
         <li>
             <a href="<?= url('/static/switches' ) ?>">Connecting Switches</a>
         </li>

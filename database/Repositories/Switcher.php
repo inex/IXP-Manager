@@ -485,7 +485,7 @@ class Switcher extends EntityRepository
     public function getAllVlan( int $id ): array {
 
         /** @noinspection SqlNoDataSourceInspection */
-        $dql = "SELECT vl.name, vl.private, vl.number
+        $dql = "SELECT vl.name, vl.private, vl.number, vl.config_name
                     FROM Entities\\VlanInterface vli
                     LEFT JOIN vli.Vlan vl
                     LEFT JOIN vli.VirtualInterface vi
@@ -521,7 +521,7 @@ class Switcher extends EntityRepository
 
         foreach( [ 'A', 'B' ] as $side ) {
             /** @noinspection SqlNoDataSourceInspection */
-            $dql = "SELECT cb.type, cb.ipv4_subnet as cbSubnet, cb.enabled, cb.description, cl.bfd, sp$side.name, pi$side.speed, cl.ipv4_subnet as clSubnet, s$side.id as saId
+            $dql = "SELECT cb.type, cb.ipv4_subnet as cbSubnet,cb.enabled as cbEnabled, cl.enabled as clEnabled, cb.description, cl.bfd, sp$side.name, pi$side.speed, cl.ipv4_subnet as clSubnet, s$side.id as saId
                         FROM Entities\\CoreLink cl
                         LEFT JOIN cl.coreBundle cb
 
@@ -552,7 +552,7 @@ class Switcher extends EntityRepository
                 $export[ 'bfd' ]          = $ci[ 'bfd' ];
                 $export[ 'speed' ]        = $ci[ 'speed' ];
                 $export[ 'name' ]         = $ci[ 'name' ];
-                $export[ 'shutdown' ]     = !$ci[ 'enabled' ];
+                $export[ 'shutdown' ]     = $ci[ 'cbEnabled' ] && $ci[ 'clEnabled' ] ? false : true;
 
                 $cis[] = $export;
             }
@@ -687,7 +687,7 @@ class Switcher extends EntityRepository
     public function getAllVlansInInfrastructure( int $id ): array {
 
         /** @noinspection SqlNoDataSourceInspection */
-        $dql = "SELECT vl.name, vl.number as tag, vl.private
+        $dql = "SELECT vl.name, vl.number as tag, vl.private, vl.config_name
                     FROM Entities\\Infrastructure inf
                         LEFT JOIN inf.Switchers s
                         LEFT JOIN inf.Vlans vl
