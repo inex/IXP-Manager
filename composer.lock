@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "815fe70d13f80e4f6cbf14e448b23f0f",
+    "content-hash": "7fc906b93d8794dd4cd8ddfc5940aa24",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -4485,7 +4485,7 @@
         },
         {
             "name": "zendesk/zendesk_api_client_php",
-            "version": "dev-master",
+            "version": "v2.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendesk/zendesk_api_client_php.git",
@@ -6377,7 +6377,6 @@
     "stability-flags": {
         "komola/bootstrap-zend-framework": 20,
         "opensolutions/oss-snmp": 20,
-        "zendesk/zendesk_api_client_php": 20,
         "maxhoffmann/parsedown-laravel": 20
     },
     "prefer-stable": false,
