@@ -359,10 +359,12 @@ class IXP_Form_Customer extends IXP_Form
         $e->setRegisterInArrayValidator( true )
             ->setLabel( _( 'IRRDB Source' ) )
             ->setAttrib( 'class', 'span8 chzn-select' )
-            ->setErrorMessages( array( _( 'Please select an IRRDB source' ) ) );
+            ->setErrorMessages( [ _( 'Please select an IRRDB source' ) ] );
 
         return $e;
+    }
 
+    /**
      * Create a SELECT / dropdown element of all IXP names indexed by their id.
      *
      * @return Zend_Form_Element_Select The select element
