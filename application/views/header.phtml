@@ -93,7 +93,7 @@
                                     {if isset( $options.weathermap )}
                                         {foreach from=$options.weathermap key=k item=w}
                                             <li>
-                                                <a href="{genUrl controller="weather-map" action="index" id=$k}">{$w.menu}</a>
+                                                <a href="{route( 'weathermap@index', ['id' => {$k} ] ) }">{$w.menu}</a>
                                             </li>
                                         {/foreach}
                                     {/if}
@@ -194,7 +194,7 @@
                                 {if isset( $options.weathermap )}
                                     {foreach from=$options.weathermap key=k item=w}
                                         <li>
-                                            <a href="{genUrl controller="weather-map" action="index" id=$k}">{$w.menu}</a>
+                                            <a href="{route( 'weathermap@index', ['id' => {$k} ] ) }">{$w.menu}</a>
                                         </li>
                                     {/foreach}
                                 {/if}

@@ -347,14 +347,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
             $options['rir']['ripe_password'] = config( 'ixp_tools.rir_ripe_password' );
         }
 
-        if( is_array( config('ixp_tools.weathermap') ) ) {
-            foreach( config('ixp_tools.weathermap') as $id => $details ) {
-                foreach( $details as $k => $v ) {
-                    $options['weathermap'][$id][$k]  = $v;
-                }
-            }
-        }
-
         return $options;
     }
 
