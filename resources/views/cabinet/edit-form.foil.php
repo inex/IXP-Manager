@@ -8,7 +8,7 @@
 
     <?= Former::text( 'name' )
         ->label( 'Name' )
-        ->blockHelp( "A cabinet name / reference. Usually as assigned by the data centre and the same as colocation reference below. You can also assign your own "
+        ->blockHelp( "A rack name / reference. Usually as assigned by the data centre and the same as colocation reference below. You can also assign your own "
             . "which has the advantage of surviving data centre acquisitions and renumbering! Should be a short all capital alphanumeric reference with dashes as "
             . "necessary.");
     ?>
@@ -19,13 +19,13 @@
         ->placeholder( 'Select a location' )
         ->fromQuery( $t->data[ 'params'][ 'locations' ], 'name' )
         ->addClass( 'chzn-select' )
-        ->blockHelp( "Chose the location where this cabinet resides." );
+        ->blockHelp( "Chose the location where this rack resides." );
     ?>
 
     <?= Former::text( 'colocation' )
         ->label( 'Colocation Ref' )
-        ->blockHelp( "The reference for this cabinet as provided by / is known to your co-location provider. In other words, if you ring up for remote hands, this is "
-            . "the cabinet reference you would give the remote engineer.");
+        ->blockHelp( "The reference for this rack as provided by / is known to your co-location provider. In other words, if you ring up for remote hands, this is "
+            . "the rack reference you would give the remote engineer.");
     ?>
 
     <?= Former::text( 'type' )
