@@ -47,11 +47,11 @@ $this->layout( 'layouts/ixpv4' )
                     <tr>
                         <td>
                             <b>
-                                Location:
+                                Facility:
                             </b>
                         </td>
                         <td>
-                            <a href="<?= url( '/vlan/view/id/' ) ?> ">
+                            <a href="<?= route( 'facility@view', ['id' => $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getId() ] ) ?> ">
                                 <?= $t->ee(  $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() )?>
                             </a>
                         </td>

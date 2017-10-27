@@ -53,7 +53,7 @@
         ?>
 
         <?= Former::text( 'cabinet_name' )
-            ->label( 'Cabinet Name' )
+            ->label( 'Rack' )
             ->disabled( 'disable' );
         ?>
 

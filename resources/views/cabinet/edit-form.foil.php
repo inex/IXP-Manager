@@ -15,11 +15,11 @@
 
     <?= Former::select( 'locationid' )
         ->id( 'location' )
-        ->label( 'Location' )
-        ->placeholder( 'Select a location' )
+        ->label( 'Facility' )
+        ->placeholder( 'Select a facility' )
         ->fromQuery( $t->data[ 'params'][ 'locations' ], 'name' )
         ->addClass( 'chzn-select' )
-        ->blockHelp( "Chose the location where this rack resides." );
+        ->blockHelp( "Chose the facility where this rack resides." );
     ?>
 
     <?= Former::text( 'colocation' )

@@ -52,7 +52,7 @@
             <table border="0" width="100%" style="border: 2px solid #000000; padding: 10px;">
                 <tr>
                     <td width="10%"></td>
-                    <td><b>Location:</b></td>
+                    <td><b>Facility:</b></td>
                     <td><?= $t->ee( $t->ppp->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?></td>
                 </tr>
                 <tr>

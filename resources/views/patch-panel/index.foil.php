@@ -32,7 +32,7 @@
             <form class="form-inline" method="post" action="<?= action ('PatchPanel\PatchPanelPortController@advancedIndex' ) ?>">
                 <div class="form-group">
                     <select id="adv-search-select-locations" name="location">
-                        <option value="all">All Locations</option>
+                        <option value="all">All Facilities</option>
                         <?php foreach( $t->locations as $i => $l ): ?>
                             <option value="<?= $i ?>"><?= $l['name'] ?></option>
                         <?php endforeach; ?>
@@ -40,7 +40,7 @@
                 </div>
                 <div class="form-group">
                     <select id="adv-search-select-cabinets" name="cabinet">
-                        <option value="all">All Cabinets</option>
+                        <option value="all">All Racks</option>
                     </select>
                 </div>
                 <div class="form-group">
@@ -77,7 +77,7 @@
                         Name
                     </td>
                     <td>
-                        Cabinet
+                        Rack
                     </td>
                     <td>
                         Colocation
@@ -108,7 +108,7 @@
 
                         </td>
                         <td>
-                            <a href="<?= url( '/cabinet/view/id' ).'/'.$pp->getCabinet()->getId()?>">
+                            <a href="<?= route( 'rack@view', [ 'id' => $pp->getCabinet()->getId() ] ) ?>">
                                 <?= $t->ee( $pp->getCabinet()->getName() ) ?>
                             </a>
                         </td>
@@ -184,7 +184,7 @@
         });
 
         $('#adv-search-select-locations').on( 'change', function( e ) {
-            let opts = `<option value="all">All Cabinets</option>` ;
+            let opts = `<option value="all">All Racks</option>` ;
 
             if( $('#adv-search-select-locations').val() != 'all' ) {
                 for ( let i in locations[ $( '#adv-search-select-locations' ).val() ][ 'cabinets' ] ) {

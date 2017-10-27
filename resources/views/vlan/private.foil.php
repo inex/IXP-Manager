@@ -57,7 +57,7 @@ $this->layout( 'layouts/ixpv4' );
                 </th>
 
                 <th>
-                    Locations
+                    Facilities
                 </th>
 
                 <th>

@@ -19,9 +19,9 @@
     ?>
 
     <?= Former::select( 'cabinetid' )
-        ->label( 'Cabinet' )
+        ->label( 'Rack' )
         ->fromQuery( $t->data[ 'params'][ 'cabinets'], 'name' )
-        ->placeholder( 'Choose a cabinet' )
+        ->placeholder( 'Choose a rack' )
         ->addClass( 'chzn-select' );
     ?>
 
