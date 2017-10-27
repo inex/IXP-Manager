@@ -46,7 +46,6 @@
       <path value="$PROJECT_DIR$/vendor/monolog/monolog" />
       <path value="$PROJECT_DIR$/vendor/igorw/get-in" />
       <path value="$PROJECT_DIR$/vendor/vlucas/phpdotenv" />
-      <path value="$PROJECT_DIR$/vendor/oss2/auth" />
       <path value="$PROJECT_DIR$/vendor/oss2/doctrine2" />
       <path value="$PROJECT_DIR$/vendor/oss2/var-utils" />
       <path value="$PROJECT_DIR$/vendor/dnoegel/php-xdg-base-dir" />

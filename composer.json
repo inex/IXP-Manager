@@ -31,10 +31,6 @@
         {
             "url": "git@github.com:oss2/var-utils.git",
             "type": "vcs"
-        },
-        {
-            "url": "git@github.com:oss2/auth.git",
-            "type": "vcs"
         }
     ],
     "require": {
@@ -50,8 +46,6 @@
         "laravel-doctrine/orm": "1.4.*",
         "oss2/doctrine2": "dev-master",
         "oss2/var-utils": "dev-master",
-        
-        "oss2/auth": "dev-master",
         
         "smarty/smarty": "~3.1",
         "foil/foil": "~0.6",
