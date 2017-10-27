@@ -103,7 +103,7 @@ $(document).ready( function() {
 		
 		var days = $( '#' + event.currentTarget.id ).attr( 'data-days' );
 		if( days >= 0 && days < 30 ) {
-			bootbox.confirm( "Are you sure you want to send a peering request to this member? You already sent one only " + days + " days ago.", 
+			bootbox.confirm( "Are you sure you want to send a peering request to this member? You already sent one " + ( days == 0 ? "today" : ( days == 1 ? "yesterday" : days + " days ago" ) ) + ".",
 				function( result ) {
 				    if( result ) {
 				    	return ixpOpenPeeringRequestDialog( custid );
