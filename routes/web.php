@@ -13,8 +13,10 @@
 
 $auth = Zend_Auth::getInstance();
 
-// phpunit trips up here:
+// phpunit trips up here without the cli test:
 if( php_sapi_name() !== 'cli' ) {
+
+    // this if equates to: if the user is logged into Zend but not Laravel:
     if( $auth->hasIdentity() && \Auth::guest() ) {
         // log the user is for Laravel5
         // Note that we reload the user from the database as Zend uses a session cache
@@ -50,6 +52,30 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
 });
 
 Route::get( 'weather-map/{id}',                    'WeatherMapController@index' )->name( 'weathermap@index');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// DEFAULT ROUTE
+///
+
+Route::get( '/', function() {
+
+    if( Auth::guest() ) {
+        return redirect('auth/login' );
+    }
+
+    if( Auth::user()->isSuperUser() ) {
+        return redirect( 'admin/index' );
+    } else if( Auth::user()->isCustAdmin() ) {
+        return redirect( 'contact/list' );
+    } else {
+        return redirect( 'dashboard/index' );
+    }
+})->name( 'default' );
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 

@@ -41,8 +41,8 @@ class RouteServiceProvider extends ServiceProvider {
         $this->mapWebAuthSuperuserRoutes();
         $this->mapApiV4Routes();
         $this->mapApiAuthSuperuserRoutes();
-        //
 
+        // aliases that need to be deprecated:
         require base_path('routes/apiv1-aliases.php');
 
     }

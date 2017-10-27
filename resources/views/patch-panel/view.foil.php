@@ -65,11 +65,11 @@
                     <tr>
                         <td>
                             <b>
-                                Cabinet:
+                                Rack:
                             </b>
                         </td>
                         <td>
-                            <a href="<?= url( '/cabinet/view'  ).'/'.$t->pp->getCabinet()->getId()?>">
+                            <a href="<?= route( 'rack@view', [ 'id' => $t->pp->getCabinet()->getId() ] ) ?>">
                                 <?= $t->ee( $t->pp->getCabinet()->getName() ) ?>
                             </a>
                         </td>
@@ -177,7 +177,7 @@
                     <tr>
                         <td>
                             <b>
-                                Location Description:
+                                Facility Description:
                             </b>
                         </td>
                         <td>
@@ -187,7 +187,7 @@
                     <tr>
                         <td>
                             <b>
-                                Location Notes:
+                                Facility Notes:
                             </b>
                         </td>
                         <td>

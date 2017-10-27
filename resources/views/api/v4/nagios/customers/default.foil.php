@@ -167,7 +167,7 @@ define hostgroup {
 
 ###############################################################################################
 ###
-### Group: by cabinet
+### Group: by rack
 ###
 ###
 ###
@@ -176,9 +176,9 @@ define hostgroup {
     asort( $c ); ?>
 
 define hostgroup {
-    hostgroup_name  cabinet-ipv<?= $t->protocol ?>-vlanid-<?= $t->vlan->getId() ?>-<?= preg_replace( '/[^a-zA-Z0-9]/', '-', strtolower( $k ) ) ?>
+    hostgroup_name  rack-ipv<?= $t->protocol ?>-vlanid-<?= $t->vlan->getId() ?>-<?= preg_replace( '/[^a-zA-Z0-9]/', '-', strtolower( $k ) ) ?>
 
-    alias           All IPv<?= $t->protocol ?> Members in Cabinet <?= $k ?> for VLAN <?= $t->vlan->getName() ?>
+    alias           All IPv<?= $t->protocol ?> Members in Rack <?= $k ?> for VLAN <?= $t->vlan->getName() ?>
 
     members         <?= $t->softwrap( $c, 1, ', ', ', \\', 20 ) ?>
 
@@ -189,7 +189,7 @@ define hostgroup {
 
 ###############################################################################################
 ###
-### Group: by location
+### Group: by facility
 ###
 ###
 ###
@@ -198,9 +198,9 @@ define hostgroup {
     asort( $l ); ?>
 
 define hostgroup {
-    hostgroup_name  location-ipv<?= $t->protocol ?>-vlanid-<?= $t->vlan->getId() ?>-<?= preg_replace( '/[^a-zA-Z0-9]/', '-', strtolower( $k ) ) ?>
+    hostgroup_name  facility-ipv<?= $t->protocol ?>-vlanid-<?= $t->vlan->getId() ?>-<?= preg_replace( '/[^a-zA-Z0-9]/', '-', strtolower( $k ) ) ?>
 
-    alias           All IPv<?= $t->protocol ?> Members at Location <?= $k ?> for VLAN <?= $t->vlan->getName() ?>
+    alias           All IPv<?= $t->protocol ?> Members at Facility <?= $k ?> for VLAN <?= $t->vlan->getName() ?>
 
     members         <?= $t->softwrap( $l, 1, ', ', ', \\', 20 ) ?>
 

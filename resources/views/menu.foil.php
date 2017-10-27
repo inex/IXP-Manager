@@ -70,25 +70,6 @@
                     </li>
                 <?php endif; ?>
 
-                <?php if( !config( 'ixp_fe.frontend.disabled.meeting', false ) ): ?>
-                    <li>
-                        <a href="<?= url( 'meeting/list' ) ?>">Meetings</a>
-
-                        <?php /* {if $controller eq 'meeting' or $controller eq 'meeting-item' or ( $controller eq 'static' and $action eq 'meetings-instructions' )}
-                            <ul class="nav nav-list">
-                                <li {if $controller eq 'meeting-item'}class="active"{/if}>
-                                    <a href="{genUrl controller='meeting-item' action='list'}">Presentations</a>
-                                </li>
-                                <li {if $controller eq 'meeting' and $action eq 'read'}class="active"{/if}>
-                                    <a href="{genUrl controller='meeting' action='read'}">Member View</a>
-                                </li>
-                                <li {if $controller eq 'static' and $action eq 'meetings-instructions'}class="active"{/if}>
-                                    <a href="{genUrl controller='static' action='meetings-instructions'}">Instructions</a>
-                                </li>
-                            </ul> */ ?>
-                    </li>
-                <?php endif; ?>
-
                 <li class="nav-header">
                     IXP Admin Actions
                 </li>

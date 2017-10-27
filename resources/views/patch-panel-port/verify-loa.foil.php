@@ -36,7 +36,7 @@
         <table width="100%">
             <tr>
                 <td width="10%"></td>
-                <td><b>Location:</b></td>
+                <td><b>Facility:</b></td>
                 <td><?= $t->ee( $t->ppp->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?></td>
             </tr>
             <tr>

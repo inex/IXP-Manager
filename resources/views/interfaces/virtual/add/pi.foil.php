@@ -36,7 +36,7 @@
                 <thead>
                     <tr>
                         <th>
-                            Location
+                            Facility
                         </th>
                         <th>
                             Peering Port

@@ -27,11 +27,6 @@
                         <li>
                             <a href="{genUrl controller="customer" action="details"}">Member Details</a>
                         </li>
-                        <?php if( !config( 'ixp_fe.frontend.disabled.meeting', true ) ): ?>
-                            <li>
-                                <a href="{genUrl controller="meeting" action="read"}">Meetings</a>
-                            </li>
-                        <?php endif; ?>
                     </ul>
                 </li>
                 <li class="dropdown">

@@ -220,10 +220,10 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
      * Setup peering manager
      */
     private function setupPeeringManager( array $options ): array {
-        $options['peering_manager']['testmode']  = config( 'ixp.peering_manager.testmode' );
-        $options['peering_manager']['testemail'] = config( 'ixp.peering_manager.testemail' );
-        $options['peering_manager']['testnote']  = config( 'ixp.peering_manager.testnote' );
-        $options['peering_manager']['testdate']  = config( 'ixp.peering_manager.testdate' );
+        $options['peeringmanager']['testmode']  = config( 'ixp.peering_manager.testmode' );
+        $options['peeringmanager']['testemail'] = config( 'ixp.peering_manager.testemail' );
+        $options['peeringmanager']['testnote']  = config( 'ixp.peering_manager.testnote' );
+        $options['peeringmanager']['testdate']  = config( 'ixp.peering_manager.testdate' );
 
         $options['peeringdb']['url'] = "https://www.peeringdb.com/view.php?asn=%ASN%";
 
@@ -331,12 +331,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
 
         if( config( 'ixp_tools.peeringdb_url' ) ) {
             $options['peeringdb']['url'] = config( 'ixp_tools.peeringdb_url' );
-        }
-
-        if( is_array( config('ixp_tools.meeting') ) ) {
-            foreach( config('ixp_tools.meeting') as $k => $v ) {
-                $options['meeting'][$k]  = $v;
-            }
         }
 
         if( config( 'ixp_tools.billing_updates_notify' ) ) {
