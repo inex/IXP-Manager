@@ -85,11 +85,6 @@ class StaticController extends IXP_Controller_Action
         $this->_requireAuth();
     }
 
-    public function meetingsInstructionsAction()
-    {
-        $this->_requireAuth();
-    }
-
     public function miscBenefitsAction()
     {
         $this->_requireAuth();

@@ -500,47 +500,6 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
         $this->Children->removeElement($children);
     }
 
-    /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
-     */
-    protected $Meetings;
-
-
-    /**
-     * Add Meetings
-     *
-     * @param Entities\Meeting $meetings
-     * @return User
-     */
-    public function addMeeting(\Entities\Meeting $meetings)
-    {
-        $this->Meetings[] = $meetings;
-
-        return $this;
-    }
-
-    /**
-     * Remove Meetings
-     *
-     * @param Entities\Meeting $meetings
-     */
-    public function removeMeeting(\Entities\Meeting $meetings)
-    {
-        $this->Meetings->removeElement($meetings);
-    }
-
-    /**
-     * Get Meetings
-     *
-     * @return Doctrine\Common\Collections\Collection
-     */
-    public function getMeetings()
-    {
-        return $this->Meetings;
-    }
-    /**
-     * @var \Entities\Contact
-     */
     protected $Contact;
 
 

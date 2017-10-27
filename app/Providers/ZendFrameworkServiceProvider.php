@@ -333,12 +333,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
             $options['peeringdb']['url'] = config( 'ixp_tools.peeringdb_url' );
         }
 
-        if( is_array( config('ixp_tools.meeting') ) ) {
-            foreach( config('ixp_tools.meeting') as $k => $v ) {
-                $options['meeting'][$k]  = $v;
-            }
-        }
-
         if( config( 'ixp_tools.billing_updates_notify' ) ) {
             $options['billing']['updates_notify'] = config( 'ixp_tools.billing_updates_notify' );
         }
