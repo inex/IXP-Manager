@@ -99,9 +99,9 @@ $(document).ready( function() {
 	
 	$( 'button[id|="peering-request"]' ).on( 'click', function( event ){
 		
-		var custid = substr( event.target.id, 16 );
+		var custid = substr( event.currentTarget.id, 16 );
 		
-		var days = $( '#' + event.target.id ).attr( 'data-days' );
+		var days = $( '#' + event.currentTarget.id ).attr( 'data-days' );
 		if( days >= 0 && days < 30 ) {
 			bootbox.confirm( "Are you sure you want to send a peering request to this member? You already sent one only " + days + " days ago.", 
 				function( result ) {
@@ -119,7 +119,7 @@ $(document).ready( function() {
 
 	$( 'button[id|="peering-notes"]' ).on( 'click', function( event ){
 		
-		var custid = substr( event.target.id, 14 );
+		var custid = substr( event.currentTarget.id, 14 );
 
 		// make sure we're "clean"
 		$( '#modal-peering-notes-message' ).val( "Please wait... loading..." );
