@@ -23,10 +23,6 @@
         {
             "type": "vcs",
             "url": "https://github.com/opensolutions/Bootstrap-Zend-Framework"
-        },
-        {
-            "url": "git@github.com:oss2/var-utils.git",
-            "type": "vcs"
         }
     ],
     "require": {
@@ -40,7 +36,6 @@
         "laravel/framework": "5.5.*",
         "laravel/tinker": "~1.0",
         "laravel-doctrine/orm": "1.4.*",
-        "oss2/var-utils": "dev-master",
         
         "smarty/smarty": "~3.1",
         "foil/foil": "~0.6",
