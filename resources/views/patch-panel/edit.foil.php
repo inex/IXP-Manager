@@ -47,13 +47,13 @@
 
         <?= Former::text( 'colo_reference' )
             ->label( 'Colocation reference' )
-            ->blockHelp( 'The reference the co-location provider has assigned to this patch panel.' );
+            ->blockHelp( 'The reference the facility/co-location provider has assigned to this patch panel.' );
         ?>
 
         <?= Former::select( 'cabinet' )
-            ->label( 'Cabinet' )
+            ->label( 'Rack' )
             ->fromQuery( $t->cabinets, 'name' )
-            ->placeholder( 'Choose a Cabinet' )
+            ->placeholder( 'Choose a rack' )
             ->addClass( 'chzn-select' );
         ?>
 
@@ -62,7 +62,7 @@
             ->options(   Entities\PatchPanel::$MOUNTED_AT )
             ->placeholder( '---' )
             ->addClass( 'chzn-select' )
-            ->blockHelp( 'Is this patch panel mounted at the front or rear of the cabinet?' );
+            ->blockHelp( 'Is this patch panel mounted at the front or rear of the rack?' );
         ?>
 
         <?= Former::number( 'u_position' )
@@ -120,7 +120,7 @@
         ?>
 
         <?= Former::textarea( 'location_notes' )
-            ->label( 'Location Notes' )
+            ->label( 'Facility Notes' )
             ->rows( 5 )
             ->blockHelp( 'These notes are included on connection and other emails to help co-location providers correctly '
                 . 'identify their own co-location references. Unfortunately, it has been the experience of the authors '

@@ -44,7 +44,7 @@
                         Customer
                     </td>
                     <td>
-                        Location
+                        Facility
                     </td>
                     <td>
                         Switch

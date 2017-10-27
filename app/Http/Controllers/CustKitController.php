@@ -83,9 +83,9 @@ class CustKitController extends Doctrine2Frontend {
                 ],
 
                 'cabinet'  => [
-                    'title'      => 'Cabinet',
+                    'title'      => 'Rack',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'cabinet',
+                    'controller' => 'rack',
                     'action'     => 'view',
                     'idField'    => 'cabinetid'
                 ],

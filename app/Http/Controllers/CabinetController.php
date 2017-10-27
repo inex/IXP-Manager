@@ -82,9 +82,9 @@ class CabinetController extends Doctrine2Frontend {
                 'id'        => [ 'title' => 'DB ID', 'display' => true ],
 
                 'location'  => [
-                    'title'      => 'Location',
+                    'title'      => 'Facility',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'location',
+                    'controller' => 'facility',
                     'action'     => 'view',
                     'idField'    => 'locationid'
                 ],

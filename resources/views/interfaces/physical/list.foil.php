@@ -25,7 +25,7 @@ $this->layout( 'layouts/ixpv4' );
                         Customer
                     </td>
                     <td>
-                        Location
+                        Facility
                     </td>
                     <td>
                         Switch
@@ -59,7 +59,7 @@ $this->layout( 'layouts/ixpv4' );
                             </a>
                         </td>
                         <td>
-                            <a href="<?= url( 'location/view/id' ).'/'.$pi['locid']?>">
+                            <a href="<?= route( 'facility@view', [ 'id' => $pi['locid'] ] ) ?>">
                                 <?= $t->ee(  $pi['location'] )   ?>
                             </a>
                         </td>
