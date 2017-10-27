@@ -56,10 +56,12 @@
                         <li>
                             <a href="<?= url('statistics/switches') ?>">Switch Aggregate Graphs</a>
                         </li>
+
                         <?php if( is_array( config( 'ixp_tools.weathermap', false ) ) ): ?>
+
                             <?php foreach( config( 'ixp_tools.weathermap' ) as $k => $w ): ?>
                                 <li>
-                                    <a href="<?= url( '/weather-map/index/id/' . $k ) ?>"><?= $w['menu'] ?></a>
+                                    <a href="<?= route( 'weathermap' , [ 'id' => $k ] ) ?>"><?= $w['menu'] ?></a>
                                 </li>
                             <?php endforeach; ?>
                         <?php endif; ?>

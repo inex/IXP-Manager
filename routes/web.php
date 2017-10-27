@@ -51,6 +51,8 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'loa-pdf/{id}',                 'PatchPanelPortController@loaPDF' );
 });
 
+Route::get( 'weather-map/{id}',                    'WeatherMapController@index' )->name( 'weathermap');
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////

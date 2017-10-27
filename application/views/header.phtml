@@ -85,10 +85,11 @@
                                     <li>
                                         <a href="{genUrl controller="statistics" action="switches"}">Switch Aggregate Graphs</a>
                                     </li>
-                                    {if isset( $options.weathermap )}
-                                        {foreach from=$options.weathermap key=k item=w}
+                                    <li class="divider"></li>
+                                    {if is_array( config( 'ixp_tools.weathermap', false ) )}
+                                        {foreach from=config( 'ixp_tools.weathermap' ) key=k item=w}
                                             <li>
-                                                <a href="{genUrl controller="weather-map" action="index" id=$k}">{$w.menu}</a>
+                                                <a href="{route( 'weathermap', ['id' => {$k} ] ) }">{$w.menu}</a>
                                             </li>
                                         {/foreach}
                                     {/if}
@@ -186,10 +187,10 @@
                                     <a href="{genUrl controller="public-statistics" action="switches"}">Switch Aggregate Graphs</a>
                                 </li>
                                 <li class="divider"></li>
-                                {if isset( $options.weathermap )}
-                                    {foreach from=$options.weathermap key=k item=w}
+                                {if is_array( config( 'ixp_tools.weathermap', false ) )}
+                                    {foreach from=config( 'ixp_tools.weathermap' ) key=k item=w}
                                         <li>
-                                            <a href="{genUrl controller="weather-map" action="index" id=$k}">{$w.menu}</a>
+                                            <a href="{route( 'weathermap', ['id' => {$k} ] ) }">{$w.menu}</a>
                                         </li>
                                     {/foreach}
                                 {/if}
