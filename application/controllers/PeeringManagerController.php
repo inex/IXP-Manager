@@ -283,7 +283,6 @@ class PeeringManagerController extends IXP_Controller_AuthRequiredAction
                     }
                     else
                     {
-                        dd('cx');
                         if( $sendtome ) {
                             $mail->addTo( $this->getUser()->getEmail() );
                         } else {
