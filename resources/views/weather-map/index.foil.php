@@ -23,7 +23,7 @@
         <ul>
             <?php foreach( $t->wms as $id => $wp ): ?>
                 <li>
-                    <a href="<?= route( 'weathermap@index' , [ 'id' => $id ] ) ?>">
+                    <a href="<?= route( 'weathermap' , [ 'id' => $id ] ) ?>">
                         <?= $wp[ 'name' ] ?>
                     </a>
                 </li>

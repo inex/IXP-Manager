@@ -32,7 +32,7 @@ use Illuminate\View\View;
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class WeatherMapController extends Controller{
+class WeatherMapController extends Controller {
 
     /**
      * Display the weather map

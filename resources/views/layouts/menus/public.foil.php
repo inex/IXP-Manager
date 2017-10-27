@@ -40,7 +40,7 @@
                         <?php if( is_array( config( 'ixp_tools.weathermap', false ) ) ): ?>
                             <?php foreach( config( 'ixp_tools.weathermap' ) as $k => $w ): ?>
                                 <li>
-                                    <a href="<?= route( 'weathermap@index' , [ 'id' => $k ] ) ?>"><?= $w['menu'] ?></a>
+                                    <a href="<?= route( 'weathermap' , [ 'id' => $k ] ) ?>"><?= $w['menu'] ?></a>
                                 </li>
                             <?php endforeach; ?>
                         <?php endif; ?>
