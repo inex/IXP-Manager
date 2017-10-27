@@ -1,6 +1,6 @@
 {
     "name": "inex/IXP-Manager",
-    "description": "An application by INEX to manage Internet Exchange Points (IXPs)",
+    "description": "An application by INEX to manage Internet Exchange Points (IXPs) - https://www.ixpmanager.org/",
     "type": "project",
     "keywords": ["ixp manager", "ixpm", "inex", "ixp"],
     "homepage": "https://github.com/inex/IXP-Manager/wiki",
@@ -9,14 +9,11 @@
         {
             "name": "Barry O'Donovan",
             "email": "barry.odonovan@inex.ie",
-            "homepage": "https://www.inex.ie/",
-            "role": "Senior Coding Dude & INEX Network Consultant"
-        },
+            "homepage": "https://www.ixpmanager.org/"        },
         {
             "name": "Nick Hilliard",
             "email": "nick@inex.ie",
-            "homepage": "https://www.inex.ie/",
-            "role": "Junior Coding Dweeb & Chief Technical Officer"
+            "homepage": "https://www.ixpmanager.org/"
         }
     ],
     "repositories": [
@@ -62,8 +59,9 @@
         "barryvdh/laravel-ide-helper": "^2.3"
      },
     "support": {
-        "issues": "https://github.com/inex/IXP-Manager/issues",
-        "wiki": "https://github.com/inex/IXP-Manager/wiki",
+        "issues": "https://www.ixpmanager.org/support.php",
+        "forum": "https://www.inex.ie/mailman/listinfo/ixpmanager",
+        "docs": "http://docs.ixpmanager.org/",
         "source": "https://github.com/inex/IXP-Manager"
     },
     "autoload": {
