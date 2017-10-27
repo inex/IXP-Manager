@@ -8,7 +8,7 @@
 
     <?= Former::text( 'name' )
         ->label( 'Name' )
-        ->blockHelp( "The name of the location / data centre / facility / point of presence (PoP)." );
+        ->blockHelp( "The name of the data centre / facility / point of presence (PoP)." );
     ?>
 
     <?= Former::text( 'shortname' )
@@ -18,7 +18,7 @@
 
     <?= Former::text( 'tag' )
         ->label( 'Tag' )
-        ->blockHelp( "Typically a lower case, 3-4 letter identifier. For example, INEX uses tags as part of our switch hostname to identify its location." );
+        ->blockHelp( "Typically a lower case, 3-4 letter identifier. For example, INEX uses tags as part of our switch hostname to identify its facility." );
     ?>
 
     <?= Former::select( 'pdb_facility_id' )
@@ -26,7 +26,7 @@
         ->label( 'PeeringDB Facility' )
         ->placeholder( 'Please wait, loading...' )
         ->addClass( 'chzn-select' )
-        ->blockHelp( "If listed, identify the location from PeeringDB's facility list. If it is not listed here and you believe it should be, "
+        ->blockHelp( "If listed, identify the facility from PeeringDB's facility list. If it is not listed here and you believe it should be, "
             . "then please contact PeeringDB directly. Note also that IXP Manager caches this data for a number of hours - so an "
             . "<code>artisan cache:clear</code> is required if you get your facility listed and IXP Manager still does not have it." );
     ?>
