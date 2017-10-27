@@ -25,10 +25,6 @@
             "url": "https://github.com/opensolutions/Bootstrap-Zend-Framework"
         },
         {
-            "url": "git@github.com:oss2/doctrine2.git",
-            "type": "vcs"
-        },
-        {
             "url": "git@github.com:oss2/var-utils.git",
             "type": "vcs"
         }
