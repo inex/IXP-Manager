@@ -108,7 +108,7 @@ class Ipv4AddressController extends IXP_Controller_FrontEnd
 
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 'ip.id as id, ip.address as address,
-                v.name AS vlan,
+                v.name AS vlan, v.id as vlanid,
                 vli.' . ( $this->_feParams->entity == '\\Entities\\IPv4Address' ? 'ipv4' : 'ipv6' ) . 'hostname AS hostname,
                 c.name AS customer, c.id AS customerid'
             )
@@ -156,7 +156,7 @@ class Ipv4AddressController extends IXP_Controller_FrontEnd
 
         if( $this->multiIXP() )
             $this->view->ixpNames = $this->getD2R( '\\Entities\\IXP' )->getNames( $this->getUser() );
-        
+
         return $qb->getQuery()->getResult();
     }
     
