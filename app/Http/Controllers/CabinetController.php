@@ -55,6 +55,7 @@ class CabinetController extends Doctrine2Frontend {
      */
     protected $object = null;
 
+    protected static $route_prefix = "rack";
     /**
      * This function sets up the frontend controller
      */
@@ -63,10 +64,10 @@ class CabinetController extends Doctrine2Frontend {
         $this->feParams         = ( object )[
 
             'entity'            => CabinetEntity::class,
-            'pagetitle'         => 'Cabinets',
+            'pagetitle'         => 'Racks',
 
-            'titleSingular'     => 'Cabinet',
-            'nameSingular'      => 'a cabinet',
+            'titleSingular'     => 'Rack',
+            'nameSingular'      => 'a rack',
 
             'defaultAction'     => 'list',
             'defaultController' => 'CabinetController',
@@ -208,12 +209,12 @@ class CabinetController extends Doctrine2Frontend {
         $okay = true;
 
         if( ( $cnt = count( $this->object->getCustomerEquipment() ) ) ) {
-            AlertContainer::push( "Could not delete the cabinet as at least one piece of customer equipment is located here. Reassign or delete that kit first.", Alert::DANGER );
+            AlertContainer::push( "Could not delete the rack as at least one piece of customer equipment is located here. Reassign or delete that kit first.", Alert::DANGER );
             $okay = false;
         }
 
         if( ( $cnt = count( $this->object->getSwitches() ) ) ) {
-            AlertContainer::push( "Could not delete the cabinet as at least one switch is located here. Reassign or delete the switch first.", Alert::DANGER );
+            AlertContainer::push( "Could not delete the rack as at least one switch is located here. Reassign or delete the switch first.", Alert::DANGER );
             $okay = false;
         }
 
