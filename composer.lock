@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "410741ec4027c58ecbc854ea5e028426",
+    "content-hash": "55e10a99bcc79e534f7141b0da831bc6",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -2838,48 +2838,6 @@
                 "snmp"
             ],
             "time": "2017-09-30T15:41:27+00:00"
-        },
-        {
-            "name": "oss2/doctrine2",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/oss2/doctrine2.git",
-                "reference": "76d42678b28d0d4fe25f09271b76262280de3d97"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/oss2/doctrine2/zipball/76d42678b28d0d4fe25f09271b76262280de3d97",
-                "reference": "76d42678b28d0d4fe25f09271b76262280de3d97",
-                "shasum": ""
-            },
-            "require": {
-                "doctrine/orm": "2.*",
-                "illuminate/support": ">=4.0",
-                "php": ">=5.4.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Oss2\\Doctrine2": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Barry O'Donovan",
-                    "email": "barry@opensolutions.ie"
-                }
-            ],
-            "description": "Class, traits, helpers and other tools for Doctine2",
-            "homepage": "https://github.com/oss2/doctrine2",
-            "support": {
-                "source": "https://github.com/oss2/doctrine2/tree/master",
-                "issues": "https://github.com/oss2/doctrine2/issues"
-            },
-            "time": "2015-02-04T20:35:14+00:00"
         },
         {
             "name": "oss2/var-utils",
@@ -6460,7 +6418,6 @@
     "stability-flags": {
         "komola/bootstrap-zend-framework": 20,
         "opensolutions/oss-snmp": 20,
-        "oss2/doctrine2": 20,
         "oss2/var-utils": 20,
         "zendesk/zendesk_api_client_php": 20,
         "maxhoffmann/parsedown-laravel": 20
