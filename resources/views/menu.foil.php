@@ -98,11 +98,11 @@
                 </li>
 
                 <li <?php if( $t->controller == 'LocationController' ):?> class="active" <?php endif;?> >
-                    <a href="<?= route( 'location@list' ) ?>">Locations</a>
+                    <a href="<?= route( 'facility@list' ) ?>">Facilities</a>
                 </li>
 
                 <li <?php if( $t->controller == 'CabinetController' ):?> class="active" <?php endif;?> >
-                    <a href="<?= route('cabinet@list') ?>">Cabinets</a>
+                    <a href="<?= route('rack@list') ?>">Racks</a>
                 </li>
 
                 <li <?= $t->controller == 'RouterController' && $t->action != 'status' ? 'class="active"' : '' ?>>
