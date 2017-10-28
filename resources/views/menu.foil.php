@@ -222,8 +222,8 @@
                     IXP Utilities
                 </li>
 
-                <li>
-                    <a href="<?= url( 'utils/phpinfo' ) ?>">PHP Info</a>
+                <li <?= !Route::current()->named('utils/phpinfo') ?: 'class="active"' ?>>
+                    <a href="<?= route( 'utils/phpinfo' ) ?>">PHP Info</a>
                 </li>
 
                 <li>

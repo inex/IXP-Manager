@@ -120,3 +120,21 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::post(    'members',         'StatisticsController@members' )->name( 'statistics/members' );
 });
 
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Utilities
+///
+
+
+Route::get( 'phpinfo', function() { phpinfo(); })->name('phpinfo');
+
+Route::group( [ 'prefix' => 'utils' ], function() {
+
+    Route::get( 'phpinfo', function() {
+        return view( 'utils/phpinfo' );
+    })->name('utils/phpinfo');
+
+});
