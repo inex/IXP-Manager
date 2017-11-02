@@ -121,7 +121,7 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
 });
 
 
-Route::get( 'search',                   'SearchController@do' )->name( 'search@do' );
+Route::get( 'search', 'SearchController@do' )->name( 'search' );
 
 
 

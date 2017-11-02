@@ -8,9 +8,30 @@
 
 <?php $this->section( 'content' ) ?>
 
+
+    <div class="well">
+        <div class="row">
+            <div class="col-md-12">
+                <form class="form-inline" method="get" action="<?= route( 'search' ) ?>">
+
+                    <div class="form-group">
+                        <input type="text" class="form-control" placeholder="Search for..." name="search" value="<?= $t->search ?>">
+                        <button class="btn btn-default" type="submit">Search</button>
+                        <a class="btn btn-default" id="searchHelp" data-toggle="modal" data-target="#searchHelpModal">
+                            <span class="glyphicon glyphicon-question-sign"></span>
+                        </a>
+                    </div>
+
+                </form>
+            </div>
+        </div>
+    </div>
+
+
+
     <?php if( count( $t->results ) ): ?>
-        <div class="row-fluid">
-            <div class="span12">
+        <div class="row">
+            <div class="col-md-12">
                 <h4><?= count( $t->results ) ?> Result(s):</h4>
             </div>
         </div>
@@ -69,9 +90,9 @@
     <?php endif; ?>
 
 
-<div class="row-fluid">
+<div class="row">
 
-    <div class="span12">
+    <div class="col-md-12">
 
         <?php if( !count( $t->results ) ): ?>
             <h3>No results found.</h3>
@@ -81,23 +102,5 @@
 
 </div>
 <br>
-<div class="row-fluid">
-    <div class="span12">
-        <form class="form-inline" method="get" action="<?= action( 'SearchController@do' ) ?>">
-            <div>
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search for..." name="search" value="<?= $t->search ?>">
-                    <span class="input-group-btn">
-                        <button class="btn btn-default" type="submit">Search</button>
-                        <a class="btn btn-default" id="searchHelp" data-toggle="modal" data-target="#searchHelpModal">
-                            <span class="glyphicon glyphicon-question-sign"></span>
-                        </a>
-                    </span>
-                </div>
-
-            </div>
-        </form>
-    </div>
-</div>
 
 <?php $this->append() ?>
