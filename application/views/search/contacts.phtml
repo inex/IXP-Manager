@@ -15,7 +15,7 @@
             </thead>
             <tbody>
             {foreach $results as $contact}
-            
+
                 <tr>
                     <td>
                         <a href="{genUrl controller="contact" action="edit" id=$contact->getId() cid=$contact->getCustomer()->getId()}">

@@ -5,8 +5,8 @@
 
 <ul class="nav nav-list">
 
-    <form class="form-search" method="get" action="{genUrl controller="search" action="do"}">
-        <input type="text" class="search-query" style="width: 50%" placeholder="Search..." name="search">
+    <form class="form-search" method="get" action="{genUrl controller="search"}">
+        <input type="text" class="" style="width: 65%" placeholder="Search for..." name="search">
         <a class="btn btn-small" id="searchHelp" data-toggle="modal" data-target="#searchHelpModal"><i class="icon-question-sign"></i></a>
     </form>
 
@@ -84,7 +84,7 @@
         </li>
 
         <li {if $controller eq 'cabinet'}class="active"{/if}>
-            <a href="{route('rack@list')}">Racks</a>
+            <a href="{ route( 'rack@list' ) }">Racks</a>
         </li>
 
         <li {if $controller eq 'router'}class="active"{/if}>

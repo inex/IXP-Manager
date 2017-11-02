@@ -120,3 +120,8 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::post(    'members',         'StatisticsController@members' )->name( 'statistics/members' );
 });
 
+
+Route::get( 'search',                   'SearchController@do' )->name( 'search@do' );
+
+
+

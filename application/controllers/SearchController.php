@@ -118,6 +118,7 @@ class SearchController extends IXP_Controller_AuthRequiredAction
     private function processIPSearch( $vlis )
     {
         $results = [];
+        $interfaces = [];
         foreach( $vlis as $vli )
         {
             $results[$vli->getVirtualInterface()->getCustomer()->getId()] = $vli->getVirtualInterface()->getCustomer();
