@@ -61,6 +61,7 @@ Route::get( 'weather-map/{id}',                    'WeatherMapController@index' 
 ///
 
 Route::get( 'content/{priv}/{page}',     'ContentController@index' )->name( 'content' );
+Route::get( 'public-content/{page}',     'ContentController@public' )->name( 'public-content' );
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

@@ -67,4 +67,13 @@ class ContentController extends Controller {
 
         return view( $page );
     }
-}
+
+    /**
+     * Alias for public only content
+     *
+     * @param  string $page Page to display
+     * @return  View
+     */
+    public function public( string $page ): View {
+        return $this->index( 0, $page );
+    }}

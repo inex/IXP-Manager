@@ -10,14 +10,21 @@
 
 <?php $this->section('content') ?>
 
+<div class="alert alert-danger">
+    Please see the official IXP Manager documentation on
+    <a target="_blank" href="http://docs.ixpmanager.org/features/static-content/">static content here</a>
+    for information and instructions on how to customise this page.
+</div>
+
+
 <div class="alert alert-info">
-    <h3 align="center">
+    <h4 align="center">
         Technical Support: <a href="mailto:email@example.com">email@example.com</a>
         &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
         Billing / Accounts: <a href="mailto:email@example.com">email@example.com</a>
         &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
         Sales / Marketing: <a href="mailto:email@example.com">email@example.com</a>
-    </h3>
+    </h4>
 </div>
 
 <p>

@@ -10,6 +10,12 @@
 
 <?php $this->section('content') ?>
 
+<div class="alert alert-info">
+    Please see the official IXP Manager documentation on
+    <a target="_blank" href="http://docs.ixpmanager.org/features/static-content/">static content here</a>
+    for information and instructions on this page.
+</div>
+
 <p>
     Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tristique diam pretium ipsum fermentum ut
     sollicitudin mauris blandit. Mauris luctus, ipsum id feugiat bibendum, felis nulla dignissim sem, vehicula

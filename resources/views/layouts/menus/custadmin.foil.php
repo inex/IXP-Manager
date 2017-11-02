@@ -23,7 +23,7 @@
                 ?>
 
                 <li class="">
-                    <a href="<?= url( '/static/support' ) ?>">Support</a>
+                    <a href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>">Support</a>
                 </li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
