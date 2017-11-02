@@ -1,31 +1,22 @@
-{tmplinclude file="header.phtml"}
+<?php
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' );
+?>
 
-{if isset( $user ) and $user->getPrivs() eq 3}
-    <ul class="breadcrumb">
-        <li>
-            <a href="{genUrl}">Home</a> <span class="divider">/</span>
-        </li>
-        <li>
-            Documentation <span class="divider">/</span>
-        </li>
-        <li class="active">
-            Technical Support and Contact Information
-        </li>
-    </ul>
-{else}
-    <div class="page-content">
-        <div class="page-header">
-            <h1>Technical Support</h1>
-        </div>
-{/if}
+<?php $this->section( 'title' ) ?>
+    Support / Contact Details
+<?php $this->append() ?>
+
+
+<?php $this->section('content') ?>
 
 <div class="alert alert-info">
     <h3 align="center">
-        Technical Support: {mailto address="email@example.com" encode="javascript"}
+        Technical Support: <a href="mailto:email@example.com">email@example.com</a>
         &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-        Billing / Accounts: {mailto address="email@example.com" encode="javascript"}
+        Billing / Accounts: <a href="mailto:email@example.com">email@example.com</a>
         &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-        Sales / Marketing: {mailto address="email@example.com" encode="javascript"}
+        Sales / Marketing: <a href="mailto:email@example.com">email@example.com</a>
     </h3>
 </div>
 
@@ -53,7 +44,7 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tristique diam 
         <td></td>
         <td align="right"><strong>Email:</strong></td>
         <td></td>
-        <td align="left">{mailto address="email@example.com" encode="javascript"}</td>
+        <td align="left"><a href="mailto:email@example.com">email@example.com</a></td>
     </tr>
     <tr>
         <td></td>
@@ -76,8 +67,4 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Integer tristique diam 
     </table>
 </div>
 
-{if not isset( $user ) or $user->getPrivs() neq 3}
-    </div>
-{/if}
-
-{tmplinclude file="footer.phtml"}
+<?php $this->append() ?>

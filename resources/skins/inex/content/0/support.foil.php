@@ -1,31 +1,23 @@
-{tmplinclude file="header.phtml"}
+<?php
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' );
+?>
 
-{if isset( $user ) and $user->getPrivs() eq 3}
-    <ul class="breadcrumb">
-        <li>
-            <a href="{genUrl}">Home</a> <span class="divider">/</span>
-        </li>
-        <li>
-            Documentation <span class="divider">/</span>
-        </li>
-        <li class="active">
-            Technical Support and Contact Information
-        </li>
-    </ul>
-{else}
-    <div class="page-content">
-        <div class="page-header">
-            <h1>Technical Support</h1>
-        </div>
-{/if}
+<?php $this->section( 'title' ) ?>
+    Technical Support and Contact Information
+<?php $this->append() ?>
+
+
+<?php $this->section( 'content' ) ?>
+
 
 <div class="alert alert-info">
 <h4 align="center">
-    Technical Support: {mailto address="operations@inex.ie" encode="javascript"}
+    Technical Support: <a href="mailto:operations@inex.ie">operations@inex.ie</a>
     &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-    Billing / Accounts: {mailto address="accounts@inex.ie" encode="javascript"}
+    Billing / Accounts: <a href="mailto:accounts@inex.ie">accounts@inex.ie</a>
     &nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;
-    Sales / Marketing: {mailto address="sales@inex.ie" encode="javascript"}
+    Sales / Marketing: <a href="mailto:sales@inex.ie">sales@inex.ie</a>
 </h4>
 </div>
 
@@ -67,8 +59,8 @@ attended to immediately.
     <tr>
         <td></td>
         <td align="right"><strong>Email:</strong></td>
-        <td></td>
-        <td align="left">{mailto address="operations@inex.ie" encode="javascript"}</td>
+        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+        <td align="left"><a href="mailto:operations@inex.ie">operations@inex.ie</a></td>
     </tr>
     <tr>
         <td></td>
@@ -91,8 +83,5 @@ attended to immediately.
     </table>
 </div>
 
-{if not isset( $user ) or $user->getPrivs() neq 3}
-    </div>
-{/if}
 
-{tmplinclude file="footer.phtml"}
+<?php $this->append() ?>
