@@ -27,11 +27,6 @@
                         <li>
                             <a href="{genUrl controller="customer" action="details"}">Member Details</a>
                         </li>
-                        <?php if( !config( 'ixp_fe.frontend.disabled.meeting', true ) ): ?>
-                            <li>
-                                <a href="{genUrl controller="meeting" action="read"}">Meetings</a>
-                            </li>
-                        <?php endif; ?>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -67,7 +62,7 @@
                         <?php if( is_array( config( 'ixp_tools.weathermap', false ) ) ): ?>
                             <?php foreach( config( 'ixp_tools.weathermap' ) as $k => $w ): ?>
                                 <li>
-                                    <a href="<?= url( '/weather-map/index/id/' . $k ) ?>"><?= $w['menu'] ?></a>
+                                    <a href="<?= route( 'weathermap' , [ 'id' => $k ] ) ?>"><?= $w['menu'] ?></a>
                                 </li>
                             <?php endforeach; ?>
                         <?php endif; ?>

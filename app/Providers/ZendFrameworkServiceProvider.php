@@ -333,26 +333,12 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
             $options['peeringdb']['url'] = config( 'ixp_tools.peeringdb_url' );
         }
 
-        if( is_array( config('ixp_tools.meeting') ) ) {
-            foreach( config('ixp_tools.meeting') as $k => $v ) {
-                $options['meeting'][$k]  = $v;
-            }
-        }
-
         if( config( 'ixp_tools.billing_updates_notify' ) ) {
             $options['billing']['updates_notify'] = config( 'ixp_tools.billing_updates_notify' );
         }
 
         if( config( 'ixp_tools.rir_ripe_password' ) ) {
             $options['rir']['ripe_password'] = config( 'ixp_tools.rir_ripe_password' );
-        }
-
-        if( is_array( config('ixp_tools.weathermap') ) ) {
-            foreach( config('ixp_tools.weathermap') as $id => $details ) {
-                foreach( $details as $k => $v ) {
-                    $options['weathermap'][$id][$k]  = $v;
-                }
-            }
         }
 
         return $options;

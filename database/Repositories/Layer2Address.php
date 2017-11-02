@@ -125,4 +125,28 @@ class Layer2Address extends EntityRepository
 
         return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
     }
+
+
+    /**
+     * Find vlan interface by MAC address
+     *
+     * MAC address is normaliased using `preg_replace( '/[^a-f0-9]/, '', strtolower( $msc ) ).
+     *
+     * @param  string $mac The MAC address to search for
+     * @return \Entities\VlanInterface[] Matching VLAN nterfaces
+     */
+    public function findVlanInterface( string $mac )
+    {
+        return $this->getEntityManager()->createQuery(
+            "SELECT vli
+        
+                 FROM \\Entities\\VlanInterface vli
+                 LEFT JOIN vli.layer2Addresses l2a
+
+                 WHERE l2a.mac = :mac"
+        )
+            ->setParameter( 'mac', preg_replace( '/[^a-f0-9]/', '', strtolower( $mac ) ) )
+            ->getResult();
+    }
+
 }

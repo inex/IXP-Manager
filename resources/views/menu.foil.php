@@ -2,11 +2,18 @@
     <div class="col-md-2 no-padding">
         <div class="well sidebar-nav left-sidebar">
             <ul class="nav nav-pills nav-stacked ">
-                <form class="form-inline sidebar-search-form" method="get" action="<?= url( 'search/do' ) ?>">
-                    <input type="text" class="form-control menu-search-input" style="width: 65%" placeholder="Search..." name="search">
-                    <a class="btn btn-default menu-search-help-btn " id="searchHelp" data-toggle="modal" data-target="#searchHelpModal">
-                        <span class="glyphicon glyphicon-question-sign"></span>
-                    </a>
+                <form class="form-inline sidebar-search-form" method="get" action="<?= route( 'search' ) ?>">
+                    <div class="">
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search for..." name="search">
+                            <span class="input-group-btn">
+                                <a class="btn btn-default " id="searchHelp" data-toggle="modal" data-target="#searchHelpModal">
+
+                                    <span class="glyphicon glyphicon-question-sign"></span>
+                                </a>
+                            </span>
+                        </div><!-- /input-group -->
+                    </div>
                 </form>
 
                 <li class="nav-header">
@@ -67,25 +74,6 @@
                 <?php if( !config( 'ixp_fe.frontend.disabled.cust-kit', false ) ): ?>
                     <li <?php if( $t->controller == 'CustKitController' ):?> class="active" <?php endif;?> >
                         <a href="<?= route( 'cust-kit@list' ) ?>">Colocated Equipment</a>
-                    </li>
-                <?php endif; ?>
-
-                <?php if( !config( 'ixp_fe.frontend.disabled.meeting', false ) ): ?>
-                    <li>
-                        <a href="<?= url( 'meeting/list' ) ?>">Meetings</a>
-
-                        <?php /* {if $controller eq 'meeting' or $controller eq 'meeting-item' or ( $controller eq 'static' and $action eq 'meetings-instructions' )}
-                            <ul class="nav nav-list">
-                                <li {if $controller eq 'meeting-item'}class="active"{/if}>
-                                    <a href="{genUrl controller='meeting-item' action='list'}">Presentations</a>
-                                </li>
-                                <li {if $controller eq 'meeting' and $action eq 'read'}class="active"{/if}>
-                                    <a href="{genUrl controller='meeting' action='read'}">Member View</a>
-                                </li>
-                                <li {if $controller eq 'static' and $action eq 'meetings-instructions'}class="active"{/if}>
-                                    <a href="{genUrl controller='static' action='meetings-instructions'}">Instructions</a>
-                                </li>
-                            </ul> */ ?>
                     </li>
                 <?php endif; ?>
 
@@ -241,8 +229,8 @@
                     IXP Utilities
                 </li>
 
-                <li>
-                    <a href="<?= url( 'utils/phpinfo' ) ?>">PHP Info</a>
+                <li <?= !Route::current()->named('utils/phpinfo') ?: 'class="active"' ?>>
+                    <a href="<?= route( 'utils/phpinfo' ) ?>">PHP Info</a>
                 </li>
 
                 <li>
@@ -250,65 +238,72 @@
                 </li>
             </ul>
         </div><!--/.well -->
-
-        <div id="searchHelpModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="searchHelpModalLabel" aria-hidden="true">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="searchHelpModalLabel">Search Help</h3>
-            </div>
-            <div class="modal-body">
-                <p>
-                    The search box allows for an efficient database search via a number of parameters:
-                </p>
-                <div class="row-fluid">
-                    <div class="span6">
-                        <dl>
-                            <dt>IPv4 Address</dt>
-                            <dd>
-                                Full address as <code>a.b.c.d</code> or last octet as <code>.d</code>
-                            </dd>
-                            <dt>AS Number / Macro</dt>
-                            <dd>
-                                Enter ASN as <code>XXX</code> or <code>asXXX</code> and AS macro as <code>as-XXX</code>
-                            </dd>
-                            <dt>Usernames</dt>
-                            <dd>
-                                Find usernames <em>starting with</em> <code>xxx</code> by entering <code>@xxx</code>
-                            </dd>
-                            <dt>Route Server Prefix</dt>
-                            <dd>
-                                Enter IPv4 <code>a.b.c.d/x</code> or IPv6 <code>a:b::/x</code>
-                            </dd>
-                            <dt>Patch Panel Port</dt>
-                            <dd>
-                                Enter ID <code>PPP-xxx</code>
-                            </dd>
-                        </dl>
+        <div class="modal fade" id="searchHelpModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+            <div class="modal-dialog modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                        <h4 class="modal-title" id="myModalLabel">Search Help</h4>
                     </div>
-                    <div class="span6">
-                        <dl>
-                            <dt>IPv6 Address</dt>
-                            <dd>
-                                Full (compact) address as <code>a:b::h</code> or last section as <code>:h</code>
-                            </dd>
-                            <dt>MAC Address</dt>
-                            <dd>
-                                Enter as <code>xxxxxxxxxxxx</code> or <code>xx:xx:xx:xx:xx:xx</code>
-                            </dd>
-                            <dt>Email Addresses</dt>
-                            <dd>
-                                Find contacts / users via full email address <code>xxx@example.com</code>
-                            </dd>
-                            <dt>Wildcard</dt>
-                            <dd>
-                                Any other text is searched as <code>%xxx%</code> on customer details
-                            </dd>
-                        </dl>
+                    <div class="modal-body">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <p>
+                                    The search box allows for an efficient database search via a number of parameters:
+                                </p>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <dl>
+                                    <dt>IPv4 Address</dt>
+                                    <dd>
+                                        Full address as <code>a.b.c.d</code> or last octet as <code>.d</code>
+                                    </dd>
+                                    <dt>AS Number / Macro</dt>
+                                    <dd>
+                                        Enter ASN as <code>XXX</code> or <code>asXXX</code> and AS macro as <code>as-XXX</code>
+                                    </dd>
+                                    <dt>Usernames</dt>
+                                    <dd>
+                                        Find usernames <em>starting with</em> <code>xxx</code> by entering <code>@xxx</code>
+                                    </dd>
+                                    <dt>Route Server Prefix</dt>
+                                    <dd>
+                                        Enter IPv4 <code>a.b.c.d/x</code> or IPv6 <code>a:b::/x</code>
+                                    </dd>
+                                    <dt>Patch Panel Port</dt>
+                                    <dd>
+                                        Find a patch panel port by its ID: <code>PPP-xxxx</code>.
+                                    </dd>
+                                </dl>
+                            </div>
+                            <div class="col-md-6">
+                                <dl>
+                                    <dt>IPv6 Address</dt>
+                                    <dd>
+                                        Full (compact) address as <code>a:b::h</code> or last section as <code>:h</code>
+                                    </dd>
+                                    <dt>MAC Address</dt>
+                                    <dd>
+                                        Enter as <code>xxxxxxxxxxxx</code> or <code>xx:xx:xx:xx:xx:xx</code>
+                                    </dd>
+                                    <dt>Email Addresses</dt>
+                                    <dd>
+                                        Find contacts / users via full email address <code>xxx@example.com</code>
+                                    </dd>
+                                    <dt>Wildcard</dt>
+                                    <dd>
+                                        Any other text is searched as <code>%xxx%</code> on customer details
+                                    </dd>
+                                </dl>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
             </div>
         </div>
     </div><!--/span-->

@@ -870,55 +870,6 @@
     <association from="\Entities\MACAddress" to="\Entities\VirtualInterface" owner-alias="MACAddresses" inverse-alias="VirtualInterface" many-owner="true" many-inverse="false" uuid="0ddc2408-657b-4705-8e3d-05dfd77e7f4f">
       <association-field from="virtualinterfaceid" to="id"/>
     </association>
-    <entity name="\Entities\Meeting" local-name="Meeting" namespace="\Entities" uuid="d921acd2-7afa-40c6-b53e-73a113193916">
-      <field name="id" type="integer" primary="true" auto-increment="true" uuid="4eddbdfa-8084-4fde-8b7c-7af0798e8522"/>
-      <field name="title" type="string" size="255" uuid="5ac0d334-faa4-4189-9076-b52b47171655"/>
-      <field name="before_text" type="text" uuid="e367494d-695e-4093-b799-771d26b63a76"/>
-      <field name="after_text" type="text" uuid="675f2d08-f908-4898-9dc6-34571b70657e"/>
-      <field name="date" type="date" uuid="38ddd653-98e4-45f8-9cef-05bc164bae97"/>
-      <field name="time" type="time" uuid="a6c38069-ed69-4271-8e9d-92f86b16e10b"/>
-      <field name="venue" type="string" size="255" uuid="0649baa5-5cdf-46b1-a6d0-8dfc118a0239"/>
-      <field name="venue_url" type="string" size="255" uuid="149057b5-54af-47f6-b4a4-dc13faa7f81d"/>
-      <field name="created_by" type="integer" uuid="80424a79-cd08-486a-a24b-fcf655f5dcd2"/>
-      <field name="created_at" type="datetime" uuid="086f9f70-c4df-4f83-ac9c-d5faf4c6f88d"/>
-      <field name="updated_by" type="integer" uuid="4fe61649-e846-4458-9359-9b43c0674148"/>
-      <field name="updated_at" type="datetime" uuid="f88261c0-eb75-432f-b12e-cc6ab0c83966"/>
-      <orm-attributes>
-        <attribute name="repository-class">Repositories\Meeting</attribute>
-        <attribute name="table">meeting</attribute>
-        <attribute name="tableName">meeting</attribute>
-      </orm-attributes>
-    </entity>
-    <association from="\Entities\Meeting" to="\Entities\User" owner-alias="Meetings" inverse-alias="CreatedBy" many-owner="true" many-inverse="false" uuid="6aa96961-825e-462c-bccb-e68696cb64c0">
-      <association-field from="created_by" to="id"/>
-    </association>
-    <entity name="\Entities\MeetingItem" local-name="MeetingItem" namespace="\Entities" uuid="005af367-611e-4b83-81c7-f6f36dc00d9f">
-      <field name="id" type="integer" primary="true" auto-increment="true" uuid="9b3fe453-51aa-4229-b00b-adcdd8647c0b"/>
-      <field name="meeting_id" type="integer" uuid="84ac3933-10af-48ce-afad-8cedc6b88675"/>
-      <field name="title" type="string" size="255" uuid="4b03175b-591a-4277-b2a2-f992f28381cd"/>
-      <field name="name" type="string" size="255" uuid="40f4d06c-2cb5-4436-a51a-a962c831930d"/>
-      <field name="role" type="string" size="255" uuid="300bc901-ef29-49b8-ac06-703c06482775"/>
-      <field name="email" type="string" size="255" uuid="258c5efc-c614-4f5f-bbcb-c9d1d907d403"/>
-      <field name="company" type="string" size="255" uuid="6b8f2c35-b33c-4284-8af3-e7e88f415afd"/>
-      <field name="company_url" type="string" size="255" uuid="5b40a6fb-389e-41ce-8cf7-1c3d6d7e9821"/>
-      <field name="summary" type="text" uuid="14dc68e1-beac-4283-b86e-66779c893c62"/>
-      <field name="presentation" type="string" size="255" uuid="9ecf651a-7938-4466-879c-3be12c9a4c69"/>
-      <field name="filename" type="string" size="255" uuid="c19b88ae-3087-460b-ae71-77a9ab14d390"/>
-      <field name="video_url" type="string" size="255" uuid="d475b487-9bcf-4014-84ed-6fe6050f181d"/>
-      <field name="other_content" type="boolean" uuid="87fac00c-45cb-4047-ba35-db1a058a599f"/>
-      <field name="created_by" type="integer" uuid="c717aac8-dfbd-41da-942a-7ab202254218"/>
-      <field name="created_at" type="datetime" uuid="b6155d41-2b01-40eb-89a1-3d563e95fc07"/>
-      <field name="updated_by" type="integer" uuid="367cc5ef-60e3-4a5c-98f2-c63deedab29a"/>
-      <field name="updated_at" type="datetime" uuid="bc22531d-1786-4deb-88f4-fb7844855cd9"/>
-      <orm-attributes>
-        <attribute name="repository-class">Repositories\MeetingItem</attribute>
-        <attribute name="table">meeting_item</attribute>
-        <attribute name="tableName">meeting_item</attribute>
-      </orm-attributes>
-    </entity>
-    <association from="\Entities\MeetingItem" to="\Entities\Meeting" owner-alias="MeetingItems" inverse-alias="Meeting" many-owner="true" many-inverse="false" uuid="2fe65b4f-c179-4c71-b5d0-e6177fdcea61">
-      <association-field from="meeting_id" to="id"/>
-    </association>
     <entity name="\Entities\NetworkInfo" local-name="NetworkInfo" namespace="\Entities" uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="72dd316f-2a45-4376-b4fe-c4332431c5c3"/>
       <field name="protocol" type="integer" uuid="f3135547-33cb-4a29-b729-38edc4dcf2a8"/>
@@ -1410,7 +1361,6 @@
     <association uuid="212269bb-5626-4a46-b864-1a94ecee88f3" center-position-x="-5" center-position-y="0" color="4288059030"/>
     <association uuid="263cdc09-054e-49c3-9b3e-c310b4edc711" center-position-x="0" center-position-y="-20" color="#969696"/>
     <association uuid="2c958365-0e49-4b74-b291-dedac8a85f74" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
-    <association uuid="2fe65b4f-c179-4c71-b5d0-e6177fdcea61" color="4288059030"/>
     <association uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="39ad3dd5-487b-4152-9190-558bd7e80668" center-position-x="-7" center-position-y="0" color="4288059030"/>
     <association uuid="3de69308-a3d5-4138-97be-111724303344" caption1-position-x="-1" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
@@ -1422,7 +1372,6 @@
     <association uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="619331cb-7c10-46c6-ac28-f46096e91407" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="670582b5-1394-4b90-b827-0a331ea5b4aa" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20" color="4288059030"/>
-    <association uuid="6aa96961-825e-462c-bccb-e68696cb64c0" color="4288059030"/>
     <association uuid="729deb72-6e14-4cec-9120-f722c6aeaa6a" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="73e14126-258d-4d70-b63e-7a90192e3492" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="879b2bdc-c0c5-4d23-b190-4a4b37cb7f68" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
@@ -1463,7 +1412,6 @@
     <association uuid="f68d03a0-7831-4bdb-847c-0b2c3fa091c9" center-position-x="-86" center-position-y="0" color="4288059030"/>
     <association uuid="f719e289-ecf6-4430-9e56-989348b61488" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="fea968fd-7ff8-437c-b90d-4f2e1e24cd6f" color="4288059030"/>
-    <entity uuid="005af367-611e-4b83-81c7-f6f36dc00d9f" bg-color="4294967295" hdr-color="4292006610" position-x="1378" position-y="597" size-x="0" size-x2="135" size-y="0" size-y2="255"/>
     <entity uuid="04946ae3-fa99-4cf0-a31a-f0b49f85c326" bg-color="4294967295" hdr-color="4292006610" position-x="1249" position-y="755" size-x="0" size-x2="112" size-y="0" size-y2="115"/>
     <entity uuid="04f83672-40da-4802-ad22-809cfd3ab549" bg-color="4294967295" hdr-color="4292006610" position-x="250" position-y="1009" size-x="0" size-x2="97" size-y="0" size-y2="73"/>
     <entity uuid="0617cfe2-0a29-4671-a9d6-5401bc911e43" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="595" position-y="350" size-x="0" size-x2="186" size-y="0" size-y2="465"/>
@@ -1506,10 +1454,9 @@
     <entity uuid="c10dc8b2-b201-42e8-83cf-cb3813a435d8" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="411" position-y="-492" size-x="0" size-x2="155" size-y="0" size-y2="129"/>
     <entity uuid="c2a2b054-bb69-48af-8f88-6a00f6fed667" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="531" position-y="-333" size-x="0" size-x2="132" size-y="0" size-y2="255"/>
     <entity uuid="cc05d49f-a5cf-4650-9300-be430837e73b" bg-color="4294967295" hdr-color="4292006610" position-x="356" position-y="417" size-x="0" size-x2="125" size-y="0" size-y2="213"/>
-    <entity uuid="ceaae170-210b-45f6-81b2-9094b57e3848" bg-color="4294967295" hdr-color="4292006610" position-x="1391" position-y="479" size-x="0" size-x2="114" size-y="0" size-y2="87"/>
+    <entity uuid="ceaae170-210b-45f6-81b2-9094b57e3848" bg-color="4294967295" hdr-color="4292006610" position-x="1244" position-y="637" size-x="0" size-x2="107" size-y="0" size-y2="87"/>
     <entity uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="554" position-y="103" size-x="0" size-x2="133" size-y="0" size-y2="73"/>
     <entity uuid="d776f08f-235f-4431-b5c8-60a6e13295f8" bg-color="4294967295" hdr-color="4292006610" position-x="960" position-y="475" size-x="0" size-x2="135" size-y="0" size-y2="87"/>
-    <entity uuid="d921acd2-7afa-40c6-b53e-73a113193916" bg-color="4294967295" hdr-color="4292006610" position-x="1153" position-y="545" size-x="0" size-x2="115" size-y="0" size-y2="185"/>
     <entity uuid="e2c63309-9c7b-44ea-a0be-cf770fe358fb" bg-color="4294967295" hdr-color="4292006610" position-x="11" position-y="881" size-x="0" size-x2="114" size-y="0" size-y2="115"/>
     <entity uuid="e64bc27c-d058-422a-987d-95e987418035" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1611" position-y="-334" size-x="0" size-x2="135" size-y="0" size-y2="143"/>
     <entity uuid="e8b4e227-f83c-413d-9e34-56dd493985fe" bg-color="4294967295" hdr-color="4292006610" position-x="808" position-y="464" size-x="0" size-x2="138" size-y="0" size-y2="157"/>

@@ -52,24 +52,6 @@ class DashboardController extends IXP_Controller_AuthRequiredAction
 
         $this->view->isSuperUser    = $this->getUser()->isSuperUser();
         $this->view->crossConnects = $this->getD2R( "\\Entities\\Customer" )->getCrossConnects( $this->getCustomer()->getId() );
-        /*
-            // is there a meeting available to register for?
-            $this->view->meeting = false;
-
-            if( ( $meeting = MeetingTable::getUpcomingMeeting() ) !== false
-                && ( !isset( $this->session->dashboard_skip_meeting ) || !$this->session->dashboard_skip_meeting )
-            )
-            {
-                $rsvp = $this->getUser()->hasPreference( 'meeting.attending.' . $meeting['id'] );
-
-                if( $rsvp === false )
-                {
-                    $this->view->meeting = $meeting;
-                    $this->view->meeting_pref = $rsvp;
-                }
-            }
-        */
-
 
         if( !$this->getCustomer()->isTypeAssociate() )
         {

@@ -56,17 +56,6 @@ return [
     // %ASN% is replaced with the customer's ASN
     'peeringdb_url' => "https://www.peeringdb.com/view.php?asn=%ASN%",
 
-    //;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    //
-    // Meeting RSVP Handler
-    //
-    // Members can RSVP for meetings via IXP Manager but this is currently
-    // broken and unlikely to be rekindled.
-    'meeting' => [
-        'rsvp_to_email' => "rsvp@example.com",
-        'rsvp_to_name'  => "Person Who Looks After This Stuff"
-    ],
-
     //;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     // Billing updates notifications
     //
