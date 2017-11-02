@@ -173,23 +173,4 @@ class AdminController extends IXP_Controller_AuthRequiredAction
         $this->view->byixp       = $admin_home_ctypes['byixp'];
     }
 
-    public function staticAction()
-    {
-        $page = $this->_request->getParam( 'page', null );
-
-        if( $page == null )
-            return( $this->_redirect( 'index' ) );
-
-        // does the requested static page exist? And if so, display it
-        if( preg_match( '/^[a-zA-Z0-9\-]+$/', $page ) > 0
-                && file_exists( APPLICATION_PATH . "/views/admin/static/{$page}.tpl" ) )
-        {
-            $this->view->display( "admin/static/{$page}.tpl" );
-        }
-        else
-        {
-            $this->addMessage( "The requested page was not found.", OSS_Message::ERROR );
-            $this->redirect( 'index' );
-        }
-    }
 }
