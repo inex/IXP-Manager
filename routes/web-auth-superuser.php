@@ -138,3 +138,7 @@ Route::group( [ 'prefix' => 'utils' ], function() {
     })->name('utils/phpinfo');
 
 });
+
+
+Route::get( 'search', 'SearchController@do' )->name( 'search' );
+
