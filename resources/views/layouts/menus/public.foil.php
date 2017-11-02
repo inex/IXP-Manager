@@ -48,7 +48,7 @@
                 </li>
 
                 <li class="">
-                    <a href="<?= url( '/static/support' ) ?>">Support</a>
+                    <a href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>">Support</a>
                 </li>
                 <li>
                     <a href="http://www.ixpmanager.org/" target="_blank">About</a>

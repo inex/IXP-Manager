@@ -1,25 +1,14 @@
-{tmplinclude file="header.phtml"}
+<?php
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' );
+?>
 
-{if $user->getPrivs() eq 3}
-    <ul class="breadcrumb">
-        <li>
-            <a href="{genUrl}">Home</a> <span class="divider">/</span>
-        </li>
-        <li>
-            Documentation <span class="divider">/</span>
-        </li>
-        <li class="active">
-            Connecting Switches
-        </li>
-    </ul>
+<?php $this->section( 'title' ) ?>
+    Connecting Switches to INEX
+<?php $this->append() ?>
 
-    <div>
-{else}
-    <div class="page-content">
-        <div class="page-header">
-            <h1>Connecting Switches to INEX</h1>
-        </div>
-{/if}
+
+<?php $this->section('content') ?>
 
 
 <p>
@@ -133,6 +122,4 @@ can be disabled on a per-interface basis using the following command:
 </pre>
 </p>
 
-</div>
-
-{tmplinclude file="footer.phtml"}
+<?php $this->append() ?>

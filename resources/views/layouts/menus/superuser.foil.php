@@ -69,7 +69,7 @@
                 </li>
 
                 <li class="">
-                    <a href="<?= url( '/static/support' ) ?>">Support</a>
+                    <a href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>">Support</a>
                 </li>
 
                 <?= $this->insert('staff-links'); ?>

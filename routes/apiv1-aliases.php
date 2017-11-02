@@ -16,3 +16,6 @@ Route::get('apiv1/member-list/list',                   'IXP\Http\Controllers\Api
 Route::get('apiv1/member-list/list/version/{version}', 'IXP\Http\Controllers\Api\V4\MemberExportController@ixf' );
 
 
+Route::get( 'static/support', function() {
+   return redirect( 'public-content/support' );
+});
