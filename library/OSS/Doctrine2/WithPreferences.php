@@ -603,7 +603,7 @@ trait OSS_Doctrine2_WithPreferences
      * NOTICE: Function required due to `$this->getPreferences()` iteration failure.
      * FIXME This should not be necessary
      *
-     * @return \Doctrine\Common\Collections\ArrayCollection
+     * @return \Doctrine\Common\Collections\ArrayCollection|array
      */
     public function _getPreferences()
     {
@@ -612,7 +612,11 @@ trait OSS_Doctrine2_WithPreferences
             $this->_getFullClassname(), $this->_getShortClassname(), $this->getId()
         );
 
-        return \Zend_Registry::get( 'd2em' )['default']->createQuery( $query )->getResult();
+        try {
+            return \Zend_Registry::get( 'd2em' )[ 'default' ]->createQuery( $query )->getResult();
+        } catch( Zend_Exception $e ) {
+            return D2EM::createQuery( $query )->getResult();
+        }
     }
 
     /**
