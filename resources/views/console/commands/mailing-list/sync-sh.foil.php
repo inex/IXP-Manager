@@ -1,5 +1,7 @@
 #! /bin/sh
 
+set -e
+
 #
 # Script for syncronising subscriptions between mailing lists and IXP Manager.
 #
