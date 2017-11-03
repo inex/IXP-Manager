@@ -85,7 +85,7 @@ class MailingListController extends Controller {
             return response()->json( $this->getMailingList( $listname )->getSubscriberEmails() );
         }
 
-        return response( implode( "\n", $this->getMailingList( $listname )->getSubscriberEmails() ),
+        return response( implode( "\n", $this->getMailingList( $listname )->getSubscriberEmails() ) . "\n",
             200, [ 'Content-Type' => 'text/plain; charset=utf-8' ] );
     }
 
@@ -103,7 +103,7 @@ class MailingListController extends Controller {
             return response()->json( $this->getMailingList( $listname )->getSubscriberEmails(false) );
         }
 
-        return response( implode( "\n", $this->getMailingList( $listname )->getSubscriberEmails(false) ),
+        return response( implode( "\n", $this->getMailingList( $listname )->getSubscriberEmails(false) ) . "\n",
             200, [ 'Content-Type' => 'text/plain; charset=utf-8' ] );
     }
 
