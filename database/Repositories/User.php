@@ -69,14 +69,15 @@ class User extends EntityRepository
      * Return an array of users subscribed (or not) to a given mailing list
      *
      * @param string $list The mailing list handle
-     * @param int Set to '0' to get a list of users not subscribed
+     * @param bool $subscribed Set to false to get a list of users not subscribed
+     * @param bool $withPassword Include passwords in the query
      * @return array Array of array of emails
      */
-    public function getMailingListSubscribers( $list, $subscribed = 1 )
-    {
-        $sql = "SELECT u.email AS email, u.password AS password
+    public function getMailingListSubscribers( string $list, bool $subscribed = true, bool $withPassword = true ): array {
+        $sql = "SELECT u.email AS email" . ( $withPassword ? ", u.password AS password" : "" ) . "
                     FROM \\Entities\\User u LEFT JOIN u.Preferences up
-                    WHERE up.attribute = ?1 AND up.value = ?2";
+                    WHERE up.attribute = ?1 AND up.value = ?2
+                    ORDER BY email ASC";
         
         return $this->getEntityManager()->createQuery( $sql )
             ->setParameter( 1, "mailinglist.{$list}.subscribed" )

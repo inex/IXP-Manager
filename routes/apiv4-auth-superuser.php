@@ -44,6 +44,21 @@ Route::post('user/formatted/{priv}/{template}', 'UserController@formatted');
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Mailing Lists
+//
+Route::group( [  'prefix' => 'mailing-list' ], function() {
+    Route::get( 'subscribers/{listname}',      'MailingListController@subscribers' );
+    Route::get( 'subscribers/json/{listname}', 'MailingListController@subscribers' );
+
+    Route::get( 'unsubscribed/{listname}',      'MailingListController@unsubscribed' );
+    Route::get( 'unsubscribed/json/{listname}', 'MailingListController@unsubscribed' );
+
+    Route::post( 'init/{listname}',      'MailingListController@init' );
+    Route::post( 'init/json/{listname}', 'MailingListController@init' );
+});
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // VLANs
 //
 // Returns a smokeping configuration for a given VLAN and protocol

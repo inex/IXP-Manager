@@ -130,6 +130,7 @@ return [
     |--------------------------------------------------------------------------
     */
     'custom_string_functions'   => [
+        'ANY_VALUE'      => DoctrineExtensions\Query\Mysql\AnyValue::class,
         'GROUP_CONCAT'   => DoctrineExtensions\Query\Mysql\GroupConcat::class,
     ],
 
