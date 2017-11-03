@@ -120,6 +120,8 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::post(    'members',         'StatisticsController@members' )->name( 'statistics/members' );
 });
 
+Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
+
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

@@ -77,7 +77,7 @@ Route::get( '/', function() {
     }
 
     if( Auth::user()->isSuperUser() ) {
-        return redirect( 'admin/index' );
+        return redirect( 'admin' );
     } else if( Auth::user()->isCustAdmin() ) {
         return redirect( 'contact/list' );
     } else {
