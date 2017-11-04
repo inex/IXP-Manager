@@ -5,6 +5,8 @@
 
 <?php $this->section('content') ?>
 
+    <?= $t->alerts() ?>
+
     <div class="col-md-6">
         <div class="row">
             <table class="table  table-striped">

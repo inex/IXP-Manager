@@ -27,6 +27,7 @@ use IXP\Services\Grapher\{Graph,Statistics};
 use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
 
 use Entities\Infrastructure as InfrastructureEntity;
+use Entities\User as UserEntity;
 
 use Auth;
 
@@ -115,7 +116,13 @@ class Infrastructure extends Graph {
             return $this->deny();
         }
 
-        return $this->allow();
+        if( config( 'grapher.access.infrastructure', -1 ) == UserEntity::AUTH_PUBLIC ) {
+            return $this->allow();
+        } else if( Auth::check() && Auth::user()->getPrivs() >= config( 'grapher.access.infrastructure', 0 ) ) {
+            return $this->allow();
+        }
+
+        return $this->deny();
     }
 
     /**
