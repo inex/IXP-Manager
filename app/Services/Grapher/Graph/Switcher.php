@@ -27,6 +27,7 @@ use IXP\Services\Grapher\{Graph,Statistics};
 use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
 
 use Entities\Switcher as SwitchEntity;
+use Entities\User as UserEntity;
 
 use Auth;
 
@@ -111,8 +112,13 @@ class Switcher extends Graph {
             return $this->allow();
         }
 
-        // public access to switch graphs
-        return $this->allow();
+        if( config( 'grapher.access.switch', -1 ) == UserEntity::AUTH_PUBLIC ) {
+            return $this->allow();
+        } else if( Auth::check() && Auth::user()->getPrivs() >= config( 'grapher.access.switch', 0 ) ) {
+            return $this->allow();
+        }
+
+        return $this->deny();
     }
 
     /**

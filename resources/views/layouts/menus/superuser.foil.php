@@ -44,20 +44,25 @@
                     echo $this->insert('header-documentation');
                 ?>
 
-                <li class="dropdown">
+                <li class="dropdown <?= !request()->is( 'statistics/*', 'weather-map/*' ) ?: 'active' ?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="<?= url('statistics/public') ?>">Overall Peering Graphs</a>
+                            <a href="<?= route( 'statistics/ixp' ) ?>">Overall Peering Graphs</a>
                         </li>
                         <li>
-                            <a href="<?= url('statistics/trunks') ?>">Inter-Switch / PoP Graphs</a>
+                            <a href="<?= route( 'statistics/infrastructure' ) ?>">Infrastructure Graphs</a>
                         </li>
                         <li>
-                            <a href="<?= url('statistics/switches') ?>">Switch Aggregate Graphs</a>
+                            <a href="<?= route('statistics/trunk') ?>">Inter-Switch / PoP Graphs</a>
+                        </li>
+                        <li>
+                            <a href="<?= route('statistics/switch') ?>">Switch Aggregate Graphs</a>
                         </li>
 
                         <?php if( is_array( config( 'ixp_tools.weathermap', false ) ) ): ?>
+
+                            <li class="divider"></li>
 
                             <?php foreach( config( 'ixp_tools.weathermap' ) as $k => $w ): ?>
                                 <li>
