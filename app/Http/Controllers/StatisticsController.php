@@ -24,19 +24,25 @@ namespace IXP\Http\Controllers;
 
 use App, D2EM;
 
-use IXP\Services\Grapher\Graph;
-
-use Illuminate\Http\Request;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\Cache;
-
 use Entities\{
     Customer         as CustomerEntity,
     Infrastructure   as InfrastructureEntity,
+    IXP              as IXPEntity,
+    Switcher         as SwitchEntity,
     VirtualInterface as VIEntity,
     Vlan             as VlanEntity,
     VlanInterface    as VlanInterfaceEntity
 };
+
+
+use Illuminate\View\View;
+use Illuminate\Support\Facades\Cache;
+
+use IXP\Http\Requests\StatisticsRequest;
+use IXP\Services\Grapher\Graph;
+use IXP\Utils\View\Alert\Alert;
+use IXP\Utils\View\Alert\Container as AlertContainer;
+
 
 /**
  * Statistics Controller
@@ -53,21 +59,161 @@ class StatisticsController extends Controller
      *
      * These are safe for use from the request.
      *
-     * @param \Illuminate\Http\Request $r
+     * @param StatisticsRequest $r
      */
-    private function processGraphParams( Request $r ) {
+    private function processGraphParams( StatisticsRequest $r ) {
         $r->period   = Graph::processParameterPeriod(   $r->input( 'period',   '' ) );
         $r->category = Graph::processParameterCategory( $r->input( 'category', '' ) );
         $r->protocol = Graph::processParameterProtocol( $r->input( 'protocol', '' ) );
         $r->type     = Graph::processParameterType(     $r->input( 'type',     '' ) );
     }
 
+
+    /**
+     * Show overall IXP graphs
+     *
+     * @param StatisticsRequest $r
+     * @param string $category Category of graph to show (e.g. bits / pkts)
+     * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function ixp( StatisticsRequest $r, string $category = Graph::CATEGORY_BITS )
+    {
+        $ixp      = D2EM::getRepository( IXPEntity::class )->getDefault();
+        $grapher  = App::make('IXP\Services\Grapher');
+        $category = Graph::processParameterCategory( $category, true );
+
+        $graph = $grapher->ixp( $ixp )->setType( Graph::TYPE_PNG )->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
+        $graph->authorise();
+
+        return view( 'statistics/ixp' )->with([
+            'graph'    => $graph,
+            'category' => $category,
+        ]);
+    }
+
+    /**
+     * Show IXP infrastructure graphs
+     *
+     * @param StatisticsRequest $r
+     * @param int $infraid ID of the infrastructure to show the graph of
+     * @param string $category Category of graph to show (e.g. bits / pkts)
+     * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function infrastructure( StatisticsRequest $r, int $infraid = 0, string $category = Graph::CATEGORY_BITS )
+    {
+        /** @var InfrastructureEntity[] $eInfras */
+        $eInfras  = D2EM::getRepository( InfrastructureEntity::class )->findBy( [], [ 'name' => 'ASC' ] );
+        $grapher  = App::make('IXP\Services\Grapher');
+        $category = Graph::processParameterCategory( $category, true );
+
+        $infras = [];
+        foreach( $eInfras as $i ) {
+            $infras[ $i->getId() ] = $i->getName();
+        }
+
+        $infraid  = isset( $infras[ $infraid ] ) ? $infraid : array_keys( $infras )[0];
+        $infra    = D2EM::getRepository( InfrastructureEntity::class )->find( $infraid );
+        $graph    = $grapher->infrastructure( $infra )->setType( Graph::TYPE_PNG )->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
+
+        $graph->authorise();
+
+        return view( 'statistics/infrastructure' )->with([
+            'infras'   => $infras,
+            'infraid'  => $infraid,
+            'infra'    => $infra,
+            'graph'    => $graph,
+            'category' => $category,
+        ]);
+    }
+
+    /**
+     * Show IXP switch graphs
+     *
+     * @param StatisticsRequest $r
+     * @param int $switchid ID of the switch to show the graph of
+     * @param string $category Category of graph to show (e.g. bits / pkts)
+     * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function switch( StatisticsRequest $r, int $switchid = 0, string $category = Graph::CATEGORY_BITS )
+    {
+        /** @var SwitchEntity[] $eSwitches */
+        $eSwitches = D2EM::getRepository( SwitchEntity::class )->getAndCache( true, SwitchEntity::TYPE_SWITCH );
+        $grapher = App::make('IXP\Services\Grapher');
+        $category = Graph::processParameterCategory( $category, true );
+
+        $switches = [];
+        foreach( $eSwitches as $s ) {
+            $switches[ $s->getId() ] = $s->getName();
+        }
+
+        $switchid = isset( $switches[ $switchid ] ) ? $switchid : array_keys( $switches )[0];
+        $switch   = D2EM::getRepository( SwitchEntity::class )->find( $switchid );
+        $graph    = $grapher->switch( $switch )->setType( Graph::TYPE_PNG )->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
+
+        $graph->authorise();
+
+        return view( 'statistics/switch' )->with([
+            'switches'  => $switches,
+            'switchid'  => $switchid,
+            'switch'    => $switch,
+            'graph'     => $graph,
+            'category'  => $category,
+        ]);
+    }
+
+
+    /**
+     * Show IXP trunk graphs
+     *
+     * @param StatisticsRequest $r
+     * @param string $trunkid ID of the trunk to show the graph of
+     * @param string $category Category of graph to show (e.g. bits / pkts)
+     * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     */
+    public function trunk( StatisticsRequest $r, string $trunkid = null, string $category = Graph::CATEGORY_BITS )
+    {
+        if( !is_array( config('grapher.backends.mrtg.trunks') ) || !count( config('grapher.backends.mrtg.trunks') ) ) {
+            AlertContainer::push(
+                "Trunk graphs have not been configured. Please see <a href=\"http://docs.ixpmanager.org/features/grapher/\">this documentation</a> for instructions.",
+                Alert::DANGER
+            );
+            return redirect('');
+        }
+
+        $grapher = App::make('IXP\Services\Grapher');
+
+        // get the available graphs
+        $images = [];
+        $graphs = [];
+        foreach( config('grapher.backends.mrtg.trunks') as $g ) {
+            $images[]           = $g['name'];
+            $graphs[$g['name']] = $g['title'];
+        }
+
+        if( !in_array( $trunkid, $images ) ) {
+            $trunkid = $images[ 0 ];
+        }
+
+        $graph = $grapher->trunk( $trunkid )->setType( Graph::TYPE_PNG )->setProtocol( Graph::PROTOCOL_ALL )->setCategory( Graph::CATEGORY_BITS );
+        $graph->authorise();
+
+        return view( 'statistics/trunk' )->with([
+            'graphs'    => $graphs,
+            'trunkid'   => $trunkid,
+            'graph'     => $graph,
+            'category'  => $category,
+        ]);
+    }
+
+
+
     /**
      * Display all member graphs
      *
+     * @param StatisticsRequest $r
      * @return  View
      */
-    public function members( Request $r ) : View {
+    public function members( StatisticsRequest $r ) : View {
 
         $grapher = App::make('IXP\Services\Grapher');
         $this->processGraphParams($r);
@@ -86,8 +232,6 @@ class StatisticsController extends Controller
             $targets = D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, true, false );
             $r->protocol = Graph::PROTOCOL_ALL;
         }
-
-
 
         $graphs = [];
         foreach( $targets as $t ) {

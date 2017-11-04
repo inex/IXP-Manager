@@ -23,21 +23,34 @@
                         <?php endif; ?>
                     </ul>
                 </li>
-                <li class="dropdown">
+                <li class="dropdown <?= !request()->is( 'statistics/*', 'weather-map/*' ) ?: 'active' ?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <li>
-                            <a href="<?php url( 'public-statistics/public' ) ?>">Overall Peering Graphs</a>
-                        </li>
-                        <li>
-                            <a href="<?php url( 'public-statistics/trunks' ) ?>">Inter-Switch / PoP Graphs</a>
-                        </li>
-                        <li>
-                            <a href="<?php url( 'public-statistics/switches' ) ?>">Switch Aggregate Graphs</a>
-                        </li>
-                        <li class="divider">
-                        </li>
+                        <?php if( config( 'grapher.access.ixp', Entities\User::AUTH_PUBLIC ) == Entities\User::AUTH_PUBLIC ): ?>
+                            <li>
+                                <a href="<?= route( 'statistics/ixp' ) ?>">Overall Peering Graphs</a>
+                            </li>
+                        <?php endif; ?>
+                        <?php if( config( 'grapher.access.infrastructure', Entities\User::AUTH_PUBLIC ) == Entities\User::AUTH_PUBLIC ): ?>
+                            <li>
+                                <a href="<?= route( 'statistics/infrastructure' ) ?>">Infrastructure Graphs</a>
+                            </li>
+                        <?php endif; ?>
+                        <?php if( config( 'grapher.access.trunk', Entities\User::AUTH_PUBLIC ) == Entities\User::AUTH_PUBLIC ): ?>
+                            <li>
+                                <a href="<?= route('statistics/trunk') ?>">Inter-Switch / PoP Graphs</a>
+                            </li>
+                        <?php endif; ?>
+                        <?php if( config( 'grapher.access.switch', Entities\User::AUTH_PUBLIC ) == Entities\User::AUTH_PUBLIC ): ?>
+                            <li>
+                                <a href="<?= route('statistics/switch') ?>">Switch Aggregate Graphs</a>
+                            </li>
+                        <?php endif; ?>
+
                         <?php if( is_array( config( 'ixp_tools.weathermap', false ) ) ): ?>
+
+                            <li class="divider"></li>
+
                             <?php foreach( config( 'ixp_tools.weathermap' ) as $k => $w ): ?>
                                 <li>
                                     <a href="<?= route( 'weathermap' , [ 'id' => $k ] ) ?>"><?= $w['menu'] ?></a>

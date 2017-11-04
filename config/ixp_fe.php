@@ -67,16 +67,4 @@ return [
 
     ],
     
-    /*
-    |--------------------------------------------------------------------------
-    | Should aggregate, trunk and switch graphs be public?
-    |--------------------------------------------------------------------------
-    |
-    */
-
-    'statistics' => [
-        'public' => env( 'IXP_FE_STATISTICS_PUBLIC', true ),
-    ],
-
-
 ];

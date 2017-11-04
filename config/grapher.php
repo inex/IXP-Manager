@@ -99,6 +99,26 @@ return [
         // All keys are prepended with 'grapher::'
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Access permissions
+    |--------------------------------------------------------------------------
+    |
+    | Most IXPs make aggregate graphs publically available. Namely IXP,
+    | infrastructure, switch and trunks. As such, this is our default.
+    |
+    | You can alter these settings to change these defaults to a specific user
+    | level.
+    |
+    | NB: if these are not defined, THEY DEFAULT TO PUBLIC ACCESS
+    |
+    */
+    'access' => [
+        'ixp'            => env( 'GRAPHER_ACCESS_IXP',            Entities\User::AUTH_PUBLIC ),
+        'infrastructure' => env( 'GRAPHER_ACCESS_INFRASTRUCTURE', Entities\User::AUTH_PUBLIC ),
+        'switch'         => env( 'GRAPHER_ACCESS_SWITCH',         Entities\User::AUTH_PUBLIC ),
+        'trunk'          => env( 'GRAPHER_ACCESS_TRUNK',          Entities\User::AUTH_PUBLIC ),
+    ],
 
 
     /*

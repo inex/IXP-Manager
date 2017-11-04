@@ -60,7 +60,10 @@
                             {* Add a skinned file in views/_skins/xxx/header-documentation.phtml for your IXP to override the sample *}
                             {tmplinclude file="header-documentation.phtml"}
 
-                            <li class="dropdown {if $controller eq 'statistics' or substr( $action, 0, 9 ) eq 'statistic' or $action eq 'traffic-stats' or $action eq 'trunk-graphs' or $action eq 'switch-graphs' or $controller eq 'weather-map'}active{/if}">
+                            <li class="dropdown
+                                    {if $controller eq 'statistics' or substr( $action, 0, 9 ) eq 'statistic' or $action eq 'traffic-stats' or $action eq 'trunk-graphs' or $action eq 'switch-graphs' or $controller eq 'weather-map'}active{/if}
+                                     <?= !request()->is( 'statistics/*', 'weather-map/*' ) ?: 'active' ?>
+                                ">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     {if $user->getPrivs() eq USER::AUTH_CUSTUSER and not $user->getCustomer()->isTypeAssociate()}
@@ -76,17 +79,21 @@
 
                                         <li class="divider"></li>
                                     {/if}
+                                    
                                     <li>
-                                        <a href="{genUrl controller="statistics" action="public"}">Overall Peering Graphs</a>
+                                        <a href="{route( 'statistics/ixp' )}">Overall Peering Graphs</a>
                                     </li>
                                     <li>
-                                        <a href="{genUrl controller="statistics" action="trunks"}">Inter-Switch / PoP Graphs</a>
+                                        <a href="{route( 'statistics/infrastructure' )}">Infrastructure Graphs</a>
                                     </li>
                                     <li>
-                                        <a href="{genUrl controller="statistics" action="switches"}">Switch Aggregate Graphs</a>
+                                        <a href="{route( 'statistics/trunk' )}">Inter-Switch / PoP Graphs</a>
                                     </li>
-                                    <li class="divider"></li>
+                                    <li>
+                                        <a href="{route( 'statistics/switch' )}">Switch Aggregate Graphs</a>
+                                    </li>
                                     {if is_array( config( 'ixp_tools.weathermap', false ) )}
+                                        <li class="divider"></li>
                                         {foreach from=config( 'ixp_tools.weathermap' ) key=k item=w}
                                             <li>
                                                 <a href="{route( 'weathermap', ['id' => {$k} ] ) }">{$w.menu}</a>
@@ -178,7 +185,7 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="{genUrl controller="public-statistics" action="public"}">Overall Peering Graphs</a>
+                                    <a href="{route( 'statistics/ixp' )}">Overall Peering Graphs</a>
                                 </li>
                                 <li>
                                     <a href="{genUrl controller="public-statistics" action="trunks"}">Inter-Switch / PoP Graphs</a>
