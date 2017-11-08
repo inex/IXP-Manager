@@ -136,10 +136,8 @@ echo -e "(these details can all be changed later - just hitting enter will set d
 
 # check to see if we have values from a previous run
 if [[ -f $IXPROOT/.ixp-manager-installer-settingsrc ]]; then
-    # shellcheck source=/srv/ixpmanager/.ixp-manager-installer-settingsrc
     . $IXPROOT/.ixp-manager-installer-settingsrc
 elif [[ -f /tmp/.ixp-manager-installer-settingsrc ]]; then
-    # shellcheck source=/srv/ixpmanager/.ixp-manager-installer-settingsrc
     . /tmp/.ixp-manager-installer-settingsrc
 else
     IXPNAME="Somecity Internet Exchange Point"
@@ -277,6 +275,13 @@ echo '[done]'
 echo -n "Doing a full system upgrade to ensure latest packages are installed (be patient)... "
 log_break && apt-get dist-upgrade -yq &>> /tmp/ixp-manager-install.log
 apt-get autoremove -yq &>> /tmp/ixp-manager-install.log
+echo '[done]'
+
+
+echo -n "Adding ppa:ondrej/php... "
+log_break && apt-get install -yq software-properties-common &>> /tmp/ixp-manager-install.log
+add-apt-repository -y ppa:ondrej/php &>> /tmp/ixp-manager-install.log
+apt-get update -q &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
 ##################################################################
