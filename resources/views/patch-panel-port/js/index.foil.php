@@ -54,7 +54,6 @@
 
     $( "a[id|='attach-file']" ).on( 'click', function(e){
         e.preventDefault();
-        console.log( 'dfsfsd' );
         let pppid = (this.id).substring(12);
         uploadPopup( pppid );
     });

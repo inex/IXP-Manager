@@ -114,10 +114,22 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
     });
 });
 
+Route::group( [ 'prefix' => 'address' ], function() {
+    Route::get(     'list/{protocol}/{vlanid?}',                'IpAddressController@list'              )->name(   'ipAddress@list'                 );
+    Route::get(     'delete/vlan/{vlan}/{network?}',            'IpAddressController@preDeleteForVlan'  )->name(   'ipAddress@preDeleteForVlan'     );
+    Route::post(    'delete/vlan/{vlan}/{network}',            'IpAddressController@preDeleteForVlan'  )->name(   'ipAddress@preDeleteForVlanPost' );
+    Route::get(     'add/{protocol}',                           'IpAddressController@add'               )->name(   'ipAddress@add'                  );
+    Route::post(    'store',                                    'IpAddressController@store'             )->name(   'ipAddress@store'                );
+    Route::post(    'delete/{protocol}/{id}',                   'IpAddressController@delete'            )->name(   'ipAddress@delete'               );
+    Route::post(    'delete/vlan',                              'IpAddressController@deleteForVlan'     )->name(   'ipAddress@deleteForVlan'        );
+
+});
+
 
 
 Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
 
+Route::get( 'search', 'SearchController@do' )->name( 'search' );
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -138,5 +150,5 @@ Route::group( [ 'prefix' => 'utils' ], function() {
 });
 
 
-Route::get( 'search', 'SearchController@do' )->name( 'search' );
+
 

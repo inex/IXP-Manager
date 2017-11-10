@@ -32,4 +32,43 @@ class IPv4Address extends EntityRepository
             ->getResult();
     }
 
+    /**
+     * Get all IPv4 address for listing on the frontend
+     *
+     * @param int $vlanid Get all IP for a vlan ?
+     *
+     * @return array All Ip address
+     */
+    public function getAllForList( int $vlanid = null )
+    {
+
+        $dql = "SELECT  ip.id as id, 
+                        ip.address as address,
+                        v.name AS vlan, 
+                        v.id as vlanid,
+                        vli.id AS vliid,
+                        vli.ipv4hostname AS hostname,
+                        c.name AS customer, 
+                        c.id AS customerid,
+                        vi.id AS viid
+                        
+                FROM Entities\\IPv4Address ip
+                LEFT JOIN ip.Vlan as v
+                LEFT JOIN ip.VlanInterface as vli
+                LEFT JOIN vli.VirtualInterface as vi
+                LEFT JOIN vi.Customer as c ";
+
+
+
+        if( $vlanid ) {
+            $dql .= " WHERE v.id = " . (int)$vlanid;
+        }
+
+        $dql .= " ORDER BY address ASC" ;
+
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getArrayResult();
+    }
 }

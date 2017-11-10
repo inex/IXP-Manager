@@ -48,7 +48,8 @@
         "php-ds/php-ds": "^1.1",
         "beberlei/DoctrineExtensions": "^1.0",
         "laravel-doctrine/extensions": "1.0.*",
-        "graham-campbell/flysystem": "^4.0"
+        "graham-campbell/flysystem": "^4.0",
+        "s1lentium/iptools": "^1.1"
 
     },
     "require-dev": {
