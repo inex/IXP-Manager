@@ -140,7 +140,7 @@ class IpAddressController extends Controller
      */
     public function store( StoreIpAddress $request ): RedirectResponse {
 
-        $network = explode( '/', $request->input('network' ) );
+        $network = explode( '/', trim( htmlspecialchars( $request->input('network' ) )  ) );
 
         // $network[ 0 ] => IP address, if exist $network[ 1 ] => subnet
         if( !filter_var( $network[ 0 ], FILTER_VALIDATE_IP ) ){
