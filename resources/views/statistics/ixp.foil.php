@@ -29,6 +29,10 @@
             <?php endforeach; ?>
         </select>
     </td>
+    <td width="20"></td>
+    <td>
+        <a class="btn btn-default" href="<?= route( 'statistics/infrastructure' ) ?>">Per-Infrastructure Graphs</a>
+    </td>
 </tr>
 </table>
 </form>

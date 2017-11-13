@@ -188,19 +188,22 @@
                                     <a href="{route( 'statistics/ixp' )}">Overall Peering Graphs</a>
                                 </li>
                                 <li>
-                                    <a href="{genUrl controller="public-statistics" action="trunks"}">Inter-Switch / PoP Graphs</a>
+                                    <a href="{route( 'statistics/infrastructure' )}">Infrastructure Graphs</a>
                                 </li>
                                 <li>
-                                    <a href="{genUrl controller="public-statistics" action="switches"}">Switch Aggregate Graphs</a>
+                                    <a href="{route( 'statistics/trunk' )}">Inter-Switch / PoP Graphs</a>
+                                </li>
+                                <li>
+                                    <a href="{route( 'statistics/switch' )}">Switch Aggregate Graphs</a>
                                 </li>
                                 <li class="divider"></li>
-                                {if is_array( config( 'ixp_tools.weathermap', false ) )}
-                                    {foreach from=config( 'ixp_tools.weathermap' ) key=k item=w}
-                                        <li>
-                                            <a href="{route( 'weathermap', ['id' => {$k} ] ) }">{$w.menu}</a>
-                                        </li>
-                                    {/foreach}
-                                {/if}
+                                    {if is_array( config( 'ixp_tools.weathermap', false ) )}
+                                        {foreach from=config( 'ixp_tools.weathermap' ) key=k item=w}
+                                            <li>
+                                                <a href="{route( 'weathermap', ['id' => {$k} ] ) }">{$w.menu}</a>
+                                            </li>
+                                        {/foreach}
+                                    {/if}
                             </ul>
                         </li>
 

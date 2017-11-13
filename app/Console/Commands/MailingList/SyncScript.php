@@ -71,6 +71,10 @@ class SyncScript extends MailingList {
      */
     public function handle(): int {
 
+        if( !config( 'mailinglists.enabled' ) ) {
+            die( "Mailing list functionality is disabled. See: http://docs.ixpmanager.org/features/mailing-lists/\n" );
+        }
+        
         // do we have mailing lists defined?
         if( !is_array( config( 'mailinglists.lists' ) ) || !count( config( 'mailinglists.lists' ) ) ) {
             $this->error( "No valid mailing lists defined in config/mailinglist.php" );
