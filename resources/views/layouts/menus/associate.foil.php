@@ -95,9 +95,6 @@
                         <li>
                             <a href="<?= url( '/profile' ) ?>">Profile</a>
                         </li>
-                        <li>
-                            <a href="<?= route('api-key@list' )?>">API Keys</a>
-                        </li>
                         <li class="divider"></li>
                         <li>
                             <a href="<?php url( 'auth/logout' ) ?>">Logout</a>

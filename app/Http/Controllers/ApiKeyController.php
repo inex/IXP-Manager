@@ -26,7 +26,8 @@ namespace IXP\Http\Controllers;
 use Auth, D2EM, Redirect, Route;
 
 use Entities\{
-    ApiKey      as ApiKeyEntity
+    ApiKey      as ApiKeyEntity,
+    User        as UserEntity
 };
 
 use IXP\Utils\View\Alert\{
@@ -58,6 +59,16 @@ class ApiKeyController extends Doctrine2Frontend {
     protected $object = null;
 
     /**
+     * The minimum privileges required to access this controller.
+     *
+     * If you set this to less than the superuser, you need to manage privileges and access
+     * within your own implementation yourself.
+     *
+     * @var int
+     */
+    public static $minimum_privilege = UserEntity::AUTH_CUSTUSER;
+
+    /**
      * This function sets up the frontend controller
      */
     public function feInit(){
@@ -68,7 +79,7 @@ class ApiKeyController extends Doctrine2Frontend {
             'pagetitle'         => 'API Keys',
 
             'titleSingular'     => 'API Key',
-            'nameSingular'      => 'an API Key',
+            'nameSingular'      => 'an API key',
 
             'listOrderBy'       => 'created',
             'listOrderByDir'    => 'ASC',
@@ -98,11 +109,22 @@ class ApiKeyController extends Doctrine2Frontend {
         // display the same information in the view as the list
         $this->feParams->viewColumns = $this->feParams->listColumns;
 
+        // custom access controls:
+        switch( Auth::user()->getPrivs() ) {
+            case UserEntity::AUTH_SUPERUSER:
+            case UserEntity::AUTH_CUSTUSER:
+                break;
+
+            default:
+                abort( 403 );
+        }
 
     }
 
+    /**
+     * @inheritdoc
+     */
     public static function routes() {
-
         Route::group( [ 'prefix' => 'api-key' ], function() {
             Route::get(  'list',    'ApiKeyController@list'     )->name( 'api-key@list'     );
             Route::get(  'add',     'ApiKeyController@add'      )->name( 'api-key@add'      );
@@ -117,7 +139,7 @@ class ApiKeyController extends Doctrine2Frontend {
      * @return array
      */
     protected function listGetData( $id = null ) {
-        return D2EM::getRepository( ApiKeyEntity::class )->getAllForFeList( $this->feParams, $id );
+        return D2EM::getRepository( ApiKeyEntity::class )->getAllForFeList( $this->feParams, Auth::user()->getId() );
     }
 
     /**
@@ -132,17 +154,16 @@ class ApiKeyController extends Doctrine2Frontend {
         }
 
         $key = new ApiKeyEntity;
-        D2EM::persist( $key );
 
         $key->setUser(          Auth::user()    );
         $key->setCreated(       new \DateTime   );
-        $key->setAllowedIPs(    ''      );
-        $key->setExpires(       null    );
-        $key->setLastseenFrom(  ''      );
-        $key->setApiKey(        OSS_String::random( 48, true, true, true, '', '' ) );
+        $key->setAllowedIPs(    ''              );
+        $key->setExpires(       null            );
+        $key->setLastseenFrom(  ''              );
+        $key->setApiKey(        str_random(48)  );
 
+        D2EM::persist( $key );
         Auth::user()->addApiKey( $key );
-
         D2EM::flush();
 
         AlertContainer::push( "Your new API key has been created - <code>" . $key->getApiKey() . "</code>", Alert::SUCCESS );
