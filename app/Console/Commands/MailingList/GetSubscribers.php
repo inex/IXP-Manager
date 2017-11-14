@@ -63,6 +63,10 @@ class GetSubscribers extends MailingList {
      */
     public function handle(): int {
 
+        if( !config( 'mailinglists.enabled' ) ) {
+            die( "Mailing list functionality is disabled. See: http://docs.ixpmanager.org/features/mailing-lists/\n" );
+        }
+
         $ml = new ML( $this->argument('list') );
 
         if( $this->option('format') == 'json' ) {

@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+## VAGRANT provisioning script
+##
+## Barry O'Donovan 2015-2017
+
 apt update
 
 # Defaults for MySQL and phpMyAdmin:
@@ -10,16 +14,19 @@ echo 'phpmyadmin phpmyadmin/app-password-confirm password password' | debconf-se
 echo 'phpmyadmin phpmyadmin/mysql/admin-pass password password' | debconf-set-selections
 echo 'phpmyadmin phpmyadmin/mysql/app-pass password password' | debconf-set-selections
 echo 'phpmyadmin phpmyadmin/reconfigure-webserver multiselect apache2' | debconf-set-selections
+echo 'mrtg mrtg/conf_mods boolean true' | debconf-set-selections
+
+apt-get install -y software-properties-common
+add-apt-repository -y ppa:ondrej/php
+apt-get update
 
 apt full-upgrade -y
+apt autoremove -y
 
-apt install -y apache2 php7.0 php7.0-intl php7.0-mysql php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt \
-    php-memcached libapache2-mod-php7.0 mysql-server mysql-client php-mysql joe memcached snmp nodejs nodejs-legacy npm    \
-    build-essential php7.0-mbstring php7.0-xml phpmyadmin php-gettext bgpq3 screen joe curl git php-memcache unzip php-zip \
-    rrdtool php-yaml
-
-# ubuntu/xenial64 oddity:
-ln -s /etc/php/mods-available/rrd.ini /etc/php/7.0/apache2/conf.d/20-rrd.ini
+apt-get install -y apache2 php7.0 php7.0-intl php7.0-mysql php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt \
+    php-memcached libapache2-mod-php7.0 mysql-server mysql-client php-mysql memcached snmp nodejs nodejs-legacy npm            \
+    php7.0-mbstring php7.0-xml php7.0-gd php-gettext bgpq3 php-memcache unzip php-zip git php-yaml php-ds                      \
+    libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl
 
 if ! [ -L /var/www ]; then
   rm -rf /var/www
@@ -47,10 +54,10 @@ fi
 
 if [[ -f /vagrant/.env ]]; then
     cp /vagrant/.env /vagrant/.env.by-vagrant.$$
-else
-    cp /vagrant/.env.vagrant /vagrant/.env
-    php /vagrant/artisan key:generate --force
 fi
+
+cat /vagrant/.env.vagrant > /vagrant/.env
+php /vagrant/artisan key:generate --force
 
 
 cd /vagrant
