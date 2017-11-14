@@ -129,9 +129,9 @@
                                                 <?= sprintf( $cconf[ 'sprintf' ], $t->ee( $row[ $col ] ) ) ?>
 
                                             <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
-
-                                                <?= date('Y-m-d H:M:S', strtotime($row[ $col ] ) ) ?>
-
+                                                <?php if( $row[ $col ] != null): ?>
+                                                    <?= $row[ $col ]->format( 'Y-m-d H:i:s' )  ?>
+                                                <?php endif; ?>
                                             <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
 
                                                 <?= date('Y-m-d', strtotime( $row[ $col ] ) ) ?>

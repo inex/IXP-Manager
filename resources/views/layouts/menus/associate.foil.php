@@ -96,7 +96,7 @@
                             <a href="<?= url( '/profile' ) ?>">Profile</a>
                         </li>
                         <li>
-                            <a href="<?= url( '/api-key' ) ?>">API Keys</a>
+                            <a href="<?= route('api-key@list' )?>">API Keys</a>
                         </li>
                         <li class="divider"></li>
                         <li>

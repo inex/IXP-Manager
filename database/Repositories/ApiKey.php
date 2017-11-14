@@ -2,6 +2,8 @@
 
 namespace Repositories;
 
+use Auth;
+
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -12,4 +14,39 @@ use Doctrine\ORM\EntityRepository;
  */
 class ApiKey extends EntityRepository
 {
+    /**
+     * Get all api keys for listing on the frontend CRUD
+     *
+     * @see \IXP\Http\Controller\Doctrine2Frontend
+     *
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     * @return array Array of infrastructures (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeList( \stdClass $feParams, int $id = null )
+    {
+        $dql = "SELECT  a.id AS id, 
+                        a.apiKey as apiKey, 
+                        a.created AS created,
+                        a.expires AS expires,
+                        a.lastseenAt AS lastseenAt,
+                        a.lastseenFrom AS lastseenFrom
+                FROM Entities\\ApiKey a
+                LEFT JOIN a.User u
+                WHERE u.id = ".Auth::user()->getId();
+
+        if( $id ) {
+            $dql .= " AND a.id = " . (int)$id;
+        }
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getArrayResult();
+    }
 }
