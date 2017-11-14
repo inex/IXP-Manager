@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Redirect;
+use Auth, D2EM, Redirect, Route;
 
 use Entities\{
     ApiKey      as ApiKeyEntity
@@ -101,6 +101,14 @@ class ApiKeyController extends Doctrine2Frontend {
 
     }
 
+    public static function routes() {
+
+        Route::group( [ 'prefix' => 'api-key' ], function() {
+            Route::get(  'list',    'ApiKeyController@list'     )->name( 'api-key@list'     );
+            Route::get(  'add',     'ApiKeyController@add'      )->name( 'api-key@add'      );
+            Route::post( 'delete',  'ApiKeyController@delete'   )->name( 'api-key@delete'   );
+        });
+    }
 
     /**
      * Provide array of rows for the list action and view action
