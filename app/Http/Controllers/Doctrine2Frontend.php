@@ -250,9 +250,11 @@ abstract class Doctrine2Frontend extends Controller {
      * View an object
      *
      * @param int $id The `id` of the row to load for `view` action.
+     * @param int|string|boolean $param accessory param
+     *
      * @return View
      */
-    public function view( $id ): View
+    public function view( $id, $param = null ): View
     {
         $this->data[ 'item' ]               = $this->viewGetData( $id ) ;
 

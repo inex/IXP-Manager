@@ -2,6 +2,27 @@
 
 namespace Repositories;
 
+/*
+ * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -61,6 +82,47 @@ class User extends EntityRepository
             $q->setMaxResults( $limit );
         
         return $q->getScalarResult();
+    }
+
+    /**
+     * Return an array of users with their last login time ordered from most recent to oldest. (DQL)
+     *
+     * As an example, an element of the returned array contains:
+     *
+     *     [0] => array(6) {
+     *         ["attribute"] => string(18) "auth.last_login_at"
+     *         ["lastlogin"] => string(10) "1338329771"
+     *         ["username"]  => string(4) "auser"
+     *         ["email"]     => string(12) "auser@example.com"
+     *         ["cust_name"] => string(4) "INEX"
+     *         ["cust_id"]   => string(2) "15"
+     *     }
+     *
+     * @param \stdClass $feParams
+     *
+     * @return array Users with their last login time ordered from most recent to oldest.
+     */
+    public function getLastLoginsForFeList( $feParams )
+    {
+        $dql = "SELECT  up.attribute AS attribute, 
+                        up.value AS lastlogin, 
+                        u.username AS username,
+                        u.email AS email, 
+                        c.name AS cust_name, 
+                        c.id AS cust_id, 
+                        u.id AS id
+                    FROM Entities\\UserPreference up
+                        JOIN up.User u
+                        JOIN u.Customer c
+                    WHERE up.attribute = 'auth.last_login_at'";
+
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
     }
 
 
