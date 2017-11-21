@@ -136,10 +136,8 @@ echo -e "(these details can all be changed later - just hitting enter will set d
 
 # check to see if we have values from a previous run
 if [[ -f $IXPROOT/.ixp-manager-installer-settingsrc ]]; then
-    # shellcheck source=/srv/ixpmanager/.ixp-manager-installer-settingsrc
     . $IXPROOT/.ixp-manager-installer-settingsrc
 elif [[ -f /tmp/.ixp-manager-installer-settingsrc ]]; then
-    # shellcheck source=/srv/ixpmanager/.ixp-manager-installer-settingsrc
     . /tmp/.ixp-manager-installer-settingsrc
 else
     IXPNAME="Somecity Internet Exchange Point"
@@ -279,6 +277,13 @@ log_break && apt-get dist-upgrade -yq &>> /tmp/ixp-manager-install.log
 apt-get autoremove -yq &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
+
+echo -n "Adding ppa:ondrej/php... "
+log_break && apt-get install -yq software-properties-common &>> /tmp/ixp-manager-install.log
+add-apt-repository -y ppa:ondrej/php &>> /tmp/ixp-manager-install.log
+apt-get update -q &>> /tmp/ixp-manager-install.log
+echo '[done]'
+
 ##################################################################
 ### MySQL Password
 ##################################################################
@@ -298,7 +303,7 @@ echo mrtg mrtg/conf_mods boolean true | debconf-set-selections
 
 log_break && apt-get install -qy apache2 php7.0 php7.0-intl php7.0-mysql php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt \
     php-memcached libapache2-mod-php7.0 mysql-server mysql-client php-mysql memcached snmp nodejs nodejs-legacy npm     \
-    php7.0-mbstring php7.0-xml php7.0-gd php-gettext bgpq3 php-memcache unzip php-zip git php-yaml                      \
+    php7.0-mbstring php7.0-xml php7.0-gd php-gettext bgpq3 php-memcache unzip php-zip git php-yaml php-ds               \
     libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl      \
         &>> /tmp/ixp-manager-install.log
 echo '[done]'

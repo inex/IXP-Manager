@@ -107,7 +107,8 @@ class Infrastructure extends EntityRepository
                 "SELECT i
                     FROM Entities\\Infrastructure i
                     JOIN i.IXP ixp
-                    WHERE ixp = :ixp"
+                    WHERE ixp = :ixp
+                    ORDER BY i.name ASC"
             )
             ->setParameter( 'ixp', $ixp )
             ->useResultCache( true, 7200, self::CACHE_KEY_ALL )

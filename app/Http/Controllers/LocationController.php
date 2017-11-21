@@ -54,6 +54,7 @@ class LocationController extends Doctrine2Frontend {
      */
     protected $object = null;
 
+    protected static $route_prefix = "facility";
     /**
      * This function sets up the frontend controller
      */
@@ -62,10 +63,10 @@ class LocationController extends Doctrine2Frontend {
         $this->feParams = (object)[
             'entity'            => LocationEntity::class,
 
-            'pagetitle'         => 'Locations',
+            'pagetitle'         => 'Facilities',
 
-            'titleSingular'     => 'Location',
-            'nameSingular'      => 'a location',
+            'titleSingular'     => 'Facility',
+            'nameSingular'      => 'a facility',
 
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
@@ -196,7 +197,7 @@ class LocationController extends Doctrine2Frontend {
      */
     protected function preDelete(): bool {
         if( ( $cnt = count( $this->object->getCabinets() ) ) ) {
-            AlertContainer::push( "Could not delete the location ({$this->object->getName()}) as at least one cabinet is located here. Reassign or delete the cabinet first.", Alert::DANGER );
+            AlertContainer::push( "Could not delete the Facility ({$this->object->getName()}) as at least one rack is located here. Reassign or delete the rack first.", Alert::DANGER );
             return false;
         }
 

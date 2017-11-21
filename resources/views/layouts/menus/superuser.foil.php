@@ -24,11 +24,6 @@
                         <li>
                             <a href="{genUrl controller="customer" action="details"}">Member Details</a>
                         </li>
-                        <?php if( !config( 'ixp_fe.frontend.disabled.meeting', true ) ): ?>
-                            <li>
-                                <a href="{genUrl controller="meeting" action="read"}">Meetings</a>
-                            </li>
-                        <?php endif; ?>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -49,22 +44,29 @@
                     echo $this->insert('header-documentation');
                 ?>
 
-                <li class="dropdown">
+                <li class="dropdown <?= !request()->is( 'statistics/*', 'weather-map/*' ) ?: 'active' ?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="<?= url('statistics/public') ?>">Overall Peering Graphs</a>
+                            <a href="<?= route( 'statistics/ixp' ) ?>">Overall Peering Graphs</a>
                         </li>
                         <li>
-                            <a href="<?= url('statistics/trunks') ?>">Inter-Switch / PoP Graphs</a>
+                            <a href="<?= route( 'statistics/infrastructure' ) ?>">Infrastructure Graphs</a>
                         </li>
                         <li>
-                            <a href="<?= url('statistics/switches') ?>">Switch Aggregate Graphs</a>
+                            <a href="<?= route('statistics/trunk') ?>">Inter-Switch / PoP Graphs</a>
                         </li>
+                        <li>
+                            <a href="<?= route('statistics/switch') ?>">Switch Aggregate Graphs</a>
+                        </li>
+
                         <?php if( is_array( config( 'ixp_tools.weathermap', false ) ) ): ?>
+
+                            <li class="divider"></li>
+
                             <?php foreach( config( 'ixp_tools.weathermap' ) as $k => $w ): ?>
                                 <li>
-                                    <a href="<?= url( '/weather-map/index/id/' . $k ) ?>"><?= $w['menu'] ?></a>
+                                    <a href="<?= route( 'weathermap' , [ 'id' => $k ] ) ?>"><?= $w['menu'] ?></a>
                                 </li>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -72,7 +74,7 @@
                 </li>
 
                 <li class="">
-                    <a href="<?= url( '/static/support' ) ?>">Support</a>
+                    <a href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>">Support</a>
                 </li>
 
                 <?= $this->insert('staff-links'); ?>
@@ -80,12 +82,12 @@
             <ul class="nav navbar-nav pull-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account<b class="caret"></b></a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu dropdown-menu-right">
                         <li>
                             <a href="<?= url('profile') ?>">Profile</a>
                         </li>
                         <li>
-                            <a href="<?= url('api-key' )?>">API Keys</a>
+                            <a href="<?= route('api-key@list' )?>">API Keys</a>
                         </li>
                         <li class="divider"></li>
                         <li>

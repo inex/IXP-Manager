@@ -65,9 +65,6 @@
       <excludeFolder url="file://$MODULE_DIR$/vendor/ocramius/package-versions" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/ocramius/proxy-manager" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/opensolutions/oss-snmp" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/oss2/auth" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/oss2/doctrine2" />
-      <excludeFolder url="file://$MODULE_DIR$/vendor/oss2/var-utils" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phar-io/manifest" />
       <excludeFolder url="file://$MODULE_DIR$/vendor/phar-io/version" />
@@ -190,9 +187,6 @@
           <root url="file://$MODULE_DIR$/vendor/nesbot/carbon" />
           <root url="file://$MODULE_DIR$/vendor/nikic/php-parser" />
           <root url="file://$MODULE_DIR$/vendor/opensolutions/oss-snmp" />
-          <root url="file://$MODULE_DIR$/vendor/oss2/auth" />
-          <root url="file://$MODULE_DIR$/vendor/oss2/doctrine2" />
-          <root url="file://$MODULE_DIR$/vendor/oss2/var-utils" />
           <root url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
           <root url="file://$MODULE_DIR$/vendor/phar-io/manifest" />
           <root url="file://$MODULE_DIR$/vendor/phar-io/version" />
@@ -310,9 +304,6 @@
           <root url="file://$MODULE_DIR$/vendor/nesbot/carbon" />
           <root url="file://$MODULE_DIR$/vendor/nikic/php-parser" />
           <root url="file://$MODULE_DIR$/vendor/opensolutions/oss-snmp" />
-          <root url="file://$MODULE_DIR$/vendor/oss2/auth" />
-          <root url="file://$MODULE_DIR$/vendor/oss2/doctrine2" />
-          <root url="file://$MODULE_DIR$/vendor/oss2/var-utils" />
           <root url="file://$MODULE_DIR$/vendor/paragonie/random_compat" />
           <root url="file://$MODULE_DIR$/vendor/phar-io/manifest" />
           <root url="file://$MODULE_DIR$/vendor/phar-io/version" />

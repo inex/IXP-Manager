@@ -64,10 +64,10 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Preferences', 'Customer', 'Children', 'Meetings', 'Contact', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', '_className', '_preferenceClassName', '' . "\0" . 'Entities\\User' . "\0" . '_cache', '' . "\0" . 'Entities\\User' . "\0" . '_namespace'];
+            return ['__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Preferences', 'Customer', 'Children', 'Contact', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', '_className', '_preferenceClassName', '' . "\0" . 'Entities\\User' . "\0" . '_cache', '' . "\0" . 'Entities\\User' . "\0" . '_namespace'];
         }
 
-        return ['__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Preferences', 'Customer', 'Children', 'Meetings', 'Contact', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', '_className', '_preferenceClassName', '' . "\0" . 'Entities\\User' . "\0" . '_cache', '' . "\0" . 'Entities\\User' . "\0" . '_namespace'];
+        return ['__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Preferences', 'Customer', 'Children', 'Contact', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', '_className', '_preferenceClassName', '' . "\0" . 'Entities\\User' . "\0" . '_cache', '' . "\0" . 'Entities\\User' . "\0" . '_namespace'];
     }
 
     /**
@@ -538,39 +538,6 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeChildren', [$children]);
 
         return parent::removeChildren($children);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addMeeting(\Entities\Meeting $meetings)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addMeeting', [$meetings]);
-
-        return parent::addMeeting($meetings);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeMeeting(\Entities\Meeting $meetings)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeMeeting', [$meetings]);
-
-        return parent::removeMeeting($meetings);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getMeetings()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMeetings', []);
-
-        return parent::getMeetings();
     }
 
     /**

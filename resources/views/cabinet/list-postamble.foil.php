@@ -1,9 +1,12 @@
 
 <br><br>
 <div class="well">
-    <h3>Cabinets</h3>
+    <h3>Racks</h3>
     <p>
-        Cabinets in IXP Manager are racks that exist in your locations (data centres / points of presence / facilities). A cabinet contains your switches, patch panels, etc.
+        Racks in IXP Manager exist in your facilities (data centres / points of presence / locations). A rack contains your switches, patch panels, etc.
+    </p>
+    <p>
+        <em>In previous versions of IXP Manager, racks were referred to as cabinets and the backend schema still uses this older terminology.</em>
     </p>
 </div>
 

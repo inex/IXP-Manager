@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "cc2d6e180dad2e6c9dfcf89c1a4e7e6f",
+    "content-hash": "7fc906b93d8794dd4cd8ddfc5940aa24",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -899,16 +899,16 @@
         },
         {
             "name": "doctrine/orm",
-            "version": "v2.5.11",
+            "version": "v2.5.12",
             "source": {
                 "type": "git",
                 "url": "https://github.com/doctrine/doctrine2.git",
-                "reference": "249b737094f1e7cba4f0a8d19acf5be6cf3ed504"
+                "reference": "984535cadc609e9eef8c89414aa3568ee97aa79f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/249b737094f1e7cba4f0a8d19acf5be6cf3ed504",
-                "reference": "249b737094f1e7cba4f0a8d19acf5be6cf3ed504",
+                "url": "https://api.github.com/repos/doctrine/doctrine2/zipball/984535cadc609e9eef8c89414aa3568ee97aa79f",
+                "reference": "984535cadc609e9eef8c89414aa3568ee97aa79f",
                 "shasum": ""
             },
             "require": {
@@ -919,11 +919,11 @@
                 "doctrine/instantiator": "^1.0.1",
                 "ext-pdo": "*",
                 "php": ">=5.4",
-                "symfony/console": "~2.5|~3.0"
+                "symfony/console": "~2.5|~3.0|~4.0"
             },
             "require-dev": {
                 "phpunit/phpunit": "~4.0",
-                "symfony/yaml": "~2.3|~3.0"
+                "symfony/yaml": "~2.3|~3.0|~4.0"
             },
             "suggest": {
                 "symfony/yaml": "If you want to use YAML Metadata Mapping Driver"
@@ -971,7 +971,7 @@
                 "database",
                 "orm"
             ],
-            "time": "2017-09-18T06:50:20+00:00"
+            "time": "2017-10-23T18:21:04+00:00"
         },
         {
             "name": "dompdf/dompdf",
@@ -2070,16 +2070,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.5.17",
+            "version": "v5.5.19",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "3a16d196bd8d2b7761c9b0060a30a3687c3ea201"
+                "reference": "c678100e84934ec85c9f8bc26bd0a60222682719"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/3a16d196bd8d2b7761c9b0060a30a3687c3ea201",
-                "reference": "3a16d196bd8d2b7761c9b0060a30a3687c3ea201",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/c678100e84934ec85c9f8bc26bd0a60222682719",
+                "reference": "c678100e84934ec85c9f8bc26bd0a60222682719",
                 "shasum": ""
             },
             "require": {
@@ -2120,7 +2120,6 @@
                 "illuminate/database": "self.version",
                 "illuminate/encryption": "self.version",
                 "illuminate/events": "self.version",
-                "illuminate/exception": "self.version",
                 "illuminate/filesystem": "self.version",
                 "illuminate/hashing": "self.version",
                 "illuminate/http": "self.version",
@@ -2198,7 +2197,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2017-10-17T12:19:22+00:00"
+            "time": "2017-10-25T19:10:45+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -2841,131 +2840,6 @@
             "time": "2017-09-30T15:41:27+00:00"
         },
         {
-            "name": "oss2/auth",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/oss2/auth.git",
-                "reference": "abd64db0fc866a312adeb8ccca631a872b754eff"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/oss2/auth/zipball/abd64db0fc866a312adeb8ccca631a872b754eff",
-                "reference": "abd64db0fc866a312adeb8ccca631a872b754eff",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": "5.*",
-                "php": ">=5.5.0"
-            },
-            "require-dev": {
-                "mockery/mockery": "~0.9",
-                "orchestra/testbench": "2.2.*",
-                "phpunit/phpunit": "4.1.*"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Oss2\\Auth": "src/"
-                }
-            },
-            "authors": [
-                {
-                    "name": "Barry O'Donovan",
-                    "email": "barry@opensolutions.ie"
-                }
-            ],
-            "description": "Laravel authentication with frontend API / pages and enhanced with extensions",
-            "support": {
-                "source": "https://github.com/oss2/auth/tree/master",
-                "issues": "https://github.com/oss2/auth/issues"
-            },
-            "time": "2015-02-21T10:47:21+00:00"
-        },
-        {
-            "name": "oss2/doctrine2",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/oss2/doctrine2.git",
-                "reference": "76d42678b28d0d4fe25f09271b76262280de3d97"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/oss2/doctrine2/zipball/76d42678b28d0d4fe25f09271b76262280de3d97",
-                "reference": "76d42678b28d0d4fe25f09271b76262280de3d97",
-                "shasum": ""
-            },
-            "require": {
-                "doctrine/orm": "2.*",
-                "illuminate/support": ">=4.0",
-                "php": ">=5.4.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Oss2\\Doctrine2": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Barry O'Donovan",
-                    "email": "barry@opensolutions.ie"
-                }
-            ],
-            "description": "Class, traits, helpers and other tools for Doctine2",
-            "homepage": "https://github.com/oss2/doctrine2",
-            "support": {
-                "source": "https://github.com/oss2/doctrine2/tree/master",
-                "issues": "https://github.com/oss2/doctrine2/issues"
-            },
-            "time": "2015-02-04T20:35:14+00:00"
-        },
-        {
-            "name": "oss2/var-utils",
-            "version": "dev-master",
-            "source": {
-                "type": "git",
-                "url": "https://github.com/oss2/var-utils.git",
-                "reference": "ad1422bd7df91cf2389496d88e5f62d8abfae84e"
-            },
-            "dist": {
-                "type": "zip",
-                "url": "https://api.github.com/repos/oss2/var-utils/zipball/ad1422bd7df91cf2389496d88e5f62d8abfae84e",
-                "reference": "ad1422bd7df91cf2389496d88e5f62d8abfae84e",
-                "shasum": ""
-            },
-            "require": {
-                "illuminate/support": ">=4.0",
-                "php": ">=5.4.0"
-            },
-            "type": "library",
-            "autoload": {
-                "psr-0": {
-                    "Oss2\\VarUtils": "src/"
-                }
-            },
-            "license": [
-                "MIT"
-            ],
-            "authors": [
-                {
-                    "name": "Barry O'Donovan",
-                    "email": "barry@opensolutions.ie"
-                }
-            ],
-            "description": "Various utilities for primitives / variables",
-            "homepage": "https://github.com/oss2/var-utils",
-            "support": {
-                "source": "https://github.com/oss2/var-utils/tree/master",
-                "issues": "https://github.com/oss2/var-utils/issues"
-            },
-            "time": "2015-02-04T20:35:29+00:00"
-        },
-        {
             "name": "paragonie/random_compat",
             "version": "v2.0.11",
             "source": {
@@ -3383,16 +3257,16 @@
         },
         {
             "name": "psy/psysh",
-            "version": "v0.8.12",
+            "version": "v0.8.13",
             "source": {
                 "type": "git",
                 "url": "https://github.com/bobthecow/psysh.git",
-                "reference": "1502354ebc70d59d8e3a87c325b0eb78a79da25b"
+                "reference": "cdb5593c3684bab74e10fcfffe4a0c8d1c39695d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/1502354ebc70d59d8e3a87c325b0eb78a79da25b",
-                "reference": "1502354ebc70d59d8e3a87c325b0eb78a79da25b",
+                "url": "https://api.github.com/repos/bobthecow/psysh/zipball/cdb5593c3684bab74e10fcfffe4a0c8d1c39695d",
+                "reference": "cdb5593c3684bab74e10fcfffe4a0c8d1c39695d",
                 "shasum": ""
             },
             "require": {
@@ -3452,7 +3326,7 @@
                 "interactive",
                 "shell"
             ],
-            "time": "2017-10-14T17:14:13+00:00"
+            "time": "2017-10-19T06:13:20+00:00"
         },
         {
             "name": "ramsey/uuid",
@@ -4611,7 +4485,7 @@
         },
         {
             "name": "zendesk/zendesk_api_client_php",
-            "version": "dev-master",
+            "version": "v2.2.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zendesk/zendesk_api_client_php.git",
@@ -5045,37 +4919,40 @@
         },
         {
             "name": "myclabs/deep-copy",
-            "version": "1.6.1",
+            "version": "1.7.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/myclabs/DeepCopy.git",
-                "reference": "8e6e04167378abf1ddb4d3522d8755c5fd90d102"
+                "reference": "3b8a3a99ba1f6a3952ac2747d989303cbd6b7a3e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/8e6e04167378abf1ddb4d3522d8755c5fd90d102",
-                "reference": "8e6e04167378abf1ddb4d3522d8755c5fd90d102",
+                "url": "https://api.github.com/repos/myclabs/DeepCopy/zipball/3b8a3a99ba1f6a3952ac2747d989303cbd6b7a3e",
+                "reference": "3b8a3a99ba1f6a3952ac2747d989303cbd6b7a3e",
                 "shasum": ""
             },
             "require": {
-                "php": ">=5.4.0"
+                "php": "^5.6 || ^7.0"
             },
             "require-dev": {
-                "doctrine/collections": "1.*",
-                "phpunit/phpunit": "~4.1"
+                "doctrine/collections": "^1.0",
+                "doctrine/common": "^2.6",
+                "phpunit/phpunit": "^4.1"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
                     "DeepCopy\\": "src/DeepCopy/"
-                }
+                },
+                "files": [
+                    "src/DeepCopy/deep_copy.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
             "description": "Create deep copies (clones) of your objects",
-            "homepage": "https://github.com/myclabs/DeepCopy",
             "keywords": [
                 "clone",
                 "copy",
@@ -5083,7 +4960,7 @@
                 "object",
                 "object graph"
             ],
-            "time": "2017-04-12T18:52:22+00:00"
+            "time": "2017-10-19T19:58:43+00:00"
         },
         {
             "name": "phar-io/manifest",
@@ -6500,10 +6377,6 @@
     "stability-flags": {
         "komola/bootstrap-zend-framework": 20,
         "opensolutions/oss-snmp": 20,
-        "oss2/doctrine2": 20,
-        "oss2/var-utils": 20,
-        "oss2/auth": 20,
-        "zendesk/zendesk_api_client_php": 20,
         "maxhoffmann/parsedown-laravel": 20
     },
     "prefer-stable": false,

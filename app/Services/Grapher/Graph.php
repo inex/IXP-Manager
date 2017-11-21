@@ -844,8 +844,8 @@ abstract class Graph {
      * @param string $v The user input value
      * @return string The verified / sanitised / default value
      */
-    public static function processParameterCategory( string $v ): string {
-        if( !isset( self::CATEGORIES[ $v ] ) ) {
+    public static function processParameterCategory( string $v, $bits_pkts_only = false ): string {
+        if( ( $bits_pkts_only && !isset( self::CATEGORIES_BITS_PKTS[$v] ) ) || ( !$bits_pkts_only && !isset( self::CATEGORIES[ $v ] ) ) ) {
             $v = self::CATEGORY_DEFAULT;
         }
         return $v;

@@ -13,8 +13,10 @@
 
 $auth = Zend_Auth::getInstance();
 
-// phpunit trips up here:
+// phpunit trips up here without the cli test:
 if( php_sapi_name() !== 'cli' ) {
+
+    // this if equates to: if the user is logged into Zend but not Laravel:
     if( $auth->hasIdentity() && \Auth::guest() ) {
         // log the user is for Laravel5
         // Note that we reload the user from the database as Zend uses a session cache
@@ -48,6 +50,59 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'view/{id}',                    'PatchPanelPortController@view' );
     Route::get( 'loa-pdf/{id}',                 'PatchPanelPortController@loaPDF' );
 });
+
+Route::get( 'weather-map/{id}',                    'WeatherMapController@index' )->name( 'weathermap');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Static content
+///
+
+Route::get( 'content/{priv}/{page}',     'ContentController@index' )->name( 'content' );
+Route::get( 'public-content/{page}',     'ContentController@public' )->name( 'public-content' );
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Statistics -> a dedicated request object manages authorization
+///
+
+Route::group( [ 'prefix' => 'statistics' ], function() {
+    Route::get(  'ixp/{category?}',                       'StatisticsController@ixp'               )->name( 'statistics/ixp'            );
+    Route::get(  'infrastructure/{graphid?}/{category?}', 'StatisticsController@infrastructure'    )->name( 'statistics/infrastructure' );
+    Route::get(  'switch/{switchid?}/{category?}',        'StatisticsController@switch'            )->name( 'statistics/switch'         );
+    Route::get(  'trunk/{trunkid?}/{category?}',          'StatisticsController@trunk'             )->name( 'statistics/trunk'          );
+
+    Route::get(  'members', 'StatisticsController@members' );
+    Route::post( 'members', 'StatisticsController@members' )->name( 'statistics/members' );
+});
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// DEFAULT ROUTE
+///
+
+Route::get( '/', function() {
+
+    if( Auth::guest() ) {
+        return redirect('auth/login' );
+    }
+
+    if( Auth::user()->isSuperUser() ) {
+        return redirect( 'admin' );
+    } else if( Auth::user()->isCustAdmin() ) {
+        return redirect( 'contact/list' );
+    } else {
+        return redirect( 'dashboard/index' );
+    }
+})->name( 'default' );
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
 
 
 

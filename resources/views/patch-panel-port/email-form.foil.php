@@ -62,7 +62,7 @@
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="body">
-                    <textarea class="form-control" style="font-family:monospace;" rows="30" id="email_text" name="email_text"><?= $t->ee( $t->mailable->getBody() ) ?></textarea>
+                    <textarea class="form-control" style="font-family:monospace;" rows="30" id="email_text" name="email_text"><?= $t->ee( $t->body )?></textarea>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="preview">
                     <div id="well-preview" class="well" style="background: rgb(255,255,255);">

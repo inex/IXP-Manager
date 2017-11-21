@@ -13,13 +13,13 @@
         <div class="alert alert-{if isset( $options.peeringmanager.testemail )}info{else}error{/if}">
             <strong>Test mode enabled.</strong>
             {if isset( $options.peeringmanager.testemail )}
-                All peering requests (with the exception of any BCC entries you add) will
-                be sent to <code>{$options.peeringmanager.testemail}</code>. The CC recipient
+                All peering requests will only
+                be sent to <code>{$options.peeringmanager.testemail}</code>. The CC/BCC recipients
                 will be ignored.
-                This can be changed in <code>application.ini</code>.
+                This can be changed in <code>.env</code>.
             {else}
-                The test mode destination email is not configured in <code>application.ini</code>.
-                Please set this via the <code>peeringmanager.testemail</code> parameter.
+                The test mode destination email is not configured in <code>.env</code>.
+                Please set this via the <code>PEERING_MANAGER_TESTEMAIL</code> parameter.
             {/if}
         </div>
     </div>

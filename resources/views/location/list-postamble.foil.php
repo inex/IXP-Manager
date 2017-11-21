@@ -1,9 +1,13 @@
 
 <br><br>
 <div class="well">
-    <h3>Locations</h3>
+    <h3>Facilities</h3>
     <p>
-        Locations in IXP Manager are data centres / points of presence. A location is somewhere that contains your cabinets (racks). Cabinets in turn contain switches.
+        Facilities in IXP Manager are data centres / points of presence. A facility is somewhere that contains your racks. Racks in turn contain switches.
     </p>
+    <p>
+        <em>In previous versions of IXP Manager, facilities were referred to as locations and the backend schema still uses this older terminology.</em>
+    </p>
+
 </div>
 

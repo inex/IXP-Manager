@@ -27,11 +27,6 @@
                         <li>
                             <a href="{genUrl controller="customer" action="details"}">Member Details</a>
                         </li>
-                        <?php if( !config( 'ixp_fe.frontend.disabled.meeting', true ) ): ?>
-                            <li>
-                                <a href="{genUrl controller="meeting" action="read"}">Meetings</a>
-                            </li>
-                        <?php endif; ?>
                     </ul>
                 </li>
                 <li class="dropdown">
@@ -60,7 +55,7 @@
                     echo $this->insert('header-documentation');
                 ?>
 
-                <li class="dropdown">
+                <li class="dropdown <?= !request()->is( 'statistics/*', 'weather-map/*' ) ?: 'active' ?>">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
@@ -75,20 +70,34 @@
 
                         <li class="divider"></li>
 
-                        <li>
-                            <a href="<?= url('statistics/public') ?>">Overall Peering Graphs</a>
-                        </li>
-                        <li>
-                            <a href="<?= url('statistics/trunks') ?>">Inter-Switch / PoP Graphs</a>
-                        </li>
-                        <li>
-                            <a href="<?= url('statistics/switches') ?>">Switch Aggregate Graphs</a>
-                        </li>
+                        <?php if( config( 'grapher.access.ixp', Entities\User::AUTH_PUBLIC ) <= Auth::user()->getPrivs() ): ?>
+                            <li>
+                                <a href="<?= route( 'statistics/ixp' ) ?>">Overall Peering Graphs</a>
+                            </li>
+                        <?php endif; ?>
+                        <?php if( config( 'grapher.access.infrastructure', Entities\User::AUTH_PUBLIC )  <= Auth::user()->getPrivs() ): ?>
+                            <li>
+                                <a href="<?= route( 'statistics/infrastructure' ) ?>">Infrastructure Graphs</a>
+                            </li>
+                        <?php endif; ?>
+                        <?php if( config( 'grapher.access.trunk', Entities\User::AUTH_PUBLIC ) <= Auth::user()->getPrivs() ): ?>
+                            <li>
+                                <a href="<?= route('statistics/trunk') ?>">Inter-Switch / PoP Graphs</a>
+                            </li>
+                        <?php endif; ?>
+                        <?php if( config( 'grapher.access.switch', Entities\User::AUTH_PUBLIC ) <= Auth::user()->getPrivs() ): ?>
+                            <li>
+                                <a href="<?= route('statistics/switch') ?>">Switch Aggregate Graphs</a>
+                            </li>
+                        <?php endif; ?>
 
                         <?php if( is_array( config( 'ixp_tools.weathermap', false ) ) ): ?>
+
+                            <li class="divider"></li>
+
                             <?php foreach( config( 'ixp_tools.weathermap' ) as $k => $w ): ?>
                                 <li>
-                                    <a href="<?= url( '/weather-map/index/id/' . $k ) ?>"><?= $w['menu'] ?></a>
+                                    <a href="<?= route( 'weathermap' , [ 'id' => $k ] ) ?>"><?= $w['menu'] ?></a>
                                 </li>
                             <?php endforeach; ?>
                         <?php endif; ?>
@@ -96,7 +105,7 @@
                 </li>
 
                 <li class="">
-                    <a href="<?= url( '/static/support' ) ?>">Support</a>
+                    <a href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>">Support</a>
                 </li>
 
                 <li class="dropdown">
@@ -106,7 +115,7 @@
                             <a href="<?= url( '/profile' ) ?>">Profile</a>
                         </li>
                         <li>
-                            <a href="<?= url( '/api-key' ) ?>">API Keys</a>
+                            <a href="<?= route('api-key@list' )?>">API Keys</a>
                         </li>
                         <li class="divider"></li>
                         <li>

@@ -5,8 +5,8 @@
 
 <ul class="nav nav-list">
 
-    <form class="form-search" method="get" action="{genUrl controller="search" action="do"}">
-        <input type="text" class="search-query" style="width: 50%" placeholder="Search..." name="search">
+    <form class="form-search" method="get" action="{route( 'search' )}">
+        <input type="text" class="" style="width: 65%" placeholder="Search for..." name="search">
         <a class="btn btn-small" id="searchHelp" data-toggle="modal" data-target="#searchHelpModal"><i class="icon-question-sign"></i></a>
     </form>
 
@@ -42,30 +42,10 @@
         </li>
 
     {if not isset( $options['frontend']['disabled']['cust-kit'] ) or not $options['frontend']['disabled']['cust-kit'] }
-            <li {if $controller eq 'cust-kit'}class="active"{/if}>
-                <a href="{genUrl controller='cust-kit' action='list'}">Colocated Equipment</a>
-            </li>
-        {/if}
-
-    {if not isset( $options['frontend']['disabled']['meeting'] ) or not $options['frontend']['disabled']['meeting'] }
-            <li {if $controller eq 'meeting' and $controller neq 'meeting-item' and $action neq 'read'}class="active"{/if}>
-                <a href="{genUrl controller='meeting' action='list'}">Meetings</a>
-
-                {if $controller eq 'meeting' or $controller eq 'meeting-item' or ( $controller eq 'static' and $action eq 'meetings-instructions' )}
-                    <ul class="nav nav-list">
-                        <li {if $controller eq 'meeting-item'}class="active"{/if}>
-                            <a href="{genUrl controller='meeting-item' action='list'}">Presentations</a>
-                        </li>
-                        <li {if $controller eq 'meeting' and $action eq 'read'}class="active"{/if}>
-                            <a href="{genUrl controller='meeting' action='read'}">Member View</a>
-                        </li>
-                        <li {if $controller eq 'static' and $action eq 'meetings-instructions'}class="active"{/if}>
-                            <a href="{genUrl controller='static' action='meetings-instructions'}">Instructions</a>
-                        </li>
-                    </ul>
-                {/if}
-            </li>
-        {/if}
+        <li {if $controller eq 'cust-kit'}class="active"{/if}>
+            <a href="{genUrl controller='cust-kit' action='list'}">Colocated Equipment</a>
+        </li>
+    {/if}
 
 
     <li class="nav-header">IXP Admin Actions</li>
@@ -80,11 +60,11 @@
         </li>
 
         <li {if $controller eq 'location'}class="active"{/if}>
-            <a href="{genUrl controller='location' action='list'}">Locations</a>
+            <a href="{route( 'facility@list' )}">Facilities</a>
         </li>
 
         <li {if $controller eq 'cabinet'}class="active"{/if}>
-            <a href="{route('cabinet@list')}">Cabinets</a>
+            <a href="{route( 'rack@list' )}">Racks</a>
         </li>
 
         <li {if $controller eq 'router'}class="active"{/if}>
@@ -209,8 +189,8 @@
 
     <li class="nav-header">IXP Utilities</li>
 
-        <li {if $controller eq 'utils' and $action eq 'phpinfo'}class="active"{/if}>
-            <a href="{genUrl controller='utils' action='phpinfo'}">PHP Info</a>
+        <li>
+            <a href="{route( 'utils/phpinfo' )}">PHP Info</a>
         </li>
         <li {if $controller eq 'user' and $action eq 'last'}class="active"{/if}>
             <a href="{genUrl controller='user' action='last'}">Last Logins</a>

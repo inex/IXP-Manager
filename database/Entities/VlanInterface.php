@@ -679,7 +679,7 @@ class VlanInterface
     }
 
     /**
-     * Get the mac(s) of Layer2Addresses as a plain array
+     * Get the mac(s) of Layer2Addresses as a plain array (formatted with colons)
      *
      * @return array
      */
@@ -688,7 +688,7 @@ class VlanInterface
         $macs = [];
 
         foreach( $this->layer2Addresses as $l2a ) {
-            $macs[] = $l2a->getMac();
+            $macs[] = $l2a->getMacFormattedWithColons();
         }
 
         return $macs;

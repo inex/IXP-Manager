@@ -295,7 +295,7 @@
                                 <tr>
                                     <td>
                                         <b>
-                                            Cabinet Name:
+                                            Rack:
                                         </b>
                                     </td>
                                     <td>
@@ -305,7 +305,7 @@
                                 <tr>
                                     <td>
                                         <b>
-                                            Colocation centre:
+                                            Facility:
                                         </b>
                                     </td>
                                     <td>

@@ -141,7 +141,7 @@ class SwitchConfigurationGenerator
         // we now have the base port config. If this is not a LAG, just return it:
         if( !$vi->getLagFraming() ) {
             $pi = $vi->getPhysicalInterfaces()[0];
-            $p['shutdown']           = ! ($pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED);
+            $p['shutdown']           = !$pi->statusIsConnectedOrQuarantine();
             $p['name']               = $pi->getSwitchport()->getIfName();
             $p['speed']              = $pi->getSpeed();
             $p['autoneg']            = $pi->getAutoneg();
@@ -165,7 +165,7 @@ class SwitchConfigurationGenerator
             $p['lagmembers'][]= $pi->getSwitchPort()->getIfName();
 
             // if any bundle members are up, the LAG is up
-            if ($pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED) {
+            if( $pi->statusIsConnectedOrQuarantine() ) {
                 $p['shutdown'] = false;
             }
         }
@@ -179,7 +179,7 @@ class SwitchConfigurationGenerator
             if( !$pi->getSwitchPort() ) {
                 continue;
             }
-            $p['shutdown']  = !($pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED);
+            $p['shutdown']  = !$pi->statusIsConnectedOrQuarantine();
             $p['name']      = $pi->getSwitchPort()->getIfName();
             $p['lagmaster'] = false;
             $p['autoneg']   = $pi->getAutoneg();
@@ -229,7 +229,7 @@ class SwitchConfigurationGenerator
 
         // we now have the base port config. If this is not a LAG, just return it:
         if( !$vi->getLagFraming() ) {
-            $p['shutdown']           = !($pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED);
+            $p['shutdown']           = !$pi->statusIsConnectedOrQuarantine();
             $p['name']               = $pi->getSwitchport()->getIfName();
             $p['speed']              = $pi->getSpeed();
             $p['autoneg']            = $pi->getAutoneg();
@@ -254,7 +254,7 @@ class SwitchConfigurationGenerator
             $p['lagmembers'][]= $_pi->getSwitchPort()->getIfName();
 
             // if any bundle members are up, the LAG is up
-            if( $_pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED ) {
+            if( $_pi->statusIsConnectedOrQuarantine() ) {
                 $p['shutdown'] = false;
             }
         }
@@ -276,7 +276,7 @@ class SwitchConfigurationGenerator
             if( !$_pi->getSwitchPort() ) {
                 continue;
             }
-            $p['shutdown']  = !($_pi->getStatus() == \Entities\PhysicalInterface::STATUS_CONNECTED);
+            $p['shutdown']  = !$pi->statusIsConnectedOrQuarantine();
             $p['name']      = $_pi->getSwitchPort()->getIfName();
             $p['lagmaster'] = false;
             $p['autoneg']   = $_pi->getAutoneg();
