@@ -82,7 +82,7 @@
             <ul class="nav navbar-nav pull-right">
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account<b class="caret"></b></a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu dropdown-menu-right">
                         <li>
                             <a href="<?= url('profile') ?>">Profile</a>
                         </li>
