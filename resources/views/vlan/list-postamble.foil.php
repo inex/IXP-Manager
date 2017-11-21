@@ -9,7 +9,7 @@
     </p>
 
     <p>
-        VLANs belong to <a href="<?= route('infrastructure@list' ) ?>">infrastructures</a> and a unique key constrant exists between
+        VLANs belong to <a href="<?= route('infrastructure@list' ) ?>">infrastructures</a> and a unique key constraint exists between
         an infrastructure and the VLAN's 802.1q tag.
     </p>
 
