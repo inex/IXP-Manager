@@ -29,7 +29,6 @@
         ->id( 'ixf_ix_id' )
         ->label( 'IX-F DB IX ID' )
         ->placeholder( 'Please wait, loading...' )
-        ->addClass( 'chzn-select' )
         ->blockHelp( "Identify your IXP from the <a href=\"http://ml.ix-f.net/\">IX Federation's database</a>. If it does not exist there, "
             . "<a href=\"https://www.euro-ix.net/\">contact the euro-ix secretariat</a>.<br><br>Note the local copy of this list is "
             . "cached for two hours. Use 'artisan cache:clear' to reset it.");
@@ -39,7 +38,6 @@
         ->id( 'pdb_ixp' )
         ->label( 'Peering DB IX ID' )
         ->placeholder( 'Please wait, loading...' )
-        ->addClass( 'chzn-select' )
         ->blockHelp( "Identify your IXP from <a href=\"https://www.peeringdb.com/\">PeeringDB</a>. If it does not exist there, "
             . "then you should add it yourself through their web interface.<br><br>Note the local copy of this list is "
             . "cached for two hours. Use 'artisan cache:clear' to reset it.");
