@@ -154,9 +154,10 @@ abstract class Email extends Mailable
         // recipients
         foreach( [ 'to', 'cc', 'bcc' ] as $r ) {
             $hasFn = 'has' . ucfirst( $r );
-            foreach( explode(',', $request->input('email_' . $r)) as $emaddr ) {
-                if( filter_var($emaddr, FILTER_VALIDATE_EMAIL) && !$this->$hasFn( $emaddr ) ) {
-                    $this->$r($emaddr);
+            foreach( explode(',', $request->input('email_' . $r ) ) as $emaddr ) {
+                $email = trim( $emaddr );
+                if( filter_var( $email, FILTER_VALIDATE_EMAIL ) && !$this->$hasFn( $email ) ) {
+                    $this->$r($email);
                 }
             }
         }
