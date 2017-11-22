@@ -130,32 +130,30 @@ Title[core-nwb1-cls1-lan1]: Inter-POP Trunk Core - Vodafone - swi1-tcy3-1 swi1-v
 ################
 
 # degkcp-tcydub1 - LAN2
-Target[core-degkcp-tcydub1-lan2]: #1\:41:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
-				+ #1\:42:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
-				+ #1\:37:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
+Target[core-degkcp-tcydub1-lan2]: #1\:37:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
 				+ #1\:38:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
 				+ #1\:39:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
 				+ #1\:40:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
-MaxBytes[core-degkcp-tcydub1-lan2]: 2500000000
+MaxBytes[core-degkcp-tcydub1-lan2]: 5000000000
 Directory[core-degkcp-tcydub1-lan2]: trunks
 Title[core-degkcp-tcydub1-lan2]: Trunk Core - DEGKCP-TCYDUB1 - LAN2
 
 # degkcp-ixdub1 - LAN2
-Target[core-degkcp-ixdub1-lan2]: #1\:33:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
-                               + #1\:34:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
+Target[core-degkcp-ixdub1-lan2]: #1\:31:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
+                               + #1\:32:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
 MaxBytes[core-degkcp-ixdub1-lan2]: 2500000000
 Directory[core-degkcp-ixdub1-lan2]: trunks
 Title[core-degkcp-ixdub1-lan2]: Trunk Core - DEGKCP-IXDUB1 - LAN2
 
 # tcydub1-ixdub1 - LAN2
-Target[core-tcydub1-ixdub1-lan2]: #1\:45:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-cwt1-1.mgmt.inex.ie:::::2
-                                + #1\:46:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-cwt1-1.mgmt.inex.ie:::::2
+Target[core-tcydub1-ixdub1-lan2]: #1\:33:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-cwt1-1.mgmt.inex.ie:::::2
+                                + #1\:34:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-cwt1-1.mgmt.inex.ie:::::2
 MaxBytes[core-tcydub1-ixdub1-lan2]: 2500000000
 Directory[core-tcydub1-ixdub1-lan2]: trunks
 Title[core-tcydub1-ixdub1-lan2]: Trunk Core - TCYDUB1-IXDUB1 - LAN2
 
 # degkcp-tcy3 - LAN2
-Target[core-degkcp-tcy3-lan2]: #1\:25:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
+Target[core-degkcp-tcy3-lan2]: #1\:43:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi2-deg1-1.inex.ie:::::2
 MaxBytes[core-degkcp-tcy3-lan2]: 1250000000
 Directory[core-degkcp-tcy3-lan2]: trunks
 Title[core-degkcp-tcy3-lan2]: Trunk Core - DEGKCP-TCY3 - LAN2

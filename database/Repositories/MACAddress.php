@@ -79,12 +79,12 @@ class MACAddress extends EntityRepository
                 FROM Entities\\MACAddress m
                     JOIN m.VirtualInterface vi
                     JOIN vi.VlanInterfaces vli
-                    JOIN vli.IPv4Address ipv4
-                    JOIN vli.IPv6Address ipv6
+                    LEFT JOIN vli.IPv4Address ipv4
+                    LEFT JOIN vli.IPv6Address ipv6
                     JOIN vi.Customer c
-                    JOIN vi.PhysicalInterfaces pi
-                    JOIN pi.SwitchPort sp
-                    JOIN sp.Switcher s
+                    LEFT JOIN vi.PhysicalInterfaces pi
+                    LEFT JOIN pi.SwitchPort sp
+                    LEFT JOIN sp.Switcher s
                     LEFT JOIN Entities\\OUI o WITH SUBSTRING( m.mac, 1, 6 ) = o.oui
                     
                 WHERE 1 = 1";
