@@ -234,7 +234,7 @@
                 </li>
 
                 <li>
-                    <a href="<?= url( 'user/last' ) ?>">Last Logins</a>
+                    <a href="<?= route( 'login-history@list' ) ?>">Last Logins</a>
                 </li>
             </ul>
         </div><!--/.well -->
