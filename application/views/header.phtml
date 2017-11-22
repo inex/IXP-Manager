@@ -20,7 +20,7 @@
                             </li>
                         {/if}
                         {if $user->getPrivs() neq 2}
-                            <li class="dropdown {if $action eq 'switch-configuration' or $action eq 'members-details-list' or ( $controller eq 'meeting' and $action eq 'read' )}active{/if}">
+                            <li class="dropdown {if $action eq 'switch-configuration' or $action eq 'members-details-list'}active{/if}">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Member Information <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li>
@@ -29,11 +29,6 @@
                                     <li>
                                         <a href="{genUrl controller="customer" action="details"}">Member Details</a>
                                     </li>
-                                    {if not isset( $options['frontend']['disabled']['meeting'] ) or not $options['frontend']['disabled']['meeting'] }
-                                        <li>
-                                            <a href="{genUrl controller="meeting" action="read"}">Meetings</a>
-                                        </li>
-                                    {/if}
                                 </ul>
                             </li>
                             <li class="dropdown {if $controller eq 'peering-manager' or $controller eq 'rs-prefixes'
@@ -65,7 +60,10 @@
                             {* Add a skinned file in views/_skins/xxx/header-documentation.phtml for your IXP to override the sample *}
                             {tmplinclude file="header-documentation.phtml"}
 
-                            <li class="dropdown {if $controller eq 'statistics' or substr( $action, 0, 9 ) eq 'statistic' or $action eq 'traffic-stats' or $action eq 'trunk-graphs' or $action eq 'switch-graphs' or $controller eq 'weather-map'}active{/if}">
+                            <li class="dropdown
+                                    {if $controller eq 'statistics' or substr( $action, 0, 9 ) eq 'statistic' or $action eq 'traffic-stats' or $action eq 'trunk-graphs' or $action eq 'switch-graphs' or $controller eq 'weather-map'}active{/if}
+                                     <?= !request()->is( 'statistics/*', 'weather-map/*' ) ?: 'active' ?>
+                                ">
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     {if $user->getPrivs() eq USER::AUTH_CUSTUSER and not $user->getCustomer()->isTypeAssociate()}
@@ -81,27 +79,32 @@
 
                                         <li class="divider"></li>
                                     {/if}
+                                    
                                     <li>
-                                        <a href="{genUrl controller="statistics" action="public"}">Overall Peering Graphs</a>
+                                        <a href="{route( 'statistics/ixp' )}">Overall Peering Graphs</a>
                                     </li>
                                     <li>
-                                        <a href="{genUrl controller="statistics" action="trunks"}">Inter-Switch / PoP Graphs</a>
+                                        <a href="{route( 'statistics/infrastructure' )}">Infrastructure Graphs</a>
                                     </li>
                                     <li>
-                                        <a href="{genUrl controller="statistics" action="switches"}">Switch Aggregate Graphs</a>
+                                        <a href="{route( 'statistics/trunk' )}">Inter-Switch / PoP Graphs</a>
                                     </li>
-                                    {if isset( $options.weathermap )}
-                                        {foreach from=$options.weathermap key=k item=w}
+                                    <li>
+                                        <a href="{route( 'statistics/switch' )}">Switch Aggregate Graphs</a>
+                                    </li>
+                                    {if is_array( config( 'ixp_tools.weathermap', false ) )}
+                                        <li class="divider"></li>
+                                        {foreach from=config( 'ixp_tools.weathermap' ) key=k item=w}
                                             <li>
-                                                <a href="{genUrl controller="weather-map" action="index" id=$k}">{$w.menu}</a>
+                                                <a href="{route( 'weathermap', ['id' => {$k} ] ) }">{$w.menu}</a>
                                             </li>
                                         {/foreach}
                                     {/if}
                                 </ul>
                             </li>
                         {/if}
-                        <li class="{if $controller eq 'static' and $action eq 'support'}active{/if}">
-                            <a href="{genUrl controller="static" action="support"}">Support</a>
+                        <li>
+                            <a href="{route( 'public-content', [ 'page' => 'support' ] )}">Support</a>
                         </li>
                         {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
                             {tmplinclude file="staff-links.phtml"}
@@ -114,9 +117,11 @@
                                     <li>
                                         <a href="{genUrl controller="profile"}">Profile</a>
                                     </li>
-                                    <li>
-                                        <a href="{genUrl controller="api-key"}">API Keys</a>
-                                    </li>
+                                    {if $user->getPrivs() neq 3}
+                                        <li>
+                                            <a href="{route('api-key@list' )}">API Keys</a>
+                                        </li>
+                                    {/if}
                                     <li class="divider"></li>
                                     <li>
                                         <a href="{genUrl controller="auth" action="logout"}">Logout</a>
@@ -148,7 +153,7 @@
                                         <a href="{genUrl controller="profile"}">Profile</a>
                                     </li>
                                     <li>
-                                        <a href="{genUrl controller="api-key"}">API Keys</a>
+                                        <a href="{route('api-key@list' )}">API Keys</a>
                                     </li>
                                     <li class="divider"></li>
                                     <li>
@@ -182,22 +187,25 @@
                             <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
                             <ul class="dropdown-menu">
                                 <li>
-                                    <a href="{genUrl controller="public-statistics" action="public"}">Overall Peering Graphs</a>
+                                    <a href="{route( 'statistics/ixp' )}">Overall Peering Graphs</a>
                                 </li>
                                 <li>
-                                    <a href="{genUrl controller="public-statistics" action="trunks"}">Inter-Switch / PoP Graphs</a>
+                                    <a href="{route( 'statistics/infrastructure' )}">Infrastructure Graphs</a>
                                 </li>
                                 <li>
-                                    <a href="{genUrl controller="public-statistics" action="switches"}">Switch Aggregate Graphs</a>
+                                    <a href="{route( 'statistics/trunk' )}">Inter-Switch / PoP Graphs</a>
+                                </li>
+                                <li>
+                                    <a href="{route( 'statistics/switch' )}">Switch Aggregate Graphs</a>
                                 </li>
                                 <li class="divider"></li>
-                                {if isset( $options.weathermap )}
-                                    {foreach from=$options.weathermap key=k item=w}
-                                        <li>
-                                            <a href="{genUrl controller="weather-map" action="index" id=$k}">{$w.menu}</a>
-                                        </li>
-                                    {/foreach}
-                                {/if}
+                                    {if is_array( config( 'ixp_tools.weathermap', false ) )}
+                                        {foreach from=config( 'ixp_tools.weathermap' ) key=k item=w}
+                                            <li>
+                                                <a href="{route( 'weathermap', ['id' => {$k} ] ) }">{$w.menu}</a>
+                                            </li>
+                                        {/foreach}
+                                    {/if}
                             </ul>
                         </li>
 

@@ -2,6 +2,30 @@
 
 namespace Repositories;
 
+
+/*
+ * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+use Auth;
+
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -12,4 +36,33 @@ use Doctrine\ORM\EntityRepository;
  */
 class ApiKey extends EntityRepository
 {
+    /**
+     * Get all api keys for listing on the frontend CRUD
+     *
+     * @see \IXP\Http\Controllers\Doctrine2Frontend
+     *
+     *
+     * @param \stdClass $feParams
+     * @param int|null $userid
+     * @return array Array of infrastructures (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeList( \stdClass $feParams, int $userid )
+    {
+        $dql = "SELECT  a.id           AS id, 
+                        a.apiKey       AS apiKey, 
+                        a.created      AS created,
+                        a.expires      AS expires,
+                        a.lastseenAt   AS lastseenAt,
+                        a.lastseenFrom AS lastseenFrom
+                FROM Entities\\ApiKey a
+                LEFT JOIN a.User u
+                WHERE u.id = " . (int)$userid;
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
+    }
 }

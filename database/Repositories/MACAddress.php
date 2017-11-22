@@ -20,11 +20,13 @@ class MACAddress extends EntityRepository
 {
     /**
      * Find virtual interface by MAC address
-     * 
+     *
+     * MAC address is normaliased using `preg_replace( '/[^a-f0-9]/, '', strtolower( $msc ) ).
+     *
      * @param  string $mac The MAC address to search for
      * @return \Entities\VirtualInterface[] Matching interfaces
      */
-    public function findVirtualInterface( $mac )
+    public function findVirtualInterface( string $mac )
     {
         return $this->getEntityManager()->createQuery(
                 "SELECT vi
@@ -34,7 +36,7 @@ class MACAddress extends EntityRepository
 
                  WHERE m.mac = :mac"
             )
-            ->setParameter( 'mac', strtolower( str_replace( ':', '', $mac ) ) )
+            ->setParameter( 'mac', preg_replace( '/[^a-f0-9]/', '', strtolower( $mac ) ) )
             ->getResult();
     }
 

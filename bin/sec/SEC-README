@@ -1,4 +1,0 @@
-
-To test on a local machine:
-
-sec -conf=sec-test.conf -quoting -input=cisco-test.log -debug 4 -fromstart

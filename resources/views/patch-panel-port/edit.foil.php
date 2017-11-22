@@ -296,7 +296,7 @@
     <?php if ( $t->prewired ): ?>
         <?= Former::hidden( 'state' )
             ->id( 'state' )
-            ->value( $t->ppp->getState() )
+            ->forceValue( \Entities\PatchPanelPort::STATE_PREWIRED )
         ?>
     <?php endif; ?>
 

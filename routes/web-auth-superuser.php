@@ -115,8 +115,28 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
 });
 
 
-Route::group( [ 'prefix' => 'statistics' ], function() {
-    Route::get(     'members',         'StatisticsController@members' );
-    Route::post(    'members',         'StatisticsController@members' )->name( 'statistics/members' );
+
+Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Utilities
+///
+
+
+Route::get( 'phpinfo', function() { phpinfo(); })->name('phpinfo');
+
+Route::group( [ 'prefix' => 'utils' ], function() {
+
+    Route::get( 'phpinfo', function() {
+        return view( 'utils/phpinfo' );
+    })->name('utils/phpinfo');
+
 });
+
+
+Route::get( 'search', 'SearchController@do' )->name( 'search' );
 

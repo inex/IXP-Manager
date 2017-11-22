@@ -83,7 +83,6 @@ Route::get( 'peering-db/fac', function() {
             }
         }
         return $pdbs;
-    })
-    );
+    }));
 })->name('api-v4-peering-db-fac');
 
