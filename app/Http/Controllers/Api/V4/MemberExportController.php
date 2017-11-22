@@ -45,7 +45,7 @@ class MemberExportController extends Controller {
         }
 
         $exporter = new \IXP\Utils\Export\JsonSchema;
-        return response()->json( $exporter->get( $version, true, Auth::check() ) );
+        return response()->json( $exporter->get( $version, true, Auth::check() ), 200, [], JSON_PRETTY_PRINT );
     }
 
 }
