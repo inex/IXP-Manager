@@ -3,7 +3,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2017-10-27.
+    * Generated on 2017-11-22.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -56,9 +56,6 @@ namespace PHPSTORM_META {
         'validation.presence' => \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier::class,
         'debugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
-        'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
-        'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
-        'command.ide-helper.meta' => \Barryvdh\LaravelIdeHelper\Console\MetaCommand::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
         'Foil\Engine' => \Foil\Engine::class,
@@ -159,6 +156,9 @@ namespace PHPSTORM_META {
         'translation.loader' => \Illuminate\Translation\FileLoader::class,
         'translator' => \Illuminate\Translation\Translator::class,
         'command.tinker' => \Laravel\Tinker\Console\TinkerCommand::class,
+        'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
+        'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
+        'command.ide-helper.meta' => \Barryvdh\LaravelIdeHelper\Console\MetaCommand::class,
         'ZendFramework' => \Zend_Application::class,
         'purifier' => \LukeTowers\Purifier\Purifier::class,
     ]));
@@ -210,9 +210,6 @@ namespace PHPSTORM_META {
         'validation.presence' => \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier::class,
         'debugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
-        'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
-        'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
-        'command.ide-helper.meta' => \Barryvdh\LaravelIdeHelper\Console\MetaCommand::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
         'Foil\Engine' => \Foil\Engine::class,
@@ -313,6 +310,9 @@ namespace PHPSTORM_META {
         'translation.loader' => \Illuminate\Translation\FileLoader::class,
         'translator' => \Illuminate\Translation\Translator::class,
         'command.tinker' => \Laravel\Tinker\Console\TinkerCommand::class,
+        'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
+        'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
+        'command.ide-helper.meta' => \Barryvdh\LaravelIdeHelper\Console\MetaCommand::class,
         'ZendFramework' => \Zend_Application::class,
         'purifier' => \LukeTowers\Purifier\Purifier::class,
     ]));
@@ -364,9 +364,6 @@ namespace PHPSTORM_META {
         'validation.presence' => \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier::class,
         'debugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
-        'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
-        'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
-        'command.ide-helper.meta' => \Barryvdh\LaravelIdeHelper\Console\MetaCommand::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
         'Foil\Engine' => \Foil\Engine::class,
@@ -467,6 +464,9 @@ namespace PHPSTORM_META {
         'translation.loader' => \Illuminate\Translation\FileLoader::class,
         'translator' => \Illuminate\Translation\Translator::class,
         'command.tinker' => \Laravel\Tinker\Console\TinkerCommand::class,
+        'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
+        'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
+        'command.ide-helper.meta' => \Barryvdh\LaravelIdeHelper\Console\MetaCommand::class,
         'ZendFramework' => \Zend_Application::class,
         'purifier' => \LukeTowers\Purifier\Purifier::class,
     ]));
@@ -518,9 +518,6 @@ namespace PHPSTORM_META {
         'validation.presence' => \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier::class,
         'debugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
-        'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
-        'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
-        'command.ide-helper.meta' => \Barryvdh\LaravelIdeHelper\Console\MetaCommand::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
         'Foil\Engine' => \Foil\Engine::class,
@@ -621,6 +618,9 @@ namespace PHPSTORM_META {
         'translation.loader' => \Illuminate\Translation\FileLoader::class,
         'translator' => \Illuminate\Translation\Translator::class,
         'command.tinker' => \Laravel\Tinker\Console\TinkerCommand::class,
+        'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
+        'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
+        'command.ide-helper.meta' => \Barryvdh\LaravelIdeHelper\Console\MetaCommand::class,
         'ZendFramework' => \Zend_Application::class,
         'purifier' => \LukeTowers\Purifier\Purifier::class,
     ]));
@@ -672,9 +672,6 @@ namespace PHPSTORM_META {
         'validation.presence' => \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier::class,
         'debugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
-        'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
-        'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
-        'command.ide-helper.meta' => \Barryvdh\LaravelIdeHelper\Console\MetaCommand::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
         'Foil\Engine' => \Foil\Engine::class,
@@ -775,6 +772,9 @@ namespace PHPSTORM_META {
         'translation.loader' => \Illuminate\Translation\FileLoader::class,
         'translator' => \Illuminate\Translation\Translator::class,
         'command.tinker' => \Laravel\Tinker\Console\TinkerCommand::class,
+        'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
+        'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
+        'command.ide-helper.meta' => \Barryvdh\LaravelIdeHelper\Console\MetaCommand::class,
         'ZendFramework' => \Zend_Application::class,
         'purifier' => \LukeTowers\Purifier\Purifier::class,
     ]));
@@ -826,9 +826,6 @@ namespace PHPSTORM_META {
         'validation.presence' => \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier::class,
         'debugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
-        'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
-        'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
-        'command.ide-helper.meta' => \Barryvdh\LaravelIdeHelper\Console\MetaCommand::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
         'Foil\Engine' => \Foil\Engine::class,
@@ -929,6 +926,9 @@ namespace PHPSTORM_META {
         'translation.loader' => \Illuminate\Translation\FileLoader::class,
         'translator' => \Illuminate\Translation\Translator::class,
         'command.tinker' => \Laravel\Tinker\Console\TinkerCommand::class,
+        'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
+        'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
+        'command.ide-helper.meta' => \Barryvdh\LaravelIdeHelper\Console\MetaCommand::class,
         'ZendFramework' => \Zend_Application::class,
         'purifier' => \LukeTowers\Purifier\Purifier::class,
     ]));
@@ -980,9 +980,6 @@ namespace PHPSTORM_META {
         'validation.presence' => \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier::class,
         'debugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
-        'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
-        'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
-        'command.ide-helper.meta' => \Barryvdh\LaravelIdeHelper\Console\MetaCommand::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
         'Foil\Engine' => \Foil\Engine::class,
@@ -1083,6 +1080,9 @@ namespace PHPSTORM_META {
         'translation.loader' => \Illuminate\Translation\FileLoader::class,
         'translator' => \Illuminate\Translation\Translator::class,
         'command.tinker' => \Laravel\Tinker\Console\TinkerCommand::class,
+        'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
+        'command.ide-helper.models' => \Barryvdh\LaravelIdeHelper\Console\ModelsCommand::class,
+        'command.ide-helper.meta' => \Barryvdh\LaravelIdeHelper\Console\MetaCommand::class,
         'ZendFramework' => \Zend_Application::class,
         'purifier' => \LukeTowers\Purifier\Purifier::class,
     ]));
