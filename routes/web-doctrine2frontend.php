@@ -8,6 +8,7 @@
 |
 */
 
+IXP\Http\Controllers\ApiKeyController::routes();
 IXP\Http\Controllers\CabinetController::routes();
 IXP\Http\Controllers\ConsoleServerConnectionController::routes();
 IXP\Http\Controllers\CustKitController::routes();

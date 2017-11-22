@@ -80,7 +80,13 @@ class LocationController extends Doctrine2Frontend {
                 'shortname' => 'Shortname',
                 'tag'       => 'Tag',
                 'nocphone'  => 'NOC Phone',
-                'nocemail'  => 'NOC Email'
+                'nocemail'  => 'NOC Email',
+
+                'pdb_facility_id' => [
+                    'title'    => 'PeeringDB ID',
+                    'type'     => self::$FE_COL_TYPES[ 'REPLACE' ],
+                    'subject'  => '<a href="https://www.peeringdb.com/api/fac/%%COL%%" target="_blank">%%COL%%</a>',
+                ],
             ]
         ];
 

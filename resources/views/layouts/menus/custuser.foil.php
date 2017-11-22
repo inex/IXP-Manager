@@ -16,16 +16,16 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
                 <li {if $controller eq "dashboard"}class="active"{/if}>
-                    <a href="{genUrl}">Home</a>
+                    <a href="<?= url('') ?>">Home</a>
                 </li>
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Member Information <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="{genUrl controller="switch" action="configuration"}">Switch Configuration</a>
+                            <a href="<?= url('') ?>/switch/configuration">Switch Configuration</a>
                         </li>
                         <li>
-                            <a href="{genUrl controller="customer" action="details"}">Member Details</a>
+                            <a href="<?= url('') ?>/customer/details">Member Details</a>
                         </li>
                     </ul>
                 </li>
@@ -33,15 +33,15 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Peering<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <?php if( !config( 'ixp_fe.frontend.disabled.peering-manager', false ) ): ?>
-                            <li><a href="{genUrl controller="peering-manager"}">Peering Manager</a></li>
+                            <li><a href="<?= url('') ?>/peering-manager">Peering Manager</a></li>
                         <?php endif; ?>
                         <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) ): ?>
                             <?php if( Auth::user()->getCustomer()->isRouteServerClient() ): ?>
-                                <li><a href="{genUrl controller="rs-prefixes" action="list"}">Route Server Prefixes</a></li>
+                                <li><a href="<?= url('') ?>/rs-prefixes/list">Route Server Prefixes</a></li>
                             <?php endif; ?>
                         <?php endif; ?>
                         <?php if( !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
-                            <li><a href="{genUrl controller="peering-matrix"}">Public Peering Matrix</a></li>
+                            <li><a href="<?= url('') ?>/peering-matrix">Public Peering Matrix</a></li>
                         <?php endif; ?>
                         <?php if( !config('ixp_fe.frontend.disabled.lg' ) ): ?>
                             <li><a href="<?= url('lg') ?>">Looking Glass</a></li>
@@ -115,7 +115,7 @@
                             <a href="<?= url( '/profile' ) ?>">Profile</a>
                         </li>
                         <li>
-                            <a href="<?= url( '/api-key' ) ?>">API Keys</a>
+                            <a href="<?= route('api-key@list' )?>">API Keys</a>
                         </li>
                         <li class="divider"></li>
                         <li>

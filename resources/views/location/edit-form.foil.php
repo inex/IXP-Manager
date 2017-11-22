@@ -25,7 +25,6 @@
         ->id( 'pdb_facility_id' )
         ->label( 'PeeringDB Facility' )
         ->placeholder( 'Please wait, loading...' )
-        ->addClass( 'chzn-select' )
         ->blockHelp( "If listed, identify the facility from PeeringDB's facility list. If it is not listed here and you believe it should be, "
             . "then please contact PeeringDB directly. Note also that IXP Manager caches this data for a number of hours - so an "
             . "<code>artisan cache:clear</code> is required if you get your facility listed and IXP Manager still does not have it." );
@@ -90,7 +89,6 @@
         ->style( 'width:500px' )
         ->blockHelp( '' );
     ?>
-
 
     <?= Former::actions(
         Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' )->disabled( true ),
