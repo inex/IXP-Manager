@@ -22,9 +22,6 @@
                     <td>
                         {if $u->getPreference( 'auth.last_login_at' )}
                             {$u->getPreference( 'auth.last_login_at' )|date_format:"%Y-%m-%d %H:%M:%S"}
-                            <a class="btn btn-mini have-tooltip" title="History" href="{route( 'login-history@view', [ 'id' => $u->getId(), 'limit' => true ] )}">
-                                <i class="icon-time"></i>
-                            </a>
                         {else}
                             <em>Never</em>
                         {/if}

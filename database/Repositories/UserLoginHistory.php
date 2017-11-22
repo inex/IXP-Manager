@@ -39,10 +39,10 @@ class UserLoginHistory extends EntityRepository
      * @see \IXP\Http\Controllers\Doctrine2Frontend
      *
      * @param int|null $userid
-     * @param boolean $limit
+     * @param int $limit
      * @return array Array of login history (as associated arrays) (or for a single user if `$id` passed)
      */
-    public function getAllForFeList( int $userid = null , bool $limit = false )
+    public function getAllForFeList( int $userid = null , int $limit = 0 )
     {
         $dql = "SELECT  lh.id AS id, 
                         lh.at AS at, 
@@ -60,8 +60,8 @@ class UserLoginHistory extends EntityRepository
 
         $query = $this->getEntityManager()->createQuery( $dql );
 
-        if( $limit ){
-            $query->setMaxResults( 1000 );
+        if( $limit > 0 ){
+            $query->setMaxResults( $limit );
         }
 
         return $query->getArrayResult();

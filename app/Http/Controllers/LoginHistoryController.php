@@ -96,7 +96,7 @@ class LoginHistoryController extends Doctrine2Frontend {
 
                 'lastlogin'         => [
                     'title'     => 'Last Login',
-                    'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
+                    'type'      => self::$FE_COL_TYPES[ 'UNIX_TIMESTAMP' ]
                 ]
             ]
         ];
@@ -150,7 +150,7 @@ class LoginHistoryController extends Doctrine2Frontend {
         }
 
         return view( 'login-history/view' )->with([
-            'histories'                 => D2EM::getRepository( UserLoginHistoryEntity::class)->getAllForFeList( $user->getId(), $r->input( 'limit', null ) ),
+            'histories'                 => D2EM::getRepository( UserLoginHistoryEntity::class)->getAllForFeList( $user->getId(), $r->input( 'limit', 0 ) ),
             'user'                      => $user,
         ]);
     }
