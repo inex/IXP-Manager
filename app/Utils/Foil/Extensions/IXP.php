@@ -59,6 +59,7 @@ class IXP implements ExtensionInterface {
             'scaleBits'         => [ $this, 'scaleBits' ],
             'scaleBytes'        => [ $this, 'scaleBytes' ],
             'softwrap'          => [ $this, 'softwrap' ],
+            'asNumber'          => [ $this, 'asNumber' ],
         ];
     }
 
@@ -279,6 +280,18 @@ class IXP implements ExtensionInterface {
     public function as112UiActive(): bool
     {
         return boolval( config( 'ixp.as112.ui_active', false ) );
+    }
+
+    /**
+     * Replaces an AS  Number with some JS magic to invoke a bootbox.
+     *
+     * @param string $asn The AS number
+     *
+     * @return html
+     */
+    public function asNumber( $asn )
+    {
+        return '<a href="#asnumber-' . $asn . '" href="#" onClick=\'asnumber(' . $asn . '); return false;\'>' . $asn . '</a>';
     }
 
 

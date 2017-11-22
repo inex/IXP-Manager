@@ -195,7 +195,7 @@
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) ): ?>
                     <li>
-                        <a href="<?= url( 'rs-prefixes/index' ) ?>">Route Server Prefixes</a>
+                        <a href="<?= route( 'rs-prefixes@list' ) ?>">Route Server Prefixes</a>
                     </li>
                 <?php endif; ?>
 
