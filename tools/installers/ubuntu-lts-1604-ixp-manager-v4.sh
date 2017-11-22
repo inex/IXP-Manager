@@ -518,7 +518,7 @@ echo '[done]'
 ### Install PHP packages
 ##################################################################
 
-echo -n "Running composer to install PHP dependancies (please be patient)... "
+echo -n "Running composer to install PHP dependencies (please be patient)... "
 cd $IXPROOT
 log_break
 sudo -u www-data bash -c "HOME=$IXPROOT && cd $IXPROOT && ./composer.phar --no-ansi --no-interaction install &>> /tmp/ixp-manager-install.log"
