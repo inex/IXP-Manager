@@ -129,9 +129,17 @@
                                                 <?= sprintf( $cconf[ 'sprintf' ], $t->ee( $row[ $col ] ) ) ?>
 
                                             <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
+
                                                 <?php if( $row[ $col ] != null): ?>
                                                     <?= $row[ $col ]->format( 'Y-m-d H:i:s' )  ?>
                                                 <?php endif; ?>
+
+                                            <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'UNIX_TIMESTAMP'] ): ?>
+
+                                                <?php if( $row[ $col ] ): ?>
+                                                    <?= Carbon\Carbon::createFromTimestamp( $row[ $col ] )->format( 'Y-m-d H:i:s' )  ?>
+                                                <?php endif; ?>
+
                                             <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
 
                                                 <?= date('Y-m-d', strtotime( $row[ $col ] ) ) ?>

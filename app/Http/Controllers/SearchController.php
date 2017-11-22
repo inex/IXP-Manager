@@ -43,7 +43,7 @@ use Entities\{
 use Illuminate\Http\{
     RedirectResponse, Request
 };
-use Proxies\__CG__\Entities\Layer2Address;
+
 
 
 /**

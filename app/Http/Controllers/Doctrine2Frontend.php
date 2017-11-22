@@ -110,6 +110,7 @@ abstract class Doctrine2Frontend extends Controller {
         'DATETIME'          => 'datetime',
         'DATE'              => 'date',
         'TIME'              => 'time',
+        'UNIX_TIMESTAMP'    => 'unix_timestamp',
         'SCRIPT'            => 'script',
         'SPRINTF'           => 'sprintf',
         'REPLACE'           => 'replace',
@@ -249,10 +250,12 @@ abstract class Doctrine2Frontend extends Controller {
     /**
      * View an object
      *
+     * @param Request $request The HTTP Request object
      * @param int $id The `id` of the row to load for `view` action.
+     *
      * @return View
      */
-    public function view( $id ): View
+    public function view( Request $request, $id ): View
     {
         $this->data[ 'item' ]               = $this->viewGetData( $id ) ;
 
