@@ -901,7 +901,7 @@ class Customer
     /**
      * Get VirtualInterfaces
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return Doctrine\Common\Collection
      */
     public function getVirtualInterfaces()
     {

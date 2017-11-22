@@ -169,7 +169,7 @@
             {if not isset( $options['frontend']['disabled']['rs-prefixes'] ) or not $options['frontend']['disabled']['rs-prefixes'] }
                 {if $cust->isRouteServerClient()}
                     <li>
-                        <a href="{genUrl controller="rs-prefixes" action="list" custid=$cust->getId()}">
+                        <a href="{route('rs-prefixes@viewFiltered', [ 'cid' =>  $cust->getId() ])}">
                             RS Prefixes
                             {if $rsRoutes.adv_nacc.total gt 0}
                                 <span class="badge badge-important">{$rsRoutes.adv_nacc.total}</span>

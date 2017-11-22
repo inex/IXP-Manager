@@ -30,6 +30,7 @@
     "clipboard": "^1.6.1",
     "ip-address": "^5.0",
     "moment": "^2.18.1",
-    "select2": "^4.0.3"
+    "select2": "^4.0.3",
+    "bootbox.js": "^4.4.0"
   }
 }

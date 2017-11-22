@@ -139,7 +139,7 @@
     <script type="text/javascript" src="<?= asset('/bower_components/select2/dist/js/select2.min.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/js/900-oss-framework.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/js/ixp-manager.js') ?>"></script>
-    <script type="text/javascript" src="<?= asset('/js/bootbox.min.js') ?>"></script>
+    <script type="text/javascript" src="<?= asset('/bower_components/bootbox.js/bootbox.js') ?>"></script>
 
     <script>
         $( ".chzn-select" ).select2({ width: '100%' });

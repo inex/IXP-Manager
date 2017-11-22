@@ -114,6 +114,11 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
     });
 });
 
+Route::group( [ 'prefix' => 'rs-prefixes' ], function() {
+    Route::get(     'list',                                 'RsPrefixesController@list'             )->name( 'rs-prefixes@list'  );
+    Route::get(     'view/{cid}/type/{type}/{protocol?}',   'RsPrefixesController@view'             )->name( 'rs-prefixes@view'  );
+    Route::get(     'view/{cid}/{protocol?}',               'RsPrefixesController@viewFiltered'     )->name( 'rs-prefixes@viewFiltered'  );
+});
 
 
 Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
