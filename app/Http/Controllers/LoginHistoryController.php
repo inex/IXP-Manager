@@ -30,6 +30,7 @@ use Entities\{
     User                as UserEntity
 };
 
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 
@@ -81,7 +82,9 @@ class LoginHistoryController extends Doctrine2Frontend {
             'listColumns'    => [
 
                 'username'          => [ 'title' => 'Username' ],
+
                 'email'             => [ 'title' => 'Email' ],
+
                 'cust_name'  => [
                     'title'      => 'Customer',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -90,6 +93,7 @@ class LoginHistoryController extends Doctrine2Frontend {
                     'nameIdParam'=> 'id',
                     'idField'    => 'cust_id'
                 ],
+
                 'lastlogin'         => [
                     'title'     => 'Last Login',
                     'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
@@ -117,7 +121,7 @@ class LoginHistoryController extends Doctrine2Frontend {
     public static function routes() {
         Route::group( [ 'prefix' => 'login-history' ], function() {
             Route::get(  'list',                'LoginHistoryController@list'   )->name( 'login-history@list'   );
-            Route::get(  'view/{id}/{limit?}',  'LoginHistoryController@view'   )->name( 'login-history@view'   );
+            Route::get(  'view/{id}',           'LoginHistoryController@view'   )->name( 'login-history@view'   );
         });
     }
 
@@ -136,12 +140,9 @@ class LoginHistoryController extends Doctrine2Frontend {
     /**
      * Display the login history list for a user
      *
-     * @param int $id the id of the user
-     * @param boolean $limit do we want to limit the number of row displayd ?
-     *
-     * @return View
+     * @inheritdoc
      */
-    public function view( $id, $limit = false ): View
+    public function view( Request $r, $id ): View
     {
 
         if( !( $user = D2EM::getRepository( UserEntity::class )->find( $id ) ) ) {
@@ -149,7 +150,7 @@ class LoginHistoryController extends Doctrine2Frontend {
         }
 
         return view( 'login-history/view' )->with([
-            'histories'                 => D2EM::getRepository( UserLoginHistoryEntity::class)->getAllForFeList( $user->getId(), $limit ),
+            'histories'                 => D2EM::getRepository( UserLoginHistoryEntity::class)->getAllForFeList( $user->getId(), $r->input( 'limit', null ) ),
             'user'                      => $user,
         ]);
     }
