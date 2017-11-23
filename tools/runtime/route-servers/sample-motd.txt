@@ -1,7 +1,14 @@
-Here is a sample motd (message of the day) that sysadmins at INEX see when 
-logging into a route server:
+#! /bin/sh
 
-======================== INEX Route Server #1 (16.04) =====================
+# Here is a sample motd (message of the day) that sysadmins at INEX see when 
+# logging into a route server.
+#
+# Place this file at /etc/update-motd.d/99-ixp-manager-motd
+#
+
+cat <<END_MOTD
+
+========================== Route Server #1 ===============================
 
 To start / reconfigure all Bird BGP daemons, execute:
 
@@ -21,3 +28,5 @@ sudo birdc  -s /var/run/bird/bird-rs1-lan2-ipv4.ctl
 sudo birdc6 -s /var/run/bird/bird-rs1-lan2-ipv6.ctl
 
 ===========================================================================
+
+END_MOTD
