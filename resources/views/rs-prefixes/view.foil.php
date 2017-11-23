@@ -27,13 +27,19 @@
                 </button>
                 <ul class="dropdown-menu dropdown-menu-right">
                     <?php if( $t->protocol ): ?>
-                        <li> <a id="protocol-0" href="<?= route( "rs-prefixes@viewFiltered" , [ 'cid' => $t->c->getId() ] ) ?>">All Protocols</a> </li>
+                        <li>
+                            <a id="protocol-0" href="<?= route( "rs-prefixes@viewFiltered" ,   [ 'cid' => $t->c->getId()                   ] ) ?>">All Protocols</a>
+                        </li>
                     <?php endif;?>
                     <?php if( $t->protocol != 4 ): ?>
-                        <li> <a id="protocol-4" href="<?= route( "rs-prefixes@viewFiltered", [ 'cid' => $t->c->getId(), 'protocol' => 4 ] ) ?>">IPv4 Only</a> </li>
+                        <li>
+                            <a id="protocol-4" href="<?= route( "rs-prefixes@viewFiltered",    [ 'cid' => $t->c->getId(), 'protocol' => 4  ] ) ?>">IPv4 Only</a>
+                        </li>
                     <?php endif;?>
                     <?php if( $t->protocol != 6 ): ?>
-                        <li> <a id="protocol-6" href="<?= route( "rs-prefixes@viewFiltered", [ 'cid' => $t->c->getId(), 'protocol' => 6 ] ) ?>">IPv6 Only</a> </li>
+                        <li>
+                            <a id="protocol-6" href="<?= route( "rs-prefixes@viewFiltered",    [ 'cid' => $t->c->getId(), 'protocol' => 6  ] ) ?>">IPv6 Only</a>
+                        </li>
                     <?php endif;?>
                 </ul>
             </div>
@@ -51,20 +57,26 @@
             </button>
             <ul class="dropdown-menu dropdown-menu-right">
                 <?php if( $t->protocol ): ?>
-                    <li> <a id="protocol-0" href="<?= route( "rs-prefixes@viewRestricted" ) ?>">All Protocols</a> </li>
+                    <li>
+                        <a id="protocol-0" href="<?= route( "rs-prefixes@viewRestricted" )                      ?>">All Protocols</a>
+                    </li>
                 <?php endif;?>
                 <?php if( $t->protocol != 4 ): ?>
-                    <li> <a id="protocol-4" href="<?= route( "rs-prefixes@viewRestricted", [ 'protocol' => 4 ] ) ?>">IPv4 Only</a> </li>
+                    <li>
+                        <a id="protocol-4" href="<?= route( "rs-prefixes@viewRestricted", [ 'protocol' => 4 ] ) ?>">IPv4 Only</a>
+                    </li>
                 <?php endif;?>
                 <?php if( $t->protocol != 6 ): ?>
-                    <li> <a id="protocol-6" href="<?= route( "rs-prefixes@viewRestricted", [ 'protocol' => 6 ] ) ?>">IPv6 Only</a> </li>
+                    <li>
+                        <a id="protocol-6" href="<?= route( "rs-prefixes@viewRestricted", [ 'protocol' => 6 ] ) ?>">IPv6 Only</a>
+                    </li>
                 <?php endif;?>
             </ul>
         </div>
     </li>
     <?php $this->append() ?>
-
 <?php endif;?>
+
 <?php $this->section( 'content' ) ?>
 
     <?php if( $t->totalVl != $t->filteredVl ): ?>
@@ -81,13 +93,13 @@
 
     <ul class="nav nav-tabs" role="tab-list">
         <li role="presentation" class="active" id="nav-adv_nacc">
-            <a href="#adv_nacc" aria-controls="adv_nacc" role="tab" data-toggle="tab">Advertised but Not Accepted (<?= count( $t->aggRoutes[ 'adv_nacc' ] ) ?>)</a>
+            <a href="#adv_nacc" aria-controls="adv_nacc" role="tab" data-toggle="tab"   >Advertised but Not Accepted (<?= count( $t->aggRoutes[ 'adv_nacc' ] )  ?>)</a>
         </li>
         <li role="presentation" id="nav-adv_acc">
-            <a href="#adv_acc" aria-controls="adv_acc" role="tab" data-toggle="tab">Advertised & Accepted (<?= count( $t->aggRoutes[ 'adv_acc' ] ) ?>)</a>
+            <a href="#adv_acc" aria-controls="adv_acc" role="tab" data-toggle="tab"     >Advertised & Accepted (<?= count( $t->aggRoutes[ 'adv_acc' ] )         ?>)</a>
         </li>
         <li role="presentation" id="nav-nadv_acc">
-            <a href="#nadv_acc" aria-controls="nadv_acc" role="tab" data-toggle="tab">Not Advertised but Accepted (<?= count( $t->aggRoutes[ 'nadv_acc' ] ) ?>)</a>
+            <a href="#nadv_acc" aria-controls="nadv_acc" role="tab" data-toggle="tab"   >Not Advertised but Accepted (<?= count( $t->aggRoutes[ 'nadv_acc' ] )  ?>)</a>
         </li>
         <li role="presentation">
             <a href="#help" aria-controls="help" role="tab" data-toggle="tab">Help</a>
@@ -97,7 +109,7 @@
     <!-- Tab panes -->
     <div class="tab-content" id='type-tabs'>
         <div role="tab-list" class="tab-pane active" id="adv_nacc">
-            <?= $t->insert( 'rs-prefixes/view-route', [ 'type' => 'adv_nacc',   'protocol'  => $t->protocol, 'aggRoutes' => $t->aggRoutes  ] ); ?>
+            <?= $t->insert( 'rs-prefixes/view-route', [ 'type' => 'adv_nacc',   'protocol'  => $t->protocol, 'aggRoutes' => $t->aggRoutes ] ); ?>
         </div>
         <div role="tab-list" class="tab-pane" id="adv_acc">
             <?= $t->insert( 'rs-prefixes/view-route', [ 'type' => 'adv_acc',    'protocol'  => $t->protocol, 'aggRoutes' => $t->aggRoutes ] ); ?>

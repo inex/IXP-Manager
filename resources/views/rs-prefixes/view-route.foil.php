@@ -17,7 +17,9 @@
                     <?= $r[ 'timestamp']->format('Y-m-d H:i:s') ?>
                 </td>
                 <?php if( $t->type == 'adv_acc' || $t->type == 'adv_nacc' ): ?>
-                    <td> <?= $t->asNumber( $r[ 'rsorigin' ] ) ?></td>
+                    <td>
+                        <?= $t->asNumber( $r[ 'rsorigin' ] ) ?>
+                    </td>
                 <?php endif; ?>
             </tr>
         <?php endforeach; ?>
