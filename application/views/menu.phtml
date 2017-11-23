@@ -160,7 +160,7 @@
 
         {if not isset( $options['frontend']['disabled']['rs-prefixes'] ) or not $options['frontend']['disabled']['rs-prefixes'] }
             <li {if $controller eq 'rs-prefixes'}class="active"{/if}>
-                <a href="{genUrl controller='rs-prefixes' action='index'}">Route Server Prefixes</a>
+                <a href="{route( 'rs-prefixes@list' )}">Route Server Prefixes</a>
             </li>
         {/if}
 

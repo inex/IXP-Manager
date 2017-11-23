@@ -7,7 +7,7 @@
         <th>Total</th>
     </thead>
     <tbody>
-        <?php foreach( $t->cust_prefixes as $id => $cp ): ?>
+        <?php foreach( $t->cPrefixes as $id => $cp ): ?>
             <?php if( $cp[ $t->type ][ 'total' ] > 0 ): ?>
                 <tr>
                     <td>

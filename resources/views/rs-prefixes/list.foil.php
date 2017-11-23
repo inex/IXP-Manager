@@ -29,13 +29,13 @@
     <!-- Tab panel -->
     <div class="tab-content">
         <div role="tab-list" class="tab-pane active" id="adv_nacc">
-            <?= $t->insert( 'rs-prefixes/list-summary', [ 'type' => 'adv_nacc' ] ); ?>
+            <?= $t->insert( 'rs-prefixes/list-summary', [ 'type' => 'adv_nacc'  ] ); ?>
         </div>
         <div role="tab-list" class="tab-pane" id="adv_acc">
-            <?= $t->insert( 'rs-prefixes/list-summary', [ 'type' => 'adv_acc' ] ); ?>
+            <?= $t->insert( 'rs-prefixes/list-summary', [ 'type' => 'adv_acc'   ] ); ?>
         </div>
         <div role="tab-list" class="tab-pane" id="nadv_acc">
-            <?= $t->insert( 'rs-prefixes/list-summary', [ 'type' => 'nadv_acc' ] ); ?>
+            <?= $t->insert( 'rs-prefixes/list-summary', [ 'type' => 'nadv_acc'  ] ); ?>
         </div>
     </div>
 <?php $this->append() ?>

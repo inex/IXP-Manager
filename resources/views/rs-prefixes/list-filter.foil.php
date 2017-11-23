@@ -10,13 +10,19 @@ endif; ?>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
             <?php if( $t->protocol ): ?>
-                <li> <a id="protocol-0" href="<?= route( "rs-prefixes@".$route , [ 'cid' => $t->c->getId() ] ) ?>">All Protocols</a> </li>
+                <li>
+                    <a id="protocol-0" href="<?= route( "rs-prefixes@".$route , [ 'cid' => $t->c->getId() ]                 ) ?>">All Protocols</a>
+                </li>
             <?php endif;?>
             <?php if( $t->protocol != 4 ): ?>
-                <li> <a id="protocol-4" href="<?= route( "rs-prefixes@".$route, [ 'cid' => $t->c->getId(), 'protocol' => 4 ] ) ?>">IPv4 Only</a> </li>
+                <li>
+                    <a id="protocol-4" href="<?= route( "rs-prefixes@".$route, [ 'cid' => $t->c->getId(), 'protocol' => 4 ] ) ?>">IPv4 Only</a>
+                </li>
             <?php endif;?>
             <?php if( $t->protocol != 6 ): ?>
-                <li> <a id="protocol-6" href="<?= route( "rs-prefixes@".$route, [ 'cid' => $t->c->getId(), 'protocol' => 6 ] ) ?>">IPv6 Only</a> </li>
+                <li>
+                    <a id="protocol-6" href="<?= route( "rs-prefixes@".$route, [ 'cid' => $t->c->getId(), 'protocol' => 6 ] ) ?>">IPv6 Only</a>
+                </li>
             <?php endif;?>
         </ul>
     </div>

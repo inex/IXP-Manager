@@ -56,12 +56,12 @@ class RsPrefixesController extends Controller {
         return view( 'rs-prefixes/list' )->with([
             'types'                 => RSPrefixEntity::$SUMMARY_TYPES_FNS,
             'rsRouteTypes'          => array_keys( RSPrefixEntity::$ROUTES_TYPES_FNS ),
-            'cust_prefixes'         => D2EM::getRepository( RSPrefixEntity::class )->aggregateRouteSummaries()
+            'cPrefixes'             => D2EM::getRepository( RSPrefixEntity::class )->aggregateRouteSummaries()
         ]);
     }
 
     /**
-     * Display all the RsPrefixes for a Customer in Restricted version for the user type CustUser
+     * Display all the Rs Prefixes for a Customer in Restricted version for the user type CustUser
      *
      * @param int|null $protocol protocol selected
      * @return  View
@@ -140,8 +140,5 @@ class RsPrefixesController extends Controller {
             'c'                         => $c,
             'aggRoutes'                 => D2EM::getRepository( RSPrefixEntity::class )->aggregateRoutes( $c->getId(), $protocol ? $protocol : null )
         ]);
-
-
     }
-
 }
