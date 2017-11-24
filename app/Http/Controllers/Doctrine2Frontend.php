@@ -404,8 +404,11 @@ abstract class Doctrine2Frontend extends Controller {
             $this->postFlush( 'delete' );
             AlertContainer::push( $this->feParams->titleSingular . " deleted.", Alert::SUCCESS );
         }
-
-        return redirect()->route( $this->postDeleteRedirect() ?? self::route_prefix() . '@' . 'list' );
+        if( $this->postDeleteRedirect() ){
+            return redirect()->to( $this->postDeleteRedirect() );
+        } else{
+            return redirect()->route( self::route_prefix() . '@' . 'list' );
+        }
     }
 
     /**
