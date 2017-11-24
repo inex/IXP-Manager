@@ -78,7 +78,7 @@
                                         </b>
                                     </td>
                                     <td>
-                                        <?= Markdown::parse( $t->ee( $p->getDescription() ) ) ?>
+                                        <?= @parsedown( $t->ee( $p->getDescription() ) ) ?>
                                     </td>
                                 </tr>
 

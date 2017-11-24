@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.5.19 on 2017-10-27.
+ * Generated for Laravel 5.5.21 on 2017-11-24.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -375,6 +375,18 @@ namespace Illuminate\Support\Facades {
         public static function getProvider($provider)
         {
             return \Illuminate\Foundation\Application::getProvider($provider);
+        }
+        
+        /**
+         * Get the registered service provider instances if any exist.
+         *
+         * @param \Illuminate\Support\ServiceProvider|string $provider
+         * @return array 
+         * @static 
+         */ 
+        public static function getProviders($provider)
+        {
+            return \Illuminate\Foundation\Application::getProviders($provider);
         }
         
         /**
@@ -5541,8 +5553,8 @@ namespace Illuminate\Support\Facades {
          * 
          * Order of precedence: PATH (routing placeholders or custom attributes), GET, BODY
          *
-         * @param string $key the key
-         * @param mixed $default the default value if the parameter key does not exist
+         * @param string $key The key
+         * @param mixed $default The default value if the parameter key does not exist
          * @return mixed 
          * @static 
          */ 
@@ -8895,8 +8907,8 @@ namespace Illuminate\Support\Facades {
          * 
          * Order of precedence: PATH (routing placeholders or custom attributes), GET, BODY
          *
-         * @param string $key the key
-         * @param mixed $default the default value if the parameter key does not exist
+         * @param string $key The key
+         * @param mixed $default The default value if the parameter key does not exist
          * @return mixed 
          * @static 
          */ 
@@ -10509,7 +10521,19 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Route an api resource to a controller.
+         * Register an array of API resource controllers.
+         *
+         * @param array $resources
+         * @return void 
+         * @static 
+         */ 
+        public static function apiResources($resources)
+        {
+            \Illuminate\Routing\Router::apiResources($resources);
+        }
+        
+        /**
+         * Route an API resource to a controller.
          *
          * @param string $name
          * @param string $controller
@@ -16184,84 +16208,6 @@ namespace GrahamCampbell\Flysystem\Facades {
  
 }
 
-namespace MaxHoffmann\Parsedown { 
-
-    class ParsedownFacade {
-        
-        /**
-         * 
-         *
-         * @static 
-         */ 
-        public static function text($text)
-        {
-            return \Parsedown::text($text);
-        }
-        
-        /**
-         * 
-         *
-         * @static 
-         */ 
-        public static function setBreaksEnabled($breaksEnabled)
-        {
-            return \Parsedown::setBreaksEnabled($breaksEnabled);
-        }
-        
-        /**
-         * 
-         *
-         * @static 
-         */ 
-        public static function setMarkupEscaped($markupEscaped)
-        {
-            return \Parsedown::setMarkupEscaped($markupEscaped);
-        }
-        
-        /**
-         * 
-         *
-         * @static 
-         */ 
-        public static function setUrlsLinked($urlsLinked)
-        {
-            return \Parsedown::setUrlsLinked($urlsLinked);
-        }
-        
-        /**
-         * 
-         *
-         * @static 
-         */ 
-        public static function line($text)
-        {
-            return \Parsedown::line($text);
-        }
-        
-        /**
-         * 
-         *
-         * @static 
-         */ 
-        public static function parse($text)
-        {
-            return \Parsedown::parse($text);
-        }
-        
-        /**
-         * 
-         *
-         * @static 
-         */ 
-        public static function instance($name = 'default')
-        {
-            return \Parsedown::instance($name);
-        }
-         
-    }
- 
-}
-
 namespace LukeTowers\Purifier\Facades { 
 
     class Purifier {
@@ -18564,8 +18510,6 @@ namespace  {
 
     class Flysystem extends \GrahamCampbell\Flysystem\Facades\Flysystem {}
 
-    class Markdown extends \MaxHoffmann\Parsedown\ParsedownFacade {}
-
     class Purifier extends \LukeTowers\Purifier\Facades\Purifier {}
 
     class PDF extends \Barryvdh\DomPDF\Facade {}
@@ -19624,6 +19568,7 @@ if (! function_exists('throw_if')) {
      * @param  \Throwable|string  $exception
      * @param  array  ...$parameters
      * @return void
+     * @throws \Throwable
      */
     function throw_if($boolean, $exception, ...$parameters)
     {
@@ -19641,6 +19586,7 @@ if (! function_exists('throw_unless')) {
      * @param  \Throwable|string  $exception
      * @param  array  ...$parameters
      * @return void
+     * @throws \Throwable
      */
     function throw_unless($boolean, $exception, ...$parameters)
     {
