@@ -414,9 +414,9 @@ abstract class Doctrine2Frontend extends Controller {
     /**
      * Allow D2F implementations to override where the post-delete redirect goes.
      *
-     * To implement this, have it return a valid route name
+     * To implement this, have it return a valid route url (e.g. `return route( "route-name" );`
      *
-     * @return string|null
+     * @return ?string
      */
     protected function postDeleteRedirect() {
         return null;

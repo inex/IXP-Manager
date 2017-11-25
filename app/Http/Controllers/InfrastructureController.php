@@ -213,25 +213,24 @@ class InfrastructureController extends Doctrine2Frontend {
     protected function preDelete() : bool {
         $okay = true;
         if( ( $cnt = count( $this->object->getSwitchers() ) ) ) {
-            AlertContainer::push( "Could not delete this infrastructure as {$cnt} switch(es) are assigned to it", Alert::DANGER );
+            AlertContainer::push( "You cannot delete this infrastructure there are {$cnt} switch(es) associated with it. "
+                . "You can view and then reassign or delete those switches <a href=\""
+                . url('') . "/switch/list/infra/" . $this->object->getId()
+                . "\">by clicking here</a>.", Alert::DANGER
+            );
             $okay = false;
         }
 
-        if( count( $this->object->getVlans() ) ) {
-            AlertContainer::push( "You cannot delete this infrastructure as the below VLANs are linked to it. Please delete these VLANs first.", Alert::DANGER );
+        if( $cnt = count( $this->object->getVlans() ) ) {
+            AlertContainer::push( "You cannot delete this infrastructure there are {$cnt} VLAN(s) associated with it. "
+                . "You can view and then reassign or delete those VLANs <a href=\""
+                . route( "vlan@infra" , [ 'id' => $this->object->getId() ]  )
+                . "\">by clicking here</a>.", Alert::DANGER
+            );
             $okay = false;
         }
 
         return $okay;
     }
-
-    protected function postDeleteRedirect(){
-        if( count( $this->object->getVlans() ) ) {
-            return route( "vlan@infra" , [ 'id' => $this->object->getId() ] );
-        } else{
-            return false;
-        }
-    }
-
 
 }
