@@ -4,7 +4,7 @@
 
 <?php $this->section( 'title' ) ?>
     Route Server Prefix Filtering Analysis Tool
-    <?php if( !Auth::user()->isSuperUser() ): ?>
+    <?php if( Auth::guest() || !Auth::user()->isSuperUser() ): ?>
         <small>
             <br>Summary by Customer
         </small>
@@ -13,7 +13,7 @@
 
 
 
-<?php if( Auth::user()->isSuperUser() ): ?>
+<?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
     <?php $this->section( 'page-header-postamble' ) ?>
         <li>
             Summary by Customer

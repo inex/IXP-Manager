@@ -16,7 +16,3 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
     Route::get( 'view/{id}',                        'PatchPanelPortController@view' );
 });
 
-Route::group( [ 'prefix' => 'rs-prefixes' ], function() {
-    Route::get(     'list',         'RsPrefixesController@list' )->name( 'rs-prefixes@list'  );
-    Route::get(     'view/{cid}',   'RsPrefixesController@view' )->name( 'rs-prefixes@view'  );
-});
