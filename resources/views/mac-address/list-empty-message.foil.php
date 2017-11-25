@@ -1,4 +1,5 @@
 <div class="alert alert-warning">
-    To configure MAC addresses for a customer, edit a customer's port and set the MAC
-    address from the VLAN Interfaces list. Please <a target="_blank" href="http://docs.ixpmanager.org/features/layer2-addresses/">see the official documentation here</a>
+    There are no discovered MAC addresses in the database. 
+    Please <a href="http://docs.ixpmanager.org/features/layer2-addresses/" target="_blank">see the official
+    MAC address documentation</a> for details on how to configure and set this up.
 </div>
