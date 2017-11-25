@@ -4,6 +4,9 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
+use Entities\Vlan as VlanEntitiy;
+use IPTools\Network as IPToolsNetwork;
+
 /**
  * IPv6Address
  *
@@ -100,5 +103,40 @@ class IPv6Address extends EntityRepository
         $query = $this->getEntityManager()->createQuery( $dql );
 
         return $query->getArrayResult();
+    }
+
+
+    public function bulkAdd( IPToolsNetwork $network, VlanEntitiy $vlan, bool $skip, bool $decimal )
+    {
+        $addresses = [];
+
+        if( $decimal ) {
+
+            $ip     = $network->getFirstIP();
+            $target = 2**( 128 - $network->getPrefixLength() );
+            $i = 0;
+
+            do {
+
+                if( !preg_match( '/^([0-9]+|)$/', substr( $ip, strrpos( $ip, ':' ) + 1 ) ) ) {
+                    $ip = $ip->next();
+                    continue;
+                }
+
+                $addresses[] = (string)$ip;
+                $ip = $ip->next();
+                $i++;
+
+            } while( $i < $target );
+
+        } else {
+
+            foreach( $network as $ip ) {
+                $addresses[] = (string)$ip;
+            }
+
+        }
+
+        dd($addresses);
     }
 }

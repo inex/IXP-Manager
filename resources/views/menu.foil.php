@@ -133,15 +133,14 @@
                 <?php endif; ?>
 
                 <li>
-                    <a href="<?= route('ipAddress@list', [ 'protocol' => 6 ] ) ?>">IP Addressing</a>
-                    <?php if(  $t->controller == 'IpAddressController' ): ?>
-                        <li class="sub-menu <?= substr( $_SERVER['REQUEST_URI'] , 14, -2 ) == 4 ? 'active' : '' ?>">
-                            <a href="<?= route('ipAddress@list', [ 'protocol' => 4 ] ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;IPv4 Address</a>
+                    <a href="<?= route('ip-address@list', [ 'protocol' => 6 ] ) ?>">IP Addresses</a>
+                    <?php if( request()->is( 'ip-address/*' ) ): ?>
+                        <li class="sub-menu <?= request()->route()->parameter('protocol') == '4' ? 'active' : '' ?>">
+                            <a href="<?= route('ip-address@list', [ 'protocol' => 4 ] ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;IPv4 Addresses</a>
                         </li>
 
-
-                        <li class="sub-menu <?= substr( $_SERVER['REQUEST_URI'] , 14, -2 ) == 6 ? 'active' : '' ?>">
-                            <a href="<?= route('ipAddress@list', [ 'protocol' => 6 ] ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;IPv6 Address</a>
+                    <li class="sub-menu <?= request()->route()->parameter('protocol') == '6' ? 'active' : '' ?>">
+                            <a href="<?= route('ip-address@list', [ 'protocol' => 6 ] ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;IPv6 Addresses</a>
                         </li>
                     <?php endif; ?>
                 </li>

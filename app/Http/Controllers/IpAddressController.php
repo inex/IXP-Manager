@@ -73,7 +73,7 @@ class IpAddressController extends Controller
      *
      * @return IPv4AddressEntity | IPv6AddressEntity | integer
      */
-    public function processProtocol( int $protocol , bool $entity = true )
+    private function processProtocol( int $protocol , bool $entity = true )
     {
         if( !in_array( $protocol, [ 4,6 ] ) ){
             abort( 404 , 'Unknown protocol');
@@ -96,9 +96,8 @@ class IpAddressController extends Controller
      */
     public function list( int $protocol, int $vid = null ): View
     {
-        $vlan = '';
-
-        if( $vid ){
+        $vlan = null;
+        if( $vid ) {
             if( !( $vlan = D2EM::getRepository( VlanEntity::class )->find( $vid ) ) ) {
                 abort( 404 , 'Unknown vlan');
             }
@@ -110,7 +109,7 @@ class IpAddressController extends Controller
             'ips'                       => $ips,
             'vlans'                     => D2EM::getRepository( VlanEntity::class )->getNames(),
             'protocol'                  => $protocol,
-            'vlan'                      => $vlan
+            'vlan'                      => $vlan ?? false
 
         ]);
     }
@@ -135,97 +134,76 @@ class IpAddressController extends Controller
      * Edit the core links associated to a core bundle
      *
      * @param   StoreIpAddress      $request instance of the current HTTP request
-     *
      * @return  RedirectResponse
      */
     public function store( StoreIpAddress $request ): RedirectResponse {
 
-        $network = explode( '/', trim( htmlspecialchars( $request->input('network' ) )  ) );
+        $vlan     = D2EM::getRepository( VlanEntity::class )->find( $request->input('vlan' ) );
+        $network  = Network::parse( trim( htmlspecialchars( $request->input('network' ) )  ) );
+        $skip     = (bool)$request->input( 'skip',    false );
+        $decimal  = (bool)$request->input( 'decimal', false );
 
-        // $network[ 0 ] => IP address, if exist $network[ 1 ] => subnet
-        if( !filter_var( $network[ 0 ], FILTER_VALIDATE_IP ) ){
-            AlertContainer::push( 'The IP address format is invalid', Alert::DANGER );
-            return Redirect::back()->withInput();
-        }
-
-        $vlan =  D2EM::getRepository( VlanEntity::class )->find( $request->input('vlan' ) );
-
-        $ip = new IP( $network[ 0 ] );
-
-        $protocol = $ip->version == 'IPv4' ? 4 : 6;
-
-        $entity = $this->processProtocol( $protocol, true );
-
-        // if the IP address has a subnet
-        if( isset( $network[ 1 ] ) ){
-
-           if( $protocol == 4 ){
-               if( $network[ 1 ] < 21 || $network[ 1 ] > 32 ){
-                   AlertContainer::push( 'The maximum subnet size is /21 for IPv4.', Alert::DANGER );
-                   return Redirect::back()->withInput();
-               }
-           } else{
-               if( $network[ 1 ] < 117 || $network[ 1 ] > 128 ){
-                   AlertContainer::push( 'The maximum subnet size is /117 for IPv6.', Alert::DANGER );
-                   return Redirect::back()->withInput();
-               }
-           }
-
-            $networks = Network::parse( $network[ 0 ]. '/'.$network[ 1 ] );
-
-            // FIX ME example : 192.0.2.10 already exist in the vlan ,
-            // I want to add 192.0.2.0/24, the ips from 192.0.2.0 to 192.0.2.9 will be added
-            // after there is the exception for 192.0.2.10, and all the other ips that should be added will be not added
-            // that always catch in the exception even if there are not exisint in the DB
-            foreach( $networks as $ip ) {
-                try{
-                        //D2EM::beginTransaction();
-
-                        $ipAddress = new $entity;
-                        D2EM::persist( $ipAddress );
-
-                        $ipAddress->setVlan( $vlan );
-
-                        $ipAddress->setAddress( (string)$ip );
-
-                        D2EM::commit();
-
-
-                        D2EM::flush();
-
-                        var_dump( (string)$ip." - added");
-
-
-
-                } catch( \Exception $e ) {
-                    //D2EM::rollback();
-                    if( $request->input('skip' ) ){
-
-                    }
-                    var_dump( (string)$ip." - exist");
-
-                    //throw $e;
-                }
-            }
-
-
+        if( $network->getFirstIP()->version == 'IPv6' ) {
+            $result = D2EM::getRepository( IPv6AddressEntity::class )->bulkAdd( $network, $vlan, $skip, $decimal );
         } else {
-            if( !( $ip = D2EM::getRepository( $entity )->findOneBy( [ "Vlan" => $vlan->getId(), 'address' => $network[ 0 ] ] ) ) ) {
-                $ipAddress = new $entity;
-                D2EM::persist( $ipAddress );
-                $ipAddress->setVlan( $vlan );
-                $ipAddress->setAddress( $network[ 0 ] );
-                D2EM::flush();
-            } else {
-                AlertContainer::push( 'The IP Address '.$network[ 0 ]. ' is already in use by another VLAN interface on the same VLAN.', Alert::DANGER );
-                return Redirect::back()->withInput();
-            }
+            $result = D2EM::getRepository( IPv4AddressEntity::class )->bulkAdd( $network, $vlan, $skip );
         }
 
+        dd($result);
 
-        AlertContainer::push( 'The Ip Address have been edited with success.', Alert::SUCCESS );
-
-        return Redirect::to( route( 'ipAddress@list', [ 'protocole' => $protocol ] ) );
+//            // FIX ME example : 192.0.2.10 already exist in the vlan ,
+//            // I want to add 192.0.2.0/24, the ips from 192.0.2.0 to 192.0.2.9 will be added
+//            // after there is the exception for 192.0.2.10, and all the other ips that should be added will be not added
+//            // that always catch in the exception even if there are not exisint in the DB
+//            foreach( $networks as $ip ) {
+//                try{
+//                        //D2EM::beginTransaction();
+//
+//                        $ipAddress = new $entity;
+//                        D2EM::persist( $ipAddress );
+//
+//                        $ipAddress->setVlan( $vlan );
+//
+//                        $ipAddress->setAddress( (string)$ip );
+//
+//                        D2EM::commit();
+//
+//
+//                        D2EM::flush();
+//
+//                        var_dump( (string)$ip." - added");
+//
+//
+//
+//                } catch( \Exception $e ) {
+//                    //D2EM::rollback();
+//                    if( $request->input('skip' ) ){
+//
+//                    }
+//                    var_dump( (string)$ip." - exist");
+//
+//                    //throw $e;
+//                }
+//            }
+//
+//
+//        } else {
+//            if( !( $ip = D2EM::getRepository( $entity )->findOneBy( [ "Vlan" => $vlan->getId(), 'address' => $network[ 0 ] ] ) ) ) {
+//                $ipAddress = new $entity;
+//                D2EM::persist( $ipAddress );
+//                $ipAddress->setVlan( $vlan );
+//                $ipAddress->setAddress( $network[ 0 ] );
+//                D2EM::flush();
+//            } else {
+//                AlertContainer::push( 'The IP Address '.$network[ 0 ]. ' is already in use by another VLAN interface on the same VLAN.', Alert::DANGER );
+//                return Redirect::back()->withInput();
+//            }
+//        }
+//
+//
+//        AlertContainer::push( 'The Ip Address have been edited with success.', Alert::SUCCESS );
+//
+//        return Redirect::to( route( 'ipAddress@list', [ 'protocole' => $protocol ] ) );
 
     }
 
