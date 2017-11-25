@@ -201,7 +201,7 @@ class RSPrefix extends EntityRepository
                         dp.irrdb AS irrdb, count( dp.protocol ) AS prefixes
     
                 FROM \\Entities\\RSPrefix dp
-                    LEFT JOIN dp.Customer c
+                    JOIN dp.Customer c
                 WHERE
                     dp.rs_origin IS ' . ( $rsOriginIsNull ? '' : 'NOT' ) . ' NULL
                     AND dp.irrdb = ?2
@@ -267,8 +267,10 @@ class RSPrefix extends EntityRepository
     {
         $aggRoutes = [];
     
-        foreach( \Entities\RSPrefix::$ROUTES_TYPES_FNS as $type => $fn )
+        foreach( \Entities\RSPrefix::$ROUTES_TYPES_FNS as $type => $fn ){
             $aggRoutes[ $type ] = $this->$fn( $protocol, $cust );
+        }
+
     
         return $aggRoutes;
     }
@@ -353,6 +355,7 @@ class RSPrefix extends EntityRepository
         
         if( $cust !== null )
             $query->setParameter( 3, $cust );
+
     
         return $query->getArrayResult();
     }

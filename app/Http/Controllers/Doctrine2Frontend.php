@@ -148,7 +148,7 @@ abstract class Doctrine2Frontend extends Controller {
 
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $class, $route_prefix ) {
 
-            Route::get( 'list', $class . '@list' )->name( $route_prefix . '@list' );
+            Route::get( 'list',      $class . '@list' )->name( $route_prefix . '@list' );
             Route::get( 'view/{id}', $class . '@view' )->name( $route_prefix . '@view' );
 
             if( !static::$read_only ) {
@@ -404,16 +404,19 @@ abstract class Doctrine2Frontend extends Controller {
             $this->postFlush( 'delete' );
             AlertContainer::push( $this->feParams->titleSingular . " deleted.", Alert::SUCCESS );
         }
-
-        return redirect()->route( $this->postDeleteRedirect() ?? self::route_prefix() . '@' . 'list' );
+        if( $this->postDeleteRedirect() ){
+            return redirect()->to( $this->postDeleteRedirect() );
+        } else{
+            return redirect()->route( self::route_prefix() . '@' . 'list' );
+        }
     }
 
     /**
      * Allow D2F implementations to override where the post-delete redirect goes.
      *
-     * To implement this, have it return a valid route name
+     * To implement this, have it return a valid route url (e.g. `return route( "route-name" );`
      *
-     * @return string|null
+     * @return ?string
      */
     protected function postDeleteRedirect() {
         return null;

@@ -112,3 +112,31 @@ function ixpRandomString( length = 12 ) {
 
     return result;
 }
+
+
+/**
+ * Replaces an AS  Number with some JS magic to invoke a BootBox.
+ *
+ * @param string asNumber The AS number
+ *
+ * @return html
+ */
+function ixpAsnumber( asNumber ) {
+
+    let html = `<iframe width="100%" height="500px" src="https://apps.db.ripe.net/search/lookup.html?source=ripe&key=AS${asNumber}&type=aut-num" frameborder="0" allowfullscreen></iframe>`;
+
+    bootbox.dialog({
+        message: html,
+        size: "large",
+        title: "AS Number Lookup",
+        buttons: {
+            cancel: {
+                label: 'Close',
+                callback: function () {
+                    $('.bootbox.modal').modal('hide');
+                    return false;
+                }
+            }
+        }
+    });
+}

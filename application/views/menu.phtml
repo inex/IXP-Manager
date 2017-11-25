@@ -49,11 +49,6 @@
 
 
     <li class="nav-header">IXP Admin Actions</li>
-        {if $multiIXP }
-            <li {if $controller eq 'ixp'}class="active"{/if}>
-                <a href="{genUrl controller='ixp' action='list'}">IXPs</a>
-            </li>
-        {/if}
 
         <li {if $controller eq 'infrastructure'}class="active"{/if}>
             <a href="{genUrl controller='infrastructure' action='list'}">Infrastructures</a>
@@ -158,9 +153,9 @@
             <a href="{genUrl controller='irrdb-config' action='list'}">IRRDB Configuration</a>
         </li>
 
-        {if not isset( $options['frontend']['disabled']['rs-prefixes'] ) or not $options['frontend']['disabled']['rs-prefixes'] }
-            <li {if $controller eq 'rs-prefixes'}class="active"{/if}>
-                <a href="{genUrl controller='rs-prefixes' action='index'}">Route Server Prefixes</a>
+        {if !config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) }
+            <li>
+                <a href="{route( 'rs-prefixes@list' )}">Route Server Prefixes</a>
             </li>
         {/if}
 

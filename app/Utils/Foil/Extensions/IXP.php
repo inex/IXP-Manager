@@ -52,6 +52,7 @@ class IXP implements ExtensionInterface {
         return [
             'alerts'            => [ AlertContainer::class, 'html' ],
             'as112UiActive'     => [ $this, 'as112UiActive' ],
+            'asNumber'          => [ $this, 'asNumber' ],
             'maxFileUploadSize' => [ $this, 'maxFileUploadSize' ],
             'multiIXP'          => [ $this, 'multiIXP' ],
             'nagiosHostname'    => [ $this, 'nagiosHostname' ],
@@ -279,6 +280,17 @@ class IXP implements ExtensionInterface {
     public function as112UiActive(): bool
     {
         return boolval( config( 'ixp.as112.ui_active', false ) );
+    }
+
+    /**
+     * Replaces an AS  Number with some JS magic to invoke a bootbox.
+     *
+     * @param  int    $asn The AS number
+     * @return string
+     */
+    public function asNumber( int $asn, $addAs = true )
+    {
+        return '<a href="#ixpm-asnumber-' . $asn . '" onClick="ixpAsnumber( ' . $asn . ' ); return false;">' . ( $addAs ? 'AS' : '' ) . $asn . '</a>';
     }
 
 

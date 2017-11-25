@@ -115,7 +115,6 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
 });
 
 
-
 Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
 
 

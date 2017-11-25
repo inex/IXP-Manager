@@ -210,14 +210,27 @@ class InfrastructureController extends Doctrine2Frontend {
     /**
      * @inheritdoc
      */
-    protected function preDelete(): bool {
+    protected function preDelete() : bool {
+        $okay = true;
         if( ( $cnt = count( $this->object->getSwitchers() ) ) ) {
-            AlertContainer::push( "Could not delete this infrastructure as {$cnt} switch(es) are assigned to it", Alert::DANGER );
-            return false;
+            AlertContainer::push( "You cannot delete this infrastructure there are {$cnt} switch(es) associated with it. "
+                . "You can view and then reassign or delete those switches <a href=\""
+                . url('') . "/switch/list/infra/" . $this->object->getId()
+                . "\">by clicking here</a>.", Alert::DANGER
+            );
+            $okay = false;
         }
 
-        return true;
-    }
+        if( $cnt = count( $this->object->getVlans() ) ) {
+            AlertContainer::push( "You cannot delete this infrastructure there are {$cnt} VLAN(s) associated with it. "
+                . "You can view and then reassign or delete those VLANs <a href=\""
+                . route( "vlan@infra" , [ 'id' => $this->object->getId() ]  )
+                . "\">by clicking here</a>.", Alert::DANGER
+            );
+            $okay = false;
+        }
 
+        return $okay;
+    }
 
 }

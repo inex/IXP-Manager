@@ -891,7 +891,7 @@ class Customer
     /**
      * Remove VirtualInterfaces
      *
-     * @param Entities\VirtualInterface $virtualInterfaces
+     * @param VirtualInterface $virtualInterfaces
      */
     public function removeVirtualInterface(\Entities\VirtualInterface $virtualInterfaces)
     {
@@ -901,7 +901,7 @@ class Customer
     /**
      * Get VirtualInterfaces
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|VirtualInterface[]
      */
     public function getVirtualInterfaces()
     {
@@ -911,12 +911,12 @@ class Customer
     /**
      * Add Contacts
      *
-     * @param Entities\Contact $contacts
+     * @param Contact $contact
      * @return Customer
      */
-    public function addContact(\Entities\Contact $contacts)
+    public function addContact(\Entities\Contact $contact)
     {
-        $this->Contacts[] = $contacts;
+        $this->Contacts[] = $contact;
 
         return $this;
     }
@@ -924,17 +924,17 @@ class Customer
     /**
      * Remove Contacts
      *
-     * @param Entities\Contact $contacts
+     * @param Contact $contact
      */
-    public function removeContact(\Entities\Contact $contacts)
+    public function removeContact(\Entities\Contact $contact)
     {
-        $this->Contacts->removeElement($contacts);
+        $this->Contacts->removeElement($contact);
     }
 
     /**
      * Get Contacts
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|Contact[]
      */
     public function getContacts()
     {
@@ -944,12 +944,12 @@ class Customer
     /**
      * Add ConsoleServerConnections
      *
-     * @param Entities\ConsoleServerConnection $consoleServerConnections
+     * @param ConsoleServerConnection $consoleServerConnection
      * @return Customer
      */
-    public function addConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnections)
+    public function addConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnection)
     {
-        $this->ConsoleServerConnections[] = $consoleServerConnections;
+        $this->ConsoleServerConnections[] = $consoleServerConnection;
 
         return $this;
     }
@@ -957,17 +957,17 @@ class Customer
     /**
      * Remove ConsoleServerConnections
      *
-     * @param Entities\ConsoleServerConnection $consoleServerConnections
+     * @param ConsoleServerConnection $consoleServerConnection
      */
-    public function removeConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnections)
+    public function removeConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnection)
     {
-        $this->ConsoleServerConnections->removeElement($consoleServerConnections);
+        $this->ConsoleServerConnections->removeElement($consoleServerConnection);
     }
 
     /**
      * Get ConsoleServerConnections
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|ConsoleServerConnection[]
      */
     public function getConsoleServerConnections()
     {
@@ -977,7 +977,7 @@ class Customer
     /**
      * Add CustomerEquipment
      *
-     * @param Entities\CustomerEquipment $customerEquipment
+     * @param CustomerEquipment $customerEquipment
      * @return Customer
      */
     public function addCustomerEquipment(\Entities\CustomerEquipment $customerEquipment)
@@ -990,7 +990,7 @@ class Customer
     /**
      * Remove CustomerEquipment
      *
-     * @param Entities\CustomerEquipment $customerEquipment
+     * @param CustomerEquipment $customerEquipment
      */
     public function removeCustomerEquipment(\Entities\CustomerEquipment $customerEquipment)
     {
@@ -1000,7 +1000,7 @@ class Customer
     /**
      * Get CustomerEquipment
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|CustomerEquipment[]
      */
     public function getCustomerEquipment()
     {

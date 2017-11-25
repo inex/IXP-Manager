@@ -51,6 +51,11 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'loa-pdf/{id}',                 'PatchPanelPortController@loaPDF' );
 });
 
+Route::group( [ 'prefix' => 'rs-prefixes', 'middleware' => [ 'rs-prefixes' ] ], function() {
+    Route::get(     'list',         'RsPrefixesController@list' )->name( 'rs-prefixes@list'  );
+    Route::get(     'view/{cid}',   'RsPrefixesController@view' )->name( 'rs-prefixes@view'  );
+});
+
 Route::get( 'weather-map/{id}',                    'WeatherMapController@index' )->name( 'weathermap');
 
 
