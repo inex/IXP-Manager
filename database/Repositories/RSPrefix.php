@@ -201,7 +201,7 @@ class RSPrefix extends EntityRepository
                         dp.irrdb AS irrdb, count( dp.protocol ) AS prefixes
     
                 FROM \\Entities\\RSPrefix dp
-                    LEFT JOIN dp.Customer c
+                    JOIN dp.Customer c
                 WHERE
                     dp.rs_origin IS ' . ( $rsOriginIsNull ? '' : 'NOT' ) . ' NULL
                     AND dp.irrdb = ?2

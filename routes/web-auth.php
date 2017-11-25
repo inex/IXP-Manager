@@ -17,5 +17,6 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
 });
 
 Route::group( [ 'prefix' => 'rs-prefixes' ], function() {
-    Route::get(     'view-restrict/{protocol?}',               'RsPrefixesController@viewRestricted'     )->name( 'rs-prefixes@viewRestricted'  );
+    Route::get(     'list',         'RsPrefixesController@list' )->name( 'rs-prefixes@list'  );
+    Route::get(     'view/{cid}',   'RsPrefixesController@view' )->name( 'rs-prefixes@view'  );
 });

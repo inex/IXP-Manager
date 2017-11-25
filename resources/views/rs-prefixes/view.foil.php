@@ -2,80 +2,55 @@
 /** @var object $t */
 ?>
 
+
+<?php $this->section( 'title' ) ?>
+    <?php if( Auth::user()->isSuperUser() ): ?>
+        <a href="<?= route( "rs-prefixes@list" ) ?>">Route Server Prefix Filtering Analysis Tool</a>
+    <?php else: ?>
+        Route Server Prefix Filtering Analysis Tool
+        <small>
+            <br>
+            <?= $t->ee( $t->c->getName() ) ?> [<?= $t->asNumber( $t->c->getAutsys() ) ?>]
+            <?php if( $t->protocol ): ?>[IPv<?= $t->protocol ?>]<?php endif; ?>
+        </small>
+    <?php endif; ?>
+<?php $this->append() ?>
+
+
+
 <?php if( Auth::user()->isSuperUser() ): ?>
-    <?php $this->section( 'title' ) ?>
-        <a href="<?= route( "rs-prefixes@list" ) ?>">Route Server Prefixes</a>
-    <?php $this->append() ?>
 
     <?php $this->section( 'page-header-postamble' ) ?>
         <li>
             <a href="<?=  url( "customer/overview/id/" )."/".$t->c->getId() ?>" >
-            <?= $t->ee( $t->c->getName() ) ?>
+                <?= $t->ee( $t->c->getName() ) ?>
             </a>
+
             [<?= $t->asNumber( $t->c->getAutsys() ) ?>]
+
             <?php if( $t->protocol ): ?>
                 [IPv<?= $t->protocol ?>]
             <?php endif; ?>
         </li>
     <?php $this->append() ?>
 
-    <?php $this->section( 'page-header-preamble' ) ?>
+<?php endif; ?>
+
+
+
+<?php $this->section( 'page-header-preamble' ) ?>
+    <?php if( Auth::user()->isSuperUser() ): ?>
         <li class="pull-right">
-            <div class="btn-group btn-group-xs" role="group">
-                <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?php if( $t->protocol ): ?> Filtered for IPv<?= $t->protocol ?><?php else: ?>Limit to Protocol...<?php endif;?> <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right">
-                    <?php if( $t->protocol ): ?>
-                        <li>
-                            <a id="protocol-0" href="<?= route( "rs-prefixes@viewFiltered" ,   [ 'cid' => $t->c->getId()                   ] ) ?>">All Protocols</a>
-                        </li>
-                    <?php endif;?>
-                    <?php if( $t->protocol != 4 ): ?>
-                        <li>
-                            <a id="protocol-4" href="<?= route( "rs-prefixes@viewFiltered",    [ 'cid' => $t->c->getId(), 'protocol' => 4  ] ) ?>">IPv4 Only</a>
-                        </li>
-                    <?php endif;?>
-                    <?php if( $t->protocol != 6 ): ?>
-                        <li>
-                            <a id="protocol-6" href="<?= route( "rs-prefixes@viewFiltered",    [ 'cid' => $t->c->getId(), 'protocol' => 6  ] ) ?>">IPv6 Only</a>
-                        </li>
-                    <?php endif;?>
-                </ul>
-            </div>
+            <?= $t->insert( 'rs-prefixes/list-filter' ) ?>
         </li>
-    <?php $this->append() ?>
-<?php else: ?>
-    <?php $this->section('title') ?>
-        Route Server Prefix Analysis
-    <?php $this->stop() ?>
-    <?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right" style="list-style-type:none">
-        <div class="btn-group btn-group-xs" role="group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?php if( $t->protocol ): ?> Filtered for IPv<?= $t->protocol ?><?php else: ?>Limit to Protocol...<?php endif;?> <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-right">
-                <?php if( $t->protocol ): ?>
-                    <li>
-                        <a id="protocol-0" href="<?= route( "rs-prefixes@viewRestricted" )                      ?>">All Protocols</a>
-                    </li>
-                <?php endif;?>
-                <?php if( $t->protocol != 4 ): ?>
-                    <li>
-                        <a id="protocol-4" href="<?= route( "rs-prefixes@viewRestricted", [ 'protocol' => 4 ] ) ?>">IPv4 Only</a>
-                    </li>
-                <?php endif;?>
-                <?php if( $t->protocol != 6 ): ?>
-                    <li>
-                        <a id="protocol-6" href="<?= route( "rs-prefixes@viewRestricted", [ 'protocol' => 6 ] ) ?>">IPv6 Only</a>
-                    </li>
-                <?php endif;?>
-            </ul>
+    <?php else: ?>
+        <div class="pull-right">
+            <?= $t->insert( 'rs-prefixes/list-filter' ) ?>
         </div>
-    </li>
-    <?php $this->append() ?>
-<?php endif;?>
+    <?php endif; ?>
+<?php $this->append() ?>
+
+
 
 <?php $this->section( 'content' ) ?>
 
@@ -86,7 +61,7 @@
                 Not all ports have IRRDB filtered applied.
             <?php else: ?>
                 No ports have IRRDB filtering applied so, while this information is useful,
-                it has no impact on your services.
+                it has no impact on services for this member.
             <?php endif;?>
         </div>
     <?php endif; ?>
@@ -96,7 +71,7 @@
             <a href="#adv_nacc" aria-controls="adv_nacc" role="tab" data-toggle="tab"   >Advertised but Not Accepted (<?= count( $t->aggRoutes[ 'adv_nacc' ] )  ?>)</a>
         </li>
         <li role="presentation" id="nav-adv_acc">
-            <a href="#adv_acc" aria-controls="adv_acc" role="tab" data-toggle="tab"     >Advertised & Accepted (<?= count( $t->aggRoutes[ 'adv_acc' ] )         ?>)</a>
+            <a href="#adv_acc" aria-controls="adv_acc" role="tab" data-toggle="tab"     >Advertised & Accepted (<?=       count( $t->aggRoutes[ 'adv_acc' ] )   ?>)</a>
         </li>
         <li role="presentation" id="nav-nadv_acc">
             <a href="#nadv_acc" aria-controls="nadv_acc" role="tab" data-toggle="tab"   >Not Advertised but Accepted (<?= count( $t->aggRoutes[ 'nadv_acc' ] )  ?>)</a>
@@ -134,7 +109,7 @@
                 $( '#nav-<?=  $t->type ?>' ).addClass( 'active' );
             <?php endif; ?>
 
-            $( '.table' ).dataTable( { "autoWidth": false } ).show();
+            $( '.table' ).dataTable( { "autoWidth": false, pageLength: 50 } ).show();
         });
     </script>
 <?php $this->append() ?>

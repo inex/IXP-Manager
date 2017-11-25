@@ -52,6 +52,7 @@ class IXP implements ExtensionInterface {
         return [
             'alerts'            => [ AlertContainer::class, 'html' ],
             'as112UiActive'     => [ $this, 'as112UiActive' ],
+            'asNumber'          => [ $this, 'asNumber' ],
             'maxFileUploadSize' => [ $this, 'maxFileUploadSize' ],
             'multiIXP'          => [ $this, 'multiIXP' ],
             'nagiosHostname'    => [ $this, 'nagiosHostname' ],
@@ -59,7 +60,6 @@ class IXP implements ExtensionInterface {
             'scaleBits'         => [ $this, 'scaleBits' ],
             'scaleBytes'        => [ $this, 'scaleBytes' ],
             'softwrap'          => [ $this, 'softwrap' ],
-            'asNumber'          => [ $this, 'asNumber' ],
         ];
     }
 
@@ -285,13 +285,12 @@ class IXP implements ExtensionInterface {
     /**
      * Replaces an AS  Number with some JS magic to invoke a bootbox.
      *
-     * @param string $asn The AS number
-     *
-     * @return html
+     * @param  int    $asn The AS number
+     * @return string
      */
-    public function asNumber( $asn )
+    public function asNumber( int $asn, $addAs = true )
     {
-        return '<a href="#asnumber-' . $asn . '" href="#" onClick=\'asnumber(' . $asn . '); return false;\'>' . $asn . '</a>';
+        return '<a href="#ixpm-asnumber-' . $asn . '" onClick="ixpAsnumber( ' . $asn . ' ); return false;">' . ( $addAs ? 'AS' : '' ) . $asn . '</a>';
     }
 
 

@@ -1,4 +1,5 @@
 <br>
+
 <table class="table collapse" id="summary-table-<?= $t->type ?>">
     <thead>
         <th>Customer</th>
@@ -11,22 +12,22 @@
             <?php if( $cp[ $t->type ][ 'total' ] > 0 ): ?>
                 <tr>
                     <td>
-                        <a href="<?= url( "customer/overview/id/" ).'/'.$id ?>">
+                        <a href="<?= route( "rs-prefixes@view", [ 'cid' => $id ] ) ?>">
                             <?= $cp[ 'name' ] ?>
                         </a>
                     </td>
                     <td>
-                        <a href="<?= route( "rs-prefixes@view", [ 'cid' => $id, 'type' => $t->type, 'protocol' => 4 ] ) ?>">
+                        <a href="<?= route( "rs-prefixes@view", [ 'cid' => $id ] ) ?>?type=<?= $t->type ?>&protocol=4">
                             <?= $cp[ $t->type ][ 4 ]?>
                         </a>
                     </td>
                     <td>
-                        <a href="<?= route( "rs-prefixes@view", [ 'cid' => $id, 'type' => $t->type, 'protocol' => 6 ] ) ?>">
+                        <a href="<?= route( "rs-prefixes@view", [ 'cid' => $id ] ) ?>?type=<?= $t->type ?>&protocol=6">
                             <?= $cp[ $t->type ][ 6 ]?>
                         </a>
                     </td>
                     <td>
-                        <a href="<?= route( "rs-prefixes@view", [ 'cid' => $id, 'type' => $t->type ] ) ?>">
+                        <a href="<?= route( "rs-prefixes@view", [ 'cid' => $id ] ) ?>?type=<?= $t->type ?>">
                             <?= $cp[ $t->type ][ 'total' ]?>
                         </a>
                     </td>
