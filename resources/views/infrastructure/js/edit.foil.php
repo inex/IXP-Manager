@@ -5,6 +5,17 @@
 
     let ixp_req_finish = false;
     let pdb_req_finish = false;
+    let errorOption = `<option value="0">AJAX / API Error</option>\n`;
+
+    dd_ixp.select2({
+        placeholder: 'Please wait, loading...',
+        allowClear: true
+    });
+
+    dd_pdb.select2({
+        placeholder: 'Please wait, loading...',
+        allowClear: true
+    });
 
     $(document).ready(function() {
 
@@ -30,9 +41,19 @@
                 dd_ixp.attr("placeholder", "Choose the matching IX-F IXP...");
             })
             .fail( function() {
-                throw new Error("Error running ajax query for IX-F IXPs");
+                dd_ixp.prop( 'disabled', true );
+                <?php if( !$t->data[ 'params' ][ 'isAdd' ] && $t->data[ 'params'][ 'object']->getIxfIxId() ): ?>
+                    errorOption = `<option value="<?= $t->data[ 'params'][ 'object']->getIxfIxId() ?>"> IX-F IXP ID: <?= $t->data[ 'params'][ 'object']->getIxfIxId() ?></option>` ;
+                    dd_ixp.prop( 'disabled', false );
+                <?php endif; ?>
+                dd_ixp.html( errorOption );
+
+                $( '#form' ).prepend( `<div class="alert alert-danger" role="alert"> We could not load the list of IXPs from IX-F.
+                                        This is usually a transient network / service issue and should work again at a later stage.
+                                        Please try again later and set the IX-F IXP. </div>` );
             })
             .always( function() {
+                dd_ixp.select2({ allowClear: true, placeholder: 'Choose the matching IX-F IXP..' });
                 dd_ixp.trigger( "changed.select2" );
                 ixp_req_finish = true;
 
@@ -63,9 +84,19 @@
                 dd_pdb.html( options );
             })
             .fail( function() {
-                throw new Error("Error running ajax query for PeeringDB IXPs");
+                dd_pdb.prop( 'disabled', true );
+                <?php if( !$t->data[ 'params' ][ 'isAdd' ] && $t->data[ 'params'][ 'object']->getPeeringdbIxId() ): ?>
+                    errorOption = `<option value="<?= $t->data[ 'params'][ 'object']->getPeeringdbIxId() ?>"> PeeringDB IXP ID: <?= $t->data[ 'params'][ 'object']->getPeeringdbIxId() ?></option>` ;
+                    dd_pdb.prop( 'disabled', false );
+                <?php endif; ?>
+                dd_pdb.html( errorOption );
+
+                $( '#form' ).prepend( `<div class="alert alert-danger" role="alert"> We could not load the list of IXPs from PeeringDB.
+                                        This is usually a transient network / service issue and should work again at a later stage.
+                                        Please try again later and set the PeeringDB IXP. </div>` );
             })
             .always( function() {
+                dd_pdb.select2({ allowClear: true, placeholder: 'Choose the matching PeeringDB IXP...' });
                 dd_pdb.trigger( "changed.select2" );
                 pdb_req_finish = true;
 

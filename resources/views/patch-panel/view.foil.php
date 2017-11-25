@@ -181,7 +181,7 @@
                             </b>
                         </td>
                         <td>
-                            <?= Markdown::parse( $t->ee( $t->pp->getLocationDescription() ) ) ?>
+                            <?= @parsedown( $t->ee( $t->pp->getLocationDescription() ) ) ?>
                         </td>
                     </tr>
                     <tr>
@@ -191,7 +191,7 @@
                             </b>
                         </td>
                         <td>
-                            <?= Markdown::parse( $t->ee( $t->pp->getLocationNotes() ) ) ?>
+                            <?= @parsedown( $t->ee( $t->pp->getLocationNotes() ) ) ?>
                         </td>
                     </tr>
                 </table>

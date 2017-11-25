@@ -110,6 +110,7 @@ abstract class Doctrine2Frontend extends Controller {
         'DATETIME'          => 'datetime',
         'DATE'              => 'date',
         'TIME'              => 'time',
+        'UNIX_TIMESTAMP'    => 'unix_timestamp',
         'SCRIPT'            => 'script',
         'SPRINTF'           => 'sprintf',
         'REPLACE'           => 'replace',
@@ -249,10 +250,12 @@ abstract class Doctrine2Frontend extends Controller {
     /**
      * View an object
      *
+     * @param Request $request The HTTP Request object
      * @param int $id The `id` of the row to load for `view` action.
+     *
      * @return View
      */
-    public function view( $id ): View
+    public function view( Request $request, $id ): View
     {
         $this->data[ 'item' ]               = $this->viewGetData( $id ) ;
 
@@ -401,16 +404,19 @@ abstract class Doctrine2Frontend extends Controller {
             $this->postFlush( 'delete' );
             AlertContainer::push( $this->feParams->titleSingular . " deleted.", Alert::SUCCESS );
         }
-
-        return redirect()->route( $this->postDeleteRedirect() ?? self::route_prefix() . '@' . 'list' );
+        if( $this->postDeleteRedirect() ){
+            return redirect()->to( $this->postDeleteRedirect() );
+        } else{
+            return redirect()->route( self::route_prefix() . '@' . 'list' );
+        }
     }
 
     /**
      * Allow D2F implementations to override where the post-delete redirect goes.
      *
-     * To implement this, have it return a valid route name
+     * To implement this, have it return a valid route url (e.g. `return route( "route-name" );`
      *
-     * @return string|null
+     * @return ?string
      */
     protected function postDeleteRedirect() {
         return null;

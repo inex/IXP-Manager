@@ -171,17 +171,6 @@ class UserController extends IXP_Controller_FrontEnd
         return $qb->getQuery()->getResult();
     }
 
-    /**
-     * Show the last users to login
-     *
-     * Named for the UNIX 'last' command
-     */
-    public function lastAction()
-    {
-        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER );
-        $this->view->last = $this->getD2EM()->getRepository( '\\Entities\\User' )->getLastLogins();
-    }
-
 
     public function welcomeEmailAction()
     {

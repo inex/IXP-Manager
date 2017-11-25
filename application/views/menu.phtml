@@ -193,7 +193,7 @@
             <a href="{route( 'utils/phpinfo' )}">PHP Info</a>
         </li>
         <li {if $controller eq 'user' and $action eq 'last'}class="active"{/if}>
-            <a href="{genUrl controller='user' action='last'}">Last Logins</a>
+            <a href="{route('login-history@list')}">Last Logins</a>
         </li>
 
 
