@@ -126,7 +126,6 @@ Route::group( [ 'prefix' => 'address' ], function() {
 });
 
 
-
 Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
 
 Route::get( 'search', 'SearchController@do' )->name( 'search' );

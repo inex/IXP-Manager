@@ -191,8 +191,6 @@ return [
 
         LukeTowers\Purifier\PurifierServiceProvider::class,
 
-        MaxHoffmann\Parsedown\ParsedownServiceProvider::class,
-
     ],
 
     /*
@@ -252,7 +250,6 @@ return [
 
         'Former'    => Former\Facades\Former::class,
         'Flysystem' => GrahamCampbell\Flysystem\Facades\Flysystem::class,
-        'Markdown'  => MaxHoffmann\Parsedown\ParsedownFacade::class,
         'Purifier'  => LukeTowers\Purifier\Facades\Purifier::class,
         'PDF'       => Barryvdh\DomPDF\Facade::class,
 

@@ -96,6 +96,7 @@ storage/files/*
 .idea/inspectionProfiles
 .idea/ixpv.iml
 .idea/php.xml
+.idea/symfony2.xml
 
 
 # Let's not accidently add SQL dumps to Git

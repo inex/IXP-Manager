@@ -357,7 +357,7 @@ class VirtualInterface
     /**
      * Get VlanInterfaces
      *
-     * @return \Doctrine\Common\Collections\Collection|VlanInterface[]
+     * @return \Doctrine\Common\Collection|VlanInterface[]
      */
     public function getVlanInterfaces()
     {

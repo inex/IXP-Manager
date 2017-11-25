@@ -107,7 +107,7 @@
                             <?php endif; ?>
                             <td>
                                 <?php if( trim( $ppp->getDescription() ) != '' ): ?>
-                                    <?= Markdown::parse( $t->ee( $ppp->getDescription() ) ) ?>
+                                    <?= @parsedown( $t->ee( $ppp->getDescription() ) ) ?>
                                     <?= $ppp->getSwitchPort() ? "<br" : "" ?>
                                 <?php endif; ?>
                                 <?php if( $ppp->getSwitchPort() ): ?>

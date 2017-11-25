@@ -195,8 +195,8 @@
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) ): ?>
-                    <li>
-                        <a href="<?= url( 'rs-prefixes/index' ) ?>">Route Server Prefixes</a>
+                    <li <?php if( request()->is( 'rs-prefixes/*' ) ): ?> class="active" <?php endif; ?>>
+                        <a href="<?= route( 'rs-prefixes@list' ) ?>">Route Server Prefixes</a>
                     </li>
                 <?php endif; ?>
 
@@ -235,7 +235,7 @@
                 </li>
 
                 <li>
-                    <a href="<?= url( 'user/last' ) ?>">Last Logins</a>
+                    <a href="<?= route( 'login-history@list' ) ?>">Last Logins</a>
                 </li>
             </ul>
         </div><!--/.well -->

@@ -230,7 +230,7 @@ class IXP_Form_Switch extends IXP_Form
         $sw->setRegisterInArrayValidator( true )
             ->setRequired( false )
             ->setAttrib( 'data-maxId', $maxId )
-            ->setLabel( _( 'infrastructure' ) )
+            ->setLabel( _( 'Infrastructure' ) )
             ->setAttrib( 'class', 'chzn-select-deselect' )
             //->addValidator( 'between', false, array( 1, $maxId ) )
             ->setErrorMessages( [ 'Please select an infrastructure' ] );

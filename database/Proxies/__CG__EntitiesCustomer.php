@@ -752,23 +752,23 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function addContact(\Entities\Contact $contacts)
+    public function addContact(\Entities\Contact $contact)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addContact', [$contacts]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addContact', [$contact]);
 
-        return parent::addContact($contacts);
+        return parent::addContact($contact);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function removeContact(\Entities\Contact $contacts)
+    public function removeContact(\Entities\Contact $contact)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeContact', [$contacts]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeContact', [$contact]);
 
-        return parent::removeContact($contacts);
+        return parent::removeContact($contact);
     }
 
     /**
@@ -785,23 +785,23 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function addConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnections)
+    public function addConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnection)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addConsoleServerConnection', [$consoleServerConnections]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addConsoleServerConnection', [$consoleServerConnection]);
 
-        return parent::addConsoleServerConnection($consoleServerConnections);
+        return parent::addConsoleServerConnection($consoleServerConnection);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function removeConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnections)
+    public function removeConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnection)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeConsoleServerConnection', [$consoleServerConnections]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeConsoleServerConnection', [$consoleServerConnection]);
 
-        return parent::removeConsoleServerConnection($consoleServerConnections);
+        return parent::removeConsoleServerConnection($consoleServerConnection);
     }
 
     /**
