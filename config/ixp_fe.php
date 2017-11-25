@@ -66,5 +66,27 @@ return [
         ],
 
     ],
-    
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Route Server PRefixes Access permissions
+    |--------------------------------------------------------------------------
+    |
+    | Generally speaking, the filtering of route server prefixes is visible
+    | on looking glasses / via comparison to route collector / etc.
+    |
+    | However, some IXs may wish to restrict access to the Route Server Prefix
+    | Analysis Tool.
+    |
+    | The following options apply:
+    |
+    | 1. Entities\User::AUTH_PUBLIC     -> tool is publically available to all
+    | 2. Entities\User::AUTH_CUSTUSER   -> tool is available to any logged in user
+    | 3. Entities\User::AUTH_SUPERUSER  -> summary and any customer access is restricted to superadmins,
+    |                                      logged in users may see their prefixes.
+    */
+    'rs-prefixes' => [
+        'access'  => env( 'IXP_FE_RS_PREFIXES_ACCESS', Entities\User::AUTH_SUPERUSER ),
+    ]
 ];

@@ -148,7 +148,7 @@ abstract class Doctrine2Frontend extends Controller {
 
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $class, $route_prefix ) {
 
-            Route::get( 'list', $class . '@list' )->name( $route_prefix . '@list' );
+            Route::get( 'list',      $class . '@list' )->name( $route_prefix . '@list' );
             Route::get( 'view/{id}', $class . '@view' )->name( $route_prefix . '@view' );
 
             if( !static::$read_only ) {

@@ -88,6 +88,7 @@ class Kernel extends HttpKernel {
         'doctrine2frontend'  => Middleware\Doctrine2Frontend::class,
         'grapher'            => Middleware\Services\Grapher::class,
         'patch-panel-port'   => Middleware\PatchPanelPort::class,
+        'rs-prefixes'        => Middleware\RsPrefixes::class,
     ];
 
 }

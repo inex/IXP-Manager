@@ -4,7 +4,7 @@
 
 
 <?php $this->section( 'title' ) ?>
-    <?php if( Auth::user()->isSuperUser() ): ?>
+    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
         <a href="<?= route( "rs-prefixes@list" ) ?>">Route Server Prefix Filtering Analysis Tool</a>
     <?php else: ?>
         Route Server Prefix Filtering Analysis Tool
@@ -18,7 +18,7 @@
 
 
 
-<?php if( Auth::user()->isSuperUser() ): ?>
+<?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
 
     <?php $this->section( 'page-header-postamble' ) ?>
         <li>
@@ -39,7 +39,7 @@
 
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if( Auth::user()->isSuperUser() ): ?>
+    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
         <li class="pull-right">
             <?= $t->insert( 'rs-prefixes/list-filter' ) ?>
         </li>
