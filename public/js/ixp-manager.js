@@ -121,16 +121,14 @@ function ixpRandomString( length = 12 ) {
  *
  * @return html
  */
-function asnumber( asNumber ) {
+function ixpAsnumber( asNumber ) {
 
-    event.preventDefault();
-
-    let html = `<iframe width="100%" height="500px" src="https://apps.db.ripe.net/search/query.html?searchtext=as${asNumber}" frameborder="0" allowfullscreen></iframe>`;
+    let html = `<iframe width="100%" height="500px" src="https://apps.db.ripe.net/search/lookup.html?source=ripe&key=AS${asNumber}&type=aut-num" frameborder="0" allowfullscreen></iframe>`;
 
     bootbox.dialog({
         message: html,
         size: "large",
-        title: "Informations",
+        title: "AS Number Lookup",
         buttons: {
             cancel: {
                 label: 'Close',

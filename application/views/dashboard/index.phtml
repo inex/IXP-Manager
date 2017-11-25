@@ -33,18 +33,16 @@
             <li>
                 <a href="#tab-cross-connects" data-toggle="tab">Cross Connects</a>
             </li>
-            {if not isset( $options['frontend']['disabled']['rs-prefixes'] ) or not $options['frontend']['disabled']['rs-prefixes'] }
-                {if $user->getCustomer()->isRouteServerClient()}
-                    <li>
-                        <a href="{route('rs-prefixes@viewRestricted')}">
-                            Prefixes
-                            {if $rsRoutes.adv_nacc.total gt 0}
-                                <span class="badge badge-important">{$rsRoutes.adv_nacc.total}</span>
-                            {/if}
-                            &raquo;
-                        </a>
-                    </li>
-                {/if}
+            {if !config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) and $user->getCustomer()->isRouteServerClient()}
+                <li>
+                    <a href="{route('rs-prefixes@view', [ 'cid' => $user->getCustomer()->getId() ])}">
+                        Prefixes
+                        {if $rsRoutes.adv_nacc.total gt 0}
+                            <span class="badge badge-important">{$rsRoutes.adv_nacc.total}</span>
+                        {/if}
+                        &raquo;
+                    </a>
+                </li>
             {/if}
 
             {if !isset( $options['frontend']['disabled']['peering-manager'] ) or !$options['frontend']['disabled']['peering-manager'] }

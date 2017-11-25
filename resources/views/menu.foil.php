@@ -194,7 +194,7 @@
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) ): ?>
-                    <li <?php if( $t->controller == 'RsPrefixesController' ):?> class="active" <?php endif;?>>
+                    <li <?php if( request()->is( 'rs-prefixes/*' ) ): ?> class="active" <?php endif; ?>>
                         <a href="<?= route( 'rs-prefixes@list' ) ?>">Route Server Prefixes</a>
                     </li>
                 <?php endif; ?>

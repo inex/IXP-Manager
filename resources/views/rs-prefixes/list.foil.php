@@ -3,14 +3,25 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    Route Server Prefixes
+    Route Server Prefix Filtering Analysis Tool
+    <?php if( !Auth::user()->isSuperUser() ): ?>
+        <small>
+            <br>Summary by Customer
+        </small>
+    <?php endif; ?>
 <?php $this->append() ?>
 
-<?php $this->section( 'page-header-postamble' ) ?>
-    <li>
-        Summary by Customer
-    </li>
-<?php $this->append() ?>
+
+
+<?php if( Auth::user()->isSuperUser() ): ?>
+    <?php $this->section( 'page-header-postamble' ) ?>
+        <li>
+            Summary by Customer
+        </li>
+    <?php $this->append() ?>
+<?php endif; ?>
+
+
 
 <?php $this->section( 'content' ) ?>
 
@@ -19,7 +30,7 @@
             <a href="#adv_nacc" aria-controls="adv_nacc" role="tab" data-toggle="tab">Advertised but Not Accepted</a>
         </li>
         <li role="presentation">
-            <a href="#adv_acc" aria-controls="adv_acc" role="tab" data-toggle="tab">Advertised & Accepted</a>
+            <a href="#adv_acc"  aria-controls="adv_acc"  role="tab" data-toggle="tab">Advertised & Accepted</a>
         </li>
         <li role="presentation">
             <a href="#nadv_acc" aria-controls="nadv_acc" role="tab" data-toggle="tab">Not Advertised but Accepted</a>
@@ -38,12 +49,14 @@
             <?= $t->insert( 'rs-prefixes/list-summary', [ 'type' => 'nadv_acc'  ] ); ?>
         </div>
     </div>
+
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
     <script>
         $(document).ready( function() {
-            $( '.table' ).dataTable( { "autoWidth": false } ).show();
+            $( '.table' ).dataTable( { "autoWidth": false, pageLength: 100 } ).show();
         });
     </script>
 <?php $this->append() ?>
+

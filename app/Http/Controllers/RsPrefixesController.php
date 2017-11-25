@@ -33,6 +33,7 @@ use Entities\{
     VlanInterface       as VlanInterfaceEntity
 };
 
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 
@@ -51,7 +52,7 @@ class RsPrefixesController extends Controller {
      *
      * @return  View
      */
-    public function list( ): View {
+    public function list(): View {
 
         return view( 'rs-prefixes/list' )->with([
             'types'                 => RSPrefixEntity::$SUMMARY_TYPES_FNS,
@@ -61,55 +62,29 @@ class RsPrefixesController extends Controller {
     }
 
     /**
-     * Display all the Rs Prefixes for a Customer in Restricted version for the user type CustUser
-     *
-     * @param int|null $protocol protocol selected
-     * @return  View
-     */
-    public function viewRestricted( $protocol = null ) {
-        if( Auth::getUser()->getPrivs() != UserEntity::AUTH_CUSTADMIN || Auth::getUser()->getPrivs() != UserEntity::AUTH_SUPERUSER ) {
-            abort( 403 );
-        }
-
-        return $this->view( Auth::getUser()->getCustomer()->getId() , null, $protocol);
-    }
-
-    /**
-     * Display all the RsPrefixes for a Customer filtered by protocol or for all protocol
-     *
-     * @param int       $cid        customer ID
-     * @param int|null  $protocol   protocol selected
-     * @return  View
-     */
-    public function viewFiltered( $cid, $protocol = null ) {
-        return $this->view( $cid, null, $protocol);
-    }
-
-    /**
      * Display all the RsPrefixes for a Customer
      *
-     * @param int       $cid        customer ID
-     * @param string    $type       type of Rs prefix (adv_nacc|adv_acc|nadv_acc)
-     * @param int|null $protocol    protocol selected
+     * Optional get parameters:
+     *
+     * type       type of Rs prefix (adv_nacc|adv_acc|nadv_acc)
+     * protocol   protocol selected (4/6)
+     *
+     * @param   Request $r
+     * @param   int     $cid customer ID
      * @return  View
      */
-    public function view( $cid, $type , $protocol = null ) : View {
+    public function view( Request $r, $cid ) : View {
         /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $cid ) ) ) {
             abort(404);
         }
 
-        if( $type ){
-            if( !in_array( $type, array_keys( RSPrefixEntity::$SUMMARY_TYPES_FNS ) ) ) {
-                abort(404);
-            }
-        } else{
-            $type = false;
+        if( !in_array( $type = $r->input( 'type', false ), array_merge( [ false ], array_keys( RSPrefixEntity::$SUMMARY_TYPES_FNS ) ) ) ) {
+            abort( 404 );
         }
 
-
-        if( !in_array( $protocol, [ 4, 6 ] ) ){
-            $protocol = false;
+        if( !in_array( $protocol = $r->input( 'protocol' ), [ null, 4, 6 ] ) ) {
+            abort( 404 );
         }
 
         // does the customer have VLAN interfaces that filtering is disabled on?
@@ -119,7 +94,6 @@ class RsPrefixesController extends Controller {
         foreach( $c->getVirtualInterfaces() as $vi ) {
             /** @var VirtualInterfaceEntity $vi */
             foreach( $vi->getVlanInterfaces() as $vli ) {
-                /** @var VlanInterfaceEntity $vli */
                 if( $vli->getVlan()->getPrivate() ){
                     continue;
                 }
@@ -134,11 +108,11 @@ class RsPrefixesController extends Controller {
         return view( 'rs-prefixes/view' )->with([
             'totalVl'                   => $totalVlanInts,
             'filteredVl'                => $filteredVlanInts ,
-            'protocol'                  => $protocol,
+            'protocol'                  => $protocol ?? false,
             'type'                      => $type,
             'rsRouteTypes'              => array_keys( RSPrefixEntity::$ROUTES_TYPES_FNS ),
             'c'                         => $c,
-            'aggRoutes'                 => D2EM::getRepository( RSPrefixEntity::class )->aggregateRoutes( $c->getId(), $protocol ? $protocol : null )
+            'aggRoutes'                 => D2EM::getRepository( RSPrefixEntity::class )->aggregateRoutes( $c->getId(), $protocol )
         ]);
     }
 }
