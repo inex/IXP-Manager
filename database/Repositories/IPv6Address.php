@@ -4,6 +4,10 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
+use IPTools\Network as IPToolsNetwork;
+
+use Repositories\Traits\IPAddress as IPAddressTrait;
+
 /**
  * IPv6Address
  *
@@ -12,6 +16,8 @@ use Doctrine\ORM\EntityRepository;
  */
 class IPv6Address extends EntityRepository
 {
+    use IPAddressTrait;
+
     /**
      * Returns IPv6 addresses array for given customer
      *
@@ -24,7 +30,7 @@ class IPv6Address extends EntityRepository
     public function getArrayForCustomer( $customer )
     {
         $addresses = $this->getEntityManager()->createQuery(
-            "SELECT ip6.address as address
+            "SELECT ip6.address AS address
         
              FROM \\Entities\\IPv6Address ip6
                  LEFT JOIN ip6.VlanInterface vi
@@ -32,8 +38,8 @@ class IPv6Address extends EntityRepository
         
              WHERE viri.Customer = ?1"
         )
-        ->setParameter( 1, $customer )
-        ->getArrayResult();
+            ->setParameter( 1, $customer )
+            ->getArrayResult();
 
         if( !$addresses )
             return [];
@@ -41,23 +47,120 @@ class IPv6Address extends EntityRepository
             return array_map( 'current', $addresses );
     }
 
-    /** 
+    /**
      * Find VLAN interfaces by (partial) IP address
-     * 
+     *
      * @param  string $ip The IP address to search for
      * @return \Entities\VlanInterface[] Matching interfaces
      */
     public function findVlanInterfaces( $ip )
     {
         return $this->getEntityManager()->createQuery(
-                "SELECT vli
+            "SELECT vli
         
                  FROM \\Entities\\VlanInterface vli
                  LEFT JOIN vli.IPv6Address ip
 
                  WHERE ip.address LIKE :ip"
-            )
+        )
             ->setParameter( 'ip', strtolower( "%{$ip}" ) )
             ->getResult();
     }
+
+
+    /**
+     * Get all IPv6 address for listing on the frontend
+     *
+     * @param int $vlanid Get all IP for a vlan ?
+     *
+     * @return array All Ip address
+     */
+    public function getAllForList( int $vlanid = null )
+    {
+
+        $dql = "SELECT  ip.id AS id, 
+                        ip.address AS address,
+                        v.name AS vlan, 
+                        v.id AS vlanid,
+                        vli.id AS vliid,
+                        vli.ipv4hostname AS hostname,
+                        c.name AS customer, 
+                        c.id AS customerid,
+                        vi.id AS viid
+                        
+                FROM Entities\\IPv6Address ip
+                LEFT JOIN ip.Vlan AS v
+                LEFT JOIN ip.VlanInterface AS vli
+                LEFT JOIN vli.VirtualInterface AS vi
+                LEFT JOIN vi.Customer AS c ";
+
+
+        if( $vlanid ) {
+            $dql .= " WHERE v.id = " . (int)$vlanid;
+        }
+
+        $dql .= " ORDER BY address ASC";
+
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getArrayResult();
+    }
+
+
+    /**
+     * For a given IPTools library network object, generate sequential IPv6 addresses.
+     *
+     * There is also a `$decimal` option which only returns IPv6 addresses where the
+     * last block uses only decimal numbering. This exists because typically IXs allocate
+     * a customer an IPv6 address such that the last block matches the last block of the
+     * IPv4 address. So, if set, the function will generate the number of addresses as
+     * indicated by the CIDR block size but skip over any addresses containing
+     * `a-f` characters. **NB:** the full number of addresses will be generated which means
+     * this would typically overflow the subnet bound (unless $nooverflow is set).
+     *
+     * @param IPToolsNetwork $network
+     * @param bool           $decimal
+     * @param bool           $nooverflow
+     * @return array Generated addresses (string[])
+     */
+    public static function generateSequentialAddresses( IPToolsNetwork $network, bool $decimal = false, bool $overflow = true ): array
+    {
+        assert( $network->getFirstIP()->getVersion() == 'IPv6' );
+        $addresses = [];
+
+        if( $decimal ) {
+
+            $ip = $network->getFirstIP();
+            $target = 2 ** ( 128 - $network->getPrefixLength() );
+            $i      = 0;
+            $loops  = 0;
+
+            do {
+                if( ++$loops == $target && !$overflow ) {
+                    break;
+                }
+
+                if( !preg_match( '/^([0-9]+|)$/', substr( $ip, strrpos( $ip, ':' ) + 1 ) ) ) {
+                    $ip = $ip->next();
+                    continue;
+                }
+
+                $addresses[] = (string)$ip;
+                $ip = $ip->next();
+                $i++;
+
+            } while( $i < $target );
+
+        } else {
+
+            foreach( $network as $ip ) {
+                $addresses[] = (string)$ip;
+            }
+
+        }
+
+        return $addresses;
+    }
+
 }
