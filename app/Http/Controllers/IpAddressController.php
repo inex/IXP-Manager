@@ -48,6 +48,7 @@ use Illuminate\Http\{
 };
 
 use IXP\Http\Requests\{
+    DeleteIpAddressesByNetwork,
     StoreIpAddress
 };
 
@@ -179,33 +180,54 @@ class IpAddressController extends Controller
         return Redirect::to( route( 'ip-address@list', [ 'protocol' => $network->getFirstIP()->getVersion() == 'IPv6' ? '6' : '4', 'vlan' => $vlan->getId() ] ) );
     }
 
+
     /**
-     * Display the form to delete free IP addresses in a Vlan
+     * Display the form to delete free IP addresses in a VLAN
      *
-     * @param  Request  $request            Instance of the current HTTP request
-     * @param  int      $vid                Id of the VLan
-     * @param  bool     $networkSearch      Do you need to delete IP addresses in a given network  (e.g. 192.0.2.48/29)
+     * @param  DeleteIpAddressesByNetwork  $request            Instance of the current HTTP request
+     * @param  int      $vlanid                Id of the VLan
      *
      * @return View | Redirect
      */
-    public function preDeleteForVlan( Request $request, int $vid, bool $networkSearch = null ) {
+    public function deleteByNetwork( DeleteIpAddressesByNetwork $request, int $vlanid ) {
 
         /** @var VlanEntity $v */
-        if( !( $v = D2EM::getRepository( VlanEntity::class )->find( $vid ) ) ) {
+        if( !( $v = D2EM::getRepository( VlanEntity::class )->find( $vlanid ) ) ) {
             abort(404);
         }
 
-        $ips = $this->getFreeIpAddresses( $v, $networkSearch, $request->input( 'network' )  );
+        if( $request->input( 'network' ) ) {
 
-        return view( 'ip-address/delete' )->with([
+            $network  = Network::parse( trim( htmlspecialchars( $request->input('network' ) )  ) );
+
+            if( $network->getFirstIP()->version == 'IPv6' ) {
+                $ips = D2EM::getRepository( IPv6AddressEntity::class )->getFreeAddressesFromList( $v,
+                    D2EM::getRepository( IPv6AddressEntity::class )->generateSequentialAddresses( $network, false, false )
+                );
+            } else {
+                $ips = D2EM::getRepository( IPv4AddressEntity::class )->getFreeAddressesFromList( $v,
+                    D2EM::getRepository( IPv4AddressEntity::class )->generateSequentialAddresses( $network )
+                );
+            }
+
+        } else {
+            $ips = [];
+        }
+
+        //dd($ips);
+
+        return view( 'ip-address/delete-by-network' )->with([
             'vlan'                      => $v,
-            'network'                   => $networkSearch || $request->input( 'network' ) ? true : false ,
-            'ip'                        => $request->input( 'network' ) ? $request->input( 'network' ) : false,
-            'ips'                       => $ips == false ? [] : $ips,
+            'network'                   => $request->input( 'network', '' ),
+            'ips'                       => $ips,
         ]);
     }
 
+    // DeleteIpAddressesByNetwork
 
+    public function doDeleteByNetwork( DeleteIpAddressesByNetwork $r, int $vlanid ) {
+        dd($r);
+    }
 
     /**
      * Get all the free IP address for a Vlan or all the free IP address for a network (e.g. 192.0.2.48/29) inside a Vlan
@@ -216,7 +238,7 @@ class IpAddressController extends Controller
      *
      * @return array | boolean
      */
-    public function getFreeIpAddresses( $vlan, $networkSearch, $network  ){
+    public function getFreeIpAddresses( $vlan, $network  ){
         $ips = [];
 
         if( !$networkSearch  ){

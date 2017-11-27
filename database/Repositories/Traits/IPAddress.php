@@ -101,5 +101,38 @@ trait IPAddress {
 
         return $results;
     }
+
+    /**
+     * Find any existing but unallocated IP addresses in the given VLAN from the list provided.
+     *
+     * Sample usage:
+     *
+     *     $ips = D2EM::getRepository( IPv4AddressEntity::class )->getFreeAddressesFromList( $v,
+     *         D2EM::getRepository( IPv4AddressEntity::class )->generateSequentialAddresses( $network )
+     *     );
+     *
+     * @param VlanEntity $vlan
+     * @param array $list
+     * @return array
+     */
+    public function getFreeAddressesFromList( VlanEntity $vlan, array $list ): array
+    {
+        $entity = $this->getEntityNameFromCalledRepository();
+        $free = [];
+
+        foreach( $list as $a ) {
+            // does the address exist
+            if( $ipentity = $this->getEntityManager()->getRepository( $entity )->findOneBy( [ 'address' => $a, 'Vlan' => $vlan ] ) ) {
+                // and is it allocated?
+                if( $ipentity->getVlanInterface() ) {
+                    continue;
+                }
+
+                $free[] = $ipentity;
+            }
+        }
+
+        return $free;
+    }
 }
 

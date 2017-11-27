@@ -14,8 +14,7 @@
         <ul class="dropdown-menu dropdown-menu-right">
             <li>
                 <a id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>" title="Delete">Delete the Vlan</a>
-                <a href="<?= route( 'ip-address@pre-delete-for-vlan' , [ 'vlan' => $t->row['id']                    ] ) ?>">Delete free IP addresses in VLAN</a>
-                <a href="<?= route( 'ip-address@pre-delete-for-vlan' , [ 'vlan' => $t->row['id'], 'network' => true ] ) ?>">Delete free IP addresses in a given network</a>
+                <a href="<?= route( 'ip-address@delete-by-network' , [ 'vlan' => $t->row['id']                    ] ) ?>">Delete IP Addresses...</a>
             </li>
         </ul>
 
