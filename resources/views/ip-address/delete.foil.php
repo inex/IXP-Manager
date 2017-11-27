@@ -1,25 +1,35 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
+
+
 <?php $this->section( 'title' ) ?>
     <a href="<?= route ( 'vlan@list' ) ?>">VLANs</a>
 <?php $this->append() ?>
 
+
+
 <?php $this->section( 'page-header-postamble' ) ?>
     <li>
-        Delete IP Addresses
+        Delete Free IP Addresses
     </li>
 <?php $this->append() ?>
 
+
+
 <?php $this->section( 'content' ) ?>
+
     <?= $t->alerts() ?>
+
     <div class="row">
+
         <div class="col-md-12">
+
             <?php if( $t->network ): ?>
                 <div class="well col-md-12 form-inline">
                     <div style="display: inline" class="col-md-6 ">
 
                         <?= Former::open()->method( 'POST' )
-                            ->action( route( 'ipAddress@preDeleteForVlanPost', [ "vlan" => $t->vlan->getId(), 'protocol' => 1 ] ) )
+                            ->action( route( 'ip-address@pre-delete-for-vlan-post', [ "vlan" => $t->vlan->getId(), 'protocol' => 1 ] ) )
                         ?>
 
                         <?= Former::text( 'network' )
@@ -40,7 +50,7 @@
 
             <?php if( $t->ip ): ?>
 
-                <h3> List of IP addresses ready to be deleted for <?= $t->ip ?> </h3>
+                <h3> List of Free IP Addresses To Be Deleted for <?= $t->ip ?> </h3>
 
                 <div class="col-md-6">
                     <table id='table-ip' class="table table-striped table-bordered">
@@ -182,7 +192,7 @@
          * Function that allow to delete a core link
          */
         function deleteIPs( vid , network ){
-            let urlAction = "<?= route('ipAddress@deleteForVlan') ?>";
+            let urlAction = "<?= route('ip-address@delete-for-vlan') ?>";
 
 
             bootbox.confirm({

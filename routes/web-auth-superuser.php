@@ -8,7 +8,7 @@
 
 Route::group( [ 'prefix' => 'ip-address' ], function() {
     Route::get(     'list/{protocol}/{vlanid?}',                'IpAddressController@list'              )->name(   'ip-address@list'                 );
-    Route::get(     'delete/vlan/{vlan}/{network?}',            'IpAddressController@preDeleteForVlan'  )->name(   'ip-address@pre-delete-dor-dlan'     );
+    Route::get(     'delete/vlan/{vlan}/{network?}',            'IpAddressController@preDeleteForVlan'  )->name(   'ip-address@pre-delete-for-vlan'     );
     Route::post(    'delete/vlan/{vlan}/{network}',             'IpAddressController@preDeleteForVlan'  )->name(   'ip-address@pre-delete-for-vlan-post' );
     Route::get(     'add/{protocol}',                           'IpAddressController@add'               )->name(   'ip-address@add'                  );
     Route::post(    'store',                                    'IpAddressController@store'             )->name(   'ip-address@store'                );

@@ -180,7 +180,7 @@ class IpAddressController extends Controller
     }
 
     /**
-     * Display the form to delete the IP for a Vlan
+     * Display the form to delete free IP addresses in a Vlan
      *
      * @param  Request  $request            Instance of the current HTTP request
      * @param  int      $vid                Id of the VLan
@@ -189,12 +189,13 @@ class IpAddressController extends Controller
      * @return View | Redirect
      */
     public function preDeleteForVlan( Request $request, int $vid, bool $networkSearch = null ) {
+
         /** @var VlanEntity $v */
         if( !( $v = D2EM::getRepository( VlanEntity::class )->find( $vid ) ) ) {
             abort(404);
         }
 
-        $ips = $this->getFreeIpAddress( $v, $networkSearch, $request->input( 'network' )  );
+        $ips = $this->getFreeIpAddresses( $v, $networkSearch, $request->input( 'network' )  );
 
         return view( 'ip-address/delete' )->with([
             'vlan'                      => $v,
@@ -215,7 +216,7 @@ class IpAddressController extends Controller
      *
      * @return array | boolean
      */
-    public function getFreeIpAddress( $vlan, $networkSearch, $network  ){
+    public function getFreeIpAddresses( $vlan, $networkSearch, $network  ){
         $ips = [];
 
         if( !$networkSearch  ){
