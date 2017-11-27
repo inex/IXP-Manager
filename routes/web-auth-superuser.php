@@ -6,6 +6,14 @@
 |--------------------------------------------------------------------------
 */
 
+Route::group( [ 'prefix' => 'ip-address' ], function() {
+    Route::get(     'list/{protocol}/{vlanid?}',                'IpAddressController@list'              )->name( 'ip-address@list'                 );
+    Route::get(     'delete-by-network/vlan/{vlanid}',          'IpAddressController@deleteByNetwork'   )->name( 'ip-address@delete-by-network'    );
+    Route::post(    'delete-by-network/vlan/{vlanid}',          'IpAddressController@deleteByNetwork'   );
+    Route::get(     'add/{protocol}',                           'IpAddressController@add'               )->name( 'ip-address@add'                  );
+    Route::post(    'store',                                    'IpAddressController@store'             )->name( 'ip-address@store'                );
+    Route::post(    'delete/{protocol}/{id}',                   'IpAddressController@delete'            )->name( 'ip-address@delete'               );
+});
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], function() {
     Route::get(     'list',                             'PatchPanelController@index'            )->name( 'patch-panel/list'         );
@@ -114,9 +122,9 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
     });
 });
 
-
 Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
 
+Route::get( 'search', 'SearchController@do' )->name( 'search' );
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,5 +145,5 @@ Route::group( [ 'prefix' => 'utils' ], function() {
 });
 
 
-Route::get( 'search', 'SearchController@do' )->name( 'search' );
+
 

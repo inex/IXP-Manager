@@ -133,16 +133,16 @@
                 <?php endif; ?>
 
                 <li>
-                    <a href="<?= url('/ipv6-address/list') ?>">IP Addressing</a>
-                    <?php /*{if $controller eq 'ipv4-address' or $controller eq 'ipv6-address'}
-                        <ul class="nav nav-list">
-                            <li {if $controller eq 'ipv4-address' and $action neq 'add-addresses'}class="active"{/if}>
-                                <a href="{genUrl controller='ipv4-address' action='list'}">IPv4 Addresses</a>
-                            </li>
-                            <li {if $controller eq 'ipv6-address'}class="active"{/if}>
-                                <a href="{genUrl controller='ipv6-address' action='list'}">IPv6 Addresses</a>
-                            </li>
-                        </ul> */ ?>
+                    <a href="<?= route('ip-address@list', [ 'protocol' => 6 ] ) ?>">IP Addresses</a>
+                    <?php if( request()->is( 'ip-address/*' ) ): ?>
+                        <li class="sub-menu <?= request()->route()->parameter('protocol') == '4' ? 'active' : '' ?>">
+                            <a href="<?= route('ip-address@list', [ 'protocol' => 4 ] ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;IPv4 Addresses</a>
+                        </li>
+
+                    <li class="sub-menu <?= request()->route()->parameter('protocol') == '6' ? 'active' : '' ?>">
+                            <a href="<?= route('ip-address@list', [ 'protocol' => 6 ] ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;IPv6 Addresses</a>
+                        </li>
+                    <?php endif; ?>
                 </li>
 
                 <li>
