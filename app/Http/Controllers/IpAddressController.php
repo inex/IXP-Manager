@@ -187,6 +187,12 @@ class IpAddressController extends Controller
      * @param  DeleteIpAddressesByNetwork  $request            Instance of the current HTTP request
      * @param  int      $vlanid                Id of the VLan
      *
+     * There's actually three ways into this action:
+     *
+     * 1. standard GET request which just displays for form asking for the network range to delete
+     * 2. POST with the network range: finds addresses and displays them for confirmation
+     * 3. POST with 'doDelete' parameter: works as (2) but actually deletes the addressess
+     *
      * @return View | Redirect
      */
     public function deleteByNetwork( DeleteIpAddressesByNetwork $request, int $vlanid ) {
@@ -214,80 +220,20 @@ class IpAddressController extends Controller
             $ips = [];
         }
 
-        //dd($ips);
+        if( $request->input( 'doDelete', false ) == "1" ) {
+            foreach( $ips as $ip ) {
+                D2EM::remove( $ip );
+            }
+            D2EM::flush();
+            AlertContainer::push( 'IP Addresses deleted.', Alert::SUCCESS );
+            return redirect( route( 'ip-address@list', [ 'protocol' => $network->getFirstIP()->version == 'IPv6' ? 6 : 4, 'vlanid' => $v->getId() ] ) );
+        }
 
         return view( 'ip-address/delete-by-network' )->with([
             'vlan'                      => $v,
             'network'                   => $request->input( 'network', '' ),
             'ips'                       => $ips,
         ]);
-    }
-
-    // DeleteIpAddressesByNetwork
-
-    public function doDeleteByNetwork( DeleteIpAddressesByNetwork $r, int $vlanid ) {
-        dd($r);
-    }
-
-    /**
-     * Get all the free IP address for a Vlan or all the free IP address for a network (e.g. 192.0.2.48/29) inside a Vlan
-     *
-     * @param  VlanEntity   $vlan            Vlan object
-     * @param  bool         $networkSearch   Are we searching for a network
-     * @param  string       $network         The network that we are searching
-     *
-     * @return array | boolean
-     */
-    public function getFreeIpAddresses( $vlan, $network  ){
-        $ips = [];
-
-        if( !$networkSearch  ){
-            foreach( $vlan->getIPv4Addresses() as $ipv4 ){
-                if( !$ipv4->getVlanInterface() ){
-                    $ips[ 'ipv4' ][] = $ipv4;
-                }
-            }
-
-            foreach( $vlan->getIPv6Addresses() as $ipv6 ){
-                if( !$ipv6->getVlanInterface() ){
-                    $ips[ 'ipv6' ][] = $ipv6;
-                }
-            }
-        } else {
-            if( $network ){
-                $network = explode( '/', $network );
-
-                // $network[ 0 ] => IP address, if exist $network[ 1 ] => subnet
-                if( !filter_var( $network[ 0 ], FILTER_VALIDATE_IP ) ){
-                    AlertContainer::push( 'The IP address format is invalid', Alert::DANGER );
-                    return false;
-                }
-
-                if( !isset( $network[ 1 ] ) ){
-                    AlertContainer::push( 'The IP Address must have a subnet', Alert::DANGER );
-                    return false;
-                }
-
-                $ip = new IP( $network[ 0 ] );
-
-                $protocol = $ip->getVersion() == 'IPv4' ? 4 : 6;
-
-                $entity = $this->processProtocol( $protocol, true );
-                $networks = Network::parse( $network[ 0 ]. '/'.$network[ 1 ] );
-
-                foreach( $networks as $ipParse ) {
-                    if( $ipAddress = D2EM::getRepository( $entity )->findOneBy( [ "Vlan" => $vlan->getId() , 'address' => (string)$ipParse ] ) ){
-                        if( !$ipAddress->getVlanInterface() ){
-                            $ips[ 'ip' ][] = $ipAddress;
-                        }
-                    }
-                }
-
-            }
-
-        }
-
-        return $ips;
     }
 
 
@@ -316,34 +262,4 @@ class IpAddressController extends Controller
         AlertContainer::push( 'The IP has been successfully deleted.', Alert::SUCCESS );
         return response()->json( [ 'success' => true ] );
     }
-
-
-    /**
-     * Delete IP addresses for a Vlan
-     *
-     * @param  Request  $request            Instance of the current HTTP request
-     *
-     * @return JsonResponse
-     */
-    public function deleteForVlan( Request $request ) : JsonResponse {
-        /** @var VlanEntity $v */
-        if( !( $v = D2EM::getRepository( VlanEntity::class )->find( $request->input( 'vid' ) ) ) ) {
-            abort(404);
-        }
-
-        $ips = $this->getFreeIpAddress( $v, $request->input( 'network' ) ? true : false, $request->input( 'network' ) );
-
-        foreach( $ips as $protocol => $ip){
-            foreach( $ip as $address ){
-                D2EM::remove( $address );
-            }
-        }
-
-        D2EM::flush();
-
-        AlertContainer::push( 'The IP Addresses of the Vlan ' .$v->getName(). ' have been successfully deleted.', Alert::SUCCESS );
-        return response()->json( [ 'success' => true ] );
-    }
-
-
 }

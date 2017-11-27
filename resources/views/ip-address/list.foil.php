@@ -42,12 +42,22 @@
             </div>
 
             <?php if( $t->vlan ): ?>
-                <a class="btn btn-sm btn-default" href="<?= route( 'ip-address@list', [ 'vid' => $t->vlan->getId(), 'protocol' => ( $t->protocol == 4 ? 6 : 4 ) ] ) ?>">
-                    Switch to IPv<?= $t->protocol == 4 ? 6 : 4 ?>
-                </a>
-                <a type="button" class="btn btn-sm btn-default" href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol ]) ?>?vlan=<?= $t->vlan->getId() ?>">
-                    <span class="glyphicon glyphicon-plus"></span>
-                </a>
+
+                <div class="btn-group">
+
+                    <a class="btn btn-sm btn-default" href="<?= route( 'ip-address@list', [ 'vid' => $t->vlan->getId(), 'protocol' => ( $t->protocol == 4 ? 6 : 4 ) ] ) ?>">
+                        Switch to IPv<?= $t->protocol == 4 ? 6 : 4 ?>
+                    </a>
+
+                    <a type="button" class="btn btn-sm btn-default" href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol ]) ?>?vlan=<?= $t->vlan->getId() ?>">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </a>
+
+                    <a type="button" class="btn btn-sm btn-danger" href="<?= route ('ip-address@delete-by-network', [ 'vlanid' => $t->vlan->getId() ]) ?>">
+                        <span class="glyphicon glyphicon-trash"></span>
+                    </a>
+
+                </div>
             <?php endif; ?>
 
         </form>
