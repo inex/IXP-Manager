@@ -138,73 +138,45 @@ class IpAddressController extends Controller
      */
     public function store( StoreIpAddress $request ): RedirectResponse {
 
+        /** @var VlanEntity $vlan */
         $vlan     = D2EM::getRepository( VlanEntity::class )->find( $request->input('vlan' ) );
         $network  = Network::parse( trim( htmlspecialchars( $request->input('network' ) )  ) );
-        $skip     = (bool)$request->input( 'skip',    false );
-        $decimal  = (bool)$request->input( 'decimal', false );
+        $skip     = (bool)$request->input( 'skip',     false );
+        $decimal  = (bool)$request->input( 'decimal',  false );
+        $overflow = (bool)$request->input( 'overflow', false );
 
         if( $network->getFirstIP()->version == 'IPv6' ) {
-            $result = D2EM::getRepository( IPv6AddressEntity::class )->bulkAdd( $network, $vlan, $skip, $decimal );
+            $result = D2EM::getRepository( IPv6AddressEntity::class )->bulkAdd(
+                D2EM::getRepository( IPv6AddressEntity::class )->generateSequentialAddresses( $network, $decimal, $overflow ),
+                $vlan, $skip
+            );
         } else {
-            $result = D2EM::getRepository( IPv4AddressEntity::class )->bulkAdd( $network, $vlan, $skip );
+            $result = D2EM::getRepository( IPv4AddressEntity::class )->bulkAdd(
+                D2EM::getRepository( IPv4AddressEntity::class )->generateSequentialAddresses( $network ),
+                $vlan, $skip
+            );
         }
 
-        dd($result);
+        if( !$skip && count( $result['preexisting'] ) ) {
+            AlertContainer::push( "No addresses were added as the following addresses already exist in the database: "
+                . implode( ', ', $result['preexisting'] ) . ". You can check <em>skip</em> below to add only the addresses "
+                . "that do not already exist.", Alert::DANGER );
+            return Redirect::back()->withInput();
+        }
 
-//            // FIX ME example : 192.0.2.10 already exist in the vlan ,
-//            // I want to add 192.0.2.0/24, the ips from 192.0.2.0 to 192.0.2.9 will be added
-//            // after there is the exception for 192.0.2.10, and all the other ips that should be added will be not added
-//            // that always catch in the exception even if there are not exisint in the DB
-//            foreach( $networks as $ip ) {
-//                try{
-//                        //D2EM::beginTransaction();
-//
-//                        $ipAddress = new $entity;
-//                        D2EM::persist( $ipAddress );
-//
-//                        $ipAddress->setVlan( $vlan );
-//
-//                        $ipAddress->setAddress( (string)$ip );
-//
-//                        D2EM::commit();
-//
-//
-//                        D2EM::flush();
-//
-//                        var_dump( (string)$ip." - added");
-//
-//
-//
-//                } catch( \Exception $e ) {
-//                    //D2EM::rollback();
-//                    if( $request->input('skip' ) ){
-//
-//                    }
-//                    var_dump( (string)$ip." - exist");
-//
-//                    //throw $e;
-//                }
-//            }
-//
-//
-//        } else {
-//            if( !( $ip = D2EM::getRepository( $entity )->findOneBy( [ "Vlan" => $vlan->getId(), 'address' => $network[ 0 ] ] ) ) ) {
-//                $ipAddress = new $entity;
-//                D2EM::persist( $ipAddress );
-//                $ipAddress->setVlan( $vlan );
-//                $ipAddress->setAddress( $network[ 0 ] );
-//                D2EM::flush();
-//            } else {
-//                AlertContainer::push( 'The IP Address '.$network[ 0 ]. ' is already in use by another VLAN interface on the same VLAN.', Alert::DANGER );
-//                return Redirect::back()->withInput();
-//            }
-//        }
-//
-//
-//        AlertContainer::push( 'The Ip Address have been edited with success.', Alert::SUCCESS );
-//
-//        return Redirect::to( route( 'ipAddress@list', [ 'protocole' => $protocol ] ) );
+        if( count( $result['new'] ) == 0 ) {
+            AlertContainer::push( "No addresses were added. " . count( $result['preexisting'] ) . " already exist in the database.",
+                Alert::WARNING
+            );
+            return Redirect::back()->withInput();
+        }
 
+        AlertContainer::push( count( $result['new'] ) . ' new IP addresses added to <em>' . $vlan->getName() . '</em>. '
+            . ( $skip ? 'There were ' . count( $result['preexisting'] ) . ' preexisting address(es).' : '' ),
+            Alert::SUCCESS
+        );
+
+        return Redirect::to( route( 'ip-address@list', [ 'protocol' => $network->getFirstIP()->getVersion() == 'IPv6' ? '6' : '4', 'vlan' => $vlan->getId() ] ) );
     }
 
     /**

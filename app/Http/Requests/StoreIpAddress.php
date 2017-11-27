@@ -63,6 +63,9 @@ class StoreIpAddress extends FormRequest
         return [
             'vlan'                  => 'required|integer|exists:Entities\Vlan,id',
             'network'               => 'required|string|max:255',
+            'decimal'               => 'bool',
+            'skip'                  => 'bool',
+            'overflow'              => 'bool',
         ];
     }
 

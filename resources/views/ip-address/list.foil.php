@@ -56,6 +56,12 @@
 
     <?php if( !count( $t->ips ) ): ?>
 
+        <?php if( $t->vlan ): ?>
+            <p>
+                There are no IPv<?= $t->protocol ?> addresses in this VLAN.
+                <a href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol ]) ?>?vlan=<?= $t->vlan->getId() ?>">Add some...</a>
+            </p>
+        <?php endif; ?>
 
     <?php else: ?>
 

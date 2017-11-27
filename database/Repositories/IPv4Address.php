@@ -4,6 +4,11 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
+use IPTools\Network as IPToolsNetwork;
+
+use Repositories\Traits\IPAddress as IPAddressTrait;
+
+
 /**
  * IPv4Address
  *
@@ -12,6 +17,8 @@ use Doctrine\ORM\EntityRepository;
  */
 class IPv4Address extends EntityRepository
 {
+    use IPAddressTrait;
+
     /** 
      * Find VLAN interfaces by (partial) IP address
      * 
@@ -70,5 +77,25 @@ class IPv4Address extends EntityRepository
         $query = $this->getEntityManager()->createQuery( $dql );
 
         return $query->getArrayResult();
+    }
+
+
+    /**
+     * For a given IPTools library network object, generate sequential IPv4 addresses.
+     *
+     * @param IPToolsNetwork $network
+     * @return array Generated addresses (string[])
+     */
+    public static function generateSequentialAddresses( IPToolsNetwork $network ): array
+    {
+        assert( $network->getFirstIP()->getVersion() == 'IPv4' );
+
+        $addresses = [];
+
+        foreach( $network as $ip ) {
+            $addresses[] = (string)$ip;
+        }
+
+        return $addresses;
     }
 }

@@ -57,28 +57,44 @@
         <?= Former::checkbox( 'decimal' )
             ->label( '&nbsp;' )
             ->text( 'Enter decimal values only' )
+            ->unchecked_value( 0 )
+            ->value( 1 )
             ->blockHelp( "Typically IXs allocate a customer an IPv6 address such that the last block matches the last block of the IPv4 address. "
                 . "If you check this, IXP Manager will add the number of addresses as indicated by the CIDR block size but skip over any "
-                . "addresses containing <code>a-f</code> characters. <b>NB:</b> the full number of addresses will be added which means this "
-                . "would typically overflow the subnet bound."
-            );
+                . "addresses containing <code>a-f</code> characters."
+            )
         ?>
+
+        <div id="div-overflow" style="display: none;">
+            <?= Former::checkbox( 'overflow' )
+                ->label( '&nbsp;' )
+                ->text( 'Overflow network bound for decimal-only values' )
+                ->unchecked_value( 0 )
+                ->value( 1 )
+                ->blockHelp( "If you are adding decimal addresses only, you would typically want the number of addresses created to match the "
+                        . "size of the subnet even if it overflows the subnet bounds. Unchecking this will limit the decimal addresses create to the subnet."
+                )
+            ?>
+        </div>
 
     <?php else: ?>
 
         <?= Former::hidden( 'decimal' )->value( '0' ) ?>
+        <?= Former::hidden( 'overflow' )->value( '0' ) ?>
 
     <?php endif; ?>
 
     <?= Former::checkbox( 'skip' )
         ->label( '&nbsp;' )
         ->text( 'Skip over existing addresses without throwing an error' )
-        ->check()
+        ->unchecked_value( 0 )
+        ->value( 1 )
+        ->check( Input::old( 'skip', null ) ?? true )
         ->blockHelp( 'When adding a range of addresses, some may already exist in the database (created during provisioning a VLAN interface, previously added, etc.) '
             . 'Checking this will just skip over any addresses that already exist and only add the new ones.' );
     ?>
 
-    <?=Former::actions( Former::primary_submit( 'Save Changes' ),
+    <?=Former::actions( Former::primary_submit( 'Add Addresses' ),
         Former::default_link( 'Cancel' )->href( route ( 'ip-address@list', [ 'protocol' => $t->protocol, 'vlanid' => request()->input( 'vlan' ) ] ) ),
         Former::success_button( 'Help' )->id( 'help-btn' )
     );?>
@@ -119,8 +135,8 @@
 2001:db8:32::67
 2001:db8:32::68
 2001:db8:32::69
-2001:db8:32::70
-2001:db8:32::71</pre>
+2001:db8:32::70 [only if 'Overflow network bound for decimal-only values' is checked]
+2001:db8:32::71 [only if 'Overflow network bound for decimal-only values' is checked]</pre>
 
 
     <?php else: ?>
@@ -146,17 +162,6 @@
         bound of <code>/<?= $t->protocol == 6 ? '120' : '24' ?></code>. If you need to add more than this, just add them in batches.
     </p>
 
-    <?php if( $t->protocol == 6 ): ?>
-
-        <div class="alert alert-danger">
-            <span class="label label-danger"><b>WARNING:</b></span> IXP Manager currently handles IPv6 addresses using the assumption that
-            they all use lowercase letters and are entered in shorthand form. Do not deviate from this as it will lead to unexpected
-            consequences. This is a lagacy of the fact that IXP Manager did not have UI based access to add / manipulate IPv6 addresses
-            in the past.
-        </div>
-
-    <?php endif; ?>
-
 </div>
 
 
@@ -164,3 +169,8 @@
 <?= Former::close() ?>
 
 <?php $this->append() ?>
+
+<?php $this->section( 'scripts' ) ?>
+    <?= $t->insert( 'ip-address/js/add.foil.js' ) ?>
+<?php $this->append() ?>
+
