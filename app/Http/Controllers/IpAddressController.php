@@ -26,7 +26,6 @@ namespace IXP\Http\Controllers;
 use D2EM, Redirect;
 
 use IPTools\{
-    IP,
     Network
 };
 
@@ -43,8 +42,7 @@ use Illuminate\View\View;
 
 use Illuminate\Http\{
     RedirectResponse,
-    JsonResponse,
-    Request
+    JsonResponse
 };
 
 use IXP\Http\Requests\{

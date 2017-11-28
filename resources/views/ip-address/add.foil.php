@@ -71,6 +71,7 @@
                 ->text( 'Overflow network bound for decimal-only values' )
                 ->unchecked_value( 0 )
                 ->value( 1 )
+                ->check()
                 ->blockHelp( "If you are adding decimal addresses only, you would typically want the number of addresses created to match the "
                         . "size of the subnet even if it overflows the subnet bounds. Unchecking this will limit the decimal addresses create to the subnet."
                 )
