@@ -12,4 +12,16 @@ use Doctrine\ORM\EntityRepository;
  */
 class CompanyRegistrationDetail extends EntityRepository
 {
+    /**
+     * Get all the juridictions
+     *
+     * @return array Array of juridiction
+     */
+    public function getJuridictionsAsArray(){
+        $dql = "SELECT DISTINCT crd.jurisdiction
+                FROM Entities\\CompanyRegisteredDetail crd
+                WHERE  crd.jurisdiction != '' ";
+
+        return $this->getEntityManager()->createQuery( $dql )->getResult();
+    }
 }

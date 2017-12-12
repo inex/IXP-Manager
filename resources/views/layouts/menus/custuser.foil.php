@@ -25,7 +25,7 @@
                             <a href="<?= url('') ?>/switch/configuration">Switch Configuration</a>
                         </li>
                         <li>
-                            <a href="<?= url('') ?>/customer/details">Member Details</a>
+                            <a href="<?= route('customer@details') ?>">Member Details</a>
                         </li>
                     </ul>
                 </li>

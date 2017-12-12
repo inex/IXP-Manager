@@ -58,6 +58,11 @@ Route::group( [ 'prefix' => 'rs-prefixes', 'middleware' => [ 'rs-prefixes' ] ], 
 
 Route::get( 'weather-map/{id}',                    'WeatherMapController@index' )->name( 'weathermap');
 
+Route::group( [ 'prefix' => 'customer', 'namespace' => 'Customer'], function() {
+    Route::get( 'details',                  'CustomerController@details'    )->name( "customer@details" );
+    Route::get( 'detail/{id}',              'CustomerController@detail'     )->name( "customer@detail" );
+});
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
