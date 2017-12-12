@@ -485,4 +485,41 @@ class Customer extends EntityRepository
 
         return $customers;
     }
+
+    /**
+     * Return an array of one or all customer names where the array key is the customer id.
+     *
+     * @param $types array the types needed
+     * @param $cid int The customer ID
+     *
+     * @return array An array of all customers names with the customers id as the key.
+     */
+    public function getAllForFeList( bool $currentCust = null,  int $state = null, int $type = null ): array {
+        $request = "SELECT c
+                    FROM \\Entities\\customer c
+                    WHERE 1 = 1";
+
+        if( $state ){
+            $request .= " AND c.status = {$state} " ;
+        }
+
+        if( $type ){
+            $request .= " AND c.type = {$type} " ;
+        }
+
+        if( $currentCust ){
+            $request .= " AND " . Customer::DQL_CUST_CURRENT ;
+        }
+
+        $request .= " ORDER BY c.name ASC ";
+
+        $listCustomers = $this->getEntityManager()->createQuery( $request )->getResult();
+
+        $customers = [];
+        foreach( $listCustomers as $cust ) {
+            $customers[ ] = $cust ;
+        }
+
+        return $customers;
+    }
 }

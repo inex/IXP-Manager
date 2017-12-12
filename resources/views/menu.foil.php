@@ -21,7 +21,7 @@
                 </li>
 
                 <li>
-                    <a href="<?= url( 'customer/list' ) ?>">Customers</a>
+                    <a href="<?= route( 'customer@list' ) ?>">Customers</a>
                 </li>
 
                 <li <?php if( $t->controller == 'VirtualInterfaceController' ): ?> class="active" <?php endif; ?> >

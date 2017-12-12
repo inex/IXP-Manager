@@ -3,7 +3,7 @@
 <?php elseif( $t->cust->getType() == \Entities\Customer::TYPE_PROBONO ): ?>
     <span class="label label-info">PROBONO MEMBER</span>
 <?php elseif( $t->cust->getType() == \Entities\Customer::TYPE_INTERNAL ): ?>
-    <span class="label label-inverse">INTERNAL INFRASTRUCTURE</span>
+    <span class="label label-primary">INTERNAL INFRASTRUCTURE</span>
 <?php elseif( $t->cust->getType() == \Entities\Customer::TYPE_FULL ): ?>
     <span class="label label-success">FULL MEMBER</span>
 <?php else: ?>
@@ -11,13 +11,13 @@
 <?php endif; ?>
 
 <?php if( $t->cust->hasLeft() ): ?>
-    <span class="label label-important">ACCOUNT CLOSED</span>
+    <span class="label label-danger">ACCOUNT CLOSED</span>
 <?php endif; ?>
 <?php if( $t->resellerMode ): ?>
     <?php if( $t->cust->getIsReseller() ): ?>
-        <span class="label">RESELLER</span>
+        <span class="label label-default">RESELLER</span>
     <?php elseif( $t->cust->getReseller() ): ?>
-        <span class="label">RESOLD CUSTOMER</span>
+        <span class="label label-default">RESOLD CUSTOMER</span>
     <?php endif; ?>
 <?php endif; ?>
 
@@ -28,6 +28,6 @@
     <?php elseif( $t->cust->statusIsSuspended() ): ?>
         <span class="label label-important">SUSPENDED</span>
     <?php else: ?>
-        <span class="label label-inverse">UNKNOWN CUSTOMER STATUS</span>
+        <span class="label label-primary">UNKNOWN CUSTOMER STATUS</span>
     <?php endif; ?>
 <?php endif; ?>

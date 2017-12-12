@@ -268,6 +268,10 @@ class Customer
      */
     protected $IXPs;
 
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $patchPanelPorts;
 
 
     /**
@@ -2338,43 +2342,56 @@ class Customer
 
         return null;
     }
-/**
- * @var \Doctrine\Common\Collections\Collection
- */
-private $patchPanelPorts;
 
 
-/**
- * Add patchPanelPort
- *
- * @param \Entities\PatchPanelPort $patchPanelPort
- *
- * @return Customer
- */
-public function addPatchPanelPort(\Entities\PatchPanelPort $patchPanelPort)
-{
-$this->patchPanelPorts[] = $patchPanelPort;
 
-return $this;
-}
 
-/**
- * Remove patchPanelPort
- *
- * @param \Entities\PatchPanelPort $patchPanelPort
- */
-public function removePatchPanelPort(\Entities\PatchPanelPort $patchPanelPort)
-{
-$this->patchPanelPorts->removeElement($patchPanelPort);
-}
+    /**
+     * Add patchPanelPort
+     *
+     * @param \Entities\PatchPanelPort $patchPanelPort
+     *
+     * @return Customer
+     */
+    public function addPatchPanelPort(\Entities\PatchPanelPort $patchPanelPort){
+        $this->patchPanelPorts[] = $patchPanelPort;
 
-/**
- * Get patchPanelPorts
- *
- * @return \Doctrine\Common\Collections\Collection
- */
-public function getPatchPanelPorts()
-{
-return $this->patchPanelPorts;
-}
+        return $this;
+    }
+
+    /**
+     * Remove patchPanelPort
+     *
+     * @param \Entities\PatchPanelPort $patchPanelPort
+     */
+    public function removePatchPanelPort(\Entities\PatchPanelPort $patchPanelPort){
+        $this->patchPanelPorts->removeElement($patchPanelPort);
+    }
+
+    /**
+     * Get patchPanelPorts
+     *
+     * @return \Doctrine\Common\Collections\Collection
+     */
+    public function getPatchPanelPorts(){
+        return $this->patchPanelPorts;
+    }
+
+    /**
+     * Turn the database integer representation of the type into text as
+     * defined in the self::$CUST_TYPES_TEXT array (or 'Unknown')
+     * @return string
+     */
+    public function resolveType(): string {
+        return self::$CUST_TYPES_TEXT[ $this->getType() ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the status into text as
+     * defined in the self::$CUST_STATUS_TEXT array (or 'Unknown')
+     * @return string
+     */
+    public function resolveStatus(): string {
+        return self::$CUST_STATUS_TEXT[ $this->getStatus() ] ?? 'Unknown';
+    }
 }
