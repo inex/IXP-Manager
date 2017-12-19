@@ -38,12 +38,12 @@
                 </a>
                 <ul class="dropdown-menu pull-right">
                     <li>
-                        <a href="{genUrl controller=$controller action="edit" id=$cust->getId()}">
+                        <a href="{route( 'customer@edit', [ 'id' => $cust->getId() ] )}">
                             Edit Customer Details
                         </a>
                     </li>
                     <li>
-                        <a href="{genUrl controller=$controller action="billing-registration" id=$cust->getId()}">
+                        <a href="{route( 'customer@billingRegistration', [ 'id' => $cust->getId() ] )}">
                             {if (!isset( $options.reseller.no_billing_for_resold_customers ) || !$options.reseller.no_billing_for_resold_customers ) || !$resellerMode || !$cust->isResoldCustomer()}
                                 Edit Billing/Registration Details
                             {else}

@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.5.25 on 2017-12-12.
+ * Generated for Laravel 5.5.25 on 2017-12-18.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -20810,9 +20810,9 @@ namespace  {
 
     class PDF extends \Barryvdh\DomPDF\Facade {}
 
-    class EntityManager extends \LaravelDoctrine\ORM\Facades\EntityManager {}
-
     class Countries extends \Webpatser\Countries\CountriesFacade {}
+
+    class EntityManager extends \LaravelDoctrine\ORM\Facades\EntityManager {}
  
 }
 

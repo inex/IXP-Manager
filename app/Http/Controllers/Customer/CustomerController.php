@@ -23,12 +23,13 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM , DateTime, Mail, Redirect, Former;
+use Auth, D2EM , DateTime, Exception, Mail, Redirect, Former;
 
 use Illuminate\View\View;
 use IXP\Http\Controllers\Controller;
 use Illuminate\Http\{
-    RedirectResponse, Request
+    RedirectResponse,
+    JsonResponse
 };
 
 use Illuminate\Support\Facades\Session;
@@ -51,10 +52,19 @@ use IXP\Http\Requests\{
     StoreCustomerBillingInformation
 };
 
+use Webpatser\Countries\CountriesFacade as CountriesFacade;
+
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
+
+
+use GuzzleHttp\{
+    Client as GuzzleHttp,
+    Exception\RequestException
+};
+
 
 /**
  * Customer Controller
@@ -85,11 +95,11 @@ class CustomerController extends Controller
     /**
      * Display all the Customers as a list
      *
-     * @param int   $status         Display customer by specific status
+     * @param int $status Display customer by specific status
      *
      * @return  View
      */
-    public function listByStatus( $status = null ): View {
+    public function listByStatus( int $status = null ): View {
         if( $status && !array_key_exists( $status, CustomerEntity::$CUST_STATUS_TEXT)){
             abort( 404);
         }
@@ -100,11 +110,11 @@ class CustomerController extends Controller
     /**
      * Display all the Customers as a list
      *
-     * @param int   $type           Display customer by specific types
+     * @param int $type Display customer by specific types
      *
      * @return  View
      */
-    public function listByType( $type = null ): View {
+    public function listByType( int $type = null ): View {
         if( $type && !array_key_exists( $type, CustomerEntity::$CUST_TYPES_TEXT)){
             abort( 404);
         }
@@ -187,7 +197,6 @@ class CustomerController extends Controller
                 'peeringemail'          => $cust->getPeeringemail(),
                 'peeringmacro'          => $cust->getPeeringmacro(),
                 'peeringmacrov6'        => $cust->getPeeringmacrov6(),
-                'status'                => $cust->getStatus(),
                 'irrdb'                 => $cust->getIRRDB()->getId(),
                 'activepeeringmatrix'   => $cust->getActivepeeringmatrix() ? 1 : 0,
                 'nocphone'              => $cust->getNocphone(),
@@ -195,7 +204,6 @@ class CustomerController extends Controller
                 'nocfax'                => $cust->getNocfax(),
                 'nocemail'              => $cust->getNocemail(),
                 'nochours'              => $cust->getNoc24hphone(),
-                'nocwww'                => $cust->getNocwww(),
                 'nocwww'                => $cust->getNocwww(),
                 'isReseller'            => $cust->getIsReseller() ? 1 : 0,
                 'isResold'              => $this->resellerMode() && $cust->getReseller() ? 1 : 0,
@@ -263,16 +271,13 @@ class CustomerController extends Controller
         $cust->setIsReseller(           $request->input( 'isReseller'           ) ?? false  );
 
         if( !$this->setReseller( $request, $cust ) ) {
-            return Redirect::back( )->withErrors();
+            return Redirect::back()->withErrors();
         }
 
 
         if( $isEdit ) {
             $cust->setLastupdated( new DateTime() );
             $cust->setLastupdatedby( Auth::getUser()->getId() );
-
-            $bdetail = $cust->getBillingDetails();
-            $rdetail = $cust->getRegistrationDetails();
         } else {
             $cust->setCreated( new DateTime() );
             $cust->setCreator( Auth::getUser()->getId() );
@@ -281,13 +286,11 @@ class CustomerController extends Controller
             D2EM::persist( $bdetail );
             $bdetail->setPurchaseOrderRequired( 0 );
 
-            $cust->setBillingDetails( $bdetail );
-
             $rdetail = new CompanyRegisteredDetailEntity;
             D2EM::persist( $rdetail );
 
+            $cust->setBillingDetails( $bdetail );
             $cust->setRegistrationDetails( $rdetail );
-
             $cust->setIsReseller( 0 );
         }
 
@@ -300,7 +303,6 @@ class CustomerController extends Controller
         if( !$isEdit ) {
             $cust->addIXP( D2EM::getRepository( IXPEntity::class )->find( $request->input( 'ixp' ) ) );
         }
-
 
         D2EM::flush();
 
@@ -384,6 +386,7 @@ class CustomerController extends Controller
         $billingDetails         = $cust->getBillingDetails();
         $registrationDetails    = $cust->getRegistrationDetails();
         $billingNotify = config( 'ixp_tools.billing_updates_notify' );
+
         if( $cust ) {
             $dataBillingDetail = [];
 
@@ -427,6 +430,7 @@ class CustomerController extends Controller
             'juridictions'                  => D2EM::getRepository( CompanyRegisteredDetailEntity::class )->getJuridictionsAsArray(),
             'billingNotify'                 => $billingNotify,
             'resellerMode'                  => $this->resellerMode(),
+            'countries'                     => CountriesFacade::getList('name' )
         ]);
     }
 
@@ -442,7 +446,6 @@ class CustomerController extends Controller
      * @throws
      */
     public function storeBillingInformation( StoreCustomerBillingInformation $request ): RedirectResponse {
-        $isEdit = $request->input( 'id' ) ? true : false;
         /** @var CustomerEntity $cust */
         if( $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) {
             if( !$cust ) {
@@ -450,7 +453,8 @@ class CustomerController extends Controller
             }
         }
 
-        $oldBillingDetail = $billingDetails         = $cust->getBillingDetails();
+        $oldBillingDetail                           = clone $cust->getBillingDetails();
+        $billingDetails                             = $cust->getBillingDetails();
         $registrationDetails                        = $cust->getRegistrationDetails();
 
         $registrationDetails->setRegisteredName(    $request->input( 'registeredName'       ) );
@@ -461,7 +465,7 @@ class CustomerController extends Controller
         $registrationDetails->setAddress3(          $request->input( 'address3'             ) );
         $registrationDetails->setTownCity(          $request->input( 'townCity'             ) );
         $registrationDetails->setPostcode(          $request->input( 'postcode'             ) );
-        $registrationDetails->setCountry(           $request->input( 'nacountryme'          ) );
+        $registrationDetails->setCountry(           $request->input( 'country'          ) );
 
         $billingDetails->setBillingContactName(     $request->input( 'billingContactName'   ) );
         $billingDetails->setBillingFrequency(       $request->input( 'billingFrequency'     ) );
@@ -479,24 +483,23 @@ class CustomerController extends Controller
         $billingDetails->setVatRate(                $request->input( 'vatRate'              ) );
         $billingDetails->setVatNumber(              $request->input( 'vatNumber'            ) );
 
-
         D2EM::flush( $billingDetails );
         D2EM::flush( $registrationDetails );
 
         if( config( 'ixp_tools.billing_updates_notify', false ) && !$cust->getReseller() ) {
+            // send notification email
             $mailable = new EmailCustomer( $cust );
             try {
                 $mailable->subject( config('identity.sitename') . " - ('Billing Details Change Notification')" );
                 $mailable->from( config('identity.email'), config('identity.name') );
                 $mailable->to( config('ixp_tools.billing_updates_notify'), config('identity.sitename') . ' - Accounts' );
-                $mailable->view( "customer/emails/billing-details" )->with( ['cust' => $cust, 'oldDetails' => $oldBillingDetail] );
+                $mailable->view( "customer/emails/billing-details" )->with( ['billingDetail' => $billingDetails, 'oldDetails' => $oldBillingDetail] );
                 Mail::send( $mailable );
 
                 if( Auth::getUser()->getPrivs() == UserEntity::AUTH_SUPERUSER ) {
                     AlertContainer::push( "Notification of updated billing details has been sent to " . config('ixp_tools.billing_updates_notify'), Alert::SUCCESS );
                 }
             } catch( Exception $e ) {
-
                 AlertContainer::push( "Could not sent notification of updated billing details to " . config('ixp_tools.billing_updates_notify')
                     . ". Check your email settings.", Alert::DANGER );
             }
@@ -505,9 +508,69 @@ class CustomerController extends Controller
 
         return Redirect::to( 'customer/overview/id/' . $cust->getId() . '/tab/billing' );
 
+    }
+
+    /**
+     * Add or edit a customer billing information
+     *
+     * email notification
+     *
+     * @param   int  $asn ASN that the user want to use to populate the customer details form
+     *
+     * @return  JsonResponse
+     * @throws
+     */
+    public function populateCustomerInfoByAsn( int $asn ) : JsonResponse{
+        $error = false;
+        $result = '';
+        if( is_numeric( $asn ) ) {
+            $autsys = trim( $asn );
+
+            // doing request to get the cookie
+
+            // NOT SURE THAT IS NECESSARY
+            $client = new GuzzleHttp( ['cookies' => true] );
+            $conn = $client->request('GET', "https://" . config( "ixp_api.peeringDB.username" ) . ":" . config( "ixp_api.peeringDB.password" ) . "@peeringdb.com" );
+
+            try {
+                // check if HTTP request status is 200
+                if( $conn->getStatusCode() == '200' ) {
+                    $AsnContent = $client->request( 'GET', "https://www.peeringdb.com/api/net?asn=" . $autsys );
+                    $result = json_decode( $AsnContent->getBody()->getContents() );
+
+                    $id = $result->data[ 0 ]->id;
+
+                    $infoContent = $client->request( 'GET', "https://www.peeringdb.com/api/net/" . $id );
+                    $info = json_decode( $infoContent->getBody()->getContents() );
+
+                    $result = $info->data[ 0 ];
+                }
+
+            } catch (RequestException $e) {
+                $error = true;
+                // If there are network errors, we need to ensure the application doesn't crash.
+                // if $e->hasResponse is not null we can attempt to get the message
+                // Otherwise, we'll just pass a network unavailable message.
+                if( $e->hasResponse() ) {
+                    $exception = (string)$e->getResponse()->getBody();
+                    $result = json_decode( $exception );
+                } else {
+                    $result = $e->getMessage();
+                }
+            }
+
+        }
+
+        return response()->json( [ 'error' => $error , 'informations' => $result ] );
 
     }
 
+    /**
+     * Display the list of all the Customers
+     *
+     * @return  View
+     * @throws
+     */
     public function details( ): View {
         $ixp            = D2EM::getRepository( IXPEntity::class )->getDefault();
         $custs          = D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, false, false, false);
@@ -518,11 +581,17 @@ class CustomerController extends Controller
         ]);
     }
 
+    /**
+     * Display all the informations for a customer
+     *
+     * @param int $id ID of the customer
+     *
+     * @return  View
+     */
     public function detail( int $id = null ): View {
         if( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
             abort( 404);
         }
-
 
         return view( 'customer/detail' )->with([
             'as112UiActive'         => $this->as112UiActive(),

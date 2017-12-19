@@ -73,7 +73,7 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::select( 'country' )
                 ->label( 'Country' )
-                ->fromQuery( \Entities\CompanyBillingDetail::$BILLING_FREQUENCIES )
+                ->fromQuery( $t->countries, 'name', 'iso_3166_2' )
                 ->placeholder( 'Choose a country' )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( '' );
@@ -129,7 +129,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::select( 'billingCountry' )
                     ->label( 'Country' )
-                    ->fromQuery( \Entities\CompanyBillingDetail::$BILLING_FREQUENCIES )
+                    ->fromQuery( $t->countries, 'name', 'iso_3166_2' )
                     ->placeholder( 'Choose a country' )
                     ->addClass( 'chzn-select' )
                     ->blockHelp( '' );
@@ -219,6 +219,7 @@ $this->layout( 'layouts/ixpv4' );
                 $( "#billingAddress3"   ).val( $( "#address3" ).val(  ) );
                 $( "#billingTownCity"   ).val( $( "#townCity" ).val(  ) );
                 $( "#billingPostcode"   ).val( $( "#postcode" ).val(  ) );
+                $( "#billingCountry"    ).val( $( "#country"  ).val(  ) ).trigger('change.select2');
             } );
         });
     </script>
