@@ -26,33 +26,33 @@ Billing details have been updated for <em>{{ $cust->getName() }}</em>.
             {{$oldDetails->getBillingCountry()}}
         </td>
         <td style="border: 1px solid black;">
-            {{$cust->getBillingDetails()->getBillingAddress1()}}<br/>
-            {{$cust->getBillingDetails()->getBillingAddress2()}}<br/>
-            {{$cust->getBillingDetails()->getBillingAddress3()}}<br/>
-            {{$cust->getBillingDetails()->getBillingTownCity()}}<br/>
-            {{$cust->getBillingDetails()->getBillingPostcode()}}<br/>
-            {{$cust->getBillingDetails()->getBillingCountry()}}
+            {{$billingDetail->getBillingAddress1()}}<br/>
+            {{$billingDetail->getBillingAddress2()}}<br/>
+            {{$billingDetail->getBillingAddress3()}}<br/>
+            {{$billingDetail->getBillingTownCity()}}<br/>
+            {{$billingDetail->getBillingPostcode()}}<br/>
+            {{$billingDetail->getBillingCountry()}}
         </td style="border: 1px solid black;">
     </tr>
     <tr>
         <th style="border: 1px solid black;">Email</th>
         <td style="border: 1px solid black;">{{$oldDetails->getBillingEmail()}}</td>
-        <td style="border: 1px solid black;">{{$cust->getBillingDetails()->getBillingEmail()}}</td>
+        <td style="border: 1px solid black;">{{$billingDetail->getBillingEmail()}}</td>
     </tr>
     <tr>
         <th style="border: 1px solid black;">Phone</th>
         <td style="border: 1px solid black;">{{$oldDetails->getBillingTelephone()}}</td>
-        <td style="border: 1px solid black;">{{$cust->getBillingDetails()->getBillingTelephone()}}</td>
+        <td style="border: 1px solid black;">{{$billingDetail->getBillingTelephone()}}</td>
     </tr>
     <tr>
         <th style="border: 1px solid black;">VAT Number</th>
         <td style="border: 1px solid black;">{{$oldDetails->getVatNumber()}}</td>
-        <td style="border: 1px solid black;">{{$cust->getBillingDetails()->getVatNumber()}}</td>
+        <td style="border: 1px solid black;">{{$billingDetail->getVatNumber()}}</td>
     </tr>
     <tr>
         <th style="border: 1px solid black;">VAT Rate</th>
         <td style="border: 1px solid black;">{{$oldDetails->getVatRate()}}</td>
-        <td style="border: 1px solid black;">{{$cust->getBillingDetails()->getVatRate()}}</td>
+        <td style="border: 1px solid black;">{{$billingDetail->getVatRate()}}</td>
     </tr>
     <tr>
         <th style="border: 1px solid black;">Required Purchase Order</th>
@@ -64,7 +64,7 @@ Billing details have been updated for <em>{{ $cust->getName() }}</em>.
             @endif
         </td>
         <td style="border: 1px solid black;">
-            @if($cust->getBillingDetails()->getPurchaseOrderRequired() )
+            @if($billingDetail->getPurchaseOrderRequired() )
                 Yes
             @else
                 No
@@ -74,16 +74,16 @@ Billing details have been updated for <em>{{ $cust->getName() }}</em>.
     <tr>
         <th style="border: 1px solid black;">Invoice Method</th>
         <td style="border: 1px solid black;">{{$oldDetails->getInvoiceMethod()}}</td>
-        <td style="border: 1px solid black;">{{$cust->getBillingDetails()->getInvoiceMethod()}}</td>
+        <td style="border: 1px solid black;">{{$billingDetail->getInvoiceMethod()}}</td>
     </tr>
     <tr>
         <th style="border: 1px solid black;">Invoice Email</th>
         <td style="border: 1px solid black;">{{$oldDetails->getInvoiceEmail()}}</td>
-        <td style="border: 1px solid black;">{{$cust->getBillingDetails()->getInvoiceEmail()}}</td>
+        <td style="border: 1px solid black;">{{$billingDetail->getInvoiceEmail()}}</td>
     </tr>
     <tr>
         <th style="border: 1px solid black;">Billing Frequency</th>
         <td style="border: 1px solid black;">{{$oldDetails->getBillingFrequency()}}</td>
-        <td style="border: 1px solid black;">{{$cust->getBillingDetails()->getBillingFrequency()}}</td>
+        <td style="border: 1px solid black;">{{$billingDetail->getBillingFrequency()}}</td>
     </tr>
 </table>

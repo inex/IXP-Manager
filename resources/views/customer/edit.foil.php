@@ -13,12 +13,30 @@
 
 <?php $this->section('content') ?>
     <?= Former::open()->method( 'POST' )
+        ->id( "form" )
         ->action( route ('customer@store' ) )
         ->customWidthClass( 'col-sm-6' )
 
     ?>
-
         <div class="col-md-12">
+            <div class="well">
+                <div>
+                    <b>
+                        Prepopulate this form from PeeringDB by entering the network ASN here
+                    </b>
+                </div>
+
+                <div class="form-group col-sm-3">
+                    <input type="text" class="form-control" id="asn-search">
+                </div>
+
+                <div class="btn-group">
+                    <span class="btn btn-primary" id="btn-populate" style="margin-left: 15px" href="">
+                        Populate
+                    </span>
+                </div>
+            </div>
+
             <div class="col-md-6">
                 <h3>Customer Details</h3>
                 <hr>
@@ -179,7 +197,7 @@
 
         <div class="col-md-6">
             <?php if( $t->resellerMode ): ?>
-                <h3>Peering Details</h3>
+                <h3>Reseller Details</h3>
                 <hr>
                 <?= Former::checkbox( 'isReseller' )
                     ->label( ' ' )
@@ -226,69 +244,5 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
-        //////////////////////////////////////////////////////////////////////////////////////
-        // we'll need these handles to html elements in a few places:
-
-        const input_name                = $( '#name' );
-        const input_abbreviated_name    = $( '#abbreviatedName' );
-        const dd_type                   = $( '#type' );
-        const cb_isResold               = $( '#isResold' );
-        const div_reseller_area         = $( '#reseller-area' );
-
-        /**
-         * set the colo_reference in empty input by the name input value
-         */
-        input_name.blur( function() {
-            if( input_abbreviated_name.val() == '' ){
-                input_abbreviated_name.val( input_name.val() );
-            }
-        });
-
-        dd_type.change( function( ){
-            if( dd_type.val() == 2 )  // associate member
-            {
-                $( '.full-member-details' ).slideUp( 'fast' );
-            }
-            else {
-                $( '.full-member-details' ).slideDown( 'fast' );
-            }
-        });
-
-        <?php if( $t->resellerMode ): ?>
-            $( "#isResold" ).change( function(){
-                if( $( this ).prop( "checked" ) )
-                {
-                    $( '#reseller-area' ).show();
-                    if( $( '#isReseller' ).prop( "checked" ) )
-                        $( '#isReseller' ).prop( "checked", false );
-                }
-                else
-                    $( '#reseller-area' ).hide();
-
-            });
-
-            $( "#isReseller" ).change( function(){
-                if( $( this ).prop( "checked" ) )
-                {
-                    if( $( '#isResold' ).prop( "checked" ) )
-                        $( '#isResold' ).prop( "checked", false ).trigger( "change" );
-                }
-
-            });
-        <?php endif; ?>
-
-        $(document).ready( function(){
-            <?php if( $t->cust && $t->cust->getType() == \Entities\Customer::TYPE_ASSOCIATE ): ?>
-                $( '.full-member-details' ).slideUp( 'fast' );
-            <?php endif; ?>
-
-            /**
-             * Display the reseller dropdown if resold customer
-             */
-            if( cb_isResold.prop('checked') ) {
-                div_reseller_area.show();
-            }
-        });
-    </script>
+    <?= $t->insert( 'customer/js/edit' ); ?>
 <?php $this->append() ?>

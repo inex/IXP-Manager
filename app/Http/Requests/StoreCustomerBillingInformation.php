@@ -31,6 +31,8 @@ use Entities\{
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use Webpatser\Countries\CountriesFacade as Countries;
+
 
 class StoreCustomerBillingInformation extends FormRequest
 {
@@ -62,7 +64,7 @@ class StoreCustomerBillingInformation extends FormRequest
             'address3'              => 'nullable|string|max:255',
             'townCity'              => 'nullable|string|max:255',
             'postcode'              => 'nullable|string|max:255',
-            'country'               => 'nullable|string|max:255',
+            'country'               => 'nullable|string|max:255|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
 
             'billingContactName'    => 'nullable|string|max:255',
             'billingFrequency'      => 'nullable|string|max:255|in:' . implode( ',', array_keys( CompanyBillingDetailEntity::$BILLING_FREQUENCIES ) ),
@@ -71,7 +73,7 @@ class StoreCustomerBillingInformation extends FormRequest
             'billingAddress3'       => 'nullable|string|max:255',
             'billingTownCity'       => 'nullable|string|max:255',
             'billingPostcode'       => 'nullable|string|max:255',
-            'billingCountry'        => 'nullable|string|max:255',
+            'billingCountry'        => 'nullable|string|max:255|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
             'billingEmail'          => 'nullable|email|max:255',
             'billingTelephone'      => 'nullable|string|max:255',
             'invoiceMethod'         => 'nullable|string|max:255|in:' . implode( ',', array_keys( CompanyBillingDetailEntity::$INVOICE_METHODS ) ),

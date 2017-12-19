@@ -45,6 +45,17 @@ return [
         'customer_service'  => env( 'IXP_API_NAGIOS_CUSTOMER_SERVICE', "generic-service" ),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | PEERING DB
+    |--------------------------------------------------------------------------
+    |
+    */
+    'peeringDB' => [
+        'username'        => env( 'IXP_API_PEERING_DB_USERNAME',       ""    ),
+        'password'        => env( 'IXP_API_PEERING_DB_PASSWORD',       ""    ),
+    ],
+
 
 
 
