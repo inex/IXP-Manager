@@ -61,7 +61,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                     'cabinet'  => [
                         'title'      => 'Cabinet',
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                        'controller' => 'cabinet',
+                        'controller' => 'rack',
                         'action'     => 'view',
                         'idField'    => 'cabinetid'
                     ],

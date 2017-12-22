@@ -21,3 +21,7 @@ IXP\Http\Controllers\LoginHistoryController::routes();
 IXP\Http\Controllers\MacAddressController::routes();
 IXP\Http\Controllers\VendorController::routes();
 IXP\Http\Controllers\VlanController::routes();
+
+// tmp until ZF is consigned to history
+Route::get( 'rack/view/id/{id}',   'CabinetController@view' );
+Route::get( 'vendor/view/id/{id}', 'VendorController@view'  );
