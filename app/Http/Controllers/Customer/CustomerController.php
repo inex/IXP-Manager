@@ -515,24 +515,24 @@ class CustomerController extends Controller
      *
      * email notification
      *
-     * @param   int  $asn ASN that the user want to use to populate the customer details form
+     * @param   string  $asn ASN that the user want to use to populate the customer details form
      *
      * @return  JsonResponse
      * @throws
      */
-    public function populateCustomerInfoByAsn( int $asn ) : JsonResponse{
+    public function populateCustomerInfoByAsn( string $asn ) : JsonResponse{
         $error = false;
         $result = '';
-        if( is_numeric( $asn ) ) {
+        if( $asn != null || $asn != '' ) {
             $autsys = trim( $asn );
 
-            // doing request to get the cookie
-
-            // NOT SURE THAT IS NECESSARY
-            $client = new GuzzleHttp( ['cookies' => true] );
-            $conn = $client->request('GET', "https://" . config( "ixp_api.peeringDB.username" ) . ":" . config( "ixp_api.peeringDB.password" ) . "@peeringdb.com" );
-
             try {
+                // doing request to get the cookie
+
+                // NOT SURE THAT IS NECESSARY
+                $client = new GuzzleHttp( ['cookies' => true] );
+                $conn = $client->request('GET', "https://" . config( "ixp_api.peeringDB.username" ) . ":" . config( "ixp_api.peeringDB.password" ) . "@peeringdb.com" );
+
                 // check if HTTP request status is 200
                 if( $conn->getStatusCode() == '200' ) {
                     $AsnContent = $client->request( 'GET', "https://www.peeringdb.com/api/net?asn=" . $autsys );
@@ -558,7 +558,6 @@ class CustomerController extends Controller
                     $result = $e->getMessage();
                 }
             }
-
         }
 
         return response()->json( [ 'error' => $error , 'informations' => $result ] );
