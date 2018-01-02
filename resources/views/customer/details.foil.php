@@ -66,10 +66,14 @@ $this->layout( 'layouts/ixpv4' );
                     <?= $t->ee( $c->getPeeringemail() ) ?>
                 </td>
                 <td>
-                    <?php if( $c->getAutsys() ): ?>
-                        <a href="#">
-                            <?=  $t->asNumber( $c->getAutsys() ) ?>
-                        </a>
+                    <?php if( $c->getType() == \Entities\Customer::TYPE_ASSOCIATE ): ?>
+                        <em>(associate)</em>
+                    <?php else: ?>
+                        <?php if( $c->getAutsys() ): ?>
+                            <a href="#">
+                                <?=  $t->asNumber( $c->getAutsys() ) ?>
+                            </a>
+                        <?php endif; ?>
                     <?php endif; ?>
 
                 </td>

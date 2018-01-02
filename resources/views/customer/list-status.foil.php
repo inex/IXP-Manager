@@ -3,7 +3,7 @@
 <?php else: ?>
     <?php if( $t->cust->getStatus() == \Entities\Customer::STATUS_SUSPENDED ): ?>
         <span class="label label-important">SUSPENDED</span>
-    <?php elseif( $t->cust->getStatus() == \Entities\Customer::STATUS_NORMAL || ( $t->cust->getStatus() == \Entities\Customer::TYPE_ASSOCIATE && $t->cust->getStatus() == \Entities\Customer::STATUS_NOTCONNECTED ) ): ?>
+    <?php elseif( $t->cust->getStatus() == \Entities\Customer::STATUS_NORMAL || ( $t->cust->getType() == \Entities\Customer::TYPE_ASSOCIATE && $t->cust->getStatus() == \Entities\Customer::STATUS_NOTCONNECTED ) ): ?>
         <span class="label label-success">NORMAL</span>
     <?php elseif( $t->cust->getStatus() == \Entities\Customer::STATUS_NOTCONNECTED ): ?>
         <span class="label label-warning">NOT CONNECTED</span>

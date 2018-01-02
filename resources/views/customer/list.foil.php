@@ -25,18 +25,18 @@ $this->layout( 'layouts/ixpv4' );
                     <?php if( $t->status ): ?> <?= \Entities\Customer::$CUST_STATUS_TEXT[ $t->status ] ?> <?php else: ?>Limit to status...<?php endif;?> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li>
+                    <li <?php if( !$t->status ): ?> class="active" <?php endif; ?>>
                         <a href="<?= route( "customer@listByStatus" , [ "status" => 0 ] ) ?>">All Status</a>
                     </li>
                     <li role="separator" class="divider"></li>
-                    <li>
-                        <a href="<?= route( "customer@listByStatus" , [ "status" => \Entities\Customer::STATUS_NORMAL ] ) ?>">Normal</a>
+                    <li <?php if( $t->status == \Entities\Customer::STATUS_NORMAL ):        ?> class="active" <?php endif; ?>   >
+                        <a href="<?= route( "customer@listByStatus" , [ "status" => \Entities\Customer::STATUS_NORMAL ]         ) ?>">Normal</a>
                     </li>
-                    <li>
-                        <a href="<?= route( "customer@listByStatus" , [ "status" => \Entities\Customer::STATUS_NOTCONNECTED ] ) ?>">Not Connected</a>
+                    <li <?php if( $t->status == \Entities\Customer::STATUS_NOTCONNECTED ):  ?> class="active" <?php endif; ?>    >
+                        <a href="<?= route( "customer@listByStatus" , [ "status" => \Entities\Customer::STATUS_NOTCONNECTED ]   ) ?>">Not Connected</a>
                     </li>
-                    <li>
-                        <a href="<?= route( "customer@listByStatus" , [ "status" => \Entities\Customer::STATUS_SUSPENDED ] ) ?>">Suspended</a>
+                    <li <?php if( $t->status == \Entities\Customer::STATUS_SUSPENDED ):     ?> class="active" <?php endif; ?>   >
+                        <a href="<?= route( "customer@listByStatus" , [ "status" => \Entities\Customer::STATUS_SUSPENDED ]      ) ?>">Suspended</a>
                     </li>
                 </ul>
             </div>
@@ -47,24 +47,24 @@ $this->layout( 'layouts/ixpv4' );
                     <?php if( $t->type ): ?> <?= \Entities\Customer::$CUST_TYPES_TEXT[ $t->type ] ?> <?php else: ?>Limit to type...<?php endif;?> <span class="caret"></span>
                 </button>
                 <ul class="dropdown-menu">
-                    <li>
+                    <li <?php if( !$t->type ): ?> class="active" <?php endif; ?> >
                         <a id="type-0" href="<?= route( "customer@listByType" , [ "type" => 0 ] ) ?>">All types</a>
                     </li>
                     <li role="separator" class="divider"></li>
-                    <li>
-                        <a id="type-4" href="<?= route( "customer@listByType" , [ "type" => \Entities\Customer::TYPE_FULL ] ) ?>">Full</a>
+                    <li <?php if( $t->type == \Entities\Customer::TYPE_FULL ):          ?> class="active" <?php endif; ?> >
+                        <a id="type-4" href="<?= route( "customer@listByType" , [ "type" => \Entities\Customer::TYPE_FULL ]         ) ?>">Full</a>
                     </li>
-                    <li>
-                        <a id="type-6" href="<?= route( "customer@listByType" , [ "type" => \Entities\Customer::TYPE_ASSOCIATE ] ) ?>">Associated</a>
+                    <li <?php if( $t->type == \Entities\Customer::TYPE_ASSOCIATE ):     ?> class="active" <?php endif; ?> >
+                        <a id="type-6" href="<?= route( "customer@listByType" , [ "type" => \Entities\Customer::TYPE_ASSOCIATE ]    ) ?>">Associated</a>
                     </li>
-                    <li>
-                        <a id="type-6" href="<?= route( "customer@listByType" , [ "type" => \Entities\Customer::TYPE_INTERNAL ] ) ?>">Internal</a>
+                    <li <?php if( $t->type == \Entities\Customer::TYPE_INTERNAL ):      ?> class="active" <?php endif; ?> >
+                        <a id="type-6" href="<?= route( "customer@listByType" , [ "type" => \Entities\Customer::TYPE_INTERNAL ]     ) ?>">Internal</a>
                     </li>
-                    <li>
-                        <a id="type-6" href="<?= route( "customer@listByType" , [ "type" => \Entities\Customer::TYPE_PROBONO ] ) ?>">Pro-bono</a>
+                    <li <?php if( $t->type == \Entities\Customer::TYPE_PROBONO ):       ?> class="active" <?php endif; ?> >
+                        <a id="type-6" href="<?= route( "customer@listByType" , [ "type" => \Entities\Customer::TYPE_PROBONO ]      ) ?>">Pro-bono</a>
                     </li>
-                    <li>
-                        <a id="type-6" href="<?= route( "customer@listByType" , [ "type" => \Entities\Customer::TYPE_ROUTESERVER ] ) ?>">Routeserver</a>
+                    <li <?php if( $t->type == \Entities\Customer::TYPE_ROUTESERVER ):   ?> class="active" <?php endif; ?> >
+                        <a id="type-6" href="<?= route( "customer@listByType" , [ "type" => \Entities\Customer::TYPE_ROUTESERVER ]  ) ?>">Routeserver</a>
                     </li>
                 </ul>
             </div>
@@ -143,13 +143,13 @@ $this->layout( 'layouts/ixpv4' );
                     <?= $c->getReseller() ? "Yes" : "No" ?>
                 </td>
                 <td>
-                    <?= $t->insert( 'customer/cust-type',   [ 'cust' => $c , 'resellerMode' => $t->resellerMode ] ) ?>
+                    <?= $t->insert( 'customer/list-type',   [ 'cust' => $c , 'resellerMode' => $t->resellerMode ] ) ?>
                 </td>
                 <td>
-                    <?= $t->insert( 'customer/cust-status', [ 'cust' => $c ] ) ?>
+                    <?= $t->insert( 'customer/list-status', [ 'cust' => $c ] ) ?>
                 </td>
                 <td>
-                    <?= $c->getDatejoin()->format( "Y-m-d" ) ?>
+                    <?= $c->getDatejoin() != null ? $c->getDatejoin()->format( "Y-m-d" ) : "" ?>
                 </td>
                 <td>
                     <div class="btn-group btn-group-sm" role="group">

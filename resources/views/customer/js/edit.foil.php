@@ -68,22 +68,30 @@
         if( cb_isResold.prop('checked') ) {
             div_reseller_area.show();
         }
+
+        addClickEvent();
     });
 
 
     /**
      * Display the reseller dropdown if resold customer
      */
-    $( "#btn-populate" ).click( function(){
-        pupulateFormViaAsn();
-    });
+    function addClickEvent() {
+        btn_populate.on('click', function(event){
+            pupulateFormViaAsn(event)
+        });
+    }
 
     /**
      * Ajax request to fill the inputs depending on the ASN entered
      */
     function pupulateFormViaAsn() {
         if( $( "#asn-search" ).val() ){
-            btn_populate.attr("disabled","disabled");
+            let error = '';
+
+            btn_populate.attr("disabled", "disabled" );
+            btn_populate.off("click");
+
             $( '#error-message' ).remove();
             let url = " <?= url( "customer/populate-customer/asn") ?>/" + $( "#asn-search" ).val();
             $.ajax( url )
@@ -99,7 +107,13 @@
                             dd_peering_policy.val(  data.informations.policy_general.toLowerCase() ).trigger( "change" );
                         }
                     }else{
-                        $( '#form' ).prepend( `<div id="error-message" class="alert alert-danger" role="alert"> ${data.informations.meta.error} </div>` );
+
+                        if( data.informations.meta !== undefined ){
+                            error = data.informations.meta.error;
+                        } else {
+                            error = data.informations;
+                        }
+                        $( '#form' ).prepend( `<div id="error-message" class="alert alert-danger" role="alert"> ${error} </div>` );
                     }
 
                 })
@@ -108,7 +122,8 @@
                     throw "Error running ajax query for " + url;
                 })
                 .always( function() {
-                    btn_populate.attr("disabled", false);
+                    btn_populate.attr("disabled", false );
+                    addClickEvent();
                 });
         }
     }
