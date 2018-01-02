@@ -20,7 +20,7 @@
                     IXP Customer Actions
                 </li>
 
-                <li>
+                <li  <?php if( $t->controller == 'CustomerController' ): ?> class="active" <?php endif; ?> >
                     <a href="<?= route( 'customer@list' ) ?>">Customers</a>
                 </li>
 
