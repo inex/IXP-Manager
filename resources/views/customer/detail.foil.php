@@ -205,7 +205,7 @@
                                 </td>
 
                                 <td>
-                                    <?= $pi->getSwitchPort()->getSwitcher()->getName() ?>
+                                    <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?>
                                 </td>
                             </tr>
                             <tr>
@@ -225,7 +225,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ?>
+                                    <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ) ?>
                                 </td>
                             </tr>
                         </table>
@@ -237,7 +237,7 @@
                                     <b>Switch Port:</b>
                                 </td>
                                 <td>
-                                    <?= $pi->getSwitchPort()->getName() ?>
+                                    <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
                                 </td>
                             </tr>
                             <tr>
@@ -245,7 +245,7 @@
                                     <b>Duplex:</b>
                                 </td>
                                 <td>
-                                    <?= $pi->getDuplex() ?>
+                                    <?= $t->ee( $pi->getDuplex() ) ?>
                                 </td>
                             </tr>
                             <tr>
@@ -255,7 +255,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $pi->getSwitchPort()->getSwitcher()->getCabinet()->getName() ?>
+                                    <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getCabinet()->getName() ) ?>
                                 </td>
                             </tr>
                         </table>
@@ -271,7 +271,7 @@
                 <?php if( !$vli->getVlan()->getPrivate() ): ?>
                     <div class="col-md-12" style="margin-bottom: 20px; text-indent: 20px ">
 
-                        <h4><?= $vli->getVlan()->getName() ?>:</h4>
+                        <h4><?= $t->ee( $vli->getVlan()->getName() ) ?>:</h4>
 
                         <div class="col-xs-6" style="">
                             <table class="">

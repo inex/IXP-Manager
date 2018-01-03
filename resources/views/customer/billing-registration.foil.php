@@ -204,12 +204,6 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'scripts' ) ?>
     <script>
         $( document ).ready( function() {
-            //////////////////////////////////////////////////////////////////////////////////////
-            // we'll need these handles to html elements in a few places:
-
-            const input_name              = $( '#name' );
-            const input_colo_ref          = $( '#colo_reference' );
-
             /**
              * set the address information to the billing address info
              */
