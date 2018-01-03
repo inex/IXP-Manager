@@ -137,7 +137,7 @@ $this->layout( 'layouts/ixpv4' );
                     </a>
                 </td>
                 <td>
-                    <?= $c->getPeeringpolicy() ?>
+                    <?= $t->ee( $c->getPeeringpolicy() ) ?>
                 </td>
                 <td>
                     <?= $c->getReseller() ? "Yes" : "No" ?>
