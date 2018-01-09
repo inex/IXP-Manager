@@ -53,7 +53,7 @@
                     </li>
                     {if $logoManagementActive}
                         <li>
-                            <a href="{genUrl controller=$controller action="manage-logo" id=$cust->getId()}">
+                            <a href="{route( 'customer@manageLogo', [ 'id' => $cust->getId() ] )}">
                                 Manage Logo
                             </a>
                         </li>

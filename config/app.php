@@ -193,6 +193,8 @@ return [
 
         Webpatser\Countries\CountriesServiceProvider::class,
 
+        Intervention\Image\ImageServiceProvider::class
+
     ],
 
     /*

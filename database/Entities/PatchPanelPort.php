@@ -3,7 +3,7 @@
 namespace Entities;
 
 use Carbon\Carbon;
-use D2EM, Auth;
+use D2EM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use IXP\Mail\PatchPanelPort\{
@@ -12,14 +12,6 @@ use IXP\Mail\PatchPanelPort\{
     Info    as InfoMail,
     Loa     as LoaMail
 };
-
-use Entities\{
-    PatchPanelPortFile  as PatchPanelPortFileEntity,
-    PatchPanelPort      as PatchPanelPortEntity
-};
-
-use Parsedown;
-
 
 /**
  * Entities\PatchPanelPort
@@ -463,8 +455,7 @@ class PatchPanelPort
      */
     public function getNotesParseDown()
     {
-        $parseDown = new Parsedown;
-        return $parseDown->text($this->notes);
+        return @parsedown( $this->notes );
     }
 
     /**
@@ -707,8 +698,7 @@ class PatchPanelPort
      */
     public function getPrivateNotesParseDown()
     {
-        $parseDown = new Parsedown;
-        return $parseDown->text($this->private_notes);
+        return @parsedown( $this->private_notes );
     }
 
     /**

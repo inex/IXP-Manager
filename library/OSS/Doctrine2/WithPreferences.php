@@ -182,8 +182,13 @@ trait OSS_Doctrine2_WithPreferences
         $pref->setExpire( $expires );
         $pref->setIx( $index );
 
-        $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
-        $em->persist( $pref );
+        try {
+            $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
+            $em->persist( $pref );
+        } catch( Zend_Exception $e ) {
+            D2EM::persist($pref);
+        }
+
         return $this;
     }
 
@@ -364,7 +369,6 @@ trait OSS_Doctrine2_WithPreferences
     {
         $count = 0;
 
-        $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
         foreach( $this->_getPreferences() as $pref )
         {
             if( $pref->getAttribute() == $attribute )
@@ -373,7 +377,13 @@ trait OSS_Doctrine2_WithPreferences
                 {
                     $count++;
                     $this->getPreferences()->removeElement( $pref );
-                    $em->remove( $pref );
+                    try {
+                        $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
+                        $em->remove( $pref );
+                    } catch( Zend_Exception $e ) {
+                        D2EM::remove( $pref );
+                    }
+
                 }
             }
         }

@@ -131,8 +131,24 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
     Route::get(     'edit/{id}',                        'CustomerController@edit'                       )->name( 'customer@edit');
     Route::get(     'billing-registration/{id}',        'CustomerController@billingRegistration'        )->name( 'customer@billingRegistration');
     Route::get(     'populate-customer/asn/{asn}',      'CustomerController@populateCustomerInfoByAsn'  )->name( 'customer@populateCustomerInfoByAsn');
-    Route::post(     'store',                           'CustomerController@store'                      )->name( 'customer@store');
-    Route::post(     'store-billing-info',                           'CustomerController@storeBillingInformation'     )->name( 'customer@storeBillingInfo');
+    Route::get(     'unread-notes',                     'CustomerController@unreadNotes'                )->name( "customer@unreadNotes" );
+
+
+    Route::post(    'store',                            'CustomerController@store'                      )->name( 'customer@store');
+    Route::post(    'store-billing-info',               'CustomerController@storeBillingInformation'    )->name( 'customer@storeBillingInfo');
+
+});
+
+Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer-note' ], function() {
+
+    Route::get(    'ajax-notify-toggle/custid/{id}',   'CustomerNotesController@notifyToggleByCust'     )->name( 'customerNotes@notifyToggleCust');
+    Route::get(    'ajax-notify-toggle/id/{id}',       'CustomerNotesController@notifyToggleByNote'     )->name( 'customerNotes@notifyToggleNote');
+    Route::get(    'real-all',                         'CustomerNotesController@readAll'                )->name( 'customerNotes@readAll');
+
+
+    Route::post(    'add',                             'CustomerNotesController@add'                    )->name( 'customerNotes@add');
+    Route::post(    'delete/{id}',                     'CustomerNotesController@delete'                 )->name( 'customerNotes@delete');
+
 });
 
 Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );

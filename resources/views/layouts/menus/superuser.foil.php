@@ -91,7 +91,7 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="<?= url( 'customer/unread-notes' ) ?>">Unread Notes</a>
+                            <a href="<?= route( 'customer@unreadNotes' ) ?>">Unread Notes</a>
                         </li>
                         <li class="divider"></li>
                         <li>
