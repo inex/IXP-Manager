@@ -25,6 +25,8 @@ namespace IXP\Http\Controllers\Customer;
 
 use Auth, D2EM , DateTime, Exception, Mail, Redirect, Former;
 
+use Intervention\Image\ImageManagerStatic as Image;
+
 use Illuminate\View\View;
 use IXP\Http\Controllers\Controller;
 use Illuminate\Http\{
@@ -35,13 +37,15 @@ use Illuminate\Http\{
 use Illuminate\Support\Facades\Session;
 
 use Entities\{
-    Customer                as CustomerEntity,
-    IXP                     as IXPEntity,
-    NetworkInfo             as NetworkInfoEntity,
-    IRRDBConfig             as IRRDBConfigEntity,
-    CompanyBillingDetail    as CompanyBillingDetailEntity,
+    Customer as CustomerEntity,
+    CustomerNote as CustomerNoteEntity,
+    IXP as IXPEntity,
+    NetworkInfo as NetworkInfoEntity,
+    IRRDBConfig as IRRDBConfigEntity,
+    CompanyBillingDetail as CompanyBillingDetailEntity,
     CompanyRegisteredDetail as CompanyRegisteredDetailEntity,
-    User                    as UserEntity
+    User as UserEntity,
+    Logo as LogoEntity
 };
 
 use IXP\Mail\Customer\Email as EmailCustomer;
@@ -49,7 +53,8 @@ use IXP\Mail\Customer\Email as EmailCustomer;
 
 use IXP\Http\Requests\{
     StoreCustomer,
-    StoreCustomerBillingInformation
+    StoreCustomerBillingInformation,
+    StoreCustomerLogoController
 };
 
 use Webpatser\Countries\CountriesFacade as CountriesFacade;
@@ -598,4 +603,175 @@ class CustomerController extends Controller
             'netInfo'               => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray()
         ]);
     }
+
+    /**
+     * Load a customer from the database with the given ID (or ID in request)
+     *
+     * @param int $id The customer ID
+
+     * @return \Entities\Customer The customer object
+     */
+    protected function loadCustomer( int $id = null ){
+        if( Auth::getUser()->isSuperUser() ) {
+            if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
+                abort( 404);
+            }
+        } else {
+            $c = Auth::getUser()->getCustomer();
+        }
+
+        return $c;
+    }
+
+
+    /**
+     * Display the form to add / edit / delete a member's logo
+     *
+     * @param int $id ID of the customer
+     *
+     * @return  View
+     */
+    public function manageLogo( int $id = null ) {
+        if( $this->logoManagementDisabled() ) {
+            return redirect( '' );
+        }
+
+        $c = $this->loadCustomer( $id );
+
+        return view( 'customer/manage-logo' )->with([
+            'c'                  => $c,
+            'logo'               => $c->getLogo( LogoEntity::TYPE_WWW80 ) ?? false
+        ]);
+    }
+
+    /**
+     * Add or edit a customer's logo
+     *
+     * @param   StoreCustomerLogoController $request instance of the current HTTP request
+     *
+     * @return  RedirectResponse
+     * @throws
+     */
+    public function storeLogo( StoreCustomerLogoController $request ): RedirectResponse {
+        /** @var CustomerEntity $c */
+        $c = $this->loadCustomer( $request->input( 'id' ) );
+
+        if( !$request->hasFile( 'logo' ) ) {
+            abort(400);
+        }
+
+        $file = $request->file('logo');
+
+        $img = Image::make( $file->getPath().'/'.$file->getFilename() );
+
+        $img->resize(null, 80, function ($constraint) {
+            $constraint->aspectRatio();
+        });
+
+        $img->encode('png');
+
+        $logo = new LogoEntity();
+        D2EM::persist($logo);
+
+        $logo->setOriginalName(     $file->getClientOriginalName());
+        $logo->setStoredName(       sha1($img->getEncoded()) . '.png' );
+        $logo->setWidth(            $img->width() );
+        $logo->setHeight(           $img->height() );
+        $logo->setUploadedBy(       Auth::getUser()->getUsername() );
+        $logo->setUploadedAt(       new \DateTime );
+        $logo->setType(             LogoEntity::TYPE_WWW80 );
+
+        $saveTo =  $logo->getFullPath();
+
+        if( !is_dir( dirname( $saveTo ) ) ) {
+            mkdir( dirname($saveTo), 0755, true );
+        }
+
+        $img->save( $saveTo );
+
+        // remove old logo
+        if( $oldLogo = $c->getLogo( LogoEntity::TYPE_WWW80 ) ) {
+            // only delete if they do not upload the exact same logo
+            if( $oldLogo->getShardedPath() != $logo->getShardedPath() ) {
+                unlink( public_path().'/logos/' . $c->getShardedPath() );
+            }
+            $c->removeLogo( $oldLogo );
+            D2EM::remove( $oldLogo );
+            D2EM::flush();
+        }
+
+        $logo->setCustomer( $c );
+        D2EM::persist( $logo );
+        D2EM::flush();
+
+
+        AlertContainer::push( "Logo successfully uploaded!", Alert::SUCCESS );
+
+        if( !Auth::getUser()->isSuperUser() ) {
+            return Redirect::to( '' );
+        }
+
+        return Redirect::to( 'customer/overview/id/' . $c->getId() );
+
+    }
+
+
+    /**
+    * Delete a customer's logo
+    *
+    * @param   int      $id         Id of the customer
+    *
+    * @return  RedirectResponse
+    * @throws
+    */
+    public function deleteLogo( int $id = null ) {
+        if( $this->logoManagementDisabled() ) {
+            return $this->redirect('');
+        }
+
+        $superUser = true;
+
+        /** @var CustomerEntity $c */
+        $c = $this->loadCustomer( $id );
+
+        // do we have a logo?
+        if( !( $oldLogo = $c->getLogo( LogoEntity::TYPE_WWW80 ) ) ) {
+            AlertContainer::push( "Sorry, we could not find any logo for you.", Alert::DANGER );
+            return Redirect::to( 'customer/overview/id/' . $c->getId() );
+        }
+
+        unlink( $oldLogo->getFullPath() );
+        $c->removeLogo( $oldLogo );
+        D2EM::remove( $oldLogo );
+        D2EM::flush();
+
+        AlertContainer::push( "Logo successfully removed!", Alert::SUCCESS );
+
+        if( !Auth::getUser()->isSuperUser() ) {
+            $superUser = false;
+        }
+
+
+        return response()->json( [ 'success' => true, 'superUser' => $superUser ] );
+    }
+
+    public function unreadNotes(){
+        $lastReads = Auth::getUser()->getAssocPreference( 'customer-notes' )[0];
+
+        $latestNotes = [];
+
+        foreach( D2EM::getRepository( CustomerNoteEntity::class )->getLatestUpdate() as $ln ) {
+
+            if( ( !isset( $lastReads['read_upto'] ) || $lastReads['read_upto'] < strtotime( $ln['latest']  ) )
+                && ( !isset( $lastReads[ $ln['cid'] ] ) || $lastReads[ $ln['cid'] ]['last_read'] < strtotime( $ln['latest'] ) ) )
+                $latestNotes[] = $ln;
+
+        }
+
+        return view( 'customer/unread-notes' )->with([
+            'notes'                     => $latestNotes,
+            'c'                         => Auth::getUser()->getCustomer()
+        ]);
+    }
 }
+

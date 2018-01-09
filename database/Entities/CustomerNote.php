@@ -110,6 +110,16 @@ class CustomerNote
     }
 
     /**
+     * Get note
+     *
+     * @return string
+     */
+    public function getNoteParsedown()
+    {
+        return @parseDown( $this->note );
+    }
+
+    /**
      * Set created
      *
      * @param \DateTime $created
@@ -173,11 +183,12 @@ class CustomerNote
     public function toArray()
     {
         return [
-            'created' => $this->getCreated(),
-            'id'      => $this->getId(),
-            'note'    => $this->getNote(),
-            'private' => $this->getPrivate(),
-            'title'   => $this->getTitle()
+            'created'           => $this->getCreated(),
+            'id'                => $this->getId(),
+            'note'              => $this->getNote(),
+            'noteParsedown'     => @parsedown( $this->getNote() ),
+            'private'           => $this->getPrivate(),
+            'title'             => $this->getTitle()
         ];
     }
     /**
