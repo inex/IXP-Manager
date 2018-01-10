@@ -722,6 +722,8 @@ class PatchPanelPortController extends Controller
      *
      * @param   MovePatchPanelPortRequest $request instance of the current HTTP request
      * @return  RedirectResponse
+     *
+     * @throws
      */
     public function move( MovePatchPanelPortRequest $request ): RedirectResponse {
         $pppOld     = D2EM::getRepository( PatchPanelPortEntity::class )->find( $request->input( 'id'           ) ) ; /** @var PatchPanelPortEntity $pppOld */
@@ -748,6 +750,8 @@ class PatchPanelPortController extends Controller
      *
      * @param  int $fileid patch panel port file ID
      * @return  JsonResponse
+     *
+     * @throws
      */
     public function deleteFile( int $fileid ){
         /** @var PatchPanelPortFileEntity $pppf */
