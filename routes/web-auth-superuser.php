@@ -132,6 +132,7 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
     Route::get(     'billing-registration/{id}',        'CustomerController@billingRegistration'        )->name( 'customer@billingRegistration');
     Route::get(     'populate-customer/asn/{asn}',      'CustomerController@populateCustomerInfoByAsn'  )->name( 'customer@populateCustomerInfoByAsn');
     Route::get(     'unread-notes',                     'CustomerController@unreadNotes'                )->name( "customer@unreadNotes" );
+    Route::get(     'welcome-email/{id}',               'CustomerController@welcomeEmail'               )->name( "customer@welcomeEmail" );
 
 
     Route::post(    'store',                            'CustomerController@store'                      )->name( 'customer@store');
