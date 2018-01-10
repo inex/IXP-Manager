@@ -38,8 +38,4 @@
             </div>
         </div>
     </div>
-
-    <?php $this->section( 'scripts' ) ?>
-
-
-    <?php $this->append() ?>
+</div>
