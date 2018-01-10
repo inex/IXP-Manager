@@ -773,5 +773,17 @@ class CustomerController extends Controller
             'c'                         => Auth::getUser()->getCustomer()
         ]);
     }
+
+    public function welcomeEmail( int $id = null ){
+
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
+            abort( 404);
+        }
+
+        return view( 'customer/welcome-email' )->with([
+            'c'         => $c
+        ]);
+
+    }
 }
 
