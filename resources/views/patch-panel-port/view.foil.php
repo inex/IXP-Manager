@@ -16,14 +16,16 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= url('patch-panel-port/list/patch-panel/' . $t->ppp->getPatchPanel()->getId() ) ?>" title="list">
-                <span class="glyphicon glyphicon-th-list"></span>
-            </a>
-            <a type="button" class="btn btn-default" href="<?= url('patch-panel-port/edit').'/'.$t->ppp->getId() ?>" title="edit">
+
+            <a type="button" class="btn btn-default extra-action" href="<?= url('patch-panel-port/edit').'/'.$t->ppp->getId() ?>" title="edit">
                 <span class="glyphicon glyphicon-pencil"></span>
             </a>
 
-            <?= $t->insert( 'patch-panel-port/action-dd', [ 'ppp' => $t->ppp, 'btnClass' => 'btn-group-xs' ] ); ?>
+            <?= $t->insert( 'patch-panel-port/action-dd', [ 'ppp' => $t->ppp, 'btnClass' => 'btn-group-xs', 'tpl' => 'view' ] ); ?>
+
+            <a type="button" class="btn btn-default" href="<?= url('patch-panel-port/list/patch-panel/' . $t->ppp->getPatchPanel()->getId() ) ?>" title="list">
+                <span class="glyphicon glyphicon-th-list"></span>
+            </a>
         </div>
     </li>
 <?php $this->append() ?>
@@ -38,7 +40,7 @@
                     $current = get_class( $p ) == \Entities\PatchPanelPort::class;
                 ?>
                     <li <?php if( $current ): ?> class="active" <?php endif; ?>>
-                        <a href="#<?= $p->getId() ?>" data-toggle="tab"><?php if( $current ): ?> Current <?php else: ?> <?= $p->getCeasedAtFormated(); ?> <?php endif; ?></a>
+                        <a href="#<?= $p->getId() ?>" data-toggle="tab"><?php if( $current ): ?>Current<?php else: ?> <?= $p->getCeasedAtFormated(); ?> <?php endif; ?></a>
                     </li>
                 <?php endforeach; ?>
             </ul>
@@ -55,10 +57,6 @@
                         <div class="row">
                         <div class="col-xs-6">
                             <table class="table_view_info">
-                                <?php if( $current ): ?>
-
-                                <?php endif; ?>
-
                                 <?php if( !$current && ( $p->getDuplexMasterPort() || $p->getDuplexSlavePort() ) ): ?>
                                     <tr>
                                         <td>
@@ -170,6 +168,81 @@
                                             <span title="" class="label label-<?= $p->getStateCssClass() ?>">
                                                 <?= $p->resolveStates() ?>
                                             </span>
+
+                                        </td>
+                                        <td>
+                                            <div class="dropdown btn-group-xs">
+                                                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                    Change State
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                    <?php if( $t->ppp->isStateAvailable() or $t->ppp->isStateReserved() or $t->ppp->isStatePrewired() ): ?>
+                                                        <li>
+                                                            <a id="allocate-<?= $t->ppp->getId() ?>" href="<?= action ( 'PatchPanel\PatchPanelPortController@editToAllocate' , [ 'id' => $t->ppp->getId() ] ) ?>">
+                                                                Allocate
+                                                            </a>
+                                                        </li>
+                                                    <?php endif; ?>
+
+                                                    <?php if( $t->ppp->isStateAvailable() ): ?>
+                                                        <li>
+                                                            <a id="prewired-<?= $t->ppp->getId() ?>" href="<?= action ( 'PatchPanel\PatchPanelPortController@editToPrewired' , [ 'id' => $t->ppp->getId() ] ) ?>">
+                                                                Set Prewired
+                                                            </a>
+                                                        </li>
+                                                    <?php endif; ?>
+
+                                                    <?php if( $t->ppp->isStatePrewired() ): ?>
+                                                        <li>
+                                                            <a id="prewired-<?= $t->ppp->getId() ?>" href="<?= action( 'PatchPanel\PatchPanelPortController@changeStatus' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_AVAILABLE ] ) ?>">
+                                                                Unset Prewired
+                                                            </a>
+                                                        </li>
+                                                    <?php endif; ?>
+
+                                                    <?php if( $t->ppp->isStateAvailable() ): ?>
+                                                        <li>
+                                                            <a id="reserved-<?= $t->ppp->getId() ?>" href="<?= action( 'PatchPanel\PatchPanelPortController@changeStatus' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_RESERVED ] ) ?>">
+                                                                Mark as Reserved
+                                                            </a>
+                                                        </li>
+                                                    <?php endif; ?>
+
+
+                                                    <?php if( $t->ppp->isStateReserved() ): ?>
+                                                        <li>
+                                                            <a id="unreserved-<?= $t->ppp->getId() ?>" href="<?= action( 'PatchPanel\PatchPanelPortController@changeStatus' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_AVAILABLE ] ) ?>">
+                                                                Unreserve
+                                                            </a>
+                                                        </li>
+                                                    <?php endif; ?>
+
+                                                    <?php if( $t->ppp->isStateAwaitingXConnect() ): ?>
+                                                        <li>
+                                                            <a id="set-connected-<?= $t->ppp->getId() ?>" href="<?= action( 'PatchPanel\PatchPanelPortController@changeStatus' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_CONNECTED ] ) ?>">
+                                                                Set Connected
+                                                            </a>
+                                                        </li>
+                                                    <?php endif; ?>
+
+                                                    <?php if( $t->ppp->isStateAwaitingXConnect() || $t->ppp->isStateConnected() ): ?>
+                                                        <li>
+                                                            <a id="request-cease-<?= $t->ppp->getId() ?>" href="<?= action( 'PatchPanel\PatchPanelPortController@changeStatus' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_AWAITING_CEASE ] ) ?>">
+                                                                Set Awaiting Cease
+                                                            </a>
+                                                        </li>
+                                                    <?php endif; ?>
+
+                                                    <?php if( $t->ppp->isStateAwaitingXConnect() || $t->ppp->isStateConnected() || $t->ppp->isStateAwaitingCease() ): ?>
+                                                        <li>
+                                                            <a id="set-ceased-<?= $t->ppp->getId() ?>"   href="<?= action( 'PatchPanel\PatchPanelPortController@changeStatus' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_CEASED ] ) ?>">
+                                                                Set Ceased
+                                                            </a>
+                                                        </li>
+                                                    <?php endif; ?>
+                                                </ul>
+                                            </div>
                                         </td>
                                     </tr>
                                 <?php endif; ?>
@@ -335,29 +408,35 @@
                             <?php if( Auth::user()->isSuperUser() ): ?>
 
                                 <div class="col-xs-6">
-                                    <?php if ( $p->getNotes() ): ?>
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading padding-10">
-                                                Public Notes:
-                                            </div>
-                                            <div class="panel-body">
-                                                <?= $p->getNotesParseDown() ?>
-                                            </div>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading padding-10">
+                                            Public Notes:
+                                            <?php if( $current ): ?>
+                                                <a class="btn btn-default btn-xs pull-right" id="edit-notes-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" title="edit note" >
+                                                    <i class="glyphicon glyphicon-pencil"></i>
+                                                </a>
+                                            <?php endif; ?>
                                         </div>
-                                    <?php endif; ?>
+                                        <div class="panel-body">
+                                            <?= $p->getNotesParseDown() ?>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="col-xs-6">
-                                    <?php if ( $p->getPrivateNotes() ): ?>
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading padding-10">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading padding-10">
                                                 Private Notes:
-                                            </div>
-                                            <div class="panel-body">
-                                                <?= $p->getPrivateNotesParseDown() ?>
-                                            </div>
+                                            <?php if( $current ): ?>
+                                                <a class="btn btn-default btn-xs pull-right" id="edit-notes-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" title="edit note" >
+                                                    <i class="glyphicon glyphicon-pencil"></i>
+                                                </a>
+                                            <?php endif; ?>
                                         </div>
-                                    <?php endif; ?>
+                                        <div class="panel-body">
+                                            <?= $p->getPrivateNotesParseDown() ?>
+                                        </div>
+                                    </div>
                                 </div>
 
                             <?php else: ?>
@@ -394,6 +473,11 @@
                                     <div class="panel panel-default" id="list_file_<?= $p->getId()."_".$objectType ?>">
                                         <div class="panel-heading padding-10">
                                             List files
+                                            <?php if( $current ): ?>
+                                                <a class="btn btn-default btn-xs pull-right" id="attach-file-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" >
+                                                    <i class="glyphicon glyphicon-upload"></i>
+                                                </a>
+                                            <?php endif; ?>
                                         </div>
                                         <div class="panel-body">
                                             <table class="table table-bordered table-striped" >
@@ -478,6 +562,15 @@
 
     <script>
         $(document).ready(function() {
+
+            // Hide actions if PPP history is selected
+            $( ".nav-tabs li" ).click( function(){
+                if( $( this ).children().text() != "Current" ){
+                    $( ".extra-action" ).addClass( 'disabled' )
+                } else{
+                    $( ".extra-action" ).removeClass( 'disabled' )
+                }
+            });
 
             $("a[id|='file-toggle-private']").on('click', function (e) {
                 e.preventDefault();

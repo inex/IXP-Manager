@@ -158,7 +158,7 @@
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
 
-                                    <?= $t->insert( 'patch-panel-port/action-dd', [ 'ppp' => $ppp, 'btnClass' => 'btn-group-sm' ] ); ?>
+                                    <?= $t->insert( 'patch-panel-port/action-dd', [ 'ppp' => $ppp, 'btnClass' => 'btn-group-sm', 'tpl' => 'index' ] ); ?>
 
                                     <a class="btn btn btn-default" style="height: 30px;" title="History"
                                             href="<?= action( 'PatchPanel\PatchPanelPortController@view' , [ 'id' => $ppp->getId() ] ) ?>  ">
