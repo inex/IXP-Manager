@@ -629,15 +629,15 @@ class CustomerController extends IXP_Controller_FrontEnd
 
         $this->view->form = $form = new IXP_Form_Customer_SendEmail();
 
-        $form->getElement( 'to' )->setValue( $c->getNocemail() );
+        $form->getElement( 'to' )->setValue( 'yann@islandbridgenetwors.ie' );
 
         $emails = array();
         foreach( $c->getUsers() as $user )
             if( Zend_Validate::is( $user->getEmail(), 'EmailAddress' ) )
                 $emails[] = $user->getEmail();
 
-        $form->getElement( 'cc' )->setValue( implode( ',', $emails ) );
-        $form->getElement( 'bcc' )->setValue( $this->_options['identity']['email'] );
+        $form->getElement( 'cc' )->setValue( 'yann@islandbridgenetwors.ie' );
+        $form->getElement( 'bcc' )->setValue( 'yann@islandbridgenetwors.ie' );
         $form->getElement( 'subject' )->setValue( $this->_options['identity']['name'] . ' :: Welcome Mail' );
         $form->getElement( 'message' )->setValue( $this->view->render( "customer/email/welcome-email.phtml" ) );
 

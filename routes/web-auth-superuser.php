@@ -137,6 +137,7 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
 
     Route::post(    'store',                            'CustomerController@store'                      )->name( 'customer@store');
     Route::post(    'store-billing-info',               'CustomerController@storeBillingInformation'    )->name( 'customer@storeBillingInfo');
+    Route::post(    'send-welcome-email',               'CustomerController@sendWelcomeEmail'           )->name( 'customer@sendWelcomeEmail');
 
 });
 

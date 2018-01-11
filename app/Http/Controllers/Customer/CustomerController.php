@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Customer;
 
 use Auth, D2EM , DateTime, Exception, Mail, Redirect, Former;
 
+use Illuminate\Mail\Mailable;
 use Intervention\Image\ImageManagerStatic as Image;
 
 use Illuminate\View\View;
@@ -54,7 +55,8 @@ use IXP\Mail\Customer\Email as EmailCustomer;
 use IXP\Http\Requests\{
     StoreCustomer,
     StoreCustomerBillingInformation,
-    StoreCustomerLogoController
+    StoreCustomerLogo,
+    WelcomeEmail
 };
 
 use Webpatser\Countries\CountriesFacade as CountriesFacade;
@@ -647,12 +649,12 @@ class CustomerController extends Controller
     /**
      * Add or edit a customer's logo
      *
-     * @param   StoreCustomerLogoController $request instance of the current HTTP request
+     * @param   StoreCustomerLogo $request instance of the current HTTP request
      *
      * @return  RedirectResponse
      * @throws
      */
-    public function storeLogo( StoreCustomerLogoController $request ): RedirectResponse {
+    public function storeLogo( StoreCustomerLogo $request ): RedirectResponse {
         /** @var CustomerEntity $c */
         $c = $this->loadCustomer( $request->input( 'id' ) );
 
@@ -774,16 +776,91 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function welcomeEmail( int $id = null ){
-
+    /**
+     * Display the Welcome Email form
+     *
+     * @param   int      $id         Id of the customer
+     *
+     * @return  View
+     * @throws
+     */
+    public function welcomeEmail( int $id = null ) : View{
+        /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
             abort( 404);
         }
 
+        $emails = array();
+        foreach( $c->getUsers() as $user ){
+            if( $email = filter_var( $user->getEmail(), FILTER_VALIDATE_EMAIL ) ) {
+                $emails[] = $email;
+            }
+        }
+
+        Former::populate( [
+            'to'                        => $c->getNocemail(),
+            'cc'                        => implode( ',', $emails ),
+            'bcc'                       => config('identity.email'),
+            'subject'                   => config('identity.name'). ' :: Welcome Mail',
+        ] );
+
         return view( 'customer/welcome-email' )->with([
-            'c'         => $c
+            'c'         => $c,
+            'body'      => view( "customer/emails/welcome-email" )->with( [
+                    'c'                     => $c,
+                    'admins'                => $c->getAdminUsers() ,
+                    'netinfo'               => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray(),
+                    'identityEmail'         => config('identity.email'),
+                    'identityOrgname'       => config('identity.orgname'),
+                ] )->render()
         ]);
 
     }
+
+    /**
+     * Send the welcome email to a customer
+     *
+     * @param WelcomeEmail $request
+     *
+     * @return RedirectResponse|View
+     *
+     * @throws
+     */
+    public function sendWelcomeEmail( WelcomeEmail $request){
+        /** @var CustomerEntity $c */
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) ){
+            abort( 404);
+        }
+
+        $mailable = new EmailCustomer( $c );
+        $mailable->prepareFromRequest( $request );
+
+        $mailable->prepareBody( $request );
+
+        try {
+            $mailable->checkIfSendable();
+        } catch( MailableException $e ) {
+            AlertContainer::push( $e->getMessage(), Alert::DANGER );
+
+            return view( 'customer/welcome-email' )->with([
+                'c'         => $c,
+                'body'      => view( "customer/emails/welcome-email" )->with( [
+                    'c'                     => $c,
+                    'admins'                => $c->getAdminUsers() ,
+                    'netinfo'               => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray(),
+                    'identityEmail'         => config('identity.email'),
+                    'identityOrgname'       => config('identity.orgname'),
+                ] )->render()
+            ]);
+        }
+
+        Mail::send( $mailable );
+
+        AlertContainer::push( "Email sent.", Alert::SUCCESS );
+
+        return Redirect::to( 'customer/overview/id/' . $c->getId() );
+
+    }
+
 }
 

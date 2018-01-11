@@ -26,7 +26,7 @@
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a href="{genUrl controller="customer" action="welcome-email" id=$cust->getId()}">Send Welcome Email...</a>
+                        <a href="{route( 'customer@welcomeEmail', [ 'id' => $cust->getId() ] )}">Send Welcome Email...</a>
                     </li>
                 </ul>
             </div>
