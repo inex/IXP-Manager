@@ -36,7 +36,7 @@
                     .fail( function() {
                         $('.bootbox.modal').modal( 'hide' );
                         $( "#message" ).html( "<div class='alert alert-danger' role='alert'>" +
-                            "Could add MAC address. API / AJAX / network error</div>"
+                            "Couldn't add MAC address. API / AJAX / network error</div>"
                         );
                     });
                 }
@@ -98,7 +98,7 @@
 
                         })
                         .fail( function(){
-                            alert( 'Could add MAC address. API / AJAX / network error' );
+                            alert( `Couldn't add MAC address. API / AJAX / network error` );
                             throw new Error("Error running ajax query for api/v4/l2-address/{id}/delete");
                         })
                 }
