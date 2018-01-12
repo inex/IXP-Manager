@@ -31,6 +31,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
+    <?= $t->alerts() ?>
     <div class="panel with-nav-tabs panel-default">
 
         <div class="panel-heading">
@@ -417,7 +418,7 @@
                                                 </a>
                                             <?php endif; ?>
                                         </div>
-                                        <div class="panel-body">
+                                        <div class="panel-body" id="public-note-display">
                                             <?= $p->getNotesParseDown() ?>
                                         </div>
                                     </div>
@@ -433,7 +434,7 @@
                                                 </a>
                                             <?php endif; ?>
                                         </div>
-                                        <div class="panel-body">
+                                        <div class="panel-body" id="private-note-display">
                                             <?= $p->getPrivateNotesParseDown() ?>
                                         </div>
                                     </div>
@@ -469,7 +470,7 @@
 
                             <div class="col-xs-12" id="area_file_<?= $p->getId()."_".$objectType ?>">
                                 <span id="message-<?= $p->getId()."-".$objectType ?>"></span>
-                                <?php if( count( $listFile ) > 0 ): ?>
+
                                     <div class="panel panel-default" id="list_file_<?= $p->getId()."_".$objectType ?>">
                                         <div class="panel-heading padding-10">
                                             List files
@@ -480,70 +481,72 @@
                                             <?php endif; ?>
                                         </div>
                                         <div class="panel-body">
-                                            <table class="table table-bordered table-striped" >
-                                                <tr>
-                                                    <th>
-                                                        Name
-                                                    </th>
-                                                    <th>
-                                                        Size
-                                                    </th>
-                                                    <th>
-                                                        Type
-                                                    </th>
-                                                    <th>
-                                                        Uploaded at
-                                                    </th>
-                                                    <th>
-                                                        Uploaded By
-                                                    </th>
-                                                    <th>
-                                                        Action
-                                                    </th>
-                                                </tr>
-                                                <?php foreach ( $listFile as $file ):?>
-                                                    <?php if( Auth::user()->isSuperUser() || !$file->getIsPrivate() ): ?>
-                                                        <tr id="file_row_<?=$file->getId()?>">
-                                                            <td>
-                                                                <?= $file->getNameTruncate() ?>
-                                                                <i id="file-private-state-<?= $file->getId() ?>"
-                                                                    class="pull-right fa fa-<?= $file->getIsPrivate() ? 'lock' : 'unlock' ?> fa-lg" aria-hidden="true"></i>
-                                                            </td>
-                                                            <td>
-                                                                <?= $file->getSizeFormated() ?>
-                                                            </td>
-                                                            <td>
-                                                                <i title='<?= $file->getType()?>' class="fa <?= $file->getTypeAsIcon()?> fa-lg' aria-hidden="true"></i>
-                                                            </td>
-                                                            <td>
-                                                                <?= $t->ee( $file->getUploadedAtFormated() ) ?>
-                                                            </td>
-                                                            <td>
-                                                                <?= $t->ee( $file->getUploadedBy() ) ?>
-                                                            </td>
-                                                            <td>
-                                                                <div class="btn-group btn-group-sm" role="group">
-                                                                    <?php if( Auth::user()->isSuperUser() ): ?>
-                                                                        <a id="file-toggle-private-<?= $file->getId() ?>" class="btn btn btn-default" target="_blank" href="<?= url()->current() ?>"
-                                                                                title="Toggle Public / Private">
-                                                                            <i id="file-toggle-private-i-<?= $file->getId() ?>" class="fa fa-<?= $file->getIsPrivate() ? 'unlock' : 'lock' ?>"></i>
+                                            <?php if( count( $listFile ) > 0 ): ?>
+                                                <table class="table table-bordered table-striped" >
+                                                    <tr>
+                                                        <th>
+                                                            Name
+                                                        </th>
+                                                        <th>
+                                                            Size
+                                                        </th>
+                                                        <th>
+                                                            Type
+                                                        </th>
+                                                        <th>
+                                                            Uploaded at
+                                                        </th>
+                                                        <th>
+                                                            Uploaded By
+                                                        </th>
+                                                        <th>
+                                                            Action
+                                                        </th>
+                                                    </tr>
+                                                    <?php foreach ( $listFile as $file ):?>
+                                                        <?php if( Auth::user()->isSuperUser() || !$file->getIsPrivate() ): ?>
+                                                            <tr id="file_row_<?=$file->getId()?>">
+                                                                <td>
+                                                                    <?= $file->getNameTruncate() ?>
+                                                                    <i id="file-private-state-<?= $file->getId() ?>"
+                                                                        class="pull-right fa fa-<?= $file->getIsPrivate() ? 'lock' : 'unlock' ?> fa-lg" aria-hidden="true"></i>
+                                                                </td>
+                                                                <td>
+                                                                    <?= $file->getSizeFormated() ?>
+                                                                </td>
+                                                                <td>
+                                                                    <i title='<?= $file->getType()?>' class="fa <?= $file->getTypeAsIcon()?> fa-lg' aria-hidden="true"></i>
+                                                                </td>
+                                                                <td>
+                                                                    <?= $t->ee( $file->getUploadedAtFormated() ) ?>
+                                                                </td>
+                                                                <td>
+                                                                    <?= $t->ee( $file->getUploadedBy() ) ?>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="btn-group btn-group-sm" role="group">
+                                                                        <?php if( Auth::user()->isSuperUser() ): ?>
+                                                                            <a id="file-toggle-private-<?= $file->getId() ?>" class="btn btn btn-default" target="_blank" href="<?= url()->current() ?>"
+                                                                                    title="Toggle Public / Private">
+                                                                                <i id="file-toggle-private-i-<?= $file->getId() ?>" class="fa fa-<?= $file->getIsPrivate() ? 'unlock' : 'lock' ?>"></i>
+                                                                            </a>
+                                                                        <?php endif; ?>
+                                                                        <a class="btn btn btn-default" target="_blank" href="<?= action('PatchPanel\PatchPanelPortController@downloadFile', [ 'pppfid' => $file->getId() ] ) ?>" title="Download">
+                                                                            <i class="fa fa-download"></i>
                                                                         </a>
-                                                                    <?php endif; ?>
-                                                                    <a class="btn btn btn-default" target="_blank" href="<?= action('PatchPanel\PatchPanelPortController@downloadFile', [ 'pppfid' => $file->getId() ] ) ?>" title="Download">
-                                                                        <i class="fa fa-download"></i>
-                                                                    </a>
-                                                                    <?php if( Auth::user()->isSuperUser() ): ?>
-                                                                        <button id="delete_<?=$file->getId()?>" class="btn btn btn-default" onclick="deletePopup(<?=$file->getId()?>,<?= $p->getId()?>,'<?=$objectType?>')" title="Delete"><i class="glyphicon glyphicon-trash"></i></button>
-                                                                    <?php endif; ?>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    <?php endif; ?>
-                                                <?php endforeach; ?>
-                                            </table>
+                                                                        <?php if( Auth::user()->isSuperUser() ): ?>
+                                                                            <button id="delete_<?=$file->getId()?>" class="btn btn btn-default" onclick="deletePopup(<?=$file->getId()?>,<?= $p->getId()?>,'<?=$objectType?>')" title="Delete"><i class="glyphicon glyphicon-trash"></i></button>
+                                                                        <?php endif; ?>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        <?php endif; ?>
+                                                    <?php endforeach; ?>
+                                                </table>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
-                                <?php endif; ?>
+
                             </div>
                         </div> <!-- row -->
                     </div>
@@ -577,7 +580,7 @@
 
                 let pppfid = (this.id).substring(20);
 
-                $.ajax( "<?= url('api/v4/patch-panel-port/toggle-file-privacy') ?>/" + pppfid, {
+                $.ajax( "<?= url('patch-panel-port/toggle-file-privacy') ?>/" + pppfid, {
                     type : 'POST'
                 } )
                 .done( function( data ) {

@@ -488,7 +488,8 @@ class PatchPanelPortController extends Controller
         D2EM::flush();
 
         AlertContainer::push( 'The patch panel port has been set to: ' . $this->getPPP()->resolveStates(), Alert::SUCCESS );
-        return redirect( '/patch-panel-port/list/patch-panel/'.$this->getPPP()->getPatchPanel()->getId() );
+        //return redirect( '/patch-panel-port/list/patch-panel/'.$this->getPPP()->getPatchPanel()->getId() );
+        return redirect::back();
     }
 
     /**
