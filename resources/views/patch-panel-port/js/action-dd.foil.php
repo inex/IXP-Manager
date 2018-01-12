@@ -126,7 +126,11 @@
 
         $('#notes-modal-body-div-pi-status').hide();
         if( action == 'set-connected' && ppp.switchPortId ) {
-            $('#notes-modal-body-pi-status').val( ppp.switchPort.physicalInterface.statusId );
+            console.log( ppp.switchPort );
+            if( ppp.switchPort.physicalInterface !== undefined){
+                $('#notes-modal-body-pi-status').val( ppp.switchPort.physicalInterface.statusId );
+            }
+
             $('#notes-modal-body-div-pi-status').show();
         }
 
@@ -161,6 +165,20 @@
         $('#notes-modal-btn-confirm').off( 'click' );
     }
 
+    function markdownText( text, input ){
+        $.ajax( "<?= action ('Api\V4\UtilsController@markdown')?>", {
+            data: {
+                text: text
+            },
+            type: 'POST'
+        })
+            .done( function( data ) {
+                input.html( data.html );
+            })
+            .fail( function() {
+                input.html('Error!');
+            });
+    }
     /**
      * This function uses the ajaxGetPatchPanelPort() action to get the details of a ppp
      * and then show a popup dialog to edit notes and handle the saving of same.
@@ -193,6 +211,15 @@
                 })
                     .done( function( data ) {
                         if( action == 'edit-notes' ) {
+                            if( data.success ){
+                                if( publicNotes.val() != ppp.note ){
+                                    markdownText( publicNotes.val(), $( '#public-note-display') );
+                                }
+
+                                if( privateNotes.val() != ppp.privateNotes ){
+                                    markdownText( privateNotes.val(), $( '#private-note-display' ) );
+                                }
+                            }
                             $('#notes-modal').modal('hide');
                         } else {
                             document.location.href = url;
@@ -340,7 +367,7 @@
     function deleteFile(e) {
         let pppFileId = (this.id).substring(21);
 
-        $.ajax( "<?= url('api/v4/patch-panel-port/delete-file') ?>/" + pppFileId, {
+        $.ajax( "<?= url('patch-panel-port/delete-file') ?>/" + pppFileId, {
             type : 'POST'
         } )
             .done( function( data ) {
@@ -359,7 +386,7 @@
      */
     function toggleFilePrivacy(e) {
         let pppFileId = (this.id).substring(29);
-        $.ajax( "<?= url('api/v4/patch-panel-port/toggle-file-privacy') ?>/" + pppFileId ,{
+        $.ajax( "<?= url('patch-panel-port/toggle-file-privacy') ?>/" + pppFileId ,{
             type: 'POST'
         })
             .done( function( data ) {
@@ -412,7 +439,12 @@
                     })
                         .done( function(  ) {
                             if( result ) {
-                                window.location.reload();
+                                if( action == 'delete' ){
+                                    window.location = "<?= url( "patch-panel-port/list/" ); ?>";
+                                } else{
+                                    window.location.reload();
+                                }
+
                             }
                         })
                         .fail( function(){
