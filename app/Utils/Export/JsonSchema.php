@@ -259,7 +259,7 @@ class JsonSchema
                         $vlanentry['ipv4']['as_macro'] = $vi->getCustomer()->resolveAsMacro( 4, "AS");
                         $vlanentry['ipv4']['routeserver'] = $vli->getRsclient();
                         $vlanentry['ipv4']['mac_addresses'] = $vli->getLayer2AddressesAsArray();
-                        if( $detailed ) {
+                        if( $detailed && !is_null ($vi->getCustomer()->getMaxprefixes()) ) {
                             $vlanentry['ipv4']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
                         }
                     }
@@ -269,7 +269,7 @@ class JsonSchema
                         $vlanentry['ipv6']['as_macro'] = $vi->getCustomer()->resolveAsMacro( 6, "AS" );
                         $vlanentry['ipv6']['routeserver'] = $vli->getRsclient();
                         $vlanentry['ipv6']['mac_addresses'] = $vli->getLayer2AddressesAsArray();
-                        if( $detailed ) {
+                        if( $detailed && !is_null ($vi->getCustomer()->getMaxprefixes()) ) {
                             $vlanentry['ipv6']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
                         }
                     }
