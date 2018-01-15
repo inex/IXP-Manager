@@ -36,8 +36,6 @@ IXPROOT=/srv/ixpmanager
 DBNAME=ixpmanager
 DBUSER=ixpmanager
 
-IPADDRESS=$( ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v '127.0.0.1' | head -1 )
-
 touch /tmp/ixp-manager-install.log
 chmod a+w /tmp/ixp-manager-install.log
 
@@ -77,8 +75,9 @@ function log_break {
 
 [[ -n $NOINTERACTION ]] || read
 
+
 ##################################################################
-### Preflight checks
+### Preflight checks and System update / upgrade
 ##################################################################
 
 # Make sure user is root
@@ -86,6 +85,35 @@ if [[ $EUID -ne 0 ]]; then
    echo "ERROR: This script must be run as root" 1>&2
    exit 1
 fi
+
+
+echo -n "Updating local package repository... "
+log_break && apt-get update -q &>> /tmp/ixp-manager-install.log
+echo '[done]'
+
+debconf-set-selections <<< "console-setup console-setup/charmap47 select UTF-8"
+debconf-set-selections <<< "console-setup console-setup/codeset47 select Lat15"
+
+echo -n "Doing a full system upgrade to ensure latest packages are installed (be patient)... "
+log_break && apt-get dist-upgrade -yq &>> /tmp/ixp-manager-install.log
+apt-get install -yq ubuntu-minimal openssl wget &>> /tmp/ixp-manager-install.log
+apt-get autoremove -yq &>> /tmp/ixp-manager-install.log
+echo '[done]'
+
+
+locale-gen en_IE.UTF-8
+export LANG=en_IE.UTF-8
+
+echo -n "Adding ppa:ondrej/php... "
+log_break && apt-get install -yq software-properties-common &>> /tmp/ixp-manager-install.log
+add-apt-repository -y ppa:ondrej/php &>> /tmp/ixp-manager-install.log
+apt-get update -q &>> /tmp/ixp-manager-install.log
+echo '[done]'
+
+
+IPADDRESS=$( ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v '127.0.0.1' | head -1 )
+
+
 
 # Make sure the destination directory is available
 if [[ -e $IXPROOT ]]; then
@@ -124,6 +152,7 @@ if [[ $( netstat -lnt | awk '$6 == "LISTEN" && $1 ~ "^tcp[6]*" && $4 ~ ":80$"' |
     [[ -n $NOINTERACTION ]] || read
     log_break && echo "Already listening on tcp/80 but user is pressing on..." >>/tmp/ixp-manager-install.log
 fi
+
 
 
 ##################################################################
@@ -265,26 +294,6 @@ log_break && cat /proc/cpuinfo >>/tmp/ixp-manager-install.log
 log_break && dpkg -l >>/tmp/ixp-manager-install.log
 
 ##################################################################
-### System update / upgrade
-##################################################################
-
-echo -n "Updating local package repository... "
-log_break && apt-get update -q &>> /tmp/ixp-manager-install.log
-echo '[done]'
-
-echo -n "Doing a full system upgrade to ensure latest packages are installed (be patient)... "
-log_break && apt-get dist-upgrade -yq &>> /tmp/ixp-manager-install.log
-apt-get autoremove -yq &>> /tmp/ixp-manager-install.log
-echo '[done]'
-
-
-echo -n "Adding ppa:ondrej/php... "
-log_break && apt-get install -yq software-properties-common &>> /tmp/ixp-manager-install.log
-add-apt-repository -y ppa:ondrej/php &>> /tmp/ixp-manager-install.log
-apt-get update -q &>> /tmp/ixp-manager-install.log
-echo '[done]'
-
-##################################################################
 ### MySQL Password
 ##################################################################
 
@@ -302,9 +311,9 @@ echo -n "Installing PHP, Apache, MySQL, etc. Please be very patient..."
 echo mrtg mrtg/conf_mods boolean true | debconf-set-selections
 
 log_break && apt-get install -qy apache2 php7.0 php7.0-intl php7.0-mysql php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt \
-    php-memcached libapache2-mod-php7.0 mysql-server mysql-client php-mysql memcached snmp nodejs nodejs-legacy npm     \
-    php7.0-mbstring php7.0-xml php7.0-gd php-gettext bgpq3 php-memcache unzip php-zip git php-yaml php-ds               \
-    libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl      \
+    php-memcached libapache2-mod-php7.0 mysql-server mysql-client php-mysql memcached snmp nodejs nodejs-legacy npm           \
+    php7.0-mbstring php7.0-xml php7.0-gd php7.0-bcmath php-gettext bgpq3 php-memcache unzip php-zip git php-yaml php-ds       \
+    libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl            \
         &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
