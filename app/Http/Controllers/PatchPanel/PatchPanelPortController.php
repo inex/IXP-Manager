@@ -634,10 +634,6 @@ class PatchPanelPortController extends Controller
      *
      */
     private function setupLoA() {
-        if( !($this->getPPP()->isStateAwaitingXConnect() || $this->getPPP()->isStateConnected()) ) {
-            abort(404);
-        }
-
         /** @var UserEntity $u */
         $u = Auth::user();
         if( !$u->isSuperUser() ) {
