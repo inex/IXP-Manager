@@ -7,6 +7,13 @@
     const input_abbreviated_name    = $( '#abbreviatedName' );
     const input_corp_www            = $( '#corpwww' );
     const input_autsys              = $( '#autsys' );
+    const input_datejoin            = $( '#datejoin' );
+    const input_maxprefixes         = $( '#maxprefixes' );
+    const input_nocphone            = $( '#nocphone' );
+    const input_nocemail            = $( '#nocemail' );
+    const input_peeringemail        = $( '#peeringemail' );
+    const input_peeringmacro        = $( '#peeringmacro' );
+    const input_peeringpolicy       = $( '#peeringpolicy' );
 
     const dd_type                   = $( '#type' );
     const dd_peering_policy         = $( '#peeringpolicy' );
@@ -88,6 +95,7 @@
     function pupulateFormViaAsn() {
         if( $( "#asn-search" ).val() ){
             let error = '';
+            let peering_policy = '';
 
             btn_populate.attr("disabled", "disabled" );
             btn_populate.off("click");
@@ -98,13 +106,52 @@
                 .done( function( data ) {
                     if( !data.error ){
                         if( data.informations ){
+                            $('#form').trigger("reset");
                             // fill inputs with info received
                             input_name.val( data.informations.name );
-                            input_shortname.val( data.informations.aka );
+                            input_shortname.val( data.informations.name.replace(/[^a-zA-Z0-9]+/g, "").toLowerCase() );
+                            input_datejoin.val( getCurrentDate() );
+
+                            if( data.informations.info_prefixes4 !== "undefined" ){
+                                input_maxprefixes.val( Math.round(data.informations.info_prefixes4 * 1.2 ) );
+                            }
+
                             input_abbreviated_name.val( data.informations.name );
                             input_corp_www.val( data.informations.website );
                             input_autsys.val( data.informations.asn );
+                            input_peeringmacro.val( data.informations.irr_as_set );
                             dd_peering_policy.val(  data.informations.policy_general.toLowerCase() ).trigger( "change" );
+
+                            if( data.informations.poc_set !== "undefined" ){
+                                $.each( data.informations.poc_set, function( key, noc ) {
+                                    if( noc.role == "NOC"){
+                                        if( noc.phone !== "undefined" ){
+                                            input_nocphone.val( noc.phone );
+                                        }
+                                        if( noc.email !== "undefined" ){
+                                            input_nocemail.val( noc.email );
+                                            input_peeringemail.val( noc.email );
+                                        }
+
+                                    }
+
+                                });
+                            }
+
+
+                            switch ( data.informations.policy_general ) {
+                                case "Open":
+                                    peering_policy = "open";
+                                    break;
+                                case "Selective":
+                                    peering_policy = "selective";
+                                    break;
+                                case "No":
+                                    peering_policy = "closed";
+                                    break;
+                            }
+
+                            input_peeringpolicy.val( peering_policy ).trigger( "change" );
                         }
                     }else{
 
@@ -126,5 +173,20 @@
                     addClickEvent();
                 });
         }
+    }
+
+    function getCurrentDate(){
+        let now = new Date();
+        let month = (now.getMonth() + 1);
+        let day = now.getDate();
+        if (month < 10){
+            month = "0" + month;
+        }
+
+        if (day < 10){
+            day = "0" + day;
+        }
+
+        return now.getFullYear() + '-' + month + '-' + day;
     }
 </script>

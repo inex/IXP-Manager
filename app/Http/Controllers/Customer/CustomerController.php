@@ -23,9 +23,8 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM , DateTime, Exception, Mail, Redirect, Former;
+use App, Auth, D2EM , DateTime, Exception, Mail, Redirect, Former;
 
-use Illuminate\Mail\Mailable;
 use Intervention\Image\ImageManagerStatic as Image;
 
 use Illuminate\View\View;
@@ -51,7 +50,6 @@ use Entities\{
 
 use IXP\Mail\Customer\Email as EmailCustomer;
 
-
 use IXP\Http\Requests\{
     StoreCustomer,
     StoreCustomerBillingInformation,
@@ -67,10 +65,7 @@ use IXP\Utils\View\Alert\{
 };
 
 
-use GuzzleHttp\{
-    Client as GuzzleHttp,
-    Exception\RequestException
-};
+
 
 
 /**
@@ -531,43 +526,10 @@ class CustomerController extends Controller
         $error = false;
         $result = '';
         if( $asn != null || $asn != '' ) {
-            $autsys = trim( $asn );
-
-            try {
-                // doing request to get the cookie
-
-                // NOT SURE THAT IS NECESSARY
-                $client = new GuzzleHttp( ['cookies' => true] );
-                $conn = $client->request('GET', "https://" . config( "ixp_api.peeringDB.username" ) . ":" . config( "ixp_api.peeringDB.password" ) . "@peeringdb.com" );
-
-                // check if HTTP request status is 200
-                if( $conn->getStatusCode() == '200' ) {
-                    $AsnContent = $client->request( 'GET', "https://www.peeringdb.com/api/net?asn=" . $autsys );
-                    $result = json_decode( $AsnContent->getBody()->getContents() );
-
-                    $id = $result->data[ 0 ]->id;
-
-                    $infoContent = $client->request( 'GET', "https://www.peeringdb.com/api/net/" . $id );
-                    $info = json_decode( $infoContent->getBody()->getContents() );
-
-                    $result = $info->data[ 0 ];
-                }
-
-            } catch (RequestException $e) {
-                $error = true;
-                // If there are network errors, we need to ensure the application doesn't crash.
-                // if $e->hasResponse is not null we can attempt to get the message
-                // Otherwise, we'll just pass a network unavailable message.
-                if( $e->hasResponse() ) {
-                    $exception = (string)$e->getResponse()->getBody();
-                    $result = json_decode( $exception );
-                } else {
-                    $result = $e->getMessage();
-                }
-            }
+            $result = App::make( "IXP\Services\PeeringDb" )->getNetworkByAsn( $asn );
         }
 
-        return response()->json( [ 'error' => $error , 'informations' => $result ] );
+        return response()->json( [ 'error' => $result[ 'error' ] , 'informations' => $result[ 'result' ] ] );
 
     }
 

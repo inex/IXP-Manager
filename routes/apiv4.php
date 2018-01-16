@@ -46,7 +46,6 @@ Route::get( 'peeringdb/ix', function() {
     );
 })->name('api-v4-peeringdb-ixs');
 
-
 Route::get( 'ix-f/ixp', function() {
     return response()->json( Cache::remember('ix-f/ixp', 120, function() {
             $ixps = [];
@@ -64,20 +63,4 @@ Route::get( 'ix-f/ixp', function() {
         })
     );
 })->name('api-v4-ixf-ixs');
-
-
-Route::get( 'peering-db/fac', function() {
-    return response()->json( Cache::remember('peering-db/fac', 120, function() {
-        $pdbs = [];
-        if( $pdb = file_get_contents('https://api.peeringdb.com/api/fac') ) {
-            foreach( json_decode( $pdb )->data as $db ) {
-                $pdbs[ $db->id ] = [
-                    'id' => $db->id,
-                    'name' => $db->name,
-                ];
-            }
-        }
-        return $pdbs;
-    }));
-})->name('api-v4-peering-db-fac');
 
