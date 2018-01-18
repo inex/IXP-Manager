@@ -156,6 +156,9 @@ $this->layout( 'layouts/ixpv4' );
                         <a class="btn btn btn-default" href="<?= url ( 'customer/overview/id/')."/". $c->getId()  ?>" title="View">
                             <i class="glyphicon glyphicon-eye-open"></i>
                         </a>
+                        <a class="btn btn btn-default" href="<?= route ( "customer@deleteRecap", [ "id" => $c->getId() ] )   ?>" title="View">
+                            <i class="glyphicon glyphicon-trash"></i>
+                        </a>
                     </div>
                 </td>
             </tr>

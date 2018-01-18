@@ -133,11 +133,13 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
     Route::get(     'populate-customer/asn/{asn}',      'CustomerController@populateCustomerInfoByAsn'  )->name( 'customer@populateCustomerInfoByAsn');
     Route::get(     'unread-notes',                     'CustomerController@unreadNotes'                )->name( "customer@unreadNotes" );
     Route::get(     'welcome-email/{id}',               'CustomerController@welcomeEmail'               )->name( "customer@welcomeEmail" );
+    Route::get(     'delete-recap/{id}',                'CustomerController@deleteRecap'                )->name( "customer@deleteRecap" );
 
 
     Route::post(    'store',                            'CustomerController@store'                      )->name( 'customer@store');
     Route::post(    'store-billing-info',               'CustomerController@storeBillingInformation'    )->name( 'customer@storeBillingInfo');
     Route::post(    'send-welcome-email',               'CustomerController@sendWelcomeEmail'           )->name( 'customer@sendWelcomeEmail');
+    Route::post(    'delete',                           'CustomerController@delete'                     )->name( 'customer@delete');
 
 });
 
@@ -149,7 +151,7 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer-note' ], funct
 
 
     Route::post(    'add',                             'CustomerNotesController@add'                    )->name( 'customerNotes@add');
-    Route::post(    'delete/{id}',                     'CustomerNotesController@delete'                 )->name( 'customerNotes@delete');
+    Route::post(    'delete',                          'CustomerNotesController@delete'                 )->name( 'customerNotes@delete');
 
 });
 
