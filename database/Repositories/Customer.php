@@ -3,6 +3,12 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use D2EM, Exception;
+
+use Entities\{
+    PatchPanelPort  as PatchPanelPortEntity,
+    Customer        as CustomerEntity
+};
 
 /**
  * CustomerRepository
@@ -521,5 +527,209 @@ class Customer extends EntityRepository
         }
 
         return $customers;
+    }
+
+
+    /**
+     * Delete the customer object and everything releated
+     *
+     *     MACAddresses
+     *     PhysicalInterfaces
+     *     Layer2Addresses
+     *     VlanInterfaces
+     *     SflowReceivers
+     *     VirtualInterfaces
+     *     Contacts
+     *     Preferences
+     *     Logins
+     *     Users
+     *     ConsoleServerConnections
+     *     TrafficDaily
+     *     Traffic95thMonthly
+     *     Traffic95th
+     *     RSPrefix
+     *     Peering Manager
+     *     PatchPanelPorts
+     *     Peering Matrix
+     *     Logos
+     *     Notes
+     *     CustomerEquipment
+     *     Irrdb Prefix
+     *     Irrdb ASN
+     *
+     * @param CustomerEntity $c The customer Object
+     *
+     * @return boolean
+     * @throws
+     */
+    public function delete( CustomerEntity $c ){
+        $isOK = true;
+        $this->getEntityManager()->getConnection()->beginTransaction();
+
+        try {
+            // Delete Virtual Interfaces
+            foreach( $c->getVirtualInterfaces() as $vi ){
+
+                // Delete Mac Addresses
+                foreach( $vi->getMACAddresses() as $mac ){
+                    $vi->removeMACAddresses( $mac );
+                    $this->getEntityManager()->remove( $mac );
+                }
+
+                // Delete Physical Interface
+                foreach( $vi->getPhysicalInterfaces() as $pi ){
+                    $vi->removePhysicalInterface( $pi );
+                    $this->getEntityManager()->remove( $pi );
+                }
+
+                // Delete Vlan Interfaces
+                foreach( $vi->getVlanInterfaces() as $vli ){
+                    // Delete Layer2Addresses
+                    foreach( $vli->getLayer2Addresses() as $l2a ){
+                        $vli->removeLayer2Address( $l2a );
+                        $this->getEntityManager()->remove( $l2a );
+                    }
+                    $vi->removeVlanInterface( $vli );
+                    $this->getEntityManager()->remove( $vli );
+                }
+
+                // Delete SflowReceivers
+                foreach( $vi->getSflowReceivers() as $sflow ){
+                    $vi->removeSflowReceiver( $sflow );
+                    $this->getEntityManager()->remove( $sflow );
+                }
+
+                $c->removeVirtualInterface( $vi );
+                $this->getEntityManager()->remove( $vi );
+            }
+
+            // Delete Contacts
+            foreach( $c->getContacts() as $contact ){
+                $c->removeContact( $contact );
+                $this->getEntityManager()->remove( $contact );
+            }
+
+            // Delete Users
+            foreach( $c->getUsers() as $user ){
+                // Delete User Preferences
+                /** @var \Entities\User $user */
+                foreach( $user->getPreferences() as $pref ){
+                    $user->removePreference( $pref );
+                    $this->getEntityManager()->remove( $pref );
+                }
+
+                foreach( $user->getLastLogins() as $login ){
+                    $user->removeLastLogin( $login );
+                    $this->getEntityManager()->remove( $login );
+                }
+
+                $c->removeUser( $user );
+                $this->getEntityManager()->remove( $user );
+            }
+
+            // Delete Console Server Connections
+            foreach( $c->getConsoleServerConnections() as $csc ){
+                $c->removeConsoleServerConnection( $csc );
+                $this->getEntityManager()->remove( $csc );
+            }
+
+            // Delete Traffic Daily
+            foreach( $c->getTrafficDailies() as $trafficDaily ){
+                $c->removeTrafficDaily( $trafficDaily );
+                $this->getEntityManager()->remove( $trafficDaily );
+            }
+
+            // Delete Traffic 95 monthly
+            foreach( $c->getTraffic95thMonthlys() as $traffic95thMonthly ){
+                $c->removeTraffic95thMonthly( $traffic95thMonthly );
+                $this->getEntityManager()->remove( $traffic95thMonthly );
+            }
+
+            // Delete Traffic 95 monthly
+            foreach( $c->getTraffic95ths() as $traffic95th ){
+                $c->removeTraffic95th( $traffic95th );
+                $this->getEntityManager()->remove( $traffic95th );
+            }
+
+            // Delete Rs Prefixes
+            foreach( $c->getRSPrefixes() as $RSPrefix ){
+                $c->removeRSPrefix( $RSPrefix );
+                $this->getEntityManager()->remove( $RSPrefix );
+            }
+
+            // Delete Peering manager
+            foreach( $c->getPeersWith() as $peerWith ){
+                $c->removePeersWith( $peerWith );
+                $this->getEntityManager()->remove( $peerWith );
+            }
+
+            foreach( $c->getPeers() as $peer ){
+                $c->removePeer( $peer );
+                $this->getEntityManager()->remove( $peer );
+            }
+
+            // Delete Patch Panel Port
+            foreach( $c->getPatchPanelPorts() as $ppp ){
+                D2EM::getRepository( PatchPanelPortEntity::class )->delete( $ppp );
+            }
+
+            foreach( $c->getYCusts() as $YCust){
+                $c->removeYCust( $YCust );
+                $this->getEntityManager()->remove( $YCust );
+            }
+
+            foreach( $c->getXCusts() as $XCust){
+                $c->removeXCust( $XCust );
+                $this->getEntityManager()->remove( $XCust );
+            }
+
+            // Delete Customer Logo
+            foreach( $c->getLogos() as $logo){
+                //unlink( $logo->getFullPath() );
+                $c->removeLogo( $logo );
+                $this->getEntityManager()->remove( $logo );
+            }
+
+            // Delete Notes
+            foreach( $c->getNotes() as $note ){
+                $c->removeNote( $note );
+                $this->getEntityManager()->remove( $note );
+            }
+
+            // Delete Customer Equipment
+            foreach( $c->getCustomerEquipment() as $custKit ){
+                $c->removeCustomerEquipment( $custKit );
+                $this->getEntityManager()->remove( $custKit );
+            }
+
+            // Delete Irrdb Prefixes
+            foreach( $c->getIrrdbPrefixes() as $irrdbPrefixes ){
+                $c->removeIrrdbPrefix( $irrdbPrefixes );
+                $this->getEntityManager()->remove( $irrdbPrefixes );
+            }
+
+            // Delete Irrdb ASN
+            foreach( $c->getIrrdbASNs() as $irrdbASN ){
+                $c->removeIrrdbASN( $irrdbASN );
+                $this->getEntityManager()->remove( $irrdbASN );
+            }
+
+
+
+
+            $this->getEntityManager()->remove( $c );
+
+
+            $this->getEntityManager()->flush();
+            $this->getEntityManager()->getConnection()->commit();
+
+
+        } catch (Exception $e) {
+            dd( $e );
+            $this->getEntityManager()->getConnection()->rollBack();
+            $isOK = false;
+        }
+
+        return $isOK;
     }
 }

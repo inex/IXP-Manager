@@ -27,14 +27,16 @@ use App, Auth, D2EM , DateTime, Exception, Mail, Redirect, Former;
 
 use Intervention\Image\ImageManagerStatic as Image;
 
-use Illuminate\View\View;
 use IXP\Http\Controllers\Controller;
+
 use Illuminate\Http\{
     RedirectResponse,
-    JsonResponse
+    JsonResponse,
+    Request
 };
-
 use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
+
 
 use Entities\{
     Customer as CustomerEntity,
@@ -821,6 +823,50 @@ class CustomerController extends Controller
         AlertContainer::push( "Email sent.", Alert::SUCCESS );
 
         return Redirect::to( 'customer/overview/id/' . $c->getId() );
+
+    }
+
+    /**
+     * Display Recap of the the information that will be deleted with the customer
+     *
+     * @param   int      $id         Id of the customer
+     *
+     * @return  View
+     * @throws
+     */
+    public function deleteRecap( int $id = null ) : View{
+        /** @var CustomerEntity $c */
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
+            abort( 404);
+        }
+
+        return view( 'customer/delete' )->with([
+            'c'         => $c,
+        ]);
+
+    }
+
+    /**
+     * Delete a customer and everything related !!
+     *
+     * @param   Request      $request         Instance of HTTP request
+     *
+     * @return  RedirectResponse
+     * @throws
+     */
+    public function delete( Request $request) : RedirectResponse{
+        /** @var CustomerEntity $c */
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( "id" ) ) ) ){
+            abort( 404);
+        }
+
+        if( D2EM::getRepository( CustomerEntity::class )->delete( $c ) ) {
+            AlertContainer::push( "Customer deleted with success.", Alert::SUCCESS );
+        } else {
+            AlertContainer::push( "Error", Alert::DANGER );
+        }
+
+        return Redirect::to( route( "customer@list" ) );
 
     }
 
