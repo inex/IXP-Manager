@@ -197,7 +197,7 @@ function get_user_input() {
         echo "  - no input provided, defaulting to: ${USERINPUT}"
         echo
     fi
-    eval $__resultvar="'$USERINPUT'"
+    eval $__resultvar="\$USERINPUT"
 }
 
 get_user_input IXPNAME      "Long name of your IXP"          "$IXPNAME"
