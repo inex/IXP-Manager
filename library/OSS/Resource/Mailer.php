@@ -77,7 +77,7 @@ class OSS_Resource_Mailer extends Zend_Application_Resource_ResourceAbstract
 
             if( count( $options ) )
             {
-                if( isset( $options['auth'] ) )
+                if( isset( $options['auth'] ) && $options['auth'] )
                 {
                     $config = array(
                         'auth' => $options['auth'],
@@ -87,6 +87,10 @@ class OSS_Resource_Mailer extends Zend_Application_Resource_ResourceAbstract
                 }
                 else
                     $config = array();
+
+                if( isset( $options['port'] ) ) {
+                    $config['port'] = $options['port'];
+                }
 
                 $transport = new Zend_Mail_Transport_Smtp( $options['smtphost'], $config );
                 Zend_Mail::setDefaultTransport( $transport );
