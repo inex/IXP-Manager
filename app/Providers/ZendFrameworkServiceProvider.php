@@ -379,7 +379,15 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
      * Setup mailer
      */
     private function setupMailer( array $options ): array {
-        $options['ondemand_resources']['mailer']['smtphost'] = config('mail.host');
+
+        $options['resources']['mailer']['smtphost'] = config('mail.host');
+
+        $options['resources']['mailer']['port'] = config('mail.port',null) ?? 25;
+
+        $options['resources']['mailer']['auth']     = config('mail.auth',null);
+        $options['resources']['mailer']['username'] = config('mail.username',null);
+        $options['resources']['mailer']['password'] = config('mail.password',null);
+
         return $options;
     }
 
