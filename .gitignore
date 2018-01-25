@@ -113,3 +113,4 @@ mrtg/
 npm-debug.log
 yarn-error.log
 
+tools/docker/containers/mysql/docker.sql

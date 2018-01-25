@@ -1,0 +1,166 @@
+
+version: "2.3"
+
+networks:
+    ixpmanager:
+        driver: bridge
+        enable_ipv6: true
+        ipam:
+            driver: default
+            config:
+                - subnet: 172.30.201.0/24
+                  gateway: 172.30.201.1
+                - subnet: fd99::/64
+
+volumes:
+    mrtg-data:
+
+
+services:
+    mysql:
+        build:
+            context: tools/docker/containers/mysql
+        image: ixpmanager/mysql:dev
+        networks:
+            ixpmanager:
+                ipv4_address: 172.30.201.10
+                ipv6_address: fd99::10
+                aliases:
+                    - ixpmanager-mysql
+
+    mailcatcher:
+        image: schickling/mailcatcher
+        ports:
+            - 1080:1080
+        networks:
+            ixpmanager:
+                ipv4_address: 172.30.201.11
+
+    mrtg:
+        image: cityhawk/mrtg
+        depends_on:
+            - "switch1"
+            - "switch2"
+        networks:
+            ixpmanager:
+                ipv4_address: 172.30.201.12
+        volumes:
+            - mrtg-data:/mrtg_data
+            - ./tools/docker/mrtg/mrtg.cfg:/etc/mrtg.cfg
+            - ./tools/docker/mrtg/update-mrtg-conf.sh:/update-mrtg-conf.sh
+
+    switch1:
+        image: tandrup/snmpsim
+        networks:
+            ixpmanager:
+                ipv4_address: 172.30.201.60
+        volumes:
+            - ./tools/docker/snmpwalks:/usr/share/snmpsim/data
+
+    switch2:
+        image: tandrup/snmpsim
+        networks:
+            ixpmanager:
+                ipv4_address: 172.30.201.61
+        volumes:
+            - ./tools/docker/snmpwalks:/usr/share/snmpsim/data
+
+    www:
+        build:
+            context: tools/docker/containers/www
+        image: ixpmanager/www:dev
+        ports:
+            - 8880:80
+        depends_on:
+            - "mailcatcher"
+            - "mysql"
+        networks:
+            ixpmanager:
+                ipv4_address: 172.30.201.20
+                ipv6_address: fd99::20
+                aliases:
+                    - ixpmanager-www
+        extra_hosts:
+            - "rs1-ipv4:172.30.201.30"
+            - "rs1-ipv4.ixpmanager:172.30.201.30"
+            - "rs1-ipv6:172.30.201.30"
+            - "rs1-ipv6.ixpmanager:172.30.201.30"
+            - "switch1:172.30.201.60"
+            - "switch2:172.30.201.61"
+        volumes:
+            - .:/srv/ixpmanager
+            - mrtg-data:/srv/mrtg
+
+    rs1:
+        image: ixpmanager/rs1:4.7.0
+        ports:
+            - 8881:80
+        depends_on:
+            - "www"
+        networks:
+            ixpmanager:
+                ipv4_address: 172.30.201.30
+                ipv6_address: fd99::30
+        cap_add:
+            - ALL
+
+
+    cust-as112:
+        image: ixpmanager/bird:1.6.3
+        depends_on:
+            - "rs1"
+        networks:
+            ixpmanager:
+                ipv4_address: 172.30.201.106
+        cap_add:
+            - ALL
+        volumes:
+          - ./tools/docker/rs-cust/as112-bird.conf:/etc/bird/bird.conf
+
+    cust-as42:
+        image: ixpmanager/bird:1.6.3
+        depends_on:
+            - "rs1"
+        networks:
+            ixpmanager:
+                ipv4_address: 172.30.201.136
+        cap_add:
+            - ALL
+        volumes:
+          - ./tools/docker/rs-cust/as42-bird.conf:/etc/bird/bird.conf
+
+    cust-as1213:
+        image: ixpmanager/bird:1.6.3
+        depends_on:
+            - "rs1"
+        networks:
+            ixpmanager:
+                ipv4_address: 172.30.201.110
+        cap_add:
+            - ALL
+        volumes:
+          - ./tools/docker/rs-cust/as1213-bird.conf:/etc/bird/bird.conf
+
+    cust-as1213-v6:
+        image: ixpmanager/bird6:1.6.3
+        depends_on:
+            - "rs1"
+        networks:
+            ixpmanager:
+                ipv6_address: fd99::110
+        cap_add:
+            - ALL
+        volumes:
+          - ./tools/docker/rs-cust/as1213-bird6.conf:/etc/bird/bird6.conf
+
+    cust-as25441-v6:
+        image: ixpmanager/bird6:1.6.3
+        depends_on:
+            - "rs1"
+        networks:
+            ixpmanager:
+                ipv6_address: fd99::108
+        cap_add:
+            - ALL
+        volumes:
+          - ./tools/docker/rs-cust/as25441-bird6.conf:/etc/bird/bird6.conf
