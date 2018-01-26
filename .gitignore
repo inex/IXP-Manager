@@ -1,5 +1,6 @@
 
 .env
+.env.local
 .project
 .buildpath
 .vagrant/
@@ -114,3 +115,4 @@ npm-debug.log
 yarn-error.log
 
 tools/docker/containers/mysql/docker.sql
+

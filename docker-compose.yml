@@ -72,7 +72,6 @@ services:
         ports:
             - 8880:80
         depends_on:
-            - "mailcatcher"
             - "mysql"
         networks:
             ixpmanager:
