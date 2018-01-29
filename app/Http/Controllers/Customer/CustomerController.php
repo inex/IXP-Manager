@@ -39,15 +39,17 @@ use Illuminate\View\View;
 
 
 use Entities\{
-    Customer as CustomerEntity,
-    CustomerNote as CustomerNoteEntity,
-    IXP as IXPEntity,
-    NetworkInfo as NetworkInfoEntity,
-    IRRDBConfig as IRRDBConfigEntity,
-    CompanyBillingDetail as CompanyBillingDetailEntity,
+    CompanyBillingDetail    as CompanyBillingDetailEntity,
     CompanyRegisteredDetail as CompanyRegisteredDetailEntity,
-    User as UserEntity,
-    Logo as LogoEntity
+    Customer                as CustomerEntity,
+    CustomerNote            as CustomerNoteEntity,
+    IRRDBConfig             as IRRDBConfigEntity,
+    IXP                     as IXPEntity,
+    Logo                    as LogoEntity,
+    NetworkInfo             as NetworkInfoEntity,
+    PhysicalInterface       as PhysicalInterfaceEntity,
+    RSPrefix                as RSPrefixEntity,
+    User                    as UserEntity
 };
 
 use IXP\Mail\Customer\Email as EmailCustomer;
@@ -738,6 +740,129 @@ class CustomerController extends Controller
             'notes'                     => $latestNotes,
             'c'                         => Auth::getUser()->getCustomer()
         ]);
+    }
+
+
+    /**
+     * Display the customer overview
+     *
+     * @param   int         $id         Id of the customer
+     * @param   string      $tab        Tab from the overview selected
+     *
+     * @return  View
+     * @throws
+     */
+    public function overview(  $id = null, string $tab = null ) : View {
+        $netinfo            = D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray();
+        $c                  = $this->loadCustomer( $id );
+        $isSuperUser        = Auth::getUser()->isSuperUser();
+
+        //$this->view->registerClass( 'Countries', 'OSS_Countries' );
+        //$this->view->registerClass( 'BillingDetails', '\\Entities\\CompanyBillingDetail' );
+        //$this->view->registerClass( 'SWITCHPORT', '\\Entities\\SwitchPort' );
+
+        // is this user watching all notes for this customer?
+        $coNotifyAll = Auth::getUser()->getPreference( "customer-notes.{$c->getId()}.notify" ) ? true : false;
+
+        // what specific notes is this cusomer watching?
+        $coNotify = Auth::getUser()->getAssocPreference( "customer-notes.watching" ) ? Auth::getUser()->getAssocPreference( "customer-notes.watching" )[0] : [];
+
+
+        // load customer notes and the amount of unread notes for this user and customer
+        // ASK FO THAT $this->_fetchCustomerNotes( $cust->getId() );
+
+        $rsRoutes = $c->isRouteServerClient() ? D2EM::getRepository( RSPrefixEntity::class )->aggregateRouteSummariesForCustomer( $c->getId() ) : false;
+
+        $crossConnects = D2EM::getRepository( CustomerEntity::class )->getCrossConnects( $c->getId() );
+
+        // does the customer have any graphs?
+        $hasAggregateGraph = false;
+        $aggregateGraph = false;
+        $grapher = App::make('IXP\Services\Grapher' );
+        if( $c->getType() != CustomerEntity::TYPE_ASSOCIATE && !$c->hasLeft() ) {
+            foreach( $c->getVirtualInterfaces() as $vi ) {
+                foreach( $vi->getPhysicalInterfaces() as $pi ) {
+                    if( $pi->getStatus() == PhysicalInterfaceEntity::STATUS_CONNECTED ) {
+                        $hasAggregateGraph = true;
+                        $aggregateGraph = $grapher->customer( $c );
+                        break;
+                    }
+                }
+            }
+        }
+
+        //is customer RS or AS112 client
+        $rsclient = false;
+        $as112client   = false;
+        foreach( $c->getVirtualInterfaces() as $vi ) {
+            foreach( $vi->getVlanInterfaces() as $vli ) {
+                if( $vli->getRsclient() ){
+                    $rsclient = true;
+                }
+
+                if( $vli->getAs112client() ){
+                    $as112client = true;
+                }
+            }
+        }
+
+        $arrayNotes = $this->fetchCustomerNotes( $c->getId() );
+
+        return view( 'customer/overview' )->with([
+            'c'                         => $c,
+            'customers'                 => D2EM::getRepository( CustomerEntity::class )->getNames( true ),
+            'netInfo'                   => $netinfo,
+            'isSuperUser'               => $isSuperUser,
+            'coNotifyAll'               => $coNotifyAll,
+            'coNotify'                  => $coNotify,
+            'rsRoutes'                  => $rsRoutes,
+            'crossConnects'             => $crossConnects,
+            'hasAggregateGraph'         => $hasAggregateGraph,
+            'aggregateGraph'            => $aggregateGraph,
+            'grapher'                   => $grapher,
+            'rsclient'                  => $rsclient,
+            'as112client'               => $as112client,
+            'logoManagementDisabled'    => $this->logoManagementDisabled(),
+            'resellerMode'              => $this->resellerMode(),
+            'as112UiActive'             => $this->as112UiActive(),
+            'resellerResoldBilling'     => config('ixp.reseller.reseller'),
+            'countries'                 => CountriesFacade::getList('name' ),
+            'tab'                       => strtolower( $tab ),
+            'notesInfo'                 => $arrayNotes
+        ]);
+    }
+
+    /**
+     * Load a customer's notes and calculate the amount of unread / updated notes
+     * for the logged in user and the given customer
+     *
+     * Used by:
+     * @see CustomerController
+     * @see DashboardController
+     *
+     * @param int $custid
+     *
+     * @return array
+     */
+    protected function fetchCustomerNotes( $custid, $publicOnly = false ){
+        $custNotes      = D2EM::getRepository( CustomerNoteEntity::class )->ordered( $custid, $publicOnly );
+        $unreadNotes    = 0;
+        $rut            = Auth::getUser()->getPreference( "customer-notes.read_upto" );
+        $lastRead       = Auth::getUser()->getPreference( "customer-notes.{$custid}.last_read" );
+
+        if( $lastRead || $rut ) {
+            foreach( $custNotes as $cn ) {
+                $time = $cn->getUpdated()->format( "U" );
+                if( ( !$rut || $rut < $time ) && ( !$lastRead || $lastRead < $time ) ){
+                    $unreadNotes++;
+                }
+            }
+        } else {
+            $unreadNotes = count( $custNotes );
+        }
+
+        return [ "custNotes" => $custNotes, "notesReadUpto" => $rut , "notesLastRead" => $lastRead, "unreadNotes" => $unreadNotes];
+
     }
 
     /**
