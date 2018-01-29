@@ -134,6 +134,7 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
     Route::get(     'unread-notes',                     'CustomerController@unreadNotes'                )->name( "customer@unreadNotes" );
     Route::get(     'welcome-email/{id}',               'CustomerController@welcomeEmail'               )->name( "customer@welcomeEmail" );
     Route::get(     'delete-recap/{id}',                'CustomerController@deleteRecap'                )->name( "customer@deleteRecap" );
+    Route::get(     'overviews/{id}/{tab?}',             'CustomerController@overview'                   )->name( "customer@overview" );
 
 
     Route::post(    'store',                            'CustomerController@store'                      )->name( 'customer@store');
@@ -151,7 +152,7 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer-note' ], funct
 
 
     Route::post(    'add',                             'CustomerNotesController@add'                    )->name( 'customerNotes@add');
-    Route::post(    'delete',                          'CustomerNotesController@delete'                 )->name( 'customerNotes@delete');
+    Route::post(    'delete/{id}',                     'CustomerNotesController@delete'                 )->name( 'customerNotes@delete');
 
 });
 

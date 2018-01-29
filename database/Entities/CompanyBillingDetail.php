@@ -4,6 +4,8 @@ namespace Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use Webpatser\Countries\CountriesFacade as CountriesFacade;
+
 /**
  * CompanyBillingDetail
  */
@@ -255,6 +257,29 @@ class CompanyBillingDetail
     public function getBillingCountry()
     {
         return $this->billingCountry;
+    }
+
+    /**
+     * Get billingCountry
+     *
+     * @return string
+     */
+    public function getBillingCountryName()
+    {
+        $index = null;
+        foreach( CountriesFacade::getList() as $i => $value ){
+            if( $value[ 'iso_3166_2' ] == $this->getBillingCountry() ){
+                $index = $i;
+
+            }
+        }
+
+        if( $index == null ){
+            return null;
+        } else{
+            return CountriesFacade::getList()[ $index ][ 'name' ];
+        }
+
     }
 
     /**

@@ -194,7 +194,7 @@ class CustomerNotesController extends Controller {
      */
     public function delete( int $id = null ) : JsonResponse{
         $error = true;
-
+dd($id);
         if( $note = D2EM::getRepository( CustomerNoteEntity::class )->find( $id ) ) {
             $old = clone( $note );
             D2EM::remove( $note );
