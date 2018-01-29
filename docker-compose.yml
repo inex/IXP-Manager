@@ -68,6 +68,8 @@ services:
     www:
         build:
             context: tools/docker/containers/www
+        environment:
+            XDEBUG_CONFIG: remote_host=${DOCKER_XDEBUG_CONFIG_REMOTE_HOST}
         image: ixpmanager/www:dev
         ports:
             - 8880:80
