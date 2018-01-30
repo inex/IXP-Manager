@@ -19,7 +19,7 @@
 
     {if isset( $user ) and $user->getPrivs() eq 3}
         $( "#menu-select-customer" ).chosen().change( function(){
-            document.location.href = '{genUrl controller="customer" action="overview"}/id/' + $( "#menu-select-customer" ).val();
+            document.location.href = '{genUrl controller="customer" action="overview"}/' + $( "#menu-select-customer" ).val();
         });
 
         {if isset( $acust )}

@@ -15,7 +15,6 @@
                 </div>
             </div>
         <?php endif; ?>
-
         <table class="table">
             <tbody>
                 <tr>
@@ -23,7 +22,7 @@
                         <b>Abbreviated Name</b>
                     </td>
                     <td>
-                        <?= $t->c->getAbbreviatedName() ?>
+                        <?= $t->ee( $t->c->getAbbreviatedName() ) ?>
                     </td>
                     <td colspan="2">
                         <?php if( !$t->c->isTypeAssociate() ):?>
@@ -143,7 +142,7 @@
                     </td>
                     <td>
                         <?php if( !$t->c->isTypeAssociate() ): ?>
-                            <?php if( $t->c->getNochours()      ): ?>   <?= $t->c->getNochours() ?> <br />    <?php endif; ?>
+                            <?php if( $t->c->getNochours()      ): ?>   <?= $t->ee( $t->c->getNochours() ) ?> <br />    <?php endif; ?>
                             <?php if( $t->c->getNocemail()      ): ?>   <a href="mailto:<?= $t->ee( $t->c->getNocemail() ) ?>"> <?= $t->ee( $t->c->getNocemail() ) ?> </a><br /><?php endif; ?>
                             <?php if( $t->c->getNocwww()        ): ?>   <a href="<?= $t->ee( $t->c->getNocwww() ) ?>"> <?= $t->ee( $t->c->getNocwww() ) ?> </a><br /><?php endif; ?>
                             <?php if( $t->c->getNocphone()      ): ?>   <?= $t->ee( $t->c->getNocphone() ) ?> <br />    <?php endif; ?>
@@ -153,8 +152,8 @@
                     <td><b>Max Prefixes</b></td>
                     <td>
                         <?= $t->c->getMaxprefixes() ?>
+                        <?php $arrayVal = [] ?>
                         <?php if( count( $t->c->getVirtualInterfaces() ) ): ?>
-                            <?php $arrayVal = [] ?>
                             <?php foreach( $t->c->getVirtualInterfaces() as $vi ): ?>
                                 <?php foreach( $vi->getVlanInterfaces() as $vli ): ?>
                                     <?php $arrayVal[] = $vli->getMaxbgpprefix() ?>

@@ -57,7 +57,6 @@
                     <a class="btn btn-xs btn-default" href="<?= route( "interfaces/physical/add", [ "id" => count( $pis ) ? $pis[ 0 ]->getId() : 0 , "viid" => $t->vi->getId() ] ) ?>" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
                 </div>
             <?php endif; ?>
-
         </h3>
         <?php if( count( $t->vi->getPhysicalInterfaces() ) > 0 ): ?>
             <?php $countPi = 1 ?>
@@ -134,7 +133,7 @@
                                         <b>Media:</b>
                                     </td>
                                     <td>
-                                        <?= $pi->getSwitchPort()->getMauType() ?>
+                                        <?= $t->ee( $pi->getSwitchPort()->getMauType() ) ?>
                                     </td>
                                 <?php else: ?>
                                     <td>
@@ -183,20 +182,16 @@
                 <?php endif; ?>
             </p>
         <?php endif; ?>
-
         <br /><br />
         <br /><br />
         <div class="col-sm-12">
             <?php if( count( $t->vi->getVlanInterfaces() ) > 0 ): ?>
                 <?php foreach( $t->vi->getVlanInterfaces() as $vli ): ?>
                     <?php $vlanid =$vli->getVlan()->getId() ?>
-
                     <?php if( $vli->getVlan()->getPrivate() ): ?>
-
                         <?php if( !isset( $pvlans ) ): ?>
                             <?php $pvlans = $t->c->getPrivateVlanDetails() ?>
                         <?php endif; ?>
-
                         <h4>
                             &nbsp;&nbsp;&nbsp;Private VLAN Service
                             <small><?= config( "identity.orgname" ) ?> Reference: #<?= $vli->getVlan()->getId() ?></small>
@@ -216,27 +211,28 @@
                                     <b>Tag</b>
                                 </td>
                                 <td>
-                                    <?= $vli->getVlan()->getNumber() ?>
+                                    <?= $t->ee( $vli->getVlan()->getNumber() ) ?>
                                 </td>
 
                                 <td>
                                     <b>Other Members:</b>
                                 </td>
                                 <td>
+
                                     <?php if( count( $pvlans[ $vli->getVlan()->getId() ][ 'members'] ) == 1 ): ?>
                                         <em>None - single member</em>
                                     <?php else: ?>
-                                        <?php foreach( $pvlans[ $vli->getVlan()->getId() ][ 'members'] as $m ): ?>
-                                            <?= $t->ee( $m->getAbbreviatedName() )?> <br />
-                                        <?php endforeach; ?>
+                                        <div class="well" style="overflow-y: scroll; height:400px;">
+                                            <?php foreach( $pvlans[ $vli->getVlan()->getId() ][ 'members'] as $m ): ?>
+                                                <?= $t->ee( $m->getAbbreviatedName() )?> <br />
+                                            <?php endforeach; ?>
+                                        </div>
                                     <?php endif; ?>
                                 </td>
                             </tr>
                         </table>
                         <br /><br />
-
                     <?php else: ?>
-
                         <h4><?= $t->ee( $vli->getVlan()->getName() ) ?>:</h4>
                         <div class="col-sm-6">
                             <table>
@@ -248,7 +244,7 @@
                                     </td>
                                     <td>
                                         <?php if( $vli->getIpv6enabled() and $vli->getIpv6address() ): ?>
-                                            <?= $vli->getIPv6Address()->getAddress() ?> <?php if( isset( $netinfo[ $vlanid ][ 6 ][ 'masklen' ] ) ) : ?> /<?= $netinfo[ $vlanid ][ 6 ][ "masklen" ] ?> <?php endif;?>
+                                            <?= $t->ee( $vli->getIPv6Address()->getAddress() ) ?> <?php if( isset( $netinfo[ $vlanid ][ 6 ][ 'masklen' ] ) ) : ?> /<?= $netinfo[ $vlanid ][ 6 ][ "masklen" ] ?> <?php endif;?>
                                         <?php else: ?>
                                             IPv6 not enabled.
                                         <?php endif; ?>
@@ -284,7 +280,7 @@
                                     </td>
                                     <td>
                                         <?php if( $vli->getIpv4enabled() and $vli->getIpv4address() ): ?>
-                                            <?= $vli->getIPv4Address()->getAddress() ?> <?php if( isset( $netinfo[ $vlanid ][ 4 ][ 'masklen' ] ) ) : ?> /<?= $netinfo[ $vlanid ][ 4 ][ "masklen" ] ?> <?php endif;?>
+                                            <?= $t->ee( $vli->getIPv4Address()->getAddress() ) ?> <?php if( isset( $netinfo[ $vlanid ][ 4 ][ 'masklen' ] ) ) : ?> /<?= $netinfo[ $vlanid ][ 4 ][ "masklen" ] ?> <?php endif;?>
                                         <?php else: ?>
                                             IPv4 not enabled.
                                         <?php endif; ?>
@@ -297,7 +293,7 @@
                                         </b>
                                     </td>
                                     <td>
-                                        global: <?= $t->c->getMaxprefixes() ?>, per-interface: <?= $vli->getMaxbgpprefix() ?>
+                                        global: <?= $t->ee( $t->c->getMaxprefixes() ) ?>, per-interface: <?= $t->ee( $vli->getMaxbgpprefix() )?>
                                     </td>
                                 </tr>
 
@@ -314,13 +310,8 @@
                                     </tr>
                                 <?php endif; ?>
                             </table>
-
                         </div>
-
-
-
                     <?php endif; ?>
-
                 <?php endforeach; ?>
             <?php else: ?>
                 <?php if( $t->vi->getType() ==  \Entities\SwitchPort::TYPE_PEERING ): ?>
@@ -339,7 +330,7 @@
             <div class="well">
                 <h4>
                     Aggregate Day Graph for LAG
-                    <a class="btn btn-default pull-right" href="<?= url( "statistics/member-drilldown/shortname/" . $t->c->getShortname() . "/category/bits/monitorindex/lag-viid-" . $t->vi->getId() ) ?>">
+                    <a class="btn btn-default pull-right" href="<?= url( "statistics/member-drilldown/shortname/" . $t->ee( $t->c->getShortname() ) . "/category/bits/monitorindex/lag-viid-" . $t->vi->getId() ) ?>">
                     <i class="glyphicon glyphicon-eye-open"></i>
                     </a>
                 </h4>

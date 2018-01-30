@@ -17,11 +17,9 @@
         <tbody>
         <?php if( count( $t->c->getResoldCustomers() ) ): ?>
             <?php foreach( $t->c->getResoldCustomers() as $rc ): ?>
-
                 <?php if( $rc->hasLeft() ): ?>
                     <?php continue; ?>
                 <?php endif; ?>
-
                 <tr>
                     <td>
                         <?php if( Auth::getUser()->isSuperUser() ): ?>

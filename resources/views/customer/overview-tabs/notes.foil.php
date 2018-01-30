@@ -33,7 +33,7 @@
                                     <?php endif; ?>
                                  </span>
                             <?php endif; ?>
-                            <?= $n->getTitle() ?>
+                            <?= $t->ee( $n->getTitle() ) ?>
                         </td>
 
                         <?php if( Auth::getUser()->getPrivs() ==  \Entities\User::AUTH_SUPERUSER ): ?>
@@ -126,5 +126,4 @@
             </div>
         </div>
     </div>
-
 </div>

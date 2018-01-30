@@ -2,13 +2,13 @@
     <br>
     <table class="table">
         <thead>
-        <tr>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Last Login</th>
-            <th>Last Login From</th>
-            <th>Actions</th>
-        </tr>
+            <tr>
+                <th>Username</th>
+                <th>Email</th>
+                <th>Last Login</th>
+                <th>Last Login From</th>
+                <th>Actions</th>
+            </tr>
         </thead>
         <tbody>
         <?php if( count( $t->c->getUsers() ) ): ?>

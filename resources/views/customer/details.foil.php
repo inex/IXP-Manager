@@ -57,7 +57,7 @@ $this->layout( 'layouts/ixpv4' );
             ?>
             <tr>
                 <td>
-                    <a href="<?= url ( 'customer/overview/id/')."/". $c->getId()  ?>">
+                    <a href="<?= route( "customer@overview" , [ "id" => $c->getId() ] ) ?>">
                         <?= $t->ee( $c->getName() ) ?>
                     </a>
 

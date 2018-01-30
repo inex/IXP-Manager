@@ -13,7 +13,7 @@
     <li class="nav-header">IXP Customer Actions</li>
 
         <li {if $controller eq 'customer' and ( $action eq 'list' or $action eq 'add' or $action eq 'edit' or $action eq 'dashboard' )}class="active"{/if}>
-            <a href="{genUrl controller='customer' action='list'}">Customers</a>
+            <a href="{route( 'customer@list')}">Customers</a>
         </li>
 
         <li>
@@ -170,7 +170,7 @@
         </li>
         {if $logoManagementActive}
             <li {if $controller eq 'customer' and $action eq 'logos'}class="active"{/if}>
-                <a href="{genUrl controller='customer' action='logos'}">Member Logos</a>
+                <a href="{route( 'customer@logos' )}">Member Logos</a>
             </li>
         {/if}
         <li {if $controller eq 'statistics' and $action eq 'league-table'}class="active"{/if}>

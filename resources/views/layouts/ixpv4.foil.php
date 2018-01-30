@@ -146,7 +146,7 @@
 
         <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
             $( "#menu-select-customer" ).select2({ placeholder: "Jump to customer...", allowClear: true }).change( function(){
-                document.location.href = '<?= url( "/customer/overview" ) ?>/id/' + $( "#menu-select-customer" ).val();
+                document.location.href = '<?= url( "/customer/overview" ) ?>/' + $( "#menu-select-customer" ).val();
             });
         <?php endif; ?>
     </script>

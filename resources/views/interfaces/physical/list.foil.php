@@ -54,7 +54,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?php foreach( $t->pis as $pi ): ?>
                     <tr>
                         <td>
-                            <a href="<?= url( '/customer/overview/id' ).'/'.$pi['custid']?>">
+                            <a href="<?= route( "customer@overview" , [ "id" => $pi['custid'] ] ) ?>">
                                 <?= $t->ee( $pi['customer'] )   ?>
                             </a>
                         </td>
