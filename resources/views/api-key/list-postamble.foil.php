@@ -28,12 +28,23 @@
         See <a href="http://ml.ix-f.net/">here for details on the IX-F Member List</a>
         and <a href="http://docs.ixpmanager.org/features/ixf-export/">here for IXP Manager's IX-F
             Member List export instructions</a>.<br><br>
-        Example:
-        <code>
-            <a href="<?= url( "/api/v4/member-export/ixf/0.6")?>">
-                <?= url( "/api/v4/member-export/ixf/0.6") ?>
-            </a>
-        </code>
+        Examples:
+        <ul>
+            <li>
+                <code>
+                    <a href="<?= url( "/api/v4/member-export/ixf/0.7")?>">
+                        <?= url( "/api/v4/member-export/ixf/0.7") ?>
+                    </a>
+                </code>
+            </li>
+            <li>
+                <code>
+                    <a href="<?= url( "/api/v4/member-export/ixf/0.6")?>">
+                        <?= url( "/api/v4/member-export/ixf/0.6") ?>
+                    </a>
+                </code>
+            </li>
+        </ul>
         <br><br>
     </dd>
 
