@@ -164,7 +164,7 @@ class JsonSchema
                             $i[ 'vlan' ][ $idx ][ 'ipv4' ][ 'looking_glass_urls' ][] = url( '/lg' );
                         }
                         if( isset( $i[ 'vlan' ][ $idx ][ 'ipv6' ] ) ) {
-                            $i[ 'vlan' ][ $idx ][ 'ipv4' ][ 'looking_glass_urls' ][] = url( '/lg' );
+                            $i[ 'vlan' ][ $idx ][ 'ipv6' ][ 'looking_glass_urls' ][] = url( '/lg' );
                         }
                     }
                 }
