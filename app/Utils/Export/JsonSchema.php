@@ -23,7 +23,9 @@ namespace IXP\Utils\Export;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Entities\{Customer, Infrastructure, IXP, VirtualInterface};
+use Entities\{Customer, Infrastructure, IXP, Router, Switcher, VirtualInterface};
+
+use IXP\Exceptions\Utils\ExportException;
 
 use OSS_Array;
 
@@ -49,12 +51,14 @@ class JsonSchema
     // ended 201705: const EUROIX_JSON_VERSION_0_4 = "0.4";
     // cended 201705: onst EUROIX_JSON_VERSION_0_5 = "0.5";
     const EUROIX_JSON_VERSION_0_6 = "0.6";
+    const EUROIX_JSON_VERSION_0_7 = "0.7";
     // adding a new version? update sanitiseVersion() below also!
 
-    const EUROIX_JSON_LATEST = self::EUROIX_JSON_VERSION_0_6;
+    const EUROIX_JSON_LATEST = self::EUROIX_JSON_VERSION_0_7;
 
     const EUROIX_JSON_VERSIONS = [
         self::EUROIX_JSON_VERSION_0_6,
+        self::EUROIX_JSON_VERSION_0_7,
     ];
 
     /**
@@ -95,14 +99,11 @@ class JsonSchema
      */
     public function sanitiseVersion( $version )
     {
-        switch ( $version )
-        {
-            case self::EUROIX_JSON_VERSION_0_6:
-                return $version;
-
-            default:
-                return self::EUROIX_JSON_LATEST;
+        if( in_array( $version, self::EUROIX_JSON_VERSIONS ) ) {
+            return $version;
         }
+
+        return self::EUROIX_JSON_LATEST;
     }
 
     /**
@@ -110,6 +111,7 @@ class JsonSchema
      *
      * @param string $version The version to collate the detail for
      * @return array
+     * @throws ExportException
      */
     private function getIXPInfo( $version )
     {
@@ -133,6 +135,8 @@ class JsonSchema
 
             if( $infra->getIxfIxId() ) {
                 $i[ 'ixf_id' ] = intval( $infra->getIxfIxId() );
+            } else if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
+                throw new ExportException( "IX-F ID is required for IX-F Export Schema >=v0.7. Set this under Infrastructures." );
             }
 
             $i['ixp_id'] = $infra->getId();    // referenced in member's connections section
@@ -152,6 +156,20 @@ class JsonSchema
             $i['peering_policy_list'] = array_values(\Entities\Customer::$PEERING_POLICIES);
 
             $i['vlan'] = d2r('NetworkInfo')->asVlanEuroIXExportArray( $infra );
+
+            if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
+                if( !config( 'ixp_fe.frontend.disabled.lg' ) ) {
+                    foreach( $i[ 'vlan' ] as $idx => $vlan ) {
+                        if( isset( $i[ 'vlan' ][ $idx ][ 'ipv4' ] ) ) {
+                            $i[ 'vlan' ][ $idx ][ 'ipv4' ][ 'looking_glass_urls' ][] = url( '/lg' );
+                        }
+                        if( isset( $i[ 'vlan' ][ $idx ][ 'ipv6' ] ) ) {
+                            $i[ 'vlan' ][ $idx ][ 'ipv4' ][ 'looking_glass_urls' ][] = url( '/lg' );
+                        }
+                    }
+                }
+            }
+
             $i['switch'] = $this->getSwitchInfo( $version, $infra );
 
             $ixpinfo[] = $i;
@@ -169,9 +187,11 @@ class JsonSchema
     {
         $data = [];
 
+        /** @var Switcher $switch */
         foreach( $infra->getSwitchers() as $switch ) {
-            if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
+            if( $switch->getSwitchtype() != Switcher::TYPE_SWITCH || !$switch->getActive() ) {
                 continue;
+            }
 
             $switchentry = [];
             $switchentry['id']      = $switch->getId();
@@ -182,6 +202,11 @@ class JsonSchema
 
             if( $switch->getCabinet()->getLocation()->getPdbFacilityId() ) {
                 $switchentry['pdb_facility_id'] = intval($switch->getCabinet()->getLocation()->getPdbFacilityId());
+            }
+
+            if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
+                $switchentry['manufacturer'] = $switch->getVendor()->getName();
+                $switchentry['model']        = $switch->getModel();
             }
 
             $data[] = $switchentry;
@@ -199,6 +224,11 @@ class JsonSchema
     private function getMemberInfo( string $version, bool $detailed )
     {
         $memberinfo = [];
+
+        if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
+            $routeServerIPs = d2r( 'Router' )->getAllPeeringIPs( Router::TYPE_ROUTE_SERVER );
+            $routeCollectorIPs = d2r( 'Router' )->getAllPeeringIPs( Router::TYPE_ROUTE_COLLECTOR );
+        }
 
         /** @var IXP $ixp */
         $ixp = d2r( 'IXP' )->getDefault();
@@ -373,10 +403,10 @@ class JsonSchema
                 return 'ixp';
 
             case Customer::TYPE_PROBONO:
-                return 'probono';
+                return 'peering';
 
             case Customer::TYPE_ROUTESERVER:
-                return 'routeserver';
+                return 'ixp';
 
             default:
                 return 'other';
