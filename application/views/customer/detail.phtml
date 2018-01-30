@@ -6,7 +6,7 @@
             <a href="{genUrl}">Home</a> <span class="divider">/</span>
         </li>
         <li>
-            <a href="{genUrl controller="customer" action="details"}">Customer Details</a> <span class="divider">/</span>
+            <a href="{route( 'customer@details' )}">Customer Details</a> <span class="divider">/</span>
         </li>
         <li class="active">
             {$cust->getName()}

@@ -26,11 +26,11 @@
                             <?= $t->ee( $co->getEmail() ) ?>
                         </td>
                         <td>
-                            <?= $co->getPhone() ?>
+                            <?= $t->ee( $co->getPhone() ) ?>
                             <?php if( $co->getPhone() && $co->getMobile() ): ?>
                                 /
                             <?php endif; ?>
-                            <?= $co->getMobile() ?>
+                            <?=  $t->ee( $co->getMobile() ) ?>
                         </td>
                         <td>
                             <?php foreach( $co->getGroups() as $group ): ?>

@@ -37,9 +37,9 @@
                         <td>
                             <?php if( $patchPanelPort->isAvailableForUse() ): ?>
                                 <?php $class = "success" ?>
-                            <?php elseif( $patchPanelPort->getState() == Entities\PatchPanelPort::STATE_AWAITING_XCONNECT ): ?>
+                            <?php elseif( $patchPanelPort->isStateAwaitingXConnect() ): ?>
                                 <?php $class = "warning" ?>
-                            <?php elseif( $patchPanelPort->getState() == Entities\PatchPanelPort::STATE_CONNECTED ): ?>
+                            <?php elseif( $patchPanelPort->isStateConnected() ): ?>
                                 <?php $class = "danger" ?>
                             <?php else: ?>
                                 <?php $class =  "info" ?>

@@ -77,7 +77,7 @@
         {if $cust->getLogo('WWW80')}
             <div class="span3">
                 The logo we have for you is shown here.
-                Please <a href="{genUrl controller="customer" action="manage-logo"}">click here</a>
+                Please <a href="{route( 'customer@list' )} {genUrl controller="customer" action="manage-logo"}">click here</a>
                 to change it.
             </div>
             <div class="span3">

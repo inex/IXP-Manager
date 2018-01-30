@@ -13,7 +13,7 @@
     <?php $this->section( 'page-header-postamble' ) ?>
 
         <li>
-            <a href="<?=  url( "customer/overview/id/" )."/".$t->c->getId() ?>" >
+            <a href="<?= route( "customer@overview" , [ "id" => $t->c->getId() ] ) ?>" >
                 <?= $t->ee( $t->c->getName() ) ?>
             </a>
         </li>
@@ -76,7 +76,7 @@
             ?>
 
             <?=Former::actions( Former::primary_submit( 'Upload' ),
-                Former::default_link( 'Cancel' )->href( Auth::getUser()->isSuperUser() ? url( "customer/overview/id/" )."/".$t->c->getId() : url( "dashboard/index" ) ),
+                Former::default_link( 'Cancel' )->href( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ "id" => $t->c->getId() ] ) : url( "dashboard/index" ) ),
                 Former::success_button( 'Help' )->id( 'help-btn' )
             );?>
 
@@ -112,7 +112,7 @@
             })
             .done( function( data ) {
                 if( data.superUser ){
-                    window.location.href = "<?= url( 'customer/overview/id' ) . '/' . $t->c->getId() ?>";
+                    window.location.href = "<?= route( "customer@overview" , [ "id" => $t->c->getId() ] ) ?>";
                 } else {
                     window.location.href = "<?= url( 'dashboard/index' ) ?>";
                 }

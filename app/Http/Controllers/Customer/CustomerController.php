@@ -315,9 +315,9 @@ class CustomerController extends Controller
         AlertContainer::push( 'Customer successfully ' . ( $isEdit ? ' edited.' : ' added.' ), Alert::SUCCESS );
 
         if( $isEdit ){
-            return Redirect::to( 'customer/overview/id/' . $cust->getId() );
+            return Redirect::to( route( "customer@overview" , [ "id" => $cust->getId() ] ) );
         } else {
-            return Redirect::to( 'customer/billing-registration/' . $cust->getId() );
+            return Redirect::to( route( "customer@billingRegistration" , [ "id" => $cust->getId() ] ) );
         }
 
     }
@@ -512,7 +512,7 @@ class CustomerController extends Controller
 
         }
 
-        return Redirect::to( 'customer/overview/id/' . $cust->getId() . '/tab/billing' );
+        return Redirect::to( route( "customer@overview" , [ "id" => $cust->getId() , "tab" => "billing" ]  ) );
 
     }
 
@@ -657,20 +657,23 @@ class CustomerController extends Controller
 
         $img->save( $saveTo );
 
+        $logo->setCustomer( $c );
+        D2EM::persist( $logo );
+        D2EM::flush();
+
         // remove old logo
         if( $oldLogo = $c->getLogo( LogoEntity::TYPE_WWW80 ) ) {
             // only delete if they do not upload the exact same logo
             if( $oldLogo->getShardedPath() != $logo->getShardedPath() ) {
-                unlink( public_path().'/logos/' . $c->getShardedPath() );
+                if (file_exists( public_path().'/logos/' . $oldLogo->getShardedPath() )) {
+                    unlink( public_path().'/logos/' . $oldLogo->getShardedPath() );
+                }
+
             }
             $c->removeLogo( $oldLogo );
             D2EM::remove( $oldLogo );
             D2EM::flush();
         }
-
-        $logo->setCustomer( $c );
-        D2EM::persist( $logo );
-        D2EM::flush();
 
 
         AlertContainer::push( "Logo successfully uploaded!", Alert::SUCCESS );
@@ -679,7 +682,7 @@ class CustomerController extends Controller
             return Redirect::to( '' );
         }
 
-        return Redirect::to( 'customer/overview/id/' . $c->getId() );
+        return Redirect::to( route( "customer@overview" , [ "id" => $c->getId() ] ) );
 
     }
 
@@ -705,10 +708,12 @@ class CustomerController extends Controller
         // do we have a logo?
         if( !( $oldLogo = $c->getLogo( LogoEntity::TYPE_WWW80 ) ) ) {
             AlertContainer::push( "Sorry, we could not find any logo for you.", Alert::DANGER );
-            return Redirect::to( 'customer/overview/id/' . $c->getId() );
+            return Redirect::to( route( "customer@overview", [ "id" => $c->getId() ] ) );
+        }
+        if( file_exists( $oldLogo->getFullPath() ) ) {
+            unlink( $oldLogo->getFullPath() );
         }
 
-        unlink( $oldLogo->getFullPath() );
         $c->removeLogo( $oldLogo );
         D2EM::remove( $oldLogo );
         D2EM::flush();
@@ -739,6 +744,19 @@ class CustomerController extends Controller
         return view( 'customer/unread-notes' )->with([
             'notes'                     => $latestNotes,
             'c'                         => Auth::getUser()->getCustomer()
+        ]);
+    }
+
+    public function logos(){
+        $logos = [];
+        foreach( D2EM::getRepository( CustomerEntity::class )->findAll() as $c ) {
+            if( $c->getLogo( LogoEntity::TYPE_WWW80) ) {
+                $logos[] = $c->getLogo( LogoEntity::TYPE_WWW80);
+            }
+        }
+
+        return view( 'customer/logos' )->with([
+            'logos'                     => $logos,
         ]);
     }
 
@@ -947,7 +965,7 @@ class CustomerController extends Controller
 
         AlertContainer::push( "Email sent.", Alert::SUCCESS );
 
-        return Redirect::to( 'customer/overview/id/' . $c->getId() );
+        return Redirect::to( route( "customer@overview", [ "id" => $c->getId() ] ) );
 
     }
 

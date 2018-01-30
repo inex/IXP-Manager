@@ -134,7 +134,8 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
     Route::get(     'unread-notes',                     'CustomerController@unreadNotes'                )->name( "customer@unreadNotes" );
     Route::get(     'welcome-email/{id}',               'CustomerController@welcomeEmail'               )->name( "customer@welcomeEmail" );
     Route::get(     'delete-recap/{id}',                'CustomerController@deleteRecap'                )->name( "customer@deleteRecap" );
-    Route::get(     'overviews/{id}/{tab?}',             'CustomerController@overview'                   )->name( "customer@overview" );
+    Route::get(     'overview/{id}/{tab?}',             'CustomerController@overview'                   )->name( "customer@overview" );
+    Route::get(     'logos',                            'CustomerController@logos'                      )->name( "customer@logos" );
 
 
     Route::post(    'store',                            'CustomerController@store'                      )->name( 'customer@store');

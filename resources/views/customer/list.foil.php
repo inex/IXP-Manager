@@ -118,7 +118,7 @@ $this->layout( 'layouts/ixpv4' );
             ?>
             <tr>
                 <td>
-                    <a href="<?= url ( 'customer/overview/id/')."/". $c->getId()  ?>">
+                    <a href="<?= route( "customer@overview" , [ "id" => $c->getId() ] ) ?>">
                         <?= $t->ee( $c->getName() ) ?>
                     </a>
 
@@ -132,7 +132,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 </td>
                 <td>
-                    <a href="<?= url ( 'customer/overview/id/')."/". $c->getId()  ?>">
+                    <a href="<?= route( "customer@overview" , [ "id" => $c->getId() ] ) ?>">
                         <?= $t->ee( $c->getShortname() ) ?>
                     </a>
                 </td>
@@ -153,7 +153,7 @@ $this->layout( 'layouts/ixpv4' );
                 </td>
                 <td>
                     <div class="btn-group btn-group-sm" role="group">
-                        <a class="btn btn btn-default" href="<?= url ( 'customer/overview/id/')."/". $c->getId()  ?>" title="View">
+                        <a class="btn btn btn-default" href="<?= route( "customer@overview" , [ "id" => $c->getId() ] ) ?>" title="View">
                             <i class="glyphicon glyphicon-eye-open"></i>
                         </a>
                         <a class="btn btn btn-default" href="<?= route ( "customer@deleteRecap", [ "id" => $c->getId() ] )   ?>" title="View">

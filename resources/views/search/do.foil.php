@@ -51,7 +51,7 @@
                         <div class="list-group-item">
                             <div>
                                 <b>
-                                    <a style="font-size: x-large" href="<?= url( 'customer/overview/id/' . $cust->getId() )?>">
+                                    <a style="font-size: x-large" href="<?= route( "customer@overview" , [ "id" => $cust->getId() ] ) ?>">
                                         <?= $t->ee( $cust->getAbbreviatedName() ) ?> - AS<?= $t->ee( $cust->getAutsys() )?>
                                     </a>
                                 </b>
@@ -68,16 +68,16 @@
                             <?php endif; ?>
 
                             <div class="btn-group">
-                                <a class="btn btn-default" href="<?= url( 'customer/overview/id/' . $cust->getId() )?>">Overview</a>
-                                <a class="btn btn-default" href="<?= url( 'customer/overview/id/' . $cust->getId() . '/tab/ports' )?>">Ports</a>
+                                <a class="btn btn-default" href="<?= route( "customer@overview" , [ "id" => $cust->getId() ] ) ?>">Overview</a>
+                                <a class="btn btn-default" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "ports" ] ) ?>">Ports</a>
                                 <a class="btn btn-default" href="<?= url( 'statistics/member-drilldown/monitorindex/aggregate/shortname/' . $cust->getShortname() )?>">
                                     Statistics
                                 </a>
                                 <a class="btn btn-default" href="<?= url( 'statistics/p2p/shortname/' . $cust->getShortname() )?>">
                                     P2P
                                 </a>
-                                <a class="btn btn-default" href="<?= url( 'customer/overview/id/' . $cust->getId() . '/tab/users' )?>">Users</a>
-                                <a class="btn btn-default" href="<?= url( 'customer/overview/id/' . $cust->getId() . '/tab/contacts' )?>">Contacts</a>
+                                <a class="btn btn-default" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "users" ] ) ?>">Users</a>
+                                <a class="btn btn-default" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "contacts" ] )?>">Contacts</a>
                             </div>
 
                         </div>

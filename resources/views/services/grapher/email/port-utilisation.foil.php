@@ -37,7 +37,7 @@
 
 
         <p>
-            <a href="<?= url('') ?>/customer/overview/id/<?= $e['cust']->getId() ?>">
+            <a href="<?= route( "customer@overview" , [ "id" => $e['cust']->getId() ] ) ?> ">
                 <img src="data:image/png;base64,<?= base64_encode( $p['png'] ) ?>">
             </a>
         </p>

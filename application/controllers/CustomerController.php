@@ -489,9 +489,9 @@ class CustomerController extends IXP_Controller_FrontEnd
     {
         $this->addMessage( 'Customer successfully ' . ( $isEdit ? ' edited.' : ' added.' ), OSS_Message::SUCCESS );
         if( $isEdit )
-            $this->redirect( 'customer/overview/id/' . $object->getId() );
+            $this->redirect( 'customer/overview/' . $object->getId() );
         else
-            $this->redirect( 'customer/billing-registration/id/' . $object->getId() );
+            $this->redirect( 'customer/billing-registration/' . $object->getId() );
     }
 
     /**
@@ -611,7 +611,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                 }
             }
 
-            $this->redirect( 'customer/overview/id/' . $c->getId() . '/tab/billing' );
+            $this->redirect( 'customer/overview/' . $c->getId() . '/billing' );
         }
     }
 
@@ -654,7 +654,7 @@ class CustomerController extends IXP_Controller_FrontEnd
 
                 $this->getLogger()->info( "Welcome email sent for {$c->getName()}" );
                 $this->addMessage( "Welcome email successfully sent to {$c->getName()}", OSS_Message::SUCCESS );
-                return $this->redirect( 'customer/overview/id/' . $c->getId() );
+                return $this->redirect( 'customer/overview/' . $c->getId() );
             }
         }
     }
@@ -818,7 +818,7 @@ class CustomerController extends IXP_Controller_FrontEnd
         {
             if( !$form->logo->receive() ) {
                 $this->addMessage( "Sorry, there was an error receiving this file.", OSS_Message::ERROR );
-                return $this->redirect( 'customer/manage-logo/id/' . $c->getId() );
+                return $this->redirect( 'customer/manage-logo/' . $c->getId() );
             }
 
             $img = Image::make($form->logo->getFileName());
@@ -867,7 +867,7 @@ class CustomerController extends IXP_Controller_FrontEnd
                 return $this->redirect( '' );
             }
 
-            return $this->redirect( 'customer/manage-logo/id/' . $c->getId() );
+            return $this->redirect( 'customer/manage-logo/' . $c->getId() );
         }
     }
 
@@ -890,7 +890,7 @@ class CustomerController extends IXP_Controller_FrontEnd
         // do we have a logo?
         if( !( $orig = $c->getLogo(Entities\Logo::TYPE_WWW80) ) ) {
             $this->addMessage( "Sorry, we could not find any logo for you.", OSS_Message::ERROR );
-            return $this->redirect( 'customer/overview/id/' . $c->getId() );
+            return $this->redirect( 'customer/overview/' . $c->getId() );
         }
 
         unlink( APPLICATION_PATH . '/../public/logos/' . $orig->getShardedPath() );

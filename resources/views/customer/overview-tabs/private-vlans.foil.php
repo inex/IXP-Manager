@@ -12,7 +12,6 @@
         </tr>
     </thead>
     <tbody>
-
         <?php if( !isset( $pvlans ) ): ?>
             <?php $pvlans = $t->c->getPrivateVlanDetails() ?>
          <?php endif; ?>
@@ -24,7 +23,7 @@
                         <?= $t->ee( $vli->getVlan()->getName() )?>
                     </td>
                     <td>
-                        <?= $vli->getVlan()->getNumber() ?>
+                        <?= $t->ee( $vli->getVlan()->getNumber() )?>
                     </td>
                     <td>
                         <?php $pis = $vli->getVirtualInterface()->getPhysicalInterfaces() ?>
@@ -40,17 +39,16 @@
                     </td>
                     <td>
                         <?php foreach( $vli->getVirtualInterface()->getPhysicalInterfaces() as $p ): ?>
-                            <?= $p->getSwitchPort()->getName() ?><br />
+                            <?= $t->ee( $p->getSwitchPort()->getName() ) ?><br />
 
                         <?php endforeach; ?>
                     </td>
                     <td>
                         <?php foreach( $vli->getVirtualInterface()->getPhysicalInterfaces() as $p ): ?>
 
-                            <?= $p->getSpeed() ?>/<?= $p->getDuplex() ?><br />
+                            <?= $t->ee( $p->getSpeed() ) ?>/<?= $t->ee( $p->getDuplex() ) ?><br />
                         <?php endforeach; ?>
                     </td>
-
                     <td>
                         <div class="well" style="overflow-y: scroll; height:400px;">
                             <?php $others =  0 ?>
@@ -65,9 +63,8 @@
                             <?php if( !$others): ?>
                                 <em>None - single member</em>
                             <?php endif; ?>
-                    </td>
                         </div>
-
+                    </td>
                 </tr>
             <?php endforeach; ?>
         <?php endforeach; ?>

@@ -13,7 +13,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <li>
-        <a href="<?=  url( "customer/overview/id/" )."/".$t->c->getId() ?>" >
+        <a href="<?=  route( "customer@overview" , [ "id" => $c->getId() ] ) ?>" >
             <?= $t->ee( $t->c->getName() ) ?>
         </a>
     </li>
@@ -74,7 +74,7 @@
 
             <?= Former::actions(
                 Former::primary_submit( 'Send Email' ),
-                Former::default_link( 'Cancel' )->href( url( "customer/overview/id/" )."/".$t->c->getId() )
+                Former::default_link( 'Cancel' )->href( route( "customer@overview" , [ "id" => $t->c->getId() ] ) )
             );
             ?>
 

@@ -12,8 +12,8 @@
 
         <?php $nbVi = 1 ?>
         <?php foreach( $t->c->getVirtualInterfaces() as $vi ): ?>
-            <?= $t->insert( 'customer/overview-tabs/ports/port', [ 'c' => $t->c ,'vi' => $vi, 'nbVi' => $t->nbVi ] ); ?>
-            <?php $t->nbVi++ ?>
+            <?= $t->insert( 'customer/overview-tabs/ports/port', [ 'c' => $t->c ,'vi' => $vi, 'nbVi' => $nbVi ] ); ?>
+            <?php $nbVi++ ?>
         <?php endforeach; ?>
     </div>
 </div>

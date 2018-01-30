@@ -212,7 +212,7 @@
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.logo', true ) ): ?>
                     <li>
-                        <a href="<?= url('customer/logos' ) ?>">Member Logos</a>
+                        <a href="<?= route('customer@logos' ) ?>">Member Logos</a>
                     </li>
                 <?php endif; ?>
 

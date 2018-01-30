@@ -188,7 +188,7 @@ $this->layout( 'layouts/ixpv4' );
 
 
 <?=Former::actions( Former::primary_submit( 'Save Changes' ),
-    Former::default_link( 'Cancel' )->href( url ( 'customer/overview/id/' )."/".$t->cust->getId() ),
+    Former::default_link( 'Cancel' )->href( route( "customer@overview" , [ "id" => $t->cust->getId() ] ) ),
     Former::success_button( 'Help' )->id( 'help-btn' )
 );?>
 

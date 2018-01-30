@@ -22,7 +22,7 @@
 
     <?php $this->section( 'page-header-postamble' ) ?>
         <li>
-            <a href="<?=  url( "customer/overview/id/" )."/".$t->c->getId() ?>" >
+            <a href="<?=  route( "customer@overview" , [ "id" => $t->c->getId() ] ) ?>" >
                 <?= $t->ee( $t->c->getName() ) ?>
             </a>
 
