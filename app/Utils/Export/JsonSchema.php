@@ -256,7 +256,9 @@ class JsonSchema
 
                     if ($vli->getIpv4enabled()) {
                         $vlanentry['ipv4']['address'] = $vli->getIPv4Address()->getAddress();
-                        $vlanentry['ipv4']['as_macro'] = $vi->getCustomer()->resolveAsMacro( 4, "AS");
+                        if( ( $asmacro = $vi->getCustomer()->resolveAsMacro( 4, "AS", true ) ) !== null ) {
+                            $vlanentry[ 'ipv4' ][ 'as_macro' ] = $asmacro;
+                        }
                         $vlanentry['ipv4']['routeserver'] = $vli->getRsclient();
                         $vlanentry['ipv4']['mac_addresses'] = $vli->getLayer2AddressesAsArray();
                         if( $detailed ) {
@@ -280,7 +282,9 @@ class JsonSchema
 
                     if ($vli->getIpv6enabled()) {
                         $vlanentry['ipv6']['address'] = $vli->getIPv6Address()->getAddress();
-                        $vlanentry['ipv6']['as_macro'] = $vi->getCustomer()->resolveAsMacro( 6, "AS" );
+                        if( ( $asmacro = $vi->getCustomer()->resolveAsMacro( 6, "AS", true ) ) !== null ) {
+                            $vlanentry[ 'ipv6' ][ 'as_macro' ] = $asmacro;
+                        }
                         $vlanentry['ipv6']['routeserver'] = $vli->getRsclient();
                         $vlanentry['ipv6']['mac_addresses'] = $vli->getLayer2AddressesAsArray();
                         if( $detailed ) {
