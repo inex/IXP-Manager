@@ -359,7 +359,7 @@ class JsonSchema
                 'url'            => $c->getCorpwww(),
                 'name'           => $c->getName(),
                 'peering_policy' => $c->getPeeringpolicy(),
-                'member_type'    => $this->xlateMemberType( $c->getType(),
+                'member_type'    => $this->xlateMemberType( $c->getType() ),
             ];
 
             if( $detailed ) {
