@@ -354,11 +354,12 @@ class JsonSchema
             }
 
             $memberinfo[ $cnt ] = [
-                'asnum'		       	 => $c->getAutsys(),
-                'member_since'		 => $c->getDatejoin()->format( 'Y-m-d' ).'T00:00:00Z',
-                'url'			 => $c->getCorpwww(),
-                'name'			 => $c->getName(),
-                'peering_policy'	 => $c->getPeeringpolicy(),
+                'asnum'          => $c->getAutsys(),
+                'member_since'   => $c->getDatejoin()->format( 'Y-m-d' ).'T00:00:00Z',
+                'url'            => $c->getCorpwww(),
+                'name'           => $c->getName(),
+                'peering_policy' => $c->getPeeringpolicy(),
+                'member_type'    => $this->xlateMemberType( $c->getType(),
             ];
 
             if( $detailed ) {
@@ -374,8 +375,6 @@ class JsonSchema
                 if( $c->getNochours() && strlen($c->getNochours()) ) {
                     $memberinfo[$cnt]['contact_hours'] = $c->getNochours();
                 }
-
-                $memberinfo[$cnt][ 'type' ] = $this->xlateMemberType( $c->getType() );
             }
 
 
