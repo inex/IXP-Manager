@@ -88,5 +88,27 @@ return [
     */
     'rs-prefixes' => [
         'access'  => env( 'IXP_FE_RS_PREFIXES_ACCESS', Entities\User::AUTH_SUPERUSER ),
+    ],
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Customer Ability to Change Own MAC Addresses
+    |--------------------------------------------------------------------------
+    |
+    */
+    'layer2-addresses' => [
+
+        'customer_can_edit'  => env( 'IXP_FE_LAYER2_ADDRESSES_CUST_CAN_EDIT', false ),
+
+        'customer_params' => [
+            'min_addresses' => env( 'IXP_FE_LAYER2_ADDRESSES_CUST_PARAMS_MIN_ADDRESSES', 1 ),
+            'max_addresses' => env( 'IXP_FE_LAYER2_ADDRESSES_CUST_PARAMS_MAX_ADDRESSES', 2 ),
+        ],
+
+        'email_on_superuser_change'  => env( 'IXP_FE_LAYER2_ADDRESSES_EMAIL_ON_SUPERUSER_CHANGE', false ),
+        'email_on_customer_change'   => env( 'IXP_FE_LAYER2_ADDRESSES_EMAIL_ON_CUSTOMER_CHANGE',  false ),
+        'email_on_change_dest'       => env( 'IXP_FE_LAYER2_ADDRESSES_EMAIL_ON_CHANGE_DEST',      null  ),  // e.g. 'ops@ixp.example.net'
+
     ]
 ];
