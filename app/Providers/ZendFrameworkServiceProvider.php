@@ -159,13 +159,11 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
     }
 
     /**
-     * Force URL (and http/s schema) if necessary
+     * Force URL
      */
     private function setupUrls( array $options ): array {
-        if( config('identity.urls.forceUrl') ) {
-            $options['utils']['genurl']['host_mode']    = 'REPLACE';
-            $options['utils']['genurl']['host_replace'] = config('identity.urls.forceUrl');
-        }
+        $options['utils']['genurl']['host_mode']    = 'REPLACE';
+        $options['utils']['genurl']['host_replace'] = config('app.url');
         return $options;
     }
 

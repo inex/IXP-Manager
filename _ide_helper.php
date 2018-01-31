@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.5.22 on 2017-11-28.
+ * Generated for Laravel 5.5.33 on 2018-01-31.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -894,7 +894,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Register a binding with the container.
          *
-         * @param string|array $abstract
+         * @param string $abstract
          * @param \Closure|string|null $concrete
          * @param bool $shared
          * @return void 
@@ -980,7 +980,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Register a shared binding in the container.
          *
-         * @param string|array $abstract
+         * @param string $abstract
          * @param \Closure|string|null $concrete
          * @return void 
          * @static 
@@ -1178,7 +1178,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Register a new resolving callback.
          *
-         * @param string $abstract
+         * @param \Closure|string $abstract
          * @param \Closure|null $callback
          * @return void 
          * @static 
@@ -1192,7 +1192,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Register a new after resolving callback for all types.
          *
-         * @param string $abstract
+         * @param \Closure|string $abstract
          * @param \Closure|null $callback
          * @return void 
          * @static 
@@ -1885,7 +1885,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Get the session store used by the guard.
          *
-         * @return \Illuminate\Contracts\Session\Session. 
+         * @return \Illuminate\Contracts\Session\Session 
          * @static 
          */ 
         public static function getSession()
@@ -2179,6 +2179,17 @@ namespace Illuminate\Support\Facades {
         public static function setEchoFormat($format)
         {
             \Illuminate\View\Compilers\BladeCompiler::setEchoFormat($format);
+        }
+        
+        /**
+         * Set the echo format to double encode entities.
+         *
+         * @return void 
+         * @static 
+         */ 
+        public static function doubleEncode()
+        {
+            \Illuminate\View\Compilers\BladeCompiler::doubleEncode();
         }
         
         /**
@@ -5067,24 +5078,24 @@ namespace Illuminate\Support\Facades {
          * Merge new input into the current request's input array.
          *
          * @param array $input
-         * @return void 
+         * @return \Illuminate\Http\Request 
          * @static 
          */ 
         public static function merge($input)
         {
-            \Illuminate\Http\Request::merge($input);
+            return \Illuminate\Http\Request::merge($input);
         }
         
         /**
          * Replace the input for the current request.
          *
          * @param array $input
-         * @return void 
+         * @return \Illuminate\Http\Request 
          * @static 
          */ 
         public static function replace($input)
         {
-            \Illuminate\Http\Request::replace($input);
+            return \Illuminate\Http\Request::replace($input);
         }
         
         /**
@@ -5092,7 +5103,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $key
          * @param mixed $default
-         * @return mixed 
+         * @return \Symfony\Component\HttpFoundation\ParameterBag|mixed 
          * @static 
          */ 
         public static function json($key = null, $default = null)
@@ -5192,7 +5203,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Set the JSON payload for the request.
          *
-         * @param array $json
+         * @param \Symfony\Component\HttpFoundation\ParameterBag $json
          * @return $this 
          * @static 
          */ 
@@ -5351,7 +5362,7 @@ namespace Illuminate\Support\Facades {
          * @param array $cookies The request cookies ($_COOKIE)
          * @param array $files The request files ($_FILES)
          * @param array $server The server parameters ($_SERVER)
-         * @param string $content The raw body data
+         * @param string|resource $content The raw body data
          * @return static 
          * @static 
          */ 
@@ -6187,6 +6198,24 @@ namespace Illuminate\Support\Facades {
         {
             //Method inherited from \Symfony\Component\HttpFoundation\Request            
             return \Illuminate\Http\Request::isMethodCacheable();
+        }
+        
+        /**
+         * Returns the protocol version.
+         * 
+         * If the application is behind a proxy, the protocol version used in the
+         * requests between the client and the proxy and between the proxy and the
+         * server might be different. This returns the former (from the "Via" header)
+         * if the proxy is trusted (see "setTrustedProxies()"), otherwise it returns
+         * the latter (from the "SERVER_PROTOCOL" server parameter).
+         *
+         * @return string 
+         * @static 
+         */ 
+        public static function getProtocolVersion()
+        {
+            //Method inherited from \Symfony\Component\HttpFoundation\Request            
+            return \Illuminate\Http\Request::getProtocolVersion();
         }
         
         /**
@@ -7420,7 +7449,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string|array $view
          * @param array $data
-         * @return \Illuminate\View\View 
+         * @return string 
          * @static 
          */ 
         public static function render($view, $data = array())
@@ -8421,24 +8450,24 @@ namespace Illuminate\Support\Facades {
          * Merge new input into the current request's input array.
          *
          * @param array $input
-         * @return void 
+         * @return \Illuminate\Http\Request 
          * @static 
          */ 
         public static function merge($input)
         {
-            \Illuminate\Http\Request::merge($input);
+            return \Illuminate\Http\Request::merge($input);
         }
         
         /**
          * Replace the input for the current request.
          *
          * @param array $input
-         * @return void 
+         * @return \Illuminate\Http\Request 
          * @static 
          */ 
         public static function replace($input)
         {
-            \Illuminate\Http\Request::replace($input);
+            return \Illuminate\Http\Request::replace($input);
         }
         
         /**
@@ -8446,7 +8475,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $key
          * @param mixed $default
-         * @return mixed 
+         * @return \Symfony\Component\HttpFoundation\ParameterBag|mixed 
          * @static 
          */ 
         public static function json($key = null, $default = null)
@@ -8546,7 +8575,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Set the JSON payload for the request.
          *
-         * @param array $json
+         * @param \Symfony\Component\HttpFoundation\ParameterBag $json
          * @return $this 
          * @static 
          */ 
@@ -8705,7 +8734,7 @@ namespace Illuminate\Support\Facades {
          * @param array $cookies The request cookies ($_COOKIE)
          * @param array $files The request files ($_FILES)
          * @param array $server The server parameters ($_SERVER)
-         * @param string $content The raw body data
+         * @param string|resource $content The raw body data
          * @return static 
          * @static 
          */ 
@@ -9541,6 +9570,24 @@ namespace Illuminate\Support\Facades {
         {
             //Method inherited from \Symfony\Component\HttpFoundation\Request            
             return \Illuminate\Http\Request::isMethodCacheable();
+        }
+        
+        /**
+         * Returns the protocol version.
+         * 
+         * If the application is behind a proxy, the protocol version used in the
+         * requests between the client and the proxy and between the proxy and the
+         * server might be different. This returns the former (from the "Via" header)
+         * if the proxy is trusted (see "setTrustedProxies()"), otherwise it returns
+         * the latter (from the "SERVER_PROTOCOL" server parameter).
+         *
+         * @return string 
+         * @static 
+         */ 
+        public static function getProtocolVersion()
+        {
+            //Method inherited from \Symfony\Component\HttpFoundation\Request            
+            return \Illuminate\Http\Request::getProtocolVersion();
         }
         
         /**
@@ -12443,6 +12490,17 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Flush the Flysystem cache.
+         *
+         * @return void 
+         * @static 
+         */ 
+        public static function flushCache()
+        {
+            \Illuminate\Filesystem\FilesystemAdapter::flushCache();
+        }
+        
+        /**
          * Get the Flysystem driver.
          *
          * @return \League\Flysystem\FilesystemInterface 
@@ -12659,6 +12717,17 @@ namespace Illuminate\Support\Facades {
         public static function defaults($defaults)
         {
             \Illuminate\Routing\UrlGenerator::defaults($defaults);
+        }
+        
+        /**
+         * Get the default named parameters used by the URL generator.
+         *
+         * @return array 
+         * @static 
+         */ 
+        public static function getDefaultParameters()
+        {
+            return \Illuminate\Routing\UrlGenerator::getDefaultParameters();
         }
         
         /**
@@ -17015,7 +17084,7 @@ namespace  {
              * Execute the query and get the first result.
              *
              * @param array $columns
-             * @return \Illuminate\Database\Eloquent\Model|static|null 
+             * @return \Illuminate\Database\Eloquent\Model|object|static|null 
              * @static 
              */ 
             public static function first($columns = array())
@@ -18154,6 +18223,17 @@ namespace  {
             }
          
             /**
+             * Determine if no rows exist for the current query.
+             *
+             * @return bool 
+             * @static 
+             */ 
+            public static function doesntExist()
+            {    
+                return \Illuminate\Database\Query\Builder::doesntExist();
+            }
+         
+            /**
              * Retrieve the "count" result of the query.
              *
              * @param string $columns
@@ -19104,6 +19184,8 @@ if (! function_exists('dd')) {
      */
     function dd(...$args)
     {
+        http_response_code(500);
+
         foreach ($args as $x) {
             (new Dumper)->dump($x);
         }
@@ -19117,15 +19199,16 @@ if (! function_exists('e')) {
      * Escape HTML special characters in a string.
      *
      * @param  \Illuminate\Contracts\Support\Htmlable|string  $value
+     * @param  bool  $doubleEncode
      * @return string
      */
-    function e($value)
+    function e($value, $doubleEncode = false)
     {
         if ($value instanceof Htmlable) {
             return $value->toHtml();
         }
 
-        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', false);
+        return htmlspecialchars($value, ENT_QUOTES, 'UTF-8', $doubleEncode);
     }
 }
 
@@ -19268,7 +19351,7 @@ if (! function_exists('optional')) {
      * @param  mixed  $value
      * @return mixed
      */
-    function optional($value)
+    function optional($value = null)
     {
         return new Optional($value);
     }
@@ -19415,7 +19498,7 @@ if (! function_exists('str_is')) {
     /**
      * Determine if a given string matches a given pattern.
      *
-     * @param  string  $pattern
+     * @param  string|array  $pattern
      * @param  string  $value
      * @return bool
      */
