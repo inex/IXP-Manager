@@ -29,6 +29,8 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 use IXP\Http\Controllers\Controller;
 
+use MailableException;
+
 use Illuminate\Http\{
     RedirectResponse,
     JsonResponse,
@@ -61,7 +63,7 @@ use IXP\Http\Requests\{
     WelcomeEmail
 };
 
-use Webpatser\Countries\CountriesFacade as CountriesFacade;
+use Webpatser\Countries\CountriesFacade as CountriesWebpatser;
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -436,7 +438,7 @@ class CustomerController extends Controller
             'juridictions'                  => D2EM::getRepository( CompanyRegisteredDetailEntity::class )->getJuridictionsAsArray(),
             'billingNotify'                 => $billingNotify,
             'resellerMode'                  => $this->resellerMode(),
-            'countries'                     => CountriesFacade::getList('name' )
+            'countries'                     => CountriesWebpatser::getList('name' )
         ]);
     }
 
@@ -527,7 +529,6 @@ class CustomerController extends Controller
      * @throws
      */
     public function populateCustomerInfoByAsn( string $asn ) : JsonResponse{
-        $error = false;
         $result = '';
         if( $asn != null || $asn != '' ) {
             $result = App::make( "IXP\Services\PeeringDb" )->getNetworkByAsn( $asn );
@@ -747,9 +748,16 @@ class CustomerController extends Controller
         ]);
     }
 
+    /**
+     * Display all the customer logo's
+     *
+     * @return  View
+     * @throws
+     */
     public function logos(){
         $logos = [];
         foreach( D2EM::getRepository( CustomerEntity::class )->findAll() as $c ) {
+            /** @var CustomerEntity $c */
             if( $c->getLogo( LogoEntity::TYPE_WWW80) ) {
                 $logos[] = $c->getLogo( LogoEntity::TYPE_WWW80);
             }
@@ -774,10 +782,6 @@ class CustomerController extends Controller
         $netinfo            = D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray();
         $c                  = $this->loadCustomer( $id );
         $isSuperUser        = Auth::getUser()->isSuperUser();
-
-        //$this->view->registerClass( 'Countries', 'OSS_Countries' );
-        //$this->view->registerClass( 'BillingDetails', '\\Entities\\CompanyBillingDetail' );
-        //$this->view->registerClass( 'SWITCHPORT', '\\Entities\\SwitchPort' );
 
         // is this user watching all notes for this customer?
         $coNotifyAll = Auth::getUser()->getPreference( "customer-notes.{$c->getId()}.notify" ) ? true : false;
@@ -844,7 +848,7 @@ class CustomerController extends Controller
             'resellerMode'              => $this->resellerMode(),
             'as112UiActive'             => $this->as112UiActive(),
             'resellerResoldBilling'     => config('ixp.reseller.reseller'),
-            'countries'                 => CountriesFacade::getList('name' ),
+            'countries'                 => CountriesWebpatser::getList('name' ),
             'tab'                       => strtolower( $tab ),
             'notesInfo'                 => $arrayNotes
         ]);
@@ -858,7 +862,8 @@ class CustomerController extends Controller
      * @see CustomerController
      * @see DashboardController
      *
-     * @param int $custid
+     * @param int       $custid
+     * @param boolean   $publicOnly
      *
      * @return array
      */
@@ -870,6 +875,7 @@ class CustomerController extends Controller
 
         if( $lastRead || $rut ) {
             foreach( $custNotes as $cn ) {
+                /** @var CustomerNoteEntity $cn */
                 $time = $cn->getUpdated()->format( "U" );
                 if( ( !$rut || $rut < $time ) && ( !$lastRead || $lastRead < $time ) ){
                     $unreadNotes++;
@@ -899,6 +905,7 @@ class CustomerController extends Controller
 
         $emails = array();
         foreach( $c->getUsers() as $user ){
+            /** @var UserEntity $user */
             if( $email = filter_var( $user->getEmail(), FILTER_VALIDATE_EMAIL ) ) {
                 $emails[] = $email;
             }
