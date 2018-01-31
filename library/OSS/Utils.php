@@ -219,9 +219,14 @@ class OSS_Utils
                     case 'HTTP_X_FORWARDED_HOST':
                         $host = $_SERVER['HTTP_X_FORWARDED_HOST'];
                         break;
-                        
+
                     case 'REPLACE':
-                        $host = $options['utils']['genurl']['host_replace'];
+                        // need to make sure the host is an actual host
+                        if( preg_match( "/^(http[s]{0,1}:\/\/[a-zA-Z0-9\-_\.]+)[\/]{0,1}.*/", $options['utils']['genurl']['host_replace'], $host_array ) ) {
+                            $host = $host_array[1];
+                        } else {
+                            $host = $options['utils']['genurl']['host_replace'];
+                        }
                         break;
                         
                     default:
