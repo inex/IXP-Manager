@@ -184,9 +184,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options['resources']['namespace']['checkip']           = 0;
         $options['resources']['namespace']['timeout']           = config('session.lifetime')*60;
 
-        $options['resources']['session']['use_only_cookies']    = true;
-        $options['resources']['session']['remember_me_seconds'] = config('session.lifetime')*60;
-
         return $options;
     }
 
@@ -395,8 +392,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
      * Setup session
      */
     private function setupSession( array $options ): array {
-        $options['resources']['session']['save_path'] = config('session.files');
-        $options['resources']['session']['name']      = config('session.cookie');
+        $options['resources']['session'] = [];
         return $options;
     }
 }
