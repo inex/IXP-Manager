@@ -2,14 +2,11 @@
 Verify first that your issue/request is not already reported on GitHub.
 Also test if the latest release, and master branch are affected too.
 
-Do not create an issue for requests for help - use the mailing list.
-
-See: https://www.ixpmanager.org/support.php
-
+Do not create an issue for requests for help - use the mailing list:
+  See: https://www.ixpmanager.org/support.php
 
 For issues with documentation, please use the following issue tracker:
-
-https://github.com/inex/ixp-manager-docs-md/issues
+  https://github.com/inex/ixp-manager-docs-md/issues
 
 -->
 
@@ -22,7 +19,7 @@ https://github.com/inex/ixp-manager-docs-md/issues
 ##### OS
 
 <!---
-Mention the OS you are running ExaBGP on (including Linux variant if relevant)
+Mention the OS you are running IXP Manager on (including Linux variant if relevant)
 -->
 
 ##### VERSION
