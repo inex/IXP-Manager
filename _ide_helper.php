@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.5.29 on 2018-01-15.
+ * Generated for Laravel 5.5.33 on 2018-01-31.
  *
  * @author Barry vd. Heuvel <barryvdh@gmail.com>
  * @see https://github.com/barryvdh/laravel-ide-helper
@@ -894,7 +894,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Register a binding with the container.
          *
-         * @param string|array $abstract
+         * @param string $abstract
          * @param \Closure|string|null $concrete
          * @param bool $shared
          * @return void 
@@ -980,7 +980,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Register a shared binding in the container.
          *
-         * @param string|array $abstract
+         * @param string $abstract
          * @param \Closure|string|null $concrete
          * @return void 
          * @static 
@@ -1178,7 +1178,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Register a new resolving callback.
          *
-         * @param string $abstract
+         * @param \Closure|string $abstract
          * @param \Closure|null $callback
          * @return void 
          * @static 
@@ -1192,7 +1192,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Register a new after resolving callback for all types.
          *
-         * @param string $abstract
+         * @param \Closure|string $abstract
          * @param \Closure|null $callback
          * @return void 
          * @static 
@@ -2839,29 +2839,7 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function flush()
         {
-            return \Illuminate\Cache\FileStore::flush();
-        }
-        
-        /**
-         * Get the Filesystem instance.
-         *
-         * @return \Illuminate\Filesystem\Filesystem 
-         * @static 
-         */ 
-        public static function getFilesystem()
-        {
-            return \Illuminate\Cache\FileStore::getFilesystem();
-        }
-        
-        /**
-         * Get the working directory of the cache.
-         *
-         * @return string 
-         * @static 
-         */ 
-        public static function getDirectory()
-        {
-            return \Illuminate\Cache\FileStore::getDirectory();
+            return \Illuminate\Cache\ArrayStore::flush();
         }
         
         /**
@@ -2872,7 +2850,7 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function getPrefix()
         {
-            return \Illuminate\Cache\FileStore::getPrefix();
+            return \Illuminate\Cache\ArrayStore::getPrefix();
         }
          
     }
@@ -5125,7 +5103,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $key
          * @param mixed $default
-         * @return mixed 
+         * @return \Symfony\Component\HttpFoundation\ParameterBag|mixed 
          * @static 
          */ 
         public static function json($key = null, $default = null)
@@ -5225,7 +5203,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Set the JSON payload for the request.
          *
-         * @param array $json
+         * @param \Symfony\Component\HttpFoundation\ParameterBag $json
          * @return $this 
          * @static 
          */ 
@@ -5384,7 +5362,7 @@ namespace Illuminate\Support\Facades {
          * @param array $cookies The request cookies ($_COOKIE)
          * @param array $files The request files ($_FILES)
          * @param array $server The server parameters ($_SERVER)
-         * @param string $content The raw body data
+         * @param string|resource $content The raw body data
          * @return static 
          * @static 
          */ 
@@ -8497,7 +8475,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $key
          * @param mixed $default
-         * @return mixed 
+         * @return \Symfony\Component\HttpFoundation\ParameterBag|mixed 
          * @static 
          */ 
         public static function json($key = null, $default = null)
@@ -8597,7 +8575,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Set the JSON payload for the request.
          *
-         * @param array $json
+         * @param \Symfony\Component\HttpFoundation\ParameterBag $json
          * @return $this 
          * @static 
          */ 
@@ -8756,7 +8734,7 @@ namespace Illuminate\Support\Facades {
          * @param array $cookies The request cookies ($_COOKIE)
          * @param array $files The request files ($_FILES)
          * @param array $server The server parameters ($_SERVER)
-         * @param string $content The raw body data
+         * @param string|resource $content The raw body data
          * @return static 
          * @static 
          */ 
@@ -17106,7 +17084,7 @@ namespace  {
              * Execute the query and get the first result.
              *
              * @param array $columns
-             * @return \Illuminate\Database\Eloquent\Model|static|null 
+             * @return \Illuminate\Database\Eloquent\Model|object|static|null 
              * @static 
              */ 
             public static function first($columns = array())
@@ -18242,6 +18220,17 @@ namespace  {
             public static function exists()
             {    
                 return \Illuminate\Database\Query\Builder::exists();
+            }
+         
+            /**
+             * Determine if no rows exist for the current query.
+             *
+             * @return bool 
+             * @static 
+             */ 
+            public static function doesntExist()
+            {    
+                return \Illuminate\Database\Query\Builder::doesntExist();
             }
          
             /**

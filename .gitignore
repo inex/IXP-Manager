@@ -1,6 +1,6 @@
 
 .env
-.env.local
+.env*.local
 .project
 .buildpath
 .vagrant/
