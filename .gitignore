@@ -52,7 +52,7 @@ config/grapher_smokeping_overrides.php
 config/ixp_tools.php
 config/mailinglists.php
 config/routers.php
-
+config/trustedproxy.php
 
 application/configs/rs*.conf
 
