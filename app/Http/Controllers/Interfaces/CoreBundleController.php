@@ -403,7 +403,7 @@ class CoreBundleController extends Common
 
                 /** @var SwitchPortEntity $sp */
                 $sp = $vi->getSwitchPort();
-                $sp->setType( SwitchPortEntity::TYPE_UNSET );
+                $sp->setType( SwitchPortEntity::TYPE_CORE );
 
                 D2EM::remove( $ci );
                 D2EM::remove( $pi );
