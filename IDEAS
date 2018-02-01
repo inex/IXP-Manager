@@ -2,6 +2,8 @@
 Potential Todo / Feature Ideas
 ------------------------------
 
+* IP address state (history and reserved) - see #274
+
 * API - "another thing that could potentially be useful.. the way you
   generate RIR objects.. if members could generate their macro and maybe
   import/exports based on the data route servers receive this could be
