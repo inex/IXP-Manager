@@ -48,9 +48,6 @@ Potential Todo / Feature Ideas
   Also consider adding maxprefixes to peering manager template (see #174).
 
 
-* Add integrated PeeringDB functionality via access to:
-  mysql -h mysql.peeringdb.com
-
 * Add PeeringDB link to PM request template
 
 * Update suggested prefix limit / real prefix limit based on IRRDB entries?
