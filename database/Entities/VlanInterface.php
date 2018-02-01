@@ -63,6 +63,11 @@ class VlanInterface
     protected $rsclient;
 
     /**
+     * @var boolean $rsmorespecifics
+     */
+    protected $rsmorespecifics;
+
+    /**
      * @var boolean $ipv4canping
      */
     protected $ipv4canping;
@@ -379,6 +384,29 @@ class VlanInterface
     public function getRsclient()
     {
         return $this->rsclient;
+    }
+
+    /**
+     * Set rsmorespecifics
+     *
+     * @param boolean $rsmorespecifics
+     * @return VlanInterface
+     */
+    public function setRsMoreSpecifics($rsmorespecifics)
+    {
+        $this->rsmorespecifics = $rsmorespecifics;
+
+        return $this;
+    }
+
+    /**
+     * Get rsmorespecifics
+     *
+     * @return boolean
+     */
+    public function getRsMoreSpecifics()
+    {
+        return $this->rsmorespecifics;
     }
 
     /**

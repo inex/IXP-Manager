@@ -31,6 +31,11 @@
     <field name="ipv6bgpmd5secret" type="string" length="255" nullable="true"/>
     <field name="maxbgpprefix" type="integer" nullable="true"/>
     <field name="rsclient" type="boolean" nullable="true"/>
+    <field name="rsmorespecifics" type="boolean" nullable="false">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
     <field name="ipv4canping" type="boolean" nullable="true"/>
     <field name="ipv6canping" type="boolean" nullable="true"/>
     <field name="ipv4monitorrcbgp" type="boolean" nullable="true"/>

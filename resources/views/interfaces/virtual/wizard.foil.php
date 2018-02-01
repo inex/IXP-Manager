@@ -166,24 +166,31 @@ $this->layout( 'layouts/ixpv4' );
                 ->blockHelp( 'Setting this will override the overall customer setting. Leave blank to use the overall setting.' );
             ?>
 
-            <?= Former::checkbox( 'irrdbfilter' )
-                ->label('&nbsp')
-                ->text( 'Apply IRRDB Filtering' )
-                ->blockHelp( "<strong>Strongly recommended!</strong> Filter routes learned on route servers based on the customer's IRRDB entries." )
-                ->check( true )
-            ?>
-
-            <?= Former::checkbox( 'mcastenabled' )
-                ->label('&nbsp')
-                ->text( 'Multicast Enabled' )
-                ->blockHelp( 'Indicates if this port should be configured to allow multicast.' )
-            ?>
-
             <?= Former::checkbox( 'rsclient' )
                 ->label('&nbsp;')
                 ->text( 'Route Server Client' )
                 ->blockHelp( 'Indicates if IXP Manager should configure route server BGP sessions for this interface.' )
             ?>
+
+            <?= Former::checkbox( 'irrdbfilter' )
+                ->label('&nbsp')
+                ->text( 'Apply IRRDB Filtering' )
+                ->blockHelp( "<strong>Strongly recommended!</strong> Filter routes learned on route servers based on the customer's IRRDB entries." )
+                ->unchecked_value( 0 )
+                ->value( 1 )
+            ?>
+
+            <div id="div-rsmorespecifics" style="<?= old( 'irrdbfilter' ) || $t->vli && $t->vli->getIrrdbfilter() ?: 'display: none;' ?>">
+                <?= Former::checkbox( 'rsmorespecifics' )
+                    ->label('&nbsp;')
+                    ->text( 'IRRDB - Allow More Specifics?' )
+                    ->unchecked_value( 0 )
+                    ->value( 1 )
+                    ->blockHelp( 'If checked, then IXP Manager will configure the route server BGP peer for this connection such that it will '
+                        . 'allow more specific prefixes than those registered in the IRRDB. See the '
+                        . '<a href="http://docs.ixpmanager.org/features/route-servers/">route server configuration documenation for more details</a>.' )
+                ?>
+            </div>
 
             <?= Former::checkbox( 'as112client' )
                 ->label( '&nbsp;' )
