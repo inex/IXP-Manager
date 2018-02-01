@@ -31,10 +31,6 @@ Potential Todo / Feature Ideas
 * Member audit - port states, errors / discards, route collector session
   status, route server session status, etc.
 
-
-* Go through application/config/application.ini.dist and fix FIXMEs and add new
-  documentation where indicated
-
 * Would be useful to display last login information in the user edit screen or
   the list of users. Also the created by, last updated date?
 
