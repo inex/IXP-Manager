@@ -34,9 +34,6 @@ Potential Todo / Feature Ideas
 * Would be useful to display last login information in the user edit screen or
   the list of users. Also the created by, last updated date?
 
-* Member field for "MD5 Required" with values: "No", "Yes - mandatory",
-  "Yes - on request", "Unknown"
-
 * Show per-member peering matrix on member overview page?
 
 * Member health report
