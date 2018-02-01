@@ -56,7 +56,21 @@ class Grapher implements ExtensionInterface {
 
     public function getObject(): Grapher {
        return $this;
-   }
+    }
+
+    /**
+     * Escape SNMP communities so they are suitable for use in Mrtg config files.
+     *
+     * As per: https://oss.oetiker.ch/mrtg/doc/mrtg-reference.en.html
+     *
+     * > If your community contains a "@" or a " " these characters must be escaped with a "\".
+     *
+     * @param string $c The SNMP community to be escaped
+     * @return string The escaped community
+     */
+    public function escapeCommunityForMrtg( string $c ): string {
+        return str_replace( '@', '\@', str_replace(' ', '\\ ', $c ) );
+    }
 
    /**
     * Scale function
