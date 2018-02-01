@@ -24,7 +24,7 @@ Target[<?=$mrtglabel?>]:    <?php
                     . $this->data['pis'][$piid]->getSwitchPort()->ifnameToSNMPIdentifier()
                     . "&" . substr( $this->data['pis'][$piid]->getSwitchPort()->{$trafficType['out']}(), 1 ) . "#"
                     . $this->data['pis'][$piid]->getSwitchPort()->ifnameToSNMPIdentifier()
-                    . ":" .  $this->data['pis'][$piid]->getSwitchPort()->getSwitcher()->getSnmppasswd()
+                    . ":" .  $t->grapher()->escapeCommunityForMrtg( $this->data['pis'][$piid]->getSwitchPort()->getSwitcher()->getSnmppasswd() )
                     . "@" . $this->data['pis'][$piid]->getSwitchPort()->getSwitcher()->getHostname() . ":::::2";
 
             $cnt++;
