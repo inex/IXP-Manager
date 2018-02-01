@@ -28,8 +28,6 @@ Potential Todo / Feature Ideas
 
 * Show who a member peers with (or not) on the overview page
 
-* Show if a member is on the route server or not
-
 * Member audit - port states, errors / discards, route collector session
   status, route server session status, etc.
 
