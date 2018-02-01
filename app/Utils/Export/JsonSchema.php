@@ -23,7 +23,9 @@ namespace IXP\Utils\Export;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Entities\{Customer, Infrastructure, IXP, VirtualInterface};
+use Entities\{Customer, Infrastructure, IXP, Router, Switcher, VirtualInterface};
+
+use IXP\Exceptions\Utils\ExportException;
 
 use OSS_Array;
 
@@ -49,12 +51,14 @@ class JsonSchema
     // ended 201705: const EUROIX_JSON_VERSION_0_4 = "0.4";
     // cended 201705: onst EUROIX_JSON_VERSION_0_5 = "0.5";
     const EUROIX_JSON_VERSION_0_6 = "0.6";
+    const EUROIX_JSON_VERSION_0_7 = "0.7";
     // adding a new version? update sanitiseVersion() below also!
 
-    const EUROIX_JSON_LATEST = self::EUROIX_JSON_VERSION_0_6;
+    const EUROIX_JSON_LATEST = self::EUROIX_JSON_VERSION_0_7;
 
     const EUROIX_JSON_VERSIONS = [
         self::EUROIX_JSON_VERSION_0_6,
+        self::EUROIX_JSON_VERSION_0_7,
     ];
 
     /**
@@ -95,14 +99,11 @@ class JsonSchema
      */
     public function sanitiseVersion( $version )
     {
-        switch ( $version )
-        {
-            case self::EUROIX_JSON_VERSION_0_6:
-                return $version;
-
-            default:
-                return self::EUROIX_JSON_LATEST;
+        if( in_array( $version, self::EUROIX_JSON_VERSIONS ) ) {
+            return $version;
         }
+
+        return self::EUROIX_JSON_LATEST;
     }
 
     /**
@@ -110,6 +111,7 @@ class JsonSchema
      *
      * @param string $version The version to collate the detail for
      * @return array
+     * @throws ExportException
      */
     private function getIXPInfo( $version )
     {
@@ -133,6 +135,8 @@ class JsonSchema
 
             if( $infra->getIxfIxId() ) {
                 $i[ 'ixf_id' ] = intval( $infra->getIxfIxId() );
+            } else if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
+                throw new ExportException( "IX-F ID is required for IX-F Export Schema >=v0.7. Set this under Infrastructures." );
             }
 
             $i['ixp_id'] = $infra->getId();    // referenced in member's connections section
@@ -152,6 +156,20 @@ class JsonSchema
             $i['peering_policy_list'] = array_values(\Entities\Customer::$PEERING_POLICIES);
 
             $i['vlan'] = d2r('NetworkInfo')->asVlanEuroIXExportArray( $infra );
+
+            if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
+                if( !config( 'ixp_fe.frontend.disabled.lg' ) ) {
+                    foreach( $i[ 'vlan' ] as $idx => $vlan ) {
+                        if( isset( $i[ 'vlan' ][ $idx ][ 'ipv4' ] ) ) {
+                            $i[ 'vlan' ][ $idx ][ 'ipv4' ][ 'looking_glass_urls' ][] = url( '/lg' );
+                        }
+                        if( isset( $i[ 'vlan' ][ $idx ][ 'ipv6' ] ) ) {
+                            $i[ 'vlan' ][ $idx ][ 'ipv6' ][ 'looking_glass_urls' ][] = url( '/lg' );
+                        }
+                    }
+                }
+            }
+
             $i['switch'] = $this->getSwitchInfo( $version, $infra );
 
             $ixpinfo[] = $i;
@@ -169,9 +187,11 @@ class JsonSchema
     {
         $data = [];
 
+        /** @var Switcher $switch */
         foreach( $infra->getSwitchers() as $switch ) {
-            if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
+            if( $switch->getSwitchtype() != Switcher::TYPE_SWITCH || !$switch->getActive() ) {
                 continue;
+            }
 
             $switchentry = [];
             $switchentry['id']      = $switch->getId();
@@ -182,6 +202,11 @@ class JsonSchema
 
             if( $switch->getCabinet()->getLocation()->getPdbFacilityId() ) {
                 $switchentry['pdb_facility_id'] = intval($switch->getCabinet()->getLocation()->getPdbFacilityId());
+            }
+
+            if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
+                $switchentry['manufacturer'] = $switch->getVendor()->getName();
+                $switchentry['model']        = $switch->getModel();
             }
 
             $data[] = $switchentry;
@@ -199,6 +224,11 @@ class JsonSchema
     private function getMemberInfo( string $version, bool $detailed )
     {
         $memberinfo = [];
+
+        if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
+            $routeServerIPs = d2r( 'Router' )->getAllPeeringIPs( Router::TYPE_ROUTE_SERVER );
+            $routeCollectorIPs = d2r( 'Router' )->getAllPeeringIPs( Router::TYPE_ROUTE_COLLECTOR );
+        }
 
         /** @var IXP $ixp */
         $ixp = d2r( 'IXP' )->getDefault();
@@ -256,21 +286,53 @@ class JsonSchema
 
                     if ($vli->getIpv4enabled()) {
                         $vlanentry['ipv4']['address'] = $vli->getIPv4Address()->getAddress();
-                        $vlanentry['ipv4']['as_macro'] = $vi->getCustomer()->resolveAsMacro( 4, "AS");
+                        if( ( $asmacro = $vi->getCustomer()->resolveAsMacro( 4, "AS", true ) ) !== null ) {
+                            $vlanentry[ 'ipv4' ][ 'as_macro' ] = $asmacro;
+                        }
                         $vlanentry['ipv4']['routeserver'] = $vli->getRsclient();
                         $vlanentry['ipv4']['mac_addresses'] = $vli->getLayer2AddressesAsArray();
                         if( $detailed && !is_null ($vi->getCustomer()->getMaxprefixes()) ) {
                             $vlanentry['ipv4']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
                         }
+
+                        if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
+                            $services = [];
+                            if( in_array( $vli->getIPv4Address()->getAddress(), $routeServerIPs[ $vli->getVlan()->getId() ] ) ) {
+                                $services[] = 'ixrouteserver';
+                            }
+                            if( in_array( $vli->getIPv4Address()->getAddress(), $routeCollectorIPs[ $vli->getVlan()->getId() ] ) ) {
+                                $services[] = 'ixroutecollector';
+                            }
+
+                            if( count( $services ) ) {
+                                $vlanentry[ 'ipv4' ][ 'service_type' ] = $services;
+                            }
+                        }
                     }
 
                     if ($vli->getIpv6enabled()) {
                         $vlanentry['ipv6']['address'] = $vli->getIPv6Address()->getAddress();
-                        $vlanentry['ipv6']['as_macro'] = $vi->getCustomer()->resolveAsMacro( 6, "AS" );
+                        if( ( $asmacro = $vi->getCustomer()->resolveAsMacro( 6, "AS", true ) ) !== null ) {
+                            $vlanentry[ 'ipv6' ][ 'as_macro' ] = $asmacro;
+                        }
                         $vlanentry['ipv6']['routeserver'] = $vli->getRsclient();
                         $vlanentry['ipv6']['mac_addresses'] = $vli->getLayer2AddressesAsArray();
                         if( $detailed && !is_null ($vi->getCustomer()->getMaxprefixes()) ) {
                             $vlanentry['ipv6']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
+                        }
+
+                        if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
+                            $services = [];
+                            if( in_array( $vli->getIPv6Address()->getAddress(), $routeServerIPs[ $vli->getVlan()->getId() ] ) ) {
+                                $services[] = 'ixrouteserver';
+                            }
+                            if( in_array( $vli->getIPv6Address()->getAddress(), $routeCollectorIPs[ $vli->getVlan()->getId() ] ) ) {
+                                $services[] = 'ixroutecollector';
+                            }
+
+                            if( count( $services ) ) {
+                                $vlanentry[ 'ipv6' ][ 'service_type' ] = $services;
+                            }
                         }
                     }
 
@@ -292,11 +354,12 @@ class JsonSchema
             }
 
             $memberinfo[ $cnt ] = [
-                'asnum'		       	 => $c->getAutsys(),
-                'member_since'		 => $c->getDatejoin()->format( 'Y-m-d' ).'T00:00:00Z',
-                'url'			 => $c->getCorpwww(),
-                'name'			 => $c->getName(),
-                'peering_policy'	 => $c->getPeeringpolicy(),
+                'asnum'          => $c->getAutsys(),
+                'member_since'   => $c->getDatejoin()->format( 'Y-m-d' ).'T00:00:00Z',
+                'url'            => $c->getCorpwww(),
+                'name'           => $c->getName(),
+                'peering_policy' => $c->getPeeringpolicy(),
+                'member_type'    => $this->xlateMemberType( $c->getType() ),
             ];
 
             if( $detailed ) {
@@ -312,8 +375,6 @@ class JsonSchema
                 if( $c->getNochours() && strlen($c->getNochours()) ) {
                     $memberinfo[$cnt]['contact_hours'] = $c->getNochours();
                 }
-
-                $memberinfo[$cnt][ 'type' ] = $this->xlateMemberType( $c->getType() );
             }
 
 
@@ -341,10 +402,10 @@ class JsonSchema
                 return 'ixp';
 
             case Customer::TYPE_PROBONO:
-                return 'probono';
+                return 'peering';
 
             case Customer::TYPE_ROUTESERVER:
-                return 'routeserver';
+                return 'ixp';
 
             default:
                 return 'other';
