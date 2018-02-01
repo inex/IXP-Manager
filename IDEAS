@@ -52,8 +52,6 @@ Potential Todo / Feature Ideas
 
 * Update suggested prefix limit / real prefix limit based on IRRDB entries?
 
-* Add "Abbrieviated Name" to schema for titles in, e.g., p2p graphs
-
 * Add ASN to graph titles
 
 * Multiple P2P graphs for LAG ports
