@@ -52,8 +52,6 @@ Potential Todo / Feature Ideas
 
 * Update suggested prefix limit / real prefix limit based on IRRDB entries?
 
-* Tool to plug data into EURO-IX database
-
 * Add "Abbrieviated Name" to schema for titles in, e.g., p2p graphs
 
 * Add ASN to graph titles
