@@ -86,7 +86,11 @@ int set allas;
 <?php   if( count( $int['irrdbfilter_prefixes'] ) ):
     /* allnet = [ <?php echo $t->softwrap( $int['irrdbfilter_prefixes'], 4, ", ", ",", 16 ); ?> ]; */ ?>
 
-    allnet = [ <?= implode( ', ', $int['irrdbfilter_prefixes'] ) ?> ];
+    allnet = [ <?= implode( ', ',
+            $int['rsmorespecifics']
+                    ? $t->bird()->prefixExactToLessSpecific( $int['irrdbfilter_prefixes'], $t->router->protocol(), config( 'ixp.irrdb.min_v' . $t->router->protocol() . '_subnet_size' ) )
+                    : $int['irrdbfilter_prefixes']
+                ) ?> ];
 
     if ! (net ~ allnet) then
             reject;
