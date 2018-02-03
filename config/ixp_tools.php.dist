@@ -6,18 +6,7 @@
 
 return [
 
-    //;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    //
-    // Route Server Configuration Options Details
-    //
 
-    // BGPQ3 utility location and options.
-    // See: http://docs.ixpmanager.org/features/irrdb/
-    'irrdb' => [
-        'bgpq' => [
-            'path' => '/path/to/bgpq3',
-        ],
-    ],
 
     // LANs available for public and member's own peering matrix.
     'peering_matrix' => [
