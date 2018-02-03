@@ -5,7 +5,8 @@
 use Illuminate\Support\ServiceProvider;
 use IXP\Services\FoilEngine as Engine;
 
-use IXP\Utils\Foil\Extensions\IXP as IXPFoilExtensions;
+use IXP\Utils\Foil\Extensions\Bird as BirdFoilExtensions;
+use IXP\Utils\Foil\Extensions\IXP  as IXPFoilExtensions;
 
 use View;
 
@@ -66,6 +67,8 @@ class FoilServiceProvider extends ServiceProvider
 
             // we have a few rendering functions we want to include here:
             $engine->engine()->loadExtension( new IXPFoilExtensions(), [ 'alerts' ] );
+            $engine->engine()->loadExtension( new BirdFoilExtensions(), [] );
+
 
             $view->addExtension('foil.php', 'foil', function() use ($app, $engine) {
                 return $engine;
