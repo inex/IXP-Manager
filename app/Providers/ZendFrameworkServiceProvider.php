@@ -296,22 +296,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
      */
     private function setupIxpTools( array $options ): array {
 
-        if( config( 'ixp_tools.router.collector.conf.target' ) ) {
-            $options['router']['collector']['conf']['target'] = config( 'ixp_tools.router.collector.conf.target' );
-        }
-
-        if( config( 'ixp_tools.router.collector.conf.dstpath' ) ) {
-            $options['router']['collector']['conf']['dstpath'] = config( 'ixp_tools.router.collector.conf.dstpath' );
-        }
-
-        if( config( 'ixp_tools.router.collector.conf.snmppasswd' ) ) {
-            $options['router']['collector']['conf']['snmppasswd'] = config( 'ixp_tools.router.collector.conf.snmppasswd' );
-        }
-
-        if( config( 'ixp_tools.irrdb.bgpq.path' ) ) {
-            $options['irrdb']['bgpq']['path'] = config( 'ixp_tools.irrdb.bgpq.path' );
-        }
-
         if( is_array( config('ixp_tools.peering_matrix') ) ) {
             foreach( config('ixp_tools.peering_matrix') as $id => $details ) {
                 foreach( $details as $k => $v ) {
