@@ -67,4 +67,29 @@ return [
         'testdate'  => env( 'PEERING_MANAGER_TESTDATE', false ),
     ],
 
+
+
+
+    /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+       ;; Route Server and IRRDB Filtering
+       ;;
+       ;;
+       ;; */
+
+    'irrdb' => [
+        'bgpq3' => [
+            'path' => env( 'IXP_IRRDB_BGPQ3_PATH', false ),
+        ],
+
+        // ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        // Minimum subnet sizes
+        //
+        // Used by the route server template and the bgpq3 command line.
+        // Template: resources/views/api/v4/router/server/bird/header.foil.php
+        'min_v4_subnet_size' => env( 'IXP_IRRDB_MIN_V4_SUBNET_SIZE', 24 ),
+        'min_v6_subnet_size' => env( 'IXP_IRRDB_MIN_V6_SUBNET_SIZE', 48 ),
+
+    ],
+
+
 ];

@@ -27,6 +27,7 @@ namespace IXP\Tasks\Irrdb;
 use D2EM;
 use Entities\Customer;
 use Exception;
+use IXP\Exceptions\ConfigurationException;
 use IXP\Exceptions\GeneralException;
 use IXP\Utils\Bgpq3;
 use Log;
@@ -94,10 +95,11 @@ abstract class UpdateDb
     /**
      * UpdatePrefixDb constructor.
      * @param Customer $c
+     * @throws ConfigurationException
      */
     public function __construct( Customer $c ) {
         $this->setCustomer( $c );
-        $this->setBgpq3( new Bgpq3( config( 'ixp_tools.irrdb.bgpq.path' ) ) );
+        $this->setBgpq3( new Bgpq3( config( 'ixp.irrdb.bgpq3.path' ) ) );
     }
 
     /**
@@ -125,6 +127,7 @@ abstract class UpdateDb
      *
      * @param Bgpq3 $bgpq3
      * @return UpdateDb
+     * @throws ConfigurationException
      */
     public function setBgpq3( Bgpq3 $bgpq3 ): UpdateDb {
         $this->bgpq3 = $bgpq3;
