@@ -55,14 +55,19 @@ class ConsoleServerConnection
     protected $id;
 
     /**
-     * @var Entities\Customer
+     * @var \Entities\Customer
      */
     protected $Customer;
 
     /**
-     * @var Entities\Switcher
+     * @var \Entities\ConsoleServer
      */
-    protected $Switcher;
+    protected $consoleServer;
+
+    /**
+     * @var integer $switchid
+     */
+    protected $switchid;
 
 
     /**
@@ -283,6 +288,29 @@ class ConsoleServerConnection
     }
 
     /**
+     * Set console server
+     *
+     * @param \Entities\ConsoleServer $consoleServer
+     * @return ConsoleServerConnection
+     */
+    public function setConsoleServer(\Entities\ConsoleServer $consoleServer = null)
+    {
+        $this->cons = $consoleServer;
+
+        return $this;
+    }
+
+    /**
+     * Get Console Server
+     *
+     * @return \Entities\ConsoleServer
+     */
+    public function getConsoleServer()
+    {
+        return $this->consoleServer;
+    }
+
+    /**
      * Set Switcher
      *
      * @param \Entities\Switcher $switcher
@@ -290,8 +318,7 @@ class ConsoleServerConnection
      */
     public function setSwitcher(\Entities\Switcher $switcher = null)
     {
-        $this->Switcher = $switcher;
-    
+        $this->setSwitchId( $switcher->getId() );
         return $this;
     }
 
@@ -302,6 +329,32 @@ class ConsoleServerConnection
      */
     public function getSwitcher()
     {
-        return $this->Switcher;
+        // yann -> D2EM get Switcher for $this->>getSwitchId()
+        die();
+        //return $this->Switcher;
     }
+
+    /**
+     * Get switch id
+     *
+     * @return integer
+     */
+    public function getSwitchId()
+    {
+        return $this->switchid;
+    }
+
+    /**
+     * Set switch id
+     *
+     * @param int $switchid
+     * @return ConsoleServerConnection
+     */
+    public function setSwitchId( int $switchid )
+    {
+        $this->switchid = $switchid;
+        return $this;
+    }
+
+
 }
