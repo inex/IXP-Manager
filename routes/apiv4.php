@@ -86,3 +86,5 @@ Route::get( 'peering-db/fac', function() {
     }));
 })->name('api-v4-peering-db-fac');
 
+Route::post( 'l2-address/add',                                  'Layer2AddressController@add' );
+Route::post( 'l2-address/delete/{id}',                          'Layer2AddressController@delete' );

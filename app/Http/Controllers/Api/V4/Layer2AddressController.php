@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Api\V4;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM;
+use Auth, D2EM;
 
 use Entities\{
     Layer2Address as Layer2AddressEntity,
@@ -32,6 +32,9 @@ use Entities\{
 
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+
+use IXP\Events\Layer2Address\Added as Layer2AddressAddedEvent;
+use IXP\Events\Layer2Address\Deleted as Layer2AddressDeletedEvent;
 
 /**
  * Layer2Address API Controller
@@ -71,6 +74,8 @@ class Layer2AddressController extends Controller {
         D2EM::persist( $l2a );
         D2EM::flush();
 
+        event( new Layer2AddressAddedEvent( $l2a, Auth::getUser() ) );
+
         return response()->json( [ 'success' => true, 'message' => 'The MAC address has been added successfully.' ] );
     }
 
@@ -93,6 +98,7 @@ class Layer2AddressController extends Controller {
      *
      * @param   int $id ID of the Layer2Address
      * @return  JsonResponse
+     * @throws
      */
     public function delete( int $id ): JsonResponse{
         /** @var Layer2AddressEntity $l2a */
@@ -101,8 +107,13 @@ class Layer2AddressController extends Controller {
         }
 
         $l2a->getVlanInterface()->removeLayer2Address( $l2a );
+        $macaddress = $l2a->getMacFormattedWithColons();
+        $vli        = $l2a->getVlanInterface();
+
         D2EM::remove( $l2a );
         D2EM::flush();
+
+        event( new Layer2AddressDeletedEvent( $macaddress, $vli, Auth::user() ) );
 
         return response()->json( [ 'success' => true, 'message' => 'The MAC address has been deleted.' ] );
     }
