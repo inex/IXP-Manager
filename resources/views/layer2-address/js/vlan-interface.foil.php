@@ -1,21 +1,27 @@
 <script>
+    const addl2a               = $('#add-l2a' );
+
     let table; // datatable handle
 
     $( document ).ready( function() {
         loadDataTable();
         $( "#list-area").show();
+
     });
 
     /**
      * on click even allow to add a mac address using prompt popup
      */
-    $( "#add-l2a" ).on( 'click', function( e ) {
-        e.preventDefault();
+
+
+
+    function add(){
+
         bootbox.prompt({
             title: "Enter a MAC Address.",
             inputType: 'text',
             callback: function ( result ) {
-                if( result != '' ) {
+                if( result != null ) {
                     $.ajax( "<?= action ( 'Api\V4\Layer2AddressController@add' ) ?>", {
                         type: 'POST',
                         data: {
@@ -24,25 +30,25 @@
                             _token : "<?= csrf_token() ?>"
                         }
                     })
-                    .done( function( data ) {
-                        $('.bootbox.modal').modal( 'hide' );
-                        result = ( data.success ) ? 'success': 'danger';
-                        if( result ) {
-                            refreshDataTable();
-                        }
+                        .done( function( data ) {
+                            $('.bootbox.modal').modal( 'hide' );
+                            result = ( data.success ) ? 'success': 'danger';
+                            if( result ) {
+                                refreshDataTable();
+                            }
 
-                        $( "#message" ).html( "<div class='alert alert-"+result+"' role='alert'>"+ data.message +"</div>" );
-                    })
-                    .fail( function() {
-                        $('.bootbox.modal').modal( 'hide' );
-                        $( "#message" ).html( "<div class='alert alert-danger' role='alert'>" +
-                            "Could add MAC address. API / AJAX / network error</div>"
-                        );
-                    });
-                }
+                            $( "#message" ).html( "<div class='alert alert-"+result+"' role='alert'>"+ data.message +"</div>" );
+                        })
+                        .fail( function() {
+                            $('.bootbox.modal').modal( 'hide' );
+                            $( "#message" ).html( "<div class='alert alert-danger' role='alert'>" +
+                                "Couldn't add MAC address. API / AJAX / network error</div>"
+                            );
+                        });
+     }
             }
         });
-    });
+    }
 
     /**
      * on click even allow to delete a mac address
@@ -57,10 +63,13 @@
      * reloading only a part of the DOM
      */
     function refreshDataTable() {
+
         $( "#list-area").load( "<?= action ('Layer2AddressController@forVlanInterface' , [ 'id' => $t->vli->getId() ] ) ?> #layer-2-interface-list " ,function( ) {
             table.destroy();
             loadDataTable();
         });
+        $( "#pull-right").load( "<?= action ('Layer2AddressController@forVlanInterface' , [ 'id' => $t->vli->getId() ] ) ?> #add-btn " );
+        addl2a.on( 'click', add  );
     }
 
     /**
@@ -89,7 +98,8 @@
                             result = ( data.success ) ? 'success': 'danger';
 
                             if( result ){
-                                table.row( $(deleteBtn).parents('tr') ).remove().draw();
+                                //table.row( $(deleteBtn).parents('tr') ).remove().draw();
+                                refreshDataTable();
                                 $( "#message" ).html( "<div class='alert alert-"+result+"' role='alert'>"+ data.message +"</div>" );
                             }
 

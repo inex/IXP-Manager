@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Route;
+use Auth, D2EM, Route;
 
 use Illuminate\View\View;
 
@@ -105,7 +105,6 @@ class Layer2AddressController extends Doctrine2Frontend {
     protected static function additionalRoutes( string $route_prefix )
     {
         Route::group( [ 'prefix' => $route_prefix ], function() {
-            Route::get(     'vlan-interface/{vliid}',   'Layer2AddressController@forVlanInterface' );
 
             // adding delete route as controller is marked as read only to avoid normal d2f crud actions
             Route::post(    'delete/{id}',              'Layer2AddressController@delete' );
@@ -126,14 +125,25 @@ class Layer2AddressController extends Doctrine2Frontend {
      * Display all the layer2addresses for a VlanInterface
      *
      * @param  int $vliid ID if the VlanInterface
-     * @return  View
+     * @return  View|Redirect
      */
-    public function forVlanInterface( int $vliid ): View {
+    public function forVlanInterface( int $vliid )  {
         if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $vliid ) ) ) {
             return abort( '404' );
         }
 
-        return view( 'layer2-address/vlan-interface' )->with([
+        if( Auth::getUser()->isSuperUser() ){
+            $view = 'layer2-address/vlan-interface';
+        } else{
+            if( config( 'ixp_fe.layer2-addresses.customer_can_edit' ) && Auth::getUser()->getCustomer()->getId() == $vli->getVirtualInterface()->getCustomer()->getId() ){
+                $view = 'layer2-address/vlan-interface-cust';
+            } else{
+                return redirect('');
+            }
+
+        }
+
+        return view( $view )->with([
             'vli'       => $vli
         ]);
     }
