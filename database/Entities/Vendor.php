@@ -25,6 +25,11 @@ class Vendor
     protected $Switches;
 
     /**
+     * @var ArrayCollection
+     */
+    protected $consoleServers;
+
+    /**
      * @var string $bundle_name
      */
     protected $bundle_name;
@@ -35,6 +40,7 @@ class Vendor
     public function __construct()
     {
         $this->Switches = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->consoleServers = new \Doctrine\Common\Collections\ArrayCollection();
     }
     
     /**
@@ -197,4 +203,44 @@ class Vendor
     public function setBundleName( string $bundle_name = null ) {
         $this->bundle_name = $bundle_name;
     }
+
+
+
+
+
+    /**
+     * Add consoleServer
+     *
+     * @param ConsoleServer $consoleServer
+     * @return Vendor
+     */
+    public function addConsoleServer(ConsoleServer $consoleServer)
+    {
+        $this->consoleServers[] = $consoleServer;
+
+        return $this;
+    }
+
+    /**
+     * Remove consoleServer
+     *
+     * @param ConsoleServer $consoleServer
+     */
+    public function removeConsoleServer(ConsoleServer $consoleServer)
+    {
+        $this->consoleServers->removeElement($consoleServer);
+    }
+
+    /**
+     * Get consoleServers
+     *
+     * @return ArrayCollection
+     */
+    public function getConsoleServers()
+    {
+        return $this->consoleServers;
+    }
+
+
+
 }
