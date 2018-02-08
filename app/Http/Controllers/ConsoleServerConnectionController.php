@@ -83,14 +83,6 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
 
                 'description'  => 'Description',
 
-                'switch'  => [
-                    'title'      => 'Console Server',
-                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'switch',
-                    'action'     => 'view',
-                    'idField'    => 'switchid'
-                ],
-
                 'port'    => 'Port'
             ]
         ];
