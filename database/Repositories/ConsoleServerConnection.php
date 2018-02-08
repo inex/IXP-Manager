@@ -26,8 +26,6 @@ class ConsoleServerConnection extends EntityRepository
     {
         $dql = "SELECT  csc.id AS id,
                         csc.port AS port, 
-                        s.name AS switch,
-                        s.id AS switchid,
                         csc.speed AS speed,
                         csc.notes AS notes, 
                         c.name AS customer, 
@@ -39,7 +37,6 @@ class ConsoleServerConnection extends EntityRepository
                         csc.description AS description
                 FROM Entities\\ConsoleServerConnection csc
                 LEFT JOIN csc.Customer c
-                LEFT JOIN csc.Switcher s
                 
                 WHERE 1 = 1";
 

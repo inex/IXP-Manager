@@ -173,4 +173,228 @@ class ConsoleServer extends \Entities\ConsoleServer implements \Doctrine\ORM\Pro
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
+    public function addConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnection)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addConsoleServerConnection', [$consoleServerConnection]);
+
+        return parent::addConsoleServerConnection($consoleServerConnection);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnection)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeConsoleServerConnection', [$consoleServerConnection]);
+
+        return parent::removeConsoleServerConnection($consoleServerConnection);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getConsoleServerConnections()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getConsoleServerConnections', []);
+
+        return parent::getConsoleServerConnections();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getId()
+    {
+        if ($this->__isInitialized__ === false) {
+            return (int)  parent::getId();
+        }
+
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
+
+        return parent::getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setName($name)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', [$name]);
+
+        return parent::setName($name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getName()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', []);
+
+        return parent::getName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setHostname($hostname)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setHostname', [$hostname]);
+
+        return parent::setHostname($hostname);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getHostname()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHostname', []);
+
+        return parent::getHostname();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setModel($model)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setModel', [$model]);
+
+        return parent::setModel($model);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getModel()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getModel', []);
+
+        return parent::getModel();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setSerialNumber($serial_number)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSerialNumber', [$serial_number]);
+
+        return parent::setSerialNumber($serial_number);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSerialNumber()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSerialNumber', []);
+
+        return parent::getSerialNumber();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setActive($active)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setActive', [$active]);
+
+        return parent::setActive($active);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getActive()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getActive', []);
+
+        return parent::getActive();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setNote($notes)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setNote', [$notes]);
+
+        return parent::setNote($notes);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getNote()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNote', []);
+
+        return parent::getNote();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setVendor(\Entities\Vendor $vendor = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVendor', [$vendor]);
+
+        return parent::setVendor($vendor);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getVendor()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVendor', []);
+
+        return parent::getVendor();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCabinet(\Entities\Cabinet $cabinet = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCabinet', [$cabinet]);
+
+        return parent::setCabinet($cabinet);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCabinet()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCabinet', []);
+
+        return parent::getCabinet();
+    }
+
 }

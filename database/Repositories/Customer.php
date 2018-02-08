@@ -720,7 +720,6 @@ class Customer extends EntityRepository
 
 
         } catch (Exception $e) {
-            dd( $e );
             $this->getEntityManager()->getConnection()->rollBack();
             $isOK = false;
         }

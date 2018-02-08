@@ -295,7 +295,7 @@ class ConsoleServerConnection
      */
     public function setConsoleServer(\Entities\ConsoleServer $consoleServer = null)
     {
-        $this->cons = $consoleServer;
+        $this->consoleServer = $consoleServer;
 
         return $this;
     }
@@ -318,7 +318,7 @@ class ConsoleServerConnection
      */
     public function setSwitcher(\Entities\Switcher $switcher = null)
     {
-        $this->setSwitchId( $switcher->getId() );
+        $this->setSwitchId( $switcher != null ? $switcher->getId() : null );
         return $this;
     }
 
@@ -350,7 +350,7 @@ class ConsoleServerConnection
      * @param int $switchid
      * @return ConsoleServerConnection
      */
-    public function setSwitchId( int $switchid )
+    public function setSwitchId( $switchid )
     {
         $this->switchid = $switchid;
         return $this;

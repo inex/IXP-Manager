@@ -66,6 +66,10 @@
             <a href="{genUrl controller='router' action='list'}">Routers</a>
         </li>
 
+        <li {if $controller eq 'console-server'}class="active"{/if}>
+            <a href="{route( 'console-server@list' )}">Console Servers</a>
+        </li>
+
         <li {if $controller eq 'switch' and $action neq 'add-ports'}class="active"{/if}>
             <a href="{genUrl controller='switch' action='list'}">Switches</a>
 
@@ -129,12 +133,6 @@
         <li {if $controller eq 'vendor'}class="active"{/if}>
             <a href="{genUrl controller='vendor' action='list'}">Vendors</a>
         </li>
-
-        {if not isset( $options['frontend']['disabled']['console-server-connection'] ) or not $options['frontend']['disabled']['console-server-connection'] }
-            <li {if $controller eq 'console-server-connection'}class="active"{/if}>
-                <a href="{genUrl controller='console-server-connection' action='list'}">Console Server Connections</a>
-            </li>
-        {/if}
 
         <li {if $controller eq 'vlan' and $action neq 'private'}class="active"{/if}>
             <a href="{genUrl controller='vlan' action='list'}">VLANs</a>
