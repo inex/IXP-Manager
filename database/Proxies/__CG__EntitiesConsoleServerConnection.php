@@ -444,7 +444,7 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     /**
      * {@inheritDoc}
      */
-    public function setSwitchId(int $switchid)
+    public function setSwitchId($switchid)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSwitchId', [$switchid]);
