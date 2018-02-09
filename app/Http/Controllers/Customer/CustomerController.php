@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Customer;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -29,13 +29,12 @@ use Intervention\Image\ImageManagerStatic as Image;
 
 use IXP\Http\Controllers\Controller;
 
-use MailableException;
-
 use Illuminate\Http\{
     RedirectResponse,
     JsonResponse,
     Request
 };
+
 use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 
@@ -57,10 +56,10 @@ use Entities\{
 use IXP\Mail\Customer\Email as EmailCustomer;
 
 use IXP\Http\Requests\{
-    StoreCustomer,
-    StoreCustomerBillingInformation,
-    StoreCustomerLogo,
-    WelcomeEmail
+    StoreCustomer                   as StoreCustomerRequest,
+    StoreCustomerBillingInformation as StoreCustomerBillingInformationRequest,
+    StoreCustomerLogo               as StoreCustomerLogoRequest,
+    WelcomeEmail                    as WelcomeEmailRequest
 };
 
 use Webpatser\Countries\CountriesFacade as CountriesWebpatser;
@@ -231,12 +230,12 @@ class CustomerController extends Controller
     /**
      * Add or edit a customer (set all the data needed)
      *
-     * @param   StoreCustomer $request instance of the current HTTP request
+     * @param   StoreCustomerRequest $request instance of the current HTTP request
      *
      * @return  RedirectResponse
      * @throws
      */
-    public function store( StoreCustomer $request ): RedirectResponse {
+    public function store( StoreCustomerRequest $request ): RedirectResponse {
         $isEdit = $request->input( 'id' ) ? true : false;
         /** @var CustomerEntity $cust */
         if( $isEdit && $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) {
@@ -327,7 +326,7 @@ class CustomerController extends Controller
     /**
      * Sets reseller to customer from form
      *
-     * @param StoreCustomer     $request    instance of the current HTTP request
+     * @param StoreCustomerRequest     $request    instance of the current HTTP request
      * @param CustomerEntity    $cust
      *
      * @return bool If false, the form is not processed
@@ -448,12 +447,12 @@ class CustomerController extends Controller
      *
      * email notification
      *
-     * @param   StoreCustomerBillingInformation $request instance of the current HTTP request
+     * @param   StoreCustomerBillingInformationRequest $request instance of the current HTTP request
      *
      * @return  RedirectResponse
      * @throws
      */
-    public function storeBillingInformation( StoreCustomerBillingInformation $request ): RedirectResponse {
+    public function storeBillingInformation( StoreCustomerBillingInformationRequest $request ): RedirectResponse {
         /** @var CustomerEntity $cust */
         if( $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) {
             if( !$cust ) {
@@ -616,12 +615,12 @@ class CustomerController extends Controller
     /**
      * Add or edit a customer's logo
      *
-     * @param   StoreCustomerLogo $request instance of the current HTTP request
+     * @param   StoreCustomerLogoRequest $request instance of the current HTTP request
      *
      * @return  RedirectResponse
      * @throws
      */
-    public function storeLogo( StoreCustomerLogo $request ): RedirectResponse {
+    public function storeLogo( StoreCustomerLogoRequest $request ): RedirectResponse {
         /** @var CustomerEntity $c */
         $c = $this->loadCustomer( $request->input( 'id' ) );
 
@@ -934,13 +933,13 @@ class CustomerController extends Controller
     /**
      * Send the welcome email to a customer
      *
-     * @param WelcomeEmail $request
+     * @param WelcomeEmailRequest $request
      *
      * @return RedirectResponse|View
      *
      * @throws
      */
-    public function sendWelcomeEmail( WelcomeEmail $request){
+    public function sendWelcomeEmail( WelcomeEmailRequest $request){
         /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) ){
             abort( 404);
