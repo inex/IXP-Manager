@@ -493,40 +493,35 @@ class Customer extends EntityRepository
     }
 
     /**
-     * Return an array of one or all customer names where the array key is the customer id.
+     * Return an array of customers for display on the frontend list
      *
-     * @param $types array the types needed
-     * @param $cid int The customer ID
+     * @param bool $showCurrentOnly Limit to current customers only
+     * @param int  $state           Array index of CustomerEntity::$CUST_STATUS_TEXT
+     * @param int $type             Array index of CustomerEntity::$CUST_TYPE_TEXT
      *
-     * @return array An array of all customers names with the customers id as the key.
+     * @return array An array of all customers objects
      */
-    public function getAllForFeList( bool $currentCust = null,  int $state = null, int $type = null ): array {
-        $request = "SELECT c
-                    FROM \\Entities\\customer c
-                    WHERE 1 = 1";
+    public function getAllForFeList( bool $showCurrentOnly = false, int $state = null, int $type = null ): array {
 
-        if( $state ){
-            $request .= " AND c.status = {$state} " ;
+        $q = "SELECT c
+                FROM Entities\\Customer c
+                WHERE 1 = 1";
+
+        if( $state && isset( CustomerEntity::$CUST_STATUS_TEXT[ $state ] ) ) {
+            $q .= " AND c.status = {$state} " ;
         }
 
-        if( $type ){
-            $request .= " AND c.type = {$type} " ;
+        if( $type && isset( CustomerEntity::$CUST_TYPES_TEXT[ $type ] ) ) {
+            $q .= " AND c.type = {$type} " ;
         }
 
-        if( $currentCust ){
-            $request .= " AND " . Customer::DQL_CUST_CURRENT ;
+        if( $showCurrentOnly ) {
+            $q .= " AND " . Customer::DQL_CUST_CURRENT;
         }
 
-        $request .= " ORDER BY c.name ASC ";
+        $q .= " ORDER BY c.name ASC ";
 
-        $listCustomers = $this->getEntityManager()->createQuery( $request )->getResult();
-
-        $customers = [];
-        foreach( $listCustomers as $cust ) {
-            $customers[ ] = $cust ;
-        }
-
-        return $customers;
+        return $this->getEntityManager()->createQuery( $q )->getResult();
     }
 
 
