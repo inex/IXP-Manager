@@ -97,7 +97,7 @@ class CustomerController extends Controller
             }
         } else if( $r->session()->exists( "cust-list-state" ) ) {
             $state = $r->session()->get( "cust-list-state" );
-        } 
+        }
 
         if( ( $type = $r->input( 'type' ) ) !== null ) {
             if( isset( CustomerEntity::$CUST_TYPES_TEXT[ $type ] ) ) {
@@ -117,7 +117,6 @@ class CustomerController extends Controller
 
         return view( 'customer/list' )->with([
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAllForFeList( $showCurrentOnly, $state, $type ),
-            'resellerMode'          => $this->resellerMode(),
             'state'                 => $state           ?? false,
             'type'                  => $type            ?? false,
             'showCurrentOnly'       => $showCurrentOnly ?? false,
