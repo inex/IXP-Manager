@@ -23,33 +23,34 @@ const div_reseller_area         = $( '#reseller-area' );
 const btn_populate              = $( '#btn-populate' );
 
 /**
- * set the colo_reference in empty input by the name input value
+ * Set the abbreviated name (if empty) when the name is set:
  */
-input_name.blur( function() {
-    if( input_abbreviated_name.val() === '' ){
-        input_abbreviated_name.val( input_name.val() );
-    }
-});
+input_name.blur( () => { if( input_abbreviated_name.val() === '' ) { input_abbreviated_name.val( input_name.val() ); } });
 
 /**
  * display or hide form section depending on the type selected
  */
-dd_type.change( function( ){
-    if( dd_type.val() === "2" ){  // associate member
+dd_type.change( () => {
+    if( dd_type.val() === "<?= Entities\Customer::TYPE_ASSOCIATE ?>" ) {  // associate member
         $( '.full-member-details' ).slideUp( 'fast' );
     } else {
         $( '.full-member-details' ).slideDown( 'fast' );
     }
 });
 
-<?php if( $t->resellerMode ): ?>
+<?php if( $t->resellerMode() ): ?>
+
+/*
+ * ------------------------------------------------
+ * Reseller mode is enabled: {
+ */
 
 const cb_isReseller             = $( '#isReseller' );
 
 cb_isResold.change( function(){
     if( $( this ).prop( "checked" ) ) {
         $( '#reseller-area' ).show();
-        if( cb_isReseller.prop( "checked" ) ){
+        if( cb_isReseller.prop( "checked" ) ) {
             cb_isReseller.prop( "checked", false );
         }
     } else {
@@ -57,23 +58,29 @@ cb_isResold.change( function(){
     }
 });
 
-cb_isReseller.change( function(){
+cb_isReseller.change( function() {
     if( $( this ).prop( "checked" ) ) {
-        if( cb_isResold.prop( "checked" ) ){
+        if( cb_isResold.prop( "checked" ) ) {
             cb_isResold.prop( "checked", false ).trigger( "change" );
         }
     }
 });
 
+/*
+ * Reseller mode is enabled }
+ * ------------------------------------------------
+ */
 
 <?php endif; ?>
 
+
 $(document).ready( function(){
-    <?php if( $t->cust && $t->cust->getType() == \Entities\Customer::TYPE_ASSOCIATE ): ?>
+
+    <?php if( $t->cust && $t->cust->isTypeAssociate() ): ?>
     $( '.full-member-details' ).slideUp( 'fast' );
     <?php endif; ?>
 
-    /**
+    /*
      * Display the reseller dropdown if resold customer
      */
     if( cb_isResold.prop('checked') ) {
@@ -89,14 +96,14 @@ $(document).ready( function(){
  */
 function addClickEvent() {
     btn_populate.on('click', function(event){
-        pupulateFormViaAsn(event)
+        populateFormViaAsn(event)
     });
 }
 
 /**
  * Ajax request to fill the inputs depending on the ASN entered
  */
-function pupulateFormViaAsn() {
+function populateFormViaAsn() {
     const input_asn_search = $( '#asn-search' );
 
     if( input_asn_search.val() ){
