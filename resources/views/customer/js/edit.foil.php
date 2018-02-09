@@ -38,6 +38,13 @@ dd_type.change( () => {
     }
 });
 
+/**
+ * Handler for button request to populate from PeeringDB
+ */
+btn_populate.on( 'click', populateFormViaAsn );
+
+
+
 <?php if( $t->resellerMode() ): ?>
 
 /*
@@ -87,18 +94,8 @@ $(document).ready( function(){
         div_reseller_area.show();
     }
 
-    addClickEvent();
 });
 
-
-/**
- * Display the reseller dropdown if resold customer
- */
-function addClickEvent() {
-    btn_populate.on('click', function(event){
-        populateFormViaAsn(event)
-    });
-}
 
 /**
  * Ajax request to fill the inputs depending on the ASN entered
@@ -111,7 +108,6 @@ function populateFormViaAsn() {
         let peering_policy = '';
 
         btn_populate.attr("disabled", "disabled" );
-        btn_populate.off("click");
 
         $( '#error-message' ).remove();
         let url = " <?= url( "customer/populate-customer/asn") ?>/" + input_asn_search.val();
@@ -164,7 +160,7 @@ function populateFormViaAsn() {
                                 break;
                         }
 
-                        dd_peeringpolicy.val( peering_policy ).trigger( "change" );
+                        dd_peering_policy.val( peering_policy ).trigger( "change" );
                     }
                 }else{
 
@@ -183,7 +179,6 @@ function populateFormViaAsn() {
             })
             .always( function() {
                 btn_populate.attr("disabled", false );
-                addClickEvent();
             });
     }
 }
