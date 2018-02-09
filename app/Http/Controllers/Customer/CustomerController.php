@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use App, Auth, D2EM , DateTime, Exception, Mail, Redirect, Former;
+use App, Auth, Countries, D2EM, DateTime, Exception, Former, Mail, Redirect;
 
 use Intervention\Image\ImageManagerStatic as Image;
 
@@ -35,7 +35,6 @@ use Illuminate\Http\{
     Request
 };
 
-use Illuminate\Support\Facades\Session;
 use Illuminate\View\View;
 
 
@@ -62,8 +61,6 @@ use IXP\Http\Requests\Customer\{
     WelcomeEmail            as WelcomeEmailRequest
 };
 
-use Webpatser\Countries\CountriesFacade as CountriesWebpatser;
-
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
@@ -77,98 +74,53 @@ use IXP\Utils\View\Alert\{
  * Customer Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Interfaces
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   Customers
+ * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CustomerController extends Controller
 {
 
     /**
-     * Display all the Customers that are current in terms of `datejoin` and `dateleave` as a list
-     *
-     * @param bool  $currentCust    Display customers that are current in terms of `datejoin` and `dateleave`
-     *
-     * @return  View
-     */
-    public function listByCurrentCust( $currentCust = null ): View {
-        if( $currentCust && !in_array( $currentCust,  [ 0, 1 ] )){
-            abort( 404);
-        }
-
-        return $this->list( $currentCust , null , null );
-    }
-
-    /**
      * Display all the Customers as a list
      *
-     * @param int $status Display customer by specific status
-     *
+     * @param Request $r
      * @return  View
      */
-    public function listByStatus( int $status = null ): View {
-        if( $status && !array_key_exists( $status, CustomerEntity::$CUST_STATUS_TEXT)){
-            abort( 404);
-        }
+    public function list( Request $r ): View {
 
-        return $this->list( null, $status, null );
-    }
-
-    /**
-     * Display all the Customers as a list
-     *
-     * @param int $type Display customer by specific types
-     *
-     * @return  View
-     */
-    public function listByType( int $type = null ): View {
-        if( $type && !array_key_exists( $type, CustomerEntity::$CUST_TYPES_TEXT)){
-            abort( 404);
-        }
-        return $this->list( null,null, $type );
-    }
-
-    /**
-     * Display all the Customers as a list
-     *
-     * @param bool  $currentCust    Display customers that are current in terms of `datejoin` and `dateleave`
-     * @param int   $status         Display customer by specific status
-     * @param int   $type           Display customer by specific types
-     *
-     * @return  View
-     */
-    public function list( $currentCust = null, $status = null, $type = null ): View {
-
-        if( $status !== null ){
-            Session::put( "cust-list-status", $status );
-        } else {
-            if ( Session::exists( "cust-list-status" ) ) {
-                $status = Session::get( "cust-list-status" );
+        if( ( $state = $r->input( 'state' ) ) !== null ) {
+            if( isset( CustomerEntity::$CUST_STATUS_TEXT[ $state ] ) ) {
+                $r->session()->put( "cust-list-state", $state );
+            } else {
+                $r->session()->remove( "cust-list-state" );
             }
+        } else if( $r->session()->exists( "cust-list-state" ) ) {
+            $state = $r->session()->get( "cust-list-state" );
         }
 
-        if( $type !== null ){
-            Session::put( "cust-list-type", $type );
-        } else {
-            if ( Session::exists( "cust-list-type" ) ) {
-                $type = Session::get( "cust-list-type" );
+        if( ( $type = $r->input( 'type' ) ) !== null ) {
+            if( isset( CustomerEntity::$CUST_TYPES_TEXT[ $type ] ) ) {
+                $r->session()->put( "cust-list-type", $type );
+            } else {
+                $r->session()->remove( "cust-list-type" );
             }
+        } else if( $r->session()->exists( "cust-list-type" ) ) {
+            $type = $r->session()->get( "cust-list-type" );
         }
 
-        if( $currentCust !== null ){
-            Session::put( "cust-list-current", $currentCust );
-        } else {
-            if ( Session::exists( "cust-list-current" ) ) {
-                $currentCust = Session::get( "cust-list-current" );
-            }
+        if( ( $showCurrentOnly = $r->input( 'current-only' ) ) !== null ) {
+            $r->session()->put( "cust-list-current-only", $showCurrentOnly );
+        } else if( $r->session()->exists( "cust-list-current-only" ) ) {
+            $showCurrentOnly = $r->session()->get( "cust-list-current-only" );
         }
 
         return view( 'customer/list' )->with([
-            'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAllForFeList( $currentCust, $status, $type ),
+            'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAllForFeList( $showCurrentOnly, $state, $type ),
             'resellerMode'          => $this->resellerMode(),
-            'status'                => $status          ?? false,
+            'state'                 => $state           ?? false,
             'type'                  => $type            ?? false,
-            'currentCust'           => $currentCust     ?? false,
+            'showCurrentOnly'       => $showCurrentOnly ?? false,
         ]);
     }
 
@@ -437,7 +389,7 @@ class CustomerController extends Controller
             'juridictions'                  => D2EM::getRepository( CompanyRegisteredDetailEntity::class )->getJuridictionsAsArray(),
             'billingNotify'                 => $billingNotify,
             'resellerMode'                  => $this->resellerMode(),
-            'countries'                     => CountriesWebpatser::getList('name' )
+            'countries'                     => Countries::getList('name' )
         ]);
     }
 
@@ -847,7 +799,7 @@ class CustomerController extends Controller
             'resellerMode'              => $this->resellerMode(),
             'as112UiActive'             => $this->as112UiActive(),
             'resellerResoldBilling'     => config('ixp.reseller.reseller'),
-            'countries'                 => CountriesWebpatser::getList('name' ),
+            'countries'                 => Countries::getList('name' ),
             'tab'                       => strtolower( $tab ),
             'notesInfo'                 => $arrayNotes
         ]);
