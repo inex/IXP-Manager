@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Http\Requests;
+namespace IXP\Http\Requests\Customer;
 
 /*
  * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -33,7 +33,7 @@ use Entities\{
 use Illuminate\Foundation\Http\FormRequest;
 
 
-class StoreCustomer extends FormRequest
+class Store extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
