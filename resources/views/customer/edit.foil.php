@@ -200,34 +200,39 @@
             <hr>
             <?= Former::phone( 'nocphone' )
                 ->label( 'Phone' )
-                ->placeholder( '+353 1 123 4567' )
-                ->blockHelp( '' );
+                ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
+                ->blockHelp( 'Working hours phone number for contacting the customer NOC.<br><br>'
+                    . 'This is available to all other customers.' );
             ?>
 
             <?= Former::phone( 'noc24hphone' )
                 ->label( '24h Phone' )
-                ->placeholder( '+353 86 876 5432' )
-                ->blockHelp( '' );
+                ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
+                ->blockHelp( '24/7 emergency phone number for contacting the customer NOC..<br><br>'
+                    . 'This is available to all other customers.' );
             ?>
 
             <?= Former::email( 'nocemail' )
                 ->label( 'Email' )
                 ->placeholder( 'noc@example.com' )
-                ->blockHelp( '' );
+                ->blockHelp( 'The NOC email is used in customer lists. We try and encourage "
+                    . "the use of a role alias such as noc@example.com but this does not "
+                    . "always work out.<br><br>'
+                    . 'This is available to all other customers.' );
             ?>
 
             <?= Former::select( 'nochours' )
                 ->label( 'Hours' )
                 ->fromQuery( \Entities\Customer::$NOC_HOURS )
-                ->placeholder( 'Choose an hours' )
+                ->placeholder( 'Choose NOC Hours' )
                 ->addClass( 'chzn-select' )
-                ->blockHelp( '' );
+                ->blockHelp( 'The hours during which the NOC is available.' );
             ?>
 
             <?= Former::url( 'nocwww' )
                 ->label( 'Website' )
                 ->placeholder( 'http://www.noc.example.com/' )
-                ->blockHelp( '' );
+                ->blockHelp( 'An optional NOC information email page / status page.' );
             ?>
 
         </div>
@@ -237,15 +242,15 @@
                 <h3>Reseller Details</h3>
                 <hr>
                 <?= Former::checkbox( 'isReseller' )
-                    ->label( ' ' )
+                    ->label( '&nbsp;' )
                     ->text( 'Is a Reseller' )
-                    ->blockHelp('' );
+                    ->blockHelp( 'Check this if this customer is (also) a reseller.' );
                 ?>
 
                 <?= Former::checkbox( 'isResold' )
-                    ->label( ' ' )
+                    ->label( '&nbsp;' )
                     ->text( 'Resold Customer' )
-                    ->blockHelp('' );
+                    ->blockHelp( 'Check this if this customer comes via a reseller. Then chose the reseller.' );
                 ?>
 
                 <div id="reseller-area" class="collapse">

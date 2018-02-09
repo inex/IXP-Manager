@@ -97,7 +97,7 @@ class CustomerController extends Controller
             }
         } else if( $r->session()->exists( "cust-list-state" ) ) {
             $state = $r->session()->get( "cust-list-state" );
-        }
+        } 
 
         if( ( $type = $r->input( 'type' ) ) !== null ) {
             if( isset( CustomerEntity::$CUST_TYPES_TEXT[ $type ] ) ) {

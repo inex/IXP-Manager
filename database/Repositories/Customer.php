@@ -501,7 +501,7 @@ class Customer extends EntityRepository
      *
      * @return array An array of all customers objects
      */
-    public function getAllForFeList( bool $showCurrentOnly = false, int $state = null, int $type = null ): array {
+    public function getAllForFeList( $showCurrentOnly = false, $state = null, $type = null ): array {
 
         $q = "SELECT c
                 FROM Entities\\Customer c

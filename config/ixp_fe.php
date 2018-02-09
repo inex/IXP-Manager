@@ -71,7 +71,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Route Server PRefixes Access permissions
+    | Route Server Prefixes Access permissions
     |--------------------------------------------------------------------------
     |
     | Generally speaking, the filtering of route server prefixes is visible
@@ -89,5 +89,24 @@ return [
     */
     'rs-prefixes' => [
         'access'  => env( 'IXP_FE_RS_PREFIXES_ACCESS', Entities\User::AUTH_SUPERUSER ),
-    ]
+    ],
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Customer Controller Options
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    'customer' => [
+        'form'  => [
+            'placeholders' => [
+                // sample Irish number reserved for dramatic use
+                'phone'    => env( 'IXP_FE_CUSTOMER_FORM_PLACEHOLDER_PHONE', '+353 20 910 1234' ),
+            ]
+        ],
+    ],
+
+
 ];
