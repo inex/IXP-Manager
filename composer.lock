@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "81f8df7d8806e59700b5a1676d25d83c",
+    "content-hash": "0879c28c012346193827deb8a3664543",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -4627,32 +4627,22 @@
         },
         {
             "name": "webpatser/laravel-countries",
-            "version": "dev-master",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/webpatser/laravel-countries.git",
-                "reference": "2568394dd6bcc983be190086576ff2715c236f42"
+                "reference": "cf29cdb93a27a25cae03ab6e205f32d40bca0d1f"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/webpatser/laravel-countries/zipball/2568394dd6bcc983be190086576ff2715c236f42",
-                "reference": "2568394dd6bcc983be190086576ff2715c236f42",
+                "url": "https://api.github.com/repos/webpatser/laravel-countries/zipball/cf29cdb93a27a25cae03ab6e205f32d40bca0d1f",
+                "reference": "cf29cdb93a27a25cae03ab6e205f32d40bca0d1f",
                 "shasum": ""
             },
             "require": {
                 "php": ">=5.3.0"
             },
             "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [
-                        "Webpatser\\Countries\\CountriesServiceProvider"
-                    ],
-                    "aliases": {
-                        "Countries": "Webpatser\\Countries\\CountriesFacade"
-                    }
-                }
-            },
             "autoload": {
                 "psr-0": {
                     "Webpatser\\Countries": "src/"
@@ -4685,7 +4675,7 @@
                 "iso_3166_3",
                 "laravel"
             ],
-            "time": "2017-10-15T11:08:15+00:00"
+            "time": "2018-01-03T19:25:08+00:00"
         },
         {
             "name": "zendesk/zendesk_api_client_php",
