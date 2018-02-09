@@ -50,7 +50,7 @@
         "graham-campbell/flysystem": "^4.0",
         "s1lentium/iptools": "^1.1",
         "parsedown/laravel": "^1.0",
-        "webpatser/laravel-countries": "dev-master"
+        "webpatser/laravel-countries": "dev-develop"
 
     },
     "require-dev": {
