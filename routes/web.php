@@ -64,7 +64,12 @@ Route::group( [ 'prefix' => 'customer', 'namespace' => 'Customer'], function() {
     Route::get( 'manage-logo/{id?}',        'CustomerController@manageLogo'     )->name( "customer@manageLogo" );
     Route::post('store-logo',               'CustomerController@storeLogo'      )->name( "customer@storeLogo" );
     Route::post('deleteLogo/{id}',          'CustomerController@deleteLogo'     )->name( 'customer@deleteLogo');
+});
 
+Route::group( [ 'prefix' => 'customer-logo', 'namespace' => 'Customer'], function() {
+    Route::get( 'manage/{id?}',         'LogoController@manage'     )->name( "logo@manage" );
+    Route::post('store',                'LogoController@store'      )->name( "logo@store" );
+    Route::post('delete/{id}',          'LogoController@delete'     )->name( 'logo@delete');
 });
 
 Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer'], function() {

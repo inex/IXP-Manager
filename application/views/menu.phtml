@@ -169,8 +169,8 @@
             <a href="{genUrl controller='statistics' action='list'}">Member Statistics - List</a>
         </li>
         {if $logoManagementActive}
-            <li {if $controller eq 'customer' and $action eq 'logos'}class="active"{/if}>
-                <a href="{route( 'customer@logos' )}">Member Logos</a>
+            <li {if $controller eq 'logo' }class="active"{/if}>
+                <a href="{route( 'logo@logos' )}">Member Logos</a>
             </li>
         {/if}
         <li {if $controller eq 'statistics' and $action eq 'league-table'}class="active"{/if}>
