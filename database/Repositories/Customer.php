@@ -218,7 +218,7 @@ class Customer extends EntityRepository
      *
      * @return array An array of all reseller names with the customer id as the key.
      */
-    public function getResellerNames()
+    public function getResellerNames(): array
     {
         $acusts = $this->getEntityManager()->createQuery(
             "SELECT c.id AS id, c.name AS name FROM Entities\\Customer c WHERE c.isReseller = 1 ORDER BY c.name ASC"
