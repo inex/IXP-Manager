@@ -14,10 +14,10 @@ const input_nocphone            = $( '#nocphone' );
 const input_nocemail            = $( '#nocemail' );
 const input_peeringemail        = $( '#peeringemail' );
 const input_peeringmacro        = $( '#peeringmacro' );
-const input_peeringpolicy       = $( '#peeringpolicy' );
 
 const dd_type                   = $( '#type' );
 const dd_peering_policy         = $( '#peeringpolicy' );
+
 const cb_isResold               = $( '#isResold' );
 const div_reseller_area         = $( '#reseller-area' );
 const btn_populate              = $( '#btn-populate' );
@@ -26,7 +26,7 @@ const btn_populate              = $( '#btn-populate' );
  * set the colo_reference in empty input by the name input value
  */
 input_name.blur( function() {
-    if( input_abbreviated_name.val() == '' ){
+    if( input_abbreviated_name.val() === '' ){
         input_abbreviated_name.val( input_name.val() );
     }
 });
@@ -35,7 +35,7 @@ input_name.blur( function() {
  * display or hide form section depending on the type selected
  */
 dd_type.change( function( ){
-    if( dd_type.val() == 2 ){  // associate member
+    if( dd_type.val() === "2" ){  // associate member
         $( '.full-member-details' ).slideUp( 'fast' );
     } else {
         $( '.full-member-details' ).slideDown( 'fast' );
@@ -43,21 +43,24 @@ dd_type.change( function( ){
 });
 
 <?php if( $t->resellerMode ): ?>
-$( "#isResold" ).change( function(){
+
+const cb_isReseller             = $( '#isReseller' );
+
+cb_isResold.change( function(){
     if( $( this ).prop( "checked" ) ) {
         $( '#reseller-area' ).show();
-        if( $( '#isReseller' ).prop( "checked" ) ){
-            $( '#isReseller' ).prop( "checked", false );
+        if( cb_isReseller.prop( "checked" ) ){
+            cb_isReseller.prop( "checked", false );
         }
     } else {
         $( '#reseller-area' ).hide();
     }
 });
 
-$( "#isReseller" ).change( function(){
+cb_isReseller.change( function(){
     if( $( this ).prop( "checked" ) ) {
-        if( $( '#isResold' ).prop( "checked" ) ){
-            $( '#isResold' ).prop( "checked", false ).trigger( "change" );
+        if( cb_isResold.prop( "checked" ) ){
+            cb_isResold.prop( "checked", false ).trigger( "change" );
         }
     }
 });
@@ -94,7 +97,9 @@ function addClickEvent() {
  * Ajax request to fill the inputs depending on the ASN entered
  */
 function pupulateFormViaAsn() {
-    if( $( "#asn-search" ).val() ){
+    const input_asn_search = $( '#asn-search' );
+
+    if( input_asn_search.val() ){
         let error = '';
         let peering_policy = '';
 
@@ -102,7 +107,7 @@ function pupulateFormViaAsn() {
         btn_populate.off("click");
 
         $( '#error-message' ).remove();
-        let url = " <?= url( "customer/populate-customer/asn") ?>/" + $( "#asn-search" ).val();
+        let url = " <?= url( "customer/populate-customer/asn") ?>/" + input_asn_search.val();
         $.ajax( url )
             .done( function( data ) {
                 if( !data.error ){
@@ -125,7 +130,7 @@ function pupulateFormViaAsn() {
 
                         if( data.informations.poc_set !== "undefined" ){
                             $.each( data.informations.poc_set, function( key, noc ) {
-                                if( noc.role == "NOC"){
+                                if( noc.role === "NOC"){
                                     if( noc.phone !== "undefined" ){
                                         input_nocphone.val( noc.phone );
                                     }
@@ -152,7 +157,7 @@ function pupulateFormViaAsn() {
                                 break;
                         }
 
-                        input_peeringpolicy.val( peering_policy ).trigger( "change" );
+                        dd_peeringpolicy.val( peering_policy ).trigger( "change" );
                     }
                 }else{
 
