@@ -268,17 +268,21 @@
     </div>
 
 
-    <?=Former::actions( Former::primary_submit( 'Save Changes' ),
-        Former::default_link( 'Cancel' )->href( route ( 'customer@list' ) ),
-        Former::success_button( 'Help' )->id( 'help-btn' )
-    );?>
+    <div class="col-md-12">
 
+        <br>
+        <?= Former::hidden( 'id' )->value( $t->cust ? $t->cust->getId() : '' ) ?>
 
-    <?= Former::hidden( 'id' )
-        ->value( $t->cust ? $t->cust->getId() : '' )
-    ?>
+        <?= Former::actions( Former::primary_submit( 'Save Changes' ),
+                Former::default_link( 'Cancel' )->href( route ( 'customer@list' ) ),
+                Former::success_button( 'Help' )->id( 'help-btn' )
+            );
+        ?>
+
+    </div>
 
     <?= Former::close() ?>
+    <br>
 
 <?php $this->append() ?>
 
