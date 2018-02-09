@@ -123,10 +123,9 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
 });
 
 Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function() {
+
     Route::get(     'list',                             'CustomerController@list'                       )->name( 'customer@list');
-    Route::get(     'list/status/{status}',             'CustomerController@listByStatus'               )->name( 'customer@listByStatus');
-    Route::get(     'list/type/{type}',                 'CustomerController@listByType'                 )->name( 'customer@listByType');
-    Route::get(     'list/current-cust/{currentCust}',  'CustomerController@listByCurrentCust'          )->name( 'customer@listByCurrentCust');
+
     Route::get(     'add',                              'CustomerController@edit'                       )->name( 'customer@add');
     Route::get(     'edit/{id}',                        'CustomerController@edit'                       )->name( 'customer@edit');
     Route::get(     'billing-registration/{id}',        'CustomerController@billingRegistration'        )->name( 'customer@billingRegistration');

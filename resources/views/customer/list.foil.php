@@ -14,58 +14,66 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
+
     <li class="pull-right">
+
         <div class="btn-group btn-group-xs" role="group">
-            <a id="btn-filter-options" class="btn btn-default" href="<?= route( "customer@listByCurrentCust" , [ "currentCust" => $t->currentCust ? 0 : 1 ] ) ?>">
-                <?php if( $t->currentCust ): ?> Show All Customers <?php else: ?>Show Current Customers<?php endif;?>
+
+            <a id="btn-filter-options" class="btn btn-default" href="<?= route( "customer@list" ) . '?current-only=' . ( $t->showCurrentOnly ? '0' : '1' ) ?>">
+                <?= $t->showCurrentOnly ? "Show All Customers" : "Show Current Customers" ?>
             </a>
 
+
             <div class="btn-group">
+
                 <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?php if( $t->status ): ?> <?= \Entities\Customer::$CUST_STATUS_TEXT[ $t->status ] ?> <?php else: ?>Limit to status...<?php endif;?> <span class="caret"></span>
+                    <?= $t->state ? 'State: ' . \Entities\Customer::$CUST_STATUS_TEXT[ $t->state ] : "Limit to state..." ?> <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu">
-                    <li <?php if( !$t->status ): ?> class="active" <?php endif; ?>>
-                        <a href="<?= route( "customer@listByStatus" , [ "status" => 0 ] ) ?>">All Status</a>
+
+                <ul class="dropdown-menu dropdown-menu-right">
+
+                    <li class="<?= $t->state ? "" : "active" ?>">
+                        <a href="<?= route( "customer@list" ) . '?state=0' ?>">All States</a>
                     </li>
+
                     <li role="separator" class="divider"></li>
-                    <li <?php if( $t->status == \Entities\Customer::STATUS_NORMAL ):        ?> class="active" <?php endif; ?>   >
-                        <a href="<?= route( "customer@listByStatus" , [ "status" => \Entities\Customer::STATUS_NORMAL ]         ) ?>">Normal</a>
-                    </li>
-                    <li <?php if( $t->status == \Entities\Customer::STATUS_NOTCONNECTED ):  ?> class="active" <?php endif; ?>    >
-                        <a href="<?= route( "customer@listByStatus" , [ "status" => \Entities\Customer::STATUS_NOTCONNECTED ]   ) ?>">Not Connected</a>
-                    </li>
-                    <li <?php if( $t->status == \Entities\Customer::STATUS_SUSPENDED ):     ?> class="active" <?php endif; ?>   >
-                        <a href="<?= route( "customer@listByStatus" , [ "status" => \Entities\Customer::STATUS_SUSPENDED ]      ) ?>">Suspended</a>
-                    </li>
+
+                    <?php foreach( \Entities\Customer::$CUST_STATUS_TEXT as $state => $text ): ?>
+
+                        <li class="<?= $t->state == $state ? "active" : "" ?>">
+                            <a href="<?= route( "customer@list" ) . '?state=' . $state ?>"><?= $text ?></a>
+                        </li>
+
+                    <?php endforeach; ?>
+
                 </ul>
+
             </div>
 
-            <!-- Small button group -->
+
+
             <div class="btn-group">
+
                 <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?php if( $t->type ): ?> <?= \Entities\Customer::$CUST_TYPES_TEXT[ $t->type ] ?> <?php else: ?>Limit to type...<?php endif;?> <span class="caret"></span>
+                    <?= $t->type ? 'Type: ' . \Entities\Customer::$CUST_TYPES_TEXT[ $t->type ] : "Limit to type..." ?> <span class="caret"></span>
                 </button>
-                <ul class="dropdown-menu">
-                    <li <?php if( !$t->type ): ?> class="active" <?php endif; ?> >
-                        <a id="type-0" href="<?= route( "customer@listByType" , [ "type" => 0 ] ) ?>">All types</a>
+
+                <ul class="dropdown-menu dropdown-menu-right">
+
+                    <li class="<?= $t->type ? "" : "active" ?>">
+                        <a href="<?= route( "customer@list" ) ?>">All Types</a>
                     </li>
+
                     <li role="separator" class="divider"></li>
-                    <li <?php if( $t->type == \Entities\Customer::TYPE_FULL ):          ?> class="active" <?php endif; ?> >
-                        <a id="type-4" href="<?= route( "customer@listByType" , [ "type" => \Entities\Customer::TYPE_FULL ]         ) ?>">Full</a>
-                    </li>
-                    <li <?php if( $t->type == \Entities\Customer::TYPE_ASSOCIATE ):     ?> class="active" <?php endif; ?> >
-                        <a id="type-6" href="<?= route( "customer@listByType" , [ "type" => \Entities\Customer::TYPE_ASSOCIATE ]    ) ?>">Associated</a>
-                    </li>
-                    <li <?php if( $t->type == \Entities\Customer::TYPE_INTERNAL ):      ?> class="active" <?php endif; ?> >
-                        <a id="type-6" href="<?= route( "customer@listByType" , [ "type" => \Entities\Customer::TYPE_INTERNAL ]     ) ?>">Internal</a>
-                    </li>
-                    <li <?php if( $t->type == \Entities\Customer::TYPE_PROBONO ):       ?> class="active" <?php endif; ?> >
-                        <a id="type-6" href="<?= route( "customer@listByType" , [ "type" => \Entities\Customer::TYPE_PROBONO ]      ) ?>">Pro-bono</a>
-                    </li>
-                    <li <?php if( $t->type == \Entities\Customer::TYPE_ROUTESERVER ):   ?> class="active" <?php endif; ?> >
-                        <a id="type-6" href="<?= route( "customer@listByType" , [ "type" => \Entities\Customer::TYPE_ROUTESERVER ]  ) ?>">Routeserver</a>
-                    </li>
+
+                    <?php foreach( \Entities\Customer::$CUST_TYPES_TEXT as $type => $text ): ?>
+
+                        <li class="<?= $t->type == $type ? "active" : "" ?>">
+                            <a href="<?= route( "customer@list" ) . '?type=' . $type ?>"><?= $text ?></a>
+                        </li>
+
+                    <?php endforeach; ?>
+
                 </ul>
             </div>
 
