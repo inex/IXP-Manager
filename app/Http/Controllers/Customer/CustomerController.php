@@ -134,12 +134,12 @@ class CustomerController extends Controller
     public function edit( int $id = null ): View {
 
         $cust = false; /** @var CustomerEntity $cust */
-        if( $id and !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
+        if( $id && !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
             abort(404);
         }
 
         if( $cust ) {
-            // populate the form with VLAN interface data
+            // populate the form with data
             Former::populate([
                 'name'                  => $cust->getName(),
                 'type'                  => $cust->getType(),
@@ -160,7 +160,6 @@ class CustomerController extends Controller
                 'activepeeringmatrix'   => $cust->getActivepeeringmatrix() ? 1 : 0,
                 'nocphone'              => $cust->getNocphone(),
                 'noc24hphone'           => $cust->getNoc24hphone(),
-                'nocfax'                => $cust->getNocfax(),
                 'nocemail'              => $cust->getNocemail(),
                 'nochours'              => $cust->getNoc24hphone(),
                 'nocwww'                => $cust->getNocwww(),
@@ -175,7 +174,6 @@ class CustomerController extends Controller
             'irrdbs'                        => D2EM::getRepository( IRRDBConfigEntity::class )->getAsArray(),
             'resellerMode'                  => $this->resellerMode(),
             'resellers'                     => D2EM::getRepository( CustomerEntity::class )->getResellerNames(),
-            'ixp'                           => D2EM::getRepository( IXPEntity::class )->find( 1 ),
         ]);
     }
 
