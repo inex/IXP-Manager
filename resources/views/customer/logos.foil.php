@@ -23,7 +23,7 @@
 
             <div class="col-sm-3">
 
-                <a href="<?= route( "customer@manageLogo" , [ "id" => $logo->getCustomer()->getId() ] ) ?>">
+                <a href="<?= route( "logo@manage" , [ "id" => $logo->getCustomer()->getId() ] ) ?>">
                     <img class="www80-padding" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
                 </a>
 

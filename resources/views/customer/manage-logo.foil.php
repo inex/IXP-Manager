@@ -63,7 +63,7 @@
         </p>
 
         <?= Former::open()->method( 'POST' )
-            ->action( route ('customer@storeLogo' ) )
+            ->action( route ('logo@store' ) )
             ->enctype( "multipart/form-data" )
             ->customWidthClass( 'col-sm-3' )
             ->addClass( 'col-md-10' );
@@ -105,7 +105,7 @@
 
         $( "#delete" ).on( 'click', function(e){
             e.preventDefault();
-            let urlAction = '<?= route( "customer@deleteLogo" , [ 'id' => $t->c->getId() ] )  ?>';
+            let urlAction = '<?= route( "logo@delete" , [ 'id' => $t->c->getId() ] )  ?>';
 
             $.ajax( urlAction, {
                 type: 'POST'

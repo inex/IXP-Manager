@@ -144,6 +144,10 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
 
 });
 
+Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer-logo' ], function() {
+    Route::get(     'logos',                            'LogoController@logos'                      )->name( "logo@logos" );
+});
+
 Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer-note' ], function() {
 
     Route::get(    'ajax-notify-toggle/custid/{id}',   'CustomerNotesController@notifyToggleByCust'     )->name( 'customerNotes@notifyToggleCust');
