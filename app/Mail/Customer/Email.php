@@ -31,7 +31,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Entities\{
     Customer as CustomerEntity
 };
-use IXP\Http\Requests\WelcomeEmail;
+use IXP\Http\Requests\Customer\WelcomeEmail;
 
 /**
  * Mailable for Customer

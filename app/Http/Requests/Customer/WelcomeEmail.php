@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Http\Requests;
+namespace IXP\Http\Requests\Customer;
 
 /*
  * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.

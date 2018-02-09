@@ -54,11 +54,11 @@ use Entities\{
 
 use IXP\Mail\Customer\Email as EmailCustomer;
 
-use IXP\Http\Requests\{
-    StoreCustomer                   as StoreCustomerRequest,
-    StoreCustomerBillingInformation as StoreCustomerBillingInformationRequest,
-    StoreCustomerLogo               as StoreCustomerLogoRequest,
-    WelcomeEmail                    as WelcomeEmailRequest
+use IXP\Http\Requests\Customer\{
+    Store                   as CustomerRequest,
+    BillingInformation      as BillingInformationRequest,
+    Logo                    as LogoRequest,
+    WelcomeEmail            as WelcomeEmailRequest
 };
 
 use IXP\Utils\View\Alert\{
@@ -180,12 +180,12 @@ class CustomerController extends Controller
     /**
      * Add or edit a customer (set all the data needed)
      *
-     * @param   StoreCustomerRequest $request instance of the current HTTP request
+     * @param   CustomerRequest $request instance of the current HTTP request
      *
      * @return  RedirectResponse
      * @throws
      */
-    public function store( StoreCustomerRequest $request ): RedirectResponse {
+    public function store( CustomerRequest $request ): RedirectResponse {
         $isEdit = $request->input( 'id' ) ? true : false;
         /** @var CustomerEntity $cust */
         if( $isEdit && $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) {
@@ -397,12 +397,12 @@ class CustomerController extends Controller
      *
      * email notification
      *
-     * @param   StoreCustomerBillingInformationRequest $request instance of the current HTTP request
+     * @param   BillingInformationRequest $request instance of the current HTTP request
      *
      * @return  RedirectResponse
      * @throws
      */
-    public function storeBillingInformation( StoreCustomerBillingInformationRequest $request ): RedirectResponse {
+    public function storeBillingInformation( BillingInformationRequest $request ): RedirectResponse {
         /** @var CustomerEntity $cust */
         if( $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) {
             if( !$cust ) {
@@ -463,7 +463,7 @@ class CustomerController extends Controller
 
         }
 
-        return Redirect::to( route( "customer@overview" , [ "id" => $cust->getId() , "tab" => "billing" ]  ) );
+        return Redirect::to( route( "customer@overview" , [ "id" => $cust->getId() , "tab" => "details" ]  ) );
 
     }
 
@@ -565,12 +565,12 @@ class CustomerController extends Controller
     /**
      * Add or edit a customer's logo
      *
-     * @param   StoreCustomerLogoRequest $request instance of the current HTTP request
+     * @param   LogoRequest $request instance of the current HTTP request
      *
      * @return  RedirectResponse
      * @throws
      */
-    public function storeLogo( StoreCustomerLogoRequest $request ): RedirectResponse {
+    public function storeLogo( LogoRequest $request ): RedirectResponse {
         /** @var CustomerEntity $c */
         $c = $this->loadCustomer( $request->input( 'id' ) );
 
@@ -919,7 +919,7 @@ class CustomerController extends Controller
 
         Mail::send( $mailable );
 
-        AlertContainer::push( "Email sent.", Alert::SUCCESS );
+        AlertContainer::push( "Welcome email sent.", Alert::SUCCESS );
 
         return Redirect::to( route( "customer@overview", [ "id" => $c->getId() ] ) );
 

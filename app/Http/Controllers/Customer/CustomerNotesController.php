@@ -46,7 +46,7 @@ use IXP\Mail\Customer\Email as EmailCustomer;
 
 
 use IXP\Http\Requests\{
-    StoreCustomer
+    Store
 };
 
 use IXP\Utils\View\Alert\{
