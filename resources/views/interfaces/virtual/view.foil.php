@@ -40,7 +40,7 @@
                             </b>
                         </td>
                         <td>
-                            <a href="<?= url( '/customer/overview/id' ).'/'.$t->vi->getCustomer()->getId() ?>">
+                            <a href="<?= route( "customer@overview" , [ "id" => $t->vi->getCustomer()->getId() ] ) ?>">
                                 <?= $t->ee( $t->vi->getCustomer()->getName() )  ?>
                             </a>
                         </td>

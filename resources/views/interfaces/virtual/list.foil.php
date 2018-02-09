@@ -65,7 +65,7 @@
                 /** @var Entities\VirtualInterface $vi */ ?>
                 <tr>
                     <td>
-                        <a href="<?= url( '/customer/overview/id' ).'/' . $vi->getCustomer()->getId() ?>">
+                        <a href="<?= route( "customer@overview" , [ "id" => $vi->getCustomer()->getId() ] ) ?>">
                             <?= $t->ee( $vi->getCustomer()->getName() ) ?>
                         </a>
                     </td>

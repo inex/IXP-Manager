@@ -181,6 +181,7 @@ return [
         IXP\Providers\GrapherServiceProvider::class,
         IXP\Providers\LookingGlassServiceProvider::class,
         IXP\Providers\FoilServiceProvider::class,
+        IXP\Providers\PeeringDbServiceProvider::class,
 
         /*
          * Third party providers

@@ -63,7 +63,7 @@
             });
 
 
-        $.ajax( "<?= url('api/v4/peeringdb/ix') ?>" )
+        $.ajax( "<?= url('peeringdb/ix') ?>" )
             .done( function( data ) {
                 let selectedpdb, selectNow;
                 let options = `<option value=''>Choose the matching PeeringDB IXP...</option>\n`;

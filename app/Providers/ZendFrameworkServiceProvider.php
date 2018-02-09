@@ -159,13 +159,11 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
     }
 
     /**
-     * Force URL (and http/s schema) if necessary
+     * Force URL
      */
     private function setupUrls( array $options ): array {
-        if( config('identity.urls.forceUrl') ) {
-            $options['utils']['genurl']['host_mode']    = 'REPLACE';
-            $options['utils']['genurl']['host_replace'] = config('identity.urls.forceUrl');
-        }
+        $options['utils']['genurl']['host_mode']    = 'REPLACE';
+        $options['utils']['genurl']['host_replace'] = config('app.url');
         return $options;
     }
 
@@ -183,9 +181,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
 
         $options['resources']['namespace']['checkip']           = 0;
         $options['resources']['namespace']['timeout']           = config('session.lifetime')*60;
-
-        $options['resources']['session']['use_only_cookies']    = true;
-        $options['resources']['session']['remember_me_seconds'] = config('session.lifetime')*60;
 
         return $options;
     }
@@ -379,7 +374,15 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
      * Setup mailer
      */
     private function setupMailer( array $options ): array {
-        $options['ondemand_resources']['mailer']['smtphost'] = config('mail.host');
+
+        $options['resources']['mailer']['smtphost'] = config('mail.host');
+
+        $options['resources']['mailer']['port'] = config('mail.port',null) ?? 25;
+
+        $options['resources']['mailer']['auth']     = config('mail.auth',null);
+        $options['resources']['mailer']['username'] = config('mail.username',null);
+        $options['resources']['mailer']['password'] = config('mail.password',null);
+
         return $options;
     }
 
@@ -387,8 +390,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
      * Setup session
      */
     private function setupSession( array $options ): array {
-        $options['resources']['session']['save_path'] = config('session.files');
-        $options['resources']['session']['name']      = config('session.cookie');
+        $options['resources']['session'] = [];
         return $options;
     }
 }

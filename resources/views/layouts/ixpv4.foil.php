@@ -10,7 +10,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
     <meta charset="utf-8">
 
-    <title>IXP Manager</title>
+    <title><?= config('identity.sitename' ) ?></title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">
@@ -146,7 +146,7 @@
 
         <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
             $( "#menu-select-customer" ).select2({ placeholder: "Jump to customer...", allowClear: true }).change( function(){
-                document.location.href = '<?= url( "/customer/overview" ) ?>/id/' + $( "#menu-select-customer" ).val();
+                document.location.href = '<?= url( "/customer/overview" ) ?>/' + $( "#menu-select-customer" ).val();
             });
         <?php endif; ?>
     </script>

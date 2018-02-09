@@ -32,26 +32,6 @@ Route::get( 'test', function() {
         ->header( 'Content-Type', 'text/plain; charset=utf-8' );
 });
 
-
-Route::get( 'peeringdb/ix', function() {
-    return response()->json( Cache::remember('peeringdb/ix', 120, function() {
-        $ixps = [];
-        if( $ixs = file_get_contents('https://www.peeringdb.com/api/ix') ) {
-            foreach( json_decode($ixs)->data as $ix ) {
-                $ixps[$ix->id] = [
-                    'pdb_id' => $ix->id,
-                    'name' => $ix->name,
-                    'city' => $ix->city,
-                    'country' => $ix->country,
-                ];
-            }
-        }
-        return $ixps;
-    })
-    );
-})->name('api-v4-peeringdb-ixs');
-
-
 Route::get( 'ix-f/ixp', function() {
     return response()->json( Cache::remember('ix-f/ixp', 120, function() {
             $ixps = [];
@@ -69,20 +49,4 @@ Route::get( 'ix-f/ixp', function() {
         })
     );
 })->name('api-v4-ixf-ixs');
-
-
-Route::get( 'peering-db/fac', function() {
-    return response()->json( Cache::remember('peering-db/fac', 120, function() {
-        $pdbs = [];
-        if( $pdb = file_get_contents('https://api.peeringdb.com/api/fac') ) {
-            foreach( json_decode( $pdb )->data as $db ) {
-                $pdbs[ $db->id ] = [
-                    'id' => $db->id,
-                    'name' => $db->name,
-                ];
-            }
-        }
-        return $pdbs;
-    }));
-})->name('api-v4-peering-db-fac');
 

@@ -53,7 +53,7 @@ $this->layout( 'layouts/ixpv4' );
                     <tr>
 
                         <td>
-                            <a href="<?= url( '/customer/overview/id' ).'/'.$sflr->getCustomer()->getId()?>">
+                            <a href="<?= route( "customer@overview" , [ "id" => $sflr->getCustomer()->getId() ] ) ?>">
                                 <?= $t->ee( $sflr->getCustomer()->getName() )   ?>
                             </a>
                         </td>

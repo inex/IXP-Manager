@@ -49,7 +49,7 @@
         <tbody>
             {foreach $notes as $n}
                 <tr>
-                    <td><a href="{genUrl controller="customer" action="overview" tab="notes" id=$n.cid}">{$n.cname}</a></td>
+                    <td><a href="{route( 'customer@overview', [ 'id' => $n.cid, 'tab' => 'notes' ] )}">{$n.cname}</a></td>
                     <td>{$n.latest}</td>
                 </tr>
             {/foreach}

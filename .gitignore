@@ -1,5 +1,6 @@
 
 .env
+.env*.local
 .project
 .buildpath
 .vagrant/
@@ -90,6 +91,7 @@ storage/files/*
 
 .idea/workspace.xml
 .idea/tasks.xml
+.idea/codeStyles/
 .idea/dataSources.local.xml
 .idea/dataSources.xml
 .idea/dataSources
@@ -111,4 +113,6 @@ storage/files/*
 mrtg/
 npm-debug.log
 yarn-error.log
+
+tools/docker/containers/mysql/docker.sql
 

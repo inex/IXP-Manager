@@ -488,7 +488,8 @@ class PatchPanelPortController extends Controller
         D2EM::flush();
 
         AlertContainer::push( 'The patch panel port has been set to: ' . $this->getPPP()->resolveStates(), Alert::SUCCESS );
-        return redirect( '/patch-panel-port/list/patch-panel/'.$this->getPPP()->getPatchPanel()->getId() );
+        //return redirect( '/patch-panel-port/list/patch-panel/'.$this->getPPP()->getPatchPanel()->getId() );
+        return redirect::back();
     }
 
     /**
@@ -633,10 +634,6 @@ class PatchPanelPortController extends Controller
      *
      */
     private function setupLoA() {
-        if( !($this->getPPP()->isStateAwaitingXConnect() || $this->getPPP()->isStateConnected()) ) {
-            abort(404);
-        }
-
         /** @var UserEntity $u */
         $u = Auth::user();
         if( !$u->isSuperUser() ) {
@@ -722,6 +719,8 @@ class PatchPanelPortController extends Controller
      *
      * @param   MovePatchPanelPortRequest $request instance of the current HTTP request
      * @return  RedirectResponse
+     *
+     * @throws
      */
     public function move( MovePatchPanelPortRequest $request ): RedirectResponse {
         $pppOld     = D2EM::getRepository( PatchPanelPortEntity::class )->find( $request->input( 'id'           ) ) ; /** @var PatchPanelPortEntity $pppOld */
@@ -748,6 +747,8 @@ class PatchPanelPortController extends Controller
      *
      * @param  int $fileid patch panel port file ID
      * @return  JsonResponse
+     *
+     * @throws
      */
     public function deleteFile( int $fileid ){
         /** @var PatchPanelPortFileEntity $pppf */

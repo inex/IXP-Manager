@@ -308,6 +308,17 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     /**
      * {@inheritDoc}
      */
+    public function getBillingCountryName()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingCountryName', []);
+
+        return parent::getBillingCountryName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setBillingEmail($billingEmail)
     {
 

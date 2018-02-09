@@ -26,7 +26,7 @@
                     </li>
                     <li class="divider"></li>
                     <li>
-                        <a href="{genUrl controller="customer" action="welcome-email" id=$cust->getId()}">Send Welcome Email...</a>
+                        <a href="{route( 'customer@welcomeEmail', [ 'id' => $cust->getId() ] )}">Send Welcome Email...</a>
                     </li>
                 </ul>
             </div>
@@ -86,9 +86,9 @@
 
                 {/foreach}
 
-                <a class="btn btn-mini" href="{genUrl controller='customer' action="overview" id=$cidprev}"><i class="icon-chevron-left"></i></a>
-                <a class="btn btn-mini" href="{genUrl controller='customer' action="overview" id=$cust->getId()}"><i class="icon-refresh"></i></a>
-                <a class="btn btn-mini" href="{genUrl controller='customer' action="overview" id=$cidnext}"><i class="icon-chevron-right"></i></a>
+                <a class="btn btn-mini" href="{route( 'customer@overview', [ 'id' => $cidprev ] )}"><i class="icon-chevron-left"></i></a>
+                <a class="btn btn-mini" href="{route( 'customer@overview', [ 'id' => $cust->getId() ] )}"><i class="icon-refresh"></i></a>
+                <a class="btn btn-mini" href="{route( 'customer@overview', [ 'id' => $cidnext ] )}"><i class="icon-chevron-right"></i></a>
             </div>
         </div>
     </li>

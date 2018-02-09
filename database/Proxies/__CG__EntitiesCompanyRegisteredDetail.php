@@ -352,6 +352,17 @@ class CompanyRegisteredDetail extends \Entities\CompanyRegisteredDetail implemen
     /**
      * {@inheritDoc}
      */
+    public function getCountryName()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCountryName', []);
+
+        return parent::getCountryName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getId()
     {
         if ($this->__isInitialized__ === false) {

@@ -1,0 +1,282 @@
+<?php
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' );
+?>
+
+<?php $this->section( 'title' ) ?>
+    <a href="<?= route( 'customer@list' )?>">Customers</a>
+<?php $this->append() ?>
+
+<?php $this->section( 'page-header-postamble' ) ?>
+    <li><?= $t->c->getFormattedName() ?></li>
+<?php $this->append() ?>
+
+<?php $this->section( 'page-header-preamble' ) ?>
+<li class="pull-right">
+    <div class="btn-group">
+        <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="glyphicon glyphicon-cog"></i> &nbsp;<span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu pull-right">
+            <li>
+                <a href="<?= route( 'interfaces/virtual/add-wizard/custid', [ 'id' => $t->c->getId() ] ) ?>">Provision new port...</a>
+            </li>
+            <li role="separator" class="divider"></li>
+            <li >
+                <a href="<?= route( 'customer@welcomeEmail', [ 'id' => $t->c->getId() ] ) ?>"               >Send Welcome Email...</a>
+            </li>
+        </ul>
+    </div>
+
+
+    <div class="btn-group">
+        <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="glyphicon glyphicon-pencil"></i> &nbsp;<span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu pull-right">
+            <li>
+                <a href="<?= route( 'customer@edit' , [ 'id' => $t->c->getId() ] ) ?>">Edit Customer Details</a>
+            </li>
+            <li>
+                <a href="<?= route( 'customer@billingRegistration' , [ 'id' => $t->c->getId() ] ) ?>" >
+                    <?php if ( ( config('ixp.reseller.reseller') !== null || !config('ixp.reseller.reseller') ) || !$t->resellerMode || !$t->c->isResoldCustomer() ): ?>
+                        Edit Billing/Registration Details
+                    <?php else: ?>
+                        Edit Registration Details
+                    <?php endif; ?>
+                </a>
+            </li>
+            <?php if( !$t->logoManagementDisabled ): ?>
+                <li>
+                    <a href="<?= route( 'customer@manageLogo', [ 'id' => $t->c->getId() ] ) ?>">Manage Logo</a>
+                </li>
+            <?php endif; ?>
+
+        </ul>
+    </div>
+
+    <?php $haveprev = 0 ?>
+    <?php $havenext = 0 ?>
+    <?php $keyCustomers = array_keys( $t->customers ) ?>
+    <?php foreach( $t->customers as $id => $name ): ?>
+
+        <?php if( $id == reset( $keyCustomers ) ): ?>
+            <?php $cidprev = $id ?>
+        <?php endif; ?>
+
+        <?php if( $id == $t->c->getId() ): ?>
+            <?php $haveprev = 1 ?>
+        <?php elseif( $haveprev && !$havenext ): ?>
+            <?php $havenext = 1 ?>
+            <?php $cidnext = $id ?>
+        <?php endif; ?>
+
+        <?php if( !$haveprev ): ?>
+            <?php $cidprev = $id ?>
+        <?php endif; ?>
+
+        <?php if( !$havenext and end( $keyCustomers ) ): ?>
+            <?php $cidnext = $id ?>
+        <?php endif; ?>
+
+    <?php endforeach; ?>
+
+    <div class="btn-group btn-group-xs" role="group">
+        <a type="button" class="btn btn-default" href="<?= route( "customer@overview", [ 'id' => $cidprev ] ) ?>">
+            <span class="glyphicon glyphicon-chevron-left"></span>
+        </a>
+        <a type="button" class="btn btn-default" href="<?= route( "customer@overview", [ 'id' => $t->c->getId() ] ) ?>">
+            <span class="glyphicon glyphicon glyphicon-refresh"></span>
+        </a>
+        <a type="button" class="btn btn-default" href="<?= route( "customer@overview", [ 'id' => $cidnext ] ) ?>">
+            <span class="glyphicon glyphicon-chevron-right"></span>
+        </a>
+    </div>
+</li>
+<?php $this->append() ?>
+
+<?php $this->section('content') ?>
+    <?= $t->alerts() ?>
+
+
+        <div class="col-sm-12">
+            <div class="well">
+                <h3>
+                    <?= $t->c->getFormattedName() ?>
+                    <?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?>
+                </h3>
+            </div>
+
+            <ul class="nav nav-tabs">
+                <li role="overview" <?php if( $t->tab == null || $t->tab == 'overview' ): ?> class="active" <?php endif; ?>>
+                    <a data-toggle="tab" href="#overview">Overview</a>
+                </li>
+                <li role="details" <?php if( $t->tab == 'details' ): ?> class="active" <?php endif; ?> >
+                    <a data-toggle="tab" href="#details">Details</a>
+                </li>
+                <?php if( $t->resellerMode && $t->c->isReseller() ): ?>
+                    <li role="resold-customers" <?php if( $t->tab == 'resold-customers' ): ?> class="active" <?php endif; ?>>
+                        <a data-toggle="tab" href="#resold-customers" data-toggle="tab">Resold Customers</a>
+                    </li>
+                <?php endif; ?>
+                <?php if( $t->c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $t->c->hasLeft() ) ):?>
+                    <li role="ports" <?php if( $t->tab == 'ports' ): ?> class="active" <?php endif; ?>>
+                        <a data-toggle="tab" href="#ports" data-toggle="tab">Ports</a>
+                    </li>
+
+                    <?php if( $t->c->hasPrivateVLANs() ): ?>
+                        <li role="private-vlans" <?php if( $t->tab == 'private-vlans' ): ?> class="active" <?php endif; ?>>
+                            <a data-toggle="tab" href="#private-vlans" data-toggle="tab">Private VLANs</a>
+                        </li>
+                    <?php endif; ?>
+                <?php endif; ?>
+                <li role="users" <?php if( $t->tab == 'users' ): ?> class="active" <?php endif; ?>>
+                    <a data-toggle="tab" href="#users" data-toggle="tab">Users</a>
+                </li>
+
+                <li role="contacts" <?php if( $t->tab == 'contacts' ): ?> class="active" <?php endif; ?>>
+                    <a data-toggle="tab" href="#contacts" data-toggle="tab">Contacts</a>
+                </li>
+
+                <li role="logins" <?php if( $t->tab == 'logins' ): ?> class="active" <?php endif; ?>>
+                    <a data-toggle="tab" href="#logins" data-toggle="tab">Logins</a>
+                </li>
+
+                <li role="notes" <?php if( $t->tab == 'notes' ): ?> class="active" <?php endif; ?>>
+                    <a data-toggle="tab" href="#notes" id="tab-notes" data-toggle="tab">
+                        Notes
+                        <?php if( $t->notesInfo[ "unreadNotes"] > 0 ): ?>
+                            <span id="notes-unread-indicator" class="badge badge-success"><?= $t->notesInfo[ "unreadNotes"] ?></span>
+                        <?php endif ?>
+                    </a>
+                </li>
+                <li role="cross-connects" <?php if( $t->tab == 'cross-connects' ): ?> class="active" <?php endif; ?>>
+                    <a data-toggle="tab" href="#cross-connects" data-toggle="tab">Cross Connects</a>
+                </li>
+                <?php if( count( $t->c->getConsoleServerConnections() ) ): ?>
+                    <li role="console-server-connections" <?php if( $t->tab == 'console-server-connections' ): ?> class="active" <?php endif; ?>>
+                        <a data-toggle="tab" href="#console-server-connections" data-toggle="tab">OOB Access</a>
+                    </li>
+                <?php endif ?>
+
+                <?php if( $t->c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $t->c->hasLeft() ) ): ?>
+
+                    <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes' ) && $t->c->isRouteServerClient() ): ?>
+                        <li onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'id' =>  $t->c->getId() ] ) ?>'">
+                            <a data-toggle="tab"  href="">
+                                RS Prefixes
+                                <?php if( $t->rsRoutes[ 'adv_nacc' ][ 'total' ] > 0 ): ?>
+                                    <span class="badge badge-danger"><?= $t->rsRoutes[ 'adv_nacc' ][ 'total' ] ?></span>
+                                <?php endif ?>
+                                &raquo;
+                            </a>
+                        </li>
+                    <?php endif ?>
+
+                    <?php if( config('grapher.backends.sflow.enabled') ) : ?>
+                        <li onclick="window.location.href = '<?= url( "statistics/p2p/shortname/". $t->c->getShortname() )  ?>'">
+                            <a data-toggle="tab" href="">P2P &raquo;</a>
+                        </li>
+                    <?php endif ?>
+                <?php endif ?>
+            </ul>
+
+
+
+            <div class="tab-content">
+                <div id="overview" class="tab-pane fade <?php if( $t->tab == null || $t->tab == 'overview' ): ?> in active <?php endif; ?>">
+                    <?= $t->insert( 'customer/overview-tabs/overview' ); ?>
+                </div>
+                <div id="details" class="tab-pane fade <?php if( $t->tab == 'details' ): ?> in active <?php endif; ?>">
+                    <?= $t->insert( 'customer/overview-tabs/details' ); ?>
+                </div>
+                <?php if( $t->resellerMode && $t->c->isReseller() ): ?>
+                    <div id="resold-customers" class="tab-pane fade">
+                        <?= $t->insert( 'customer/overview-tabs/resold-customers' ); ?>
+                    </div>
+                <?php endif ?>
+                <?php if( $t->c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $t->c->hasLeft() ) ):?>
+                    <div id="ports" class="tab-pane fade <?php if( $t->tab == 'ports' ): ?> in active <?php endif; ?> ">
+                        <?php if( $t->resellerMode && $t->c->isReseller() ): ?>
+                            <?= $t->insert( 'customer/overview-tabs/reseller-ports' ); ?>
+                        <?php else: ?>
+                            <?= $t->insert( 'customer/overview-tabs/ports' ); ?>
+                        <?php endif ?>
+
+
+                    </div>
+                    <?php if( $t->c->hasPrivateVLANs() ): ?>
+                        <div id="private-vlans" class="tab-pane fade <?php if( $t->tab == 'private-vlans' ): ?> in active <?php endif; ?> ">
+                            <?= $t->insert( 'customer/overview-tabs/private-vlans' ); ?>
+                        </div>
+                    <?php endif ?>
+                <?php endif ?>
+                <div id="users" class="tab-pane fade <?php if( $t->tab == 'users' ): ?> in active <?php endif; ?> ">
+                    <?= $t->insert( 'customer/overview-tabs/users' ); ?>
+                </div>
+                <div id="contacts" class="tab-pane fade <?php if( $t->tab == 'contacts' ): ?> in active <?php endif; ?>">
+                    <?= $t->insert( 'customer/overview-tabs/contacts' ); ?>
+                </div>
+                <div id="logins" class="tab-pane fade <?php if( $t->tab == 'logins' ): ?> in active <?php endif; ?>">
+                    <?= $t->insert( 'customer/overview-tabs/logins' ); ?>
+                </div>
+                <div id="notes" class="tab-pane fade <?php if( $t->tab == 'notes' ): ?> in active <?php endif; ?>">
+                    <?= $t->insert( 'customer/overview-tabs/notes' ); ?>
+                </div>
+                <div id="cross-connects" class="tab-pane fade">
+                    <?= $t->insert( 'customer/overview-tabs/cross-connects' ); ?>
+                </div>
+                <div id="console-server-connections" class="tab-pane fade">
+                    <?= $t->insert( 'customer/overview-tabs/console-server-connections' ); ?>
+                </div>
+            </div>
+        </div>
+
+
+<?php $this->append() ?>
+
+<?php $this->section( 'scripts' ) ?>
+
+    <?= $t->insert( 'customer/js/overview/users' ); ?>
+    <?= $t->insert( 'customer/js/overview/contacts' ); ?>
+    <?= $t->insert( 'customer/js/overview/notes' ); ?>
+
+    <script>
+        /**
+         * Iframe to display peeringDB website
+         *
+         * @param string asNumber The AS number
+         *
+         * @return html
+         */
+        function perringDb( ) {
+            var str = "<?= config('ixp_tools.peeringdb_url' ) ?>";
+            var mapObj = {
+                '%ID%':"<?= $t->c->getPeeringDb() ?>",
+                '%ASN%':"<?= $t->c->getAutsys() ?>",
+
+            };
+            var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
+            str = str.replace(re, function(matched){
+                return mapObj[matched];
+            });
+
+            let html = `<iframe width="100%" height="500px" src="${str}" frameborder="0" allowfullscreen></iframe>`;
+
+            bootbox.dialog({
+                message: html,
+                size: "large",
+                title: "AS Number Lookup",
+                buttons: {
+                    cancel: {
+                        label: 'Close',
+                        callback: function () {
+                            $('.bootbox.modal').modal('hide');
+                            return false;
+                        }
+                    }
+                }
+            });
+        }
+    </script>
+<?php $this->append() ?>

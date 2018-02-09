@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Customer;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,41 +23,43 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM , DateTime, Exception, Mail, Redirect, Former;
+use App, Auth, Countries, D2EM, DateTime, Exception, Former, Mail, Redirect;
 
 use Intervention\Image\ImageManagerStatic as Image;
 
-use Illuminate\View\View;
 use IXP\Http\Controllers\Controller;
+
 use Illuminate\Http\{
     RedirectResponse,
-    JsonResponse
+    JsonResponse,
+    Request
 };
 
-use Illuminate\Support\Facades\Session;
+use Illuminate\View\View;
+
 
 use Entities\{
-    Customer as CustomerEntity,
-    CustomerNote as CustomerNoteEntity,
-    IXP as IXPEntity,
-    NetworkInfo as NetworkInfoEntity,
-    IRRDBConfig as IRRDBConfigEntity,
-    CompanyBillingDetail as CompanyBillingDetailEntity,
+    CompanyBillingDetail    as CompanyBillingDetailEntity,
     CompanyRegisteredDetail as CompanyRegisteredDetailEntity,
-    User as UserEntity,
-    Logo as LogoEntity
+    Customer                as CustomerEntity,
+    CustomerNote            as CustomerNoteEntity,
+    IRRDBConfig             as IRRDBConfigEntity,
+    IXP                     as IXPEntity,
+    Logo                    as LogoEntity,
+    NetworkInfo             as NetworkInfoEntity,
+    PhysicalInterface       as PhysicalInterfaceEntity,
+    RSPrefix                as RSPrefixEntity,
+    User                    as UserEntity
 };
 
 use IXP\Mail\Customer\Email as EmailCustomer;
 
-
-use IXP\Http\Requests\{
-    StoreCustomer,
-    StoreCustomerBillingInformation,
-    StoreCustomerLogoController
+use IXP\Http\Requests\Customer\{
+    Store                   as CustomerRequest,
+    BillingInformation      as BillingInformationRequest,
+    Logo                    as LogoRequest,
+    WelcomeEmail            as WelcomeEmailRequest
 };
-
-use Webpatser\Countries\CountriesFacade as CountriesFacade;
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -65,108 +67,60 @@ use IXP\Utils\View\Alert\{
 };
 
 
-use GuzzleHttp\{
-    Client as GuzzleHttp,
-    Exception\RequestException
-};
+
 
 
 /**
  * Customer Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   Interfaces
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @category   Customers
+ * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CustomerController extends Controller
 {
 
     /**
-     * Display all the Customers that are current in terms of `datejoin` and `dateleave` as a list
-     *
-     * @param bool  $currentCust    Display customers that are current in terms of `datejoin` and `dateleave`
-     *
-     * @return  View
-     */
-    public function listByCurrentCust( $currentCust = null ): View {
-        if( $currentCust && !in_array( $currentCust,  [ 0, 1 ] )){
-            abort( 404);
-        }
-
-        return $this->list( $currentCust , null , null );
-    }
-
-    /**
      * Display all the Customers as a list
      *
-     * @param int $status Display customer by specific status
-     *
+     * @param Request $r
      * @return  View
      */
-    public function listByStatus( int $status = null ): View {
-        if( $status && !array_key_exists( $status, CustomerEntity::$CUST_STATUS_TEXT)){
-            abort( 404);
-        }
+    public function list( Request $r ): View {
 
-        return $this->list( null, $status, null );
-    }
-
-    /**
-     * Display all the Customers as a list
-     *
-     * @param int $type Display customer by specific types
-     *
-     * @return  View
-     */
-    public function listByType( int $type = null ): View {
-        if( $type && !array_key_exists( $type, CustomerEntity::$CUST_TYPES_TEXT)){
-            abort( 404);
-        }
-        return $this->list( null,null, $type );
-    }
-
-    /**
-     * Display all the Customers as a list
-     *
-     * @param bool  $currentCust    Display customers that are current in terms of `datejoin` and `dateleave`
-     * @param int   $status         Display customer by specific status
-     * @param int   $type           Display customer by specific types
-     *
-     * @return  View
-     */
-    public function list( $currentCust = null, $status = null, $type = null ): View {
-
-        if( $status !== null ){
-            Session::put( "cust-list-status", $status );
-        } else {
-            if ( Session::exists( "cust-list-status" ) ) {
-                $status = Session::get( "cust-list-status" );
+        if( ( $state = $r->input( 'state' ) ) !== null ) {
+            if( isset( CustomerEntity::$CUST_STATUS_TEXT[ $state ] ) ) {
+                $r->session()->put( "cust-list-state", $state );
+            } else {
+                $r->session()->remove( "cust-list-state" );
             }
+        } else if( $r->session()->exists( "cust-list-state" ) ) {
+            $state = $r->session()->get( "cust-list-state" );
         }
 
-        if( $type !== null ){
-            Session::put( "cust-list-type", $type );
-        } else {
-            if ( Session::exists( "cust-list-type" ) ) {
-                $type = Session::get( "cust-list-type" );
+        if( ( $type = $r->input( 'type' ) ) !== null ) {
+            if( isset( CustomerEntity::$CUST_TYPES_TEXT[ $type ] ) ) {
+                $r->session()->put( "cust-list-type", $type );
+            } else {
+                $r->session()->remove( "cust-list-type" );
             }
+        } else if( $r->session()->exists( "cust-list-type" ) ) {
+            $type = $r->session()->get( "cust-list-type" );
         }
 
-        if( $currentCust !== null ){
-            Session::put( "cust-list-current", $currentCust );
-        } else {
-            if ( Session::exists( "cust-list-current" ) ) {
-                $currentCust = Session::get( "cust-list-current" );
-            }
+        if( ( $showCurrentOnly = $r->input( 'current-only' ) ) !== null ) {
+            $r->session()->put( "cust-list-current-only", $showCurrentOnly );
+        } else if( $r->session()->exists( "cust-list-current-only" ) ) {
+            $showCurrentOnly = $r->session()->get( "cust-list-current-only" );
         }
 
         return view( 'customer/list' )->with([
-            'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAllForFeList( $currentCust, $status, $type ),
+            'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAllForFeList( $showCurrentOnly, $state, $type ),
             'resellerMode'          => $this->resellerMode(),
-            'status'                => $status          ?? false,
+            'state'                 => $state           ?? false,
             'type'                  => $type            ?? false,
-            'currentCust'           => $currentCust     ?? false,
+            'showCurrentOnly'       => $showCurrentOnly ?? false,
         ]);
     }
 
@@ -180,12 +134,12 @@ class CustomerController extends Controller
     public function edit( int $id = null ): View {
 
         $cust = false; /** @var CustomerEntity $cust */
-        if( $id and !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
+        if( $id && !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
             abort(404);
         }
 
         if( $cust ) {
-            // populate the form with VLAN interface data
+            // populate the form with data
             Former::populate([
                 'name'                  => $cust->getName(),
                 'type'                  => $cust->getType(),
@@ -206,7 +160,6 @@ class CustomerController extends Controller
                 'activepeeringmatrix'   => $cust->getActivepeeringmatrix() ? 1 : 0,
                 'nocphone'              => $cust->getNocphone(),
                 'noc24hphone'           => $cust->getNoc24hphone(),
-                'nocfax'                => $cust->getNocfax(),
                 'nocemail'              => $cust->getNocemail(),
                 'nochours'              => $cust->getNoc24hphone(),
                 'nocwww'                => $cust->getNocwww(),
@@ -221,19 +174,18 @@ class CustomerController extends Controller
             'irrdbs'                        => D2EM::getRepository( IRRDBConfigEntity::class )->getAsArray(),
             'resellerMode'                  => $this->resellerMode(),
             'resellers'                     => D2EM::getRepository( CustomerEntity::class )->getResellerNames(),
-            'ixp'                           => D2EM::getRepository( IXPEntity::class )->find( 1 ),
         ]);
     }
 
     /**
      * Add or edit a customer (set all the data needed)
      *
-     * @param   StoreCustomer $request instance of the current HTTP request
+     * @param   CustomerRequest $request instance of the current HTTP request
      *
      * @return  RedirectResponse
      * @throws
      */
-    public function store( StoreCustomer $request ): RedirectResponse {
+    public function store( CustomerRequest $request ): RedirectResponse {
         $isEdit = $request->input( 'id' ) ? true : false;
         /** @var CustomerEntity $cust */
         if( $isEdit && $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) {
@@ -314,9 +266,9 @@ class CustomerController extends Controller
         AlertContainer::push( 'Customer successfully ' . ( $isEdit ? ' edited.' : ' added.' ), Alert::SUCCESS );
 
         if( $isEdit ){
-            return Redirect::to( 'customer/overview/id/' . $cust->getId() );
+            return Redirect::to( route( "customer@overview" , [ "id" => $cust->getId() ] ) );
         } else {
-            return Redirect::to( 'customer/billing-registration/' . $cust->getId() );
+            return Redirect::to( route( "customer@billingRegistration" , [ "id" => $cust->getId() ] ) );
         }
 
     }
@@ -324,7 +276,7 @@ class CustomerController extends Controller
     /**
      * Sets reseller to customer from form
      *
-     * @param StoreCustomer     $request    instance of the current HTTP request
+     * @param StoreCustomerRequest     $request    instance of the current HTTP request
      * @param CustomerEntity    $cust
      *
      * @return bool If false, the form is not processed
@@ -435,7 +387,7 @@ class CustomerController extends Controller
             'juridictions'                  => D2EM::getRepository( CompanyRegisteredDetailEntity::class )->getJuridictionsAsArray(),
             'billingNotify'                 => $billingNotify,
             'resellerMode'                  => $this->resellerMode(),
-            'countries'                     => CountriesFacade::getList('name' )
+            'countries'                     => Countries::getList('name' )
         ]);
     }
 
@@ -445,12 +397,12 @@ class CustomerController extends Controller
      *
      * email notification
      *
-     * @param   StoreCustomerBillingInformation $request instance of the current HTTP request
+     * @param   BillingInformationRequest $request instance of the current HTTP request
      *
      * @return  RedirectResponse
      * @throws
      */
-    public function storeBillingInformation( StoreCustomerBillingInformation $request ): RedirectResponse {
+    public function storeBillingInformation( BillingInformationRequest $request ): RedirectResponse {
         /** @var CustomerEntity $cust */
         if( $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) {
             if( !$cust ) {
@@ -511,7 +463,7 @@ class CustomerController extends Controller
 
         }
 
-        return Redirect::to( 'customer/overview/id/' . $cust->getId() . '/tab/billing' );
+        return Redirect::to( route( "customer@overview" , [ "id" => $cust->getId() , "tab" => "details" ]  ) );
 
     }
 
@@ -526,46 +478,12 @@ class CustomerController extends Controller
      * @throws
      */
     public function populateCustomerInfoByAsn( string $asn ) : JsonResponse{
-        $error = false;
         $result = '';
         if( $asn != null || $asn != '' ) {
-            $autsys = trim( $asn );
-
-            try {
-                // doing request to get the cookie
-
-                // NOT SURE THAT IS NECESSARY
-                $client = new GuzzleHttp( ['cookies' => true] );
-                $conn = $client->request('GET', "https://" . config( "ixp_api.peeringDB.username" ) . ":" . config( "ixp_api.peeringDB.password" ) . "@peeringdb.com" );
-
-                // check if HTTP request status is 200
-                if( $conn->getStatusCode() == '200' ) {
-                    $AsnContent = $client->request( 'GET', "https://www.peeringdb.com/api/net?asn=" . $autsys );
-                    $result = json_decode( $AsnContent->getBody()->getContents() );
-
-                    $id = $result->data[ 0 ]->id;
-
-                    $infoContent = $client->request( 'GET', "https://www.peeringdb.com/api/net/" . $id );
-                    $info = json_decode( $infoContent->getBody()->getContents() );
-
-                    $result = $info->data[ 0 ];
-                }
-
-            } catch (RequestException $e) {
-                $error = true;
-                // If there are network errors, we need to ensure the application doesn't crash.
-                // if $e->hasResponse is not null we can attempt to get the message
-                // Otherwise, we'll just pass a network unavailable message.
-                if( $e->hasResponse() ) {
-                    $exception = (string)$e->getResponse()->getBody();
-                    $result = json_decode( $exception );
-                } else {
-                    $result = $e->getMessage();
-                }
-            }
+            $result = App::make( "IXP\Services\PeeringDb" )->getNetworkByAsn( $asn );
         }
 
-        return response()->json( [ 'error' => $error , 'informations' => $result ] );
+        return response()->json( [ 'error' => $result[ 'error' ] , 'informations' => $result[ 'result' ] ] );
 
     }
 
@@ -647,12 +565,12 @@ class CustomerController extends Controller
     /**
      * Add or edit a customer's logo
      *
-     * @param   StoreCustomerLogoController $request instance of the current HTTP request
+     * @param   LogoRequest $request instance of the current HTTP request
      *
      * @return  RedirectResponse
      * @throws
      */
-    public function storeLogo( StoreCustomerLogoController $request ): RedirectResponse {
+    public function storeLogo( LogoRequest $request ): RedirectResponse {
         /** @var CustomerEntity $c */
         $c = $this->loadCustomer( $request->input( 'id' ) );
 
@@ -689,20 +607,23 @@ class CustomerController extends Controller
 
         $img->save( $saveTo );
 
+        $logo->setCustomer( $c );
+        D2EM::persist( $logo );
+        D2EM::flush();
+
         // remove old logo
         if( $oldLogo = $c->getLogo( LogoEntity::TYPE_WWW80 ) ) {
             // only delete if they do not upload the exact same logo
             if( $oldLogo->getShardedPath() != $logo->getShardedPath() ) {
-                unlink( public_path().'/logos/' . $c->getShardedPath() );
+                if (file_exists( public_path().'/logos/' . $oldLogo->getShardedPath() )) {
+                    unlink( public_path().'/logos/' . $oldLogo->getShardedPath() );
+                }
+
             }
             $c->removeLogo( $oldLogo );
             D2EM::remove( $oldLogo );
             D2EM::flush();
         }
-
-        $logo->setCustomer( $c );
-        D2EM::persist( $logo );
-        D2EM::flush();
 
 
         AlertContainer::push( "Logo successfully uploaded!", Alert::SUCCESS );
@@ -711,7 +632,7 @@ class CustomerController extends Controller
             return Redirect::to( '' );
         }
 
-        return Redirect::to( 'customer/overview/id/' . $c->getId() );
+        return Redirect::to( route( "customer@overview" , [ "id" => $c->getId() ] ) );
 
     }
 
@@ -737,10 +658,12 @@ class CustomerController extends Controller
         // do we have a logo?
         if( !( $oldLogo = $c->getLogo( LogoEntity::TYPE_WWW80 ) ) ) {
             AlertContainer::push( "Sorry, we could not find any logo for you.", Alert::DANGER );
-            return Redirect::to( 'customer/overview/id/' . $c->getId() );
+            return Redirect::to( route( "customer@overview", [ "id" => $c->getId() ] ) );
+        }
+        if( file_exists( $oldLogo->getFullPath() ) ) {
+            unlink( $oldLogo->getFullPath() );
         }
 
-        unlink( $oldLogo->getFullPath() );
         $c->removeLogo( $oldLogo );
         D2EM::remove( $oldLogo );
         D2EM::flush();
@@ -773,5 +696,278 @@ class CustomerController extends Controller
             'c'                         => Auth::getUser()->getCustomer()
         ]);
     }
+
+    /**
+     * Display all the customer logo's
+     *
+     * @return  View
+     * @throws
+     */
+    public function logos(){
+        $logos = [];
+        foreach( D2EM::getRepository( CustomerEntity::class )->findAll() as $c ) {
+            /** @var CustomerEntity $c */
+            if( $c->getLogo( LogoEntity::TYPE_WWW80) ) {
+                $logos[] = $c->getLogo( LogoEntity::TYPE_WWW80);
+            }
+        }
+
+        return view( 'customer/logos' )->with([
+            'logos'                     => $logos,
+        ]);
+    }
+
+
+    /**
+     * Display the customer overview
+     *
+     * @param   int         $id         Id of the customer
+     * @param   string      $tab        Tab from the overview selected
+     *
+     * @return  View
+     * @throws
+     */
+    public function overview(  $id = null, string $tab = null ) : View {
+        $netinfo            = D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray();
+        $c                  = $this->loadCustomer( $id );
+        $isSuperUser        = Auth::getUser()->isSuperUser();
+
+        // is this user watching all notes for this customer?
+        $coNotifyAll = Auth::getUser()->getPreference( "customer-notes.{$c->getId()}.notify" ) ? true : false;
+
+        // what specific notes is this cusomer watching?
+        $coNotify = Auth::getUser()->getAssocPreference( "customer-notes.watching" ) ? Auth::getUser()->getAssocPreference( "customer-notes.watching" )[0] : [];
+
+
+        // load customer notes and the amount of unread notes for this user and customer
+        // ASK FO THAT $this->_fetchCustomerNotes( $cust->getId() );
+
+        $rsRoutes = $c->isRouteServerClient() ? D2EM::getRepository( RSPrefixEntity::class )->aggregateRouteSummariesForCustomer( $c->getId() ) : false;
+
+        $crossConnects = D2EM::getRepository( CustomerEntity::class )->getCrossConnects( $c->getId() );
+
+        // does the customer have any graphs?
+        $hasAggregateGraph = false;
+        $aggregateGraph = false;
+        $grapher = App::make('IXP\Services\Grapher' );
+        if( $c->getType() != CustomerEntity::TYPE_ASSOCIATE && !$c->hasLeft() ) {
+            foreach( $c->getVirtualInterfaces() as $vi ) {
+                foreach( $vi->getPhysicalInterfaces() as $pi ) {
+                    if( $pi->getStatus() == PhysicalInterfaceEntity::STATUS_CONNECTED ) {
+                        $hasAggregateGraph = true;
+                        $aggregateGraph = $grapher->customer( $c );
+                        break;
+                    }
+                }
+            }
+        }
+
+        //is customer RS or AS112 client
+        $rsclient = false;
+        $as112client   = false;
+        foreach( $c->getVirtualInterfaces() as $vi ) {
+            foreach( $vi->getVlanInterfaces() as $vli ) {
+                if( $vli->getRsclient() ){
+                    $rsclient = true;
+                }
+
+                if( $vli->getAs112client() ){
+                    $as112client = true;
+                }
+            }
+        }
+
+        $arrayNotes = $this->fetchCustomerNotes( $c->getId() );
+
+        return view( 'customer/overview' )->with([
+            'c'                         => $c,
+            'customers'                 => D2EM::getRepository( CustomerEntity::class )->getNames( true ),
+            'netInfo'                   => $netinfo,
+            'isSuperUser'               => $isSuperUser,
+            'coNotifyAll'               => $coNotifyAll,
+            'coNotify'                  => $coNotify,
+            'rsRoutes'                  => $rsRoutes,
+            'crossConnects'             => $crossConnects,
+            'hasAggregateGraph'         => $hasAggregateGraph,
+            'aggregateGraph'            => $aggregateGraph,
+            'grapher'                   => $grapher,
+            'rsclient'                  => $rsclient,
+            'as112client'               => $as112client,
+            'logoManagementDisabled'    => $this->logoManagementDisabled(),
+            'resellerMode'              => $this->resellerMode(),
+            'as112UiActive'             => $this->as112UiActive(),
+            'resellerResoldBilling'     => config('ixp.reseller.reseller'),
+            'countries'                 => Countries::getList('name' ),
+            'tab'                       => strtolower( $tab ),
+            'notesInfo'                 => $arrayNotes
+        ]);
+    }
+
+    /**
+     * Load a customer's notes and calculate the amount of unread / updated notes
+     * for the logged in user and the given customer
+     *
+     * Used by:
+     * @see CustomerController
+     * @see DashboardController
+     *
+     * @param int       $custid
+     * @param boolean   $publicOnly
+     *
+     * @return array
+     */
+    protected function fetchCustomerNotes( $custid, $publicOnly = false ){
+        $custNotes      = D2EM::getRepository( CustomerNoteEntity::class )->ordered( $custid, $publicOnly );
+        $unreadNotes    = 0;
+        $rut            = Auth::getUser()->getPreference( "customer-notes.read_upto" );
+        $lastRead       = Auth::getUser()->getPreference( "customer-notes.{$custid}.last_read" );
+
+        if( $lastRead || $rut ) {
+            foreach( $custNotes as $cn ) {
+                /** @var CustomerNoteEntity $cn */
+                $time = $cn->getUpdated()->format( "U" );
+                if( ( !$rut || $rut < $time ) && ( !$lastRead || $lastRead < $time ) ){
+                    $unreadNotes++;
+                }
+            }
+        } else {
+            $unreadNotes = count( $custNotes );
+        }
+
+        return [ "custNotes" => $custNotes, "notesReadUpto" => $rut , "notesLastRead" => $lastRead, "unreadNotes" => $unreadNotes];
+
+    }
+
+    /**
+     * Display the Welcome Email form
+     *
+     * @param   int      $id         Id of the customer
+     *
+     * @return  View
+     * @throws
+     */
+    public function welcomeEmail( int $id = null ) : View{
+        /** @var CustomerEntity $c */
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
+            abort( 404);
+        }
+
+        $emails = array();
+        foreach( $c->getUsers() as $user ){
+            /** @var UserEntity $user */
+            if( $email = filter_var( $user->getEmail(), FILTER_VALIDATE_EMAIL ) ) {
+                $emails[] = $email;
+            }
+        }
+
+        Former::populate( [
+            'to'                        => $c->getNocemail(),
+            'cc'                        => implode( ',', $emails ),
+            'bcc'                       => config('identity.email'),
+            'subject'                   => config('identity.name'). ' :: Welcome Mail',
+        ] );
+
+        return view( 'customer/welcome-email' )->with([
+            'c'         => $c,
+            'body'      => view( "customer/emails/welcome-email" )->with( [
+                    'c'                     => $c,
+                    'admins'                => $c->getAdminUsers() ,
+                    'netinfo'               => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray(),
+                    'identityEmail'         => config('identity.email'),
+                    'identityOrgname'       => config('identity.orgname'),
+                ] )->render()
+        ]);
+
+    }
+
+    /**
+     * Send the welcome email to a customer
+     *
+     * @param WelcomeEmailRequest $request
+     *
+     * @return RedirectResponse|View
+     *
+     * @throws
+     */
+    public function sendWelcomeEmail( WelcomeEmailRequest $request){
+        /** @var CustomerEntity $c */
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) ){
+            abort( 404);
+        }
+
+        $mailable = new EmailCustomer( $c );
+        $mailable->prepareFromRequest( $request );
+
+        $mailable->prepareBody( $request );
+
+        try {
+            $mailable->checkIfSendable();
+        } catch( MailableException $e ) {
+            AlertContainer::push( $e->getMessage(), Alert::DANGER );
+
+            return view( 'customer/welcome-email' )->with([
+                'c'         => $c,
+                'body'      => view( "customer/emails/welcome-email" )->with( [
+                    'c'                     => $c,
+                    'admins'                => $c->getAdminUsers() ,
+                    'netinfo'               => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray(),
+                    'identityEmail'         => config('identity.email'),
+                    'identityOrgname'       => config('identity.orgname'),
+                ] )->render()
+            ]);
+        }
+
+        Mail::send( $mailable );
+
+        AlertContainer::push( "Welcome email sent.", Alert::SUCCESS );
+
+        return Redirect::to( route( "customer@overview", [ "id" => $c->getId() ] ) );
+
+    }
+
+    /**
+     * Display Recap of the the information that will be deleted with the customer
+     *
+     * @param   int      $id         Id of the customer
+     *
+     * @return  View
+     * @throws
+     */
+    public function deleteRecap( int $id = null ) : View{
+        /** @var CustomerEntity $c */
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
+            abort( 404);
+        }
+
+        return view( 'customer/delete' )->with([
+            'c'         => $c,
+        ]);
+
+    }
+
+    /**
+     * Delete a customer and everything related !!
+     *
+     * @param   Request      $request         Instance of HTTP request
+     *
+     * @return  RedirectResponse
+     * @throws
+     */
+    public function delete( Request $request) : RedirectResponse{
+        /** @var CustomerEntity $c */
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( "id" ) ) ) ){
+            abort( 404);
+        }
+
+        if( D2EM::getRepository( CustomerEntity::class )->delete( $c ) ) {
+            AlertContainer::push( "Customer deleted with success.", Alert::SUCCESS );
+        } else {
+            AlertContainer::push( "Error", Alert::DANGER );
+        }
+
+        return Redirect::to( route( "customer@list" ) );
+
+    }
+
 }
 
