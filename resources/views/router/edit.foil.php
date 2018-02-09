@@ -99,7 +99,10 @@
         <?= Former::text( 'asn' )
             ->label( 'ASN' )
             ->placeholder( '65501' )
-            ->blockHelp( "The router's AS number." );
+            ->blockHelp( "The router's AS number.<br><br>"
+                . "If you are adding a route server, you are strongly advised to use a 16-bit ASN as otherwise "
+                . "community filtering will be unavailable."
+            );
         ?>
 
         <?= Former::select( 'software' )

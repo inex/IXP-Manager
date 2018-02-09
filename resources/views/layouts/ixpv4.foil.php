@@ -10,7 +10,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
     <meta charset="utf-8">
 
-    <title>IXP Manager</title>
+    <title><?= config('identity.sitename' ) ?></title>
 
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="">

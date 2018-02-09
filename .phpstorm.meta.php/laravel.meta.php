@@ -3,7 +3,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2017-12-18.
+    * Generated on 2018-01-31.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -55,8 +55,6 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
         'validation.presence' => \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier::class,
         'parsedown' => \Parsedown::class,
-        'countries' => \Webpatser\Countries\Countries::class,
-        'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
         'debugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
@@ -211,8 +209,6 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
         'validation.presence' => \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier::class,
         'parsedown' => \Parsedown::class,
-        'countries' => \Webpatser\Countries\Countries::class,
-        'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
         'debugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
@@ -367,8 +363,6 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
         'validation.presence' => \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier::class,
         'parsedown' => \Parsedown::class,
-        'countries' => \Webpatser\Countries\Countries::class,
-        'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
         'debugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
@@ -523,8 +517,6 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
         'validation.presence' => \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier::class,
         'parsedown' => \Parsedown::class,
-        'countries' => \Webpatser\Countries\Countries::class,
-        'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
         'debugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
@@ -679,8 +671,6 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
         'validation.presence' => \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier::class,
         'parsedown' => \Parsedown::class,
-        'countries' => \Webpatser\Countries\Countries::class,
-        'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
         'debugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
@@ -835,8 +825,6 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
         'validation.presence' => \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier::class,
         'parsedown' => \Parsedown::class,
-        'countries' => \Webpatser\Countries\Countries::class,
-        'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
         'debugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,
@@ -991,8 +979,6 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
         'validation.presence' => \LaravelDoctrine\ORM\Validation\DoctrinePresenceVerifier::class,
         'parsedown' => \Parsedown::class,
-        'countries' => \Webpatser\Countries\Countries::class,
-        'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
         'debugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'command.ide-helper.generate' => \Barryvdh\LaravelIdeHelper\Console\GeneratorCommand::class,

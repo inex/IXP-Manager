@@ -2026,22 +2026,29 @@ class Customer
      * One example usage is in IrrdbCli for bgpq3. bgpq3 requires ASNs to
      * be formatted as `asxxxx` so we set `$asnPrefix = 'as'` in this case.
      *
-     * @param int $protocol One of 4 or 6 (defaults to 4)
+     * By default, the function will return some format of the ASN if no macro is
+     * defined. To return null in this case, set `$nullIfNoMacro` to true.
+     *
+     * @param int    $protocol One of 4 or 6 (defaults to 4)
      * @param string $asnPrefix A prefix for the ASN if no macro is present. See above.
+     * @param bool   $nullIfNoMacro
      * @return The ASN / AS macro as appropriate
      */
-    public function resolveAsMacro( $protocol = 4, $asnPrefix = '' )
+    public function resolveAsMacro( $protocol = 4, $asnPrefix = '', $nullIfNoMacro = false )
     {
         if( !in_array( $protocol, [ 4, 6 ] ) )
             throw new \IXP_Exception( 'Invalid / unknown protocol. 4/6 accepted only.' );
 
         // find the appropriate ASN or macro
-        if( $protocol == 6 && strlen( $this->getPeeringmacrov6() ) > 3 )
+        if( $protocol == 6 && strlen( $this->getPeeringmacrov6() ) > 3 ) {
             $asmacro = $this->getPeeringmacrov6();
-        else if( strlen( $this->getPeeringmacro() ) > 3 )
+        } else if( strlen( $this->getPeeringmacro() ) > 3 ) {
             $asmacro = $this->getPeeringmacro();
-        else
+        } else if( $nullIfNoMacro ) {
+            $asmacro = null;
+        } else {
             $asmacro = $asnPrefix . $this->getAutsys();
+        }
 
         return $asmacro;
     }

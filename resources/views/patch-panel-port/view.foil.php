@@ -16,17 +16,22 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
+
+            <a type="button" class="btn btn-default extra-action" href="<?= url('patch-panel-port/edit').'/'.$t->ppp->getId() ?>" title="edit">
+                <span class="glyphicon glyphicon-pencil"></span>
+            </a>
+
+            <?= $t->insert( 'patch-panel-port/action-dd', [ 'ppp' => $t->ppp, 'btnClass' => 'btn-group-xs', 'tpl' => 'view' ] ); ?>
+
             <a type="button" class="btn btn-default" href="<?= url('patch-panel-port/list/patch-panel/' . $t->ppp->getPatchPanel()->getId() ) ?>" title="list">
                 <span class="glyphicon glyphicon-th-list"></span>
-            </a>
-            <a type="button" class="btn btn-default" href="<?= url('patch-panel-port/edit').'/'.$t->ppp->getId() ?>" title="edit">
-                <span class="glyphicon glyphicon-pencil"></span>
             </a>
         </div>
     </li>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
+    <?= $t->alerts() ?>
     <div class="panel with-nav-tabs panel-default">
 
         <div class="panel-heading">
@@ -36,7 +41,7 @@
                     $current = get_class( $p ) == \Entities\PatchPanelPort::class;
                 ?>
                     <li <?php if( $current ): ?> class="active" <?php endif; ?>>
-                        <a href="#<?= $p->getId() ?>" data-toggle="tab"><?php if( $current ): ?> Current <?php else: ?> <?= $p->getCeasedAtFormated(); ?> <?php endif; ?></a>
+                        <a href="#<?= $p->getId() ?>" data-toggle="tab"><?php if( $current ): ?>Current<?php else: ?> <?= $p->getCeasedAtFormated(); ?> <?php endif; ?></a>
                     </li>
                 <?php endforeach; ?>
             </ul>
@@ -164,6 +169,81 @@
                                             <span title="" class="label label-<?= $p->getStateCssClass() ?>">
                                                 <?= $p->resolveStates() ?>
                                             </span>
+
+                                        </td>
+                                        <td>
+                                            <div class="dropdown btn-group-xs">
+                                                <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                    Change State
+                                                    <span class="caret"></span>
+                                                </button>
+                                                <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                    <?php if( $t->ppp->isStateAvailable() or $t->ppp->isStateReserved() or $t->ppp->isStatePrewired() ): ?>
+                                                        <li>
+                                                            <a id="allocate-<?= $t->ppp->getId() ?>" href="<?= action ( 'PatchPanel\PatchPanelPortController@editToAllocate' , [ 'id' => $t->ppp->getId() ] ) ?>">
+                                                                Allocate
+                                                            </a>
+                                                        </li>
+                                                    <?php endif; ?>
+
+                                                    <?php if( $t->ppp->isStateAvailable() ): ?>
+                                                        <li>
+                                                            <a id="prewired-<?= $t->ppp->getId() ?>" href="<?= action ( 'PatchPanel\PatchPanelPortController@editToPrewired' , [ 'id' => $t->ppp->getId() ] ) ?>">
+                                                                Set Prewired
+                                                            </a>
+                                                        </li>
+                                                    <?php endif; ?>
+
+                                                    <?php if( $t->ppp->isStatePrewired() ): ?>
+                                                        <li>
+                                                            <a id="prewired-<?= $t->ppp->getId() ?>" href="<?= action( 'PatchPanel\PatchPanelPortController@changeStatus' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_AVAILABLE ] ) ?>">
+                                                                Unset Prewired
+                                                            </a>
+                                                        </li>
+                                                    <?php endif; ?>
+
+                                                    <?php if( $t->ppp->isStateAvailable() ): ?>
+                                                        <li>
+                                                            <a id="reserved-<?= $t->ppp->getId() ?>" href="<?= action( 'PatchPanel\PatchPanelPortController@changeStatus' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_RESERVED ] ) ?>">
+                                                                Mark as Reserved
+                                                            </a>
+                                                        </li>
+                                                    <?php endif; ?>
+
+
+                                                    <?php if( $t->ppp->isStateReserved() ): ?>
+                                                        <li>
+                                                            <a id="unreserved-<?= $t->ppp->getId() ?>" href="<?= action( 'PatchPanel\PatchPanelPortController@changeStatus' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_AVAILABLE ] ) ?>">
+                                                                Unreserve
+                                                            </a>
+                                                        </li>
+                                                    <?php endif; ?>
+
+                                                    <?php if( $t->ppp->isStateAwaitingXConnect() ): ?>
+                                                        <li>
+                                                            <a id="set-connected-<?= $t->ppp->getId() ?>" href="<?= action( 'PatchPanel\PatchPanelPortController@changeStatus' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_CONNECTED ] ) ?>">
+                                                                Set Connected
+                                                            </a>
+                                                        </li>
+                                                    <?php endif; ?>
+
+                                                    <?php if( $t->ppp->isStateAwaitingXConnect() || $t->ppp->isStateConnected() ): ?>
+                                                        <li>
+                                                            <a id="request-cease-<?= $t->ppp->getId() ?>" href="<?= action( 'PatchPanel\PatchPanelPortController@changeStatus' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_AWAITING_CEASE ] ) ?>">
+                                                                Set Awaiting Cease
+                                                            </a>
+                                                        </li>
+                                                    <?php endif; ?>
+
+                                                    <?php if( $t->ppp->isStateAwaitingXConnect() || $t->ppp->isStateConnected() || $t->ppp->isStateAwaitingCease() ): ?>
+                                                        <li>
+                                                            <a id="set-ceased-<?= $t->ppp->getId() ?>"   href="<?= action( 'PatchPanel\PatchPanelPortController@changeStatus' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_CEASED ] ) ?>">
+                                                                Set Ceased
+                                                            </a>
+                                                        </li>
+                                                    <?php endif; ?>
+                                                </ul>
+                                            </div>
                                         </td>
                                     </tr>
                                 <?php endif; ?>
@@ -329,29 +409,35 @@
                             <?php if( Auth::user()->isSuperUser() ): ?>
 
                                 <div class="col-xs-6">
-                                    <?php if ( $p->getNotes() ): ?>
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading padding-10">
-                                                Public Notes:
-                                            </div>
-                                            <div class="panel-body">
-                                                <?= $p->getNotesParseDown() ?>
-                                            </div>
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading padding-10">
+                                            Public Notes:
+                                            <?php if( $current ): ?>
+                                                <a class="btn btn-default btn-xs pull-right" id="edit-notes-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" title="edit note" >
+                                                    <i class="glyphicon glyphicon-pencil"></i>
+                                                </a>
+                                            <?php endif; ?>
                                         </div>
-                                    <?php endif; ?>
+                                        <div class="panel-body" id="public-note-display">
+                                            <?= $p->getNotesParseDown() ?>
+                                        </div>
+                                    </div>
                                 </div>
 
                                 <div class="col-xs-6">
-                                    <?php if ( $p->getPrivateNotes() ): ?>
-                                        <div class="panel panel-default">
-                                            <div class="panel-heading padding-10">
+                                    <div class="panel panel-default">
+                                        <div class="panel-heading padding-10">
                                                 Private Notes:
-                                            </div>
-                                            <div class="panel-body">
-                                                <?= $p->getPrivateNotesParseDown() ?>
-                                            </div>
+                                            <?php if( $current ): ?>
+                                                <a class="btn btn-default btn-xs pull-right" id="edit-notes-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" title="edit note" >
+                                                    <i class="glyphicon glyphicon-pencil"></i>
+                                                </a>
+                                            <?php endif; ?>
                                         </div>
-                                    <?php endif; ?>
+                                        <div class="panel-body" id="private-note-display">
+                                            <?= $p->getPrivateNotesParseDown() ?>
+                                        </div>
+                                    </div>
                                 </div>
 
                             <?php else: ?>
@@ -384,76 +470,83 @@
 
                             <div class="col-xs-12" id="area_file_<?= $p->getId()."_".$objectType ?>">
                                 <span id="message-<?= $p->getId()."-".$objectType ?>"></span>
-                                <?php if( count( $listFile ) > 0 ): ?>
+
                                     <div class="panel panel-default" id="list_file_<?= $p->getId()."_".$objectType ?>">
                                         <div class="panel-heading padding-10">
                                             List files
+                                            <?php if( $current ): ?>
+                                                <a class="btn btn-default btn-xs pull-right" id="attach-file-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" >
+                                                    <i class="glyphicon glyphicon-upload"></i>
+                                                </a>
+                                            <?php endif; ?>
                                         </div>
                                         <div class="panel-body">
-                                            <table class="table table-bordered table-striped" >
-                                                <tr>
-                                                    <th>
-                                                        Name
-                                                    </th>
-                                                    <th>
-                                                        Size
-                                                    </th>
-                                                    <th>
-                                                        Type
-                                                    </th>
-                                                    <th>
-                                                        Uploaded at
-                                                    </th>
-                                                    <th>
-                                                        Uploaded By
-                                                    </th>
-                                                    <th>
-                                                        Action
-                                                    </th>
-                                                </tr>
-                                                <?php foreach ( $listFile as $file ):?>
-                                                    <?php if( Auth::user()->isSuperUser() || !$file->getIsPrivate() ): ?>
-                                                        <tr id="file_row_<?=$file->getId()?>">
-                                                            <td>
-                                                                <?= $file->getNameTruncate() ?>
-                                                                <i id="file-private-state-<?= $file->getId() ?>"
-                                                                    class="pull-right fa fa-<?= $file->getIsPrivate() ? 'lock' : 'unlock' ?> fa-lg" aria-hidden="true"></i>
-                                                            </td>
-                                                            <td>
-                                                                <?= $file->getSizeFormated() ?>
-                                                            </td>
-                                                            <td>
-                                                                <i title='<?= $file->getType()?>' class="fa <?= $file->getTypeAsIcon()?> fa-lg' aria-hidden="true"></i>
-                                                            </td>
-                                                            <td>
-                                                                <?= $t->ee( $file->getUploadedAtFormated() ) ?>
-                                                            </td>
-                                                            <td>
-                                                                <?= $t->ee( $file->getUploadedBy() ) ?>
-                                                            </td>
-                                                            <td>
-                                                                <div class="btn-group btn-group-sm" role="group">
-                                                                    <?php if( Auth::user()->isSuperUser() ): ?>
-                                                                        <a id="file-toggle-private-<?= $file->getId() ?>" class="btn btn btn-default" target="_blank" href="<?= url()->current() ?>"
-                                                                                title="Toggle Public / Private">
-                                                                            <i id="file-toggle-private-i-<?= $file->getId() ?>" class="fa fa-<?= $file->getIsPrivate() ? 'unlock' : 'lock' ?>"></i>
+                                            <?php if( count( $listFile ) > 0 ): ?>
+                                                <table class="table table-bordered table-striped" >
+                                                    <tr>
+                                                        <th>
+                                                            Name
+                                                        </th>
+                                                        <th>
+                                                            Size
+                                                        </th>
+                                                        <th>
+                                                            Type
+                                                        </th>
+                                                        <th>
+                                                            Uploaded at
+                                                        </th>
+                                                        <th>
+                                                            Uploaded By
+                                                        </th>
+                                                        <th>
+                                                            Action
+                                                        </th>
+                                                    </tr>
+                                                    <?php foreach ( $listFile as $file ):?>
+                                                        <?php if( Auth::user()->isSuperUser() || !$file->getIsPrivate() ): ?>
+                                                            <tr id="file_row_<?=$file->getId()?>">
+                                                                <td>
+                                                                    <?= $file->getNameTruncate() ?>
+                                                                    <i id="file-private-state-<?= $file->getId() ?>"
+                                                                        class="pull-right fa fa-<?= $file->getIsPrivate() ? 'lock' : 'unlock' ?> fa-lg" aria-hidden="true"></i>
+                                                                </td>
+                                                                <td>
+                                                                    <?= $file->getSizeFormated() ?>
+                                                                </td>
+                                                                <td>
+                                                                    <i title='<?= $file->getType()?>' class="fa <?= $file->getTypeAsIcon()?> fa-lg' aria-hidden="true"></i>
+                                                                </td>
+                                                                <td>
+                                                                    <?= $t->ee( $file->getUploadedAtFormated() ) ?>
+                                                                </td>
+                                                                <td>
+                                                                    <?= $t->ee( $file->getUploadedBy() ) ?>
+                                                                </td>
+                                                                <td>
+                                                                    <div class="btn-group btn-group-sm" role="group">
+                                                                        <?php if( Auth::user()->isSuperUser() ): ?>
+                                                                            <a id="file-toggle-private-<?= $file->getId() ?>" class="btn btn btn-default" target="_blank" href="<?= url()->current() ?>"
+                                                                                    title="Toggle Public / Private">
+                                                                                <i id="file-toggle-private-i-<?= $file->getId() ?>" class="fa fa-<?= $file->getIsPrivate() ? 'unlock' : 'lock' ?>"></i>
+                                                                            </a>
+                                                                        <?php endif; ?>
+                                                                        <a class="btn btn btn-default" target="_blank" href="<?= action('PatchPanel\PatchPanelPortController@downloadFile', [ 'pppfid' => $file->getId() ] ) ?>" title="Download">
+                                                                            <i class="fa fa-download"></i>
                                                                         </a>
-                                                                    <?php endif; ?>
-                                                                    <a class="btn btn btn-default" target="_blank" href="<?= action('PatchPanel\PatchPanelPortController@downloadFile', [ 'pppfid' => $file->getId() ] ) ?>" title="Download">
-                                                                        <i class="fa fa-download"></i>
-                                                                    </a>
-                                                                    <?php if( Auth::user()->isSuperUser() ): ?>
-                                                                        <button id="delete_<?=$file->getId()?>" class="btn btn btn-default" onclick="deletePopup(<?=$file->getId()?>,<?= $p->getId()?>,'<?=$objectType?>')" title="Delete"><i class="glyphicon glyphicon-trash"></i></button>
-                                                                    <?php endif; ?>
-                                                                </div>
-                                                            </td>
-                                                        </tr>
-                                                    <?php endif; ?>
-                                                <?php endforeach; ?>
-                                            </table>
+                                                                        <?php if( Auth::user()->isSuperUser() ): ?>
+                                                                            <button id="delete_<?=$file->getId()?>" class="btn btn btn-default" onclick="deletePopup(<?=$file->getId()?>,<?= $p->getId()?>,'<?=$objectType?>')" title="Delete"><i class="glyphicon glyphicon-trash"></i></button>
+                                                                        <?php endif; ?>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        <?php endif; ?>
+                                                    <?php endforeach; ?>
+                                                </table>
+                                            <?php endif; ?>
                                         </div>
                                     </div>
-                                <?php endif; ?>
+
                             </div>
                         </div> <!-- row -->
                     </div>
@@ -461,72 +554,85 @@
             </div>
         </div>
     </div>
+
+    <?= $t->insert( 'patch-panel-port/modal' ); ?>
 <?php $this->append() ?>
 
 <?php $this->section('scripts') ?>
-<script>
+    <?= $t->insert( 'patch-panel-port/js/action-dd' ); ?>
 
 
-    $(document).ready(function() {
 
-        $("a[id|='file-toggle-private']").on('click', function (e) {
-            e.preventDefault();
+    <script>
+        $(document).ready(function() {
 
-            let pppfid = (this.id).substring(20);
-
-            $.ajax( "<?= url('api/v4/patch-panel-port/toggle-file-privacy') ?>/" + pppfid, {
-                type : 'POST'
-            } )
-            .done( function( data ) {
-                if( data.isPrivate ) {
-                    $( '#file-toggle-private-i-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-unlock');
-                    $( '#file-private-state-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-lock');
-                } else {
-                    $( '#file-toggle-private-i-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-lock');
-                    $( '#file-private-state-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-unlock');
+            // Hide actions if PPP history is selected
+            $( ".nav-tabs li" ).click( function(){
+                if( $( this ).children().text() != "Current" ){
+                    $( ".extra-action" ).addClass( 'disabled' )
+                } else{
+                    $( ".extra-action" ).removeClass( 'disabled' )
                 }
             });
-        });
-    });
 
-    function deletePopup( idFile, idHistory, objectType ){
-        bootbox.confirm({
-            title: "Delete",
-            message: "Are you sure you want to delete this object ?",
-            buttons: {
-                cancel: {
-                    label: '<i class="fa fa-times"></i> Cancel'
+            $("a[id|='file-toggle-private']").on('click', function (e) {
+                e.preventDefault();
+
+                let pppfid = (this.id).substring(20);
+
+                $.ajax( "<?= url('patch-panel-port/toggle-file-privacy') ?>/" + pppfid, {
+                    type : 'POST'
+                } )
+                .done( function( data ) {
+                    if( data.isPrivate ) {
+                        $( '#file-toggle-private-i-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-unlock');
+                        $( '#file-private-state-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-lock');
+                    } else {
+                        $( '#file-toggle-private-i-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-lock');
+                        $( '#file-private-state-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-unlock');
+                    }
+                });
+            });
+        });
+
+        function deletePopup( idFile, idHistory, objectType ){
+            bootbox.confirm({
+                title: "Delete",
+                message: "Are you sure you want to delete this object ?",
+                buttons: {
+                    cancel: {
+                        label: '<i class="fa fa-times"></i> Cancel'
+                    },
+                    confirm: {
+                        label: '<i class="fa fa-check"></i> Confirm'
+                    }
                 },
-                confirm: {
-                    label: '<i class="fa fa-check"></i> Confirm'
-                }
-            },
-            callback: function ( result ) {
-                if( result ){
+                callback: function ( result ) {
+                    if( result ){
 
-                    let urlAction = objectType == 'ppp' ? "<?= url('patch-panel-port/delete-file') ?>" : "<?= url('patch-panel-port/delete-history-file') ?>";
+                        let urlAction = objectType == 'ppp' ? "<?= url('patch-panel-port/delete-file') ?>" : "<?= url('patch-panel-port/delete-history-file') ?>";
 
-                    $.ajax( urlAction + "/" + idFile , {
-                        type : 'POST'
-                    })
-                    .done( function( data ) {
-                        if( data.success ){
-                            $( "#area_file_"+idHistory+'_'+objectType ).load( "<?= action('PatchPanel\PatchPanelPortController@view' , [ 'id' => $t->ppp->getId() ] ) ?> #list_file_"+idHistory+'_'+objectType );
-                            $( '.bootbox.modal' ).modal( 'hide' );
-                        }
-                        else{
-                            $( '#message-'+idHistory+'-'+objectType ).html("<div class='alert alert-danger' role='alert'>" + data.message + "</div>");
-                            $( '#delete_'+idFile ).remove();
-                        }
-                    })
-                    .fail( function() {
-                        throw new Error( "Error running ajax query for patch-panel-port/deleteFile/" );
-                        alert( "Error running ajax query for patch-panel-port/deleteFile/" );
-                        $( "#customer" ).html("");
-                    })
+                        $.ajax( urlAction + "/" + idFile , {
+                            type : 'POST'
+                        })
+                        .done( function( data ) {
+                            if( data.success ){
+                                $( "#area_file_"+idHistory+'_'+objectType ).load( "<?= action('PatchPanel\PatchPanelPortController@view' , [ 'id' => $t->ppp->getId() ] ) ?> #list_file_"+idHistory+'_'+objectType );
+                                $( '.bootbox.modal' ).modal( 'hide' );
+                            }
+                            else{
+                                $( '#message-'+idHistory+'-'+objectType ).html("<div class='alert alert-danger' role='alert'>" + data.message + "</div>");
+                                $( '#delete_'+idFile ).remove();
+                            }
+                        })
+                        .fail( function() {
+                            throw new Error( "Error running ajax query for patch-panel-port/deleteFile/" );
+                            alert( "Error running ajax query for patch-panel-port/deleteFile/" );
+                            $( "#customer" ).html("");
+                        })
+                    }
                 }
-            }
-        });
-    }
-</script>
+            });
+        }
+    </script>
 <?php $this->append() ?>

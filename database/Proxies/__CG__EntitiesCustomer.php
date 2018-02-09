@@ -1676,12 +1676,12 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function resolveAsMacro($protocol = 4, $asnPrefix = '')
+    public function resolveAsMacro($protocol = 4, $asnPrefix = '', $nullIfNoMacro = false)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveAsMacro', [$protocol, $asnPrefix]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveAsMacro', [$protocol, $asnPrefix, $nullIfNoMacro]);
 
-        return parent::resolveAsMacro($protocol, $asnPrefix);
+        return parent::resolveAsMacro($protocol, $asnPrefix, $nullIfNoMacro);
     }
 
     /**
