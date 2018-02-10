@@ -185,6 +185,9 @@ class CustomerController extends Controller
      * @throws
      */
     public function store( CustomerRequest $request ): RedirectResponse {
+
+        //dd($request);
+
         $isEdit = $request->input( 'id' ) ? true : false;
         /** @var CustomerEntity $cust */
         if( $isEdit && $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) {
