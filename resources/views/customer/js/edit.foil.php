@@ -111,6 +111,7 @@ function populateFormViaAsn() {
 
         btn_populate.attr( "disabled", "disabled" );
         $( '#error-message' ).remove();
+        $( '.form-group' ).removeClass( 'has-success' );
 
         $.ajax( url )
 
@@ -121,29 +122,29 @@ function populateFormViaAsn() {
                     if( data.informations ) {
 
                         // fill inputs with info received
-                        input_name.val(             data.informations.name );
-                        input_abbreviated_name.val( data.informations.name );
-                        input_shortname.val(        data.informations.name.replace( /[^a-zA-Z0-9]+/g, "" ).toLowerCase().substr( 0, 10 ) );
-                        input_datejoin.val(         getCurrentDate() );
-                        input_corp_www.val(         data.informations.website );
-                        input_autsys.val(           data.informations.asn );
-                        input_peeringmacro.val(     data.informations.irr_as_set );
+                        input_name.val(             data.informations.name ).closest( 'div.form-group' ).addClass( 'has-success' );
+                        input_abbreviated_name.val( data.informations.name ).closest( 'div.form-group' ).addClass( 'has-success' );
+                        input_shortname.val(        data.informations.name.replace( /[^a-zA-Z0-9]+/g, "" ).toLowerCase().substr( 0, 10 ) ).closest( 'div.form-group' ).addClass( 'has-success' );
+                        input_datejoin.val(         getCurrentDate() ).closest( 'div.form-group' ).addClass( 'has-success' );
+                        input_corp_www.val(         data.informations.website ).closest( 'div.form-group' ).addClass( 'has-success' );
+                        input_autsys.val(           data.informations.asn ).closest( 'div.form-group' ).addClass( 'has-success' );
+                        input_peeringmacro.val(     data.informations.irr_as_set ).closest( 'div.form-group' ).addClass( 'has-success' );
 
                         if( data.informations.info_prefixes4 !== "undefined" ) {
-                            input_maxprefixes.val( Math.ceil( data.informations.info_prefixes4 * 1.2 ) );
+                            input_maxprefixes.val( Math.ceil( data.informations.info_prefixes4 * 1.2 ) ).closest( 'div.form-group' ).addClass( 'has-success' );
                         }
 
-                        dd_peering_policy.val(  data.informations.policy_general.toLowerCase() ).trigger( "change" );
+                        dd_peering_policy.val(  data.informations.policy_general.toLowerCase() ).trigger( "change" ).closest( 'div.form-group' ).addClass( 'has-success' );
 
                         if( data.informations.poc_set !== "undefined" ) {
                             $.each( data.informations.poc_set, function( key, noc ) {
                                 if( noc.role.toUpperCase() === "NOC" ) {
                                     if( noc.phone !== "undefined" ){
-                                        input_nocphone.val( noc.phone );
+                                        input_nocphone.val( noc.phone ).closest( 'div.form-group' ).addClass( 'has-success' );
                                     }
                                     if( noc.email !== "undefined" ) {
                                         input_nocemail.val( noc.email );
-                                        input_peeringemail.val( noc.email );
+                                        input_peeringemail.val( noc.email ).closest( 'div.form-group' ).addClass( 'has-success' );
                                     }
                                 }
                             });
@@ -161,7 +162,7 @@ function populateFormViaAsn() {
                                 break;
                         }
 
-                        dd_peering_policy.val( peering_policy ).trigger( "change" );
+                        dd_peering_policy.val( peering_policy ).trigger( "change" ).closest( 'div.form-group' ).addClass( 'has-success' );
                     }
 
                 } else {
