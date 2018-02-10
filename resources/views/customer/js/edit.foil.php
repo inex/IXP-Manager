@@ -37,7 +37,7 @@ dd_type.change( () => {
     } else {
         $( '.full-member-details' ).slideDown( 'fast' );
     }
-});
+}).trigger('change');
 
 /**
  * Handler for button request to populate from PeeringDB

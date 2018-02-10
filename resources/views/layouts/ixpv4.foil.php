@@ -143,6 +143,8 @@
 
     <script>
         $( ".chzn-select" ).select2({ width: '100%' });
+        $( ".chzn-select-deselect" ).select2( { width: '100%', allowClear: true } );
+
 
         <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
             $( "#menu-select-customer" ).select2({ placeholder: "Jump to customer...", allowClear: true }).change( function(){

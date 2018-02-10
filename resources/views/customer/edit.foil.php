@@ -122,7 +122,9 @@
 
 
 
-            <div class="col-md-6 full-member-details">
+            <div class="col-md-6 full-member-details" style="<?=
+                old( 'type' ) == Entities\Customer::TYPE_ASSOCIATE || ( $t->cust && $t->cust->isTypeAssociate() ) ? 'display: none;' : ''
+            ?>">
 
                 <h3>Peering Details</h3>
                 <hr>
@@ -176,9 +178,9 @@
 
                 <?= Former::select( 'irrdb' )
                     ->label( 'IRRDB Source' )
-                    ->fromQuery( $t->irrdbs, 'source' )
                     ->placeholder( 'Choose a IRRDB Source' )
-                    ->addClass( 'chzn-select' )
+                    ->fromQuery( $t->irrdbs, 'source' )
+                    ->addClass( 'chzn-select-deselect' )
                     ->blockHelp( "The IRRDB source sets the database where IXP Manager queries the customer's IRR data from. See "
                         . '<a href="http://docs.ixpmanager.org/features/irrdb/">the IRRDB feature page</a> for more information.' );
                 ?>
@@ -194,7 +196,10 @@
             </div>
         </div>
 
-    <div class="col-md-12 full-member-details">
+    <div class="col-md-12 full-member-details" style="<?=
+        old( 'type' ) == Entities\Customer::TYPE_ASSOCIATE || ( $t->cust && $t->cust->isTypeAssociate() ) ? 'display: none;' : ''
+    ?>">
+
         <div class="col-md-6">
             <h3>NOC Details</h3>
             <hr>

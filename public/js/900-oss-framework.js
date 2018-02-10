@@ -373,12 +373,6 @@ function ossPopover()
 // Chosen Functions
 //****************************************************************************
 
-$( 'document' ).ready( function(){
-
-    $(".chzn-select-deselect").each( function( index ) {
-        $( this ).select2( { allowClear: true } );
-    });
-});
 
 
 // clear a select dropdown
