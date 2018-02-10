@@ -105,7 +105,6 @@ function populateFormViaAsn() {
 
     if( input_asn_search.val() && /^\s*\d+\s*$/.test( input_asn_search.val() ) ) {
 
-        let error = '';
         let peering_policy = '';
         let url = " <?= url( "api/v4/customer/query-peeringdb/asn" ) ?>/" + input_asn_search.val().trim();
 
@@ -115,67 +114,55 @@ function populateFormViaAsn() {
 
         $.ajax( url )
 
-            .done( function( data ) {
+            .done( function( response ) {
+                if( typeof response.net !== "undefined" ) {
 
-                if( !data.error ) {
+                    // fill inputs with info received
+                    input_name.val(             response.net.name ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    input_abbreviated_name.val( response.net.name ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    input_shortname.val(        response.net.name.replace( /[^a-zA-Z0-9]+/g, "" ).toLowerCase().substr( 0, 10 ) ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    input_datejoin.val(         getCurrentDate() ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    input_corp_www.val(         response.net.website ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    input_autsys.val(           response.net.asn ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    input_peeringmacro.val(     response.net.irr_as_set ).closest( 'div.form-group' ).addClass( 'has-success' );
 
-                    if( data.informations ) {
-
-                        // fill inputs with info received
-                        input_name.val(             data.informations.name ).closest( 'div.form-group' ).addClass( 'has-success' );
-                        input_abbreviated_name.val( data.informations.name ).closest( 'div.form-group' ).addClass( 'has-success' );
-                        input_shortname.val(        data.informations.name.replace( /[^a-zA-Z0-9]+/g, "" ).toLowerCase().substr( 0, 10 ) ).closest( 'div.form-group' ).addClass( 'has-success' );
-                        input_datejoin.val(         getCurrentDate() ).closest( 'div.form-group' ).addClass( 'has-success' );
-                        input_corp_www.val(         data.informations.website ).closest( 'div.form-group' ).addClass( 'has-success' );
-                        input_autsys.val(           data.informations.asn ).closest( 'div.form-group' ).addClass( 'has-success' );
-                        input_peeringmacro.val(     data.informations.irr_as_set ).closest( 'div.form-group' ).addClass( 'has-success' );
-
-                        if( data.informations.info_prefixes4 !== "undefined" ) {
-                            input_maxprefixes.val( Math.ceil( data.informations.info_prefixes4 * 1.2 ) ).closest( 'div.form-group' ).addClass( 'has-success' );
-                        }
-
-                        dd_peering_policy.val(  data.informations.policy_general.toLowerCase() ).trigger( "change" ).closest( 'div.form-group' ).addClass( 'has-success' );
-
-                        if( data.informations.poc_set !== "undefined" ) {
-                            $.each( data.informations.poc_set, function( key, noc ) {
-                                if( noc.role.toUpperCase() === "NOC" ) {
-                                    if( noc.phone !== "undefined" ){
-                                        input_nocphone.val( noc.phone ).closest( 'div.form-group' ).addClass( 'has-success' );
-                                    }
-                                    if( noc.email !== "undefined" ) {
-                                        input_nocemail.val( noc.email );
-                                        input_peeringemail.val( noc.email ).closest( 'div.form-group' ).addClass( 'has-success' );
-                                    }
-                                }
-                            });
-                        }
-
-                        switch ( data.informations.policy_general ) {
-                            case "Open":
-                                peering_policy = "open";
-                                break;
-                            case "Selective":
-                                peering_policy = "selective";
-                                break;
-                            case "No":
-                                peering_policy = "closed";
-                                break;
-                        }
-
-                        dd_peering_policy.val( peering_policy ).trigger( "change" ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    if( response.net.info_prefixes4 !== "undefined" ) {
+                        input_maxprefixes.val( Math.ceil( response.net.info_prefixes4 * 1.2 ) ).closest( 'div.form-group' ).addClass( 'has-success' );
                     }
+
+                    dd_peering_policy.val(  response.net.policy_general.toLowerCase() ).trigger( "change" ).closest( 'div.form-group' ).addClass( 'has-success' );
+
+                    if( response.net.poc_set !== "undefined" ) {
+                        $.each( response.net.poc_set, function( key, noc ) {
+                            if( noc.role.toUpperCase() === "NOC" ) {
+                                if( noc.phone !== "undefined" ){
+                                    input_nocphone.val( noc.phone ).closest( 'div.form-group' ).addClass( 'has-success' );
+                                }
+                                if( noc.email !== "undefined" ) {
+                                    input_nocemail.val( noc.email );
+                                    input_peeringemail.val( noc.email ).closest( 'div.form-group' ).addClass( 'has-success' );
+                                }
+                            }
+                        });
+                    }
+
+                    switch ( response.net.policy_general ) {
+                        case "Open":
+                            peering_policy = "open";
+                            break;
+                        case "Selective":
+                            peering_policy = "selective";
+                            break;
+                        case "No":
+                            peering_policy = "closed";
+                            break;
+                    }
+
+                    dd_peering_policy.val( peering_policy ).trigger( "change" ).closest( 'div.form-group' ).addClass( 'has-success' );
 
                 } else {
 
-                    if( typeof data.error !== "undefined" ) {
-                        error = data.error;
-                    } else if( data.informations.meta !== undefined ) {
-                        error = data.informations.meta.error;
-                    } else {
-                        error = data.informations;
-                    }
-
-                    $( '#form' ).prepend( `<div id="error-message" class="alert alert-danger" role="alert"> ${error} </div>` );
+                    $( '#form' ).prepend( `<div id="error-message" class="alert alert-danger" role="alert"> ${response.error} </div>` );
                 }
 
             })
