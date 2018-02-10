@@ -107,7 +107,7 @@ function populateFormViaAsn() {
 
         let error = '';
         let peering_policy = '';
-        let url = " <?= url( "customer/populate-customer/asn" ) ?>/" + input_asn_search.val().trim();
+        let url = " <?= url( "api/v4/customer/query-peeringdb/asn" ) ?>/" + input_asn_search.val().trim();
 
         btn_populate.attr( "disabled", "disabled" );
         $( '#error-message' ).remove();
@@ -167,7 +167,9 @@ function populateFormViaAsn() {
 
                 } else {
 
-                    if( data.informations.meta !== undefined ) {
+                    if( typeof data.error !== "undefined" ) {
+                        error = data.error;
+                    } else if( data.informations.meta !== undefined ) {
                         error = data.informations.meta.error;
                     } else {
                         error = data.informations;

@@ -27,6 +27,15 @@ Route::get('dns/arpa/{vlanid}/{protocol}',             'DnsController@arpa');
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Customers
+//
+Route::group( [  'prefix' => 'customer' ], function() {
+    Route::get( 'query-peeringdb/asn/{asn}',   'CustomerController@queryPeeringDbWithAsn' );
+
+    Route::post( '{id}/switches',               'CustomerController@switches' );
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Users
 //
 // Returns all users (or users with given integer privilege) as JSON
@@ -118,8 +127,6 @@ Route::get('provisioner/routing/switch-name/{switchname}.{outformat}',          
 
 Route::get('switch-port/{id}/customer',                         'SwitchPortController@customer' );
 Route::get('switch-port/{id}/physical-interface',               'SwitchPortController@physicalInterface' );
-
-Route::post('customer/{id}/switches',                           'CustomerController@switches' );
 
 Route::group( [  'prefix' => 'switch' ], function() {
     Route::get( '{id}/ports',                        'SwitchController@ports' );

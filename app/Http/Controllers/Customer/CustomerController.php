@@ -467,26 +467,6 @@ class CustomerController extends Controller
     }
 
     /**
-     * Add or edit a customer billing information
-     *
-     * email notification
-     *
-     * @param   string  $asn ASN that the user want to use to populate the customer details form
-     *
-     * @return  JsonResponse
-     * @throws
-     */
-    public function populateCustomerInfoByAsn( string $asn ) : JsonResponse{
-        $result = '';
-        if( $asn != null || $asn != '' ) {
-            $result = App::make( "IXP\Services\PeeringDb" )->getNetworkByAsn( $asn );
-        }
-
-        return response()->json( [ 'error' => $result[ 'error' ] , 'informations' => $result[ 'result' ] ] );
-
-    }
-
-    /**
      * Display the list of all the Customers
      *
      * @return  View
