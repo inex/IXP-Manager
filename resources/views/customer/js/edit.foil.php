@@ -1,3 +1,4 @@
+<?php /** @var Foil\Template\Template $t */ ?>
 <script>
 
 //////////////////////////////////////////////////////////////////////////////////////
@@ -87,9 +88,7 @@ $(document).ready( function(){
     $( '.full-member-details' ).slideUp( 'fast' );
     <?php endif; ?>
 
-    /*
-     * Display the reseller dropdown if resold customer
-     */
+    // Display the reseller dropdown if resold customer
     if( cb_isResold.prop('checked') ) {
         div_reseller_area.show();
     }
@@ -101,52 +100,54 @@ $(document).ready( function(){
  * Ajax request to fill the inputs depending on the ASN entered
  */
 function populateFormViaAsn() {
+
     const input_asn_search = $( '#asn-search' );
 
-    if( input_asn_search.val() ){
+    if( input_asn_search.val() && /^\s*\d+\s*$/.test( input_asn_search.val() ) ) {
+
         let error = '';
         let peering_policy = '';
+        let url = " <?= url( "customer/populate-customer/asn" ) ?>/" + input_asn_search.val().trim();
 
-        btn_populate.attr("disabled", "disabled" );
-
+        btn_populate.attr( "disabled", "disabled" );
         $( '#error-message' ).remove();
-        let url = " <?= url( "customer/populate-customer/asn") ?>/" + input_asn_search.val();
-        $.ajax( url )
-            .done( function( data ) {
-                if( !data.error ){
-                    if( data.informations ){
-                        $('#form').trigger("reset");
-                        // fill inputs with info received
-                        input_name.val( data.informations.name );
-                        input_shortname.val( data.informations.name.replace(/[^a-zA-Z0-9]+/g, "").toLowerCase() );
-                        input_datejoin.val( getCurrentDate() );
 
-                        if( data.informations.info_prefixes4 !== "undefined" ){
-                            input_maxprefixes.val( Math.round(data.informations.info_prefixes4 * 1.2 ) );
+        $.ajax( url )
+
+            .done( function( data ) {
+
+                if( !data.error ) {
+
+                    if( data.informations ) {
+
+                        // fill inputs with info received
+                        input_name.val(             data.informations.name );
+                        input_abbreviated_name.val( data.informations.name );
+                        input_shortname.val(        data.informations.name.replace( /[^a-zA-Z0-9]+/g, "" ).toLowerCase().substr( 0, 10 ) );
+                        input_datejoin.val(         getCurrentDate() );
+                        input_corp_www.val(         data.informations.website );
+                        input_autsys.val(           data.informations.asn );
+                        input_peeringmacro.val(     data.informations.irr_as_set );
+
+                        if( data.informations.info_prefixes4 !== "undefined" ) {
+                            input_maxprefixes.val( Math.ceil( data.informations.info_prefixes4 * 1.2 ) );
                         }
 
-                        input_abbreviated_name.val( data.informations.name );
-                        input_corp_www.val( data.informations.website );
-                        input_autsys.val( data.informations.asn );
-                        input_peeringmacro.val( data.informations.irr_as_set );
                         dd_peering_policy.val(  data.informations.policy_general.toLowerCase() ).trigger( "change" );
 
-                        if( data.informations.poc_set !== "undefined" ){
+                        if( data.informations.poc_set !== "undefined" ) {
                             $.each( data.informations.poc_set, function( key, noc ) {
-                                if( noc.role === "NOC"){
+                                if( noc.role.toUpperCase() === "NOC" ) {
                                     if( noc.phone !== "undefined" ){
                                         input_nocphone.val( noc.phone );
                                     }
-                                    if( noc.email !== "undefined" ){
+                                    if( noc.email !== "undefined" ) {
                                         input_nocemail.val( noc.email );
                                         input_peeringemail.val( noc.email );
                                     }
-
                                 }
-
                             });
                         }
-
 
                         switch ( data.informations.policy_general ) {
                             case "Open":
@@ -162,13 +163,15 @@ function populateFormViaAsn() {
 
                         dd_peering_policy.val( peering_policy ).trigger( "change" );
                     }
-                }else{
 
-                    if( data.informations.meta !== undefined ){
+                } else {
+
+                    if( data.informations.meta !== undefined ) {
                         error = data.informations.meta.error;
                     } else {
                         error = data.informations;
                     }
+
                     $( '#form' ).prepend( `<div id="error-message" class="alert alert-danger" role="alert"> ${error} </div>` );
                 }
 
@@ -183,6 +186,10 @@ function populateFormViaAsn() {
     }
 }
 
+/**
+ * Get date as Y-m-d
+ * @returns {string}
+ */
 function getCurrentDate(){
     let now = new Date();
     let month = (now.getMonth() + 1);
