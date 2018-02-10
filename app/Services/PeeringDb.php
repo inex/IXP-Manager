@@ -3,7 +3,7 @@
 namespace IXP\Services;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,65 +22,89 @@ namespace IXP\Services;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
+use Log;
+
 use GuzzleHttp\{
     Client as GuzzleHttp,
     Exception\RequestException
 };
 
+// use IXP\Exceptions\Services\PeeringDb as PeeringDbException;
 
 /**
  * PeeringDb
  *
  * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
  * @author     Yann Robin       <yann@islandbridgenetworks.ie>
- * @category   LookingGlass
+ * @category   PeeringDB
  * @package    IXP\Services\PeeringDb
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class PeeringDb {
+class PeeringDb
+{
+
+    private function generateBasePeeringDbUrl( string $query = "" )
+    {
+        $credentials = '';
+        if( ( $un = config( 'ixp_api.peeringDB.username' ) ) === null || ( $pw = config( 'ixp_api.peeringDB.password' ) ) === null ) {
+            Log::warning( 'PeeringDb username / password not set in .env. Only public data will be retrieved.' );
+        } else {
+            $credentials = urlencode( $un ) . ":" . urlencode( $pw ) . "@";
+        }
+
+        return sprintf( config( 'ixp_api.peeringDB.url' ), $credentials ) . $query;
+    }
 
     /**
-     * Get network by ASN
+     * Get network information by ASN
      *
-     * @param int $asn
+     * Returns one of two arrays:
      *
+     * [ 'net' => (json decoded network information directly from PeeringDB) ]
+     * [ 'error' => (some error message) ]
+     *
+     * @param string $asn
      * @return array
      */
-    public function getNetworkByAsn( $asn = null){
-        $autsys = trim( $asn );
-        $result[ 'error' ] = false;
+    public function getNetworkByAsn( $asn = null )
+    {
+        $asn = trim( $asn );
+
+        if( !is_numeric( $asn ) || $asn <= 0 ) {
+            return [ 'error' => "Invalid ASN provided: " . $asn ];
+        }
+
+        $client = new GuzzleHttp();
 
         try {
-            // doing request to get the cookie
+            // find network by ASN
+            $req = $client->request( 'GET', $this->generateBasePeeringDbUrl( "/net.json?asn={$asn}" ) );
 
-            // NOT SURE THAT IS NECESSARY
-            $client = new GuzzleHttp( ['cookies' => true] );
-            $AsnContent = $client->request( 'GET', "https://www.peeringdb.com/api/net?asn=" . $autsys );
+            if( $req->getStatusCode() == '200' ) {
 
-            // check if HTTP request status is 200
-            if( $AsnContent->getStatusCode() == '200' ) {
-                $id = json_decode( $AsnContent->getBody()->getContents() )->data[ 0 ]->id;
+                $pdb_network_id = json_decode( $req->getBody()->getContents() )->data[ 0 ]->id;
+                $req = $client->request( 'GET', $this->generateBasePeeringDbUrl( "/net/{$pdb_network_id}.json" ) );
 
-                $infoContent = $client->request( 'GET', "https://" . config( "ixp_api.peeringDB.username" ) . ":" . config( "ixp_api.peeringDB.password" ) ."@peeringdb.com/api/net/" . $id );
-                $info = json_decode( $infoContent->getBody()->getContents() );
+                if( $req->getStatusCode() == '200' ) {
+                    return [ 'net' => json_decode( $req->getBody()->getContents() )->data[ 0 ] ];
+                }
 
-                $result[ 'result' ] = $info->data[ 0 ];
+            } else if( $req->getStatusCode() == '404' ) {
+                return [ 'error' => "No network with AS{$asn} found in PeeringDB" ];
             }
 
         } catch (RequestException $e) {
-            $result[ 'error' ] = true;
-            // If there are network errors, we need to ensure the application doesn't crash.
-            // if $e->hasResponse is not null we can attempt to get the message
-            // Otherwise, we'll just pass a network unavailable message.
+
             if( $e->hasResponse() ) {
-                $exception = (string)$e->getResponse()->getBody();
-                $result[ 'result' ] = json_decode( $exception );
-            } else {
-                $result[ 'result' ] = $e->getMessage();
+                return [ 'error' => json_decode( (string)$e->getResponse()->getBody() ) ];
             }
+
+            return [ 'error' => $e->getMessage() ];
         }
-        return $result;
+
+        return [ 'error' => 'Unable to query PeeringDb / get result from PeeringDb. Please open GitHub issue.' ];
     }
 
 

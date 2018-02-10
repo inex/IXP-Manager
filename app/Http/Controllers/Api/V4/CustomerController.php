@@ -46,25 +46,16 @@ class CustomerController extends Controller
 {
 
     /**
-     * Add or edit a customer billing information
+     * Get network information from PeeringDb by ASN
      *
-     * email notification
+     * For return information:
+     * @see \IXP\Services\PeeringDb::getNetworkByAsn()
      *
-     * @param   string  $asn ASN that the user want to use to populate the customer details form
-     *
+     * @param   string  $asn
      * @return  JsonResponse
-     * @throws
      */
     public function queryPeeringDbWithAsn( string $asn ): JsonResponse {
-
-        if( is_numeric( $asn ) ) {
-            $result = App::make( "IXP\Services\PeeringDb" )->getNetworkByAsn( $asn );
-        } else {
-            return response()->json( [ 'error' => "Invalid ASN" ] );
-        }
-
-        return response()->json( [ 'error' => $result[ 'error' ] , 'informations' => $result[ 'result' ] ] );
-
+        return response()->json( App::make( "IXP\Services\PeeringDb" )->getNetworkByAsn( $asn ) );
     }
 
 
