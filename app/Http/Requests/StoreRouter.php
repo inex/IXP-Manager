@@ -61,15 +61,28 @@ class StoreRouter extends FormRequest
             'protocol'              => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$PROTOCOLS ) ),
             'type'                  => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$TYPES ) ),
             'name'                  => 'required|string|max:255',
-            'shortname'             => 'required|string|max:20',
+            'shortname'             => 'required|string|max:30',
             'router_id'             => 'required|ipv4',
             'peering_ip'            => 'required|ipv' . $this->input('protocol'),
             'asn'                   => 'required|integer',
             'software'              => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$SOFTWARES ) ),
             'mgmt_host'             => 'required|string|max:255',
             'api_type'              => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$API_TYPES ) ),
-            'api'                   => ( $this->input('api_type') != RouterEntity::API_TYPE_NONE ? 'url|required' : '' ),
+            'api'                   => ( $this->input('api_type') != RouterEntity::API_TYPE_NONE ? 'url|required|regex:/.*[^\/]$/' : '' ),
             'lg_access'             => 'integer' . ( $this->input('api') ? '|required|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ) : '' ),
         ];
     }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'api.regex' => 'The API URL must not end with a trailing slash',
+        ];
+    }
+
 }
