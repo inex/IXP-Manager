@@ -143,7 +143,12 @@
 
     <script>
         $( ".chzn-select" ).select2({ width: '100%' });
-        $( ".chzn-select-deselect" ).select2( { width: '100%', allowClear: true } );
+        $( ".chzn-select-deselect" ).select2( { width: '100%', allowClear: true } )
+        // . find placeholder in first dropdown item and set with placeholder()
+            .prepend( new Option( '', '', true, false) )
+            .trigger('change')
+            .show();
+
 
 
         <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
