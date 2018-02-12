@@ -162,7 +162,7 @@ class LogoController extends Controller
             D2EM::remove( $oldLogo );
             D2EM::flush();
         }
-        
+
         $logo->setCustomer( $c );
         D2EM::flush();
 

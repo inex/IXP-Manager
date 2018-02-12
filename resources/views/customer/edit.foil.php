@@ -122,7 +122,9 @@
 
 
 
-            <div class="col-md-6 full-member-details">
+            <div class="col-md-6 full-member-details" style="<?=
+                old( 'type' ) == Entities\Customer::TYPE_ASSOCIATE || ( $t->cust && $t->cust->isTypeAssociate() ) ? 'display: none;' : ''
+            ?>">
 
                 <h3>Peering Details</h3>
                 <hr>
@@ -176,9 +178,9 @@
 
                 <?= Former::select( 'irrdb' )
                     ->label( 'IRRDB Source' )
-                    ->fromQuery( $t->irrdbs, 'source' )
                     ->placeholder( 'Choose a IRRDB Source' )
-                    ->addClass( 'chzn-select' )
+                    ->fromQuery( $t->irrdbs, 'source' )
+                    ->addClass( 'chzn-select-deselect' )
                     ->blockHelp( "The IRRDB source sets the database where IXP Manager queries the customer's IRR data from. See "
                         . '<a href="http://docs.ixpmanager.org/features/irrdb/">the IRRDB feature page</a> for more information.' );
                 ?>
@@ -194,40 +196,48 @@
             </div>
         </div>
 
-    <div class="col-md-12 full-member-details">
+    <div class="col-md-12 full-member-details" style="<?=
+        old( 'type' ) == Entities\Customer::TYPE_ASSOCIATE || ( $t->cust && $t->cust->isTypeAssociate() ) ? 'display: none;' : ''
+    ?>">
+
         <div class="col-md-6">
             <h3>NOC Details</h3>
             <hr>
             <?= Former::phone( 'nocphone' )
                 ->label( 'Phone' )
-                ->placeholder( '+353 1 123 4567' )
-                ->blockHelp( '' );
+                ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
+                ->blockHelp( 'Working hours phone number for contacting the customer NOC.<br><br>'
+                    . 'This is available to all other customers.' );
             ?>
 
             <?= Former::phone( 'noc24hphone' )
                 ->label( '24h Phone' )
-                ->placeholder( '+353 86 876 5432' )
-                ->blockHelp( '' );
+                ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
+                ->blockHelp( '24/7 emergency phone number for contacting the customer NOC..<br><br>'
+                    . 'This is available to all other customers.' );
             ?>
 
             <?= Former::email( 'nocemail' )
                 ->label( 'Email' )
                 ->placeholder( 'noc@example.com' )
-                ->blockHelp( '' );
+                ->blockHelp( 'The NOC email is used in customer lists. We try and encourage "
+                    . "the use of a role alias such as noc@example.com but this does not "
+                    . "always work out.<br><br>'
+                    . 'This is available to all other customers.' );
             ?>
 
             <?= Former::select( 'nochours' )
                 ->label( 'Hours' )
                 ->fromQuery( \Entities\Customer::$NOC_HOURS )
-                ->placeholder( 'Choose an hours' )
+                ->placeholder( 'Choose NOC Hours' )
                 ->addClass( 'chzn-select' )
-                ->blockHelp( '' );
+                ->blockHelp( 'The hours during which the NOC is available.' );
             ?>
 
             <?= Former::url( 'nocwww' )
                 ->label( 'Website' )
                 ->placeholder( 'http://www.noc.example.com/' )
-                ->blockHelp( '' );
+                ->blockHelp( 'An optional NOC information email page / status page.' );
             ?>
 
         </div>
@@ -237,15 +247,15 @@
                 <h3>Reseller Details</h3>
                 <hr>
                 <?= Former::checkbox( 'isReseller' )
-                    ->label( ' ' )
+                    ->label( '&nbsp;' )
                     ->text( 'Is a Reseller' )
-                    ->blockHelp('' );
+                    ->blockHelp( 'Check this if this customer is (also) a reseller.' );
                 ?>
 
                 <?= Former::checkbox( 'isResold' )
-                    ->label( ' ' )
+                    ->label( '&nbsp;' )
                     ->text( 'Resold Customer' )
-                    ->blockHelp('' );
+                    ->blockHelp( 'Check this if this customer comes via a reseller. Then chose the reseller.' );
                 ?>
 
                 <div id="reseller-area" class="collapse">
@@ -263,17 +273,21 @@
     </div>
 
 
-    <?=Former::actions( Former::primary_submit( 'Save Changes' ),
-        Former::default_link( 'Cancel' )->href( route ( 'customer@list' ) ),
-        Former::success_button( 'Help' )->id( 'help-btn' )
-    );?>
+    <div class="col-md-12">
 
+        <br>
+        <?= Former::hidden( 'id' )->value( $t->cust ? $t->cust->getId() : '' ) ?>
 
-    <?= Former::hidden( 'id' )
-        ->value( $t->cust ? $t->cust->getId() : '' )
-    ?>
+        <?= Former::actions( Former::primary_submit( 'Save Changes' ),
+                Former::default_link( 'Cancel' )->href( route ( 'customer@list' ) ),
+                Former::success_button( 'Help' )->id( 'help-btn' )
+            );
+        ?>
+
+    </div>
 
     <?= Former::close() ?>
+    <br>
 
 <?php $this->append() ?>
 

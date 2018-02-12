@@ -115,7 +115,6 @@ class CustomerController extends Controller
 
         return view( 'customer/list' )->with([
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAllForFeList( $showCurrentOnly, $state, $type ),
-            'resellerMode'          => $this->resellerMode(),
             'state'                 => $state           ?? false,
             'type'                  => $type            ?? false,
             'showCurrentOnly'       => $showCurrentOnly ?? false,
@@ -184,6 +183,9 @@ class CustomerController extends Controller
      * @throws
      */
     public function store( CustomerRequest $request ): RedirectResponse {
+
+        //dd($request);
+
         $isEdit = $request->input( 'id' ) ? true : false;
         /** @var CustomerEntity $cust */
         if( $isEdit && $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) {
@@ -462,26 +464,6 @@ class CustomerController extends Controller
         }
 
         return Redirect::to( route( "customer@overview" , [ "id" => $cust->getId() , "tab" => "details" ]  ) );
-
-    }
-
-    /**
-     * Add or edit a customer billing information
-     *
-     * email notification
-     *
-     * @param   string  $asn ASN that the user want to use to populate the customer details form
-     *
-     * @return  JsonResponse
-     * @throws
-     */
-    public function populateCustomerInfoByAsn( string $asn ) : JsonResponse{
-        $result = '';
-        if( $asn != null || $asn != '' ) {
-            $result = App::make( "IXP\Services\PeeringDb" )->getNetworkByAsn( $asn );
-        }
-
-        return response()->json( [ 'error' => $result[ 'error' ] , 'informations' => $result[ 'result' ] ] );
 
     }
 

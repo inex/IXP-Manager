@@ -130,7 +130,6 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
     Route::get(     'edit/{id}',                        'CustomerController@edit'                       )->name( 'customer@edit');
 
     Route::get(     'billing-registration/{id}',        'CustomerController@billingRegistration'        )->name( 'customer@billingRegistration');
-    Route::get(     'populate-customer/asn/{asn}',      'CustomerController@populateCustomerInfoByAsn'  )->name( 'customer@populateCustomerInfoByAsn');
     Route::get(     'unread-notes',                     'CustomerController@unreadNotes'                )->name( "customer@unreadNotes" );
     Route::get(     'welcome-email/{id}',               'CustomerController@welcomeEmail'               )->name( "customer@welcomeEmail" );
     Route::get(     'delete-recap/{id}',                'CustomerController@deleteRecap'                )->name( "customer@deleteRecap" );
@@ -145,11 +144,13 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
 
 });
 
+
 Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer-logo' ], function() {
     Route::get(     'logos',                            'LogoController@logos'                      )->name( "logo@logos" );
 });
 
 Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer-note' ], function() {
+
 
     Route::get(    'ajax-notify-toggle/custid/{id}',   'CustomerNotesController@notifyToggleByCust'     )->name( 'customerNotes@notifyToggleCust');
     Route::get(    'ajax-notify-toggle/id/{id}',       'CustomerNotesController@notifyToggleByNote'     )->name( 'customerNotes@notifyToggleNote');

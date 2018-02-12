@@ -151,7 +151,7 @@ $this->layout( 'layouts/ixpv4' );
                     <?= $c->getReseller() ? "Yes" : "No" ?>
                 </td>
                 <td>
-                    <?= $t->insert( 'customer/list-type',   [ 'cust' => $c , 'resellerMode' => $t->resellerMode ] ) ?>
+                    <?= $t->insert( 'customer/list-type',   [ 'cust' => $c , 'resellerMode' => $t->resellerMode() ] ) ?>
                 </td>
                 <td>
                     <?= $t->insert( 'customer/list-status', [ 'cust' => $c ] ) ?>
