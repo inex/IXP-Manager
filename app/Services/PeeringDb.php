@@ -104,7 +104,7 @@ class PeeringDb
             return [ 'error' => $e->getMessage() ];
         }
 
-        return [ 'error' => 'Unable to query PeeringDb / get result from PeeringDb. Please open GitHub issue.' ];
+        return [ 'error' => 'Unable to query PeeringDb / get result from PeeringDb. Check if PeeringDB is up / functioning.' ];
     }
 
 
