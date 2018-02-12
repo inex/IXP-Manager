@@ -86,7 +86,7 @@ prefix set martians;
                 fe80::/10+,             # Link-local Unicast
                 fec0::/10+,             # Site-local Unicast - deprecated by RFC 3879 (replaced by ULA)
                 ff00::/8+,              # Multicast
-                ::/0{<?= config( 'ixp.irrdb.min_v6_subnet_size', 48 ) + 1 ?>,128}            # Default (can be advertised as a route in BGP to peers if desired)
+                ::/0{<?= config( 'ixp.irrdb.min_v6_subnet_size', 48 ) + 1 ?>,128}            # Filter small prefixes
         ];
 
     <?php else: ?>
