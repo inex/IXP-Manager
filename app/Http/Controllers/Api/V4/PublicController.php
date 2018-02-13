@@ -73,8 +73,8 @@ class PublicController extends Controller {
                 'sitename'  => config( 'identity.sitename' ),
                 'name'      => config( 'identity.name' ),
                 'corp_url'  => config( 'identity.corporate_url' ),
-                'city'      => config( 'identity.location.city '),
-                'country'   => config( 'identity.location.country '),
+                'city'      => config( 'identity.location.city' ),
+                'country'   => config( 'identity.location.country' ),
             ],
         ]);
     }
