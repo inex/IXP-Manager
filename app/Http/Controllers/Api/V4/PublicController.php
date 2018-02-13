@@ -77,7 +77,7 @@ class PublicController extends Controller {
                 'city'      => config( 'identity.location.city' ),
                 'country'   => config( 'identity.location.country' ),
             ],
-        ]);
+        ], 200, [], JSON_PRETTY_PRINT );
     }
 
 
