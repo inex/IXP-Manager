@@ -17,20 +17,15 @@ use Illuminate\Http\Request;
 //     wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
 
 
+Route::get( 'ping', 'PublicController@ping' );
+Route::get( 'test', 'PublicController@test' );
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // IX-F Member List Export
 
 Route::get('member-export/ixf',            'MemberExportController@ixf');
 Route::get('member-export/ixf/{version}',  'MemberExportController@ixf');
-
-
-
-Route::get( 'test', function() {
-    return response()->make( "API Test Function!\n\nAuthenticated: "
-        . ( Auth::check() ? 'Yes, as: ' . Auth::user()->getUsername() : 'No' ) . "\n\n", 200 )
-        ->header( 'Content-Type', 'text/plain; charset=utf-8' );
-});
 
 
 Route::get( 'peeringdb/ix', function() {
