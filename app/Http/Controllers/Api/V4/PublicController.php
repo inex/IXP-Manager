@@ -71,7 +71,8 @@ class PublicController extends Controller {
             'ixf-export' => config( 'ixp_api.json_export_schema.public' ),
             'identity' => [
                 'sitename'  => config( 'identity.sitename' ),
-                'name'      => config( 'identity.name' ),
+                'legalname' => config( 'identity.legalname' ),
+                'orgname'   => config( 'identity.orgname' ),
                 'corp_url'  => config( 'identity.corporate_url' ),
                 'city'      => config( 'identity.location.city' ),
                 'country'   => config( 'identity.location.country' ),
