@@ -75,6 +75,8 @@ class StatisticsController extends Controller
      * @param StatisticsRequest $r
      * @param string $category Category of graph to show (e.g. bits / pkts)
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \IXP_Exception
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
     public function ixp( StatisticsRequest $r, string $category = Graph::CATEGORY_BITS )
     {
