@@ -28,13 +28,13 @@
                     <?php if( count( $pis ) && $firstPi->getRelatedInterface() ): ?>
                     for <a
 
-                        <?php if( $user->getPrivs() == \Entities\User::AUTH_SUPERUSER ): ?>
+                        <?php if( Auth::user()->getPrivs() == \Entities\User::AUTH_SUPERUSER ): ?>
                             href="<?= route( "customer@overview" , [ 'id' => $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>"
                         <?php else: ?>
                             href="<?= route( "customer@detail" , [ "id" => $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>"
                         <?php endif; ?>
 
-                        ><?= $t->ee( $pi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getAbbreviatedName() ) ?></a>
+                        ><?= $t->ee( $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getAbbreviatedName() ) ?></a>
                     <?php else: ?>
                         <em>(unassigned)</em>
                     <?php endif; ?>
