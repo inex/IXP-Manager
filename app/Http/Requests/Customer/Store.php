@@ -26,12 +26,11 @@ namespace IXP\Http\Requests\Customer;
 use Auth, D2EM;
 
 use Entities\{
-    Customer    as CustomerEntity,
-    IRRDBConfig as IRRDBConfigEntity
+    Customer    as CustomerEntity
 };
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Validation\Validator;
 
 
 /**
@@ -98,24 +97,27 @@ class Store extends FormRequest
     /**
      * Configure the validator instance.
      *
-     * @param  \Illuminate\Validation\Validator  $validator
+     * @param  Validator  $validator
      * @return void
      */
-    public function withValidator($validator)
+    public function withValidator( Validator $validator )
     {
         $validator->after( function( $validator ) {
             $this->checkReseller( $validator );
-            $validator->errors()->add('reseller', 'Passed' );
         });
     }
 
     /**
-     * Checks reseller
+     * Checks reseller status such that:
      *
-     * @param  \Illuminate\Validation\Validator  $validator
+     * - we cannot remove reseller state from a reseller with resold customers
+     * - we cannot reassign a resold customer to another reseller if they still have ports belonging to the current reseller
+     * - we cannot unset reseller status while a resold customer has ports belonging to a reseller
+     *
+     * @param  Validator  $validator
      * @return bool If false, the form is not valid
      */
-    private function checkReseller( $validator ) {
+    private function checkReseller( Validator $validator ): bool {
 
         $c = null;
         if( $this->input( 'id' ) ) {
@@ -143,7 +145,9 @@ class Store extends FormRequest
                     }
                 }
             }
+
         } else if( $c && $c->getReseller() ) {
+
             foreach( $c->getVirtualInterfaces() as $vi ) {
                 foreach( $vi->getPhysicalInterfaces() as $pi ) {
                     if( $pi->getFanoutPhysicalInterface() && $pi->getFanoutPhysicalInterface()->getVirtualInterface()->getCustomer()->getId() == $c->getReseller()->getId() ) {
