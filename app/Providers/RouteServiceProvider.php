@@ -129,9 +129,10 @@ class RouteServiceProvider extends ServiceProvider {
             'namespace' => $this->namespace . '\\Api\\V4',
             'prefix' => 'api/v4',
         ], function ($router) {
-            if( class_exists( "\Debugbar" ) ) {
-                \Debugbar::disable();
-            }
+
+//            if( class_exists( "\Debugbar" ) ) {
+//                \Debugbar::disable();
+//            }
 
             require base_path('routes/apiv4.php');
         });
@@ -155,9 +156,9 @@ class RouteServiceProvider extends ServiceProvider {
              'prefix' => 'api/v4',
         ], function ($router) {
 
-            if( class_exists( "\Debugbar" ) ) {
-                \Debugbar::disable();
-            }
+//            if( class_exists( "\Debugbar" ) ) {
+//                \Debugbar::disable();
+//            }
 
             require base_path('routes/apiv4-auth-superuser.php');
         });
