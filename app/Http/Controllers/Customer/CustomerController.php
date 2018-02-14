@@ -184,13 +184,13 @@ class CustomerController extends Controller
      */
     public function store( CustomerRequest $request ): RedirectResponse {
 
-        //dd($request);
-
+        dd( $request );
         $isEdit = $request->input( 'id' ) ? true : false;
+
         /** @var CustomerEntity $cust */
         if( $isEdit && $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) {
             if( !$cust ) {
-                abort(404, 'Unknown customer');
+                abort(404, 'Customer not found' );
             }
         } else {
             $cust = new CustomerEntity;
@@ -220,14 +220,13 @@ class CustomerController extends Controller
 
         $cust->setNocphone(             $request->input( 'nocphone'             ) );
         $cust->setNoc24hphone(          $request->input( 'noc24hphone'          ) );
-        $cust->setNocfax(               $request->input( 'nocfax'               ) );
         $cust->setNocemail(             $request->input( 'nocemail'             ) );
         $cust->setNochours(             $request->input( 'nochours'             ) );
         $cust->setNocwww(               $request->input( 'nocwww'               ) );
 
         $cust->setIsReseller(           $request->input( 'isReseller'           ) ?? false  );
 
-        if( !$this->setReseller( $request, $cust ) ) {
+        if( $this->setReseller( $request, $cust ) ) {
             return Redirect::back()->withErrors();
         }
 
@@ -273,58 +272,6 @@ class CustomerController extends Controller
 
     }
 
-    /**
-     * Sets reseller to customer from form
-     *
-     * @param StoreCustomerRequest     $request    instance of the current HTTP request
-     * @param CustomerEntity    $cust
-     *
-     * @return bool If false, the form is not processed
-     */
-    private function setReseller( $request, $cust ){
-        $isOK = true;
-
-        if( !$this->resellerMode() )
-            $isOK = true;
-
-        if( $request->input( 'isResold' ) ) {
-            if( !( $reseller = D2EM::getRepository( CustomerEntity::class )->find( $request->input( "reseller" ) ) ) ) {
-                AlertContainer::push( 'Please select a reseller', Alert::DANGER );
-                $isOK = false;
-            }
-
-            if( $cust->getReseller() && $cust->getReseller()->getId() != $request->input( 'reseller' ) ) {
-                foreach( $cust->getVirtualInterfaces() as $viInt ) {
-                    foreach( $viInt->getPhysicalInterfaces() as $pi ) {
-                        if( $pi->getFanoutPhysicalInterface() && $pi->getFanoutPhysicalInterface()->getVirtualInterface()->getCustomer()->getId() == $cust->getReseller()->getId() ) {
-                            AlertContainer::push( 'You can not change the reseller because there are still fanout ports from the current reseller linked to this customer\'s physical interfaces. You need to reassign these first.', Alert::DANGER );
-                            $isOK = false;
-                        }
-                    }
-                }
-            }
-
-            $cust->setReseller( $reseller );
-        }
-        else if( $cust->getReseller() ) {
-            foreach( $cust->getVirtualInterfaces() as $vi ) {
-                foreach( $vi->getPhysicalInterfaces() as $pi ) {
-                    if( $pi->getFanoutPhysicalInterface() && $pi->getFanoutPhysicalInterface()->getVirtualInterface()->getCustomer()->getId() == $cust->getReseller()->getId() ) {
-                        AlertContainer::push( 'You can not change this resold customer state because there are still physical interface(s) of this customer linked to fanout ports or the current reseller. You need to reassign these first', Alert::DANGER );
-                        $isOK = false;
-                    }
-                }
-            }
-            $cust->setReseller( null );
-        }
-
-        if( !$request->input( 'isReseller' ) && $cust->getIsReseller() && count( $cust->getResoldCustomers() ) ) {
-            AlertContainer::push( 'You can not change the reseller state because this customer still has resold customers. You need to reassign these first.', Alert::DANGER );
-            $isOK = false;
-        }
-
-        return $isOK;
-    }
 
     /**
      * Display the billing registration form a customer

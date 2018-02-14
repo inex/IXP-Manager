@@ -16,7 +16,7 @@
 	'fetch_errors'            => true,
 
 	// Whether Former should try to apply Validator rules as attributes
-	'live_validation'         => true,
+	'live_validation'         => false,
 
 	// Whether Former should automatically fetch error messages and
 	// display them next to the matching fields
