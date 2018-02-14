@@ -39,7 +39,7 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     /**
      * @var string $username
      */
-    protected $username;
+    public $username;
 
     /**
      * @var string $password

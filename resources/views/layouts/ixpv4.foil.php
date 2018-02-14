@@ -158,5 +158,6 @@
 
     <?php $this->section('scripts') ?>
     <?php $this->stop() ?>
+
 </body>
 </html>
