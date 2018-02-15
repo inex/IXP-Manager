@@ -25,15 +25,19 @@ namespace IXP\Http\Controllers;
 use App, D2EM;
 
 use Entities\{
-    Customer         as CustomerEntity,
-    Infrastructure   as InfrastructureEntity,
-    IXP              as IXPEntity,
-    Switcher         as SwitchEntity,
-    VirtualInterface as VIEntity,
-    Vlan             as VlanEntity,
-    VlanInterface    as VlanInterfaceEntity
+    Customer            as CustomerEntity,
+    Infrastructure      as InfrastructureEntity,
+    IXP                 as IXPEntity,
+    PhysicalInterface   as PIEntity,
+    Switcher            as SwitchEntity,
+    VirtualInterface    as VIEntity,
+    Vlan                as VlanEntity,
+    VlanInterface       as VlanInterfaceEntity
 };
 
+use Illuminate\Http\{
+    Request
+};
 
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Cache;
@@ -135,6 +139,7 @@ class StatisticsController extends Controller
      * @param int $switchid ID of the switch to show the graph of
      * @param string $category Category of graph to show (e.g. bits / pkts)
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws
      */
     public function switch( StatisticsRequest $r, int $switchid = 0, string $category = Graph::CATEGORY_BITS )
     {
@@ -171,6 +176,7 @@ class StatisticsController extends Controller
      * @param string $trunkid ID of the trunk to show the graph of
      * @param string $category Category of graph to show (e.g. bits / pkts)
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws
      */
     public function trunk( StatisticsRequest $r, string $trunkid = null, string $category = Graph::CATEGORY_BITS )
     {
@@ -214,6 +220,7 @@ class StatisticsController extends Controller
      *
      * @param StatisticsRequest $r
      * @return  View
+     * @throws
      */
     public function members( StatisticsRequest $r ) : View {
 
@@ -254,13 +261,144 @@ class StatisticsController extends Controller
         }
 
         return view( 'statistics/members' )->with([
-            'graph'        => $graphs[0] ?? false,  // sample graph as all types/protocols/categories/periods will be the same
-            'graphs'       => $graphs,
-            'r'            => $r,
-            'infras'       => D2EM::getRepository( InfrastructureEntity::class )->getNames(),
-            'infra'        => $infra ?? false,
-            'vlans'       => D2EM::getRepository( VlanEntity::class )->getNames(),
-            'vlan'        => $vlan ?? false,
+            'graph'         => $graphs[0] ?? false,  // sample graph as all types/protocols/categories/periods will be the same
+            'graphs'        => $graphs,
+            'r'             => $r,
+            'infras'        => D2EM::getRepository( InfrastructureEntity::class )->getNames(),
+            'infra'         => $infra ?? false,
+            'vlans'         => D2EM::getRepository( VlanEntity::class )->getNames(),
+            'vlan'          => $vlan ?? false,
+        ]);
+    }
+
+
+    /**
+     * Display all graphs for a member
+     *
+     * @param Request   $r
+     * @param integer   $id ID of the member
+     * @return  View
+     * @throws
+     */
+    public function member( Request $r, int $id ) {
+
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
+            abort( 404);
+        }
+
+        if( ! ( ( $category = $r->input( 'category' ) ) !== null && isset( Graph::CATEGORIES[ $r->input( 'category' ) ] ) ) )  {
+            $category = "";
+        }
+
+        if( ! ( ( $period = $r->input( 'period' ) ) !== null && isset( Graph::PERIOD_DESCS[ $r->input( 'period' ) ] ) ) )  {
+            $period = "";
+        }
+
+
+        return view( 'statistics/member' )->with([
+            "c"                     => $c,
+            "grapher"               => App::make('IXP\Services\Grapher'),
+            "category"              => Graph::processParameterCategory( $category , true ),
+            "period"                => Graph::processParameterPeriod( $period , true ),
+            "periods"               => Graph::PERIOD_DESCS,
+            "categories"            => Graph::CATEGORY_DESCS,
+        ]);
+    }
+
+    /**
+     * Display Aggregate/LAG/Port for all periods (day/week/month/year)
+     *
+     * @param Request   $r
+     * @param integer   $id         ID of the member
+     * @param string    $type       type
+     * @param integer   $typeid     ID of type
+     * @return  View
+     * @throws
+     */
+    public function memberDrilldown( Request $r, int $id, string $type = null, int $typeid = null ){
+
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
+            abort( 404);
+        }
+
+        if( ! ( ( $category = $r->input( 'category' ) ) !== null && isset( Graph::CATEGORIES[ $r->input( 'category' ) ] ) ) )  {
+            $category = "";
+        }
+
+        if( ! in_array( $type, [ 'vi', 'pi' ] ) ){
+            $type = null;
+        }
+
+        $graph = App::make('IXP\Services\Grapher');
+
+        if( $type == "vi" ){
+            if( !( $viParam = D2EM::getRepository( VIEntity::class )->find( $typeid ) ) ){
+                abort( 404);
+            }
+            $vi = null;
+            $pi = null;
+            foreach( $c->getVirtualInterfaces() as $virtualInferface ) {
+                if( $virtualInferface->getId() == $viParam->getId() ) {
+                    $vi   = $virtualInferface;
+                    break;
+                }
+            }
+
+            if( !$vi ){
+                abort( 404 , 'Member statistics drilldown requested for unknown LAG index' );
+            }
+
+            $sname = $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getName();
+
+            foreach( $vi->getPhysicalInterfaces() as $pi ){
+                $portnames[] = $pi->getSwitchPort()->getName();
+            }
+
+            $spname = implode( ', ', $portnames );
+
+            $grapher = $graph->virtint( $vi );
+
+        } elseif( $type == "pi" ) {
+            if( !( $piParam = D2EM::getRepository( PIEntity::class )->find( $typeid ) ) ){
+                abort( 404);
+            }
+
+            $vi = false;
+            $pi = null;
+            foreach( $c->getVirtualInterfaces() as $virtualInterface ) {
+                foreach( $virtualInterface->getPhysicalInterfaces() as $physicalInterface ) {
+                    if( $physicalInterface->getId() == $piParam->getId() ) {
+                        $pi     = $physicalInterface;
+                        $vi     = $virtualInterface;
+                        break 2;
+                    }
+                }
+            }
+
+            if( !$vi ){
+                abort( 404 , 'Member statistics drilldown requested for unknown physical interface' );
+            }
+
+            $sname          = $pi->getSwitchPort()->getSwitcher()->getName();
+            $spname         = $pi->getSwitchPort()->getName();
+            $grapher = $graph->physint( $pi );
+
+        } else {
+            $sname      = '';
+            $spname     = '';
+            $grapher = $graph->customer( $c );
+        }
+
+        return view( 'statistics/member-drilldown' )->with([
+            "c"                     => $c,
+            "grapher"               => $grapher,
+            "category"              => Graph::processParameterCategory( $category , true ),
+            "periods"               => Graph::PERIOD_DESCS,
+            "categories"            => Graph::CATEGORY_DESCS,
+            "type"                  => $type,
+            "typeid"                => $typeid,
+            "sname"                 => $sname,
+            "spname"                => $spname,
         ]);
     }
 }
