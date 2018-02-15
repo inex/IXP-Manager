@@ -142,7 +142,9 @@
     <script type="text/javascript" src="<?= asset('/bower_components/bootbox.js/bootbox.js') ?>"></script>
 
     <script>
-        $( ".chzn-select" ).select2({ width: '100%' });
+        $( ".chzn-select" ).select2({ width: '100%' ,placeholder: function(){
+                $(this).data('placeholder');
+            } } );
 
         $( ".chzn-select-deselect" ).select2( { width: '100%', allowClear: true, placeholder: function(){
             $(this).data('placeholder');
