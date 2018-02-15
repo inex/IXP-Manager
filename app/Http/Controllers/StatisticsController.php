@@ -275,33 +275,28 @@ class StatisticsController extends Controller
     /**
      * Display all graphs for a member
      *
-     * @param Request   $r
-     * @param integer   $id ID of the member
+     * @param StatisticsRequest   $r
+     * @param integer             $id ID of the member
      * @return  View
      * @throws
      */
-    public function member( Request $r, int $id ) {
+    public function member( StatisticsRequest $r, int $id ): View {
 
+        /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
             abort( 404);
         }
 
-        if( ! ( ( $category = $r->input( 'category' ) ) !== null && isset( Graph::CATEGORIES[ $r->input( 'category' ) ] ) ) )  {
-            $category = "";
-        }
+        $grapher = App::make('IXP\Services\Grapher');
 
-        if( ! ( ( $period = $r->input( 'period' ) ) !== null && isset( Graph::PERIOD_DESCS[ $r->input( 'period' ) ] ) ) )  {
-            $period = "";
-        }
-
+        // if the customer is authorised, then so too are all of their virtual and physical interfaces:
+        $grapher->customer( $c )->authorise();
 
         return view( 'statistics/member' )->with([
             "c"                     => $c,
-            "grapher"               => App::make('IXP\Services\Grapher'),
-            "category"              => Graph::processParameterCategory( $category , true ),
-            "period"                => Graph::processParameterPeriod( $period , true ),
-            "periods"               => Graph::PERIOD_DESCS,
-            "categories"            => Graph::CATEGORY_DESCS,
+            "grapher"               => $grapher,
+            "category"              => Graph::processParameterCategory( $r->input( 'category' ) ),
+            "period"                => Graph::processParameterPeriod( $r->input( 'period' ) ),
         ]);
     }
 
