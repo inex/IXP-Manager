@@ -297,10 +297,10 @@ class JsonSchema
 
                         if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
                             $services = [];
-                            if( in_array( $vli->getIPv4Address()->getAddress(), $routeServerIPs[ $vli->getVlan()->getId() ] ) ) {
+                            if( isset( $routeServerIPs[ $vli->getVlan()->getId() ] ) && in_array( $vli->getIPv4Address()->getAddress(), $routeServerIPs[ $vli->getVlan()->getId() ] ) ) {
                                 $services[] = 'ixrouteserver';
                             }
-                            if( in_array( $vli->getIPv4Address()->getAddress(), $routeCollectorIPs[ $vli->getVlan()->getId() ] ) ) {
+                            if( isset( $routeCollectorIPs[ $vli->getVlan()->getId() ] ) && in_array( $vli->getIPv4Address()->getAddress(), $routeCollectorIPs[ $vli->getVlan()->getId() ] ) ) {
                                 $services[] = 'ixroutecollector';
                             }
 
@@ -323,10 +323,10 @@ class JsonSchema
 
                         if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
                             $services = [];
-                            if( in_array( $vli->getIPv6Address()->getAddress(), $routeServerIPs[ $vli->getVlan()->getId() ] ) ) {
+                            if( isset( $routeServerIPs[ $vli->getVlan()->getId() ] ) && in_array( $vli->getIPv6Address()->getAddress(), $routeServerIPs[ $vli->getVlan()->getId() ] ) ) {
                                 $services[] = 'ixrouteserver';
                             }
-                            if( in_array( $vli->getIPv6Address()->getAddress(), $routeCollectorIPs[ $vli->getVlan()->getId() ] ) ) {
+                            if( isset( $routeCollectorIPs[ $vli->getVlan()->getId() ] ) && in_array( $vli->getIPv6Address()->getAddress(), $routeCollectorIPs[ $vli->getVlan()->getId() ] ) ) {
                                 $services[] = 'ixroutecollector';
                             }
 
