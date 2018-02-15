@@ -665,7 +665,7 @@ abstract class Graph {
      * @param string $period
      * @return string
      */
-    public static function resolvePeriod( string $period = null ): string {
+    public static function resolvePeriod( $period = null ): string {
         return self::PERIOD_DESCS[ $period ] ?? 'Unknown';
     }
 
@@ -718,7 +718,7 @@ abstract class Graph {
      * @param string $category
      * @return string
      */
-    public static function resolveCategory( string $category ): string {
+    public static function resolveCategory( $category ): string {
         return self::CATEGORY_DESCS[ $category ] ?? 'Unknown';
     }
 
@@ -812,7 +812,7 @@ abstract class Graph {
      * @param string $v The user input value
      * @return string The verified / sanitised / default value
      */
-    public static function processParameterPeriod( string $v ): string {
+    public static function processParameterPeriod( $v = null ): string {
         if( !isset( self::PERIODS[ $v ] ) ) {
             $v = self::PERIOD_DEFAULT;
         }
@@ -828,7 +828,7 @@ abstract class Graph {
      * @param string $v The user input value
      * @return string The verified / sanitised / default value
      */
-    public static function processParameterProtocol( string $v ): string {
+    public static function processParameterProtocol( $v = null ): string {
         if( !isset( self::PROTOCOLS[ $v ] ) ) {
             $v = self::PROTOCOL_DEFAULT;
         }
@@ -844,7 +844,7 @@ abstract class Graph {
      * @param string $v The user input value
      * @return string The verified / sanitised / default value
      */
-    public static function processParameterCategory( string $v, $bits_pkts_only = false ): string {
+    public static function processParameterCategory( $v = null, $bits_pkts_only = false ): string {
         if( ( $bits_pkts_only && !isset( self::CATEGORIES_BITS_PKTS[$v] ) ) || ( !$bits_pkts_only && !isset( self::CATEGORIES[ $v ] ) ) ) {
             $v = self::CATEGORY_DEFAULT;
         }
@@ -861,7 +861,7 @@ abstract class Graph {
      * @param string $v The user input value
      * @return string The verified / sanitised / default value
      */
-    public static function processParameterType( string $v ): string {
+    public static function processParameterType( $v = null ): string {
         if( !isset( self::TYPES[ $v ] ) ) {
             $v = self::TYPE_DEFAULT;
         }
