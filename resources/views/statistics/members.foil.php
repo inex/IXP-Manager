@@ -85,55 +85,58 @@ $this->layout( 'layouts/ixpv4' )
 
         <nav class="navbar navbar-default">
             <div class="container-fluid">
+                <div class="col-md-12">
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="<?= route('statistics/members') ?>">SFlow:</a>
+                    </div>
 
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="<?= route('statistics/members') ?>">SFlow:</a>
+                    <form class="navbar-form navbar-left form-inline"  action="<?= route('statistics/members' ) ?>" method="post">
+
+                        <div class="form-group">
+                            <label for="selectVlan">VLAN:</label>
+                            <select id="selectVlan" class="chzn-select form-control" name="vlan">
+                                <option></option>
+                                <?php foreach( $t->vlans as $id => $i ): ?>
+                                    <option value="<?= $id ?>" <?= $t->vlan && $t->vlan->getId() == $id ? 'selected="selected"' : '' ?>><?= $i ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="selectVlan">Protocol:</label>
+                            <select id="selectVlan" class="form-control chzn-select" name="protocol">
+                                <option></option>
+                                <?php foreach( \IXP\Services\Grapher\Graph::PROTOCOL_REAL_DESCS as $p => $n ): ?>
+                                    <option value="<?= $p ?>" <?= $t->r->protocol == $p ? 'selected="selected"' : '' ?>><?= $n ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="selectCategory2">Category:</label>
+                            <select id="selectCategory2" class="form-control chzn-select" name="category">
+                                <?php foreach( IXP\Services\Grapher\Graph::CATEGORY_DESCS as $c => $d ): ?>
+                                    <option value="<?= $c ?>" <?= $t->r->category == $c ? 'selected="selected"' : '' ?>><?= $d ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="selectPeriod2">Period:</label>
+                            <select id="selectPeriod2" class="form-control chzn-select" name="period">
+                                <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $p => $d ): ?>
+                                    <option value="<?= $p ?>" <?= $t->r->period == $p ? 'selected="selected"' : '' ?>><?= $d ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+
+                        <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                        <input class="btn btn-default" type="submit" name="submit" value="Change" />
+
+                    </form>
                 </div>
 
-                <form class="navbar-form navbar-left action="<?= route('statistics/members' ) ?>" method="post">
 
-                <div class="form-group">
-                    <label for="selectVlan">VLAN:</label>
-                    <select id="selectVlan" class="form-control" name="vlan">
-                        <option></option>
-                        <?php foreach( $t->vlans as $id => $i ): ?>
-                            <option value="<?= $id ?>" <?= $t->vlan && $t->vlan->getId() == $id ? 'selected="selected"' : '' ?>><?= $i ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="selectVlan">Protocol:</label>
-                    <select id="selectVlan" class="form-control" name="protocol">
-                        <option></option>
-                        <?php foreach( \IXP\Services\Grapher\Graph::PROTOCOL_REAL_DESCS as $p => $n ): ?>
-                            <option value="<?= $p ?>" <?= $t->r->protocol == $p ? 'selected="selected"' : '' ?>><?= $n ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="selectCategory2">Category:</label>
-                    <select id="selectCategory2" class="form-control" name="category">
-                        <?php foreach( IXP\Services\Grapher\Graph::CATEGORY_DESCS as $c => $d ): ?>
-                            <option value="<?= $c ?>" <?= $t->r->category == $c ? 'selected="selected"' : '' ?>><?= $d ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="selectPeriod2">Period:</label>
-                    <select id="selectPeriod2" class="form-control" name="period">
-                        <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $p => $d ): ?>
-                            <option value="<?= $p ?>" <?= $t->r->period == $p ? 'selected="selected"' : '' ?>><?= $d ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                <input class="btn btn-default" type="submit" name="submit" value="Change" />
-
-                </form>
 
             </div>
         </nav>
