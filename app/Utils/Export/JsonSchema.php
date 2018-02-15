@@ -262,6 +262,20 @@ class JsonSchema
                         if( $detailed ) {
                             $vlanentry['ipv4']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
                         }
+
+                        if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
+                            $services = [];
+                            if( isset( $routeServerIPs[ $vli->getVlan()->getId() ] ) && in_array( $vli->getIPv4Address()->getAddress(), $routeServerIPs[ $vli->getVlan()->getId() ] ) ) {
+                                $services[] = 'ixrouteserver';
+                            }
+                            if( isset( $routeCollectorIPs[ $vli->getVlan()->getId() ] ) && in_array( $vli->getIPv4Address()->getAddress(), $routeCollectorIPs[ $vli->getVlan()->getId() ] ) ) {
+                                $services[] = 'ixroutecollector';
+                            }
+
+                            if( count( $services ) ) {
+                                $vlanentry[ 'ipv4' ][ 'service_type' ] = $services;
+                            }
+                        }
                     }
 
                     if ($vli->getIpv6enabled()) {
@@ -271,6 +285,20 @@ class JsonSchema
                         $vlanentry['ipv6']['mac_addresses'] = $vli->getLayer2AddressesAsArray();
                         if( $detailed ) {
                             $vlanentry['ipv6']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
+                        }
+
+                        if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
+                            $services = [];
+                            if( isset( $routeServerIPs[ $vli->getVlan()->getId() ] ) && in_array( $vli->getIPv6Address()->getAddress(), $routeServerIPs[ $vli->getVlan()->getId() ] ) ) {
+                                $services[] = 'ixrouteserver';
+                            }
+                            if( isset( $routeCollectorIPs[ $vli->getVlan()->getId() ] ) && in_array( $vli->getIPv6Address()->getAddress(), $routeCollectorIPs[ $vli->getVlan()->getId() ] ) ) {
+                                $services[] = 'ixroutecollector';
+                            }
+
+                            if( count( $services ) ) {
+                                $vlanentry[ 'ipv6' ][ 'service_type' ] = $services;
+                            }
                         }
                     }
 
