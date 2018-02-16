@@ -1475,6 +1475,29 @@ class Customer
         return false;
     }
 
+    /**
+     * Does the customer have any interfaces in quarantine/connected?
+     *
+     * I.e. does the customer have graphable interfaces?
+     *
+     * @return bool
+     */
+    public function hasInterfacesConnectedOrInQuarantine(): bool
+    {
+        foreach( $this->getVirtualInterfaces() as $vi ) {
+            foreach( $vi->getPhysicalInterfaces() as $pi ) {
+                if( $pi->statusIsConnectedOrQuarantine() ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+
+
 
     /**
      * @var \Doctrine\Common\Collections\Collection

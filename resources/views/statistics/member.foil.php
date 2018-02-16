@@ -8,7 +8,7 @@ $this->layout( 'layouts/ixpv4' );
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
         <a href="<?= route( 'customer@list' )?>">Customers</a>
        <li>
-           <a href="<?= route( 'customer@list' )?>" >
+           <a href="<?= route( 'customer@overview', [ 'id' => $t->c->getId() ] )?>" >
                <?= $t->c->getFormattedName() ?>
            </a>
        </li>
@@ -82,7 +82,7 @@ $this->layout( 'layouts/ixpv4' );
                             <small><em>(Peering ports only)</em></small>
                         <?php endif; ?>
                         <a class="btn btn-default pull-right" href="<?= route( "statistics@memberDrilldown" , [ "id" => $t->c->getId(), "type" => "aggregate" ] ) ?>/?category=<?= $t->category ?>">
-                            <i class="glyphicon glyphicon-eye-open"></i>
+                            <i class="glyphicon glyphicon-zoom-in"></i>
                         </a>
                     </h3>
                     <p>
@@ -108,6 +108,15 @@ $this->layout( 'layouts/ixpv4' );
 
                         $pi = $vi->getPhysicalInterfaces()[ 0 ];
                         $isLAG = count( $vi->getPhysicalInterfaces() ) > 1;
+
+                        $graphable = false;
+                        foreach( $vi->getPhysicalInterfaces() as $pi ) {
+                            if( $pi->statusIsConnectedOrQuarantine() ) {
+                                $graphable = true;
+                                break;
+                            }
+                        }
+
                     ?>
 
 
@@ -119,13 +128,17 @@ $this->layout( 'layouts/ixpv4' );
                                     LAG on <?= $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ?>
                                     / <?= $pi->getSwitchPort()->getSwitcher()->getName() ?>
 
-                                    <a class="btn btn-default pull-right" href="<?= route( "statistics@memberDrilldown" , [ "id" => $t->c->getId(), "type" => "aggregate", "type" => "vi", "typeid" => $vi->getId()  ] ) ?>/?category=<?= $t->category ?>">
-                                        <i class="glyphicon glyphicon-eye-open"></i>
-                                    </a>
+                                    <?php if( $graphable ): ?>
+                                        <a class="btn btn-default pull-right" href="<?= route( "statistics@memberDrilldown" , [ "id" => $t->c->getId(), "type" => "aggregate", "type" => "vi", "typeid" => $vi->getId()  ] ) ?>/?category=<?= $t->category ?>">
+                                            <i class="glyphicon glyphicon-zoom-in"></i>
+                                        </a>
+                                    <?php endif; ?>
                                 </h4>
                                 <p>
-                                    <br />
-                                    <?= $t->grapher->virtint( $vi )->setCategory( $t->category )->setPeriod( $t->period )->renderer()->boxLegacy() ?>
+                                    <?php if( $graphable ): ?>
+                                        <br />
+                                        <?= $t->grapher->virtint( $vi )->setCategory( $t->category )->setPeriod( $t->period )->renderer()->boxLegacy() ?>
+                                    <?php endif; ?>
                                 </p>
                             </div>
                         </div>
@@ -148,9 +161,11 @@ $this->layout( 'layouts/ixpv4' );
                                             / <?= $pi->getSwitchPort()->getSwitcher()->getName() ?> (<?=$pi->resolveSpeed() ?>)
                                     <?php endif; ?>
 
-                                    <a class="btn btn-default pull-right" href="<?= route( "statistics@memberDrilldown" , [ "id" => $t->c->getId(), "type" => "aggregate", "type" => "pi", "typeid" => $pi->getId()  ] ) ?>/?category=<?= $t->category ?>">
-                                        <i class="glyphicon glyphicon-eye-open"></i>
-                                    </a>
+                                    <?php if( $pi->statusIsConnectedOrQuarantine() ): ?>
+                                        <a class="btn btn-default pull-right" href="<?= route( "statistics@memberDrilldown" , [ "id" => $t->c->getId(), "type" => "aggregate", "type" => "pi", "typeid" => $pi->getId()  ] ) ?>/?category=<?= $t->category ?>">
+                                            <i class="glyphicon glyphicon-zoom-in"></i>
+                                        </a>
+                                    <?php endif; ?>
 
                                     <small>
                                         <br />
@@ -174,8 +189,12 @@ $this->layout( 'layouts/ixpv4' );
                                 </h4>
 
                                 <p>
-                                    <br />
-                                    <?= $t->grapher->physint( $pi )->setCategory( $t->category )->setPeriod( $t->period )->renderer()->boxLegacy() ?>
+                                    <?php if( $pi->statusIsConnectedOrQuarantine() ): ?>
+                                        <br />
+                                        <?= $t->grapher->physint( $pi )->setCategory( $t->category )->setPeriod( $t->period )->renderer()->boxLegacy() ?>
+                                    <?php else: ?>
+                                        <?= $t->insert( 'customer/overview-tabs/ports/pi-status', [ 'pi' => $pi ] ) ?>
+                                    <?php endif; ?>
                                 </p>
 
                             </div>

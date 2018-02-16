@@ -39,6 +39,7 @@ use Illuminate\Http\{
     Request
 };
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Cache;
 
@@ -277,10 +278,10 @@ class StatisticsController extends Controller
      *
      * @param StatisticsRequest   $r
      * @param integer             $id ID of the member
-     * @return  View
+     * @return RedirectResponse|View
      * @throws
      */
-    public function member( StatisticsRequest $r, int $id ): View {
+    public function member( StatisticsRequest $r, int $id ) {
 
         /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
@@ -291,6 +292,14 @@ class StatisticsController extends Controller
 
         // if the customer is authorised, then so too are all of their virtual and physical interfaces:
         $grapher->customer( $c )->authorise();
+
+        if( !$c->hasInterfacesConnectedOrInQuarantine() ) {
+            AlertContainer::push(
+                "This customer has no graphable interfaces (i.e. no physical interfaces in quarantine or connected)",
+                Alert::WARNING
+            );
+            return redirect()->back();
+        }
 
         return view( 'statistics/member' )->with([
             "c"                     => $c,

@@ -143,14 +143,11 @@
 
     <script>
 
-        $( ".chzn-select" ).select2({ width: '100%' });
-        $( ".chzn-select-deselect" ).select2( { width: '100%', allowClear: true } )
-        // . find placeholder in first dropdown item and set with placeholder()
-            .prepend( new Option( '', '', true, false) )
-            .trigger('change')
-            .show();
+        $( ".chzn-select" ).select2( { width: '100%', placeholder: function() {
+                $(this).data('placeholder');
+        } } );
 
-        $( ".chzn-select" ).select2({ width: '100%' ,placeholder: function(){
+        $( ".chzn-select-deselect" ).select2( { width: '100%', allowClear: true, placeholder: function(){
                 $(this).data('placeholder');
             } } );
 
