@@ -108,7 +108,25 @@ class Customer extends EntityRepository
         
         return $asArray ? $custs->getArrayResult() : $custs->getResult();
     }
-    
+
+    /**
+     * Utility function to provide a array of all current associate customers
+     *
+     * @param bool $asArray If `true`, return an associative array, else an array of Customer objects
+     * @return array
+     */
+    public function getCurrentAssociate( $asArray = false )
+    {
+        $dql = "SELECT c FROM Entities\\Customer c
+                WHERE " . self::DQL_CUST_CURRENT . " AND c.type = " . CustomerEntity::TYPE_ASSOCIATE;
+
+        $dql .= " ORDER BY c.name ASC";
+
+        $custs = $this->getEntityManager()->createQuery( $dql );
+
+        return $asArray ? $custs->getArrayResult() : $custs->getResult();
+    }
+
     /**
      * Utility function to provide a array of all members connected to the exchange (including at 
      * least one physical interface with status 'CONNECTED').

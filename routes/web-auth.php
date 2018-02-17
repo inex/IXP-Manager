@@ -6,10 +6,13 @@
 |--------------------------------------------------------------------------
 */
 
-Route::group( [ 'prefix' => 'customer', 'namespace' => 'Customer'], function() {
-    Route::get( 'details',                  'CustomerController@details'        )->name( "customer@details" );
-    Route::get( 'detail/{id}',              'CustomerController@detail'         )->name( "customer@detail" );
-});
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Customer
+///
+
 
 Route::group( [ 'prefix' => 'customer-logo', 'namespace' => 'Customer'], function() {
     Route::get( 'manage/{id?}',         'LogoController@manage'     )->name( "logo@manage" );
@@ -23,7 +26,11 @@ Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer'], functio
 
 });
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Patch Panels
+///
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'middleware' => 'patch-panel-port'], function() {
     Route::get( 'download-loa/{id}',                'PatchPanelPortController@downloadLoA' );
@@ -33,4 +40,19 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
 
     Route::get( 'view/{id}',                        'PatchPanelPortController@view' )->name('patch-panel-port/view' );;
 });
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Route Server Prefixes
+///
+
+Route::group( [ 'prefix' => 'rs-prefixes', 'middleware' => [ 'rs-prefixes' ] ], function() {
+    Route::get(     'list',         'RsPrefixesController@list' )->name( 'rs-prefixes@list'  );
+    Route::get(     'view/{cid}',   'RsPrefixesController@view' )->name( 'rs-prefixes@view'  );
+});
+
+
 

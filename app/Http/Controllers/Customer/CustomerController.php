@@ -388,15 +388,27 @@ class CustomerController extends Controller
      * Display the list of all the Customers
      *
      * @return  View
-     * @throws
      */
     public function details(): View {
-        $ixp            = D2EM::getRepository( IXPEntity::class )->getDefault();
-        $custs          = D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, false, false, false);
+        $custs          = D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, true, false );
 
         return view( 'customer/details' )->with([
-            'ixp'                   => $ixp,
             'custs'                 => $custs,
+            'associates'            => false,
+        ]);
+    }
+
+    /**
+     * Display the list of all asscociate customers
+     *
+     * @return  View
+     */
+    public function associates(): View {
+        $custs          = D2EM::getRepository( CustomerEntity::class )->getCurrentAssociate( false );
+
+        return view( 'customer/details' )->with([
+            'custs'                 => $custs,
+            'associates'            => true,
         ]);
     }
 

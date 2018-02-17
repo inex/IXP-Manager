@@ -37,6 +37,25 @@ if( Auth::check() && Auth::user()->isSuperUser() ) {
     app()->make('Foil\Engine')->useData(['customers' => $customers]);
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Customers
+///
+
+Route::group( [ 'prefix' => 'customer', 'namespace' => 'Customer'], function() {
+    Route::get( 'details',                  'CustomerController@details'        )->name( "customer@details"    );
+    Route::get( 'associates',               'CustomerController@associates'     )->name( "customer@associates" );
+    Route::get( 'detail/{id}',              'CustomerController@detail'         )->name( "customer@detail"     );
+});
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Patch Panels
+///
 
 Route::group( [ 'namespace' => 'PatchPanel' ], function() {
     Route::get( 'verify-loa/{id}/{code}',       'PatchPanelPortController@verifyLoa' );
@@ -51,10 +70,7 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'loa-pdf/{id}',                 'PatchPanelPortController@loaPDF' );
 });
 
-Route::group( [ 'prefix' => 'rs-prefixes', 'middleware' => [ 'rs-prefixes' ] ], function() {
-    Route::get(     'list',         'RsPrefixesController@list' )->name( 'rs-prefixes@list'  );
-    Route::get(     'view/{cid}',   'RsPrefixesController@view' )->name( 'rs-prefixes@view'  );
-});
+
 
 Route::get( 'weather-map/{id}',                    'WeatherMapController@index' )->name( 'weathermap');
 
