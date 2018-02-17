@@ -9,11 +9,13 @@
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
 
         <a href="<?= route( 'customer@list' )?>">Customers</a>
+
         <li>
             <a href="<?= route( 'customer@overview', [ 'id' => $t->c->getId() ] ) ?>" >
                 <?= $t->c->getFormattedName() ?>
             </a>
         </li>
+
         <li>
             <a href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>" >
                 Port Graphs
@@ -22,7 +24,11 @@
 
     <?php else: ?>
 
-        IXP Port Graphs :: <?= $t->cust->getFormattedName() ?>
+        IXP Port Graphs :: <?= $t->c->getFormattedName() ?>
+
+        <div class="pull-right">
+            <a class="btn btn-default" href="<?= route( 'statistics@member', [ 'id' => $t->c->GetId() ] ) ?>">All Ports</a>
+        </div>
 
     <?php endif; ?>
 

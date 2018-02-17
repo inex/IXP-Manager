@@ -13,7 +13,7 @@
            </a>
        </li>
     <?php else: ?>
-        IXP Interface Statistics :: <?= $t->cust->getFormattedName() ?>
+        IXP Port Graphs :: <?= $t->c->getFormattedName() ?>
     <?php endif; ?>
 <?php $this->append() ?>
 
