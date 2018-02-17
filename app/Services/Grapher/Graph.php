@@ -714,6 +714,15 @@ abstract class Graph {
     }
 
     /**
+     * Get the category description
+     * @return string
+     */
+    public function resolveMyCategory(): string {
+        return self::CATEGORY_DESCS[ $this->category() ] ?? 'Unknown';
+    }
+
+
+    /**
      * Get the category description for a given category identifier
      * @param string $category
      * @return string

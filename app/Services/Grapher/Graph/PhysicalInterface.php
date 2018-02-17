@@ -1,7 +1,7 @@
 <?php namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -22,7 +22,7 @@
  */
 
 use IXP\Services\Grapher;
-use IXP\Services\Grapher\{Graph,Statistics};
+use IXP\Services\Grapher\{Graph};
 
 use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
 
@@ -75,11 +75,10 @@ class PhysicalInterface extends Graph {
 
     /**
      * Set the physint we should use
-     * @param Entities\PhysicalInterface $pi
-     * @return \IXP\Services\Grapher Fluid interface
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     * @param PhysicalInterfaceEntity $pi
+     * @return Graph Fluid interface
      */
-    public function setPhysicalInterface( PhysicalInterfaceEntity $pi ): Grapher {
+    public function setPhysicalInterface( PhysicalInterfaceEntity $pi ): Graph {
         if( $this->physicalInterface() && $this->physicalInterface()->getId() != $pi->getId() ) {
             $this->wipe();
         }

@@ -1,53 +1,67 @@
 <?php
-/** @var Foil\Template\Template $t */
-$this->layout( 'layouts/ixpv4' );
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' );
 ?>
 
 
 <?php $this->section( 'title' ) ?>
-<?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-    <a href="<?= route( 'customer@list' )?>">Customers</a>
-    <li>
-        <a href="<?= route( 'customer@list' )?>" >
-            <?= $t->c->getFormattedName() ?>
-        </a>
-    </li>
-<?php else: ?>
-    IXP Interface Statistics :: <?= $t->cust->getFormattedName() ?>
-<?php endif; ?>
+
+    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+
+        <a href="<?= route( 'customer@list' )?>">Customers</a>
+        <li>
+            <a href="<?= route( 'customer@overview', [ 'id' => $t->c->getId() ] ) ?>" >
+                <?= $t->c->getFormattedName() ?>
+            </a>
+        </li>
+        <li>
+            <a href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>" >
+                Port Graphs
+            </a>
+        </li>
+
+    <?php else: ?>
+
+        IXP Port Graphs :: <?= $t->cust->getFormattedName() ?>
+
+    <?php endif; ?>
+
 <?php $this->append() ?>
 
+
 <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+
     <?php $this->section( 'page-header-postamble' ) ?>
-    <li>
-        Statistics Drilldown (<?= $t->category ?>)
-    </li>
+
+        <li>
+            Statistics Drilldown (<?= $t->graph->resolveMyCategory() ?>)
+        </li>
+
     <?php $this->append() ?>
+
 <?php endif; ?>
 
+
+
 <?php $this->section('content') ?>
+
     <?= $t->alerts() ?>
+
     <div class="row col-sm-12">
 
         <nav class="navbar navbar-default">
-            <div class="">
 
+            <div class="">
                 <div class="navbar-header">
                     <a class="navbar-brand" href="http://ixp.test/statistics/members">Graph Options:</a>
                 </div>
 
-                <?php if( $t->type == null ): ?>
-                    <?php $formRoute =  route( "statistics@memberDrilldown", [ "id" => $t->c->getId() ] ) ?>
-                <?php else: ?>
-                    <?php $formRoute =  route( "statistics@memberDrilldown", [ "id" => $t->c->getId(), "type" => $t->type , "typeid" => $t->typeid ] ) ?>
-                <?php endif; ?>
-
-                <form class="navbar-form navbar-left form-inline"  action="<?= $formRoute ?>" method="get">
+                <form class="navbar-form navbar-left form-inline" method="get">
                     <div class="form-group">
                         <label for="category">Type:</label>
                         <select id="category" name="category" onchange="this.form.submit()" class="form-control">
-                            <?php foreach( $t->categories as $cvalue => $cname ): ?>
-                                <option value="<?= $cvalue ?>" <?php if( $t->category == $cvalue ): ?> selected <?php endif; ?> ><?= $cname ?></option>
+                            <?php foreach( IXP\Services\Grapher\Graph::CATEGORY_DESCS as $cvalue => $cname ): ?>
+                                <option value="<?= $cvalue ?>" <?= $t->graph->category() == $cvalue ? 'selected="selected"' : '' ?>><?= $cname ?></option>
                             <?php endforeach; ?>
                         </select>
                     </div>
@@ -59,45 +73,70 @@ $this->layout( 'layouts/ixpv4' );
 
     <div class="col-sm-12">
         <h3>
-            <?php if( $t->type == "aggregate" ): ?>
-                Aggregate Statistics for All Peering Ports
-            <?php elseif( $t->type == "lag" ): ?>
-                LAG
-                <small>
-                    <?= $t->sname?>: <?= $t->spname ?>
-                </small>
-            <?php else: ?>
-                Port:  <?= $t->sname?> / <?= $t->spname ?>
+            <?php switch( get_class( $t->graph ) ):
 
-                <?php if( $t->resellerMode() && $t->c->isReseller() ): ?>
-                <br /><small>
-                    <?php if( $t->pi->getSwitchPort()->isTypePeering() ): ?>
-                        Peering Port
-                    <?php elseif( $pi->getSwitchPort()->isTypeFanout() ): ?>
-                        Fanout Port for <a href="<?= route( 'customer@overview', [ 'id' => $pi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>">
-                        <?= $pi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getAbbreviatedName() ?>
-                        </a>
-                    <?php elseif( $t->pi->getSwitchPort()->isTypeReseller() ): ?>
-                        Reseller Uplink Port
-                    <?php endif; ?>
-                </small>
-                <?php endif; ?>
+                case IXP\Services\Grapher\Graph\Customer::class: ?>
 
-            <?php endif; ?>
+                    Aggregate Statistics for All Peering Ports
+
+                    <?php break;
+
+                case IXP\Services\Grapher\Graph\VirtualInterface::class: ?>
+
+                    LAG
+                    <?php if( $sp = $t->graph->virtualInterface()->getSwitchPort() ): ?>
+                        <small>
+                            <?= $sp->getSwitcher()->getName() ?>
+                        </small>
+                    <?php endif;
+
+                    break;
+
+                case IXP\Services\Grapher\Graph\PhysicalInterface::class: ?>
+
+                    Port:  <?= $t->graph->physicalInterface()->getSwitchPort()->getSwitcher()->getName() ?> / <?= $t->graph->physicalInterface()->getSwitchPort()->getName() ?>
+
+                    <?php if( $t->resellerMode() && $t->c->isReseller() ): ?>
+
+                        <br />
+                        <small>
+                            <?php if( $t->graph->physicalInterface()->getSwitchPort()->isTypePeering() ): ?>
+                                Peering Port
+                            <?php elseif( $t->graph->physicalInterface()->getSwitchPort()->isTypeFanout() ): ?>
+                                Fanout Port for <a href="<?= route( 'customer@overview', [ 'id' => $t->graph->physicalInterface()->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>">
+                                    <?= $t->graph->physicalInterface()->getRelatedInterface()->getVirtualInterface()->getCustomer()->getAbbreviatedName() ?>
+                                </a>
+                            <?php elseif( $t->graph->physicalInterface()->getSwitchPort()->isTypeReseller() ): ?>
+                                Reseller Uplink Port
+                            <?php endif; ?>
+                        </small>
+
+                    <?php endif;
+
+                    break;
+
+                endswitch;
+            ?>
+
         </h3>
+        <br>
     </div>
 
     <div class="row">
-        <?php foreach( $t->periods as $pvalue => $pname ): ?>
+
+        <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $pvalue => $pname ): ?>
+
             <div class="col-sm-6">
                 <div class="well">
                     <h3><?= $pname ?> Graph</h3>
                     <p>
-                        <?= $t->grapher->setCategory( $t->category )->setPeriod( $pvalue )->renderer()->boxLegacy() ?>
+                        <?= $t->graph->setPeriod( $pvalue )->renderer()->boxLegacy() ?>
                     </p>
                 </div>
             </div>
+
         <?php endforeach; ?>
+
     </div>
 
 <?php $this->append() ?>

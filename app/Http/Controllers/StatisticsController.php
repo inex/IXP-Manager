@@ -28,9 +28,9 @@ use Entities\{
     Customer            as CustomerEntity,
     Infrastructure      as InfrastructureEntity,
     IXP                 as IXPEntity,
-    PhysicalInterface   as PIEntity,
+    PhysicalInterface   as PhysicalInterfaceEntity,
     Switcher            as SwitchEntity,
-    VirtualInterface    as VIEntity,
+    VirtualInterface    as VirtualInterfaceEntity,
     Vlan                as VlanEntity,
     VlanInterface       as VlanInterfaceEntity
 };
@@ -231,7 +231,7 @@ class StatisticsController extends Controller
         // do we have an infrastructure or vlan?
         $vlan = $infra = false;
         if( $r->input( 'infra' ) && ( $infra = D2EM::getRepository(InfrastructureEntity::class) ->find($r->input('infra')) ) ) {
-            $targets = D2EM::getRepository(VIEntity::class)->getObjectsForInfrastructure($infra);
+            $targets = D2EM::getRepository(VirtualInterfaceEntity::class)->getObjectsForInfrastructure($infra);
             $r->protocol = Graph::PROTOCOL_ALL;
         } else if( $r->input( 'vlan' ) && ( $vlan = D2EM::getRepository(VlanEntity::class)->find($r->input('vlan')) ) ) {
             if( !in_array( $r->protocol, Graph::PROTOCOLS_REAL ) ) {
@@ -312,97 +312,52 @@ class StatisticsController extends Controller
     /**
      * Display Aggregate/LAG/Port for all periods (day/week/month/year)
      *
-     * @param Request   $r
+     * @param StatisticsRequest   $r
      * @param integer   $id         ID of the member
      * @param string    $type       type
      * @param integer   $typeid     ID of type
      * @return  View
      * @throws
      */
-    public function memberDrilldown( Request $r, int $id, string $type = null, int $typeid = null ){
+    public function memberDrilldown( StatisticsRequest $r, string $type, int $typeid ) {
 
-        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
-            abort( 404);
-        }
-
-        if( ! ( ( $category = $r->input( 'category' ) ) !== null && isset( Graph::CATEGORIES[ $r->input( 'category' ) ] ) ) )  {
-            $category = "";
-        }
-
-        if( ! in_array( $type, [ 'vi', 'pi' ] ) ){
-            $type = null;
-        }
-
-        $graph = App::make('IXP\Services\Grapher');
-
-        if( $type == "vi" ){
-            if( !( $viParam = D2EM::getRepository( VIEntity::class )->find( $typeid ) ) ){
-                abort( 404);
-            }
-            $vi = null;
-            $pi = null;
-            foreach( $c->getVirtualInterfaces() as $virtualInferface ) {
-                if( $virtualInferface->getId() == $viParam->getId() ) {
-                    $vi   = $virtualInferface;
-                    break;
+        switch( strtolower( $type ) ) {
+            case 'agg':
+                /** @var CustomerEntity $c */
+                if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $typeid ) ) ){
+                    abort( 404, 'Unknown customer' );
                 }
-            }
+                $graph = App::make('IXP\Services\Grapher')->customer( $c );
+                break;
 
-            if( !$vi ){
-                abort( 404 , 'Member statistics drilldown requested for unknown LAG index' );
-            }
-
-            $sname = $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getName();
-
-            foreach( $vi->getPhysicalInterfaces() as $pi ){
-                $portnames[] = $pi->getSwitchPort()->getName();
-            }
-
-            $spname = implode( ', ', $portnames );
-
-            $grapher = $graph->virtint( $vi );
-
-        } elseif( $type == "pi" ) {
-            if( !( $piParam = D2EM::getRepository( PIEntity::class )->find( $typeid ) ) ){
-                abort( 404);
-            }
-
-            $vi = false;
-            $pi = null;
-            foreach( $c->getVirtualInterfaces() as $virtualInterface ) {
-                foreach( $virtualInterface->getPhysicalInterfaces() as $physicalInterface ) {
-                    if( $physicalInterface->getId() == $piParam->getId() ) {
-                        $pi     = $physicalInterface;
-                        $vi     = $virtualInterface;
-                        break 2;
-                    }
+            case 'vi':
+                /** @var VirtualInterfaceEntity $vi */
+                if( !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $typeid ) ) ) {
+                    abort( 404, 'Unknown virtual interface' );
                 }
-            }
+                $c = $vi->getCustomer();
+                $graph = App::make('IXP\Services\Grapher')->virtint( $vi );
+                break;
 
-            if( !$vi ){
-                abort( 404 , 'Member statistics drilldown requested for unknown physical interface' );
-            }
+            case 'pi':
+                /** @var PhysicalInterfaceEntity $pi */
+                if( !( $pi = D2EM::getRepository( PhysicalInterfaceEntity::class )->find( $typeid ) ) ) {
+                    abort( 404, 'Unknown physical interface' );
+                }
+                $c = $pi->getVirtualInterface()->getCustomer();
+                $graph = App::make('IXP\Services\Grapher')->physint( $pi );
+                break;
 
-            $sname          = $pi->getSwitchPort()->getSwitcher()->getName();
-            $spname         = $pi->getSwitchPort()->getName();
-            $grapher = $graph->physint( $pi );
-
-        } else {
-            $sname      = '';
-            $spname     = '';
-            $grapher = $graph->customer( $c );
+            default:
+                abort( 404, 'Unknown graph type' );
         }
+
+        $graph->setCategory( Graph::processParameterCategory( $r->input( 'category' ) ) );
+        $graph->authorise();
 
         return view( 'statistics/member-drilldown' )->with([
-            "c"                     => $c,
-            "grapher"               => $grapher,
-            "category"              => Graph::processParameterCategory( $category , true ),
-            "periods"               => Graph::PERIOD_DESCS,
-            "categories"            => Graph::CATEGORY_DESCS,
-            "type"                  => $type,
-            "typeid"                => $typeid,
-            "sname"                 => $sname,
-            "spname"                => $spname,
+            'c'     => $c,
+            'graph' => $graph,
         ]);
     }
 }

@@ -102,8 +102,7 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'trunk/{trunkid?}/{category?}',                'StatisticsController@trunk'             )->name( 'statistics/trunk'              );
 
     Route::get(  'member/{cid}',                                'StatisticsController@member'            )->name( 'statistics@member'             );
-    Route::get(  'member-drilldown/{cid}',                      'StatisticsController@memberDrilldown'   )->name( 'statistics@memberDrilldown'    );
-    Route::get(  'member-drilldown/{cid}/{type?}/{tid?}',       'StatisticsController@memberDrilldown'   )->name( 'statistics@memberDrilldown'    );
+    Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'    );
 
     Route::get(  'members', 'StatisticsController@members' );
     Route::post( 'members', 'StatisticsController@members' )->name( 'statistics/members' );

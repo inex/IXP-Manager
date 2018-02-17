@@ -1,6 +1,6 @@
 <?php
-/** @var Foil\Template\Template $t */
-$this->layout( 'layouts/ixpv4' );
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' );
 ?>
 
 
@@ -81,7 +81,7 @@ $this->layout( 'layouts/ixpv4' );
                         <?php if( $t->resellerMode() && $t->c->isReseller() ): ?>
                             <small><em>(Peering ports only)</em></small>
                         <?php endif; ?>
-                        <a class="btn btn-default pull-right" href="<?= route( "statistics@memberDrilldown" , [ "id" => $t->c->getId(), "type" => "aggregate" ] ) ?>/?category=<?= $t->category ?>">
+                        <a class="btn btn-default pull-right" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $t->c->getId(), "type" => "agg" ] ) ?>/?category=<?= $t->category ?>">
                             <i class="glyphicon glyphicon-zoom-in"></i>
                         </a>
                     </h3>
@@ -129,7 +129,7 @@ $this->layout( 'layouts/ixpv4' );
                                     / <?= $pi->getSwitchPort()->getSwitcher()->getName() ?>
 
                                     <?php if( $graphable ): ?>
-                                        <a class="btn btn-default pull-right" href="<?= route( "statistics@memberDrilldown" , [ "id" => $t->c->getId(), "type" => "aggregate", "type" => "vi", "typeid" => $vi->getId()  ] ) ?>/?category=<?= $t->category ?>">
+                                        <a class="btn btn-default pull-right" href="<?= route( "statistics@member-drilldown" , [ "type" => "vi", "typeid" => $vi->getId()  ] ) ?>/?category=<?= $t->category ?>">
                                             <i class="glyphicon glyphicon-zoom-in"></i>
                                         </a>
                                     <?php endif; ?>
@@ -162,7 +162,7 @@ $this->layout( 'layouts/ixpv4' );
                                     <?php endif; ?>
 
                                     <?php if( $pi->statusIsConnectedOrQuarantine() ): ?>
-                                        <a class="btn btn-default pull-right" href="<?= route( "statistics@memberDrilldown" , [ "id" => $t->c->getId(), "type" => "aggregate", "type" => "pi", "typeid" => $pi->getId()  ] ) ?>/?category=<?= $t->category ?>">
+                                        <a class="btn btn-default pull-right" href="<?= route( "statistics@member-drilldown" , [ "type" => "pi", "typeid" => $pi->getId()  ] ) ?>/?category=<?= $t->category ?>">
                                             <i class="glyphicon glyphicon-zoom-in"></i>
                                         </a>
                                     <?php endif; ?>
