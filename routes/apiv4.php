@@ -17,6 +17,9 @@ use Illuminate\Http\Request;
 //     wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
 
 
+Route::get( 'ping', 'PublicController@ping' );
+Route::get( 'test', 'PublicController@test' );
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // IX-F Member List Export
@@ -25,12 +28,24 @@ Route::get('member-export/ixf',            'MemberExportController@ixf');
 Route::get('member-export/ixf/{version}',  'MemberExportController@ixf');
 
 
+Route::get( 'peeringdb/ix', function() {
+    return response()->json( Cache::remember('peeringdb/ix', 120, function() {
+        $ixps = [];
+        if( $ixs = file_get_contents('https://www.peeringdb.com/api/ix') ) {
+            foreach( json_decode($ixs)->data as $ix ) {
+                $ixps[$ix->id] = [
+                    'pdb_id' => $ix->id,
+                    'name' => $ix->name,
+                    'city' => $ix->city,
+                    'country' => $ix->country,
+                ];
+            }
+        }
+        return $ixps;
+    })
+    );
+})->name('api-v4-peeringdb-ixs');
 
-Route::get( 'test', function() {
-    return response()->make( "API Test Function!\n\nAuthenticated: "
-        . ( Auth::check() ? 'Yes, as: ' . Auth::user()->getUsername() : 'No' ) . "\n\n", 200 )
-        ->header( 'Content-Type', 'text/plain; charset=utf-8' );
-});
 
 Route::get( 'ix-f/ixp', function() {
     return response()->json( Cache::remember('ix-f/ixp', 120, function() {

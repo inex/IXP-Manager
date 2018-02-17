@@ -104,6 +104,10 @@
                 <h3>
                     <?= $t->c->getFormattedName() ?>
                     <?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?>
+
+                    <div class="pull-right">
+                        <a class="btn btn-default" href="<?= route('statistics@member', [ 'id' => $t->c->getId() ] ) ?>">Port Graphs</a>
+                    </div>
                 </h3>
             </div>
 
@@ -114,7 +118,9 @@
                 <li role="details" <?php if( $t->tab == 'details' ): ?> class="active" <?php endif; ?> >
                     <a data-toggle="tab" href="#details">Details</a>
                 </li>
-                <?php if( $t->resellerMode && $t->c->isReseller() ): ?>
+
+                <?php if( $t->resellerMode() && $t->c->isReseller() ): ?>
+
                     <li role="resold-customers" <?php if( $t->tab == 'resold-customers' ): ?> class="active" <?php endif; ?>>
                         <a data-toggle="tab" href="#resold-customers" data-toggle="tab">Resold Customers</a>
                     </li>

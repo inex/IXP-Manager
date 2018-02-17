@@ -440,7 +440,7 @@ class VirtualInterface
     }
 
     /**
-     * Get the Switch Port of a virtual interface.
+     * Get a Switch Port of a virtual interface.
      *
      * @return string|bool The switch port or false if no switch port.
      */
@@ -450,6 +450,24 @@ class VirtualInterface
             return $this->getPhysicalInterfaces()[0]->getSwitchPort();
         else
             return false;
+    }
+
+    /**
+     * Get an array of the switch port name(s) (`$pi->getSwitchPort()->getName()`)
+     *
+     * @return array
+     */
+    public function getSwitchPortNames(): array
+    {
+        $names = [];
+
+        foreach( $this->getPhysicalInterfaces() as $pi ) {
+            if( $pi->getSwitchPort() ) {
+                $names[] = $pi->getSwitchPort()->getName();
+            }
+        }
+
+        return $names;
     }
 
     /**
@@ -730,5 +748,21 @@ class VirtualInterface
         }
 
         return true;
+    }
+
+
+    /**
+     * Is this LAG graphable?
+     *
+     * @return bool
+     */
+    public function isGraphable(): bool {
+        foreach( $this->getPhysicalInterfaces() as $pi ) {
+            if( $pi->isGraphable() ) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

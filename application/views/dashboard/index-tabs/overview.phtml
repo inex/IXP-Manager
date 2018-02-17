@@ -4,32 +4,15 @@
     <div class="span6">
         <h3>
             Aggregate Peering Statistics
-            {if not $multiIXP}
-                <a class="btn" href="{genUrl controller="statistics" action="member-drilldown" shortname=$user->getCustomer()->getShortname() category='bits' monitorindex='aggregate'}">
-                    <i class="icon-eye-open"></i>
+                <a class="btn" href="{genUrl controller="statistics" action="member-drilldown"}/agg/{$user->getCustomer()->getId()}">
+                    <i class="icon-zoom-in"></i>
                 </a>
-            {/if}
         </h3>
 
-        {if $multiIXP}
-            {foreach $cust->getIXPs() as $ixp}
-                <br />
-                <div class="well">
-                    <h3>
-                        {$ixp->getName()}
-                        <a class="btn" href="{genUrl controller="statistics" action="member-drilldown" ixp=$ixp->getId() shortname=$cust->getShortname() category='bits' monitorindex='aggregate'}">
-                            <i class="icon-eye-open"></i>
-                        </a>
-                    </h3>
-                    FIXME
-                </div>
-            {/foreach}
-        {else}
-            <br />
-            <div class="well">
-                {$grapher->customer($cust)->renderer()->boxLegacy()}
-            </div>
-        {/if}
+        <br />
+        <div class="well">
+            {$grapher->customer($cust)->renderer()->boxLegacy()}
+        </div>
     </div>
 
     <div class="span6">

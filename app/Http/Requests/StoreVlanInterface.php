@@ -55,6 +55,7 @@ class StoreVlanInterface extends FormRequest
             'busyhost'              => 'boolean',
             'rsclient'              => 'boolean',
             'irrdbfilter'           => 'boolean',
+            'rsmorespecifics'       => 'boolean',
             'as112client'           => 'boolean',
 
             'ipv4-enabled'          => 'boolean',

@@ -1,5 +1,7 @@
 <div class="col-sm-12">
+
     <div class="col-sm-6">
+
         <h3>
             Connection <?= $t->nbVi ?>
 
@@ -47,16 +49,19 @@
                     <?php $isLAG = 1 ?>
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAG Port
                 <?php else: ?>
-                    <?= $t->insert( 'customer/overview-tabs/ports/pi-status', [ 'pi' => 0 , 'vi' => $t->vi ] ); ?>
+                    <?= $t->insert( 'customer/overview-tabs/ports/pi-status', [ 'pi' => $firstPi, 'vi' => $t->vi ] ); ?>
                     <?php $isLAG = 0 ?>
                 <?php endif; ?>
             </small>
 
             <?php if( Auth::getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER ): ?>
+
                 <div class="btn-group" style="padding-left: 20px;">
-                    <a class="btn btn-xs btn-default" href="<?= route( "interfaces/physical/add", [ "id" => count( $pis ) ? $pis[ 0 ]->getId() : 0 , "viid" => $t->vi->getId() ] ) ?>" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                    <a class="btn btn-xs btn-default" href="<?= route( "interfaces/virtual/edit", [ "id" => $t->vi->getId() ] ) ?>" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
                 </div>
+
             <?php endif; ?>
+
         </h3>
         <?php if( count( $t->vi->getPhysicalInterfaces() ) > 0 ): ?>
             <?php $countPi = 1 ?>
@@ -325,31 +330,43 @@
             <?php endif; ?>
         </div>
     </div>
+
     <div class="col-sm-6">
         <?php if( $isLAG ): ?>
-            <div class="well">
-                <h4>
-                    Aggregate Day Graph for LAG
-                    <a class="btn btn-default pull-right" href="<?= url( "statistics/member-drilldown/shortname/" . $t->ee( $t->c->getShortname() ) . "/category/bits/monitorindex/lag-viid-" . $t->vi->getId() ) ?>">
-                    <i class="glyphicon glyphicon-eye-open"></i>
-                    </a>
-                </h4>
-                <br />
-                <?= $t->grapher->virtint( $t->vi )->renderer()->boxLegacy() ?>
-            </div>
+
+            <?php
+                if( $t->vi->isGraphable() ): ?>
+
+                    <div class="well">
+                        <h4>
+                            Aggregate Day Graph for LAG
+                            <a class="btn btn-default btn-xs pull-right" href="<?= route( "statistics@member-drilldown", [ 'type' => 'vi', 'typeid' => $t->vi->getId() ] ) ?>">
+                                <i class="glyphicon glyphicon-zoom-in"></i>
+                            </a>
+                        </h4>
+                        <br />
+                        <?= $t->grapher->virtint( $t->vi )->renderer()->boxLegacy() ?>
+                    </div>
+
+                <?php endif; ?>
+
         <?php endif; ?>
 
+
         <?php foreach( $t->vi->getPhysicalInterfaces() as $pi ): ?>
+            <?php if( !$pi->isGraphable() ) { continue; } ?>
+
             <div class="well">
                 <h4>
                     Day Graph for <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?> / <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
-                    <a class="btn btn-default btn-xs pull-right" href="<?= url( "statistics/member-drilldown/shortname/" . $t->c->getShortname() . "/category/bits/monitorindex/" . $pi->getMonitorindex() ) ?>">
-                        <i class="glyphicon glyphicon-eye-open"></i>
+                    <a class="btn btn-default btn-xs pull-right" href="<?= route( "statistics@member-drilldown", [ 'type' => 'pi', 'typeid' => $pi->getId() ] ) ?>">
+                        <i class="glyphicon glyphicon-zoom-in"></i>
                     </a>
                 </h4>
                 <br />
                 <?= $t->grapher->physint( $pi )->renderer()->boxLegacy() ?>
             </div>
         <?php endforeach; ?>
+
     </div>
 </div>

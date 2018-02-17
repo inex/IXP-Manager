@@ -142,11 +142,14 @@
     <script type="text/javascript" src="<?= asset('/bower_components/bootbox.js/bootbox.js') ?>"></script>
 
     <script>
-        $( ".chzn-select" ).select2({ width: '100%' });
+
+        $( ".chzn-select" ).select2( { width: '100%', placeholder: function() {
+                $(this).data('placeholder');
+        } } );
 
         $( ".chzn-select-deselect" ).select2( { width: '100%', allowClear: true, placeholder: function(){
-            $(this).data('placeholder');
-        } } );
+                $(this).data('placeholder');
+            } } );
 
         <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
             $( "#menu-select-customer" ).select2({ placeholder: "Jump to customer...", allowClear: true }).change( function(){
@@ -158,6 +161,12 @@
 
     <?php $this->section('scripts') ?>
     <?php $this->stop() ?>
+
+    <?=
+        // Skin this file to add your own footer content such as
+        // Piwik / Google Analytics integration:
+        $t->insert( 'footer-custom' );
+    ?>
 
 </body>
 </html>

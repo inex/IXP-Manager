@@ -136,6 +136,7 @@ class VlanInterfaceController extends Common
 
                 'maxbgpprefix'              => $vli->getMaxbgpprefix(),
                 'rsclient'                  => $vli->getRsclient() ? 1 : 0,
+                'rsmorespecifics'           => $vli->getRsMoreSpecifics() ? 1 : 0,
                 'as112client'               => $vli->getAs112client() ? 1 : 0,
                 'busyhost'                  => $vli->getBusyhost() ? 1 : 0,
 
@@ -202,12 +203,13 @@ class VlanInterfaceController extends Common
 
         $vli->setVirtualInterface(  $vi );
         $vli->setVlan(              $v  );
-        $vli->setIrrdbfilter(       $request->input( 'irrdbfilter',  false ) );
-        $vli->setMcastenabled(      $request->input( 'mcastenabled', false ) );
-        $vli->setMaxbgpprefix(      $request->input( 'maxbgpprefix', null  ) === "0" ? null : $request->input( 'maxbgpprefix', null ) );
-        $vli->setRsclient(          $request->input( 'rsclient',     false ) );
-        $vli->setAs112client(       $request->input( 'as112client',  false ) );
-        $vli->setBusyhost(          $request->input( 'busyhost',     false ) );
+        $vli->setIrrdbfilter(       $request->input( 'irrdbfilter',     false ) );
+        $vli->setRsMoreSpecifics(   $request->input( 'rsmorespecifics', false ) );
+        $vli->setMcastenabled(      $request->input( 'mcastenabled',    false ) );
+        $vli->setMaxbgpprefix(      $request->input( 'maxbgpprefix',    null  ) === "0" ? null : $request->input( 'maxbgpprefix', null ) );
+        $vli->setRsclient(          $request->input( 'rsclient',        false ) );
+        $vli->setAs112client(       $request->input( 'as112client',     false ) );
+        $vli->setBusyhost(          $request->input( 'busyhost',        false ) );
         D2EM::flush();
 
         AlertContainer::push( 'Vlan Interface updated successfully.', Alert::SUCCESS );

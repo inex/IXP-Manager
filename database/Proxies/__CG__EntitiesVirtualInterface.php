@@ -521,6 +521,17 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
     /**
      * {@inheritDoc}
      */
+    public function getSwitchPortNames(): array
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitchPortNames', []);
+
+        return parent::getSwitchPortNames();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getLocation()
     {
 
@@ -736,6 +747,17 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'sameSwitchForEachPI', []);
 
         return parent::sameSwitchForEachPI();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isGraphable(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isGraphable', []);
+
+        return parent::isGraphable();
     }
 
 }

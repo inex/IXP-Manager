@@ -163,11 +163,9 @@
     <li class="nav-header">IXP Statistics</li>
 
         <li {if $controller eq 'statistics' and $action eq 'members'}class="active"{/if}>
-            <a href="{genUrl controller='statistics' action='members'}">Member Statistics - Graphs</a>
+            <a href="{genUrl controller='statistics' action='members'}">Member Statistics</a>
         </li>
-        <li {if $controller eq 'statistics' and $action eq 'list'}class="active"{/if}>
-            <a href="{genUrl controller='statistics' action='list'}">Member Statistics - List</a>
-        </li>
+
         {if $logoManagementActive}
             <li {if $controller eq 'logo' }class="active"{/if}>
                 <a href="{route( 'logo@logos' )}">Member Logos</a>
