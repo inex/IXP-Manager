@@ -95,6 +95,7 @@
                     <?php if( $sp = $t->graph->virtualInterface()->getSwitchPort() ): ?>
                         <small>
                             <?= $sp->getSwitcher()->getName() ?>
+                            [<?= implode( ', ', $t->graph->virtualInterface()->getSwitchPortNames() ) ?>]
                         </small>
                     <?php endif;
 

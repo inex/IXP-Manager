@@ -82,7 +82,7 @@
                             <small><em>(Peering ports only)</em></small>
                         <?php endif; ?>
 
-                        <a class="btn btn-default pull-right" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $t->c->getId(), "type" => "agg" ] ) ?>/?category=<?= $t->category ?>">
+                        <a class="btn btn-default btn-sm pull-right" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $t->c->getId(), "type" => "agg" ] ) ?>/?category=<?= $t->category ?>">
                             <i class="glyphicon glyphicon-zoom-in"></i>
                         </a>
                     </h3>
@@ -109,15 +109,6 @@
 
                         $pi = $vi->getPhysicalInterfaces()[ 0 ];
                         $isLAG = count( $vi->getPhysicalInterfaces() ) > 1;
-
-                        $graphable = false;
-                        foreach( $vi->getPhysicalInterfaces() as $pi ) {
-                            if( $pi->statusIsConnectedOrQuarantine() ) {
-                                $graphable = true;
-                                break;
-                            }
-                        }
-
                     ?>
 
 
@@ -129,14 +120,14 @@
                                     LAG on <?= $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ?>
                                     / <?= $pi->getSwitchPort()->getSwitcher()->getName() ?>
 
-                                    <?php if( $graphable ): ?>
-                                        <a class="btn btn-default pull-right" href="<?= route( "statistics@member-drilldown" , [ "type" => "vi", "typeid" => $vi->getId()  ] ) ?>/?category=<?= $t->category ?>">
+                                    <?php if( $vi->isGraphable() ): ?>
+                                        <a class="btn btn-default btn-sm pull-right" href="<?= route( "statistics@member-drilldown" , [ "type" => "vi", "typeid" => $vi->getId()  ] ) ?>/?category=<?= $t->category ?>">
                                             <i class="glyphicon glyphicon-zoom-in"></i>
                                         </a>
                                     <?php endif; ?>
                                 </h4>
                                 <p>
-                                    <?php if( $graphable ): ?>
+                                    <?php if( $vi->isGraphable() ): ?>
                                         <br />
                                         <?= $t->grapher->virtint( $vi )->setCategory( $t->category )->setPeriod( $t->period )->renderer()->boxLegacy() ?>
                                     <?php endif; ?>
@@ -163,7 +154,7 @@
                                     <?php endif; ?>
 
                                     <?php if( $pi->statusIsConnectedOrQuarantine() ): ?>
-                                        <a class="btn btn-default pull-right" href="<?= route( "statistics@member-drilldown" , [ "type" => "pi", "typeid" => $pi->getId()  ] ) ?>/?category=<?= $t->category ?>">
+                                        <a class="btn btn-default btn-sm pull-right" href="<?= route( "statistics@member-drilldown" , [ "type" => "pi", "typeid" => $pi->getId()  ] ) ?>/?category=<?= $t->category ?>">
                                             <i class="glyphicon glyphicon-zoom-in"></i>
                                         </a>
                                     <?php endif; ?>

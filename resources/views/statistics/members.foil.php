@@ -5,7 +5,7 @@ $this->layout( 'layouts/ixpv4' )
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <li>
+
         Statistics
     </li>
 
@@ -14,6 +14,9 @@ $this->layout( 'layouts/ixpv4' )
 
         <?php if( $t->graph ): ?>
             (
+                <?= $t->infra ? 'MRTG: '  . $t->infra->getName() : '' ?>
+                <?= $t->vlan  ? 'SFlow: ' . $t->vlan->getName()  : '' ?>
+                /
                 <?= $t->graph->resolveCategory( $t->graph->category() ) ?>
                 /
                 <?= $t->graph->resolvePeriod( $t->graph->period() ) ?>
@@ -23,8 +26,8 @@ $this->layout( 'layouts/ixpv4' )
                 <?php endif; ?>
             )
         <?php endif; ?>
-    </li>
-<?php $this->append() ?>
+
+    <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
 <?php $this->append() ?>
@@ -37,45 +40,48 @@ $this->layout( 'layouts/ixpv4' )
         <nav class="navbar navbar-default">
             <div class="container-fluid">
 
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="<?= route('statistics/members') ?>">MRTG:</a>
+                <div class="col-md-12">
+
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="<?= route('statistics/members') ?>">MRTG:</a>
+                    </div>
+
+                    <form class="navbar-form navbar-left action="<?= route('statistics/members' ) ?>" method="post">
+
+                    <div class="form-group">
+                        <label for="selectInfra">Infrastructure:</label>
+                        <select id="selectInfra" class="form-control" name="infra">
+                            <option>All</option>
+                            <?php foreach( $t->infras as $id => $i ): ?>
+                                <option value="<?= $id ?>" <?= $t->infra && $t->infra->getId() == $id ? 'selected="selected"' : '' ?>><?= $i ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="selectCategory">Category:</label>
+                        <select id="selectCategory" class="form-control" name="category">
+                            <?php foreach( IXP\Services\Grapher\Graph::CATEGORY_DESCS as $c => $d ): ?>
+                                <option value="<?= $c ?>" <?= $t->r->category == $c ? 'selected="selected"' : '' ?>><?= $d ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="selectPeriod">Period:</label>
+                        <select id="selectPeriod" class="form-control" name="period">
+                            <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $p => $d ): ?>
+                                <option value="<?= $p ?>" <?= $t->r->period == $p ? 'selected="selected"' : '' ?>><?= $d ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                    <input class="btn btn-default" type="submit" name="submit" value="Show Graphs" />
+
+                    </form>
+
                 </div>
-
-                <form class="navbar-form navbar-left action="<?= route('statistics/members' ) ?>" method="post">
-
-                <div class="form-group">
-                    <label for="selectInfra">Infrastructure:</label>
-                    <select id="selectInfra" class="form-control" name="infra">
-                        <option>All</option>
-                        <?php foreach( $t->infras as $id => $i ): ?>
-                            <option value="<?= $id ?>" <?= $t->infra && $t->infra->getId() == $id ? 'selected="selected"' : '' ?>><?= $i ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="selectCategory">Category:</label>
-                    <select id="selectCategory" class="form-control" name="category">
-                        <?php foreach( IXP\Services\Grapher\Graph::CATEGORY_DESCS as $c => $d ): ?>
-                            <option value="<?= $c ?>" <?= $t->r->category == $c ? 'selected="selected"' : '' ?>><?= $d ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <label for="selectPeriod">Period:</label>
-                    <select id="selectPeriod" class="form-control" name="period">
-                        <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $p => $d ): ?>
-                            <option value="<?= $p ?>" <?= $t->r->period == $p ? 'selected="selected"' : '' ?>><?= $d ?></option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                <input class="btn btn-default" type="submit" name="submit" value="Change" />
-
-                </form>
-
             </div>
         </nav>
 
@@ -94,7 +100,7 @@ $this->layout( 'layouts/ixpv4' )
 
                         <div class="form-group">
                             <label for="selectVlan">VLAN:</label>
-                            <select id="selectVlan" class="chzn-select form-control" name="vlan">
+                            <select id="selectVlan" class="form-control" name="vlan">
                                 <option></option>
                                 <?php foreach( $t->vlans as $id => $i ): ?>
                                     <option value="<?= $id ?>" <?= $t->vlan && $t->vlan->getId() == $id ? 'selected="selected"' : '' ?>><?= $i ?></option>
@@ -104,7 +110,7 @@ $this->layout( 'layouts/ixpv4' )
 
                         <div class="form-group">
                             <label for="selectVlan">Protocol:</label>
-                            <select id="selectVlan" class="form-control chzn-select" name="protocol">
+                            <select id="selectVlan" class="form-control" name="protocol">
                                 <option></option>
                                 <?php foreach( \IXP\Services\Grapher\Graph::PROTOCOL_REAL_DESCS as $p => $n ): ?>
                                     <option value="<?= $p ?>" <?= $t->r->protocol == $p ? 'selected="selected"' : '' ?>><?= $n ?></option>
@@ -114,7 +120,7 @@ $this->layout( 'layouts/ixpv4' )
 
                         <div class="form-group">
                             <label for="selectCategory2">Category:</label>
-                            <select id="selectCategory2" class="form-control chzn-select" name="category">
+                            <select id="selectCategory2" class="form-control" name="category">
                                 <?php foreach( IXP\Services\Grapher\Graph::CATEGORY_DESCS as $c => $d ): ?>
                                     <option value="<?= $c ?>" <?= $t->r->category == $c ? 'selected="selected"' : '' ?>><?= $d ?></option>
                                 <?php endforeach; ?>
@@ -123,7 +129,7 @@ $this->layout( 'layouts/ixpv4' )
 
                         <div class="form-group">
                             <label for="selectPeriod2">Period:</label>
-                            <select id="selectPeriod2" class="form-control chzn-select" name="period">
+                            <select id="selectPeriod2" class="form-control" name="period">
                                 <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $p => $d ): ?>
                                     <option value="<?= $p ?>" <?= $t->r->period == $p ? 'selected="selected"' : '' ?>><?= $d ?></option>
                                 <?php endforeach; ?>
@@ -131,7 +137,7 @@ $this->layout( 'layouts/ixpv4' )
                         </div>
 
                         <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                        <input class="btn btn-default" type="submit" name="submit" value="Change" />
+                        <input class="btn btn-default" type="submit" name="submit" value="Show Graphs" />
 
                     </form>
                 </div>
@@ -147,9 +153,19 @@ $this->layout( 'layouts/ixpv4' )
 
     <?php if( !$t->graph ): ?>
 
-        <div class="alert alert-info" role="alert">
-            No graphs found for the requested parameters.
-        </div>
+        <?php if( !$t->infra && !$t->vlan  ): ?>
+
+            <div class="alert alert-info" role="alert">
+                Select parameters above and click <em>Show Graphs</em>.
+            </div>
+
+        <?php else: ?>
+
+            <div class="alert alert-info" role="alert">
+                No graphs found for the requested parameters.
+            </div>
+
+        <?php endif; ?>
 
     <?php else: ?>
 

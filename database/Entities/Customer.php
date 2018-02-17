@@ -2417,4 +2417,21 @@ class Customer
     public function resolveStatus(): string {
         return self::$CUST_STATUS_TEXT[ $this->getStatus() ] ?? 'Unknown';
     }
+
+
+    /**
+     * Is this customer graphable?
+     *
+     * @return bool
+     */
+    public function isGraphable(): bool {
+        foreach( $this->getVirtualInterfaces() as $vi ) {
+            if( $vi->isGraphable() ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

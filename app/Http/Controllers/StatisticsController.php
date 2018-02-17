@@ -230,8 +230,12 @@ class StatisticsController extends Controller
 
         // do we have an infrastructure or vlan?
         $vlan = $infra = false;
-        if( $r->input( 'infra' ) && ( $infra = D2EM::getRepository(InfrastructureEntity::class) ->find($r->input('infra')) ) ) {
-            $targets = D2EM::getRepository(VirtualInterfaceEntity::class)->getObjectsForInfrastructure($infra);
+        if( $r->input( 'infra' ) ) {
+            if( $infra = D2EM::getRepository(InfrastructureEntity::class) ->find($r->input('infra')) ) {
+                $targets = D2EM::getRepository( VirtualInterfaceEntity::class )->getObjectsForInfrastructure( $infra );
+            } else {
+                $targets = D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, true, false );
+            }
             $r->protocol = Graph::PROTOCOL_ALL;
         } else if( $r->input( 'vlan' ) && ( $vlan = D2EM::getRepository(VlanEntity::class)->find($r->input('vlan')) ) ) {
             if( !in_array( $r->protocol, Graph::PROTOCOLS_REAL ) ) {
@@ -239,18 +243,21 @@ class StatisticsController extends Controller
             }
             $targets = D2EM::getRepository( VlanInterfaceEntity::class )->getObjectsForVlan( $vlan, false, $r->protocol );
         } else {
-            $targets = D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, true, false );
-            $r->protocol = Graph::PROTOCOL_ALL;
+            $targets = [];
         }
 
         $graphs = [];
         foreach( $targets as $t ) {
             if( $infra ) {
-                $g = $grapher->virtint( $t );
+                if( $t->isGraphable() ) {
+                    $g = $grapher->virtint( $t );
+                }
             } else if( $vlan ) {
                 $g = $grapher->vlanint( $t );
             } else {
-                $g = $grapher->customer( $t );
+                if( $t->isGraphable() ) {
+                    $g = $grapher->customer( $t );
+                }
             }
 
             $g->setType(     Graph::TYPE_PNG )

@@ -335,22 +335,13 @@
         <?php if( $isLAG ): ?>
 
             <?php
-                // do we have graphable interfaces?
-                $graphable = false;
-                foreach( $t->vi->getPhysicalInterfaces() as $pi ) {
-                    if( $pi->statusIsConnectedOrQuarantine() ) {
-                        $graphable = true;
-                        break;
-                    }
-                }
-
-                if( $graphable ): ?>
+                if( $t->vi->isGraphable() ): ?>
 
                     <div class="well">
                         <h4>
                             Aggregate Day Graph for LAG
-                            <a class="btn btn-default pull-right" href="<?= url( "statistics/member-drilldown/shortname/" . $t->ee( $t->c->getShortname() ) . "/category/bits/monitorindex/lag-viid-" . $t->vi->getId() ) ?>">
-                            <i class="glyphicon glyphicon-eye-open"></i>
+                            <a class="btn btn-default btn-xs pull-right" href="<?= route( "statistics@member-drilldown", [ 'type' => 'vi', 'typeid' => $t->vi->getId() ] ) ?>">
+                                <i class="glyphicon glyphicon-zoom-in"></i>
                             </a>
                         </h4>
                         <br />
@@ -363,13 +354,13 @@
 
 
         <?php foreach( $t->vi->getPhysicalInterfaces() as $pi ): ?>
-            <?php if( !$pi->statusIsConnectedOrQuarantine() ) { continue; } ?>
+            <?php if( !$pi->isGraphable() ) { continue; } ?>
 
             <div class="well">
                 <h4>
                     Day Graph for <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?> / <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
-                    <a class="btn btn-default btn-xs pull-right" href="<?= url( "statistics/member-drilldown/shortname/" . $t->c->getShortname() . "/category/bits/monitorindex/" . $pi->getMonitorindex() ) ?>">
-                        <i class="glyphicon glyphicon-eye-open"></i>
+                    <a class="btn btn-default btn-xs pull-right" href="<?= route( "statistics@member-drilldown", [ 'type' => 'pi', 'typeid' => $pi->getId() ] ) ?>">
+                        <i class="glyphicon glyphicon-zoom-in"></i>
                     </a>
                 </h4>
                 <br />
