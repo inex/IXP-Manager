@@ -129,7 +129,7 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
     Route::get(     'add',                              'CustomerController@edit'                       )->name( 'customer@add');
     Route::get(     'edit/{id}',                        'CustomerController@edit'                       )->name( 'customer@edit');
 
-    Route::get(     'billing-registration/{id}',        'CustomerController@billingRegistration'        )->name( 'customer@billingRegistration');
+    Route::get(     'billing-registration/{id}',        'CustomerController@editBillingAndRegDetails'   )->name( 'customer@billingRegistration');
     Route::get(     'unread-notes',                     'CustomerController@unreadNotes'                )->name( "customer@unreadNotes" );
     Route::get(     'welcome-email/{id}',               'CustomerController@welcomeEmail'               )->name( "customer@welcomeEmail" );
     Route::get(     'delete-recap/{id}',                'CustomerController@deleteRecap'                )->name( "customer@deleteRecap" );
@@ -138,7 +138,7 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
 
 
     Route::post(    'store',                            'CustomerController@store'                      )->name( 'customer@store');
-    Route::post(    'store-billing-info',               'CustomerController@storeBillingInformation'    )->name( 'customer@storeBillingInfo');
+    Route::post(    'store-billing-and-reg-details',    'CustomerController@storeBillingAndRegDetails'  )->name( 'customer@store-billing-and-reg-details');
     Route::post(    'send-welcome-email',               'CustomerController@sendWelcomeEmail'           )->name( 'customer@sendWelcomeEmail');
     Route::post(    'delete',                           'CustomerController@delete'                     )->name( 'customer@delete');
 

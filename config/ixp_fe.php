@@ -106,7 +106,17 @@ return [
                 'phone'    => env( 'IXP_FE_CUSTOMER_FORM_PLACEHOLDER_PHONE', '+353 20 910 1234' ),
             ]
         ],
+
+        // Billing updates notifications
+        //
+        // Send email with updated billing details to the following address when billing details
+        // are updated by an admin or a user.
+        //
+        'billing_updates_notify' => env( 'IXP_FE_CUSTOMER_BILLING_UPDATES_NOTIFY', false ),
+
     ],
+
+
 
 
 ];

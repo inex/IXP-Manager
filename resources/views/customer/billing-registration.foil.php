@@ -1,27 +1,57 @@
 <?php
-/** @var Foil\Template\Template $t */
-$this->layout( 'layouts/ixpv4' );
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' );
 ?>
+
 
 <?php $this->section( 'title' ) ?>
     <a href="<?= route( 'customer@list' )?>">Customers</a>
 <?php $this->append() ?>
 
+
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li><?= $t->cust ? "Edit" : "Add" ?> Customer</li>
+    <li>
+        <a href="<?= route( 'customer@overview', [ 'id' => $t->c->getId() ] ) ?>">
+            <?= $t->c->getFormattedName() ?>
+        </a>
+    </li>
+    <li>
+        Billing and Registration Details
+    </li>
 <?php $this->append() ?>
 
-<?php $this->section('content') ?>
-<?= Former::open()->method( 'POST' )
-    ->action( route ('customer@storeBillingInfo' ) )
-    ->customWidthClass( 'col-sm-6' )
 
-?>
+<?php $this->section('content') ?>
+
+    <?php if( config( 'ixp_fe.customer.billing_updates_notify' ) ): ?>
+
+        <div class="alert alert-info">
+            <b>NB:</b> Billing update notifications have been enabled. As such, any changes to the below form will be
+            emailed to
+            <a href="mailto:<?= config( 'ixp_fe.customer.billing_updates_notify' ) ?>"><?= config( 'ixp_fe.customer.billing_updates_notify' ) ?></a>
+            on submission.
+        </div>
+
+    <?php endif; ?>
+
+    <div id="instructions-alert" class="alert alert-info" style="display: none;">
+        <b>IXP Manager</b> does not provide any accounting / invoicing functionality. All the information on this page is
+        informational for your own record keeping. None of it is required.
+    </div>
+
+    <?= Former::open()->method( 'POST' )
+        ->action( route ('customer@store-billing-and-reg-details' ) )
+        ->customWidthClass( 'col-sm-6' )
+    ?>
+
 
     <div class="col-md-12">
+
         <div class="col-md-6">
+
             <h3>Registration Details</h3>
             <hr>
+
             <?= Former::text( 'registeredName' )
                 ->label( 'Registered Name' )
                 ->blockHelp( '' );
@@ -35,8 +65,8 @@ $this->layout( 'layouts/ixpv4' );
             <?= Former::select( 'jurisdiction' )
                 ->label( 'Jurisdiction' )
                 ->fromQuery( $t->juridictions, 'jurisdiction' )
-                ->placeholder( 'Choose a juridiction' )
-                ->addClass( 'chzn-select' )
+                ->placeholder( 'Choose a jurisdiction' )
+                ->addClass( 'chzn-select-tag' )
                 ->blockHelp( '' );
             ?>
 
@@ -79,10 +109,15 @@ $this->layout( 'layouts/ixpv4' );
                 ->blockHelp( '' );
             ?>
         </div>
-        <?php if( ( !isset( $t->billingNotify ) || !$t->billingNotify ) || !$t->resellerMode || !$t->cust->isResoldCustomer() ): ?>
+
+
+        <?php if( !( $t->resellerMode() && $t->c->isResoldCustomer() ) ): ?>
+
             <div class="col-md-6 full-member-details">
+
                 <h3>Billing Details</h3>
                 <hr>
+
                 <?= Former::text( 'billingContactName' )
                     ->label( 'Contact' )
                     ->blockHelp( '' );
@@ -187,17 +222,17 @@ $this->layout( 'layouts/ixpv4' );
     </div>
 
 
-<?=Former::actions( Former::primary_submit( 'Save Changes' ),
-    Former::default_link( 'Cancel' )->href( route( "customer@overview" , [ "id" => $t->cust->getId() ] ) ),
-    Former::success_button( 'Help' )->id( 'help-btn' )
-);?>
+    <?=Former::actions( Former::primary_submit( 'Save Changes' ),
+        Former::default_link( 'Cancel' )->href( route( "customer@overview" , [ "id" => $t->c->getId() ] ) ),
+        Former::success_button( 'Help' )->id( 'help-btn' )
+    );?>
 
 
-<?= Former::hidden( 'id' )
-    ->value( $t->cust ? $t->cust->getId() : '' )
-?>
+    <?= Former::hidden( 'id' )
+        ->value( $t->c ? $t->c->getId() : '' )
+    ?>
 
-<?= Former::close() ?>
+    <?= Former::close() ?>
 
 <?php $this->append() ?>
 

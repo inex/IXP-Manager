@@ -275,67 +275,62 @@ class CustomerController extends Controller
      *
      * @return View
      */
-    public function billingRegistration( int $id = null ): View {
+    public function editBillingAndRegDetails( int $id = null ): View {
 
-        $cust = false; /** @var CustomerEntity $cust */
-        if( $id and !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
-            abort(404);
+        $c = false; /** @var CustomerEntity $c */
+        if( !$id || !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
+            abort( 404, 'Customer not found' );
         }
 
-        $billingDetails         = $cust->getBillingDetails();
-        $registrationDetails    = $cust->getRegistrationDetails();
-        $billingNotify = config( 'ixp_tools.billing_updates_notify' );
+        $cbd = $c->getBillingDetails();
+        $crd = $c->getRegistrationDetails();
 
-        if( $cust ) {
-            $dataBillingDetail = [];
 
-            if( ( !isset( $billingNotify ) || !$billingNotify  ) || !$this->resellerMode() || !$cust->isResoldCustomer() ){
-                $dataBillingDetail = [
-                    'billingContactName'        => $billingDetails->getBillingContactName(),
-                    'billingFrequency'          => $billingDetails->getBillingFrequency(),
-                    'billingAddress1'           => $billingDetails->getBillingAddress1(),
-                    'billingAddress2'           => $billingDetails->getBillingAddress2(),
-                    'billingAddress3'           => $billingDetails->getBillingAddress3(),
-                    'billingTownCity'           => $billingDetails->getBillingTownCity(),
-                    'billingPostcode'           => $billingDetails->getBillingPostcode(),
-                    'billingCountry'            => $billingDetails->getBillingCountry(),
-                    'billingEmail'              => $billingDetails->getBillingEmail(),
-                    'billingTelephone'          => $billingDetails->getBillingTelephone(),
-                    'purchaseOrderRequired'     => $billingDetails->getPurchaseOrderRequired() ? 1 : 0,
-                    'invoiceMethod'             => $billingDetails->getInvoiceMethod(),
-                    'invoiceEmail'              => $billingDetails->getInvoiceEmail(),
-                    'vatRate'                   => $billingDetails->getVatRate(),
-                    'vatNumber'                 => $billingDetails->getVatNumber(),
-                ];
-            }
-
-            $dataRegistrationDetail = [
-                'registeredName'            => $registrationDetails->getRegisteredName(),
-                'companyNumber'             => $registrationDetails->getCompanyNumber(),
-                'jurisdiction'              => $registrationDetails->getJurisdiction(),
-                'address1'                  => $registrationDetails->getAddress1(),
-                'address2'                  => $registrationDetails->getAddress2(),
-                'address3'                  => $registrationDetails->getAddress3(),
-                'townCity'                  => $registrationDetails->getTownCity(),
-                'postcode'                  => $registrationDetails->getPostcode(),
-                'country'                   => $registrationDetails->getCountry(),
+        $dataBillingDetail = [];
+        if( !( $this->resellerMode() && $c->isResoldCustomer() ) ){
+            $dataBillingDetail = [
+                'billingContactName'        => $cbd->getBillingContactName(),
+                'billingFrequency'          => $cbd->getBillingFrequency(),
+                'billingAddress1'           => $cbd->getBillingAddress1(),
+                'billingAddress2'           => $cbd->getBillingAddress2(),
+                'billingAddress3'           => $cbd->getBillingAddress3(),
+                'billingTownCity'           => $cbd->getBillingTownCity(),
+                'billingPostcode'           => $cbd->getBillingPostcode(),
+                'billingCountry'            => $cbd->getBillingCountry(),
+                'billingEmail'              => $cbd->getBillingEmail(),
+                'billingTelephone'          => $cbd->getBillingTelephone(),
+                'purchaseOrderRequired'     => $cbd->getPurchaseOrderRequired() ? 1 : 0,
+                'invoiceMethod'             => $cbd->getInvoiceMethod(),
+                'invoiceEmail'              => $cbd->getInvoiceEmail(),
+                'vatRate'                   => $cbd->getVatRate(),
+                'vatNumber'                 => $cbd->getVatNumber(),
             ];
-
-            Former::populate( array_merge( $dataRegistrationDetail, $dataBillingDetail ) );
         }
+
+        $dataRegistrationDetail = [
+            'registeredName'            => $crd->getRegisteredName(),
+            'companyNumber'             => $crd->getCompanyNumber(),
+            'jurisdiction'              => $crd->getJurisdiction(),
+            'address1'                  => $crd->getAddress1(),
+            'address2'                  => $crd->getAddress2(),
+            'address3'                  => $crd->getAddress3(),
+            'townCity'                  => $crd->getTownCity(),
+            'postcode'                  => $crd->getPostcode(),
+            'country'                   => $crd->getCountry(),
+        ];
+
+        Former::populate( array_merge( $dataRegistrationDetail, $dataBillingDetail ) );
 
         return view( 'customer/billing-registration' )->with([
-            'cust'                          => $cust,
+            'c'                             => $c,
             'juridictions'                  => D2EM::getRepository( CompanyRegisteredDetailEntity::class )->getJuridictionsAsArray(),
-            'billingNotify'                 => $billingNotify,
-            'resellerMode'                  => $this->resellerMode(),
             'countries'                     => Countries::getList('name' )
         ]);
     }
 
 
     /**
-     * Add or edit a customer billing information
+     * Add or edit a customer's regitsration / billing information
      *
      * email notification
      *
@@ -344,55 +339,54 @@ class CustomerController extends Controller
      * @return  RedirectResponse
      * @throws
      */
-    public function storeBillingInformation( BillingInformationRequest $request ): RedirectResponse {
-        /** @var CustomerEntity $cust */
-        if( $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) {
-            if( !$cust ) {
+    public function storeBillingAndRegDetails( BillingInformationRequest $request ): RedirectResponse 
+    {
+        /** @var CustomerEntity $c */
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) ) {
                 abort(404, 'Unknown customer');
-            }
         }
 
-        $oldBillingDetail                           = clone $cust->getBillingDetails();
-        $billingDetails                             = $cust->getBillingDetails();
-        $registrationDetails                        = $cust->getRegistrationDetails();
+        $ocbd = clone $c->getBillingDetails();
+        $cbd  = $c->getBillingDetails();
+        $crd  = $c->getRegistrationDetails();
 
-        $registrationDetails->setRegisteredName(    $request->input( 'registeredName'       ) );
-        $registrationDetails->setCompanyNumber(     $request->input( 'companyNumber'        ) );
-        $registrationDetails->setJurisdiction(      $request->input( 'jurisdiction'         ) );
-        $registrationDetails->setAddress1(          $request->input( 'address1'             ) );
-        $registrationDetails->setAddress2(          $request->input( 'address2'             ) );
-        $registrationDetails->setAddress3(          $request->input( 'address3'             ) );
-        $registrationDetails->setTownCity(          $request->input( 'townCity'             ) );
-        $registrationDetails->setPostcode(          $request->input( 'postcode'             ) );
-        $registrationDetails->setCountry(           $request->input( 'country'          ) );
+        $crd->setRegisteredName(    $request->input( 'registeredName'       ) );
+        $crd->setCompanyNumber(     $request->input( 'companyNumber'        ) );
+        $crd->setJurisdiction(      $request->input( 'jurisdiction'         ) );
+        $crd->setAddress1(          $request->input( 'address1'             ) );
+        $crd->setAddress2(          $request->input( 'address2'             ) );
+        $crd->setAddress3(          $request->input( 'address3'             ) );
+        $crd->setTownCity(          $request->input( 'townCity'             ) );
+        $crd->setPostcode(          $request->input( 'postcode'             ) );
+        $crd->setCountry(           $request->input( 'country'              ) );
 
-        $billingDetails->setBillingContactName(     $request->input( 'billingContactName'   ) );
-        $billingDetails->setBillingFrequency(       $request->input( 'billingFrequency'     ) );
-        $billingDetails->setBillingAddress1(        $request->input( 'billingAddress1'      ) );
-        $billingDetails->setBillingAddress2(        $request->input( 'billingAddress2'      ) );
-        $billingDetails->setBillingAddress3(        $request->input( 'billingAddress3'      ) );
-        $billingDetails->setBillingTownCity(        $request->input( 'billingTownCity'      ) );
-        $billingDetails->setBillingPostcode(        $request->input( 'billingPostcode'      ) );
-        $billingDetails->setBillingCountry(         $request->input( 'billingCountry'       ) );
-        $billingDetails->setBillingEmail(           $request->input( 'billingEmail'         ) );
-        $billingDetails->setBillingTelephone(       $request->input( 'billingTelephone'     ) );
-        $billingDetails->setPurchaseOrderRequired(  $request->input( 'purchaseOrderRequired') ?? 0 );
-        $billingDetails->setInvoiceMethod(          $request->input( 'invoiceMethod'        ) );
-        $billingDetails->setInvoiceEmail(           $request->input( 'invoiceEmail'         ) );
-        $billingDetails->setVatRate(                $request->input( 'vatRate'              ) );
-        $billingDetails->setVatNumber(              $request->input( 'vatNumber'            ) );
+        $cbd->setBillingContactName(     $request->input( 'billingContactName'   ) );
+        $cbd->setBillingFrequency(       $request->input( 'billingFrequency'     ) );
+        $cbd->setBillingAddress1(        $request->input( 'billingAddress1'      ) );
+        $cbd->setBillingAddress2(        $request->input( 'billingAddress2'      ) );
+        $cbd->setBillingAddress3(        $request->input( 'billingAddress3'      ) );
+        $cbd->setBillingTownCity(        $request->input( 'billingTownCity'      ) );
+        $cbd->setBillingPostcode(        $request->input( 'billingPostcode'      ) );
+        $cbd->setBillingCountry(         $request->input( 'billingCountry'       ) );
+        $cbd->setBillingEmail(           $request->input( 'billingEmail'         ) );
+        $cbd->setBillingTelephone(       $request->input( 'billingTelephone'     ) );
+        $cbd->setPurchaseOrderRequired(  $request->input( 'purchaseOrderRequired') ?? 0 );
+        $cbd->setInvoiceMethod(          $request->input( 'invoiceMethod'        ) );
+        $cbd->setInvoiceEmail(           $request->input( 'invoiceEmail'         ) );
+        $cbd->setVatRate(                $request->input( 'vatRate'              ) );
+        $cbd->setVatNumber(              $request->input( 'vatNumber'            ) );
 
-        D2EM::flush( $billingDetails );
-        D2EM::flush( $registrationDetails );
+        D2EM::flush();
 
-        if( config( 'ixp_tools.billing_updates_notify', false ) && !$cust->getReseller() ) {
+        // should we send a billing notification?
+        if( config( 'ixp_tools.billing_updates_notify', false ) && !$c->getReseller() ) {
             // send notification email
-            $mailable = new EmailCustomer( $cust );
+            $mailable = new EmailCustomer( $c );
             try {
                 $mailable->subject( config('identity.sitename') . " - ('Billing Details Change Notification')" );
                 $mailable->from( config('identity.email'), config('identity.name') );
                 $mailable->to( config('ixp_tools.billing_updates_notify'), config('identity.sitename') . ' - Accounts' );
-                $mailable->view( "customer/emails/billing-details" )->with( ['billingDetail' => $billingDetails, 'oldDetails' => $oldBillingDetail] );
+                $mailable->view( "customer/emails/billing-details" )->with( ['billingDetail' => $cbd, 'oldDetails' => $oldBillingDetail] );
                 Mail::send( $mailable );
 
                 if( Auth::getUser()->getPrivs() == UserEntity::AUTH_SUPERUSER ) {
@@ -405,7 +399,7 @@ class CustomerController extends Controller
 
         }
 
-        return Redirect::to( route( "customer@overview" , [ "id" => $cust->getId() , "tab" => "details" ]  ) );
+        return Redirect::to( route( "customer@overview" , [ "id" => $c->getId() , "tab" => "details" ]  ) );
 
     }
 
@@ -415,7 +409,7 @@ class CustomerController extends Controller
      * @return  View
      * @throws
      */
-    public function details( ): View {
+    public function details(): View {
         $ixp            = D2EM::getRepository( IXPEntity::class )->getDefault();
         $custs          = D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, false, false, false);
 
