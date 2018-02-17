@@ -30,6 +30,7 @@ use Entities\{
 };
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 
 class StoreVirtualInterfaceWizard extends FormRequest
@@ -86,6 +87,7 @@ class StoreVirtualInterfaceWizard extends FormRequest
 
         ];
     }
+
 }
 
 

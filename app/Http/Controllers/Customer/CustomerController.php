@@ -182,61 +182,61 @@ class CustomerController extends Controller
      * @return  RedirectResponse
      * @throws
      */
-    public function store( CustomerRequest $request ): RedirectResponse {
+    public function store( CustomerRequest $r ): RedirectResponse {
 
-        dd( $request );
-        $isEdit = $request->input( 'id' ) ? true : false;
+        $isEdit = $r->input( 'id' ) ? true : false;
 
-        /** @var CustomerEntity $cust */
-        if( $isEdit && $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) {
-            if( !$cust ) {
+        /** @var CustomerEntity $c */
+        if( $isEdit && $c = D2EM::getRepository( CustomerEntity::class )->find( $r->input( 'id' ) ) ) {
+            if( !$c ) {
                 abort(404, 'Customer not found' );
             }
         } else {
-            $cust = new CustomerEntity;
-            D2EM::persist( $cust );
+            $c = new CustomerEntity;
+            D2EM::persist( $c );
         }
 
 
-        $cust->setName(                 $request->input( 'name'                 ) );
-        $cust->setType(                 $request->input( 'type'                 ) );
-        $cust->setShortname(            $request->input( 'shortname'            ) );
-        $cust->setCorpwww(              $request->input( 'corpwww'              ) );
-        $cust->setDatejoin(             $request->input( 'datejoin'             )  ? new \DateTime( $request->input( 'datejoin'    ) ) : null );
-        $cust->setDateleave(            $request->input( 'dateleave'            )  ? new \DateTime( $request->input( 'dateleave'   ) ) : null );
-        $cust->setStatus(               $request->input( 'status'               ) );
-        $cust->setMD5Support(           $request->input( 'md5support'           ) );
-        $cust->setAbbreviatedName(      $request->input( 'abbreviatedName'      ) );
+        $c->setName(                 $r->input( 'name'                 ) );
+        $c->setType(                 $r->input( 'type'                 ) );
+        $c->setShortname(            $r->input( 'shortname'            ) );
+        $c->setCorpwww(              $r->input( 'corpwww'              ) );
+        $c->setDatejoin(             $r->input( 'datejoin'             )  ? new \DateTime( $r->input( 'datejoin'    ) ) : null );
+        $c->setDateleave(            $r->input( 'dateleave'            )  ? new \DateTime( $r->input( 'dateleave'   ) ) : null );
+        $c->setStatus(               $r->input( 'status'               ) );
+        $c->setMD5Support(           $r->input( 'md5support'           ) );
+        $c->setAbbreviatedName(      $r->input( 'abbreviatedName'      ) );
 
 
-        $cust->setAutsys(               $request->input( 'autsys'               ) );
-        $cust->setMaxprefixes(          $request->input( 'maxprefixes'          ) );
-        $cust->setPeeringemail(         $request->input( 'peeringemail'         ) );
-        $cust->setPeeringmacro(         $request->input( 'peeringmacro'         ) );
-        $cust->setPeeringmacrov6(       $request->input( 'peeringmacrov6'       ) );
-        $cust->setPeeringpolicy(        $request->input( 'peeringpolicy'        ) );
-        $cust->setActivepeeringmatrix(  $request->input( 'activepeeringmatrix'  ) );
+        $c->setAutsys(               $r->input( 'autsys'               ) );
+        $c->setMaxprefixes(          $r->input( 'maxprefixes'          ) );
+        $c->setPeeringemail(         $r->input( 'peeringemail'         ) );
+        $c->setPeeringmacro(         $r->input( 'peeringmacro'         ) );
+        $c->setPeeringmacrov6(       $r->input( 'peeringmacrov6'       ) );
+        $c->setPeeringpolicy(        $r->input( 'peeringpolicy'        ) );
+        $c->setActivepeeringmatrix(  $r->input( 'activepeeringmatrix'  ) );
 
 
-        $cust->setNocphone(             $request->input( 'nocphone'             ) );
-        $cust->setNoc24hphone(          $request->input( 'noc24hphone'          ) );
-        $cust->setNocemail(             $request->input( 'nocemail'             ) );
-        $cust->setNochours(             $request->input( 'nochours'             ) );
-        $cust->setNocwww(               $request->input( 'nocwww'               ) );
+        $c->setNocphone(             $r->input( 'nocphone'             ) );
+        $c->setNoc24hphone(          $r->input( 'noc24hphone'          ) );
+        $c->setNocemail(             $r->input( 'nocemail'             ) );
+        $c->setNochours(             $r->input( 'nochours'             ) );
+        $c->setNocwww(               $r->input( 'nocwww'               ) );
 
-        $cust->setIsReseller(           $request->input( 'isReseller'           ) ?? false  );
+        $c->setIsReseller(           $r->input( 'isReseller'           ) ?? false  );
 
-        if( $this->setReseller( $request, $cust ) ) {
-            return Redirect::back()->withErrors();
+        if( $r->input( 'isResold' ) ) {
+            $c->setReseller( D2EM::getRepository( CustomerEntity::class )->find( $this->input( "reseller" ) ) );
+        } else {
+            $c->setReseller( null );
         }
-
 
         if( $isEdit ) {
-            $cust->setLastupdated( new DateTime() );
-            $cust->setLastupdatedby( Auth::getUser()->getId() );
+            $c->setLastupdated( new DateTime() );
+            $c->setLastupdatedby( Auth::getUser()->getId() );
         } else {
-            $cust->setCreated( new DateTime() );
-            $cust->setCreator( Auth::getUser()->getId() );
+            $c->setCreated( new DateTime() );
+            $c->setCreator( Auth::getUser()->getId() );
 
             $bdetail = new CompanyBillingDetailEntity;
             D2EM::persist( $bdetail );
@@ -245,19 +245,14 @@ class CustomerController extends Controller
             $rdetail = new CompanyRegisteredDetailEntity;
             D2EM::persist( $rdetail );
 
-            $cust->setBillingDetails( $bdetail );
-            $cust->setRegistrationDetails( $rdetail );
-            $cust->setIsReseller( 0 );
+            $c->setBillingDetails( $bdetail );
+            $c->setRegistrationDetails( $rdetail );
         }
 
-        if( $request->input( 'irrdb' ) ) {
-            $cust->setIRRDB( D2EM::getRepository( IRRDBConfigEntity::class)->find( $request->input( 'irrdb' ) ) ) ;
+        if( $r->input( 'irrdb' ) ) {
+            $c->setIRRDB( D2EM::getRepository( IRRDBConfigEntity::class)->find( $r->input( 'irrdb' ) ) ) ;
         } else {
-            $cust->setIRRDB( null );
-        }
-
-        if( !$isEdit ) {
-            $cust->addIXP( D2EM::getRepository( IXPEntity::class )->find( $request->input( 'ixp' ) ) );
+            $c->setIRRDB( null );
         }
 
         D2EM::flush();
@@ -265,9 +260,9 @@ class CustomerController extends Controller
         AlertContainer::push( 'Customer successfully ' . ( $isEdit ? ' edited.' : ' added.' ), Alert::SUCCESS );
 
         if( $isEdit ){
-            return Redirect::to( route( "customer@overview" , [ "id" => $cust->getId() ] ) );
+            return Redirect::to( route( "customer@overview" , [ "id" => $c->getId() ] ) );
         } else {
-            return Redirect::to( route( "customer@billingRegistration" , [ "id" => $cust->getId() ] ) );
+            return Redirect::to( route( "customer@billingRegistration" , [ "id" => $c->getId() ] ) );
         }
 
     }
