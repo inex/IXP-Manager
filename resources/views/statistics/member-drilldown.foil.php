@@ -52,6 +52,7 @@
         <nav class="navbar navbar-default">
 
             <div class="">
+
                 <div class="navbar-header">
                     <a class="navbar-brand" href="http://ixp.test/statistics/members">Graph Options:</a>
                 </div>
@@ -73,6 +74,7 @@
 
     <div class="col-sm-12">
         <h3>
+
             <?php switch( get_class( $t->graph ) ):
 
                 case IXP\Services\Grapher\Graph\Customer::class: ?>

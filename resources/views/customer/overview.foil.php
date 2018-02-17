@@ -118,7 +118,9 @@
                 <li role="details" <?php if( $t->tab == 'details' ): ?> class="active" <?php endif; ?> >
                     <a data-toggle="tab" href="#details">Details</a>
                 </li>
+
                 <?php if( $t->resellerMode() && $t->c->isReseller() ): ?>
+
                     <li role="resold-customers" <?php if( $t->tab == 'resold-customers' ): ?> class="active" <?php endif; ?>>
                         <a data-toggle="tab" href="#resold-customers" data-toggle="tab">Resold Customers</a>
                     </li>

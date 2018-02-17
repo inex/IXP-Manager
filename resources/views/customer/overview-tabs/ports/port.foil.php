@@ -364,6 +364,7 @@
 
         <?php foreach( $t->vi->getPhysicalInterfaces() as $pi ): ?>
             <?php if( !$pi->statusIsConnectedOrQuarantine() ) { continue; } ?>
+
             <div class="well">
                 <h4>
                     Day Graph for <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?> / <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>

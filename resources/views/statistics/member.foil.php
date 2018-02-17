@@ -81,6 +81,7 @@
                         <?php if( $t->resellerMode() && $t->c->isReseller() ): ?>
                             <small><em>(Peering ports only)</em></small>
                         <?php endif; ?>
+
                         <a class="btn btn-default pull-right" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $t->c->getId(), "type" => "agg" ] ) ?>/?category=<?= $t->category ?>">
                             <i class="glyphicon glyphicon-zoom-in"></i>
                         </a>
