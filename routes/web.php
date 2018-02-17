@@ -58,26 +58,6 @@ Route::group( [ 'prefix' => 'rs-prefixes', 'middleware' => [ 'rs-prefixes' ] ], 
 
 Route::get( 'weather-map/{id}',                    'WeatherMapController@index' )->name( 'weathermap');
 
-Route::group( [ 'prefix' => 'customer', 'namespace' => 'Customer'], function() {
-    Route::get( 'details',                  'CustomerController@details'        )->name( "customer@details" );
-    Route::get( 'detail/{id}',              'CustomerController@detail'         )->name( "customer@detail" );
-    Route::get( 'manage-logo/{id?}',        'CustomerController@manageLogo'     )->name( "customer@manageLogo" );
-    Route::post('store-logo',               'CustomerController@storeLogo'      )->name( "customer@storeLogo" );
-    Route::post('deleteLogo/{id}',          'CustomerController@deleteLogo'     )->name( 'customer@deleteLogo');
-});
-
-Route::group( [ 'prefix' => 'customer-logo', 'namespace' => 'Customer'], function() {
-    Route::get( 'manage/{id?}',         'LogoController@manage'     )->name( "logo@manage" );
-    Route::post('store',                'LogoController@store'      )->name( "logo@store" );
-    Route::post('delete/{id}',          'LogoController@delete'     )->name( 'logo@delete');
-});
-
-Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer'], function() {
-    Route::get(    'ping/{id?}',            'CustomerNotesController@ping'      )->name( 'customerNotes@ping');
-    Route::get(    'get/{id}',              'CustomerNotesController@get'       )->name( 'customerNotes@get');
-
-});
-
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
