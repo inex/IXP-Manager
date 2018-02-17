@@ -25,6 +25,8 @@ namespace IXP\Http\Controllers\Customer;
 
 use App, Auth, Countries, D2EM, DateTime, Exception, Former, Mail, Redirect;
 
+use IXP\Events\Customer\BillingDetailsChanged as CustomerBillingDetailsChangedEvent;
+
 use IXP\Http\Controllers\Controller;
 
 use Illuminate\Http\{
@@ -378,29 +380,8 @@ class CustomerController extends Controller
 
         D2EM::flush();
 
-        // should we send a billing notification?
-        if( config( 'ixp_tools.billing_updates_notify', false ) && !$c->getReseller() ) {
-            // send notification email
-            $mailable = new EmailCustomer( $c );
-            try {
-                $mailable->subject( config('identity.sitename') . " - ('Billing Details Change Notification')" );
-                $mailable->from( config('identity.email'), config('identity.name') );
-                $mailable->to( config('ixp_tools.billing_updates_notify'), config('identity.sitename') . ' - Accounts' );
-                $mailable->view( "customer/emails/billing-details" )->with( ['billingDetail' => $cbd, 'oldDetails' => $oldBillingDetail] );
-                Mail::send( $mailable );
-
-                if( Auth::getUser()->getPrivs() == UserEntity::AUTH_SUPERUSER ) {
-                    AlertContainer::push( "Notification of updated billing details has been sent to " . config('ixp_tools.billing_updates_notify'), Alert::SUCCESS );
-                }
-            } catch( Exception $e ) {
-                AlertContainer::push( "Could not sent notification of updated billing details to " . config('ixp_tools.billing_updates_notify')
-                    . ". Check your email settings.", Alert::DANGER );
-            }
-
-        }
-
+        event( new CustomerBillingDetailsChangedEvent( $ocbd, $cbd ) );
         return Redirect::to( route( "customer@overview" , [ "id" => $c->getId() , "tab" => "details" ]  ) );
-
     }
 
     /**

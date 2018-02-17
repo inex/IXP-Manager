@@ -11,9 +11,11 @@ class EventServiceProvider extends ServiceProvider {
      * @var array
      */
     protected $listen = [
-        'event.name' => [
-            'EventListener',
+
+        'IXP\Events\Customer\BillingDetailsChanged' => [
+            'IXP\Listeners\Customer\BillingDetailsChanged'
         ],
+
     ];
 
     /**
