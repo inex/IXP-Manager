@@ -22,7 +22,7 @@
 
 namespace IXP\Http\Controllers;
 
-use App, D2EM;
+use App, Auth, D2EM;
 
 use Entities\{
     Customer            as CustomerEntity,
@@ -288,11 +288,15 @@ class StatisticsController extends Controller
      * @return RedirectResponse|View
      * @throws
      */
-    public function member( StatisticsRequest $r, int $id ) {
+    public function member( StatisticsRequest $r, int $id = null ) {
+
+        if( $id === null && Auth::check() ) {
+            $id = Auth::user()->getCustomer()->getId();
+        }
 
         /** @var CustomerEntity $c */
-        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
-            abort( 404);
+        if( !$id || !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
+            abort( 404, 'Customer not found' );
         }
 
         $grapher = App::make('IXP\Services\Grapher');
