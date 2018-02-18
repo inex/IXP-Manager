@@ -765,4 +765,20 @@ class VirtualInterface
 
         return false;
     }
+
+    /**
+     * Convenience function to resolve the infrastructure of a virtual interface
+     *
+     * @return Infrastructure|null
+     */
+    public function getInfrastructure()
+    {
+        if( $pis = $this->getPhysicalInterfaces() ) {
+            if( $sp = $this->getPhysicalInterfaces()[0]->getSwitchPort() ) {
+                return $sp->getSwitcher()->getInfrastructure();
+            }
+        }
+
+        return null;
+    }
 }
