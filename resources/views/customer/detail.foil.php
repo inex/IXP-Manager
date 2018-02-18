@@ -1,21 +1,32 @@
 <?php
     /** @var Foil\Template\Template $t */
     $this->layout( 'layouts/ixpv4' );
+
+    // convenience for IDE autocompletion
+    /** @var Entities\Customer $c */
+    $c = $t->c;
 ?>
+
 
 <?php $this->section( 'title' ) ?>
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-        <a href="<?= route( 'customer@list' )?>">Customers</a>
+        <a href="<?= route( $c->isTypeAssociate() ? 'customer@associates' : 'customer@details' )?>"><?= $c->isTypeAssociate() ? 'Associate Members' : 'Customers' ?></a>
     <?php else: ?>
         Customer Detail
     <?php endif; ?>
 <?php $this->append() ?>
 
+
 <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
     <?php $this->section( 'page-header-postamble' ) ?>
-        <li> <?= $t->ee( $t->cust->getName() ) ?></li>
+        <li>
+            <a href="<?= route( 'customer@overview', [ 'id' => $c->getId() ] ) ?>">
+                <?= $t->ee( $c->getName() ) ?>
+            </a>
+        </li>
     <?php $this->append() ?>
 <?php endif; ?>
+
 
 <?php $this->section('content') ?>
     <div class="row">
@@ -28,7 +39,7 @@
                         </b>
                     </td>
                     <td>
-                        <?= $t->ee( $t->cust->resolveType() ) ?>
+                        <?= $t->ee( $c->resolveType() ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -38,7 +49,7 @@
                         </b>
                     </td>
                     <td>
-                        <?=  $t->asNumber( $t->cust->getAutsys() ) ?>
+                        <?=  $t->asNumber( $c->getAutsys() ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -48,7 +59,7 @@
                         </b>
                     </td>
                     <td>
-                        <?= $t->ee( $t->cust->getPeeringPolicy() ) ?>
+                        <?= $t->ee( $c->getPeeringPolicy() ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -58,7 +69,7 @@
                         </b>
                     </td>
                     <td>
-                        <?= $t->ee( $t->cust->getPeeringemail() ) ?>
+                        <?= $t->ee( $c->getPeeringemail() ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -68,7 +79,7 @@
                         </b>
                     </td>
                     <td>
-                        <?= $t->cust->getNocphone() ?>
+                        <?= $c->getNocphone() ?>
                     </td>
                 </tr>
                 <tr>
@@ -78,8 +89,8 @@
                         </b>
                     </td>
                     <td>
-                        <a href="<?= $t->ee( $t->cust->getNocwww() ) ?>" target="_blank">
-                            <?= $t->ee( $t->cust->getNocwww() ) ?>
+                        <a href="<?= $t->ee( $c->getNocwww() ) ?>" target="_blank">
+                            <?= $t->ee( $c->getNocwww() ) ?>
                         </a>
 
                     </td>
@@ -91,7 +102,7 @@
                         </b>
                     </td>
                     <td>
-                        <?= $t->cust->getNochours() ?>
+                        <?= $c->getNochours() ?>
                     </td>
                 </tr>
 
@@ -106,7 +117,7 @@
                         </b>
                     </td>
                     <td>
-                        <?= $t->ee( $t->cust->resolveStatus() ) ?>
+                        <?= $t->ee( $c->resolveStatus() ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -116,7 +127,7 @@
                         </b>
                     </td>
                     <td>
-                        <?=  $t->ee( $t->cust->getPeeringmacro() ) ?>
+                        <?=  $t->ee( $c->getPeeringmacro() ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -126,8 +137,8 @@
                         </b>
                     </td>
                     <td>
-                        <a href="<?= $t->ee( $t->cust->getCorpwww() ) ?>" target="_blank">
-                            <?= $t->ee( $t->cust->getCorpwww() ) ?>
+                        <a href="<?= $t->ee( $c->getCorpwww() ) ?>" target="_blank">
+                            <?= $t->ee( $c->getCorpwww() ) ?>
                         </a>
                     </td>
                 </tr>
@@ -138,7 +149,7 @@
                         </b>
                     </td>
                     <td>
-                        <?= $t->ee( $t->cust->getNocemail() ) ?>
+                        <?= $t->ee( $c->getNocemail() ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -148,7 +159,7 @@
                         </b>
                     </td>
                     <td>
-                        <?= $t->ee( $t->cust->getNoc24hphone() ) ?>
+                        <?= $t->ee( $c->getNoc24hphone() ) ?>
                     </td>
                 </tr>
                 <tr>
@@ -158,7 +169,7 @@
                         </b>
                     </td>
                     <td>
-                        <?= $t->cust->getNocfax() ?>
+                        <?= $c->getNocfax() ?>
                     </td>
                 </tr>
             </table>
@@ -166,7 +177,7 @@
     </div>
 
     <?php $countVi = 1 ?>
-    <?php foreach( $t->cust->getVirtualInterfaces() as $vi ): ?>
+    <?php foreach( $c->getVirtualInterfaces() as $vi ): ?>
 
         <div class="row col-md-12" style="margin-bottom: 20px">
             <hr>
@@ -332,11 +343,11 @@
                                         </b>
                                     </td>
                                     <td>
-                                        global: <?= $t->cust->getMaxprefixes() ?>, per-interface: <?= $vli->getMaxbgpprefix() ?>
+                                        global: <?= $c->getMaxprefixes() ?>, per-interface: <?= $vli->getMaxbgpprefix() ?>
                                     </td>
                                 </tr>
 
-                                <?php if( $t->as112UiActive ): ?>
+                                <?php if( $t->as112UiActive() ): ?>
                                     <tr>
                                         <td>
                                             <b>

@@ -413,21 +413,20 @@ class CustomerController extends Controller
     }
 
     /**
-     * Display all the informations for a customer
+     * Display all the information for a customer
      *
      * @param int $id ID of the customer
      *
      * @return  View
      */
-    public function detail( int $id = null ): View {
-        if( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
+    public function detail( int $id ): View {
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
             abort( 404);
         }
 
         return view( 'customer/detail' )->with([
-            'as112UiActive'         => $this->as112UiActive(),
-            'cust'                  => $cust,
-            'netInfo'               => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray()
+            'c'       => $c,
+            'netinfo' => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray()
         ]);
     }
 
