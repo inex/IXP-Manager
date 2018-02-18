@@ -1,7 +1,7 @@
 <div class="row">
     <div class="col-sm-12">
         <br>
-        <?php if( $t->hasAggregateGraph ): ?>
+        <?php if( $t->aggregateGraph ): ?>
             <div class="row-fluid">
                 <div class="well">
                     <h3>

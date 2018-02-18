@@ -430,25 +430,6 @@ class CustomerController extends Controller
         ]);
     }
 
-    /**
-     * Load a customer from the database with the given ID (or ID in request)
-     *
-     * @param int $id The customer ID
-
-     * @return \Entities\Customer The customer object
-     */
-    protected function loadCustomer( int $id = null ){
-        if( Auth::getUser()->isSuperUser() ) {
-            if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
-                abort( 404);
-            }
-        } else {
-            $c = Auth::getUser()->getCustomer();
-        }
-
-        return $c;
-    }
-
     public function unreadNotes(){
         $lastReads = Auth::getUser()->getAssocPreference( 'customer-notes' )[0];
 
@@ -471,85 +452,48 @@ class CustomerController extends Controller
     /**
      * Display the customer overview
      *
+     * @param   Request     $r
      * @param   int         $id         Id of the customer
      * @param   string      $tab        Tab from the overview selected
      *
      * @return  View
      * @throws
      */
-    public function overview(  $id = null, string $tab = null ) : View {
-        $netinfo            = D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray();
-        $c                  = $this->loadCustomer( $id );
-        $isSuperUser        = Auth::getUser()->isSuperUser();
+    public function overview( Request $r, $id = null, string $tab = null ) : View {
 
-        // is this user watching all notes for this customer?
-        $coNotifyAll = Auth::getUser()->getPreference( "customer-notes.{$c->getId()}.notify" ) ? true : false;
+        /** @var CustomerEntity $c */
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
+            abort(404, 'Unknown customer');
+        }
 
-        // what specific notes is this cusomer watching?
-        $coNotify = Auth::getUser()->getAssocPreference( "customer-notes.watching" ) ? Auth::getUser()->getAssocPreference( "customer-notes.watching" )[0] : [];
-
-
-        // load customer notes and the amount of unread notes for this user and customer
-        // ASK FO THAT $this->_fetchCustomerNotes( $cust->getId() );
-
-        $rsRoutes = $c->isRouteServerClient() ? D2EM::getRepository( RSPrefixEntity::class )->aggregateRouteSummariesForCustomer( $c->getId() ) : false;
-
-        $crossConnects = D2EM::getRepository( CustomerEntity::class )->getCrossConnects( $c->getId() );
-
-        // does the customer have any graphs?
-        $hasAggregateGraph = false;
-        $aggregateGraph = false;
         $grapher = App::make('IXP\Services\Grapher' );
-        if( $c->getType() != CustomerEntity::TYPE_ASSOCIATE && !$c->hasLeft() ) {
-            foreach( $c->getVirtualInterfaces() as $vi ) {
-                foreach( $vi->getPhysicalInterfaces() as $pi ) {
-                    if( $pi->getStatus() == PhysicalInterfaceEntity::STATUS_CONNECTED ) {
-                        $hasAggregateGraph = true;
-                        $aggregateGraph = $grapher->customer( $c );
-                        break;
-                    }
-                }
-            }
-        }
-
-        //is customer RS or AS112 client
-        $rsclient = false;
-        $as112client   = false;
-        foreach( $c->getVirtualInterfaces() as $vi ) {
-            foreach( $vi->getVlanInterfaces() as $vli ) {
-                if( $vli->getRsclient() ){
-                    $rsclient = true;
-                }
-
-                if( $vli->getAs112client() ){
-                    $as112client = true;
-                }
-            }
-        }
-
-        $arrayNotes = $this->fetchCustomerNotes( $c->getId() );
 
         return view( 'customer/overview' )->with([
             'c'                         => $c,
             'customers'                 => D2EM::getRepository( CustomerEntity::class )->getNames( true ),
-            'netInfo'                   => $netinfo,
-            'isSuperUser'               => $isSuperUser,
-            'coNotifyAll'               => $coNotifyAll,
-            'coNotify'                  => $coNotify,
-            'rsRoutes'                  => $rsRoutes,
-            'crossConnects'             => $crossConnects,
-            'hasAggregateGraph'         => $hasAggregateGraph,
-            'aggregateGraph'            => $aggregateGraph,
+            'netInfo'                   => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray(),
+            'isSuperUser'               => Auth::getUser()->isSuperUser(),
+
+            // is this user watching all notes for this customer?
+            'coNotifyAll'               => Auth::getUser()->getPreference( "customer-notes.{$c->getId()}.notify" ) ? true : false,
+
+            // what specific notes is this user watching?
+            'coNotify'                  => Auth::getUser()->getAssocPreference( "customer-notes.watching" ) ? Auth::getUser()->getAssocPreference( "customer-notes.watching" )[0] : [],
+
+            'rsRoutes'                  => $c->isRouteServerClient() ? D2EM::getRepository( RSPrefixEntity::class )->aggregateRouteSummariesForCustomer( $c->getId() ) : false,
+
+            'crossConnects'             => D2EM::getRepository( CustomerEntity::class )->getCrossConnects( $c->getId() ),
+            'aggregateGraph'            => $c->isGraphable() ? $grapher->customer( $c ) : false,
             'grapher'                   => $grapher,
-            'rsclient'                  => $rsclient,
-            'as112client'               => $as112client,
+            'rsclient'                  => $c->isRouteServerClient(),
+            'as112client'               => $c->isAS112Client(),
             'logoManagementDisabled'    => $this->logoManagementDisabled(),
             'resellerMode'              => $this->resellerMode(),
             'as112UiActive'             => $this->as112UiActive(),
             'resellerResoldBilling'     => config('ixp.reseller.reseller'),
             'countries'                 => Countries::getList('name' ),
             'tab'                       => strtolower( $tab ),
-            'notesInfo'                 => $arrayNotes
+            'notesInfo'                 => $this->fetchCustomerNotes( $c->getId() )
         ]);
     }
 
