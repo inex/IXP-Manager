@@ -154,5 +154,12 @@
 
     <?php $this->section('scripts') ?>
     <?php $this->stop() ?>
+
+    <?=
+        // Skin this file to add your own footer content such as
+        // Piwik / Google Analytics integration:
+        $t->insert( 'footer-custom' );
+    ?>
+
 </body>
 </html>
