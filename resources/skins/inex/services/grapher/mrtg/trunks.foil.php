@@ -90,11 +90,7 @@ Target[core-cwt1-cls1-lan1]: #Ethernet41:<?=config('custom.grapher.snmp_password
                                         + #Ethernet42:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
                                         + #Ethernet43:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
                                         + #Ethernet44:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
-                                        + #Ethernet45:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
-                                        + #Ethernet46:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
-                                        + #Ethernet47:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
-                                        + #Ethernet48:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt1-1.mgmt.inex.ie:::::2
-MaxBytes[core-cwt1-cls1-lan1]: 10000000000
+MaxBytes[core-cwt1-cls1-lan1]: 5000000000
 Directory[core-cwt1-cls1-lan1]: trunks
 Title[core-cwt1-cls1-lan1]: Inter-POP Trunk Core - Vodafone - swi1-tcy1-1 swi1-vfw-1 - LAN1
 
@@ -109,11 +105,7 @@ Target[core-nwb1-cls1-lan1]: #Ethernet33:<?=config('custom.grapher.snmp_password
                             + #Ethernet34:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-nwb1-1.mgmt.inex.ie:::::2
                             + #Ethernet35:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-nwb1-1.mgmt.inex.ie:::::2
                             + #Ethernet36:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-nwb1-1.mgmt.inex.ie:::::2
-                            + #Ethernet37:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-nwb1-1.mgmt.inex.ie:::::2
-                            + #Ethernet38:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-nwb1-1.mgmt.inex.ie:::::2
-                            + #Ethernet39:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-nwb1-1.mgmt.inex.ie:::::2
-                            + #Ethernet40:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-nwb1-1.mgmt.inex.ie:::::2
-MaxBytes[core-nwb1-cls1-lan1]: 10000000000
+MaxBytes[core-nwb1-cls1-lan1]: 5000000000
 Directory[core-nwb1-cls1-lan1]: trunks
 Title[core-nwb1-cls1-lan1]: Inter-POP Trunk Core - Vodafone - swi1-tcy3-1 swi1-vfw-1 - LAN1
 
