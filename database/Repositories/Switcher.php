@@ -594,10 +594,10 @@ class Switcher extends EntityRepository
 
         $sw = $this->getEntityManager( )->getRepository('Entities\Switcher')->find( $id );
 
-        if ($sw) {
+        if ($sw && $sw->getLoopbackIP() && $sw->getLoopbackName()) {
             $ci['description']  = 'Loopback interface';
             $ci['loopback']     = true;
-            $ci['ipv4']         = $sw->getLoopbackIP() ? $sw->getLoopbackIP().'/32' : null;
+            $ci['ipv4']         = $sw->getLoopbackIP().'/32';
             $ci['name']         = $sw->getLoopbackName();
             $ci['shutdown']     = false;
 
