@@ -64,10 +64,10 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported'];
+            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported'];
         }
 
-        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported'];
+        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported'];
     }
 
     /**
@@ -736,6 +736,28 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLoopbackName', []);
 
         return parent::getLoopbackName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getMgmtMacAddress(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMgmtMacAddress', []);
+
+        return parent::getMgmtMacAddress();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setMgmtMacAddress(string $mgmt_mac_address): \Entities\Switcher
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMgmtMacAddress', [$mgmt_mac_address]);
+
+        return parent::setMgmtMacAddress($mgmt_mac_address);
     }
 
 }
