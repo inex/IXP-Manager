@@ -116,6 +116,9 @@ Route::get('provisioner/vlans/switch-name/{switchname}.{outformat}',            
 Route::get('provisioner/routing/switch-id/{switchid}.{outformat}',              'Provisioner\YamlController@bgpForSwitch');
 Route::get('provisioner/routing/switch-name/{switchname}.{outformat}',          'Provisioner\YamlController@bgpForSwitchByName');
 
+Route::get( 'provisioner/switch/switch-id/{switchid}.{outformat}',               'Provisioner\YamlController@showSwitch' );
+Route::get( 'provisioner/switch/switch-name/{switchname}.{outformat}',           'Provisioner\YamlController@showSwitchByName' );
+
 Route::get('switch-port/{id}/customer',                         'SwitchPortController@customer' );
 Route::get('switch-port/{id}/physical-interface',               'SwitchPortController@physicalInterface' );
 
