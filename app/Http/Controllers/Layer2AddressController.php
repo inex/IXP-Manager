@@ -109,7 +109,7 @@ class Layer2AddressController extends Doctrine2Frontend {
         if( php_sapi_name() !== 'cli' ) {
 
             // custom access controls:
-            switch( Auth::user()->getPrivs() ) {
+            switch( Auth::check() ? Auth::user()->getPrivs() : UserEntity::AUTH_PUBLIC ) {
                 case UserEntity::AUTH_SUPERUSER:
                     break;
 
@@ -119,12 +119,12 @@ class Layer2AddressController extends Doctrine2Frontend {
                             break;
 
                         default:
-                            abort( 403 );
+                            abort( 302, '', [ 'Location' => url('') ] );
                     }
                     break;
 
                 default:
-                    abort( 403 );
+                    abort( 302, '', [ 'Location' => url('') ] );
             }
 
         }
