@@ -145,8 +145,6 @@ class Layer2AddressController extends Doctrine2Frontend {
 
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
             Route::get(  'vlan-interface/{vliid}', 'Layer2AddressController@forVlanInterface' )->name( "Layer2AddressController@forVlanInterface" );
-            Route::post( 'add/{id}',               'Layer2AddressController@add'    )->name( $route_prefix . '@add'     );
-            Route::post( 'delete/{id}',            'Layer2AddressController@delete' )->name( $route_prefix . '@delete'  );
         });
     }
 
