@@ -265,6 +265,7 @@ class StatisticsController extends Controller
                 ->setCategory( $r->category   )
                 ->setPeriod(   $r->period     );
 
+            $g->authorise();
             $graphs[] = $g;
         }
 
