@@ -109,14 +109,19 @@ class ApiKeyController extends Doctrine2Frontend {
         // display the same information in the view as the list
         $this->feParams->viewColumns = $this->feParams->listColumns;
 
-        // custom access controls:
-        switch( Auth::user()->getPrivs() ) {
-            case UserEntity::AUTH_SUPERUSER:
-            case UserEntity::AUTH_CUSTUSER:
-                break;
+        // phpunit / artisan trips up here without the cli test:
+        if( php_sapi_name() !== 'cli' ) {
+        
+            // custom access controls:
+            switch( Auth::user()->getPrivs() ) {
+                case UserEntity::AUTH_SUPERUSER:
+                case UserEntity::AUTH_CUSTUSER:
+                    break;
 
-            default:
-                abort( 403 );
+                default:
+                    abort( 403 );
+            }
+            
         }
 
     }

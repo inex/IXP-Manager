@@ -136,8 +136,6 @@ Route::post( 'utils/markdown',                                  'UtilsController
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Layer 2 Address
 //
-Route::post( 'l2-address/add',                                  'Layer2AddressController@add' );
-Route::post( 'l2-address/delete/{id}',                          'Layer2AddressController@delete' );
 Route::get(  'l2-address/detail/{id}',                          'Layer2AddressController@detail' );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

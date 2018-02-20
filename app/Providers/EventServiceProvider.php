@@ -11,8 +11,11 @@ class EventServiceProvider extends ServiceProvider {
      * @var array
      */
     protected $listen = [
-        'event.name' => [
-            'EventListener',
+        'IXP\Events\Layer2Address\Added' => [
+            'IXP\Listeners\Layer2Address\Changed',
+        ],
+        'IXP\Events\Layer2Address\Deleted' => [
+            'IXP\Listeners\Layer2Address\Changed',
         ],
     ];
 

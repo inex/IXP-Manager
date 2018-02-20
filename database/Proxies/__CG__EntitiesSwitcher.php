@@ -741,7 +741,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function getMgmtMacAddress(): string
+    public function getMgmtMacAddress()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMgmtMacAddress', []);
@@ -752,7 +752,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setMgmtMacAddress(string $mgmt_mac_address): \Entities\Switcher
+    public function setMgmtMacAddress($mgmt_mac_address): \Entities\Switcher
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMgmtMacAddress', [$mgmt_mac_address]);
