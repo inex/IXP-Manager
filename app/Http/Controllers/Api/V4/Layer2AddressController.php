@@ -50,20 +50,36 @@ class Layer2AddressController extends Controller {
      *
      * @param   Request $request instance of the current HTTP request
      * @return  JsonResponse
+     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function add( Request $request ): JsonResponse {
         /** @var VlanInterfaceEntity $vli */
         if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $request->input( 'vliid' ) ) ) ) {
-            return abort( '404' );
+            return abort( 404, 'VLAN interface not found' );
+        }
+
+        if( !Auth::user()->isSuperUser() ) {
+            if( !config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ) {
+                abort( 404 );
+            }
+
+            if( Auth::user()->getCustomer()->getId() != $vli->getVirtualInterface()->getCustomer()->getId() ) {
+                abort( 403, 'VLI / Customer mismatch' );
+            }
+
+            if( count( $vli->getLayer2Addresses() ) >= config( 'ixp_fe.layer2-addresses.customer_params.max_addresses' ) ) {
+                return response()->json( [ 'danger' => false, 'message' => 'The maximum possible MAC addresses have been configured. Please delete a MAC before adding.' ] );
+            }
         }
 
         $mac = preg_replace( "/[^a-f0-9]/i", '' , strtolower( $request->input( 'mac', '' ) ) );
         if( strlen( $mac ) !== 12 ) {
-            return response()->json( [ 'success' => false, 'message' => 'Invalid or missing MAC addresses' ] );
+            return response()->json( [ 'danger' => false, 'message' => 'Invalid or missing MAC addresses' ] );
         }
 
         if( D2EM::getRepository( Layer2AddressEntity::class )->existsInVlan( $mac, $vli->getVlan()->getId() ) ) {
-            return response()->json( [ 'success' => false, 'message' => 'The MAC address already exists within the VLAN' ] );
+            return response()->json( [ 'danger' => false, 'message' => 'The MAC address already exists within this IXP VLAN' ] );
         }
 
         $l2a = new Layer2AddressEntity();
@@ -104,6 +120,20 @@ class Layer2AddressController extends Controller {
         /** @var Layer2AddressEntity $l2a */
         if( !( $l2a = D2EM::getRepository( Layer2AddressEntity::class )->find( $id ) ) ) {
             return abort( '404' );
+        }
+
+        if( !Auth::user()->isSuperUser() ) {
+            if( !config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ) {
+                abort( 404 );
+            }
+
+            if( Auth::user()->getCustomer()->getId() != $l2a->getVlanInterface()->getVirtualInterface()->getCustomer()->getId() ) {
+                abort( 403, 'MAC address / Customer mismatch' );
+            }
+
+            if( count( $l2a->getVlanInterface()->getLayer2Addresses() ) <= config( 'ixp_fe.layer2-addresses.customer_params.min_addresses' ) ) {
+                return response()->json( [ 'danger' => false, 'message' => 'The minimum possible MAC addresses have been configured. Please add a MAC before deleting.' ] );
+            }
         }
 
         $l2a->getVlanInterface()->removeLayer2Address( $l2a );

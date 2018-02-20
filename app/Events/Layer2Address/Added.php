@@ -2,21 +2,39 @@
 
 namespace IXP\Events\Layer2Address;
 
+/*
+ * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 use Entities\{
     Layer2Address   as Layer2AddressEntity,
-    Customer        as CustomerEntity
+    User            as UserEntity,
+    VlanInterface   as VlanInterfaceEntity
 };
-use Illuminate\Broadcasting\Channel;
+
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class Added
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, SerializesModels;
 
     /**
      * @var string
@@ -24,17 +42,22 @@ class Added
     public $action;
 
     /**
-     * @var String
+     * @var string
      */
     public $mac;
 
     /**
-     * @var Customer
+     * @var UserEntity
      */
-    public $auth;
+    public $user;
 
     /**
-     * @var VlanInterface
+     * @var string
+     */
+    public $customer;
+
+    /**
+     * @var VlanInterfaceEntity
      */
     public $vli;
 
@@ -42,26 +65,14 @@ class Added
      * Create a new event instance.
      *
      * @param Layer2AddressEntity     $l2a
-     * @param CustomerEntity          $auth
-     *
-     * @return void
+     * @param UserEntity          $u
      */
-    public function __construct(  $l2a,  $auth )
+    public function __construct( Layer2AddressEntity $l2a, UserEntity $u )
     {
         $this->action   = "add";
         $this->mac      = $l2a->getMac();
-        $this->auth     = $auth;
+        $this->user     = $u;
+        $this->customer = $u->getCustomer()->getFormattedName();
         $this->vli      = $l2a->getVlanInterface();
-
-    }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
     }
 }

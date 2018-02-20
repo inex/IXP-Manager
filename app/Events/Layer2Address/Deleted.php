@@ -2,17 +2,38 @@
 
 namespace IXP\Events\Layer2Address;
 
-use Illuminate\Broadcasting\Channel;
+/*
+ * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+use Entities\{
+    User            as UserEntity,
+    VlanInterface   as VlanInterfaceEntity
+};
+
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
-use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class Deleted
 {
-    use Dispatchable, InteractsWithSockets, SerializesModels;
+    use Dispatchable, SerializesModels;
 
     /**
      * @var string
@@ -25,39 +46,35 @@ class Deleted
     public $mac;
 
     /**
-     * @var Customer
+     * @var UserEntity
      */
-    public $auth;
+    public $user;
 
     /**
-     * @var VirtualInterface
+     * @var string
+     */
+    public $customer;
+
+    /**
+     * @var VlanInterfaceEntity
      */
     public $vli;
 
     /**
      * Create a new event instance.
      *
-     * @param string                $mac
-     * @param VlanInterface         $vli
-     * @param Customer              $auth
+     * @param string                $oldmac
+     * @param VlanInterfaceEntity   $vli
+     * @param UserEntity            $u
      *
      * @return void
      */
-    public function __construct( $mac, $vli, $auth )
+    public function __construct( string $oldmac, VlanInterfaceEntity $vli, UserEntity $u )
     {
         $this->action   = "delete";
-        $this->mac      = $mac;
-        $this->auth     = $auth;
+        $this->mac      = $oldmac;
+        $this->user     = $u;
+        $this->customer = $u->getCustomer()->getFormattedName();
         $this->vli      = $vli;
-    }
-
-    /**
-     * Get the channels the event should broadcast on.
-     *
-     * @return \Illuminate\Broadcasting\Channel|array
-     */
-    public function broadcastOn()
-    {
-        return new PrivateChannel('channel-name');
     }
 }

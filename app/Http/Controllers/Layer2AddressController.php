@@ -25,11 +25,13 @@ namespace IXP\Http\Controllers;
 
 use Auth, D2EM, Route;
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 use Entities\{
-    VlanInterface as VlanInterfaceEntity,
-    Layer2Address as Layer2AddressEntity
+    Layer2Address as Layer2AddressEntity,
+    User          as UserEntity,
+    VlanInterface as VlanInterfaceEntity
 };
 
 
@@ -55,6 +57,17 @@ class Layer2AddressController extends Doctrine2Frontend {
      * @var boolean
      */
     public static $read_only = true;
+
+    /**
+     * The minimum privileges required to access this controller.
+     *
+     * If you set this to less than the superuser, you need to manage privileges and access
+     * within your own implementation yourself.
+     *
+     * @var int
+     */
+    public static $minimum_privilege = UserEntity::AUTH_CUSTUSER;
+
 
     /**
      * This function sets up the frontend controller
@@ -92,6 +105,30 @@ class Layer2AddressController extends Doctrine2Frontend {
         // display the same information in the view as the list
         $this->feParams->viewColumns = $this->feParams->listColumns;
 
+        // phpunit / artisan trips up here without the cli test:
+        if( php_sapi_name() !== 'cli' ) {
+
+            // custom access controls:
+            switch( Auth::user()->getPrivs() ) {
+                case UserEntity::AUTH_SUPERUSER:
+                    break;
+
+                case UserEntity::AUTH_CUSTUSER:
+                    switch( Route::current()->getName() ) {
+                        case 'Layer2AddressController@forVlanInterface':
+                            break;
+
+                        default:
+                            abort( 403 );
+                    }
+                    break;
+
+                default:
+                    abort( 403 );
+            }
+
+        }
+
 
     }
 
@@ -104,10 +141,12 @@ class Layer2AddressController extends Doctrine2Frontend {
      */
     protected static function additionalRoutes( string $route_prefix )
     {
-        Route::group( [ 'prefix' => $route_prefix ], function() {
+        // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
 
-            // adding delete route as controller is marked as read only to avoid normal d2f crud actions
-            Route::post(    'delete/{id}',              'Layer2AddressController@delete' );
+        Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
+            Route::get(  'vlan-interface/{vliid}', 'Layer2AddressController@forVlanInterface' )->name( "Layer2AddressController@forVlanInterface" );
+            Route::post( 'add/{id}',               'Layer2AddressController@add'    )->name( $route_prefix . '@add'     );
+            Route::post( 'delete/{id}',            'Layer2AddressController@delete' )->name( $route_prefix . '@delete'  );
         });
     }
 
@@ -124,28 +163,23 @@ class Layer2AddressController extends Doctrine2Frontend {
     /**
      * Display all the layer2addresses for a VlanInterface
      *
-     * @param  int $vliid ID if the VlanInterface
-     * @return  View|Redirect
+     * @param   int $vliid      ID if the VlanInterface
+     * @return  View|RedirectResponse
      */
     public function forVlanInterface( int $vliid )  {
         if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $vliid ) ) ) {
             return abort( '404' );
         }
 
-        if( Auth::getUser()->isSuperUser() ){
-            $view = 'layer2-address/vlan-interface';
-        } else{
-            if( config( 'ixp_fe.layer2-addresses.customer_can_edit' ) && Auth::getUser()->getCustomer()->getId() == $vli->getVirtualInterface()->getCustomer()->getId() ){
-                $view = 'layer2-address/vlan-interface-cust';
-            } else{
-                return redirect('');
-            }
-
+        if( Auth::getUser()->isSuperUser() ) {
+            return view( 'layer2-address/vlan-interface' )->with([ 'vli' => $vli ]);
         }
 
-        return view( $view )->with([
-            'vli'       => $vli
-        ]);
+        if( config( 'ixp_fe.layer2-addresses.customer_can_edit' ) && Auth::getUser()->getCustomer()->getId() == $vli->getVirtualInterface()->getCustomer()->getId() ) {
+            return view( 'layer2-address/vlan-interface-cust' )->with([ 'vli' => $vli ]);
+        }
+
+        return redirect('');
     }
 
 }

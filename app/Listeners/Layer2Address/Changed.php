@@ -2,15 +2,42 @@
 
 namespace IXP\Listeners\Layer2Address;
 
+/*
+ * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 use Mail;
 
-use IXP\Events\Layer2Address\Deleted;
-use Illuminate\Queue\InteractsWithQueue;
+
+// use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-use IXP\Mail\Layer2Address\Email as EmailLayer2Address;
+use IXP\Events\Layer2Address\{
+    Added   as Layer2AddressAddedEvent,
+    Deleted as Layer2AddressDeletedEvent
+};
 
-class Changed
+use IXP\Mail\Layer2Address\ChangedMail as Layer2AddressChangedMail;
+
+
+class Changed implements ShouldQueue
 {
     /**
      * Create the event listener.
@@ -25,25 +52,19 @@ class Changed
     /**
      * Handle the event.
      *
-     * @param  Deleted  $event
+     * @param  Layer2AddressAddedEvent|Layer2AddressDeletedEvent  $e
      * @return void
      */
-    public function handle( $event)
+    public function handle( $e )
     {
-        if( config( 'ixp_fe.layer2-addresses.email_on_superuser_change' ) || config( 'ixp_fe.layer2-addresses.email_on_customer_change' ) ){
-            $mailable = new EmailLayer2Address( $event->vli );
-            try {
-                $view = $mailable->view( "layer2-address/emails/changed" )->with( ['user' => $event->auth, 'vli' => $event->vli, "added" => $event->action == "add" ? true : false , "mac" => $event->mac ] )->render();
-                $mailable->prepareBody( $view );
-
-                Mail::send( $mailable );
-
-            } catch( MailableException $e ) {
-                AlertContainer::push( $e->getMessage(), Alert::DANGER );
-
-            }
-
+        if( !( config( 'ixp_fe.layer2-addresses.email_on_superuser_change' ) || config( 'ixp_fe.layer2-addresses.email_on_customer_change' ) ) ) {
+            return;
         }
 
+        if( !config( 'ixp_fe.layer2-addresses.email_on_superuser_change' ) && $e->user->isSuperUser() ) {
+            return;
+        }
+
+        Mail::to( config( 'ixp_fe.layer2-addresses.email_on_change_dest' ) )->send( new Layer2AddressChangedMail( $e ) );
     }
 }

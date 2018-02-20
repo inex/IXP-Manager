@@ -1,5 +1,7 @@
 <script>
-    const addl2a               = $('#add-l2a' );
+    const addl2a           = $('#add-l2a' );
+    const spanCustAddBtn   = $('#span-cust-add-btn');
+
 
     let table; // datatable handle
 
@@ -12,15 +14,15 @@
     /**
      * on click even allow to add a mac address using prompt popup
      */
-
-
-
-    function add(){
+    addl2a.on( 'click', function( e ) {
+        e.preventDefault();
 
         bootbox.prompt({
+
             title: "Enter a MAC Address.",
             inputType: 'text',
             callback: function ( result ) {
+
                 if( result != null ) {
                     $.ajax( "<?= action ( 'Api\V4\Layer2AddressController@add' ) ?>", {
                         type: 'POST',
@@ -42,13 +44,13 @@
                         .fail( function() {
                             $('.bootbox.modal').modal( 'hide' );
                             $( "#message" ).html( "<div class='alert alert-danger' role='alert'>" +
-                                "Couldn't add MAC address. API / AJAX / network error</div>"
+                                "Could not add MAC address. API / AJAX / network error</div>"
                             );
                         });
-     }
+                }
             }
         });
-    }
+    });
 
     /**
      * on click even allow to delete a mac address
@@ -67,9 +69,15 @@
         $( "#list-area").load( "<?= action ('Layer2AddressController@forVlanInterface' , [ 'id' => $t->vli->getId() ] ) ?> #layer-2-interface-list " ,function( ) {
             table.destroy();
             loadDataTable();
+
+            if( spanCustAddBtn.length ) {
+                if( table.rows().count() >= <?= config( 'ixp_fe.layer2-addresses.customer_params.max_addresses' ) ?> ) {
+                    spanCustAddBtn.hide();
+                } else {
+                    spanCustAddBtn.show();
+                }
+            }
         });
-        $( "#pull-right").load( "<?= action ('Layer2AddressController@forVlanInterface' , [ 'id' => $t->vli->getId() ] ) ?> #add-btn " );
-        addl2a.on( 'click', add  );
     }
 
     /**
@@ -98,13 +106,9 @@
                             result = ( data.success ) ? 'success': 'danger';
 
                             if( result ){
-                                //table.row( $(deleteBtn).parents('tr') ).remove().draw();
                                 refreshDataTable();
                                 $( "#message" ).html( "<div class='alert alert-"+result+"' role='alert'>"+ data.message +"</div>" );
                             }
-
-                            //$( "#message" ).html( "<div class='alert alert-"+result+"' role='alert'>"+ data.message +"</div>" );
-                            //$( "button[id|='delete-l2a']" ).on('click', deleteL2a);
 
                         })
                         .fail( function(){
