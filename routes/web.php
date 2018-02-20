@@ -96,6 +96,9 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'infrastructure/{graphid?}/{category?}',       'StatisticsController@infrastructure'    )->name( 'statistics/infrastructure'     );
     Route::get(  'switch/{switchid?}/{category?}',              'StatisticsController@switch'            )->name( 'statistics/switch'             );
     Route::get(  'trunk/{trunkid?}/{category?}',                'StatisticsController@trunk'             )->name( 'statistics/trunk'              );
+
+    Route::get(  'member/{id?}',                                'StatisticsController@member'            )->name( 'statistics@member'             );
+    Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'    );
 });
 
 
