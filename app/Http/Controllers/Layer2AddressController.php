@@ -119,12 +119,12 @@ class Layer2AddressController extends Doctrine2Frontend {
                             break;
 
                         default:
-                            abort( 302, '', [ 'Location' => url('') ] );
+                            $this->unauthorized();
                     }
                     break;
 
                 default:
-                    abort( 302, '', [ 'Location' => url('') ] );
+                    $this->unauthorized();
             }
 
         }
