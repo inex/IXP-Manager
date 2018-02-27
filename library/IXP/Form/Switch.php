@@ -33,6 +33,9 @@
  */
 class IXP_Form_Switch extends IXP_Form
 {
+    /**
+     * @throws Zend_Form_Exception
+     */
     public function init()
     {
 
@@ -143,6 +146,15 @@ class IXP_Form_Switch extends IXP_Form
             ->addFilter( 'StringTrim' )
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $loopback_name );
+
+        $mgmt_mac_address = $this->createElement( 'text', 'mgmt_mac_address' );
+        $mgmt_mac_address->addValidator( 'regex', false, array('/^[a-f0-9]{12}$/' ) )
+            ->setLabel( 'Mgmt MAC Address' )
+            ->setAttrib( 'class', 'span3' )
+            ->addFilter( 'StringTrim' )
+            ->addFilter( 'StringToLower' )
+            ->addFilter( new Zend_Filter_PregReplace( [ 'match' => '/[^0-9a-f]*/', 'reaplce' => '' ] ) );
+        $this->addElement( $mgmt_mac_address );
 
 
         $this->addElement( self::createSubmitElement( 'submit', _( 'Add' ) ) );

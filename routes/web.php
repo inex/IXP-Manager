@@ -98,12 +98,9 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'trunk/{trunkid?}/{category?}',                'StatisticsController@trunk'             )->name( 'statistics/trunk'              );
 
     Route::get(  'member/{id?}',                                'StatisticsController@member'            )->name( 'statistics@member'             );
-    Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'   );
 
+    Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'    );
     Route::get(  'smokeping/{vliid}',                           'StatisticsController@smokeping'         )->name( 'statistics@smokeping'          );
-
-    Route::get(  'members', 'StatisticsController@members' );
-    Route::post( 'members', 'StatisticsController@members' )->name( 'statistics/members' );
 });
 
 
