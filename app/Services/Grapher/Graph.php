@@ -44,6 +44,50 @@ use Illuminate\Auth\Access\AuthorizationException;
 abstract class Graph {
 
     /**
+     * Category to use
+     * @var
+     */
+    private $category = self::CATEGORY_DEFAULT;
+
+    /**
+     * Protocol to use
+     * @var
+     */
+    private $protocol = self::PROTOCOL_DEFAULT;
+
+    /**
+     * Grapher Service
+     * @var Grapher
+     */
+    private $grapher;
+
+    /**
+     * Backend to use
+     * @var GrapherBackend
+     */
+    private $backend = null;
+
+    /**
+     * Data points (essentially a cache which is wiped as appropriate)
+     * @var array
+     */
+    private $data = null;
+
+    /**
+     * Statistics object (essentially a cache which is wiped as appropriate)
+     * @var Statistics
+     */
+    private $statistics = null;
+
+    /**
+     * Renderer object (essentially a cache which is wiped as appropriate)
+     * @var Renderer
+     */
+    private $renderer = null;
+
+
+
+    /**
      * Period of one day for graphs
      */
     const PERIOD_DAY   = 'day';
@@ -72,7 +116,7 @@ abstract class Graph {
      * Period to use
      * @var
      */
-    private $period = self::PERIOD_DEFAULT;
+    protected $period = self::PERIOD_DEFAULT;
 
     /**
      * Array of valid periods for drill down graphs
@@ -124,11 +168,7 @@ abstract class Graph {
      */
     const CATEGORY_DEFAULT  = self::CATEGORY_BITS;
 
-    /**
-     * Category to use
-     * @var
-     */
-    private $category = self::CATEGORY_DEFAULT;
+
 
     /**
      * Array of valid categories for graphs
@@ -188,12 +228,6 @@ abstract class Graph {
      * Default protocol for graphs
      */
     const PROTOCOL_DEFAULT = self::PROTOCOL_ALL;
-
-    /**
-     * Protocol to use
-     * @var
-     */
-    private $protocol = self::PROTOCOL_DEFAULT;
 
 
     /**
@@ -301,38 +335,6 @@ abstract class Graph {
         self::TYPE_JSON => 'application/json',
     ];
 
-
-    /**
-     * Grapher Service
-     * @var Grapher
-     */
-    private $grapher;
-
-    /**
-     * Backend to use
-     * @var GrapherBackend
-     */
-    private $backend = null;
-
-    /**
-     * Data points (essentially a cache which is wiped as appropriate)
-     * @var array
-     */
-    private $data = null;
-
-    /**
-     * Statistics object (essentially a cache which is wiped as appropriate)
-     * @var Statistics
-     */
-    private $statistics = null;
-
-    /**
-     * Renderer object (essentially a cache which is wiped as appropriate)
-     * @var Renderer
-     */
-    private $renderer = null;
-
-
     /**
      * Constructor
      * @param Grapher $grapher
@@ -366,9 +368,11 @@ abstract class Graph {
      * @return GrapherBackend
      */
     public function backend(): GrapherBackend {
+
         if( $this->backend === null ) {
             $this->backend = $this->grapher()->backendForGraph( $this );
         }
+
         return $this->backend;
     }
 
@@ -497,6 +501,7 @@ abstract class Graph {
         if( $this->renderer === null ) {
             $this->renderer = new Renderer( $this );
         }
+
         return $this->renderer;
     }
 
@@ -610,6 +615,7 @@ abstract class Graph {
      * allow graph access based on your own requirements.
      *
      * @return bool
+     * @throws
      */
     public function authorise(): bool {
         $this->deny();
@@ -648,6 +654,7 @@ abstract class Graph {
      * @throws ParameterException
      */
     public function setPeriod( $v ): Graph {
+
         if( !isset( $this::PERIODS[ $v ] ) ) {
             throw new ParameterException('Invalid period ' . $v );
         }
@@ -738,6 +745,7 @@ abstract class Graph {
      * @throws ParameterException
      */
     public function setCategory( string $v ): Graph {
+
         if( !isset( $this::CATEGORIES[ $v ] ) ) {
             throw new ParameterException('Invalid category ' . $v );
         }

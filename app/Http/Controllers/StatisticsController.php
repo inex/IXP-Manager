@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -41,7 +41,6 @@ use Illuminate\Http\{
 
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
-use Illuminate\Support\Facades\Cache;
 
 use IXP\Http\Requests\StatisticsRequest;
 use IXP\Services\Grapher\Graph;
@@ -77,14 +76,12 @@ class StatisticsController extends Controller
     /**
      * Show overall IXP graphs
      *
-     * @param StatisticsRequest $r
      * @param string $category Category of graph to show (e.g. bits / pkts)
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      * @throws \IXP_Exception
      * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
-    public function ixp( StatisticsRequest $r, string $category = Graph::CATEGORY_BITS )
-    {
+    public function ixp( string $category = Graph::CATEGORY_BITS ){
         $ixp      = D2EM::getRepository( IXPEntity::class )->getDefault();
         $grapher  = App::make('IXP\Services\Grapher');
         $category = Graph::processParameterCategory( $category, true );
@@ -101,13 +98,12 @@ class StatisticsController extends Controller
     /**
      * Show IXP infrastructure graphs
      *
-     * @param StatisticsRequest $r
      * @param int $infraid ID of the infrastructure to show the graph of
      * @param string $category Category of graph to show (e.g. bits / pkts)
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws
      */
-    public function infrastructure( StatisticsRequest $r, int $infraid = 0, string $category = Graph::CATEGORY_BITS )
-    {
+    public function infrastructure( int $infraid = 0, string $category = Graph::CATEGORY_BITS ){
         /** @var InfrastructureEntity[] $eInfras */
         $eInfras  = D2EM::getRepository( InfrastructureEntity::class )->findBy( [], [ 'name' => 'ASC' ] );
         $grapher  = App::make('IXP\Services\Grapher');
@@ -119,6 +115,7 @@ class StatisticsController extends Controller
         }
 
         $infraid  = isset( $infras[ $infraid ] ) ? $infraid : array_keys( $infras )[0];
+        /** @var InfrastructureEntity $infra */
         $infra    = D2EM::getRepository( InfrastructureEntity::class )->find( $infraid );
         $graph    = $grapher->infrastructure( $infra )->setType( Graph::TYPE_PNG )->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
 
@@ -136,14 +133,12 @@ class StatisticsController extends Controller
     /**
      * Show IXP switch graphs
      *
-     * @param StatisticsRequest $r
      * @param int $switchid ID of the switch to show the graph of
      * @param string $category Category of graph to show (e.g. bits / pkts)
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      * @throws
      */
-    public function switch( StatisticsRequest $r, int $switchid = 0, string $category = Graph::CATEGORY_BITS )
-    {
+    public function switch( int $switchid = 0, string $category = Graph::CATEGORY_BITS ){
         /** @var SwitchEntity[] $eSwitches */
         $eSwitches = D2EM::getRepository( SwitchEntity::class )->getAndCache( true, SwitchEntity::TYPE_SWITCH );
         $grapher = App::make('IXP\Services\Grapher');
@@ -155,6 +150,7 @@ class StatisticsController extends Controller
         }
 
         $switchid = isset( $switches[ $switchid ] ) ? $switchid : array_keys( $switches )[0];
+        /** @var SwitchEntity $switch */
         $switch   = D2EM::getRepository( SwitchEntity::class )->find( $switchid );
         $graph    = $grapher->switch( $switch )->setType( Graph::TYPE_PNG )->setProtocol( Graph::PROTOCOL_ALL )->setCategory( $category );
 
@@ -173,14 +169,12 @@ class StatisticsController extends Controller
     /**
      * Show IXP trunk graphs
      *
-     * @param StatisticsRequest $r
      * @param string $trunkid ID of the trunk to show the graph of
      * @param string $category Category of graph to show (e.g. bits / pkts)
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      * @throws
      */
-    public function trunk( StatisticsRequest $r, string $trunkid = null, string $category = Graph::CATEGORY_BITS )
-    {
+    public function trunk( string $trunkid = null, string $category = Graph::CATEGORY_BITS ){
         if( !is_array( config('grapher.backends.mrtg.trunks') ) || !count( config('grapher.backends.mrtg.trunks') ) ) {
             AlertContainer::push(
                 "Trunk graphs have not been configured. Please see <a href=\"http://docs.ixpmanager.org/features/grapher/\">this documentation</a> for instructions.",
@@ -229,8 +223,10 @@ class StatisticsController extends Controller
         $this->processGraphParams($r);
 
         // do we have an infrastructure or vlan?
+
         $vlan = $infra = false;
         if( $r->input( 'infra' ) ) {
+            /** @var InfrastructureEntity $infra */
             if( $infra = D2EM::getRepository(InfrastructureEntity::class) ->find($r->input('infra')) ) {
                 $targets = D2EM::getRepository( VirtualInterfaceEntity::class )->getObjectsForInfrastructure( $infra );
             } else {
@@ -238,6 +234,7 @@ class StatisticsController extends Controller
             }
             $r->protocol = Graph::PROTOCOL_ALL;
         } else if( $r->input( 'vlan' ) && ( $vlan = D2EM::getRepository(VlanEntity::class)->find($r->input('vlan')) ) ) {
+            /** @var VlanEntity $vlan */
             if( !in_array( $r->protocol, Graph::PROTOCOLS_REAL ) ) {
                 $r->protocol = Graph::PROTOCOL_IPV4;
             }
@@ -260,6 +257,7 @@ class StatisticsController extends Controller
                 }
             }
 
+            /** @var Graph $g */
             $g->setType(     Graph::TYPE_PNG )
                 ->setProtocol( $r->protocol   )
                 ->setCategory( $r->category   )
@@ -323,18 +321,17 @@ class StatisticsController extends Controller
     /**
      * Display Aggregate/LAG/Port for all periods (day/week/month/year)
      *
-     * @param StatisticsRequest   $r
-     * @param integer   $id         ID of the member
-     * @param string    $type       type
-     * @param integer   $typeid     ID of type
+     * @param   StatisticsRequest     $r
+     * @param   string                $type       type
+     * @param   integer               $typeid     ID of type
      * @return  View
      * @throws
      */
     public function memberDrilldown( StatisticsRequest $r, string $type, int $typeid ) {
-
+        /** @var CustomerEntity $c */
         switch( strtolower( $type ) ) {
             case 'agg':
-                /** @var CustomerEntity $c */
+
                 if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $typeid ) ) ){
                     abort( 404, 'Unknown customer' );
                 }
@@ -357,12 +354,14 @@ class StatisticsController extends Controller
                 }
                 $c = $pi->getVirtualInterface()->getCustomer();
                 $graph = App::make('IXP\Services\Grapher')->physint( $pi );
+
                 break;
 
             default:
                 abort( 404, 'Unknown graph type' );
         }
 
+        /** @var Graph $graph */
         $graph->setCategory( Graph::processParameterCategory( $r->input( 'category' ) ) );
         $graph->authorise();
 
@@ -370,5 +369,65 @@ class StatisticsController extends Controller
             'c'     => $c,
             'graph' => $graph,
         ]);
+    }
+
+    /**
+     * @param Request $r
+     * @param int $vliid
+     * @return $this|RedirectResponse
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     */
+    public function smokeping( Request $r, int $vliid ){
+        /** @var VlanInterfaceEntity $vli */
+        if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $vliid ) ) ){
+            abort( 404, 'Unknown vlan interface' );
+        }
+
+
+        $listProtocols = Graph::PROTOCOLS_REAL;
+
+        foreach( $listProtocols as $p => $n ) {
+
+            $enabled = 'get' . ucfirst( $p ) . 'enabled';
+            $canping = 'get' . ucfirst( $p ) . 'canping';
+
+            if( !$vli->$enabled() || !$vli->$canping() )
+                unset( $listProtocols[ $p ] );
+        }
+
+
+        if( count( $listProtocols ) ) {
+            $proto = $r->input( 'protocol' );
+
+            if( !in_array( $proto, array_keys( $listProtocols ) ) ){
+                $proto = array_keys( $listProtocols )[0];
+            }
+
+            $ipfn   = 'get' . $listProtocols[ $proto ] . 'Address';
+            $ip     = $vli->$ipfn()->getAddress();
+
+        } else {
+            AlertContainer::push(
+                "This customer does not have pinging enabled for any IP address(es) on the requested interface",
+                Alert::WARNING
+            );
+            return redirect()->to( route( "statistics@member" ), [ "id" => $vli->getVirtualInterface()->getCustomer()->getId() ] );
+        }
+
+        $graph = App::make('IXP\Services\Grapher')->smokeping( $vli );
+
+        $graph->setProtocol( $proto );
+
+        $graph->authorise();
+
+        return view( 'statistics/smokeping' )->with([
+            'c'         => $vli->getVirtualInterface()->getCustomer(),
+            'vli'       => $vli,
+            'ip'        => $ip,
+            'protocol'  => $proto,
+            'grapher'   => $graph,
+
+        ]);
+
     }
 }

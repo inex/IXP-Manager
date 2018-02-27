@@ -65,7 +65,7 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
     /**
      * This function indicates whether this graphing engine supports single monolithic text
      *
-     * @see IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     * @see Dummy::isMonolithicConfigurationSupported() for an explanation
      * @return bool
      */
     public function isMonolithicConfigurationSupported(): bool {
@@ -75,7 +75,7 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
     /**
      * This function indicates whether this graphing engine supports multiple files to a directory
      *
-     * @see IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     * @see Dummy::isMonolithicConfigurationSupported() for an explanation
      * @return bool
      */
     public function isMultiFileConfigurationSupported(): bool {
@@ -87,8 +87,8 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param Entities\IXP $ixp The IXP to generate the config for (multi-IXP mode)
-     * @param int $config_type The type of configuration to generate
+     * @param \Entities\IXP     $ixp    The IXP to generate the config for (multi-IXP mode)
+     * @param int               $type   The type of configuration to generate
      * @return array
      */
     public function generateConfiguration( IXP $ixp, int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
@@ -104,6 +104,7 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
      * @return array
      */
     public static function supports(): array {
+
         return [
             'ixp' => [
                 'protocols'   => Graph::PROTOCOLS,
@@ -165,6 +166,12 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
                 'periods'     => Graph::PERIODS,
                 'types'       => Graph::TYPES
             ],
+            'smokeping' => [
+                'protocols'   => Graph::PROTOCOLS,
+                'categories'  => Graph::CATEGORIES,
+                'periods'     => Graph\Smokeping::PERIODS,
+                'types'       => Graph::TYPES
+            ],
         ];
     }
 
@@ -173,8 +180,9 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      * @return array
+     * @throws
      */
     public function data( Graph $graph ): array {
         $dummy = new DummyFile( $this->resolveFilePath( $graph, 'log' ) );
@@ -186,7 +194,7 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      * @return string
      */
     public function png( Graph $graph ): string {
@@ -210,8 +218,10 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
      * For a given graph, return the path where the appropriate log file
      * will be found.
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph     $graph
+     * @param string    $type
      * @return string
+     * @throws
      */
     private function resolveFilePath( Graph $graph, $type ): string {
         $config = config('grapher.backends.dummy');

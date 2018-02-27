@@ -30,8 +30,6 @@ use IXP\Services\Grapher\Renderer\Extensions\Grapher as GrapherRendererExtension
 
 use Entities\User as UserEntity;
 
-use Cache;
-use Config;
 use Route;
 
 /**
@@ -76,6 +74,7 @@ class GrapherServiceProvider extends ServiceProvider {
             Route::get( 'customer',          'Grapher@customer'          ); // member agg over all physint's
             Route::get( 'vlaninterface',     'Grapher@vlanInterface'     ); // member vlan interface
             Route::get( 'p2p',               'Grapher@p2p'               ); // member vlan interface
+            Route::get( 'smokeping',         'Grapher@smokeping'         );
         });
 
         Route::group(['middleware' => [ 'api/v4', 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ],
@@ -92,7 +91,8 @@ class GrapherServiceProvider extends ServiceProvider {
     /**
      * Register the application services.
      *
-     * @return void
+     * @return void|\IXP\Services\Grapher
+     * @throws
      */
     public function register()
     {
@@ -103,7 +103,8 @@ class GrapherServiceProvider extends ServiceProvider {
             }
         }
 
-        $this->app->singleton( 'IXP\Services\Grapher', function($app) {
+        $this->app->singleton(
+            'IXP\Services\Grapher', function() {
             return new \IXP\Services\Grapher;
         });
 

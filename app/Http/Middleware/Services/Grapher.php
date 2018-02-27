@@ -41,10 +41,10 @@ use IXP\Services\Grapher\Graph\{
     VirtualInterface  as VirtIntGraph,  // member LAG
     Customer          as CustomerGraph, // member agg over all physical ports
     VlanInterface     as VlanIntGraph,  // member VLAN interface
-    P2p               as P2pGraph
+    P2p               as P2pGraph,
+    Smokeping         as SmokepingGraph
 };
 
-use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException};
 
 /**
  * Grapher -> MIDDLEWARE
@@ -86,6 +86,8 @@ class Grapher
      * All graphs have common parameters. We process these here for every request - and set sensible defaults.
      *
      * @param \Illuminate\Http\Request  $request
+     * @param GrapherService            $grapher
+     * @return Graph
      */
     private function processParameters( Request $request, GrapherService $grapher ): Graph {
 
@@ -162,12 +164,18 @@ class Grapher
                 $request->dstvlanint = $dstvlanint->getId();
                 $graph = $grapher->p2p( $srcvlanint, $dstvlanint )->setParamsFromArray( $request->all() );
                 break;
+            case 'smokeping':
+                $vli = SmokepingGraph::processParameterVlanInterface( (int)$request->input( 'id', 0 ) );
+                $request->vli = $vli;
+                $graph = $grapher->smokeping( $vli )->setParamsFromArray( $request->all() );
+                break;
 
 
             default:
                 abort(404, 'No such graph type');
         }
 
+        /** @var Graph $graph */
         return $graph;
     }
 

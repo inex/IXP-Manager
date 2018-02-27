@@ -43,7 +43,8 @@ use IXP\Services\Grapher\Graph\{
     VirtualInterface  as VirtIntGraph,  // member LAG
     Customer          as CustomerGraph, // member agg over all physical ports
     VlanInterface     as VlanIntGraph,  // member VLAN interface
-    P2p               as P2pGraph
+    P2p               as P2pGraph,
+    Smokeping         as SmokepingGraph
 };
 
 use IXP\Contracts\Grapher\Backend as BackendContract;
@@ -51,7 +52,16 @@ use IXP\Contracts\Grapher\Backend as BackendContract;
 use Cache;
 use Config;
 
-use Entities\{IXP,Infrastructure,Vlan,Switcher,PhysicalInterface,VlanInterface,VirtualInterface,Customer};
+use Entities\{
+    IXP,
+    Infrastructure,
+    Vlan,
+    Switcher,
+    PhysicalInterface,
+    VlanInterface,
+    VirtualInterface,
+    Customer
+};
 
 /**
  * Grapher Backend -> Mrtg
@@ -123,6 +133,7 @@ class Grapher {
      *
      * @param string|null $backend A specific backend to return. If not specified, we use command line arguments
      * @return \IXP\Contracts\Grapher\Backend
+     * @throws
      */
     public function backend( $backend = null ): BackendContract {
         $backend = $this->resolveBackend( $backend );
@@ -149,6 +160,7 @@ class Grapher {
         }
 
         foreach( $backends as $backend ) {
+
             if( ( $b = $this->backend( $backend ) )->canProcess( $graph ) ) {
                 return $b;
             }
@@ -291,7 +303,14 @@ class Grapher {
     }
 
 
-
+    /**
+     * Get an instance of a smoekping graph
+     * @param VlanInterface $vli
+     * @return \IXP\Services\Grapher\Graph\Smokeping
+     */
+    public function smokeping( VlanInterface $vli ): SmokepingGraph {
+        return new SmokepingGraph( $this, $vli );
+    }
 
 
 

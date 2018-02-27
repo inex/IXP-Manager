@@ -117,7 +117,7 @@ class SmokepingController extends IXP_Controller_AuthRequiredAction
             $this->addMessage( 'This customer does not have pinging enabled for any IP address(es) on the requested interface', OSS_Message::INFO );
             $this->redirect( "statistics/member/ixp/{$ixp->getId()}/shortname/{$cust->getShortname()}" );
         }
-        
+
         $this->view->protos = $protos;
         $this->view->proto  = $proto;
         
@@ -177,9 +177,9 @@ class SmokepingController extends IXP_Controller_AuthRequiredAction
         }
 
         $filename = "{$url}/?displaymode=a;start=now-{$scale};end=now;target={$target}";
-        
+
         $this->getLogger()->debug( "Serving Smokeping {$target} to {$this->getUser()->getUsername()} from [{$filename}]" );
-        
+
         if( @readfile( $filename ) === false )
         {
             $this->getLogger()->notice( "Could not load Smokeping {$filename}" );

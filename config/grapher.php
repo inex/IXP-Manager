@@ -6,9 +6,10 @@ return [
     | Providers - support providers.
     */
     'providers' => [
-        'dummy' => IXP\Services\Grapher\Backend\Dummy::class,
-        'mrtg'  => IXP\Services\Grapher\Backend\Mrtg::class,
-        'sflow' => IXP\Services\Grapher\Backend\Sflow::class,
+        'dummy'         => IXP\Services\Grapher\Backend\Dummy::class,
+        'mrtg'          => IXP\Services\Grapher\Backend\Mrtg::class,
+        'sflow'         => IXP\Services\Grapher\Backend\Sflow::class,
+        'smokeping'     => IXP\Services\Grapher\Backend\Smokeping::class,
     ],
 
     /*
@@ -69,6 +70,14 @@ return [
 
             // where to find the MRTG rrd files
             'root'  => env( 'GRAPHER_BACKEND_SFLOW_ROOT', 'http://www.example.com/' ),
+        ],
+
+        'smokeping' => [
+            // show sflow / p2p links on the frontend
+            'enabled' => env( 'GRAPHER_BACKEND_SMOKEPING_ENABLED', false ),
+
+            // where to find the smokeping files
+            'url'  => env( 'GRAPHER_SMOKEPING_URL', 'http://www.example.com/' ),
         ]
 
     ],
@@ -118,6 +127,7 @@ return [
         'infrastructure' => env( 'GRAPHER_ACCESS_INFRASTRUCTURE', Entities\User::AUTH_PUBLIC ),
         'switch'         => env( 'GRAPHER_ACCESS_SWITCH',         Entities\User::AUTH_PUBLIC ),
         'trunk'          => env( 'GRAPHER_ACCESS_TRUNK',          Entities\User::AUTH_PUBLIC ),
+        'smokeping'      => env( 'GRAPHER_ACCESS_SMOKEPING',      Entities\User::AUTH_PUBLIC ),
     ],
 
 

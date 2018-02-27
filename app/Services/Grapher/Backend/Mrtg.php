@@ -28,7 +28,13 @@ use IXP\Services\Grapher\Graph;
 use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
 use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
 
-use Entities\{IXP,PhysicalInterface,SwitchPort};
+use Entities\{
+    IXP                     as IXPEntity,
+    PhysicalInterface       as PhysicalInterfaceEntity,
+    SwitchPort              as SwitchPortEntity,
+    Switcher                as SwitcherEntity,
+    VirtualInterface        as VirtualInterfaceEntity
+};
 
 use IXP\Utils\Grapher\{
     Mrtg as MrtgFile,
@@ -94,11 +100,11 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param IXP $ixp The IXP to generate the config for (multi-IXP mode)
-     * @param int $config_type The type of configuration to generate
+     * @param IXPEntity $ixp  The IXP to generate the config for (multi-IXP mode)
+     * @param int $type The type of configuration to generate
      * @return array
      */
-    public function generateConfiguration( IXP $ixp, int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
+    public function generateConfiguration( IXPEntity $ixp, int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
     {
         return [
             View::make( 'services.grapher.mrtg.monolithic', [
@@ -106,7 +112,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                     'data'       => $this->getPeeringPorts( $ixp ),
                     'snmppasswd' => config('grapher.backends.mrtg.snmppasswd'),
                 ]
-            )->render()
+            )->render(),
         ];
     }
 
@@ -116,23 +122,23 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * The array returned is an array of arrays containing:
      *
-     * * array `['pis']` of PhysicalInterface objects indexed by their ID
+     * * array `['pis']` of PhysicalInterfaceEntity objects indexed by their ID
      * * array `['custs']` of Customer objects indexed by their ID
      * * array `['sws']` of Switcher objects indexed by their ID
      * * array `['infras']` of Infrastructure objects indexed by their ID
-     * * array `['custports']` containing an array of PhysicalInterface IDs indexed by customer ID
-     * * array `['custlags']` containing an array of PhysicalInterface IDs contained in an array indexed
-     *       by VirtualInterface IDs in turn in an array of customer IDs:
+     * * array `['custports']` containing an array of PhysicalInterfaceEntity IDs indexed by customer ID
+     * * array `['custlags']` containing an array of PhysicalInterfaceEntity IDs contained in an array indexed
+     *       by VirtualInterfaceEntity IDs in turn in an array of customer IDs:
      *       `['custlags'][$custid][$viid][]`
-     * * array `['swports']` indexed by Switcher ID conataining the PhysicalInterface IDs of peering ports
-     * * array `['infraports']` indexed by Infrastructure ID conataining the PhysicalInterface IDs of peering ports
-     * * array `['ixpports']` conataining the PhysicalInterface IDs of peering ports
+     * * array `['swports']` indexed by Switcher ID conataining the PhysicalInterfaceEntity IDs of peering ports
+     * * array `['infraports']` indexed by Infrastructure ID conataining the PhysicalInterfaceEntity IDs of peering ports
+     * * array `['ixpports']` conataining the PhysicalInterfaceEntity IDs of peering ports
      *
      *
-     * @param IXP $ixp The IXP to generate the config for (multi-IXP mode)
+     * @param IXPEntity $ixp The IXP to generate the config for (multi-IXP mode)
      * @return array
      */
-    public function getPeeringPorts( IXP $ixp ): array {
+    public function getPeeringPorts( IXPEntity $ixp ): array {
         $data = [];
         $data['ixpports']            = [];
         $data['ixpports_maxbytes']   = 0;
@@ -153,7 +159,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
         foreach( $ixp->getCustomers() as $c ) {
 
             foreach( $c->getVirtualInterfaces() as $vi ) {
-
+                /** @var VirtualInterfaceEntity $vi*/
                 // we do not include core bundle interfaces here
                 if( $vi->getCoreBundle() !== false ) {
                     continue;
@@ -212,7 +218,9 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
         // This is a slight hack as the template requires PhysicalInterfaces so we wrap core SwitchPorts in temporary PhyInts.
         foreach( $ixp->getInfrastructures() as $infra ) {
             foreach( $infra->getSwitchers() as $switch ) {
+                /** @var SwitcherEntity $switch */
                 foreach( $switch->getPorts() as $sp ) {
+                    /** @var SwitchPortEntity $sp */
                     if( $sp->isTypeCore() ) {
                         // this needs to be wrapped in a physical interface for the template
                         $pi = $this->wrapSwitchPortInPhysicalInterface( $sp, ++$maxPiID );
@@ -236,12 +244,14 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * Wrap a switchport in a temporary PhysicalInterface.
      *
      * @see getPeeringPorts() for usage
-     * @param SwitchPort $switchport
+     *
+     * @param SwitchPortEntity $sp
      * @param int $id The ID to set in the physical interface
-     * @return PhysicalInterface
+     *
+     * @return PhysicalInterfaceEntity
      */
-    public function wrapSwitchPortInPhysicalInterface( SwitchPort $sp, int $id ): PhysicalInterface {
-        $pi = new PhysicalInterface;
+    public function wrapSwitchPortInPhysicalInterface( SwitchPortEntity $sp, int $id ): PhysicalInterfaceEntity {
+        $pi = new PhysicalInterfaceEntity;
         $pi->setId( $id );
         $pi->setSwitchPort($sp);
         $pi->setSpeed( $sp->getIfHighSpeed() );
@@ -264,45 +274,45 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
-                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD )
+                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD ),
             ],
             'infrastructure' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
-                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD )
+                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD ),
             ],
             'switcher' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
-                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD )
+                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD ),
             ],
             'trunk' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS ],
                 'periods'     => Graph::PERIODS,
-                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD )
+                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD ),
             ],
             'physicalinterface' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => Graph::CATEGORIES,
                 'periods'     => Graph::PERIODS,
-                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD )
+                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD ),
             ],
             'virtualinterface' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => Graph::CATEGORIES,
                 'periods'     => Graph::PERIODS,
-                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD )
+                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD ),
             ],
             'customer' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => Graph::CATEGORIES,
                 'periods'     => Graph::PERIODS,
-                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD )
+                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD ),
             ],
         ];
     }
@@ -314,9 +324,9 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * @param Graph $graph
      * @return array
+     * @throws
      */
     public function data( Graph $graph ): array {
-
         try {
             if( config('grapher.backends.mrtg.dbtype') == 'log' ) {
                 $mrtg = new MrtgFile( $this->resolveFilePath( $graph, 'log' ) );
@@ -338,6 +348,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * @param Graph $graph
      * @return string
+     * @throws
      */
     public function png( Graph $graph ): string {
 
@@ -351,7 +362,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                 return $img;
             } else {
                 $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
-                return @file_get_contents( $rrd->png('a') );
+                return @file_get_contents( $rrd->png() );
             }
         } catch( FileErrorException $e ) {
             Log::notice("[Grapher] {$this->name()} png(): could not load rrd file " . ( isset( $rrd ) ? $rrd->file() : '???' ) );
@@ -366,6 +377,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * @param Graph $graph
      * @return string
+     * @throws
      */
     public function rrd( Graph $graph ): string {
         try {
@@ -394,37 +406,44 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * will be found.
      *
      * @param Graph $graph
+     * @param string $type
      * @return string
+     * @throws
      */
-    public function resolveFilePath( Graph $graph, $type ): string {
+    public function resolveFilePath( Graph $graph, string $type ): string {
         $config = config('grapher.backends.mrtg');
 
         $loggyType = $type == 'rrd' || $type == 'log';
 
         switch( $graph->classType() ) {
             case 'IXP':
+                /** @var Graph\IXP $graph */
                 return sprintf( "%s/ixp/ixp%03d-%s%s.%s", $config['logdir'], $graph->ixp()->getId(),
                     $graph->category(), $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'Infrastructure':
+                /** @var Graph\Infrastructure $graph */
                 return sprintf( "%s/infras/%03d/ixp%03d-infra%03d-%s%s.%s", $config['logdir'],
                     $graph->infrastructure()->getId(), $graph->infrastructure()->getIXP()->getId(),
                     $graph->infrastructure()->getId(), $graph->category(), $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'Switcher':
+                /** @var Graph\Switcher $graph */
                 return sprintf( "%s/switches/%03d/switch-aggregate-%05d-%s%s.%s", $config['logdir'],
                     $graph->switch()->getId(), $graph->switch()->getId(),
                     $graph->category(), $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'Trunk':
+                /** @var Graph\Trunk $graph */
                 return sprintf( "%s/trunks/%s%s.%s", $config['logdir'], $graph->trunkname(),
                     $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'PhysicalInterface':
+                /** @var Graph\PhysicalInterface $graph */
                 return sprintf( "%s/members/%s/ints/%s-%s%s.%s", $config['logdir'],
                     $this->shardMemberDir( $graph->physicalInterface()->getVirtualInterface()->getCustomer()->getId() ),
                     $graph->identifier(), $graph->category(),
@@ -432,6 +451,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                 break;
 
             case 'VirtualInterface':
+                /** @var Graph\VirtualInterface $graph */
                 return sprintf( "%s/members/%s/lags/%s-%s%s.%s", $config['logdir'],
                     $this->shardMemberDir( $graph->virtualInterface()->getCustomer()->getId() ),
                     $graph->identifier(), $graph->category(),
@@ -439,6 +459,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                 break;
 
             case 'Customer':
+                /** @var Graph\Customer $graph */
                 return sprintf( "%s/members/%s/%s-%s%s.%s", $config['logdir'],
                     $this->shardMemberDir( $graph->customer()->getId() ),
                     $graph->identifier(), $graph->category(),

@@ -42,7 +42,7 @@
                 <div class="">
 
                     <div class="navbar-header">
-                        <a class="navbar-brand" href="http://ixp.test/statistics/members">Graph Options:</a>
+                        <a class="navbar-brand" href="">Graph Options:</a>
                     </div>
 
                     <form class="navbar-form navbar-left form-inline"  action="<?= route( "statistics@member", [ "id" => $t->c->getId() ] ) ?>" method="""et">
