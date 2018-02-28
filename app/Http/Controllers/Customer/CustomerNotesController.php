@@ -23,11 +23,8 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM , DateTime, Exception, Mail, Redirect, Former;
+use Auth, D2EM, Exception, Mail, Redirect;
 
-use Intervention\Image\ImageManagerStatic as Image;
-
-use Illuminate\View\View;
 use IXP\Http\Controllers\Controller;
 use Illuminate\Http\{
     RedirectResponse,
@@ -43,11 +40,6 @@ use Entities\{
 };
 
 use IXP\Mail\Customer\Email as EmailCustomer;
-
-
-use IXP\Http\Requests\{
-    Store
-};
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -78,6 +70,7 @@ class CustomerNotesController extends Controller {
         $isEdit = false;
         $old = false;
 
+        /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) ) ){
             abort( 404);
         }
@@ -121,17 +114,31 @@ class CustomerNotesController extends Controller {
     }
 
 
+    /**
+     * @param int $custid
+     * @return JsonResponse
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     public function notifyToggleByCust( int $custid = null ){
-
         return  $this->notifyToggle( $custid, null );
     }
 
+    /**
+     * @param int $id
+     * @return JsonResponse
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     public function notifyToggleByNote( int $id = null ){
         return  $this->notifyToggle( null, $id );
     }
 
+    /**
+     * @param int|null $custid
+     * @param int|null $noteId
+     * @return JsonResponse
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     private function notifyToggle( int $custid = null, int $noteId = null ) : JsonResponse{
-
         if( $custid ) {
             $id   = $custid;
             $name = sprintf( "customer-notes.%d.notify", $id );
@@ -145,6 +152,7 @@ class CustomerNotesController extends Controller {
 
         // Toggles customer notes notification preference
         if( isset( $id ) && is_numeric( $id ) ) {
+            /** @var string $name */
             if( !Auth::getUser()->getPreference( $name ) ){
                 Auth::getUser()->setPreference( $name, $value );
             } else {
@@ -207,6 +215,11 @@ class CustomerNotesController extends Controller {
     }
 
 
+    /**
+     * @param int|null $id
+     * @return JsonResponse
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     public function ping( int $id = null ) : JsonResponse {
         if( Auth::getUser()->getPrivs() == UserEntity::AUTH_SUPERUSER ){
             $custid = $id;
@@ -230,12 +243,12 @@ class CustomerNotesController extends Controller {
      *  * old != false, new == false: DELETE
      *  * old != false, new != false: EDIT
      *
-     * @param string $old Old Note
-     * @param string $new New note
+     * @param CustomerNoteEntity $old Old Note
+     * @param CustomerNoteEntity $new New note
      *
      * @throws Exception
      */
-    private function sendNotifications( $old = null , $new = null ){
+    private function sendNotifications( CustomerNoteEntity $old = null ,CustomerNoteEntity $new = null ){
         // get admin users
         $users = D2EM::getRepository( UserEntity::class )->findBy( [ 'privs' => UserEntity::AUTH_SUPERUSER ] );
 
@@ -256,6 +269,7 @@ class CustomerNotesController extends Controller {
 
 
         foreach( $users as $user ) {
+            /** @var UserEntity $user */
             if( !$user->getPreference( "customer-notes.notify" ) ) {
                 if( !$user->getPreference( "customer-notes.{$cust->getId()}.notify" ) ) {
                     if( !$old ) // adding
@@ -269,8 +283,7 @@ class CustomerNotesController extends Controller {
                 continue;
 
             try {
-                //$mailable->to( $user->getContact()->getEmail(), $user->getContact()->getName() );
-                $mailable->to( 'yann@islandbridgenetworks.ie', 'yann' );
+                $mailable->to( $user->getContact()->getEmail(), $user->getContact()->getName() );
                 Mail::send( $mailable ) ;
 
             } catch( Exception $e ) {
@@ -280,6 +293,10 @@ class CustomerNotesController extends Controller {
     }
 
 
+    /**
+     * @return RedirectResponse
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
     public function readAll() : RedirectResponse{
         $lastReads = Auth::getUser()->getAssocPreference( 'customer-notes' )[0];
         foreach( $lastReads as $id => $data ) {

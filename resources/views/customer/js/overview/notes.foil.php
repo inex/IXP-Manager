@@ -86,8 +86,8 @@
                         });
                     })
                     .fail( function(){
-                        throw new Error( "Error running ajax query for " + urlAction );
                         alert( "Error running ajax query for " + urlAction );
+                        throw new Error( "Error running ajax query for " + urlAction );
                     })
                     .always( function() {
 
@@ -100,14 +100,14 @@
         event.preventDefault();
 
         // validation - just make sure there's a title
-        if( $( "#co-notes-ftitle" ).val().length == 0 ){
+        if( $( "#co-notes-ftitle" ).val().length === 0 ){
             bootbox.alert( "Error! A title for the note is required.", function() {
                 $( "#co-notes-ftitle" ).focus();
             });
             return;
         }
 
-        urlAction = "<?= route( 'customerNotes@add' ) ?>";
+        let urlAction = "<?= route( 'customerNotes@add' ) ?>";
 
         $.ajax( urlAction, {
             type: 'POST',
@@ -166,7 +166,7 @@
 
         $( "#co-notes-dialog" ).modal( 'hide' );
 
-        if( $( "#co-notes-fadd" ).html() == 'Add' ) {
+        if( $( "#co-notes-fadd" ).html() === 'Add' ) {
 
             $( "#co-notes-table-tbody" ).prepend(
                 "<tr class=\"collapse\" id=\"co-notes-table-row-" + data.rep['noteid'] + "\">"
@@ -228,8 +228,8 @@
                 }
             })
             .fail( function(){
-                throw new Error( "Error running ajax query for " + urlAction );
                 alert( "Error running ajax query for " + urlAction );
+                throw new Error( "Error running ajax query for " + urlAction );
             })
             .always( function() {
 
@@ -248,8 +248,8 @@
                 }
             })
             .fail( function(){
-                throw new Error( "Error running ajax query for " + urlAction );
                 alert( "Error running ajax query for " + urlAction );
+                throw new Error( "Error running ajax query for " + urlAction );
             })
             .always( function() {
 
@@ -282,7 +282,7 @@
         $( 'button[id|="co-notes-edit"]' ).on( 'click', coNotesEditDialog );
         $( 'button[id|="co-notes-trash"]' ).on( 'click', coNotesDelete );
 
-        $( "#co-notes-fpublic" ).on( "click", function( event ){
+        $( "#co-notes-fpublic" ).on( "click", function( ){
             coNotesPublicCheckbox();
         });
 
@@ -294,13 +294,13 @@
             return false;
         });
 
-        $( "#co-notes-dialog" ).on( 'shown', function( e ) {
+        $( "#co-notes-dialog" ).on( 'shown', function() {
             $( "#co-notes-ftitle" ).focus();
         });
 
         <?php endif; ?>
 
-        $( "#tab-notes" ).on( 'shown', function( e ) {
+        $( "#tab-notes" ).on( 'shown', function( ) {
             // mark notes as read and update the users last read time
             $( '#notes-unread-indicator' ).remove();
             <?php if( Auth::getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER ): ?>

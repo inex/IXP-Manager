@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use App, Auth, Countries, D2EM, DateTime, Exception, Former, Mail, Redirect;
+use App, Auth, Countries, D2EM, DateTime, Former, Mail, Redirect;
 
 use IXP\Events\Customer\BillingDetailsChanged as CustomerBillingDetailsChangedEvent;
 
@@ -31,12 +31,10 @@ use IXP\Http\Controllers\Controller;
 
 use Illuminate\Http\{
     RedirectResponse,
-    JsonResponse,
     Request
 };
 
 use Illuminate\View\View;
-
 
 use Entities\{
     CompanyBillingDetail    as CompanyBillingDetailEntity,
@@ -44,9 +42,7 @@ use Entities\{
     Customer                as CustomerEntity,
     CustomerNote            as CustomerNoteEntity,
     IRRDBConfig             as IRRDBConfigEntity,
-    IXP                     as IXPEntity,
     NetworkInfo             as NetworkInfoEntity,
-    PhysicalInterface       as PhysicalInterfaceEntity,
     RSPrefix                as RSPrefixEntity,
     User                    as UserEntity
 };
@@ -179,7 +175,7 @@ class CustomerController extends Controller
     /**
      * Add or edit a customer (set all the data needed)
      *
-     * @param   CustomerRequest $request instance of the current HTTP request
+     * @param   CustomerRequest $r instance of the current HTTP request
      *
      * @return  RedirectResponse
      * @throws
@@ -228,7 +224,7 @@ class CustomerController extends Controller
         $c->setIsReseller(           $r->input( 'isReseller'           ) ?? false  );
 
         if( $r->input( 'isResold' ) ) {
-            $c->setReseller( D2EM::getRepository( CustomerEntity::class )->find( $this->input( "reseller" ) ) );
+            $c->setReseller( D2EM::getRepository( CustomerEntity::class )->find( $r->input( "reseller" ) ) );
         } else {
             $c->setReseller( null );
         }
@@ -452,14 +448,13 @@ class CustomerController extends Controller
     /**
      * Display the customer overview
      *
-     * @param   Request     $r
      * @param   int         $id         Id of the customer
      * @param   string      $tab        Tab from the overview selected
      *
      * @return  View
      * @throws
      */
-    public function overview( Request $r, $id = null, string $tab = null ) : View {
+    public function overview(int $id = null, string $tab = null ) : View {
 
         /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
@@ -596,7 +591,7 @@ class CustomerController extends Controller
 
         try {
             $mailable->checkIfSendable();
-        } catch( MailableException $e ) {
+        } catch( \Exception $e ) {
             AlertContainer::push( $e->getMessage(), Alert::DANGER );
 
             return view( 'customer/welcome-email' )->with([

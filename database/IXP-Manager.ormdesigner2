@@ -142,7 +142,7 @@
       <orm-attributes>
         <attribute name="table">company_registration_detail</attribute>
         <attribute name="tableName">company_registration_detail</attribute>
-        <attribute name="repository-class">Repositories\CompanyRegistrationDetail</attribute>
+        <attribute name="repository-class">Repositories\CompanyRegisteredDetail</attribute>
       </orm-attributes>
     </entity>
     <entity name="\Entities\Infrastructure" local-name="Infrastructure" namespace="\Entities" uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b">
@@ -329,7 +329,7 @@
       <orm-attributes>
         <attribute name="table">cust_notes</attribute>
         <attribute name="tableName">cust_notes</attribute>
-        <attribute name="repository-class">Repositories\CustomerNotes</attribute>
+        <attribute name="repository-class">Repositories\CustomerNote</attribute>
       </orm-attributes>
     </entity>
     <association from="\Entities\CustomerNote" to="\Entities\Customer" owner-alias="Notes" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="c5d6b4b1-d641-426c-b168-c2a1a8351cb2">
