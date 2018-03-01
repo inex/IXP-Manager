@@ -45,6 +45,49 @@ body {
 
 }
 
+@media (max-width: 810px) {
+    .navbar-header {
+        float: none;
+    }
+    .navbar-toggle {
+        display: block;
+    }
+    .navbar-collapse {
+        border-top: 1px solid transparent;
+        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .navbar-collapse.collapse {
+        display: none!important;
+    }
+    .navbar-collapse.collapse.in {
+        display: block!important;
+    }
+    .navbar-nav {
+        float: none!important;
+        margin: 7.5px -15px;
+    }
+    .navbar-nav>li {
+        float: none;
+    }
+    .navbar-nav>li>a {
+        padding-top: 10px;
+        padding-bottom: 10px;
+    }
+    .navbar-form {
+        padding: 10px 15px;
+        margin-top: 8px;
+        margin-right: -15px;
+        margin-bottom: 8px;
+        margin-left: -15px;
+        border-top: 1px solid transparent;
+        border-bottom: 1px solid transparent;
+        -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 1px 0 rgba(255, 255, 255, .1);
+        box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 1px 0 rgba(255, 255, 255, .1);
+        width:auto;
+        float:none!important;
+    }
+}
+
 button.navbar-toggle{
     margin-top: 4px;
 }
@@ -153,48 +196,7 @@ nav.navbar.navbar-inverse.navbar-fixed-top > div.container-fluid > div.navbar-he
 
 }
 
-@media (max-width: 810px) {
-    .navbar-header {
-        float: none;
-    }
-    .navbar-toggle {
-        display: block;
-    }
-    .navbar-collapse {
-        border-top: 1px solid transparent;
-        box-shadow: inset 0 1px 0 rgba(255,255,255,0.1);
-    }
-    .navbar-collapse.collapse {
-        display: none!important;
-    }
-    .navbar-collapse.collapse.in {
-        display: block!important;
-    }
-    .navbar-nav {
-        float: none!important;
-        margin: 7.5px -15px;
-    }
-    .navbar-nav>li {
-        float: none;
-    }
-    .navbar-nav>li>a {
-        padding-top: 10px;
-        padding-bottom: 10px;
-    }
-    .navbar-form {
-        padding: 10px 15px;
-        margin-top: 8px;
-        margin-right: -15px;
-        margin-bottom: 8px;
-        margin-left: -15px;
-        border-top: 1px solid transparent;
-        border-bottom: 1px solid transparent;
-        -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 1px 0 rgba(255, 255, 255, .1);
-        box-shadow: inset 0 1px 0 rgba(255, 255, 255, .1), 0 1px 0 rgba(255, 255, 255, .1);
-        width:auto;
-        float:none!important;
-    }
-}
+
 
 nav.navbar.navbar-inverse.navbar-fixed-top .navbar-brand{
     display: block;
