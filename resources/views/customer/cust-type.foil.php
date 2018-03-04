@@ -1,4 +1,6 @@
-
+<?php
+/** @var Foil\Template\Template $t */
+?>
 <?php if( $t->cust->getType() == \Entities\Customer::TYPE_ASSOCIATE ): ?>
     <span class="label lb-sm label-warning">ASSOCIATE MEMBER</span>
 <?php elseif( $t->cust->getType() == \Entities\Customer::TYPE_PROBONO ): ?>

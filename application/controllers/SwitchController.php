@@ -375,7 +375,6 @@ class SwitchController extends IXP_Controller_FrontEnd
      */
     protected function addPostValidate( $form, $object, $isEdit )
     {
-
         $object->setCabinet(
             $this->getD2EM()->getRepository( '\\Entities\\Cabinet' )->find( $form->getElement( 'cabinetid' )->getValue() )
         );
@@ -390,8 +389,6 @@ class SwitchController extends IXP_Controller_FrontEnd
                 $this->getD2EM()->getRepository( '\\Entities\\Infrastructure' )->find( $form->getElement( 'infrastructure' )->getValue() )
             );
         }
-
-
 
         if( $form->getElement( 'asn' )->getValue() ){
 
@@ -443,6 +440,11 @@ class SwitchController extends IXP_Controller_FrontEnd
         if( $form->getElement( 'loopback_name' )->getValue() == "" ) {
             $object->setLoopbackName( null );
         }
+
+        if( $form->getElement( 'mgmt_mac_address' )->getValue() == '' ) {
+            $object->setMgmtMacAddress( null );
+        }
+
 
         return true;
     }

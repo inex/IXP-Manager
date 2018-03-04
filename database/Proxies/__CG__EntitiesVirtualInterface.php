@@ -760,4 +760,15 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
         return parent::isGraphable();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getInfrastructure()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInfrastructure', []);
+
+        return parent::getInfrastructure();
+    }
+
 }

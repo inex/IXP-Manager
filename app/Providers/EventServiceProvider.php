@@ -16,6 +16,13 @@ class EventServiceProvider extends ServiceProvider {
             'IXP\Listeners\Customer\BillingDetailsChanged'
         ],
 
+        'IXP\Events\Layer2Address\Added' => [
+            'IXP\Listeners\Layer2Address\Changed',
+        ],
+        'IXP\Events\Layer2Address\Deleted' => [
+            'IXP\Listeners\Layer2Address\Changed',
+        ],
+
     ];
 
     /**

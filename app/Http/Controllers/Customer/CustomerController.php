@@ -38,7 +38,6 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-
 use Entities\{
     CompanyBillingDetail    as CompanyBillingDetailEntity,
     CompanyRegisteredDetail as CompanyRegisteredDetailEntity,
@@ -180,7 +179,8 @@ class CustomerController extends Controller
     /**
      * Add or edit a customer (set all the data needed)
      *
-     * @param CustomerRequest $r
+     * @param   CustomerRequest $r instance of the current HTTP request
+     *
      * @return  RedirectResponse
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
@@ -459,7 +459,7 @@ class CustomerController extends Controller
      * @return  View
      * @throws  \IXP_Exception
      */
-    public function overview( $id = null, string $tab = null ) : View {
+    public function overview( $id = null, $tab = null ) : View {
 
         /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
@@ -589,7 +589,7 @@ class CustomerController extends Controller
 
         try {
             $mailable->checkIfSendable();
-        } catch( MailableException $e ) {
+        } catch( \Exception $e ) {
             AlertContainer::push( $e->getMessage(), Alert::DANGER );
             return back()->withInput();
         }
