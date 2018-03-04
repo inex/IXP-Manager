@@ -3,7 +3,7 @@
 namespace IXP\Mail\Customer;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -31,7 +31,10 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Entities\{
     Customer as CustomerEntity
 };
-use IXP\Http\Requests\Customer\WelcomeEmail;
+
+use IXP\Exceptions\Mailable as MailableException;
+
+use IXP\Http\Requests\Customer\WelcomeEmail as WelcomeEmailRequest;
 
 /**
  * Mailable for Customer
@@ -43,19 +46,19 @@ use IXP\Http\Requests\Customer\WelcomeEmail;
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Email extends Mailable
+class WelcomeEmail extends Mailable
 {
     use Queueable, SerializesModels;
 
     /**
      * @var CustomerEntity
      */
-    public $cust;
+    public $c;
 
     /**
-     * @var string
+     * @var WelcomeEmailRequest
      */
-    public $subject;
+    public $r;
 
     /**
      * @var string The template to use to create the email
@@ -75,11 +78,14 @@ class Email extends Mailable
     /**
      * Create a new message instance.
      *
-     * @param CustomerEntity $cust
+     * @param CustomerEntity $c
+     * @param WelcomeEmailRequest $r
      */
-    public function __construct( CustomerEntity $cust ) {
-        $this->cust    = $cust;
-        $this->from( config('identity.email'), config('identity.name') );
+    public function __construct( CustomerEntity $c, WelcomeEmailRequest $r ) {
+        $this->c = $c;
+        $this->r = $r;
+        $this->prepareFromRequest($r);
+        $this->prepareBody($r);
     }
 
     /**
@@ -92,77 +98,59 @@ class Email extends Mailable
         }
     }
 
-    /**
-     * Build the message.
-     *
-     * @return $this
-     */
-    public function build()
-    {
-        return $this;
-    }
-
-    /**
-     * Get the subject for an email
-     *
-     * @return string The subject for an email
-     */
-    public function getSubject(): string {
-        return $this->subject;
-    }
-
-    /**
-     * Get the email's body
-     *
-     * For this we assume Markdown and return the template as is (with
-     * rendered data).
-     *
-     * @return string The Email's body
-     * @throws
-     */
-    public function getBody(): string {
-        return view( $this->tmpl )->with( $this->buildViewData() )->render();
-    }
 
     /**
      * Set up recipients and subject from a POST request.
      *
-     * @param \IXP\Http\Requests\WelcomeEmail $request
+     * @param WelcomeEmailRequest $r
+     * @return WelcomeEmail
      */
-    public function prepareFromRequest( WelcomeEmail $request ) {
+    protected function prepareFromRequest( WelcomeEmailRequest $r ) {
         // recipients
-        foreach( [ 'to', 'cc', 'bcc' ] as $r ) {
-            $hasFn = 'has' . ucfirst( $r );
-            foreach( explode(',', $request->input( $r ) ) as $emaddr ) {
+        foreach( [ 'to', 'cc', 'bcc' ] as $p ) {
+            $hasFn = 'has' . ucfirst( $p );
+            foreach( explode(',', $r->input( $p ) ) as $emaddr ) {
                 $email = trim( $emaddr );
-                if( filter_var( $email, FILTER_VALIDATE_EMAIL ) && !$this->$hasFn( $email ) ) {
-                    $this->$r($email);
+                if( filter_var( $email, FILTER_VALIDATE_EMAIL ) ) {
+                    $this->$p($email);
                 }
             }
         }
 
-        $this->subject( $request->input('subject') );
+        $this->subject( $r->input('subject') );
+        return $this;
     }
 
     /**
      * Set up Markdown body from a POST request.
      *
-     * @param \IXP\Http\Requests\WelcomeEmail $request
+     * @param WelcomeEmailRequest $r
+     * @return WelcomeEmail
      */
-
-    public function prepareBody( WelcomeEmail $request ) {
+    public function prepareBody( WelcomeEmailRequest $r )
+    {
         // Templating is slightly awkward here as Laravel's Mailable is built around reading the
         // body from a template file be we have it via post.
         //
         // To work around this, we'll use a temporary file in a new view namespace.
 
-        $body          = $request->input('message');
+        $body          = $r->input('message');
         $this->tmpfile = tempnam( sys_get_temp_dir(), 'welcome_email_' );
         $this->tmpname = basename( $this->tmpfile );
         $this->tmpfile = $this->tmpfile . '.blade.php';
         file_put_contents( $this->tmpfile, "@component('mail::message')\n\n" . $body . "\n\n@endcomponent\n" );
         view()->addNamespace('welcome_emails', sys_get_temp_dir() );
         $this->markdown( 'welcome_emails::' . $this->tmpname );
+        return $this;
+    }
+
+    /**
+     * Build the message.
+     *
+     * @return $this
+     */
+    public function build() {
+        return $this;
     }
 
     /**

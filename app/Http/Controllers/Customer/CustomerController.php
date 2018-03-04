@@ -23,7 +23,9 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use App, Auth, Countries, D2EM, DateTime, Exception, Former, Mail, Redirect;
+use App, Auth, Countries, D2EM, DateTime, Former, Mail, Redirect;
+
+use Doctrine\ORM\ORMInvalidArgumentException;
 
 use IXP\Events\Customer\BillingDetailsChanged as CustomerBillingDetailsChangedEvent;
 
@@ -31,7 +33,6 @@ use IXP\Http\Controllers\Controller;
 
 use Illuminate\Http\{
     RedirectResponse,
-    JsonResponse,
     Request
 };
 
@@ -44,14 +45,14 @@ use Entities\{
     Customer                as CustomerEntity,
     CustomerNote            as CustomerNoteEntity,
     IRRDBConfig             as IRRDBConfigEntity,
-    IXP                     as IXPEntity,
     NetworkInfo             as NetworkInfoEntity,
-    PhysicalInterface       as PhysicalInterfaceEntity,
     RSPrefix                as RSPrefixEntity,
     User                    as UserEntity
 };
 
-use IXP\Mail\Customer\Email as EmailCustomer;
+use IXP\Exceptions\Mailable as MailableException;
+
+use IXP\Mail\Customer\WelcomeEmail;
 
 use IXP\Http\Requests\Customer\{
     Store                   as CustomerRequest,
@@ -179,12 +180,13 @@ class CustomerController extends Controller
     /**
      * Add or edit a customer (set all the data needed)
      *
-     * @param   CustomerRequest $request instance of the current HTTP request
-     *
+     * @param CustomerRequest $r
      * @return  RedirectResponse
-     * @throws
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
      */
-    public function store( CustomerRequest $r ): RedirectResponse {
+    public function store( CustomerRequest $r ): RedirectResponse
+    {
 
         $isEdit = $r->input( 'id' ) ? true : false;
 
@@ -228,7 +230,7 @@ class CustomerController extends Controller
         $c->setIsReseller(           $r->input( 'isReseller'           ) ?? false  );
 
         if( $r->input( 'isResold' ) ) {
-            $c->setReseller( D2EM::getRepository( CustomerEntity::class )->find( $this->input( "reseller" ) ) );
+            $c->setReseller( D2EM::getRepository( CustomerEntity::class )->find( $r->input( "reseller" ) ) );
         } else {
             $c->setReseller( null );
         }
@@ -452,14 +454,12 @@ class CustomerController extends Controller
     /**
      * Display the customer overview
      *
-     * @param   Request     $r
-     * @param   int         $id         Id of the customer
-     * @param   string      $tab        Tab from the overview selected
-     *
+     * @param   int $id Id of the customer
+     * @param   string $tab Tab from the overview selected
      * @return  View
-     * @throws
+     * @throws  \IXP_Exception
      */
-    public function overview( Request $r, $id = null, string $tab = null ) : View {
+    public function overview( $id = null, string $tab = null ) : View {
 
         /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
@@ -529,18 +529,16 @@ class CustomerController extends Controller
         }
 
         return [ "custNotes" => $custNotes, "notesReadUpto" => $rut , "notesLastRead" => $lastRead, "unreadNotes" => $unreadNotes];
-
     }
 
     /**
      * Display the Welcome Email form
      *
-     * @param   int      $id         Id of the customer
-     *
+     * @param   int $id Id of the customer
      * @return  View
-     * @throws
+     * @throws \Throwable
      */
-    public function welcomeEmail( int $id = null ) : View{
+    public function welcomeEmail( int $id ) : View{
         /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
             abort( 404);
@@ -563,13 +561,13 @@ class CustomerController extends Controller
 
         return view( 'customer/welcome-email' )->with([
             'c'         => $c,
-            'body'      => view( "customer/emails/welcome-email" )->with( [
-                    'c'                     => $c,
-                    'admins'                => $c->getAdminUsers() ,
-                    'netinfo'               => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray(),
-                    'identityEmail'         => config('identity.email'),
-                    'identityOrgname'       => config('identity.orgname'),
-                ] )->render()
+            'body'      => view( "customer/emails/welcome-email" )->with([
+                'c'                     => $c,
+                'admins'                => $c->getAdminUsers(),
+                'netinfo'               => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray(),
+                'identityEmail'         => config('identity.email'),
+                'identityOrgname'       => config('identity.orgname'),
+            ])->render()
         ]);
 
     }
@@ -577,38 +575,23 @@ class CustomerController extends Controller
     /**
      * Send the welcome email to a customer
      *
-     * @param WelcomeEmailRequest $request
-     *
+     * @param WelcomeEmailRequest $r
      * @return RedirectResponse|View
-     *
-     * @throws
      */
-    public function sendWelcomeEmail( WelcomeEmailRequest $request){
+    public function sendWelcomeEmail( WelcomeEmailRequest $r )
+    {
         /** @var CustomerEntity $c */
-        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) ){
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $r->input( 'id' ) ) ) ){
             abort( 404);
         }
 
-        $mailable = new EmailCustomer( $c );
-        $mailable->prepareFromRequest( $request );
-
-        $mailable->prepareBody( $request );
+        $mailable = new WelcomeEmail( $c, $r );
 
         try {
             $mailable->checkIfSendable();
         } catch( MailableException $e ) {
             AlertContainer::push( $e->getMessage(), Alert::DANGER );
-
-            return view( 'customer/welcome-email' )->with([
-                'c'         => $c,
-                'body'      => view( "customer/emails/welcome-email" )->with( [
-                    'c'                     => $c,
-                    'admins'                => $c->getAdminUsers() ,
-                    'netinfo'               => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray(),
-                    'identityEmail'         => config('identity.email'),
-                    'identityOrgname'       => config('identity.orgname'),
-                ] )->render()
-            ]);
+            return back()->withInput();
         }
 
         Mail::send( $mailable );

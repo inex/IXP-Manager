@@ -30,7 +30,7 @@
 
                 <legend>Send Email to Customer</legend>
             <?= Former::open()->method( 'POST' )
-                ->action( route( 'customer@sendWelcomeEmail' ) )
+                ->action( route( 'customer@send-welcome-email' ) )
                 ->addClass( 'col-md-10' );
             ?>
             <?= Former::text( 'to' )
@@ -60,7 +60,7 @@
 
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="body">
-                        <textarea class="form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= $t->ee( $t->body )?></textarea>
+                        <textarea class="form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= old( 'message' ) ?? $t->body ?></textarea>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="preview">
                         <div id="well-preview" class="well" style="background: rgb(255,255,255);">
