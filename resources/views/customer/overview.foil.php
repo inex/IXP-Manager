@@ -1,6 +1,9 @@
 <?php
     /** @var Foil\Template\Template $t */
     $this->layout( 'layouts/ixpv4' );
+    
+    /** @var Entities\Customer $c */
+    $c = $t->c;
 ?>
 
 <?php $this->section( 'title' ) ?>
@@ -8,84 +11,85 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li><?= $t->c->getFormattedName() ?></li>
+    <li><?= $c->getFormattedName() ?></li>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
 <li class="pull-right">
-    <div class="btn-group">
-        <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="glyphicon glyphicon-cog"></i> &nbsp;<span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu pull-right">
-            <li>
-                <a href="<?= route( 'interfaces/virtual/add-wizard/custid', [ 'id' => $t->c->getId() ] ) ?>">Provision new port...</a>
-            </li>
-            <li role="separator" class="divider"></li>
-            <li >
-                <a href="<?= route( 'customer@welcome-email', [ 'id' => $t->c->getId() ] ) ?>"               >Send Welcome Email...</a>
-            </li>
-        </ul>
-    </div>
+    <div class="btn-group btn-group-xs">
 
+        <a class="btn btn-default btn-xs" href="<?= route('statistics@member', [ 'id' => $c->getId() ] ) ?>">Port Graphs</a>
 
-    <div class="btn-group">
-        <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="glyphicon glyphicon-pencil"></i> &nbsp;<span class="caret"></span>
-        </button>
-        <ul class="dropdown-menu pull-right">
-            <li>
-                <a href="<?= route( 'customer@edit' , [ 'id' => $t->c->getId() ] ) ?>">Edit Customer Details</a>
-            </li>
-            <li>
-                <a href="<?= route( 'customer@billing-registration' , [ 'id' => $t->c->getId() ] ) ?>" >
-                    <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode || !$t->c->isResoldCustomer() ): ?>
-                        Edit Billing/Registration Details
-                    <?php else: ?>
-                        Edit Registration Details
-                    <?php endif; ?>
-                </a>
-            </li>
-            <?php if( $t->logoManagementEnabled() ): ?>
+        <div class="btn-group">
+            <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="glyphicon glyphicon-cog"></i> &nbsp;<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu pull-right">
                 <li>
-                    <a href="<?= route( 'logo@manage', [ 'id' => $t->c->getId() ] ) ?>">Manage Logo</a>
+                    <a href="<?= route( 'interfaces/virtual/add-wizard/custid', [ 'id' => $c->getId() ] ) ?>">Provision new port...</a>
                 </li>
+                <li role="separator" class="divider"></li>
+                <li >
+                    <a href="<?= route( 'customer@welcome-email', [ 'id' => $c->getId() ] ) ?>"               >Send Welcome Email...</a>
+                </li>
+            </ul>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="glyphicon glyphicon-pencil"></i> &nbsp;<span class="caret"></span>
+            </button>
+            <ul class="dropdown-menu pull-right">
+                <li>
+                    <a href="<?= route( 'customer@edit' , [ 'id' => $c->getId() ] ) ?>">Edit Customer Details</a>
+                </li>
+                <li>
+                    <a href="<?= route( 'customer@billing-registration' , [ 'id' => $c->getId() ] ) ?>" >
+                        <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode || !$c->isResoldCustomer() ): ?>
+                            Edit Billing/Registration Details
+                        <?php else: ?>
+                            Edit Registration Details
+                        <?php endif; ?>
+                    </a>
+                </li>
+                <?php if( $t->logoManagementEnabled() ): ?>
+                    <li>
+                        <a href="<?= route( 'logo@manage', [ 'id' => $c->getId() ] ) ?>">Manage Logo</a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </div>
+
+        <?php $haveprev = 0 ?>
+        <?php $havenext = 0 ?>
+        <?php $keyCustomers = array_keys( $t->customers ) ?>
+        <?php foreach( $t->customers as $id => $name ): ?>
+
+            <?php if( $id == reset( $keyCustomers ) ): ?>
+                <?php $cidprev = $id ?>
             <?php endif; ?>
 
-        </ul>
-    </div>
+            <?php if( $id == $c->getId() ): ?>
+                <?php $haveprev = 1 ?>
+            <?php elseif( $haveprev && !$havenext ): ?>
+                <?php $havenext = 1 ?>
+                <?php $cidnext = $id ?>
+            <?php endif; ?>
 
-    <?php $haveprev = 0 ?>
-    <?php $havenext = 0 ?>
-    <?php $keyCustomers = array_keys( $t->customers ) ?>
-    <?php foreach( $t->customers as $id => $name ): ?>
+            <?php if( !$haveprev ): ?>
+                <?php $cidprev = $id ?>
+            <?php endif; ?>
 
-        <?php if( $id == reset( $keyCustomers ) ): ?>
-            <?php $cidprev = $id ?>
-        <?php endif; ?>
+            <?php if( !$havenext and end( $keyCustomers ) ): ?>
+                <?php $cidnext = $id ?>
+            <?php endif; ?>
 
-        <?php if( $id == $t->c->getId() ): ?>
-            <?php $haveprev = 1 ?>
-        <?php elseif( $haveprev && !$havenext ): ?>
-            <?php $havenext = 1 ?>
-            <?php $cidnext = $id ?>
-        <?php endif; ?>
+        <?php endforeach; ?>
 
-        <?php if( !$haveprev ): ?>
-            <?php $cidprev = $id ?>
-        <?php endif; ?>
-
-        <?php if( !$havenext and end( $keyCustomers ) ): ?>
-            <?php $cidnext = $id ?>
-        <?php endif; ?>
-
-    <?php endforeach; ?>
-
-    <div class="btn-group btn-group-xs" role="group">
         <a type="button" class="btn btn-default" href="<?= route( "customer@overview", [ 'id' => $cidprev ] ) ?>">
             <span class="glyphicon glyphicon-chevron-left"></span>
         </a>
-        <a type="button" class="btn btn-default" href="<?= route( "customer@overview", [ 'id' => $t->c->getId() ] ) ?>">
+        <a type="button" class="btn btn-default" href="<?= route( "customer@overview", [ 'id' => $c->getId() ] ) ?>">
             <span class="glyphicon glyphicon glyphicon-refresh"></span>
         </a>
         <a type="button" class="btn btn-default" href="<?= route( "customer@overview", [ 'id' => $cidnext ] ) ?>">
@@ -98,17 +102,24 @@
 <?php $this->section('content') ?>
     <?= $t->alerts() ?>
 
-
+    <div class="row">
         <div class="col-sm-12">
-            <div class="well">
-                <h3>
-                    <?= $t->c->getFormattedName() ?>
-                    <?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?>
 
-                    <div class="pull-right">
-                        <a class="btn btn-default" href="<?= route('statistics@member', [ 'id' => $t->c->getId() ] ) ?>">Port Graphs</a>
-                    </div>
-                </h3>
+            <div class="well">
+                <div class="row">
+                    <h3 class="col-sm-9">
+                        <?= $c->getFormattedName() ?>
+                        <?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?>
+                    </h3>
+
+                    <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ): ?>
+
+                        <div class="col-sm-3">
+                            <img class="www80-padding img-responsive" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
+                        </div>
+
+                    <?php endif; ?>
+                </div>
             </div>
 
             <ul class="nav nav-tabs">
@@ -119,18 +130,18 @@
                     <a data-toggle="tab" href="#details">Details</a>
                 </li>
 
-                <?php if( $t->resellerMode() && $t->c->isReseller() ): ?>
+                <?php if( $t->resellerMode() && $c->isReseller() ): ?>
 
                     <li role="resold-customers" <?php if( $t->tab == 'resold-customers' ): ?> class="active" <?php endif; ?>>
                         <a data-toggle="tab" href="#resold-customers" data-toggle="tab">Resold Customers</a>
                     </li>
                 <?php endif; ?>
-                <?php if( $t->c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $t->c->hasLeft() ) ):?>
+                <?php if( $c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $c->hasLeft() ) ):?>
                     <li role="ports" <?php if( $t->tab == 'ports' ): ?> class="active" <?php endif; ?>>
                         <a data-toggle="tab" href="#ports" data-toggle="tab">Ports</a>
                     </li>
 
-                    <?php if( $t->c->hasPrivateVLANs() ): ?>
+                    <?php if( $c->hasPrivateVLANs() ): ?>
                         <li role="private-vlans" <?php if( $t->tab == 'private-vlans' ): ?> class="active" <?php endif; ?>>
                             <a data-toggle="tab" href="#private-vlans" data-toggle="tab">Private VLANs</a>
                         </li>
@@ -159,16 +170,16 @@
                 <li role="cross-connects" <?php if( $t->tab == 'cross-connects' ): ?> class="active" <?php endif; ?>>
                     <a data-toggle="tab" href="#cross-connects" data-toggle="tab">Cross Connects</a>
                 </li>
-                <?php if( count( $t->c->getConsoleServerConnections() ) ): ?>
+                <?php if( count( $c->getConsoleServerConnections() ) ): ?>
                     <li role="console-server-connections" <?php if( $t->tab == 'console-server-connections' ): ?> class="active" <?php endif; ?>>
                         <a data-toggle="tab" href="#console-server-connections" data-toggle="tab">OOB Access</a>
                     </li>
                 <?php endif ?>
 
-                <?php if( $t->c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $t->c->hasLeft() ) ): ?>
+                <?php if( $c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $c->hasLeft() ) ): ?>
 
-                    <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes' ) && $t->c->isRouteServerClient() ): ?>
-                        <li onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'id' =>  $t->c->getId() ] ) ?>'">
+                    <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes' ) && $c->isRouteServerClient() ): ?>
+                        <li onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'id' =>  $c->getId() ] ) ?>'">
                             <a data-toggle="tab"  href="">
                                 RS Prefixes
                                 <?php if( $t->rsRoutes[ 'adv_nacc' ][ 'total' ] > 0 ): ?>
@@ -180,7 +191,7 @@
                     <?php endif ?>
 
                     <?php if( config('grapher.backends.sflow.enabled') ) : ?>
-                        <li onclick="window.location.href = '<?= url( "statistics/p2p/shortname/". $t->c->getShortname() )  ?>'">
+                        <li onclick="window.location.href = '<?= url( "statistics/p2p/shortname/". $c->getShortname() )  ?>'">
                             <a data-toggle="tab" href="">P2P &raquo;</a>
                         </li>
                     <?php endif ?>
@@ -196,14 +207,14 @@
                 <div id="details" class="tab-pane fade <?php if( $t->tab == 'details' ): ?> in active <?php endif; ?>">
                     <?= $t->insert( 'customer/overview-tabs/details' ); ?>
                 </div>
-                <?php if( $t->resellerMode && $t->c->isReseller() ): ?>
+                <?php if( $t->resellerMode && $c->isReseller() ): ?>
                     <div id="resold-customers" class="tab-pane fade">
                         <?= $t->insert( 'customer/overview-tabs/resold-customers' ); ?>
                     </div>
                 <?php endif ?>
-                <?php if( $t->c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $t->c->hasLeft() ) ):?>
+                <?php if( $c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $c->hasLeft() ) ):?>
                     <div id="ports" class="tab-pane fade <?php if( $t->tab == 'ports' ): ?> in active <?php endif; ?> ">
-                        <?php if( $t->resellerMode && $t->c->isReseller() ): ?>
+                        <?php if( $t->resellerMode && $c->isReseller() ): ?>
                             <?= $t->insert( 'customer/overview-tabs/reseller-ports' ); ?>
                         <?php else: ?>
                             <?= $t->insert( 'customer/overview-tabs/ports' ); ?>
@@ -211,7 +222,7 @@
 
 
                     </div>
-                    <?php if( $t->c->hasPrivateVLANs() ): ?>
+                    <?php if( $c->hasPrivateVLANs() ): ?>
                         <div id="private-vlans" class="tab-pane fade <?php if( $t->tab == 'private-vlans' ): ?> in active <?php endif; ?> ">
                             <?= $t->insert( 'customer/overview-tabs/private-vlans' ); ?>
                         </div>
@@ -237,6 +248,7 @@
                 </div>
             </div>
         </div>
+    </div>
 
 
 <?php $this->append() ?>
@@ -258,8 +270,8 @@
         function perringDb( ) {
             var str = "<?= config('ixp_tools.peeringdb_url' ) ?>";
             var mapObj = {
-                '%ID%':"<?= $t->c->getPeeringDb() ?>",
-                '%ASN%':"<?= $t->c->getAutsys() ?>",
+                '%ID%':"<?= $c->getPeeringDb() ?>",
+                '%ASN%':"<?= $c->getAutsys() ?>",
 
             };
             var re = new RegExp(Object.keys(mapObj).join("|"),"gi");

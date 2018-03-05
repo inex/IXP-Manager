@@ -24,7 +24,7 @@
             <div class="col-sm-3">
 
                 <a href="<?= route( "logo@manage" , [ "id" => $logo->getCustomer()->getId() ] ) ?>">
-                    <img class="www80-padding" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
+                    <img class="www80-padding img-responsive" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
                 </a>
 
             </div>
