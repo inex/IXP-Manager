@@ -325,7 +325,7 @@ trait OSS_Controller_Trait_Auth
                 $this->view->token = $pwdResetToken;
 
                 $mailer = $this->getMailer();
-                $mailer->setFrom( $this->getOptions()['identity']['mailer']['email'], $this->getOptions()['identity']['mailer']['name'] );
+                $mailer->setFrom( config( 'identity.email' ), config( 'identity.name' ) );
                 $mailer->addTo( $user->getEmail(), $user->getFormattedName() );
                 $mailer->setSubject( $this->getOptions()['identity']['sitename'] . ' - Password Reset Information' );
                 $this->resolveTemplate( $mailer, 'lost-password' );
@@ -395,7 +395,7 @@ trait OSS_Controller_Trait_Auth
                     $this->view->user = $user;
 
                     $mailer = $this->getMailer();
-                    $mailer->setFrom( $this->_options['identity']['mailer']['email'], $this->_options['identity']['mailer']['name'] );
+                    $mailer->setFrom( config( 'identity.email' ), config( 'identity.name' ) );
                     $mailer->addTo( $user->getEmail(), $user->getFormattedName() );
                     $mailer->setSubject( $this->_options['identity']['sitename'] . ' - Your Password Has Been Reset' );
                     $this->resolveTemplate( $mailer, 'reset-password' );
@@ -475,7 +475,7 @@ trait OSS_Controller_Trait_Auth
                 if( count( $users ) )
                 {
                     $mailer = $this->getMailer();
-                    $mailer->setFrom( $this->_options['identity']['mailer']['email'], $this->_options['identity']['mailer']['name'] );
+                    $mailer->setFrom( config( 'identity.email' ), config( 'identity.name' ) );
                     $mailer->addTo( $form->getValue( 'email' ) );
                     $mailer->setSubject( $this->_options['identity']['sitename'] . ' - Your Accounts' );
                     $this->resolveTemplate( $mailer, 'lost-username' );

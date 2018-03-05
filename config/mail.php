@@ -15,7 +15,7 @@ return [
     |            "sparkpost", "log", "array"    |
     */
 
-    'driver' => env( 'MAIL_DRIVER', 'mail' ),
+    'driver' => env( 'MAIL_DRIVER', 'sendmail' ),
 
     /*
     |--------------------------------------------------------------------------
@@ -28,7 +28,7 @@ return [
     |
     */
 
-    'host' => env( 'MAIL_HOST', 'smtp.mailgun.org' ),
+    'host' => env( 'MAIL_HOST', 'localhost' ),
 
     /*
     |--------------------------------------------------------------------------
@@ -41,7 +41,7 @@ return [
     |
     */
 
-    'port' => env( 'MAIL_PORT', 587 ),
+    'port' => env( 'MAIL_PORT', 25 ),
 
     /*
     |--------------------------------------------------------------------------
@@ -63,7 +63,8 @@ return [
     |
     | Here you may specify the encryption protocol that should be used when
     | the application send e-mail messages. A sensible default using the
-    | transport layer security protocol should provide great security.
+    | transport layer security protocol should provide great security. An
+    | empty string means no encryption.
     |
     */
 
