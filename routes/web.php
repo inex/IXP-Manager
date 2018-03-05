@@ -80,9 +80,6 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'infrastructure/{graphid?}/{category?}', 'StatisticsController@infrastructure'    )->name( 'statistics/infrastructure' );
     Route::get(  'switch/{switchid?}/{category?}',        'StatisticsController@switch'            )->name( 'statistics/switch'         );
     Route::get(  'trunk/{trunkid?}/{category?}',          'StatisticsController@trunk'             )->name( 'statistics/trunk'          );
-
-    Route::get(  'members', 'StatisticsController@members' );
-    Route::post( 'members', 'StatisticsController@members' )->name( 'statistics/members' );
 });
 
 
