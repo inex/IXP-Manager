@@ -24,7 +24,7 @@
      */
     $('#core-link-form').submit(function( e ) {
         $( ".subnet-cl" ).each(function() {
-            if( $( this ).val() != '' ){
+            if( $( this ).val() !== '' ){
                 if( !validSubnet( $( this ).val() ) ){
                     $("#message-cl").html("<div class='alert alert-danger' role='alert'> The subnet " + $( this ).val() + " is not valid! </div>");
                     e.preventDefault();
@@ -117,10 +117,23 @@
         });
     }
 
+
+    /**
+     * event onchange on the switch port dropdowns
+     */
+    $(document).on('change', "[id|='sp']" ,function(e){
+        e.preventDefault();
+        let sid = ( this.id ).substring( 5 );
+        let sside = ( this.id ).substring( 3, 4 );
+
+        $( "#hidden-sp-" + sside + '-' + sid ).val( $("#sp-"+ sside + "-" + sid).val() );
+
+    });
+
     function addCoreLink(){
         let enabled = $( "#enabled").is( ':checked' ) ? 1 : 0 ;
 
-        let ajaxCall = $.ajax( "<?= action( 'Interfaces\CoreBundleController@addCoreLinkFrag' ) ?>", {
+        $.ajax( "<?= action( 'Interfaces\CoreBundleController@addCoreLinkFrag' ) ?>", {
             data: {
                 nbCoreLink      : 0,
                 enabled         : enabled,
@@ -147,8 +160,8 @@
 
         })
         .fail( function() {
-            throw new Error( "Error running ajax query for core-bundle/add-core-link-frag" );
             alert( "Error running ajax query for core-bundle/add-core-link-frag" );
+            throw new Error( "Error running ajax query for core-bundle/add-core-link-frag" );
         })
     }
 
