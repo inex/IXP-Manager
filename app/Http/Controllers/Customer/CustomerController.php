@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use App, Auth, Countries, D2EM, DateTime, Former, Mail, Redirect;
+use App, Auth, Cache, Countries, D2EM, DateTime, Former, Mail, Redirect;
 
 use Doctrine\ORM\ORMInvalidArgumentException;
 
@@ -260,6 +260,7 @@ class CustomerController extends Controller
         }
 
         D2EM::flush();
+        Cache::forget( 'admin_home_customers' );
 
         AlertContainer::push( 'Customer successfully ' . ( $isEdit ? ' edited.' : ' added.' ), Alert::SUCCESS );
 
@@ -663,6 +664,7 @@ class CustomerController extends Controller
             AlertContainer::push( "Error: customer could not be deleted. Please open a GitHub bug report.", Alert::DANGER );
         }
 
+        Cache::forget( 'admin_home_customers' );
         return Redirect::to( route( "customer@list" ) );
     }
 
