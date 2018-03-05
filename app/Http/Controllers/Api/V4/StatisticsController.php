@@ -49,6 +49,24 @@ class StatisticsController extends Controller
     /**
      * Function to export max traffic stats by month (past six) as JSON
      *
+     * Response is of the form:
+     *
+     *     [
+     *         {
+     *             "start": "2017-10-01T00:00:00Z",
+     *             "startTs": 1506816000,
+     *             "end": "2017-10-31T23:59:59Z",
+     *             "endTs": 1509494399,
+     *             "max": 206917750576
+     *         },
+     *         ...
+     *     ]
+     *
+     * Access via https://ixp.example.com/statistics/overall-by-month
+     *
+     * Respects Grapher authorisation settings:
+     *   http://docs.ixpmanager.org/features/grapher/#accessibility-of-aggregate-graphs
+     *
      * This is mostly used by https://www.inex.ie/ 's front page graph.
      *
      * @return JsonResponse
