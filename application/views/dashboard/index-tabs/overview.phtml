@@ -60,8 +60,7 @@
         {if $cust->getLogo('WWW80')}
             <div class="span3">
                 The logo we have for you is shown here.
-                Please <a href="{route( 'customer@list' )} {genUrl controller="customer" action="manage-logo"}">click here</a>
-                to change it.
+                Please <a href="{route( 'logo@manage' )}">click here</a> to change it.
             </div>
             <div class="span3">
                 <img class="www80-padding" src="{genUrl}/logos/{$cust->getLogo('WWW80')->getShardedPath()}" />
@@ -69,7 +68,7 @@
         {else}
             <p>
                 You have not uploaded a logo which means it is not currently displayed on our public
-                website. Please <a href="{genUrl controller="customer" action="manage-logo"}">click here</a>
+                website. Please <a href="{route( 'logo@manage' )}">click here</a>
                 to add one now.
             </p>
         {/if}

@@ -276,7 +276,6 @@ class CustomerController extends Controller
      * Display the billing registration form a customer
      *
      * @param int $id    The Customer ID
-     *
      * @return View
      */
     public function editBillingAndRegDetails( int $id = null ): View {
@@ -334,9 +333,9 @@ class CustomerController extends Controller
 
 
     /**
-     * Add or edit a customer's regitsration / billing information
+     * Add or edit a customer's registration / billing information
      *
-     * email notification
+     * Also sends an email notification if so configured.
      *
      * @param   BillingInformationRequest $request instance of the current HTTP request
      *

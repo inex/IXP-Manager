@@ -47,7 +47,7 @@ Speed:           {{$pi->resolveSpeed()}} ({{$pi->getDuplex()}} duplex)
 
 ```
 @if( $vi->getTrunk() )
-802.1q Tag:    {{$vi->getVLAN()->getNumber()}}
+802.1q Tag:    {{$vli->getVlan()->getNumber()}}
 
 @endif
 @if( $vli->getIpv6enabled() )

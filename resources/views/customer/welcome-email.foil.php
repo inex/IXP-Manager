@@ -25,10 +25,16 @@
 <?php $this->section( 'content' ) ?>
 
     <?= $t->alerts() ?>
+
+    <div class="well">
+        Please see the <a target="_blank" href="http://docs.ixpmanager.org/usage/customers/#welcome-emails">official documentation</a> for information on welcome emails and instructions on how to customise the content.
+    </div>
+
     <div class="row">
         <div class="col-md-12">
 
-                <legend>Send Email to Customer</legend>
+            <legend>Send Welcome Email</legend>
+
             <?= Former::open()->method( 'POST' )
                 ->action( route( 'customer@send-welcome-email' ) )
                 ->addClass( 'col-md-10' );

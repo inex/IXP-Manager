@@ -14,11 +14,13 @@
 ///
 
 
-Route::group( [ 'prefix' => 'customer-logo', 'namespace' => 'Customer'], function() {
-    Route::get( 'manage/{id?}',         'LogoController@manage'     )->name( "logo@manage" );
-    Route::post('store',                'LogoController@store'      )->name( "logo@store" );
-    Route::post('delete/{id}',          'LogoController@delete'     )->name( 'logo@delete');
-});
+if( !config('ixp_fe.frontend.disabled.logo' ) ) {
+    Route::group( [ 'prefix' => 'customer-logo', 'namespace' => 'Customer' ], function() {
+        Route::get( 'manage/{id?}', 'LogoController@manage' )->name( "logo@manage" );
+        Route::post( 'store', 'LogoController@store' )->name( "logo@store" );
+        Route::post( 'delete/{id}', 'LogoController@delete' )->name( 'logo@delete' );
+    } );
+}
 
 Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer'], function() {
     Route::get(    'ping/{id?}',            'CustomerNotesController@ping'      )->name( 'customerNotes@ping');

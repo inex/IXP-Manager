@@ -141,8 +141,6 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
     Route::get(     'welcome-email/{id}',               'CustomerController@welcomeEmail'               )->name( "customer@welcome-email" );
     Route::get(     'delete-recap/{id}',                'CustomerController@deleteRecap'                )->name( "customer@delete-recap" );
     Route::get(     'overview/{id}/{tab?}',             'CustomerController@overview'                   )->name( "customer@overview" );
-    Route::get(     'logos',                            'CustomerController@logos'                      )->name( "customer@logos" );
-
 
     Route::post(    'store',                            'CustomerController@store'                      )->name( 'customer@store');
     Route::post(    'store-billing-and-reg-details',    'CustomerController@storeBillingAndRegDetails'  )->name( 'customer@store-billing-and-reg-details');
@@ -151,9 +149,11 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
 
 });
 
-Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer-logo' ], function() {
-    Route::get(     'logos',                            'LogoController@logos'                      )->name( "logo@logos" );
-});
+if( !config('ixp_fe.frontend.disabled.logo' ) ) {
+    Route::group( [ 'namespace' => 'Customer', 'prefix' => 'customer-logo' ], function() {
+        Route::get( 'logos', 'LogoController@logos' )->name( "logo@logos" );
+    } );
+}
 
 Route::group( [ 'namespace' => 'Customer', 'prefix' => 'customer-note' ], function() {
 

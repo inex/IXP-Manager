@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\Customer;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,10 +23,17 @@ namespace IXP\Http\Requests\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
-
+use Auth;
 use Illuminate\Foundation\Http\FormRequest;
 
+/**
+ * Customer Store Request
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @category   Customers
+ * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class Logo extends FormRequest
 {
     /**
@@ -36,8 +43,10 @@ class Logo extends FormRequest
      */
     public function authorize()
     {
-        // middleware ensures superuser access only so always authorised here:
-        return true;
+        // This is just belt and braces. Real authorization is handled via:
+        // 1. routes are defined in web-auth (or web-auth-superuser)
+        // 2. routes are only defined if !config( 'ixp_fe.frontend.disabled.logo' )
+        return Auth::check() && !config( 'ixp_fe.frontend.disabled.logo' );
     }
 
     /**
@@ -49,7 +58,7 @@ class Logo extends FormRequest
     {
 
         return [
-            'logo'        => 'required',
+            'logo'        => 'required|file',
         ];
 
     }
