@@ -169,7 +169,8 @@ trait OSS_Controller_Trait_Auth
                     if( isset( $this->_options['resources']['auth']['oss']['login_history']['enabled'] )
                                 && $this->_options['resources']['auth']['oss']['login_history']['enabled'] )
                     {
-                        $log = new $this->_options['resources']['auth']['oss']['login_history']['entity'];
+                        $entityName = $this->_options['resources']['auth']['oss']['login_history']['entity'];
+                        $log = new $entityName;
                         $log->setAt( new \DateTime() );
                         $log->setIp( $_SERVER['REMOTE_ADDR'] );
                         $log->setUser( $user );
