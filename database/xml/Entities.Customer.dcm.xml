@@ -42,7 +42,7 @@
     </field>
     <many-to-one field="IRRDB" target-entity="Entities\IRRDBConfig" inversed-by="Customers">
       <join-columns>
-        <join-column name="irrdb" referenced-column-name="id"/>
+        <join-column name="irrdb" referenced-column-name="id" on-delete="RESTRICT"/>
       </join-columns>
     </many-to-one>
     <one-to-one field="RegistrationDetails" target-entity="Entities\CompanyRegisteredDetail" inversed-by="Customer">

@@ -15,7 +15,7 @@
     <field name="updated" type="datetime" nullable="false"/>
     <many-to-one field="Customer" target-entity="Entities\Customer" inversed-by="Notes">
       <join-columns>
-        <join-column name="customer_id" referenced-column-name="id" nullable="false"/>
+        <join-column name="customer_id" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
   </entity>

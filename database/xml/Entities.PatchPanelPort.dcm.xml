@@ -39,7 +39,7 @@
     </many-to-one>
     <many-to-one field="customer" target-entity="Entities\Customer" inversed-by="patchPanelPorts">
       <join-columns>
-        <join-column name="customer_id" referenced-column-name="id"/>
+        <join-column name="customer_id" referenced-column-name="id" on-delete="RESTRICT"/>
       </join-columns>
     </many-to-one>
     <one-to-one field="switchPort" target-entity="Entities\SwitchPort" inversed-by="patchPanelPort">

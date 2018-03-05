@@ -13,12 +13,12 @@
     <field name="updated" type="datetime" nullable="true"/>
     <many-to-one field="Customer" target-entity="Entities\Customer" inversed-by="Peers">
       <join-columns>
-        <join-column name="custid" referenced-column-name="id"/>
+        <join-column name="custid" referenced-column-name="id" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
     <many-to-one field="Peer" target-entity="Entities\Customer" inversed-by="PeersWith">
       <join-columns>
-        <join-column name="peerid" referenced-column-name="id"/>
+        <join-column name="peerid" referenced-column-name="id" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
   </entity>

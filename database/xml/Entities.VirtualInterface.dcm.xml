@@ -21,7 +21,7 @@
     </field>
     <many-to-one field="Customer" target-entity="Entities\Customer" inversed-by="VirtualInterfaces">
       <join-columns>
-        <join-column name="custid" referenced-column-name="id"/>
+        <join-column name="custid" referenced-column-name="id" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
     <one-to-many field="PhysicalInterfaces" target-entity="Entities\PhysicalInterface" mapped-by="VirtualInterface"/>
