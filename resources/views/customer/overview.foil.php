@@ -39,7 +39,7 @@
             </li>
             <li>
                 <a href="<?= route( 'customer@billing-registration' , [ 'id' => $t->c->getId() ] ) ?>" >
-                    <?php if ( ( config('ixp.reseller.reseller') !== null || !config('ixp.reseller.reseller') ) || !$t->resellerMode || !$t->c->isResoldCustomer() ): ?>
+                    <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode || !$t->c->isResoldCustomer() ): ?>
                         Edit Billing/Registration Details
                     <?php else: ?>
                         Edit Registration Details

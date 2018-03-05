@@ -490,7 +490,6 @@ class CustomerController extends Controller
             'logoManagementDisabled'    => $this->logoManagementDisabled(),
             'resellerMode'              => $this->resellerMode(),
             'as112UiActive'             => $this->as112UiActive(),
-            'resellerResoldBilling'     => config('ixp.reseller.reseller'),
             'countries'                 => Countries::getList('name' ),
             'tab'                       => strtolower( $tab ),
             'notesInfo'                 => $this->fetchCustomerNotes( $c->getId() )

@@ -34,7 +34,7 @@
             </table>
         </div>
         <div class="col-sm-6">
-            <?php if ( ( config('ixp.reseller.reseller') !== null || !config('ixp.reseller.reseller') ) || !$t->resellerMode || !$t->c->isResoldCustomer() ): ?>
+            <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode || !$t->c->isResoldCustomer() ): ?>
                 <h3>Billing Details</h3>
                 <?php $bdetails = $t->c->getBillingDetails() ?>
                 <table class="table">
