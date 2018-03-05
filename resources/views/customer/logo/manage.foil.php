@@ -141,16 +141,33 @@
             e.preventDefault();
             let urlAction = '<?= route( "logo@delete" , [ 'id' => $t->c->getId() ] )  ?>';
 
-            $.ajax( urlAction, {
-                type: 'POST'
-            })
-            .done( function( data ) {
-                window.location.href = "<?= Auth::user()->isSuperUser() ? route( 'customer@overview', [ 'id' => $t->c->getId() ] ) : url( 'dashboard/index' ) ?>";
-            })
-            .fail( function(){
-                alert( 'Could not delete logo. API / AJAX / network error' );
-                throw new Error("Error running ajax query for "+urlAction);
-            })
+            bootbox.confirm({
+                message: "Do you really want to delete this logo?",
+                buttons: {
+                    confirm: {
+                        label: 'Confirm',
+                        className: 'btn-primary',
+                    },
+                    cancel: {
+                        label: 'Cancel',
+                        className: 'btn-default',
+                    }
+                },
+                callback: function ( result ) {
+                    if( result) {
+                        $.ajax( "<?= route( "logo@delete" , [ 'id' => $t->c->getId() ] )  ?>",{
+                            type : 'POST'
+                        })
+                            .done( function( data ) {
+                                window.location.href = "<?= Auth::user()->isSuperUser() ? route( 'customer@overview', [ 'id' => $t->c->getId() ] ) : url( 'dashboard/index' ) ?>";
+                            })
+                            .fail( function(){
+                                alert( 'Could not delete logo. API / AJAX / network error' );
+                                throw new Error("Error running ajax query for "+urlAction);
+                            })
+                    }
+                }
+            });
         });
 
     </script>

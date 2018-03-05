@@ -164,7 +164,7 @@ $this->layout( 'layouts/ixpv4' );
                         <a class="btn btn btn-default" href="<?= route( "customer@overview" , [ "id" => $c->getId() ] ) ?>" title="View">
                             <i class="glyphicon glyphicon-eye-open"></i>
                         </a>
-                        <a class="btn btn btn-default" href="<?= route ( "customer@deleteRecap", [ "id" => $c->getId() ] )   ?>" title="View">
+                        <a class="btn btn btn-default" href="<?= route ( "customer@delete-recap", [ "id" => $c->getId() ] )   ?>" title="View">
                             <i class="glyphicon glyphicon-trash"></i>
                         </a>
                     </div>
