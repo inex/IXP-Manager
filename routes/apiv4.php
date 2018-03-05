@@ -81,3 +81,11 @@ Route::get( 'peering-db/fac', function() {
     }));
 })->name('api-v4-peering-db-fac');
 
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Statistics
+//
+
+// get overall stats by month as a JSON response
+Route::get( 'statistics/overall-by-month', 'StatisticsController@overallByMonth' );
+

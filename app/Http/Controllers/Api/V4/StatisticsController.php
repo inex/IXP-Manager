@@ -1,0 +1,127 @@
+<?php
+
+namespace IXP\Http\Controllers\Api\V4;
+
+/*
+ * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+use Cache, D2EM, Grapher;
+
+use Carbon\Carbon;
+
+use Entities\{
+    IXP as IXPEntity
+};
+
+use Illuminate\Http\JsonResponse;
+
+use IXP\Services\Grapher\Graph;
+
+
+/**
+ * Statistics API Controller
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
+class StatisticsController extends Controller
+{
+
+
+    /**
+     * Function to export max traffic stats by month (past six) as JSON
+     *
+     * This is mostly used by https://www.inex.ie/ 's front page graph.
+     *
+     * @return JsonResponse
+     */
+    public function overallByMonth(): JsonResponse
+    {
+        $data = Cache::remember( 'public_overall_stats_by_month', 14400, function() {
+
+            $ixp   = D2EM::getRepository( IXPEntity::class )->getDefault();
+            $graph = Grapher::ixp( $ixp )->setPeriod( Graph::PERIOD_YEAR );
+
+            $graph->authorise();
+
+            $mrtg = $graph->data();
+
+            $data = [];
+
+            $start = Carbon::now()->subMonths( 5 )->startOfMonth();
+            $startTs = $start->timestamp;
+
+            $i = 0;
+            while( $start->lt( Carbon::now() ) ) {
+                $data[ $i ][ 'start' ] = $start->copy();
+                $data[ $i ][ 'startTs' ] = $start->timestamp;
+                $data[ $i ][ 'end' ] = $start->endOfMonth()->copy();
+                $data[ $i ][ 'endTs' ] = $start->endOfMonth()->timestamp;
+                $data[ $i ][ 'max' ] = 0;
+
+                $start->startOfMonth()->addMonth();
+                $i++;
+            }
+
+            $endTs = $data[ $i - 1 ][ 'endTs' ];
+
+            foreach( $mrtg as $m ) {
+                if( count( $m ) != 5 ) {
+                    continue;
+                }
+
+                if( $m[ 0 ] < $startTs || $m[ 0 ] > $endTs ) {
+                    continue;
+                }
+
+                foreach( $data as $i => $d ) {
+                    if( $m[ 0 ] >= $d[ 'startTs' ] && $m[ 0 ] <= $d[ 'endTs' ] ) {
+                        if( $m[ 3 ] > $data[ $i ][ 'max' ] ) {
+                            $data[ $i ][ 'max' ] = $m[ 3 ];
+                        }
+                        if( $m[ 4 ] > $data[ $i ][ 'max' ] ) {
+                            $data[ $i ][ 'max' ] = $m[ 4 ];
+                        }
+
+                        break;
+                    }
+                }
+            }
+
+            // scale to bps
+            foreach( $data as $i => $d ) {
+                /** @var Carbon $start */
+                $start = $data[ $i ][ 'start' ];
+
+                /** @var Carbon $end */
+                $end = $data[ $i ][ 'end' ];
+
+                $data[ $i ][ 'start' ] = $start->format( 'Y-m-d' ) . 'T' . $start->format( 'H:i:s' ) . 'Z';
+                $data[ $i ][ 'end' ]   = $end->format( 'Y-m-d' )   . 'T' . $end->format( 'H:i:s' )   . 'Z';
+            }
+
+            return $data;
+        });
+
+        return response()->json( $data );
+    }
+
+}
