@@ -532,6 +532,17 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
     /**
      * {@inheritDoc}
      */
+    public function getCabinet()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCabinet', []);
+
+        return parent::getCabinet();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getLocation()
     {
 

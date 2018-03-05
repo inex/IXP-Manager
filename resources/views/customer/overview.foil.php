@@ -23,7 +23,7 @@
             </li>
             <li role="separator" class="divider"></li>
             <li >
-                <a href="<?= route( 'customer@welcomeEmail', [ 'id' => $t->c->getId() ] ) ?>"               >Send Welcome Email...</a>
+                <a href="<?= route( 'customer@welcome-email', [ 'id' => $t->c->getId() ] ) ?>"               >Send Welcome Email...</a>
             </li>
         </ul>
     </div>
@@ -38,7 +38,7 @@
                 <a href="<?= route( 'customer@edit' , [ 'id' => $t->c->getId() ] ) ?>">Edit Customer Details</a>
             </li>
             <li>
-                <a href="<?= route( 'customer@billingRegistration' , [ 'id' => $t->c->getId() ] ) ?>" >
+                <a href="<?= route( 'customer@billing-registration' , [ 'id' => $t->c->getId() ] ) ?>" >
                     <?php if ( ( config('ixp.reseller.reseller') !== null || !config('ixp.reseller.reseller') ) || !$t->resellerMode || !$t->c->isResoldCustomer() ): ?>
                         Edit Billing/Registration Details
                     <?php else: ?>
