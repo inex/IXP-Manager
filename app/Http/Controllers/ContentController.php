@@ -58,7 +58,7 @@ class ContentController extends Controller {
         }
 
         // sanitise page name:
-        $page = "content/{$priv}/" . strtolower( preg_replace( '/[^a-z0-9\-_]/', '', $page ) );
+        $page = "content/{$priv}/" . preg_replace( '/[^a-z0-9\-_]/', '', strtolower( $page ) );
 
         if( !FacadeView::exists( $page ) ) {
             abort( 404, 'Requested page not found' );

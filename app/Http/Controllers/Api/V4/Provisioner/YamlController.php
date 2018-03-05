@@ -27,6 +27,7 @@ namespace IXP\Http\Controllers\Api\V4\Provisioner;
 
 use D2EM;
 
+use Doctrine\ORM\NonUniqueResultException;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
@@ -147,6 +148,44 @@ class YamlController extends Controller {
         }
 
         return $this->vlansForSwitch( $switch->getId(), $format );
+    }
+
+    /**
+     * Generate a Yaml/JSON response for a switch
+     *
+     * @return View
+     */
+    public function showSwitch( int $switchid, string $format = null ) {
+
+        /** @var \Entities\Switcher $switch */
+        try {
+            $switch = D2EM::createQuery( 'SELECT s FROM Entities\Switcher s WHERE s.id = :id' )->setParameter( 'id', $switchid )->getSingleResult( \Doctrine\ORM\Query::HYDRATE_ARRAY );
+        } catch( \Doctrine\ORM\NoResultException $e ) {
+            abort( 404, "Unknown switch" );
+        } catch( NonUniqueResultException $e ) {
+            abort( 404, "Unknown switch" );
+        }
+
+        return $this->structuredResponse( $switch, $format );
+    }
+
+    /**
+     * Generate a Yaml/JSON response for a switch
+     *
+     * @return View
+     */
+    public function showSwitchByName( string $switchname, string $format = null ) {
+
+        /** @var \Entities\Switcher $switch */
+        try {
+            $switch = D2EM::createQuery('SELECT s FROM Entities\Switcher s WHERE s.name = :name' )->setParameter('name',$switchname)->getSingleResult(\Doctrine\ORM\Query::HYDRATE_ARRAY );
+        } catch( \Doctrine\ORM\NoResultException $e ) {
+            abort( 404, "Unknown switch" );
+        } catch( NonUniqueResultException $e ) {
+            abort( 404, "Unknown switch" );
+        }
+
+        return $this->structuredResponse( $switch, $format );
     }
 
     /**
