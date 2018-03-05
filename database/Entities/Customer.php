@@ -1169,7 +1169,7 @@ class Customer
     /**
      * Get Users
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|User[]
      */
     public function getUsers()
     {
@@ -2394,7 +2394,7 @@ class Customer
     /**
      * Get patchPanelPorts
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|PatchPanelPort[]
      */
     public function getPatchPanelPorts(){
         return $this->patchPanelPorts;

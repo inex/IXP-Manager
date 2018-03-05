@@ -40,9 +40,11 @@
                 <i class="glyphicon glyphicon-pencil"></i> &nbsp;<span class="caret"></span>
             </button>
             <ul class="dropdown-menu pull-right">
+
                 <li>
                     <a href="<?= route( 'customer@edit' , [ 'id' => $c->getId() ] ) ?>">Edit Customer Details</a>
                 </li>
+
                 <li>
                     <a href="<?= route( 'customer@billing-registration' , [ 'id' => $c->getId() ] ) ?>" >
                         <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode || !$c->isResoldCustomer() ): ?>
@@ -52,11 +54,18 @@
                         <?php endif; ?>
                     </a>
                 </li>
+
                 <?php if( $t->logoManagementEnabled() ): ?>
+                    <li class="divider"></li>
                     <li>
                         <a href="<?= route( 'logo@manage', [ 'id' => $c->getId() ] ) ?>">Manage Logo</a>
                     </li>
                 <?php endif; ?>
+
+                <li class="divider"></li>
+                <li>
+                    <a href="<?= route( 'customer@delete-recap', [ 'id' => $c->getId() ] ) ?>">Delete Customer...</a>
+                </li>
             </ul>
         </div>
 

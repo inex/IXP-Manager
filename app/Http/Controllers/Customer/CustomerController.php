@@ -600,47 +600,70 @@ class CustomerController extends Controller
     }
 
     /**
-     * Display Recap of the the information that will be deleted with the customer
+     * Recap the information that will be deleted with the customer
      *
-     * @param   int      $id         Id of the customer
-     *
-     * @return  View
-     * @throws
+     * @param   int   $id Id of the customer
+     * @return  View|RedirectResponse
      */
-    public function deleteRecap( int $id = null ) : View{
+    public function deleteRecap( int $id )
+    {
         /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
             abort( 404);
         }
 
+        // cannot delete a customer with active cross connects:
+        if( count( $c->getPatchPanelPorts() ) ) {
+            AlertContainer::push( "This customer has active patch panel ports. Please cease "
+                . "these (or set them to awaiting cease and unset the customer link in the patch panel "
+                . "port) to proceed with deleting this customer.", Alert::DANGER
+            );
+            return Redirect::to( route( "customer@overview", $c->getId() ) );
+        }
+
+        // cannot delete a customer with fan out ports:
+        if( $c->isResoldCustomer() ) {
+            foreach( $c->getVirtualInterfaces() as $vi ) {
+                foreach( $vi->getPhysicalInterfaces() as $pi ) {
+                    if( $pi->getFanoutPhysicalInterface() ) {
+                        AlertContainer::push( "This customer has is a resold customer with fan out physical "
+                            . "interfaces. Please delete these manually before proceeding with deleting the customer.",
+                            Alert::DANGER
+                        );
+                        return Redirect::to( route( "customer@overview", $c->getId() ) );
+                    }
+                }
+            }
+        }
+
+
         return view( 'customer/delete' )->with([
             'c'         => $c,
         ]);
-
     }
 
     /**
      * Delete a customer and everything related !!
      *
-     * @param   Request      $request         Instance of HTTP request
-     *
+     * @param   Request $request Instance of HTTP request
      * @return  RedirectResponse
-     * @throws
+     * @throws \Exception
      */
-    public function delete( Request $request) : RedirectResponse{
+    public function delete( Request $request) : RedirectResponse {
         /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( "id" ) ) ) ){
             abort( 404);
         }
 
+        $oldname = $c->getFormattedName();
+
         if( D2EM::getRepository( CustomerEntity::class )->delete( $c ) ) {
-            AlertContainer::push( "Customer deleted with success.", Alert::SUCCESS );
+            AlertContainer::push( "Customer <em>{$oldname}</em> deleted.", Alert::SUCCESS );
         } else {
-            AlertContainer::push( "Error", Alert::DANGER );
+            AlertContainer::push( "Error: customer could not be deleted. Please open a GitHub bug report.", Alert::DANGER );
         }
 
         return Redirect::to( route( "customer@list" ) );
-
     }
 
 }
