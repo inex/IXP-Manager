@@ -105,7 +105,7 @@
             </ul>
             <form class="navbar-form navbar-search navbar-right">
                 <div class="form-group">
-                    <select id="menu-select-customer" type="select" name="id" class="chzn-select">
+                    <select id="menu-select-customer" type="select" name="id" class="chzn-select col-sm-7">
                         <option></option>
                         <?php foreach( $t->customers as $k => $i ): ?>
                             <option value="<?= $k ?>"><?= $i ?></option>
