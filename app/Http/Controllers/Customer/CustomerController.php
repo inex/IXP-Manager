@@ -432,16 +432,16 @@ class CustomerController extends Controller
     }
 
     public function unreadNotes(){
-        $lastReads = Auth::getUser()->getAssocPreference( 'customer-notes' )[0];
+        $lastRead = Auth::getUser()->getAssocPreference( 'customer-notes' )[0];
 
         $latestNotes = [];
 
         foreach( D2EM::getRepository( CustomerNoteEntity::class )->getLatestUpdate() as $ln ) {
 
-            if( ( !isset( $lastReads['read_upto'] ) || $lastReads['read_upto'] < strtotime( $ln['latest']  ) )
-                && ( !isset( $lastReads[ $ln['cid'] ] ) || $lastReads[ $ln['cid'] ]['last_read'] < strtotime( $ln['latest'] ) ) )
+            if( ( !isset( $lastRead['read_upto'] ) || $lastRead['read_upto'] < strtotime( $ln['latest']  ) )
+                && ( !isset( $lastRead[ $ln['cid'] ] ) || $lastRead[ $ln['cid'] ]['last_read'] < strtotime( $ln['latest'] ) ) ) {
                 $latestNotes[] = $ln;
-
+            }
         }
 
         return view( 'customer/unread-notes' )->with([

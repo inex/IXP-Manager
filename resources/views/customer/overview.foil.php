@@ -58,7 +58,7 @@
                 <?php if( $t->logoManagementEnabled() ): ?>
                     <li class="divider"></li>
                     <li>
-                        <a href="<?= route( 'logo@manage', [ 'id' => $c->getId() ] ) ?>">Manage Logo</a>
+                        <a href="<?= route( 'logo@manage', [ 'id' => $c->getId() ] ) ?>">Manage Logo...</a>
                     </li>
                 <?php endif; ?>
 
