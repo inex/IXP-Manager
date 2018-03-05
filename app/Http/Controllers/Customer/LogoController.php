@@ -89,7 +89,8 @@ class LogoController extends Controller
      * @return  View
      */
     public function manage( int $id = null ) {
-        if( $this->logoManagementDisabled() ) {
+        if( !$this->logoManagementEnabled() ) {
+            AlertContainer::push( "Logo management is disabled in .env", Alert::WARNING );
             return redirect( '' );
         }
 
@@ -186,8 +187,9 @@ class LogoController extends Controller
      * @throws
      */
     public function delete( int $id = null ) {
-        if( $this->logoManagementDisabled() ) {
-            return $this->redirect('');
+        if( !$this->logoManagementEnabled() ) {
+            AlertContainer::push( "Logo management is disabled in .env", Alert::WARNING );
+            return redirect( '' );
         }
 
         $superUser = true;
@@ -220,7 +222,7 @@ class LogoController extends Controller
 
 
     /**
-     * Display all the customer logo's
+     * Display all the customers' logos
      *
      * @return  View
      * @throws

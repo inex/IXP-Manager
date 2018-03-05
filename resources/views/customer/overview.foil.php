@@ -46,7 +46,7 @@
                     <?php endif; ?>
                 </a>
             </li>
-            <?php if( !$t->logoManagementDisabled ): ?>
+            <?php if( $t->logoManagementEnabled() ): ?>
                 <li>
                     <a href="<?= route( 'logo@manage', [ 'id' => $t->c->getId() ] ) ?>">Manage Logo</a>
                 </li>

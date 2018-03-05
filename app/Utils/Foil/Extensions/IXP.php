@@ -50,16 +50,17 @@ class IXP implements ExtensionInterface {
 
     public function provideFunctions() {
         return [
-            'alerts'            => [ AlertContainer::class, 'html' ],
-            'as112UiActive'     => [ $this, 'as112UiActive' ],
-            'asNumber'          => [ $this, 'asNumber' ],
-            'maxFileUploadSize' => [ $this, 'maxFileUploadSize' ],
-            'multiIXP'          => [ $this, 'multiIXP' ],
-            'nagiosHostname'    => [ $this, 'nagiosHostname' ],
-            'resellerMode'      => [ $this, 'resellerMode' ],
-            'scaleBits'         => [ $this, 'scaleBits' ],
-            'scaleBytes'        => [ $this, 'scaleBytes' ],
-            'softwrap'          => [ $this, 'softwrap' ],
+            'alerts'                => [ AlertContainer::class, 'html' ],
+            'as112UiActive'         => [ $this, 'as112UiActive' ],
+            'asNumber'              => [ $this, 'asNumber' ],
+            'logoManagementEnabled' => [ $this, 'logoManagementEnabled' ],
+            'maxFileUploadSize'     => [ $this, 'maxFileUploadSize' ],
+            'multiIXP'              => [ $this, 'multiIXP' ],
+            'nagiosHostname'        => [ $this, 'nagiosHostname' ],
+            'resellerMode'          => [ $this, 'resellerMode' ],
+            'scaleBits'             => [ $this, 'scaleBits' ],
+            'scaleBytes'            => [ $this, 'scaleBytes' ],
+            'softwrap'              => [ $this, 'softwrap' ],
         ];
     }
 
@@ -249,6 +250,18 @@ class IXP implements ExtensionInterface {
     public function resellerMode(): bool
     {
         return boolval( config( 'ixp.reseller.enabled', false ) );
+    }
+
+    /**
+     * Checks if logo management is enabled
+     *
+     * To enable logos in the UI set IXP_FE_FRONTEND_DISABLED_LOGO=false in .env
+     *
+     * @return bool
+     */
+    public function logoManagementEnabled()
+    {
+        return !boolval( config( 'ixp_fe.frontend.disabled.logo' ) );
     }
 
     /**

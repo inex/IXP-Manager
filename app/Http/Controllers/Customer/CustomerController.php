@@ -487,7 +487,6 @@ class CustomerController extends Controller
             'grapher'                   => $grapher,
             'rsclient'                  => $c->isRouteServerClient(),
             'as112client'               => $c->isAS112Client(),
-            'logoManagementDisabled'    => $this->logoManagementDisabled(),
             'resellerMode'              => $this->resellerMode(),
             'as112UiActive'             => $this->as112UiActive(),
             'countries'                 => Countries::getList('name' ),
