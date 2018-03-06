@@ -76,7 +76,7 @@ class SearchController extends Controller {
                     return Redirect::to( 'patch-panel-port/view/' . $ppp->getId() );
                 }
             }
-            else if( preg_match( '/^xc:(.*)$/', $search, $matches ) ) {
+            else if( preg_match( '/^xc:\s*(.*)\s*$/', $search, $matches ) ) {
                 // patch panel x-connect ID search
                 // wild card search
                 $type = 'ppp-xc';
