@@ -106,6 +106,8 @@ class CoreBundleController extends Common
      * @param  Request    $request        instance of the current HTTP request
      *
      * @return JsonResponse
+     *
+     * @throws
      */
     public function addCoreLinkFrag( Request $request ) :JsonResponse {
         $nb = $request->input("nbCoreLink") + 1;
@@ -162,7 +164,10 @@ class CoreBundleController extends Common
      * Add a core bundle/core links (set all the data needed)
      *
      * @param   StoreCoreBundle $request instance of the current HTTP request
+     *
      * @return  RedirectResponse
+     *
+     * @throws
      */
     public function storeWizard( StoreCoreBundle $request ): RedirectResponse {
         $edit = false;
@@ -247,8 +252,12 @@ class CoreBundleController extends Common
      * Edit the core links associated to a core bundle
      *
      * @param   Request $request instance of the current HTTP request
+     *
      * @param   int $id ID of the core bundle
+     *
      * @return  RedirectResponse
+     *
+     * @throws
      */
     public function storeCoreLinks( Request $request, int $id ): RedirectResponse {
         /** @var CoreBundleEntity $cb */
@@ -282,7 +291,10 @@ class CoreBundleController extends Common
      * Add a core link to a core bundle only in EDIT MODE
      *
      * @param   Request $request instance of the current HTTP request
+     *
      * @return  RedirectResponse
+     *
+     * @throws
      */
     public function addCoreLink( Request $request ): RedirectResponse {
         /** @var CoreBundleEntity $cb */
@@ -298,7 +310,6 @@ class CoreBundleController extends Common
         $via = $cb->getVirtualInterfaces()[ 'A' ];
         /** @var VirtualInterfaceEntity $vib */
         $vib = $cb->getVirtualInterfaces()[ 'B' ];
-
 
         $this->buildCorelink( $cb, $request, [ 'a' => $via , 'b' => $vib], 1 , true );
 
@@ -317,7 +328,10 @@ class CoreBundleController extends Common
      * @param   array $vis array of the Virtual interfaces ( side A and B ) linked to the core bundle
      * @param   int $clNumber
      * @param   bool $edit Are we editing the core bundle ?
+     *
      * @return  RedirectResponse
+     *
+     * @throws
      */
     private function buildCorelink( $cb, $request, $vis, $clNumber, $edit ){
         // Set value to the Core Bundle
@@ -329,8 +343,6 @@ class CoreBundleController extends Common
         $cl->setEnabled( $request->input( "enabled-cl-$clNumber" ) ?? false );
 
         $bfd = ( $request->input( "bfd-$clNumber") ?? false );
-
-
 
         $type = $edit ? $cb->getType() : $request->input( 'type' ) ;
 
@@ -351,7 +363,6 @@ class CoreBundleController extends Common
             ${ 'pi'.$side } = new PhysicalInterfaceEntity;
             D2EM::persist( ${ 'pi'.$side } );
 
-
             ${ 'pi'.$side }->setSwitchPort(        ${ 'sp'.$side } );
             ${ 'pi'.$side }->setVirtualInterface(  $vi );
             ${ 'pi'.$side }->setSpeed(             $edit ? $cb->getSpeedPi() : $request->input( 'speed' ) );
@@ -359,14 +370,12 @@ class CoreBundleController extends Common
             ${ 'pi'.$side }->setAutoneg(           $edit ? $cb->getAutoNegPi() : $request->input( 'auto-neg' ) ?? false );
             ${ 'pi'.$side }->setStatus(            PhysicalInterfaceEntity::STATUS_CONNECTED );
 
-
             /** @var CoreInterfaceEntity $cia */
             /** @var CoreInterfaceEntity $cib */
             ${ 'ci'.$side } = new CoreInterfaceEntity;
             D2EM::persist( ${ 'ci'.$side } );
             ${ 'ci'.$side }->setPhysicalInterface( ${ 'pi'.$side } );
         }
-
 
         $cl->setCoreInterfaceSideA( $cia );
         $cl->setCoreInterfaceSideB( $cib );
@@ -385,7 +394,10 @@ class CoreBundleController extends Common
      ** Change the status of the switch ports to UNSET
      *
      * @param   int $id ID of the core bundle
+     *
      * @return  JsonResponse
+     *
+     * @throws
      */
     public function deleteCoreBundle( int $id ): JsonResponse {
         /** @var CoreBundleEntity $cb */
@@ -429,7 +441,10 @@ class CoreBundleController extends Common
      * Change the type of the switch ports to UNSET
      *
      * @param  int $id ID of the core link to delete
+     *
      * @return  JsonResponse
+     *
+     * @throws
      */
     public function deleteCoreLink( int $id ) : JsonResponse {
 
