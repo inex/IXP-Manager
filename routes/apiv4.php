@@ -81,3 +81,27 @@ Route::get( 'peering-db/fac', function() {
     }));
 })->name('api-v4-peering-db-fac');
 
+Route::get( 'aut-num/{asn}', function( $asn) {
+    return response()->json( Cache::remember('aut-num', 120, function() use( $asn ) {
+        $infos = [];
+        if( $values = file_get_contents("https://rest.db.ripe.net/ripe/aut-num/". $asn . ".json" ) ) {
+            $i = 0;
+
+            foreach( json_decode( $values)->objects->object[0]->attributes->attribute as $val ) {
+                   $infos[ $i ][ 'name' ] = $val->name;
+                   $infos[ $i ][ 'value' ] = $val->value;
+                   if( isset( $val->link ) ){
+                       $infos[ $i ][ 'link' ] = $val->link->href;
+                   }
+
+                if( isset( $val->comment ) ){
+                    $infos[ $i ][ 'comment' ] = $val->comment;
+                }
+
+                $i++;
+            }
+        }
+        return $infos;
+    }));
+})->name('api-v4-aut-num');
+

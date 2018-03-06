@@ -122,21 +122,50 @@ function ixpRandomString( length = 12 ) {
  * @return html
  */
 function ixpAsnumber( asNumber ) {
+    let url = RIPE_ASN_URL + "/AS" + asNumber;
+    let datas = `<table class="asn-table"><tbody>`;
+    $.ajax(url)
+        .done(function (data) {
+            $.each(data, function (i, info) {
+                datas += `<tr><td>${info.name}:</td><td>`;
 
-    let html = `<iframe width="100%" height="500px" src="https://apps.db.ripe.net/search/lookup.html?source=ripe&key=AS${asNumber}&type=aut-num" frameborder="0" allowfullscreen></iframe>`;
+                if (info.link !== undefined) {
+                    let link = info.link;
+                    if (!link.includes(".json")) {
+                        link = link + ".json";
+                    }
 
-    bootbox.dialog({
-        message: html,
-        size: "large",
-        title: "AS Number Lookup",
-        buttons: {
-            cancel: {
-                label: 'Close',
-                callback: function () {
-                    $('.bootbox.modal').modal('hide');
-                    return false;
+                    datas += ` <a target="_blank" href="${link}">${info.value}<a/>`;
+                } else {
+                    datas += `${info.value}`;
                 }
-            }
-        }
-    });
+
+                if (info.comment !== undefined) {
+                    datas += ` # ${info.comment}`;
+
+                }
+                datas += `</td>`;
+            });
+
+            datas += `</table>`;
+            bootbox.dialog({
+                message: datas,
+                size: "large",
+                title: "AS Number Lookup",
+                buttons: {
+                    cancel: {
+                        label: 'Close',
+                        callback: function () {
+                            $('.bootbox.modal').modal('hide');
+                            return false;
+                        }
+                    }
+                }
+            });
+        })
+        .fail(function () {
+            alert(`Error running ajax query for ${url}`);
+            throw `Error running ajax query for ${url}`;
+        })
 }
+

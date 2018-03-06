@@ -611,3 +611,11 @@ td a:hover{
     color: #fff;
     background-color: #f0ad4e;
 }
+
+.asn-table{
+    margin-left: 30px;
+}
+
+.asn-table tr td{
+    padding : 4px;
+}
