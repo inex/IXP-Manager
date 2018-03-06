@@ -23,10 +23,15 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth;
+use Auth, D2EM;
 
-use Entities\User as UserEntity;
+use Entities\{
+    Customer as CustomerEntity,
+    User     as UserEntity
+};
 
+use Illuminate\Http\JsonResponse;
+use Illuminate\Http\Response;
 use Illuminate\Support\Facades\View as FacadeView;
 
 use Illuminate\View\View;
@@ -76,4 +81,46 @@ class ContentController extends Controller {
      */
     public function public( string $page ): View {
         return $this->index( 0, $page );
-    }}
+    }
+
+    /**
+     * Display the appropriate member details page (if permissions match)
+     *
+     * @param  int    $priv Required privilege for access to the content
+     * @param  string $page Page to display
+     * @return View|Response|JsonResponse
+     */
+    public function members( int $priv, string $page )
+    {
+        // check privilege:
+        if( $priv != UserEntity::AUTH_PUBLIC ) {
+            if( Auth::guest() || Auth::user()->getPrivs() < $priv ) {
+                abort( 403, 'Unauthorized' );
+            }
+        }
+
+        // check format
+        $page = strtolower( $page );
+        if( strpos( $page, '.' ) === false ) {
+            $page .= '.html';
+        }
+
+        list( $page, $format ) = explode( '.', $page );
+
+        // sanitise page name:
+        $page = "content/members/{$priv}/" . preg_replace( '/[^a-z0-9\-_]/', '', $page );
+
+        if( !FacadeView::exists( $page ) ) {
+            abort( 404, 'Requested page not found' );
+        }
+
+        $r = response()->view( $page, [ 'customers' =>D2EM::getRepository( CustomerEntity::class )->getCurrentActive() ], 200 );
+
+        if( $format == 'json' ) {
+            $r->header( 'Content-Type', 'application/json' );
+        }
+
+        return $r;
+    }
+
+}
