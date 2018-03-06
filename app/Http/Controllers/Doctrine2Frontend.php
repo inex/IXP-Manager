@@ -471,4 +471,18 @@ abstract class Doctrine2Frontend extends Controller {
         return false;
     }
 
+
+    /**
+     * A helper function which can be called when the needs to be logged in
+     * or have a greater privilege.
+     *
+     * @param string $url  URL to redirect to (default: the default route)
+     * @param int    $code Redirection code (default: 302)
+     */
+    protected function unauthorized( string $url = '', $code = 302 ) {
+        abort( 302, '', [ 'Location' => url($url) ] );
+        // belt and braces:
+        die( "File: " . __FILE__ . "\nLine: " . __LINE__ . "\nBug: you should not see this..." );
+    }
+
 }

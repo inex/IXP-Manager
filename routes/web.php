@@ -64,10 +64,13 @@ Route::get( 'weather-map/{id}',                    'WeatherMapController@index' 
 ///
 /// Static content
 ///
-
+/// See: http://docs.ixpmanager.org/features/static-content/
+///
+///
 Route::get( 'content/{priv}/{page}',     'ContentController@index' )->name( 'content' );
 Route::get( 'public-content/{page}',     'ContentController@public' )->name( 'public-content' );
 
+Route::get( 'content/members/{priv}/{page}', 'ContentController@members' )->name( 'content/members' );
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
