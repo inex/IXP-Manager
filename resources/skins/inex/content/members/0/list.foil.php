@@ -7,7 +7,7 @@ echo Cache::remember('skin-inex-content-members-list.json', '14400', function() 
     /** @var Entities\Customer $c */
     foreach( $t->customers as $c ) {
 
-        $data[ $c->getId() ][ 'type' ] = $c->getType();
+        $data[ $c->getId() ][ 'type' ] = $c->resolveType();
         $data[ $c->getId() ][ 'corpwww' ] = $c->getCorpwww();
         $data[ $c->getId() ][ 'name' ] = $c->getName();
         $data[ $c->getId() ][ 'numberofports' ] = 0;
