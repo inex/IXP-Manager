@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Exception, Mail, Redirect;
+use Auth, D2EM, Exception, Redirect;
 
 use IXP\Http\Controllers\Controller;
 use Illuminate\Http\{
@@ -39,11 +39,12 @@ use Entities\{
     User as UserEntity
 };
 
-use IXP\Mail\Customer\Email as EmailCustomer;
 
-use IXP\Utils\View\Alert\{
-    Alert,
-    Container as AlertContainer
+
+use IXP\Events\Customer\Note\{
+    Added       as CustomerNoteAddedEvent,
+    Deleted     as CustomerNoteDeletedEvent,
+    Updated     as CustomerNoteUpdatedEvent
 };
 
 /**
@@ -68,7 +69,8 @@ class CustomerNotesController extends Controller {
      */
     public function add( Request $request ) : JsonResponse{
         $isEdit = false;
-        $old = false;
+        $old = null;
+
 
         /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) ) ){
@@ -207,7 +209,7 @@ class CustomerNotesController extends Controller {
             $old = clone( $note );
             D2EM::remove( $note );
             D2EM::flush();
-            $this->sendNotifications( $old, false );
+            $this->sendNotifications( $old, null );
             $error = false;
         }
 
@@ -243,53 +245,21 @@ class CustomerNotesController extends Controller {
      *  * old != false, new == false: DELETE
      *  * old != false, new != false: EDIT
      *
-     * @param CustomerNoteEntity $old Old Note
-     * @param CustomerNoteEntity $new New note
+     * @param CustomerNoteEntity $ocn   Old Note
+     * @param CustomerNoteEntity $cn    New note
      *
      * @throws Exception
      */
-    private function sendNotifications( CustomerNoteEntity $old = null ,CustomerNoteEntity $new = null ){
-        // get admin users
-        $users = D2EM::getRepository( UserEntity::class )->findBy( [ 'privs' => UserEntity::AUTH_SUPERUSER ] );
+    private function sendNotifications( CustomerNoteEntity $ocn = null ,CustomerNoteEntity $cn = null ){
 
-
-        if( $old ){
-            $c = $cust = $old->getCustomer();
-        } else if( $new ) {
-            $c = $cust = $new->getCustomer();
-        } else {
-            throw new Exception( "Customer note is missing." );
+        if( !$ocn ){
+            event( new CustomerNoteAddedEvent   ( $ocn, $cn ) );
+        } elseif( !$cn ){
+            event( new CustomerNoteDeletedEvent ( $ocn, $cn ) );
+        } else{
+            event( new CustomerNoteUpdatedEvent ( $ocn, $cn  ) );
         }
 
-
-        $mailable = new EmailCustomer( $cust );
-        $mailable->subject(  '[IXP Notes] [' . $c->getName() . '] ' . ( $old ? $old->getTitle() : $new->getTitle() ) );
-        $mailable->from( config('identity.email'), config('identity.name') );
-        $mailable->view( "customer/emails/notification" )->with( ['old' => $old, 'new' => $new , 'cust' => $c, 'user' => Auth::getUser() ] );
-
-
-        foreach( $users as $user ) {
-            /** @var UserEntity $user */
-            if( !$user->getPreference( "customer-notes.notify" ) ) {
-                if( !$user->getPreference( "customer-notes.{$cust->getId()}.notify" ) ) {
-                    if( !$old ) // adding
-                        continue;
-
-                    if( !$user->getPreference( "customer-notes.watching.{$old->getId()}" ) )
-                        continue;
-                }
-            }
-            else if( $user->getPreference( "customer-notes.notify" ) == "none" )
-                continue;
-
-            try {
-                $mailable->to( $user->getContact()->getEmail(), $user->getContact()->getName() );
-                Mail::send( $mailable ) ;
-
-            } catch( Exception $e ) {
-                AlertContainer::push( $e->getMessage(), Alert::DANGER );
-            }
-        }
     }
 
 

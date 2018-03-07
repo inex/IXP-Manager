@@ -25,8 +25,6 @@ namespace IXP\Http\Controllers\Customer;
 
 use App, Auth, Cache, Countries, D2EM, DateTime, Former, Mail, Redirect;
 
-use Doctrine\ORM\ORMInvalidArgumentException;
-
 use IXP\Events\Customer\BillingDetailsChanged as CustomerBillingDetailsChangedEvent;
 
 use IXP\Http\Controllers\Controller;
@@ -49,7 +47,6 @@ use Entities\{
     User                    as UserEntity
 };
 
-use IXP\Exceptions\Mailable as MailableException;
 
 use IXP\Mail\Customer\WelcomeEmail;
 
