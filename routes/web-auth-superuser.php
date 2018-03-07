@@ -156,15 +156,7 @@ if( !config('ixp_fe.frontend.disabled.logo' ) ) {
 }
 
 Route::group( [ 'namespace' => 'Customer', 'prefix' => 'customer-note' ], function() {
-
-    Route::get(    'ajax-notify-toggle/custid/{id}',   'CustomerNotesController@notifyToggleByCust'     )->name( 'customerNotes@notifyToggleCust');
-    Route::get(    'ajax-notify-toggle/id/{id}',       'CustomerNotesController@notifyToggleByNote'     )->name( 'customerNotes@notifyToggleNote');
     Route::get(    'real-all',                         'CustomerNotesController@readAll'                )->name( 'customerNotes@readAll');
-
-
-    Route::post(    'add',                             'CustomerNotesController@add'                    )->name( 'customerNotes@add');
-    Route::post(    'delete/{id}',                     'CustomerNotesController@delete'                 )->name( 'customerNotes@delete');
-
 });
 
 Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );

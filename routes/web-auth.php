@@ -22,12 +22,6 @@ if( !config('ixp_fe.frontend.disabled.logo' ) ) {
     } );
 }
 
-Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer'], function() {
-    Route::get(    'ping/{id?}',            'CustomerNotesController@ping'      )->name( 'customerNotes@ping');
-    Route::get(    'get/{id}',              'CustomerNotesController@get'       )->name( 'customerNotes@get');
-
-});
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///

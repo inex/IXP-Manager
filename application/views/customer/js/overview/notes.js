@@ -22,7 +22,7 @@ function coNotesClearDialog() {
 function coNotesEditDialog( event ) {
 	let noteid = substr( event.delegateTarget.id, 14 );
 
-    let urlAction = "{url( 'customer-note/get' )}/"+ noteid;
+    let urlAction = "{url( '/api/v4/customer-note/get' )}/"+ noteid;
 
     $.ajax( urlAction )
         .done( function( data ) {
@@ -65,7 +65,7 @@ function coNotesDelete( event ) {
     bootbox.confirm( "Are you sure you want to delete this note?", function(result) {
         if( result ) {
 
-            let urlAction = "{url( 'customer-note/delete' )}/"+ noteid;
+            let urlAction = "{url( '/api/v4/customer-note/delete' )}/"+ noteid;
 
             $.ajax( urlAction , {
                 type: 'POST',
@@ -131,7 +131,7 @@ function coNotesSubmitDialog( event ) {
 function coNotesViewDialog( event ) {
 	let noteid = substr( event.delegateTarget.id, 14 );
 
-    let urlAction = "{url( 'customer-note/get' )}/"+ noteid;
+    let urlAction = "{url( '/api/v4/customer-note/get' )}/"+ noteid;
 
     $.ajax( urlAction )
         .done( function( data ) {
@@ -217,7 +217,7 @@ function coNotesPost( data ) {
 function coCustomerNotifyToggle( event ){
     let custid = substr( event.delegateTarget.id, 15 );
 
-	let urlAction = "{url( 'customer-note/ajax-notify-toggle/custid' )}/"+ custid;
+	let urlAction = "{url( '/api/v4/customer-note/ajax-notify-toggle/custid' )}/"+ custid;
 
     $.ajax( urlAction )
         .done( function( data ) {
@@ -236,7 +236,7 @@ function coCustomerNotifyToggle( event ){
 
 function coNotesNotifyToggle( event ){
     let noteid = substr( event.delegateTarget.id, 16 );
-    let urlAction = "{url( 'customer-note/ajax-notify-toggle/id' )}/"+ noteid;
+    let urlAction = "{url( '/api/v4/customer-note/ajax-notify-toggle/id' )}/"+ noteid;
 
     $.ajax( urlAction )
         .done( function( data ) {
