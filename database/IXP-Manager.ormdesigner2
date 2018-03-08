@@ -1145,6 +1145,7 @@
       <field name="number" type="smallint" required="true" uuid="2d964dfa-53dd-4a04-92d1-938347172eca"/>
       <field name="state" type="integer" required="true" uuid="fb079291-7b0c-4ca4-b25a-9007b5d83153"/>
       <field name="colo_circuit_ref" type="string" size="30" uuid="6b28819d-917d-4dfd-91f6-bcd1c07da533"/>
+      <field name="colo_billing_ref" type="string" size="30" uuid="329d627a-153b-4961-abf7-fb85f8b1a7d5"/>
       <field name="ticket_ref" type="string" size="30" uuid="39eb482e-46c1-4739-94c1-ec29a4300a3c"/>
       <field name="notes" type="text" uuid="a137835d-7515-4d55-99ea-5367401ae2ba"/>
       <field name="private_notes" type="text" uuid="259e178b-7c07-44b5-9aaa-6012eceedfcc"/>
@@ -1185,6 +1186,7 @@
       <field name="number" type="smallint" required="true" uuid="1e130de3-d747-46ac-ba5a-1cadc245e4df"/>
       <field name="state" type="integer" required="true" uuid="07e6ab7b-b3a4-4df9-9753-87f2ef20ae57"/>
       <field name="colo_circuit_ref" type="string" size="30" uuid="e59bfd83-0291-4644-a6c1-d4d3584760ca"/>
+      <field name="colo_billing_ref" type="string" size="30" uuid="980cb80b-493c-4a55-880e-127f7849f877"/>
       <field name="ticket_ref" type="string" size="30" uuid="95ee474a-1bf1-4efe-a166-37da7bf12b75"/>
       <field name="notes" type="text" uuid="355eaa2c-a248-4900-bc91-6f228eb04c66"/>
       <field name="private_notes" type="text" uuid="80a23128-fca7-4232-ace5-edd19b8cddb0"/>
