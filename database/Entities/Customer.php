@@ -2408,16 +2408,7 @@ class Customer
     public function getPatchPanelPorts(){
         return $this->patchPanelPorts;
     }
-
-    /**
-     * Turn the database integer representation of the type into text as
-     * defined in the self::$CUST_TYPES_TEXT array (or 'Unknown')
-     * @return string
-     */
-    public function resolveType(): string {
-        return self::$CUST_TYPES_TEXT[ $this->getType() ] ?? 'Unknown';
-    }
-
+    
     /**
      * Turn the database integer representation of the status into text as
      * defined in the self::$CUST_STATUS_TEXT array (or 'Unknown')
