@@ -76,6 +76,16 @@ class SearchController extends Controller {
                     return Redirect::to( 'patch-panel-port/view/' . $ppp->getId() );
                 }
             }
+            else if( preg_match( '/^xc:\s*(.*)\s*$/', $search, $matches ) ) {
+                // patch panel x-connect ID search
+                // wild card search
+                $type = 'ppp-xc';
+                $results = D2EM::getRepository( PatchPanelPortEntity::class )->findByColoCircuitRef( $matches[1] );
+
+                if( count( $results ) === 1 ) {
+                    return Redirect::to( 'patch-panel-port/view/' . $results[0]->getId() );
+                }
+            }
             else if( preg_match( '/^\.\d{1,3}$/', $search ) || preg_match( '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $search ) ) {
                 // IPv4 search
                 $type = 'ipv4';

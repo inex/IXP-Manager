@@ -309,6 +309,31 @@ class PatchPanelPort extends EntityRepository
 
 
     /**
+     * Wildcard search based on colo circuit ref
+     *
+     * @param string  $coloref   Colo ref for %xxx% searcf
+     * @return PatchPanelPortEntity[]
+     */
+    public function findByColoCircuitRef( string $coloref )
+    {
+        $q = $this->getEntityManager()->createQuery(
+            "SELECT ppp
+                FROM Entities\PatchPanelPort ppp
+                    LEFT JOIN ppp.patchPanel pp
+                    LEFT JOIN pp.cabinet cab
+                    LEFT JOIN cab.Location l 
+                  WHERE ppp.colo_circuit_ref LIKE :ref
+                  ORDER BY pp.id ASC, ppp.id ASC"
+            );
+
+        $q->setParameter( 'ref', '%' . $coloref . '%' );
+
+
+        return $q->getResult();
+    }
+
+
+    /**
      * Move details / contents of a PPP to another PPP.
      *
      * Moves the information and files from a patch panel port to an other one
