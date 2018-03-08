@@ -2,7 +2,13 @@
 
 namespace Repositories;
 
+use Auth, D2EM;
+
 use Doctrine\ORM\EntityRepository;
+
+use Entities\{
+    CustomerNote as CustomerNoteEntity
+};
 
 /**
  * CustomerNote
@@ -59,6 +65,41 @@ class CustomerNote extends EntityRepository {
                 ORDER BY latest DESC"
             )
             ->getArrayResult();
+    }
+
+
+    /**
+     * Load a customer's notes and calculate the amount of unread / updated notes
+     * for the logged in user and the given customer
+     *
+     * Used by:
+     * @see CustomerController
+     * @see DashboardController
+     *
+     * @param int       $custid
+     * @param boolean   $publicOnly
+     *
+     * @return array
+     */
+    public function fetchCustomerNotes( $custid, $publicOnly = false ){
+        $custNotes      = $this->ordered( $custid, $publicOnly );
+        $unreadNotes    = 0;
+        $rut            = Auth::getUser()->getPreference( "customer-notes.read_upto" );
+        $lastRead       = Auth::getUser()->getPreference( "customer-notes.{$custid}.last_read" );
+
+        if( $lastRead || $rut ) {
+            foreach( $custNotes as $cn ) {
+                /** @var CustomerNoteEntity $cn */
+                $time = $cn->getUpdated()->format( "U" );
+                if( ( !$rut || $rut < $time ) && ( !$lastRead || $lastRead < $time ) ){
+                    $unreadNotes++;
+                }
+            }
+        } else {
+            $unreadNotes = count( $custNotes );
+        }
+
+        return [ "custNotes" => $custNotes, "notesReadUpto" => $rut , "notesLastRead" => $lastRead, "unreadNotes" => $unreadNotes];
     }
     
 }

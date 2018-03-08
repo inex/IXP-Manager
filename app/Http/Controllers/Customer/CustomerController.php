@@ -61,10 +61,6 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-
-
-
-
 /**
  * Customer Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
@@ -429,24 +425,6 @@ class CustomerController extends Controller
         ]);
     }
 
-    public function unreadNotes(){
-        $lastRead = Auth::getUser()->getAssocPreference( 'customer-notes' )[0];
-
-        $latestNotes = [];
-
-        foreach( D2EM::getRepository( CustomerNoteEntity::class )->getLatestUpdate() as $ln ) {
-
-            if( ( !isset( $lastRead['read_upto'] ) || $lastRead['read_upto'] < strtotime( $ln['latest']  ) )
-                && ( !isset( $lastRead[ $ln['cid'] ] ) || $lastRead[ $ln['cid'] ]['last_read'] < strtotime( $ln['latest'] ) ) ) {
-                $latestNotes[] = $ln;
-            }
-        }
-
-        return view( 'customer/unread-notes' )->with([
-            'notes'                     => $latestNotes,
-            'c'                         => Auth::getUser()->getCustomer()
-        ]);
-    }
 
     /**
      * Display the customer overview
@@ -488,42 +466,8 @@ class CustomerController extends Controller
             'as112UiActive'             => $this->as112UiActive(),
             'countries'                 => Countries::getList('name' ),
             'tab'                       => strtolower( $tab ),
-            'notesInfo'                 => $this->fetchCustomerNotes( $c->getId() )
+            'notesInfo'                 => D2EM::getRepository( CustomerNoteEntity::class )->fetchCustomerNotes( $c->getId() )
         ]);
-    }
-
-    /**
-     * Load a customer's notes and calculate the amount of unread / updated notes
-     * for the logged in user and the given customer
-     *
-     * Used by:
-     * @see CustomerController
-     * @see DashboardController
-     *
-     * @param int       $custid
-     * @param boolean   $publicOnly
-     *
-     * @return array
-     */
-    protected function fetchCustomerNotes( $custid, $publicOnly = false ){
-        $custNotes      = D2EM::getRepository( CustomerNoteEntity::class )->ordered( $custid, $publicOnly );
-        $unreadNotes    = 0;
-        $rut            = Auth::getUser()->getPreference( "customer-notes.read_upto" );
-        $lastRead       = Auth::getUser()->getPreference( "customer-notes.{$custid}.last_read" );
-
-        if( $lastRead || $rut ) {
-            foreach( $custNotes as $cn ) {
-                /** @var CustomerNoteEntity $cn */
-                $time = $cn->getUpdated()->format( "U" );
-                if( ( !$rut || $rut < $time ) && ( !$lastRead || $lastRead < $time ) ){
-                    $unreadNotes++;
-                }
-            }
-        } else {
-            $unreadNotes = count( $custNotes );
-        }
-
-        return [ "custNotes" => $custNotes, "notesReadUpto" => $rut , "notesLastRead" => $lastRead, "unreadNotes" => $unreadNotes];
     }
 
     /**

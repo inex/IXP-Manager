@@ -30,7 +30,11 @@ use Illuminate\Http\{
     RedirectResponse
 };
 
+use Entities\{
+    CustomerNote as CustomerNoteEntity
+};
 
+use Illuminate\View\View;
 
 
 /**
@@ -58,6 +62,30 @@ class CustomerNotesController extends Controller {
         D2EM::flush();
 
         return Redirect::to( '/customer/unread-notes' );
+    }
+
+    /**
+     * Get the list of unread not for the current user
+     *
+     * @return View
+     */
+    public function unreadNotes() : View {
+        $lastRead = Auth::getUser()->getAssocPreference( 'customer-notes' )[0];
+
+        $latestNotes = [];
+
+        foreach( D2EM::getRepository( CustomerNoteEntity::class )->getLatestUpdate() as $ln ) {
+
+            if( ( !isset( $lastRead['read_upto'] ) || $lastRead['read_upto'] < strtotime( $ln['latest']  ) )
+                && ( !isset( $lastRead[ $ln['cid'] ] ) || $lastRead[ $ln['cid'] ]['last_read'] < strtotime( $ln['latest'] ) ) ) {
+                $latestNotes[] = $ln;
+            }
+        }
+
+        return view( 'customer/unread-notes' )->with([
+            'notes'                     => $latestNotes,
+            'c'                         => Auth::getUser()->getCustomer()
+        ]);
     }
 }
 

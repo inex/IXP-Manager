@@ -137,7 +137,7 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
     Route::get(     'edit/{id}',                        'CustomerController@edit'                       )->name( 'customer@edit');
 
     Route::get(     'billing-registration/{id}',        'CustomerController@editBillingAndRegDetails'   )->name( 'customer@billing-registration');
-    Route::get(     'unread-notes',                     'CustomerController@unreadNotes'                )->name( "customer@unreadNotes" );
+
     Route::get(     'welcome-email/{id}',               'CustomerController@welcomeEmail'               )->name( "customer@welcome-email" );
     Route::get(     'delete-recap/{id}',                'CustomerController@deleteRecap'                )->name( "customer@delete-recap" );
     Route::get(     'overview/{id}/{tab?}',             'CustomerController@overview'                   )->name( "customer@overview" );
@@ -156,7 +156,8 @@ if( !config('ixp_fe.frontend.disabled.logo' ) ) {
 }
 
 Route::group( [ 'namespace' => 'Customer', 'prefix' => 'customer-note' ], function() {
-    Route::get(    'real-all',                         'CustomerNotesController@readAll'                )->name( 'customerNotes@readAll');
+    Route::get(    'real-all',                          'CustomerNotesController@readAll'                )->name( 'customerNotes@readAll');
+    Route::get(    'unread-notes',                      'CustomerNotesController@unreadNotes'            )->name( "customerNotes@unreadNotes" );
 });
 
 Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
