@@ -171,6 +171,11 @@ class PatchPanelPort
     /**
      * @var string
      */
+    private $colo_billing_ref = '';
+
+    /**
+     * @var string
+     */
     private $ticket_ref = '';
 
 
@@ -408,6 +413,29 @@ class PatchPanelPort
     public function getColoCircuitRef()
     {
         return $this->colo_circuit_ref ?? '';
+    }
+
+    /**
+     * Set colo_billing_ref
+     *
+     * @param string $colo_billing_ref
+     *
+     * @return PatchPanelPort
+     */
+    public function setColoBillingRef( string $colo_billing_ref ): PatchPanelPort
+    {
+        $this->colo_billing_ref = $colo_billing_ref;
+        return $this;
+    }
+
+    /**
+     * Get colo_billing_ref
+     *
+     * @return string
+     */
+    public function getColoBillingRef()
+    {
+        return $this->colo_billing_ref ?? '';
     }
 
     /**
@@ -1425,6 +1453,7 @@ class PatchPanelPort
             'number'           => $this->getNumber(),
             'name'             => $this->getName(),
             'coloRef'          => $this->getColoCircuitRef(),
+            'coloBillingRef'   => $this->getColoBillingRef(),
             'ticketRef'        => $this->getTicketRef(),
             'stateId'          => $this->getState(),
             'state'            => $this->resolveStates(),

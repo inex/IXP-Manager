@@ -80,6 +80,11 @@
             ->blockHelp( 'The cross connect reference as provided by the colocation provider.' );
         ?>
 
+        <?= Former::text( 'colo_billing_ref' )
+            ->label( 'Colocation Billing Reference' )
+            ->blockHelp( 'The cross connect billing reference as provided by the colocation provider.' );
+        ?>
+
         <?= Former::text( 'ticket_ref' )
             ->label( 'Ticket Reference(s)' )
             ->blockHelp( 'This is a free text field to allow you to add helpdesk ticket reference(s) that deal with your member for this connection.' );
