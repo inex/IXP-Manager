@@ -173,20 +173,20 @@ class SearchController extends Controller {
      * @param   array $vis virtual interfaces list
      * @return  array array composed of the the result (customer) and the interface (vlan interfaces)
      */
-    private function processMACSearch( array $vis = [] ) {
+    private function processMACSearch( array $is = [] ) {
         $results = [];
         $interfaces = [];
 
-        foreach( $vis as $vi ) {
+        foreach( $is as $i ) {
 
-            if( $vi instanceof VlanInterfaceEntity ) {
-                $c = $vi->getVirtualInterface()->getCustomer();
+            if( $i instanceof VlanInterfaceEntity ) {
+                $c = $i->getVirtualInterface()->getCustomer();
             } else {
-                $c = $vi->getCustomer();
+                $c = $i->getCustomer();
             }
 
             $results[ $c->getId()    ]   = $c;
-            $interfaces[ $c->getId() ][] = $vi instanceof VlanInterfaceEntity ? $vi->getVirtualInterface() : $vi;
+            $interfaces[ $c->getId() ][] = $i instanceof VlanInterfaceEntity ? $i->getVirtualInterface() : $i;
         }
 
         return [ 'results' => $results, 'interfaces' => $interfaces ];
