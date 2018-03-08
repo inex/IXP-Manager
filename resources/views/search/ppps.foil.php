@@ -15,6 +15,7 @@
                 <th>Port</th>
                 <th>Customer</th>
                 <th>Colo Ref</th>
+                <th>Colo Billing Ref</th>
             </tr>
         </thead>
         <tbody>
@@ -43,6 +44,9 @@
                     </td>
                     <td>
                         <code><?= $ppp->getColoCircuitRef() ?></code>
+                    </td>
+                    <td>
+                        <code><?= $ppp->getColoBillingRef() ?></code>
                     </td>
                 </tr>
             <?php endforeach; ?>

@@ -275,7 +275,7 @@
                                     <dt>Patch Panel Port</dt>
                                     <dd>
                                         Find a patch panel port by its ID: <code>PPP-xxxx</code>.<br>
-                                        Wildcard search on colo circtui reference: <code>xc:xxx</code>.
+                                        Wildcard search on colo references: <code>xc:xxx</code>.
                                     </dd>
                                 </dl>
                             </div>

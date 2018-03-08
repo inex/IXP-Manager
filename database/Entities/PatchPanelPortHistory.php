@@ -38,6 +38,11 @@ class PatchPanelPortHistory
     /**
      * @var string
      */
+    private $colo_billing_ref = '';
+
+    /**
+     * @var string
+     */
     private $ticket_ref;
 
     /**
@@ -224,6 +229,29 @@ class PatchPanelPortHistory
      */
     public function getColoCircuitRef(): string {
         return $this->colo_circuit_ref;
+    }
+
+    /**
+     * Set colo_billing_ref
+     *
+     * @param string $colo_billing_ref
+     *
+     * @return PatchPanelPortHistory
+     */
+    public function setColoBillingRef( string $colo_billing_ref ): PatchPanelPortHistory
+    {
+        $this->colo_billing_ref = $colo_billing_ref;
+        return $this;
+    }
+
+    /**
+     * Get colo_billing_ref
+     *
+     * @return string
+     */
+    public function getColoBillingRef()
+    {
+        return $this->colo_billing_ref ?? '';
     }
 
     /**
@@ -746,6 +774,7 @@ class PatchPanelPortHistory
             ->setNumber( $ppp->getNumber() )
             ->setState( $ppp->getState() )
             ->setColoCircuitRef( $ppp->getColoCircuitRef() )
+            ->setColoBillingRef( $ppp->getColoBillingRef() )
             ->setTicketRef( $ppp->getTicketRef() )
             ->setNotes( $ppp->getNotes() )
             ->setPrivateNotes( $ppp->getPrivateNotes() )

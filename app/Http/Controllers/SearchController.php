@@ -36,7 +36,6 @@ use Entities\{
     MACAddress       as   MACAddressEntity,
     PatchPanelPort   as   PatchPanelPortEntity,
     RSPrefix         as   RSPrefixEntity,
-    VirtualInterface as   VirtualInterfaceEntity,
     VlanInterface    as   VlanInterfaceEntity
 };
 
@@ -80,7 +79,7 @@ class SearchController extends Controller {
                 // patch panel x-connect ID search
                 // wild card search
                 $type = 'ppp-xc';
-                $results = D2EM::getRepository( PatchPanelPortEntity::class )->findByColoCircuitRef( $matches[1] );
+                $results = D2EM::getRepository( PatchPanelPortEntity::class )->findByColoRefs( $matches[1] );
 
                 if( count( $results ) === 1 ) {
                     return Redirect::to( 'patch-panel-port/view/' . $results[0]->getId() );
@@ -174,20 +173,20 @@ class SearchController extends Controller {
      * @param   array $vis virtual interfaces list
      * @return  array array composed of the the result (customer) and the interface (vlan interfaces)
      */
-    private function processMACSearch( array $is = [] ) {
+    private function processMACSearch( array $vis = [] ) {
         $results = [];
         $interfaces = [];
 
-        foreach( $is as $i ) {
+        foreach( $vis as $vi ) {
 
-            if( $i instanceof VlanInterfaceEntity ) {
-                $c = $i->getVirtualInterface()->getCustomer();
+            if( $vi instanceof VlanInterfaceEntity ) {
+                $c = $vi->getVirtualInterface()->getCustomer();
             } else {
-                $c = $i->getCustomer();
+                $c = $vi->getCustomer();
             }
 
             $results[ $c->getId()    ]   = $c;
-            $interfaces[ $c->getId() ][] = $i instanceof VlanInterfaceEntity ? $i->getVirtualInterface() : $i;
+            $interfaces[ $c->getId() ][] = $vi instanceof VlanInterfaceEntity ? $vi->getVirtualInterface() : $vi;
         }
 
         return [ 'results' => $results, 'interfaces' => $interfaces ];
