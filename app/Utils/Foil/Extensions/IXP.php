@@ -298,7 +298,8 @@ class IXP implements ExtensionInterface {
     /**
      * Replaces an AS  Number with some JS magic to invoke a bootbox.
      *
-     * @param  int    $asn The AS number
+     * @param  int    $asn      The AS number
+     * @param  bool   $addAs    Do we need to add AS?
      * @return string
      */
     public function asNumber( int $asn, $addAs = true )

@@ -1382,6 +1382,15 @@ class Customer
 
 
     /**
+     * Turn the database integer representation of the type into text as
+     * defined in the self::$CUST_TYPES_TEXT array (or 'Unknown')
+     * @return string
+     */
+    public function resolveType(): string {
+        return self::$CUST_TYPES_TEXT[ $this->getType() ] ?? 'Unknown';
+    }
+
+    /**
      * Does the customer have private VLANs?
      *
      * A private VLAN is a VLAN between a subset of members (usually

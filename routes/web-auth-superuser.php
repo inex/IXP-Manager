@@ -125,7 +125,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::post(    'add-core-link',                    'CoreBundleController@addCoreLink'      );
         Route::post(    '{id}/store-core-links',            'CoreBundleController@storeCoreLinks'   );
         Route::post(    'delete/{id}',                      'CoreBundleController@deleteCoreBundle' )->name(    'core-bundle/delete');
-        Route::post(    'core-link/delete/{id}',            'CoreBundleController@delete'           );
+        Route::post(    'core-link/delete/{id}',            'CoreBundleController@deleteCoreLink'   );
     });
 });
 

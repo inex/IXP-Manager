@@ -34,7 +34,7 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
 
     Route::get( 'download-file/{pppfid}',           'PatchPanelPortController@downloadFile' );
 
-    Route::get( 'view/{id}',                        'PatchPanelPortController@view' )->name('patch-panel-port/view' );;
+    Route::get( 'view/{id}',                        'PatchPanelPortController@view' )->name( 'patch-panel-port@view' );
 });
 
 

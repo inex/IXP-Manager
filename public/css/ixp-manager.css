@@ -708,3 +708,11 @@ td a:hover{
     font-size: 20px;
 }
 
+.asn-table{
+    margin-left: 30px;
+}
+
+.asn-table tr td{
+    padding : 4px;
+}
+

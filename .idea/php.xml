@@ -135,7 +135,6 @@
       <path value="$PROJECT_DIR$/vendor/oss2/var-utils" />
       <path value="$PROJECT_DIR$/vendor/s1lentium/iptools" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-php70" />
-      <path value="$PROJECT_DIR$/vendor/webpatser/laravel-countries" />
       <path value="$PROJECT_DIR$/vendor/barryvdh/laravel-debugbar" />
       <path value="$PROJECT_DIR$/vendor/maximebf/debugbar" />
     </include_path>
