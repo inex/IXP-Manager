@@ -106,7 +106,7 @@ function coNotesSubmitDialog( event ) {
         return;
     }
 
-    urlAction = "{route( 'customerNotes@add' )}";
+    urlAction = "{route( 'customer-notes@add' )}";
 
     $.ajax( urlAction, {
         type: 'POST',

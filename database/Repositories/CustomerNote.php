@@ -7,7 +7,9 @@ use Auth, D2EM;
 use Doctrine\ORM\EntityRepository;
 
 use Entities\{
-    CustomerNote as CustomerNoteEntity
+    Customer     as CustomerEntity,
+    CustomerNote as CustomerNoteEntity,
+    User         as UserEntity
 };
 
 /**
@@ -17,16 +19,17 @@ use Entities\{
  * repository methods below.
  */
 class CustomerNote extends EntityRepository {
+
     /**
      * Return an array of ordered customer notes
      *
-     * @param int $custid The customer ID to fetch notes for
-     * @param boolean $publicOnly
+     * @param int  $custid      The customer ID to fetch notes for
+     * @param bool $publicOnly
      * @return \Entities\CustomerNote[] An array of all customer notes objects
      */
-    public function ordered( $custid, $publicOnly = false ){
+    public function ordered( int $custid, bool $publicOnly = false ) {
         return $this->getEntityManager()->createQuery(
-                "SELECT n FROM Entities\\CustomerNote n WHERE n.Customer = ?1 "
+                "SELECT n FROM Entities\CustomerNote n WHERE n.Customer = ?1 "
                 . ( $publicOnly ? "AND n.private = 0 " : "" )
                 . "ORDER BY n.created DESC"
             )
@@ -72,16 +75,15 @@ class CustomerNote extends EntityRepository {
      * Load a customer's notes and calculate the amount of unread / updated notes
      * for the logged in user and the given customer
      *
-     * Used by:
-     * @see CustomerController
-     * @see DashboardController
+     * @deprecated Used by the old ZF dashboard only. Remove once ZF is gone.
      *
-     * @param int       $custid
-     * @param boolean   $publicOnly
+     * @param int        $custid      The customer ID
+     * @param bool       $publicOnly
+     * @param UserEntity $u
      *
      * @return array
      */
-    public function fetchCustomerNotes( $custid, $publicOnly = false ){
+    public function fetchCustomerNotes( $custid, $publicOnly ) {
         $custNotes      = $this->ordered( $custid, $publicOnly );
         $unreadNotes    = 0;
         $rut            = Auth::getUser()->getPreference( "customer-notes.read_upto" );
@@ -101,5 +103,49 @@ class CustomerNote extends EntityRepository {
 
         return [ "custNotes" => $custNotes, "notesReadUpto" => $rut , "notesLastRead" => $lastRead, "unreadNotes" => $unreadNotes];
     }
-    
+
+    /**
+     * Fetch a customer's notes
+     *
+     * @param CustomerEntity $c          The customer
+     * @param bool           $publicOnly
+     * @return CustomerNoteEntity[]
+     */
+    public function fetchForCustomer( CustomerEntity $c, bool $publicOnly = false ) {
+        return $this->ordered( $c->getId(), $publicOnly );
+    }
+
+    /**
+     * Get note read statistics for a given set of notes and a user
+     *
+     * Returns an associate array with keys:
+     *
+     * * `notesReadUpto` - UNIX timestamp of when the user last read all notes / marked them as read
+     * * `notesLastRead` - UNIX timestamp of when the user last read this customer's notes
+     * * `unreadNotes`   - number of unread notes for this customer
+     *
+     * @param CustomerNoteEntity[] $cns
+     * @param CustomerEntity       $c   The customer
+     * @param UserEntity           $u   Optional user
+     * @return array
+     */
+    public function analyseForUser( $cns, CustomerEntity $c, UserEntity $u ) {
+
+        $unreadNotes    = 0;
+        $rut            = $u->getPreference( "customer-notes.read_upto" );
+        $lastRead       = $u->getPreference( "customer-notes.{$c->getId()}.last_read" );
+
+        if( $lastRead || $rut ) {
+            foreach( $cns as $cn ) {
+                $time = $cn->getUpdated()->format( "U" );
+                if( ( !$rut || $rut < $time ) && ( !$lastRead || $lastRead < $time ) ) {
+                    $unreadNotes++;
+                }
+            }
+        } else {
+            $unreadNotes = count( $cns );
+        }
+
+        return [ "notesReadUpto" => $rut , "notesLastRead" => $lastRead, "unreadNotes" => $unreadNotes ];
+    }
 }

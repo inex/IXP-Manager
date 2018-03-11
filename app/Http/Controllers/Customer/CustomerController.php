@@ -443,6 +443,9 @@ class CustomerController extends Controller
 
         $grapher = App::make('IXP\Services\Grapher' );
 
+        // get customer's notes
+        $cns = D2EM::getRepository( CustomerNoteEntity::class )->fetchForCustomer( $c );
+
         return view( 'customer/overview' )->with([
             'c'                         => $c,
             'customers'                 => D2EM::getRepository( CustomerEntity::class )->getNames( true ),
@@ -466,7 +469,8 @@ class CustomerController extends Controller
             'as112UiActive'             => $this->as112UiActive(),
             'countries'                 => Countries::getList('name' ),
             'tab'                       => strtolower( $tab ),
-            'notesInfo'                 => D2EM::getRepository( CustomerNoteEntity::class )->fetchCustomerNotes( $c->getId() )
+            'notes'                     => $cns,
+            'notesInfo'                 => D2EM::getRepository( CustomerNoteEntity::class )->analyseForUser( $cns, $c, Auth::user() )
         ]);
     }
 

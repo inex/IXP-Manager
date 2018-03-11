@@ -19,7 +19,7 @@ class EventServiceProvider extends ServiceProvider {
             'IXP\Listeners\Customer\Note\EmailOnChange'
         ],
 
-        'IXP\Events\Customer\Note\Updated' => [
+        'IXP\Events\Customer\Note\Edited' => [
             'IXP\Listeners\Customer\Note\EmailOnChange'
         ],
 

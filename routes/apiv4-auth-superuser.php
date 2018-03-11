@@ -190,7 +190,7 @@ Route::group( [ 'namespace' => 'Customer\Note', 'prefix' => 'customer-note' ], f
     Route::get(    'ajax-notify-toggle/custid/{id}',   'CustomerNotesController@notifyToggleByCust'     )->name( 'customerNotes@notifyToggleCust');
     Route::get(    'ajax-notify-toggle/id/{id}',       'CustomerNotesController@notifyToggleByNote'     )->name( 'customerNotes@notifyToggleNote');
 
-    Route::post(    'add',                             'CustomerNotesController@add'                    )->name( 'customerNotes@add');
+    Route::post(    'add',                             'CustomerNotesController@add'                    )->name( 'customer-notes@add');
     Route::post(    'delete/{id}',                     'CustomerNotesController@delete'                 )->name( 'customerNotes@delete');
 
 });

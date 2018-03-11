@@ -107,23 +107,17 @@
             return;
         }
 
-        let urlAction = "<?= route( 'customerNotes@add' ) ?>";
+        let urlAction = "<?= route( 'customer-notes@add' ) ?>";
 
         $.ajax( urlAction, {
             type: 'POST',
-            data: $( "#co-notes-form" ).serialize(),
-            headers: {
-                'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-            }
+            data: $( "#co-notes-form" ).serialize()
         })
             .done( function( data ) {
                 coNotesPost( data );
             })
-            .fail( function(){
+            .fail( function() {
                 bootbox.alert( "Error! Could not save your note." );
-            })
-            .always( function() {
-
             });
     }
 
@@ -158,18 +152,13 @@
     }
 
     function coNotesPost( data ) {
-        // server-side form validation fails:
-        if( data.rep['error'] ) {
-            bootbox.alert( "Error! Your note could not be saved." );
-            return;
-        }
 
         $( "#co-notes-dialog" ).modal( 'hide' );
 
         if( $( "#co-notes-fadd" ).html() === 'Add' ) {
 
             $( "#co-notes-table-tbody" ).prepend(
-                "<tr class=\"collapse\" id=\"co-notes-table-row-" + data.rep['noteid'] + "\">"
+                "<tr class=\"collapse\" id=\"co-notes-table-row-" + data.noteid + "\">"
                 + "<td>" + $( "#co-notes-ftitle" ).val() + "</td>"
                 + "<td>" + "<span class=\"label label-"
                 + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "important\">PRIVATE" )
@@ -177,23 +166,23 @@
                 + "<td>Just Now</td>"
                 + "<td>"
                 + "<div class=\"btn-group btn-group-sm\">"
-                + "<button id=\"co-notes-notify-" + data.rep['noteid'] + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-eye-open\"></i></button>"
-                + "<button id=\"co-notes-view-"   + data.rep['noteid'] + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-zoom-in\"></i></button>"
-                + "<button id=\"co-notes-edit-"   + data.rep['noteid'] + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-pencil\"></i></button>"
-                + "<button id=\"co-notes-trash-"  + data.rep['noteid'] + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-trash\"></i></button>"
+                + "<button id=\"co-notes-notify-" + data.noteid + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-eye-open\"></i></button>"
+                + "<button id=\"co-notes-view-"   + data.noteid + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-zoom-in\"></i></button>"
+                + "<button id=\"co-notes-edit-"   + data.noteid + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-pencil\"></i></button>"
+                + "<button id=\"co-notes-trash-"  + data.noteid + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-trash\"></i></button>"
                 + "</div>"
                 + "</td>"
                 + "</tr>"
             );
-            $( "#co-notes-notify-" + data.rep['noteid'] ).on( 'click', coNotesNotifyToggle );
-            $( "#co-notes-view-"   + data.rep['noteid'] ).on( 'click', coNotesViewDialog );
-            $( "#co-notes-edit-"   + data.rep['noteid'] ).on( 'click', coNotesEditDialog );
-            $( "#co-notes-trash-"  + data.rep['noteid'] ).on( 'click', coNotesDelete );
+            $( "#co-notes-notify-" + data.noteid ).on( 'click', coNotesNotifyToggle );
+            $( "#co-notes-view-"   + data.noteid ).on( 'click', coNotesViewDialog );
+            $( "#co-notes-edit-"   + data.noteid ).on( 'click', coNotesEditDialog );
+            $( "#co-notes-trash-"  + data.noteid ).on( 'click', coNotesDelete );
 
             $( "#co-notes-no-notes-msg" ).hide();
             $( "#co-notes-table" ).show();
 
-            $( "#co-notes-table-row-" + data.rep['noteid'] ).fadeIn( 'slow' );
+            $( "#co-notes-table-row-" + data.noteid ).fadeIn( 'slow' );
         }
         else {
             let noteid = $( "#notes-dialog-noteid" ).val();
@@ -205,8 +194,8 @@
                 + "</span>"
             );
 
-            $( "#co-notes-table-row-" + data.rep['noteid'] ).fadeOut( 'fast', function() {
-                $( "#co-notes-table-row-" + data.rep['noteid'] ).fadeIn( 'slow' );
+            $( "#co-notes-table-row-" + data.noteid ).fadeOut( 'fast', function() {
+                $( "#co-notes-table-row-" + data.noteid ).fadeIn( 'slow' );
             });
 
         }

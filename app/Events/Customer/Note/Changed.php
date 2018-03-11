@@ -28,7 +28,7 @@ use Entities\{
     Customer     as CustomerEntity
 };
 
-use Exception;
+use IXP\Exceptions\GeneralException;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 
@@ -49,7 +49,7 @@ abstract class Changed
     protected $cn;
 
     /**
-     * @var string
+     * @var CustomerEntity
      */
     protected $cust;
 
@@ -66,23 +66,20 @@ abstract class Changed
      * @param CustomerNoteEntity|null   $ocn
      * @param CustomerNoteEntity        $cn
      *
-     * @throws
+     * @throws GeneralException
      */
     public function __construct( $ocn, $cn )
     {
         $this->ocn   = $ocn;
         $this->cn    = $cn;
 
-        if( $ocn ){
-            $cust = $ocn->getCustomer();
+        if( $ocn ) {
+            $this->cust = $ocn->getCustomer();
         } else if( $cn ) {
-            $cust = $cn->getCustomer();
+            $this->cust = $cn->getCustomer();
         } else {
-            throw new Exception( "Customer note is missing." );
+            throw new GeneralException( "Customer note is missing." );
         }
-
-        $this->cust  = $cust;
-
     }
 
     /**
@@ -90,16 +87,16 @@ abstract class Changed
      *
      * @return CustomerEntity
      */
-    public function getCustomer(){
+    public function getCustomer(): CustomerEntity {
         return $this->cust;
     }
 
     /**
      * Get old note
      *
-     * @return CustomerNoteEntity
+     * @return CustomerNoteEntity|null
      */
-    public function getOldNote(){
+    public function getOldNote() {
         return $this->ocn;
     }
 
@@ -108,16 +105,34 @@ abstract class Changed
      *
      * @return CustomerNoteEntity
      */
-    public function getNote(){
+    public function getNote(): CustomerNoteEntity {
         return $this->cn;
     }
 
     /**
-     * Get note
+     * Is the event type: a customer note was added
      *
-     * @return string
+     * @return bool
      */
-    public function getType(){
-        return $this->type;
+    public function isTypeAdded() {
+        return get_class($this) == Added::class;
+    }
+
+    /**
+     * Is the event type: a customer note was deleted
+     *
+     * @return bool
+     */
+    public function isTypeDeleted() {
+        return get_class($this) == Deleted::class;
+    }
+
+    /**
+     * Is the event type: a customer note was edited
+     *
+     * @return bool
+     */
+    public function isTypeEdited() {
+        return get_class($this) == Edited::class;
     }
 }

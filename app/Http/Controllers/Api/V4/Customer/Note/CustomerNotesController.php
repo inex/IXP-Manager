@@ -43,7 +43,7 @@ use Entities\{
 use IXP\Events\Customer\Note\{
     Added       as CustomerNoteAddedEvent,
     Deleted     as CustomerNoteDeletedEvent,
-    Updated     as CustomerNoteUpdatedEvent
+    Edited     as CustomerNoteUpdatedEvent
 };
 
 /**
@@ -65,52 +65,47 @@ class CustomerNotesController extends Controller
      *
      * @throws
      */
-    public function add( Request $request ) : JsonResponse{
-        $isEdit = false;
-        $old = null;
-
+    public function add( Request $request ): JsonResponse{
 
         /** @var CustomerEntity $c */
-        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) ) ){
-            abort( 404);
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) ) ) {
+            abort( 404, 'Customer not found.' );
         }
 
         if( $request->input( 'noteid' ) ) {
-            $isEdit = true;
-            $n = D2EM::getRepository( CustomerNoteEntity::class )->find( $request->input( 'noteid' ) );
+            if( !( $n = D2EM::getRepository( CustomerNoteEntity::class )->find( $request->input( 'noteid' ) ) ) ) {
+                abort( 404, 'Note not found.' );
+            }
             $old = clone( $n );
         } else {
             $n = new CustomerNoteEntity();
+            $old = null;
         }
 
-        if( $c && $n ) {
-            $n->setTitle(   $request->input( 'title' ) );
-            $n->setNote(    $request->input( 'note' ) );
-            $n->setPrivate( $request->input( 'public' ) == 'makePublic' ? false : true );
-            $n->setUpdated( new \DateTime );
+        $n->setTitle(   $request->input( 'title' ) );
+        $n->setNote(    $request->input( 'note' ) );
+        $n->setPrivate( $request->input( 'public' ) == 'makePublic' ? false : true );
+        $n->setUpdated( new \DateTime );
 
-            if( !$isEdit ) {
-                $n->setCreated( $n->getUpdated() );
-                $n->setCustomer( $c );
-                D2EM::persist( $n );
-            }
-
-            // update the user's notes last read so he won't be told his own is new
-            Auth::getUser()->setPreference( "customer-notes.{$request->input( 'custid' )}.last_read", time() );
-
-            D2EM::flush();
-
-            if( !$old || $old->getTitle() != $n->getTitle() || $old->getNote() != $n->getNote() || $old->getPrivate() != $n->getPrivate() ){
-                $this->sendNotifications( $old , $n );
-            }
-
-            $r[ 'error' ] = false;
-            $r[ 'noteid' ] = $n->getId();
-        } else {
-            $r['error'] = "Invalid customer / note specified.";
+        if( $old === null ) {
+            // new note:
+            $n->setCreated( $n->getUpdated() );
+            $n->setCustomer( $c );
+            D2EM::persist( $n );
         }
 
-        return response()->json( [ 'rep' => $r ] );
+        // update the user's notes last read so he won't be told his own is new
+        Auth::getUser()->setPreference( "customer-notes.{$c->getId()}.last_read", time() );
+
+        D2EM::flush();
+
+        if( $old === null ) {
+            event( new CustomerNoteAddedEvent( null, $n ) );
+        } else if( $old->getTitle() != $n->getTitle() || $old->getNote() != $n->getNote() ) {
+            event( new CustomerNoteUpdatedEvent ( $old, $n  ) );
+        }
+
+        return response()->json( [ 'noteid' => $n->getId() ] );
     }
 
     /**
@@ -156,7 +151,9 @@ class CustomerNotesController extends Controller
             $old = clone( $note );
             D2EM::remove( $note );
             D2EM::flush();
-            $this->sendNotifications( $old, null );
+            // $this->sendNotifications( $old, null );
+            //event( new CustomerNoteDeletedEvent ( $ocn, $cn ) );
+
             $error = false;
         }
 
@@ -185,28 +182,6 @@ class CustomerNotesController extends Controller
         return response()->json( true );
     }
 
-    /**
-     * Send email notification, We can work out the action as follows:
-     *
-     *  * old == false, new != false: ADD
-     *  * old != false, new == false: DELETE
-     *  * old != false, new != false: EDIT
-     *
-     * @param CustomerNoteEntity $ocn   Old Note
-     * @param CustomerNoteEntity $cn    New note
-     *
-     * @throws Exception
-     */
-    private function sendNotifications( CustomerNoteEntity $ocn = null ,CustomerNoteEntity $cn = null ){
-
-        if( !$ocn ){
-            event( new CustomerNoteAddedEvent   ( $ocn, $cn ) );
-        } elseif( !$cn ){
-            event( new CustomerNoteDeletedEvent ( $ocn, $cn ) );
-        } else{
-            event( new CustomerNoteUpdatedEvent ( $ocn, $cn  ) );
-        }
-    }
 
     /**
      * @param int $custid

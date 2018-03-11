@@ -26,6 +26,4 @@ namespace IXP\Events\Customer\Note;
 
 
 class Deleted extends Changed
-{
-    protected $type = "Deleted";
-}
+{}

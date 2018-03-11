@@ -26,6 +26,4 @@ namespace IXP\Events\Customer\Note;
 
 
 class Added extends Changed
-{
-    protected $type = "Added";
-}
+{}
