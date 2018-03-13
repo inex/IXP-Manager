@@ -141,9 +141,9 @@ function coNotesViewDialog( event ) {
                 return;
             }
 
-            $( "#co-notes-view-dialog-title" ).html( data['title'] );
-            $( "#co-notes-view-dialog-note"  ).html( data['noteParsedown'] );
-            $( "#co-notes-view-dialog-date"  ).html( 'Note first created: ' + data['created'] );
+            $( "#co-notes-view-dialog-title" ).html( data.note['title'] );
+            $( "#co-notes-view-dialog-note"  ).html( data.note['noteParsedown'] );
+            $( "#co-notes-view-dialog-date"  ).html( 'Note first created: ' + data.note['created'] );
             $( "#co-notes-view-dialog" ).modal();
 
         })
@@ -301,9 +301,9 @@ $(document).ready(function(){
 		// mark notes as read and update the users last read time
 		$( '#notes-unread-indicator' ).remove();
 		{if $user->getPrivs() eq USER::AUTH_SUPERUSER}
-			$.get( "{route( 'customerNotes@ping' , [ 'id' => $cust->getId() ] )}" );
+			$.get( "{route( 'customer-notes@ping' , [ 'id' => $cust->getId() ] )}" );
 		{else}
-            $.get( "{route( 'customerNotes@ping' )}" );
+            $.get( "{route( 'customer-notes@ping' )}" );
 		{/if}
 	});
 		

@@ -16,6 +16,6 @@ Route::post( 'l2-address/add',                                  'Layer2AddressCo
 Route::post( 'l2-address/delete/{id}',                          'Layer2AddressController@delete' );
 
 Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer\Note'], function() {
-    Route::get(    'ping/{id?}',            'CustomerNotesController@ping'      )->name( 'customerNotes@ping');
-    Route::get(    'get/{id}',              'CustomerNotesController@get'       )->name( 'customerNotes@get');
+    Route::get(    'ping/{id?}',            'CustomerNotesController@ping'      )->name( 'customer-notes@ping');
+    Route::get(    'get/{id}',              'CustomerNotesController@get'       )->name( 'customer-notes@get');
 });

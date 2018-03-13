@@ -3,7 +3,7 @@
     <div class="col-sm-12">
 
         <br>
-        <?php if( Auth::getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER && !$t->c->statusIsNormal() ): ?>
+        <?php if( Auth::getUser()->isSuperUser() && !$t->c->statusIsNormal() ): ?>
 
             <div class="alert alert-danger" role="alert">
                 <b>Warning! Customer status is not normal.</b>

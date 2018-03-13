@@ -126,7 +126,7 @@ class RouteServiceProvider extends ServiceProvider {
     protected function mapApiV4Routes()
     {
         Route::group([
-            'middleware' => 'public/api/v4',
+            'middleware' => [  'web', 'public/api/v4' ],
             'namespace' => $this->namespace . '\\Api\\V4',
             'prefix' => 'api/v4',
         ], function ($router) {
@@ -149,7 +149,7 @@ class RouteServiceProvider extends ServiceProvider {
     protected function mapApiV4AuthRoutes()
     {
         Route::group([
-            'middleware' => [ 'api/v4', 'auth' ],
+            'middleware' => [ 'web', 'api/v4', 'auth' ],
             'namespace' => $this->namespace . '\\Api\\V4',
             'prefix' => 'api/v4',
         ], function ($router) {
@@ -173,6 +173,7 @@ class RouteServiceProvider extends ServiceProvider {
     {
         Route::group([
              'middleware' => [
+                 'web',
                  'api/v4',
                  'assert.privilege:' . UserEntity::AUTH_SUPERUSER
              ],

@@ -62,7 +62,7 @@ class Changed extends Mailable
     public $cn;
 
     /**
-     * Custoner
+     * Customer
      * @var CustomerEntity
      */
     public $cust;

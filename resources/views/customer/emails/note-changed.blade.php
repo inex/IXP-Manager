@@ -1,37 +1,40 @@
 @component('mail::message')
-    Customer:   {{$cust->getName()}}
 
-    Changed by: {{$user->getContact()->getName()}} <{{$user->getContact()->getEmail()}}>
+#**Note {{$type}}**
 
-    Action:     Note {{$type}}
+**Customer:** {{$cust->getName()}}
+
+**Changed by:** {{$user->getContact()->getName()}} - <{{$user->getContact()->getEmail()}}>
+
+@if( $cn )
+
+##**Note Details**
+@component('mail::panel')
+**Title:**      {{$cn->getTitle()}}
+
+**Visibility:**@if( $cn->getPrivate()) Private @else Public @endif
 
 
-    @if( $cn)
+**Note:**
+{{$cn->getNote()}}
+@endcomponent
 
-        ================= NEW NOTE DETAILS ===================
+@endif
 
-        Title:      {{$cn->getTitle()}}
 
-        Visibility: @if( $cn->getPrivate() ) Private @else Public  @endif
+@if( $ocn )
 
-        {{$cn->getNoteParsedown()}}
+##**Old Note Details**
+@component('mail::panel')
+**Title:**      {{$ocn->getTitle()}}
 
-        ======================================================
+**Visibility:**@if( $ocn->getPrivate()) Private @else Public @endif
 
-    @endif
 
-    @if( $ocn )
+**Note:**
+{{$ocn->getNote()}}
+@endcomponent
 
-        ================= OLD NOTE DETAILS ===================
-
-        Title:      {{$ocn->getTitle()}}
-
-        Visibility: @if( $ocn->getPrivate()) Private @else Public @endif
-
-        {{$ocn->getNoteParsedown()}}
-
-        ======================================================
-
-    @endif
+@endif
 
 @endcomponent

@@ -27,19 +27,13 @@
 
         $.ajax( urlAction )
             .done( function( data ) {
-
-                if( data['error'] ) {
-                    bootbox.alert( "Error! Error getting the note from the server." );
-                    return;
-                }
-
                 $( "#co-notes-fadd"        ).html( 'Save' );
-                $( "#co-notes-ftitle"      ).val( data['title'] );
-                $( "#co-notes-fnote"       ).val( data['note']  );
-                $( "#notes-dialog-noteid"  ).val( data['id'] );
-                $( "#co-notes-dialog-date" ).html( 'Note first created: ' + data['created'] );
+                $( "#co-notes-ftitle"      ).val( data.note['title'] );
+                $( "#co-notes-fnote"       ).val( data.note['note']  );
+                $( "#notes-dialog-noteid"  ).val( data.note['id'] );
+                $( "#co-notes-dialog-date" ).html( 'Note first created: ' + data.note['created'] );
 
-                if( data['private'] ){
+                if( data.note['private'] ){
                     $( "#co-notes-fpublic" ).prop( 'checked', false );
                 } else {
                     $( "#co-notes-fpublic" ).prop( 'checked', true );
@@ -70,28 +64,25 @@
 
                 $.ajax( urlAction , {
                     type: 'POST',
-                    headers: {
-                        'X-CSRF-Token': $('meta[name="csrf-token"]').attr('content')
-                    }
                 })
-                    .done( function( data ) {
+                .done( function( data ) {
 
-                        if( data['error'] ) {
-                            bootbox.alert( "Error! Server side error deleting the note." );
-                            return;
-                        }
+                    if( data['error'] ) {
+                        bootbox.alert( "Error! Server side error deleting the note." );
+                        return;
+                    }
 
-                        $( "#co-notes-table-row-" + noteid ).fadeOut( 'slow', function() {
-                            $( "#co-notes-table-row-" + noteid ).remove();
-                        });
-                    })
-                    .fail( function(){
-                        alert( "Error running ajax query for " + urlAction );
-                        throw new Error( "Error running ajax query for " + urlAction );
-                    })
-                    .always( function() {
-
+                    $( "#co-notes-table-row-" + noteid ).fadeOut( 'slow', function() {
+                        $( "#co-notes-table-row-" + noteid ).remove();
                     });
+                })
+                .fail( function(){
+                    alert( "Error running ajax query for " + urlAction );
+                    throw new Error( "Error running ajax query for " + urlAction );
+                })
+                .always( function() {
+
+                });
             }
         });
     }
@@ -111,7 +102,7 @@
 
         $.ajax( urlAction, {
             type: 'POST',
-            data: $( "#co-notes-form" ).serialize()
+            data: $( "#co-notes-form" ).serialize(),
         })
             .done( function( data ) {
                 coNotesPost( data );
@@ -130,15 +121,9 @@
 
         $.ajax( urlAction )
             .done( function( data ) {
-
-                if( data['error'] ) {
-                    bootbox.alert( "Error! Error getting the note from the server." );
-                    return;
-                }
-
-                $( "#co-notes-view-dialog-title" ).html( data['title'] );
-                $( "#co-notes-view-dialog-note"  ).html( data['noteParsedown'] );
-                $( "#co-notes-view-dialog-date"  ).html( 'Note first created: ' + data['created'] );
+                $( "#co-notes-view-dialog-title" ).html( data.note['title'] );
+                $( "#co-notes-view-dialog-note"  ).html( data.note['noteParsedown'] );
+                $( "#co-notes-view-dialog-date"  ).html( 'Note first created: ' + data.note['created'] );
                 $( "#co-notes-view-dialog" ).modal();
 
             })
@@ -161,7 +146,7 @@
                 "<tr class=\"collapse\" id=\"co-notes-table-row-" + data.noteid + "\">"
                 + "<td>" + $( "#co-notes-ftitle" ).val() + "</td>"
                 + "<td>" + "<span class=\"label label-"
-                + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "important\">PRIVATE" )
+                + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "danger\">PRIVATE" )
                 + "</span></td>"
                 + "<td>Just Now</td>"
                 + "<td>"
@@ -248,7 +233,32 @@
     $(document).ready(function(){
 
 
-        <?php if( Auth::getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER ): ?>
+        <?php if( Auth::getUser()->isSuperUser() ): ?>
+
+        $('#tab-link-body').on( 'click', function(e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+
+        $('#tab-link-preview').on( 'click', function(e) {
+            e.preventDefault();
+            $('#well-preview').html('Loading...');
+            $(this).tab('show');
+
+            $.ajax( "<?= action ('Api\V4\UtilsController@markdown')?>", {
+                data: {
+                    text: $('#co-notes-fnote').val()
+                },
+                type: 'POST'
+            })
+                .done( function( data ) {
+                    $('#well-preview').html( data.html );
+                })
+                .fail( function() {
+                    $('#well-preview').html('Error!');
+                });
+        });
+
 
         $( "#co-notes-add-btn" ).on( "click", function( event ){
             event.preventDefault();
@@ -289,13 +299,13 @@
 
         <?php endif; ?>
 
-        $( "#tab-notes" ).on( 'shown', function( ) {
+        $( "#tab-notes" ).on( 'shown.bs.tab', function( ) {
             // mark notes as read and update the users last read time
             $( '#notes-unread-indicator' ).remove();
-            <?php if( Auth::getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER ): ?>
-                $.get( "{route( 'customerNotes@ping' , [ 'id' => $cust->getId() ] )}" );
+            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                $.get( "<?= route( "customer-notes@ping" , [ 'id' => $t->c->getId() ] ) ?>");
             <?php else: ?>
-                $.get( "{route( 'customerNotes@ping' )}" );
+                $.get( "<?= route( "customer-notes@ping" ) ?>";
             <?php endif; ?>
         });
 

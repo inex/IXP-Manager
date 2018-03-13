@@ -91,7 +91,24 @@
                         <form class="bootbox-form" id="co-notes-form">
                             <input type="text" placeholder="Title" class="bootbox-input bootbox-input form-control" name="title" id="co-notes-ftitle" />
                             <br />
-                            <textarea rows="6" class="bootbox-input bootbox-input-textarea form-control" name="note" id="co-notes-fnote"></textarea>
+                            <ul class="nav nav-tabs">
+                                <li role="presentation" class="active"><a id="tab-link-body" href="#body">Body</a></li>
+                                <li role="presentation"><a  id="tab-link-preview" href="#preview">Preview</a></li>
+                            </ul>
+
+                            <br>
+
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane active" id="body">
+                                    <textarea rows="6" class="bootbox-input bootbox-input-textarea form-control" name="note" id="co-notes-fnote"></textarea>
+                                </div>
+                                <div role="tabpanel" class="tab-pane" id="preview">
+                                    <div id="well-preview" class="well" style="background: rgb(255,255,255);">
+                                        Loading...
+                                    </div>
+                                </div>
+                            </div>
+
                             <br />
                             <label>
                                 <input type="checkbox" name="public" id="co-notes-fpublic" class="bootbox-input bootbox-input-checkbox" value="makePublic" />

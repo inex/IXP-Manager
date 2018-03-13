@@ -24,8 +24,9 @@ namespace IXP\Events\Customer\Note;
  */
 
 use Entities\{
-    CustomerNote as CustomerNoteEntity,
-    Customer     as CustomerEntity
+    CustomerNote    as CustomerNoteEntity,
+    Customer        as CustomerEntity,
+    User            as UserEntity
 };
 
 use IXP\Exceptions\GeneralException;
@@ -58,6 +59,11 @@ abstract class Changed
      */
     protected $type;
 
+    /**
+     * @var UserEntity
+     */
+    protected $user;
+
 
 
     /**
@@ -68,10 +74,11 @@ abstract class Changed
      *
      * @throws GeneralException
      */
-    public function __construct( $ocn, $cn )
+    public function __construct( $ocn, $cn, $user )
     {
-        $this->ocn   = $ocn;
-        $this->cn    = $cn;
+        $this->ocn      = $ocn;
+        $this->cn       = $cn;
+        $this->user     = $user;
 
         if( $ocn ) {
             $this->cust = $ocn->getCustomer();
@@ -89,6 +96,15 @@ abstract class Changed
      */
     public function getCustomer(): CustomerEntity {
         return $this->cust;
+    }
+
+    /**
+     * Get customer
+     *
+     * @return UserEntity
+     */
+    public function getUser(): UserEntity {
+        return $this->user;
     }
 
     /**
@@ -134,5 +150,20 @@ abstract class Changed
      */
     public function isTypeEdited() {
         return get_class($this) == Edited::class;
+    }
+
+    /**
+     * Resolve the type
+     *
+     * @return string
+     */
+    public function resolveType() {
+        if( $this->isTypeAdded() ){
+            return "Added";
+        }elseif( $this->isTypeEdited() ){
+            return "Edited";
+        }else{
+            return "Deleted";
+        }
     }
 }

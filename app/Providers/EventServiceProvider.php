@@ -5,24 +5,22 @@ use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvi
 class EventServiceProvider extends ServiceProvider {
 
     /**
+     * The subscriber classes to register.
+     *
+     * @var array
+     */
+    protected $subscribe = [
+        'IXP\Listeners\Customer\Note\EmailOnChange',
+    ];
+
+
+
+    /**
      * The event handler mappings for the application.
      *
      * @var array
      */
     protected $listen = [
-
-        'IXP\Events\Customer\Note\Added' => [
-            'IXP\Listeners\Customer\Note\EmailOnChange'
-        ],
-
-        'IXP\Events\Customer\Note\Deleted' => [
-            'IXP\Listeners\Customer\Note\EmailOnChange'
-        ],
-
-        'IXP\Events\Customer\Note\Edited' => [
-            'IXP\Listeners\Customer\Note\EmailOnChange'
-        ],
-
         'IXP\Events\Customer\BillingDetailsChanged' => [
             'IXP\Listeners\Customer\BillingDetailsChanged'
         ],
@@ -35,6 +33,9 @@ class EventServiceProvider extends ServiceProvider {
         ],
 
     ];
+
+
+
 
     /**
      * Register any other events for your application.

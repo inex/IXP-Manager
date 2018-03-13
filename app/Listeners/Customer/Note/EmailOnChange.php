@@ -34,10 +34,56 @@ use Entities\{
 };
 
 
+use IXP\Events\Event;
 use IXP\Mail\Customer\Note\Changed as CustomerNoteChangedMailable;
 
 class EmailOnChange
 {
+    /**
+     * Handle customer note added
+     */
+    public function onAddedNote( $event ) {
+        $this->handle( $event );
+    }
+
+    /**
+     * Handle customer note edited
+     */
+    public function onEditedNote( $event ) {
+        $this->handle( $event );
+    }
+
+    /**
+     * Handle customer note deleted
+     */
+    public function onDeletedNote( $event ) {
+        $this->handle( $event );
+    }
+
+    /**
+     * Register the listeners for the subscriber.
+     *
+     * @param  Illuminate\Events\Dispatcher  $events
+     */
+    public function subscribe( $events )
+    {
+        $events->listen(
+            'IXP\Events\Customer\Note\Added',
+            'IXP\Listeners\Customer\Note\EmailOnChange@onAddedNote'
+        );
+
+        $events->listen(
+            'IXP\Events\Customer\Note\Edited',
+            'IXP\Listeners\Customer\Note\EmailOnChange@onEditedNote'
+        );
+
+        $events->listen(
+            'IXP\Events\Customer\Note\Deleted',
+            'IXP\Listeners\Customer\Note\EmailOnChange@onDeletedNote'
+        );
+    }
+
+
     /**
      * Create the event listener.
      *
@@ -51,7 +97,7 @@ class EmailOnChange
     /**
      * Handle the event.
      *
-     * @param  CustomerNoteAddedEvent $e
+     * @param  Event $e
      * @return void
      */
     public function handle( $e )
@@ -74,7 +120,7 @@ class EmailOnChange
                 continue;
 
 
-            Mail::to( $user->getContact()->getEmail() )->send( new CustomerNoteChangedMailable( $e->getOldNote(), $e->getNote(), $e->getCustomer(), $user, $e->getType() ) );
+            Mail::to( $user->getContact()->getEmail() )->send( new CustomerNoteChangedMailable( $e->getOldNote(), $e->getNote(), $e->getCustomer(), $e->getUser(), $e->resolveType() ) );
 
         }
 

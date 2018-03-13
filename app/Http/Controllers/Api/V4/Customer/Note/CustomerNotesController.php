@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Api\V4\Customer\Note;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Exception;
+use Auth, D2EM;
 
 use IXP\Http\Controllers\Controller;
 use Illuminate\Http\{
@@ -100,9 +100,9 @@ class CustomerNotesController extends Controller
         D2EM::flush();
 
         if( $old === null ) {
-            event( new CustomerNoteAddedEvent( null, $n ) );
+            event( new CustomerNoteAddedEvent( null, $n, Auth::getUser() ) );
         } else if( $old->getTitle() != $n->getTitle() || $old->getNote() != $n->getNote() ) {
-            event( new CustomerNoteUpdatedEvent ( $old, $n  ) );
+            event( new CustomerNoteUpdatedEvent ( $old, $n, Auth::getUser()  ) );
         }
 
         return response()->json( [ 'noteid' => $n->getId() ] );
@@ -118,19 +118,18 @@ class CustomerNotesController extends Controller
      * @throws
      */
     public function get( int $id = null ){
-        $r = [ 'error' => true ];
-
-        if( $note = D2EM::getRepository( CustomerNoteEntity::class )->find( $id ) ) {
-            if( Auth::getUser()->getPrivs() != UserEntity::AUTH_SUPERUSER && ( $note->getCustomer() != Auth::getUser()->getCustomer() || $note->getPrivate() ) ) {
-                abort( 403 );
-            } else {
-                $r = $note->toArray();
-                $r['created'] = $r['created']->format( 'Y-m-d H:i' );
-                $r['error'] = false;
-            }
+        if( !( $n = D2EM::getRepository( CustomerNoteEntity::class )->find( $id ) ) ) {
+            abort( 404, 'Customer Note not found.' );
         }
 
-        return response()->json( $r );
+        if( Auth::getUser()->getPrivs() != UserEntity::AUTH_SUPERUSER && ( $n->getCustomer() != Auth::getUser()->getCustomer() || $n->getPrivate() ) ) {
+            abort( 403, 'Insufficient Permissions.' );
+        }
+
+        $nArray = $n->toArray();
+        $nArray['created'] = $nArray['created']->format( 'Y-m-d H:i' );
+
+        return response()->json( [ 'note' => $nArray ] );
     }
 
     /**
@@ -145,39 +144,39 @@ class CustomerNotesController extends Controller
      * @throws
      */
     public function delete( int $id = null ) : JsonResponse{
-        $error = true;
-
-        if( $note = D2EM::getRepository( CustomerNoteEntity::class )->find( $id ) ) {
-            $old = clone( $note );
-            D2EM::remove( $note );
-            D2EM::flush();
-            // $this->sendNotifications( $old, null );
-            //event( new CustomerNoteDeletedEvent ( $ocn, $cn ) );
-
-            $error = false;
+        if( !( $n = D2EM::getRepository( CustomerNoteEntity::class )->find( $id ) ) ) {
+            abort( 404, 'Customer Note not found.' );
         }
 
-        return response()->json( ['error' => $error ] );
+        $on = clone( $n );
+        D2EM::remove( $n );
+        D2EM::flush();
+        event( new CustomerNoteDeletedEvent ( null , $on, Auth::getUser() ) );
+
+        return response()->json( [ 'noteid' => $on->getId() ] );
     }
 
 
     /**
+     * Update the last read for this user
+     *
      * @param int|null $id
      * @return JsonResponse
      * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function ping( int $id = null ) : JsonResponse {
-        if( Auth::getUser()->getPrivs() == UserEntity::AUTH_SUPERUSER ){
-            $custid = $id;
+        if( Auth::getUser()->isSuperUser() ){
+            if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
+                abort( 404, 'Customer not found.' );
+            }
         } else {
-            $custid = Auth::getUser()->getCustomer()->getId();
+            $c = Auth::getUser()->getCustomer();
         }
 
         // update the last read for this user / customer combination
-        if( is_numeric( $custid ) ) {
-            Auth::getUser()->setPreference( "customer-notes.{$custid}.last_read", time() );
-            D2EM::flush();
-        }
+
+        Auth::getUser()->setPreference( "customer-notes.{$c->getId()}.last_read", time() );
+        D2EM::flush();
 
         return response()->json( true );
     }
