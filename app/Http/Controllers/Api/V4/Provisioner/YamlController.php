@@ -165,7 +165,7 @@ class YamlController extends Controller {
             }
         }
 
-        if ($data['mgmt_mac_address']) { $output['macaddress']    = $data['mgmt_mac_address']; }
+        if ($data['mgmt_mac_address']) { $output['macaddress']    = implode(':', str_split($data['mgmt_mac_address'], 2)); }
         if ($data['serialNumber'])     { $output['serial']        = $data['serialNumber'];     }
         if ($data['lastPolled'])       { $output['lastpolled']    = $data['lastPolled']->format('c'); }
         if ($data['osVersion'])        { $output['osversion']     = $data['osVersion'];        }
