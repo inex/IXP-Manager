@@ -171,7 +171,7 @@ class YamlController extends Controller {
         if ($data['osVersion'])        { $output['osversion']     = $data['osVersion'];        }
         if ($data['snmppasswd'])       { $output['snmpcommunity'] = $data['snmppasswd'];       }
 
-        return $output;
+        return array("switch" => $output);
     }
 
     /**
