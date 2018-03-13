@@ -422,9 +422,9 @@ class PatchPanelPort
      *
      * @return PatchPanelPort
      */
-    public function setColoBillingRef( string $colo_billing_ref ): PatchPanelPort
+    public function setColoBillingRef( $colo_billing_ref ): PatchPanelPort
     {
-        $this->colo_billing_ref = $colo_billing_ref;
+        $this->colo_billing_ref = $colo_billing_ref ?? '';
         return $this;
     }
 

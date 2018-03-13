@@ -151,6 +151,30 @@ class YamlController extends Controller {
     }
 
     /**
+     * Restructure the output from showSwitch.
+     *
+     * @return Array
+     */
+    public function showSwitchRestructureOutput( array $data ) {
+        $output = [];
+
+        foreach (['name', 'asn', 'hostname', 'loopback_ip', 'loopback_name', 'ipv4addr',
+                    'ipv6addr', 'model', 'active', 'os', 'id'] as $key) {
+            if (!is_null ($data[$key]) && $data[$key] !== '') {
+                $output[$key] = $data[$key];
+            }
+        }
+
+        if ($data['mgmt_mac_address']) { $output['macaddress']    = $data['mgmt_mac_address']; }
+        if ($data['serialNumber'])     { $output['serial']        = $data['serialNumber'];     }
+        if ($data['lastPolled'])       { $output['lastpolled']    = $data['lastPolled'];       }
+        if ($data['osVersion'])        { $output['osversion']     = $data['osVersion'];        }
+        if ($data['snmppasswd'])       { $output['snmpcommunity'] = $data['snmppasswd'];       }
+
+        return $output;
+    }
+
+    /**
      * Generate a Yaml/JSON response for a switch
      *
      * @return View
@@ -166,7 +190,7 @@ class YamlController extends Controller {
             abort( 404, "Unknown switch" );
         }
 
-        return $this->structuredResponse( $switch, $format );
+        return $this->structuredResponse( $this->showSwitchRestructureOutput($switch), $format );
     }
 
     /**
@@ -185,7 +209,7 @@ class YamlController extends Controller {
             abort( 404, "Unknown switch" );
         }
 
-        return $this->structuredResponse( $switch, $format );
+        return $this->structuredResponse( $this->showSwitchRestructureOutput($switch), $format );
     }
 
     /**
