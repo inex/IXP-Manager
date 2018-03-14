@@ -98,8 +98,16 @@
             return;
         }
 
-        let urlAction = "<?= route( 'customer-notes@add' ) ?>";
+        // validation - just make sure there's a body
+        if( $( "#co-notes-fnote" ).val().length === 0 ){
+            bootbox.alert( "Error! A body for the note is required.", function() {
+                $( "#co-notes-ftitle" ).focus();
+            });
+            return;
+        }
 
+        let urlAction = "<?= route( 'customer-notes@add' ) ?>";
+        $( "#co-notes-fadd" ).attr( "disabled","disabled" );
         $.ajax( urlAction, {
             type: 'POST',
             data: $( "#co-notes-form" ).serialize(),
@@ -109,6 +117,9 @@
             })
             .fail( function() {
                 bootbox.alert( "Error! Could not save your note." );
+            })
+            .always( function() {
+                $( "#co-notes-fadd" ).attr( "disabled", false );
             });
     }
 
