@@ -108,10 +108,10 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Preferences', 'Customer', 'Children', 'Contact', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', '_className', '_preferenceClassName', '' . "\0" . 'Entities\\User' . "\0" . '_cache', '' . "\0" . 'Entities\\User' . "\0" . '_namespace'];
+            return ['__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Children', 'Contact', '_className', '_preferenceClassName', '' . "\0" . 'Entities\\User' . "\0" . '_cache', '' . "\0" . 'Entities\\User' . "\0" . '_namespace'];
         }
 
-        return ['__isInitialized__', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Preferences', 'Customer', 'Children', 'Contact', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', '_className', '_preferenceClassName', '' . "\0" . 'Entities\\User' . "\0" . '_cache', '' . "\0" . 'Entities\\User' . "\0" . '_namespace'];
+        return ['__isInitialized__', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Children', 'Contact', '_className', '_preferenceClassName', '' . "\0" . 'Entities\\User' . "\0" . '_cache', '' . "\0" . 'Entities\\User' . "\0" . '_namespace'];
     }
 
     /**

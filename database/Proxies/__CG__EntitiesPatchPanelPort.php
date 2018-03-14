@@ -297,7 +297,7 @@ class PatchPanelPort extends \Entities\PatchPanelPort implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function setColoBillingRef(string $colo_billing_ref): \Entities\PatchPanelPort
+    public function setColoBillingRef($colo_billing_ref): \Entities\PatchPanelPort
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setColoBillingRef', [$colo_billing_ref]);
