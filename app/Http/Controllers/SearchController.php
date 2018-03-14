@@ -72,7 +72,7 @@ class SearchController extends Controller {
             if( preg_match( '/^PPP\-(\d+)$/', $search, $matches ) ) {
                 // patch panel port search
                 if( $ppp = D2EM::getRepository( PatchPanelPortEntity::class )->find( $matches[1] ) ) {
-                    return Redirect::to( 'patch-panel-port/view/' . $ppp->getId() );
+                    return Redirect::to( route( 'patch-panel-port@view', [ 'id' => $ppp->getId() ] ) );
                 }
             }
             else if( preg_match( '/^xc:\s*(.*)\s*$/', $search, $matches ) ) {
@@ -82,7 +82,7 @@ class SearchController extends Controller {
                 $results = D2EM::getRepository( PatchPanelPortEntity::class )->findByColoRefs( $matches[1] );
 
                 if( count( $results ) === 1 ) {
-                    return Redirect::to( 'patch-panel-port/view/' . $results[0]->getId() );
+                    return Redirect::to( route( 'patch-panel-port@view', [ 'id' => $results[0]->getId() ] ) );
                 }
             }
             else if( preg_match( '/^\.\d{1,3}$/', $search ) || preg_match( '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/', $search ) ) {

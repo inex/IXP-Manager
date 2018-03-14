@@ -24,10 +24,13 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Member Information <b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     <li>
-                                        <a href="{genUrl controller="switch" action="configuration"}">Switch Configuration</a>
+                                        <a href="{route( 'customer@details')}">Member Details</a>
                                     </li>
                                     <li>
-                                        <a href="{genUrl controller="customer" action="details"}">Member Details</a>
+                                        <a href="{route( 'customer@associates')}">Associate Members</a>
+                                    </li>
+                                    <li>
+                                        <a href="{genUrl controller="switch" action="configuration"}">Switch Configuration</a>
                                     </li>
                                 </ul>
                             </li>
@@ -156,7 +159,7 @@
                                     </li>
                                     <li class="divider"></li>
                                     <li>
-                                        <a href="{genUrl controller="customer" action="unread-notes"}">Unread Notes</a>
+                                        <a href="{route('customerNotes@unreadNotes')}">Unread Notes</a>
                                     </li>
                                     <li class="divider"></li>
                                     <li>

@@ -950,6 +950,14 @@ class SwitchPort
     }
 
     /**
+     * Is this a fanout port?
+     * @return boolean
+     */
+    public function isTypeFanout() {
+        return $this->getType() == self::TYPE_FANOUT;
+    }
+
+    /**
      * Set patchPanelPort
      *
      * @param \Entities\PatchPanelPort $patchPanelPort

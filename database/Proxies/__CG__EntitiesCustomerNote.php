@@ -242,6 +242,17 @@ class CustomerNote extends \Entities\CustomerNote implements \Doctrine\ORM\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getNoteParsedown()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNoteParsedown', []);
+
+        return parent::getNoteParsedown();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setCreated($created)
     {
 

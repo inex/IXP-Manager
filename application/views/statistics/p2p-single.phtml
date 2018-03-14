@@ -9,7 +9,7 @@
             <a href="{genUrl controller='statistics' action='members'}">Statistics</a> <span class="divider">/</span>
         </li>
         <li>
-             <a href="{genUrl controller="customer" action="overview" id=$cust->getId()}">{$cust->getFormattedName()}</a> <span class="divider">/</span>
+             <a href="{route( 'customer@overview' , [ "id" => $cust->getId() ])}">{$cust->getFormattedName()}</a> <span class="divider">/</span>
         </li>
         <li class="active">
             <a href="{genUrl controller="statistics" action="p2p" shortname=$cust->getShortname()}">Peer to Peer Statistics</a>

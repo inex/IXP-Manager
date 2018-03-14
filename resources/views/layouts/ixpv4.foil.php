@@ -143,11 +143,26 @@
     <script type="text/javascript" src="<?= asset('/bower_components/bootbox.js/bootbox.js') ?>"></script>
 
     <script>
-        $( ".chzn-select" ).select2({ width: '100%' });
+
+        $( ".chzn-select" ).select2({ width: '100%', placeholder: function() {
+            $(this).data('placeholder');
+        }});
+
+        $( ".chzn-select-tag" ).select2({ width: '100%', tags: true, placeholder: function() {
+            $(this).data('placeholder');
+        }});
+
+        $( ".chzn-select-deselect" ).select2({ width: '100%', allowClear: true, placeholder: function() {
+            $(this).data('placeholder');
+        }});
+
+        $( ".chzn-select-deselect-tag" ).select2({ width: '100%', allowClear: true, tags: true, placeholder: function() {
+            $(this).data('placeholder');
+        }});
 
         <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
             $( "#menu-select-customer" ).select2({ placeholder: "Jump to customer...", allowClear: true }).change( function(){
-                document.location.href = '<?= url( "/customer/overview" ) ?>/id/' + $( "#menu-select-customer" ).val();
+                document.location.href = '<?= url( "/customer/overview" ) ?>/' + $( "#menu-select-customer" ).val();
             });
         <?php endif; ?>
     </script>

@@ -473,6 +473,15 @@ class PhysicalInterface
     }
 
     /**
+     * Is this port graphable?
+     *
+     * @return bool
+     */
+    public function isGraphable(): bool {
+        return $this->statusIsConnectedOrQuarantine();
+    }
+
+    /**
      * Try to find the most accurate version of the port's speed.
      *
      * I.e. try the actual SNMP-discovered port speed first, otherwise use the configured speed

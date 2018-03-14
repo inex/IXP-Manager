@@ -27,6 +27,15 @@ Route::get('dns/arpa/{vlanid}/{protocol}',             'DnsController@arpa');
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Customers
+//
+Route::group( [  'prefix' => 'customer' ], function() {
+    Route::get( 'query-peeringdb/asn/{asn}',   'CustomerController@queryPeeringDbWithAsn' );
+
+    Route::post( '{id}/switches',               'CustomerController@switches' );
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Users
 //
 // Returns all users (or users with given integer privilege) as JSON
@@ -122,8 +131,6 @@ Route::get( 'provisioner/switch/switch-name/{switchname}.{outformat}',          
 Route::get('switch-port/{id}/customer',                         'SwitchPortController@customer' );
 Route::get('switch-port/{id}/physical-interface',               'SwitchPortController@physicalInterface' );
 
-Route::post('customer/{id}/switches',                           'CustomerController@switches' );
-
 Route::group( [  'prefix' => 'switch' ], function() {
     Route::get( '{id}/ports',                        'SwitchController@ports' );
     Route::post( '{id}/switch-port-for-ppp',          'SwitchController@switchPortForPPP' );
@@ -176,6 +183,16 @@ Route::group( [ 'prefix' => 'nagios' ], function() {
     Route::post( 'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}',            'NagiosController@birdseyeBgpSessions');
     Route::get(  'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}/{template}', 'NagiosController@birdseyeBgpSessions');
     Route::post( 'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}/{template}', 'NagiosController@birdseyeBgpSessions');
+});
+
+Route::group( [ 'namespace' => 'Customer\Note', 'prefix' => 'customer-note' ], function() {
+
+    Route::get(    'notify-toggle/customer/{id}', 'CustomerNotesController@notifyToggleCustomer' )->name( 'customer-notes@notify-toggle-customer');
+    Route::get(    'notify-toggle/note/{id}',     'CustomerNotesController@notifyToggleNote'     )->name( 'customer-notes@notify-toggle-note');
+
+    Route::post(    'add',                             'CustomerNotesController@add'                    )->name( 'customer-notes@add');
+    Route::post(    'delete/{id}',                     'CustomerNotesController@delete'                 )->name( 'customer-notes@delete');
+
 });
 
 

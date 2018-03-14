@@ -12,9 +12,9 @@ class DatabaseSeeder extends Seeder {
 	 */
 	public function run()
 	{
-		Model::unguard();
+        $this->call('CountriesSeeder');
+        $this->command->info('Seeded the countries!');
 
-		// $this->call('UserTableSeeder');
-	}
+    }
 
 }
