@@ -104,31 +104,36 @@ class EmailOnChange
     {
         // get admin users
         $users = D2EM::getRepository( UserEntity::class )->findBy( [ 'privs' => UserEntity::AUTH_SUPERUSER ] );
+        $to = [];
 
         foreach( $users as $user ) {
 
             /** @var UserEntity $user */
-            if( !$user->getPreference( "customer-notes.notify" ) ) {
-
-                if( !$user->getPreference( "customer-notes.{$e->getCustomer()->getId()}.notify" ) ) {
-
-                    if( !$e->getOldNote() || !$e->isTypeAdded() ) {
-                        continue;
-                    }
-
-                    if( !$user->getPreference( "customer-notes.watching.{$e->getOldNote()->getId()}" ) ) {
-                        continue;
-                    }
-                }
-            }
-            else if( $user->getPreference( "customer-notes.notify" ) == "none" ) {
+            if( $user->getPreference( "customer-notes.notify" ) == "none" ) {
                 continue;
             }
 
-            // so user wants to be notified:
-            Mail::to( $user->getContact()->getEmail() )->send( new CustomerNoteChangedMailable( $e ) );
+            if( $user->getPreference( "customer-notes.notify" ) == "all" ) {
+                $to[] = [ 'name' => $user->getContact()->getName(), 'email' => $user->getContact()->getEmail() ];
+                continue;
+            }
 
+            // watching a whole customer: customer-notes.{customer id}.notify == 1
+            if( $user->getPreference( "customer-notes.{$e->getCustomer()->getId()}.notify" ) ) {
+                $to[] = [ 'name' => $user->getContact()->getName(), 'email' => $user->getContact()->getEmail() ];
+                continue;
+            }
+
+            // watching a specific note: customer-notes.watching.{note id}
+            if( $user->getPreference( "customer-notes.watching.{$e->getEitherNote()->getId()}" ) ) {
+                $to[] = [ 'name' => $user->getContact()->getName(), 'email' => $user->getContact()->getEmail() ];
+                continue;
+            }
+
+            // so, skip this user then.
         }
+
+        Mail::to( $to )->send( new CustomerNoteChangedMailable( $e ) );
 
     }
 }

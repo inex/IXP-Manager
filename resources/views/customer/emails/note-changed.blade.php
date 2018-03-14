@@ -1,21 +1,17 @@
 @component('mail::message')
 
-#**Note {{$event->getActionDescription()}}**
+# Note {{$event->getActionDescription()}} :: {{$event->getCustomer()->getFormattedName()}}
 
-**Customer:** {{$event->getCustomer()->getName()}}
+**{{$event->getActionDescription()}} by:** [{{$event->getUser()->getContact()->getName()}}](mailto:{{$event->getUser()->getContact()->getEmail()}})
 
-**Changed by:** {{$event->getUser()->getContact()->getName()}} - <{{$event->getUser()->getContact()->getEmail()}}>
+**Visibility:** @if( $event->getEitherNote()->getPrivate()) Admins only @else Admins and customer @endif
+
 
 @if( $event->getNote() )
 
-##**Note Details**
+## {{$event->getNote()->getTitle()}}
+
 @component('mail::panel')
-**Title:**      {{$event->getNote()->getTitle()}}
-
-**Visibility:**@if( $event->getNote()->getPrivate()) Private @else Public @endif
-
-
-**Note:**
 {{$event->getNote()->getNote()}}
 @endcomponent
 
@@ -24,14 +20,15 @@
 
 @if( $event->getOldNote() )
 
-##**Old Note Details**
+## Old Note Details
+
+### {{$event->getOldNote()->getTitle()}}
+
+@if( $event->getNote() && $event->getNote()->getPrivate() != $event->getOldNote()->getPrivate() )
+**Visibility:** @if( $event->getOldNote()->getPrivate()) Admins only @else Admins and customer @endif
+@endif
+
 @component('mail::panel')
-**Title:**      {{$event->getOldNote()->getTitle()}}
-
-**Visibility:**@if( $event->getOldNote()->getPrivate()) Private @else Public @endif
-
-
-**Note:**
 {{$event->getOldNote()->getNote()}}
 @endcomponent
 

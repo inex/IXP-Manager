@@ -212,7 +212,7 @@ class CustomerNotesController extends Controller
      * @throws \Doctrine\ORM\OptimisticLockException
      * @throws GeneralException
      */
-    private function notifyToggle( int $custid, int $noteId ): JsonResponse {
+    private function notifyToggle( int $custid = null, int $noteId = null ): JsonResponse {
         if( $custid ) {
             $id   = $custid;
             $name = sprintf( "customer-notes.%d.notify", $id );

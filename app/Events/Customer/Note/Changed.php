@@ -126,6 +126,16 @@ abstract class Changed
     }
 
     /**
+     * Get either note: get the new note if set, otherwise the old note
+     *
+     * @return CustomerNoteEntity
+     */
+    public function getEitherNote(): CustomerNoteEntity {
+        return $this->cn ? $this->cn : $this->ocn;
+    }
+
+
+    /**
      * Is the event type: a customer note was added
      *
      * @return bool

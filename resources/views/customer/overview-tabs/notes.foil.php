@@ -1,6 +1,8 @@
 <div class="col-sm-12">
     <br>
     <table class="table <?php if( !count( $t->notes ) ): ?>collapse <?php endif; ?>" id="co-notes-table">
+
+
         <thead>
             <tr>
                 <th>Title</th>
@@ -13,12 +15,14 @@
                     <?php if( Auth::getUser()->isSuperUser() ): ?>
                         &nbsp;<div class="btn-group btn-group-sm">
                             <button id="co-notes-add-btn" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i></button>
-                            <button id="co-cust-notify-<?= $t->c->getId() ?>"  class="btn btn-default <?php if( isset( $co_notify_all ) && $co_notify_all ): ?>active<?php endif; ?>"><i class="glyphicon glyphicon-eye-open"></i></button>
+                            <button id="co-cust-notify-<?= $t->c->getId() ?>"  class="btn btn-default <?= $t->coNotifyAll ? 'active' : '' ?>"><i class="glyphicon glyphicon-eye-open"></i></button>
                         </div>
                     <?php endif; ?>
                 </th>
             </tr>
         </thead>
+
+
         <tbody id="co-notes-table-tbody">
             <?php
                 /** @var \Entities\CustomerNote $n */
@@ -34,14 +38,15 @@
                                     <?php else: ?>
                                         UPDATED
                                     <?php endif; ?>
-                                 </span>
+                                </span>
+                                &nbsp;&nbsp;
                             <?php endif; ?>
                             <?= $t->ee( $n->getTitle() ) ?>
                         </td>
 
                         <?php if( Auth::getUser()->isSuperUser() ): ?>
                             <td id="co-notes-table-row-public-<?= $n->getId() ?>">
-                                <span class="label label-<?php if( !$n->getPrivate() ): ?>success">PUBLIC<?php else: ?>danger">PRIVATE<?php endif; ?></span>
+                                <span class="label label-<?php if( !$n->getPrivate() ): ?>success">PUBLIC<?php else: ?>default">PRIVATE<?php endif; ?></span>
                             </td>
                         <?php endif; ?>
                         <td id="co-notes-table-row-updated-<?= $n->getId() ?>">
@@ -114,6 +119,9 @@
                                 <input type="checkbox" name="public" id="co-notes-fpublic" class="bootbox-input bootbox-input-checkbox" value="makePublic" />
                                 Make note visible to customer
                             </label>
+                            <p>
+                                <em>Markdown formatting supported (and encouraged!)</em>
+                            </p>
                             <input type="hidden" name="custid" value="<?= $t->c->getId() ?>" />
                             <input type="hidden" id="notes-dialog-noteid" name="noteid" value="0" />
                         </form>

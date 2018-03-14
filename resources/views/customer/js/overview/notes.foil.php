@@ -146,7 +146,7 @@
                 "<tr class=\"collapse\" id=\"co-notes-table-row-" + data.noteid + "\">"
                 + "<td>" + $( "#co-notes-ftitle" ).val() + "</td>"
                 + "<td>" + "<span class=\"label label-"
-                + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "danger\">PRIVATE" )
+                + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "default\">PRIVATE" )
                 + "</span></td>"
                 + "<td>Just Now</td>"
                 + "<td>"
@@ -175,7 +175,7 @@
             $( "#co-notes-table-row-updated-" + noteid ).html( "Just Now" );
             $( "#co-notes-table-row-public-" + noteid ).html(
                 "<span class=\"label label-"
-                + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "danger\">PRIVATE" )
+                + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "default\">PRIVATE" )
                 + "</span>"
             );
 
