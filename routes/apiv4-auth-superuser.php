@@ -187,8 +187,8 @@ Route::group( [ 'prefix' => 'nagios' ], function() {
 
 Route::group( [ 'namespace' => 'Customer\Note', 'prefix' => 'customer-note' ], function() {
 
-    Route::get(    'ajax-notify-toggle/custid/{id}',   'CustomerNotesController@notifyToggleByCust'     )->name( 'customer-notes@notify-toggle-cust');
-    Route::get(    'ajax-notify-toggle/id/{id}',       'CustomerNotesController@notifyToggleByNote'     )->name( 'customer-notes@notify-toggle-note');
+    Route::get(    'notify-toggle/customer/{id}', 'CustomerNotesController@notifyToggleCustomer' )->name( 'customer-notes@notify-toggle-customer');
+    Route::get(    'notify-toggle/note/{id}',     'CustomerNotesController@notifyToggleNote'     )->name( 'customer-notes@notify-toggle-note');
 
     Route::post(    'add',                             'CustomerNotesController@add'                    )->name( 'customer-notes@add');
     Route::post(    'delete/{id}',                     'CustomerNotesController@delete'                 )->name( 'customer-notes@delete');

@@ -217,7 +217,7 @@ function coNotesPost( data ) {
 function coCustomerNotifyToggle( event ){
     let custid = substr( event.delegateTarget.id, 15 );
 
-	let urlAction = "{url( '/api/v4/customer-note/ajax-notify-toggle/custid' )}/"+ custid;
+	let urlAction = "{url( '/api/v4/customer-note/notify-toggle/customer' )}/"+ custid;
 
     $.ajax( urlAction )
         .done( function( data ) {
@@ -236,7 +236,7 @@ function coCustomerNotifyToggle( event ){
 
 function coNotesNotifyToggle( event ){
     let noteid = substr( event.delegateTarget.id, 16 );
-    let urlAction = "{url( '/api/v4/customer-note/ajax-notify-toggle/id' )}/"+ noteid;
+    let urlAction = "{url( '/api/v4/customer-note/notify-toggle/note' )}/"+ noteid;
 
     $.ajax( urlAction )
         .done( function( data ) {

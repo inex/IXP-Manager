@@ -156,7 +156,7 @@ if( !config('ixp_fe.frontend.disabled.logo' ) ) {
 }
 
 Route::group( [ 'namespace' => 'Customer', 'prefix' => 'customer-note' ], function() {
-    Route::get(    'real-all',                          'CustomerNotesController@readAll'                )->name( 'customerNotes@readAll');
+    Route::get(    'read-all',                          'CustomerNotesController@readAll'                )->name( 'customerNotes@readAll');
     Route::get(    'unread-notes',                      'CustomerNotesController@unreadNotes'            )->name( "customerNotes@unreadNotes" );
 });
 

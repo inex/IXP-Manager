@@ -35,6 +35,8 @@ use Entities\{
     User            as UserEntity
 };
 
+use IXP\Events\Customer\Note\Changed as CustomerNoteChangedEvent;
+
 /**
  * Mailable for customer note changed
  *
@@ -50,52 +52,20 @@ class Changed extends Mailable
     use Queueable, SerializesModels;
 
     /**
-     * Old/original customer not
-     * @var CustomerNoteEntity
+     *
+     * @var CustomerNoteChangedEvent
      */
-    public $ocn;
-
-    /**
-     * New customer note
-     * @var CustomerNoteEntity
-     */
-    public $cn;
-
-    /**
-     * Customer
-     * @var CustomerEntity
-     */
-    public $cust;
-
-    /**
-     * User
-     * @var UserEntity
-     */
-    public $user;
-
-    /**
-     * type of action
-     * @var string
-     */
-    public $type;
+    public $event;
 
     /**
      * Create a new message instance.
      *
-     * @param CustomerNoteEntity|null   $ocn
-     * @param CustomerNoteEntity|null   $cn
-     * @param CustomerEntity            $cust
-     * @param UserEntity                $user
-     * @param string                    $type
+     * @param CustomerNoteChangedEvent $e
      * @return void
      */
-    public function __construct( $ocn,  $cn, CustomerEntity $cust, UserEntity $user, string $type )
+    public function __construct( CustomerNoteChangedEvent $e )
     {
-        $this->ocn      = $ocn;
-        $this->cn       = $cn;
-        $this->cust     = $cust;
-        $this->user     = $user;
-        $this->type     = $type;
+        $this->event = $e;
     }
 
     /**
@@ -105,8 +75,8 @@ class Changed extends Mailable
      */
     public function build()
     {
-        $cust = $this->cn ? $this->cn->getCustomer() : $this->ocn->getCustomer();
+        $cust = $this->event->getNote() ? $this->event->getNote()->getCustomer() : $this->event->getOldNote()->getCustomer();
         return $this->markdown( 'customer.emails.note-changed' )
-            ->subject( env('IDENTITY_NAME') . " :: IXP Notes " . $cust->getFormattedName() );
+            ->subject( env('IDENTITY_NAME') . " :: Customer Notes :: " . $cust->getFormattedName() );
     }
 }

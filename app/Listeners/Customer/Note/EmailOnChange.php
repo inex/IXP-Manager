@@ -34,7 +34,7 @@ use Entities\{
 };
 
 
-use IXP\Events\Event;
+use IXP\Events\Customer\Note\Changed as NoteChangedEvent;
 use IXP\Mail\Customer\Note\Changed as CustomerNoteChangedMailable;
 
 class EmailOnChange
@@ -63,7 +63,7 @@ class EmailOnChange
     /**
      * Register the listeners for the subscriber.
      *
-     * @param  Illuminate\Events\Dispatcher  $events
+     * @param  \Illuminate\Events\Dispatcher  $events
      */
     public function subscribe( $events )
     {
@@ -97,7 +97,7 @@ class EmailOnChange
     /**
      * Handle the event.
      *
-     * @param  Event $e
+     * @param  NoteChangedEvent $e
      * @return void
      */
     public function handle( $e )
@@ -106,21 +106,27 @@ class EmailOnChange
         $users = D2EM::getRepository( UserEntity::class )->findBy( [ 'privs' => UserEntity::AUTH_SUPERUSER ] );
 
         foreach( $users as $user ) {
+
             /** @var UserEntity $user */
             if( !$user->getPreference( "customer-notes.notify" ) ) {
-                if( !$user->getPreference( "customer-notes.{$e->getCustomer()->getId()}.notify" ) ) {
-                    if( !$e->getOldNote() ) // adding
-                        continue;
 
-                    if( !$user->getPreference( "customer-notes.watching.{$e->getOldNote()->getId()}" ) )
+                if( !$user->getPreference( "customer-notes.{$e->getCustomer()->getId()}.notify" ) ) {
+
+                    if( !$e->getOldNote() || !$e->isTypeAdded() ) {
                         continue;
+                    }
+
+                    if( !$user->getPreference( "customer-notes.watching.{$e->getOldNote()->getId()}" ) ) {
+                        continue;
+                    }
                 }
             }
-            else if( $user->getPreference( "customer-notes.notify" ) == "none" )
+            else if( $user->getPreference( "customer-notes.notify" ) == "none" ) {
                 continue;
+            }
 
-
-            Mail::to( $user->getContact()->getEmail() )->send( new CustomerNoteChangedMailable( $e->getOldNote(), $e->getNote(), $e->getCustomer(), $e->getUser(), $e->resolveType() ) );
+            // so user wants to be notified:
+            Mail::to( $user->getContact()->getEmail() )->send( new CustomerNoteChangedMailable( $e ) );
 
         }
 

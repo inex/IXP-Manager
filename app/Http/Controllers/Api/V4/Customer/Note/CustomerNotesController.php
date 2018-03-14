@@ -25,6 +25,8 @@ namespace IXP\Http\Controllers\Api\V4\Customer\Note;
 
 use Auth, D2EM;
 
+use IXP\Exceptions\GeneralException;
+
 use IXP\Http\Controllers\Controller;
 use Illuminate\Http\{
     JsonResponse,
@@ -33,9 +35,7 @@ use Illuminate\Http\{
 
 
 use Entities\{
-    Customer as CustomerEntity,
-    CustomerNote as CustomerNoteEntity,
-    User as UserEntity
+    Customer as CustomerEntity, CustomerNote as CustomerNoteEntity, CustomerNote
 };
 
 
@@ -72,6 +72,7 @@ class CustomerNotesController extends Controller
             abort( 404, 'Customer not found.' );
         }
 
+        /** @var CustomerNoteEntity $old */
         if( $request->input( 'noteid' ) ) {
             if( !( $n = D2EM::getRepository( CustomerNoteEntity::class )->find( $request->input( 'noteid' ) ) ) ) {
                 abort( 404, 'Note not found.' );
@@ -117,17 +118,23 @@ class CustomerNotesController extends Controller
      *
      * @throws
      */
-    public function get( int $id = null ){
+    public function get( int $id = null ) {
         if( !( $n = D2EM::getRepository( CustomerNoteEntity::class )->find( $id ) ) ) {
-            abort( 404, 'Customer Note not found.' );
+            abort( 404, 'Note not found.' );
         }
 
-        if( Auth::getUser()->getPrivs() != UserEntity::AUTH_SUPERUSER && ( $n->getCustomer() != Auth::getUser()->getCustomer() || $n->getPrivate() ) ) {
-            abort( 403, 'Insufficient Permissions.' );
+        // these if's could be joined with '&&' but are separated for readability:
+        if( !Auth::getUser()->isSuperUser() ) {
+            if( $n->getCustomer() != Auth::getUser()->getCustomer() || $n->getPrivate() ) {
+                abort( 403, 'Insufficient Permissions.' );
+            }
         }
 
         $nArray = $n->toArray();
+        /** @noinspection PhpUndefinedMethodInspection */
         $nArray['created'] = $nArray['created']->format( 'Y-m-d H:i' );
+        /** @noinspection PhpUndefinedMethodInspection */
+        $nArray['updated'] = $nArray['updated'] ? $nArray['updated']->format( 'Y-m-d H:i' ) : null;
 
         return response()->json( [ 'note' => $nArray ] );
     }
@@ -135,19 +142,17 @@ class CustomerNotesController extends Controller
     /**
      * Delete a customer note
      *
-     * Send A notification email
-     *
      * @param int $id ID of the customer note
-     *
      * @return JsonResponse
      *
      * @throws
      */
-    public function delete( int $id = null ) : JsonResponse{
+    public function delete( int $id = null ) : JsonResponse {
         if( !( $n = D2EM::getRepository( CustomerNoteEntity::class )->find( $id ) ) ) {
-            abort( 404, 'Customer Note not found.' );
+            abort( 404, 'Note not found.' );
         }
 
+        /** @var CustomerNoteEntity $on */
         $on = clone( $n );
         D2EM::remove( $n );
         D2EM::flush();
@@ -164,8 +169,9 @@ class CustomerNotesController extends Controller
      * @return JsonResponse
      * @throws \Doctrine\ORM\OptimisticLockException
      */
-    public function ping( int $id = null ) : JsonResponse {
-        if( Auth::getUser()->isSuperUser() ){
+    public function ping( int $id = null ): JsonResponse {
+
+        if( Auth::getUser()->isSuperUser() ) {
             if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
                 abort( 404, 'Customer not found.' );
             }
@@ -174,7 +180,6 @@ class CustomerNotesController extends Controller
         }
 
         // update the last read for this user / customer combination
-
         Auth::getUser()->setPreference( "customer-notes.{$c->getId()}.last_read", time() );
         D2EM::flush();
 
@@ -183,20 +188,20 @@ class CustomerNotesController extends Controller
 
 
     /**
-     * @param int $custid
+     * @param int $id  Customer ID
      * @return JsonResponse
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws
      */
-    public function notifyToggleByCust( int $custid = null ){
-        return  $this->notifyToggle( $custid, null );
+    public function notifyToggleCustomer( int $id ): JsonResponse {
+        return  $this->notifyToggle( $id, null );
     }
 
     /**
-     * @param int $id
+     * @param int $id Note ID
      * @return JsonResponse
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws
      */
-    public function notifyToggleByNote( int $id = null ){
+    public function notifyToggleNote( int $id ): JsonResponse {
         return  $this->notifyToggle( null, $id );
     }
 
@@ -205,8 +210,9 @@ class CustomerNotesController extends Controller
      * @param int|null $noteId
      * @return JsonResponse
      * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws GeneralException
      */
-    private function notifyToggle( int $custid = null, int $noteId = null ) : JsonResponse{
+    private function notifyToggle( int $custid, int $noteId ): JsonResponse {
         if( $custid ) {
             $id   = $custid;
             $name = sprintf( "customer-notes.%d.notify", $id );
@@ -215,13 +221,13 @@ class CustomerNotesController extends Controller
             $id = $noteId;
             $name = sprintf( "customer-notes.watching.%d", $id );
             $value = 1;
+        } else {
+            throw new GeneralException('Coding error');
         }
-
 
         // Toggles customer notes notification preference
         if( isset( $id ) && is_numeric( $id ) ) {
-            /** @var string $name */
-            if( !Auth::getUser()->getPreference( $name ) ){
+            if( !Auth::getUser()->getPreference( $name ) ) {
                 Auth::getUser()->setPreference( $name, $value );
             } else {
                 Auth::getUser()->deletePreference( $name );

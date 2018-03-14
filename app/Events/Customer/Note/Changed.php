@@ -152,18 +152,4 @@ abstract class Changed
         return get_class($this) == Edited::class;
     }
 
-    /**
-     * Resolve the type
-     *
-     * @return string
-     */
-    public function resolveType() {
-        if( $this->isTypeAdded() ){
-            return "Added";
-        }elseif( $this->isTypeEdited() ){
-            return "Edited";
-        }else{
-            return "Deleted";
-        }
-    }
 }
