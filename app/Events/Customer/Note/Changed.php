@@ -152,4 +152,18 @@ abstract class Changed
         return get_class($this) == Edited::class;
     }
 
+    /**
+     * Resolve the type
+     *
+     * @return string
+     */
+    public function getActionDescription() {
+        if( $this->isTypeAdded() ){
+            return "Added";
+        }elseif( $this->isTypeEdited() ){
+            return "Edited";
+        }else{
+            return "Deleted";
+        }
+    }
 }

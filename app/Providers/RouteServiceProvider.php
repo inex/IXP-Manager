@@ -126,7 +126,7 @@ class RouteServiceProvider extends ServiceProvider {
     protected function mapApiV4Routes()
     {
         Route::group([
-            'middleware' => [  'web', 'public/api/v4' ],
+            'middleware' => [ 'web', 'public/api/v4' ],
             'namespace' => $this->namespace . '\\Api\\V4',
             'prefix' => 'api/v4',
         ], function ($router) {

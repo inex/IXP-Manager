@@ -1,38 +1,38 @@
 @component('mail::message')
 
-#**Note {{$type}}**
+#**Note {{$event->getActionDescription()}}**
 
-**Customer:** {{$cust->getName()}}
+**Customer:** {{$event->getCustomer()->getName()}}
 
-**Changed by:** {{$user->getContact()->getName()}} - <{{$user->getContact()->getEmail()}}>
+**Changed by:** {{$event->getUser()->getContact()->getName()}} - <{{$event->getUser()->getContact()->getEmail()}}>
 
-@if( $cn )
+@if( $event->getNote() )
 
 ##**Note Details**
 @component('mail::panel')
-**Title:**      {{$cn->getTitle()}}
+**Title:**      {{$event->getNote()->getTitle()}}
 
-**Visibility:**@if( $cn->getPrivate()) Private @else Public @endif
+**Visibility:**@if( $event->getNote()->getPrivate()) Private @else Public @endif
 
 
 **Note:**
-{{$cn->getNote()}}
+{{$event->getNote()->getNote()}}
 @endcomponent
 
 @endif
 
 
-@if( $ocn )
+@if( $event->getOldNote() )
 
 ##**Old Note Details**
 @component('mail::panel')
-**Title:**      {{$ocn->getTitle()}}
+**Title:**      {{$event->getOldNote()->getTitle()}}
 
-**Visibility:**@if( $ocn->getPrivate()) Private @else Public @endif
+**Visibility:**@if( $event->getOldNote()->getPrivate()) Private @else Public @endif
 
 
 **Note:**
-{{$ocn->getNote()}}
+{{$event->getOldNote()->getNote()}}
 @endcomponent
 
 @endif
