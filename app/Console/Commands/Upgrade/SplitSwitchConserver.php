@@ -50,14 +50,14 @@ class SplitSwitchConserver extends Command
      *
      * @var string
      */
-    protected $signature = 'switch:split-console-servers';
+    protected $signature = 'ixp-manager:upgrade:split-conservers';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'This command will split the console servers from the switches';
+    protected $description = 'This command will split out any console servers from the switch table. It is part of the v4.7 to v4.8 upgrade procedure.';
 
     /**
      * Create a new command instance.
@@ -78,58 +78,45 @@ class SplitSwitchConserver extends Command
      */
     public function handle() {
 
-        if( !$this->confirm( 'Are you sure you wish to proceed? This command will split the console servers from the switches '
-            . 'Generally, this command should only ever be run once when initially '
-            . 'populating the new table.' ) ) {
+        if( !$this->confirm( "Are you sure you wish to proceed?\n\nThis command will split out any console servers from the switch table.\n\n"
+            . "Generally, this command should only ever be run once when migrating from v4.7.x to v4.8\n" ) ) {
             return 1;
         }
 
-        $conn = D2EM::getConnection();
-     
-        foreach( D2EM::getRepository( SwitcherEntity::class )->findBy( [ "switchtype" => SwitcherEntity::TYPE_CONSOLESERVER ]) as $s ) {
-            /** @var SwitcherEntity $s */
-            $conn->beginTransaction();
-            $conn->transactional(function( $conn ) use ( $s ) {
+        D2EM::transactional( function( $em ) {
 
-                try{
-                    $cs = new ConsoleServerEntity;
-                    D2EM::persist( $cs );
-                    $cs->setName(           $s->getName()           );
-                    $cs->setActive(         $s->getActive()         );
-                    $cs->setHostname(       $s->getHostName()       );
-                    $cs->setModel(          $s->getModel()          );
-                    $cs->setNote(           $s->getNotes()          );
-                    $cs->setSerialNumber(   $s->getSerialNumber()   );
-                    $cs->setCabinet(        $s->getCabinet()        );
-                    $cs->setVendor(         $s->getVendor()         );
+            /** @var \Doctrine\ORM\EntityManager $em */
 
-                    D2EM::flush();
+            foreach( D2EM::getRepository( SwitcherEntity::class )->findBy( [ "switchtype" => SwitcherEntity::TYPE_CONSOLESERVER ] ) as $s ) {
 
-                    $this->info( 'The console server id:'. $cs->getName().' has been inserted into the database.' );
+                /** @var SwitcherEntity $s */
 
-                    foreach( D2EM::getRepository( SwitcherEntity::class )->getConsoleServerConnections( $s->getId() ) as $csc ) {
-                        /** @var ConsoleServerConnectionEntity $csc */
-                        $csc->setConsoleServer( $cs );
-                        $csc->setSwitcher( null );
-                        $this->info( 'The console server connection id:' . $csc->getId(). ' name:' . $csc->getDescription() . ' has been linked to the new console server '. $cs->getName() );
-                    }
+                $cscs = D2EM::getRepository( SwitcherEntity::class )->getConsoleServerConnections( $s->getId() );
+                $this->info( " - migrating {$s->getName()} and its " . count( $cscs ) . " console connections" );
 
-                    $switchInfo = "id:". $s->getId(). " name:" .$s->getName();
-                    D2EM::remove( $s );
+                $cs = new ConsoleServerEntity;
+                $cs->setName( $s->getName() );
+                $cs->setActive( $s->getActive() );
+                $cs->setHostname( $s->getHostName() );
+                $cs->setModel( $s->getModel() );
+                $cs->setNote( $s->getNotes() );
+                $cs->setSerialNumber( $s->getSerialNumber() );
+                $cs->setCabinet( $s->getCabinet() );
+                $cs->setVendor( $s->getVendor() );
+                $em->persist( $cs );
 
-                    $conn->commit();
-                    D2EM::flush();
-                    $this->info( 'The switch '. $switchInfo . ' has been deleted from the database ' );
-
-
-                } catch (Exception $e) {
-                    $this->error( $e->getMessage() );
-                    $conn->rollBack();
-                    $conn->close();
+                /** @var ConsoleServerConnectionEntity $csc */
+                foreach( $cscs as $csc ) {
+                    $csc->setConsoleServer( $cs );
+                    $csc->setSwitcher( null );
                 }
-            });
-            $this->info( '=========================================' );
-        }
+
+                $em->remove( $s );
+            }
+
+        });
+
+        $this->info( '=========================================' );
         $this->info( 'Migration completed successfully' );
     }
 }
