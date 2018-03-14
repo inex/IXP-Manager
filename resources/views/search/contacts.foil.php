@@ -26,7 +26,7 @@
                         </a>
                     </td>
                     <td>
-                        <a href="<?= url( "customer/overview/id/".$contact->getCustomer()->getId() ) ?>">
+                        <a href="<?= route( "customer@overview" , [ "id" => $contact->getCustomer()->getId() ] ) ?>">
                             <?= $t->ee( $contact->getCustomer()->getName() ) ?>
                         </a>
                     </td>

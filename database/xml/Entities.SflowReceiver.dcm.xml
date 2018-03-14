@@ -8,7 +8,7 @@
     <field name="dst_port" type="integer" nullable="false"/>
     <many-to-one field="VirtualInterface" target-entity="Entities\VirtualInterface" inversed-by="SflowReceivers">
       <join-columns>
-        <join-column name="virtual_interface_id" referenced-column-name="id"/>
+        <join-column name="virtual_interface_id" referenced-column-name="id" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
   </entity>

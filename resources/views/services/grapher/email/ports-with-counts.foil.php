@@ -23,7 +23,7 @@
     </ul>
 
     <p>
-        <a href="<?= url('') ?>/customer/overview/id/<?= $p['cust']['id'] ?>">
+        <a href="<?= route( "customer@overview" , [ "id" => $p['cust']['id'] ] )  ?>">
             <img src="data:image/png;base64,<?= base64_encode( $p['png'] ) ?>">
         </a>
     </p>

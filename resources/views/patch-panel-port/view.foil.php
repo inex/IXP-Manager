@@ -275,6 +275,21 @@
                                         <?= $t->ee( $p->getColoCircuitRef() ) ?>
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Co-location Billing Reference:
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <?= $t->ee( $p->getColoBillingRef() ) ?>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <table class="table_view_info">
                                 <?php if( Auth::user()->isSuperUser() ): ?>
                                     <tr>
                                         <td>
@@ -287,11 +302,6 @@
                                         </td>
                                     </tr>
                                 <?php endif; ?>
-                            </table>
-                        </div>
-
-                        <div class="col-xs-6">
-                            <table class="table_view_info">
                                 <tr>
                                     <td>
                                         <b>

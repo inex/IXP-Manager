@@ -13,8 +13,6 @@ function updateIpAddresses() {
         let selectedIPv6 = $( "#original-ipv6-address" ).val();
         let selectedIPv4 = $( "#original-ipv4-address" ).val();
 
-        console.debug( selectedIPv4 );
-
         $( dd_ipv6 ).html( "<option value=\"\">Loading, please wait...</option>\n" ).trigger('change.select2');
         $( dd_ipv4 ).html( "<option value=\"\">Loading, please wait...</option>\n" ).trigger('change.select2');
 

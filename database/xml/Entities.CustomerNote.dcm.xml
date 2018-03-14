@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Entities\CustomerNote" table="cust_notes" tableName="cust_notes" repository-class="Repositories\CustomerNotes">
+  <entity name="Entities\CustomerNote" table="cust_notes" tableName="cust_notes" repository-class="Repositories\CustomerNote">
     <id name="id" type="bigint">
       <generator strategy="AUTO"/>
     </id>
@@ -15,7 +15,7 @@
     <field name="updated" type="datetime" nullable="false"/>
     <many-to-one field="Customer" target-entity="Entities\Customer" inversed-by="Notes">
       <join-columns>
-        <join-column name="customer_id" referenced-column-name="id" nullable="false"/>
+        <join-column name="customer_id" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
   </entity>

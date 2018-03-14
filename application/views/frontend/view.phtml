@@ -70,7 +70,11 @@
                     {elseif isset( $cconf.type )}
                         {if $cconf.type eq $FE_COL_TYPES.HAS_ONE}
                             {assign var=hasOneId value=$cconf.idField}
-                            <a href="{genUrl controller=$cconf.controller action=$cconf.action id=$object.$hasOneId}">{$object.$col}</a>
+                            {if $cconf.controller == "customer" && $cconf.action == "overview" }
+                                <a href="{route( 'customer@overview', [ 'id' => $row.$hasOneId ] )}">{$row.$col}</a>
+                            {else}
+                                <a href="{genUrl controller=$cconf.controller action=$cconf.action id=$object.$hasOneId}">{$object.$col}</a>
+                            {/if}
                         {elseif $cconf.type eq $FE_COL_TYPES.XLATE}
                             {if isset($cconf.xlator[ $object.$col ])}{$cconf.xlator[ $object.$col ]}{else}{$object.$col}{/if}
                         {elseif $cconf.type eq $FE_COL_TYPES.DATETIME}

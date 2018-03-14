@@ -2,7 +2,9 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
+use Countries;
+
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * CompanyRegisteredDetail
@@ -55,13 +57,13 @@ class CompanyRegisteredDetail
     protected $id;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var Customer
      */
     protected $Customer;
     
     public function __construct()
     {
-        $this->Customer = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->Customer = new ArrayCollection();
     }
 
     /**
@@ -249,6 +251,29 @@ class CompanyRegisteredDetail
     }
 
     /**
+     * Get billingCountry
+     *
+     * @return string
+     */
+    public function getCountryName()
+    {
+        $index = null;
+        foreach( Countries::getList() as $i => $value ){
+            if( $value[ 'iso_3166_2' ] == $this->getCountry() ){
+                $index = $i;
+
+            }
+        }
+
+        if( $index == null ){
+            return null;
+        } else{
+            return Countries::getList()[ $index ][ 'name' ];
+        }
+
+    }
+
+    /**
      * Get id
      *
      * @return integer 
@@ -258,28 +283,7 @@ class CompanyRegisteredDetail
         return $this->id;
     }
 
-    /**
-     * Set Company
-     *
-     * @param \Entities\Customer $company
-     * @return CompanyRegisteredDetail
-     */
-    public function setCompany(\Entities\Customer $company = null)
-    {
-        $this->Company = $company;
-    
-        return $this;
-    }
 
-    /**
-     * Get Company
-     *
-     * @return \Entities\Customer 
-     */
-    public function getCompany()
-    {
-        return $this->Company;
-    }
     /**
      * @var string
      */
@@ -310,31 +314,21 @@ class CompanyRegisteredDetail
     }
     
     /**
-     * Add Customer
+     * Set Customer
      *
-     * @param Entities\Customer $customer
+     * @param Customer $customer
      * @return CompanyRegisteredDetail
      */
-    public function addCustomer(\Entities\Customer $customer)
+    public function setCustomer(Customer $customer)
     {
         $this->Customer[] = $customer;
         return $this;
     }
 
     /**
-     * Remove Customer
-     *
-     * @param Entities\Customer $customer
-     */
-    public function removeCustomer(\Entities\Customer $customer)
-    {
-        $this->Customer->removeElement($customer);
-    }
-
-    /**
      * Get Customer
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Customer
      */
     public function getCustomer()
     {

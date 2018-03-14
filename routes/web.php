@@ -37,6 +37,25 @@ if( Auth::check() && Auth::user()->isSuperUser() ) {
     app()->make('Foil\Engine')->useData(['customers' => $customers]);
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Customers
+///
+
+Route::group( [ 'prefix' => 'customer', 'namespace' => 'Customer'], function() {
+    Route::get( 'details',                  'CustomerController@details'        )->name( "customer@details"    );
+    Route::get( 'associates',               'CustomerController@associates'     )->name( "customer@associates" );
+    Route::get( 'detail/{id}',              'CustomerController@detail'         )->name( "customer@detail"     );
+});
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Patch Panels
+///
 
 Route::group( [ 'namespace' => 'PatchPanel' ], function() {
     Route::get( 'verify-loa/{id}/{code}',       'PatchPanelPortController@verifyLoa' );
@@ -51,10 +70,7 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'loa-pdf/{id}',                 'PatchPanelPortController@loaPDF' );
 });
 
-Route::group( [ 'prefix' => 'rs-prefixes', 'middleware' => [ 'rs-prefixes' ] ], function() {
-    Route::get(     'list',         'RsPrefixesController@list' )->name( 'rs-prefixes@list'  );
-    Route::get(     'view/{cid}',   'RsPrefixesController@view' )->name( 'rs-prefixes@view'  );
-});
+
 
 Route::get( 'weather-map/{id}',                    'WeatherMapController@index' )->name( 'weathermap');
 
@@ -64,10 +80,13 @@ Route::get( 'weather-map/{id}',                    'WeatherMapController@index' 
 ///
 /// Static content
 ///
-
+/// See: http://docs.ixpmanager.org/features/static-content/
+///
+///
 Route::get( 'content/{priv}/{page}',     'ContentController@index' )->name( 'content' );
 Route::get( 'public-content/{page}',     'ContentController@public' )->name( 'public-content' );
 
+Route::get( 'content/members/{priv}/{page}', 'ContentController@members' )->name( 'content/members' );
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,10 +95,13 @@ Route::get( 'public-content/{page}',     'ContentController@public' )->name( 'pu
 ///
 
 Route::group( [ 'prefix' => 'statistics' ], function() {
-    Route::get(  'ixp/{category?}',                       'StatisticsController@ixp'               )->name( 'statistics/ixp'            );
-    Route::get(  'infrastructure/{graphid?}/{category?}', 'StatisticsController@infrastructure'    )->name( 'statistics/infrastructure' );
-    Route::get(  'switch/{switchid?}/{category?}',        'StatisticsController@switch'            )->name( 'statistics/switch'         );
-    Route::get(  'trunk/{trunkid?}/{category?}',          'StatisticsController@trunk'             )->name( 'statistics/trunk'          );
+    Route::get(  'ixp/{category?}',                             'StatisticsController@ixp'               )->name( 'statistics/ixp'                );
+    Route::get(  'infrastructure/{graphid?}/{category?}',       'StatisticsController@infrastructure'    )->name( 'statistics/infrastructure'     );
+    Route::get(  'switch/{switchid?}/{category?}',              'StatisticsController@switch'            )->name( 'statistics/switch'             );
+    Route::get(  'trunk/{trunkid?}/{category?}',                'StatisticsController@trunk'             )->name( 'statistics/trunk'              );
+
+    Route::get(  'member/{id?}',                                'StatisticsController@member'            )->name( 'statistics@member'             );
+    Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'    );
 });
 
 

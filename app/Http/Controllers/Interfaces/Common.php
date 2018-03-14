@@ -37,10 +37,12 @@ use Entities\{
 };
 
 use Illuminate\Http\Request;
+
 use IXP\Http\Controllers\Controller;
 use IXP\Http\Requests\StoreVirtualInterfaceWizard;
 
 use IXP\Services\Grapher\Graph\VlanInterface;
+
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
@@ -64,6 +66,7 @@ abstract class Common extends Controller
      * @param \Entities\PhysicalInterface $pi Physical interface to remove related physical interface.
      *
      * @return void
+     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
      */
     public function removeRelatedInterface( $pi ){
         if( $pi->getRelatedInterface() ) {
@@ -72,7 +75,7 @@ abstract class Common extends Controller
 
             if( count( $pi->getRelatedInterface()->getVirtualInterface()->getPhysicalInterfaces() ) == 1 ) {
                 foreach( $pi->getRelatedInterface()->getVirtualInterface()->getVlanInterfaces() as $vli ) {
-                    /** @var VlanInterface $vli */
+                    /** @var VlanInterfaceEntity $vli */
                     foreach( $vli->getLayer2Addresses() as $l2a ) {
                         D2EM::remove( $l2a );
                     }
@@ -107,9 +110,10 @@ abstract class Common extends Controller
      * if the peering port has a related interface and, if so, removes the relation.
      *
      * @param  Request|StoreVirtualInterfaceWizard $request instance of the current HTTP reques
-     * @param \Entities\PhysicalInterface  $pi   Peering physical interface to related with fanout physical interface (port).
-     * @param \Entities\VirtualInterface   $vi   Virtual interface of peering physical intreface
+     * @param \Entities\PhysicalInterface $pi Peering physical interface to related with fanout physical interface (port).
+     * @param \Entities\VirtualInterface $vi Virtual interface of peering physical intreface
      * @return boolean
+     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
      */
     public function processFanoutPhysicalInterface( $request, $pi, $vi ) {
 
@@ -186,6 +190,7 @@ abstract class Common extends Controller
     /**
      * When we have >1 phys int / LAG framing, we need to set other elements of the virtual interface appropriately:
      * @param VirtualInterfaceEntity $vi
+     * @throws \IXP\Exceptions\GeneralException
      */
     public function setBundleDetails( VirtualInterfaceEntity $vi ){
         if( count( $vi->getPhysicalInterfaces() ) ) {
@@ -228,11 +233,12 @@ abstract class Common extends Controller
      * * if it exists, it ensures is is not assigned to another interface;
      * * if !exists, creates a new one.
      *
-     * @param Request                      $request
-     * @param VlanEntity                   $v
-     * @param VlanInterfaceEntity          $vli  Vlan interface to assign IP to
-     * @param bool                         $ipv6 Bool to define if IP address is IPv4 or IPv6
+     * @param Request $request
+     * @param VlanEntity $v
+     * @param VlanInterfaceEntity $vli Vlan interface to assign IP to
+     * @param bool $ipv6 Bool to define if IP address is IPv4 or IPv6
      * @return bool
+     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
      */
     public function setIp( Request $request, VlanEntity $v, VlanInterfaceEntity $vli, bool $ipv6 = false )
     {
@@ -251,6 +257,7 @@ abstract class Common extends Controller
 
         if( trim( $addressValue ) ) {
             if( !( $ip = D2EM::getRepository( $entity )->findOneBy( [ "Vlan" => $v->getId(), 'address' => $addressValue ] ) ) ) {
+                /** @var IPv4AddressEntity|IPv6AddressEntity $ip */
                 $ip = new $entity();
                 $ip->setVlan( $v );
                 $ip->setAddress( $addressValue );
@@ -274,6 +281,17 @@ abstract class Common extends Controller
 
         return true;
     }
+
+
+    public function warnIfIrrdbFilteringButNoIrrdbSourceSet( VlanInterfaceEntity $vli )
+    {
+        if( $vli->getRsclient() && $vli->getIrrdbfilter() && !$vli->getVirtualInterface()->getCustomer()->getIRRDB() ) {
+            AlertContainer::push( "You have enabled IRRDB filtering for this VLAN interface's route server sessions. "
+                . "However, the customer does not have an IRRDB source set. As such, the route servers will block all prefix "
+                . "advertisements. To rectify this, edit the customer and set an IRRDB source.", Alert::WARNING );
+        }
+    }
+
 
 
 }

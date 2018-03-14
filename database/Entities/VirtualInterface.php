@@ -440,7 +440,7 @@ class VirtualInterface
     }
 
     /**
-     * Get the Switch Port of a virtual interface.
+     * Get a Switch Port of a virtual interface.
      *
      * @return string|bool The switch port or false if no switch port.
      */
@@ -453,9 +453,42 @@ class VirtualInterface
     }
 
     /**
+     * Get an array of the switch port name(s) (`$pi->getSwitchPort()->getName()`)
+     *
+     * @return array
+     */
+    public function getSwitchPortNames(): array
+    {
+        $names = [];
+
+        foreach( $this->getPhysicalInterfaces() as $pi ) {
+            if( $pi->getSwitchPort() ) {
+                $names[] = $pi->getSwitchPort()->getName();
+            }
+        }
+
+        return $names;
+    }
+
+    /**
+     * Get the cabinet of a virtual interface.
+     *
+     * @return Cabinet|null The location or false if no switch port.
+     */
+    public function getCabinet()
+    {
+        if( count( $this->getPhysicalInterfaces() ) ){
+            return $this->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getCabinet();
+        } else {
+            return null;
+        }
+
+    }
+
+    /**
      * Get the location of a virtual interface.
      *
-     * @return string|bool The location or false if no switch port.
+     * @return Location|bool The location or false if no switch port.
      */
     public function getLocation()
     {
@@ -730,5 +763,37 @@ class VirtualInterface
         }
 
         return true;
+    }
+
+
+    /**
+     * Is this LAG graphable?
+     *
+     * @return bool
+     */
+    public function isGraphable(): bool {
+        foreach( $this->getPhysicalInterfaces() as $pi ) {
+            if( $pi->isGraphable() ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Convenience function to resolve the infrastructure of a virtual interface
+     *
+     * @return Infrastructure|null
+     */
+    public function getInfrastructure()
+    {
+        if( $pis = $this->getPhysicalInterfaces() ) {
+            if( $sp = $this->getPhysicalInterfaces()[0]->getSwitchPort() ) {
+                return $sp->getSwitcher()->getInfrastructure();
+            }
+        }
+
+        return null;
     }
 }

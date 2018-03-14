@@ -19,10 +19,13 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Member Information <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="<?= url('') ?>/switch/configuration">Switch Configuration</a>
+                            <a href="<?= route('customer@details') ?>">Member Details</a>
                         </li>
                         <li>
-                            <a href="<?= url('') ?>/customer/details">Member Details</a>
+                            <a href="<?= route( "customer@associates" ) ?>">Associate Members</a>
+                        </li>
+                        <li>
+                            <a href="<?= url('') ?>/switch/configuration">Switch Configuration</a>
                         </li>
                     </ul>
                 </li>
@@ -91,7 +94,7 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="<?= url( 'customer/unread-notes' ) ?>">Unread Notes</a>
+                            <a href="<?= route( 'customerNotes@unreadNotes' ) ?>">Unread Notes</a>
                         </li>
                         <li class="divider"></li>
                         <li>
@@ -102,7 +105,7 @@
             </ul>
             <form class="navbar-form navbar-search navbar-right">
                 <div class="form-group">
-                    <select id="menu-select-customer" type="select" name="id" class="chzn-select">
+                    <select id="menu-select-customer" type="select" name="id" class="chzn-select col-sm-7">
                         <option></option>
                         <?php foreach( $t->customers as $k => $i ): ?>
                             <option value="<?= $k ?>"><?= $i ?></option>
