@@ -1,8 +1,11 @@
 <?php
 
 namespace Entities;
-
-use Doctrine\ORM\Mapping as ORM;
+use Entities\{
+    ConsoleServer   as ConsoleServerEntity,
+    Customer        as CustomerEntity,
+    Switcher        as SwitcherEntity
+};
 
 /**
  * Entities\ConsoleServerConnection
@@ -60,7 +63,7 @@ class ConsoleServerConnection
     protected $Customer;
 
     /**
-     * @var \Entities\ConsoleServer
+     * @var ConsoleServer
      */
     protected $consoleServer;
 
@@ -267,10 +270,10 @@ class ConsoleServerConnection
     /**
      * Set Customer
      *
-     * @param \Entities\Customer $customer
+     * @param CustomerEntity $customer
      * @return ConsoleServerConnection
      */
-    public function setCustomer(\Entities\Customer $customer = null)
+    public function setCustomer( CustomerEntity $customer = null)
     {
         $this->Customer = $customer;
     
@@ -290,10 +293,10 @@ class ConsoleServerConnection
     /**
      * Set console server
      *
-     * @param \Entities\ConsoleServer $consoleServer
+     * @param ConsoleServerEntity $consoleServer
      * @return ConsoleServerConnection
      */
-    public function setConsoleServer(\Entities\ConsoleServer $consoleServer = null)
+    public function setConsoleServer( ConsoleServerEntity $consoleServer = null)
     {
         $this->consoleServer = $consoleServer;
 
@@ -303,7 +306,7 @@ class ConsoleServerConnection
     /**
      * Get Console Server
      *
-     * @return \Entities\ConsoleServer
+     * @return ConsoleServer
      */
     public function getConsoleServer()
     {
@@ -313,10 +316,10 @@ class ConsoleServerConnection
     /**
      * Set Switcher
      *
-     * @param \Entities\Switcher $switcher
+     * @param SwitcherEntity $switcher
      * @return ConsoleServerConnection
      */
-    public function setSwitcher(\Entities\Switcher $switcher = null)
+    public function setSwitcher( SwitcherEntity $switcher = null)
     {
         $this->setSwitchId( $switcher != null ? $switcher->getId() : null );
         return $this;
@@ -325,7 +328,7 @@ class ConsoleServerConnection
     /**
      * Get Switcher
      *
-     * @return \Entities\Switcher
+     * @return void
      */
     public function getSwitcher()
     {

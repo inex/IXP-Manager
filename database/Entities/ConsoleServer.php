@@ -2,6 +2,17 @@
 
 namespace Entities;
 
+use Doctrine\Common\Collections\{
+    ArrayCollection,
+    Collection
+};
+
+use Entities\{
+    ConsoleServerConnection     as ConsoleServerConnectionEntity,
+    Vendor                      as VendorEntity,
+    Cabinet                     as CabinetEntity
+};
+
 /**
  * ConsoleServer
  */
@@ -43,7 +54,7 @@ class ConsoleServer
     private $id;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      */
     private $consoleServerConnections;
 
@@ -62,17 +73,20 @@ class ConsoleServer
      */
     public function __construct()
     {
-        $this->consoleServerConnections = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->consoleServerConnections = new ArrayCollection();
     }
 
 
     /**
      * Add ConsoleServerConnections
      *
-     * @param \Entities\ConsoleServerConnection $consoleServerConnections
-     * @return Switcher
+     * @param ConsoleServerConnectionEntity $consoleServerConnection
+     *
+     * @return ConsoleServer
+     *
+     * @throws
      */
-    public function addConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnection)
+    public function addConsoleServerConnection( ConsoleServerConnectionEntity $consoleServerConnection )
     {
         $this->ConsoleServerConnections[] = $consoleServerConnection;
 
@@ -82,9 +96,11 @@ class ConsoleServer
     /**
      * Remove ConsoleServerConnections
      *
-     * @param \Entities\ConsoleServerConnection $consoleServerConnections
+     * @param ConsoleServerConnectionEntity $consoleServerConnection
+     *
+     * @return void
      */
-    public function removeConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnection)
+    public function removeConsoleServerConnection( ConsoleServerConnectionEntity $consoleServerConnection )
     {
         $this->ConsoleServerConnections->removeElement($consoleServerConnection);
     }
@@ -92,7 +108,7 @@ class ConsoleServer
     /**
      * Get ConsoleServerConnections
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getConsoleServerConnections()
     {
@@ -205,6 +221,7 @@ class ConsoleServer
      * Set active
      *
      * @param boolean $active
+     *
      * @return ConsoleServer
      */
     public function setActive($active)
@@ -250,10 +267,11 @@ class ConsoleServer
     /**
      * Set Vendor
      *
-     * @param \Entities\Vendor $vendor
+     * @param VendorEntity $vendor
+     *
      * @return ConsoleServer
      */
-    public function setVendor( \Entities\Vendor $vendor = null )
+    public function setVendor( VendorEntity $vendor = null )
     {
         $this->vendor = $vendor;
 
@@ -273,10 +291,10 @@ class ConsoleServer
     /**
      * Set Cabinet
      *
-     * @param \Entities\Cabinet $cabinet
+     * @param CabinetEntity $cabinet
      * @return ConsoleServer
      */
-    public function setCabinet( \Entities\Cabinet $cabinet = null )
+    public function setCabinet( CabinetEntity $cabinet = null )
     {
         $this->cabinet = $cabinet;
 

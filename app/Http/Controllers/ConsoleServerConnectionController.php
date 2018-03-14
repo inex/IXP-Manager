@@ -40,7 +40,7 @@ use Illuminate\Http\RedirectResponse;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ConsoleServerConnectionController extends Doctrine2Frontend {
@@ -54,7 +54,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
     /**
      * This function sets up the frontend controller
      */
-    public function feInit(){
+    public function feInit() {
 
         $this->feParams         = (object)[
 
@@ -108,6 +108,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
      * Provide array of rows for the list action and view action
      *
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     *
      * @return array
      */
     protected function listGetData( $id = null ) {
@@ -118,14 +119,16 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
 
     /**
      * Display the form to add/edit an object
+     *
      * @param   int $id ID of the row to edit
+     *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array {
+    protected function addEditPrepareForm( $id = null ) : array {
         if( $id !== null ) {
 
             if( !( $this->object = D2EM::getRepository( ConsoleServerConnectionEntity::class )->find( $id) ) ) {
-                abort(404);
+                abort(404, "Console Server Connection not found." );
             }
 
             $old = request()->old();
@@ -147,18 +150,21 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
         return [
             'object'                => $this->object,
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
-            'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNames( true, SwitcherEntity::TYPE_CONSOLESERVER , false),
+            'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNames( true, SwitcherEntity::TYPE_CONSOLESERVER , false ),
         ];
     }
 
 
     /**
      * Function to do the actual validation and storing of the submitted object.
+     *
      * @param Request $request
+     *
      * @return bool|RedirectResponse
+     *
+     * @throws
      */
-    public function doStore( Request $request )
-    {
+    public function doStore( Request $request ) {
         $validator = Validator::make( $request->all(), [
             'description'           => 'required|string|max:255',
             'custid'                => 'required|int|exists:Entities\Customer,id',
@@ -178,7 +184,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
 
         if( $request->input( 'id', false ) ) {
             if( !( $this->object = D2EM::getRepository( ConsoleServerConnectionEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404);
+                abort(404, "Console Server Connection not found." );
             }
         } else {
             $this->object = new ConsoleServerConnectionEntity;
