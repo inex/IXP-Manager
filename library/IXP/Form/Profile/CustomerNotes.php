@@ -43,10 +43,10 @@ class IXP_Form_Profile_CustomerNotes extends IXP_Form
         $notify = $this->createElement( 'radio','notify' );
         $notify->addMultiOptions([
                 'none'     => 'Disable all email notifications',
-                'default'  => 'Email me on changes to only watched customers and notes',
+                'watched'  => 'Email me on changes to only watched customers and notes',
                 'all'      => 'Email me on any change to any customer note'
             ])
-            ->setValue( 'default' );
+            ->setValue( 'all' );
         $this->addElement( $notify );
         
         $this->addElement( OSS_Form::createSubmitElement( 'submit', _( 'Change Notification Preference' ) ) );
