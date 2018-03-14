@@ -275,7 +275,7 @@ class PatchPanelPortHistory extends \Entities\PatchPanelPortHistory implements \
     /**
      * {@inheritDoc}
      */
-    public function setColoBillingRef(string $colo_billing_ref): \Entities\PatchPanelPort
+    public function setColoBillingRef(string $colo_billing_ref): \Entities\PatchPanelPortHistory
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setColoBillingRef', [$colo_billing_ref]);

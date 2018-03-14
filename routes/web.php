@@ -37,6 +37,25 @@ if( Auth::check() && Auth::user()->isSuperUser() ) {
     app()->make('Foil\Engine')->useData(['customers' => $customers]);
 }
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Customers
+///
+
+Route::group( [ 'prefix' => 'customer', 'namespace' => 'Customer'], function() {
+    Route::get( 'details',                  'CustomerController@details'        )->name( "customer@details"    );
+    Route::get( 'associates',               'CustomerController@associates'     )->name( "customer@associates" );
+    Route::get( 'detail/{id}',              'CustomerController@detail'         )->name( "customer@detail"     );
+});
+
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Patch Panels
+///
 
 Route::group( [ 'namespace' => 'PatchPanel' ], function() {
     Route::get( 'verify-loa/{id}/{code}',       'PatchPanelPortController@verifyLoa' );
@@ -51,32 +70,9 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'loa-pdf/{id}',                 'PatchPanelPortController@loaPDF' );
 });
 
-Route::group( [ 'prefix' => 'rs-prefixes', 'middleware' => [ 'rs-prefixes' ] ], function() {
-    Route::get(     'list',         'RsPrefixesController@list' )->name( 'rs-prefixes@list'  );
-    Route::get(     'view/{cid}',   'RsPrefixesController@view' )->name( 'rs-prefixes@view'  );
-});
+
 
 Route::get( 'weather-map/{id}',                    'WeatherMapController@index' )->name( 'weathermap');
-
-Route::group( [ 'prefix' => 'customer', 'namespace' => 'Customer'], function() {
-    Route::get( 'details',                  'CustomerController@details'        )->name( "customer@details" );
-    Route::get( 'detail/{id}',              'CustomerController@detail'         )->name( "customer@detail" );
-    Route::get( 'manage-logo/{id?}',        'CustomerController@manageLogo'     )->name( "customer@manageLogo" );
-    Route::post('store-logo',               'CustomerController@storeLogo'      )->name( "customer@storeLogo" );
-    Route::post('deleteLogo/{id}',          'CustomerController@deleteLogo'     )->name( 'customer@deleteLogo');
-});
-
-Route::group( [ 'prefix' => 'customer-logo', 'namespace' => 'Customer'], function() {
-    Route::get( 'manage/{id?}',         'LogoController@manage'     )->name( "logo@manage" );
-    Route::post('store',                'LogoController@store'      )->name( "logo@store" );
-    Route::post('delete/{id}',          'LogoController@delete'     )->name( 'logo@delete');
-});
-
-Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer'], function() {
-    Route::get(    'ping/{id?}',            'CustomerNotesController@ping'      )->name( 'customerNotes@ping');
-    Route::get(    'get/{id}',              'CustomerNotesController@get'       )->name( 'customerNotes@get');
-
-});
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -99,10 +95,13 @@ Route::get( 'content/members/{priv}/{page}', 'ContentController@members' )->name
 ///
 
 Route::group( [ 'prefix' => 'statistics' ], function() {
-    Route::get(  'ixp/{category?}',                       'StatisticsController@ixp'               )->name( 'statistics/ixp'            );
-    Route::get(  'infrastructure/{graphid?}/{category?}', 'StatisticsController@infrastructure'    )->name( 'statistics/infrastructure' );
-    Route::get(  'switch/{switchid?}/{category?}',        'StatisticsController@switch'            )->name( 'statistics/switch'         );
-    Route::get(  'trunk/{trunkid?}/{category?}',          'StatisticsController@trunk'             )->name( 'statistics/trunk'          );
+    Route::get(  'ixp/{category?}',                             'StatisticsController@ixp'               )->name( 'statistics/ixp'                );
+    Route::get(  'infrastructure/{graphid?}/{category?}',       'StatisticsController@infrastructure'    )->name( 'statistics/infrastructure'     );
+    Route::get(  'switch/{switchid?}/{category?}',              'StatisticsController@switch'            )->name( 'statistics/switch'             );
+    Route::get(  'trunk/{trunkid?}/{category?}',                'StatisticsController@trunk'             )->name( 'statistics/trunk'              );
+
+    Route::get(  'member/{id?}',                                'StatisticsController@member'            )->name( 'statistics@member'             );
+    Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'    );
 });
 
 

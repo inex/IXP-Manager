@@ -53,7 +53,7 @@
                                         Please try again later and set the IX-F IXP. </div>` );
             })
             .always( function() {
-                dd_ixp.select2({ allowClear: true, placeholder: 'Choose the matching IX-F IXP..' });
+                dd_ixp.select2({ allowClear: true, placeholder: 'Choose the matching IX-F IXP...' });
                 dd_ixp.trigger( "changed.select2" );
                 ixp_req_finish = true;
 

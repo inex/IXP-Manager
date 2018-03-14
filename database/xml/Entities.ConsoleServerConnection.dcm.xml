@@ -15,7 +15,7 @@
     <field name="notes" type="text" nullable="true"/>
     <many-to-one field="Customer" target-entity="Entities\Customer" inversed-by="ConsoleServerConnections">
       <join-columns>
-        <join-column name="custid" referenced-column-name="id"/>
+        <join-column name="custid" referenced-column-name="id" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
     <many-to-one field="consoleServer" target-entity="Entities\ConsoleServer" inversed-by="consoleServerConnections">

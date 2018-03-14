@@ -136,37 +136,28 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
     Route::get(     'add',                              'CustomerController@edit'                       )->name( 'customer@add');
     Route::get(     'edit/{id}',                        'CustomerController@edit'                       )->name( 'customer@edit');
 
-    Route::get(     'billing-registration/{id}',        'CustomerController@billingRegistration'        )->name( 'customer@billingRegistration');
-    Route::get(     'unread-notes',                     'CustomerController@unreadNotes'                )->name( "customer@unreadNotes" );
-    Route::get(     'welcome-email/{id}',               'CustomerController@welcomeEmail'               )->name( "customer@welcomeEmail" );
-    Route::get(     'delete-recap/{id}',                'CustomerController@deleteRecap'                )->name( "customer@deleteRecap" );
-    Route::get(     'overview/{id}/{tab?}',             'CustomerController@overview'                   )->name( "customer@overview" );
-    Route::get(     'logos',                            'CustomerController@logos'                      )->name( "customer@logos" );
+    Route::get(     'billing-registration/{id}',        'CustomerController@editBillingAndRegDetails'   )->name( 'customer@billing-registration');
 
+    Route::get(     'welcome-email/{id}',               'CustomerController@welcomeEmail'               )->name( "customer@welcome-email" );
+    Route::get(     'delete-recap/{id}',                'CustomerController@deleteRecap'                )->name( "customer@delete-recap" );
+    Route::get(     'overview/{id}/{tab?}',             'CustomerController@overview'                   )->name( "customer@overview" );
 
     Route::post(    'store',                            'CustomerController@store'                      )->name( 'customer@store');
-    Route::post(    'store-billing-info',               'CustomerController@storeBillingInformation'    )->name( 'customer@storeBillingInfo');
-    Route::post(    'send-welcome-email',               'CustomerController@sendWelcomeEmail'           )->name( 'customer@sendWelcomeEmail');
+    Route::post(    'store-billing-and-reg-details',    'CustomerController@storeBillingAndRegDetails'  )->name( 'customer@store-billing-and-reg-details');
+    Route::post(    'send-welcome-email',               'CustomerController@sendWelcomeEmail'           )->name( 'customer@send-welcome-email');
     Route::post(    'delete',                           'CustomerController@delete'                     )->name( 'customer@delete');
 
 });
 
+if( !config('ixp_fe.frontend.disabled.logo' ) ) {
+    Route::group( [ 'namespace' => 'Customer', 'prefix' => 'customer-logo' ], function() {
+        Route::get( 'logos', 'LogoController@logos' )->name( "logo@logos" );
+    } );
+}
 
-Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer-logo' ], function() {
-    Route::get(     'logos',                            'LogoController@logos'                      )->name( "logo@logos" );
-});
-
-Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer-note' ], function() {
-
-
-    Route::get(    'ajax-notify-toggle/custid/{id}',   'CustomerNotesController@notifyToggleByCust'     )->name( 'customerNotes@notifyToggleCust');
-    Route::get(    'ajax-notify-toggle/id/{id}',       'CustomerNotesController@notifyToggleByNote'     )->name( 'customerNotes@notifyToggleNote');
-    Route::get(    'real-all',                         'CustomerNotesController@readAll'                )->name( 'customerNotes@readAll');
-
-
-    Route::post(    'add',                             'CustomerNotesController@add'                    )->name( 'customerNotes@add');
-    Route::post(    'delete/{id}',                     'CustomerNotesController@delete'                 )->name( 'customerNotes@delete');
-
+Route::group( [ 'namespace' => 'Customer', 'prefix' => 'customer-note' ], function() {
+    Route::get(    'read-all',                          'CustomerNotesController@readAll'                )->name( 'customerNotes@readAll');
+    Route::get(    'unread-notes',                      'CustomerNotesController@unreadNotes'            )->name( "customerNotes@unreadNotes" );
 });
 
 Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );

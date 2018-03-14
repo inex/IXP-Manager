@@ -26,8 +26,8 @@ return [
         'enabled' => env( 'IXP_RESELLER_ENABLED', false ),
 
         // If reseller mode enabled and this is set to true then super admin or customer itself
-        // can not add/change resold customers details.
-        'reseller' => env( 'IXP_RESELLER_RESOLD_BILLING', false ),
+        // can not add/change a resold customer's billing details.
+        'no_billing' => env( 'IXP_RESELLER_RESOLD_BILLING', false ),
     ],
 
 

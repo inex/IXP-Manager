@@ -59,7 +59,7 @@
     </p>
 
     <p>
-        <a href="<?= <?= route( "customer@overview" , [ "id" => $p['cust']->getId() ] ) ?>">
+        <a href="<?= route( "customer@overview" , [ "id" => $p['cust']->getId() ] ) ?>">
             <img src="data:image/png;base64,<?= base64_encode( $p['pngYear'] ) ?>">
         </a>
     </p>

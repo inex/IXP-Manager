@@ -21,6 +21,9 @@
     </entity>
     <association from="\Entities\IrrdbAsn" to="\Entities\Customer" owner-alias="IrrdbASNs" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="f49ec7d3-18a7-4159-80c3-7c9bd2d650dd">
       <association-field from="customer_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\ApiKey" local-name="ApiKey" namespace="\Entities" uuid="3da990c1-6ab8-436e-8800-e09a08ebee16">
       <field name="id" type="bigint" unique="true" primary="true" auto-increment="true" uuid="e7921411-de32-4a53-a946-d829a0a07f91"/>
@@ -55,6 +58,9 @@
     </entity>
     <association from="\Entities\ApiKey" to="\Entities\User" owner-alias="ApiKeys" inverse-alias="User" many-owner="true" many-inverse="false" parent-required="true" uuid="15b1d11f-9a03-4772-a3cf-c984cd801d7a">
       <association-field from="user_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\IrrdbPrefix" local-name="IrrdbPrefix" namespace="\Entities" uuid="6ed4d8a0-e20d-426a-ac5a-0b966a455f64">
       <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="3dba3446-ee45-49f0-8435-7765a5078a5a"/>
@@ -76,6 +82,9 @@
     </entity>
     <association from="\Entities\IrrdbPrefix" to="\Entities\Customer" owner-alias="IrrdbPrefixes" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="9ebc868a-ee73-4fac-a3e0-9eb0ae4ca726">
       <association-field from="customer_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\UserLoginHistory" local-name="UserLoginHistory" namespace="\Entities" uuid="9f26679f-99e4-48b9-b544-4d7377988044">
       <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="2ec9db54-1a9e-4bea-b669-1842199f515f"/>
@@ -94,6 +103,9 @@
     </entity>
     <association from="\Entities\UserLoginHistory" to="\Entities\User" owner-alias="LastLogins" inverse-alias="User" many-owner="true" many-inverse="false" parent-required="true" uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543">
       <association-field from="user_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\NetInfo" local-name="NetInfo" namespace="\Entities" uuid="6747622b-df14-45da-828f-3c676799d963">
       <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="690436d3-2110-4c40-a6de-d2d79f286469"/>
@@ -142,7 +154,7 @@
       <orm-attributes>
         <attribute name="table">company_registration_detail</attribute>
         <attribute name="tableName">company_registration_detail</attribute>
-        <attribute name="repository-class">Repositories\CompanyRegistrationDetail</attribute>
+        <attribute name="repository-class">Repositories\CompanyRegisteredDetail</attribute>
       </orm-attributes>
     </entity>
     <entity name="\Entities\Infrastructure" local-name="Infrastructure" namespace="\Entities" uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b">
@@ -329,11 +341,14 @@
       <orm-attributes>
         <attribute name="table">cust_notes</attribute>
         <attribute name="tableName">cust_notes</attribute>
-        <attribute name="repository-class">Repositories\CustomerNotes</attribute>
+        <attribute name="repository-class">Repositories\CustomerNote</attribute>
       </orm-attributes>
     </entity>
     <association from="\Entities\CustomerNote" to="\Entities\Customer" owner-alias="Notes" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="c5d6b4b1-d641-426c-b168-c2a1a8351cb2">
       <association-field from="customer_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\BGPSessionData" local-name="BGPSessionData" namespace="\Entities" uuid="0aaacba6-6bf1-4b5f-b3ad-41f36ca7bd7d">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="cd0ddadb-8250-4d15-8b5a-bc466fa3457f"/>
@@ -584,9 +599,15 @@
     </association>
     <association from="\Entities\PhysicalInterface" to="\Entities\VirtualInterface" owner-alias="PhysicalInterfaces" inverse-alias="VirtualInterface" many-owner="true" many-inverse="false" uuid="e4173e3e-7085-4482-9960-5b5e4493f0f6">
       <association-field from="virtualinterfaceid" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <association from="\Entities\PhysicalInterface" to="\Entities\PhysicalInterface" owner-alias="PeeringPhysicalInterface" inverse-alias="FanoutPhysicalInterface" many-owner="false" many-inverse="false" uuid="1166ebf0-8024-4783-9af3-61e1b4f61070">
       <association-field from="fanout_physical_interface_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">RESTRICT</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\VlanInterface" local-name="VlanInterface" namespace="\Entities" uuid="bad4f785-8f04-4d84-8cc9-36f638715559">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="7ee46365-d03c-4418-b7be-ddfebaf9420e"/>
@@ -621,15 +642,27 @@
     </entity>
     <association from="\Entities\VlanInterface" to="\Entities\VirtualInterface" owner-alias="VlanInterfaces" inverse-alias="VirtualInterface" many-owner="true" many-inverse="false" uuid="b52f74fd-d507-4af6-a949-79a8bd13d7c4">
       <association-field from="virtualinterfaceid" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <association from="\Entities\VlanInterface" to="\Entities\Vlan" owner-alias="VlanInterfaces" inverse-alias="Vlan" many-owner="true" many-inverse="false" uuid="56098a3e-c55e-4a20-9ca1-88ac494c7e73">
       <association-field from="vlanid" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">RESTRICT</attribute>
+      </orm-attributes>
     </association>
     <association from="\Entities\VlanInterface" to="\Entities\IPv4Address" owner-alias="VlanInterface" inverse-alias="IPv4Address" many-owner="false" many-inverse="false" uuid="39ad3dd5-487b-4152-9190-558bd7e80668">
       <association-field from="ipv4addressid" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">RESTRICT</attribute>
+      </orm-attributes>
     </association>
     <association from="\Entities\VlanInterface" to="\Entities\IPv6Address" owner-alias="VlanInterface" inverse-alias="IPv6Address" many-owner="false" many-inverse="false" uuid="fea968fd-7ff8-437c-b90d-4f2e1e24cd6f">
       <association-field from="ipv6addressid" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">RESTRICT</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\Vlan" local-name="Vlan" namespace="\Entities" uuid="1b90f411-dfed-48a8-acd0-97cbf599e069">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="947c18c6-133a-42ba-a7e2-1346d7cc7e44"/>
@@ -672,6 +705,9 @@
     </entity>
     <association from="\Entities\VirtualInterface" to="\Entities\Customer" owner-alias="VirtualInterfaces" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="a6cd1017-f136-4839-a577-7477c6a5a287">
       <association-field from="custid" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\IPv4Address" local-name="IPv4Address" namespace="\Entities" uuid="274aaa49-9d19-4458-8f91-386f5b9a44cd">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="d2d715d5-e7fc-452c-9081-72e65fc1a1a0"/>
@@ -744,8 +780,8 @@
       <field name="lastupdatedby" type="integer" uuid="0dad4465-e86b-4934-abf0-ef105f15e9cf"/>
       <field name="creator" type="string" size="255" uuid="c2152236-2b56-4088-9cb2-f161c10bb6c4"/>
       <field name="created" type="date" uuid="085f44ec-c9e3-4dcc-8db0-451c688f423f"/>
-      <field name="company_registered_detail_id" type="integer" uuid="76dcfb1e-efda-44d9-bd00-083de3255e70"/>
-      <field name="company_billing_details_id" type="integer" uuid="0320ee04-426b-4d61-98e9-237980463824"/>
+      <field name="company_registered_detail_id" type="integer" unique="true" uuid="76dcfb1e-efda-44d9-bd00-083de3255e70"/>
+      <field name="company_billing_details_id" type="integer" unique="true" uuid="0320ee04-426b-4d61-98e9-237980463824"/>
       <field name="MD5Support" type="string" default="UNKNOWN" uuid="d1920f75-a18c-45ba-833b-4aaed4d50055">
         <orm-attributes>
           <attribute name="column">MD5Support</attribute>
@@ -765,11 +801,14 @@
     </entity>
     <association from="\Entities\Customer" to="\Entities\IRRDBConfig" owner-alias="Customers" inverse-alias="IRRDB" many-owner="true" many-inverse="false" uuid="dd9b73a1-8945-4904-8fac-9ce65f5e124d">
       <association-field from="irrdb" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">RESTRICT</attribute>
+      </orm-attributes>
     </association>
-    <association from="\Entities\Customer" to="\Entities\CompanyRegisteredDetail" owner-alias="Customer" inverse-alias="RegistrationDetails" many-owner="true" many-inverse="false" uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602">
+    <association from="\Entities\Customer" to="\Entities\CompanyRegisteredDetail" owner-alias="Customer" inverse-alias="RegistrationDetails" many-owner="false" many-inverse="false" uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602">
       <association-field from="company_registered_detail_id" to="id"/>
     </association>
-    <association from="\Entities\Customer" to="\Entities\CompanyBillingDetail" owner-alias="Customer" inverse-alias="BillingDetails" many-owner="true" many-inverse="false" uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72">
+    <association from="\Entities\Customer" to="\Entities\CompanyBillingDetail" owner-alias="Customer" inverse-alias="BillingDetails" many-owner="false" many-inverse="false" uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72">
       <association-field from="company_billing_details_id" to="id"/>
     </association>
     <association from="\Entities\Customer" to="\Entities\Customer" owner-alias="ResoldCustomers" inverse-alias="Reseller" many-owner="true" many-inverse="false" uuid="670582b5-1394-4b90-b827-0a331ea5b4aa">
@@ -799,9 +838,15 @@
     </entity>
     <association from="\Entities\Contact" to="\Entities\Customer" owner-alias="Contacts" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="3de69308-a3d5-4138-97be-111724303344">
       <association-field from="custid" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <association from="\Entities\Contact" to="\Entities\User" owner-alias="Contact" inverse-alias="User" many-owner="false" many-inverse="false" uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287">
       <association-field from="user_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\ConsoleServerConnection" local-name="ConsoleServerConnection" namespace="\Entities" uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="a1f3d63b-a238-4760-a2e7-ad5045394acf"/>
@@ -824,6 +869,9 @@
     </entity>
     <association from="\Entities\ConsoleServerConnection" to="\Entities\Customer" owner-alias="ConsoleServerConnections" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="f663287b-e38a-442b-9043-f37c176e6125">
       <association-field from="custid" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <association from="\Entities\ConsoleServerConnection" to="\Entities\ConsoleServer" owner-alias="consoleServerConnections" inverse-alias="consoleServer" many-owner="true" many-inverse="false" uuid="7264f047-7aed-475c-b870-1c3a2a1ab316">
       <association-field from="console_server_id" to="id"/>
@@ -842,6 +890,9 @@
     </entity>
     <association from="\Entities\CustomerEquipment" to="\Entities\Customer" owner-alias="CustomerEquipment" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="d038f4b7-cba8-4a6d-b772-a1e410b0d819">
       <association-field from="custid" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <association from="\Entities\CustomerEquipment" to="\Entities\Cabinet" owner-alias="CustomerEquipment" inverse-alias="Cabinet" many-owner="true" many-inverse="false" uuid="ab08b405-788c-4579-bc8d-3445b6ba3821">
       <association-field from="cabinetid" to="id"/>
@@ -872,6 +923,9 @@
     </entity>
     <association from="\Entities\MACAddress" to="\Entities\VirtualInterface" owner-alias="MACAddresses" inverse-alias="VirtualInterface" many-owner="true" many-inverse="false" uuid="0ddc2408-657b-4705-8e3d-05dfd77e7f4f">
       <association-field from="virtualinterfaceid" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\NetworkInfo" local-name="NetworkInfo" namespace="\Entities" uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="72dd316f-2a45-4376-b4fe-c4332431c5c3"/>
@@ -910,9 +964,15 @@
     </entity>
     <association from="\Entities\PeeringManager" to="\Entities\Customer" owner-alias="Peers" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="9a0a56b5-00e0-4eef-aba0-5c00267415cc">
       <association-field from="custid" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <association from="\Entities\PeeringManager" to="\Entities\Customer" owner-alias="PeersWith" inverse-alias="Peer" many-owner="true" many-inverse="false" uuid="c9431b23-72cb-4afa-a057-ced40869cfd0">
       <association-field from="peerid" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\PeeringMatrix" local-name="PeeringMatrix" namespace="\Entities" uuid="575cdaf6-dbcb-464d-b5be-70c7eae4bf8e">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="fdff273f-469c-4f98-bd74-8b69c4f51d17"/>
@@ -931,9 +991,15 @@
     </entity>
     <association from="\Entities\PeeringMatrix" to="\Entities\Customer" owner-alias="XCusts" inverse-alias="XCustomer" many-owner="true" many-inverse="false" uuid="4c701748-2450-4a6b-9d80-f5df9e6ebf6e">
       <association-field from="x_custid" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <association from="\Entities\PeeringMatrix" to="\Entities\Customer" owner-alias="YCusts" inverse-alias="YCustomer" many-owner="true" many-inverse="false" uuid="73e14126-258d-4d70-b63e-7a90192e3492">
       <association-field from="y_custid" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\RSPrefix" local-name="RSPrefix" namespace="\Entities" uuid="e2c63309-9c7b-44ea-a0be-cf770fe358fb">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="63ad0b95-2f36-48c4-916d-f95e2d8bced3"/>
@@ -951,6 +1017,9 @@
     </entity>
     <association from="\Entities\RSPrefix" to="\Entities\Customer" owner-alias="RSPrefixes" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="1eba91d3-a283-42e2-8ae4-45163c1ea622">
       <association-field from="custid" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\User" local-name="User" namespace="\Entities" uuid="47af3a5d-875a-4488-a39f-d2a3178e4d66">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="627692b3-0d23-4011-b994-dbd3ff0a4909"/>
@@ -978,6 +1047,9 @@
     </entity>
     <association from="\Entities\User" to="\Entities\Customer" owner-alias="Users" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="f2a9c016-2e92-44b2-92dd-ca881cb6d1c5">
       <association-field from="custid" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\UserPreference" local-name="UserPreference" namespace="\Entities" uuid="04946ae3-fa99-4cf0-a31a-f0b49f85c326">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="df440161-0912-420f-a7d1-7e0a7104419d"/>
@@ -1001,6 +1073,9 @@
     </entity>
     <association from="\Entities\UserPreference" to="\Entities\User" owner-alias="Preferences" inverse-alias="User" many-owner="true" many-inverse="false" uuid="b205a6b5-4bdf-4d45-a9b2-971828dd39db">
       <association-field from="user_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\Traffic95th" local-name="Traffic95th" namespace="\Entities" uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a">
       <field name="id" type="bigint" primary="true" auto-increment="true" uuid="9c8f645f-8ba0-47f4-b17d-aefb89c3ca62"/>
@@ -1016,6 +1091,9 @@
     </entity>
     <association from="\Entities\Traffic95th" to="\Entities\Customer" owner-alias="Traffic95ths" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="f68d03a0-7831-4bdb-847c-0b2c3fa091c9">
       <association-field from="cust_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\Traffic95thMonthly" local-name="Traffic95thMonthly" namespace="\Entities" uuid="04f83672-40da-4802-ad22-809cfd3ab549">
       <field name="id" type="bigint" primary="true" auto-increment="true" uuid="d5365066-346d-493d-b84b-fb77d66d988c"/>
@@ -1030,6 +1108,9 @@
     </entity>
     <association from="\Entities\Traffic95thMonthly" to="\Entities\Customer" owner-alias="Traffic95thMonthlys" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="cd076385-16a0-4646-ae5b-6c7b87b94be4">
       <association-field from="cust_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\TrafficDaily" local-name="TrafficDaily" namespace="\Entities" uuid="e8daf53a-44b8-4798-b6a3-808bff907953">
       <field name="id" type="bigint" primary="true" auto-increment="true" uuid="d4fa99e8-9f7e-4394-a49a-115de5739a2d"/>
@@ -1069,6 +1150,9 @@
     </entity>
     <association from="\Entities\TrafficDaily" to="\Entities\Customer" owner-alias="TrafficDailies" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="212269bb-5626-4a46-b864-1a94ecee88f3">
       <association-field from="cust_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <association from="\Entities\TrafficDaily" to="\Entities\IXP" owner-alias="TrafficDaily" inverse-alias="IXP" many-owner="true" many-inverse="false" parent-required="true" uuid="879b2bdc-c0c5-4d23-b190-4a4b37cb7f68">
       <association-field from="ixp_id" to="id"/>
@@ -1101,6 +1185,9 @@
     </entity>
     <association from="\Entities\Logo" to="\Entities\Customer" owner-alias="logos" inverse-alias="customer" many-owner="true" many-inverse="false" uuid="07356969-b967-4fdc-b03a-1db029a1d435">
       <association-field from="customer_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">RESTRICT</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\SflowReceiver" local-name="SflowReceiver" namespace="\Entities" uuid="709f0b3a-19e0-4026-88d3-1904231644ec">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="03f5a740-7ba0-4ae5-adbf-bbf0d4a9bcfc"/>
@@ -1115,6 +1202,9 @@
     </entity>
     <association from="\Entities\SflowReceiver" to="\Entities\VirtualInterface" owner-alias="SflowReceivers" inverse-alias="VirtualInterface" many-owner="true" many-inverse="false" uuid="619331cb-7c10-46c6-ac28-f46096e91407">
       <association-field from="virtual_interface_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\PatchPanel" local-name="PatchPanel" namespace="\Entities" uuid="e64bc27c-d058-422a-987d-95e987418035">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="b005a7ab-3066-4464-83ed-d106cb017999"/>
@@ -1173,6 +1263,9 @@
     </association>
     <association from="\Entities\PatchPanelPort" to="\Entities\Customer" owner-alias="patchPanelPorts" inverse-alias="customer" many-owner="true" many-inverse="false" uuid="52d28567-bcaf-46dd-8616-115315c3d965">
       <association-field from="customer_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">RESTRICT</attribute>
+      </orm-attributes>
     </association>
     <association from="\Entities\PatchPanelPort" to="\Entities\SwitchPort" owner-alias="patchPanelPort" inverse-alias="switchPort" many-owner="false" many-inverse="false" uuid="0dc9ac51-e3ab-42de-b7f6-81d5b4bf8637">
       <association-field from="switch_port_id" to="id"/>
@@ -1232,6 +1325,9 @@
     </entity>
     <association from="\Entities\Layer2Address" to="\Entities\VlanInterface" owner-alias="layer2Addresses" inverse-alias="vlanInterface" many-owner="true" many-inverse="false" parent-required="true" uuid="d055afe7-fe5a-4a17-8bb6-21aa478e1633">
       <association-field from="vlan_interface_id" to="id"/>
+      <orm-attributes>
+        <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
     </association>
     <entity name="\Entities\PatchPanelPortFile" local-name="PatchPanelPortFile" namespace="\Entities" uuid="fe102ac1-eef6-41b0-ae2b-87fc4fc10ba1">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="f5940254-97b6-40fa-8268-3b0b4d290aed"/>
@@ -1384,67 +1480,67 @@
     <association uuid="01e81093-107a-49b9-9cb8-18b8a383bf6e" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="07356969-b967-4fdc-b03a-1db029a1d435" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="0dc9ac51-e3ab-42de-b7f6-81d5b4bf8637" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
-    <association uuid="0ddc2408-657b-4705-8e3d-05dfd77e7f4f" color="4288059030"/>
+    <association uuid="0ddc2408-657b-4705-8e3d-05dfd77e7f4f" color="#969696"/>
     <association uuid="0ee80a87-2e0c-4f8a-a0c5-aff080f731da" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
-    <association uuid="10405d40-8fdd-4189-864c-0535fbf1eaf5" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
-    <association uuid="1166ebf0-8024-4783-9af3-61e1b4f61070" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20" color="4288059030"/>
-    <association uuid="15b1d11f-9a03-4772-a3cf-c984cd801d7a" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <association uuid="1eba91d3-a283-42e2-8ae4-45163c1ea622" color="4288059030"/>
-    <association uuid="212269bb-5626-4a46-b864-1a94ecee88f3" center-position-x="-5" center-position-y="0" color="4288059030"/>
+    <association uuid="1166ebf0-8024-4783-9af3-61e1b4f61070" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20" color="#969696"/>
+    <association uuid="15b1d11f-9a03-4772-a3cf-c984cd801d7a" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="1eba91d3-a283-42e2-8ae4-45163c1ea622" color="#969696"/>
+    <association uuid="212269bb-5626-4a46-b864-1a94ecee88f3" center-position-x="-5" center-position-y="0" color="#969696"/>
     <association uuid="263cdc09-054e-49c3-9b3e-c310b4edc711" center-position-x="0" center-position-y="-20" color="#969696"/>
     <association uuid="2c958365-0e49-4b74-b291-dedac8a85f74" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
-    <association uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <association uuid="39ad3dd5-487b-4152-9190-558bd7e80668" center-position-x="-7" center-position-y="0" color="4288059030"/>
-    <association uuid="3de69308-a3d5-4138-97be-111724303344" caption1-position-x="-1" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="39ad3dd5-487b-4152-9190-558bd7e80668" center-position-x="-7" center-position-y="0" color="#969696"/>
+    <association uuid="3de69308-a3d5-4138-97be-111724303344" caption1-position-x="-1" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="4bc1d72f-a2b3-43b8-89f6-e5aaeb3b6d59" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
-    <association uuid="4c701748-2450-4a6b-9d80-f5df9e6ebf6e" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="4c701748-2450-4a6b-9d80-f5df9e6ebf6e" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="518453f9-598d-4246-847d-f839117f1d0a" color="4288059030"/>
     <association uuid="52d28567-bcaf-46dd-8616-115315c3d965" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
-    <association uuid="56098a3e-c55e-4a20-9ca1-88ac494c7e73" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <association uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="56098a3e-c55e-4a20-9ca1-88ac494c7e73" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="619331cb-7c10-46c6-ac28-f46096e91407" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="670582b5-1394-4b90-b827-0a331ea5b4aa" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20" color="4288059030"/>
     <association uuid="7264f047-7aed-475c-b870-1c3a2a1ab316" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="729deb72-6e14-4cec-9120-f722c6aeaa6a" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
-    <association uuid="73e14126-258d-4d70-b63e-7a90192e3492" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="73e14126-258d-4d70-b63e-7a90192e3492" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="879b2bdc-c0c5-4d23-b190-4a4b37cb7f68" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
     <association uuid="93708a18-58db-4061-add9-24991ccd3ce0" color="4288059030"/>
     <association uuid="9751c600-b30e-4f42-a07d-9eb6a4c45765" color="4288059030"/>
-    <association uuid="9a0a56b5-00e0-4eef-aba0-5c00267415cc" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <association uuid="9ebc868a-ee73-4fac-a3e0-9eb0ae4ca726" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="9a0a56b5-00e0-4eef-aba0-5c00267415cc" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="9ebc868a-ee73-4fac-a3e0-9eb0ae4ca726" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="9fbc7658-7e64-4754-a2da-e49ad6400671" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
-    <association uuid="a6cd1017-f136-4839-a577-7477c6a5a287" color="4288059030"/>
+    <association uuid="a6cd1017-f136-4839-a577-7477c6a5a287" color="#969696"/>
     <association uuid="a93d8c93-6456-462f-a524-9fcda1180727" color="4288059030"/>
     <association uuid="ab08b405-788c-4579-bc8d-3445b6ba3821" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-56" color="4288059030"/>
     <association uuid="ac59c5ec-22c1-4f07-88e9-3eeaa60d547c" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
-    <association uuid="b205a6b5-4bdf-4d45-a9b2-971828dd39db" color="4288059030"/>
-    <association uuid="b52f74fd-d507-4af6-a949-79a8bd13d7c4" color="4288059030"/>
+    <association uuid="b205a6b5-4bdf-4d45-a9b2-971828dd39db" color="#969696"/>
+    <association uuid="b52f74fd-d507-4af6-a949-79a8bd13d7c4" color="#969696"/>
     <association uuid="b92532d3-9b72-47c4-8271-cd3f14181208" center-position-x="0" center-position-y="-20" color="#969696"/>
     <association uuid="bc7fc00c-039c-4e6a-ad73-f571f5761bfe" color="4288059030"/>
     <association uuid="be7e2b92-010c-49ad-b716-7879623ca29d" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="c1c0aaf2-5968-412b-8ff3-05e224f88ecd" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="c3779c0a-b590-4cf8-9495-984270d7496a" color="#969696" split="1"/>
-    <association uuid="c5d6b4b1-d641-426c-b168-c2a1a8351cb2" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="c5d6b4b1-d641-426c-b168-c2a1a8351cb2" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
-    <association uuid="c9431b23-72cb-4afa-a057-ced40869cfd0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="c9431b23-72cb-4afa-a057-ced40869cfd0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="cc3abe50-1c33-4763-ab4a-348810f1b04c" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
-    <association uuid="cd076385-16a0-4646-ae5b-6c7b87b94be4" caption1-position-x="0" caption1-position-y="1" center-position-x="-26" center-position-y="0" color="4288059030"/>
-    <association uuid="d038f4b7-cba8-4a6d-b772-a1e410b0d819" color="4288059030"/>
+    <association uuid="cd076385-16a0-4646-ae5b-6c7b87b94be4" caption1-position-x="0" caption1-position-y="1" center-position-x="-26" center-position-y="0" color="#969696"/>
+    <association uuid="d038f4b7-cba8-4a6d-b772-a1e410b0d819" color="#969696"/>
     <association uuid="d055afe7-fe5a-4a17-8bb6-21aa478e1633" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="d54c91d9-e69b-4f91-9666-52a881f17b12" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="d9075ce3-753a-432f-a009-c9e386509484" color="4288059030"/>
-    <association uuid="dd9b73a1-8945-4904-8fac-9ce65f5e124d" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <association uuid="e4173e3e-7085-4482-9960-5b5e4493f0f6" color="4288059030"/>
+    <association uuid="dd9b73a1-8945-4904-8fac-9ce65f5e124d" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="e4173e3e-7085-4482-9960-5b5e4493f0f6" color="#969696"/>
     <association uuid="e52b85f7-fca3-4ba3-aadb-758ad65f2c4d" color="4288059030"/>
     <association uuid="e8f4931c-82ef-4c5d-83c3-61a0b4271727" color="4288059030"/>
     <association uuid="f18aceae-d3e6-452d-9e28-0c32f340b245" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <association uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
-    <association uuid="f2a9c016-2e92-44b2-92dd-ca881cb6d1c5" color="4288059030"/>
-    <association uuid="f49ec7d3-18a7-4159-80c3-7c9bd2d650dd" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
+    <association uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="f2a9c016-2e92-44b2-92dd-ca881cb6d1c5" color="#969696"/>
+    <association uuid="f49ec7d3-18a7-4159-80c3-7c9bd2d650dd" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="f4d2208c-a2cb-4ee8-89dd-afef07118b96" color="4288059030"/>
-    <association uuid="f663287b-e38a-442b-9043-f37c176e6125" color="#969696" split="1"/>
-    <association uuid="f68d03a0-7831-4bdb-847c-0b2c3fa091c9" center-position-x="-86" center-position-y="0" color="4288059030"/>
+    <association uuid="f663287b-e38a-442b-9043-f37c176e6125" color="#969696"/>
+    <association uuid="f68d03a0-7831-4bdb-847c-0b2c3fa091c9" center-position-x="-86" center-position-y="0" color="#969696"/>
     <association uuid="f719e289-ecf6-4430-9e56-989348b61488" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
-    <association uuid="fea968fd-7ff8-437c-b90d-4f2e1e24cd6f" color="4288059030"/>
+    <association uuid="fea968fd-7ff8-437c-b90d-4f2e1e24cd6f" color="#969696"/>
     <entity uuid="04946ae3-fa99-4cf0-a31a-f0b49f85c326" bg-color="4294967295" hdr-color="4292006610" position-x="1249" position-y="755" size-x="0" size-x2="112" size-y="0" size-y2="115"/>
     <entity uuid="04f83672-40da-4802-ad22-809cfd3ab549" bg-color="4294967295" hdr-color="4292006610" position-x="250" position-y="1009" size-x="0" size-x2="97" size-y="0" size-y2="73"/>
     <entity uuid="0617cfe2-0a29-4671-a9d6-5401bc911e43" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="595" position-y="350" size-x="0" size-x2="186" size-y="0" size-y2="465"/>
@@ -1468,7 +1564,7 @@
     <entity uuid="47af3a5d-875a-4488-a39f-d2a3178e4d66" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="809" position-y="653" size-x="0" size-x2="145" size-y="0" size-y2="213"/>
     <entity uuid="48d00263-155b-4410-b5da-4f7b2ef3bfc4" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="228" position-y="-191" size-x="0" size-x2="122" size-y="0" size-y2="185"/>
     <entity uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="81" position-y="1042" size-x="0" size-x2="109" size-y="0" size-y2="87"/>
-    <entity uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a" bg-color="4294967295" hdr-color="4292006610" position-x="175" position-y="631" size-x="0" size-x2="106" size-y="0" size-y2="87"/>
+    <entity uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a" bg-color="4294967295" hdr-color="4292006610" position-x="98" position-y="698" size-x="0" size-x2="101" size-y="0" size-y2="87"/>
     <entity uuid="575cdaf6-dbcb-464d-b5be-70c7eae4bf8e" bg-color="4294967295" hdr-color="4292006610" position-x="466" position-y="848" size-x="0" size-x2="118" size-y="0" size-y2="129"/>
     <entity uuid="6070e4d5-359b-4047-a550-8e130118632e" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="590" position-y="886" size-x="0" size-x2="129" size-y="0" size-y2="157"/>
     <entity uuid="6297699e-ca02-426a-b191-3270e7e93aa8" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1314" position-y="-303" size-x="0" size-x2="131" size-y="0" size-y2="297"/>
@@ -1476,7 +1572,7 @@
     <entity uuid="6ed4d8a0-e20d-426a-ac5a-0b966a455f64" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="160" position-y="880" size-x="0" size-x2="112" size-y="0" size-y2="87"/>
     <entity uuid="6f5416c6-f6a1-4fef-8745-7affa8571ea8" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="232" position-y="-492" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
     <entity uuid="709f0b3a-19e0-4026-88d3-1904231644ec" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="997" position-y="-4" size-x="0" size-x2="135" size-y="0" size-y2="73"/>
-    <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" bg-color="4294967295" hdr-color="4292006610" position-x="337" position-y="874" size-x="0" size-x2="113" size-y="0" size-y2="115"/>
+    <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="337" position-y="874" size-x="0" size-x2="113" size-y="0" size-y2="115"/>
     <entity uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135" bg-color="4294967295" hdr-color="4292006610" position-x="173" position-y="438" size-x="0" size-x2="138" size-y="0" size-y2="74"/>
     <entity uuid="90947ea1-a2fb-430b-b55e-a4901eb1fa30" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="30" position-y="-526" size-x="0" size-x2="118" size-y="0" size-y2="297"/>
     <entity uuid="9f26679f-99e4-48b9-b544-4d7377988044" bg-color="4294967295" hdr-color="4292006610" position-x="929" position-y="1072" size-x="0" size-x2="92" size-y="0" size-y2="73"/>
@@ -1490,10 +1586,10 @@
     <entity uuid="cc05d49f-a5cf-4650-9300-be430837e73b" bg-color="4294967295" hdr-color="4292006610" position-x="356" position-y="417" size-x="0" size-x2="125" size-y="0" size-y2="213"/>
     <entity uuid="ceaae170-210b-45f6-81b2-9094b57e3848" bg-color="4294967295" hdr-color="4292006610" position-x="1244" position-y="637" size-x="0" size-x2="107" size-y="0" size-y2="87"/>
     <entity uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="554" position-y="103" size-x="0" size-x2="133" size-y="0" size-y2="73"/>
-    <entity uuid="d776f08f-235f-4431-b5c8-60a6e13295f8" bg-color="4294967295" hdr-color="4292006610" position-x="965" position-y="535" size-x="0" size-x2="125" size-y="0" size-y2="87"/>
+    <entity uuid="d776f08f-235f-4431-b5c8-60a6e13295f8" bg-color="4294967295" hdr-color="4292006610" position-x="611" position-y="208" size-x="0" size-x2="125" size-y="0" size-y2="87"/>
     <entity uuid="e2c63309-9c7b-44ea-a0be-cf770fe358fb" bg-color="4294967295" hdr-color="4292006610" position-x="11" position-y="881" size-x="0" size-x2="114" size-y="0" size-y2="115"/>
     <entity uuid="e64bc27c-d058-422a-987d-95e987418035" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1611" position-y="-334" size-x="0" size-x2="135" size-y="0" size-y2="143"/>
-    <entity uuid="e8b4e227-f83c-413d-9e34-56dd493985fe" bg-color="4294967295" hdr-color="4292006610" position-x="808" position-y="464" size-x="0" size-x2="138" size-y="0" size-y2="157"/>
+    <entity uuid="e8b4e227-f83c-413d-9e34-56dd493985fe" bg-color="4294967295" hdr-color="4292006610" position-x="913" position-y="440" size-x="0" size-x2="129" size-y="0" size-y2="157"/>
     <entity uuid="e8daf53a-44b8-4798-b6a3-808bff907953" bg-color="4294967295" hdr-color="4292006610" position-x="1639" position-y="321" size-x="0" size-x2="123" size-y="0" size-y2="409"/>
     <entity uuid="e980f96e-6b58-43c4-8822-a507f25a8885" bg-color="4294967295" hdr-color="4292006610" position-x="272" position-y="321" size-x="0" size-x2="98" size-y="0" size-y2="87"/>
     <entity uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1519" position-y="-122" size-x="0" size-x2="171" size-y="0" size-y2="129"/>

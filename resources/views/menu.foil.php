@@ -210,10 +210,7 @@
                 </li>
 
                 <li>
-                    <a href="<?= url( 'statistics/members' ) ?>">Member Statistics - Graphs</a>
-                </li>
-                <li>
-                    <a href="<?= url( 'statistics/list' ) ?>">Member Statistics - List</a>
+                    <a href="<?= url( 'statistics/members' ) ?>">Member Statistics</a>
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.logo', true ) ): ?>

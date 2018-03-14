@@ -22,19 +22,24 @@
 
 namespace IXP\Http\Controllers;
 
-use App, D2EM;
+use App, Auth, D2EM;
 
 use Entities\{
-    Customer         as CustomerEntity,
-    Infrastructure   as InfrastructureEntity,
-    IXP              as IXPEntity,
-    Switcher         as SwitchEntity,
-    VirtualInterface as VIEntity,
-    Vlan             as VlanEntity,
-    VlanInterface    as VlanInterfaceEntity
+    Customer            as CustomerEntity,
+    Infrastructure      as InfrastructureEntity,
+    IXP                 as IXPEntity,
+    PhysicalInterface   as PhysicalInterfaceEntity,
+    Switcher            as SwitchEntity,
+    VirtualInterface    as VirtualInterfaceEntity,
+    Vlan                as VlanEntity,
+    VlanInterface       as VlanInterfaceEntity
 };
 
+use Illuminate\Http\{
+    Request
+};
 
+use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 use Illuminate\Support\Facades\Cache;
 
@@ -75,6 +80,8 @@ class StatisticsController extends Controller
      * @param StatisticsRequest $r
      * @param string $category Category of graph to show (e.g. bits / pkts)
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws \IXP_Exception
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
     public function ixp( StatisticsRequest $r, string $category = Graph::CATEGORY_BITS )
     {
@@ -133,6 +140,7 @@ class StatisticsController extends Controller
      * @param int $switchid ID of the switch to show the graph of
      * @param string $category Category of graph to show (e.g. bits / pkts)
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws
      */
     public function switch( StatisticsRequest $r, int $switchid = 0, string $category = Graph::CATEGORY_BITS )
     {
@@ -169,6 +177,7 @@ class StatisticsController extends Controller
      * @param string $trunkid ID of the trunk to show the graph of
      * @param string $category Category of graph to show (e.g. bits / pkts)
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @throws
      */
     public function trunk( StatisticsRequest $r, string $trunkid = null, string $category = Graph::CATEGORY_BITS )
     {
@@ -212,6 +221,7 @@ class StatisticsController extends Controller
      *
      * @param StatisticsRequest $r
      * @return  View
+     * @throws
      */
     public function members( StatisticsRequest $r ) : View {
 
@@ -220,8 +230,12 @@ class StatisticsController extends Controller
 
         // do we have an infrastructure or vlan?
         $vlan = $infra = false;
-        if( $r->input( 'infra' ) && ( $infra = D2EM::getRepository(InfrastructureEntity::class) ->find($r->input('infra')) ) ) {
-            $targets = D2EM::getRepository(VIEntity::class)->getObjectsForInfrastructure($infra);
+        if( $r->input( 'infra' ) ) {
+            if( $infra = D2EM::getRepository(InfrastructureEntity::class) ->find($r->input('infra')) ) {
+                $targets = D2EM::getRepository( VirtualInterfaceEntity::class )->getObjectsForInfrastructure( $infra );
+            } else {
+                $targets = D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, true, false );
+            }
             $r->protocol = Graph::PROTOCOL_ALL;
         } else if( $r->input( 'vlan' ) && ( $vlan = D2EM::getRepository(VlanEntity::class)->find($r->input('vlan')) ) ) {
             if( !in_array( $r->protocol, Graph::PROTOCOLS_REAL ) ) {
@@ -229,18 +243,21 @@ class StatisticsController extends Controller
             }
             $targets = D2EM::getRepository( VlanInterfaceEntity::class )->getObjectsForVlan( $vlan, false, $r->protocol );
         } else {
-            $targets = D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, true, false );
-            $r->protocol = Graph::PROTOCOL_ALL;
+            $targets = [];
         }
 
         $graphs = [];
         foreach( $targets as $t ) {
             if( $infra ) {
-                $g = $grapher->virtint( $t );
+                if( $t->isGraphable() ) {
+                    $g = $grapher->virtint( $t );
+                }
             } else if( $vlan ) {
                 $g = $grapher->vlanint( $t );
             } else {
-                $g = $grapher->customer( $t );
+                if( $t->isGraphable() ) {
+                    $g = $grapher->customer( $t );
+                }
             }
 
             $g->setType(     Graph::TYPE_PNG )
@@ -248,17 +265,111 @@ class StatisticsController extends Controller
                 ->setCategory( $r->category   )
                 ->setPeriod(   $r->period     );
 
+            $g->authorise();
             $graphs[] = $g;
         }
 
         return view( 'statistics/members' )->with([
-            'graph'        => $graphs[0] ?? false,  // sample graph as all types/protocols/categories/periods will be the same
-            'graphs'       => $graphs,
-            'r'            => $r,
-            'infras'       => D2EM::getRepository( InfrastructureEntity::class )->getNames(),
-            'infra'        => $infra ?? false,
-            'vlans'       => D2EM::getRepository( VlanEntity::class )->getNames(),
-            'vlan'        => $vlan ?? false,
+            'graph'         => $graphs[0] ?? false,  // sample graph as all types/protocols/categories/periods will be the same
+            'graphs'        => $graphs,
+            'r'             => $r,
+            'infras'        => D2EM::getRepository( InfrastructureEntity::class )->getNames(),
+            'infra'         => $infra ?? false,
+            'vlans'         => D2EM::getRepository( VlanEntity::class )->getNames(),
+            'vlan'          => $vlan ?? false,
+        ]);
+    }
+
+
+    /**
+     * Display all graphs for a member
+     *
+     * @param StatisticsRequest   $r
+     * @param integer             $id ID of the member
+     * @return RedirectResponse|View
+     * @throws
+     */
+    public function member( StatisticsRequest $r, int $id = null ) {
+
+        if( $id === null && Auth::check() ) {
+            $id = Auth::user()->getCustomer()->getId();
+        }
+
+        /** @var CustomerEntity $c */
+        if( !$id || !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
+            abort( 404, 'Customer not found' );
+        }
+
+        $grapher = App::make('IXP\Services\Grapher');
+
+        // if the customer is authorised, then so too are all of their virtual and physical interfaces:
+        $grapher->customer( $c )->authorise();
+
+        if( !$c->hasInterfacesConnectedOrInQuarantine() ) {
+            AlertContainer::push(
+                "This customer has no graphable interfaces (i.e. no physical interfaces in quarantine or connected)",
+                Alert::WARNING
+            );
+            return redirect()->back();
+        }
+
+        return view( 'statistics/member' )->with([
+            "c"                     => $c,
+            "grapher"               => $grapher,
+            "category"              => Graph::processParameterCategory( $r->input( 'category' ) ),
+            "period"                => Graph::processParameterPeriod( $r->input( 'period' ) ),
+        ]);
+    }
+
+    /**
+     * Display Aggregate/LAG/Port for all periods (day/week/month/year)
+     *
+     * @param StatisticsRequest   $r
+     * @param integer   $id         ID of the member
+     * @param string    $type       type
+     * @param integer   $typeid     ID of type
+     * @return  View
+     * @throws
+     */
+    public function memberDrilldown( StatisticsRequest $r, string $type, int $typeid ) {
+
+        switch( strtolower( $type ) ) {
+            case 'agg':
+                /** @var CustomerEntity $c */
+                if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $typeid ) ) ){
+                    abort( 404, 'Unknown customer' );
+                }
+                $graph = App::make('IXP\Services\Grapher')->customer( $c );
+                break;
+
+            case 'vi':
+                /** @var VirtualInterfaceEntity $vi */
+                if( !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $typeid ) ) ) {
+                    abort( 404, 'Unknown virtual interface' );
+                }
+                $c = $vi->getCustomer();
+                $graph = App::make('IXP\Services\Grapher')->virtint( $vi );
+                break;
+
+            case 'pi':
+                /** @var PhysicalInterfaceEntity $pi */
+                if( !( $pi = D2EM::getRepository( PhysicalInterfaceEntity::class )->find( $typeid ) ) ) {
+                    abort( 404, 'Unknown physical interface' );
+                }
+                $c = $pi->getVirtualInterface()->getCustomer();
+                $graph = App::make('IXP\Services\Grapher')->physint( $pi );
+                break;
+
+            default:
+                abort( 404, 'Unknown graph type' );
+        }
+
+        $graph->setCategory( Graph::processParameterCategory( $r->input( 'category' ) ) );
+        $graph->authorise();
+
+        return view( 'statistics/member-drilldown' )->with([
+            'c'     => $c,
+            'graph' => $graph,
         ]);
     }
 }

@@ -2,9 +2,9 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
+use Countries;
+use Doctrine\Common\Collections\ArrayCollection;
 
-use Webpatser\Countries\CountriesFacade as CountriesFacade;
 
 /**
  * CompanyBillingDetail
@@ -92,7 +92,7 @@ class CompanyBillingDetail
     protected $id;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var Customer
      */
     protected $Customer;
 
@@ -118,7 +118,7 @@ class CompanyBillingDetail
     
     public function __construct()
     {
-        $this->Customer = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->Customer = new ArrayCollection();
     }
 
     /**
@@ -267,7 +267,7 @@ class CompanyBillingDetail
     public function getBillingCountryName()
     {
         $index = null;
-        foreach( CountriesFacade::getList() as $i => $value ){
+        foreach( Countries::getList() as $i => $value ){
             if( $value[ 'iso_3166_2' ] == $this->getBillingCountry() ){
                 $index = $i;
 
@@ -277,7 +277,7 @@ class CompanyBillingDetail
         if( $index == null ){
             return null;
         } else{
-            return CountriesFacade::getList()[ $index ][ 'name' ];
+            return Countries::getList()[ $index ][ 'name' ];
         }
 
     }
@@ -387,29 +387,19 @@ class CompanyBillingDetail
     /**
      * Add Customer
      *
-     * @param Entities\Customer $customer
+     * @param Customer $customer
      * @return CompanyBillingDetail
      */
-    public function addCustomer(\Entities\Customer $customer)
+    public function setCustomer( Customer $customer)
     {
-        $this->Customer[] = $customer;
+        $this->Customer = $customer;
         return $this;
-    }
-
-    /**
-     * Remove Customer
-     *
-     * @param Entities\Customer $customer
-     */
-    public function removeCustomer(\Entities\Customer $customer)
-    {
-        $this->Customer->removeElement($customer);
     }
 
     /**
      * Get Customer
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Customer
      */
     public function getCustomer()
     {

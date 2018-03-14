@@ -185,5 +185,15 @@ Route::group( [ 'prefix' => 'nagios' ], function() {
     Route::post( 'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}/{template}', 'NagiosController@birdseyeBgpSessions');
 });
 
+Route::group( [ 'namespace' => 'Customer\Note', 'prefix' => 'customer-note' ], function() {
+
+    Route::get(    'notify-toggle/customer/{id}', 'CustomerNotesController@notifyToggleCustomer' )->name( 'customer-notes@notify-toggle-customer');
+    Route::get(    'notify-toggle/note/{id}',     'CustomerNotesController@notifyToggleNote'     )->name( 'customer-notes@notify-toggle-note');
+
+    Route::post(    'add',                             'CustomerNotesController@add'                    )->name( 'customer-notes@add');
+    Route::post(    'delete/{id}',                     'CustomerNotesController@delete'                 )->name( 'customer-notes@delete');
+
+});
+
 
 

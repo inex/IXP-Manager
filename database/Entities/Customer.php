@@ -1169,7 +1169,7 @@ class Customer
     /**
      * Get Users
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|User[]
      */
     public function getUsers()
     {
@@ -1483,6 +1483,29 @@ class Customer
 
         return false;
     }
+
+    /**
+     * Does the customer have any interfaces in quarantine/connected?
+     *
+     * I.e. does the customer have graphable interfaces?
+     *
+     * @return bool
+     */
+    public function hasInterfacesConnectedOrInQuarantine(): bool
+    {
+        foreach( $this->getVirtualInterfaces() as $vi ) {
+            foreach( $vi->getPhysicalInterfaces() as $pi ) {
+                if( $pi->statusIsConnectedOrQuarantine() ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+
+
 
 
     /**
@@ -2380,21 +2403,12 @@ class Customer
     /**
      * Get patchPanelPorts
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|PatchPanelPort[]
      */
     public function getPatchPanelPorts(){
         return $this->patchPanelPorts;
     }
-
-    /**
-     * Turn the database integer representation of the type into text as
-     * defined in the self::$CUST_TYPES_TEXT array (or 'Unknown')
-     * @return string
-     */
-    public function resolveType(): string {
-        return self::$CUST_TYPES_TEXT[ $this->getType() ] ?? 'Unknown';
-    }
-
+    
     /**
      * Turn the database integer representation of the status into text as
      * defined in the self::$CUST_STATUS_TEXT array (or 'Unknown')
@@ -2403,4 +2417,21 @@ class Customer
     public function resolveStatus(): string {
         return self::$CUST_STATUS_TEXT[ $this->getStatus() ] ?? 'Unknown';
     }
+
+
+    /**
+     * Is this customer graphable?
+     *
+     * @return bool
+     */
+    public function isGraphable(): bool {
+        foreach( $this->getVirtualInterfaces() as $vi ) {
+            if( $vi->isGraphable() ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 }

@@ -1258,6 +1258,17 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function hasInterfacesConnectedOrInQuarantine(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasInterfacesConnectedOrInQuarantine', []);
+
+        return parent::hasInterfacesConnectedOrInQuarantine();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addRSPrefixes(\Entities\RSPrefix $rSPrefixes)
     {
 
@@ -1973,23 +1984,23 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function resolveType(): string
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveType', []);
-
-        return parent::resolveType();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function resolveStatus(): string
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveStatus', []);
 
         return parent::resolveStatus();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isGraphable(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isGraphable', []);
+
+        return parent::isGraphable();
     }
 
 }

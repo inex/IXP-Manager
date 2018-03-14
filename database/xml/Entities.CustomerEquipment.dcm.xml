@@ -8,7 +8,7 @@
     <field name="descr" type="string" length="255" nullable="true"/>
     <many-to-one field="Customer" target-entity="Entities\Customer" inversed-by="CustomerEquipment">
       <join-columns>
-        <join-column name="custid" referenced-column-name="id"/>
+        <join-column name="custid" referenced-column-name="id" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
     <many-to-one field="Cabinet" target-entity="Entities\Cabinet" inversed-by="CustomerEquipment">

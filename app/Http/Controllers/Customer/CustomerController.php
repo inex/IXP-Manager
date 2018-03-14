@@ -23,18 +23,18 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use App, Auth, Countries, D2EM, DateTime, Exception, Former, Mail, Redirect;
+use App, Auth, Cache, Countries, D2EM, DateTime, Former, Mail, Redirect;
+
+use IXP\Events\Customer\BillingDetailsChanged as CustomerBillingDetailsChangedEvent;
 
 use IXP\Http\Controllers\Controller;
 
 use Illuminate\Http\{
     RedirectResponse,
-    JsonResponse,
     Request
 };
 
 use Illuminate\View\View;
-
 
 use Entities\{
     CompanyBillingDetail    as CompanyBillingDetailEntity,
@@ -42,14 +42,13 @@ use Entities\{
     Customer                as CustomerEntity,
     CustomerNote            as CustomerNoteEntity,
     IRRDBConfig             as IRRDBConfigEntity,
-    IXP                     as IXPEntity,
     NetworkInfo             as NetworkInfoEntity,
-    PhysicalInterface       as PhysicalInterfaceEntity,
     RSPrefix                as RSPrefixEntity,
     User                    as UserEntity
 };
 
-use IXP\Mail\Customer\Email as EmailCustomer;
+
+use IXP\Mail\Customer\WelcomeEmail;
 
 use IXP\Http\Requests\Customer\{
     Store                   as CustomerRequest,
@@ -61,10 +60,6 @@ use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
-
-
-
-
 
 /**
  * Customer Controller
@@ -177,67 +172,68 @@ class CustomerController extends Controller
     /**
      * Add or edit a customer (set all the data needed)
      *
-     * @param   CustomerRequest $request instance of the current HTTP request
+     * @param   CustomerRequest $r instance of the current HTTP request
      *
      * @return  RedirectResponse
-     * @throws
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
      */
-    public function store( CustomerRequest $request ): RedirectResponse {
+    public function store( CustomerRequest $r ): RedirectResponse
+    {
 
-        //dd($request);
+        $isEdit = $r->input( 'id' ) ? true : false;
 
-        $isEdit = $request->input( 'id' ) ? true : false;
-        /** @var CustomerEntity $cust */
-        if( $isEdit && $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) {
-            if( !$cust ) {
-                abort(404, 'Unknown customer');
+        /** @var CustomerEntity $c */
+        if( $isEdit && $c = D2EM::getRepository( CustomerEntity::class )->find( $r->input( 'id' ) ) ) {
+            if( !$c ) {
+                abort(404, 'Customer not found' );
             }
         } else {
-            $cust = new CustomerEntity;
-            D2EM::persist( $cust );
+            $c = new CustomerEntity;
+            D2EM::persist( $c );
         }
 
 
-        $cust->setName(                 $request->input( 'name'                 ) );
-        $cust->setType(                 $request->input( 'type'                 ) );
-        $cust->setShortname(            $request->input( 'shortname'            ) );
-        $cust->setCorpwww(              $request->input( 'corpwww'              ) );
-        $cust->setDatejoin(             $request->input( 'datejoin'             )  ? new \DateTime( $request->input( 'datejoin'    ) ) : null );
-        $cust->setDateleave(            $request->input( 'dateleave'            )  ? new \DateTime( $request->input( 'dateleave'   ) ) : null );
-        $cust->setStatus(               $request->input( 'status'               ) );
-        $cust->setMD5Support(           $request->input( 'md5support'           ) );
-        $cust->setAbbreviatedName(      $request->input( 'abbreviatedName'      ) );
+        $c->setName(                 $r->input( 'name'                 ) );
+        $c->setType(                 $r->input( 'type'                 ) );
+        $c->setShortname(            $r->input( 'shortname'            ) );
+        $c->setCorpwww(              $r->input( 'corpwww'              ) );
+        $c->setDatejoin(             $r->input( 'datejoin'             )  ? new \DateTime( $r->input( 'datejoin'    ) ) : null );
+        $c->setDateleave(            $r->input( 'dateleave'            )  ? new \DateTime( $r->input( 'dateleave'   ) ) : null );
+        $c->setStatus(               $r->input( 'status'               ) );
+        $c->setMD5Support(           $r->input( 'md5support'           ) );
+        $c->setAbbreviatedName(      $r->input( 'abbreviatedName'      ) );
 
 
-        $cust->setAutsys(               $request->input( 'autsys'               ) );
-        $cust->setMaxprefixes(          $request->input( 'maxprefixes'          ) );
-        $cust->setPeeringemail(         $request->input( 'peeringemail'         ) );
-        $cust->setPeeringmacro(         $request->input( 'peeringmacro'         ) );
-        $cust->setPeeringmacrov6(       $request->input( 'peeringmacrov6'       ) );
-        $cust->setPeeringpolicy(        $request->input( 'peeringpolicy'        ) );
-        $cust->setActivepeeringmatrix(  $request->input( 'activepeeringmatrix'  ) );
+        $c->setAutsys(               $r->input( 'autsys'               ) );
+        $c->setMaxprefixes(          $r->input( 'maxprefixes'          ) );
+        $c->setPeeringemail(         $r->input( 'peeringemail'         ) );
+        $c->setPeeringmacro(         $r->input( 'peeringmacro'         ) );
+        $c->setPeeringmacrov6(       $r->input( 'peeringmacrov6'       ) );
+        $c->setPeeringpolicy(        $r->input( 'peeringpolicy'        ) );
+        $c->setActivepeeringmatrix(  $r->input( 'activepeeringmatrix'  ) );
 
 
-        $cust->setNocphone(             $request->input( 'nocphone'             ) );
-        $cust->setNoc24hphone(          $request->input( 'noc24hphone'          ) );
-        $cust->setNocfax(               $request->input( 'nocfax'               ) );
-        $cust->setNocemail(             $request->input( 'nocemail'             ) );
-        $cust->setNochours(             $request->input( 'nochours'             ) );
-        $cust->setNocwww(               $request->input( 'nocwww'               ) );
+        $c->setNocphone(             $r->input( 'nocphone'             ) );
+        $c->setNoc24hphone(          $r->input( 'noc24hphone'          ) );
+        $c->setNocemail(             $r->input( 'nocemail'             ) );
+        $c->setNochours(             $r->input( 'nochours'             ) );
+        $c->setNocwww(               $r->input( 'nocwww'               ) );
 
-        $cust->setIsReseller(           $request->input( 'isReseller'           ) ?? false  );
+        $c->setIsReseller(           $r->input( 'isReseller'           ) ?? false  );
 
-        if( !$this->setReseller( $request, $cust ) ) {
-            return Redirect::back()->withErrors();
+        if( $r->input( 'isResold' ) ) {
+            $c->setReseller( D2EM::getRepository( CustomerEntity::class )->find( $r->input( "reseller" ) ) );
+        } else {
+            $c->setReseller( null );
         }
-
 
         if( $isEdit ) {
-            $cust->setLastupdated( new DateTime() );
-            $cust->setLastupdatedby( Auth::getUser()->getId() );
+            $c->setLastupdated( new DateTime() );
+            $c->setLastupdatedby( Auth::getUser()->getId() );
         } else {
-            $cust->setCreated( new DateTime() );
-            $cust->setCreator( Auth::getUser()->getId() );
+            $c->setCreated( new DateTime() );
+            $c->setCreator( Auth::getUser()->getId() );
 
             $bdetail = new CompanyBillingDetailEntity;
             D2EM::persist( $bdetail );
@@ -246,429 +242,246 @@ class CustomerController extends Controller
             $rdetail = new CompanyRegisteredDetailEntity;
             D2EM::persist( $rdetail );
 
-            $cust->setBillingDetails( $bdetail );
-            $cust->setRegistrationDetails( $rdetail );
-            $cust->setIsReseller( 0 );
+            $c->setBillingDetails( $bdetail );
+            $c->setRegistrationDetails( $rdetail );
         }
 
-        if( $request->input( 'irrdb' ) ) {
-            $cust->setIRRDB( D2EM::getRepository( IRRDBConfigEntity::class)->find( $request->input( 'irrdb' ) ) ) ;
+        if( $r->input( 'irrdb' ) ) {
+            $c->setIRRDB( D2EM::getRepository( IRRDBConfigEntity::class)->find( $r->input( 'irrdb' ) ) ) ;
         } else {
-            $cust->setIRRDB( null );
-        }
-
-        if( !$isEdit ) {
-            $cust->addIXP( D2EM::getRepository( IXPEntity::class )->find( $request->input( 'ixp' ) ) );
+            $c->setIRRDB( null );
         }
 
         D2EM::flush();
+        Cache::forget( 'admin_home_customers' );
 
         AlertContainer::push( 'Customer successfully ' . ( $isEdit ? ' edited.' : ' added.' ), Alert::SUCCESS );
 
         if( $isEdit ){
-            return Redirect::to( route( "customer@overview" , [ "id" => $cust->getId() ] ) );
+            return Redirect::to( route( "customer@overview" , [ "id" => $c->getId() ] ) );
         } else {
-            return Redirect::to( route( "customer@billingRegistration" , [ "id" => $cust->getId() ] ) );
+            return Redirect::to( route( "customer@billingRegistration" , [ "id" => $c->getId() ] ) );
         }
 
     }
 
-    /**
-     * Sets reseller to customer from form
-     *
-     * @param StoreCustomerRequest     $request    instance of the current HTTP request
-     * @param CustomerEntity    $cust
-     *
-     * @return bool If false, the form is not processed
-     */
-    private function setReseller( $request, $cust ){
-        $isOK = true;
-
-        if( !$this->resellerMode() )
-            $isOK = true;
-
-        if( $request->input( 'isResold' ) ) {
-            if( !( $reseller = D2EM::getRepository( CustomerEntity::class )->find( $request->input( "reseller" ) ) ) ) {
-                AlertContainer::push( 'Please select a reseller', Alert::DANGER );
-                $isOK = false;
-            }
-
-            if( $cust->getReseller() && $cust->getReseller()->getId() != $request->input( 'reseller' ) ) {
-                foreach( $cust->getVirtualInterfaces() as $viInt ) {
-                    foreach( $viInt->getPhysicalInterfaces() as $pi ) {
-                        if( $pi->getFanoutPhysicalInterface() && $pi->getFanoutPhysicalInterface()->getVirtualInterface()->getCustomer()->getId() == $cust->getReseller()->getId() ) {
-                            AlertContainer::push( 'You can not change the reseller because there are still fanout ports from the current reseller linked to this customer\'s physical interfaces. You need to reassign these first.', Alert::DANGER );
-                            $isOK = false;
-                        }
-                    }
-                }
-            }
-
-            $cust->setReseller( $reseller );
-        }
-        else if( $cust->getReseller() ) {
-            foreach( $cust->getVirtualInterfaces() as $vi ) {
-                foreach( $vi->getPhysicalInterfaces() as $pi ) {
-                    if( $pi->getFanoutPhysicalInterface() && $pi->getFanoutPhysicalInterface()->getVirtualInterface()->getCustomer()->getId() == $cust->getReseller()->getId() ) {
-                        AlertContainer::push( 'You can not change this resold customer state because there are still physical interface(s) of this customer linked to fanout ports or the current reseller. You need to reassign these first', Alert::DANGER );
-                        $isOK = false;
-                    }
-                }
-            }
-            $cust->setReseller( null );
-        }
-
-        if( !$request->input( 'isReseller' ) && $cust->getIsReseller() && count( $cust->getResoldCustomers() ) ) {
-            AlertContainer::push( 'You can not change the reseller state because this customer still has resold customers. You need to reassign these first.', Alert::DANGER );
-            $isOK = false;
-        }
-
-        return $isOK;
-    }
 
     /**
      * Display the billing registration form a customer
      *
      * @param int $id    The Customer ID
-     *
      * @return View
      */
-    public function billingRegistration( int $id = null ): View {
+    public function editBillingAndRegDetails( int $id = null ): View {
 
-        $cust = false; /** @var CustomerEntity $cust */
-        if( $id and !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
-            abort(404);
+        $c = false; /** @var CustomerEntity $c */
+        if( !$id || !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
+            abort( 404, 'Customer not found' );
         }
 
-        $billingDetails         = $cust->getBillingDetails();
-        $registrationDetails    = $cust->getRegistrationDetails();
-        $billingNotify = config( 'ixp_tools.billing_updates_notify' );
+        $cbd = $c->getBillingDetails();
+        $crd = $c->getRegistrationDetails();
 
-        if( $cust ) {
-            $dataBillingDetail = [];
 
-            if( ( !isset( $billingNotify ) || !$billingNotify  ) || !$this->resellerMode() || !$cust->isResoldCustomer() ){
-                $dataBillingDetail = [
-                    'billingContactName'        => $billingDetails->getBillingContactName(),
-                    'billingFrequency'          => $billingDetails->getBillingFrequency(),
-                    'billingAddress1'           => $billingDetails->getBillingAddress1(),
-                    'billingAddress2'           => $billingDetails->getBillingAddress2(),
-                    'billingAddress3'           => $billingDetails->getBillingAddress3(),
-                    'billingTownCity'           => $billingDetails->getBillingTownCity(),
-                    'billingPostcode'           => $billingDetails->getBillingPostcode(),
-                    'billingCountry'            => $billingDetails->getBillingCountry(),
-                    'billingEmail'              => $billingDetails->getBillingEmail(),
-                    'billingTelephone'          => $billingDetails->getBillingTelephone(),
-                    'purchaseOrderRequired'     => $billingDetails->getPurchaseOrderRequired() ? 1 : 0,
-                    'invoiceMethod'             => $billingDetails->getInvoiceMethod(),
-                    'invoiceEmail'              => $billingDetails->getInvoiceEmail(),
-                    'vatRate'                   => $billingDetails->getVatRate(),
-                    'vatNumber'                 => $billingDetails->getVatNumber(),
-                ];
-            }
-
-            $dataRegistrationDetail = [
-                'registeredName'            => $registrationDetails->getRegisteredName(),
-                'companyNumber'             => $registrationDetails->getCompanyNumber(),
-                'jurisdiction'              => $registrationDetails->getJurisdiction(),
-                'address1'                  => $registrationDetails->getAddress1(),
-                'address2'                  => $registrationDetails->getAddress2(),
-                'address3'                  => $registrationDetails->getAddress3(),
-                'townCity'                  => $registrationDetails->getTownCity(),
-                'postcode'                  => $registrationDetails->getPostcode(),
-                'country'                   => $registrationDetails->getCountry(),
+        $dataBillingDetail = [];
+        if( !( $this->resellerMode() && $c->isResoldCustomer() ) ){
+            $dataBillingDetail = [
+                'billingContactName'        => $cbd->getBillingContactName(),
+                'billingFrequency'          => $cbd->getBillingFrequency(),
+                'billingAddress1'           => $cbd->getBillingAddress1(),
+                'billingAddress2'           => $cbd->getBillingAddress2(),
+                'billingAddress3'           => $cbd->getBillingAddress3(),
+                'billingTownCity'           => $cbd->getBillingTownCity(),
+                'billingPostcode'           => $cbd->getBillingPostcode(),
+                'billingCountry'            => $cbd->getBillingCountry(),
+                'billingEmail'              => $cbd->getBillingEmail(),
+                'billingTelephone'          => $cbd->getBillingTelephone(),
+                'purchaseOrderRequired'     => $cbd->getPurchaseOrderRequired() ? 1 : 0,
+                'invoiceMethod'             => $cbd->getInvoiceMethod(),
+                'invoiceEmail'              => $cbd->getInvoiceEmail(),
+                'vatRate'                   => $cbd->getVatRate(),
+                'vatNumber'                 => $cbd->getVatNumber(),
             ];
-
-            Former::populate( array_merge( $dataRegistrationDetail, $dataBillingDetail ) );
         }
+
+        $dataRegistrationDetail = [
+            'registeredName'            => $crd->getRegisteredName(),
+            'companyNumber'             => $crd->getCompanyNumber(),
+            'jurisdiction'              => $crd->getJurisdiction(),
+            'address1'                  => $crd->getAddress1(),
+            'address2'                  => $crd->getAddress2(),
+            'address3'                  => $crd->getAddress3(),
+            'townCity'                  => $crd->getTownCity(),
+            'postcode'                  => $crd->getPostcode(),
+            'country'                   => $crd->getCountry(),
+        ];
+
+        Former::populate( array_merge( $dataRegistrationDetail, $dataBillingDetail ) );
 
         return view( 'customer/billing-registration' )->with([
-            'cust'                          => $cust,
+            'c'                             => $c,
             'juridictions'                  => D2EM::getRepository( CompanyRegisteredDetailEntity::class )->getJuridictionsAsArray(),
-            'billingNotify'                 => $billingNotify,
-            'resellerMode'                  => $this->resellerMode(),
             'countries'                     => Countries::getList('name' )
         ]);
     }
 
 
     /**
-     * Add or edit a customer billing information
+     * Add or edit a customer's registration / billing information
      *
-     * email notification
+     * Also sends an email notification if so configured.
      *
      * @param   BillingInformationRequest $request instance of the current HTTP request
      *
      * @return  RedirectResponse
      * @throws
      */
-    public function storeBillingInformation( BillingInformationRequest $request ): RedirectResponse {
-        /** @var CustomerEntity $cust */
-        if( $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) {
-            if( !$cust ) {
+    public function storeBillingAndRegDetails( BillingInformationRequest $request ): RedirectResponse 
+    {
+        /** @var CustomerEntity $c */
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) ) {
                 abort(404, 'Unknown customer');
-            }
         }
 
-        $oldBillingDetail                           = clone $cust->getBillingDetails();
-        $billingDetails                             = $cust->getBillingDetails();
-        $registrationDetails                        = $cust->getRegistrationDetails();
+        $ocbd = clone $c->getBillingDetails();
+        $cbd  = $c->getBillingDetails();
+        $crd  = $c->getRegistrationDetails();
 
-        $registrationDetails->setRegisteredName(    $request->input( 'registeredName'       ) );
-        $registrationDetails->setCompanyNumber(     $request->input( 'companyNumber'        ) );
-        $registrationDetails->setJurisdiction(      $request->input( 'jurisdiction'         ) );
-        $registrationDetails->setAddress1(          $request->input( 'address1'             ) );
-        $registrationDetails->setAddress2(          $request->input( 'address2'             ) );
-        $registrationDetails->setAddress3(          $request->input( 'address3'             ) );
-        $registrationDetails->setTownCity(          $request->input( 'townCity'             ) );
-        $registrationDetails->setPostcode(          $request->input( 'postcode'             ) );
-        $registrationDetails->setCountry(           $request->input( 'country'          ) );
+        $crd->setRegisteredName(    $request->input( 'registeredName'       ) );
+        $crd->setCompanyNumber(     $request->input( 'companyNumber'        ) );
+        $crd->setJurisdiction(      $request->input( 'jurisdiction'         ) );
+        $crd->setAddress1(          $request->input( 'address1'             ) );
+        $crd->setAddress2(          $request->input( 'address2'             ) );
+        $crd->setAddress3(          $request->input( 'address3'             ) );
+        $crd->setTownCity(          $request->input( 'townCity'             ) );
+        $crd->setPostcode(          $request->input( 'postcode'             ) );
+        $crd->setCountry(           $request->input( 'country'              ) );
 
-        $billingDetails->setBillingContactName(     $request->input( 'billingContactName'   ) );
-        $billingDetails->setBillingFrequency(       $request->input( 'billingFrequency'     ) );
-        $billingDetails->setBillingAddress1(        $request->input( 'billingAddress1'      ) );
-        $billingDetails->setBillingAddress2(        $request->input( 'billingAddress2'      ) );
-        $billingDetails->setBillingAddress3(        $request->input( 'billingAddress3'      ) );
-        $billingDetails->setBillingTownCity(        $request->input( 'billingTownCity'      ) );
-        $billingDetails->setBillingPostcode(        $request->input( 'billingPostcode'      ) );
-        $billingDetails->setBillingCountry(         $request->input( 'billingCountry'       ) );
-        $billingDetails->setBillingEmail(           $request->input( 'billingEmail'         ) );
-        $billingDetails->setBillingTelephone(       $request->input( 'billingTelephone'     ) );
-        $billingDetails->setPurchaseOrderRequired(  $request->input( 'purchaseOrderRequired') ?? 0 );
-        $billingDetails->setInvoiceMethod(          $request->input( 'invoiceMethod'        ) );
-        $billingDetails->setInvoiceEmail(           $request->input( 'invoiceEmail'         ) );
-        $billingDetails->setVatRate(                $request->input( 'vatRate'              ) );
-        $billingDetails->setVatNumber(              $request->input( 'vatNumber'            ) );
+        $cbd->setBillingContactName(     $request->input( 'billingContactName'   ) );
+        $cbd->setBillingFrequency(       $request->input( 'billingFrequency'     ) );
+        $cbd->setBillingAddress1(        $request->input( 'billingAddress1'      ) );
+        $cbd->setBillingAddress2(        $request->input( 'billingAddress2'      ) );
+        $cbd->setBillingAddress3(        $request->input( 'billingAddress3'      ) );
+        $cbd->setBillingTownCity(        $request->input( 'billingTownCity'      ) );
+        $cbd->setBillingPostcode(        $request->input( 'billingPostcode'      ) );
+        $cbd->setBillingCountry(         $request->input( 'billingCountry'       ) );
+        $cbd->setBillingEmail(           $request->input( 'billingEmail'         ) );
+        $cbd->setBillingTelephone(       $request->input( 'billingTelephone'     ) );
+        $cbd->setPurchaseOrderRequired(  $request->input( 'purchaseOrderRequired') ?? 0 );
+        $cbd->setInvoiceMethod(          $request->input( 'invoiceMethod'        ) );
+        $cbd->setInvoiceEmail(           $request->input( 'invoiceEmail'         ) );
+        $cbd->setVatRate(                $request->input( 'vatRate'              ) );
+        $cbd->setVatNumber(              $request->input( 'vatNumber'            ) );
 
-        D2EM::flush( $billingDetails );
-        D2EM::flush( $registrationDetails );
+        D2EM::flush();
 
-        if( config( 'ixp_tools.billing_updates_notify', false ) && !$cust->getReseller() ) {
-            // send notification email
-            $mailable = new EmailCustomer( $cust );
-            try {
-                $mailable->subject( config('identity.sitename') . " - ('Billing Details Change Notification')" );
-                $mailable->from( config('identity.email'), config('identity.name') );
-                $mailable->to( config('ixp_tools.billing_updates_notify'), config('identity.sitename') . ' - Accounts' );
-                $mailable->view( "customer/emails/billing-details" )->with( ['billingDetail' => $billingDetails, 'oldDetails' => $oldBillingDetail] );
-                Mail::send( $mailable );
-
-                if( Auth::getUser()->getPrivs() == UserEntity::AUTH_SUPERUSER ) {
-                    AlertContainer::push( "Notification of updated billing details has been sent to " . config('ixp_tools.billing_updates_notify'), Alert::SUCCESS );
-                }
-            } catch( Exception $e ) {
-                AlertContainer::push( "Could not sent notification of updated billing details to " . config('ixp_tools.billing_updates_notify')
-                    . ". Check your email settings.", Alert::DANGER );
-            }
-
-        }
-
-        return Redirect::to( route( "customer@overview" , [ "id" => $cust->getId() , "tab" => "details" ]  ) );
-
+        event( new CustomerBillingDetailsChangedEvent( $ocbd, $cbd ) );
+        return Redirect::to( route( "customer@overview" , [ "id" => $c->getId() , "tab" => "details" ]  ) );
     }
 
     /**
      * Display the list of all the Customers
      *
      * @return  View
-     * @throws
      */
-    public function details( ): View {
-        $ixp            = D2EM::getRepository( IXPEntity::class )->getDefault();
-        $custs          = D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, false, false, false);
+    public function details(): View {
+        $custs          = D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, true, false );
 
         return view( 'customer/details' )->with([
-            'ixp'                   => $ixp,
             'custs'                 => $custs,
+            'associates'            => false,
         ]);
     }
 
     /**
-     * Display all the informations for a customer
+     * Display the list of all asscociate customers
+     *
+     * @return  View
+     */
+    public function associates(): View {
+        $custs          = D2EM::getRepository( CustomerEntity::class )->getCurrentAssociate( false );
+
+        return view( 'customer/details' )->with([
+            'custs'                 => $custs,
+            'associates'            => true,
+        ]);
+    }
+
+    /**
+     * Display all the information for a customer
      *
      * @param int $id ID of the customer
      *
      * @return  View
      */
-    public function detail( int $id = null ): View {
-        if( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
+    public function detail( int $id ): View {
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
             abort( 404);
         }
 
         return view( 'customer/detail' )->with([
-            'as112UiActive'         => $this->as112UiActive(),
-            'cust'                  => $cust,
-            'netInfo'               => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray()
+            'c'       => $c,
+            'netinfo' => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray()
         ]);
     }
 
-    /**
-     * Load a customer from the database with the given ID (or ID in request)
-     *
-     * @param int $id The customer ID
-
-     * @return \Entities\Customer The customer object
-     */
-    protected function loadCustomer( int $id = null ){
-        if( Auth::getUser()->isSuperUser() ) {
-            if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
-                abort( 404);
-            }
-        } else {
-            $c = Auth::getUser()->getCustomer();
-        }
-
-        return $c;
-    }
-
-    public function unreadNotes(){
-        $lastReads = Auth::getUser()->getAssocPreference( 'customer-notes' )[0];
-
-        $latestNotes = [];
-
-        foreach( D2EM::getRepository( CustomerNoteEntity::class )->getLatestUpdate() as $ln ) {
-
-            if( ( !isset( $lastReads['read_upto'] ) || $lastReads['read_upto'] < strtotime( $ln['latest']  ) )
-                && ( !isset( $lastReads[ $ln['cid'] ] ) || $lastReads[ $ln['cid'] ]['last_read'] < strtotime( $ln['latest'] ) ) )
-                $latestNotes[] = $ln;
-
-        }
-
-        return view( 'customer/unread-notes' )->with([
-            'notes'                     => $latestNotes,
-            'c'                         => Auth::getUser()->getCustomer()
-        ]);
-    }
 
     /**
      * Display the customer overview
      *
-     * @param   int         $id         Id of the customer
-     * @param   string      $tab        Tab from the overview selected
-     *
+     * @param   int $id Id of the customer
+     * @param   string $tab Tab from the overview selected
      * @return  View
-     * @throws
+     * @throws  \IXP_Exception
      */
-    public function overview(  $id = null, string $tab = null ) : View {
-        $netinfo            = D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray();
-        $c                  = $this->loadCustomer( $id );
-        $isSuperUser        = Auth::getUser()->isSuperUser();
+    public function overview( $id = null, $tab = null ) : View {
 
-        // is this user watching all notes for this customer?
-        $coNotifyAll = Auth::getUser()->getPreference( "customer-notes.{$c->getId()}.notify" ) ? true : false;
+        /** @var CustomerEntity $c */
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
+            abort(404, 'Unknown customer');
+        }
 
-        // what specific notes is this cusomer watching?
-        $coNotify = Auth::getUser()->getAssocPreference( "customer-notes.watching" ) ? Auth::getUser()->getAssocPreference( "customer-notes.watching" )[0] : [];
-
-
-        // load customer notes and the amount of unread notes for this user and customer
-        // ASK FO THAT $this->_fetchCustomerNotes( $cust->getId() );
-
-        $rsRoutes = $c->isRouteServerClient() ? D2EM::getRepository( RSPrefixEntity::class )->aggregateRouteSummariesForCustomer( $c->getId() ) : false;
-
-        $crossConnects = D2EM::getRepository( CustomerEntity::class )->getCrossConnects( $c->getId() );
-
-        // does the customer have any graphs?
-        $hasAggregateGraph = false;
-        $aggregateGraph = false;
         $grapher = App::make('IXP\Services\Grapher' );
-        if( $c->getType() != CustomerEntity::TYPE_ASSOCIATE && !$c->hasLeft() ) {
-            foreach( $c->getVirtualInterfaces() as $vi ) {
-                foreach( $vi->getPhysicalInterfaces() as $pi ) {
-                    if( $pi->getStatus() == PhysicalInterfaceEntity::STATUS_CONNECTED ) {
-                        $hasAggregateGraph = true;
-                        $aggregateGraph = $grapher->customer( $c );
-                        break;
-                    }
-                }
-            }
-        }
 
-        //is customer RS or AS112 client
-        $rsclient = false;
-        $as112client   = false;
-        foreach( $c->getVirtualInterfaces() as $vi ) {
-            foreach( $vi->getVlanInterfaces() as $vli ) {
-                if( $vli->getRsclient() ){
-                    $rsclient = true;
-                }
-
-                if( $vli->getAs112client() ){
-                    $as112client = true;
-                }
-            }
-        }
-
-        $arrayNotes = $this->fetchCustomerNotes( $c->getId() );
+        // get customer's notes
+        $cns = D2EM::getRepository( CustomerNoteEntity::class )->fetchForCustomer( $c );
 
         return view( 'customer/overview' )->with([
             'c'                         => $c,
             'customers'                 => D2EM::getRepository( CustomerEntity::class )->getNames( true ),
-            'netInfo'                   => $netinfo,
-            'isSuperUser'               => $isSuperUser,
-            'coNotifyAll'               => $coNotifyAll,
-            'coNotify'                  => $coNotify,
-            'rsRoutes'                  => $rsRoutes,
-            'crossConnects'             => $crossConnects,
-            'hasAggregateGraph'         => $hasAggregateGraph,
-            'aggregateGraph'            => $aggregateGraph,
+            'netInfo'                   => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray(),
+            'isSuperUser'               => Auth::getUser()->isSuperUser(),
+
+            // is this user watching all notes for this customer?
+            'coNotifyAll'               => Auth::getUser()->getPreference( "customer-notes.{$c->getId()}.notify" ) ? true : false,
+
+            // what specific notes is this user watching?
+            'coNotify'                  => Auth::getUser()->getAssocPreference( "customer-notes.watching" ) ? Auth::getUser()->getAssocPreference( "customer-notes.watching" )[0] : [],
+
+            'rsRoutes'                  => $c->isRouteServerClient() ? D2EM::getRepository( RSPrefixEntity::class )->aggregateRouteSummariesForCustomer( $c->getId() ) : false,
+
+            'crossConnects'             => D2EM::getRepository( CustomerEntity::class )->getCrossConnects( $c->getId() ),
+            'aggregateGraph'            => $c->isGraphable() ? $grapher->customer( $c ) : false,
             'grapher'                   => $grapher,
-            'rsclient'                  => $rsclient,
-            'as112client'               => $as112client,
-            'logoManagementDisabled'    => $this->logoManagementDisabled(),
+            'rsclient'                  => $c->isRouteServerClient(),
+            'as112client'               => $c->isAS112Client(),
             'resellerMode'              => $this->resellerMode(),
             'as112UiActive'             => $this->as112UiActive(),
-            'resellerResoldBilling'     => config('ixp.reseller.reseller'),
             'countries'                 => Countries::getList('name' ),
             'tab'                       => strtolower( $tab ),
-            'notesInfo'                 => $arrayNotes
+            'notes'                     => $cns,
+            'notesInfo'                 => D2EM::getRepository( CustomerNoteEntity::class )->analyseForUser( $cns, $c, Auth::user() )
         ]);
-    }
-
-    /**
-     * Load a customer's notes and calculate the amount of unread / updated notes
-     * for the logged in user and the given customer
-     *
-     * Used by:
-     * @see CustomerController
-     * @see DashboardController
-     *
-     * @param int       $custid
-     * @param boolean   $publicOnly
-     *
-     * @return array
-     */
-    protected function fetchCustomerNotes( $custid, $publicOnly = false ){
-        $custNotes      = D2EM::getRepository( CustomerNoteEntity::class )->ordered( $custid, $publicOnly );
-        $unreadNotes    = 0;
-        $rut            = Auth::getUser()->getPreference( "customer-notes.read_upto" );
-        $lastRead       = Auth::getUser()->getPreference( "customer-notes.{$custid}.last_read" );
-
-        if( $lastRead || $rut ) {
-            foreach( $custNotes as $cn ) {
-                /** @var CustomerNoteEntity $cn */
-                $time = $cn->getUpdated()->format( "U" );
-                if( ( !$rut || $rut < $time ) && ( !$lastRead || $lastRead < $time ) ){
-                    $unreadNotes++;
-                }
-            }
-        } else {
-            $unreadNotes = count( $custNotes );
-        }
-
-        return [ "custNotes" => $custNotes, "notesReadUpto" => $rut , "notesLastRead" => $lastRead, "unreadNotes" => $unreadNotes];
-
     }
 
     /**
      * Display the Welcome Email form
      *
-     * @param   int      $id         Id of the customer
-     *
+     * @param   int $id Id of the customer
      * @return  View
-     * @throws
+     * @throws \Throwable
      */
-    public function welcomeEmail( int $id = null ) : View{
+    public function welcomeEmail( int $id ) : View{
         /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
             abort( 404);
@@ -691,13 +504,13 @@ class CustomerController extends Controller
 
         return view( 'customer/welcome-email' )->with([
             'c'         => $c,
-            'body'      => view( "customer/emails/welcome-email" )->with( [
-                    'c'                     => $c,
-                    'admins'                => $c->getAdminUsers() ,
-                    'netinfo'               => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray(),
-                    'identityEmail'         => config('identity.email'),
-                    'identityOrgname'       => config('identity.orgname'),
-                ] )->render()
+            'body'      => view( "customer/emails/welcome-email" )->with([
+                'c'                     => $c,
+                'admins'                => $c->getAdminUsers(),
+                'netinfo'               => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray(),
+                'identityEmail'         => config('identity.email'),
+                'identityOrgname'       => config('identity.orgname'),
+            ])->render()
         ]);
 
     }
@@ -705,38 +518,23 @@ class CustomerController extends Controller
     /**
      * Send the welcome email to a customer
      *
-     * @param WelcomeEmailRequest $request
-     *
+     * @param WelcomeEmailRequest $r
      * @return RedirectResponse|View
-     *
-     * @throws
      */
-    public function sendWelcomeEmail( WelcomeEmailRequest $request){
+    public function sendWelcomeEmail( WelcomeEmailRequest $r )
+    {
         /** @var CustomerEntity $c */
-        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'id' ) ) ) ){
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $r->input( 'id' ) ) ) ){
             abort( 404);
         }
 
-        $mailable = new EmailCustomer( $c );
-        $mailable->prepareFromRequest( $request );
-
-        $mailable->prepareBody( $request );
+        $mailable = new WelcomeEmail( $c, $r );
 
         try {
             $mailable->checkIfSendable();
-        } catch( MailableException $e ) {
+        } catch( \Exception $e ) {
             AlertContainer::push( $e->getMessage(), Alert::DANGER );
-
-            return view( 'customer/welcome-email' )->with([
-                'c'         => $c,
-                'body'      => view( "customer/emails/welcome-email" )->with( [
-                    'c'                     => $c,
-                    'admins'                => $c->getAdminUsers() ,
-                    'netinfo'               => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray(),
-                    'identityEmail'         => config('identity.email'),
-                    'identityOrgname'       => config('identity.orgname'),
-                ] )->render()
-            ]);
+            return back()->withInput();
         }
 
         Mail::send( $mailable );
@@ -748,47 +546,71 @@ class CustomerController extends Controller
     }
 
     /**
-     * Display Recap of the the information that will be deleted with the customer
+     * Recap the information that will be deleted with the customer
      *
-     * @param   int      $id         Id of the customer
-     *
-     * @return  View
-     * @throws
+     * @param   int   $id Id of the customer
+     * @return  View|RedirectResponse
      */
-    public function deleteRecap( int $id = null ) : View{
+    public function deleteRecap( int $id )
+    {
         /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
             abort( 404);
         }
 
+        // cannot delete a customer with active cross connects:
+        if( count( $c->getPatchPanelPorts() ) ) {
+            AlertContainer::push( "This customer has active patch panel ports. Please cease "
+                . "these (or set them to awaiting cease and unset the customer link in the patch panel "
+                . "port) to proceed with deleting this customer.", Alert::DANGER
+            );
+            return Redirect::to( route( "customer@overview", $c->getId() ) );
+        }
+
+        // cannot delete a customer with fan out ports:
+        if( $c->isResoldCustomer() ) {
+            foreach( $c->getVirtualInterfaces() as $vi ) {
+                foreach( $vi->getPhysicalInterfaces() as $pi ) {
+                    if( $pi->getFanoutPhysicalInterface() ) {
+                        AlertContainer::push( "This customer has is a resold customer with fan out physical "
+                            . "interfaces. Please delete these manually before proceeding with deleting the customer.",
+                            Alert::DANGER
+                        );
+                        return Redirect::to( route( "customer@overview", $c->getId() ) );
+                    }
+                }
+            }
+        }
+
+
         return view( 'customer/delete' )->with([
             'c'         => $c,
         ]);
-
     }
 
     /**
      * Delete a customer and everything related !!
      *
-     * @param   Request      $request         Instance of HTTP request
-     *
+     * @param   Request $request Instance of HTTP request
      * @return  RedirectResponse
-     * @throws
+     * @throws \Exception
      */
-    public function delete( Request $request) : RedirectResponse{
+    public function delete( Request $request) : RedirectResponse {
         /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( "id" ) ) ) ){
             abort( 404);
         }
 
+        $oldname = $c->getFormattedName();
+
         if( D2EM::getRepository( CustomerEntity::class )->delete( $c ) ) {
-            AlertContainer::push( "Customer deleted with success.", Alert::SUCCESS );
+            AlertContainer::push( "Customer <em>{$oldname}</em> deleted.", Alert::SUCCESS );
         } else {
-            AlertContainer::push( "Error", Alert::DANGER );
+            AlertContainer::push( "Error: customer could not be deleted. Please open a GitHub bug report.", Alert::DANGER );
         }
 
+        Cache::forget( 'admin_home_customers' );
         return Redirect::to( route( "customer@list" ) );
-
     }
 
 }

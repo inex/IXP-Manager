@@ -1,13 +1,13 @@
 <div class="row">
     <div class="col-sm-12">
         <br>
-        <?php if( $t->hasAggregateGraph ): ?>
+        <?php if( $t->aggregateGraph ): ?>
             <div class="row-fluid">
                 <div class="well">
                     <h3>
                         Aggregate Traffic Statistics
-                        <a class="btn btn-default" href="<?= url( "statistics/member-drilldown/shortname/".$t->c->getShortname()."/category/bits/monitorindex/aggregate" )?>">
-                            <i class="glyphicon glyphicon-eye-open"></i>
+                        <a class="btn btn-default" href="<?= route( "statistics@member", [ 'id' => $t->c->getId() ] )?>">
+                            <i class="glyphicon glyphicon-zoom-in"></i>
                         </a>
                     </h3>
 

@@ -43,7 +43,6 @@ class BillingInformation extends FormRequest
      */
     public function authorize()
     {
-        // middleware ensures superuser access only so always authorised here:
         return Auth::getUser()->isSuperUser();
     }
 
@@ -58,7 +57,7 @@ class BillingInformation extends FormRequest
         return [
             'registeredName'        => 'nullable|string|max:255',
             'companyNumber'         => 'nullable|string|max:255',
-            'jurisdiction'          => 'nullable|string|max:255|exists:Entities\CompanyRegisteredDetail,jurisdiction',
+            'jurisdiction'          => 'nullable|string|max:255',
             'address1'              => 'nullable|string|max:255',
             'address2'              => 'nullable|string|max:255',
             'address3'              => 'nullable|string|max:255',

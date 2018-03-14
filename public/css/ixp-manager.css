@@ -545,7 +545,7 @@ a.aplain, a:link.aplain, a:visited.aplain, a:hover.aplain, a:active.aplain {
 
 
 .www80-padding {
-    padding: 5px;
+    padding: 10px;
 }
 
 
@@ -696,6 +696,18 @@ td a:hover{
     background-color: #f0ad4e;
 }
 
+.lb-sm {
+    font-size: 12px;
+}
+
+.lb-md {
+    font-size: 16px;
+}
+
+.lb-lg {
+    font-size: 20px;
+}
+
 .asn-table{
     margin-left: 30px;
 }
@@ -703,3 +715,4 @@ td a:hover{
 .asn-table tr td{
     padding : 4px;
 }
+

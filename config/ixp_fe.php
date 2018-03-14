@@ -94,6 +94,32 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Customer Controller Options
+    |--------------------------------------------------------------------------
+    |
+    |
+    */
+    'customer' => [
+        'form'  => [
+            'placeholders' => [
+                // sample Irish number reserved for dramatic use
+                'phone'    => env( 'IXP_FE_CUSTOMER_FORM_PLACEHOLDER_PHONE', '+353 20 910 1234' ),
+            ]
+        ],
+
+        // Billing updates notifications
+        //
+        // Send email with updated billing details to the following address when billing details
+        // are updated by an admin or a user.
+        //
+        'billing_updates_notify' => env( 'IXP_FE_CUSTOMER_BILLING_UPDATES_NOTIFY', false ),
+
+    ],
+
+
+
+    /*
+    |--------------------------------------------------------------------------
     | Customer Ability to Change Own MAC Addresses
     |--------------------------------------------------------------------------
     |
@@ -111,6 +137,6 @@ return [
         'email_on_customer_change'   => env( 'IXP_FE_LAYER2_ADDRESSES_EMAIL_ON_CUSTOMER_CHANGE',  false ),
         'email_on_change_dest'       => env( 'IXP_FE_LAYER2_ADDRESSES_EMAIL_ON_CHANGE_DEST',      null  ),  // e.g. 'ops@ixp.example.net'
 
-    ]
+    ],
 
 ];

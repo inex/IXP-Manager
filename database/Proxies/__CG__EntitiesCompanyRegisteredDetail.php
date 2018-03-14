@@ -378,28 +378,6 @@ class CompanyRegisteredDetail extends \Entities\CompanyRegisteredDetail implemen
     /**
      * {@inheritDoc}
      */
-    public function setCompany(\Entities\Customer $company = NULL)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCompany', [$company]);
-
-        return parent::setCompany($company);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getCompany()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCompany', []);
-
-        return parent::getCompany();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function setRegisteredName($registeredName)
     {
 
@@ -422,23 +400,12 @@ class CompanyRegisteredDetail extends \Entities\CompanyRegisteredDetail implemen
     /**
      * {@inheritDoc}
      */
-    public function addCustomer(\Entities\Customer $customer)
+    public function setCustomer(\Entities\Customer $customer)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addCustomer', [$customer]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', [$customer]);
 
-        return parent::addCustomer($customer);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeCustomer(\Entities\Customer $customer)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeCustomer', [$customer]);
-
-        return parent::removeCustomer($customer);
+        return parent::setCustomer($customer);
     }
 
     /**

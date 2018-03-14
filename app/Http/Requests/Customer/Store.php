@@ -26,12 +26,11 @@ namespace IXP\Http\Requests\Customer;
 use Auth, D2EM;
 
 use Entities\{
-    Customer    as CustomerEntity,
-    IRRDBConfig as IRRDBConfigEntity
+    Customer    as CustomerEntity
 };
 
 use Illuminate\Foundation\Http\FormRequest;
-
+use Illuminate\Validation\Validator;
 
 
 /**
@@ -63,6 +62,7 @@ class Store extends FormRequest
     public function rules()
     {
         $validateCommonDetails = [
+            'id'                    => 'nullable|integer|exists:Entities\Customer,id',
             'name'                  => 'required|string|max:255',
             'type'                  => 'required|integer|in:' . implode( ',', array_keys( CustomerEntity::$CUST_TYPES_TEXT ) ),
             'shortname'             => 'required|string|max:30|regex:/[a-z0-9]+/|unique:Entities\Customer,shortname'. ( $this->input('id') ? ','. $this->input('id') : '' ),
@@ -81,37 +81,93 @@ class Store extends FormRequest
             'peeringmacro'          => 'nullable|string|max:255',
             'peeringmacrov6'        => 'nullable|string|max:255',
             'peeringpolicy'         => 'string|in:' . implode( ',', array_keys( CustomerEntity::$PEERING_POLICIES ) ),
-//            'irrdb'                 => 'nullable|integer'. $this->input( 'irrdb' ) ? "|exists:Entities\IRRDBConfig,id" : '',
-            'irrdb'                 => "required|integer|exists:Entities\\IRRDBConfig,id",
+            'irrdb'                 => 'nullable|integer|exists:Entities\IRRDBConfig,id',
             'nocphone'              => 'nullable|string|max:255',
             'noc24hphone'           => 'nullable|string|max:255',
             'nocemail'              => 'email|max:255',
             'nochours'              => 'nullable|string|in:' . implode( ',', array_keys( CustomerEntity::$NOC_HOURS ) ),
             'nocwww'                => 'nullable|url|max:255',
+            'reseller'              => 'nullable|integer|exists:Entities\Customer,id',
         ];
 
         return $this->input( 'type' ) == CustomerEntity::TYPE_ASSOCIATE  ? $validateCommonDetails : array_merge( $validateCommonDetails, $validateOtherDetails ) ;
     }
 
+
     /**
      * Configure the validator instance.
      *
-     * @param  \Illuminate\Validation\Validator  $validator
+     * @param  Validator  $validator
      * @return void
      */
-    public function withValidator( $validator )
+    public function withValidator( Validator $validator )
     {
-        $validator->after(function ($validator) {
-
-//            if( ( $this->input( 'type' ) == CustomerEntity::TYPE_FULL || $this->input( 'type' ) == CustomerEntity::TYPE_PROBONO ) && !$this->input( 'irrdb' ) ) {
-//                $validator->errors()->add( 'irrdb', 'Please select an IRRDB Config.' );
-//                return;
-//            } else if( $this->input( 'irrdb' ) ) {
-//                if( !( $irrdb = D2EM::getRepository( IRRDBConfigEntity::class )->find( $this->input( 'irrdb' ) ) ) ) {
-//                    $validator->errors()->add( 'irrdb', 'Invalid IRRDB source' );
-//                    return;
-//                }
-//            }
+        $validator->after( function( $validator ) {
+            $this->checkReseller( $validator );
         });
     }
+
+    /**
+     * Checks reseller status such that:
+     *
+     * - we cannot remove reseller state from a reseller with resold customers
+     * - we cannot reassign a resold customer to another reseller if they still have ports belonging to the current reseller
+     * - we cannot unset reseller status while a resold customer has ports belonging to a reseller
+     *
+     * @param  Validator  $validator
+     * @return bool If false, the form is not valid
+     */
+    private function checkReseller( Validator $validator ): bool {
+
+        $c = null;
+        if( $this->input( 'id' ) ) {
+            /** @var CustomerEntity $c */
+            $c = D2EM::getRepository( CustomerEntity::class )->find( $this->input( 'id' ) );
+        }
+
+        if( $this->input( 'isResold' ) ) {
+
+            /** @var CustomerEntity $reseller */
+            if( !$this->input( "reseller" ) || !( $reseller = D2EM::getRepository( CustomerEntity::class )->find( $this->input( "reseller" ) ) ) ) {
+                $validator->errors()->add('reseller', 'Please choose a reseller');
+                return false;
+            }
+
+            // are we changing reseller?
+            if( $c && $c->getReseller() && $c->getReseller()->getId() != $reseller->getId() ) {
+                foreach( $c->getVirtualInterfaces() as $vi ) {
+                    foreach( $vi->getPhysicalInterfaces() as $pi ) {
+                        if( $pi->getFanoutPhysicalInterface() && $pi->getFanoutPhysicalInterface()->getVirtualInterface()->getCustomer()->getId() == $c->getReseller()->getId() ) {
+                            $validator->errors()->add('reseller', 'You cannot change the reseller because there are still fanout ports from the current reseller'
+                                . 'linked to this customer\'s physical interfaces. You need to reassign these first.' );
+                            return false;
+                        }
+                    }
+                }
+            }
+
+        } else if( $c && $c->getReseller() ) {
+
+            foreach( $c->getVirtualInterfaces() as $vi ) {
+                foreach( $vi->getPhysicalInterfaces() as $pi ) {
+                    if( $pi->getFanoutPhysicalInterface() && $pi->getFanoutPhysicalInterface()->getVirtualInterface()->getCustomer()->getId() == $c->getReseller()->getId() ) {
+                        $validator->errors()->add('reseller', 'You can not change this resold customer state because there are still physical interface(s) of '
+                         . 'this customer linked to fanout ports of the current reseller. You need to reassign these first.' );
+                        return false;
+                    }
+                }
+            }
+        }
+
+        if( !$this->input( 'isReseller' ) && $c && $c->getIsReseller() && count( $c->getResoldCustomers() ) ) {
+            $validator->errors()->add('isReseller', 'You can not change the reseller state because this customer still has resold customers. '
+                . 'You need to reassign these first.' );
+            return false;
+        }
+
+        return true;
+    }
+
+
+
 }

@@ -253,7 +253,7 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
         $mailer = $this->getMailer()
                     ->setBodyText( $content )
                     ->addTo( $email )
-                    ->setFrom( $this->_options['identity']['autobot']['email'], $this->_options['identity']['autobot']['name'] )
+                    ->setFrom( config( 'identity.email' ), config( 'identity.name' ) )
                     ->setSubject( "Changes to {$tmpl} via IXP Manager" );
 
         try
