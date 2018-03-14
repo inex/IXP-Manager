@@ -68,7 +68,7 @@ return [
             'show_graphs_on_index_page' => env( 'GRAPHER_BACKEND_SFLOW_SHOW_ON_INDEX', false ),
 
             // where to find the MRTG rrd files
-            'root'  => env( 'GRAPHER_BACKEND_SFLOW_ROOT', 'http://www.example.com/' ),
+            'root'  => env( 'GRAPHER_BACKEND_SFLOW_ROOT', 'http://sflow-server.example.com/grapher-sflow' ),
         ]
 
     ],

@@ -94,19 +94,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Customer Controller Options
+    | Customer Ability to Change Own MAC Addresses
     |--------------------------------------------------------------------------
     |
-    |
     */
-    'customer' => [
-        'form'  => [
-            'placeholders' => [
-                // sample Irish number reserved for dramatic use
-                'phone'    => env( 'IXP_FE_CUSTOMER_FORM_PLACEHOLDER_PHONE', '+353 20 910 1234' ),
-            ]
-        ],
-    ],
+    'layer2-addresses' => [
 
+        'customer_can_edit'  => env( 'IXP_FE_LAYER2_ADDRESSES_CUST_CAN_EDIT', false ),
+
+        'customer_params' => [
+            'min_addresses' => env( 'IXP_FE_LAYER2_ADDRESSES_CUST_PARAMS_MIN_ADDRESSES', 1 ),
+            'max_addresses' => env( 'IXP_FE_LAYER2_ADDRESSES_CUST_PARAMS_MAX_ADDRESSES', 2 ),
+        ],
+
+        'email_on_superuser_change'  => env( 'IXP_FE_LAYER2_ADDRESSES_EMAIL_ON_SUPERUSER_CHANGE', false ),
+        'email_on_customer_change'   => env( 'IXP_FE_LAYER2_ADDRESSES_EMAIL_ON_CUSTOMER_CHANGE',  false ),
+        'email_on_change_dest'       => env( 'IXP_FE_LAYER2_ADDRESSES_EMAIL_ON_CHANGE_DEST',      null  ),  // e.g. 'ops@ixp.example.net'
+
+    ]
 
 ];

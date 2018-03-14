@@ -93,6 +93,11 @@ class Switcher
     protected $loopback_name;
 
     /**
+     * @var string $mgmt_mac_address
+     */
+    protected $mgmt_mac_address;
+
+    /**
      * @var integer $id
      */
     protected $id;
@@ -880,6 +885,26 @@ class Switcher
     public function getLoopbackName()
     {
         return $this->loopback_name;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getMgmtMacAddress()
+    {
+        return $this->mgmt_mac_address;
+    }
+
+    /**
+     * @param string $mgmt_mac_address
+     * @return Switcher
+     */
+    public function setMgmtMacAddress( $mgmt_mac_address ): Switcher
+    {
+        $this->mgmt_mac_address = $mgmt_mac_address;
+
+        return $this;
     }
 
 }

@@ -130,6 +130,7 @@
 
 </div> <!-- </div class="container"> -->
 
+    <script> const RIPE_ASN_URL = "<?= url( "api/v4/aut-num" ) ?>"; </script>
     <script type="text/javascript" src="<?= asset('/bower_components/jquery/dist/jquery.min.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/bower_components/jquery-ui/jquery-ui.min.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/bower_components/bootstrap/dist/js/bootstrap.min.js') ?>"></script>
@@ -158,5 +159,12 @@
 
     <?php $this->section('scripts') ?>
     <?php $this->stop() ?>
+
+    <?=
+        // Skin this file to add your own footer content such as
+        // Piwik / Google Analytics integration:
+        $t->insert( 'footer-custom' );
+    ?>
+
 </body>
 </html>

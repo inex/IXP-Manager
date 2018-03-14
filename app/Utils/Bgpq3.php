@@ -24,6 +24,7 @@ namespace IXP\Utils;
  */
 
 use IXP\Exceptions\GeneralException as Exception;
+use IXP\Exceptions\ConfigurationException;
 
 /**
  * Interface for the BQPQ3 command line utility
@@ -59,9 +60,15 @@ class Bgpq3
      * @param string $path The full executable path of the BGPQ3 utility
      * @param string $whois Whois server - defaults to BGPQ's own default
      * @param string $sources Whois server sources - defaults to BGPQ's own default
+     * @throws ConfigurationException
      */
     public function __construct( $path, $whois = null, $sources = null )
     {
+        if( !$path || !is_file( $path ) || !is_executable( $path ) ) {
+            throw new ConfigurationException('You must set the configuration option IXP_IRRDB_BGPQ3_PATH and it must be the absolute path to the executable bgpq3 utility.');
+        }
+
+
         $this->path = $path;
 
         if( $whois )
@@ -84,7 +91,8 @@ class Bgpq3
      */
     public function getPrefixList( $asmacro, $proto = 4 )
     {
-        $json = $this->execute( '-l pl -j ' . escapeshellarg( $asmacro ), $proto );
+        $minSubnetSize = config( 'ixp.irrdb.min_v' . $proto . '_subnet_size' );
+        $json = $this->execute( '-l pl -j -m ' . $minSubnetSize . ' ' . escapeshellarg( $asmacro ), $proto );
         $array = json_decode( $json, true );
 
         if( $array === null )

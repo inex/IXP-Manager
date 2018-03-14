@@ -307,11 +307,12 @@ class VirtualInterfaceController extends Common
 
         $vli->setVirtualInterface(  $vi );
         $vli->setVlan(              $v  );
-        $vli->setIrrdbfilter(       $request->input( 'irrdbfilter',  false ) );
-        $vli->setMcastenabled(      $request->input( 'mcastenabled', false ) );
-        $vli->setMaxbgpprefix(      $request->input( 'maxbgpprefix', null  ) === "0" ? null : $request->input( 'maxbgpprefix', null ) );
-        $vli->setRsclient(          $request->input( 'rsclient',     false ) );
-        $vli->setAs112client(       $request->input( 'as112client',  false ) );
+        $vli->setIrrdbfilter(       $request->input( 'irrdbfilter',     false ) );
+        $vli->setRsMoreSpecifics(   $request->input( 'rsmorespecifics', false ) );
+        $vli->setMcastenabled(      $request->input( 'mcastenabled',    false ) );
+        $vli->setMaxbgpprefix(      $request->input( 'maxbgpprefix',    null  ) === "0" ? null : $request->input( 'maxbgpprefix', null ) );
+        $vli->setRsclient(          $request->input( 'rsclient',        false ) );
+        $vli->setAs112client(       $request->input( 'as112client',     false ) );
         $vli->setBusyhost(          false );
 
         if( !$this->setIp($request, $v, $vli, false ) || !$this->setIp($request, $v, $vli, true ) ) {

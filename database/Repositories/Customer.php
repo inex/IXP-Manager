@@ -91,7 +91,7 @@ class Customer extends EntityRepository
                 WHERE " . self::DQL_CUST_CURRENT . " AND " . self::DQL_CUST_ACTIVE;
 
         if( $trafficing )
-            $dql .= " AND " . self::DQL_CUST_TRAFFICING;
+            $dql .= " AND " . self::DQL_CUST_TRAFFICING . " AND " . self::DQL_CUST_CONNECTED;
         
         if( $externalOnly )
             $dql .= " AND " . self::DQL_CUST_EXTERNAL;

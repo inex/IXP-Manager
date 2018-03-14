@@ -84,10 +84,13 @@ Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer'], functio
 ///
 /// Static content
 ///
-
+/// See: http://docs.ixpmanager.org/features/static-content/
+///
+///
 Route::get( 'content/{priv}/{page}',     'ContentController@index' )->name( 'content' );
 Route::get( 'public-content/{page}',     'ContentController@public' )->name( 'public-content' );
 
+Route::get( 'content/members/{priv}/{page}', 'ContentController@members' )->name( 'content/members' );
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -100,9 +103,6 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'infrastructure/{graphid?}/{category?}', 'StatisticsController@infrastructure'    )->name( 'statistics/infrastructure' );
     Route::get(  'switch/{switchid?}/{category?}',        'StatisticsController@switch'            )->name( 'statistics/switch'         );
     Route::get(  'trunk/{trunkid?}/{category?}',          'StatisticsController@trunk'             )->name( 'statistics/trunk'          );
-
-    Route::get(  'members', 'StatisticsController@members' );
-    Route::post( 'members', 'StatisticsController@members' )->name( 'statistics/members' );
 });
 
 

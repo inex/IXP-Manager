@@ -49,6 +49,13 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
     Route::post(    'notes/{id}',                       'PatchPanelPortController@setNotes'             );
 });
 
+
+Route::group( [ 'prefix' => 'statistics' ], function() {
+    Route::get(  'members', 'StatisticsController@members' );
+    Route::post( 'members', 'StatisticsController@members' )->name( 'statistics/members' );
+});
+
+
 Route::group( [ 'prefix' => 'router' ], function() {
     Route::get(     'list',                             'RouterController@list'     )->name( 'router/list'  );
     Route::get(     'status',                           'RouterController@status'   )->name('router/status' );
@@ -118,7 +125,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::post(    'add-core-link',                    'CoreBundleController@addCoreLink'      );
         Route::post(    '{id}/store-core-links',            'CoreBundleController@storeCoreLinks'   );
         Route::post(    'delete/{id}',                      'CoreBundleController@deleteCoreBundle' )->name(    'core-bundle/delete');
-        Route::post(    'core-link/delete/{id}',            'CoreBundleController@delete'           );
+        Route::post(    'core-link/delete/{id}',            'CoreBundleController@deleteCoreLink'   );
     });
 });
 
