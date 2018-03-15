@@ -42,7 +42,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <a href="<?= url( '/customer/overview/id' ).'/'.$t->vli->getVirtualInterface()->getCustomer()->getId()?>">
+                            <a href="<?= route( "customer@overview" , [ "id" => $t->vli->getVirtualInterface()->getCustomer()->getId() ] ) ?>">
                                 <?= $t->ee( $t->vli->getVirtualInterface()->getCustomer()->getName() )   ?>
                             </a>
                         </td>

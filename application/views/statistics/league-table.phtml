@@ -5,7 +5,7 @@
         <a href="{genUrl}">Home</a> <span class="divider">/</span>
     </li>
     <li>
-        <a href="{genUrl controller="customer" action="list"}">Customers</a> <span class="divider">/</span>
+        <a href="{route( 'customer@list' )}">Customers</a> <span class="divider">/</span>
     </li>
     <li class="active">
         League Table ({foreach from=$categories key=cname item=cvalue}{if $category eq $cvalue}{$cname}{/if}{/foreach})

@@ -150,11 +150,8 @@ class ProfileController extends IXP_Controller_AuthRequiredAction
         
         if( $this->getRequest()->isPost() && $form->isValid( $_POST ) )
         {
-            if( $form->getValue( 'notify' ) != 'default' )
-                $this->getUser()->setPreference( 'customer-notes.notify', $form->getValue( 'notify' ) );
-            else
-                $this->getUser()->deletePreference( 'customer-notes.notify' );
-                
+            $this->getUser()->setPreference( 'customer-notes.notify', $form->getValue( 'notify' ) );
+
             $this->getD2EM()->flush();
             
             $this->addMessage( _( 'Your notification preference has been updated.' ), OSS_Message::SUCCESS );

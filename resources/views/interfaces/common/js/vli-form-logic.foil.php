@@ -19,8 +19,8 @@ let ajaxRequests = [];
 //////////////////////////////////////////////////////////////////////////////////////
 // action bindings:
 
-dd_ipv6.select2({ tags: true, width: '100%', allowClear: true, placeholder: "Select an IPv6 address..." }).on( 'change', usedAcrossVlans );
-dd_ipv4.select2({ tags: true, width: '100%', allowClear: true, placeholder: "Select an IPv4 address..." }).on( 'change', usedAcrossVlans );
+dd_ipv6.on( 'change', usedAcrossVlans );
+dd_ipv4.on( 'change', usedAcrossVlans );
 
 cb_ipv6_enabled.change( () => { cb_ipv6_enabled.is(":checked") ? div_ipv6.slideDown()            : div_ipv6.slideUp()            } );
 cb_ipv4_enabled.change( () => { cb_ipv4_enabled.is(":checked") ? div_ipv4.slideDown()            : div_ipv4.slideUp()            } );

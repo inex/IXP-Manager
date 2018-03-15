@@ -13,7 +13,7 @@
     <field name="height" type="integer" nullable="false"/>
     <many-to-one field="customer" target-entity="Entities\Customer" inversed-by="logos">
       <join-columns>
-        <join-column name="customer_id" referenced-column-name="id"/>
+        <join-column name="customer_id" referenced-column-name="id" on-delete="RESTRICT"/>
       </join-columns>
     </many-to-one>
   </entity>

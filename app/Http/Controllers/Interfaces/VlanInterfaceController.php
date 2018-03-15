@@ -169,6 +169,8 @@ class VlanInterfaceController extends Common
      *
      * @param   StoreVlanInterface $request instance of the current HTTP request
      * @return  RedirectResponse
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
      */
     public function store( StoreVlanInterface $request ): RedirectResponse {
 
@@ -211,6 +213,9 @@ class VlanInterfaceController extends Common
         $vli->setAs112client(       $request->input( 'as112client',     false ) );
         $vli->setBusyhost(          $request->input( 'busyhost',        false ) );
         D2EM::flush();
+
+        // add a warning if we're filtering on irrdb but have not configured one for the customer
+        $this->warnIfIrrdbFilteringButNoIrrdbSourceSet($vli);
 
         AlertContainer::push( 'Vlan Interface updated successfully.', Alert::SUCCESS );
 

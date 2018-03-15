@@ -45,6 +45,19 @@ return [
         'customer_service'  => env( 'IXP_API_NAGIOS_CUSTOMER_SERVICE', "generic-service" ),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | PEERING DB
+    |--------------------------------------------------------------------------
+    |
+    */
+    'peeringDB' => [
+        'username'        => env( 'IXP_API_PEERING_DB_USERNAME', null ),
+        'password'        => env( 'IXP_API_PEERING_DB_PASSWORD', null ),
+        // you should not need to change this. The %s is either "$un:$pw@" or an empty string
+        'url'             => env( 'IXP_API_PEERING_DB_URL',      "https://%speeringdb.com/api" ),
+    ],
+
 
 
 

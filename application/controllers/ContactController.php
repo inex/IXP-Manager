@@ -423,9 +423,9 @@ class ContactController extends IXP_Controller_FrontEnd
         }
 
         if( $this->getParam( 'user', false ) || $this->getParam( 'uid', false ) )
-            $this->redirect( 'customer/overview/tab/users/id/' . $object->getCustomer()->getId() );
+            $this->redirect( 'customer/overview/' .$object->getCustomer()->getId().'/users' );
         else
-            $this->redirect( 'customer/overview/tab/contacts/id/' . $object->getCustomer()->getId() );
+            $this->redirect( 'customer/overview/' .$object->getCustomer()->getId().'/contacts' );
     }
 
     /**
@@ -463,7 +463,7 @@ class ContactController extends IXP_Controller_FrontEnd
         {
             $this->getD2EM()->flush();
             $this->addMessage( 'User login account successfully removed.', OSS_Message::SUCCESS );
-            $this->redirectAndEnsureDie( 'customer/overview/tab/users/id/' . $object->getCustomer()->getId() );
+            $this->redirectAndEnsureDie( 'customer/overview/' .$object->getCustomer()->getId(). '/users');
         }
 
         return true;
@@ -527,7 +527,7 @@ class ContactController extends IXP_Controller_FrontEnd
             unset( $this->getSessionNamespace()->ixp_contact_delete_custid );
 
             $this->addMessage( 'Contact successfully deleted', OSS_Message::SUCCESS );
-            $this->redirect( 'customer/overview/tab/contacts/id/' . $custid );
+            $this->redirect( 'customer/overview/' .$custid. '/contacts' );
         }
 
         return false;

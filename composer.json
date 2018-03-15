@@ -41,7 +41,6 @@
         "guzzlehttp/guzzle": "~6.0",
         "intervention/image": "^2.3",
         "anahkiasen/former": "^4.0",
-        "barryvdh/laravel-debugbar": "^2.3",
         "barryvdh/laravel-dompdf": "^0.8.0",
         "luketowers/purifier": "~3.0",
         "php-ds/php-ds": "^1.1",
@@ -49,7 +48,8 @@
         "laravel-doctrine/extensions": "1.0.*",
         "graham-campbell/flysystem": "^4.0",
         "s1lentium/iptools": "^1.1",
-        "parsedown/laravel": "^1.0"
+        "parsedown/laravel": "^1.0",
+        "webpatser/laravel-countries": "dev-develop"
 
     },
     "require-dev": {
@@ -57,7 +57,8 @@
         "phpunit/phpunit": "~6.0",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "~1.0",
-        "barryvdh/laravel-ide-helper": "^2.3"
+        "barryvdh/laravel-ide-helper": "^2.3",
+        "barryvdh/laravel-debugbar": "^3.1"
      },
     "support": {
         "issues": "https://www.ixpmanager.org/support.php",
