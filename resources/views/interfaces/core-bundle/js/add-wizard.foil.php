@@ -163,8 +163,8 @@
             required = false ;
         }
 
-        $( '#pi-name-a' ).prop( 'required', required );
-        $( '#pi-name-b' ).prop( 'required', required );
+        $( '#vi-name-a' ).prop( 'required', required );
+        $( '#vi-name-b' ).prop( 'required', required );
         $( '#pi-channel-number-a' ).prop( 'required', required );
         $( '#pi-channel-number-b' ).prop( 'required', required );
     }
