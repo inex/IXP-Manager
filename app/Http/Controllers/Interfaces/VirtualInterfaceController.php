@@ -170,6 +170,9 @@ class VirtualInterfaceController extends Common
      *
      * @param   StoreVirtualInterface $request instance of the current HTTP request
      * @return  RedirectResponse
+     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \IXP\Exceptions\GeneralException
      */
     public function store( StoreVirtualInterface $request ): RedirectResponse {
         /** @var VirtualInterfaceEntity $vi */
@@ -274,11 +277,13 @@ class VirtualInterfaceController extends Common
      *
      * @param   StoreVirtualInterfaceWizard $request instance of the current HTTP request
      * @return  RedirectResponse
+     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function storeWizard( StoreVirtualInterfaceWizard $request ): RedirectResponse {
         // all validation of ids is in the request object, App\Http\Requests\StoreVirtualInterfaceWizard
-        $c   = D2EM::getRepository( CustomerEntity::class   )->find( $request->input( 'cust'        ) );    /** @var CustomerEntity   $cust   */
-        $v   = D2EM::getRepository( VlanEntity::class       )->find( $request->input( 'vlan'        ) );    /** @var VlanEntity       $vlan   */
+        $c   = D2EM::getRepository( CustomerEntity::class   )->find( $request->input( 'cust'        ) );    /** @var CustomerEntity   $c      */
+        $v   = D2EM::getRepository( VlanEntity::class       )->find( $request->input( 'vlan'        ) );    /** @var VlanEntity       $v      */
         $sp  = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'switch-port' ) );    /** @var SwitchPortEntity $sp     */
 
         $vi = new VirtualInterfaceEntity;
@@ -307,11 +312,12 @@ class VirtualInterfaceController extends Common
 
         $vli->setVirtualInterface(  $vi );
         $vli->setVlan(              $v  );
-        $vli->setIrrdbfilter(       $request->input( 'irrdbfilter',  false ) );
-        $vli->setMcastenabled(      $request->input( 'mcastenabled', false ) );
-        $vli->setMaxbgpprefix(      $request->input( 'maxbgpprefix', null  ) === "0" ? null : $request->input( 'maxbgpprefix', null ) );
-        $vli->setRsclient(          $request->input( 'rsclient',     false ) );
-        $vli->setAs112client(       $request->input( 'as112client',  false ) );
+        $vli->setIrrdbfilter(       $request->input( 'irrdbfilter',     false ) );
+        $vli->setRsMoreSpecifics(   $request->input( 'rsmorespecifics', false ) );
+        $vli->setMcastenabled(      $request->input( 'mcastenabled',    false ) );
+        $vli->setMaxbgpprefix(      $request->input( 'maxbgpprefix',    null  ) === "0" ? null : $request->input( 'maxbgpprefix', null ) );
+        $vli->setRsclient(          $request->input( 'rsclient',        false ) );
+        $vli->setAs112client(       $request->input( 'as112client',     false ) );
         $vli->setBusyhost(          false );
 
         if( !$this->setIp($request, $v, $vli, false ) || !$this->setIp($request, $v, $vli, true ) ) {
@@ -319,6 +325,11 @@ class VirtualInterfaceController extends Common
         }
 
         D2EM::flush();
+
+        // add a warning if we're filtering on irrdb but have not configured one for the customer
+        $this->warnIfIrrdbFilteringButNoIrrdbSourceSet($vli);
+
+
         AlertContainer::push( "New interface created!", Alert::SUCCESS );
 
         return Redirect::route( 'interfaces/virtual/edit', [ 'id' => $vi->getId() ] );

@@ -115,7 +115,7 @@
                                 <?php endif; ?>
                             </td>
                             <td>
-                                <a href="<?= url( 'customer/overview/id/' ).'/'.$ppp->getCustomerId()?>">
+                                <a href="<?= route( "customer@overview" , [ "id" => $ppp->getCustomerId() ] ) ?>">
                                     <?= $t->ee( $ppp->getCustomerName() ) ?>
                                 </a>
                             </td>

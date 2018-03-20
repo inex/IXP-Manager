@@ -30,6 +30,7 @@ use Entities\{
 };
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Validation\Validator;
 
 
 class StoreVirtualInterfaceWizard extends FormRequest
@@ -67,6 +68,7 @@ class StoreVirtualInterfaceWizard extends FormRequest
             'mcastenabled'          => 'boolean',
             'rsclient'              => 'boolean',
             'irrdbfilter'           => 'boolean',
+            'rsmorespecifics'       => 'boolean',
             'as112client'           => 'boolean',
 
             'ipv4-enabled'          => 'boolean',
@@ -85,6 +87,7 @@ class StoreVirtualInterfaceWizard extends FormRequest
 
         ];
     }
+
 }
 
 

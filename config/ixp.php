@@ -26,8 +26,8 @@ return [
         'enabled' => env( 'IXP_RESELLER_ENABLED', false ),
 
         // If reseller mode enabled and this is set to true then super admin or customer itself
-        // can not add/change resold customers details.
-        'reseller' => env( 'IXP_RESELLER_RESOLD_BILLING', false ),
+        // can not add/change a resold customer's billing details.
+        'no_billing' => env( 'IXP_RESELLER_RESOLD_BILLING', false ),
     ],
 
 
@@ -66,5 +66,35 @@ return [
         'testnote'  => env( 'PEERING_MANAGER_TESTNOTE', false ),
         'testdate'  => env( 'PEERING_MANAGER_TESTDATE', false ),
     ],
+
+
+
+
+    /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+       ;; Route Server and IRRDB Filtering
+       ;;
+       ;;
+       ;; */
+
+    'irrdb' => [
+        'bgpq3' => [
+            'path' => env( 'IXP_IRRDB_BGPQ3_PATH', false ),
+        ],
+
+        // ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+        // Minimum subnet sizes
+        //
+        // Used by the route server/collector/as112 templates and
+        // the bgpq3 command line.
+        // Templates:
+        //   - resources/views/api/v4/router/as112/bird/header.foil.php
+        //   - resources/views/api/v4/router/collector/bird/header.foil.php
+        //   - resources/views/api/v4/router/server/bird/header.foil.php
+        //
+        'min_v4_subnet_size' => env( 'IXP_IRRDB_MIN_V4_SUBNET_SIZE', 24 ),
+        'min_v6_subnet_size' => env( 'IXP_IRRDB_MIN_V6_SUBNET_SIZE', 48 ),
+
+    ],
+
 
 ];

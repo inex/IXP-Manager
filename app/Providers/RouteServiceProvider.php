@@ -40,6 +40,7 @@ class RouteServiceProvider extends ServiceProvider {
         $this->mapWebAuthRoutes();
         $this->mapWebAuthSuperuserRoutes();
         $this->mapApiV4Routes();
+        $this->mapApiV4AuthRoutes();
         $this->mapApiAuthSuperuserRoutes();
 
         // aliases that need to be deprecated:
@@ -125,13 +126,14 @@ class RouteServiceProvider extends ServiceProvider {
     protected function mapApiV4Routes()
     {
         Route::group([
-            'middleware' => 'public/api/v4',
+            'middleware' => [ 'web', 'public/api/v4' ],
             'namespace' => $this->namespace . '\\Api\\V4',
             'prefix' => 'api/v4',
         ], function ($router) {
-            if( class_exists( "\Debugbar" ) ) {
-                \Debugbar::disable();
-            }
+
+//            if( class_exists( "\Debugbar" ) ) {
+//                \Debugbar::disable();
+//            }
 
             require base_path('routes/apiv4.php');
         });
@@ -144,10 +146,34 @@ class RouteServiceProvider extends ServiceProvider {
      *
      * @return void
      */
+    protected function mapApiV4AuthRoutes()
+    {
+        Route::group([
+            'middleware' => [ 'web', 'api/v4', 'auth' ],
+            'namespace' => $this->namespace . '\\Api\\V4',
+            'prefix' => 'api/v4',
+        ], function ($router) {
+            if( class_exists( "\Debugbar" ) ) {
+                \Debugbar::disable();
+            }
+
+            require base_path('routes/apiv4-auth.php');
+        });
+    }
+
+
+    /**
+     * Define the "api" routes for the application.
+     *
+     * These routes are typically stateless.
+     *
+     * @return void
+     */
     protected function mapApiAuthSuperuserRoutes()
     {
         Route::group([
              'middleware' => [
+                 'web',
                  'api/v4',
                  'assert.privilege:' . UserEntity::AUTH_SUPERUSER
              ],
@@ -155,9 +181,9 @@ class RouteServiceProvider extends ServiceProvider {
              'prefix' => 'api/v4',
         ], function ($router) {
 
-            if( class_exists( "\Debugbar" ) ) {
-                \Debugbar::disable();
-            }
+//            if( class_exists( "\Debugbar" ) ) {
+//                \Debugbar::disable();
+//            }
 
             require base_path('routes/apiv4-auth-superuser.php');
         });

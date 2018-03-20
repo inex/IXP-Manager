@@ -49,6 +49,7 @@ class VlanInterface extends EntityRepository
      *         [maxbgpprefix] => 20        // VLAN interface max prefixes
      *         [as112client] => 1          // if the member is an as112 client or not
      *         [rsclient] => 1             // if the member is a route server client or not
+     *         [rsmorespecifics] => 0/1    // if IRRDB filtering should allow more specifics
      *         [busyhost]
      *         [sid]
      *         [sname]
@@ -97,6 +98,7 @@ class VlanInterface extends EntityRepository
                         vli.rsclient                AS rsclient, 
                         vli.busyhost                AS busyhost, 
                         vli.irrdbfilter             AS irrdbfilter,
+                        vli.rsmorespecifics         AS rsmorespecifics,
                         vli.ipv{$proto}canping      AS canping,
                         
                         addr.address AS address,
@@ -484,6 +486,7 @@ class VlanInterface extends EntityRepository
      *         [rsclient] => 1                    // if the member is a route server client or not
      *         [maxprefixes] => 20
      *         [irrdbfilter] => 0/1               // if IRRDB filtering should be applied
+     *         [rsmorespecifics] => 0/1           // if IRRDB filtering should allow more specifics
      *         [location_name] => Interxion DUB1
      *         [location_shortname] => IX-DUB1
      *         [location_tag] => ix1

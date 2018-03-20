@@ -27,6 +27,15 @@ Route::get('dns/arpa/{vlanid}/{protocol}',             'DnsController@arpa');
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Customers
+//
+Route::group( [  'prefix' => 'customer' ], function() {
+    Route::get( 'query-peeringdb/asn/{asn}',   'CustomerController@queryPeeringDbWithAsn' );
+
+    Route::post( '{id}/switches',               'CustomerController@switches' );
+});
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Users
 //
 // Returns all users (or users with given integer privilege) as JSON
@@ -116,10 +125,11 @@ Route::get('provisioner/vlans/switch-name/{switchname}.{outformat}',            
 Route::get('provisioner/routing/switch-id/{switchid}.{outformat}',              'Provisioner\YamlController@bgpForSwitch');
 Route::get('provisioner/routing/switch-name/{switchname}.{outformat}',          'Provisioner\YamlController@bgpForSwitchByName');
 
+Route::get( 'provisioner/switch/switch-id/{switchid}.{outformat}',               'Provisioner\YamlController@showSwitch' );
+Route::get( 'provisioner/switch/switch-name/{switchname}.{outformat}',           'Provisioner\YamlController@showSwitchByName' );
+
 Route::get('switch-port/{id}/customer',                         'SwitchPortController@customer' );
 Route::get('switch-port/{id}/physical-interface',               'SwitchPortController@physicalInterface' );
-
-Route::post('customer/{id}/switches',                           'CustomerController@switches' );
 
 Route::group( [  'prefix' => 'switch' ], function() {
     Route::get( '{id}/ports',                        'SwitchController@ports' );
@@ -133,8 +143,6 @@ Route::post( 'utils/markdown',                                  'UtilsController
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Layer 2 Address
 //
-Route::post( 'l2-address/add',                                  'Layer2AddressController@add' );
-Route::post( 'l2-address/delete/{id}',                          'Layer2AddressController@delete' );
 Route::get(  'l2-address/detail/{id}',                          'Layer2AddressController@detail' );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,6 +183,16 @@ Route::group( [ 'prefix' => 'nagios' ], function() {
     Route::post( 'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}',            'NagiosController@birdseyeBgpSessions');
     Route::get(  'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}/{template}', 'NagiosController@birdseyeBgpSessions');
     Route::post( 'birdseye-bgp-sessions/{vlanid}/{protocol}/{type}/{template}', 'NagiosController@birdseyeBgpSessions');
+});
+
+Route::group( [ 'namespace' => 'Customer\Note', 'prefix' => 'customer-note' ], function() {
+
+    Route::get(    'notify-toggle/customer/{id}', 'CustomerNotesController@notifyToggleCustomer' )->name( 'customer-notes@notify-toggle-customer');
+    Route::get(    'notify-toggle/note/{id}',     'CustomerNotesController@notifyToggleNote'     )->name( 'customer-notes@notify-toggle-note');
+
+    Route::post(    'add',                             'CustomerNotesController@add'                    )->name( 'customer-notes@add');
+    Route::post(    'delete/{id}',                     'CustomerNotesController@delete'                 )->name( 'customer-notes@delete');
+
 });
 
 

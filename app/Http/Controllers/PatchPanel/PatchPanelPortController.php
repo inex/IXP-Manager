@@ -210,6 +210,7 @@ class PatchPanelPortController extends Controller
             'cabinet_name'              => $ppp->getPatchPanel()->getCabinet()->getName(),
             'colocation_centre'         => $ppp->getPatchPanel()->getCabinet()->getLocation()->getName(),
             'colo_circuit_ref'          => $ppp->getColoCircuitRef(),
+            'colo_billing_ref'          => $ppp->getColoBillingRef(),
             'ticket_ref'                => $ppp->getTicketRef(),
             'switch'                    => $ppp->getSwitchId(),
             'switch_port'               => $ppp->getSwitchPortId(),
@@ -277,7 +278,13 @@ class PatchPanelPortController extends Controller
      * Add or edit a patch panel port (set all the data needed)
      *
      * @param   StorePatchPanelPortRequest $request instance of the current HTTP request
+     *
      * @return  RedirectResponse
+     *
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
      */
     public function store( StorePatchPanelPortRequest $request ): RedirectResponse {
 
@@ -332,6 +339,7 @@ class PatchPanelPortController extends Controller
         $ppp->setPrivateNotes(      clean( $request->input( 'private_notes',''  ) ) );
 
         $ppp->setColoCircuitRef(    $request->input( 'colo_circuit_ref',    ''  ) );
+        $ppp->setColoBillingRef(    $request->input( 'colo_billing_ref',    ''  ) );
         $ppp->setTicketRef(         $request->input( 'ticket_ref',          ''  ) );
 
         $ppp->setCustomer( ( $request->input( 'customer' ) ) ? D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'customer' ) ) : null );
@@ -430,7 +438,11 @@ class PatchPanelPortController extends Controller
      *
      * @param int $id
      * @param int $status
+     *
      * @return RedirectResponse
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
      */
     public function changeStatus( int $id, int $status ): RedirectResponse {
         switch ( $status ) {
@@ -773,7 +785,11 @@ class PatchPanelPortController extends Controller
      * Delete a patch panel port file history
      *
      * @param  int $fileid patch panel port history file ID
+     *
      * @return  JsonResponse
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
      */
     public function deleteHistoryFile( int $fileid ){
         /** @var PatchPanelPortHistoryFileEntity $ppphf */
@@ -800,7 +816,10 @@ class PatchPanelPortController extends Controller
      * Also deletes associated files and histories.
      *
      * @param  int $id ID of the patch panel port to delete
+     *
      * @return  JsonResponse
+     *
+     * @throws
      */
     public function delete( int $id ) {
         /** @var PatchPanelPortEntity $ppp */
@@ -819,7 +838,10 @@ class PatchPanelPortController extends Controller
      * Remove the linked port from the master and reset it as available.
      *
      * @param  int $id ID of the patch panel **master** port from which to split the slave
+     *
      * @return  JsonResponse
+     *
+     * @throws
      */
     public function split( int $id ){
         /** @var PatchPanelPortEntity $ppp */
@@ -860,7 +882,10 @@ class PatchPanelPortController extends Controller
      * Make a patch panel port file private
      *
      * @param  int $fileid patch panel port file ID
+     *
      * @return  JsonResponse
+     *
+     * @throws
      */
     public function toggleFilePrivacy( int $fileid ){
         /** @var PatchPanelPortFileEntity $pppFile */
@@ -880,7 +905,10 @@ class PatchPanelPortController extends Controller
      * @param  int $id patch panel port ID
      * @param  Request $request instance of the current HTTP request
      * @param  FlysystemManager $filesystem instance of the file manager
+     *
      * @return  JsonResponse
+     *
+     * @throws
      */
     public function uploadFile( Request $request, FlysystemManager $filesystem, int $id ): JsonResponse {
         if( !( $ppp = D2EM::getRepository( PatchPanelPortEntity::class )->find($id) ) ) {
@@ -931,6 +959,8 @@ class PatchPanelPortController extends Controller
      * @param   int         $id         The ID of the patch panel port to query
      *
      * @return  JsonResponse JSON customer object
+     *
+     * @throws
      */
     public function setNotes( Request $request, int $id ) : JsonResponse {
 

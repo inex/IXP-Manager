@@ -209,8 +209,9 @@ class SwitchPortController extends IXP_Controller_FrontEnd
             }
             catch( \OSS_SNMP\Exception $e )
             {
-                $this->addMessage( "<strong>Stale data gathered on " . $switch->getLastPolled()->format( 'Y-m-d H:i:s' ) . "</strong>. "
-                        . "Could not update switch and switch port details via SNMP poll.", OSS_Message::ALERT );
+                $lastpolled = is_null( $switch->getLastPolled()) ? "never" : $switch->getLastPolled()->format( 'Y-m-d H:i:s' );
+                $this->addMessage("<strong>Could not update switch and switch port details via SNMP poll.</strong> " .
+                    "Last successful poll: " . $lastpolled . "</strong>.", OSS_Message::ALERT );
             }
         }
 

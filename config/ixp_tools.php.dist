@@ -6,35 +6,7 @@
 
 return [
 
-    //;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    //
-    // Route Collector / Server Details
-    //
-    // See: https://github.com/inex/IXP-Manager/wiki/Route-Collector
-    //
 
-    'safe_ips' => [
-        '127.0.0.1',
-        '::1',
-    ],
-
-    'router' => [
-        'collector' => [
-            'conf'       => [
-                'target'  => "quagga",
-                'dstpath' => base_path() . "/var/spool",
-
-                // Used by nagios-cli.gen-members-conf action to monitor route collector BGP sessions
-                'snmppasswd' => 'xxxx',
-            ],
-        ],
-    ],
-
-    'irrdb' => [
-        'bgpq' => [
-            'path' => '/path/to/bgpq3',
-        ],
-    ],
 
     // LANs available for public and member's own peering matrix.
     'peering_matrix' => [

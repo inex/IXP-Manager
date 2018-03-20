@@ -64,10 +64,10 @@ class CustomerNote extends \Entities\CustomerNote implements \Doctrine\ORM\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'private', 'title', 'note', 'created', 'id', 'Customer', 'updated'];
+            return ['__isInitialized__', 'private', 'title', 'note', 'created', 'updated', 'id', 'Customer'];
         }
 
-        return ['__isInitialized__', 'private', 'title', 'note', 'created', 'id', 'Customer', 'updated'];
+        return ['__isInitialized__', 'private', 'title', 'note', 'created', 'updated', 'id', 'Customer'];
     }
 
     /**
@@ -242,6 +242,17 @@ class CustomerNote extends \Entities\CustomerNote implements \Doctrine\ORM\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getNoteParsedown()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNoteParsedown', []);
+
+        return parent::getNoteParsedown();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setCreated($created)
     {
 
@@ -301,7 +312,7 @@ class CustomerNote extends \Entities\CustomerNote implements \Doctrine\ORM\Proxy
     /**
      * {@inheritDoc}
      */
-    public function toArray()
+    public function toArray(): array
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'toArray', []);

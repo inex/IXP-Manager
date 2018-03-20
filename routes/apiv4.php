@@ -17,20 +17,15 @@ use Illuminate\Http\Request;
 //     wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
 
 
+Route::get( 'ping', 'PublicController@ping' );
+Route::get( 'test', 'PublicController@test' );
+
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // IX-F Member List Export
 
 Route::get('member-export/ixf',            'MemberExportController@ixf');
 Route::get('member-export/ixf/{version}',  'MemberExportController@ixf');
-
-
-
-Route::get( 'test', function() {
-    return response()->make( "API Test Function!\n\nAuthenticated: "
-        . ( Auth::check() ? 'Yes, as: ' . Auth::user()->getUsername() : 'No' ) . "\n\n", 200 )
-        ->header( 'Content-Type', 'text/plain; charset=utf-8' );
-});
 
 
 Route::get( 'peeringdb/ix', function() {
@@ -85,4 +80,39 @@ Route::get( 'peering-db/fac', function() {
         return $pdbs;
     }));
 })->name('api-v4-peering-db-fac');
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// Statistics
+//
+
+// get overall stats by month as a JSON response
+Route::get( 'statistics/overall-by-month', 'StatisticsController@overallByMonth' );
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ASN Number
+//
+Route::get( 'aut-num/{asn}', function( $asn) {
+    return response()->json( Cache::remember('aut-num', 120, function() use( $asn ) {
+        $infos = [];
+        if( $values = file_get_contents("https://rest.db.ripe.net/ripe/aut-num/". $asn . ".json" ) ) {
+            $i = 0;
+
+            foreach( json_decode( $values)->objects->object[0]->attributes->attribute as $val ) {
+                $infos[ $i ][ 'name' ] = $val->name;
+                $infos[ $i ][ 'value' ] = $val->value;
+                if( isset( $val->link ) ){
+                    $infos[ $i ][ 'link' ] = $val->link->href;
+                }
+
+                if( isset( $val->comment ) ){
+                    $infos[ $i ][ 'comment' ] = $val->comment;
+                }
+
+                $i++;
+            }
+        }
+        return $infos;
+    }));
+})->name('api-v4-aut-num');
 

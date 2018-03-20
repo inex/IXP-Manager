@@ -13,7 +13,7 @@
     </unique-constraints>
     <many-to-one field="vlanInterface" target-entity="Entities\VlanInterface" inversed-by="layer2Addresses">
       <join-columns>
-        <join-column name="vlan_interface_id" referenced-column-name="id" nullable="false"/>
+        <join-column name="vlan_interface_id" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
   </entity>

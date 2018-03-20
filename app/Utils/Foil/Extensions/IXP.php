@@ -50,16 +50,17 @@ class IXP implements ExtensionInterface {
 
     public function provideFunctions() {
         return [
-            'alerts'            => [ AlertContainer::class, 'html' ],
-            'as112UiActive'     => [ $this, 'as112UiActive' ],
-            'asNumber'          => [ $this, 'asNumber' ],
-            'maxFileUploadSize' => [ $this, 'maxFileUploadSize' ],
-            'multiIXP'          => [ $this, 'multiIXP' ],
-            'nagiosHostname'    => [ $this, 'nagiosHostname' ],
-            'resellerMode'      => [ $this, 'resellerMode' ],
-            'scaleBits'         => [ $this, 'scaleBits' ],
-            'scaleBytes'        => [ $this, 'scaleBytes' ],
-            'softwrap'          => [ $this, 'softwrap' ],
+            'alerts'                => [ AlertContainer::class, 'html' ],
+            'as112UiActive'         => [ $this, 'as112UiActive' ],
+            'asNumber'              => [ $this, 'asNumber' ],
+            'logoManagementEnabled' => [ $this, 'logoManagementEnabled' ],
+            'maxFileUploadSize'     => [ $this, 'maxFileUploadSize' ],
+            'multiIXP'              => [ $this, 'multiIXP' ],
+            'nagiosHostname'        => [ $this, 'nagiosHostname' ],
+            'resellerMode'          => [ $this, 'resellerMode' ],
+            'scaleBits'             => [ $this, 'scaleBits' ],
+            'scaleBytes'            => [ $this, 'scaleBytes' ],
+            'softwrap'              => [ $this, 'softwrap' ],
         ];
     }
 
@@ -252,6 +253,18 @@ class IXP implements ExtensionInterface {
     }
 
     /**
+     * Checks if logo management is enabled
+     *
+     * To enable logos in the UI set IXP_FE_FRONTEND_DISABLED_LOGO=false in .env
+     *
+     * @return bool
+     */
+    public function logoManagementEnabled()
+    {
+        return !boolval( config( 'ixp_fe.frontend.disabled.logo' ) );
+    }
+
+    /**
      * Checks if multi IXP mode is enabled.
      *
      * To enable multi IXP mode set the env variable IXP_MULTIIXP_ENABLED
@@ -285,7 +298,8 @@ class IXP implements ExtensionInterface {
     /**
      * Replaces an AS  Number with some JS magic to invoke a bootbox.
      *
-     * @param  int    $asn The AS number
+     * @param  int    $asn      The AS number
+     * @param  bool   $addAs    Do we need to add AS?
      * @return string
      */
     public function asNumber( int $asn, $addAs = true )

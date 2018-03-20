@@ -2,6 +2,8 @@
 Potential Todo / Feature Ideas
 ------------------------------
 
+* IP address state (history and reserved) - see #274
+
 * API - "another thing that could potentially be useful.. the way you
   generate RIR objects.. if members could generate their macro and maybe
   import/exports based on the data route servers receive this could be
@@ -18,8 +20,6 @@ Potential Todo / Feature Ideas
 
 * Review MRTG script for reseller and fanout ports
 
-* Fix static documentation to allow for auth. See StaticController::__call()
-
 * INEX require that members peer "with at least the greater of 4 other
   Members, or 10% of other Members". A tool to list members failing this
   requirement would be useful.
@@ -28,20 +28,11 @@ Potential Todo / Feature Ideas
 
 * Show who a member peers with (or not) on the overview page
 
-* Show if a member is on the route server or not
-
 * Member audit - port states, errors / discards, route collector session
   status, route server session status, etc.
 
-
-* Go through application/config/application.ini.dist and fix FIXMEs and add new
-  documentation where indicated
-
 * Would be useful to display last login information in the user edit screen or
   the list of users. Also the created by, last updated date?
-
-* Member field for "MD5 Required" with values: "No", "Yes - mandatory",
-  "Yes - on request", "Unknown"
 
 * Show per-member peering matrix on member overview page?
 
@@ -57,16 +48,9 @@ Potential Todo / Feature Ideas
   Also consider adding maxprefixes to peering manager template (see #174).
 
 
-* Add integrated PeeringDB functionality via access to:
-  mysql -h mysql.peeringdb.com
-
 * Add PeeringDB link to PM request template
 
 * Update suggested prefix limit / real prefix limit based on IRRDB entries?
-
-* Tool to plug data into EURO-IX database
-
-* Add "Abbrieviated Name" to schema for titles in, e.g., p2p graphs
 
 * Add ASN to graph titles
 
@@ -94,5 +78,3 @@ Potential Todo / Feature Ideas
   subscriptions. Also email to custadmins reminding them of their users.
   Probably staggered over the year to prevent a flux of inbound emails.
 
-* I'd like to see the ability to do bulk modification (likely just deletion) 
-  to IP addresses, ie: selecting a group of ten and deleting them # 296
