@@ -861,6 +861,10 @@
       <field name="flowcontrol" type="integer" uuid="1a41b714-5aef-48c6-b5b4-cd5dfa190f25"/>
       <field name="autobaud" type="boolean" uuid="8c3747cd-8f2c-4786-affd-c6e4705b7c91"/>
       <field name="notes" type="text" uuid="2c357ee1-effe-445c-b259-b5b672266a95"/>
+      <index name="console_server_port_uniq" unique="true">
+        <index-field name="console_server_id"/>
+        <index-field name="port"/>
+      </index>
       <orm-attributes>
         <attribute name="repository-class">Repositories\ConsoleServerConnection</attribute>
         <attribute name="table">consoleserverconnection</attribute>
@@ -1482,6 +1486,7 @@
     <association uuid="0dc9ac51-e3ab-42de-b7f6-81d5b4bf8637" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="0ddc2408-657b-4705-8e3d-05dfd77e7f4f" color="#969696"/>
     <association uuid="0ee80a87-2e0c-4f8a-a0c5-aff080f731da" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="10405d40-8fdd-4189-864c-0535fbf1eaf5" color="#969696"/>
     <association uuid="1166ebf0-8024-4783-9af3-61e1b4f61070" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20" color="#969696"/>
     <association uuid="15b1d11f-9a03-4772-a3cf-c984cd801d7a" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="1eba91d3-a283-42e2-8ae4-45163c1ea622" color="#969696"/>
@@ -1493,7 +1498,6 @@
     <association uuid="3de69308-a3d5-4138-97be-111724303344" caption1-position-x="-1" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="4bc1d72f-a2b3-43b8-89f6-e5aaeb3b6d59" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="4c701748-2450-4a6b-9d80-f5df9e6ebf6e" center-position-x="0" center-position-y="0" color="#969696"/>
-    <association uuid="518453f9-598d-4246-847d-f839117f1d0a" color="4288059030"/>
     <association uuid="52d28567-bcaf-46dd-8616-115315c3d965" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="56098a3e-c55e-4a20-9ca1-88ac494c7e73" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
