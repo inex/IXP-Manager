@@ -260,7 +260,7 @@ class CustomerController extends Controller
         if( $isEdit ){
             return Redirect::to( route( "customer@overview" , [ "id" => $c->getId() ] ) );
         } else {
-            return Redirect::to( route( "customer@billingRegistration" , [ "id" => $c->getId() ] ) );
+            return Redirect::to( route( "customer@billing-registration" , [ "id" => $c->getId() ] ) );
         }
 
     }
