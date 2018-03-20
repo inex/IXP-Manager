@@ -17,7 +17,7 @@
                         </a>
                     </td>
                     <td>
-                        <a href="<?= url( 'customer/overview/id/' . $prefix->getCustomer()->getId() )?>">
+                        <a href="<?= route( "customer@overview" , [ "id" => $prefix->getCustomer()->getId() ] ) ?>">
                             <?= $t->ee( $prefix->getCustomer()->getName() ) ?>
                         </a>
                     </td>

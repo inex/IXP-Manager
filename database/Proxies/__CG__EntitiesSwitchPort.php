@@ -851,6 +851,17 @@ class SwitchPort extends \Entities\SwitchPort implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
+    public function isTypeFanout()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeFanout', []);
+
+        return parent::isTypeFanout();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setPatchPanelPort(\Entities\PatchPanelPort $patchPanelPort = NULL)
     {
 

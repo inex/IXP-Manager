@@ -78,7 +78,11 @@
                         {if $cconf.type eq $FE_COL_TYPES.HAS_ONE}
                             <td>
                                 {assign var=hasOneId value=$cconf.idField}
-                                <a href="{genUrl controller=$cconf.controller action=$cconf.action id=$row.$hasOneId}">{$row.$col}</a>
+                                {if $cconf.controller == "customer" && $cconf.action == "overview" }
+                                    <a href="{route( 'customer@overview', [ 'id' => $row.$hasOneId ] )}">{$row.$col}</a>
+                                {else}
+                                    <a href="{genUrl controller=$cconf.controller action=$cconf.action id=$row.$hasOneId}">{$row.$col}</a>
+                                {/if}
                             </td>
                         {elseif $cconf.type eq $FE_COL_TYPES.XLATE}
                             <td>

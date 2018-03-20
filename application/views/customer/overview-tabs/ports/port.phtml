@@ -218,8 +218,15 @@
                 <td><strong>Multicast Enabled:</strong></td>
                 <td id="value">{if $vli->getMcastenabled()}Yes{else}No{/if}</td>
                 <td></td>
-                <td><strong></strong></td>
-                <td id="value"></td>
+                <td><strong>Mac Address:</strong></td>
+                <td id="value">
+                    {foreach $vli->getLayer2AddressesAsArray() as $l2a}
+                        {$l2a}<br />
+                    {/foreach}
+                    {if count( $vli->getLayer2AddressesAsArray() ) > 0 && config( 'ixp_fe.layer2-addresses.customer_can_edit' ) }
+                        <a href="{route( "Layer2AddressController@forVlanInterface", [ "id" => {$vli->getId()} ] )}">Edit</a>
+                    {/if}
+                </td>
             </tr>
 
             <tr>
@@ -231,14 +238,18 @@
                 <td><strong>Route Server Client:</strong></td>
                 <td id="value">{if $vli->getRsclient()}Yes{else}No{/if}</td>
                 <td></td>
-                {if $as112UiActive}
-                    <td><strong>AS112 Client:</strong></td>
-                    <td id="value">{if $vli->getAs112client()}Yes{else}No{/if}</td>
-                {else}
-                    <td></td>
-                    <td></td>
-                {/if}
+
             </tr>
+                <tr>
+                    <td></td>
+                    {if $as112UiActive}
+                        <td><strong>AS112 Client:</strong></td>
+                        <td id="value">{if $vli->getAs112client()}Yes{else}No{/if}</td>
+                    {else}
+                        <td></td>
+                        <td></td>
+                    {/if}
+                </tr>
 
             </table>
 
@@ -260,13 +271,13 @@
     </div>
     <div class="span6">
 
-        {if $isLAG}
+        {if $isLAG and $vi->isGraphable()}
             <br /><br />
             <div class="well">
                 <h4>
                     Aggregate Day Graph for LAG
-                    <a class="btn btn-default pull-right" href="{genUrl controller="statistics" action="member-drilldown" shortname=$cust->getShortname() category='bits' monitorindex="lag-viid-`$vi->getId()`"}">
-                        <i class="icon-eye-open"></i>
+                    <a class="btn btn-default pull-right" href="{genUrl controller="statistics" action="member-drilldown"}/vi/{$vi->getId()}">
+                        <i class="icon-zoom-in"></i>
                     </a>
                 </h4>
                 <br />
@@ -275,12 +286,16 @@
         {/if}
 
         {foreach $vi->getPhysicalInterfaces() as $pi}
+            {if not $pi->isGraphable()}
+                {continue}
+            {/if}
+
             <br /><br />
             <div class="well">
                 <h4>
                     Day Graph for {$pi->getSwitchPort()->getSwitcher()->getName()} / {$pi->getSwitchPort()->getName()}
-                    <a class="btn btn-default pull-right" href="{genUrl controller="statistics" action="member-drilldown" shortname=$cust->getShortname() category='bits' monitorindex=$pi->getMonitorindex()}">
-                        <i class="icon-eye-open"></i>
+                    <a class="btn btn-default pull-right" href="{genUrl controller="statistics" action="member-drilldown"}/pi/{$pi->getId()}">
+                        <i class="icon-zoom-in"></i>
                     </a>
                 </h4>
                 <br />

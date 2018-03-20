@@ -22,10 +22,10 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Member Information <b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="<?= url('') ?>/switch/configuration">Switch Configuration</a>
+                            <a href="<?= route( "customer@details" ) ?>">Member Details</a>
                         </li>
                         <li>
-                            <a href="<?= url('') ?>/customer/details">Member Details</a>
+                            <a href="<?= route( "customer@associates" ) ?>">Associate Members</a>
                         </li>
                     </ul>
                 </li>

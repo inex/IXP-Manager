@@ -532,6 +532,17 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
     /**
      * {@inheritDoc}
      */
+    public function isGraphable(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isGraphable', []);
+
+        return parent::isGraphable();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function resolveDetectedSpeed()
     {
 

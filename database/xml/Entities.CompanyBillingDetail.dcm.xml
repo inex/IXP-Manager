@@ -23,6 +23,6 @@
     <field name="invoiceMethod" type="string" nullable="true" column="invoiceMethod"/>
     <field name="invoiceEmail" type="string" nullable="true" column="invoiceEmail"/>
     <field name="billingFrequency" type="string" nullable="true" column="billingFrequency"/>
-    <one-to-many field="Customer" target-entity="Entities\Customer" mapped-by="BillingDetails"/>
+    <one-to-one field="Customer" target-entity="Entities\Customer" mapped-by="BillingDetails"/>
   </entity>
 </doctrine-mapping>

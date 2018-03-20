@@ -2,52 +2,55 @@
 
 namespace Entities;
 
-/**
- * Logo
- */
-class Logo
-{
-/**
- * @var string
- */
-private $original_name;
+    /**
+     * Logo
+     */
+    class Logo
+    {
+    /**
+     * @var string
+     */
+    private $original_name;
 
-/**
- * @var string
- */
-private $stored_name;
+    /**
+     * @var string
+     */
+    private $stored_name;
 
-/**
- * @var string
- */
-private $uploaded_by;
+    /**
+     * @var string
+     */
+    private $uploaded_by;
 
-/**
- * @var \DateTime
- */
-private $uploaded_at;
+    /**
+     * @var \DateTime
+     */
+    private $uploaded_at;
 
-/**
- * @var integer
- */
-private $width;
+    /**
+     * @var integer
+     */
+    private $width;
 
-/**
- * @var integer
- */
-private $height;
+    /**
+     * @var integer
+     */
+    private $height;
 
-/**
- * @var integer
- */
-private $id;
+    /**
+     * @var integer
+     */
+    private $id;
 
-/**
- * @var \Entities\Customer
- */
-private $customer;
+    /**
+     * @var \Entities\Customer
+     */
+    private $customer;
 
-
+    /**
+     * @var string
+     */
+    private $type;
 
     /**
      * Tyoe for display on public website
@@ -55,183 +58,77 @@ private $customer;
     const TYPE_WWW80 = 'WWW80';
 
 
-/**
- * Set originalName
- *
- * @param string $originalName
- *
- * @return Logo
- */
-public function setOriginalName($originalName)
-{
-$this->original_name = $originalName;
+    /**
+     * Get originalName
+     *
+     * @return string
+     */
+    public function getOriginalName(){
+        return $this->original_name;
+    }
 
-return $this;
-}
+    /**
+     * Get storedName
+     *
+     * @return string
+     */
+    public function getStoredName(){
+        return $this->stored_name;
+    }
 
-/**
- * Get originalName
- *
- * @return string
- */
-public function getOriginalName()
-{
-return $this->original_name;
-}
+    /**
+     * Get uploadedBy
+     *
+     * @return string
+     */
+    public function getUploadedBy(){
+        return $this->uploaded_by;
+    }
 
-/**
- * Set storedName
- *
- * @param string $storedName
- *
- * @return Logo
- */
-public function setStoredName($storedName)
-{
-$this->stored_name = $storedName;
+    /**
+     * Get uploadedAt
+     *
+     * @return \DateTime
+     */
+    public function getUploadedAt(){
+        return $this->uploaded_at;
+    }
 
-return $this;
-}
+    /**
+     * Get width
+     *
+     * @return integer
+     */
+    public function getWidth(){
+        return $this->width;
+    }
 
-/**
- * Get storedName
- *
- * @return string
- */
-public function getStoredName()
-{
-return $this->stored_name;
-}
+    /**
+     * Get height
+     *
+     * @return integer
+     */
+    public function getHeight(){
+        return $this->height;
+    }
 
-/**
- * Set uploadedBy
- *
- * @param string $uploadedBy
- *
- * @return Logo
- */
-public function setUploadedBy($uploadedBy)
-{
-$this->uploaded_by = $uploadedBy;
+    /**
+     * Get id
+     *
+     * @return integer
+     */
+    public function getId(){
+        return $this->id;
+    }
 
-return $this;
-}
-
-/**
- * Get uploadedBy
- *
- * @return string
- */
-public function getUploadedBy()
-{
-return $this->uploaded_by;
-}
-
-/**
- * Set uploadedAt
- *
- * @param \DateTime $uploadedAt
- *
- * @return Logo
- */
-public function setUploadedAt($uploadedAt)
-{
-$this->uploaded_at = $uploadedAt;
-
-return $this;
-}
-
-/**
- * Get uploadedAt
- *
- * @return \DateTime
- */
-public function getUploadedAt()
-{
-return $this->uploaded_at;
-}
-
-/**
- * Set width
- *
- * @param integer $width
- *
- * @return Logo
- */
-public function setWidth($width)
-{
-$this->width = $width;
-
-return $this;
-}
-
-/**
- * Get width
- *
- * @return integer
- */
-public function getWidth()
-{
-return $this->width;
-}
-
-/**
- * Set height
- *
- * @param integer $height
- *
- * @return Logo
- */
-public function setHeight($height)
-{
-$this->height = $height;
-
-return $this;
-}
-
-/**
- * Get height
- *
- * @return integer
- */
-public function getHeight()
-{
-return $this->height;
-}
-
-/**
- * Get id
- *
- * @return integer
- */
-public function getId()
-{
-return $this->id;
-}
-
-/**
- * Set customer
- *
- * @param \Entities\Customer $customer
- *
- * @return Logo
- */
-public function setCustomer(\Entities\Customer $customer = null)
-{
-$this->customer = $customer;
-
-return $this;
-}
-
-/**
- * Get customer
- *
- * @return \Entities\Customer
- */
-public function getCustomer()
-{
-return $this->customer;
-}
+    /**
+     * Get customer
+     *
+     * @return \Entities\Customer
+     */
+    public function getCustomer(){
+        return $this->customer;
+    }
 
 
     /**
@@ -243,34 +140,120 @@ return $this->customer;
         return substr($this->getStoredName(), 0, 1) . '/' . substr($this->getStoredName(), 1, 1) . '/' . $this->getStoredName();
     }
 
+    /**
+     * Get the full path of the a logo
+     *
+     * @return string the/full/path/filename
+     */
+    public function getFullPath() {
+        return public_path().'/logos/' . $this->getShardedPath();
+    }
 
-/**
- * @var string
- */
-private $type;
+    /**
+     * Get type
+     *
+     * @return string
+     */
+    public function getType(){
+        return $this->type;
+    }
 
+    /**
+     * Set originalName
+     *
+     * @param string $originalName
+     *
+     * @return Logo
+     */
+    public function setOriginalName( $originalName ){
+        $this->original_name = $originalName;
+        return $this;
+    }
 
-/**
- * Set type
- *
- * @param string $type
- *
- * @return Logo
- */
-public function setType($type)
-{
-$this->type = $type;
+    /**
+     * Set storedName
+     *
+     * @param string $storedName
+     *
+     * @return Logo
+     */
+    public function setStoredName( $storedName ){
+        $this->stored_name = $storedName;
+        return $this;
+    }
 
-return $this;
-}
+    /**
+     * Set uploadedBy
+     *
+     * @param string $uploadedBy
+     *
+     * @return Logo
+     */
+    public function setUploadedBy( $uploadedBy ){
+        $this->uploaded_by = $uploadedBy;
+        return $this;
+    }
 
-/**
- * Get type
- *
- * @return string
- */
-public function getType()
-{
-return $this->type;
-}
+    /**
+     * Set uploadedAt
+     *
+     * @param \DateTime $uploadedAt
+     *
+     * @return Logo
+     */
+    public function setUploadedAt( $uploadedAt ){
+        $this->uploaded_at = $uploadedAt;
+
+        return $this;
+    }
+
+    /**
+     * Set width
+     *
+     * @param integer $width
+     *
+     * @return Logo
+     */
+    public function setWidth( $width ){
+    $this->width = $width;
+
+    return $this;
+    }
+
+    /**
+     * Set height
+     *
+     * @param integer $height
+     *
+     * @return Logo
+     */
+    public function setHeight( $height ){
+        $this->height = $height;
+        return $this;
+    }
+
+    /**
+     * Set customer
+     *
+     * @param \Entities\Customer $customer
+     *
+     * @return Logo
+     */
+    public function setCustomer( \Entities\Customer $customer = null ){
+        $this->customer = $customer;
+        return $this;
+    }
+
+    /**
+     * Set type
+     *
+     * @param string $type
+     *
+     * @return Logo
+     */
+    public function setType( $type ){
+        $this->type = $type;
+
+        return $this;
+    }
 }

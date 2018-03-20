@@ -10,7 +10,7 @@ $row = $t->data[ 'item' ];
             Customer
     </th>
     <td>
-        <a href="<?= url( 'customer/view/id/'. $row[ 'customerid' ] )?>">
+        <a href="<?= route( "customer@overview" , [ "id" => $row[ 'customerid' ] ] ) ?>">
             <?= $t->ee( $row['customer'] ) ?>
         </a>
     </td>

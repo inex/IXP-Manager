@@ -44,7 +44,7 @@ $this->layout( 'layouts/ixpv4' );
                 /** @var Entities\VlanInterface $vli */ ?>
                 <tr>
                     <td>
-                        <a href="<?= url( '/customer/overview/id' ).'/'.$vli['custid']?>">
+                        <a href="<?= route( "customer@overview" , [ "id" => $vli['custid'] ] ) ?>">
                             <?= $t->ee( $vli['customer'] )  ?>
                         </a>
                     </td>

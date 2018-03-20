@@ -104,15 +104,18 @@ class LoginHistoryController extends Doctrine2Frontend {
         // display the same information in the view as the list
         $this->feParams->viewColumns = $this->feParams->listColumns;
 
-        // custom access controls:
-        switch( Auth::user()->getPrivs() ) {
-            case UserEntity::AUTH_SUPERUSER:
-                break;
+        // phpunit / artisan trips up here without the cli test:
+        if( php_sapi_name() !== 'cli' ) {
 
-            default:
-                abort( 403 );
+            // custom access controls:
+            switch( Auth::check() ? Auth::user()->getPrivs() : UserEntity::AUTH_PUBLIC ) {
+                case UserEntity::AUTH_SUPERUSER:
+                    break;
+
+                default:
+                    $this->unauthorized();
+            }
         }
-
     }
 
     /**

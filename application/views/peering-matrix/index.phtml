@@ -100,6 +100,8 @@
 
 {assign var=outer value=0}
 
+{assign var=rspeer value=0}
+{assign var=bilat value=0}
 {foreach from=$custs key=x_as item=x}
 
 
@@ -116,10 +118,14 @@
 		        {if $y.autsys neq $x.autsys}
     		        {if isset( $sessions.$x_as.peers.$y_as ) and $x.rsclient and $y.rsclient}
     		             peered bilateral-rs
+                            {assign var=bilat value=$bilat+1}
+                            {assign var=rspeer value=$rspeer+1}
 		            {else if isset( $sessions.$x_as.peers.$y_as )}
     		             peered bilateral-only
+                            {assign var=bilat value=$bilat+1}
     		        {else if $x.rsclient and $y.rsclient}
     		             peered rs-only
+                            {assign var=rspeer value=$rspeer+1}
     	            {else}
     		            not-peered
     		        {/if}
@@ -140,6 +146,8 @@
 {assign var=outer value=$outer+1}
 
 {/foreach}
+{assign var=bilat value=$bilat/2}
+{assign var=rspeer value=$rspeer/2}
 
 </tbody>
 
@@ -156,6 +164,9 @@
             <h3>Notes on the Peering Matrix</h3>
 
             <ul>
+                <li>
+                    bilat: {$bilat}, multilat: {$rspeer}
+                </li>
                 <li>
                     Clicking the AS number in the table header will isolate that column. Clicking individual
                     cells in the body will freeze the dynamic highlighting.

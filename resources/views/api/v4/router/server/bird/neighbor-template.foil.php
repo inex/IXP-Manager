@@ -37,7 +37,6 @@
 template bgp tb_rsclient {
         local as routeserverasn;
         source address routeserveraddress;
-<?php if( $t->router->protocol() == 4 ): ?>
         import filter {
                 ## Prevent BGP NEXT_HOP Hijacking
                 if !( from = bgp_next_hop ) then
@@ -45,9 +44,6 @@ template bgp tb_rsclient {
 
                 accept;
         };
-<?php else: ?>
-        import all;
-<?php endif; ?>
 
         export all;
         rs client;

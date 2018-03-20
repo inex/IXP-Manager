@@ -114,6 +114,8 @@ class PatchPanelController extends Controller
      * @param   StorePatchPanel $request instance of the current HTTP request
      *
      * @return  redirect
+     *
+     * @throws
      */
     public function store( StorePatchPanel $request ) {
         /** @var PatchPanelEntity $pp  */
@@ -171,6 +173,8 @@ class PatchPanelController extends Controller
      * @param int $active
      *
      * @return RedirectResponse
+     *
+     * @throws
      */
     public function changeStatus( int $id, int $active ): RedirectResponse {
         /** @var PatchPanelEntity $pp  */

@@ -159,13 +159,11 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
     }
 
     /**
-     * Force URL (and http/s schema) if necessary
+     * Force URL
      */
     private function setupUrls( array $options ): array {
-        if( config('identity.urls.forceUrl') ) {
-            $options['utils']['genurl']['host_mode']    = 'REPLACE';
-            $options['utils']['genurl']['host_replace'] = config('identity.urls.forceUrl');
-        }
+        $options['utils']['genurl']['host_mode']    = 'REPLACE';
+        $options['utils']['genurl']['host_replace'] = config('app.url');
         return $options;
     }
 
@@ -184,9 +182,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options['resources']['namespace']['checkip']           = 0;
         $options['resources']['namespace']['timeout']           = config('session.lifetime')*60;
 
-        $options['resources']['session']['use_only_cookies']    = true;
-        $options['resources']['session']['remember_me_seconds'] = config('session.lifetime')*60;
-
         return $options;
     }
 
@@ -201,11 +196,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options['identity']['ixfid']                 = config( 'identity.ixfid' );
         $options['identity']['name']                  = config( 'identity.name' );
         $options['identity']['email']                 = config( 'identity.email' );
-        $options['identity']['email']                 = config( 'identity.email' );
-        $options['identity']['autobot']['name']       = config( 'identity.autobot.name' );
-        $options['identity']['autobot']['email']      = config( 'identity.autobot.email' );
-        $options['identity']['mailer']['name']        = config( 'identity.mailer.name' );
-        $options['identity']['mailer']['email']       = config( 'identity.mailer.email' );
         $options['identity']['sitename']              = config( 'identity.sitename' );
         $options['identity']['url']                   = config( 'app.url' );
         $options['identity']['logo']                  = config( 'identity.logo' );
@@ -301,22 +291,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
      */
     private function setupIxpTools( array $options ): array {
 
-        if( config( 'ixp_tools.router.collector.conf.target' ) ) {
-            $options['router']['collector']['conf']['target'] = config( 'ixp_tools.router.collector.conf.target' );
-        }
-
-        if( config( 'ixp_tools.router.collector.conf.dstpath' ) ) {
-            $options['router']['collector']['conf']['dstpath'] = config( 'ixp_tools.router.collector.conf.dstpath' );
-        }
-
-        if( config( 'ixp_tools.router.collector.conf.snmppasswd' ) ) {
-            $options['router']['collector']['conf']['snmppasswd'] = config( 'ixp_tools.router.collector.conf.snmppasswd' );
-        }
-
-        if( config( 'ixp_tools.irrdb.bgpq.path' ) ) {
-            $options['irrdb']['bgpq']['path'] = config( 'ixp_tools.irrdb.bgpq.path' );
-        }
-
         if( is_array( config('ixp_tools.peering_matrix') ) ) {
             foreach( config('ixp_tools.peering_matrix') as $id => $details ) {
                 foreach( $details as $k => $v ) {
@@ -395,8 +369,7 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
      * Setup session
      */
     private function setupSession( array $options ): array {
-        $options['resources']['session']['save_path'] = config('session.files');
-        $options['resources']['session']['name']      = config('session.cookie');
+        $options['resources']['session'] = [];
         return $options;
     }
 }

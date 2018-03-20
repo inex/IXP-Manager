@@ -8,19 +8,6 @@ return [
      *
      */
 
-    'urls' => [
-        // if you want to FORCE a URL (e.g. running behind a proxy) - set the following.
-        // If in doubt, leave it commented out and IXP Manager will 'do the right thing'
-        // 'forceUrl' => 'https://www.example.com'
-        'forceUrl' => env( 'IDENTITY_FORCE_URL', false ),
-
-        // if you want to FORCE a schema (http/https) (e.g. running behind a proxy) - set the following.
-        // If in doubt, leave it commented out and IXP Manager will 'do the right thing'
-        // 'forceSchema' => 'https'
-        'forceSchema' => env( 'IDENTITY_FORCE_SCHEMA', false ),
-    ],
-
-
 
     // ****************************************************************************************
     // IXP Manager v3 legacy below. Needs to be configured!
@@ -50,17 +37,6 @@ return [
     'billing_phone'       => env( 'IDENTITY_BILLING_PHONE', '*** CONFIG IDENTITY IN .env ***' ),
     'billing_hours'       => env( 'IDENTITY_BILLING_HOURS', '*** CONFIG IDENTITY IN .env ***' ),
 
-
-    'autobot'     => [
-            'name'           => env( 'IDENTITY_AUTOBOT_NAME', '*** CONFIG IDENTITY IN .env ***' ),
-            'email'          => env( 'IDENTITY_AUTOBOT_EMAIL', '*** CONFIG IDENTITY IN .env ***' ),
-        ],
-
-    'mailer'      => [
-        'name'               => env( 'IDENTITY_MAILER_NAME', '*** CONFIG IDENTITY IN .env ***' ),
-        'email'              => env( 'IDENTITY_MAILER_EMAIL', '*** CONFIG IDENTITY IN .env ***' ),
-    ],
-
     'sitename'      => env( 'IDENTITY_SITENAME', '*** CONFIG IDENTITY IN .env ***' ),
     'corporate_url' => env( 'IDENTITY_CORPORATE_URL', '*** CONFIG IDENTITY IN .env ***' ),
     'url'           => env( 'APP_URL', '*** CONFIG APP_URL IN .env ***' ),
@@ -73,9 +49,6 @@ return [
 
     'vlans'       => [
             'default' => env( 'IDENTITY_DEFAULT_VLAN', 1 ),
-        ],
-
-    // appended to switch names in some places. If you use FQDNs for your switches in IXP Manager then leave blank.
-    'switch_domain' => env( 'IDENTITY_SWITCH_DOMAIN', '*** CONFIG IDENTITY IN .env ***' ),
+    ],
 
 ];

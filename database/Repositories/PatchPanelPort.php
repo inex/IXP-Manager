@@ -116,8 +116,10 @@ class PatchPanelPort extends EntityRepository
     /**
      * Check if the a switch port is available to be assign to a patch panel port
      *
-     * @param   int     $spid ID of the switch port
+     * @param   int $spid ID of the switch port
      * @return  boolean
+     * @throws \Doctrine\ORM\NoResultException
+     * @throws \Doctrine\ORM\NonUniqueResultException
      */
     public function isSwitchPortAvailable( $spid ){
         $dql = "SELECT count(ppp.id)
@@ -149,7 +151,10 @@ class PatchPanelPort extends EntityRepository
      *     $ppp->resetPatchPanelPort()
      *
      * @param PatchPanelPortEntity $ppp
+     *
      * @return PatchPanelPortHistoryEntity
+     *
+     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
      */
     public function archive( PatchPanelPortEntity $ppp ): PatchPanelPortHistoryEntity {
 
@@ -219,6 +224,8 @@ class PatchPanelPort extends EntityRepository
      *
      * @param PatchPanelPortEntity $ppp the patch panel port that will be deleted
      * @param boolean $includeSlave if the patch panel port has a slave port, do we need to delete the slave port aswell ?
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
      */
     public function delete( PatchPanelPortEntity $ppp, bool $includeSlave = true ) {
 
@@ -271,6 +278,7 @@ class PatchPanelPort extends EntityRepository
      * @param int  $cabinet    Cabinet ID
      * @param int  $cabletype  Cable type (@see \Entities\PatchPanel::$CABLE_TYPES)
      * @param bool $availableForUse  available Port states (self::STATE_AVAILABLE, self::STATE_CEASED, self::STATE_AWAITING_CEASE, self::STATE_PREWIRED)
+     *
      * @return array
      */
     public function advancedSearch( int $location, int $cabinet, int $cabletype, bool $availableForUse ) {
@@ -309,6 +317,33 @@ class PatchPanelPort extends EntityRepository
 
 
     /**
+     * Wildcard search based on colo circuit ref or colo billing ref
+     *
+     * @param string  $ref   Colo ref or colo billing ref for %xxx% searcf
+     *
+     * @return PatchPanelPortEntity[]
+     */
+    public function findByColoRefs( string $ref )
+    {
+        $q = $this->getEntityManager()->createQuery(
+            "SELECT ppp
+                FROM Entities\PatchPanelPort ppp
+                    LEFT JOIN ppp.patchPanel pp
+                    LEFT JOIN pp.cabinet cab
+                    LEFT JOIN cab.Location l 
+                  WHERE ppp.colo_circuit_ref LIKE :ref
+                  OR    ppp.colo_billing_ref LIKE :ref
+                  ORDER BY pp.id ASC, ppp.id ASC"
+            );
+
+        $q->setParameter( 'ref', '%' . $ref . '%' );
+
+
+        return $q->getResult();
+    }
+
+
+    /**
      * Move details / contents of a PPP to another PPP.
      *
      * Moves the information and files from a patch panel port to an other one
@@ -320,8 +355,11 @@ class PatchPanelPort extends EntityRepository
      * @param PatchPanelPortEntity $source The old port
      * @param PatchPanelPortEntity $destination The target port
      * @param PatchPanelPortEntity $newSlavePort If `$source` is a duplex port, we need a new slave also.
+     *
      * @return boolean
-     * @throws GeneralException
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException|GeneralException
+     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
      */
     public function move( PatchPanelPortEntity $source, PatchPanelPortEntity $destination, PatchPanelPortEntity $newSlavePort = null )
     {

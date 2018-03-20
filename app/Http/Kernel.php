@@ -2,7 +2,31 @@
 
 namespace IXP\Http;
 
+use Illuminate\Auth\Middleware\{
+    AuthenticateWithBasicAuth,
+    Authorize
+};
+
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+
 use Illuminate\Foundation\Http\Kernel as HttpKernel;
+
+use Illuminate\Foundation\Http\Middleware\{
+    CheckForMaintenanceMode,
+    ConvertEmptyStringsToNull,
+    ValidatePostSize
+};
+
+use Illuminate\Routing\Middleware\{
+    SubstituteBindings,
+    ThrottleRequests
+};
+
+use Illuminate\Session\Middleware\StartSession;
+
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+
+use IXP\Http\Middleware\TrustProxies;
 
 class Kernel extends HttpKernel {
 
@@ -14,12 +38,11 @@ class Kernel extends HttpKernel {
      * @var array
      */
     protected $middleware = [
-        \Illuminate\Foundation\Http\Middleware\CheckForMaintenanceMode::class,
-        Middleware\UrlResolver::class,
-        \Illuminate\Foundation\Http\Middleware\ValidatePostSize::class,
+        CheckForMaintenanceMode::class,
+        ValidatePostSize::class,
         Middleware\TrimStrings::class,
-        \Illuminate\Foundation\Http\Middleware\ConvertEmptyStringsToNull::class,
-        \IXP\Http\Middleware\TrustProxies::class,
+        ConvertEmptyStringsToNull::class,
+        TrustProxies::class,
     ];
 
     /**
@@ -30,11 +53,11 @@ class Kernel extends HttpKernel {
     protected $middlewareGroups = [
         'web' => [
             Middleware\EncryptCookies::class,
-            \Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse::class,
-            \Illuminate\Session\Middleware\StartSession::class,
-            \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            ShareErrorsFromSession::class,
             Middleware\VerifyCsrfToken::class,
-            \Illuminate\Routing\Middleware\SubstituteBindings::class,
+            SubstituteBindings::class,
             Middleware\ControllerEnabled::class,
         ],
 
@@ -74,21 +97,20 @@ class Kernel extends HttpKernel {
      * @var array
      */
     protected $routeMiddleware = [
-        'auth'       => Middleware\Authenticate::class,
-        'auth.basic' => \Illuminate\Auth\Middleware\AuthenticateWithBasicAuth::class,
-        'bindings'   => \Illuminate\Routing\Middleware\SubstituteBindings::class,
-        'can'        => \Illuminate\Auth\Middleware\Authorize::class,
-        'guest'      => Middleware\RedirectIfAuthenticated::class,
-        'throttle'   => \Illuminate\Routing\Middleware\ThrottleRequests::class,
-
-        'apiauth'            => Middleware\ApiAuthenticate::class,
-        'apimaybeauth'       => Middleware\ApiMaybeAuthenticate::class,
-        'assert.privilege'   => Middleware\AssertUserPrivilege::class,
-        'controller-enabled' => Middleware\ControllerEnabled::class,
-        'doctrine2frontend'  => Middleware\Doctrine2Frontend::class,
-        'grapher'            => Middleware\Services\Grapher::class,
-        'patch-panel-port'   => Middleware\PatchPanelPort::class,
-        'rs-prefixes'        => Middleware\RsPrefixes::class,
+        'auth'                  => Middleware\Authenticate::class,
+        'auth.basic'            => AuthenticateWithBasicAuth::class,
+        'bindings'              => SubstituteBindings::class,
+        'can'                   => Authorize::class,
+        'guest'                 => Middleware\RedirectIfAuthenticated::class,
+        'throttle'              => ThrottleRequests::class,
+        'apiauth'               => Middleware\ApiAuthenticate::class,
+        'apimaybeauth'          => Middleware\ApiMaybeAuthenticate::class,
+        'assert.privilege'      => Middleware\AssertUserPrivilege::class,
+        'controller-enabled'    => Middleware\ControllerEnabled::class,
+        'doctrine2frontend'     => Middleware\Doctrine2Frontend::class,
+        'grapher'               => Middleware\Services\Grapher::class,
+        'patch-panel-port'      => Middleware\PatchPanelPort::class,
+        'rs-prefixes'           => Middleware\RsPrefixes::class,
     ];
 
 }

@@ -11,12 +11,12 @@
     <field name="updated" type="datetime" nullable="true"/>
     <many-to-one field="XCustomer" target-entity="Entities\Customer" inversed-by="XCusts">
       <join-columns>
-        <join-column name="x_custid" referenced-column-name="id"/>
+        <join-column name="x_custid" referenced-column-name="id" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
     <many-to-one field="YCustomer" target-entity="Entities\Customer" inversed-by="YCusts">
       <join-columns>
-        <join-column name="y_custid" referenced-column-name="id"/>
+        <join-column name="y_custid" referenced-column-name="id" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
   </entity>

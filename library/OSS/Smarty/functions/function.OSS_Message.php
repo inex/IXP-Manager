@@ -88,7 +88,7 @@
         <a class="close" href="#" data-dismiss="alert">×</a>
         {$ossm->getMessage()}
 END_MESSAGE;
-                if( count( $ossm->getActions() ) )
+                if( is_array( $ossm->getActions() ) && count( $ossm->getActions() ) )
                 {
                     $message .= "        <div class=\"alert-actions\">\n";
 

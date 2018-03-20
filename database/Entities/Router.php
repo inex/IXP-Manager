@@ -38,7 +38,7 @@ class Router
      */
     public static $TYPES = [
         self::TYPE_ROUTE_SERVER             => 'Route Server',
-        self::TYPE_ROUTE_COLLECTOR          => 'Route Colllector',
+        self::TYPE_ROUTE_COLLECTOR          => 'Route Collector',
         self::TYPE_AS112                    => 'AS112',
         self::TYPE_OTHER                    => 'Other'
     ];

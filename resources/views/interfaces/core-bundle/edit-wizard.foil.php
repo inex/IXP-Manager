@@ -311,7 +311,7 @@ $this->layout( 'layouts/ixpv4' );
                                     <td>
                                         <?php if( count( $t->cb->getCoreLinks() ) > 1 ): ?>
                                             <div class="btn-group btn-group-sm" role="group">
-                                                <a class="btn btn btn-default" id="delete-cl-<?=  $cl->getId() ?>" href="#" title="Edit">
+                                                <a class="btn btn btn-default" id="delete-cl-<?=  $cl->getId() ?>" href="#" title="Delete">
                                                     <i class="glyphicon glyphicon-trash"></i>
                                                 </a>
                                             </div>

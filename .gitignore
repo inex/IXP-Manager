@@ -1,6 +1,6 @@
 
 .env
-.env.local
+.env*.local
 .project
 .buildpath
 .vagrant/
@@ -52,7 +52,7 @@ config/grapher_smokeping_overrides.php
 config/ixp_tools.php
 config/mailinglists.php
 config/routers.php
-
+config/trustedproxy.php
 
 application/configs/rs*.conf
 
@@ -86,8 +86,10 @@ ubuntu-xenial-16.04-cloudimg-console.log
 composer.phar
 tools/installers/Vagrantfile
 
+storage/.local
 storage/grapher/
 storage/files/*
+storage/tmp/*
 
 .idea/workspace.xml
 .idea/tasks.xml

@@ -48,6 +48,7 @@ class IXP_Controller_AuthRequiredAction extends IXP_Controller_Action
      */
     protected function _fetchCustomerNotes( $custid, $publicOnly = false )
     {
+
         $this->view->custNotes = $custNotes = $this->getD2EM()->getRepository( '\\Entities\\CustomerNote' )->ordered( $custid, $publicOnly );
         $unreadNotes = 0;
          

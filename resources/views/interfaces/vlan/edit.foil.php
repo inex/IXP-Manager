@@ -147,6 +147,17 @@
                     . 'See <a href=""http://docs.ixpmanager.org/features/irrdb/">the documentation</a> for more information.' )
             ?>
 
+            <div id="div-rsmorespecifics" style="<?= old( 'irrdbfilter' ) || $t->vli && $t->vli->getIrrdbfilter() ?: 'display: none;' ?>">
+                <?= Former::checkbox( 'rsmorespecifics' )
+                    ->label('&nbsp;')
+                    ->text( 'IRRDB - Allow More Specifics?' )
+                    ->unchecked_value( 0 )
+                    ->value( 1 )
+                    ->blockHelp( 'If checked, then IXP Manager will configure the route server BGP peer for this connection such that it will '
+                        . 'allow more specific prefixes than those registered in the IRRDB. See the '
+                        . '<a href="http://docs.ixpmanager.org/features/route-servers/">route server configuration documenation for more details</a>.' )
+                ?>
+            </div>
 
             <?php if( $t->as112UiActive() ): ?>
                 <?= Former::checkbox( 'as112client' )

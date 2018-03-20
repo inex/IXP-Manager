@@ -2,12 +2,23 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
+use Entities\{
+    ApiKey              as ApiKeyEntity,
+    Contact             as ContactEntity,
+    Customer            as CustomerEntity,
+    User                as UserEntity,
+    UserLoginHistory    as UserLoginHistoryEntity,
+    UserPreference      as UserPreferenceEntity
+};
+
+use Illuminate\Contracts\Auth\Authenticatable;
+
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Entities\User
  */
-class User implements \Illuminate\Contracts\Auth\Authenticatable
+class User implements Authenticatable
 {
     use \OSS_Doctrine2_WithPreferences;
 
@@ -39,7 +50,7 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     /**
      * @var string $username
      */
-    protected $username;
+    public $username;
 
     /**
      * @var string $password
@@ -96,18 +107,29 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
      */
     protected $id;
 
+
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    protected $LastLogins;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
+    private $ApiKeys;
+
+    /**
+     * @var ArrayCollection
      */
     protected $Preferences;
 
     /**
-     * @var Entities\Customer
+     * @var CustomerEntity
      */
     protected $Customer;
 
     /**
-     * @var Entities\User
+     * @var UserEntity
      */
     protected $Children;
 
@@ -116,7 +138,7 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
      */
     public function __construct()
     {
-        $this->Preferences = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->Preferences = new ArrayCollection();
     }
 
     /**
@@ -385,10 +407,10 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     /**
      * Add Preferences
      *
-     * @param Entities\UserPreference $preferences
+     * @param UserPreferenceEntity $preferences
      * @return User
      */
-    public function addPreference(\Entities\UserPreference $preferences)
+    public function addPreference(UserPreferenceEntity $preferences)
     {
         $this->Preferences[] = $preferences;
 
@@ -398,9 +420,9 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     /**
      * Remove Preferences
      *
-     * @param Entities\UserPreference $preferences
+     * @param UserPreferenceEntity $preferences
      */
-    public function removePreference(\Entities\UserPreference $preferences)
+    public function removePreference(UserPreferenceEntity $preferences)
     {
         $this->Preferences->removeElement($preferences);
     }
@@ -408,7 +430,7 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     /**
      * Get Preferences
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return ArrayCollection
      */
     public function getPreferences()
     {
@@ -418,10 +440,10 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     /**
      * Set Customer
      *
-     * @param Entities\Customer $customer
+     * @param CustomerEntity $customer
      * @return User
      */
-    public function setCustomer(\Entities\Customer $customer = null)
+    public function setCustomer(CustomerEntity $customer = null)
     {
         $this->Customer = $customer;
 
@@ -441,10 +463,10 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     /**
      * Set Children
      *
-     * @param Entities\User $children
+     * @param UserEntity $children
      * @return User
      */
-    public function setChildren(\Entities\User $children = null)
+    public function setChildren(UserEntity $children = null)
     {
         $this->Children = $children;
 
@@ -454,14 +476,12 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     /**
      * Get Children
      *
-     * @return Entities\User
+     * @return \Entities\User
      */
     public function getChildren()
     {
         return $this->Children;
     }
-
-
 
 
     /**
@@ -475,15 +495,13 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     }
 
 
-
-
     /**
      * Add Children
      *
-     * @param Entities\User $children
+     * @param UserEntity $children
      * @return User
      */
-    public function addChildren(\Entities\User $children)
+    public function addChildren(UserEntity $children)
     {
         $this->Children[] = $children;
 
@@ -493,9 +511,9 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     /**
      * Remove Children
      *
-     * @param Entities\User $children
+     * @param UserEntity $children
      */
-    public function removeChildren(\Entities\User $children)
+    public function removeChildren(UserEntity $children)
     {
         $this->Children->removeElement($children);
     }
@@ -506,10 +524,10 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     /**
      * Set Contact
      *
-     * @param \Entities\Contact $contact
+     * @param ContactEntity $contact
      * @return User
      */
-    public function setContact(\Entities\Contact $contact = null)
+    public function setContact(ContactEntity $contact = null)
     {
         $this->Contact = $contact;
 
@@ -527,18 +545,12 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     }
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    protected $LastLogins;
-
-
-    /**
      * Add LastLogins
      *
-     * @param \Entities\UserLoginHistory $lastLogins
+     * @param UserLoginHistoryEntity $lastLogins
      * @return User
      */
-    public function addLastLogin(\Entities\UserLoginHistory $lastLogins)
+    public function addLastLogin(UserLoginHistoryEntity $lastLogins)
     {
         $this->LastLogins[] = $lastLogins;
 
@@ -548,9 +560,9 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     /**
      * Remove LastLogins
      *
-     * @param \Entities\UserLoginHistory $lastLogins
+     * @param UserLoginHistoryEntity $lastLogins
      */
-    public function removeLastLogin(\Entities\UserLoginHistory $lastLogins)
+    public function removeLastLogin(UserLoginHistoryEntity $lastLogins)
     {
         $this->LastLogins->removeElement($lastLogins);
     }
@@ -564,19 +576,15 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     {
         return $this->LastLogins;
     }
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $ApiKeys;
 
 
     /**
      * Add ApiKeys
      *
-     * @param \Entities\ApiKey $apiKeys
+     * @param ApiKeyEntity $apiKeys
      * @return User
      */
-    public function addApiKey(\Entities\ApiKey $apiKeys)
+    public function addApiKey(ApiKeyEntity $apiKeys)
     {
         $this->ApiKeys[] = $apiKeys;
 
@@ -586,9 +594,9 @@ class User implements \Illuminate\Contracts\Auth\Authenticatable
     /**
      * Remove ApiKeys
      *
-     * @param \Entities\ApiKey $apiKeys
+     * @param ApiKeyEntity $apiKeys
      */
-    public function removeApiKey(\Entities\ApiKey $apiKeys)
+    public function removeApiKey(ApiKeyEntity $apiKeys)
     {
         $this->ApiKeys->removeElement($apiKeys);
     }

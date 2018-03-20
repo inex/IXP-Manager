@@ -32,9 +32,28 @@
     <?php if( count( $t->results ) ): ?>
         <div class="row">
             <div class="col-md-12">
-                <h4><?= count( $t->results ) ?> Result(s):</h4>
+                <h4>
+                    <?= count( $t->results ) ?> Result(s)
+
+                    <?php
+                        switch( $t->type ) {
+                            case 'asn':       echo ' - AS Number'; break;
+                            case 'asmacro':   echo ' - AS Macro'; break;
+                            case 'cust_wild': echo ' - Wildcard Customer Search'; break;
+                            case 'email':     echo ' - Email Address'; break;
+                            case 'ipv4':      echo ' - IPv4 Addresses'; break;
+                            case 'ipv6':      echo ' - IPv6 Addresses'; break;
+                            case 'mac':       echo ' - MAC Addresses'; break;
+                            case 'ppp-xc':    echo ' - Patch Panel Port Colo Circuit Reference'; break;
+                            case 'rsprefix':  echo ' - Route Server Prefix'; break;
+                            case 'username':  echo ' - Contacts / Users from Username'; break;
+                        }
+                    ?>
+                </h4>
             </div>
         </div>
+
+
         <?php if( $t->type == 'username' || $t->type == 'email' ): ?>
 
             <?= $t->insert( 'search/contacts' ) ?>
@@ -42,6 +61,10 @@
         <?php elseif( $t->type == 'rsprefix' ): ?>
 
             <?= $t->insert( 'search/rsprefixes' ) ?>
+
+        <?php elseif( $t->type == 'ppp-xc' ): ?>
+
+            <?= $t->insert( 'search/ppps' ) ?>
 
         <?php else: ?>
 
@@ -51,7 +74,7 @@
                         <div class="list-group-item">
                             <div>
                                 <b>
-                                    <a style="font-size: x-large" href="<?= url( 'customer/overview/id/' . $cust->getId() )?>">
+                                    <a style="font-size: x-large" href="<?= route( "customer@overview" , [ "id" => $cust->getId() ] ) ?>">
                                         <?= $t->ee( $cust->getAbbreviatedName() ) ?> - AS<?= $t->ee( $cust->getAutsys() )?>
                                     </a>
                                 </b>
@@ -68,16 +91,16 @@
                             <?php endif; ?>
 
                             <div class="btn-group">
-                                <a class="btn btn-default" href="<?= url( 'customer/overview/id/' . $cust->getId() )?>">Overview</a>
-                                <a class="btn btn-default" href="<?= url( 'customer/overview/id/' . $cust->getId() . '/tab/ports' )?>">Ports</a>
+                                <a class="btn btn-default" href="<?= route( "customer@overview" , [ "id" => $cust->getId() ] ) ?>">Overview</a>
+                                <a class="btn btn-default" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "ports" ] ) ?>">Ports</a>
                                 <a class="btn btn-default" href="<?= url( 'statistics/member-drilldown/monitorindex/aggregate/shortname/' . $cust->getShortname() )?>">
                                     Statistics
                                 </a>
                                 <a class="btn btn-default" href="<?= url( 'statistics/p2p/shortname/' . $cust->getShortname() )?>">
                                     P2P
                                 </a>
-                                <a class="btn btn-default" href="<?= url( 'customer/overview/id/' . $cust->getId() . '/tab/users' )?>">Users</a>
-                                <a class="btn btn-default" href="<?= url( 'customer/overview/id/' . $cust->getId() . '/tab/contacts' )?>">Contacts</a>
+                                <a class="btn btn-default" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "users" ] ) ?>">Users</a>
+                                <a class="btn btn-default" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "contacts" ] )?>">Contacts</a>
                             </div>
 
                         </div>

@@ -87,7 +87,7 @@ $this->layout( 'layouts/ixpv4' );
 
                     <td>
                         <?php foreach( $row[ "members" ] as $custid => $cust ): ?>
-                            <a href="<?= url('' ) . '/customer/overview/id/' . $custid ?>"><?= $t->ee( $cust[ 'name' ] ) ?></a>
+                            <a href="<?= route( "customer@overview" , [ "id" => $custid ] ) ?>"><?= $t->ee( $cust[ 'name' ] ) ?></a>
                             (<a href=" <?= route( 'interfaces/virtual/edit', [ 'id' => $cust['viid'] ] ) ?>">interface details</a>)<br />
                         <?php endforeach; ?>
                     </td>
