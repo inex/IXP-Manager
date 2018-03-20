@@ -2,6 +2,27 @@
 
 namespace Repositories;
 
+/*
+ * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -24,26 +45,26 @@ class ConsoleServer extends EntityRepository
      */
     public function getAllForFeList( \stdClass $feParams, int $id = null )
     {
-        $dql = "SELECT  cs.id AS id,
-                cs.name AS name,
-                cs.model AS model,
-                cs.active AS active, 
-                cs.notes AS notes,
-                cs.hostname AS hostname,
-                cs.serial_number AS serialNumber,
-                v.id AS vendorid, 
-                v.name AS vendor, 
-                c.id AS cabinetid, 
-                c.name AS cabinet
-                
+        $dql = /** @lang text */
+            "SELECT  cs.id AS id,
+                    cs.name AS name,
+                    cs.model AS model,
+                    cs.active AS active, 
+                    cs.notes AS notes,
+                    cs.hostname AS hostname,
+                    cs.serial_number AS serialNumber,
+                    v.id AS vendorid, 
+                    v.name AS vendor, 
+                    c.id AS cabinetid, 
+                    c.name AS cabinet
                 FROM Entities\\ConsoleServer cs
-                LEFT JOIN cs.cabinet c
-                LEFT JOIN cs.vendor v
+                    LEFT JOIN cs.cabinet c
+                    LEFT JOIN cs.vendor v
                 
                 WHERE 1 = 1";
 
         if( $id ) {
-            $dql .= " AND cs.id = " . (int)$id;
+            $dql .= " AND cs.id = " . $id;
         }
 
         if( isset( $feParams->listOrderBy ) ) {
@@ -51,9 +72,6 @@ class ConsoleServer extends EntityRepository
             $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
         }
 
-
-        $query = $this->getEntityManager()->createQuery( $dql );
-
-        return $query->getArrayResult();
+        return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
     }
 }

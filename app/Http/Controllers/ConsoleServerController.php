@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -41,7 +41,7 @@ use Proxies\__CG__\Entities\Cabinet;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ConsoleServerController extends Doctrine2Frontend {
@@ -131,10 +131,11 @@ class ConsoleServerController extends Doctrine2Frontend {
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
+
         if( $id !== null ) {
 
             if( !( $this->object = D2EM::getRepository( ConsoleServerEntity::class )->find( $id) ) ) {
-                abort(404);
+                abort(404, 'Console server not found' );
             }
 
             $old = request()->old();
@@ -153,8 +154,8 @@ class ConsoleServerController extends Doctrine2Frontend {
 
         return [
             'object'                => $this->object,
-            'cabinets'               => D2EM::getRepository( CabinetEntity::class    )->getAsArray(),
-            'vendors'              => D2EM::getRepository( VendorEntity::class     )->getAsArray(),
+            'cabinets'              => D2EM::getRepository( CabinetEntity::class    )->getAsArray(),
+            'vendors'               => D2EM::getRepository( VendorEntity::class     )->getAsArray(),
         ];
     }
 
@@ -175,7 +176,7 @@ class ConsoleServerController extends Doctrine2Frontend {
             'serial_number'     => 'nullable|string',
             'notes'             => 'nullable|string',
             'hostname'          => 'required|string',
-            'active'            => 'nullable|boolean',
+            'active'            => 'string',
         ]);
 
         if( $validator->fails() ) {
@@ -184,7 +185,7 @@ class ConsoleServerController extends Doctrine2Frontend {
 
         if( $request->input( 'id', false ) ) {
             if( !( $this->object = D2EM::getRepository( ConsoleServerEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404);
+                abort( 404, 'Console server not found' );
             }
         } else {
             $this->object = new ConsoleServerEntity;
@@ -193,7 +194,7 @@ class ConsoleServerController extends Doctrine2Frontend {
 
         $this->object->setName(         $request->input( 'name'             ) );
         $this->object->setSerialNumber( $request->input( 'serial_number'    ) );
-        $this->object->setActive(       $request->input( 'active'           ) );
+        $this->object->setActive(       ( $request->input( 'active' ) ?? false ) == "1" );
         $this->object->setHostname(     $request->input( 'hostname'         ) );
         $this->object->setNote(         $request->input( 'notes'            ) );
         $this->object->setModel(        $request->input( 'model'            ) );

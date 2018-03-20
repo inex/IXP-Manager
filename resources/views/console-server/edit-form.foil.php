@@ -8,47 +8,51 @@
 
     <?= Former::text( 'name' )
         ->label( 'Name' )
-        ->blockHelp( "" );
+        ->blockHelp( "The name of the console server. Typically you should use the host part of the hostname." );
     ?>
 
     <?= Former::text( 'hostname' )
         ->label( 'Hostname' )
-        ->blockHelp( "" );
+        ->blockHelp( "The hostname of the console server. This should be in DNS and should be resolvable." );
+    ?>
+
+    <?= Former::select( 'cabinet' )
+        ->id( 'cabinet' )
+        ->label( 'Rack' )
+        ->addClass( 'chzn-select' )
+        ->fromQuery( [ '' => '' ] + $t->data[ 'params'][ 'cabinets' ], 'name' )
+        ->blockHelp( "The rack where the console server is located." );
+    ?>
+
+    <?= Former::select( 'vendor' )
+        ->id( 'vendor' )
+        ->fromQuery( [ '' => '' ] + $t->data[ 'params'][ 'vendors' ], 'name' )
+        ->addClass( 'chzn-select' )
+        ->label( 'Vendor' )
+        ->placeholder( '' )
+        ->blockHelp( "If the vendor is not listed here, you can "
+            . '<a href="' . route( 'vendor@add' ) . '">add them by clicking here</a>.' );
     ?>
 
     <?= Former::text( 'model' )
-        ->label( 'model' )
-        ->blockHelp( "" );
+        ->label( 'Model' )
+        ->blockHelp( "The model of the console server." );
     ?>
 
     <?= Former::text( 'serial_number' )
-        ->label( 'serial_number' )
-        ->blockHelp( "" );
+        ->label( 'Serial Number' )
+        ->blockHelp( "The serial number of the console server." );
     ?>
+
+    <?php dd( Former::getFacadeRoot()  ); ?>
 
     <?= Former::checkbox( 'active' )
         ->label( '&nbsp;' )
         ->text( 'Active' )
         ->checked_value( 1 )
         ->unchecked_value( 0 )
-        ->blockHelp( "" );
-    ?>
-
-    <?= Former::select( 'cabinet' )
-        ->id( 'cabinet' )
-        ->label( 'Cabinet' )
-        ->addClass( 'chzn-select' )
-        ->fromQuery( $t->data[ 'params'][ 'cabinets' ], 'name' )
-        ->blockHelp( "");
-    ?>
-
-    <?= Former::select( 'vendor' )
-        ->id( 'vendor' )
-        ->fromQuery( $t->data[ 'params'][ 'vendors' ], 'name' )
-        ->addClass( 'chzn-select' )
-        ->label( 'Vendor' )
-        ->placeholder( '' )
-        ->blockHelp( "");
+        ->forceValue(0)
+        ->blockHelp( "Marking a console inactive will exclude it from, for example, Nagios configuration generation." );
     ?>
 
     <?= Former::textarea( 'notes' )
