@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Http\Controllers;
+namespace IXP\Http\Controllers\ConsoleServer;
 
 /*
  * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -33,7 +33,7 @@ use Entities\{
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
-use Proxies\__CG__\Entities\Cabinet;
+use IXP\Http\Controllers\Doctrine2Frontend;
 
 
 /**
@@ -120,6 +120,7 @@ class ConsoleServerController extends Doctrine2Frontend {
      * @return array
      */
     protected function listGetData( $id = null ) {
+
         return D2EM::getRepository( ConsoleServerEntity::class )->getAllForFeList( $this->feParams, $id );
     }
 
@@ -199,7 +200,7 @@ class ConsoleServerController extends Doctrine2Frontend {
         $this->object->setNote(         $request->input( 'notes'            ) );
         $this->object->setModel(        $request->input( 'model'            ) );
         $this->object->setVendor(       D2EM::getRepository( VendorEntity::class    )->find( $request->input( 'vendor'     ) ) );
-        $this->object->setCabinet(      D2EM::getRepository( Cabinet::class         )->find( $request->input( 'cabinet'    ) ) );
+        $this->object->setCabinet(      D2EM::getRepository( CabinetEntity::class   )->find( $request->input( 'cabinet'    ) ) );
 
         D2EM::flush( $this->object );
 

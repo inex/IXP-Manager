@@ -1,8 +1,8 @@
-<div class="well col-sm-12">
+<div class="well">
 
     <?= Former::open()->method( 'POST' )
         ->id( 'form' )
-        ->action( action( $t->controller.'@store' ) )
+        ->action( route( $t->feParams->route_prefix.'@store' ) )
         ->customWidthClass( 'col-sm-3' )
     ?>
 
@@ -73,7 +73,7 @@
 
     <?= Former::actions(
         Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' ),
-        Former::default_link( 'Cancel' )->href( action ($t->controller.'@list') ),
+        Former::default_link( 'Cancel' )->href( route ($t->feParams->route_prefix.'@list') ),
         Former::success_button( 'Help' )->id( 'help-btn' )
     );
     ?>

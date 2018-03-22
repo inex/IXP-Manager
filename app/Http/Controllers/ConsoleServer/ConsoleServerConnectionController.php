@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Http\Controllers;
+namespace IXP\Http\Controllers\ConsoleServer;
 
 /*
  * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -33,6 +33,8 @@ use Entities\{
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+
+use IXP\Http\Controllers\Doctrine2Frontend;
 
 
 /**
@@ -125,6 +127,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
      * @return array
      */
     protected function addEditPrepareForm( $id = null ) : array {
+
         if( $id !== null ) {
 
             if( !( $this->object = D2EM::getRepository( ConsoleServerConnectionEntity::class )->find( $id) ) ) {
@@ -136,7 +139,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
             Former::populate([
                 'description'   => array_key_exists( 'description', $old ) ? $old['description']    : $this->object->getDescription(),
                 'custid'        => array_key_exists( 'custid',      $old ) ? $old['custid']         : $this->object->getCustomer()->getId(),
-                'switchid'      => array_key_exists( 'switchid',    $old ) ? $old['switchid']       : $this->object->getSwitcher()->getId(),
+                'switchid'      => array_key_exists( 'switchid',    $old ) ? $old['switchid']       : $this->object->getSwitchId(),
                 'port'          => array_key_exists( 'port',        $old ) ? $old['port']           : $this->object->getPort(),
                 'speed'         => array_key_exists( 'speed',       $old ) ? $old['speed']          : $this->object->getSpeed(),
                 'parity'        => array_key_exists( 'parity',      $old ) ? $old['parity']         : $this->object->getParity(),

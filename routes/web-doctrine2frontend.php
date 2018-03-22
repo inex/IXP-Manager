@@ -10,8 +10,8 @@
 
 IXP\Http\Controllers\ApiKeyController::routes();
 IXP\Http\Controllers\CabinetController::routes();
-IXP\Http\Controllers\ConsoleServerController::routes();
-IXP\Http\Controllers\ConsoleServerConnectionController::routes();
+IXP\Http\Controllers\ConsoleServer\ConsoleServerController::routes();
+IXP\Http\Controllers\ConsoleServer\ConsoleServerConnectionController::routes();
 IXP\Http\Controllers\CustKitController::routes();
 IXP\Http\Controllers\InfrastructureController::routes();
 IXP\Http\Controllers\IrrdbConfigController::routes();
