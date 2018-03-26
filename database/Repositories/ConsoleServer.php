@@ -34,6 +34,19 @@ use Doctrine\ORM\EntityRepository;
 class ConsoleServer extends EntityRepository
 {
     /**
+     * Return an array of all console servers names where the array key is the console server id.
+     * @return array An array of all console servers names with the console server id as the key.
+     */
+    public function getAsArray(): array {
+        $csc = [];
+        foreach( self::findAll() as $cs ) {
+            $csc[ $cs->getId() ] = $cs->getName();
+        }
+
+        return $csc;
+    }
+
+    /**
      * Get all console server (or a particular one) for listing on the frontend CRUD
      *
      * @see \IXP\Http\Controllers\Doctrine2Frontend
@@ -46,7 +59,7 @@ class ConsoleServer extends EntityRepository
     public function getAllForFeList( \stdClass $feParams, int $id = null )
     {
         $dql = /** @lang text */
-            "SELECT  cs.id AS id,
+            "SELECT cs.id AS id,
                     cs.name AS name,
                     cs.model AS model,
                     cs.active AS active, 

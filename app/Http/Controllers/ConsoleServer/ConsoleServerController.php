@@ -74,7 +74,13 @@ class ConsoleServerController extends Doctrine2Frontend {
 
                 'id'        => [ 'title' => 'DB ID', 'display' => true ],
 
-                'name'           => 'Name',
+                'name'           => [
+                    'title'      => 'Name',
+                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller' => 'console-server',
+                    'action'     => 'view',
+                    'idField'    => 'id'
+                ],
 
                 'cabinet'  => [
                     'title'      => 'Cabinet',

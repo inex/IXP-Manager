@@ -23,16 +23,18 @@ namespace IXP\Http\Controllers\ConsoleServer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Redirect, Validator;
+use D2EM, Former, Redirect, Route, Validator;
 
 use Entities\{
     ConsoleServerConnection     as ConsoleServerConnectionEntity,
+    ConsoleServer               as ConsoleServerEntity,
     Customer                    as CustomerEntity,
     Switcher                    as SwitcherEntity
 };
 
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\View\View;
 
 use IXP\Http\Controllers\Doctrine2Frontend;
 
@@ -66,7 +68,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
             'titleSingular'     => 'Console Server Connection',
             'nameSingular'      => 'a console server connection',
 
-            'listOrderBy'       => 'description',
+            'listOrderBy'       => 'name, port',
             'listOrderByDir'    => 'ASC',
 
             'viewFolderName'    => 'console-server-connection',
@@ -82,6 +84,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
                     'action'     => 'view',
                     'idField'    => 'customerid'
                 ],
+
 
                 'description'  => 'Description',
 
@@ -105,6 +108,12 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
 
     }
 
+    protected static function additionalRoutes( string $route_prefix )
+    {
+        Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
+            Route::get(     'list/port/{port}',               'ConsoleServer\ConsoleServerConnectionController@listPort'    )->name( $route_prefix . '@listPort'   );
+        });
+    }
 
     /**
      * Provide array of rows for the list action and view action
@@ -208,5 +217,42 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
         D2EM::flush($this->object);
 
         return true;
+    }
+
+    protected function preList() {
+        $this->data[ 'params' ]         = [ 'css' => D2EM::getRepository( ConsoleServerEntity::class )->getAsArray( ) ];
+    }
+
+    /**
+     * Display the Console Server Connections for a port
+     *
+     * @param int $port ID of the Console Server
+     *
+     * @return View
+     */
+    public function listPort( int $port = null ){
+
+        /** @var ConsoleServerEntity $cs */
+        if( $port && !( $cs = D2EM::getRepository( ConsoleServerEntity::class )->find( $port ) ) ) {
+            abort(404);
+        }
+
+        $this->data[ 'rows' ]                           = D2EM::getRepository( ConsoleServerConnectionEntity::class )->getAllForFeList( $this->feParams, null, $cs->getId() );
+
+        $this->data[ 'view' ][ 'listEmptyMessage']      = $this->resolveTemplate( 'list-empty-message', false );
+        $this->data[ 'view' ][ 'listHeadOverride']      = $this->resolveTemplate( 'list-head-override', false );
+        $this->data[ 'view' ][ 'listRowOverride']       = $this->resolveTemplate( 'list-row-override',  false );
+        $this->data[ 'view' ][ 'listPreamble']          = $this->resolveTemplate( 'list-preamble',      false );
+        $this->data[ 'view' ][ 'listPostamble']         = $this->resolveTemplate( 'list-postamble',     false );
+        $this->data[ 'view' ][ 'listRowMenu']           = $this->resolveTemplate( 'list-row-menu',      false );
+        $this->data[ 'view' ][ 'pageHeaderPreamble']    = $this->resolveTemplate( 'page-header-preamble',      false );
+        $this->data[ 'view' ][ 'listScript' ]           = $this->resolveTemplate( 'js/list' );
+
+        $this->preList();
+
+        $this->data[ 'params' ][ "cs" ]                 = $cs->getId();
+
+
+        return $this->display( 'list' );
     }
 }

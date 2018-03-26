@@ -44,7 +44,7 @@ class ConsoleServerConnection extends EntityRepository
      * @param int|null $id
      * @return array Array of console server connections (as associated arrays) (or single element if `$id` passed)
      */
-    public function getAllForFeList( \stdClass $feParams, int $id = null )
+    public function getAllForFeList( \stdClass $feParams, int $id = null, int $port = null )
     {
         $dql = /** @lang text */
             "SELECT  csc.id AS id,
@@ -57,14 +57,20 @@ class ConsoleServerConnection extends EntityRepository
                         csc.stopbits AS stopbits,
                         csc.autobaud AS autobaud,
                         csc.flowcontrol AS flowcontrol,
-                        csc.description AS description
+                        csc.description AS description,
+                        cs.name AS name
                 FROM Entities\\ConsoleServerConnection csc
+                LEFT JOIN csc.consoleServer cs
                 LEFT JOIN csc.Customer c
                 
                 WHERE 1 = 1";
 
         if( $id ) {
             $dql .= " AND csc.id = " . (int)$id;
+        }
+
+        if( $port ) {
+            $dql .= " AND csc.consoleServer = " . (int)$port;
         }
 
         if( isset( $feParams->listOrderBy ) ) {

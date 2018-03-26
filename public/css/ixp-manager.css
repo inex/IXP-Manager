@@ -716,3 +716,8 @@ td a:hover{
     padding : 4px;
 }
 
+.scrollable-dropdown {
+    height: auto;
+    max-height: 200px;
+    overflow-x: hidden;
+}

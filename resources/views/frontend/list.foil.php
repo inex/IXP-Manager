@@ -8,14 +8,22 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-        <li class="pull-right">
-            <div class="btn-group btn-group-xs" role="group">
-                <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add') ?>">
-                    <span class="glyphicon glyphicon-plus"></span>
-                </a>
-            </div>
-        </li>
+    <?php if( $t->data[ 'view' ]['pageHeaderPreamble'] ): ?>
+
+        <?= $t->insert( $t->data[ 'view' ]['pageHeaderPreamble'] ) ?>
+
+    <?php else: ?>
+
+        <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
+            <li class="pull-right">
+                <div class="btn-group btn-group-xs" role="group">
+                    <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add') ?>">
+                        <span class="glyphicon glyphicon-plus"></span>
+                    </a>
+                </div>
+            </li>
+        <?php endif;?>
+
     <?php endif;?>
 <?php $this->append() ?>
 

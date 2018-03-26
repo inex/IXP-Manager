@@ -1,4 +1,4 @@
-<div class="btn-group">
+ <div class="btn-group">
 
     <a class="btn btn-sm btn-default" href="<?= action($t->controller.'@view' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
 
