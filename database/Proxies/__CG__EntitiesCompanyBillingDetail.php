@@ -308,6 +308,17 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     /**
      * {@inheritDoc}
      */
+    public function getBillingCountryName()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBillingCountryName', []);
+
+        return parent::getBillingCountryName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setBillingEmail($billingEmail)
     {
 
@@ -411,23 +422,12 @@ class CompanyBillingDetail extends \Entities\CompanyBillingDetail implements \Do
     /**
      * {@inheritDoc}
      */
-    public function addCustomer(\Entities\Customer $customer)
+    public function setCustomer(\Entities\Customer $customer)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addCustomer', [$customer]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', [$customer]);
 
-        return parent::addCustomer($customer);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeCustomer(\Entities\Customer $customer)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeCustomer', [$customer]);
-
-        return parent::removeCustomer($customer);
+        return parent::setCustomer($customer);
     }
 
     /**

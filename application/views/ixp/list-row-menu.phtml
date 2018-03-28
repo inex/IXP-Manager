@@ -10,7 +10,7 @@
 
     <ul class="dropdown-menu">
         <li>
-            <a href="{genUrl controller='customer' action='list' ixp=$row.id}">View / Edit Customers</a>
+            <a href="{route( 'customer@list')}">View / Edit Customers</a>
             <a href="{genUrl controller='infrastructure' action='list' ixp=$row.id}">View Infrastructures</a>
         </li>
     </ul>

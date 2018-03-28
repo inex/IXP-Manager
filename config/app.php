@@ -162,11 +162,6 @@ return [
          Illuminate\Validation\ValidationServiceProvider::class,
          Illuminate\View\ViewServiceProvider::class,
 
-         /*
-          * Debug
-          */
-         Barryvdh\Debugbar\ServiceProvider::class,
-
         /*
          * Application Service Providers...
          */
@@ -175,12 +170,14 @@ return [
         IXP\Providers\EventServiceProvider::class,
         IXP\Providers\RouteServiceProvider::class,
 
+        Barryvdh\Debugbar\ServiceProvider::class,
 
         IXP\Providers\HelpdeskServiceProvider::class,
         IXP\Providers\ZendFrameworkServiceProvider::class,
         IXP\Providers\GrapherServiceProvider::class,
         IXP\Providers\LookingGlassServiceProvider::class,
         IXP\Providers\FoilServiceProvider::class,
+        IXP\Providers\PeeringDbServiceProvider::class,
 
         /*
          * Third party providers
@@ -190,6 +187,10 @@ return [
         Former\FormerServiceProvider::class,
 
         LukeTowers\Purifier\PurifierServiceProvider::class,
+
+        Webpatser\Countries\CountriesServiceProvider::class,
+
+        Intervention\Image\ImageServiceProvider::class
 
     ],
 
@@ -246,13 +247,14 @@ return [
         'Grapher'   => IXP\Support\Facades\Grapher::class,
         'Image'     => Intervention\Image\Facades\Image::class,
 
-        'Debugbar' => Barryvdh\Debugbar\Facade::class,
-
         'Former'    => Former\Facades\Former::class,
         'Flysystem' => GrahamCampbell\Flysystem\Facades\Flysystem::class,
         'Purifier'  => LukeTowers\Purifier\Facades\Purifier::class,
         'PDF'       => Barryvdh\DomPDF\Facade::class,
 
+        'Countries' => Webpatser\Countries\CountriesFacade::class,
+
+        'Debugbar' => Barryvdh\Debugbar\Facade::class,
     ],
 
 ];

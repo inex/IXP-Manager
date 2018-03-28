@@ -20,8 +20,8 @@
                     IXP Customer Actions
                 </li>
 
-                <li>
-                    <a href="<?= url( 'customer/list' ) ?>">Customers</a>
+                <li  <?php if( $t->controller == 'CustomerController' ): ?> class="active" <?php endif; ?> >
+                    <a href="<?= route( 'customer@list' ) ?>">Customers</a>
                 </li>
 
                 <li <?php if( $t->controller == 'VirtualInterfaceController' ): ?> class="active" <?php endif; ?> >
@@ -204,15 +204,12 @@
                 </li>
 
                 <li>
-                    <a href="<?= url( 'statistics/members' ) ?>">Member Statistics - Graphs</a>
-                </li>
-                <li>
-                    <a href="<?= url( 'statistics/list' ) ?>">Member Statistics - List</a>
+                    <a href="<?= url( 'statistics/members' ) ?>">Member Statistics</a>
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.logo', true ) ): ?>
                     <li>
-                        <a href="<?= url('customer/logos' ) ?>">Member Logos</a>
+                        <a href="<?= route('logo@logos' ) ?>">Member Logos</a>
                     </li>
                 <?php endif; ?>
 

@@ -413,10 +413,6 @@ class CoreBundleController extends Common
 
                 $vi = $pi->getVirtualInterface();
 
-                /** @var SwitchPortEntity $sp */
-                $sp = $vi->getSwitchPort();
-                $sp->setType( SwitchPortEntity::TYPE_UNSET );
-
                 D2EM::remove( $ci );
                 D2EM::remove( $pi );
                 D2EM::remove( $vi );

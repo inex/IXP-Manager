@@ -4,32 +4,15 @@
     <div class="span6">
         <h3>
             Aggregate Peering Statistics
-            {if not $multiIXP}
-                <a class="btn" href="{genUrl controller="statistics" action="member-drilldown" shortname=$user->getCustomer()->getShortname() category='bits' monitorindex='aggregate'}">
-                    <i class="icon-eye-open"></i>
+                <a class="btn" href="{genUrl controller="statistics" action="member-drilldown"}/agg/{$user->getCustomer()->getId()}">
+                    <i class="icon-zoom-in"></i>
                 </a>
-            {/if}
         </h3>
 
-        {if $multiIXP}
-            {foreach $cust->getIXPs() as $ixp}
-                <br />
-                <div class="well">
-                    <h3>
-                        {$ixp->getName()}
-                        <a class="btn" href="{genUrl controller="statistics" action="member-drilldown" ixp=$ixp->getId() shortname=$cust->getShortname() category='bits' monitorindex='aggregate'}">
-                            <i class="icon-eye-open"></i>
-                        </a>
-                    </h3>
-                    FIXME
-                </div>
-            {/foreach}
-        {else}
-            <br />
-            <div class="well">
-                {$grapher->customer($cust)->renderer()->boxLegacy()}
-            </div>
-        {/if}
+        <br />
+        <div class="well">
+            {$grapher->customer($cust)->renderer()->boxLegacy()}
+        </div>
     </div>
 
     <div class="span6">
@@ -77,8 +60,7 @@
         {if $cust->getLogo('WWW80')}
             <div class="span3">
                 The logo we have for you is shown here.
-                Please <a href="{genUrl controller="customer" action="manage-logo"}">click here</a>
-                to change it.
+                Please <a href="{route( 'logo@manage' )}">click here</a> to change it.
             </div>
             <div class="span3">
                 <img class="www80-padding" src="{genUrl}/logos/{$cust->getLogo('WWW80')->getShardedPath()}" />
@@ -86,7 +68,7 @@
         {else}
             <p>
                 You have not uploaded a logo which means it is not currently displayed on our public
-                website. Please <a href="{genUrl controller="customer" action="manage-logo"}">click here</a>
+                website. Please <a href="{route( 'logo@manage' )}">click here</a>
                 to add one now.
             </p>
         {/if}

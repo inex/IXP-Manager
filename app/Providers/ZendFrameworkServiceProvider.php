@@ -196,11 +196,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options['identity']['ixfid']                 = config( 'identity.ixfid' );
         $options['identity']['name']                  = config( 'identity.name' );
         $options['identity']['email']                 = config( 'identity.email' );
-        $options['identity']['email']                 = config( 'identity.email' );
-        $options['identity']['autobot']['name']       = config( 'identity.autobot.name' );
-        $options['identity']['autobot']['email']      = config( 'identity.autobot.email' );
-        $options['identity']['mailer']['name']        = config( 'identity.mailer.name' );
-        $options['identity']['mailer']['email']       = config( 'identity.mailer.email' );
         $options['identity']['sitename']              = config( 'identity.sitename' );
         $options['identity']['url']                   = config( 'app.url' );
         $options['identity']['logo']                  = config( 'identity.logo' );

@@ -271,13 +271,13 @@
     </div>
     <div class="span6">
 
-        {if $isLAG}
+        {if $isLAG and $vi->isGraphable()}
             <br /><br />
             <div class="well">
                 <h4>
                     Aggregate Day Graph for LAG
-                    <a class="btn btn-default pull-right" href="{genUrl controller="statistics" action="member-drilldown" shortname=$cust->getShortname() category='bits' monitorindex="lag-viid-`$vi->getId()`"}">
-                        <i class="icon-eye-open"></i>
+                    <a class="btn btn-default pull-right" href="{genUrl controller="statistics" action="member-drilldown"}/vi/{$vi->getId()}">
+                        <i class="icon-zoom-in"></i>
                     </a>
                 </h4>
                 <br />
@@ -286,12 +286,16 @@
         {/if}
 
         {foreach $vi->getPhysicalInterfaces() as $pi}
+            {if not $pi->isGraphable()}
+                {continue}
+            {/if}
+
             <br /><br />
             <div class="well">
                 <h4>
                     Day Graph for {$pi->getSwitchPort()->getSwitcher()->getName()} / {$pi->getSwitchPort()->getName()}
-                    <a class="btn btn-default pull-right" href="{genUrl controller="statistics" action="member-drilldown" shortname=$cust->getShortname() category='bits' monitorindex=$pi->getMonitorindex()}">
-                        <i class="icon-eye-open"></i>
+                    <a class="btn btn-default pull-right" href="{genUrl controller="statistics" action="member-drilldown"}/pi/{$pi->getId()}">
+                        <i class="icon-zoom-in"></i>
                     </a>
                 </h4>
                 <br />

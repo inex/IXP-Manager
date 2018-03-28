@@ -352,6 +352,17 @@ class CompanyRegisteredDetail extends \Entities\CompanyRegisteredDetail implemen
     /**
      * {@inheritDoc}
      */
+    public function getCountryName()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCountryName', []);
+
+        return parent::getCountryName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getId()
     {
         if ($this->__isInitialized__ === false) {
@@ -362,28 +373,6 @@ class CompanyRegisteredDetail extends \Entities\CompanyRegisteredDetail implemen
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
 
         return parent::getId();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setCompany(\Entities\Customer $company = NULL)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCompany', [$company]);
-
-        return parent::setCompany($company);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getCompany()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCompany', []);
-
-        return parent::getCompany();
     }
 
     /**
@@ -411,23 +400,12 @@ class CompanyRegisteredDetail extends \Entities\CompanyRegisteredDetail implemen
     /**
      * {@inheritDoc}
      */
-    public function addCustomer(\Entities\Customer $customer)
+    public function setCustomer(\Entities\Customer $customer)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addCustomer', [$customer]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', [$customer]);
 
-        return parent::addCustomer($customer);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeCustomer(\Entities\Customer $customer)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeCustomer', [$customer]);
-
-        return parent::removeCustomer($customer);
+        return parent::setCustomer($customer);
     }
 
     /**

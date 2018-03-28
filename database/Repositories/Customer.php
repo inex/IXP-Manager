@@ -3,6 +3,12 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
+use D2EM, Exception;
+
+use Entities\{
+    PatchPanelPort  as PatchPanelPortEntity,
+    Customer        as CustomerEntity
+};
 
 /**
  * CustomerRepository
@@ -102,7 +108,25 @@ class Customer extends EntityRepository
         
         return $asArray ? $custs->getArrayResult() : $custs->getResult();
     }
-    
+
+    /**
+     * Utility function to provide a array of all current associate customers
+     *
+     * @param bool $asArray If `true`, return an associative array, else an array of Customer objects
+     * @return array
+     */
+    public function getCurrentAssociate( $asArray = false )
+    {
+        $dql = "SELECT c FROM Entities\\Customer c
+                WHERE " . self::DQL_CUST_CURRENT . " AND c.type = " . CustomerEntity::TYPE_ASSOCIATE;
+
+        $dql .= " ORDER BY c.name ASC";
+
+        $custs = $this->getEntityManager()->createQuery( $dql );
+
+        return $asArray ? $custs->getArrayResult() : $custs->getResult();
+    }
+
     /**
      * Utility function to provide a array of all members connected to the exchange (including at 
      * least one physical interface with status 'CONNECTED').
@@ -212,7 +236,7 @@ class Customer extends EntityRepository
      *
      * @return array An array of all reseller names with the customer id as the key.
      */
-    public function getResellerNames()
+    public function getResellerNames(): array
     {
         $acusts = $this->getEntityManager()->createQuery(
             "SELECT c.id AS id, c.name AS name FROM Entities\\Customer c WHERE c.isReseller = 1 ORDER BY c.name ASC"
@@ -484,5 +508,92 @@ class Customer extends EntityRepository
         }
 
         return $customers;
+    }
+
+    /**
+     * Return an array of customers for display on the frontend list
+     *
+     * @param bool $showCurrentOnly Limit to current customers only
+     * @param int  $state           Array index of CustomerEntity::$CUST_STATUS_TEXT
+     * @param int $type             Array index of CustomerEntity::$CUST_TYPE_TEXT
+     *
+     * @return array An array of all customers objects
+     */
+    public function getAllForFeList( $showCurrentOnly = false, $state = null, $type = null ): array {
+
+        $q = "SELECT c
+                FROM Entities\\Customer c
+                WHERE 1 = 1";
+
+        if( $state && isset( CustomerEntity::$CUST_STATUS_TEXT[ $state ] ) ) {
+            $q .= " AND c.status = {$state} " ;
+        }
+
+        if( $type && isset( CustomerEntity::$CUST_TYPES_TEXT[ $type ] ) ) {
+            $q .= " AND c.type = {$type} " ;
+        }
+
+        if( $showCurrentOnly ) {
+            $q .= " AND " . Customer::DQL_CUST_CURRENT;
+        }
+
+        $q .= " ORDER BY c.name ASC ";
+
+        return $this->getEntityManager()->createQuery( $q )->getResult();
+    }
+
+
+    /**
+     * Delete the customer.
+     *
+     * Related entities are mostly handled by 'ON DELETE CASCADE'.
+     *
+     * @param CustomerEntity $c The customer Object
+     *
+     * @return bool
+     * @throws
+     */
+    public function delete( CustomerEntity $c ): bool {
+
+        try {
+            $this->getEntityManager()->getConnection()->beginTransaction();
+
+            $cbd = $c->getBillingDetails();
+            $crd = $c->getRegistrationDetails();
+
+            // Delete Customer Logo
+            foreach( $c->getLogos() as $logo){
+
+                if( file_exists( $logo->getFullPath() ) ) {
+                    @unlink( $logo->getFullPath() );
+                }
+
+                $c->removeLogo( $logo );
+                $this->getEntityManager()->remove( $logo );
+            }
+
+            // delete contact to contact group links
+            $conn = $this->getEntityManager()->getConnection();
+            $stmt = $conn->prepare("DELETE FROM contact_to_group WHERE contact_id = :id");
+            foreach( $c->getContacts() as $contact ) {
+                $stmt->bindValue('id', $contact->getId() );
+                $stmt->execute();
+            }
+
+
+            $this->getEntityManager()->remove( $c );
+            $this->getEntityManager()->remove( $cbd );
+            $this->getEntityManager()->remove( $crd );
+
+            $this->getEntityManager()->flush();
+            $this->getEntityManager()->getConnection()->commit();
+
+
+        } catch( Exception $e ) {
+            $this->getEntityManager()->getConnection()->rollBack();
+            throw $e;
+        }
+
+        return true;
     }
 }

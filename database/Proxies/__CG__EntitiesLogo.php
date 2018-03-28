@@ -176,34 +176,12 @@ class Logo extends \Entities\Logo implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setOriginalName($originalName)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOriginalName', [$originalName]);
-
-        return parent::setOriginalName($originalName);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getOriginalName()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOriginalName', []);
 
         return parent::getOriginalName();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setStoredName($storedName)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setStoredName', [$storedName]);
-
-        return parent::setStoredName($storedName);
     }
 
     /**
@@ -220,34 +198,12 @@ class Logo extends \Entities\Logo implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setUploadedBy($uploadedBy)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUploadedBy', [$uploadedBy]);
-
-        return parent::setUploadedBy($uploadedBy);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getUploadedBy()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUploadedBy', []);
 
         return parent::getUploadedBy();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setUploadedAt($uploadedAt)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUploadedAt', [$uploadedAt]);
-
-        return parent::setUploadedAt($uploadedAt);
     }
 
     /**
@@ -264,34 +220,12 @@ class Logo extends \Entities\Logo implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setWidth($width)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setWidth', [$width]);
-
-        return parent::setWidth($width);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getWidth()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getWidth', []);
 
         return parent::getWidth();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setHeight($height)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setHeight', [$height]);
-
-        return parent::setHeight($height);
     }
 
     /**
@@ -323,17 +257,6 @@ class Logo extends \Entities\Logo implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setCustomer(\Entities\Customer $customer = NULL)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', [$customer]);
-
-        return parent::setCustomer($customer);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getCustomer()
     {
 
@@ -356,12 +279,12 @@ class Logo extends \Entities\Logo implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setType($type)
+    public function getFullPath()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setType', [$type]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getFullPath', []);
 
-        return parent::setType($type);
+        return parent::getFullPath();
     }
 
     /**
@@ -373,6 +296,94 @@ class Logo extends \Entities\Logo implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getType', []);
 
         return parent::getType();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setOriginalName($originalName)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOriginalName', [$originalName]);
+
+        return parent::setOriginalName($originalName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setStoredName($storedName)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setStoredName', [$storedName]);
+
+        return parent::setStoredName($storedName);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUploadedBy($uploadedBy)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUploadedBy', [$uploadedBy]);
+
+        return parent::setUploadedBy($uploadedBy);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUploadedAt($uploadedAt)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUploadedAt', [$uploadedAt]);
+
+        return parent::setUploadedAt($uploadedAt);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setWidth($width)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setWidth', [$width]);
+
+        return parent::setWidth($width);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setHeight($height)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setHeight', [$height]);
+
+        return parent::setHeight($height);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCustomer(\Entities\Customer $customer = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', [$customer]);
+
+        return parent::setCustomer($customer);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setType($type)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setType', [$type]);
+
+        return parent::setType($type);
     }
 
 }

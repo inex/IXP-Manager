@@ -2,6 +2,8 @@
 
 namespace Repositories;
 
+use Entities\IRRDBConfig as IRRDBConfigEntity;
+
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -44,5 +46,26 @@ class IRRDBConfig extends EntityRepository
         $query = $this->getEntityManager()->createQuery( $dql );
 
         return $query->getArrayResult();
+    }
+
+    /**
+     * Return an array of all IRRDB Config
+     * @return array An array of IRRDB Config
+     */
+    public function getAsArray(): array {
+        $irrdb = [];
+
+        foreach( $this->findBy( [], [ 'source' => 'ASC' ] ) as $i ) {
+            /** @var IRRDBConfigEntity $i */
+            $irrdb[ $i->getId()] = [
+                'id'        => $i->getId(),
+                'protocol'  => $i->getProtocol(),
+                'source'    => $i->getSource(),
+                'host'      => $i->getHost(),
+                'notes'     => $i->getNotes(),
+            ];
+        }
+
+        return $irrdb;
     }
 }

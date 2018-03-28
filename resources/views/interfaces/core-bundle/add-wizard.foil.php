@@ -64,18 +64,21 @@ $this->layout( 'layouts/ixpv4' );
                     ->fromQuery( $t->customers, 'name' )
                     ->placeholder( 'Choose a customer' )
                     ->addClass( 'chzn-select' )
+                    ->required( true )
                     ->blockHelp( '' );
                 ?>
 
                 <?= Former::text( 'description' )
                     ->label( 'Description' )
                     ->placeholder( 'Description' )
+                    ->required( true )
                     ->blockHelp( 'help text' );
                 ?>
 
                 <?= Former::text( 'graph-title' )
                     ->label( 'Graph Title' )
                     ->placeholder( 'Graph Title' )
+                    ->required( true )
                     ->blockHelp( 'help text' );
                 ?>
 
@@ -105,10 +108,11 @@ $this->layout( 'layouts/ixpv4' );
                 ?>
 
                 <?= Former::select( 'type' )
-                    ->label( 'Type<sup>*</sup>' )
+                    ->label( 'Type' )
                     ->fromQuery( $t->types, 'name' )
                     ->placeholder( 'Choose Core Bundle type' )
                     ->addClass( 'chzn-select' )
+                    ->required( true )
                     ->blockHelp( '' )
                     ->value( Entities\CoreBundle::TYPE_ECMP );
                 ?>
@@ -205,8 +209,9 @@ $this->layout( 'layouts/ixpv4' );
             <div class="col-sm-6">
                 <?= Former::select( 'switch-a' )
                     ->id( 'switch-a' )
-                    ->label( 'Switch A<sup>*</sup> :' )
+                    ->label( 'Switch A:' )
                     ->fromQuery( $t->switches, 'name' )
+                    ->required( true )
                     ->placeholder( 'Choose a switch' )
                     ->addClass( 'chzn-select' )
                 ?>
@@ -215,7 +220,8 @@ $this->layout( 'layouts/ixpv4' );
             <div class="col-sm-6">
                 <?= Former::select( 'switch-b' )
                     ->id( 'switch-b' )
-                    ->label( 'Switch B<sup>*</sup> :' )
+                    ->label( 'Switch B :' )
+                    ->required( true )
                     ->placeholder( 'Choose a switch' )
                     ->addClass( 'chzn-select' )
                 ?>
@@ -225,9 +231,10 @@ $this->layout( 'layouts/ixpv4' );
             <br/>
             <div class="col-sm-6">
                 <?= Former::select( 'speed' )
-                    ->label( 'Speed<sup>*</sup> :' )
+                    ->label( 'Speed :' )
                     ->id( 'speed' )
                     ->fromQuery( $t->speed, 'name' )
+                    ->required( true )
                     ->placeholder( 'Choose a Speed' )
                     ->addClass( 'chzn-select' )
 
@@ -239,6 +246,7 @@ $this->layout( 'layouts/ixpv4' );
                     ->label( 'Duplex<sup>*</sup> :' )
                     ->fromQuery( $t->duplex, 'name' )
                     ->placeholder( 'Choose a duplex' )
+                    ->required( true )
                     ->select( 'full' )
                     ->addClass( 'chzn-select' )
                 ?>

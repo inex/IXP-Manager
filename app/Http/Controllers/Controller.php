@@ -61,4 +61,16 @@ class Controller extends BaseController
         return boolval( config( 'ixp.as112.ui_active', false ) );
     }
 
+    /**
+     * Checks if logo management is enabled
+     *
+     * To enable logos in the UI set IXP_FE_FRONTEND_DISABLED_LOGO=false in .env
+     *
+     * @return bool
+     */
+    protected function logoManagementEnabled()
+    {
+        return !boolval( config( 'ixp_fe.frontend.disabled.logo' ) );
+    }
+
 }
