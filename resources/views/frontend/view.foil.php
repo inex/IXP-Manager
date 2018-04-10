@@ -106,20 +106,20 @@
 
                                                     <?php elseif( $cconf[ 'type'] ==  $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
 
-                                                        <?php if( $t->data[ 'item' ][ $col ] ): ?>
-                                                            <?= date('Y-m-d H:M:S', strtotime( $t->data[ $col ] ) ) ?>
+                                                        <?php if(  $t->data[ 'item' ][ $col ] ): ?>
+                                                            <?= $t->data[ 'item' ][ $col ]->format( 'Y-m-d H:i:s' )  ?>
                                                         <?php endif; ?>
 
                                                     <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
 
-                                                        <?php if ( $t->data[ 'item' ][ $col ] ): ?>
-                                                            <?= date('Y-m-d', strtotime( $t->data[ $col ] ) ) ?>
+                                                        <?php if(  $t->data[ 'item' ][ $col ] ): ?>
+                                                            <?= $t->data[ 'item' ][ $col ]->format( 'Y-m-d' )  ?>
                                                         <?php endif; ?>
 
                                                     <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'TIME'] ): ?>
 
-                                                        <?php if( $t->data[ 'item' ][ $col ] ): ?>
-                                                            <?= date('H:M:S', strtotime($t->data[ $col ] ) ) ?>
+                                                        <?php if(  $t->data[ 'item' ][ $col ] ): ?>
+                                                            <?= $t->data[ 'item' ][ $col ]->format( 'H:i:s' )  ?>
                                                         <?php endif; ?>
 
                                                     <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'REPLACE'] ): ?>

@@ -4,7 +4,7 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 use Entities\CoreBundle;
-use Entities\SwitchPort;
+use Entities\Switcher as SwitcherEntity;
 
 /**
  * Switcher
@@ -50,6 +50,8 @@ class Switcher extends EntityRepository
      *
      * @param bool $active If `true`, return only active switches
      * @param int $type If `0`, all types otherwise limit to specific type
+     *
+     * @return bool
      */
     public function clearCache( $active = false, $type = 0 )
     {
@@ -441,9 +443,12 @@ class Switcher extends EntityRepository
      */
     public function getAllPorts( int $id, $types = [], $spid = [], bool $notAssignToPI = true ): array {
 
-        $dql = "SELECT sp.name AS name, sp.type AS type, sp.id AS id
-                    FROM Entities\\SwitchPort sp
-                    LEFT JOIN sp.Switcher s";
+        $dql = "SELECT  sp.name AS name, 
+                        sp.type AS type, 
+                        sp.id AS id, 
+                        sp.type AS porttype
+                FROM Entities\\SwitchPort sp
+                LEFT JOIN sp.Switcher s";
 
         if( $notAssignToPI ){
             $dql .= " LEFT JOIN sp.PhysicalInterface pi";
@@ -472,6 +477,40 @@ class Switcher extends EntityRepository
 
         foreach( $ports as $id => $port )
             $ports[$id]['type'] = \Entities\SwitchPort::$TYPES[ $port['type'] ];
+
+        return $ports;
+    }
+
+    /**
+     * Returns all switch ports assigned to a physical interface for a switch.
+     *
+     * @param int      $id     Switch ID - switch to query
+     *
+     * @return array
+     */
+    public function getAllPortsAssignedToPI( int $id ): array {
+
+        $dql = "SELECT  sp.id AS id, 
+                        sp.name AS name, 
+                        sp.type AS porttype,
+                        pi.speed AS speed, 
+                        pi.duplex AS duplex, 
+                        c.name AS custname
+
+                FROM Entities\\SwitchPort sp
+                    JOIN sp.PhysicalInterface pi
+                    JOIN pi.VirtualInterface vi
+                    JOIN vi.Customer c
+
+                WHERE sp.Switcher = ?1
+
+                ORDER BY id ASC";
+
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+        $query->setParameter( 1, $id );
+
+        $ports = $query->getArrayResult();
 
         return $ports;
     }
@@ -715,5 +754,80 @@ class Switcher extends EntityRepository
             "SELECT csc FROM Entities\ConsoleServerConnection csc
                   WHERE csc.switchid = {$id}"
             )->getResult();
+    }
+
+
+    /**
+     * Get all switches (or a particular one) for listing on the frontend CRUD
+     *
+     * @see \IXP\Http\Controller\Doctrine2Frontend
+     *
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     * @return array Array of switches (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeList( \stdClass $feParams, int $id = null, $params = null )
+    {
+
+
+
+//        if( $this->getParam( 'infra', false ) && $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $this->getParam( 'infra' ) ) )
+//        {
+//            $qb->andWhere( 'i = :infra' )->setParameter( 'infra', $infra );
+//            $this->view->infra = $infra;
+//        }
+
+        $dql = "SELECT  s.id AS id, 
+                        s.name AS name,
+                        s.ipv4addr AS ipv4addr, 
+                        s.ipv6addr AS ipv6addr, 
+                        s.snmppasswd AS snmppasswd,
+                        i.name AS infrastructure, 
+                        s.switchtype AS switchtype, 
+                        s.model AS model,
+                        s.active AS active, 
+                        s.notes AS notes, 
+                        s.lastPolled AS lastPolled,
+                        s.hostname AS hostname, 
+                        s.os AS os, 
+                        s.osDate AS osDate, 
+                        s.osVersion AS osVersion,
+                        s.serialNumber AS serialNumber, 
+                        s.mauSupported AS mauSupported,
+                        v.id AS vendorid, 
+                        v.name AS vendor, 
+                        c.id AS cabinetid, 
+                        c.name AS cabinet, 
+                        s.asn as asn, 
+                        s.loopback_ip as loopback_ip, 
+                        s.loopback_name as loopback_name
+                FROM Entities\\Switcher s
+                LEFT JOIN s.Infrastructure i
+                LEFT JOIN s.Cabinet c
+                LEFT JOIN s.Vendor v
+                
+                WHERE 1 = 1";
+
+        if( $id ) {
+            $dql .= " AND s.id = " . (int)$id;
+        }
+
+        if( isset( $params[ "params" ][ "switchType" ] ) && isset( SwitcherEntity::$TYPES[ $params[ "params" ][ "switchType" ] ] ) ) {
+            $dql .= " AND s.switchtype = " . (int)$params[ "params" ][ "switchType" ];
+        }
+
+        if( isset( $params[ "params" ][ "activeOnly" ] ) && $params[ "params" ][ "activeOnly" ] ){
+            $dql .= " AND s.active = true";
+        }
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getArrayResult();
     }
 }

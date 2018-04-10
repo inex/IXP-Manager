@@ -212,17 +212,17 @@ abstract class Doctrine2Frontend extends Controller {
      *
      * @return View
      */
-    public function list(): View
+    public function list( Request $param ): View
     {
         $this->data[ 'rows' ] = $this->listGetData();
 
-        $this->data[ 'view' ][ 'listEmptyMessage']      = $this->resolveTemplate( 'list-empty-message', false );
-        $this->data[ 'view' ][ 'listHeadOverride']      = $this->resolveTemplate( 'list-head-override', false );
-        $this->data[ 'view' ][ 'listRowOverride']       = $this->resolveTemplate( 'list-row-override',  false );
-        $this->data[ 'view' ][ 'listPreamble']          = $this->resolveTemplate( 'list-preamble',      false );
-        $this->data[ 'view' ][ 'listPostamble']         = $this->resolveTemplate( 'list-postamble',     false );
-        $this->data[ 'view' ][ 'listRowMenu']           = $this->resolveTemplate( 'list-row-menu',      false );
-        $this->data[ 'view' ][ 'pageHeaderPreamble']    = $this->resolveTemplate( 'page-header-preamble',      false );
+        $this->data[ 'view' ][ 'listEmptyMessage']      = $this->resolveTemplate( 'list-empty-message',     false );
+        $this->data[ 'view' ][ 'listHeadOverride']      = $this->resolveTemplate( 'list-head-override',     false );
+        $this->data[ 'view' ][ 'listRowOverride']       = $this->resolveTemplate( 'list-row-override',      false );
+        $this->data[ 'view' ][ 'listPreamble']          = $this->resolveTemplate( 'list-preamble',          false );
+        $this->data[ 'view' ][ 'listPostamble']         = $this->resolveTemplate( 'list-postamble',         false );
+        $this->data[ 'view' ][ 'listRowMenu']           = $this->resolveTemplate( 'list-row-menu',          false );
+        $this->data[ 'view' ][ 'pageHeaderPreamble']    = $this->resolveTemplate( 'page-header-preamble',   false );
         $this->data[ 'view' ][ 'listScript' ]           = $this->resolveTemplate( 'js/list' );
 
         $this->preList();
@@ -284,11 +284,13 @@ abstract class Doctrine2Frontend extends Controller {
      */
     protected function addEditSetup()
     {
-        $this->data[ 'view' ][ 'editForm']        = $this->resolveTemplate( 'edit-form' );
+        $this->data[ 'view' ][ 'editForm']               = $this->resolveTemplate( 'edit-form' );
 
-        $this->data[ 'view' ][ 'editPreamble']    = $this->resolveTemplate( 'edit-preamble',      false );
-        $this->data[ 'view' ][ 'editPostamble']   = $this->resolveTemplate( 'edit-postamble',     false );
-        $this->data[ 'view' ][ 'editScript' ]     = $this->resolveTemplate( 'js/edit',            false );
+        $this->data[ 'view' ][ 'editPreamble']           = $this->resolveTemplate( 'edit-preamble',      false );
+        $this->data[ 'view' ][ 'editPostamble']          = $this->resolveTemplate( 'edit-postamble',     false );
+        $this->data[ 'view' ][ 'editHeaderPreamble']     = $this->resolveTemplate( 'edit-header-preamble',      false );
+        $this->data[ 'view' ][ 'editScript' ]            = $this->resolveTemplate( 'js/edit',            false );
+
     }
 
     /**
@@ -300,13 +302,19 @@ abstract class Doctrine2Frontend extends Controller {
         $this->data[ 'params' ]['isAdd'] = true;
         $this->addEditSetup();
 
+
+
         return $this->display( 'edit' );
     }
 
     /**
      * Edit an object
+     *
      * @param int $id ID of the object to edit
+     *
      * @return view
+     *
+     * @throws
      */
     public function edit( $id ){
         $this->data[ 'params' ] = $this->addEditPrepareForm( $id );
@@ -319,7 +327,9 @@ abstract class Doctrine2Frontend extends Controller {
 
     /**
      * Function to do the actual validation and storing of the submitted object.
+     *
      * @param Request $request
+     *
      * @throws GeneralException
      */
     public function doStore( Request $request ) {
@@ -328,8 +338,12 @@ abstract class Doctrine2Frontend extends Controller {
 
     /**
      * Action for storing a new/updated object
+     *
      * @param Request $request
+     *
      * @return RedirectResponse
+     *
+     * @throws
      */
     public function store( Request $request )
     {
@@ -391,7 +405,10 @@ abstract class Doctrine2Frontend extends Controller {
      * Delete an object
      *
      * @param Request $request
+     *
      * @return RedirectResponse
+     *
+     * @throws
      */
     public function delete( Request $request ) {
 
@@ -456,7 +473,6 @@ abstract class Doctrine2Frontend extends Controller {
      * @return bool|string The template to use of false if none found
      */
     protected function resolveTemplate( $tpl, $quitOnMissing = true ) {
-
         if( ViewFacade::exists ( $this->feParams->viewFolderName . "/{$tpl}" ) ) {
             return $this->feParams->viewFolderName . "/{$tpl}";
         } else if( ViewFacade::exists( "frontend/{$tpl}"  ) ) {

@@ -351,7 +351,7 @@ class Switcher
     /**
      * Get Ports
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Entities\SwitchPort $ports
      */
     public function getPorts()
     {
