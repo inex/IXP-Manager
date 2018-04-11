@@ -2,7 +2,7 @@
 
     <?= Former::open()->method( 'POST' )
         ->id( 'form' )
-        ->action( route( $t->feParams->route_prefix.'@store' ) )
+        ->action( $t->data[ 'params'][ 'addBySnmp'] ?  route( $t->feParams->route_prefix.'@store-by-snmp' ) : route( $t->feParams->route_prefix.'@store' ) )
         ->customWidthClass( 'col-sm-3' )
     ?>
 
