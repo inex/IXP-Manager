@@ -61,9 +61,7 @@ class CustomerNote extends EntityRepository {
                 FROM Entities\\Customer c
                     LEFT JOIN c.Notes AS cn
 
-                GROUP BY cname, cid, cshortname
-                
-                HAVING COUNT( cn.Customer ) > 0
+                GROUP BY cname, cid, cn.Customer HAVING COUNT( cn.Customer ) > 0
                 
                 ORDER BY latest DESC"
             )
