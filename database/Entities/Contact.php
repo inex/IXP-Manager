@@ -65,7 +65,7 @@ class Contact
     protected $id;
 
     /**
-     * @var Entities\Customer
+     * @var |Entities\Customer
      */
     protected $Customer;
     
@@ -328,7 +328,7 @@ class Contact
     /**
      * Set Customer
      *
-     * @param Entities\Customer $customer
+     * @param |Entities\Customer $customer
      * @return Contact
      */
     public function setCustomer(\Entities\Customer $customer = null)
@@ -341,7 +341,7 @@ class Contact
     /**
      * Get Customer
      *
-     * @return Entities\Customer
+     * @return |Entities\Customer
      */
     public function getCustomer()
     {
