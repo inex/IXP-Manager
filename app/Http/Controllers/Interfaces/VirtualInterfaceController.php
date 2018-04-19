@@ -78,6 +78,8 @@ class VirtualInterfaceController extends Common
     /**
      * Display the form to add a virtual interface
      *
+     * @param int $custId ID of customer
+     *
      * @return  View
      */
     public function addWizardCustId( int $custId = null ) : View {
@@ -106,40 +108,47 @@ class VirtualInterfaceController extends Common
      */
     public function add( int $id = null, int $custId = null ): View {
         $vi = false;
+
+        $old = request()->old();
         /** @var VirtualInterfaceEntity $vi */
-        if( $id and !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $id ) ) ) {
-            abort(404);
+        if( $id != null ) {
+
+            if( (!$vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $id ) ) ) {
+                abort(404);
+            }
+
+            // fill the form with Virtual interface data
+            Former::populate([
+                'cust'                  => array_key_exists( 'cust',         $old    ) ? $old['cust']              : $vi->getCustomer(),
+                'trunk'                 => array_key_exists( 'trunk',        $old    ) ? $old['trunk']             : ( $vi->getTrunk() ? 1 : 0 ),
+                'lag_framing'           => array_key_exists( 'lag_framing',  $old    ) ? $old['lag_framing']       : ( $vi->getLagFraming() ? 1 : 0 ),
+                'fastlacp'              => array_key_exists( 'fastlacp',     $old    ) ? $old['fastlacp']          : ( $vi->getFastLACP() ? 1 : 0 ),
+                'name'                  => array_key_exists( 'name',         $old    ) ? $old['name']              : $vi->getName(),
+                'description'           => array_key_exists( 'description',  $old    ) ? $old['description']       : $vi->getDescription(),
+                'channel-group'         => array_key_exists( 'channel-group',$old    ) ? $old['channel-group']     : $vi->getChannelgroup(),
+                'mtu'                   => array_key_exists( 'mtu',          $old    ) ? $old['mtu']               : $vi->getMtu(),
+            ]);
+
         }
 
         $cust = false;
         /** @var CustomerEntity $cust */
-        if( $custId and !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $custId ) ) ) {
-            abort(404);
-        }
+        if( $custId != null ) {
+            if ( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $custId ) ) ) {
+                abort( 404 );
+            }
 
-
-        if( $vi ) {
-            // fill the form with Virtual interface data
             Former::populate([
-                'cust'                  => $vi->getCustomer(),
-                'name'                  => $vi->getName(),
-                'description'           => $vi->getDescription(),
-                'channel-group'         => $vi->getChannelgroup(),
-                'mtu'                   => $vi->getMtu(),
+                'cust'                  => array_key_exists( 'cust',          $old    ) ? $old['cust']               : $cust->getId(),
             ]);
         }
-        if( $cust ) {
-            // fill the form with Virtual interface data
-            Former::populate([
-                'cust'                  => $cust->getId(),
-            ]);
-        }
+
 
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'interfaces/virtual/add' )->with([
-            'cust'              => D2EM::getRepository( CustomerEntity::class)->getNames(),
-            'vls'               => D2EM::getRepository( VlanEntity::class)->getNames(),
+            'cust'              => D2EM::getRepository( CustomerEntity::class   )->getNames(),
+            'vls'               => D2EM::getRepository( VlanEntity::class       )->getNames(),
             'vi'                => $vi ? $vi : false,
             'cb'                => $vi ? $vi->getCoreBundle() : false,
             'resellerMode'      => $this->resellerMode(),
@@ -150,7 +159,7 @@ class VirtualInterfaceController extends Common
     /**
      * Display the Virtual Interface informations
      *
-     * @params  int $id ID of the Virtual Interface
+     * @param  int $id ID of the Virtual Interface
      *
      * @return  view
      */
@@ -169,10 +178,10 @@ class VirtualInterfaceController extends Common
      * Add or edit a virtual interface (set all the data needed)
      *
      * @param   StoreVirtualInterface $request instance of the current HTTP request
+     *
      * @return  RedirectResponse
-     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \IXP\Exceptions\GeneralException
+     *
+     * @throws
      */
     public function store( StoreVirtualInterface $request ): RedirectResponse {
         /** @var VirtualInterfaceEntity $vi */
@@ -200,18 +209,20 @@ class VirtualInterfaceController extends Common
             $request->merge( [ 'name' => '' , 'channel-group' => null ] );
         }
 
-        // NOT SURE
-        $vi->setCustomer( $cust );
-        $vi->setTrunk( $request->input( 'trunk' ) ? $request->input( 'trunk' ) : false );
-        $vi->setLagFraming( $request->input( 'lag_framing' ) ? $request->input( 'lag_framing' ) : false );
-        $vi->setFastLACP( $request->input( 'fastlacp' ) ? $request->input( 'fastlacp' ) : false);
-        $vi->setName( $request->input( 'name' ) );
-        $vi->setDescription( $request->input( 'description' ) );
-        $vi->setChannelgroup( $request->input( 'channel-group' ) );
-        $vi->setMtu( $request->input( 'mtu' ) );
+        var_dump( $request->input());
+
+        $vi->setCustomer(               $cust );
+        $vi->setTrunk(            $request->input( 'trunk' )          ?? 0 );
+        $vi->setLagFraming(  $request->input( 'lag_framing' )    ?? 0 );
+        $vi->setFastLACP(       $request->input( 'fastlacp' )       ?? 0);
+        $vi->setName(                   $request->input( 'name'             ) );
+        $vi->setDescription(            $request->input( 'description'      ) );
+        $vi->setChannelgroup(           $request->input( 'channel-group'    ) );
+        $vi->setMtu(                    $request->input( 'mtu'              ) );
 
         $this->setBundleDetails( $vi );
 
+        var_dump($vi);exit;
         if( count( $vi->getPhysicalInterfaces() ) > 0 ) {
             // We need to try and make naming of the virtual interface name automatic as well as choice
             // of the channel group number.
@@ -276,9 +287,10 @@ class VirtualInterfaceController extends Common
      * Add or edit a interface wizard (set all the data needed)
      *
      * @param   StoreVirtualInterfaceWizard $request instance of the current HTTP request
+     *
      * @return  RedirectResponse
-     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @throws
      */
     public function storeWizard( StoreVirtualInterfaceWizard $request ): RedirectResponse {
         // all validation of ids is in the request object, App\Http\Requests\StoreVirtualInterfaceWizard
@@ -340,7 +352,10 @@ class VirtualInterfaceController extends Common
      *
      * @param   Request $request instance of the current HTTP request
      * @param   int $id ID of the VirtualInterface
+     *
      * @return  JsonResponse
+     *
+     * @throws
      */
     public function delete( Request $request,  int $id ): JsonResponse {
         /** @var VirtualInterfaceEntity $vi */
@@ -352,10 +367,10 @@ class VirtualInterfaceController extends Common
             /** @var PhysicalInterfaceEntity $pi */
             $vi->removePhysicalInterface( $pi );
 
-            if( $pi->getSwitchPort()->getType() == SwitchPortEntity::TYPE_PEERING && $pi->getFanoutPhysicalInterface() ) {
+            if( $pi->getSwitchPort()->isTypePeering() && $pi->getFanoutPhysicalInterface() ) {
                 $pi->getSwitchPort()->setPhysicalInterface( null );
                 $pi->getFanoutPhysicalInterface()->getSwitchPort()->setType(SwitchPortEntity::TYPE_PEERING );
-            } else if( $pi->getSwitchPort()->getType() == SwitchPortEntity::TYPE_FANOUT && $pi->getPeeringPhysicalInterface() ) {
+            } else if( $pi->getSwitchPort()->isTypeFanout() && $pi->getPeeringPhysicalInterface() ) {
                 if( $request->input( 'related' ) ){
                     $this->removeRelatedInterface( $pi );
                 }

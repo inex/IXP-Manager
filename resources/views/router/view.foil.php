@@ -15,13 +15,13 @@ $this->layout( 'layouts/ixpv4' )
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= route('router/list' ) ?>" title="list">
+            <a type="button" class="btn btn-default" href="<?= route('router@list' ) ?>" title="list">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
-            <a type="button" class="btn btn-default" href="<?= route ('router/add' ) ?>" title="add">
+            <a type="button" class="btn btn-default" href="<?= route ('router@add' ) ?>" title="add">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
-            <a type="button" class="btn btn-default" href="<?= route ('router/edit' , [ 'id' => $t->rt->getId() ] ) ?>" title="edit">
+            <a type="button" class="btn btn-default" href="<?= route ('router@edit' , [ 'id' => $t->rt->getId() ] ) ?>" title="edit">
                 <span class="glyphicon glyphicon-pencil"></span>
             </a>
 
@@ -54,7 +54,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <a href="<?= url( '/vlan/view/id/' ).'/'.$t->rt->getVlan()->getId()?> ">
+                            <a href="<?= route( "vlan@view" , [ "id" => $t->rt->getVlan()->getId() ] )?> ">
                                 <?= $t->ee( $t->rt->getVlan()->getName() )?>
                             </a>
                         </td>
@@ -244,8 +244,4 @@ $this->layout( 'layouts/ixpv4' )
             </div>
         </div>
     </div>
-<?php $this->append() ?>
-
-<?php $this->section('scripts') ?>
-
 <?php $this->append() ?>

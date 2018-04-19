@@ -48,6 +48,7 @@
             <?= Former::checkbox( 'loa' )
                 ->label( 'Attach LoA as a PDF' )
                 ->check( $t->emailType == 1 /* connect */ || $t->emailType == 4 /* send loa */ )
+                ->value(1)
             ?>
         <?php endif; ?>
 

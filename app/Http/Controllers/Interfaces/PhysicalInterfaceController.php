@@ -183,6 +183,7 @@ class PhysicalInterfaceController extends Common
      *
      * @param PhysicalInterfaceEntity $pi
      * @param array $data
+     *
      * @return array
      */
     private function mergeCoreLinkDetails( $pi, array $data ): array
@@ -210,6 +211,7 @@ class PhysicalInterfaceController extends Common
      * @param PhysicalInterfaceEntity $pi
      * @param VirtualInterfaceEntity $vi
      * @param array $data
+     *
      * @return array
      */
     private function mergeFanoutDetails( $pi, $vi, array $data ): array
@@ -239,7 +241,10 @@ class PhysicalInterfaceController extends Common
      * Edit a physical interface (set all the data needed)
      *
      * @param   StorePhysicalInterface $request instance of the current HTTP request
+     *
      * @return  RedirectResponse
+     *
+     * @throws
      */
     public function store( StorePhysicalInterface $request ): RedirectResponse {
         /** @var PhysicalInterfaceEntity $pi */
@@ -315,7 +320,7 @@ class PhysicalInterfaceController extends Common
         D2EM::flush();
 
         AlertContainer::push( 'Physical Interface updated successfully.', Alert::SUCCESS );
-        return Redirect::to( $request->input( 'cb' ) ? 'interfaces/core-bundle/edit/'.$request->input( 'cb' ) : 'interfaces/virtual/edit/'.$pi->getVirtualInterface()->getId() );
+        return Redirect::to( $request->input( 'cb' ) ? route( "core-bundle/edit", [ "id" => $request->input( 'cb' ) ] ) : route( "interfaces/virtual/edit", [ "id" => $pi->getVirtualInterface()->getId() ] ) );
     }
 
 
@@ -324,7 +329,10 @@ class PhysicalInterfaceController extends Common
      *
      * @param   Request $request instance of the current HTTP request
      * @param   int $id ID of the Physical Interface
+     *
      * @return  JsonResponse
+     *
+     * @throws
      */
     public function delete( Request $request,  int $id ): JsonResponse {
         /** @var PhysicalInterfaceEntity $pi */
@@ -332,11 +340,11 @@ class PhysicalInterfaceController extends Common
             return abort( '404' );
         }
 
-        if( $pi->getSwitchPort()->getType() == SwitchPortEntity::TYPE_PEERING && $pi->getFanoutPhysicalInterface() ) {
+        if( $pi->getSwitchPort()->isTypePeering() && $pi->getFanoutPhysicalInterface() ) {
             $pi->getSwitchPort()->setPhysicalInterface( null );
             $pi->getFanoutPhysicalInterface()->getSwitchPort()->setType( SwitchPortEntity::TYPE_PEERING );
         }
-        else if( $pi->getSwitchPort()->getType() == SwitchPortEntity::TYPE_FANOUT && $pi->getPeeringPhysicalInterface() ) {
+        else if( $pi->getSwitchPort()->isTypeFanout() && $pi->getPeeringPhysicalInterface() ) {
             if( $request->input( 'related' ) ){
                 $this->removeRelatedInterface( $pi );
             }

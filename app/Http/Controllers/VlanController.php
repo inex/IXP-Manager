@@ -138,7 +138,9 @@ class VlanController extends Doctrine2Frontend {
 
     /**
      * Display the form to add/edit an object
+     *
      * @param   int $id ID of the row to edit
+     *
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
@@ -147,16 +149,17 @@ class VlanController extends Doctrine2Frontend {
                 abort(404);
             }
 
-            Former::populate([
-                'name'                      => $this->object->getName(),
-                'number'                    => $this->object->getNumber(),
-                'infrastructureid'          => $this->object->getInfrastructure()->getId(),
-                'config_name'               => $this->object->getConfigName(),
-                'private'                   => $this->object->getPrivate()          ? 1 : 0,
-                'peering_matrix'            => $this->object->getPeeringMatrix()    ? 1 : 0,
-                'peering_manager'           => $this->object->getPeeringManager()   ? 1 : 0,
-                'notes'                     => $this->object->getNotes(),
+            $old = request()->old();
 
+            Former::populate([
+                'name'                      =>  array_key_exists( 'name',               $old    ) ? $old['name']               : $this->object->getName(),
+                'number'                    =>  array_key_exists( 'number',             $old    ) ? $old['number']             : $this->object->getNumber(),
+                'infrastructureid'          =>  array_key_exists( 'infrastructureid',   $old    ) ? $old['infrastructureid']   : $this->object->getInfrastructure()->getId(),
+                'config_name'               =>  array_key_exists( 'config_name',        $old    ) ? $old['config_name']        : $this->object->getConfigName(),
+                'private'                   =>  array_key_exists( 'private',            $old    ) ? $old['private']            : ( $this->object->getPrivate()          ? 1 : 0 ),
+                'peering_matrix'            =>  array_key_exists( 'peering_matrix',     $old    ) ? $old['peering_matrix']     : ($this->object->getPeeringMatrix()     ? 1 : 0 ),
+                'peering_manager'           =>  array_key_exists( 'peering_manager',    $old    ) ? $old['peering_manager']    : ( $this->object->getPeeringManager()   ? 1 : 0 ),
+                'notes'                     =>  array_key_exists( 'notes',              $old    ) ? $old['notes']              : $this->object->getNotes(),
             ]);
         }
 
@@ -169,8 +172,12 @@ class VlanController extends Doctrine2Frontend {
 
     /**
      * Function to do the actual validation and storing of the submitted object.
+     *
      * @param Request $request
+     *
      * @return bool|RedirectResponse
+     *
+     * @throws
      */
     public function doStore( Request $request )
     {
@@ -181,6 +188,8 @@ class VlanController extends Doctrine2Frontend {
             'config_name'       => 'required|string|max:32|alpha_dash'
 
         ]);
+
+
 
         if( $validator->fails() ) {
             return Redirect::back()->withErrors( $validator )->withInput();
@@ -195,13 +204,20 @@ class VlanController extends Doctrine2Frontend {
             D2EM::persist( $this->object );
         }
 
+        if( $vlanFound = D2EM::getRepository( VlanEntity::class )->getInfraConfigNameCouple( $request->input( 'infrastructureid' ), $request->input( 'config_name' ) ) ){
+            if( $this->object->getId() != $vlanFound->getId() ){
+                AlertContainer::push( "The couple Infrastructure and config name already exist.", Alert::DANGER );
+                return Redirect::back()->withErrors( $validator )->withInput();
+            }
+        }
+
         $this->object->setName(             $request->input( 'name'                 ) );
         $this->object->setNumber(           $request->input( 'number'               ) );
         $this->object->setConfigName(       $request->input( 'config_name'          ) );
         $this->object->setNotes(            $request->input( 'notes'                ) );
-        $this->object->setPrivate(          $request->input( 'private'              ) ?? false );
-        $this->object->setPeeringManager(   $request->input( 'peering_manager'      ) ?? false );
-        $this->object->setPeeringMatrix(    $request->input( 'peering_matrix'       ) ?? false );
+        $this->object->setPrivate(              $request->input( 'private'              ) ?? 0 );
+        $this->object->setPeeringManager($request->input( 'peering_manager'      ) ?? 0 );
+        $this->object->setPeeringMatrix(   $request->input( 'peering_matrix'       ) ?? 0 );
         $this->object->setInfrastructure(   D2EM::getRepository( InfrastructureEntity::class )->find( $request->input( 'infrastructureid' ) ) );
         D2EM::flush( $this->object );
 
@@ -239,6 +255,11 @@ class VlanController extends Doctrine2Frontend {
 
         if( ( $cnt = count( $this->object->getIPv6Addresses() ) ) ) {
             AlertContainer::push( "Could not delete this Vlan as {$cnt} IPv6 address(es) are assigned to it", Alert::DANGER );
+            $okay = false;
+        }
+
+        if( ( $cnt = count( $this->object->getVlanInterfaces() ) ) ) {
+            AlertContainer::push( "Could not delete this Vlan as {$cnt} Vlan Interfaces are assigned to it", Alert::DANGER );
             $okay = false;
         }
 

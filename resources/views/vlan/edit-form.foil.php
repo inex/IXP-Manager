@@ -2,7 +2,7 @@
 <div class="well col-sm-12">
     <?= Former::open()->method( 'POST' )
         ->id( 'form' )
-        ->action( action ( $t->controller.'@store' ) )
+        ->action( route ( $t->feParams->route_prefix.'@store' ) )
         ->customWidthClass( 'col-sm-3' )
     ?>
 
@@ -33,16 +33,14 @@
     <?= Former::checkbox( 'private' )
         ->label( ' ' )
         ->text( 'Private VLAN between a subset of members' )
-        ->checked_value( 1 )
-        ->unchecked_value( 0 )
+        ->value( 1 )
         ->blockHelp( "Check this if this is a private VLAN." );
     ?>
 
     <?= Former::checkbox( 'peering_matrix' )
         ->label( ' ' )
         ->text( 'Include VLAN in the peering matrix (see help)' )
-        ->checked_value( 1 )
-        ->unchecked_value( 0 )
+        ->value( 1 )
         ->blockHelp( "Selecting this checkbox means that this VLAN will appear on the <a href='http://ixp-master.dev/peering-matrix' target='_blank'>peering matrix</a>. 
             Note that this does not mean that this matrix will be populated. For that, you need to <a href='https://github.com/inex/IXP-Manager/wiki/Peering-Matrix'>configure
             sflow support for this</a>." );
@@ -51,8 +49,7 @@
     <?= Former::checkbox( 'peering_manager' )
         ->label( ' ' )
         ->text( 'Include VLAN in the peering manager (see help)' )
-        ->checked_value( 1 )
-        ->unchecked_value( 0 )
+        ->value( 1 )
         ->blockHelp( "Selecting this checkbox means that this VLAN will appear on the members' peering manager. 
             Note that this does not mean that it will be populated. For that, you need to <a href='https://github.com/inex/IXP-Manager/wiki/Peering-Matrix'>configure
             sflow support for this</a>." );
@@ -66,13 +63,13 @@
 
     <?= Former::actions(
         Former::primary_submit( $t->data[ 'params']['isAdd'] ? 'Add' : 'Save Changes' ),
-        Former::default_link( 'Cancel' )->href( action ($t->controller.'@list') ),
+        Former::default_link( 'Cancel' )->href( route ($t->feParams->route_prefix.'@list') ),
         Former::success_button( 'Help' )->id( 'help-btn' )
     );
     ?>
 
     <?= Former::hidden( 'id' )
-        ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
+        ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : null )
     ?>
 
     <?= Former::close() ?>

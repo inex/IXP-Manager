@@ -120,38 +120,39 @@ class VlanInterfaceController extends Common
             $vi = $vli->getVirtualInterface();
         }
 
+        $old = request()->old();
+
         if( $vli ) {
             // populate the form with VLAN interface data
             Former::populate([
-                'vlan'                      => $duplicateTo ? $duplicateTo : $vli->getVlan()->getId() ,
-                'irrdbfilter'               => $vli->getIrrdbfilter() ? 1 : 0,
-                'mcastenabled'              => $vli->getMcastenabled() ? 1 : 0,
+                'vlan'                      => array_key_exists( 'vlan',                    $old    ) ? $old['vlan']                : ( $duplicateTo                ? $duplicateTo : $vli->getVlan()->getId() ) ,
+                'irrdbfilter'               => array_key_exists( 'irrdbfilter',             $old    ) ? $old['irrdbfilter']         : ( $vli->getIrrdbfilter()      ? 1 : 0 ),
+                'mcastenabled'              => array_key_exists( 'mcastenabled',            $old    ) ? $old['mcastenabled']        : ( $vli->getMcastenabled()     ? 1 : 0 ),
 
-                'ipv4-enabled'              => $vli->getIpv4enabled() ? 1 : 0,
-                'ipv4-address'              => $vli->getIPv4Address() ? $vli->getIPv4Address()->getId() : null,
-                'ipv4-hostname'             => $vli->getIpv4hostname(),
-                'ipv4-bgp-md5-secret'       => $vli->getIpv4bgpmd5secret(),
-                'ipv4-can-ping'             => $vli->getIpv4canping() ? 1 : 0,
-                'ipv4-monitor-rcbgp'        => $vli->getIpv4monitorrcbgp() ? 1 : 0,
+                'ipv4-enabled'              => array_key_exists( 'ipv4-enabled',            $old    ) ? $old['ipv4-enabled']        : ( $vli->getIpv4enabled()      ? 1 : 0 ),
+                'ipv4-address'              => array_key_exists( 'ipv4-address',            $old    ) ? $old['ipv4-address']        : ( $vli->getIPv4Address()      ? $vli->getIPv4Address()->getId() : null ),
+                'ipv4-hostname'             => array_key_exists( 'ipv4-hostname',           $old    ) ? $old['ipv4-hostname']       :  $vli->getIpv4hostname() ,
+                'ipv4-bgp-md5-secret'       => array_key_exists( 'ipv4-bgp-md5-secret',     $old    ) ? $old['ipv4-bgp-md5-secret'] : $vli->getIpv4bgpmd5secret(),
+                'ipv4-can-ping'             => array_key_exists( 'ipv4-can-ping',           $old    ) ? $old['ipv4-can-ping']       : ( $vli->getIpv4canping()      ? 1 : 0 ),
+                'ipv4-monitor-rcbgp'        => array_key_exists( 'ipv4-monitor-rcbgp',      $old    ) ? $old['ipv4-monitor-rcbgp']  : ( $vli->getIpv4monitorrcbgp() ? 1 : 0 ),
 
-                'maxbgpprefix'              => $vli->getMaxbgpprefix(),
-                'rsclient'                  => $vli->getRsclient() ? 1 : 0,
-                'rsmorespecifics'           => $vli->getRsMoreSpecifics() ? 1 : 0,
-                'as112client'               => $vli->getAs112client() ? 1 : 0,
-                'busyhost'                  => $vli->getBusyhost() ? 1 : 0,
+                'maxbgpprefix'              => array_key_exists( 'maxbgpprefix',            $old    ) ? $old['maxbgpprefix']        : $vli->getMaxbgpprefix(),
+                'rsclient'                  => array_key_exists( 'rsclient',                $old    ) ? $old['rsclient']            : ( $vli->getRsclient()         ? 1 : 0 ),
+                'rsmorespecifics'           => array_key_exists( 'rsmorespecifics',         $old    ) ? $old['rsmorespecifics']     : ( $vli->getRsMoreSpecifics()  ? 1 : 0 ),
+                'as112client'               => array_key_exists( 'as112client',             $old    ) ? $old['as112client']         : ( $vli->getAs112client()      ? 1 : 0 ),
+                'busyhost'                  => array_key_exists( 'busyhost',                $old    ) ? $old['busyhost']            : ( $vli->getBusyhost()         ? 1 : 0 ),
 
-                'ipv6-enabled'              => $vli->getIpv6enabled() ? 1 : 0,
-                'ipv6-address'              => $vli->getIPv6Address() ? $vli->getIPv6Address()->getId() : null,
-                'ipv6-hostname'             => $vli->getIpv6hostname(),
-                'ipv6-bgp-md5-secret'       => $vli->getIpv6bgpmd5secret(),
-                'ipv6-can-ping'             => $vli->getIpv6canping()? 1 : 0,
-                'ipv6-monitor-rcbgp'        => $vli->getIpv6monitorrcbgp() ? 1 : 0,
+                'ipv6-enabled'              => array_key_exists( 'ipv6-enabled',            $old    ) ? $old['ipv6-enabled']        : ( $vli->getIpv6enabled()      ? 1 : 0 ),
+                'ipv6-address'              => array_key_exists( 'ipv6-address',            $old    ) ? $old['ipv6-address']        : ( $vli->getIPv6Address()      ? $vli->getIPv6Address()->getId() : null ),
+                'ipv6-hostname'             => array_key_exists( 'ipv6-hostname',           $old    ) ? $old['ipv6-hostname']       : $vli->getIpv6hostname(),
+                'ipv6-bgp-md5-secret'       => array_key_exists( 'ipv6-bgp-md5-secret',     $old    ) ? $old['ipv6-bgp-md5-secret'] : $vli->getIpv6bgpmd5secret(),
+                'ipv6-can-ping'             => array_key_exists( 'ipv6-can-ping',           $old    ) ? $old['ipv6-can-ping']       : ( $vli->getIpv6canping()      ? 1 : 0 ),
+                'ipv6-monitor-rcbgp'        => array_key_exists( 'ipv6-monitor-rcbgp',      $old    ) ? $old['ipv6-monitor-rcbgp']  : ( $vli->getIpv6monitorrcbgp() ? 1 : 0 ),
             ]);
         } else {
             // populate the form with default data
             Former::populate([
-                'irrdbfilter'               => 1,
-                'maxbgpprefix'              => $vi->getCustomer()->getMaxprefixes(),
+                'maxbgpprefix'              => array_key_exists( 'maxbgpprefix',           $old    ) ? $old['maxbgpprefix']         : $vi->getCustomer()->getMaxprefixes(),
             ]);
         }
 
@@ -230,7 +231,10 @@ class VlanInterfaceController extends Common
      * Delete a Vlan Interface and the Layer2Address associated
      *
      * @param   int $id ID of the SflowReceiver
+     *
      * @return  JsonResponse
+     *
+     * @throws
      */
     public function delete( int $id ): JsonResponse {
         /** @var VlanInterfaceEntity $vli */

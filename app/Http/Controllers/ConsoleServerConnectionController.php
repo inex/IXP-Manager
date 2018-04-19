@@ -138,6 +138,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
 
             $old = request()->old();
 
+
             Former::populate([
                 'description'   => array_key_exists( 'description', $old ) ? $old['description']    : $this->object->getDescription(),
                 'custid'        => array_key_exists( 'custid',      $old ) ? $old['custid']         : $this->object->getCustomer()->getId(),
@@ -147,10 +148,11 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
                 'parity'        => array_key_exists( 'parity',      $old ) ? $old['parity']         : $this->object->getParity(),
                 'stopbits'      => array_key_exists( 'stopbits',    $old ) ? $old['stopbits']       : $this->object->getStopbits(),
                 'flowcontrol'   => array_key_exists( 'flowcontrol', $old ) ? $old['flowcontrol']    : $this->object->getFlowcontrol(),
-                'autobaud'      => array_key_exists( 'autobaud',    $old ) ? $old['autobaud']       : ( $this->object->getAutobaud() ?? false ),
+                'autobaud'      => array_key_exists( 'autobaud',    $old ) ? $old['autobaud']       : ( $this->object->getAutobaud() ? 1 : 0 ),
                 'notes'         => array_key_exists( 'notes',       $old ) ? $old['notes']          : $this->object->getNotes(),
             ]);
         }
+
 
         return [
             'object'                => $this->object,
@@ -162,11 +164,14 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
 
     /**
      * Function to do the actual validation and storing of the submitted object.
+     *
      * @param Request $request
+     *
      * @return bool|RedirectResponse
+     *
+     * @throws
      */
-    public function doStore( Request $request )
-    {
+    public function doStore( Request $request ){
         $validator = Validator::make( $request->all(), [
             'description'           => 'required|string|max:255',
             'custid'                => 'required|int|exists:Entities\Customer,id',
@@ -199,7 +204,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
         $this->object->setParity(       $request->input( 'parity'       ) );
         $this->object->setStopbits(     $request->input( 'stopbits'     ) );
         $this->object->setFlowcontrol(  $request->input( 'flowcontrol'  ) );
-        $this->object->setAutobaud(     $request->input( 'autobaud'     ) );
+        $this->object->setAutobaud(     $request->input( 'autobaud'     ) ?? 0 );
         $this->object->setNotes(        $request->input( 'notes'        ) );
         $this->object->setCustomer(     D2EM::getRepository( CustomerEntity::class  )->find( $request->input( 'custid'      ) ) );
         $this->object->setSwitcher(     D2EM::getRepository( SwitcherEntity::class  )->find( $request->input( 'switchid'    ) ) );

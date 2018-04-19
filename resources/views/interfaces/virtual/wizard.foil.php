@@ -82,18 +82,24 @@ $this->layout( 'layouts/ixpv4' );
                 ->text( 'Use 802.1q framing' )
                 ->blockHelp( 'Indicates if this port should be configured for 802.1q framing / tagged packets.' )
                 ->check( false )
+                ->checked_value( 1 )
+                ->unchecked_value( 0 )
             ?>
 
             <?= Former::checkbox( 'ipv6-enabled' )
                 ->label('&nbsp;')
                 ->text( 'IPv6 Enabled' )
                 ->blockHelp( ' ' )
+                ->checked_value( 1 )
+                ->unchecked_value( 0 )
             ?>
 
             <?= Former::checkbox( 'ipv4-enabled' )
                 ->label('&nbsp;')
                 ->text( 'IPv4 Enabled' )
                 ->blockHelp( ' ' )
+                ->checked_value( 1 )
+                ->unchecked_value( 0 )
             ?>
 
         </div>
@@ -170,22 +176,24 @@ $this->layout( 'layouts/ixpv4' );
                 ->label('&nbsp;')
                 ->text( 'Route Server Client' )
                 ->blockHelp( 'Indicates if IXP Manager should configure route server BGP sessions for this interface.' )
+                ->checked_value( 1 )
+                ->unchecked_value( 0 )
             ?>
 
             <?= Former::checkbox( 'irrdbfilter' )
                 ->label('&nbsp')
                 ->text( 'Apply IRRDB Filtering' )
                 ->blockHelp( "<strong>Strongly recommended!</strong> Filter routes learned on route servers based on the customer's IRRDB entries." )
+                ->checked_value( 1 )
                 ->unchecked_value( 0 )
-                ->value( 1 )
             ?>
 
             <div id="div-rsmorespecifics" style="<?= old( 'irrdbfilter' ) || $t->vli && $t->vli->getIrrdbfilter() ?: 'display: none;' ?>">
                 <?= Former::checkbox( 'rsmorespecifics' )
                     ->label('&nbsp;')
                     ->text( 'IRRDB - Allow More Specifics?' )
+                    ->checked_value( 1 )
                     ->unchecked_value( 0 )
-                    ->value( 1 )
                     ->blockHelp( 'If checked, then IXP Manager will configure the route server BGP peer for this connection such that it will '
                         . 'allow more specific prefixes than those registered in the IRRDB. See the '
                         . '<a href="http://docs.ixpmanager.org/features/route-servers/">route server configuration documenation for more details</a>.' )
@@ -196,7 +204,8 @@ $this->layout( 'layouts/ixpv4' );
                 ->label( '&nbsp;' )
                 ->text( 'AS112 Client' )
                 ->blockHelp( 'Indicates if IXP Manager should configure AS112 BGP sessions for this interface.' )
-
+                ->checked_value( 1 )
+                ->unchecked_value( 0 )
             ?>
         </div>
     </div>

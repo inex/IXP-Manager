@@ -11,7 +11,7 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= route ('router/add') ?>">
+            <a type="button" class="btn btn-default" href="<?= route ('router@add') ?>">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
         </div>
@@ -66,7 +66,7 @@
                         <?= $t->ee( $router->getShortName() ) ?>
                     </td>
                     <td>
-                        <a href="<?= url( '/vlan/view/id/' ).'/'.$router->getVlan()->getId()?> ">
+                        <a href="<?= route( "vlan@view", [ "id" => $router->getVlan()->getId() ] ) ?> ">
                             <?= $t->ee( $router->getVlan()->getName() )?>
                         </a>
                     </td>
@@ -96,10 +96,10 @@
                             <a target="_blank" class="btn btn btn-default" href="<?= route('apiv4-router-gen-config', [ 'handle' => $router->getHandle() ] ) ?>" title="Configuration">
                                 <i class="glyphicon glyphicon-file"></i>
                             </a>
-                            <a class="btn btn btn-default" href="<?= action('RouterController@view' , [ 'id' => $router->getId() ] ) ?>" title="Preview">
+                            <a class="btn btn btn-default" href="<?= route('router@view' , [ 'id' => $router->getId() ] ) ?>" title="Preview">
                                 <i class="glyphicon glyphicon-eye-open"></i>
                             </a>
-                            <a class="btn btn btn-default" href="<?= route('router/edit' , [ 'id' => $router->getId() ] )?>" title="Edit">
+                            <a class="btn btn btn-default" href="<?= route('router@edit' , [ 'id' => $router->getId() ] )?>" title="Edit">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </a>
                             <a class="btn btn btn-default" id="delete-router-<?=$router->getId() ?>" href="" title="Delete">

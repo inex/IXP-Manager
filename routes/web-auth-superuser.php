@@ -57,14 +57,14 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
 
 
 Route::group( [ 'prefix' => 'router' ], function() {
-    Route::get(     'list',                             'RouterController@list'     )->name( 'router/list'  );
-    Route::get(     'status',                           'RouterController@status'   )->name('router/status' );
-    Route::get(     'add',                              'RouterController@edit'     )->name( 'router/add'   );
-    Route::get(     'edit/{id}',                        'RouterController@edit'     )->name( 'router/edit'  );
-    Route::get(     'view/{id}',                        'RouterController@view'     );
-    Route::get(     'delete/{id}',                      'RouterController@delete'   );
+    Route::get(     'list',                             'RouterController@list'     )->name( 'router@list'  );
+    Route::get(     'status',                           'RouterController@status'   )->name( 'router@status' );
+    Route::get(     'add',                              'RouterController@edit'     )->name( 'router@add'   );
+    Route::get(     'edit/{id}',                        'RouterController@edit'     )->name( 'router@edit'  );
+    Route::get(     'view/{id}',                        'RouterController@view'     )->name( 'router@view'  );
+    Route::get(     'delete/{id}',                      'RouterController@delete'   )->name( 'router@delete'  );
     Route::get(     'gen-config/{id}',                  'RouterController@genConfig');
-    Route::post(    'store',                            'RouterController@store'    );
+    Route::post(    'store',                            'RouterController@store'    )->name( 'router@store'  );
 
 });
 
@@ -77,7 +77,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get(     'view/{id}',                        'VirtualInterfaceController@view'               );
         Route::get(     'wizard-add',                       'VirtualInterfaceController@wizard'             )->name(    'interfaces/virtual/wizard'             );
         Route::get(     'wizard-add/custid/{custid}',       'VirtualInterfaceController@addWizardCustId'    )->name(   'interfaces/virtual/add-wizard/custid'   );
-        Route::post(    'store',                            'VirtualInterfaceController@store'              );
+        Route::post(    'store',                            'VirtualInterfaceController@store'              )->name(   'interfaces/virtual/store'   );
         Route::post(    'wizard-add',                       'VirtualInterfaceController@storeWizard'        )->name(    'interfaces/virtual/wizard-save'        );
         Route::post(    'delete/{id}',                      'VirtualInterfaceController@delete'             );
         

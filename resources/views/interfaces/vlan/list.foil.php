@@ -49,7 +49,7 @@ $this->layout( 'layouts/ixpv4' );
                         </a>
                     </td>
                     <td>
-                        <a href="<?= url( 'vlan/list/id' ).'/'.$vli['vlanid']?>">
+                        <a href="<?= route( 'vlan@view', [ "id" => $vli['vlanid'] ] ) ?>">
                             <?= $t->ee( $vli['vlan'] )   ?>
                         </a>
                     </td>

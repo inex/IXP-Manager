@@ -57,8 +57,7 @@
         <?= Former::checkbox( 'decimal' )
             ->label( '&nbsp;' )
             ->text( 'Enter decimal values only' )
-            ->unchecked_value( 0 )
-            ->value( 1 )
+            ->value(1)
             ->blockHelp( "Typically IXs allocate a customer an IPv6 address such that the last block matches the last block of the IPv4 address. "
                 . "If you check this, IXP Manager will add the number of addresses as indicated by the CIDR block size but skip over any "
                 . "addresses containing <code>a-f</code> characters."
@@ -69,9 +68,8 @@
             <?= Former::checkbox( 'overflow' )
                 ->label( '&nbsp;' )
                 ->text( 'Overflow network bound for decimal-only values' )
-                ->unchecked_value( 0 )
-                ->value( 1 )
                 ->check()
+                ->value(1)
                 ->blockHelp( "If you are adding decimal addresses only, you would typically want the number of addresses created to match the "
                         . "size of the subnet even if it overflows the subnet bounds. Unchecking this will limit the decimal addresses create to the subnet."
                 )
@@ -88,9 +86,8 @@
     <?= Former::checkbox( 'skip' )
         ->label( '&nbsp;' )
         ->text( 'Skip over existing addresses without throwing an error' )
-        ->unchecked_value( 0 )
-        ->value( 1 )
-        ->check( Input::old( 'skip', null ) ?? true )
+        ->check()
+        ->value(1)
         ->blockHelp( 'When adding a range of addresses, some may already exist in the database (created during provisioning a VLAN interface, previously added, etc.) '
             . 'Checking this will just skip over any addresses that already exist and only add the new ones.' );
     ?>

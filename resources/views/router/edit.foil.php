@@ -1,22 +1,22 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= action( 'RouterController@list' )?>">Router</a>
+    <a href="<?= route( 'router@list' )?>">Router</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li><?= ( $t->edit ) ? 'Edit' : 'Add' ?></li>
-    <?= $t->rt->getId() ?>
+    <li><?= ( $t->rt ) ? 'Edit : '. $t->rt->getName() : 'Add' ?></li>
+
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= route('router/list' ) ?>" title="list">
+            <a type="button" class="btn btn-default" href="<?= route('router@list' ) ?>" title="list">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
-            <?php if( $t->edit ): ?>
-                <a type="button" class="btn btn-default" href="<?= route ('router/add' ) ?>" title="add">
+            <?php if( $t->rt ): ?>
+                <a type="button" class="btn btn-default" href="<?= route ('router@add' ) ?>" title="add">
                     <span class="glyphicon glyphicon-plus"></span>
                 </a>
             <?php endif; ?>
@@ -31,7 +31,7 @@
 
 
         <?= Former::open()->method( 'POST' )
-            ->action( action( 'RouterController@store' ) )
+            ->action( route( 'router@store' ) )
             ->customWidthClass( 'col-sm-6' )
             ->addClass( 'col-md-10' );
         ?>
@@ -55,14 +55,14 @@
 
         <?= Former::select( 'protocol' )
             ->label( 'Protocol' )
-            ->fromQuery( $t->protocols )
+            ->fromQuery( Entities\Router::$PROTOCOLS )
             ->placeholder( 'Choose the protocol' )
             ->addClass( 'chzn-select' );
         ?>
 
         <?= Former::select( 'type' )
             ->label( 'Type' )
-            ->fromQuery( $t->types )
+            ->fromQuery( Entities\Router::$TYPES )
             ->placeholder( 'Choose a type / function' )
             ->addClass( 'chzn-select' )
             ->blockHelp( 'The function of this router. We define three. If you use <em>Other</em> then we suggest opening a 
@@ -107,7 +107,7 @@
 
         <?= Former::select( 'software' )
             ->label( 'Software' )
-            ->fromQuery( $t->softwares )
+            ->fromQuery( Entities\Router::$SOFTWARES )
             ->placeholder( 'Choose the platform / software' )
             ->addClass( 'chzn-select' )
             ->blockHelp( 'There is no specific use for this as yet but you should choose appropriately for future correctness. If
@@ -123,7 +123,7 @@
 
         <?= Former::select( 'api_type' )
             ->label( 'API Type' )
-            ->fromQuery( $t->apiTypes )
+            ->fromQuery( Entities\Router::$API_TYPES )
             ->placeholder( 'Choose an API type' )
             ->addClass( 'chzn-select' )
             ->blockHelp( "For monitoring and looking glass functionality, we support API access to the router. The only currently
@@ -138,7 +138,7 @@
 
         <?= Former::select( 'lg_access' )
             ->label( 'LG Access Privileges' )
-            ->fromQuery( $t->lgAccess )
+            ->fromQuery( Entities\User::$PRIVILEGES_ALL )
             ->placeholder( 'Choose Minimum Looking Glass Access Privileges' )
             ->addClass( 'chzn-select' )
             ->blockHelp( 'What (minimum) privileges must a user have to access the looking glass of this router. <em>Only relevant 
@@ -148,7 +148,6 @@
         <?= Former::checkbox( 'quarantine' )
             ->label( 'Quarantine' )
             ->text( 'Router will be used for quarantine procedures only' )
-            ->unchecked_value( 0 )
             ->value( 1 )
             ->blockHelp( "Is this router used in quarantine rather than production? The effect of this is that BGP client
                 sessions are only generated for interfaces that have a physical interface in quarantine." );
@@ -158,7 +157,6 @@
         <?= Former::checkbox( 'bgp_lc' )
             ->label('BGP LC')
             ->text( 'Enable Large BGP Communities / RFC8092' )
-            ->unchecked_value( 0 )
             ->value( 1 )
             ->blockHelp( "Enable support for Large BGP Communities? (RFC8092). NB: must be supported by both the 
                 template and the software / platform!" );
@@ -167,7 +165,6 @@
         <?= Former::checkbox( 'skip_md5' )
             ->label( 'Skip MD5' )
             ->text( 'Do not include any MD5 configuration' )
-            ->unchecked_value( 0 )
             ->value( 1 )
             ->blockHelp( 'If checked, all sessions will be configured without MD5 whether they have an
                 MD5 password set on an interface or not.' );
@@ -186,15 +183,16 @@
         ?>
 
         <?=Former::actions( Former::primary_submit( 'Save Changes' ),
-            Former::default_link( 'Cancel' )->href( action( 'RouterController@list' ) ),
+            Former::default_link( 'Cancel' )->href( route( 'router@list' ) ),
             Former::success_button( 'Help' )->id( 'help-btn' )
         );?>
 
         <?= Former::hidden( 'id' )
-            ->value( $t->rt ? $t->rt->getId() : '' )
+            ->value( $t->rt ? $t->rt->getId() : null )
         ?>
 
-    <?= Former::close() ?>
+        <?= Former::close() ?>
+
     </div>
 <?php $this->append() ?>
 

@@ -19,8 +19,7 @@
     <?= Former::checkbox( 'primary' )
         ->label( '&nbsp;' )
         ->text( 'Primary Infrastructure' )
-        ->checked_value( 1 )
-        ->unchecked_value( 0 )
+        ->value(1)
         ->blockHelp( "Only one infrastructure can be primary. Setting this will unset this on all other infrastructures. Usually used to "
             . "signify an infrastructure where <em>everyone</em> connects such as a primary peering LAN." );
     ?>
