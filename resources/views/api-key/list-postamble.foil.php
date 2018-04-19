@@ -33,8 +33,8 @@
             <?php foreach( \IXP\Utils\Export\JsonSchema::EUROIX_JSON_VERSIONS as $v ): ?>
                 <li>
                     <code>
-                        <a href="<?= url( "/api/v4/member-export/ixf/<?= $v ?>")?>">
-                            <?= url( "/api/v4/member-export/ixf/<?= $v ?>") ?>
+                        <a href="<?= url( "/api/v4/member-export/ixf/" . $v )?>">
+                            <?= url( "/api/v4/member-export/ixf/" . $v ) ?>
                         </a>
                     </code>
                 </li>

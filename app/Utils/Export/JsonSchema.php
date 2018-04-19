@@ -49,7 +49,7 @@ class JsonSchema
     // Supported versions:
     // ended 201705: const EUROIX_JSON_VERSION_0_3 = "0.3";
     // ended 201705: const EUROIX_JSON_VERSION_0_4 = "0.4";
-    // cended 201705: onst EUROIX_JSON_VERSION_0_5 = "0.5";
+    // ended 201705: const EUROIX_JSON_VERSION_0_5 = "0.5";
     const EUROIX_JSON_VERSION_0_6 = "0.6";
     const EUROIX_JSON_VERSION_0_7 = "0.7";
     // adding a new version? update sanitiseVersion() below also!
