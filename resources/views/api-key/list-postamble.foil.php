@@ -30,20 +30,15 @@
             Member List export instructions</a>.<br><br>
         Examples:
         <ul>
-            <li>
-                <code>
-                    <a href="<?= url( "/api/v4/member-export/ixf/0.7")?>">
-                        <?= url( "/api/v4/member-export/ixf/0.7") ?>
-                    </a>
-                </code>
-            </li>
-            <li>
-                <code>
-                    <a href="<?= url( "/api/v4/member-export/ixf/0.6")?>">
-                        <?= url( "/api/v4/member-export/ixf/0.6") ?>
-                    </a>
-                </code>
-            </li>
+            <?php foreach( \IXP\Utils\Export\JsonSchema::EUROIX_JSON_VERSIONS as $v ): ?>
+                <li>
+                    <code>
+                        <a href="<?= url( "/api/v4/member-export/ixf/<?= $v ?>")?>">
+                            <?= url( "/api/v4/member-export/ixf/<?= $v ?>") ?>
+                        </a>
+                    </code>
+                </li>
+            <?php endforeach; ?>
         </ul>
         <br><br>
     </dd>
