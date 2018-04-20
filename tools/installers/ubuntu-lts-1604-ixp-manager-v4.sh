@@ -94,9 +94,10 @@ echo '[done]'
 
 debconf-set-selections <<< "console-setup console-setup/charmap47 select UTF-8"
 debconf-set-selections <<< "console-setup console-setup/codeset47 select Lat15"
+export DEBIAN_FRONTEND=noninteractive
 
 echo -n "Doing a full system upgrade to ensure latest packages are installed (be patient)... "
-log_break && apt-get dist-upgrade -yq &>> /tmp/ixp-manager-install.log
+log_break && apt-get dist-upgrade -o "Dpkg::Options::=--force-confnew" -yq &>> /tmp/ixp-manager-install.log
 apt-get install -yq ubuntu-minimal openssl wget &>> /tmp/ixp-manager-install.log
 apt-get autoremove -yq &>> /tmp/ixp-manager-install.log
 echo '[done]'
