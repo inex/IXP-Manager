@@ -90,6 +90,23 @@ class ContactsController extends Doctrine2Frontend {
     }
 
     /**
+     * The default routes for a Doctrine2Frontend class
+     */
+    public static function routes() {
+
+
+        // add leading slash to class name for absolute resolution:
+        $class = '\\' . get_called_class();
+        $route_prefix = self::route_prefix();
+
+        Route::group( [ 'prefix' => $route_prefix ], function() use ( $class, $route_prefix ) {
+            Route::post( 'delete',      $class . '@delete'  )->name( $route_prefix . '@delete'  );
+        });
+
+        $class::additionalRoutes( $route_prefix );
+    }
+
+    /**
      * Provide array of rows for the list and view
      *
      * @param int $id The `id` of the row to load for `view`. `null` if `list`
