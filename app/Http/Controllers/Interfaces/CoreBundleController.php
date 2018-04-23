@@ -93,10 +93,7 @@ class CoreBundleController extends Common
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'interfaces/core-bundle/add-wizard' )->with([
             'switches'                      => D2EM::getRepository( SwitcherEntity::class )->getNames(),
-            'customers'                     => D2EM::getRepository( CustomerEntity::class )->getAsArray( null, [CustomerEntity::TYPE_INTERNAL] ),
-            'types'                         => CoreBundleEntity::$TYPES,
-            'speed'                         => PhysicalInterfaceEntity::$SPEED,
-            'duplex'                        => PhysicalInterfaceEntity::$DUPLEX
+            'customers'                     => D2EM::getRepository( CustomerEntity::class )->getAsArray( null, [ CustomerEntity::TYPE_INTERNAL ] ),
         ]);
     }
 
@@ -135,27 +132,26 @@ class CoreBundleController extends Common
             abort(404);
         }
 
+        $old = request()->old();
+
         if( $cb ) {
             // fill the form with Virtual interface data
             Former::populate([
-                'customer'                  => $cb->getCustomer(),
-                'description'               => $cb->getDescription(),
-                'graph-title'               => $cb->getGraphTitle(),
-                'cost'                      => $cb->getCost(),
-                'preference'                => $cb->getPreference(),
-                'type'                      => $cb->getType(),
-                'subnet'                    => $cb->getIPv4Subnet() ,
-                'enabled'                   => $cb->getEnabled()    ? 1 : 0,
-                'bfd'                       => $cb->getBFD()        ? 1 : 0,
-                'stp'                       => $cb->getSTP()        ? 1 : 0,
+                'customer'                  => array_key_exists( 'customer',        $old    ) ? $old['customer']        : $cb->getCustomer(),
+                'description'               => array_key_exists( 'description',     $old    ) ? $old['description']     : $cb->getDescription(),
+                'graph-title'               => array_key_exists( 'graph-title',     $old    ) ? $old['graph-title']     : $cb->getGraphTitle(),
+                'cost'                      => array_key_exists( 'cost',            $old    ) ? $old['cost']            : $cb->getCost(),
+                'preference'                => array_key_exists( 'preference',      $old    ) ? $old['preference']      : $cb->getPreference(),
+                'type'                      => array_key_exists( 'type',            $old    ) ? $old['type']            : $cb->getType(),
+                'subnet'                    => array_key_exists( 'subnet',          $old    ) ? $old['subnet']          : $cb->getIPv4Subnet() ,
+                'enabled'                   => array_key_exists( 'enabled',         $old    ) ? $old['enabled']         : ( $cb->getEnabled()    ? 1 : 0 ),
+                'bfd'                       => array_key_exists( 'bfd',             $old    ) ? $old['bfd']             : ( $cb->getBFD()        ? 1 : 0 ),
+                'stp'                       => array_key_exists( 'stp',             $old    ) ? $old['stp']             : ( $cb->getSTP()        ? 1 : 0 ),
             ]);
         }
 
         return view( 'interfaces/core-bundle/edit-wizard' )->with([
             'cb'                            => $cb,
-            'types'                         => CoreBundleEntity::$TYPES,
-            'speed'                         => PhysicalInterfaceEntity::$SPEED,
-            'duplex'                        => PhysicalInterfaceEntity::$DUPLEX,
             'customers'                     => D2EM::getRepository( CustomerEntity::class )->getAsArray( null, [CustomerEntity::TYPE_INTERNAL] )
         ]);
     }
@@ -200,10 +196,10 @@ class CoreBundleController extends Common
         $cb->setCost(           $request->input( 'cost'                 ) );
         $cb->setPreference(     $request->input( 'preference'           ) );
         $cb->setType(           $request->input( 'type'                 ) );
-        $cb->setEnabled(        $request->input( 'enabled'              ) ? $request->input( 'enabled'  ) : false   );
-        $cb->setBFD(            $request->input( 'bfd'                  ) ? $request->input( 'bfd'      ) : false   );
-        $cb->setIPv4Subnet(     $request->input( 'subnet'               ) ? $request->input( 'subnet'   ) : null    );
-        $cb->setSTP(            $request->input( 'stp',false    ) ? true : false );
+        $cb->setEnabled(        $request->input( 'enabled'           ) ?? false );
+        $cb->setBFD(            $request->input( 'bfd'                  ) ?? false  );
+        $cb->setIPv4Subnet(     $request->input( 'subnet'         ) ?? null  );
+        $cb->setSTP(            $request->input( 'stp',false     ) ?? false );
 
         /** @var CustomerEntity $cust */
         $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'customer' ) )  ;
@@ -216,7 +212,7 @@ class CoreBundleController extends Common
         if( $edit ){
             D2EM::flush();
             AlertContainer::push( 'The core bundle has been updated successfully.', Alert::SUCCESS );
-            return Redirect::to( 'interfaces/core-bundle/edit/'.$cb->getId() );
+            return Redirect::to( route( "core-bundle/edit", [ "id" => $cb->getId() ] ) );
         }
 
         foreach( [ 'a' => $via , 'b' => $vib ] as $side => $vi ){
@@ -231,7 +227,7 @@ class CoreBundleController extends Common
 
         // CHeck if there is at least 1 core link created for the core bundle
         if( $request->input( 'nb-core-links' ) == 0 || $request->input( 'nb-core-links' ) == null ){
-            return Redirect::to( 'interfaces/core-bundle/add-wizard' )->withInput( Input::all() );
+            return Redirect::to( route( "core-bundle/add" ) )->withInput( Input::all() );
         }
 
         for( $i = 1; $i <= $request->input( 'nb-core-links' ); $i++ ){
@@ -243,7 +239,7 @@ class CoreBundleController extends Common
 
         AlertContainer::push( 'The core bundle has been added successfully.', Alert::SUCCESS );
 
-        return Redirect::to( 'interfaces/core-bundle/list' );
+        return Redirect::to( route( "core-bundle/list" ) );
     }
 
 
@@ -279,12 +275,9 @@ class CoreBundleController extends Common
 
         AlertContainer::push( 'The core links have been edited with success.', Alert::SUCCESS );
 
-        return Redirect::to( 'interfaces/core-bundle/edit/'.$cb->getId() );
+        return Redirect::to( route( "core-bundle/edit", [ "id" => $cb->getId() ] ) );
 
     }
-
-
-
 
 
     /**
@@ -317,7 +310,7 @@ class CoreBundleController extends Common
 
         AlertContainer::push( 'The core link has been added successfully.', Alert::SUCCESS );
 
-        return Redirect::to( 'interfaces/core-bundle/edit/'.$cb->getId() );
+        return Redirect::to( route( "core-bundle/edit" , [ "id" => $cb->getId() ] ) );
     }
 
     /**

@@ -209,7 +209,6 @@ class VirtualInterfaceController extends Common
             $request->merge( [ 'name' => '' , 'channel-group' => null ] );
         }
 
-        var_dump( $request->input());
 
         $vi->setCustomer(               $cust );
         $vi->setTrunk(            $request->input( 'trunk' )          ?? 0 );
@@ -222,7 +221,6 @@ class VirtualInterfaceController extends Common
 
         $this->setBundleDetails( $vi );
 
-        var_dump($vi);exit;
         if( count( $vi->getPhysicalInterfaces() ) > 0 ) {
             // We need to try and make naming of the virtual interface name automatic as well as choice
             // of the channel group number.

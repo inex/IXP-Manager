@@ -86,8 +86,7 @@ $this->layout( 'layouts/ixpv4' );
                     <?= Former::checkbox( 'stp' )
                         ->id('stp')
                         ->label( 'STP' )
-                        ->checked_value( 1 )
-                        ->unchecked_value( 0 )
+                        ->value( 1 )
                         ->blockHelp( "" );
                     ?>
                 </div>
@@ -109,7 +108,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::select( 'type' )
                     ->label( 'Type' )
-                    ->fromQuery( $t->types, 'name' )
+                    ->fromQuery( Entities\CoreBundle::$TYPES , 'name' )
                     ->placeholder( 'Choose Core Bundle type' )
                     ->addClass( 'chzn-select' )
                     ->required( true )
@@ -120,7 +119,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?= Former::checkbox( 'enabled' )
                     ->id( 'enabled' )
                     ->label( 'Enabled' )
-                    ->unchecked_value( 0 )
+                    ->value( 1 )
                     ->blockHelp( "" );
                 ?>
             </div>
@@ -132,7 +131,6 @@ $this->layout( 'layouts/ixpv4' );
                 <?= Former::checkbox( 'framing' )
                     ->id( 'framing' )
                     ->label( 'Use 802.1q framing' )
-                    ->unchecked_value( 0 )
                     ->value( 1 )
                     ->blockHelp( "" );
                 ?>
@@ -145,19 +143,17 @@ $this->layout( 'layouts/ixpv4' );
                 <div class="lag-area" style="display: none" >
                     <?= Former::checkbox( 'fast-lacp' )
                         ->label( 'Use Fast LACP' )
-                        ->unchecked_value( 0 )
                         ->value( 1 )
                     ?>
                 </div>
                 <div id="l3-lag-area" style="display: none">
                     <?= Former::checkbox( 'bfd' )
                         ->label( 'BFD' )
-                        ->unchecked_value( 0 )
                         ->value( 1 )
                     ?>
 
                     <?= Former::text( 'subnet' )
-                        ->label( 'SubNet' )
+                        ->label( 'SubNet<sup>*</sup>' )
                         ->placeholder( '192.0.2.0/30' )
                     ?>
                 </div>
@@ -233,7 +229,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?= Former::select( 'speed' )
                     ->label( 'Speed :' )
                     ->id( 'speed' )
-                    ->fromQuery( $t->speed, 'name' )
+                    ->fromQuery( Entities\PhysicalInterface::$SPEED, 'name' )
                     ->required( true )
                     ->placeholder( 'Choose a Speed' )
                     ->addClass( 'chzn-select' )
@@ -244,7 +240,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?= Former::select( 'duplex' )
                     ->id( 'duplex' )
                     ->label( 'Duplex<sup>*</sup> :' )
-                    ->fromQuery( $t->duplex, 'name' )
+                    ->fromQuery( Entities\PhysicalInterface::$DUPLEX, 'name' )
                     ->placeholder( 'Choose a duplex' )
                     ->required( true )
                     ->select( 'full' )
@@ -257,9 +253,8 @@ $this->layout( 'layouts/ixpv4' );
             <div class="col-sm-6">
                 <?= Former::checkbox( 'auto-neg' )
                     ->label( 'Auto-Neg :' )
-                    ->unchecked_value( 0 )
                     ->value( 1 )
-                    ->check( true )
+                    ->check()
                 ?>
             </div>
             <div style="clear: both"></div>
@@ -300,7 +295,7 @@ $this->layout( 'layouts/ixpv4' );
 
         <?=Former::actions(
             Former::primary_submit( 'Save Changes' )->id( 'core-bundle-submit-btn' ),
-            Former::default_link( 'Cancel' )->href( action( 'Interfaces\CoreBundleController@list' ) ),
+            Former::default_link( 'Cancel' )->href( route( 'core-bundle/list' ) ),
             Former::success_button( 'Help' )->id( 'help-btn' )
         )->id('btn-group-add')
         ;?>

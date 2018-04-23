@@ -90,8 +90,8 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get(     'edit/{id}/from-cb/{cb}',           'PhysicalInterfaceController@editFromCb'    )->name( 'interfaces/physical/edit/from-core-bundle'        );
         Route::get(     'edit/{id}/vintid/{viid}',          'PhysicalInterfaceController@edit'          )->name( 'interfaces/physical/edit/from-virtual-interface'  );
         Route::get(     'add/{id}/vintid/{viid}',           'PhysicalInterfaceController@edit'          )->name( 'interfaces/physical/add'                          );
-        Route::post(    'store',                            'PhysicalInterfaceController@store'         );
-        Route::post(    'delete/{id}',                      'PhysicalInterfaceController@delete'        );
+        Route::post(    'store',                            'PhysicalInterfaceController@store'         )->name( 'interfaces/physical/store'                        );
+        Route::post(    'delete/{id}',                      'PhysicalInterfaceController@delete'        )->name( 'interfaces/physical/delete'                       );
     });
 
     Route::group( [  'prefix' => 'vlan' ], function() {
@@ -118,14 +118,14 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
 
     Route::group( [  'prefix' => 'core-bundle' ], function() {
         Route::get(     'list',                             'CoreBundleController@list'             )->name(    'core-bundle/list');
-        Route::get(     'add-wizard',                       'CoreBundleController@addWizard'        );
+        Route::get(     'add-wizard',                       'CoreBundleController@addWizard'        )->name(    'core-bundle/add');
         Route::get(     'edit/{id}',                        'CoreBundleController@edit'             )->name(    'core-bundle/edit');
-        Route::post(    'add-core-link-frag',               'CoreBundleController@addCoreLinkFrag'  );
-        Route::post(    'store-wizard',                     'CoreBundleController@storeWizard'      );
-        Route::post(    'add-core-link',                    'CoreBundleController@addCoreLink'      );
-        Route::post(    '{id}/store-core-links',            'CoreBundleController@storeCoreLinks'   );
+        Route::post(    'add-core-link-frag',               'CoreBundleController@addCoreLinkFrag'  )->name(    'core-bundle/add-core-link-frag');
+        Route::post(    'store-wizard',                     'CoreBundleController@storeWizard'      )->name(    'core-bundle/store');
+        Route::post(    'add-core-link',                    'CoreBundleController@addCoreLink'      )->name(    'core-bundle/add-core-link');
+        Route::post(    '{id}/store-core-links',            'CoreBundleController@storeCoreLinks'   )->name(    'core-bundle/store-core-link');
         Route::post(    'delete/{id}',                      'CoreBundleController@deleteCoreBundle' )->name(    'core-bundle/delete');
-        Route::post(    'core-link/delete/{id}',            'CoreBundleController@deleteCoreLink'   );
+        Route::post(    'core-link/delete/{id}',            'CoreBundleController@deleteCoreLink'   )->name(    'core-bundle/delete-core-link');
     });
 });
 

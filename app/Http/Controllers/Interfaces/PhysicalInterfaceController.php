@@ -65,8 +65,7 @@ class PhysicalInterfaceController extends Common
      */
     public function list(): View {
         return view( 'interfaces/physical/list' )->with([
-            'pis'               => D2EM::getRepository( PhysicalInterfaceEntity::class )->getForList(),
-            'resellerMode'      => $this->resellerMode()
+            'pis'               => D2EM::getRepository( PhysicalInterfaceEntity::class )->getForList()
         ]);
     }
 
@@ -122,6 +121,8 @@ class PhysicalInterfaceController extends Common
             return Redirect::back();
         }
 
+        $old = request()->old();
+
         if( $pi ) {
             // ==== EDIT PI MODE
 
@@ -133,14 +134,14 @@ class PhysicalInterfaceController extends Common
 
             // fill the form with physical interface data
             $data = [
-                'switch'                  => $pi->getSwitchPort()->getSwitcher()->getId(),
-                'switch-port'             => $pi->getSwitchPort()->getId(),
-                'status'                  => $pi->getStatus(),
-                'speed'                   => $pi->getSpeed(),
-                'duplex'                  => $pi->getDuplex(),
-                'autoneg-label'           => $pi->getAutoneg() ? 1 : 0,
-                'monitorindex'            => $pi->getMonitorindex() ? $pi->getMonitorindex() : D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $pi->getVirtualInterface()->getCustomer() ) ,
-                'notes'                   => $pi->getNotes()
+                'switch'                  => array_key_exists( 'switch',        $old    ) ? $old['switch']          : $pi->getSwitchPort()->getSwitcher()->getId(),
+                'switch-port'             => array_key_exists( 'switch-port',   $old    ) ? $old['switch-port']     : $pi->getSwitchPort()->getId(),
+                'status'                  => array_key_exists( 'status',        $old    ) ? $old['status']          : $pi->getStatus(),
+                'speed'                   => array_key_exists( 'speed',         $old    ) ? $old['speed']           : $pi->getSpeed(),
+                'duplex'                  => array_key_exists( 'duplex',        $old    ) ? $old['duplex']          : $pi->getDuplex(),
+                'autoneg-label'           => array_key_exists( 'autoneg-label', $old    ) ? $old['autoneg-label']   : ( $pi->getAutoneg() ? 1 : 0 ),
+                'monitorindex'            => array_key_exists( 'monitorindex',  $old    ) ? $old['monitorindex']    : ( $pi->getMonitorindex() ? $pi->getMonitorindex() : D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $pi->getVirtualInterface()->getCustomer() ) ) ,
+                'notes'                   => array_key_exists( 'notes',         $old    ) ? $old['notes']   : $pi->getNotes()
             ];
 
             // get all the switch ports available and add the switch port associated to the physical interface in the list
@@ -156,12 +157,12 @@ class PhysicalInterfaceController extends Common
 
         } else {
             // ==== CREATE PI MODE
-            $data['monitorindex'] = D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $vi->getCustomer() );
+            $data['monitorindex'] = array_key_exists( 'monitorindex',        $old    ) ? $old['monitorindex']          : D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $vi->getCustomer() );
         }
 
         // get the fanout details or other side of the core link details as/if applicable
-        $data = $this->mergeFanoutDetails( $pi, $pi ? $pi->getVirtualInterface() : null, $data );
-        $data = $this->mergeCoreLinkDetails( $pi, $data );
+        $data = $this->mergeFanoutDetails(      $pi, $pi ? $pi->getVirtualInterface() : null, $data );
+        $data = $this->mergeCoreLinkDetails(    $pi, $data );
 
         Former::populate( $data );
 
@@ -303,19 +304,21 @@ class PhysicalInterfaceController extends Common
         $pi->setMonitorindex(       $request->input( 'monitorindex'     ) );
         $pi->setNotes(              $request->input( 'notes'            ) );
 
-        // Fanout part
-        if( $request->input('fanout-checked' ) ) {
-            if( ! $this->processFanoutPhysicalInterface( $request, $pi, $vi) ){
-                return Redirect::back( )->withInput( Input::all() );
-            }
 
-            if( $related = $pi->getRelatedInterface() ) {
-                /** @var PhysicalInterfaceEntity $related */
-                $related->setSpeed(     $request->input( 'speed'    ) );
-                $related->setStatus(    $request->input( 'status'   ) );
-                $related->setDuplex(    $request->input( 'duplex'   ) );
-            }
+
+
+
+        if( !$this->processFanoutPhysicalInterface( $request, $pi, $vi) ){
+            return Redirect::back( )->withInput( Input::all() );
         }
+
+        if( $related = $pi->getRelatedInterface() ) {
+            /** @var PhysicalInterfaceEntity $related */
+            $related->setSpeed(     $request->input( 'speed'    ) );
+            $related->setStatus(    $request->input( 'status'   ) );
+            $related->setDuplex(    $request->input( 'duplex'   ) );
+        }
+
 
         D2EM::flush();
 

@@ -188,8 +188,7 @@
                 <?= Former::checkbox( 'activepeeringmatrix' )
                     ->label( '&nbsp;' )
                     ->text( 'Active Peering Matrix' )
-                    ->checked_value( 1 )
-                    ->unchecked_value( 0 )
+                    ->value( 1 )
                     ->blockHelp( "Indicates whether or not the customer's route server and bilateral peering sessions should appear in the public peering matrix." );
                 ?>
 
@@ -249,12 +248,14 @@
                 <?= Former::checkbox( 'isReseller' )
                     ->label( '&nbsp;' )
                     ->text( 'Is a Reseller' )
+                    ->value( 1 )
                     ->blockHelp( 'Check this if this customer is (also) a reseller.' );
                 ?>
 
                 <?= Former::checkbox( 'isResold' )
                     ->label( '&nbsp;' )
                     ->text( 'Resold Customer' )
+                    ->value( 1 )
                     ->blockHelp( 'Check this if this customer comes via a reseller. Then chose the reseller.' );
                 ?>
 
