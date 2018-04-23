@@ -142,6 +142,7 @@ class SwitchConfigurationGenerator
         if( !$vi->getLagFraming() ) {
             $pi = $vi->getPhysicalInterfaces()[0];
             $p['shutdown']           = !$pi->statusIsConnectedOrQuarantine();
+            $p['status']             = $pi->resolveAPIStatus();
             $p['name']               = $pi->getSwitchport()->getIfName();
             $p['speed']              = $pi->getSpeed();
             $p['autoneg']            = $pi->getAutoneg();
@@ -156,7 +157,9 @@ class SwitchConfigurationGenerator
         $p['fastlacp']  = $vi->getFastLACP();
         $p['lagmembers']= [];
         $p['shutdown']  = true;
+        $p['status']    = \Entities\PhysicalInterface::$APISTATES[ \Entities\PhysicalInterface::STATUS_NOTCONNECTED ];
 
+        $lagquarantinestatus = true;
         // build up list of physical ports associated with this lag master
         foreach( $vi->getPhysicalInterfaces() as $pi ) {
             if( !$pi->getSwitchPort() ) {
@@ -168,7 +171,21 @@ class SwitchConfigurationGenerator
             if( $pi->statusIsConnectedOrQuarantine() ) {
                 $p['shutdown'] = false;
             }
+            // if any bundle members are connected then status is connected
+            // if all bundle members are quarantine then status is quarantine
+            // otherwise status remains as default: notconnected
+            if( $pi->statusIsConnected() ) {
+                $p['status'] = $pi->resolveAPIStatus();
+            }
+            if( $pi->getStatus() != \Entities\PhysicalInterface::STATUS_QUARANTINE ) {
+                $lagquarantinestatus = false;
+            }
         }
+
+        if ($lagquarantinestatus) {
+            $p['status'] = \Entities\PhysicalInterface::$APISTATES[ \Entities\PhysicalInterface::STATUS_QUARANTINE ];
+        }
+
         $ports[]        = $p;
 
         unset( $p['lagmembers'] );
@@ -180,6 +197,7 @@ class SwitchConfigurationGenerator
                 continue;
             }
             $p['shutdown']  = !$pi->statusIsConnectedOrQuarantine();
+            $p['status']    = $pi->resolveAPIStatus();
             $p['name']      = $pi->getSwitchPort()->getIfName();
             $p['lagmaster'] = false;
             $p['autoneg']   = $pi->getAutoneg();
