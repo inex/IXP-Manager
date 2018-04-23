@@ -2,23 +2,23 @@
     <br>
     <table class="table">
         <thead>
-            <tr>
-                <th>
-                    Username
-                </th>
-                <th>
-                    Type
-                </th>
-                <th>
-                    Email
-                </th>
-                <th>
-                    Last Login
-                </th>
-                <th>
-                    Action
-                </th>
-            </tr>
+        <tr>
+            <th>
+                Username
+            </th>
+            <th>
+                Type
+            </th>
+            <th>
+                Email
+            </th>
+            <th>
+                Last Login
+            </th>
+            <th>
+                Action
+            </th>
+        </tr>
         </thead>
         <tbody>
         <?php if( count( $t->c->getUsers() ) ): ?>
@@ -45,8 +45,9 @@
                             <a class="btn btn-default" href="<?= url( "contact/edit/uid/". $u->getId() ."/cid/". $t->c->getId() ) ?>">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </a>
-                            <a class="btn btn-default" id="usr-list-delete-<?= $u->getId() ?> "
-                               href="<?= url( "contact/delete/id/".$u->getContact()->getId() ) ?>">
+
+                            <a class="btn btn-default" id="usr-list-delete-<?= $u->getId() ?>" data-object-id="<?= $u->getContact()->getId() ?>"
+                               href="#">
                                 <i class="glyphicon glyphicon-trash"></i>
                             </a>
                             <a class="btn btn-default"
