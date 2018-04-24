@@ -54,7 +54,7 @@ $this->layout( 'layouts/ixpv4' )
                             </b>
                         </td>
                         <td>
-                            <a href="<?= url( 'vlan/list/id' ).'/'.$t->vli->getVlan()->getId()?>">
+                            <a href="<?= action( "VlanController@view" , [ 'id' => $t->vli->getVlan()->getId() ] ) ?>">
                                 <?= $t->ee( $t->vli->getVlan()->getName() ) ?>
                             </a>
                         </td>

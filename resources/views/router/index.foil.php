@@ -66,7 +66,7 @@
                         <?= $t->ee( $router->getShortName() ) ?>
                     </td>
                     <td>
-                        <a href="<?= url( '/vlan/view/id/' ).'/'.$router->getVlan()->getId()?> ">
+                        <a href="<?= action( "VlanController@view" , [ 'id' => $router->getVlan()->getId() ] ) ?> ">
                             <?= $t->ee( $router->getVlan()->getName() )?>
                         </a>
                     </td>
