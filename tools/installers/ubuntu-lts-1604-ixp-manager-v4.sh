@@ -2,10 +2,10 @@
 
 # Installation script for IXP Manager v4 on Ubuntu LTS 16.04
 
-# Barry O'Donovan <barry ~at~ islandbridgenetworks.ie>
-# 2016-10-19
+# Barry O'Donovan <barry.odonovan ~at~ inex.ie>
+# First version: 2016-10-19
 
-# Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
+# Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
 # All Rights Reserved.
 #
 # This file is part of IXP Manager.
@@ -35,6 +35,7 @@ set -e
 IXPROOT=/srv/ixpmanager
 DBNAME=ixpmanager
 DBUSER=ixpmanager
+IXPMANAGER_VERSION="v4.7.3"
 
 touch /tmp/ixp-manager-install.log
 chmod a+w /tmp/ixp-manager-install.log
@@ -93,9 +94,10 @@ echo '[done]'
 
 debconf-set-selections <<< "console-setup console-setup/charmap47 select UTF-8"
 debconf-set-selections <<< "console-setup console-setup/codeset47 select Lat15"
+export DEBIAN_FRONTEND=noninteractive
 
 echo -n "Doing a full system upgrade to ensure latest packages are installed (be patient)... "
-log_break && apt-get dist-upgrade -yq &>> /tmp/ixp-manager-install.log
+log_break && apt-get dist-upgrade -o "Dpkg::Options::=--force-confold" -yq &>> /tmp/ixp-manager-install.log
 apt-get install -yq ubuntu-minimal openssl wget &>> /tmp/ixp-manager-install.log
 apt-get autoremove -yq &>> /tmp/ixp-manager-install.log
 echo '[done]'
@@ -328,16 +330,14 @@ php -r 'phpinfo();' &>/dev/null
 log_break
 
 if [[ -d $IXPROOT/.git ]]; then
-    echo -n "Found existing IXP Manager GitHub repository, updating..."
+    echo -n "Found existing IXP Manager GitHub repository, not pulling / updating..."
     cd $IXPROOT
     git fetch &>> /tmp/ixp-manager-install.log
-    git checkout master &>> /tmp/ixp-manager-install.log
-    git pull &>> /tmp/ixp-manager-install.log
 else
     echo -n "Cloning IXP Manager GitHub repository..."
     git clone https://github.com/inex/IXP-Manager.git $IXPROOT &>> /tmp/ixp-manager-install.log
     cd $IXPROOT
-    git checkout master &>> /tmp/ixp-manager-install.log
+    git checkout $IXPMANAGER_VERSION &>> /tmp/ixp-manager-install.log
 fi
 
 # Make www-data the owner for now
