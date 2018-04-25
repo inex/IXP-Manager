@@ -71,18 +71,23 @@ class RouterController extends Controller
     public function status(): View {
 
         /** @var RouterEntity[] $routers */
-        $routers = D2EM::getRepository( RouterEntity::class )->findAll();
-
+        $routers        = [];
         $routersWithApi = [];
-        foreach( $routers as $r ) {
-            if( $r->hasApi() ) {
-                $routersWithApi[] = $r->getHandle();
+        $lgEnabled      = !config('ixp_fe.frontend.disabled.lg' );
+
+        if( $lgEnabled ) {
+            $routers = D2EM::getRepository( RouterEntity::class )->findAll();
+            foreach( $routers as $r ) {
+                if( $r->hasApi() ) {
+                    $routersWithApi[] = $r->getHandle();
+                }
             }
         }
 
         return view( 'router/status' )->with([
             'routers'        => $routers,
             'routersWithApi' => $routersWithApi,
+            'lgEnabled'      => $lgEnabled,
         ]);
     }
 

@@ -22,6 +22,18 @@ $this->layout( 'layouts/ixpv4' );
 
 <?= $t->alerts() ?>
 
+
+<?php if( !$t->lgEnabled ): ?>
+    <div class="alert alert-warning">
+        <b>Warning:</b> the looking glass functionality is currently disabled and thus this <em>Live Status</em> feature will not work.
+        Additionally, the <em>Looking Glass</em> links will not appear in IXP Manager. To enable looking glass functionality, first
+        configure it <a href="http://docs.ixpmanager.org/features/looking-glass/">as per the documentation</a> and ensure you set the
+        following in your <code>.env</code> file: <br><br>
+        <code>IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS=false</code>
+    </div>
+<?php endif; ?>
+
+
 <div class="row">
     <div class="col-md-12">
         <p>
@@ -127,6 +139,8 @@ $this->layout( 'layouts/ixpv4' );
 <script src="<?= asset( 'bower_components/moment/min/moment.min.js' ) ?>"></script>
 <script>
 
+    const lgEnabled = <?= $t->lgEnabled ? 'true' : 'false' ?>;
+
     let table = $('#router-list').on( 'init.dt', function () {
 
         let handles   = [ "<?= implode( '", "', $t->routersWithApi ) ?>" ];
@@ -137,6 +151,10 @@ $this->layout( 'layouts/ixpv4' );
 
         // get states
         handles.forEach( function( handle, index ) {
+
+            if( !lgEnabled ) {
+                return;
+            }
 
             $.ajax({
                 "url": "<?= url('api/v4/lg') ?>/" + handle + "/status",
