@@ -117,7 +117,7 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="<?= url( '/profile' ) ?>">Profile</a>
+                            <a href="<?= route( 'profile@edit' ) ?>">Profile</a>
                         </li>
                         <li>
                             <a href="<?= route('api-key@list' )?>">API Keys</a>

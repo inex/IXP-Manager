@@ -51,4 +51,15 @@ Route::group( [ 'prefix' => 'rs-prefixes', 'middleware' => [ 'rs-prefixes' ] ], 
 });
 
 
+Route::group( [ 'prefix' => 'profile' ], function() {
+
+    Route::get( '', 'ProfileController@edit' )->name( 'profile@edit' );
+
+    Route::post( 'update-password',                'ProfileController@updatePassword'               )->name( 'profile@update-password' );
+    Route::post( 'update-profile',                 'ProfileController@updateProfile'                )->name( 'profile@update-profile' );
+    Route::post( 'update-notification-preference', 'ProfileController@updateNotificationPreference' )->name( 'profile@update-notification-preference' );
+    Route::post( 'update-mailing-lists',           'ProfileController@updateMailingLists'           )->name( 'profile@update-mailing-lists' );
+
+});
+
 
