@@ -150,7 +150,7 @@ class CustomerController extends Controller
                 'peeringemail'          => array_key_exists( 'peeringemail',        $old    ) ? $old['peeringemail']            : $cust->getPeeringemail(),
                 'peeringmacro'          => array_key_exists( 'peeringmacro',        $old    ) ? $old['peeringmacro']            : $cust->getPeeringmacro(),
                 'peeringmacrov6'        => array_key_exists( 'peeringmacrov6',      $old    ) ? $old['peeringmacrov6']          : $cust->getPeeringmacrov6(),
-                'irrdb'                 => array_key_exists( 'irrdb',               $old    ) ? $old['irrdb']                   : $cust->getIRRDB()->getId(),
+                'irrdb'                 => array_key_exists( 'irrdb',               $old    ) ? $old['irrdb']                   : ( $cust->getIRRDB() ? $cust->getIRRDB()->getId() : null ) ,
                 'activepeeringmatrix'   => array_key_exists( 'activepeeringmatrix', $old    ) ? $old['activepeeringmatrix']     : ( $cust->getActivepeeringmatrix() ? 1 : 0 ) ,
                 'nocphone'              => array_key_exists( 'nocphone',            $old    ) ? $old['nocphone']                : $cust->getNocphone(),
                 'noc24hphone'           => array_key_exists( 'noc24hphone',         $old    ) ? $old['noc24hphone']             : $cust->getNoc24hphone(),
@@ -168,7 +168,6 @@ class CustomerController extends Controller
         return view( 'customer/edit' )->with([
             'cust'                          => $cust ?? false,
             'irrdbs'                        => D2EM::getRepository( IRRDBConfigEntity::class )->getAsArray(),
-            'resellerMode'                  => $this->resellerMode(),
             'resellers'                     => D2EM::getRepository( CustomerEntity::class )->getResellerNames(),
         ]);
     }
@@ -201,12 +200,11 @@ class CustomerController extends Controller
         $c->setType(                 $r->input( 'type'                 ) );
         $c->setShortname(            $r->input( 'shortname'            ) );
         $c->setCorpwww(              $r->input( 'corpwww'              ) );
-        $c->setDatejoin(             $r->input( 'datejoin'             )  ? new \DateTime( $r->input( 'datejoin'    ) ) : null );
-        $c->setDateleave(            $r->input( 'dateleave'            )  ? new \DateTime( $r->input( 'dateleave'   ) ) : null );
         $c->setStatus(               $r->input( 'status'               ) );
         $c->setMD5Support(           $r->input( 'md5support'           ) );
         $c->setAbbreviatedName(      $r->input( 'abbreviatedName'      ) );
-
+        $c->setDatejoin(  $r->input( 'datejoin'                  )  ? new \DateTime( $r->input( 'datejoin'    ) ) : null );
+        $c->setDateleave($r->input( 'dateleave'                 )  ? new \DateTime( $r->input( 'dateleave'   ) ) : null );
 
         $c->setAutsys(               $r->input( 'autsys'               ) );
         $c->setMaxprefixes(          $r->input( 'maxprefixes'          ) );
@@ -214,7 +212,7 @@ class CustomerController extends Controller
         $c->setPeeringmacro(         $r->input( 'peeringmacro'         ) );
         $c->setPeeringmacrov6(       $r->input( 'peeringmacrov6'       ) );
         $c->setPeeringpolicy(        $r->input( 'peeringpolicy'        ) );
-        $c->setActivepeeringmatrix(  $r->input( 'activepeeringmatrix'  ) );
+        $c->setActivepeeringmatrix(  $r->input( 'activepeeringmatrix'  ) ? 1 : 0 );
 
 
         $c->setNocphone(             $r->input( 'nocphone'             ) );
@@ -223,7 +221,7 @@ class CustomerController extends Controller
         $c->setNochours(             $r->input( 'nochours'             ) );
         $c->setNocwww(               $r->input( 'nocwww'               ) );
 
-        $c->setIsReseller(           $r->input( 'isReseller'           ) ?? false  );
+        $c->setIsReseller( $r->input( 'isReseller'           ) ? 1 : 0 );
 
         if( $r->input( 'isResold' ) ) {
             $c->setReseller( D2EM::getRepository( CustomerEntity::class )->find( $r->input( "reseller" ) ) );
@@ -232,9 +230,12 @@ class CustomerController extends Controller
         }
 
         if( $isEdit ) {
+
             $c->setLastupdated( new DateTime() );
             $c->setLastupdatedby( Auth::getUser()->getId() );
+
         } else {
+
             $c->setCreated( new DateTime() );
             $c->setCreator( Auth::getUser()->getId() );
 
@@ -352,15 +353,15 @@ class CustomerController extends Controller
         $cbd  = $c->getBillingDetails();
         $crd  = $c->getRegistrationDetails();
 
-        $crd->setRegisteredName(    $request->input( 'registeredName'       ) );
-        $crd->setCompanyNumber(     $request->input( 'companyNumber'        ) );
-        $crd->setJurisdiction(      $request->input( 'jurisdiction'         ) );
-        $crd->setAddress1(          $request->input( 'address1'             ) );
-        $crd->setAddress2(          $request->input( 'address2'             ) );
-        $crd->setAddress3(          $request->input( 'address3'             ) );
-        $crd->setTownCity(          $request->input( 'townCity'             ) );
-        $crd->setPostcode(          $request->input( 'postcode'             ) );
-        $crd->setCountry(           $request->input( 'country'              ) );
+        $crd->setRegisteredName(        $request->input( 'registeredName'       ) );
+        $crd->setCompanyNumber(         $request->input( 'companyNumber'        ) );
+        $crd->setJurisdiction(          $request->input( 'jurisdiction'         ) );
+        $crd->setAddress1(              $request->input( 'address1'             ) );
+        $crd->setAddress2(              $request->input( 'address2'             ) );
+        $crd->setAddress3(              $request->input( 'address3'             ) );
+        $crd->setTownCity(              $request->input( 'townCity'             ) );
+        $crd->setPostcode(              $request->input( 'postcode'             ) );
+        $crd->setCountry(               $request->input( 'country'              ) );
 
         $cbd->setBillingContactName(     $request->input( 'billingContactName'   ) );
         $cbd->setBillingFrequency(       $request->input( 'billingFrequency'     ) );
@@ -372,7 +373,7 @@ class CustomerController extends Controller
         $cbd->setBillingCountry(         $request->input( 'billingCountry'       ) );
         $cbd->setBillingEmail(           $request->input( 'billingEmail'         ) );
         $cbd->setBillingTelephone(       $request->input( 'billingTelephone'     ) );
-        $cbd->setPurchaseOrderRequired(  $request->input( 'purchaseOrderRequired') ?? 0 );
+        $cbd->setPurchaseOrderRequired(  $request->input( 'purchaseOrderRequired') ? 1 : 0 );
         $cbd->setInvoiceMethod(          $request->input( 'invoiceMethod'        ) );
         $cbd->setInvoiceEmail(           $request->input( 'invoiceEmail'         ) );
         $cbd->setVatRate(                $request->input( 'vatRate'              ) );
@@ -381,6 +382,7 @@ class CustomerController extends Controller
         D2EM::flush();
 
         event( new CustomerBillingDetailsChangedEvent( $ocbd, $cbd ) );
+
         return Redirect::to( route( "customer@overview" , [ "id" => $c->getId() , "tab" => "details" ]  ) );
     }
 
@@ -390,10 +392,8 @@ class CustomerController extends Controller
      * @return  View
      */
     public function details(): View {
-        $custs          = D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, true, false );
-
         return view( 'customer/details' )->with([
-            'custs'                 => $custs,
+            'custs'                 => D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, true, false ),
             'associates'            => false,
         ]);
     }
@@ -404,10 +404,8 @@ class CustomerController extends Controller
      * @return  View
      */
     public function associates(): View {
-        $custs          = D2EM::getRepository( CustomerEntity::class )->getCurrentAssociate( false );
-
         return view( 'customer/details' )->with([
-            'custs'                 => $custs,
+            'custs'                 => D2EM::getRepository( CustomerEntity::class )->getCurrentAssociate( false ),
             'associates'            => true,
         ]);
     }
@@ -470,7 +468,6 @@ class CustomerController extends Controller
             'grapher'                   => $grapher,
             'rsclient'                  => $c->isRouteServerClient(),
             'as112client'               => $c->isAS112Client(),
-            'resellerMode'              => $this->resellerMode(),
             'as112UiActive'             => $this->as112UiActive(),
             'countries'                 => Countries::getList('name' ),
             'tab'                       => strtolower( $tab ),
@@ -606,6 +603,7 @@ class CustomerController extends Controller
             abort( 404);
         }
 
+        // Keep the name before delete
         $oldname = $c->getFormattedName();
 
         if( D2EM::getRepository( CustomerEntity::class )->delete( $c ) ) {

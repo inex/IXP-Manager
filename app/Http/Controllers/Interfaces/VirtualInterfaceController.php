@@ -107,9 +107,10 @@ class VirtualInterfaceController extends Common
      * @return View
      */
     public function add( int $id = null, int $custId = null ): View {
-        $vi = false;
+        $vi = $cust = false;
 
         $old = request()->old();
+
         /** @var VirtualInterfaceEntity $vi */
         if( $id != null ) {
 
@@ -120,9 +121,9 @@ class VirtualInterfaceController extends Common
             // fill the form with Virtual interface data
             Former::populate([
                 'cust'                  => array_key_exists( 'cust',         $old    ) ? $old['cust']              : $vi->getCustomer(),
-                'trunk'                 => array_key_exists( 'trunk',        $old    ) ? $old['trunk']             : ( $vi->getTrunk() ? 1 : 0 ),
+                'trunk'                 => array_key_exists( 'trunk',        $old    ) ? $old['trunk']             : ( $vi->getTrunk()      ? 1 : 0 ),
                 'lag_framing'           => array_key_exists( 'lag_framing',  $old    ) ? $old['lag_framing']       : ( $vi->getLagFraming() ? 1 : 0 ),
-                'fastlacp'              => array_key_exists( 'fastlacp',     $old    ) ? $old['fastlacp']          : ( $vi->getFastLACP() ? 1 : 0 ),
+                'fastlacp'              => array_key_exists( 'fastlacp',     $old    ) ? $old['fastlacp']          : ( $vi->getFastLACP()   ? 1 : 0 ),
                 'name'                  => array_key_exists( 'name',         $old    ) ? $old['name']              : $vi->getName(),
                 'description'           => array_key_exists( 'description',  $old    ) ? $old['description']       : $vi->getDescription(),
                 'channel-group'         => array_key_exists( 'channel-group',$old    ) ? $old['channel-group']     : $vi->getChannelgroup(),
@@ -131,7 +132,6 @@ class VirtualInterfaceController extends Common
 
         }
 
-        $cust = false;
         /** @var CustomerEntity $cust */
         if( $custId != null ) {
             if ( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $custId ) ) ) {
@@ -151,7 +151,6 @@ class VirtualInterfaceController extends Common
             'vls'               => D2EM::getRepository( VlanEntity::class       )->getNames(),
             'vi'                => $vi ? $vi : false,
             'cb'                => $vi ? $vi->getCoreBundle() : false,
-            'resellerMode'      => $this->resellerMode(),
             'selectedCust'      => $cust
         ]);
     }
@@ -211,9 +210,9 @@ class VirtualInterfaceController extends Common
 
 
         $vi->setCustomer(               $cust );
-        $vi->setTrunk(            $request->input( 'trunk' )          ?? 0 );
-        $vi->setLagFraming(  $request->input( 'lag_framing' )    ?? 0 );
-        $vi->setFastLACP(       $request->input( 'fastlacp' )       ?? 0);
+        $vi->setTrunk(            $request->input( 'trunk' )          ? 1 : 0 );
+        $vi->setLagFraming(  $request->input( 'lag_framing' )    ? 1 : 0 );
+        $vi->setFastLACP(       $request->input( 'fastlacp' )       ? 1 : 0);
         $vi->setName(                   $request->input( 'name'             ) );
         $vi->setDescription(            $request->input( 'description'      ) );
         $vi->setChannelgroup(           $request->input( 'channel-group'    ) );
@@ -273,9 +272,6 @@ class VirtualInterfaceController extends Common
             'vli'                   => false,
             'vlans'                 => D2EM::getRepository( VlanEntity::class )->getNames( false ),
             'pi_switches'           => D2EM::getRepository( SwitcherEntity::class )->getNames( true, SwitcherEntity::TYPE_SWITCH ),
-            'pi_states'             => PhysicalInterfaceEntity::$STATES,
-            'pi_speeds'             => PhysicalInterfaceEntity::$SPEED,
-            'pi_duplexes'           => PhysicalInterfaceEntity::$DUPLEX,
             'resoldCusts'           => $this->resellerMode() ? json_encode( D2EM::getRepository( CustomerEntity::class )->getResoldCustomerNames() ) : json_encode([]) ,
             'selectedCust'          => $cust
         ]);
@@ -309,8 +305,8 @@ class VirtualInterfaceController extends Common
         $pi->setStatus( $request->input( 'status' ) );
         $pi->setDuplex( $request->input( 'duplex' ) );
 
-        $pi->setVirtualInterface( $vi );
-        $vi->addPhysicalInterface($pi);
+        $pi->setVirtualInterface(   $vi );
+        $vi->addPhysicalInterface(  $pi);
 
         $sp->setType( SwitchPortEntity::TYPE_PEERING );
         $pi->setSwitchPort( $sp );

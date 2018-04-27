@@ -25,7 +25,7 @@
     <?= $t->alerts() ?>
 
     <?= Former::open()->method( 'POST' )
-        ->action( action ( 'PatchPanel\PatchPanelPortController@sendEmail' , [ 'id' =>  $t->ppp->getId() , 'type' => $t->emailType  ] ) )
+        ->action( route ( 'patch-panel-port@send-email' , [ 'id' =>  $t->ppp->getId() , 'type' => $t->emailType  ] ) )
         ->addClass( 'col-md-10' );
     ?>
         <?= Former::text( 'email_to' )
@@ -48,7 +48,7 @@
             <?= Former::checkbox( 'loa' )
                 ->label( 'Attach LoA as a PDF' )
                 ->check( $t->emailType == 1 /* connect */ || $t->emailType == 4 /* send loa */ )
-                ->value(1)
+                ->value( 1 )
             ?>
         <?php endif; ?>
 
@@ -111,7 +111,7 @@
             $('#well-preview').html('Loading...');
             $(this).tab('show');
 
-            $.ajax( "<?= action ('Api\V4\UtilsController@markdown')?>", {
+            $.ajax( "<?= route ('utils@markdown')?>", {
                 data: {
                     text: $('#email_text').val()
                 },

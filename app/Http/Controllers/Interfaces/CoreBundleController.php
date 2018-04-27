@@ -296,7 +296,7 @@ class CoreBundleController extends Common
         }
 
         if( $request->input( 'nb-core-links' ) == 0 || $request->input( 'nb-core-links' ) == null ){
-            return Redirect::to( 'interfaces/core-bundle/edit/'.$cb->getId() )->withInput( Input::all() );
+            return Redirect::to( route( "core-bundle/edit", [ "id" => $cb->getId()] ) )->withInput( Input::all() );
         }
 
         /** @var VirtualInterfaceEntity $via */

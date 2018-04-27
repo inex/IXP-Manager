@@ -117,7 +117,9 @@ class InfrastructureController extends Doctrine2Frontend {
 
     /**
      * Display the form to add/edit an object
+     *
      * @param   int $id ID of the row to edit
+     *
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {

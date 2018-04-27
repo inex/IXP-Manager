@@ -50,26 +50,32 @@
 
 
 <?php $this->section('content') ?>
+    <div class="row">
 
-    <div id="instructions-alert" class="alert alert-info" style="display: none;">
-        <b>Instructions: </b> You are strongly advised to review <a href="http://docs.ixpmanager.org/usage/interfaces/">the official documentation</a> before adding / editing interfaces
-        on a production system.
+        <div class="col-sm-12">
+
+            <div id="instructions-alert" class="alert alert-info" style="display: none;">
+                <b>Instructions: </b> You are strongly advised to review <a href="http://docs.ixpmanager.org/usage/interfaces/">the official documentation</a> before adding / editing interfaces
+                on a production system.
+            </div>
+
+            <?= $t->alerts() ?>
+
+            <?= $t->insert( 'interfaces/virtual/add/vi-details' ) ?>
+
+            <?php if( $t->vi ): ?>
+
+                <?= $t->insert( 'interfaces/virtual/add/pi' ) ?>
+
+                <?php if( !$t->cb ): ?>
+                    <?= $t->insert( 'interfaces/virtual/add/vli' ) ?>
+                    <?= $t->insert( 'interfaces/virtual/add/sfr' ) ?>
+                <?php endif; ?>
+
+            <?php endif; ?>
+        </div>
+
     </div>
-
-    <?= $t->alerts() ?>
-
-    <?= $t->insert( 'interfaces/virtual/add/vi-details' ) ?>
-
-    <?php if( $t->vi ): ?>
-
-        <?= $t->insert( 'interfaces/virtual/add/pi' ) ?>
-
-        <?php if( !$t->cb ): ?>
-            <?= $t->insert( 'interfaces/virtual/add/vli' ) ?>
-            <?= $t->insert( 'interfaces/virtual/add/sfr' ) ?>
-        <?php endif; ?>
-
-    <?php endif; ?>
 
 <?php $this->append() ?>
 

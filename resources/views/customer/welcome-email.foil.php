@@ -3,7 +3,7 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= route ( 'customer@list' )?>">
+    <a href="<?= route( 'customer@list' )?>">
         Customer
     </a>
 <?php $this->append() ?>
@@ -24,14 +24,15 @@
 
 <?php $this->section( 'content' ) ?>
 
-    <?= $t->alerts() ?>
-
-    <div class="well">
-        Please see the <a target="_blank" href="http://docs.ixpmanager.org/usage/customers/#welcome-emails">official documentation</a> for information on welcome emails and instructions on how to customise the content.
-    </div>
-
     <div class="row">
+
         <div class="col-md-12">
+
+            <?= $t->alerts() ?>
+
+            <div class="well">
+                Please see the <a target="_blank" href="http://docs.ixpmanager.org/usage/customers/#welcome-emails">official documentation</a> for information on welcome emails and instructions on how to customise the content.
+            </div>
 
             <legend>Send Welcome Email</legend>
 
@@ -110,7 +111,7 @@
                 $('#well-preview').html('Loading...');
                 $(this).tab('show');
 
-                $.ajax( "<?= action ('Api\V4\UtilsController@markdown')?>", {
+                $.ajax( "<?= route('utils@markdown')?>", {
                     data: {
                         text: $('#message').val()
                     },

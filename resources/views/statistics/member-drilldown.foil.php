@@ -50,20 +50,22 @@
 
 
 <?php $this->section('content') ?>
+<div class="row">
 
-    <?= $t->alerts() ?>
+    <div class="col-sm-12">
 
-    <div class="row col-sm-12">
+        <?= $t->alerts() ?>
 
         <nav class="navbar navbar-default">
 
             <div class="">
 
                 <div class="navbar-header">
-                    <a class="navbar-brand" href="http://ixp.test/statistics/members">Graph Options:</a>
+                    <a class="navbar-brand" href="">Graph Options:</a>
                 </div>
 
-                <form class="navbar-form navbar-left form-inline" method="get">
+                <form class="navbar-form navbar-left form-inline">
+
                     <div class="form-group">
                         <label for="category">Type:</label>
                         <select id="category" name="category" onchange="this.form.submit()" class="form-control">
@@ -72,13 +74,12 @@
                             <?php endforeach; ?>
                         </select>
                     </div>
+
                 </form>
 
             </div>
         </nav>
-    </div>
 
-    <div class="col-sm-12">
         <h3>
 
             <?php switch( get_class( $t->graph ) ):
@@ -124,14 +125,11 @@
 
                     break;
 
-                endswitch;
+            endswitch;
             ?>
 
         </h3>
         <br>
-    </div>
-
-    <div class="row">
 
         <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $pvalue => $pname ): ?>
 
@@ -147,5 +145,20 @@
         <?php endforeach; ?>
 
     </div>
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <?php $this->append() ?>

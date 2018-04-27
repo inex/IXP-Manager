@@ -4,7 +4,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= action( 'Interfaces\CoreBundleController@list' )?>">Core Bundle</a>
+    <a href="<?= route( 'core-bundle/list' )?>">Core Bundle</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>

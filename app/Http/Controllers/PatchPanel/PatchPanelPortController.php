@@ -123,6 +123,7 @@ class PatchPanelPortController extends Controller
      * Display all the patch panel ports based on a search
      *
      * @param   Request $request
+     *
      * @return  View
      */
     public function advancedIndex( Request $request ): View {
@@ -151,6 +152,7 @@ class PatchPanelPortController extends Controller
      *
      * @param  int    $id        Patch panel port that need to be edited
      * @param  string $formType  Which type of form to show
+     *
      * @return View
      */
     public function edit( int $id, string $formType = null ): View {
@@ -194,38 +196,40 @@ class PatchPanelPortController extends Controller
             $switchPorts = D2EM::getRepository(SwitcherEntity::class)->getAllPortsNotAssignedToPI( $ppp->getSwitchPort()->getSwitcher()->getId(), [], $ppp->getSwitchPort()->getId() );
 
             // we add the current switch port in the list to display it
-            $switchPorts[ ] = [  "name" => $ppp->getSwitchPort()->getName(),
-                                 "typeid" => $ppp->getSwitchPort()->getType(),
-                                 "type" => $ppp->getSwitchPort()->resolveType(),
-                                 "id" => $ppp->getSwitchPort()->getId() ];
+            $switchPorts[ ] = [  "name"     => $ppp->getSwitchPort()->getName(),
+                                 "typeid"   => $ppp->getSwitchPort()->getType(),
+                                 "type"     => $ppp->getSwitchPort()->resolveType(),
+                                 "id"       => $ppp->getSwitchPort()->getId() ];
 
             array_multisort( array_column( $switchPorts, 'id' ), SORT_ASC, $switchPorts );
         }
 
+        $old = request()->old();
+
         // fill the form with patch panel port data
         Former::populate([
-            'description'               => $ppp->getDescription(),
+            'description'               => array_key_exists( 'description',             $old    ) ? $old['description']          : $ppp->getDescription(),
             'number'                    => $ppp->getNumber(),
             'patch_panel'               => $ppp->getPatchPanel()->getName(),
             'cabinet_name'              => $ppp->getPatchPanel()->getCabinet()->getName(),
             'colocation_centre'         => $ppp->getPatchPanel()->getCabinet()->getLocation()->getName(),
-            'colo_circuit_ref'          => $ppp->getColoCircuitRef(),
-            'colo_billing_ref'          => $ppp->getColoBillingRef(),
-            'ticket_ref'                => $ppp->getTicketRef(),
-            'switch'                    => $ppp->getSwitchId(),
-            'switch_port'               => $ppp->getSwitchPortId(),
-            'customer'                  => $ppp->getCustomerId(),
-            'partner_port'              => $ppp->getDuplexSlavePortId(),
-            'state'                     => $ppp->getState(),
-            'notes'                     => $ppp->getNotes(),
-            'private_notes'             => $ppp->getPrivateNotes(),
-            'assigned_at'               => $ppp->getAssignedAtFormated(),
-            'connected_at'              => $ppp->getConnectedAtFormated(),
-            'ceased_requested_at'       => $ppp->getCeaseRequestedAtFormated(),
-            'ceased_at'                 => $ppp->getCeasedAtFormated(),
-            'last_state_change_at'      => $ppp->getLastStateChangeFormated(),
-            'chargeable'                => $chargeable,
-            'owned_by'                  => $ppp->getOwnedBy()
+            'colo_circuit_ref'          => array_key_exists( 'colo_circuit_ref',        $old    ) ? $old['colo_circuit_ref']        : $ppp->getColoCircuitRef(),
+            'colo_billing_ref'          => array_key_exists( 'colo_billing_ref',        $old    ) ? $old['colo_billing_ref']        : $ppp->getColoBillingRef(),
+            'ticket_ref'                => array_key_exists( 'ticket_ref',              $old    ) ? $old['ticket_ref']              : $ppp->getTicketRef(),
+            'switch'                    => array_key_exists( 'switch',                  $old    ) ? $old['switch']                  : $ppp->getSwitchId(),
+            'switch_port'               => array_key_exists( 'switch_port',             $old    ) ? $old['switch_port']             : $ppp->getSwitchPortId(),
+            'customer'                  => array_key_exists( 'customer',                $old    ) ? $old['customer']                : $ppp->getCustomerId(),
+            'partner_port'              => array_key_exists( 'partner_port',            $old    ) ? $old['partner_port']            : $ppp->getDuplexSlavePortId(),
+            'state'                     => array_key_exists( 'state',                   $old    ) ? $old['state']                   : $ppp->getState(),
+            'notes'                     => array_key_exists( 'notes',                   $old    ) ? $old['notes']                   : $ppp->getNotes(),
+            'private_notes'             => array_key_exists( 'private_notes',           $old    ) ? $old['private_notes']           : $ppp->getPrivateNotes(),
+            'assigned_at'               => array_key_exists( 'assigned_at',             $old    ) ? $old['assigned_at']             : $ppp->getAssignedAtFormated(),
+            'connected_at'              => array_key_exists( 'connected_at',            $old    ) ? $old['connected_at']            : $ppp->getConnectedAtFormated(),
+            'ceased_requested_at'       => array_key_exists( 'ceased_requested_at',     $old    ) ? $old['ceased_requested_at']     : $ppp->getCeaseRequestedAtFormated(),
+            'ceased_at'                 => array_key_exists( 'ceased_at',               $old    ) ? $old['ceased_at']               : $ppp->getCeasedAtFormated(),
+            'last_state_change_at'      => array_key_exists( 'last_state_change_at',    $old    ) ? $old['last_state_change_at']    : $ppp->getLastStateChangeFormated(),
+            'chargeable'                => array_key_exists( 'chargeable',              $old    ) ? $old['chargeable']              : $chargeable,
+            'owned_by'                  => array_key_exists( 'owned_by',                $old    ) ? $old['owned_by']                : $ppp->getOwnedBy()
         ]);
 
         // display the duplex port if set or the list of all duplex ports available
@@ -374,14 +378,21 @@ class PatchPanelPortController extends Controller
 
         $ppp->setInternalUse(   ( $request->input( 'internal_use'   ) ) ? $request->input( 'internal_use'   ) : false );
         $ppp->setChargeable(    ( $request->input( 'chargeable'     ) ) ? $request->input( 'chargeable'     ) : false );
-        $ppp->setOwnedBy(       ( $request->input( 'owned_by'       ) ) ? $request->input( 'owned_by'       ) : false );
+        $ppp->setOwnedBy(         ( $request->input( 'owned_by'       ) ) ? $request->input( 'owned_by'       ) : false );
 
 
         if( $request->input( 'duplex' ) ) {
             if( !$ppp->hasSlavePort() ) {
-                /** @var PatchPanelPortEntity $partnerPort */
-                $partnerPort = D2EM::getRepository( PatchPanelPortEntity::class )->find( $request->input( 'partner_port' ) );
-                $ppp->setDuplexPort( $partnerPort );
+
+                if( $request->input( 'partner_port' ) != null ){
+                    /** @var PatchPanelPortEntity $partnerPort */
+                    $partnerPort = D2EM::getRepository( PatchPanelPortEntity::class )->find( $request->input( 'partner_port' ) );
+                    $ppp->setDuplexPort( $partnerPort );
+                } else{
+                    AlertContainer::push( 'You need to select a partner port as you checked duplex connection', Alert::DANGER );
+                    return Redirect::back()->withInput( Input::all() );
+                }
+
             }
         }
 
@@ -500,7 +511,7 @@ class PatchPanelPortController extends Controller
         D2EM::flush();
 
         AlertContainer::push( 'The patch panel port has been set to: ' . $this->getPPP()->resolveStates(), Alert::SUCCESS );
-        //return redirect( '/patch-panel-port/list/patch-panel/'.$this->getPPP()->getPatchPanel()->getId() );
+
         return redirect::back();
     }
 

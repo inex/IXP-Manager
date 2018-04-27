@@ -141,6 +141,8 @@ class AdminController extends Controller
      * Get public peering graphs
      *
      * @return array array of graphs
+     *
+     * @throws
      */
     private function publicPeeringGraphs()
     {

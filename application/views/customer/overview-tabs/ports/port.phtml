@@ -224,7 +224,7 @@
                         {$l2a}<br />
                     {/foreach}
                     {if count( $vli->getLayer2AddressesAsArray() ) > 0 && config( 'ixp_fe.layer2-addresses.customer_can_edit' ) }
-                        <a href="{route( "Layer2AddressController@forVlanInterface", [ "id" => {$vli->getId()} ] )}">Edit</a>
+                        <a href="{route( "layer2-address@forVlanInterface", [ "id" => {$vli->getId()} ] )}">Edit</a>
                     {/if}
                 </td>
             </tr>

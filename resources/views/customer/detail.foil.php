@@ -30,16 +30,31 @@
 
 <?php $this->section('content') ?>
 
-    <div class="row">
-        <div class="col-md-12">
-            <div class="well">
-                <h3><?= $t->ee( $c->getFormattedName() ) ?></h3>
+<div class="row">
+
+    <div class="col-sm-12">
+
+
+        <div class="well">
+            <div class="row">
+                <h3 class="col-sm-9">
+                    <?= $t->ee( $c->getFormattedName() ) ?>
+                    <?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?>
+                </h3>
+
+                <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ): ?>
+
+                    <div class="col-sm-3">
+                        <img class="www80-padding img-responsive" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
+                    </div>
+
+                <?php endif; ?>
             </div>
         </div>
-    </div>
 
 
-    <div class="row">
+
+
         <div class="col-md-6">
             <table class="table_view_info">
                 <tr>
@@ -196,13 +211,13 @@
 
             </table>
         </div>
-    </div>
 
 
-    <?php $countVi = 1 ?>
-    <?php foreach( $c->getVirtualInterfaces() as $vi ): ?>
 
-        <div class="row" style="margin-bottom: 20px">
+        <?php $countVi = 1 ?>
+        <?php foreach( $c->getVirtualInterfaces() as $vi ): ?>
+
+
 
             <div class="col-md-12">
                 <hr>
@@ -210,8 +225,8 @@
                 <h3>
                     Connection <?= $countVi ?>
                     <?php
-                        $countPi  = 1;
-                        $isLAG = count( $vi->getPhysicalInterfaces() ) > 1;
+                    $countPi  = 1;
+                    $isLAG = count( $vi->getPhysicalInterfaces() ) > 1;
                     ?>
 
                     <small>
@@ -283,102 +298,108 @@
             <?php endforeach; /* foreach( $vi->getPhysicalInterfaces() as $pi ) */ ?>
 
 
-            <?php foreach( $vi->getVlanInterfaces() as $vli ): ?>
+                <?php foreach( $vi->getVlanInterfaces() as $vli ): ?>
 
-                <?php if( $vli->getVlan()->getPrivate() ): ?>
-                    continue;
-                <?php endif; ?>
+                    <?php if( $vli->getVlan()->getPrivate() ): ?>
+                        continue;
+                    <?php endif; ?>
 
-                <div class="col-md-12" style="margin-bottom: 20px; text-indent: 20px ">
+                    <div class="col-md-12" style="margin-bottom: 20px; text-indent: 20px ">
 
-                    <br>
-                    <h4><?= $t->ee( $vli->getVlan()->getName() ) ?>:</h4>
+                        <br>
+                        <h4><?= $t->ee( $vli->getVlan()->getName() ) ?>:</h4>
 
-                    <div class="col-md-6" style="">
+                        <div class="col-md-6" style="">
 
-                        <table>
-                            <tr>
-                                <td>
-                                    <b>
-                                        IPv6 Address:
-                                    </b>
-                                </td>
-                                <td>
-                                    <?php if( $vli->getIpv6enabled() and $vli->getIpv6address() ): ?>
-                                        <?= $vli->getIPv6Address()->getAddress() ?>
-                                        /<?= isset( $t->netinfo[ $vli->getVlan()->getId() ][ 6 ][ 'masklen' ] ) ? $t->netinfo[ $vli->getVlan()->getId() ][ 6 ][ "masklen" ] : '??' ?>
-                                    <?php else: ?>
-                                        IPv6 not enabled.
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>
-                                        Route Server Client:&nbsp;&nbsp;
-                                    </b>
-                                </td>
-                                <td>
-                                    <?= $vli->getRsclient() ? "Yes" : "No" ?>
-                                </td>
-                            </tr>
-                        </table>
+                            <table>
+                                <tr>
+                                    <td>
+                                        <b>
+                                            IPv6 Address:
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <?php if( $vli->getIpv6enabled() and $vli->getIpv6address() ): ?>
+                                            <?= $vli->getIPv6Address()->getAddress() ?>
+                                            /<?= isset( $t->netinfo[ $vli->getVlan()->getId() ][ 6 ][ 'masklen' ] ) ? $t->netinfo[ $vli->getVlan()->getId() ][ 6 ][ "masklen" ] : '??' ?>
+                                        <?php else: ?>
+                                            IPv6 not enabled.
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Route Server Client:&nbsp;&nbsp;
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <?= $vli->getRsclient() ? "Yes" : "No" ?>
+                                    </td>
+                                </tr>
+                            </table>
 
+                        </div>
+                        <div class="col-md-6">
+
+                            <table>
+                                <tr>
+                                    <td>
+                                        <b>IPv4 Address:&nbsp;&nbsp;</b>
+                                    </td>
+                                    <td>
+                                        <?php if( $vli->getIpv4enabled() and $vli->getIpv4address() ): ?>
+                                            <?= $vli->getIPv4Address()->getAddress() ?>
+                                            /<?= isset( $t->netinfo[ $vli->getVlan()->getId() ][ 4 ][ 'masklen' ] ) ? $t->netinfo[ $vli->getVlan()->getId() ][ 4 ][ "masklen" ] : '??' ?>
+                                        <?php else: ?>
+                                            IPv4 not enabled.
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+
+                                <?php if( $t->as112UiActive() ): ?>
+                                    <tr>
+                                        <td>
+                                            <b>
+                                                AS112 Client:&nbsp;&nbsp;
+                                            </b>
+                                        </td>
+                                        <td>
+                                            <?= $vli->getAs112client() ? "Yes" : "No" ?>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+
+                                <?php if( Auth::check() ): ?>
+                                    <tr>
+                                        <td>
+                                            <b>
+                                                Max Prefixes:&nbsp;&nbsp;
+                                            </b>
+                                        </td>
+                                        <td>
+                                            global: <?= $c->getMaxprefixes() ?>, per-interface: <?= $vli->getMaxbgpprefix() ?>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
+
+                            </table>
+
+                        </div>
                     </div>
-                    <div class="col-md-6">
 
-                        <table>
-                            <tr>
-                                <td>
-                                    <b>IPv4 Address:&nbsp;&nbsp;</b>
-                                </td>
-                                <td>
-                                    <?php if( $vli->getIpv4enabled() and $vli->getIpv4address() ): ?>
-                                        <?= $vli->getIPv4Address()->getAddress() ?>
-                                        /<?= isset( $t->netinfo[ $vli->getVlan()->getId() ][ 4 ][ 'masklen' ] ) ? $t->netinfo[ $vli->getVlan()->getId() ][ 4 ][ "masklen" ] : '??' ?>
-                                    <?php else: ?>
-                                        IPv4 not enabled.
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
+                <?php endforeach; /* foreach( $vi->getVlanInterfaces() as $vli ) */ ?>
 
-                            <?php if( $t->as112UiActive() ): ?>
-                                <tr>
-                                    <td>
-                                        <b>
-                                            AS112 Client:&nbsp;&nbsp;
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <?= $vli->getAs112client() ? "Yes" : "No" ?>
-                                    </td>
-                                </tr>
-                            <?php endif; ?>
 
-                            <?php if( Auth::check() ): ?>
-                                <tr>
-                                    <td>
-                                        <b>
-                                            Max Prefixes:&nbsp;&nbsp;
-                                        </b>
-                                    </td>
-                                    <td>
-                                        global: <?= $c->getMaxprefixes() ?>, per-interface: <?= $vli->getMaxbgpprefix() ?>
-                                    </td>
-                                </tr>
-                            <?php endif; ?>
 
-                        </table>
+            <?php $countVi++ ?>
+        <?php endforeach; ?>
 
-                     </div>
-                </div>
+    </div>
 
-            <?php endforeach; /* foreach( $vi->getVlanInterfaces() as $vli ) */ ?>
+</div>
 
-        </div>
 
-        <?php $countVi++ ?>
-    <?php endforeach; ?>
 
 <?php $this->append() ?>
 

@@ -20,42 +20,46 @@
 
 <?php $this->section('content') ?>
 
-    <?= $t->alerts() ?>
-    <table id='router-list' class="table">
-        <thead>
-        <tr>
-            <th>
-                Handle
-            </th>
-            <th>
-                Name
-            </th>
-            <th>
-                Vlan
-            </th>
-            <th>
-                Protocol
-            </th>
-            <th>
-                Type
-            </th>
-            <th>
-                Router
-            </th>
-            <th>
-                Peering IP
-            </th>
-            <th>
-                ASN
-            </th>
-            <th>
-                Last Updated
-            </th>
-            <th>
-            </th>
-        </tr>
-        <thead>
-        <tbody>
+<div class="row">
+
+    <div class="col-sm-12">
+
+        <?= $t->alerts() ?>
+        <table id='router-list' class="table">
+            <thead>
+            <tr>
+                <th>
+                    Handle
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Vlan
+                </th>
+                <th>
+                    Protocol
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Router
+                </th>
+                <th>
+                    Peering IP
+                </th>
+                <th>
+                    ASN
+                </th>
+                <th>
+                    Last Updated
+                </th>
+                <th>
+                </th>
+            </tr>
+            <thead>
+            <tbody>
             <?php foreach( $t->routers as $router ):
                 /** @var Entities\Router $router */ ?>
                 <tr>
@@ -109,8 +113,14 @@
                     </td>
                 </tr>
             <?php endforeach;?>
-        <tbody>
-    </table>
+            <tbody>
+        </table>
+
+    </div>
+
+</div>
+
+
 
 <?php $this->append() ?>
 

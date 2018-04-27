@@ -24,15 +24,19 @@ function deletePopup( id, viid, type ) {
     if( type === "vli") {
         objectName = "Vlan Interface";
         urlDelete  = "<?= url( 'interfaces/vlan/delete' ) ?>";
+        urlRedirect = "<?= route( 'interfaces/vlan/list' ) ?>" ;
     } else if( type === "vi" ) {
         objectName = "Virtual Interface";
         urlDelete = "<?= url( 'interfaces/virtual/delete' ) ?>" ;
+        urlRedirect = "<?= route( 'interfaces/virtual/list' ) ?>" ;
     } else if( type === "sflr" ) {
         objectName = "Sflow Receiver";
         urlDelete = "<?= url( 'interfaces/sflow-receiver/delete' ) ?>" ;
+        urlRedirect = "<?= route( 'interfaces/sflow-receiver/list' ) ?>" ;
     } else if( type === "pi" ) {
         objectName = "Physical Interface";
         urlDelete = "<?= url( 'interfaces/physical/delete' ) ?>";
+        urlRedirect = "<?= route( 'interfaces/physical/list' ) ?>" ;
     }
 
     const btn_delete = $( '#delete-' +type+ '-' + id );
@@ -71,7 +75,7 @@ function deletePopup( id, viid, type ) {
                             if( type !== "vi" ) {
                                 location.reload();
                             } else {
-                                window.location.href = "<?= url('') ?>";
+                                window.location.href = urlRedirect;
                             }
                         })
                         .fail( function(){

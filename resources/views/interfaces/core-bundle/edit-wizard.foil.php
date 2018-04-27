@@ -43,7 +43,7 @@ $this->layout( 'layouts/ixpv4' );
             </button>
             <ul class="dropdown-menu dropdown-menu-right">
                 <li>
-                    <a href="<?= action( 'Interfaces\CoreBundleController@addWizard' )?>" >
+                    <a href="<?= route( 'interfaces/virtual/wizard' )?>" >
                         Add Core Bundle Wizard...
                     </a>
                 </li>
@@ -142,7 +142,7 @@ $this->layout( 'layouts/ixpv4' );
 
                             <?= Former::checkbox( 'bfd' )
                                 ->label( 'BFD' )
-                                ->value( 0 )
+                                ->value( 1 )
                                 ->blockHelp( "" );
                             ?>
 
@@ -165,8 +165,6 @@ $this->layout( 'layouts/ixpv4' );
                         ?>
 
                     </div>
-
-
 
                     <?=Former::actions(
                         Former::primary_submit( 'Save Changes' )->id( 'core-bundle-submit-btn' ),
@@ -239,7 +237,7 @@ $this->layout( 'layouts/ixpv4' );
 
                         <?= Former::open()->method( 'POST' )
                             ->id( 'core-link-form' )
-                            ->action( route ( 'core-bundle/store-core-link', [ 'id' => $t->cb->getId() ] ) )
+                            ->action( route( 'core-bundle/store-core-link', [ 'id' => $t->cb->getId() ] ) )
                             ->customWidthClass( 'col-sm-10' )
                         ?>
 
@@ -363,7 +361,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::open()->method( 'POST' )
                     ->id( 'core-link-form' )
-                    ->action( route ( "core-bundle/add-core-link" ) )
+                    ->action( route( "core-bundle/add-core-link" ) )
                     ->customWidthClass( 'col-sm-6' )
                 ?>
                     <div id="core-links"></div>

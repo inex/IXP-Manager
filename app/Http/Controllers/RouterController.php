@@ -27,8 +27,7 @@ use D2EM, Former, Input, Redirect;
 
 use Entities\{
     Router as RouterEntity,
-    Vlan as VlanEntity,
-    User as UserEntity
+    Vlan as VlanEntity
 };
 
 use Illuminate\Http\RedirectResponse;

@@ -307,6 +307,4 @@ class VlanController extends Doctrine2Frontend {
         return $this->list();
     }
 
-
-
 }

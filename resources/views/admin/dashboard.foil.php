@@ -5,12 +5,16 @@
 
 <?php $this->section('content') ?>
 
-    <?= $t->alerts() ?>
+<div class="row">
 
-    <div class="col-md-6">
-        <div class="row">
-            <table class="table  table-striped">
-                <thead>
+    <div class="col-sm-12">
+
+        <?= $t->alerts() ?>
+
+        <div class="col-md-6">
+            <div class="row">
+                <table class="table  table-striped">
+                    <thead>
                     <tr>
                         <th>
                             Customer Type
@@ -19,8 +23,8 @@
                             Count
                         </th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     <?php foreach( $t->stats[ "types" ] as $type => $count  ): ?>
                         <tr>
                             <td>
@@ -31,14 +35,14 @@
                             </td>
                         </tr>
                     <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+                    </tbody>
+                </table>
+            </div>
 
-        <div class="row">
-            <h3>Customer Ports by Location</h3>
-            <table class="table table-striped">
-                <thead>
+            <div class="row">
+                <h3>Customer Ports by Location</h3>
+                <table class="table table-striped">
+                    <thead>
                     <tr>
                         <th>
                             Location
@@ -54,8 +58,8 @@
                             Total
                         </th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     <?php $colcount = 0 ?>
                     <?php foreach( $t->stats[ "byLocation"] as $location => $speed ): ?>
                         <?php $rowcount = 0 ?>
@@ -99,16 +103,16 @@
                             <b><?= $colcount ?></b>
                         </td>
                     </tr>
-                </tbody>
+                    </tbody>
 
-            </table>
-        </div>
+                </table>
+            </div>
 
-        <div class="row">
-            <h3>Customer Ports by Infrastructure</h3>
+            <div class="row">
+                <h3>Customer Ports by Infrastructure</h3>
 
-            <table class="table table-striped">
-                <thead>
+                <table class="table table-striped">
+                    <thead>
                     <tr>
                         <th>
                             Infrastructure
@@ -126,8 +130,8 @@
                             Capacity
                         </th>
                     </tr>
-                </thead>
-                <tbody>
+                    </thead>
+                    <tbody>
                     <?php $colcount = 0 ?>
                     <?php foreach( $t->stats[ "byLan"] as  $inf => $spds ): ?>
 
@@ -179,35 +183,42 @@
                         </td>
                     </tr>
 
-                </tbody>
-            </table>
+                    </tbody>
+                </table>
+            </div>
         </div>
-    </div>
 
-    <div class="col-md-6">
-        <?php if( count( $t->graphs ) ): ?>
-            <?php foreach( $t->graphs as $id => $graph ): ?>
+        <div class="col-md-6">
+            <?php if( count( $t->graphs ) ): ?>
+                <?php foreach( $t->graphs as $id => $graph ): ?>
+                    <div class="row" style="margin-left: 0px">
+                        <div class="well">
+                            <h3><?= $t->ee( $graph->name() ) ?> Aggregate Traffic</h3>
+                            <p>
+                                <?= $graph->renderer()->boxLegacy() ?>
+                            </p>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
                 <div class="row" style="margin-left: 0px">
                     <div class="well">
-                        <h3><?= $t->ee( $graph->name() ) ?> Aggregate Traffic</h3>
+                        <h3>Configure Your Aggregate Graph(s)</h3>
                         <p>
-                            <?= $graph->renderer()->boxLegacy() ?>
+                            Aggregate graphs have not been configured.
+                            Please see <a href="https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs">this documentation</a>.
                         </p>
                     </div>
                 </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <div class="row" style="margin-left: 0px">
-                <div class="well">
-                    <h3>Configure Your Aggregate Graph(s)</h3>
-                    <p>
-                        Aggregate graphs have not been configured.
-                        Please see <a href="https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs">this documentation</a>.
-                    </p>
-                </div>
-            </div>
-        <?php endif; ?>
+            <?php endif; ?>
+        </div>
+
     </div>
+
+
+</div>
+
+
 
 
 <?php $this->append() ?>

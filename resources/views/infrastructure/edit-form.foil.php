@@ -2,7 +2,7 @@
 
     <?= Former::open()->method( 'POST' )
         ->id( 'form' )
-        ->action( action( $t->controller.'@store' ) )
+        ->action( route( $t->feParams->route_prefix . '@store' ) )
         ->customWidthClass( 'col-sm-3' )
     ?>
 
@@ -19,7 +19,7 @@
     <?= Former::checkbox( 'primary' )
         ->label( '&nbsp;' )
         ->text( 'Primary Infrastructure' )
-        ->value(1)
+        ->value( 1 )
         ->blockHelp( "Only one infrastructure can be primary. Setting this will unset this on all other infrastructures. Usually used to "
             . "signify an infrastructure where <em>everyone</em> connects such as a primary peering LAN." );
     ?>
@@ -44,7 +44,7 @@
 
     <?= Former::actions(
         Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' )->disabled( true ),
-        Former::default_link( 'Cancel' )->href( action($t->controller.'@list') ),
+        Former::default_link( 'Cancel' )->href( route($t->feParams->route_prefix . '@list') ),
         Former::success_button( 'Help' )->id( 'help-btn' )
     );
     ?>

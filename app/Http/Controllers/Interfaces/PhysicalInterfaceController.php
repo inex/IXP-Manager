@@ -127,7 +127,7 @@ class PhysicalInterfaceController extends Common
             // ==== EDIT PI MODE
 
             // we never edit a fanout port:
-            if( $pi->getSwitchPort()->getType() == SwitchPortEntity::TYPE_FANOUT ) {
+            if( $pi->getSwitchPort()->isTypeFanout() ) {
                 AlertContainer::push( 'Do not edit fanout ports directly. Edit the peering interface and the fanout port will be updated to match.', Alert::DANGER );
                 return Redirect::back();
             }
@@ -141,14 +141,16 @@ class PhysicalInterfaceController extends Common
                 'duplex'                  => array_key_exists( 'duplex',        $old    ) ? $old['duplex']          : $pi->getDuplex(),
                 'autoneg-label'           => array_key_exists( 'autoneg-label', $old    ) ? $old['autoneg-label']   : ( $pi->getAutoneg() ? 1 : 0 ),
                 'monitorindex'            => array_key_exists( 'monitorindex',  $old    ) ? $old['monitorindex']    : ( $pi->getMonitorindex() ? $pi->getMonitorindex() : D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $pi->getVirtualInterface()->getCustomer() ) ) ,
-                'notes'                   => array_key_exists( 'notes',         $old    ) ? $old['notes']   : $pi->getNotes()
+                'notes'                   => array_key_exists( 'notes',         $old    ) ? $old['notes']           : $pi->getNotes()
             ];
 
             // get all the switch ports available and add the switch port associated to the physical interface in the list
             $switchports = array_merge(
                 D2EM::getRepository( SwitcherEntity::class )->getAllPortsNotAssignedToPI( $pi->getSwitchPort()->getSwitcher()->getId(), [], null ),
-                [ [ "name" => $pi->getSwitchPort()->getName(), "id" => $pi->getSwitchPort()->getId() ] ]
+                [ [ "name" => $pi->getSwitchPort()->getName(), "id" => $pi->getSwitchPort()->getId(), "typeid" => $pi->getSwitchPort()->getType(), "type" => $pi->getSwitchPort()->resolveType() ] ]
             );
+
+
 
             // ascending sort the array by ID
             usort( $switchports, function( $item1, $item2 ) {
@@ -167,7 +169,7 @@ class PhysicalInterfaceController extends Common
         Former::populate( $data );
 
         return view( 'interfaces/physical/edit' )->with([
-            'switches'                    => D2EM::getRepository( SwitcherEntity::class )->getNames( true, SwitcherEntity::TYPE_SWITCH ),
+            'switches'                    => D2EM::getRepository( SwitcherEntity::class )->getNames( false, SwitcherEntity::TYPE_SWITCH ),
             'switchports'                 => isset( $switchports ) ? $switchports : [],
             'pi'                          => $pi,
             'otherPICoreLink'             => $pi ? $pi->getOtherPICoreLink() : false,

@@ -166,7 +166,7 @@
     }
 
     function markdownText( text, input ){
-        $.ajax( "<?= action ('Api\V4\UtilsController@markdown')?>", {
+        $.ajax( "<?= route ('utils@markdown')?>", {
             data: {
                 text: text
             },
@@ -412,7 +412,7 @@
         }
 
         if( action == 'split' ){
-            prefix = $('#danger-dropdown-'+pppid).data("port-prefix");
+            let prefix = $('#danger-dropdown-'+pppid).data("port-prefix");
 
             let slavePort = $('#danger-dropdown-'+pppid).data("slave-port");
             let masterPort = prefix+$('#danger-dropdown-'+pppid).data("master-port");

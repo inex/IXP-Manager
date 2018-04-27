@@ -4,7 +4,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'interfaces/virtual/list' )?>">(Virtual) Interfaces</a>
+    <a href="<?= route( 'interfaces/physical/list' ) ?>">Physical Interfaces</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -17,6 +17,12 @@ $this->layout( 'layouts/ixpv4' );
             <a type="button" class="btn btn-default" href="<?= route( 'interfaces/physical/list' )?>" title="list">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
+
+            <?php if( $t->pi ): ?>
+                <a type="button" class="btn btn-default" href="<?= route( 'interfaces/physical/view' , [ "id" => $t->pi->getId() ])?>" title="list">
+                    <span class="glyphicon glyphicon-eye-open"></span>
+                </a>
+            <?php endif;?>
         </div>
     </li>
 <?php $this->append() ?>
@@ -171,12 +177,12 @@ $this->layout( 'layouts/ixpv4' );
                             ->label('&nbsp;')
                             ->text( 'Auto-Negotiation Enabled' )
                             ->value( 1 )
-                            ->disabled( true)
+                            ->disabled( true )
                             ->blockHelp( "" ); ?>
 
                         <?= Former::number( 'monitorindex-b' )
                             ->label( 'Monitor Index' )
-                            ->disabled( true)
+                            ->disabled( true )
                             ->blockHelp( '' );
                         ?>
 
@@ -184,7 +190,7 @@ $this->layout( 'layouts/ixpv4' );
                             ->label( 'Notes' )
                             ->rows( 10 )
                             ->style( 'width:500px' )
-                            ->disabled( true)
+                            ->disabled( true )
                             ->blockHelp( ' ' );
                         ?>
 
@@ -263,7 +269,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::actions(
                     Former::primary_submit( 'Save Changes' ),
-                    Former::default_link( 'Cancel' )->href( $t->vi ? route ( 'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) : route ( 'interfaces/physical/list' ) ),
+                    Former::default_link( 'Cancel' )->href( $t->vi ? route( 'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) : route( 'interfaces/physical/list' ) ),
                     Former::success_button( 'Help' )->id( 'help-btn' )
                 )->id('btn-group');?>
 

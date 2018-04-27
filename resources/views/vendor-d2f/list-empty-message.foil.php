@@ -1,6 +1,6 @@
 
 <div class="alert alert-info" role="alert">
-    <b>No vendor entries exist in the database.</b> <a href="<?= action($t->controller.'@add') ?>">Add one...</a>
+    <b>No vendor entries exist in the database.</b> <a href="<?= route( $t->feParams->route_prefix . '@add') ?>">Add one...</a>
 </div>
 
 <div class="alert alert-warning" role="alert">

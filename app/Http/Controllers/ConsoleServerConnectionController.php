@@ -204,7 +204,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
         $this->object->setParity(       $request->input( 'parity'       ) );
         $this->object->setStopbits(     $request->input( 'stopbits'     ) );
         $this->object->setFlowcontrol(  $request->input( 'flowcontrol'  ) );
-        $this->object->setAutobaud(     $request->input( 'autobaud'     ) ?? 0 );
+        $this->object->setAutobaud(     $request->input( 'autobaud'     ) ? 1 : 0 );
         $this->object->setNotes(        $request->input( 'notes'        ) );
         $this->object->setCustomer(     D2EM::getRepository( CustomerEntity::class  )->find( $request->input( 'custid'      ) ) );
         $this->object->setSwitcher(     D2EM::getRepository( SwitcherEntity::class  )->find( $request->input( 'switchid'    ) ) );
