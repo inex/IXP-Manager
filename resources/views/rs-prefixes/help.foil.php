@@ -47,35 +47,34 @@
     A typical <code>route:</code> / <code>route6:</code> object for this organisation would be:
 </p>
 
-<div class="row">
 
-    <div class="col-md-4 col-md-offset-1">
+<div class="col-md-4 col-md-offset-1">
 
-        <pre>
-            route:          192.0.2.0/24
-            descr:          <?= $t->c->getName() ?>
+    <pre>
+        route:          192.0.2.0/24
+        descr:          <?= $t->c->getName() ?>
 
-            origin:         AS<?= $t->c->getAutsys() ?>
+        origin:         AS<?= $t->c->getAutsys() ?>
 
-            mnt-by:         YOURORG-MNT
-        </pre>
-
-    </div>
-
-    <div class="col-md-4 col-md-offset-1">
-
-        <pre>
-            route6:         2001:DB8::/32
-            descr:          <?= $t->c->getName() ?>
-
-            origin:         AS<?= $t->c->getAutsys() ?>
-
-            mnt-by:         YOURORG-MNT
-        </pre>
-
-    </div>
+        mnt-by:         YOURORG-MNT
+    </pre>
 
 </div>
+
+<div class="col-md-4 col-md-offset-1">
+
+    <pre>
+        route6:         2001:DB8::/32
+        descr:          <?= $t->c->getName() ?>
+
+        origin:         AS<?= $t->c->getAutsys() ?>
+
+        mnt-by:         YOURORG-MNT
+    </pre>
+
+</div>
+
+<div style="clear:both"></div>
 
 <br /><br />
 

@@ -179,7 +179,7 @@ function updateSwitchPort(e) {
         selectedPort = $( "#original-switch-port-fanout" ).val();
     } else {
         dd_sp     = $( "#switch-port" );
-        arrayType = [ <?= \Entities\SwitchPort::TYPE_UNSET ?>,  <?= \Entities\SwitchPort::TYPE_PEERING ?>];
+        arrayType = [ <?= \Entities\SwitchPort::TYPE_UNSET ?>,  <?= \Entities\SwitchPort::TYPE_PEERING ?>, <?= \Entities\SwitchPort::TYPE_CORE ?> ];
         selectedPort = $( "#original-switch-port" ).val();
     }
 
@@ -192,8 +192,13 @@ function updateSwitchPort(e) {
             let options = "<option value=\"\">Choose a switch port</option>\n";
 
             $.each( data.switchports, function( key, port ) {
+
+                if(port.sp_id.toString()  === selectedPort){
+                    console.log(port.sp_type);
+                }
                 if( ( port.pi_id === null || port.sp_id.toString() === selectedPort ) && arrayType.indexOf( port.sp_type ) !== -1 ) {
                     options += `<option value="${port.sp_id}">${port.sp_name} (${port.sp_type_name})</option>\n`;
+
                 }
             });
 

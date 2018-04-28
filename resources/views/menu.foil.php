@@ -94,13 +94,13 @@
                 </li>
 
                 <li <?= $t->controller == 'RouterController' && $t->action != 'status' ? 'class="active"' : '' ?>>
-                    <a href="<?= route('router/list' ) ?>">
+                    <a href="<?= route('router@list' ) ?>">
                         Routers
                     </a>
 
                     <?php if( $t->controller == 'RouterController' ): ?>
                         <li class="sub-menu <?php if( $t->controller == 'RouterController' && $t->action == 'status'):?> active <?php endif;?> " >
-                            <a href="<?= route('router/status' ) ?>">Live Status</a>
+                            <a href="<?= route('router@status' ) ?>">Live Status</a>
                         </li>
                     <?php endif;?>
 

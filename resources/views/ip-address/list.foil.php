@@ -24,103 +24,111 @@
 
 
 <?php $this->section('content') ?>
+    <div class="row">
 
-    <?= $t->alerts() ?>
+        <div class="col-sm-12">
 
-    <div class="well col-md-12">
+            <?= $t->alerts() ?>
 
-        <form class="form-inline">
+            <div class="well ">
 
-            <div class="form-group">
-                <label for="vlan">VLAN</label>
-                <select id="vlan" name="vlan" class="form-control">
-                    <option></option>
-                    <?php foreach( $t->vlans as $vid => $vname ): ?>
-                        <option value="<?= $vid ?>" <?= $t->vlan && $vid == $t->vlan->getId() ? 'selected' : '' ?>><?= $vname ?></option>
-                    <?php endforeach; ?>
-                </select>
+                <form class="form-inline">
+
+                    <div class="form-group">
+                        <label for="vlan">VLAN</label>
+                        <select id="vlan" name="vlan" class="form-control">
+                            <option></option>
+                            <?php foreach( $t->vlans as $vid => $vname ): ?>
+                                <option value="<?= $vid ?>" <?= $t->vlan && $vid == $t->vlan->getId() ? 'selected' : '' ?>><?= $vname ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <?php if( $t->vlan ): ?>
+
+                        <div class="btn-group">
+
+                            <a class="btn btn-sm btn-default" href="<?= route( 'ip-address@list', [ 'vid' => $t->vlan->getId(), 'protocol' => ( $t->protocol == 4 ? 6 : 4 ) ] ) ?>">
+                                Switch to IPv<?= $t->protocol == 4 ? 6 : 4 ?>
+                            </a>
+
+                            <a type="button" class="btn btn-sm btn-default" href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol ]) ?>?vlan=<?= $t->vlan->getId() ?>">
+                                <span class="glyphicon glyphicon-plus"></span>
+                            </a>
+
+                            <a type="button" class="btn btn-sm btn-danger" href="<?= route ('ip-address@delete-by-network', [ 'vlanid' => $t->vlan->getId() ]) ?>">
+                                <span class="glyphicon glyphicon-trash"></span>
+                            </a>
+
+                        </div>
+                    <?php endif; ?>
+
+                </form>
+
             </div>
 
-            <?php if( $t->vlan ): ?>
+            <?php if( !count( $t->ips ) ): ?>
 
-                <div class="btn-group">
+                <?php if( $t->vlan ): ?>
+                    <p>
+                        There are no IPv<?= $t->protocol ?> addresses in this VLAN.
+                        <a href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol ]) ?>?vlan=<?= $t->vlan->getId() ?>">Add some...</a>
+                    </p>
+                <?php endif; ?>
 
-                    <a class="btn btn-sm btn-default" href="<?= route( 'ip-address@list', [ 'vid' => $t->vlan->getId(), 'protocol' => ( $t->protocol == 4 ? 6 : 4 ) ] ) ?>">
-                        Switch to IPv<?= $t->protocol == 4 ? 6 : 4 ?>
-                    </a>
+            <?php else: ?>
 
-                    <a type="button" class="btn btn-sm btn-default" href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol ]) ?>?vlan=<?= $t->vlan->getId() ?>">
-                        <span class="glyphicon glyphicon-plus"></span>
-                    </a>
+                <table id='ip-address-list' class="table collapse" >
+                    <thead>
+                    <tr>
+                        <td>
+                            IP Address
+                        </td>
+                        <td>
+                            Customer
+                        </td>
+                        <td>
+                            Hostname
+                        </td>
+                        <td>
+                            Action
+                        </td>
+                    </tr>
+                    <thead>
+                    <tbody>
+                    <?php foreach( $t->ips as $ip ):?>
+                        <tr>
+                            <td>
+                                <?= $t->ee( $ip[ 'address' ] ) ?>
+                            </td>
+                            <td>
+                                <?= $t->ee( $ip[ 'customer' ] ) ?>
+                            </td>
+                            <td>
+                                <?= $t->ee( $ip[ 'hostname' ] ) ?>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a class="btn btn btn-default <?= $ip[ 'viid' ] ? '' : 'disabled' ?>" href="<?= $ip[ 'viid' ] ? route( "interfaces/virtual/edit" , [ 'id' => $ip[ 'viid' ] ] ) : '#' ?>" title="See interface">
+                                        <i class="glyphicon glyphicon-eye-open"></i>
+                                    </a>
+                                    <a class="btn btn btn-default <?= !$ip[ 'vliid' ] ? '' : 'disabled' ?>" id="delete-ip-<?=$ip[ 'id' ] ?>" href="" title="Delete">
+                                        <i class="glyphicon glyphicon-trash"></i>
+                                    </a>
 
-                    <a type="button" class="btn btn-sm btn-danger" href="<?= route ('ip-address@delete-by-network', [ 'vlanid' => $t->vlan->getId() ]) ?>">
-                        <span class="glyphicon glyphicon-trash"></span>
-                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach;?>
+                    <tbody>
+                </table>
 
-                </div>
-            <?php endif; ?>
+            <?php endif;  /* !count( $t->ips ) */ ?>
 
-        </form>
+        </div>
 
     </div>
 
-    <?php if( !count( $t->ips ) ): ?>
-
-        <?php if( $t->vlan ): ?>
-            <p>
-                There are no IPv<?= $t->protocol ?> addresses in this VLAN.
-                <a href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol ]) ?>?vlan=<?= $t->vlan->getId() ?>">Add some...</a>
-            </p>
-        <?php endif; ?>
-
-    <?php else: ?>
-
-        <table id='ip-address-list' class="table collapse" >
-            <thead>
-                <tr>
-                    <td>
-                        IP Address
-                    </td>
-                    <td>
-                        Customer
-                    </td>
-                    <td>
-                        Hostname
-                    </td>
-                    <td>
-                        Action
-                    </td>
-                </tr>
-            <thead>
-            <tbody>
-                <?php foreach( $t->ips as $ip ):?>
-                    <tr>
-                        <td>
-                            <?= $t->ee( $ip[ 'address' ] ) ?>
-                        </td>
-                        <td>
-                            <?= $t->ee( $ip[ 'customer' ] ) ?>
-                        </td>
-                        <td>
-                            <?= $t->ee( $ip[ 'hostname' ] ) ?>
-                        </td>
-                        <td>
-                            <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn btn-default <?= $ip[ 'viid' ] ? '' : 'disabled' ?>" href="<?= $ip[ 'viid' ] ? route( "interfaces/virtual/edit" , [ 'id' => $ip[ 'viid' ] ] ) : '#' ?>" title="See interface">
-                                    <i class="glyphicon glyphicon-eye-open"></i>
-                                </a>
-                                <a class="btn btn btn-default <?= !$ip[ 'vliid' ] ? '' : 'disabled' ?>" id="delete-ip-<?=$ip[ 'id' ] ?>" href="" title="Delete">
-                                    <i class="glyphicon glyphicon-trash"></i>
-                                </a>
-
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach;?>
-            <tbody>
-        </table>
-
-    <?php endif;  /* !count( $t->ips ) */ ?>
 
 <?php $this->append() ?>
 

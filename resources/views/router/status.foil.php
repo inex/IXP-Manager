@@ -11,7 +11,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= url('router/add') ?>">
+            <a type="button" class="btn btn-default" href="<?= route('router@add') ?>">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
         </div>
@@ -21,7 +21,6 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section('content') ?>
 
 <?= $t->alerts() ?>
-
 
 <?php if( !$t->lgEnabled ): ?>
 
@@ -136,6 +135,7 @@ $this->layout( 'layouts/ixpv4' );
         </table>
 
 <?php endif; ?>
+
 
 <?php $this->append() ?>
 

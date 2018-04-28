@@ -16,9 +16,9 @@
 
 if( !config('ixp_fe.frontend.disabled.logo' ) ) {
     Route::group( [ 'prefix' => 'customer-logo', 'namespace' => 'Customer' ], function() {
-        Route::get( 'manage/{id?}', 'LogoController@manage' )->name( "logo@manage" );
-        Route::post( 'store', 'LogoController@store' )->name( "logo@store" );
-        Route::post( 'delete/{id}', 'LogoController@delete' )->name( 'logo@delete' );
+        Route::get(     'manage/{id?}',     'LogoController@manage'     )->name( "logo@manage"  );
+        Route::post(    'store',            'LogoController@store'      )->name( "logo@store"   );
+        Route::post(    'delete/{id}',      'LogoController@delete'     )->name( 'logo@delete'  );
     } );
 }
 
@@ -29,12 +29,10 @@ if( !config('ixp_fe.frontend.disabled.logo' ) ) {
 ///
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'middleware' => 'patch-panel-port'], function() {
-    Route::get( 'download-loa/{id}',                'PatchPanelPortController@downloadLoA' );
-    Route::get( 'view-loa/{id}',                    'PatchPanelPortController@viewLoA' );
-
-    Route::get( 'download-file/{pppfid}',           'PatchPanelPortController@downloadFile' );
-
-    Route::get( 'view/{id}',                        'PatchPanelPortController@view' )->name( 'patch-panel-port@view' );
+    Route::get( 'download-loa/{id}',                'PatchPanelPortController@downloadLoA'      )->name( 'patch-panel-port@download-loa'     );
+    Route::get( 'view-loa/{id}',                    'PatchPanelPortController@viewLoA'          )->name( 'patch-panel-port@view-loa'         );
+    Route::get( 'download-file/{pppfid}',           'PatchPanelPortController@downloadFile'     )->name( 'patch-panel-port@download-file'    );
+    Route::get( 'view/{id}',                        'PatchPanelPortController@view'             )->name( 'patch-panel-port@view'            );
 });
 
 

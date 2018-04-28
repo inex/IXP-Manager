@@ -16,37 +16,36 @@ Route::group( [ 'prefix' => 'ip-address' ], function() {
 });
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], function() {
-    Route::get(     'list',                             'PatchPanelController@index'            )->name( 'patch-panel/list'         );
-    Route::get(     'list/inactive',                    'PatchPanelController@indexInactive'    )->name( 'patch-panel/list/inactive');
-    Route::get(     'add',                              'PatchPanelController@edit'             )->name( 'patch-panel/add'          );
-    Route::get(     'edit/{id}',                        'PatchPanelController@edit'             )->name( 'patch-panel/edit'         );
-    Route::get(     'view/{id}',                        'PatchPanelController@view'             );
-    Route::get(     'change-status/{id}/{active}',      'PatchPanelController@changeStatus'     );
-    Route::post(    'store',                            'PatchPanelController@store'            );
+    Route::get(     'list',                             'PatchPanelController@index'            )->name( 'patch-panel/list'         )   ;
+    Route::get(     'list/inactive',                    'PatchPanelController@indexInactive'    )->name( 'patch-panel/list/inactive'    );
+    Route::get(     'add',                              'PatchPanelController@edit'             )->name( 'patch-panel/add'              );
+    Route::get(     'edit/{id}',                        'PatchPanelController@edit'             )->name( 'patch-panel/edit'             );
+    Route::get(     'view/{id}',                        'PatchPanelController@view'             )->name( 'patch-panel@view'             );
+    Route::get(     'change-status/{id}/{active}',      'PatchPanelController@changeStatus'     )->name( 'patch-panel@change-status'    );
+    Route::post(    'store',                            'PatchPanelController@store'            )->name( 'patch-panel@store'            );
 });
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'middleware' => 'patch-panel-port' ], function() {
-    Route::get(     'list',                             'PatchPanelPortController@index'                )->name('patch-panel-port/list'             );
-    Route::post(    'advanced-list',                    'PatchPanelPortController@advancedIndex'        );
-    Route::get(     'list/patch-panel/{ppid}',          'PatchPanelPortController@index'                )->name('patch-panel-port/list/patch-panel' );
-    Route::get(     'edit/{id}',                        'PatchPanelPortController@edit'                 );
-    Route::get(     'edit-to-allocate/{id}',            'PatchPanelPortController@editToAllocate'       );
-    Route::get(     'edit-to-prewired/{id}',            'PatchPanelPortController@editToPrewired'       );
-    Route::get(     'change-status/{id}/{status}',      'PatchPanelPortController@changeStatus'         );
-    Route::get(     'email/{id}/{type}',                'PatchPanelPortController@email'                );
-    Route::get(     'download-file/{id}',               'PatchPanelPortController@downloadFile'         );
-    Route::get(     'move-form/{id}',                   'PatchPanelPortController@moveForm'             );
-    Route::post(    'move',                             'PatchPanelPortController@move'                 );
-    Route::post(    'store',                            'PatchPanelPortController@store'                );
-    Route::get(     'email/{id}/{type}',                'PatchPanelPortController@email'                );
-    Route::post(    'send-email/{id}/{type}',           'PatchPanelPortController@sendEmail'            );
-    Route::post(    'delete-file/{fileid}',             'PatchPanelPortController@deleteFile'           );
-    Route::post(    'delete-history-file/{fileid}',     'PatchPanelPortController@deleteHistoryFile'    );
-    Route::post(    'delete/{id}',                      'PatchPanelPortController@delete'               );
-    Route::post(    'split/{id}',                       'PatchPanelPortController@split'                );
-    Route::post(    'toggle-file-privacy/{fileid}',     'PatchPanelPortController@toggleFilePrivacy'    );
-    Route::post(    'upload-file/{id}',                 'PatchPanelPortController@uploadFile'           );
-    Route::post(    'notes/{id}',                       'PatchPanelPortController@setNotes'             );
+    Route::get(     'list',                             'PatchPanelPortController@index'                )->name('patch-panel-port/list'                 );
+    Route::post(    'advanced-list',                    'PatchPanelPortController@advancedIndex'        )->name('patch-panel-port@advanced-list'       );
+    Route::get(     'list/patch-panel/{ppid}',          'PatchPanelPortController@index'                )->name('patch-panel-port/list/patch-panel'     );
+    Route::get(     'edit/{id}',                        'PatchPanelPortController@edit'                 )->name('patch-panel-port@edit'                 );
+    Route::get(     'edit-to-allocate/{id}',            'PatchPanelPortController@editToAllocate'       )->name('patch-panel-port@edit-allocate'     );
+    Route::get(     'edit-to-prewired/{id}',            'PatchPanelPortController@editToPrewired'       )->name('patch-panel-port@edit-prewired'     );
+    Route::get(     'change-status/{id}/{status}',      'PatchPanelPortController@changeStatus'         )->name('patch-panel-port@change-status'        );
+    Route::get(     'email/{id}/{type}',                'PatchPanelPortController@email'                )->name('patch-panel-port@email'                );
+    Route::get(     'download-file/{id}',               'PatchPanelPortController@downloadFile'         )->name('patch-panel-port@download-file'        );
+    Route::get(     'move-form/{id}',                   'PatchPanelPortController@moveForm'             )->name('patch-panel-port@move-form'            );
+    Route::post(    'move',                             'PatchPanelPortController@move'                 )->name('patch-panel-port@move'                 );
+    Route::post(    'store',                            'PatchPanelPortController@store'                )->name('patch-panel-port@store'                );
+    Route::post(    'send-email/{id}/{type}',           'PatchPanelPortController@sendEmail'            )->name('patch-panel-port@send-email'           );
+    Route::post(    'delete-file/{fileid}',             'PatchPanelPortController@deleteFile'           )->name('patch-panel-port@delete-file'          );
+    Route::post(    'delete-history-file/{fileid}',     'PatchPanelPortController@deleteHistoryFile'    )->name('patch-panel-port@delete-history-file'  );
+    Route::post(    'delete/{id}',                      'PatchPanelPortController@delete'               )->name('patch-panel-port@delete'               );
+    Route::post(    'split/{id}',                       'PatchPanelPortController@split'                )->name('patch-panel-port@split'                );
+    Route::post(    'toggle-file-privacy/{fileid}',     'PatchPanelPortController@toggleFilePrivacy'    )->name('patch-panel-port@toggle-file-privacy'  );
+    Route::post(    'upload-file/{id}',                 'PatchPanelPortController@uploadFile'           )->name('patch-panel-port/upload-file'          );
+    Route::post(    'notes/{id}',                       'PatchPanelPortController@setNotes'             )->name('patch-panel-port/set-notes'            );
 });
 
 
@@ -57,14 +56,14 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
 
 
 Route::group( [ 'prefix' => 'router' ], function() {
-    Route::get(     'list',                             'RouterController@list'     )->name( 'router/list'  );
-    Route::get(     'status',                           'RouterController@status'   )->name('router/status' );
-    Route::get(     'add',                              'RouterController@edit'     )->name( 'router/add'   );
-    Route::get(     'edit/{id}',                        'RouterController@edit'     )->name( 'router/edit'  );
-    Route::get(     'view/{id}',                        'RouterController@view'     );
-    Route::get(     'delete/{id}',                      'RouterController@delete'   );
+    Route::get(     'list',                             'RouterController@list'     )->name( 'router@list'  );
+    Route::get(     'status',                           'RouterController@status'   )->name( 'router@status' );
+    Route::get(     'add',                              'RouterController@edit'     )->name( 'router@add'   );
+    Route::get(     'edit/{id}',                        'RouterController@edit'     )->name( 'router@edit'  );
+    Route::get(     'view/{id}',                        'RouterController@view'     )->name( 'router@view'  );
+    Route::get(     'delete/{id}',                      'RouterController@delete'   )->name( 'router@delete'  );
     Route::get(     'gen-config/{id}',                  'RouterController@genConfig');
-    Route::post(    'store',                            'RouterController@store'    );
+    Route::post(    'store',                            'RouterController@store'    )->name( 'router@store'  );
 
 });
 
@@ -74,10 +73,10 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get(     'edit/{id}',                        'VirtualInterfaceController@add'                )->name(    'interfaces/virtual/edit'               );
         Route::get(     'add/',                             'VirtualInterfaceController@add'                )->name(    'interfaces/virtual/add'                );
         Route::get(     'add/custid/{custid}',              'VirtualInterfaceController@addCustId'          )->name(    'interfaces/virtual/add/custid'         );
-        Route::get(     'view/{id}',                        'VirtualInterfaceController@view'               );
+        Route::get(     'view/{id}',                        'VirtualInterfaceController@view'               )->name(    'virtual-interface@view'         );
         Route::get(     'wizard-add',                       'VirtualInterfaceController@wizard'             )->name(    'interfaces/virtual/wizard'             );
         Route::get(     'wizard-add/custid/{custid}',       'VirtualInterfaceController@addWizardCustId'    )->name(   'interfaces/virtual/add-wizard/custid'   );
-        Route::post(    'store',                            'VirtualInterfaceController@store'              );
+        Route::post(    'store',                            'VirtualInterfaceController@store'              )->name(   'interfaces/virtual/store'   );
         Route::post(    'wizard-add',                       'VirtualInterfaceController@storeWizard'        )->name(    'interfaces/virtual/wizard-save'        );
         Route::post(    'delete/{id}',                      'VirtualInterfaceController@delete'             );
         
@@ -90,8 +89,8 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get(     'edit/{id}/from-cb/{cb}',           'PhysicalInterfaceController@editFromCb'    )->name( 'interfaces/physical/edit/from-core-bundle'        );
         Route::get(     'edit/{id}/vintid/{viid}',          'PhysicalInterfaceController@edit'          )->name( 'interfaces/physical/edit/from-virtual-interface'  );
         Route::get(     'add/{id}/vintid/{viid}',           'PhysicalInterfaceController@edit'          )->name( 'interfaces/physical/add'                          );
-        Route::post(    'store',                            'PhysicalInterfaceController@store'         );
-        Route::post(    'delete/{id}',                      'PhysicalInterfaceController@delete'        );
+        Route::post(    'store',                            'PhysicalInterfaceController@store'         )->name( 'interfaces/physical/store'                        );
+        Route::post(    'delete/{id}',                      'PhysicalInterfaceController@delete'        )->name( 'interfaces/physical/delete'                       );
     });
 
     Route::group( [  'prefix' => 'vlan' ], function() {
@@ -112,20 +111,20 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get(     'edit/{id}/',                       'SflowReceiverController@edit'  )->name( 'interfaces/sflow-receiver/edit'                        );
         Route::get(     'edit/{id}/vintid/{viid}',          'SflowReceiverController@edit'  )->name( 'interfaces/sflow-receiver/edit/from-virtual-interface' );
         Route::get(     'add/{id}/vintid/{viid}',           'SflowReceiverController@edit'  )->name( 'interfaces/sflow-receiver/add'                         );
-        Route::post(    'store',                            'SflowReceiverController@store' );
+        Route::post(    'store',                            'SflowReceiverController@store' )->name( 'sflow-receiver@store'                                  );
         Route::post(    'delete/{id}',                      'SflowReceiverController@delete');
     });
 
     Route::group( [  'prefix' => 'core-bundle' ], function() {
         Route::get(     'list',                             'CoreBundleController@list'             )->name(    'core-bundle/list');
-        Route::get(     'add-wizard',                       'CoreBundleController@addWizard'        );
+        Route::get(     'add-wizard',                       'CoreBundleController@addWizard'        )->name(    'core-bundle/add');
         Route::get(     'edit/{id}',                        'CoreBundleController@edit'             )->name(    'core-bundle/edit');
-        Route::post(    'add-core-link-frag',               'CoreBundleController@addCoreLinkFrag'  );
-        Route::post(    'store-wizard',                     'CoreBundleController@storeWizard'      );
-        Route::post(    'add-core-link',                    'CoreBundleController@addCoreLink'      );
-        Route::post(    '{id}/store-core-links',            'CoreBundleController@storeCoreLinks'   );
+        Route::post(    'add-core-link-frag',               'CoreBundleController@addCoreLinkFrag'  )->name(    'core-bundle/add-core-link-frag');
+        Route::post(    'store-wizard',                     'CoreBundleController@storeWizard'      )->name(    'core-bundle/store');
+        Route::post(    'add-core-link',                    'CoreBundleController@addCoreLink'      )->name(    'core-bundle/add-core-link');
+        Route::post(    '{id}/store-core-links',            'CoreBundleController@storeCoreLinks'   )->name(    'core-bundle/store-core-link');
         Route::post(    'delete/{id}',                      'CoreBundleController@deleteCoreBundle' )->name(    'core-bundle/delete');
-        Route::post(    'core-link/delete/{id}',            'CoreBundleController@deleteCoreLink'   );
+        Route::post(    'core-link/delete/{id}',            'CoreBundleController@deleteCoreLink'   )->name(    'core-bundle/delete-core-link');
     });
 });
 

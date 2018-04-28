@@ -145,7 +145,6 @@ class SearchController extends Controller {
             'results'           => $results,
             'interfaces'        => $interfaces,
             'type'              => $type,
-            'resellerMode'      => $this->resellerMode(),
             'search'            => $search
         ]);
     }
@@ -170,7 +169,8 @@ class SearchController extends Controller {
     /**
      * Process the mac address search
      *
-     * @param   array $vis virtual interfaces list
+     * @param   array $is virtual interfaces list
+     *
      * @return  array array composed of the the result (customer) and the interface (vlan interfaces)
      */
     private function processMACSearch( array $is = [] ) {
@@ -197,6 +197,7 @@ class SearchController extends Controller {
      *
      * @param array $discovered
      * @param array $configured
+     *
      * @return array
      */
     private function mergeMacs( array $discovered, array $configured ): array {

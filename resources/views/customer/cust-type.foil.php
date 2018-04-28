@@ -1,13 +1,13 @@
 <?php
 /** @var Foil\Template\Template $t */
 ?>
-<?php if( $t->cust->getType() == \Entities\Customer::TYPE_ASSOCIATE ): ?>
+<?php if( $t->cust->isTypeAssociate() ): ?>
     <span class="label lb-sm label-warning">ASSOCIATE MEMBER</span>
-<?php elseif( $t->cust->getType() == \Entities\Customer::TYPE_PROBONO ): ?>
+<?php elseif( $t->cust->isTypeProBono() ): ?>
     <span class="label lb-sm label-info">PROBONO MEMBER</span>
-<?php elseif( $t->cust->getType() == \Entities\Customer::TYPE_INTERNAL ): ?>
+<?php elseif( $t->cust->isTypeInternal() ): ?>
     <span class="label lb-sm label-primary">INTERNAL INFRASTRUCTURE</span>
-<?php elseif( $t->cust->getType() == \Entities\Customer::TYPE_FULL ): ?>
+<?php elseif( $t->cust->isTypeFull() == \Entities\Customer::TYPE_FULL ): ?>
     <span class="label lb-sm label-success">FULL MEMBER</span>
 <?php else: ?>
     <span class="label">UNKNOWN MEMBER TYPE</span>
@@ -16,7 +16,7 @@
 <?php if( $t->cust->hasLeft() ): ?>
     <span class="label lb-sm label-danger">ACCOUNT CLOSED</span>
 <?php endif; ?>
-<?php if( $t->resellerMode ): ?>
+<?php if( $t->resellerMode() ): ?>
     <?php if( $t->cust->getIsReseller() ): ?>
         <span class="label lb-sm label-default">RESELLER</span>
     <?php elseif( $t->cust->getReseller() ): ?>

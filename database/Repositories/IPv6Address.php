@@ -121,8 +121,11 @@ class IPv6Address extends EntityRepository
      *
      * @param IPToolsNetwork $network
      * @param bool           $decimal
-     * @param bool           $nooverflow
+     * @param bool           $overflow
+     *
      * @return array Generated addresses (string[])
+     *
+     * @throws
      */
     public static function generateSequentialAddresses( IPToolsNetwork $network, bool $decimal = false, bool $overflow = true ): array
     {

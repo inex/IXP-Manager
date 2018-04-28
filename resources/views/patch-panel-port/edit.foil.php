@@ -1,7 +1,7 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= route ( 'patch-panel/list' )?>">Patch Panel Port</a>
+    <a href="<?= route ( 'patch-panel-port/list' )?>">Patch Panel Port</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -35,7 +35,7 @@
 <?= $t->alerts() ?>
 
 <?= Former::open()->method( 'POST' )
-    ->action( action ('PatchPanel\PatchPanelPortController@store' ) )
+    ->action( route( 'patch-panel-port@store' ) )
     ->customWidthClass( 'col-sm-3' )
     ->addClass( 'col-md-10' );
 ?>
@@ -93,6 +93,7 @@
 
     <?= Former::checkbox( 'duplex' )
         ->label( 'Duplex connection?' )
+        ->value( 1 )
         ->blockHelp('Typically fibre connections are <em>duplex connections</em> in that they use two ports. If this is the '
             . 'case, check this and select the partner port. <em>Duplex ports should generally start with an odd number and '
             . 'have an even numbered partner port (assuming port numbering starts from 1).</em>' );

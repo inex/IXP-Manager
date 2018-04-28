@@ -75,26 +75,31 @@ class SflowReceiverController extends Common
      * @return View
      */
     public function edit( int $id = null, int $viid = null )  {
-        $sflr = false;
-        /** @var SflowReceiverEntity $sflr */
-        if( $id && !( $sflr = D2EM::getRepository( SflowReceiverEntity::class )->find( $id ) ) ) {
-            abort(404);
-        }
+        $sflr = $vi = false;
 
-        $vi = false;
         /** @var VirtualInterfaceEntity $vi */
         if( $viid && !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $viid ) ) ) {
             AlertContainer::push( 'You need a containing virtual interface before you add a sflow receiver', Alert::DANGER );
             return Redirect::back();
         }
 
-        if( $sflr ) {
+
+        /** @var SflowReceiverEntity $sflr */
+        if( $id ) {
+            if( !( $sflr = D2EM::getRepository( SflowReceiverEntity::class )->find( $id ) ) ) {
+                abort(404);
+            }
+
+            $old = request()->old();
+
             // fill the form with sflow receiver data
             Former::populate([
-                'dst_ip'                      => $sflr->getDstIp() ,
-                'dst_port'                    => $sflr->getDstPort() ,
+                'dst_ip'                      => array_key_exists( 'dst_ip',        $old    ) ? $old['dst_ip']          :  $sflr->getDstIp() ,
+                'dst_port'                    => array_key_exists( 'dst_port',      $old    ) ? $old['dst_port']        :  $sflr->getDstPort() ,
             ]);
+
         }
+
 
         return view( 'interfaces/sflow-receiver/edit' )->with([
             'sflr'  => $sflr ? $sflr : false,
@@ -109,6 +114,8 @@ class SflowReceiverController extends Common
      * @param   StoreSflowReceiver $request instance of the current HTTP request
      *
      * @return  RedirectResponse
+     *
+     * @throws
      */
     public function store( StoreSflowReceiver $request ): RedirectResponse {
 
@@ -123,11 +130,9 @@ class SflowReceiverController extends Common
             D2EM::persist( $sflr );
         }
 
-        $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $request->input( 'viid' ) ); /** @var VirtualInterfaceEntity $vi */
-
-        $sflr->setVirtualInterface( $vi );
-        $sflr->setDstIp( $request->input( 'dst_ip' ) );
-        $sflr->setDstPort( $request->input( 'dst_port' ) );
+        $sflr->setVirtualInterface( D2EM::getRepository( VirtualInterfaceEntity::class )->find( $request->input( 'viid' ) ) );
+        $sflr->setDstIp(            $request->input( 'dst_ip' ) );
+        $sflr->setDstPort(          $request->input( 'dst_port' ) );
 
         D2EM::flush();
 
@@ -140,7 +145,10 @@ class SflowReceiverController extends Common
      * Delete a Sflow receiver
      *
      * @param   int $id ID of the SflowReceiver
+     *
      * @return  JsonResponse
+     *
+     * @throws
      */
     public function delete( int $id ): JsonResponse{
         /** @var SflowReceiverEntity $sflr */

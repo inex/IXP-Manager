@@ -34,11 +34,14 @@
     ->label( '&nbsp;' )
     ->text( 'IPv6 Ping Allowed / Possible' )
     ->blockHelp( "IXP's typically monitor customer interfaces for reachability / latency using pings. If the customer has asked you not to do this, uncheck this box." )
+    ->value( 1 )
 ?>
 
 <?= Former::checkbox( 'ipv6-monitor-rcbgp' )
     ->label( '&nbsp;' )
     ->text( 'IPv6 Monitor Route Collector BGP' )
     ->blockHelp( "IXP's often monitor a customer's route collector BGP session. If this is not possible / unsuitable for this customer, uncheck this box." )
+    ->value( 1 )
+
 ?>
 

@@ -49,6 +49,11 @@ $( 'document' ).ready( function(){
         $( "#instructions-alert").toggle();
     });
 
+    $( ".help-btn" ).click( function() {
+        $( "p.help-block" ).toggle();
+        $( "#instructions-alert").toggle();
+    });
+
 
 });
 
