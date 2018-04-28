@@ -405,11 +405,7 @@
                                             <td>
                                                 <?php if ( $p->getPatchPanel() ): ?>
                                                     <?= $t->ee( $p->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?>
-
-                                                <?php else: ?>
-
                                                 <?php endif; ?>
-
                                             </td>
                                         </tr>
                                     </table>

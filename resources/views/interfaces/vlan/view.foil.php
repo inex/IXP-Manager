@@ -30,11 +30,12 @@ $this->layout( 'layouts/ixpv4' )
 <?php $this->section( 'content' ) ?>
 <div class="row">
 
+
     <div class="col-sm-12">
 
         <div class="panel panel-default">
             <div class="panel-heading">
-                Informations
+                VLAN Interface Details
             </div>
             <div class="panel-body">
                 <div class="col-xs-6">
@@ -42,7 +43,7 @@ $this->layout( 'layouts/ixpv4' )
                         <tr>
                             <td>
                                 <b>
-                                    Customer :
+                                    Customer:
                                 </b>
                             </td>
                             <td>
@@ -54,7 +55,7 @@ $this->layout( 'layouts/ixpv4' )
                         <tr>
                             <td>
                                 <b>
-                                    VLAN Name :
+                                    VLAN Name:
                                 </b>
                             </td>
                             <td>
@@ -66,21 +67,21 @@ $this->layout( 'layouts/ixpv4' )
                         <tr>
                             <td>
                                 <b>
-                                    IPv4 :
+                                    IPv4:
                                 </b>
                             </td>
                             <td>
-                                <?= $t->vli->getIpv4enabled() ? '<span class="label label-success">Enable</span>' : '<span class="label label-danger">Disable</span>' ?>
+                                <?= $t->vli->getIpv4enabled() ? '<span class="label label-success">Enabled</span>' : '<span class="label label-danger">Disabled</span>' ?>
                                 <?php if( $t->vli->getIpv4enabled() ): ?>
-                                    <br/>
+                                    <br><br>
                                     <?= $t->ee( $t->vli->getIPv4Address()->getAddress() ) ?>
-                                    <br/>
+                                    <br>
                                     <?= $t->ee( $t->vli->getIPv4HostName() ) ?>
-                                    <br/>
-                                    <?= $t->vli->getIPv4CanPing() ? '<span class="label label-success">Canping</span>' : '' ?>
-                                    <br/>
-                                    <?= $t->vli->getIpv4monitorrcbgp() ? '<span class="label label-success">Monitor rcbgp</span>' : '' ?>
-                                    <br/>
+                                    <br>
+                                    <?= $t->vli->getIPv4CanPing() ? '<span class="label label-success">Can Ping</span>' : '' ?>
+                                    &nbsp;
+                                    <?= $t->vli->getIpv4monitorrcbgp() ? '<span class="label label-success">Monitor RC BGP</span>' : '' ?>
+                                    <br>
                                 <?php endif ?>
                                 <br/>
                             </td>
@@ -88,33 +89,45 @@ $this->layout( 'layouts/ixpv4' )
                         <tr>
                             <td>
                                 <b>
-                                    Secret key IPv4:
+                                    BGP IPv4 MD5:
                                 </b>
                             </td>
                             <td>
-                                <?= $t->ee( $t->vli->getIpv4bgpmd5secret() ) ?>
+                                <code><?= $t->ee( $t->vli->getIpv4bgpmd5secret() ) ?></code>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <b>
-                                    Monitoring Enabled via IPv4 ICMP :
-                                </b>
-                            </td>
-                            <td>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>
-                                    Route Server Client :
+                                    Route Server Client:
                                 </b>
                             </td>
                             <td>
                                 <?= $t->vli->getRsclient() ? '<i class="glyphicon glyphicon-ok"></i>' : '<i class="glyphicon glyphicon-remove"></i>'   ?>
                             </td>
                         </tr>
+                        <?php if( $t->vli->getRsClient() ): ?>
+                            <tr>
+                                <td>
+                                    <b>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;IRRDB Filtering:
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $t->vli->getIrrdbfilter() ? '<i class="glyphicon glyphicon-ok"></i>' : '<i class="glyphicon glyphicon-remove"></i>' ?>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <b>
+                                        &nbsp;&nbsp;&nbsp;&nbsp;Allow More Specifics:
+                                    </b>
+                                </td>
+                                <td>
+                                    <?= $t->vli->getRsmorespecifics() ? '<i class="glyphicon glyphicon-ok"></i>' : '<i class="glyphicon glyphicon-remove"></i>' ?>
+                                </td>
+                            </tr>
+                        <?php endif; ?>
                         <tr>
                             <td>
                                 <b>
@@ -133,17 +146,17 @@ $this->layout( 'layouts/ixpv4' )
                         <tr>
                             <td>
                                 <b>
-                                    Multicast :
+                                    Multicast:
                                 </b>
                             </td>
                             <td>
-                                <?= $t->vli->getMcastenabled() ? '<span class="label label-success">Enable</span>' : '<span class="label label-danger">Disable</span>' ?>
+                                <?= $t->vli->getMcastenabled() ? '<span class="label label-success">Enabled</span>' : '<span class="label label-danger">Disabled</span>' ?>
                             </td>
                         </tr>
                         <tr>
                             <td>
                                 <b>
-                                    Max BGP Prefixes :
+                                    Max BGP Prefixes:
                                 </b>
                             </td>
                             <td>
@@ -153,21 +166,21 @@ $this->layout( 'layouts/ixpv4' )
                         <tr>
                             <td>
                                 <b>
-                                    IPv6 :
+                                    IPv6:
                                 </b>
                             </td>
                             <td>
-                                <?= $t->vli->getIpv6enabled() ? '<span class="label label-success">Enable</span>' : '<span class="label label-danger">Disable</span>' ?>
+                                <?= $t->vli->getIpv6enabled() ? '<span class="label label-success">Enabled</span>' : '<span class="label label-danger">Disabled</span>' ?>
                                 <?php if( $t->vli->getIpv6enabled() ): ?>
-                                    <br/>
+                                    <br><br>
                                     <?= $t->ee( $t->vli->getIPv6Address()->getAddress() ) ?>
-                                    <br/>
+                                    <br>
                                     <?= $t->ee( $t->vli->getIPv6HostName() )?>
-                                    <br/>
-                                    <?= $t->vli->getIPv6CanPing() ? '<span class="label label-success">Canping</span>' : '' ?>
-                                    <br/>
-                                    <?= $t->vli->getIpv6monitorrcbgp() ? '<span class="label label-success">Monitor rcbgp</span>' : '' ?>
-                                    <br/>
+                                    <br>
+                                    <?= $t->vli->getIPv6CanPing() ? '<span class="label label-success">Can Ping</span>' : '' ?>
+                                    &nbsp;
+                                    <?= $t->vli->getIpv6monitorrcbgp() ? '<span class="label label-success">Monitor RC BGP</span>' : '' ?>
+                                    <br>
                                 <?php endif; ?>
                                 <br/>
                             </td>
@@ -175,28 +188,18 @@ $this->layout( 'layouts/ixpv4' )
                         <tr>
                             <td>
                                 <b>
-                                    Secret key IPv6 :
+                                    BGP IPv6 MD5:
                                 </b>
                             </td>
                             <td>
-                                <?= $t->ee( $t->vli->getIpv6bgpmd5secret() )?>
+                                <code><?= $t->ee( $t->vli->getIpv6bgpmd5secret() )?></code>
                             </td>
                         </tr>
 
                         <tr>
                             <td>
                                 <b>
-                                    Monitoring Enabled via IPv6 ICMP :
-                                </b>
-                            </td>
-                            <td>
-
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>
-                                    Busy Host?
+                                    Busy Host:
                                 </b>
                             </td>
                             <td>
@@ -206,7 +209,7 @@ $this->layout( 'layouts/ixpv4' )
                         <tr>
                             <td>
                                 <b>
-                                    AS112 Client :
+                                    AS112 Client:
                                 </b>
                             </td>
                             <td>

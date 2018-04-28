@@ -227,11 +227,9 @@
                                     <?php if( count( $pvlans[ $vli->getVlan()->getId() ][ 'members'] ) == 1 ): ?>
                                         <em>None - single member</em>
                                     <?php else: ?>
-                                        <div class="well" style="overflow-y: scroll; height:400px;">
-                                            <?php foreach( $pvlans[ $vli->getVlan()->getId() ][ 'members'] as $m ): ?>
-                                                <?= $t->ee( $m->getAbbreviatedName() )?> <br />
-                                            <?php endforeach; ?>
-                                        </div>
+                                        <?php foreach( $pvlans[ $vli->getVlan()->getId() ][ 'members'] as $m ): ?>
+                                            <?= $t->ee( $m->getAbbreviatedName() )?> <br />
+                                        <?php endforeach; ?>
                                     <?php endif; ?>
                                 </td>
                             </tr>
