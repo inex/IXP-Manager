@@ -26,10 +26,6 @@
 
         IXP Port Graphs :: <?= $t->c->getFormattedName() ?>
 
-        <div class="pull-right">
-            <a class="btn btn-default" href="<?= route( 'statistics@member', [ 'id' => $t->c->GetId() ] ) ?>">All Ports</a>
-        </div>
-
     <?php endif; ?>
 
 <?php $this->append() ?>
@@ -58,8 +54,8 @@
 
         <nav class="navbar navbar-default">
 
-            <div class="">
-
+            <div class="col-sm-10">
+            
                 <div class="navbar-header">
                     <a class="navbar-brand" href="">Graph Options:</a>
                 </div>
@@ -77,6 +73,11 @@
 
                 </form>
 
+            </div>
+            <div class="col-sm-2">
+            <form class="navbar-form navbar-right form-inline">
+                <a class="btn btn-default pull-right" href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>?category=<?= $t->graph->category() ?>">All Ports</a>
+            </form>
             </div>
         </nav>
 
