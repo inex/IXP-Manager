@@ -24,14 +24,14 @@ Route::get( 'test', 'PublicController@test' );
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // IX-F Member List Export
 
-Route::get('member-export/ixf',            'MemberExportController@ixf');
+Route::get('member-export/ixf',            'MemberExportController@ixf')->name('ixf-member-export');
 Route::get('member-export/ixf/{version}',  'MemberExportController@ixf');
 
 
 Route::get( 'peeringdb/ix', function() {
     return response()->json( Cache::remember('peeringdb/ix', 120, function() {
         $ixps = [];
-        if( $ixs = file_get_contents('https://www.peeringdb.com/api/ix') ) {
+        if( $ixs = file_get_contents(config( 'ixp_api.peeringDB.ixp_api' )) ) {
             foreach( json_decode($ixs)->data as $ix ) {
                 $ixps[$ix->id] = [
                     'pdb_id' => $ix->id,
@@ -50,11 +50,11 @@ Route::get( 'peeringdb/ix', function() {
 Route::get( 'ix-f/ixp', function() {
     return response()->json( Cache::remember('ix-f/ixp', 120, function() {
             $ixps = [];
-            if( $ixs = file_get_contents('https://db.ix-f.net/api/ixp') ) {
-                foreach( json_decode($ixs)->data as $ix ) {
+            if( $ixs = file_get_contents(config('ixp_api.IXPDB.ixp_api')) ) {
+                foreach( json_decode($ixs) as $ix ) {
                     $ixps[$ix->id] = [
                         'ixf_id' => $ix->id,
-                        'name' => $ix->short_name,
+                        'name' => $ix->name,
                         'city' => $ix->city,
                         'country' => $ix->country,
                     ];
@@ -69,7 +69,7 @@ Route::get( 'ix-f/ixp', function() {
 Route::get( 'peering-db/fac', function() {
     return response()->json( Cache::remember('peering-db/fac', 120, function() {
         $pdbs = [];
-        if( $pdb = file_get_contents('https://api.peeringdb.com/api/fac') ) {
+        if( $pdb = file_get_contents(config( 'ixp_api.peeringDB.fac_api' )) ) {
             foreach( json_decode( $pdb )->data as $db ) {
                 $pdbs[ $db->id ] = [
                     'id' => $db->id,

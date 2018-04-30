@@ -56,8 +56,20 @@ return [
         'password'        => env( 'IXP_API_PEERING_DB_PASSWORD', null ),
         // you should not need to change this. The %s is either "$un:$pw@" or an empty string
         'url'             => env( 'IXP_API_PEERING_DB_URL',      "https://%speeringdb.com/api" ),
+
+        'fac_api'         => env( 'IXP_API_PEERING_DB_FAC_URL',  "https://api.peeringdb.com/api/fac" ),
+        'ixp_api'         => env( 'IXP_API_PEERING_DB_IXP_URL',  "https://api.peeringdb.com/api/ix"  ),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | IXP DB
+    |--------------------------------------------------------------------------
+    |
+    */
+    'IXPDB' => [
+        'ixp_api'         => env( 'IXP_API_IXPDB_IXP_URL',  "https://api.ixpdb.net/v1/provider/list"  ),
+    ],
 
 
 
