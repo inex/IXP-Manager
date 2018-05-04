@@ -160,7 +160,7 @@ class IxpController extends Doctrine2Frontend {
      * @inheritdoc
      */
     protected function postStoreRedirect() {
-        return 'infrastructure@list';
+        return route( 'infrastructure@list' );
     }
 
     /**

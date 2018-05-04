@@ -120,7 +120,8 @@ abstract class Doctrine2Frontend extends Controller {
         'SPRINTF'           => 'sprintf',
         'REPLACE'           => 'replace',
         'XLATE'             => 'xlate',
-        'YES_NO'            => 'yes_no'
+        'YES_NO'            => 'yes_no',
+        'PARSDOWN'          => 'parsdown',
     ];
 
 
@@ -221,13 +222,14 @@ abstract class Doctrine2Frontend extends Controller {
     {
         $this->data[ 'rows' ] = $this->listGetData();
 
-        $this->data[ 'view' ][ 'listEmptyMessage'] = $this->resolveTemplate( 'list-empty-message', false );
-        $this->data[ 'view' ][ 'listHeadOverride'] = $this->resolveTemplate( 'list-head-override', false );
-        $this->data[ 'view' ][ 'listRowOverride']  = $this->resolveTemplate( 'list-row-override',  false );
-        $this->data[ 'view' ][ 'listPreamble']     = $this->resolveTemplate( 'list-preamble',      false );
-        $this->data[ 'view' ][ 'listPostamble']    = $this->resolveTemplate( 'list-postamble',     false );
-        $this->data[ 'view' ][ 'listRowMenu']      = $this->resolveTemplate( 'list-row-menu',      false );
-        $this->data[ 'view' ][ 'listScript' ]      = $this->resolveTemplate( 'js/list' );
+        $this->data[ 'view' ][ 'listEmptyMessage']      = $this->resolveTemplate( 'list-empty-message', false );
+        $this->data[ 'view' ][ 'listHeadOverride']      = $this->resolveTemplate( 'list-head-override', false );
+        $this->data[ 'view' ][ 'listRowOverride']       = $this->resolveTemplate( 'list-row-override',  false );
+        $this->data[ 'view' ][ 'listPreamble']          = $this->resolveTemplate( 'list-preamble',      false );
+        $this->data[ 'view' ][ 'listPostamble']         = $this->resolveTemplate( 'list-postamble',     false );
+        $this->data[ 'view' ][ 'listRowMenu']           = $this->resolveTemplate( 'list-row-menu',      false );
+        $this->data[ 'view' ][ 'pageHeaderPreamble']    = $this->resolveTemplate( 'page-header-preamble',      false );
+        $this->data[ 'view' ][ 'listScript' ]           = $this->resolveTemplate( 'js/list' );
 
         $this->preList();
 
@@ -350,7 +352,7 @@ abstract class Doctrine2Frontend extends Controller {
             . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
         AlertContainer::push(  $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
 
-        return redirect()->route( $this->postStoreRedirect() ?? self::route_prefix() . '@' . 'list' );
+        return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
     }
 
     /**

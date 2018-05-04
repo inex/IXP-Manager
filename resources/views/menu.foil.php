@@ -106,6 +106,18 @@
 
                 </li>
 
+                <li <?php if( $t->controller == 'ConsoleServerController' ):?> class="active" <?php endif;?> >
+                    <a href="<?= route('console-server@list' ) ?>">Console Servers </a>
+
+                    <?php if( $t->controller == 'ConsoleServerController' || $t->controller == 'ConsoleServerConnectionController' ):?>
+                        <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection', false ) ): ?>
+                            <li class="sub-menu <?php if( $t->controller == 'ConsoleServerConnectionController' ):?> active <?php endif;?>" >
+                                <a href="<?= route('console-server-connection@list' ) ?>">Console Server Connections</a>
+                            </li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                </li>
 
                 <li>
                     <a href="<?= url('/switch/list') ?>">Switches</a>
@@ -165,12 +177,6 @@
                 <li <?php if( $t->controller == 'VendorController' ):?> class="active" <?php endif;?> >
                     <a href="<?= route('vendor@list' ) ?>">Vendors</a>
                 </li>
-
-                <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection', false ) ): ?>
-                    <li <?php if( $t->controller == 'ConsoleServerConnectionController' ):?> class="active" <?php endif;?>>
-                        <a href="<?= route('console-server-connection@list' ) ?>">Console Server Connections</a>
-                    </li>
-                <?php endif; ?>
 
                 <li <?php if( $t->controller == 'VlanController' && !strpos( strtolower($t->action) , 'private') ):?> class="active" <?php endif;?> >
                     <a href="<?= route('vlan@list' ) ?>">VLANs</a>

@@ -45,4 +45,17 @@ class Vendor extends EntityRepository
 
         return $query->getArrayResult();
     }
+
+    /**
+     * Return an array of all vendors names where the array key is the vendor id.
+     * @return array An array of all vendors names with the vendor id as the key.
+     */
+    public function getAsArray(): array {
+        $vendors = [];
+        foreach( self::findAll() as $vendor ) {
+            $vendors[ $vendor->getId() ] = $vendor->getName();
+        }
+
+        return $vendors;
+    }
 }
