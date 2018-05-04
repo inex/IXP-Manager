@@ -2,7 +2,33 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
+/*
+ * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+
+use Entities\{
+    ConsoleServer   as ConsoleServerEntity,
+    Customer        as CustomerEntity,
+    Switcher        as SwitcherEntity
+};
 
 /**
  * Entities\ConsoleServerConnection
@@ -55,14 +81,19 @@ class ConsoleServerConnection
     protected $id;
 
     /**
-     * @var Entities\Customer
+     * @var \Entities\Customer
      */
     protected $Customer;
 
     /**
-     * @var Entities\Switcher
+     * @var ConsoleServer
      */
-    protected $Switcher;
+    protected $consoleServer;
+
+    /**
+     * @var integer $switchid
+     */
+    protected $switchid;
 
 
     /**
@@ -262,10 +293,10 @@ class ConsoleServerConnection
     /**
      * Set Customer
      *
-     * @param \Entities\Customer $customer
+     * @param CustomerEntity $customer
      * @return ConsoleServerConnection
      */
-    public function setCustomer(\Entities\Customer $customer = null)
+    public function setCustomer( CustomerEntity $customer = null)
     {
         $this->Customer = $customer;
     
@@ -283,25 +314,73 @@ class ConsoleServerConnection
     }
 
     /**
-     * Set Switcher
+     * Set console server
      *
-     * @param \Entities\Switcher $switcher
+     * @param ConsoleServerEntity $consoleServer
      * @return ConsoleServerConnection
      */
-    public function setSwitcher(\Entities\Switcher $switcher = null)
+    public function setConsoleServer( ConsoleServerEntity $consoleServer = null)
     {
-        $this->Switcher = $switcher;
-    
+        $this->consoleServer = $consoleServer;
+
+        return $this;
+    }
+
+    /**
+     * Get Console Server
+     *
+     * @return ConsoleServer
+     */
+    public function getConsoleServer()
+    {
+        return $this->consoleServer;
+    }
+
+    /**
+     * Set Switcher
+     *
+     * @param SwitcherEntity $switcher
+     * @return ConsoleServerConnection
+     */
+    public function setSwitcher( SwitcherEntity $switcher = null)
+    {
+        $this->setSwitchId( $switcher != null ? $switcher->getId() : null );
         return $this;
     }
 
     /**
      * Get Switcher
      *
-     * @return \Entities\Switcher
+     * @return void
      */
     public function getSwitcher()
     {
-        return $this->Switcher;
+        // yann -> D2EM get Switcher for $this->>getSwitchId()
+        die();
+        //return $this->Switcher;
     }
+
+    /**
+     * Get switch id
+     *
+     * @return integer
+     */
+    public function getSwitchId()
+    {
+        return $this->switchid;
+    }
+
+    /**
+     * Set switch id
+     *
+     * @param int $switchid
+     * @return ConsoleServerConnection
+     */
+    public function setSwitchId( $switchid )
+    {
+        $this->switchid = $switchid;
+        return $this;
+    }
+
+
 }

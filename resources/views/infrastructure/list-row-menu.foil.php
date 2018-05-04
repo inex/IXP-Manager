@@ -1,4 +1,4 @@
-<div class="btn-group">
+ <div class="btn-group">
 
     <a class="btn btn-sm btn-default" href="<?= route($t->feParams->route_prefix . '@view' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
 

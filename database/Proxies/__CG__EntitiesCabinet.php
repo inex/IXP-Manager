@@ -64,10 +64,10 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'CustomerEquipment', 'Location', 'u_counts_from', 'cololocation', '' . "\0" . 'Entities\\Cabinet' . "\0" . 'patchPanels'];
+            return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'consoleServers', 'CustomerEquipment', 'Location', 'u_counts_from', 'cololocation', '' . "\0" . 'Entities\\Cabinet' . "\0" . 'patchPanels'];
         }
 
-        return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'CustomerEquipment', 'Location', 'u_counts_from', 'cololocation', '' . "\0" . 'Entities\\Cabinet' . "\0" . 'patchPanels'];
+        return ['__isInitialized__', 'name', 'colocation', 'height', 'type', 'notes', 'id', 'Switches', 'consoleServers', 'CustomerEquipment', 'Location', 'u_counts_from', 'cololocation', '' . "\0" . 'Entities\\Cabinet' . "\0" . 'patchPanels'];
     }
 
     /**
@@ -362,6 +362,39 @@ class Cabinet extends \Entities\Cabinet implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitches', []);
 
         return parent::getSwitches();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addConsoleServer(\Entities\ConsoleServer $consoleServer)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addConsoleServer', [$consoleServer]);
+
+        return parent::addConsoleServer($consoleServer);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeConsoleServer(\Entities\ConsoleServer $consoleServer)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeConsoleServer', [$consoleServer]);
+
+        return parent::removeConsoleServer($consoleServer);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getConsoleServers()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getConsoleServers', []);
+
+        return parent::getConsoleServers();
     }
 
     /**

@@ -62,6 +62,12 @@ class Cabinet
     /**
      * @var ArrayCollection
      */
+    protected $consoleServers;
+
+
+    /**
+     * @var ArrayCollection
+     */
     protected $CustomerEquipment;
 
     /**
@@ -80,6 +86,7 @@ class Cabinet
     public function __construct()
     {
         $this->Switches = new ArrayCollection();
+        $this->consoleServers = new ArrayCollection();
         $this->CustomerEquipment = new ArrayCollection();
     }
     
@@ -269,6 +276,45 @@ class Cabinet
     {
         return $this->Switches;
     }
+
+
+
+
+    /**
+     * Add consoleServer
+     *
+     * @param ConsoleServer $consoleServer
+     * @return Cabinet
+     */
+    public function addConsoleServer(ConsoleServer $consoleServer)
+    {
+        $this->consoleServers[] = $consoleServer;
+
+        return $this;
+    }
+
+    /**
+     * Remove consoleServer
+     *
+     * @param ConsoleServer $consoleServer
+     */
+    public function removeConsoleServer(ConsoleServer $consoleServer)
+    {
+        $this->consoleServers->removeElement($consoleServer);
+    }
+
+    /**
+     * Get consoleServers
+     *
+     * @return ArrayCollection
+     */
+    public function getConsoleServers()
+    {
+        return $this->consoleServers;
+    }
+
+
+
 
     /**
      * Add CustomerEquipment
