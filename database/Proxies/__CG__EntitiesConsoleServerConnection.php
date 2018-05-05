@@ -64,10 +64,10 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'description', 'port', 'speed', 'parity', 'stopbits', 'flowcontrol', 'autobaud', 'notes', 'id', 'Customer', 'Switcher'];
+            return ['__isInitialized__', 'description', 'port', 'speed', 'parity', 'stopbits', 'flowcontrol', 'autobaud', 'notes', 'id', 'Customer', 'consoleServer', 'switchid'];
         }
 
-        return ['__isInitialized__', 'description', 'port', 'speed', 'parity', 'stopbits', 'flowcontrol', 'autobaud', 'notes', 'id', 'Customer', 'Switcher'];
+        return ['__isInitialized__', 'description', 'port', 'speed', 'parity', 'stopbits', 'flowcontrol', 'autobaud', 'notes', 'id', 'Customer', 'consoleServer', 'switchid'];
     }
 
     /**
@@ -389,6 +389,28 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
     /**
      * {@inheritDoc}
      */
+    public function setConsoleServer(\Entities\ConsoleServer $consoleServer = NULL)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setConsoleServer', [$consoleServer]);
+
+        return parent::setConsoleServer($consoleServer);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getConsoleServer()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getConsoleServer', []);
+
+        return parent::getConsoleServer();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setSwitcher(\Entities\Switcher $switcher = NULL)
     {
 
@@ -406,6 +428,28 @@ class ConsoleServerConnection extends \Entities\ConsoleServerConnection implemen
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitcher', []);
 
         return parent::getSwitcher();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSwitchId()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitchId', []);
+
+        return parent::getSwitchId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setSwitchId($switchid)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSwitchId', [$switchid]);
+
+        return parent::setSwitchId($switchid);
     }
 
 }

@@ -7,8 +7,12 @@
 
         <?php /* PLEASE LEAVE THIS SOMEWHERE!  IT'S ONLY FAIR INEX GETS SOME CREDIT :D */ ?>
         <li class="divider"></li>
+        <li class="dropdown-header">Official IXP Manager Sites</li>
         <li>
-            <a href="http://www.ixpmanager.org/" target="_blank">About</a>
+            <a href="https://www.ixpmanager.org/" target="_blank">Homepage</a>
+        </li>
+        <li>
+            <a href="https://docs.ixpmanager.org/" target="_blank">Documentation</a>
         </li>
     </ul>
 </li>

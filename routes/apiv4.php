@@ -46,7 +46,6 @@ Route::get( 'peeringdb/ix', function() {
     );
 })->name('api-v4-peeringdb-ixs');
 
-
 Route::get( 'ix-f/ixp', function() {
     return response()->json( Cache::remember('ix-f/ixp', 120, function() {
             $ixps = [];
@@ -64,7 +63,6 @@ Route::get( 'ix-f/ixp', function() {
         })
     );
 })->name('api-v4-ixf-ixs');
-
 
 Route::get( 'peering-db/fac', function() {
     return response()->json( Cache::remember('peering-db/fac', 120, function() {

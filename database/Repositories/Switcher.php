@@ -700,4 +700,20 @@ class Switcher extends EntityRepository
 
         return $listVlan;
     }
+
+    /**
+     * Returns all the Console Server Connection for the given switch ID
+     *
+     * @deprecated     This will be removed before v5 is released. Just used
+     *                 for console server migration.
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getConsoleServerConnections( int $id ): array {
+        /** @noinspection SqlNoDataSourceInspection */
+        return $this->getEntityManager()->createQuery(
+            "SELECT csc FROM Entities\ConsoleServerConnection csc
+                  WHERE csc.switchid = {$id}"
+            )->getResult();
+    }
 }

@@ -2434,4 +2434,9 @@ class Customer
         return false;
     }
 
+
+    public static function resolveGivenType( int $t ) {
+        return self::$CUST_TYPES_TEXT[ $t ] ?? 'Unknwon';
+    }
+
 }

@@ -4,6 +4,7 @@
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>
+    <field name="switchid" type="integer" nullable="true"/>
     <field name="description" type="string" length="255" nullable="true"/>
     <field name="port" type="string" length="255" nullable="true"/>
     <field name="speed" type="integer" nullable="true"/>
@@ -12,14 +13,17 @@
     <field name="flowcontrol" type="integer" nullable="true"/>
     <field name="autobaud" type="boolean" nullable="true"/>
     <field name="notes" type="text" nullable="true"/>
+    <unique-constraints>
+      <unique-constraint name="console_server_port_uniq" columns="console_server_id,port"/>
+    </unique-constraints>
     <many-to-one field="Customer" target-entity="Entities\Customer" inversed-by="ConsoleServerConnections">
       <join-columns>
         <join-column name="custid" referenced-column-name="id" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
-    <many-to-one field="Switcher" target-entity="Entities\Switcher" inversed-by="ConsoleServerConnections">
+    <many-to-one field="consoleServer" target-entity="Entities\ConsoleServer" inversed-by="consoleServerConnections">
       <join-columns>
-        <join-column name="switchid" referenced-column-name="id"/>
+        <join-column name="console_server_id" referenced-column-name="id"/>
       </join-columns>
     </many-to-one>
   </entity>

@@ -18,5 +18,6 @@
     <one-to-many field="Switches" target-entity="Entities\Switcher" mapped-by="Cabinet"/>
     <one-to-many field="CustomerEquipment" target-entity="Entities\CustomerEquipment" mapped-by="Cabinet"/>
     <one-to-many field="patchPanels" target-entity="Entities\PatchPanel" mapped-by="cabinet"/>
+    <one-to-many field="consoleServers" target-entity="Entities\ConsoleServer" mapped-by="cabinet"/>
   </entity>
 </doctrine-mapping>
