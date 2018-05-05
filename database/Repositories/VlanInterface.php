@@ -696,4 +696,30 @@ class VlanInterface extends EntityRepository
         );
     }
 
+    /**
+     * Get statistics of ipv6 enabled / total on a per VLAN basis
+     *
+     * Returns an array of objects such as:
+     *
+     *     [
+     *         {
+     *             +"vlanname": "Peering VLAN #1",
+     *             ++"overall_count": 60,
+     *             ++"ipv6_count": "54",
+     *         }
+     *     ]
+     *
+     * @return array
+     */
+    public function getIPv6UsagePerVlan(): array
+    {
+        return DB::select('SELECT v.name AS vlanname, COUNT(vli.id) AS overall_count, SUM(vli.ipv6enabled = 1) AS ipv6_count
+            FROM `vlaninterface` AS vli
+            LEFT JOIN virtualinterface AS vi ON vli.virtualinterfaceid = vi.id
+            LEFT JOIN cust AS c ON vi.custid = c.id
+            LEFT JOIN vlan AS v ON vli.vlanid = v.id
+            WHERE v.`private` = 0 AND c.type IN (1,4)
+            GROUP BY vlanname'
+        );
+    }
 }

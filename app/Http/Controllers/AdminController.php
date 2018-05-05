@@ -147,6 +147,7 @@ class AdminController extends Controller
             $cTypes['byIxp']            = $byIxp;
 
             $cTypes['rsUsage']          = D2EM::getRepository( VlanInterfaceEntity::class )->getRsClientUsagePerVlan();
+            $cTypes['ipv6Usage']        = D2EM::getRepository( VlanInterfaceEntity::class )->getIPv6UsagePerVlan();
 
             Cache::put( 'admin_ctypes', $cTypes, 3600 );
         }
