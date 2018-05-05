@@ -17,7 +17,7 @@
         ->placeholder( 'Select a customer' )
         ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
         ->addClass( 'chzn-select' )
-        ->blockHelp( "This field exists as you may colocate some equipment for your customers." );
+        ->blockHelp( "This field exists as you may co-locate some equipment for your customers. Ordinarily, just pick your IXP customer." );
     ?>
 
     <?= Former::select( 'consoleserverid' )
@@ -66,11 +66,9 @@
     <div class="col-lg-offset-2 col-sm-offset-2 col-sm-8">
 
         <ul class="nav nav-tabs">
-            <li role="presentation" class="active"><a id="tab-link-body" href="#body">Body</a></li>
+            <li role="presentation" class="active"><a id="tab-link-body" href="#body">Notes</a></li>
             <li role="presentation"><a  id="tab-link-preview" href="#preview">Preview</a></li>
         </ul>
-
-        <br>
 
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="body">
