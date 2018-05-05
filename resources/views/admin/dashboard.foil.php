@@ -28,10 +28,10 @@
                     <?php foreach( $t->stats[ "types" ] as $type => $count  ): ?>
                         <tr>
                             <td>
-                                <?= \Entities\Customer::$CUST_TYPES_TEXT[ $type ] ?>
+                                <?= \Entities\Customer::resolveGivenType( $type ) ?>
                             </td>
                             <td>
-                                <?= $count ?>
+                                <a href="<?= route( "customer@list" ) . '?type=' . $type ?>"><?= $count ?></a>
                             </td>
                         </tr>
                     <?php endforeach; ?>
