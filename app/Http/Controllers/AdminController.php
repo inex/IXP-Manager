@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers;
 
 use App, Cache, D2EM;
 
+use Carbon\Carbon;
 use IXP\Services\Grapher\Graph as Graph;
 
 use Entities\{
@@ -60,8 +61,9 @@ class AdminController extends Controller
     public function dashboard( Request $request ): View
     {
         return view( 'admin/dashboard' )->with([
-            'stats'                 => $this->dashboardStats(),
+            'stats'                 => $this->dashboardStats( $request ),
             'graphs'                => $this->publicPeeringGraphs( $request ),
+            'graph_period'          => $request->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ),
             'graph_periods'         => Graph::PERIOD_DESCS,
         ]);
     }
@@ -72,10 +74,10 @@ class AdminController extends Controller
      *
      * @return array array of statistics
      */
-    private function dashboardStats()
+    private function dashboardStats( Request $request )
     {
         // only do this once every 60 minutes
-        if( !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
+        if( $request->query( 'refresh_cache', 0 ) || !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
 
             $cTypes['types'] = D2EM::getRepository( CustomerEntity::class )->getTypeCounts();
 
@@ -149,6 +151,8 @@ class AdminController extends Controller
             $cTypes['rsUsage']          = D2EM::getRepository( VlanInterfaceEntity::class )->getRsClientUsagePerVlan();
             $cTypes['ipv6Usage']        = D2EM::getRepository( VlanInterfaceEntity::class )->getIPv6UsagePerVlan();
 
+            $cTypes['cached_at']        = Carbon::now();
+
             Cache::put( 'admin_ctypes', $cTypes, 60 );
         }
 
@@ -168,7 +172,7 @@ class AdminController extends Controller
 
         $period   = Graph::processParameterPeriod( $request->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ) );
 
-        if( !( $graphs = Cache::get( 'admin_stats_'.$period ) ) ) {
+        if( $request->query( 'refresh_cache', 0 ) || !( $graphs = Cache::get( 'admin_stats_'.$period ) ) ) {
             $graphs = [];
 
             $graphs['ixp'] = $grapher->ixp( D2EM::getRepository(IXPEntity::class )->getDefault() )

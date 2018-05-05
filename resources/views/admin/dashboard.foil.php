@@ -362,6 +362,14 @@
 
 
 
+            <div class="alert alert-info">
+                Dashboard statistics are cached for 1 hour (graphs for 5mins). These dashboard statistics were last cached
+                <?= $t->stats['cached_at']->diffForHumans() ?>.
+                <a href="<?= route('admin@dashboard') ?>?graph_period=<?= $t->graph_period ?>&refresh_cache=1">Click
+                here</a> to refresh the cache now.
+            </div>
+
+
         </div>
 
         <div class="col-md-6">
