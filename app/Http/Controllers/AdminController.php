@@ -149,7 +149,7 @@ class AdminController extends Controller
             $cTypes['rsUsage']          = D2EM::getRepository( VlanInterfaceEntity::class )->getRsClientUsagePerVlan();
             $cTypes['ipv6Usage']        = D2EM::getRepository( VlanInterfaceEntity::class )->getIPv6UsagePerVlan();
 
-            Cache::put( 'admin_ctypes', $cTypes, 3600 );
+            Cache::put( 'admin_ctypes', $cTypes, 60 );
         }
 
         return $cTypes;
@@ -185,7 +185,7 @@ class AdminController extends Controller
                     ->setCategory( Graph::CATEGORY_BITS );
             }
 
-            Cache::put( 'admin_stats_'.$period, $graphs, 300 );
+            Cache::put( 'admin_stats_'.$period, $graphs, 5 );
         }
 
         return $graphs;
