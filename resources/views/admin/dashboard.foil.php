@@ -13,6 +13,7 @@
 
         <div class="col-md-6">
             <div class="row">
+                <h3>Overall Customer Numbers</h3>
                 <table class="table  table-striped">
                     <thead>
                     <tr>
@@ -38,6 +39,36 @@
                     </tbody>
                 </table>
             </div>
+
+
+            <div class="row">
+                <h3>Customers by Location</h3>
+                <table class="table  table-striped">
+                    <thead>
+                    <tr>
+                        <th>
+                            Location
+                        </th>
+                        <th>
+                            Customers
+                        </th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <?php foreach( $t->stats[ "custsByLocation" ] as $loc => $custids  ): ?>
+                        <tr>
+                            <td>
+                                <?= $loc ?>
+                            </td>
+                            <td>
+                                <?= count( $custids ) ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+
 
             <div class="row">
                 <h3>Customer Ports by Location</h3>

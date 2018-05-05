@@ -88,6 +88,10 @@ class AdminController extends Controller
                 $location       = $vi['locationname'];
                 $infrastructure = $vi['infrastructure'];
 
+                if( !isset( $custsByLocation[ $location ] ) ) {
+                    $custsByLocation[ $location ] = [];
+                }
+
                 if( !isset( $byLocation[ $location ] ) ) {
                     $byLocation[ $location ] = [];
                 }
@@ -105,6 +109,11 @@ class AdminController extends Controller
                 } else {
                     $speeds[ $vi[ 'speed' ] ]++;
                 }
+
+                if( !isset( $custsByLocation[ $location ][ $vi['customerid'] ] ) ) {
+                    $custsByLocation[ $location ][] = $vi['customerid'];
+                }
+
 
                 if( !isset( $byLocation[ $vi['locationname'] ][ $vi['speed'] ] ) ) {
                     $byLocation[ $location ][ $vi[ 'speed' ] ] = 1;
@@ -126,10 +135,13 @@ class AdminController extends Controller
             }
 
             ksort( $speeds, SORT_NUMERIC );
-            $cTypes['speeds']      = $speeds;
-            $cTypes['byLocation']  = $byLocation;
-            $cTypes['byLan']       = $byLan;
-            $cTypes['byIxp']       = $byIxp;
+            ksort( $custsByLocation );
+
+            $cTypes['speeds']           = $speeds;
+            $cTypes['custsByLocation']  = $custsByLocation;
+            $cTypes['byLocation']       = $byLocation;
+            $cTypes['byLan']            = $byLan;
+            $cTypes['byIxp']            = $byIxp;
 
             Cache::put( 'admin_ctypes', $cTypes, 3600 );
         }
