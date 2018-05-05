@@ -30,7 +30,8 @@ use IXP\Services\Grapher\Graph as Graph;
 use Entities\{
     Customer            as CustomerEntity,
     IXP                 as IXPEntity,
-    VirtualInterface    as VirtualInterfaceEntity
+    VirtualInterface    as VirtualInterfaceEntity,
+    VlanInterface       as VlanInterfaceEntity
 };
 
 
@@ -144,6 +145,8 @@ class AdminController extends Controller
             $cTypes['byLocation']       = $byLocation;
             $cTypes['byLan']            = $byLan;
             $cTypes['byIxp']            = $byIxp;
+
+            $cTypes['rsUsage']          = D2EM::getRepository( VlanInterfaceEntity::class )->getRsClientUsagePerVlan();
 
             Cache::put( 'admin_ctypes', $cTypes, 3600 );
         }

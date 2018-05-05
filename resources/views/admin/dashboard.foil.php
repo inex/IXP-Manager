@@ -217,6 +217,77 @@
                     </tbody>
                 </table>
             </div>
+
+
+
+            <div class="row">
+                <h3>Customer Route Server Usage by VLAN</h3>
+
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>
+                                Infrastructure
+                            </th>
+                            <th align="right" style="text-align: right;">
+                                RS Clients
+                            </th>
+                            <th align="right" style="text-align: right;">
+                                Total
+                            </th>
+                            <th align="right" style="text-align: right;">
+                                Percentage
+                            </th>
+                        </tr>
+                    </thead>
+
+                    <tbody>
+
+                        <?php $rsclients = 0 ?>
+                        <?php $total     = 0 ?>
+
+                        <?php foreach( $t->stats[ "rsUsage"] as  $vlan ): ?>
+                            <tr>
+                                <td>
+                                    <?= $t->ee( $vlan->vlanname ) ?>
+                                </td>
+                                <td align="right">
+                                    <?php $rsclients += $vlan->rsclient_count ?>
+                                    <?= $vlan->rsclient_count ?>
+                                </td>
+                                <td align="right">
+                                    <?php $total += $vlan->overall_count ?>
+                                    <?= $vlan->overall_count ?>
+                                </td>
+                                <td align="right">
+                                    <?= round( (100.0 * $vlan->rsclient_count ) / $vlan->overall_count ) ?>%
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+
+                    </tbody>
+
+                    <tfoot>
+                        <tr>
+                            <td>
+                                <b>Totals</b>
+                            </td>
+
+                            <td align="right">
+                                <b><?= $rsclients ?></b>
+                            </td>
+                            <td align="right">
+                                <b><?= $total ?></b>
+                            </td>
+                            <td align="right">
+                                <b><?= round( (100.0 * $rsclients ) / $total ) ?>%</b>
+                            </td>
+                        </tr>
+                    </tfoot>
+                    
+                </table>
+            </div>
+
         </div>
 
         <div class="col-md-6">
