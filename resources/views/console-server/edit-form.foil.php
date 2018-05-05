@@ -54,11 +54,9 @@
     <div class="col-lg-offset-2 col-sm-offset-2 col-sm-8">
 
         <ul class="nav nav-tabs">
-            <li role="presentation" class="active"><a id="tab-link-body" href="#body">Body</a></li>
+            <li role="presentation" class="active"><a id="tab-link-body" href="#body">Notes</a></li>
             <li role="presentation"><a  id="tab-link-preview" href="#preview">Preview</a></li>
         </ul>
-
-        <br>
 
         <div class="tab-content">
             <div role="tabpanel" class="tab-pane active" id="body">
