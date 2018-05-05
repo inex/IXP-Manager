@@ -139,4 +139,18 @@ return [
 
     ],
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admins Dashboard
+    |--------------------------------------------------------------------------
+    |
+    */
+    'admin_dashboard' => [
+
+        'default_graph_period'       => env( 'IXP_FE_ADMIN_DASHBOARD_DEFAULT_GRAPH_PERIOD', 'week' ),
+
+    ],
+
+
 ];

@@ -34,6 +34,7 @@ use Entities\{
 };
 
 
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 
@@ -55,11 +56,12 @@ class AdminController extends Controller
      *
      * @return view
      */
-    public function dashboard(): View
+    public function dashboard( Request $request ): View
     {
         return view( 'admin/dashboard' )->with([
             'stats'                 => $this->dashboardStats(),
-            'graphs'                => $this->publicPeeringGraphs(),
+            'graphs'                => $this->publicPeeringGraphs( $request ),
+            'graph_periods'         => Graph::PERIOD_DESCS,
         ]);
     }
 
@@ -156,28 +158,30 @@ class AdminController extends Controller
      *
      * @throws
      */
-    private function publicPeeringGraphs()
+    private function publicPeeringGraphs( Request $request )
     {
         $grapher = App::make('IXP\Services\Grapher');
 
-        if( !( $graphs = Cache::get( 'admin_stats' ) ) ) {
+        $period   = Graph::processParameterPeriod( $request->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ) );
+
+        if( !( $graphs = Cache::get( 'admin_stats_'.$period ) ) ) {
             $graphs = [];
 
             $graphs['ixp'] = $grapher->ixp( D2EM::getRepository(IXPEntity::class )->getDefault() )
                 ->setType(     Graph::TYPE_PNG )
                 ->setProtocol( Graph::PROTOCOL_ALL )
-                ->setPeriod(   Graph::PERIOD_MONTH )
+                ->setPeriod(   $period )
                 ->setCategory( Graph::CATEGORY_BITS );
 
             foreach( D2EM::getRepository(IXPEntity::class )->getDefault()->getInfrastructures() as $inf ) {
                 $graphs[ $inf->getId()] = $grapher->infrastructure( $inf )
                     ->setType(     Graph::TYPE_PNG )
                     ->setProtocol( Graph::PROTOCOL_ALL )
-                    ->setPeriod(   Graph::PERIOD_MONTH )
+                    ->setPeriod(   $period )
                     ->setCategory( Graph::CATEGORY_BITS );
             }
 
-            Cache::put( 'admin_stats', $graphs, 300 );
+            Cache::put( 'admin_stats_'.$period, $graphs, 300 );
         }
 
         return $graphs;

@@ -220,11 +220,34 @@
         </div>
 
         <div class="col-md-6">
+
+            <div class="row">
+                <p>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <?php foreach( $t->graph_periods as $period => $desc ): ?>
+
+                        <a href="<?= route('admin@dashboard') ?>?graph_period=<?= $period ?>"
+                            ><span class="label label-info"><?= $desc ?></span></a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    <?php endforeach; ?>
+                </p>
+            </div>
+
             <?php if( count( $t->graphs ) ): ?>
                 <?php foreach( $t->graphs as $id => $graph ): ?>
                     <div class="row" style="margin-left: 0px">
                         <div class="well">
-                            <h3><?= $t->ee( $graph->name() ) ?> Aggregate Traffic</h3>
+                            <h3>
+                                <?= $t->ee( $graph->name() ) ?> Aggregate Traffic
+                                <a class="btn btn-default btn-sm pull-right"
+                                    <?php if( $id == 'ixp' ): ?>
+                                        href="<?= route('statistics/ixp') ?>"
+                                    <?php else: ?>
+                                        href="<?= route('statistics/infrastructure', [ 'graphid' => $id ] ) ?>"
+                                    <?php endif; ?>
+                                >
+                                    <span class="glyphicon glyphicon-search"></span></a>
+                            </h3>
                             <p>
                                 <?= $graph->renderer()->boxLegacy() ?>
                             </p>
