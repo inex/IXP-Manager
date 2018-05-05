@@ -48,7 +48,7 @@
         ->label( '&nbsp;' )
         ->text( 'Active' )
         ->value( 1 )
-        ->blockHelp( "Marking a console inactive will exclude it from, for example, Nagios configuration generation." );
+        ->blockHelp( "Marking a console inactive could allow you to exclude it from, for example, Nagios configuration generation." );
     ?>
 
     <div class="col-lg-offset-2 col-sm-offset-2 col-sm-8">
