@@ -44,7 +44,7 @@
                 <div class="">
 
                     <div class="navbar-header">
-                        <a class="navbar-brand" href="<?= route( "statistics/members" ) ?>">Graph Options:</a>
+                        <a class="navbar-brand">Graph Options:</a>
                     </div>
 
                     <form class="navbar-form navbar-left form-inline"  action="<?= route( "statistics@member", [ "id" => $t->c->getId() ] ) ?>" method="GET">
