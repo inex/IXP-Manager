@@ -1,9 +1,19 @@
 <?php namespace IXP\Providers;
 
-use Illuminate\Contracts\Events\Dispatcher as DispatcherContract;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 
 class EventServiceProvider extends ServiceProvider {
+
+    /**
+     * The subscriber classes to register.
+     *
+     * @var array
+     */
+    protected $subscribe = [
+        'IXP\Listeners\Customer\Note\EmailOnChange',
+    ];
+
+
 
     /**
      * The event handler mappings for the application.
@@ -11,7 +21,6 @@ class EventServiceProvider extends ServiceProvider {
      * @var array
      */
     protected $listen = [
-
         'IXP\Events\Customer\BillingDetailsChanged' => [
             'IXP\Listeners\Customer\BillingDetailsChanged'
         ],
@@ -25,10 +34,12 @@ class EventServiceProvider extends ServiceProvider {
 
     ];
 
+
+
+
     /**
      * Register any other events for your application.
      *
-     * @param  \Illuminate\Contracts\Events\Dispatcher  $events
      * @return void
      */
     public function boot()

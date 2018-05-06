@@ -26,6 +26,8 @@ btn_advanced.click( () => { div_advanced.slideToggle(); btn_delete.slideToggle()
 // display or hide the fastlapc area
 cb_lag_framing.change( () => { cb_lag_framing.is(":checked") ? div_fastlacp.slideDown() : div_fastlacp.slideUp() } );
 
+cb_lag_framing.trigger( 'change' );
+
 <?php if( $t->vi ): ?>
     /**
      * on click even allow to delete a Sflow receiver

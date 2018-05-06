@@ -31,6 +31,11 @@ use Entities\{
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
+
 
 
 /**
@@ -128,8 +133,12 @@ class IrrdbConfigController extends Doctrine2Frontend {
 
     /**
      * Function to do the actual validation and storing of the submitted object.
+     *
      * @param Request $request
+     *
      * @return bool|RedirectResponse
+     *
+     * @throws
      */
     public function doStore( Request $request )
     {
@@ -162,6 +171,20 @@ class IrrdbConfigController extends Doctrine2Frontend {
 
 
         return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function preDelete() : bool {
+        $okay = true;
+        if( ( $cnt = count( $this->object->getCustomers() ) ) ) {
+            AlertContainer::push( "You cannot delete this IRRDB Source there are {$cnt} customer(s) associated with it. ", Alert::DANGER );
+            $okay = false;
+        }
+
+
+        return $okay;
     }
 
 }

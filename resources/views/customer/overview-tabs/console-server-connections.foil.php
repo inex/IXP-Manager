@@ -10,19 +10,19 @@
         </tr>
         </thead>
         <tbody>
-            <?php foreach( $t->c->getConsoleServerConnections() as $c ): ?>
+            <?php foreach( $t->c->getConsoleServerConnections() as $csc ): ?>
                 <tr>
                     <td>
-                        <?= $t->ee( $c->getDescription() ) ?>
+                        <?= $t->ee( $csc->getDescription() ) ?>
                     </td>
                     <td>
-                        <?= $t->ee( $c->getSwitcher()->getCabinet()->getLocation()->getName() )?>
+                        <?= $t->ee( $csc->getSwitcher()->getCabinet()->getLocation()->getName() )?>
                     </td>
                     <td>
-                        <?= $t->ee( $c->getSwitcher()->getName() )?>
+                        <?= $t->ee( $csc->getSwitcher()->getName() )?>
                     </td>
                     <td>
-                        <?= $t->ee( $c->getPort() ) ?>
+                        <?= $t->ee( $csc->getPort() ) ?>
                     </td>
                 </tr>
             <?php endforeach; ?>

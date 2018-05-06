@@ -119,7 +119,9 @@ class LocationController extends Doctrine2Frontend {
 
     /**
      * Display the form to add/edit an object
+     *
      * @param   int $id ID of the row to edit
+     *
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
@@ -153,8 +155,12 @@ class LocationController extends Doctrine2Frontend {
 
     /**
      * Function to do the actual validation and storing of the submitted object.
+     *
      * @param Request $request
+     *
      * @return bool|RedirectResponse
+     *
+     * @throws
      */
     public function doStore( Request $request )
     {

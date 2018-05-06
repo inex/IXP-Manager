@@ -10,59 +10,63 @@
 
 <?php $this->section( 'content' ) ?>
 
-<div class="row">
+    <div class="row">
 
-<?= $t->alerts() ?>
+        <?= $t->alerts() ?>
 
-<div class="col-md-12">
+        <div class="col-md-12">
 
-<p>
-<form class="form-horizontal">
-<table>
-<tr>
-    <td width="20"></td>
-    <td valign="middle"><strong>Select Infrastructure:&nbsp;</strong></td>
-    <td width="300">
-        <select id="form-select-infraid" name="infraid" class="chzn-select" data-minimum-results-for-search="10">
-            <?php foreach( $t->infras as $id => $i ): ?>
-                <option value="<?= $id ?>" <?= $t->infraid != $id ?: 'selected="selected"' ?>><?= $i ?></option>
+            <nav class="navbar navbar-default">
+                <div class="">
+
+                    <div class="navbar-header">
+                        <a class="navbar-brand" href="<?= route( "statistics/infrastructure" ) ?>">Graph Options:</a>
+                    </div>
+
+                    <form class="navbar-form navbar-left form-inline">
+
+                        <div class="form-group">
+                            <label for="category">Infrastructure:</label>
+
+                            <select id="form-select-infraid" name="infraid" class="form-control" >
+                                <?php foreach( $t->infras as $id => $i ): ?>
+                                    <option value="<?= $id ?>" <?= $t->infraid != $id ?: 'selected="selected"' ?>><?= $i ?></option>
+                                <?php endforeach; ?>
+                            </select>
+
+                        </div>
+                        <div class="form-group">
+                            <label for="period">Category:</label>
+                            <select id="form-select-category" name="category" class="form-control">
+                                <?php foreach( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS_DESCS as $cvalue => $cname ): ?>
+                                    <option value="<?= $cvalue ?>" <?= $t->category != $cvalue ?: 'selected="selected"' ?>><?= $cname ?></option>
+                                <?php endforeach; ?>
+                            </select>
+
+                        </div>
+                        <a class="btn btn-default" href="<?= route( 'statistics/ixp' ) ?>">Overall IXP Graphs</a>
+
+                    </form>
+
+                </div>
+            </nav>
+
+
+            <?php foreach( IXP\Services\Grapher\Graph::PERIODS as $pvalue => $pname ): ?>
+
+                <div class="col-md-6">
+
+                    <div class="well">
+                        <h3><?= IXP\Services\Grapher\Graph::resolvePeriod( $pvalue ) ?> Graph</h3>
+                        <?= $t->graph->setPeriod( $pvalue )->renderer()->boxLegacy() ?>
+                    </div>
+                </div>
+
             <?php endforeach; ?>
-        </select>
-    </td>
-    <td width="20"></td>
-    <td valign="middle"><strong>Category:&nbsp;</strong></td>
-    <td width="100">
-        <select id="form-select-category" name="category" class="chzn-select" data-minimum-results-for-search="10">
-            <?php foreach( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS_DESCS as $cvalue => $cname ): ?>
-                <option value="<?= $cvalue ?>" <?= $t->category != $cvalue ?: 'selected="selected"' ?>><?= $cname ?></option>
-            <?php endforeach; ?>
-        </select>
-    </td>
-    <td width="20"></td>
-    <td>
-        <a class="btn btn-default" href="<?= route( 'statistics/ixp' ) ?>">Overall IXP Graphs</a>
-    </td>
-</tr>
-</table>
-</form>
-</p>
 
-</div>
-
-<?php foreach( IXP\Services\Grapher\Graph::PERIODS as $pvalue => $pname ): ?>
-
-
-    <div class="col-md-6">
-
-        <div class="well">
-            <h3><?= IXP\Services\Grapher\Graph::resolvePeriod( $pvalue ) ?> Graph</h3>
-            <?= $t->graph->setPeriod( $pvalue )->renderer()->boxLegacy() ?>
         </div>
+
     </div>
-
-<?php endforeach; ?>
-
-</div>
 
 <?php $this->append() ?>
 

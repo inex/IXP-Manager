@@ -45,22 +45,22 @@
     <field name="notes" type="text" nullable="true"/>
     <many-to-one field="VirtualInterface" target-entity="Entities\VirtualInterface" inversed-by="VlanInterfaces">
       <join-columns>
-        <join-column name="virtualinterfaceid" referenced-column-name="id"/>
+        <join-column name="virtualinterfaceid" referenced-column-name="id" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
     <many-to-one field="Vlan" target-entity="Entities\Vlan" inversed-by="VlanInterfaces">
       <join-columns>
-        <join-column name="vlanid" referenced-column-name="id"/>
+        <join-column name="vlanid" referenced-column-name="id" on-delete="RESTRICT"/>
       </join-columns>
     </many-to-one>
     <one-to-one field="IPv4Address" target-entity="Entities\IPv4Address" inversed-by="VlanInterface">
       <join-columns>
-        <join-column name="ipv4addressid" referenced-column-name="id" unique="true"/>
+        <join-column name="ipv4addressid" referenced-column-name="id" unique="true" on-delete="RESTRICT"/>
       </join-columns>
     </one-to-one>
     <one-to-one field="IPv6Address" target-entity="Entities\IPv6Address" inversed-by="VlanInterface">
       <join-columns>
-        <join-column name="ipv6addressid" referenced-column-name="id" unique="true"/>
+        <join-column name="ipv6addressid" referenced-column-name="id" unique="true" on-delete="RESTRICT"/>
       </join-columns>
     </one-to-one>
     <one-to-many field="layer2Addresses" target-entity="Entities\Layer2Address" mapped-by="vlanInterface"/>

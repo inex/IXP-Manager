@@ -1214,6 +1214,17 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function resolveType(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveType', []);
+
+        return parent::resolveType();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function hasPrivateVLANs()
     {
 
@@ -1968,17 +1979,6 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPatchPanelPorts', []);
 
         return parent::getPatchPanelPorts();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function resolveType(): string
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveType', []);
-
-        return parent::resolveType();
     }
 
     /**

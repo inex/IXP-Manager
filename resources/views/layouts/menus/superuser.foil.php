@@ -87,14 +87,14 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account<b class="caret"></b></a>
                     <ul class="dropdown-menu dropdown-menu-right">
                         <li>
-                            <a href="<?= url('profile') ?>">Profile</a>
+                            <a href="<?= route( 'profile@edit' ) ?>">Profile</a>
                         </li>
                         <li>
                             <a href="<?= route('api-key@list' )?>">API Keys</a>
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="<?= route( 'customer@unreadNotes' ) ?>">Unread Notes</a>
+                            <a href="<?= route( 'customerNotes@unreadNotes' ) ?>">Unread Notes</a>
                         </li>
                         <li class="divider"></li>
                         <li>
@@ -105,7 +105,7 @@
             </ul>
             <form class="navbar-form navbar-search navbar-right">
                 <div class="form-group">
-                    <select id="menu-select-customer" type="select" name="id" class="chzn-select">
+                    <select id="menu-select-customer" type="select" name="id" class="chzn-select col-sm-7">
                         <option></option>
                         <?php foreach( $t->customers as $k => $i ): ?>
                             <option value="<?= $k ?>"><?= $i ?></option>

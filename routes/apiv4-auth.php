@@ -15,3 +15,7 @@ use Illuminate\Http\Request;
 Route::post( 'l2-address/add',                                  'Layer2AddressController@add' );
 Route::post( 'l2-address/delete/{id}',                          'Layer2AddressController@delete' );
 
+Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer\Note'], function() {
+    Route::get(    'ping/{id?}',            'CustomerNotesController@ping'      )->name( 'customer-notes@ping');
+    Route::get(    'get/{id}',              'CustomerNotesController@get'       )->name( 'customer-notes@get');
+});

@@ -107,9 +107,9 @@
             <tr>
                 <td>
                     {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
-                        <a href="{genUrl controller="customer" action="view" id=$row.custid}">{$row.customer}</a>
+                        <a href="{route( "customer@overview", [ "id" => $row.custid ] )}">{$row.customer}</a>
                     {else}
-                        <a href="{genUrl controller="customer" action="detail" id=$row.custid}">{$row.customer}</a>
+                        <a href="{route( "customer@detail", [ "id" => $row.custid ] )}">{$row.customer}</a>
                     {/if}
                 </td>
                 {if not isset( $switchid )}

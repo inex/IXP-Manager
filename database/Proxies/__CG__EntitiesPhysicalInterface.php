@@ -573,4 +573,15 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
         return parent::resolveStatus();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveAPIStatus(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveAPIStatus', []);
+
+        return parent::resolveAPIStatus();
+    }
+
 }

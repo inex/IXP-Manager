@@ -1,7 +1,7 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= route ( 'patch-panel/list' )?>">Patch Panel Port</a>
+    <a href="<?= route ( 'patch-panel-port/list' )?>">Patch Panel Port</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -35,7 +35,7 @@
 <?= $t->alerts() ?>
 
 <?= Former::open()->method( 'POST' )
-    ->action( action ('PatchPanel\PatchPanelPortController@store' ) )
+    ->action( route( 'patch-panel-port@store' ) )
     ->customWidthClass( 'col-sm-3' )
     ->addClass( 'col-md-10' );
 ?>
@@ -80,6 +80,11 @@
             ->blockHelp( 'The cross connect reference as provided by the colocation provider.' );
         ?>
 
+        <?= Former::text( 'colo_billing_ref' )
+            ->label( 'Colocation Billing Reference' )
+            ->blockHelp( 'The cross connect billing reference as provided by the colocation provider.' );
+        ?>
+
         <?= Former::text( 'ticket_ref' )
             ->label( 'Ticket Reference(s)' )
             ->blockHelp( 'This is a free text field to allow you to add helpdesk ticket reference(s) that deal with your member for this connection.' );
@@ -88,6 +93,7 @@
 
     <?= Former::checkbox( 'duplex' )
         ->label( 'Duplex connection?' )
+        ->value( 1 )
         ->blockHelp('Typically fibre connections are <em>duplex connections</em> in that they use two ports. If this is the '
             . 'case, check this and select the partner port. <em>Duplex ports should generally start with an odd number and '
             . 'have an even numbered partner port (assuming port numbering starts from 1).</em>' );

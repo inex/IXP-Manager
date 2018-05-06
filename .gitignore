@@ -86,6 +86,7 @@ ubuntu-xenial-16.04-cloudimg-console.log
 composer.phar
 tools/installers/Vagrantfile
 
+storage/.local
 storage/grapher/
 storage/files/*
 storage/tmp/*

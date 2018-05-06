@@ -60,7 +60,7 @@
         echo $t->insert("layouts/menus/associate");
     } elseif( Auth::user()->isCustUser() ) {
         echo $t->insert("layouts/menus/custuser");
-    } elseif( Auth::user()->isCustUser() ) {
+    } elseif( Auth::user()->isCustAdmin() ) {
         echo $t->insert("layouts/menus/custadmin");
     } elseif( Auth::user()->isSuperUser() ) {
         echo $t->insert("layouts/menus/superuser");
@@ -130,6 +130,7 @@
 
 </div> <!-- </div class="container"> -->
 
+    <script> const RIPE_ASN_URL = "<?= url( "api/v4/aut-num" ) ?>"; </script>
     <script type="text/javascript" src="<?= asset('/bower_components/jquery/dist/jquery.min.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/bower_components/jquery-ui/jquery-ui.min.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/bower_components/bootstrap/dist/js/bootstrap.min.js') ?>"></script>

@@ -54,7 +54,7 @@
                 <?php endif; ?>
             </small>
 
-            <?php if( Auth::getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER ): ?>
+            <?php if( Auth::getUser()->isSuperUser() ): ?>
 
                 <div class="btn-group" style="padding-left: 20px;">
                     <a class="btn btn-xs btn-default" href="<?= route( "interfaces/virtual/edit", [ "id" => $t->vi->getId() ] ) ?>" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
@@ -182,7 +182,7 @@
         <?php else: ?>
             <p>
                 No physical interfaces defined.
-                <?php if( Auth::getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER ): ?>
+                <?php if( Auth::getUser()->isSuperUser() ): ?>
                     <a href="<?= route( "interfaces/physical/add", [ "id" =>  0 , "viid" => $t->vi->getId() ] ) ?>">Add one...</a>
                 <?php endif; ?>
             </p>
@@ -227,11 +227,9 @@
                                     <?php if( count( $pvlans[ $vli->getVlan()->getId() ][ 'members'] ) == 1 ): ?>
                                         <em>None - single member</em>
                                     <?php else: ?>
-                                        <div class="well" style="overflow-y: scroll; height:400px;">
-                                            <?php foreach( $pvlans[ $vli->getVlan()->getId() ][ 'members'] as $m ): ?>
-                                                <?= $t->ee( $m->getAbbreviatedName() )?> <br />
-                                            <?php endforeach; ?>
-                                        </div>
+                                        <?php foreach( $pvlans[ $vli->getVlan()->getId() ][ 'members'] as $m ): ?>
+                                            <?= $t->ee( $m->getAbbreviatedName() )?> <br />
+                                        <?php endforeach; ?>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -319,10 +317,10 @@
                     <?php endif; ?>
                 <?php endforeach; ?>
             <?php else: ?>
-                <?php if( $t->vi->getType() ==  \Entities\SwitchPort::TYPE_PEERING ): ?>
+                <?php if( $t->vi->isTypePeering() ): ?>
                     <p>
                         No VLAN interfaces defined.
-                        <?php if( Auth::getUser()->getPrivs() == \Entities\User::AUTH_SUPERUSER ): ?>
+                        <?php if( Auth::getUser()->isSuperUser() ): ?>
                             <a href="<?=  route( "interfaces/vlan/edit/from-virtual-interface", [ "id" => $t->vi->getId() ] ) ?>">Add one...</a>
                         <?php endif; ?>
                     </p>

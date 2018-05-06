@@ -33,19 +33,21 @@
 
 
 <?php $this->section('content') ?>
-    <?= $t->alerts() ?>
+
     <div class="row">
+
         <div class="col-sm-12">
 
+            <?= $t->alerts() ?>
 
             <nav class="navbar navbar-default">
                 <div class="">
 
                     <div class="navbar-header">
-                        <a class="navbar-brand" href="">Graph Options:</a>
+                        <a class="navbar-brand" href="<?= route( "statistics/members" ) ?>">Graph Options:</a>
                     </div>
 
-                    <form class="navbar-form navbar-left form-inline"  action="<?= route( "statistics@member", [ "id" => $t->c->getId() ] ) ?>" method="""et">
+                    <form class="navbar-form navbar-left form-inline"  action="<?= route( "statistics@member", [ "id" => $t->c->getId() ] ) ?>" method="GET">
 
                         <div class="form-group">
                             <label for="category">Type:</label>
@@ -121,9 +123,14 @@
                                     / <?= $pi->getSwitchPort()->getSwitcher()->getName() ?>
 
                                     <?php if( $vi->isGraphable() ): ?>
-                                        <a class="btn btn-default btn-sm pull-right" href="<?= route( "statistics@member-drilldown" , [ "type" => "vi", "typeid" => $vi->getId()  ] ) ?>/?category=<?= $t->category ?>">
-                                            <i class="glyphicon glyphicon-zoom-in"></i>
-                                        </a>
+                                        <div class="btn-group pull-right">
+                                            <a class="btn btn-default btn-sm" href="<?= url("") ?>/smokeping/member-drilldown/ixp/1/vi/<?= $vi->getId() ?>" title="Latency Graphs">
+                                                <i class="glyphicon glyphicon-time"></i>
+                                            </a>
+                                            <a class="btn btn-default btn-sm" href="<?= route( "statistics@member-drilldown" , [ "type" => "vi", "typeid" => $vi->getId()  ] ) ?>/?category=<?= $t->category ?>" title="Drilldown">
+                                                <i class="glyphicon glyphicon-zoom-in"></i>
+                                            </a>
+                                        </div>
                                     <?php endif; ?>
                                 </h4>
                                 <p>
@@ -154,9 +161,16 @@
                                     <?php endif; ?>
 
                                     <?php if( $pi->statusIsConnectedOrQuarantine() ): ?>
-                                        <a class="btn btn-default btn-sm pull-right" href="<?= route( "statistics@member-drilldown" , [ "type" => "pi", "typeid" => $pi->getId()  ] ) ?>/?category=<?= $t->category ?>">
-                                            <i class="glyphicon glyphicon-zoom-in"></i>
-                                        </a>
+                                        <div class="btn-group pull-right">
+                                            <?php if( !$isLAG ): ?>
+                                                <a class="btn btn-default btn-sm" href="<?= url('') ?>/smokeping/member-drilldown/ixp/1/vi/<?= $vi->getId() ?>" title="Latency Graphs">
+                                                    <i class="glyphicon glyphicon-time"></i>
+                                                </a>
+                                            <?php endif; ?>
+                                            <a class="btn btn-default btn-sm" href="<?= route( "statistics@member-drilldown" , [ "type" => "pi", "typeid" => $pi->getId()  ] ) ?>/?category=<?= $t->category ?>">
+                                                <i class="glyphicon glyphicon-zoom-in"></i>
+                                            </a>
+                                        </div>
                                     <?php endif; ?>
 
                                     <small>

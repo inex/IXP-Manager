@@ -16,7 +16,7 @@
 	'fetch_errors'            => true,
 
 	// Whether Former should try to apply Validator rules as attributes
-	'live_validation'         => false,
+	'live_validation'         => env( 'FORMER_LIVE_VALIDATION', true ),
 
 	// Whether Former should automatically fetch error messages and
 	// display them next to the matching fields
@@ -27,7 +27,7 @@
 
 	// Whether checkboxes should always be present in the POST data,
 	// no matter if you checked them or not
-	'push_checkboxes'         => false,
+	'push_checkboxes'         => true,
 
 	// The value a checkbox will have in the POST array if unchecked
 	'unchecked_value'         => 0,

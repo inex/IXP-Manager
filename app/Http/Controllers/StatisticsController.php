@@ -100,7 +100,9 @@ class StatisticsController extends Controller
      *
      * @param int $infraid ID of the infrastructure to show the graph of
      * @param string $category Category of graph to show (e.g. bits / pkts)
+     *
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     *
      * @throws
      */
     public function infrastructure( int $infraid = 0, string $category = Graph::CATEGORY_BITS ){
@@ -135,7 +137,9 @@ class StatisticsController extends Controller
      *
      * @param int $switchid ID of the switch to show the graph of
      * @param string $category Category of graph to show (e.g. bits / pkts)
+     *
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     *
      * @throws
      */
     public function switch( int $switchid = 0, string $category = Graph::CATEGORY_BITS ){
@@ -171,13 +175,15 @@ class StatisticsController extends Controller
      *
      * @param string $trunkid ID of the trunk to show the graph of
      * @param string $category Category of graph to show (e.g. bits / pkts)
+     *
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     *
      * @throws
      */
     public function trunk( string $trunkid = null, string $category = Graph::CATEGORY_BITS ){
         if( !is_array( config('grapher.backends.mrtg.trunks') ) || !count( config('grapher.backends.mrtg.trunks') ) ) {
             AlertContainer::push(
-                "Trunk graphs have not been configured. Please see <a href=\"http://docs.ixpmanager.org/features/grapher/\">this documentation</a> for instructions.",
+                "Trunk graphs have not been configured. Please see <a target='_blank' href=\"http://docs.ixpmanager.org/features/grapher/\">this documentation</a> for instructions.",
                 Alert::DANGER
             );
             return redirect('');
@@ -214,7 +220,9 @@ class StatisticsController extends Controller
      * Display all member graphs
      *
      * @param StatisticsRequest $r
+     *
      * @return  View
+     *
      * @throws
      */
     public function members( StatisticsRequest $r ) : View {
@@ -284,7 +292,9 @@ class StatisticsController extends Controller
      *
      * @param StatisticsRequest   $r
      * @param integer             $id ID of the member
+     *
      * @return RedirectResponse|View
+     *
      * @throws
      */
     public function member( StatisticsRequest $r, int $id = null ) {
@@ -326,6 +336,7 @@ class StatisticsController extends Controller
      * @param   string                $type       type
      * @param   integer               $typeid     ID of type
      * @return  View
+     *
      * @throws
      */
     public function memberDrilldown( StatisticsRequest $r, string $type, int $typeid ) {

@@ -28,7 +28,6 @@ namespace IXP\Mail\Customer;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 use Entities\CompanyBillingDetail as CompanyBillingDetailEntity;
 

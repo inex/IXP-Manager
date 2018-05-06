@@ -471,9 +471,24 @@ class VirtualInterface
     }
 
     /**
+     * Get the cabinet of a virtual interface.
+     *
+     * @return Cabinet|null The location or false if no switch port.
+     */
+    public function getCabinet()
+    {
+        if( count( $this->getPhysicalInterfaces() ) ){
+            return $this->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getCabinet();
+        } else {
+            return null;
+        }
+
+    }
+
+    /**
      * Get the location of a virtual interface.
      *
-     * @return string|bool The location or false if no switch port.
+     * @return Location|bool The location or false if no switch port.
      */
     public function getLocation()
     {

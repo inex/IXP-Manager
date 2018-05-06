@@ -290,7 +290,6 @@ trait OSS_Doctrine2_WithPreferences
         if( $max != 0 && $count >= $max )
             throw new \OSS_Doctrine2_WithPreferences_IndexLimitException( 'Requested maximum number of indexed preferences reached' );
 
-        $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
         if( is_array( $value ) )
         {
             foreach( $value as $v )
@@ -302,7 +301,12 @@ trait OSS_Doctrine2_WithPreferences
                 $pref->setExpire( $expires );
                 $pref->setIx( ++$highest );
 
-                $em->persist( $pref );
+                try {
+                    $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
+                    $em->persist( $pref );
+                } catch( Zend_Exception $e ) {
+                    D2EM::persist($pref);
+                }
             }
         }
         else
@@ -314,7 +318,12 @@ trait OSS_Doctrine2_WithPreferences
             $pref->setExpire( $expires );
             $pref->setIx( ++$highest );
 
-            $em->persist( $pref );
+            try {
+                $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
+                $em->persist( $pref );
+            } catch( Zend_Exception $e ) {
+                D2EM::persist($pref);
+            }
         }
 
         return $this;
@@ -339,7 +348,6 @@ trait OSS_Doctrine2_WithPreferences
         if( $asOf === null )
             $asOf = time();
 
-        $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
         foreach( $this->_getPreferences() as $pref )
         {
             if( $attribute !== null && $pref->getAttribute() != $attribute )
@@ -349,7 +357,12 @@ trait OSS_Doctrine2_WithPreferences
             {
                 $count++;
                 $this->getPreferences()->removeElement( $pref );
-                $em->remove( $pref );
+                try {
+                    $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
+                    $em->remove( $pref );
+                } catch( Zend_Exception $e ) {
+                    D2EM::remove($pref);
+                }
             }
         }
 
@@ -399,11 +412,18 @@ trait OSS_Doctrine2_WithPreferences
      */
     public function expungePreferences()
     {
-        $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
+        try {
 
-        return $em->createQuery( "DELETE \\Entities\\UserPreference up WHERE up.User = ?1" )
-            ->setParameter( 1, $this )
-            ->execute();
+            $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
+
+            return $em->createQuery( "DELETE \\Entities\\UserPreference up WHERE up.User = ?1" )
+                ->setParameter( 1, $this )
+                ->execute();
+        } catch( Zend_Exception $e ) {
+            return D2EM::createQuery( "DELETE \\Entities\\UserPreference up WHERE up.User = ?1" )
+                ->setParameter( 1, $this )
+                ->execute();
+        }
     }
 
 
@@ -536,7 +556,6 @@ trait OSS_Doctrine2_WithPreferences
     {
         $cnt = 0;
 
-        $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
         foreach( $this->_getPreferences() as $pref )
         {
             if( strpos( $pref->getAttribute(), $attribute ) === 0 )
@@ -544,7 +563,14 @@ trait OSS_Doctrine2_WithPreferences
                 if( $index == null || $pref->getIx() == $index)
                 {
                     $this->getPreferences()->removeElement( $pref );
-                    $em->remove( $pref );
+
+                    try {
+                        $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
+                        $em->remove( $pref );
+                    } catch( Zend_Exception $e ) {
+                        D2EM::remove( $pref );
+                    }
+
                     $cnt++;
                 }
             }

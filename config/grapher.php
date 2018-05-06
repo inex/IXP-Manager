@@ -78,7 +78,7 @@ return [
 
             // where to find the smokeping files
             'url'  => env( 'GRAPHER_SMOKEPING_URL', 'http://www.example.com/' ),
-        ]
+        ],
 
     ],
 
@@ -164,6 +164,8 @@ return [
 
     /*
      | Smokeping - mostly temporary configuration until migrated in full / proper to Grapher
+     |
+     | FIXME: REMOVE!
      |
      | See: http://docs.ixpmanager.org/features/smokeping/
      */

@@ -3,7 +3,7 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= route ( 'customer@list' )?>">
+    <a href="<?= route( 'customer@list' )?>">
         Customer
     </a>
 <?php $this->append() ?>
@@ -24,13 +24,20 @@
 
 <?php $this->section( 'content' ) ?>
 
-    <?= $t->alerts() ?>
     <div class="row">
+
         <div class="col-md-12">
 
-                <legend>Send Email to Customer</legend>
+            <?= $t->alerts() ?>
+
+            <div class="well">
+                Please see the <a target="_blank" href="http://docs.ixpmanager.org/usage/customers/#welcome-emails">official documentation</a> for information on welcome emails and instructions on how to customise the content.
+            </div>
+
+            <legend>Send Welcome Email</legend>
+
             <?= Former::open()->method( 'POST' )
-                ->action( route( 'customer@sendWelcomeEmail' ) )
+                ->action( route( 'customer@send-welcome-email' ) )
                 ->addClass( 'col-md-10' );
             ?>
             <?= Former::text( 'to' )
@@ -60,7 +67,7 @@
 
                 <div class="tab-content">
                     <div role="tabpanel" class="tab-pane active" id="body">
-                        <textarea class="form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= $t->ee( $t->body )?></textarea>
+                        <textarea class="form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= old( 'message' ) ?? $t->body ?></textarea>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="preview">
                         <div id="well-preview" class="well" style="background: rgb(255,255,255);">
@@ -104,7 +111,7 @@
                 $('#well-preview').html('Loading...');
                 $(this).tab('show');
 
-                $.ajax( "<?= action ('Api\V4\UtilsController@markdown')?>", {
+                $.ajax( "<?= route('utils@markdown')?>", {
                     data: {
                         text: $('#message').val()
                     },

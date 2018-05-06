@@ -75,6 +75,11 @@ abstract class Doctrine2Frontend extends Controller {
     protected $object = null;
 
     /**
+     * The http request
+     */
+    protected $request = null;
+
+    /**
      * The URL prefix to use.
      *
      * Automatically dertermined based on the crontroller name if not set.
@@ -115,7 +120,8 @@ abstract class Doctrine2Frontend extends Controller {
         'SPRINTF'           => 'sprintf',
         'REPLACE'           => 'replace',
         'XLATE'             => 'xlate',
-        'YES_NO'            => 'yes_no'
+        'YES_NO'            => 'yes_no',
+        'PARSDOWN'          => 'parsdown',
     ];
 
 
@@ -216,13 +222,14 @@ abstract class Doctrine2Frontend extends Controller {
     {
         $this->data[ 'rows' ] = $this->listGetData();
 
-        $this->data[ 'view' ][ 'listEmptyMessage'] = $this->resolveTemplate( 'list-empty-message', false );
-        $this->data[ 'view' ][ 'listHeadOverride'] = $this->resolveTemplate( 'list-head-override', false );
-        $this->data[ 'view' ][ 'listRowOverride']  = $this->resolveTemplate( 'list-row-override',  false );
-        $this->data[ 'view' ][ 'listPreamble']     = $this->resolveTemplate( 'list-preamble',      false );
-        $this->data[ 'view' ][ 'listPostamble']    = $this->resolveTemplate( 'list-postamble',     false );
-        $this->data[ 'view' ][ 'listRowMenu']      = $this->resolveTemplate( 'list-row-menu',      false );
-        $this->data[ 'view' ][ 'listScript' ]      = $this->resolveTemplate( 'js/list' );
+        $this->data[ 'view' ][ 'listEmptyMessage']      = $this->resolveTemplate( 'list-empty-message', false );
+        $this->data[ 'view' ][ 'listHeadOverride']      = $this->resolveTemplate( 'list-head-override', false );
+        $this->data[ 'view' ][ 'listRowOverride']       = $this->resolveTemplate( 'list-row-override',  false );
+        $this->data[ 'view' ][ 'listPreamble']          = $this->resolveTemplate( 'list-preamble',      false );
+        $this->data[ 'view' ][ 'listPostamble']         = $this->resolveTemplate( 'list-postamble',     false );
+        $this->data[ 'view' ][ 'listRowMenu']           = $this->resolveTemplate( 'list-row-menu',      false );
+        $this->data[ 'view' ][ 'pageHeaderPreamble']    = $this->resolveTemplate( 'page-header-preamble',      false );
+        $this->data[ 'view' ][ 'listScript' ]           = $this->resolveTemplate( 'js/list' );
 
         $this->preList();
 
@@ -345,7 +352,7 @@ abstract class Doctrine2Frontend extends Controller {
             . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
         AlertContainer::push(  $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
 
-        return redirect()->route( $this->postStoreRedirect() ?? self::route_prefix() . '@' . 'list' );
+        return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
     }
 
     /**
@@ -390,13 +397,18 @@ abstract class Doctrine2Frontend extends Controller {
      * Delete an object
      *
      * @param Request $request
+     *
      * @return RedirectResponse
+     *
+     * @throws
      */
     public function delete( Request $request ) {
-
         if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( $request->input( 'id' ) ) ) ) {
             return abort( '404' );
         }
+
+
+        $this->request = $request;
 
         if( $this->preDelete() ) {
             D2EM::remove( $this->object );
@@ -404,8 +416,8 @@ abstract class Doctrine2Frontend extends Controller {
             $this->postFlush( 'delete' );
             AlertContainer::push( $this->feParams->titleSingular . " deleted.", Alert::SUCCESS );
         }
-        if( $this->postDeleteRedirect() ){
-            return redirect()->to( $this->postDeleteRedirect() );
+        if( $url = $this->postDeleteRedirect() ){
+            return redirect()->to( $url );
         } else{
             return redirect()->route( self::route_prefix() . '@' . 'list' );
         }
@@ -416,7 +428,7 @@ abstract class Doctrine2Frontend extends Controller {
      *
      * To implement this, have it return a valid route url (e.g. `return route( "route-name" );`
      *
-     * @return ?string
+     * @return null|string
      */
     protected function postDeleteRedirect() {
         return null;
@@ -469,6 +481,20 @@ abstract class Doctrine2Frontend extends Controller {
         }
 
         return false;
+    }
+
+
+    /**
+     * A helper function which can be called when the needs to be logged in
+     * or have a greater privilege.
+     *
+     * @param string $url  URL to redirect to (default: the default route)
+     * @param int    $code Redirection code (default: 302)
+     */
+    protected function unauthorized( string $url = '', $code = 302 ) {
+        abort( 302, '', [ 'Location' => url($url) ] );
+        // belt and braces:
+        die( "File: " . __FILE__ . "\nLine: " . __LINE__ . "\nBug: you should not see this..." );
     }
 
 }

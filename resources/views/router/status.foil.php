@@ -11,7 +11,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= url('router/add') ?>">
+            <a type="button" class="btn btn-default" href="<?= route('router@add') ?>">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
         </div>
@@ -22,110 +22,128 @@ $this->layout( 'layouts/ixpv4' );
 
 <?= $t->alerts() ?>
 
-<div class="row">
-    <div class="col-md-12">
-        <p>
-            This page performs a live query of all routers configured with an API interface and reports live data.
-        </p>
-        <p>
-            <em>Sessions</em> indicates the number of BGP sessions configured on the router while <em>Up</em> shows how many of these are actually established.
+<?php if( !$t->lgEnabled ): ?>
+
+    <div class="alert alert-warning">
+        <b>Warning:</b> the looking glass functionality is currently disabled and thus this <em>Live Status</em> feature will not work.
+        Additionally, the <em>Looking Glass</em> links will not appear in IXP Manager. To enable looking glass functionality, first
+        configure it <a href="http://docs.ixpmanager.org/features/looking-glass/">as per the documentation</a> and ensure you set the
+        following in your <code>.env</code> file: <br><br>
+        <code>IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS=false</code>
+    </div>
+
+<?php else: ?>
+
+
+    <div class="row">
+        <div class="col-md-12">
+            <p>
+                This page performs a live query of all routers configured with an API interface and reports live data.
+            </p>
+            <p>
+                <em>Sessions</em> indicates the number of BGP sessions configured on the router while <em>Up</em> shows how many of these are actually established.
+            </p>
+        </div>
+    </div>
+
+    <div id="fetched-alert" class="alert alert-info">
+        <p>Fetched <span id="fetched">0</span> of <span id="fetched-total">0</span> router details with <span id="fetched-errors">0</span> errors.</p>
+        <p id="daemon-stats" class="collapse">
+            <b>Daemon Version Counts for Bird:</b>&nbsp;&nbsp;
         </p>
     </div>
-</div>
-
-<div id="fetched-alert" class="alert alert-info">
-    <p>Fetched <span id="fetched">0</span> of <span id="fetched-total">0</span> router details with <span id="fetched-errors">0</span> errors.</p>
-    <p id="daemon-stats" class="collapse">
-        <b>Daemon Version Counts for Bird:</b>&nbsp;&nbsp;
-    </p>
-</div>
 
 
-    <table id='router-list' class="table">
-        <thead>
-        <tr>
-            <th>
-                Handle
-            </th>
-            <th>
-                Name
-            </th>
-            <th>
-                Router ID
-            </th>
-            <th>
-                Type
-            </th>
-            <th>
-                Version
-            </th>
-            <th>
-                API Version
-            </th>
-            <th>
-                Sessions
-            </th>
-            <th>
-                Up
-            </th>
-            <th>
-                Last Updated
-            </th>
-            <th>
-                Last Reboot
-            </th>
-        </tr>
-        <thead>
-        <tbody>
-        <?php foreach( $t->routers as $router ):
-            /** @var Entities\Router $router */ ?>
+        <table id='router-list' class="table">
+            <thead>
             <tr>
-                <td>
-                    <?php if( !config( 'ixp_fe.frontend.disabled.lg' ) ): ?>
-                        <a href="<?= route( "lg::bgp-sum", [ 'handle' => $router->getHandle() ] ) ?>">
-                    <?php endif; ?>
-                        <?= $router->getHandle() ?>
-                    <?= config( 'ixp_fe.frontend.disabled.lg' ) ?: '</a>' ?>
-                </td>
-                <td>
-                    <?= $router->getShortName() ?>
-                </td>
-                <td>
-                    <?= $router->getRouterId() ?>
-                </td>
-                <td>
-                    <?= $router->resolveSoftware() ?>
-                </td>
-
-                <td id="<?= $router->getHandle() ?>-version">
-                    <?php if( $router->hasApi() ): ?>
-                        <i class="fa fa-spinner fa-spin fa-fw"></i>
-                    <?php else: ?>
-                        <em>No API access.</em>
-                    <?php endif; ?>
-                </td>
-
-                <td id="<?= $router->getHandle() ?>-api-version">
-                </td>
-                <td id="<?= $router->getHandle() ?>-bgp-sessions">
-                </td>
-                <td id="<?= $router->getHandle() ?>-bgp-sessions-up">
-                </td>
-                <td id="<?= $router->getHandle() ?>-last-updated">
-                </td>
-                <td id="<?= $router->getHandle() ?>-last-reboot">
-                </td>
-
+                <th>
+                    Handle
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Router ID
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Version
+                </th>
+                <th>
+                    API Version
+                </th>
+                <th>
+                    Sessions
+                </th>
+                <th>
+                    Up
+                </th>
+                <th>
+                    Last Updated
+                </th>
+                <th>
+                    Last Reboot
+                </th>
             </tr>
-        <?php endforeach;?>
-        <tbody>
-    </table>
+            <thead>
+            <tbody>
+            <?php foreach( $t->routers as $router ):
+                /** @var Entities\Router $router */ ?>
+                <tr>
+                    <td>
+                        <?php if( !config( 'ixp_fe.frontend.disabled.lg' ) ): ?>
+                            <a href="<?= route( "lg::bgp-sum", [ 'handle' => $router->getHandle() ] ) ?>">
+                        <?php endif; ?>
+                            <?= $router->getHandle() ?>
+                        <?= config( 'ixp_fe.frontend.disabled.lg' ) ?: '</a>' ?>
+                    </td>
+                    <td>
+                        <?= $router->getShortName() ?>
+                    </td>
+                    <td>
+                        <?= $router->getRouterId() ?>
+                    </td>
+                    <td>
+                        <?= $router->resolveSoftware() ?>
+                    </td>
+
+                    <td id="<?= $router->getHandle() ?>-version">
+                        <?php if( $router->hasApi() ): ?>
+                            <i class="fa fa-spinner fa-spin fa-fw"></i>
+                        <?php else: ?>
+                            <em>No API access.</em>
+                        <?php endif; ?>
+                    </td>
+
+                    <td id="<?= $router->getHandle() ?>-api-version">
+                    </td>
+                    <td id="<?= $router->getHandle() ?>-bgp-sessions">
+                    </td>
+                    <td id="<?= $router->getHandle() ?>-bgp-sessions-up">
+                    </td>
+                    <td id="<?= $router->getHandle() ?>-last-updated">
+                    </td>
+                    <td id="<?= $router->getHandle() ?>-last-reboot">
+                    </td>
+
+                </tr>
+            <?php endforeach;?>
+            <tbody>
+        </table>
+
+<?php endif; ?>
+
 
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
 <script src="<?= asset( 'bower_components/moment/min/moment.min.js' ) ?>"></script>
 <script>
+
+    const lgEnabled = <?= $t->lgEnabled ? 'true' : 'false' ?>;
 
     let table = $('#router-list').on( 'init.dt', function () {
 
@@ -137,6 +155,10 @@ $this->layout( 'layouts/ixpv4' );
 
         // get states
         handles.forEach( function( handle, index ) {
+
+            if( !lgEnabled ) {
+                return;
+            }
 
             $.ajax({
                 "url": "<?= url('api/v4/lg') ?>/" + handle + "/status",

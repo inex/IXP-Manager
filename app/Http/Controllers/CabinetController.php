@@ -160,8 +160,12 @@ class CabinetController extends Doctrine2Frontend {
 
     /**
      * Function to do the actual validation and storing of the submitted object.
+     *
      * @param Request $request
+     *
      * @return bool|RedirectResponse
+     *
+     * @throws
      */
     public function doStore( Request $request )
     {

@@ -2,7 +2,31 @@
 
 namespace Repositories;
 
+/*
+ * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+
 use Doctrine\ORM\EntityRepository;
+
+use Entities\ConsoleServerConnection as ConsoleServerConnectionEntity;
 
 /**
  * ConsoleServerConnection
@@ -22,12 +46,11 @@ class ConsoleServerConnection extends EntityRepository
      * @param int|null $id
      * @return array Array of console server connections (as associated arrays) (or single element if `$id` passed)
      */
-    public function getAllForFeList( \stdClass $feParams, int $id = null )
+    public function getAllForFeList( \stdClass $feParams, int $id = null, int $port = null )
     {
-        $dql = "SELECT  csc.id AS id,
+        $dql = /** @lang text */
+            "SELECT  csc.id AS id,
                         csc.port AS port, 
-                        s.name AS switch,
-                        s.id AS switchid,
                         csc.speed AS speed,
                         csc.notes AS notes, 
                         c.name AS customer, 
@@ -36,15 +59,21 @@ class ConsoleServerConnection extends EntityRepository
                         csc.stopbits AS stopbits,
                         csc.autobaud AS autobaud,
                         csc.flowcontrol AS flowcontrol,
-                        csc.description AS description
+                        csc.description AS description,
+                        cs.id   AS consoleserver_id,
+                        cs.name AS consoleserver_name
                 FROM Entities\\ConsoleServerConnection csc
+                LEFT JOIN csc.consoleServer cs
                 LEFT JOIN csc.Customer c
-                LEFT JOIN csc.Switcher s
                 
                 WHERE 1 = 1";
 
         if( $id ) {
             $dql .= " AND csc.id = " . (int)$id;
+        }
+
+        if( $port ) {
+            $dql .= " AND csc.consoleServer = " . (int)$port;
         }
 
         if( isset( $feParams->listOrderBy ) ) {
@@ -55,5 +84,28 @@ class ConsoleServerConnection extends EntityRepository
         $query = $this->getEntityManager()->createQuery( $dql );
 
         return $query->getArrayResult();
+    }
+
+
+    /**
+     * Get a console server connection for a given consoleserverid and port
+     *
+     * @param int $csid     Consoler server ID
+     * @param string $port  Port
+     *
+     * @return ConsoleServerConnectionEntity[]
+     *
+     * @throws
+     */
+    public function getByServerAndPort( int $csid, string $port ): array {
+        $dql = "SELECT  csc
+                FROM Entities\\ConsoleServerConnection csc
+                WHERE csc.consoleServer = :csid
+                AND csc.port = :port";
+
+        return $this->getEntityManager()->createQuery( $dql )
+                ->setParameter( 'csid', $csid )
+                ->setParameter( 'port', $port )
+                ->getResult();
     }
 }

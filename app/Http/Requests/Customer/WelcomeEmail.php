@@ -25,8 +25,34 @@ namespace IXP\Http\Requests\Customer;
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use Validator;
+
 class WelcomeEmail extends FormRequest
 {
+
+    public function __construct()
+    {
+        parent::__construct();
+        Validator::extend("emails", function( $attribute, $value, $parameters ) {
+            $rules = [
+                'email' => 'required|email',
+            ];
+
+            $addresses = explode( ',', $value );
+
+            foreach( $addresses as $address ) {
+                $data = [
+                    'email' => trim($address)
+                ];
+                $validator = Validator::make($data, $rules);
+                if ($validator->fails()) {
+                    return false;
+                }
+            }
+            return true;
+        });
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -46,11 +72,25 @@ class WelcomeEmail extends FormRequest
     public function rules()
     {
         return [
-            'to'              => 'required|string',
-            'cc'              => 'nullable|string',
-            'bcc'             => 'nullable|string',
+            'to'              => 'required|emails',
+            'cc'              => 'nullable|emails',
+            'bcc'             => 'nullable|emails',
             'subject'         => 'required|string',
             'message'         => 'required',
+        ];
+    }
+
+    /**
+     * Get the error messages for the defined validation rules.
+     *
+     * @return array
+     */
+    public function messages()
+    {
+        return [
+            'to.emails'  => 'One or more of the email addresses are invalid',
+            'cc.emails'  => 'One or more of the email addresses are invalid',
+            'bcc.emails' => 'One or more of the email addresses are invalid',
         ];
     }
 }

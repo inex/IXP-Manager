@@ -1169,7 +1169,7 @@ class Customer
     /**
      * Get Users
      *
-     * @return Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|User[]
      */
     public function getUsers()
     {
@@ -1380,6 +1380,15 @@ class Customer
         return $this->getType() == self::TYPE_PROBONO;
     }
 
+
+    /**
+     * Turn the database integer representation of the type into text as
+     * defined in the self::$CUST_TYPES_TEXT array (or 'Unknown')
+     * @return string
+     */
+    public function resolveType(): string {
+        return self::$CUST_TYPES_TEXT[ $this->getType() ] ?? 'Unknown';
+    }
 
     /**
      * Does the customer have private VLANs?
@@ -2394,21 +2403,12 @@ class Customer
     /**
      * Get patchPanelPorts
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return \Doctrine\Common\Collections\Collection|PatchPanelPort[]
      */
     public function getPatchPanelPorts(){
         return $this->patchPanelPorts;
     }
-
-    /**
-     * Turn the database integer representation of the type into text as
-     * defined in the self::$CUST_TYPES_TEXT array (or 'Unknown')
-     * @return string
-     */
-    public function resolveType(): string {
-        return self::$CUST_TYPES_TEXT[ $this->getType() ] ?? 'Unknown';
-    }
-
+    
     /**
      * Turn the database integer representation of the status into text as
      * defined in the self::$CUST_STATUS_TEXT array (or 'Unknown')
@@ -2432,6 +2432,11 @@ class Customer
         }
 
         return false;
+    }
+
+
+    public static function resolveGivenType( int $t ) {
+        return self::$CUST_TYPES_TEXT[ $t ] ?? 'Unknwon';
     }
 
 }

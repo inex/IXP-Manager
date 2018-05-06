@@ -118,7 +118,7 @@ class CompanyBillingDetail
     
     public function __construct()
     {
-        $this->Customer = new ArrayCollection();
+
     }
 
     /**

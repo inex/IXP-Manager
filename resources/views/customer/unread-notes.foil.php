@@ -3,7 +3,9 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    Customer
+    <a href="<?= route( 'customer@list' )?>">
+        Customer
+    </a>
 <?php $this->append() ?>
 
 
@@ -27,49 +29,50 @@
 
 <?php $this->section( 'content' ) ?>
 
-    <?= $t->alerts() ?>
+<div class="row">
 
-    <div class="row">
-        <div class="col-md-12">
+    <div class="col-md-12">
 
+        <?= $t->alerts() ?>
+
+        <div class="alert alert-info" role="alert">
             <?php if( count( $t->notes ) ): ?>
                 The following customers have new or updated notes that you have not seen.
             <?php else: ?>
                 There are no notes for any customers that you have not seen.
             <?php endif; ?>
-
         </div>
+
+        <?php if( count( $t->notes ) ): ?>
+
+            <table class="table" id="list-table-notes">
+                <thead>
+                <th>Customer</th>
+                <th>Notes Last Created / Updated</th>
+                </thead>
+                <tbody>
+                <?php foreach( $t->notes as $n ): ?>
+                    <tr>
+                        <td>
+                            <a href="<?= route( "customer@overview" , [ "id" => $n[ 'cid' ] ] ) ?>" >
+                                <?= $n[ 'cname' ] ?>
+                            </a>
+                        </td>
+                        <td>
+                            <?= $n[ 'latest' ] ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+
+        <?php endif; ?>
     </div>
 
-    <?php if( count( $t->notes ) ): ?>
-        <div class="row">
-            <div class="col-md-12">
-
-                <table class="table" id="list-table-notes">
-                    <thead>
-                    <th>Customer</th>
-                    <th>Notes Last Created / Updated</th>
-                    </thead>
-                    <tbody>
-                        <?php foreach( $t->notes as $n ): ?>
-                        <tr>
-                            <td>
-                                <a href="<?= route( "customer@overview" , [ "id" => $n[ 'cid' ] ] ) ?>" >
-                                    <?= $n[ 'cname' ] ?>
-                                </a>
-                            </td>
-                            <td>
-                                <?= $n[ 'latest' ] ?>
-                            </td>
-                        </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
+</div>
 
 
-            </div>
-        </div>
-    <?php endif; ?>
+
 
 <?php $this->append() ?>
 

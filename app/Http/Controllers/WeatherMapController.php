@@ -38,6 +38,7 @@ class WeatherMapController extends Controller {
      * Display the weather map
      *
      * @param  int $id ID of the weather map
+     *
      * @return  view
      */
     public function index( int $id ): View {

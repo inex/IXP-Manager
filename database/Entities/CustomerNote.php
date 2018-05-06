@@ -2,8 +2,6 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
  * CustomerNote
  */
@@ -28,6 +26,11 @@ class CustomerNote
      * @var \DateTime
      */
     protected $created;
+
+    /**
+     * @var \DateTime
+     */
+    protected $updated;
 
     /**
      * @var integer
@@ -155,10 +158,10 @@ class CustomerNote
     /**
      * Set Customer
      *
-     * @param \Entities\Customer $customer
+     * @param Customer $customer
      * @return CustomerNote
      */
-    public function setCustomer(\Entities\Customer $customer)
+    public function setCustomer( Customer $customer )
     {
         $this->Customer = $customer;
     
@@ -180,10 +183,11 @@ class CustomerNote
      * Return the main fields of the note as an array
      * @return array
      */
-    public function toArray()
+    public function toArray(): array
     {
         return [
             'created'           => $this->getCreated(),
+            'updated'           => $this->getUpdated(),
             'id'                => $this->getId(),
             'note'              => $this->getNote(),
             'noteParsedown'     => @parsedown( $this->getNote() ),
@@ -191,11 +195,6 @@ class CustomerNote
             'title'             => $this->getTitle()
         ];
     }
-    /**
-     * @var \DateTime
-     */
-    protected $updated;
-
 
     /**
      * Set updated
