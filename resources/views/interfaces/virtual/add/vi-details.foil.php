@@ -6,7 +6,7 @@
         </div>
     <?php endif; ?>
     <?= Former::open()->method( 'POST' )
-        ->action( action( 'Interfaces\VirtualInterfaceController@store' ) )
+        ->action( route( 'interfaces/virtual/store' ) )
         ->customWidthClass( 'col-sm-6' )
     ?>
     <div class="col-sm-6">
@@ -23,9 +23,7 @@
             ->label( '&nbsp;' )
             ->text( 'Use 802.1q framing' )
             ->blockHelp( 'Indicates if operators / provisioning systems should configure this port with 802.1q framing / tagged packets.' )
-            ->check( $t->vi ? $t->vi->getTrunk() : false )
-            ->addClass( 'col-sm-6' );
-
+            ->value( 1 );
         ?>
 
         <?php if( $t->vi && count( $t->vi->getPhysicalInterfaces() ) > 1 && !$t->vi->getLagFraming() ): ?>
@@ -39,15 +37,15 @@
             ->label( '&nbsp;' )
             ->text( 'Link aggregation / LAG framing' )
             ->blockHelp( 'Indicates if operators / provisioning systems should enable LAG framing such as LACP. <br/><br/>Mandatory where there is more than one phsyical interface.<br/><br/> Otherwise optional where a member requests a single member LAG for ease of upgrades.' )
-            ->check( $t->vi ? $t->vi->getLagFraming() : false );
+            ->value( 1 );
         ?>
 
-        <div id='fastlacp-area' style="<?= $t->vi && $t->vi->getLagFraming() ? "" : "display: none" ?>">
+        <div id='fastlacp-area' style="<?= old( 'fastlacp' ) || $t->vi && $t->vi->getLagFraming() ? "" : "display: none" ?>">
             <?= Former::checkbox( 'fastlacp' )
                 ->label( '&nbsp;' )
                 ->text( 'Use Fast LACP' )
                 ->blockHelp( 'When LACP is used for LAG framing, indicates if operators / provisioning systems should enable fast LACP.' )
-                ->check( $t->vi ? $t->vi->getFastLACP() : false );
+                ->value( 1 )
             ?>
         </div>
 

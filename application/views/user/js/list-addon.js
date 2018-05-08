@@ -5,6 +5,7 @@ $(document).ready(function() {
         event.preventDefault();
         url = $(this).attr("href");
 
+
         bootbox.dialog( "Are you sure you want to delete this user?", [{
             "label": "Cancel",
             "class": "btn-primary"
@@ -12,7 +13,7 @@ $(document).ready(function() {
         {
             "label": "Remove User Access",
             "class": "btn-danger",
-            "callback": function() { document.location.href = url + "/useronly/1"; }
+            "callback": function() { document.location.href = url + "&useronly=1"; }
         },
         {
             "label": "Delete",

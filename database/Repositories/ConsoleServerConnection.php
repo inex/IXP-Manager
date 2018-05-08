@@ -26,6 +26,8 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
+use Entities\ConsoleServerConnection as ConsoleServerConnectionEntity;
+
 /**
  * ConsoleServerConnection
  *
@@ -58,7 +60,8 @@ class ConsoleServerConnection extends EntityRepository
                         csc.autobaud AS autobaud,
                         csc.flowcontrol AS flowcontrol,
                         csc.description AS description,
-                        cs.name AS name
+                        cs.id   AS consoleserver_id,
+                        cs.name AS consoleserver_name
                 FROM Entities\\ConsoleServerConnection csc
                 LEFT JOIN csc.consoleServer cs
                 LEFT JOIN csc.Customer c
@@ -81,5 +84,29 @@ class ConsoleServerConnection extends EntityRepository
         $query = $this->getEntityManager()->createQuery( $dql );
 
         return $query->getArrayResult();
+    }
+
+
+    /**
+     * Get a console server connection for a given consoleserverid and port
+     *
+     * @param int $csid     Consoler server ID
+     * @param string $port  Port
+     *
+     * @return ConsoleServerConnectionEntity[]
+     *
+     * @throws
+     */
+    public function getByServerAndPort( int $csid, string $port ): array {
+        $dql = "SELECT  csc
+                FROM Entities\\ConsoleServerConnection csc
+                WHERE csc.consoleServer = :csid
+                AND csc.port = :port";
+
+
+        return $this->getEntityManager()->createQuery( $dql )
+                ->setParameter( 'csid', $csid )
+                ->setParameter( 'port', $port )
+                ->getResult();
     }
 }

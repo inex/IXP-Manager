@@ -98,7 +98,10 @@ class LocationController extends Doctrine2Frontend {
                 'officephone' => 'Office Phone',
                 'officefax'   => 'Office Fax',
                 'officeemail' => 'Office Email',
-                'notes'       => 'Notes'
+                'notes'       => [
+                    'title'         => 'Notes',
+                    'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
+                ]
             ]
         );
 
@@ -119,16 +122,19 @@ class LocationController extends Doctrine2Frontend {
 
     /**
      * Display the form to add/edit an object
+     *
      * @param   int $id ID of the row to edit
+     *
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
+        $old = request()->old();
+
         if( $id != null ) {
             if( !( $this->object = D2EM::getRepository( LocationEntity::class )->find( $id ) ) ) {
                 abort(404);
             }
 
-            $old = request()->old();
 
             Former::populate([
                 'name'                  => array_key_exists( 'name',        $old ) ? $old['name']        : $this->object->getName(),
@@ -147,20 +153,25 @@ class LocationController extends Doctrine2Frontend {
 
         return [
             'object'       => $this->object,
+            'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : null )
         ];
     }
 
 
     /**
      * Function to do the actual validation and storing of the submitted object.
+     *
      * @param Request $request
+     *
      * @return bool|RedirectResponse
+     *
+     * @throws
      */
     public function doStore( Request $request )
     {
         $validator = Validator::make( $request->all(), [
             'name'              => 'required|string|max:255',
-            'shortname'         => 'required|string|max:255',
+            'shortname'         => 'required|string|max:255|unique:Entities\Location,shortname' . ( $request->input('id') ? ','. $request->input('id') : '' ),
             'tag'               => 'required|string|max:255',
             'nocemail'          => 'nullable|email',
             'officeemail'       => 'nullable|email',

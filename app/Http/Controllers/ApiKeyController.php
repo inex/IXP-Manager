@@ -152,6 +152,8 @@ class ApiKeyController extends Doctrine2Frontend {
      * Add Api Key to the current user
      *
      * @return RedirectResponse
+     *
+     * @throws
      */
     public function add() : RedirectResponse {
         if( count( Auth::user()->getApiKeys() ) >= 10 ) {

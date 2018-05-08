@@ -27,8 +27,7 @@ use D2EM, Former, Input, Redirect;
 
 use Entities\{
     Router as RouterEntity,
-    Vlan as VlanEntity,
-    User as UserEntity
+    Vlan as VlanEntity
 };
 
 use Illuminate\Http\RedirectResponse;
@@ -71,18 +70,23 @@ class RouterController extends Controller
     public function status(): View {
 
         /** @var RouterEntity[] $routers */
-        $routers = D2EM::getRepository( RouterEntity::class )->findAll();
-
+        $routers        = [];
         $routersWithApi = [];
-        foreach( $routers as $r ) {
-            if( $r->hasApi() ) {
-                $routersWithApi[] = $r->getHandle();
+        $lgEnabled      = !config('ixp_fe.frontend.disabled.lg' );
+
+        if( $lgEnabled ) {
+            $routers = D2EM::getRepository( RouterEntity::class )->findAll();
+            foreach( $routers as $r ) {
+                if( $r->hasApi() ) {
+                    $routersWithApi[] = $r->getHandle();
+                }
             }
         }
 
         return view( 'router/status' )->with([
             'routers'        => $routers,
             'routersWithApi' => $routersWithApi,
+            'lgEnabled'      => $lgEnabled,
         ]);
     }
 
@@ -91,59 +95,46 @@ class RouterController extends Controller
      * Display the form to edit a router
      *
      * @param  int    $id        router that need to be edited
+     *
      * @return View
      */
     public function edit( int $id = null ): View {
-        /** @var RouterEntity $rt */
-        if( $id ) {
-            if( !( $rt = D2EM::getRepository( RouterEntity::class )->find( $id ) ) ) {
-                abort( 404 );
-            }
-        } else {
-            $rt = new RouterEntity;
+
+        $rt = false; /** @var RouterEntity $rt */
+        if( $id && !( $rt = D2EM::getRepository( RouterEntity::class )->find( $id ) ) ) {
+            abort(404, "Unknown Router");
         }
 
-        // fill the form with router data
-        Former::populate([
-            'handle'                => $rt->getHandle(),
-            'vlan'                  => $rt->getVlan(),
-            'protocol'              => $rt->getProtocol(),
-            'type'                  => $rt->getType(),
-            'name'                  => $rt->getName(),
-            'shortname'             => $rt->getShortName(),
-            'router_id'             => $rt->getRouterId(),
-            'peering_ip'            => $rt->getPeeringIp(),
-            'asn'                   => $rt->getAsn(),
-            'software'              => $rt->getSoftware(),
-            'mgmt_host'             => $rt->getMgmtHost(),
-            'api_type'              => $rt->getApiType(),
-            'api'                   => $rt->getApi(),
-            'lg_access'             => $rt->getLgAccess(),
-            'quarantine'            => $rt->getQuarantine() ? 1 : 0,
-            'bgp_lc'                => $rt->getBgpLc() ? 1 : 0,
-            'skip_md5'              => $rt->getSkipMd5() ? 1 : 0,
-            'template'              => $rt->getTemplate()
-        ]);
+        $old = request()->old();
 
-        Former::open()->rules([
-            'handle'                => 'required|string|max:255',
-            'name'                  => 'required|string|max:255',
-            'shortname'             => 'required|string|max:20',
-            'router_id'             => 'required|ipv4',
-            'asn'                   => 'required|integer',
-            'mgmt_host'             => 'required|string|max:255'
-        ]);
+        if( $rt ) {
+            // fill the form with router data
+            Former::populate([
+                'handle'                => array_key_exists( 'handle',      $old ) ? $old['handle']         : $rt->getHandle(),
+                'vlan'                  => array_key_exists( 'vlan',        $old ) ? $old['vlan']           : $rt->getVlan(),
+                'protocol'              => array_key_exists( 'protocol',    $old ) ? $old['protocol']       : $rt->getProtocol(),
+                'type'                  => array_key_exists( 'type',        $old ) ? $old['type']           : $rt->getType(),
+                'name'                  => array_key_exists( 'name',        $old ) ? $old['name']           : $rt->getName(),
+                'shortname'             => array_key_exists( 'shortname',   $old ) ? $old['shortname']      : $rt->getShortName(),
+                'router_id'             => array_key_exists( 'router_id',   $old ) ? $old['router_id']      : $rt->getRouterId(),
+                'peering_ip'            => array_key_exists( 'peering_ip',  $old ) ? $old['peering_ip']     : $rt->getPeeringIp(),
+                'asn'                   => array_key_exists( 'asn',         $old ) ? $old['asn']            : $rt->getAsn(),
+                'software'              => array_key_exists( 'software',    $old ) ? $old['software']       : $rt->getSoftware(),
+                'mgmt_host'             => array_key_exists( 'mgmt_host',   $old ) ? $old['mgmt_host']      : $rt->getMgmtHost(),
+                'api_type'              => array_key_exists( 'api_type',    $old ) ? $old['api_type']       : $rt->getApiType(),
+                'api'                   => array_key_exists( 'api',         $old ) ? $old['api']            : $rt->getApi(),
+                'lg_access'             => array_key_exists( 'lg_access',   $old ) ? $old['lg_access']      : $rt->getLgAccess(),
+                'quarantine'            => array_key_exists( 'quarantine',  $old ) ? $old['quarantine']     : ( $rt->getQuarantine()    ? 1 : 0 ),
+                'bgp_lc'                => array_key_exists( 'bgp_lc',      $old ) ? $old['bgp_lc']         : ( $rt->getBgpLc()         ? 1 : 0 ),
+                'skip_md5'              => array_key_exists( 'skip_md5',    $old ) ? $old['skip_md5']       : ( $rt->getSkipMd5()       ? 1 : 0 ),
+                'template'              => array_key_exists( 'template',    $old ) ? $old['template']       : $rt->getTemplate(),
+            ]);
+        }
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'router/edit' )->with([
             'rt'                => $rt,
-            'edit'              => $id  ? true : false,
             'vlans'             => D2EM::getRepository( VlanEntity::class )->getNames( VlanRepository::TYPE_NORMAL ),
-            'protocols'         => RouterEntity::$PROTOCOLS,
-            'types'             => RouterEntity::$TYPES,
-            'softwares'         => RouterEntity::$SOFTWARES,
-            'apiTypes'          => RouterEntity::$API_TYPES,
-            'lgAccess'          => UserEntity::$PRIVILEGES_ALL
         ]);
     }
 
@@ -153,9 +144,14 @@ class RouterController extends Controller
      * Add or edit a router (set all the data needed)
      *
      * @param   StoreRouter $request instance of the current HTTP request
+     *
      * @return  RedirectResponse
+     *
+     * @throws
      */
     public function store( StoreRouter $request ): RedirectResponse {
+
+        $isEdit = $request->input( 'id' ) ? true : false;
 
         /** @var RouterEntity $rt */
         if( $request->input( 'id' ) && $rt = D2EM::getRepository( RouterEntity::class )->find( $request->input( 'id' ) ) ) {
@@ -167,41 +163,40 @@ class RouterController extends Controller
             D2EM::persist($rt);
         }
 
-        /** @var VlanEntity $vlan */
-        if( !( $vlan = D2EM::getRepository( VlanEntity::class )->find( $request->input( 'vlan' ) ) ) ) {
-            abort(404, 'Unknown vlan');
-        }
-
         if( !FacadeView::exists( $request->input( 'template' ) ) ) {
             AlertContainer::push( 'The template you entered cannot be found. Please check the help message for more information.', Alert::DANGER );
 
-            return Redirect::to( $request->input( 'id' ) ? 'router/edit/'.$request->input( 'id' ) : 'router/add/' )
+            return Redirect::to( $isEdit ? route( "router@edit", [ "id" => $request->input( 'id' ) ] ) : route( "router@add" ) )
                 ->withInput( Input::all() );
         }
 
-        $rt->setHandle( $request->input( 'handle' ) );
-        $rt->setVlan( $vlan );
-        $rt->setProtocol( $request->input( 'protocol' ) );
-        $rt->setType( $request->input( 'type' ) );
-        $rt->setName( $request->input( 'name' ) );
-        $rt->setShortName( $request->input( 'shortname' ) );
-        $rt->setRouterId( $request->input( 'router_id' ) );
-        $rt->setPeeringIp( $request->input( 'peering_ip' ) );
-        $rt->setAsn( $request->input( 'asn' ) );
-        $rt->setSoftware( $request->input( 'software' ) );
-        $rt->setMgmtHost( $request->input( 'mgmt_host' ) );
-        $rt->setApiType( $request->input( 'api_type' ) );
-        $rt->setApi( $request->input( 'api' ) );
-        $rt->setLgAccess( $request->input( 'lg_access' ) );
-        $rt->setQuarantine( ( $request->input( 'quarantine' ) ) ? $request->input( 'quarantine' ) : false );
-        $rt->setBgpLc( ( $request->input( 'bgp_lc' ) ) ? $request->input( 'bgp_lc' ) : false );
-        $rt->setSkipMd5( ( $request->input( 'skip_md5' ) ) ? $request->input( 'skip_md5' ) : false );
-        $rt->setTemplate(  $request->input( 'template' ) ) ;
+        $rt->setHandle(     $request->input( 'handle'       ) );
+        $rt->setProtocol(   $request->input( 'protocol'     ) );
+        $rt->setType(       $request->input( 'type'         ) );
+        $rt->setName(       $request->input( 'name'         ) );
+        $rt->setShortName(  $request->input( 'shortname'    ) );
+        $rt->setRouterId(   $request->input( 'router_id'    ) );
+        $rt->setPeeringIp(  $request->input( 'peering_ip'   ) );
+        $rt->setAsn(        $request->input( 'asn'          ) );
+        $rt->setSoftware(   $request->input( 'software'     ) );
+        $rt->setMgmtHost(   $request->input( 'mgmt_host'    ) );
+        $rt->setApiType(    $request->input( 'api_type'     ) );
+        $rt->setApi(        $request->input( 'api'          ) );
+        $rt->setLgAccess(   $request->input( 'lg_access'    ) );
+        $rt->setTemplate(   $request->input( 'template'     ) );
+
+        $rt->setVlan(       D2EM::getRepository( VlanEntity::class )->find( $request->input( 'vlan' ) ) );
+
+        $rt->setQuarantine(( $request->input( 'quarantine'  ) ) ? $request->input( 'quarantine'     ) : 0 );
+        $rt->setBgpLc(       ( $request->input( 'bgp_lc'       ) ) ? $request->input( 'bgp_lc'         ) : 0 );
+        $rt->setSkipMd5(   ( $request->input( 'skip_md5'     ) ) ? $request->input( 'skip_md5'       ) : 0 );
+
 
         D2EM::flush();
 
         AlertContainer::push( 'Router added/updated successfully.', Alert::SUCCESS );
-        return Redirect::to( 'router/list');
+
+        return Redirect::to( route( "router@list" ) );
     }
 
 
@@ -214,7 +209,7 @@ class RouterController extends Controller
     public function view( int $id ): View {
         /** @var RouterEntity $rt */
         if( !( $rt = D2EM::getRepository( RouterEntity::class )->find( $id ) ) ) {
-            abort(404);
+            abort(404 , 'Unknown router' );
         }
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
@@ -227,7 +222,10 @@ class RouterController extends Controller
      * Delete a router
      *
      * @param  int    $id        router that need to be deleted
+     *
      * @return redirectresponse
+     *
+     * @throws
      */
     public function delete( int $id ): RedirectResponse {
         /** @var RouterEntity $rt */
@@ -239,7 +237,7 @@ class RouterController extends Controller
         D2EM::flush();
 
         AlertContainer::push( 'The router has been successfully deleted.', Alert::SUCCESS );
-        return Redirect::to( 'router/list');
+        return Redirect::to( route( "router@list" ) );
     }
 
 }

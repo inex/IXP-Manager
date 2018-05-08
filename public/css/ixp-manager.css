@@ -173,7 +173,7 @@ button.navbar-toggle{
 
 .left-sidebar .nav-stacked li{
     line-height: 20px;
-    height : 26px;
+    height : auto;
     margin-top: 0px;
 }
 

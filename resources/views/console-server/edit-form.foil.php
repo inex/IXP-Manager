@@ -47,18 +47,40 @@
     <?= Former::checkbox( 'active' )
         ->label( '&nbsp;' )
         ->text( 'Active' )
-        ->checked_value( 1 )
-        ->unchecked_value( 0 )
-        ->forceValue(0)
+        ->value( 1 )
         ->blockHelp( "Marking a console inactive will exclude it from, for example, Nagios configuration generation." );
     ?>
 
-    <?= Former::textarea( 'notes' )
-        ->label( 'Notes' )
-        ->rows( 10 )
-        ->style( 'width:500px' )
-        ->blockHelp( '' );
-    ?>
+    <div class="form-group">
+
+        <label for="notes" class="control-label col-lg-2 col-sm-4">Notes</label>
+        <div class="col-sm-8">
+
+            <ul class="nav nav-tabs">
+                <li role="presentation" class="active">
+                    <a class="tab-link-body-note" href="#body">Notes</a>
+                </li>
+                <li role="presentation">
+                    <a class="tab-link-preview-note" href="#preview">Preview</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="body">
+
+                    <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->data[ 'params'][ 'notes' ] ?></textarea>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="preview">
+                    <div class="well well-preview" style="background: rgb(255,255,255);">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+
+            <br><br>
+        </div>
+
+    </div>
 
     <?= Former::actions(
         Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' ),

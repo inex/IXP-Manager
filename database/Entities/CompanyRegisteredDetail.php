@@ -63,7 +63,7 @@ class CompanyRegisteredDetail
     
     public function __construct()
     {
-        $this->Customer = new ArrayCollection();
+
     }
 
     /**

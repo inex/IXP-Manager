@@ -23,7 +23,8 @@ namespace IXP\Console\Commands\Upgrade;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Console\Command;
+
+use IXP\Console\Commands\Command;
 
 use D2EM;
 
@@ -32,9 +33,6 @@ use Entities\{
     Switcher                    as SwitcherEntity,
     ConsoleServerConnection     as ConsoleServerConnectionEntity
 };
-
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException as UniqueConstraintException;
-
 
 /**
  * Class SplitSwitchConserver - tool to split the console servers from the switches
@@ -85,13 +83,13 @@ class SplitSwitchConserver extends Command
             return 1;
         }
         try{
-            D2EM::transactional( function( $em ) {
 
-                /** @var \Doctrine\ORM\EntityManager $em */
+            foreach( D2EM::getRepository( SwitcherEntity::class )->findBy( [ "switchtype" => SwitcherEntity::TYPE_CONSOLESERVER ] ) as $s ) {
 
-                foreach( D2EM::getRepository( SwitcherEntity::class )->findBy( [ "switchtype" => SwitcherEntity::TYPE_CONSOLESERVER ] ) as $s ) {
+                /** @var SwitcherEntity $s */
+                D2EM::transactional( function( $em ) use ($s) {
 
-                    /** @var SwitcherEntity $s */
+                    /** @var \Doctrine\ORM\EntityManager $em */
 
                     $cscs = D2EM::getRepository( SwitcherEntity::class )->getConsoleServerConnections( $s->getId() );
                     $this->info( " - migrating {$s->getName()} and its " . count( $cscs ) . " console connections" );
@@ -102,7 +100,7 @@ class SplitSwitchConserver extends Command
                     $cs->setHostname( $s->getHostName() );
                     $cs->setModel( $s->getModel() );
                     $cs->setNote( $s->getNotes() );
-                    $cs->setSerialNumber( $s->getSerialNumber() );
+                    $cs->setSerialNumber( $s->getSerialNumber() == '(not implemented)' ? '' : $s->getSerialNumber() );
                     $cs->setCabinet( $s->getCabinet() );
                     $cs->setVendor( $s->getVendor() );
                     $em->persist( $cs );
@@ -114,14 +112,15 @@ class SplitSwitchConserver extends Command
                     }
 
                     $em->remove( $s );
-                }
 
-            });
+                });
+
+            }
         }
-        catch( UniqueConstraintException $e ){
+        catch( \Exception $e ){
             $this->info( '=========================================' );
             $this->error( $e->getMessage() );
-            $this->info( 'Migration Aborted!' );
+            $this->info( 'Migration Aborted! Database changes for the errored switch rolled back.' );
             return $e;
         }
 

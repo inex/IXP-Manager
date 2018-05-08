@@ -13,21 +13,23 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section('content') ?>
 
-<div class="container-fluid">
+<div class="row">
 
-    <div class="alert alert-info">
-        You can add sflow receivers via the customers virtual interface edit page.
-    </div>
+    <div class="col-sm-12">
 
-    <?= $t->alerts() ?>
+        <div class="alert alert-info">
+            You can add sflow receivers via the customers virtual interface edit page.
+        </div>
 
-    <span id="message-sflr"></span>
+        <?= $t->alerts() ?>
 
-    <div id="area-sflr" class="collapse">
+        <span id="message-sflr"></span>
 
-        <table id='table-sflr' class="table">
+        <div id="area-sflr" class="collapse">
 
-            <thead>
+            <table id='table-sflr' class="table">
+
+                <thead>
                 <tr>
                     <th>
                         Customer
@@ -42,11 +44,12 @@ $this->layout( 'layouts/ixpv4' );
                         Destination Port
                     </th>
                     <th>
+                        Action
                     </th>
                 </tr>
-            <thead>
+                <thead>
 
-            <tbody>
+                <tbody>
 
                 <?php foreach( $t->listSr as $sflr ): /** @var Entities\SflowReceiver $sflr */ ?>
 
@@ -76,7 +79,7 @@ $this->layout( 'layouts/ixpv4' );
 
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn btn-default" href="<?= route ( 'interfaces/sflow-receiver/edit' , [ 'id' => $sflr->getId() ] ) ?>" title="Edit">
+                                <a class="btn btn btn-default" href="<?= route( 'interfaces/sflow-receiver/edit' , [ 'id' => $sflr->getId() ] ) ?>" title="Edit">
                                     <i class="glyphicon glyphicon-pencil"></i>
                                 </a>
 
@@ -90,9 +93,11 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?php endforeach;?>
 
-            <tbody>
+                <tbody>
 
-        </table>
+            </table>
+
+        </div>
 
     </div>
 

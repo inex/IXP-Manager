@@ -25,15 +25,18 @@ namespace IXP\Http\Controllers;
 
 use App, Cache, D2EM;
 
+use Carbon\Carbon;
 use IXP\Services\Grapher\Graph as Graph;
 
 use Entities\{
     Customer            as CustomerEntity,
     IXP                 as IXPEntity,
-    VirtualInterface    as VirtualInterfaceEntity
+    VirtualInterface    as VirtualInterfaceEntity,
+    VlanInterface       as VlanInterfaceEntity
 };
 
 
+use Illuminate\Http\Request;
 use Illuminate\View\View;
 
 
@@ -55,11 +58,13 @@ class AdminController extends Controller
      *
      * @return view
      */
-    public function dashboard(): View
+    public function dashboard( Request $request ): View
     {
         return view( 'admin/dashboard' )->with([
-            'stats'                 => $this->dashboardStats(),
-            'graphs'                => $this->publicPeeringGraphs(),
+            'stats'                 => $this->dashboardStats( $request ),
+            'graphs'                => $this->publicPeeringGraphs( $request ),
+            'graph_period'          => $request->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ),
+            'graph_periods'         => Graph::PERIOD_DESCS,
         ]);
     }
 
@@ -69,10 +74,10 @@ class AdminController extends Controller
      *
      * @return array array of statistics
      */
-    private function dashboardStats()
+    private function dashboardStats( Request $request )
     {
         // only do this once every 60 minutes
-        if( !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
+        if( $request->query( 'refresh_cache', 0 ) || !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
 
             $cTypes['types'] = D2EM::getRepository( CustomerEntity::class )->getTypeCounts();
 
@@ -87,6 +92,10 @@ class AdminController extends Controller
 
                 $location       = $vi['locationname'];
                 $infrastructure = $vi['infrastructure'];
+
+                if( !isset( $custsByLocation[ $location ] ) ) {
+                    $custsByLocation[ $location ] = [];
+                }
 
                 if( !isset( $byLocation[ $location ] ) ) {
                     $byLocation[ $location ] = [];
@@ -105,6 +114,11 @@ class AdminController extends Controller
                 } else {
                     $speeds[ $vi[ 'speed' ] ]++;
                 }
+
+                if( !isset( $custsByLocation[ $location ][ $vi['customerid'] ] ) ) {
+                    $custsByLocation[ $location ][] = $vi['customerid'];
+                }
+
 
                 if( !isset( $byLocation[ $vi['locationname'] ][ $vi['speed'] ] ) ) {
                     $byLocation[ $location ][ $vi[ 'speed' ] ] = 1;
@@ -126,12 +140,20 @@ class AdminController extends Controller
             }
 
             ksort( $speeds, SORT_NUMERIC );
-            $cTypes['speeds']      = $speeds;
-            $cTypes['byLocation']  = $byLocation;
-            $cTypes['byLan']       = $byLan;
-            $cTypes['byIxp']       = $byIxp;
+            ksort( $custsByLocation );
 
-            Cache::put( 'admin_ctypes', $cTypes, 3600 );
+            $cTypes['speeds']           = $speeds;
+            $cTypes['custsByLocation']  = $custsByLocation;
+            $cTypes['byLocation']       = $byLocation;
+            $cTypes['byLan']            = $byLan;
+            $cTypes['byIxp']            = $byIxp;
+
+            $cTypes['rsUsage']          = D2EM::getRepository( VlanInterfaceEntity::class )->getRsClientUsagePerVlan();
+            $cTypes['ipv6Usage']        = D2EM::getRepository( VlanInterfaceEntity::class )->getIPv6UsagePerVlan();
+
+            $cTypes['cached_at']        = Carbon::now();
+
+            Cache::put( 'admin_ctypes', $cTypes, 60 );
         }
 
         return $cTypes;
@@ -141,29 +163,33 @@ class AdminController extends Controller
      * Get public peering graphs
      *
      * @return array array of graphs
+     *
+     * @throws
      */
-    private function publicPeeringGraphs()
+    private function publicPeeringGraphs( Request $request )
     {
         $grapher = App::make('IXP\Services\Grapher');
 
-        if( !( $graphs = Cache::get( 'admin_stats' ) ) ) {
+        $period   = Graph::processParameterPeriod( $request->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ) );
+
+        if( $request->query( 'refresh_cache', 0 ) || !( $graphs = Cache::get( 'admin_stats_'.$period ) ) ) {
             $graphs = [];
 
             $graphs['ixp'] = $grapher->ixp( D2EM::getRepository(IXPEntity::class )->getDefault() )
                 ->setType(     Graph::TYPE_PNG )
                 ->setProtocol( Graph::PROTOCOL_ALL )
-                ->setPeriod(   Graph::PERIOD_MONTH )
+                ->setPeriod(   $period )
                 ->setCategory( Graph::CATEGORY_BITS );
 
             foreach( D2EM::getRepository(IXPEntity::class )->getDefault()->getInfrastructures() as $inf ) {
                 $graphs[ $inf->getId()] = $grapher->infrastructure( $inf )
                     ->setType(     Graph::TYPE_PNG )
                     ->setProtocol( Graph::PROTOCOL_ALL )
-                    ->setPeriod(   Graph::PERIOD_MONTH )
+                    ->setPeriod(   $period )
                     ->setCategory( Graph::CATEGORY_BITS );
             }
 
-            Cache::put( 'admin_stats', $graphs, 300 );
+            Cache::put( 'admin_stats_'.$period, $graphs, 5 );
         }
 
         return $graphs;

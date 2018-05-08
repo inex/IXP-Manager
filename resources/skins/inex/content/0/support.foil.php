@@ -24,7 +24,7 @@
 <p>
 Regular technical support at INEX is provided on an office hours basis from 08:00 to 18:00 GMT,
 Monday through Friday. The normal communications channel for technical support is email to
-{mailto address="operations@inex.ie" encode="javascript"}. INEX aims for 4 hour turnaround on all
+    <a href="mailto:operations@inex.ie">operations@inex.ie</a>. INEX aims for 4 hour turnaround on all
 email support requests. INEX operations staff are also available by telephone on +353-1-5313339.
 <br /><br />
 </p>

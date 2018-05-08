@@ -60,7 +60,8 @@ class ConsoleServerController extends Doctrine2Frontend {
         $this->feParams         = (object)[
 
             'entity'            => ConsoleServerEntity::class,
-            'pagetitle'         => 'Console Server',
+
+            'pagetitle'         => 'Console Servers',
 
             'titleSingular'     => 'Console Server',
             'nameSingular'      => 'a console server',
@@ -72,14 +73,20 @@ class ConsoleServerController extends Doctrine2Frontend {
 
             'listColumns'    => [
 
-                'id'        => [ 'title' => 'DB ID', 'display' => true ],
-
                 'name'           => [
                     'title'      => 'Name',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'console-server',
-                    'action'     => 'view',
+                    'controller' => 'console-server-connection',
+                    'action'     => 'list/port',
                     'idField'    => 'id'
+                ],
+
+                'facility'  => [
+                    'title'      => 'Facility',
+                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller' => 'facility',
+                    'action'     => 'view',
+                    'idField'    => 'locationid'
                 ],
 
                 'cabinet'  => [
@@ -111,7 +118,10 @@ class ConsoleServerController extends Doctrine2Frontend {
             $this->feParams->listColumns,
             [
                 'serialNumber'   => 'Serial Number',
-                'notes'          => 'Notes',
+                'notes'       => [
+                    'title'         => 'Notes',
+                    'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
+                ]
             ]
         );
 
@@ -139,23 +149,23 @@ class ConsoleServerController extends Doctrine2Frontend {
      */
     protected function addEditPrepareForm( $id = null ): array {
 
+        $old = request()->old();
+
+
         if( $id !== null ) {
 
             if( !( $this->object = D2EM::getRepository( ConsoleServerEntity::class )->find( $id) ) ) {
                 abort(404, 'Console server not found' );
             }
 
-            $old = request()->old();
-
             Former::populate([
                 'name'              => array_key_exists( 'name',            $old ) ? $old['name']           : $this->object->getName(),
                 'hostname'          => array_key_exists( 'hostname',        $old ) ? $old['hostname']       : $this->object->getHostname(),
                 'model'             => array_key_exists( 'model',           $old ) ? $old['model']          : $this->object->getModel(),
                 'serial_number'     => array_key_exists( 'serial_number',   $old ) ? $old['serial_number']  : $this->object->getSerialNumber(),
-                'notes'             => array_key_exists( 'notes',           $old ) ? $old['notes']          : $this->object->getNote(),
                 'cabinet'           => array_key_exists( 'cabinet',         $old ) ? $old['cabinet']        : $this->object->getCabinet()->getId(),
                 'vendor'            => array_key_exists( 'vendor',          $old ) ? $old['vendor']         : $this->object->getVendor()->getId(),
-                'active'            => array_key_exists( 'active',          $old ) ? $old['active']         : ( $this->object->getActive() ?? false ),
+                'active'            => array_key_exists( 'active',          $old ) ? $old['active']         : ( $this->object->getActive() ? 1 : 0 ),
             ]);
         }
 
@@ -163,6 +173,7 @@ class ConsoleServerController extends Doctrine2Frontend {
             'object'                => $this->object,
             'cabinets'              => D2EM::getRepository( CabinetEntity::class    )->getAsArray(),
             'vendors'               => D2EM::getRepository( VendorEntity::class     )->getAsArray(),
+            'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNote() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : null )
         ];
     }
 
@@ -176,7 +187,7 @@ class ConsoleServerController extends Doctrine2Frontend {
     public function doStore( Request $request )
     {
         $validator = Validator::make( $request->all(), [
-            'name'              => 'required|string|max:255',
+            'name'              => 'required|string|max:255|unique:Entities\ConsoleServer,name' . ( $request->input('id') ? ','. $request->input('id') : '' ),
             'vendor'            => 'required|int|exists:Entities\Vendor,id',
             'cabinet'           => 'required|int|exists:Entities\Cabinet,id',
             'model'             => 'nullable|string|max:255',
@@ -201,10 +212,10 @@ class ConsoleServerController extends Doctrine2Frontend {
 
         $this->object->setName(         $request->input( 'name'             ) );
         $this->object->setSerialNumber( $request->input( 'serial_number'    ) );
-        $this->object->setActive(       ( $request->input( 'active' ) ?? false ) == "1" );
         $this->object->setHostname(     $request->input( 'hostname'         ) );
         $this->object->setNote(         $request->input( 'notes'            ) );
         $this->object->setModel(        $request->input( 'model'            ) );
+        $this->object->setActive(       $request->input( 'active' ) ? 1 : 0 );
         $this->object->setVendor(       D2EM::getRepository( VendorEntity::class    )->find( $request->input( 'vendor'     ) ) );
         $this->object->setCabinet(      D2EM::getRepository( CabinetEntity::class   )->find( $request->input( 'cabinet'    ) ) );
 

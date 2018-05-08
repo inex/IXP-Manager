@@ -26,12 +26,9 @@
                 </ul>
             </div>
 
-
-            <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add') ?>">
+            <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add' ) ?><?= isset( $t->data[ 'params'][ "cs" ] ) ? "?console-server=" . $t->data[ 'params'][ "cs" ] : ""  ?>">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
-
-
 
         </div>
     </li>

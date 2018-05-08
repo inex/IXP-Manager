@@ -9,12 +9,12 @@
                 <div class="btn-group btn-group-xs" role="group">
 
                     <?php if( isset( $t->feParams->publicOnly ) and $t->feParams->publicOnly ): ?>
-                        <a href="<?= route( 'vlan@infra',       [ 'id' => $t->feParams->infra->getId() ] ) ?>" class='btn btn-default'>Include Private</a>
+                        <a href="<?= route( $t->feParams->route_prefix . '@infra',       [ 'id' => $t->feParams->infra->getId() ] )                 ?>" class='btn btn-default'>Include Private</a>
                     <?php else: ?>
-                        <a href="<?= route( 'vlan@infraPublic', [ 'id' => $t->feParams->infra->getId(), 'public' => 1 ] ) ?>" class='btn btn-default'>Public Only</a>
+                        <a href="<?= route( $t->feParams->route_prefix . '@infraPublic', [ 'id' => $t->feParams->infra->getId(), 'public' => 1 ] )  ?>" class='btn btn-default'>Public Only</a>
                     <?php endif; ?>
 
-                    <a href="<?= action( 'VlanController@list' ) ?>" class='btn btn-default'>Show All VLANs</a>
+                    <a href="<?= route( $t->feParams->route_prefix . '@list' ) ?>" class='btn btn-default'>Show All VLANs</a>
                 </div>
             </div>
         </div>

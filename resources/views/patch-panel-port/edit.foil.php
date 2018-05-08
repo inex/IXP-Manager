@@ -1,7 +1,7 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= route ( 'patch-panel/list' )?>">Patch Panel Port</a>
+    <a href="<?= route ( 'patch-panel-port/list' )?>">Patch Panel Port</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -35,7 +35,7 @@
 <?= $t->alerts() ?>
 
 <?= Former::open()->method( 'POST' )
-    ->action( action ('PatchPanel\PatchPanelPortController@store' ) )
+    ->action( route( 'patch-panel-port@store' ) )
     ->customWidthClass( 'col-sm-3' )
     ->addClass( 'col-md-10' );
 ?>
@@ -93,6 +93,7 @@
 
     <?= Former::checkbox( 'duplex' )
         ->label( 'Duplex connection?' )
+        ->value( 1 )
         ->blockHelp('Typically fibre connections are <em>duplex connections</em> in that they use two ports. If this is the '
             . 'case, check this and select the partner port. <em>Duplex ports should generally start with an odd number and '
             . 'have an even numbered partner port (assuming port numbering starts from 1).</em>' );
@@ -202,19 +203,70 @@
     <?php endif; ?>
 
     <?php if ( !$t->prewired ): ?>
-        <?= Former::textarea( 'notes' )
-            ->label( 'Public Notes' )
-            ->rows( 10 )
-            ->style( 'width:500px' )
-            ->blockHelp( 'These notes are visible (but not editable) to the member. You can use markdown here.' );
-        ?>
+
+        <div class="form-group">
+
+            <label for="notes" class="control-label col-lg-2 col-sm-4">Public Notes</label>
+            <div class="col-sm-8">
+
+                <ul class="nav nav-tabs">
+                    <li role="presentation" class="active">
+                        <a class="tab-link-body-note" href="#body1">Notes</a>
+                    </li>
+                    <li role="presentation">
+                        <a class="tab-link-preview-note" href="#preview1">Preview</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="body1">
+                        <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->notes ?></textarea>
+                        <p class="help-block">These notes are visible (but not editable) to the member. You can use markdown here.</p>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="preview1">
+                        <div class="well well-preview" style="background: rgb(255,255,255);">
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+
+                <br><br>
+            </div>
+
+        </div>
+
     <?php endif; ?>
-    <?= Former::textarea( 'private_notes' )
-        ->label( 'Private Notes' )
-        ->rows( 10 )
-        ->style( 'width:500px' )
-        ->blockHelp( 'These notes are <b>NOT</b> visible to the member. You can use markdown here.' );
-    ?>
+
+        <div class="form-group">
+
+            <label for="private_notes" class="control-label col-lg-2 col-sm-4">Private Notes</label>
+            <div class="col-sm-8">
+
+                <ul class="nav nav-tabs">
+                    <li role="presentation" class="active">
+                        <a class="tab-link-body-note" href="#body2">Notes</a>
+                    </li>
+                    <li role="presentation">
+                        <a class="tab-link-preview-note" href="#preview2">Preview</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="body2">
+                        <textarea class="form-control" style="font-family:monospace;" rows="20" id="private_notes" name="private_notes"><?= $t->private_notes ?></textarea>
+                        <p class="help-block">These notes are <b>NOT</b> visible to the member. You can use markdown here.</p>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="preview2">
+                        <div class="well well-preview" style="background: rgb(255,255,255);">
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+
+                <br><br>
+            </div>
+
+        </div>
 
     <?php if ( !$t->prewired ): ?>
         <?php if( !$t->allocating ): ?>
