@@ -135,9 +135,13 @@ class SwitchsController extends Doctrine2Frontend {
                     'title'      => 'Last Polled',
                     'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ],
-                'notes'          => 'Notes',
+
                 'asn'            => 'ASN',
                 'loopback_ip'    => 'Loopback IP',
+                'notes'       => [
+                    'title'         => 'Notes',
+                    'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
+                ]
             ]
         );
 
@@ -302,13 +306,15 @@ class SwitchsController extends Doctrine2Frontend {
      */
     protected function addEditPrepareForm( $id = null ): array {
 
+        $old = request()->old();
+
         if( $id !== null ) {
 
             if( !( $this->object = D2EM::getRepository( SwitcherEntity::class )->find( $id) ) ) {
                 abort(404);
             }
 
-            $old = request()->old();
+
 
             Former::populate([
                 'name'              => array_key_exists( 'name',      $old         ) ? $old['name']              :  $this->object->getName(),
@@ -321,7 +327,6 @@ class SwitchsController extends Doctrine2Frontend {
                 'snmppasswd'        => array_key_exists( 'snmppasswd', $old        ) ? $old['snmppasswd']        :  $this->object->getSnmppasswd(),
                 'vendorid'          => array_key_exists( 'vendorid', $old          ) ? $old['vendorid']          :  $this->object->getVendor() ? $this->object->getVendor()->getId() : null,
                 'model'             => array_key_exists( 'model', $old             ) ? $old['model']             :  $this->object->getModel(),
-                'notes'             => array_key_exists( 'notes', $old             ) ? $old['notes']             :  $this->object->getNotes(),
                 'active'            => array_key_exists( 'active', $old            ) ? $old['active']            : ( $this->object->getActive() ?? 0 ),
                 'asn'               => array_key_exists( 'asn', $old               ) ? $old['notes']             :  $this->object->getAsn(),
                 'loopback_ip'       => array_key_exists( 'loopback_ip', $old       ) ? $old['loopback_ip']       :  $this->object->getLoopbackIP(),
@@ -337,6 +342,7 @@ class SwitchsController extends Doctrine2Frontend {
             'cabinets'          => D2EM::getRepository( CabinetEntity::class            )->getAsArray(),
             'infra'             => D2EM::getRepository( InfrastructureEntity::class     )->getAllAsArray(),
             'vendors'           => D2EM::getRepository( VendorEntity::class             )->getAsArray(),
+            'notes'             => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : "" )
         ];
     }
 
