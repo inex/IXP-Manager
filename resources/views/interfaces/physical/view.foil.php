@@ -137,7 +137,7 @@ $this->layout( 'layouts/ixpv4' )
                                 </b>
                             </td>
                             <td>
-                                <?= $t->ee(  $pi->getNotes() ) ?>
+                                <?= @parsedown( $pi->getNotes() ) ?>
                             </td>
                         </tr>
                     </table>

@@ -103,6 +103,7 @@ class ConsoleServerConnection extends EntityRepository
                 WHERE csc.consoleServer = :csid
                 AND csc.port = :port";
 
+
         return $this->getEntityManager()->createQuery( $dql )
                 ->setParameter( 'csid', $csid )
                 ->setParameter( 'port', $port )

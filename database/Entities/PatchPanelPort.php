@@ -473,7 +473,7 @@ class PatchPanelPort
      */
     public function getNotes()
     {
-        return $this->notes;
+        return $this->notes ?? '';
     }
 
     /**
@@ -716,7 +716,7 @@ class PatchPanelPort
      */
     public function getPrivateNotes()
     {
-        return $this->private_notes;
+        return $this->private_notes ?? '';
     }
 
     /**

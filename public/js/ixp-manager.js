@@ -55,6 +55,32 @@ $( 'document' ).ready( function(){
     });
 
 
+    $('.tab-link-body-note').on( 'click', function(e) {
+        e.preventDefault();
+        $(this).tab('show');
+    });
+
+    $('.tab-link-preview-note').on( 'click', function(e) {
+        const well_div = $(this).closest('div').find( ".well-preview" );
+        e.preventDefault();
+
+        $(this).tab('show');
+
+        $.ajax( MARKDOWN_URL, {
+            data: {
+                text: $(this).closest('div').find( "textarea" ).val()
+            },
+            type: 'POST'
+        })
+            .done( function( data ) {
+                well_div.html( data.html );
+            })
+            .fail( function() {
+                well_div.html('Error!');
+            });
+    });
+
+
 });
 
 
@@ -175,4 +201,7 @@ function ixpAsnumber( asNumber ) {
             throw `Error running ajax query for ${url}`;
         })
 }
+
+
+
 

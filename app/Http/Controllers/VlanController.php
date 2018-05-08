@@ -108,7 +108,10 @@ class VlanController extends Doctrine2Frontend {
                     'xlator'         => VlanEntity::$PRIVATE_YES_NO
                 ],
 
-                'notes' => 'Notes'
+                'notes' => [
+                    'title'         => 'Notes',
+                    'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
+                ]
             ]
         );
 
@@ -144,12 +147,13 @@ class VlanController extends Doctrine2Frontend {
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
+        $old = request()->old();
+
         if( $id != null ) {
+
             if( !( $this->object = D2EM::getRepository( VlanEntity::class )->find( $id ) ) ) {
                 abort(404);
             }
-
-            $old = request()->old();
 
             Former::populate([
                 'name'                      =>  array_key_exists( 'name',               $old    ) ? $old['name']               : $this->object->getName(),
@@ -159,13 +163,13 @@ class VlanController extends Doctrine2Frontend {
                 'private'                   =>  array_key_exists( 'private',            $old    ) ? $old['private']            : ( $this->object->getPrivate()          ? 1 : 0 ),
                 'peering_matrix'            =>  array_key_exists( 'peering_matrix',     $old    ) ? $old['peering_matrix']     : ($this->object->getPeeringMatrix()     ? 1 : 0 ),
                 'peering_manager'           =>  array_key_exists( 'peering_manager',    $old    ) ? $old['peering_manager']    : ( $this->object->getPeeringManager()   ? 1 : 0 ),
-                'notes'                     =>  array_key_exists( 'notes',              $old    ) ? $old['notes']              : $this->object->getNotes(),
             ]);
         }
 
         return [
             'object'            => $this->object,
             'infrastructure'    => D2EM::getRepository( InfrastructureEntity::class )->getNames( ),
+            'notes'             => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : "" )
         ];
     }
 

@@ -131,15 +131,37 @@
                     ->value( date( 'Y-m-d' ) );
                 ?>
 
-                <?= Former::textarea( 'location_notes' )
-                    ->label( 'Facility Notes' )
-                    ->rows( 5 )
-                    ->blockHelp( 'These notes are included on connection and other emails to help co-location providers correctly '
-                        . 'identify their own co-location references. Unfortunately, it has been the experience of the authors '
-                        . 'that co-location providers change identifiers (and ownership) like the wind changes direction. These '
-                        . 'notes will be parsed as Markdown.'
-                    );
-                ?>
+                <div class="form-group">
+
+                    <label for="location_notes" class="control-label col-lg-2 col-sm-4">Facility Notes</label>
+                    <div class="col-sm-8">
+
+                        <ul class="nav nav-tabs">
+                            <li role="presentation" class="active">
+                                <a class="tab-link-body-note" href="#body">Notes</a>
+                            </li>
+                            <li role="presentation">
+                                <a class="tab-link-preview-note" href="#preview">Preview</a>
+                            </li>
+                        </ul>
+
+                        <div class="tab-content">
+                            <div role="tabpanel" class="tab-pane active" id="body">
+                                <textarea class="form-control" style="font-family:monospace;" rows="20" id="location_notes" name="location_notes"><?= $t->location_notes ?></textarea>
+                                <p class="help-block">These notes are included on connection and other emails to help co-location providers correctly identify their own co-location references. Unfortunately, it has been the experience of the authors that co-location providers change identifiers (and ownership) like the wind changes direction. These notes will be parsed as Markdown.</p>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="preview">
+                                <div class="well well-preview" style="background: rgb(255,255,255);">
+                                    Loading...
+                                </div>
+                            </div>
+                        </div>
+
+                        <br><br>
+                    </div>
+
+                </div>
+
 
                 <?= Former::hidden( 'id' )
                     ->value( $t->pp ? $t->pp->getId() : '' )

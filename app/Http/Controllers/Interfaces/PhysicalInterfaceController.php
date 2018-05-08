@@ -141,7 +141,6 @@ class PhysicalInterfaceController extends Common
                 'duplex'                  => array_key_exists( 'duplex',        $old    ) ? $old['duplex']          : $pi->getDuplex(),
                 'autoneg-label'           => array_key_exists( 'autoneg-label', $old    ) ? $old['autoneg-label']   : ( $pi->getAutoneg() ? 1 : 0 ),
                 'monitorindex'            => array_key_exists( 'monitorindex',  $old    ) ? $old['monitorindex']    : ( $pi->getMonitorindex() ? $pi->getMonitorindex() : D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $pi->getVirtualInterface()->getCustomer() ) ) ,
-                'notes'                   => array_key_exists( 'notes',         $old    ) ? $old['notes']           : $pi->getNotes()
             ];
 
             // get all the switch ports available and add the switch port associated to the physical interface in the list
@@ -177,6 +176,8 @@ class PhysicalInterfaceController extends Common
             'cb'                          => $cb ? $cb : false,
             'enableFanout'                => $this->resellerMode() && $vi && $vi->getCustomer()->isResoldCustomer(),
             'spFanout'                    => $pi && isset( $data['fanout'] ) && $data['fanout'] && $pi->getFanoutPhysicalInterface() ? $pi->getFanoutPhysicalInterface()->getSwitchPort()->getId() : false,
+            'notes'                       => $pi ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $pi->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : "" ),
+            'notesb'                      => array_key_exists( 'notes-b',           $data ) ? $data['notes-b']           : ""
         ]);
     }
 
