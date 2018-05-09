@@ -32,7 +32,7 @@ use IXP\Utils\Grapher\Dummy as DummyFile;
 use Entities\IXP;
 
 /**
- * Grapher Backend -> Mrtg
+ * Grapher Backend -> Dummy
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Grapher
@@ -194,7 +194,10 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
      * {inheritDoc}
      *
      * @param Graph $graph
+     *
      * @return string
+     *
+     * @throws
      */
     public function png( Graph $graph ): string {
         return @file_get_contents( $this->resolveFilePath( $graph, 'png' ) );

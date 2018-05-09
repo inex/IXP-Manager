@@ -137,7 +137,10 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      * {inheritDoc}
      *
      * @param Graph $graph
+     *
      * @return string
+     *
+     * @throws
      */
     public function png( Graph $graph ): string {
         return @file_get_contents( $this->resolveFilePath( $graph ) );
@@ -149,6 +152,7 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      * {inheritDoc}
      *
      * @param Graph $graph
+     *
      * @return string
      */
     public function rrd( Graph $graph ): string {
@@ -161,7 +165,9 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      * will be found.
      *
      * @param Graph $graph
+     *
      * @return string
+     *
      * @throws
      */
     private function resolveFilePath( Graph $graph ): string {

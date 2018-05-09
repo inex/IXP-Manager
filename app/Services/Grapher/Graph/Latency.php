@@ -85,7 +85,6 @@ class Latency extends Graph {
      */
     const PERIOD_DEFAULT  = self::PERIOD_3HOURS;
 
-
     /**
      * Array of valid periods for drill down graphs
      */
@@ -95,7 +94,6 @@ class Latency extends Graph {
         self::PERIOD_10DAYS     => "10days",
         self::PERIOD_1YEAR      => "1year"
     ];
-
 
     /**
      * Default protocol for graphs
@@ -145,7 +143,6 @@ class Latency extends Graph {
     public static function resolvePeriod( $period = null ): string {
         return self::PERIODS[ $period ] ?? 'Unknown';
     }
-
 
     /**
      * Get the vlan interface we're meant to graph for latency
@@ -232,14 +229,16 @@ class Latency extends Graph {
      *
      * Does a abort(404) if invalid
      *
-     * @param   int                     $vliid  The user input value
-     * @return  VlanInterfaceEntity     $vli    VlanInterface object
+     * @param   int     $vliid  The user input value
+     *
+     * @return  VlanInterfaceEntity
      */
     public static function processParameterVlanInterface( int $vliid ): VlanInterfaceEntity {
-        /** @var $vli VlanInterfaceEntity */
+        /** @var VlanInterfaceEntity $vli */
         if( !$vliid || !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $vliid ) ) ) {
             abort(404);
         }
+
         return $vli;
     }
 }

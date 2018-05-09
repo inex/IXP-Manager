@@ -26,6 +26,7 @@
 use Illuminate\Support\ServiceProvider;
 
 use IXP\Exceptions\Services\Grapher\ConfigurationException;
+use IXP\Services\Grapher;
 use IXP\Services\Grapher\Renderer\Extensions\Grapher as GrapherRendererExtension;
 
 use Entities\User as UserEntity;
@@ -91,7 +92,7 @@ class GrapherServiceProvider extends ServiceProvider {
     /**
      * Register the application services.
      *
-     * @return void|\IXP\Services\Grapher
+     * @return void|Grapher
      * @throws
      */
     public function register()
@@ -105,7 +106,7 @@ class GrapherServiceProvider extends ServiceProvider {
 
         $this->app->singleton(
             'IXP\Services\Grapher', function() {
-            return new \IXP\Services\Grapher;
+            return new Grapher;
         });
 
         $this->commands( $this->commands );

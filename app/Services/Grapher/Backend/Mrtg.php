@@ -322,7 +322,9 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * {inheritDoc}
      *
      * @param Graph $graph
+     *
      * @return array
+     *
      * @throws
      */
     public function data( Graph $graph ): array {
@@ -346,7 +348,9 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * {inheritDoc}
      *
      * @param Graph $graph
+     *
      * @return string
+     *
      * @throws
      */
     public function png( Graph $graph ): string {
@@ -375,7 +379,9 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * {inheritDoc}
      *
      * @param Graph $graph
+     *
      * @return string
+     *
      * @throws
      */
     public function rrd( Graph $graph ): string {
@@ -393,7 +399,9 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
 
     /**
      * For larger IXPs, allow sharding of directories over 16 possible base directories
+     *
      * @param int $id The customer entity id
+     *
      * @return string shared path -> e.g. 18 -> 18 % 16 = 2 / 00016 -> 2/00016
      */
     private function shardMemberDir( int $id ): string {
@@ -406,7 +414,9 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * @param Graph $graph
      * @param string $type
+     *
      * @return string
+     *
      * @throws
      */
     public function resolveFilePath( Graph $graph, string $type ): string {
@@ -470,7 +480,4 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                 throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$graph->type()}" );
         }
     }
-
-
-
 }
