@@ -122,6 +122,7 @@ abstract class Doctrine2Frontend extends Controller {
         'XLATE'             => 'xlate',
         'YES_NO'            => 'yes_no',
         'PARSDOWN'          => 'parsdown',
+        'CONST'             => 'const',
     ];
 
 
@@ -447,7 +448,7 @@ abstract class Doctrine2Frontend extends Controller {
         $this->feParams->route_prefix = self::route_prefix();
 
         return view( $this->resolveTemplate( $tpl ) )->with( [
-            'data'          => $this->data ,
+            'data'          => $this->data,
             'feParams'      => $this->feParams
         ]);
     }
