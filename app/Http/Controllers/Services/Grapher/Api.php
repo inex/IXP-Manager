@@ -76,7 +76,7 @@ class Api extends Controller
             abort( 404, "This backend ({$grapher->name()}) does not support single configuration files" );
         }
 
-        $config = $grapher->generateConfiguration( d2r( 'IXP' )->getDefault() )[0];
+        $config = $grapher->generateConfiguration()[0];
 
 
         return (new Response( $config ) )

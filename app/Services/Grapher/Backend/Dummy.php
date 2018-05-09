@@ -87,11 +87,10 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param \Entities\IXP     $ixp    The IXP to generate the config for (multi-IXP mode)
      * @param int               $type   The type of configuration to generate
      * @return array
      */
-    public function generateConfiguration( IXP $ixp, int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
+    public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
     {
         return [];
     }
@@ -160,16 +159,16 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
                 'periods'     => Graph::PERIODS,
                 'types'       => Graph::TYPES
             ],
-            'p2p' => [
+            'latency' => [
                 'protocols'   => Graph::PROTOCOLS,
                 'categories'  => Graph::CATEGORIES,
                 'periods'     => Graph::PERIODS,
                 'types'       => Graph::TYPES
             ],
-            'smokeping' => [
+            'p2p' => [
                 'protocols'   => Graph::PROTOCOLS,
                 'categories'  => Graph::CATEGORIES,
-                'periods'     => Graph\Smokeping::PERIODS,
+                'periods'     => Graph::PERIODS,
                 'types'       => Graph::TYPES
             ],
         ];

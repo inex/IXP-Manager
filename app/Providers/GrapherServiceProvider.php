@@ -74,7 +74,7 @@ class GrapherServiceProvider extends ServiceProvider {
             Route::get( 'customer',          'Grapher@customer'          ); // member agg over all physint's
             Route::get( 'vlaninterface',     'Grapher@vlanInterface'     ); // member vlan interface
             Route::get( 'p2p',               'Grapher@p2p'               ); // member vlan interface
-            Route::get( 'smokeping',         'Grapher@smokeping'         );
+            Route::get( 'latency',           'Grapher@latency'           );
         });
 
         Route::group(['middleware' => [ 'api/v4', 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ],

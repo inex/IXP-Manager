@@ -82,7 +82,7 @@ $this->layout( 'layouts/ixpv4' );
     </div>
 
     <div class="row col-sm-12">
-        <?php foreach( IXP\Services\Grapher\Graph\Smokeping::PERIODS as $scale => $name ): ?>
+        <?php foreach( IXP\Services\Grapher\Graph\Latency::PERIODS as $scale => $name ): ?>
 
             <div class="col-sm-6">
 

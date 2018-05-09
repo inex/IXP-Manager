@@ -23,8 +23,6 @@ namespace IXP\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Cache\Repository as CacheRepository;
-
 use IXP\Exceptions\Services\Grapher\{
         BadBackendException,
         ConfigurationException,
@@ -44,7 +42,7 @@ use IXP\Services\Grapher\Graph\{
     Customer          as CustomerGraph, // member agg over all physical ports
     VlanInterface     as VlanIntGraph,  // member VLAN interface
     P2p               as P2pGraph,
-    Smokeping         as SmokepingGraph
+    Latency           as LatencyGraph
 };
 
 use IXP\Contracts\Grapher\Backend as BackendContract;
@@ -304,12 +302,12 @@ class Grapher {
 
 
     /**
-     * Get an instance of a smoekping graph
+     * Get an instance of a latency graph
      * @param VlanInterface $vli
-     * @return \IXP\Services\Grapher\Graph\Smokeping
+     * @return LatencyGraph
      */
-    public function smokeping( VlanInterface $vli ): SmokepingGraph {
-        return new SmokepingGraph( $this, $vli );
+    public function latency( VlanInterface $vli ): LatencyGraph {
+        return new LatencyGraph( $this, $vli );
     }
 
 
@@ -346,9 +344,10 @@ class Grapher {
 
     /**
      * Get the cache repository
-     * @return \Illuminate\Cache\Repository
+     * @return \Illuminate\Contracts\Cache\Repository
      */
-    public function cacheRepository(): CacheRepository {
+    public function cacheRepository(): \Illuminate\Contracts\Cache\Repository
+    {
         return Cache::store( config('grapher.cache.store' ) );
     }
 

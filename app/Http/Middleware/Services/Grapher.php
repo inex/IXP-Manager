@@ -42,7 +42,7 @@ use IXP\Services\Grapher\Graph\{
     Customer          as CustomerGraph, // member agg over all physical ports
     VlanInterface     as VlanIntGraph,  // member VLAN interface
     P2p               as P2pGraph,
-    Smokeping         as SmokepingGraph
+    Latency           as LatencyGraph
 };
 
 
@@ -157,17 +157,18 @@ class Grapher
                 $graph = $grapher->vlanint( $vlanint )->setParamsFromArray( $request->all() );
                 break;
 
+            case 'latency':
+                $vli = LatencyGraph::processParameterVlanInterface( (int)$request->input( 'id', 0 ) );
+                $request->vli = $vli;
+                $graph = $grapher->latency( $vli )->setParamsFromArray( $request->all() );
+                break;
+
             case 'p2p':
                 $srcvlanint = P2pGraph::processParameterSourceVlanInterface(      (int)$request->input( 'svli', 0 ) );
                 $dstvlanint = P2pGraph::processParameterDestinationVlanInterface( (int)$request->input( 'dvli', 0 ) );
                 $request->srcvlanint = $srcvlanint->getId();
                 $request->dstvlanint = $dstvlanint->getId();
                 $graph = $grapher->p2p( $srcvlanint, $dstvlanint )->setParamsFromArray( $request->all() );
-                break;
-            case 'smokeping':
-                $vli = SmokepingGraph::processParameterVlanInterface( (int)$request->input( 'id', 0 ) );
-                $request->vli = $vli;
-                $graph = $grapher->smokeping( $vli )->setParamsFromArray( $request->all() );
                 break;
 
 

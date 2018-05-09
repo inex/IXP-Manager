@@ -169,12 +169,11 @@ class Grapher extends Controller
         return $this->simpleResponse( $request );
     }
 
-    public function p2p( Request $request ): Response {
+    public function latency( Request $request ): Response {
         return $this->simpleResponse( $request );
     }
 
-    public function smokeping( Request $request ): Response {
-
+    public function p2p( Request $request ): Response {
         return $this->simpleResponse( $request );
     }
 }

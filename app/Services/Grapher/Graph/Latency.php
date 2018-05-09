@@ -1,7 +1,7 @@
 <?php namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -37,21 +37,25 @@ use Entities\{
 
 use Auth, D2EM;
 
+use Illuminate\Auth\Access\AuthorizationException;
+
+
 /**
- * Grapher -> Smokeping Graph
+ * Grapher -> Latency Graphs
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Smokeping extends Graph {
+class Latency extends Graph {
 
 
     /**
-     * Trunk to graph
-     * @var string
+     * VLAN interface to graph
+     * @var VlanInterfaceEntity
      */
     private $vli = null;
 
@@ -93,20 +97,38 @@ class Smokeping extends Graph {
     ];
 
 
+    /**
+     * Default protocol for graphs
+     */
+    const PROTOCOL_DEFAULT = self::PROTOCOL_IPV4;
+
+
+
+
+    /**
+     * Constructor
+     * @param  Grapher             $grapher
+     * @param VlanInterfaceEntity $vli
+     */
+    public function __construct( Grapher $grapher, VlanInterfaceEntity $vli ) {
+        parent::__construct( $grapher );
+        $this->vli = $vli;
+    }
+
 
     /**
      * Set the period we should use
-     * @param int $v
+     * @param string $v
      * @return Graph Fluid interface
      * @throws ParameterException
      */
-    public function setPeriod( $v ): Graph {
+    public function setPeriod( string $v ): Graph {
 
         if( !isset( self::PERIODS[ $v ] ) ) {
             throw new ParameterException('Invalid period ' . $v );
         }
 
-        if( $this->period() != $v ) {
+        if( $this->period() !== $v ) {
             $this->wipe();
         }
 
@@ -126,17 +148,7 @@ class Smokeping extends Graph {
 
 
     /**
-     * Constructor
-     * @param  Grapher             $grapher
-     * @param VlanInterfaceEntity $vli
-     */
-    public function __construct( Grapher $grapher, VlanInterfaceEntity $vli ) {
-        parent::__construct( $grapher );
-        $this->vli = $vli;
-    }
-
-    /**
-     * Get the smokeping name we're meant to graph
+     * Get the vlan interface we're meant to graph for latency
      * @return VlanInterfaceEntity
      */
     public function vli(): VlanInterfaceEntity {
@@ -148,8 +160,10 @@ class Smokeping extends Graph {
      * @return string
      */
     public function name(): string {
-        return sprintf( "smokeping :: %s",
-            $this->vli()->getId()
+        return sprintf( "Latency Graph :: %s :: %s :: %s",
+            $this->vli()->getVlan()->getName(),
+            $this->vli()->getVirtualInterface()->getCustomer()->getAbbreviatedName(),
+            $this->protocol() == self::PROTOCOL_IPV4 ? $this->vli()->getIPv4Address()->getAddress() : $this->vli()->getIPv6Address()->getAddress()
         );
     }
 
@@ -160,7 +174,7 @@ class Smokeping extends Graph {
      * @return string
      */
     public function identifier(): string {
-        return sprintf( "smokeping-vli%s", $this->vli()->getId() );
+        return sprintf( "latency-vli%d-%s", $this->vli()->getId(), $this->protocol() );
     }
 
 
@@ -170,20 +184,20 @@ class Smokeping extends Graph {
      * {@inheritDoc}
      *
      * For (public) vlan aggregate graphs we pretty much allow complete access.
-     *
-     * @return bool
+     * @throws AuthorizationException
      */
-    public function authorise() : bool {
+    public function authorise(): bool {
         if( Auth::check() && Auth::user()->isSuperUser() ) {
             return $this->allow();
         }
 
-        if( config( 'grapher.access.smokeping', -1 ) == UserEntity::AUTH_PUBLIC ) {
+        if( config( 'grapher.access.latency', -1 ) == UserEntity::AUTH_PUBLIC ) {
             return $this->allow();
         } else if( Auth::check() && Auth::user()->getPrivs() >= config( 'grapher.access.smokeping', 0 ) ) {
             return $this->allow();
         }
 
+        /** @noinspection PhpVoidFunctionResultUsedInspection */
         return $this->deny();
     }
 
@@ -222,6 +236,7 @@ class Smokeping extends Graph {
      * @return  VlanInterfaceEntity     $vli    VlanInterface object
      */
     public static function processParameterVlanInterface( int $vliid ): VlanInterfaceEntity {
+        /** @var $vli VlanInterfaceEntity */
         if( !$vliid || !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $vliid ) ) ) {
             abort(404);
         }

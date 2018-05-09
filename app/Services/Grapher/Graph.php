@@ -577,7 +577,7 @@ abstract class Graph {
      * @return string
      */
     public function watermark(): string {
-        return config( 'identity.watermark' );
+        return (string)config( 'identity.watermark' );
     }
 
     /**
@@ -649,11 +649,11 @@ abstract class Graph {
 
     /**
      * Set the period we should use
-     * @param int $v
+     * @param string $v
      * @return Graph Fluid interface
      * @throws ParameterException
      */
-    public function setPeriod( $v ): Graph {
+    public function setPeriod( string $v ): Graph {
 
         if( !isset( $this::PERIODS[ $v ] ) ) {
             throw new ParameterException('Invalid period ' . $v );

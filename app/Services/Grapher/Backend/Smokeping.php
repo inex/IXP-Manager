@@ -24,7 +24,7 @@
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
 use IXP\Services\Grapher\Backend as GrapherBackend;
 
-use IXP\Services\Grapher\Graph\Smokeping as SmokepingGraph;
+use IXP\Services\Grapher\Graph\Latency as SmokepingGraph;
 
 use IXP\Services\Grapher\Graph;
 
@@ -43,6 +43,7 @@ use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Smokeping extends GrapherBackend implements GrapherBackendContract {
+
     /**
      * {@inheritDoc}
      *
@@ -53,14 +54,14 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
     }
 
     /**
-     * The sflow backend requires no configuration.
+     * The Smokeping backend requires configuration.
      *
      * {@inheritDoc}
      *
      * @return bool
      */
     public function isConfigurationRequired(): bool {
-        return false;
+        return true;
     }
 
     /**
@@ -70,7 +71,7 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      * @return bool
      */
     public function isMonolithicConfigurationSupported(): bool {
-        return false;
+        return true;
     }
 
     /**
@@ -88,11 +89,10 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param IXP   $ixp      The IXP to generate the config for (multi-IXP mode)
      * @param int   $type     The type of configuration to generate
      * @return array
      */
-    public function generateConfiguration( IXP $ixp, int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
+    public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
     {
         return [];
     }
@@ -109,12 +109,13 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
 
         return [
             'smokeping' => [
-                'protocols'   => Graph::PROTOCOLS,
-                'categories'  => Graph::CATEGORIES,
+                'protocols'   => Graph::PROTOCOLS_REAL,
+                'categories'  => [],
                 'periods'     => SmokepingGraph::PERIODS,
-                'types'       => Graph::TYPES
+                'types'       => [ Graph::TYPE_PNG => Graph::TYPE_PNG ],
             ],
         ];
+
     }
 
 
@@ -167,7 +168,8 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
         $config = config('grapher.backends.smokeping');
 
         switch( $graph->classType() ) {
-            case 'Smokeping':
+
+            case 'Latency':
                 /** @var SmokepingGraph $graph  */
                 return sprintf( "%s/?displaymode=a;start=now-%s;end=now;target=infra_%s.vlan_%s.vlanint_%s_%s", $config['url'],
                     $graph->period(), $graph->vli()->getVirtualInterface()->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getInfrastructure()->getId(),

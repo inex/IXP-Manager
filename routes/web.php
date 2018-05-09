@@ -96,7 +96,7 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'member/{id?}',                                'StatisticsController@member'            )->name( 'statistics@member'             );
 
     Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'    );
-    Route::get(  'smokeping/{vliid}',                           'StatisticsController@smokeping'         )->name( 'statistics@smokeping'          );
+    Route::get(  'latency/{vliid}',                             'StatisticsController@latency'           )->name( 'statistics@latency'          );
 });
 
 

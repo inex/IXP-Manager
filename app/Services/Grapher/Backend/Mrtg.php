@@ -41,7 +41,7 @@ use IXP\Utils\Grapher\{
     Rrd  as RrdUtil
 };
 
-use View,Log;
+use D2EM, View,Log;
 
 /**
  * Grapher Backend -> Mrtg
@@ -100,16 +100,15 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param IXPEntity $ixp  The IXP to generate the config for (multi-IXP mode)
      * @param int $type The type of configuration to generate
      * @return array
      */
-    public function generateConfiguration( IXPEntity $ixp, int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
+    public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
     {
         return [
             View::make( 'services.grapher.mrtg.monolithic', [
-                    'ixp'        => $ixp,
-                    'data'       => $this->getPeeringPorts( $ixp ),
+                    'ixp'        => D2EM::getRepository( IXPEntity::class )->getDefault(),
+                    'data'       => $this->getPeeringPorts( D2EM::getRepository( IXPEntity::class )->getDefault() ),
                     'snmppasswd' => config('grapher.backends.mrtg.snmppasswd'),
                 ]
             )->render(),

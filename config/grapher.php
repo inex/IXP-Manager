@@ -126,8 +126,7 @@ return [
         'ixp'            => env( 'GRAPHER_ACCESS_IXP',            Entities\User::AUTH_PUBLIC ),
         'infrastructure' => env( 'GRAPHER_ACCESS_INFRASTRUCTURE', Entities\User::AUTH_PUBLIC ),
         'switch'         => env( 'GRAPHER_ACCESS_SWITCH',         Entities\User::AUTH_PUBLIC ),
-        'trunk'          => env( 'GRAPHER_ACCESS_TRUNK',          Entities\User::AUTH_PUBLIC ),
-        'smokeping'      => env( 'GRAPHER_ACCESS_SMOKEPING',      Entities\User::AUTH_PUBLIC ),
+        'trunk'          => env( 'GRAPHER_ACCESS_TRUNK',          Entities\User::AUTH_PUBLIC )
     ],
 
 
