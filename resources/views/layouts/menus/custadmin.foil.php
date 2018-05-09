@@ -25,6 +25,23 @@
                 <li class="">
                     <a href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>">Support</a>
                 </li>
+
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">My Account<b class="caret"></b></a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="<?= route( 'profile@edit' ) ?>">Profile</a>
+                        </li>
+                        <li>
+                            <a href="<?= route('api-key@list' )?>">API Keys</a>
+                        </li>
+                        <li class="divider"></li>
+                        <li>
+                            <a href="<?php url( 'auth/logout' ) ?>">Logout</a>
+                        </li>
+                    </ul>
+                </li>
+
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><a href="<?= url( 'auth/logout' ) ?>">Logout</a></li>

@@ -98,8 +98,16 @@
             return;
         }
 
-        let urlAction = "<?= route( 'customer-notes@add' ) ?>";
+        // validation - just make sure there's a body
+        if( $( "#co-notes-fnote" ).val().length === 0 ){
+            bootbox.alert( "Error! A body for the note is required.", function() {
+                $( "#co-notes-ftitle" ).focus();
+            });
+            return;
+        }
 
+        let urlAction = "<?= route( 'customer-notes@add' ) ?>";
+        $( "#co-notes-fadd" ).attr( "disabled","disabled" );
         $.ajax( urlAction, {
             type: 'POST',
             data: $( "#co-notes-form" ).serialize(),
@@ -109,6 +117,9 @@
             })
             .fail( function() {
                 bootbox.alert( "Error! Could not save your note." );
+            })
+            .always( function() {
+                $( "#co-notes-fadd" ).attr( "disabled", false );
             });
     }
 
@@ -234,30 +245,6 @@
 
 
         <?php if( Auth::getUser()->isSuperUser() ): ?>
-
-        $('#tab-link-body').on( 'click', function(e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
-
-        $('#tab-link-preview').on( 'click', function(e) {
-            e.preventDefault();
-            $('#well-preview').html('Loading...');
-            $(this).tab('show');
-
-            $.ajax( "<?= action ('Api\V4\UtilsController@markdown')?>", {
-                data: {
-                    text: $('#co-notes-fnote').val()
-                },
-                type: 'POST'
-            })
-                .done( function( data ) {
-                    $('#well-preview').html( data.html );
-                })
-                .fail( function() {
-                    $('#well-preview').html('Error!');
-                });
-        });
 
 
         $( "#co-notes-add-btn" ).on( "click", function( event ){

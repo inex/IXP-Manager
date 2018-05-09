@@ -756,7 +756,6 @@ class Switcher extends EntityRepository
             )->getResult();
     }
 
-
     /**
      * Get all switches (or a particular one) for listing on the frontend CRUD
      *
@@ -830,4 +829,5 @@ class Switcher extends EntityRepository
 
         return $query->getArrayResult();
     }
+
 }

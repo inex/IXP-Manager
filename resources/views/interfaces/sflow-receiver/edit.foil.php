@@ -27,19 +27,18 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 
-
 <?php $this->section('content') ?>
-
-<div class="container-fluid">
-
-    <?= $t->alerts() ?>
 
     <div class="row">
 
-        <div class="well col-md-12">
+        <div class="col-md-12">
+
+            <div class="well">
+
+            <?= $t->alerts() ?>
 
             <?= Former::open()->method( 'post' )
-                ->action( action( 'Interfaces\SflowReceiverController@store' ) )
+                ->action( route( 'sflow-receiver@store' ) )
                 ->customWidthClass( 'col-sm-6' )
             ?>
 
@@ -69,10 +68,11 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::close() ?>
 
+            </div>
+
         </div>
 
     </div>
 
-</div>
 
 <?php $this->append() ?>

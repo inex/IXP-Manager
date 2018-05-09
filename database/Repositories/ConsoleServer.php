@@ -43,6 +43,8 @@ class ConsoleServer extends EntityRepository
             $csc[ $cs->getId() ] = $cs->getName();
         }
 
+        asort( $csc);
+
         return $csc;
     }
 
@@ -69,9 +71,12 @@ class ConsoleServer extends EntityRepository
                     v.id AS vendorid, 
                     v.name AS vendor, 
                     c.id AS cabinetid, 
-                    c.name AS cabinet
+                    c.name AS cabinet,
+                    l.id AS locationid,
+                    l.shortname AS facility 
                 FROM Entities\\ConsoleServer cs
                     LEFT JOIN cs.cabinet c
+                    LEFT JOIN c.Location l
                     LEFT JOIN cs.vendor v
                 
                 WHERE 1 = 1";

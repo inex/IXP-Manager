@@ -23,6 +23,14 @@ class PhysicalInterface
         self::STATUS_QUARANTINE   => 'Quarantine'
     );
 
+    public static $APISTATES = array(
+        self::STATUS_CONNECTED    => 'connected',
+        self::STATUS_DISABLED     => 'disabled',
+        self::STATUS_NOTCONNECTED => 'notconnected',
+        self::STATUS_XCONNECT     => 'awaitingxconnect',
+        self::STATUS_QUARANTINE   => 'quarantine'
+    );
+
     public static $SPEED = [
         10    => '10 Mbps',
         100   => '100 Mbps',
@@ -233,7 +241,7 @@ class PhysicalInterface
      */
     public function getNotes()
     {
-        return $this->notes;
+        return $this->notes ?? '';
     }
 
     /**
@@ -509,6 +517,15 @@ class PhysicalInterface
      */
     public function resolveStatus(): string {
         return self::$STATES[ $this->getStatus() ] ?? 'Unknown';
+    }
+
+    /**
+     * Turn the database integer representation of the states into text suitable
+     * for API output as defined in the self::$STATES array (or 'unknown')
+     * @return string
+     */
+    public function resolveAPIStatus(): string {
+        return self::$APISTATES[ $this->getStatus() ] ?? 'unknown';
     }
 
 }

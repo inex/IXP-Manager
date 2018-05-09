@@ -10,7 +10,7 @@
         It is possible to add switches without SNMP polling but this is strongly discouraged as SNMP is built heavily into the switch and switch port management.
 
         <br>
-        Please consider using <a href="<?= route( $t->feParams->route_prefix.'@add-by-snmp' ) ?>" >the SNMP method to add switches</a>.
+        Please consider using <a href="<?= route( $t->feParams->route_prefix.'@add-by-snmp-step-1' ) ?>" >the SNMP method to add switches</a>.
 
     <?php endif; ?>
 </div>

@@ -133,7 +133,10 @@ class IpAddressController extends Controller
      * Edit the core links associated to a core bundle
      *
      * @param   StoreIpAddress      $request instance of the current HTTP request
+     *
      * @return  RedirectResponse
+     *
+     * @throws
      */
     public function store( StoreIpAddress $request ): RedirectResponse {
 
@@ -192,6 +195,8 @@ class IpAddressController extends Controller
      * 3. POST with 'doDelete' parameter: works as (2) but actually deletes the addressess
      *
      * @return View | Redirect
+     *
+     * @throws
      */
     public function deleteByNetwork( DeleteIpAddressesByNetwork $request, int $vlanid ) {
 
@@ -219,10 +224,13 @@ class IpAddressController extends Controller
         }
 
         if( $request->input( 'doDelete', false ) == "1" ) {
+
             foreach( $ips as $ip ) {
                 D2EM::remove( $ip );
             }
+
             D2EM::flush();
+
             AlertContainer::push( 'IP Addresses deleted.', Alert::SUCCESS );
             return redirect( route( 'ip-address@list', [ 'protocol' => $network->getFirstIP()->version == 'IPv6' ? 6 : 4, 'vlanid' => $v->getId() ] ) );
         }
@@ -242,6 +250,8 @@ class IpAddressController extends Controller
      * @param   int     $id         Router that need to be deleted
      *
      * @return JsonResponse
+     *
+     * @throws
      */
     public function delete( int $protocol, int $id ): JsonResponse {
 

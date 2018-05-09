@@ -14,30 +14,39 @@
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
-    <table id="table-list" class="table collapse">
-        <thead>
-            <tr>
-                <th>
-                    IP
-                </th>
-                <th>
-                    At
-                </th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php foreach( $t->histories as $history ): ?>
+    <div class="row">
+
+        <div class="col-sm-12">
+
+            <table id="table-list" class="table collapse">
+                <thead>
                 <tr>
-                    <td>
-                        <?= $t->ee( $history[ "ip" ] ) ?>
-                    </td>
-                    <td>
-                        <?= $history[ "at" ]->format( "Y-m-d H:i:s" ) ?>
-                    </td>
+                    <th>
+                        IP
+                    </th>
+                    <th>
+                        At
+                    </th>
                 </tr>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
+                </thead>
+                <tbody>
+                <?php foreach( $t->histories as $history ): ?>
+                    <tr>
+                        <td>
+                            <?= $t->ee( $history[ "ip" ] ) ?>
+                        </td>
+                        <td>
+                            <?= $history[ "at" ]->format( "Y-m-d H:i:s" ) ?>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+                </tbody>
+            </table>
+
+        </div>
+
+    </div>
+
 <?php $this->append() ?>
 
 

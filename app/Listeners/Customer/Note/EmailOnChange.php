@@ -113,7 +113,7 @@ class EmailOnChange
                 continue;
             }
 
-            if( $user->getPreference( "customer-notes.notify" ) == "all" ) {
+            if( !$user->getPreference( "customer-notes.notify" ) || $user->getPreference( "customer-notes.notify" ) == "default" || $user->getPreference( "customer-notes.notify" ) == "all" ) {
                 $to[] = [ 'name' => $user->getContact()->getName(), 'email' => $user->getContact()->getEmail() ];
                 continue;
             }

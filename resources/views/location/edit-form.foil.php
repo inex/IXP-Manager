@@ -2,7 +2,7 @@
 
     <?= Former::open()->method( 'POST' )
         ->id( 'form' )
-        ->action( action( $t->controller.'@store' ) )
+        ->action( route( $t->feParams->route_prefix . '@store' ) )
         ->customWidthClass( 'col-sm-3' )
     ?>
 
@@ -83,16 +83,38 @@
     </h3>
     <hr>
 
-    <?= Former::textarea( 'notes' )
-        ->label( '&nbsp;' )
-        ->rows( 10 )
-        ->style( 'width:500px' )
-        ->blockHelp( '' );
-    ?>
+    <div class="form-group">
+        <div class="col-lg-offset-2 col-sm-8">
+
+            <ul class="nav nav-tabs">
+                <li role="presentation" class="active">
+                    <a class="tab-link-body-note" href="#body">Notes</a>
+                </li>
+                <li role="presentation">
+                    <a class="tab-link-preview-note" href="#preview">Preview</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="body">
+
+                    <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->data['params']['notes'] ?></textarea>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="preview">
+                    <div class="well well-preview" style="background: rgb(255,255,255);">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+
+            <br><br>
+        </div>
+
+    </div>
 
     <?= Former::actions(
         Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' )->disabled( true ),
-        Former::default_link( 'Cancel' )->href( action ($t->controller.'@list') ),
+        Former::default_link( 'Cancel' )->href( route( $t->feParams->route_prefix . '@list') ),
         Former::success_button( 'Help' )->id( 'help-btn' )
     );
     ?>

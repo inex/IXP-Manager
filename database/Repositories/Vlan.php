@@ -560,19 +560,6 @@ class Vlan extends EntityRepository
             $dql .= " AND i.id = ".$feParams->infra->getId();
         }
 
-        /*if( $this->getParam( 'infra', false ) && $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $this->getParam( 'infra' ) ) )
-        {
-            $dql .= " i.id = ". (int)$infraid ;
-            $qb->andWhere( 'i = :infra' )->setParameter( 'infra', $infra );
-            $this->view->infra = $infra;
-        }
-
-        if( $this->getParam( 'publiconly', false ) )
-        {
-            $qb->andWhere( 'v.private = 0' );
-            $this->view->publiconly = 1;
-        }*/
-
         if( isset( $feParams->listOrderBy ) ) {
             $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
             $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
@@ -583,4 +570,20 @@ class Vlan extends EntityRepository
         return $query->getArrayResult();
     }
 
+    public function getInfraConfigNameCouple( $infraid, $configName ){
+
+        $dql = "SELECT  v
+                FROM Entities\\Vlan v
+                WHERE v.Infrastructure = :infraid
+                AND v.config_name = :configname";
+
+
+
+        $q = $this->getEntityManager()->createQuery( $dql );
+
+        $q->setParameter( 'infraid', $infraid );
+        $q->setParameter( 'configname', $configName );
+
+        return $q->getOneOrNullResult();
+    }
 }

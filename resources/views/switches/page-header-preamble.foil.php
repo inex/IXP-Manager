@@ -44,7 +44,7 @@
 
             </div>
 
-            <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add-by-snmp') ?>">
+            <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add-by-snmp-step-1') ?>">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
 

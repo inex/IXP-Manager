@@ -159,6 +159,7 @@ class Store extends FormRequest
             }
         }
 
+
         if( !$this->input( 'isReseller' ) && $c && $c->getIsReseller() && count( $c->getResoldCustomers() ) ) {
             $validator->errors()->add('isReseller', 'You can not change the reseller state because this customer still has resold customers. '
                 . 'You need to reassign these first.' );

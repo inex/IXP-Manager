@@ -30,7 +30,7 @@ $row = $t->row;
         } ?>
     </td>
     <td>
-        <a href="<?= action( 'VlanController@view' , [ 'id' => $row[ 'vlanid' ] ])?>">
+        <a href="<?= route( 'vlan@view' , [ 'id' => $row[ 'vlanid' ] ])?>">
             <?= $row['vlan'] ?>
         </a>
     </td>
@@ -57,7 +57,7 @@ $row = $t->row;
 
         <div class="btn-group">
 
-            <a class="btn btn-sm btn-default" href="<?= action($t->controller.'@forVlanInterface' , [ 'id' => $row[ 'vliid' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
+            <a class="btn btn-sm btn-default" href="<?= route( $t->feParams->route_prefix . '@forVlanInterface' , [ 'id' => $row[ 'vliid' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
 
         </div>
 

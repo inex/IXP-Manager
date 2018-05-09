@@ -57,17 +57,10 @@ Route::group( [ 'prefix' => 'customer', 'namespace' => 'Customer'], function() {
 /// Patch Panels
 ///
 
-Route::group( [ 'namespace' => 'PatchPanel' ], function() {
-    Route::get( 'verify-loa/{id}/{code}',       'PatchPanelPortController@verifyLoa' );
-});
-
-Route::group( [ 'namespace' => 'PatchPanel'], function() {
-    Route::get( 'verify-loa/{id}/{code}',       'PatchPanelPortController@verifyLoa' );
-});
-
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], function() {
-    Route::get( 'view/{id}',                    'PatchPanelPortController@view' );
-    Route::get( 'loa-pdf/{id}',                 'PatchPanelPortController@loaPDF' );
+    Route::get( 'view/{id}',                    'PatchPanelPortController@view'         )->name( "patch-panel-port@view"        );
+    Route::get( 'loa-pdf/{id}',                 'PatchPanelPortController@loaPDF'       )->name( "patch-panel-port@loa-pdf"     );
+    Route::get( 'verify-loa/{id}/{code}',       'PatchPanelPortController@verifyLoa'    )->name( "patch-panel-port@verify-loa"  );
 });
 
 
@@ -103,6 +96,16 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'member/{id?}',                                'StatisticsController@member'            )->name( 'statistics@member'             );
     Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'    );
 });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// MEMBER EXPORT
+///
+
+
+Route::get( 'participants.json', function() { return redirect(route('ixf-member-export')); });
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////

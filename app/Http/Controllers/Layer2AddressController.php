@@ -115,7 +115,7 @@ class Layer2AddressController extends Doctrine2Frontend {
 
                 case UserEntity::AUTH_CUSTUSER:
                     switch( Route::current()->getName() ) {
-                        case 'Layer2AddressController@forVlanInterface':
+                        case 'layer2-address@forVlanInterface':
                             break;
 
                         default:
@@ -144,7 +144,7 @@ class Layer2AddressController extends Doctrine2Frontend {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
 
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get(  'vlan-interface/{vliid}', 'Layer2AddressController@forVlanInterface' )->name( "Layer2AddressController@forVlanInterface" );
+            Route::get(  'vlan-interface/{vliid}', 'Layer2AddressController@forVlanInterface' )->name( "layer2-address@forVlanInterface" );
         });
     }
 

@@ -50,20 +50,20 @@
                         <?php endforeach; ?>
                     </td>
                     <td>
-                        <div class="well" style="overflow-y: scroll; height:400px;">
-                            <?php $others =  0 ?>
-                            <?php foreach( $pv[ "members" ] as $m ): ?>
-                                <?php if( $m->getId() != $t->c->getId() ): ?>
-                                    <a href="<?= route( "customer@overview" , [ "id" => $m->getId() ]) ?>">
-                                        <?= $t->ee( $m->getAbbreviatedName() ) ?>
-                                    </a><br />
-                                    <?php $others =  1 ?>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                            <?php if( !$others): ?>
-                                <em>None - single member</em>
+
+                        <?php $others =  0 ?>
+                        <?php foreach( $pv[ "members" ] as $m ): ?>
+                            <?php if( $m->getId() != $t->c->getId() ): ?>
+                                <a href="<?= route( "customer@overview" , [ "id" => $m->getId() ]) ?>">
+                                    <?= $t->ee( $m->getAbbreviatedName() ) ?>
+                                </a><br />
+                                <?php $others =  1 ?>
                             <?php endif; ?>
-                        </div>
+                        <?php endforeach; ?>
+                        <?php if( !$others): ?>
+                            <em>None - single member</em>
+                        <?php endif; ?>
+
                     </td>
                 </tr>
             <?php endforeach; ?>

@@ -46,7 +46,7 @@
                 <hr>
                 <?= Former::checkbox( 'enabled-cl-'.$t->nbLink )
                     ->label( '' )
-                    ->unchecked_value( 0 )
+                    ->value( 1 )
                     ->check( $t->enabled )
                 ?>
             </div>
@@ -59,7 +59,6 @@
                     <hr>
                     <?= Former::checkbox( 'bfd-'.$t->nbLink )
                         ->label( '' )
-                        ->unchecked_value( 0 )
                         ->value( 1 )
                     ?>
                 <?php endif; ?>

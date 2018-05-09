@@ -57,7 +57,7 @@ class StoreRouter extends FormRequest
 
         return [
             'handle'                => 'required|string|max:255|unique:Entities\Router,handle' . ( $this->input('id') ? ','. $this->input('id') : '' ),
-            'vlan'                  => 'required|integer',
+            'vlan'                  => 'required|integer|exists:Entities\Vlan,id',
             'protocol'              => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$PROTOCOLS ) ),
             'type'                  => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$TYPES ) ),
             'name'                  => 'required|string|max:255',

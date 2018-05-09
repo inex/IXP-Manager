@@ -108,18 +108,21 @@
 
                                                         <?php if(  $t->data[ 'item' ][ $col ] ): ?>
                                                             <?= $t->data[ 'item' ][ $col ]->format( 'Y-m-d H:i:s' )  ?>
+
                                                         <?php endif; ?>
 
                                                     <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
 
                                                         <?php if(  $t->data[ 'item' ][ $col ] ): ?>
                                                             <?= $t->data[ 'item' ][ $col ]->format( 'Y-m-d' )  ?>
+
                                                         <?php endif; ?>
 
                                                     <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'TIME'] ): ?>
 
                                                         <?php if(  $t->data[ 'item' ][ $col ] ): ?>
                                                             <?= $t->data[ 'item' ][ $col ]->format( 'H:i:s' )  ?>
+
                                                         <?php endif; ?>
 
                                                     <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
@@ -135,6 +138,10 @@
                                                     <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
 
                                                         <?= $t->insert( $cconf['script'], [ 'row' => $t->data['item'], 'col' => $col ] ) ?>
+
+                                                    <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'PARSDOWN'] ): ?>
+
+                                                        <?= @parsedown( $t->data[ 'item' ][ $col ] )?>
 
                                                     <?php else: ?>
 
@@ -152,7 +159,6 @@
                                         </tr>
 
                                     <?php endif; ?>
-
 
                                 <?php endforeach; ?>
 
