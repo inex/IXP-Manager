@@ -14,9 +14,9 @@
      */
     cb_autobaud.change( function(){
         if( this.checked ){
-            div_autobaud.hide();
+            div_autobaud.slideUp();
         } else {
-            div_autobaud.show();
+            div_autobaud.slideDown();
         }
     });
 </script>

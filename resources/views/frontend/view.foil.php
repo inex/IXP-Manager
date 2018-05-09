@@ -65,7 +65,7 @@
 
                                     <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display'] ) || $cconf[ 'display'] ): ?>
 
-                                        <?php if( !isset( $cconf[ 'hideIfFieldTrue'] ) ||  ( isset( $cconf[ 'hideIfFieldTrue'] ) && !$t->data[ 'item' ][ $cconf[ 'hideIfFieldTrue'] ]  ) ) : ?>
+                                        <?php if( !isset( $cconf[ 'hideIfFieldTrue'] ) || !$t->data[ 'item' ][ $cconf[ 'hideIfFieldTrue'] ] ): ?>
 
                                             <tr>
 

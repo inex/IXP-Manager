@@ -230,7 +230,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
             'parity'                => 'nullable|string',
             'stopbits'              => 'nullable|string',
             'flowcontrol'           => 'nullable|string',
-            'autobaud'              => 'nullable|boolean',
+            'autobaud'              => 'boolean',
             'notes'                 => 'nullable|string|max:65535',
         ]);
 
@@ -324,6 +324,16 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
         }else{
             return route( 'console-server-connection@list' );
         }
-
     }
+
+    /**
+     * @inheritdoc
+     *
+     * @return null|string
+     */
+    protected function postDeleteRedirect() {
+        return route('console-server-connection@listPort' , [ 'port' => $this->object->getConsoleServer()->getId() ] );
+    }
+
+
 }

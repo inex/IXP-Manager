@@ -73,8 +73,10 @@ class ConsoleServer extends EntityRepository
                     c.id AS cabinetid, 
                     c.name AS cabinet,
                     l.id AS locationid,
-                    l.shortname AS facility 
+                    l.shortname AS facility,
+                    COUNT( DISTINCT csc.id ) AS num_connections 
                 FROM Entities\\ConsoleServer cs
+                    LEFT JOIN cs.consoleServerConnections csc
                     LEFT JOIN cs.cabinet c
                     LEFT JOIN c.Location l
                     LEFT JOIN cs.vendor v
@@ -84,6 +86,8 @@ class ConsoleServer extends EntityRepository
         if( $id ) {
             $dql .= " AND cs.id = " . $id;
         }
+
+        $dql .= " GROUP BY cs.id ";
 
         if( isset( $feParams->listOrderBy ) ) {
             $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';

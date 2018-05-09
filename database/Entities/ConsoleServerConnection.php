@@ -74,8 +74,8 @@ class ConsoleServerConnection
     ];
 
     public static $STOP_BITS = [
-        1 => 1 ,
-        2 => 2
+        1 => 1,
+        2 => 2,
     ];
 
     /**

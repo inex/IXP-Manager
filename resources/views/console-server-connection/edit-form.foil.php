@@ -35,13 +35,14 @@
         ->blockHelp( "Enter the port number." );
     ?>
 
-    <div id="autobaud-section">
+    <div id="autobaud-section" style="<?= $t->data['params']['object'] && $t->data['params']['object']->getAutobaud() ? 'display: none;' : '' ?>">
+
         <?= Former::select( 'speed' )
             ->label( 'Speed' )
             ->placeholder( "Choose speed")
             ->options(   Entities\ConsoleServerConnection::$SPEED )
             ->addClass( 'chzn-select' )
-            ->blockHelp( 'Enter the baud speed - just used for your own informational purposes.' );
+            ->blockHelp( 'Enter the baud speed - used for your own informational purposes but could also be used for automated console server provisioning.' );
         ?>
 
         <?= Former::select( 'parity' )
@@ -49,7 +50,7 @@
             ->placeholder( "Choose parity")
             ->options(   Entities\ConsoleServerConnection::$PARITY )
             ->addClass( 'chzn-select' )
-            ->blockHelp( 'Enter the parity - just used for your own informational purposes.' );
+            ->blockHelp( 'Enter the parity - used for your own informational purposes but could also be used for automated console server provisioning.' );
         ?>
 
 
@@ -58,7 +59,7 @@
             ->placeholder( "Choose stop bits")
             ->options(   Entities\ConsoleServerConnection::$STOP_BITS )
             ->addClass( 'chzn-select' )
-            ->blockHelp( 'Enter the number of stop bits - just used for your own informational purposes.' );
+            ->blockHelp( 'Enter the number of stop bits - used for your own informational purposes but could also be used for automated console server provisioning.' );
         ?>
 
 
@@ -67,8 +68,9 @@
             ->placeholder( "Choose flow control")
             ->options(   Entities\ConsoleServerConnection::$FLOW_CONTROL )
             ->addClass( 'chzn-select' )
-            ->blockHelp( 'Enter the flowcontrol status - just used for your own informational purposes.' );
+            ->blockHelp( 'Enter the flowcontrol status - used for your own informational purposes but could also be used for automated console server provisioning.' );
         ?>
+
     </div>
 
 
@@ -76,7 +78,7 @@
         ->label( '&nbsp;' )
         ->text( 'Autobaud' )
         ->value( 1 )
-        ->blockHelp( "Indicate is autobaud is supported - just used for your own informational purposes." );
+        ->blockHelp( "Indicate is autobaud is supported - used for your own informational purposes but could also be used for automated console server provisioning." );
     ?>
 
     <div class="form-group">
