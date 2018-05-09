@@ -97,14 +97,25 @@ class ConsoleServerController extends Doctrine2Frontend {
                 ],
 
                 'vendor'  => [
-                    'title'      => 'Vendor',
-                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'vendor',
-                    'action'     => 'view',
-                    'idField'    => 'vendorid'
+                    'title'       => 'Vendor',
+                    'type'        => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller'  => 'vendor',
+                    'action'      => 'view',
+                    'idField'     => 'vendorid'
                 ],
 
-                'model'          => 'Model',
+                'model'           => 'Model',
+
+                //'num_connections' => 'Connections',
+
+                'num_connections' => [
+                    'title'      => 'Connections',
+                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                    'controller' => 'console-server-connection',
+                    'action'     => 'list/port',
+                    'idField'    => 'id'
+                ],
+
                 'active'       => [
                     'title'    => 'Active',
                     'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
@@ -221,4 +232,22 @@ class ConsoleServerController extends Doctrine2Frontend {
 
         return true;
     }
+
+
+    /**
+     * Delete all console server connections before deleting the console server.
+     *
+     * @inheritdoc
+     *
+     * @return bool Return false to stop / cancel the deletion
+     */
+    protected function preDelete(): bool {
+
+        foreach( $this->object->getConsoleServerConnections() as $csc ) {
+            D2EM::remove( $csc );
+        }
+
+        return true;
+    }
+
 }

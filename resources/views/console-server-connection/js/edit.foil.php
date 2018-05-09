@@ -1,29 +1,22 @@
 <script>
+    //////////////////////////////////////////////////////////////////////////////////////
+    // we'll need these handles to html elements in a few places:
+    const cb_autobaud         = $( "#autobaud" );
+    const div_autobaud        = $( "#autobaud-section" );
+
     $(document).ready(function(){
+        cb_autobaud.change( );
 
-        $('#tab-link-body').on( 'click', function(e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
+    });
 
-        $('#tab-link-preview').on( 'click', function(e) {
-            e.preventDefault();
-            $('#well-preview').html('Loading...');
-            $(this).tab('show');
-
-            $.ajax( "<?= route ('utils@markdown')?>", {
-                data: {
-                    text: $('#notes').val()
-                },
-                type: 'POST'
-            })
-                .done( function( data ) {
-                    $('#well-preview').html( data.html );
-                })
-                .fail( function() {
-                    $('#well-preview').html('Error!');
-                });
-        });
-
+    /**
+     * display or hide the autobaud area
+     */
+    cb_autobaud.change( function(){
+        if( this.checked ){
+            div_autobaud.slideUp();
+        } else {
+            div_autobaud.slideDown();
+        }
     });
 </script>

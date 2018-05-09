@@ -35,32 +35,50 @@
         ->blockHelp( "Enter the port number." );
     ?>
 
-    <?= Former::number( 'speed' )
-        ->label( 'Speed' )
-        ->blockHelp( "Enter the baud speed - just used for your own informational purposes." );
-    ?>
+    <div id="autobaud-section" style="<?= $t->data['params']['object'] && $t->data['params']['object']->getAutobaud() ? 'display: none;' : '' ?>">
 
-    <?= Former::number( 'parity' )
-        ->label( 'parity' )
-        ->blockHelp( "Enter the parity - just used for your own informational purposes." );
-    ?>
+        <?= Former::select( 'speed' )
+            ->label( 'Speed' )
+            ->placeholder( "Choose speed")
+            ->options(   Entities\ConsoleServerConnection::$SPEED )
+            ->addClass( 'chzn-select' )
+            ->blockHelp( 'Enter the baud speed - used for your own informational purposes but could also be used for automated console server provisioning.' );
+        ?>
+
+        <?= Former::select( 'parity' )
+            ->label( 'Parity' )
+            ->placeholder( "Choose parity")
+            ->options(   Entities\ConsoleServerConnection::$PARITY )
+            ->addClass( 'chzn-select' )
+            ->blockHelp( 'Enter the parity - used for your own informational purposes but could also be used for automated console server provisioning.' );
+        ?>
 
 
-    <?= Former::number( 'stopbits' )
-        ->label( 'Stopbits' )
-        ->blockHelp( "Enter the number of stop bits - just used for your own informational purposes." );
-    ?>
+        <?= Former::select( 'stopbits' )
+            ->label( 'Stopbits' )
+            ->placeholder( "Choose stop bits")
+            ->options(   Entities\ConsoleServerConnection::$STOP_BITS )
+            ->addClass( 'chzn-select' )
+            ->blockHelp( 'Enter the number of stop bits - used for your own informational purposes but could also be used for automated console server provisioning.' );
+        ?>
 
-    <?= Former::number( 'flowcontrol' )
-        ->label( 'Flow Control' )
-        ->blockHelp( "Enter the flowcontrol status - just used for your own informational purposes." );
-    ?>
+
+        <?= Former::select( 'flowcontrol' )
+            ->label( 'Flow Control' )
+            ->placeholder( "Choose flow control")
+            ->options(   Entities\ConsoleServerConnection::$FLOW_CONTROL )
+            ->addClass( 'chzn-select' )
+            ->blockHelp( 'Enter the flowcontrol status - used for your own informational purposes but could also be used for automated console server provisioning.' );
+        ?>
+
+    </div>
+
 
     <?= Former::checkbox( 'autobaud' )
         ->label( '&nbsp;' )
         ->text( 'Autobaud' )
         ->value( 1 )
-        ->blockHelp( "Indicate is autobaud is supported - just used for your own informational purposes." );
+        ->blockHelp( "Indicate is autobaud is supported - used for your own informational purposes but could also be used for automated console server provisioning." );
     ?>
 
     <div class="form-group">
