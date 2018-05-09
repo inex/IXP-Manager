@@ -35,6 +35,49 @@ use Entities\{
  */
 class ConsoleServerConnection
 {
+
+
+    public static $SPEED = [
+        300     => 300,
+        600     => 600,
+        1200    => 1200,
+        2400    => 2400,
+        4800    => 4800,
+        9600    => 9600,
+        14400   => 14400,
+        19200   => 19200,
+        28800   => 28800,
+        38400   => 38400,
+        57600   => 57600,
+        115200  => 115200,
+        230400  => 230400
+    ];
+
+    const PARITY_EVEN       = 1;
+    const PARITY_ODD        = 2;
+    const PARITY_NONE       = 3;
+
+    public static $PARITY = [
+        self::PARITY_EVEN   => "even",
+        self::PARITY_ODD    => "odd",
+        self::PARITY_NONE   => "none"
+    ];
+
+    const FLOW_CONTROL_NONE         = 1;
+    const FLOW_CONTROL_RTS_CTS      = 2;
+    const FLOW_CONTROL_XON_XOFF     = 3;
+
+    public static $FLOW_CONTROL = [
+        self::FLOW_CONTROL_NONE         => "none",
+        self::FLOW_CONTROL_RTS_CTS      => "rts/cts",
+        self::FLOW_CONTROL_XON_XOFF     => "xon/xoff"
+    ];
+
+    public static $STOP_BITS = [
+        1 => 1 ,
+        2 => 2
+    ];
+
     /**
      * @var string $description
      */

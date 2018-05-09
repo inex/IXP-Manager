@@ -35,26 +35,42 @@
         ->blockHelp( "Enter the port number." );
     ?>
 
-    <?= Former::number( 'speed' )
-        ->label( 'Speed' )
-        ->blockHelp( "Enter the baud speed - just used for your own informational purposes." );
-    ?>
+    <div id="autobaud-section">
+        <?= Former::select( 'speed' )
+            ->label( 'Speed' )
+            ->placeholder( "Choose speed")
+            ->options(   Entities\ConsoleServerConnection::$SPEED )
+            ->addClass( 'chzn-select' )
+            ->blockHelp( 'Enter the baud speed - just used for your own informational purposes.' );
+        ?>
 
-    <?= Former::number( 'parity' )
-        ->label( 'parity' )
-        ->blockHelp( "Enter the parity - just used for your own informational purposes." );
-    ?>
+        <?= Former::select( 'parity' )
+            ->label( 'Parity' )
+            ->placeholder( "Choose parity")
+            ->options(   Entities\ConsoleServerConnection::$PARITY )
+            ->addClass( 'chzn-select' )
+            ->blockHelp( 'Enter the parity - just used for your own informational purposes.' );
+        ?>
 
 
-    <?= Former::number( 'stopbits' )
-        ->label( 'Stopbits' )
-        ->blockHelp( "Enter the number of stop bits - just used for your own informational purposes." );
-    ?>
+        <?= Former::select( 'stopbits' )
+            ->label( 'Stopbits' )
+            ->placeholder( "Choose stop bits")
+            ->options(   Entities\ConsoleServerConnection::$STOP_BITS )
+            ->addClass( 'chzn-select' )
+            ->blockHelp( 'Enter the number of stop bits - just used for your own informational purposes.' );
+        ?>
 
-    <?= Former::number( 'flowcontrol' )
-        ->label( 'Flow Control' )
-        ->blockHelp( "Enter the flowcontrol status - just used for your own informational purposes." );
-    ?>
+
+        <?= Former::select( 'flowcontrol' )
+            ->label( 'Flow Control' )
+            ->placeholder( "Choose flow control")
+            ->options(   Entities\ConsoleServerConnection::$FLOW_CONTROL )
+            ->addClass( 'chzn-select' )
+            ->blockHelp( 'Enter the flowcontrol status - just used for your own informational purposes.' );
+        ?>
+    </div>
+
 
     <?= Former::checkbox( 'autobaud' )
         ->label( '&nbsp;' )

@@ -104,11 +104,30 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
         $this->feParams->viewColumns = array_merge(
             $this->feParams->listColumns,
             [
-                'speed'       => 'Speed',
-                'parity'      => 'Parity',
-                'stopbits'    => 'Stopbits',
-                'flowcontrol' => 'Flow Control',
-                'autobaud'    => 'Autobaud',
+                'speed'       => [
+                    'title'             => 'Speed',
+                    'hideIfFieldTrue'   => "autobaud"
+                ],
+                'parity'       => [
+                    'title'             => 'Parity',
+                    'type'              => self::$FE_COL_TYPES[ 'CONST' ],
+                    'const'             => ConsoleServerConnectionEntity::$PARITY,
+                    'hideIfFieldTrue'   => "autobaud"
+                ],
+                'stopbits'       => [
+                    'title'             => 'Stopbits',
+                    'hideIfFieldTrue'   => "autobaud"
+                ],
+                'flowcontrol'       => [
+                    'title'             => 'Flow Control',
+                    'type'              => self::$FE_COL_TYPES[ 'CONST' ],
+                    'const'             => ConsoleServerConnectionEntity::$FLOW_CONTROL,
+                    'hideIfFieldTrue'   => "autobaud"
+                ],
+                'autobaud'       => [
+                    'title'         => 'Autobaud',
+                    'type'          => self::$FE_COL_TYPES[ 'YES_NO' ],
+                ],
                 'notes'       => [
                     'title'         => 'Notes',
                     'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
@@ -208,9 +227,9 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
             'consoleserverid'       => 'required|int|exists:Entities\ConsoleServer,id',
             'port'                  => 'required|string|max:255',
             'speed'                 => 'nullable|integer',
-            'parity'                => 'nullable|integer',
-            'stopbits'              => 'nullable|integer',
-            'flowcontrol'           => 'nullable|integer',
+            'parity'                => 'nullable|string',
+            'stopbits'              => 'nullable|string',
+            'flowcontrol'           => 'nullable|string',
             'autobaud'              => 'nullable|boolean',
             'notes'                 => 'nullable|string|max:65535',
         ]);
@@ -226,11 +245,13 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
 
         $validator->after( function ( $validator ) use( $request ) {
 
-            if( $csFound = D2EM::getRepository( ConsoleServerConnectionEntity::class )->getByServerAndPort( $request->input( 'consoleserverid' ), $request->input( 'port' ) ) ) {
+            if( $request->input( 'consoleserverid' ) != null && $request->input( 'port' ) != null ){
+                if( $csFound = D2EM::getRepository( ConsoleServerConnectionEntity::class )->getByServerAndPort( $request->input( 'consoleserverid' ), $request->input( 'port' ) ) ) {
 
-                if( $this->object->getId() !== $csFound[0]->getId() ) {
+                    if( $this->object->getId() !== $csFound[0]->getId() ) {
 
-                    $validator->errors()->add( 'port', 'This port is already used by this console server.' );
+                        $validator->errors()->add( 'port', 'This port is already used by this console server.' );
+                    }
                 }
             }
 
@@ -239,8 +260,6 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
         if( $validator->fails() ) {
             return Redirect::back()->withErrors($validator)->withInput();
         }
-
-
 
         $this->object->setDescription(   $request->input( 'description'  ) );
         $this->object->setPort(          $request->input( 'port'         ) );

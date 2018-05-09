@@ -122,6 +122,7 @@ abstract class Doctrine2Frontend extends Controller {
         'XLATE'             => 'xlate',
         'YES_NO'            => 'yes_no',
         'PARSDOWN'          => 'parsdown',
+        'CONST'             => 'const',
     ];
 
 

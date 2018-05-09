@@ -65,95 +65,106 @@
 
                                     <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display'] ) || $cconf[ 'display'] ): ?>
 
-                                        <tr>
+                                        <?php if( !isset( $cconf[ 'hideIfFieldTrue'] ) ||  ( isset( $cconf[ 'hideIfFieldTrue'] ) && !$t->data[ 'item' ][ $cconf[ 'hideIfFieldTrue'] ]  ) ) : ?>
 
-                                            <th>
-                                                <?php if( !is_array( $cconf ) ): ?>
-                                                    <?= $cconf ?>
-                                                <?php else: ?>
-                                                    <?= $cconf[ 'title' ] ?>
-                                                <?php endif; ?>
-                                            </th>
+                                            <tr>
 
-
-
-                                            <td>
-
-                                                <?php if( !is_array( $cconf ) ): ?>
-
-                                                    <?php if( $t->data[ 'item' ][ $col ] ): ?>
-                                                        <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
+                                                <th>
+                                                    <?php if( !is_array( $cconf ) ): ?>
+                                                        <?= $cconf ?>
+                                                    <?php else: ?>
+                                                        <?= $cconf[ 'title' ] ?>
                                                     <?php endif; ?>
+                                                </th>
 
-                                                <?php elseif( isset( $cconf[ 'type' ] ) ): ?>
 
-                                                    <?php if( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'HAS_ONE'] ): ?>
-                                                        <?php $nameIdParam = '' ; ?>
-                                                        <?php if( isset( $cconf['nameIdParam'] ) ): ?>
-                                                            <?php $nameIdParam = $cconf['nameIdParam'].'/'; ?>
-                                                        <?php endif; ?>
-                                                        <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . '/'.$nameIdParam . $t->data[ 'item' ][ $cconf['idField'] ] ) ?>">
+                                                <td>
+
+                                                    <?php if( !is_array( $cconf ) ): ?>
+
+                                                        <?php if( $t->data[ 'item' ][ $col ] ): ?>
                                                             <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
-                                                        </a>
+                                                        <?php endif; ?>
 
-                                                    <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'XLATE'] ): ?>
+                                                    <?php elseif( isset( $cconf[ 'type' ] ) ): ?>
 
-                                                        <?php if( isset($cconf[ 'xlator'][ $t->data[ 'item' ][ $col ] ]) ): ?>
-                                                            <?= $cconf[ 'xlator' ][ $t->data[ 'item' ][ $col] ] ?>
+                                                        <?php if( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'HAS_ONE'] ): ?>
+                                                            <?php $nameIdParam = '' ; ?>
+                                                            <?php if( isset( $cconf['nameIdParam'] ) ): ?>
+                                                                <?php $nameIdParam = $cconf['nameIdParam'].'/'; ?>
+                                                            <?php endif; ?>
+                                                            <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . '/'.$nameIdParam . $t->data[ 'item' ][ $cconf['idField'] ] ) ?>">
+                                                                <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
+                                                            </a>
+
+                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'XLATE'] ): ?>
+
+                                                            <?php if( isset($cconf[ 'xlator'][ $t->data[ 'item' ][ $col ] ]) ): ?>
+                                                                <?= $cconf[ 'xlator' ][ $t->data[ 'item' ][ $col] ] ?>
+                                                            <?php else: ?>
+                                                                <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
+                                                            <?php endif; ?>
+
+                                                        <?php elseif( $cconf[ 'type'] ==  $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
+
+                                                            <?php if( $t->data[ 'item' ][ $col ] ): ?>
+                                                                <?= date('Y-m-d H:M:S', strtotime( $t->data[ $col ] ) ) ?>
+                                                            <?php endif; ?>
+
+                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
+
+                                                            <?php if ( $t->data[ 'item' ][ $col ] ): ?>
+                                                                <?= date('Y-m-d', strtotime( $t->data[ $col ] ) ) ?>
+                                                            <?php endif; ?>
+
+                                                        <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'TIME'] ): ?>
+
+                                                            <?php if( $t->data[ 'item' ][ $col ] ): ?>
+                                                                <?= date('H:M:S', strtotime($t->data[ $col ] ) ) ?>
+                                                            <?php endif; ?>
+
+                                                        <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
+
+                                                            <?php if( $t->data[ 'item' ][ $col ] ): ?>
+                                                                <?= str_replace( '%%COL%%', $t->ee( $t->data[ 'item' ][ $col ] ) , $cconf[ 'subject' ] ) ?>
+                                                            <?php endif; ?>
+
+                                                        <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'YES_NO'] ): ?>
+
+                                                            <?= $t->data[ 'item' ][ $col ] ? 'Yes' : 'No' ?>
+
+                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
+
+                                                            <?= $t->insert( $cconf['script'], [ 'row' => $t->data['item'], 'col' => $col ] ) ?>
+
+                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'PARSDOWN'] ): ?>
+
+                                                            <?= @parsedown( $t->data[ 'item' ][ $col ] )?>
+
+                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'CONST'] ): ?>
+
+                                                            <?php if( isset( $cconf[ 'const' ][ $t->data[ 'item' ][ $col ] ] ) ): ?>
+
+                                                                <?= $cconf[ 'const' ][ $t->data[ 'item' ][ $col ] ]  ?>
+
+                                                            <?php endif; ?>
+
                                                         <?php else: ?>
-                                                            <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
+
+                                                            Type?
+
                                                         <?php endif; ?>
-
-                                                    <?php elseif( $cconf[ 'type'] ==  $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
-
-                                                        <?php if( $t->data[ 'item' ][ $col ] ): ?>
-                                                            <?= date('Y-m-d H:M:S', strtotime( $t->data[ $col ] ) ) ?>
-                                                        <?php endif; ?>
-
-                                                    <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
-
-                                                        <?php if ( $t->data[ 'item' ][ $col ] ): ?>
-                                                            <?= date('Y-m-d', strtotime( $t->data[ $col ] ) ) ?>
-                                                        <?php endif; ?>
-
-                                                    <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'TIME'] ): ?>
-
-                                                        <?php if( $t->data[ 'item' ][ $col ] ): ?>
-                                                            <?= date('H:M:S', strtotime($t->data[ $col ] ) ) ?>
-                                                        <?php endif; ?>
-
-                                                    <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
-
-                                                        <?php if( $t->data[ 'item' ][ $col ] ): ?>
-                                                            <?= str_replace( '%%COL%%', $t->ee( $t->data[ 'item' ][ $col ] ) , $cconf[ 'subject' ] ) ?>
-                                                        <?php endif; ?>
-
-                                                    <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'YES_NO'] ): ?>
-
-                                                        <?= $t->data[ 'item' ][ $col ] ? 'Yes' : 'No' ?>
-
-                                                    <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
-
-                                                        <?= $t->insert( $cconf['script'], [ 'row' => $t->data['item'], 'col' => $col ] ) ?>
-
-                                                    <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'PARSDOWN'] ): ?>
-
-                                                        <?= @parsedown( $t->data[ 'item' ][ $col ] )?>
 
                                                     <?php else: ?>
 
-                                                        Type?
+                                                        <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
 
                                                     <?php endif; ?>
+                                                </td>
 
-                                                <?php else: ?>
+                                            </tr>
 
-                                                    <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
-
-                                                <?php endif; ?>
-                                            </td>
-
-                                        </tr>
+                                        <?php endif; ?>
 
                                     <?php endif; ?>
 
