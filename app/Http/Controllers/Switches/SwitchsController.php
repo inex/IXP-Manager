@@ -184,11 +184,11 @@ class SwitchsController extends Doctrine2Frontend {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
 
         Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get(  'add-by-snmp', 'Switches\switchsController@addBySnmp'          )->name( "switchs@add-by-snmp" );
+            Route::get(  'add-by-snmp-step-1', 'Switches\SwitchsController@addBySnmpStep1'     )->name( "switchs@add-by-snmp-step-1" );
             Route::get(  'port-report/{id}', 'Switches\SwitchsController@portReport'    )->name( "switchs@port-report" );
             Route::get(  'configuration', 'Switches\SwitchsController@configuration'    )->name( "switchs@configuration" );
 
-            Route::post(  'store-by-snmp', 'Switches\SwitchsController@storeBySnmp'    )->name( "switchs@store-by-snmp" );
+            Route::post(  'store-by-snmp-step-1', 'Switches\SwitchsController@storeBySmtpStep1'    )->name( "switchs@store-by-snmp-step-1" );
         });
     }
 
@@ -314,8 +314,6 @@ class SwitchsController extends Doctrine2Frontend {
                 abort(404);
             }
 
-
-
             Former::populate([
                 'name'              => array_key_exists( 'name',      $old         ) ? $old['name']              :  $this->object->getName(),
                 'hostname'          => array_key_exists( 'hostname', $old          ) ? $old['hostname']          :  $this->object->getHostname(),
@@ -351,7 +349,106 @@ class SwitchsController extends Doctrine2Frontend {
      *
      * @return View
      */
-    public function addBySnmp( ): View {
+    public function addBySnmpStep1(): View {
+
+        $this->data[ 'params' ]['isAdd']        = true;
+        $this->data[ 'params' ]['addBySnmp']    = true;
+        $this->data[ 'params' ]['object']       = null;
+
+        $this->feParams->titleSingular = "Switch (via SNMP) - Step 1";
+        $this->addEditSetup();
+
+        return $this->display( 'add-step-1-form' );
+    }
+
+    /**
+     * Resolve a hostname into an IPv4/IPv6 address
+     *
+     * **NB:** Assumes only one IP address and as such only the first is returned
+     *
+     * @param string $hn The hostname to resolve
+     * @param int $type The DNS query type - either DNS_A or DNS_AAAA
+     * @throws Exception In the event that an unsupprted query type is requested
+     * @return string|null The resolved IP address or null
+     */
+    private function resolve( $hn, $type ){
+        $a = dns_get_record( $hn, $type );
+
+        if( empty( $a ) )
+            return null;
+
+        if( $type == DNS_A )
+            return $a[0]['ip'];
+
+        if( $type == DNS_AAAA )
+            return $a[0]['ipv6'];
+
+        throw new Exception( 'Unhandled DNS query type.' );
+    }
+
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request $request
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function storeBySmtpStep1( Request $request ) {
+
+        $validator = Validator::make( $request->all(), [
+                'snmppasswd'                => 'nullable|string|max:255',
+                'hostname'                  => 'required|string|max:255|unique:Entities\Switcher,hostname' . ( $request->input('id') ? ','. $request->input('id') : '' ),
+            ]
+        );
+
+        if( $validator->fails() ) {
+            return Redirect::back()->withErrors( $validator )->withInput();
+        }
+
+
+        // can we talk to it by SNMP and discover some basic details?
+        try {
+            $snmp = new SNMP( $request->input( 'hostname' ), $request->input( 'snmppasswd' ) );
+            $vendor = $snmp->getPlatform()->getVendor();
+        }
+        catch( Exception $e ) {
+            AlertContainer::push( "Could not query {$request->input( 'hostname' )} via SNMP. Consider using the <a href=\"" . OSS_Utils::genUrl( 'switch', 'add' ) . "\">the manual add method</a>.", Alert::WARNING );
+        }
+
+        Former::populate([
+            'name'              => substr( $request->input( 'name' ), 0, strpos('.') ),
+            'snmppasswd'        => $request->input( 'snmppasswd' ),
+            'hostname'          => $request->input( 'hostname' ),
+            'ipv4addr'          => $this->resolve( $request->input( 'hostname' ), DNS_A    ) ?? '',
+            'ipv6addr'          => $this->resolve( $request->input( 'hostname' ), DNS_AAAA ) ?? '',
+
+            'switchtype'        => array_key_exists( 'switchtype', $old        ) ? $old['switchtype']        :  $this->object->getSwitchtype(),
+
+
+
+
+            'vendorid'          => array_key_exists( 'vendorid', $old          ) ? $old['vendorid']          :  $this->object->getVendor() ? $this->object->getVendor()->getId() : null,
+            'model'             => array_key_exists( 'model', $old             ) ? $old['model']             :  $this->object->getModel(),
+            'active'            => array_key_exists( 'active', $old            ) ? $old['active']            : ( $this->object->getActive() ?? 0 ),
+            'asn'               => array_key_exists( 'asn', $old               ) ? $old['notes']             :  $this->object->getAsn(),
+            'loopback_ip'       => array_key_exists( 'loopback_ip', $old       ) ? $old['loopback_ip']       :  $this->object->getLoopbackIP(),
+            'loopback_name'     => array_key_exists( 'loopback_name', $old     ) ? $old['loopback_name']     :  $this->object->getLoopbackName(),
+            'mgmt_mac_address'  => array_key_exists( 'mgmt_mac_address', $old  ) ? $old['mgmt_mac_address']  :  $this->object->getMgmtMacAddress(),
+        ]);
+
+
+
+        return true;
+    }
+
+
+    /**
+     * Display the form to add by SNMP
+     *
+     * @return View
+     */
+    public function addBySnmpStep2(): View {
 
         $this->data[ 'params' ] = [
             'cabinets'          => D2EM::getRepository( CabinetEntity::class            )->getAsArray(),
@@ -365,7 +462,7 @@ class SwitchsController extends Doctrine2Frontend {
         $this->feParams->titleSingular = "Switch (via SNMP)";
         $this->addEditSetup();
 
-        return $this->display( 'edit' );
+        return $this->display( 'add-step-1-form' );
     }
 
 
