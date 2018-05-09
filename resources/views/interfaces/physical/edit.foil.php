@@ -111,12 +111,38 @@ $this->layout( 'layouts/ixpv4' );
                             . 'IXP Manager will generally <em>do the right thing</em>.' );
                     ?>
 
-                    <?= Former::textarea( 'notes' )
-                        ->label( 'Notes' )
-                        ->rows( 10 )
-                        ->style( 'width:500px' )
-                        ->blockHelp( ' ' );
-                    ?>
+
+                    <div class="form-group">
+
+                        <label for="notes" class="control-label col-lg-2 col-sm-4">Notes</label>
+                        <div class="col-sm-8">
+
+                            <ul class="nav nav-tabs">
+                                <li role="presentation" class="active">
+                                    <a class="tab-link-body-note" href="#body">Notes</a>
+                                </li>
+                                <li role="presentation">
+                                    <a class="tab-link-preview-note" href="#preview">Preview</a>
+                                </li>
+                            </ul>
+
+                            <div class="tab-content">
+                                <div role="tabpanel" class="tab-pane active" id="body">
+
+                                    <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->notes ?></textarea>
+                                </div>
+                                <div role="tabpanel" class="tab-pane" id="preview">
+                                    <div class="well well-preview" style="background: rgb(255,255,255);">
+                                        Loading...
+                                    </div>
+                                </div>
+                            </div>
+
+                            <br><br>
+                        </div>
+
+                    </div>
+
                 </div>
 
                 <?php if( $t->otherPICoreLink ): ?>
@@ -186,13 +212,14 @@ $this->layout( 'layouts/ixpv4' );
                             ->blockHelp( '' );
                         ?>
 
-                        <?= Former::textarea( 'notes-b' )
-                            ->label( 'Notes' )
-                            ->rows( 10 )
-                            ->style( 'width:500px' )
-                            ->disabled( true )
-                            ->blockHelp( ' ' );
-                        ?>
+                        <div class="form-group">
+
+                            <label for="notes" class="control-label col-lg-2 col-sm-4">Notes</label>
+                            <div class="col-sm-8">
+                                <?= @parsedown( $t->notesb )?>
+                            </div>
+
+                        </div>
 
                     </div>
 

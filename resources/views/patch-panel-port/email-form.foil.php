@@ -55,18 +55,20 @@
         <div class="col-lg-offset-2 col-sm-offset-2">
 
             <ul class="nav nav-tabs">
-                <li role="presentation" class="active"><a id="tab-link-body" href="#body">Body</a></li>
-                <li role="presentation"><a  id="tab-link-preview" href="#preview">Preview</a></li>
+                <li role="presentation" class="active">
+                    <a class="tab-link-body-note" href="#body">Body</a>
+                </li>
+                <li role="presentation">
+                    <a class="tab-link-preview-note" href="#preview">Preview</a>
+                </li>
             </ul>
-
-            <br>
 
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="body">
                     <textarea class="form-control" style="font-family:monospace;" rows="30" id="email_text" name="email_text"><?= $t->ee( $t->body )?></textarea>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="preview">
-                    <div id="well-preview" class="well" style="background: rgb(255,255,255);">
+                    <div class="well well-preview" style="background: rgb(255,255,255);">
                         Loading...
                     </div>
                 </div>
@@ -94,38 +96,7 @@
 
 <?php $this->section( 'scripts' ) ?>
 
-<!--<script type="text/javascript" src="--><?//= asset( 'bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.min.js' ) ?><!--"></script>-->
 <script>
-    $(document).ready(function(){
-        //$('#email_bcc').on( 'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
-        //$('#email_cc').on(  'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
-        //$('#email_to').on(  'beforeItemAdd', function (event) { allowValue(event) } ).tagsinput();
-
-        $('#tab-link-body').on( 'click', function(e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
-
-        $('#tab-link-preview').on( 'click', function(e) {
-            e.preventDefault();
-            $('#well-preview').html('Loading...');
-            $(this).tab('show');
-
-            $.ajax( "<?= route ('utils@markdown')?>", {
-                data: {
-                    text: $('#email_text').val()
-                },
-                type: 'POST'
-            })
-            .done( function( data ) {
-                $('#well-preview').html( data.html );
-            })
-            .fail( function() {
-                $('#well-preview').html('Error!');
-            });
-        });
-
-    });
 
     /**
      * allow the value to be display as a tag

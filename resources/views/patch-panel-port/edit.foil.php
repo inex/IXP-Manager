@@ -203,19 +203,70 @@
     <?php endif; ?>
 
     <?php if ( !$t->prewired ): ?>
-        <?= Former::textarea( 'notes' )
-            ->label( 'Public Notes' )
-            ->rows( 10 )
-            ->style( 'width:500px' )
-            ->blockHelp( 'These notes are visible (but not editable) to the member. You can use markdown here.' );
-        ?>
+
+        <div class="form-group">
+
+            <label for="notes" class="control-label col-lg-2 col-sm-4">Public Notes</label>
+            <div class="col-sm-8">
+
+                <ul class="nav nav-tabs">
+                    <li role="presentation" class="active">
+                        <a class="tab-link-body-note" href="#body1">Notes</a>
+                    </li>
+                    <li role="presentation">
+                        <a class="tab-link-preview-note" href="#preview1">Preview</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="body1">
+                        <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->notes ?></textarea>
+                        <p class="help-block">These notes are visible (but not editable) to the member. You can use markdown here.</p>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="preview1">
+                        <div class="well well-preview" style="background: rgb(255,255,255);">
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+
+                <br><br>
+            </div>
+
+        </div>
+
     <?php endif; ?>
-    <?= Former::textarea( 'private_notes' )
-        ->label( 'Private Notes' )
-        ->rows( 10 )
-        ->style( 'width:500px' )
-        ->blockHelp( 'These notes are <b>NOT</b> visible to the member. You can use markdown here.' );
-    ?>
+
+        <div class="form-group">
+
+            <label for="private_notes" class="control-label col-lg-2 col-sm-4">Private Notes</label>
+            <div class="col-sm-8">
+
+                <ul class="nav nav-tabs">
+                    <li role="presentation" class="active">
+                        <a class="tab-link-body-note" href="#body2">Notes</a>
+                    </li>
+                    <li role="presentation">
+                        <a class="tab-link-preview-note" href="#preview2">Preview</a>
+                    </li>
+                </ul>
+
+                <div class="tab-content">
+                    <div role="tabpanel" class="tab-pane active" id="body2">
+                        <textarea class="form-control" style="font-family:monospace;" rows="20" id="private_notes" name="private_notes"><?= $t->private_notes ?></textarea>
+                        <p class="help-block">These notes are <b>NOT</b> visible to the member. You can use markdown here.</p>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="preview2">
+                        <div class="well well-preview" style="background: rgb(255,255,255);">
+                            Loading...
+                        </div>
+                    </div>
+                </div>
+
+                <br><br>
+            </div>
+
+        </div>
 
     <?php if ( !$t->prewired ): ?>
         <?php if( !$t->allocating ): ?>

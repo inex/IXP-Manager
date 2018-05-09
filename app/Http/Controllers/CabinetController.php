@@ -106,7 +106,10 @@ class CabinetController extends Doctrine2Frontend {
                 ],
 
                 'type'       => 'Type',
-                'notes'      => 'Notes'
+                'notes'       => [
+                    'title'         => 'Notes',
+                    'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
+                ]
             ]
         );
 
@@ -132,13 +135,16 @@ class CabinetController extends Doctrine2Frontend {
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
+
+        $old = request()->old();
+
         if( $id !== null ) {
 
             if( !( $this->object = D2EM::getRepository( CabinetEntity::class )->find( $id ) ) ) {
                 abort(404);
             }
 
-            $old = request()->old();
+
 
             Former::populate([
                 'name'                  => array_key_exists( 'name',          $old ) ? $old['name']          : $this->object->getName(),
@@ -147,13 +153,13 @@ class CabinetController extends Doctrine2Frontend {
                 'type'                  => array_key_exists( 'type',          $old ) ? $old['type']          : $this->object->getType(),
                 'height'                => array_key_exists( 'height',        $old ) ? $old['height']        : $this->object->getHeight(),
                 'u_counts_from'         => array_key_exists( 'u_counts_from', $old ) ? $old['u_counts_from'] : $this->object->getUCountsFrom(),
-                'notes'                 => array_key_exists( 'notes',         $old ) ? $old['notes']         : $this->object->getNotes(),
             ]);
         }
 
         return [
             'object'                => $this->object,
             'locations'             => D2EM::getRepository( LocationEntity::class )->getAsArray(),
+            'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : "" )
         ];
     }
 

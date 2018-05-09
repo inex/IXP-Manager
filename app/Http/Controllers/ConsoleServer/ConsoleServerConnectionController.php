@@ -83,6 +83,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
                     'idField'    => 'consoleserver_id'
                 ],
 
+
                 'port'          => 'Port',
 
                 'customer'      => [
@@ -228,6 +229,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
             if( $csFound = D2EM::getRepository( ConsoleServerConnectionEntity::class )->getByServerAndPort( $request->input( 'consoleserverid' ), $request->input( 'port' ) ) ) {
 
                 if( $this->object->getId() !== $csFound[0]->getId() ) {
+
                     $validator->errors()->add( 'port', 'This port is already used by this console server.' );
                 }
             }

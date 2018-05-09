@@ -96,23 +96,27 @@
                         <form class="bootbox-form" id="co-notes-form">
                             <input type="text" placeholder="Title" class="bootbox-input bootbox-input form-control" name="title" id="co-notes-ftitle" />
                             <br />
-                            <ul class="nav nav-tabs">
-                                <li role="presentation" class="active"><a id="tab-link-body" href="#body">Body</a></li>
-                                <li role="presentation"><a  id="tab-link-preview" href="#preview">Preview</a></li>
-                            </ul>
 
-                            <br>
+                            <ul class="nav nav-tabs">
+                                <li role="presentation" class="active">
+                                    <a class="tab-link-body-note" href="#body">Notes</a>
+                                </li>
+                                <li role="presentation">
+                                    <a class="tab-link-preview-note" href="#preview">Preview</a>
+                                </li>
+                            </ul>
 
                             <div class="tab-content">
                                 <div role="tabpanel" class="tab-pane active" id="body">
                                     <textarea rows="6" class="bootbox-input bootbox-input-textarea form-control" name="note" id="co-notes-fnote"></textarea>
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="preview">
-                                    <div id="well-preview" class="well" style="background: rgb(255,255,255);">
+                                    <div class="well well-preview" style="background: rgb(255,255,255);">
                                         Loading...
                                     </div>
                                 </div>
                             </div>
+
 
                             <br />
                             <label>

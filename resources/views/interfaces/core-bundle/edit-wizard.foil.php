@@ -305,7 +305,7 @@ $this->layout( 'layouts/ixpv4' );
                                         </td>
                                         <td>
                                             <?= $cl->getCoreInterfaceSideB()->getPhysicalInterface()->getSwitchPort()->getName() ?>
-                                            <a class="btn btn-sm btn-default" href="<?= route('interfaces/physical/edit' , [ 'id' => $cl->getCoreInterfaceSideB()->getPhysicalInterface()->getId() ] ) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
+                                            <a class="btn btn-sm btn-default" href="<?= route('interfaces/physical/edit/from-core-bundle' , [ 'id' => $cl->getCoreInterfaceSideB()->getPhysicalInterface()->getId(), 'cb' => $t->cb->getId() ] ) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
                                         </td>
                                         <td>
                                             <?= Former::checkbox( 'enabled-'.$cl->getId() )

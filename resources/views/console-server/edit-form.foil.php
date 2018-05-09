@@ -48,28 +48,38 @@
         ->label( '&nbsp;' )
         ->text( 'Active' )
         ->value( 1 )
-        ->blockHelp( "Marking a console inactive could allow you to exclude it from, for example, Nagios configuration generation." );
+        ->blockHelp( "Marking a console inactive will exclude it from, for example, Nagios configuration generation." );
     ?>
 
-    <div class="col-lg-offset-2 col-sm-offset-2 col-sm-8">
+    <div class="form-group">
 
-        <ul class="nav nav-tabs">
-            <li role="presentation" class="active"><a id="tab-link-body" href="#body">Notes</a></li>
-            <li role="presentation"><a  id="tab-link-preview" href="#preview">Preview</a></li>
-        </ul>
+        <label for="notes" class="control-label col-lg-2 col-sm-4">Notes</label>
+        <div class="col-sm-8">
 
-        <div class="tab-content">
-            <div role="tabpanel" class="tab-pane active" id="body">
-                <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->data[ 'params'][ 'notes' ] ?></textarea>
-            </div>
-            <div role="tabpanel" class="tab-pane" id="preview">
-                <div id="well-preview" class="well" style="background: rgb(255,255,255);">
-                    Loading...
+            <ul class="nav nav-tabs">
+                <li role="presentation" class="active">
+                    <a class="tab-link-body-note" href="#body">Notes</a>
+                </li>
+                <li role="presentation">
+                    <a class="tab-link-preview-note" href="#preview">Preview</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="body">
+
+                    <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->data[ 'params'][ 'notes' ] ?></textarea>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="preview">
+                    <div class="well well-preview" style="background: rgb(255,255,255);">
+                        Loading...
+                    </div>
                 </div>
             </div>
+
+            <br><br>
         </div>
 
-        <br><br>
     </div>
 
     <?= Former::actions(

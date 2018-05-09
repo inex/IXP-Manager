@@ -221,8 +221,6 @@ class PatchPanelPortController extends Controller
             'customer'                  => array_key_exists( 'customer',                $old    ) ? $old['customer']                : $ppp->getCustomerId(),
             'partner_port'              => array_key_exists( 'partner_port',            $old    ) ? $old['partner_port']            : $ppp->getDuplexSlavePortId(),
             'state'                     => array_key_exists( 'state',                   $old    ) ? $old['state']                   : $ppp->getState(),
-            'notes'                     => array_key_exists( 'notes',                   $old    ) ? $old['notes']                   : $ppp->getNotes(),
-            'private_notes'             => array_key_exists( 'private_notes',           $old    ) ? $old['private_notes']           : $ppp->getPrivateNotes(),
             'assigned_at'               => array_key_exists( 'assigned_at',             $old    ) ? $old['assigned_at']             : $ppp->getAssignedAtFormated(),
             'connected_at'              => array_key_exists( 'connected_at',            $old    ) ? $old['connected_at']            : $ppp->getConnectedAtFormated(),
             'ceased_requested_at'       => array_key_exists( 'ceased_requested_at',     $old    ) ? $old['ceased_requested_at']     : $ppp->getCeaseRequestedAtFormated(),
@@ -254,7 +252,9 @@ class PatchPanelPortController extends Controller
             'hasDuplex'             => $ppp->hasSlavePort(),
             'user'                  => Auth::user(),
             'allocating'            => $allocating,
-            'prewired'              => $prewired
+            'prewired'              => $prewired,
+            'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']              : $ppp->getNotes() )        : ( array_key_exists( 'notes',              $old ) ? $old['notes']              : "" ),
+            'private_notes'         => $id ? ( array_key_exists( 'private_notes',   $old ) ? $old['private_notes']      : $ppp->getPrivateNotes() ) : ( array_key_exists( 'private_notes',      $old ) ? $old['private_notes']      : "" )
         ]);
     }
 

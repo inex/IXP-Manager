@@ -165,20 +165,6 @@
         $('#notes-modal-btn-confirm').off( 'click' );
     }
 
-    function markdownText( text, input ){
-        $.ajax( "<?= route ('utils@markdown')?>", {
-            data: {
-                text: text
-            },
-            type: 'POST'
-        })
-            .done( function( data ) {
-                input.html( data.html );
-            })
-            .fail( function() {
-                input.html('Error!');
-            });
-    }
     /**
      * This function uses the ajaxGetPatchPanelPort() action to get the details of a ppp
      * and then show a popup dialog to edit notes and handle the saving of same.
@@ -210,20 +196,7 @@
                     type: 'POST'
                 })
                     .done( function( data ) {
-                        if( action == 'edit-notes' ) {
-                            if( data.success ){
-                                if( publicNotes.val() != ppp.note ){
-                                    markdownText( publicNotes.val(), $( '#public-note-display') );
-                                }
-
-                                if( privateNotes.val() != ppp.privateNotes ){
-                                    markdownText( privateNotes.val(), $( '#private-note-display' ) );
-                                }
-                            }
-                            $('#notes-modal').modal('hide');
-                        } else {
-                            document.location.href = url;
-                        }
+                        document.location.href = url;
                     })
                     .fail( function(){
                         alert( 'Could not update notes. API / AJAX / network error' );

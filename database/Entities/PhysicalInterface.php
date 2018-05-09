@@ -241,7 +241,7 @@ class PhysicalInterface
      */
     public function getNotes()
     {
-        return $this->notes;
+        return $this->notes ?? '';
     }
 
     /**
