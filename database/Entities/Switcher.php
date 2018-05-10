@@ -103,6 +103,16 @@ class Switcher
     protected $id;
 
     /**
+     * @var boolean
+     */
+    private $mauSupported;
+
+    /**
+     * @var string
+     */
+    private $serialNumber;
+
+    /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $Ports;
@@ -761,10 +771,7 @@ class Switcher
         return $this;
     }
 
-    /**
-     * @var string
-     */
-    private $serialNumber;
+
 
 
     /**
@@ -789,10 +796,7 @@ class Switcher
     {
         return $this->serialNumber;
     }
-    /**
-     * @var boolean
-     */
-    private $mauSupported;
+
 
 
     /**

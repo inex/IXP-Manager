@@ -47,9 +47,9 @@ use IXP\Utils\View\Alert\{
 };
 
 use Illuminate\View\View;
-use OSS_SNMP\Exception;
-use OSS_SNMP\SNMP;
-use OSS_Utils;
+use OSS_SNMP\{
+    Exception, Platform, SNMP
+};
 
 
 /**
@@ -184,25 +184,15 @@ class SwitchsController extends Doctrine2Frontend {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
 
         Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get(  'add-by-snmp-step-1', 'Switches\SwitchsController@addBySnmpStep1'     )->name( "switchs@add-by-snmp-step-1" );
-            Route::get(  'port-report/{id}', 'Switches\SwitchsController@portReport'    )->name( "switchs@port-report" );
-            Route::get(  'configuration', 'Switches\SwitchsController@configuration'    )->name( "switchs@configuration" );
+            Route::get(  'pre-add-by-snmp', 'Switches\SwitchsController@preAddBySnmp'           )->name( "switchs@pre-add-by-snmp" );
+            Route::get(  'port-report/{id}', 'Switches\SwitchsController@portReport'            )->name( "switchs@port-report" );
+            Route::get(  'configuration', 'Switches\SwitchsController@configuration'            )->name( "switchs@configuration" );
 
-            Route::post(  'store-by-snmp-step-1', 'Switches\SwitchsController@storeBySmtpStep1'    )->name( "switchs@store-by-snmp-step-1" );
+            Route::post(  'pre-store-by-snmp',  'Switches\SwitchsController@preStoreBySmtp'     )->name( "switchs@pre-store-by-snmp" );
         });
     }
 
     public function list( Request $r  ) : View{
-
-        if( ( $type = $r->input( 'type' ) ) !== null ) {
-            if( isset( SwitcherEntity::$TYPES[ $type ] ) ) {
-                $r->session()->put( "switch-list-type", $type );
-            } else {
-                $r->session()->remove( "switch-list-type" );
-            }
-        } else if( $r->session()->exists( "switch-list-type" ) ) {
-            $type = $r->session()->get( "switch-list-type" );
-        }
 
         if( ( $showActiveOnly = $r->input( 'active-only' ) ) !== null ) {
             $r->session()->put( "switch-list-active-only", $showActiveOnly );
@@ -224,7 +214,6 @@ class SwitchsController extends Doctrine2Frontend {
             $this->setUpOsView();
         }
 
-        $this->data[ 'params' ][ 'switchType' ] = $type;
         $this->data[ 'params' ][ 'activeOnly' ] = $showActiveOnly;
         $this->data[ 'params' ][ 'osView' ]     = $osView;
 
@@ -317,7 +306,6 @@ class SwitchsController extends Doctrine2Frontend {
             Former::populate([
                 'name'              => array_key_exists( 'name',      $old         ) ? $old['name']              :  $this->object->getName(),
                 'hostname'          => array_key_exists( 'hostname', $old          ) ? $old['hostname']          :  $this->object->getHostname(),
-                'switchtype'        => array_key_exists( 'switchtype', $old        ) ? $old['switchtype']        :  $this->object->getSwitchtype(),
                 'cabinetid'         => array_key_exists( 'cabinetid', $old         ) ? $old['cabinetid']         :  $this->object->getCabinet() ? $this->object->getCabinet()->getId() : null,
                 'infrastructure'    => array_key_exists( 'infrastructure', $old    ) ? $old['infrastructure']    :  $this->object->getInfrastructure() ? $this->object->getInfrastructure()->getId() : null,
                 'ipv4addr'          => array_key_exists( 'ipv4addr', $old          ) ? $old['ipv4addr']          :  $this->object->getIpv4addr(),
@@ -336,7 +324,8 @@ class SwitchsController extends Doctrine2Frontend {
 
         return [
             'object'            => $this->object,
-            'addBySnmp'         => false,
+            'addBySnmp'         => array_key_exists( 'add_by_snnp', $old  ) ? $old['add_by_snnp']  : false,
+            'preAddForm'        => false,
             'cabinets'          => D2EM::getRepository( CabinetEntity::class            )->getAsArray(),
             'infra'             => D2EM::getRepository( InfrastructureEntity::class     )->getAllAsArray(),
             'vendors'           => D2EM::getRepository( VendorEntity::class             )->getAsArray(),
@@ -349,16 +338,17 @@ class SwitchsController extends Doctrine2Frontend {
      *
      * @return View
      */
-    public function addBySnmpStep1(): View {
+    public function preAddBySnmp(): View {
 
         $this->data[ 'params' ]['isAdd']        = true;
         $this->data[ 'params' ]['addBySnmp']    = true;
+        $this->data[ 'params' ]['preAddForm']   = true;
         $this->data[ 'params' ]['object']       = null;
 
-        $this->feParams->titleSingular = "Switch (via SNMP) - Step 1";
+        $this->feParams->titleSingular = "Switch (via SNMP)";
         $this->addEditSetup();
 
-        return $this->display( 'add-step-1-form' );
+        return $this->display( 'pre-add-by-smtp-form' );
     }
 
     /**
@@ -387,14 +377,14 @@ class SwitchsController extends Doctrine2Frontend {
     }
 
     /**
-     * Function to do the actual validation and storing of the submitted object.
+     * Pre populate the form ADD by smtp
      *
      * @param Request $request
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function storeBySmtpStep1( Request $request ) {
+    public function preStoreBySmtp( Request $request ) {
 
         $validator = Validator::make( $request->all(), [
                 'snmppasswd'                => 'nullable|string|max:255',
@@ -406,15 +396,25 @@ class SwitchsController extends Doctrine2Frontend {
             return Redirect::back()->withErrors( $validator )->withInput();
         }
 
+        $vendorid = null;
 
         // can we talk to it by SNMP and discover some basic details?
         try {
             $snmp = new SNMP( $request->input( 'hostname' ), $request->input( 'snmppasswd' ) );
             $vendor = $snmp->getPlatform()->getVendor();
+
+            // Store the platform in session to be able to get back the information when we will create the object
+            $request->session()->put( "snmp-platform", $snmp->getPlatform() );
+
+            /** @var VendorEntity $vendorFound */
+            if( $vendorFound = D2EM::getRepository( VendorEntity::class )->findOneBy( [ "name" => $vendor ] ) ){
+                $vendorid = $vendorFound->getId();
+            }
         }
         catch( Exception $e ) {
-            AlertContainer::push( "Could not query {$request->input( 'hostname' )} via SNMP. Consider using the <a href=\"" . OSS_Utils::genUrl( 'switch', 'add' ) . "\">the manual add method</a>.", Alert::WARNING );
+            $snmp = null;
         }
+
 
         Former::populate([
             'name'              => substr( $request->input( 'name' ), 0, strpos('.') ),
@@ -422,48 +422,25 @@ class SwitchsController extends Doctrine2Frontend {
             'hostname'          => $request->input( 'hostname' ),
             'ipv4addr'          => $this->resolve( $request->input( 'hostname' ), DNS_A    ) ?? '',
             'ipv6addr'          => $this->resolve( $request->input( 'hostname' ), DNS_AAAA ) ?? '',
-
-            'switchtype'        => array_key_exists( 'switchtype', $old        ) ? $old['switchtype']        :  $this->object->getSwitchtype(),
-
-
-
-
-            'vendorid'          => array_key_exists( 'vendorid', $old          ) ? $old['vendorid']          :  $this->object->getVendor() ? $this->object->getVendor()->getId() : null,
-            'model'             => array_key_exists( 'model', $old             ) ? $old['model']             :  $this->object->getModel(),
-            'active'            => array_key_exists( 'active', $old            ) ? $old['active']            : ( $this->object->getActive() ?? 0 ),
-            'asn'               => array_key_exists( 'asn', $old               ) ? $old['notes']             :  $this->object->getAsn(),
-            'loopback_ip'       => array_key_exists( 'loopback_ip', $old       ) ? $old['loopback_ip']       :  $this->object->getLoopbackIP(),
-            'loopback_name'     => array_key_exists( 'loopback_name', $old     ) ? $old['loopback_name']     :  $this->object->getLoopbackName(),
-            'mgmt_mac_address'  => array_key_exists( 'mgmt_mac_address', $old  ) ? $old['mgmt_mac_address']  :  $this->object->getMgmtMacAddress(),
+            'vendorid'          => $vendorid ?? "",
+            'model'             => $snmp ? $snmp->getPlatform()->getModel() : "",
         ]);
-
-
-
-        return true;
-    }
-
-
-    /**
-     * Display the form to add by SNMP
-     *
-     * @return View
-     */
-    public function addBySnmpStep2(): View {
-
-        $this->data[ 'params' ] = [
-            'cabinets'          => D2EM::getRepository( CabinetEntity::class            )->getAsArray(),
-            'infra'             => D2EM::getRepository( InfrastructureEntity::class     )->getAllAsArray(),
-        ];
-
-        $this->data[ 'params' ]['isAdd']        = true;
-        $this->data[ 'params' ]['addBySnmp']    = true;
-        $this->data[ 'params' ]['object']       = null;
 
         $this->feParams->titleSingular = "Switch (via SNMP)";
         $this->addEditSetup();
 
-        return $this->display( 'add-step-1-form' );
+        $this->data[ 'params' ]['isAdd']        = true;
+        $this->data[ 'params' ]['addBySnmp']    = true;
+        $this->data[ 'params' ]['preAddForm']   = false;
+        $this->data[ 'params' ]['object']       = null;
+        $this->data[ 'params' ]['cabinets']     = D2EM::getRepository( CabinetEntity::class            )->getAsArray();
+        $this->data[ 'params' ]['infra']        = D2EM::getRepository( InfrastructureEntity::class     )->getAllAsArray();
+        $this->data[ 'params' ]['vendors']      = D2EM::getRepository( VendorEntity::class             )->getAsArray();
+
+
+        return $this->display( 'edit' );
     }
+
 
 
     /**
@@ -479,7 +456,6 @@ class SwitchsController extends Doctrine2Frontend {
         $validator = Validator::make( $request->all(), [
                 'name'                      => 'required|string|max:255|unique:Entities\Switcher,name' . ( $request->input('id') ? ','. $request->input('id') : '' ),
                 'hostname'                  => 'required|string|max:255|unique:Entities\Switcher,hostname' . ( $request->input('id') ? ','. $request->input('id') : '' ),
-                'switchtype'                => 'required|integer|in:' . implode( ',', array_keys( SwitcherEntity::$TYPES ) ),
                 'cabinetid'                 => 'required|integer|exists:Entities\Cabinet,id',
                 'infrastructure'            => 'required|integer|exists:Entities\Infrastructure,id',
                 'snmppasswd'                => 'nullable|string|max:255',
@@ -496,7 +472,7 @@ class SwitchsController extends Doctrine2Frontend {
 
 
         if( $validator->fails() ) {
-            return Redirect::back()->withErrors( $validator )->withInput();
+            return Redirect::to( route( "switchs@add") )->withErrors( $validator )->withInput();
         }
 
         if( $request->input( 'id', false ) ) {
@@ -525,7 +501,7 @@ class SwitchsController extends Doctrine2Frontend {
 
         $this->object->setName(           $request->input( 'name'               ) );
         $this->object->setHostname(       $request->input( 'hostname'           ) );
-        $this->object->setSwitchtype(     $request->input( 'switchtype'         ) );
+        $this->object->setSwitchtype(     SwitcherEntity::TYPE_SWITCH        );
         $this->object->setIpv4addr(       $request->input( 'ipv4addr'           ) );
         $this->object->setIpv6addr(       $request->input( 'ipv6addr'           ) );
         $this->object->setModel(          $request->input( 'model'              ) );
@@ -542,106 +518,29 @@ class SwitchsController extends Doctrine2Frontend {
         $this->object->setInfrastructure( D2EM::getRepository( InfrastructureEntity::class  )->find( $request->input( 'infrastructure'  ) ) );
         $this->object->setVendor(         D2EM::getRepository( VendorEntity::class          )->find( $request->input( 'vendorid'        ) ) );
 
+
+        if( $request->session()->exists( "snmp-platform" ) ) {
+            /** @var Platform $platform */
+            $platform = $request->session()->get( "snmp-platform" );
+
+            $this->object->setOs(           $platform->getOs() );
+            $this->object->setOsDate(       $platform->getOsDate() );
+            $this->object->setOsVersion(    $platform->getOsVersion() );
+            $this->object->setSerialNumber( $platform->getSerialNumber() );
+            $request->session()->remove( "snmp-platform" );
+        }
+
+
+
+        if( $request->input( "add_by_snnp" ) ){
+            $this->object->setLastPolled(   new \DateTime );
+        }
+
         D2EM::flush();
 
         return true;
     }
 
-    /**
-     * Function to do the actual validation and storing of the submitted object.
-     *
-     * @param Request $request
-     * @return RedirectResponse
-     *
-     * @throws
-     */
-    public function storeBySnmp( Request $request ) {
-
-        $validator = Validator::make( $request->all(), [
-                'name'                      => 'required|string|max:255|unique:Entities\Switcher,name' . ( $request->input('id') ? ','. $request->input('id') : '' ),
-                'hostname'                  => 'required|string|max:255|unique:Entities\Switcher,hostname' . ( $request->input('id') ? ','. $request->input('id') : '' ),
-                'switchtype'                => 'required|integer|in:' . implode( ',', array_keys( SwitcherEntity::$TYPES ) ),
-                'cabinetid'                 => 'required|integer|exists:Entities\Cabinet,id',
-                'infrastructure'            => 'required|integer|exists:Entities\Infrastructure,id',
-                'snmppasswd'                => 'nullable|string|max:255',
-            ]
-        );
-
-
-        if( $validator->fails() ) {
-            return Redirect::back()->withErrors( $validator )->withInput();
-        }
-
-
-        // can we talk to it by SNMP and discover some basic details?
-        try {
-            $snmp = new SNMP( $request->input( 'hostname' ), $request->input( 'snmppasswd' ) );
-            $vendor = $snmp->getPlatform()->getVendor();
-        }
-        catch( Exception $e ) {
-            AlertContainer::push( "Could not query {$request->input( 'hostname' )} via SNMP. Consider using the <a href=\"" . OSS_Utils::genUrl( 'switch', 'add' ) . "\">the manual add method</a>.", Alert::WARNING );
-        }
-
-
-        if( $vendor == 'Unknown' ) {
-            AlertContainer::push( "Could not interpret switch system description string - most likely
-                        because no platform interpretor exists for it.<br/><br/>Please see
-                        <a href=\"https://github.com/opensolutions/OSS_SNMP/wiki/Device-Discovery\">this OSS_SNMP page</a>
-                        and consider adding one.<br /><br />
-                        Otherwise use the <a href=\"" . OSS_Utils::genUrl( 'switch', 'add' ) . "\">the manual add method</a>."
-                , Alert::WARNING
-            );
-
-        }
-
-        if( !( $eVendor = D2EM::getRepository( VendorEntity::class )->find( $vendor ) ) ) {
-            AlertContainer::push( "No vendor defined for [{$vendor}]. Please
-                    <a href=\"" . OSS_Utils::genUrl( 'vendor', 'add' ) . "\">add one first</a>."
-                , Alert::WARNING
-            );
-        }
-
-
-
-
-
-
-
-
-
-        $this->object->setName(           $request->input( 'name'               ) );
-        $this->object->setHostname(       $request->input( 'hostname'           ) );
-        $this->object->setSnmppasswd(     $request->input( 'snmppasswd'         ) );
-        $this->object->setCabinet(        D2EM::getRepository( CabinetEntity::class         )->find( $request->input( 'cabinetid'       ) ) );
-        $this->object->setInfrastructure( D2EM::getRepository( InfrastructureEntity::class  )->find( $request->input( 'infrastructure'  ) ) );
-        $this->object->setSwitchtype(     $request->input( 'switchtype'         ) );
-        $this->object->setAsn(            $request->input( 'asn'                ) );
-
-
-        $this->object->setVendor(       $eVendor );
-        $this->object->setIpv4addr(     $this->_resolve( $s->getHostname(), DNS_A    ) );
-        $this->object->setIpv6addr(     $this->_resolve( $s->getHostname(), DNS_AAAA ) );
-        $this->object->setModel(        $snmp->getPlatform()->getModel() );
-        $this->object->setOs(           $snmp->getPlatform()->getOs() );
-        $this->object->setOsDate(       $snmp->getPlatform()->getOsDate() );
-        $this->object->setOsVersion(    $snmp->getPlatform()->getOsVersion() );
-        $this->object->setActive(true );
-        $this->object->setLastPolled(   new DateTime() );
-
-
-//        $s->setLoopbackIP( $f->getValue( 'loopback_ip' ) );
-//        $s->setLoopbackName( $f->getValue( 'loopback_name' ) );
-
-        // clear the cache
-        D2EM::getRepository( SwitcherEntity::class )->clearCache( true, $request->input( 'switchtype' ) );
-
-        AlertContainer::push( "Switch polled and added successfully! Please configure the ports found below.", Alert::SUCCESS );
-
-
-        //$this->redirect( 'switch-port/snmp-poll/switch/' . $s->getId() );
-
-        return Redirect::to( route( "switchs@list" ) );
-    }
 
     /**
      * Overriding optional method to clear cached entries:

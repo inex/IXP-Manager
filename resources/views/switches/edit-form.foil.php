@@ -2,144 +2,163 @@
 
     <?= Former::open()->method( 'POST' )
         ->id( 'form' )
-        ->action( $t->data[ 'params'][ 'addBySnmp'] ?  route( $t->feParams->route_prefix.'@store-by-snmp' ) : route( $t->feParams->route_prefix.'@store' ) )
-        ->customWidthClass( 'col-sm-3' )
+        ->action( route( $t->feParams->route_prefix.'@store' ) )
+        ->customWidthClass( 'col-sm-6' )
     ?>
 
+    <div class="col-sm-12">
+        <div class="col-sm-6">
+            <?= Former::text( 'name' )
+                ->label( 'Name' )
+                ->blockHelp( "" );
+            ?>
 
-    <?= Former::text( 'name' )
-        ->label( 'Name' )
-        ->blockHelp( "" );
-    ?>
+            <?= Former::text( 'hostname' )
+                ->label( 'Hostname' )
+                ->disabled( $t->data[ 'params'][ 'addBySnmp'] ? true : false )
+                ->blockHelp( "" );
+            ?>
 
-    <?= Former::text( 'hostname' )
-        ->label( 'Hostname' )
-        ->blockHelp( "" );
-    ?>
+            <?php if( $t->data[ 'params'][ 'addBySnmp'] ): ?>
+                <?= Former::hidden( 'hostname' ) ?>
+            <?php endif; ?>
 
-    <?= Former::select( 'switchtype' )
-        ->label( 'Type' )
-        ->fromQuery( Entities\Switcher::$TYPES )
-        ->placeholder( 'Choose a switch Type' )
-        ->addClass( 'chzn-select' );
-    ?>
+            <?= Former::select( 'cabinetid' )
+                ->label( 'Cabinet' )
+                ->fromQuery( $t->data[ 'params'][ 'cabinets'], 'name' )
+                ->placeholder( 'Choose a cabinet' )
+                ->addClass( 'chzn-select' );
+            ?>
 
-    <?= Former::select( 'cabinetid' )
-        ->label( 'Cabinet' )
-        ->fromQuery( $t->data[ 'params'][ 'cabinets'], 'name' )
-        ->placeholder( 'Choose a cabinet' )
-        ->addClass( 'chzn-select' );
-    ?>
+            <?= Former::select( 'infrastructure' )
+                ->label( 'Infrastructure' )
+                ->fromQuery( $t->data[ 'params'][ 'infra'], 'name' )
+                ->placeholder( 'Choose a cabinet' )
+                ->addClass( 'chzn-select' );
+            ?>
+        </div>
 
-    <?= Former::select( 'infrastructure' )
-        ->label( 'Infrastructure' )
-        ->fromQuery( $t->data[ 'params'][ 'infra'], 'name' )
-        ->placeholder( 'Choose a cabinet' )
-        ->addClass( 'chzn-select' );
-    ?>
+        <div class="col-sm-6">
+            <?= Former::text( 'snmppasswd' )
+                ->label( 'SNMP Community' )
+                ->disabled( $t->data[ 'params'][ 'addBySnmp'] ? true : false )
+                ->blockHelp( "" );
+            ?>
 
-    <?php if( !$t->data[ 'params'][ 'addBySnmp'] ):?>
+            <?php if( $t->data[ 'params'][ 'addBySnmp'] ): ?>
+                <?= Former::hidden( 'snmppasswd' ) ?>
+            <?php endif; ?>
 
-        <?= Former::text( 'ipv4addr' )
-            ->label( 'IPv4 Address' )
-            ->blockHelp( "" );
-        ?>
+            <?= Former::select( 'vendorid' )
+                ->label( 'Vendor' )
+                ->fromQuery( $t->data[ 'params'][ 'vendors'], 'name' )
+                ->placeholder( 'Choose a vendor' )
+                ->addClass( 'chzn-select' );
+            ?>
 
-        <?= Former::text( 'ipv6addr' )
-            ->label( 'IPv6 Address' )
-            ->blockHelp( "" );
-        ?>
+            <?= Former::text( 'model' )
+                ->label( 'Model' )
+                ->blockHelp( "" );
+            ?>
 
-    <?php endif; ?>
+            <?= Former::checkbox( 'active' )
+                ->label( '&nbsp;' )
+                ->text( 'Active' )
+                ->value( 1 )
+                ->check()
+                ->blockHelp( "" );
+            ?>
+        </div>
+    </div>
 
-    <?= Former::text( 'snmppasswd' )
-        ->label( 'SNMP Community' )
-        ->blockHelp( "" );
-    ?>
+    <div style="clear: both"></div>
+    <br/>
 
-    <?php if( !$t->data[ 'params'][ 'addBySnmp'] ):?>
+    <div class="col-sm-12">
+        <div class="col-sm-6">
 
-        <?= Former::select( 'vendorid' )
-            ->label( 'Vendor' )
-            ->fromQuery( $t->data[ 'params'][ 'vendors'], 'name' )
-            ->placeholder( 'Choose a vendor' )
-            ->addClass( 'chzn-select' );
-        ?>
+            <fieldset>
+                <legend>Management Configuration:</legend>
+                <?= Former::text( 'ipv4addr' )
+                    ->label( 'IPv4 Address' )
+                    ->blockHelp( "" );
+                ?>
 
-        <?= Former::text( 'model' )
-            ->label( 'Model' )
-            ->blockHelp( "" );
-        ?>
+                <?= Former::text( 'ipv6addr' )
+                    ->label( 'IPv6 Address' )
+                    ->blockHelp( "" );
+                ?>
 
-        <div class="form-group">
-
-            <label for="notes" class="control-label col-lg-2 col-sm-4">Notes</label>
-            <div class="col-sm-8">
-
-                <ul class="nav nav-tabs">
-                    <li role="presentation" class="active">
-                        <a class="tab-link-body-note" href="#body">Notes</a>
-                    </li>
-                    <li role="presentation">
-                        <a class="tab-link-preview-note" href="#preview">Preview</a>
-                    </li>
-                </ul>
-
-                <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="body">
-
-                        <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->data[ 'params'][ 'notes' ] ?></textarea>
-                    </div>
-                    <div role="tabpanel" class="tab-pane" id="preview">
-                        <div class="well well-preview" style="background: rgb(255,255,255);">
-                            Loading...
-                        </div>
-                    </div>
-                </div>
-
-                <br><br>
-            </div>
+                <?= Former::text( 'mgmt_mac_address' )
+                    ->label( 'Mgmt MAC Address' )
+                    ->blockHelp( "" );
+                ?>
+            </fieldset>
 
         </div>
-    <?php endif; ?>
 
-    <?= Former::checkbox( 'active' )
-        ->label( '&nbsp;' )
-        ->text( 'Active' )
-        ->value( 1 )
-        ->check()
-        ->blockHelp( "" );
-    ?>
+        <div class="col-sm-6">
 
-    <?php if( !$t->data[ 'params'][ 'addBySnmp'] ):?>
+            <fieldset>
+                <legend>Layer 3 Configuration:</legend>
+                <?= Former::text( 'asn' )
+                    ->label( 'ASN' )
+                    ->blockHelp( "" );
+                ?>
 
-        <?= Former::text( 'asn' )
-            ->label( 'ASN' )
-            ->blockHelp( "" );
-        ?>
+                <?= Former::text( 'loopback_ip' )
+                    ->label( 'Loopback IP' )
+                    ->blockHelp( "" );
+                ?>
 
-        <?= Former::text( 'loopback_ip' )
-            ->label( 'Loopback IP' )
-            ->blockHelp( "" );
-        ?>
+                <?= Former::text( 'loopback_name' )
+                    ->label( 'Loopback Name' )
+                    ->blockHelp( "" );
+                ?>
+            </fieldset>
 
-        <?= Former::text( 'loopback_name' )
-            ->label( 'Loopback Name' )
-            ->blockHelp( "" );
-        ?>
+        </div>
+    </div>
 
-        <?= Former::text( 'mgmt_mac_address' )
-            ->label( 'Mgmt MAC Address' )
-            ->blockHelp( "" );
-        ?>
+    <div style="clear: both"></div>
+    <br/>
 
-    <?php endif; ?>
+    <div class="form-group">
+
+        <label for="notes" class="control-label control-label col-lg-1 col-sm-4 ">Notes</label>
+        <div class="col-sm-8">
+
+            <ul class="nav nav-tabs">
+                <li role="presentation" class="active">
+                    <a class="tab-link-body-note" href="#body">Notes</a>
+                </li>
+                <li role="presentation">
+                    <a class="tab-link-preview-note" href="#preview">Preview</a>
+                </li>
+            </ul>
+
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="body">
+
+                    <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->data[ 'params'][ 'notes' ] ?? '' ?></textarea>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="preview">
+                    <div class="well well-preview" style="background: rgb(255,255,255);">
+                        Loading...
+                    </div>
+                </div>
+            </div>
+
+            <br><br>
+        </div>
+
+    </div>
 
     <?= Former::actions(
         Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' ),
         Former::default_link( 'Cancel' )->href( route( $t->feParams->route_prefix.'@list') ),
         Former::success_button( 'Help' )->id( 'help-btn' ),
-        Former::default_link( $t->data[ 'params'][ 'addBySnmp'] ? "Manual / Non-SNMP Add" : "Add by SNMP" )->href( route( $t->data[ 'params'][ 'addBySnmp'] ? $t->feParams->route_prefix.'@add' : $t->feParams->route_prefix.'@add-by-snmp-step-1' ) )
+        Former::default_link( $t->data[ 'params'][ 'addBySnmp'] ? "Manual / Non-SNMP Add" : "Add by SNMP" )->href( route( $t->data[ 'params'][ 'addBySnmp'] ? $t->feParams->route_prefix.'@add' : $t->feParams->route_prefix.'@pre-add-by-snmp' ) )
     );
     ?>
 

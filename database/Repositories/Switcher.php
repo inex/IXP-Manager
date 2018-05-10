@@ -812,9 +812,6 @@ class Switcher extends EntityRepository
             $dql .= " AND s.id = " . (int)$id;
         }
 
-        if( isset( $params[ "params" ][ "switchType" ] ) && isset( SwitcherEntity::$TYPES[ $params[ "params" ][ "switchType" ] ] ) ) {
-            $dql .= " AND s.switchtype = " . (int)$params[ "params" ][ "switchType" ];
-        }
 
         if( isset( $params[ "params" ][ "activeOnly" ] ) && $params[ "params" ][ "activeOnly" ] ){
             $dql .= " AND s.active = true";

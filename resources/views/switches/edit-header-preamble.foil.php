@@ -10,7 +10,7 @@
             <?php endif; ?>
 
             <?php if( !$t->data[ 'params'][ 'addBySnmp'] ): ?>
-                <a type="button" title="add SNMP" class="btn btn-default btn-xs" href="<?= route($t->feParams->route_prefix.'@add-by-snmp-step-1') ?>">
+                <a type="button" title="add SNMP" class="btn btn-default btn-xs" href="<?= route($t->feParams->route_prefix.'@pre-add-by-snmp') ?>">
                     <span class="glyphicon glyphicon-plus"></span>
                 </a>
             <?php endif; ?>
