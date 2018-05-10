@@ -124,9 +124,9 @@
 
                                     <?php if( $vi->isGraphable() ): ?>
                                         <div class="btn-group pull-right">
-                                            <a class="btn btn-default btn-sm" href="<?= url("") ?>/smokeping/member-drilldown/ixp/1/vi/<?= $vi->getId() ?>" title="Latency Graphs">
-                                                <i class="glyphicon glyphicon-time"></i>
-                                            </a>
+
+                                            <?= $t->insert( 'statistics/snippets/latency-dropup', [ 'vi' => $vi ] ) ?>
+
                                             <a class="btn btn-default btn-sm" href="<?= route( "statistics@member-drilldown" , [ "type" => "vi", "typeid" => $vi->getId()  ] ) ?>/?category=<?= $t->category ?>" title="Drilldown">
                                                 <i class="glyphicon glyphicon-zoom-in"></i>
                                             </a>
@@ -163,9 +163,7 @@
                                     <?php if( $pi->statusIsConnectedOrQuarantine() ): ?>
                                         <div class="btn-group pull-right">
                                             <?php if( !$isLAG ): ?>
-                                                <a class="btn btn-default btn-sm" href="<?= url('') ?>/smokeping/member-drilldown/ixp/1/vi/<?= $vi->getId() ?>" title="Latency Graphs">
-                                                    <i class="glyphicon glyphicon-time"></i>
-                                                </a>
+                                                <?= $t->insert( 'statistics/snippets/latency-dropup', [ 'vi' => $vi ] ) ?>
                                             <?php endif; ?>
                                             <a class="btn btn-default btn-sm" href="<?= route( "statistics@member-drilldown" , [ "type" => "pi", "typeid" => $pi->getId()  ] ) ?>/?category=<?= $t->category ?>">
                                                 <i class="glyphicon glyphicon-zoom-in"></i>

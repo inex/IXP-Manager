@@ -388,33 +388,27 @@ class StatisticsController extends Controller
      *
      * @param Request $r
      * @param int $vliid
+     * @param string $protocol
      * @return $this|RedirectResponse
      * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      * @throws \Illuminate\Auth\Access\AuthorizationException
      */
-    public function latency( Request $r, int $vliid ){
+    public function latency( Request $r, int $vliid, string $protocol ){
         /** @var VlanInterfaceEntity $vli */
         if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $vliid ) ) ){
             abort( 404, 'Unknown VLAN interface' );
         }
 
-        $graph = App::make('IXP\Services\Grapher')->latency( $vli );
+        $protocol = Graph::processParameterProtocol( $protocol );
+
+        $graph = App::make('IXP\Services\Grapher')->latency( $vli )->setProtocol( $protocol );
         $graph->authorise();
 
-        $listProtocols = Graph::PROTOCOLS_REAL;
+        $fnEnabled = 'get' . ucfirst( $protocol ) . 'enabled';
+        $fnCanping = 'get' . ucfirst( $protocol ) . 'canping';
+        $fnAddress = 'get' . ucfirst( $protocol ) . 'Address';
 
-        foreach( $listProtocols as $p => $n ) {
-
-            $enabled = 'get' . ucfirst( $p ) . 'enabled';
-            $canping = 'get' . ucfirst( $p ) . 'canping';
-
-            if( !$vli->$enabled() || !$vli->$canping() ) {
-                unset( $listProtocols[ $p ] );
-            }
-        }
-
-
-        if( !count( $listProtocols ) ) {
+        if( !$vli->$fnEnabled() || !$vli->$fnCanping() ) {
             AlertContainer::push(
                 "Protocol or ping not enabled on the requested interface",
                 Alert::WARNING
@@ -422,22 +416,11 @@ class StatisticsController extends Controller
             return redirect()->to( route( "statistics@member" ), [ "id" => $vli->getVirtualInterface()->getCustomer()->getId() ] );
         }
 
-
-        $proto = $r->input( 'protocol' );
-        if( !in_array( $proto, array_keys( $listProtocols ) ) ){
-            $proto = array_keys( $listProtocols )[0];
-        }
-
-        $ipfn   = 'get' . ucfirst( $listProtocols[ $proto ] ) . 'Address';
-        $ip     = $vli->$ipfn()->getAddress();
-
-        $graph->setProtocol( $proto );
-
         return view( 'statistics/latency' )->with([
             'c'         => $vli->getVirtualInterface()->getCustomer(),
             'vli'       => $vli,
-            'ip'        => $ip,
-            'protocol'  => $proto,
+            'ip'        => $vli->$fnAddress()->getAddress(),
+            'protocol'  => $protocol,
             'graph'     => $graph,
         ]);
     }

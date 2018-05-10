@@ -2,6 +2,10 @@
 
 namespace Entities;
 
+use IXP\Exceptions\Services\Grapher\ParameterException as GrapherParameterException;
+use IXP\Services\Grapher\Graph;
+
+
 /**
  * Entities\VlanInterface
  */
@@ -721,5 +725,46 @@ class VlanInterface
 
         return $macs;
     }
+
+
+    /**
+     * Convenience function to see if we can graph a VLI for latency for a given protocol
+     *
+     * @param string $protocol Either ipv4 / ipv6 (as defined in Grapher)
+     * @return bool
+     * @throws GrapherParameterException
+     */
+    public function canGraphForLatency( string $protocol ): bool {
+        if( !isset( Graph::PROTOCOLS_REAL[$protocol] ) ) {
+            throw new GrapherParameterException( 'Unknown protocol: ' . $protocol );
+        }
+
+        $fnAddress = 'get' . ucfirst( $protocol ) . 'Address';
+        $fnCanping = 'get' . ucfirst( $protocol ) . 'Canping';
+        $fnEnabled = 'get' . ucfirst( $protocol ) . 'Enabled';
+
+        return !$this->getVlan()->getPrivate()
+            && $this->$fnEnabled()
+            && $this->$fnCanping()
+            && $this->$fnAddress();
+    }
+
+    /**
+     * Convenience function to get an IP address based on a given protocol
+     *
+     * @param string $protocol Either ipv4 / ipv6 (as defined in Grapher)
+     * @return null|IPv4Address|IPv6Address
+     * @throws GrapherParameterException
+     */
+    public function getIPAddress( string $protocol ) {
+        if( !isset( Graph::PROTOCOLS_REAL[$protocol] ) ) {
+            throw new GrapherParameterException( 'Unknown protocol: ' . $protocol );
+        }
+
+        $fnAddress = 'get' . ucfirst( $protocol ) . 'Address';
+
+        return $this->$fnAddress();
+    }
+
 
 }

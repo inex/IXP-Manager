@@ -96,6 +96,16 @@ class Latency extends Graph {
     ];
 
     /**
+     * Array of valid periods for drill down graphs - descriptions
+     */
+    const PERIODS_DESC = [
+        self::PERIOD_3HOURS     => "3 hours",
+        self::PERIOD_30HOURS    => "30 hours",
+        self::PERIOD_10DAYS     => "10 days",
+        self::PERIOD_1YEAR      => "year"
+    ];
+
+    /**
      * Default protocol for graphs
      */
     const PROTOCOL_DEFAULT = self::PROTOCOL_IPV4;
@@ -111,6 +121,7 @@ class Latency extends Graph {
     public function __construct( Grapher $grapher, VlanInterfaceEntity $vli ) {
         parent::__construct( $grapher );
         $this->vli = $vli;
+        $this->setPeriod( self::PERIOD_3HOURS );
     }
 
 

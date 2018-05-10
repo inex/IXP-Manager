@@ -186,6 +186,7 @@ class Grapher {
                 $backends[] = $b;
             }
         }
+
         return $backends;
     }
 

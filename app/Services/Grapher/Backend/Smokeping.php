@@ -24,7 +24,7 @@
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
 use IXP\Services\Grapher\Backend as GrapherBackend;
 
-use IXP\Services\Grapher\Graph\Latency as SmokepingGraph;
+use IXP\Services\Grapher\Graph\Latency as LatencyGraph;
 
 use IXP\Services\Grapher\Graph;
 
@@ -108,10 +108,10 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
     public static function supports(): array {
 
         return [
-            'smokeping' => [
+            'latency' => [
                 'protocols'   => Graph::PROTOCOLS_REAL,
-                'categories'  => [],
-                'periods'     => SmokepingGraph::PERIODS,
+                'categories'  => Graph::CATEGORIES,
+                'periods'     => LatencyGraph::PERIODS,
                 'types'       => [ Graph::TYPE_PNG => Graph::TYPE_PNG ],
             ],
         ];
@@ -176,7 +176,7 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
         switch( $graph->classType() ) {
 
             case 'Latency':
-                /** @var SmokepingGraph $graph  */
+                /** @var LatencyGraph $graph  */
                 return sprintf( "%s/?displaymode=a;start=now-%s;end=now;target=infra_%s.vlan_%s.vlanint_%s_%s", $config['url'],
                     $graph->period(), $graph->vli()->getVirtualInterface()->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getInfrastructure()->getId(),
                     $graph->vli()->getVlan()->getId(),  $graph->vli()->getId(), $graph->protocol()  );
