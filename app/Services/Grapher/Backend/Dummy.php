@@ -25,11 +25,12 @@ use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
 use IXP\Services\Grapher\Backend as GrapherBackend;
 use IXP\Services\Grapher\Graph;
 
+use IXP\Services\Grapher\Graph\Latency as LatencyGraph;
+
 use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
 
 use IXP\Utils\Grapher\Dummy as DummyFile;
 
-use Entities\IXP;
 
 /**
  * Grapher Backend -> Dummy
@@ -160,10 +161,10 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
                 'types'       => Graph::TYPES
             ],
             'latency' => [
-                'protocols'   => Graph::PROTOCOLS,
+                'protocols'   => Graph::PROTOCOLS_REAL,
                 'categories'  => Graph::CATEGORIES,
-                'periods'     => Graph::PERIODS,
-                'types'       => Graph::TYPES
+                'periods'     => LatencyGraph::PERIODS,
+                'types'       => [ Graph::TYPE_PNG => Graph::TYPE_PNG ],
             ],
             'p2p' => [
                 'protocols'   => Graph::PROTOCOLS,
