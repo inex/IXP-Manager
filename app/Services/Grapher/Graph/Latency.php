@@ -195,17 +195,33 @@ class Latency extends Graph {
      * @throws AuthorizationException
      */
     public function authorise(): bool {
-        if( Auth::check() && Auth::user()->isSuperUser() ) {
+
+        if( config( 'grapher.access.latency', 'own_graphs_only' ) == UserEntity::AUTH_PUBLIC ) {
             return $this->allow();
         }
 
-        if( config( 'grapher.access.latency', -1 ) == UserEntity::AUTH_PUBLIC ) {
-            return $this->allow();
-        } else if( Auth::check() && Auth::user()->getPrivs() >= config( 'grapher.access.smokeping', 0 ) ) {
+        if( !Auth::check() ) {
+            return $this->deny();
+        }
+
+        if( Auth::user()->isSuperUser() ) {
             return $this->allow();
         }
 
-        /** @noinspection PhpVoidFunctionResultUsedInspection */
+        if( Auth::user()->getCustomer()->getId() == $this->vli()->getVirtualInterface()->getCustomer()->getId() ) {
+            return $this->allow();
+        }
+
+        if( config( 'grapher.access.latency', 'own_graphs_only' ) != 'own_graphs_only'
+            && is_numeric( config( 'grapher.access.latency', 'own_graphs_only' ) )
+            && Auth::user()->getPrivs() >= config( 'grapher.access.latency' )
+        ) {
+            return $this->allow();
+        }
+
+        Log::notice( sprintf( "[Grapher] [Latency]: user %d::%s tried to access a latency graph for vli "
+                . "{$this->vli()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
+        );
         return $this->deny();
     }
 

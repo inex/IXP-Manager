@@ -136,7 +136,18 @@ return [
         'ixp'            => env( 'GRAPHER_ACCESS_IXP',            Entities\User::AUTH_PUBLIC ),
         'infrastructure' => env( 'GRAPHER_ACCESS_INFRASTRUCTURE', Entities\User::AUTH_PUBLIC ),
         'switch'         => env( 'GRAPHER_ACCESS_SWITCH',         Entities\User::AUTH_PUBLIC ),
-        'trunk'          => env( 'GRAPHER_ACCESS_TRUNK',          Entities\User::AUTH_PUBLIC )
+        'trunk'          => env( 'GRAPHER_ACCESS_TRUNK',          Entities\User::AUTH_PUBLIC ),
+
+        // FIXME: vlan
+
+        // The follows DO NOT DEFAULT TO PUBLIC but rather customer's are only allowed access
+        // their own graphs by default.
+        'customer'          => env( 'GRAPHER_ACCESS_CUSTOMER',          'own_graphs_only' ),
+        'virtualinterface'  => env( 'GRAPHER_ACCESS_VIRTUALINTERFACE',  'own_graphs_only' ),
+        'physicalinterface' => env( 'GRAPHER_ACCESS_PHYSICALINTERFACE', 'own_graphs_only' ),
+        'vlaninterface'     => env( 'GRAPHER_ACCESS_VLANINTERFACE',     'own_graphs_only' ),
+        'p2p'               => env( 'GRAPHER_ACCESS_P2P',               'own_graphs_only' ),
+        'latency'           => env( 'GRAPHER_ACCESS_LATENCY',           'own_graphs_only' ),
     ],
 
 

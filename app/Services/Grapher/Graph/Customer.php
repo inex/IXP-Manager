@@ -26,7 +26,10 @@ use IXP\Services\Grapher\{Graph,Statistics};
 
 use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
 
-use Entities\Customer as CustomerEntity;
+use Entities\{
+    Customer as CustomerEntity,
+    User     as UserEntity
+};
 
 use Auth, Log;
 
@@ -107,6 +110,11 @@ class Customer extends Graph {
      * @return bool
      */
     public function authorise(): bool {
+
+        if( config( 'grapher.access.customer', 'own_graphs_only' ) == UserEntity::AUTH_PUBLIC ) {
+            return $this->allow();
+        }
+
         if( !Auth::check() ) {
             return $this->deny();
         }
@@ -116,6 +124,13 @@ class Customer extends Graph {
         }
 
         if( Auth::user()->getCustomer()->getId() == $this->customer()->getId() ) {
+            return $this->allow();
+        }
+
+        if( config( 'grapher.access.customer', 'own_graphs_only' ) != 'own_graphs_only'
+                && is_numeric( config( 'grapher.access.customer', 'own_graphs_only' ) )
+                && Auth::user()->getPrivs() >= config( 'grapher.access.customer' )
+        ) {
             return $this->allow();
         }
 
