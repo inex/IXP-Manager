@@ -1,6 +1,6 @@
 #! /usr/bin/env bash
 #
-# Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+# Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
 # All Rights Reserved.
 #
 # This file is part of IXP Manager.
@@ -21,15 +21,17 @@
 
 # Example script for updating smokeping target configuration from IXP Manager
 
-# See: http://docs.ixpmanager.org/features/smokeping/
+# Script correct of API usage in IXP Manager >= v4.8
+
+# See: https://docs.ixpmanager.org/grapher/smokeping/
 
 KEY="my-ixp-manager-api-key"
-URL="https://ixp.example.com/api/v4/vlan/smokeping"
+URL="https://ixp.example.com/api/v4/grapher/config?backend=smokeping"
 ETCPATH="/etc/smokeping"
 SMOKEPING="/usr/bin/smokeping"
 SMOKEPING_RELOAD="/etc/rc.d/smokeping reload"
 VLANS="1 2"
-PROTOCOLS="4 6"
+PROTOCOLS="ipv4 ipv6"
 
 
 # flag used to indicate if a reload is necessary below
@@ -53,34 +55,34 @@ for vlanid in $VLANS; do
         if [ $DEBUG -ne 0 ]; then echo -n "Processing $vlanid - $proto.... "; fi
 
     	curl --fail -s -H "X-IXP-Manager-API-Key: ${KEY}"  \
-    	    ${URL}/${vlanid}/${proto} >${ETCPATH}/targets-vlan${vlanid}-ipv${proto}.cfg.$$
+    	    "${URL}&vlanid=${vlanid}&protocol=${proto}"" >${ETCPATH}/targets-vlan${vlanid}-${proto}.cfg.$$
 
         if [[ $? -ne 0 ]]; then
-            rm -f ${ETCPATH}/targets-vlan${vlanid}-ipv${proto}.cfg.$$
-            echo FAILED targets-vlan${vlanid}-ipv${proto}.cfg
+            rm -f ${ETCPATH}/targets-vlan${vlanid}-${proto}.cfg.$$
+            echo FAILED targets-vlan${vlanid}-${proto}.cfg
             continue
         fi
 
         cd ${ETCPATH}
 
-        if [[ ! -f targets-vlan${vlanid}-ipv${proto}.cfg ]]; then
-            mv targets-vlan${vlanid}-ipv${proto}.cfg.$$ targets-vlan${vlanid}-ipv${proto}.cfg
+        if [[ ! -f targets-vlan${vlanid}-${proto}.cfg ]]; then
+            mv targets-vlan${vlanid}-${proto}.cfg.$$ targets-vlan${vlanid}-${proto}.cfg
             if [ $DEBUG -ne 0 ]; then echo "created -> reload scheduled [DONE]"; fi
             RELOAD=1
         else
-	        cat targets-vlan${vlanid}-ipv${proto}.cfg    | egrep -v '^#.*$' >targets-vlan${vlanid}-ipv${proto}.cfg.filtered
-            cat targets-vlan${vlanid}-ipv${proto}.cfg.$$ | egrep -v '^#.*$' >targets-vlan${vlanid}-ipv${proto}.cfg.$$.filtered
+	        cat targets-vlan${vlanid}-${proto}.cfg    | egrep -v '^#.*$' >targets-vlan${vlanid}-${proto}.cfg.filtered
+            cat targets-vlan${vlanid}-${proto}.cfg.$$ | egrep -v '^#.*$' >targets-vlan${vlanid}-${proto}.cfg.$$.filtered
 
-    	    diff targets-vlan${vlanid}-ipv${proto}.cfg.filtered targets-vlan${vlanid}-ipv${proto}.cfg.$$.filtered >/dev/null
+    	    diff targets-vlan${vlanid}-${proto}.cfg.filtered targets-vlan${vlanid}-${proto}.cfg.$$.filtered >/dev/null
     	    DIFF=$?
 
-    	    rm -f targets-vlan${vlanid}-ipv${proto}.cfg.filtered targets-vlan${vlanid}-ipv${proto}.cfg.$$.filtered
+    	    rm -f targets-vlan${vlanid}-${proto}.cfg.filtered targets-vlan${vlanid}-${proto}.cfg.$$.filtered
 
     	    if [[ $DIFF -eq 0 ]]; then
-    	        rm targets-vlan${vlanid}-ipv${proto}.cfg.$$
+    	        rm targets-vlan${vlanid}-${proto}.cfg.$$
     	        if [ $DEBUG -ne 0 ]; then echo "unchanged -> skipping [DONE]"; fi
      	    else
-    	        mv targets-vlan${vlanid}-ipv${proto}.cfg.$$ targets-vlan${vlanid}-ipv${proto}.cfg
+    	        mv targets-vlan${vlanid}-${proto}.cfg.$$ targets-vlan${vlanid}-${proto}.cfg
     	        RELOAD=1
     	        if [ $DEBUG -ne 0 ]; then echo "changed -> updated -> reload scheduled [DONE]"; fi
     	    fi

@@ -82,6 +82,8 @@ class GrapherServiceProvider extends ServiceProvider {
                 'namespace' => 'IXP\Http\Controllers\Services', 'as' => 'grapher::' ], function(){
                     
             Route::get( 'api/v4/grapher/mrtg-config', 'Grapher\Api@generateConfiguration' );
+            Route::get( 'api/v4/grapher/config',      'Grapher\Api@generateConfiguration' );
+            Route::post( 'api/v4/grapher/config',      'Grapher\Api@generateConfiguration' );
         });
         
         // we have a few rendering functions we want to include here:

@@ -56,15 +56,6 @@ Route::group( [  'prefix' => 'mailing-list' ], function() {
 });
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// VLANs
-//
-// Returns a smokeping configuration for a given VLAN and protocol
-Route::get('vlan/smokeping/{vlanid}/{protocol}',             'VlanController@smokepingTargets');
-Route::get('vlan/smokeping/{vlanid}/{protocol}/{template}',  'VlanController@smokepingTargets');
-Route::post('vlan/smokeping/{vlanid}/{protocol}',             'VlanController@smokepingTargets');
-Route::post('vlan/smokeping/{vlanid}/{protocol}/{template}',  'VlanController@smokepingTargets');
-
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Routers

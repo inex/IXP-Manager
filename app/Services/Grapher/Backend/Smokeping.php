@@ -21,6 +21,15 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use D2EM, View;
+
+use Entities\{
+    Vlan          as VlanEntity,
+    VlanInterface as VlanInterfaceEntity
+};
+
+use Illuminate\Support\Facades\View as FacadeView;
+
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
 use IXP\Services\Grapher\Backend as GrapherBackend;
 
@@ -87,11 +96,54 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      * {inheritDoc}
      *
      * @param int   $type     The type of configuration to generate
+     * @param array $options
      * @return array
      */
-    public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
+    public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC, array $options = [] ): array
     {
-        return [];
+
+        /** @var VlanEntity $v */
+        if( !isset( $options['vlanid'] ) || !( $v = D2EM::getRepository( VlanEntity::class )->find( $options['vlanid'] ) ) ){
+            return abort( 404, 'No "vlanid" paramater provided or unknown VLAN' );
+        }
+
+        if( !isset( $options['protocol'] ) || !in_array( $options['protocol'], Graph::PROTOCOLS_REAL ) ) {
+            return abort( 404, 'No "protocol" parameter provided or unknown protocol' );
+        }
+
+        if( !isset( $options['template'] ) ) {
+            $tmpl = 'services/grapher/smokeping/default';
+        } else {
+            $tmpl = sprintf( 'services/grapher/smokeping/%s', preg_replace( '/[^a-z0-9\-]/', '', strtolower( $options['template'] ) ) );
+        }
+
+        if( !FacadeView::exists( $tmpl ) ) {
+            abort(404, 'Unknown template');
+        }
+
+        if( isset( $options['probe'] ) ) {
+            $probe = $options['probe'];
+        } else {
+            $probe = 'FPing' . ( $options['protocol'] == Graph::PROTOCOL_IPV4 ? '' : '6' );
+        }
+
+        // try and reorder the VLIs into alphabetical order of customer names
+        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForProto( $v, $options['protocol'] == Graph::PROTOCOL_IPV4 ? 4 : 6, false );
+        $orderedVlis = [];
+        foreach( $vlis as $vli ) {
+            $orderedVlis[ $vli['cname'] . '::' . $vli['vliid'] ] = $vli;
+        }
+        ksort( $orderedVlis, SORT_STRING | SORT_FLAG_CASE );
+
+        return [
+            View::make( $tmpl, [
+                'vlan'     => $v,
+                'vlis'     => $orderedVlis,
+                'probe'    => $probe,
+                'level'    => isset( $options['level'] ) ? $options['level'] : '+++',
+                'protocol' => $options['protocol'] == Graph::PROTOCOL_IPV4 ? 4 : 6,
+            ] )->render()
+        ];
     }
 
 

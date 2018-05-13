@@ -101,9 +101,10 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * {inheritDoc}
      *
      * @param int $type The type of configuration to generate
+     * @param array $options
      * @return array
      */
-    public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
+    public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC, array $options = [] ): array
     {
         return [
             View::make( 'services.grapher.mrtg.monolithic', [

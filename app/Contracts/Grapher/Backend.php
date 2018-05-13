@@ -101,9 +101,10 @@ interface Backend {
      * an array keyed by the filename (with optional local directory path).
      *
      * @param int $type The type of configuration to generate
+     * @param array $options
      * @return array
      */
-    public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array;
+    public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC, array $options = [] ): array;
 
     /**
      * Examines the provided graph object and determines if this backend is able to
