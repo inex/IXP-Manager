@@ -28,10 +28,7 @@ use IXP\Services\Grapher\Graph\Latency as LatencyGraph;
 
 use IXP\Services\Grapher\Graph;
 
-use Entities\IXP;
-
 use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
-
 
 /**
  * Grapher Backend -> Smokeping
@@ -161,6 +158,30 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
 
 
     /**
+     * Function to decide what URL Smokeping should be reached via.
+     *
+     * Typically, this is just the 'grapher.backends.smokeping.url' config
+     * option (or more appropriately the GRAPHER_BACKEND_SMOKEPING_URL .env option).
+     *
+     * However we allow per VLAN overrides. See the documentation for details above this:
+     *
+     * @see https://docs.ixpmanager.org/grapher/smokeping/
+     *
+     * @param LatencyGraph $graph
+     * @return string
+     */
+    private function resolveGraphURL( LatencyGraph $graph ): string {
+        // does an override exist?
+        $urls = config( 'grapher.backends.smokeping.overrides.per_vlan_urls', [] );
+
+        if( isset( $urls[ $graph->vli()->getVlan()->getId() ] ) ) {
+            return $urls[ $graph->vli()->getVlan()->getId() ];
+        }
+
+        return config('grapher.backends.smokeping.url');
+    }
+
+    /**
      * For a given graph, return the path where the appropriate file
      * will be found.
      *
@@ -171,13 +192,12 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      * @throws
      */
     private function resolveFilePath( Graph $graph ): string {
-        $config = config('grapher.backends.smokeping');
 
         switch( $graph->classType() ) {
 
             case 'Latency':
                 /** @var LatencyGraph $graph  */
-                return sprintf( "%s/?displaymode=a;start=now-%s;end=now;target=infra_%s.vlan_%s.vlanint_%s_%s", $config['url'],
+                return sprintf( "%s/?displaymode=a;start=now-%s;end=now;target=infra_%s.vlan_%s.vlanint_%s_%s", $this->resolveGraphURL( $graph ),
                     $graph->period(), $graph->vli()->getVirtualInterface()->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getInfrastructure()->getId(),
                     $graph->vli()->getVlan()->getId(),  $graph->vli()->getId(), $graph->protocol()  );
                 break;

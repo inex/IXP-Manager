@@ -77,7 +77,17 @@ return [
             'enabled' => env( 'GRAPHER_BACKEND_SMOKEPING_ENABLED', false ),
 
             // where to find the smokeping files
-            'url'  => env( 'GRAPHER_SMOKEPING_URL', 'http://www.example.com/' ),
+            'url'  => env( 'GRAPHER_BACKEND_SMOKEPING_URL', 'http://www.example.com/' ),
+
+            // per VLAN overrides:
+            'overrides' => call_user_func( function() {
+                if( file_exists( config_path( 'grapher_smokeping_overrides.php' ) ) ) {
+                    return include( config_path( 'grapher_smokeping_overrides.php' ) );
+                } else {
+                    return [];
+                }
+            }),
+
         ],
 
     ],
@@ -158,26 +168,6 @@ return [
             // a standard deviation so this needs to be usefully large:
             'delete_old_days' => env( 'GRAPHER_CLI_TRAFFICDAILY_DELETE_OLD_DAYS', 140 ),
         ],
-    ],
-
-
-    /*
-     | Smokeping - mostly temporary configuration until migrated in full / proper to Grapher
-     |
-     | FIXME: REMOVE!
-     |
-     | See: http://docs.ixpmanager.org/features/smokeping/
-     */
-    'smokeping' => [
-        'url' => env( 'GRAPHER_SMOKEPING_URL', false ),
-
-        'overrides' => call_user_func( function() {
-            if( file_exists( config_path( 'grapher_smokeping_overrides.php' ) ) ) {
-                return include( config_path( 'grapher_smokeping_overrides.php' ) );
-            } else {
-                return [];
-            }
-        }),
     ],
 
 ];
