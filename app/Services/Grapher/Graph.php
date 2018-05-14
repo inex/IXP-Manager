@@ -859,6 +859,23 @@ abstract class Graph {
     }
 
     /**
+     * Process user input for the parameter: protocol (real only, not both)
+     *
+     * Note that this function just sets the default (ipv4) if the input is invalid.
+     * If you want to force an exception in such cases, use setProtocol()
+     *
+     * @param string $v The user input value
+     * @return string The verified / sanitised / default value
+     */
+    public static function processParameterRealProtocol( $v = null ): string {
+        if( !isset( self::PROTOCOLS_REAL[ $v ] ) ) {
+            $v = self::PROTOCOL_IPV4;
+        }
+        return $v;
+    }
+
+
+    /**
      * Process user input for the parameter: category
      *
      * Note that this function just sets the default if the input is invalid.

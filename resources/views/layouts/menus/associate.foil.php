@@ -61,6 +61,11 @@
                                 <a href="<?= route( 'statistics/infrastructure' ) ?>">Infrastructure Graphs</a>
                             </li>
                         <?php endif; ?>
+                        <?php if( config( 'grapher.access.vlan' ) <= Auth::user()->getPrivs() && config( 'grapher.backends.sflow.enabled' ) ): ?>
+                            <li>
+                                <a href="<?= route( 'statistics/vlan' ) ?>">VLAN / Per-Protocol Graphs</a>
+                            </li>
+                        <?php endif; ?>
                         <?php if( config( 'grapher.access.trunk', Entities\User::AUTH_PUBLIC ) <= Auth::user()->getPrivs() ): ?>
                             <li>
                                 <a href="<?= route('statistics/trunk') ?>">Inter-Switch / PoP Graphs</a>

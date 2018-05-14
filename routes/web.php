@@ -90,13 +90,14 @@ Route::get( 'content/members/{priv}/{page}', 'ContentController@members' )->name
 Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'ixp/{category?}',                             'StatisticsController@ixp'               )->name( 'statistics/ixp'                );
     Route::get(  'infrastructure/{graphid?}/{category?}',       'StatisticsController@infrastructure'    )->name( 'statistics/infrastructure'     );
+    Route::get(  'vlan/{vlanid?}/{period?}',                    'StatisticsController@vlan'              )->name( 'statistics/vlan'               );
     Route::get(  'switch/{switchid?}/{category?}',              'StatisticsController@switch'            )->name( 'statistics/switch'             );
     Route::get(  'trunk/{trunkid?}/{category?}',                'StatisticsController@trunk'             )->name( 'statistics/trunk'              );
 
     Route::get(  'member/{id?}',                                'StatisticsController@member'            )->name( 'statistics@member'             );
 
-    Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'    );
-    Route::get(  'latency/{vliid}/{protocol}',                  'StatisticsController@latency'           )->name( 'statistics@latency'          );
+    Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'   );
+    Route::get(  'latency/{vliid}/{protocol}',                  'StatisticsController@latency'           )->name( 'statistics@latency'            );
 });
 
 

@@ -112,7 +112,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
     public static function supports(): array {
         return [
             'vlan' => [
-                'protocols'   => array_except( Graph::PROTOCOLS, Graph::PROTOCOL_ALL ),
+                'protocols'   => Graph::PROTOCOLS_REAL,
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,

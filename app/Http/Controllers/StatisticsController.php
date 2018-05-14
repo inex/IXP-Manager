@@ -35,6 +35,8 @@ use Entities\{
     VlanInterface       as VlanInterfaceEntity
 };
 
+use Repositories\Vlan as VlanRepository;
+
 use Illuminate\Http\{
     Request
 };
@@ -129,6 +131,46 @@ class StatisticsController extends Controller
             'infra'    => $infra,
             'graph'    => $graph,
             'category' => $category,
+        ]);
+    }
+
+    /**
+     * Show Vlan (sflow) graphs
+     *
+     * @param int $vlanid ID of the VLAN to show the graph of
+     * @param string $protocol IPv4/6
+     *
+     * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     *
+     * @throws
+     */
+    public function vlan( int $vlanid = 0, string $protocol = Graph::PROTOCOL_IPV6 ){
+        /** @var VlanEntity[] $eVlans */
+        $eVlans   = D2EM::getRepository( VlanEntity::class )->getAndCache( VlanRepository::TYPE_NORMAL, 'name', false );
+        $grapher  = App::make('IXP\Services\Grapher');
+        $protocol = Graph::processParameterRealProtocol( $protocol );
+
+        $vlans = [];
+        foreach( $eVlans as $v ) {
+            // we really only want 'public' VLANs
+            if( $v->getPeeringManager() || $v->getPeeringMatrix() ) {
+                $vlans[ $v->getId() ] = $v->getName();
+            }
+        }
+
+        $vlanid  = isset( $vlans[ $vlanid ] ) ? $vlanid : array_keys( $vlans )[0];
+        /** @var VlanEntity $vlan */
+        $vlan     = D2EM::getRepository( VlanEntity::class )->find( $vlanid );
+        $graph    = $grapher->vlan( $vlan )->setType( Graph::TYPE_PNG )->setProtocol( $protocol )->setCategory( Graph::CATEGORY_BITS );
+
+        $graph->authorise();
+
+        return view( 'statistics/vlan' )->with([
+            'vlans'    => $vlans,
+            'vlanid'   => $vlanid,
+            'vlan'     => $vlan,
+            'graph'    => $graph,
+            'protocol' => $protocol,
         ]);
     }
 
