@@ -1,7 +1,6 @@
 <?php
-/** @var Foil\Template\Template $t */
-
-$this->layout( 'layouts/ixpv4' )
+    /** @var Foil\Template\Template $t */
+    $this->layout( 'layouts/ixpv4' )
 ?>
 
 <?php $this->section( 'title' ) ?>

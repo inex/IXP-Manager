@@ -210,7 +210,7 @@
                 </li>
 
                 <li>
-                    <a href="<?= url( 'statistics/members' ) ?>">Member Statistics</a>
+                    <a href="<?= route( 'statistics/members' ) ?>">Member Statistics</a>
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.logo', true ) ): ?>
@@ -220,7 +220,7 @@
                 <?php endif; ?>
 
                 <li>
-                    <a href="<?= url( 'statistics/league-table' ) ?>">League Table</a>
+                    <a href="<?= route( 'statistics/league-table' ) ?>">League Table</a>
                 </li>
 
                 <?php /*

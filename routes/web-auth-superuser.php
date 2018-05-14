@@ -61,6 +61,13 @@ Route::group( [ 'prefix' => 'router' ], function() {
 
 });
 
+
+Route::group( [ 'prefix' => 'statistics' ], function() {
+    Route::get(  'league-table', 'StatisticsController@leagueTable' );
+    Route::post( 'league-table', 'StatisticsController@leagueTable' )->name( 'statistics/league-table' );
+});
+
+
 Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], function() {
     Route::group( [  'prefix' => 'virtual' ], function() {
         Route::get(     'list',                             'VirtualInterfaceController@list'               )->name(    'interfaces/virtual/list'               );

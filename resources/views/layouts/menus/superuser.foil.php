@@ -75,7 +75,9 @@
                             <a href="<?= route( 'statistics/members' ) ?>">Member Graphs</a>
                         </li>
 
-
+                        <li>
+                            <a href="<?= route( 'statistics/league-table' ) ?>">League Table</a>
+                        </li>
 
                         <?php if( is_array( config( 'ixp_tools.weathermap', false ) ) ): ?>
 

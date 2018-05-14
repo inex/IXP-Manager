@@ -30,6 +30,7 @@ use Entities\{
     IXP                 as IXPEntity,
     PhysicalInterface   as PhysicalInterfaceEntity,
     Switcher            as SwitchEntity,
+    TrafficDaily        as TrafficDailyEntity,
     VirtualInterface    as VirtualInterfaceEntity,
     Vlan                as VlanEntity,
     VlanInterface       as VlanInterfaceEntity
@@ -488,4 +489,44 @@ class StatisticsController extends Controller
             'graph'     => $graph,
         ]);
     }
+
+
+    /**
+     * Show daily traffic for customers in a table.
+     *
+     * @param Request $r
+     * @return \Illuminate\Contracts\View\Factory|View
+     * @throws \Doctrine\ORM\ORMException
+     */
+    public function leagueTable( Request $r )
+    {
+        $metrics = [
+            'Total'   => 'data',
+            'Max'     => 'max',
+            'Average' => 'average'
+        ];
+
+        $metric = $r->input( 'metric', $metrics['Total'] );
+        if( !in_array( $metric, $metrics ) ) {
+            $metric = $metrics[ 'Total' ];
+        }
+
+        $day = $r->input( 'day', date( 'Y-m-d', time() - 86400 ) );
+        if( !preg_match( '/^\d\d\d\d\-\d\d\-\d\d$/', $day ) ) {
+            $day = date( 'Y-m-d', time() - 86400 );
+        }
+        $day = new \DateTime( $day );
+
+        $category = Graph::processParameterCategory( $r->input( 'category' ) );
+
+        return view( 'statistics/league-table' )->with([
+            'metric'       => $metric,
+            'metrics'      => $metrics,
+            'day'          => $day,
+            'category'     => $category,
+            'trafficDaily' => D2EM::getRepository( TrafficDailyEntity::class )->load( $day, $category ),
+        ]);
+    }
+
+
 }

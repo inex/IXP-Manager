@@ -36,33 +36,6 @@ class StatisticsController extends IXP_Controller_AuthRequiredAction
 {
     use IXP_Controller_Trait_Statistics;
 
-    public function leagueTableAction()
-    {
-        $this->assertPrivilege( \Entities\User::AUTH_SUPERUSER, true );
-
-        $this->setIXP();
-
-        $this->view->metrics = $metrics = [
-            'Total'   => 'data',
-            'Max'     => 'max',
-            'Average' => 'average'
-        ];
-
-        $metric = $this->getParam( 'metric', $metrics['Total'] );
-        if( !in_array( $metric, $metrics ) )
-            $metric = $metrics['Total'];
-        $this->view->metric     = $metric;
-
-        $day = $this->getParam( 'day', date( 'Y-m-d' ) );
-        if( !Zend_Date::isDate( $day, 'Y-m-d' ) )
-            $day = date( 'Y-m-d' );
-        $this->view->day = $day = new \DateTime( $day );
-
-        $category = $this->setCategory();
-
-        $this->view->trafficDaily = $this->getD2EM()->getRepository( '\\Entities\\TrafficDaily' )->load( $day, $category, $this->ixp );
-    }
-
     /**
      * sFlow Peer to Peer statistics
      */
