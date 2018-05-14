@@ -144,11 +144,12 @@ class StatisticsController extends Controller
      *
      * @throws
      */
-    public function vlan( int $vlanid = 0, string $protocol = Graph::PROTOCOL_IPV6 ){
+    public function vlan( int $vlanid = 0, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ){
         /** @var VlanEntity[] $eVlans */
         $eVlans   = D2EM::getRepository( VlanEntity::class )->getAndCache( VlanRepository::TYPE_NORMAL, 'name', false );
         $grapher  = App::make('IXP\Services\Grapher');
         $protocol = Graph::processParameterRealProtocol( $protocol );
+        $category = Graph::processParameterCategory( $category, true );
 
         $vlans = [];
         foreach( $eVlans as $v ) {
@@ -161,7 +162,8 @@ class StatisticsController extends Controller
         $vlanid  = isset( $vlans[ $vlanid ] ) ? $vlanid : array_keys( $vlans )[0];
         /** @var VlanEntity $vlan */
         $vlan     = D2EM::getRepository( VlanEntity::class )->find( $vlanid );
-        $graph    = $grapher->vlan( $vlan )->setType( Graph::TYPE_PNG )->setProtocol( $protocol )->setCategory( Graph::CATEGORY_BITS );
+        $graph    = $grapher->vlan( $vlan )->setType( Graph::TYPE_PNG )->setProtocol( $protocol )
+                        ->setCategory( $category );
 
         $graph->authorise();
 
@@ -171,6 +173,7 @@ class StatisticsController extends Controller
             'vlan'     => $vlan,
             'graph'    => $graph,
             'protocol' => $protocol,
+            'category' => $category,
         ]);
     }
 

@@ -33,7 +33,7 @@
                     <form class="navbar-form navbar-left form-inline">
 
                         <div class="form-group">
-                            <label for="category">Vlan:</label>
+                            <label for="form-select-vlanid">Vlan:</label>
 
                             <select id="form-select-vlanid" name="vlanid" class="form-control" >
                                 <?php foreach( $t->vlans as $id => $v ): ?>
@@ -42,11 +42,22 @@
                             </select>
 
                         </div>
+
                         <div class="form-group">
-                            <label for="period">Protocol:</label>
+                            <label for="form-select-protocol">Protocol:</label>
                             <select id="form-select-protocol" name="protocol" class="form-control">
                                 <?php foreach( IXP\Services\Grapher\Graph::PROTOCOL_REAL_DESCS as $pvalue => $pname ): ?>
                                     <option value="<?= $pvalue ?>" <?= $t->protocol != $pvalue ?: 'selected="selected"' ?>><?= $pname ?></option>
+                                <?php endforeach; ?>
+                            </select>
+
+                        </div>
+
+                        <div class="form-group">
+                            <label for="form-select-category">Category:</label>
+                            <select id="form-select-category" name="category" class="form-control">
+                                <?php foreach( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS_DESCS as $cvalue => $cname ): ?>
+                                    <option value="<?= $cvalue ?>" <?= $t->category != $cvalue ?: 'selected="selected"' ?>><?= $cname ?></option>
                                 <?php endforeach; ?>
                             </select>
 
@@ -89,13 +100,15 @@
     let base_route   = "<?= route( 'statistics/vlan' ) ?>";
     let sel_vlanid   = $("#form-select-vlanid");
     let sel_protocol = $("#form-select-protocol");
+    let sel_category = $("#form-select-category");
 
     function changeGraph() {
-        window.location = `${base_route}/${sel_vlanid.val()}/${sel_protocol.val()}`;
+        window.location = `${base_route}/${sel_vlanid.val()}/${sel_protocol.val()}/${sel_category.val()}`;
     }
 
     sel_vlanid.on(  'change',  changeGraph );
     sel_protocol.on( 'change', changeGraph );
+    sel_category.on( 'change', changeGraph );
 
 </script>
 
