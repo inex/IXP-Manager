@@ -766,5 +766,22 @@ class VlanInterface
         return $this->$fnAddress();
     }
 
+    /**
+     * Convenience function to see if an IP protocol is enabled
+     *
+     * @param string $protocol Either ipv4 / ipv6 (as defined in Grapher)
+     * @return bool
+     * @throws GrapherParameterException
+     */
+    public function isIPEnabled( string $protocol ): bool {
+        if( !isset( Graph::PROTOCOLS_REAL[$protocol] ) ) {
+            throw new GrapherParameterException( 'Unknown protocol: ' . $protocol );
+        }
+
+        $fnEnabled = 'get' . ucfirst( $protocol ) . 'Enabled';
+
+        return $this->$fnEnabled();
+    }
+
 
 }

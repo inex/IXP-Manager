@@ -149,9 +149,11 @@ class StatisticsController extends Controller
      * @param int $vlanid ID of the VLAN to show the graph of
      * @param string $protocol IPv4/6
      *
+     * @param string $category
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      *
-     * @throws
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
     public function vlan( int $vlanid = 0, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ){
         /** @var VlanEntity[] $eVlans */
@@ -490,6 +492,115 @@ class StatisticsController extends Controller
         ]);
     }
 
+
+    /**
+     * sFlow Peer to Peer statistics
+     * @throws \Doctrine\ORM\ORMException
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     */
+    public function p2p( Request $r, $cid = null )
+    {
+        // default to the current user:
+        if( $cid === null && Auth::check() ) {
+            $cid = Auth::user()->getCustomer()->getId();
+        }
+
+        /** @var CustomerEntity $c */
+        if( !$cid || !( $c = D2EM::getRepository( CustomerEntity::class )->find( $cid ) ) ){
+            abort( 404, 'Customer not found' );
+        }
+
+        $grapher = App::make('IXP\Services\Grapher');
+
+        $r->category = Graph::processParameterCategory(     $r->input( 'category', '' ), true );
+        $r->period   = Graph::processParameterPeriod(       $r->input( 'period', '' ) );
+        $r->protocol = Graph::processParameterRealProtocol( $r->input( 'protocol', '' ) );
+
+        // if the customer is authorised, then so too are all of their virtual and physical interfaces:
+//        try {
+//            $grapher->customer( $c )->authorise();
+//        } catch( AuthorizationException $e ) {
+//            AlertContainer::push( "You are not authorised to view this member's graphs.", Alert::DANGER );
+//            return redirect()->back();
+//        }
+
+
+        // for larger IXPs, it's quite intensive to display all the graphs - decide if we need to do this or not
+        if( config('grapher.backends.sflow.show_graphs_on_index_page') !== null ) {
+            $showGraphsOption = true;
+            $showGraphs       = config('grapher.backends.sflow.show_graphs_on_index_page');
+        } else {
+            $showGraphsOption = false;
+            $showGraphs       = true;
+        }
+
+        if( $showGraphsOption ) {
+            if( $r->input( 'submit' ) == "Show Graphs" ) {
+                $showGraphs = true;
+                $r->session()->put( 'controller.statistics.p2p.show_graphs', true );
+            } else if( $r->input( 'submit' ) == "Hide Graphs" ) {
+                $showGraphs = false;
+                $r->session()->put( 'controller.statistics.p2p.show_graphs', false );
+            } else {
+                $showGraphs = $r->session()->get( 'controller.statistics.p2p.show_graphs', config('grapher.backends.sflow.show_graphs_on_index_page') );
+            }
+        }
+
+        // Find the possible VLAN interfaces that this customer has for the given IXP
+        if( !count( $srcVlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForCustomer( $c ) ) ) {
+            AlertContainer::push( "There were no interfaces available for the given criteria.", Alert::WARNING );
+            return redirect()->back();
+        }
+
+        if( ( $svlid = $r->input( 'svli', false ) ) && isset( $srcVlis[ $svlid ] ) ) {
+            $srcVli = $srcVlis[ $svlid ];
+        } else {
+            $srcVli = $srcVlis[ array_keys( $srcVlis )[ 0 ] ];
+        }
+
+        // Now find the possible other VLAN interfaces that this customer could exchange traffic with
+        // (as well as removing the source vli)
+        $dstVlis = D2EM::getRepository( VlanInterfaceEntity::class )->getObjectsForVlan( $srcVli->getVlan() );
+        unset( $dstVlis[ $srcVli->getId() ] );
+
+        if( !count( $dstVlis ) ) {
+            AlertContainer::push( "There were no destination interfaces available for traffic exchange for the given criteria.", Alert::WARNING );
+            return redirect()->back();
+        }
+
+        if( ( $dvlid = $r->input( 'dvli', false ) ) && isset( $dstVlis[ $dvlid ] ) ) {
+            $dstVli = $dstVlis[ $dvlid ];
+        } else {
+            $dstVli = false;
+        }
+
+        // authenticate on one of the graphs
+        $graph = $grapher->p2p( $srcVli, $dstVli ? $dstVli->getId() : $dstVlis[ array_keys( $dstVlis )[0] ] )
+            ->setProtocol( $r->protocol )
+            ->setCategory( $r->category )
+            ->setPeriod( $r->period );
+        $graph->authorise();
+
+        $viewOptions = [
+            'c'                => $c,
+            'category'         => $r->category,
+            'dstVlis'          => $dstVlis,
+            'dstVli'           => $dstVli,
+            'graph'            => $graph,
+            'period'           => $r->period,
+            'protocol'         => $r->protocol,
+            'showGraphs'       => $showGraphs,
+            'showGraphsOption' => $showGraphsOption,
+            'srcVlis'          => $srcVlis,
+            'srcVli'           => $srcVli,
+        ];
+
+        if( $dstVli ) {
+            return view( 'statistics/p2p-single', $viewOptions );
+        } else {
+            return view( 'statistics/p2p', $viewOptions );
+        }
+    }
 
     /**
      * Show daily traffic for customers in a table.

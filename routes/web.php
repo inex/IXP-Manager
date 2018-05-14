@@ -97,6 +97,9 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'members', 'StatisticsController@members' );
     Route::post( 'members', 'StatisticsController@members' )->name( 'statistics/members' );
 
+    Route::get(  'p2p/{cid}', 'StatisticsController@p2p' );
+    Route::post( 'p2p/{cid}', 'StatisticsController@p2p' )->name( 'statistics@p2p' );
+
     Route::get(  'member/{id?}',                                'StatisticsController@member'            )->name( 'statistics@member'             );
 
     Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'   );

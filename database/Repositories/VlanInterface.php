@@ -419,50 +419,26 @@ class VlanInterface extends EntityRepository
      * customer at an optionally given IXP.
      *
      * @param \Entities\Customer $customer The customer
-     * @param \Entities\IXP      $ixp      The optional IXP
-     * @param bool $useResultCache If true, use Doctrine's result cache
      * @return \Entities\VlanInterface[] Index by the VlanInterface ID
      */
-    public function getForCustomer( $customer, $ixp = false, $useResultCache = true )
+    public function getForCustomer( $customer )
     {
         $qstr = "SELECT vli
                     FROM Entities\\VlanInterface vli
                         JOIN vli.VirtualInterface vi
                         JOIN vi.Customer c
-                        JOIN vli.Vlan v";
-
-        if( $ixp )
-        {
-            $qstr .= " JOIN vi.PhysicalInterfaces pi
-                        JOIN pi.SwitchPort sp
-                        JOIN sp.Switcher sw
-                        JOIN sw.Infrastructure i
-                        JOIN i.IXP ixp";
-        }
-
-        $qstr .= " WHERE c = :customer";
-
-        if( $ixp )
-        {
-            $qstr .= " AND ixp = :ixp
-                        ORDER BY ixp.id, v.number";
-        }
-        else
-            $qstr .= " ORDER BY v.number";
-
+                        JOIN vli.Vlan v
+                    WHERE c = :customer
+                    ORDER BY v.number";
 
         $q = $this->getEntityManager()->createQuery( $qstr );
         $q->setParameter( 'customer', $customer );
 
-        if( $ixp )
-            $q->setParameter( 'ixp', $ixp );
-
-        $q->useResultCache( $useResultCache, 3600 );
-
         $vlis = [];
 
-        foreach( $q->getResult() as $vli )
+        foreach( $q->getResult() as $vli ) {
             $vlis[ $vli->getId() ] = $vli;
+        }
 
         return $vlis;
     }

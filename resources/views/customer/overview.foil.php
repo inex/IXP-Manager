@@ -201,7 +201,7 @@
                     <?php endif ?>
 
                     <?php if( config('grapher.backends.sflow.enabled') ) : ?>
-                        <li onclick="window.location.href = '<?= url( "statistics/p2p/shortname/". $c->getShortname() )  ?>'">
+                        <li onclick="window.location.href = '<?= route( "statistics@p2p", [ 'cid' => $c->getId() ] )  ?>'">
                             <a data-toggle="tab" href="">P2P &raquo;</a>
                         </li>
                     <?php endif ?>

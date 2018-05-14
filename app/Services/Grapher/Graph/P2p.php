@@ -101,11 +101,12 @@ class P2p extends Graph {
     /**
      * Set the dest vli we should use
      * @param VlanInterfaceEntity $i
+     * @param bool $wipe Graph settings are wiped by default when the dvli changes
      * @return P2p Fluid interface
      */
-    public function setDestinationVlanInterface( VlanInterfaceEntity $i ): P2p {
+    public function setDestinationVlanInterface( VlanInterfaceEntity $i, bool $wipe = true ): P2p {
         if( $this->dvli() && $this->dvli()->getId() != $i->getId() ) {
-            $this->wipe();
+            if( $wipe ) { $this->wipe(); }
         }
 
         $this->dvli = $i;
