@@ -122,6 +122,41 @@ class Switcher extends EntityRepository
     /**
      * Return an array of all switch names where the array key is the switch id
      *
+     * @param \Entities\Infrastructure      $infra
+     * @param \Entities\Location            $location
+
+     * @return array An array of all switch names with the switch id as the key.
+     */
+    public function getByLocationAndInfrastructure( $infra = null, $location = null )
+    {
+        $q = "SELECT s
+
+            FROM \\Entities\\Switcher s";
+
+        if( $location !== null ){
+            $q .= " LEFT JOIN s.Cabinet cab";
+        }
+
+
+        $q .= " WHERE 1=1 ";
+
+        if( $infra )
+            $q .= 'AND s.Infrastructure = ' .  $infra->getId() . ' ';
+
+        if( $location )
+            $q .= 'AND cab.Location = ' . $location->getId() . ' ';
+
+
+        $q .= " ORDER BY s.name ASC";
+
+        $query = $this->getEntityManager()->createQuery( $q );
+
+        return $query->getResult();
+    }
+
+    /**
+     * Return an array of all switch names where the array key is the switch id
+     *
      * @param bool          $active If `true`, return only active switches
      * @param int           $type   If `0`, all types otherwise limit to specific type
      * @param int           $idLocation  location requiered
@@ -145,21 +180,32 @@ class Switcher extends EntityRepository
     /**
      * Return an array of configurations
      *
-     * @param int $switchid Switcher id for filtering results
-     * @param int $vlanid   Vlan id for filtering results
-     * @param int $ixpid    IXP id for filtering results
+     * @param int   $switchid     Switcher id for filtering results
+     * @param int   $vlanid       Vlan id for filtering results
+     * @param int   $ixpid        IXP id for filtering results
+     * @param bool  $superuser    Does the user is super user ?
+     * @param int   $infra        Infrastructure id for filtering results
+     * @param int   $facility     Facility id for filtering results
+     *
      * @return array
      */
-    public function getConfiguration( $switchid = null, $vlanid = null, $ixpid = null, $superuser = true )
+    public function getConfiguration( $switchid = null, $vlanid = null, $ixpid = null, $superuser = true, $infra = null, $facility = null )
     {
         $q =
-            "SELECT s.name AS switchname, s.id AS switchid,
-                    sp.name AS portname, sp.ifName AS ifName,
-                    pi.speed AS speed, pi.duplex AS duplex, pi.status AS portstatus,
-                    c.name AS customer, c.id AS custid, c.autsys AS asn,
+            "SELECT s.name AS switchname, 
+                    s.id AS switchid,
+                    
+                    GROUP_CONCAT(  sp.ifName ) AS ifName,
+                    GROUP_CONCAT( pi.speed ) AS speed, 
+                    pi.duplex AS duplex, 
+                    pi.status AS portstatus,
+                    c.name AS customer, 
+                    c.id AS custid, 
+                    c.autsys AS asn,
                     vli.rsclient AS rsclient,
                     v.name AS vlan,
-                    ipv4.address AS ipv4address, ipv6.address AS ipv6address
+                    GROUP_CONCAT( DISTINCT ipv4.address ) AS ipv4address, 
+                    GROUP_CONCAT( DISTINCT ipv6.address ) AS ipv6address
 
             FROM \\Entities\\VlanInterface vli
                 JOIN vli.IPv4Address ipv4
@@ -174,6 +220,7 @@ class Switcher extends EntityRepository
                 LEFT JOIN vinf.IXP vixp
                 LEFT JOIN s.Infrastructure sinf
                 LEFT JOIN sinf.IXP sixp
+                LEFT JOIN s.Cabinet cab
 
             WHERE 1=1 ";
 
@@ -189,13 +236,22 @@ class Switcher extends EntityRepository
         if( !$superuser && $ixpid )
             $q .= 'AND ?1 MEMBER OF c.IXPs ';
 
-        $q .= "ORDER BY customer ASC";
+        if( $infra !== null )
+            $q .= 'AND sinf.id = ' . intval( $infra ) . ' ';
+
+        if( $facility !== null )
+            $q .= 'AND cab.Location = ' . intval( $facility ) . ' ';
+
+
+        $q .= " GROUP BY switchname, switchid, duplex, portstatus, customer, custid, asn, rsclient, vlan ";
+
+        $q .= " ORDER BY customer ASC";
 
         $query = $this->getEntityManager()->createQuery( $q );
 
         if( !$superuser && $ixpid )
             $query->setParameter( 1, $ixpid );
-        
+
         return $query->getArrayResult();
     }
 

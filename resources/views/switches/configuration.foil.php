@@ -16,7 +16,7 @@
 
 <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
     <?php $this->section( 'page-header-postamble' ) ?>
-        <li>Configuration</li>
+        <li class="active">Configuration <?= $t->summary ?></li>
     <?php $this->append() ?>
 <?php endif; ?>
 
@@ -24,6 +24,62 @@
     <li class="pull-right">
 
         <div class="btn-group btn-group-xs" role="group">
+
+            <!-- Single button -->
+            <div class="btn-group">
+
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <?= $t->s ? $t->s->getInfrastructure()->getName() : ( $t->infra ? $t->infra->getName() : "All Infrastructures" ) ?> <span class="caret"></span>
+                </button>
+
+
+                <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
+
+                    <li class="<?= $t->s ? "" : ( !$t->infra ? "active" : "" ) ?>">
+                        <a href="<?= route( "switchs@configuration", [ "infra" => 0 ] ) ?>">All Infrastructures</a>
+                    </li>
+
+                    <li role="separator" class="divider"></li>
+                    
+                    <?php foreach( $t->infras as $id => $name ): ?>
+
+                        <li class="<?= $t->s ? "active" : ( $t->infra && $t->infra->getId() == $id ? "active" : "" )?>">
+                            <a href="<?= route( "switchs@configuration", [ "infra" => $id ] ) ?>"><?= $name ?></a>
+                        </li>
+
+
+                    <?php endforeach; ?>
+
+                </ul>
+            </div>
+
+
+            <!-- Single button -->
+            <div class="btn-group">
+
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <?= $t->s ? $t->s->getCabinet()->getLocation()->getName() : ( $t->location ? $t->location->getName() : "All Facilities" ) ?> <span class="caret"></span>
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
+
+                    <li class="<?= $t->s ? "" : ( !$t->location ? "active" : "" ) ?>">
+                        <a href="<?= route( "switchs@configuration", [ "location" => 0 ] ) ?>">All Facilities</a>
+                    </li>
+
+                    <li role="separator" class="divider"></li>
+
+                    <?php foreach( $t->locations as $id => $name ): ?>
+
+                        <li class="<?= $t->s ? "active" : ( $t->location && $t->location->getId() == $id ? "active" : "" ) ?>">
+                            <a href="<?= route( "switchs@configuration", [ "location" => $id ] ) ?>"><?= $name ?></a>
+                        </li>
+
+
+                    <?php endforeach; ?>
+
+                </ul>
+            </div>
 
             <!-- Single button -->
             <div class="btn-group">
@@ -42,10 +98,10 @@
                     <li role="separator" class="divider"></li>
 
 
-                    <?php foreach( $t->switches as $id => $name ): ?>
+                    <?php foreach( $t->switches as $s ): ?>
 
-                        <li class="<?= $t->s && $t->s->getId() == $id ? "active" : "" ?>">
-                            <a href="<?= route( "switchs@configuration", [ "switch" => $id ] ) ?>"><?= $name ?></a>
+                        <li class="<?= $t->s && $t->s->getId() == $s->getId() ? "active" : "" ?>">
+                            <a href="<?= route( "switchs@configuration", [ "switch" => $s->getId() ] ) ?>"><?= $s->getName() ?></a>
                         </li>
 
 
@@ -54,32 +110,7 @@
                 </ul>
             </div>
 
-            <!-- Single button -->
-            <div class="btn-group">
-
-                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?= $t->vl ? $t->vl->getName() : "All Peering Vlan" ?> <span class="caret"></span>
-                </button>
-
-                <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
-
-                    <li class="<?= !$t->vl ? "active" : "" ?>">
-                        <a href="<?= route( "switchs@configuration", [ "vlan" => 0 ] ) ?>">All Peering Vlan</a>
-                    </li>
-
-                    <li role="separator" class="divider"></li>
-
-                    <?php foreach( $t->vlans as $id => $name ): ?>
-
-                        <li class="<?= $t->vl && $t->vl->getId() == $id ? "active" : "" ?>">
-                            <a href="<?= route( "switchs@configuration", [ "vlan" => $id ] ) ?>"><?= $name ?></a>
-                        </li>
-
-
-                    <?php endforeach; ?>
-
-                </ul>
-            </div>
+            <a class="btn btn-default btn-xs" href="<?= route( "switchs@configuration", [ "switch" => 0, "infra" => 0, "location" => 0 ] ) ?>">Clear</a>
 
         </div>
 
@@ -133,10 +164,12 @@
                         <?php endif; ?>
                     </td>
                     <td>
-                        <?= $conf[ "ifName" ] ?>
+                        <?= str_replace( ",", "<br>",$conf[ "ifName" ] ) ?>
                     </td>
                     <td>
-                        <?= $conf[ "speed" ] ?>
+                        <?php $totalSpeed = explode( "," , $conf[ "speed" ]) ?>
+
+                        <?= $t->scaleBits( array_sum( $totalSpeed )*1000*1000, 0 ) ?>
                     </td>
                     <td>
                         <?= $conf[ "vlan" ] ?>
