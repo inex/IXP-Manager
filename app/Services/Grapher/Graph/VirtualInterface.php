@@ -25,6 +25,7 @@ use IXP\Services\Grapher;
 use IXP\Services\Grapher\{Graph};
 
 use Entities\Customer as CustomerEntity;
+use Entities\User as UserEntity;
 use Entities\VirtualInterface as VirtualInterfaceEntity;
 
 use Auth, Log;
@@ -115,6 +116,10 @@ class VirtualInterface extends Graph {
      * @return bool
      */
     public function authorise(): bool {
+        if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) == UserEntity::AUTH_PUBLIC ) {
+            return $this->allow();
+        }
+
         if( !Auth::check() ) {
             $this->deny();
             return false;
@@ -128,8 +133,15 @@ class VirtualInterface extends Graph {
             return $this->allow();
         }
 
+        if( config( 'grapher.access.customer' ) != 'own_graphs_only'
+            && is_numeric( config( 'grapher.access.customer' ) )
+            && Auth::user()->getPrivs() >= config( 'grapher.access.customer' )
+        ) {
+            return $this->allow();
+        }
+
         Log::notice( sprintf( "[Grapher] [VirtualInterface]: user %d::%s tried to access a virtual interface graph "
-            . "{$this->virtualInterface()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
+                . "{$this->virtualInterface()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
         );
 
         $this->deny();

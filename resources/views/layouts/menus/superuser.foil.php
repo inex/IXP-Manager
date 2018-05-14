@@ -68,6 +68,15 @@
                             <a href="<?= route('statistics/switch') ?>">Switch Aggregate Graphs</a>
                         </li>
 
+
+                        <li class="divider"></li>
+
+                        <li>
+                            <a href="<?= route( 'statistics/members' ) ?>">Member Graphs</a>
+                        </li>
+
+
+
                         <?php if( is_array( config( 'ixp_tools.weathermap', false ) ) ): ?>
 
                             <li class="divider"></li>

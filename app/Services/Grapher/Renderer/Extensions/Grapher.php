@@ -21,8 +21,13 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Foil\Engine;
 use Foil\Contracts\ExtensionInterface;
+
+use IXP\Services\Grapher\Graph\{
+    Customer as CustomerGraph,
+    Latency  as LatencyGraph,
+    P2p      as P2pGraph
+};
 
 /**
  * Grapher -> Renderer view extensions
@@ -122,6 +127,40 @@ class Grapher implements ExtensionInterface {
                 $v /= 1000.0;
             }
         }
+
+        // should not get here:
+        return '';
+    }
+
+
+    /**
+     * Utility function to determine if the currently logged in user can access 'all customer' graphs
+     *
+     * @return bool
+     */
+    public function canAccessAllCustomerGraphs(): bool
+    {
+        return CustomerGraph::authorisedForAllCustomers();
+    }
+
+    /**
+     * Utility function to determine if the currently logged in user can access 'all customers' p2p' graphs
+     *
+     * @return bool
+     */
+    public function canAccessAllCustomerP2pGraphs(): bool
+    {
+        return P2pGraph::authorisedForAllCustomers();
+    }
+
+    /**
+     * Utility function to determine if the currently logged in user can access 'all customers' latency' graphs
+     *
+     * @return bool
+     */
+    public function canAccessAllCustomerLatencyGraphs(): bool
+    {
+        return LatencyGraph::authorisedForAllCustomers();
     }
 
 }

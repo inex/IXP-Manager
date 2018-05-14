@@ -101,6 +101,19 @@
                             </li>
                         <?php endif; ?>
 
+
+                        <?php if( $this->grapher()->canAccessAllCustomerGraphs() ): ?>
+
+                            <li class="divider"></li>
+
+                            <li>
+                                <a href="<?= route( 'statistics/members' ) ?>">Member Graphs</a>
+                            </li>
+
+                        <?php endif; ?>
+
+
+
                         <?php if( is_array( config( 'ixp_tools.weathermap', false ) ) ): ?>
 
                             <li class="divider"></li>

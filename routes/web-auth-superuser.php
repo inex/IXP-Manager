@@ -49,12 +49,6 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
 });
 
 
-Route::group( [ 'prefix' => 'statistics' ], function() {
-    Route::get(  'members', 'StatisticsController@members' );
-    Route::post( 'members', 'StatisticsController@members' )->name( 'statistics/members' );
-});
-
-
 Route::group( [ 'prefix' => 'router' ], function() {
     Route::get(     'list',                             'RouterController@list'     )->name( 'router@list'  );
     Route::get(     'status',                           'RouterController@status'   )->name( 'router@status' );

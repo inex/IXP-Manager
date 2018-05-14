@@ -142,9 +142,11 @@ class IXP extends Graph {
             return false;
         }
 
-        if( config( 'grapher.access.ixp', -1 ) == UserEntity::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.ixp' ) ) && config( 'grapher.access.ixp' ) == UserEntity::AUTH_PUBLIC ) {
             return $this->allow();
-        } else if( Auth::check() && Auth::user()->getPrivs() >= config( 'grapher.access.ixp', 0 ) ) {
+        }
+
+        if( Auth::check() && is_numeric( config( 'grapher.access.ixp' ) ) && Auth::user()->getPrivs() >= config( 'grapher.access.ixp' ) ) {
             return $this->allow();
         }
 

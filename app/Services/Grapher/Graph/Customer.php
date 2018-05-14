@@ -99,6 +99,24 @@ class Customer extends Graph {
         return sprintf( "aggregate-%05d", $this->customer()->getId() );
     }
 
+
+    /**
+     * Utility function to determine if the currently logged in user can access 'all customer' graphs
+     *
+     * @return bool
+     */
+    public static function authorisedForAllCustomers(): bool {
+        if( Auth::check() && Auth::user()->isSuperUser() ) {
+            return true;
+        }
+
+        if( !Auth::check() && is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) == UserEntity::AUTH_PUBLIC ) {
+            return true;
+        }
+
+        return Auth::check() && is_numeric( config( 'grapher.access.customer' ) ) && Auth::user()->getPrivs() >= config( 'grapher.access.customer' );
+    }
+
     /**
      * This function controls access to the graph.
      *
@@ -110,7 +128,9 @@ class Customer extends Graph {
      */
     public function authorise(): bool {
 
-        if( config( 'grapher.access.customer', 'own_graphs_only' ) == UserEntity::AUTH_PUBLIC ) {
+        // NB: see above authorisedForAllCustomers()
+
+        if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) == UserEntity::AUTH_PUBLIC ) {
             return $this->allow();
         }
 
@@ -127,8 +147,8 @@ class Customer extends Graph {
             return $this->allow();
         }
 
-        if( config( 'grapher.access.customer', 'own_graphs_only' ) != 'own_graphs_only'
-                && is_numeric( config( 'grapher.access.customer', 'own_graphs_only' ) )
+        if( config( 'grapher.access.customer' ) != 'own_graphs_only'
+                && is_numeric( config( 'grapher.access.customer' ) )
                 && Auth::user()->getPrivs() >= config( 'grapher.access.customer' )
         ) {
             return $this->allow();

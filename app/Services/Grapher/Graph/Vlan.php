@@ -119,9 +119,11 @@ class Vlan extends Graph {
             return false;
         }
 
-        if( config( 'grapher.access.vlan', -1 ) == UserEntity::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.vlan' ) ) && config( 'grapher.access.vlan' ) == UserEntity::AUTH_PUBLIC ) {
             return $this->allow();
-        } else if( Auth::check() && Auth::user()->getPrivs() >= config( 'grapher.access.trunk', 0 ) ) {
+        }
+
+        if( Auth::check() && is_numeric( config( 'grapher.access.vlan' ) ) && Auth::user()->getPrivs() >= config( 'grapher.access.vlan' ) ) {
             return $this->allow();
         }
 

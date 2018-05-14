@@ -116,9 +116,11 @@ class Infrastructure extends Graph {
             return false;
         }
 
-        if( config( 'grapher.access.infrastructure', -1 ) == UserEntity::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.infrastructure' ) ) && config( 'grapher.access.infrastructure' ) == UserEntity::AUTH_PUBLIC ) {
             return $this->allow();
-        } else if( Auth::check() && Auth::user()->getPrivs() >= config( 'grapher.access.infrastructure', 0 ) ) {
+        }
+
+        if( Auth::check() && is_numeric( config( 'grapher.access.infrastructure' ) ) && Auth::user()->getPrivs() >= config( 'grapher.access.infrastructure' ) ) {
             return $this->allow();
         }
 

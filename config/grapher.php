@@ -139,16 +139,13 @@ return [
         'trunk'          => env( 'GRAPHER_ACCESS_TRUNK',          Entities\User::AUTH_PUBLIC ),
         'vlan'           => env( 'GRAPHER_ACCESS_VLAN',           Entities\User::AUTH_PUBLIC ),
 
-        // FIXME: vlan
-
         // The follows DO NOT DEFAULT TO PUBLIC but rather customer's are only allowed access
         // their own graphs by default.
-        'customer'          => env( 'GRAPHER_ACCESS_CUSTOMER',          'own_graphs_only' ),
-        'virtualinterface'  => env( 'GRAPHER_ACCESS_VIRTUALINTERFACE',  'own_graphs_only' ),
-        'physicalinterface' => env( 'GRAPHER_ACCESS_PHYSICALINTERFACE', 'own_graphs_only' ),
-        'vlaninterface'     => env( 'GRAPHER_ACCESS_VLANINTERFACE',     'own_graphs_only' ),
-        'p2p'               => env( 'GRAPHER_ACCESS_P2P',               'own_graphs_only' ),
-        'latency'           => env( 'GRAPHER_ACCESS_LATENCY',           'own_graphs_only' ),
+        //
+        // See: https://docs.ixpmanager.org/grapher/api/#access-to-member-graphs
+        'customer'          => env( 'GRAPHER_ACCESS_CUSTOMER', 'own_graphs_only' ),
+        'p2p'               => 'own_graphs_only', // not migrated from ZF yet - env( 'GRAPHER_ACCESS_P2P',      'own_graphs_only' ),
+        'latency'           => env( 'GRAPHER_ACCESS_LATENCY',  'own_graphs_only' ),
     ],
 
 

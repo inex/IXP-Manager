@@ -24,7 +24,10 @@
 use IXP\Services\Grapher;
 use IXP\Services\Grapher\{Graph};
 
-use Entities\VlanInterface as VlanInterfaceEntity;
+use Entities\{
+    User as UserEntity,
+    VlanInterface as VlanInterfaceEntity
+};
 
 use Auth, Log;
 
@@ -131,6 +134,25 @@ class P2p extends Graph {
         return sprintf( "p2p-svli%05d-dvli%05d", $this->svli()->getId(), $this->dvli()->getId() );
     }
 
+
+    /**
+     * Utility function to determine if the currently logged in user can access 'all customer's p2p' graphs
+     *
+     * @return bool
+     */
+    public static function authorisedForAllCustomers(): bool {
+        if( Auth::check() && Auth::user()->isSuperUser() ) {
+            return true;
+        }
+
+        if( !Auth::check() && is_numeric( config( 'grapher.access.p2p' ) ) && config( 'grapher.access.p2p' ) == UserEntity::AUTH_PUBLIC ) {
+            return true;
+        }
+
+        return Auth::check() && is_numeric( config( 'grapher.access.p2p' ) ) && Auth::user()->getPrivs() >= config( 'grapher.access.p2p' );
+    }
+
+
     /**
      * This function controls access to the graph.
      *
@@ -141,6 +163,13 @@ class P2p extends Graph {
      * @return bool
      */
     public function authorise(): bool {
+
+        // NB: see above authorisedForAllCustomers()
+
+        if( is_numeric( config( 'grapher.access.p2p' ) ) && config( 'grapher.access.p2p' ) == UserEntity::AUTH_PUBLIC ) {
+            return $this->allow();
+        }
+
         if( !Auth::check() ) {
             $this->deny();
             return false;
@@ -154,12 +183,20 @@ class P2p extends Graph {
             return $this->allow();
         }
 
-        Log::notice( sprintf( "[Grapher] [P2P]: user %d::%s tried to access a p2p vlan interface graph "
-            . "{$this->svli()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
+        if( config( 'grapher.access.p2p' ) != 'own_graphs_only'
+            && is_numeric( config( 'grapher.access.p2p' ) )
+            && Auth::user()->getPrivs() >= config( 'grapher.access.p2p' )
+        ) {
+            return $this->allow();
+        }
+
+        Log::notice( sprintf( "[Grapher] [Customer]: user %d::%s tried to access a customer p2p vli graph "
+                . "{$this->svli()->getId()} with dvli {$this->dvli()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
         );
 
         $this->deny();
         return false;
+
     }
 
     /**

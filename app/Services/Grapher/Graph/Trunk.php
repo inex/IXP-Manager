@@ -115,9 +115,11 @@ class Trunk extends Graph {
             return $this->allow();
         }
 
-        if( config( 'grapher.access.trunk', -1 ) == UserEntity::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) == UserEntity::AUTH_PUBLIC ) {
             return $this->allow();
-        } else if( Auth::check() && Auth::user()->getPrivs() >= config( 'grapher.access.trunk', 0 ) ) {
+        }
+
+        if( Auth::check() && is_numeric( config( 'grapher.access.trunk' ) ) && Auth::user()->getPrivs() >= config( 'grapher.access.trunk' ) ) {
             return $this->allow();
         }
 

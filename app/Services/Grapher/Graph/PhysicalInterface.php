@@ -26,6 +26,7 @@ use IXP\Services\Grapher\{Graph};
 
 use Entities\Customer as CustomerEntity;
 use Entities\PhysicalInterface as PhysicalInterfaceEntity;
+use Entities\User as UserEntity;
 
 use Auth, Log;
 
@@ -115,6 +116,11 @@ class PhysicalInterface extends Graph {
      * @return bool
      */
     public function authorise(): bool {
+
+        if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) == UserEntity::AUTH_PUBLIC ) {
+            return $this->allow();
+        }
+
         if( !Auth::check() ) {
             $this->deny();
             return false;
@@ -128,8 +134,15 @@ class PhysicalInterface extends Graph {
             return $this->allow();
         }
 
+        if( config( 'grapher.access.customer' ) != 'own_graphs_only'
+            && is_numeric( config( 'grapher.access.customer' ) )
+            && Auth::user()->getPrivs() >= config( 'grapher.access.customer' )
+        ) {
+            return $this->allow();
+        }
+
         Log::notice( sprintf( "[Grapher] [PhysicalInterface]: user %d::%s tried to access a physical interface graph "
-            . "{$this->physicalInterface()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
+                . "{$this->physicalInterface()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
         );
 
         $this->deny();

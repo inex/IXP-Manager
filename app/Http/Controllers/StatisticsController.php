@@ -46,8 +46,15 @@ use Illuminate\View\View;
 
 use IXP\Http\Requests\StatisticsRequest;
 use IXP\Services\Grapher\Graph;
+
+use IXP\Services\Grapher\Graph\{
+    Customer as CustomerGraph
+};
+
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
+
+use Illuminate\Auth\Access\AuthorizationException;
 
 
 /**
@@ -82,6 +89,7 @@ class StatisticsController extends Controller
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      * @throws \IXP_Exception
      * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     * @throws \Doctrine\ORM\ORMException
      */
     public function ixp( string $category = Graph::CATEGORY_BITS ){
         $ixp      = D2EM::getRepository( IXPEntity::class )->getDefault();
@@ -266,11 +274,16 @@ class StatisticsController extends Controller
      *
      * @param StatisticsRequest $r
      *
-     * @return  View
+     * @return View|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      *
      * @throws
      */
-    public function members( StatisticsRequest $r ) : View {
+    public function members( StatisticsRequest $r ) {
+
+        if( !CustomerGraph::authorisedForAllCustomers() ) {
+            AlertContainer::push( "You are not authorised to view all member graphs.", Alert::DANGER );
+            return redirect('');
+        }
 
         $grapher = App::make('IXP\Services\Grapher');
         $this->processGraphParams($r);
@@ -355,8 +368,14 @@ class StatisticsController extends Controller
 
         $grapher = App::make('IXP\Services\Grapher');
 
+
         // if the customer is authorised, then so too are all of their virtual and physical interfaces:
-        $grapher->customer( $c )->authorise();
+        try {
+            $grapher->customer( $c )->authorise();
+        } catch( AuthorizationException $e ) {
+            AlertContainer::push( "You are not authorised to view this member's graphs.", Alert::DANGER );
+            return redirect()->back();
+        }
 
         if( !$c->hasInterfacesConnectedOrInQuarantine() ) {
             AlertContainer::push(

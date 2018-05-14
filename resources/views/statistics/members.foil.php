@@ -6,28 +6,52 @@ $this->layout( 'layouts/ixpv4' )
 
 <?php $this->section( 'title' ) ?>
 
-        Statistics
-    </li>
 
-    <li>
-        Graphs
+    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
 
-        <?php if( $t->graph ): ?>
-            (
-                <?= $t->infra ? 'MRTG: '  . $t->infra->getName() : '' ?>
-                <?= $t->vlan  ? 'SFlow: ' . $t->vlan->getName()  : '' ?>
-                /
-                <?= $t->graph->resolveCategory( $t->graph->category() ) ?>
-                /
-                <?= $t->graph->resolvePeriod( $t->graph->period() ) ?>
-                <?php if( $t->graph->protocol() != IXP\Services\Grapher\Graph::PROTOCOL_ALL ): ?>
-                    /
-                    <?= $t->graph->resolveProtocol( $t->graph->protocol() ) ?>
-                <?php endif; ?>
-            )
+            Statistics
+        </li>
+
+        <li>
+            Graphs
+
+    <?php else: ?>
+
+        Member Graphs
+
+    <?php endif; ?>
+
+
+    <?php if( $t->graph ): ?>
+
+        <?php if( !(Auth::check() && Auth::user()->isSuperUser() ) ): ?>
+            <small>
         <?php endif; ?>
 
-    <?php $this->append() ?>
+        (
+        <?= $t->infra ? 'MRTG: '  . $t->infra->getName() : '' ?>
+        <?= $t->vlan  ? 'SFlow: ' . $t->vlan->getName()  : '' ?>
+        /
+        <?= $t->graph->resolveCategory( $t->graph->category() ) ?>
+        /
+        <?= $t->graph->resolvePeriod( $t->graph->period() ) ?>
+        <?php if( $t->graph->protocol() != IXP\Services\Grapher\Graph::PROTOCOL_ALL ): ?>
+            /
+            <?= $t->graph->resolveProtocol( $t->graph->protocol() ) ?>
+        <?php endif; ?>
+        )
+
+        <?php if( !(Auth::check() && Auth::user()->isSuperUser() ) ): ?>
+            </small>
+        <?php endif; ?>
+
+    <?php endif; ?>
+
+
+<?php $this->append() ?>
+
+
+
 
 <?php $this->section( 'page-header-postamble' ) ?>
 <?php $this->append() ?>
@@ -178,13 +202,25 @@ $this->layout( 'layouts/ixpv4' )
                         <div class="well">
                             <h4 style="vertical-align: middle">
                                 <?= $graph->customer()->getFormattedName() ?>
-                                <?php if( config('grapher.backends.sflow.enabled') && isset( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS[$graph->category()] ) ): ?>
-                                    <span class="pull-right">
-                                <a class="btn btn-default btn-sm" href="<?= url('') . '/statistics/p2p/shortname/' . $graph->customer()->getShortname() . '/category/' . $graph->category() . '/period/' . $graph->period() ?>">
-                                    <span class="glyphicon glyphicon-random"></span>
-                                </a>
-                            </span>
-                                <?php endif; ?>
+                                <span class="pull-right">
+
+                                    <div class="btn-group" role="group">
+
+                                        <?php if( config('grapher.backends.sflow.enabled') && isset( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS[$graph->category()] ) && $t->grapher()->canAccessAllCustomerP2pGraphs() ): ?>
+                                            <a class="btn btn-default btn-xs" href="<?= url('') . '/statistics/p2p/shortname/' . $graph->customer()->getShortname() . '/category/' . $graph->category() . '/period/' . $graph->period() ?>">
+                                                <span class="glyphicon glyphicon-random"></span>
+                                            </a>
+                                        <?php endif; ?>
+
+                                        <?php if( $t->grapher()->canAccessAllCustomerGraphs() ): ?>
+                                            <a class="btn btn-default btn-xs" href="<?= route( 'statistics@member', [ $graph->customer()->getId() ] ) ?>">
+                                                <span class="glyphicon glyphicon-zoom-in"></span>
+                                            </a>
+                                        <?php endif; ?>
+
+                                    </div>
+
+                                </span>
                             </h4>
 
                             <p>
