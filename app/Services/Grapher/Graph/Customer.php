@@ -22,9 +22,7 @@
  */
 
 use IXP\Services\Grapher;
-use IXP\Services\Grapher\{Graph,Statistics};
-
-use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
+use IXP\Services\Grapher\{Graph};
 
 use Entities\{
     Customer as CustomerEntity,
@@ -53,6 +51,8 @@ class Customer extends Graph {
 
     /**
      * Constructor
+     * @param Grapher $grapher
+     * @param CustomerEntity $c
      */
     public function __construct( Grapher $grapher, CustomerEntity $c ) {
         parent::__construct( $grapher );
@@ -61,7 +61,7 @@ class Customer extends Graph {
 
     /**
      * Get the customer we're set to use
-     * @return \Entities\Vlan
+     * @return CustomerEntity
      */
     public function customer(): CustomerEntity {
         return $this->cust;
@@ -69,11 +69,10 @@ class Customer extends Graph {
 
     /**
      * Set the customer we should use
-     * @param Entities\customer $i=c
-     * @return \IXP\Services\Grapher Fluid interface
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     * @param CustomerEntity $c
+     * @return Customer Fluid interface
      */
-    public function setCustomer( CustomerEntity $c ): Grapher {
+    public function setCustomer( CustomerEntity $c ): Customer {
         if( $this->customer() && $this->customer()->getId() != $c->getId() ) {
             $this->wipe();
         }
@@ -116,7 +115,8 @@ class Customer extends Graph {
         }
 
         if( !Auth::check() ) {
-            return $this->deny();
+            $this->deny();
+            return false;
         }
 
         if( Auth::user()->isSuperUser() ) {
@@ -137,7 +137,9 @@ class Customer extends Graph {
         Log::notice( sprintf( "[Grapher] [Customer]: user %d::%s tried to access a customer aggregate graph "
             . "{$this->customer()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
         );
-        return $this->deny();
+
+        $this->deny();
+        return false;
     }
 
     /**
@@ -172,7 +174,7 @@ class Customer extends Graph {
      * Does a abort(404) if invalid
      *
      * @param int $i The user input value
-     * @return int The verified / sanitised / default value
+     * @return CustomerEntity The verified / sanitised / default value
      */
     public static function processParameterCustomer( int $i ): CustomerEntity {
         // if we're not an admin, default to the currently logged in customer
@@ -180,9 +182,11 @@ class Customer extends Graph {
             return Auth::user()->getCustomer();
         }
 
+        $cust = null;
         if( !$i || !( $cust = d2r( 'Customer' )->find( $i ) ) ) {
             abort(404);
         }
+
         return $cust;
     }
 

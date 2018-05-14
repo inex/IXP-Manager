@@ -35,7 +35,7 @@ use Entities\{
     VlanInterface as VlanInterfaceEntity
 };
 
-use Auth, D2EM;
+use Auth, D2EM, Log;
 
 use Illuminate\Auth\Access\AuthorizationException;
 
@@ -111,12 +111,11 @@ class Latency extends Graph {
     const PROTOCOL_DEFAULT = self::PROTOCOL_IPV4;
 
 
-
-
     /**
      * Constructor
-     * @param  Grapher             $grapher
+     * @param  Grapher $grapher
      * @param VlanInterfaceEntity $vli
+     * @throws ParameterException
      */
     public function __construct( Grapher $grapher, VlanInterfaceEntity $vli ) {
         parent::__construct( $grapher );
@@ -201,7 +200,8 @@ class Latency extends Graph {
         }
 
         if( !Auth::check() ) {
-            return $this->deny();
+            $this->deny();
+            return false;
         }
 
         if( Auth::user()->isSuperUser() ) {
@@ -222,7 +222,9 @@ class Latency extends Graph {
         Log::notice( sprintf( "[Grapher] [Latency]: user %d::%s tried to access a latency graph for vli "
                 . "{$this->vli()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
         );
-        return $this->deny();
+
+        $this->deny();
+        return false;
     }
 
     /**

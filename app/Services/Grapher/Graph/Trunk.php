@@ -22,9 +22,9 @@
  */
 
 use IXP\Services\Grapher;
-use IXP\Services\Grapher\{Graph,Statistics};
+use IXP\Services\Grapher\{Graph};
 
-use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
+use IXP\Exceptions\Services\Grapher\{ParameterException};
 
 use Entities\User as UserEntity;
 
@@ -50,6 +50,9 @@ class Trunk extends Graph {
 
     /**
      * Constructor
+     * @param Grapher $grapher
+     * @param string $n
+     * @throws ParameterException
      */
     public function __construct( Grapher $grapher, string $n ) {
         parent::__construct( $grapher );
@@ -66,8 +69,8 @@ class Trunk extends Graph {
 
     /**
      * Set the trunk we should use
-     * @param string $trunkname
-     * @return \IXP\Services\Grapher Fluid interface
+     * @param string $n
+     * @return Trunk Fluid interface
      * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
     public function setTrunkname( string $n ): Trunk {
@@ -118,7 +121,8 @@ class Trunk extends Graph {
             return $this->allow();
         }
 
-        return $this->deny();
+        $this->deny();
+        return false;
     }
 
     /**
@@ -152,13 +156,14 @@ class Trunk extends Graph {
      *
      * Does a abort(404) if invalid
      *
-     * @param int $s The user input value
-     * @return int The verified / sanitised / default value
+     * @param string $n The user input value
+     * @return string The verified / sanitised / default value
      */
     public static function processParameterTrunkname( string $n ): string {
         if( !is_array( config('grapher.backends.mrtg.trunks.'.$n) ) ) {
             abort(404);
         }
+
         return $n;
     }
 }

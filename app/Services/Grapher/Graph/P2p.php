@@ -22,9 +22,7 @@
  */
 
 use IXP\Services\Grapher;
-use IXP\Services\Grapher\{Graph,Statistics};
-
-use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
+use IXP\Services\Grapher\{Graph};
 
 use Entities\VlanInterface as VlanInterfaceEntity;
 
@@ -56,6 +54,9 @@ class P2p extends Graph {
 
     /**
      * Constructor
+     * @param Grapher $grapher
+     * @param VlanInterfaceEntity $svli
+     * @param VlanInterfaceEntity $dvli
      */
     public function __construct( Grapher $grapher, VlanInterfaceEntity $svli, VlanInterfaceEntity $dvli ) {
         parent::__construct( $grapher );
@@ -65,7 +66,7 @@ class P2p extends Graph {
 
     /**
      * Get the source vlan we're set to use
-     * @return \Entities\Vlan
+     * @return VlanInterfaceEntity
      */
     public function svli(): VlanInterfaceEntity {
         return $this->svli;
@@ -73,7 +74,7 @@ class P2p extends Graph {
 
     /**
      * Get the dest vlan we're set to use
-     * @return \Entities\Vlan
+     * @return VlanInterfaceEntity
      */
     public function dvli(): VlanInterfaceEntity {
         return $this->dvli;
@@ -82,11 +83,10 @@ class P2p extends Graph {
 
     /**
      * Set the source vli we should use
-     * @param Entities\VlanInterface $i
-     * @return \IXP\Services\Grapher Fluid interface
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     * @param VlanInterfaceEntity $i
+     * @return P2p Fluid interface
      */
-    public function setSourceVlanInterface( VlanInterfaceEntity $i ): Grapher {
+    public function setSourceVlanInterface( VlanInterfaceEntity $i ): P2p {
         if( $this->svli() && $this->svli()->getId() != $i->getId() ) {
             $this->wipe();
         }
@@ -97,11 +97,10 @@ class P2p extends Graph {
 
     /**
      * Set the dest vli we should use
-     * @param Entities\VlanInterface $i
-     * @return \IXP\Services\Grapher Fluid interface
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     * @param VlanInterfaceEntity $i
+     * @return P2p Fluid interface
      */
-    public function setDestinationVlanInterface( VlanInterfaceEntity $i ): Grapher {
+    public function setDestinationVlanInterface( VlanInterfaceEntity $i ): P2p {
         if( $this->dvli() && $this->dvli()->getId() != $i->getId() ) {
             $this->wipe();
         }
@@ -143,7 +142,8 @@ class P2p extends Graph {
      */
     public function authorise(): bool {
         if( !Auth::check() ) {
-            return $this->deny();
+            $this->deny();
+            return false;
         }
 
         if( Auth::user()->isSuperUser() ) {
@@ -157,7 +157,9 @@ class P2p extends Graph {
         Log::notice( sprintf( "[Grapher] [P2P]: user %d::%s tried to access a p2p vlan interface graph "
             . "{$this->svli()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
         );
-        return $this->deny();
+
+        $this->deny();
+        return false;
     }
 
     /**
@@ -193,10 +195,11 @@ class P2p extends Graph {
      *
      * Does a abort(404) if invalid
      *
-     * @param int $pi The user input value
-     * @return int The verified / sanitised / default value
+     * @param int $i The user input value
+     * @return VlanInterfaceEntity The verified / sanitised / default value
      */
     public static function processParameterVlanInterface( int $i ): VlanInterfaceEntity {
+        $vlanint = null;
         if( !$i || !( $vlanint = d2r( 'VlanInterface' )->find( $i ) ) ) {
             abort(404);
         }
@@ -208,8 +211,8 @@ class P2p extends Graph {
      *
      * Does a abort(404) if invalid
      *
-     * @param int $pi The user input value
-     * @return int The verified / sanitised / default value
+     * @param int $i The user input value
+     * @return VlanInterfaceEntity The verified / sanitised / default value
      */
     public static function processParameterSourceVlanInterface( int $i ): VlanInterfaceEntity {
         return self::processParameterVlanInterface($i);
@@ -220,8 +223,8 @@ class P2p extends Graph {
      *
      * Does a abort(404) if invalid
      *
-     * @param int $pi The user input value
-     * @return int The verified / sanitised / default value
+     * @param int $i The user input value
+     * @return VlanInterfaceEntity The verified / sanitised / default value
      */
     public static function processParameterDestinationVlanInterface( int $i ): VlanInterfaceEntity {
         return self::processParameterVlanInterface($i);

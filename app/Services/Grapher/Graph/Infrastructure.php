@@ -22,9 +22,7 @@
  */
 
 use IXP\Services\Grapher;
-use IXP\Services\Grapher\{Graph,Statistics};
-
-use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
+use IXP\Services\Grapher\{Graph};
 
 use Entities\Infrastructure as InfrastructureEntity;
 use Entities\User as UserEntity;
@@ -51,6 +49,8 @@ class Infrastructure extends Graph {
 
     /**
      * Constructor
+     * @param Grapher $grapher
+     * @param InfrastructureEntity $i
      */
     public function __construct( Grapher $grapher, InfrastructureEntity $i ) {
         parent::__construct( $grapher );
@@ -67,11 +67,10 @@ class Infrastructure extends Graph {
 
     /**
      * Set the infrastructure we should use
-     * @param Entities\Infrastructure $infra
-     * @return \IXP\Services\Grapher Fluid interface
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     * @param InfrastructureEntity $infra
+     * @return Infrastructure Fluid interface
      */
-    public function setInfrastructure( InfrastructureEntity $infra ): Grapher {
+    public function setInfrastructure( InfrastructureEntity $infra ): Infrastructure {
         if( $this->infrastructure() && $this->infrastructure()->getId() != $infra->getId() ) {
             $this->wipe();
         }
@@ -113,7 +112,8 @@ class Infrastructure extends Graph {
         }
 
         if( in_array( $this->category(), [ self::CATEGORY_ERRORS, self::CATEGORY_DISCARDS ] ) ) {
-            return $this->deny();
+            $this->deny();
+            return false;
         }
 
         if( config( 'grapher.access.infrastructure', -1 ) == UserEntity::AUTH_PUBLIC ) {
@@ -122,7 +122,8 @@ class Infrastructure extends Graph {
             return $this->allow();
         }
 
-        return $this->deny();
+        $this->deny();
+        return false;
     }
 
     /**
@@ -158,9 +159,10 @@ class Infrastructure extends Graph {
      * If you want to force an exception in such cases, use setIXP()
      *
      * @param int $v The user input value
-     * @return int The verified / sanitised / default value
+     * @return InfrastructureEntity The verified / sanitised / default value
      */
     public static function processParameterInfrastructure( int $v ): InfrastructureEntity {
+        $infra = null;
         if( !$v || !( $infra = d2r( 'Infrastructure' )->find( $v ) ) ) {
             abort(404);
         }

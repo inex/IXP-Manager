@@ -22,11 +22,12 @@
  */
 
 use IXP\Services\Grapher;
-use IXP\Services\Grapher\{Graph,Statistics};
+use IXP\Services\Grapher\{Graph};
 
-use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
-
-use Entities\Vlan as VlanEntity;
+use Entities\{
+    User as UserEntity,
+    Vlan as VlanEntity
+};
 
 use Auth;
 
@@ -50,6 +51,8 @@ class Vlan extends Graph {
 
     /**
      * Constructor
+     * @param Grapher $grapher
+     * @param VlanEntity $v
      */
     public function __construct( Grapher $grapher, VlanEntity $v ) {
         parent::__construct( $grapher );
@@ -66,11 +69,10 @@ class Vlan extends Graph {
 
     /**
      * Set the vlan we should use
-     * @param Entities\Vlan $vlan
-     * @return \IXP\Services\Grapher Fluid interface
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     * @param VlanEntity $vlan
+     * @return Vlan Fluid interface
      */
-    public function setVlan( VlanEntity $vlan ): Grapher {
+    public function setVlan( VlanEntity $vlan ): Vlan {
         if( $this->vlan() && $this->vlan()->getId() != $vlan->getId() ) {
             $this->wipe();
         }
@@ -113,10 +115,18 @@ class Vlan extends Graph {
 
         if( $this->vlan()->getPrivate() ) {
             // FIXME
-            return $this->deny();
+            $this->deny();
+            return false;
         }
 
-        return $this->allow();
+        if( config( 'grapher.access.vlan', -1 ) == UserEntity::AUTH_PUBLIC ) {
+            return $this->allow();
+        } else if( Auth::check() && Auth::user()->getPrivs() >= config( 'grapher.access.trunk', 0 ) ) {
+            return $this->allow();
+        }
+
+        $this->deny();
+        return false;
     }
 
     /**
@@ -151,9 +161,10 @@ class Vlan extends Graph {
      * Does a abort(404) if invalid
      *
      * @param int $v The user input value
-     * @return int The verified / sanitised / default value
+     * @return VlanEntity The verified / sanitised / default value
      */
     public static function processParameterVlan( int $v ): VlanEntity {
+        $vlan = null;
         if( !$v || !( $vlan = d2r( 'Vlan' )->find( $v ) ) ) {
             abort(404);
         }

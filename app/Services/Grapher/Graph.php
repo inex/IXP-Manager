@@ -28,7 +28,7 @@ use IXP\Services\Grapher;
 
 use IXP\Contracts\Grapher\Backend as GrapherBackend;
 
-use IXP\Exceptions\Services\Grapher\ParameterException;
+use IXP\Exceptions\Services\Grapher\{ConfigurationException,GraphCannotBeProcessedException,ParameterException};
 
 use Illuminate\Auth\Access\AuthorizationException;
 
@@ -366,6 +366,8 @@ abstract class Graph {
      * For a given graph object ($this), find a backend that can process it
      *
      * @return GrapherBackend
+     * @throws ConfigurationException
+     * @throws GraphCannotBeProcessedException
      */
     public function backend(): GrapherBackend {
 
@@ -404,6 +406,8 @@ abstract class Graph {
      * A veritable table of contents for API access to this graph
      *
      * @return array
+     * @throws ConfigurationException
+     * @throws GraphCannotBeProcessedException
      */
     public function toc(): array {
         $arr = [ 'class' => $this->lcClassType() ];
@@ -434,6 +438,8 @@ abstract class Graph {
      * return as JSON
      *
      * @return string
+     * @throws ConfigurationException
+     * @throws GraphCannotBeProcessedException
      */
     public function json(): string {
         return json_encode($this->toc(), JSON_PRETTY_PRINT);
@@ -859,6 +865,7 @@ abstract class Graph {
      * If you want to force an exception in such cases, use setCategory()
      *
      * @param string $v The user input value
+     * @param bool $bits_pkts_only
      * @return string The verified / sanitised / default value
      */
     public static function processParameterCategory( $v = null, $bits_pkts_only = false ): string {

@@ -24,8 +24,6 @@
 use IXP\Services\Grapher;
 use IXP\Services\Grapher\{Graph};
 
-use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
-
 use Entities\Customer as CustomerEntity;
 use Entities\PhysicalInterface as PhysicalInterfaceEntity;
 
@@ -51,6 +49,8 @@ class PhysicalInterface extends Graph {
 
     /**
      * Constructor
+     * @param Grapher $grapher
+     * @param PhysicalInterfaceEntity $pi
      */
     public function __construct( Grapher $grapher, PhysicalInterfaceEntity $pi ) {
         parent::__construct( $grapher );
@@ -59,7 +59,7 @@ class PhysicalInterface extends Graph {
 
     /**
      * Get the vlan we're set to use
-     * @return \Entities\Vlan
+     * @return PhysicalInterfaceEntity
      */
     public function physicalInterface(): PhysicalInterfaceEntity {
         return $this->physint;
@@ -116,7 +116,8 @@ class PhysicalInterface extends Graph {
      */
     public function authorise(): bool {
         if( !Auth::check() ) {
-            return $this->deny();
+            $this->deny();
+            return false;
         }
 
         if( Auth::user()->isSuperUser() ) {
@@ -130,7 +131,9 @@ class PhysicalInterface extends Graph {
         Log::notice( sprintf( "[Grapher] [PhysicalInterface]: user %d::%s tried to access a physical interface graph "
             . "{$this->physicalInterface()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
         );
-        return $this->deny();
+
+        $this->deny();
+        return false;
     }
 
     /**
@@ -165,9 +168,10 @@ class PhysicalInterface extends Graph {
      * Does a abort(404) if invalid
      *
      * @param int $pi The user input value
-     * @return int The verified / sanitised / default value
+     * @return PhysicalInterfaceEntity The verified / sanitised / default value
      */
     public static function processParameterPhysicalInterface( int $pi ): PhysicalInterfaceEntity {
+        $physint = null;
         if( !$pi || !( $physint = d2r( 'PhysicalInterface' )->find( $pi ) ) ) {
             abort(404);
         }

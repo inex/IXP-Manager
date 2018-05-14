@@ -22,9 +22,7 @@
  */
 
 use IXP\Services\Grapher;
-use IXP\Services\Grapher\{Graph,Statistics};
-
-use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
+use IXP\Services\Grapher\{Graph};
 
 use Entities\Switcher as SwitchEntity;
 use Entities\User as UserEntity;
@@ -51,6 +49,8 @@ class Switcher extends Graph {
 
     /**
      * Constructor
+     * @param Grapher $grapher
+     * @param SwitchEntity $s
      */
     public function __construct( Grapher $grapher, SwitchEntity $s ) {
         parent::__construct( $grapher );
@@ -67,11 +67,10 @@ class Switcher extends Graph {
 
     /**
      * Set the switch we should use
-     * @param Entities\Switcher $switch
-     * @return \IXP\Services\Grapher Fluid interface
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     * @param SwitchEntity $switch
+     * @return Switcher Fluid interface
      */
-    public function setSwitch( SwitchEntity $switch ): Grapher {
+    public function setSwitch( SwitchEntity $switch ): Switcher {
         if( $this->switch() && $this->switch()->getId() != $switch->getId() ) {
             $this->wipe();
         }
@@ -109,7 +108,8 @@ class Switcher extends Graph {
      */
     public function authorise(): bool {
         if( Auth::check() && Auth::user()->isSuperUser() ) {
-            return $this->allow();
+            $this->deny();
+            return false;
         }
 
         if( config( 'grapher.access.switch', -1 ) == UserEntity::AUTH_PUBLIC ) {
@@ -118,7 +118,8 @@ class Switcher extends Graph {
             return $this->allow();
         }
 
-        return $this->deny();
+        $this->deny();
+        return false;
     }
 
     /**
@@ -153,9 +154,10 @@ class Switcher extends Graph {
      * Does a abort(404) if invalid
      *
      * @param int $s The user input value
-     * @return int The verified / sanitised / default value
+     * @return SwitchEntity The verified / sanitised / default value
      */
     public static function processParameterSwitch( int $s ): SwitchEntity {
+        $switch = null;
         if( !$s || !( $switch = d2r( 'Switcher' )->find( $s ) ) ) {
             abort(404);
         }
