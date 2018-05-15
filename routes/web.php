@@ -26,8 +26,7 @@ if( php_sapi_name() !== 'cli' ) {
         \Auth::logout();
     }
 }
-
-if( Auth::check() && Auth::user()->isSuperUser() ) {
+if( ( Auth::check() && Auth::user()->isSuperUser() ) || env( 'IXP_PHPUNIT_RUNNING', false ) ) {
     // get an array of customer id => names
     if( !( $customers = Cache::get( 'admin_home_customers' ) ) ) {
         $customers = d2r( 'Customer' )->getNames( true );
