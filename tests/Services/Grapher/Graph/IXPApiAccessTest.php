@@ -38,21 +38,26 @@ use Entities\User as UserEntity;
  * Class IXPAccessTest
  * @package Tests\Services\Grapher\Graph
  */
-class IXPAccessTest extends Access
+class IXPApiAccessTest extends Access
 {
+//    public function setUp() {
+////        Config::set( 'grapher.backend', 'dummy' );
+//    }
+
+
     /**
-     * Test access restrictions for public web access
+     * Test access restrictions for public api access
      * @return void
      */
-    public function testWebPublicAccess()
+    public function testApiPublicAccess()
     {
         // this should be the default
-        $response = $this->get('/statistics/ixp');
+        $response = $this->get('/grapher/ixp?id=1');
         $response->assertStatus(200);
 
         // force the default
         Config::set( 'grapher.access.ixp', '0' );
-        $response = $this->get('/statistics/ixp');
+        $response = $this->get('/grapher/ixp?id=1');
         $response->assertStatus(200);
     }
 
@@ -60,46 +65,47 @@ class IXPAccessTest extends Access
      * Test access restrictions for verious non-public access settings
      * @return void
      */
-    public function testWebNonPublicAccess()
+    public function testApiNonPublicAccess()
     {
         Config::set( 'grapher.access.ixp', '1' );
-        $response = $this->get('/statistics/ixp');
+        $response = $this->get('/grapher/ixp?id=1');
         $response->assertStatus(403);
 
         Config::set( 'grapher.access.ixp', '2' );
-        $response = $this->get('/statistics/ixp');
+        $response = $this->get('/grapher/ixp?id=1');
         $response->assertStatus(403);
 
         Config::set( 'grapher.access.ixp', '3' );
-        $response = $this->get('/statistics/ixp');
+        $response = $this->get('/grapher/ixp?id=1');
         $response->assertStatus(403);
 
         Config::set( 'grapher.access.ixp', 'blah' );
-        $response = $this->get('/statistics/ixp');
+        $response = $this->get('/grapher/ixp?id=1');
         $response->assertStatus(403);
 
         Config::set( 'grapher.access.ixp', null );
-        $response = $this->get('/statistics/ixp');
+        $response = $this->get('/grapher/ixp?id=1');
         $response->assertStatus(403);
     }
 
     /**
-     * Test access restrictions requiring minimum logged in user of CustUser (privs=1) for web access
+     * Test access restrictions requiring minimum user of CustUser (privs=1) for api access
      * @return void
      */
-    public function testWebCustUserAccess()
+    public function testApiCustUserAccess()
     {
         Config::set( 'grapher.access.ixp', '1' );
-        $response = $this->get('/statistics/ixp');
+
+        $response = $this->get('/grapher/ixp?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getCustUser() )->get('/grapher/ixp?id=1');
         $response->assertStatus(200);
 
-        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/grapher/ixp?id=1');
         $response->assertStatus(200);
 
-        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/grapher/ixp?id=1');
         $response->assertStatus(200);
     }
 
@@ -110,16 +116,17 @@ class IXPAccessTest extends Access
     public function testWebCustAdminAccess()
     {
         Config::set( 'grapher.access.ixp', '2' );
-        $response = $this->get('/statistics/ixp');
+        
+        $response = $this->get('/grapher/ixp?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getCustUser() )->get('/grapher/ixp?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/grapher/ixp?id=1');
         $response->assertStatus(200);
 
-        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/grapher/ixp?id=1');
         $response->assertStatus(200);
     }
 
@@ -130,17 +137,18 @@ class IXPAccessTest extends Access
     public function testWebSuperuserAccess()
     {
         Config::set( 'grapher.access.ixp', '3' );
-        $response = $this->get('/statistics/ixp');
+        $response = $this->get('/grapher/ixp?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getCustUser() )->get('/grapher/ixp?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/grapher/ixp?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/grapher/ixp?id=1');
         $response->assertStatus(200);
     }
+
 
 }
