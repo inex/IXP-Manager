@@ -69,7 +69,7 @@
 
                 </form>
 
-                <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
+                <?php if( config('grapher.backends.sflow.enabled') && $t->grapher()->canAccessAllCustomerP2pGraphs() ): ?>
                     <form class="navbar-form navbar-right form-inline">
                         <a class="btn btn-default" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] ) ?>">
                             <span class="glyphicon glyphicon-random"></span>&nbsp;&nbsp;P2P Graphs

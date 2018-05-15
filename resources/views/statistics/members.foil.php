@@ -224,6 +224,7 @@
 
                             <p>
                                 <br />
+                                <?php $graph->authorise() ?>
                                 <?= $graph->renderer()->boxLegacy() ?>
                             </p>
                         </div>

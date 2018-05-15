@@ -585,6 +585,7 @@ class StatisticsController extends Controller
 
             if( !$dstVli && $r->input( 'dvli', false ) !== false ) {
                 AlertContainer::push( "The customer selected for destination traffic does not have any interfaces on the requested VLAN", Alert::WARNING );
+                return redirect()->back();
             }
         }
 

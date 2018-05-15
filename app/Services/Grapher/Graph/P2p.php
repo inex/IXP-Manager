@@ -153,7 +153,6 @@ class P2p extends Graph {
         return Auth::check() && is_numeric( config( 'grapher.access.p2p' ) ) && Auth::user()->getPrivs() >= config( 'grapher.access.p2p' );
     }
 
-
     /**
      * This function controls access to the graph.
      *

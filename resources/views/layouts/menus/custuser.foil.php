@@ -64,12 +64,12 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
                     <ul class="dropdown-menu">
                         <li>
-                            <a href="<?= url( 'statistics/member' ) ?>">My Statistics</a>
+                            <a href="<?= route( 'statistics@member' ) ?>">My Statistics</a>
                         </li>
 
                         <?php if( config('grapher.backends.sflow.enabled') ): ?>
                             <li>
-                                <a href="<?= url( 'statistics/p2p' ) ?>">My Peer to Peer Traffic</a>
+                                <a href="<?= route( 'statistics@p2p', ['cid' => Auth::user()->getCustomer()->getId() ] ) ?>">My Peer to Peer Traffic</a>
                             </li>
                         <?php endif; ?>
 

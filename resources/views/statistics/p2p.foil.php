@@ -36,9 +36,11 @@
 
     Peer to Peer Graphs :: <?= $t->c->getFormattedName() ?>
 
-    <div class="pull-right">
-        <a class="btn btn-default" href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>">All Ports</a>
-    </div>
+    <?php if( $t->grapher()->canAccessAllCustomerGraphs() ): ?>
+        <div class="pull-right">
+            <a class="btn btn-default" href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>">All Ports</a>
+        </div>
+    <?php endif; ?>
 
 <?php endif; ?>
 
@@ -56,9 +58,11 @@
 
         <nav class="navbar navbar-default">
 
-            <div class="navbar-header">
-                <a class="navbar-brand">P2P Graphs</a>
-            </div>
+            <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                <div class="navbar-header">
+                    <a class="navbar-brand">P2P Graphs</a>
+                </div>
+            <?php endif; ?>
 
             <form class="navbar-form navbar-left form-inline" action="<?= route( 'statistics@p2p', [ 'cid' => $this->c->getId() ] ) ?>" method="post">
 

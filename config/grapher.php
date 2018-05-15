@@ -144,7 +144,7 @@ return [
         //
         // See: https://docs.ixpmanager.org/grapher/api/#access-to-member-graphs
         'customer'          => env( 'GRAPHER_ACCESS_CUSTOMER', 'own_graphs_only' ),
-        'p2p'               => 'own_graphs_only', // not migrated from ZF yet - env( 'GRAPHER_ACCESS_P2P',      'own_graphs_only' ),
+        'p2p'               => env( 'GRAPHER_ACCESS_P2P',      'own_graphs_only' ),
         'latency'           => env( 'GRAPHER_ACCESS_LATENCY',  'own_graphs_only' ),
     ],
 
