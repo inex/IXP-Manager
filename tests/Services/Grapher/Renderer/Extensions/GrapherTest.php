@@ -23,6 +23,8 @@
 
 use IXP\Services\Grapher\Renderer\Extensions\Grapher as GrapherFoilExtension;
 
+use Tests\TestCase;
+
 /**
  * PHPUnit test class to test the Grapher Foil extension.
  *

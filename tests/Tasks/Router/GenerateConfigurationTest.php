@@ -25,6 +25,8 @@ use Entities\Router as RouterEntity;
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 use IXP\Tasks\Router\ConfigurationGenerator as RouterConfigurationGenerator;
 
+use Tests\TestCase;
+
 /**
  * PHPUnit test class to test the configuration generation of router configurations
  * against known good configurations for IXP\Tasks\Router\ConfigurationGenerator

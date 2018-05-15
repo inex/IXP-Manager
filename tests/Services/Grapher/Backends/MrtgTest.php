@@ -1,5 +1,7 @@
 <?php
 
+use Tests\TestCase;
+
 /*
  * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.

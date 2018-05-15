@@ -23,6 +23,7 @@
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 
+use Tests\TestCase;
 
 use Grapher as GrapherService;
 

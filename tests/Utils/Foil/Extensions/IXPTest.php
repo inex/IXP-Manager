@@ -22,6 +22,7 @@
  */
 
 use IXP\Utils\Foil\Extensions\IXP as IXPFoilExtension;
+use Tests\TestCase;
 
 /**
  * PHPUnit test class to test the 'softwrap' Foil extension.
