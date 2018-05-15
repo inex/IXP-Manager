@@ -25,6 +25,11 @@
         <a href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>" >
             Peer to Peer Graphs
         </a>
+        (<?= $t->srcVli->getIPAddress( $t->protocol ) ? $t->srcVli->getIPAddress( $t->protocol )->getAddress() : 'No IP?' ?>
+            / <?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>
+            / <?= IXP\Services\Grapher\Graph::resolvePeriod( $t->period ) ?>
+            / <?= IXP\Services\Grapher\Graph::resolveProtocol( $t->protocol ) ?>
+        )
     </li>
 
 <?php else: ?>
@@ -45,14 +50,14 @@
 
 <div class="row">
 
-    <?= $t->alerts() ?>
-
     <div class="col-md-12">
+
+        <?= $t->alerts() ?>
 
         <nav class="navbar navbar-default">
 
             <div class="navbar-header">
-                <a class="navbar-brand">P2P Graphs for <?= $t->srcVli->getVlan()->getName() ?></a>
+                <a class="navbar-brand">P2P Graphs</a>
             </div>
 
             <form class="navbar-form navbar-left form-inline" action="<?= route( 'statistics@p2p', [ 'cid' => $this->c->getId() ] ) ?>" method="post">
@@ -63,6 +68,7 @@
                         <?php foreach( $t->srcVlis as $id => $vli ): ?>
                             <option value="<?= $id ?>" <?php if( $t->srcVli->getId() == $id ): ?> selected <?php endif; ?>  >
                                 <?= $vli->getVlan()->getName() ?>
+                                :: <?= $vli->getIPAddress( $t->protocol ) ? $vli->getIPAddress( $t->protocol )->getAddress() : 'No IP - VLI ID: ' . $vli->getId() ?>
                             </option>
                         <?php endforeach; ?>
                     </select>
@@ -98,9 +104,11 @@
                     <label for="select_protocol">Protocol:</label>
                     <select id="select_protocol" name="protocol" class="form-control">
                         <?php foreach( IXP\Services\Grapher\Graph::PROTOCOL_REAL_DESCS as $pvalue => $pname ): ?>
-                            <option value="<?= $pvalue ?>" <?php if( $t->protocol == $pvalue ): ?> selected <?php endif; ?>  >
-                                <?= $pname ?>
-                            </option>
+                            <?php if( $t->srcVli->isIPEnabled( $pvalue ) ): ?>
+                                <option value="<?= $pvalue ?>" <?php if( $t->protocol == $pvalue ): ?> selected <?php endif; ?>  >
+                                    <?= $pname ?>
+                                </option>
+                            <?php endif; ?>
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -183,12 +191,12 @@
 
         <?php foreach( $dstVlis as $dvli ): ?>
 
-            <div class="col-md-6">
+            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
 
                 <div class="well">
 
                     <h4>
-                        <?= $dvli->getVirtualInterface()->getCustomer()->getFormattedName() ?>
+                        <?= $dvli->getVirtualInterface()->getCustomer()->getFormattedName() ?> :: <?= $dvli->getIPAddress( $t->protocol ) ? $dvli->getIPAddress( $t->protocol )->getAddress() : 'No IP?' ?>
                     </h4>
 
                     <p>
@@ -200,7 +208,7 @@
                             . '&period='   . $t->period
                             . '&protocol=' . $t->protocol
                         ?>">
-                            <img src="<?= $t->graph->setDestinationVlanInterface( $dvli, false )->setType('png')->url() ?>">
+                            <img class="img-responsive" src="<?= $t->graph->setDestinationVlanInterface( $dvli, false )->setType('png')->url() ?>">
                         </a>
                     </p>
                 </div>
@@ -213,4 +221,11 @@
 <?php endif; ?>
 
 <?php $this->append() ?>
+
+
+
+<?php $this->section( 'scripts' ) ?>
+<?= $t->insert( 'statistics/js/p2p' ); ?>
+<?php $this->append() ?>
+
 

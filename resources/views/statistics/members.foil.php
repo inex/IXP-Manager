@@ -206,7 +206,7 @@
                                     <div class="btn-group" role="group">
 
                                         <?php if( config('grapher.backends.sflow.enabled') && isset( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS[$graph->category()] ) && $t->grapher()->canAccessAllCustomerP2pGraphs() ): ?>
-                                            <a class="btn btn-default btn-xs" href="<?= url('') . '/statistics/p2p/shortname/' . $graph->customer()->getShortname() . '/category/' . $graph->category() . '/period/' . $graph->period() ?>">
+                                            <a class="btn btn-default btn-xs" href="<?= route('statistics@p2p', [ 'cid' => $graph->customer()->getId() ] ) . "?category={$graph->category()}&period={$graph->period()}" ?>">
                                                 <span class="glyphicon glyphicon-random"></span>
                                             </a>
                                         <?php endif; ?>

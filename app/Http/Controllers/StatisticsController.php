@@ -516,15 +516,6 @@ class StatisticsController extends Controller
         $r->period   = Graph::processParameterPeriod(       $r->input( 'period', '' ) );
         $r->protocol = Graph::processParameterRealProtocol( $r->input( 'protocol', '' ) );
 
-        // if the customer is authorised, then so too are all of their virtual and physical interfaces:
-//        try {
-//            $grapher->customer( $c )->authorise();
-//        } catch( AuthorizationException $e ) {
-//            AlertContainer::push( "You are not authorised to view this member's graphs.", Alert::DANGER );
-//            return redirect()->back();
-//        }
-
-
         // for larger IXPs, it's quite intensive to display all the graphs - decide if we need to do this or not
         if( config('grapher.backends.sflow.show_graphs_on_index_page') !== null ) {
             $showGraphsOption = true;
@@ -558,9 +549,15 @@ class StatisticsController extends Controller
             $srcVli = $srcVlis[ array_keys( $srcVlis )[ 0 ] ];
         }
 
+        // is the requested protocol support?
+        if( !$srcVli->isIPEnabled( $r->protocol ) ) {
+            AlertContainer::push( Graph::resolveProtocol( $r->protocol ) . " is not supported on the requested VLAN interface.", Alert::WARNING );
+            return redirect()->back();
+        }
+
         // Now find the possible other VLAN interfaces that this customer could exchange traffic with
         // (as well as removing the source vli)
-        $dstVlis = D2EM::getRepository( VlanInterfaceEntity::class )->getObjectsForVlan( $srcVli->getVlan() );
+        $dstVlis = D2EM::getRepository( VlanInterfaceEntity::class )->getObjectsForVlan( $srcVli->getVlan(), false );
         unset( $dstVlis[ $srcVli->getId() ] );
 
         if( !count( $dstVlis ) ) {
@@ -572,10 +569,27 @@ class StatisticsController extends Controller
             $dstVli = $dstVlis[ $dvlid ];
         } else {
             $dstVli = false;
+
+            // possibility that we've changed the source VLI in the UI and so the destination dli provided is on another LAN
+            if( $dvlid && $otherDstVli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $dvlid ) ) {
+                // does this customer have a VLAN interface on the same VLAN as the srcVli?
+                foreach( $otherDstVli->getVirtualInterface()->getCustomer()->getVirtualInterfaces() as $vi ) {
+                    foreach( $vi->getVlanInterfaces() as $vli ) {
+                        if( $srcVli->getVlan()->getId() == $vli->getVlan()->getId() ) {
+                            $dstVli = $vli;
+                            break 2;
+                        }
+                    }
+                }
+            }
+
+            if( !$dstVli && $r->input( 'dvli', false ) !== false ) {
+                AlertContainer::push( "The customer selected for destination traffic does not have any interfaces on the requested VLAN", Alert::WARNING );
+            }
         }
 
         // authenticate on one of the graphs
-        $graph = $grapher->p2p( $srcVli, $dstVli ? $dstVli->getId() : $dstVlis[ array_keys( $dstVlis )[0] ] )
+        $graph = $grapher->p2p( $srcVli, $dstVli ? $dstVli : $dstVlis[ array_keys( $dstVlis )[0] ] )
             ->setProtocol( $r->protocol )
             ->setCategory( $r->category )
             ->setPeriod( $r->period );
