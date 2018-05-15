@@ -589,6 +589,25 @@ class StatisticsController extends Controller
             }
         }
 
+        // if we have a $dstVli, then remove any VLANs from $srcVlis where both src and dst do not have VLIs on the same VLAN:
+        if( $dstVli ) {
+            foreach( $srcVlis as $i => $svli ) {
+                $haveMatch = false;
+                foreach( $dstVli->getVirtualInterface()->getCustomer()->getVirtualInterfaces() as $vi ) {
+                    foreach( $vi->getVlanInterfaces() as $dvli ) {
+                        if( $svli->getVlan()->getId() == $dvli->getVlan()->getId() ) {
+                            $haveMatch = true;
+                            break 2;
+                        }
+                    }
+                }
+
+                if( !$haveMatch ) {
+                    unset( $srcVlis[ $i ] );
+                }
+            }
+        }
+
         // authenticate on one of the graphs
         $graph = $grapher->p2p( $srcVli, $dstVli ? $dstVli : $dstVlis[ array_keys( $dstVlis )[0] ] )
             ->setProtocol( $r->protocol )

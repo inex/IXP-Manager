@@ -70,7 +70,8 @@
         <?= $t->alerts() ?>
 
         <h3>
-            Traffic exchanged between <?= $srcVli->getVirtualInterface()->getCustomer()->getFormattedName() ?> &amp; <?= $dstVli->getVirtualInterface()->getCustomer()->getFormattedName() ?>
+            Traffic exchanged between <?= $srcVli->getVirtualInterface()->getCustomer()->getAbbreviatedName() ?> (<?= $srcVli->getIPAddress( $t->protocol ) ? $srcVli->getIPAddress( $t->protocol )->getAddress() : 'No IP' ?>)
+            &amp; <?= $dstVli->getVirtualInterface()->getCustomer()->getAbbreviatedName() ?> (<?= $dstVli->getIPAddress( $t->protocol ) ? $dstVli->getIPAddress( $t->protocol )->getAddress() : 'No IP' ?>)
         </h3>
 
     </div>
