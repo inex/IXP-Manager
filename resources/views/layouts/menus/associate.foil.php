@@ -51,27 +51,27 @@
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Statistics<b class="caret"></b></a>
                     <ul class="dropdown-menu">
 
-                        <?php if( config( 'grapher.access.ixp', Entities\User::AUTH_PUBLIC ) <= Auth::user()->getPrivs() ): ?>
+                        <?php if( is_numeric( config( 'grapher.access.ixp' ) ) && config( 'grapher.access.ixp' ) <= Auth::user()->getPrivs() ): ?>
                             <li>
                                 <a href="<?= route( 'statistics/ixp' ) ?>">Overall Peering Graphs</a>
                             </li>
                         <?php endif; ?>
-                        <?php if( config( 'grapher.access.infrastructure', Entities\User::AUTH_PUBLIC )  <= Auth::user()->getPrivs() ): ?>
+                        <?php if( is_numeric( config( 'grapher.access.infrastructure' ) ) && config( 'grapher.access.infrastructure' )  <= Auth::user()->getPrivs() ): ?>
                             <li>
                                 <a href="<?= route( 'statistics/infrastructure' ) ?>">Infrastructure Graphs</a>
                             </li>
                         <?php endif; ?>
-                        <?php if( config( 'grapher.access.vlan' ) <= Auth::user()->getPrivs() && config( 'grapher.backends.sflow.enabled' ) ): ?>
+                        <?php if( is_numeric( config( 'grapher.access.vlan' ) ) && config( 'grapher.access.vlan' ) <= Auth::user()->getPrivs() && config( 'grapher.backends.sflow.enabled' ) ): ?>
                             <li>
                                 <a href="<?= route( 'statistics/vlan' ) ?>">VLAN / Per-Protocol Graphs</a>
                             </li>
                         <?php endif; ?>
-                        <?php if( config( 'grapher.access.trunk', Entities\User::AUTH_PUBLIC ) <= Auth::user()->getPrivs() ): ?>
+                        <?php if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) <= Auth::user()->getPrivs() ): ?>
                             <li>
                                 <a href="<?= route('statistics/trunk') ?>">Inter-Switch / PoP Graphs</a>
                             </li>
                         <?php endif; ?>
-                        <?php if( config( 'grapher.access.switch', Entities\User::AUTH_PUBLIC ) <= Auth::user()->getPrivs() ): ?>
+                        <?php if( is_numeric( config( 'grapher.access.switch' ) ) && config( 'grapher.access.switch' ) <= Auth::user()->getPrivs() ): ?>
                             <li>
                                 <a href="<?= route('statistics/switch') ?>">Switch Aggregate Graphs</a>
                             </li>
