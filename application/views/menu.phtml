@@ -71,7 +71,7 @@
         </li>
 
         <li {if $controller eq 'switch' and $action neq 'add-ports'}class="active"{/if}>
-            <a href="{genUrl controller='switch' action='list'}">Switches</a>
+            <a href="{route( 'switch@list' )}">Switches</a>
 
             {if $controller eq 'switch' or $controller eq 'switch-port'}
                 <ul class="nav nav-list">

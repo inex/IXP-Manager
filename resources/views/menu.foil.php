@@ -119,20 +119,18 @@
 
                 </li>
 
-                <li>
-                    <a href="<?= url('/switch/list') ?>">Switches</a>
-                    <?php /*
-                    {if $controller eq 'switch' or $controller eq 'switch-port'}
-                        <ul class="nav nav-list">
-                            <li {if $controller eq 'switch-port' and $action neq 'unused-optics'}class="active"{/if}>
-                                <a href="{genUrl controller='switch-port' action='list'}">Switch Ports</a>
-                            </li>
-                            <li {if $controller eq 'switch-port' and $action eq 'unused-optics'}class="active"{/if}>
-                                <a href="{genUrl controller='switch-port' action='unused-optics'}">Unused Optics</a>
-                            </li>
-                        </ul>
-                    {/if}
-                    */ ?>
+                <li <?php if( $t->controller == 'SwitchController' ):?> class="active" <?php endif;?> >
+                    <a href="<?= route('switch@list') ?>">Switches</a>
+
+                    <?php if( $t->controller == 'SwitchController' || $t->controller == 'SwitchPortsController' ):?>
+                        <li class="sub-menu <?php if( $t->controller == 'SwitchPortsController' && $t->action != 'unusedOptics' ):?> active <?php endif;?>" >
+                        <li class="sub-menu <?php if( $t->controller == 'SwitchPortsController' && $t->action != 'unusedOptics' ):?> active <?php endif;?>" >
+                            <a href="<?= route( "switch-ports@list" ) ?>">Switch Port</a>
+                        </li>
+                        <li class="sub-menu <?php if( $t->controller == 'SwitchPortsController' && $t->action == 'unusedOptics' ):?> active <?php endif;?>" >
+                            <a href="<?= route( "switch-ports@unused-optics" ) ?>">Unused Optics</a>
+                        </li>
+                    <?php endif; ?>
                 </li>
 
 

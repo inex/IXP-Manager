@@ -21,7 +21,8 @@ IXP\Http\Controllers\Layer2AddressController::routes();
 IXP\Http\Controllers\LocationController::routes();
 IXP\Http\Controllers\LoginHistoryController::routes();
 IXP\Http\Controllers\MacAddressController::routes();
-IXP\Http\Controllers\Switches\SwitchsController::routes();
+IXP\Http\Controllers\Switches\SwitchController::routes();
+IXP\Http\Controllers\Switches\SwitchPortsController::routes();
 IXP\Http\Controllers\VendorController::routes();
 IXP\Http\Controllers\VlanController::routes();
 

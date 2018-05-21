@@ -37,4 +37,142 @@ class SwitchPort extends EntityRepository
 
       return $this->getEntityManager()->createQuery( $dql )->getOneOrNullResult()['id'];
     }
+
+
+    /**
+     * Get all switch ports (or a particular one) for listing on the frontend CRUD
+     *
+     * @see \IXP\Http\Controller\Doctrine2Frontend
+     *
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     * @return array Array of switches (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeList( \stdClass $feParams, int $id = null, $params = null )
+    {
+        $dql = "SELECT  sp.id AS id, 
+                        sp.name AS name, 
+                        sp.type AS type, 
+                        s.id AS switchid,
+                        s.name AS switch,
+                        sp.ifName AS ifName, 
+                        sp.ifAlias AS ifAlias, 
+                        sp.ifHighSpeed AS ifHighSpeed,
+                        sp.ifMtu AS ifMtu, 
+                        sp.ifPhysAddress AS ifPhysAddress, 
+                        sp.active AS active,
+                        sp.ifAdminStatus AS ifAdminStatus, 
+                        sp.ifOperStatus AS ifOperStatus,
+                        sp.ifLastChange AS ifLastChange, 
+                        sp.lastSnmpPoll AS lastSnmpPoll,
+                        sp.lagIfIndex AS lagIfIndex, 
+                        sp.ifIndex AS ifIndex
+                    FROM Entities\\SwitchPort sp
+                    LEFT JOIN sp.Switcher s
+                    
+                    WHERE 1 = 1";
+
+        if( $id ) {
+            $dql .= " AND sp.id = " . (int)$id;
+        }
+
+
+        if( isset( $params[ "params" ][ "switch" ] ) && $params[ "params" ][ "switch" ] ){
+            $dql .= " AND s.id = ". $params[ "params" ][ "switch" ];
+        }
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getArrayResult();
+    }
+
+
+
+    /**
+     * Get all the unused optics
+     *
+     * @return array Array
+     */
+    public function getUnusedOpticsForFeList( \stdClass $feParams )
+    {
+
+        $dql = "SELECT  sp.ifIndex AS ifIndex,
+                        s.name AS switch,
+                        s.id AS switchid,
+                        sp.ifName AS ifName,
+                        sp.type AS type,
+                        sp.mauType AS mauType,
+                        sp.mauState AS mauState,
+                        sp.mauJacktype AS mauJacktype
+                    FROM Entities\\SwitchPort sp
+                    LEFT JOIN sp.Switcher s
+                    WHERE s.mauSupported = 1 
+                    AND sp.ifOperStatus != 1 
+                    AND sp.mauType != '(empty)'
+                    AND sp.type != " . \Entities\SwitchPort::TYPE_MANAGEMENT;
+
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getArrayResult();
+
+    }
+
+
+    /**
+     * Get all the unused optics
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     *
+     * @return array Array
+     */
+    public function getListMau( \stdClass $feParams, int $id = null )
+    {
+
+            $dql = "SELECT sp.id AS id, 
+                          sp.name AS name, 
+                          sp.type AS type, 
+                          s.name AS switch,
+                          sp.ifName AS ifName, 
+                          sp.ifAlias AS ifAlias, 
+                          sp.lastSnmpPoll AS lastSnmpPoll,
+                          sp.ifAdminStatus AS ifAdminStatus, 
+                          sp.ifOperStatus AS ifOperStatus,
+                          sp.mauType AS mauType, 
+                          sp.mauState AS mauState,
+                          sp.mauAvailability AS mauAvailability, 
+                          sp.mauJacktype AS mauJacktype,
+                          sp.mauAutoNegSupported AS mauAutoNegSupported, 
+                          sp.mauAutoNegAdminState AS mauAutoNegAdminState,
+                          sp.ifIndex AS ifIndex, 
+                          s.id AS switchid
+                    FROM Entities\\SwitchPort sp
+                    LEFT JOIN sp.Switcher s
+                    WHERE 1 = 1";
+
+            if( $id !== null ){
+                $dql .= " AND s.id = " . $id ;
+            }
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
+
+    }
+
 }

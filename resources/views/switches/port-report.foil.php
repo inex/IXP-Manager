@@ -1,7 +1,7 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'switchs@list' )?>">Switches</a>
+    <a href="<?= route( 'switch@list' )?>">Switches</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -25,7 +25,7 @@
                     <?php foreach( $t->switches as $id => $name ): ?>
 
                         <li class="<?= $t->s->getId() == $id ? 'active' : '' ?>">
-                            <a href="<?= route( "switchs@port-report", [ "port" => $id ] ) ?>"><?= $name ?></a>
+                            <a href="<?= route( "switch@port-report", [ "port" => $id ] ) ?>"><?= $name ?></a>
                         </li>
 
 
@@ -35,7 +35,7 @@
             </div>
 
 
-            <a type="button" class="btn btn-default" href="<?= route ('switchs@list' ) ?>" title="list">
+            <a type="button" class="btn btn-default" href="<?= route ('switch@list' ) ?>" title="list">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
 

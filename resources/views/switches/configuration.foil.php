@@ -5,7 +5,7 @@
 
         <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
 
-            <a href="<?= route( 'switchs@list' )?>">Switches</a>
+            <a href="<?= route( 'switch@list' )?>">Switches</a>
 
         <?php else: ?>
 
@@ -36,7 +36,7 @@
                 <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
 
                     <li class="<?= $t->s ? "" : ( !$t->infra ? "active" : "" ) ?>">
-                        <a href="<?= route( "switchs@configuration", [ "infra" => 0 ] ) ?>">All Infrastructures</a>
+                        <a href="<?= route( "switch@configuration", [ "infra" => 0 ] ) ?>">All Infrastructures</a>
                     </li>
 
                     <li role="separator" class="divider"></li>
@@ -44,7 +44,7 @@
                     <?php foreach( $t->infras as $id => $name ): ?>
 
                         <li class="<?= $t->s ? "active" : ( $t->infra && $t->infra->getId() == $id ? "active" : "" )?>">
-                            <a href="<?= route( "switchs@configuration", [ "infra" => $id ] ) ?>"><?= $name ?></a>
+                            <a href="<?= route( "switch@configuration", [ "infra" => $id ] ) ?>"><?= $name ?></a>
                         </li>
 
 
@@ -64,7 +64,7 @@
                 <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
 
                     <li class="<?= $t->s ? "" : ( !$t->location ? "active" : "" ) ?>">
-                        <a href="<?= route( "switchs@configuration", [ "location" => 0 ] ) ?>">All Facilities</a>
+                        <a href="<?= route( "switch@configuration", [ "location" => 0 ] ) ?>">All Facilities</a>
                     </li>
 
                     <li role="separator" class="divider"></li>
@@ -72,7 +72,7 @@
                     <?php foreach( $t->locations as $id => $name ): ?>
 
                         <li class="<?= $t->s ? "active" : ( $t->location && $t->location->getId() == $id ? "active" : "" ) ?>">
-                            <a href="<?= route( "switchs@configuration", [ "location" => $id ] ) ?>"><?= $name ?></a>
+                            <a href="<?= route( "switch@configuration", [ "location" => $id ] ) ?>"><?= $name ?></a>
                         </li>
 
 
@@ -92,7 +92,7 @@
                 <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
 
                     <li class="<?= !$t->s ? "active" : "" ?>">
-                        <a href="<?= route( "switchs@configuration", [ "switch" => 0 ] ) ?>">All Switch</a>
+                        <a href="<?= route( "switch@configuration", [ "switch" => 0 ] ) ?>">All Switch</a>
                     </li>
 
                     <li role="separator" class="divider"></li>
@@ -101,7 +101,7 @@
                     <?php foreach( $t->switches as $s ): ?>
 
                         <li class="<?= $t->s && $t->s->getId() == $s->getId() ? "active" : "" ?>">
-                            <a href="<?= route( "switchs@configuration", [ "switch" => $s->getId() ] ) ?>"><?= $s->getName() ?></a>
+                            <a href="<?= route( "switch@configuration", [ "switch" => $s->getId() ] ) ?>"><?= $s->getName() ?></a>
                         </li>
 
 
@@ -110,7 +110,7 @@
                 </ul>
             </div>
 
-            <a class="btn btn-default btn-xs" href="<?= route( "switchs@configuration", [ "switch" => 0, "infra" => 0, "location" => 0 ] ) ?>">Clear</a>
+            <a class="btn btn-default btn-xs" href="<?= route( "switch@configuration", [ "switch" => 0, "infra" => 0, "location" => 0 ] ) ?>">Clear</a>
 
         </div>
 
@@ -158,9 +158,9 @@
                     </td>
                     <td>
                         <?php if( Auth::getUser()->isSuperUser() ): ?>
-                            <a href="<?= route( "switchs@port-report" , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
+                            <a href="<?= route( "switch@port-report" , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
                         <?php else: ?>
-                            <a href="<?= route( "switchs@configuration" , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
+                            <a href="<?= route( "switch@configuration" , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
                         <?php endif; ?>
                     </td>
                     <td>

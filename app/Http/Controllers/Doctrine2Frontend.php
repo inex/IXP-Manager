@@ -122,6 +122,7 @@ abstract class Doctrine2Frontend extends Controller {
         'XLATE'             => 'xlate',
         'YES_NO'            => 'yes_no',
         'PARSDOWN'          => 'parsdown',
+        'RESOLVE_CONST'     => 'resolve_const',
     ];
 
 
@@ -325,6 +326,7 @@ abstract class Doctrine2Frontend extends Controller {
     public function edit( $id ){
         $this->data[ 'params' ] = $this->addEditPrepareForm( $id );
         $this->data[ 'params' ]['isAdd'] = false;
+
         $this->addEditSetup();
 
         return $this->display( 'edit' );
@@ -364,10 +366,13 @@ abstract class Doctrine2Frontend extends Controller {
 
         Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action
             . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
-        AlertContainer::push(  $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
+
+
+        AlertContainer::push( $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
 
         return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
     }
+
 
     /**
      * Allow D2F implementations to override where the post-store redirect goes.

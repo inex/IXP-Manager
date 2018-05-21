@@ -824,15 +824,6 @@ class Switcher extends EntityRepository
      */
     public function getAllForFeList( \stdClass $feParams, int $id = null, $params = null )
     {
-
-
-
-//        if( $this->getParam( 'infra', false ) && $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $this->getParam( 'infra' ) ) )
-//        {
-//            $qb->andWhere( 'i = :infra' )->setParameter( 'infra', $infra );
-//            $this->view->infra = $infra;
-//        }
-
         $dql = "SELECT  s.id AS id, 
                         s.name AS name,
                         s.ipv4addr AS ipv4addr, 

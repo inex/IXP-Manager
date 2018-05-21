@@ -1,0 +1,80 @@
+
+<li class="pull-right">
+    <div class="btn-group btn-group-xs" role="group">
+
+        <?php if( isset( $t->data[ 'params'][ "switch" ] ) ): ?>
+
+            <?php if( $t->data[ 'params'][ "switch" ] ): ?>
+                <!-- Single button -->
+                <div class="btn-group">
+
+                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <?php if( $t->action ==  'op-status' ): ?>
+                            Live Port States (with SNMP poll)
+                        <?php elseif( $t->action == 'list' ): ?>
+                            Ports (database only)
+                        <?php elseif( $t->action == 'snmp-poll' ): ?>
+                            Ports (with SNMP poll)
+                        <?php elseif( $t->action == 'listMau' ): ?>
+                            Port MAU Detail (database only)
+                        <?php else: ?>
+                            Unknown action?
+                        <?php endif; ?>
+
+                        <span class="caret"></span>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
+
+                        <li <?php if( $t->action == 'op-status' ): ?> class="active"<?php endif; ?>>
+                            <a href="{genUrl controller='switch-port' action='op-status' switch=$sid}">View Live Port States (with SNMP poll)</a>
+                        </li>
+
+                        <li <?php if( $t->action == 'list'): ?>class="active"<?php endif; ?>>
+                            <a href="<?= route( "switch-ports@list", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View / Edit Ports (database only)</a>
+                        </li>
+
+                        <li <?php if( $t->action == 'snmp-poll'): ?>class="active"<?php endif; ?>>
+                            <a href="{genUrl controller='switch-port' action='snmp-poll' switch=$sid}">View / Edit Ports (with SNMP poll)</a>
+                        </li>
+
+                    </ul>
+                </div>
+            <?php endif; ?>
+
+            <!-- Single button -->
+            <div class="btn-group">
+                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <?= $t->data[ 'params'][ "switch" ] ? $t->data[ 'params'][ "switches" ][ $t->data[ 'params'][ "switch" ] ] : "All Switch" ?><span class="caret"></span>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
+
+                    <li class="<?= $t->data[ 'params'][ "switch" ] ? "" : "active" ?>">
+                        <a href="<?= route( $t->feParams->route_prefix . "@" . $t->feParams->route_action , [ "switch" => 0 ] ) ?>">All Switches</a>
+                    </li>
+
+                    <li role="separator" class="divider"></li>
+
+                    <?php foreach( $t->data[ 'params'][ "switches" ] as $id => $name ): ?>
+
+                        <li class="<?= isset( $t->data[ 'params'][ "switch" ]) && $t->data[ 'params'][ "switch" ] === $id ? 'active' : '' ?>">
+                            <a href="<?= route( $t->feParams->route_prefix . "@" . $t->feParams->route_action, [ "switch" => $id ] ) ?>"><?= $name ?></a>
+                        </li>
+
+                    <?php endforeach; ?>
+
+                </ul>
+            </div>
+
+            <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add' ) ?>">
+                <span class="glyphicon glyphicon-plus"></span>
+            </a>
+
+        <?php endif; ?>
+
+
+
+
+
+    </div>
+</li>

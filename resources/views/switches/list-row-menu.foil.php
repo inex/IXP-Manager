@@ -19,15 +19,15 @@
             </li>
         <?php endif; ?>
             <li>
-                <a href="{genUrl controller='switch-port' action='list' switch=$row.id}">View / Edit Ports (database only)</a>
+                <a href="<?= route( "switch-ports@list", [ "switch" => $t->row[ 'id' ] ] ) ?>">View / Edit Ports (database only)</a>
             </li>
         <?php if( $t->row[ "mauSupported" ] ): ?>
             <li>
-                <a href="{genUrl controller='switch-port' action='list-mau' switch=$row.id}">View Port MAU Detail (database only)</a>
+                <a href="<?= route( "switch-ports@list-mau", [ "switch" => $t->row[ 'id' ] ] ) ?> ">View Port MAU Detail (database only)</a>
             </li>
         <?php endif; ?>
         <li>
-            <a href="<?= route( "switchs@port-report", [ "id" => $t->row[ 'id' ] ] ) ?>">View Port Report</a>
+            <a href="<?= route( "switch@port-report", [ "id" => $t->row[ 'id' ] ] ) ?>">View Port Report</a>
         </li>
     </ul>
 

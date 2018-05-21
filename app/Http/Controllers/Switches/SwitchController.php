@@ -28,15 +28,13 @@ use Auth, D2EM, Former, Redirect,Route, Validator;
 use Entities\{
     Cabinet             as CabinetEntity,
     Infrastructure      as InfrastructureEntity,
-    IXP                 as IXPEntity,
     Location            as LocationEntity,
     Switcher            as SwitcherEntity,
     SwitchPort          as SwitchPortEntity,
     User                as UserEntity,
-    Vendor              as VendorEntity,
-    Vlan                as VlanEntity
-
+    Vendor              as VendorEntity
 };
+
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
@@ -61,7 +59,7 @@ use OSS_SNMP\{
  * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class SwitchsController extends Doctrine2Frontend {
+class SwitchController extends Doctrine2Frontend {
 
     /**
      * The object being added / edited
@@ -185,11 +183,11 @@ class SwitchsController extends Doctrine2Frontend {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
 
         Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get(  'pre-add-by-snmp', 'Switches\SwitchsController@preAddBySnmp'           )->name( "switchs@pre-add-by-snmp" );
-            Route::get(  'port-report/{id}', 'Switches\SwitchsController@portReport'            )->name( "switchs@port-report" );
-            Route::get(  'configuration', 'Switches\SwitchsController@configuration'            )->name( "switchs@configuration" );
+            Route::get(  'pre-add-by-snmp', 'Switches\SwitchController@preAddBySnmp'           )->name( "switch@pre-add-by-snmp" );
+            Route::get(  'port-report/{id}', 'Switches\SwitchController@portReport'            )->name( "switch@port-report" );
+            Route::get(  'configuration', 'Switches\SwitchController@configuration'            )->name( "switch@configuration" );
 
-            Route::post(  'pre-store-by-snmp',  'Switches\SwitchsController@preStoreBySmtp'     )->name( "switchs@pre-store-by-snmp" );
+            Route::post(  'pre-store-by-snmp',  'Switches\SwitchController@preStoreBySmtp'     )->name( "switch@pre-store-by-snmp" );
         });
     }
 
@@ -473,7 +471,7 @@ class SwitchsController extends Doctrine2Frontend {
 
 
         if( $validator->fails() ) {
-            return Redirect::to( route( "switchs@add") )->withErrors( $validator )->withInput();
+            return Redirect::to( route( "switch@add") )->withErrors( $validator )->withInput();
         }
 
         if( $request->input( 'id', false ) ) {
