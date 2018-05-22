@@ -37,9 +37,6 @@ use Tests\Services\Grapher\Graph\Access\Access;
  */
 class IXPWebAccessTest extends Access
 {
-//    public function setUp() {
-//        //Config::set( 'grapher.backend', 'dummy' );
-//    }
 
 
     /**
