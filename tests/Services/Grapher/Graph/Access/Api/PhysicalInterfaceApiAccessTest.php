@@ -45,17 +45,17 @@ class PhysicalInterfaceApiAccessTest extends Access
     public function testApiPublicAccess()
     {
         // this should be the default
-        $response = $this->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(403);
 
         // force the default
         Config::set( 'grapher.access.customer', 'own_graphs_only' );
-        $response = $this->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(403);
 
         // force public access
         Config::set( 'grapher.access.customer', 0 );
-        $response = $this->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(200);
     }
 
@@ -66,23 +66,23 @@ class PhysicalInterfaceApiAccessTest extends Access
     public function testWebNonPublicAccess()
     {
         Config::set( 'grapher.access.customer', '1' );
-        $response = $this->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(403);
 
         Config::set( 'grapher.access.customer', '2' );
-        $response = $this->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(403);
 
         Config::set( 'grapher.access.customer', '3' );
-        $response = $this->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(403);
 
         Config::set( 'grapher.access.customer', 'blah' );
-        $response = $this->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(403);
 
         Config::set( 'grapher.access.customer', null );
-        $response = $this->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(403);
     }
 
@@ -93,27 +93,27 @@ class PhysicalInterfaceApiAccessTest extends Access
     public function testWebOwnUserCustUserAccess()
     {
         Config::set( 'grapher.access.customer', 'own_graphs_only' );
-        $response = $this->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(403);
 
         // customer user
-        $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(200);
 
         // customer admin user
-        $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(200);
 
         // non-customer user
-        $response = $this->actingAs( $this->getCustUser( 'imcustuser' ) )->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->actingAs( $this->getCustUser( 'imcustuser' ) )->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(403);
 
         // non-customer admin user
-        $response = $this->actingAs( $this->getCustAdminUser( 'imcustadmin' ) )->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->actingAs( $this->getCustAdminUser( 'imcustadmin' ) )->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(403);
 
         // superadmin
-        $response = $this->actingAs( $this->getSuperUser() )->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(200);
     }
 
@@ -125,16 +125,16 @@ class PhysicalInterfaceApiAccessTest extends Access
     public function testWebCustUserAccess()
     {
         Config::set( 'grapher.access.customer', '1' );
-        $response = $this->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustUser() )->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->actingAs( $this->getCustUser() )->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(200);
 
-        $response = $this->actingAs( $this->getCustAdminUser() )->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(200);
 
-        $response = $this->actingAs( $this->getSuperUser() )->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(200);
     }
 
@@ -146,16 +146,16 @@ class PhysicalInterfaceApiAccessTest extends Access
     public function testWebCustAdminAccess()
     {
         Config::set( 'grapher.access.customer', '2' );
-        $response = $this->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustUser() )->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->actingAs( $this->getCustUser() )->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustAdminUser() )->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(200);
 
-        $response = $this->actingAs( $this->getSuperUser() )->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(200);
     }
 
@@ -166,16 +166,16 @@ class PhysicalInterfaceApiAccessTest extends Access
     public function testWebSuperuserAccess()
     {
         Config::set( 'grapher.access.customer', '3' );
-        $response = $this->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustUser() )->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->actingAs( $this->getCustUser() )->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustAdminUser() )->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getSuperUser() )->get('/grapher/phsyicalinterface?id=1');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/grapher/physicalinterface?id=1');
         $response->assertStatus(200);
     }
 

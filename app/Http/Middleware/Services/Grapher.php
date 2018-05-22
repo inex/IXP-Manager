@@ -140,7 +140,7 @@ class Grapher
                 $graph = $grapher->switch( $switch )->setParamsFromArray( $request->all() );
                 break;
 
-            case 'phsyicalinterface':
+            case 'physicalinterface':
                 $physint = PhysIntGraph::processParameterPhysicalInterface( (int)$request->input( 'id', 0 ) );
                 $request->physint = $physint->getId();
                 $graph = $grapher->physint( $physint )->setParamsFromArray( $request->all() );

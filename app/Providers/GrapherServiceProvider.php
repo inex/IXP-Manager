@@ -70,7 +70,7 @@ class GrapherServiceProvider extends ServiceProvider {
             Route::get( 'vlan',              'Grapher@vlan'              );
             Route::get( 'switch',            'Grapher@switch'            );
             Route::get( 'trunk',             'Grapher@trunk'             );
-            Route::get( 'phsyicalinterface', 'Grapher@physicalInterface' ); // individual member port
+            Route::get( 'physicalinterface', 'Grapher@physicalInterface' ); // individual member port
             Route::get( 'virtualinterface',  'Grapher@virtualInterface'  ); // member LAG (of physint's)
             Route::get( 'customer',          'Grapher@customer'          ); // member agg over all physint's
             Route::get( 'vlaninterface',     'Grapher@vlanInterface'     ); // member vlan interface
