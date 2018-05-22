@@ -117,31 +117,31 @@ class CustomerWebAccessTest extends Access
         // customer user
         $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )->get('/statistics/member/2');
         $response->assertStatus(200);
-        $response = $this->get('/statistics/member-drilldown/agg/2');
+        $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )->get('/statistics/member-drilldown/agg/2');
         $response->assertStatus(200);
 
         // customer admin user
         $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )->get('/statistics/member/2');
         $response->assertStatus(200);
-        $response = $this->get('/statistics/member-drilldown/agg/2');
+        $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )->get('/statistics/member-drilldown/agg/2');
         $response->assertStatus(200);
 
         // non-customer user
         $response = $this->actingAs( $this->getCustUser( 'imcustuser' ) )->get('/statistics/member/2');
         $response->assertStatus(302);
-        $response = $this->get('/statistics/member-drilldown/agg/2');
+        $response = $this->actingAs( $this->getCustUser( 'imcustuser' ) )->get('/statistics/member-drilldown/agg/2');
         $response->assertStatus(403);
 
         // non-customer admin user
         $response = $this->actingAs( $this->getCustAdminUser( 'imcustadmin' ) )->get('/statistics/member/2');
         $response->assertStatus(302);
-        $response = $this->get('/statistics/member-drilldown/agg/2');
+        $response = $this->actingAs( $this->getCustAdminUser( 'imcustadmin' ) )->get('/statistics/member-drilldown/agg/2');
         $response->assertStatus(403);
 
         // superadmin
         $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/member/2');
         $response->assertStatus(200);
-        $response = $this->get('/statistics/member-drilldown/agg/2');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/member-drilldown/agg/2');
         $response->assertStatus(200);
     }
 
@@ -160,17 +160,17 @@ class CustomerWebAccessTest extends Access
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/member/2');
         $response->assertStatus(200);
-        $response = $this->get('/statistics/member-drilldown/agg/2');
+        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/member-drilldown/agg/2');
         $response->assertStatus(200);
 
         $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/member/2');
         $response->assertStatus(200);
-        $response = $this->get('/statistics/member-drilldown/agg/2');
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/member-drilldown/agg/2');
         $response->assertStatus(200);
 
         $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/member/2');
         $response->assertStatus(200);
-        $response = $this->get('/statistics/member-drilldown/agg/2');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/member-drilldown/agg/2');
         $response->assertStatus(200);
     }
 
@@ -189,17 +189,17 @@ class CustomerWebAccessTest extends Access
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/member/2');
         $response->assertStatus(302);
-        $response = $this->get('/statistics/member-drilldown/agg/2');
+        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/member-drilldown/agg/2');
         $response->assertStatus(403);
 
         $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/member/2');
         $response->assertStatus(200);
-        $response = $this->get('/statistics/member-drilldown/agg/2');
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/member-drilldown/agg/2');
         $response->assertStatus(200);
 
         $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/member/2');
         $response->assertStatus(200);
-        $response = $this->get('/statistics/member-drilldown/agg/2');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/member-drilldown/agg/2');
         $response->assertStatus(200);
     }
 
@@ -217,17 +217,17 @@ class CustomerWebAccessTest extends Access
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/member/2');
         $response->assertStatus(302);
-        $response = $this->get('/statistics/member-drilldown/agg/2');
+        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/member-drilldown/agg/2');
         $response->assertStatus(403);
 
         $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/member/2');
         $response->assertStatus(302);
-        $response = $this->get('/statistics/member-drilldown/agg/2');
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/member-drilldown/agg/2');
         $response->assertStatus(403);
 
         $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/member/2');
         $response->assertStatus(200);
-        $response = $this->get('/statistics/member-drilldown/agg/2');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/member-drilldown/agg/2');
         $response->assertStatus(200);
     }
 
