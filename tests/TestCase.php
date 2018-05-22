@@ -13,6 +13,11 @@ abstract class TestCase extends BaseTestCase
     use CreatesApplication;
 
 
+    const API_KEY_CUSTUSER  = 'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC7';
+    const API_KEY_CUSTADMIN = 'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC8';
+    const API_KEY_SUPERUSER = 'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9';
+
+
     /**
      * Utility function to get a customer user
      * @param string $username

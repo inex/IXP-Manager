@@ -103,11 +103,11 @@ class Grapher extends Controller
      * @throws
      */
     private function graph(): Graph {
-        if( $this->graph === null ){
+        if( $this->graph === null ) {
             $this->graph = $this->request()->attributes->get('graph');
 
             // if there's no graph then the middleware went wrong... safety net:
-            if( $this->graph === null ){
+            if( $this->graph === null ) {
                 throw new GrapherGeneralException('Middleware could not load graph but did not throw a 404');
             }
         }

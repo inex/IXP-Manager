@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Services\Grapher\Graph;
+namespace Tests\Services\Grapher\Graph\Access\Api;
 
 /*
  * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -24,40 +24,33 @@ namespace Tests\Services\Grapher\Graph;
  */
 
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Config;
 
-use Config, D2EM;
-
-use Entities\User as UserEntity;
+use Tests\Services\Grapher\Graph\Access\Access;
 
 
 /**
- * Test access restrictions for IXP graphs
+ * Test access restrictions for Infrastructure graphs
  *
- * Class IXPAccessTest
+ * Class InfrastructureAccessTest
  * @package Tests\Services\Grapher\Graph
  */
-class IXPWebAccessTest extends Access
+class InfrastructureApiAccessTest extends Access
 {
-//    public function setUp() {
-//        //Config::set( 'grapher.backend', 'dummy' );
-//    }
-
 
     /**
      * Test access restrictions for public web access
      * @return void
      */
-    public function testWebPublicAccess()
+    public function testApiPublicAccess()
     {
         // this should be the default
-        $response = $this->get('/statistics/ixp');
+        $response = $this->get('/grapher/infrastructure?id=1');
         $response->assertStatus(200);
 
         // force the default
-        Config::set( 'grapher.access.ixp', '0' );
-        $response = $this->get('/statistics/ixp');
+        Config::set( 'grapher.access.infrastructure', '0' );
+        $response = $this->get('/grapher/infrastructure?id=1');
         $response->assertStatus(200);
     }
 
@@ -67,24 +60,24 @@ class IXPWebAccessTest extends Access
      */
     public function testWebNonPublicAccess()
     {
-        Config::set( 'grapher.access.ixp', '1' );
-        $response = $this->get('/statistics/ixp');
+        Config::set( 'grapher.access.infrastructure', '1' );
+        $response = $this->get('/grapher/infrastructure?id=1');
         $response->assertStatus(403);
 
-        Config::set( 'grapher.access.ixp', '2' );
-        $response = $this->get('/statistics/ixp');
+        Config::set( 'grapher.access.infrastructure', '2' );
+        $response = $this->get('/grapher/infrastructure?id=1');
         $response->assertStatus(403);
 
-        Config::set( 'grapher.access.ixp', '3' );
-        $response = $this->get('/statistics/ixp');
+        Config::set( 'grapher.access.infrastructure', '3' );
+        $response = $this->get('/grapher/infrastructure?id=1');
         $response->assertStatus(403);
 
-        Config::set( 'grapher.access.ixp', 'blah' );
-        $response = $this->get('/statistics/ixp');
+        Config::set( 'grapher.access.infrastructure', 'blah' );
+        $response = $this->get('/grapher/infrastructure?id=1');
         $response->assertStatus(403);
 
-        Config::set( 'grapher.access.ixp', null );
-        $response = $this->get('/statistics/ixp');
+        Config::set( 'grapher.access.infrastructure', null );
+        $response = $this->get('/grapher/infrastructure?id=1');
         $response->assertStatus(403);
     }
 
@@ -94,17 +87,18 @@ class IXPWebAccessTest extends Access
      */
     public function testWebCustUserAccess()
     {
-        Config::set( 'grapher.access.ixp', '1' );
-        $response = $this->get('/statistics/ixp');
+        Config::set( 'grapher.access.infrastructure', '1' );
+        $response = $this->get('/grapher/infrastructure?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/ixp');
+        Config::set( 'grapher.backend', 'dummy' );
+        $response = $this->actingAs( $this->getCustUser() )->get('/grapher/infrastructure?id=1');
         $response->assertStatus(200);
 
-        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/grapher/infrastructure?id=1');
         $response->assertStatus(200);
 
-        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/grapher/infrastructure?id=1');
         $response->assertStatus(200);
     }
 
@@ -114,17 +108,17 @@ class IXPWebAccessTest extends Access
      */
     public function testWebCustAdminAccess()
     {
-        Config::set( 'grapher.access.ixp', '2' );
-        $response = $this->get('/statistics/ixp');
+        Config::set( 'grapher.access.infrastructure', '2' );
+        $response = $this->get('/grapher/infrastructure?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getCustUser() )->get('/grapher/infrastructure?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/grapher/infrastructure?id=1');
         $response->assertStatus(200);
 
-        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/grapher/infrastructure?id=1');
         $response->assertStatus(200);
     }
 
@@ -134,17 +128,17 @@ class IXPWebAccessTest extends Access
      */
     public function testWebSuperuserAccess()
     {
-        Config::set( 'grapher.access.ixp', '3' );
-        $response = $this->get('/statistics/ixp');
+        Config::set( 'grapher.access.infrastructure', '3' );
+        $response = $this->get('/grapher/infrastructure?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getCustUser() )->get('/grapher/infrastructure?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getCustAdminUser() )->get('/grapher/infrastructure?id=1');
         $response->assertStatus(403);
 
-        $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/ixp');
+        $response = $this->actingAs( $this->getSuperUser() )->get('/grapher/infrastructure?id=1');
         $response->assertStatus(200);
     }
 

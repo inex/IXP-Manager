@@ -1,6 +1,6 @@
 <?php
 
-namespace Tests\Services\Grapher\Graph;
+namespace Tests\Services\Grapher\Graph\Access\Api;
 
 /*
  * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -24,12 +24,9 @@ namespace Tests\Services\Grapher\Graph;
  */
 
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Config;
 
-use Config, D2EM;
-
-use Entities\User as UserEntity;
+use Tests\Services\Grapher\Graph\Access\Access;
 
 
 /**
@@ -40,13 +37,9 @@ use Entities\User as UserEntity;
  */
 class IXPApiAccessTest extends Access
 {
-//    public function setUp() {
-////        Config::set( 'grapher.backend', 'dummy' );
-//    }
-
 
     /**
-     * Test access restrictions for public api access
+     * Test access restrictions for public web access
      * @return void
      */
     public function testApiPublicAccess()
@@ -65,7 +58,7 @@ class IXPApiAccessTest extends Access
      * Test access restrictions for verious non-public access settings
      * @return void
      */
-    public function testApiNonPublicAccess()
+    public function testWebNonPublicAccess()
     {
         Config::set( 'grapher.access.ixp', '1' );
         $response = $this->get('/grapher/ixp?id=1');
@@ -89,16 +82,16 @@ class IXPApiAccessTest extends Access
     }
 
     /**
-     * Test access restrictions requiring minimum user of CustUser (privs=1) for api access
+     * Test access restrictions requiring minimum logged in user of CustUser (privs=1) for web access
      * @return void
      */
-    public function testApiCustUserAccess()
+    public function testWebCustUserAccess()
     {
         Config::set( 'grapher.access.ixp', '1' );
-
         $response = $this->get('/grapher/ixp?id=1');
         $response->assertStatus(403);
 
+        Config::set( 'grapher.backend', 'dummy' );
         $response = $this->actingAs( $this->getCustUser() )->get('/grapher/ixp?id=1');
         $response->assertStatus(200);
 
@@ -116,7 +109,6 @@ class IXPApiAccessTest extends Access
     public function testWebCustAdminAccess()
     {
         Config::set( 'grapher.access.ixp', '2' );
-        
         $response = $this->get('/grapher/ixp?id=1');
         $response->assertStatus(403);
 
@@ -149,6 +141,5 @@ class IXPApiAccessTest extends Access
         $response = $this->actingAs( $this->getSuperUser() )->get('/grapher/ixp?id=1');
         $response->assertStatus(200);
     }
-
 
 }
