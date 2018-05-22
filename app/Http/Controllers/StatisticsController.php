@@ -170,6 +170,10 @@ class StatisticsController extends Controller
             }
         }
 
+        if( !count($vlans) ) {
+            abort( 404, 'No VLANs available for graphing' );
+        }
+
         $vlanid  = isset( $vlans[ $vlanid ] ) ? $vlanid : array_keys( $vlans )[0];
         /** @var VlanEntity $vlan */
         $vlan     = D2EM::getRepository( VlanEntity::class )->find( $vlanid );
