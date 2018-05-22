@@ -17,7 +17,7 @@
             <?= $t->alerts() ?>
 
             <div class="alert alert-info">
-                VLAN graphs are based on sflow sampling. These slightly under report true traffic levels due to known issues
+                VLAN graphs are based on sflow sampling. These can under/over report true traffic levels due to known issues
                 with some switching hardware. See the
                 <a href="<?= route( 'statistics/infrastructure' ) ?>">infrastructure graphs</a>
                 for a more realistic representation of overall traffic.
