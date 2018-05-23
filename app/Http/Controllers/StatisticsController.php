@@ -204,7 +204,7 @@ class StatisticsController extends Controller
      */
     public function switch( int $switchid = 0, string $category = Graph::CATEGORY_BITS ){
         /** @var SwitchEntity[] $eSwitches */
-        $eSwitches = D2EM::getRepository( SwitchEntity::class )->getAndCache( true, SwitchEntity::TYPE_SWITCH );
+        $eSwitches = D2EM::getRepository( SwitchEntity::class )->getAndCache( true );
         $grapher = App::make('IXP\Services\Grapher');
         $category = Graph::processParameterCategory( $category, true );
 

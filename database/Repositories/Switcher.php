@@ -18,26 +18,25 @@ class Switcher extends EntityRepository
      * The cache key for all switch objects
      * @var string The cache key for all switch objects
      */
-    const ALL_CACHE_KEY = 'inex_switches';
+    const ALL_CACHE_KEY = 'ixp_switches';
 
     /**
      * Return an array of all switch objects from the database with caching
      *
      * @param bool $active If `true`, return only active switches
-     * @param int $type If `0`, all types otherwise limit to specific type
      * @return array An array of all switch objects
      */
-    public function getAndCache( $active = false, $type = 0 )
+    public function getAndCache( $active = false )
     {
         $dql = "SELECT s FROM Entities\\Switcher s WHERE 1=1";
 
-        $key = $this->genCacheKey( $active, $type );
+        $key = $this->genCacheKey( $active );
 
-        if( $active )
+        if( $active ) {
             $dql .= " AND s.active = 1";
+        }
 
-        if( $type )
-            $dql .= " AND s.switchtype = " . intval( $type );
+        $dql .= " ORDER BY s.name ASC";
 
         return $this->getEntityManager()->createQuery( $dql )
             ->useResultCache( true, 3600, $key )
@@ -54,7 +53,7 @@ class Switcher extends EntityRepository
     public function clearCache( $active = false, $type = 0 )
     {
         return $this->getEntityManager()->getConfiguration()->getQueryCacheImpl()->delete(
-            $this->genCacheKey( $active, $type )
+            $this->genCacheKey( $active )
         );
     }
 
@@ -66,7 +65,7 @@ class Switcher extends EntityRepository
         foreach( [ true, false ] as $active ) {
             foreach( \Entities\Switcher::$TYPES as $type => $name ) {
                 $this->getEntityManager()->getConfiguration()->getQueryCacheImpl()->delete(
-                    $this->genCacheKey( $active, $type )
+                    $this->genCacheKey( $active )
                 );
             }
         }
@@ -76,22 +75,17 @@ class Switcher extends EntityRepository
      * Generate a deterministic caching key for given parameters
      *
      * @param bool $active If `true`, return only active switches
-     * @param int $type If `0`, all types otherwise limit to specific type
      * @return string The generate caching key
      */
-    public function genCacheKey( $active, $type )
+    public function genCacheKey( $active )
     {
         $key = self::ALL_CACHE_KEY;
 
-        if( $active )
+        if( $active ) {
             $key .= '-active';
-        else
+        } else {
             $key .= '-all';
-
-        if( $type )
-            $key .= '-' . intval( $type );
-        else
-            $key .= '-all';
+        }
 
         return $key;
     }
