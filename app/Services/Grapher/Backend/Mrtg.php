@@ -219,6 +219,15 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
         foreach( $ixp->getInfrastructures() as $infra ) {
             foreach( $infra->getSwitchers() as $switch ) {
                 /** @var SwitcherEntity $switch */
+
+                if( !$switch->getActive() ) {
+                    continue;
+                }
+
+                if( !isset( $data['sws'][ $switch->getId() ] ) ) {
+                    $data['sws'][$switch->getId() ] = $switch;
+                }
+
                 foreach( $switch->getPorts() as $sp ) {
                     /** @var SwitchPortEntity $sp */
                     if( $sp->isTypeCore() ) {
