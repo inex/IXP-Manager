@@ -74,7 +74,7 @@ if( !count( $vlans ) )
     die( "USAGE: private-vlans.php \$vlan1 \$vlan2 \$vlan3 ...\n\n" );
 
 // get all switches
-$switches = $em->getRepository( '\\Entities\\Switcher' )->getAndCache( true, \Entities\Switcher::TYPE_SWITCH );
+$switches = $em->getRepository( '\\Entities\\Switcher' )->getAndCache( true );
 
 foreach( $switches as $switch )
 {

@@ -24,20 +24,16 @@ class Switcher extends EntityRepository
      * Return an array of all switch objects from the database with caching
      *
      * @param bool $active If `true`, return only active switches
-     * @param int $type If `0`, all types otherwise limit to specific type
      * @return array An array of all switch objects
      */
-    public function getAndCache( $active = false, $type = 0 )
+    public function getAndCache( $active = false )
     {
         $dql = "SELECT s FROM Entities\\Switcher s WHERE 1=1";
 
-        $key = $this->genCacheKey( $active, $type );
+        $key = $this->genCacheKey( $active );
 
         if( $active )
             $dql .= " AND s.active = 1";
-
-        if( $type )
-            $dql .= " AND s.switchtype = " . intval( $type );
 
         return $this->getEntityManager()->createQuery( $dql )
             ->useResultCache( true, 3600, $key )
@@ -49,14 +45,13 @@ class Switcher extends EntityRepository
      * Clear the cache of a given result set
      *
      * @param bool $active If `true`, return only active switches
-     * @param int $type If `0`, all types otherwise limit to specific type
      *
      * @return bool
      */
-    public function clearCache( $active = false, $type = 0 )
+    public function clearCache( $active = false )
     {
         return $this->getEntityManager()->getConfiguration()->getQueryCacheImpl()->delete(
-            $this->genCacheKey( $active, $type )
+            $this->genCacheKey( $active )
         );
     }
 
@@ -66,11 +61,9 @@ class Switcher extends EntityRepository
     public function clearCacheAll()
     {
         foreach( [ true, false ] as $active ) {
-            foreach( \Entities\Switcher::$TYPES as $type => $name ) {
-                $this->getEntityManager()->getConfiguration()->getQueryCacheImpl()->delete(
-                    $this->genCacheKey( $active, $type )
-                );
-            }
+            $this->getEntityManager()->getConfiguration()->getQueryCacheImpl()->delete(
+                $this->genCacheKey( $active )
+            );
         }
     }
 
@@ -78,10 +71,9 @@ class Switcher extends EntityRepository
      * Generate a deterministic caching key for given parameters
      *
      * @param bool $active If `true`, return only active switches
-     * @param int $type If `0`, all types otherwise limit to specific type
      * @return string The generate caching key
      */
-    public function genCacheKey( $active, $type )
+    public function genCacheKey( $active  )
     {
         $key = self::ALL_CACHE_KEY;
 
@@ -90,10 +82,8 @@ class Switcher extends EntityRepository
         else
             $key .= '-all';
 
-        if( $type )
-            $key .= '-' . intval( $type );
-        else
-            $key .= '-all';
+
+        $key .= '-all';
 
         return $key;
     }
@@ -102,14 +92,14 @@ class Switcher extends EntityRepository
      * Return an array of all switch names where the array key is the switch id
      *
      * @param bool          $active If `true`, return only active switches
-     * @param int           $type   If `0`, all types otherwise limit to specific type
      * @param \Entities\IXP $ixp    IXP to filter vlan names
+     *
      * @return array An array of all switch names with the switch id as the key.
      */
-    public function getNames( $active = false, $type = 0, $ixp = false )
+    public function getNames( $active = false, $ixp = false )
     {
         $switches = [];
-        foreach( $this->getAndCache( $active, $type ) as $a )
+        foreach( $this->getAndCache( $active ) as $a )
         {
             if( !$ixp || ( $ixp->getInfrastructures()->contains( $a->getInfrastructure() ) ) )
                 $switches[ $a->getId() ] = $a->getName();
@@ -127,8 +117,7 @@ class Switcher extends EntityRepository
 
      * @return array An array of all switch names with the switch id as the key.
      */
-    public function getByLocationAndInfrastructure( $infra = null, $location = null )
-    {
+    public function getByLocationAndInfrastructure( $infra = null, $location = null ){
         $q = "SELECT s
 
             FROM \\Entities\\Switcher s";
@@ -146,6 +135,8 @@ class Switcher extends EntityRepository
         if( $location )
             $q .= 'AND cab.Location = ' . $location->getId() . ' ';
 
+        $q .= 'AND s.active = 1 ';
+
 
         $q .= " ORDER BY s.name ASC";
 
@@ -158,14 +149,13 @@ class Switcher extends EntityRepository
      * Return an array of all switch names where the array key is the switch id
      *
      * @param bool          $active If `true`, return only active switches
-     * @param int           $type   If `0`, all types otherwise limit to specific type
      * @param int           $idLocation  location requiered
+     *
      * @return array An array of all switch names with the switch id as the key.
      */
-    public function getNamesByLocation( $active = false, $type = 0, $idLocation = null )
-    {
+    public function getNamesByLocation( $active = false, $idLocation = null ){
         $switches = [];
-        foreach( $this->getAndCache( $active, $type ) as $a ) {
+        foreach( $this->getAndCache( $active ) as $a ) {
 
             if($idLocation != null)
                 if($a->getCabinet()->getLocation()->getId() == $idLocation)
@@ -261,8 +251,7 @@ class Switcher extends EntityRepository
      *
      * @return array
      */
-    public function getActive()
-    {
+    public function getActive(){
         $q = "SELECT s FROM \\Entities\\Switcher s WHERE s.active = 1";
         return $this->getEntityManager()->createQuery( $q )->getResult();
     }
@@ -862,6 +851,10 @@ class Switcher extends EntityRepository
 
         if( isset( $params[ "params" ][ "activeOnly" ] ) && $params[ "params" ][ "activeOnly" ] ){
             $dql .= " AND s.active = true";
+        }
+
+        if( isset( $params[ "params" ][ "infra" ] ) && $params[ "params" ][ "infra" ] ){
+            $dql .= " AND s.Infrastructure = " . (int)$params[ "params" ][ "infra" ]->getId();
         }
 
         if( isset( $feParams->listOrderBy ) ) {

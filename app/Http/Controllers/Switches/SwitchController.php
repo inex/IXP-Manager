@@ -209,12 +209,30 @@ class SwitchController extends Doctrine2Frontend {
             $osView = false;
         }
 
+
+
+        if( $r->input( 'infra' )  !== null ) {
+            /** @var SwitcherEntity $s */
+            if(  $infra = D2EM::getRepository( InfrastructureEntity::class )->find( $r->input( 'infra' ) ) ) {
+                $r->session()->put( "switch-list-infra", $infra );
+            } else {
+                $r->session()->remove( "switch-list-infra" );
+                $infra = false;
+            }
+        } else if( $r->session()->exists( "switch-list-infra" ) ) {
+            $infra = $r->session()->get( "switch-list-infra" );
+        } else {
+            $infra = false;
+        }
+
+
         if( $osView ){
             $this->setUpOsView();
         }
 
-        $this->data[ 'params' ][ 'activeOnly' ] = $showActiveOnly;
-        $this->data[ 'params' ][ 'osView' ]     = $osView;
+        $this->data[ 'params' ][ 'activeOnly' ]     = $showActiveOnly;
+        $this->data[ 'params' ][ 'osView' ]         = $osView;
+        $this->data[ 'params' ][ 'infra' ]          = $infra;
 
         $this->data[ 'rows' ] = $this->listGetData();
 

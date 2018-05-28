@@ -12,10 +12,10 @@
     <ul class="dropdown-menu dropdown-menu-right">
         <?php if( $t->row[ "active" ] ): ?>
             <li>
-                <a href="{genUrl controller='switch-port' action='snmp-poll' switch=$row.id}">View / Edit Ports (with SNMP poll)</a>
+                <a href="<?= route( "switch-ports@snmp-poll", [ "switch" => $t->row[ 'id' ] ] ) ?>">View / Edit Ports (with SNMP poll)</a>
             </li>
             <li>
-                <a href="{genUrl controller='switch-port' action='op-status' switch=$row.id}">View Live Port States (with SNMP poll)</a>
+                <a href="<?= route( "switch-ports@list-op-status", [ "switch" => $t->row[ 'id' ] ] ) ?>">View Live Port States (with SNMP poll)</a>
             </li>
         <?php endif; ?>
             <li>

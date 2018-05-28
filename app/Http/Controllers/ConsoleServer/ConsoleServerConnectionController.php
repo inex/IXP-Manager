@@ -136,14 +136,13 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
      * @return array
      */
     protected function addEditPrepareForm( $id = null ) : array {
+        $old = request()->old();
 
         if( $id !== null ) {
 
             if( !( $this->object = D2EM::getRepository( ConsoleServerConnectionEntity::class )->find( $id) ) ) {
                 abort(404, "Console Server Connection not found." );
             }
-
-            $old = request()->old();
 
             Former::populate([
                 'description'   => array_key_exists( 'description', $old ) ? $old['description']    : $this->object->getDescription(),
@@ -155,14 +154,14 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
                 'stopbits'      => array_key_exists( 'stopbits',    $old ) ? $old['stopbits']       : $this->object->getStopbits(),
                 'flowcontrol'   => array_key_exists( 'flowcontrol', $old ) ? $old['flowcontrol']    : $this->object->getFlowcontrol(),
                 'autobaud'      => array_key_exists( 'autobaud',    $old ) ? $old['autobaud']       : ( $this->object->getAutobaud() ?? false ),
-                'notes'         => array_key_exists( 'notes',       $old ) ? $old['notes']          : $this->object->getNotes(),
             ]);
         }
 
         return [
             'object'                => $this->object,
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
-            'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNames( true, SwitcherEntity::TYPE_CONSOLESERVER , false ),
+            'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNames( true, false ),
+            'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : null )
         ];
     }
 

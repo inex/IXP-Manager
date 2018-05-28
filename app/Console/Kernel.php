@@ -26,6 +26,8 @@ class Kernel extends ConsoleKernel {
 
         \IXP\Console\Commands\Utils\Export\JsonSchema\Post::class,
 
+        \IXP\Console\Commands\Switches\SnmpPoll::class,
+
 
     ];
 

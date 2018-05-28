@@ -9,11 +9,11 @@
                 <div class="btn-group">
 
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <?php if( $t->action ==  'op-status' ): ?>
+                        <?php if( $t->action ==  'listOpStatus' ): ?>
                             Live Port States (with SNMP poll)
                         <?php elseif( $t->action == 'list' ): ?>
                             Ports (database only)
-                        <?php elseif( $t->action == 'snmp-poll' ): ?>
+                        <?php elseif( $t->action == 'snmpPoll' ): ?>
                             Ports (with SNMP poll)
                         <?php elseif( $t->action == 'listMau' ): ?>
                             Port MAU Detail (database only)
@@ -26,18 +26,23 @@
 
                     <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
 
-                        <li <?php if( $t->action == 'op-status' ): ?> class="active"<?php endif; ?>>
-                            <a href="{genUrl controller='switch-port' action='op-status' switch=$sid}">View Live Port States (with SNMP poll)</a>
+                        <li <?php if( $t->action == 'listOpStatus' ): ?> class="active"<?php endif; ?>>
+                            <a href="<?= route( "switch-ports@list-op-status", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View Live Port States (with SNMP poll)</a>
                         </li>
 
                         <li <?php if( $t->action == 'list'): ?>class="active"<?php endif; ?>>
                             <a href="<?= route( "switch-ports@list", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View / Edit Ports (database only)</a>
                         </li>
 
-                        <li <?php if( $t->action == 'snmp-poll'): ?>class="active"<?php endif; ?>>
-                            <a href="{genUrl controller='switch-port' action='snmp-poll' switch=$sid}">View / Edit Ports (with SNMP poll)</a>
+                        <li <?php if( $t->action == 'snmpPoll'): ?>class="active"<?php endif; ?>>
+                            <a href="<?= route( "switch-ports@snmp-poll", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View / Edit Ports (with SNMP poll)</a>
                         </li>
 
+                        <?php if( $t->action == 'listMau' ): ?>
+                            <li <?php if( $t->action == 'listMau'): ?>class="active"<?php endif; ?>>
+                                <a href="<?= route( "switch-ports@list-mau", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View / Edit Ports (with SNMP poll)</a>
+                            </li>
+                        <?php endif; ?>
                     </ul>
                 </div>
             <?php endif; ?>
@@ -50,7 +55,7 @@
                 <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
 
                     <li class="<?= $t->data[ 'params'][ "switch" ] ? "" : "active" ?>">
-                        <a href="<?= route( $t->feParams->route_prefix . "@" . $t->feParams->route_action , [ "switch" => 0 ] ) ?>">All Switches</a>
+                        <a href="<?= route( "switch-ports@list" , [ "switch" => 0 ] ) ?>">All Switches</a>
                     </li>
 
                     <li role="separator" class="divider"></li>

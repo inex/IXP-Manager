@@ -609,7 +609,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function snmpPoll($host, $logger = false)
+    public function snmpPoll($host, bool $logger = false)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'snmpPoll', [$host, $logger]);

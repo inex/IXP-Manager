@@ -545,8 +545,8 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         try
         {
             $host = new \OSS_SNMP\SNMP( $switch->getHostname(), $switch->getSnmppasswd() );
-            $switch->snmpPoll( $host, $this->getLogger() );
-            $switch->snmpPollSwitchPorts( $host, $this->getLogger(), $results );
+            $switch->snmpPoll( $host, true );
+            $switch->snmpPollSwitchPorts( $host, true, $results );
             $this->view->switch    = $switch;
             $this->view->portTypes = \Entities\SwitchPort::$TYPES;
             $this->view->portsData = $results;

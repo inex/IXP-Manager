@@ -2,6 +2,8 @@
 
 namespace Entities;
 
+use Log;
+
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -51,7 +53,7 @@ class SwitchPort
 
     // This array is for matching data from OSS_SNMP to the switchport database table.
     // See snmpUpdate() below
-    public static $OSS_SNMP_MAP = [
+    public static $SNMP_MAP = [
         'descriptions'    => 'Name',
         'names'           => 'IfName',
         'aliases'         => 'IfAlias',
@@ -67,7 +69,7 @@ class SwitchPort
     /**
      * Mappings for OSS_SNMP fucntions to SwitchPort members
      */
-    public static $OSS_SNMP_MAU_MAP = [
+    public static $SNMP_MAU_MAP = [
         'types'             => [ 'fn' => 'MauType',         'xlate' => true ],
         'states'            => [ 'fn' => 'MauState',        'xlate' => true ],
         'mediaAvailable'    => [ 'fn' => 'MauAvailability', 'xlate' => true ],
@@ -537,27 +539,24 @@ class SwitchPort
      * @param \OSS_Logger $logger An instance of the logger or false
      * @return \Entities\SwitchPort For fluent interfaces
      */
-    public function snmpUpdate( $host, $logger = false )
-    {
-        foreach( self::$OSS_SNMP_MAP as $snmp => $entity )
-        {
+    public function snmpUpdate( $host, $logger = false ){
+        foreach( self::$SNMP_MAP as $snmp => $entity ) {
             $fn = "get{$entity}";
 
-            switch( $snmp )
-            {
+            switch( $snmp ) {
                 case 'lastChanges':
                     $n = $host->useIface()->$snmp( true )[ $this->getIfIndex() ];
 
                     // need to allow for small changes due to rounding errors
                     if( $logger !== false && $this->$fn() != $n && abs( $this->$fn() - $n ) > 60 )
-                        $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$fn()}] to [{$n}]" );
+                        Log::info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$fn()}] to [{$n}]" );
                     break;
 
                 default:
                     $n = $host->useIface()->$snmp()[ $this->getIfIndex() ];
 
                     if( $logger !== false && $this->$fn() != $n )
-                        $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$fn()}] to [{$n}]" );
+                        Log::info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity} from [{$this->$fn()}] to [{$n}]" );
                     break;
             }
 
@@ -566,7 +565,7 @@ class SwitchPort
         }
 
         if( $this->getSwitcher()->getMauSupported() ) {
-            foreach( self::$OSS_SNMP_MAU_MAP as $snmp => $entity ) {
+            foreach( self::$SNMP_MAU_MAP as $snmp => $entity ) {
                 $getfn = "get{$entity['fn']}";
                 $setfn = "set{$entity['fn']}";
 
@@ -574,15 +573,16 @@ class SwitchPort
                     if( isset( $entity['xlate'] ) ) {
                         $n = $host->useMAU()->$snmp( $entity['xlate'] );
                         $n = isset( $n[ $this->getIfIndex() ] ) ? $n[ $this->getIfIndex() ] : null;
-                    }
-                    else {
+
+                    } else {
                         $n = $host->useMAU()->$snmp();
                         $n = isset( $n[ $this->getIfIndex() ] ) ? $n[ $this->getIfIndex() ] : null;
                     }
+
                 } catch( \OSS_SNMP\Exception $e ) {
                     // looks like the switch supports MAU but not all of the MIBs
                     if( $logger !== false ) {
-                        $logger->debug( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] MAU MIB for {$fn} not supported" );
+                        Log::debug( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] MAU MIB for {$fn} not supported" );
                     }
                     $n = null;
                 }
@@ -591,25 +591,25 @@ class SwitchPort
                     $n = '(empty)';
 
                 if( $logger !== false && $this->$getfn() != $n )
-                    $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity['fn']} from [{$this->$getfn()}] to [{$n}]" );
+                    Log::info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity['fn']} from [{$this->$getfn()}] to [{$n}]" );
 
                 $this->$setfn( $n );
             }
         }
 
-        try
-        {
+        try {
             // not all switches support this
             // FIXME is there a vendor agnostic way of doing this?
 
             // are we a LAG port?
             $isAggregatePorts = $host->useLAG()->isAggregatePorts();
+
             if( isset( $isAggregatePorts[ $this->getIfIndex() ] ) && $isAggregatePorts[ $this->getIfIndex() ] )
                 $this->setLagIfIndex( $host->useLAG()->portAttachedIds()[ $this->getIfIndex() ] );
             else
                 $this->setLagIfIndex( null );
-        }
-        catch( \OSS_SNMP\Exception $e ){}
+
+        } catch( \OSS_SNMP\Exception $e ){}
 
         $this->setLastSnmpPoll( new \DateTime() );
 

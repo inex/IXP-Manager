@@ -243,7 +243,7 @@ class Upgrade extends GrapherCommand {
      */
     private function switches() {
         foreach( d2r('Infrastructure')->findAll() as $i ) {
-            foreach( $i->getSwitchers( \Entities\Switcher::TYPE_SWITCH, true ) as $s ) {
+            foreach( $i->getSwitchers( true ) as $s ) {
                 // need to convert between the old name and the new name
                 $graph = Grapher::switch( $s );
 
