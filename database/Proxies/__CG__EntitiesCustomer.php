@@ -64,10 +64,10 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'RegistrationDetails', 'BillingDetails', 'IXPs', '' . "\0" . 'Entities\\Customer' . "\0" . 'patchPanelPorts', 'noc24hphone', 'RSPrefixes', 'IRRDB', 'peeringDb', 'Notes', 'peeringmacrov6', 'abbreviatedName', 'MD5Support', 'isReseller', 'ResoldCustomers', 'Reseller', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbPrefixes', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbASNs', '' . "\0" . 'Entities\\Customer' . "\0" . 'logos'];
+            return ['__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'RegistrationDetails', 'BillingDetails', 'IXPs', 'tags', '' . "\0" . 'Entities\\Customer' . "\0" . 'patchPanelPorts', 'noc24hphone', 'RSPrefixes', 'IRRDB', 'peeringDb', 'Notes', 'peeringmacrov6', 'abbreviatedName', 'MD5Support', 'isReseller', 'ResoldCustomers', 'Reseller', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbPrefixes', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbASNs', '' . "\0" . 'Entities\\Customer' . "\0" . 'logos'];
         }
 
-        return ['__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'RegistrationDetails', 'BillingDetails', 'IXPs', '' . "\0" . 'Entities\\Customer' . "\0" . 'patchPanelPorts', 'noc24hphone', 'RSPrefixes', 'IRRDB', 'peeringDb', 'Notes', 'peeringmacrov6', 'abbreviatedName', 'MD5Support', 'isReseller', 'ResoldCustomers', 'Reseller', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbPrefixes', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbASNs', '' . "\0" . 'Entities\\Customer' . "\0" . 'logos'];
+        return ['__isInitialized__', 'name', 'type', 'shortname', 'autsys', 'maxprefixes', 'peeringemail', 'nocphone', 'nocfax', 'nocemail', 'nochours', 'nocwww', 'peeringmacro', 'peeringpolicy', 'corpwww', 'datejoin', 'dateleave', 'status', 'activepeeringmatrix', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'VirtualInterfaces', 'Contacts', 'ConsoleServerConnections', 'CustomerEquipment', 'Peers', 'PeersWith', 'XCusts', 'YCusts', 'Users', 'Traffic95ths', 'Traffic95thMonthlys', 'TrafficDailies', 'RegistrationDetails', 'BillingDetails', 'IXPs', 'tags', '' . "\0" . 'Entities\\Customer' . "\0" . 'patchPanelPorts', 'noc24hphone', 'RSPrefixes', 'IRRDB', 'peeringDb', 'Notes', 'peeringmacrov6', 'abbreviatedName', 'MD5Support', 'isReseller', 'ResoldCustomers', 'Reseller', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbPrefixes', '' . "\0" . 'Entities\\Customer' . "\0" . 'IrrdbASNs', '' . "\0" . 'Entities\\Customer' . "\0" . 'logos'];
     }
 
     /**
@@ -2001,6 +2001,39 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isGraphable', []);
 
         return parent::isGraphable();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addTag(\Entities\CustomerTag $tag)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addTag', [$tag]);
+
+        return parent::addTag($tag);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeTag(\Entities\CustomerTag $tag)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeTag', [$tag]);
+
+        return parent::removeTag($tag);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTags()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTags', []);
+
+        return parent::getTags();
     }
 
 }

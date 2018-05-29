@@ -738,4 +738,37 @@ class VlanInterface extends \Entities\VlanInterface implements \Doctrine\ORM\Pro
         return parent::getLayer2AddressesAsArray();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function canGraphForLatency(string $protocol): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'canGraphForLatency', [$protocol]);
+
+        return parent::canGraphForLatency($protocol);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getIPAddress(string $protocol)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIPAddress', [$protocol]);
+
+        return parent::getIPAddress($protocol);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isIPEnabled(string $protocol): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isIPEnabled', [$protocol]);
+
+        return parent::isIPEnabled($protocol);
+    }
+
 }

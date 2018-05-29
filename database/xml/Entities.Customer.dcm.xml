@@ -89,5 +89,6 @@
         </inverse-join-columns>
       </join-table>
     </many-to-many>
+    <many-to-many field="tags" target-entity="Entities\CustomerTag" mapped-by="customers"/>
   </entity>
 </doctrine-mapping>
