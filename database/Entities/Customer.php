@@ -271,6 +271,11 @@ class Customer
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    protected $tags;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
     private $patchPanelPorts;
 
 
@@ -292,6 +297,7 @@ class Customer
         $this->Traffic95thMonthlys = new \Doctrine\Common\Collections\ArrayCollection();
         $this->TrafficDailies = new \Doctrine\Common\Collections\ArrayCollection();
         $this->RSPrefixes = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->tags = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -2438,5 +2444,41 @@ class Customer
     public static function resolveGivenType( int $t ) {
         return self::$CUST_TYPES_TEXT[ $t ] ?? 'Unknwon';
     }
+
+
+
+    /**
+     * Add tag
+     *
+     * @param \Entities\CustomerTag $tag
+     * @return Customer
+     */
+    public function addTag(CustomerTag $tag)
+    {
+        $this->tags[] = $tag;
+
+        return $this;
+    }
+
+    /**
+     * Remove tag
+     *
+     * @param \Entities\CustomerTag $tag
+     */
+    public function removeTag(CustomerTag $tag)
+    {
+        $this->tags->removeElement($tag);
+    }
+
+    /**
+     * Get tags
+     *
+     * @return \Doctrine\Common\Collections\Collection|CustomerTag[]
+     */
+    public function getTags()
+    {
+        return $this->tags;
+    }
+
 
 }
