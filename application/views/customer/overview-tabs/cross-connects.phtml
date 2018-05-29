@@ -18,7 +18,7 @@
                 <tr>
                     <td>
 
-                        <a href="{genUrl controller="patch-panel-port" view=$patchPanelPort->getId()}">
+                        <a href="{route("patch-panel-port@view", [ "id" =>  $patchPanelPort->getId() ] ) }">
                             {$patchPanelPort->getPatchPanel()->getName()}
                             {$patchPanelPort->getName()}
                         </a>
