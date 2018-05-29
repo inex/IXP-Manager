@@ -16,10 +16,10 @@
                         <?= $t->ee( $csc->getDescription() ) ?>
                     </td>
                     <td>
-                        <?= $t->ee( $csc->getSwitcher()->getCabinet()->getLocation()->getName() )?>
+                        <?= $csc->getConsoleServer() ? $t->ee( $csc->getConsoleServer()->getCabinet()->getLocation()->getName() ) : "" ?>
                     </td>
                     <td>
-                        <?= $t->ee( $csc->getSwitcher()->getName() )?>
+                        <?= $csc->getConsoleServer() ? $t->ee( $csc->getConsoleServer()->getName() ) : "" ?>
                     </td>
                     <td>
                         <?= $t->ee( $csc->getPort() ) ?>
