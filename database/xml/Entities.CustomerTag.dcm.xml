@@ -7,6 +7,11 @@
     <field name="tag" type="string" unique="true" length="255" nullable="false"/>
     <field name="display_as" type="string" length="255" nullable="false"/>
     <field name="description" type="text" nullable="true"/>
+    <field name="internal_only" type="boolean" nullable="false">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
     <field name="created" type="datetime" nullable="false"/>
     <field name="updated" type="datetime" nullable="false"/>
     <many-to-many field="customers" target-entity="Entities\Customer" inversed-by="tags">

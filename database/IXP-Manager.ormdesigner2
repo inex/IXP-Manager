@@ -1484,6 +1484,7 @@
       <field name="tag" type="string" size="255" required="true" unique="true" uuid="b263f486-1b1a-4990-aab6-5d779cfe098c"/>
       <field name="display_as" type="string" size="255" required="true" uuid="ff13a9c8-46ac-4f7b-a4d4-5e8bb8e13677"/>
       <field name="description" type="text" uuid="24e034b2-17fe-4644-b155-c55c3310ec55"/>
+      <field name="internal_only" type="boolean" default="0" required="true" uuid="163cd247-69ee-48ce-95c9-c2782cb37ac6"/>
       <field name="created" type="datetime" required="true" uuid="6fbbb48d-70d5-4c52-90cd-5a8d9766d8ab"/>
       <field name="updated" type="datetime" required="true" uuid="ff1b06ae-2268-4ecb-a46f-f4c129f74fe3"/>
       <orm-attributes>
