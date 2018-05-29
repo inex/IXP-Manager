@@ -113,7 +113,13 @@
             {if $pi->getSwitchPort()->getPatchPanelPort()}
             <tr>
                 <td><strong>XConnect Port:</strong></td>
-                <td id="value">{$pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getColoReference()} - <a href="{genUrl controller="patch-panel-port" action="list" patch-panel=$pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getId()}">{$pi->getSwitchPort()->getPatchPanelPort()->getName()}</a></td>
+                <td id="value">{$pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getColoReference()} -
+                    {if $user->getPrivs() eq USER::AUTH_SUPERUSER}
+                        <a href="{genUrl controller="patch-panel-port" action="list" patch-panel=$pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getId()}">{$pi->getSwitchPort()->getPatchPanelPort()->getName()}</a>
+                    {else}
+                        {$pi->getSwitchPort()->getPatchPanelPort()->getName()}
+                    {/if}
+                </td>
                 <td></td>
                 <td><strong>XConnect Status:</strong></td>
                 <td id="value">
