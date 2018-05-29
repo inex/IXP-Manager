@@ -181,10 +181,10 @@
                          <?php if( $conf[ "rsclient" ] ): ?>Yes<?php else: ?>No<?php endif; ?>
                     </td>
                     <td>
-                        <?= $conf[ "ipv4address" ] ?>
+                        <?= str_replace( ",", "<br>" , $conf[ "ipv4address" ] ) ?>
                     </td>
                     <td>
-                        <?= $conf[ "ipv6address" ] ?>
+                        <?= str_replace( ",", "<br>" , $conf[ "ipv6address" ] ) ?>
                     </td>
                     <td>
                         <?php if( isset( Entities\PhysicalInterface::$STATES[ $conf[ "portstatus" ] ] ) ): ?>

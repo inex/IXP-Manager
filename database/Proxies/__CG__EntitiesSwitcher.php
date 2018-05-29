@@ -264,7 +264,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setInfrastructure($infrastructure)
+    public function setInfrastructure(\Entities\Infrastructure $infrastructure = NULL)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setInfrastructure', [$infrastructure]);

@@ -237,7 +237,7 @@ class Switcher
      * @param \Entities\Infrastructure $infrastructure
      * @return Switcher
      */
-    public function setInfrastructure($infrastructure)
+    public function setInfrastructure( \Entities\Infrastructure $infrastructure = null )
     {
         $this->Infrastructure = $infrastructure;
 
