@@ -47,6 +47,10 @@
                             <li <?php if( $current ): ?> class="active" <?php endif; ?>>
                                 <a href="#<?= $p->getId() ?>" data-toggle="tab"><?php if( $current ): ?>Current<?php else: ?> <?= $p->getCeasedAtFormated(); ?> <?php endif; ?></a>
                             </li>
+
+                            <?php if( !Auth::user()->isSuperUser() ){ break; /* no history for non-admins */ } ?>
+
+
                         <?php endforeach; ?>
                     </ul>
                 </div>
@@ -173,81 +177,82 @@
                                                     <span title="" class="label label-<?= $p->getStateCssClass() ?>">
                                                         <?= $p->resolveStates() ?>
                                                     </span>
-
                                                 </td>
                                                 <td>
-                                                    <div class="dropdown btn-group-xs">
-                                                        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                                            Change State
-                                                            <span class="caret"></span>
-                                                        </button>
-                                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                                            <?php if( $t->ppp->isStateAvailable() or $t->ppp->isStateReserved() or $t->ppp->isStatePrewired() ): ?>
-                                                                <li>
-                                                                    <a id="allocate-<?= $t->ppp->getId() ?>" href="<?= route( 'patch-panel-port@edit-allocate' , [ 'id' => $t->ppp->getId() ] ) ?>">
-                                                                        Allocate
-                                                                    </a>
-                                                                </li>
-                                                            <?php endif; ?>
+                                                    <?php if( Auth::user()->isSuperUser() ): ?>
+                                                        <div class="dropdown btn-group-xs">
+                                                            <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                                Change State
+                                                                <span class="caret"></span>
+                                                            </button>
+                                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                                                <?php if( $t->ppp->isStateAvailable() or $t->ppp->isStateReserved() or $t->ppp->isStatePrewired() ): ?>
+                                                                    <li>
+                                                                        <a id="allocate-<?= $t->ppp->getId() ?>" href="<?= route( 'patch-panel-port@edit-allocate' , [ 'id' => $t->ppp->getId() ] ) ?>">
+                                                                            Allocate
+                                                                        </a>
+                                                                    </li>
+                                                                <?php endif; ?>
 
-                                                            <?php if( $t->ppp->isStateAvailable() ): ?>
-                                                                <li>
-                                                                    <a id="prewired-<?= $t->ppp->getId() ?>" href="<?= route( 'patch-panel-port@edit-prewired' , [ 'id' => $t->ppp->getId() ] ) ?>">
-                                                                        Set Prewired
-                                                                    </a>
-                                                                </li>
-                                                            <?php endif; ?>
+                                                                <?php if( $t->ppp->isStateAvailable() ): ?>
+                                                                    <li>
+                                                                        <a id="prewired-<?= $t->ppp->getId() ?>" href="<?= route( 'patch-panel-port@edit-prewired' , [ 'id' => $t->ppp->getId() ] ) ?>">
+                                                                            Set Prewired
+                                                                        </a>
+                                                                    </li>
+                                                                <?php endif; ?>
 
-                                                            <?php if( $t->ppp->isStatePrewired() ): ?>
-                                                                <li>
-                                                                    <a id="prewired-<?= $t->ppp->getId() ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_AVAILABLE ] ) ?>">
-                                                                        Unset Prewired
-                                                                    </a>
-                                                                </li>
-                                                            <?php endif; ?>
+                                                                <?php if( $t->ppp->isStatePrewired() ): ?>
+                                                                    <li>
+                                                                        <a id="prewired-<?= $t->ppp->getId() ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_AVAILABLE ] ) ?>">
+                                                                            Unset Prewired
+                                                                        </a>
+                                                                    </li>
+                                                                <?php endif; ?>
 
-                                                            <?php if( $t->ppp->isStateAvailable() ): ?>
-                                                                <li>
-                                                                    <a id="reserved-<?= $t->ppp->getId() ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_RESERVED ] ) ?>">
-                                                                        Mark as Reserved
-                                                                    </a>
-                                                                </li>
-                                                            <?php endif; ?>
+                                                                <?php if( $t->ppp->isStateAvailable() ): ?>
+                                                                    <li>
+                                                                        <a id="reserved-<?= $t->ppp->getId() ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_RESERVED ] ) ?>">
+                                                                            Mark as Reserved
+                                                                        </a>
+                                                                    </li>
+                                                                <?php endif; ?>
 
 
-                                                            <?php if( $t->ppp->isStateReserved() ): ?>
-                                                                <li>
-                                                                    <a id="unreserved-<?= $t->ppp->getId() ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_AVAILABLE ] ) ?>">
-                                                                        Unreserve
-                                                                    </a>
-                                                                </li>
-                                                            <?php endif; ?>
+                                                                <?php if( $t->ppp->isStateReserved() ): ?>
+                                                                    <li>
+                                                                        <a id="unreserved-<?= $t->ppp->getId() ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_AVAILABLE ] ) ?>">
+                                                                            Unreserve
+                                                                        </a>
+                                                                    </li>
+                                                                <?php endif; ?>
 
-                                                            <?php if( $t->ppp->isStateAwaitingXConnect() ): ?>
-                                                                <li>
-                                                                    <a id="set-connected-<?= $t->ppp->getId() ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_CONNECTED ] ) ?>">
-                                                                        Set Connected
-                                                                    </a>
-                                                                </li>
-                                                            <?php endif; ?>
+                                                                <?php if( $t->ppp->isStateAwaitingXConnect() ): ?>
+                                                                    <li>
+                                                                        <a id="set-connected-<?= $t->ppp->getId() ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_CONNECTED ] ) ?>">
+                                                                            Set Connected
+                                                                        </a>
+                                                                    </li>
+                                                                <?php endif; ?>
 
-                                                            <?php if( $t->ppp->isStateAwaitingXConnect() || $t->ppp->isStateConnected() ): ?>
-                                                                <li>
-                                                                    <a id="request-cease-<?= $t->ppp->getId() ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_AWAITING_CEASE ] ) ?>">
-                                                                        Set Awaiting Cease
-                                                                    </a>
-                                                                </li>
-                                                            <?php endif; ?>
+                                                                <?php if( $t->ppp->isStateAwaitingXConnect() || $t->ppp->isStateConnected() ): ?>
+                                                                    <li>
+                                                                        <a id="request-cease-<?= $t->ppp->getId() ?>" href="<?= route( 'patch-panel-port@change-status' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_AWAITING_CEASE ] ) ?>">
+                                                                            Set Awaiting Cease
+                                                                        </a>
+                                                                    </li>
+                                                                <?php endif; ?>
 
-                                                            <?php if( $t->ppp->isStateAwaitingXConnect() || $t->ppp->isStateConnected() || $t->ppp->isStateAwaitingCease() ): ?>
-                                                                <li>
-                                                                    <a id="set-ceased-<?= $t->ppp->getId() ?>"   href="<?= route( 'patch-panel-port@change-status' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_CEASED ] ) ?>">
-                                                                        Set Ceased
-                                                                    </a>
-                                                                </li>
-                                                            <?php endif; ?>
-                                                        </ul>
-                                                    </div>
+                                                                <?php if( $t->ppp->isStateAwaitingXConnect() || $t->ppp->isStateConnected() || $t->ppp->isStateAwaitingCease() ): ?>
+                                                                    <li>
+                                                                        <a id="set-ceased-<?= $t->ppp->getId() ?>"   href="<?= route( 'patch-panel-port@change-status' , [ 'id' => $t->ppp->getId() , 'status' => Entities\PatchPanelPort::STATE_CEASED ] ) ?>">
+                                                                            Set Ceased
+                                                                        </a>
+                                                                    </li>
+                                                                <?php endif; ?>
+                                                            </ul>
+                                                        </div>
+                                                    <?php endif; /* isSuperUser() */ ?>
                                                 </td>
                                             </tr>
                                         <?php endif; ?>
@@ -560,6 +565,9 @@
                                     </div>
                                 </div> <!-- row -->
                             </div>
+
+                            <?php if( !Auth::user()->isSuperUser() ){ break; /* no history for non-admins */ } ?>
+
                         <?php endforeach; ?>
                     </div>
                 </div>
