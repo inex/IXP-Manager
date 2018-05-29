@@ -64,10 +64,10 @@ class CustomerTag extends \Entities\CustomerTag implements \Doctrine\ORM\Proxy\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'tag', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'display_as', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'description', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'created', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'updated', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'customers'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'tag', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'display_as', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'description', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'internal_only', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'created', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'updated', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'customers'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'tag', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'display_as', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'description', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'created', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'updated', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'customers'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'tag', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'display_as', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'description', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'internal_only', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'created', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'updated', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerTag' . "\0" . 'customers'];
     }
 
     /**
@@ -173,4 +173,184 @@ class CustomerTag extends \Entities\CustomerTag implements \Doctrine\ORM\Proxy\P
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
+    public function getTag(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTag', []);
+
+        return parent::getTag();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTag(string $tag): \Entities\CustomerTag
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setTag', [$tag]);
+
+        return parent::setTag($tag);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDisplayAs(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDisplayAs', []);
+
+        return parent::getDisplayAs();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setDisplayAs(string $display_as): \Entities\CustomerTag
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDisplayAs', [$display_as]);
+
+        return parent::setDisplayAs($display_as);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDescription(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDescription', []);
+
+        return parent::getDescription();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setDescription(string $description): \Entities\CustomerTag
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDescription', [$description]);
+
+        return parent::setDescription($description);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isInternalOnly(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isInternalOnly', []);
+
+        return parent::isInternalOnly();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setInternalOnly(bool $internal_only): \Entities\CustomerTag
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setInternalOnly', [$internal_only]);
+
+        return parent::setInternalOnly($internal_only);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCreated(): \DateTime
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCreated', []);
+
+        return parent::getCreated();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCreated(\DateTime $created): \Entities\CustomerTag
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreated', [$created]);
+
+        return parent::setCreated($created);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUpdated(): \DateTime
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUpdated', []);
+
+        return parent::getUpdated();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUpdated(\DateTime $updated): \Entities\CustomerTag
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUpdated', [$updated]);
+
+        return parent::setUpdated($updated);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getId(): int
+    {
+        if ($this->__isInitialized__ === false) {
+            return (int)  parent::getId();
+        }
+
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
+
+        return parent::getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCustomers(): \Doctrine\Common\Collections\Collection
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomers', []);
+
+        return parent::getCustomers();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addCustomer(\Entities\Customer $customer): \Entities\CustomerTag
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addCustomer', [$customer]);
+
+        return parent::addCustomer($customer);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeCustomer(\Entities\Customer $customer)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeCustomer', [$customer]);
+
+        return parent::removeCustomer($customer);
+    }
+
 }
