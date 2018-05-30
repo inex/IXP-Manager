@@ -303,6 +303,7 @@ abstract class Doctrine2Frontend extends Controller {
      */
     public function add()
     {
+
         $this->data[ 'params' ] = $this->addEditPrepareForm();
         $this->data[ 'params' ]['isAdd'] = true;
         $this->addEditSetup();
