@@ -4,31 +4,44 @@
     $this->layout( 'layouts/ixpv4' )
 ?>
 <?php $this->section( 'title' ) ?>
-    <a href="<?= route ( 'patch-panel/list' )?>">
+    <?php if( Auth::getUser()->isSuperUser() ): ?>
+        <a href="<?= route ( 'patch-panel/list' )?>">
+            Patch Panel Port
+        </a>
+    <?php else: ?>
         Patch Panel Port
-    </a>
+    <?php endif ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li> Patch Panel Port / Cross Connect - <?= $t->ee( $t->ppp->getPatchPanel()->getName() ) ?> :: <?= $t->ee( $t->ppp->getName() ) ?> </li>
+    <?php if( Auth::getUser()->isSuperUser() ): ?>
+        <li>
+    <?php endif ?>
+        Patch Panel Port / Cross Connect - <?= $t->ee( $t->ppp->getPatchPanel()->getName() ) ?> :: <?= $t->ee( $t->ppp->getName() ) ?>
+
+    <?php if( Auth::getUser()->isSuperUser() ): ?>
+        </li>
+    <?php endif ?>
 <?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
-        <div class="btn-group btn-group-xs" role="group">
+<?php if( Auth::getUser()->isSuperUser() ): ?>
+    <?php $this->section( 'page-header-preamble' ) ?>
+        <li class="pull-right">
+            <div class="btn-group btn-group-xs" role="group">
 
-            <a type="button" class="btn btn-default extra-action" href="<?= route('patch-panel-port@edit' , [ "id" => $t->ppp->getId() ] ) ?>" title="edit">
-                <span class="glyphicon glyphicon-pencil"></span>
-            </a>
+                <a type="button" class="btn btn-default extra-action" href="<?= route('patch-panel-port@edit' , [ "id" => $t->ppp->getId() ] ) ?>" title="edit">
+                    <span class="glyphicon glyphicon-pencil"></span>
+                </a>
 
-            <?= $t->insert( 'patch-panel-port/action-dd', [ 'ppp' => $t->ppp, 'btnClass' => 'btn-group-xs', 'tpl' => 'view' ] ); ?>
+                <?= $t->insert( 'patch-panel-port/action-dd', [ 'ppp' => $t->ppp, 'btnClass' => 'btn-group-xs', 'tpl' => 'view' ] ); ?>
 
-            <a type="button" class="btn btn-default" href="<?= route('patch-panel-port/list/patch-panel' , [ "id" => $t->ppp->getPatchPanel()->getId() ] ) ?>" title="list">
-                <span class="glyphicon glyphicon-th-list"></span>
-            </a>
-        </div>
-    </li>
-<?php $this->append() ?>
+                <a type="button" class="btn btn-default" href="<?= route('patch-panel-port/list/patch-panel' , [ "id" => $t->ppp->getPatchPanel()->getId() ] ) ?>" title="list">
+                    <span class="glyphicon glyphicon-th-list"></span>
+                </a>
+            </div>
+        </li>
+    <?php $this->append() ?>
+<?php endif; ?>
 
 <?php $this->section( 'content' ) ?>
     <div class="row">
@@ -112,13 +125,25 @@
                                             </td>
                                             <td>
                                                 <?php if( $current ): ?>
-                                                    <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'id' => $p->getPatchPanel()->getId() ] ) ?>" >
+                                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                                        <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'id' => $p->getPatchPanel()->getId() ] ) ?>" >
+                                                    <?php endif; ?>
+
                                                         <?= $t->ee( $p->getPatchPanel()->getName() ) ?>
-                                                    </a>
+
+                                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                                        </a>
+                                                    <?php endif; ?>
                                                 <?php else: ?>
-                                                    <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'id' => $p->getPatchPanelPort()->getPatchPanel()->getId() ] ) ?>" >
+                                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                                        <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'id' => $p->getPatchPanelPort()->getPatchPanel()->getId() ] ) ?>" >
+                                                    <?php endif; ?>
+
                                                         <?= $t->ee( $p->getPatchPanelPort()->getPatchPanel()->getName() ) ?>
-                                                    </a>
+
+                                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                                        </a>
+                                                    <?php endif; ?>
                                                 <?php endif; ?>
                                             </td>
                                         </tr>
@@ -485,9 +510,11 @@
                                                 <div class="panel-heading padding-10">
                                                     List files
                                                     <?php if( $current ): ?>
-                                                        <a class="btn btn-default btn-xs pull-right" id="attach-file-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" >
-                                                            <i class="glyphicon glyphicon-upload"></i>
-                                                        </a>
+                                                        <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                                            <a class="btn btn-default btn-xs pull-right" id="attach-file-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" >
+                                                                <i class="glyphicon glyphicon-upload"></i>
+                                                            </a>
+                                                        <?php endif; ?>
                                                     <?php endif; ?>
                                                 </div>
                                                 <div class="panel-body">
