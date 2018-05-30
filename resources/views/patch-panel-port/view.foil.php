@@ -3,7 +3,10 @@
 
     $this->layout( 'layouts/ixpv4' )
 ?>
+
+
 <?php $this->section( 'title' ) ?>
+
     <?php if( Auth::getUser()->isSuperUser() ): ?>
         <a href="<?= route ( 'patch-panel/list' )?>">
             Patch Panel Port
@@ -11,20 +14,29 @@
     <?php else: ?>
         Patch Panel Port
     <?php endif ?>
+
 <?php $this->append() ?>
 
+
+
 <?php $this->section( 'page-header-postamble' ) ?>
+
     <?php if( Auth::getUser()->isSuperUser() ): ?>
         <li>
     <?php endif ?>
+
         Patch Panel Port / Cross Connect - <?= $t->ee( $t->ppp->getPatchPanel()->getName() ) ?> :: <?= $t->ee( $t->ppp->getName() ) ?>
 
     <?php if( Auth::getUser()->isSuperUser() ): ?>
         </li>
     <?php endif ?>
+
 <?php $this->append() ?>
 
+
+
 <?php if( Auth::getUser()->isSuperUser() ): ?>
+
     <?php $this->section( 'page-header-preamble' ) ?>
         <li class="pull-right">
             <div class="btn-group btn-group-xs" role="group">
@@ -41,7 +53,10 @@
             </div>
         </li>
     <?php $this->append() ?>
+
 <?php endif; ?>
+
+
 
 <?php $this->section( 'content' ) ?>
     <div class="row">
@@ -49,6 +64,7 @@
         <div class="col-sm-12">
 
             <?= $t->alerts() ?>
+
             <div class="panel with-nav-tabs panel-default">
 
                 <div class="panel-heading">
@@ -151,6 +167,18 @@
                                                 <?php endif; ?>
                                             </td>
                                         </tr>
+
+                                        <tr>
+                                            <td>
+                                                <b>
+                                                    Patch Panel Port:
+                                                </b>
+                                            </td>
+                                            <td>
+                                                <?= $t->ee( $t->ppp->getName() ) ?>
+                                            </td>
+                                        </tr>
+
 
                                         <?php if( $current ): ?>
                                             <?php if( $p->getSwitchPort() ): ?>
@@ -299,6 +327,7 @@
                                                 </td>
                                             </tr>
                                         <?php endif; ?>
+
                                         <tr>
                                             <td>
                                                 <b>
@@ -322,8 +351,10 @@
                                     </table>
                                 </div>
 
+
                                 <div class="col-xs-6">
                                     <table class="table_view_info">
+
                                         <?php if( Auth::user()->isSuperUser() ): ?>
                                             <tr>
                                                 <td>
@@ -336,6 +367,7 @@
                                                 </td>
                                             </tr>
                                         <?php endif; ?>
+
                                         <tr>
                                             <td>
                                                 <b>
@@ -346,6 +378,7 @@
                                                 <?= $p->getAssignedAtFormated(); ?>
                                             </td>
                                         </tr>
+
                                         <?php if( $p->getConnectedAt() ): ?>
                                             <tr>
                                                 <td>
@@ -358,6 +391,7 @@
                                                 </td>
                                             </tr>
                                         <?php endif; ?>
+
                                         <?php if( $p->getCeaseRequestedAt() ): ?>
                                             <tr>
                                                 <td>
@@ -370,6 +404,7 @@
                                                 </td>
                                             </tr>
                                         <?php endif; ?>
+
                                         <?php if( $p->getCeasedAt() ): ?>
                                             <tr>
                                                 <td>
@@ -382,6 +417,7 @@
                                                 </td>
                                             </tr>
                                         <?php endif; ?>
+
                                         <?php if( Auth::user()->isSuperUser() ): ?>
                                             <tr>
                                                 <td>
@@ -394,6 +430,7 @@
                                                 </td>
                                             </tr>
                                         <?php endif; ?>
+
                                         <tr>
                                             <td>
                                                 <b>
@@ -404,18 +441,18 @@
                                                 <?= $p->resolveChargeable() ?>
                                             </td>
                                         </tr>
-                                        <?php if( Auth::user()->isSuperUser() ): ?>
-                                            <tr>
-                                                <td>
-                                                    <b>
-                                                        Owned By:
-                                                    </b>
-                                                </td>
-                                                <td>
-                                                    <?= $p->resolveOwnedBy() ?>
-                                                </td>
-                                            </tr>
-                                        <?php endif; ?>
+
+                                        <tr>
+                                            <td>
+                                                <b>
+                                                    Owned By:
+                                                </b>
+                                            </td>
+                                            <td>
+                                                <?= $p->resolveOwnedBy() ?>
+                                            </td>
+                                        </tr>
+
                                         <tr>
                                             <td>
                                                 <b>
@@ -426,6 +463,7 @@
                                                 <?= $t->ee( $p->getPatchPanel()->getCabinet()->getName() ) ?>
                                             </td>
                                         </tr>
+
                                         <tr>
                                             <td>
                                                 <b>
@@ -513,7 +551,7 @@
 
                                             <div class="panel panel-default" id="list_file_<?= $p->getId()."_".$objectType ?>">
                                                 <div class="panel-heading padding-10">
-                                                    List files
+                                                    Attached Files
                                                     <?php if( $current ): ?>
                                                         <?php if( Auth::getUser()->isSuperUser() ): ?>
                                                             <a class="btn btn-default btn-xs pull-right" id="attach-file-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" >
