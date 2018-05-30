@@ -91,4 +91,22 @@ class VlanInterfaceController extends Controller
         return response()->json( D2EM::getRepository( VlanInterfaceEntity::class )->sflowMacTableArray() );
     }
 
+    /**
+     * Get infra / tag / mac / viid structure for sflow data processing
+     *
+     * FIXME insert reference to documentation - see islandbridgenetworks/IXP-Manager#34
+     *
+     * @return JsonResponse
+     */
+    public function sflowLearnedMacs(): JsonResponse
+    {
+        $mactablearray = D2EM::getRepository( VlanInterfaceEntity::class )->sflowMacTableArray();
+
+        foreach ($mactablearray as $macentry) {
+            $output[$macentry['infrastructure']][$macentry['tag']][$macentry['mac']] = $macentry['viid'];
+        }
+
+        return response()->json($output);
+    }
+
 }

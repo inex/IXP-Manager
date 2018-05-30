@@ -615,10 +615,12 @@ class VlanInterface extends EntityRepository
     public function sflowMacTableArray(): array
     {
         return $this->getEntityManager()->createQuery(
-            "SELECT DISTINCT vi.id AS viid, l2a.mac AS mac
+            "SELECT DISTINCT vi.id AS viid, l2a.mac AS mac, vl.number as tag, i.id as infrastructure
                     FROM Entities\VlanInterface vli
                         LEFT JOIN vli.VirtualInterface vi
                         LEFT JOIN vli.layer2Addresses l2a
+                        LEFT JOIN vli.Vlan vl
+                        LEFT JOIN vl.Infrastructure i
                     WHERE l2a.mac IS NOT NULL
                     ORDER BY viid"
         )->getArrayResult();
