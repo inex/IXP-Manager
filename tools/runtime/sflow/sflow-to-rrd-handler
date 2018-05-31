@@ -102,6 +102,7 @@ $client->setHost($apibaseurl);
 $client->addHeader('X-IXP-Manager-API-Key', $apikey);
 
 my $mactable = reload_mactable($client, $macdbrest);
+$mactable || die "FATAL: could not read IXP Manager API call on $apibaseurl$macdbrest\n";
 my $matrix = matrix_init($mactable, $infraid);
 
 my $execute_periodic = 0;
@@ -412,7 +413,16 @@ sub reload_mactable
 
 	$client->GET($uri);
 
-	my $response = from_json($client->responseContent());
+	my $content = $client->responseContent();
+	my $code = $client->responseCode();
+	if ($code != 200) {
+		die "FATAL: HTTP response $code: $content\n";
+	}
 
-	return $response;
+	my $json = eval { from_json($content) };
+	if (!$json) {
+		die "FATAL: HTTP response was not legitimate json: '$content'\n";
+	}
+
+	return $json;
 }
