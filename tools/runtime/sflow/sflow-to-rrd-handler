@@ -154,9 +154,6 @@ while (<SFLOWTOOL>) {
 	my $srcvli = getvlifrommactable ($mactable, $infraid, $vlan, $srcmac);
 	my $dstvli = getvlifrommactable ($mactable, $infraid, $vlan, $dstmac);
 
-	my $srcname = defined ($matrix->{names}->{$srcvli}) ? $matrix->{names}->{$srcvli} : '(unknown)';
-	my $dstname = defined ($matrix->{names}->{$dstvli}) ? $matrix->{names}->{$dstvli} : '(unknown)';
-
 	# the sflow accounting perimeter on the switches will ensure that
 	# each packet will be counted exactly once.  because of this, the
 	# packet sample needs to be added to both the source vlaninterface
@@ -167,8 +164,8 @@ while (<SFLOWTOOL>) {
 		$insanedebug && print STDERR "DEBUG: accepted update for: ".
 			"protocol: $ipprotocol ".
 			"vlan: $vlan ".
-			"srcvli: $srcvli / '$srcname' ".
-			"dstvli: $dstvli / '$dstname' ".
+			"srcvli: $srcvli ".
+			"dstvli: $dstvli ".
 			"pktsize: $pktsize ".
 			"samplerate: $samplerate ".
 			"\n";
@@ -182,8 +179,8 @@ while (<SFLOWTOOL>) {
 		$debug && print STDERR "DEBUG: dropped update for: ".
 			"protocol: $ipprotocol ".
 			"vlan: $vlan ".
-			"srcvli: $srcvli / '$srcname' ".
-			"dstvli: $dstvli / '$dstname' ".
+			"srcvli: $srcvli ".
+			"dstvli: $dstvli ".
 			"pktsize: $pktsize ".
 			"samplerate: $samplerate ".
 			"\n";
@@ -243,8 +240,8 @@ sub process_rrd {
 						$insanedebug && print STDERR "DEBUG: p2p: building update for ".
 								"protocol: $ipprotocol ".
 								"type: $rrdtype ".
-								"srcvli: $srcvli / '$matrix->{names}->{$srcvli}' ".
-								"dstvli: $dstvli / '$matrix->{names}->{$dstvli}' ".
+								"srcvli: $srcvli ".
+								"dstvli: $dstvli ".
 								"in: $in out: $out ".
 								"\n";
 						build_update_rrd ($rrdfile, $rrdtype, $ipprotocol, $in, $out, $interval, $rrdcached);
@@ -266,7 +263,7 @@ sub process_rrd {
 							"vlan: $vlan ".
 							"type: $rrdtype ".
 							"protocol: $ipprotocol ".
-							"srcvli: $srcvli / '$matrix->{names}->{$srcvli}' ".
+							"srcvli: $srcvli ".
 							"\n";
 					build_update_rrd ($rrdfile, $rrdtype, $ipprotocol, $in, $out, $interval, $rrdcached);
 				}
