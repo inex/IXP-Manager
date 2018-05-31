@@ -53,7 +53,8 @@ my @dependencies = (
 	{ name => 'Net::SNMP',		pkgng => 'p5-Net-SNMP',		apt => 'libnet-snmp-perl',		redhat => '' },
 	{ name => 'Net_SNMP_util',	pkgng => 'mrtg',		apt => 'mrtg',				redhat => '' },
 	{ name => 'RRDs',		pkgng => 'rrdtool',		apt => 'librrds-perl',			redhat => 'rrdtool-perl' },
-	{ name => 'Template',		pkgng => 'p5-Template-Toolkit',	apt => 'libtemplate-perl',		redhat => 'perl-Template-Toolkit' },
+	{ name => 'JSON',		pkgng => 'p5-JSON',		apt => 'libjson-pp-perl',		redhat => 'perl-JSON' },
+	{ name => 'REST::Client',	pkgng => 'p5-REST-Client',	apt => 'librest-client-perl',		redhat => 'perl-REST-Client' },
 
 );
 
