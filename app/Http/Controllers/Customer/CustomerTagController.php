@@ -33,12 +33,6 @@ use Illuminate\Http\RedirectResponse;
 use IXP\Http\Controllers\Doctrine2Frontend;
 
 
-use IXP\Utils\View\Alert\{
-    Alert,
-    Container as AlertContainer
-};
-
-
 
 /**
  * Customer Tag Controller
@@ -77,13 +71,18 @@ class CustomerTagController extends Doctrine2Frontend {
 
             'viewFolderName'    => 'customer/tag',
 
+            'extraDeleteMessage' => "<b>This tag will be removed from All the customers.</b>",
+
             'listColumns'    => [
 
                 'id'        => [ 'title' => 'DB ID', 'display' => true ],
 
                 'tag'               => 'Tag',
-                'display_as'        => 'Colo Location',
-                'internal_only'     => 'Internal Only'
+                'display_as'        => 'Display As',
+                'internal_only'     => [
+                                'title' => 'Internal Only',
+                                'type' => self::$FE_COL_TYPES[ 'YES_NO' ]
+                ],
             ]
         ];
 
@@ -91,9 +90,15 @@ class CustomerTagController extends Doctrine2Frontend {
         $this->feParams->viewColumns = array_merge(
             $this->feParams->listColumns,
             [
-                'description'           => 'Description',
-                'created'               => 'Created',
-                'updated'               => 'Created',
+                'description'          => 'Description',
+                'created'              => [
+                        'title'        => 'Created',
+                        'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
+                    ],
+                'updated'              => [
+                        'title'        => 'Updated',
+                        'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
+                    ],
             ]
         );
 
@@ -132,9 +137,7 @@ class CustomerTagController extends Doctrine2Frontend {
                 'tag'                   => array_key_exists( 'tag',             $old ) ? $old['tag']            : $this->object->getTag(),
                 'description'           => array_key_exists( 'description',     $old ) ? $old['description']    : $this->object->getDescription(),
                 'display_as'            => array_key_exists( 'display_as',      $old ) ? $old['display_as']     : $this->object->getDisplayAs(),
-                'internal_only'         => array_key_exists( 'internal_only',   $old ) ? $old['internal_only']  : $this->object->isInternalOnly(),
-                'created'               => array_key_exists( 'created',         $old ) ? $old['height']         : $this->object->getCreated(),
-                'updated'               => array_key_exists( 'updated',         $old ) ? $old['updated']        : $this->object->getUpdated(),
+                'internal_only'         => array_key_exists( 'internal_only',   $old ) ? $old['internal_only']  : ( $this->object->isInternalOnly() ? 1 : 0 ),
             ]);
         }
 
@@ -156,13 +159,9 @@ class CustomerTagController extends Doctrine2Frontend {
     public function doStore( Request $request )
     {
         $validator = Validator::make( $request->all(), [
-            'name'                  => 'required|string|max:255',
-            'locationid'            => 'required|integer|exists:Entities\Location,id',
-            'colocation'            => 'required|string|max:255',
-            'height'                => 'nullable|integer',
-            'type'                  => 'nullable|string|max:255',
-            'notes'                 => 'nullable|string|max:65535',
-            'u_counts_from'         => 'required|integer|in:' . implode( ',', array_keys( CabinetEntity::$U_COUNTS_FROM ) ),
+            'tag'                   => 'required|string|max:255|unique:Entities\CustomerTag,tag'. ( $request->input('id') ? ','. $request->input('id') : '' ),
+            'description'           => 'nullable|string|max:255',
+            'display_as'            => 'required|string|max:255',
         ]);
 
         if( $validator->fails() ) {
@@ -170,21 +169,21 @@ class CustomerTagController extends Doctrine2Frontend {
         }
 
         if( $request->input( 'id', false ) ) {
-            if( !( $this->object = D2EM::getRepository( CabinetEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404);
+            if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( $request->input( 'id' ) ) ) ) {
+                abort(404, "Unknown" . $this->feParams->titleSingular );
             }
+            $this->object->setUpdated( new \DateTime );
         } else {
-            $this->object = new CabinetEntity;
+            $this->object = new $this->feParams->entity;
             D2EM::persist( $this->object );
+            $this->object->setCreated( new \DateTime );
+            $this->object->setUpdated( new \DateTime );
         }
 
-        $this->object->setName(              $request->input( 'name'            ) );
-        $this->object->setCololocation(      $request->input( 'colocation'      ) );
-        $this->object->setType(              $request->input( 'type'            ) );
-        $this->object->setHeight(            $request->input( 'height'          ) );
-        $this->object->setUCountsFrom(       $request->input( 'u_counts_from'   ) );
-        $this->object->setNotes(             $request->input( 'notes'           ) );
-        $this->object->setLocation(          D2EM::getRepository( LocationEntity::class )->find( $request->input( 'locationid' ) ) );
+        $this->object->setTag(                      preg_replace( "/[^a-z0-9]/" , "", strtolower( $request->input( 'tag' ) ) ) );
+        $this->object->setDescription(              $request->input( 'description'  ) );
+        $this->object->setDisplayAs(                $request->input( 'display_as'   ) );
+        $this->object->setInternalOnly( $request->input( 'internal_only' ) ? 1 : 0 );
 
         D2EM::flush($this->object);
 
@@ -198,15 +197,7 @@ class CustomerTagController extends Doctrine2Frontend {
     protected function preDelete(): bool {
         $okay = true;
 
-        if( ( $cnt = count( $this->object->getCustomerEquipment() ) ) ) {
-            AlertContainer::push( "Could not delete the rack as at least one piece of customer equipment is located here. Reassign or delete that kit first.", Alert::DANGER );
-            $okay = false;
-        }
-
-        if( ( $cnt = count( $this->object->getSwitches() ) ) ) {
-            AlertContainer::push( "Could not delete the rack as at least one switch is located here. Reassign or delete the switch first.", Alert::DANGER );
-            $okay = false;
-        }
+        request()->session()->remove( "cust-list-tag" );
 
         return $okay;
     }

@@ -141,11 +141,13 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
     Route::get(     'welcome-email/{id}',               'CustomerController@welcomeEmail'               )->name( "customer@welcome-email" );
     Route::get(     'delete-recap/{id}',                'CustomerController@deleteRecap'                )->name( "customer@delete-recap" );
     Route::get(     'overview/{id}/{tab?}',             'CustomerController@overview'                   )->name( "customer@overview" );
+    Route::get(     '{id}/tags',                       'CustomerController@tags'                       )->name( "customer@tags" );
 
     Route::post(    'store',                            'CustomerController@store'                      )->name( 'customer@store');
     Route::post(    'store-billing-and-reg-details',    'CustomerController@storeBillingAndRegDetails'  )->name( 'customer@store-billing-and-reg-details');
     Route::post(    'send-welcome-email',               'CustomerController@sendWelcomeEmail'           )->name( 'customer@send-welcome-email');
     Route::post(    'delete',                           'CustomerController@delete'                     )->name( 'customer@delete');
+    Route::post(    'store-tags',                       'CustomerController@storeTags'                  )->name( 'customer@store-tags');
 
 });
 

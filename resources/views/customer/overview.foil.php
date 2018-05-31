@@ -55,6 +55,11 @@
                     </a>
                 </li>
 
+                <li class="divider"></li>
+                <li>
+                    <a href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">Manage Tags...</a>
+                </li>
+
                 <?php if( $t->logoManagementEnabled() ): ?>
                     <li class="divider"></li>
                     <li>
@@ -129,6 +134,12 @@
                         </div>
 
                     <?php endif; ?>
+                </div>
+                <br>
+                <div>
+                    <?php foreach( $c->getTags() as $tag ): ?>
+                        <span class="label label-default"><?= $tag->getDisplayAs() ?></span>
+                    <?php endforeach; ?>
                 </div>
             </div>
 

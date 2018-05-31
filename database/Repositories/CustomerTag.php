@@ -49,4 +49,42 @@ class CustomerTag extends EntityRepository
         return $query->getArrayResult();
     }
 
+
+    /**
+     * Return an array of all Customer Tags where the array key is the Customer Tag id.
+     *
+     * @return array An array of all Customer Tag names with the Customer Tag id as the key.
+     */
+    public function getAsArray(): array {
+        $cts = [];
+        foreach( self::findAll() as $ct ) {
+            $cts[ $ct->getId() ] = $ct->getDisplayAs();
+        }
+
+        asort( $cts);
+
+        return $cts;
+    }
+
+
+    /**
+     * Return an array of Customer tag for a customer
+     *
+     * @param int $cid             Customer ID
+     *
+     * @return array An array of all customers objects
+     */
+    public function getAllForCustomer( $cid = null ): array {
+
+        $q = "SELECT ct
+                FROM Entities\\CustomerTag ct 
+                LEFT JOIN ct.customers c
+                WHERE c.id = " . $cid;
+
+        $result = [];
+        foreach( $this->getEntityManager()->createQuery( $q )->getResult() as $tag ){
+            $result[ $tag->getId() ] = $tag;
+        }
+        return $result;
+    }
 }

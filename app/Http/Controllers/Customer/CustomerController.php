@@ -41,6 +41,7 @@ use Entities\{
     CompanyRegisteredDetail as CompanyRegisteredDetailEntity,
     Customer                as CustomerEntity,
     CustomerNote            as CustomerNoteEntity,
+    CustomerTag             as CustomerTagEntity,
     IRRDBConfig             as IRRDBConfigEntity,
     IXP                     as IXPEntity,
     NetworkInfo             as NetworkInfoEntity,
@@ -109,11 +110,52 @@ class CustomerController extends Controller
             $showCurrentOnly = false;
         }
 
+
+        if( $r->input( 'tag' )  !== null ) {
+            /** @var CustomerTagEntity $s */
+            if(  $tag = D2EM::getRepository( CustomerTagEntity::class )->find( $r->input( 'tag' ) ) ) {
+                $tid = $tag->getId();
+                $r->session()->put( "cust-list-tag", $tid );
+            } else {
+                $r->session()->remove( "cust-list-tag" );
+                $tid = false;
+            }
+        } else if( $r->session()->exists( "cust-list-tag" ) ) {
+            $tid = $r->session()->get( "cust-list-tag" );
+        } else {
+            $tid = false;
+        }
+
+
+
+        if( $state || $type || $showCurrentOnly || $tid ){
+            $summary = $showCurrentOnly ? ":: Current Customers" : ":: All Customers" ;
+
+            if( $state ){
+                $summary .= " - State: " . CustomerEntity::$CUST_STATUS_TEXT[ $state ];
+            }
+
+            if( $type ){
+                $summary .= " - Type: " . CustomerEntity::$CUST_TYPES_TEXT[ $type ];
+            }
+
+            if( $tid ){
+                $summary .= " - Tag: " . D2EM::getRepository( CustomerTagEntity::class )->getAsArray()[ $tid ];
+            }
+
+        } else{
+            $summary = false;
+        }
+
+
         return view( 'customer/list' )->with([
-            'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAllForFeList( $showCurrentOnly, $state, $type ),
+            'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAllForFeList( $showCurrentOnly, $state, $type, $tid ),
             'state'                 => $state           ?? false,
             'type'                  => $type            ?? false,
             'showCurrentOnly'       => $showCurrentOnly ?? false,
+            'tag'                   => $tid ?? false,
+            'tags'                  => D2EM::getRepository( CustomerTagEntity::class )->getAsArray(),
+            'summary'               => $summary
         ]);
     }
 
@@ -617,6 +659,62 @@ class CustomerController extends Controller
 
         Cache::forget( 'admin_home_customers' );
         return Redirect::to( route( "customer@list" ) );
+    }
+
+
+    /**
+     * Display the form to add/remove customer tags
+     *
+     * @param int $id    The Customer ID
+     *
+     * @return View
+     */
+    public function tags( int $id = null ): View {
+
+        /** @var CustomerEntity $cust */
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
+            abort(404, "Unknown Customer");
+        }
+
+        return view( 'customer/tags' )->with([
+            'c'             => $c,
+            'tags'          => D2EM::getRepository( CustomerTagEntity::class )->findAll( [], [ "display_as" => "ASC"] ),
+            'selectedTags'  => D2EM::getRepository( CustomerTagEntity::class )->getAllForCustomer( $c->getId() ),
+        ]);
+    }
+
+    /**
+     * Add or edit a customer (set all the data needed)
+     *
+     * @param   Request $r instance of the current HTTP request
+     *
+     * @return  RedirectResponse
+     * @throws
+     */
+    public function storeTags( Request $r ): RedirectResponse {
+
+        /** @var CustomerEntity $c */
+        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $r->input( "id" ) ) ) ) {
+            abort(404, "Unknown Customer");
+        }
+
+        foreach( D2EM::getRepository( CustomerTagEntity::class )->findAll() as $customerTag ){
+            /** @var CustomerTagEntity $customerTag */
+            if( $r->input( "tag-" . $customerTag->getId() ) ){
+                // check if the link between the customer and the tag already exist
+                if( !array_key_exists( $customerTag->getId(), D2EM::getRepository( CustomerTagEntity::class)->getAllForCustomer( $c->getId() ) ) ){
+                    $customerTag->addCustomer( $c );
+                }
+            } else{
+                $customerTag->removeCustomer( $c );
+            }
+        }
+
+        D2EM::flush();
+
+        AlertContainer::push( "The Tags have been updated.", Alert::SUCCESS );
+
+        return Redirect::to( route( "customer@overview" , [ "id" => $c->getId() ] ) );
     }
 
 }

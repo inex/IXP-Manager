@@ -519,11 +519,16 @@ class Customer extends EntityRepository
      *
      * @return array An array of all customers objects
      */
-    public function getAllForFeList( $showCurrentOnly = false, $state = null, $type = null ): array {
+    public function getAllForFeList( $showCurrentOnly = false, $state = null, $type = null, $tag = null ): array {
 
         $q = "SELECT c
-                FROM Entities\\Customer c
-                WHERE 1 = 1";
+                FROM Entities\\Customer c ";
+
+        if( $tag ){
+            $q .= " LEFT JOIN c.tags t";
+        }
+
+        $q .= " WHERE 1 = 1";
 
         if( $state && isset( CustomerEntity::$CUST_STATUS_TEXT[ $state ] ) ) {
             $q .= " AND c.status = {$state} " ;
@@ -535,6 +540,10 @@ class Customer extends EntityRepository
 
         if( $showCurrentOnly ) {
             $q .= " AND " . Customer::DQL_CUST_CURRENT;
+        }
+
+        if( $tag ) {
+            $q .= " AND t.id = " . $tag;
         }
 
         $q .= " ORDER BY c.name ASC ";
