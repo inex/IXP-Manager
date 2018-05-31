@@ -66,31 +66,6 @@ class VlanInterfaceController extends Controller
         return response()->json( $l2as );
     }
 
-
-    /**
-     * Get vli id / vi id / vlan tag / cust name matrix for sflow data processing
-     *
-     * FIXME insert reference to documentation - see islandbridgenetworks/IXP-Manager#34
-     *
-     * @return JsonResponse
-     */
-    public function sflowMatrix(): JsonResponse
-    {
-        return response()->json( D2EM::getRepository( VlanInterfaceEntity::class )->sflowMatrixArray() );
-    }
-
-    /**
-     * Get vi id / mac table for sflow data processing
-     *
-     * FIXME insert reference to documentation - see islandbridgenetworks/IXP-Manager#34
-     *
-     * @return JsonResponse
-     */
-    public function sflowMacTable(): JsonResponse
-    {
-        return response()->json( D2EM::getRepository( VlanInterfaceEntity::class )->sflowMacTableArray() );
-    }
-
     /**
      * Get infra / tag / mac / viid structure for sflow data processing
      *
@@ -100,10 +75,28 @@ class VlanInterfaceController extends Controller
      */
     public function sflowLearnedMacs(): JsonResponse
     {
-        $mactablearray = D2EM::getRepository( VlanInterfaceEntity::class )->sflowMacTableArray();
+        $mactablearray = D2EM::getRepository( VlanInterfaceEntity::class )->sflowLearnedMacsHash();
 
         foreach ($mactablearray as $macentry) {
-            $output[$macentry['infrastructure']][$macentry['tag']][$macentry['mac']] = $macentry['viid'];
+            $output[$macentry['infrastructure']][$macentry['tag']][$macentry['mac']] = $macentry['vliid'];
+        }
+
+        return response()->json($output);
+    }
+
+    /**
+     * Get infra / tag / mac / viid structure for sflow data processing
+     *
+     * FIXME insert reference to documentation - see islandbridgenetworks/IXP-Manager#34
+     *
+     * @return JsonResponse
+     */
+    public function sflowConfiguredMacs(): JsonResponse
+    {
+        $mactablearray = D2EM::getRepository( VlanInterfaceEntity::class )->sflowConfiguredMacsHash();
+
+        foreach ($mactablearray as $macentry) {
+            $output[$macentry['infrastructure']][$macentry['tag']][$macentry['mac']] = $macentry['vliid'];
         }
 
         return response()->json($output);

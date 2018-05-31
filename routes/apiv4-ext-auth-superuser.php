@@ -84,9 +84,8 @@ Route::get('sflow-receivers/receivers.lst',                     'SflowReceiverCo
 // Vlan Interface
 //
 Route::get( 'vlan-interface/l2-addresses/{id}',                 'VlanInterfaceController@getL2A' );
-Route::get( 'vlan-interface/sflow-matrix',                      'VlanInterfaceController@sflowMatrix' );
-Route::get( 'vlan-interface/sflow-mac-table',                   'VlanInterfaceController@sflowMacTable' );
-Route::get( 'vlan-interface/sflow-learned-macs',                'VlanInterfaceController@sflowLearnedMacs' );
+Route::get( 'sflow-db-mapper/learned-macs',                     'VlanInterfaceController@sflowLearnedMacs' );
+Route::get( 'sflow-db-mapper/configured-macs',                  'VlanInterfaceController@sflowConfiguredMacs' );
 
 
 
