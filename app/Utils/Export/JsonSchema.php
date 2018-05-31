@@ -86,8 +86,9 @@ class JsonSchema
         $output['ixp_list']    = $this->getIXPInfo( $version );
         $output['member_list'] = $this->getMemberInfo( $version, $detailed );
 
-        if( $asArray )
+        if( $asArray ) {
             return $output;
+        }
 
         return json_encode( $output, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE )."\n";
     }
@@ -230,11 +231,8 @@ class JsonSchema
             $routeCollectorIPs = d2r( 'Router' )->getAllPeeringIPs( Router::TYPE_ROUTE_COLLECTOR );
         }
 
-        /** @var IXP $ixp */
-        $ixp = d2r( 'IXP' )->getDefault();
-
         $customers = OSS_Array::reindexObjects(
-            OSS_Array::reorderObjects( d2r( 'Customer' )->getConnected( false, false, true ),
+            OSS_Array::reorderObjects( d2r( 'Customer' )->getConnected( false, false ),
                 'getAutsys', SORT_NUMERIC
             ),
             'getId'
