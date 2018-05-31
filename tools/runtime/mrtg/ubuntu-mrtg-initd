@@ -20,7 +20,7 @@ DESC="mrtg"
 NAME=mrtg
 DAEMON=/usr/bin/$NAME
 PIDFILE=/etc/${NAME}/$NAME.pid
-CONFFILE=/etc/${NAME}/$NAME.cfg
+CONFFILE=/etc/$NAME.cfg
 DAEMON_ARGS="--daemon --pid-file=$PIDFILE $CONFFILE"
 SCRIPTNAME=/etc/init.d/$NAME
 
