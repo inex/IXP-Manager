@@ -47,7 +47,6 @@ my @dependencies = (
 	{ name => 'Config::General',	pkgng => 'p5-Config-General',	apt => 'libconfig-general-perl',	redhat => '' },
 	{ name => 'DBD::mysql',		pkgng => 'p5-DBD-mysql',	apt => 'libdbd-mysql-perl',		redhat => 'perl-DBD-MySQL' },
 	{ name => 'DBI',		pkgng => 'p5-DBI',		apt => 'libdbi-perl',			redhat => 'libdbi-dbd-mysql' },
-	{ name => 'Daemon::Control',	pkgng => 'p5-Daemon-Control',	apt => 'libdaemon-control-perl',	redhat => '' },
 	{ name => 'NetAddr::IP',	pkgng => 'p5-NetAddr-IP',	apt => 'libnetaddr-ip-perl',		redhat => 'perl-NetAddr-IP' },
 	{ name => 'NetPacket::TCP',	pkgng => 'p5-NetPacket-TCP',	apt => 'libnetpacket-perl',		redhat => '' },
 	{ name => 'Net::SNMP',		pkgng => 'p5-Net-SNMP',		apt => 'libnet-snmp-perl',		redhat => '' },
