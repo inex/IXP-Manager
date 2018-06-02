@@ -270,14 +270,8 @@ class OSS_Utils
 
         if( sizeof( $params ) > 0 )
         {
-            foreach( $params as $var => $value ){
-
-                if( strpos($var, 'escape') ){
-                    $url .= "/{$var}";
-                }
-                $url .= "/{$value}";
-            }
-
+            foreach( $params as $var => $value )
+                $url .= "/{$var}/{$value}";
         }
 
         if ( $action ){

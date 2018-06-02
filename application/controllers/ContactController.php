@@ -326,15 +326,12 @@ class ContactController extends IXP_Controller_FrontEnd
         else if( $this->getParam( "uid", false ) )
             $form->setAction( OSS_Utils::genUrl( 'contact', ( $isEdit ? 'edit' : 'add' ), false, [ 'uid' => $this->getParam( "uid" ) ] ) );
 
-
-
         if( $cid = $this->getParam( 'cid', false ) )
         {
-
             $form->updateCancelLocation( OSS_Utils::genUrl( 'customer', 'overview', false,
                     [
-                        'escape1' => $cid,
-                        'escape2' => ( $this->getParam( 'user', false ) || $this->getParam( 'uid', false ) ) ? 'users' : 'contacts'
+                        'id' => $cid,
+                        'tab' => ( $this->getParam( 'user', false ) || $this->getParam( 'uid', false ) ) ? 'users' : 'contacts'
                     ]
                 )
             );
