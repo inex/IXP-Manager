@@ -34,7 +34,7 @@ use OSS_SNMP\{
 };
 
 use Entities\{
-    Switcher                    as SwitcherEntity
+    Switcher    as SwitcherEntity
 };
 
 /**
@@ -102,7 +102,7 @@ class SnmpPoll extends Command
         if( count( $switches ) ){
 
             foreach( $switches as $s ) {
-
+                /** @var $s SwitcherEntity */
                 if( trim( $s->getSnmppasswd() ) == '' ) {
                     $this->info( "Skipping {$s->getName()} as no SNMP password set" );
                     continue;
@@ -114,7 +114,6 @@ class SnmpPoll extends Command
                 } else{
                     $this->info( "Polling {$s->getName()} with SNMP request to {$s->getHostname()}" );
                 }
-
 
                 $sPolled = false;
 
