@@ -143,7 +143,11 @@
                             <span class="label label-default"><?= $tag->getDisplayAs() ?></span>
                         <?php endforeach; ?>
                     </div>
+                <?php elseif( count( D2EM::getRepository( Entities\CustomerTag::class )->findAll() ) ): ?>
+                    <br>
+                    <em>No tags defined for this customer - <a href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">add some...</a>
                 <?php endif; ?>
+
             </div>
 
             <ul class="nav nav-tabs">
