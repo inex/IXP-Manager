@@ -135,12 +135,15 @@
 
                     <?php endif; ?>
                 </div>
-                <br>
-                <div>
-                    <?php foreach( $c->getTags() as $tag ): ?>
-                        <span class="label label-default"><?= $tag->getDisplayAs() ?></span>
-                    <?php endforeach; ?>
-                </div>
+
+                <?php if( $c->getTags()->count() ): ?>
+                    <br>
+                    <div>
+                        <?php foreach( $c->getTags() as $tag ): ?>
+                            <span class="label label-default"><?= $tag->getDisplayAs() ?></span>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
             </div>
 
             <ul class="nav nav-tabs">

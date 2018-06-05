@@ -58,10 +58,10 @@ class CustomerTagController extends Doctrine2Frontend {
         $this->feParams         = ( object )[
 
             'entity'            => CustomerTagEntity::class,
-            'pagetitle'         => 'Customer Tag',
+            'pagetitle'         => 'Customer Tags',
 
             'titleSingular'     => 'Customer Tag',
-            'nameSingular'      => 'a customer tag',
+            'nameSingular'      => 'customer tag',
 
             'defaultAction'     => 'list',
             'defaultController' => 'CustomerTagController',
@@ -71,11 +71,11 @@ class CustomerTagController extends Doctrine2Frontend {
 
             'viewFolderName'    => 'customer/tag',
 
-            'extraDeleteMessage' => "<b>This tag will be removed from All the customers.</b>",
+            'extraDeleteMessage' => "<b>This tag will be removed from all customers tagged with it.</b>",
 
             'listColumns'    => [
 
-                'id'        => [ 'title' => 'DB ID', 'display' => true ],
+                'id'        => [ 'title' => 'DB ID', 'display' => false ],
 
                 'tag'               => 'Tag',
                 'display_as'        => 'Display As',
@@ -180,7 +180,7 @@ class CustomerTagController extends Doctrine2Frontend {
             $this->object->setUpdated( new \DateTime );
         }
 
-        $this->object->setTag(                      preg_replace( "/[^a-z0-9]/" , "", strtolower( $request->input( 'tag' ) ) ) );
+        $this->object->setTag(                      preg_replace( "/[^a-z0-9\-]/" , "", strtolower( $request->input( 'tag' ) ) ) );
         $this->object->setDescription(              $request->input( 'description'  ) );
         $this->object->setDisplayAs(                $request->input( 'display_as'   ) );
         $this->object->setInternalOnly( $request->input( 'internal_only' ) ? 1 : 0 );
@@ -195,11 +195,8 @@ class CustomerTagController extends Doctrine2Frontend {
      * @inheritdoc
      */
     protected function preDelete(): bool {
-        $okay = true;
-
         request()->session()->remove( "cust-list-tag" );
-
-        return $okay;
+        return true;
     }
 
 

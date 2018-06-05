@@ -7,6 +7,6 @@
         <a class="btn btn-sm btn-default" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>" title="Delete"><i class="glyphicon glyphicon-trash"></i></a>
     <?php endif;?>
 
-    <a class="btn btn-sm btn-default" href="<?= route('customer@list' ) . "?tag=" . $t->row[ 'id' ] ?>" title="Preview"><i class="glyphicon glyphicon glyphicon-list"></i></a>
+    <a class="btn btn-sm btn-default" href="<?= route('customer@list' ) . "?tag=" . $t->row[ 'id' ] ?>" title="List Customers with Tag"><i class="glyphicon glyphicon glyphicon-list"></i></a>
 
 </div>
