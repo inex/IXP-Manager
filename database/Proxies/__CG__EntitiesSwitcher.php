@@ -64,10 +64,10 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled'];
+            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'hostname', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'os', 'active', 'osDate', 'osVersion', 'lastPolled', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor'];
         }
 
-        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled'];
+        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'hostname', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'os', 'active', 'osDate', 'osVersion', 'lastPolled', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor'];
     }
 
     /**
