@@ -10,7 +10,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>List</li>
+    <li>List <?= $t->summary ?> </li>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -61,7 +61,7 @@ $this->layout( 'layouts/ixpv4' );
                 <ul class="dropdown-menu dropdown-menu-right">
 
                     <li class="<?= $t->type ? "" : "active" ?>">
-                        <a href="<?= route( "customer@list" ) ?>">All Types</a>
+                        <a href="<?= route( "customer@list" ) . '?type=0' ?>">All Types</a>
                     </li>
 
                     <li role="separator" class="divider"></li>
@@ -70,6 +70,31 @@ $this->layout( 'layouts/ixpv4' );
 
                         <li class="<?= $t->type == $type ? "active" : "" ?>">
                             <a href="<?= route( "customer@list" ) . '?type=' . $type ?>"><?= $text ?></a>
+                        </li>
+
+                    <?php endforeach; ?>
+
+                </ul>
+            </div>
+
+            <div class="btn-group">
+
+                <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <?= $t->tag ? 'Tag: ' . $t->tags[ $t->tag ] : "Limit to tag..." ?> <span class="caret"></span>
+                </button>
+
+                <ul class="dropdown-menu dropdown-menu-right">
+
+                    <li class="<?= $t->tag ? "" : "active" ?>">
+                        <a href="<?= route( "customer@list") . '?tag=0'  ?>">All Tags</a>
+                    </li>
+
+                    <li role="separator" class="divider"></li>
+
+                    <?php foreach( $t->tags as $id => $name ): ?>
+
+                        <li class="<?= $t->tag == $id ? "active" : "" ?>">
+                            <a href="<?= route( "customer@list" ) . '?tag=' . $id ?>"><?= $name ?></a>
                         </li>
 
                     <?php endforeach; ?>

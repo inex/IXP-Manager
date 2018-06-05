@@ -95,7 +95,7 @@ class CustomerTag
     /**
      * @return string
      */
-    public function getDescription(): string
+    public function getDescription()
     {
         return $this->description;
     }
@@ -104,7 +104,7 @@ class CustomerTag
      * @param string $description
      * @return CustomerTag
      */
-    public function setDescription( string $description ): CustomerTag
+    public function setDescription( $description ): CustomerTag
     {
         $this->description = $description;
         return $this;

@@ -23,6 +23,11 @@
                 <li  <?php if( $t->controller == 'CustomerController' ): ?> class="active" <?php endif; ?> >
                     <a href="<?= route( 'customer@list' ) ?>">Customers</a>
                 </li>
+                <?php if( $t->controller == 'CustomerController' || $t->controller == 'CustomerTagController' ): ?>
+                    <li class="sub-menu <?php if( $t->controller == 'CustomerTagController' ):?> active <?php endif;?> " >
+                        <a href="<?= route('customer-tag@list' ) ?>">Tags</a>
+                    </li>
+                <?php endif; ?>
 
                 <li <?php if( $t->controller == 'VirtualInterfaceController' ): ?> class="active" <?php endif; ?> >
 

@@ -105,10 +105,10 @@
                                                                 <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
                                                             <?php endif; ?>
 
-                                                        <?php elseif( $cconf[ 'type'] ==  $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
+                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
 
-                                                            <?php if( $t->data[ 'item' ][ $col ] ): ?>
-                                                                <?= date('Y-m-d H:M:S', strtotime( $t->data[ $col ] ) ) ?>
+                                                            <?php if( $t->data[ 'item' ][ $col ] != null): ?>
+                                                                <?= $t->data[ 'item' ][ $col ]->format( 'Y-m-d H:i:s' )  ?>
                                                             <?php endif; ?>
 
                                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
