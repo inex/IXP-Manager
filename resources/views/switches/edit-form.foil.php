@@ -24,7 +24,7 @@
             <?php endif; ?>
 
             <?= Former::select( 'cabinetid' )
-                ->label( 'Cabinet' )
+                ->label( 'Rack' )
                 ->fromQuery( $t->data[ 'params'][ 'cabinets'], 'name' )
                 ->placeholder( 'Choose a cabinet' )
                 ->addClass( 'chzn-select' );

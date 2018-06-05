@@ -40,9 +40,12 @@
 
             });
 
-
         });
 
+
+        /**
+         * Even on click to generate the switch ports
+         */
         $( "#generate-btn" ).click( function( event ) {
 
             event.preventDefault();
@@ -50,6 +53,9 @@
 
         });
 
+        /**
+         * Generate the new switch ports
+         */
         function generatePorts() {
             let numPorts = parseInt($("#numports").val());
             let numFirst = parseInt($("#numfirst").val());
@@ -93,6 +99,7 @@
 
             }
         }
+
 
         function sprintf() {
             var args = arguments,

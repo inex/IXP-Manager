@@ -94,7 +94,7 @@ class SwitchController extends Doctrine2Frontend {
                 'name'           => 'Name',
 
                 'cabinet'  => [
-                    'title'      => 'Cabinet',
+                    'title'      => 'Rack',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                     'controller' => 'rack',
                     'action'     => 'view',
@@ -156,7 +156,8 @@ class SwitchController extends Doctrine2Frontend {
 
                 case UserEntity::AUTH_CUSTUSER:
                     switch( Route::current()->getName() ) {
-                        case '':
+
+                        case 'switch@configuration':
                             break;
 
                         default:
@@ -330,8 +331,8 @@ class SwitchController extends Doctrine2Frontend {
             Former::populate([
                 'name'              => array_key_exists( 'name',      $old         ) ? $old['name']              :  $this->object->getName(),
                 'hostname'          => array_key_exists( 'hostname', $old          ) ? $old['hostname']          :  $this->object->getHostname(),
-                'cabinetid'         => array_key_exists( 'cabinetid', $old         ) ? $old['cabinetid']         :  $this->object->getCabinet() ? $this->object->getCabinet()->getId() : null,
-                'infrastructure'    => array_key_exists( 'infrastructure', $old    ) ? $old['infrastructure']    :  $this->object->getInfrastructure() ? $this->object->getInfrastructure()->getId() : null,
+                'cabinetid'         => array_key_exists( 'cabinetid', $old         ) ? $old['cabinetid']         :  $this->object->getCabinet()         ? $this->object->getCabinet()->getId()          : null,
+                'infrastructure'    => array_key_exists( 'infrastructure', $old    ) ? $old['infrastructure']    :  $this->object->getInfrastructure()  ? $this->object->getInfrastructure()->getId()   : null,
                 'ipv4addr'          => array_key_exists( 'ipv4addr', $old          ) ? $old['ipv4addr']          :  $this->object->getIpv4addr(),
                 'ipv6addr'          => array_key_exists( 'ipv6addr', $old          ) ? $old['ipv6addr']          :  $this->object->getIpv6addr(),
                 'snmppasswd'        => array_key_exists( 'snmppasswd', $old        ) ? $old['snmppasswd']        :  $this->object->getSnmppasswd(),
@@ -407,7 +408,7 @@ class SwitchController extends Doctrine2Frontend {
      * Pre populate the form ADD by smtp
      *
      * @param Request $request
-     * @return bool|RedirectResponse
+     * @return bool|RedirectResponse|View
      *
      * @throws
      */
@@ -514,6 +515,7 @@ class SwitchController extends Doctrine2Frontend {
             if( $s = D2EM::getRepository( SwitcherEntity::class )->findBy( ['asn' => $request->input( 'asn' ) ] ) ){
                 $id = $this->object->getId();
                 $asnExist = array_filter( $s , function ( $e ) use( $id ) {
+                    /** @var $e SwitcherEntity */
                     return $e->getId() != $id;
                 });
 
@@ -548,7 +550,7 @@ class SwitchController extends Doctrine2Frontend {
             $platform = $request->session()->get( "snmp-platform" );
 
             $this->object->setOs(           $platform->getOs() );
-            $this->object->setOsDate(       $platform->getOsDate() );
+            $this->object->setOsDate(       new \DateTime( $platform->getOsDate() ) );
             $this->object->setOsVersion(    $platform->getOsVersion() );
             $this->object->setSerialNumber( $platform->getSerialNumber() );
             $request->session()->remove( "snmp-platform" );
@@ -627,6 +629,7 @@ class SwitchController extends Doctrine2Frontend {
      * @return view
      */
     function portReport( int $id = null ) : View {
+        $s = false;
 
         if( $id && !( $s = D2EM::getRepository( SwitcherEntity::class )->find( $id ) ) ) {
             abort(404, "Unknown switch.");
@@ -712,6 +715,7 @@ class SwitchController extends Doctrine2Frontend {
         } else {
             $location = false;
         }
+
 
 
         if( $s || $infra || $location ){

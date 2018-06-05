@@ -2,7 +2,7 @@
 
     $( document ).ready(function() {
 
-        /*
+        /**
            Change the color of the row when selected
         */
         $( ".sp-checkbox"  ).on( 'click', function( event ){
@@ -13,7 +13,7 @@
 
         });
 
-        /*
+        /**
             Check or uncheck all the checkboxes
         */
         $( "#select-all"  ).on( 'change', function(  ){
@@ -21,7 +21,7 @@
             $( ".poll-tr"       ).css( "background",    $( "#select-all"  ).is( ":checked" ) ? "#F0F0F0" : "" );
         });
 
-        /*
+        /**
             Reverse the states of the checkboxes
         */
         $( "#checkbox-reverse"  ).on( 'click', function( ){
@@ -34,7 +34,7 @@
         });
 
 
-        /*
+        /**
             Change the type of the selected switch ports via the shared dropdown
         */
         $( "#shared-type" ).on( 'change', function(){
@@ -43,7 +43,7 @@
             }
         });
 
-        /*
+        /**
             Change the type of a switch port via the dedicated dropdown
         */
         $( "select[id|='port-type']"  ).on( 'change', function( event ){
@@ -52,21 +52,21 @@
 
         });
 
-        /*
+        /**
             Change the status of the selected switch ports to active
         */
         $( "#poll-group-active"  ).on( 'click', function( ){
             changeSwitchPortStatus( 1 );
         });
 
-        /*
+        /**
             Change the status of the selected switch ports to inactive
         */
         $( "#poll-group-inactive"  ).on( 'click', function( ){
             changeSwitchPortStatus( 0 );
         });
 
-        /*
+        /**
             Get the ID of all the switch port selected
 
             @return    spids          array of switch port ID
@@ -85,7 +85,7 @@
         }
 
 
-        /*
+        /**
             Change the type on the selected Switch port
 
             @var    id          array of swtich port ID
@@ -141,7 +141,7 @@
 
         }
 
-        /*
+        /**
             Disable all the action button in order to avoid many submit when a request has already been submitted
         */
         function disableInputsAction(){
@@ -152,13 +152,13 @@
         }
 
 
-        /*
+        /**
             Delete the selected switch ports
         */
         $( "#poll-group-delete"  ).on( 'click', function( event ){
             if( id = getSelectedSwitchPorts() ){
 
-                let urlAction = '<?= route( "switch-ports@delete" ) ?>';
+                let urlAction = '<?= route( "switch-ports@delete-snmp-poll" ) ?>';
                 disableInputsAction();
                 $.ajax( urlAction, {
                     data: {
@@ -183,7 +183,7 @@
 
 
 
-        /*
+        /**
             Change the status of selected switch ports (active or inactive)
 
             @var    bool   active   the status wanted (active or inactive)

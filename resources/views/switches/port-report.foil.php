@@ -28,12 +28,10 @@
                             <a href="<?= route( "switch@port-report", [ "port" => $id ] ) ?>"><?= $name ?></a>
                         </li>
 
-
                     <?php endforeach; ?>
 
                 </ul>
             </div>
-
 
             <a type="button" class="btn btn-default" href="<?= route ('switch@list' ) ?>" title="list">
                 <span class="glyphicon glyphicon-th-list"></span>

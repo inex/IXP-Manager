@@ -44,9 +44,13 @@ use IXP\Utils\View\Alert\{
 };
 
 use Illuminate\View\View;
+
 use OSS_SNMP\{
-    Exception, Platform, SNMP
+    Exception,
+    SNMP
 };
+
+use OSS_SNMP\MIBS\Iface;
 
 
 /**
@@ -136,8 +140,9 @@ class SwitchPortsController extends Doctrine2Frontend {
             Route::get(  'list-mau/{id}',   'Switches\SwitchPortsController@listMau'        )->name( "switch-ports@list-mau"        );
             Route::get(  'op-status/{id}',  'Switches\SwitchPortsController@listOpStatus'   )->name( "switch-ports@list-op-status"  );
             Route::get(  'snmp-poll/{id}',  'Switches\SwitchPortsController@snmpPoll'       )->name( "switch-ports@snmp-poll"       );
+
             Route::post( 'set-type',        'Switches\SwitchPortsController@setType'        )->name( "switch-ports@set-type"        );
-            Route::post( 'delete',          'Switches\SwitchPortsController@delete'         )->name( "switch-ports@delete"          );
+            Route::post( 'delete-snmp-poll','Switches\SwitchPortsController@deleteSnmpPoll' )->name( "switch-ports@delete-snmp-poll");
             Route::post( 'change-status',   'Switches\SwitchPortsController@changeStatus'   )->name( "switch-ports@change-status"   );
         });
     }
@@ -161,13 +166,13 @@ class SwitchPortsController extends Doctrine2Frontend {
             /** @var SwitcherEntity $s */
             if(  $s = D2EM::getRepository( SwitcherEntity::class )->find( $r->input( 'switch' ) ) ) {
                 $sid = $s->getId();
-                $r->session()->put( "switch-configuration-switch", $sid );
+                $r->session()->put( "switch-port-list", $sid );
             } else {
-                $r->session()->remove( "switch-configuration-switch" );
+                $r->session()->remove( "switch-port-list" );
                 $sid = false;
             }
-        } else if( $r->session()->exists( "switch-configuration-switch" ) ) {
-            $sid = $r->session()->get( "switch-configuration-switch" );
+        } else if( $r->session()->exists( "switch-port-list" ) ) {
+            $sid = $r->session()->get( "switch-port-list" );
         } else {
             $sid = false;
         }
@@ -224,8 +229,6 @@ class SwitchPortsController extends Doctrine2Frontend {
 
         }
 
-
-
         return [
             'object'            => $this->object,
             'switches'          => D2EM::getRepository( SwitcherEntity::class  )->getNames(),
@@ -277,7 +280,6 @@ class SwitchPortsController extends Doctrine2Frontend {
 
             }
 
-
         } else {
 
             $validator = Validator::make( $request->all(), [
@@ -286,7 +288,6 @@ class SwitchPortsController extends Doctrine2Frontend {
                     'type'                      => 'required|integer|in:' . implode( ',', array_keys( SwitchPortEntity::$TYPES ) ),
                 ]
             );
-
 
             if( $validator->fails() ) {
                 return Redirect::back()->withErrors( $validator )->withInput();
@@ -308,6 +309,21 @@ class SwitchPortsController extends Doctrine2Frontend {
         return true;
     }
 
+
+    /**
+     * Allow D2F implementations to override where the post-store redirect goes.
+     *
+     * To implement this, have it return a valid route name
+     *
+     * @return string|null
+     */
+    protected function postStoreRedirect() {
+        if( request()->input( "isAdd" ) ){
+            return route( "switch-ports@list", [ "switch" => request()->input( "switchid" ) ] );
+        }
+
+        return null;
+    }
 
 
     /**
@@ -349,10 +365,9 @@ class SwitchPortsController extends Doctrine2Frontend {
             'switch'        => 'Switch',
             'ifName'        => 'Port',
             'type'          => 'Type',
-
-            'mauType'      => 'MAU Type',
-            'mauState'     => 'MAU State',
-            'mauJacktype'  => 'Jack Type',
+            'mauType'       => 'MAU Type',
+            'mauState'      => 'MAU State',
+            'mauJacktype'   => 'Jack Type',
         ];
 
         return true;
@@ -372,9 +387,14 @@ class SwitchPortsController extends Doctrine2Frontend {
         $this->data[ 'rows' ] =  D2EM::getRepository( SwitchPortEntity::class )->getUnusedOpticsForFeList( $this->feParams );
 
         $this->setUpViews();
+
         $this->data[ 'view' ][ 'pageBreadcrumbs']       = $this->resolveTemplate( 'page-bread-crumbs',          false );
 
         $this->preList();
+
+        AlertContainer::push( "A list of ports from <b>switches that support the IANA MAU MIB</b> where the operational status
+        is down, the port is populated with an optic / SFP and the port type is not management.
+        Data valid at time of last SNMP poll.", Alert::INFO );
 
         return $this->display( 'list' );
     }
@@ -397,15 +417,15 @@ class SwitchPortsController extends Doctrine2Frontend {
         $this->feParams->hideactioncolumn           = true;
 
         $this->feParams->listColumns = [
-            'id'                 => [ 'title' => 'UID', 'display' => true ],
-            'ifName'             => 'Name',
+            'id'                    => [ 'title' => 'UID', 'display' => true ],
+            'ifName'                => 'Name',
             'type'                  => [
                 'title'     =>  'Type',
                 'type'      =>   self::$FE_COL_TYPES[ 'RESOLVE_CONST' ],
                 'const'     =>   SwitchPortEntity::$TYPES,
             ],
 
-            'state'       => [
+            'state'                 => [
                 'title'     =>  'State (Admin/Op)',
                 'type'      =>   self::$FE_COL_TYPES[ 'SCRIPT' ],
                 'script'    =>   'switch-port/port-admin-status',
@@ -439,7 +459,7 @@ class SwitchPortsController extends Doctrine2Frontend {
      *
      * @param int $switchid
      *
-     * @return view|redirect
+     * @return RedirectResponse|View
      *
      * @throws
      */
@@ -452,7 +472,9 @@ class SwitchPortsController extends Doctrine2Frontend {
 
         $switches = [];
         $switchesList = D2EM::getRepository( SwitcherEntity::class )->findBy( [ 'mauSupported' => true ] );
+
         foreach( $switchesList as $switch ){
+            /** @var $switch  SwitcherEntity */
             $switches[ $switch->getId() ] = $switch->getName();
         }
 
@@ -556,7 +578,7 @@ class SwitchPortsController extends Doctrine2Frontend {
 
                 AlertContainer::push( "The below is <b>live information</b> gathered via SNMP", Alert::INFO );
 
-            } catch( \OSS_SNMP\Exception $e ) {
+            } catch( Exception $e ) {
                 $lastpolled = is_null( $s->getLastPolled()) ? "never" : $s->getLastPolled()->format( 'Y-m-d H:i:s' );
 
                 AlertContainer::push( "<b>Could not update switch and switch port details via SNMP poll.</b> " .
@@ -566,7 +588,7 @@ class SwitchPortsController extends Doctrine2Frontend {
 
         $this->setUpOpStatus();
 
-        $this->data[ 'params' ][ 'portStates' ]     = \OSS_SNMP\MIBS\Iface::$IF_OPER_STATES;
+        $this->data[ 'params' ][ 'portStates' ]     = Iface::$IF_OPER_STATES;
         $this->data[ 'params' ][ 'switch' ]         = $s->getId();
         $this->data[ 'params' ][ 'switches']        = D2EM::getRepository( SwitcherEntity::class  )->getNames();
 
@@ -580,7 +602,6 @@ class SwitchPortsController extends Doctrine2Frontend {
     }
 
 
-
     /**
      * This action will find all ports on a switch, match them (where possible) to existing
      * ports of that switch in the database and allow the user to:
@@ -592,6 +613,10 @@ class SwitchPortsController extends Doctrine2Frontend {
      *
      *  Should this be in the SwitchController? Possibly...
      *
+     * @param int $id Switch Id
+     *
+     * @return view
+     * @throws
      */
     public function snmpPoll( int $id ){
 
@@ -615,7 +640,7 @@ class SwitchPortsController extends Doctrine2Frontend {
             $s->snmpPollSwitchPorts( $host, true, $results );
             D2EM::flush();
 
-        } catch( \OSS_SNMP\Exception $e ) {
+        } catch( Exception $e ) {
             AlertContainer::push( "Error polling switch via SNMP.", Alert::DANGER );
             redirect::to( route( "switch@list" ) );
         }
@@ -666,6 +691,7 @@ class SwitchPortsController extends Doctrine2Frontend {
 
         }
 
+        return response()->json( [ 'success' => false ] );
     }
 
 
@@ -678,7 +704,7 @@ class SwitchPortsController extends Doctrine2Frontend {
      *
      * @throws
      */
-    public function delete( Request $r ): JsonResponse {
+    public function deleteSnmpPoll( Request $r ): JsonResponse {
 
         if( $r->input( "spid") ){
 
@@ -718,6 +744,8 @@ class SwitchPortsController extends Doctrine2Frontend {
 
         }
 
+        return response()->json( [ 'success' => false ] );
+
     }
 
     /**
@@ -749,10 +777,13 @@ class SwitchPortsController extends Doctrine2Frontend {
 
         }
 
+        return response()->json( [ 'success' => false ] );
     }
 
 
-
+    /**
+     * Setup all the necessary view
+     */
     private function setUpViews(){
         $this->data[ 'view' ][ 'listEmptyMessage']      = $this->resolveTemplate( 'list-empty-message',         false );
         $this->data[ 'view' ][ 'listHeadOverride']      = $this->resolveTemplate( 'list-head-override',         false );

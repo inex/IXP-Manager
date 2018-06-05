@@ -153,14 +153,14 @@
                         <?php if( Auth::getUser()->isSuperUser() ): ?>
                             <a href="<?= route( "customer@overview" , [ "id" => $conf[ "custid" ] ] ) ?>"><?= $conf[ "customer" ] ?></a>
                         <?php else: ?>
-                            <a href="<?= route( "customer@detail" , [ "id" => $conf[ "custid" ] ] ) ?>"><?= $conf[ "customer" ] ?></a>
+                            <a href="<?= route( "customer@detail"   , [ "id" => $conf[ "custid" ] ] ) ?>"><?= $conf[ "customer" ] ?></a>
                         <?php endif; ?>
                     </td>
                     <td>
                         <?php if( Auth::getUser()->isSuperUser() ): ?>
-                            <a href="<?= route( "switch@port-report" , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
+                            <a href="<?= route( "switch@port-report"    , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
                         <?php else: ?>
-                            <a href="<?= route( "switch@configuration" , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
+                            <a href="<?= route( "switch@configuration"  , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
                         <?php endif; ?>
                     </td>
                     <td>

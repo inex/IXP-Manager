@@ -4,17 +4,23 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'title' ) ?>
-<?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
-<a href="<?= route($t->feParams->route_prefix.'@list') ?>">
-    <?php endif; ?>
-    <?=  $t->feParams->pagetitle  ?>
+
     <?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
-</a>
-<?php endif; ?>
+
+        <a href="<?= route($t->feParams->route_prefix.'@list') ?>">
+            <?php endif; ?>
+            <?=  $t->feParams->pagetitle  ?>
+            <?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
+        </a>
+
+    <?php endif; ?>
+
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-<li> <?= $t->data[ 'params']['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->feParams->titleSingular  ?> </li>
+
+    <li> <?= $t->data[ 'params']['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->feParams->titleSingular  ?> </li>
+
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -26,6 +32,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php else: ?>
 
     <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
+
         <li class="pull-right">
             <div class="btn-group btn-group-xs" role="group">
                 <?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
@@ -35,6 +42,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?php endif; ?>
             </div>
         </li>
+
     <?php endif;?>
 
 <?php endif;?>
@@ -45,6 +53,7 @@ $this->layout( 'layouts/ixpv4' );
 <div class="row">
 
     <div class="col-sm-12">
+
         <div class="well">
 
             <?= Former::open()->method( 'POST' )
@@ -78,9 +87,7 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::close() ?>
 
-
         </div>
-
 
     </div>
 
@@ -90,5 +97,7 @@ $this->layout( 'layouts/ixpv4' );
 
 
 <?php $this->section( 'scripts' ) ?>
-<?= $t->data[ 'view' ]['editScript'] ? $t->insert( $t->data[ 'view' ]['editScript'] ) : '' ?>
+
+    <?= $t->data[ 'view' ]['editScript'] ? $t->insert( $t->data[ 'view' ]['editScript'] ) : '' ?>
+
 <?php $this->append() ?>

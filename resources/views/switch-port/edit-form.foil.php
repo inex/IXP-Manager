@@ -17,7 +17,7 @@
     ?>
 
         <?= Former::select( 'switchid' )
-            ->label( 'Cabinet' )
+            ->label( 'Switch' )
             ->fromQuery( $t->data[ 'params'][ 'switches'], 'name' )
             ->placeholder( 'Choose a Switch' )
             ->addClass( 'chzn-select' )

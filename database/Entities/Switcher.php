@@ -4,13 +4,16 @@ namespace Entities;
 
 use D2EM, Log;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Entities\{
-    SwitchPort as SwitchPortEntity
+    Cabinet                 as CabinetEntity,
+    ConsoleServerConnection as ConsoleServerConnectionEntity,
+    Infrastructure          as InfrastructureEntity,
+    SwitchPort              as SwitchPortEntity,
+    Vendor                  as VendorEntity
 };
 
 use \OSS_SNMP\MIBS\Iface as SNMPIface;
-
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Entities\Switcher
@@ -71,6 +74,11 @@ class Switcher
     protected $model;
 
     /**
+     * @var string
+     */
+    protected $hostname;
+
+    /**
      * @var string $notes
      */
     protected $notes;
@@ -111,12 +119,37 @@ class Switcher
     private $serialNumber;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var string
+     */
+    protected $os;
+
+    /**
+     * @var boolean $active
+     */
+    protected $active;
+
+    /**
+     * @var \DateTime
+     */
+    protected $osDate;
+
+    /**
+     * @var string
+     */
+    protected $osVersion;
+
+    /**
+     * @var \DateTime
+     */
+    protected $lastPolled;
+
+    /**
+     * @var ArrayCollection
      */
     protected $Ports;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $ConsoleServerConnections;
 
@@ -135,8 +168,8 @@ class Switcher
      */
     public function __construct()
     {
-        $this->Ports = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->ConsoleServerConnections = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->Ports = new ArrayCollection();
+        $this->ConsoleServerConnections = new ArrayCollection();
     }
 
     /**
@@ -234,10 +267,10 @@ class Switcher
     /**
      * Set infrastructure
      *
-     * @param \Entities\Infrastructure $infrastructure
+     * @param InfrastructureEntity $infrastructure
      * @return Switcher
      */
-    public function setInfrastructure( \Entities\Infrastructure $infrastructure = null )
+    public function setInfrastructure( InfrastructureEntity $infrastructure = null )
     {
         $this->Infrastructure = $infrastructure;
 
@@ -247,7 +280,7 @@ class Switcher
     /**
      * Get infrastructure
      *
-     * @return \Entities\Infrastructure
+     * @return InfrastructureEntity
      */
     public function getInfrastructure()
     {
@@ -336,10 +369,10 @@ class Switcher
     /**
      * Add Ports
      *
-     * @param \Entities\SwitchPort $ports
+     * @param SwitchPortEntity $ports
      * @return Switcher
      */
-    public function addPort(\Entities\SwitchPort $ports)
+    public function addPort( SwitchPortEntity $ports)
     {
         $this->Ports[] = $ports;
 
@@ -349,9 +382,9 @@ class Switcher
     /**
      * Remove Ports
      *
-     * @param \Entities\SwitchPort $ports
+     * @param SwitchPortEntity $ports
      */
-    public function removePort(\Entities\SwitchPort $ports)
+    public function removePort( SwitchPortEntity $ports)
     {
         $this->Ports->removeElement($ports);
     }
@@ -359,7 +392,7 @@ class Switcher
     /**
      * Get Ports
      *
-     * @return \Entities\SwitchPort $ports
+     * @return ArrayCollection $ports
      */
     public function getPorts()
     {
@@ -369,10 +402,10 @@ class Switcher
     /**
      * Add ConsoleServerConnections
      *
-     * @param \Entities\ConsoleServerConnection $consoleServerConnections
+     * @param ConsoleServerConnectionEntity $consoleServerConnections
      * @return Switcher
      */
-    public function addConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnections)
+    public function addConsoleServerConnection( ConsoleServerConnectionEntity $consoleServerConnections)
     {
         $this->ConsoleServerConnections[] = $consoleServerConnections;
 
@@ -382,9 +415,9 @@ class Switcher
     /**
      * Remove ConsoleServerConnections
      *
-     * @param \Entities\ConsoleServerConnection $consoleServerConnections
+     * @param ConsoleServerConnectionEntity $consoleServerConnections
      */
-    public function removeConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnections)
+    public function removeConsoleServerConnection( ConsoleServerConnectionEntity $consoleServerConnections)
     {
         $this->ConsoleServerConnections->removeElement($consoleServerConnections);
     }
@@ -402,10 +435,10 @@ class Switcher
     /**
      * Set Cabinet
      *
-     * @param \Entities\Cabinet $cabinet
+     * @param CabinetEntity $cabinet
      * @return Switcher
      */
-    public function setCabinet(\Entities\Cabinet $cabinet = null)
+    public function setCabinet( CabinetEntity $cabinet = null)
     {
         $this->Cabinet = $cabinet;
 
@@ -415,7 +448,7 @@ class Switcher
     /**
      * Get Cabinet
      *
-     * @return \Entities\Cabinet
+     * @return CabinetEntity
      */
     public function getCabinet()
     {
@@ -425,10 +458,10 @@ class Switcher
     /**
      * Set Vendor
      *
-     * @param \Entities\Vendor $vendor
+     * @param VendorEntity $vendor
      * @return Switcher
      */
-    public function setVendor(\Entities\Vendor $vendor = null)
+    public function setVendor( VendorEntity $vendor = null)
     {
         $this->Vendor = $vendor;
 
@@ -444,13 +477,6 @@ class Switcher
     {
         return $this->Vendor;
     }
-
-
-    /**
-     * @var boolean $active
-     */
-    protected $active;
-
 
     /**
      * Set active
@@ -474,10 +500,7 @@ class Switcher
     {
         return $this->active;
     }
-    /**
-     * @var string
-     */
-    protected $hostname;
+
 
 
     /**
@@ -502,25 +525,7 @@ class Switcher
     {
         return $this->hostname;
     }
-    /**
-     * @var string
-     */
-    protected $os;
 
-    /**
-     * @var \DateTime
-     */
-    protected $osDate;
-
-    /**
-     * @var string
-     */
-    protected $osVersion;
-
-    /**
-     * @var \DateTime
-     */
-    protected $lastPolled;
 
 
     /**
@@ -694,8 +699,7 @@ class Switcher
      *
      * @return \Entities\Switcher For fluent interfaces
      *
-     * @throws \OSS_SNMP\Exception
-     * @throws \Zend_Exception
+     * @throws
      */
     public function snmpPollSwitchPorts( $host, $logger = false, &$result = false ){
         // clone the ports currently known to this switch as we'll be playing with this array
@@ -728,7 +732,6 @@ class Switcher
                 }
             }
 
-            $new = false;
             if( !$sp ) {
                 // no existing port in database so we have found a new port
                 $sp = new SwitchPortEntity;
@@ -744,7 +747,6 @@ class Switcher
                 if( is_array( $result ) ) {
                     $result[ $index ] = [ "port" => $sp, 'bullet' => "new" ];
                 }
-                $new = true;
 
                 if( $logger ) {
                     Log::info( "Found new port for {$this->getName()} with index $index" );

@@ -4,7 +4,16 @@ namespace Entities;
 
 use Log;
 
-use Doctrine\ORM\Mapping as ORM;
+use Entities\{
+    PatchPanelPort      as PatchPanelPortEntity,
+    PhysicalInterface   as PhysicalInterfaceEntity,
+    Switcher            as SwitcherEntity
+};
+
+use OSS_SNMP\Exception;
+use OSS_SNMP\MIBS\Extreme\Port;
+use OSS_SNMP\MIBS\Iface;
+
 
 /**
  * Entities\SwitchPort
@@ -153,7 +162,6 @@ class SwitchPort
      */
     protected $ifIndex;
 
-
     /**
      * @var boolean $active
      */
@@ -163,6 +171,36 @@ class SwitchPort
      * @var \Entities\PatchPanelPort
      */
     private $patchPanelPort;
+
+    /**
+     * @var string
+     */
+    private $mauType;
+
+    /**
+     * @var string
+     */
+    private $mauState;
+
+    /**
+     * @var string
+     */
+    private $mauAvailability;
+
+    /**
+     * @var string
+     */
+    private $mauJacktype;
+
+    /**
+     * @var boolean
+     */
+    private $mauAutoNegSupported;
+
+    /**
+     * @var boolean
+     */
+    private $mauAutoNegAdminState;
 
     /**
      * Set type
@@ -223,10 +261,10 @@ class SwitchPort
     /**
      * Set PhysicalInterface
      *
-     * @param \Entities\PhysicalInterface $physicalInterface
+     * @param PhysicalInterfaceEntity $physicalInterface
      * @return SwitchPort
      */
-    public function setPhysicalInterface(\Entities\PhysicalInterface $physicalInterface = null)
+    public function setPhysicalInterface( PhysicalInterfaceEntity $physicalInterface = null)
     {
         $this->PhysicalInterface = $physicalInterface;
 
@@ -245,10 +283,10 @@ class SwitchPort
     /**
      * Set Switcher
      *
-     * @param \Entities\Switcher $switcher
+     * @param SwitcherEntity $switcher
      * @return SwitchPort
      */
-    public function setSwitcher(\Entities\Switcher $switcher = null)
+    public function setSwitcher( SwitcherEntity $switcher = null)
     {
         $this->Switcher = $switcher;
 
@@ -258,7 +296,7 @@ class SwitchPort
     /**
      * Get Switcher
      *
-     * @return \Entities\Switcher
+     * @return SwitcherEntity
      */
     public function getSwitcher()
     {
@@ -533,11 +571,13 @@ class SwitchPort
      *
      * @link https://github.com/opensolutions/OSS_SNMP
      *
-     * @throws \OSS_SNMP\Exception
      *
      * @param \OSS_SNMP\SNMP $host An instance of the SNMP host object
-     * @param \OSS_Logger $logger An instance of the logger or false
+     * @param bool $logger An instance of the logger or false
+     *
      * @return \Entities\SwitchPort For fluent interfaces
+     *
+     * @throws
      */
     public function snmpUpdate( $host, $logger = false ){
         foreach( self::$SNMP_MAP as $snmp => $entity ) {
@@ -579,7 +619,7 @@ class SwitchPort
                         $n = isset( $n[ $this->getIfIndex() ] ) ? $n[ $this->getIfIndex() ] : null;
                     }
 
-                } catch( \OSS_SNMP\Exception $e ) {
+                } catch( Exception $e ) {
                     // looks like the switch supports MAU but not all of the MIBs
                     if( $logger !== false ) {
                         Log::debug( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] MAU MIB for {$fn} not supported" );
@@ -609,7 +649,7 @@ class SwitchPort
             else
                 $this->setLagIfIndex( null );
 
-        } catch( \OSS_SNMP\Exception $e ){}
+        } catch( Exception $e ){}
 
         $this->setLastSnmpPoll( new \DateTime() );
 
@@ -659,35 +699,7 @@ class SwitchPort
     {
         return $this->lagIfIndex;
     }
-    /**
-     * @var string
-     */
-    private $mauType;
 
-    /**
-     * @var string
-     */
-    private $mauState;
-
-    /**
-     * @var string
-     */
-    private $mauAvailability;
-
-    /**
-     * @var string
-     */
-    private $mauJacktype;
-
-    /**
-     * @var boolean
-     */
-    private $mauAutoNegSupported;
-
-    /**
-     * @var boolean
-     */
-    private $mauAutoNegAdminState;
 
 
     /**
@@ -833,7 +845,7 @@ class SwitchPort
      * @return string
      */
     public function oidInOctets(): string {
-        return \OSS_SNMP\MIBS\Iface::OID_IF_HC_IN_OCTETS;
+        return Iface::OID_IF_HC_IN_OCTETS;
     }
 
     /**
@@ -841,7 +853,7 @@ class SwitchPort
      * @return string
      */
     public function oidOutOctets(): string {
-        return \OSS_SNMP\MIBS\Iface::OID_IF_HC_OUT_OCTETS;
+        return Iface::OID_IF_HC_OUT_OCTETS;
     }
 
     /**
@@ -849,7 +861,7 @@ class SwitchPort
      * @return string
      */
     public function oidInUnicastPackets(): string {
-        return \OSS_SNMP\MIBS\Iface::OID_IF_HC_IN_UNICAST_PACKETS;
+        return Iface::OID_IF_HC_IN_UNICAST_PACKETS;
     }
 
     /**
@@ -857,7 +869,7 @@ class SwitchPort
      * @return string
      */
     public function oidOutUnicastPackets(): string {
-        return \OSS_SNMP\MIBS\Iface::OID_IF_HC_OUT_UNICAST_PACKETS;
+        return Iface::OID_IF_HC_OUT_UNICAST_PACKETS;
     }
 
     /**
@@ -865,7 +877,7 @@ class SwitchPort
      * @return string
      */
     public function oidInErrors(): string {
-        return \OSS_SNMP\MIBS\Iface::OID_IF_IN_ERRORS;
+        return Iface::OID_IF_IN_ERRORS;
     }
 
     /**
@@ -873,7 +885,7 @@ class SwitchPort
      * @return string
      */
     public function oidOutErrors(): string {
-        return \OSS_SNMP\MIBS\Iface::OID_IF_OUT_ERRORS;
+        return Iface::OID_IF_OUT_ERRORS;
     }
 
     /**
@@ -881,7 +893,7 @@ class SwitchPort
      * @return string
      */
     public function oidInDiscards(): string {
-        return \OSS_SNMP\MIBS\Iface::OID_IF_IN_DISCARDS;
+        return Iface::OID_IF_IN_DISCARDS;
     }
 
     /**
@@ -891,11 +903,11 @@ class SwitchPort
     public function oidOutDiscards(): string {
         switch( $this->getSwitcher()->getOs() ) {
             case 'ExtremeXOS':
-                return \OSS_SNMP\MIBS\Extreme\Port::OID_PORT_CONG_DROP_PKTS;
+                return Port::OID_PORT_CONG_DROP_PKTS;
                 break;
 
             default:
-                return \OSS_SNMP\MIBS\Iface::OID_IF_OUT_DISCARDS;
+                return Iface::OID_IF_OUT_DISCARDS;
                 break;
         }
 
@@ -906,7 +918,7 @@ class SwitchPort
      * @return string
      */
     public function oidInBroadcasts(): string {
-        return \OSS_SNMP\MIBS\Iface::OID_IF_HC_IN_BROADCAST;
+        return Iface::OID_IF_HC_IN_BROADCAST;
     }
 
     /**
@@ -914,7 +926,7 @@ class SwitchPort
      * @return string
      */
     public function oidOutBroadcasts(): string {
-        return \OSS_SNMP\MIBS\Iface::OID_IF_HC_OUT_BROADCAST;
+        return Iface::OID_IF_HC_OUT_BROADCAST;
     }
 
     /**
@@ -960,11 +972,11 @@ class SwitchPort
     /**
      * Set patchPanelPort
      *
-     * @param \Entities\PatchPanelPort $patchPanelPort
+     * @param PatchPanelPortEntity $patchPanelPort
      *
      * @return SwitchPort
      */
-    public function setPatchPanelPort(\Entities\PatchPanelPort $patchPanelPort = null)
+    public function setPatchPanelPort( PatchPanelPortEntity $patchPanelPort = null)
     {
         $this->patchPanelPort = $patchPanelPort;
         return $this;
@@ -973,7 +985,7 @@ class SwitchPort
     /**
      * Get patchPanelPort
      *
-     * @return \Entities\PatchPanelPort
+     * @return PatchPanelPortEntity
      */
     public function getPatchPanelPort()
     {

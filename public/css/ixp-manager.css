@@ -744,3 +744,7 @@ td a:hover{
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
 }
+
+.table tbody tr td div.btn-group{
+    display: flex!important;
+}

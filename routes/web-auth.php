@@ -60,4 +60,4 @@ Route::group( [ 'prefix' => 'profile' ], function() {
 
 });
 
-
+Route::get(  'switch/configuration',       'Switches\SwitchController@configuration'       )->name( "switch@configuration" );
