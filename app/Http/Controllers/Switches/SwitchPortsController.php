@@ -340,6 +340,16 @@ class SwitchPortsController extends Doctrine2Frontend {
             return false;
         }
 
+
+        if( ( $this->object->getPatchPanelPort() ) ) {
+
+            $ppp = $this->object->getPatchPanelPort();
+
+            AlertContainer::push( "You cannot delete the switch port {$this->object->getName()} as it is assigned to a patch panel port for "
+                . "<a href=\"" . route('patch-panel-port/list/patch-panel', [ "id" => $ppp->getPatchPanel()->getId() ] ) . "\">{$ppp->getName()}</a>.", Alert::DANGER );
+            return false;
+        }
+
         return true;
 
     }
@@ -705,7 +715,7 @@ class SwitchPortsController extends Doctrine2Frontend {
      * @throws
      */
     public function deleteSnmpPoll( Request $r ): JsonResponse {
-
+        $error = false;
         if( $r->input( "spid") ){
 
             foreach( $r->input( "spid") as $id ){
@@ -722,7 +732,23 @@ class SwitchPortsController extends Doctrine2Frontend {
                         . "\">{$cust->getName()}</a>.", Alert::DANGER
                     );
 
-                } else{
+                    $error = true;
+
+                }
+
+                if( $sp->getPatchPanelPort() ){
+                    $ppp = $sp->getPatchPanelPort();
+                    AlertContainer::push( "Could not delete switch port {$sp->getName()} as it is assigned to a patch panel port for "
+                        . "<a href=\""
+                        . route( "patch-panel-port/list/patch-panel" , [ 'id' => $ppp->getId() ]  )
+                        . "\">{$ppp->getName()}</a>.", Alert::DANGER
+                    );
+
+                    $error = true;
+                }
+
+
+                if( !$error ) {
                     D2EM::remove( $sp );
                 }
 
