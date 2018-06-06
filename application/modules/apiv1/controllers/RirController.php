@@ -60,7 +60,7 @@ class Apiv1_RirController extends IXP_Controller_API_V1Action
 
         // populate the template variables
         $this->view->customers = $customers = OSS_Array::reindexObjects(
-                OSS_Array::reorderObjects( $this->getD2R( '\\Entities\\Customer' )->getConnected( false, false, true ), 'getAutsys', SORT_NUMERIC ),
+                OSS_Array::reorderObjects( $this->getD2R( '\\Entities\\Customer' )->getConnected( false, false ), 'getAutsys', SORT_NUMERIC ),
                 'getId'
         );
 

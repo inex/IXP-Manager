@@ -81,6 +81,7 @@ class Renderer {
      * Render the graph box
      * @param string $style The style (See BOX_STYLES above)
      * @return string
+     * @throws RendererException
      */
     public function box( $style ): string {
         if( !in_array($style,self::BOX_STYLES) || !View::exists('services.grapher.renderer.box.'.$style) ) {
@@ -93,10 +94,10 @@ class Renderer {
     /**
      * Alias for box renderer with legacy style
      * @return string
+     * @throws RendererException
      */
     public function boxLegacy(): string {
         return $this->box( self::BOX_STYLE_LEGACY );
     }
-
 
 }

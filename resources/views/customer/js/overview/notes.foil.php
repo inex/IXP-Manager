@@ -6,7 +6,7 @@
 
 
     function coNotesPublicCheckbox() {
-        if( $( "#co-notes-fpublic" ).is( ':checked' ) ){
+        if( $( "#co-notes-fpublic" ).is( ':checked' ) ) {
             $( "#co-notes-warning" ).show();
         } else {
             $( "#co-notes-warning" ).hide();
@@ -268,7 +268,7 @@
         $( 'button[id|="co-notes-edit"]' ).on( 'click', coNotesEditDialog );
         $( 'button[id|="co-notes-trash"]' ).on( 'click', coNotesDelete );
 
-        $( "#co-notes-fpublic" ).on( "click", function( ){
+        $( "#co-notes-fpublic" ).on( "click", function() {
             coNotesPublicCheckbox();
         });
 

@@ -1,5 +1,7 @@
 <?php
 
+use Tests\TestCase;
+
 /*
  * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -43,7 +45,7 @@ class MrtgTest extends TestCase
     {
         $grapher = GrapherService::backend( 'mrtg' );
 
-        $config = $grapher->generateConfiguration( d2r( 'IXP' )->getDefault() )[0];
+        $config = $grapher->generateConfiguration()[0];
 
         $knownGoodConf = file_get_contents( base_path() . "/data/travis-ci/known-good/ci-services-grapher-mrtg.conf" );
         $this->assertFalse( $knownGoodConf === false, "Mrtg Conf generation - could not load known good file ci-services-grapher-mrtg.conf" );

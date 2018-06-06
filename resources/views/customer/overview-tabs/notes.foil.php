@@ -89,7 +89,7 @@
                         <h4 class="modal-title" id="notes-modal-label"><span id="co-notes-dialog-title-action">Add a</span> Note for <?= $t->c->getName() ?> </h4>
                     </div>
                     <div class="modal-body" id="notes-modal-body">
-                        <div class="alert hide" id="co-notes-warning">
+                        <div class="alert alert-warning" id="co-notes-warning" style="display: none;">
                             <strong>Warning!</strong> Your customer will be able to read this note!
                         </div>
 

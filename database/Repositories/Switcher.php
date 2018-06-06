@@ -4,7 +4,6 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 use Entities\CoreBundle;
-use Entities\Switcher as SwitcherEntity;
 
 /**
  * Switcher
@@ -18,7 +17,7 @@ class Switcher extends EntityRepository
      * The cache key for all switch objects
      * @var string The cache key for all switch objects
      */
-    const ALL_CACHE_KEY = 'inex_switches';
+    const ALL_CACHE_KEY = 'ixp_switches';
 
     /**
      * Return an array of all switch objects from the database with caching
@@ -32,8 +31,11 @@ class Switcher extends EntityRepository
 
         $key = $this->genCacheKey( $active );
 
-        if( $active )
+        if( $active ) {
             $dql .= " AND s.active = 1";
+        }
+
+        $dql .= " ORDER BY s.name ASC";
 
         return $this->getEntityManager()->createQuery( $dql )
             ->useResultCache( true, 3600, $key )
@@ -64,6 +66,7 @@ class Switcher extends EntityRepository
             $this->getEntityManager()->getConfiguration()->getQueryCacheImpl()->delete(
                 $this->genCacheKey( $active )
             );
+
         }
     }
 
@@ -77,13 +80,11 @@ class Switcher extends EntityRepository
     {
         $key = self::ALL_CACHE_KEY;
 
-        if( $active )
+        if( $active ) {
             $key .= '-active';
-        else
+        } else {
             $key .= '-all';
-
-
-        $key .= '-all';
+        }
 
         return $key;
     }

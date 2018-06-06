@@ -1,5 +1,7 @@
 <?php
 
+use Tests\TestCase;
+
 use IXP\Utils\OUI as OUIUtil;
 
 /**

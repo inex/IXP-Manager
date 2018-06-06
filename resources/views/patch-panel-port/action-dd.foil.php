@@ -98,7 +98,10 @@
             <li> <a href="<?= route( 'patch-panel-port@email',  [ 'id' => $t->ppp->getId() , 'type' => \Entities\PatchPanelPort::EMAIL_CEASE ]      )  ?>">Email - Cease</a></li>
             <li> <a href="<?= route( 'patch-panel-port@email',  [ 'id' => $t->ppp->getId() , 'type' => \Entities\PatchPanelPort::EMAIL_INFO ]       )  ?>">Email - Information</a></li>
             <li> <a href="<?= route( 'patch-panel-port@email',  [ 'id' => $t->ppp->getId() , 'type' => \Entities\PatchPanelPort::EMAIL_LOA ]        )  ?>">Email - LoA</a></li>
-            <li role="separator" class="divider"></li>
+
+            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                <li role="separator" class="divider"></li>
+            <?php endif; ?>
         <?php endif; ?>
 
         <?php if( $t->tpl == "index"):?>
@@ -131,25 +134,26 @@
         <?php endif; ?>
 
 
-
-        <li id="danger-dropdown-<?= $t->ppp->getId() ?>" data-master-port="<?= $t->ppp->getNumber() ?>" data-port-prefix="<?= $t->ppp->getPrefix() ?>" data-slave-port="<?= $t->ppp->getDuplexSlavePortName() ?>" class="dropdown-submenu">
-            <a class="submenu" tabindex="-1" href="#" >
-                Admin Actions <span class="caret"></span>
-            </a>
-            <ul class="dropdown-menu dropdown-menu-l">
-                <li class="dropdown-header">DANGER AREA</li>
-                <li>
-                    <a tabindex="-1" id="delete-ppp-<?= $t->ppp->getId()?>" href="#">Delete Port</a>
-                </li>
-                <?php if( $t->ppp->hasSlavePort() ) : ?>
+        <?php if( Auth::getUser()->isSuperUser() ): ?>
+            <li id="danger-dropdown-<?= $t->ppp->getId() ?>" data-master-port="<?= $t->ppp->getNumber() ?>" data-port-prefix="<?= $t->ppp->getPrefix() ?>" data-slave-port="<?= $t->ppp->getDuplexSlavePortName() ?>" class="dropdown-submenu">
+                <a class="submenu" tabindex="-1" href="#" >
+                    Admin Actions <span class="caret"></span>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-l">
+                    <li class="dropdown-header">DANGER AREA</li>
                     <li>
-                        <a id="split-ppp-<?= $t->ppp->getId()?>" tabindex="-1" href="#">Split Port</a>
+                        <a tabindex="-1" id="delete-ppp-<?= $t->ppp->getId()?>" href="#">Delete Port</a>
                     </li>
-                <?php endif; ?>
-                <li>
-                    <a tabindex="-1" href="<?= route('patch-panel-port@move-form' , [ 'id' => $t->ppp->getId() ] ) ?>">Move Port</a>
-                </li>
-            </ul>
-        </li>
+                    <?php if( $t->ppp->hasSlavePort() ) : ?>
+                        <li>
+                            <a id="split-ppp-<?= $t->ppp->getId()?>" tabindex="-1" href="#">Split Port</a>
+                        </li>
+                    <?php endif; ?>
+                    <li>
+                        <a tabindex="-1" href="<?= route('patch-panel-port@move-form' , [ 'id' => $t->ppp->getId() ] ) ?>">Move Port</a>
+                    </li>
+                </ul>
+            </li>
+        <?php endif; ?>
     </ul>
 </div>

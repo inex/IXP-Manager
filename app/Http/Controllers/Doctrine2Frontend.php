@@ -123,6 +123,7 @@ abstract class Doctrine2Frontend extends Controller {
         'YES_NO'            => 'yes_no',
         'PARSDOWN'          => 'parsdown',
         'RESOLVE_CONST'     => 'resolve_const',
+        'CONST'             => 'const',
     ];
 
 
@@ -305,6 +306,7 @@ abstract class Doctrine2Frontend extends Controller {
      */
     public function add()
     {
+
         $this->data[ 'params' ] = $this->addEditPrepareForm();
         $this->data[ 'params' ]['isAdd'] = true;
         $this->addEditSetup();
@@ -466,7 +468,7 @@ abstract class Doctrine2Frontend extends Controller {
         $this->feParams->route_prefix = self::route_prefix();
 
         return view( $this->resolveTemplate( $tpl ) )->with( [
-            'data'          => $this->data ,
+            'data'          => $this->data,
             'feParams'      => $this->feParams
         ]);
     }

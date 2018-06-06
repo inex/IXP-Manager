@@ -33,6 +33,8 @@ use Getopt::Long;
 use Data::Dumper;
 use RRDs;
 use Time::HiRes qw(ualarm gettimeofday tv_interval);
+use JSON;
+use REST::Client;
 
 use FindBin qw($Bin);
 use File::Spec;
@@ -40,8 +42,7 @@ use lib File::Spec->catdir( $Bin, File::Spec->updir(), File::Spec->updir(), 'per
 
 use IXPManager::Config;
 
-my $ixp = new IXPManager::Config;	# (configfile => $configfile);
-my $dbh = $ixp->{db};
+my $ixp = new IXPManager::Config (dbase_disable => 1);	# (configfile => $configfile);
 
 my $debug = defined($ixp->{ixp}->{debug}) ? $ixp->{ixp}->{debug} : 0;
 my $insanedebug = 0;
@@ -49,8 +50,15 @@ my $rrdcached = defined($ixp->{ixp}->{sflow_rrdcached}) ? $ixp->{ixp}->{sflow_rr
 my $sflowtool = defined($ixp->{ixp}->{sflowtool}) ? $ixp->{ixp}->{sflowtool} : '/usr/bin/sflowtool';
 my $sflowtool_opts = defined($ixp->{ixp}->{sflowtool_opts}) ? $ixp->{ixp}->{sflowtool_opts} : '-l';
 my $basedir = defined($ixp->{ixp}->{sflow_rrddir}) ? $ixp->{ixp}->{sflow_rrddir} : '/data/ixpmatrix';
+my $apikey = defined($ixp->{ixp}->{apikey}) ? $ixp->{ixp}->{apikey} : undef;
+my $apibaseurl = defined($ixp->{ixp}->{apibaseurl}) ? $ixp->{ixp}->{apibaseurl} : undef;
+
 my $timer_period = 60;
+my $mactabletimeout = 86400;
 my $daemon = 1;
+my $infraid = undef;
+my $macdbtype = '';
+my $macdbrest;
 
 # conundrum: do we run GetOptions() before creating a new IXPManager::Config
 # object, which would allow us to set the configfile location on the command
@@ -64,18 +72,43 @@ GetOptions(
 	'sflowtool=s'		=> \$sflowtool,
 	'sflowtool_opts=s'	=> \$sflowtool_opts,
 	'sflow_rrddir=s'	=> \$basedir,
-	'flushtimer=i'		=> \$timer_period
+	'flushtimer=i'		=> \$timer_period,
+	'infraid=i'		=> \$infraid,
+	'macdbtype=s'		=> \$macdbtype,
+	'apikey=s'		=> \$apikey,
+	'apibaseurl=s'		=> \$apibaseurl,
 );
+
+if ($macdbtype eq 'configured') {
+	$macdbrest = '/sflow-db-mapper/configured-macs';
+} else {
+	$macdbrest = '/sflow-db-mapper/learned-macs';
+}
 
 if ($insanedebug) {
 	$debug = 1;
 }
 
-my $mactable = reload_mactable($dbh);
-my $matrix = matrix_init($dbh);
+if (!defined ($apikey)) {
+	die "FATAL: must set 'apikey' parameter in <ixp> section of ixpmanager.conf\n";
+}
+
+if (!defined ($apibaseurl)) {
+	die "FATAL: must set 'apibaseurl' parameter in <ixp> section of ixpmanager.conf\n";
+}
+
+my $client = REST::Client->new();
+$client->setTimeout(5);
+$client->setHost($apibaseurl);
+$client->addHeader('X-IXP-Manager-API-Key', $apikey);
+
+my $mactable = reload_mactable($client, $macdbrest);
+$mactable || die "FATAL: could not read IXP Manager API call on $apibaseurl$macdbrest\n";
+my $matrix = matrix_init($mactable, $infraid);
 
 my $execute_periodic = 0;
 my $quit_after_periodic = 0;
+my $mactablereloadfails = 0;
 
 # handle signals gracefully
 $SIG{TERM} = sub { $execute_periodic = 1; $quit_after_periodic = 1; };
@@ -121,25 +154,8 @@ while (<SFLOWTOOL>) {
 		next;
 	}
 
-	# each vid may have multiple VLIs associated with it.  The only way
-	# to determine which is the correct one is to iterate through the
-	# array of potential candidates and do a vlan/vid match.  The
-	# database schema guarantees that this is a unique mapping.
-
-	my $srcvli = 0; my $dstvli = 0;
-	foreach my $srcvid (@{$mactable->{mac}->{$srcmac}}) {
-		if (defined($matrix->{vlanmap}->{$vlan}->{$srcvid})) {
-			$srcvli = $matrix->{vlanmap}->{$vlan}->{$srcvid};
-		}
-	}
-	foreach my $dstvid (@{$mactable->{mac}->{$dstmac}}) {
-		if (defined($matrix->{vlanmap}->{$vlan}->{$dstvid})) {
-			$dstvli = $matrix->{vlanmap}->{$vlan}->{$dstvid};
-		}
-	}
-
-	my $srcname = defined ($matrix->{names}->{$srcvli}) ? $matrix->{names}->{$srcvli} : '(unknown)';
-	my $dstname = defined ($matrix->{names}->{$dstvli}) ? $matrix->{names}->{$dstvli} : '(unknown)';
+	my $srcvli = getvlifrommactable ($mactable, $infraid, $vlan, $srcmac);
+	my $dstvli = getvlifrommactable ($mactable, $infraid, $vlan, $dstmac);
 
 	# the sflow accounting perimeter on the switches will ensure that
 	# each packet will be counted exactly once.  because of this, the
@@ -151,8 +167,8 @@ while (<SFLOWTOOL>) {
 		$insanedebug && print STDERR "DEBUG: accepted update for: ".
 			"protocol: $ipprotocol ".
 			"vlan: $vlan ".
-			"srcvli: $srcvli / '$srcname' ".
-			"dstvli: $dstvli / '$dstname' ".
+			"srcvli: $srcvli ".
+			"dstvli: $dstvli ".
 			"pktsize: $pktsize ".
 			"samplerate: $samplerate ".
 			"\n";
@@ -166,8 +182,8 @@ while (<SFLOWTOOL>) {
 		$debug && print STDERR "DEBUG: dropped update for: ".
 			"protocol: $ipprotocol ".
 			"vlan: $vlan ".
-			"srcvli: $srcvli / '$srcname' ".
-			"dstvli: $dstvli / '$dstname' ".
+			"srcvli: $srcvli ".
+			"dstvli: $dstvli ".
 			"pktsize: $pktsize ".
 			"samplerate: $samplerate ".
 			"\n";
@@ -189,8 +205,20 @@ while (<SFLOWTOOL>) {
 			exit 0;
 		}
 		$execute_periodic = 0;
-		$mactable = reload_mactable($dbh);
-		$matrix = matrix_init($dbh);
+		my $newmactable = reload_mactable($client, $macdbrest);
+		if ($newmactable) {
+			$mactable = $newmactable;
+			$matrix = matrix_init($mactable, $infraid);
+			$mactablereloadfails = 0;
+		} else {
+			$mactablereloadfails++;
+			$debug && print STDERR "DEBUG: mactable reload failed: $mactablereloadfails\n";
+			# quit after specified period of unavailability
+			if ($mactablereloadfails > ($mactabletimeout / $timer_period)) {
+				kill 9, $sflowpid;
+				die "FATAL: could not reload mactable after $mactabletimeout seconds. Aborting.\n";
+			}
+		}
 		$debug && print STDERR "DEBUG: flush completed at ".time()."\n";
 	}
 }
@@ -227,8 +255,8 @@ sub process_rrd {
 						$insanedebug && print STDERR "DEBUG: p2p: building update for ".
 								"protocol: $ipprotocol ".
 								"type: $rrdtype ".
-								"srcvli: $srcvli / '$matrix->{names}->{$srcvli}' ".
-								"dstvli: $dstvli / '$matrix->{names}->{$dstvli}' ".
+								"srcvli: $srcvli ".
+								"dstvli: $dstvli ".
 								"in: $in out: $out ".
 								"\n";
 						build_update_rrd ($rrdfile, $rrdtype, $ipprotocol, $in, $out, $interval, $rrdcached);
@@ -250,7 +278,7 @@ sub process_rrd {
 							"vlan: $vlan ".
 							"type: $rrdtype ".
 							"protocol: $ipprotocol ".
-							"srcvli: $srcvli / '$matrix->{names}->{$srcvli}' ".
+							"srcvli: $srcvli ".
 							"\n";
 					build_update_rrd ($rrdfile, $rrdtype, $ipprotocol, $in, $out, $interval, $rrdcached);
 				}
@@ -312,48 +340,57 @@ sub build_update_rrd
 }
 
 #
+# extract vli from mac table, given input from sflow
+#
+
+sub getvlifrommactable {
+	my ($mactable, $infraid, $vlan, $mac) = @_;
+
+	my @infras;
+
+	if (defined ($infraid)) {
+		@infras = qw ( $infraid );
+	} else {
+		@infras = keys %{$mactable};
+	}
+
+	foreach my $infra (@infras) {
+		# we need some sanitisation here because sflowtool could pass in anything
+		next unless (
+			defined ($mactable->{$infra}) &&
+			defined ($vlan) && defined ($mactable->{$infra}->{$vlan}) &&
+			defined ($mac) && defined ($mactable->{$infra}->{$vlan}->{$mac})
+		);
+
+		return $mactable->{$infra}->{$vlan}->{$mac};
+	}
+
+	return 0;
+}
+
+#
 # build up complete up-to-date blank matrix of all relevant traffic data
 #
 
 sub matrix_init
 {
-	my ($dbh) = @_;
-	my ($sth, $matrix);
+	my ($mactable, $infraid) = @_;
+	my (@infras, $matrix);
 
-	# we need this to be distinct because of 802.3ag LAGs, where there
-	# can be multiple physical ports associated with a single VLI
+	if (defined ($infraid)) {
+		@infras = qw ( $infraid );
+	} else {
+		@infras = keys %{$mactable};
+	}
 
-	my $query = "
-SELECT DISTINCT
-	vli.vlaninterfaceid,
-	vli.virtualinterfaceid,
-	vli.vlan,
-	cu.name
-FROM
-	(view_vlaninterface_details_by_custid vli, cust cu)
-WHERE
-	vli.custid = cu.id
-ORDER BY
-	virtualinterfaceid
-";
-
-	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
-	$sth->execute() or die "$dbh->errstr\n";
-
-	while (my $rec = $sth->fetchrow_hashref) {
-		# mapping from virtualinterfaceid->vlaninterfaceid
-		$matrix->{vlanmap}->{$rec->{vlan}}->{$rec->{virtualinterfaceid}} = $rec->{vlaninterfaceid};
-		# mapping from virtualinterfaceid->name
-		$matrix->{names}->{$rec->{vlaninterfaceid}} = $rec->{name};
-
-		# create list of vlids for convenience.  We use a hash here
-		# instead of a strict array because the hash will guarantee
-		# that the keys are unique.  This is important because if
-		# there is a db screwup, you could end up with multiply
-		# referenced objects, and this will lead to data being
-		# counted multiple times.
-		
-		$matrix->{vlilist}->{$rec->{vlan}}->{$rec->{vlaninterfaceid}} = 1;
+	# create list of all vlan interface IDs per vlan
+	foreach my $infra (@infras) {
+		next unless (defined ($mactable->{$infra}));
+		foreach my $vlan (keys %{$mactable->{$infra}}) {
+			foreach my $mac (keys %{$mactable->{$infra}->{$vlan}}) {
+				$matrix->{vlilist}->{$vlan}->{$mactable->{$infra}->{$vlan}->{$mac}} = 1;
+			}
+		}
 	}
 
 	# Not all srcvli/dstvli combinations are valid.  We only consider
@@ -386,36 +423,22 @@ ORDER BY
 
 sub reload_mactable
 {
-	my ($dbh) = @_;
-	my ($sth, $pmactable);
+	my ($client, $uri) = @_;
 
-	my $query = "
-SELECT DISTINCT
-	vi.virtualinterfaceid AS id,
-	m.mac   
-FROM (
-	view_vlaninterface_details_by_custid vi,
-	cust cu,
-	macaddress m
-)
-WHERE
-	vi.virtualinterfaceid = m.virtualinterfaceid
-AND	vi.custid = cu.id
-ORDER BY
-	id
-";
+	$client->GET($uri);
 
-	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
-	$sth->execute() or die "$dbh->errstr\n";
-	while (my $rec = $sth->fetchrow_hashref) {
-		push (@{$pmactable->{mac}->{$rec->{mac}}}, $rec->{id});
+	my $content = $client->responseContent();
+	my $code = $client->responseCode();
+	if ($code != 200) {
+		$debug && print STDERR "WARNING: HTTP response $code: $content\n";
+		return undef;
 	}
 
-	my $mac;
-	if ($debug) {
-		for $mac (keys %{$pmactable->{mac}}) {
-			print STDERR "DEBUG: mac-map $mac vlid: ".join (",", @{$pmactable->{mac}->{$mac}})."\n";
-		}
+	my $json = eval { from_json($content) };
+	if (!$json) {
+		$debug && print STDERR "WARNING: HTTP response was not legitimate json: '$content'\n";
+		return undef;
 	}
-	return $pmactable;
+
+	return $json;
 }

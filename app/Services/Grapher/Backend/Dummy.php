@@ -25,14 +25,15 @@ use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
 use IXP\Services\Grapher\Backend as GrapherBackend;
 use IXP\Services\Grapher\Graph;
 
+use IXP\Services\Grapher\Graph\Latency as LatencyGraph;
+
 use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
 
 use IXP\Utils\Grapher\Dummy as DummyFile;
 
-use Entities\IXP;
 
 /**
- * Grapher Backend -> Mrtg
+ * Grapher Backend -> Dummy
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Grapher
@@ -65,7 +66,7 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
     /**
      * This function indicates whether this graphing engine supports single monolithic text
      *
-     * @see IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     * @see Dummy::isMonolithicConfigurationSupported() for an explanation
      * @return bool
      */
     public function isMonolithicConfigurationSupported(): bool {
@@ -75,7 +76,7 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
     /**
      * This function indicates whether this graphing engine supports multiple files to a directory
      *
-     * @see IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     * @see Dummy::isMonolithicConfigurationSupported() for an explanation
      * @return bool
      */
     public function isMultiFileConfigurationSupported(): bool {
@@ -87,11 +88,11 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param Entities\IXP $ixp The IXP to generate the config for (multi-IXP mode)
-     * @param int $config_type The type of configuration to generate
+     * @param int               $type   The type of configuration to generate
+     * @param array             $options
      * @return array
      */
-    public function generateConfiguration( IXP $ixp, int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
+    public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC, array $options = [] ): array
     {
         return [];
     }
@@ -104,6 +105,7 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
      * @return array
      */
     public static function supports(): array {
+
         return [
             'ixp' => [
                 'protocols'   => Graph::PROTOCOLS,
@@ -159,6 +161,12 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
                 'periods'     => Graph::PERIODS,
                 'types'       => Graph::TYPES
             ],
+            'latency' => [
+                'protocols'   => Graph::PROTOCOLS_REAL,
+                'categories'  => Graph::CATEGORIES,
+                'periods'     => LatencyGraph::PERIODS,
+                'types'       => [ Graph::TYPE_PNG => Graph::TYPE_PNG ],
+            ],
             'p2p' => [
                 'protocols'   => Graph::PROTOCOLS,
                 'categories'  => Graph::CATEGORIES,
@@ -173,8 +181,9 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      * @return array
+     * @throws
      */
     public function data( Graph $graph ): array {
         $dummy = new DummyFile( $this->resolveFilePath( $graph, 'log' ) );
@@ -186,8 +195,11 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
+     *
      * @return string
+     *
+     * @throws
      */
     public function png( Graph $graph ): string {
         return @file_get_contents( $this->resolveFilePath( $graph, 'png' ) );
@@ -210,8 +222,10 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
      * For a given graph, return the path where the appropriate log file
      * will be found.
      *
-     * @param IXP\Services\Grapher\Graph $graph
+     * @param Graph     $graph
+     * @param string    $type
      * @return string
+     * @throws
      */
     private function resolveFilePath( Graph $graph, $type ): string {
         $config = config('grapher.backends.dummy');

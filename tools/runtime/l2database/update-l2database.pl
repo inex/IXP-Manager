@@ -104,7 +104,7 @@ if (defined $vlanid) {
 	}
 
 	# then retrieve a list of relevant switches
-	$query = "SELECT sw.name, sw.snmppasswd FROM (vlan vl, switch sw) WHERE vl.infrastructureid = sw.infrastructure AND sw.active AND vl.id = ?";
+	$query = "SELECT sw.hostname, sw.snmppasswd FROM (vlan vl, switch sw) WHERE vl.infrastructureid = sw.infrastructure AND sw.active AND vl.id = ?";
 	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
 	$sth->execute($vlanid) or die "$dbh->errstr\n";
 
@@ -114,18 +114,18 @@ if (defined $vlanid) {
 	# IXP, so this is not recommended.
 
 	print STDERR "WARNING: executing this program without the \"--vlanid\" parameter is deprecated and will be removed in a future version of IXP Manager.\n";
-	$query = "SELECT sw.name, sw.snmppasswd FROM (vlan vl, switch sw) WHERE vl.infrastructureid = sw.infrastructure AND sw.active AND vl.number = ?";
+	$query = "SELECT sw.hostname, sw.snmppasswd FROM (vlan vl, switch sw) WHERE vl.infrastructureid = sw.infrastructure AND sw.active AND vl.number = ?";
 	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
 	$sth->execute($vlan) or die "$dbh->errstr\n";
 } else {
 	print STDERR "WARNING: executing this program without the \"--vlanid\" parameter is deprecated and will be removed in a future version of IXP Manager.\n";
 	# otherwise query all switches for legacy behaviour
-	$query = "SELECT name, snmppasswd FROM switch WHERE active AND switchtype = ?";
+	$query = "SELECT hostname, snmppasswd FROM switch WHERE active AND switchtype = ?";
 	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
 	$sth->execute(SWITCHTYPE_SWITCH) or die "$dbh->errstr\n";
 }
 
-my $switches = $sth->fetchall_hashref('name');
+my $switches = $sth->fetchall_hashref('hostname');
 
 foreach my $switch (keys %{$switches}) {
 	$l2mapping->{$switch} = trawl_switch_snmp($switch, $switches->{$switch}->{snmppasswd}, $vlan);
@@ -136,10 +136,10 @@ if ($debug) {
 	print STDERR $debug_output;
 }
 
-$query = "SELECT id, switchport, switchportid, spifname, switch, status, infrastructure, virtualinterfacename FROM view_switch_details_by_custid";
+$query = "SELECT id, switchport, switchportid, spifname, switch, switchhostname, status, infrastructure, virtualinterfacename FROM view_switch_details_by_custid";
 ($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
 $sth->execute() or die "$dbh->errstr\n";
-my $ports = $sth->fetchall_hashref( [qw (switch switchport)] );
+my $ports = $sth->fetchall_hashref( [qw (switchhostname switchport)] );
 
 if ($debug) {
 	($debug_output = Dumper($ports)) =~ s/^\$VAR[0-9]+ = /\$ports = /;

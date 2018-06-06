@@ -26,12 +26,11 @@
 use Illuminate\Support\ServiceProvider;
 
 use IXP\Exceptions\Services\Grapher\ConfigurationException;
+use IXP\Services\Grapher;
 use IXP\Services\Grapher\Renderer\Extensions\Grapher as GrapherRendererExtension;
 
 use Entities\User as UserEntity;
 
-use Cache;
-use Config;
 use Route;
 
 /**
@@ -71,17 +70,20 @@ class GrapherServiceProvider extends ServiceProvider {
             Route::get( 'vlan',              'Grapher@vlan'              );
             Route::get( 'switch',            'Grapher@switch'            );
             Route::get( 'trunk',             'Grapher@trunk'             );
-            Route::get( 'phsyicalinterface', 'Grapher@physicalInterface' ); // individual member port
+            Route::get( 'physicalinterface', 'Grapher@physicalInterface' ); // individual member port
             Route::get( 'virtualinterface',  'Grapher@virtualInterface'  ); // member LAG (of physint's)
             Route::get( 'customer',          'Grapher@customer'          ); // member agg over all physint's
             Route::get( 'vlaninterface',     'Grapher@vlanInterface'     ); // member vlan interface
             Route::get( 'p2p',               'Grapher@p2p'               ); // member vlan interface
+            Route::get( 'latency',           'Grapher@latency'           );
         });
 
         Route::group(['middleware' => [ 'api/v4', 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ],
                 'namespace' => 'IXP\Http\Controllers\Services', 'as' => 'grapher::' ], function(){
                     
             Route::get( 'api/v4/grapher/mrtg-config', 'Grapher\Api@generateConfiguration' );
+            Route::get( 'api/v4/grapher/config',      'Grapher\Api@generateConfiguration' );
+            Route::post( 'api/v4/grapher/config',      'Grapher\Api@generateConfiguration' );
         });
         
         // we have a few rendering functions we want to include here:
@@ -92,7 +94,8 @@ class GrapherServiceProvider extends ServiceProvider {
     /**
      * Register the application services.
      *
-     * @return void
+     * @return void|Grapher
+     * @throws
      */
     public function register()
     {
@@ -103,8 +106,9 @@ class GrapherServiceProvider extends ServiceProvider {
             }
         }
 
-        $this->app->singleton( 'IXP\Services\Grapher', function($app) {
-            return new \IXP\Services\Grapher;
+        $this->app->singleton(
+            'IXP\Services\Grapher', function() {
+            return new Grapher;
         });
 
         $this->commands( $this->commands );

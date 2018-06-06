@@ -26,8 +26,7 @@ if( php_sapi_name() !== 'cli' ) {
         \Auth::logout();
     }
 }
-
-if( Auth::check() && Auth::user()->isSuperUser() ) {
+if( ( Auth::check() && Auth::user()->isSuperUser() ) || env( 'IXP_PHPUNIT_RUNNING', false ) ) {
     // get an array of customer id => names
     if( !( $customers = Cache::get( 'admin_home_customers' ) ) ) {
         $customers = d2r( 'Customer' )->getNames( true );
@@ -90,11 +89,20 @@ Route::get( 'content/members/{priv}/{page}', 'ContentController@members' )->name
 Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'ixp/{category?}',                             'StatisticsController@ixp'               )->name( 'statistics/ixp'                );
     Route::get(  'infrastructure/{graphid?}/{category?}',       'StatisticsController@infrastructure'    )->name( 'statistics/infrastructure'     );
+    Route::get(  'vlan/{vlanid?}/{protocol?}/{category?}',      'StatisticsController@vlan'              )->name( 'statistics/vlan'               );
     Route::get(  'switch/{switchid?}/{category?}',              'StatisticsController@switch'            )->name( 'statistics/switch'             );
     Route::get(  'trunk/{trunkid?}/{category?}',                'StatisticsController@trunk'             )->name( 'statistics/trunk'              );
 
+    Route::get(  'members', 'StatisticsController@members' );
+    Route::post( 'members', 'StatisticsController@members' )->name( 'statistics/members' );
+
+    Route::get(  'p2p/{cid}', 'StatisticsController@p2p' );
+    Route::post( 'p2p/{cid}', 'StatisticsController@p2p' )->name( 'statistics@p2p' );
+
     Route::get(  'member/{id?}',                                'StatisticsController@member'            )->name( 'statistics@member'             );
-    Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'    );
+
+    Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'   );
+    Route::get(  'latency/{vliid}/{protocol}',                  'StatisticsController@latency'           )->name( 'statistics@latency'            );
 });
 
 

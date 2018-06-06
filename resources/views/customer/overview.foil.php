@@ -55,6 +55,11 @@
                     </a>
                 </li>
 
+                <li class="divider"></li>
+                <li>
+                    <a href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">Manage Tags...</a>
+                </li>
+
                 <?php if( $t->logoManagementEnabled() ): ?>
                     <li class="divider"></li>
                     <li>
@@ -130,6 +135,19 @@
 
                     <?php endif; ?>
                 </div>
+
+                <?php if( $c->getTags()->count() ): ?>
+                    <br>
+                    <div>
+                        <?php foreach( $c->getTags() as $tag ): ?>
+                            <span class="label label-default"><?= $tag->getDisplayAs() ?></span>
+                        <?php endforeach; ?>
+                    </div>
+                <?php elseif( count( D2EM::getRepository( Entities\CustomerTag::class )->findAll() ) ): ?>
+                    <br>
+                    <em>No tags defined for this customer - <a href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">add some...</a>
+                <?php endif; ?>
+
             </div>
 
             <ul class="nav nav-tabs">
@@ -201,7 +219,7 @@
                     <?php endif ?>
 
                     <?php if( config('grapher.backends.sflow.enabled') ) : ?>
-                        <li onclick="window.location.href = '<?= url( "statistics/p2p/shortname/". $c->getShortname() )  ?>'">
+                        <li onclick="window.location.href = '<?= route( "statistics@p2p", [ 'cid' => $c->getId() ] )  ?>'">
                             <a data-toggle="tab" href="">P2P &raquo;</a>
                         </li>
                     <?php endif ?>

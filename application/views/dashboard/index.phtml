@@ -52,7 +52,7 @@
             <li><a href="{genUrl controller="statistics" action="member"}">Statistics &raquo;</a></li>
 
             {if config('grapher.backends.sflow.enabled')}
-                <li><a href="{genUrl controller="statistics" action="p2p"}">Peer to Peer Traffic &raquo;</a></li>
+                <li><a href="{route( "statistics@p2p", [ 'cid' => $user->getCustomer()->getId() ] )}">Peer to Peer Traffic &raquo;</a></li>
             {/if}
     </ul>
 

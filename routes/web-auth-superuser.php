@@ -49,12 +49,6 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
 });
 
 
-Route::group( [ 'prefix' => 'statistics' ], function() {
-    Route::get(  'members', 'StatisticsController@members' );
-    Route::post( 'members', 'StatisticsController@members' )->name( 'statistics/members' );
-});
-
-
 Route::group( [ 'prefix' => 'router' ], function() {
     Route::get(     'list',                             'RouterController@list'     )->name( 'router@list'  );
     Route::get(     'status',                           'RouterController@status'   )->name( 'router@status' );
@@ -66,6 +60,13 @@ Route::group( [ 'prefix' => 'router' ], function() {
     Route::post(    'store',                            'RouterController@store'    )->name( 'router@store'  );
 
 });
+
+
+Route::group( [ 'prefix' => 'statistics' ], function() {
+    Route::get(  'league-table', 'StatisticsController@leagueTable' );
+    Route::post( 'league-table', 'StatisticsController@leagueTable' )->name( 'statistics/league-table' );
+});
+
 
 Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], function() {
     Route::group( [  'prefix' => 'virtual' ], function() {
@@ -140,11 +141,13 @@ Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function()
     Route::get(     'welcome-email/{id}',               'CustomerController@welcomeEmail'               )->name( "customer@welcome-email" );
     Route::get(     'delete-recap/{id}',                'CustomerController@deleteRecap'                )->name( "customer@delete-recap" );
     Route::get(     'overview/{id}/{tab?}',             'CustomerController@overview'                   )->name( "customer@overview" );
+    Route::get(     '{id}/tags',                       'CustomerController@tags'                       )->name( "customer@tags" );
 
     Route::post(    'store',                            'CustomerController@store'                      )->name( 'customer@store');
     Route::post(    'store-billing-and-reg-details',    'CustomerController@storeBillingAndRegDetails'  )->name( 'customer@store-billing-and-reg-details');
     Route::post(    'send-welcome-email',               'CustomerController@sendWelcomeEmail'           )->name( 'customer@send-welcome-email');
     Route::post(    'delete',                           'CustomerController@delete'                     )->name( 'customer@delete');
+    Route::post(    'store-tags',                       'CustomerController@storeTags'                  )->name( 'customer@store-tags');
 
 });
 

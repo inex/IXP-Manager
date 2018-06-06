@@ -41,36 +41,42 @@
             <?= $t->alerts() ?>
 
             <nav class="navbar navbar-default">
-                <div class="">
 
-                    <div class="navbar-header">
-                        <a class="navbar-brand" href="<?= route( "statistics/members" ) ?>">Graph Options:</a>
-                    </div>
-
-                    <form class="navbar-form navbar-left form-inline"  action="<?= route( "statistics@member", [ "id" => $t->c->getId() ] ) ?>" method="GET">
-
-                        <div class="form-group">
-                            <label for="category">Type:</label>
-                            <select id="category" name="category" onchange="" class="form-control">
-                                <?php foreach( IXP\Services\Grapher\Graph::CATEGORY_DESCS as $cvalue => $cname ): ?>
-                                    <option value="<?= $cvalue ?>" <?php if( $t->category == $cvalue ): ?> selected <?php endif; ?> ><?= $cname ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="period">Period:</label>
-                            <select id="period" name="period" onchange="" class="form-control" placeholder="Select State">
-                                <option></option>
-                                <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $pvalue => $pname ): ?>
-                                    <option value="<?= $pvalue ?>" <?php if( $t->period == $pvalue ): ?> selected <?php endif; ?>  ><?= $pname ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <button type="submit" class="btn btn-default">Change</button>
-
-                    </form>
-
+                <div class="navbar-header">
+                    <a class="navbar-brand">Graph Options:</a>
                 </div>
+
+                <form class="navbar-form navbar-left form-inline"  action="<?= route( "statistics@member", [ "id" => $t->c->getId() ] ) ?>" method="GET">
+
+                    <div class="form-group">
+                        <label for="category">Type:</label>
+                        <select id="category" name="category" onchange="" class="form-control">
+                            <?php foreach( IXP\Services\Grapher\Graph::CATEGORY_DESCS as $cvalue => $cname ): ?>
+                                <option value="<?= $cvalue ?>" <?php if( $t->category == $cvalue ): ?> selected <?php endif; ?> ><?= $cname ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="period">Period:</label>
+                        <select id="period" name="period" onchange="" class="form-control" placeholder="Select State">
+                            <option></option>
+                            <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $pvalue => $pname ): ?>
+                                <option value="<?= $pvalue ?>" <?php if( $t->period == $pvalue ): ?> selected <?php endif; ?>  ><?= $pname ?></option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+                    <button type="submit" class="btn btn-default">Change</button>
+
+                </form>
+
+                <?php if( config('grapher.backends.sflow.enabled') && $t->grapher()->canAccessAllCustomerP2pGraphs() ): ?>
+                    <form class="navbar-form navbar-right form-inline">
+                        <a class="btn btn-default" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] ) ?>">
+                            <span class="glyphicon glyphicon-random"></span>&nbsp;&nbsp;P2P Graphs
+                        </a>
+                        &nbsp;&nbsp;&nbsp;&nbsp;
+                    </form>
+                <?php endif; ?>
             </nav>
 
 
@@ -84,9 +90,16 @@
                             <small><em>(Peering ports only)</em></small>
                         <?php endif; ?>
 
-                        <a class="btn btn-default btn-sm pull-right" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $t->c->getId(), "type" => "agg" ] ) ?>/?category=<?= $t->category ?>">
-                            <i class="glyphicon glyphicon-zoom-in"></i>
-                        </a>
+                        <div class="btn-group pull-right">
+                            <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
+                                <a class="btn btn-default btn-sm" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] ) ?>">
+                                    <span class="glyphicon glyphicon-random"></span>
+                                </a>
+                            <?php endif; ?>
+                            <a class="btn btn-default btn-sm" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $t->c->getId(), "type" => "agg" ] ) ?>/?category=<?= $t->category ?>">
+                                <i class="glyphicon glyphicon-zoom-in"></i>
+                            </a>
+                        </div>
                     </h3>
                     <p>
                         <br />
@@ -124,9 +137,17 @@
 
                                     <?php if( $vi->isGraphable() ): ?>
                                         <div class="btn-group pull-right">
-                                            <a class="btn btn-default btn-sm" href="<?= url("") ?>/smokeping/member-drilldown/ixp/1/vi/<?= $vi->getId() ?>" title="Latency Graphs">
-                                                <i class="glyphicon glyphicon-time"></i>
-                                            </a>
+
+                                            <?= $t->insert( 'statistics/snippets/latency-dropup', [ 'vi' => $vi ] ) ?>
+
+                                            <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
+                                                <a class="btn btn-default btn-sm" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] )
+                                                    . ( $vi->getVlanInterfaces() ? '?svli=' . $vi->getVlanInterfaces()[0]->getId() : '' )
+                                                ?>">
+                                                    <span class="glyphicon glyphicon-random"></span>
+                                                </a>
+                                            <?php endif; ?>
+
                                             <a class="btn btn-default btn-sm" href="<?= route( "statistics@member-drilldown" , [ "type" => "vi", "typeid" => $vi->getId()  ] ) ?>/?category=<?= $t->category ?>" title="Drilldown">
                                                 <i class="glyphicon glyphicon-zoom-in"></i>
                                             </a>
@@ -163,8 +184,13 @@
                                     <?php if( $pi->statusIsConnectedOrQuarantine() ): ?>
                                         <div class="btn-group pull-right">
                                             <?php if( !$isLAG ): ?>
-                                                <a class="btn btn-default btn-sm" href="<?= url('') ?>/smokeping/member-drilldown/ixp/1/vi/<?= $vi->getId() ?>" title="Latency Graphs">
-                                                    <i class="glyphicon glyphicon-time"></i>
+                                                <?= $t->insert( 'statistics/snippets/latency-dropup', [ 'vi' => $vi ] ) ?>
+                                            <?php endif; ?>
+                                            <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
+                                                <a class="btn btn-default btn-sm" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] )
+                                                . ( $vi->getVlanInterfaces() ? '?svli=' . $vi->getVlanInterfaces()[0]->getId() : '' )
+                                                ?>">
+                                                    <span class="glyphicon glyphicon-random"></span>
                                                 </a>
                                             <?php endif; ?>
                                             <a class="btn btn-default btn-sm" href="<?= route( "statistics@member-drilldown" , [ "type" => "pi", "typeid" => $pi->getId()  ] ) ?>/?category=<?= $t->category ?>">

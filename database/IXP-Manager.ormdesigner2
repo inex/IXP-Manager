@@ -1479,6 +1479,36 @@
     <association from="\Entities\ConsoleServer" to="\Entities\Cabinet" owner-alias="consoleServers" inverse-alias="cabinet" many-owner="true" many-inverse="false" uuid="c1c0aaf2-5968-412b-8ff3-05e224f88ecd">
       <association-field from="cabinet_id" to="id"/>
     </association>
+    <entity name="\Entities\CustomerTag" local-name="CustomerTag" namespace="\Entities" uuid="aa41e95c-958a-4689-83cb-600d2adfc217">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="55efb147-c0e0-4a06-ab4f-7cb77676d7b0"/>
+      <field name="tag" type="string" size="255" required="true" unique="true" uuid="b263f486-1b1a-4990-aab6-5d779cfe098c"/>
+      <field name="display_as" type="string" size="255" required="true" uuid="ff13a9c8-46ac-4f7b-a4d4-5e8bb8e13677"/>
+      <field name="description" type="text" uuid="24e034b2-17fe-4644-b155-c55c3310ec55"/>
+      <field name="internal_only" type="boolean" default="0" required="true" uuid="163cd247-69ee-48ce-95c9-c2782cb37ac6"/>
+      <field name="created" type="datetime" required="true" uuid="6fbbb48d-70d5-4c52-90cd-5a8d9766d8ab"/>
+      <field name="updated" type="datetime" required="true" uuid="ff1b06ae-2268-4ecb-a46f-f4c129f74fe3"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\CustomerTag</attribute>
+        <attribute name="table">cust_tag</attribute>
+        <attribute name="tableName">cust_tag</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\Entities\CustomerToCustomerTag" local-name="CustomerToCustomerTag" namespace="\Entities" uuid="ae31d2b7-6ddf-461b-b5f8-6dcb0c43b678">
+      <field name="customer_id" type="integer" required="true" primary="true" uuid="29711375-b8bd-4510-8496-01e7ab16a7a1"/>
+      <field name="customer_tag_id" type="integer" required="true" primary="true" uuid="c02d7efa-c0da-478b-bd44-11c99398e915"/>
+      <orm-attributes>
+        <attribute name="table">cust_to_cust_tag</attribute>
+        <attribute name="tableName">cust_to_cust_tag</attribute>
+      </orm-attributes>
+    </entity>
+    <many-to-many mn-entity="\Entities\CustomerToCustomerTag" uuid="0f04bf1e-28ce-4bff-979e-ce0fc931bee9">
+      <many-to-many-entity name="\Entities\CustomerTag" owning-side="true" alias="tags" uuid="fa315f12-5ef2-42ea-b580-6a8591d7b86e">
+        <many-to-many-field from="customer_tag_id" to="id"/>
+      </many-to-many-entity>
+      <many-to-many-entity name="\Entities\Customer" owning-side="false" alias="customers" uuid="a77b8979-4aea-4e12-a598-80c2e20bd513">
+        <many-to-many-field from="customer_id" to="id"/>
+      </many-to-many-entity>
+    </many-to-many>
   </module>
   <visual-data>
     <association uuid="01e81093-107a-49b9-9cb8-18b8a383bf6e" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
@@ -1582,7 +1612,9 @@
     <entity uuid="9f26679f-99e4-48b9-b544-4d7377988044" bg-color="4294967295" hdr-color="4292006610" position-x="929" position-y="1072" size-x="0" size-x2="92" size-y="0" size-y2="73"/>
     <entity uuid="a4eeb330-c86b-4443-968b-c166863303b1" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="415" position-y="16" size-x="0" size-x2="104" size-y="0" size-y2="115"/>
     <entity uuid="a6d2adc6-7ce1-4c57-b4da-5b5f17d963f7" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="657" position-y="-436" size-x="0" size-x2="144" size-y="0" size-y2="45"/>
+    <entity uuid="aa41e95c-958a-4689-83cb-600d2adfc217" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="162" position-y="187" size-x="0" size-x2="118" size-y="0" size-y2="101"/>
     <entity uuid="aa930c08-4f0b-4947-b15b-840caa7455cb" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="810" position-y="292" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
+    <entity uuid="ae31d2b7-6ddf-461b-b5f8-6dcb0c43b678" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="389" position-y="207" size-x="0" size-x2="139" size-y="0" size-y2="60"/>
     <entity uuid="b8c028d1-c43e-44ef-b86e-7849c119d00f" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="459" position-y="1038" size-x="0" size-x2="116" size-y="0" size-y2="129"/>
     <entity uuid="bad4f785-8f04-4d84-8cc9-36f638715559" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1052" position-y="128" size-x="0" size-x2="155" size-y="0" size-y2="339"/>
     <entity uuid="c10dc8b2-b201-42e8-83cf-cb3813a435d8" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="411" position-y="-492" size-x="0" size-x2="155" size-y="0" size-y2="129"/>
@@ -1599,10 +1631,11 @@
     <entity uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1519" position-y="-122" size-x="0" size-x2="171" size-y="0" size-y2="129"/>
     <entity uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="727" position-y="926" size-x="0" size-x2="164" size-y="0" size-y2="227"/>
     <entity uuid="fe102ac1-eef6-41b0-ae2b-87fc4fc10ba1" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1320" position-y="-508" size-x="0" size-x2="141" size-y="0" size-y2="115"/>
+    <many-to-many-association uuid="0f04bf1e-28ce-4bff-979e-ce0fc931bee9" color="#969696"/>
     <many-to-many-association uuid="3da5bfe5-819b-4e33-9cb1-028912dddc2a" color="4288059030"/>
     <many-to-many-association uuid="3e003c57-9922-4820-a7b3-897360e1d984" color="#969696"/>
     <many-to-many-association-entity uuid="3ddb207a-b135-469a-8c60-8bdd1856f642" split="1"/>
-    <module uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f" bg-color="4294244851" position-x="-19" position-y="161" size-x="0" size-x2="2064" size-y="592" size-y2="1199"/>
-    <project uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543" size-x="69" size-x2="2050" size-y="481" size-y2="1410"/>
+    <module uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f" bg-color="4294244851" position-x="-19" position-y="161" size-x="0" size-x2="2209" size-y="592" size-y2="1199"/>
+    <project uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543" size-x="69" size-x2="2171" size-y="481" size-y2="1410"/>
   </visual-data>
 </skipper>

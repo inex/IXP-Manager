@@ -22,11 +22,12 @@
  */
 
 use IXP\Services\Grapher;
-use IXP\Services\Grapher\{Graph,Statistics};
+use IXP\Services\Grapher\{Graph};
 
-use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
-
-use Entities\Customer as CustomerEntity;
+use Entities\{
+    Customer as CustomerEntity,
+    User     as UserEntity
+};
 
 use Auth, Log;
 
@@ -50,6 +51,8 @@ class Customer extends Graph {
 
     /**
      * Constructor
+     * @param Grapher $grapher
+     * @param CustomerEntity $c
      */
     public function __construct( Grapher $grapher, CustomerEntity $c ) {
         parent::__construct( $grapher );
@@ -58,7 +61,7 @@ class Customer extends Graph {
 
     /**
      * Get the customer we're set to use
-     * @return \Entities\Vlan
+     * @return CustomerEntity
      */
     public function customer(): CustomerEntity {
         return $this->cust;
@@ -66,11 +69,10 @@ class Customer extends Graph {
 
     /**
      * Set the customer we should use
-     * @param Entities\customer $i=c
-     * @return \IXP\Services\Grapher Fluid interface
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     * @param CustomerEntity $c
+     * @return Customer Fluid interface
      */
-    public function setCustomer( CustomerEntity $c ): Grapher {
+    public function setCustomer( CustomerEntity $c ): Customer {
         if( $this->customer() && $this->customer()->getId() != $c->getId() ) {
             $this->wipe();
         }
@@ -97,6 +99,24 @@ class Customer extends Graph {
         return sprintf( "aggregate-%05d", $this->customer()->getId() );
     }
 
+
+    /**
+     * Utility function to determine if the currently logged in user can access 'all customer' graphs
+     *
+     * @return bool
+     */
+    public static function authorisedForAllCustomers(): bool {
+        if( Auth::check() && Auth::user()->isSuperUser() ) {
+            return true;
+        }
+
+        if( !Auth::check() && is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) == UserEntity::AUTH_PUBLIC ) {
+            return true;
+        }
+
+        return Auth::check() && is_numeric( config( 'grapher.access.customer' ) ) && Auth::user()->getPrivs() >= config( 'grapher.access.customer' );
+    }
+
     /**
      * This function controls access to the graph.
      *
@@ -107,8 +127,16 @@ class Customer extends Graph {
      * @return bool
      */
     public function authorise(): bool {
+
+        // NB: see above authorisedForAllCustomers()
+
+        if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) == UserEntity::AUTH_PUBLIC ) {
+            return $this->allow();
+        }
+
         if( !Auth::check() ) {
-            return $this->deny();
+            $this->deny();
+            return false;
         }
 
         if( Auth::user()->isSuperUser() ) {
@@ -119,10 +147,19 @@ class Customer extends Graph {
             return $this->allow();
         }
 
+        if( config( 'grapher.access.customer' ) != 'own_graphs_only'
+                && is_numeric( config( 'grapher.access.customer' ) )
+                && Auth::user()->getPrivs() >= config( 'grapher.access.customer' )
+        ) {
+            return $this->allow();
+        }
+
         Log::notice( sprintf( "[Grapher] [Customer]: user %d::%s tried to access a customer aggregate graph "
             . "{$this->customer()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
         );
-        return $this->deny();
+
+        $this->deny();
+        return false;
     }
 
     /**
@@ -157,7 +194,7 @@ class Customer extends Graph {
      * Does a abort(404) if invalid
      *
      * @param int $i The user input value
-     * @return int The verified / sanitised / default value
+     * @return CustomerEntity The verified / sanitised / default value
      */
     public static function processParameterCustomer( int $i ): CustomerEntity {
         // if we're not an admin, default to the currently logged in customer
@@ -165,9 +202,11 @@ class Customer extends Graph {
             return Auth::user()->getCustomer();
         }
 
+        $cust = null;
         if( !$i || !( $cust = d2r( 'Customer' )->find( $i ) ) ) {
             abort(404);
         }
+
         return $cust;
     }
 

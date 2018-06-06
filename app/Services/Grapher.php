@@ -23,8 +23,6 @@ namespace IXP\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Illuminate\Cache\Repository as CacheRepository;
-
 use IXP\Exceptions\Services\Grapher\{
         BadBackendException,
         ConfigurationException,
@@ -43,7 +41,8 @@ use IXP\Services\Grapher\Graph\{
     VirtualInterface  as VirtIntGraph,  // member LAG
     Customer          as CustomerGraph, // member agg over all physical ports
     VlanInterface     as VlanIntGraph,  // member VLAN interface
-    P2p               as P2pGraph
+    P2p               as P2pGraph,
+    Latency           as LatencyGraph
 };
 
 use IXP\Contracts\Grapher\Backend as BackendContract;
@@ -51,7 +50,16 @@ use IXP\Contracts\Grapher\Backend as BackendContract;
 use Cache;
 use Config;
 
-use Entities\{IXP,Infrastructure,Vlan,Switcher,PhysicalInterface,VlanInterface,VirtualInterface,Customer};
+use Entities\{
+    IXP,
+    Infrastructure,
+    Vlan,
+    Switcher,
+    PhysicalInterface,
+    VlanInterface,
+    VirtualInterface,
+    Customer
+};
 
 /**
  * Grapher Backend -> Mrtg
@@ -123,6 +131,7 @@ class Grapher {
      *
      * @param string|null $backend A specific backend to return. If not specified, we use command line arguments
      * @return \IXP\Contracts\Grapher\Backend
+     * @throws
      */
     public function backend( $backend = null ): BackendContract {
         $backend = $this->resolveBackend( $backend );
@@ -149,6 +158,7 @@ class Grapher {
         }
 
         foreach( $backends as $backend ) {
+
             if( ( $b = $this->backend( $backend ) )->canProcess( $graph ) ) {
                 return $b;
             }
@@ -176,6 +186,7 @@ class Grapher {
                 $backends[] = $b;
             }
         }
+
         return $backends;
     }
 
@@ -291,7 +302,14 @@ class Grapher {
     }
 
 
-
+    /**
+     * Get an instance of a latency graph
+     * @param VlanInterface $vli
+     * @return LatencyGraph
+     */
+    public function latency( VlanInterface $vli ): LatencyGraph {
+        return new LatencyGraph( $this, $vli );
+    }
 
 
 
@@ -327,9 +345,10 @@ class Grapher {
 
     /**
      * Get the cache repository
-     * @return \Illuminate\Cache\Repository
+     * @return \Illuminate\Contracts\Cache\Repository
      */
-    public function cacheRepository(): CacheRepository {
+    public function cacheRepository(): \Illuminate\Contracts\Cache\Repository
+    {
         return Cache::store( config('grapher.cache.store' ) );
     }
 

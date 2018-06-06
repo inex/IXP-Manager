@@ -23,6 +23,11 @@
                 <li  <?php if( $t->controller == 'CustomerController' ): ?> class="active" <?php endif; ?> >
                     <a href="<?= route( 'customer@list' ) ?>">Customers</a>
                 </li>
+                <?php if( $t->controller == 'CustomerController' || $t->controller == 'CustomerTagController' ): ?>
+                    <li class="sub-menu <?php if( $t->controller == 'CustomerTagController' ):?> active <?php endif;?> " >
+                        <a href="<?= route('customer-tag@list' ) ?>">Tags</a>
+                    </li>
+                <?php endif; ?>
 
                 <li <?php if( $t->controller == 'VirtualInterfaceController' ): ?> class="active" <?php endif; ?> >
 
@@ -208,7 +213,7 @@
                 </li>
 
                 <li>
-                    <a href="<?= url( 'statistics/members' ) ?>">Member Statistics</a>
+                    <a href="<?= route( 'statistics/members' ) ?>">Member Statistics</a>
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.logo', true ) ): ?>
@@ -218,7 +223,7 @@
                 <?php endif; ?>
 
                 <li>
-                    <a href="<?= url( 'statistics/league-table' ) ?>">League Table</a>
+                    <a href="<?= route( 'statistics/league-table' ) ?>">League Table</a>
                 </li>
 
                 <?php /*

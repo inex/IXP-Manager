@@ -56,11 +56,27 @@
                         <li>
                             <a href="<?= route( 'statistics/infrastructure' ) ?>">Infrastructure Graphs</a>
                         </li>
+                        <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
+                            <li>
+                                <a href="<?= route( 'statistics/vlan' ) ?>">VLAN / Per-Protocol Graphs</a>
+                            </li>
+                        <?php endif; ?>
                         <li>
                             <a href="<?= route('statistics/trunk') ?>">Inter-Switch / PoP Graphs</a>
                         </li>
                         <li>
                             <a href="<?= route('statistics/switch') ?>">Switch Aggregate Graphs</a>
+                        </li>
+
+
+                        <li class="divider"></li>
+
+                        <li>
+                            <a href="<?= route( 'statistics/members' ) ?>">Member Graphs</a>
+                        </li>
+
+                        <li>
+                            <a href="<?= route( 'statistics/league-table' ) ?>">League Table</a>
                         </li>
 
                         <?php if( is_array( config( 'ixp_tools.weathermap', false ) ) ): ?>
