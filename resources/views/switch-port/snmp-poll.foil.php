@@ -135,12 +135,15 @@
                         </tr>
 
                     <?php endforeach; ?>
+
                 <?php else: ?>
+
                     <tr align="center">
-                        <td colspan="6">
+                        <td colspan="8">
                             <b>SNMP polling information failed or there are no Ethernet ports on this switch</b>
                         </td>
                     </tr>
+
                 <?php endif; ?>
 
             </tbody>
