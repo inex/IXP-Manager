@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Switches;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Redirect,Route, Validator;
+use D2EM,Former, Redirect,Route, Validator;
 
 use Entities\{
     Switcher            as SwitcherEntity,
@@ -715,10 +715,12 @@ class SwitchPortsController extends Doctrine2Frontend {
      * @throws
      */
     public function deleteSnmpPoll( Request $r ): JsonResponse {
-        $error = false;
+
         if( $r->input( "spid") ){
 
             foreach( $r->input( "spid") as $id ){
+                $error = false;
+
                 /** @var $sp SwitchPortEntity */
                 if( $id && !( $sp = D2EM::getRepository( SwitchPortEntity::class )->find( $id ) ) ) {
                     abort(404, "Unknown switch port.");
