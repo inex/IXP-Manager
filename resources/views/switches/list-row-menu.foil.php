@@ -11,18 +11,18 @@
 
         <?php if( $t->row[ "active" ] ): ?>
             <li>
-                <a href="<?= route( "switch-ports@snmp-poll", [ "switch" => $t->row[ 'id' ] ] ) ?>">View / Edit Ports (with SNMP poll)</a>
+                <a href="<?= route( "switch-port@snmp-poll", [ "switch" => $t->row[ 'id' ] ] ) ?>">View / Edit Ports (with SNMP poll)</a>
             </li>
             <li>
-                <a href="<?= route( "switch-ports@list-op-status", [ "switch" => $t->row[ 'id' ] ] ) ?>">View Live Port States (with SNMP poll)</a>
+                <a href="<?= route( "switch-port@list-op-status", [ "switch" => $t->row[ 'id' ] ] ) ?>">View Live Port States (with SNMP poll)</a>
             </li>
         <?php endif; ?>
             <li>
-                <a href="<?= route( "switch-ports@list", [ "switch" => $t->row[ 'id' ] ] ) ?>">View / Edit Ports (database only)</a>
+                <a href="<?= route( "switch-port@list", [ "switch" => $t->row[ 'id' ] ] ) ?>">View / Edit Ports (database only)</a>
             </li>
         <?php if( $t->row[ "mauSupported" ] ): ?>
             <li>
-                <a href="<?= route( "switch-ports@list-mau", [ "switch" => $t->row[ 'id' ] ] ) ?> ">View Port MAU Detail (database only)</a>
+                <a href="<?= route( "switch-port@list-mau", [ "switch" => $t->row[ 'id' ] ] ) ?> ">View Port MAU Detail (database only)</a>
             </li>
         <?php endif; ?>
 

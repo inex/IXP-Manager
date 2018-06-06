@@ -122,13 +122,13 @@
                 <li <?php if( $t->controller == 'SwitchController' ):?> class="active" <?php endif;?> >
                     <a href="<?= route('switch@list') ?>">Switches</a>
 
-                    <?php if( $t->controller == 'SwitchController' || $t->controller == 'SwitchPortsController' ):?>
-                        <li class="sub-menu <?php if( $t->controller == 'SwitchPortsController' && $t->action != 'unusedOptics' ):?> active <?php endif;?>" >
-                        <li class="sub-menu <?php if( $t->controller == 'SwitchPortsController' && $t->action != 'unusedOptics' ):?> active <?php endif;?>" >
-                            <a href="<?= route( "switch-ports@list" ) ?>">Switch Port</a>
+                    <?php if( $t->controller == 'SwitchController' || $t->controller == 'SwitchPortController' ):?>
+                        <li class="sub-menu <?php if( $t->controller == 'SwitchPortController' && $t->action != 'unusedOptics' ):?> active <?php endif;?>" >
+                        <li class="sub-menu <?php if( $t->controller == 'SwitchPortController' && $t->action != 'unusedOptics' ):?> active <?php endif;?>" >
+                            <a href="<?= route( "switch-port@list" ) ?>">Switch Port</a>
                         </li>
-                        <li class="sub-menu <?php if( $t->controller == 'SwitchPortsController' && $t->action == 'unusedOptics' ):?> active <?php endif;?>" >
-                            <a href="<?= route( "switch-ports@unused-optics" ) ?>">Unused Optics</a>
+                        <li class="sub-menu <?php if( $t->controller == 'SwitchPortController' && $t->action == 'unusedOptics' ):?> active <?php endif;?>" >
+                            <a href="<?= route( "switch-port@unused-optics" ) ?>">Unused Optics</a>
                         </li>
                     <?php endif; ?>
                 </li>

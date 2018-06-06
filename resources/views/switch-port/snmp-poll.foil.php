@@ -10,7 +10,7 @@
 
 <?php $this->section( 'page-header-preamble' ) ?>
 
-    <?= $t->insert( "switch-port/page-header-preamble", [ "data" => [ "params" => [ "switch" => $t->s->getId(), "switches" => $t->switches ] ] , "feParams" => (object)[ "route_prefix" => "switch-ports", "route_action" => "snmp-poll" ] ] ) ?>
+    <?= $t->insert( "switch-port/page-header-preamble", [ "data" => [ "params" => [ "switch" => $t->s->getId(), "switches" => $t->switches ] ] , "feParams" => (object)[ "route_prefix" => "switch-port", "route_action" => "snmp-poll" ] ] ) ?>
 
 <?php $this->append() ?>
 

@@ -61,7 +61,7 @@ use OSS_SNMP\MIBS\Iface;
  * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class SwitchPortsController extends Doctrine2Frontend {
+class SwitchPortController extends Doctrine2Frontend {
 
     /**
      * The object being added / edited
@@ -136,14 +136,14 @@ class SwitchPortsController extends Doctrine2Frontend {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
 
         Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get(  'unused-optics',   'Switches\SwitchPortsController@unusedOptics'   )->name( "switch-ports@unused-optics"   );
-            Route::get(  'list-mau/{id}',   'Switches\SwitchPortsController@listMau'        )->name( "switch-ports@list-mau"        );
-            Route::get(  'op-status/{id}',  'Switches\SwitchPortsController@listOpStatus'   )->name( "switch-ports@list-op-status"  );
-            Route::get(  'snmp-poll/{id}',  'Switches\SwitchPortsController@snmpPoll'       )->name( "switch-ports@snmp-poll"       );
+            Route::get(  'unused-optics',   'Switches\SwitchPortController@unusedOptics'   )->name( "switch-port@unused-optics"   );
+            Route::get(  'list-mau/{id}',   'Switches\SwitchPortController@listMau'        )->name( "switch-port@list-mau"        );
+            Route::get(  'op-status/{id}',  'Switches\SwitchPortController@listOpStatus'   )->name( "switch-port@list-op-status"  );
+            Route::get(  'snmp-poll/{id}',  'Switches\SwitchPortController@snmpPoll'       )->name( "switch-port@snmp-poll"       );
 
-            Route::post( 'set-type',        'Switches\SwitchPortsController@setType'        )->name( "switch-ports@set-type"        );
-            Route::post( 'delete-snmp-poll','Switches\SwitchPortsController@deleteSnmpPoll' )->name( "switch-ports@delete-snmp-poll");
-            Route::post( 'change-status',   'Switches\SwitchPortsController@changeStatus'   )->name( "switch-ports@change-status"   );
+            Route::post( 'set-type',        'Switches\SwitchPortController@setType'        )->name( "switch-port@set-type"        );
+            Route::post( 'delete-snmp-poll','Switches\SwitchPortController@deleteSnmpPoll' )->name( "switch-port@delete-snmp-poll");
+            Route::post( 'change-status',   'Switches\SwitchPortController@changeStatus'   )->name( "switch-port@change-status"   );
         });
     }
 
@@ -319,7 +319,7 @@ class SwitchPortsController extends Doctrine2Frontend {
      */
     protected function postStoreRedirect() {
         if( request()->input( "isAdd" ) ){
-            return route( "switch-ports@list", [ "switch" => request()->input( "switchid" ) ] );
+            return route( "switch-port@list", [ "switch" => request()->input( "switchid" ) ] );
         }
 
         return null;

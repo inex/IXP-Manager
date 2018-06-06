@@ -94,7 +94,7 @@
         function setType( id, element ){
             if( id ){
                 let returnMessage = true;
-                let urlAction = '<?= route( "switch-ports@set-type" ) ?>';
+                let urlAction = '<?= route( "switch-port@set-type" ) ?>';
 
                 let type = element == "port-type" ?  $( '#port-type-' + id ).val( ) : $( '#shared-type' ).val( ) ;
 
@@ -158,7 +158,7 @@
         $( "#poll-group-delete"  ).on( 'click', function( event ){
             if( id = getSelectedSwitchPorts() ){
 
-                let urlAction = '<?= route( "switch-ports@delete-snmp-poll" ) ?>';
+                let urlAction = '<?= route( "switch-port@delete-snmp-poll" ) ?>';
                 disableInputsAction();
                 $.ajax( urlAction, {
                     data: {
@@ -191,7 +191,7 @@
         function changeSwitchPortStatus( active ){
             if( id = getSelectedSwitchPorts() ){
 
-                let urlAction = '<?= route( "switch-ports@change-status" ) ?>';
+                let urlAction = '<?= route( "switch-port@change-status" ) ?>';
                 disableInputsAction();
                 $.ajax( urlAction, {
                     data: {

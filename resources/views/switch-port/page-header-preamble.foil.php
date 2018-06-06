@@ -38,20 +38,20 @@
                     <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
 
                         <li <?php if( $t->action == 'listOpStatus' ): ?> class="active"<?php endif; ?>>
-                            <a href="<?= route( "switch-ports@list-op-status", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View Live Port States (with SNMP poll)</a>
+                            <a href="<?= route( "switch-port@list-op-status", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View Live Port States (with SNMP poll)</a>
                         </li>
 
                         <li <?php if( $t->action == 'list'): ?>class="active"<?php endif; ?>>
-                            <a href="<?= route( "switch-ports@list", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View / Edit Ports (database only)</a>
+                            <a href="<?= route( "switch-port@list", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View / Edit Ports (database only)</a>
                         </li>
 
                         <li <?php if( $t->action == 'snmpPoll'): ?>class="active"<?php endif; ?>>
-                            <a href="<?= route( "switch-ports@snmp-poll", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View / Edit Ports (with SNMP poll)</a>
+                            <a href="<?= route( "switch-port@snmp-poll", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View / Edit Ports (with SNMP poll)</a>
                         </li>
 
                         <?php if( $t->action == 'listMau' ): ?>
                             <li <?php if( $t->action == 'listMau'): ?>class="active"<?php endif; ?>>
-                                <a href="<?= route( "switch-ports@list-mau", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View / Edit Ports (with SNMP poll)</a>
+                                <a href="<?= route( "switch-port@list-mau", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View / Edit Ports (with SNMP poll)</a>
                             </li>
                         <?php endif; ?>
 
@@ -71,7 +71,7 @@
                 <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
 
                     <li class="<?= $t->data[ 'params'][ "switch" ] ? "" : "active" ?>">
-                        <a href="<?= route( "switch-ports@list" , [ "switch" => 0 ] ) ?>">All Switches</a>
+                        <a href="<?= route( "switch-port@list" , [ "switch" => 0 ] ) ?>">All Switches</a>
                     </li>
 
                     <li role="separator" class="divider"></li>
