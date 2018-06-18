@@ -184,7 +184,7 @@
                 " );
             ?>
 
-            <?=Former::actions( Former::primary_submit( 'Save Changes' ),
+            <?=Former::actions( Former::primary_submit( $t->rt ? 'Save Changes' : 'Add Router' )->id('btn-submit-form'),
                 Former::default_link( 'Cancel' )->href( route( 'router@list' ) ),
                 Former::success_button( 'Help' )->id( 'help-btn' )
             );?>
