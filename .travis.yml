@@ -1,3 +1,9 @@
+sudo: required
+dist: trusty
+
+addons:
+   chrome: stable
+
 language: php
 
 php:
@@ -17,3 +23,4 @@ before_install:
 
 after_failure:
     - "./data/travis-ci/after_failure.sh"
+
