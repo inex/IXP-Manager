@@ -135,21 +135,18 @@
                     <?php endif; ?>
                 </div>
 
-                <?php if( $c->getTags()->count() ): ?>
-                    <br>
-                    <div>
-                        <?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?>
-
-                        <?php foreach( $c->getTags() as $tag ): ?>
-                            <span class="label label-default"><?= $tag->getDisplayAs() ?></span>
-                        <?php endforeach; ?>
-                        <a class="btn btn-xs btn-default" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>"><span class="glyphicon glyphicon-pencil"></span></a>
-                    </div>
-                <?php elseif( count( D2EM::getRepository( Entities\CustomerTag::class )->findAll() ) ): ?>
-                    <br>
+                <br>
+                <div>
                     <?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?>
-                    <a class="btn btn-xs btn-default" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Add tags...</a>
-                <?php endif; ?>
+                    <?php if( $c->getTags()->count() ): ?>
+                            <?php foreach( $c->getTags() as $tag ): ?>
+                                <span class="label label-default"><?= $tag->getDisplayAs() ?></span>
+                            <?php endforeach; ?>
+                            <a class="btn btn-xs btn-default" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>"><span class="glyphicon glyphicon-pencil"></span></a>
+                    <?php elseif( count( D2EM::getRepository( Entities\CustomerTag::class )->findAll() ) ): ?>
+                        <a class="btn btn-xs btn-default" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Add tags...</a>
+                    <?php endif; ?>
+                </div>
 
             </div>
 
