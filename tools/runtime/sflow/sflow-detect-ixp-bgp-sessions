@@ -54,6 +54,7 @@ my $bgpretaindays = 14;
 my $daemon = 1;
 
 GetOptions(
+	'bgpretaindays=i'	=> \$bgpretaindays,
 	'debug!'		=> \$debug,
 	'insanedebug!'		=> \$insanedebug,
 	'daemon!'		=> \$daemon,
