@@ -124,7 +124,6 @@
                 <div class="row">
                     <h3 class="col-sm-9">
                         <?= $c->getFormattedName() ?>
-                        <?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?>
                     </h3>
 
                     <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ): ?>
@@ -139,13 +138,17 @@
                 <?php if( $c->getTags()->count() ): ?>
                     <br>
                     <div>
+                        <?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?>
+
                         <?php foreach( $c->getTags() as $tag ): ?>
                             <span class="label label-default"><?= $tag->getDisplayAs() ?></span>
                         <?php endforeach; ?>
+                        <a class="btn btn-xs btn-default" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>"><span class="glyphicon glyphicon-pencil"></span></a>
                     </div>
                 <?php elseif( count( D2EM::getRepository( Entities\CustomerTag::class )->findAll() ) ): ?>
                     <br>
-                    <em>No tags defined for this customer - <a href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">add some...</a>
+                    <?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?>
+                    <a class="btn btn-xs btn-default" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Add tags...</a>
                 <?php endif; ?>
 
             </div>
