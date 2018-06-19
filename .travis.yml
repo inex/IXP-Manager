@@ -19,6 +19,8 @@ notifications:
     - barryo@inex.ie
 
 before_install:
+    - sudo apt-get update
+    - sudo apt-get install npm nodejs-legacy
     - "./data/travis-ci/setup_tests.sh"
 
 after_failure:
