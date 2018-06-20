@@ -6,7 +6,7 @@ about: Chose this option if you want to open a non-bug / non-feature issue
 
 **NB: Do not create an issue for requests for help.**
 
-<--
+<!--
 The correct place to request help is either:
 
 * the public mailing list: https://www.ixpmanager.org/support
