@@ -39,7 +39,16 @@ Speed:           {{$pi->resolveSpeed()}} ({{$pi->getDuplex()}} duplex)
 @foreach( $vi->getVlanInterfaces() as $vli )
 @php ($vlanid = $vli->getVlan()->getId())
 
+@if( in_array( $vli->getVlan()->getNumber(), [ 10, 30 ] ) )
+**Peering LAN1**
+@elseif( in_array( $vli->getVlan()->getNumber(), [ 12, 32 ] ) )
+**Peering LAN2**
+@elseif( in_array( $vli->getVlan()->getNumber(), [ 210, 230 ] ) )
+**INEX Cork**
+@else
 **{{$vli->getVlan()->getName()}}**
+@endif
+
 
 ```
 @if( $vi->getTrunk() )
@@ -96,6 +105,118 @@ Please contact us for your account details at {{ config( 'identity.email' ) }}.
 @endif
 
 
+## Quarantine Procedure
+
+When you first connect to INEX, we perform what we call a *quarantine procedure*. This is to ensure that you are only
+transmitting permitted packet types into the INEX peering fabric. These types are set out in the [INEX MoU](https://www.inex.ie/become-a-member/inex-mou/)
+under *Technical Requirements / Connectivity* but the tl;dr is that you should only be transmitting ARP, IPv4 and IPv6 packets.
+
+To begin the quarantine procedure, we need you to:
+
+1. order and complete the cross connect(s) to INEX;
+2. configure your port(s) with the IP addresses provided above
+3. bring the port up;
+4. test connectivity by pinging the IPv4/IPv6 address of the route collectors (see below);
+5. configure and bring up BGP sessions to the quarantine route collector and advertise your address space.
+6. Quarantine procedures now begin - allow 24hours for this.
+
+Don't worry - we're here to help with each step of the above!
+
+To aid us and accelerate the quarantine procedure, please ensure all of the following are disabled on your port where appropriate: spanning tree, keepalives, *-discovery protocol (lldp, cdp, etc.), proxy arp, ospf/isis.
+
+Note that the IP addresses we use and the quarantine route collector are all identical to those that are used in production so there is no reconfiguration required.
+
+
+
+## Peering / Route Collectors
+
+
+{{ config( 'identity.orgname' ) }} facilitates peering between its members, but other than the minimum current peering
+requirements (2 other members per LAN) does not mandate peering with any particular member apart from
+{{ config( 'identity.orgname' ) }} itself.
+
+You will find a full list of members on the IXP Manager, along with the correct email addresses to use for peering requests.
+
+When emailing other {{ config( 'identity.orgname' ) }} members about peering requests, please include all technical details
+relevant to the peering session, including your IP address, your AS number, and an estimate of the number of prefixes you
+intend to announce to that candidate peer.
+
+The *My Peering Manager* tool in **IXP Manager** will compose mails with the above details for you automatically.
+
+Please note that {{ config( 'identity.orgname' ) }} members are required to reply to peering requests within a
+reasonable time frame.  If your emails to other {{ config( 'identity.orgname' ) }} members about peering go unanswered,
+please let us know and we will do what we can.
+
+{{ config( 'identity.orgname' ) }} requires that all new members peer and share routes with the
+{{ config( 'identity.orgname' ) }} route collectors for administrative purposes.  We would be obliged if you
+could set up your router(s) and make the necessary arrangements for this as soon as possible.
+
+{{ config( 'identity.orgname' ) }}'s details are:
+
+```
+remote-as:              2128
+@foreach( $c->getVirtualInterfaces() as $vi )
+@foreach( $vi->getVlanInterfaces() as $vli )
+
+@if( in_array( $vli->getVlan()->getNumber(), [ 10, 30 ] ) )
+
+Peering VLAN #1
+@if( $vli->getIpv6enabled() )
+    IPv6 address:       2001:7F8:18::f:0:1
+    IPv6 session MD5:   {{ $vli->getIpv6bgpmd5secret() }}
+
+@endif
+@if( $vli->getIpv4enabled() )
+    IPv4 address:       185.6.36.126
+    IPv4 session MD5:   {{ $vli->getIpv4bgpmd5secret() }}
+@endif
+@elseif( in_array( $vli->getVlan()->getNumber(), [ 12, 32 ] ) )
+
+Peering VLAN #2
+@if( $vli->getIpv6enabled() )
+    IPv6 address:       2001:7F8:18:12::9999
+    IPv6 session MD5:   {{ $vli->getIpv6bgpmd5secret() }}
+
+@endif
+@if( $vli->getIpv4enabled() )
+    IPv4 address:       194.88.240.126
+    IPv4 session MD5:   {{ $vli->getIpv4bgpmd5secret() }}
+@endif
+@elseif( in_array( $vli->getVlan()->getNumber(), [ 210, 230 ] ) )
+
+INEX Cork
+@if( $vli->getIpv6enabled() )
+    IPv6 address:       2001:7F8:18:210::126
+    IPv6 session MD5:   {{ $vli->getIpv6bgpmd5secret() }}
+
+@endif
+@if( $vli->getIpv4enabled() )
+    IPv4 address:       185.1.69.126
+    IPv4 session MD5:   {{ $vli->getIpv4bgpmd5secret() }}
+@endif
+@endif
+@endforeach
+@endforeach
+```
+
+
+**No prefixes are ever announced to you or any other peer by the route collector and it will not forward traffic.**
+
+**Looking glasses for the route servers are available as follows:**
+
+@foreach( $c->getVirtualInterfaces() as $vi )
+@foreach( $vi->getVlanInterfaces() as $vli )
+@if( in_array( $vli->getVlan()->getNumber(), [ 10, 30 ] ) )
+* Peering VLAN #1 [[Production IPv4](https://www.inex.ie/ixp/lg/rc1-lan1-ipv4)] [[Production IPv6](https://www.inex.ie/ixp/lg/rc1-lan1-ipv6)] [[Quarantine IPv4](https://www.inex.ie/ixp/lg/rc1q-lan1-ipv4)] [[Quarantine IPv6](https://www.inex.ie/ixp/lg/rc1q-lan1-ipv6)]
+@elseif( in_array( $vli->getVlan()->getNumber(), [ 12, 32 ] ) )
+* Peering VLAN #2 [[Production IPv4](https://www.inex.ie/ixp/lg/rc1-lan2-ipv4)] [[Production IPv6](https://www.inex.ie/ixp/lg/rc1-lan2-ipv6)] [[Quarantine IPv4](https://www.inex.ie/ixp/lg/rc1q-lan2-ipv4)] [[Quarantine IPv6](https://www.inex.ie/ixp/lg/rc1q-lan2-ipv6)]
+@elseif( in_array( $vli->getVlan()->getNumber(), [ 210, 230 ] ) )
+* INEX Cork [[Production IPv4](https://www.inex.ie/ixp/lg/rc1-cork-ipv4)] [[Production IPv6](https://www.inex.ie/ixp/lg/rc1-cork-ipv6)] [[Quarantine IPv4](https://www.inex.ie/ixp/lg/rc1q-cork-ipv4)] [[Quarantine IPv6](https://www.inex.ie/ixp/lg/rc1q-cork-ipv6)]
+@endif
+@endforeach
+@endforeach
+
+
 
 ## Route Servers
 
@@ -110,6 +231,10 @@ route servers for peering is generally much safer than peering directly with oth
 
 See https://www.inex.ie/technical/route-servers/ for full details.
 
+@if( !$c->isRouteServerClient(4) && !$c->isRouteServerClient(6) )
+**Route server sessions are not currently configured on your account. If you wish to peer with the route servers
+(recommended for most members) then please let us know and we will configure your sessions.**
+@else
 Your connection to the route servers will be brought live during standard provisioning of your new port(s).
 
 It would aid the provisioning process if you could configure BGP sessions as follows **but leave them in the
@@ -117,11 +242,9 @@ shutdown state until advised otherwise**.
 
 ```
 remote-as:                43760
-
 @foreach( $c->getVirtualInterfaces() as $vi )
 @foreach( $vi->getVlanInterfaces() as $vli )
-
-@if( $vli->getRsclient() && $vli->getVlan()->getNumber() == 10 )
+@if( $vli->getRsclient() && in_array( $vli->getVlan()->getNumber(), [ 10, 30 ] ) )
 
 Peering VLAN #1
 @if( $vli->getIpv6enabled() )
@@ -135,7 +258,7 @@ Peering VLAN #1
     IPv4 Route Server #2: 185.6.36.9
     IPv4 session MD5:     {{ $vli->getIpv4bgpmd5secret() }}
 @endif
-@elseif( $vli->getVlan()->getNumber() == 12)
+@elseif( $vli->getRsclient() && in_array( $vli->getVlan()->getNumber(), [ 12, 32 ] ) )
 
 Peering VLAN #2
 @if( $vli->getIpv6enabled() )
@@ -149,7 +272,7 @@ Peering VLAN #2
     IPv4 Route Server #2: 194.88.240.9
     IPv4 session MD5:     {{ $vli->getIpv4bgpmd5secret() }}
 @endif
-@elseif( $vli->getVlan()->getNumber() == 210)
+@elseif( $vli->getRsclient() && in_array( $vli->getVlan()->getNumber(), [ 210, 230 ] ) )
 
 INEX Cork
 @if( $vli->getIpv6enabled() )
@@ -164,10 +287,25 @@ INEX Cork
     IPv4 session MD5:   {{ $vli->getIpv4bgpmd5secret() }}
 @endif
 @endif
-
 @endforeach
 @endforeach
 ```
+
+@endif
+
+**Looking glasses for the route servers are available as follows:**
+
+@foreach( $c->getVirtualInterfaces() as $vi )
+@foreach( $vi->getVlanInterfaces() as $vli )
+@if( in_array( $vli->getVlan()->getNumber(), [ 10, 30 ] ) )
+* Peering VLAN #1 [[RS1 IPv4](https://www.inex.ie/ixp/lg/rs1-lan1-ipv4)] [[RS1 IPv6](https://www.inex.ie/ixp/lg/rs1-lan1-ipv6)] [[RS2 IPv4](https://www.inex.ie/ixp/lg/rs2-lan1-ipv4)] [[RS2 IPv6](https://www.inex.ie/ixp/lg/rs2-lan1-ipv6)]
+@elseif( in_array( $vli->getVlan()->getNumber(), [ 12, 32 ] ) )
+* Peering VLAN #2 [[RS1 IPv4](https://www.inex.ie/ixp/lg/rs1-lan2-ipv4)] [[RS1 IPv6](https://www.inex.ie/ixp/lg/rs1-lan2-ipv6)] [[RS2 IPv4](https://www.inex.ie/ixp/lg/rs2-lan2-ipv4)] [[RS2 IPv6](https://www.inex.ie/ixp/lg/rs2-lan2-ipv6)]
+@elseif( in_array( $vli->getVlan()->getNumber(), [ 210, 230 ] ) )
+* INEX Cork [[RS1 IPv4](https://www.inex.ie/ixp/lg/rs1-cork-ipv4)] [[RS1 IPv6](https://www.inex.ie/ixp/lg/rs1-cork-ipv6)] [[RS2 IPv4](https://www.inex.ie/ixp/lg/rs2-cork-ipv4)] [[RS2 IPv6](https://www.inex.ie/ixp/lg/rs2-cork-ipv6)]
+@endif
+@endforeach
+@endforeach
 
 
 ## External Connections to {{ config( 'identity.orgname' ) }}
@@ -214,83 +352,6 @@ In general, the best way to contact {{ config( 'identity.orgname' ) }} operation
 If there is a genuine emergency requiring immediate assistance, please use the 24/7 phone number listed on the web page.
 
 
-## Peering
-
-
-{{ config( 'identity.orgname' ) }} facilitates peering between its members, but other than the minimum current peering
-requirements (2 other members per LAN) does not mandate peering with any particular member apart from
-{{ config( 'identity.orgname' ) }} itself.
-
-You will find a full list of members on the IXP Manager, along with the correct email addresses to use for peering requests.
-
-When emailing other {{ config( 'identity.orgname' ) }} members about peering requests, please include all technical details
-relevant to the peering session, including your IP address, your AS number, and an estimate of the number of prefixes you
-intend to announce to that candidate peer.
-
-The *My Peering Manager* tool in **IXP Manager** will compose mails with the above details for you automatically.
-
-Please note that {{ config( 'identity.orgname' ) }} members are required to reply to peering requests within a
-reasonable time frame.  If your emails to other {{ config( 'identity.orgname' ) }} members about peering go unanswered,
-please let us know and we will do what we can.
-
-{{ config( 'identity.orgname' ) }} requires that all new members peer and share routes with the
-{{ config( 'identity.orgname' ) }} route collectors for administrative purposes.  We would be obliged if you
-could set up your router(s) and make the necessary arrangements for this as soon as possible.
-
-{{ config( 'identity.orgname' ) }}'s details are:
-
-```
-remote-as:              2128
-
-@foreach( $c->getVirtualInterfaces() as $vi )
-@foreach( $vi->getVlanInterfaces() as $vli )
-
-
-
-@if( $vli->getVlan()->getNumber() == 10 )
-
-Peering VLAN #1
-@if( $vli->getIpv6enabled() )
-    IPv6 address:       2001:7F8:18::F:0:1
-    IPv6 session MD5:   {{ $vli->getIpv6bgpmd5secret() }}
-
-@endif
-@if( $vli->getIpv4enabled() )
-    IPv4 address:       185.6.36.126
-    IPv4 session MD5:   {{ $vli->getIpv4bgpmd5secret() }}
-@endif
-@elseif( $vli->getVlan()->getNumber() == 12)
-
-Peering VLAN #2
-@if( $vli->getIpv6enabled() )
-    IPv6 address:       2001:7F8:18:12::9999
-    IPv6 session MD5:   {{ $vli->getIpv6bgpmd5secret() }}
-
-@endif
-@if( $vli->getIpv4enabled() )
-    IPv4 address:       194.88.240.126
-    IPv4 session MD5:   {{ $vli->getIpv4bgpmd5secret() }}
-@endif
-@elseif( $vli->getVlan()->getNumber() == 210)
-
-INEX Cork
-@if( $vli->getIpv6enabled() )
-    IPv6 address:       2001:7F8:18:210::126
-    IPv6 session MD5:   {{ $vli->getIpv6bgpmd5secret() }}
-
-@endif
-@if( $vli->getIpv4enabled() )
-    IPv4 address:       185.1.69.126
-    IPv4 session MD5:   {{ $vli->getIpv4bgpmd5secret() }}
-@endif
-@endif
-
-@endforeach
-@endforeach
-```
-
-
-No prefixes are announced by the route collector and it will not forward traffic.
 
 
 NOC Details
@@ -382,19 +443,20 @@ peering LANs.
 
 Full details are at: https://www.inex.ie/technical/as112-service/
 
+@if( !$c->isAS112Client() )
+**The AS112 service is not currently configured on your account. If you wish to avail of the AS112 service
+(recommended for most members) then please let us know and we will switch it on.**
+@else
 Your session to the AS112 service will be brought up during the standard provisioning of your new connection(s). To
 aid the process, it would help if you could preconfigure the following BGP session(s):
 
 
 ```
 remote-as:              112
-
 @foreach( $c->getVirtualInterfaces() as $vi )
 @foreach( $vi->getVlanInterfaces() as $vli )
+@if( $vli->getAs112client() && in_array( $vli->getVlan()->getNumber(), [ 10, 30 ] ) )
 
-
-
-@if( $vli->getVlan()->getNumber() == 10 )
 
 Peering VLAN #1
 @if( $vli->getIpv6enabled() )
@@ -406,7 +468,8 @@ Peering VLAN #1
     IPv4 address:       185.6.36.6
     IPv4 session MD5:   <none>
 @endif
-@elseif( $vli->getVlan()->getNumber() == 12)
+@elseif( $vli->getAs112client() && in_array( $vli->getVlan()->getNumber(), [ 12, 32 ] ) )
+
 
 Peering VLAN #2
 @if( $vli->getIpv6enabled() )
@@ -418,7 +481,7 @@ Peering VLAN #2
     IPv4 address:       194.88.240.6
     IPv4 session MD5:   <none>
 @endif
-@elseif( $vli->getVlan()->getNumber() == 210)
+@elseif( $vli->getAs112client() && in_array( $vli->getVlan()->getNumber(), [ 210, 230 ] ) )
 
 INEX Cork
 @if( $vli->getIpv6enabled() )
@@ -431,10 +494,27 @@ INEX Cork
     IPv4 session MD5:   <none>
 @endif
 @endif
-
 @endforeach
 @endforeach
 ```
+
+**Looking glasses for the AS112 service are available as follows:**
+
+@foreach( $c->getVirtualInterfaces() as $vi )
+@foreach( $vi->getVlanInterfaces() as $vli )
+@if( in_array( $vli->getVlan()->getNumber(), [ 10, 30 ] ) )
+* Peering VLAN #1 [[IPv4](https://www.inex.ie/ixp/lg/as112-lan1-ipv4)] [[IPv6](https://www.inex.ie/ixp/lg/as112-lan1-ipv6)]
+@elseif( in_array( $vli->getVlan()->getNumber(), [ 12, 32 ] ) )
+* Peering VLAN #2 [[IPv4](https://www.inex.ie/ixp/lg/as112-lan2-ipv4)] [[IPv6](https://www.inex.ie/ixp/lg/as112-lan2-ipv6)]
+@elseif( in_array( $vli->getVlan()->getNumber(), [ 210, 230 ] ) )
+* INEX Cork [[IPv4](https://www.inex.ie/ixp/lg/as112-cork-ipv4)] [[IPv6](https://www.inex.ie/ixp/lg/as112-cork-ipv6)]
+@endif
+@endforeach
+@endforeach
+
+@endif
+
+
 
 PeeringDB
 =========
