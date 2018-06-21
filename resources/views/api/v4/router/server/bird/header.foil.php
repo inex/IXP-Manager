@@ -75,13 +75,7 @@ prefix set martians;
                 0200::/7+,              # OSI NSAP-mapped prefix set (RFC4548) - deprecated by RFC4048
                 3ffe::/16+,             # Former 6bone, now decommissioned
                 2001:db8::/32+,         # Reserved by IANA for special purposes and documentation
-                2002:e000::/20+,        # Invalid 6to4 packets (IPv4 multicast)
-                2002:7f00::/24+,        # Invalid 6to4 packets (IPv4 loopback)
-                2002:0000::/24+,        # Invalid 6to4 packets (IPv4 default)
-                2002:ff00::/24+,        # Invalid 6to4 packets
-                2002:0a00::/24+,        # Invalid 6to4 packets (IPv4 private 10.0.0.0/8 network)
-                2002:ac10::/28+,        # Invalid 6to4 packets (IPv4 private 172.16.0.0/12 network)
-                2002:c0a8::/32+,        # Invalid 6to4 packets (IPv4 private 192.168.0.0/16 network)
+                2002::/16+,             # 6to4 global anycast prefix - RFC 7526
                 fc00::/7+,              # Unicast Unique Local Addresses (ULA) - RFC 4193
                 fe80::/10+,             # Link-local Unicast
                 fec0::/10+,             # Site-local Unicast - deprecated by RFC 3879 (replaced by ULA)
@@ -97,6 +91,7 @@ prefix set martians;
                 172.16.0.0/12+,
                 192.0.0.0/24+,
                 192.0.2.0/24+,
+                192.88.99.0/24+,
                 192.168.0.0/16+,
                 198.18.0.0/15+,
                 198.51.100.0/24+,
