@@ -105,7 +105,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $this->assertInstanceOf( VirtualInterfaceEntity::class , $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( array_pop( $url ) ) );
 
         // check the values of the Virtual interface object
-        $this->assertEquals( "5", $vi->getCustomer()->getId() );
+        $this->assertEquals( 5, $vi->getCustomer()->getId() );
         $this->assertEquals( "", $vi->getName() );
         $this->assertEquals( null, $vi->getMtu() );
         $this->assertEquals( false, $vi->getTrunk() );
@@ -121,7 +121,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         /** @var $vli VlanInterfaceEntity */
         $this->assertEquals( "10.2.0.22", $vli->getIPv4Address()->getAddress() );
         $this->assertEquals( "2001:db8:2::22", $vli->getIPv6Address()->getAddress() );
-        $this->assertEquals( "2", $vli->getVlan()->getId() );
+        $this->assertEquals( 2, $vli->getVlan()->getId() );
         $this->assertEquals( true, $vli->getIpv4enabled() );
         $this->assertEquals( true, $vli->getIpv6enabled() );
         $this->assertEquals( "v4.example.com", $vli->getIpv4hostname() );
@@ -152,8 +152,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         // check the values of the Physical interface object
         $this->assertEquals( "GigabitEthernet4", $pi->getSwitchPort()->getName()  );
         $this->assertEquals( "switch2", $pi->getSwitchPort()->getSwitcher()->getName()  );
-        $this->assertEquals( "4", $pi->getStatus() );
-        $this->assertEquals( "1000", $pi->getSpeed() );
+        $this->assertEquals( 4, $pi->getStatus() );
+        $this->assertEquals( 1000, $pi->getSpeed() );
         $this->assertEquals( "full", $pi->getDuplex() );
         $this->assertEquals( null, $pi->getNotes() );
         $this->assertEquals( true, $pi->getAutoneg() );
@@ -168,7 +168,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->assertNotChecked('trunk' )
             ->assertNotChecked('lag_framing' )
             ->assertNotChecked('fastlacp' )
-            ->click( "#advanced-options" )
+            ->click(        "#advanced-options" )
             ->assertInputValue('name', '' )
             ->assertInputValue('description', '' )
             ->assertInputValue('channel-group', '' )
@@ -373,6 +373,24 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->assertNotChecked('autoneg-label' )
             ->assertInputValue( 'notes' , '### note test test' );
 
+
+        // check all checkboxes
+        $browser->check( 'autoneg-label' )
+            ->press( "Save Changes" )
+            ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() )
+            ->assertSee( 'Physical Interface updated successfully.' );
+
+        D2EM::refresh( $pi );
+
+        $this->assertEquals( true,  $pi->getAutoneg() );
+
+        $browser->click( "#edit-pi-" . $pi->getId() );
+
+        $browser->assertSee( "Edit Physical Interface" );
+
+        // Check the form values
+        $browser->assertChecked('autoneg-label' );
+
         $browser->click( "#cancel-btn" )
             ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() )
             ->assertSee( "Add/Edit Virtual Interface" );
@@ -559,6 +577,49 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->assertNotChecked( 'ipv4-monitor-rcbgp' )
             ->assertNotChecked( 'ipv6-monitor-rcbgp' );
 
+
+        // Check all the checkboxes
+        $browser->check( "mcastenabled" )
+            ->check( "busyhost" )
+            ->check( "rsclient" )
+            ->check( 'irrdbfilter' )
+            ->waitFor( "#div-rsmorespecifics" )
+            ->check('rsmorespecifics')
+            ->check( 'ipv4-can-ping' )
+            ->check( 'ipv6-can-ping' )
+            ->check( 'ipv4-monitor-rcbgp' )
+            ->check( 'ipv6-monitor-rcbgp' )
+            ->press('Save Changes')
+            ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() )
+            ->assertSee('Vlan Interface updated successfully.');
+
+        D2EM::refresh( $vli );
+
+        $this->assertEquals( true, $vli->getMcastenabled() );
+        $this->assertEquals( true, $vli->getIrrdbfilter() );
+        $this->assertEquals( true, $vli->getRsclient() );
+        $this->assertEquals( true, $vli->getIpv4canping() );
+        $this->assertEquals( true, $vli->getIpv6canping() );
+        $this->assertEquals( true, $vli->getIpv4monitorrcbgp() );
+        $this->assertEquals( true, $vli->getIpv6monitorrcbgp() );
+        $this->assertEquals( true, $vli->getBusyhost() );
+        $this->assertEquals( true, $vli->getRsMoreSpecifics() );
+
+        // Edit the Vlan Interface
+        $browser->click( "#edit-vli-" . $vli->getId() )
+            ->assertPathIs('/interfaces/vlan/edit/' . $vli->getId() . "/vintid/" . $vi->getId() )
+            ->assertSee( "Edit VLAN Interface" );
+
+        // Check the form values
+        $browser->assertChecked('mcastenabled')
+            ->assertChecked('busyhost')
+            ->assertChecked('rsclient')
+            ->assertChecked('irrdbfilter')
+            ->assertChecked( 'ipv4-can-ping' )
+            ->assertChecked( 'ipv6-can-ping' )
+            ->assertChecked( 'ipv4-monitor-rcbgp' )
+            ->assertChecked( 'ipv6-monitor-rcbgp' );
+
         $browser->click( "#cancel-btn" )
             ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() )
             ->assertSee( "Add/Edit Virtual Interface" );
@@ -574,24 +635,24 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
         // check that the form match with the Vlan interface informations
         $browser->assertSelected('vlan', '2')
-            ->assertNotChecked('mcastenabled')
-            ->assertNotChecked('busyhost')
+            ->assertChecked('mcastenabled')
+            ->assertChecked('busyhost')
             ->assertChecked('ipv6-enabled')
             ->assertChecked('ipv4-enabled')
             ->assertInputValue('maxbgpprefix', '20')
-            ->assertNotChecked('rsclient')
-            ->assertNotChecked('irrdbfilter')
-            ->assertNotChecked('rsmorespecifics')
+            ->assertChecked('rsclient')
+            ->assertChecked('irrdbfilter')
+            ->assertChecked('rsmorespecifics')
             ->assertSelected('ipv4-address', '10.1.0.1')
             ->assertSelected('ipv6-address', '2001:db8:1::1')
             ->assertInputValue( 'ipv4-hostname', 'v4-2.example.com' )
             ->assertInputValue( 'ipv6-hostname', 'v6-2.example.com' )
             ->assertInputValue( 'ipv4-bgp-md5-secret', 'soopersecrets' )
             ->assertInputValue( 'ipv6-bgp-md5-secret', 'soopersecrets' )
-            ->assertNotChecked( 'ipv4-can-ping' )
-            ->assertNotChecked( 'ipv6-can-ping' )
-            ->assertNotChecked( 'ipv4-monitor-rcbgp' )
-            ->assertNotChecked( 'ipv6-monitor-rcbgp' )
+            ->assertChecked( 'ipv4-can-ping' )
+            ->assertChecked( 'ipv6-can-ping' )
+            ->assertChecked( 'ipv4-monitor-rcbgp' )
+            ->assertChecked( 'ipv6-monitor-rcbgp' )
             ->press( "Save Changes" )
             ->assertSee( "Vlan Interface updated successfully." );;
 
@@ -606,19 +667,19 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $this->assertEquals( true, $vliDuplicated->getIpv6enabled() );
         $this->assertEquals( "v4-2.example.com", $vliDuplicated->getIpv4hostname() );
         $this->assertEquals( "v6-2.example.com", $vliDuplicated->getIpv6hostname() );
-        $this->assertEquals( false, $vliDuplicated->getMcastenabled() );
-        $this->assertEquals( false, $vliDuplicated->getIrrdbfilter() );
+        $this->assertEquals( true, $vliDuplicated->getMcastenabled() );
+        $this->assertEquals( true, $vliDuplicated->getIrrdbfilter() );
         $this->assertEquals( "soopersecrets", $vliDuplicated->getIpv4bgpmd5secret() );
         $this->assertEquals( "soopersecrets", $vliDuplicated->getIpv6bgpmd5secret() );
         $this->assertEquals( "20", $vliDuplicated->getMaxbgpprefix() );
-        $this->assertEquals( false, $vliDuplicated->getRsclient() );
-        $this->assertEquals( false, $vliDuplicated->getIpv4canping() );
-        $this->assertEquals( false, $vliDuplicated->getIpv6canping() );
-        $this->assertEquals( false, $vliDuplicated->getIpv4monitorrcbgp() );
-        $this->assertEquals( false, $vliDuplicated->getIpv6monitorrcbgp() );
-        $this->assertEquals( false, $vliDuplicated->getBusyhost() );
+        $this->assertEquals( true, $vliDuplicated->getRsclient() );
+        $this->assertEquals( true, $vliDuplicated->getIpv4canping() );
+        $this->assertEquals( true, $vliDuplicated->getIpv6canping() );
+        $this->assertEquals( true, $vliDuplicated->getIpv4monitorrcbgp() );
+        $this->assertEquals( true, $vliDuplicated->getIpv6monitorrcbgp() );
+        $this->assertEquals( true, $vliDuplicated->getBusyhost() );
         $this->assertEquals( null, $vliDuplicated->getNotes() );
-        $this->assertEquals( false, $vliDuplicated->getRsMoreSpecifics() );
+        //$this->assertEquals( true, $vliDuplicated->getRsMoreSpecifics() );
 
         // Delete Vlan interface
         $browser->press("#delete-vli-" . $vli->getId() )
