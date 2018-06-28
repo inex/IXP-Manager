@@ -33,11 +33,11 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->press('submit' )
                 ->assertPathIs('/admin' );
 
-            $vi = $this->testVi( $browser );
+            $vi = $this->intTestVi( $browser );
 
-            $this->testPi( $browser, $vi );
+            $this->intTestPi( $browser, $vi );
 
-            $this->testVli( $browser, $vi );
+            $this->intTestVli( $browser, $vi );
 
             // Delete Virtual interface
             $browser->press( "#delete-vi-" . $vi->getId() )
@@ -62,7 +62,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
      *
      * @throws
      */
-    private function testVi( Browser $browser ){
+    private function intTestVi( Browser $browser ){
 
         $browser->visit('/interfaces/virtual/wizard-add/custid/5' )
             ->assertSee('Virtual Interface Settings' );
@@ -77,7 +77,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->select( 'switch', '2' )
             ->waitUntilMissing( "Choose a switch port" )
             ->waitForText( "Choose a switch port" )
-            ->select( 'switch-port', '27' )
+            ->select( 'switch-port', '28' )
             ->select( 'status', '4' )
             ->select( 'speed', '1000' )
             ->select( 'duplex', 'full' )
@@ -85,8 +85,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->check( 'rsclient' )
             ->check( 'irrdbfilter' )
             ->check( 'as112client' )
-            ->select( 'ipv4-address', "10.2.0.16" )
-            ->select( 'ipv6-address', '2001:db8:2::16' )
+            ->select( 'ipv4-address', "10.2.0.22" )
+            ->select( 'ipv6-address', '2001:db8:2::22' )
             ->type( 'ipv4-hostname', 'v4.example.com' )
             ->type( 'ipv6-hostname', 'v6.example.com' )
             ->type( 'ipv4-bgp-md5-secret', 'soopersecret' )
@@ -102,7 +102,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
         // Check data in DB
         /** @var $vi VirtualInterfaceEntity */
-        $this->assertInstanceOf( VirtualInterfaceEntity::class , $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $url[6] ) );
+        $this->assertInstanceOf( VirtualInterfaceEntity::class , $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( array_pop( $url ) ) );
 
         // check the values of the Virtual interface object
         $this->assertEquals( "5", $vi->getCustomer()->getId() );
@@ -114,13 +114,13 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $this->assertEquals( false,$vi->getFastLACP() );
 
         // check that we have 1 physical interface for the virtual interface
-        $this->assertEquals( "1", count( $vi->getVlanInterfaces() ) );
+        $this->assertEquals( 1, count( $vi->getVlanInterfaces() ) );
 
         // check the values of the Vlan interface object
         $vli = $vi->getVlanInterfaces()[0];
         /** @var $vli VlanInterfaceEntity */
-        $this->assertEquals( "10.2.0.16", $vli->getIPv4Address()->getAddress() );
-        $this->assertEquals( "2001:db8:2::16", $vli->getIPv6Address()->getAddress() );
+        $this->assertEquals( "10.2.0.22", $vli->getIPv4Address()->getAddress() );
+        $this->assertEquals( "2001:db8:2::22", $vli->getIPv6Address()->getAddress() );
         $this->assertEquals( "2", $vli->getVlan()->getId() );
         $this->assertEquals( true, $vli->getIpv4enabled() );
         $this->assertEquals( true, $vli->getIpv6enabled() );
@@ -144,13 +144,13 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
 
         // check that we have 1 physical interface for the virtual interface
-        $this->assertEquals( "1", count( $vi->getPhysicalInterfaces() ) );
+        $this->assertEquals( 1, count( $vi->getPhysicalInterfaces() ) );
 
         /** @var $pi PhysicalInterfaceEntity */
         $pi = $vi->getPhysicalInterfaces()[0];
 
         // check the values of the Physical interface object
-        $this->assertEquals( "GigabitEthernet3", $pi->getSwitchPort()->getName()  );
+        $this->assertEquals( "GigabitEthernet4", $pi->getSwitchPort()->getName()  );
         $this->assertEquals( "switch2", $pi->getSwitchPort()->getSwitcher()->getName()  );
         $this->assertEquals( "4", $pi->getStatus() );
         $this->assertEquals( "1000", $pi->getSpeed() );
@@ -191,11 +191,11 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         // Check value in DB
         D2EM::refresh( $vi );
 
-        $this->assertEquals( "2", $vi->getCustomer()->getId() );
+        $this->assertEquals( 2, $vi->getCustomer()->getId() );
         $this->assertEquals( "name-test", $vi->getName() );
-        $this->assertEquals( '666', $vi->getMtu() );
+        $this->assertEquals( 666, $vi->getMtu() );
         $this->assertEquals( true, $vi->getTrunk() );
-        $this->assertEquals( '666', $vi->getChannelgroup() );
+        $this->assertEquals( 666, $vi->getChannelgroup() );
         $this->assertEquals( true, $vi->getLagFraming() );
         $this->assertEquals( true,$vi->getFastLACP() );
 
@@ -227,10 +227,10 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         // Check value in DB
         D2EM::refresh( $vi );
 
-        $this->assertEquals( "3", $vi->getCustomer()->getId() );
+        $this->assertEquals( 3,     $vi->getCustomer()->getId() );
         $this->assertEquals( false, $vi->getTrunk() );
         $this->assertEquals( false, $vi->getLagFraming() );
-        $this->assertEquals( false,$vi->getFastLACP() );
+        $this->assertEquals( false, $vi->getFastLACP() );
 
         // Go on edit page
         $browser->visit('/interfaces/virtual/edit/' . $vi->getId() )
@@ -257,7 +257,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
         $this->assertEquals( true, $vi->getTrunk() );
         $this->assertEquals( true, $vi->getLagFraming() );
-        $this->assertEquals( true,$vi->getFastLACP() );
+        $this->assertEquals( true, $vi->getFastLACP() );
 
         // Go on edit page
         $browser->visit('/interfaces/virtual/edit/' . $vi->getId() )
@@ -279,7 +279,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
      *
      * @throws
      */
-    private function testPi(Browser $browser, VirtualInterfaceEntity $vi ){
+    private function intTestPi(Browser $browser, VirtualInterfaceEntity $vi ){
 
         $browser->visit('/interfaces/virtual/edit/' . $vi->getId() );
 
@@ -289,7 +289,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $browser->select('switch',  '2' )
             ->waitUntilMissing( "Choose a switch port" )
             ->waitForText( "Choose a switch port" )
-            ->select( 'switch-port', '28' )
+            ->select( 'switch-port', '29' )
             ->select( 'status', '1' )
             ->select( 'speed', '10' )
             ->select( 'duplex', 'half' )
@@ -301,17 +301,17 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
 
         // check data in DB
-        $this->assertGreaterThan( '0', $vi->getPhysicalInterfaces() );
+        $this->assertGreaterThan( 1, $vi->getPhysicalInterfaces()->count() );
 
         /** @var $pi PhysicalInterfaceEntity */
         $this->assertInstanceOf( PhysicalInterfaceEntity::class , $pi = $vi->getPhysicalInterfaces()->last() );
 
-        $this->assertEquals( "2", $pi->getSwitchPort()->getSwitcher()->getId() );
-        $this->assertEquals( "28", $pi->getSwitchPort()->getId() );
-        $this->assertEquals( '1', $pi->getStatus() );
-        $this->assertEquals( '10', $pi->getSpeed() );
+        $this->assertEquals( 2,      $pi->getSwitchPort()->getSwitcher()->getId() );
+        $this->assertEquals( 29,     $pi->getSwitchPort()->getId() );
+        $this->assertEquals( 1,      $pi->getStatus() );
+        $this->assertEquals( 10,     $pi->getSpeed() );
         $this->assertEquals( 'half', $pi->getDuplex() );
-        $this->assertEquals( 1, $pi->getAutoneg() );
+        $this->assertEquals( true,   $pi->getAutoneg() );
         $this->assertEquals( '### note test', $pi->getNotes() );
 
 
@@ -324,7 +324,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $browser->assertSelected('switch', '2')
             ->waitUntilMissing( "Choose a switch port" )
             ->waitForText( "Choose a switch port" )
-            ->assertSelected('switch-port', '28')
+            ->assertSelected('switch-port', '29')
             ->assertSelected('status', '1')
             ->assertSelected('speed', '10')
             ->assertSelected('duplex', 'half')
@@ -346,21 +346,21 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() )
             ->assertSee( 'Physical Interface updated successfully.' );
 
-        $browser->click( "#edit-pi-" . $pi->getId() );
-
-        $browser->assertSee( "Edit Physical Interface" );
-
         D2EM::refresh( $pi );
 
         // check data in DB
-        $this->assertEquals( "1", $pi->getSwitchPort()->getSwitcher()->getId() );
-        $this->assertEquals( "2", $pi->getSwitchPort()->getId() );
-        $this->assertEquals( '2', $pi->getStatus() );
-        $this->assertEquals( '100', $pi->getSpeed() );
-        $this->assertEquals( 'full', $pi->getDuplex() );
-        $this->assertEquals( 0, $pi->getAutoneg() );
+        $this->assertEquals( 1,      $pi->getSwitchPort()->getSwitcher()->getId() );
+        $this->assertEquals( 2,      $pi->getSwitchPort()->getId() );
+        $this->assertEquals( 2,      $pi->getStatus() );
+        $this->assertEquals( 100,    $pi->getSpeed() );
+        $this->assertEquals( "full", $pi->getDuplex() );
+        $this->assertEquals( false,  $pi->getAutoneg() );
         $this->assertEquals( '### note test test', $pi->getNotes() );
 
+
+        $browser->click( "#edit-pi-" . $pi->getId() );
+
+        $browser->assertSee( "Edit Physical Interface" );
 
         // Check the form values
         $browser->assertSelected('switch', '1')
@@ -384,7 +384,9 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() )
             ->waitForReload()
             ->assertSee( 'The Physical Interface has been deleted successfully.' );
+
     }
+
 
 
     /**
@@ -395,7 +397,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
      *
      * @throws
      */
-    private function testVli( Browser $browser, VirtualInterfaceEntity $vi ){
+    private function intTestVli( Browser $browser, VirtualInterfaceEntity $vi ){
 
         $browser->visit('/interfaces/virtual/edit/' . $vi->getId() );
 
@@ -430,14 +432,14 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->assertSee('Vlan Interface updated successfully.');
 
         // check data in DB
-        $this->assertGreaterThan( '0', $vi->getVlanInterfaces() );
+        $this->assertGreaterThan( 1, $vi->getVlanInterfaces()->count() );
 
         /** @var $vli VlanInterfaceEntity */
         $this->assertInstanceOf( VlanInterfaceEntity::class , $vli = $vi->getVlanInterfaces()->last() );
 
         $this->assertEquals( "10.2.0.1", $vli->getIPv4Address()->getAddress() );
         $this->assertEquals( "2001:db8:2::1", $vli->getIPv6Address()->getAddress() );
-        $this->assertEquals( "2", $vli->getVlan()->getId() );
+        $this->assertEquals( 2,   $vli->getVlan()->getId() );
         $this->assertEquals( true, $vli->getIpv4enabled() );
         $this->assertEquals( true, $vli->getIpv6enabled() );
         $this->assertEquals( "v4.example.com", $vli->getIpv4hostname() );
@@ -490,18 +492,14 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $browser->select('vlan', '1' )
             ->uncheck( "mcastenabled" )
             ->uncheck( "busyhost" )
-            ->check( 'ipv6-enabled' )
-            ->waitFor( "#ipv6-area" )
-            ->check( 'ipv4-enabled' )
-            ->waitFor( "#ipv4-area" )
             ->type( "maxbgpprefix", '20' )
             ->uncheck( "rsclient" )
             ->uncheck( 'irrdbfilter' )
             ->uncheck( 'rsmorespecifics' )
             ->select( 'ipv4-address', "10.1.0.1" )
             ->select( 'ipv6-address', '2001:db8:1::1' )
-            ->type( 'ipv4-hostname', 'v4.examples.com' )
-            ->type( 'ipv6-hostname', 'v6.examples.com' )
+            ->type( 'ipv4-hostname', 'v4-2.example.com' )
+            ->type( 'ipv6-hostname', 'v6-2.example.com' )
             ->type( 'ipv4-bgp-md5-secret', 'soopersecrets' )
             ->type( 'ipv6-bgp-md5-secret', 'soopersecrets' )
             ->uncheck( 'ipv4-can-ping' )
@@ -516,16 +514,16 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
         $this->assertEquals( "10.1.0.1", $vli->getIPv4Address()->getAddress() );
         $this->assertEquals( "2001:db8:1::1", $vli->getIPv6Address()->getAddress() );
-        $this->assertEquals( "1", $vli->getVlan()->getId() );
+        $this->assertEquals( 1, $vli->getVlan()->getId() );
         $this->assertEquals( true, $vli->getIpv4enabled() );
         $this->assertEquals( true, $vli->getIpv6enabled() );
-        $this->assertEquals( "v4.examples.com", $vli->getIpv4hostname() );
-        $this->assertEquals( "v6.examples.com", $vli->getIpv6hostname() );
+        $this->assertEquals( "v4-2.example.com", $vli->getIpv4hostname() );
+        $this->assertEquals( "v6-2.example.com", $vli->getIpv6hostname() );
         $this->assertEquals( false, $vli->getMcastenabled() );
         $this->assertEquals( false, $vli->getIrrdbfilter() );
         $this->assertEquals( "soopersecrets", $vli->getIpv4bgpmd5secret() );
         $this->assertEquals( "soopersecrets", $vli->getIpv6bgpmd5secret() );
-        $this->assertEquals( "20", $vli->getMaxbgpprefix() );
+        $this->assertEquals( 20, $vli->getMaxbgpprefix() );
         $this->assertEquals( false, $vli->getRsclient() );
         $this->assertEquals( false, $vli->getIpv4canping() );
         $this->assertEquals( false, $vli->getIpv6canping() );
@@ -552,8 +550,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->assertNotChecked('rsmorespecifics')
             ->assertSelected('ipv4-address', '10.1.0.1')
             ->assertSelected('ipv6-address', '2001:db8:1::1')
-            ->assertInputValue( 'ipv4-hostname', 'v4.examples.com' )
-            ->assertInputValue( 'ipv6-hostname', 'v6.examples.com' )
+            ->assertInputValue( 'ipv4-hostname', 'v4-2.example.com' )
+            ->assertInputValue( 'ipv6-hostname', 'v6-2.example.com' )
             ->assertInputValue( 'ipv4-bgp-md5-secret', 'soopersecrets' )
             ->assertInputValue( 'ipv6-bgp-md5-secret', 'soopersecrets' )
             ->assertNotChecked( 'ipv4-can-ping' )
@@ -586,8 +584,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->assertNotChecked('rsmorespecifics')
             ->assertSelected('ipv4-address', '10.1.0.1')
             ->assertSelected('ipv6-address', '2001:db8:1::1')
-            ->assertInputValue( 'ipv4-hostname', 'v4.examples.com' )
-            ->assertInputValue( 'ipv6-hostname', 'v6.examples.com' )
+            ->assertInputValue( 'ipv4-hostname', 'v4-2.example.com' )
+            ->assertInputValue( 'ipv6-hostname', 'v6-2.example.com' )
             ->assertInputValue( 'ipv4-bgp-md5-secret', 'soopersecrets' )
             ->assertInputValue( 'ipv6-bgp-md5-secret', 'soopersecrets' )
             ->assertNotChecked( 'ipv4-can-ping' )
@@ -597,7 +595,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->press( "Save Changes" )
             ->assertSee( "Vlan Interface updated successfully." );;
 
-            D2EM::refresh($vi);
+        D2EM::refresh($vi);
         $vliDuplicated = $vi->getVlanInterfaces()->last();
 
         // check if the value of the duplicated Vlan interface match
@@ -606,8 +604,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $this->assertEquals( "2", $vliDuplicated->getVlan()->getId() );
         $this->assertEquals( true, $vliDuplicated->getIpv4enabled() );
         $this->assertEquals( true, $vliDuplicated->getIpv6enabled() );
-        $this->assertEquals( "v4.examples.com", $vliDuplicated->getIpv4hostname() );
-        $this->assertEquals( "v6.examples.com", $vliDuplicated->getIpv6hostname() );
+        $this->assertEquals( "v4-2.example.com", $vliDuplicated->getIpv4hostname() );
+        $this->assertEquals( "v6-2.example.com", $vliDuplicated->getIpv6hostname() );
         $this->assertEquals( false, $vliDuplicated->getMcastenabled() );
         $this->assertEquals( false, $vliDuplicated->getIrrdbfilter() );
         $this->assertEquals( "soopersecrets", $vliDuplicated->getIpv4bgpmd5secret() );
