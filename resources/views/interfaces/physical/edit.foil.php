@@ -129,7 +129,7 @@ $this->layout( 'layouts/ixpv4' );
                             <div class="tab-content">
                                 <div role="tabpanel" class="tab-pane active" id="body">
 
-                                    <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->notes ?></textarea>
+                                    <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?=  $t->notes ?></textarea>
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="preview">
                                     <div class="well well-preview" style="background: rgb(255,255,255);">
@@ -296,7 +296,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::actions(
                     Former::primary_submit( 'Save Changes' ),
-                    Former::default_link( 'Cancel' )->href( $t->vi ? route( 'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) : route( 'interfaces/physical/list' ) ),
+                    Former::default_link( 'Cancel' )->id( 'cancel-btn' )->href( $t->vi ? route( 'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) : route( 'interfaces/physical/list' ) ),
                     Former::success_button( 'Help' )->id( 'help-btn' )
                 )->id('btn-group');?>
 
