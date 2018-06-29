@@ -114,6 +114,10 @@
                             <?php endif; ?>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
+                                    <a class="btn btn btn-default" id="view-pi-<?= $pi->getId()?>" href="<?= route( 'interfaces/physical/view' , [ 'id' => $pi->getId() ] )?>" title="View">
+                                        <i class="glyphicon glyphicon-eye-open"></i>
+                                    </a>
+
                                     <a class="btn btn btn-default" id="edit-pi-<?= $pi->getId()?>" href="<?= route( 'interfaces/physical/edit/from-virtual-interface' , [ 'id' => $pi->getId() , 'vintid' => $t->vi->getId() ] )?>" title="Edit">
                                         <i class="glyphicon glyphicon-pencil"></i>
                                     </a>

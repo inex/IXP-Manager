@@ -90,6 +90,10 @@
 
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
+                                    <a class="btn btn btn-default" id="view-vli-<?= $vli->getId()?>" href="<?= route ( 'interfaces/vlan/view', [ 'id' => $vli->getId() ] ) ?>" title="View">
+                                        <i class="glyphicon glyphicon-eye-open"></i>
+                                    </a>
+
                                     <a class="btn btn btn-default" id="edit-vli-<?= $vli->getId()?>" href="<?= route ( 'interfaces/vlan/edit/from-virtual-interface', [ 'id' => $vli->getId(), 'viid' => $t->vi->getId() ] ) ?>" title="Edit">
                                         <i class="glyphicon glyphicon-pencil"></i>
                                     </a>
