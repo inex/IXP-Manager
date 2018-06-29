@@ -51,8 +51,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
 
     }
-
-
+    
     /**
      * Test the Virtual interface add/edit/delete functions
      *
