@@ -66,10 +66,11 @@ class JsonSchema
      *
      * @param string $version The version to get (or, if null / not present then the latest)
      * @param bool   $asArray Do not convert to JSON but rather return the PHP array
-     * @param bool   $detailed Create the very detailed version (usualy for logged in users)
+     * @param bool   $detailed Create the very detailed version (usually for logged in users)
+     * @param bool   $tags     Include customer tags
      * @return string|array
      */
-    public function get( $version = null, $asArray = false, $detailed = true )
+    public function get( $version = null, $asArray = false, $detailed = true, $tags = false )
     {
         if( $version === null ) {
             $version = self::EUROIX_JSON_LATEST;
@@ -84,13 +85,13 @@ class JsonSchema
         $output['timestamp'] = date( 'Y-m-d', time() ) . 'T' . date( 'H:i:s', time() ) . 'Z';
 
         $output['ixp_list']    = $this->getIXPInfo( $version );
-        $output['member_list'] = $this->getMemberInfo( $version, $detailed );
+        $output['member_list'] = $this->getMemberInfo( $version, $detailed, $tags );
 
         if( $asArray ) {
             return $output;
         }
 
-        return json_encode( $output, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE )."\n";
+        return json_encode( $output, JSON_PRETTY_PRINT )."\n";
     }
 
     /**
@@ -222,7 +223,7 @@ class JsonSchema
      * @param string $version The version to collate the detail for
      * @return array
      */
-    private function getMemberInfo( string $version, bool $detailed )
+    private function getMemberInfo( string $version, bool $detailed, bool $tags )
     {
         $memberinfo = [];
 
@@ -375,6 +376,15 @@ class JsonSchema
                 }
             }
 
+
+            if( $tags ) {
+                $memberinfo[$cnt]['ixp_manager']['tags'] = [];
+                foreach( $c->getTags() as $tag ) {
+                    if( !$tag->isInternalOnly() || $detailed ) {
+                        $memberinfo[$cnt]['ixp_manager']['tags'][ $tag->getTag() ] = $tag->getDisplayAs();
+                    }
+                }
+            }
 
             $memberinfo[$cnt]['connection_list'] = $connlist;
 

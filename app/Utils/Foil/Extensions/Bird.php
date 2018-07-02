@@ -66,6 +66,12 @@ class Bird implements ExtensionInterface {
 
             list( $net, $mask ) = explode( '/', $p );
 
+            if( $mask > $max ) {
+                // subnet is too small already so we do not allow it
+                unset( $prefixes[$i] );
+                continue;
+            }
+
             if( $mask != $max ) {
                 $prefixes[ $i ] = $net . '/' . $mask . '{' . $mask . ',' . $max . '}';
             }

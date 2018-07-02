@@ -15,7 +15,10 @@
                     <?php if( Auth::getUser()->isSuperUser() ): ?>
                         &nbsp;<div class="btn-group btn-group-sm">
                             <button id="co-notes-add-btn" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i></button>
-                            <button id="co-cust-notify-<?= $t->c->getId() ?>"  class="btn btn-default <?= $t->coNotifyAll ? 'active' : '' ?>"><i class="glyphicon glyphicon-eye-open"></i></button>
+                            <button id="co-cust-notify-<?= $t->c->getId() ?>"  class="btn btn-default <?= $t->coNotifyAll ? 'active' : '' ?>"><i class="glyphicon glyphicon-bell"></i></button>
+                            <a class="btn btn-info" href="https://docs.ixpmanager.org/usage/customer-notes/" target="_blank">
+                                Help
+                            </a>
                         </div>
                     <?php endif; ?>
                 </th>
@@ -55,10 +58,10 @@
                         <td>
                             <div class="btn-group btn-group-sm">
                                 <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                    <button id="co-notes-notify-<?= $n->getId() ?>"  class="btn btn-default <?php if( is_array( $t->coNotify ) && array_key_exists( $n->getId(), $t->coNotify ) && $t->coNotify[ $n->getId() ] ): ?>active<?php endif; ?>"><i class="glyphicon glyphicon-eye-open"></i></button>
+                                    <button id="co-notes-notify-<?= $n->getId() ?>"  class="btn btn-default <?php if( is_array( $t->coNotify ) && array_key_exists( $n->getId(), $t->coNotify ) && $t->coNotify[ $n->getId() ] ): ?>active<?php endif; ?>"><i class="glyphicon glyphicon-bell"></i></button>
                                 <?php endif; ?>
 
-                                <button id="co-notes-view-<?= $n->getId() ?>"  class="btn btn-default"><i class="glyphicon glyphicon-zoom-in"></i></button>
+                                <button id="co-notes-view-<?= $n->getId() ?>"  class="btn btn-default"><i class="glyphicon glyphicon-eye-open"></i></button>
 
                                 <?php if( Auth::getUser()->isSuperUser() ): ?>
                                     <button id="co-notes-edit-<?= $n->getId() ?>"  class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
@@ -89,29 +92,33 @@
                         <h4 class="modal-title" id="notes-modal-label"><span id="co-notes-dialog-title-action">Add a</span> Note for <?= $t->c->getName() ?> </h4>
                     </div>
                     <div class="modal-body" id="notes-modal-body">
+
                         <div class="alert alert-warning" id="co-notes-warning" style="display: none;">
                             <strong>Warning!</strong> Your customer will be able to read this note!
                         </div>
 
                         <form class="bootbox-form" id="co-notes-form">
+
                             <input type="text" placeholder="Title" class="bootbox-input bootbox-input form-control" name="title" id="co-notes-ftitle" />
                             <br />
 
                             <ul class="nav nav-tabs">
-                                <li role="presentation" class="active">
-                                    <a class="tab-link-body-note" href="#body">Notes</a>
+                                <li role="presentation" class="active" >
+                                    <a class="tab-link-body-note" href="#body" data-toggle="tab">Notes</a>
                                 </li>
                                 <li role="presentation">
-                                    <a class="tab-link-preview-note" href="#preview">Preview</a>
+                                    <a class="tab-link-preview-note" href="#preview" data-toggle="tab">Preview</a>
                                 </li>
                             </ul>
 
                             <div class="tab-content">
                                 <div role="tabpanel" class="tab-pane active" id="body">
+                                    <br>
                                     <textarea rows="6" class="bootbox-input bootbox-input-textarea form-control" name="note" id="co-notes-fnote"></textarea>
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="preview">
-                                    <div class="well well-preview" style="background: rgb(255,255,255);">
+                                    <br>
+                                    <div id="co-notes-fpreview" class="well well-preview" style="background: rgb(255,255,255);">
                                         Loading...
                                     </div>
                                 </div>
@@ -153,7 +160,7 @@
                 </div>
                 <div class="modal-footer">
                     <span class="pull-left"  id="co-notes-view-dialog-date"></span>
-                    <button id="notes-modal-btn-cancel"  type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> OK</button>
+                    <button id="notes-modal-btn-cancel"  type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
                 </div>
             </div>
         </div>

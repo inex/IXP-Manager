@@ -1,9 +1,20 @@
+---
+name: Bug report
+about: Create a detailed report to help us improve
+
+---
+
 <!---
 Verify first that your issue/request is not already reported on GitHub.
-Also test if the latest release, and master branch are affected too.
+
+Always test if the latest release is affected. Bug reports on older releases cannot be accepted and will be closed.
+
+If you can, we would appreciate it if you could also test against the master branch.
 
 Do not create an issue for requests for help - use the mailing list:
-  See: https://www.ixpmanager.org/support.php
+  See: https://www.ixpmanager.org/support
+
+NB: Issues that are requests for help will be closed. Please use the mailing list / request commercial support via https://www.ixpmanager.org/commercial
 
 For issues with documentation, please use the following issue tracker:
   https://github.com/inex/ixp-manager-docs-md/issues
@@ -12,9 +23,7 @@ For issues with documentation, please use the following issue tracker:
 
 ##### ISSUE TYPE
 
-<!--- Pick one below and delete the rest: -->
- - Bug Report
- - Feature Idea
+Bug Report
 
 ##### OS
 
@@ -77,4 +86,3 @@ NB: sanity check the output to make sure you are happy you are not leaking any s
 
 ##### IMPORTANCE
 <!-- Please let us know if the issue is affecting you in a production environment -->
-
