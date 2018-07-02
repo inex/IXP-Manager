@@ -50,7 +50,7 @@
      */
     cb_duplex.change( function(){
         if( this.checked ){
-            let pppid = <?= $t->ppp->getId() ?> + 2;
+            let pppid = <?= $t->ppp->getId() ?> + 1;
 
             if( $(`#partner_port option[value='${pppid}']`).length > 0 ){
                 dd_partner_port.val( pppid )
