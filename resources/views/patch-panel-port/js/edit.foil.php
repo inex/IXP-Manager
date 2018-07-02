@@ -50,7 +50,14 @@
      */
     cb_duplex.change( function(){
         if( this.checked ){
-            dd_partner_port.val( $("#partner_port option:eq(1)").val() );
+            let pppid = <?= $t->ppp->getId() ?> + 2;
+
+            if( $(`#partner_port option[value='${pppid}']`).length > 0 ){
+                dd_partner_port.val( pppid )
+            } else{
+                dd_partner_port.val( $("#partner_port option:eq(1)").val() );
+            }
+
             dd_partner_port.trigger('change.select2');
             div_duplex_port.show();
         } else {
