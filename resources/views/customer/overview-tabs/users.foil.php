@@ -46,7 +46,7 @@
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </a>
 
-                            <a class="btn btn-default" id="usr-list-delete-<?= $u->getId() ?>" data-object-id="<?= $u->getContact()->getId() ?>"
+                            <a class="btn btn-default" id="usr-list-delete-<?= $u->getId() ?>" data-object-id="<?= $u->getContact() ? $u->getContact()->getId() : null ?>"
                                href="#">
                                 <i class="glyphicon glyphicon-trash"></i>
                             </a>
