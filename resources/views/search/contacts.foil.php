@@ -21,7 +21,7 @@
                         <?= $t->ee( $contact->getEmail() ) ?>
                     </td>
                     <td>
-                        <a href="<?= url( "login-history/list/uid/" . $contact->getUser()->getId() . "/limit/1") ?>">
+                        <a href="<?= route( "login-history@view", [ "id" => $contact->getUser()->getId() ] ) ?>">
                             <?= $t->ee( $contact->getUser()->getUsername() ) ?>
                         </a>
                     </td>

@@ -31,6 +31,11 @@ use Entities\{
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
+
 
 
 /**
@@ -78,7 +83,12 @@ class IrrdbConfigController extends Doctrine2Frontend {
         // display the same information in the view as the list
         $this->feParams->viewColumns = array_merge(
             $this->feParams->listColumns,
-            [ 'notes' => 'Notes' ]
+            [
+                'notes' => [
+                'title'         => 'Notes',
+                'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
+                ]
+            ]
         );
 
 
@@ -103,6 +113,8 @@ class IrrdbConfigController extends Doctrine2Frontend {
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
+        $old = request()->old();
+
         if( $id !== null ) {
 
             if( !( $this->object = D2EM::getRepository( IRRDBConfigEntity::class )->find( $id) ) ) {
@@ -110,26 +122,28 @@ class IrrdbConfigController extends Doctrine2Frontend {
             }
 
 
-            $old = request()->old();
-
             Former::populate([
                 'host'              => array_key_exists( 'host',        $old ) ? $old['host']       : $this->object->getHost(),
                 'protocol'          => array_key_exists( 'protocol',    $old ) ? $old['protocol']   : $this->object->getProtocol(),
                 'source'            => array_key_exists( 'source',      $old ) ? $old['source']     : $this->object->getSource()  ,
-                'notes'             => array_key_exists( 'notes',       $old ) ? $old['notes']      : $this->object->getNotes()  ,
             ]);
         }
 
         return [
-            'object'          => $this->object,
+            'object'                => $this->object,
+            'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : "" )
         ];
     }
 
 
     /**
      * Function to do the actual validation and storing of the submitted object.
+     *
      * @param Request $request
+     *
      * @return bool|RedirectResponse
+     *
+     * @throws
      */
     public function doStore( Request $request )
     {
@@ -162,6 +176,20 @@ class IrrdbConfigController extends Doctrine2Frontend {
 
 
         return true;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function preDelete() : bool {
+        $okay = true;
+        if( ( $cnt = count( $this->object->getCustomers() ) ) ) {
+            AlertContainer::push( "You cannot delete this IRRDB Source there are {$cnt} customer(s) associated with it. ", Alert::DANGER );
+            $okay = false;
+        }
+
+
+        return $okay;
     }
 
 }

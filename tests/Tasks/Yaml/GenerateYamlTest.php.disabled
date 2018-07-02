@@ -26,6 +26,7 @@ use Entities\Switcher;
 use IXP\Tasks\Yaml\SwitchConfigurationGenerator as SwitchConfigurationGenerator;
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
+use Tests\TestCase;
 
 /**
  * PHPUnit test class to test the configuration generation of yaml switch configurations

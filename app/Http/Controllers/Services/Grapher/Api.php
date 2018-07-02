@@ -26,6 +26,7 @@ namespace IXP\Http\Controllers\Services\Grapher;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
+use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
 use IXP\Http\Requests;
 use IXP\Http\Controllers\Controller;
 
@@ -67,7 +68,9 @@ class Api extends Controller
 
     public function generateConfiguration( Request $request ): Response {
 
-        $grapher = GrapherService::backend( 'mrtg' );
+        // get the appropriate backend
+        $grapher = GrapherService::backend( $request->input( 'backend', 'mrtg' ) );
+
         if( !$grapher->isConfigurationRequired() ) {
             abort( 404, "This grapher backend (" . $grapher->name() . ") does not require any configuration to be generated" );
         }
@@ -76,7 +79,7 @@ class Api extends Controller
             abort( 404, "This backend ({$grapher->name()}) does not support single configuration files" );
         }
 
-        $config = $grapher->generateConfiguration( d2r( 'IXP' )->getDefault() )[0];
+        $config = $grapher->generateConfiguration( GrapherBackendContract::GENERATED_CONFIG_TYPE_MONOLITHIC, $request->input() )[0];
 
 
         return (new Response( $config ) )

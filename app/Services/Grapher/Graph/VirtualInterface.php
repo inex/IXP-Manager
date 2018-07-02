@@ -22,11 +22,10 @@
  */
 
 use IXP\Services\Grapher;
-use IXP\Services\Grapher\{Graph,Statistics};
-
-use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
+use IXP\Services\Grapher\{Graph};
 
 use Entities\Customer as CustomerEntity;
+use Entities\User as UserEntity;
 use Entities\VirtualInterface as VirtualInterfaceEntity;
 
 use Auth, Log;
@@ -51,6 +50,8 @@ class VirtualInterface extends Graph {
 
     /**
      * Constructor
+     * @param Grapher $grapher
+     * @param VirtualInterfaceEntity $i
      */
     public function __construct( Grapher $grapher, VirtualInterfaceEntity $i ) {
         parent::__construct( $grapher );
@@ -76,10 +77,9 @@ class VirtualInterface extends Graph {
     /**
      * Set the interface we should use
      * @param VirtualInterfaceEntity $i
-     * @return \IXP\Services\Grapher Fluid interface
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     * @return VirtualInterface Fluid interface
      */
-    public function setVirtualInterface( VirtualInterfaceEntity $i ): Grapher {
+    public function setVirtualInterface( VirtualInterfaceEntity $i ): VirtualInterface {
         if( $this->virtualInterface() && $this->virtualInterface()->getId() != $i->getId() ) {
             $this->wipe();
         }
@@ -116,8 +116,13 @@ class VirtualInterface extends Graph {
      * @return bool
      */
     public function authorise(): bool {
+        if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) == UserEntity::AUTH_PUBLIC ) {
+            return $this->allow();
+        }
+
         if( !Auth::check() ) {
-            return $this->deny();
+            $this->deny();
+            return false;
         }
 
         if( Auth::user()->isSuperUser() ) {
@@ -128,10 +133,19 @@ class VirtualInterface extends Graph {
             return $this->allow();
         }
 
+        if( config( 'grapher.access.customer' ) != 'own_graphs_only'
+            && is_numeric( config( 'grapher.access.customer' ) )
+            && Auth::user()->getPrivs() >= config( 'grapher.access.customer' )
+        ) {
+            return $this->allow();
+        }
+
         Log::notice( sprintf( "[Grapher] [VirtualInterface]: user %d::%s tried to access a virtual interface graph "
-            . "{$this->virtualInterface()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
+                . "{$this->virtualInterface()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
         );
-        return $this->deny();
+
+        $this->deny();
+        return false;
     }
 
     /**
@@ -165,10 +179,11 @@ class VirtualInterface extends Graph {
      *
      * Does a abort(404) if invalid
      *
-     * @param int $pi The user input value
-     * @return int The verified / sanitised / default value
+     * @param int $i The user input value
+     * @return VirtualInterfaceEntity The verified / sanitised / default value
      */
     public static function processParameterVirtualInterface( int $i ): VirtualInterfaceEntity {
+        $virtint = null;
         if( !$i || !( $virtint = d2r( 'VirtualInterface' )->find( $i ) ) ) {
             abort(404);
         }

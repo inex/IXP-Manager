@@ -28,7 +28,7 @@ use IXP\Services\Grapher;
 
 use IXP\Contracts\Grapher\Backend as GrapherBackend;
 
-use IXP\Exceptions\Services\Grapher\ParameterException;
+use IXP\Exceptions\Services\Grapher\{ConfigurationException,GraphCannotBeProcessedException,ParameterException};
 
 use Illuminate\Auth\Access\AuthorizationException;
 
@@ -42,6 +42,50 @@ use Illuminate\Auth\Access\AuthorizationException;
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 abstract class Graph {
+
+    /**
+     * Category to use
+     * @var
+     */
+    private $category = self::CATEGORY_DEFAULT;
+
+    /**
+     * Protocol to use
+     * @var
+     */
+    private $protocol = self::PROTOCOL_DEFAULT;
+
+    /**
+     * Grapher Service
+     * @var Grapher
+     */
+    private $grapher;
+
+    /**
+     * Backend to use
+     * @var GrapherBackend
+     */
+    private $backend = null;
+
+    /**
+     * Data points (essentially a cache which is wiped as appropriate)
+     * @var array
+     */
+    private $data = null;
+
+    /**
+     * Statistics object (essentially a cache which is wiped as appropriate)
+     * @var Statistics
+     */
+    private $statistics = null;
+
+    /**
+     * Renderer object (essentially a cache which is wiped as appropriate)
+     * @var Renderer
+     */
+    private $renderer = null;
+
+
 
     /**
      * Period of one day for graphs
@@ -72,7 +116,7 @@ abstract class Graph {
      * Period to use
      * @var
      */
-    private $period = self::PERIOD_DEFAULT;
+    protected $period = self::PERIOD_DEFAULT;
 
     /**
      * Array of valid periods for drill down graphs
@@ -124,11 +168,7 @@ abstract class Graph {
      */
     const CATEGORY_DEFAULT  = self::CATEGORY_BITS;
 
-    /**
-     * Category to use
-     * @var
-     */
-    private $category = self::CATEGORY_DEFAULT;
+
 
     /**
      * Array of valid categories for graphs
@@ -188,12 +228,6 @@ abstract class Graph {
      * Default protocol for graphs
      */
     const PROTOCOL_DEFAULT = self::PROTOCOL_ALL;
-
-    /**
-     * Protocol to use
-     * @var
-     */
-    private $protocol = self::PROTOCOL_DEFAULT;
 
 
     /**
@@ -301,38 +335,6 @@ abstract class Graph {
         self::TYPE_JSON => 'application/json',
     ];
 
-
-    /**
-     * Grapher Service
-     * @var Grapher
-     */
-    private $grapher;
-
-    /**
-     * Backend to use
-     * @var GrapherBackend
-     */
-    private $backend = null;
-
-    /**
-     * Data points (essentially a cache which is wiped as appropriate)
-     * @var array
-     */
-    private $data = null;
-
-    /**
-     * Statistics object (essentially a cache which is wiped as appropriate)
-     * @var Statistics
-     */
-    private $statistics = null;
-
-    /**
-     * Renderer object (essentially a cache which is wiped as appropriate)
-     * @var Renderer
-     */
-    private $renderer = null;
-
-
     /**
      * Constructor
      * @param Grapher $grapher
@@ -364,11 +366,15 @@ abstract class Graph {
      * For a given graph object ($this), find a backend that can process it
      *
      * @return GrapherBackend
+     * @throws ConfigurationException
+     * @throws GraphCannotBeProcessedException
      */
     public function backend(): GrapherBackend {
+
         if( $this->backend === null ) {
             $this->backend = $this->grapher()->backendForGraph( $this );
         }
+
         return $this->backend;
     }
 
@@ -400,6 +406,8 @@ abstract class Graph {
      * A veritable table of contents for API access to this graph
      *
      * @return array
+     * @throws ConfigurationException
+     * @throws GraphCannotBeProcessedException
      */
     public function toc(): array {
         $arr = [ 'class' => $this->lcClassType() ];
@@ -430,6 +438,8 @@ abstract class Graph {
      * return as JSON
      *
      * @return string
+     * @throws ConfigurationException
+     * @throws GraphCannotBeProcessedException
      */
     public function json(): string {
         return json_encode($this->toc(), JSON_PRETTY_PRINT);
@@ -497,6 +507,7 @@ abstract class Graph {
         if( $this->renderer === null ) {
             $this->renderer = new Renderer( $this );
         }
+
         return $this->renderer;
     }
 
@@ -572,7 +583,7 @@ abstract class Graph {
      * @return string
      */
     public function watermark(): string {
-        return config( 'identity.watermark' );
+        return (string)config( 'identity.watermark' );
     }
 
     /**
@@ -610,6 +621,7 @@ abstract class Graph {
      * allow graph access based on your own requirements.
      *
      * @return bool
+     * @throws
      */
     public function authorise(): bool {
         $this->deny();
@@ -643,11 +655,12 @@ abstract class Graph {
 
     /**
      * Set the period we should use
-     * @param int $v
+     * @param string $v
      * @return Graph Fluid interface
      * @throws ParameterException
      */
-    public function setPeriod( $v ): Graph {
+    public function setPeriod( string $v ): Graph {
+
         if( !isset( $this::PERIODS[ $v ] ) ) {
             throw new ParameterException('Invalid period ' . $v );
         }
@@ -738,6 +751,7 @@ abstract class Graph {
      * @throws ParameterException
      */
     public function setCategory( string $v ): Graph {
+
         if( !isset( $this::CATEGORIES[ $v ] ) ) {
             throw new ParameterException('Invalid category ' . $v );
         }
@@ -845,12 +859,30 @@ abstract class Graph {
     }
 
     /**
+     * Process user input for the parameter: protocol (real only, not both)
+     *
+     * Note that this function just sets the default (ipv4) if the input is invalid.
+     * If you want to force an exception in such cases, use setProtocol()
+     *
+     * @param string $v The user input value
+     * @return string The verified / sanitised / default value
+     */
+    public static function processParameterRealProtocol( $v = null ): string {
+        if( !isset( self::PROTOCOLS_REAL[ $v ] ) ) {
+            $v = self::PROTOCOL_IPV4;
+        }
+        return $v;
+    }
+
+
+    /**
      * Process user input for the parameter: category
      *
      * Note that this function just sets the default if the input is invalid.
      * If you want to force an exception in such cases, use setCategory()
      *
      * @param string $v The user input value
+     * @param bool $bits_pkts_only
      * @return string The verified / sanitised / default value
      */
     public static function processParameterCategory( $v = null, $bits_pkts_only = false ): string {

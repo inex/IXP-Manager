@@ -153,7 +153,7 @@ class IXP_Form_Switch extends IXP_Form
             ->setAttrib( 'class', 'span3' )
             ->addFilter( 'StringTrim' )
             ->addFilter( 'StringToLower' )
-            ->addFilter( new Zend_Filter_PregReplace( [ 'match' => '/[^0-9a-f]*/', 'reaplce' => '' ] ) );
+            ->addFilter( new Zend_Filter_PregReplace( [ 'match' => '/[^0-9a-f]*/', 'replace' => '' ] ) );
         $this->addElement( $mgmt_mac_address );
 
 

@@ -66,7 +66,7 @@
      */
     function refreshDataTable() {
 
-        $( "#list-area").load( "<?= action ('Layer2AddressController@forVlanInterface' , [ 'id' => $t->vli->getId() ] ) ?> #layer-2-interface-list " ,function( ) {
+        $( "#list-area").load( "<?= route( "layer2-address@forVlanInterface" , [ 'id' => $t->vli->getId() ] ) ?> #layer-2-interface-list " ,function( ) {
             table.destroy();
             loadDataTable();
 

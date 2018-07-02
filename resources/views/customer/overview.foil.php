@@ -47,12 +47,17 @@
 
                 <li>
                     <a href="<?= route( 'customer@billing-registration' , [ 'id' => $c->getId() ] ) ?>" >
-                        <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode || !$c->isResoldCustomer() ): ?>
+                        <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode() || !$c->isResoldCustomer() ): ?>
                             Edit Billing/Registration Details
                         <?php else: ?>
                             Edit Registration Details
                         <?php endif; ?>
                     </a>
+                </li>
+
+                <li class="divider"></li>
+                <li>
+                    <a href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">Manage Tags...</a>
                 </li>
 
                 <?php if( $t->logoManagementEnabled() ): ?>
@@ -112,6 +117,7 @@
     <?= $t->alerts() ?>
 
     <div class="row">
+
         <div class="col-sm-12">
 
             <div class="well">
@@ -129,6 +135,19 @@
 
                     <?php endif; ?>
                 </div>
+
+                <?php if( $c->getTags()->count() ): ?>
+                    <br>
+                    <div>
+                        <?php foreach( $c->getTags() as $tag ): ?>
+                            <span class="label label-default"><?= $tag->getDisplayAs() ?></span>
+                        <?php endforeach; ?>
+                    </div>
+                <?php elseif( count( D2EM::getRepository( Entities\CustomerTag::class )->findAll() ) ): ?>
+                    <br>
+                    <em>No tags defined for this customer - <a href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">add some...</a>
+                <?php endif; ?>
+
             </div>
 
             <ul class="nav nav-tabs">
@@ -200,7 +219,7 @@
                     <?php endif ?>
 
                     <?php if( config('grapher.backends.sflow.enabled') ) : ?>
-                        <li onclick="window.location.href = '<?= url( "statistics/p2p/shortname/". $c->getShortname() )  ?>'">
+                        <li onclick="window.location.href = '<?= route( "statistics@p2p", [ 'cid' => $c->getId() ] )  ?>'">
                             <a data-toggle="tab" href="">P2P &raquo;</a>
                         </li>
                     <?php endif ?>
@@ -216,14 +235,14 @@
                 <div id="details" class="tab-pane fade <?php if( $t->tab == 'details' ): ?> in active <?php endif; ?>">
                     <?= $t->insert( 'customer/overview-tabs/details' ); ?>
                 </div>
-                <?php if( $t->resellerMode && $c->isReseller() ): ?>
+                <?php if( $t->resellerMode() && $c->isReseller() ): ?>
                     <div id="resold-customers" class="tab-pane fade">
                         <?= $t->insert( 'customer/overview-tabs/resold-customers' ); ?>
                     </div>
                 <?php endif ?>
                 <?php if( $c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $c->hasLeft() ) ):?>
                     <div id="ports" class="tab-pane fade <?php if( $t->tab == 'ports' ): ?> in active <?php endif; ?> ">
-                        <?php if( $t->resellerMode && $c->isReseller() ): ?>
+                        <?php if( $t->resellerMode() && $c->isReseller() ): ?>
                             <?= $t->insert( 'customer/overview-tabs/reseller-ports' ); ?>
                         <?php else: ?>
                             <?= $t->insert( 'customer/overview-tabs/ports' ); ?>

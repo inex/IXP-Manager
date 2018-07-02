@@ -10,9 +10,11 @@
 
 IXP\Http\Controllers\ApiKeyController::routes();
 IXP\Http\Controllers\CabinetController::routes();
+IXP\Http\Controllers\ConsoleServer\ConsoleServerController::routes();
+IXP\Http\Controllers\ConsoleServer\ConsoleServerConnectionController::routes();
 IXP\Http\Controllers\ContactsController::routes();
-IXP\Http\Controllers\ConsoleServerConnectionController::routes();
 IXP\Http\Controllers\CustKitController::routes();
+IXP\Http\Controllers\Customer\CustomerTagController::routes();
 IXP\Http\Controllers\InfrastructureController::routes();
 IXP\Http\Controllers\IrrdbConfigController::routes();
 IXP\Http\Controllers\IxpController::routes();
@@ -26,3 +28,4 @@ IXP\Http\Controllers\VlanController::routes();
 // tmp until ZF is consigned to history
 Route::get( 'rack/view/id/{id}',   'CabinetController@view' );
 Route::get( 'vendor/view/id/{id}', 'VendorController@view'  );
+

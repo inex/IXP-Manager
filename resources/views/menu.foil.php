@@ -23,6 +23,11 @@
                 <li  <?php if( $t->controller == 'CustomerController' ): ?> class="active" <?php endif; ?> >
                     <a href="<?= route( 'customer@list' ) ?>">Customers</a>
                 </li>
+                <?php if( $t->controller == 'CustomerController' || $t->controller == 'CustomerTagController' ): ?>
+                    <li class="sub-menu <?php if( $t->controller == 'CustomerTagController' ):?> active <?php endif;?> " >
+                        <a href="<?= route('customer-tag@list' ) ?>">Tags</a>
+                    </li>
+                <?php endif; ?>
 
                 <li <?php if( $t->controller == 'VirtualInterfaceController' ): ?> class="active" <?php endif; ?> >
 
@@ -94,18 +99,30 @@
                 </li>
 
                 <li <?= $t->controller == 'RouterController' && $t->action != 'status' ? 'class="active"' : '' ?>>
-                    <a href="<?= route('router/list' ) ?>">
+                    <a href="<?= route('router@list' ) ?>">
                         Routers
                     </a>
 
                     <?php if( $t->controller == 'RouterController' ): ?>
                         <li class="sub-menu <?php if( $t->controller == 'RouterController' && $t->action == 'status'):?> active <?php endif;?> " >
-                            <a href="<?= route('router/status' ) ?>">Live Status</a>
+                            <a href="<?= route('router@status' ) ?>">Live Status</a>
                         </li>
                     <?php endif;?>
 
                 </li>
 
+                <li <?php if( $t->controller == 'ConsoleServerController' ):?> class="active" <?php endif;?> >
+                    <a href="<?= route('console-server@list' ) ?>">Console Servers </a>
+
+                    <?php if( $t->controller == 'ConsoleServerController' || $t->controller == 'ConsoleServerConnectionController' ):?>
+                        <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection', false ) ): ?>
+                            <li class="sub-menu <?php if( $t->controller == 'ConsoleServerConnectionController' ):?> active <?php endif;?>" >
+                                <a href="<?= route('console-server-connection@list' ) ?>">Console Server Connections</a>
+                            </li>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                </li>
 
                 <li>
                     <a href="<?= url('/switch/list') ?>">Switches</a>
@@ -166,12 +183,6 @@
                     <a href="<?= route('vendor@list' ) ?>">Vendors</a>
                 </li>
 
-                <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection', false ) ): ?>
-                    <li <?php if( $t->controller == 'ConsoleServerConnectionController' ):?> class="active" <?php endif;?>>
-                        <a href="<?= route('console-server-connection@list' ) ?>">Console Server Connections</a>
-                    </li>
-                <?php endif; ?>
-
                 <li <?php if( $t->controller == 'VlanController' && !strpos( strtolower($t->action) , 'private') ):?> class="active" <?php endif;?> >
                     <a href="<?= route('vlan@list' ) ?>">VLANs</a>
                     <?php /* {if $controller eq 'vlan'}
@@ -204,7 +215,7 @@
                 </li>
 
                 <li>
-                    <a href="<?= url( 'statistics/members' ) ?>">Member Statistics</a>
+                    <a href="<?= route( 'statistics/members' ) ?>">Member Statistics</a>
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.logo', true ) ): ?>
@@ -214,7 +225,7 @@
                 <?php endif; ?>
 
                 <li>
-                    <a href="<?= url( 'statistics/league-table' ) ?>">League Table</a>
+                    <a href="<?= route( 'statistics/league-table' ) ?>">League Table</a>
                 </li>
 
                 <?php /*

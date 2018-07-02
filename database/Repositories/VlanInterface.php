@@ -2,6 +2,8 @@
 
 namespace Repositories;
 
+use DB;
+
 use Doctrine\ORM\EntityRepository;
 
 use Entities\{
@@ -417,50 +419,26 @@ class VlanInterface extends EntityRepository
      * customer at an optionally given IXP.
      *
      * @param \Entities\Customer $customer The customer
-     * @param \Entities\IXP      $ixp      The optional IXP
-     * @param bool $useResultCache If true, use Doctrine's result cache
      * @return \Entities\VlanInterface[] Index by the VlanInterface ID
      */
-    public function getForCustomer( $customer, $ixp = false, $useResultCache = true )
+    public function getForCustomer( $customer )
     {
         $qstr = "SELECT vli
                     FROM Entities\\VlanInterface vli
                         JOIN vli.VirtualInterface vi
                         JOIN vi.Customer c
-                        JOIN vli.Vlan v";
-
-        if( $ixp )
-        {
-            $qstr .= " JOIN vi.PhysicalInterfaces pi
-                        JOIN pi.SwitchPort sp
-                        JOIN sp.Switcher sw
-                        JOIN sw.Infrastructure i
-                        JOIN i.IXP ixp";
-        }
-
-        $qstr .= " WHERE c = :customer";
-
-        if( $ixp )
-        {
-            $qstr .= " AND ixp = :ixp
-                        ORDER BY ixp.id, v.number";
-        }
-        else
-            $qstr .= " ORDER BY v.number";
-
+                        JOIN vli.Vlan v
+                    WHERE c = :customer
+                    ORDER BY v.number";
 
         $q = $this->getEntityManager()->createQuery( $qstr );
         $q->setParameter( 'customer', $customer );
 
-        if( $ixp )
-            $q->setParameter( 'ixp', $ixp );
-
-        $q->useResultCache( $useResultCache, 3600 );
-
         $vlis = [];
 
-        foreach( $q->getResult() as $vli )
+        foreach( $q->getResult() as $vli ) {
             $vlis[ $vli->getId() ] = $vli;
+        }
 
         return $vlis;
     }
@@ -600,49 +578,63 @@ class VlanInterface extends EntityRepository
     }
 
     /**
-     * Get vli id / vi id / vlan tag / cust name matrix for sflow data processing
+     * Get vli id / mac address mapping from macaddress table for sflow data processing
      *
-     * Returns an array as follows:
+     * Returns a hash as follows:
      *
-     *     [
-     *         [ 'vliid' => 1, 'viid' => 2, 'tag' => 10, 'cname' => "OGCIO" ],
-     *         ...
-     *     ]
+     *     {
+     *         '$infrastructure' => {
+     *             '$vlan' => {
+     *                '$mac' => $vliid
+     *                '$mac' => $vliid
+     *             }
+     *         }
+     *     }
      *
-     * @return array
+     * @return mixed
      */
-    public function sflowMatrixArray(): array
+    public function sflowLearnedMacsHash(): array
     {
         return $this->getEntityManager()->createQuery(
-            "SELECT DISTINCT vli.id AS vliid, vi.id AS viid, v.number AS tag, c.name AS cname
-                    FROM Entities\VlanInterface vli
-                        LEFT JOIN vli.Vlan v
-                        LEFT JOIN vli.VirtualInterface vi
-                        LEFT JOIN vi.Customer c"
+            "SELECT DISTINCT vli.id AS vliid, ma.mac AS mac, vl.number as tag, i.id as infrastructure
+                    FROM Entities\VirtualInterface vi
+                        LEFT JOIN vi.VlanInterfaces vli
+                        JOIN vi.MACAddresses ma
+                        LEFT JOIN vli.Vlan vl
+                        LEFT JOIN vl.Infrastructure i
+                    WHERE ma.mac IS NOT NULL
+                        AND vli.id IS NOT NULL
+                    ORDER BY vliid"
         )->getArrayResult();
     }
 
     /**
-     * Get vi id / mac address for sflow data processing
+     * Get vli id / mac address mapping from macaddress table for sflow data processing
      *
-     * Returns an array as follows:
+     * Returns a hash as follows:
      *
-     *     [
-     *         [ 'viid' => 2, 'mac' => '112233445566' ],
-     *         ...
-     *     ]
+     *     {
+     *         '$infrastructure' => {
+     *             '$vlan' => {
+     *                '$mac' => $vliid
+     *                '$mac' => $vliid
+     *             }
+     *         }
+     *     }
      *
-     * @return array
+     * @return mixed
      */
-    public function sflowMacTableArray(): array
+    public function sflowConfiguredMacsHash(): array
     {
         return $this->getEntityManager()->createQuery(
-            "SELECT DISTINCT vi.id AS viid, l2a.mac AS mac
+            "SELECT DISTINCT vli.id AS vliid, l2a.mac AS mac, vl.number as tag, i.id as infrastructure
                     FROM Entities\VlanInterface vli
                         LEFT JOIN vli.VirtualInterface vi
                         LEFT JOIN vli.layer2Addresses l2a
+                        LEFT JOIN vli.Vlan vl
+                        LEFT JOIN vl.Infrastructure i
                     WHERE l2a.mac IS NOT NULL
-                    ORDER BY viid"
+                    ORDER BY vliid"
         )->getArrayResult();
     }
 
@@ -666,4 +658,58 @@ class VlanInterface extends EntityRepository
         return $this;
     }
 
+
+    /**
+     * Get statistics of RS clients / total on a per VLAN basis
+     *
+     * Returns an array of objects such as:
+     *
+     *     [
+     *         {
+     *             +"vlanname": "Peering VLAN #1",
+     *             ++"overall_count": 60,
+     *             ++"rsclient_count": "54",
+     *         }
+     *     ]
+     *
+     * @return array
+     */
+    public function getRsClientUsagePerVlan(): array
+    {
+        return DB::select('SELECT v.name AS vlanname, COUNT(vli.id) AS overall_count, SUM(vli.rsclient = 1) AS rsclient_count
+            FROM `vlaninterface` AS vli
+            LEFT JOIN virtualinterface AS vi ON vli.virtualinterfaceid = vi.id
+            LEFT JOIN cust AS c ON vi.custid = c.id
+            LEFT JOIN vlan AS v ON vli.vlanid = v.id
+            WHERE v.`private` = 0 AND c.type IN (1,4)
+            GROUP BY vlanname'
+        );
+    }
+
+    /**
+     * Get statistics of ipv6 enabled / total on a per VLAN basis
+     *
+     * Returns an array of objects such as:
+     *
+     *     [
+     *         {
+     *             +"vlanname": "Peering VLAN #1",
+     *             ++"overall_count": 60,
+     *             ++"ipv6_count": "54",
+     *         }
+     *     ]
+     *
+     * @return array
+     */
+    public function getIPv6UsagePerVlan(): array
+    {
+        return DB::select('SELECT v.name AS vlanname, COUNT(vli.id) AS overall_count, SUM(vli.ipv6enabled = 1) AS ipv6_count
+            FROM `vlaninterface` AS vli
+            LEFT JOIN virtualinterface AS vi ON vli.virtualinterfaceid = vi.id
+            LEFT JOIN cust AS c ON vi.custid = c.id
+            LEFT JOIN vlan AS v ON vli.vlanid = v.id
+            WHERE v.`private` = 0 AND c.type IN (1,4)
+            GROUP BY vlanname'
+        );
+    }
 }

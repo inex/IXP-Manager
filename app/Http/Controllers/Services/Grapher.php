@@ -26,13 +26,13 @@ namespace IXP\Http\Controllers\Services;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 
-use IXP\Http\Requests;
 use IXP\Http\Controllers\Controller;
 
 use \IXP\Services\Grapher as GrapherService;
 use \IXP\Services\Grapher\Graph;
 
 use IXP\Exceptions\Services\Grapher\GeneralException as GrapherGeneralException;
+
 
 use Carbon\Carbon;
 
@@ -73,13 +73,15 @@ class Grapher extends Controller
 
     /**
      * The request object
-     * @var Illuminate\Http\Request $request
+     * @var Request $request
      */
     private $request = null;
 
 
     /**
      * Constructor
+     * @var Request             $request
+     * @var GrapherService      $grapher
      */
     public function __construct( Request $request, GrapherService $grapher ) {
         $this->grapher = $grapher;
@@ -98,13 +100,14 @@ class Grapher extends Controller
     /**
      * Graph accessor
      * @return \IXP\Services\Grapher\Graph
+     * @throws
      */
     private function graph(): Graph {
-        if( $this->graph === null ){
+        if( $this->graph === null ) {
             $this->graph = $this->request()->attributes->get('graph');
 
             // if there's no graph then the middleware went wrong... safety net:
-            if( $this->graph === null ){
+            if( $this->graph === null ) {
                 throw new GrapherGeneralException('Middleware could not load graph but did not throw a 404');
             }
         }
@@ -113,7 +116,7 @@ class Grapher extends Controller
 
     /**
      * Request accessor
-     * @return Illuminate\Http\Request
+     * @return Request
      */
     private function request(): Request {
         return $this->request;
@@ -163,6 +166,10 @@ class Grapher extends Controller
     }
 
     public function vlanInterface( Request $request ): Response {
+        return $this->simpleResponse( $request );
+    }
+
+    public function latency( Request $request ): Response {
         return $this->simpleResponse( $request );
     }
 

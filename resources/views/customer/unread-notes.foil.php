@@ -3,7 +3,9 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    Customer
+    <a href="<?= route( 'customer@list' )?>">
+        Customer
+    </a>
 <?php $this->append() ?>
 
 
@@ -27,9 +29,12 @@
 
 <?php $this->section( 'content' ) ?>
 
-    <?= $t->alerts() ?>
+<div class="row">
 
     <div class="col-md-12">
+
+        <?= $t->alerts() ?>
+
         <div class="alert alert-info" role="alert">
             <?php if( count( $t->notes ) ): ?>
                 The following customers have new or updated notes that you have not seen.
@@ -46,7 +51,7 @@
                 <th>Notes Last Created / Updated</th>
                 </thead>
                 <tbody>
-                    <?php foreach( $t->notes as $n ): ?>
+                <?php foreach( $t->notes as $n ): ?>
                     <tr>
                         <td>
                             <a href="<?= route( "customer@overview" , [ "id" => $n[ 'cid' ] ] ) ?>" >
@@ -57,11 +62,17 @@
                             <?= $n[ 'latest' ] ?>
                         </td>
                     </tr>
-                    <?php endforeach; ?>
+                <?php endforeach; ?>
                 </tbody>
             </table>
 
         <?php endif; ?>
     </div>
+
+</div>
+
+
+
+
 <?php $this->append() ?>
 

@@ -363,6 +363,11 @@ class Rrd
             '--title=' . $this->graph()->title(),
             '--vertical-label=' . $this->graph()->category() . ' / second',
             '--watermark=' . $this->graph()->watermark(),
+            '--font=TITLE:10:Times',
+            '--font=WATERMARK:8:Times',
+            '--font=LEGEND:8:Courier',
+            '--font=AXIS:6:Courier',
+            '--font=UNIT:6:Courier',
 
             'DEF:a='.$this->file().':'.$indexIn.':AVERAGE',
             'DEF:b='.$this->file().':'.$indexIn.':MAX',
@@ -386,29 +391,29 @@ class Rrd
 
         if( $separated_maxima ) {
             $options[] = 'AREA:cdefd#006600:Peak';
-            $options[] = 'GPRINT:max_out:%8.2lf%s\t';
+            $options[] = 'GPRINT:max_out:%6.2lf%s\t';
             $options[] = 'AREA:cdefc#00CF00:Avg';
         } else {
             $options[] = 'AREA:cdefc#00CF00:Max';
-            $options[] = 'GPRINT:max_out:%8.2lf%s\t';
+            $options[] = 'GPRINT:max_out:%6.2lf%s\t';
             $options[] = 'COMMENT:Avg';
         }
-        $options[] = 'GPRINT:avg_out:%8.2lf%s';
-        $options[] = 'GPRINT:last_out:\tCur\\:%8.2lf%s\l';
+        $options[] = 'GPRINT:avg_out:%6.2lf%s';
+        $options[] = 'GPRINT:last_out:\tCur\\: %6.2lf%s\l';
 
         $options[] = 'COMMENT:In ';
 
         if( $separated_maxima ) {
             $options[] = 'LINE1:cdefb#ff00ff:Peak';
-            $options[] = 'GPRINT:max_in:%8.2lf%s\t';
+            $options[] = 'GPRINT:max_in:%6.2lf%s\t';
             $options[] = 'LINE2:cdefa#002A97FF:Avg';
         } else {
             $options[] = 'LINE2:cdefa#002A97FF:Max';
-            $options[] = 'GPRINT:max_in:%8.2lf%s\t';
+            $options[] = 'GPRINT:max_in:%6.2lf%s\t';
             $options[] = 'COMMENT:Avg';
         }
-        $options[] = 'GPRINT:avg_in:%8.2lf%s';
-        $options[] = 'GPRINT:last_in:\tCur\\:%8.2lf%s\l';
+        $options[] = 'GPRINT:avg_in:%6.2lf%s';
+        $options[] = 'GPRINT:last_in:\tCur\\: %6.2lf%s\l';
 
         $options[] = 'COMMENT:\s';
 

@@ -133,10 +133,9 @@ class Customer extends EntityRepository
      *
      * @param bool $asArray If `true`, return an associative array, else an array of Customer objects
      * @param bool $externalOnly If `true`, only include external customers (i.e. no internal types)
-     * @param \Entities\IXP $ixp Limit to a specific IXP
      * @return array
      */
-    public function getConnected( $asArray = false, $externalOnly = false, $ixp = false )
+    public function getConnected( $asArray = false, $externalOnly = false )
     {
         $dql = "SELECT c FROM \\Entities\\Customer c
                     LEFT JOIN c.VirtualInterfaces vi
@@ -147,16 +146,10 @@ class Customer extends EntityRepository
         if( $externalOnly )
             $dql .= " AND " . self::DQL_CUST_EXTERNAL;
 
-        if( $ixp !== false )
-            $dql .= " AND :ixp MEMBER OF c.IXPs";
-
         $dql .= " ORDER BY c.name ASC";
         
         $custs = $this->getEntityManager()->createQuery( $dql );
 
-        if( $ixp !== false )
-            $custs->setParameter( 'ixp', $ixp );
-        
         return $asArray ? $custs->getArrayResult() : $custs->getResult();
     }
     
@@ -519,11 +512,16 @@ class Customer extends EntityRepository
      *
      * @return array An array of all customers objects
      */
-    public function getAllForFeList( $showCurrentOnly = false, $state = null, $type = null ): array {
+    public function getAllForFeList( $showCurrentOnly = false, $state = null, $type = null, $tag = null ): array {
 
         $q = "SELECT c
-                FROM Entities\\Customer c
-                WHERE 1 = 1";
+                FROM Entities\\Customer c ";
+
+        if( $tag ){
+            $q .= " LEFT JOIN c.tags t";
+        }
+
+        $q .= " WHERE 1 = 1";
 
         if( $state && isset( CustomerEntity::$CUST_STATUS_TEXT[ $state ] ) ) {
             $q .= " AND c.status = {$state} " ;
@@ -535,6 +533,10 @@ class Customer extends EntityRepository
 
         if( $showCurrentOnly ) {
             $q .= " AND " . Customer::DQL_CUST_CURRENT;
+        }
+
+        if( $tag ) {
+            $q .= " AND t.id = " . $tag;
         }
 
         $q .= " ORDER BY c.name ASC ";

@@ -39,7 +39,7 @@ use vars qw(@ISA @EXPORT_OK @EXPORT $VERSION $AUTOLOAD);
 
 @ISA = ("Config");
 
-$VERSION = '0.25';
+$VERSION = '0.26';
 
 1;
 
@@ -56,7 +56,7 @@ sub new {
 	my ($type) = shift if @_;
 	my $class = ref($type) || $type || "IXPManager::Config";
 	my %args = @_;
-	my @tags = qw (configfile debug);
+	my @tags = qw (configfile debug dbase_disable);
 
 	my @candidates = (
 		File::Spec->catdir( $Bin, File::Spec->updir(), 'etc' ),
@@ -97,12 +97,14 @@ sub new {
 
 	my $attr = { RaiseError => 1, AutoCommit => 1 };
 
-	$self->{db} = DBI->connect (
-		$datasource,
-		$conf->{sql}->{dbase_username},
-		$conf->{sql}->{dbase_password},
-		$attr
-	);
+	unless ($self->{dbase_disable}) {
+		$self->{db} = DBI->connect (
+			$datasource,
+			$conf->{sql}->{dbase_username},
+			$conf->{sql}->{dbase_password},
+			$attr
+		);
+	}
 
 	$self->{ixp} = $conf->{ixp};
 

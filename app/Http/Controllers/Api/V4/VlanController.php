@@ -29,13 +29,11 @@ use Validator;
 
 use Entities\{
     Router        as RouterEntity,
-    Vlan          as VlanEntity,
-    VlanInterface as VlanInterfaceEntity
+    Vlan          as VlanEntity
 };
 
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\{Request,Response};
-use Illuminate\Support\Facades\View as FacadeView;
+use Illuminate\Http\Request;
 
 /**
  * Vlan API Controller
@@ -79,60 +77,7 @@ class VlanController extends Controller
         ]);
     }
 
-    /**
-     * Generate Smokeping configuration.
-     *
-     * @see http://docs.ixpmanager.org/features/smokeping/
-     * @param Request $request
-     * @param int $vlanid The ID of the VLAN
-     * @param int $protocol Either 4 or 6
-     * @param string $template Option template to use
-     * @return Response
-     */
-    public function smokepingTargets( Request $request, int $vlanid, int $protocol, string $template = null ): Response {
-        /** @var VlanEntity $v */
-        if( !( $v =  D2EM::getRepository( VlanEntity::class )->find( $vlanid ) ) ){
-            return abort( 404, 'Unknown VLAN' );
-        }
 
-        if( !in_array( $protocol, [ 4, 6 ] ) ) {
-            return abort( 404, 'Unknown protocol' );
-        }
-
-        if( $template === null ) {
-            $tmpl = 'api/v4/vlan/smokeping/default';
-        } else {
-            $tmpl = sprintf( 'api/v4/vlan/smokeping/%s', preg_replace( '/[^a-z0-9\-]/', '', strtolower( $template ) ) );
-        }
-
-        if( !FacadeView::exists( $tmpl ) ) {
-            abort(404, 'Unknown template');
-        }
-
-        if( $request->input( 'probe', false ) ) {
-            $probe = $request->input( 'probe' );
-        } else {
-            $probe = 'FPing' . ( $protocol == 4 ? '' : '6' );
-        }
-
-        // try and reorder the VLIs into alphabetical order of customer names
-        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForProto( $v, $protocol, false );
-        $orderedVlis = [];
-        foreach( $vlis as $vli ) {
-            $orderedVlis[ $vli['cname'] . '::' . $vli['vliid'] ] = $vli;
-        }
-        ksort( $orderedVlis, SORT_STRING | SORT_FLAG_CASE );
-
-        return response()
-            ->view( $tmpl, [
-                    'vlan'     => $v,
-                    'vlis'     => $orderedVlis,
-                    'probe'    => $probe,
-                    'level'    => $request->input( 'level', '+++' ),
-                    'protocol' => $protocol
-                ], 200 )
-            ->header( 'Content-Type', 'text/plain; charset=utf-8' );
-    }
 
     /**
      * Determine is an IP address /really/ free by checking across all vlans
@@ -142,7 +87,6 @@ class VlanController extends Controller
      *
      * @see VlanEntity::usedAcrossVlans() for array structure.
      *
-     * @param  string $ipAddress The IP address to check
      * @return  JsonResponse array of object
      */
     public function usedAcrossVlans( Request $request ) : JsonResponse {

@@ -90,7 +90,6 @@ class LoginHistoryController extends Doctrine2Frontend {
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                     'controller' => 'customer',
                     'action'     => 'overview',
-                    'nameIdParam'=> 'id',
                     'idField'    => 'cust_id'
                 ],
 

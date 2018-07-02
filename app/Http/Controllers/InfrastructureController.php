@@ -117,7 +117,9 @@ class InfrastructureController extends Doctrine2Frontend {
 
     /**
      * Display the form to add/edit an object
+     *
      * @param   int $id ID of the row to edit
+     *
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
@@ -132,9 +134,11 @@ class InfrastructureController extends Doctrine2Frontend {
             Former::populate([
                 'name'             => array_key_exists( 'name',      $old ) ? $old['name']      : $this->object->getName(),
                 'shortname'        => array_key_exists( 'shortname', $old ) ? $old['shortname'] : $this->object->getShortname(),
-                'isPrimary'        => array_key_exists( 'isPrimary', $old ) ? $old['isPrimary'] : ( $this->object->getIsPrimary() ?? false ),
+                'primary'          => array_key_exists( 'primary', $old   ) ? $old['primary']   : ( $this->object->getIsPrimary() ? 1 : 0 ) ,
             ]);
         }
+
+
 
         return [
             'object'          => $this->object,
@@ -144,13 +148,17 @@ class InfrastructureController extends Doctrine2Frontend {
 
     /**
      * Function to do the actual validation and storing of the submitted object.
+     *
      * @param Request $request
+     *
      * @return bool|RedirectResponse
+     *
+     * @throws
      */
     public function doStore( Request $request )
     {
         $validator = Validator::make( $request->all(), [
-            'name'                  => 'required|string|max:255',
+            'name'                  => 'required|string|max:255|unique:Entities\Infrastructure,name'. ( $request->input('id') ? ','. $request->input('id') : '' ),
             'shortname'             => 'required|string|max:255',
         ]);
 
@@ -167,12 +175,12 @@ class InfrastructureController extends Doctrine2Frontend {
             D2EM::persist( $this->object );
         }
 
-        $this->object->setName(              $request->input( 'name'         ) );
-        $this->object->setShortname(         $request->input( 'shortname'    ) );
-        $this->object->setIxfIxId(           $request->input( 'ixf_ix_id'    ) ? $request->input( 'ixf_ix_id'    ) : null );
-        $this->object->setPeeringdbIxId(     $request->input( 'pdb_ixp'      ) ? $request->input( 'pdb_ixp'      ) : null );
-        $this->object->setIsPrimary(         $request->input( 'primary'      ) ?? false );
-        $this->object->setIXP(               D2EM::getRepository( IXPEntity::class )->getDefault() );
+        $this->object->setName(                 $request->input( 'name'         ) );
+        $this->object->setShortname(            $request->input( 'shortname'    ) );
+        $this->object->setIxfIxId(          $request->input( 'ixf_ix_id'    ) ? $request->input( 'ixf_ix_id'    ) : null );
+        $this->object->setPeeringdbIxId(    $request->input( 'pdb_ixp'      ) ? $request->input( 'pdb_ixp'      ) : null );
+        $this->object->setIsPrimary(   $request->input( 'primary'      ) ?? 0 );
+        $this->object->setIXP(                  D2EM::getRepository( IXPEntity::class )->getDefault() );
 
         D2EM::flush($this->object);
 

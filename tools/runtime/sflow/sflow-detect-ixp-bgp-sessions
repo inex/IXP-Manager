@@ -108,14 +108,14 @@ while (<SFLOWTOOL>) {
 		$srcip, $dstip, $protocol, $tos, $ttl,
 		$srcport, $dstport, $tcpflags, $pktsize, $payloadsize, $samplerate) = @sample;
 
-	given ($ethertype) {
-		when ('0x0800') { $ipprotocol = 4 }
-		when ('0x86dd') {
-			$ipprotocol = 6;
-			$srcip = NetAddr::IP->new($srcip)->short();
-			$dstip = NetAddr::IP->new($dstip)->short();
-		}
-		default { next }
+	if ($ethertype eq '0x0800') {
+		$ipprotocol = 4;
+	} elsif ($ethertype eq '0x86dd') {
+		$ipprotocol = 6;
+		$srcip = NetAddr::IP->new($srcip)->short();
+		$dstip = NetAddr::IP->new($dstip)->short();
+	} else {
+		next;
 	}
 
 	# BGP data is protocol 6 (tcp) and one port == 179

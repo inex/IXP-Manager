@@ -19,14 +19,14 @@
         /**
          * Display the duplex ports area if this is a duplex port
          */
-        if( <?= (int)$t->hasDuplex ?> ){
+        if( <?= (int)$t->hasDuplex ?> || cb_duplex.is(":checked") ){
             cb_duplex.prop('checked', true);
             div_duplex_port.show();
         }
     });
 
     dd_switch.change(      () => { setSwitchPort();    } );
-    dd_switch_port.change( () => { setCustomer();      } );
+    //dd_switch_port.change( () => { setCustomer();      } );
 
     $( "#number" ).prop( 'readonly' , true);
     $( "#patch_panel" ).prop( 'readonly' , true);
@@ -46,13 +46,12 @@
 
     /**
      * display or hide the duplex port area
+     * select the first item from the dropdown
      */
     cb_duplex.change( function(){
         if( this.checked ){
-            if( $( '#partner_port option[value="<?= $t->ppp->getId() + 1 ?>"]' ).length ) {
-                dd_partner_port.val( <?= $t->ppp->getId() + 1 ?> );
-                dd_partner_port.trigger('change.select2');
-            }
+            dd_partner_port.val( $("#partner_port option:eq(1)").val() );
+            dd_partner_port.trigger('change.select2');
             div_duplex_port.show();
         } else {
             div_duplex_port.hide();
@@ -168,16 +167,16 @@
         dd_switch_port.html( "<option value=\"\">Loading please wait</option>\n" ).trigger('change.select2');
 
         <?php if ($t->prewired): ?>
-        url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port-prewired";
-        datas = {switchId: switchId,
-            spId: dd_switch_port.val()};
+            url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port-prewired";
+            datas = {switchId: switchId,
+                spId: dd_switch_port.val()};
 
         <?php else: ?>
-        url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port-for-ppp";
-        datas = {   switchId: switchId,
-                    custId: dd_customer.val(),
-                    spId: dd_switch_port.val()
-                };
+            url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port-for-ppp";
+            datas = {   switchId: switchId,
+                        custId: dd_customer.val(),
+                        spId: dd_switch_port.val()
+                    };
         <?php endif; ?>
 
         <?php if( $t->ppp ) : ?>

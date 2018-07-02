@@ -55,6 +55,7 @@ class PatchPanelController extends Controller
      * Display the patch panel list
      *
      * @param  bool $active display active or inactive patch panels
+     *
      * @return  view
      */
     public function index( bool $active = true ): View {
@@ -76,35 +77,39 @@ class PatchPanelController extends Controller
      * Allow to display the form to create/edit a patch panel
      *
      * @param   int $id EDIT => the ID of the patch panel that we need to modify, CREATE => we don't need it = null
+     *
      * @return  View
      */
     public function edit( int $id = null ): View {
         /** @var PatchPanelEntity $pp */
         $pp = false;
+        $old = request()->old();
 
         if( $id != null ) {
             if( !( $pp = D2EM::getRepository( PatchPanelEntity::class )->find( $id) ) ) {
                 abort(404);
             }
 
+
+
             Former::populate([
-                'name'                      => $pp->getName(),
-                'colo_reference'            => $pp->getColoReference(),
-                'location_notes'            => $pp->getLocationNotes(),
-                'cabinet'                   => $pp->getCabinet()->getId(),
-                'mounted_at'                => $pp->getMountedAt(),
-                'u_position'                => $pp->getUPosition(),
-                'cable_type'                => $pp->getCableType(),
-                'connector_type'            => $pp->getConnectorType(),
-                'installation_date'         => $pp->getInstallationDate()->format('Y-m-d'),
-                'port_prefix'               => $pp->getPortPrefix(),
-                'numberOfPorts'             => 0,
+                'name'                      => array_key_exists( 'name',                $old    ) ? $old['name']                : $pp->getName(),
+                'colo_reference'            => array_key_exists( 'colo_reference',      $old    ) ? $old['colo_reference']      : $pp->getColoReference(),
+                'cabinet'                   => array_key_exists( 'cabinet',             $old    ) ? $old['cabinet']             : $pp->getCabinet()->getId(),
+                'mounted_at'                => array_key_exists( 'mounted_at',          $old    ) ? $old['mounted_at']          : $pp->getMountedAt(),
+                'u_position'                => array_key_exists( 'u_position',          $old    ) ? $old['u_position']          : $pp->getUPosition(),
+                'cable_type'                => array_key_exists( 'cable_type',          $old    ) ? $old['cable_type']          : $pp->getCableType(),
+                'connector_type'            => array_key_exists( 'connector_type',      $old    ) ? $old['connector_type']      : $pp->getConnectorType(),
+                'installation_date'         => array_key_exists( 'installation_date',   $old    ) ? $old['installation_date']   : $pp->getInstallationDate()->format('Y-m-d'),
+                'port_prefix'               => array_key_exists( 'port_prefix',         $old    ) ? $old['port_prefix']         : $pp->getPortPrefix(),
+                'numberOfPorts'             => array_key_exists( 'numberOfPorts',       $old    ) ? $old['numberOfPorts']       : 0,
             ]);
         }
 
         return view( 'patch-panel/edit' )->with([
             'pp'                            => $pp,
             'cabinets'                      => D2EM::getRepository( CabinetEntity::class )->getAsArray(),
+            'location_notes'                => $id ? ( array_key_exists( 'location_notes',           $old ) ? $old['location_notes']           : $pp->getLocationNotes() ) : ( array_key_exists( 'location_notes',           $old ) ? $old['location_notes']           : "" )
         ]);
     }
 
@@ -163,7 +168,7 @@ class PatchPanelController extends Controller
 
         D2EM::flush();
 
-        return redirect( 'patch-panel-port/list/patch-panel/'.$pp->getId() );
+        return redirect( route( "patch-panel-port/list/patch-panel", [ "id" => $pp->getId() ] )  );
     }
 
     /**
@@ -195,13 +200,14 @@ class PatchPanelController extends Controller
             AlertContainer::push( 'To make a patch panel '.$status.', all ports must be available for use.', Alert::WARNING );
         }
 
-        return redirect( 'patch-panel/list' )->with( [ 'error' => $error ] );
+        return redirect( route( "patch-panel/list" ) )->with( [ 'error' => $error ] );
     }
 
     /**
      * Display the patch panel informations
      *
      * @param   int $id ID of the patch panel
+     *
      * @return  view
      */
     public function view( int $id = null ): View {

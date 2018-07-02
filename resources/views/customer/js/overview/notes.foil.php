@@ -6,7 +6,7 @@
 
 
     function coNotesPublicCheckbox() {
-        if( $( "#co-notes-fpublic" ).is( ':checked' ) ){
+        if( $( "#co-notes-fpublic" ).is( ':checked' ) ) {
             $( "#co-notes-warning" ).show();
         } else {
             $( "#co-notes-warning" ).hide();
@@ -246,30 +246,6 @@
 
         <?php if( Auth::getUser()->isSuperUser() ): ?>
 
-        $('#tab-link-body').on( 'click', function(e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
-
-        $('#tab-link-preview').on( 'click', function(e) {
-            e.preventDefault();
-            $('#well-preview').html('Loading...');
-            $(this).tab('show');
-
-            $.ajax( "<?= action ('Api\V4\UtilsController@markdown')?>", {
-                data: {
-                    text: $('#co-notes-fnote').val()
-                },
-                type: 'POST'
-            })
-                .done( function( data ) {
-                    $('#well-preview').html( data.html );
-                })
-                .fail( function() {
-                    $('#well-preview').html('Error!');
-                });
-        });
-
 
         $( "#co-notes-add-btn" ).on( "click", function( event ){
             event.preventDefault();
@@ -292,7 +268,7 @@
         $( 'button[id|="co-notes-edit"]' ).on( 'click', coNotesEditDialog );
         $( 'button[id|="co-notes-trash"]' ).on( 'click', coNotesDelete );
 
-        $( "#co-notes-fpublic" ).on( "click", function( ){
+        $( "#co-notes-fpublic" ).on( "click", function() {
             coNotesPublicCheckbox();
         });
 

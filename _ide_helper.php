@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.5.39 on 2018-03-12 11:57:50.
+ * Generated for Laravel 5.5.40 on 2018-06-02 13:12:54.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -2838,29 +2838,7 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function flush()
         {
-            return \Illuminate\Cache\FileStore::flush();
-        }
-        
-        /**
-         * Get the Filesystem instance.
-         *
-         * @return \Illuminate\Filesystem\Filesystem 
-         * @static 
-         */ 
-        public static function getFilesystem()
-        {
-            return \Illuminate\Cache\FileStore::getFilesystem();
-        }
-        
-        /**
-         * Get the working directory of the cache.
-         *
-         * @return string 
-         * @static 
-         */ 
-        public static function getDirectory()
-        {
-            return \Illuminate\Cache\FileStore::getDirectory();
+            return \Illuminate\Cache\ArrayStore::flush();
         }
         
         /**
@@ -2871,7 +2849,7 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function getPrefix()
         {
-            return \Illuminate\Cache\FileStore::getPrefix();
+            return \Illuminate\Cache\ArrayStore::getPrefix();
         }
          
     }
@@ -6030,7 +6008,7 @@ namespace Illuminate\Support\Facades {
          * Gets the mime type associated with the format.
          *
          * @param string $format The format
-         * @return string The associated mime type (null if not found)
+         * @return string|null The associated mime type (null if not found)
          * @static 
          */ 
         public static function getMimeType($format)
@@ -9402,7 +9380,7 @@ namespace Illuminate\Support\Facades {
          * Gets the mime type associated with the format.
          *
          * @param string $format The format
-         * @return string The associated mime type (null if not found)
+         * @return string|null The associated mime type (null if not found)
          * @static 
          */ 
         public static function getMimeType($format)
@@ -14450,6 +14428,31 @@ namespace LaravelDoctrine\ORM\Facades {
         }
         
         /**
+         * Close an existing object manager.
+         *
+         * @param string|null $name The object manager name (null for the default one).
+         * @static 
+         */ 
+        public static function closeManager($name = null)
+        {
+            return \LaravelDoctrine\ORM\IlluminateRegistry::closeManager($name);
+        }
+        
+        /**
+         * Purge a named object manager.
+         * 
+         * This method can be used if you wish to close an object manager manually, without opening a new one.
+         * This can be useful if you wish to open a new manager later (but maybe with different settings).
+         *
+         * @param string|null $name The object manager name (null for the default one).
+         * @static 
+         */ 
+        public static function purgeManager($name = null)
+        {
+            return \LaravelDoctrine\ORM\IlluminateRegistry::purgeManager($name);
+        }
+        
+        /**
          * Resets a named object manager.
          * 
          * This method is useful when an object manager has been closed
@@ -15162,6 +15165,7 @@ namespace IXP\Support\Facades {
          * @see \IXP\Console\Commands\Grapher\GrapherCommand::resolveBackend()
          * @param string|null $backend A specific backend to return. If not specified, we use command line arguments
          * @return \IXP\Contracts\Grapher\Backend 
+         * @throws 
          * @static 
          */ 
         public static function backend($backend = null)
@@ -15331,6 +15335,18 @@ namespace IXP\Support\Facades {
         }
         
         /**
+         * Get an instance of a latency graph
+         *
+         * @param \IXP\Services\VlanInterface $vli
+         * @return \IXP\Services\LatencyGraph 
+         * @static 
+         */ 
+        public static function latency($vli)
+        {
+            return \IXP\Services\Grapher::latency($vli);
+        }
+        
+        /**
          * Is the cache enabled?
          *
          * @return bool 
@@ -15355,7 +15371,7 @@ namespace IXP\Support\Facades {
         /**
          * Get the cache repository
          *
-         * @return \Illuminate\Cache\Repository 
+         * @return \Illuminate\Contracts\Cache\Repository 
          * @static 
          */ 
         public static function cacheRepository()
@@ -15390,6 +15406,7 @@ namespace Intervention\Image\Facades {
          * Overrides configuration settings
          *
          * @param array $config
+         * @return self 
          * @static 
          */ 
         public static function configure($config = array())
@@ -15412,8 +15429,8 @@ namespace Intervention\Image\Facades {
         /**
          * Creates an empty image canvas
          *
-         * @param integer $width
-         * @param integer $height
+         * @param int $width
+         * @param int $height
          * @param mixed $background
          * @return \Intervention\Image\Image 
          * @static 
@@ -15428,7 +15445,7 @@ namespace Intervention\Image\Facades {
          * (requires additional package intervention/imagecache)
          *
          * @param \Closure $callback
-         * @param integer $lifetime
+         * @param int $lifetime
          * @param boolean $returnObj
          * @return \Image 
          * @static 

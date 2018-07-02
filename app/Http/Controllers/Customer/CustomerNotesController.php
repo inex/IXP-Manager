@@ -61,7 +61,7 @@ class CustomerNotesController extends Controller {
         Auth::getUser()->setPreference( 'customer-notes.read_upto', time() );
         D2EM::flush();
 
-        return Redirect::to( '/customer/unread-notes' );
+        return Redirect::to( route( "customerNotes@unreadNotes" ) );
     }
 
     /**

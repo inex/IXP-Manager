@@ -64,10 +64,10 @@ class Vendor extends \Entities\Vendor implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'id', 'Switches', 'bundle_name', '' . "\0" . 'Entities\\Vendor' . "\0" . 'shortname', '' . "\0" . 'Entities\\Vendor' . "\0" . 'nagios_name'];
+            return ['__isInitialized__', 'name', 'id', 'Switches', 'consoleServers', 'bundle_name', '' . "\0" . 'Entities\\Vendor' . "\0" . 'shortname', '' . "\0" . 'Entities\\Vendor' . "\0" . 'nagios_name'];
         }
 
-        return ['__isInitialized__', 'name', 'id', 'Switches', 'bundle_name', '' . "\0" . 'Entities\\Vendor' . "\0" . 'shortname', '' . "\0" . 'Entities\\Vendor' . "\0" . 'nagios_name'];
+        return ['__isInitialized__', 'name', 'id', 'Switches', 'consoleServers', 'bundle_name', '' . "\0" . 'Entities\\Vendor' . "\0" . 'shortname', '' . "\0" . 'Entities\\Vendor' . "\0" . 'nagios_name'];
     }
 
     /**
@@ -329,6 +329,39 @@ class Vendor extends \Entities\Vendor implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBundleName', [$bundle_name]);
 
         return parent::setBundleName($bundle_name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addConsoleServer(\Entities\ConsoleServer $consoleServer)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addConsoleServer', [$consoleServer]);
+
+        return parent::addConsoleServer($consoleServer);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeConsoleServer(\Entities\ConsoleServer $consoleServer)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeConsoleServer', [$consoleServer]);
+
+        return parent::removeConsoleServer($consoleServer);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getConsoleServers()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getConsoleServers', []);
+
+        return parent::getConsoleServers();
     }
 
 }

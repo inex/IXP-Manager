@@ -102,38 +102,44 @@ class EmailOnChange
      */
     public function handle( $e )
     {
-        // get admin users
-        $users = D2EM::getRepository( UserEntity::class )->findBy( [ 'privs' => UserEntity::AUTH_SUPERUSER ] );
-        $to = [];
+        if( config( 'ixp_fe.customer.notes.only_send_to' ) ) {
+            $to = [ config( 'ixp_fe.customer.notes.only_send_to' ) ];
+        } else {
+            // get admin users
+            $users = D2EM::getRepository( UserEntity::class )->findBy( [ 'privs' => UserEntity::AUTH_SUPERUSER ] );
+            $to = [];
 
-        foreach( $users as $user ) {
+            foreach( $users as $user ) {
 
-            /** @var UserEntity $user */
-            if( $user->getPreference( "customer-notes.notify" ) == "none" ) {
-                continue;
+                /** @var UserEntity $user */
+                if( $user->getPreference( "customer-notes.notify" ) == "none" ) {
+                    continue;
+                }
+
+                if( !$user->getPreference( "customer-notes.notify" ) || $user->getPreference( "customer-notes.notify" ) == "default" || $user->getPreference( "customer-notes.notify" ) == "all" ) {
+                    $to[] = [ 'name' => $user->getContact()->getName(), 'email' => $user->getContact()->getEmail() ];
+                    continue;
+                }
+
+                // watching a whole customer: customer-notes.{customer id}.notify == 1
+                if( $user->getPreference( "customer-notes.{$e->getCustomer()->getId()}.notify" ) ) {
+                    $to[] = [ 'name' => $user->getContact()->getName(), 'email' => $user->getContact()->getEmail() ];
+                    continue;
+                }
+
+                // watching a specific note: customer-notes.watching.{note id}
+                if( $user->getPreference( "customer-notes.watching.{$e->getEitherNote()->getId()}" ) ) {
+                    $to[] = [ 'name' => $user->getContact()->getName(), 'email' => $user->getContact()->getEmail() ];
+                    continue;
+                }
+
+                // so, skip this user then.
             }
-
-            if( !$user->getPreference( "customer-notes.notify" ) || $user->getPreference( "customer-notes.notify" ) == "default" || $user->getPreference( "customer-notes.notify" ) == "all" ) {
-                $to[] = [ 'name' => $user->getContact()->getName(), 'email' => $user->getContact()->getEmail() ];
-                continue;
-            }
-
-            // watching a whole customer: customer-notes.{customer id}.notify == 1
-            if( $user->getPreference( "customer-notes.{$e->getCustomer()->getId()}.notify" ) ) {
-                $to[] = [ 'name' => $user->getContact()->getName(), 'email' => $user->getContact()->getEmail() ];
-                continue;
-            }
-
-            // watching a specific note: customer-notes.watching.{note id}
-            if( $user->getPreference( "customer-notes.watching.{$e->getEitherNote()->getId()}" ) ) {
-                $to[] = [ 'name' => $user->getContact()->getName(), 'email' => $user->getContact()->getEmail() ];
-                continue;
-            }
-
-            // so, skip this user then.
         }
 
-        Mail::to( $to )->send( new CustomerNoteChangedMailable( $e ) );
+        if( count( $to ) ) {
+            Mail::to( $to )->send( new CustomerNoteChangedMailable( $e ) );
+        }
 
     }
 }

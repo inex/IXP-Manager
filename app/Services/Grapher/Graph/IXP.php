@@ -22,14 +22,12 @@
  */
 
 use IXP\Services\Grapher;
-use IXP\Services\Grapher\{Graph,Statistics};
-
-use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException,ConfigurationException,ParameterException};
+use IXP\Services\Grapher\{Graph};
 
 use Entities\IXP  as IXPEntity;
 use Entities\User as UserEntity;
 
-use Auth;
+use Auth, D2EM;
 
 /**
  * Grapher -> Abstract Graph
@@ -51,6 +49,8 @@ class IXP extends Graph {
 
     /**
      * Constructor
+     * @param Grapher $grapher
+     * @param IXPEntity $ixp
      */
     public function __construct( Grapher $grapher, IXPEntity $ixp ) {
         parent::__construct( $grapher );
@@ -72,11 +72,10 @@ class IXP extends Graph {
 
     /**
      * Set the IXP we should use
-     * @param \Entities\IXP $ixp
-     * @return \IXP\Services\Grapher Fluid interface
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     * @param IXPEntity $ixp
+     * @return IXP Fluid interface
      */
-    public function setIXP( IXPEntity $ixp ): Grapher {
+    public function setIXP( IXPEntity $ixp ): IXP {
         if( $this->ixp() && $this->ixp()->getId() != $ixp->getId() ) {
             $this->wipe();
         }
@@ -97,7 +96,9 @@ class IXP extends Graph {
         parent::setParamsFromArray( $params );
 
         if( isset( $params['ixp'] ) ) {
-            $this->setIXP( d2r('IXP')->find( $params['ixp'] ) );
+            /** @var IXPEntity $ixp */
+            $ixp = D2EM::getRepository( IXPEntity::class )->find( $params['ixp'] );
+            $this->setIXP( $ixp );
         }
 
         return $this;
@@ -137,16 +138,20 @@ class IXP extends Graph {
         }
 
         if( in_array( $this->category(), [ self::CATEGORY_ERRORS, self::CATEGORY_DISCARDS ] ) ) {
-            return $this->deny();
+            $this->deny();
+            return false;
         }
 
-        if( config( 'grapher.access.ixp', -1 ) == UserEntity::AUTH_PUBLIC ) {
-            return $this->allow();
-        } else if( Auth::check() && Auth::user()->getPrivs() >= config( 'grapher.access.ixp', 0 ) ) {
+        if( is_numeric( config( 'grapher.access.ixp' ) ) && config( 'grapher.access.ixp' ) == UserEntity::AUTH_PUBLIC ) {
             return $this->allow();
         }
 
-        return $this->deny();
+        if( Auth::check() && is_numeric( config( 'grapher.access.ixp' ) ) && Auth::user()->getPrivs() >= config( 'grapher.access.ixp' ) ) {
+            return $this->allow();
+        }
+
+        $this->deny();
+        return false;
     }
 
     /**
@@ -182,11 +187,13 @@ class IXP extends Graph {
      * If you want to force an exception in such cases, use setIXP()
      *
      * @param int $v The user input value
-     * @return int The verified / sanitised / default value
+     * @return IXPEntity The verified / sanitised / default value
+     * @throws
      */
     public static function processParameterIXP( int $v ): IXPEntity {
+        $ixp = null;
         if( !$v || !( $ixp = d2r( 'IXP' )->find( $v ) ) ) {
-            $ixp = d2r( 'IXP' )->getDefault();
+            $ixp = D2EM::getRepository( IXPEntity::class )->getDefault();
         }
         return $ixp;
     }

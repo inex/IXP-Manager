@@ -114,6 +114,14 @@ return [
         //
         'billing_updates_notify' => env( 'IXP_FE_CUSTOMER_BILLING_UPDATES_NOTIFY', false ),
 
+        // customer notes - see: https://docs.ixpmanager.org/usage/notes/
+        //
+        // Admin users can opt to get notified when a customer note is added / edited / deleted.
+        // For testing and demonstration purposes, this can be disabled and all updates
+        // for all actions can be sent to a single address defined here:
+        'notes' => [
+            'only_send_to' => env( 'IXP_FE_CUSTOMER_NOTES_ONLYSENDTO', false ),
+        ]
     ],
 
 
@@ -138,5 +146,19 @@ return [
         'email_on_change_dest'       => env( 'IXP_FE_LAYER2_ADDRESSES_EMAIL_ON_CHANGE_DEST',      null  ),  // e.g. 'ops@ixp.example.net'
 
     ],
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Admins Dashboard
+    |--------------------------------------------------------------------------
+    |
+    */
+    'admin_dashboard' => [
+
+        'default_graph_period'       => env( 'IXP_FE_ADMIN_DASHBOARD_DEFAULT_GRAPH_PERIOD', 'week' ),
+
+    ],
+
 
 ];

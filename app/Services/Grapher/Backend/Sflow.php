@@ -22,6 +22,7 @@
  */
 
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
+use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
 use IXP\Services\Grapher\Backend as GrapherBackend;
 
 use IXP\Services\Grapher\Graph;
@@ -37,7 +38,7 @@ use Entities\IXP;
 use Log;
 
 /**
- * Grapher Backend -> Mrtg
+ * Grapher Backend -> Sflow
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Grapher
@@ -92,11 +93,11 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      *
      * {inheritDoc}
      *
-     * @param IXP $ixp The IXP to generate the config for (multi-IXP mode)
-     * @param int $config_type The type of configuration to generate
+     * @param int   $type       The type of configuration to generate
+     * @param array $options
      * @return array
      */
-    public function generateConfiguration( IXP $ixp, int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC ): array
+    public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC, array $options = [] ): array
     {
         return [];
     }
@@ -111,7 +112,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
     public static function supports(): array {
         return [
             'vlan' => [
-                'protocols'   => array_except( Graph::PROTOCOLS, Graph::PROTOCOL_ALL ),
+                'protocols'   => Graph::PROTOCOLS_REAL,
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
@@ -141,7 +142,10 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      * {inheritDoc}
      *
      * @param \IXP\Services\Grapher\Graph $graph
+     *
      * @return array
+     *
+     * @throws
      */
     public function data( Graph $graph ): array {
         try {
@@ -159,7 +163,10 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      * {inheritDoc}
      *
      * @param Graph $graph
+     *
      * @return string
+     *
+     * @throws
      */
     public function png( Graph $graph ): string {
         try {
@@ -177,7 +184,10 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      * {inheritDoc}
      *
      * @param Graph $graph
+     *
      * @return string
+     *
+     * @throws
      */
     public function rrd( Graph $graph ): string {
         try {
@@ -207,26 +217,31 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      * For a given graph, return the filename where the appropriate data
      * will be found.
      *
-     * @param Graph $graph
+     * @param Graph     $graph
+     * @param string    $type
+     *
      * @return string
+     *
+     * @throws
      */
     private function resolveFileName( Graph $graph, $type ): string {
-        $config = config('grapher.backends.sflow');
-
         switch( $graph->classType() ) {
             case 'Vlan':
+                /** @var Graph\Vlan $graph */
                 return sprintf( "aggregate.%s.%s.vlan%05d.%s",
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
                     $graph->vlan()->getNumber(), $type );
                 break;
 
             case 'VlanInterface':
+                /** @var Graph\VlanInterface $graph */
                 return sprintf( "individual.%s.%s.src-%05d.%s",
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
                     $graph->vlanInterface()->getId(), $type );
                 break;
 
             case 'P2p':
+                /** @var Graph\P2p $graph */
                 return sprintf( "p2p.%s.%s.src-%05d.dst-%05d.%s",
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
                     $graph->svli()->getId(), $graph->dvli()->getId(), $type );
@@ -242,25 +257,31 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      * will be found.
      *
      * @param Graph $graph
+     *
      * @return string
+     *
+     * @throws
      */
     private function resolveFilePath( Graph $graph, $type ): string {
         $config = config('grapher.backends.sflow');
 
         switch( $graph->classType() ) {
             case 'Vlan':
+                /** @var Graph\Vlan $graph */
                 return sprintf( "%s/%s/%s/aggregate/%s", $config['root'],
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
                     $this->resolveFileName( $graph, $type ) );
                 break;
 
             case 'VlanInterface':
+                /** @var Graph\VlanInterface $graph */
                 return sprintf( "%s/%s/%s/individual/%s", $config['root'],
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
                     $this->resolveFileName( $graph, $type ) );
                 break;
 
             case 'P2p':
+                /** @var Graph\P2p $graph */
                 return sprintf( "%s/%s/%s/p2p/src-%05d/%s", $config['root'],
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
                     $graph->svli()->getId(), $this->resolveFileName( $graph, $type ) );

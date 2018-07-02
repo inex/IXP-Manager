@@ -204,9 +204,9 @@ abstract class Common extends Controller
             // LAGs must have a bundle name
             if( $vi->getLagFraming() && !$vi->getName() ) {
                 // assumption on no mlags (multi chassis lags) here:
-                $vi->setName( $vi->getPhysicalInterfaces()[ 0 ]->getSwitchport()->getSwitcher()->getVendor()->getBundleName() );
 
-                if( $vi->getName() ) {
+                if( $vi->getPhysicalInterfaces()[ 0 ]->getSwitchport()->getSwitcher()->getVendor() ) {
+                    $vi->setName( $vi->getPhysicalInterfaces()[ 0 ]->getSwitchport()->getSwitcher()->getVendor()->getBundleName() );
                     AlertContainer::push( "Missing bundle name assigned as this is a LAG port", Alert::INFO );
                 } else {
                     AlertContainer::push( "Missing bundle name not assigned as no bundle name set for this switch vendor (see Vendors)", Alert::WARNING );

@@ -47,6 +47,5 @@
       </join-columns>
     </many-to-one>
     <one-to-many field="Ports" target-entity="Entities\SwitchPort" mapped-by="Switcher"/>
-    <one-to-many field="ConsoleServerConnections" target-entity="Entities\ConsoleServerConnection" mapped-by="Switcher"/>
   </entity>
 </doctrine-mapping>

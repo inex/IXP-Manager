@@ -54,9 +54,11 @@ class Vlan extends EntityRepository
      * VLANs by default.
      *
      * @param $type int The VLAN types to return (see TYPE_ constants).
+     * @param $orderBy string Typical values: number, name
+     * @param $cache bool Whether to use the cache or not
      * @return \Entities\Vlan[] An array of all VLAN objects
      */
-    public function getAndCache( $type = self::TYPE_NORMAL )
+    public function getAndCache( int $type = self::TYPE_NORMAL, string $orderBy = "number", bool $cache = true )
     {
         switch( $type )
         {
@@ -75,9 +77,9 @@ class Vlan extends EntityRepository
         }
 
         return $this->getEntityManager()->createQuery(
-                "SELECT v FROM Entities\\Vlan v {$where} ORDER BY v.number ASC"
+                "SELECT v FROM Entities\\Vlan v {$where} ORDER BY v.{$orderBy} ASC"
             )
-            ->useResultCache( true, 3600, self::ALL_CACHE_KEY . "_{$type}" )
+            ->useResultCache( $cache, 3600, self::ALL_CACHE_KEY . "_{$type}_{$orderBy}" )
             ->getResult();
     }
 
@@ -560,19 +562,6 @@ class Vlan extends EntityRepository
             $dql .= " AND i.id = ".$feParams->infra->getId();
         }
 
-        /*if( $this->getParam( 'infra', false ) && $infra = $this->getD2R( '\\Entities\\Infrastructure' )->find( $this->getParam( 'infra' ) ) )
-        {
-            $dql .= " i.id = ". (int)$infraid ;
-            $qb->andWhere( 'i = :infra' )->setParameter( 'infra', $infra );
-            $this->view->infra = $infra;
-        }
-
-        if( $this->getParam( 'publiconly', false ) )
-        {
-            $qb->andWhere( 'v.private = 0' );
-            $this->view->publiconly = 1;
-        }*/
-
         if( isset( $feParams->listOrderBy ) ) {
             $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
             $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
@@ -583,4 +572,20 @@ class Vlan extends EntityRepository
         return $query->getArrayResult();
     }
 
+    public function getInfraConfigNameCouple( $infraid, $configName ){
+
+        $dql = "SELECT  v
+                FROM Entities\\Vlan v
+                WHERE v.Infrastructure = :infraid
+                AND v.config_name = :configname";
+
+
+
+        $q = $this->getEntityManager()->createQuery( $dql );
+
+        $q->setParameter( 'infraid', $infraid );
+        $q->setParameter( 'configname', $configName );
+
+        return $q->getOneOrNullResult();
+    }
 }

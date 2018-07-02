@@ -1,0 +1,24 @@
+#!/bin/sh
+#
+# PROVIDE: sflow_rrd_handler
+# REQUIRE: DAEMON
+
+# Add the following line to /etc/rc.conf to enable sflow_rrd_handler:
+# sflow_rrd_handler_enable="YES"
+# sflow_rrd_handler_flags="<set as needed>"
+
+. /etc/rc.subr
+
+name="sflow_rrd_handler"
+rcvar=sflow_rrd_handler_enable
+command="/usr/local/bin/sflow-to-rrd-handler"
+
+load_rc_config $name
+# Set defaults
+: ${sflow_rrd_handler_enable="NO"}
+: ${sflow_rrd_handler_pidfile="/var/run/${name}.pid"}
+
+start_cmd="/usr/sbin/daemon -f -p ${sflow_rrd_handler_pidfile} ${command} ${sflow_rrd_handler_flags}"
+start_postcmd="echo Starting ${name}."
+
+run_rc_command "$1"

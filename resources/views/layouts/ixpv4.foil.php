@@ -131,6 +131,7 @@
 </div> <!-- </div class="container"> -->
 
     <script> const RIPE_ASN_URL = "<?= url( "api/v4/aut-num" ) ?>"; </script>
+    <script> const MARKDOWN_URL = "<?= route( "utils@markdown" ) ?>"; </script>
     <script type="text/javascript" src="<?= asset('/bower_components/jquery/dist/jquery.min.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/bower_components/jquery-ui/jquery-ui.min.js') ?>"></script>
     <script type="text/javascript" src="<?= asset('/bower_components/bootstrap/dist/js/bootstrap.min.js') ?>"></script>

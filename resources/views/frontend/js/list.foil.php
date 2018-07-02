@@ -12,8 +12,9 @@
 
                 let objectId = $( "#" + this.id ).attr( "data-object-id" );
 
-                let html = `<form id="d2f-form-delete" method="POST" action="<?= action($t->controller.'@delete' ) ?>">
+                let html = `<form id="d2f-form-delete" method="POST" action="<?= route($t->feParams->route_prefix.'@delete' ) ?>">
                                 <div>Do you really want to delete this <?= $t->feParams->nameSingular ?>?</div>
+                                <?php if( isset( $t->feParams->extraDeleteMessage ) ): ?><div> <?= $t->feParams->extraDeleteMessage ?> </div><?php endif;?>
                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                                 <input type="hidden" name="id" value="${objectId}">
                             </form>`;

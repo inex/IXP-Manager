@@ -87,6 +87,7 @@ class VendorController extends Doctrine2Frontend {
      * Provide array of rows for the list and view
      *
      * @param int $id The `id` of the row to load for `view`. `null` if `list`
+     *
      * @return array
      */
     protected function listGetData( $id = null ) {
@@ -96,7 +97,9 @@ class VendorController extends Doctrine2Frontend {
 
     /**
      * Display the form to add/edit an object
+     *
      * @param   int $id ID of the row to edit
+     *
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
@@ -123,8 +126,12 @@ class VendorController extends Doctrine2Frontend {
 
     /**
      * Function to do the actual validation and storing of the submitted object.
+     *
      * @param Request $request
+     *
      * @return bool|RedirectResponse
+     *
+     * @throws
      */
     public function doStore( Request $request )
     {

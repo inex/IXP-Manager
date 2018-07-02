@@ -851,15 +851,20 @@
     <entity name="\Entities\ConsoleServerConnection" local-name="ConsoleServerConnection" namespace="\Entities" uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="a1f3d63b-a238-4760-a2e7-ad5045394acf"/>
       <field name="custid" type="integer" uuid="3e10c4e1-6381-43d4-b13d-434db9ac8679"/>
+      <field name="console_server_id" type="integer" uuid="5f4aa713-ee5c-41e5-9c37-599e69156fe5"/>
+      <field name="switchid" type="integer" uuid="a058be4e-c540-46e2-bd2b-bc08c88e9189"/>
       <field name="description" type="string" size="255" uuid="74b670af-325d-4c33-bcfa-4d379227823a"/>
       <field name="port" type="string" size="255" uuid="1f6c0300-810e-4acf-a9ab-9eb9a059cecc"/>
-      <field name="switchid" type="integer" uuid="d03dc71e-1b71-4a72-98d6-9a7fad82c0fd"/>
       <field name="speed" type="integer" uuid="db1cc0af-f514-443b-bcee-046faa1f9047"/>
       <field name="parity" type="integer" uuid="86852f4e-c8e3-452d-b8d7-0923199bc545"/>
       <field name="stopbits" type="integer" uuid="df8dfab9-d453-4090-a697-5aa17ada3fc2"/>
       <field name="flowcontrol" type="integer" uuid="1a41b714-5aef-48c6-b5b4-cd5dfa190f25"/>
       <field name="autobaud" type="boolean" uuid="8c3747cd-8f2c-4786-affd-c6e4705b7c91"/>
       <field name="notes" type="text" uuid="2c357ee1-effe-445c-b259-b5b672266a95"/>
+      <index name="console_server_port_uniq" unique="true">
+        <index-field name="console_server_id"/>
+        <index-field name="port"/>
+      </index>
       <orm-attributes>
         <attribute name="repository-class">Repositories\ConsoleServerConnection</attribute>
         <attribute name="table">consoleserverconnection</attribute>
@@ -872,8 +877,8 @@
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
     </association>
-    <association from="\Entities\ConsoleServerConnection" to="\Entities\Switcher" owner-alias="ConsoleServerConnections" inverse-alias="Switcher" many-owner="true" many-inverse="false" uuid="518453f9-598d-4246-847d-f839117f1d0a">
-      <association-field from="switchid" to="id"/>
+    <association from="\Entities\ConsoleServerConnection" to="\Entities\ConsoleServer" owner-alias="consoleServerConnections" inverse-alias="consoleServer" many-owner="true" many-inverse="false" uuid="7264f047-7aed-475c-b870-1c3a2a1ab316">
+      <association-field from="console_server_id" to="id"/>
     </association>
     <entity name="\Entities\CustomerEquipment" local-name="CustomerEquipment" namespace="\Entities" uuid="e980f96e-6b58-43c4-8822-a507f25a8885">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="9beab59d-a930-4ea1-8e94-988b75b1b8af"/>
@@ -1448,6 +1453,62 @@
         <attribute name="repository-class">Repositories\CoreBundle</attribute>
       </orm-attributes>
     </entity>
+    <entity name="\Entities\ConsoleServer" local-name="ConsoleServer" namespace="\Entities" uuid="251b3396-15e4-4cca-8923-22e7fe9ed56a">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="733dae29-7828-48ed-856e-418a0e9289c1"/>
+      <field name="name" type="string" size="255" unique="true" uuid="19337c3f-c8f2-49ae-9339-b6d8521845a3"/>
+      <field name="hostname" type="string" size="255" uuid="c542167d-bea4-4149-a836-091d3f4ab755"/>
+      <field name="cabinet_id" type="integer" uuid="a600f294-9afd-4991-ab87-dddf6f855e04"/>
+      <field name="vendor_id" type="integer" uuid="17e8e487-4ea2-499e-a45e-34c032819209"/>
+      <field name="model" type="string" size="255" uuid="74e2712c-33db-4ee0-8a2e-b7bb154b699d"/>
+      <field name="serial_number" type="string" size="255" uuid="9c25e220-e52e-492e-8915-f76500e66648">
+        <orm-attributes>
+          <attribute name="column">serialNumber</attribute>
+        </orm-attributes>
+      </field>
+      <field name="active" type="boolean" default="1" uuid="4aaf45d2-2dff-4717-908c-db148ea61c47"/>
+      <field name="notes" type="text" uuid="f2ec4016-7e4f-4241-bdf8-0d1367f31b4e"/>
+      <orm-attributes>
+        <attribute name="table">console_server</attribute>
+        <attribute name="tableName">console_server</attribute>
+        <attribute name="repository-class">Repositories\ConsoleServer</attribute>
+      </orm-attributes>
+    </entity>
+    <association from="\Entities\ConsoleServer" to="\Entities\Vendor" owner-alias="consoleServers" inverse-alias="vendor" many-owner="true" many-inverse="false" uuid="10405d40-8fdd-4189-864c-0535fbf1eaf5">
+      <association-field from="vendor_id" to="id"/>
+    </association>
+    <association from="\Entities\ConsoleServer" to="\Entities\Cabinet" owner-alias="consoleServers" inverse-alias="cabinet" many-owner="true" many-inverse="false" uuid="c1c0aaf2-5968-412b-8ff3-05e224f88ecd">
+      <association-field from="cabinet_id" to="id"/>
+    </association>
+    <entity name="\Entities\CustomerTag" local-name="CustomerTag" namespace="\Entities" uuid="aa41e95c-958a-4689-83cb-600d2adfc217">
+      <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="55efb147-c0e0-4a06-ab4f-7cb77676d7b0"/>
+      <field name="tag" type="string" size="255" required="true" unique="true" uuid="b263f486-1b1a-4990-aab6-5d779cfe098c"/>
+      <field name="display_as" type="string" size="255" required="true" uuid="ff13a9c8-46ac-4f7b-a4d4-5e8bb8e13677"/>
+      <field name="description" type="text" uuid="24e034b2-17fe-4644-b155-c55c3310ec55"/>
+      <field name="internal_only" type="boolean" default="0" required="true" uuid="163cd247-69ee-48ce-95c9-c2782cb37ac6"/>
+      <field name="created" type="datetime" required="true" uuid="6fbbb48d-70d5-4c52-90cd-5a8d9766d8ab"/>
+      <field name="updated" type="datetime" required="true" uuid="ff1b06ae-2268-4ecb-a46f-f4c129f74fe3"/>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\CustomerTag</attribute>
+        <attribute name="table">cust_tag</attribute>
+        <attribute name="tableName">cust_tag</attribute>
+      </orm-attributes>
+    </entity>
+    <entity name="\Entities\CustomerToCustomerTag" local-name="CustomerToCustomerTag" namespace="\Entities" uuid="ae31d2b7-6ddf-461b-b5f8-6dcb0c43b678">
+      <field name="customer_id" type="integer" required="true" primary="true" uuid="29711375-b8bd-4510-8496-01e7ab16a7a1"/>
+      <field name="customer_tag_id" type="integer" required="true" primary="true" uuid="c02d7efa-c0da-478b-bd44-11c99398e915"/>
+      <orm-attributes>
+        <attribute name="table">cust_to_cust_tag</attribute>
+        <attribute name="tableName">cust_to_cust_tag</attribute>
+      </orm-attributes>
+    </entity>
+    <many-to-many mn-entity="\Entities\CustomerToCustomerTag" uuid="0f04bf1e-28ce-4bff-979e-ce0fc931bee9">
+      <many-to-many-entity name="\Entities\CustomerTag" owning-side="true" alias="tags" uuid="fa315f12-5ef2-42ea-b580-6a8591d7b86e">
+        <many-to-many-field from="customer_tag_id" to="id"/>
+      </many-to-many-entity>
+      <many-to-many-entity name="\Entities\Customer" owning-side="false" alias="customers" uuid="a77b8979-4aea-4e12-a598-80c2e20bd513">
+        <many-to-many-field from="customer_id" to="id"/>
+      </many-to-many-entity>
+    </many-to-many>
   </module>
   <visual-data>
     <association uuid="01e81093-107a-49b9-9cb8-18b8a383bf6e" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
@@ -1455,6 +1516,7 @@
     <association uuid="0dc9ac51-e3ab-42de-b7f6-81d5b4bf8637" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="0ddc2408-657b-4705-8e3d-05dfd77e7f4f" color="#969696"/>
     <association uuid="0ee80a87-2e0c-4f8a-a0c5-aff080f731da" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="10405d40-8fdd-4189-864c-0535fbf1eaf5" color="#969696"/>
     <association uuid="1166ebf0-8024-4783-9af3-61e1b4f61070" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20" color="#969696"/>
     <association uuid="15b1d11f-9a03-4772-a3cf-c984cd801d7a" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="1eba91d3-a283-42e2-8ae4-45163c1ea622" color="#969696"/>
@@ -1466,12 +1528,12 @@
     <association uuid="3de69308-a3d5-4138-97be-111724303344" caption1-position-x="-1" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="4bc1d72f-a2b3-43b8-89f6-e5aaeb3b6d59" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="4c701748-2450-4a6b-9d80-f5df9e6ebf6e" center-position-x="0" center-position-y="0" color="#969696"/>
-    <association uuid="518453f9-598d-4246-847d-f839117f1d0a" color="4288059030"/>
     <association uuid="52d28567-bcaf-46dd-8616-115315c3d965" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="56098a3e-c55e-4a20-9ca1-88ac494c7e73" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="619331cb-7c10-46c6-ac28-f46096e91407" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="670582b5-1394-4b90-b827-0a331ea5b4aa" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="-20" color="4288059030"/>
+    <association uuid="7264f047-7aed-475c-b870-1c3a2a1ab316" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="729deb72-6e14-4cec-9120-f722c6aeaa6a" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="73e14126-258d-4d70-b63e-7a90192e3492" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="879b2bdc-c0c5-4d23-b190-4a4b37cb7f68" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
@@ -1489,6 +1551,7 @@
     <association uuid="b92532d3-9b72-47c4-8271-cd3f14181208" center-position-x="0" center-position-y="-20" color="#969696"/>
     <association uuid="bc7fc00c-039c-4e6a-ad73-f571f5761bfe" color="4288059030"/>
     <association uuid="be7e2b92-010c-49ad-b716-7879623ca29d" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="c1c0aaf2-5968-412b-8ff3-05e224f88ecd" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="c3779c0a-b590-4cf8-9495-984270d7496a" color="#969696" split="1"/>
     <association uuid="c5d6b4b1-d641-426c-b168-c2a1a8351cb2" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
@@ -1523,8 +1586,9 @@
     <entity uuid="13cd2e44-8bf8-41d0-b105-7ae62dc1d189" bg-color="4294967295" hdr-color="4292006610" position-x="1417" position-y="16" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
     <entity uuid="1b16625d-8c68-489f-b0ca-a1969276df51" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1049" position-y="-512" size-x="0" size-x2="141" size-y="0" size-y2="115"/>
     <entity uuid="1b90f411-dfed-48a8-acd0-97cbf599e069" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1236" position-y="186" size-x="0" size-x2="135" size-y="0" size-y2="143"/>
+    <entity uuid="251b3396-15e4-4cca-8923-22e7fe9ed56a" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1878" position-y="993" size-x="0" size-x2="132" size-y="0" size-y2="143"/>
     <entity uuid="274aaa49-9d19-4458-8f91-386f5b9a44cd" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1165" position-y="8" size-x="0" size-x2="106" size-y="0" size-y2="59"/>
-    <entity uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8" bg-color="4294967295" hdr-color="4292006610" position-x="421" position-y="186" size-x="0" size-x2="128" size-y="0" size-y2="171"/>
+    <entity uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1660" position-y="972" size-x="0" size-x2="133" size-y="0" size-y2="185"/>
     <entity uuid="2bc6f199-c9b6-4ee7-aba0-7aa9856b7291" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="777" position-y="-344" size-x="0" size-x2="163" size-y="0" size-y2="325"/>
     <entity uuid="3768242c-d7a1-4d2a-8aab-9a0b4e6a0a10" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1395" position-y="396" size-x="0" size-x2="109" size-y="0" size-y2="59"/>
     <entity uuid="3cf6aafe-9b7a-4ad9-a581-b91aaf58d35d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1608" position-y="80" size-x="0" size-x2="122" size-y="0" size-y2="129"/>
@@ -1548,7 +1612,9 @@
     <entity uuid="9f26679f-99e4-48b9-b544-4d7377988044" bg-color="4294967295" hdr-color="4292006610" position-x="929" position-y="1072" size-x="0" size-x2="92" size-y="0" size-y2="73"/>
     <entity uuid="a4eeb330-c86b-4443-968b-c166863303b1" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="415" position-y="16" size-x="0" size-x2="104" size-y="0" size-y2="115"/>
     <entity uuid="a6d2adc6-7ce1-4c57-b4da-5b5f17d963f7" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="657" position-y="-436" size-x="0" size-x2="144" size-y="0" size-y2="45"/>
+    <entity uuid="aa41e95c-958a-4689-83cb-600d2adfc217" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="162" position-y="187" size-x="0" size-x2="118" size-y="0" size-y2="101"/>
     <entity uuid="aa930c08-4f0b-4947-b15b-840caa7455cb" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="810" position-y="292" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
+    <entity uuid="ae31d2b7-6ddf-461b-b5f8-6dcb0c43b678" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="389" position-y="207" size-x="0" size-x2="139" size-y="0" size-y2="60"/>
     <entity uuid="b8c028d1-c43e-44ef-b86e-7849c119d00f" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="459" position-y="1038" size-x="0" size-x2="116" size-y="0" size-y2="129"/>
     <entity uuid="bad4f785-8f04-4d84-8cc9-36f638715559" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1052" position-y="128" size-x="0" size-x2="155" size-y="0" size-y2="339"/>
     <entity uuid="c10dc8b2-b201-42e8-83cf-cb3813a435d8" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="411" position-y="-492" size-x="0" size-x2="155" size-y="0" size-y2="129"/>
@@ -1565,10 +1631,11 @@
     <entity uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1519" position-y="-122" size-x="0" size-x2="171" size-y="0" size-y2="129"/>
     <entity uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="727" position-y="926" size-x="0" size-x2="164" size-y="0" size-y2="227"/>
     <entity uuid="fe102ac1-eef6-41b0-ae2b-87fc4fc10ba1" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1320" position-y="-508" size-x="0" size-x2="141" size-y="0" size-y2="115"/>
+    <many-to-many-association uuid="0f04bf1e-28ce-4bff-979e-ce0fc931bee9" color="#969696"/>
     <many-to-many-association uuid="3da5bfe5-819b-4e33-9cb1-028912dddc2a" color="4288059030"/>
     <many-to-many-association uuid="3e003c57-9922-4820-a7b3-897360e1d984" color="#969696"/>
     <many-to-many-association-entity uuid="3ddb207a-b135-469a-8c60-8bdd1856f642" split="1"/>
-    <module uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f" bg-color="4294244851" position-x="-19" position-y="161" size-x="0" size-x2="2019" size-y="592" size-y2="1199"/>
-    <project uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543" size-x="69" size-x2="2050" size-y="481" size-y2="1410"/>
+    <module uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f" bg-color="4294244851" position-x="-19" position-y="161" size-x="0" size-x2="2209" size-y="592" size-y2="1199"/>
+    <project uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543" size-x="69" size-x2="2171" size-y="481" size-y2="1410"/>
   </visual-data>
 </skipper>

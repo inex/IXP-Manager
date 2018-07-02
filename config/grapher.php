@@ -6,9 +6,10 @@ return [
     | Providers - support providers.
     */
     'providers' => [
-        'dummy' => IXP\Services\Grapher\Backend\Dummy::class,
-        'mrtg'  => IXP\Services\Grapher\Backend\Mrtg::class,
-        'sflow' => IXP\Services\Grapher\Backend\Sflow::class,
+        'dummy'         => IXP\Services\Grapher\Backend\Dummy::class,
+        'mrtg'          => IXP\Services\Grapher\Backend\Mrtg::class,
+        'sflow'         => IXP\Services\Grapher\Backend\Sflow::class,
+        'smokeping'     => IXP\Services\Grapher\Backend\Smokeping::class,
     ],
 
     /*
@@ -68,8 +69,26 @@ return [
             'show_graphs_on_index_page' => env( 'GRAPHER_BACKEND_SFLOW_SHOW_ON_INDEX', false ),
 
             // where to find the MRTG rrd files
-            'root'  => env( 'GRAPHER_BACKEND_SFLOW_ROOT', 'http://sflow-server.example.com/grapher-sflow' ),
-        ]
+            'root'  => env( 'GRAPHER_BACKEND_SFLOW_ROOT', 'http://www.example.com/' ),
+        ],
+
+        'smokeping' => [
+            // show sflow / p2p links on the frontend
+            'enabled' => env( 'GRAPHER_BACKEND_SMOKEPING_ENABLED', false ),
+
+            // where to find the smokeping files
+            'url'  => env( 'GRAPHER_BACKEND_SMOKEPING_URL', 'http://www.example.com/' ),
+
+            // per VLAN overrides:
+            'overrides' => call_user_func( function() {
+                if( file_exists( config_path( 'grapher_smokeping_overrides.php' ) ) ) {
+                    return include( config_path( 'grapher_smokeping_overrides.php' ) );
+                } else {
+                    return [];
+                }
+            }),
+
+        ],
 
     ],
 
@@ -118,6 +137,15 @@ return [
         'infrastructure' => env( 'GRAPHER_ACCESS_INFRASTRUCTURE', Entities\User::AUTH_PUBLIC ),
         'switch'         => env( 'GRAPHER_ACCESS_SWITCH',         Entities\User::AUTH_PUBLIC ),
         'trunk'          => env( 'GRAPHER_ACCESS_TRUNK',          Entities\User::AUTH_PUBLIC ),
+        'vlan'           => env( 'GRAPHER_ACCESS_VLAN',           Entities\User::AUTH_PUBLIC ),
+
+        // The follows DO NOT DEFAULT TO PUBLIC but rather customer's are only allowed access
+        // their own graphs by default.
+        //
+        // See: https://docs.ixpmanager.org/grapher/api/#access-to-member-graphs
+        'customer'          => env( 'GRAPHER_ACCESS_CUSTOMER', 'own_graphs_only' ),
+        'p2p'               => env( 'GRAPHER_ACCESS_P2P',      'own_graphs_only' ),
+        'latency'           => env( 'GRAPHER_ACCESS_LATENCY',  'own_graphs_only' ),
     ],
 
 
@@ -149,24 +177,6 @@ return [
             // a standard deviation so this needs to be usefully large:
             'delete_old_days' => env( 'GRAPHER_CLI_TRAFFICDAILY_DELETE_OLD_DAYS', 140 ),
         ],
-    ],
-
-
-    /*
-     | Smokeping - mostly temporary configuration until migrated in full / proper to Grapher
-     |
-     | See: http://docs.ixpmanager.org/features/smokeping/
-     */
-    'smokeping' => [
-        'url' => env( 'GRAPHER_SMOKEPING_URL', false ),
-
-        'overrides' => call_user_func( function() {
-            if( file_exists( config_path( 'grapher_smokeping_overrides.php' ) ) ) {
-                return include( config_path( 'grapher_smokeping_overrides.php' ) );
-            } else {
-                return [];
-            }
-        }),
     ],
 
 ];
