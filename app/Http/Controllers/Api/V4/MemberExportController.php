@@ -24,7 +24,7 @@ namespace IXP\Http\Controllers\Api\V4;
  */
 
 use Auth;
-use Illuminate\Http\Response;
+use Illuminate\Http\{Request,Response};
 
 use IXP\Utils\Export\JsonSchema as JsonSchemaExporter;
 
@@ -35,17 +35,20 @@ class MemberExportController extends Controller {
     /**
      * API call to generate DNS ARPA records in a given format
      *
+     * @param Request $r
      * @param string $version Version fo schema to export
      * @return Response
      */
-    public function ixf( string $version = JsonSchemaExporter::EUROIX_JSON_LATEST ) {
+    public function ixf( Request $r, string $version = JsonSchemaExporter::EUROIX_JSON_LATEST ) {
 
         if( !Auth::check() && !config( 'ixp_api.json_export_schema.public', false ) ) {
             abort(401, 'Public access not permitted' );
         }
 
+        $withTags = $r->query('withtags', null) === "1";
+
         $exporter = new JsonSchemaExporter;
-        return response()->json( $exporter->get( $version, true, Auth::check() ), 200, [], JSON_PRETTY_PRINT )
+        return response()->json( $exporter->get( $version, true, Auth::check(), $withTags ), 200, [], JSON_PRETTY_PRINT )
             ->header( "Access-Control-Allow-Origin", "*" );
     }
 

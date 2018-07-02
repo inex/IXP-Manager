@@ -140,6 +140,8 @@
       <path value="$PROJECT_DIR$/vendor/webpatser/laravel-countries" />
       <path value="$PROJECT_DIR$/vendor/maxhoffmann/parsedown-laravel" />
       <path value="$PROJECT_DIR$/vendor/symfony/polyfill-ctype" />
+      <path value="$PROJECT_DIR$/vendor/laravel/dusk" />
+      <path value="$PROJECT_DIR$/vendor/facebook/webdriver" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7" />

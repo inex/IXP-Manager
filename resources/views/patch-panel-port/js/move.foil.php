@@ -43,9 +43,9 @@
             type: 'POST'
         })
             .done( function( data ) {
-                let options = "<option value=\"\">Choose a switch port</option>\n";
+                let options = `<option value="">Choose a switch port</option>`;
                 $.each( data.listPorts, function( key, value ){
-                    options += "<option value=\"" + key + "\">" + value + "</option>\n";
+                    options += `<option value="${key}">${value}</option>`;
                 });
                 dd_master.html( options );
                 <?php if( $t->ppp->hasSlavePort() ): ?>

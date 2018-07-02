@@ -155,7 +155,7 @@
                         'Email me on any change to any customer note'               => [ 'name' => 'notify', 'id' => 'id="notify-all"', 'value' => 'all'     ],
                     ])
                     ->name( 'notify' )
-                    ->label( '&nbsp;' )
+                    ->label( '' )
                     ->setValue( "all" );
                 ?>
 
