@@ -321,7 +321,7 @@
                     <p>
                         No VLAN interfaces defined.
                         <?php if( Auth::getUser()->isSuperUser() ): ?>
-                            <a href="<?=  route( "interfaces/vlan/edit/from-virtual-interface", [ "id" => $t->vi->getId() ] ) ?>">Add one...</a>
+                            <a href="<?=  route( "interfaces/vlan/edit/from-virtual-interface", [ "id" => 0 , "viid" => $t->vi->getId() ] ) ?>">Add one...</a>
                         <?php endif; ?>
                     </p>
                 <?php endif; ?>
