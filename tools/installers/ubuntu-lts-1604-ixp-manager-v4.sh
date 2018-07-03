@@ -388,18 +388,11 @@ echo '[done]'
 echo -n "Installing / updating composer - PHP's package manager..."
 log_break && echo -n "Installing composer - PHP's package manager... " &>> /tmp/ixp-manager-install.log
 cd $IXPROOT
-EXPECTED_SIGNATURE=$(wget https://composer.github.io/installer.sig -O - -q)
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-ACTUAL_SIGNATURE=$(php -r "echo hash_file('SHA384', 'composer-setup.php');")
 
-if [ "$EXPECTED_SIGNATURE" = "$ACTUAL_SIGNATURE" ]; then
-    sudo -u www-data bash -c "HOME=$IXPROOT && cd $IXPROOT && php composer-setup.php --quiet"
-    rm $IXPROOT/composer-setup.php
-else
-    echo -e "\n\nERROR: Invalid installer signature for composer installation"
-    rm $IXPROOT/composer-setup.php
-    exit 1
-fi
+curl -so $IXPROOT/composer.phar https://getcomposer.org/download/1.6.5/composer.phar && \
+    chmod a+x $IXPROOT/composer.phar && \
+    $IXPROOT/composer.phar selfupdate
+
 echo '[done]'
 echo '[done]' &>> /tmp/ixp-manager-install.log
 
@@ -530,7 +523,7 @@ echo '[done]'
 echo -n "Running composer to install PHP dependencies (please be patient)... "
 cd $IXPROOT
 log_break
-sudo -u www-data bash -c "HOME=$IXPROOT && cd $IXPROOT && ./composer.phar --no-ansi --no-interaction install &>> /tmp/ixp-manager-install.log"
+sudo -u www-data bash -c "HOME=$IXPROOT && cd $IXPROOT && ./composer.phar --no-ansi --no-interaction --no-dev --prefer-dist install &>> /tmp/ixp-manager-install.log"
 echo '[done]'
 
 ##################################################################

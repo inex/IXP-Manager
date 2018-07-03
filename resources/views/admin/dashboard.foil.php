@@ -280,7 +280,7 @@
                                 <b><?= $total ?></b>
                             </td>
                             <td align="right">
-                                <b><?= round( (100.0 * $rsclients ) / $total ) ?>%</b>
+                                <b><?= $total ? round( (100.0 * $rsclients ) / $total ) : 0 ?>%</b>
                             </td>
                         </tr>
                     </tfoot>
@@ -352,7 +352,7 @@
                             <b><?= $total ?></b>
                         </td>
                         <td align="right">
-                            <b><?= round( (100.0 * $ipv6 ) / $total ) ?>%</b>
+                            <b><?= $total ? round( (100.0 * $ipv6 ) / $total ) : 0 ?>%</b>
                         </td>
                     </tr>
                     </tfoot>
