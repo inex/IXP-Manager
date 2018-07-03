@@ -35,7 +35,9 @@ set -e
 IXPROOT=/srv/ixpmanager
 DBNAME=ixpmanager
 DBUSER=ixpmanager
-IXPMANAGER_VERSION="v4.8.0"
+
+# the version / branch to use:
+IXPMANAGER_VERSION="v4.8"
 
 touch /tmp/ixp-manager-install.log
 chmod a+w /tmp/ixp-manager-install.log
