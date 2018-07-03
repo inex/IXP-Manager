@@ -649,8 +649,11 @@ echo '[done]'
 
 chown -R root: ${IXPROOT}
 chown -R www-data: ${IXPROOT}/storage ${IXPROOT}/var ${IXPROOT}/bootstrap/cache ${IXPROOT}/database/Proxies \
-    ${IXPROOT}/vendor ${IXPROOT}/bower.json ${IXPROOT}/public/bower_components    &>> /tmp/ixp-manager-install.log
+    ${IXPROOT}/vendor ${IXPROOT}/bower.json ${IXPROOT}/public/bower_components ${IXPROOT}/public/logos   &>> /tmp/ixp-manager-install.log
 chmod -R ug+rwX,o+rX ${IXPROOT} &>> /tmp/ixp-manager-install.log
+
+# favicon
+cp ${IXPROOT}/public/favicon.ico.dist ${IXPROOT}/public/favicon.ico
 
 ##################################################################
 ### Completion Details
