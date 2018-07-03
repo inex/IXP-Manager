@@ -93,7 +93,7 @@
      * set data to the switch dropdown related to the customer selected
      */
     dd_customer.change( function(){
-        dd_switch.html( "<option value=\"\">Loading please wait</option>\n" ).trigger('change.select2');
+        dd_switch.html( `<option value=''>Loading please wait</option>` ).trigger('change.select2');
         dd_switch_port.html("").trigger('change.select2');
 
         let customerId = dd_customer.val();
@@ -107,9 +107,9 @@
         })
         .done( function( data ) {
             if( data.switchesFound ){
-                let options = "<option value=\"\">Choose a switch</option>\n";
+                let options = `<option value=''>Choose a switch</option>`;
                 $.each( data.switches, function( key, value ){
-                    options += "<option value=\"" + key + "\">" + value + "</option>\n";
+                    options += `<option value='${key}'>${value}</option>`;
                 });
                 dd_switch.html( options );
             }
@@ -131,11 +131,11 @@
      */
     $( ".reset-btn" ).click( function(){
         let $switch;
-        let options = "<option value=''> Choose a Switch</option>\n";
+        let options = `<option value=''> Choose a Switch</option>`;
 
         <?php foreach ( $t->switches as $id => $switch ): ?>
-            $switch = '<?= $switch ?>';
-            options += "<option value=\"" + <?= $id ?> + "\">" + $switch  + "</option>\n";
+            $switch = `<?= $switch ?>`;
+            options += `<option value='<?= $id ?>'>${$switch}</option>`;
         <?php endforeach; ?>
 
         dd_switch.html( options ).trigger('change.select2');
@@ -164,7 +164,7 @@
         let spOption            = false;
         let spOptionset         = false;
 
-        dd_switch_port.html( "<option value=\"\">Loading please wait</option>\n" ).trigger('change.select2');
+        dd_switch_port.html( `<option value=''>Loading please wait</option>` ).trigger('change.select2');
 
         <?php if ($t->prewired): ?>
             url = "<?= url( '/api/v4/switch' )?>/" + switchId + "/switch-port-prewired";
@@ -277,12 +277,12 @@
     function setCustomer(){
         if( dd_switch.val() != ''){
             let switchPortId = dd_switch_port.val();
-            dd_customer.html( "<option value=\"\">Loading please wait</option>\n" );
+            dd_customer.html( `<option value=''>Loading please wait</option>` );
             dd_customer.trigger('change.select2');
             $.ajax( "<?= url( '/api/v4/switch-port' ) ?>/" + switchPortId + "/customer" )
             .done( function( data ) {
                 if( data.customerFound ) {
-                    dd_customer.html( '<option value="' + data.id + '">' + data.name + "</option>\n" );
+                    dd_customer.html( `<option value='${data.id}'>${data.name}</option>` );
                 } else {
                     dd_customer.html("");
                 }
@@ -305,8 +305,8 @@
         let options = "<option value=''> Choose a customer</option>\n";
 
         <?php foreach ( $t->customers as $id => $customer ): ?>
-            customer = '<?= $customer ?>';
-            options += "<option value=\"" + <?= $id ?> + "\">" + customer  + "</option>\n";
+            customer = `<?= $customer ?>`;
+            options += `<option value='<?= $id ?>'>${customer}</option>`;
         <?php endforeach; ?>
         dd_customer.html( options ).trigger('change.select2');
     }

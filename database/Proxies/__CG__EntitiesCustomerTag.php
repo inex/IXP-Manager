@@ -220,7 +220,7 @@ class CustomerTag extends \Entities\CustomerTag implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
-    public function getDescription(): string
+    public function getDescription()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDescription', []);
@@ -231,7 +231,7 @@ class CustomerTag extends \Entities\CustomerTag implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
-    public function setDescription(string $description): \Entities\CustomerTag
+    public function setDescription($description): \Entities\CustomerTag
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDescription', [$description]);
