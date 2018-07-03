@@ -1,7 +1,7 @@
 <?php
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.5.40 on 2018-06-16 11:33:09.
+ * Generated for Laravel 5.5.40 on 2018-07-03 10:06:09.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -2838,7 +2838,29 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function flush()
         {
-            return \Illuminate\Cache\ArrayStore::flush();
+            return \Illuminate\Cache\FileStore::flush();
+        }
+        
+        /**
+         * Get the Filesystem instance.
+         *
+         * @return \Illuminate\Filesystem\Filesystem 
+         * @static 
+         */ 
+        public static function getFilesystem()
+        {
+            return \Illuminate\Cache\FileStore::getFilesystem();
+        }
+        
+        /**
+         * Get the working directory of the cache.
+         *
+         * @return string 
+         * @static 
+         */ 
+        public static function getDirectory()
+        {
+            return \Illuminate\Cache\FileStore::getDirectory();
         }
         
         /**
@@ -2849,7 +2871,7 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function getPrefix()
         {
-            return \Illuminate\Cache\ArrayStore::getPrefix();
+            return \Illuminate\Cache\FileStore::getPrefix();
         }
          
     }
