@@ -89,15 +89,14 @@ class SwitchConfigurationGenerator
         foreach( $this->getSwitch()->getPorts() as $sp ) {
 
             /** @var \Entities\SwitchPort $sp */
-/*
-            if( !$sp->isTypePeering() ) {
-            if( !$sp->isTypeUnset() && !$sp->isTypePeering() && !$sp->isTypeCore() ) {
-                continue;
-            }
-*/
 
             // is the port in use?
             if( !($pi = $sp->getPhysicalInterface()) ) {
+                continue;
+            }
+
+            // don't emit ports which aren't ready for production
+            if( $pi->statusIsAwaitingXConnect() ) {
                 continue;
             }
 
@@ -136,6 +135,11 @@ class SwitchConfigurationGenerator
                 $v[ 'macaddresses' ][] = $mac->getMacFormattedWithColons();
             }
             $p[ 'vlans' ][] = $v;
+        }
+
+        // return nothing if there are no vlans defined on the port
+        if( empty($p['vlans']) ) {
+            return [];
         }
 
         // we now have the base port config. If this is not a LAG, just return it:
