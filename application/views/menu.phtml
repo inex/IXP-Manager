@@ -95,19 +95,7 @@
         {/if}
 
         <li>
-            <a href="{genUrl controller='ipv6-address' action='list'}">IPv4/6 Addresses</a>
-
-            {if $controller eq 'ipv4-address' or $controller eq 'ipv6-address'}
-                <ul class="nav nav-list">
-                    <li {if $controller eq 'ipv4-address' and $action neq 'add-addresses'}class="active"{/if}>
-                        <a href="{genUrl controller='ipv4-address' action='list'}">IPv4 Addresses</a>
-                    </li>
-                    <li {if $controller eq 'ipv6-address'}class="active"{/if}>
-                        <a href="{genUrl controller='ipv6-address' action='list'}">IPv6 Addresses</a>
-                    </li>
-                </ul>
-            {/if}
-
+            <a href="{route( 'ip-address@list', [ "protocol" => "6" ] )}">IPv4/6 Addresses</a>
         </li>
 
         <li>
