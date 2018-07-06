@@ -170,8 +170,6 @@ return [
         IXP\Providers\EventServiceProvider::class,
         IXP\Providers\RouteServiceProvider::class,
 
-        Barryvdh\Debugbar\ServiceProvider::class,
-
         IXP\Providers\HelpdeskServiceProvider::class,
         IXP\Providers\ZendFrameworkServiceProvider::class,
         IXP\Providers\GrapherServiceProvider::class,
@@ -253,8 +251,6 @@ return [
         'PDF'       => Barryvdh\DomPDF\Facade::class,
 
         'Countries' => Webpatser\Countries\CountriesFacade::class,
-
-        'Debugbar' => Barryvdh\Debugbar\Facade::class,
     ],
 
 ];

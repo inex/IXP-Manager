@@ -101,9 +101,6 @@
                         <?php endif; ?>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn btn-default" href="<?= route( 'virtual-interface@view' , ['id' => $vi->getId() ] )?>" title="Preview">
-                                    <i class="glyphicon glyphicon-eye-open"></i>
-                                </a>
                                 <a class="btn btn btn-default" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vi->getId() ]) ?>" title="Edit">
                                     <i class="glyphicon glyphicon-pencil"></i>
                                 </a>
