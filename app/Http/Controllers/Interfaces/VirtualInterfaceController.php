@@ -293,8 +293,6 @@ class VirtualInterfaceController extends Common
         $sp->setType( SwitchPortEntity::TYPE_PEERING );
         $pi->setSwitchPort( $sp );
 
-        $pi->setMonitorindex( D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $c ) );
-
         $vli = new VlanInterfaceEntity();
         D2EM::persist($vli);
 

@@ -1256,7 +1256,6 @@ CREATE TABLE `physicalinterface` (
   `status` int(11) DEFAULT NULL,
   `speed` int(11) DEFAULT NULL,
   `duplex` varchar(16) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `monitorindex` int(11) DEFAULT NULL,
   `notes` longtext COLLATE utf8_unicode_ci,
   `autoneg` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
@@ -1275,7 +1274,7 @@ CREATE TABLE `physicalinterface` (
 
 LOCK TABLES `physicalinterface` WRITE;
 /*!40000 ALTER TABLE `physicalinterface` DISABLE KEYS */;
-INSERT INTO `physicalinterface` VALUES (1,3,NULL,1,1,1000,'full',1,'',1),(2,4,NULL,1,1,1000,'full',2,'',1),(3,25,NULL,2,1,1000,'full',3,NULL,1),(4,8,NULL,3,1,100,'full',1,NULL,1),(5,6,NULL,4,1,10,'full',1,NULL,1),(6,30,NULL,5,1,10,'full',2,NULL,1),(7,9,NULL,6,1,1000,'full',1,NULL,1),(8,32,NULL,7,1,10000,'full',2,NULL,1);
+INSERT INTO `physicalinterface` VALUES (1,3,NULL,1,1,1000,'full','',1),(2,4,NULL,1,1,1000,'full','',1),(3,25,NULL,2,1,1000,'full',NULL,1),(4,8,NULL,3,1,100,'full',NULL,1),(5,6,NULL,4,1,10,'full',NULL,1),(6,30,NULL,5,1,10,'full',NULL,1),(7,9,NULL,6,1,1000,'full',NULL,1),(8,32,NULL,7,1,10000,'full',NULL,1);
 /*!40000 ALTER TABLE `physicalinterface` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1397,7 +1396,6 @@ CREATE TABLE `switch` (
   `ipv4addr` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ipv6addr` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `snmppasswd` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `switchtype` int(11) DEFAULT NULL,
   `model` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `active` tinyint(1) DEFAULT '1',
   `os` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1428,7 +1426,7 @@ CREATE TABLE `switch` (
 
 LOCK TABLES `switch` WRITE;
 /*!40000 ALTER TABLE `switch` DISABLE KEYS */;
-INSERT INTO `switch` VALUES (1,1,1,12,'Switch 1','s1','10.0.0.1','','public',1,'FESX624',1,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL),(2,2,1,12,'Switch 2','s2','10.0.0.2','','public',1,'FESX624',1,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `switch` VALUES (1,1,1,12,'Switch 1','s1','10.0.0.1','','public','FESX624',1,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL),(2,2,1,12,'Switch 2','s2','10.0.0.2','','public','FESX624',1,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `switch` ENABLE KEYS */;
 UNLOCK TABLES;
 

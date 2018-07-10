@@ -123,16 +123,6 @@ $this->layout( 'layouts/ixpv4' )
                         <tr>
                             <td>
                                 <b>
-                                    Monitor Index:
-                                </b>
-                            </td>
-                            <td>
-                                <?= $pi->getMonitorindex() ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>
                                     Notes:
                                 </b>
                             </td>

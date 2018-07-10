@@ -584,7 +584,6 @@
       <field name="speed" type="integer" uuid="0503f30c-b27d-4026-bf41-ef05388078d8"/>
       <field name="duplex" type="string" size="16" uuid="ed6840cf-769f-40b8-bfb4-a68a30d480c4"/>
       <field name="autoneg" type="boolean" default="1" required="true" uuid="1a8aec97-e073-476c-93c0-3705adad336c"/>
-      <field name="monitorindex" type="integer" uuid="c515c52e-8f2d-4cc0-8862-584c0bb8d636"/>
       <field name="notes" type="text" uuid="eed9d024-c35e-4c89-802a-7fcbf392067f"/>
       <field name="fanout_physical_interface_id" type="integer" unique="true" uuid="d8b65def-02ef-4aef-a766-dfa92e3b9284"/>
       <orm-attributes>
