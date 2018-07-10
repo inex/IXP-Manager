@@ -243,7 +243,7 @@ class PatchPanelPortController extends Controller
         return view( 'patch-panel-port/edit' )->with([
             'states'                => $states,
             'customers'             => D2EM::getRepository( CustomerEntity::class )->getNames( false ),
-            'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNamesByLocation( true, SwitcherEntity::TYPE_SWITCH,$ppp->getPatchPanel()->getCabinet()->getLocation()->getId() ),
+            'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNamesByLocation( true, $ppp->getPatchPanel()->getCabinet()->getLocation()->getId() ),
             'switchPorts'           => $switchPorts ?? [],
             'chargeables'           => PatchPanelPortEntity::$CHARGEABLES,
             'ownedBy'               => PatchPanelPortEntity::$OWNED_BY,

@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<skipper version="3.2.11.1392" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
+<skipper version="3.2.12.1400" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
   <module name="\IXP-Manager" local-name="IXP-Manager" namespace="\Entities" local-namespace="Entities" export-format="Doctrine2Xml" export-path="xml" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
     <entity name="\Entities\IrrdbAsn" local-name="IrrdbAsn" namespace="\Entities" uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c">
       <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="033ed9da-4165-432b-8b57-e21110abe29e"/>
@@ -419,7 +419,6 @@
       <field name="ipv6addr" type="string" size="255" uuid="c53d4076-8573-498f-a4ad-26c6584b85dd"/>
       <field name="snmppasswd" type="string" size="255" uuid="4b73b930-a965-4e30-81e5-8c664891c88c"/>
       <field name="infrastructure" type="integer" uuid="06791ab2-f917-4be2-9602-831d305c694a"/>
-      <field name="switchtype" type="integer" uuid="d9e9f4ea-bd98-4ab1-adda-0e34a8699ce8"/>
       <field name="vendorid" type="integer" uuid="0c6b8117-2c7e-41f7-be3c-0c7c9cd5beb4"/>
       <field name="model" type="string" size="255" uuid="5796046e-993c-474e-a188-74a6f946d460"/>
       <field name="active" type="boolean" default="1" uuid="50f54b05-6a96-432b-99e1-6b9994b13d9a"/>

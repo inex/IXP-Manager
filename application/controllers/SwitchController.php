@@ -91,7 +91,6 @@ class SwitchController extends IXP_Controller_FrontEnd
                     [
                         'ipv6addr'       => 'IPv6 Address',
                         'snmppasswd'     => 'SNMP Community',
-                        'switchtype'     => 'Type',
                         'os'             => 'OS',
                         'osVersion'      => 'OS Version',
                         'serialNumber'   => 'Serial Number',
@@ -132,7 +131,7 @@ class SwitchController extends IXP_Controller_FrontEnd
         $qb = $this->getD2EM()->createQueryBuilder()
             ->select( 's.id AS id, s.name AS name,
                 s.ipv4addr AS ipv4addr, s.ipv6addr AS ipv6addr, s.snmppasswd AS snmppasswd,
-                i.name AS infrastructure, s.switchtype AS switchtype, s.model AS model,
+                i.name AS infrastructure, s.model AS model,
                 s.active AS active, s.notes AS notes, s.lastPolled AS lastPolled,
                 s.hostname AS hostname, s.os AS os, s.osDate AS osDate, s.osVersion AS osVersion,
                 s.serialNumber AS serialNumber, s.mauSupported AS mauSupported,
@@ -148,13 +147,6 @@ class SwitchController extends IXP_Controller_FrontEnd
             $qb->andWhere( 'i = :infra' )->setParameter( 'infra', $infra );
             $this->view->infra = $infra;
         }
-
-        $this->view->switchTypes = $switchTypes = \Entities\Switcher::$TYPES;
-        $this->view->stype = $stype = $this->getSessionNamespace()->switch_list_stype
-            = $this->getParam( 'stype', ( $this->getSessionNamespace()->switch_list_stype !== null
-                ? $this->getSessionNamespace()->switch_list_stype : \Entities\Switcher::TYPE_SWITCH ) );
-        if( $stype && isset( $switchTypes[$stype] ) )
-            $qb->andWhere( 's.switchtype = :stype' )->setParameter( 'stype', $stype );
 
         $this->view->activeOnly = $activeOnly = $this->getSessionNamespace()->switch_list_active_only
             = $this->getParam( 'activeOnly', ( $this->getSessionNamespace()->switch_list_active_only !== null
@@ -284,7 +276,6 @@ class SwitchController extends IXP_Controller_FrontEnd
                 $s->setIpv6addr( $this->_resolve( $s->getHostname(), DNS_AAAA ) );
                 $s->setSnmppasswd( $f->getValue( 'snmppasswd' ) );
                 $s->setInfrastructure( $this->getD2R( '\\Entities\\Infrastructure' )->find( $f->getValue( 'infrastructure' ) ) );
-                $s->setSwitchtype( $f->getValue( 'switchtype' ) );
                 $s->setModel( $snmp->getPlatform()->getModel() );
                 $s->setActive( true );
                 $s->setOs( $snmp->getPlatform()->getOs() );
@@ -299,7 +290,7 @@ class SwitchController extends IXP_Controller_FrontEnd
                 $this->getD2EM()->flush();
 
                 // clear the cache
-                $this->getD2R( '\\Entities\\Switcher' )->clearCache( true, $f->getValue( 'switchtype' ) );
+                $this->getD2R( '\\Entities\\Switcher' )->clearCache( true );
 
                 $this->addMessage(
                     "Switch polled and added successfully! Please configure the ports found below.", OSS_Message::SUCCESS
@@ -539,7 +530,7 @@ class SwitchController extends IXP_Controller_FrontEnd
         $this->view->states   = \Entities\PhysicalInterface::$STATES;
         $this->view->ixps     = $ixps     = $this->getD2R( '\\Entities\\IXP'      )->getNames( $this->getUser() );
         $this->view->vlans    = $vlans    = $this->getD2R( '\\Entities\\Vlan'     )->getNames( 1, $ixp );
-        $this->view->switches = $switches = $this->getD2R( '\\Entities\\Switcher' )->getNames( false, 0, $ixp );
+        $this->view->switches = $switches = $this->getD2R( '\\Entities\\Switcher' )->getNames( false );
 
         $this->view->switchid = $sid   = ( $this->getParam( 'sid', false ) && isset( $switches[ $this->getParam( 'sid' ) ] ) ) ? $this->getParam( 'sid' ) : null;
         $this->view->vlanid   = $vid   = ( $this->getParam( 'vid', false ) && isset( $vlans[    $this->getParam( 'vid' ) ] ) ) ? $this->getParam( 'vid' ) : null;
