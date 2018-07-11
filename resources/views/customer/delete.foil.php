@@ -140,6 +140,7 @@
                             <button id="notes-modal-btn-cancel"  type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
                             <button id="notes-modal-btn-confirm" type="submit" class="btn btn-primary"                     ><i class="fa fa-check"></i> Confirm</button>
                             <input type="hidden" name="id" value="<?= $c->getId() ?>">
+                            <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                         </div>
                     </form>
                 </div>
