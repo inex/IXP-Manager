@@ -116,7 +116,7 @@ class EmailOnChange
                     continue;
                 }
 
-                if( $user->getContact()->getEmail() == null ){
+                if( $user->getContact()->getEmail() == null || filter_var( $user->getContact()->getEmail() , FILTER_VALIDATE_EMAIL ) == false ) {
                     continue;
                 }
 
