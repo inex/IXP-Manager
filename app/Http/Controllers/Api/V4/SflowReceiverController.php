@@ -121,7 +121,7 @@ class SflowReceiverController extends Controller {
      *
      * @return Response
      */
-    public function getReceiverList( Request $request, string $type = null, string $format = null )
+    public function getReceiverList( Request $request, string $format = null )
     {
         $map = [];
 
@@ -130,15 +130,17 @@ class SflowReceiverController extends Controller {
             $m['dst_ip']             = $sr->getDstIp();
             $m['dst_port']           = $sr->getDstPort();
             $macs = [];
-            if( $type == 'learned' ) {
-                foreach( $sr->getVirtualInterface()->getMACAddresses() as $mac ) {
+            foreach( $sr->getVirtualInterface()->getMACAddresses() as $mac ) {
+                $macs[] = $mac->getMacFormattedWithColons();
+            }
+            $m['macaddresses']['learned'] = $macs;
+            $macs = [];
+            foreach( $sr->getVirtualInterface()->getVlanInterfaces() as $vli ) {
+                foreach( $vli->getLayer2Addresses() as $mac ) {
                     $macs[] = $mac->getMacFormattedWithColons();
                 }
-            } else {
-                // need Entities\\SflowReceiver\\getVlaninterfaces exposed here
             }
-
-            $m['macaddresses'] = $macs;
+            $m['macaddresses']['configured'] = $macs;
             $map[] = $m;
         }
 
