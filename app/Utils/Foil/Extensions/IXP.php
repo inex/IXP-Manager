@@ -306,9 +306,13 @@ class IXP implements ExtensionInterface {
      * @param  bool   $addAs    Do we need to add AS?
      * @return string
      */
-    public function asNumber( int $asn, $addAs = true )
+    public function asNumber( $asn, $addAs = true )
     {
-        return '<a href="#ixpm-asnumber-' . $asn . '" onClick="ixpAsnumber( ' . $asn . ' ); return false;">' . ( $addAs ? 'AS' : '' ) . $asn . '</a>';
+        if( $asn ) {
+            return '<a href="#ixpm-asnumber-' . $asn . '" onClick="ixpAsnumber( ' . $asn . ' ); return false;">' . ( $addAs ? 'AS' : '' ) . $asn . '</a>';
+        }
+
+        return ( $addAs ? 'AS' : '' ) . $asn;
     }
 
 }
