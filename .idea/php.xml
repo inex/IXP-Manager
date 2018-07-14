@@ -142,7 +142,6 @@
       <path value="$PROJECT_DIR$/vendor/barryvdh/reflection-docblock" />
       <path value="$PROJECT_DIR$/vendor/phpspec/phpspec" />
       <path value="$PROJECT_DIR$/vendor/phpspec/php-diff" />
-      <path value="$PROJECT_DIR$/vendor/beberlei/orig" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7" />
