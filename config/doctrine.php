@@ -132,6 +132,15 @@ return [
     'custom_string_functions'   => [
         'ANY_VALUE'      => DoctrineExtensions\Query\Mysql\AnyValue::class,
         'GROUP_CONCAT'   => DoctrineExtensions\Query\Mysql\GroupConcat::class,
+        'HEX'            => DoctrineExtensions\Query\Mysql\Hex::class,
+        'INET_ATON'      => DoctrineExtensions\Query\Mysql\InetAton::class,
+        'INET_NTOA'      => DoctrineExtensions\Query\Mysql\InetNtoa::class,
+        'INET6_ATON'     => DoctrineExtensions\Query\Mysql\Inet6Aton::class,
+        'INET6_NTOA'     => DoctrineExtensions\Query\Mysql\Inet6Ntoa::class,
+        'IS_IPV4'        => DoctrineExtensions\Query\Mysql\IsIpv4::class,
+        'IS_IPV4_COMPAT' => DoctrineExtensions\Query\Mysql\IsIpv4Compat::class,
+        'IS_IPV4_MAPPED' => DoctrineExtensions\Query\Mysql\IsIpv4Mapped::class,
+        'IS_IPV6'        => DoctrineExtensions\Query\Mysql\IsIpv6::class,
     ],
 
     /*
