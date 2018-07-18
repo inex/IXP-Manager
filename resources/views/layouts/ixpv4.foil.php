@@ -17,14 +17,7 @@
     <meta name="author" content="">
     <meta name="csrf-token" content="<?=  csrf_token() ?>">
 
-    <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/bootstrap/dist/css/bootstrap.min.css') ?>" />
-    <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/datatables.net-bs/css/dataTables.bootstrap.min.css') ?>" />
-    <link rel="stylesheet" type="text/css" href="<?= asset('bower_components/select2/dist/css/select2.min.css') ?>" />
-    <link rel="stylesheet" type="text/css" href="<?= asset('css/ixp-manager.css') ?>" />
-    <link rel="stylesheet" type="text/css" href="<?= asset('css/draganddrop.css') ?>" />
-    <link rel="stylesheet" type="text/css" href="<?= asset('css/font-awesome.min.css') ?>" />
-
-
+    <link rel="stylesheet" type="text/css" href="<?= asset('css/ixp-pack.css') ?>" />
     <?php $this->section('headers') ?>
     <?php $this->stop() ?>
 
@@ -132,16 +125,8 @@
 
     <script> const RIPE_ASN_URL = "<?= url( "api/v4/aut-num" ) ?>"; </script>
     <script> const MARKDOWN_URL = "<?= route( "utils@markdown" ) ?>"; </script>
-    <script type="text/javascript" src="<?= asset('/bower_components/jquery/dist/jquery.min.js') ?>"></script>
-    <script type="text/javascript" src="<?= asset('/bower_components/jquery-ui/jquery-ui.min.js') ?>"></script>
-    <script type="text/javascript" src="<?= asset('/bower_components/bootstrap/dist/js/bootstrap.min.js') ?>"></script>
-    <script type="text/javascript" src="<?= asset('/bower_components/datatables.net/js/jquery.dataTables.min.js') ?>"></script>
-    <script type="text/javascript" src="<?= asset('/bower_components/datatables.net-bs/js/dataTables.bootstrap.min.js') ?>"></script>
-    <script type="text/javascript" src="<?= asset('/bower_components/vue/dist/vue.min.js') ?>"></script>
-    <script type="text/javascript" src="<?= asset('/bower_components/select2/dist/js/select2.min.js') ?>"></script>
-    <script type="text/javascript" src="<?= asset('/js/900-oss-framework.js') ?>"></script>
-    <script type="text/javascript" src="<?= asset('/js/ixp-manager.js') ?>"></script>
-    <script type="text/javascript" src="<?= asset('/bower_components/bootbox.js/bootbox.js') ?>"></script>
+    <script type="text/javascript" src="<?= asset('js/ixp-pack.js') ?>"></script>
+    <script type="text/javascript" src="<?= asset('js/ixp-manager.js') ?>"></script>
 
     <script>
 
