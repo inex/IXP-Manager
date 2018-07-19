@@ -247,7 +247,7 @@ class CustomerController extends Controller
         $c->setMD5Support(           $r->input( 'md5support'           ) );
         $c->setAbbreviatedName(      $r->input( 'abbreviatedName'      ) );
         $c->setDatejoin(  $r->input( 'datejoin'                  )  ? new \DateTime( $r->input( 'datejoin'    ) ) : null );
-        $c->setDateleave($r->input( 'dateleave'                 )  ? new \DateTime( $r->input( 'dateleave'   ) ) : null );
+        $c->setDateleave($r->input( 'dateleft'                 )  ? new \DateTime( $r->input( 'dateleft'   ) ) : null );
 
         $c->setAutsys(               $r->input( 'autsys'               ) );
         $c->setMaxprefixes(          $r->input( 'maxprefixes'          ) );
