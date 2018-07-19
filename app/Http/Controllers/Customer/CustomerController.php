@@ -344,7 +344,7 @@ class CustomerController extends Controller
                 'billingAddress3'           => array_key_exists( 'billingAddress3',         $old    ) ? $old['billingAddress3']         : $cbd->getBillingAddress3(),
                 'billingTownCity'           => array_key_exists( 'billingTownCity',         $old    ) ? $old['billingTownCity']         : $cbd->getBillingTownCity(),
                 'billingPostcode'           => array_key_exists( 'billingPostcode',         $old    ) ? $old['billingPostcode']         : $cbd->getBillingPostcode(),
-                'billingCountry'            => array_key_exists( 'billingCountry',          $old    ) ? $old['billingCountry']          : ( $cbd->getBillingCountry() == "" ? '0' : $cbd->getBillingCountry() ),
+                'billingCountry'            => array_key_exists( 'billingCountry',          $old    ) ? $old['billingCountry']          : in_array( $cbd->getBillingCountry(),  array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ) ? $cbd->getBillingCountry() : null,
                 'billingEmail'              => array_key_exists( 'billingEmail',            $old    ) ? $old['billingEmail']            : $cbd->getBillingEmail(),
                 'billingTelephone'          => array_key_exists( 'billingTelephone',        $old    ) ? $old['billingTelephone']        : $cbd->getBillingTelephone(),
                 'purchaseOrderRequired'     => array_key_exists( 'purchaseOrderRequired',   $old    ) ? $old['purchaseOrderRequired']   : ( $cbd->getPurchaseOrderRequired() ? 1 : 0 ),
@@ -364,7 +364,7 @@ class CustomerController extends Controller
             'address3'                  => array_key_exists( 'address3',                        $old    ) ? $old['address3']        : $crd->getAddress3(),
             'townCity'                  => array_key_exists( 'townCity',                        $old    ) ? $old['townCity']        : $crd->getTownCity(),
             'postcode'                  => array_key_exists( 'postcode',                        $old    ) ? $old['postcode']        : $crd->getPostcode(),
-            'country'                   => array_key_exists( 'country',                         $old    ) ? $old['country']         : ( $crd->getCountry() == "" ? "0" : $crd->getCountry() ),
+            'country'                   => array_key_exists( 'country',                         $old    ) ? $old['country']         : in_array( $crd->getCountry(),  array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ) ? $crd->getCountry() : null,
         ];
 
 
@@ -373,7 +373,7 @@ class CustomerController extends Controller
         return view( 'customer/billing-registration' )->with([
             'c'                             => $c,
             'juridictions'                  => D2EM::getRepository( CompanyRegisteredDetailEntity::class )->getJuridictionsAsArray(),
-            'countries'                     => array_merge( Countries::getList('name' ), [ 999 => [ 'name' => '&nbsp;', 'iso_3166_2' => 0 ] ] )
+            'countries'                     => Countries::getList('name' )
         ]);
     }
 
@@ -407,7 +407,7 @@ class CustomerController extends Controller
         $crd->setAddress3(              $request->input( 'address3'             ) );
         $crd->setTownCity(              $request->input( 'townCity'             ) );
         $crd->setPostcode(              $request->input( 'postcode'             ) );
-        $crd->setCountry(       $request->input( 'country'              ) == 0 ? null : $request->input( 'country'              ) );
+        $crd->setCountry(               $request->input( 'country'              ) );
 
         $cbd->setBillingContactName(     $request->input( 'billingContactName'   ) );
         $cbd->setBillingFrequency(       $request->input( 'billingFrequency'     ) );
@@ -416,7 +416,7 @@ class CustomerController extends Controller
         $cbd->setBillingAddress3(        $request->input( 'billingAddress3'      ) );
         $cbd->setBillingTownCity(        $request->input( 'billingTownCity'      ) );
         $cbd->setBillingPostcode(        $request->input( 'billingPostcode'      ) );
-        $cbd->setBillingCountry(         $request->input( 'billingCountry'       ) == 0 ? null : $request->input( 'billingCountry'       ) );
+        $cbd->setBillingCountry(         $request->input( 'billingCountry'       ) );
         $cbd->setBillingEmail(           $request->input( 'billingEmail'         ) );
         $cbd->setBillingTelephone(       $request->input( 'billingTelephone'     ) );
         $cbd->setPurchaseOrderRequired(  $request->input( 'purchaseOrderRequired') ? 1 : 0 );
