@@ -2659,12 +2659,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/opensolutions/OSS_SNMP.git",
-                "reference": "e7070bf1bd1f24a7d833300fbb9dc835a81dfc6d"
+                "reference": "f9ee2aa8ec411237818837eeb1bc8723ed108d32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opensolutions/OSS_SNMP/zipball/e7070bf1bd1f24a7d833300fbb9dc835a81dfc6d",
-                "reference": "e7070bf1bd1f24a7d833300fbb9dc835a81dfc6d",
+                "url": "https://api.github.com/repos/opensolutions/OSS_SNMP/zipball/f9ee2aa8ec411237818837eeb1bc8723ed108d32",
+                "reference": "f9ee2aa8ec411237818837eeb1bc8723ed108d32",
                 "shasum": ""
             },
             "require": {
@@ -2692,7 +2692,7 @@
                 "oss_snmp",
                 "snmp"
             ],
-            "time": "2018-07-21T11:23:04+00:00"
+            "time": "2018-07-21T11:47:46+00:00"
         },
         {
             "name": "paragonie/random_compat",
