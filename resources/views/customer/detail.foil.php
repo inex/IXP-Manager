@@ -301,7 +301,7 @@
                 <?php foreach( $vi->getVlanInterfaces() as $vli ): ?>
 
                     <?php if( $vli->getVlan()->getPrivate() ): ?>
-                        continue;
+                        <?php continue; ?>
                     <?php endif; ?>
 
                     <div class="col-md-12" style="margin-bottom: 20px; text-indent: 20px ">
