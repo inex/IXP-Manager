@@ -589,9 +589,11 @@ class SwitchPort
                     $n = null;
                 }
 
-                if( $n !== null && $n != '.0.0' && $snmp == 'types' ) {
+                if( $snmp == 'types' ) {
                     if( isset( MauMib::$TYPES[ $n ] ) ) {
                         $n = MauMib::$TYPES[ $n ];
+                    } else if( $n === null || $n === '.0.0' ) {
+                        $n = '(empty)';
                     } else {
                         $n = '(unknown type - oid: ' . $n . ')';
                     }
