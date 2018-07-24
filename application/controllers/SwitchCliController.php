@@ -92,7 +92,6 @@ class SwitchCliController extends IXP_Controller_CliAction
                     $host = new \OSS_SNMP\SNMP( $sw->getHostname(), $sw->getSnmppasswd() );
                     $sw->snmpPoll( $host, $logger );
                     $swPolled = true;
-                    
                     $sw->snmpPollSwitchPorts( $host, $logger );
 
                     if( $this->getParam( 'noflush', false ) )

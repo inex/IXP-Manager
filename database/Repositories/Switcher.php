@@ -93,17 +93,13 @@ class Switcher extends EntityRepository
      * Return an array of all switch names where the array key is the switch id
      *
      * @param bool          $active If `true`, return only active switches
-     * @param \Entities\IXP $ixp    IXP to filter vlan names
-     *
      * @return array An array of all switch names with the switch id as the key.
      */
-    public function getNames( $active = false, $ixp = false )
+    public function getNames( $active = false )
     {
         $switches = [];
-        foreach( $this->getAndCache( $active ) as $a )
-        {
-            if( !$ixp || ( $ixp->getInfrastructures()->contains( $a->getInfrastructure() ) ) )
-                $switches[ $a->getId() ] = $a->getName();
+        foreach( $this->getAndCache( $active ) as $a ) {
+            $switches[ $a->getId() ] = $a->getName();
         }
 
         asort( $switches );
@@ -154,7 +150,8 @@ class Switcher extends EntityRepository
      *
      * @return array An array of all switch names with the switch id as the key.
      */
-    public function getNamesByLocation( $active = false, $idLocation = null ){
+    public function getNamesByLocation( $active = false, $idLocation = null )
+    {
         $switches = [];
         foreach( $this->getAndCache( $active ) as $a ) {
 

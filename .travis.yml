@@ -1,3 +1,9 @@
+sudo: required
+dist: trusty
+
+addons:
+   chrome: stable
+
 language: php
 
 php:
@@ -13,7 +19,11 @@ notifications:
     - barryo@inex.ie
 
 before_install:
+    - sudo apt-get update
+    - sudo apt-get install npm nodejs-legacy
+    - npm conf set strict-ssl false
     - "./data/travis-ci/setup_tests.sh"
 
 after_failure:
     - "./data/travis-ci/after_failure.sh"
+

@@ -366,19 +366,24 @@ class Vlan extends EntityRepository
      */
     public function getArpaDetails( $vlan, $proto, $useResultCache = true )
     {
-        if( !in_array( $proto, [ 4, 6 ] ) )
+        if( !in_array( $proto, [ 4, 6 ] ) ) {
             throw new \IXP_Exception( 'Invalid protocol specified' );
+        }
 
+        $qstr = sprintf( "SELECT vli.ipv{$proto}enabled AS enabled, addr.address AS address,
+                                vli.ipv{$proto}hostname AS hostname,
+                                %s( addr.address )%s AS aton
+                          FROM Entities\\VlanInterface vli
+                                JOIN vli.IPv{$proto}Address addr
+                                JOIN vli.Vlan v
+                            WHERE
+                                v = :vlan
+                                AND vli.ipv{$proto}hostname IS NOT NULL
+                                AND vli.ipv{$proto}hostname != ''",
+            $proto == 4 ? 'INET_ATON' : 'HEX(INET6_ATON', $proto == 4 ? '' : ')'
+        );
 
-        $qstr = "SELECT vli.ipv{$proto}enabled AS enabled, addr.address AS address,
-                        vli.ipv{$proto}hostname AS hostname
-                    FROM Entities\\VlanInterface vli
-                        JOIN vli.IPv{$proto}Address addr
-                        JOIN vli.Vlan v
-                    WHERE
-                        v = :vlan";
-
-        $qstr .= " ORDER BY addr.address ASC";
+        $qstr .= " ORDER BY aton ASC";
 
         $q = $this->getEntityManager()->createQuery( $qstr );
         $q->setParameter( 'vlan', $vlan );

@@ -14,7 +14,7 @@
 
     <h3 class="col-md-12">
         VLAN Interfaces
-        <a class="btn btn-default btn-xs" href="<?= route('interfaces/vlan/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
+        <a class="btn btn-default btn-xs" id="add-vli" href="<?= route('interfaces/vlan/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
             <i class="glyphicon glyphicon-plus"></i>
         </a>
     </h3>
@@ -90,7 +90,11 @@
 
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn btn-default" href="<?= route ( 'interfaces/vlan/edit/from-virtual-interface', [ 'id' => $vli->getId(), 'viid' => $t->vi->getId() ] ) ?>" title="Edit">
+                                    <a class="btn btn btn-default" id="view-vli-<?= $vli->getId()?>" href="<?= route ( 'interfaces/vlan/view', [ 'id' => $vli->getId() ] ) ?>" title="View">
+                                        <i class="glyphicon glyphicon-eye-open"></i>
+                                    </a>
+
+                                    <a class="btn btn btn-default" id="edit-vli-<?= $vli->getId()?>" href="<?= route ( 'interfaces/vlan/edit/from-virtual-interface', [ 'id' => $vli->getId(), 'viid' => $t->vi->getId() ] ) ?>" title="Edit">
                                         <i class="glyphicon glyphicon-pencil"></i>
                                     </a>
 

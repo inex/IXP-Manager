@@ -120,9 +120,9 @@ if (defined $vlanid) {
 } else {
 	print STDERR "WARNING: executing this program without the \"--vlanid\" parameter is deprecated and will be removed in a future version of IXP Manager.\n";
 	# otherwise query all switches for legacy behaviour
-	$query = "SELECT hostname, snmppasswd FROM switch WHERE active AND switchtype = ?";
+	$query = "SELECT hostname, snmppasswd FROM switch WHERE active";
 	($sth = $dbh->prepare($query)) or die "$dbh->errstr\n";
-	$sth->execute(SWITCHTYPE_SWITCH) or die "$dbh->errstr\n";
+	$sth->execute() or die "$dbh->errstr\n";
 }
 
 my $switches = $sth->fetchall_hashref('hostname');

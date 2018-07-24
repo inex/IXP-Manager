@@ -12,7 +12,6 @@
         <option name="default">1</option>
       </options>
     </field>
-    <field name="monitorindex" type="integer" nullable="true"/>
     <field name="notes" type="text" nullable="true"/>
     <one-to-one field="SwitchPort" target-entity="Entities\SwitchPort" inversed-by="PhysicalInterface">
       <join-columns>

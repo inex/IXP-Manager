@@ -122,17 +122,6 @@ abstract class Common extends Controller
             return true;
         }
 
-        $fanoutMonitorIndex = $request->input( 'monitorindex-fanout' );
-
-        if( isset( $fanoutMonitorIndex ) ) {
-            $monitorIdx = $fanoutMonitorIndex;
-        } else {
-            $monitorIdx = D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex(
-                $vi->getCustomer()->getReseller()
-            );
-        }
-
-
         /** @var SwitchPortEntity $fnsp */
         if( !( $fnsp = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'switch-port-fanout' ) ) ) ) {
             abort( 404, 'Unknown customer' );
@@ -146,7 +135,6 @@ abstract class Common extends Controller
             $fnpi = new PhysicalInterfaceEntity();
             $fnpi->setSwitchPort( $fnsp );
             $fnsp->setPhysicalInterface( $fnpi );
-            $fnpi->setMonitorindex( $monitorIdx );
             D2EM::persist( $fnpi );
         } else {
             $fnpi = $fnsp->getPhysicalInterface();

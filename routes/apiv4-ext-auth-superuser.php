@@ -76,6 +76,7 @@ Route::get('router/updated-before/{threshold}',                 'RouterControlle
 //
 Route::get('sflow-receivers/pretag.map',                        'SflowReceiverController@pretagMap');
 Route::get('sflow-receivers/receivers.lst',                     'SflowReceiverController@receiversLst');
+Route::get('sflow-receivers.{format}',               		'SflowReceiverController@getReceiverList');
 
 
 

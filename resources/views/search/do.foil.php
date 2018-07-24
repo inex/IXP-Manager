@@ -11,7 +11,7 @@
     <div class="row">
 
         <div class="col-sm-12">
-
+            <?= $t->alerts() ?>
             <div class="well">
 
                 <form class="form-inline" method="get" action="<?= route( 'search' ) ?>">
@@ -92,7 +92,7 @@
                                     <a class="btn btn-default" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $cust->getId(), "type" => "agg" ] ) ?>">
                                         Statistics
                                     </a>
-                                    <a class="btn btn-default" href="<?= url( 'statistics/p2p/shortname/' . $cust->getShortname() )?>">
+                                    <a class="btn btn-default" href="<?= route( 'statistics@p2p-get', [ "id" => $cust->getId() ] )?>">
                                         P2P
                                     </a>
                                     <a class="btn btn-default" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "users" ] ) ?>">Users</a>

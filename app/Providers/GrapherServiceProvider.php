@@ -53,8 +53,6 @@ class GrapherServiceProvider extends ServiceProvider {
         'IXP\Console\Commands\Grapher\EmailTrafficDeltas',
         'IXP\Console\Commands\Grapher\GenerateConfiguration',
         'IXP\Console\Commands\Grapher\UploadStatsToDb',
-
-        'IXP\Console\Commands\Grapher\Backend\Mrtg\Upgrade',
     ];
 
     /**

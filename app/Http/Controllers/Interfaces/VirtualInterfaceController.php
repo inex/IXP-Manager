@@ -156,24 +156,6 @@ class VirtualInterfaceController extends Common
     }
 
     /**
-     * Display the Virtual Interface informations
-     *
-     * @param  int $id ID of the Virtual Interface
-     *
-     * @return  view
-     */
-    public function view( int $id = null ): View {
-        /** @var VirtualInterfaceEntity $vi */
-        if( !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $id ) ) ){
-            abort(404);
-        }
-
-        return view( 'interfaces/virtual/view' )->with([
-            'vi'                        => $vi
-        ]);
-    }
-
-    /**
      * Add or edit a virtual interface (set all the data needed)
      *
      * @param   StoreVirtualInterface $request instance of the current HTTP request
@@ -310,8 +292,6 @@ class VirtualInterfaceController extends Common
 
         $sp->setType( SwitchPortEntity::TYPE_PEERING );
         $pi->setSwitchPort( $sp );
-
-        $pi->setMonitorindex( D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $c ) );
 
         $vli = new VlanInterfaceEntity();
         D2EM::persist($vli);

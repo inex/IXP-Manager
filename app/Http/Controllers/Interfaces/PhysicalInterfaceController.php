@@ -122,6 +122,7 @@ class PhysicalInterfaceController extends Common
         }
 
         $old = request()->old();
+        $data = [];
 
         if( $pi ) {
             // ==== EDIT PI MODE
@@ -140,7 +141,6 @@ class PhysicalInterfaceController extends Common
                 'speed'                   => array_key_exists( 'speed',         $old    ) ? $old['speed']           : $pi->getSpeed(),
                 'duplex'                  => array_key_exists( 'duplex',        $old    ) ? $old['duplex']          : $pi->getDuplex(),
                 'autoneg-label'           => array_key_exists( 'autoneg-label', $old    ) ? $old['autoneg-label']   : ( $pi->getAutoneg() ? 1 : 0 ),
-                'monitorindex'            => array_key_exists( 'monitorindex',  $old    ) ? $old['monitorindex']    : ( $pi->getMonitorindex() ? $pi->getMonitorindex() : D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $pi->getVirtualInterface()->getCustomer() ) ) ,
             ];
 
             // get all the switch ports available and add the switch port associated to the physical interface in the list
@@ -156,9 +156,6 @@ class PhysicalInterfaceController extends Common
                 return $item1['id'] <=> $item2['id'];
             });
 
-        } else {
-            // ==== CREATE PI MODE
-            $data['monitorindex'] = array_key_exists( 'monitorindex',        $old    ) ? $old['monitorindex']          : D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $vi->getCustomer() );
         }
 
         // get the fanout details or other side of the core link details as/if applicable
@@ -176,7 +173,7 @@ class PhysicalInterfaceController extends Common
             'cb'                          => $cb ? $cb : false,
             'enableFanout'                => $this->resellerMode() && $vi && $vi->getCustomer()->isResoldCustomer(),
             'spFanout'                    => $pi && isset( $data['fanout'] ) && $data['fanout'] && $pi->getFanoutPhysicalInterface() ? $pi->getFanoutPhysicalInterface()->getSwitchPort()->getId() : false,
-            'notes'                       => $pi ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $pi->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : "" ),
+            'notes'                       => $pi ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           :  $pi->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? ( $old['notes'] ?? '' )           : "" ),
             'notesb'                      => array_key_exists( 'notes-b',           $data ) ? $data['notes-b']           : ""
         ]);
     }
@@ -202,7 +199,6 @@ class PhysicalInterfaceController extends Common
         $data['speed-b']         = $piB->getSpeed();
         $data['duplex-b']        = $piB->getDuplex();
         $data['autoneg-label-b'] = $piB->getAutoneg() ? 1 : 0;
-        $data['monitorindex-b']  = $piB->getMonitorindex() ? $piB->getMonitorindex() : D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $piB->getVirtualInterface()->getCustomer() );
         $data['notes-b']         = $piB->getNotes();
 
         return $data;
@@ -229,12 +225,9 @@ class PhysicalInterfaceController extends Common
             $data['fanout']                 = $pi->getFanoutPhysicalInterface() ? 1 : 0;
             $data['switch-fanout']          = $pi->getFanoutPhysicalInterface()->getSwitchPort()->getSwitcher()->getId();
             $data['switch-port-fanout']     = $pi->getFanoutPhysicalInterface()->getSwitchPort()->getId();
-            $data['monitorindex-fanout']    = $pi->getFanoutPhysicalInterface()->getMonitorindex();
 
             // @yann: not sure why this is here as well as fanout above?
             $data['fanout-checked']         = $pi->getFanoutPhysicalInterface() ? 1 : 0;
-        } else {
-            $data['monitorindex-fanout']    = D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $vi->getCustomer()->getReseller() );
         }
 
         return $data;
@@ -270,16 +263,6 @@ class PhysicalInterfaceController extends Common
         // when presenting the add PI form, we include peering and unknown port types; set the selected port as peering:
         $sp->setType( SwitchPortEntity::TYPE_PEERING );
 
-        if( $pi->getMonitorindex() != $request->input( 'monitorindex' ) ) {
-            if( !$vi->getCustomer()->isUniqueMonitorIndex( $request->input( 'monitorindex' ) ) ) {
-                AlertContainer::push( 'The monitor index must be unique. It has been reset below to a unique value.', Alert::DANGER );
-
-                // doesnt work set all the input and replace the value of the monitor with a new value
-                $request->merge([ 'monitorindex' => D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $pi->getVirtualInterface()->getCustomer()) ]);
-                return Redirect::back( )->withInput( $request->all() );
-            }
-        }
-
         if( $pi->getOtherPICoreLink() ){
             // check if the user has changed the switch port
             if( $sp->getId() != $pi->getSwitchPort()->getId() ){
@@ -304,7 +287,6 @@ class PhysicalInterfaceController extends Common
         $pi->setSpeed(              $request->input( 'speed'            ) );
         $pi->setDuplex(             $request->input( 'duplex'           ) );
         $pi->setAutoneg(            $request->input( 'autoneg-label'    ) ? 1 : 0 );
-        $pi->setMonitorindex(       $request->input( 'monitorindex'     ) );
         $pi->setNotes(              $request->input( 'notes'            ) );
 
 

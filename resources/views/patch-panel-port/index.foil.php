@@ -22,10 +22,10 @@
         <?php endif; ?>
         <div class="btn-group btn-group-xs" role="group">
             <?php if( $t->pp ): ?>
-                <a type="button" class="btn btn-default" href="<?= route('patch-panel-port@edit' , [ 'id' => $t->pp->getId() ] ) ?>" title="Edit Patch Panel">
+                <a type="button" class="btn btn-default" href="<?= route('patch-panel/edit' , [ 'id' => $t->pp->getId() ] ) ?>" title="Edit Patch Panel">
                     <span class="glyphicon glyphicon-pencil"></span>
                 </a>
-                <a type="button" class="btn btn-default" href="<?= route('patch-panel-port@view' , [ 'id' => $t->pp->getId() ] ) ?>" title="View Patch Panel">
+                <a type="button" class="btn btn-default" href="<?= route('patch-panel@view' , [ 'id' => $t->pp->getId() ] ) ?>" title="View Patch Panel">
                     <span class="glyphicon glyphicon-eye-open"></span>
                 </a>
             <?php endif;?>

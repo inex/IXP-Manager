@@ -35,7 +35,9 @@ set -e
 IXPROOT=/srv/ixpmanager
 DBNAME=ixpmanager
 DBUSER=ixpmanager
-IXPMANAGER_VERSION="v4.7.3"
+
+# the version / branch to use:
+IXPMANAGER_VERSION="v4.8"
 
 touch /tmp/ixp-manager-install.log
 chmod a+w /tmp/ixp-manager-install.log
@@ -386,18 +388,11 @@ echo '[done]'
 echo -n "Installing / updating composer - PHP's package manager..."
 log_break && echo -n "Installing composer - PHP's package manager... " &>> /tmp/ixp-manager-install.log
 cd $IXPROOT
-EXPECTED_SIGNATURE=$(wget https://composer.github.io/installer.sig -O - -q)
-php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
-ACTUAL_SIGNATURE=$(php -r "echo hash_file('SHA384', 'composer-setup.php');")
 
-if [ "$EXPECTED_SIGNATURE" = "$ACTUAL_SIGNATURE" ]; then
-    sudo -u www-data bash -c "HOME=$IXPROOT && cd $IXPROOT && php composer-setup.php --quiet"
-    rm $IXPROOT/composer-setup.php
-else
-    echo -e "\n\nERROR: Invalid installer signature for composer installation"
-    rm $IXPROOT/composer-setup.php
-    exit 1
-fi
+curl -so $IXPROOT/composer.phar https://getcomposer.org/download/1.6.5/composer.phar && \
+    chmod a+x $IXPROOT/composer.phar && \
+    $IXPROOT/composer.phar selfupdate
+
 echo '[done]'
 echo '[done]' &>> /tmp/ixp-manager-install.log
 
@@ -528,7 +523,7 @@ echo '[done]'
 echo -n "Running composer to install PHP dependencies (please be patient)... "
 cd $IXPROOT
 log_break
-sudo -u www-data bash -c "HOME=$IXPROOT && cd $IXPROOT && ./composer.phar --no-ansi --no-interaction install &>> /tmp/ixp-manager-install.log"
+sudo -u www-data bash -c "HOME=$IXPROOT && cd $IXPROOT && ./composer.phar --no-ansi --no-interaction --no-dev --prefer-dist install &>> /tmp/ixp-manager-install.log"
 echo '[done]'
 
 ##################################################################
@@ -654,8 +649,11 @@ echo '[done]'
 
 chown -R root: ${IXPROOT}
 chown -R www-data: ${IXPROOT}/storage ${IXPROOT}/var ${IXPROOT}/bootstrap/cache ${IXPROOT}/database/Proxies \
-    ${IXPROOT}/vendor ${IXPROOT}/bower.json ${IXPROOT}/public/bower_components    &>> /tmp/ixp-manager-install.log
+    ${IXPROOT}/vendor ${IXPROOT}/bower.json ${IXPROOT}/public/bower_components ${IXPROOT}/public/logos   &>> /tmp/ixp-manager-install.log
 chmod -R ug+rwX,o+rX ${IXPROOT} &>> /tmp/ixp-manager-install.log
+
+# favicon
+cp ${IXPROOT}/public/favicon.ico.dist ${IXPROOT}/public/favicon.ico
 
 ##################################################################
 ### Completion Details

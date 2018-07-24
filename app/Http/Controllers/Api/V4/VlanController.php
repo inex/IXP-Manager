@@ -87,7 +87,6 @@ class VlanController extends Controller
      *
      * @see VlanEntity::usedAcrossVlans() for array structure.
      *
-     * @param  string $ipAddress The IP address to check
      * @return  JsonResponse array of object
      */
     public function usedAcrossVlans( Request $request ) : JsonResponse {

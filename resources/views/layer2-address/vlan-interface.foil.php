@@ -5,7 +5,7 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'virtual-interface@view', [ 'id' => $t->vli->getVirtualInterface()->getId() ] ) ?>">Vlan Interface</a>
+    <a href="<?= route( 'interfaces/virtual/edit', [ 'id' => $t->vli->getVirtualInterface()->getId() ] ) ?>">Vlan Interface</a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>

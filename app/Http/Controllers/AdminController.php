@@ -83,10 +83,11 @@ class AdminController extends Controller
 
             $vis = D2EM::getRepository( VirtualInterfaceEntity::class )->getByLocation();
 
-            $speeds     = [];
-            $byLocation = [];
-            $byLan      = [];
-            $byIxp      = [];
+            $speeds          = [];
+            $byLocation      = [];
+            $byLan           = [];
+            $byIxp           = [];
+            $custsByLocation = [];
 
             foreach( $vis as $vi ) {
 

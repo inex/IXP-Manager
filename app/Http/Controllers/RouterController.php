@@ -111,7 +111,7 @@ class RouterController extends Controller
             // fill the form with router data
             Former::populate([
                 'handle'                => array_key_exists( 'handle',      $old ) ? $old['handle']         : $rt->getHandle(),
-                'vlan'                  => array_key_exists( 'vlan',        $old ) ? $old['vlan']           : $rt->getVlan(),
+                'vlan'                  => array_key_exists( 'vlan',        $old ) ? $old['vlan']           : $rt->getVlan()->getId(),
                 'protocol'              => array_key_exists( 'protocol',    $old ) ? $old['protocol']       : $rt->getProtocol(),
                 'type'                  => array_key_exists( 'type',        $old ) ? $old['type']           : $rt->getType(),
                 'name'                  => array_key_exists( 'name',        $old ) ? $old['name']           : $rt->getName(),

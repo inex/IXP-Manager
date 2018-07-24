@@ -223,15 +223,17 @@
 
     function uploadPopup( pppid ){
 
-        let html = '<form id="upload" method="post" action="<?= url("patch-panel-port/upload-file" )?>/' + pppid + '" enctype="multipart/form-data">' +
-            '<div id="drop">Drop Files Here &nbsp;' +
-            '    <a id="upload-drop-a" class="btn btn-success">' +
-            '        <i class="glyphicon glyphicon-upload"></i> Browse</a> <br/>' +
-            '        <span class="info"> (max size <?= $t->maxFileUploadSize() ?> </span>' +
-            '        <input type="file" name="upl" multiple />' +
-            '</div>' +
-            '<ul id="upload-ul"><!-- The file uploads will be shown here --> </ul>' +
-            '</form>';
+
+        let html = `<form id="upload" method="post" action='<?= url("patch-panel-port/upload-file" )?>/${pppid}' enctype='multipart/form-data'>
+            <div id='drop'>Drop Files Here &nbsp;
+                <a id="upload-drop-a" class="btn btn-success">
+                    <i class="glyphicon glyphicon-upload"></i> Browse</a> <br/>
+                    <span class="info"> (max size <?= $t->maxFileUploadSize() ?> </span>
+                    <input type="file" name="upl" multiple />
+            </div>
+            <ul id="upload-ul"></ul>
+            </form>`;
+
 
         let dialog = bootbox.dialog({
             message: html,
@@ -291,9 +293,9 @@
                                 tpl.addClass( 'success' );
                                 tpl.attr( 'id','uploaded-file-' + result.id );
                                 tpl.find( 'span' ).addClass( 'success' );
-                                tpl.append( '<span id="uploaded-file-toggle-private-' + result.id + '" class="private fa fa-unlock fa-lg"></span>' );
-                                tpl.append( '<span id="uploaded-file-delete-'         + result.id + '" class="delete glyphicon glyphicon-trash"></span>' );
-                                tpl.find('p').append( '<i id="message-'+ result.id + '" class="success">' + result.message + '</i>' );
+                                tpl.append( `<span id="uploaded-file-toggle-private-${result.id}" class="private fa fa-unlock fa-lg"></span>` );
+                                tpl.append( `<span id="uploaded-file-delete-${result.id}" class="delete glyphicon glyphicon-trash"></span>` );
+                                tpl.find('p').append( `<i id="message-${result.id}" class="success">${result.message}</i>` );
 
                                 $('#uploaded-file-toggle-private-' + result.id).on( 'click', toggleFilePrivacy );
                                 $('#uploaded-file-delete-'         + result.id).on( 'click', deleteFile        );

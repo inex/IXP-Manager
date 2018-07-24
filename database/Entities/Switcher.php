@@ -20,8 +20,6 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  */
 class Switcher
 {
-    const TYPE_SWITCH        = 1;
-
     /**
      * Elements for SNMP polling via the OSS_SNMP library
      *
@@ -62,11 +60,6 @@ class Switcher
      * @var \Entities\Infrastructure
      */
     protected $Infrastructure;
-
-    /**
-     * @var integer $switchtype
-     */
-    protected $switchtype;
 
     /**
      * @var string $model
@@ -285,29 +278,6 @@ class Switcher
     public function getInfrastructure()
     {
         return $this->Infrastructure;
-    }
-
-    /**
-     * Set switchtype
-     *
-     * @param integer $switchtype
-     * @return Switcher
-     */
-    public function setSwitchtype($switchtype)
-    {
-        $this->switchtype = $switchtype;
-
-        return $this;
-    }
-
-    /**
-     * Get switchtype
-     *
-     * @return integer
-     */
-    public function getSwitchtype()
-    {
-        return $this->switchtype;
     }
 
     /**

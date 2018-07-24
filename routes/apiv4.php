@@ -90,27 +90,28 @@ Route::get( 'statistics/overall-by-month', 'StatisticsController@overallByMonth'
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // ASN Number
 //
-Route::get( 'aut-num/{asn}', function( $asn) {
-    return response()->json( Cache::remember('aut-num', 120, function() use( $asn ) {
-        $infos = [];
-        if( $values = file_get_contents("https://rest.db.ripe.net/ripe/aut-num/". $asn . ".json" ) ) {
-            $i = 0;
+Route::get( 'aut-num/{asn}', function( $asn ) {
 
-            foreach( json_decode( $values)->objects->object[0]->attributes->attribute as $val ) {
-                $infos[ $i ][ 'name' ] = $val->name;
-                $infos[ $i ][ 'value' ] = $val->value;
-                if( isset( $val->link ) ){
-                    $infos[ $i ][ 'link' ] = $val->link->href;
-                }
+    $infos = [];
 
-                if( isset( $val->comment ) ){
-                    $infos[ $i ][ 'comment' ] = $val->comment;
-                }
+    if( $values = file_get_contents("https://rest.db.ripe.net/ripe/aut-num/". $asn . ".json" ) ) {
+        $i = 0;
 
-                $i++;
+        foreach( json_decode( $values)->objects->object[0]->attributes->attribute as $val ) {
+            $infos[ $i ][ 'name' ] = $val->name;
+            $infos[ $i ][ 'value' ] = $val->value;
+            if( isset( $val->link ) ){
+                $infos[ $i ][ 'link' ] = $val->link->href;
             }
+
+            if( isset( $val->comment ) ){
+                $infos[ $i ][ 'comment' ] = $val->comment;
+            }
+
+            $i++;
         }
-        return $infos;
-    }));
+    }
+
+    return response()->json(  $infos );
 })->name('api-v4-aut-num');
 
