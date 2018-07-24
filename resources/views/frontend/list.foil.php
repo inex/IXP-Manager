@@ -130,10 +130,18 @@
 
                                                 <?php if( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'HAS_ONE'] ): ?>
                                                     <?php $nameIdParam = '' ; ?>
+
                                                     <?php if( isset( $cconf['nameIdParam'] ) ): ?>
                                                         <?php $nameIdParam = $cconf['nameIdParam'].'/'; ?>
                                                     <?php endif; ?>
-                                                    <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . '/' . $nameIdParam . $row[ $cconf['idField'] ] ) ?>">
+
+                                                    <?php $params = '/' . $nameIdParam . $row[ $cconf['idField'] ] ; ?>
+
+                                                    <?php if( isset( $cconf['nameIdOptionalParam'] ) ): ?>
+                                                        <?php $params = '?' . $cconf['nameIdOptionalParam'] . '=' . $row[ $cconf['idField'] ] ; ?>
+                                                    <?php endif; ?>
+
+                                                    <a href="<?= url( $cconf[ 'controller'] . '/' . $cconf[ 'action'] . $params ) ?>">
                                                         <?= $t->ee( $row[$col] ) ?>
                                                     </a>
 

@@ -78,7 +78,7 @@ class SwitchPortController extends Doctrine2Frontend {
         $this->feParams         = (object)[
 
             'entity'            => SwitchPortEntity::class,
-            'pagetitle'         => 'Switch Ports',
+            'pagetitle'         => 'Switches',
 
             'titleSingular'     => 'Switch Port',
             'nameSingular'      => 'a switch port',
@@ -88,6 +88,10 @@ class SwitchPortController extends Doctrine2Frontend {
 
             'viewFolderName'    => 'switch-port',
             'route_action'      => 'list',
+
+            'route_prefix_page_title'   => 'switch',
+
+            'pagetitlepostamble'         => 'Switch Port',
 
             'listColumns'       => [
 
@@ -137,6 +141,8 @@ class SwitchPortController extends Doctrine2Frontend {
 
         Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
             Route::get(  'unused-optics',   'Switches\SwitchPortController@unusedOptics'   )->name( "switch-port@unused-optics"   );
+            Route::get(  'optic-inventory', 'Switches\SwitchPortController@opticInventory' )->name( "switch-port@optic-inventory" );
+            Route::get(  'optic-list',      'Switches\SwitchPortController@opticList'      )->name( "switch-port@optic-list" );
             Route::get(  'list-mau/{id}',   'Switches\SwitchPortController@listMau'        )->name( "switch-port@list-mau"        );
             Route::get(  'op-status/{id}',  'Switches\SwitchPortController@listOpStatus'   )->name( "switch-port@list-op-status"  );
             Route::get(  'snmp-poll/{id}',  'Switches\SwitchPortController@snmpPoll'       )->name( "switch-port@snmp-poll"       );
@@ -821,6 +827,134 @@ class SwitchPortController extends Doctrine2Frontend {
         $this->data[ 'view' ][ 'listRowMenu']           = $this->resolveTemplate( 'list-row-menu',              false );
         $this->data[ 'view' ][ 'pageHeaderPreamble']    = $this->resolveTemplate( 'page-header-preamble',       false );
         $this->data[ 'view' ][ 'listScript' ]           = $this->resolveTemplate( 'js/list' );
+    }
+
+    /**
+     * Set up all the information to display the optic inventory
+     *
+     * @bool
+     */
+    public function setUpOpticInventory( ){
+
+        $this->feParams->listOrderBy                = 'cnt';
+        $this->feParams->pagetitle                  = 'Switches';
+
+        $this->feParams->pagetitlepostamble             = 'Optic Inventory';
+
+        $this->feParams->route_prefix_page_title    = 'switch';
+        $this->feParams->route_action               = 'optic-inventory';
+        $this->feParams->hideactioncolumn           = true;
+        $this->feParams->listOrderByDir             = "DESC";
+
+        $this->feParams->listColumns = [
+            'mauType'           => 'Type',
+            'cnt'  => [
+                'title'                 => 'Count',
+                'type'                  => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                'controller'            => 'switch-port',
+                'action'                => 'optic-list',
+                'nameIdOptionalParam'   => 'mau-type',
+                'idField'               => 'mauType'
+            ],
+        ];
+
+        return true;
+    }
+
+    /**
+     * Display the Optic Inventory
+     *
+     * @return view
+     *
+     * @throws
+     */
+    public function opticInventory(){
+
+        $this->setUpOpticInventory();
+
+        $this->data[ 'rows' ] =  D2EM::getRepository( SwitchPortEntity::class )->getOpticInventory( $this->feParams );
+
+        $this->setUpViews();
+
+        return $this->display( 'list' );
+    }
+
+
+    /**
+     * Set up all the information to display the optics list
+     *
+     *
+     * @bool
+     */
+    public function setUpOpticList( ){
+
+        $this->feParams->pagetitle                  = 'Switches';
+
+        $this->feParams->pagetitlepostamble         = 'Optic List';
+
+        $this->feParams->route_prefix_page_title    = 'switch';
+
+        $this->feParams->listOrderBy                = 'ifName';
+
+        $this->feParams->readonly                   = true;
+        $this->feParams->hideactioncolumn           = true;
+
+        $this->feParams->listColumns = [
+            'id'                    => [ 'title' => 'UID', 'display' => false ],
+            'ifName'                => 'Name',
+            'switch'                => 'Switch',
+            'custname'              => 'Customer',
+
+            'custname'  => [
+                'title'                 => 'Customer',
+                'type'                  => self::$FE_COL_TYPES[ 'HAS_ONE' ],
+                'controller'            => 'customer',
+                'action'                => 'overview',
+                'idField'               => 'custid'
+            ],
+
+            'type'                  => [
+                'title'     =>  'Type',
+                'type'      =>   self::$FE_COL_TYPES[ 'RESOLVE_CONST' ],
+                'const'     =>   SwitchPortEntity::$TYPES,
+            ],
+
+            'state'                 => [
+                'title'     =>  'State (Admin/Op)',
+                'type'      =>   self::$FE_COL_TYPES[ 'SCRIPT' ],
+                'script'    =>   'switch-port/port-admin-status',
+                'params'    =>   [
+                    "adminState"    => "ifAdminStatus",
+                    "operState"     => "ifOperStatus",
+                ],
+            ],
+
+            'mauType'               => 'MAU Type',
+            'mauState'              => 'MAU State',
+
+        ];
+
+        return true;
+    }
+
+    /**
+     * Display the Optic list
+     *
+     * @return view
+     *
+     * @throws
+     */
+    public function opticList(){
+
+        $this->setUpOpticList();
+
+        $this->data[ 'rows' ] =  D2EM::getRepository( SwitchPortEntity::class )->getListMauForType( $this->feParams, request()->input( "mau-type" ) );
+
+        $this->setUpViews();
+
+        $this->preList();
+
+        return $this->display( 'list' );
     }
 
 

@@ -166,6 +166,78 @@ class SwitchPort extends EntityRepository
                 $dql .= " AND s.id = " . $id ;
             }
 
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
+
+    }
+
+    /**
+     * Get all the unused optics
+     *
+     * @return array Array
+     */
+    public function getOpticInventory( \stdClass $feParams )
+    {
+
+        $dql = "SELECT  sp.mauType AS mauType, 
+                        COUNT( sp.mauType ) AS cnt 
+                    FROM Entities\\SwitchPort sp
+                    GROUP BY sp.mauType
+                    HAVING cnt > 0";
+
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getArrayResult();
+
+    }
+
+    /**
+     * Get all the optic for a dedicated MAU TYPE
+     *
+     * @param \stdClass $feParams
+     * @param string|null $mautype
+     *
+     * @return array Array
+     */
+    public function getListMauForType( \stdClass $feParams, string $mautype = null )
+    {
+
+        $dql = "SELECT sp.id AS id, 
+                          sp.name AS name, 
+                          sp.type AS type, 
+                          s.name AS switch,
+                          sp.ifName AS ifName, 
+                          sp.ifAdminStatus AS ifAdminStatus, 
+                          sp.ifOperStatus AS ifOperStatus,
+                          sp.mauType AS mauType, 
+                          sp.mauState AS mauState,
+                          s.id AS switchid,
+                          c.name AS custname,
+                          c.id AS custid
+                    FROM Entities\\SwitchPort sp
+                    LEFT JOIN sp.Switcher s
+                    LEFT JOIN sp.PhysicalInterface pi
+                    LEFT JOIN pi.VirtualInterface vi
+                    LEFT JOIN vi.Customer c
+                    WHERE 1 = 1";
+
+        if( $mautype !== null ){
+            $dql .= " AND sp.mauType = '" . $mautype . "'";
+        } else {
+            $dql .= " AND sp.mauType IS NOT NULL";
+        }
+
         if( isset( $feParams->listOrderBy ) ) {
             $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
             $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
