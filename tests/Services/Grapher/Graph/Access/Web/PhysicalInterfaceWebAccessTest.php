@@ -46,12 +46,12 @@ class PhysicalInterfaceWebAccessTest extends Access
     {
         // this should be the default
         $response = $this->get('/statistics/member-drilldown/pi/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         // force the default
         Config::set( 'grapher.access.customer', 'own_graphs_only' );
         $response = $this->get('/statistics/member-drilldown/pi/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         // force public access
         Config::set( 'grapher.access.customer', 0 );
@@ -67,23 +67,23 @@ class PhysicalInterfaceWebAccessTest extends Access
     {
         Config::set( 'grapher.access.customer', '1' );
         $response = $this->get('/statistics/member-drilldown/pi/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.customer', '2' );
         $response = $this->get('/statistics/member-drilldown/pi/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.customer', '3' );
         $response = $this->get('/statistics/member-drilldown/pi/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.customer', 'blah' );
         $response = $this->get('/statistics/member-drilldown/pi/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.customer', null );
         $response = $this->get('/statistics/member-drilldown/pi/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
     }
 
     /**
@@ -94,7 +94,7 @@ class PhysicalInterfaceWebAccessTest extends Access
     {
         Config::set( 'grapher.access.customer', 'own_graphs_only' );
         $response = $this->get('/statistics/member-drilldown/pi/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         // customer user
         $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )->get('/statistics/member-drilldown/pi/1');
@@ -106,11 +106,11 @@ class PhysicalInterfaceWebAccessTest extends Access
 
         // non-customer user
         $response =$this->actingAs( $this->getCustUser( 'imcustuser' ) )->get('/statistics/member-drilldown/pi/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         // non-customer admin user
         $response = $this->actingAs( $this->getCustAdminUser( 'imcustadmin' ) )->get('/statistics/member-drilldown/pi/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         // superadmin
         $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/member-drilldown/pi/1');
@@ -126,7 +126,7 @@ class PhysicalInterfaceWebAccessTest extends Access
     {
         Config::set( 'grapher.access.customer', '1' );
         $response = $this->get('/statistics/member-drilldown/pi/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/member-drilldown/pi/1');
         $response->assertStatus(200);
@@ -147,10 +147,10 @@ class PhysicalInterfaceWebAccessTest extends Access
     {
         Config::set( 'grapher.access.customer', '2' );
         $response = $this->get('/statistics/member-drilldown/pi/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/member-drilldown/pi/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/member-drilldown/pi/1');
         $response->assertStatus(200);
@@ -167,13 +167,13 @@ class PhysicalInterfaceWebAccessTest extends Access
     {
         Config::set( 'grapher.access.customer', '3' );
         $response = $this->get('/statistics/member-drilldown/pi/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/member-drilldown/pi/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/member-drilldown/pi/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/member-drilldown/pi/1');
         $response->assertStatus(200);

@@ -63,23 +63,23 @@ class VlanWebAccessTest extends Access
     {
         Config::set( 'grapher.access.vlan', '1' );
         $response = $this->get('/statistics/vlan/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.vlan', '2' );
         $response = $this->get('/statistics/vlan/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.vlan', '3' );
         $response = $this->get('/statistics/vlan/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.vlan', 'blah' );
         $response = $this->get('/statistics/vlan/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.vlan', null );
         $response = $this->get('/statistics/vlan/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
     }
 
     /**
@@ -90,7 +90,7 @@ class VlanWebAccessTest extends Access
     {
         Config::set( 'grapher.access.vlan', '1' );
         $response = $this->get('/statistics/vlan/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/vlan/1');
         $response->assertStatus(200);
@@ -110,10 +110,10 @@ class VlanWebAccessTest extends Access
     {
         Config::set( 'grapher.access.vlan', '2' );
         $response = $this->get('/statistics/vlan/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/vlan/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/vlan/1');
         $response->assertStatus(200);
@@ -130,13 +130,14 @@ class VlanWebAccessTest extends Access
     {
         Config::set( 'grapher.access.vlan', '3' );
         $response = $this->get('/statistics/vlan/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/vlan/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/vlan/1');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/vlan/1');
         $response->assertStatus(200);
