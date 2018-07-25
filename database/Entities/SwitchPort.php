@@ -4,6 +4,8 @@ namespace Entities;
 
 use Doctrine\ORM\Mapping as ORM;
 
+use OSS_SNMP\MIBS\MAU as MauMib;
+
 /**
  * Entities\SwitchPort
  */
@@ -68,7 +70,7 @@ class SwitchPort
      * Mappings for OSS_SNMP fucntions to SwitchPort members
      */
     public static $OSS_SNMP_MAU_MAP = [
-        'types'             => [ 'fn' => 'MauType',         'xlate' => true ],
+        'types'             => [ 'fn' => 'MauType',         'xlate' => false ],
         'states'            => [ 'fn' => 'MauState',        'xlate' => true ],
         'mediaAvailable'    => [ 'fn' => 'MauAvailability', 'xlate' => true ],
         'jackTypes'         => [ 'fn' => 'MauJacktype',     'xlate' => true ],
@@ -565,6 +567,7 @@ class SwitchPort
             $this->$fn( $n );
         }
 
+
         if( $this->getSwitcher()->getMauSupported() ) {
             foreach( self::$OSS_SNMP_MAU_MAP as $snmp => $entity ) {
                 $getfn = "get{$entity['fn']}";
@@ -574,8 +577,7 @@ class SwitchPort
                     if( isset( $entity['xlate'] ) ) {
                         $n = $host->useMAU()->$snmp( $entity['xlate'] );
                         $n = isset( $n[ $this->getIfIndex() ] ) ? $n[ $this->getIfIndex() ] : null;
-                    }
-                    else {
+                    } else {
                         $n = $host->useMAU()->$snmp();
                         $n = isset( $n[ $this->getIfIndex() ] ) ? $n[ $this->getIfIndex() ] : null;
                     }
@@ -587,11 +589,19 @@ class SwitchPort
                     $n = null;
                 }
 
-                if( $n == '*** UNKNOWN ***' && $snmp == 'types' )
-                    $n = '(empty)';
+                if( $snmp == 'types' ) {
+                    if( isset( MauMib::$TYPES[ $n ] ) ) {
+                        $n = MauMib::$TYPES[ $n ];
+                    } else if( $n === null || $n === '.0.0' ) {
+                        $n = '(empty)';
+                    } else {
+                        $n = '(unknown type - oid: ' . $n . ')';
+                    }
+                }
 
-                if( $logger !== false && $this->$getfn() != $n )
+                if( $logger !== false && $this->$getfn() != $n ) {
                     $logger->info( "[{$this->getSwitcher()->getName()}]:{$this->getName()} [Index: {$this->getIfIndex()}] Updating {$entity['fn']} from [{$this->$getfn()}] to [{$n}]" );
+                }
 
                 $this->$setfn( $n );
             }

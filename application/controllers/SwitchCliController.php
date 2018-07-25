@@ -93,8 +93,7 @@ class SwitchCliController extends IXP_Controller_CliAction
                     $sw->snmpPoll( $host, $logger );
                     $swPolled = true;
 
-                    if( $sw->getSwitchtype() == \Entities\Switcher::TYPE_SWITCH )
-                        $sw->snmpPollSwitchPorts( $host, $logger );
+                    $sw->snmpPollSwitchPorts( $host, $logger );
 
                     if( $this->getParam( 'noflush', false ) )
                         $this->verbose( '*** noflush parameter set - NO CHANGES MADE TO DATABASE' );

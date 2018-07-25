@@ -197,13 +197,13 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         {
             try // to refresh switch and switch port details via SNMP
             {
-                if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
+                if( !$switch->getActive() ) {
                     throw new \OSS_SNMP\Exception();
+                }
 
                 $host = new \OSS_SNMP\SNMP( $switch->getHostname(), $switch->getSnmppasswd() );
                 $switch->snmpPoll( $host, $this->getLogger() );
-                if( $switch->getSwitchtype() == \Entities\Switcher::TYPE_SWITCH )
-                    $switch->snmpPollSwitchPorts( $host, $this->getLogger() );
+                $switch->snmpPollSwitchPorts( $host, $this->getLogger() );
                 $this->getD2EM()->flush();
                 $this->addMessage( "The below is <strong>live information</strong> gathered via SNMP", OSS_Message::INFO );
             }
@@ -478,7 +478,7 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         else
             $this->view->sid = $switch->getId();
 
-        if( $switch->getSwitchtype() != \Entities\Switcher::TYPE_SWITCH || !$switch->getActive() )
+        if( !$switch->getActive() )
         {
             $this->addMessage( 'SNMP Polling of ports is only valid for switches (e.g. not console servers) that are active', OSS_Message::ERROR );
             $this->redirect( 'switch/list' );

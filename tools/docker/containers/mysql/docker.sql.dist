@@ -1256,7 +1256,6 @@ CREATE TABLE `physicalinterface` (
   `status` int(11) DEFAULT NULL,
   `speed` int(11) DEFAULT NULL,
   `duplex` varchar(16) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `monitorindex` int(11) DEFAULT NULL,
   `notes` longtext COLLATE utf8_unicode_ci,
   `autoneg` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
@@ -1275,7 +1274,7 @@ CREATE TABLE `physicalinterface` (
 
 LOCK TABLES `physicalinterface` WRITE;
 /*!40000 ALTER TABLE `physicalinterface` DISABLE KEYS */;
-INSERT INTO `physicalinterface` VALUES (2,30,NULL,1,1,10000,'full',2,NULL,1),(4,37,NULL,3,1,1000,'full',1,NULL,1),(5,26,NULL,4,1,1000,'full',1,NULL,1),(7,32,NULL,6,1,1000,'full',1,NULL,1),(8,31,NULL,1,1,10000,'full',3,NULL,0);
+INSERT INTO `physicalinterface` VALUES (2,30,NULL,1,1,10000,'full',NULL,1),(4,37,NULL,3,1,1000,'full',NULL,1),(5,26,NULL,4,1,1000,'full',NULL,1),(7,32,NULL,6,1,1000,'full',NULL,1),(8,31,NULL,1,1,10000,'full',NULL,0);
 /*!40000 ALTER TABLE `physicalinterface` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1398,7 +1397,6 @@ CREATE TABLE `switch` (
   `ipv4addr` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `ipv6addr` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `snmppasswd` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `switchtype` int(11) DEFAULT NULL,
   `model` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `active` tinyint(1) DEFAULT '1',
   `os` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -1429,7 +1427,7 @@ CREATE TABLE `switch` (
 
 LOCK TABLES `switch` WRITE;
 /*!40000 ALTER TABLE `switch` DISABLE KEYS */;
-INSERT INTO `switch` VALUES (2,1,1,14,'Switch 1','switch1','172.30.201.60','fd99::6','switch1',1,'DCS-7280SR-48C6',1,'EOS',NULL,'4.18.0F','2018-01-22 15:03:24','','(not implemented)',1,NULL,NULL,NULL);
+INSERT INTO `switch` VALUES (2,1,1,14,'Switch 1','switch1','172.30.201.60','fd99::6','switch1','DCS-7280SR-48C6',1,'EOS',NULL,'4.18.0F','2018-01-22 15:03:24','','(not implemented)',1,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `switch` ENABLE KEYS */;
 UNLOCK TABLES;
 

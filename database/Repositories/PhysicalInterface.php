@@ -13,29 +13,6 @@ use Doctrine\ORM\EntityRepository;
  */
 class PhysicalInterface extends EntityRepository
 {
-    /**
-     * When performing various scripted tasks such as polling interface statistics and generating
-     * filenames, we use `monitorindex` as a label. These should be unique across a customer's
-     * physical interfaces (but not unique across all customers).
-     *
-     * @param \Entities\Customer $customer The customer to find the next sequential monitor index
-     * @return int The next sequential monitor index
-     */
-    public function getNextMonitorIndex( $customer )
-    {
-        $maxMonIndex = 0;
-        foreach( $customer->getVirtualInterfaces() as $vi )
-        {
-            foreach( $vi->getPhysicalInterfaces() as $pi )
-            {
-                if( $pi->getMonitorIndex() > $maxMonIndex )
-                    $maxMonIndex = $pi->getMonitorIndex();
-            }
-        }
-        
-        return $maxMonIndex + 1;
-    }
-
 
     /**
      * Provide array of physical interfaces for the list Action
@@ -46,7 +23,7 @@ class PhysicalInterface extends EntityRepository
     {
         return $this->getEntityManager()->createQuery(
             "SELECT pi.id AS id, pi.speed AS speed, pi.duplex AS duplex, pi.status AS status,
-                    pi.monitorindex AS monitorindex, pi.notes AS notes, pi.autoneg AS autoneg,
+                    pi.notes AS notes, pi.autoneg AS autoneg,
                     c.name AS customer, c.id AS custid,
                     s.name AS switch, s.id AS switchid,
                     vi.id AS vintid,

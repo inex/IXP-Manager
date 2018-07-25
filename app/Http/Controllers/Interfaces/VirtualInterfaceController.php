@@ -253,7 +253,7 @@ class VirtualInterfaceController extends Common
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getNames(),
             'vli'                   => false,
             'vlans'                 => D2EM::getRepository( VlanEntity::class )->getNames( false ),
-            'pi_switches'           => D2EM::getRepository( SwitcherEntity::class )->getNames( true, SwitcherEntity::TYPE_SWITCH ),
+            'pi_switches'           => D2EM::getRepository( SwitcherEntity::class )->getNames( true ),
             'resoldCusts'           => $this->resellerMode() ? json_encode( D2EM::getRepository( CustomerEntity::class )->getResoldCustomerNames() ) : json_encode([]) ,
             'selectedCust'          => $cust
         ]);
@@ -292,8 +292,6 @@ class VirtualInterfaceController extends Common
 
         $sp->setType( SwitchPortEntity::TYPE_PEERING );
         $pi->setSwitchPort( $sp );
-
-        $pi->setMonitorindex( D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $c ) );
 
         $vli = new VlanInterfaceEntity();
         D2EM::persist($vli);
