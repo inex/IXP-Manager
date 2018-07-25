@@ -184,8 +184,14 @@ trait OSS_Controller_Trait_Auth
 
                     $this->getD2EM()->flush();
 
+
                     if( isset( $this->getSessionNamespace()->postAuthRedirect ) )
                         $this->_redirect( $this->getSessionNamespace()->postAuthRedirect );
+                    elseif(  isset(  $_SESSION["url.redirect.after.login"] ) ){
+                        $url = $_SESSION["url.redirect.after.login"] ;
+                        unset( $_SESSION["url.redirect.after.login"] );
+                        $this->_redirect( $url );
+                    }
                     else
                         $this->_redirect( '' );
                     break;
