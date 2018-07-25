@@ -70,11 +70,11 @@ class Handler extends ExceptionHandler
             \App::make('ZendFramework')->run();
             die();
 
-        } else if ($this->isHttpException($e)) {
+        } else if( $this->isHttpException($e) ) {
 
             return $this->renderHttpException($e);
 
-        } else if ($e instanceof AuthorizationException ) {
+        } else if( $e instanceof AuthorizationException && request()->route()->action['middleware'] != 'grapher' ) {
             //AlertContainer::push( "Please login below.", Alert::DANGER );
 
             // store in session url for a redirection after login

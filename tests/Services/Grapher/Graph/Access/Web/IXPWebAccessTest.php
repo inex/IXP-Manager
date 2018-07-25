@@ -63,23 +63,23 @@ class IXPWebAccessTest extends Access
     {
         Config::set( 'grapher.access.ixp', '1' );
         $response = $this->get('/statistics/ixp');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.ixp', '2' );
         $response = $this->get('/statistics/ixp');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.ixp', '3' );
         $response = $this->get('/statistics/ixp');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.ixp', 'blah' );
         $response = $this->get('/statistics/ixp');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.ixp', null );
         $response = $this->get('/statistics/ixp');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
     }
 
     /**
@@ -90,7 +90,7 @@ class IXPWebAccessTest extends Access
     {
         Config::set( 'grapher.access.ixp', '1' );
         $response = $this->get('/statistics/ixp');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/ixp');
         $response->assertStatus(200);
@@ -110,10 +110,10 @@ class IXPWebAccessTest extends Access
     {
         Config::set( 'grapher.access.ixp', '2' );
         $response = $this->get('/statistics/ixp');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/ixp');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/ixp');
         $response->assertStatus(200);
@@ -130,13 +130,13 @@ class IXPWebAccessTest extends Access
     {
         Config::set( 'grapher.access.ixp', '3' );
         $response = $this->get('/statistics/ixp');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/ixp');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/ixp');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/ixp');
         $response->assertStatus(200);

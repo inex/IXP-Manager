@@ -46,12 +46,12 @@ class LatencyWebAccessTest extends Access
     {
         // this should be the default
         $response = $this->get('/statistics/latency/1/ipv4');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         // force the default
         Config::set( 'grapher.access.latency', 'own_graphs_only' );
         $response = $this->get('/statistics/latency/1/ipv4');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         // force public access
         Config::set( 'grapher.access.latency', 0 );
@@ -67,23 +67,23 @@ class LatencyWebAccessTest extends Access
     {
         Config::set( 'grapher.access.latency', '1' );
         $response = $this->get('/statistics/latency/1/ipv4');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.latency', '2' );
         $response = $this->get('/statistics/latency/1/ipv4');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.latency', '3' );
         $response = $this->get('/statistics/latency/1/ipv4');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.latency', 'blah' );
         $response = $this->get('/statistics/latency/1/ipv4');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.latency', null );
         $response = $this->get('/statistics/latency/1/ipv4');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
     }
 
     /**
@@ -94,7 +94,7 @@ class LatencyWebAccessTest extends Access
     {
         Config::set( 'grapher.access.latency', 'own_graphs_only' );
         $response = $this->get('/statistics/latency/1/ipv4');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         // customer user
         $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )->get('/statistics/latency/1/ipv4');
@@ -106,11 +106,11 @@ class LatencyWebAccessTest extends Access
 
         // non-customer user
         $response = $this->actingAs( $this->getCustUser( 'imcustuser' ) )->get('/statistics/latency/1/ipv4');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         // non-customer admin user
         $response = $this->actingAs( $this->getCustAdminUser( 'imcustadmin' ) )->get('/statistics/latency/1/ipv4');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         // superadmin
         $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/latency/1/ipv4');
@@ -126,7 +126,7 @@ class LatencyWebAccessTest extends Access
     {
         Config::set( 'grapher.access.latency', '1' );
         $response = $this->get('/statistics/latency/1/ipv4');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/latency/1/ipv4');
         $response->assertStatus(200);
@@ -147,10 +147,10 @@ class LatencyWebAccessTest extends Access
     {
         Config::set( 'grapher.access.latency', '2' );
         $response = $this->get('/statistics/latency/1/ipv4');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/latency/1/ipv4');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/latency/1/ipv4');
         $response->assertStatus(200);
@@ -167,13 +167,13 @@ class LatencyWebAccessTest extends Access
     {
         Config::set( 'grapher.access.latency', '3' );
         $response = $this->get('/statistics/latency/1/ipv4');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/latency/1/ipv4');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/latency/1/ipv4');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/latency/1/ipv4');
         $response->assertStatus(200);

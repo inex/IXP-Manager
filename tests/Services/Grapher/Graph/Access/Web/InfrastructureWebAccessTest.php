@@ -63,23 +63,23 @@ class InfrastructureWebAccessTest extends Access
     {
         Config::set( 'grapher.access.infrastructure', '1' );
         $response = $this->get('/statistics/infrastructure');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.infrastructure', '2' );
         $response = $this->get('/statistics/infrastructure');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.infrastructure', '3' );
         $response = $this->get('/statistics/infrastructure');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.infrastructure', 'blah' );
         $response = $this->get('/statistics/infrastructure');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         Config::set( 'grapher.access.infrastructure', null );
         $response = $this->get('/statistics/infrastructure');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
     }
 
     /**
@@ -90,7 +90,7 @@ class InfrastructureWebAccessTest extends Access
     {
         Config::set( 'grapher.access.infrastructure', '1' );
         $response = $this->get('/statistics/infrastructure');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/infrastructure');
         $response->assertStatus(200);
@@ -110,10 +110,10 @@ class InfrastructureWebAccessTest extends Access
     {
         Config::set( 'grapher.access.infrastructure', '2' );
         $response = $this->get('/statistics/infrastructure');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/infrastructure');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/infrastructure');
         $response->assertStatus(200);
@@ -130,13 +130,13 @@ class InfrastructureWebAccessTest extends Access
     {
         Config::set( 'grapher.access.infrastructure', '3' );
         $response = $this->get('/statistics/infrastructure');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/infrastructure');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/infrastructure');
-        $response->assertStatus(403);
+        $response->assertStatus(302);
 
         $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/infrastructure');
         $response->assertStatus(200);
