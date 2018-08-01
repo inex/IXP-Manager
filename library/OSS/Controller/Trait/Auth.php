@@ -582,7 +582,7 @@ trait OSS_Controller_Trait_Auth
             $this->forward( 'logout' ); die();
         }
 
-        $this->_redirect( '' );
+        $this->_redirect( 'dashboard' );
     }
 
     /**

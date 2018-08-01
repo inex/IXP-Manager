@@ -188,7 +188,7 @@
                                             <?php endif; ?>
                                             <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
                                                 <a class="btn btn-default btn-sm" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] )
-                                                . ( $vi->getVlanInterfaces() ? '?svli=' . $vi->getVlanInterfaces()[0]->getId() : '' )
+                                                . ( $vi->getVlanInterfaces()[0] ? '?svli=' . $vi->getVlanInterfaces()[0]->getId() : '' )
                                                 ?>">
                                                     <span class="glyphicon glyphicon-random"></span>
                                                 </a>
