@@ -29,7 +29,7 @@
                             <span class="label label-<?php if( $t->rsclient ): ?>success<?php else: ?>important<?php endif; ?>">RS Client</span>
                             <?php if( $t->as112UiActive ): ?>
                                 &nbsp;&nbsp;&nbsp;
-                                <span class="label label-<?php if( $t->as112client ): ?> success<?php else: ?>important<?php endif; ?>">AS112</span>
+                                <span class="label label-<?php if( $t->as112client ): ?>success<?php else: ?>important<?php endif; ?>">AS112</span>
                             <?php endif; ?>
                         <?php endif; ?>
                     </td>
