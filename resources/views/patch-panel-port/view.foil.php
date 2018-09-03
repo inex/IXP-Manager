@@ -215,7 +215,7 @@
                                                 </td>
                                                 <td>
                                                     <?php if( !$current ): ?>
-                                                        <?= $p->getCustomer() ?>
+                                                        <?= $t->ee( $p->getCustomer() ) ?>
                                                     <?php else: ?>
 
                                                         <a href="<?= route( 'customer@overview' , [ 'id' => $p->getCustomer()->getId() ] ) ?>" >
