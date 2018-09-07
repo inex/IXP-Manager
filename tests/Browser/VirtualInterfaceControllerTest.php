@@ -684,7 +684,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $browser->press("#delete-vli-" . $vli->getId() )
             ->waitForText( 'Do you really want to delete this Vlan Interface?' )
             ->press('Delete')
-            ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() )
+            ->assertPathIs('/customer/overview/' . $vi->getCustomer()->getId() . '/ports' )
             ->waitForReload()
             ->assertSee( 'The Vlan Interface has been deleted successfully.' );
 
