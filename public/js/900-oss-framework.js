@@ -754,3 +754,16 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
 } );
+
+//See https://github.com/harvesthq/chosen/issues/92 for:
+function ossChosenFixWidth( obj, force ) {
+    if( ( force != undefined && force == true ) || obj.attr( 'chzn-fix-width' ) === '1' ) {
+        czn_id = "#" + obj.attr( "id" ) + "_chzn";
+        width = parseInt( obj.css( "width" ) );
+
+        if( $( czn_id ).length == 0)
+            czn_id = czn_id.replace( /\-/g, "_" );
+
+        $( czn_id ).css( "width", width + "px" );
+    }
+}
