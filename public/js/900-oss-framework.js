@@ -378,13 +378,13 @@ function ossPopover()
 // clear a select dropdown
 function ossChosenClear( id ) {
     $( id ).html( "" ).val( "" );
-    $( id ).trigger( "change" );
+    $( id ).trigger( "chosen:updated" );
 }
 
 //clear a chosen dropdown with a placeholder
 function ossChosenClear( id, ph ) {
     $( id ).html( ph ).val( "" );
-    $( id ).trigger( "change" );
+    $( id ).trigger( "chosen:updated" );
 }
 
 
@@ -395,7 +395,7 @@ function ossChosenSet( id, options, value ) {
     if( value != undefined )
         $( id ).val( value );
 
-    $( id ).trigger( "change" );
+    $( id ).trigger( "chosen:updated" );
 }
 
 //****************************************************************************
@@ -754,3 +754,17 @@ jQuery.extend( jQuery.fn.dataTableExt.oSort, {
         return ((a < b) ? 1 : ((a > b) ? -1 : 0));
     }
 } );
+
+//See https://github.com/harvesthq/chosen/issues/92 for:
+function ossChosenFixWidth( obj, force ) {
+    if( ( force != undefined && force == true ) || obj.attr( 'chzn-fix-width' ) === '1' ) {
+        czn_id = "#" + obj.attr( "id" ) + "_chosen";
+        width = parseInt( obj.css( "width" ) );
+
+        if( $( czn_id ).length == 0){
+            czn_id = czn_id.replace( /\-/g, "_" );
+        }
+
+        $( czn_id ).css( "width", width + "px" );
+    }
+}
