@@ -607,7 +607,8 @@ class Switcher extends EntityRepository
                                                     FROM Entities\\Switcher s2
                                                     LEFT JOIN s2.Infrastructure inf
                                                     WHERE s2.id = ?1)
-                        AND s.loopback_ip IS NOT NULL";
+                        AND s.loopback_ip IS NOT NULL
+                        AND s.active = 1";
 
         if( $excludeCurrentSwitch ){
             $dql .= " AND s.id != ".$id;
