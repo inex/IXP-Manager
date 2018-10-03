@@ -43,7 +43,8 @@ class PostSpeeds extends Command {
      * @var string
      */
     protected $signature = 'audit:port-speeds
-        {--cron : Running as a cronjob, only output if mismatched ports found}';
+        {--cron : Running as a cronjob, only output if mismatched ports found}
+        {--ignore-pids= : Comma separated physical interface database IDs to ignore}';
 
     /**
      * The console command description.
@@ -62,12 +63,23 @@ class PostSpeeds extends Command {
 
         $mismatched = [];
 
+        $ignorepiids = [];
+        if( $this->option('ignore-pids' ) ) {
+            $ignorepiids = explode( ',', $this->option('ignore-pids' ) );
+        }
+
         /** @var PhysicalInterface $pi */
         foreach( D2EM::getRepository(PhysicalInterface::class )->findAll() as $pi ) {
 
             if( $pi->statusIsConnectedOrQuarantine() && $pi->getSwitchPort() && $pi->getSpeed() != $pi->getSwitchPort()->getIfHighSpeed() ) {
+
+                if( in_array( $pi->getId(), $ignorepiids ) ) {
+                    continue;
+                }
+
                 $mismatched[] = [
                     $pi->getVirtualInterface()->getCustomer()->getFormattedName(),
+                    $pi->getId(),
                     $pi->getSwitchPort()->getSwitcher()->getName(),
                     $pi->getSwitchPort()->getName(),
                     $pi->getSwitchPort()->getIfHighSpeed(),
@@ -82,7 +94,12 @@ class PostSpeeds extends Command {
         }
 
         $this->info( "\nAudit of Configured Physical Interface Port Speeds Against SNMP Discovered Speeds\n" );
-        $this->table( [ 'Customer', 'Switch', 'Switchport', 'PI Speed', 'SNMP Speed' ], $mismatched );
+
+        if( $mismatched == [] ) {
+            $this->info( "No mismatched ports found." );
+        } else {
+            $this->table( [ 'Customer', 'PI DB ID', 'Switch', 'Switchport', 'PI Speed', 'SNMP Speed' ], $mismatched );
+        }
 
         return $mismatched == [] ? 0 : 1;
     }
