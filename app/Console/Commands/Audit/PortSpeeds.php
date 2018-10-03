@@ -64,7 +64,7 @@ class PostSpeeds extends Command {
 
             if( $pi->statusIsConnectedOrQuarantine() && $pi->getSwitchPort() && $pi->getSpeed() != $pi->getSwitchPort()->getIfHighSpeed() ) {
                 $this->error( sprintf(
-                    "%s - %s :: %s has SNMP speed %d but physical interface has %d\n",
+                    "%s - %s :: %s has SNMP speed %d but physical interface has %d",
                     $pi->getVirtualInterface()->getCustomer()->getFormattedName(),
                     $pi->getSwitchPort()->getSwitcher()->getName(),
                     $pi->getSwitchPort()->getName(),
