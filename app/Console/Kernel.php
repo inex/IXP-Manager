@@ -2,6 +2,7 @@
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use IXP\Console\Commands\Audit\PostSpeeds;
 use IXP\Console\Commands\Upgrade\RouterImport;
 
 class Kernel extends ConsoleKernel {
@@ -12,6 +13,9 @@ class Kernel extends ConsoleKernel {
      * @var array
      */
     protected $commands = [
+
+        \IXP\Console\Commands\Audit\PostSpeeds::class,
+
         \IXP\Console\Commands\Irrdb\UpdateAsnDb::class,
         \IXP\Console\Commands\Irrdb\UpdatePrefixDb::class,
 
