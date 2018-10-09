@@ -314,7 +314,7 @@ pEgAAAAASUVORK5CYII=" />
     <br><br>
     <em>
         Internet Neutral Exchange Association Company Limited by Guarantee (INEX) is a company registered in Dublin, Ireland with the Companies Registration Office (#253804).
-        Our registered office is 1-2 Marino Mart, Fairview, Dublin 3 but our correspondance and visiting address is as above.
+        Our registered office is 1-2 Marino Mart, Fairview, Dublin 3 but our correspondence and visiting address is as above.
         More details at: <a href="https://www.inex.ie/">www.inex.ie</a>. Contact details: <a href="https://www.inex.ie/support/">https://www.inex.ie/support/</a>
     </em>
 </p>
