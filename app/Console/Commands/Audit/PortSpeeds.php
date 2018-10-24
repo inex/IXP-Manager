@@ -35,7 +35,7 @@ use Entities\PhysicalInterface;
  * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class PostSpeeds extends Command {
+class PortSpeeds extends Command {
 
     /**
      * The name and signature of the console command.
