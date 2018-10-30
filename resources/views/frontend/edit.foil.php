@@ -4,17 +4,31 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
-        <a href="<?= route($t->feParams->route_prefix.'@list') ?>">
-    <?php endif; ?>
-    <?=  $t->feParams->pagetitle  ?>
-    <?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
-        </a>
-    <?php endif; ?>
-<?php $this->append() ?>
 
+    <?php if( auth::getUser()->isSuperUser() ): ?>
+
+        <?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
+            <a href="<?= route($t->feParams->route_prefix.'@list') ?>">
+        <?php endif; ?>
+        <?=  $t->feParams->pagetitle  ?>
+        <?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
+            </a>
+        <?php endif; ?>
+
+    <?php else: ?>
+
+        <?=  $t->feParams->pagetitle  ?>
+
+    <?php endif; ?>
+
+
+<?php $this->append() ?>
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li> <?= $t->data[ 'params']['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->feParams->titleSingular  ?> </li>
+    <?php if( auth::getUser()->isSuperUser() ): ?>
+        <li> <?= $t->data[ 'params']['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->feParams->titleSingular  ?> </li>
+    <?php else: ?>
+        <h3 style="display:inline;color: #999999"><?= $t->data[ 'params']['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->feParams->titleSingular  ?></h3>
+    <?php endif; ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>

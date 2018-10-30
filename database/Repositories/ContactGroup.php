@@ -27,8 +27,9 @@ class ContactGroup extends EntityRepository
      *         ]
      *     ];
      *
-     * @param string $type Optionally limit to a specific type
-     * @param int    $cid  Contact id to filter for a particular contact
+     * @param bool $type Optionally limit to a specific type
+     * @param bool $cid Contact id to filter for a particular contact
+     *
      * @return array
      */
     public function getGroupNamesTypeArray( $type = false, $cid = false )
@@ -69,7 +70,10 @@ class ContactGroup extends EntityRepository
      *
      * @param \Entities\Customer $customer The customer to count the contact groups of
      * @param int $id Contact group id
+     *
      * @return int The number of contacts with a contact group for a given customer
+     *
+     * @throws
      */
     public function countForCustomer( $customer, $id )
     {
@@ -85,5 +89,53 @@ class ContactGroup extends EntityRepository
             ->setParameter( 1, $id )
             ->setParameter( 2, $customer )
             ->getSingleScalarResult();
+    }
+
+
+    /**
+     * Get all Contacts Group for listing on the frontend CRUD
+     *
+     * @see \IXP\Http\Controllers\Doctrine2Frontend
+     *
+     *
+     * @param \stdClass $feParams
+     * @param $id
+     *
+     * @return array Array of Contacts (as associated arrays) (or single element if `$id` passed)
+     *
+     */
+    public function getAllForFeList( \stdClass $feParams, $id )
+    {
+        $dql = "SELECT  cg.id AS id, 
+                        cg.name AS name, 
+                        cg.type AS type,
+                        cg.created AS created, 
+                        cg.description AS description,
+                        cg.active AS active, 
+                        cg.limited_to AS limit_to
+                  FROM Entities\\ContactGroup cg
+                  WHERE 1 = 1";
+
+
+
+        if( $types = config( "contact_group.types" ) ){
+
+
+            $dql .= " AND cg.type IN('" . implode( "','", array_keys( $types ) ) . "')";
+        }
+
+
+        if( $id ) {
+            $dql .= " AND cg.id = " . (int)$id;
+        }
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+
+        return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
+
     }
 }

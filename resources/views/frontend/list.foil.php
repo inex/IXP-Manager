@@ -109,7 +109,11 @@
 
                                         <td>
 
+
+
                                             <?php if(isset( $cconf[ 'type'] ) ): ?>
+
+
 
                                                 <?php if( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'HAS_ONE'] ): ?>
                                                     <?php $nameIdParam = '' ; ?>
@@ -163,6 +167,47 @@
                                                 <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
 
                                                     <?= $t->insert( $cconf['script'], [ 'row' => $row, 'col' => $col ] ) ?>
+
+                                                <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'LABEL'] ): ?>
+
+                                                    <?php if( isset( $cconf[ 'explode'] ) ): ?>
+
+                                                        <?php if( strpos( $row[ $col ], $cconf[ 'explode' ][ 'delimiter' ] ) !== false ): ?>
+
+                                                            <?php $exploded = explode( $cconf[ 'explode' ][ 'delimiter' ] , $row[ $col ] ); ?>
+
+                                                            <?php foreach( $exploded as $explode ): ?>
+
+                                                                <span class="label label-success"><?= $t->ee( $explode ) ?> </span><?= $cconf[ 'explode' ][ 'replace' ] ?>
+
+                                                            <?php endforeach; ?>
+
+                                                        <?php else: ?>
+                                                            <span class="label label-success"><?= $t->ee( $row[ $col ] ) ?></span>
+
+                                                        <?php endif;?>
+
+                                                    <?php elseif( isset( $cconf[ 'array'] )  ): ?>
+
+                                                        <?php foreach( $row[ $col ] as $item ): ?>
+
+                                                            <span class="label label-success"><?= $t->ee( $item ) ?> </span><?= $cconf[ 'array' ][ 'replace' ] ?>
+
+                                                        <?php endforeach; ?>
+
+                                                    <?php else: ?>
+
+                                                        <span class="label label-success"><?= $t->ee( $row[ $col ] ) ?></span>
+
+                                                    <?php endif; ?>
+
+                                                <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'ARRAY'] ): ?>
+
+                                                    <?= $cconf[ 'source' ][ $row[ $col ] ] ?>
+
+                                                <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'INTEGER'] ): ?>
+
+                                                    <?= (int)$row[ $col ] ?>
 
                                                 <?php else: ?>
 

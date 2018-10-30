@@ -8,7 +8,7 @@
 
             let objectId = $( "#" + this.id ).attr( "data-object-id" );
 
-            let html = `<form id="d2f-form-delete" method="POST" action="<?= route('contacts@delete' ) ?>">
+            let html = `<form id="d2f-form-delete" method="POST" action="<?= route('contact@delete' ) ?>">
                                 <div>Do you really want to delete this Contact?</div>
                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                                 <input type="hidden" name="id" value="${objectId}">

@@ -150,58 +150,6 @@ class ContactsController extends Doctrine2Frontend {
         return Redirect::to( route( "customer@overview", [ "id" => $this->object->getCustomer()->getId(), "tab" => "users" ] ) );
     }
 
-    /**
-     * Function which can be over-ridden to perform any pre-deletion tasks
-     *
-     * You can stop the deletion by returning false but you should also add a
-     * message to explain why (to the AlertContainer).
-     *
-     * The object to be deleted is available via `$this->>object`
-     *
-     * @return bool Return false to stop / cancel the deletion
-     */
-    protected function preDelete( ): bool {
-
-        if( !Auth::getUser()->isSuperUser() ) {
-            if( $this->object->getCustomer()->getId() != Auth::getUser()->getCustomer()->getId() ) {
-                Log::notice( Auth::getUser()->getUsername() . "tried to delete other customer user " . $this->object->getUser()->getUsername() );
-                AlertContainer::push( 'You are not authorised to delete this user. The administrators have been notified.', Alert::DANGER );
-                return false;
-            }
-        } else {
-            // keep the customer ID for redirection on success
-            $this->request->session()->put( "ixp_contact_delete_custid", $this->object->getCustomer()->getId() );
-        }
-
-
-        if( $this->object->getUser() )
-            $this->removeUserData( $this->object );
-
-        return true;
-
-    }
-
-    /**
-     * Allow D2F implementations to override where the post-delete redirect goes.
-     *
-     * To implement this, have it return a valid route url (e.g. `return route( "route-name" );`
-     *
-     * @return null|string
-     */
-    protected function postDeleteRedirect(){
-
-        // retrieve the customer ID
-        if( $custid = $this->request->session()->get( "ixp_contact_delete_custid" ) ) {
-
-            $this->request->session()->remove( "ixp_contact_delete_custid" );
-
-            return route( "customer@overview" , [ "id" => $custid, "tab" => "contacts" ] );
-        }
-
-        return null;
-    }
-
-
 
     /**
      * Delete all the informations associated to the User (User preference, User logins, Api keys)

@@ -4,21 +4,38 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= route($t->feParams->route_prefix.'@list') ?>">
-        <?=  $t->feParams->pagetitle  ?>
-    </a>
+    <?php if( Auth::getUser()->isSuperUser() ): ?>
+        <a href="<?= route($t->feParams->route_prefix.'@list') ?>">
+    <?php endif; ?>
+
+    <?=  $t->feParams->pagetitle  ?>
+
+    <?php if( Auth::getUser()->isSuperUser() ): ?>
+        </a>
+    <?php endif; ?>
+
 <?php $this->append() ?>
 
-<?php $this->section( 'page-header-postamble' ) ?>
-    <li>
-        View <?=  $t->feParams->titleSingular  ?>
-    </li>
-<?php $this->append() ?>
+
+
+    <?php $this->section( 'page-header-postamble' ) ?>
+        <?php if( Auth::getUser()->isSuperUser() ): ?>
+            <li>
+                View <?=  $t->feParams->titleSingular  ?>
+            </li>
+        <?php else:?>
+            <h3 style="display:inline;color: #999999">
+                View <?=  $t->feParams->titleSingular  ?>
+            </h3>
+        <?php endif; ?>
+    <?php $this->append() ?>
+
+
 
 
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
+    <li class="pull-right" style=<?= Auth::getUser()->isSuperUser() ? "margin-top: 10px" : "" ?>>
         <div class="btn-group btn-group-xs" role="group">
             <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@list') ?>">
                 <span class="glyphicon glyphicon-th-list"></span>
@@ -148,6 +165,53 @@
                                                                 <?= $cconf[ 'const' ][ $t->data[ 'item' ][ $col ] ]  ?>
 
                                                             <?php endif; ?>
+
+                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'LABEL'] ): ?>
+
+                                                            <?php if( isset( $t->data[ 'item' ][ $col ] ) ): ?>
+
+
+                                                                <?php if( isset( $cconf[ 'explode'] ) ): ?>
+
+                                                                    <?php if( strpos( $t->data[ 'item' ][ $col ], $cconf[ 'explode' ][ 'delimiter' ] ) !== false ): ?>
+
+                                                                        <?php $exploded = explode( $cconf[ 'explode' ][ 'delimiter' ] , $t->data[ 'item' ][ $col ] ); ?>
+
+                                                                        <?php foreach( $exploded as $explode ): ?>
+
+                                                                            <span class="label label-success"><?= $t->ee( $explode ) ?> </span><?= $cconf[ 'explode' ][ 'replace' ] ?>
+
+                                                                        <?php endforeach; ?>
+
+                                                                    <?php else: ?>
+
+                                                                        <span class="label label-success"><?= $t->ee( $t->data[ 'item' ][ $col ] ) ?></span>
+
+                                                                    <?php endif;?>
+
+                                                                <?php elseif( isset( $cconf[ 'array'] )  ): ?>
+
+                                                                    <?php foreach( $t->data[ 'item' ][ $col ] as $item ): ?>
+
+                                                                        <span class="label label-success"><?= $t->ee( $item ) ?> </span><?= $cconf[ 'array' ][ 'replace' ] ?>
+
+                                                                    <?php endforeach; ?>
+
+                                                                <?php else: ?>
+
+                                                                    <span class="label label-success"><?= $t->ee( $t->data[ 'item' ][ $col ] ) ?></span>
+
+                                                                <?php endif; ?>
+
+                                                            <?php endif; ?>
+
+                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'ARRAY'] ): ?>
+
+                                                            <?= $cconf[ 'source' ][ $t->data[ 'item' ][ $col] ] ?>
+
+                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'INTEGER'] ): ?>
+
+                                                            <?=  (int)$t->data[ 'item' ][ $col] ?>
 
                                                         <?php else: ?>
 

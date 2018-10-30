@@ -2,7 +2,11 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
+use Entities\{
+    ContactGroup    as ContactGroupEntity,
+    Customer        as CustomerEntity,
+    User            as UserEntity
+};
 
 /**
  * Entities\Contact
@@ -65,7 +69,7 @@ class Contact
     protected $id;
 
     /**
-     * @var |Entities\Customer
+     * @var CustomerEntity
      */
     protected $Customer;
     
@@ -328,10 +332,10 @@ class Contact
     /**
      * Set Customer
      *
-     * @param |Entities\Customer $customer
+     * @param CustomerEntity $customer
      * @return Contact
      */
-    public function setCustomer(\Entities\Customer $customer = null)
+    public function setCustomer( CustomerEntity $customer = null)
     {
         $this->Customer = $customer;
     
@@ -341,7 +345,7 @@ class Contact
     /**
      * Get Customer
      *
-     * @return |Entities\Customer
+     * @return CustomerEntity
      */
     public function getCustomer()
     {
@@ -382,10 +386,10 @@ class Contact
     /**
      * Set User
      *
-     * @param \Entities\User $user
+     * @param UserEntity $user
      * @return Contact
      */
-    public function setUser(\Entities\User $user)
+    public function setUser( UserEntity $user)
     {
         $this->User = $user;
     
@@ -417,10 +421,10 @@ class Contact
     /**
      * Add Groups
      *
-     * @param \Entities\ContactGroup $groups
+     * @param ContactGroupEntity $groups
      * @return Contact
      */
-    public function addGroup(\Entities\ContactGroup $groups)
+    public function addGroup( ContactGroupEntity $groups)
     {
         $this->Groups[] = $groups;
     
@@ -430,9 +434,9 @@ class Contact
     /**
      * Remove Groups
      *
-     * @param \Entities\ContactGroup $groups
+     * @param ContactGroupEntity $groups
      */
-    public function removeGroup(\Entities\ContactGroup $groups)
+    public function removeGroup( ContactGroupEntity $groups)
     {
         $this->Groups->removeElement($groups);
     }

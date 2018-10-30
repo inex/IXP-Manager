@@ -123,6 +123,9 @@ abstract class Doctrine2Frontend extends Controller {
         'YES_NO'            => 'yes_no',
         'PARSDOWN'          => 'parsdown',
         'CONST'             => 'const',
+        'LABEL'             => 'label',
+        'ARRAY'             => 'array',
+        'INTEGER'           => 'integer',
     ];
 
 
@@ -256,6 +259,15 @@ abstract class Doctrine2Frontend extends Controller {
     }
 
     /**
+     * Function which can be over-ridden to perform any pre-list tasks
+     *
+     * E.g. adding elements to $this->view for the pre/post-amble templates.
+     *
+     * @return void
+     */
+    protected function preView() {}
+
+    /**
      * View an object
      *
      * @param Request $request The HTTP Request object
@@ -271,6 +283,8 @@ abstract class Doctrine2Frontend extends Controller {
         $this->data[ 'view' ][ 'viewPostamble']       = $this->resolveTemplate( 'view-postamble',     false );
         $this->data[ 'view' ][ 'viewRowOverride']     = $this->resolveTemplate( 'view-row-override',  false );
         $this->data[ 'view' ][ 'viewScript' ]         = $this->resolveTemplate( 'js/view',            false );
+
+        $this->preView();
 
         return $this->display( 'view' );
     }
