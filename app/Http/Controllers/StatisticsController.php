@@ -328,6 +328,9 @@ class StatisticsController extends Controller
                 if( $t->isGraphable() ) {
                     $g = $grapher->customer( $t );
                 }
+                else {
+                    continue;
+                }
             }
 
             /** @var Graph $g */
