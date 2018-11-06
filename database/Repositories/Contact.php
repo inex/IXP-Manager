@@ -8,8 +8,7 @@ use Auth, D2EM;
 
 use Entities\{
     Contact             as ContactEntity,
-    ContactGroup        as ContactGroupEntity,
-    User                as UserEntity
+    ContactGroup        as ContactGroupEntity
 };
 
 /**
@@ -41,8 +40,6 @@ class Contact extends EntityRepository
     {
         if( !count( $ids ) )
             return [];
-
-
 
         $dql = "SELECT c.id as contact_id,
                         cg.name as name
@@ -94,29 +91,7 @@ class Contact extends EntityRepository
 
 
     /**
-     * Find contacts by username
-     *
-     * Will support a username starts / ends with as it uses LIKE
-     *
-     * @param  string $username The username to search for
-     * @return \Entities\Contact[] Matching contacts
-     */
-    public function findByUsername( $username )
-    {
-        return $this->getEntityManager()->createQuery(
-                "SELECT c
-
-                 FROM \\Entities\\Contact c
-                 LEFT JOIN c.User u
-
-                 WHERE u.username LIKE :username"
-            )
-            ->setParameter( 'username', $username )
-            ->getResult();
-    }
-
-    /**
-     * Find contacts by contact / user email
+     * Find contacts by contact email
      *
      * @param  string $email The email to search for
      * @return \Entities\Contact[] Matching contacts
@@ -127,9 +102,8 @@ class Contact extends EntityRepository
                 "SELECT c
 
                  FROM \\Entities\\Contact c
-                 LEFT JOIN c.User u
-
-                 WHERE c.email = :email OR u.email = :email"
+  
+                 WHERE c.email = :email"
             )
             ->setParameter( 'email', $email )
             ->getResult();
@@ -166,10 +140,9 @@ class Contact extends EntityRepository
                         c.creator AS creator, 
                         c.created AS created, 
                         cust.name AS customer, 
-                        cust.id AS custid,
-                        u.id AS uid
+                        cust.id AS custid
+                     
                   FROM Entities\\Contact c
-                  LEFT JOIN c.User u
                   LEFT JOIN c.Customer cust";
 
         if( config('contact_group.types.ROLE') ) {
@@ -201,8 +174,7 @@ class Contact extends EntityRepository
         $dql .= ( $where ? "" : " WHERE 1 = 1" );
 
         if( !Auth::getUser()->isSuperUser() ) {
-            $dql .= " AND cust.id = " . Auth::getUser()->getCustomer()->getId() . " 
-                     AND ( c.User IS NULL OR u.privs = " . UserEntity::AUTH_CUSTUSER . ")";
+            $dql .= " AND cust.id = " . Auth::getUser()->getCustomer()->getId();
         }
 
 

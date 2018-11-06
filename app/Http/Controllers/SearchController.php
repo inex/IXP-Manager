@@ -36,6 +36,7 @@ use Entities\{
     MACAddress       as   MACAddressEntity,
     PatchPanelPort   as   PatchPanelPortEntity,
     RSPrefix         as   RSPrefixEntity,
+    User             as   UserEntity,
     VlanInterface    as   VlanInterfaceEntity
 };
 
@@ -121,12 +122,14 @@ class SearchController extends Controller {
             else if( preg_match( '/^@([a-zA-Z0-9]+)$/', $search, $matches ) ) {
                 // user by username search
                 $type = 'username';
-                $results = D2EM::getRepository( ContactEntity::class )->findByUsername( $matches[1] . '%' );
+                $results = D2EM::getRepository( UserEntity::class )->findByUsername( $matches[1] . '%' );
             }
             else if( filter_var( $search, FILTER_VALIDATE_EMAIL ) !== false ) {
                 // user by email search
                 $type = 'email';
-                $results = D2EM::getRepository( ContactEntity::class )->findByEmail( $search );
+
+                $results[ 'users' ]     = D2EM::getRepository( UserEntity::class    )->findByEmail( $search );
+                $results[ 'contacts' ]  = D2EM::getRepository( ContactEntity::class )->findByEmail( $search );
             }
             else if( preg_match( '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2}$/', $search ) || preg_match( '/^[0-9a-fA-F]{1,4}:.*:[0-9a-fA-F]{0,4}\/\d{1,3}$/', $search ) ) {
                 // rsprefix search

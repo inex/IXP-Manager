@@ -118,77 +118,7 @@ class ContactsController extends Doctrine2Frontend {
     }
 
 
-    /**
-     * Delete the user only
-     *
-     * @param   Request   $r HTTP request
-     *
-     * @return  RedirectResponse
-     *
-     * @throws
-     */
-    public function deleteUser( Request $r )  {
 
-        if( !Auth::getUser()->isSuperUser() ) {
-            if( $this->object->getCustomer()->getId() != Auth::getUser()->getCustomer()->getId() ) {
-                Log::notice( Auth::getUser()->getUsername() . "tried to delete other customer user " . $this->object->getUser()->getUsername()  );
-                AlertContainer::push( 'You are not authorised to delete this user. The administrators have been notified.', Alert::DANGER );
-                return Redirect::to( '' );
-            }
-        }
-
-        if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( $r->input( 'id' ) ) ) ) {
-            return abort( '404', "Unknown Contact" );
-        }
-
-        $this->removeUserData( $this->object );
-
-        D2EM::flush();
-
-        AlertContainer::push( 'User login account successfully removed.', Alert::SUCCESS );
-
-        return Redirect::to( route( "customer@overview", [ "id" => $this->object->getCustomer()->getId(), "tab" => "users" ] ) );
-    }
-
-
-    /**
-     * Delete all the informations associated to the User (User preference, User logins, Api keys)
-     *
-     * @param ContactEntity $contact The contact entity
-     *
-     * @throws
-     */
-    private function removeUserData( ContactEntity $contact ){
-        /** @var UserEntity $user */
-        $user = $contact->getUser();
-        $userName = $user->getUsername();
-
-        // delete all the user's preferences
-        foreach( $user->getPreferences() as $pref ) {
-            $user->removePreference( $pref );
-            D2EM::remove( $pref );
-        }
-
-        // delete all the user's login records
-        foreach( $user->getLastLogins() as $ll ) {
-            $user->removeLastLogin( $ll );
-            D2EM::remove( $ll );
-        }
-
-        // delete all the user's API keys
-        foreach( $user->getApiKeys() as $ak ) {
-            $user->removeApiKey( $ak );
-            D2EM::remove( $ak );
-        }
-
-        // clear the user from the contact and remove the user then
-        $contact->unsetUser();
-        D2EM::remove( $user );
-
-        Cache::forget( 'oss_d2u_user_' . $user->getId() );
-
-        Log::notice( Auth::getUser()->getUsername()." deleted user" . $userName );
-    }
 
 
 }

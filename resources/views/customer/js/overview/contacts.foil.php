@@ -14,8 +14,6 @@
                                 <input type="hidden" name="id" value="${objectId}">
                             </form>`;
 
-            html += $(this).attr( "data-hasuser" ) == "1" ? "The related user login account will also be removed." : "";
-
             bootbox.dialog({
                 title: "Delete Contact",
                 message: html,

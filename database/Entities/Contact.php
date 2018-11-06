@@ -4,8 +4,7 @@ namespace Entities;
 
 use Entities\{
     ContactGroup    as ContactGroupEntity,
-    Customer        as CustomerEntity,
-    User            as UserEntity
+    Customer        as CustomerEntity
 };
 
 /**
@@ -77,11 +76,6 @@ class Contact
      * @var string
      */
     protected $position;
-
-    /**
-     * @var \Entities\User
-     */
-    protected $User;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -381,41 +375,6 @@ class Contact
     public function getPosition()
     {
         return $this->position;
-    }
-
-    /**
-     * Set User
-     *
-     * @param UserEntity $user
-     * @return Contact
-     */
-    public function setUser( UserEntity $user)
-    {
-        $this->User = $user;
-    
-        return $this;
-    }
-    
-    /**
-     * Unset User
-     *
-     * @return Contact
-     */
-    public function unsetUser()
-    {
-        $this->User = null;
-    
-        return $this;
-    }
-
-    /**
-     * Get User
-     *
-     * @return \Entities\User
-     */
-    public function getUser()
-    {
-        return $this->User;
     }
 
     /**

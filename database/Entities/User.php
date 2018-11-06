@@ -4,7 +4,6 @@ namespace Entities;
 
 use Entities\{
     ApiKey              as ApiKeyEntity,
-    Contact             as ContactEntity,
     Customer            as CustomerEntity,
     User                as UserEntity,
     UserLoginHistory    as UserLoginHistoryEntity,
@@ -516,32 +515,6 @@ class User implements Authenticatable
     public function removeChildren(UserEntity $children)
     {
         $this->Children->removeElement($children);
-    }
-
-    protected $Contact;
-
-
-    /**
-     * Set Contact
-     *
-     * @param ContactEntity $contact
-     * @return User
-     */
-    public function setContact(ContactEntity $contact = null)
-    {
-        $this->Contact = $contact;
-
-        return $this;
-    }
-
-    /**
-     * Get Contact
-     *
-     * @return \Entities\Contact
-     */
-    public function getContact()
-    {
-        return $this->Contact;
     }
 
     /**

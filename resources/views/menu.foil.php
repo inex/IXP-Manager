@@ -61,8 +61,9 @@
                         </li>
                     <?php endif;?>
                 </li>
-                <li>
-                    <a href="<?= url( 'user/list' ) ?>">Users</a>
+
+                <li <?php if( $t->controller == 'UserController' ):?> class="active" <?php endif;?> >
+                    <a href="<?= route('user@list') ?>">Users</a>
                 </li>
 
                 <li <?php if( $t->controller == 'ContactController' ):?> class="active" <?php endif;?> >

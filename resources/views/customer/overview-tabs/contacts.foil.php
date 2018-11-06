@@ -42,8 +42,7 @@
                     <td>
                         <div class="btn-group btn-group-sm">
                             <a class="btn btn-default" href="<?= route( "contact@edit", [ "id" => $co->getId() ] ) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
-                            <a class="btn btn-default" id="cont-list-delete-<?= $co->getId() ?>" data-object-id="<?= $co->getId() ?>" data-hasuser="<?php if( $co->getUser() ): ?>1<?php else: ?>0<?php endif; ?>"
-                               href="#">
+                            <a class="btn btn-default" id="cont-list-delete-<?= $co->getId() ?>" data-object-id="<?= $co->getId() ?>" href="#">
                                 <i class="glyphicon glyphicon-trash"></i>
                             </a>
                         </div>

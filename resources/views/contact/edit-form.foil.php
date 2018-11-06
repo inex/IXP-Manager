@@ -164,13 +164,17 @@
 
     <?= Former::actions(
         Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' ),
-        Former::default_link( 'Cancel' )->href( route ($t->feParams->route_prefix . '@list' )  ),
+        Former::default_link( 'Cancel' )->href( $t->data[ 'params'][ "from" ] == "contact@list" ? route($t->feParams->route_prefix . '@list' ) : route('customer@overview', [ "id" => $t->data[ 'params'][ 'object']->getCustomer()->getId() ,  "tab" => "contacts" ] ) ),
         Former::success_button( 'Help' )->id( 'help-btn' )
     );
     ?>
 
     <?= Former::hidden( 'id' )
         ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
+    ?>
+
+    <?= Former::hidden( 'from' )
+        ->value( $t->data[ 'params'][ "from" ] )
     ?>
 
     <?= Former::close() ?>

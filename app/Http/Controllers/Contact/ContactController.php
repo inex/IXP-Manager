@@ -266,6 +266,13 @@ class ContactController extends Doctrine2Frontend {
 
         $old = request()->old();
 
+        $from = "contact@list";
+
+        // check if we come from the customer overview or the customer list
+        if( isset( $_SERVER[ "HTTP_REFERER" ] ) && strpos( $_SERVER[ "HTTP_REFERER" ] , $this::$route_prefix . "/list" ) === false ){
+            $from = "customer@overview";
+        }
+
         if( config('contact_group.types.ROLE') ){
             $roles      = D2EM::getRepository( ContactGroupEntity::class )->getGroupNamesTypeArray( 'ROLE' )[ "ROLE"];
             $allGroups  = D2EM::getRepository( ContactGroupEntity::class )->getGroupNamesTypeArray( );
@@ -325,7 +332,8 @@ class ContactController extends Doctrine2Frontend {
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
             'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : "" ),
             'roles'                 => $roles,
-            'allGroups'             => $allGroups
+            'allGroups'             => $allGroups,
+            'from'                  => $from
         ];
     }
 
@@ -430,6 +438,10 @@ class ContactController extends Doctrine2Frontend {
 
         D2EM::flush($this->object);
 
+        if( Auth::getUser()->isSuperUser() ) {
+            request()->session()->put( "contact_post_store_redirect", $request->input( 'from' ) );
+        }
+
         return true;
     }
 
@@ -442,8 +454,18 @@ class ContactController extends Doctrine2Frontend {
         if( !Auth::getUser()->isSuperUser() ){
             return route( 'contact@list' );
         } else{
-            return route( 'customer@overview', [ "id" => $this->object->getCustomer()->getId() , "tab" => "contacts" ] );
+
+            $redirect = request()->session()->get( "contact_post_store_redirect" );
+            request()->session()->remove( "contact_post_store_redirect" );
+
+            // retrieve the customer ID
+            if( $redirect != "contact@list" ) {
+                return route( "customer@overview" , [ "id" => $this->object->getCustomer()->getId() , "tab" => "users" ] );
+            }
+
         }
+
+        return null;
 
     }
 

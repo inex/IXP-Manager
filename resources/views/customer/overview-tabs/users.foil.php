@@ -42,12 +42,11 @@
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm">
-                            <a class="btn btn-default" href="<?= url( "contact/edit/uid/". $u->getId() ."/cid/". $t->c->getId() ) ?>">
+                            <a class="btn btn-default" href="<?= route( "user@edit", [ "id" => $u->getId() ] ) ?>">
                                 <i class="glyphicon glyphicon-pencil"></i>
                             </a>
 
-                            <a class="btn btn-default" id="usr-list-delete-<?= $u->getId() ?>" data-object-id="<?= $u->getContact() ? $u->getContact()->getId() : null ?>"
-                               href="#">
+                            <a class="btn btn-default" id="usr-list-delete-<?= $u->getId() ?>" data-object-id="<?=  $u->getId() ?>" href="#">
                                 <i class="glyphicon glyphicon-trash"></i>
                             </a>
                             <a class="btn btn-default"

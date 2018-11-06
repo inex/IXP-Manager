@@ -32,6 +32,10 @@ class EventServiceProvider extends ServiceProvider {
             'IXP\Listeners\Layer2Address\Changed',
         ],
 
+        'IXP\Events\User\Welcome' => [
+            'IXP\Listeners\User\EmailWelcome'
+        ],
+
     ];
 
 
