@@ -318,19 +318,17 @@ class StatisticsController extends Controller
 
         $graphs = [];
         foreach( $targets as $t ) {
+
+            if( !$t->isGraphable() ) {
+                continue;
+            }
+
             if( $infra ) {
-                if( $t->isGraphable() ) {
-                    $g = $grapher->virtint( $t );
-                }
+                $g = $grapher->virtint( $t );
             } else if( $vlan ) {
                 $g = $grapher->vlanint( $t );
             } else {
-                if( $t->isGraphable() ) {
-                    $g = $grapher->customer( $t );
-                }
-                else {
-                    continue;
-                }
+                $g = $grapher->customer( $t );
             }
 
             /** @var Graph $g */
