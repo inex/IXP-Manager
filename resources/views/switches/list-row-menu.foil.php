@@ -9,25 +9,29 @@
     </button>
     <ul class="dropdown-menu dropdown-menu-right">
 
-        <?php if( $t->row[ "active" ] ): ?>
-            <li>
-                <a href="<?= route( "switch-port@snmp-poll", [ "switch" => $t->row[ 'id' ] ] ) ?>">View / Edit Ports (with SNMP poll)</a>
-            </li>
-            <li>
-                <a href="<?= route( "switch-port@list-op-status", [ "switch" => $t->row[ 'id' ] ] ) ?>">View Live Port States (with SNMP poll)</a>
-            </li>
-        <?php endif; ?>
-            <li>
-                <a href="<?= route( "switch-port@list", [ "switch" => $t->row[ 'id' ] ] ) ?>">View / Edit Ports (database only)</a>
-            </li>
-        <?php if( $t->row[ "mauSupported" ] ): ?>
-            <li>
-                <a href="<?= route( "switch-port@list-mau", [ "switch" => $t->row[ 'id' ] ] ) ?> ">View Port MAU Detail (database only)</a>
-            </li>
-        <?php endif; ?>
+        <li class="dropdown-header">SNMP Actions</li>
+
+        <li <?php if( !$t->row[ "active" ] ): ?> class="disabled" <?php endif; ?> >
+            <a href="<?= route( "switch-port@snmp-poll", [ "switch" => $t->row[ 'id' ] ] ) ?>">View / Edit Ports</a>
+        </li>
+
+        <li <?php if( !$t->row[ "active" ] ): ?> class="disabled" <?php endif; ?> >
+            <a href="<?= route( "switch-port@list-op-status", [ "switch" => $t->row[ 'id' ] ] ) ?>">Live Port States</a>
+        </li>
+
+        <li role="separator" class="divider"></li>
+        <li class="dropdown-header">Database Actions</li>
 
         <li>
-            <a href="<?= route( "switch@port-report", [ "id" => $t->row[ 'id' ] ] ) ?>">View Port Report</a>
+            <a href="<?= route( "switch-port@list", [ "switch" => $t->row[ 'id' ] ] ) ?>">View / Edit Ports</a>
+        </li>
+
+        <li <?php if( !$t->row[ "mauSupported" ] ): ?> class="disabled" <?php endif; ?> >
+            <a href="<?= route( "switch-port@list-mau", [ "switch" => $t->row[ 'id' ] ] ) ?> ">Port MAU Detail</a>
+        </li>
+
+        <li>
+            <a href="<?= route( "switch@port-report", [ "id" => $t->row[ 'id' ] ] ) ?>">Port Report</a>
         </li>
 
     </ul>

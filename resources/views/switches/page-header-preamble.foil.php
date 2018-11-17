@@ -8,13 +8,13 @@
                 <?php if( isset($t->data[ 'params'][ "activeOnly" ] ) && $t->data[ 'params'][ "activeOnly" ] ): ?>
 
                     <a class="btn btn-default btn-xs" href="<?= route( $t->feParams->route_prefix."@list" , [ "active-only" => 0 ] ) ?>">
-                        Include Inactive
+                        Show Active &amp; Inactive
                     </a>
 
                 <?php else: ?>
 
                     <a class="btn btn-default btn-xs" href="<?= route( $t->feParams->route_prefix."@list" , [ "active-only" => 1 ] ) ?>">
-                        Show Active
+                        Show Active Only
                     </a>
 
                 <?php endif; ?>
