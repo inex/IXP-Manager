@@ -29,13 +29,13 @@
 
                 <?php endif; ?>
 
-                <a type="button" class="btn btn-default btn-xs"  target="_blank" href="https://github.com/inex/IXP-Manager/wiki/Switch-and-Switch-Port-Management">
+                <a type="button" class="btn btn-default btn-xs"  target="_blank" href="https://docs.ixpmanager.org/usage/switches/">
                     Help
                 </a>
 
             </div>
 
-            <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@pre-add-by-snmp') ?>">
+            <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add-by-snmp') ?>">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
 
@@ -43,3 +43,4 @@
 
     </li>
 <?php endif;?>
+

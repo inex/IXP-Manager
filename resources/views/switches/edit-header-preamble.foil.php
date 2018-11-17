@@ -14,7 +14,7 @@
 
             <?php if( !$t->data[ 'params'][ 'addBySnmp'] ): ?>
 
-                <a type="button" title="add SNMP" class="btn btn-default btn-xs" href="<?= route($t->feParams->route_prefix.'@pre-add-by-snmp') ?>">
+                <a type="button" title="add SNMP" class="btn btn-default btn-xs" href="<?= route($t->feParams->route_prefix.'@add-by-snmp') ?>">
                     <span class="glyphicon glyphicon-plus"></span>
                 </a>
 

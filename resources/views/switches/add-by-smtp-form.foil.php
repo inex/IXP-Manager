@@ -50,6 +50,18 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
+
+<div class="row-fluid">
+    <div class="well">
+        Adding switches in IXP Manager requires SNMP v2 access from the host that runs IXP Manager. When you complete the details below, IXP Manager
+        queries the switch using SNMP to discover its make, model, number and names of ports, etc.
+        <br><br>
+        See <a target="_blank" href="<?= url( 'https://docs.ixpmanager.org/usage/switches/' ) ?>">the official documentation for more information</a>
+        or click the <em>Help</em> button below.
+    </div>
+</div>
+
+
 <div class="row">
 
     <div class="col-sm-12">
@@ -64,12 +76,14 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::text( 'hostname' )
                 ->label( 'Hostname' )
-                ->blockHelp( "" );
+                ->blockHelp( "Ideally this should be the fully qualified hostname of your switch.<br><br>"
+                    . "E.g. <code>switch01.mgmt.example.com</code><br><br>"
+                    . "You can use an IP address here but that is strongly discouraged." );
             ?>
 
             <?= Former::text( 'snmppasswd' )
                 ->label( 'SNMP Community' )
-                ->blockHelp( "" );
+                ->blockHelp( "The SNMP v2c community of your switch. You switch <b>must</b> be reachable and SNMP accessible from the host which runs IXP Manager." );
             ?>
 
 
@@ -77,7 +91,7 @@ $this->layout( 'layouts/ixpv4' );
                 Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' ),
                 Former::default_link( 'Cancel' )->href( route( $t->feParams->route_prefix.'@list') ),
                 Former::success_button( 'Help' )->id( 'help-btn' ),
-                Former::default_link( $t->data[ 'params'][ 'addBySnmp'] ? "Manual / Non-SNMP Add" : "Add by SNMP" )->href( route( $t->data[ 'params'][ 'addBySnmp'] ? $t->feParams->route_prefix.'@add' : $t->feParams->route_prefix.'@pre-add-by-snmp' ) )
+                Former::default_link( $t->data[ 'params'][ 'addBySnmp'] ? "Manual / Non-SNMP Add" : "Add by SNMP" )->href( route( $t->data[ 'params'][ 'addBySnmp'] ? $t->feParams->route_prefix.'@add' : $t->feParams->route_prefix.'@add-by-snmp' ) )
             );
             ?>
 

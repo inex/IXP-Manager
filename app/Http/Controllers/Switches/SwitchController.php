@@ -186,7 +186,7 @@ class SwitchController extends Doctrine2Frontend {
 
         Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
 
-            Route::get(  'pre-add-by-snmp',     'Switches\SwitchController@preAddBySnmp'        )->name( "switch@pre-add-by-snmp" );
+            Route::get(  'add-by-snmp',         'Switches\SwitchController@preAddBySnmp'        )->name( "switch@add-by-snmp" );
             Route::get(  'port-report/{id}',    'Switches\SwitchController@portReport'          )->name( "switch@port-report" );
             Route::get(  'configuration',       'Switches\SwitchController@configuration'       )->name( "switch@configuration" );
 
@@ -373,7 +373,7 @@ class SwitchController extends Doctrine2Frontend {
         $this->feParams->titleSingular = "Switch (via SNMP)";
         $this->addEditSetup();
 
-        return $this->display( 'pre-add-by-smtp-form' );
+        return $this->display( 'add-by-smtp-form' );
     }
 
     /**
