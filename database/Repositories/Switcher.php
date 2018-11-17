@@ -833,7 +833,8 @@ class Switcher extends EntityRepository
                         c.name AS cabinet, 
                         s.asn as asn, 
                         s.loopback_ip as loopback_ip, 
-                        s.loopback_name as loopback_name
+                        s.loopback_name as loopback_name,
+                        s.mgmt_mac_address as mgmt_mac_address
                 FROM Entities\\Switcher s
                 LEFT JOIN s.Infrastructure i
                 LEFT JOIN s.Cabinet c

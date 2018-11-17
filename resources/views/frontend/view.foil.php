@@ -139,6 +139,10 @@
 
                                                             <?= $t->data[ 'item' ][ $col ] ? 'Yes' : 'No' ?>
 
+                                                        <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'YES_NO_NULL'] ): ?>
+
+                                                            <?= $t->data[ 'item' ][ $col ] === null ? 'Unknown' : ( $t->data[ 'item' ][ $col ] ? 'Yes' : 'No' ) ?>
+
                                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
 
                                                             <?= $t->insert( $cconf['script'], [ 'row' => $t->data['item'], 'col' => $col ] ) ?>
