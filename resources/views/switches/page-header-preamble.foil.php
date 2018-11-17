@@ -19,6 +19,31 @@
 
                 <?php endif; ?>
 
+                <div class="btn-group">
+
+                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        List Mode: <?= $t->data[ 'params']['vtype'] ?>&nbsp;<span class="caret"></span>
+                    </button>
+
+                    <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
+
+                        <li class="<?= $t->data[ 'params']['vtype'] === "Default" ? "active" : "" ?>">
+                            <a href="<?= route( "switch@list" , [ "vtype" => "Default" ] ) ?>">Default</a>
+                        </li>
+
+                        <li class="<?= $t->data[ 'params']['vtype'] === "OS View" ? "active" : "" ?>">
+                            <a href="<?= route( "switch@list" , [ "vtype" => "OS View" ] ) ?>">OS View</a>
+                        </li>
+
+                        <li class="<?= $t->data[ 'params']['vtype'] === "L3 View" ? "active" : "" ?>">
+                            <a href="<?= route( "switch@list" , [ "vtype" => "L3 View" ] ) ?>">L3 View</a>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+
                 <?php if( isset($t->data[ 'params'][ "osView" ] ) && $t->data[ 'params'][ "osView" ] == true ): ?>
 
                     <a class="btn btn-default btn-xs" href="<?= route($t->feParams->route_prefix.'@list', [ "os-view" => false ] ) ?>">Standard View</a>

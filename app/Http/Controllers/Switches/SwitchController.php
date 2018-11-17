@@ -221,12 +221,13 @@ class SwitchController extends Doctrine2Frontend {
             $showActiveOnly = false;
         }
 
-        if( ( $osView = $r->input( 'os-view' ) ) !== null ) {
-            $r->session()->put( "switch-list-os-view", $osView );
-        } else if( $r->session()->exists( "switch-list-os-view" ) ) {
-            $osView = $r->session()->get( "switch-list-os-view" );
+        if( ( $vtype = $r->input( 'vtype' ) ) !== null ) {
+            $r->session()->put( "switch-list-vtype", $vtype );
+        } else if( $r->session()->exists( "switch-list-vtype" ) ) {
+            $vtype = $r->session()->get( "switch-list-vtype" );
         } else {
-            $osView = false;
+            $r->session()->remove( "switch-list-vtype" );
+            $vtype = "Default";
         }
 
 
@@ -246,12 +247,14 @@ class SwitchController extends Doctrine2Frontend {
         }
 
 
-        if( $osView ){
+        if( $vtype == "OS View" ){
             $this->setUpOsView();
+        } else if( $vtype == "L3 View" ){
+            $this->setUpL3View();
         }
 
         $this->data[ 'params' ][ 'activeOnly' ]         = $showActiveOnly;
-        $this->data[ 'params' ][ 'osView' ]             = $osView;
+        $this->data[ 'params' ][ 'vtype' ]              = $vtype;
         $this->data[ 'params' ][ 'infra' ]              = $infra;
 
         $this->data[ 'rows' ] = $this->listGetData();
@@ -276,7 +279,7 @@ class SwitchController extends Doctrine2Frontend {
      *
      * @return bool
      */
-    public function setUpOsView( ){
+    private function setUpOsView( ){
 
         $this->feParams->listColumns = [
             'id'        => [ 'title' => 'UID', 'display' => false ],
@@ -314,6 +317,31 @@ class SwitchController extends Doctrine2Frontend {
         return true;
     }
 
+
+    /**
+     * Set Up the the table to display the OS VIEW
+     *
+     * @return bool
+     */
+    private function setUpL3View( ){
+
+        $this->feParams->listColumns = [
+            'id'                => [ 'title' => 'UID', 'display' => false ],
+            'name'              => 'Name',
+
+            'hostname'          => 'Hostname',
+            'asn'               => 'ASN',
+            'loopback_ip'       => 'Loopback',
+            'mgmt_mac_address'  => 'Mgmt Mac',
+
+            'active'            => [
+                'title'    => 'Active',
+                'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
+            ]
+        ];
+
+        return true;
+    }
 
     /**
      * Provide array of rows for the list action and view action
