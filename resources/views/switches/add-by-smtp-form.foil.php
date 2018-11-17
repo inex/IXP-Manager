@@ -19,37 +19,22 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'page-header-postamble' ) ?>
 
-    <li> <?= $t->data[ 'params']['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->feParams->titleSingular  ?> </li>
+    <li> Add Switch via SNMP </li>
 
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
 
-<?php if( $t->data[ 'view' ]['editHeaderPreamble'] ): ?>
-
-    <?= $t->insert( $t->data[ 'view' ]['editHeaderPreamble'] ) ?>
-
-<?php else: ?>
-
-    <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-
-        <li class="pull-right">
-            <div class="btn-group btn-group-xs" role="group">
-                <?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
-                    <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@list') ?>">
-                        <span class="glyphicon glyphicon-th-list"></span>
-                    </a>
-                <?php endif; ?>
-            </div>
-        </li>
-
-    <?php endif;?>
-
-<?php endif;?>
+<?= $t->insert( $t->data[ 'view' ]['editHeaderPreamble'] ) ?>
 
 <?php $this->append() ?>
 
+
+
+
+
 <?php $this->section('content') ?>
+
 
 <div class="row-fluid">
     <div class="well">
@@ -70,7 +55,7 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::open()->method( 'POST' )
                 ->id( 'form' )
-                ->action( route( $t->feParams->route_prefix.'@pre-store-by-snmp' ) )
+                ->action( route( $t->feParams->route_prefix.'@store-by-snmp' ) )
                 ->customWidthClass( 'col-sm-3' )
             ?>
 
@@ -88,15 +73,11 @@ $this->layout( 'layouts/ixpv4' );
 
 
             <?= Former::actions(
-                Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' ),
-                Former::default_link( 'Cancel' )->href( route( $t->feParams->route_prefix.'@list') ),
-                Former::success_button( 'Help' )->id( 'help-btn' ),
-                Former::default_link( $t->data[ 'params'][ 'addBySnmp'] ? "Manual / Non-SNMP Add" : "Add by SNMP" )->href( route( $t->data[ 'params'][ 'addBySnmp'] ? $t->feParams->route_prefix.'@add' : $t->feParams->route_prefix.'@add-by-snmp' ) )
-            );
-            ?>
-
-            <?= Former::hidden( 'add_by_snnp' )
-                ->value( $t->data[ 'params'][ 'addBySnmp'] ? true : false )
+                    Former::primary_submit( 'Next &gg;' )->id( 'btn-submit' ),
+                    Former::default_link( 'Cancel' )->href( route( $t->feParams->route_prefix.'@list') ),
+                    Former::success_button( 'Help' )->id( 'help-btn' ),
+                    Former::default_link( "Manual / Non-SNMP Add" )->href( route( $t->feParams->route_prefix.'@add' ) . '?manual=1' )
+                );
             ?>
 
             <?= Former::close() ?>
@@ -109,9 +90,3 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->append() ?>
 
-
-<?php $this->section( 'scripts' ) ?>
-
-    <?= $t->data[ 'view' ]['editScript'] ? $t->insert( $t->data[ 'view' ]['editScript'] ) : '' ?>
-
-<?php $this->append() ?>

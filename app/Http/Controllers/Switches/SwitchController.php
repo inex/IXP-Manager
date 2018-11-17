@@ -186,11 +186,11 @@ class SwitchController extends Doctrine2Frontend {
 
         Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
 
-            Route::get(  'add-by-snmp',         'Switches\SwitchController@preAddBySnmp'        )->name( "switch@add-by-snmp" );
+            Route::get(  'add-by-snmp',         'Switches\SwitchController@addBySnmp'           )->name( "switch@add-by-snmp" );
             Route::get(  'port-report/{id}',    'Switches\SwitchController@portReport'          )->name( "switch@port-report" );
             Route::get(  'configuration',       'Switches\SwitchController@configuration'       )->name( "switch@configuration" );
 
-            Route::post(  'pre-store-by-snmp',  'Switches\SwitchController@preStoreBySmtp'      )->name( "switch@pre-store-by-snmp" );
+            Route::post(  'store-by-snmp',      'Switches\SwitchController@storeBySmtp'         )->name( "switch@store-by-snmp" );
         });
     }
 
@@ -363,14 +363,8 @@ class SwitchController extends Doctrine2Frontend {
      *
      * @return View
      */
-    public function preAddBySnmp(): View {
+    public function addBySnmp(): View {
 
-        $this->data[ 'params' ]['isAdd']        = true;
-        $this->data[ 'params' ]['addBySnmp']    = true;
-        $this->data[ 'params' ]['preAddForm']   = true;
-        $this->data[ 'params' ]['object']       = null;
-
-        $this->feParams->titleSingular = "Switch (via SNMP)";
         $this->addEditSetup();
 
         return $this->display( 'add-by-smtp-form' );
@@ -412,10 +406,10 @@ class SwitchController extends Doctrine2Frontend {
      *
      * @throws
      */
-    public function preStoreBySmtp( Request $request ) {
+    public function storeBySmtp( Request $request ) {
 
         $validator = Validator::make( $request->all(), [
-                'snmppasswd'                => 'nullable|string|max:255',
+                'snmppasswd'                => 'required|string|max:255',
                 'hostname'                  => 'required|string|max:255|unique:Entities\Switcher,hostname' . ( $request->input('id') ? ','. $request->input('id') : '' ),
             ]
         );
