@@ -817,7 +817,6 @@ class Switcher extends EntityRepository
                         s.ipv6addr AS ipv6addr, 
                         s.snmppasswd AS snmppasswd,
                         i.name AS infrastructure, 
-                        s.switchtype AS switchtype, 
                         s.model AS model,
                         s.active AS active, 
                         s.notes AS notes, 
