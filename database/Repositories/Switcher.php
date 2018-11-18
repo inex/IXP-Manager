@@ -603,7 +603,7 @@ class Switcher extends EntityRepository
 
         foreach( [ 'A', 'B' ] as $side ) {
             /** @noinspection SqlNoDataSourceInspection */
-            $dql = "SELECT cb.type, cb.ipv4_subnet as cbSubnet,cb.enabled as cbEnabled, cl.enabled as clEnabled, cb.description, cl.bfd, sp$side.name, pi$side.speed, cl.ipv4_subnet as clSubnet, s$side.id as saId
+            $dql = "SELECT cb.type, cb.ipv4_subnet as cbSubnet,cb.enabled as cbEnabled, cl.enabled as clEnabled, cb.description, cl.bfd, sp$side.name, pi$side.speed, pi$side.autoneg, cl.ipv4_subnet as clSubnet, s$side.id as saId
                         FROM Entities\\CoreLink cl
                         LEFT JOIN cl.coreBundle cb
 
@@ -634,6 +634,7 @@ class Switcher extends EntityRepository
                 $export[ 'bfd' ]          = $ci[ 'bfd' ];
                 $export[ 'speed' ]        = $ci[ 'speed' ];
                 $export[ 'name' ]         = $ci[ 'name' ];
+                $export[ 'autoneg' ]      = $ci[ 'autoneg' ];
                 $export[ 'shutdown' ]     = $ci[ 'cbEnabled' ] && $ci[ 'clEnabled' ] ? false : true;
 
                 $cis[] = $export;
@@ -703,7 +704,8 @@ class Switcher extends EntityRepository
                                                     FROM Entities\\Switcher s2
                                                     LEFT JOIN s2.Infrastructure inf
                                                     WHERE s2.id = ?1)
-                        AND s.loopback_ip IS NOT NULL";
+                        AND s.loopback_ip IS NOT NULL
+                        AND s.active = 1";
 
         if( $excludeCurrentSwitch ){
             $dql .= " AND s.id != ".$id;

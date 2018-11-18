@@ -10,8 +10,9 @@ $( document ).ready( function(){
     
 function updateGroups( event ){
     row = $( event.target ).attr( 'id' ).substr( $( event.target ).attr( 'id' ).lastIndexOf( '-' ) + 1 );
+
     id = '#select-group-' + row;
-    
+
     $( id ).parent().show( "slow" ).removeClass( 'hidden' );
     ossChosenClear( id );
     
