@@ -78,12 +78,12 @@
 
                                 <tr>
                                     <td><b>Name</b></td>
-                                    <td><?= $sp->getName() ?></td>
+                                    <td><?= $t->ee( $sp->getName() ) ?></td>
                                 </tr>
 
                                 <tr>
                                     <td><b>Switch</b></td>
-                                    <td><a href="<?= route( 'switch@view', [ 'id' => $sp->getSwitcher()->getId() ] ) ?>"><?= $sp->getSwitcher()->getName() ?></a></td>
+                                    <td><a href="<?= route( 'switch@view', [ 'id' => $sp->getSwitcher()->getId() ] ) ?>">$t->ee( <?= $sp->getSwitcher()->getName() ?> )</a></td>
                                 </tr>
 
                                 <tr>
