@@ -608,7 +608,7 @@ class SwitchPort
 
 
         if( $this->getSwitcher()->getMauSupported() ) {
-            foreach( self::$SNMP_MAU_MAP as $snmp => $entity ) {
+            foreach( self::$OSS_SNMP_MAU_MAP as $snmp => $entity ) {
                 $getfn = "get{$entity['fn']}";
                 $setfn = "set{$entity['fn']}";
 

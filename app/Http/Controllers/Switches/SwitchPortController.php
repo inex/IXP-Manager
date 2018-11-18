@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Switches;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM,Former, Redirect,Route, Validator;
+use D2EM, Former, Log, Redirect, Route, Validator;
 
 use Entities\{
     Switcher            as SwitcherEntity,
@@ -45,6 +45,7 @@ use IXP\Utils\View\Alert\{
 
 use Illuminate\View\View;
 
+use Monolog\Logger;
 use OSS_SNMP\{
     Exception,
     SNMP
@@ -74,7 +75,6 @@ class SwitchPortController extends Doctrine2Frontend {
      * This function sets up the frontend controller
      */
     public function feInit(){
-
         $this->feParams         = (object)[
 
             'entity'            => SwitchPortEntity::class,
@@ -683,31 +683,30 @@ class SwitchPortController extends Doctrine2Frontend {
      */
     public function setType( Request $r ): JsonResponse {
 
-        if( $r->input( "spid") ){
-            foreach( $r->input( "spid") as $id ){
-                /** @var $sp SwitchPortEntity */
-                if( $id && !( $sp = D2EM::getRepository( SwitchPortEntity::class )->find( $id ) ) ) {
-                    abort(404, "Unknown switch port.");
-                }
-
-                if( !array_key_exists( $r->input( "type"), SwitchPortEntity::$TYPES ) ){
-                    return response()->json( [ 'success' => false ] );
-                }
-
-                $sp->setType( $r->input( "type") );
-            }
-
-            D2EM::flush();
-
-            if( $r->input( "returnMessage") ){
-                AlertContainer::push( "The selected switch ports have been updated", Alert::SUCCESS );
-            }
-
-            return response()->json( [ 'success' => true ] );
-
+        if( !$r->input( "spid") ) {
+            return response()->json( [ 'success' => false ] );
         }
 
-        return response()->json( [ 'success' => false ] );
+        foreach( $r->input( "spid") as $id ) {
+            /** @var $sp SwitchPortEntity */
+            if( $id && !( $sp = D2EM::getRepository( SwitchPortEntity::class )->find( $id ) ) ) {
+                abort(404, "Unknown switch port.");
+            }
+
+            if( !array_key_exists( $r->input( "type"), SwitchPortEntity::$TYPES ) ){
+                return response()->json( [ 'success' => false ] );
+            }
+
+            $sp->setType( $r->input( "type") );
+        }
+
+        D2EM::flush();
+
+        if( $r->input( "returnMessage", false ) ) {
+            AlertContainer::push( "The selected switch ports have been updated", Alert::SUCCESS );
+        }
+
+        return response()->json( [ 'success' => true ] );
     }
 
 
@@ -722,64 +721,62 @@ class SwitchPortController extends Doctrine2Frontend {
      */
     public function deleteSnmpPoll( Request $r ): JsonResponse {
 
-        if( $r->input( "spid") ){
+        if( !$r->input( "spid") ) {
+            return response()->json( [ 'success' => false ] );
+        }
 
-            foreach( $r->input( "spid") as $id ){
-                $error = false;
+        foreach( $r->input( "spid" ) as $id ) {
+            $error = false;
 
-                /** @var $sp SwitchPortEntity */
-                if( $id && !( $sp = D2EM::getRepository( SwitchPortEntity::class )->find( $id ) ) ) {
-                    abort(404, "Unknown switch port.");
-                }
+            Log::debug( 'Html\Controllers\Switches\SwitchPort::deleteSnmpPoll() - Processing switch port ID: ' . $id );
 
-                if( $sp->getPhysicalInterface() ){
-                    $cust = $sp->getPhysicalInterface()->getVirtualInterface()->getCustomer();
-                    AlertContainer::push( "Could not delete switch port {$sp->getName()} as it is assigned to a physical interface for "
-                        . "<a href=\""
-                        . route( "customer@overview" , [ 'id' => $cust->getId(), 'tab' => 'ports' ]  )
-                        . "\">{$cust->getName()}</a>.", Alert::DANGER
-                    );
-
-                    $error = true;
-
-                }
-
-                if( $sp->getPatchPanelPort() ){
-                    $ppp = $sp->getPatchPanelPort();
-                    AlertContainer::push( "Could not delete switch port {$sp->getName()} as it is assigned to a patch panel port for "
-                        . "<a href=\""
-                        . route( "patch-panel-port/list/patch-panel" , [ 'id' => $ppp->getId() ]  )
-                        . "\">{$ppp->getName()}</a>.", Alert::DANGER
-                    );
-
-                    $error = true;
-                }
-
-
-                if( !$error ) {
-                    D2EM::remove( $sp );
-                }
-
+            /** @var $sp SwitchPortEntity */
+            if( !$id || !( $sp = D2EM::getRepository( SwitchPortEntity::class )->find( $id ) ) ) {
+                abort(404, "Unknown switch port.");
             }
 
-            D2EM::flush();
+            if( $sp->getPhysicalInterface() ) {
+                $cust = $sp->getPhysicalInterface()->getVirtualInterface()->getCustomer();
+                AlertContainer::push( "Could not delete switch port {$sp->getName()} as it is assigned to a physical interface for "
+                    . "<a href=\""
+                    . route( "customer@overview" , [ 'id' => $cust->getId(), 'tab' => 'ports' ]  )
+                    . "\">{$cust->getName()}</a>.", Alert::DANGER
+                );
 
-            AlertContainer::push(
-                "<b>Please Note:</b> It is not possible to delete real physical Ethernet switch ports as "
-                . "the switch is re-polled and these ports are added back into the system as new ports automatically. "
-                . "The purpose of delete is to remove ports that were manually added to the database that do not match "
-                . "up with phsyical ports on the switch. You can deactivate switchports however.",
-                Alert::INFO
-            );
+                $error = true;
+            }
 
-            AlertContainer::push( "The selected switch ports have been deleted", Alert::SUCCESS );
+            if( $sp->getPatchPanelPort() ) {
+                $ppp = $sp->getPatchPanelPort();
+                AlertContainer::push( "Could not delete switch port {$sp->getName()} as it is assigned to a patch panel port for "
+                    . "<a href=\""
+                    . route( "patch-panel-port/list/patch-panel" , [ 'id' => $ppp->getId() ]  )
+                    . "\">{$ppp->getName()}</a>.", Alert::DANGER
+                );
 
-            return response()->json( [ 'success' => true ] );
+                $error = true;
+            }
+
+
+            if( !$error ) {
+                D2EM::remove( $sp );
+            }
 
         }
 
-        return response()->json( [ 'success' => false ] );
+        D2EM::flush();
 
+        AlertContainer::push(
+            "<b>Please Note:</b> It is not possible to delete real physical Ethernet switch ports as "
+            . "the switch is re-polled and these ports are added back into the system as new ports automatically. "
+            . "The purpose of delete is to remove ports that were manually added to the database that do not match "
+            . "up with physical ports on the switch. You can, however, deactivate switch ports.",
+            Alert::INFO
+        );
+
+        AlertContainer::push( "The selected switch ports - where possible - have been deleted", Alert::SUCCESS );
+
+        return response()->json( [ 'success' => true ] );
     }
 
     /**

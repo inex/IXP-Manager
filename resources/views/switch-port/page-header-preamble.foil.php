@@ -4,7 +4,11 @@
 
         <?php if( isset( $t->data[ 'params'][ "switch" ] ) ): ?>
 
-            <?php if( $t->data[ 'params'][ "switch" ] ): ?>
+            <?php if( $t->data[ 'params'][ "switch" ] ):
+
+                /** @var Entities\Switcher $s */
+                $s = D2EM::getRepository( Entities\Switcher::class )->find( $t->data[ 'params'][ "switch" ] );
+            ?>
 
                 <!-- Single button -->
                 <div class="btn-group">
@@ -12,15 +16,15 @@
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <?php if( $t->action ==  'listOpStatus' ): ?>
 
-                            Live Port States (with SNMP poll)
-
-                        <?php elseif( $t->action == 'list' ): ?>
-
-                            Ports (database only)
+                            Live Port States (via SNMP poll)
 
                         <?php elseif( $t->action == 'snmpPoll' ): ?>
 
-                            Ports (with SNMP poll)
+                            View/Edit Ports (via SNMP poll)
+
+                        <?php elseif( $t->action == 'list' ): ?>
+
+                            View/Edit Ports (database only)
 
                         <?php elseif( $t->action == 'listMau' ): ?>
 
@@ -32,26 +36,32 @@
 
                         <?php endif; ?>
 
+                        &nbsp;
                         <span class="caret"></span>
                     </button>
 
                     <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
 
-                        <li <?php if( $t->action == 'listOpStatus' ): ?> class="active"<?php endif; ?>>
-                            <a href="<?= route( "switch-port@list-op-status", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View Live Port States (with SNMP poll)</a>
+                        <li class="dropdown-header">SNMP Actions</li>
+
+                        <li <?php if( $t->action == 'listOpStatus' ): ?> class="active <?= $s->getActive() ? "" : 'disabled' ?>"<?php endif; ?>>
+                            <a href="<?= route( "switch-port@list-op-status", [ "switch" => $s->getId() ] ) ?>">Live Port States</a>
                         </li>
+
+                        <li <?php if( $t->action == 'snmpPoll'): ?>class="active <?= $s->getActive() ? "" : 'disabled' ?>"<?php endif; ?>>
+                            <a href="<?= route( "switch-port@snmp-poll", [ "switch" => $s->getId() ] ) ?>">View / Edit Ports</a>
+                        </li>
+
+                        <li role="separator" class="divider"></li>
+                        <li class="dropdown-header">Database Actions</li>
 
                         <li <?php if( $t->action == 'list'): ?>class="active"<?php endif; ?>>
-                            <a href="<?= route( "switch-port@list", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View / Edit Ports (database only)</a>
+                            <a href="<?= route( "switch-port@list", [ "switch" => $s->getId() ] ) ?>">View / Edit Ports</a>
                         </li>
 
-                        <li <?php if( $t->action == 'snmpPoll'): ?>class="active"<?php endif; ?>>
-                            <a href="<?= route( "switch-port@snmp-poll", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View / Edit Ports (with SNMP poll)</a>
-                        </li>
-
-                        <?php if( $t->action == 'listMau' ): ?>
+                        <?php if( $s->getMauSupported() ): ?>
                             <li <?php if( $t->action == 'listMau'): ?>class="active"<?php endif; ?>>
-                                <a href="<?= route( "switch-port@list-mau", [ "switch" => $t->data[ 'params'][ "switch" ] ] ) ?>">View / Edit Ports (with SNMP poll)</a>
+                                <a href="<?= route( "switch-port@list-mau", [ "switch" => $s->getId() ] ) ?>">Port MAU Detail</a>
                             </li>
                         <?php endif; ?>
 
@@ -59,13 +69,16 @@
 
                 </div>
 
+
             <?php endif; ?>
 
             <!-- Single button -->
             <div class="btn-group">
 
                 <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?= $t->data[ 'params'][ "switch" ] ? $t->data[ 'params'][ "switches" ][ $t->data[ 'params'][ "switch" ] ] : "All Switch" ?><span class="caret"></span>
+                    <?= $t->data[ 'params'][ "switch" ] ? $t->data[ 'params'][ "switches" ][ $t->data[ 'params'][ "switch" ] ] : "All Switches" ?>
+                    &nbsp;
+                    <span class="caret"></span>
                 </button>
 
                 <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">

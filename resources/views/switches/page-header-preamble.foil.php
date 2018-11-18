@@ -43,17 +43,6 @@
 
                 </div>
 
-
-                <?php if( isset($t->data[ 'params'][ "osView" ] ) && $t->data[ 'params'][ "osView" ] == true ): ?>
-
-                    <a class="btn btn-default btn-xs" href="<?= route($t->feParams->route_prefix.'@list', [ "os-view" => false ] ) ?>">Standard View</a>
-
-                <?php else: ?>
-
-                    <a class="btn btn-default btn-xs" href="<?= route($t->feParams->route_prefix.'@list' , [ "os-view" => true ] ) ?>">OS View</a>
-
-                <?php endif; ?>
-
                 <a type="button" class="btn btn-default btn-xs"  target="_blank" href="https://docs.ixpmanager.org/usage/switches/">
                     Help
                 </a>
