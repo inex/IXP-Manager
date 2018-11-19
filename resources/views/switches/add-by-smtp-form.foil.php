@@ -61,6 +61,7 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::text( 'hostname' )
                 ->label( 'Hostname' )
+                ->placeholder( 'switch01.mgmt.example.com' )
                 ->blockHelp( "Ideally this should be the fully qualified hostname of your switch.<br><br>"
                     . "E.g. <code>switch01.mgmt.example.com</code><br><br>"
                     . "You can use an IP address here but that is strongly discouraged." );
@@ -68,6 +69,7 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::text( 'snmppasswd' )
                 ->label( 'SNMP Community' )
+                ->placeholder( 'yourcommunity' )
                 ->blockHelp( "The SNMP v2c community of your switch. You switch <b>must</b> be reachable and SNMP accessible from the host which runs IXP Manager." );
             ?>
 
