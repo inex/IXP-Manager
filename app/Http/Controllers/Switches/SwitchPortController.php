@@ -650,8 +650,7 @@ class SwitchPortController extends Doctrine2Frontend {
         $results = [];
 
         try {
-            //$host = new SNMP( $s->getHostname(), $s->getSnmppasswd() );
-            $host = new SNMP( "switch1" , "switch1" );
+            $host = new SNMP( $s->getHostname(), $s->getSnmppasswd() );
             $s->snmpPoll( $host, true );
             $s->snmpPollSwitchPorts( $host, true, $results );
             D2EM::flush();
