@@ -237,6 +237,10 @@ class OSS_Utils
                 $host = $_SERVER['HTTP_HOST'];
         }
 
+        if( isset( $_SERVER['SERVER_PORT'] ) ){
+            $host = $host . ":" . $_SERVER['SERVER_PORT'];
+        }
+
         $url = $host . $url;
         
         // when the webpage is directly under "xyz.com/", and not in "xyz.com/wherever"
