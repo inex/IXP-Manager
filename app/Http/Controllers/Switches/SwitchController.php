@@ -607,7 +607,7 @@ class SwitchController extends Doctrine2Frontend {
             }
         }
 
-        if( $cntCsc = count( $this->object->getConsoleServerConnections() ) ) {
+        if( $this->object->getConsoleServerConnections() && ( $cntCsc = count( $this->object->getConsoleServerConnections() ) ) ) {
             AlertContainer::push( "You cannot delete this switch there are {$cntCsc} console port connection exists for this switch", Alert::DANGER );
             $okay = false;
         }
