@@ -158,8 +158,10 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         if( ( $sid = $this->getParam( 'switch', false ) ) && isset( $switches[$sid] ) && $switches[$sid]->getMauSupported() ) {
             $this->view->sid = $sid;
             $qb->where( 's.id = ?2' )->setParameter( 2, $sid );
+
         } else {
             $this->redirect( 'switch/list' );
+
         }
 
         return $qb->getQuery()->getResult();
@@ -543,8 +545,8 @@ class SwitchPortController extends IXP_Controller_FrontEnd
         try
         {
             $host = new \OSS_SNMP\SNMP( $switch->getHostname(), $switch->getSnmppasswd() );
-            $switch->snmpPoll( $host, $this->getLogger() );
-            $switch->snmpPollSwitchPorts( $host, $this->getLogger(), $results );
+            $switch->snmpPoll( $host, true );
+            $switch->snmpPollSwitchPorts( $host, true, $results );
             $this->view->switch    = $switch;
             $this->view->portTypes = \Entities\SwitchPort::$TYPES;
             $this->view->portsData = $results;

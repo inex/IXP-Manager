@@ -35,6 +35,21 @@ class Location extends EntityRepository
     }
 
     /**
+     * Return of all locations
+     * @return array An array of all locations names with the location id as the key.
+     */
+    public function getNames(): array {
+        $locations = [];
+
+        foreach( $this->findBy( [], [ 'name' => 'ASC' ] ) as $l ) {
+            /** @var LocationEntity $l */
+            $locations[ $l->getId() ] =  $l->getName();
+        }
+
+        return $locations;
+    }
+
+    /**
      * Get all lcoation (or a particular one) for listing on the frontend CRUD
      *
      * @see \IXP\Http\Controller\Doctrine2Frontend

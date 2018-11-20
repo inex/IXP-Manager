@@ -385,7 +385,7 @@ class SwitchController extends IXP_Controller_FrontEnd
 
             if( $s = $this->getD2EM()->getRepository( '\\Entities\\Switcher' )->findBy( ['asn' => $form->getElement( 'asn' )->getValue() ]) ){
                 $id = $object->getId();
-                $asnExist = array_filter( $s, function ($e) use( $object ) {
+                $asnExist = array_filter( $s, function ( $e ) use( $object ) {
                     return $e->getId() != $object->getId();
                 });
                 

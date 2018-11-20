@@ -30,3 +30,40 @@ if( !function_exists( 'd2r' ) ) {
         return app('Doctrine\ORM\EntityManagerInterface')->getRepository($namespace.'\\'.$entity);
     }
 }
+
+if( !function_exists( 'resolve_dns_a' ) ) {
+
+    /**
+     * Do a DNS A record lookup on a hostname
+     *
+     * @param string $hostname
+     * @return string|null The IP address or null
+     */
+    function resolve_dns_a( string $hostname ) {
+        $a = dns_get_record( $hostname, DNS_A );
+
+        if( empty( $a ) )
+            return null;
+
+        return $a[0]['ip'];
+    }
+}
+
+if( !function_exists( 'resolve_dns_aaaa' ) ) {
+
+    /**
+     * Do a DNS AAAA record lookup on a hostname
+     *
+     * @param string $hostname
+     * @return string|null The IP address or null
+     */
+    function resolve_dns_aaaa( string $hostname ) {
+        $a = dns_get_record( $hostname, DNS_AAAA );
+
+        if( empty( $a ) )
+            return null;
+
+        return $a[0]['ipv6'];
+    }
+}
+

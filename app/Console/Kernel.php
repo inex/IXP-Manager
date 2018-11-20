@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel {
      */
     protected $commands = [
 
-        \IXP\Console\Commands\Audit\PostSpeeds::class,
+        \IXP\Console\Commands\Audit\PortSpeeds::class,
 
         \IXP\Console\Commands\Irrdb\UpdateAsnDb::class,
         \IXP\Console\Commands\Irrdb\UpdatePrefixDb::class,
@@ -29,6 +29,8 @@ class Kernel extends ConsoleKernel {
         \IXP\Console\Commands\Upgrade\RouterImport::class,
 
         \IXP\Console\Commands\Utils\Export\JsonSchema\Post::class,
+
+        \IXP\Console\Commands\Switches\SnmpPoll::class,
 
 
     ];

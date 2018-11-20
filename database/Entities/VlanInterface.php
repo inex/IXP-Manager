@@ -783,5 +783,12 @@ class VlanInterface
         return $this->$fnEnabled();
     }
 
-
+    /**
+     * Is this VLAN interface graphable?
+     *
+     * @return bool
+     */
+    public function isGraphable(): bool {
+        return $this->getVirtualInterface()->isGraphable();
+    }
 }
