@@ -237,7 +237,7 @@ class OSS_Utils
                 $host = $_SERVER['HTTP_HOST'];
         }
 
-        if( isset( $_SERVER['SERVER_PORT'] ) ){
+        if( isset( $_SERVER['SERVER_PORT'] ) && !in_array( $_SERVER['SERVER_PORT'], [ 80, 443 ] ) && strpos( $host, $_SERVER['SERVER_PORT'] ) === false ){
             $host = $host . ":" . $_SERVER['SERVER_PORT'];
         }
 
