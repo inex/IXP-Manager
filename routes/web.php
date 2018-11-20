@@ -62,6 +62,7 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'verify-loa/{id}/{code}',       'PatchPanelPortController@verifyLoa'    )->name( "patch-panel-port@verify-loa"  );
 });
 
+Route::get( 'verify-loa/{id}/{code}',       'PatchPanel\PatchPanelPortController@verifyLoa'    )->name( "patch-panel-port@verify-loa"  );
 
 
 Route::get( 'weather-map/{id}',                    'WeatherMapController@index' )->name( 'weathermap');
