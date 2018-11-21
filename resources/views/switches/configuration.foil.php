@@ -132,6 +132,7 @@
                 <th>Switch</th>
                 <th>Port</th>
                 <th>Speed</th>
+                <th>Raw Speed</th>
                 <th>Peering LAN</th>
                 <th>ASN</th>
                 <th>Route Server</th>
@@ -170,6 +171,11 @@
                         <?php $totalSpeed = explode( "," , $conf[ "speed" ]) ?>
 
                         <?= $t->scaleBits( array_sum( $totalSpeed )*1000*1000, 0 ) ?>
+                    </td>
+                    <td>
+                        <?php $totalSpeed = explode( "," , $conf[ "speed" ]) ?>
+
+                        <?= array_sum( $totalSpeed ) ?>
                     </td>
                     <td>
                         <?= $conf[ "vlan" ] ?>
@@ -212,12 +218,15 @@
 
         $('#list-configuration').dataTable({
             "columnDefs": [
-                { "targets": [ 0 ], "visible": false }
+                { "targets": [ 0 ], "visible": false, "searchable": false },
+                { "targets": [ 4 ], "orderData": 5 },
+                { "targets": [ 5 ], "visible": false, "searchable": false }
             ],
             "order": [[ 1, "asc" ]],
 
             "iDisplayLength": 100,
             "aoColumns": [
+                null,
                 null,
                 null,
                 null,
