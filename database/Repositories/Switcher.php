@@ -503,7 +503,7 @@ class Switcher extends EntityRepository
             $dql .= " AND pi.id IS NULL ";
         }
 
-        if( count( $spid ) > 0 ){
+        if( $spid != null && count( $spid ) > 0 ){
             $dql .= ' AND sp.id NOT IN ('.implode( ',', $spid ).') ';
         }
 

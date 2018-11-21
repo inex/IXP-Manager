@@ -165,7 +165,7 @@ class LogoController extends Controller
         AlertContainer::push( "Logo successfully uploaded!", Alert::SUCCESS );
 
         if( !Auth::getUser()->isSuperUser() ) {
-            return Redirect::to( '' );
+            return Redirect::to( route( "dashboard@index" ) );
         }
 
         return Redirect::to( route( "customer@overview" , [ "id" => $c->getId() ] ) );
