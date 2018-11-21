@@ -109,13 +109,15 @@ class SwitchController extends Doctrine2Frontend {
                     'idField'    => 'vendorid'
                 ],
 
-                'model'          => 'Model',
-                'ipv4addr'       => 'IPv4 Address',
                 'infrastructure' => 'Infrastructure',
                 'active'       => [
                     'title'    => 'Active',
                     'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
-                ]
+                ],
+
+                'model'          => 'Model',
+
+                'ipv4addr'       => 'IPv4 Address',
             ]
         ];
 
@@ -124,21 +126,36 @@ class SwitchController extends Doctrine2Frontend {
             $this->feParams->listColumns,
             [
                 'ipv6addr'       => 'IPv6 Address',
+
+                'hostname'       => 'Hostname',
+
                 'snmppasswd'     => 'SNMP Community',
                 'os'             => 'OS',
                 'osVersion'      => 'OS Version',
-                'serialNumber'   => 'Serial Number',
+
                 'osDate'         => [
                     'title'      => 'OS Date',
                     'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ],
+
                 'lastPolled'         => [
                     'title'      => 'Last Polled',
                     'type'       => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ],
 
+                'serialNumber'   => 'Serial Number',
+
+                'mauSupported'   => [
+                    'title'    => 'MAU Supported',
+                    'type'     => self::$FE_COL_TYPES[ 'YES_NO_NULL' ]
+                ],
+
                 'asn'            => 'ASN',
                 'loopback_ip'    => 'Loopback IP',
+                'loopback_name'  => 'Loopback Name',
+
+                'mgmt_mac_address' => 'Mgmt MAC Address',
+
                 'notes'       => [
                     'title'         => 'Notes',
                     'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
@@ -186,11 +203,11 @@ class SwitchController extends Doctrine2Frontend {
 
         Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
 
-            Route::get(  'pre-add-by-snmp',     'Switches\SwitchController@preAddBySnmp'        )->name( "switch@pre-add-by-snmp" );
+            Route::get(  'add-by-snmp',         'Switches\SwitchController@addBySnmp'           )->name( "switch@add-by-snmp" );
             Route::get(  'port-report/{id}',    'Switches\SwitchController@portReport'          )->name( "switch@port-report" );
             Route::get(  'configuration',       'Switches\SwitchController@configuration'       )->name( "switch@configuration" );
 
-            Route::post(  'pre-store-by-snmp',  'Switches\SwitchController@preStoreBySmtp'      )->name( "switch@pre-store-by-snmp" );
+            Route::post(  'store-by-snmp',      'Switches\SwitchController@storeBySmtp'         )->name( "switch@store-by-snmp" );
         });
     }
 
@@ -204,12 +221,13 @@ class SwitchController extends Doctrine2Frontend {
             $showActiveOnly = false;
         }
 
-        if( ( $osView = $r->input( 'os-view' ) ) !== null ) {
-            $r->session()->put( "switch-list-os-view", $osView );
-        } else if( $r->session()->exists( "switch-list-os-view" ) ) {
-            $osView = $r->session()->get( "switch-list-os-view" );
+        if( ( $vtype = $r->input( 'vtype' ) ) !== null ) {
+            $r->session()->put( "switch-list-vtype", $vtype );
+        } else if( $r->session()->exists( "switch-list-vtype" ) ) {
+            $vtype = $r->session()->get( "switch-list-vtype" );
         } else {
-            $osView = false;
+            $r->session()->remove( "switch-list-vtype" );
+            $vtype = "Default";
         }
 
 
@@ -229,12 +247,14 @@ class SwitchController extends Doctrine2Frontend {
         }
 
 
-        if( $osView ){
+        if( $vtype == "OS View" ){
             $this->setUpOsView();
+        } else if( $vtype == "L3 View" ){
+            $this->setUpL3View();
         }
 
         $this->data[ 'params' ][ 'activeOnly' ]         = $showActiveOnly;
-        $this->data[ 'params' ][ 'osView' ]             = $osView;
+        $this->data[ 'params' ][ 'vtype' ]              = $vtype;
         $this->data[ 'params' ][ 'infra' ]              = $infra;
 
         $this->data[ 'rows' ] = $this->listGetData();
@@ -259,7 +279,7 @@ class SwitchController extends Doctrine2Frontend {
      *
      * @return bool
      */
-    public function setUpOsView( ){
+    private function setUpOsView( ){
 
         $this->feParams->listColumns = [
             'id'        => [ 'title' => 'UID', 'display' => false ],
@@ -299,6 +319,31 @@ class SwitchController extends Doctrine2Frontend {
 
 
     /**
+     * Set Up the the table to display the OS VIEW
+     *
+     * @return bool
+     */
+    private function setUpL3View( ){
+
+        $this->feParams->listColumns = [
+            'id'                => [ 'title' => 'UID', 'display' => false ],
+            'name'              => 'Name',
+
+            'hostname'          => 'Hostname',
+            'asn'               => 'ASN',
+            'loopback_ip'       => 'Loopback',
+            'mgmt_mac_address'  => 'Mgmt Mac',
+
+            'active'            => [
+                'title'    => 'Active',
+                'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
+            ]
+        ];
+
+        return true;
+    }
+
+    /**
      * Provide array of rows for the list action and view action
      *
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
@@ -329,20 +374,20 @@ class SwitchController extends Doctrine2Frontend {
             }
 
             Former::populate([
-                'name'              => array_key_exists( 'name',      $old         ) ? $old['name']              :  $this->object->getName(),
-                'hostname'          => array_key_exists( 'hostname', $old          ) ? $old['hostname']          :  $this->object->getHostname(),
-                'cabinetid'         => array_key_exists( 'cabinetid', $old         ) ? $old['cabinetid']         :  $this->object->getCabinet()         ? $this->object->getCabinet()->getId()          : null,
-                'infrastructure'    => array_key_exists( 'infrastructure', $old    ) ? $old['infrastructure']    :  $this->object->getInfrastructure()  ? $this->object->getInfrastructure()->getId()   : null,
-                'ipv4addr'          => array_key_exists( 'ipv4addr', $old          ) ? $old['ipv4addr']          :  $this->object->getIpv4addr(),
-                'ipv6addr'          => array_key_exists( 'ipv6addr', $old          ) ? $old['ipv6addr']          :  $this->object->getIpv6addr(),
-                'snmppasswd'        => array_key_exists( 'snmppasswd', $old        ) ? $old['snmppasswd']        :  $this->object->getSnmppasswd(),
-                'vendorid'          => array_key_exists( 'vendorid', $old          ) ? $old['vendorid']          :  $this->object->getVendor() ? $this->object->getVendor()->getId() : null,
-                'model'             => array_key_exists( 'model', $old             ) ? $old['model']             :  $this->object->getModel(),
-                'active'            => array_key_exists( 'active', $old            ) ? $old['active']            : ( $this->object->getActive() ?? 0 ),
-                'asn'               => array_key_exists( 'asn', $old               ) ? $old['notes']             :  $this->object->getAsn(),
-                'loopback_ip'       => array_key_exists( 'loopback_ip', $old       ) ? $old['loopback_ip']       :  $this->object->getLoopbackIP(),
-                'loopback_name'     => array_key_exists( 'loopback_name', $old     ) ? $old['loopback_name']     :  $this->object->getLoopbackName(),
-                'mgmt_mac_address'  => array_key_exists( 'mgmt_mac_address', $old  ) ? $old['mgmt_mac_address']  :  $this->object->getMgmtMacAddress(),
+                'name'              => array_key_exists( 'name',      $old         ) ? $old['name']               :  $this->object->getName(),
+                'hostname'          => array_key_exists( 'hostname', $old          ) ? $old['hostname']           :  $this->object->getHostname(),
+                'cabinetid'         => array_key_exists( 'cabinetid', $old         ) ? $old['cabinetid']          :  $this->object->getCabinet()         ? $this->object->getCabinet()->getId()          : null,
+                'infrastructure'    => array_key_exists( 'infrastructure', $old    ) ? $old['infrastructure']     :  $this->object->getInfrastructure()  ? $this->object->getInfrastructure()->getId()   : null,
+                'ipv4addr'          => array_key_exists( 'ipv4addr', $old          ) ? $old['ipv4addr']           :  $this->object->getIpv4addr(),
+                'ipv6addr'          => array_key_exists( 'ipv6addr', $old          ) ? $old['ipv6addr']           :  $this->object->getIpv6addr(),
+                'snmppasswd'        => array_key_exists( 'snmppasswd', $old        ) ? $old['snmppasswd']         :  $this->object->getSnmppasswd(),
+                'vendorid'          => array_key_exists( 'vendorid', $old          ) ? $old['vendorid']           :  $this->object->getVendor() ? $this->object->getVendor()->getId() : null,
+                'model'             => array_key_exists( 'model', $old             ) ? $old['model']              :  $this->object->getModel(),
+                'active'            => array_key_exists( 'active', $old            ) ? ( $old['active'] ? 1 : 0 ) :  ( $this->object->getActive() ? 1 : 0 ),
+                'asn'               => array_key_exists( 'asn', $old               ) ? $old['notes']              :  $this->object->getAsn(),
+                'loopback_ip'       => array_key_exists( 'loopback_ip', $old       ) ? $old['loopback_ip']        :  $this->object->getLoopbackIP(),
+                'loopback_name'     => array_key_exists( 'loopback_name', $old     ) ? $old['loopback_name']      :  $this->object->getLoopbackName(),
+                'mgmt_mac_address'  => array_key_exists( 'mgmt_mac_address', $old  ) ? $old['mgmt_mac_address']   :  $this->object->getMgmtMacAddress(),
             ]);
         }
 
@@ -363,62 +408,28 @@ class SwitchController extends Doctrine2Frontend {
      *
      * @return View
      */
-    public function preAddBySnmp(): View {
+    public function addBySnmp(): View {
+        // wipe any preexisting cached switch platform entry:
+        session()->remove( "snmp-platform" );
 
-        $this->data[ 'params' ]['isAdd']        = true;
-        $this->data[ 'params' ]['addBySnmp']    = true;
-        $this->data[ 'params' ]['preAddForm']   = true;
-        $this->data[ 'params' ]['object']       = null;
-
-        $this->feParams->titleSingular = "Switch (via SNMP)";
         $this->addEditSetup();
-
-        return $this->display( 'pre-add-by-smtp-form' );
+        return $this->display( 'add-by-smtp-form' );
     }
 
     /**
-     * Resolve a hostname into an IPv4/IPv6 address
-     *
-     * **NB:** Assumes only one IP address and as such only the first is returned
-     *
-     * @param string $hn The hostname to resolve
-     * @param int $type The DNS query type - either DNS_A or DNS_AAAA
-     *
-     *
-     * @return string|null The resolved IP address or null
-     *
-     * @throws \Exception
-     */
-    private function resolve( $hn, $type ){
-        $a = dns_get_record( $hn, $type );
-
-        if( empty( $a ) )
-            return null;
-
-        if( $type == DNS_A )
-            return $a[0]['ip'];
-
-        if( $type == DNS_AAAA )
-            return $a[0]['ipv6'];
-
-        throw new \Exception( 'Unhandled DNS query type.' );
-    }
-
-    /**
-     * Pre populate the form ADD by smtp
+     * Process the hostname and SNMP community, poll the switch and set up the proper add/edit form
      *
      * @param Request $request
      * @return bool|RedirectResponse|View
      *
      * @throws
      */
-    public function preStoreBySmtp( Request $request ) {
+    public function storeBySmtp( Request $request ) {
 
         $validator = Validator::make( $request->all(), [
-                'snmppasswd'                => 'nullable|string|max:255',
-                'hostname'                  => 'required|string|max:255|unique:Entities\Switcher,hostname' . ( $request->input('id') ? ','. $request->input('id') : '' ),
-            ]
-        );
+            'snmppasswd' => 'required|string|max:255',
+            'hostname'   => 'required|string|max:255|unique:Entities\Switcher,hostname' . ( $request->input('id') ? ','. $request->input('id') : '' ),
+        ] );
 
         if( $validator->fails() ) {
             return Redirect::back()->withErrors( $validator )->withInput();
@@ -435,25 +446,26 @@ class SwitchController extends Doctrine2Frontend {
             $request->session()->put( "snmp-platform", $snmp->getPlatform() );
 
             /** @var VendorEntity $vendorFound */
-            if( $vendorFound = D2EM::getRepository( VendorEntity::class )->findOneBy( [ "name" => $vendor ] ) ){
-                $vendorid = $vendorFound->getId();
+            if( $v = D2EM::getRepository( VendorEntity::class )->findOneBy( [ "name" => $vendor ] ) ) {
+                $vendorid = $v->getId();
             }
         } catch( SNMPException $e ) {
             $snmp = null;
         }
 
+        $sp = strpos( $request->input( 'hostname' ), '.' );
 
         Former::populate([
-            'name'              => substr( $request->input( 'hostname' ), 0, strpos($request->input( 'hostname' ), '.'  ) ),
+            'name'              => substr( $request->input( 'hostname' ), 0, $sp ? $sp : strlen( $request->input( 'hostname' ) ) ),
             'snmppasswd'        => $request->input( 'snmppasswd' ),
             'hostname'          => $request->input( 'hostname' ),
-            'ipv4addr'          => $this->resolve( $request->input( 'hostname' ), DNS_A    ) ?? '',
-            'ipv6addr'          => $this->resolve( $request->input( 'hostname' ), DNS_AAAA ) ?? '',
+            'ipv4addr'          => resolve_dns_a(    $request->input( 'hostname' ) ) ?? '',
+            'ipv6addr'          => resolve_dns_aaaa( $request->input( 'hostname' ) ) ?? '',
             'vendorid'          => $vendorid ?? "",
             'model'             => $snmp ? $snmp->getPlatform()->getModel() : "",
         ]);
 
-        $this->feParams->titleSingular = "Switch (via SNMP)";
+        $this->feParams->titleSingular = "Switch via SNMP";
         $this->addEditSetup();
 
         $this->data[ 'params' ]['isAdd']        = true;
@@ -481,21 +493,20 @@ class SwitchController extends Doctrine2Frontend {
     public function doStore( Request $request ) {
 
         $validator = Validator::make( $request->all(), [
-                'name'                      => 'required|string|max:255|unique:Entities\Switcher,name'      . ( $request->input('id') ? ','. $request->input('id') : '' ),
-                'hostname'                  => 'required|string|max:255|unique:Entities\Switcher,hostname'  . ( $request->input('id') ? ','. $request->input('id') : '' ),
-                'cabinetid'                 => 'required|integer|exists:Entities\Cabinet,id',
-                'infrastructure'            => 'required|integer|exists:Entities\Infrastructure,id',
-                'snmppasswd'                => 'nullable|string|max:255',
-                'ipv4addr'                  => 'required|ipv4',
-                'ipv6addr'                  => 'nullable|ipv6',
-                'vendorid'                  => 'required|integer|exists:Entities\Vendor,id',
-                'model'                     => 'nullable|string|max:255',
-                'asn'                       => 'nullable|string|min:1',
-                'loopback_ip'               => 'nullable|string|max:255|unique:Entities\Switcher,loopback_ip' . ( $request->input('id') ? ','. $request->input('id') : '' ),
-                'loopback_name'             => 'nullable|string|max:255',
-                'mgmt_mac_address'          => 'nullable|string|max:255',
-            ]
-        );
+            'name'                      => 'required|string|max:255|unique:Entities\Switcher,name'      . ( $request->input('id') ? ','. $request->input('id') : '' ),
+            'hostname'                  => 'required|string|max:255|unique:Entities\Switcher,hostname'  . ( $request->input('id') ? ','. $request->input('id') : '' ),
+            'cabinetid'                 => 'required|integer|exists:Entities\Cabinet,id',
+            'infrastructure'            => 'required|integer|exists:Entities\Infrastructure,id',
+            'snmppasswd'                => 'nullable|string|max:255',
+            'vendorid'                  => 'required|integer|exists:Entities\Vendor,id',
+            'ipv4addr'                  => 'nullable|ipv4',
+            'ipv6addr'                  => 'nullable|ipv6',
+            'model'                     => 'nullable|string|max:255',
+            'asn'                       => 'nullable|integer|min:1',
+            'loopback_ip'               => 'nullable|string|max:255|unique:Entities\Switcher,loopback_ip' . ( $request->input('id') ? ','. $request->input('id') : '' ),
+            'loopback_name'             => 'nullable|string|max:255',
+            'mgmt_mac_address'          => 'nullable|string|max:17|regex:/^[a-f0-9:\.\-]{12,17}$/i',
+        ] );
 
         if( $validator->fails() ) {
             return Redirect::to( route( "switch@add") )->withErrors( $validator )->withInput();
@@ -503,7 +514,7 @@ class SwitchController extends Doctrine2Frontend {
 
         if( $request->input( 'id', false ) ) {
             if( !( $this->object = D2EM::getRepository( SwitcherEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404, "Unknown Switch");
+                abort(404, "Unknown switch");
             }
         } else {
             $this->object = new SwitcherEntity;
@@ -519,7 +530,7 @@ class SwitchController extends Doctrine2Frontend {
                     return $e->getId() != $id;
                 });
 
-                if( $asnExist ){
+                if( count( $asnExist ) ){
                     AlertContainer::push( "WARNING: you have supplied a AS number that is already is use by at least one other switch. If you are using eBGP, this will be a problem.", Alert::WARNING );
                 }
             }
@@ -527,7 +538,6 @@ class SwitchController extends Doctrine2Frontend {
 
         $this->object->setName(           $request->input( 'name'               ) );
         $this->object->setHostname(       $request->input( 'hostname'           ) );
-        $this->object->setSwitchtype(     SwitcherEntity::TYPE_SWITCH        );
         $this->object->setIpv4addr(       $request->input( 'ipv4addr'           ) );
         $this->object->setIpv6addr(       $request->input( 'ipv6addr'           ) );
         $this->object->setModel(          $request->input( 'model'              ) );
@@ -537,7 +547,8 @@ class SwitchController extends Doctrine2Frontend {
         $this->object->setAsn(            $request->input( 'asn'                ) );
         $this->object->setLoopbackIP(     $request->input( 'loopback_ip'        ) );
         $this->object->setLoopbackName(   $request->input( 'loopback_name'      ) );
-        $this->object->setMgmtMacAddress( $request->input( 'mgmt_mac_address'   ) );
+        $this->object->setMgmtMacAddress( preg_replace( "/[^a-f0-9]/i", '', strtolower( $request->input( 'mgmt_mac_address', '' ) ) ) );
+
         $this->object->setActive(  $request->input( 'active'             ) ?? false );
 
         $this->object->setCabinet(        D2EM::getRepository( CabinetEntity::class         )->find( $request->input( 'cabinetid'       ) ) );
@@ -596,7 +607,7 @@ class SwitchController extends Doctrine2Frontend {
             }
         }
 
-        if( $cntCsc = count( $this->object->getConsoleServerConnections() ) ) {
+        if( $this->object->getConsoleServerConnections() && ( $cntCsc = count( $this->object->getConsoleServerConnections() ) ) ) {
             AlertContainer::push( "You cannot delete this switch there are {$cntCsc} console port connection exists for this switch", Alert::DANGER );
             $okay = false;
         }
@@ -605,7 +616,7 @@ class SwitchController extends Doctrine2Frontend {
             /** @var SwitchPortEntity $port */
             if( $port->getPatchPanelPort() ) {
                 $okay = false;
-                AlertContainer::push( "You cannot delete this switch there are switch(es) port assigned to Patch Panel Port", Alert::DANGER );
+                AlertContainer::push( "You cannot delete this switch there are switch(es) port assigned to patch panel ports", Alert::DANGER );
                 break;
             }
         }

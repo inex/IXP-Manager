@@ -40,6 +40,12 @@ class Authenticate {
 			}
 			else
 			{
+                // store in session url for a redirection after login
+                //$request->session()->put( "url.redirect.after.login", $request->path() );
+
+                // TEMPORARY : using classic php session to be able to get the session in the ZEND auth
+                $_SESSION["url.redirect.after.login"] = $request->path();
+
 				return redirect()->guest('auth/login');
 			}
 		}

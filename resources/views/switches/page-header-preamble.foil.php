@@ -8,34 +8,48 @@
                 <?php if( isset($t->data[ 'params'][ "activeOnly" ] ) && $t->data[ 'params'][ "activeOnly" ] ): ?>
 
                     <a class="btn btn-default btn-xs" href="<?= route( $t->feParams->route_prefix."@list" , [ "active-only" => 0 ] ) ?>">
-                        Include Inactive
+                        Show Active &amp; Inactive
                     </a>
 
                 <?php else: ?>
 
                     <a class="btn btn-default btn-xs" href="<?= route( $t->feParams->route_prefix."@list" , [ "active-only" => 1 ] ) ?>">
-                        Show Active
+                        Show Active Only
                     </a>
 
                 <?php endif; ?>
 
-                <?php if( isset($t->data[ 'params'][ "osView" ] ) && $t->data[ 'params'][ "osView" ] == true ): ?>
+                <div class="btn-group">
 
-                    <a class="btn btn-default btn-xs" href="<?= route($t->feParams->route_prefix.'@list', [ "os-view" => false ] ) ?>">Standard View</a>
+                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        List Mode: <?= $t->data[ 'params']['vtype'] ?>&nbsp;<span class="caret"></span>
+                    </button>
 
-                <?php else: ?>
+                    <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
 
-                    <a class="btn btn-default btn-xs" href="<?= route($t->feParams->route_prefix.'@list' , [ "os-view" => true ] ) ?>">OS View</a>
+                        <li class="<?= $t->data[ 'params']['vtype'] === "Default" ? "active" : "" ?>">
+                            <a href="<?= route( "switch@list" , [ "vtype" => "Default" ] ) ?>">Default</a>
+                        </li>
 
-                <?php endif; ?>
+                        <li class="<?= $t->data[ 'params']['vtype'] === "OS View" ? "active" : "" ?>">
+                            <a href="<?= route( "switch@list" , [ "vtype" => "OS View" ] ) ?>">OS View</a>
+                        </li>
 
-                <a type="button" class="btn btn-default btn-xs"  target="_blank" href="https://github.com/inex/IXP-Manager/wiki/Switch-and-Switch-Port-Management">
+                        <li class="<?= $t->data[ 'params']['vtype'] === "L3 View" ? "active" : "" ?>">
+                            <a href="<?= route( "switch@list" , [ "vtype" => "L3 View" ] ) ?>">L3 View</a>
+                        </li>
+
+                    </ul>
+
+                </div>
+
+                <a type="button" class="btn btn-default btn-xs"  target="_blank" href="https://docs.ixpmanager.org/usage/switches/">
                     Help
                 </a>
 
             </div>
 
-            <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@pre-add-by-snmp') ?>">
+            <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add-by-snmp') ?>">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
 
@@ -43,3 +57,4 @@
 
     </li>
 <?php endif;?>
+

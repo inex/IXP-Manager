@@ -104,13 +104,6 @@ $this->layout( 'layouts/ixpv4' );
                         ->blockHelp( "Unless you are provisioning switches from IXP Manager, this is informational." );
                     ?>
 
-                    <?= Former::number( 'monitorindex' )
-                        ->label( 'Monitor Index' )
-                        ->blockHelp( '<b>DEPRECATED.</b> This was previously used as a unique index (per customer) for generating certain elements such as graphs. It is no '
-                            . 'longer used and will be removed during the lifetime of the v4 release. Until it is removed, the only condition is per customer uniqueness - but '
-                            . 'IXP Manager will generally <em>do the right thing</em>.' );
-                    ?>
-
 
                     <div class="form-group">
 
@@ -129,7 +122,7 @@ $this->layout( 'layouts/ixpv4' );
                             <div class="tab-content">
                                 <div role="tabpanel" class="tab-pane active" id="body">
 
-                                    <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->notes ?></textarea>
+                                    <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?=  $t->notes ?></textarea>
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="preview">
                                     <div class="well well-preview" style="background: rgb(255,255,255);">
@@ -206,12 +199,6 @@ $this->layout( 'layouts/ixpv4' );
                             ->disabled( true )
                             ->blockHelp( "" ); ?>
 
-                        <?= Former::number( 'monitorindex-b' )
-                            ->label( 'Monitor Index' )
-                            ->disabled( true )
-                            ->blockHelp( '' );
-                        ?>
-
                         <div class="form-group">
 
                             <label for="notes" class="control-label col-lg-2 col-sm-4">Notes</label>
@@ -262,11 +249,6 @@ $this->layout( 'layouts/ixpv4' );
                                 ->forceValue( old('switch-port-fanout') ? old('switch-port-fanout')  : ( $t->spFanout ? $t->spFanout : '' ) )
                             ?>
 
-                            <?= Former::number( 'monitorindex-fanout' )
-                                ->label( 'Monitor Index' )
-                                ->blockHelp( '' );
-                            ?>
-
                             <?= Former::hidden( 'sp-fanout' )
                                 ->id( 'sp-fanout' )
                                 ->value( $t->spFanout )
@@ -296,7 +278,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::actions(
                     Former::primary_submit( 'Save Changes' ),
-                    Former::default_link( 'Cancel' )->href( $t->vi ? route( 'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) : route( 'interfaces/physical/list' ) ),
+                    Former::default_link( 'Cancel' )->id( 'cancel-btn' )->href( $t->vi ? route( 'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) : route( 'interfaces/physical/list' ) ),
                     Former::success_button( 'Help' )->id( 'help-btn' )
                 )->id('btn-group');?>
 

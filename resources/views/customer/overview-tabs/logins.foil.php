@@ -15,9 +15,14 @@
             <?php foreach( $t->c->getUsers() as $u ): ?>
                 <tr>
                     <td>
-                        <a href="<?= url( "contact/edit/id/" . $u->getContact()->getId() . "/cid/". $u->getCustomer()->getId() ) ?>">
+                        <?php if(  $u->getContact() ): ?>
+                            <a href="<?= url( "contact/edit/id/" . $u->getContact()->getId() . "/cid/". $u->getCustomer()->getId() ) ?>">
+                                <?= $t->ee ( $u->getUsername() ) ?>
+                            </a>
+
+                        <?php else: ?>
                             <?= $t->ee ( $u->getUsername() ) ?>
-                        </a>
+                        <?php endif; ?>
                     </td>
                     <td>
                         <?= $t->ee( $u->getEmail() ) ?>

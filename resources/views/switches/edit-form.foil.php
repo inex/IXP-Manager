@@ -10,13 +10,20 @@
         <div class="col-sm-6">
             <?= Former::text( 'name' )
                 ->label( 'Name' )
-                ->blockHelp( "" );
+                ->placeholder( 'switch01' )
+                ->required( true )
+                ->blockHelp( "How you would like the switch referenced in various pages of IXP Manager. This should be a single word "
+                    . "such as the host part of a fully qualified name. It should be all lowercase and only contain the characters a-z, 0-9, - and _" );
             ?>
 
             <?= Former::text( 'hostname' )
                 ->label( 'Hostname' )
+                ->required( true )
+                ->placeholder( 'switch01.mgmt.example.com' )
                 ->disabled( $t->data[ 'params'][ 'addBySnmp'] ? true : false )
-                ->blockHelp( "" );
+                ->blockHelp( "Ideally this should be the fully qualified hostname of your switch.<br><br>"
+                    . "E.g. <code>switch01.mgmt.example.com</code><br><br>"
+                    . "You can use an IP address here but that is strongly discouraged." );
             ?>
 
             <?php if( $t->data[ 'params'][ 'addBySnmp'] ): ?>
@@ -25,24 +32,30 @@
 
             <?= Former::select( 'cabinetid' )
                 ->label( 'Rack' )
+                ->required( true )
                 ->fromQuery( $t->data[ 'params'][ 'cabinets'], 'name' )
-                ->placeholder( 'Choose a cabinet' )
-                ->addClass( 'chzn-select' );
+                ->placeholder( 'Choose a rack' )
+                ->addClass( 'chzn-select' )
+                ->blockHelp( "The rack / cabinet where this switch is located." );
             ?>
 
             <?= Former::select( 'infrastructure' )
                 ->label( 'Infrastructure' )
+                ->required( true )
                 ->fromQuery( $t->data[ 'params'][ 'infra'], 'name' )
-                ->placeholder( 'Choose a cabinet' )
-                ->addClass( 'chzn-select' );
+                ->placeholder( 'Choose the infrastructure' )
+                ->addClass( 'chzn-select' )
+                ->blockHelp( "The infrastructure (IXP) that this switch participates in." );
             ?>
         </div>
 
         <div class="col-sm-6">
             <?= Former::text( 'snmppasswd' )
                 ->label( 'SNMP Community' )
+                ->placeholder( 'yourcommunity' )
+                ->required( true )
                 ->disabled( $t->data[ 'params'][ 'addBySnmp'] ? true : false )
-                ->blockHelp( "" );
+                ->blockHelp( "The SNMP v2c community of your switch. You switch <b>must</b> be reachable and SNMP accessible from the host which runs IXP Manager." );
             ?>
 
             <?php if( $t->data[ 'params'][ 'addBySnmp'] ): ?>
@@ -51,14 +64,20 @@
 
             <?= Former::select( 'vendorid' )
                 ->label( 'Vendor' )
+                ->required( true )
                 ->fromQuery( $t->data[ 'params'][ 'vendors'], 'name' )
                 ->placeholder( 'Choose a vendor' )
-                ->addClass( 'chzn-select' );
+                ->addClass( 'chzn-select' )
+                ->blockHelp( "The switch vendor. If the vendor is not listed here, then you can add it in the "
+                    . "<a target=\"_blank\" href=\"" . route( "vendor@list" ) . "\">vendor management section</a>.");
             ?>
 
             <?= Former::text( 'model' )
                 ->label( 'Model' )
-                ->blockHelp( "" );
+                ->placeholder( 'FESX424' )
+                ->blockHelp( "The switch model. If this can be autodiscovered via SNMP, it will be pre-populated. If it was not auto-discovered and you "
+                    . "would like this support, please <a target=\"_blank\" href=\"https://github.com/opensolutions/OSS_SNMP/wiki/Device-Discovery#adding-new-devices\">"
+                    . "see this (external) project</a>.");
             ?>
 
             <?= Former::checkbox( 'active' )
@@ -66,7 +85,7 @@
                 ->text( 'Active' )
                 ->value( 1 )
                 ->check()
-                ->blockHelp( "" );
+                ->blockHelp( "Inactive switches are removed from polling, monitoring, etc." );
             ?>
         </div>
     </div>
@@ -81,17 +100,24 @@
                 <legend>Management Configuration:</legend>
                 <?= Former::text( 'ipv4addr' )
                     ->label( 'IPv4 Address' )
-                    ->blockHelp( "" );
+                    ->placeholder( '192.0.2.12' )
+                    ->blockHelp( "The IPv4 management address of the switch. This is generally optional as IXP Manager will use the hostname to address the "
+                        . "switch for most queries. However, if you are exporting Nagios configuration for monitoring or using auto-provisioning / "
+                        . "orchestration then you should set it according to your own needs." );
                 ?>
 
                 <?= Former::text( 'ipv6addr' )
                     ->label( 'IPv6 Address' )
-                    ->blockHelp( "" );
+                    ->placeholder( '2001:db8:45::12' )
+                    ->blockHelp( "The IPv6 management address of the switch. This is generally optional as IXP Manager will use the hostname to address the "
+                        . "switch for most queries. However, if you are exporting Nagios configuration for monitoring or using auto-provisioning / "
+                        . "orchestration then you should set it according to your own needs." );
                 ?>
 
                 <?= Former::text( 'mgmt_mac_address' )
                     ->label( 'Mgmt MAC Address' )
-                    ->blockHelp( "" );
+                    ->placeholder( '00:05:78:a1:b5:2c' )
+                    ->blockHelp( "This option exists for auto-provisioning / orchestration purposes and you should set it according to your own needs." );
                 ?>
             </fieldset>
 
@@ -103,17 +129,20 @@
                 <legend>Layer 3 Configuration:</legend>
                 <?= Former::text( 'asn' )
                     ->label( 'ASN' )
-                    ->blockHelp( "" );
+                    ->placeholder( '65012' )
+                    ->blockHelp( "This option exists for auto-provisioning / orchestration purposes (such as VXLAN overlay) and you should set it according to your own needs." );
                 ?>
 
                 <?= Former::text( 'loopback_ip' )
                     ->label( 'Loopback IP' )
-                    ->blockHelp( "" );
+                    ->placeholder( '192.0.2.1' )
+                    ->blockHelp( "This option exists for auto-provisioning / orchestration purposes (such as VXLAN overlay) and you should set it according to your own needs." );
                 ?>
 
                 <?= Former::text( 'loopback_name' )
                     ->label( 'Loopback Name' )
-                    ->blockHelp( "" );
+                    ->placeholder( 'Loopback0' )
+                    ->blockHelp( "The loopback interface name. This option exists for auto-provisioning / orchestration purposes (such as VXLAN overlay) and you should set it according to your own needs." );
                 ?>
             </fieldset>
 
@@ -140,7 +169,7 @@
             <div class="tab-content">
                 <div role="tabpanel" class="tab-pane active" id="body">
 
-                    <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->data[ 'params'][ 'notes' ] ?? '' ?></textarea>
+                    <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes" placeholder="This field supports Markdown..."><?= $t->data[ 'params'][ 'notes' ] ?? '' ?></textarea>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="preview">
                     <div class="well well-preview" style="background: rgb(255,255,255);">
@@ -155,11 +184,11 @@
     </div>
 
     <?= Former::actions(
-        Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' ),
-        Former::default_link( 'Cancel' )->href( route( $t->feParams->route_prefix.'@list') ),
-        Former::success_button( 'Help' )->id( 'help-btn' ),
-        Former::default_link( $t->data[ 'params'][ 'addBySnmp'] ? "Manual / Non-SNMP Add" : "Add by SNMP" )->href( route( $t->data[ 'params'][ 'addBySnmp'] ? $t->feParams->route_prefix.'@add' : $t->feParams->route_prefix.'@pre-add-by-snmp' ) )
-    );
+            Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' ),
+            Former::default_link( 'Cancel' )->href( route( $t->feParams->route_prefix.'@list') ),
+            Former::success_button( 'Help' )->id( 'help-btn' ),
+            Former::default_link( $t->data[ 'params'][ 'addBySnmp'] ? "Manual / Non-SNMP Add" : "Add by SNMP" )->href( route( $t->data[ 'params'][ 'addBySnmp'] ? $t->feParams->route_prefix.'@add' : $t->feParams->route_prefix.'@add-by-snmp' ) . ( $t->data[ 'params'][ 'addBySnmp'] ? "?manual=1" : "" ) )
+        );
     ?>
 
     <?= Former::hidden( 'id' )

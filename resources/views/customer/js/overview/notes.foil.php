@@ -16,6 +16,7 @@
     function coNotesClearDialog() {
         $( "#co-notes-ftitle" ).val("");
         $( "#co-notes-fnote" ).val("");
+        $( "#co-notes-fpreview" ).html("");
         $( "#co-notes-fpublic" ).prop( 'checked', false );
         $( "#co-notes-warning" ).hide();
     }
@@ -30,6 +31,7 @@
                 $( "#co-notes-fadd"        ).html( 'Save' );
                 $( "#co-notes-ftitle"      ).val( data.note['title'] );
                 $( "#co-notes-fnote"       ).val( data.note['note']  );
+                $( "#co-notes-fpreview" ).html("");
                 $( "#notes-dialog-noteid"  ).val( data.note['id'] );
                 $( "#co-notes-dialog-date" ).html( 'Note first created: ' + data.note['created'] );
 
@@ -162,8 +164,8 @@
                 + "<td>Just Now</td>"
                 + "<td>"
                 + "<div class=\"btn-group btn-group-sm\">"
-                + "<button id=\"co-notes-notify-" + data.noteid + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-eye-open\"></i></button>"
-                + "<button id=\"co-notes-view-"   + data.noteid + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-zoom-in\"></i></button>"
+                + "<button id=\"co-notes-notify-" + data.noteid + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-bell\"></i></button>"
+                + "<button id=\"co-notes-view-"   + data.noteid + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-eye-open\"></i></button>"
                 + "<button id=\"co-notes-edit-"   + data.noteid + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-pencil\"></i></button>"
                 + "<button id=\"co-notes-trash-"  + data.noteid + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-trash\"></i></button>"
                 + "</div>"
@@ -289,6 +291,7 @@
         $( "#tab-notes" ).on( 'shown.bs.tab', function( ) {
             // mark notes as read and update the users last read time
             $( '#notes-unread-indicator' ).remove();
+
             <?php if( Auth::getUser()->isSuperUser() ): ?>
                 $.get( "<?= route( "customer-notes@ping" , [ 'id' => $t->c->getId() ] ) ?>");
             <?php else: ?>

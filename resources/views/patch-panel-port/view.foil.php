@@ -214,7 +214,14 @@
                                                     </b>
                                                 </td>
                                                 <td>
-                                                    <?= !$current ? $p->getCustomer() : ( $p->getCustomer() ? $t->ee( $p->getCustomer()->getName() ) : '' ) ?>
+                                                    <?php if( !$current ): ?>
+                                                        <?= $t->ee( $p->getCustomer() ) ?>
+                                                    <?php else: ?>
+
+                                                        <a href="<?= route( 'customer@overview' , [ 'id' => $p->getCustomer()->getId() ] ) ?>" >
+                                                            <?= $t->ee( $p->getCustomer()->getName() ) ?>
+                                                        </a>
+                                                    <?php endif; ?>
                                                 </td>
                                             </tr>
                                         <?php endif; ?>

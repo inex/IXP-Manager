@@ -50,9 +50,11 @@ my $insanedebug = 0;
 my $sflowtool = defined($ixp->{ixp}->{sflowtool}) ? $ixp->{ixp}->{sflowtool} : '/usr/bin/sflowtool';
 my $sflowtool_opts = defined($ixp->{ixp}->{sflowtool_bgp_opts}) ? $ixp->{ixp}->{sflowtool_bgp_opts} : '-l';
 my $timer_period = 600;
+my $bgpretaindays = 14;
 my $daemon = 1;
 
 GetOptions(
+	'bgpretaindays=i'	=> \$bgpretaindays,
 	'debug!'		=> \$debug,
 	'insanedebug!'		=> \$insanedebug,
 	'daemon!'		=> \$daemon,
@@ -84,12 +86,14 @@ $SIG{ALRM} = sub { $execute_periodic = 1 };
 ualarm ( $timer_period*1000000, $timer_period*1000000);
 
 my $tv = [gettimeofday()];
+my $lastdailyrun = 0;
 
 # FIXME - spaces embedded *within* sflowtool args will be split too
 #         Should only ever matter for the "-r" option if the filename has spaces in it...
 my $sflowpid = open (SFLOWTOOL, '-|', $sflowtool, split(' ', $sflowtool_opts));
 
 my $sth = $dbh->prepare('INSERT INTO bgpsessiondata (srcipaddressid, dstipaddressid, protocol, vlan, packetcount, source, timestamp) VALUES (?, ?, ?, ?, 1, ?, NOW())');
+my $expiresth = $dbh->prepare('DELETE FROM bgpsessiondata WHERE timestampdiff(DAY, timestamp, NOW()) > ?');
 
 # methodology is to throw away as much crap as possible before parsing
 while (<SFLOWTOOL>) {
@@ -160,6 +164,16 @@ while (<SFLOWTOOL>) {
 		$ipmappings = reload_ipmappings($dbh);
 		$debug && print STDERR "DEBUG: periodic reload completed at ".time()."\n";
 		$debug && print Dumper ($ipmappings);
+
+		if (time() - $lastdailyrun > 86400) {
+			$lastdailyrun = time();
+			$debug && print STDERR "DEBUG: started daily run at ".time()."\n";
+			$debug && print STDERR "DEBUG: clearing out stale bgp session data older than $bgpretaindays days\n";
+			if (!$expiresth->execute($bgpretaindays)) {
+				$debug && print STDERR "WARNING: could not expire session data";
+			}
+			$debug && print STDERR "DEBUG: completed daily run at ".time()."\n";
+		}
 	}
 }
 

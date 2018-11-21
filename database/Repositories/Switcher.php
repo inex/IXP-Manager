@@ -93,17 +93,13 @@ class Switcher extends EntityRepository
      * Return an array of all switch names where the array key is the switch id
      *
      * @param bool          $active If `true`, return only active switches
-     * @param \Entities\IXP $ixp    IXP to filter vlan names
-     *
      * @return array An array of all switch names with the switch id as the key.
      */
-    public function getNames( $active = false, $ixp = false )
+    public function getNames( $active = false )
     {
         $switches = [];
-        foreach( $this->getAndCache( $active ) as $a )
-        {
-            if( !$ixp || ( $ixp->getInfrastructures()->contains( $a->getInfrastructure() ) ) )
-                $switches[ $a->getId() ] = $a->getName();
+        foreach( $this->getAndCache( $active ) as $a ) {
+            $switches[ $a->getId() ] = $a->getName();
         }
 
         asort( $switches );
@@ -154,7 +150,8 @@ class Switcher extends EntityRepository
      *
      * @return array An array of all switch names with the switch id as the key.
      */
-    public function getNamesByLocation( $active = false, $idLocation = null ){
+    public function getNamesByLocation( $active = false, $idLocation = null )
+    {
         $switches = [];
         foreach( $this->getAndCache( $active ) as $a ) {
 
@@ -606,7 +603,7 @@ class Switcher extends EntityRepository
 
         foreach( [ 'A', 'B' ] as $side ) {
             /** @noinspection SqlNoDataSourceInspection */
-            $dql = "SELECT cb.type, cb.ipv4_subnet as cbSubnet,cb.enabled as cbEnabled, cl.enabled as clEnabled, cb.description, cl.bfd, sp$side.name, pi$side.speed, cl.ipv4_subnet as clSubnet, s$side.id as saId
+            $dql = "SELECT cb.type, cb.ipv4_subnet as cbSubnet,cb.enabled as cbEnabled, cl.enabled as clEnabled, cb.description, cl.bfd, sp$side.name, pi$side.speed, pi$side.autoneg, cl.ipv4_subnet as clSubnet, s$side.id as saId
                         FROM Entities\\CoreLink cl
                         LEFT JOIN cl.coreBundle cb
 
@@ -637,6 +634,7 @@ class Switcher extends EntityRepository
                 $export[ 'bfd' ]          = $ci[ 'bfd' ];
                 $export[ 'speed' ]        = $ci[ 'speed' ];
                 $export[ 'name' ]         = $ci[ 'name' ];
+                $export[ 'autoneg' ]      = $ci[ 'autoneg' ];
                 $export[ 'shutdown' ]     = $ci[ 'cbEnabled' ] && $ci[ 'clEnabled' ] ? false : true;
 
                 $cis[] = $export;
@@ -706,7 +704,8 @@ class Switcher extends EntityRepository
                                                     FROM Entities\\Switcher s2
                                                     LEFT JOIN s2.Infrastructure inf
                                                     WHERE s2.id = ?1)
-                        AND s.loopback_ip IS NOT NULL";
+                        AND s.loopback_ip IS NOT NULL
+                        AND s.active = 1";
 
         if( $excludeCurrentSwitch ){
             $dql .= " AND s.id != ".$id;
@@ -820,7 +819,6 @@ class Switcher extends EntityRepository
                         s.ipv6addr AS ipv6addr, 
                         s.snmppasswd AS snmppasswd,
                         i.name AS infrastructure, 
-                        s.switchtype AS switchtype, 
                         s.model AS model,
                         s.active AS active, 
                         s.notes AS notes, 
@@ -837,7 +835,8 @@ class Switcher extends EntityRepository
                         c.name AS cabinet, 
                         s.asn as asn, 
                         s.loopback_ip as loopback_ip, 
-                        s.loopback_name as loopback_name
+                        s.loopback_name as loopback_name,
+                        s.mgmt_mac_address as mgmt_mac_address
                 FROM Entities\\Switcher s
                 LEFT JOIN s.Infrastructure i
                 LEFT JOIN s.Cabinet c

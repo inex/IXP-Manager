@@ -42,7 +42,7 @@ use Entities\{
  *
  * @author      Yann Robin          <yann@islandbridgenetworks.ie>
  * @author      Barry O'Donovan     <barry@islandbridgenetworks.ie>
- * @package     IXP\Console\Commands\Upgrade
+ * @package     IXP\Console\Commands
  * @copyright   Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
@@ -54,26 +54,17 @@ class SnmpPoll extends Command
      * @var string
      */
 
-    protected $signature = 'ixp-manager:switch:snmp-poll
-                        {switch? : The name of the switch, if not name specified the command will loop all the switches}
-                        {--noflush : If specified no modification will be made on the Database}';
+    protected $signature = 'switch:snmp-poll
+                        {switch? : The name of the switch, if not name specified the command will loop over all switches}
+                        {--noflush : If specified no modification will be made to the database}
+                        {--log : Output detailed polling information to the log}';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'This command will Poll and update switch objects via SNMP';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    protected $description = 'Poll and update switches and switch ports via SNMP';
 
     /**
      * Execute the console command.
@@ -84,15 +75,11 @@ class SnmpPoll extends Command
      */
     public function handle() {
 
-        if( !$this->confirm( "Are you sure you wish to proceed?\n\nThis command will Poll and update switch objects via SNMP\n" ) ) {
-            return 1;
-        }
-
         if( $this->argument('switch') ) {
 
             if( ! ( $switches = D2EM::getRepository( SwitcherEntity::class )->findBy( [ "name" => $this->argument('switch') ] ) ) ) {
-                $this->info( "ERR: No switch found with name " . $this->argument('switch' ) );
-                return 0;
+                $this->error( "ERR: No switch found with name: " . $this->argument('switch' ) );
+                return -1;
             }
 
         } else {
@@ -102,52 +89,49 @@ class SnmpPoll extends Command
         if( count( $switches ) ){
 
             foreach( $switches as $s ) {
+
                 /** @var $s SwitcherEntity */
-                if( trim( $s->getSnmppasswd() ) == '' ) {
-                    $this->info( "Skipping {$s->getName()} as no SNMP password set" );
+
+                if( $s->getSnmppasswd() === null || trim( $s->getSnmppasswd() ) === '' ) {
+                    if( !$this->isVerbosityQuiet() ) {
+                        $this->info( "Skipping {$s->getName()} as no SNMP password set" );
+                    }
                     continue;
                 }
 
-                if( $s->getLastPolled() == null ){
-                    $this->info( "First time polling of {$s->getName()} with SNMP request to {$s->getHostname()}" );
-
-                } else{
-                    $this->info( "Polling {$s->getName()} with SNMP request to {$s->getHostname()}" );
+                if( !$this->isVerbosityQuiet() ) {
+                    if( $s->getLastPolled() === null ) {
+                        $this->info( "First time polling {$s->getName()} with SNMP request to {$s->getHostname()}" );
+                    } else {
+                        $this->info( "Polling {$s->getName()} with SNMP request to {$s->getHostname()}" );
+                    }
                 }
-
-                $sPolled = false;
 
                 try {
                     $sPolled = false;
                     $host = new SNMP( $s->getHostname(), $s->getSnmppasswd() );
-                    $s->snmpPoll( $host, true );
+                    $s->snmpPoll( $host, $this->option( 'log', false ) );
                     $sPolled = true;
 
-                    $s->snmpPollSwitchPorts( $host, true );
+                    $s->snmpPollSwitchPorts( $host, $this->option( 'log', false ) );
 
-                    if( $this->option( 'noflush' ) ){
-                        $this->info( '*** noflush parameter set - NO CHANGES MADE TO DATABASE' );
+                    if( $this->option( 'noflush', false ) ){
+                        $this->warn( '    *** --noflush parameter set - NO CHANGES MADE TO DATABASE' );
                     } else{
                         D2EM::flush();
                     }
 
                 } catch( Exception $e ) {
                     if( $sPolled ){
-                        $this->error("ERROR: OSS_SNMP exception polling {$s->getName()} by SNMP");
+                        $this->error("ERROR: OSS_SNMP exception polling switch {$s->getName()} by SNMP");
                     } else {
-                        $this->error("ERROR: OSS_SNMP exception polling ports for {$s->getName()} by SNMP");
+                        $this->error("ERROR: OSS_SNMP exception polling switch ports for {$s->getName()} by SNMP");
                     }
 
                 }
-
-                $this->info( '=========================================' );
-
             }
 
         }
-
-
-        $this->info( 'Process finish' );
         return 0;
     }
 }

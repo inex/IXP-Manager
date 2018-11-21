@@ -216,6 +216,7 @@ class CoreBundleController extends Common
         }
 
         foreach( [ 'a' => $via , 'b' => $vib ] as $side => $vi ){
+            /** @var $vi VirtualInterfaceEntity */
             // Set value to the Virtual Interface side A and B
             $vi->setCustomer(       $cust );
             $vi->setMtu(            $request->input( "mtu"                      ) );
@@ -223,6 +224,11 @@ class CoreBundleController extends Common
             $vi->setChannelgroup(   $request->input( "vi-channel-number-$side"  ) );
             $vi->setTrunk(          $request->input( 'framing'                  ) ?? false  );
             $vi->setFastLACP(       $request->input( 'fast-lacp'                ) ?? false  );
+
+            if( $request->input( "type" ) == CoreBundleEntity::TYPE_L2_LAG ){
+                $vi->setLagFraming( true );
+            }
+
         }
 
         // CHeck if there is at least 1 core link created for the core bundle

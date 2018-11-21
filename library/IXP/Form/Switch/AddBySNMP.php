@@ -54,15 +54,6 @@ class IXP_Form_Switch_AddBySNMP extends IXP_Form
             ->addFilter( new OSS_Filter_StripSlashes() );
         $this->addElement( $hostname );
 
-        $switchtype = $this->createElement( 'select', 'switchtype' );
-        $switchtype->setMultiOptions( \Entities\Switcher::$TYPES )
-            ->setAttrib( 'class', 'span3 chzn-select' )
-            ->setRegisterInArrayValidator( true )
-            ->addValidator( 'greaterThan', true, array( 0 ) )
-            ->setLabel( 'Type' )
-            ->setErrorMessages( array( 'Please set the switch type' ) );
-        $this->addElement( $switchtype );
-
         $this->addElement( self::getPopulatedSelectCabinet( ) );
 
         $infrastructure = self::getPopulatedSelectInfra( );

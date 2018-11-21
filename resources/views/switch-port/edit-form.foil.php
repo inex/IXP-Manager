@@ -1,12 +1,3 @@
-<?php if( $t->data[ 'params'][ 'isAdd'] ): ?>
-
-    <div class="alert alert-info">
-        <h4>Use of this method is discouraged!</h4>
-
-        Switch ports are best added using the <a href="https://github.com/inex/IXP-Manager/wiki/Updating-Switches-and-Ports-via-SNMP" target="_blank">CLI scripts</a> or the View / Edit Ports (with SNMP poll) option from the <a href="<?= route( "switch@list" ) ?>">switch list page</a>. See <a href="https://github.com/inex/IXP-Manager/wiki/Switch-and-Switch-Port-Management">the documentation for more information.</a>
-    </div>
-
-<?php endif; ?>
 
 <div class="well col-sm-12">
 
@@ -21,13 +12,13 @@
             ->fromQuery( $t->data[ 'params'][ 'switches'], 'name' )
             ->placeholder( 'Choose a Switch' )
             ->addClass( 'chzn-select' )
-            ->blockHelp( "" );
+            ->blockHelp( "The switch that this port belongs to." );
         ?>
 
         <?php if( !$t->data[ 'params'][ 'isAdd'] ): ?>
             <?= Former::text( 'name' )
                 ->label( 'Name' )
-                ->blockHelp( "" );
+                ->blockHelp( "The port name." );
             ?>
         <?php endif; ?>
 
@@ -36,7 +27,7 @@
             ->fromQuery( \Entities\SwitchPort::$TYPES )
             ->placeholder( 'Choose a Type' )
             ->addClass( 'chzn-select' )
-            ->blockHelp( "" );
+            ->blockHelp( "The port type." );
         ?>
 
     <?php if( !$t->data[ 'params'][ 'isAdd'] ): ?>
@@ -45,7 +36,7 @@
             ->text( 'Active' )
             ->value( 1 )
             ->check()
-            ->blockHelp( "" );
+            ->blockHelp( "Is the port active?" );
         ?>
     <?php endif; ?>
 
@@ -54,17 +45,17 @@
 
         <?= Former::number( 'numfirst' )
             ->label( 'Number of First Port' )
-            ->blockHelp( "" );
+            ->blockHelp( "The number of the first port to add. This will be incremented by 1 for <em>Number of Ports</em> below." );
         ?>
 
         <?= Former::number( 'numports' )
             ->label( 'Number of Ports' )
-            ->blockHelp( "" );
+            ->blockHelp( "The number of ports to be created starting from <em>Number of First Port</em> above." );
         ?>
 
         <?= Former::text( 'prefix' )
-            ->label( 'printf Format' )
-            ->blockHelp( "" );
+            ->label( 'Name in printf Format' )
+            ->blockHelp( "The name of the port using printf format with a <code>%d</code> handle for the port number. For example: <code>Ethernet%d</code>." );
         ?>
 
         <?= Former::actions(

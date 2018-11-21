@@ -7,15 +7,15 @@
 
 <?php endif; ?>
 
-<?php if( !$t->data[ 'params'][ 'addBySnmp'] ):?>
+<?php if( app('request')->input( 'manual' ) === "1" ):?>
 
-    <div class="alert alert-info">
-        <h4>Use of this method is discouraged!</h4>
+    <div class="alert alert-danger">
+        <h4>Use of this method is strongly discouraged!</h4>
 
-        It is possible to add switches without SNMP polling but this is strongly discouraged as SNMP is built heavily into the switch and switch port management.
+        While it is possible to add switches without SNMP polling, this is strongly discouraged as SNMP is built heavily into the switch and switch port management.
 
         <br>
-        Please consider using <a href="<?= route( $t->feParams->route_prefix.'@pre-add-by-snmp' ) ?>" >the SNMP method to add switches</a>.
+        Please consider using <a href="<?= route( $t->feParams->route_prefix.'@add-by-snmp' ) ?>" >the SNMP method to add switches</a>.
     </div>
 
 <?php endif; ?>

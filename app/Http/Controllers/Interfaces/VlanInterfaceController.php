@@ -249,7 +249,7 @@ class VlanInterfaceController extends Common
         D2EM::remove( $vli );
         D2EM::flush();
 
-        AlertContainer::push( 'The Physical Interface has been deleted successfully.', Alert::SUCCESS );
+        AlertContainer::push( 'The Vlan Interface has been deleted successfully.', Alert::SUCCESS );
 
         return response()->json( [ 'success' => true ] );
     }

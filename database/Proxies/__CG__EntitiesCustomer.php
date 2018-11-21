@@ -1819,17 +1819,6 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function isUniqueMonitorIndex($i)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isUniqueMonitorIndex', [$i]);
-
-        return parent::isUniqueMonitorIndex($i);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function addIrrdbPrefix(\Entities\IrrdbPrefix $irrdbPrefixes)
     {
 

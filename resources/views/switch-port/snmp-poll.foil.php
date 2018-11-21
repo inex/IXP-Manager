@@ -5,7 +5,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>SNMP Poll <?= $t->s->getName() ?></li>
+    <li>View / Edit Ports for <?= $t->s->getName() ?> (via SNMP)</li>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>

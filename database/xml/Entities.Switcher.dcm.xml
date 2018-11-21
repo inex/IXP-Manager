@@ -17,7 +17,6 @@
     <field name="ipv4addr" type="string" length="255" nullable="true"/>
     <field name="ipv6addr" type="string" length="255" nullable="true"/>
     <field name="snmppasswd" type="string" length="255" nullable="true"/>
-    <field name="switchtype" type="integer" nullable="true"/>
     <field name="model" type="string" length="255" nullable="true"/>
     <field name="active" type="boolean" nullable="true">
       <options>

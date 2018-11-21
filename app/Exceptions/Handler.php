@@ -1,8 +1,13 @@
 <?php namespace IXP\Exceptions;
 
-use Exception;
+use Exception,Redirect;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
+use IXP\Utils\View\Alert\Alert;
+use IXP\Utils\View\Alert\Container as AlertContainer;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+use Illuminate\Auth\Access\AuthorizationException;
 
 class Handler extends ExceptionHandler
 {
@@ -31,7 +36,10 @@ class Handler extends ExceptionHandler
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
      * @param  \Exception  $e
+     *
      * @return void
+     *
+     * @throws
      */
     public function report(Exception $e)
     {
@@ -57,15 +65,25 @@ class Handler extends ExceptionHandler
          *
          * We'll revert to ZF1 handling when Laravel throws a 404:
          */
-        if( $e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException ) {
+        if( $e instanceof NotFoundHttpException ) {
 
             \App::make('ZendFramework')->run();
             die();
 
-        } else if ($this->isHttpException($e)) {
+        } else if( $this->isHttpException($e) ) {
 
             return $this->renderHttpException($e);
 
+        } else if( $e instanceof AuthorizationException && request()->route()->action['middleware'] != 'grapher' ) {
+            //AlertContainer::push( "Please login below.", Alert::DANGER );
+
+            // store in session url for a redirection after login
+            //$request->session()->put( "url.redirect.after.login", $request->path() );
+
+            // TEMPORARY : using classic php session to be able to get the session in the ZEND auth
+            $_SESSION["url.redirect.after.login"] = $request->path();
+
+            return Redirect::to( '' );
         } else {
 
             return parent::render($request, $e);

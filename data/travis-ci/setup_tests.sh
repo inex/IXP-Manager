@@ -11,7 +11,7 @@
 pwd
 
 # install requirements
-sudo apt-get update >/dev/null
+# sudo apt-get update >/dev/null
 # sudo apt-get upgrade
 #sudo apt-get install php-memcache php7.0-snmp php-pear
 #phpenv config-add data/travis-ci/configs/ixp-php.ini
@@ -28,10 +28,18 @@ cp .env.travisci .env
 sudo cp data/travis-ci/configs/* application/configs
 sudo touch public/.htaccess
 
-echo composer install
-composer install
+sudo npm install -g bower
+bower install --production
+
+echo composer install --no-interaction --prefer-dist --no-suggest
+composer install --no-interaction --prefer-dist --no-suggest
 
 mysql -e "CREATE DATABASE myapp_test CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';"
 bzcat data/travis-ci/travis_ci_test_db.sql.bz2  | mysql --default-character-set=utf8mb4 -h 127.0.0.1 -u travis myapp_test
+
+
+echo google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost
+google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+
 
 ./artisan serve  &>php-built-in.log &
