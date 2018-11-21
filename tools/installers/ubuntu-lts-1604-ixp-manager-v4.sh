@@ -389,7 +389,7 @@ echo -n "Installing / updating composer - PHP's package manager..."
 log_break && echo -n "Installing composer - PHP's package manager... " &>> /tmp/ixp-manager-install.log
 cd $IXPROOT
 
-curl -so $IXPROOT/composer.phar https://getcomposer.org/download/1.6.5/composer.phar && \
+curl -so $IXPROOT/composer.phar https://getcomposer.org/download/1.7.3/composer.phar && \
     chmod a+x $IXPROOT/composer.phar && \
     $IXPROOT/composer.phar selfupdate
 
