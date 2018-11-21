@@ -51,8 +51,9 @@
             ?>
 
             <?= Former::actions(
-                Former::primary_submit( 'Update NOC Details' )
-            );
+                    Former::primary_submit( 'Update NOC Details' ),
+                    Former::success_button( 'Help' )->id( 'help-btn' )
+                );
             ?>
 
             <?= Former::close() ?>

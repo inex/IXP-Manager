@@ -6,35 +6,42 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 
+<?php $this->section( 'title' ) ?>
+    Your <?= config('identity.sitename' ) ?> Dashboard
+<?php $this->append() ?>
+
+
+
 <?php $this->section('content') ?>
 <div class="row">
 
     <div class="col-sm-12">
 
+
         <?= $t->alerts() ?>
         <?php if( !$t->c->isTypeAssociate() ): ?>
-            <ul class="nav nav-tabs">
+            <ul class="nav nav-tabs" role="tablist">
 
-                <li role="overview" <?php if( $t->tab == null || $t->tab == 'overview' || $t->tab == 'index' ): ?> class="active" <?php endif; ?>>
+                <li role="presentation" <?php if( $t->tab == null || $t->tab == 'overview' || $t->tab == 'index' ): ?> class="active" <?php endif; ?>>
                     <a data-toggle="tab" href="#overview">Overview</a>
                 </li>
 
-                <li role="details" <?php if( $t->tab == 'details' ): ?> class="active" <?php endif; ?>>
+                <li role="presentation" <?php if( $t->tab == 'details' ): ?> class="active" <?php endif; ?>>
                     <a data-toggle="tab" href="#details">Details</a>
                 </li>
 
-                <li role="ports" <?php if( $t->tab == 'ports' ): ?> class="active" <?php endif; ?>>
+                <li role="presentation" <?php if( $t->tab == 'ports' ): ?> class="active" <?php endif; ?>>
                     <a data-toggle="tab" href="#ports" data-toggle="tab">Ports</a>
                 </li>
 
                 <?php if( $t->resellerMode() && $t->c->isReseller() ): ?>
-                    <li role="resold-customers" <?php if( $t->tab == 'resold-customers' ): ?> class="active" <?php endif; ?>>
+                    <li role="presentation" <?php if( $t->tab == 'resold-customers' ): ?> class="active" <?php endif; ?>>
                         <a data-toggle="tab" href="#resold-customers" data-toggle="tab">Resold Customers</a>
                     </li>
                 <?php endif; ?>
 
                 <?php if( $t->notes ): ?>
-                    <li role="notes" <?php if( $t->tab == 'notes' ): ?> class="active" <?php endif; ?>>
+                    <li role="presentation" <?php if( $t->tab == 'notes' ): ?> class="active" <?php endif; ?>>
                         <a data-toggle="tab" href="#notes" id="tab-notes" data-toggle="tab">
                             Notes
                             <?php if( $t->notesInfo[ "unreadNotes"] > 0 ): ?>
@@ -44,12 +51,12 @@ $this->layout( 'layouts/ixpv4' );
                     </li>
                 <?php endif; ?>
 
-                <li role="cross-connects" <?php if( $t->tab == 'cross-connect' ): ?> class="active" <?php endif; ?>>
+                <li role="presentation" <?php if( $t->tab == 'cross-connect' ): ?> class="active" <?php endif; ?>>
                     <a data-toggle="tab" href="#cross-connects" data-toggle="tab">Cross Connects</a>
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes' ) && $t->c->isRouteServerClient() ): ?>
-                    <li onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'id' =>  $t->c->getId() ] ) ?>'">
+                    <li role="presentation" onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'id' =>  $t->c->getId() ] ) ?>'">
                         <a data-toggle="tab"  href="">
                             RS Prefixes
                             <?php if( $t->rsRoutes[ 'adv_nacc' ][ 'total' ] > 0 ): ?>
@@ -61,17 +68,17 @@ $this->layout( 'layouts/ixpv4' );
                 <?php endif ?>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.peering-manager' ) ): ?>
-                    <li>
+                    <li roler="presentation">
                         <a href=<?= url('') ?>/peering-manager>Peering Manager &raquo;</a>
                     </li>
                 <?php endif ?>
 
-                <li>
+                <li roler="presentation">
                     <a href="<?= route( "statistics@member") ?>">Statistics &raquo;</a>
                 </li>
 
                 <?php if( config( 'grapher.backends.sflow.enabled' )  ): ?>
-                    <li>
+                    <li roler="presentation">
                         <a href="<?= route( "statistics@p2p" , [ "cid" => $t->c->getId() ]) ?>">Peer to Peer Traffic &raquo;</a>
                     </li>
                 <?php endif ?>

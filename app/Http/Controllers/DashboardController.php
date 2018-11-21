@@ -98,7 +98,7 @@ class DashboardController extends Controller
         $old = request()->old();
 
         // array used to populate the details forms
-        // former doesn't allow us to populate a form the classic way when there is many forms on the same view.
+        // former doesn't allow us to populate a form the classic way when there is >1 forms on the same view.
         $dataNocDetail = [
             'nocphone'                  => array_key_exists( 'nocphone',                $old    ) ? $old['nocphone']                : $c->getNocphone(),
             'noc24hphone'               => array_key_exists( 'noc24hphone',             $old    ) ? $old['noc24hphone']             : $c->getNoc24hphone(),
