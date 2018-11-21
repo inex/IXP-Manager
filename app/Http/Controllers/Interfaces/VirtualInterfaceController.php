@@ -337,6 +337,13 @@ class VirtualInterfaceController extends Common
             return abort( '404' );
         }
 
+
+        if( $vi->getCoreBundle() ) {
+            AlertContainer::push( 'The Virtual Interface is linked to a Core Bundle. Delete the Core Bundle first to be able to delete the Virtual Interface.', Alert::DANGER );
+
+            return response()->json( [ 'success' => false ]);
+        }
+
         foreach( $vi->getPhysicalInterfaces() as $pi) {
             /** @var PhysicalInterfaceEntity $pi */
             $vi->removePhysicalInterface( $pi );
@@ -351,6 +358,7 @@ class VirtualInterfaceController extends Common
 
                 $pi->getPeeringPhysicalInterface()->setFanoutPhysicalInterface( null );
             }
+
             D2EM::remove( $pi );
 
             if( $request->input( 'related' ) && $pi->getRelatedInterface() ){

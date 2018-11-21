@@ -74,7 +74,7 @@
                         </h5>
                     <?php endif; ?>
                     <div class="col-sm-6">
-                        <table>
+                        <table class="table table-borderless">
                             <tr>
                                 <td>
                                     <b>Switch:</b>
@@ -111,19 +111,25 @@
                                     <td>
                                         <b>XConnect Port:</b>
                                     </td>
-                                    <td>
+                                    <td class="wrap">
                                         <?= $t->ee( $pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getColoReference() ) ?> -
-                                        <a href="<?= route( "patch-panel-port/list/patch-panel" , [ "id" => $pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getId() ] ) ?>">
+
+                                        <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                            <a href="<?= route( "patch-panel-port/list/patch-panel" , [ "id" => $pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getId() ] ) ?>">
+                                                <?= $t->ee( $pi->getSwitchPort()->getPatchPanelPort()->getName() ) ?>
+                                            </a>
+                                        <?php else: ?>
                                             <?= $t->ee( $pi->getSwitchPort()->getPatchPanelPort()->getName() ) ?>
-                                        </a>
+                                        <?php endif; ?>
                                     </td>
+
                                 </tr>
                             <?php endif; ?>
                             </tr>
                         </table>
                     </div>
                     <div class="col-sm-6">
-                        <table>
+                        <table class="table table-borderless">
                             <tr>
                                 <td>
                                     <b>Switch Port:</b>
@@ -202,7 +208,7 @@
                             <small><?= config( "identity.orgname" ) ?> Reference: #<?= $vli->getVlan()->getId() ?></small>
                         </h4>
 
-                        <table>
+                        <table class="table table-borderless">
                             <tr>
                                 <td>
                                     <b>Name</b>
@@ -238,7 +244,7 @@
                     <?php else: ?>
                         <h4><?= $t->ee( $vli->getVlan()->getName() ) ?>:</h4>
                         <div class="col-sm-6">
-                            <table>
+                            <table class="table table-borderless">
                                 <tr>
                                     <td>
                                         <b>
@@ -273,10 +279,22 @@
                                         <?= $vli->getRsclient() ? "Yes" : "No" ?>
                                     </td>
                                 </tr>
+                                <?php if( $t->as112UiActive() ): ?>
+                                    <tr>
+                                        <td>
+                                            <b>
+                                                AS112 Client:
+                                            </b>
+                                        </td>
+                                        <td>
+                                            <?= $vli->getAs112client() ? "Yes" : "No" ?>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
                             </table>
                         </div>
                         <div class="col-sm-6">
-                            <table>
+                            <table class="table table-borderless">
                                 <tr>
                                     <td>
                                         <b>IPv4 Address:</b>
@@ -292,26 +310,19 @@
                                 <tr>
                                     <td>
                                         <b>
-                                            Max Prefixes:
+                                            Mac Address:
                                         </b>
                                     </td>
                                     <td>
-                                        global: <?= $t->ee( $t->c->getMaxprefixes() ) ?>, per-interface: <?= $t->ee( $vli->getMaxbgpprefix() )?>
+                                        <?php foreach( $vli->getLayer2AddressesAsArray() as $l2a ): ?>
+                                            <?= $l2a ?><br />
+                                        <?php endforeach; ?>
+                                        <?php if( count( $vli->getLayer2AddressesAsArray() ) > 0 && config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ): ?>
+                                            <a href="<?= route( "layer2-address@forVlanInterface", [ "id" => $vli->getId() ] ) ?>">Edit</a>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
 
-                                <?php if( $t->as112UiActive ): ?>
-                                    <tr>
-                                        <td>
-                                            <b>
-                                                AS112 Client:
-                                            </b>
-                                        </td>
-                                        <td>
-                                            <?= $vli->getAs112client() ? "Yes" : "No" ?>
-                                        </td>
-                                    </tr>
-                                <?php endif; ?>
                             </table>
                         </div>
                     <?php endif; ?>
