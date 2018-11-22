@@ -771,3 +771,12 @@ td a:hover{
     -ms-hyphens: auto;
     hyphens: auto;
 }
+
+
+.cursor-pointer{
+    cursor: pointer;
+}
+
+li.pull-right{
+    list-style-type: none;
+}

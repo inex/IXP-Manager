@@ -5,10 +5,10 @@ namespace Repositories;
 use Doctrine\ORM\EntityRepository;
 
 use Entities\{
-    Infrastructure as InfrastructureEntity,
-    Router as RouterEntity,
-    Vlan as VlanEntity,
-    VlanInterface as VlanInterfaceEntity
+    Infrastructure  as InfrastructureEntity,
+    Router          as RouterEntity,
+    Vlan            as VlanEntity,
+    VlanInterface   as VlanInterfaceEntity
 };
 
 
@@ -230,7 +230,7 @@ class Vlan extends EntityRepository
     /**
      * Find all VLANs marked for inclusion in the peering manager.
      *
-     * @return Entities\Vlan[]
+     * @return VlanEntity[]
      */
     public function getPeeringManagerVLANs()
     {
@@ -246,16 +246,24 @@ class Vlan extends EntityRepository
     /**
     * Find all VLANs marked for inclusion in the peering matrices.
     *
-    * @return Entities\Vlan[]
+    * @return VlanEntity[]
     */
     public function getPeeringMatrixVLANs()
     {
-        return $this->getEntityManager()->createQuery(
+        $vlanEnts = $this->getEntityManager()->createQuery(
                 "SELECT v FROM \\Entities\\Vlan v
                     WHERE v.peering_matrix = 1
                 ORDER BY v.number ASC"
             )
             ->getResult();
+
+        $vlans = [];
+
+        foreach( $vlanEnts as $v ){
+            $vlans[ $v->getId() ] = $v->getName();
+        }
+
+        return $vlans;
     }
 
 

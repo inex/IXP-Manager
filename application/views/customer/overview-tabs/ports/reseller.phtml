@@ -1,9 +1,0 @@
-{foreach $cust->getVirtualInterfaces() as $vi}
-
-    {if $vi->getType() == SWITCHPORT::TYPE_RESELLER}
-    
-        {include file='customer/overview-tabs/ports/port.phtml'}
-        
-    {/if}
-
-{/foreach}

@@ -68,17 +68,17 @@ $this->layout( 'layouts/ixpv4' );
                 <?php endif ?>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.peering-manager' ) ): ?>
-                    <li roler="presentation">
-                        <a href=<?= url('') ?>/peering-manager>Peering Manager &raquo;</a>
+                    <li>
+                        <a id="peering-manager-a" href=<?= url('') ?>/peering-manager>Peering Manager &raquo;</a>
                     </li>
                 <?php endif ?>
 
-                <li roler="presentation">
+                <li role="presentation">
                     <a href="<?= route( "statistics@member") ?>">Statistics &raquo;</a>
                 </li>
 
                 <?php if( config( 'grapher.backends.sflow.enabled' )  ): ?>
-                    <li roler="presentation">
+                    <li role="presentation">
                         <a href="<?= route( "statistics@p2p" , [ "cid" => $t->c->getId() ]) ?>">Peer to Peer Traffic &raquo;</a>
                     </li>
                 <?php endif ?>
