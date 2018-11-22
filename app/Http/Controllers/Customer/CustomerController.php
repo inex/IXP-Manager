@@ -37,6 +37,7 @@ use Illuminate\Http\{
 use Illuminate\View\View;
 
 use Entities\{
+    BgpSession              as BgpSessionEntity,
     CompanyBillingDetail    as CompanyBillingDetailEntity,
     CompanyRegisteredDetail as CompanyRegisteredDetailEntity,
     Customer                as CustomerEntity,
@@ -46,7 +47,8 @@ use Entities\{
     IXP                     as IXPEntity,
     NetworkInfo             as NetworkInfoEntity,
     RSPrefix                as RSPrefixEntity,
-    User                    as UserEntity
+    User                    as UserEntity,
+    Vlan                    as VlanEntity
 };
 
 
@@ -495,6 +497,19 @@ class CustomerController extends Controller
         // get customer's notes
         $cns = D2EM::getRepository( CustomerNoteEntity::class )->fetchForCustomer( $c );
 
+        $peersStatus = [];
+
+        foreach( $c->getVirtualInterfaces() as $vi ) {
+            foreach( $vi->getVlanInterfaces() as $vli ) {
+                if( $vli->getVlan()->getPrivate() ) {
+                    continue;
+                }
+                
+                $peersStatus[ $vli->getId() ][] = D2EM::getRepository( BgpSessionEntity::class )->getPeersStatus( $vli );
+            }
+        }
+
+
         return view( 'customer/overview' )->with([
             'c'                         => $c,
             'customers'                 => D2EM::getRepository( CustomerEntity::class )->getNames( true ),
@@ -518,7 +533,8 @@ class CustomerController extends Controller
             'countries'                 => Countries::getList('name' ),
             'tab'                       => strtolower( $tab ),
             'notes'                     => $cns,
-            'notesInfo'                 => D2EM::getRepository( CustomerNoteEntity::class )->analyseForUser( $cns, $c, Auth::user() )
+            'notesInfo'                 => D2EM::getRepository( CustomerNoteEntity::class )->analyseForUser( $cns, $c, Auth::user() ),
+            'peers'                     => D2EM::getRepository( CustomerEntity::class )->getPeeringManagerArrayByType( $c , D2EM::getRepository( VlanEntity::class )->getPeeringManagerVLANs(), [ 4, 6 ] )
         ]);
     }
 
