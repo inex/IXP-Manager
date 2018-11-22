@@ -76,31 +76,27 @@ class PeeringManagerControllerTest extends DuskTestCase
 
             /** Test peering request */
 
-                // Test Mark as sent
-                $browser->click( "#peering-request-" . $c[ "id" ] )
-                    ->waitForText( "Send Peering Request by Email" )
-                    ->click('#modal-peering-request-marksent' )
-                    ->waitForText( "Peering request marked as sent in your Peering Manager." )
-                    ->click( ".bootbox-close-button" )
-                    ->waitUntilMissing( ".modal-backdrop" );
+            // Test Mark as sent
+            $browser->click( "#peering-request-" . $c[ "id" ] )
+                ->waitForText( "Send Peering Request by Email" )
+                ->click('#modal-peering-request-marksent' )
+                ->waitForText( "Peering request marked as sent in your Peering Manager." )
+                ->click( ".bootbox-close-button" )
+                ->waitUntilMissing( ".modal-backdrop" );
 
-                // Check value in DB
-                D2EM::refresh( $pm );
+            // Check value in DB
+            D2EM::refresh( $pm );
 
-                $this->assertEquals( 1 ,$pm->getEmailsSent() );
+            $this->assertEquals( 1 ,$pm->getEmailsSent() );
 
-                $this->sendEmail( $browser, $pm, $c, $user, true, 1);
-                $this->sendEmail( $browser, $pm, $c, $user, false, 2);
+            $this->sendEmail( $browser, $pm, $c, $user, true, 1);
+            $this->sendEmail( $browser, $pm, $c, $user, false, 2);
 
             // Test Mark Peering
 
             $this->markPeering( $browser, $pm, $c, "peered");
             $this->markPeering( $browser, $pm, $c, "rejected");
-
-
         });
-
-
     }
 
     /**
