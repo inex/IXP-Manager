@@ -198,6 +198,9 @@
                 <li role="cross-connects" <?php if( $t->tab == 'cross-connects' ): ?> class="active" <?php endif; ?>>
                     <a data-toggle="tab" href="#cross-connects" data-toggle="tab">Cross Connects</a>
                 </li>
+                <li role="peers" <?php if( $t->tab == 'peers' ): ?> class="active" <?php endif; ?>>
+                    <a data-toggle="tab" href="#peers" data-toggle="tab">Peers</a>
+                </li>
                 <?php if( count( $c->getConsoleServerConnections() ) ): ?>
                     <li role="console-server-connections" <?php if( $t->tab == 'console-server-connections' ): ?> class="active" <?php endif; ?>>
                         <a data-toggle="tab" href="#console-server-connections" data-toggle="tab">OOB Access</a>
@@ -271,6 +274,9 @@
                 <div id="cross-connects" class="tab-pane fade">
                     <?= $t->insert( 'customer/overview-tabs/cross-connects' ); ?>
                 </div>
+                <div id="peers" class="tab-pane fade <?php if( $t->tab == 'peers' ): ?> in active <?php endif; ?>">
+                    <?= $t->insert( 'customer/overview-tabs/peers' ); ?>
+                </div>
                 <div id="console-server-connections" class="tab-pane fade">
                     <?= $t->insert( 'customer/overview-tabs/console-server-connections' ); ?>
                 </div>
@@ -286,6 +292,7 @@
     <?= $t->insert( 'customer/js/overview/users' ); ?>
     <?= $t->insert( 'customer/js/overview/contacts' ); ?>
     <?= $t->insert( 'customer/js/overview/notes' ); ?>
+    <?= $t->insert( 'customer/js/overview/peers' ); ?>
 
     <script>
         /**

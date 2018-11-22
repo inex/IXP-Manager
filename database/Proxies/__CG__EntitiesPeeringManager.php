@@ -386,4 +386,15 @@ class PeeringManager extends \Entities\PeeringManager implements \Doctrine\ORM\P
         return parent::getUpdated();
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function toArray(): array
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'toArray', []);
+
+        return parent::toArray();
+    }
+
 }

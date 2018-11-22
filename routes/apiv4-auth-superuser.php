@@ -71,7 +71,6 @@ Route::group( [  'prefix' => 'switch' ], function() {
     Route::post( '{id}/switch-port',                  'SwitchController@switchPort' );
 });
 
-Route::post( 'utils/markdown',                                  'UtilsController@markdown' )->name( "utils@markdown" );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Layer 2 Address
