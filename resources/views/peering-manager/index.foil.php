@@ -20,6 +20,21 @@ $this->layout( 'layouts/ixpv4' );
 
         <?= $t->alerts() ?>
 
+
+
+        <?php if( config( 'ixp.peering_manager.testmode', false ) ): ?>
+
+            <div class="alert alert-warning">
+                <strong>Test mode enabled.</strong>
+                All peering requests will only be sent to <code><?= config( 'ixp.peering_manager.testemail' ) ?></code>.
+                The CC/BCC recipients will be ignored.
+                This can be changed in your <code>.env</code> configuration file.
+            </div>
+
+        <?php endif; ?>
+        
+        
+        
         <ul class="nav nav-tabs">
 
             <li id="peering-potential-li" role="potential" class="active">
