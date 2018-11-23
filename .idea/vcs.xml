@@ -2,22 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vendor/doctrine/orm" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vendor/guzzlehttp/guzzle" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vendor/guzzlehttp/psr7" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vendor/league/flysystem" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/vendor/opensolutions/oss-snmp" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vendor/symfony/console" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vendor/symfony/css-selector" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vendor/symfony/debug" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vendor/symfony/event-dispatcher" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vendor/symfony/http-foundation" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vendor/symfony/http-kernel" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vendor/symfony/polyfill-mbstring" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vendor/symfony/process" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vendor/symfony/serializer" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vendor/symfony/translation" vcs="Git" />
     <mapping directory="$PROJECT_DIR$/vendor/webpatser/laravel-countries" vcs="Git" />
-    <mapping directory="$PROJECT_DIR$/vendor/zendesk/zendesk_api_client_php" vcs="Git" />
   </component>
 </project>
