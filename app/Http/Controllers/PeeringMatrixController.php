@@ -68,7 +68,7 @@ class PeeringMatrixController extends Controller
     public function index( Request $r ) {
 
         if( config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ) {
-            AlertContainer::push( 'This controller has been disabled.', Alert::DANGER );
+            AlertContainer::push( 'The peering matrix has been disabled.', Alert::DANGER );
             return Redirect::to('');
         }
 
