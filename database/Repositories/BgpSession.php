@@ -68,7 +68,7 @@ class BgpSession extends EntityRepository
     {
         $key = "pm_sessions_{$vlan}_{$protocol}";
 
-        if( !$forceDb && ( $apeers = Cache::get( $key ) ) ){
+        if( !$forceDb && ( $apeers = Cache::get( $key ) ) ) {
             return $apeers;
         }
 
@@ -84,7 +84,6 @@ class BgpSession extends EntityRepository
         // dump old date (yet) and the time to run the query is O(n) on number
         // of rows...
 
-        // need to construct a raw SQL here due to the schema design by NH
         $sql = "SELECT  bs.*, 
                         srcip.*, 
                         dstip.*,
@@ -93,6 +92,7 @@ class BgpSession extends EntityRepository
                         cs.shortname AS csshortname, 
                         cs.name AS csname, 
                         cs.autsys AS csautsys,
+                        cs.activepeeringmatrix AS csactivepeeringmatrix,
                         cd.shortname AS cdshortname, 
                         cd.name AS cdname, 
                         cd.autsys AS cdautsys,
@@ -115,7 +115,7 @@ class BgpSession extends EntityRepository
         WHERE
             bs.last_seen >= NOW() - INTERVAL 7 DAY
             AND bs.protocol = {$protocol}
-            AND packetcount >= 1";
+            AND bs.packetcount >= 1";
 
         if( $evlan ){
             $sql .= " AND vlan.id = " . $evlan->getId();
@@ -128,9 +128,7 @@ class BgpSession extends EntityRepository
 
 
         $sql .= " GROUP BY bs.srcipaddressid, bs.dstipaddressid, bs.id, vlis.virtualinterfaceid, vlid.virtualinterfaceid";
-
         $peers = $conn->fetchAll( $sql );
-
         $apeers = [];
 
         foreach( $peers as $p )
@@ -138,9 +136,10 @@ class BgpSession extends EntityRepository
             if( !isset( $apeers[ $p['csautsys'] ] ) )
             {
                 $apeers[ $p['csautsys'] ] = [];
-                $apeers[ $p['csautsys'] ]['shortname'] = $p['csshortname'];
-                $apeers[ $p['csautsys'] ]['name']      = $p['csname'];
-                $apeers[ $p['csautsys'] ]['peers']     = [];
+                $apeers[ $p['csautsys'] ]['shortname']           = $p['csshortname'];
+                $apeers[ $p['csautsys'] ]['name']                = $p['csname'];
+                $apeers[ $p['csautsys'] ]['activepeeringmatrix'] = $p['csactivepeeringmatrix'];
+                $apeers[ $p['csautsys'] ]['peers']               = [];
             }
 
             $apeers[ $p['csautsys'] ]['peers'][ $p['cdautsys'] ] = $p['cdautsys'];
@@ -148,11 +147,11 @@ class BgpSession extends EntityRepository
 
         ksort( $apeers, SORT_NUMERIC );
 
-        foreach( $apeers as $asn => $p )
+        foreach( $apeers as $asn => $p ) {
             ksort( $apeers[ $asn ][ 'peers' ], SORT_NUMERIC );
+        }
 
         Cache::put( $key, $apeers, 3600 );
-
         return $apeers;
     }
 

@@ -74,6 +74,16 @@ class PeeringManagerController extends Controller
      */
     public function index() {
 
+        if( config( 'ixp_fe.frontend.disabled.peering-manager', false ) ) {
+            AlertContainer::push( 'The peering manager has been disabled.', Alert::DANGER );
+            return Redirect::to('');
+        }
+
+        if( !Auth::getUser()->isCustUser() ) {
+            AlertContainer::push( 'Only standard customer users can access the peering manager.', Alert::DANGER );
+            return Redirect::to('');
+        }
+
         $c      = Auth::getUser()->getCustomer();
 
         $vlans  = D2EM::getRepository( VlanEntity::class )->getPeeringManagerVLANs();
