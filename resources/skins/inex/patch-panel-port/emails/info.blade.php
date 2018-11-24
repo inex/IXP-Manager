@@ -7,8 +7,11 @@ As per your request, here are our records on the following cross connect to INEX
 @endif
 
 ```
-Colo Reference:  {{ $ppp->getColoCircuitRef() }}
+Facility:        {{ $ppp->getPatchPanel()->getCabinet()->getLocation()->getName() }}
+Rack:            {{ $ppp->getPatchPanel()->getCabinet()->getCololocation() }}
 Patch panel:     {{ $ppp->getPatchPanel()->getName() }}
+Colo Reference:  {{ $ppp->getColoCircuitRef() }}
+Type:            {{ $ppp->getPatchPanel()->resolveCableType() }}
 Port:            {{ $ppp->getName() }} @if( $ppp->hasSlavePort() ) *(duplex port)* @endif
 
 State:           {{ $ppp->resolveStates() }}
