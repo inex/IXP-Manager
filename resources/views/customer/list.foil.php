@@ -190,10 +190,10 @@ $this->layout( 'layouts/ixpv4' );
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm" role="group">
-                            <a class="btn btn btn-default" href="<?= route( "customer@overview" , [ "id" => $c->getId() ] ) ?>" title="View">
+                            <a class="btn btn btn-default" href="<?= route( "customer@overview" , [ "id" => $c->getId() ] ) ?>" title="Overview">
                                 <i class="glyphicon glyphicon-eye-open"></i>
                             </a>
-                            <a class="btn btn btn-default" href="<?= route ( "customer@delete-recap", [ "id" => $c->getId() ] )   ?>" title="View">
+                            <a class="btn btn btn-default" href="<?= route ( "customer@delete-recap", [ "id" => $c->getId() ] )   ?>" title="Delete">
                                 <i class="glyphicon glyphicon-trash"></i>
                             </a>
                         </div>

@@ -28,7 +28,12 @@ function deletePopup( id, viid, type ) {
     } else if( type === "vi" ) {
         objectName = "Virtual Interface";
         urlDelete = "<?= url( 'interfaces/virtual/delete' ) ?>" ;
-        urlRedirect = "<?= route( 'interfaces/virtual/list' ) ?>" ;
+        if( $( "#custid" ).val() !== undefined ){
+            urlRedirect = "<?= url( 'customer/overview' ) ?>/" + $( "#custid" ).val() + "/ports"  ;
+        }else{
+            urlRedirect = "<?= route( 'interfaces/virtual/list' ) ?>" ;
+        }
+
     } else if( type === "sflr" ) {
         objectName = "Sflow Receiver";
         urlDelete = "<?= url( 'interfaces/sflow-receiver/delete' ) ?>" ;
