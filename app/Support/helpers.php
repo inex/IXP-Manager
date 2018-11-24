@@ -67,3 +67,23 @@ if( !function_exists( 'resolve_dns_aaaa' ) ) {
     }
 }
 
+
+if( !function_exists( 'ixp_min_auth' ) ) {
+
+    /**
+     * Check is a logged/public user meets the minimum authentication level provided
+     *
+     * @param int $minauth
+     * @return bool
+     */
+    function ixp_min_auth( int $minauth ) {
+
+        if( Auth::check() ) {
+            return Auth::user()->getPrivs() >= $minauth;
+        }
+
+        return $minauth == 0;
+    }
+}
+
+

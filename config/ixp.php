@@ -65,6 +65,16 @@ return [
     ],
 
 
+    /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+       ;; Minimum user auth level for the peering matrix
+       ;;
+       ;; See https://docs.ixpmanager.org/usage/users/#types-of-users
+       ;;
+       ;; */
+    'peering-matrix' => [
+        'min-auth' => env( 'PEERING_MATRIX_MIN_AUTH', \Entities\User::AUTH_PUBLIC ),
+    ],
+
 
 
     /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
