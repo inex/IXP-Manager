@@ -124,6 +124,13 @@
                 <div class="row">
                     <h3 class="col-sm-9">
                         <?= $c->getFormattedName() ?>
+
+                        <?php if( $c->isResoldCustomer() ): ?>
+                            <small>
+                                <br>&nbsp;&nbsp;Reseller: <?= $c->getReseller()->getName() ?>
+                            </small>
+                        <?php endif; ?>
+
                     </h3>
 
                     <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ): ?>
