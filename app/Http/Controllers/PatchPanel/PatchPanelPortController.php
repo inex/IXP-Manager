@@ -582,7 +582,7 @@ class PatchPanelPortController extends Controller
         return view( 'patch-panel-port/email-form' )->with([
             'ppp'                           => $this->getPPP($id),
             'emailType'                     => $type,
-            'body'                      => $mailable->getBody()
+            'body'                          => $mailable->getBody()
         ]);
     }
 

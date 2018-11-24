@@ -44,7 +44,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->waitForText( 'Do you really want to delete this Virtual Interface?' )
                 ->press( "Delete" )
                 ->waitForReload()
-                ->assertPathIs('/interfaces/virtual/list' )
+                ->assertPathIs('/customer/overview/' . $vi->getCustomer()->getId() . '/ports' )
                 ->assertSee('The Virtual Interface has been deleted successfully.' );
 
         });

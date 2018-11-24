@@ -137,6 +137,13 @@
         ->value( $t->vi ? $t->vi->getId() : null )
     ?>
 
+    <?php if( $t->vi ): ?>
+        <?= Former::hidden( 'custid' )
+            ->id( "custid" )
+            ->value( $t->vi->getcustomer()->getId() )
+        ?>
+    <?php endif; ?>
+
     <?php if( $t->selectedCust ): ?>
         <?= Former::hidden( 'selectedCust' )
             ->value( $t->selectedCust->getId() )
