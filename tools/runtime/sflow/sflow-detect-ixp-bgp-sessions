@@ -213,13 +213,13 @@ sub reload_ipmappings
 	my ($d) = @_;
 	my ($rec, $s, $mapping);
 
-	$s = $d->prepare('SELECT id, address FROM ipv4address');
+	$s = $d->prepare('SELECT ipv4address.id AS id, ipv4address.address AS address FROM ipv4address LEFT JOIN vlan ON vlan.id = ipv4address.vlanid WHERE vlan.peering_matrix = 1');
 	$s->execute();
 	while (my $rec = $s->fetchrow_hashref) {
 		$mapping->{4}->{$rec->{address}} = $rec->{id};
 	}
 
-	$s = $d->prepare('SELECT id, address FROM ipv6address');
+	$s = $d->prepare('SELECT ipv6address.id AS id, ipv6address.address AS address FROM ipv6address LEFT JOIN vlan ON vlan.id = ipv6address.vlanid WHERE vlan.peering_matrix = 1');
 	$s->execute();
 	while (my $rec = $s->fetchrow_hashref) {
 		$mapping->{6}->{NetAddr::IP->new($rec->{address})->short()} = $rec->{id};

@@ -4,7 +4,8 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'peering-matrix@index' )?>">Peering Matrices </a>
+    Peering Matrix
+    <small><?= $t->vlans[ $t->vl ] ?></small>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -111,7 +112,13 @@
                         <th id="th-name" class="name zoom2"></th>
                         <th id="th-asn" class="asn zoom2"></th>
 
-                        <?php foreach( $t->custs as $x_as => $peers ): ?>
+                        <?php foreach( $t->custs as $x_as => $peers ):
+
+                            if( !$peers['activepeeringmatrix'] ) {
+                                continue;
+                            }
+                        ?>
+
 
                             <th id="th-as-<?= $x_as ?>" class="zoom2 asn">
                                 <?php $asn = sprintf( $t->asnStringFormat, $x_as ) ?>
@@ -133,9 +140,15 @@
 
                 <tbody id="tbody-pm" class="zoom2 ">
 
-                    <?php $outer = $rspeer = $bilat = 0 ?>
+                    <?php $outer = $rspeer = $bilat = 0; ?>
 
-                    <?php foreach( $t->custs as $x_as => $x ): ?>
+                    <?php foreach( $t->custs as $x_as => $x ):
+
+                            if( !$x['activepeeringmatrix'] ) {
+                                continue;
+                            }
+                    ?>
+
 
                         <tr id="tr-name-<?= $x_as ?>">
 
@@ -155,21 +168,21 @@
 
                                     <?php if( $y[ 'autsys' ] != $x[ 'autsys' ] ): ?>
 
-                                        <?php if( isset( $sessions[ $x_as ][ 'peers' ][ $y_as ] ) && $x[ 'rsclient'] && $y[ 'rsclient' ] ): ?>
+                                        <?php if( isset( $t->sessions[ $x_as ][ 'peers' ][ $y_as ] ) && $x[ 'rsclient'] && $y[ 'rsclient' ] ): ?>
 
                                              peered bilateral-rs
-                                                <?php $bilat = $bilat ++ ?>
-                                                <?php $rspeer =$rspeer ++ ?>
+                                                <?php $bilat++; ?>
+                                                <?php $rspeer++; ?>
 
-                                        <?php elseif( isset( $sessions[ $x_as ][ 'peers' ][ $y_as ] ) ): ?>
+                                        <?php elseif( isset( $t->sessions[ $x_as ][ 'peers' ][ $y_as ] ) ): ?>
 
                                              peered bilateral-only
-                                                <?php $bilat = $bilat ++ ?>
+                                                <?php $bilat++; ?>
 
                                         <?php elseif( $x[ 'rsclient' ] && $y[ 'rsclient' ] ): ?>
 
                                              peered rs-only
-                                                <?php $rspeer = $rspeer ++ ?>
+                                                <?php $rspeer++; ?>
 
                                         <?php else: ?>
 
