@@ -72,6 +72,11 @@ class PeeringMatrixController extends Controller
             return Redirect::to('');
         }
 
+        if( !ixp_min_auth( config( 'ixp.peering-matrix.min-auth' ) ) ) {
+            AlertContainer::push( 'You do not have the required privileges to access the peering matrix', Alert::DANGER );
+            return Redirect::to('');
+        }
+
         $protos = [
             4 => 'IPv4',
             6 => 'IPv6'

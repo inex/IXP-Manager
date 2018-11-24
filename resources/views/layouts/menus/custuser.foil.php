@@ -48,7 +48,7 @@
                         <?php if( !config('ixp_fe.frontend.disabled.lg' ) ): ?>
                             <li><a href="<?= url('lg') ?>">Looking Glass</a></li>
                         <?php endif; ?>
-                        <?php if( !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
+                        <?php if( ixp_min_auth( config( 'ixp.peering-matrix.min-auth' ) ) && !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
                             <li><a href="<?= route('peering-matrix@index') ?>">Peering Matrix</a></li>
                         <?php endif; ?>
                     </ul>

@@ -38,7 +38,7 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Peering<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     {if $user->getPrivs() eq 1 and $user->getCustomer()->getType() neq CUSTOMER::TYPE_ASSOCIATE}
-                                        {if !config( 'ixp_fe.frontend.disabled.peering-manager' )}
+                                        {if ixp_min_auth( config( 'ixp.peering-matrix.min-auth' ) ) and !config( 'ixp_fe.frontend.disabled.peering-manager' )}
                                             <li><a href="{genUrl controller="peering-manager"}">Peering Manager</a></li>
                                         {/if}
                                         {if !config( 'ixp_fe.frontend.disabled.rs-prefixes', false )}
@@ -186,7 +186,7 @@
                                         <a href="{genUrl}/lg">Looking Glass</a>
                                     </li>
                                 {/if}
-                                {if !config( 'ixp_fe.frontend.disabled.peering-matrix' )}
+                                {if ixp_min_auth( config( 'ixp.peering-matrix.min-auth' ) ) and !config( 'ixp_fe.frontend.disabled.peering-matrix' )}
                                     <li><a href="{route('peering-matrix@index')}">Peering Matrix</a></li>
                                 {/if}
                             </ul>
