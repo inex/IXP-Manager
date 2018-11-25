@@ -32,6 +32,7 @@ class Kernel extends ConsoleKernel {
 
         \IXP\Console\Commands\Switches\SnmpPoll::class,
 
+        \IXP\Console\Commands\Rir\GenerateObject::class,
 
     ];
 

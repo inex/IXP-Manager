@@ -393,7 +393,7 @@ $this->layout( 'layouts/ixpv4' );
                     <strong>Delete core bundle ....</strong>
                 </span>
 
-                <a class="btn btn btn-danger" onclick="deleteElement( false , null )" style="float: right;" title="Delete">
+                <a id="cb-delete-<?= $t->cb->getId() ?>" class="btn btn btn-danger" onclick="deleteElement( false , null )" style="float: right;" title="Delete">
                     Delete
                 </a>
 

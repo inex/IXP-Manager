@@ -122,7 +122,7 @@ class DashboardController extends Controller
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'dashboard/index' )->with([
-            'recentMembers'                 => array_slice( D2EM::getRepository( CustomerEntity::class )->getRecent(), 0 , 3 ),
+            'recentMembers'                 => array_slice( D2EM::getRepository( CustomerEntity::class )->getRecent(), 0 , 5 ),
             'crossConnects'                 => D2EM::getRepository( CustomerEntity::class       )->getCrossConnects(    $c->getId()             ),
             'notesInfo'                     => D2EM::getRepository( CustomerNoteEntity::class   )->analyseForUser(      $cns, $c, Auth::user()  ),
             'rsRoutes'                      => $rsRoutes        ?? null,

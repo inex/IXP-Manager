@@ -21,7 +21,7 @@
 
     <li class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@list') ?>">
+            <a id="d2f-list-a" type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@list') ?>">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
             <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
@@ -83,7 +83,7 @@
 
                                 <tr>
                                     <td><b>Switch</b></td>
-                                    <td><a href="<?= route( 'switch@view', [ 'id' => $sp->getSwitcher()->getId() ] ) ?>">$t->ee( <?= $sp->getSwitcher()->getName() ?> )</a></td>
+                                    <td><a href="<?= route( 'switch@view', [ 'id' => $sp->getSwitcher()->getId() ] ) ?>"><?= $t->ee( $sp->getSwitcher()->getName() ) ?> )</a></td>
                                 </tr>
 
                                 <tr>
@@ -182,7 +182,7 @@
 
                                 <tr>
                                     <td><b>lastSnmpPoll</b></td>
-                                    <td><?= $sp->getLastSnmpPoll()->format( 'Y-m-d H:i:s' ) ?></td>
+                                    <td><?= $sp->getLastSnmpPoll() ? $sp->getLastSnmpPoll()->format( 'Y-m-d H:i:s' ) : '(not yet polled)' ?></td>
                                 </tr>
 
                                 <tr>

@@ -99,11 +99,11 @@
                 </li>
 
                 <li <?php if( $t->controller == 'SwitchController' ):?> class="active" <?php endif;?> >
-                    <a href="<?= route('switch@list') ?>">Switches</a>
+                    <a id="lhs-menu-switches" href="<?= route('switch@list') ?>">Switches</a>
 
                     <?php if( $t->controller == 'SwitchController' || $t->controller == 'SwitchPortController' ):?>
                         <li class="sub-menu <?php if( $t->controller == 'SwitchPortController' && $t->action != 'unusedOptics' && $t->action != 'opticInventory' && $t->action != 'opticList' ):?> active <?php endif;?>" >
-                            <a href="<?= route( "switch-port@list" ) ?>">Switch Port</a>
+                            <a id="lhs-menu-switch-ports" href="<?= route( "switch-port@list" ) ?>">Switch Ports</a>
                         </li>
                         <li class="sub-menu <?php if( $t->controller == 'SwitchPortController' && $t->action == 'unusedOptics' ):?> active <?php endif;?>" >
                             <a href="<?= route( "switch-port@unused-optics" ) ?>">Unused Optics</a>

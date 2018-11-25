@@ -6,7 +6,7 @@
 <?php $this->section( 'title' ) ?>
     <?php if( isset( $t->feParams->pagetitlepostamble )  ): ?>
         <?php if( Route::has( $t->feParams->route_prefix_page_title . '@list' ) ): ?>
-            <a href="<?= route($t->feParams->route_prefix_page_title . '@list') ?>">
+            <a id="d2f-list-a" href="<?= route($t->feParams->route_prefix_page_title . '@list') ?>">
          <?php endif; ?>
             <?=  $t->feParams->pagetitle  ?>
          <?php if( Route::has( $t->feParams->route_prefix_page_title . '@list' ) ): ?>
@@ -155,7 +155,7 @@
 
                                                 <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'YES_NO'] ): ?>
 
-                                                    <?= $row[ $col ] ? 'Yes' : 'No' ?>
+                                                    <?= $row[ $col ] ? "<label class='label label-success'>Yes</label>" : "<label class='label label-danger'>No</label>" ?>
 
                                                 <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
 
@@ -236,10 +236,10 @@
 
                                             <div class="btn-group">
 
-                                                <a class="btn btn-sm btn-default" href="<?= route($t->feParams->route_prefix.'@view' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
+                                                <a id="d2f-list-view-<?= $row[ 'id' ] ?>" class="btn btn-sm btn-default" href="<?= route($t->feParams->route_prefix.'@view' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
 
                                                 <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-                                                    <a class="btn btn-sm btn-default" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $row[ 'id' ] ] ) ?> " title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                                                    <a class="btn btn-sm btn-default" id="d2f-list-edit-<?= $row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $row[ 'id' ] ] ) ?> " title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
                                                     <a class="btn btn-sm btn-default" id='d2f-list-delete-<?= $row[ 'id' ] ?>' href="#" data-object-id="<?= $row[ 'id' ] ?>" title="Delete"><i class="glyphicon glyphicon-trash"></i></a>
                                                 <?php endif;?>
 

@@ -329,7 +329,7 @@ class PhysicalInterfaceController extends Common
         }
 
         if( $pi->getCoreInterface() ){
-            AlertContainer::push( 'You cannot delete this Physical Interface there is a core bundle linked with this physical interface.', Alert::DANGER );
+            AlertContainer::push( 'You cannot delete this physical interface as there is a core bundle linked with it.', Alert::DANGER );
             return response()->json( [ 'success' => false ] );
         }
 
@@ -351,6 +351,7 @@ class PhysicalInterfaceController extends Common
         }
 
         $this->setBundleDetails( $pi->getVirtualInterface() );
+
 
         D2EM::remove( $pi );
         D2EM::flush();

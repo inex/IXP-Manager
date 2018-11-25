@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= route($t->feParams->route_prefix.'@list') ?>">
+    <a id="d2f-list-a" href="<?= route($t->feParams->route_prefix.'@list') ?>">
         <?=  $t->feParams->pagetitle  ?>
     </a>
 <?php $this->append() ?>

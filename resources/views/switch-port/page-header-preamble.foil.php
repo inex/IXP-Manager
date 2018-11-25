@@ -101,7 +101,7 @@
 
             </div>
 
-            <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add' ) ?>">
+            <a id="add-switch-port" type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add' ) ?>">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
 

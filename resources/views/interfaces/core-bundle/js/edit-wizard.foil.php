@@ -80,7 +80,7 @@
         }
 
         bootbox.confirm({
-            title: "Delete Core link",
+            title: `Delete ${elementName}`,
             message: `Do you really want to delete this ${elementName}?` ,
             buttons: {
                 cancel: {

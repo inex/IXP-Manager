@@ -1,7 +1,7 @@
 <div class="btn-group">
 
-    <a class="btn btn-sm btn-default" href="<?= route($t->feParams->route_prefix.'@view' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
-    <a class="btn btn-sm btn-default" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+    <a class="btn btn-sm btn-default" id="d2f-list-view-<?= $t->row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@view' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
+    <a class="btn btn-sm btn-default" id="d2f-list-edit-<?= $t->row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
     <a class="btn btn-sm btn-default" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>"  title="Delete"><i class="glyphicon glyphicon-trash"></i></a>
 
     <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
