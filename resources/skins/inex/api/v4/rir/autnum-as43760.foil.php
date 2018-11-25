@@ -1,4 +1,5 @@
-password: {config('ixp_api.rir.password')}
+password: <?= config('ixp_api.rir.password') ?>
+
 
 aut-num:        AS43760
 as-name:        INEX-RS
@@ -42,37 +43,40 @@ admin-c:        INO7-RIPE
 tech-c:         INO7-RIPE
 mnt-by:         RIPE-NCC-END-MNT
 mnt-by:         INEX-NOC
-mnt-routes:     INEX-NOC
 
-{foreach $rsclients.clients as $asn => $cdetails}
-    {$cust = $customers[$cdetails.id]}
-    {foreach $cdetails.vlans as $vlanid => $vli}
-        {foreach $vli as $vliid => $interface}
-            {foreach $protocols as $proto}
-                {if not isset( $interface.$proto ) }
-                    {continue}
-                {/if}
-                {foreach $rsclients.vlans.$vlanid.servers.$proto as $serverip}
-                    {if $proto eq 4}
+<?php foreach( $t->rsclients[ "clients" ] as $asn => $cdetails ): ?>
+<?php $cust = $t->customers[ $cdetails[ "id" ] ] ?>
+<?php foreach( $cdetails[ "vlans" ] as $vlanid => $vli ): ?>
+<?php foreach( $vli as $vliid => $interface ): ?>
+<?php foreach( $t->protocols as $proto ): ?>
+<?php if( !isset( $interface[ $proto ] ) ): ?>
+<?php continue; ?>
+<?php endif; ?>
+<?php foreach( $t->rsclients[ "vlans" ][ $vlanid ][ "servers" ][ $proto ] as $serverip ): ?>
+<?php if( $proto == 4 ): ?>
+import:         from AS<?= $cust->getAutsys() ?> <?= $interface[ $proto ] ?> at <?= $serverip ?>
 
-import:         from AS{$cust->getAutsys()} {$interface.$proto} at {$serverip}
-                accept {$cust->resolveAsMacro( $proto, 'AS' )}  # {$cust->getName()}
-export:         to AS{$cust->getAutsys()} {$interface.$proto} at {$serverip}
+                accept <?= $cust->resolveAsMacro( $proto, 'AS' ) ?>  # <?= $cust->getName() ?>
+
+export:         to AS<?= $cust->getAutsys() ?> <?= $interface[ $proto ] ?> at <?= $serverip ?>
+
                 announce AS-SET-INEX-RS
-                {else}
-
+<?php else: ?>
 mp-import:      afi ipv6.unicast
-                from AS{$cust->getAutsys()} {$interface.$proto} at {$serverip}
-                accept {$cust->resolveAsMacro( $proto, 'AS' )}  # {$cust->getName()}
+                from AS<?= $cust->getAutsys()?> <?= $interface[ $proto ] ?> at <?= $serverip ?>
+
+                accept <?= $cust->resolveAsMacro( $proto, 'AS' ) ?>  # <?= $cust->getName() ?>
+
 mp-export:      afi ipv6.unicast
-                to AS{$cust->getAutsys()} {$interface.$proto} at {$serverip}
+                to AS<?= $cust->getAutsys() ?> <?= $interface[ $proto ] ?> at <?= $serverip ?>
+
                 announce AS-SET-INEX-RS
-                    {/if}
-                {/foreach}
-            {/foreach}
-        {/foreach}
-    {/foreach}
-{/foreach}
+<?php endif; ?>
+<?php endforeach; ?>
+<?php endforeach; ?>
+<?php endforeach; ?>
+<?php endforeach; ?>
+<?php endforeach; ?>
 
 status:         ASSIGNED
 source:         RIPE

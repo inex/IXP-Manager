@@ -1,4 +1,5 @@
-password: {config('ixp_api.rir.password')}
+password: <?= config('ixp_api.rir.password') ?>
+
 
 as-set:         AS-SET-INEX-CONNECTED
 descr:          ASNs connected to INEX
@@ -8,9 +9,10 @@ tech-c:         INO7-RIPE
 notify:         ripe-notify@inex.ie
 remarks:        INEX route server ASNs are listed in AS-SET-INEX-RS
 mnt-by:         INEX-NOC
-{foreach $asns as $asn => $details}
-{if $asn != 43760}
-members:        {$details.asmacro}
-{/if}
-{/foreach}
+<?php foreach( $t->asns as $asn => $details ): ?>
+<?php if( $asn != 43760 ): ?>
+members:        <?= $details[ "asmacro" ] ?>
+
+<?php endif; ?>
+<?php endforeach; ?>
 source:         RIPE

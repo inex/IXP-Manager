@@ -99,5 +99,3 @@ Route::group( [ 'namespace' => 'Customer\Note', 'prefix' => 'customer-note' ], f
 
 });
 
-
-
