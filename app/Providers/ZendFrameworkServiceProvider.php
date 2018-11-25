@@ -142,7 +142,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options['pluginPaths']['IXP_Resource'] = base_path() . "/library/IXP/Resource";
 
         $options['resources']['frontController']['controllerDirectory'] = base_path() . "/application/controllers";
-        $options['resources']['frontController']['moduleDirectory']     = base_path() . "/application/modules";
         $options['resources']['modules'] = [];
 
         return $options;
