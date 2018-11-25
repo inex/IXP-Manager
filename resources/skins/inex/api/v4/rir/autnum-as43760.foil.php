@@ -41,6 +41,7 @@ remarks:        -------------------------------------------------------
 org:            ORG-INEA1-RIPE
 admin-c:        INO7-RIPE
 tech-c:         INO7-RIPE
+notify:         ripe-notify@inex.ie
 mnt-by:         RIPE-NCC-END-MNT
 mnt-by:         INEX-NOC
 
