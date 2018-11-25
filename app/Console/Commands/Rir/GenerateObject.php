@@ -28,7 +28,7 @@ use IXP\Console\Commands\Command;
 use IXP\Tasks\Rir\Generator as RirGenerator;
 use IXP\Mail\Rir\Update as RirUpdateMailable;
 
-use Mail;
+use Cache, Mail;
 
 /**
  * RIR Update command
@@ -55,6 +55,7 @@ class GenerateObject extends Command
     protected $signature = 'rir:generate-object
                         {object       : The RIR object template to use}
                         {--send-email : Rather than printing to screen, sends and email for updating a RIR automatically}
+                        {--force      : Send email even if it matches the cached version}
                         {--to=        : The email address to send the object to (if not specified then uses IXP_API_RIR_EMAIL_TO)}
                         {--from=      : The email address from which the email is sent (if not specified, tries IXP_API_RIR_EMAIL_FROM and then defaults to IDENTITY_EMAIL)}';
 
@@ -78,7 +79,10 @@ class GenerateObject extends Command
 
         $obj = $gen->generate();
 
-        if( $this->option( "send-email" ) ) {
+        $key = 'rir-object-' . $this->argument ('object' );
+        $cobj = Cache::store('file')->get( $key );
+
+        if( $this->option( "send-email" ) && ( $this->option( "force" ) || $obj != $cobj ) ) {
 
             Mail::raw( $obj, function( $m ) {
                 $m->to( $this->checkEmail( 'to', $this->option( "to" ) ?? config( 'ixp_api.rir.email.to' ) ) )
@@ -89,7 +93,12 @@ class GenerateObject extends Command
             if( !$this->isVerbosityQuiet() ) {
                 $this->info( "Email sent." );
             }
-        } else {
+
+            if( $obj != $cobj ) {
+                Cache::store('file')->forever( $key, $obj );
+            }
+
+        } else if( !$this->option( "send-email" ) ) {
             echo $obj;
         }
 
