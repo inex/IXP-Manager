@@ -96,11 +96,14 @@ $this->layout( 'layouts/ixpv4' );
                 </div>
 
                 <div id="ports" class="tab-pane fade <?php if( $t->tab == 'ports' ): ?> in active <?php endif; ?>">
-                    <?php if( $t->resellerMode() && $t->c->isReseller() ): ?>
-                        <?= $t->insert( 'customer/overview-tabs/reseller-ports' ); ?>
-                    <?php else: ?>
-                        <?= $t->insert( 'customer/overview-tabs/ports' ); ?>
-                    <?php endif ?>
+                    <div class="row">
+                        <?php if( $t->resellerMode() && $t->c->isReseller() ): ?>
+                            <?= $t->insert( 'customer/overview-tabs/reseller-ports' ); ?>
+                        <?php else: ?>
+                            <?= $t->insert( 'customer/overview-tabs/ports' ); ?>
+                        <?php endif ?>
+                    </div>
+
                 </div>
 
 

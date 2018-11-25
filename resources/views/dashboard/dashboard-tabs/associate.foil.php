@@ -1,11 +1,11 @@
 <div class="col-sm-12">
     <h3>Recent Members</h3>
-    <div class="alert alert-info">
-        Our three most recent members are listed below.
-        <?php if( !$t->c->isTypeAssociate() ): ?>
-            Have you arranged peering with them yet?
-        <?php endif; ?>
-    </div>
+
+    Our five most recent members are listed below.
+    <?php if( !$t->c->isTypeAssociate() ): ?>
+        Have you arranged peering with them yet?
+    <?php endif; ?>
+
     <table class="table">
         <thead>
         <tr>

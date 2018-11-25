@@ -78,7 +78,7 @@ class SwitchPortController extends Doctrine2Frontend {
         $this->feParams         = (object)[
 
             'entity'            => SwitchPortEntity::class,
-            'pagetitle'         => 'Switches',
+            'pagetitle'         => 'Switch Ports',
 
             'titleSingular'     => 'Switch Port',
             'nameSingular'      => 'a switch port',

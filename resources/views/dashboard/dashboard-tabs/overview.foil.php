@@ -4,9 +4,9 @@
 
         <br>
 
-        <div class="well col-sm-12">
+        <div class=" col-sm-12">
 
-            <div class="col-sm-6">
+            <div class="well col-sm-6">
                 <h3>
                     Aggregate Traffic Statistics
                     <a class="btn btn-default" href="<?= route( "statistics@member-drilldown", [ 'type' => 'agg', 'typeid' => $t->c->getId() ] )?>">
@@ -32,8 +32,8 @@
                 <h3>Your Logo</h3>
 
                 <?php if( $logo = $t->c->getLogo( Entities\Logo::TYPE_WWW80 ) ): ?>
-                    <div class="alert alert-info">
-                        Your actual logo.
+                    <div class="col-sm-3">
+                        Your actual logo.<br/>
                         Please <a href="<?= route( 'logo@manage', [ 'id' => $t->c->getId() ] ) ?>">click here</a> to change it.
                     </div>
                     <div class="col-sm-3">

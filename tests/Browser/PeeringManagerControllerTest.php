@@ -71,7 +71,7 @@ class PeeringManagerControllerTest extends DuskTestCase
             // Check value in DB
             $this->assertInstanceOf( PeeringManagerEntity::class , $pm = D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $c[ "id" ] ] ) );
 
-            $this->assertEquals( "test note" ,$pm->getNotes() );
+            $this->assertEquals( "test note", $pm->getNotes() );
 
 
             /** Test peering request */
