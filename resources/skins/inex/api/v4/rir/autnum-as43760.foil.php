@@ -44,7 +44,6 @@ tech-c:         INO7-RIPE
 notify:         ripe-notify@inex.ie
 mnt-by:         RIPE-NCC-END-MNT
 mnt-by:         INEX-NOC
-
 <?php foreach( $t->rsclients[ "clients" ] as $asn => $cdetails ): ?>
 <?php $cust = $t->customers[ $cdetails[ "id" ] ] ?>
 <?php foreach( $cdetails[ "vlans" ] as $vlanid => $vli ): ?>
@@ -78,6 +77,5 @@ mp-export:      afi ipv6.unicast
 <?php endforeach; ?>
 <?php endforeach; ?>
 <?php endforeach; ?>
-
 status:         ASSIGNED
 source:         RIPE
