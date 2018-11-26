@@ -62,28 +62,17 @@
             <a href="{route( 'rack@list' )}">Racks</a>
         </li>
 
+
+        <li {if $controller eq 'switch'}class="active"{/if}>
+            <a href="{route( 'switch@list' )}">Switches</a>
+        </li>
+
         <li {if $controller eq 'router'}class="active"{/if}>
             <a href="{genUrl controller='router' action='list'}">Routers</a>
         </li>
 
         <li {if $controller eq 'console-server'}class="active"{/if}>
             <a href="{route( 'console-server@list' )}">Console Servers</a>
-        </li>
-
-        <li {if $controller eq 'switch' and $action neq 'add-ports'}class="active"{/if}>
-            <a href="{genUrl controller='switch' action='list'}">Switches</a>
-
-            {if $controller eq 'switch' or $controller eq 'switch-port'}
-                <ul class="nav nav-list">
-                    <li {if $controller eq 'switch-port' and $action neq 'unused-optics'}class="active"{/if}>
-                        <a href="{genUrl controller='switch-port' action='list'}">Switch Ports</a>
-                    </li>
-                    <li {if $controller eq 'switch-port' and $action eq 'unused-optics'}class="active"{/if}>
-                        <a href="{genUrl controller='switch-port' action='unused-optics'}">Unused Optics</a>
-                    </li>
-                </ul>
-            {/if}
-
         </li>
 
         {if config( 'ixp_fe.frontend.beta.core_bundles', false )}

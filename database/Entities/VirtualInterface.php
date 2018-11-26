@@ -788,8 +788,8 @@ class VirtualInterface
      */
     public function getInfrastructure()
     {
-        if( $pis = $this->getPhysicalInterfaces() ) {
-            if( $sp = $this->getPhysicalInterfaces()[0]->getSwitchPort() ) {
+        foreach( $this->getPhysicalInterfaces() as $pi ) {
+            if( $sp = $pi->getSwitchPort() ) {
                 return $sp->getSwitcher()->getInfrastructure();
             }
         }

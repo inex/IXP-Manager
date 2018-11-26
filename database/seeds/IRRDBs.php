@@ -43,6 +43,13 @@ class IRRDBs extends Seeder
             ],
 
             [
+                'host'     => 'whois.ripe.net',
+                'protocol' => 'ripe',
+                'source'   => 'RIPE,RIPE-NONAUTH',
+                'notes'    => 'RIPE+RIPE-NONAUTH Query from RIPE Database'
+            ],
+
+            [
                 'host'     => 'whois.radb.net',
                 'protocol' => 'irrd',
                 'source'   => 'RADB',

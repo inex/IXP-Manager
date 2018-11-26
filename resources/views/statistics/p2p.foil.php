@@ -25,7 +25,7 @@
         <a href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>" >
             Peer to Peer Graphs
         </a>
-        (<?= $t->srcVli->getIPAddress( $t->protocol ) ? $t->srcVli->getIPAddress( $t->protocol )->getAddress() : 'No IP?' ?>
+        (<?= $t->srcVli->getIPAddress( $t->protocol ) ? $t->srcVli->getIPAddress( $t->protocol )->getAddress() : 'No IP' ?>
             / <?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>
             / <?= IXP\Services\Grapher\Graph::resolvePeriod( $t->period ) ?>
             / <?= IXP\Services\Grapher\Graph::resolveProtocol( $t->protocol ) ?>
@@ -108,7 +108,7 @@
                     <label for="select_protocol">Protocol:</label>
                     <select id="select_protocol" name="protocol" class="form-control">
                         <?php foreach( IXP\Services\Grapher\Graph::PROTOCOL_REAL_DESCS as $pvalue => $pname ): ?>
-                            <?php if( $t->srcVli->isIPEnabled( $pvalue ) ): ?>
+                            <?php if( $t->srcVli->getVlan()->getPrivate() || $t->srcVli->isIPEnabled( $pvalue ) ): ?>
                                 <option value="<?= $pvalue ?>" <?php if( $t->protocol == $pvalue ): ?> selected <?php endif; ?>  >
                                     <?= $pname ?>
                                 </option>
@@ -138,7 +138,7 @@
     /** @var $dstVlis Entities\VlanInterface[] */
     $dstVlis = $t->dstVlis;
     foreach( $dstVlis as $id => $dvli ) {
-        if( !$dvli->isIPEnabled( $t->protocol ) ) {
+        if( !$t->srcVli->getVlan()->getPrivate() && !$dvli->isIPEnabled( $t->protocol ) ) {
             unset( $dstVlis[ $id ] );
         }
     }
@@ -200,7 +200,7 @@
                 <div class="well">
 
                     <h4>
-                        <?= $dvli->getVirtualInterface()->getCustomer()->getFormattedName() ?> :: <?= $dvli->getIPAddress( $t->protocol ) ? $dvli->getIPAddress( $t->protocol )->getAddress() : 'No IP?' ?>
+                        <?= $dvli->getVirtualInterface()->getCustomer()->getFormattedName() ?> :: <?= $dvli->getIPAddress( $t->protocol ) ? $dvli->getIPAddress( $t->protocol )->getAddress() : 'No IP' ?>
                     </h4>
 
                     <p>

@@ -30,7 +30,7 @@
                                         <a href="{route( 'customer@associates')}">Associate Members</a>
                                     </li>
                                     <li>
-                                        <a href="{genUrl controller="switch" action="configuration"}">Switch Configuration</a>
+                                        <a href="{route('switch@configuration')}">Switch Configuration</a>
                                     </li>
                                 </ul>
                             </li>
@@ -38,7 +38,7 @@
                                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">Peering<b class="caret"></b></a>
                                 <ul class="dropdown-menu">
                                     {if $user->getPrivs() eq 1 and $user->getCustomer()->getType() neq CUSTOMER::TYPE_ASSOCIATE}
-                                        {if !isset( $options['frontend']['disabled']['peering-manager'] ) or !$options['frontend']['disabled']['peering-manager'] }
+                                        {if ixp_min_auth( config( 'ixp.peering-matrix.min-auth' ) ) and !config( 'ixp_fe.frontend.disabled.peering-manager' )}
                                             <li><a href="{genUrl controller="peering-manager"}">Peering Manager</a></li>
                                         {/if}
                                         {if !config( 'ixp_fe.frontend.disabled.rs-prefixes', false )}
@@ -47,13 +47,13 @@
                                             {/if}
                                         {/if}
                                     {/if}
-                                    {if !isset( $options['frontend']['disabled']['peering-matrix'] ) or !$options['frontend']['disabled']['peering-matrix'] }
-                                        <li><a href="{genUrl controller="peering-matrix"}">Public Peering Matrix</a></li>
-                                    {/if}
                                     {if not config('ixp_fe.frontend.disabled.lg' )}
                                         <li>
                                             <a href="{genUrl}/lg">Looking Glass</a>
                                         </li>
+                                    {/if}
+                                    {if !config( 'ixp_fe.frontend.disabled.peering-matrix' )}
+                                        <li><a href="{route('peering-matrix@index')}">Peering Matrix</a></li>
                                     {/if}
                                 </ul>
                             </li>
@@ -185,6 +185,9 @@
                                     <li>
                                         <a href="{genUrl}/lg">Looking Glass</a>
                                     </li>
+                                {/if}
+                                {if ixp_min_auth( config( 'ixp.peering-matrix.min-auth' ) ) and !config( 'ixp_fe.frontend.disabled.peering-matrix' )}
+                                    <li><a href="{route('peering-matrix@index')}">Peering Matrix</a></li>
                                 {/if}
                             </ul>
                         </li>

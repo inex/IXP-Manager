@@ -28,7 +28,8 @@ use D2EM, Former, Redirect, Route, Validator;
 use Entities\{
     ConsoleServerConnection     as ConsoleServerConnectionEntity,
     ConsoleServer               as ConsoleServerEntity,
-    Customer                    as CustomerEntity
+    Customer                    as CustomerEntity,
+    Switcher                    as SwitcherEntity
 };
 
 use Illuminate\Http\Request;
@@ -36,7 +37,6 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
 use IXP\Http\Controllers\Doctrine2Frontend;
-
 
 
 /**
@@ -68,25 +68,16 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
             'titleSingular'     => 'Console Server Connection',
             'nameSingular'      => 'a console server connection',
 
-            'listOrderBy'       => 'port',
+            'listOrderBy'       => 'customer, port',
             'listOrderByDir'    => 'ASC',
 
             'viewFolderName'    => 'console-server-connection',
 
             'listColumns'    => [
 
-                'consoleserver_name' => [
-                    'title'      => 'Console Server',
-                    'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
-                    'controller' => 'console-server',
-                    'action'     => 'view',
-                    'idField'    => 'consoleserver_id'
-                ],
+                'id'        => [ 'title' => 'DB ID', 'display' => true ],
 
-
-                'port'          => 'Port',
-
-                'customer'      => [
+                'customer'  => [
                     'title'      => 'Customer',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                     'controller' => 'customer',
@@ -95,8 +86,9 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
                 ],
 
 
-                'description'   => 'Description',
+                'description'  => 'Description',
 
+                'port'    => 'Port'
             ]
         ];
 
@@ -166,7 +158,6 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
      * @return array
      */
     protected function addEditPrepareForm( $id = null ) : array {
-
         $old = request()->old();
 
         if( $id !== null ) {
@@ -175,37 +166,23 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
                 abort(404, "Console Server Connection not found." );
             }
 
-
             Former::populate([
-                'description'     => array_key_exists( 'description',     $old ) ? $old['description']     : $this->object->getDescription(),
-                'custid'          => array_key_exists( 'custid',          $old ) ? $old['custid']          : $this->object->getCustomer()->getId(),
-                'consoleserverid' => array_key_exists( 'consoleserverid', $old ) ? $old['consoleserverid'] : $this->object->getConsoleServer()->getId(),
-                'port'            => array_key_exists( 'port',            $old ) ? $old['port']            : $this->object->getPort(),
-                'speed'           => array_key_exists( 'speed',           $old ) ? $old['speed']           : $this->object->getSpeed(),
-                'parity'          => array_key_exists( 'parity',          $old ) ? $old['parity']          : $this->object->getParity(),
-                'stopbits'        => array_key_exists( 'stopbits',        $old ) ? $old['stopbits']        : $this->object->getStopbits(),
-                'flowcontrol'     => array_key_exists( 'flowcontrol',     $old ) ? $old['flowcontrol']     : $this->object->getFlowcontrol(),
-                'autobaud'        => array_key_exists( 'autobaud',        $old ) ? $old['autobaud']        : ( $this->object->getAutobaud() ? 1 : 0 ),
-                'notes'           => array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes(),
+                'description'   => array_key_exists( 'description', $old ) ? $old['description']    : $this->object->getDescription(),
+                'custid'        => array_key_exists( 'custid',      $old ) ? $old['custid']         : $this->object->getCustomer()->getId(),
+                'switchid'      => array_key_exists( 'switchid',    $old ) ? $old['switchid']       : $this->object->getSwitchId(),
+                'port'          => array_key_exists( 'port',        $old ) ? $old['port']           : $this->object->getPort(),
+                'speed'         => array_key_exists( 'speed',       $old ) ? $old['speed']          : $this->object->getSpeed(),
+                'parity'        => array_key_exists( 'parity',      $old ) ? $old['parity']         : $this->object->getParity(),
+                'stopbits'      => array_key_exists( 'stopbits',    $old ) ? $old['stopbits']       : $this->object->getStopbits(),
+                'flowcontrol'   => array_key_exists( 'flowcontrol', $old ) ? $old['flowcontrol']    : $this->object->getFlowcontrol(),
+                'autobaud'      => array_key_exists( 'autobaud',    $old ) ? $old['autobaud']       : ( $this->object->getAutobaud() ?? false ),
             ]);
-        } else {
-            // Add form
-
-            if( request()->input( 'console-server' ) && ( $cs = D2EM::getRepository( ConsoleServerEntity::class )->find( request()->input( 'console-server' ) ) ) ) {
-
-                Former::populate([
-                    'consoleserverid' => array_key_exists( 'consoleserverid', $old ) ? $old['consoleserverid'] : $cs->getId(),
-                ]);
-
-            }
-
         }
 
         return [
             'object'                => $this->object,
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
-            'consoleservers'        => D2EM::getRepository( ConsoleServerEntity::class )->getAsArray(),
-            'cs'                    => request()->input( "console-server" ) ?? false,
+            'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNames( true, false ),
             'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : null )
         ];
     }
@@ -224,7 +201,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
         $validator = Validator::make( $request->all(), [
             'description'           => 'required|string|max:255',
             'custid'                => 'required|int|exists:Entities\Customer,id',
-            'consoleserverid'       => 'required|int|exists:Entities\ConsoleServer,id',
+            'switchid'              => 'required|int|exists:Entities\Switcher,id',
             'port'                  => 'required|string|max:255',
             'speed'                 => 'nullable|integer',
             'parity'                => 'nullable|string',
@@ -233,6 +210,10 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
             'autobaud'              => 'boolean',
             'notes'                 => 'nullable|string|max:65535',
         ]);
+
+        if( $validator->fails() ) {
+            return Redirect::back()->withErrors($validator)->withInput();
+        }
 
         if( $request->input( 'id', false ) ) {
             if( !( $this->object = D2EM::getRepository( ConsoleServerConnectionEntity::class )->find( $request->input( 'id' ) ) ) ) {
@@ -297,13 +278,13 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
 
         $this->data[ 'rows' ]                           = D2EM::getRepository( ConsoleServerConnectionEntity::class )->getAllForFeList( $this->feParams, null, $cs->getId() );
 
-        $this->data[ 'view' ][ 'listEmptyMessage']      = $this->resolveTemplate( 'list-empty-message',     false );
-        $this->data[ 'view' ][ 'listHeadOverride']      = $this->resolveTemplate( 'list-head-override',     false );
-        $this->data[ 'view' ][ 'listRowOverride']       = $this->resolveTemplate( 'list-row-override',      false );
-        $this->data[ 'view' ][ 'listPreamble']          = $this->resolveTemplate( 'list-preamble',          false );
-        $this->data[ 'view' ][ 'listPostamble']         = $this->resolveTemplate( 'list-postamble',         false );
-        $this->data[ 'view' ][ 'listRowMenu']           = $this->resolveTemplate( 'list-row-menu',          false );
-        $this->data[ 'view' ][ 'pageHeaderPreamble']    = $this->resolveTemplate( 'page-header-preamble',   false );
+        $this->data[ 'view' ][ 'listEmptyMessage']      = $this->resolveTemplate( 'list-empty-message', false );
+        $this->data[ 'view' ][ 'listHeadOverride']      = $this->resolveTemplate( 'list-head-override', false );
+        $this->data[ 'view' ][ 'listRowOverride']       = $this->resolveTemplate( 'list-row-override',  false );
+        $this->data[ 'view' ][ 'listPreamble']          = $this->resolveTemplate( 'list-preamble',      false );
+        $this->data[ 'view' ][ 'listPostamble']         = $this->resolveTemplate( 'list-postamble',     false );
+        $this->data[ 'view' ][ 'listRowMenu']           = $this->resolveTemplate( 'list-row-menu',      false );
+        $this->data[ 'view' ][ 'pageHeaderPreamble']    = $this->resolveTemplate( 'page-header-preamble',      false );
         $this->data[ 'view' ][ 'listScript' ]           = $this->resolveTemplate( 'js/list' );
 
         $this->preList();
@@ -313,6 +294,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
 
         return $this->display( 'list' );
     }
+
 
     /**
      * @inheritdoc
@@ -334,6 +316,5 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
     protected function postDeleteRedirect() {
         return route('console-server-connection@listPort' , [ 'port' => $this->object->getConsoleServer()->getId() ] );
     }
-
 
 }

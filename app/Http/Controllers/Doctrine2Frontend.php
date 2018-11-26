@@ -121,7 +121,9 @@ abstract class Doctrine2Frontend extends Controller {
         'REPLACE'           => 'replace',
         'XLATE'             => 'xlate',
         'YES_NO'            => 'yes_no',
+        'YES_NO_NULL'       => 'yes_no_null',
         'PARSDOWN'          => 'parsdown',
+        'RESOLVE_CONST'     => 'resolve_const',
         'CONST'             => 'const',
         'LABEL'             => 'label',
         'ARRAY'             => 'array',
@@ -222,7 +224,7 @@ abstract class Doctrine2Frontend extends Controller {
      *
      * @return View
      */
-    public function list(): View
+    public function list( Request $param ): View
     {
         $this->data[ 'rows' ] = $this->listGetData();
 
@@ -305,11 +307,13 @@ abstract class Doctrine2Frontend extends Controller {
      */
     protected function addEditSetup()
     {
-        $this->data[ 'view' ][ 'editForm']        = $this->resolveTemplate( 'edit-form' );
+        $this->data[ 'view' ][ 'editForm']               = $this->resolveTemplate( 'edit-form' );
 
-        $this->data[ 'view' ][ 'editPreamble']    = $this->resolveTemplate( 'edit-preamble',      false );
-        $this->data[ 'view' ][ 'editPostamble']   = $this->resolveTemplate( 'edit-postamble',     false );
-        $this->data[ 'view' ][ 'editScript' ]     = $this->resolveTemplate( 'js/edit',            false );
+        $this->data[ 'view' ][ 'editPreamble']           = $this->resolveTemplate( 'edit-preamble',      false );
+        $this->data[ 'view' ][ 'editPostamble']          = $this->resolveTemplate( 'edit-postamble',     false );
+        $this->data[ 'view' ][ 'editHeaderPreamble']     = $this->resolveTemplate( 'edit-header-preamble',      false );
+        $this->data[ 'view' ][ 'editScript' ]            = $this->resolveTemplate( 'js/edit',            false );
+
     }
 
     /**
@@ -322,17 +326,24 @@ abstract class Doctrine2Frontend extends Controller {
         $this->data[ 'params' ]['isAdd'] = true;
         $this->addEditSetup();
 
+
+
         return $this->display( 'edit' );
     }
 
     /**
      * Edit an object
+     *
      * @param int $id ID of the object to edit
+     *
      * @return view
+     *
+     * @throws
      */
     public function edit( $id ){
         $this->data[ 'params' ] = $this->addEditPrepareForm( $id );
         $this->data[ 'params' ]['isAdd'] = false;
+
         $this->addEditSetup();
 
         return $this->display( 'edit' );
@@ -341,7 +352,9 @@ abstract class Doctrine2Frontend extends Controller {
 
     /**
      * Function to do the actual validation and storing of the submitted object.
+     *
      * @param Request $request
+     *
      * @throws GeneralException
      */
     public function doStore( Request $request ) {
@@ -350,8 +363,12 @@ abstract class Doctrine2Frontend extends Controller {
 
     /**
      * Action for storing a new/updated object
+     *
      * @param Request $request
+     *
      * @return RedirectResponse
+     *
+     * @throws
      */
     public function store( Request $request )
     {
@@ -366,10 +383,13 @@ abstract class Doctrine2Frontend extends Controller {
 
         Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action
             . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
-        AlertContainer::push(  $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
+
+
+        AlertContainer::push( $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
 
         return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
     }
+
 
     /**
      * Allow D2F implementations to override where the post-store redirect goes.
@@ -483,7 +503,6 @@ abstract class Doctrine2Frontend extends Controller {
      * @return bool|string The template to use of false if none found
      */
     protected function resolveTemplate( $tpl, $quitOnMissing = true ) {
-
         if( ViewFacade::exists ( $this->feParams->viewFolderName . "/{$tpl}" ) ) {
             return $this->feParams->viewFolderName . "/{$tpl}";
         } else if( ViewFacade::exists( "frontend/{$tpl}"  ) ) {

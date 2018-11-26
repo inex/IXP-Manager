@@ -2,7 +2,9 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
+use Entities\{
+    VlanInterface       as VlanInterfaceEntity
+};
 
 /**
  * Entities\Vlan
@@ -1032,4 +1034,5 @@ class Vlan
     {
         return $this->routers;
     }
+
 }

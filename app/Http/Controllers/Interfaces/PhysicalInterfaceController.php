@@ -328,6 +328,11 @@ class PhysicalInterfaceController extends Common
             return abort( '404' );
         }
 
+        if( $pi->getCoreInterface() ){
+            AlertContainer::push( 'You cannot delete this physical interface as there is a core bundle linked with it.', Alert::DANGER );
+            return response()->json( [ 'success' => false ] );
+        }
+
         if( $pi->getSwitchPort()->isTypePeering() && $pi->getFanoutPhysicalInterface() ) {
             $pi->getSwitchPort()->setPhysicalInterface( null );
             $pi->getFanoutPhysicalInterface()->getSwitchPort()->setType( SwitchPortEntity::TYPE_PEERING );
@@ -346,6 +351,7 @@ class PhysicalInterfaceController extends Common
         }
 
         $this->setBundleDetails( $pi->getVirtualInterface() );
+
 
         D2EM::remove( $pi );
         D2EM::flush();

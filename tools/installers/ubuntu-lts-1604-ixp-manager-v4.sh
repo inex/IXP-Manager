@@ -314,10 +314,10 @@ echo -n "Installing PHP, Apache, MySQL, etc. Please be very patient..."
 # Prevent mrtg from prompting
 echo mrtg mrtg/conf_mods boolean true | debconf-set-selections
 
-log_break && apt-get install -qy apache2 php7.0 php7.0-intl php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt \
+log_break && apt-get install -qy apache2 php7.0 php7.0-intl php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt  \
     php-memcached libapache2-mod-php7.0 mysql-server mysql-client php7.0-mysql memcached snmp nodejs nodejs-legacy npm           \
     php7.0-mbstring php7.0-xml php7.0-gd php7.0-bcmath php-gettext bgpq3 php-memcache unzip php7.0-zip git php-yaml php-ds       \
-    libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl            \
+    libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl curl          \
         &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
@@ -389,7 +389,7 @@ echo -n "Installing / updating composer - PHP's package manager..."
 log_break && echo -n "Installing composer - PHP's package manager... " &>> /tmp/ixp-manager-install.log
 cd $IXPROOT
 
-curl -so $IXPROOT/composer.phar https://getcomposer.org/download/1.6.5/composer.phar && \
+curl -so $IXPROOT/composer.phar https://getcomposer.org/download/1.7.3/composer.phar && \
     chmod a+x $IXPROOT/composer.phar && \
     $IXPROOT/composer.phar selfupdate
 

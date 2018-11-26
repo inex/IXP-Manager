@@ -19,3 +19,5 @@ Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer\Note'], fu
     Route::get(    'ping/{id?}',            'CustomerNotesController@ping'      )->name( 'customer-notes@ping');
     Route::get(    'get/{id}',              'CustomerNotesController@get'       )->name( 'customer-notes@get');
 });
+
+Route::post( 'utils/markdown',                                  'UtilsController@markdown' )->name( "utils@markdown" );
