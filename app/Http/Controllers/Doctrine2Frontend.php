@@ -134,8 +134,15 @@ abstract class Doctrine2Frontend extends Controller {
      *
      */
     public function __construct( ){
-        $this->feInit();
-        $this->data[ 'col_types' ] = self::$FE_COL_TYPES;
+
+        $this->middleware(function ($request, $next) {
+            $this->feInit();
+            $this->data[ 'col_types' ] = self::$FE_COL_TYPES;
+
+            return $next($request);
+        });
+
+
     }
 
 
@@ -170,13 +177,13 @@ abstract class Doctrine2Frontend extends Controller {
         });
 
         $class::additionalRoutes( $route_prefix );
+
     }
 
     /**
      * Work out the route prefix
      */
     public static function route_prefix() {
-
         $class = get_called_class();
 
         if( $class::$route_prefix ) {
@@ -327,8 +334,12 @@ abstract class Doctrine2Frontend extends Controller {
 
     /**
      * Edit an object
+     *
      * @param int $id ID of the object to edit
+     *
      * @return view
+     *
+     * @throws
      */
     public function edit( $id ){
         $this->data[ 'params' ] = $this->addEditPrepareForm( $id );
@@ -341,7 +352,9 @@ abstract class Doctrine2Frontend extends Controller {
 
     /**
      * Function to do the actual validation and storing of the submitted object.
+     *
      * @param Request $request
+     *
      * @throws GeneralException
      */
     public function doStore( Request $request ) {
@@ -350,8 +363,12 @@ abstract class Doctrine2Frontend extends Controller {
 
     /**
      * Action for storing a new/updated object
+     *
      * @param Request $request
+     *
      * @return RedirectResponse
+     *
+     * @throws
      */
     public function store( Request $request )
     {
@@ -422,7 +439,6 @@ abstract class Doctrine2Frontend extends Controller {
         if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( $request->input( 'id' ) ) ) ) {
             return abort( '404' );
         }
-
 
         $this->request = $request;
 

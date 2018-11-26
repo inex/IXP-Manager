@@ -14,12 +14,18 @@ use Illuminate\Contracts\Auth\Authenticatable;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Auth\Passwords\CanResetPassword;
+
+use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
+
 /**
  * Entities\User
  */
-class User implements Authenticatable
+class User implements Authenticatable, CanResetPasswordContract
 {
     use \OSS_Doctrine2_WithPreferences;
+    use CanResetPassword;
 
     const AUTH_PUBLIC    = 0;
     const AUTH_CUSTUSER  = 1;
@@ -100,6 +106,11 @@ class User implements Authenticatable
      * @var \DateTime $created
      */
     protected $created;
+
+    /**
+     * @var string $remember_token
+     */
+    protected $remember_token;
 
     /**
      * @var integer $id
@@ -682,6 +693,21 @@ class User implements Authenticatable
     public function getRememberTokenName()
     {
         return 'remember_token';
+    }
+
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        event( new ForgotPasswordEvent( $token, $this ) );
+    }
+
+    public function getEmailForPasswordReset(){
+        return $this->getUsername();
     }
 
     /***************************************************************************

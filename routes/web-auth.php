@@ -61,3 +61,8 @@ Route::group( [ 'prefix' => 'profile' ], function() {
 });
 
 
+// Authentication routes...
+Route::group( [ 'namespace' => 'Auth' ], function() {
+    Route::get('switch-user/{id}',         'SwitchUserController@switch'                            )->name( "switch-user@switch"            );
+    Route::get('switch-user-back',         'SwitchUserController@switchBack'                        )->name( "switch-user@switchBack"        );
+});

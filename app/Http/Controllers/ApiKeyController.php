@@ -111,7 +111,6 @@ class ApiKeyController extends Doctrine2Frontend {
 
         // phpunit / artisan trips up here without the cli test:
         if( php_sapi_name() !== 'cli' ) {
-
             // custom access controls:
             switch( Auth::check() ? Auth::user()->getPrivs() : UserEntity::AUTH_PUBLIC ) {
                 case UserEntity::AUTH_SUPERUSER:

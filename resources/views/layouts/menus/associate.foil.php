@@ -102,14 +102,14 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="<?php url( 'auth/logout' ) ?>">Logout</a>
+                            <a href="<?= route( 'login@logout' ) ?>">Logout</a>
                         </li>
                     </ul>
                 </li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="<?= url( 'auth/logout' ) ?>">Logout</a></li>
+                <li><a href="<?= route( 'login@logout' ) ?>">Logout</a></li>
             </ul>
         </div>
     </div>

@@ -15,7 +15,7 @@
         <li>
             <a href="<?= route($t->feParams->route_prefix . '@welcome-email' , [ 'id' => $t->row[ 'id' ], 'resend' => 1 ] ) ?>">Resend welcome email</a>
             <a href="<?= route( "login-history@view",     [ 'id' => $t->row['id'] ]   )    ?>">Login history</a>
-            <a href="<?= url( "auth/switch-user/id/". $t->row['id'] ) ?>">Login as</a>
+            <a href="<?= route( "switch-user@switch", [ "id" => $t->row['id'] ] ) ?>">Login as</a>
         </li>
     </ul>
 

@@ -56,6 +56,8 @@ class AdminController extends Controller
     /**
      * Display the home page
      *
+     * @param Request $request
+     *
      * @return view
      */
     public function dashboard( Request $request ): View

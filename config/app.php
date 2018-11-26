@@ -176,6 +176,7 @@ return [
         IXP\Providers\LookingGlassServiceProvider::class,
         IXP\Providers\FoilServiceProvider::class,
         IXP\Providers\PeeringDbServiceProvider::class,
+        IXP\Providers\IxpServiceProvider::class,
 
         /*
          * Third party providers
