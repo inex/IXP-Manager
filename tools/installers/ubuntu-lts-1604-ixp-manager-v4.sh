@@ -456,9 +456,6 @@ IDENTITY_BIGLOGO="http://www.ixpmanager.org/images/logos/ixp-manager.png"
 IDENTITY_BIGLOGO_OFFSET="offset4"
 IDENTITY_DEFAULT_VLAN=1
 
-# get your IXF ID from https://www.peeringdb.com/api/ix ('id' field)
-IDENTITY_IXFID=0
-
 #######################################################################################
 # See: https://github.com/inex/IXP-Manager/wiki/Euro-IX-Member-Data-Export
 # Think carefully before making this private. IXPs should be open.
