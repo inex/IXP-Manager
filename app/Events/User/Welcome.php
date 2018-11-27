@@ -30,6 +30,11 @@ use Entities\{
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
 
+/**
+ * Event to trigger the (re)sending of a user welcome email
+ *
+ * @package IXP\Events\User
+ */
 class Welcome
 {
     use Dispatchable, SerializesModels;

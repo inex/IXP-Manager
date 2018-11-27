@@ -118,7 +118,7 @@ class UserController extends Doctrine2Frontend {
 
                     'disabled'       => [
                         'title'         => 'Enabled',
-                        'type'          => self::$FE_COL_TYPES[ 'YES_NO' ],
+                        'type'          => self::$FE_COL_TYPES[ 'INVERSE_YES_NO' ],
                     ],
 
                     'created'       => [
@@ -165,9 +165,10 @@ class UserController extends Doctrine2Frontend {
     }
 
 
-    protected static function additionalRoutes( string $route_prefix ){
+    protected static function additionalRoutes( string $route_prefix ) {
+        // FIXME @yannrobin: should be POST
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get(     'welcome-email/{id}/{resend}',                          'UserController@sendWelcomeEmail'    )->name( $route_prefix . '@welcome-email' );
+            Route::get(     'welcome-email/{id}/{resend?}',                          'UserController@sendWelcomeEmail'    )->name( $route_prefix . '@welcome-email' );
         });
     }
 
@@ -181,8 +182,7 @@ class UserController extends Doctrine2Frontend {
      * @throws
      */
     protected function listGetData( $id = null ) {
-
-        return D2EM::getRepository( UserEntity::class )->getAllForFeList( $this->feParams, $id );
+        return D2EM::getRepository( UserEntity::class )->getAllForFeList( $this->feParams, $id, Auth::getUser() );
     }
 
 
@@ -199,33 +199,30 @@ class UserController extends Doctrine2Frontend {
     protected function addEditPrepareForm( $id = null ): array {
 
         $old = request()->old();
-        $from = "user@list";
 
         // check if we come from the customer overview or the customer list
-        if( isset( $_SERVER[ "HTTP_REFERER" ] ) && strpos( $_SERVER[ "HTTP_REFERER" ] , $this::$route_prefix . "/list" ) === false ){
-            $from = "customer@overview";
+        if( strpos( request()->headers->get('referer', "" ), $this::$route_prefix . "/list" ) === false ) {
+            request()->session()->put( "user_post_store_redirect", "customer@overview" );
         }
 
         if( $id !== null ) {
 
             if( !( $this->object = D2EM::getRepository( UserEntity::class )->find( $id ) ) ) {
-                abort(404);
+                abort(404, 'User not found');
             }
 
-            Former::populate( [
-                'username'                  => array_key_exists( 'username',            $old ) ? $old['username']           : $this->object->getUsername(),
-                'custid'                    => array_key_exists( 'custid',              $old ) ? $old['custid']             : $this->object->getCustomer()->getId(),
-                'email'                     => array_key_exists( 'email',               $old ) ? $old['email']              : $this->object->getEmail(),
-                'authorisedMobile'          => array_key_exists( 'authorisedMobile',    $old ) ? $old['authorisedMobile']   : $this->object->getAuthorisedMobile(),
-                'diabled'                   => array_key_exists( 'diabled',             $old ) ? $old['diabled']            : ( $this->object->getDisabled()      ? 1 : 0 ),
-                'privs'                     => array_key_exists( 'privs',               $old ) ? $old['privs']              : $this->object->getPrivs(),
-            ] );
-
+            Former::populate([
+                'username'                  => array_key_exists( 'username',            $old ) ? $old['username']             : $this->object->getUsername(),
+                'custid'                    => array_key_exists( 'custid',              $old ) ? $old['custid']               : $this->object->getCustomer()->getId(),
+                'email'                     => array_key_exists( 'email',               $old ) ? $old['email']                : $this->object->getEmail(),
+                'authorisedMobile'          => array_key_exists( 'authorisedMobile',    $old ) ? $old['authorisedMobile']     : $this->object->getAuthorisedMobile(),
+                'disabled'                  => array_key_exists( 'disabled',            $old ) ? ( $old['disabled'] ? 1 : 0 ) : ( $this->object->getDisabled() ? 1 : 0 ),
+                'privs'                     => array_key_exists( 'privs',               $old ) ? $old['privs']                : $this->object->getPrivs(),
+            ]);
         }
 
         return [
             'object'                => $this->object,
-            'from'                  => $from,
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
         ];
     }
@@ -243,7 +240,7 @@ class UserController extends Doctrine2Frontend {
     public function doStore( Request $request )
     {
         $validator = Validator::make( $request->all(), [
-            'username'              => 'required|string|min:4|max:255|unique:Entities\User,username' . ( $request->input( 'id' ) ? ','. $request->input( 'id' ) : '' ),
+            'username'              => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_]{3,255}$/|unique:Entities\User,username' . ( $request->input( 'id' ) ? ','. $request->input( 'id' ) : '' ),
             'custid'                => 'required|integer|exists:Entities\Customer,id',
             'usersecret'            => ( $request->input( 'id' ) ? 'nullable' : 'required' ) . '|string|min:8|max:255',
             'email'                 => 'required|email|max:255',
@@ -252,14 +249,13 @@ class UserController extends Doctrine2Frontend {
         ]);
 
 
-
         if( $validator->fails() ) {
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
         if( $request->input( 'id', false ) ) {
             if( !( $this->object = D2EM::getRepository( UserEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404);
+                abort(404, 'User not found');
             }
         } else {
             $this->object = new UserEntity;
@@ -273,21 +269,25 @@ class UserController extends Doctrine2Frontend {
             $this->object->setPassword( password_hash( $request->input( 'usersecret' ), PASSWORD_BCRYPT, [ 'cost' => 10 ] ) );
         }
 
-        $this->object->setUsername(          $request->input( 'username'            ) );
+        $this->object->setUsername(          strtolower( $request->input( 'username' ) ) );
         $this->object->setEmail(             $request->input( 'email'               ) );
-        $this->object->setPrivs(             $request->input( 'privs'               ) );
         $this->object->setAuthorisedMobile(  $request->input( 'authorisedMobile'    ) );
-        $this->object->setCustomer(          D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) );
         $this->object->setLastupdated(       new \DateTime  );
         $this->object->setLastupdatedby(     Auth::getUser()->getId() );
 
-        D2EM::flush($this->object);
-
-        if( !$request->input( 'id') ) {
-            $this->sendWelcomeEmail( $this->object->getId(), false );
+        if( Auth::user()->isSuperUser() ) {
+            $this->object->setPrivs( $request->input( 'privs' ) );
+            $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) );
+        } else {
+            $this->object->setPrivs( $request->input( 'privs' ) < UserEntity::AUTH_SUPERUSER ? $request->input( 'privs' ) : UserEntity::AUTH_CUSTUSER );
+            $this->object->setCustomer( Auth::getUser()->getCustomer() );
         }
 
-        request()->session()->put( "user_post_store_redirect", $request->input( 'from' ) );
+        D2EM::flush();
+
+        if( !$request->input( 'id') ) {
+            event( new WelcomeEvent( $this->object, false ) );
+        }
 
         return true;
     }
@@ -300,16 +300,15 @@ class UserController extends Doctrine2Frontend {
     protected function postStoreRedirect()
     {
 
-        $redirect = request()->session()->get( "user_post_store_redirect" );
-        request()->session()->remove( "ixp_user_delete_custid" );
+        if( $redirect = request()->session()->get( "user_post_store_redirect", false ) ) {
+            request()->session()->remove( "user_post_store_redirect" );
 
-        // retrieve the customer ID
-        if( $redirect != "user@list" ) {
-            return route( "customer@overview" , [ "id" => $this->object->getCustomer()->getId() , "tab" => "users" ] );
+            if( $redirect === "customer@overview" ) {
+                return route( "customer@overview", [ "id" => $this->object->getCustomer()->getId(), "tab" => "users" ] );
+            }
         }
 
         return null;
-
     }
 
     /**
@@ -322,67 +321,47 @@ class UserController extends Doctrine2Frontend {
      *
      * @return bool Return false to stop / cancel the deletion
      */
-    protected function preDelete( ): bool {
+    protected function preDelete(): bool {
 
         if( !Auth::getUser()->isSuperUser() ) {
             if( $this->object->getCustomer()->getId() != Auth::getUser()->getCustomer()->getId() ) {
-                Log::notice( Auth::getUser()->getUsername() . "tried to delete other customer user " . $this->object->getUser()->getUsername()  );
-                AlertContainer::push( 'You are not authorised to delete this user. The administrators have been notified.', Alert::DANGER );
-                return Redirect::to( '' );
+                Log::notice( Auth::getUser()->getUsername() . " tried to delete other customer user " . $this->object->getUser()->getUsername() );
+                abort( 401, 'You are not authorised to delete this user. The administrators have been notified.' );
             }
         }
 
-
         if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( request()->input( 'id' ) ) ) ) {
-            return abort( '404', "Unknown Contact" );
+            return abort( '404', 'User not found' );
         }
-
-        $this->removeUserData( $this->object );
-
-        if( request()->input( "redirect-to" ) ){
-            request()->session()->put( "ixp_user_delete_custid", $this->object->getCustomer()->getId() );
-        }
-
-
-        return true;
-    }
-
-
-    /**
-     * Delete all the informations associated to the User (User preference, User logins, Api keys)
-     *
-     * @param UserEntity $user The user entity
-     *
-     * @throws
-     */
-    private function removeUserData( UserEntity $user ){
-        /** @var UserEntity $user */
-        $userName = $user->getUsername();
 
         // delete all the user's preferences
-        foreach( $user->getPreferences() as $pref ) {
-            $user->removePreference( $pref );
+        foreach( $this->object->getPreferences() as $pref ) {
+            $this->object->removePreference( $pref );
             D2EM::remove( $pref );
         }
 
         // delete all the user's login records
-        foreach( $user->getLastLogins() as $ll ) {
-            $user->removeLastLogin( $ll );
+        foreach( $this->object->getLastLogins() as $ll ) {
+            $this->object->removeLastLogin( $ll );
             D2EM::remove( $ll );
         }
 
         // delete all the user's API keys
-        foreach( $user->getApiKeys() as $ak ) {
-            $user->removeApiKey( $ak );
+        foreach( $this->object->getApiKeys() as $ak ) {
+            $this->object->removeApiKey( $ak );
             D2EM::remove( $ak );
         }
 
-        D2EM::remove( $user );
+        if( request()->input( "redirect-to" ) ) {
+            session()->put( "ixp_user_delete_custid", $this->object->getCustomer()->getId() );
+        }
 
-        Cache::forget( 'oss_d2u_user_' . $user->getId() );
+        Cache::forget( 'oss_d2u_user_' . $this->object->getId() );
+        Log::notice( Auth::getUser()->getUsername()." deleted user" . $this->object->getUsername() );
 
-        Log::notice( Auth::getUser()->getUsername()." deleted user" . $userName );
+        return true;
     }
+
 
 
     /**
@@ -392,15 +371,12 @@ class UserController extends Doctrine2Frontend {
      */
     protected function postDeleteRedirect() {
         // retrieve the customer ID
-        if( $custid = $this->request->session()->get( "ixp_user_delete_custid" ) ) {
-
-            $this->request->session()->remove( "ixp_user_delete_custid" );
-
+        if( $custid = session()->get( "ixp_user_delete_custid" ) ) {
+            session()->remove( "ixp_user_delete_custid" );
             return route( "customer@overview" , [ "id" => $custid, "tab" => "users" ] );
         }
 
         return null;
-
     }
 
     /**
@@ -411,16 +387,17 @@ class UserController extends Doctrine2Frontend {
      *
      * @return bool|RedirectResponse
      */
-    protected function sendWelcomeEmail( int $id, bool $resend = false ){
+    public function sendWelcomeEmail( int $id, bool $resend = false ) {
 
+        /** @var UserEntity $user */
         if( !( $user = D2EM::getRepository( UserEntity::class )->find( $id ) ) ) {
-            abort(404, 'Unknown user');
+            abort(404, 'User not found');
         }
 
         event( new WelcomeEvent( $user, $resend ) );
 
         if( $resend ){
-            AlertContainer::push( 'The welcome email has been sent with success.', Alert::SUCCESS );
+            AlertContainer::push( sprintf( 'The welcome email has been %s.', $resend ? 'resent' : 'sent' ), Alert::SUCCESS );
             return redirect::to( route( $this::$route_prefix . "@list" ) );
         }
 

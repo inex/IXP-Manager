@@ -161,6 +161,10 @@
 
                                                     <?= $row[ $col ] ? "<label class='label label-success'>Yes</label>" : "<label class='label label-danger'>No</label>" ?>
 
+                                                <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'INVERSE_YES_NO'] ): ?>
+
+                                                    <?= !$row[ $col ] ? "<label class='label label-success'>Yes</label>" : "<label class='label label-danger'>No</label>" ?>
+
                                                 <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
 
                                                     <?= str_replace( '%%COL%%', $t->ee( $row[ $col ] ), $cconf[ 'subject' ] ) ?>

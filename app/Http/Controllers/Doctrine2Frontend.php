@@ -121,6 +121,7 @@ abstract class Doctrine2Frontend extends Controller {
         'REPLACE'           => 'replace',
         'XLATE'             => 'xlate',
         'YES_NO'            => 'yes_no',
+        'INVERSE_YES_NO'    => 'yes_no_inverse',
         'YES_NO_NULL'       => 'yes_no_null',
         'PARSDOWN'          => 'parsdown',
         'RESOLVE_CONST'     => 'resolve_const',

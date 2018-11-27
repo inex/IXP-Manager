@@ -3,7 +3,6 @@
   <component name="ProjectModuleManager">
     <modules>
       <module fileurl="file://$PROJECT_DIR$/.idea/IXP-Manager.iml" filepath="$PROJECT_DIR$/.idea/IXP-Manager.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/ixpv.iml" filepath="$PROJECT_DIR$/.idea/ixpv.iml" />
     </modules>
   </component>
 </project>

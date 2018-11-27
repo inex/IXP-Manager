@@ -208,10 +208,10 @@ class User extends EntityRepository
      * @param \stdClass $feParams
      * @param int|null $id
      *
+     * @param UserEntity|null $user
      * @return array Array of User (as associated arrays) (or single element if `$id` passed)
-     *
      */
-    public function getAllForFeList( \stdClass $feParams, $id )
+    public function getAllForFeList( \stdClass $feParams, int $id = null, UserEntity $user = null )
     {
         $where = false;
         $dql = "SELECT  u.id as id, 
@@ -230,13 +230,13 @@ class User extends EntityRepository
 
 
 
-        if( Auth::getUser()->isCustAdmin() ) {
-            $dql .= " AND u.Customer = " . Auth::getUser()->getCustomer()->getId() . "
-                      AND u.privs = " . UserEntity::AUTH_CUSTUSER;
+        if( $user && $user->isCustAdmin() ) {
+            $dql .= " AND u.Customer = " . $user->getCustomer()->getId() . "
+                      AND u.privs <= " . UserEntity::AUTH_CUSTUSER;
         }
 
-        if( $id ){
-            $dql .= " AND u.id = " . (int)$id ;
+        if( $id ) {
+            $dql .= " AND u.id = " . $id ;
         }
 
         if( isset( $feParams->listOrderBy ) ) {
