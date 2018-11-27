@@ -90,6 +90,8 @@ class UserController extends Doctrine2Frontend {
 
             'viewFolderName'    => 'user',
 
+            'documentation'     => 'https://docs.ixpmanager.org/usage/users/',
+
         ];
 
 
@@ -201,7 +203,7 @@ class UserController extends Doctrine2Frontend {
         $old = request()->old();
 
         // check if we come from the customer overview or the customer list
-        if( strpos( request()->headers->get('referer', "" ), $this::$route_prefix . "/list" ) === false ) {
+        if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
             request()->session()->put( "user_post_store_redirect", "customer@overview" );
         }
 
@@ -270,8 +272,9 @@ class UserController extends Doctrine2Frontend {
         }
 
         $this->object->setUsername(          strtolower( $request->input( 'username' ) ) );
-        $this->object->setEmail(             $request->input( 'email'               ) );
-        $this->object->setAuthorisedMobile(  $request->input( 'authorisedMobile'    ) );
+        $this->object->setEmail(             $request->input( 'email'                ) );
+        $this->object->setDisabled(  $request->input( 'disabled'             ) ?? false );
+        $this->object->setAuthorisedMobile(  $request->input( 'authorisedMobile'     ) );
         $this->object->setLastupdated(       new \DateTime  );
         $this->object->setLastupdatedby(     Auth::getUser()->getId() );
 

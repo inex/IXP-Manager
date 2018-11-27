@@ -160,11 +160,15 @@
 
                                                         <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'YES_NO'] ): ?>
 
-                                                            <?= $t->data[ 'item' ][ $col ] ? 'Yes' : 'No' ?>
+                                                            <?= $t->data[ 'item' ][ $col ] ? "<label class='label label-success'>Yes</label>" : "<label class='label label-danger'>No</label>" ?>
+
+                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'INVERSE_YES_NO'] ): ?>
+
+                                                            <?= !$t->data[ 'item' ][ $col ] ? "<label class='label label-success'>Yes</label>" : "<label class='label label-danger'>No</label>" ?>
 
                                                         <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'YES_NO_NULL'] ): ?>
 
-                                                            <?= $t->data[ 'item' ][ $col ] === null ? 'Unknown' : ( $t->data[ 'item' ][ $col ] ? 'Yes' : 'No' ) ?>
+                                                            <?= $t->data[ 'item' ][ $col ] === null ? 'Unknown' : ( $t->data[ 'item' ][ $col ] ? "<label class='label label-success'>Yes</label>" : "<label class='label label-danger'>No</label>" ) ?>
 
                                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
 

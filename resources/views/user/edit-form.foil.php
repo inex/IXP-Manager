@@ -41,6 +41,7 @@
 
         <?= Former::text( 'email' )
             ->label( 'Email' )
+            ->placeholder( 'name@example.com' )
             ->blockHelp( "The user's email address." );
         ?>
 
@@ -50,19 +51,22 @@
             ->placeholder( 'Select a privilege' )
             ->fromQuery( Entities\User::$PRIVILEGES_TEXT, 'name' )
             ->addClass( 'chzn-select' )
-            ->blockHelp( "" );
+            ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/usage/users/#types-of-users">'
+                . 'the official documentation here</a>.'
+            );
         ?>
 
         <?= Former::checkbox( 'disabled' )
             ->label('&nbsp;')
             ->text( 'Disabled?' )
             ->value( 1 )
-            ->blockHelp( '' );
+            ->blockHelp( 'Disabled users cannot login to IXP Manager.' );
         ?>
 
         <?= Former::text( 'authorisedMobile' )
             ->label( 'Mobile' )
-            ->blockHelp( "" );
+            ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
+            ->blockHelp( "The user's mobile phone number." );
         ?>
 
     </div>
