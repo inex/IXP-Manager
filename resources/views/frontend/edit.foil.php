@@ -23,13 +23,17 @@
 
 
 <?php $this->append() ?>
+
+
 <?php $this->section( 'page-header-postamble' ) ?>
     <?php if( auth::getUser()->isSuperUser() ): ?>
         <li> <?= $t->data[ 'params']['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->feParams->titleSingular  ?> </li>
     <?php else: ?>
         <h3 style="display:inline;color: #999999"><?= $t->data[ 'params']['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->feParams->titleSingular  ?></h3>
     <?php endif; ?>
+
 <?php $this->append() ?>
+
 
 <?php $this->section( 'page-header-preamble' ) ?>
 
@@ -39,21 +43,30 @@
 
     <?php else: ?>
 
-        <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-            <li class="pull-right">
-                <div class="btn-group btn-group-xs" role="group">
+        <li class="pull-right">
+            <div class="btn-group btn-group-xs" role="group">
+
+                <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
+                    <a type="button" target="_blank" class="btn btn-default" href="<?= $t->feParams->documentation ?>">Documentation</a>
+                <?php endif; ?>
+
+                <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
                     <?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
                         <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@list') ?>">
                             <span class="glyphicon glyphicon-th-list"></span>
                         </a>
                     <?php endif; ?>
-                </div>
-            </li>
-        <?php endif;?>
+                <?php endif;?>
+
+            </div>
+        </li>
 
     <?php endif;?>
 
 <?php $this->append() ?>
+
+
+
 
 <?php $this->section('content') ?>
     <div class="row">

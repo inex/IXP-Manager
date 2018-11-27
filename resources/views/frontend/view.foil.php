@@ -15,7 +15,6 @@
     <?php endif; ?>
 <?php $this->append() ?>
 
-<?php $this->append() ?>
 
 
 
@@ -38,9 +37,15 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right" style=<?= Auth::getUser()->isSuperUser() ? "margin-top: 10px" : "" ?>>
         <div class="btn-group btn-group-xs" role="group">
+
+            <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
+                <a type="button" target="_blank" class="btn btn-default" href="<?= $t->feParams->documentation ?>">Documentation</a>
+            <?php endif; ?>
+
             <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@list') ?>">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
+
             <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
                 <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->data[ 'item' ][ 'id' ] ]) ?>">
                     <span class="glyphicon glyphicon-pencil"></span>
