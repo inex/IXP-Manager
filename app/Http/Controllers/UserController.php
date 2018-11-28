@@ -278,12 +278,25 @@ class UserController extends Doctrine2Frontend {
         $this->object->setLastupdated(       new \DateTime  );
         $this->object->setLastupdatedby(     Auth::getUser()->getId() );
 
+        $originalPrivs = $this->object->getPrivs();
+
         if( Auth::user()->isSuperUser() ) {
             $this->object->setPrivs( $request->input( 'privs' ) );
             $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) );
         } else {
             $this->object->setPrivs( $request->input( 'privs' ) < UserEntity::AUTH_SUPERUSER ? $request->input( 'privs' ) : UserEntity::AUTH_CUSTUSER );
             $this->object->setCustomer( Auth::getUser()->getCustomer() );
+        }
+
+
+        // we should only add admin users to customer type internal
+        if( $this->object->isSuperUser() && !$this->object->getCustomer()->isTypeInternal() ) {
+            AlertContainer::push( 'Users will full administrative access can only be added to internal customer types.', Alert::DANGER );
+            return Redirect::back()->withErrors($validator)->withInput();
+        }
+
+        if( $this->object->isSuperUser() && $originalPrivs != UserEntity::AUTH_SUPERUSER ) {
+            AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
         }
 
         D2EM::flush();
