@@ -215,8 +215,8 @@ class ContactController extends Doctrine2Frontend {
 
         $role = $cg = null;
         $cgs = [];
-        if( config('contact_group.types.ROLE') ){
 
+        if( config('contact_group.types.ROLE') ) {
             $groups = D2EM::getRepository( ContactGroupEntity::class )->getGroupNamesTypeArray();
 
             if( !in_array( $role = request()->input( "role" ) , array_column( $groups[ "ROLE" ], 'id')  ) ){
@@ -239,14 +239,24 @@ class ContactController extends Doctrine2Frontend {
 
 
 
-            $this->data[ 'params' ]         = [
-                'role'          => $role ,
+            $this->data[ 'params' ] = [
+                'role'          => $role,
                 'roles'         => $groups[ "ROLE" ],
                 'cg'            => $cg,
                 'contactGroups' => $cgs
+            ];
 
+        } else {
+
+            $this->data[ 'params' ] = [
+                'role'          => $role,
+                'roles'         => [],
+                'cg'            => $cg,
+                'contactGroups' => $cgs
             ];
         }
+
+
 
         return D2EM::getRepository( ContactEntity::class )->getAllForFeList( $this->feParams, $id, $role, $cg );
     }
