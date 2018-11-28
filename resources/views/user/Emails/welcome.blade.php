@@ -32,7 +32,7 @@ Once logged in, you will have access to a number of features including:
 * route server, AS112 and other service information.
 
 
-If you require any assistance, please contact {$options.identity.name} on [{{ config( 'identity.email' ) }}](mailto:{{ config( 'identity.email' ) }}).
+If you require any assistance, please contact {{ config('identity.name') }} on [{{ config( 'identity.email' ) }}](mailto:{{ config( 'identity.email' ) }}).
 
 
 ## Getting Your Password
@@ -41,8 +41,7 @@ If you require any assistance, please contact {$options.identity.name} on [{{ co
 To get your new password (or reset it), please use the *lost password* procedure by visiting the following link and entering your username as above:
 
 
-
-[Click here to reset password]({{ url( "auth/lost-password" ) }})
+[Click here to reset password]({{ route( "forgot-password@show-form" ) }})
 
 
 

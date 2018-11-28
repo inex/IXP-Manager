@@ -67,6 +67,7 @@ class SwitchUserController extends Controller
         Auth::login( $nuser );
 
         session()->put( "switched_user_from", $user->getId() );
+        session()->put( "redirect_after_switch_back", request()->headers->get('referer', "" ) );
 
         AlertContainer::push( "You are now logged in as {$nuser->getUsername()}.", Alert::SUCCESS );
 
@@ -81,6 +82,8 @@ class SwitchUserController extends Controller
             return redirect()->to( "/" );
         }
 
+        $redirect = "/";
+
         /** @var $user UserEntity */
         if( !( $nuser = D2EM::getRepository( UserEntity::class )->find( session()->get( "switched_user_from" ) ) ) ){
             $this->logout( request() );
@@ -93,7 +96,12 @@ class SwitchUserController extends Controller
 
         AlertContainer::push( "You are now logged in as {$nuser->getUsername()}.", Alert::SUCCESS );
 
-        return redirect()->to( "/" );
+        if( session()->exists( "redirect_after_switch_back" ) ){
+            $redirect = session()->get( "redirect_after_switch_back" );
+            session()->remove( "redirect_after_switch_back" );
+        }
+
+        return redirect()->to( $redirect );
 
     }
 

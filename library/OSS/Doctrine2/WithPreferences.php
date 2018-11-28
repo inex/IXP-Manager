@@ -274,6 +274,8 @@ trait OSS_Doctrine2_WithPreferences
      */
     public function addIndexedPreference( $attribute, $value, $operator = '=', $expires = 0, $max = 0 )
     {
+
+
         // what's the current highest index and how many is there?
         $highest = -1; $count = 0;
 
@@ -286,6 +288,7 @@ trait OSS_Doctrine2_WithPreferences
                     $highest = $pref->getIx();
             }
         }
+
 
         if( $max != 0 && $count >= $max )
             throw new \OSS_Doctrine2_WithPreferences_IndexLimitException( 'Requested maximum number of indexed preferences reached' );
@@ -301,11 +304,14 @@ trait OSS_Doctrine2_WithPreferences
                 $pref->setExpire( $expires );
                 $pref->setIx( ++$highest );
 
+
+
                 try {
                     $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
                     $em->persist( $pref );
                 } catch( Zend_Exception $e ) {
                     D2EM::persist($pref);
+                    D2EM::flush();
                 }
             }
         }
@@ -323,6 +329,7 @@ trait OSS_Doctrine2_WithPreferences
                 $em->persist( $pref );
             } catch( Zend_Exception $e ) {
                 D2EM::persist($pref);
+                D2EM::flush();
             }
         }
 

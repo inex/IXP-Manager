@@ -48,10 +48,20 @@
             ->blockHelp( '' );
         ?>
 
-        <?= Former::actions( Former::primary_submit( 'Login' ),
-            Former::default_link( 'Forgot Password' )->href( route( "forgot-password@show-form" ) ),
-            Former::default_link( 'Forgot Username' )->href( route( "forgot-password@showUsernameForm" ) ),
-            Former::success_button( 'Help' )->id( 'help-btn' )
+        <?= Former::checkbox( 'remember' )
+            ->label( '&nbsp;' )
+            ->text( 'Remember Me' )
+            ->value( 1 )
+            ->blockHelp( "" );
+        ?>
+
+        <?= Former::actions( Former::primary_submit( 'Login' ) );?>
+
+        <br>
+
+        <?= Former::actions(
+                Former::default_link( 'Forgot Password' )->href( route( "forgot-password@show-form" ) ),
+                Former::default_link( 'Forgot Username' )->href( route( "forgot-password@showUsernameForm" ) )
         );?>
 
 
