@@ -63,18 +63,25 @@
             <?php endif; ?>
 
         </h3>
+
+
+
         <?php if( count( $t->vi->getPhysicalInterfaces() ) > 0 ): ?>
             <?php $countPi = 1 ?>
             <?php foreach( $t->vi->getPhysicalInterfaces() as $pi ): ?>
-                <div class="row col-sm-12">
-                    <?php if( $isLAG ): ?>
-                        <h5>
-                            Port <?= $countPi ?> of <?= count( $t->vi->getPhysicalInterfaces() ) ?> in LAG
-                            <?= $t->insert( 'customer/overview-tabs/ports/pi-status', [ 'pi' => $pi ] ); ?>
-                        </h5>
-                    <?php endif; ?>
+                <div class="row">
+                    <div class="col-sm-12">
+                        <?php if( $isLAG ): ?>
+                            <h5>
+                                Port <?= $countPi ?> of <?= count( $t->vi->getPhysicalInterfaces() ) ?> in LAG
+                                <?= $t->insert( 'customer/overview-tabs/ports/pi-status', [ 'pi' => $pi ] ); ?>
+                            </h5>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-sm-6">
-                        <table>
+                        <table class="table table-borderless">
                             <tr>
                                 <td>
                                     <b>Switch:</b>
@@ -111,19 +118,24 @@
                                     <td>
                                         <b>XConnect Port:</b>
                                     </td>
-                                    <td>
+                                    <td class="wrap">
                                         <?= $t->ee( $pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getColoReference() ) ?> -
-                                        <a href="<?= route( "patch-panel-port/list/patch-panel" , [ "id" => $pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getId() ] ) ?>">
+
+                                        <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                            <a href="<?= route( "patch-panel-port/list/patch-panel" , [ "id" => $pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getId() ] ) ?>">
+                                                <?= $t->ee( $pi->getSwitchPort()->getPatchPanelPort()->getName() ) ?>
+                                            </a>
+                                        <?php else: ?>
                                             <?= $t->ee( $pi->getSwitchPort()->getPatchPanelPort()->getName() ) ?>
-                                        </a>
+                                        <?php endif; ?>
                                     </td>
+
                                 </tr>
                             <?php endif; ?>
-                            </tr>
                         </table>
                     </div>
                     <div class="col-sm-6">
-                        <table>
+                        <table class="table table-borderless">
                             <tr>
                                 <td>
                                     <b>Switch Port:</b>
@@ -180,65 +192,70 @@
                 <?php $countPi++ ?>
             <?php endforeach; ?>
         <?php else: ?>
-            <p>
-                No physical interfaces defined.
-                <?php if( Auth::getUser()->isSuperUser() ): ?>
-                    <a href="<?= route( "interfaces/physical/add", [ "id" =>  0 , "viid" => $t->vi->getId() ] ) ?>">Add one...</a>
-                <?php endif; ?>
-            </p>
+            <div class="row">
+                <p>
+                    No physical interfaces defined.
+                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                        <a href="<?= route( "interfaces/physical/add", [ "id" =>  0 , "viid" => $t->vi->getId() ] ) ?>">Add one...</a>
+                    <?php endif; ?>
+                </p>
+            </div>
         <?php endif; ?>
-        <br /><br />
-        <br /><br />
-        <div class="col-sm-12">
-            <?php if( count( $t->vi->getVlanInterfaces() ) > 0 ): ?>
-                <?php foreach( $t->vi->getVlanInterfaces() as $vli ): ?>
-                    <?php $vlanid =$vli->getVlan()->getId() ?>
-                    <?php if( $vli->getVlan()->getPrivate() ): ?>
-                        <?php if( !isset( $pvlans ) ): ?>
-                            <?php $pvlans = $t->c->getPrivateVlanDetails() ?>
-                        <?php endif; ?>
-                        <h4>
-                            &nbsp;&nbsp;&nbsp;Private VLAN Service
-                            <small><?= config( "identity.orgname" ) ?> Reference: #<?= $vli->getVlan()->getId() ?></small>
-                        </h4>
 
-                        <table>
-                            <tr>
-                                <td>
-                                    <b>Name</b>
-                                </td>
-                                <td>
-                                    <?= $t->ee( $vli->getVlan()->getName() ) ?>
-                                </td>
+        <?php if( count( $t->vi->getVlanInterfaces() ) > 0 ): ?>
+            <?php foreach( $t->vi->getVlanInterfaces() as $vli ): ?>
+                <?php $vlanid =$vli->getVlan()->getId() ?>
+                <?php if( $vli->getVlan()->getPrivate() ): ?>
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <?php if( !isset( $pvlans ) ): ?>
+                                <?php $pvlans = $t->c->getPrivateVlanDetails() ?>
+                            <?php endif; ?>
+                            <h4>
+                                &nbsp;&nbsp;&nbsp;Private VLAN Service
+                                <small><?= config( "identity.orgname" ) ?> Reference: #<?= $vli->getVlan()->getId() ?></small>
+                            </h4>
+
+                            <table class="table table-borderless">
+                                <tr>
+                                    <td>
+                                        <b>Name</b>
+                                    </td>
+                                    <td>
+                                        <?= $t->ee( $vli->getVlan()->getName() ) ?>
+                                    </td>
 
 
-                                <td>
-                                    <b>Tag</b>
-                                </td>
-                                <td>
-                                    <?= $t->ee( $vli->getVlan()->getNumber() ) ?>
-                                </td>
+                                    <td>
+                                        <b>Tag</b>
+                                    </td>
+                                    <td>
+                                        <?= $t->ee( $vli->getVlan()->getNumber() ) ?>
+                                    </td>
 
-                                <td>
-                                    <b>Other Members:</b>
-                                </td>
-                                <td>
+                                    <td>
+                                        <b>Other Members:</b>
+                                    </td>
+                                    <td>
 
-                                    <?php if( count( $pvlans[ $vli->getVlan()->getId() ][ 'members'] ) == 1 ): ?>
-                                        <em>None - single member</em>
-                                    <?php else: ?>
-                                        <?php foreach( $pvlans[ $vli->getVlan()->getId() ][ 'members'] as $m ): ?>
-                                            <?= $t->ee( $m->getAbbreviatedName() )?> <br />
-                                        <?php endforeach; ?>
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        </table>
-                        <br /><br />
-                    <?php else: ?>
+                                        <?php if( count( $pvlans[ $vli->getVlan()->getId() ][ 'members'] ) == 1 ): ?>
+                                            <em>None - single member</em>
+                                        <?php else: ?>
+                                            <?php foreach( $pvlans[ $vli->getVlan()->getId() ][ 'members'] as $m ): ?>
+                                                <?= $t->ee( $m->getAbbreviatedName() )?> <br />
+                                            <?php endforeach; ?>
+                                        <?php endif; ?>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                    </div>
+                    <br />
+                <?php else: ?>
+                    <div class="row">
                         <h4><?= $t->ee( $vli->getVlan()->getName() ) ?>:</h4>
                         <div class="col-sm-6">
-                            <table>
+                            <table class="table table-borderless">
                                 <tr>
                                     <td>
                                         <b>
@@ -273,10 +290,22 @@
                                         <?= $vli->getRsclient() ? "Yes" : "No" ?>
                                     </td>
                                 </tr>
+                                <?php if( $t->as112UiActive() ): ?>
+                                    <tr>
+                                        <td>
+                                            <b>
+                                                AS112 Client:
+                                            </b>
+                                        </td>
+                                        <td>
+                                            <?= $vli->getAs112client() ? "Yes" : "No" ?>
+                                        </td>
+                                    </tr>
+                                <?php endif; ?>
                             </table>
                         </div>
                         <div class="col-sm-6">
-                            <table>
+                            <table class="table table-borderless">
                                 <tr>
                                     <td>
                                         <b>IPv4 Address:</b>
@@ -292,38 +321,34 @@
                                 <tr>
                                     <td>
                                         <b>
-                                            Max Prefixes:
+                                            Mac Address:
                                         </b>
                                     </td>
                                     <td>
-                                        global: <?= $t->ee( $t->c->getMaxprefixes() ) ?>, per-interface: <?= $t->ee( $vli->getMaxbgpprefix() )?>
+                                        <?php foreach( $vli->getLayer2AddressesAsArray() as $l2a ): ?>
+                                            <?= $l2a ?><br />
+                                        <?php endforeach; ?>
+                                        <?php if( count( $vli->getLayer2AddressesAsArray() ) > 0 && config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ): ?>
+                                            <a href="<?= route( "layer2-address@forVlanInterface", [ "id" => $vli->getId() ] ) ?>">Edit</a>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
 
-                                <?php if( $t->as112UiActive ): ?>
-                                    <tr>
-                                        <td>
-                                            <b>
-                                                AS112 Client:
-                                            </b>
-                                        </td>
-                                        <td>
-                                            <?= $vli->getAs112client() ? "Yes" : "No" ?>
-                                        </td>
-                                    </tr>
-                                <?php endif; ?>
                             </table>
                         </div>
-                    <?php endif; ?>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <?php if( $t->vi->isTypePeering() ): ?>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <?php if( $t->vi->isTypePeering() ): ?>
+                <div class="row">
                     <p>
                         No VLAN interfaces defined.
                     </p>
-                <?php endif; ?>
+                </div>
             <?php endif; ?>
-        </div>
+        <?php endif; ?>
+
     </div>
 
     <div class="col-sm-6">

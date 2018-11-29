@@ -86,6 +86,8 @@ class ApiKeyController extends Doctrine2Frontend {
 
             'viewFolderName'    => 'api-key',
 
+            'documentation'     => 'https://docs.ixpmanager.org/features/api/',
+
             'listColumns'    => [
 
                 'id'           => [ 'title' => 'UID', 'display' => false ],

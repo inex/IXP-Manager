@@ -40,9 +40,19 @@
                 <td><?= $t->ee( $t->ppp->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?></td>
             </tr>
             <tr>
+                <td width="10%"></td>
+                <td><b>Rack:</b></td>
+                <td><?= $t->ee( $t->ppp->getPatchPanel()->getCabinet()->getColocation() ) ?></td>
+            </tr>
+            <tr>
                 <td></td>
                 <td><b>Patch Panel:</b></td>
                 <td><?= $t->ee( $t->ppp->getPatchPanel()->getColoReference() ) ?></td>
+            </tr>
+            <tr>
+                <td></td>
+                <td><b>Type:</b></td>
+                <td><?= $t->ee( $ppp->getPatchPanel()->resolveCableType() ) ?> / <?= $t->ee( $ppp->getPatchPanel()->resolveConnectorType() ) ?></td>
             </tr>
             <tr>
                 <td></td>

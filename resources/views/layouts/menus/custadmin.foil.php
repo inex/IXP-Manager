@@ -16,6 +16,14 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
 
+                <li class="">
+                    <a href="<?= route( 'contact@list' ) ?>">Contacts</a>
+                </li>
+
+                <li class="">
+                    <a href="<?= route( 'user@list' ) ?>">Users</a>
+                </li>
+
                 <?php
                     // STATIC DOCUMENTATION LINKS - SPECIFIC TO INDIVIDUAL IXPS
                     // Add a skinned file in views/_skins/xxx/header-documentation.phtml for your IXP to override the sample

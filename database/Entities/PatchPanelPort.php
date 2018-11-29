@@ -3,7 +3,7 @@
 namespace Entities;
 
 use Carbon\Carbon;
-use D2EM;
+use Auth, D2EM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use IXP\Mail\PatchPanelPort\{
@@ -371,15 +371,28 @@ class PatchPanelPort
      */
     public function getStateCssClass()
     {
-        if( $this->isAvailableForUse() or $this->isStatePrewired()):
-            $class = 'success';
-        elseif($this->isStateAwaitingXConnect()):
-            $class = 'warning';
-        elseif($this->isStateConnected()):
-            $class = 'danger';
-        else:
-            $class = 'info';
-        endif;
+        if( Auth::getUser()->isSuperUser() ){
+            if( $this->isAvailableForUse() or $this->isStatePrewired()):
+                $class = 'success';
+            elseif($this->isStateAwaitingXConnect()):
+                $class = 'warning';
+            elseif($this->isStateConnected()):
+                $class = 'danger';
+            else:
+                $class = 'info';
+            endif;
+        } else {
+            if( $this->isStateConnected() ):
+                $class = 'success';
+            elseif($this->isStateAwaitingCease()):
+                $class = 'warning';
+            elseif($this->isStateAwaitingXConnect()):
+                $class = 'danger';
+            else:
+                $class = 'default';
+            endif;
+        }
+
 
         return $class;
     }

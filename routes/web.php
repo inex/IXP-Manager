@@ -24,6 +24,13 @@ Route::group( [ 'prefix' => 'customer', 'namespace' => 'Customer'], function() {
     Route::get( 'detail/{id}',              'CustomerController@detail'         )->name( "customer@detail"     );
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Peering Matrix
+///
+
+Route::get( 'peering-matrix', 'PeeringMatrixController@index' )->name( "peering-matrix@index" );
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,6 +45,7 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'verify-loa/{id}/{code}',       'PatchPanelPortController@verifyLoa'    )->name( "patch-panel-port@verify-loa"  );
 });
 
+Route::get( 'verify-loa/{id}/{code}',       'PatchPanel\PatchPanelPortController@verifyLoa'    )->name( "patch-panel-port@verify-loa"  );
 
 
 Route::get( 'weather-map/{id}',                    'WeatherMapController@index' )->name( 'weathermap');
@@ -112,6 +120,7 @@ Route::group( [ 'namespace' => 'Auth' ], function() {
 Route::get( 'participants.json', function() { return redirect(route('ixf-member-export')); });
 
 //Auth::routes();
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////

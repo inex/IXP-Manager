@@ -35,15 +35,7 @@
                             </td>
                         <?php endif; ?>
                         <td>
-                            <?php if( $patchPanelPort->isAvailableForUse() ): ?>
-                                <?php $class = "success" ?>
-                            <?php elseif( $patchPanelPort->isStateAwaitingXConnect() ): ?>
-                                <?php $class = "warning" ?>
-                            <?php elseif( $patchPanelPort->isStateConnected() ): ?>
-                                <?php $class = "danger" ?>
-                            <?php else: ?>
-                                <?php $class =  "info" ?>
-                            <?php endif; ?>
+                            <?php $class = $patchPanelPort->getStateCssClass() ?>
 
                             <span title="" class="label label-<?=$class ?>">
                             <?= $patchPanelPort->resolveStates() ?>

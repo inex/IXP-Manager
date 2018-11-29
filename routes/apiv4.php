@@ -17,9 +17,8 @@ use Illuminate\Http\Request;
 //     wget http://ixpv.dev/api/v4/test?apikey=mySuperSecretApiKey
 
 
-Route::get( 'ping', 'PublicController@ping' );
-Route::get( 'test', 'PublicController@test' );
-
+Route::any( 'ping', 'PublicController@ping' );
+Route::any( 'test', 'PublicController@test' );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // IX-F Member List Export

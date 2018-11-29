@@ -761,8 +761,11 @@ function ossChosenFixWidth( obj, force ) {
     if( ( force != undefined && force == true ) || obj.attr( 'chzn-fix-width' ) === '1' ) {
         czn_id = "#" + obj.attr( "id" ) + "_chosen";
         width = parseInt( obj.css( "width" ) );
-        if( $( czn_id ).length == 0)
+
+        if( $( czn_id ).length == 0 ) {
             czn_id = czn_id.replace( /\-/g, "_" );
+        }
+
         $( czn_id ).css( "width", width + "px" );
     }
 }

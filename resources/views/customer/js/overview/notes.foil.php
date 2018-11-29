@@ -295,7 +295,7 @@
             <?php if( Auth::getUser()->isSuperUser() ): ?>
                 $.get( "<?= route( "customer-notes@ping" , [ 'id' => $t->c->getId() ] ) ?>");
             <?php else: ?>
-                $.get( "<?= route( "customer-notes@ping" ) ?>";
+                $.get( "<?= route( "customer-notes@ping" ) ?>");
             <?php endif; ?>
         });
 

@@ -52,9 +52,6 @@ return [
        ;; For testing / experimentation you can enabled test mode below and, when enabled, all
        ;; peering requests will be sent to the testemail.
        ;;
-       ;; NB: This does not apply to any BCC emails you add. The CC recipient in the request
-       ;; dialog will be ignored in test mode.
-       ;;
        ;; Normally, the peering manager adds a note to the peer's notes and sets a request last
        ;; sent date when a peering request is sent. In test mode, this will not happen.
        ;; If you want this to happen in test mode, set testnote and testdate to true below.
@@ -67,6 +64,16 @@ return [
         'testdate'  => env( 'PEERING_MANAGER_TESTDATE', false ),
     ],
 
+
+    /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+       ;; Minimum user auth level for the peering matrix
+       ;;
+       ;; See https://docs.ixpmanager.org/usage/users/#types-of-users
+       ;;
+       ;; */
+    'peering-matrix' => [
+        'min-auth' => env( 'PEERING_MATRIX_MIN_AUTH', \Entities\User::AUTH_PUBLIC ),
+    ],
 
 
 

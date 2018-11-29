@@ -7,8 +7,11 @@ You have a cross connect to INEX which our records indicate is no longer require
 Please contact the co-location facility and request that they cease the following cross connect:
 
 ```
+Facility:        {{ $ppp->getPatchPanel()->getCabinet()->getLocation()->getName() }}
+Rack:            {{ $ppp->getPatchPanel()->getCabinet()->getCololocation() }}
 Colo Reference:  {{ $ppp->getColoCircuitRef() }}
 Patch panel:     {{ $ppp->getPatchPanel()->getName() }}
+Type:            {{ $ppp->getPatchPanel()->resolveCableType() }}
 Port:            {{ $ppp->getName() }} @if( $ppp->hasSlavePort() ) *(duplex port)* @endif
 
 @if( $ppp->getConnectedAt() )

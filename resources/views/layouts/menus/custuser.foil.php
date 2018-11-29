@@ -45,11 +45,11 @@
                                 <li><a href="<?= url('') ?>/rs-prefixes/list">Route Server Prefixes</a></li>
                             <?php endif; ?>
                         <?php endif; ?>
-                        <?php if( !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
-                            <li><a href="<?= url('') ?>/peering-matrix">Public Peering Matrix</a></li>
-                        <?php endif; ?>
                         <?php if( !config('ixp_fe.frontend.disabled.lg' ) ): ?>
                             <li><a href="<?= url('lg') ?>">Looking Glass</a></li>
+                        <?php endif; ?>
+                        <?php if( ixp_min_auth( config( 'ixp.peering-matrix.min-auth' ) ) && !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
+                            <li><a href="<?= route('peering-matrix@index') ?>">Peering Matrix</a></li>
                         <?php endif; ?>
                     </ul>
                 </li>

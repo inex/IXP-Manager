@@ -18,10 +18,10 @@ class LoginTest extends DuskTestCase
     {
         $this->browse(function (Browser $browser) {
             $browser->visit('/auth/login')
-                    ->type( 'username', 'travis' )
-                    ->type( 'password', 'travisci' )
-                    ->press( 'submit' )
-                    ->assertPathIs( '/admin' );
+                ->type( 'username', 'travis' )
+                ->type( 'password', 'travisci' )
+                ->press( 'submit' )
+                ->assertPathIs( '/admin' );
         });
     }
 }

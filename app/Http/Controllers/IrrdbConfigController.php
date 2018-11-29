@@ -72,6 +72,8 @@ class IrrdbConfigController extends Doctrine2Frontend {
 
             'viewFolderName'    => 'irrdb-config',
 
+            'documentation'     => 'https://docs.ixpmanager.org/features/irrdb/',
+
             'listColumns'       => [
                 'id'        => [ 'title' => 'DB ID', 'display' => false ],
                 'host'      => 'Host',

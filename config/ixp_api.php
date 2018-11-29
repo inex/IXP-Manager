@@ -18,12 +18,16 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | RIR Password for updated RIR AS/AS-SET objects
+    | RIR details for updating RIR AS/AS-SET objects
     |--------------------------------------------------------------------------
     |
     */
     'rir' => [
         'password' => env( 'IXP_API_RIR_PASSWORD', 'xxxxx' ),
+        'email'    => [
+            'from' => env( 'IXP_API_RIR_EMAIL_FROM', null ),
+            'to'   => env( 'IXP_API_RIR_EMAIL_TO',   null ),
+        ],
     ],
 
 

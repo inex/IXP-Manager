@@ -5,7 +5,7 @@
 
 <?php $this->section( 'title' ) ?>
     <?php if( Auth::getUser()->isSuperUser() ): ?>
-        <a href="<?= route($t->feParams->route_prefix.'@list') ?>">
+        <a id="d2f-list-a" href="<?= route($t->feParams->route_prefix.'@list') ?>">
     <?php endif; ?>
 
     <?=  $t->feParams->pagetitle  ?>
@@ -13,22 +13,22 @@
     <?php if( Auth::getUser()->isSuperUser() ): ?>
         </a>
     <?php endif; ?>
-
 <?php $this->append() ?>
 
 
 
-    <?php $this->section( 'page-header-postamble' ) ?>
-        <?php if( Auth::getUser()->isSuperUser() ): ?>
-            <li>
-                View <?=  $t->feParams->titleSingular  ?>
-            </li>
-        <?php else:?>
-            <h3 style="display:inline;color: #999999">
-                View <?=  $t->feParams->titleSingular  ?>
-            </h3>
-        <?php endif; ?>
-    <?php $this->append() ?>
+
+<?php $this->section( 'page-header-postamble' ) ?>
+    <?php if( Auth::getUser()->isSuperUser() ): ?>
+        <li>
+            View <?=  $t->feParams->titleSingular  ?>
+        </li>
+    <?php else:?>
+        <h3 style="display:inline;color: #999999">
+            View <?=  $t->feParams->titleSingular  ?>
+        </h3>
+    <?php endif; ?>
+<?php $this->append() ?>
 
 
 
@@ -37,9 +37,15 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <li class="pull-right" style=<?= Auth::getUser()->isSuperUser() ? "margin-top: 10px" : "" ?>>
         <div class="btn-group btn-group-xs" role="group">
+
+            <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
+                <a type="button" target="_blank" class="btn btn-default" href="<?= $t->feParams->documentation ?>">Documentation</a>
+            <?php endif; ?>
+
             <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@list') ?>">
                 <span class="glyphicon glyphicon-th-list"></span>
             </a>
+
             <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
                 <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->data[ 'item' ][ 'id' ] ]) ?>">
                     <span class="glyphicon glyphicon-pencil"></span>
@@ -124,21 +130,27 @@
 
                                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
 
-                                                            <?php if( $t->data[ 'item' ][ $col ] != null): ?>
-                                                                <?= $t->data[ 'item' ][ $col ]->format( 'Y-m-d H:i:s' )  ?>
-                                                            <?php endif; ?>
+                                                        <?php if(  $t->data[ 'item' ][ $col ] ): ?>
+                                                            <?= $t->data[ 'item' ][ $col ]->format( 'Y-m-d H:i:s' )  ?>
+
+                                                        <?php endif; ?>
+
 
                                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
 
-                                                            <?php if ( $t->data[ 'item' ][ $col ] ): ?>
-                                                                <?= date('Y-m-d', strtotime( $t->data[ $col ] ) ) ?>
+                                                            <?php if(  $t->data[ 'item' ][ $col ] ): ?>
+                                                                <?= $t->data[ 'item' ][ $col ]->format( 'Y-m-d' )  ?>
+
                                                             <?php endif; ?>
+
 
                                                         <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'TIME'] ): ?>
 
-                                                            <?php if( $t->data[ 'item' ][ $col ] ): ?>
-                                                                <?= date('H:M:S', strtotime($t->data[ $col ] ) ) ?>
+                                                            <?php if(  $t->data[ 'item' ][ $col ] ): ?>
+                                                                <?= $t->data[ 'item' ][ $col ]->format( 'H:i:s' )  ?>
+
                                                             <?php endif; ?>
+
 
                                                         <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
 
@@ -148,7 +160,15 @@
 
                                                         <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'YES_NO'] ): ?>
 
-                                                            <?= $t->data[ 'item' ][ $col ] ? 'Yes' : 'No' ?>
+                                                            <?= $t->data[ 'item' ][ $col ] ? "<label class='label label-success'>Yes</label>" : "<label class='label label-danger'>No</label>" ?>
+
+                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'INVERSE_YES_NO'] ): ?>
+
+                                                            <?= !$t->data[ 'item' ][ $col ] ? "<label class='label label-success'>Yes</label>" : "<label class='label label-danger'>No</label>" ?>
+
+                                                        <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'YES_NO_NULL'] ): ?>
+
+                                                            <?= $t->data[ 'item' ][ $col ] === null ? 'Unknown' : ( $t->data[ 'item' ][ $col ] ? "<label class='label label-success'>Yes</label>" : "<label class='label label-danger'>No</label>" ) ?>
 
                                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'SCRIPT'] ): ?>
 
@@ -231,7 +251,6 @@
                                         <?php endif; ?>
 
                                     <?php endif; ?>
-
 
                                 <?php endforeach; ?>
 

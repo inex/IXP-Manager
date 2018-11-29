@@ -142,7 +142,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options['pluginPaths']['IXP_Resource'] = base_path() . "/library/IXP/Resource";
 
         $options['resources']['frontController']['controllerDirectory'] = base_path() . "/application/controllers";
-        $options['resources']['frontController']['moduleDirectory']     = base_path() . "/application/modules";
         $options['resources']['modules'] = [];
 
         return $options;
@@ -193,7 +192,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options['identity']['legalname']             = config( 'identity.legalname' );
         $options['identity']['location']['city']      = config( 'identity.location.city' );
         $options['identity']['location']['country']   = config( 'identity.location.country' );
-        $options['identity']['ixfid']                 = config( 'identity.ixfid' );
         $options['identity']['name']                  = config( 'identity.name' );
         $options['identity']['email']                 = config( 'identity.email' );
         $options['identity']['sitename']              = config( 'identity.sitename' );
