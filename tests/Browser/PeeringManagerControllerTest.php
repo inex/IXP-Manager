@@ -28,11 +28,11 @@ class PeeringManagerControllerTest extends DuskTestCase
         $this->browse( function ( Browser $browser ) {
 
             $browser->resize(1600, 1200 )
-                ->visit('/auth/login' )
+                ->visit('/login' )
                 ->type('username', 'hecustadmin' )
                 ->type('password', 'travisci' )
-                ->press('submit' )
-                ->assertPathIs('/dashboard/index' );
+                ->press('Login' )
+                ->assertPathIs('/dashboard' );
 
 
             $browser->press( "#peering-manager-a" )
