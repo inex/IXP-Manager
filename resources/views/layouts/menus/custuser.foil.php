@@ -149,13 +149,13 @@
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
-
-                <?php if( session()->exists( "switched_user_from" ) ): ?>
-                    <a href="<?= route( 'switch-user@switchBack' ) ?>">Switch Back</a>
-                <?php else: ?>
-                    <a href="<?= route( 'login@logout' ) ?>">Logout</a>
-                <?php endif; ?>
-
+                <li>
+                    <?php if( session()->exists( "switched_user_from" ) ): ?>
+                        <a href="<?= route( 'switch-user@switchBack' ) ?>">Switch Back</a>
+                    <?php else: ?>
+                        <a href="<?= route( 'login@logout' ) ?>">Logout</a>
+                    <?php endif; ?>
+                <li>
             </ul>
         </div>
     </div>
