@@ -184,6 +184,11 @@ class ContactController extends Doctrine2Frontend {
     }
 
     protected function preView() {
+
+        if( !Auth::getUser()->isSuperUser() && Auth::getUser()->getCustomer()->getId() != $this->data[ 'item' ][ 'custid' ] ){
+            $this->unauthorized();
+        }
+
         if( isset( $this->data[ "item" ][ "group" ] ) ) {
             $this->feParams->viewColumns = array_merge(
                 $this->feParams->listColumns,
@@ -276,11 +281,11 @@ class ContactController extends Doctrine2Frontend {
 
         $old = request()->old();
 
-        $from = "contact@list";
+        $from = "customer@overview";
 
         // check if we come from the customer overview or the customer list
-        if( isset( $_SERVER[ "HTTP_REFERER" ] ) && strpos( $_SERVER[ "HTTP_REFERER" ] , $this::$route_prefix . "/list" ) === false ){
-            $from = "customer@overview";
+        if( isset( $_SERVER[ "HTTP_REFERER" ] ) && strpos( $_SERVER[ "HTTP_REFERER" ] , "customer/overview" ) === false ){
+            $from = "contact@list";
         }
 
         if( config('contact_group.types.ROLE') ){
@@ -359,20 +364,27 @@ class ContactController extends Doctrine2Frontend {
      */
     public function doStore( Request $request )
     {
-        $validator = Validator::make( $request->all(), [
+        $rules = [
             'name'                  => 'required|string|max:255',
             'position'              => 'nullable|string|max:255',
-            'custid'                => 'required|integer|exists:Entities\Customer,id',
             'email'                 => 'nullable|email',
             'phone'                 => 'nullable|string|max:50',
             'mobile'                => 'nullable|string|max:50',
             'notes'                 => 'nullable|string|max:255',
-        ]);
+        ];
+
+        if( Auth::getUser()->isSuperUser() ){
+            $rules = array_merge( $rules, [ 'custid'                => 'required|integer|exists:Entities\Customer,id' ] );
+        }
+
+        $validator = Validator::make( $request->all(), $rules );
 
 
         if( $validator->fails() ) {
             return Redirect::back()->withErrors($validator)->withInput();
         }
+
+
 
         if( $request->input( 'id', false ) ) {
             if( !( $this->object = D2EM::getRepository( ContactEntity::class )->find( $request->input( 'id' ) ) ) ) {
@@ -470,7 +482,7 @@ class ContactController extends Doctrine2Frontend {
 
             // retrieve the customer ID
             if( $redirect != "contact@list" ) {
-                return route( "customer@overview" , [ "id" => $this->object->getCustomer()->getId() , "tab" => "users" ] );
+                return route( "customer@overview" , [ "id" => $this->object->getCustomer()->getId() , "tab" => "contacts" ] );
             }
 
         }
@@ -493,8 +505,7 @@ class ContactController extends Doctrine2Frontend {
 
         if( !Auth::getUser()->isSuperUser() ) {
             if( $this->object->getCustomer()->getId() != Auth::getUser()->getCustomer()->getId() ) {
-                Log::notice( Auth::getUser()->getUsername() . "tried to delete other contact " . $this->object->getUser()->getUsername() );
-                AlertContainer::push( 'You are not authorised to delete this contact. The administrators have been notified.', Alert::DANGER );
+                AlertContainer::push( 'You are not authorised to delete this contact.', Alert::DANGER );
                 return false;
             }
         } else {

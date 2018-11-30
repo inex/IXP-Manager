@@ -258,7 +258,7 @@ abstract class Doctrine2Frontend extends Controller {
             return $data[0];
         }
 
-        abort( 404);
+        abort( 404, "No Data" );
     }
 
     /**

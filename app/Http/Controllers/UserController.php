@@ -140,7 +140,7 @@ class UserController extends Doctrine2Frontend {
 
                 $this->feParams->pagetitle = 'User Admin for ' . Auth::getUser()->getCustomer()->getName();
 
-                $this->_feParams->listColumns = [
+                $this->feParams->listColumns = [
                     'username'      => 'Username',
                     'email'         => 'Email',
 
@@ -202,6 +202,8 @@ class UserController extends Doctrine2Frontend {
 
         $old = request()->old();
 
+        request()->session()->remove( "user_post_store_redirect" );
+
         // check if we come from the customer overview or the customer list
         if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
             request()->session()->put( "user_post_store_redirect", "customer@overview" );
@@ -211,6 +213,10 @@ class UserController extends Doctrine2Frontend {
 
             if( !( $this->object = D2EM::getRepository( UserEntity::class )->find( $id ) ) ) {
                 abort(404, 'User not found');
+            }
+
+            if( !Auth::getUser()->isSuperUser() && Auth::getUser()->getCustomer()->getId() != $this->object->getCustomer()->getId() ){
+                $this->unauthorized();
             }
 
             Former::populate([
