@@ -145,8 +145,8 @@ class UserController extends Doctrine2Frontend {
                     'email'         => 'Email',
 
                     'disabled'       => [
-                        'title'         => 'Disabled',
-                        'type'          => self::$FE_COL_TYPES[ 'YES_NO' ],
+                        'title'         => 'Enabled',
+                        'type'          => self::$FE_COL_TYPES[ 'INVERSE_YES_NO' ],
                     ],
 
                     'created'       => [
@@ -155,6 +155,7 @@ class UserController extends Doctrine2Frontend {
                     ]
                 ];
                 break;
+
 
             default:
                 $this->unauthorized();
@@ -273,7 +274,7 @@ class UserController extends Doctrine2Frontend {
             $this->object->setCreator(  Auth::getUser()->getUsername() );
         }
 
-        if( $request->input( 'usersecret' ) ){
+        if( $request->input( 'usersecret' ) ) {
             $this->object->setPassword( password_hash( $request->input( 'usersecret' ), PASSWORD_BCRYPT, [ 'cost' => 10 ] ) );
         }
 
@@ -290,10 +291,14 @@ class UserController extends Doctrine2Frontend {
             $this->object->setPrivs( $request->input( 'privs' ) );
             $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) );
         } else {
+
+            if( $this->object->getId() && !Auth::getUser()->isSuperUser() && Auth::getUser()->getCustomer()->getId() != $this->object->getCustomer()->getId() ){
+                $this->unauthorized();
+            }
+
             $this->object->setPrivs( $request->input( 'privs' ) < UserEntity::AUTH_SUPERUSER ? $request->input( 'privs' ) : UserEntity::AUTH_CUSTUSER );
             $this->object->setCustomer( Auth::getUser()->getCustomer() );
         }
-
 
         // we should only add admin users to customer type internal
         if( $this->object->isSuperUser() && !$this->object->getCustomer()->isTypeInternal() ) {
@@ -347,7 +352,7 @@ class UserController extends Doctrine2Frontend {
 
         if( !Auth::getUser()->isSuperUser() ) {
             if( $this->object->getCustomer()->getId() != Auth::getUser()->getCustomer()->getId() ) {
-                Log::notice( Auth::getUser()->getUsername() . " tried to delete other customer user " . $this->object->getUser()->getUsername() );
+                Log::notice( Auth::getUser()->getUsername() . " tried to delete other customer user " . $this->object->getUsername() );
                 abort( 401, 'You are not authorised to delete this user. The administrators have been notified.' );
             }
         }

@@ -45,7 +45,6 @@ class User implements Authenticatable
         User::AUTH_SUPERUSER => 'Superuser'
     );
 
-
     /**
      * @var string $username
      */

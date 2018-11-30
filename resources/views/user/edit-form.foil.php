@@ -34,8 +34,8 @@
             ->label( 'Password' )
             ->placeholder( $t->data['params']['isAdd'] ? '' : '(unchanged if left blank)' )
             ->value( $t->data['params']['isAdd'] ? str_random( 12 ) : '' )
-            ->blockHelp( "The user's password. Between 8 and 255 characters. "
-                . ( $t->data['params']['isAdd'] ? '' : '<br><br>Leave blank to retain the current password.' )
+            ->blockHelp( "The user's password. Between 8 and 255 characters.<br><br>"
+                . ( $t->data['params']['isAdd'] ? 'A cryptographically secure random password is suggested.' : '<br><br>Leave blank to retain the current password.' )
             );
         ?>
 
@@ -45,16 +45,25 @@
             ->blockHelp( "The user's email address." );
         ?>
 
-        <?= Former::select( 'privs' )
-            ->id( 'privs' )
-            ->label( 'Privileges' )
-            ->placeholder( 'Select a privilege' )
-            ->fromQuery( Entities\User::$PRIVILEGES_TEXT, 'name' )
-            ->addClass( 'chzn-select' )
-            ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/usage/users/#types-of-users">'
-                . 'the official documentation here</a>.'
-            );
-        ?>
+        <?php if( Auth::getUser()->isSuperUser() ): ?>
+
+            <?= Former::select( 'privs' )
+                ->id( 'privs' )
+                ->label( 'Privileges' )
+                ->placeholder( 'Select a privilege' )
+                ->fromQuery( Auth::getUser()->isSuperUser() ? \Entities\User::$PRIVILEGES_TEXT : \Entities\User::$PRIVILEGES_TEXT_NONSUPERUSER, 'name' )
+                ->addClass( 'chzn-select' )
+                ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/usage/users/#types-of-users">'
+                    . 'the official documentation here</a>.'
+                );
+            ?>
+
+        <?php else: ?>
+
+            <?= Former::hidden( 'privs' )->value( \Entities\User::AUTH_CUSTUSER ) ?>
+
+        <?php endif; ?>
+
 
         <?= Former::checkbox( 'disabled' )
             ->label('&nbsp;')
