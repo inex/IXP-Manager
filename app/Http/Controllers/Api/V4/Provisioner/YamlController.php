@@ -272,7 +272,10 @@ class YamlController extends Controller {
 
         $listNeighbors = D2EM::getRepository(SwitcherEntity::class )->getAllNeighbors( $switch->getId() );
 
+        $listAdjacentASNs = D2EM::getRepository(SwitcherEntity::class )->getAdjacentASNInfo( $switch->getId() );
+
         $out['bgp']['floodlist'] = $listFlood;
+        $out['bgp']['adjacentasns'] = $listAdjacentASNs;
         $out['bgp']['routerid'] = $switch->getLoopbackIp();
         $out['bgp']['local_as'] = $switch->getAsn();
 
