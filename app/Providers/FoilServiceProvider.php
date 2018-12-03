@@ -41,29 +41,6 @@ class FoilServiceProvider extends ServiceProvider
 
             $engine = new Engine($app->make('Foil\Engine'));
 
-            View::composer('*', function($view) {
-
-                // FIXME @yannrobin - need to remove this once ZF is gone.
-                if(app('request')->route() != null) {
-                    $action = app('request')->route()->getAction();
-                    if( isset( $action['controller'] ) ) {
-                        $controller = class_basename( $action[ 'controller' ] );
-                        $subFolder = isset( $action[ 'subFolder' ] ) ? $action[ 'subFolder' ] : '';
-                        list( $controller, $action ) = explode( '@', $controller );
-                    } else {
-                        $subFolder  = '';
-                        $controller = '';
-                    }
-                } else {
-                    $action     = null;
-                    $controller = null;
-                    $subFolder  = null;
-                }
-
-                $view->with('subFolder' , $subFolder )->with('controller' , $controller)->with('action',$action);
-
-            });
-
             // we have a few rendering functions we want to include here:
             $engine->engine()->loadExtension( new IXPFoilExtensions(), [ 'alerts' ] );
             $engine->engine()->loadExtension( new BirdFoilExtensions(), [] );

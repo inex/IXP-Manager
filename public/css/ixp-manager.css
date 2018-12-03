@@ -791,3 +791,10 @@ td a:hover{
 li.pull-right{
     list-style-type: none;
 }
+
+
+.a-disabled {
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.6;
+}
