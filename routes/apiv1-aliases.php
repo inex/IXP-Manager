@@ -18,5 +18,5 @@ Route::get('apiv1/member-list/list/version/{version}', 'IXP\Http\Controllers\Api
 
 Route::get( 'static/support', function() {
    return redirect( 'public-content/support' );
-});
+})->name( "static/support" );
 
