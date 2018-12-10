@@ -437,7 +437,7 @@ class SwitchPortController extends Doctrine2Frontend {
             'ifName'                => 'Name',
             'type'                  => [
                 'title'     =>  'Type',
-                'type'      =>   self::$FE_COL_TYPES[ 'RESOLVE_CONST' ],
+                'type'      =>   self::$FE_COL_TYPES[ 'CONST' ],
                 'const'     =>   SwitchPortEntity::$TYPES,
             ],
 
@@ -911,7 +911,7 @@ class SwitchPortController extends Doctrine2Frontend {
 
             'type'                  => [
                 'title'     =>  'Type',
-                'type'      =>   self::$FE_COL_TYPES[ 'RESOLVE_CONST' ],
+                'type'      =>   self::$FE_COL_TYPES[ 'CONST' ],
                 'const'     =>   SwitchPortEntity::$TYPES,
             ],
 

@@ -178,6 +178,9 @@
                     <?php endif; ?>
                 <?php endif; ?>
 
+                <li class="<?= !request()->is( 'network-info/*' ) ?: 'active' ?>" >
+                    <a href="<?= route('network-info@list' ) ?>">Network Informations</a>
+                </li>
 
                 <li <?php if( $t->controller == 'VendorController' ):?> class="active" <?php endif;?> >
                     <a href="<?= route('vendor@list' ) ?>">Vendors</a>

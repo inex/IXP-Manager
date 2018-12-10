@@ -24,6 +24,7 @@ IXP\Http\Controllers\Layer2AddressController::routes();
 IXP\Http\Controllers\LocationController::routes();
 IXP\Http\Controllers\LoginHistoryController::routes();
 IXP\Http\Controllers\MacAddressController::routes();
+IXP\Http\Controllers\NetworkInfoController::routes();
 IXP\Http\Controllers\Switches\SwitchController::routes();
 IXP\Http\Controllers\Switches\SwitchPortController::routes();
 IXP\Http\Controllers\UserController::routes();

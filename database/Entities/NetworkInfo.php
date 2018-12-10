@@ -2,7 +2,9 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
+use Entities\{
+    Vlan    as   VlanEntity
+};
 
 /**
  * Entities\NetworkInfo
@@ -45,7 +47,7 @@ class NetworkInfo
     protected $id;
 
     /**
-     * @var Entities\Vlan
+     * @var VlanEntity
      */
     protected $Vlan;
 
@@ -201,10 +203,10 @@ class NetworkInfo
     /**
      * Set Vlan
      *
-     * @param Entities\Vlan $vlan
+     * @param VlanEntity $vlan
      * @return NetworkInfo
      */
-    public function setVlan(\Entities\Vlan $vlan = null)
+    public function setVlan( VlanEntity $vlan = null)
     {
         $this->Vlan = $vlan;
     
@@ -214,7 +216,7 @@ class NetworkInfo
     /**
      * Get Vlan
      *
-     * @return Entities\Vlan 
+     * @return VlanEntity
      */
     public function getVlan()
     {

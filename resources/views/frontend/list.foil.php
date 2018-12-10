@@ -199,7 +199,7 @@
 
                                                     <?= date('H:M:S', strtotime($row[ $col ] ) ) ?>
 
-                                                <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'RESOLVE_CONST'] ): ?>
+                                                <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'CONST'] ): ?>
 
                                                     <?= $cconf[ 'const' ][ $row[ $col ] ] ?>
 
