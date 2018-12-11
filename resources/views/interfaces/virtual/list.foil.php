@@ -61,6 +61,9 @@
                         Speed
                     </td>
                     <td>
+                        Raw Speed
+                    </td>
+                    <td>
                         Action
                     </td>
                 </tr>
@@ -93,7 +96,12 @@
                             <td>
                                 <?= $t->scaleBits( $speed*1000*1000, 0 ) ?>
                             </td>
+                            <td>
+                                <?php $totalSpeed = explode( "," , $speed ) ?>
+                                <?= array_sum( $totalSpeed ) ?>
+                            </td>
                         <?php else: ?>
+                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -129,7 +137,14 @@
 
     <script>
         $(document).ready( function() {
-            loadDataTable( 'vi' );
+            $( '#table-vi' ).DataTable( {
+                "autoWidth": false,
+                "iDisplayLength": 100,
+                "columnDefs": [
+                    { "targets": [ 4 ], "orderData": 5 },
+                    { "targets": [ 5 ], "visible": false, "searchable": false }
+                ],
+            });
             $('#area-vi').show();
         });
 
