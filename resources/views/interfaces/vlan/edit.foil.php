@@ -215,7 +215,7 @@
 
                 <?=Former::actions(
                     Former::primary_submit( $t->vli ? 'Save Changes' : 'Add' ),
-                    Former::default_link( 'Cancel' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) :  route( 'interfaces/vlan/list' ) ),
+                    Former::default_link( 'Cancel' )->id( 'cancel-btn' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) :  route( 'interfaces/vlan/list' ) ),
                     Former::success_button( 'Help' )->id( 'help-btn' )
                 )->id('btn-group');?>
 

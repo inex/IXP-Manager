@@ -64,10 +64,10 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'monitorindex', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface'];
+            return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface'];
         }
 
-        return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'monitorindex', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface'];
+        return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface'];
     }
 
     /**
@@ -259,28 +259,6 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getAutoneg', []);
 
         return parent::getAutoneg();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setMonitorindex($monitorindex)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMonitorindex', [$monitorindex]);
-
-        return parent::setMonitorindex($monitorindex);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getMonitorindex()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getMonitorindex', []);
-
-        return parent::getMonitorindex();
     }
 
     /**

@@ -98,6 +98,22 @@
                     <a href="<?= route('rack@list') ?>">Racks</a>
                 </li>
 
+                <li <?php if( $t->controller == 'SwitchController' ):?> class="active" <?php endif;?> >
+                    <a id="lhs-menu-switches" href="<?= route('switch@list') ?>">Switches</a>
+
+                    <?php if( $t->controller == 'SwitchController' || $t->controller == 'SwitchPortController' ):?>
+                        <li class="sub-menu <?php if( $t->controller == 'SwitchPortController' && $t->action != 'unusedOptics' && $t->action != 'opticInventory' && $t->action != 'opticList' ):?> active <?php endif;?>" >
+                            <a id="lhs-menu-switch-ports" href="<?= route( "switch-port@list" ) ?>">Switch Ports</a>
+                        </li>
+                        <li class="sub-menu <?php if( $t->controller == 'SwitchPortController' && $t->action == 'unusedOptics' ):?> active <?php endif;?>" >
+                            <a href="<?= route( "switch-port@unused-optics" ) ?>">Unused Optics</a>
+                        </li>
+                        <li class="sub-menu <?php if( $t->controller == 'SwitchPortController' && $t->action == 'opticInventory' || $t->action == 'opticList' ):?> active <?php endif;?>" >
+                            <a href="<?= route( "switch-port@optic-inventory" ) ?>">Optic Inventory</a>
+                        </li>
+                    <?php endif; ?>
+                </li>
+
                 <li <?= $t->controller == 'RouterController' && $t->action != 'status' ? 'class="active"' : '' ?>>
                     <a href="<?= route('router@list' ) ?>">
                         Routers
@@ -124,21 +140,6 @@
 
                 </li>
 
-                <li>
-                    <a href="<?= url('/switch/list') ?>">Switches</a>
-                    <?php /*
-                    {if $controller eq 'switch' or $controller eq 'switch-port'}
-                        <ul class="nav nav-list">
-                            <li {if $controller eq 'switch-port' and $action neq 'unused-optics'}class="active"{/if}>
-                                <a href="{genUrl controller='switch-port' action='list'}">Switch Ports</a>
-                            </li>
-                            <li {if $controller eq 'switch-port' and $action eq 'unused-optics'}class="active"{/if}>
-                                <a href="{genUrl controller='switch-port' action='unused-optics'}">Unused Optics</a>
-                            </li>
-                        </ul>
-                    {/if}
-                    */ ?>
-                </li>
 
 
                 <?php if( config( 'ixp_fe.frontend.beta.core_bundles', false ) ): ?>

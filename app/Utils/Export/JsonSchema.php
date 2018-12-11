@@ -191,7 +191,7 @@ class JsonSchema
 
         /** @var Switcher $switch */
         foreach( $infra->getSwitchers() as $switch ) {
-            if( $switch->getSwitchtype() != Switcher::TYPE_SWITCH || !$switch->getActive() ) {
+            if( !$switch->getActive() ) {
                 continue;
             }
 

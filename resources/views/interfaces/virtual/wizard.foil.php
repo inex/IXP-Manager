@@ -184,6 +184,7 @@ $this->layout( 'layouts/ixpv4' );
                         ->text( 'Apply IRRDB Filtering' )
                         ->blockHelp( "<strong>Strongly recommended!</strong> Filter routes learned on route servers based on the customer's IRRDB entries." )
                         ->value( 1 )
+                        ->check( true )
                     ?>
 
                     <div id="div-rsmorespecifics" style="<?= old( 'irrdbfilter' ) || $t->vli && $t->vli->getIrrdbfilter() ?: 'display: none;' ?>">

@@ -151,6 +151,12 @@ abstract class Email extends Mailable
      * @param \IXP\Http\Requests\EmailPatchPanelPort $request
      */
     public function prepareFromRequest( EmailPatchPanelPortRequest $request ) {
+
+        // in the constructor, we add the NOC address of the customer (if we have one)
+        // to the recipients. This is for presetting the To: field in the HTML form.
+        // we wipe there here and just use what was submitted in the form.
+        $this->to = [];
+
         // recipients
         foreach( [ 'to', 'cc', 'bcc' ] as $r ) {
             $hasFn = 'has' . ucfirst( $r );

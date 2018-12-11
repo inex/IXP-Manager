@@ -116,6 +116,10 @@ class EmailOnChange
                     continue;
                 }
 
+                if( !$user->getContact()->getEmail() || filter_var( $user->getContact()->getEmail() , FILTER_VALIDATE_EMAIL ) === false ) {
+                    continue;
+                }
+
                 if( !$user->getPreference( "customer-notes.notify" ) || $user->getPreference( "customer-notes.notify" ) == "default" || $user->getPreference( "customer-notes.notify" ) == "all" ) {
                     $to[] = [ 'name' => $user->getContact()->getName(), 'email' => $user->getContact()->getEmail() ];
                     continue;

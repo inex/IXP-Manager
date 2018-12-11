@@ -60,6 +60,7 @@ class ConsoleServerController extends Doctrine2Frontend {
         $this->feParams         = (object)[
 
             'entity'            => ConsoleServerEntity::class,
+
             'pagetitle'         => 'Console Servers',
 
             'titleSingular'     => 'Console Server',
@@ -160,6 +161,7 @@ class ConsoleServerController extends Doctrine2Frontend {
     protected function addEditPrepareForm( $id = null ): array {
 
         $old = request()->old();
+
 
         if( $id !== null ) {
 

@@ -2,13 +2,12 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
-
+use Carbon\Carbon;
 /**
  * Entities\PeeringManager
  */
-class PeeringManager
-{
+class PeeringManager{
+
     /**
      * @var \DateTime $email_last_sent
      */
@@ -276,4 +275,30 @@ class PeeringManager
     {
         return $this->updated;
     }
+
+
+    /**
+     * Convert this object to an array
+     *
+     * @return array
+     */
+    public function toArray(): array {
+        $a = [
+            'id'                => $this->getId(),
+            'email_last_sent'   => $this->getEmailLastSent()       ? Carbon::instance( $this->getEmailLastSent()       )->toIso8601String() : null,
+            'emails_sent'       => $this->getEmailsSent() ? true : false,
+            'peered'            => $this->getPeered() ? true : false,
+            'rejected'          => $this->getRejected() ? true : false,
+            'notes'             => $this->getNotes(),
+            'created'           => $this->getCreated()       ? Carbon::instance( $this->getCreated()       )->toIso8601String() : null,
+            'updated'           => $this->getUpdated()       ? Carbon::instance( $this->getUpdated()       )->toIso8601String() : null,
+            'custid'            => $this->getCustomer()      ? $this->getCustomer()->getId() : null,
+            'peer'              => $this->getPeer()          ? $this->getPeer()->getId() : null,
+
+        ];
+
+
+        return $a;
+    }
+
 }

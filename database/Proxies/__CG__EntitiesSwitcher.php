@@ -64,10 +64,10 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported'];
+            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'model', 'hostname', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'os', 'active', 'osDate', 'osVersion', 'lastPolled', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor'];
         }
 
-        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'switchtype', 'model', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor', 'active', 'hostname', 'os', 'osDate', 'osVersion', 'lastPolled', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported'];
+        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'model', 'hostname', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'os', 'active', 'osDate', 'osVersion', 'lastPolled', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor'];
     }
 
     /**
@@ -264,7 +264,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setInfrastructure($infrastructure)
+    public function setInfrastructure(\Entities\Infrastructure $infrastructure = NULL)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setInfrastructure', [$infrastructure]);
@@ -281,28 +281,6 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getInfrastructure', []);
 
         return parent::getInfrastructure();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setSwitchtype($switchtype)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSwitchtype', [$switchtype]);
-
-        return parent::setSwitchtype($switchtype);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getSwitchtype()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitchtype', []);
-
-        return parent::getSwitchtype();
     }
 
     /**
@@ -609,7 +587,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function snmpPoll($host, $logger = false)
+    public function snmpPoll($host, bool $logger = false)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'snmpPoll', [$host, $logger]);

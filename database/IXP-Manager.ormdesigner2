@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<skipper version="3.2.11.1392" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
+<skipper version="3.2.12.1400" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
   <module name="\IXP-Manager" local-name="IXP-Manager" namespace="\Entities" local-namespace="Entities" export-format="Doctrine2Xml" export-path="xml" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
     <entity name="\Entities\IrrdbAsn" local-name="IrrdbAsn" namespace="\Entities" uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c">
       <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="033ed9da-4165-432b-8b57-e21110abe29e"/>
@@ -419,7 +419,6 @@
       <field name="ipv6addr" type="string" size="255" uuid="c53d4076-8573-498f-a4ad-26c6584b85dd"/>
       <field name="snmppasswd" type="string" size="255" uuid="4b73b930-a965-4e30-81e5-8c664891c88c"/>
       <field name="infrastructure" type="integer" uuid="06791ab2-f917-4be2-9602-831d305c694a"/>
-      <field name="switchtype" type="integer" uuid="d9e9f4ea-bd98-4ab1-adda-0e34a8699ce8"/>
       <field name="vendorid" type="integer" uuid="0c6b8117-2c7e-41f7-be3c-0c7c9cd5beb4"/>
       <field name="model" type="string" size="255" uuid="5796046e-993c-474e-a188-74a6f946d460"/>
       <field name="active" type="boolean" default="1" uuid="50f54b05-6a96-432b-99e1-6b9994b13d9a"/>
@@ -585,7 +584,6 @@
       <field name="speed" type="integer" uuid="0503f30c-b27d-4026-bf41-ef05388078d8"/>
       <field name="duplex" type="string" size="16" uuid="ed6840cf-769f-40b8-bfb4-a68a30d480c4"/>
       <field name="autoneg" type="boolean" default="1" required="true" uuid="1a8aec97-e073-476c-93c0-3705adad336c"/>
-      <field name="monitorindex" type="integer" uuid="c515c52e-8f2d-4cc0-8862-584c0bb8d636"/>
       <field name="notes" type="text" uuid="eed9d024-c35e-4c89-802a-7fcbf392067f"/>
       <field name="fanout_physical_interface_id" type="integer" unique="true" uuid="d8b65def-02ef-4aef-a766-dfa92e3b9284"/>
       <orm-attributes>
@@ -1509,6 +1507,25 @@
         <many-to-many-field from="customer_id" to="id"/>
       </many-to-many-entity>
     </many-to-many>
+    <entity name="\Entities\BgpSession" local-name="BgpSession" namespace="\Entities" uuid="8f91adda-06e6-43ed-bea6-0aec9aeb9f2e">
+      <field name="id" type="integer" primary="true" auto-increment="true" uuid="956e1ac1-65f9-4c8d-a1fe-3d82fe2ad6c3"/>
+      <field name="srcipaddressid" type="integer" required="true" uuid="91b0daba-a333-4c24-b397-2ac2d23edd4c"/>
+      <field name="protocol" type="integer" required="true" uuid="b45c1fa8-65c4-48b0-846e-8bf1a03a4697"/>
+      <field name="dstipaddressid" type="integer" required="true" uuid="5adfa80e-facc-4f9c-8bf6-fe43e49f1eba"/>
+      <field name="packetcount" type="integer" default="0" required="true" uuid="47913bed-8cb7-4391-a296-27430e2f89a8"/>
+      <field name="last_seen" type="datetime" required="true" uuid="aaed9a42-e0f8-4424-b234-1d1888f6fc05"/>
+      <field name="source" type="string" size="40" uuid="a073a53a-9d89-4454-99c1-04677f026bd6"/>
+      <index name="src_protocol_dst" unique="true">
+        <index-field name="srcipaddressid"/>
+        <index-field name="protocol"/>
+        <index-field name="dstipaddressid"/>
+      </index>
+      <orm-attributes>
+        <attribute name="repository-class">Repositories\BgpSessions</attribute>
+        <attribute name="table">bgp_sessions</attribute>
+        <attribute name="tableName">bgp_sessions</attribute>
+      </orm-attributes>
+    </entity>
   </module>
   <visual-data>
     <association uuid="01e81093-107a-49b9-9cb8-18b8a383bf6e" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="4288059030"/>
@@ -1579,7 +1596,7 @@
     <entity uuid="04f83672-40da-4802-ad22-809cfd3ab549" bg-color="4294967295" hdr-color="4292006610" position-x="250" position-y="1009" size-x="0" size-x2="97" size-y="0" size-y2="73"/>
     <entity uuid="0617cfe2-0a29-4671-a9d6-5401bc911e43" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="595" position-y="350" size-x="0" size-x2="186" size-y="0" size-y2="465"/>
     <entity uuid="09ab0078-0545-4696-a0cf-f825906ff6b8" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="775" position-y="87" size-x="0" size-x2="174" size-y="0" size-y2="157"/>
-    <entity uuid="0aaacba6-6bf1-4b5f-b3ad-41f36ca7bd7d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="35" position-y="36" size-x="0" size-x2="117" size-y="0" size-y2="101"/>
+    <entity uuid="0aaacba6-6bf1-4b5f-b3ad-41f36ca7bd7d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="36" position-y="-66" size-x="0" size-x2="118" size-y="0" size-y2="129"/>
     <entity uuid="0be9b477-a199-4d85-a892-4287cf858f4d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="47" position-y="-145" size-x="0" size-x2="124" size-y="0" size-y2="59"/>
     <entity uuid="0c1cb743-444a-4fea-ab68-7150272fc55b" bg-color="4294967295" hdr-color="4292006610" position-x="5" position-y="417" size-x="0" size-x2="123" size-y="0" size-y2="115"/>
     <entity uuid="1363c8e6-52d8-4d98-b6e9-b01eccad244d" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1261" position-y="1038" size-x="0" size-x2="128" size-y="0" size-y2="101"/>
@@ -1608,6 +1625,7 @@
     <entity uuid="709f0b3a-19e0-4026-88d3-1904231644ec" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="997" position-y="-4" size-x="0" size-x2="135" size-y="0" size-y2="73"/>
     <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="337" position-y="874" size-x="0" size-x2="113" size-y="0" size-y2="115"/>
     <entity uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135" bg-color="4294967295" hdr-color="4292006610" position-x="173" position-y="438" size-x="0" size-x2="138" size-y="0" size-y2="74"/>
+    <entity uuid="8f91adda-06e6-43ed-bea6-0aec9aeb9f2e" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1454" position-y="971" size-x="0" size-x2="118" size-y="0" size-y2="129"/>
     <entity uuid="90947ea1-a2fb-430b-b55e-a4901eb1fa30" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="30" position-y="-526" size-x="0" size-x2="118" size-y="0" size-y2="297"/>
     <entity uuid="9f26679f-99e4-48b9-b544-4d7377988044" bg-color="4294967295" hdr-color="4292006610" position-x="929" position-y="1072" size-x="0" size-x2="92" size-y="0" size-y2="73"/>
     <entity uuid="a4eeb330-c86b-4443-968b-c166863303b1" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="415" position-y="16" size-x="0" size-x2="104" size-y="0" size-y2="115"/>

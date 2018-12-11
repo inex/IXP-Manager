@@ -156,24 +156,6 @@ class VirtualInterfaceController extends Common
     }
 
     /**
-     * Display the Virtual Interface informations
-     *
-     * @param  int $id ID of the Virtual Interface
-     *
-     * @return  view
-     */
-    public function view( int $id = null ): View {
-        /** @var VirtualInterfaceEntity $vi */
-        if( !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $id ) ) ){
-            abort(404);
-        }
-
-        return view( 'interfaces/virtual/view' )->with([
-            'vi'                        => $vi
-        ]);
-    }
-
-    /**
      * Add or edit a virtual interface (set all the data needed)
      *
      * @param   StoreVirtualInterface $request instance of the current HTTP request
@@ -271,7 +253,7 @@ class VirtualInterfaceController extends Common
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getNames(),
             'vli'                   => false,
             'vlans'                 => D2EM::getRepository( VlanEntity::class )->getNames( false ),
-            'pi_switches'           => D2EM::getRepository( SwitcherEntity::class )->getNames( true, SwitcherEntity::TYPE_SWITCH ),
+            'pi_switches'           => D2EM::getRepository( SwitcherEntity::class )->getNames( true ),
             'resoldCusts'           => $this->resellerMode() ? json_encode( D2EM::getRepository( CustomerEntity::class )->getResoldCustomerNames() ) : json_encode([]) ,
             'selectedCust'          => $cust
         ]);
@@ -310,8 +292,6 @@ class VirtualInterfaceController extends Common
 
         $sp->setType( SwitchPortEntity::TYPE_PEERING );
         $pi->setSwitchPort( $sp );
-
-        $pi->setMonitorindex( D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $c ) );
 
         $vli = new VlanInterfaceEntity();
         D2EM::persist($vli);
@@ -357,6 +337,13 @@ class VirtualInterfaceController extends Common
             return abort( '404' );
         }
 
+
+        if( $vi->getCoreBundle() ) {
+            AlertContainer::push( 'The Virtual Interface is linked to a Core Bundle. Delete the Core Bundle first to be able to delete the Virtual Interface.', Alert::DANGER );
+
+            return response()->json( [ 'success' => false ]);
+        }
+
         foreach( $vi->getPhysicalInterfaces() as $pi) {
             /** @var PhysicalInterfaceEntity $pi */
             $vi->removePhysicalInterface( $pi );
@@ -371,6 +358,7 @@ class VirtualInterfaceController extends Common
 
                 $pi->getPeeringPhysicalInterface()->setFanoutPhysicalInterface( null );
             }
+
             D2EM::remove( $pi );
 
             if( $request->input( 'related' ) && $pi->getRelatedInterface() ){

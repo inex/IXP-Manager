@@ -2,25 +2,24 @@
 
 namespace Entities;
 
-use D2EM;
+use D2EM, Log;
 
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+use Entities\{
+    Cabinet                 as CabinetEntity,
+    ConsoleServerConnection as ConsoleServerConnectionEntity,
+    Infrastructure          as InfrastructureEntity,
+    SwitchPort              as SwitchPortEntity,
+    Vendor                  as VendorEntity
+};
+
+use \OSS_SNMP\MIBS\Iface as SNMPIface;
 
 /**
  * Entities\Switcher
  */
 class Switcher
 {
-    const TYPE_SWITCH        = 1;
-    const TYPE_CONSOLESERVER = 2;
-
-
-    public static $TYPES = [
-        self::TYPE_SWITCH        => 'Switch',
-        self::TYPE_CONSOLESERVER => 'Console Server'
-    ];
-
-
     /**
      * Elements for SNMP polling via the OSS_SNMP library
      *
@@ -29,7 +28,7 @@ class Switcher
      * @see snmpPoll() below
      * @var array Elements for SNMP polling via the OSS_SNMP library
      */
-    public static $OSS_SNMP_SWITCH_ELEMENTS = [
+    public static $SNMP_SWITCH_ELEMENTS = [
         'Model',
         'Os',
         'OsDate',
@@ -63,14 +62,14 @@ class Switcher
     protected $Infrastructure;
 
     /**
-     * @var integer $switchtype
-     */
-    protected $switchtype;
-
-    /**
      * @var string $model
      */
     protected $model;
+
+    /**
+     * @var string
+     */
+    protected $hostname;
 
     /**
      * @var string $notes
@@ -103,12 +102,47 @@ class Switcher
     protected $id;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var boolean
+     */
+    private $mauSupported;
+
+    /**
+     * @var string
+     */
+    private $serialNumber;
+
+    /**
+     * @var string
+     */
+    protected $os;
+
+    /**
+     * @var boolean $active
+     */
+    protected $active;
+
+    /**
+     * @var \DateTime
+     */
+    protected $osDate;
+
+    /**
+     * @var string
+     */
+    protected $osVersion;
+
+    /**
+     * @var \DateTime
+     */
+    protected $lastPolled;
+
+    /**
+     * @var ArrayCollection
      */
     protected $Ports;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $ConsoleServerConnections;
 
@@ -127,8 +161,8 @@ class Switcher
      */
     public function __construct()
     {
-        $this->Ports = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->ConsoleServerConnections = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->Ports = new ArrayCollection();
+        $this->ConsoleServerConnections = new ArrayCollection();
     }
 
     /**
@@ -226,10 +260,10 @@ class Switcher
     /**
      * Set infrastructure
      *
-     * @param \Entities\Infrastructure $infrastructure
+     * @param InfrastructureEntity $infrastructure
      * @return Switcher
      */
-    public function setInfrastructure($infrastructure)
+    public function setInfrastructure( InfrastructureEntity $infrastructure = null )
     {
         $this->Infrastructure = $infrastructure;
 
@@ -239,34 +273,11 @@ class Switcher
     /**
      * Get infrastructure
      *
-     * @return \Entities\Infrastructure
+     * @return InfrastructureEntity
      */
     public function getInfrastructure()
     {
         return $this->Infrastructure;
-    }
-
-    /**
-     * Set switchtype
-     *
-     * @param integer $switchtype
-     * @return Switcher
-     */
-    public function setSwitchtype($switchtype)
-    {
-        $this->switchtype = $switchtype;
-
-        return $this;
-    }
-
-    /**
-     * Get switchtype
-     *
-     * @return integer
-     */
-    public function getSwitchtype()
-    {
-        return $this->switchtype;
     }
 
     /**
@@ -328,10 +339,10 @@ class Switcher
     /**
      * Add Ports
      *
-     * @param \Entities\SwitchPort $ports
+     * @param SwitchPortEntity $ports
      * @return Switcher
      */
-    public function addPort(\Entities\SwitchPort $ports)
+    public function addPort( SwitchPortEntity $ports)
     {
         $this->Ports[] = $ports;
 
@@ -341,9 +352,9 @@ class Switcher
     /**
      * Remove Ports
      *
-     * @param \Entities\SwitchPort $ports
+     * @param SwitchPortEntity $ports
      */
-    public function removePort(\Entities\SwitchPort $ports)
+    public function removePort( SwitchPortEntity $ports)
     {
         $this->Ports->removeElement($ports);
     }
@@ -351,7 +362,7 @@ class Switcher
     /**
      * Get Ports
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return ArrayCollection $ports
      */
     public function getPorts()
     {
@@ -361,10 +372,10 @@ class Switcher
     /**
      * Add ConsoleServerConnections
      *
-     * @param \Entities\ConsoleServerConnection $consoleServerConnections
+     * @param ConsoleServerConnectionEntity $consoleServerConnections
      * @return Switcher
      */
-    public function addConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnections)
+    public function addConsoleServerConnection( ConsoleServerConnectionEntity $consoleServerConnections)
     {
         $this->ConsoleServerConnections[] = $consoleServerConnections;
 
@@ -374,9 +385,9 @@ class Switcher
     /**
      * Remove ConsoleServerConnections
      *
-     * @param \Entities\ConsoleServerConnection $consoleServerConnections
+     * @param ConsoleServerConnectionEntity $consoleServerConnections
      */
-    public function removeConsoleServerConnection(\Entities\ConsoleServerConnection $consoleServerConnections)
+    public function removeConsoleServerConnection( ConsoleServerConnectionEntity $consoleServerConnections)
     {
         $this->ConsoleServerConnections->removeElement($consoleServerConnections);
     }
@@ -394,10 +405,10 @@ class Switcher
     /**
      * Set Cabinet
      *
-     * @param \Entities\Cabinet $cabinet
+     * @param CabinetEntity $cabinet
      * @return Switcher
      */
-    public function setCabinet(\Entities\Cabinet $cabinet = null)
+    public function setCabinet( CabinetEntity $cabinet = null)
     {
         $this->Cabinet = $cabinet;
 
@@ -407,7 +418,7 @@ class Switcher
     /**
      * Get Cabinet
      *
-     * @return \Entities\Cabinet
+     * @return CabinetEntity
      */
     public function getCabinet()
     {
@@ -417,10 +428,10 @@ class Switcher
     /**
      * Set Vendor
      *
-     * @param \Entities\Vendor $vendor
+     * @param VendorEntity $vendor
      * @return Switcher
      */
-    public function setVendor(\Entities\Vendor $vendor = null)
+    public function setVendor( VendorEntity $vendor = null)
     {
         $this->Vendor = $vendor;
 
@@ -436,13 +447,6 @@ class Switcher
     {
         return $this->Vendor;
     }
-
-
-    /**
-     * @var boolean $active
-     */
-    protected $active;
-
 
     /**
      * Set active
@@ -466,10 +470,7 @@ class Switcher
     {
         return $this->active;
     }
-    /**
-     * @var string
-     */
-    protected $hostname;
+
 
 
     /**
@@ -494,25 +495,7 @@ class Switcher
     {
         return $this->hostname;
     }
-    /**
-     * @var string
-     */
-    protected $os;
 
-    /**
-     * @var \DateTime
-     */
-    protected $osDate;
-
-    /**
-     * @var string
-     */
-    protected $osVersion;
-
-    /**
-     * @var \DateTime
-     */
-    protected $lastPolled;
 
 
     /**
@@ -612,41 +595,36 @@ class Switcher
     /**
      * Update switch's details using SNMP polling
      *
-     * @throws \OSS_SNMP\Exception
-     * @see self::$OSS_SNMP_SWITCH_ELEMENTS
+     * @see self::$SNMP_SWITCH_ELEMENTS
      *
      * @param \OSS_SNMP\SNMP $host An instance of \OSS_SNMP\SNMP for this switch
-     * @param \OSS_Logger $logger An instance of the logger or false
+     * @param bool $logger An instance of the logger or false
      * @return \Entities\Switcher For fluent interfaces
      */
-    public function snmpPoll( $host, $logger = false )
-    {
+    public function snmpPoll( $host, bool $logger = false ){
         // utility to format dates
         $formatDate = function( $d ) {
             return $d instanceof \DateTime ? $d->format( 'Y-m-d H:i:s' ) : 'Unknown';
         };
 
-        foreach( self::$OSS_SNMP_SWITCH_ELEMENTS as $p )
-        {
+        foreach( self::$SNMP_SWITCH_ELEMENTS as $p ) {
             $fn = "get{$p}";
             $n = $host->getPlatform()->$fn();
 
-            if( $logger )
-            {
-                switch( $p )
-                {
+            if( $logger ) {
+                switch( $p ) {
                     case 'OsDate':
                         if( $formatDate( $this->$fn() ) != $formatDate( $n ) )
-                            $logger->info( " [{$this->getName()}] Platform: Updating {$p} from " . $formatDate( $this->$fn() ) . " to " . $formatDate( $n ) );
+                            Log::info( " [{$this->getName()}] Platform: Updating {$p} from " . $formatDate( $this->$fn() ) . " to " . $formatDate( $n ) );
                         else
-                            $logger->info( " [{$this->getName()}] Platform: Found {$p}: " . $formatDate( $n ) );
+                            Log::info( " [{$this->getName()}] Platform: Found {$p}: " . $formatDate( $n ) );
                         break;
 
                     default:
                         if( $logger && $this->$fn() != $n )
-                            $logger->info( " [{$this->getName()}] Platform: Updating {$p} from {$this->$fn()} to {$n}" );
+                            Log::info( " [{$this->getName()}] Platform: Updating {$p} from {$this->$fn()} to {$n}" );
                         else
-                            $logger->info( " [{$this->getName()}] Platform: Found {$p}: {$n}" );
+                            Log::info( " [{$this->getName()}] Platform: Found {$p}: {$n}" );
                         break;
                 }
             }
@@ -668,7 +646,6 @@ class Switcher
     }
 
 
-
     /**
      * Update a switches ports using SNMP polling
      *
@@ -686,35 +663,38 @@ class Switcher
      * **Note:** It is assumed that the Doctrine2 Entity Manager is available in the
      * Zend registry as ``d2em`` in this function.
      *
-     * @throws \OSS_SNMP\Exception
-     *
      * @param \OSS_SNMP\SNMP $host An instance of \OSS_SNMP\SNMP for this switch
-     * @param \OSS_Logger $logger An instance of the logger or false
-     * @param array Call by reference to an array in which to store results as outlined above
+     * @param bool $logger An instance of the logger or false
+     * @param bool $result
+     *
      * @return \Entities\Switcher For fluent interfaces
+     *
+     * @throws
      */
-    public function snmpPollSwitchPorts( $host, $logger = false, &$result = false )
-    {
+    public function snmpPollSwitchPorts( $host, $logger = false, &$result = false ){
         // clone the ports currently known to this switch as we'll be playing with this array
         $existingPorts = clone $this->getPorts();
 
         // iterate over all the ports discovered on the switch:
-        foreach( $host->useIface()->indexes() as $index )
-        {
+        foreach( $host->useIface()->indexes() as $index ) {
+
             // we're only interested in Ethernet ports here (right?)
-            if( $host->useIface()->types()[ $index ] != \OSS_SNMP\MIBS\Iface::IF_TYPE_ETHERNETCSMACD )
+            if( $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_ETHERNETCSMACD )
                 continue;
 
             // find the matching switchport that may already be in the database (or create a new one)
-            $switchport = false;
+            $sp = false;
 
-            foreach( $existingPorts as $ix => $ep )
-            {
-                if( $ep->getIfIndex() == $index )
-                {
-                    $switchport = $ep;
-                    if( is_array( $result ) ) $result[ $index ] = [ "port" => $switchport, 'bullet' => false ];
-                    if( $logger ) { $logger->info( " - {$this->getName()} - found pre-existing port for ifIndex {$index}" ); };
+            foreach( $existingPorts as $ix => $ep ) {
+                if( $ep->getIfIndex() == $index ) {
+                    $sp = $ep;
+                    if( is_array( $result ) ){
+                        $result[ $index ] = [ "port" => $sp, 'bullet' => false ];
+                    }
+
+                    if( $logger ) {
+                        Log::info( " - {$this->getName()} - found pre-existing port for ifIndex {$index}" );
+                    }
 
                     // remove this from the array so later we'll know what ports exist only in the database
                     unset( $existingPorts[ $ix ] );
@@ -722,49 +702,47 @@ class Switcher
                 }
             }
 
-            $new = false;
-            if( !$switchport )
-            {
+            if( !$sp ) {
                 // no existing port in database so we have found a new port
-                $switchport = new \Entities\SwitchPort();
+                $sp = new SwitchPortEntity;
+                D2EM::persist( $sp );
 
-                $switchport->setSwitcher( $this );
-                $this->addPort( $switchport );
+                $sp->setSwitcher(   $this );
+                $sp->setIfIndex(    $index );
+                $sp->setActive(     true );
+                $sp->setType( SwitchPortEntity::TYPE_UNSET );
 
-                $switchport->setType( \Entities\SwitchPort::TYPE_UNSET );
-                $switchport->setIfIndex( $index );
-                $switchport->setActive( true );
+                $this->addPort( $sp );
 
-                \Zend_Registry::get( 'd2em' )['default']->persist( $switchport );
+                if( is_array( $result ) ) {
+                    $result[ $index ] = [ "port" => $sp, 'bullet' => "new" ];
+                }
 
-                if( is_array( $result ) ) $result[ $index ] = [ "port" => $switchport, 'bullet' => "new" ];
-                $new = true;
-
-                if( $logger ) { $logger->info( "Found new port for {$this->getName()} with index $index" ); };
+                if( $logger ) {
+                    Log::info( "Found new port for {$this->getName()} with index $index" );
+                }
             }
 
             // update / set port details from SNMP
-            $switchport->snmpUpdate( $host, $logger );
+            $sp->snmpUpdate( $host, $logger );
         }
 
-        if( count( $existingPorts ) )
-        {
+        if( count( $existingPorts ) ) {
             $i = -1;
-            foreach( $existingPorts as $ep )
-            {
-                if( is_array( $result ) ) $result[ $i-- ] = [ "port" => $ep, 'bullet' => "db" ];
-                if( $logger ) { $logger->warn( "{$this->getName()} - port found in database with no matching port on the switch: "
-                        . " [{$ep->getId()}] {$ep->getName()}" ); };
+            foreach( $existingPorts as $ep ) {
+                if( is_array( $result ) ) {
+                    $result[ $i-- ] = [ "port" => $ep, 'bullet' => "db" ];
+                }
+                if( $logger ) {
+                    Log::warning( "{$this->getName()} - port found in database with no matching port on the switch:  [{$ep->getId()}] {$ep->getName()}" );
+                }
             }
         }
 
         return $this;
     }
 
-    /**
-     * @var string
-     */
-    private $serialNumber;
+
 
 
     /**
@@ -789,10 +767,7 @@ class Switcher
     {
         return $this->serialNumber;
     }
-    /**
-     * @var boolean
-     */
-    private $mauSupported;
+
 
 
     /**

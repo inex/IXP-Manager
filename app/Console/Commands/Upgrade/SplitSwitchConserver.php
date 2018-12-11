@@ -23,6 +23,7 @@ namespace IXP\Console\Commands\Upgrade;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+
 use IXP\Console\Commands\Command;
 
 use D2EM;
@@ -32,7 +33,6 @@ use Entities\{
     Switcher                    as SwitcherEntity,
     ConsoleServerConnection     as ConsoleServerConnectionEntity
 };
-
 
 /**
  * Class SplitSwitchConserver - tool to split the console servers from the switches
@@ -112,6 +112,7 @@ class SplitSwitchConserver extends Command
                     }
 
                     $em->remove( $s );
+
                 });
 
             }

@@ -318,16 +318,17 @@ class StatisticsController extends Controller
 
         $graphs = [];
         foreach( $targets as $t ) {
+
+            if( !$t->isGraphable() ) {
+                continue;
+            }
+
             if( $infra ) {
-                if( $t->isGraphable() ) {
-                    $g = $grapher->virtint( $t );
-                }
+                $g = $grapher->virtint( $t );
             } else if( $vlan ) {
                 $g = $grapher->vlanint( $t );
             } else {
-                if( $t->isGraphable() ) {
-                    $g = $grapher->customer( $t );
-                }
+                $g = $grapher->customer( $t );
             }
 
             /** @var Graph $g */
@@ -554,7 +555,7 @@ class StatisticsController extends Controller
         }
 
         // is the requested protocol support?
-        if( !$srcVli->isIPEnabled( $r->protocol ) ) {
+        if( !$srcVli->getVlan()->getPrivate() && !$srcVli->isIPEnabled( $r->protocol ) ) {
             AlertContainer::push( Graph::resolveProtocol( $r->protocol ) . " is not supported on the requested VLAN interface.", Alert::WARNING );
             return redirect()->back();
         }

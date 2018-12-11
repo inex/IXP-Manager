@@ -1,4 +1,4 @@
--- Views used on the IXP Manager database
+-- Views and triggers used on the IXP Manager database
 
 -- view: view_cust_current_active
 --
@@ -27,7 +27,6 @@ CREATE VIEW view_vlaninterface_details_by_custid AS
         	`pi`.`id` AS `id`,
 		vi.custid,
 		pi.virtualinterfaceid,
-		pi.monitorindex,
 		CONCAT(vi.name,vi.channelgroup) AS virtualinterfacename,
 		vlan.number AS vlan,
 		vlan.name AS vlanname,
@@ -76,7 +75,6 @@ CREATE VIEW view_switch_details_by_custid AS
 		pi.status,
 		pi.speed,
 		pi.duplex,
-		pi.monitorindex,
 		pi.notes,
 		sp.name AS switchport,
 		sp.id AS switchportid,
@@ -103,5 +101,49 @@ CREATE VIEW view_switch_details_by_custid AS
 	AND	pi.switchportid = sp.id
 	AND	sp.switchid = sw.id
 	AND	sw.cabinetid = ca.id
-	AND	ca.locationid = lo.id
-;
+	AND	ca.locationid = lo.id;
+
+
+
+-- trigger: bgp_sessions_update
+--
+-- This is used to update a n^2 table showing who peers with whom
+
+
+DROP TRIGGER IF EXISTS `bgp_sessions_update`;
+
+DELIMITER ;;
+
+CREATE TRIGGER bgp_sessions_update AFTER INSERT ON `bgpsessiondata` FOR EACH ROW
+
+	BEGIN
+
+		IF NOT EXISTS ( SELECT 1 FROM bgp_sessions WHERE srcipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND dstipaddressid = NEW.dstipaddressid ) THEN
+			INSERT INTO bgp_sessions
+				( srcipaddressid, protocol, dstipaddressid, packetcount, last_seen, source )
+			VALUES
+				( NEW.srcipaddressid, NEW.protocol, NEW.dstipaddressid, NEW.packetcount, NOW(), NEW.source );
+		ELSE
+			UPDATE bgp_sessions SET
+				last_seen   = NOW(),
+				packetcount = packetcount + NEW.packetcount
+			WHERE
+				srcipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND dstipaddressid = NEW.dstipaddressid;
+		END IF;
+
+		IF NOT EXISTS ( SELECT 1 FROM bgp_sessions WHERE dstipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND srcipaddressid = NEW.dstipaddressid ) THEN
+			INSERT INTO bgp_sessions
+				( srcipaddressid, protocol, dstipaddressid, packetcount, last_seen, source )
+			VALUES
+				( NEW.dstipaddressid, NEW.protocol, NEW.srcipaddressid, NEW.packetcount, NOW(), NEW.source );
+		ELSE
+			UPDATE bgp_sessions SET
+				last_seen   = NOW(),
+				packetcount = packetcount + NEW.packetcount
+			WHERE
+				dstipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND srcipaddressid = NEW.dstipaddressid;
+		END IF;
+
+	END ;;
+
+DELIMITER ;

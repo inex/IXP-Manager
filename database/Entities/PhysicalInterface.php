@@ -68,11 +68,6 @@ class PhysicalInterface
 
 
     /**
-     * @var integer $monitorindex
-     */
-    protected $monitorindex;
-
-    /**
      * @var string $notes
      */
     protected $notes;
@@ -197,29 +192,6 @@ class PhysicalInterface
         return $this->autoneg;
     }
 
-
-    /**
-     * Set monitorindex
-     *
-     * @param integer $monitorindex
-     * @return PhysicalInterface
-     */
-    public function setMonitorindex($monitorindex)
-    {
-        $this->monitorindex = $monitorindex;
-
-        return $this;
-    }
-
-    /**
-     * Get monitorindex
-     *
-     * @return integer
-     */
-    public function getMonitorindex()
-    {
-        return $this->monitorindex;
-    }
 
     /**
      * Set notes

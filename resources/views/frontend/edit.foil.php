@@ -18,15 +18,27 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
-        <div class="btn-group btn-group-xs" role="group">
-            <?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
-                <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@list') ?>">
-                    <span class="glyphicon glyphicon-th-list"></span>
-                </a>
-            <?php endif; ?>
-        </div>
-    </li>
+
+    <?php if( $t->data[ 'view' ]['editHeaderPreamble'] ): ?>
+
+        <?= $t->insert( $t->data[ 'view' ]['editHeaderPreamble'] ) ?>
+
+    <?php else: ?>
+
+        <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
+            <li class="pull-right">
+                <div class="btn-group btn-group-xs" role="group">
+                    <?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
+                        <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@list') ?>">
+                            <span class="glyphicon glyphicon-th-list"></span>
+                        </a>
+                    <?php endif; ?>
+                </div>
+            </li>
+        <?php endif;?>
+
+    <?php endif;?>
+
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>

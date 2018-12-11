@@ -73,7 +73,9 @@
                         }
                     }
                 ?>
-                { 'bSortable': false, "bSearchable": false, "sWidth": "150px" }
+                <?php if( !isset( $t->feParams->hideactioncolumn ) || !$t->feParams->hideactioncolumn ): ?>
+                    { 'bSortable': false, "bSearchable": false, "sWidth": "150px" }
+                <?php endif; ?>
             ]
         });
 

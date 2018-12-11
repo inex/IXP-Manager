@@ -223,7 +223,7 @@ class InfrastructureController extends Doctrine2Frontend {
         if( ( $cnt = count( $this->object->getSwitchers() ) ) ) {
             AlertContainer::push( "You cannot delete this infrastructure there are {$cnt} switch(es) associated with it. "
                 . "You can view and then reassign or delete those switches <a href=\""
-                . url('') . "/switch/list/infra/" . $this->object->getId()
+                . route("switch@list", [ "infra" => $this->object->getId() ] )
                 . "\">by clicking here</a>.", Alert::DANGER
             );
             $okay = false;
