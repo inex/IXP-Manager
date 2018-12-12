@@ -107,8 +107,11 @@ class PatchPanelPort extends EntityRepository
 
         $listAvailablePort = array();
 
-        foreach($availablePorts as $port){
-            $listAvailablePort[$port->getId()] = $port->getPatchPanel()->getPortPrefix().$port->getNumber();
+        /** @var PatchPanelPortEntity $port */
+        foreach( $availablePorts as $port ){
+            if( !$port->getDuplexSlavePort() ){
+                $listAvailablePort[$port->getId()] = $port->getPatchPanel()->getPortPrefix().$port->getNumber();
+            }
         }
         return $listAvailablePort;
     }
