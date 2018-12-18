@@ -262,7 +262,7 @@ abstract class Doctrine2Frontend extends Controller {
     }
 
     /**
-     * Function which can be over-ridden to perform any pre-list tasks
+     * Function which can be over-ridden to perform any pre-view tasks
      *
      * E.g. adding elements to $this->view for the pre/post-amble templates.
      *
