@@ -97,8 +97,7 @@
                                 <?= $t->scaleBits( $speed*1000*1000, 0 ) ?>
                             </td>
                             <td>
-                                <?php $totalSpeed = explode( "," , $speed ) ?>
-                                <?= array_sum( $totalSpeed ) ?>
+                                <?= $speed ?>
                             </td>
                         <?php else: ?>
                             <td></td>
