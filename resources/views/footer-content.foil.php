@@ -8,7 +8,7 @@
         &nbsp;|&nbsp;
         <a href="http://www.ixpmanager.org/">http://www.ixpmanager.org/</a>
         &nbsp;|&nbsp;
-        <a href="<?= url( 'static/support' ) ?>">Contact Us</a>
+        <a href="<?= route( 'static/support' ) ?>">Contact Us</a>
     </p>
 
     <p>

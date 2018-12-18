@@ -58,6 +58,9 @@ $this->layout( 'layouts/ixpv4' );
                             Capacity
                         </td>
                         <td>
+                            Raw speed
+                        </td>
+                        <td>
                             Action
                         </td>
                     </tr>
@@ -91,6 +94,9 @@ $this->layout( 'layouts/ixpv4' );
                                 <?= $t->scaleBits( count( $cb->getCoreLinks() ) * $cb->getSpeedPi() * 1000000, 0 )  ?>
                             </td>
                             <td>
+                                <?= count( $cb->getCoreLinks() ) * $cb->getSpeedPi() ?>
+                            </td>
+                            <td>
                                 <div class="btn-group btn-group-sm" role="group">
                                     <a class="btn btn btn-default" href="<?= route( 'core-bundle/edit' , [ 'id' => $cb->getId() ] ) ?>" title="Edit">
                                         <i class="glyphicon glyphicon-pencil"></i>
@@ -116,10 +122,11 @@ $this->layout( 'layouts/ixpv4' );
             $( '#table-cb' ).DataTable( {
                 "autoWidth": false,
                 "iDisplayLength": 100,
-                "columnDefs": [{
-                    "targets": 2,
-                    "type": "string" ,
-                }]
+                "columnDefs": [
+                    { "targets": [ 2 ], "type": "string" },
+                    { "targets": [ 5 ], "orderData": 6 },
+                    { "targets": [ 6 ], "visible": false, "searchable": false }
+                ],
             });
 
             $( "#area-cb" ).show();

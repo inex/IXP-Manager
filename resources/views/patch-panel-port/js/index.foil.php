@@ -35,8 +35,6 @@
             }],
             "order": [[ 0, "asc" ]]
         });
-        //unbindEvent();
-        //loadEvent();
     }
 
     /**
