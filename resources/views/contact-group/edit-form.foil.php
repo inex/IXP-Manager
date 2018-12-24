@@ -6,24 +6,23 @@
         ->customWidthClass( 'col-sm-3' )
     ?>
 
-        <?= Former::text( 'name' )
-            ->label( 'Name' )
-            ->blockHelp( "" );
+    <?= Former::select( 'type' )
+        ->id( 'type' )
+        ->label( 'Group' )
+        ->placeholder( 'Select a group...' )
+        ->fromQuery( $t->data[ 'params'][ 'types' ], 'name' )
+        ->addClass( 'chzn-select' )
+        ->blockHelp( "Select the contact group to add / edit the option for." );
+    ?>
+
+    <?= Former::text( 'name' )
+            ->label( 'Option' )
+            ->blockHelp( "The option to add / edit for this contact." );
         ?>
 
         <?= Former::text( 'description' )
             ->label( 'Description' )
-            ->blockHelp( "" );
-        ?>
-
-
-        <?= Former::select( 'type' )
-            ->id( 'type' )
-            ->label( 'Type' )
-            ->placeholder( 'Select a type' )
-            ->fromQuery( $t->data[ 'params'][ 'types' ], 'name' )
-            ->addClass( 'chzn-select' )
-            ->blockHelp( "" );
+            ->blockHelp( "Describe what this option means for other users." );
         ?>
 
 

@@ -2,6 +2,10 @@
     <li class="pull-right" style=<?= Auth::getUser()->isSuperUser() ? "margin-top: 10px" : "" ?> >
         <div class="btn-group btn-group-xs" role="group">
 
+            <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
+                <a type="button" target="_blank" class="btn btn-default" href="<?= $t->feParams->documentation ?>">Documentation</a>
+            <?php endif; ?>
+
             <?php if( config('contact_group.types.ROLE') ): ?>
                 <!-- Single button -->
                 <div class="btn-group">

@@ -80,6 +80,8 @@ class ContactController extends Doctrine2Frontend
             'titleSingular'     => 'Contact',
             'nameSingular'      => 'contact',
 
+            'documentation'     => 'https://docs.ixpmanager.org/usage/contacts/',
+
             'defaultAction'     => 'list',
             'defaultController' => 'ContactController',
 

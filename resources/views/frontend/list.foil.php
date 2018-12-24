@@ -38,6 +38,10 @@
                     <a type="button" target="_blank" class="btn btn-default" href="<?= $t->feParams->documentation ?>">Documentation</a>
                 <?php endif; ?>
 
+                <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
+                    <a type="button" target="_blank" class="btn btn-default" href="<?= $t->feParams->documentation ?>">Documentation</a>
+                <?php endif; ?>
+
                 <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
                     <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add') ?>">
                         <span class="glyphicon glyphicon-plus"></span>
