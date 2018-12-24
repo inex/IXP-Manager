@@ -652,6 +652,16 @@ chmod -R ug+rwX,o+rX ${IXPROOT} &>> /tmp/ixp-manager-install.log
 # favicon
 cp ${IXPROOT}/public/favicon.ico.dist ${IXPROOT}/public/favicon.ico
 
+
+##################################################################
+### Local config options
+##################################################################
+
+# enable contact groups
+cp ${IXPROOT}/config/contact_group.php.dist ${IXPROOT}/config/contact_group.php
+
+
+
 ##################################################################
 ### Completion Details
 ##################################################################
