@@ -35,12 +35,12 @@ class Contact
     /**
      * @var integer $facilityaccess
      */
-    protected $facilityaccess;
+    protected $facilityaccess = false;
 
     /**
      * @var boolean $mayauthorize
      */
-    protected $mayauthorize;
+    protected $mayauthorize = false;
 
     /**
      * @var \DateTime $lastupdated
