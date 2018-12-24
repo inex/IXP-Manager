@@ -139,7 +139,7 @@ class ContactController extends Doctrine2Frontend
             case UserEntity::AUTH_CUSTADMIN:
 
 
-                $this->feParams->pagetitle = 'Contacts for ' . Auth::getUser()->getCustomer()->getAbbreviatedName();
+                $this->feParams->pagetitle = 'Your Contacts';
 
                 $this->feParams->listColumns = [
                     'id'        => [ 'title' => 'UID', 'display' => false ],
@@ -280,13 +280,15 @@ class ContactController extends Doctrine2Frontend
 
         $old = request()->old();
 
-        request()->session()->remove( "contact_post_store_redirect" );
+        session()->remove( "contact_post_store_redirect" );
 
         // check if we come from the customer overview or the customer list
         if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
-            request()->session()->put( 'contact_post_store_redirect', 'customer@overview' );
+            session()->put( 'contact_post_store_redirect',     'customer@overview' );
+            session()->put( 'contact_post_store_redirect_cid', request()->input('cust', null ) );
         } else {
-            request()->session()->put( 'contact_post_store_redirect', 'contact@list' );
+            session()->put( 'contact_post_store_redirect', 'contact@list' );
+            session()->put( 'contact_post_store_redirect_cid', null );
         }
 
         if( config('contact_group.types.ROLE') ) {
@@ -315,8 +317,8 @@ class ContactController extends Doctrine2Frontend
                 'email'                     => array_key_exists( 'email',           $old ) ? $old['email']                      : $this->object->getEmail(),
                 'phone'                     => array_key_exists( 'phone',           $old ) ? $old['phone']                      : $this->object->getPhone(),
                 'mobile'                    => array_key_exists( 'mobile',          $old ) ? $old['mobile']                     : $this->object->getMobile(),
-                'facilityaccess'            => array_key_exists( 'facilityaccess',  $old ) ? ( $old['facilityaccess'] ? 1 : 0 ) : ( $this->object->getFacilityaccess() ? 1 : 0 ),
-                'mayauthorize'              => array_key_exists( 'mayauthorize',    $old ) ? ( $old['mayauthorize']   ? 1 : 0 ) : ( $this->object->getMayauthorize() ? 1 : 0 ),
+                // 'facilityaccess'            => array_key_exists( 'facilityaccess',  $old ) ? ( $old['facilityaccess'] ? 1 : 0 ) : ( $this->object->getFacilityaccess() ? 1 : 0 ),
+                // 'mayauthorize'              => array_key_exists( 'mayauthorize',    $old ) ? ( $old['mayauthorize']   ? 1 : 0 ) : ( $this->object->getMayauthorize() ? 1 : 0 ),
             ];
 
             $contactGroupDetail = [];
@@ -405,8 +407,8 @@ class ContactController extends Doctrine2Frontend
         $this->object->setEmail(             $request->input( 'email'           ) );
         $this->object->setPhone(             $request->input( 'phone'           ) );
         $this->object->setMobile(            $request->input( 'mobile'          ) );
-        $this->object->setMayauthorize(      $request->input( 'mayauthorize'    ) );
-        $this->object->setFacilityaccess(    $request->input( 'facilityaccess'  ) );
+        // $this->object->setMayauthorize(      $request->input( 'mayauthorize'    ) );
+        // $this->object->setFacilityaccess(    $request->input( 'facilityaccess'  ) );
         $this->object->setNotes(             $request->input( 'notes'           ) );
 
         $this->object->setLastupdated(      new \DateTime  );
