@@ -2,6 +2,11 @@
 
 namespace Repositories;
 
+use Auth;
+
+use Entities\{
+    User    as UserEntity
+};
 /*
  * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -192,5 +197,96 @@ class User extends EntityRepository
         
         return $arranged;
     }
-    
+
+
+    /**
+     * Get all Users for listing on the frontend CRUD
+     *
+     * @see \IXP\Http\Controllers\Doctrine2Frontend
+     *
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     *
+     * @param UserEntity|null $user
+     * @return array Array of User (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeList( \stdClass $feParams, int $id = null, UserEntity $user = null )
+    {
+        $where = false;
+        $dql = "SELECT  u.id as id, 
+                        u.name AS name,
+                        u.username as username, 
+                        u.email as email, 
+                        u.privs AS privileges,
+                        u.created as created, 
+                        u.disabled as disabled, 
+                        c.id as custid, 
+                        c.name as customer,
+                        u.lastupdated AS lastupdated
+                  FROM Entities\\User u
+                  LEFT JOIN u.Customer c
+                  WHERE 1 = 1";
+
+
+
+
+        if( $user && !$user->isSuperUser() ) {
+            $dql .= " AND u.Customer = " . $user->getCustomer()->getId() . "
+                      AND u.privs <= " . UserEntity::AUTH_CUSTADMIN;
+        }
+
+        if( $id ) {
+            $dql .= " AND u.id = " . $id ;
+        }
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
+
+    }
+
+
+    /**
+     * Find users by username
+     *
+     * Will support a username starts / ends with as it uses LIKE
+     *
+     * @param  string $username The username to search for
+     *
+     * @return \Entities\User[] Matching users
+     */
+    public function findByUsername( $username ){
+        return $this->getEntityManager()->createQuery(
+            "SELECT u
+                  FROM \\Entities\\User u
+                  WHERE u.username LIKE :username"
+        )
+            ->setParameter( 'username', $username )
+            ->getResult();
+    }
+
+    /**
+     * Find Users by email
+     *
+     * @param  string $email The email to search for
+     *
+     * @return \Entities\User[] Matching users
+     */
+    public function findByEmail( $email )
+    {
+        return $this->getEntityManager()->createQuery(
+            "SELECT u
+
+                 FROM \\Entities\\User u
+      
+
+                 WHERE u.email = :email"
+        )
+            ->setParameter( 'email', $email )
+            ->getResult();
+    }
 }

@@ -16,6 +16,14 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
 
+                <li class="<?= !request()->is( 'contact/*' ) ?: 'active' ?>">
+                    <a href="<?= route( 'contact@list' ) ?>">Contacts</a>
+                </li>
+
+                <li class="<?= !request()->is( 'user/*' ) ?: 'active' ?>">
+                    <a href="<?= route( 'user@list' ) ?>">Users</a>
+                </li>
+
                 <?php
                     // STATIC DOCUMENTATION LINKS - SPECIFIC TO INDIVIDUAL IXPS
                     // Add a skinned file in views/_skins/xxx/header-documentation.phtml for your IXP to override the sample
@@ -44,7 +52,11 @@
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="<?= url( 'auth/logout' ) ?>">Logout</a></li>
+                <?php if($t->switched_user_from): ?>
+                    <li><a href="<?= url( 'auth/switch-user-back' ) ?>">Switch Back</a></li>
+                <?php else: ?>
+                    <li><a href="<?= url( 'auth/logout' ) ?>">Logout </a></li>
+                <?php endif; ?>
             </ul>
         </div>
     </div>

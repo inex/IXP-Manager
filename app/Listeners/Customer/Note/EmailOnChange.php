@@ -25,10 +25,6 @@ namespace IXP\Listeners\Customer\Note;
 
 use D2EM, Mail;
 
-use IXP\Events\Customer\Note\{
-    Added   as CustomerNoteAddedEvent
-};
-
 use Entities\{
     User as UserEntity
 };
@@ -41,6 +37,8 @@ class EmailOnChange
 {
     /**
      * Handle customer note added
+     *
+     * @param $event
      */
     public function onAddedNote( $event ) {
         $this->handle( $event );
@@ -48,6 +46,8 @@ class EmailOnChange
 
     /**
      * Handle customer note edited
+     *
+     * @param $event
      */
     public function onEditedNote( $event ) {
         $this->handle( $event );
@@ -55,6 +55,7 @@ class EmailOnChange
 
     /**
      * Handle customer note deleted
+     * @param $event
      */
     public function onDeletedNote( $event ) {
         $this->handle( $event );
@@ -116,24 +117,24 @@ class EmailOnChange
                     continue;
                 }
 
-                if( !$user->getContact()->getEmail() || filter_var( $user->getContact()->getEmail() , FILTER_VALIDATE_EMAIL ) === false ) {
+                if( !$user->getEmail() || filter_var( $user->getEmail() , FILTER_VALIDATE_EMAIL ) === false ) {
                     continue;
                 }
 
                 if( !$user->getPreference( "customer-notes.notify" ) || $user->getPreference( "customer-notes.notify" ) == "default" || $user->getPreference( "customer-notes.notify" ) == "all" ) {
-                    $to[] = [ 'name' => $user->getContact()->getName(), 'email' => $user->getContact()->getEmail() ];
+                    $to[] = [ 'name' => $user->getUsername(), 'email' => $user->getEmail() ];
                     continue;
                 }
 
                 // watching a whole customer: customer-notes.{customer id}.notify == 1
                 if( $user->getPreference( "customer-notes.{$e->getCustomer()->getId()}.notify" ) ) {
-                    $to[] = [ 'name' => $user->getContact()->getName(), 'email' => $user->getContact()->getEmail() ];
+                    $to[] = [ 'name' => $user->getUsername(), 'email' => $user->getEmail() ];
                     continue;
                 }
 
                 // watching a specific note: customer-notes.watching.{note id}
                 if( $user->getPreference( "customer-notes.watching.{$e->getEitherNote()->getId()}" ) ) {
-                    $to[] = [ 'name' => $user->getContact()->getName(), 'email' => $user->getContact()->getEmail() ];
+                    $to[] = [ 'name' => $user->getUsername(), 'email' => $user->getEmail() ];
                     continue;
                 }
 

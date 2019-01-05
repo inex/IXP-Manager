@@ -31,15 +31,21 @@
 
     <?php else: ?>
 
-        <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-            <li class="pull-right">
-                <div class="btn-group btn-group-xs" role="group">
+        <li class="pull-right">
+            <div class="btn-group btn-group-xs" role="group">
+
+                <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
+                    <a type="button" target="_blank" class="btn btn-default" href="<?= $t->feParams->documentation ?>">Documentation</a>
+                <?php endif; ?>
+
+                <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
                     <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add') ?>">
                         <span class="glyphicon glyphicon-plus"></span>
                     </a>
-                </div>
-            </li>
-        <?php endif;?>
+                <?php endif;?>
+
+            </div>
+        </li>
 
     <?php endif;?>
 <?php $this->append() ?>
@@ -126,7 +132,11 @@
 
                                         <td>
 
+
+
                                             <?php if(isset( $cconf[ 'type'] ) ): ?>
+
+
 
                                                 <?php if( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'HAS_ONE'] ): ?>
                                                     <?php $nameIdParam = '' ; ?>
@@ -156,6 +166,10 @@
                                                 <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'YES_NO'] ): ?>
 
                                                     <?= $row[ $col ] ? "<label class='label label-success'>Yes</label>" : "<label class='label label-danger'>No</label>" ?>
+
+                                                <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'INVERSE_YES_NO'] ): ?>
+
+                                                    <?= !$row[ $col ] ? "<label class='label label-success'>Yes</label>" : "<label class='label label-danger'>No</label>" ?>
 
                                                 <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
 
@@ -206,6 +220,47 @@
                                                     <?php if( !$error ): ?>
                                                         <?= $t->insert( $cconf['script'], $params ) ?>
                                                     <?php endif; ?>
+
+                                                <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'LABEL'] ): ?>
+
+                                                    <?php if( isset( $cconf[ 'explode'] ) ): ?>
+
+                                                        <?php if( strpos( $row[ $col ], $cconf[ 'explode' ][ 'delimiter' ] ) !== false ): ?>
+
+                                                            <?php $exploded = explode( $cconf[ 'explode' ][ 'delimiter' ] , $row[ $col ] ); ?>
+
+                                                            <?php foreach( $exploded as $explode ): ?>
+
+                                                                <span class="label label-success"><?= $t->ee( $explode ) ?> </span><?= $cconf[ 'explode' ][ 'replace' ] ?>
+
+                                                            <?php endforeach; ?>
+
+                                                        <?php else: ?>
+                                                            <span class="label label-success"><?= $t->ee( $row[ $col ] ) ?></span>
+
+                                                        <?php endif;?>
+
+                                                    <?php elseif( isset( $cconf[ 'array'] )  ): ?>
+
+                                                        <?php foreach( $row[ $col ] as $item ): ?>
+
+                                                            <span class="label label-success"><?= $t->ee( $item ) ?> </span><?= $cconf[ 'array' ][ 'replace' ] ?>
+
+                                                        <?php endforeach; ?>
+
+                                                    <?php else: ?>
+
+                                                        <span class="label label-success"><?= $t->ee( $row[ $col ] ) ?></span>
+
+                                                    <?php endif; ?>
+
+                                                <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'ARRAY'] ): ?>
+
+                                                    <?= $cconf[ 'source' ][ $row[ $col ] ] ?>
+
+                                                <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'INTEGER'] ): ?>
+
+                                                    <?= (int)$row[ $col ] ?>
 
                                                 <?php else: ?>
 

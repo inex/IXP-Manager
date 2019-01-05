@@ -8,16 +8,16 @@
 
             let objectId = $( "#" + this.id ).attr( "data-object-id" );
 
-            let html = `<form id="d2f-form-delete" method="POST" action="<?= route('contacts@delete' ) ?>">
-                                <div>Do you really want to delete this Contact?</div>
+            let html = `<form id="d2f-form-delete" method="POST" action="<?= route('user@delete' ) ?>">
+                                <div>Do you really want to delete this user?</div>
                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                                 <input type="hidden" name="id" value="${objectId}">
+                                <input type="hidden" name="redirect-to" value="${objectId}">
                             </form>`;
 
-            html += $(this).attr( "data-hasuser" ) == "1" ? "The related user login account will also be removed." : "";
 
             bootbox.dialog({
-                title: "Delete Contact",
+                title: "Delete User",
                 message: html,
                 buttons: {
                     cancel: {
@@ -25,14 +25,6 @@
                         callback: function () {
                             $('.bootbox.modal').modal('hide');
                             return false;
-                        }
-                    },
-                    noclose: {
-                        label: "Remove User Access Only",
-                        className: 'btn-danger',
-                        callback: function(){
-                            $( "#d2f-form-delete" ).attr('action', "<?= route('contacts@delete-user' ) ?>" );
-                            $('#d2f-form-delete').submit();
                         }
                     },
                     submit: {

@@ -192,7 +192,6 @@ class ZendFrameworkServiceProvider extends ServiceProvider {
         $options['identity']['legalname']             = config( 'identity.legalname' );
         $options['identity']['location']['city']      = config( 'identity.location.city' );
         $options['identity']['location']['country']   = config( 'identity.location.country' );
-        $options['identity']['ixfid']                 = config( 'identity.ixfid' );
         $options['identity']['name']                  = config( 'identity.name' );
         $options['identity']['email']                 = config( 'identity.email' );
         $options['identity']['sitename']              = config( 'identity.sitename' );

@@ -44,6 +44,9 @@ $this->layout( 'layouts/ixpv4' );
                                 Speed
                             </td>
                             <td>
+                                Raw Speed
+                            </td>
+                            <td>
                                 Duplex
                             </td>
                             <td>
@@ -77,6 +80,9 @@ $this->layout( 'layouts/ixpv4' );
                                 </td>
                                 <td>
                                     <?= isset( Entities\PhysicalInterface::$STATES[ $pi['status'] ] ) ? Entities\PhysicalInterface::$STATES[ $pi['status'] ] : 'Unknown'  ?>
+                                </td>
+                                <td>
+                                    <?= $t->scaleBits( $pi['speed'] * 1000 * 1000, 0 ) ?>
                                 </td>
                                 <td>
                                     <?= $pi['speed']   ?>
@@ -119,7 +125,16 @@ $this->layout( 'layouts/ixpv4' );
     <script>
 
         $(document).ready( function() {
-            loadDataTable( 'pi' );
+
+            $( '#table-pi' ).DataTable( {
+                "autoWidth": false,
+                "iDisplayLength": 100,
+                "columnDefs": [
+                    { "targets": [ 5 ], "orderData": 6 },
+                    { "targets": [ 6 ], "visible": false, "searchable": false }
+                ],
+            });
+
             $( '#area-pi' ).show();
         });
 

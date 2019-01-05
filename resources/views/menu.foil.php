@@ -61,19 +61,18 @@
                         </li>
                     <?php endif;?>
                 </li>
-                <li>
-                    <a href="<?= url( 'user/list' ) ?>">Users</a>
+
+                <li <?php if( $t->controller == 'UserController' ):?> class="active" <?php endif;?> >
+                    <a href="<?= route('user@list') ?>">Users</a>
                 </li>
 
-                <li>
-                    <a href="<?= url( '/contact/list' ) ?>">Contacts</a>
-                    <?php /* {if $controller eq 'contact' or $controller eq 'contact-group'}
-                        <ul class="nav nav-list">
-                            <li {if $controller eq 'contact-group'}class="active"{/if}>
-                                <a href="{genUrl controller='contact-group' action='list'}">Contact Groups</a>
-                            </li>
-                        </ul>
-                    {/if} */ ?>
+                <li <?php if( $t->controller == 'ContactController' ):?> class="active" <?php endif;?> >
+                    <a href="<?= route( 'contact@list' ) ?>">Contacts</a>
+                    <?php if( $t->controller == 'ContactController' || $t->controller == 'ContactGroupController' ):?>
+                        <li class="sub-menu <?php if( $t->controller == 'ContactGroupController' ):?> active <?php endif;?> " >
+                            <a href="<?= route('contact-group@list' ) ?>">Contact Groups</a>
+                        </li>
+                    <?php endif;?>
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.cust-kit', false ) ): ?>

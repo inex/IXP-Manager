@@ -1,16 +1,16 @@
 <div class="col-sm-12">
+    <h3> Contacts</h3>
     <table class="table">
         <thead>
             <tr>
                 <th>Name</th>
                 <th>E-Mail</th>
-                <th>Username (history)</th>
                 <th>Customer</th>
                 <th>Created</th>
             </tr>
         </thead>
         <tbody>
-            <?php foreach( $t->results as $contact ): ?>
+            <?php foreach( $t->results[ 'contacts' ] as $contact ): ?>
                 <tr>
                     <td>
                         <a href="<?= url( "contact/edit/id/" . $contact->getId() . "/cid/".$contact->getCustomer()->getId()) ?>">
@@ -19,11 +19,6 @@
                     </td>
                     <td>
                         <?= $t->ee( $contact->getEmail() ) ?>
-                    </td>
-                    <td>
-                        <a href="<?= route( "login-history@view", [ "id" => $contact->getUser()->getId() ] ) ?>">
-                            <?= $t->ee( $contact->getUser()->getUsername() ) ?>
-                        </a>
                     </td>
                     <td>
                         <a href="<?= route( "customer@overview" , [ "id" => $contact->getCustomer()->getId() ] ) ?>">
