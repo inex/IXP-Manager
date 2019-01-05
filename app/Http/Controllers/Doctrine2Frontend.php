@@ -124,7 +124,6 @@ abstract class Doctrine2Frontend extends Controller {
         'INVERSE_YES_NO'    => 'yes_no_inverse',
         'YES_NO_NULL'       => 'yes_no_null',
         'PARSDOWN'          => 'parsdown',
-        'RESOLVE_CONST'     => 'resolve_const',
         'CONST'             => 'const',
         'LABEL'             => 'label',
         'ARRAY'             => 'array',
@@ -269,7 +268,7 @@ abstract class Doctrine2Frontend extends Controller {
     }
 
     /**
-     * Function which can be over-ridden to perform any pre-list tasks
+     * Function which can be over-ridden to perform any pre-view tasks
      *
      * E.g. adding elements to $this->view for the pre/post-amble templates.
      *
@@ -369,6 +368,13 @@ abstract class Doctrine2Frontend extends Controller {
         throw new GeneralException( 'For non-read-only Doctrine2Frontend controllers, you must override this method.' );
     }
 
+
+    /**
+     * Allow controllers to override the default successful store message
+     * @var string
+     */
+    protected $store_alert_success_message = null;
+
     /**
      * Action for storing a new/updated object
      *
@@ -393,7 +399,7 @@ abstract class Doctrine2Frontend extends Controller {
             . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
 
 
-        AlertContainer::push( $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
+        AlertContainer::push( $this->store_alert_success_message ?? $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
 
         return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
     }

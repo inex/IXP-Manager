@@ -9,7 +9,7 @@
             <th>Role(s)</th>
             <th>
                 Actions
-                <a class="btn btn-default btn-xs" href="<?= route( "contact@add" ) . "?cust=" . $t->c->getId() ?>">
+                <a id="contacts-add-btn" class="btn btn-default btn-xs" href="<?= route( "contact@add" ) . "?cust=" . $t->c->getId() ?>">
                     <i class="glyphicon glyphicon-plus"></i>
                 </a>
             </th>
@@ -41,7 +41,7 @@
                     </td>
                     <td>
                         <div class="btn-group btn-group-sm">
-                            <a class="btn btn-default" href="<?= route( "contact@edit", [ "id" => $co->getId() ] ) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
+                            <a class="btn btn-default" id="cont-list-edit-<?= $co->getId() ?>"href="<?= route( "contact@edit", [ "id" => $co->getId() ] ) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
                             <a class="btn btn-default" id="cont-list-delete-<?= $co->getId() ?>" data-object-id="<?= $co->getId() ?>" href="#">
                                 <i class="glyphicon glyphicon-trash"></i>
                             </a>

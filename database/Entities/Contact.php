@@ -35,12 +35,12 @@ class Contact
     /**
      * @var integer $facilityaccess
      */
-    protected $facilityaccess;
+    protected $facilityaccess = false;
 
     /**
      * @var boolean $mayauthorize
      */
-    protected $mayauthorize;
+    protected $mayauthorize = false;
 
     /**
      * @var \DateTime $lastupdated
@@ -437,4 +437,36 @@ class Contact
     {
         return $this->notes;
     }
+
+
+
+
+    /**
+     * @var \Entities\User
+     */
+    protected $User;
+
+    /**
+     * Set User
+     *
+     * @param \Entities\User $user
+     * @return User
+     */
+    public function setUser($user)
+    {
+        $this->User = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get User
+     *
+     * @return \Entities\User
+     */
+    public function getUser()
+    {
+        return $this->User;
+    }
+
 }

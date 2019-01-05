@@ -13,6 +13,18 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class RouterControllerTest extends DuskTestCase
 {
+
+    public function tearDown()
+    {
+        $router = D2EM::getRepository( RouterEntity::class )->findOneBy( [ 'handle' => 'dusk-ci-test' ] );
+        if( $router ) {
+            D2EM::remove( $router );
+            D2EM::flush();
+        }
+
+        parent::tearDown();
+    }
+
     /**
      * A Dusk test example.
      *

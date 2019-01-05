@@ -51,6 +51,15 @@ class User implements Authenticatable, CanResetPasswordContract
         User::AUTH_SUPERUSER => 'Superuser'
     );
 
+    public static $PRIVILEGES_TEXT_NONSUPERUSER = array(
+        User::AUTH_CUSTUSER  => 'Customer User',
+        User::AUTH_CUSTADMIN => 'Customer Administrator',
+    );
+
+    /**
+     * @var string $name
+     */
+    protected $name;
 
     /**
      * @var string $username
@@ -149,6 +158,29 @@ class User implements Authenticatable, CanResetPasswordContract
     public function __construct()
     {
         $this->Preferences = new ArrayCollection();
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return User
+     */
+    public function setName(string $name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string|null
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -621,6 +653,34 @@ class User implements Authenticatable, CanResetPasswordContract
     }
 
 
+    /**
+     * @var \Entities\Contact
+     */
+    protected $Contact;
+
+    /**
+     * Set Contact
+     *
+     * @param \Entities\Contact $contact
+     * @return User
+     */
+    public function setContact(Contact $contact)
+    {
+        $this->Contact = $contact;
+
+        return $this;
+    }
+
+    /**
+     * Get Contact
+     *
+     * @return \Entities\Contact
+     */
+    public function getContact()
+    {
+        return $this->Contact;
+    }
+
 
     /***************************************************************************
      | LARAVEL 5 USER PROVIDER INTERFACE METHODS
@@ -713,5 +773,10 @@ class User implements Authenticatable, CanResetPasswordContract
     /***************************************************************************
      | END LARAVEL 5 USER PROVIDER INTERFACE METHODS
      ***************************************************************************/
+
+
+
+
+
 
 }

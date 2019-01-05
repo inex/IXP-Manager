@@ -1,4 +1,4 @@
-<?php
+<?php /** @noinspection ALL */
 
 namespace IXP\Http\Controllers\Contact;
 
@@ -50,15 +50,12 @@ use Log;
  * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class ContactController extends Doctrine2Frontend {
-
+class ContactController extends Doctrine2Frontend
+{
     /**
-     * The object being added / edited
-     * @var ContactEntity
+     * @inheritdoc
      */
-    protected $object = null;
-
-    protected static $route_prefix = "contact";
+    protected static $route_prefix = 'contact';
 
     /**
      * The minimum privileges required to access this controller.
@@ -81,7 +78,9 @@ class ContactController extends Doctrine2Frontend {
             'pagetitle'         => 'Contacts',
 
             'titleSingular'     => 'Contact',
-            'nameSingular'      => 'a contact',
+            'nameSingular'      => 'contact',
+
+            'documentation'     => 'https://docs.ixpmanager.org/usage/contacts/',
 
             'defaultAction'     => 'list',
             'defaultController' => 'ContactController',
@@ -142,7 +141,7 @@ class ContactController extends Doctrine2Frontend {
             case UserEntity::AUTH_CUSTADMIN:
 
 
-                $this->feParams->pagetitle = 'Contact Admin for ' . Auth::getUser()->getCustomer()->getName();
+                $this->feParams->pagetitle = 'Your Contacts';
 
                 $this->feParams->listColumns = [
                     'id'        => [ 'title' => 'UID', 'display' => false ],
@@ -154,7 +153,6 @@ class ContactController extends Doctrine2Frontend {
                         'title'     => 'Created',
                         'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
                     ],
-
                 ];
                 break;
 
@@ -165,7 +163,7 @@ class ContactController extends Doctrine2Frontend {
 
 
         // display the same information in the view as the list
-        if( !Auth::getUser()->isSuperUser() ){
+        if( !Auth::getUser()->isSuperUser() ) {
             $this->feParams->viewColumns = $this->feParams->listColumns;
         } else {
             $this->feParams->viewColumns = array_merge(
@@ -183,9 +181,13 @@ class ContactController extends Doctrine2Frontend {
 
     }
 
+
+    /**
+     * @inheritdoc
+     */
     protected function preView() {
 
-        if( !Auth::getUser()->isSuperUser() && Auth::getUser()->getCustomer()->getId() != $this->data[ 'item' ][ 'custid' ] ){
+        if( !Auth::getUser()->isSuperUser() && Auth::getUser()->getCustomer()->getId() != $this->data[ 'item' ][ 'custid' ] ) {
             $this->unauthorized();
         }
 
@@ -220,8 +222,8 @@ class ContactController extends Doctrine2Frontend {
 
         $role = $cg = null;
         $cgs = [];
-        if( config('contact_group.types.ROLE') ){
 
+        if( config('contact_group.types.ROLE') ) {
             $groups = D2EM::getRepository( ContactGroupEntity::class )->getGroupNamesTypeArray();
 
             if( !in_array( $role = request()->input( "role" ) , array_column( $groups[ "ROLE" ], 'id')  ) ){
@@ -237,21 +239,30 @@ class ContactController extends Doctrine2Frontend {
                     }
                 }
 
-                if( !in_array( $cg , array_keys( $cgs )  ) ) {
+                if( !array_key_exists( $cg, $cgs ) ) {
                     $cg = null;
                 }
             }
 
 
-
-            $this->data[ 'params' ]         = [
-                'role'          => $role ,
+            $this->data[ 'params' ] = [
+                'role'          => $role,
                 'roles'         => $groups[ "ROLE" ],
                 'cg'            => $cg,
                 'contactGroups' => $cgs
-
             ];
+
+        } else {
+
+            $this->data[ 'params' ] = [
+                'role'          => $role,
+                'roles'         => [],
+                'cg'            => $cg,
+                'contactGroups' => $cgs
+            ];
+
         }
+
 
         return D2EM::getRepository( ContactEntity::class )->getAllForFeList( $this->feParams, $id, $role, $cg );
     }
@@ -271,18 +282,23 @@ class ContactController extends Doctrine2Frontend {
 
         $old = request()->old();
 
-        $from = "customer@overview";
+        session()->remove( "contact_post_store_redirect" );
 
-        // check if we come from the customer overview or the customer list
-        if( isset( $_SERVER[ "HTTP_REFERER" ] ) && strpos( $_SERVER[ "HTTP_REFERER" ] , "customer/overview" ) === false ){
-            $from = "contact@list";
+        // check if we come from the customer overview or the contact list
+        if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
+            session()->put( 'contact_post_store_redirect',     'customer@overview' );
+            session()->put( 'contact_post_store_redirect_cid', request()->input('cust', null ) );
+        } else {
+            session()->put( 'contact_post_store_redirect', 'contact@list' );
+            session()->put( 'contact_post_store_redirect_cid', null );
         }
 
-        if( config('contact_group.types.ROLE') ){
-            $roles      = D2EM::getRepository( ContactGroupEntity::class )->getGroupNamesTypeArray( 'ROLE' )[ "ROLE"];
-            $allGroups  = D2EM::getRepository( ContactGroupEntity::class )->getGroupNamesTypeArray( );
-        } else{
-            $roles = $allGroups = null;
+        if( config('contact_group.types.ROLE') ) {
+            $roles      = D2EM::getRepository( ContactGroupEntity::class )->getGroupNamesTypeArray( 'ROLE' )[ "ROLE" ];
+            $allGroups  = D2EM::getRepository( ContactGroupEntity::class )->getGroupNamesTypeArray();
+        } else {
+            $roles     = null;
+            $allGroups = [];
         }
 
 
@@ -292,53 +308,49 @@ class ContactController extends Doctrine2Frontend {
                 abort(404);
             }
 
-            if( !Auth::getUser()->isSuperUser() && Auth::getUser()->getCustomer()->getId() != $this->object->getCustomer()->getId() ){
+            if( !Auth::getUser()->isSuperUser() && Auth::getUser()->getCustomer()->getId() !== $this->object->getCustomer()->getId() ){
                 $this->unauthorized();
             }
 
             $contactDetail = [
-                'name'                      => array_key_exists( 'name',            $old ) ? $old['name']           : $this->object->getName(),
-                'position'                  => array_key_exists( 'position',        $old ) ? $old['position']       : $this->object->getPosition(),
-                'custid'                    => array_key_exists( 'custid',          $old ) ? $old['custid']         : $this->object->getCustomer()->getId(),
-                'email'                     => array_key_exists( 'email',           $old ) ? $old['email']          : $this->object->getEmail(),
-                'phone'                     => array_key_exists( 'phone',           $old ) ? $old['phone']          : $this->object->getPhone(),
-                'mobile'                    => array_key_exists( 'mobile',          $old ) ? $old['mobile']         : $this->object->getMobile(),
-                'facilityaccess'            => array_key_exists( 'facilityaccess',  $old ) ? $old['facilityaccess'] : ( $this->object->getFacilityaccess()      ? 1 : 0 ),
-                'mayauthorize'              => array_key_exists( 'mayauthorize',    $old ) ? $old['mayauthorize']   : ( $this->object->getMayauthorize()        ? 1 : 0 ),
+                'name'                      => array_key_exists( 'name',            $old ) ? $old['name']                       : $this->object->getName(),
+                'position'                  => array_key_exists( 'position',        $old ) ? $old['position']                   : $this->object->getPosition(),
+                'custid'                    => array_key_exists( 'custid',          $old ) ? $old['custid']                     : $this->object->getCustomer()->getId(),
+                'email'                     => array_key_exists( 'email',           $old ) ? $old['email']                      : $this->object->getEmail(),
+                'phone'                     => array_key_exists( 'phone',           $old ) ? $old['phone']                      : $this->object->getPhone(),
+                'mobile'                    => array_key_exists( 'mobile',          $old ) ? $old['mobile']                     : $this->object->getMobile(),
+                // 'facilityaccess'            => array_key_exists( 'facilityaccess',  $old ) ? ( $old['facilityaccess'] ? 1 : 0 ) : ( $this->object->getFacilityaccess() ? 1 : 0 ),
+                // 'mayauthorize'              => array_key_exists( 'mayauthorize',    $old ) ? ( $old['mayauthorize']   ? 1 : 0 ) : ( $this->object->getMayauthorize() ? 1 : 0 ),
             ];
 
             $contactGroupDetail = [];
 
             $contactGroup =  D2EM::getRepository( ContactGroupEntity::class )->getGroupNamesTypeArray( false, $this->object->getId() );
 
-            foreach( $allGroups as $gname => $gvalue ){
+            foreach( $allGroups as $gname => $gvalue ) {
                 foreach( $gvalue as $g ){
                     $contactGroupDetail[ $gname . '_' . $g[ 'id' ] ] =  array_key_exists( $gname . '_' . $g[ 'id' ] , $old ) ? $old[ $gname . '_' . $g[ 'id' ] ] : isset( $contactGroup[ $gname ][  $g[ 'id' ] ] ) ? 1 : 0 ;
                 }
-
-
             }
 
             Former::populate( array_merge( $contactDetail, $contactGroupDetail ) );
+
         } else {
 
             if( request()->input( "cust" ) && ( $cust = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "cust" ) ) ) ){
-
                 Former::populate( [
                     'custid'                    => $cust->getId(),
                 ] );
             }
-
 
         }
 
         return [
             'object'                => $this->object,
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
-            'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : "" ),
+            'notes'                 => $id ? ( array_key_exists( 'notes', $old ) ? $old['notes'] : $this->object->getNotes() ) : ( array_key_exists( 'notes', $old ) ? $old['notes'] : "" ),
             'roles'                 => $roles,
             'allGroups'             => $allGroups,
-            'from'                  => $from
         ];
     }
 
@@ -364,7 +376,7 @@ class ContactController extends Doctrine2Frontend {
         ];
 
         if( Auth::getUser()->isSuperUser() ){
-            $rules = array_merge( $rules, [ 'custid'                => 'required|integer|exists:Entities\Customer,id' ] );
+            $rules = array_merge( $rules, [ 'custid' => 'required|integer|exists:Entities\Customer,id' ] );
         }
 
         $validator = Validator::make( $request->all(), $rules );
@@ -373,8 +385,6 @@ class ContactController extends Doctrine2Frontend {
         if( $validator->fails() ) {
             return Redirect::back()->withErrors($validator)->withInput();
         }
-
-
 
         if( $request->input( 'id', false ) ) {
             if( !( $this->object = D2EM::getRepository( ContactEntity::class )->find( $request->input( 'id' ) ) ) ) {
@@ -388,8 +398,7 @@ class ContactController extends Doctrine2Frontend {
             $this->object->setCreator(  Auth::getUser()->getUsername() );
         }
 
-
-        if( Auth::getUser()->isSuperUser() ){
+        if( Auth::getUser()->isSuperUser() ) {
             $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) );
         } else {
             $this->object->setCustomer( Auth::getUser()->getCustomer() );
@@ -399,8 +408,9 @@ class ContactController extends Doctrine2Frontend {
         $this->object->setPosition(          $request->input( 'position'        ) );
         $this->object->setEmail(             $request->input( 'email'           ) );
         $this->object->setPhone(             $request->input( 'phone'           ) );
-        $this->object->setMayauthorize(      $request->input( 'mayauthorize'    ) );
-        $this->object->setFacilityaccess(    $request->input( 'facilityaccess'  ) );
+        $this->object->setMobile(            $request->input( 'mobile'          ) );
+        // $this->object->setMayauthorize(      $request->input( 'mayauthorize'    ) );
+        // $this->object->setFacilityaccess(    $request->input( 'facilityaccess'  ) );
         $this->object->setNotes(             $request->input( 'notes'           ) );
 
         $this->object->setLastupdated(      new \DateTime  );
@@ -443,16 +453,11 @@ class ContactController extends Doctrine2Frontend {
         foreach( $this->object->getGroups() as $key => $group ) {
 
             if( !in_array( $group, $groups ) ) {
-
                 $this->object->getGroups()->remove( $key );
             }
         }
 
         D2EM::flush($this->object);
-
-        if( Auth::getUser()->isSuperUser() ) {
-            request()->session()->put( "contact_post_store_redirect", $request->input( 'from' ) );
-        }
 
         return true;
     }
@@ -463,22 +468,21 @@ class ContactController extends Doctrine2Frontend {
      */
     protected function postStoreRedirect() {
 
-        if( !Auth::getUser()->isSuperUser() ){
+        if( !Auth::getUser()->isSuperUser() ) {
             return route( 'contact@list' );
-        } else{
+        } else {
 
-            $redirect = request()->session()->get( "contact_post_store_redirect" );
-            request()->session()->remove( "contact_post_store_redirect" );
+            $redirect = session()->get( "contact_post_store_redirect" );
+            session()->remove( "contact_post_store_redirect" );
 
             // retrieve the customer ID
-            if( $redirect != "contact@list" ) {
-                return route( "customer@overview" , [ "id" => $this->object->getCustomer()->getId() , "tab" => "contacts" ] );
+            if( $redirect === 'customer@overview' ) {
+                return route( 'customer@overview' , [ 'id' => $this->object->getCustomer()->getId() , 'tab' => 'contacts' ] );
             }
 
         }
 
         return null;
-
     }
 
     /**
@@ -491,20 +495,21 @@ class ContactController extends Doctrine2Frontend {
      *
      * @return bool Return false to stop / cancel the deletion
      */
-    protected function preDelete( ): bool {
+    protected function preDelete(): bool {
 
-        if( !Auth::getUser()->isSuperUser() ) {
+        session()->remove( 'ixp_contact_delete_custid' );
+
+        if( Auth::getUser()->isSuperUser() ) {
+            // keep the customer ID for redirection on success
+            $this->request->session()->put( "ixp_contact_delete_custid", $this->object->getCustomer()->getId() );
+        } else {
             if( $this->object->getCustomer()->getId() != Auth::getUser()->getCustomer()->getId() ) {
                 AlertContainer::push( 'You are not authorised to delete this contact.', Alert::DANGER );
                 return false;
             }
-        } else {
-            // keep the customer ID for redirection on success
-            $this->request->session()->put( "ixp_contact_delete_custid", $this->object->getCustomer()->getId() );
         }
 
         return true;
-
     }
 
 
@@ -518,14 +523,15 @@ class ContactController extends Doctrine2Frontend {
     protected function postDeleteRedirect(){
 
         // retrieve the customer ID
-        if( $custid = $this->request->session()->get( "ixp_contact_delete_custid" ) ) {
 
-            $this->request->session()->remove( "ixp_contact_delete_custid" );
-
-            return route( "customer@overview" , [ "id" => $custid, "tab" => "contacts" ] );
+        if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
+            if( $custid = $this->request->session()->get( "ixp_contact_delete_custid" ) ) {
+                $this->request->session()->remove( "ixp_contact_delete_custid" );
+                return route( "customer@overview", [ "id" => $custid, "tab" => "contacts" ] );
+            }
         }
 
-        return null;
+        return route( 'contact@list' );
     }
 
 

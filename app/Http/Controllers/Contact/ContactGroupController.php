@@ -74,28 +74,31 @@ class ContactGroupController extends Doctrine2Frontend {
             'pagetitle'         => 'Contact Groups',
 
             'titleSingular'     => 'Contact Group',
-            'nameSingular'      => 'a contact group',
+            'nameSingular'      => 'contact group',
 
             'defaultAction'     => 'list',
             'defaultController' => 'ContactGroupController',
 
-            'listOrderBy'       => 'name',
+            'listOrderBy'       => 'type',
             'listOrderByDir'    => 'ASC',
 
             'viewFolderName'    => 'contact-group',
 
             'listColumns'    => [
 
-                'name'         => 'Name',
                 'type'       => [
-                    'title'             => 'Type',
+                    'title'             => 'Group Name',
                     'type'              => self::$FE_COL_TYPES[ 'ARRAY' ],
                     'source'            => config( "contact_group.types" )
                 ],
+
+                'name'         => 'Option',
+
                 'active'      => [
                     'title' => 'Active',
                     'type' => self::$FE_COL_TYPES[ 'YES_NO' ]
                 ],
+
                 'created'       => [
                     'title'     => 'Created',
                     'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]

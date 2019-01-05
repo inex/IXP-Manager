@@ -344,6 +344,7 @@
                 <div class="row">
                     <p>
                         No VLAN interfaces defined.
+
                     </p>
                 </div>
             <?php endif; ?>

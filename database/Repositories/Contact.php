@@ -127,6 +127,7 @@ class Contact extends EntityRepository
     public function getAllForFeList( \stdClass $feParams, $contactid, $role = null, $cgid = null )
     {
         $where = false;
+
         $dql = "SELECT  c.id as id, 
                         c.name as name, 
                         c.email as email, 
@@ -184,12 +185,14 @@ class Contact extends EntityRepository
         }
 
 
-        if( !Auth::getUser()->isSuperUser() ){
+        if( !Auth::getUser()->isSuperUser() ) {
             return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
         }
 
+        $data = $this->getEntityManager()->createQuery( $dql )->getArrayResult();
+
         if( config('contact_group.types.ROLE') ) {
-            $data = $this->setRolesAndGroups( $this->getEntityManager()->createQuery( $dql )->getArrayResult() , $contactid );
+            $data = $this->setRolesAndGroups( $data, $contactid );
         }
 
 

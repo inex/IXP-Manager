@@ -78,8 +78,7 @@ class CustKitController extends Doctrine2Frontend {
                     'type'          => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                     'controller'    => 'customer',
                     'action'        => 'overview',
-                    'idField'       => 'custid',
-                    'nameIdParam'   => 'id',
+                    'idField'       => 'custid'
                 ],
 
                 'cabinet'  => [

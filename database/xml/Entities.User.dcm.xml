@@ -4,6 +4,7 @@
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>
+    <field name="name" type="string" length="255" nullable="true"/>
     <field name="username" type="string" unique="true" length="255" nullable="true"/>
     <field name="password" type="string" length="255" nullable="true"/>
     <field name="email" type="string" length="255" nullable="true"/>
@@ -22,6 +23,7 @@
     </many-to-one>
     <one-to-many field="ApiKeys" target-entity="Entities\ApiKey" mapped-by="User"/>
     <one-to-many field="LastLogins" target-entity="Entities\UserLoginHistory" mapped-by="User"/>
+    <one-to-one field="Contact" target-entity="Entities\Contact" mapped-by="User"/>
     <one-to-many field="Preferences" target-entity="Entities\UserPreference" mapped-by="User"/>
   </entity>
 </doctrine-mapping>

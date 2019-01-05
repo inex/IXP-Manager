@@ -80,7 +80,7 @@ class UserController extends Doctrine2Frontend {
             'pagetitle'         => 'Users',
 
             'titleSingular'     => 'User',
-            'nameSingular'      => 'a user',
+            'nameSingular'      => 'user',
 
             'defaultAction'     => 'list',
             'defaultController' => 'UserController',
@@ -109,6 +109,7 @@ class UserController extends Doctrine2Frontend {
                         'idField'    => 'custid'
                     ],
 
+                    'name'          => 'Name',
                     'username'      => 'Username',
                     'email'         => 'Email',
 
@@ -138,15 +139,22 @@ class UserController extends Doctrine2Frontend {
 
             case UserEntity::AUTH_CUSTADMIN:
 
-                $this->feParams->pagetitle = 'User Admin for ' . Auth::getUser()->getCustomer()->getName();
+                $this->feParams->pagetitle = 'Your Users';
 
                 $this->feParams->listColumns = [
+                    'name'          => 'Name',
                     'username'      => 'Username',
                     'email'         => 'Email',
 
+                    'privileges'    => [
+                        'title'     => 'Privileges',
+                        'type'      => self::$FE_COL_TYPES[ 'XLATE' ],
+                        'xlator'    => UserEntity::$PRIVILEGES_TEXT
+                    ],
+
                     'disabled'       => [
-                        'title'         => 'Disabled',
-                        'type'          => self::$FE_COL_TYPES[ 'YES_NO' ],
+                        'title'         => 'Enabled',
+                        'type'          => self::$FE_COL_TYPES[ 'INVERSE_YES_NO' ],
                     ],
 
                     'created'       => [
@@ -155,6 +163,7 @@ class UserController extends Doctrine2Frontend {
                     ]
                 ];
                 break;
+
 
             default:
                 $this->unauthorized();
@@ -204,10 +213,16 @@ class UserController extends Doctrine2Frontend {
 
         request()->session()->remove( "user_post_store_redirect" );
 
-        // check if we come from the customer overview or the customer list
+        // check if we come from the customer overview or the user list
         if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
-            request()->session()->put( "user_post_store_redirect", "customer@overview" );
+            session()->put( 'user_post_store_redirect',     'customer@overview' );
+            session()->put( 'user_post_store_redirect_cid', request()->input('cust', null ) );
+        } else {
+            session()->put( 'user_post_store_redirect', 'user@list' );
+            session()->put( 'user_post_store_redirect_cid', null );
         }
+
+
 
         if( $id !== null ) {
 
@@ -220,13 +235,23 @@ class UserController extends Doctrine2Frontend {
             }
 
             Former::populate([
-                'username'                  => array_key_exists( 'username',            $old ) ? $old['username']             : $this->object->getUsername(),
-                'custid'                    => array_key_exists( 'custid',              $old ) ? $old['custid']               : $this->object->getCustomer()->getId(),
-                'email'                     => array_key_exists( 'email',               $old ) ? $old['email']                : $this->object->getEmail(),
-                'authorisedMobile'          => array_key_exists( 'authorisedMobile',    $old ) ? $old['authorisedMobile']     : $this->object->getAuthorisedMobile(),
-                'disabled'                  => array_key_exists( 'disabled',            $old ) ? ( $old['disabled'] ? 1 : 0 ) : ( $this->object->getDisabled() ? 1 : 0 ),
-                'privs'                     => array_key_exists( 'privs',               $old ) ? $old['privs']                : $this->object->getPrivs(),
+                'name'             => array_key_exists( 'name',                $old ) ? $old['name']                 : $this->object->getName(),
+                'username'         => array_key_exists( 'username',            $old ) ? $old['username']             : $this->object->getUsername(),
+                'custid'           => array_key_exists( 'custid',              $old ) ? $old['custid']               : $this->object->getCustomer()->getId(),
+                'email'            => array_key_exists( 'email',               $old ) ? $old['email']                : $this->object->getEmail(),
+                'authorisedMobile' => array_key_exists( 'authorisedMobile',    $old ) ? $old['authorisedMobile']     : $this->object->getAuthorisedMobile(),
+                'enabled'          => array_key_exists( 'enabled',             $old ) ? ( $old['enabled'] ? 1 : 0 )  : ( $this->object->getDisabled() ? 0 : 1 ),
+                'privs'            => array_key_exists( 'privs',               $old ) ? $old['privs']                : $this->object->getPrivs(),
             ]);
+
+        } else {
+
+            if( request()->input( "cust" ) && ( $cust = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "cust" ) ) ) ){
+                Former::populate( [
+                    'custid'                    => $cust->getId(),
+                ] );
+            }
+
         }
 
         return [
@@ -248,9 +273,9 @@ class UserController extends Doctrine2Frontend {
     public function doStore( Request $request )
     {
         $validator = Validator::make( $request->all(), [
+            'name'                  => 'required|string|max:255',
             'username'              => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_]{3,255}$/|unique:Entities\User,username' . ( $request->input( 'id' ) ? ','. $request->input( 'id' ) : '' ),
             'custid'                => 'required|integer|exists:Entities\Customer,id',
-            'usersecret'            => ( $request->input( 'id' ) ? 'nullable' : 'required' ) . '|string|min:8|max:255',
             'email'                 => 'required|email|max:255',
             'authorisedMobile'      => 'nullable|string|max:50',
             'privs'                 => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ),
@@ -273,31 +298,41 @@ class UserController extends Doctrine2Frontend {
             $this->object->setCreator(  Auth::getUser()->getUsername() );
         }
 
-        if( $request->input( 'usersecret' ) ){
-            $this->object->setPassword( password_hash( $request->input( 'usersecret' ), PASSWORD_BCRYPT, [ 'cost' => 10 ] ) );
-        }
-
+        $this->object->setName(              $request->input( 'name'                 ) );
         $this->object->setUsername(          strtolower( $request->input( 'username' ) ) );
         $this->object->setEmail(             $request->input( 'email'                ) );
-        $this->object->setDisabled(  $request->input( 'disabled'             ) ?? false );
+        $this->object->setDisabled( $request->input( 'enabled', 0 ) == "1" ? false : true );
         $this->object->setAuthorisedMobile(  $request->input( 'authorisedMobile'     ) );
         $this->object->setLastupdated(       new \DateTime  );
         $this->object->setLastupdatedby(     Auth::getUser()->getId() );
 
+        if( !$this->object->getId() ) {
+            // adding a new user -> set a random password
+            $this->object->setPassword( password_hash( str_random(16), PASSWORD_BCRYPT, [ 'cost' => 10 ] ) );
+            $this->store_alert_success_message = "User added successfully. A welcome email is being sent to {$this->object->getEmail()} with "
+                . "instructions on how to set their password.";
+        }
+
         $originalPrivs = $this->object->getPrivs();
 
         if( Auth::user()->isSuperUser() ) {
+
             $this->object->setPrivs( $request->input( 'privs' ) );
             $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) );
+
         } else {
+
+            if( $this->object->getId() && Auth::getUser()->getCustomer()->getId() != $this->object->getCustomer()->getId() ){
+                $this->unauthorized();
+            }
+
             $this->object->setPrivs( $request->input( 'privs' ) < UserEntity::AUTH_SUPERUSER ? $request->input( 'privs' ) : UserEntity::AUTH_CUSTUSER );
             $this->object->setCustomer( Auth::getUser()->getCustomer() );
         }
 
-
         // we should only add admin users to customer type internal
         if( $this->object->isSuperUser() && !$this->object->getCustomer()->isTypeInternal() ) {
-            AlertContainer::push( 'Users will full administrative access can only be added to internal customer types.', Alert::DANGER );
+            AlertContainer::push( 'Users with full administrative access can only be added to internal customer types.', Alert::DANGER );
             return Redirect::back()->withErrors($validator)->withInput();
         }
 
@@ -321,12 +356,16 @@ class UserController extends Doctrine2Frontend {
      */
     protected function postStoreRedirect()
     {
+        if( !Auth::getUser()->isSuperUser() ) {
+            return route( 'user@list' );
+        } else {
 
-        if( $redirect = request()->session()->get( "user_post_store_redirect", false ) ) {
-            request()->session()->remove( "user_post_store_redirect" );
+            $redirect = session()->get( "user_post_store_redirect" );
+            session()->remove( "user_post_store_redirect" );
 
-            if( $redirect === "customer@overview" ) {
-                return route( "customer@overview", [ "id" => $this->object->getCustomer()->getId(), "tab" => "users" ] );
+            // retrieve the customer ID
+            if( $redirect === 'customer@overview' ) {
+                return route( 'customer@overview' , [ 'id' => $this->object->getCustomer()->getId() , 'tab' => 'users' ] );
             }
         }
 
@@ -347,7 +386,7 @@ class UserController extends Doctrine2Frontend {
 
         if( !Auth::getUser()->isSuperUser() ) {
             if( $this->object->getCustomer()->getId() != Auth::getUser()->getCustomer()->getId() ) {
-                Log::notice( Auth::getUser()->getUsername() . " tried to delete other customer user " . $this->object->getUser()->getUsername() );
+                Log::notice( Auth::getUser()->getUsername() . " tried to delete other customer user " . $this->object->getUsername() );
                 abort( 401, 'You are not authorised to delete this user. The administrators have been notified.' );
             }
         }

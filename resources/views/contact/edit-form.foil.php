@@ -8,12 +8,14 @@
     <div class="col-sm-6">
         <?= Former::text( 'name' )
             ->label( 'Name' )
-            ->blockHelp( "" );
+            ->placeholder( 'Firstname Lastname' )
+            ->blockHelp( "The full name of the contact." );
         ?>
 
         <?= Former::text( 'position' )
             ->label( 'Position' )
-            ->blockHelp( "" );
+            ->placeholder( 'Senior Network Engineer' )
+            ->blockHelp( "The contact's job title / position." );
         ?>
 
         <?php if( Auth::getUser()->isSuperUser() ):?>
@@ -23,61 +25,49 @@
                 ->placeholder( 'Select a customer' )
                 ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
                 ->addClass( 'chzn-select' )
-                ->blockHelp( "" );
+                ->blockHelp( "Customer to assign this contact to." );
             ?>
         <?php endif; ?>
 
         <?= Former::text( 'email' )
             ->label( 'Email' )
-            ->blockHelp( "" );
+            ->placeholder( 'firstname.lastname@example.com' )
+            ->blockHelp( "Email address of the contact." );
         ?>
 
         <?= Former::text( 'phone' )
             ->label( 'Phone' )
-            ->blockHelp( "" );
+            ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
+            ->blockHelp( "Office / landline phone number of the contact." );
         ?>
 
         <?= Former::text( 'mobile' )
             ->label( 'Mobile' )
-            ->blockHelp( "" );
+            ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
+            ->blockHelp( "Mobile phone / cell number of the contact." );
         ?>
     </div>
 
     <div class="col-sm-6">
-        <?= Former::checkbox( 'facilityaccess' )
-            ->label('&nbsp;')
-            ->text( 'Multicast Enabled' )
-            ->value( 1 )
-            ->blockHelp( '' )
-            ->check()
-        ?>
 
-        <?= Former::checkbox( 'mayauthorize' )
-            ->label('&nbsp;')
-            ->text( 'May Authorize' )
-            ->value( 1 )
-            ->blockHelp( '' )
-            ->check()
-        ?>
+        <div class="form-group" style="display: inline; display: inline-flex">
+            <label for="" class="control-label col-lg-2 col-sm-4">&nbsp;Role&nbsp;</label>
+            <?php if( $t->data[ 'params'][ "allGroups" ] && isset( $t->data[ 'params'][ "allGroups" ][ 'ROLE' ] ) ): ?>
 
-            <div class="form-group" style="display: inline; display: inline-flex">
-                <label for="" class="control-label col-lg-2 col-sm-4">&nbsp;Role&nbsp;</label>
-                <?php if( $t->data[ 'params'][ "allGroups" ] && isset( $t->data[ 'params'][ "allGroups" ][ 'ROLE' ] ) ): ?>
+                <?php foreach( $t->data[ 'params'][ "allGroups" ][ 'ROLE' ] as $role ): ?>
+                    <?= Former::checkbox( "ROLE_" . $role[ 'id' ] )
+                        ->label( '&nbsp;')
+                        ->text( $role[ 'name' ] )
+                        ->value( 1 )
+                        ->blockHelp( '' )
+                        ->class( "inline" )
 
-                    <?php foreach( $t->data[ 'params'][ "allGroups" ][ 'ROLE' ] as $role ): ?>
-                        <?= Former::checkbox( "ROLE_" . $role[ 'id' ] )
-                            ->label( '&nbsp;')
-                            ->text( $role[ 'name' ] )
-                            ->value( 1 )
-                            ->blockHelp( '' )
-                            ->class( "inline" )
+                    ?>
+                <?php endforeach; ?>
 
-                        ?>
-                    <?php endforeach; ?>
+            <?php endif; ?>
 
-                <?php endif; ?>
-
-            </div>
+        </div>
 
 
 
@@ -162,19 +152,36 @@
 <div style="clear: both"></div>
 
 
+    <?php
+        // need to figure out where the cancel button foes. shouldn't be this hard :-(
+        if( session()->get( 'contact_post_store_redirect' ) === 'contact@list' || session()->get( 'contact_post_store_redirect' ) === 'contact@add' ) {
+                $cancel_url = route('contact@list' );
+        } else {
+            $custid = null;
+            if( isset( $t->data[ 'params'][ 'object'] ) && $t->data[ 'params'][ 'object'] instanceof \Entities\Contact ) {
+                $custid = $t->data[ 'params'][ 'object']->getCustomer()->getId();
+            } else if( session()->get( 'contact_post_store_redirect_cid', null ) !== null ) {
+                $custid = session()->get( 'contact_post_store_redirect_cid' );
+            }
+
+            if( $custid !== null ) {
+                $cancel_url = route( 'customer@overview', [ "id" => $custid,  "tab" => "contacts" ] );
+            } else {
+                $cancel_url = route( 'contact@list' );
+            }
+        }
+
+    ?>
+
     <?= Former::actions(
         Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' ),
-        Former::default_link( 'Cancel' )->href( $t->data[ 'params'][ "from" ] == "contact@list" || $t->data[ 'params'][ "from" ] == "contact@add" ? route($t->feParams->route_prefix . '@list' ) : route('customer@overview', [ "id" => $t->data[ 'params'][ 'object']->getCustomer()->getId() ,  "tab" => "contacts" ] ) ),
+        Former::default_link( 'Cancel' )->href( $cancel_url ),
         Former::success_button( 'Help' )->id( 'help-btn' )
     );
     ?>
 
     <?= Former::hidden( 'id' )
         ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
-    ?>
-
-    <?= Former::hidden( 'from' )
-        ->value( $t->data[ 'params'][ "from" ] )
     ?>
 
     <?= Former::close() ?>

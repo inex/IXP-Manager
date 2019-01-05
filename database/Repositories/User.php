@@ -215,6 +215,7 @@ class User extends EntityRepository
     {
         $where = false;
         $dql = "SELECT  u.id as id, 
+                        u.name AS name,
                         u.username as username, 
                         u.email as email, 
                         u.privs AS privileges,
@@ -230,9 +231,9 @@ class User extends EntityRepository
 
 
 
-        if( $user && $user->isCustAdmin() ) {
+        if( $user && !$user->isSuperUser() ) {
             $dql .= " AND u.Customer = " . $user->getCustomer()->getId() . "
-                      AND u.privs <= " . UserEntity::AUTH_CUSTUSER;
+                      AND u.privs <= " . UserEntity::AUTH_CUSTADMIN;
         }
 
         if( $id ) {

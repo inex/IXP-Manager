@@ -194,19 +194,18 @@
 
                 <li class="<?= request()->is( 'vlan/*' ) && !request()->is( 'vlan/private' ) ? 'active' : '' ?>" >
                     <a href="<?= route('vlan@list' ) ?>">VLANs</a>
-                    <?php /* {if $controller eq 'vlan'}
-                        <ul class="nav nav-list">
-                            <li {if $controller eq 'vlan' and $action eq 'private'}class="active"{/if}>
-                                <a href="{genUrl controller='vlan' action='private'}">Private VLANs</a>
-                            </li>
-                        </ul>
-                    {/if} */ ?>
                 </li>
 
-                <?php if( request()->is( 'vlan/*' ) ): ?>
-                    <li class="sub-menu <?= request()->is( 'vlan/*' ) && request()->is( 'vlan/private' ) ? 'active' : '' ?>">
-                        <a href="<?= route( 'vlan@private' ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;Private VLANs</a>
+                <?php if(  request()->is( 'vlan/*' ) || $t->controller == 'NetworkInfoController' ): ?>
+
+                    <li class="sub-menu <?= !request()->is( 'network-info/*' ) ?: 'active' ?>" >
+                        <a href="<?= route('network-info@list' ) ?>">Network Information</a>
                     </li>
+
+                    <li class="sub-menu <?= $t->controller == 'VlanController' && strpos( strtolower($t->action) , 'private')  ? 'active' : '' ?>">
+                        <a href="<?= route( 'vlan@private' ) ?>">Private VLANs</a>
+                    </li>
+
                 <?php endif; ?>
 
                 <li class="<?= !request()->is( 'irrdb-config/*' ) ?: 'active' ?>" >

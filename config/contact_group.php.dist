@@ -16,7 +16,8 @@
 
 return [
     'types' => [
-        'ROLE'           => "Role",
-        //'MEETING'        => "Meeting Registration",
+        'ROLE'           => 'Role',
+        //'MEETING'        => 'Meeting Registration',
+        //'MARKETING_PREFERENCES'  => 'Marketing Preferences',
     ],
 ];

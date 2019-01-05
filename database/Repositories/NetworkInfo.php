@@ -106,4 +106,44 @@ class NetworkInfo extends EntityRepository
         return $data;
     }
 
+
+    /**
+     * Get all networkinfo (or a particular one) for listing on the frontend CRUD
+     *
+     * @see \IXP\Http\Controllers\Doctrine2Frontend
+     *
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     * @return array Array of networkinfo (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeList( \stdClass $feParams, int $id = null )
+    {
+        $dql = "SELECT  ni.id AS id, 
+                        ni.protocol AS protocol, 
+                        ni.network AS network, 
+                        ni.masklen AS masklen, 
+                        ni.rs1address AS rs1address, 
+                        ni.rs2address AS rs2address, 
+                        ni.dnsfile AS dnsfile,
+                        vl.name AS vlanname,
+                        vl.id AS vlanid
+                FROM Entities\\NetworkInfo ni
+                LEFT JOIN ni.Vlan vl     
+                WHERE 1 = 1";
+
+        if( $id ) {
+            $dql .= " AND ni.id = " . (int)$id;
+        }
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getArrayResult();
+    }
+
 }

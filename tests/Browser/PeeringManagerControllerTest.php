@@ -16,6 +16,32 @@ use Entities\{
 
 class PeeringManagerControllerTest extends DuskTestCase
 {
+
+    public function tearDown()
+    {
+
+        /** @var UserEntity $user */
+        $cust = D2EM::getRepository( UserEntity::class )->findOneBy( [ "username" => "hecustadmin" ] )->getCustomer();
+
+        $peers = D2EM::getRepository( CustomerEntity::class )->getPeeringManagerArrayByType( D2EM::getRepository( UserEntity::class )->findOneBy( [ "username" => "hecustadmin" ] )->getCustomer() , D2EM::getRepository( VlanEntity::class )->getPeeringManagerVLANs(), [ 4, 6 ] );
+
+        foreach( $peers[ "potential" ] as  $as => $p ){
+            if($p){
+                $c = $peers[ "custs" ][ $as ];
+                break;
+            }
+
+        }
+
+        $p = D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $c[ "id" ] ] );
+        if( $p ) {
+            D2EM::remove( $p );
+            D2EM::flush();
+        }
+
+        parent::tearDown();
+    }
+
     /**
      * Test the whole Interfaces functionalities (virtuel, physical, vlan)
      *
@@ -68,9 +94,11 @@ class PeeringManagerControllerTest extends DuskTestCase
                 ->click( ".bootbox-close-button" )
                 ->waitUntilMissing( ".modal-backdrop" );
 
+            // we need a pause here as it can sometimes break CI tests
+            sleep(5);
+
             // Check value in DB
             $this->assertInstanceOf( PeeringManagerEntity::class , $pm = D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $c[ "id" ] ] ) );
-
             $this->assertEquals( "test note", $pm->getNotes() );
 
 

@@ -50,16 +50,6 @@ class LoginHistoryController extends Doctrine2Frontend {
     protected $object = null;
 
     /**
-    * The minimum privileges required to access this controller.
-    *
-    * If you set this to less than the superuser, you need to manage privileges and access
-    * within your own implementation yourself.
-    *
-    * @var int
-    */
-    public static $minimum_privilege = UserEntity::AUTH_SUPERUSER;
-
-    /**
      * This function sets up the frontend controller
      */
     public function feInit(){

@@ -200,7 +200,7 @@ class CustomerController extends Controller
                 'nocphone'              => array_key_exists( 'nocphone',            $old    ) ? $old['nocphone']                : $cust->getNocphone(),
                 'noc24hphone'           => array_key_exists( 'noc24hphone',         $old    ) ? $old['noc24hphone']             : $cust->getNoc24hphone(),
                 'nocemail'              => array_key_exists( 'nocemail',            $old    ) ? $old['nocemail']                : $cust->getNocemail(),
-                'nochours'              => array_key_exists( 'nochours',            $old    ) ? $old['nochours']                : $cust->getNoc24hphone(),
+                'nochours'              => array_key_exists( 'nochours',            $old    ) ? $old['nochours']                : $cust->getNochours(),
                 'nocwww'                => array_key_exists( 'nocwww',              $old    ) ? $old['nocwww']                  : $cust->getNocwww(),
                 'isReseller'            => array_key_exists( 'isReseller',          $old    ) ? $old['isReseller']              : ( $cust->getIsReseller() ? 1 : 0 ),
                 'isResold'              => array_key_exists( 'isResold',            $old    ) ? $old['isResold']                : ( $this->resellerMode() && $cust->getReseller() ? 1 : 0 ),
