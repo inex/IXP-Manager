@@ -49,7 +49,7 @@ class BillingDetailsChanged
      */
     public function handle( BillingDetailsChangedEvent $e )
     {
-        if( !config( 'ixp_fe.customer.billing_updates_notify' ) ) {
+        if( !config( 'ixp_fe.customer.billing_updates_notify' ) || $e->ocbd->getCustomer()->isResoldCustomer() ) {
             return;
         }
 

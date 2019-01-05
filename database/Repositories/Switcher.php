@@ -720,12 +720,12 @@ class Switcher extends EntityRepository
     }
 
     /**
-     * Returns all the bgp associated to the following switch ID
+     * Returns core bundle routing info for the specified switch ID
      *
      * @param int      $id     Switch ID - switch to query
      * @return array
      */
-    public function getAllNeighbors( int $id ): array {
+    public function getCoreBundleNeighbors( int $id ): array {
         $dql = "SELECT  cb.type, cb.ipv4_subnet as cbSubnet, cb.cost, cb.preference, cl.ipv4_subnet as clSubnet, sA.id as sAid, sB.id as sBid, sA.name as sAname , sB.name as sBname, sA.asn as sAasn , sB.asn as sBasn
                     FROM Entities\\CoreLink cl
                     LEFT JOIN cl.coreBundle cb
@@ -744,7 +744,17 @@ class Switcher extends EntityRepository
             $query = $this->getEntityManager()->createQuery( $dql );
             $query->setParameter( 1, $id);
 
-            $listbgp = $query->getArrayResult();
+            return $query->getArrayResult();
+    }
+
+    /**
+     * Returns all bgp session info associated with the specified switch ID
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getAllNeighbors( int $id ): array {
+            $listbgp = $this->getCoreBundleNeighbors( $id );
 
             $neighbors = [];
             foreach( $listbgp as $bgp ){
@@ -760,6 +770,30 @@ class Switcher extends EntityRepository
             }
 
         return $neighbors;
+    }
+
+    /**
+     * Returns cost info about the adjacent ASNs for the specified switch ID
+     *
+     * @param int      $id     Switch ID - switch to query
+     * @return array
+     */
+    public function getAdjacentASNInfo( int $id ): array {
+            $listbgp = $this->getCoreBundleNeighbors( $id );
+
+            $adjacencies = [];
+            foreach( $listbgp as $bgp ){
+                $side = ( $bgp[ 'sAid' ] == $id ) ? 'B' : 'A';
+                $remoteasn = $bgp[ 's' .$side. 'asn'];
+                $adjacencies[$remoteasn] = [
+                    'description' => $bgp[ 's' .$side. 'name'],
+                    'asn' => $bgp[ 's' .$side. 'asn'],
+                    'cost' => $bgp[ 'cost'],
+                    'preference' => $bgp[ 'preference'],
+                ] ;
+            }
+
+        return $adjacencies;
     }
 
     /**
