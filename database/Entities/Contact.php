@@ -452,7 +452,7 @@ class Contact
      * @param \Entities\User $user
      * @return User
      */
-    public function setUser(User $user)
+    public function setUser($user)
     {
         $this->User = $user;
 
