@@ -108,10 +108,10 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Children', 'Contact', '_className', '_preferenceClassName', '' . "\0" . 'Entities\\User' . "\0" . '_cache', '' . "\0" . 'Entities\\User' . "\0" . '_namespace'];
+            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Children', 'Contact', '_className', '_preferenceClassName', '' . "\0" . 'Entities\\User' . "\0" . '_cache', '' . "\0" . 'Entities\\User' . "\0" . '_namespace'];
         }
 
-        return ['__isInitialized__', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Children', 'Contact', '_className', '_preferenceClassName', '' . "\0" . 'Entities\\User' . "\0" . '_cache', '' . "\0" . 'Entities\\User' . "\0" . '_namespace'];
+        return ['__isInitialized__', 'name', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Children', 'Contact', '_className', '_preferenceClassName', '' . "\0" . 'Entities\\User' . "\0" . '_cache', '' . "\0" . 'Entities\\User' . "\0" . '_namespace'];
     }
 
     /**
@@ -218,6 +218,28 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
+    public function setName(string $name)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setName', [$name]);
+
+        return parent::setName($name);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getName()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getName', []);
+
+        return parent::getName();
+    }
+
     /**
      * {@inheritDoc}
      */
@@ -588,28 +610,6 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setContact(\Entities\Contact $contact = NULL)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setContact', [$contact]);
-
-        return parent::setContact($contact);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getContact()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getContact', []);
-
-        return parent::getContact();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function addLastLogin(\Entities\UserLoginHistory $lastLogins)
     {
 
@@ -704,6 +704,28 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isSuperUser', []);
 
         return parent::isSuperUser();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setContact(\Entities\Contact $contact)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setContact', [$contact]);
+
+        return parent::setContact($contact);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getContact()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getContact', []);
+
+        return parent::getContact();
     }
 
     /**

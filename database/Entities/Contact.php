@@ -437,4 +437,36 @@ class Contact
     {
         return $this->notes;
     }
+
+
+
+
+    /**
+     * @var \Entities\User
+     */
+    protected $User;
+
+    /**
+     * Set User
+     *
+     * @param \Entities\User $user
+     * @return User
+     */
+    public function setUser(User $user)
+    {
+        $this->User = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get User
+     *
+     * @return \Entities\User
+     */
+    public function getUser()
+    {
+        return $this->User;
+    }
+
 }
