@@ -24,19 +24,16 @@
 
         <?php endif; ?>
 
+        <?= Former::text( 'name' )
+            ->label( 'Name' )
+            ->placeholder( 'Firstname Lastname' )
+            ->blockHelp( "The full name of the user." );
+        ?>
 
         <?= Former::text( 'username' )
             ->label( 'Username' )
+            ->placeholder( 'joebloggs123' )
             ->blockHelp( "The user's username. A single lowercase word matching the regular expression:<br><br><code>/^[a-z0-9\-_]{3,255}$/</code>" );
-        ?>
-
-        <?= Former::text( 'usersecret' )
-            ->label( 'Password' )
-            ->placeholder( $t->data['params']['isAdd'] ? '' : '(unchanged if left blank)' )
-            ->value( $t->data['params']['isAdd'] ? str_random( 12 ) : '' )
-            ->blockHelp( "The user's password. Between 8 and 255 characters.<br><br>"
-                . ( $t->data['params']['isAdd'] ? 'A cryptographically secure random password is suggested.' : '<br><br>Leave blank to retain the current password.' )
-            );
         ?>
 
         <?= Former::text( 'email' )
@@ -45,30 +42,23 @@
             ->blockHelp( "The user's email address." );
         ?>
 
-        <?php if( Auth::getUser()->isSuperUser() ): ?>
-
-            <?= Former::select( 'privs' )
-                ->id( 'privs' )
-                ->label( 'Privileges' )
-                ->placeholder( 'Select a privilege' )
-                ->fromQuery( Auth::getUser()->isSuperUser() ? \Entities\User::$PRIVILEGES_TEXT : \Entities\User::$PRIVILEGES_TEXT_NONSUPERUSER, 'name' )
-                ->addClass( 'chzn-select' )
-                ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/usage/users/#types-of-users">'
-                    . 'the official documentation here</a>.'
-                );
-            ?>
-
-        <?php else: ?>
-
-            <?= Former::hidden( 'privs' )->value( \Entities\User::AUTH_CUSTUSER ) ?>
-
-        <?php endif; ?>
+        <?= Former::select( 'privs' )
+            ->id( 'privs' )
+            ->label( 'Privileges' )
+            ->placeholder( 'Select a privilege' )
+            ->fromQuery( Auth::getUser()->isSuperUser() ? \Entities\User::$PRIVILEGES_TEXT : \Entities\User::$PRIVILEGES_TEXT_NONSUPERUSER, 'name' )
+            ->addClass( 'chzn-select' )
+            ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/usage/users/#types-of-users">'
+                . 'the official documentation here</a>.'
+            );
+        ?>
 
 
-        <?= Former::checkbox( 'disabled' )
+        <?= Former::checkbox( 'enabled' )
             ->label('&nbsp;')
-            ->text( 'Disabled?' )
+            ->text( 'Enabled' )
             ->value( 1 )
+            ->check()
             ->blockHelp( 'Disabled users cannot login to IXP Manager.' );
         ?>
 
@@ -97,4 +87,13 @@
 
     <?= Former::close() ?>
 
+</div>
+
+<div class="alert alert-info">
+    <h5>User Passwords</h5>
+    <p>
+        In previous versions of <b>IXP Manager</b>, administrators had the facility to set a user's password. This
+        has been removed as we believe it to be bad practice - only a user should know their own password. User's
+        can set (and reset) their passwords via their <i>Profile</i> page or using the password reset functionality.
+    </p>
 </div>

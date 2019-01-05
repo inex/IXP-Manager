@@ -215,6 +215,7 @@ class User extends EntityRepository
     {
         $where = false;
         $dql = "SELECT  u.id as id, 
+                        u.name AS name,
                         u.username as username, 
                         u.email as email, 
                         u.privs AS privileges,
