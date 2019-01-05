@@ -74,6 +74,8 @@ class MacAddressController extends Doctrine2Frontend {
 
             'readonly'          => self::$read_only,
 
+            'documentation'     => 'https://docs.ixpmanager.org/features/layer2-addresses/',
+
             'listColumns'       => [
 
                 'id'             => [ 'title' => 'DB ID', 'display' => false ],

@@ -20,7 +20,6 @@ return [
             'country'    => env( 'IDENTITY_COUNTRY', '*** CONFIG IDENTITY IN .env ***' ),
         ],
 
-    'ixfid'       => env( 'IDENTITY_IXFID', 0 ),
     'orgname'     => env( 'IDENTITY_ORGNAME', '*** CONFIG IDENTITY IN .env ***' ),
     'name'        => env( 'IDENTITY_NAME', '*** CONFIG IDENTITY IN .env ***' ),
     'email'       => env( 'IDENTITY_EMAIL', '*** CONFIG IDENTITY IN .env ***' ),

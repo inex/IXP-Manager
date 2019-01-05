@@ -5,7 +5,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2018-11-20 19:55:24.
+    * Generated on 2018-12-19 16:08:23.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -13,7 +13,6 @@ namespace PHPSTORM_META {
     override(new \Illuminate\Contracts\Container\Container, map([
         '' => '@',
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
-        'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
         'Foil\Engine' => \Foil\Engine::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
@@ -122,7 +121,6 @@ namespace PHPSTORM_META {
         'db.factory' => \Illuminate\Database\Connectors\ConnectionFactory::class,
         'dompdf' => \Dompdf\Dompdf::class,
         'dompdf.wrapper' => \Barryvdh\DomPDF\PDF::class,
-        'em' => \Doctrine\ORM\EntityManager::class,
         'encrypter' => \Illuminate\Encryption\Encrypter::class,
         'events' => \Illuminate\Events\Dispatcher::class,
         'files' => \Illuminate\Filesystem\Filesystem::class,
@@ -171,7 +169,6 @@ namespace PHPSTORM_META {
     override(\Illuminate\Contracts\Container\Container::make(0), map([
         '' => '@',
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
-        'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
         'Foil\Engine' => \Foil\Engine::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
@@ -280,7 +277,6 @@ namespace PHPSTORM_META {
         'db.factory' => \Illuminate\Database\Connectors\ConnectionFactory::class,
         'dompdf' => \Dompdf\Dompdf::class,
         'dompdf.wrapper' => \Barryvdh\DomPDF\PDF::class,
-        'em' => \Doctrine\ORM\EntityManager::class,
         'encrypter' => \Illuminate\Encryption\Encrypter::class,
         'events' => \Illuminate\Events\Dispatcher::class,
         'files' => \Illuminate\Filesystem\Filesystem::class,
@@ -329,7 +325,6 @@ namespace PHPSTORM_META {
     override(\Illuminate\Contracts\Container\Container::makeWith(0), map([
         '' => '@',
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
-        'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
         'Foil\Engine' => \Foil\Engine::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
@@ -438,7 +433,6 @@ namespace PHPSTORM_META {
         'db.factory' => \Illuminate\Database\Connectors\ConnectionFactory::class,
         'dompdf' => \Dompdf\Dompdf::class,
         'dompdf.wrapper' => \Barryvdh\DomPDF\PDF::class,
-        'em' => \Doctrine\ORM\EntityManager::class,
         'encrypter' => \Illuminate\Encryption\Encrypter::class,
         'events' => \Illuminate\Events\Dispatcher::class,
         'files' => \Illuminate\Filesystem\Filesystem::class,
@@ -487,7 +481,6 @@ namespace PHPSTORM_META {
     override(\App::make(0), map([
         '' => '@',
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
-        'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
         'Foil\Engine' => \Foil\Engine::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
@@ -596,7 +589,6 @@ namespace PHPSTORM_META {
         'db.factory' => \Illuminate\Database\Connectors\ConnectionFactory::class,
         'dompdf' => \Dompdf\Dompdf::class,
         'dompdf.wrapper' => \Barryvdh\DomPDF\PDF::class,
-        'em' => \Doctrine\ORM\EntityManager::class,
         'encrypter' => \Illuminate\Encryption\Encrypter::class,
         'events' => \Illuminate\Events\Dispatcher::class,
         'files' => \Illuminate\Filesystem\Filesystem::class,
@@ -645,7 +637,6 @@ namespace PHPSTORM_META {
     override(\App::makeWith(0), map([
         '' => '@',
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
-        'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
         'Foil\Engine' => \Foil\Engine::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
@@ -754,7 +745,6 @@ namespace PHPSTORM_META {
         'db.factory' => \Illuminate\Database\Connectors\ConnectionFactory::class,
         'dompdf' => \Dompdf\Dompdf::class,
         'dompdf.wrapper' => \Barryvdh\DomPDF\PDF::class,
-        'em' => \Doctrine\ORM\EntityManager::class,
         'encrypter' => \Illuminate\Encryption\Encrypter::class,
         'events' => \Illuminate\Events\Dispatcher::class,
         'files' => \Illuminate\Filesystem\Filesystem::class,
@@ -803,7 +793,6 @@ namespace PHPSTORM_META {
     override(\app(0), map([
         '' => '@',
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
-        'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
         'Foil\Engine' => \Foil\Engine::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
@@ -912,7 +901,6 @@ namespace PHPSTORM_META {
         'db.factory' => \Illuminate\Database\Connectors\ConnectionFactory::class,
         'dompdf' => \Dompdf\Dompdf::class,
         'dompdf.wrapper' => \Barryvdh\DomPDF\PDF::class,
-        'em' => \Doctrine\ORM\EntityManager::class,
         'encrypter' => \Illuminate\Encryption\Encrypter::class,
         'events' => \Illuminate\Events\Dispatcher::class,
         'files' => \Illuminate\Filesystem\Filesystem::class,
@@ -961,7 +949,6 @@ namespace PHPSTORM_META {
     override(\resolve(0), map([
         '' => '@',
         'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
-        'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
         'Foil\Engine' => \Foil\Engine::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
@@ -1070,7 +1057,6 @@ namespace PHPSTORM_META {
         'db.factory' => \Illuminate\Database\Connectors\ConnectionFactory::class,
         'dompdf' => \Dompdf\Dompdf::class,
         'dompdf.wrapper' => \Barryvdh\DomPDF\PDF::class,
-        'em' => \Doctrine\ORM\EntityManager::class,
         'encrypter' => \Illuminate\Encryption\Encrypter::class,
         'events' => \Illuminate\Events\Dispatcher::class,
         'files' => \Illuminate\Filesystem\Filesystem::class,

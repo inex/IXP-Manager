@@ -121,10 +121,14 @@ abstract class Doctrine2Frontend extends Controller {
         'REPLACE'           => 'replace',
         'XLATE'             => 'xlate',
         'YES_NO'            => 'yes_no',
+        'INVERSE_YES_NO'    => 'yes_no_inverse',
         'YES_NO_NULL'       => 'yes_no_null',
         'PARSDOWN'          => 'parsdown',
         'RESOLVE_CONST'     => 'resolve_const',
         'CONST'             => 'const',
+        'LABEL'             => 'label',
+        'ARRAY'             => 'array',
+        'INTEGER'           => 'integer',
     ];
 
 
@@ -254,8 +258,17 @@ abstract class Doctrine2Frontend extends Controller {
             return $data[0];
         }
 
-        abort( 404);
+        abort( 404, "No Data" );
     }
+
+    /**
+     * Function which can be over-ridden to perform any pre-view tasks
+     *
+     * E.g. adding elements to $this->view for the pre/post-amble templates.
+     *
+     * @return void
+     */
+    protected function preView() {}
 
     /**
      * View an object
@@ -273,6 +286,8 @@ abstract class Doctrine2Frontend extends Controller {
         $this->data[ 'view' ][ 'viewPostamble']       = $this->resolveTemplate( 'view-postamble',     false );
         $this->data[ 'view' ][ 'viewRowOverride']     = $this->resolveTemplate( 'view-row-override',  false );
         $this->data[ 'view' ][ 'viewScript' ]         = $this->resolveTemplate( 'js/view',            false );
+
+        $this->preView();
 
         return $this->display( 'view' );
     }
@@ -347,6 +362,13 @@ abstract class Doctrine2Frontend extends Controller {
         throw new GeneralException( 'For non-read-only Doctrine2Frontend controllers, you must override this method.' );
     }
 
+
+    /**
+     * Allow controllers to override the default successful store message
+     * @var string
+     */
+    protected $store_alert_success_message = null;
+
     /**
      * Action for storing a new/updated object
      *
@@ -371,7 +393,7 @@ abstract class Doctrine2Frontend extends Controller {
             . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
 
 
-        AlertContainer::push( $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
+        AlertContainer::push( $this->store_alert_success_message ?? $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
 
         return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
     }

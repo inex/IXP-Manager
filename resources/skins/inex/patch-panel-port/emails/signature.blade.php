@@ -18,8 +18,6 @@ If you have any queries about this, please just reply to this email which will c
 
 Kind regards,
 
-{{Auth::user()->getContact()->getName()}}
-
 INEX Operations - https://www.inex.ie/support/
 
 

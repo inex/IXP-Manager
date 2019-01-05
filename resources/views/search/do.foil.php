@@ -45,15 +45,20 @@
                         case 'mac':       echo ' - MAC Addresses'; break;
                         case 'ppp-xc':    echo ' - Patch Panel Port Colo Circuit Reference'; break;
                         case 'rsprefix':  echo ' - Route Server Prefix'; break;
-                        case 'username':  echo ' - Contacts / Users from Username'; break;
+                        case 'username':  echo ' - Users from Username'; break;
                     }
                     ?>
                 </h4>
 
 
-                <?php if( $t->type == 'username' || $t->type == 'email' ): ?>
+                <?php if( $t->type == 'email' ): ?>
 
+                    <?= $t->insert( 'search/users' ) ?>
                     <?= $t->insert( 'search/contacts' ) ?>
+
+                <?php elseif( $t->type == 'username' ): ?>
+
+                    <?= $t->insert( 'search/users' ) ?>
 
                 <?php elseif( $t->type == 'rsprefix' ): ?>
 

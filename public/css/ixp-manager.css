@@ -722,7 +722,18 @@ td a:hover{
     overflow-x: hidden;
 }
 
+.table-no-border > thead > tr > th,
+.table-no-border > tbody > tr > th,
+.table-no-border > tfoot > tr > th,
+.table-no-border > thead > tr > td,
+.table-no-border > tbody > tr > td,
+.table-no-border > tfoot > tr > td {
+    border: none !important;
+}
 
+.page-content .page-header li.pull-right {
+    list-style-type: none !important;
+}
 
 .loader {
     border: 6px solid #f3f3f3;

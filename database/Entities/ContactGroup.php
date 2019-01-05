@@ -2,8 +2,9 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
-
+use Entities\{
+    Contact as ContactEntity
+};
 /**
  * ContactGroup
  */
@@ -23,7 +24,7 @@ class ContactGroup
     /**
      * @var string
      */
-    protected $description;
+    protected $description = '';
 
     /**
      * @var string
@@ -213,10 +214,10 @@ class ContactGroup
     /**
      * Add Contacts
      *
-     * @param \Entities\Contact $contacts
+     * @param ContactEntity $contacts
      * @return ContactGroup
      */
-    public function addContact(\Entities\Contact $contacts)
+    public function addContact( ContactEntity $contacts)
     {
         $this->Contacts[] = $contacts;
     
@@ -226,9 +227,9 @@ class ContactGroup
     /**
      * Remove Contacts
      *
-     * @param \Entities\Contact $contacts
+     * @param ContactEntity $contacts
      */
-    public function removeContact(\Entities\Contact $contacts)
+    public function removeContact( ContactEntity $contacts)
     {
         $this->Contacts->removeElement($contacts);
     }

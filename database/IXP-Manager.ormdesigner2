@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<skipper version="3.2.12.1400" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
+<skipper version="3.2.14.1430" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
   <module name="\IXP-Manager" local-name="IXP-Manager" namespace="\Entities" local-namespace="Entities" export-format="Doctrine2Xml" export-path="xml" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
     <entity name="\Entities\IrrdbAsn" local-name="IrrdbAsn" namespace="\Entities" uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c">
       <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="033ed9da-4165-432b-8b57-e21110abe29e"/>
@@ -8,10 +8,10 @@
       <field name="protocol" type="integer" required="true" uuid="d7b4ff15-0fbd-4e2b-85a0-7397c3d932ab"/>
       <field name="first_seen" type="datetime" uuid="30730a88-58d8-4bee-aaf5-981fa1a49dff"/>
       <field name="last_seen" type="datetime" uuid="a5b4e4ca-a4e3-4301-96ca-495dad968df6"/>
-      <index name="custasn" unique="true">
-        <index-field name="asn"/>
-        <index-field name="protocol"/>
-        <index-field name="customer_id"/>
+      <index name="custasn" unique="true" uuid="9f857a97-eb0c-49bf-b9d0-b54e45a3c9b8">
+        <index-field name="asn" uuid="b30a95a2-b17a-4fd4-bd52-1db383554fa8"/>
+        <index-field name="protocol" uuid="1fe461f5-aa46-4ef8-83a5-1b27df65e645"/>
+        <index-field name="customer_id" uuid="2d4b9ea6-da64-4e43-aa46-a9155191e8c3"/>
       </index>
       <orm-attributes>
         <attribute name="repository-class">Repositories\IrrdbAsn</attribute>
@@ -20,7 +20,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\IrrdbAsn" to="\Entities\Customer" owner-alias="IrrdbASNs" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="f49ec7d3-18a7-4159-80c3-7c9bd2d650dd">
-      <association-field from="customer_id" to="id"/>
+      <association-field from="customer_id" to="id" uuid="7a422f47-55d7-4337-a6d5-3441e4670078"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -57,7 +57,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\ApiKey" to="\Entities\User" owner-alias="ApiKeys" inverse-alias="User" many-owner="true" many-inverse="false" parent-required="true" uuid="15b1d11f-9a03-4772-a3cf-c984cd801d7a">
-      <association-field from="user_id" to="id"/>
+      <association-field from="user_id" to="id" uuid="62c98a42-f1cc-40e5-8c3c-1f24350dc106"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -69,10 +69,10 @@
       <field name="protocol" type="integer" required="true" uuid="959cd9e3-0cdc-4e47-9db3-17617d470128"/>
       <field name="first_seen" type="datetime" uuid="4d67869f-fb35-46a1-8664-938a168791b9"/>
       <field name="last_seen" type="datetime" uuid="93f0f6bd-ab07-4564-ab3f-5262b7770bfa"/>
-      <index name="custprefix" unique="true">
-        <index-field name="prefix"/>
-        <index-field name="protocol"/>
-        <index-field name="customer_id"/>
+      <index name="custprefix" unique="true" uuid="16cdfbe8-d63c-4d5f-b4cb-a1c99312ea86">
+        <index-field name="prefix" uuid="0add43a1-bb14-4b69-90f4-6c18b21d99bb"/>
+        <index-field name="protocol" uuid="bbd05d9e-ae3e-4ac8-9e3b-e6056667f402"/>
+        <index-field name="customer_id" uuid="f5e656a3-5654-48a8-b0bb-1793878098fa"/>
       </index>
       <orm-attributes>
         <attribute name="table">irrdb_prefix</attribute>
@@ -81,7 +81,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\IrrdbPrefix" to="\Entities\Customer" owner-alias="IrrdbPrefixes" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="9ebc868a-ee73-4fac-a3e0-9eb0ae4ca726">
-      <association-field from="customer_id" to="id"/>
+      <association-field from="customer_id" to="id" uuid="363da8f9-389f-4b24-af36-9fd6598a29d0"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -91,9 +91,9 @@
       <field name="user_id" type="integer" required="true" uuid="99836e5c-d45b-4622-af11-a66b52ef9d93"/>
       <field name="ip" type="string" size="39" required="true" uuid="cb30ab15-2f18-462f-81b7-6304e752aad2"/>
       <field name="at" type="datetime" required="true" uuid="0696d2a8-2a83-4330-9f7d-53f020738b1f"/>
-      <index name="at_idx">
-        <index-field name="at"/>
-        <index-field name="user_id"/>
+      <index name="at_idx" uuid="cf5f1160-2185-449b-be09-ab144cc5c2b1">
+        <index-field name="at" uuid="e15c76ed-30f6-4403-be4a-eadebda2b26a"/>
+        <index-field name="user_id" uuid="f59d5837-4d9d-4780-bc47-8bb36ea5ba01"/>
       </index>
       <orm-attributes>
         <attribute name="table">user_logins</attribute>
@@ -102,7 +102,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\UserLoginHistory" to="\Entities\User" owner-alias="LastLogins" inverse-alias="User" many-owner="true" many-inverse="false" parent-required="true" uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543">
-      <association-field from="user_id" to="id"/>
+      <association-field from="user_id" to="id" uuid="666cb238-2a7e-45d2-9bef-39ed2128de1a"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -114,10 +114,10 @@
       <field name="property" type="string" size="255" required="true" uuid="1084f9d1-9222-401e-8bc0-8fd61ad15c44"/>
       <field name="ix" type="integer" default="0" required="true" uuid="b83f957c-d5e7-4660-aac6-aa381f5daf14"/>
       <field name="value" type="text" required="true" uuid="03002eb9-d649-47b7-90cc-b1c2cceae822"/>
-      <index name="VlanProtoProp">
-        <index-field name="protocol"/>
-        <index-field name="property"/>
-        <index-field name="vlan_id"/>
+      <index name="VlanProtoProp" uuid="fcc03b01-4345-45bc-8683-6dba398b90d3">
+        <index-field name="protocol" uuid="95613841-720c-4305-825d-9ce761e6769a"/>
+        <index-field name="property" uuid="718b6e90-1972-4be4-9b80-f98d0f3eaf75"/>
+        <index-field name="vlan_id" uuid="9dc0e203-c55d-4081-9d54-2e942721fa1c"/>
       </index>
       <orm-attributes>
         <attribute name="table">netinfo</attribute>
@@ -126,7 +126,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\NetInfo" to="\Entities\Vlan" owner-alias="NetInfo" inverse-alias="Vlan" many-owner="true" many-inverse="false" parent-required="true" uuid="01e81093-107a-49b9-9cb8-18b8a383bf6e">
-      <association-field from="vlan_id" to="id"/>
+      <association-field from="vlan_id" to="id" uuid="e1392ac3-77fb-47cf-b529-e2f8cf8d85e5"/>
     </association>
     <entity name="\Entities\CompanyRegisteredDetail" local-name="CompanyRegisteredDetail" namespace="\Entities" uuid="6070e4d5-359b-4047-a550-8e130118632e">
       <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="320b1911-25df-4909-ace7-575ed60fa4e5"/>
@@ -169,9 +169,9 @@
       <field name="ixp_id" type="integer" required="true" uuid="6d316694-a9c3-4547-9265-daf01edf6a88"/>
       <field name="peeringdb_ix_id" type="bigint" uuid="bb30b856-4862-49b3-b240-6ac0098ac233"/>
       <field name="ixf_ix_id" type="bigint" uuid="e9080278-6bc7-4eae-b50c-04483c064ac5"/>
-      <index name="IXPSN" unique="true">
-        <index-field name="shortname"/>
-        <index-field name="ixp_id"/>
+      <index name="IXPSN" unique="true" uuid="3514af3f-4b6d-49ba-9f02-12a1f2724bfe">
+        <index-field name="shortname" uuid="6199a691-ee98-4801-a1c6-b3e1cd77b7f2"/>
+        <index-field name="ixp_id" uuid="7ccca2db-ad05-416f-beac-17557cfafb94"/>
       </index>
       <orm-attributes>
         <attribute name="table">infrastructure</attribute>
@@ -180,7 +180,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\Infrastructure" to="\Entities\IXP" owner-alias="Infrastructures" inverse-alias="IXP" many-owner="true" many-inverse="false" parent-required="true" uuid="a93d8c93-6456-462f-a524-9fcda1180727">
-      <association-field from="ixp_id" to="id"/>
+      <association-field from="ixp_id" to="id" uuid="28acc723-ceae-46b5-9923-0cec02881f0f"/>
     </association>
     <entity name="\Entities\IXP" local-name="IXP" namespace="\Entities" uuid="3cf6aafe-9b7a-4ad9-a581-b91aaf58d35d">
       <field name="id" type="integer" required="true" primary="true" auto-increment="true" uuid="644cca3f-b189-4b43-a44c-ba3e19c325d4"/>
@@ -209,10 +209,10 @@
     </entity>
     <many-to-many mn-entity="\Entities\CustomerToIXP" uuid="3e003c57-9922-4820-a7b3-897360e1d984">
       <many-to-many-entity name="\Entities\Customer" owning-side="true" alias="Customers" uuid="3ddb207a-b135-469a-8c60-8bdd1856f642">
-        <many-to-many-field from="customer_id" to="id"/>
+        <many-to-many-field from="customer_id" to="id" uuid="06d1a92d-b906-441b-b4d5-d0aec487cab0"/>
       </many-to-many-entity>
       <many-to-many-entity name="\Entities\IXP" owning-side="false" alias="IXPs" uuid="5305218b-7fb0-4351-aaa8-39ce0d4e7d19">
-        <many-to-many-field from="ixp_id" to="id"/>
+        <many-to-many-field from="ixp_id" to="id" uuid="4fe410f3-8a46-423f-a4ff-3c83dc318b1e"/>
       </many-to-many-entity>
     </many-to-many>
     <entity name="\Entities\CompanyBillingDetail" local-name="CompanyBillingDetail" namespace="\Entities" uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b">
@@ -324,10 +324,10 @@
     </entity>
     <many-to-many mn-entity="\Entities\ContactToGroup" uuid="3da5bfe5-819b-4e33-9cb1-028912dddc2a">
       <many-to-many-entity name="\Entities\Contact" owning-side="true" alias="Contacts" uuid="1c683287-f504-4267-acea-e3d264f6aa21">
-        <many-to-many-field from="contact_id" to="id"/>
+        <many-to-many-field from="contact_id" to="id" uuid="6ccb89d5-3ff9-4445-9113-d60f78b213f7"/>
       </many-to-many-entity>
       <many-to-many-entity name="\Entities\ContactGroup" owning-side="false" alias="Groups" uuid="bcddb68b-f602-44d4-9240-46cc31b0055b">
-        <many-to-many-field from="contact_group_id" to="id"/>
+        <many-to-many-field from="contact_group_id" to="id" uuid="36bfa048-e135-4888-9b04-d7ad033ecb48"/>
       </many-to-many-entity>
     </many-to-many>
     <entity name="\Entities\CustomerNote" local-name="CustomerNote" namespace="\Entities" uuid="783a63d3-7ca8-42bc-b949-a99a889d724a">
@@ -345,7 +345,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\CustomerNote" to="\Entities\Customer" owner-alias="Notes" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="c5d6b4b1-d641-426c-b168-c2a1a8351cb2">
-      <association-field from="customer_id" to="id"/>
+      <association-field from="customer_id" to="id" uuid="2a061919-da1b-43a3-bfea-2c8d200f6053"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -359,8 +359,8 @@
       <field name="packetcount" type="integer" default="0" uuid="eb604e5d-18c0-4050-83c5-6a837d6b4b5d"/>
       <field name="timestamp" type="datetime" uuid="c71b199c-d25d-4208-9b64-7fff911b9b87"/>
       <field name="source" type="string" size="40" uuid="3ea5f9ae-e383-4532-9edf-ce430bd93255"/>
-      <index name="idx_timestamp">
-        <index-field name="timestamp"/>
+      <index name="idx_timestamp" uuid="f9693965-c101-46c4-8c97-9b5b5d0122a4">
+        <index-field name="timestamp" uuid="b93082ef-2bdf-45aa-8b5d-4fc71f862afe"/>
       </index>
       <orm-attributes>
         <attribute name="repository-class">Repositories\BGPSessionData</attribute>
@@ -404,7 +404,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\Cabinet" to="\Entities\Location" owner-alias="Cabinets" inverse-alias="Location" many-owner="true" many-inverse="false" uuid="d9075ce3-753a-432f-a009-c9e386509484">
-      <association-field from="locationid" to="id"/>
+      <association-field from="locationid" to="id" uuid="84cce77e-926c-4bcc-ba5d-6cbdb65f95c4"/>
     </association>
     <entity name="\Entities\Switcher" local-name="Switcher" namespace="\Entities" uuid="c2a2b054-bb69-48af-8f88-6a00f6fed667">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="80d579c5-bcf2-447f-8eec-7492157d3a02"/>
@@ -456,13 +456,13 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\Switcher" to="\Entities\Infrastructure" owner-alias="Switchers" inverse-alias="Infrastructure" many-owner="true" many-inverse="false" uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543">
-      <association-field from="infrastructure" to="id"/>
+      <association-field from="infrastructure" to="id" uuid="a256ddea-a107-4183-9487-406b5c0e92a3"/>
     </association>
     <association from="\Entities\Switcher" to="\Entities\Cabinet" owner-alias="Switches" inverse-alias="Cabinet" many-owner="true" many-inverse="false" uuid="9751c600-b30e-4f42-a07d-9eb6a4c45765">
-      <association-field from="cabinetid" to="id"/>
+      <association-field from="cabinetid" to="id" uuid="687bfd74-8a7e-47e6-a815-459b05595c58"/>
     </association>
     <association from="\Entities\Switcher" to="\Entities\Vendor" owner-alias="Switches" inverse-alias="Vendor" many-owner="true" many-inverse="false" uuid="e8f4931c-82ef-4c5d-83c3-61a0b4271727">
-      <association-field from="vendorid" to="id"/>
+      <association-field from="vendorid" to="id" uuid="8dbd7763-2211-4f04-8ee6-2b2030ceb474"/>
     </association>
     <entity name="\Entities\Vendor" local-name="Vendor" namespace="\Entities" uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="ec333e95-5325-419e-a114-d47cd5b622e9"/>
@@ -574,7 +574,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\SwitchPort" to="\Entities\Switcher" owner-alias="Ports" inverse-alias="Switcher" many-owner="true" many-inverse="false" uuid="93708a18-58db-4061-add9-24991ccd3ce0">
-      <association-field from="switchid" to="id"/>
+      <association-field from="switchid" to="id" uuid="caa2fc43-d791-4ad8-af54-f1471b318c45"/>
     </association>
     <entity name="\Entities\PhysicalInterface" local-name="PhysicalInterface" namespace="\Entities" uuid="09ab0078-0545-4696-a0cf-f825906ff6b8">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="845abe13-fa32-44d1-a6b5-c1bbf02c9f5f"/>
@@ -593,16 +593,16 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\PhysicalInterface" to="\Entities\SwitchPort" owner-alias="PhysicalInterface" inverse-alias="SwitchPort" many-owner="false" many-inverse="false" uuid="f18aceae-d3e6-452d-9e28-0c32f340b245">
-      <association-field from="switchportid" to="id"/>
+      <association-field from="switchportid" to="id" uuid="4f9f03d0-4827-4c2d-9e66-92fedc62706f"/>
     </association>
     <association from="\Entities\PhysicalInterface" to="\Entities\VirtualInterface" owner-alias="PhysicalInterfaces" inverse-alias="VirtualInterface" many-owner="true" many-inverse="false" uuid="e4173e3e-7085-4482-9960-5b5e4493f0f6">
-      <association-field from="virtualinterfaceid" to="id"/>
+      <association-field from="virtualinterfaceid" to="id" uuid="d4a660d0-e759-42a9-9340-60ab2b65ea6b"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
     </association>
     <association from="\Entities\PhysicalInterface" to="\Entities\PhysicalInterface" owner-alias="PeeringPhysicalInterface" inverse-alias="FanoutPhysicalInterface" many-owner="false" many-inverse="false" uuid="1166ebf0-8024-4783-9af3-61e1b4f61070">
-      <association-field from="fanout_physical_interface_id" to="id"/>
+      <association-field from="fanout_physical_interface_id" to="id" uuid="a45a9190-da6a-4792-b59e-327bd7a74cd3"/>
       <orm-attributes>
         <attribute name="on-delete">RESTRICT</attribute>
       </orm-attributes>
@@ -639,25 +639,25 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\VlanInterface" to="\Entities\VirtualInterface" owner-alias="VlanInterfaces" inverse-alias="VirtualInterface" many-owner="true" many-inverse="false" uuid="b52f74fd-d507-4af6-a949-79a8bd13d7c4">
-      <association-field from="virtualinterfaceid" to="id"/>
+      <association-field from="virtualinterfaceid" to="id" uuid="ada55611-0f83-48bc-8913-986aa78a0e29"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
     </association>
     <association from="\Entities\VlanInterface" to="\Entities\Vlan" owner-alias="VlanInterfaces" inverse-alias="Vlan" many-owner="true" many-inverse="false" uuid="56098a3e-c55e-4a20-9ca1-88ac494c7e73">
-      <association-field from="vlanid" to="id"/>
+      <association-field from="vlanid" to="id" uuid="372bf6da-dbb5-4d00-8856-bc7ef691d7dd"/>
       <orm-attributes>
         <attribute name="on-delete">RESTRICT</attribute>
       </orm-attributes>
     </association>
     <association from="\Entities\VlanInterface" to="\Entities\IPv4Address" owner-alias="VlanInterface" inverse-alias="IPv4Address" many-owner="false" many-inverse="false" uuid="39ad3dd5-487b-4152-9190-558bd7e80668">
-      <association-field from="ipv4addressid" to="id"/>
+      <association-field from="ipv4addressid" to="id" uuid="067c3cac-9717-407b-b25b-6917d4b5d9ca"/>
       <orm-attributes>
         <attribute name="on-delete">RESTRICT</attribute>
       </orm-attributes>
     </association>
     <association from="\Entities\VlanInterface" to="\Entities\IPv6Address" owner-alias="VlanInterface" inverse-alias="IPv6Address" many-owner="false" many-inverse="false" uuid="fea968fd-7ff8-437c-b90d-4f2e1e24cd6f">
-      <association-field from="ipv6addressid" to="id"/>
+      <association-field from="ipv6addressid" to="id" uuid="b5c14612-dccc-4967-969b-b23c24a65a4b"/>
       <orm-attributes>
         <attribute name="on-delete">RESTRICT</attribute>
       </orm-attributes>
@@ -672,9 +672,9 @@
       <field name="peering_matrix" type="boolean" default="0" required="true" uuid="c2635dd8-8b82-420d-b0c4-a688b52cfc39"/>
       <field name="peering_manager" type="boolean" default="0" required="true" uuid="8ccb17e4-b4f3-4a01-91e1-a639a49b6445"/>
       <field name="notes" type="text" uuid="6f0d5a85-0441-4611-97a7-af2596fab0d0"/>
-      <index name="infra_config_name" unique="true">
-        <index-field name="infrastructureid"/>
-        <index-field name="config_name"/>
+      <index name="infra_config_name" unique="true" uuid="a4fa1226-ee20-42e1-97b1-c39c333d6f4a">
+        <index-field name="infrastructureid" uuid="9f772490-9248-4288-95b0-78b9d77b7d35"/>
+        <index-field name="config_name" uuid="80697dc4-2912-486c-bc4b-cf73d992e481"/>
       </index>
       <orm-attributes>
         <attribute name="repository-class">Repositories\Vlan</attribute>
@@ -683,7 +683,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\Vlan" to="\Entities\Infrastructure" owner-alias="Vlans" inverse-alias="Infrastructure" many-owner="true" many-inverse="false" parent-required="true" uuid="c3779c0a-b590-4cf8-9495-984270d7496a">
-      <association-field from="infrastructureid" to="id"/>
+      <association-field from="infrastructureid" to="id" uuid="bba6891a-af42-4fad-9da5-4da50b0daf78"/>
     </association>
     <entity name="\Entities\VirtualInterface" local-name="VirtualInterface" namespace="\Entities" uuid="aa930c08-4f0b-4947-b15b-840caa7455cb">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="5c0ba88f-afec-4008-93e7-b3447d5ac484"/>
@@ -702,7 +702,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\VirtualInterface" to="\Entities\Customer" owner-alias="VirtualInterfaces" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="a6cd1017-f136-4839-a577-7477c6a5a287">
-      <association-field from="custid" to="id"/>
+      <association-field from="custid" to="id" uuid="2626bd5f-0c78-49e2-a097-49d63ddc6fb9"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -711,9 +711,9 @@
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="d2d715d5-e7fc-452c-9081-72e65fc1a1a0"/>
       <field name="vlanid" type="integer" uuid="14095112-c078-4c94-81e3-fc45e77cbc7c"/>
       <field name="address" type="string" size="16" uuid="4a92224d-c1af-4846-8157-0798b5e86d11"/>
-      <index name="vlan_address" unique="true">
-        <index-field name="vlanid"/>
-        <index-field name="address"/>
+      <index name="vlan_address" unique="true" uuid="8fa6377e-0737-422d-8cd7-8ffd75b3725c">
+        <index-field name="vlanid" uuid="8eaa7b4c-c6eb-4b4b-b5cd-f6b38ff3311d"/>
+        <index-field name="address" uuid="c173a13f-10ee-451a-af4c-fad3df57da32"/>
       </index>
       <orm-attributes>
         <attribute name="repository-class">Repositories\IPv4Address</attribute>
@@ -722,15 +722,15 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\IPv4Address" to="\Entities\Vlan" owner-alias="IPv4Addresses" inverse-alias="Vlan" many-owner="true" many-inverse="false" uuid="e52b85f7-fca3-4ba3-aadb-758ad65f2c4d">
-      <association-field from="vlanid" to="id"/>
+      <association-field from="vlanid" to="id" uuid="021eb885-9bea-4fe9-8964-dfb3c1375f53"/>
     </association>
     <entity name="\Entities\IPv6Address" local-name="IPv6Address" namespace="\Entities" uuid="3768242c-d7a1-4d2a-8aab-9a0b4e6a0a10">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="bf599b69-6460-4456-8394-382a4e66adab"/>
       <field name="vlanid" type="integer" uuid="526ef53a-689f-487f-90e7-cb2ca8bac3c9"/>
       <field name="address" type="string" size="40" uuid="09bbfb44-9bc3-40ac-b87f-c54e783f2f3b"/>
-      <index name="vlan_address" unique="true">
-        <index-field name="vlanid"/>
-        <index-field name="address"/>
+      <index name="vlan_address" unique="true" uuid="58648eb4-69f9-46fe-ab1a-1331dd96f889">
+        <index-field name="vlanid" uuid="4f5371a8-6b45-4f48-bb83-62820784cecc"/>
+        <index-field name="address" uuid="ed6b74fd-9ba4-4cd5-814a-6976ae484bae"/>
       </index>
       <orm-attributes>
         <attribute name="repository-class">Repositories\IPv6Address</attribute>
@@ -739,7 +739,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\IPv6Address" to="\Entities\Vlan" owner-alias="IPv6Addresses" inverse-alias="Vlan" many-owner="true" many-inverse="false" uuid="bc7fc00c-039c-4e6a-ad73-f571f5761bfe">
-      <association-field from="vlanid" to="id"/>
+      <association-field from="vlanid" to="id" uuid="4a1aa6b7-0c1e-4745-8d0b-4133a93215e0"/>
     </association>
     <entity name="\Entities\Customer" local-name="Customer" namespace="\Entities" uuid="0617cfe2-0a29-4671-a9d6-5401bc911e43">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="e5ece1fb-d3f0-4d51-aab1-52068bb60399"/>
@@ -798,19 +798,19 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\Customer" to="\Entities\IRRDBConfig" owner-alias="Customers" inverse-alias="IRRDB" many-owner="true" many-inverse="false" uuid="dd9b73a1-8945-4904-8fac-9ce65f5e124d">
-      <association-field from="irrdb" to="id"/>
+      <association-field from="irrdb" to="id" uuid="d8f77b01-0e2a-49be-afa8-2cb38aca4fd0"/>
       <orm-attributes>
         <attribute name="on-delete">RESTRICT</attribute>
       </orm-attributes>
     </association>
     <association from="\Entities\Customer" to="\Entities\CompanyRegisteredDetail" owner-alias="Customer" inverse-alias="RegistrationDetails" many-owner="false" many-inverse="false" uuid="576160a6-4b1c-4e4e-85fa-3dadeffa3602">
-      <association-field from="company_registered_detail_id" to="id"/>
+      <association-field from="company_registered_detail_id" to="id" uuid="5a0b5d3b-29e9-4859-8075-b9f50ddf7d51"/>
     </association>
     <association from="\Entities\Customer" to="\Entities\CompanyBillingDetail" owner-alias="Customer" inverse-alias="BillingDetails" many-owner="false" many-inverse="false" uuid="f280a2b2-7eaf-4a1a-8669-ad2f75240f72">
-      <association-field from="company_billing_details_id" to="id"/>
+      <association-field from="company_billing_details_id" to="id" uuid="1b80c856-5277-4c1f-9ab3-f37a8d168c8a"/>
     </association>
     <association from="\Entities\Customer" to="\Entities\Customer" owner-alias="ResoldCustomers" inverse-alias="Reseller" many-owner="true" many-inverse="false" uuid="670582b5-1394-4b90-b827-0a331ea5b4aa">
-      <association-field from="reseller" to="id"/>
+      <association-field from="reseller" to="id" uuid="35235600-5900-49c7-9f1e-70987099b5df"/>
     </association>
     <entity name="\Entities\Contact" local-name="Contact" namespace="\Entities" uuid="cc05d49f-a5cf-4650-9300-be430837e73b">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="8db1b416-2452-4121-8c07-d4539f7d2142"/>
@@ -835,13 +835,13 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\Contact" to="\Entities\Customer" owner-alias="Contacts" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="3de69308-a3d5-4138-97be-111724303344">
-      <association-field from="custid" to="id"/>
+      <association-field from="custid" to="id" uuid="5957574b-75d9-4879-b87d-951f349f4bf1"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
     </association>
     <association from="\Entities\Contact" to="\Entities\User" owner-alias="Contact" inverse-alias="User" many-owner="false" many-inverse="false" uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287">
-      <association-field from="user_id" to="id"/>
+      <association-field from="user_id" to="id" uuid="75d79600-a7b0-4e01-8ff4-ff818f24003d"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -859,9 +859,9 @@
       <field name="flowcontrol" type="integer" uuid="1a41b714-5aef-48c6-b5b4-cd5dfa190f25"/>
       <field name="autobaud" type="boolean" uuid="8c3747cd-8f2c-4786-affd-c6e4705b7c91"/>
       <field name="notes" type="text" uuid="2c357ee1-effe-445c-b259-b5b672266a95"/>
-      <index name="console_server_port_uniq" unique="true">
-        <index-field name="console_server_id"/>
-        <index-field name="port"/>
+      <index name="console_server_port_uniq" unique="true" uuid="baee63d6-2fdd-4930-ab87-8264edd53f0b">
+        <index-field name="console_server_id" uuid="baf631b0-521e-48c5-8f93-ab07d8ebab91"/>
+        <index-field name="port" uuid="679d25e7-f5e4-4c6f-9b40-0aafbc75064e"/>
       </index>
       <orm-attributes>
         <attribute name="repository-class">Repositories\ConsoleServerConnection</attribute>
@@ -870,13 +870,13 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\ConsoleServerConnection" to="\Entities\Customer" owner-alias="ConsoleServerConnections" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="f663287b-e38a-442b-9043-f37c176e6125">
-      <association-field from="custid" to="id"/>
+      <association-field from="custid" to="id" uuid="5b02a603-0c67-49ef-99c4-c081bb24d823"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
     </association>
     <association from="\Entities\ConsoleServerConnection" to="\Entities\ConsoleServer" owner-alias="consoleServerConnections" inverse-alias="consoleServer" many-owner="true" many-inverse="false" uuid="7264f047-7aed-475c-b870-1c3a2a1ab316">
-      <association-field from="console_server_id" to="id"/>
+      <association-field from="console_server_id" to="id" uuid="0e599b6e-09b3-443d-9e43-a7a89c8d59a5"/>
     </association>
     <entity name="\Entities\CustomerEquipment" local-name="CustomerEquipment" namespace="\Entities" uuid="e980f96e-6b58-43c4-8822-a507f25a8885">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="9beab59d-a930-4ea1-8e94-988b75b1b8af"/>
@@ -891,13 +891,13 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\CustomerEquipment" to="\Entities\Customer" owner-alias="CustomerEquipment" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="d038f4b7-cba8-4a6d-b772-a1e410b0d819">
-      <association-field from="custid" to="id"/>
+      <association-field from="custid" to="id" uuid="3d374349-8407-4531-9254-bbd6382db5ca"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
     </association>
     <association from="\Entities\CustomerEquipment" to="\Entities\Cabinet" owner-alias="CustomerEquipment" inverse-alias="Cabinet" many-owner="true" many-inverse="false" uuid="ab08b405-788c-4579-bc8d-3445b6ba3821">
-      <association-field from="cabinetid" to="id"/>
+      <association-field from="cabinetid" to="id" uuid="3e5ed977-9aa6-4167-9618-4707015ebc79"/>
     </association>
     <entity name="\Entities\IRRDBConfig" local-name="IRRDBConfig" namespace="\Entities" uuid="ceaae170-210b-45f6-81b2-9094b57e3848">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="e3eec488-aeeb-4b18-a155-e5a71fc733cc"/>
@@ -924,7 +924,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\MACAddress" to="\Entities\VirtualInterface" owner-alias="MACAddresses" inverse-alias="VirtualInterface" many-owner="true" many-inverse="false" uuid="0ddc2408-657b-4705-8e3d-05dfd77e7f4f">
-      <association-field from="virtualinterfaceid" to="id"/>
+      <association-field from="virtualinterfaceid" to="id" uuid="414c3e33-f73b-4c0a-b2e1-5ea59a6a5399"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -945,7 +945,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\NetworkInfo" to="\Entities\Vlan" owner-alias="NetworkInfo" inverse-alias="Vlan" many-owner="true" many-inverse="false" uuid="f4d2208c-a2cb-4ee8-89dd-afef07118b96">
-      <association-field from="vlanid" to="id"/>
+      <association-field from="vlanid" to="id" uuid="db30cf41-08cb-40e7-be46-3e027ed98613"/>
     </association>
     <entity name="\Entities\PeeringManager" local-name="PeeringManager" namespace="\Entities" uuid="e8b4e227-f83c-413d-9e34-56dd493985fe">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="5b5cea33-1cea-41a0-908c-1237a591698b"/>
@@ -965,13 +965,13 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\PeeringManager" to="\Entities\Customer" owner-alias="Peers" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="9a0a56b5-00e0-4eef-aba0-5c00267415cc">
-      <association-field from="custid" to="id"/>
+      <association-field from="custid" to="id" uuid="d7ed4828-ee1c-49fe-8cbc-fcd949c7a603"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
     </association>
     <association from="\Entities\PeeringManager" to="\Entities\Customer" owner-alias="PeersWith" inverse-alias="Peer" many-owner="true" many-inverse="false" uuid="c9431b23-72cb-4afa-a057-ced40869cfd0">
-      <association-field from="peerid" to="id"/>
+      <association-field from="peerid" to="id" uuid="976c72ee-388b-4e07-8d7c-c822e60cc719"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -992,13 +992,13 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\PeeringMatrix" to="\Entities\Customer" owner-alias="XCusts" inverse-alias="XCustomer" many-owner="true" many-inverse="false" uuid="4c701748-2450-4a6b-9d80-f5df9e6ebf6e">
-      <association-field from="x_custid" to="id"/>
+      <association-field from="x_custid" to="id" uuid="ab0d5ca8-3ee8-47d9-b264-bc3c5fdff71f"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
     </association>
     <association from="\Entities\PeeringMatrix" to="\Entities\Customer" owner-alias="YCusts" inverse-alias="YCustomer" many-owner="true" many-inverse="false" uuid="73e14126-258d-4d70-b63e-7a90192e3492">
-      <association-field from="y_custid" to="id"/>
+      <association-field from="y_custid" to="id" uuid="cd909218-ba40-4725-94e4-3443a987cc28"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -1018,13 +1018,14 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\RSPrefix" to="\Entities\Customer" owner-alias="RSPrefixes" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="1eba91d3-a283-42e2-8ae4-45163c1ea622">
-      <association-field from="custid" to="id"/>
+      <association-field from="custid" to="id" uuid="a8ec4bd2-bfa8-4100-ba70-efcab80e57d6"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
     </association>
     <entity name="\Entities\User" local-name="User" namespace="\Entities" uuid="47af3a5d-875a-4488-a39f-d2a3178e4d66">
       <field name="id" type="integer" primary="true" auto-increment="true" uuid="627692b3-0d23-4011-b994-dbd3ff0a4909"/>
+      <field name="name" type="string" size="255" uuid="362346f6-585c-44b1-9199-e9e2fbc55f60"/>
       <field name="username" type="string" size="255" unique="true" uuid="1d5e1545-7815-4067-9bb5-c8286cfe24b5"/>
       <field name="password" type="string" size="255" uuid="eab94e07-d600-49ca-88ce-0dd664f19425"/>
       <field name="email" type="string" size="255" uuid="7ce655e0-508e-444f-ac26-cb27e349bebf"/>
@@ -1048,7 +1049,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\User" to="\Entities\Customer" owner-alias="Users" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="f2a9c016-2e92-44b2-92dd-ca881cb6d1c5">
-      <association-field from="custid" to="id"/>
+      <association-field from="custid" to="id" uuid="4e93febb-7838-4b8f-8533-85e6edd0ab2e"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -1061,11 +1062,11 @@
       <field name="op" type="string" size="2" uuid="d12eb8f4-8a9e-4fe3-a230-2a20a7921903"/>
       <field name="value" type="text" uuid="d7cdc510-310f-4ac7-a818-600e9d2404e9"/>
       <field name="expire" type="bigint" default="0" required="true" uuid="4df2f73c-ca8f-4542-9d99-d20c4eb36ca6"/>
-      <index name="IX_UserPreference_1" unique="true">
-        <index-field name="user_id"/>
-        <index-field name="attribute"/>
-        <index-field name="op"/>
-        <index-field name="ix"/>
+      <index name="IX_UserPreference_1" unique="true" uuid="111eae52-347c-4f74-948d-2b04a64df223">
+        <index-field name="user_id" uuid="73619e6d-2ea1-4d16-9b50-d542683a7910"/>
+        <index-field name="attribute" uuid="03d2494f-eabd-4651-add6-58306bcf5ccd"/>
+        <index-field name="op" uuid="eab96445-67c2-4ee7-b316-98aa2e05011d"/>
+        <index-field name="ix" uuid="ba8d9b5e-1353-4489-bf77-7b0ebd0639ce"/>
       </index>
       <orm-attributes>
         <attribute name="tableName">user_pref</attribute>
@@ -1074,7 +1075,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\UserPreference" to="\Entities\User" owner-alias="Preferences" inverse-alias="User" many-owner="true" many-inverse="false" uuid="b205a6b5-4bdf-4d45-a9b2-971828dd39db">
-      <association-field from="user_id" to="id"/>
+      <association-field from="user_id" to="id" uuid="606607cd-690d-4514-b9ec-4ac2e9158fd6"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -1092,7 +1093,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\Traffic95th" to="\Entities\Customer" owner-alias="Traffic95ths" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="f68d03a0-7831-4bdb-847c-0b2c3fa091c9">
-      <association-field from="cust_id" to="id"/>
+      <association-field from="cust_id" to="id" uuid="939d1462-516c-4247-9405-baeebb4fd34f"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -1109,7 +1110,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\Traffic95thMonthly" to="\Entities\Customer" owner-alias="Traffic95thMonthlys" inverse-alias="Customer" many-owner="true" many-inverse="false" uuid="cd076385-16a0-4646-ae5b-6c7b87b94be4">
-      <association-field from="cust_id" to="id"/>
+      <association-field from="cust_id" to="id" uuid="f584d0a3-b6ea-4797-8fdf-244c783c4378"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -1151,13 +1152,13 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\TrafficDaily" to="\Entities\Customer" owner-alias="TrafficDailies" inverse-alias="Customer" many-owner="true" many-inverse="false" parent-required="true" uuid="212269bb-5626-4a46-b864-1a94ecee88f3">
-      <association-field from="cust_id" to="id"/>
+      <association-field from="cust_id" to="id" uuid="6c8444de-233b-44ee-85b5-079f7b627bf1"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
     </association>
     <association from="\Entities\TrafficDaily" to="\Entities\IXP" owner-alias="TrafficDaily" inverse-alias="IXP" many-owner="true" many-inverse="false" parent-required="true" uuid="879b2bdc-c0c5-4d23-b190-4a4b37cb7f68">
-      <association-field from="ixp_id" to="id"/>
+      <association-field from="ixp_id" to="id" uuid="f085b11c-3ae1-4c57-8f71-860006dd5e14"/>
     </association>
     <entity name="\Entities\OUI" local-name="OUI" namespace="\Entities" description="Organizationally Unique Identifiers" uuid="0be9b477-a199-4d85-a892-4287cf858f4d">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="75d46f98-6371-47cd-a841-019284ebd0e2"/>
@@ -1186,7 +1187,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\Logo" to="\Entities\Customer" owner-alias="logos" inverse-alias="customer" many-owner="true" many-inverse="false" uuid="07356969-b967-4fdc-b03a-1db029a1d435">
-      <association-field from="customer_id" to="id"/>
+      <association-field from="customer_id" to="id" uuid="58d9a00d-2f98-4d24-abde-ce652005d437"/>
       <orm-attributes>
         <attribute name="on-delete">RESTRICT</attribute>
       </orm-attributes>
@@ -1203,7 +1204,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\SflowReceiver" to="\Entities\VirtualInterface" owner-alias="SflowReceivers" inverse-alias="VirtualInterface" many-owner="true" many-inverse="false" uuid="619331cb-7c10-46c6-ac28-f46096e91407">
-      <association-field from="virtual_interface_id" to="id"/>
+      <association-field from="virtual_interface_id" to="id" uuid="85a1701a-2b20-42e2-8774-f4427b2b4d89"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -1229,7 +1230,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\PatchPanel" to="\Entities\Cabinet" owner-alias="patchPanels" inverse-alias="cabinet" many-owner="true" many-inverse="false" uuid="2c958365-0e49-4b74-b291-dedac8a85f74">
-      <association-field from="cabinet_id" to="id"/>
+      <association-field from="cabinet_id" to="id" uuid="1eee962c-4374-4854-89ff-26b4c6a6bd54"/>
     </association>
     <entity name="\Entities\PatchPanelPort" local-name="PatchPanelPort" namespace="\Entities" uuid="6297699e-ca02-426a-b191-3270e7e93aa8">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="995e6f54-d292-44f1-a4af-1df343a5498f"/>
@@ -1261,19 +1262,19 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\PatchPanelPort" to="\Entities\PatchPanel" owner-alias="patchPanelPorts" inverse-alias="patchPanel" many-owner="true" many-inverse="false" uuid="f719e289-ecf6-4430-9e56-989348b61488">
-      <association-field from="patch_panel_id" to="id"/>
+      <association-field from="patch_panel_id" to="id" uuid="ae6eb89f-27ef-4bd1-9ae7-9422d8cf0267"/>
     </association>
     <association from="\Entities\PatchPanelPort" to="\Entities\Customer" owner-alias="patchPanelPorts" inverse-alias="customer" many-owner="true" many-inverse="false" uuid="52d28567-bcaf-46dd-8616-115315c3d965">
-      <association-field from="customer_id" to="id"/>
+      <association-field from="customer_id" to="id" uuid="b35a8e9c-a021-4d97-b096-3081b3d887de"/>
       <orm-attributes>
         <attribute name="on-delete">RESTRICT</attribute>
       </orm-attributes>
     </association>
     <association from="\Entities\PatchPanelPort" to="\Entities\SwitchPort" owner-alias="patchPanelPort" inverse-alias="switchPort" many-owner="false" many-inverse="false" uuid="0dc9ac51-e3ab-42de-b7f6-81d5b4bf8637">
-      <association-field from="switch_port_id" to="id"/>
+      <association-field from="switch_port_id" to="id" uuid="9919539f-0285-4e78-a51c-a239ed861fad"/>
     </association>
     <association from="\Entities\PatchPanelPort" to="\Entities\PatchPanelPort" owner-alias="duplexSlavePorts" inverse-alias="duplexMasterPort" many-owner="true" many-inverse="false" uuid="b92532d3-9b72-47c4-8271-cd3f14181208">
-      <association-field from="duplex_master_id" to="id"/>
+      <association-field from="duplex_master_id" to="id" uuid="4256bfd1-1e7d-41d5-a9d5-97c22e1f4a4f"/>
     </association>
     <entity name="\Entities\PatchPanelPortHistory" local-name="PatchPanelPortHistory" namespace="\Entities" uuid="4322485e-ef2f-4893-a334-d1f7554c2fdb">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="2fce259d-ef0a-48c0-9487-f01df62db158"/>
@@ -1303,10 +1304,10 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\PatchPanelPortHistory" to="\Entities\PatchPanelPort" owner-alias="patchPanelPortHistory" inverse-alias="patchPanelPort" many-owner="true" many-inverse="false" uuid="ac59c5ec-22c1-4f07-88e9-3eeaa60d547c">
-      <association-field from="patch_panel_port_id" to="id"/>
+      <association-field from="patch_panel_port_id" to="id" uuid="5d662577-c3b6-4c56-9c92-92420e5ba661"/>
     </association>
     <association from="\Entities\PatchPanelPortHistory" to="\Entities\PatchPanelPortHistory" owner-alias="duplexSlavePorts" inverse-alias="duplexMasterPort" many-owner="true" many-inverse="false" uuid="263cdc09-054e-49c3-9b3e-c310b4edc711">
-      <association-field from="duplex_master_id" to="id"/>
+      <association-field from="duplex_master_id" to="id" uuid="08c51be2-6f83-4cad-8fc9-60576b8d0e7e"/>
     </association>
     <entity name="\Entities\Layer2Address" local-name="Layer2Address" namespace="\Entities" uuid="1363c8e6-52d8-4d98-b6e9-b01eccad244d">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="7dad668a-4089-4eb6-9142-0d5561adbdb9"/>
@@ -1315,9 +1316,9 @@
       <field name="firstseen" type="datetime" uuid="415b0cb9-b4e6-45c5-a9e1-33f05fc1ba68"/>
       <field name="lastseen" type="datetime" uuid="95776421-cf33-486c-b348-0dee67883c06"/>
       <field name="created" type="datetime" uuid="0c578113-3941-4c56-a46b-5fa0f8566a3a"/>
-      <index name="mac_vlanint" unique="true">
-        <index-field name="mac"/>
-        <index-field name="vlan_interface_id"/>
+      <index name="mac_vlanint" unique="true" uuid="18f3c9b0-d8a4-4bf2-803c-669bb0f11470">
+        <index-field name="mac" uuid="77d87c12-93f2-415f-abb0-afaaa0f99f4a"/>
+        <index-field name="vlan_interface_id" uuid="4c1356ec-4b1c-4ed9-8ee4-d8daabdf66d2"/>
       </index>
       <orm-attributes>
         <attribute name="repository-class">Repositories\Layer2Address</attribute>
@@ -1326,7 +1327,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\Layer2Address" to="\Entities\VlanInterface" owner-alias="layer2Addresses" inverse-alias="vlanInterface" many-owner="true" many-inverse="false" parent-required="true" uuid="d055afe7-fe5a-4a17-8bb6-21aa478e1633">
-      <association-field from="vlan_interface_id" to="id"/>
+      <association-field from="vlan_interface_id" to="id" uuid="c9fec5f8-2a9a-46fb-b7ea-12ade3f26954"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
@@ -1347,7 +1348,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\PatchPanelPortFile" to="\Entities\PatchPanelPort" owner-alias="patchPanelPortFiles" inverse-alias="patchPanelPort" many-owner="true" many-inverse="false" uuid="4bc1d72f-a2b3-43b8-89f6-e5aaeb3b6d59">
-      <association-field from="patch_panel_port_id" to="id"/>
+      <association-field from="patch_panel_port_id" to="id" uuid="b456e157-475f-456a-b860-7843d3b3bebd"/>
     </association>
     <entity name="\Entities\PatchPanelPortHistoryFile" local-name="PatchPanelPortHistoryFile" namespace="\Entities" uuid="1b16625d-8c68-489f-b0ca-a1969276df51">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="22a2c4e3-afc1-4b13-b9dd-727ad817aaf5"/>
@@ -1365,7 +1366,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\PatchPanelPortHistoryFile" to="\Entities\PatchPanelPortHistory" owner-alias="patchPanelPortHistoryFiles" inverse-alias="patchPanelPortHistory" many-owner="true" many-inverse="false" uuid="9fbc7658-7e64-4754-a2da-e49ad6400671">
-      <association-field from="patch_panel_port_history_id" to="id"/>
+      <association-field from="patch_panel_port_history_id" to="id" uuid="78f2323b-440f-4c33-be4a-41b07b184add"/>
     </association>
     <entity name="\Entities\Router" local-name="Router" namespace="\Entities" uuid="90947ea1-a2fb-430b-b55e-a4901eb1fa30">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="501af49b-86e9-40a4-af6d-cb6d66050516"/>
@@ -1395,7 +1396,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\Router" to="\Entities\Vlan" owner-alias="routers" inverse-alias="vlan" many-owner="true" many-inverse="false" parent-required="true" uuid="729deb72-6e14-4cec-9120-f722c6aeaa6a">
-      <association-field from="vlan_id" to="id"/>
+      <association-field from="vlan_id" to="id" uuid="653c54f2-154c-44ab-9a4e-2f3aebdc7f70"/>
     </association>
     <entity name="\Entities\CoreInterface" local-name="CoreInterface" namespace="\Entities" uuid="a6d2adc6-7ce1-4c57-b4da-5b5f17d963f7">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="cf46b873-8152-4fd1-bdb7-9c15c120b3db"/>
@@ -1407,7 +1408,7 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\CoreInterface" to="\Entities\PhysicalInterface" owner-alias="coreInterface" inverse-alias="physicalInterface" many-owner="false" many-inverse="false" uuid="cc3abe50-1c33-4763-ab4a-348810f1b04c">
-      <association-field from="physical_interface_id" to="id"/>
+      <association-field from="physical_interface_id" to="id" uuid="a77a7cca-7418-45e1-ae37-31d2537e82de"/>
     </association>
     <entity name="\Entities\CoreLink" local-name="CoreLink" namespace="\Entities" uuid="c10dc8b2-b201-42e8-83cf-cb3813a435d8">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="78aa416f-126f-4b9d-9894-75a8e608193d"/>
@@ -1425,13 +1426,13 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\CoreLink" to="\Entities\CoreInterface" caption="SideA" owner-alias="coreLink" inverse-alias="coreInterfaceSideA" many-owner="false" many-inverse="false" parent-required="true" uuid="be7e2b92-010c-49ad-b716-7879623ca29d">
-      <association-field from="core_interface_sidea_id" to="id"/>
+      <association-field from="core_interface_sidea_id" to="id" uuid="897dfae9-3f7c-40b6-b031-05e23df197aa"/>
     </association>
     <association from="\Entities\CoreLink" to="\Entities\CoreInterface" caption="SideB" owner-alias="coreLink2" inverse-alias="coreInterfaceSideB" many-owner="false" many-inverse="false" parent-required="true" uuid="0ee80a87-2e0c-4f8a-a0c5-aff080f731da">
-      <association-field from="core_interface_sideb_id" to="id"/>
+      <association-field from="core_interface_sideb_id" to="id" uuid="701cd3b8-585f-407b-9536-d979045cd70b"/>
     </association>
     <association from="\Entities\CoreLink" to="\Entities\CoreBundle" owner-alias="coreLinks" inverse-alias="coreBundle" many-owner="true" many-inverse="false" parent-required="true" uuid="d54c91d9-e69b-4f91-9666-52a881f17b12">
-      <association-field from="core_bundle_id" to="id"/>
+      <association-field from="core_bundle_id" to="id" uuid="843946cf-cd0e-4eb4-af04-e6a05d87c28e"/>
     </association>
     <entity name="\Entities\CoreBundle" local-name="CoreBundle" namespace="\Entities" uuid="6f5416c6-f6a1-4fef-8745-7affa8571ea8">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="b73e45bd-b965-4366-9b3a-58b842174edc"/>
@@ -1472,10 +1473,10 @@
       </orm-attributes>
     </entity>
     <association from="\Entities\ConsoleServer" to="\Entities\Vendor" owner-alias="consoleServers" inverse-alias="vendor" many-owner="true" many-inverse="false" uuid="10405d40-8fdd-4189-864c-0535fbf1eaf5">
-      <association-field from="vendor_id" to="id"/>
+      <association-field from="vendor_id" to="id" uuid="16b2d14b-f83e-4e5a-b3aa-455d2fbb0cf9"/>
     </association>
     <association from="\Entities\ConsoleServer" to="\Entities\Cabinet" owner-alias="consoleServers" inverse-alias="cabinet" many-owner="true" many-inverse="false" uuid="c1c0aaf2-5968-412b-8ff3-05e224f88ecd">
-      <association-field from="cabinet_id" to="id"/>
+      <association-field from="cabinet_id" to="id" uuid="7978c13e-dde2-43cb-b0bc-ba2e3c51b8c6"/>
     </association>
     <entity name="\Entities\CustomerTag" local-name="CustomerTag" namespace="\Entities" uuid="aa41e95c-958a-4689-83cb-600d2adfc217">
       <field name="id" type="integer" required="true" unique="true" primary="true" auto-increment="true" uuid="55efb147-c0e0-4a06-ab4f-7cb77676d7b0"/>
@@ -1501,10 +1502,10 @@
     </entity>
     <many-to-many mn-entity="\Entities\CustomerToCustomerTag" uuid="0f04bf1e-28ce-4bff-979e-ce0fc931bee9">
       <many-to-many-entity name="\Entities\CustomerTag" owning-side="true" alias="tags" uuid="fa315f12-5ef2-42ea-b580-6a8591d7b86e">
-        <many-to-many-field from="customer_tag_id" to="id"/>
+        <many-to-many-field from="customer_tag_id" to="id" uuid="42420583-8db0-4dfa-856b-37317afdf8cf"/>
       </many-to-many-entity>
       <many-to-many-entity name="\Entities\Customer" owning-side="false" alias="customers" uuid="a77b8979-4aea-4e12-a598-80c2e20bd513">
-        <many-to-many-field from="customer_id" to="id"/>
+        <many-to-many-field from="customer_id" to="id" uuid="6b10f3ee-b945-4034-b797-d19a151a7370"/>
       </many-to-many-entity>
     </many-to-many>
     <entity name="\Entities\BgpSession" local-name="BgpSession" namespace="\Entities" uuid="8f91adda-06e6-43ed-bea6-0aec9aeb9f2e">
@@ -1515,13 +1516,13 @@
       <field name="packetcount" type="integer" default="0" required="true" uuid="47913bed-8cb7-4391-a296-27430e2f89a8"/>
       <field name="last_seen" type="datetime" required="true" uuid="aaed9a42-e0f8-4424-b234-1d1888f6fc05"/>
       <field name="source" type="string" size="40" uuid="a073a53a-9d89-4454-99c1-04677f026bd6"/>
-      <index name="src_protocol_dst" unique="true">
-        <index-field name="srcipaddressid"/>
-        <index-field name="protocol"/>
-        <index-field name="dstipaddressid"/>
+      <index name="src_protocol_dst" unique="true" uuid="effc9d28-9c90-45de-a966-41c5c4295e45">
+        <index-field name="srcipaddressid" uuid="68225249-b53b-4326-aed4-a8bc787799ed"/>
+        <index-field name="protocol" uuid="a7f169ba-9e7a-4fea-b01e-f38f70cb57a6"/>
+        <index-field name="dstipaddressid" uuid="5e686b87-338c-49a7-9203-9e94f2dcdaf3"/>
       </index>
       <orm-attributes>
-        <attribute name="repository-class">Repositories\BgpSessions</attribute>
+        <attribute name="repository-class">Repositories\BgpSession</attribute>
         <attribute name="table">bgp_sessions</attribute>
         <attribute name="tableName">bgp_sessions</attribute>
       </orm-attributes>
@@ -1540,7 +1541,7 @@
     <association uuid="212269bb-5626-4a46-b864-1a94ecee88f3" center-position-x="-5" center-position-y="0" color="#969696"/>
     <association uuid="263cdc09-054e-49c3-9b3e-c310b4edc711" center-position-x="0" center-position-y="-20" color="#969696"/>
     <association uuid="2c958365-0e49-4b74-b291-dedac8a85f74" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
-    <association uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
+    <association uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="39ad3dd5-487b-4152-9190-558bd7e80668" center-position-x="-7" center-position-y="0" color="#969696"/>
     <association uuid="3de69308-a3d5-4138-97be-111724303344" caption1-position-x="-1" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="4bc1d72f-a2b3-43b8-89f6-e5aaeb3b6d59" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
@@ -1612,7 +1613,7 @@
     <entity uuid="3da990c1-6ab8-436e-8800-e09a08ebee16" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1032" position-y="1017" size-x="0" size-x2="135" size-y="0" size-y2="129"/>
     <entity uuid="4322485e-ef2f-4893-a334-d1f7554c2fdb" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1039" position-y="-319" size-x="0" size-x2="141" size-y="0" size-y2="241"/>
     <entity uuid="4365d7b5-d069-4c14-8f53-57e4a0a33786" bg-color="4294967295" hdr-color="4292006610" position-x="1709" position-y="-32" size-x="0" size-x2="109" size-y="0" size-y2="74"/>
-    <entity uuid="47af3a5d-875a-4488-a39f-d2a3178e4d66" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="809" position-y="653" size-x="0" size-x2="145" size-y="0" size-y2="213"/>
+    <entity uuid="47af3a5d-875a-4488-a39f-d2a3178e4d66" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="919" position-y="757" size-x="0" size-x2="139" size-y="0" size-y2="199"/>
     <entity uuid="48d00263-155b-4410-b5da-4f7b2ef3bfc4" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="228" position-y="-191" size-x="0" size-x2="122" size-y="0" size-y2="185"/>
     <entity uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="81" position-y="1042" size-x="0" size-x2="109" size-y="0" size-y2="87"/>
     <entity uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a" bg-color="4294967295" hdr-color="4292006610" position-x="98" position-y="698" size-x="0" size-x2="101" size-y="0" size-y2="87"/>

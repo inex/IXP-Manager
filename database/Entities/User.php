@@ -4,7 +4,6 @@ namespace Entities;
 
 use Entities\{
     ApiKey              as ApiKeyEntity,
-    Contact             as ContactEntity,
     Customer            as CustomerEntity,
     User                as UserEntity,
     UserLoginHistory    as UserLoginHistoryEntity,
@@ -46,6 +45,15 @@ class User implements Authenticatable
         User::AUTH_SUPERUSER => 'Superuser'
     );
 
+    public static $PRIVILEGES_TEXT_NONSUPERUSER = array(
+        User::AUTH_CUSTUSER  => 'Customer User',
+        User::AUTH_CUSTADMIN => 'Customer Administrator',
+    );
+
+    /**
+     * @var string $name
+     */
+    protected $name;
 
     /**
      * @var string $username
@@ -139,6 +147,29 @@ class User implements Authenticatable
     public function __construct()
     {
         $this->Preferences = new ArrayCollection();
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return User
+     */
+    public function setName(string $name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string|null
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -518,32 +549,6 @@ class User implements Authenticatable
         $this->Children->removeElement($children);
     }
 
-    protected $Contact;
-
-
-    /**
-     * Set Contact
-     *
-     * @param ContactEntity $contact
-     * @return User
-     */
-    public function setContact(ContactEntity $contact = null)
-    {
-        $this->Contact = $contact;
-
-        return $this;
-    }
-
-    /**
-     * Get Contact
-     *
-     * @return \Entities\Contact
-     */
-    public function getContact()
-    {
-        return $this->Contact;
-    }
-
     /**
      * Add LastLogins
      *
@@ -637,6 +642,34 @@ class User implements Authenticatable
     }
 
 
+    /**
+     * @var \Entities\Contact
+     */
+    protected $Contact;
+
+    /**
+     * Set Contact
+     *
+     * @param \Entities\Contact $contact
+     * @return User
+     */
+    public function setContact(Contact $contact)
+    {
+        $this->Contact = $contact;
+
+        return $this;
+    }
+
+    /**
+     * Get Contact
+     *
+     * @return \Entities\Contact
+     */
+    public function getContact()
+    {
+        return $this->Contact;
+    }
+
 
     /***************************************************************************
      | LARAVEL 5 USER PROVIDER INTERFACE METHODS
@@ -714,5 +747,10 @@ class User implements Authenticatable
     /***************************************************************************
      | END LARAVEL 5 USER PROVIDER INTERFACE METHODS
      ***************************************************************************/
+
+
+
+
+
 
 }
