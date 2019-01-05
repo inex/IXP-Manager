@@ -139,12 +139,18 @@ class UserController extends Doctrine2Frontend {
 
             case UserEntity::AUTH_CUSTADMIN:
 
-                $this->feParams->pagetitle = 'User Admin for ' . Auth::getUser()->getCustomer()->getName();
+                $this->feParams->pagetitle = 'Your Users';
 
                 $this->feParams->listColumns = [
                     'name'          => 'Name',
                     'username'      => 'Username',
                     'email'         => 'Email',
+
+                    'privileges'    => [
+                        'title'     => 'Privileges',
+                        'type'      => self::$FE_COL_TYPES[ 'XLATE' ],
+                        'xlator'    => UserEntity::$PRIVILEGES_TEXT
+                    ],
 
                     'disabled'       => [
                         'title'         => 'Enabled',
@@ -316,7 +322,7 @@ class UserController extends Doctrine2Frontend {
 
         } else {
 
-            if( $this->object->getId() && !Auth::getUser()->isSuperUser() && Auth::getUser()->getCustomer()->getId() != $this->object->getCustomer()->getId() ){
+            if( $this->object->getId() && Auth::getUser()->getCustomer()->getId() != $this->object->getCustomer()->getId() ){
                 $this->unauthorized();
             }
 

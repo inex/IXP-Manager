@@ -45,6 +45,11 @@ class User implements Authenticatable
         User::AUTH_SUPERUSER => 'Superuser'
     );
 
+    public static $PRIVILEGES_TEXT_NONSUPERUSER = array(
+        User::AUTH_CUSTUSER  => 'Customer User',
+        User::AUTH_CUSTADMIN => 'Customer Administrator',
+    );
+
     /**
      * @var string $name
      */

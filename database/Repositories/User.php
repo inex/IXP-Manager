@@ -231,9 +231,9 @@ class User extends EntityRepository
 
 
 
-        if( $user && $user->isCustAdmin() ) {
+        if( $user && !$user->isSuperUser() ) {
             $dql .= " AND u.Customer = " . $user->getCustomer()->getId() . "
-                      AND u.privs <= " . UserEntity::AUTH_CUSTUSER;
+                      AND u.privs <= " . UserEntity::AUTH_CUSTADMIN;
         }
 
         if( $id ) {
