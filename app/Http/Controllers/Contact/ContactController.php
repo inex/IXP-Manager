@@ -284,7 +284,7 @@ class ContactController extends Doctrine2Frontend
 
         session()->remove( "contact_post_store_redirect" );
 
-        // check if we come from the customer overview or the customer list
+        // check if we come from the customer overview or the contact list
         if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
             session()->put( 'contact_post_store_redirect',     'customer@overview' );
             session()->put( 'contact_post_store_redirect_cid', request()->input('cust', null ) );
@@ -472,8 +472,8 @@ class ContactController extends Doctrine2Frontend
             return route( 'contact@list' );
         } else {
 
-            $redirect = request()->session()->get( "contact_post_store_redirect" );
-            request()->session()->remove( "contact_post_store_redirect" );
+            $redirect = session()->get( "contact_post_store_redirect" );
+            session()->remove( "contact_post_store_redirect" );
 
             // retrieve the customer ID
             if( $redirect === 'customer@overview' ) {

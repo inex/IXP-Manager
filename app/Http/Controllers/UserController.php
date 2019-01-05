@@ -207,10 +207,16 @@ class UserController extends Doctrine2Frontend {
 
         request()->session()->remove( "user_post_store_redirect" );
 
-        // check if we come from the customer overview or the customer list
+        // check if we come from the customer overview or the user list
         if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
-            request()->session()->put( "user_post_store_redirect", "customer@overview" );
+            session()->put( 'user_post_store_redirect',     'customer@overview' );
+            session()->put( 'user_post_store_redirect_cid', request()->input('cust', null ) );
+        } else {
+            session()->put( 'user_post_store_redirect', 'user@list' );
+            session()->put( 'user_post_store_redirect_cid', null );
         }
+
+
 
         if( $id !== null ) {
 
@@ -231,6 +237,15 @@ class UserController extends Doctrine2Frontend {
                 'enabled'          => array_key_exists( 'enabled',             $old ) ? ( $old['enabled'] ? 1 : 0 )  : ( $this->object->getDisabled() ? 0 : 1 ),
                 'privs'            => array_key_exists( 'privs',               $old ) ? $old['privs']                : $this->object->getPrivs(),
             ]);
+
+        } else {
+
+            if( request()->input( "cust" ) && ( $cust = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "cust" ) ) ) ){
+                Former::populate( [
+                    'custid'                    => $cust->getId(),
+                ] );
+            }
+
         }
 
         return [
@@ -335,12 +350,16 @@ class UserController extends Doctrine2Frontend {
      */
     protected function postStoreRedirect()
     {
+        if( !Auth::getUser()->isSuperUser() ) {
+            return route( 'user@list' );
+        } else {
 
-        if( $redirect = request()->session()->get( "user_post_store_redirect", false ) ) {
-            request()->session()->remove( "user_post_store_redirect" );
+            $redirect = session()->get( "user_post_store_redirect" );
+            session()->remove( "user_post_store_redirect" );
 
-            if( $redirect === "customer@overview" ) {
-                return route( "customer@overview", [ "id" => $this->object->getCustomer()->getId(), "tab" => "users" ] );
+            // retrieve the customer ID
+            if( $redirect === 'customer@overview' ) {
+                return route( 'customer@overview' , [ 'id' => $this->object->getCustomer()->getId() , 'tab' => 'users' ] );
             }
         }
 

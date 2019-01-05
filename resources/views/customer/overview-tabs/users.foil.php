@@ -4,6 +4,9 @@
         <thead>
         <tr>
             <th>
+                Name
+            </th>
+            <th>
                 Username
             </th>
             <th>
@@ -16,7 +19,10 @@
                 Last Login
             </th>
             <th>
-                Action
+                Actions
+                <a id="users-add-btn" class="btn btn-default btn-xs" href="<?= route( "user@add" ) . "?cust=" . $t->c->getId() ?>">
+                    <i class="glyphicon glyphicon-plus"></i>
+                </a>
             </th>
         </tr>
         </thead>
@@ -24,6 +30,9 @@
         <?php if( count( $t->c->getUsers() ) ): ?>
             <?php foreach( $t->c->getUsers() as $u ): ?>
                 <tr>
+                    <td>
+                        <?= $t->ee( $u->getName() ) ?>
+                    </td>
                     <td>
                         <?= $t->ee( $u->getUsername() ) ?>
                     </td>

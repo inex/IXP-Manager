@@ -158,7 +158,7 @@
                 $cancel_url = route('contact@list' );
         } else {
             $custid = null;
-            if( isset( $t->data[ 'params'][ 'object'] ) && $t->data[ 'params'][ 'object'] instanceof \Entities\User ) {
+            if( isset( $t->data[ 'params'][ 'object'] ) && $t->data[ 'params'][ 'object'] instanceof \Entities\Contact ) {
                 $custid = $t->data[ 'params'][ 'object']->getCustomer()->getId();
             } else if( session()->get( 'contact_post_store_redirect_cid', null ) !== null ) {
                 $custid = session()->get( 'contact_post_store_redirect_cid' );
