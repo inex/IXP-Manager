@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009-2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -65,7 +65,7 @@ class NetworkInfoController extends Doctrine2Frontend {
         $this->feParams         = (object)[
 
             'entity'            => NetworkInfoEntity::class,
-            'pagetitle'         => 'Network Informations',
+            'pagetitle'         => 'Network Information',
 
             'titleSingular'     => 'Network Information',
             'nameSingular'      => 'Network Information',
@@ -97,7 +97,6 @@ class NetworkInfoController extends Doctrine2Frontend {
 
         // display the same information in the view as the list
         $this->feParams->viewColumns = $this->feParams->listColumns;
-
 
     }
 
@@ -182,11 +181,10 @@ class NetworkInfoController extends Doctrine2Frontend {
         $vlan = D2EM::getRepository( VlanEntity::class )->find( $request->input( 'vlanid' ) );
 
         if( $ni = D2EM::getRepository( NetworkInfoEntity::class )->findOneBy( [ "Vlan" => $vlan->getId() , "protocol" => $request->input( 'protocol' ) ] ) ) {
-            if( $this->object->getId() != $ni->getId() ){
-                AlertContainer::push( "The Network Info with the Vlan : " . $vlan->getName() . " and the IpV" . $request->input( 'protocol' ) . " Protocol already exist."   , Alert::DANGER );
+            if( $this->object->getId() != $ni->getId() ) {
+                AlertContainer::push( "Network information for this vlan (" . $vlan->getName() . ") and and protocol (ipv" . $request->input( 'protocol' ) . ") already exists. Please edit that instead."   , Alert::DANGER );
                 return Redirect::back()->withErrors( $validator )->withInput();
             }
-
         }
 
         $this->object->setVlan(         $vlan );

@@ -178,28 +178,22 @@
                     <?php endif; ?>
                 <?php endif; ?>
 
-                <li class="<?= !request()->is( 'network-info/*' ) ?: 'active' ?>" >
-                    <a href="<?= route('network-info@list' ) ?>">Network Informations</a>
-                </li>
-
                 <li <?php if( $t->controller == 'VendorController' ):?> class="active" <?php endif;?> >
                     <a href="<?= route('vendor@list' ) ?>">Vendors</a>
                 </li>
 
                 <li <?php if( $t->controller == 'VlanController' && !strpos( strtolower($t->action) , 'private') ):?> class="active" <?php endif;?> >
                     <a href="<?= route('vlan@list' ) ?>">VLANs</a>
-                    <?php /* {if $controller eq 'vlan'}
-                        <ul class="nav nav-list">
-                            <li {if $controller eq 'vlan' and $action eq 'private'}class="active"{/if}>
-                                <a href="{genUrl controller='vlan' action='private'}">Private VLANs</a>
-                            </li>
-                        </ul>
-                    {/if} */ ?>
                 </li>
 
-                <?php if(  $t->controller == 'VlanController' ): ?>
+                <?php if(  $t->controller == 'VlanController' || $t->controller == 'NetworkInfoController' ): ?>
+
+                    <li class="sub-menu <?= !request()->is( 'network-info/*' ) ?: 'active' ?>" >
+                        <a href="<?= route('network-info@list' ) ?>">Network Information</a>
+                    </li>
+
                     <li class="sub-menu <?= $t->controller == 'VlanController' && strpos( strtolower($t->action) , 'private')  ? 'active' : '' ?>">
-                        <a href="<?= route( 'vlan@private' ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;Private VLANs</a>
+                        <a href="<?= route( 'vlan@private' ) ?>">Private VLANs</a>
                     </li>
                 <?php endif; ?>
 
