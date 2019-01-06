@@ -15,6 +15,12 @@
 
     <span class="pull-right">
         <div class="btn-group btn-group-xs" role="group">
+            <a type="button" href="<?= route( "interfaces/virtual/edit" , [ "id" => $t->vli->getVirtualInterface()->getId() ] ) ?>" class="btn btn-default">
+                Virtual Interface Details
+            </a>
+        </div>
+
+        <div class="btn-group btn-group-xs" role="group">
             <a type="button" class="btn btn-default" id="add-l2a">
                 <span class="glyphicon glyphicon-plus"></span>
             </a>
