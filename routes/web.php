@@ -104,6 +104,13 @@ Route::group( [ 'namespace' => 'Auth' ], function() {
 
     Route::get( 'username',                 'ForgotPasswordController@showUsernameForm'             )->name( "forgot-password@showUsernameForm" );
     Route::post('forgot-username',          'ForgotPasswordController@sendUsernameEmail'            )->name( "forgot-password@username-email"   );
+
+
+    // IXP Manager <v4.9 aliases for static links
+    Route::redirect( '/auth/logout',        '/logout',          301 );
+    Route::redirect( '/auth/login',         '/login',           301 );
+    Route::redirect( '/auth/lost-password', '/password/forget', 301 );
+    Route::redirect( '/auth/lost-username', '/username',        301 );
 });
 
 

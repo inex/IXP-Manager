@@ -44,7 +44,7 @@ You will always find our current support contact details at: https://www.inex.ie
 To get your new password (or reset it), please use the *lost password* procedure by visiting the following link and entering your username as above:
 
 
-[Click here to reset password]({{ url( "auth/lost-password" ) }})
+[Click here to reset password]({{ route( "forgot-password@show-form" ) }})
 
 
 

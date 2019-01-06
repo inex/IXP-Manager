@@ -196,13 +196,13 @@
                     <a href="<?= route('vlan@list' ) ?>">VLANs</a>
                 </li>
 
-                <?php if(  request()->is( 'vlan/*' ) || $t->controller == 'NetworkInfoController' ): ?>
+                <?php if( request()->is( 'vlan/*' ) || request()->is( 'network-info/*' ) ): ?>
 
                     <li class="sub-menu <?= !request()->is( 'network-info/*' ) ?: 'active' ?>" >
                         <a href="<?= route('network-info@list' ) ?>">Network Information</a>
                     </li>
 
-                    <li class="sub-menu <?= $t->controller == 'VlanController' && strpos( strtolower($t->action) , 'private')  ? 'active' : '' ?>">
+                    <li class="sub-menu <?= request()->is( 'vlan/private' ) ? 'active' : '' ?>">
                         <a href="<?= route( 'vlan@private' ) ?>">Private VLANs</a>
                     </li>
 
@@ -235,11 +235,6 @@
                 <li class="<?= !request()->is( 'statistics/league-table' ) ?: 'active' ?> ">
                     <a href="<?= route( 'statistics/league-table' ) ?>">League Table</a>
                 </li>
-
-                <?php /*
-                {* 95th Percentiles {genUrl controller="customer" action="ninety-fifth"} *}
-                {* Last Logins      {genUrl controller="user" action="last"} *}
-                */ ?>
 
                 <li class="nav-header">
                     IXP Utilities

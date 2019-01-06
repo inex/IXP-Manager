@@ -99,7 +99,7 @@
                 </li>
 
                 <li class="">
-                    <a href="<?= url( '/auth/login' ) ?>">Login</a>
+                    <a href="<?= route( 'login@showForm' ) ?>">Login</a>
                 </li>
             </ul>
         </div>

@@ -16,7 +16,7 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
 
-                <li {if $controller eq "dashboard"}class="active"{/if}>
+                <li class="<?= request()->is( 'dashboard/*' ) ? 'active' : '' ?>">
                     <a href="<?= url('') ?>">Home</a>
                 </li>
 

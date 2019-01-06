@@ -32,12 +32,15 @@ class LoginController extends Controller
      |
      */
     use AuthenticatesUsers;
+
+
     /**
      * Where to redirect users after login.
      *
      * @var string
      */
     protected $redirectTo = '/';
+
 
     /**
      * Get the login username to be used by the controller.
@@ -49,6 +52,7 @@ class LoginController extends Controller
         return 'username';
     }
 
+
     /**
      * Create a new controller instance.
      *
@@ -59,10 +63,12 @@ class LoginController extends Controller
         $this->middleware( 'guest' )->except( 'logout' );
     }
 
+
     public function showLoginForm()
     {
         return view( 'auth/login' );
     }
+
 
     /**
      * Attempt to log the user into the application.
@@ -77,6 +83,7 @@ class LoginController extends Controller
         );
     }
 
+
     /**
      * The user has been authenticated.
      *
@@ -88,18 +95,18 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        if( config( "ixp_fe.login_history.enabled" ) ){
+        if( config( "ixp_fe.login_history.enabled" ) ) {
 
             $log = new UserLoginHistoryEntity;
-            D2EM::persist( $log );
             $log->setAt( new \DateTime() );
-            $log->setIp( $_SERVER['REMOTE_ADDR'] );
+            $log->setIp( request()->ip() );
             $log->setUser( $user );
+            D2EM::persist( $log );
             D2EM::flush();
         }
 
         if( method_exists( $user, 'hasPreference' ) ) {
-            $user->setPreference( 'auth.last_login_from', $_SERVER['REMOTE_ADDR'] );
+            $user->setPreference( 'auth.last_login_from', request()->ip() );
             $user->setPreference( 'auth.last_login_at',   time()                );
         }
     }
