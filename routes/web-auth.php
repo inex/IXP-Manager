@@ -62,6 +62,12 @@ Route::group( [ 'prefix' => 'profile' ], function() {
 
 Route::get(  'switch/configuration',       'Switches\SwitchController@configuration'       )->name( "switch@configuration" );
 
+// Authentication routes...
+Route::group( [ 'namespace' => 'Auth' ], function() {
+    Route::get('switch-user/{id}',         'SwitchUserController@switch'                            )->name( "switch-user@switch"            );
+    Route::get('switch-user-back',         'SwitchUserController@switchBack'                        )->name( "switch-user@switchBack"        );
+});
+
 Route::group( [ 'prefix' => 'dashboard' ], function() {
     Route::get(  '{tab?}',                          'DashboardController@index'                 )->name( "dashboard@index"                  );
     Route::post(  'store-noc-details',              'DashboardController@storeNocDetails'       )->name( "dashboard@store-noc-details"      );
@@ -74,3 +80,4 @@ Route::get(  'peering-manager/{id}/mark-peering/{status}', 'PeeringManagerContro
 Route::post( 'peering-manager/form',                       'PeeringManagerController@formEmailFrag'    )->name( 'peering-manager@form-email-frag'  );
 Route::post( 'peering-manager/send-peering-email',      'PeeringManagerController@sendPeeringEmail' )->name( "peering-manager@send-peering-email" );
 Route::post( 'peering-manager/notes',                   'PeeringManagerController@peeringNotes'     )->name( "peering-manager@notes" );
+

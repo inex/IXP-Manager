@@ -36,10 +36,10 @@ class RouterControllerTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
-                    ->visit('/auth/login')
+                    ->visit('/login')
                     ->type( 'username', 'travis' )
                     ->type( 'password', 'travisci' )
-                    ->press( 'submit' )
+                    ->press( 'Login' )
                     ->assertPathIs( '/admin' );
 
             $browser->visit( '/router/add' )

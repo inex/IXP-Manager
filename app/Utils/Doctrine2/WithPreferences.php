@@ -1,53 +1,43 @@
 <?php
 
-/**
- * OSS Framework
+namespace IXP\Utils\Doctrine2;
+
+/*
+ * Copyright (C) 2009-2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
  *
- * This file is part of the "OSS Framework" - a library of tools, utilities and
- * extensions to the Zend Framework V1.x used for PHP application development.
+ * This file is part of IXP Manager.
  *
- * Copyright (c) 2007 - 2012, Open Source Solutions Limited, Dublin, Ireland
- * All rights reserved.
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
  *
- * Open Source Solutions Limited is a company registered in Dublin,
- * Ireland with the Companies Registration Office (#438231). We
- * trade as Open Solutions with registered business name (#329120).
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
  *
- * Contact: Barry O'Donovan - info (at) opensolutions (dot) ie
- *          http://www.opensolutions.ie/
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
  *
- * LICENSE
- *
- * This source file is subject to the new BSD license that is bundled
- * with this package in the file LICENSE.txt.
- *
- * It is also available through the world-wide-web at this URL:
- *     http://www.opensolutions.ie/licenses/new-bsd
- *
- * If you did not receive a copy of the license and are unable to
- * obtain it through the world-wide-web, please send an email
- * to info@opensolutions.ie so we can send you a copy immediately.
- *
- * @category   OSS
- * @package    OSS_Doctrine2
- * @copyright  Copyright (c) 2007 - 2012, Open Source Solutions Limited, Dublin, Ireland
- * @license    http://www.opensolutions.ie/licenses/new-bsd New BSD License
- * @link       http://www.opensolutions.ie/ Open Source Solutions Limited
- * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @author     The Skilled Team of PHP Developers at Open Solutions <info@opensolutions.ie>
+ * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
 use Doctrine\ORM\Mapping as ORM;
+
+use D2EM;
+
+use Exception;
 
 /**
  * Functions to add preference functionality to users / customers / companies / etc
  *
  * @category   OSS
  * @package    OSS_Doctrine2
- * @copyright  Copyright (c) 2007 - 2012, Open Source Solutions Limited, Dublin, Ireland
+ * @copyright  2009-2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * @license    http://www.opensolutions.ie/licenses/new-bsd New BSD License
  */
-trait OSS_Doctrine2_WithPreferences
+trait WithPreferences
 {
 
     /**
@@ -63,17 +53,6 @@ trait OSS_Doctrine2_WithPreferences
     protected $_preferenceClassName;
 
 
-    /**
-     * Should we cache the preferences in the session?
-     * @var boolean
-     */
-    private $_cache = true;
-
-    /**
-     * The namespace for the cache.
-     * @var Zend_Session_Namespace
-     */
-    private $_namespace = null;
 
 
     /**
@@ -183,9 +162,8 @@ trait OSS_Doctrine2_WithPreferences
         $pref->setIx( $index );
 
         try {
-            $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
-            $em->persist( $pref );
-        } catch( Zend_Exception $e ) {
+            D2EM::persist( $pref );
+        } catch( Exception $e ) {
             D2EM::persist($pref);
         }
 
@@ -269,11 +247,12 @@ trait OSS_Doctrine2_WithPreferences
      * @param string $operator default '=' The operand (e.g. = (default), <, <=, :=, =, += etc)
      * @param int $expires default 0 The expiry as a UNIX timestamp. Default 0 which means never.
      * @param int $max The maximum index allowed. Defaults to 0 meaning no limit.
-     * @return OSS_Doctrine_Record_WithPreferences An instance of this object for fluid interfaces.
-     * @throws OSS_Doctrine2_WithPreferences_IndexLimitException If $max is set and limit exceeded
+     * @throws IndexLimitException If $max is set and limit exceeded
      */
     public function addIndexedPreference( $attribute, $value, $operator = '=', $expires = 0, $max = 0 )
     {
+
+
         // what's the current highest index and how many is there?
         $highest = -1; $count = 0;
 
@@ -287,8 +266,9 @@ trait OSS_Doctrine2_WithPreferences
             }
         }
 
+
         if( $max != 0 && $count >= $max )
-            throw new \OSS_Doctrine2_WithPreferences_IndexLimitException( 'Requested maximum number of indexed preferences reached' );
+            throw new IndexLimitException( 'Requested maximum number of indexed preferences reached' );
 
         if( is_array( $value ) )
         {
@@ -301,11 +281,13 @@ trait OSS_Doctrine2_WithPreferences
                 $pref->setExpire( $expires );
                 $pref->setIx( ++$highest );
 
+
+
                 try {
-                    $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
-                    $em->persist( $pref );
-                } catch( Zend_Exception $e ) {
+                    D2EM::persist( $pref );
+                } catch( Exception $e ) {
                     D2EM::persist($pref);
+                    D2EM::flush();
                 }
             }
         }
@@ -319,10 +301,10 @@ trait OSS_Doctrine2_WithPreferences
             $pref->setIx( ++$highest );
 
             try {
-                $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
-                $em->persist( $pref );
-            } catch( Zend_Exception $e ) {
+                D2EM::persist( $pref );
+            } catch( Exception $e ) {
                 D2EM::persist($pref);
+                D2EM::flush();
             }
         }
 
@@ -358,9 +340,8 @@ trait OSS_Doctrine2_WithPreferences
                 $count++;
                 $this->getPreferences()->removeElement( $pref );
                 try {
-                    $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
-                    $em->remove( $pref );
-                } catch( Zend_Exception $e ) {
+                    D2EM::remove( $pref );
+                } catch( Exception $e ) {
                     D2EM::remove($pref);
                 }
             }
@@ -391,9 +372,8 @@ trait OSS_Doctrine2_WithPreferences
                     $count++;
                     $this->getPreferences()->removeElement( $pref );
                     try {
-                        $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
-                        $em->remove( $pref );
-                    } catch( Zend_Exception $e ) {
+                        D2EM::remove( $pref );
+                    } catch( Exception $e ) {
                         D2EM::remove( $pref );
                     }
 
@@ -414,12 +394,10 @@ trait OSS_Doctrine2_WithPreferences
     {
         try {
 
-            $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
-
-            return $em->createQuery( "DELETE \\Entities\\UserPreference up WHERE up.User = ?1" )
+            return D2EM::createQuery( "DELETE \\Entities\\UserPreference up WHERE up.User = ?1" )
                 ->setParameter( 1, $this )
                 ->execute();
-        } catch( Zend_Exception $e ) {
+        } catch( Exception $e ) {
             return D2EM::createQuery( "DELETE \\Entities\\UserPreference up WHERE up.User = ?1" )
                 ->setParameter( 1, $this )
                 ->execute();
@@ -565,9 +543,8 @@ trait OSS_Doctrine2_WithPreferences
                     $this->getPreferences()->removeElement( $pref );
 
                     try {
-                        $em = \Zend_Registry::get( 'd2em' )[ 'default' ];
-                        $em->remove( $pref );
-                    } catch( Zend_Exception $e ) {
+                        D2EM::remove( $pref );
+                    } catch( Exception $e ) {
                         D2EM::remove( $pref );
                     }
 
@@ -649,8 +626,8 @@ trait OSS_Doctrine2_WithPreferences
         );
 
         try {
-            return \Zend_Registry::get( 'd2em' )[ 'default' ]->createQuery( $query )->getResult();
-        } catch( Zend_Exception $e ) {
+            return D2EM::createQuery( $query )->getResult();
+        } catch( Exception $e ) {
             return D2EM::createQuery( $query )->getResult();
         }
     }
@@ -662,7 +639,6 @@ trait OSS_Doctrine2_WithPreferences
      * @param  array  $config
      * @param  string $key
      * @param  string $value
-     * @throws Zend_Config_Exception
      * @return array
      */
     private function _processKey($config, $key, $value)

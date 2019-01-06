@@ -136,8 +136,15 @@ abstract class Doctrine2Frontend extends Controller {
      *
      */
     public function __construct( ){
-        $this->feInit();
-        $this->data[ 'col_types' ] = self::$FE_COL_TYPES;
+
+        $this->middleware(function ($request, $next) {
+            $this->feInit();
+            $this->data[ 'col_types' ] = self::$FE_COL_TYPES;
+
+            return $next($request);
+        });
+
+
     }
 
 
@@ -172,13 +179,13 @@ abstract class Doctrine2Frontend extends Controller {
         });
 
         $class::additionalRoutes( $route_prefix );
+
     }
 
     /**
      * Work out the route prefix
      */
     public static function route_prefix() {
-
         $class = get_called_class();
 
         if( $class::$route_prefix ) {
@@ -449,7 +456,6 @@ abstract class Doctrine2Frontend extends Controller {
         if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( $request->input( 'id' ) ) ) ) {
             return abort( '404' );
         }
-
 
         $this->request = $request;
 

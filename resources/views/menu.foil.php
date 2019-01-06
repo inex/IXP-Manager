@@ -20,63 +20,69 @@
                     IXP Customer Actions
                 </li>
 
-                <li  <?php if( $t->controller == 'CustomerController' ): ?> class="active" <?php endif; ?> >
+                <li class="<?= !request()->is( 'customer/*' ) ?: 'active' ?>" >
                     <a href="<?= route( 'customer@list' ) ?>">Customers</a>
                 </li>
-                <?php if( $t->controller == 'CustomerController' || $t->controller == 'CustomerTagController' ): ?>
-                    <li class="sub-menu <?php if( $t->controller == 'CustomerTagController' ):?> active <?php endif;?> " >
+                <?php if( request()->is( 'customer/*' ) || request()->is( 'customer-tag/*' ) ): ?>
+
+                    <li class="sub-menu <?= !request()->is( 'customer-tag/*' ) ?: 'active' ?> " >
                         <a href="<?= route('customer-tag@list' ) ?>">Tags</a>
                     </li>
                 <?php endif; ?>
 
-                <li <?php if( $t->controller == 'VirtualInterfaceController' ): ?> class="active" <?php endif; ?> >
+                <li class="<?= !request()->is( 'interfaces/virtual*' ) ?: 'active' ?>" >
 
                     <a href="<?= route( 'interfaces/virtual/list' ) ?>" >
                         Interfaces / Ports
                     </a>
 
                 </li>
+                    <?php if( request()->is( 'interfaces/*' ) ): ?>
 
-                    <?php if( substr( $t->controller, -19 ) == 'InterfaceController' ): ?>
-
-                        <li class="sub-menu <?php if( $t->controller == 'PhysicalInterfaceController' ):?> active <?php endif;?> " >
+                        <li class="sub-menu <?= !request()->is( 'interfaces/physical/*' ) ?: 'active' ?> " >
                             <a href="<?= route('interfaces/physical/list' ) ?>">Physical Interface</a>
                         </li>
 
-                        <li class="sub-menu <?php if( $t->controller == 'VlanInterfaceController' ):?> active <?php endif;?> " >
+                        <li class="sub-menu <?= !request()->is( 'interfaces/vlan/*' ) ?: 'active' ?> " >
                             <a href="<?= route('interfaces/vlan/list' ) ?>">Vlan Interface</a>
                         </li>
 
                     <?php endif; ?>
 
-                <li class="<?= $t->controller != 'SflowReceiverController' ?: 'active' ?>" >
+                <li class="<?= !request()->is( 'interfaces/sflow-receiver/*' ) ?: 'active' ?>" >
                     <a href="<?= route('interfaces/sflow-receiver/list') ?>">Sflow Receivers</a>
                 </li>
 
-                <li <?php if( $t->controller == 'PatchPanelController' ):?> class="active" <?php endif;?> >
+                <li class="<?= !request()->is( 'patch-panel/*' ) ?: 'active' ?>" >
+
                     <a href="<?= route('patch-panel/list' ) ?>">Patch Panels</a>
-                    <?php if( $t->controller == 'PatchPanelPortController' || $t->controller == 'PatchPanelController' ):?>
-                        <li class="sub-menu <?php if( $t->controller == 'PatchPanelPortController' ):?> active <?php endif;?> " >
+
+                    <?php if( request()->is( 'patch-panel/*' ) || request()->is( 'patch-panel-port/*' ) ): ?>
+
+                        <li class="sub-menu <?= !request()->is( 'patch-panel-port/*' ) ?: 'active' ?> " >
                             <a href="<?= route('patch-panel-port/list' ) ?>">Patch Panel Port</a>
                         </li>
                     <?php endif;?>
+
                 </li>
 
-                <li <?php if( $t->controller == 'UserController' ):?> class="active" <?php endif;?> >
+                <li class="<?= !request()->is( 'user/*' ) ?: 'active' ?> " >
                     <a href="<?= route('user@list') ?>">Users</a>
                 </li>
 
-                <li <?php if( $t->controller == 'ContactController' ):?> class="active" <?php endif;?> >
+                <li class="<?= !request()->is( 'contact/*' ) ?: 'active' ?> " >
+
                     <a href="<?= route( 'contact@list' ) ?>">Contacts</a>
-                    <?php if( $t->controller == 'ContactController' || $t->controller == 'ContactGroupController' ):?>
-                        <li class="sub-menu <?php if( $t->controller == 'ContactGroupController' ):?> active <?php endif;?> " >
+
+                    <?php if( request()->is( 'contact/*' ) || request()->is( 'contact-group/*' ) ): ?>
+                        <li class="sub-menu <?= !request()->is( 'contact-group/*' ) ?: 'active' ?> " >
                             <a href="<?= route('contact-group@list' ) ?>">Contact Groups</a>
                         </li>
                     <?php endif;?>
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.cust-kit', false ) ): ?>
-                    <li <?php if( $t->controller == 'CustKitController' ):?> class="active" <?php endif;?> >
+                    <li class="<?= !request()->is( 'cust-kit/*' ) ?: 'active' ?>" >
                         <a href="<?= route( 'cust-kit@list' ) ?>">Colocated Equipment</a>
                     </li>
                 <?php endif; ?>
@@ -85,53 +91,53 @@
                     IXP Admin Actions
                 </li>
 
-                <li <?php if( $t->controller == 'InfrastructureController' ):?> class="active" <?php endif;?> >
+                <li class="<?= !request()->is( 'infrastructure/*' ) ?: 'active' ?>" >
                     <a href="<?= route('infrastructure@list') ?>">Infrastructures</a>
                 </li>
 
-                <li <?php if( $t->controller == 'LocationController' ):?> class="active" <?php endif;?> >
+                <li class="<?= !request()->is( 'facility/*' ) ?: 'active' ?>" >
                     <a href="<?= route( 'facility@list' ) ?>">Facilities</a>
                 </li>
 
-                <li <?php if( $t->controller == 'CabinetController' ):?> class="active" <?php endif;?> >
+                <li class="<?= !request()->is( 'rack/*' ) ?: 'active' ?>" >
                     <a href="<?= route('rack@list') ?>">Racks</a>
                 </li>
 
-                <li <?php if( $t->controller == 'SwitchController' ):?> class="active" <?php endif;?> >
+                <li class="<?= !request()->is( 'switch/*' ) ?: 'active' ?>" >
                     <a id="lhs-menu-switches" href="<?= route('switch@list') ?>">Switches</a>
 
-                    <?php if( $t->controller == 'SwitchController' || $t->controller == 'SwitchPortController' ):?>
-                        <li class="sub-menu <?php if( $t->controller == 'SwitchPortController' && $t->action != 'unusedOptics' && $t->action != 'opticInventory' && $t->action != 'opticList' ):?> active <?php endif;?>" >
+                    <?php if( request()->is( 'switch/*' ) || request()->is( 'switch-port/*' ) ): ?>
+                        <li class="sub-menu <?= request()->is( 'switch-port/*' ) && !request()->is( 'switch-port/unused-optics' ) && !request()->is( 'switch-port/optic-inventory' ) && !request()->is( 'switch-port/optic-list' ) ? 'active' : '' ?>" >
                             <a id="lhs-menu-switch-ports" href="<?= route( "switch-port@list" ) ?>">Switch Ports</a>
                         </li>
-                        <li class="sub-menu <?php if( $t->controller == 'SwitchPortController' && $t->action == 'unusedOptics' ):?> active <?php endif;?>" >
+                        <li class="sub-menu <?= request()->is( 'switch-port/*' ) && request()->is( 'switch-port/unused-optics' ) ? 'active' : '' ?>" >
                             <a href="<?= route( "switch-port@unused-optics" ) ?>">Unused Optics</a>
                         </li>
-                        <li class="sub-menu <?php if( $t->controller == 'SwitchPortController' && $t->action == 'opticInventory' || $t->action == 'opticList' ):?> active <?php endif;?>" >
+                        <li class="sub-menu <?= request()->is( 'switch-port/*' ) && request()->is( 'switch-port/optic-inventory' )  || request()->is( 'switch-port/optic-list' ) ? 'active' : '' ?>" >
                             <a href="<?= route( "switch-port@optic-inventory" ) ?>">Optic Inventory</a>
                         </li>
                     <?php endif; ?>
                 </li>
 
-                <li <?= $t->controller == 'RouterController' && $t->action != 'status' ? 'class="active"' : '' ?>>
+                <li class="<?= request()->is( 'router/*' ) && !request()->is( 'router/status' ) ? 'active' : '' ?>" >
                     <a href="<?= route('router@list' ) ?>">
                         Routers
                     </a>
 
-                    <?php if( $t->controller == 'RouterController' ): ?>
-                        <li class="sub-menu <?php if( $t->controller == 'RouterController' && $t->action == 'status'):?> active <?php endif;?> " >
+                    <?php if( request()->is( 'router/*' ) ): ?>
+                        <li class="sub-menu <?= request()->is( 'router/*' ) && request()->is( 'router/status' ) ? 'active' : '' ?> " >
                             <a href="<?= route('router@status' ) ?>">Live Status</a>
                         </li>
                     <?php endif;?>
 
                 </li>
 
-                <li <?php if( $t->controller == 'ConsoleServerController' ):?> class="active" <?php endif;?> >
+                <li class="<?= !request()->is( 'console-server/*' ) ?: 'active' ?>" >
                     <a href="<?= route('console-server@list' ) ?>">Console Servers </a>
 
-                    <?php if( $t->controller == 'ConsoleServerController' || $t->controller == 'ConsoleServerConnectionController' ):?>
+                    <?php if( request()->is( 'console-server/*' ) || request()->is( 'console-server-connection/*' ) ): ?>
                         <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection', false ) ): ?>
-                            <li class="sub-menu <?php if( $t->controller == 'ConsoleServerConnectionController' ):?> active <?php endif;?>" >
+                            <li class="sub-menu <?= !request()->is( 'console-server-connection/*' ) ?: 'active' ?>" >
                                 <a href="<?= route('console-server-connection@list' ) ?>">Console Server Connections</a>
                             </li>
                         <?php endif; ?>
@@ -143,7 +149,7 @@
 
                 <?php if( config( 'ixp_fe.frontend.beta.core_bundles', false ) ): ?>
 
-                    <li class="<?= $t->controller != 'CoreBundleController' ?: "active" ?>" >
+                    <li class="<?= !request()->is( 'interfaces/core-bundle/*' ) ?: 'active' ?>" >
                         <a href="<?= route('core-bundle/list' ) ?>">Core Bundles</a>
                     </li>
 
@@ -165,44 +171,49 @@
                 <li>
                     <a href="<?= route( 'layer2-address@list' ) ?>">MAC Addresses</a>
                 </li>
+                <?php if( request()->is( 'mac-address/*' ) || request()->is( 'layer2-address/*' ) ): ?>
 
-                <?php if(  $t->controller == 'MacAddressController' ||  $t->controller == 'Layer2AddressController' ): ?>
-                    <li class="sub-menu <?= $t->controller == 'Layer2AddressController' ? 'active' : '' ?>">
+                    <li class="sub-menu <?= !request()->is( 'layer2-address/*' ) ?: 'active' ?> ">
                         <a href="<?= route( 'layer2-address@list' ) ?>">&nbsp;&nbsp;&nbsp;&nbsp;Configured Addresses</a>
                     </li>
 
                     <?php if( !config( 'ixp_fe.frontend.disabled.mac-address', false ) ): ?>
-                        <li class="sub-menu <?= $t->controller == 'MacAddressController' ? 'active' : '' ?>">
+
+                        <li class="sub-menu <?= !request()->is( 'mac-address/*' ) ?: 'active' ?>">
                             <a href="<?= route('mac-address@list') ?>">&nbsp;&nbsp;&nbsp;&nbsp;Discovered Addresses</a>
                         </li>
                     <?php endif; ?>
+
                 <?php endif; ?>
 
-                <li <?php if( $t->controller == 'VendorController' ):?> class="active" <?php endif;?> >
+
+                <li class="<?= !request()->is( 'vendor/*' ) ?: 'active' ?>" >
                     <a href="<?= route('vendor@list' ) ?>">Vendors</a>
                 </li>
 
-                <li <?php if( $t->controller == 'VlanController' && !strpos( strtolower($t->action) , 'private') ):?> class="active" <?php endif;?> >
+
+                <li class="<?= request()->is( 'vlan/*' ) && !request()->is( 'vlan/private' ) ? 'active' : '' ?>" >
                     <a href="<?= route('vlan@list' ) ?>">VLANs</a>
                 </li>
 
-                <?php if(  $t->controller == 'VlanController' || $t->controller == 'NetworkInfoController' ): ?>
+                <?php if( request()->is( 'vlan/*' ) || request()->is( 'network-info/*' ) ): ?>
 
                     <li class="sub-menu <?= !request()->is( 'network-info/*' ) ?: 'active' ?>" >
                         <a href="<?= route('network-info@list' ) ?>">Network Information</a>
                     </li>
 
-                    <li class="sub-menu <?= $t->controller == 'VlanController' && strpos( strtolower($t->action) , 'private')  ? 'active' : '' ?>">
+                    <li class="sub-menu <?= request()->is( 'vlan/private' ) ? 'active' : '' ?>">
                         <a href="<?= route( 'vlan@private' ) ?>">Private VLANs</a>
                     </li>
+
                 <?php endif; ?>
 
-                <li <?php if( $t->controller == 'IrrdbConfigController' ):?> class="active" <?php endif;?> >
+                <li class="<?= !request()->is( 'irrdb-config/*' ) ?: 'active' ?>" >
                     <a href="<?= route( 'irrdb-config@list' ) ?>">IRRDB Configuration</a>
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) ): ?>
-                    <li <?php if( request()->is( 'rs-prefixes/*' ) ): ?> class="active" <?php endif; ?>>
+                    <li class="<?= !request()->is( 'rs-prefixes/*' ) ?: 'active' ?>" >
                         <a href="<?= route( 'rs-prefixes@list' ) ?>">Route Server Prefixes</a>
                     </li>
                 <?php endif; ?>
@@ -211,34 +222,29 @@
                     IXP Statistics
                 </li>
 
-                <li>
+                <li class="<?= !request()->is( 'statistics/members' ) ?: 'active' ?>" >
                     <a href="<?= route( 'statistics/members' ) ?>">Member Statistics</a>
                 </li>
 
                 <?php if( !config( 'ixp_fe.frontend.disabled.logo', true ) ): ?>
-                    <li>
+                    <li class="<?= !request()->is( 'customer-logo/logos' ) ?: 'active' ?>">
                         <a href="<?= route('logo@logos' ) ?>">Member Logos</a>
                     </li>
                 <?php endif; ?>
 
-                <li>
+                <li class="<?= !request()->is( 'statistics/league-table' ) ?: 'active' ?> ">
                     <a href="<?= route( 'statistics/league-table' ) ?>">League Table</a>
                 </li>
-
-                <?php /*
-                {* 95th Percentiles {genUrl controller="customer" action="ninety-fifth"} *}
-                {* Last Logins      {genUrl controller="user" action="last"} *}
-                */ ?>
 
                 <li class="nav-header">
                     IXP Utilities
                 </li>
 
-                <li <?= !Route::current()->named('utils/phpinfo') ?: 'class="active"' ?>>
+                <li class="<?= !request()->is( 'utils/phpinfo' ) ?: 'active' ?>" >
                     <a href="<?= route( 'utils/phpinfo' ) ?>">PHP Info</a>
                 </li>
 
-                <li>
+                <li class="<?= !request()->is( 'login-history/*' ) ?: 'active' ?>" >
                     <a href="<?= route( 'login-history@list' ) ?>">Last Logins</a>
                 </li>
             </ul>

@@ -114,7 +114,12 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="<?= url( 'auth/logout' ) ?>">Logout</a>
+                            <?php if( session()->exists( "switched_user_from" ) ): ?>
+                                <a href="<?= route( 'switch-user@switchBack' ) ?>">Switch Back</a>
+                            <?php else: ?>
+                                <a href="<?= route( 'login@logout' ) ?>">Logout</a>
+                            <?php endif; ?>
+
                         </li>
                     </ul>
                 </li>

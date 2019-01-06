@@ -14,19 +14,19 @@
                 <div class="btn-group">
 
                     <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <?php if( $t->action ==  'listOpStatus' ): ?>
+                        <?php if( request()->is( 'switch-port/op-status/*' ) ): ?>
 
                             Live Port States (via SNMP poll)
 
-                        <?php elseif( $t->action == 'snmpPoll' ): ?>
+                        <?php elseif( request()->is( 'switch-port/snmp-poll/*' ) ): ?>
 
                             View/Edit Ports (via SNMP poll)
 
-                        <?php elseif( $t->action == 'list' ): ?>
+                        <?php elseif( request()->is( 'switch-port/list' ) ): ?>
 
                             View/Edit Ports (database only)
 
-                        <?php elseif( $t->action == 'listMau' ): ?>
+                        <?php elseif( request()->is( 'switch-port/list-mau/*' ) ): ?>
 
                             Port MAU Detail (database only)
 
@@ -44,23 +44,23 @@
 
                         <li class="dropdown-header">SNMP Actions</li>
 
-                        <li <?php if( $t->action == 'listOpStatus' ): ?> class="active <?= $s->getActive() ? "" : 'disabled' ?>"<?php endif; ?>>
+                        <li class="<?= !request()->is( 'switch-port/op-status/*' ) ?: 'active' ?> <?= $s->getActive() ?: 'a-disabled' ?> " >
                             <a href="<?= route( "switch-port@list-op-status", [ "switch" => $s->getId() ] ) ?>">Live Port States</a>
                         </li>
 
-                        <li <?php if( $t->action == 'snmpPoll'): ?>class="active <?= $s->getActive() ? "" : 'disabled' ?>"<?php endif; ?>>
+                        <li class="<?= !request()->is( 'switch-port/snmp-poll/*' ) ?: 'active' ?> <?= $s->getActive() ?: 'a-disabled' ?> " >
                             <a href="<?= route( "switch-port@snmp-poll", [ "switch" => $s->getId() ] ) ?>">View / Edit Ports</a>
                         </li>
 
                         <li role="separator" class="divider"></li>
                         <li class="dropdown-header">Database Actions</li>
 
-                        <li <?php if( $t->action == 'list'): ?>class="active"<?php endif; ?>>
+                        <li class="<?= !request()->is( 'switch-port/list' ) ?: 'active' ?>" >
                             <a href="<?= route( "switch-port@list", [ "switch" => $s->getId() ] ) ?>">View / Edit Ports</a>
                         </li>
 
                         <?php if( $s->getMauSupported() ): ?>
-                            <li <?php if( $t->action == 'listMau'): ?>class="active"<?php endif; ?>>
+                            <li class="<?= !request()->is( 'switch-port/list-mau/*' ) ?: 'active' ?>">
                                 <a href="<?= route( "switch-port@list-mau", [ "switch" => $s->getId() ] ) ?>">Port MAU Detail</a>
                             </li>
                         <?php endif; ?>

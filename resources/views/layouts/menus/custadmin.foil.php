@@ -45,18 +45,24 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="<?php url( 'auth/logout' ) ?>">Logout</a>
+                            <a href="<?= route( 'login@logout' ) ?>">Logout</a>
                         </li>
                     </ul>
                 </li>
 
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <?php if($t->switched_user_from): ?>
-                    <li><a href="<?= url( 'auth/switch-user-back' ) ?>">Switch Back</a></li>
-                <?php else: ?>
-                    <li><a href="<?= url( 'auth/logout' ) ?>">Logout </a></li>
-                <?php endif; ?>
+                <li>
+
+                    <?php if( session()->exists( "switched_user_from" ) ): ?>
+                        <a href="<?= route( 'switch-user@switchBack' ) ?>">Switch Back</a>
+                    <?php else: ?>
+                        <a href="<?= route( 'login@logout' ) ?>">Logout</a>
+                    <?php endif; ?>
+
+                </li>
+
+
             </ul>
         </div>
     </div>

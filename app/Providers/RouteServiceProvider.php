@@ -18,7 +18,6 @@ class RouteServiceProvider extends ServiceProvider {
     /**
      * Define your route model bindings, pattern filters, etc.
      *
-     * @param  \Illuminate\Routing\Router  $router
      * @return void
      */
     public function boot()
@@ -93,7 +92,7 @@ class RouteServiceProvider extends ServiceProvider {
     protected function mapWebAuthRoutes()
     {
         Route::group([
-            'middleware' => [ 'auth', 'web' ],
+            'middleware' => [ 'web', 'auth'  ],
             'namespace' => $this->namespace,
         ], function ($router) {
             require base_path('routes/web-auth.php');
@@ -110,7 +109,7 @@ class RouteServiceProvider extends ServiceProvider {
     protected function mapWebAuthSuperuserRoutes()
     {
         Route::group([
-                         'middleware' => [ 'auth', 'web', 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ],
+                         'middleware' => [ 'web' , 'auth' , 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ],
                          'namespace' => $this->namespace,
                      ], function ($router) {
             require base_path('routes/web-auth-superuser.php');

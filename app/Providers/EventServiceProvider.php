@@ -36,6 +36,19 @@ class EventServiceProvider extends ServiceProvider {
             'IXP\Listeners\User\EmailWelcome'
         ],
 
+        'IXP\Events\Auth\ForgotUsername' => [
+            'IXP\Listeners\Auth\ForgotUsername'
+        ],
+
+        'IXP\Events\Auth\ForgotPassword' => [
+            'IXP\Listeners\Auth\ForgotPassword'
+        ],
+
+        'IXP\Events\Auth\PasswordReset' => [
+            'IXP\Listeners\Auth\PasswordReset'
+        ],
+
+
     ];
 
 

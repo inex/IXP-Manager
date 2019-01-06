@@ -94,7 +94,7 @@ We have created your administration account(s) with the following username(s) an
 
 Please browse to the following page and use the 'Lost Password' facility to set a new password for this account.
 
-{{ url('auth/lost-password') }}
+{{ route('forgot-password@show-form') }}
 @else
 Please contact us for your account details at {{ config( 'identity.email' ) }}.
 @endif
