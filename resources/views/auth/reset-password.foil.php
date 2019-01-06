@@ -70,14 +70,13 @@
 
 
             <?= Former::actions( Former::primary_submit( 'Reset Password' ),
-                Former::default_link( 'Return to login' )->href( route( "login@showForm" ) ),
-                Former::success_button( 'Help' )->id( 'help-btn' )
+                Former::default_link( 'Return to login' )->href( route( "login@showForm" ) )
             );?>
 
             <br />
 
             <div>
-                For help please contact <a href="mailto:<?= config( "identity.support_email" ) ?>"><?= config( "identity.legalname" ) ?></a>
+                For help please contact <a href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>"><?= config( "identity.legalname" ) ?></a>
             </div>
 
             <?= Former::close() ?>

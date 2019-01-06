@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Cache, D2EM, Former, Redirect, Route, Validator;
+use Auth, Cache, D2EM, Former, Hash, Redirect, Route, Validator;
 
 use IXP\Events\User\Welcome as WelcomeEvent;
 
@@ -308,7 +308,7 @@ class UserController extends Doctrine2Frontend {
 
         if( !$this->object->getId() ) {
             // adding a new user -> set a random password
-            $this->object->setPassword( password_hash( str_random(16), PASSWORD_BCRYPT, [ 'cost' => 10 ] ) );
+            $this->object->setPassword( Hash::make( str_random(16) ) );
             $this->store_alert_success_message = "User added successfully. A welcome email is being sent to {$this->object->getEmail()} with "
                 . "instructions on how to set their password.";
         }

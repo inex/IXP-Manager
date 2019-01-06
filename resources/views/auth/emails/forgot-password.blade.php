@@ -3,7 +3,7 @@
 
 To whom it may concern,
 
-You, or someone purporting to be you, has requested a password reset for <?= config( "identity.sitename" ) ?>.
+You, or someone entering your email address, has requested a password reset for <?= config( "identity.sitename" ) ?>.
 
 If you wish to proceed, please click on the following link:
 
@@ -12,7 +12,7 @@ If you wish to proceed, please click on the following link:
     Reset password
 @endcomponent
 
-If you did not make this request, please contact our support team.
+If you did not make this request, please ignore this email.
 
 
 Thanks and kind regards,

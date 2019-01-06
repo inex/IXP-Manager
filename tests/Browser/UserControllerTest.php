@@ -38,10 +38,10 @@ class UserControllerTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
-                    ->visit('/auth/login')
+                    ->visit('/login')
                     ->type( 'username', 'travis' )
                     ->type( 'password', 'travisci' )
-                    ->press( 'submit' )
+                    ->press( 'Login' )
                     ->assertPathIs( '/admin' );
 
             $browser->visit( '/user/list' )
@@ -212,8 +212,8 @@ class UserControllerTest extends DuskTestCase
             $this->assertNull( D2EM::getRepository( UserEntity::class )->findOneBy( [ 'username' => 'testuser1' ] ) );
             $this->assertNull( D2EM::getRepository( UserEntity::class )->findOneBy( [ 'username' => 'testuser2' ] ) );
 
-            $browser->visit('/auth/logout')
-                ->assertPathIs( '/auth/login' );
+            $browser->visit('/logout')
+                ->assertPathIs( '/login' );
         });
 
     }
@@ -235,10 +235,10 @@ class UserControllerTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
-                ->visit('/auth/login')
+                ->visit('/login')
                 ->type( 'username', 'imcustadmin' )
                 ->type( 'password', 'travisci' )
-                ->press( 'submit' )
+                ->press( 'Login' )
                 ->assertPathIs( '/contact/list' )
                 ->visit( '/user/list' )
                 ->assertSee( 'Your Users' )
@@ -357,8 +357,8 @@ class UserControllerTest extends DuskTestCase
             $this->assertNull( D2EM::getRepository( UserEntity::class )->findOneBy( [ 'username' => 'testuser2' ] ) );
 
 
-            $browser->visit('/auth/logout')
-                ->assertPathIs( '/auth/login' );
+            $browser->visit('/logout')
+                ->assertPathIs( '/login' );
 
         });
 

@@ -37,10 +37,10 @@ class ContactControllerTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
-                    ->visit('/auth/login')
+                    ->visit('/login')
                     ->type( 'username', 'travis' )
                     ->type( 'password', 'travisci' )
-                    ->press( 'submit' )
+                    ->press( 'Login' )
                     ->assertPathIs( '/admin' );
 
             $browser->visit( '/contact/list' )
@@ -246,8 +246,8 @@ class ContactControllerTest extends DuskTestCase
 
             $this->assertNull( D2EM::getRepository( ContactEntity::class )->findOneBy( [ 'name' => 'Test Contact 1' ] ) );
 
-            $browser->visit('/auth/logout')
-                ->assertPathIs( '/auth/login' );
+            $browser->visit('/logout')
+                ->assertPathIs( '/login' );
         });
 
     }
@@ -269,10 +269,10 @@ class ContactControllerTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
-                ->visit('/auth/login')
+                ->visit('/login')
                 ->type( 'username', 'imcustadmin' )
                 ->type( 'password', 'travisci' )
-                ->press( 'submit' )
+                ->press( 'Login' )
                 ->assertPathIs( '/contact/list' )
                 ->assertSee( 'Your Contacts' )
                 ->assertSee( 'Imagine CustAdmin' )
@@ -407,8 +407,8 @@ class ContactControllerTest extends DuskTestCase
 
             $this->assertNull( D2EM::getRepository( ContactEntity::class )->findOneBy( [ 'name' => 'Test Contact 2' ] ) );
 
-            $browser->visit('/auth/logout')
-                ->assertPathIs( '/auth/login' );
+            $browser->visit('/logout')
+                ->assertPathIs( '/login' );
 
         });
 

@@ -19,12 +19,14 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 
 use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
 
+use IXP\Utils\Doctrine2\WithPreferences as Doctrine2_WithPreferences;
+
 /**
  * Entities\User
  */
 class User implements Authenticatable, CanResetPasswordContract
 {
-    use \OSS_Doctrine2_WithPreferences;
+    use Doctrine2_WithPreferences;
     use CanResetPassword;
 
     const AUTH_PUBLIC    = 0;

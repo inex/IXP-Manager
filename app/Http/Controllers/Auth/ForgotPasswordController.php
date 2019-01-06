@@ -108,7 +108,7 @@ class ForgotPasswordController extends Controller
      */
     protected function sendResetLinkFailedResponse(Request $request, $response)
     {
-        AlertContainer::push( "We can't find a user with that username address" , Alert::DANGER );
+        AlertContainer::push( "We can't find a user with that username" , Alert::DANGER );
         return back();
     }
 
