@@ -1,7 +1,7 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
 <?php $this->section( 'title' ) ?>
-    Login to <?= config( "identity.legalname" ) ?>
+    Login to <?= config( "identity.sitename" ) ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -14,6 +14,8 @@
     <div class="col-sm-12">
 
         <?= $t->alerts() ?>
+
+        <br /><br />
 
         <div align="center">
 
@@ -30,17 +32,16 @@
         </div>
 
         <br /><br />
+        <br /><br />
 
         <?= Former::open()->method( 'POST' )
-            ->action( route( 'login@login' ) )
-            ->customWidthClass( 'col-sm-4' )
-            ->addClass( 'col-md-offset-4' );
-
+                ->action( route( 'login@login' ) )
+                ->customWidthClass( 'col-sm-4' )
+                ->addClass( 'col-md-offset-4' );
         ?>
 
         <?= Former::text( 'username' )
-            ->label( 'Username' )
-            ->blockHelp( '' )
+                ->label( 'Username' )
         ?>
 
         <?= Former::password( 'password' )
@@ -57,13 +58,13 @@
 
         <?= Former::actions( Former::primary_submit( 'Login' ) );?>
 
-        <br>
+        <br><br>
 
-        <?= Former::actions(
-                Former::default_link( 'Forgot Password' )->href( route( "forgot-password@show-form" ) ),
-                Former::default_link( 'Forgot Username' )->href( route( "forgot-password@showUsernameForm" ) )
-        );?>
 
+        <a href="<?= route( "forgot-password@show-form" ) ?>"        class="btn-info btn">Forgot Password</a>
+        <a href="<?= route( "forgot-password@showUsernameForm" ) ?>" class="btn-info btn">Forgot Username</a>
+
+        <br><br>
 
         <?= Former::close() ?>
 
