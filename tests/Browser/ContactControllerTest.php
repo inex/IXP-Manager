@@ -37,6 +37,7 @@ class ContactControllerTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
+                    ->visit('/auth/logout')
                     ->visit('/auth/login')
                     ->type( 'username', 'travis' )
                     ->type( 'password', 'travisci' )
@@ -269,6 +270,7 @@ class ContactControllerTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
+                ->visit('/auth/logout')
                 ->visit('/auth/login')
                 ->type( 'username', 'imcustadmin' )
                 ->type( 'password', 'travisci' )
