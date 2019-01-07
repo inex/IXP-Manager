@@ -81,6 +81,9 @@ class Kernel extends HttpKernel {
         ],
 
         'grapher' => [
+            Middleware\EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
             Middleware\ControllerEnabled::class,
             Middleware\Services\Grapher::class,
         ],
