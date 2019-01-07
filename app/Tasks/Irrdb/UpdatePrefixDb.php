@@ -27,6 +27,8 @@ namespace IXP\Tasks\Irrdb;
 use D2EM;
 use Log;
 
+use IXP\Rules\{IPv4Cidr as ValidateIPv4Cidr, IPv6Cidr as ValidateIPv6Cidr};
+
 /**
  * UpdatePrefixDb
  *
@@ -86,13 +88,13 @@ class UpdatePrefixDb extends UpdateDb
      */
     protected function validate( array $prefixes, int $protocol ): array {
         if( $protocol == 4 ) {
-            $validator = new \OSS_Validate_OSSIPv4Cidr;
+            $validator = new ValidateIPv4Cidr;
         } else {
-            $validator = new \OSS_Validate_OSSIPv6Cidr;
+            $validator = new ValidateIPv6Cidr;
         }
 
         foreach( $prefixes as $i => $p ) {
-            if( !$validator->isValid( $p ) ) {
+            if( !$validator->passes( [], $p ) ) {
                 unset( $prefixes[$i] );
                 Log::alert( 'IRRDB CLI action - removing invalid prefix ' . $p . ' from IRRDB result set!' );
             }

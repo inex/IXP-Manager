@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use cache, D2EM, Former, Redirect, Route, Validator;
+use Cache, Countries, D2EM, Former, Redirect, Route, Validator;
 
 use Entities\{
     IXP   as IXPEntity
@@ -88,6 +88,16 @@ class IxpController extends Doctrine2Frontend {
     }
 
 
+    private function getCountries(): array
+    {
+        $countries = [];
+        foreach( Countries::getList( 'name' ) as $c ) {
+            $countries[ $c['iso_3166_2'] ] = $c['name'];
+        }
+
+        return $countries;
+    }
+
     /**
      * Display the form to add/edit an object
      * @param   int $id ID of the row to edit
@@ -112,7 +122,7 @@ class IxpController extends Doctrine2Frontend {
 
         return [
             'object'            => $this->object,
-            'countries'         => \OSS_Countries::getCountriesArray(),
+            'countries'         => $this->getCountries(),
         ];
     }
 
@@ -131,7 +141,7 @@ class IxpController extends Doctrine2Frontend {
         $validator = Validator::make( $request->all(), [
             'name'              => 'required|string|max:255',
             'shortname'         => 'required|string|max:255',
-            'country'           => 'required|string|in:' . implode( ',', array_keys( \OSS_Countries::getCountriesArray() ) ),
+            'country'           => 'required|string|in:' . implode( ',', array_keys( $this->getCountries() ) ),
 
         ]);
 

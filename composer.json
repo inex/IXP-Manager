@@ -16,17 +16,9 @@
             "homepage": "https://www.ixpmanager.org/"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/opensolutions/Bootstrap-Zend-Framework"
-        }
-    ],
     "require": {
         "php": "7.0.*",
 
-        "zendframework/zendframework1": "~1.12",
-        "komola/bootstrap-zend-framework": "dev-master",
         "opensolutions/oss-snmp": "dev-master",
 
         "fideloper/proxy": "~3.3",
@@ -49,7 +41,7 @@
         "graham-campbell/flysystem": "^4.0",
         "s1lentium/iptools": "^1.1",
         "parsedown/laravel": "^1.0",
-        "webpatser/laravel-countries": "dev-develop"
+        "webpatser/laravel-countries": "^1.5"
 
     },
     "require-dev": {
@@ -72,10 +64,6 @@
             "database/seeds",
             "database"
         ],
-        "psr-0": {
-            "IXP_": "library/",
-            "OSS_": "library/"
-        },
         "psr-4": {
              "IXP\\": "app/"
         },

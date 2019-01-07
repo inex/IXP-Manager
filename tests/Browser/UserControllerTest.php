@@ -42,7 +42,7 @@ class UserControllerTest extends DuskTestCase
                 ->visit('/login')
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
-                ->press( 'submit' )
+                ->press( 'Login' )
                 ->assertPathIs( '/admin' );
 
             $browser->visit( '/user/list' )

@@ -171,7 +171,6 @@ return [
         IXP\Providers\RouteServiceProvider::class,
 
         IXP\Providers\HelpdeskServiceProvider::class,
-        IXP\Providers\ZendFrameworkServiceProvider::class,
         IXP\Providers\GrapherServiceProvider::class,
         IXP\Providers\LookingGlassServiceProvider::class,
         IXP\Providers\FoilServiceProvider::class,

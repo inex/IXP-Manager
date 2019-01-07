@@ -27,8 +27,7 @@ use Entities\{Customer, Infrastructure, IXP, Router, Switcher, VirtualInterface}
 
 use IXP\Exceptions\Utils\ExportException;
 
-use OSS_Array;
-
+use IXP\Utils\ArrayUtilities;
 
 /**
  * JSON Schema Exporter
@@ -232,8 +231,8 @@ class JsonSchema
             $routeCollectorIPs = d2r( 'Router' )->getAllPeeringIPs( Router::TYPE_ROUTE_COLLECTOR );
         }
 
-        $customers = OSS_Array::reindexObjects(
-            OSS_Array::reorderObjects( d2r( 'Customer' )->getConnected( false, false ),
+        $customers = ArrayUtilities::reindexObjects(
+            ArrayUtilities::reorderObjects( d2r( 'Customer' )->getConnected( false, false ),
                 'getAutsys', SORT_NUMERIC
             ),
             'getId'

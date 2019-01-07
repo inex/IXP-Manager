@@ -4,6 +4,8 @@ use Tests\TestCase;
 
 use IXP\Utils\OUI as OUIUtil;
 
+
+
 /**
  * PHPUnit test class to test the IXP_OUI class
  */
@@ -57,7 +59,7 @@ END_DATA;
 
 
     /**
-     * @expectedException IXP_Exception
+     * @expectedException IXP\Exceptions\GeneralException
      */
     public function testBadFile()
     {
