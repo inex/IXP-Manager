@@ -104,8 +104,11 @@ class Kernel extends HttpKernel {
         'auth.basic'            => AuthenticateWithBasicAuth::class,
         'bindings'              => SubstituteBindings::class,
         'can'                   => Authorize::class,
+        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'guest'                 => Middleware\RedirectIfAuthenticated::class,
+        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle'              => ThrottleRequests::class,
+        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'apiauth'               => Middleware\ApiAuthenticate::class,
         'apimaybeauth'          => Middleware\ApiMaybeAuthenticate::class,
         'assert.privilege'      => Middleware\AssertUserPrivilege::class,
@@ -114,6 +117,23 @@ class Kernel extends HttpKernel {
         'grapher'               => Middleware\Services\Grapher::class,
         'patch-panel-port'      => Middleware\PatchPanelPort::class,
         'rs-prefixes'           => Middleware\RsPrefixes::class,
+    ];
+
+
+    /**
+     * The priority-sorted list of middleware.
+     *
+     * This forces non-global middleware to always be in the given order.
+     *
+     * @var array
+     */
+    protected $middlewarePriority = [
+        \Illuminate\Session\Middleware\StartSession::class,
+        \Illuminate\View\Middleware\ShareErrorsFromSession::class,
+        \IXP\Http\Middleware\Authenticate::class,
+        \Illuminate\Session\Middleware\AuthenticateSession::class,
+        \Illuminate\Routing\Middleware\SubstituteBindings::class,
+        \Illuminate\Auth\Middleware\Authorize::class,
     ];
 
 }

@@ -46,12 +46,12 @@ class MembersWebAccessTest extends Access
     {
         // this should be the default
         $response = $this->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         // force the default
         Config::set( 'grapher.access.customer', 'own_graphs_only' );
         $response = $this->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         // force public access
         Config::set( 'grapher.access.customer', 0 );
@@ -67,23 +67,23 @@ class MembersWebAccessTest extends Access
     {
         Config::set( 'grapher.access.customer', '1' );
         $response = $this->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         Config::set( 'grapher.access.customer', '2' );
         $response = $this->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         Config::set( 'grapher.access.customer', '3' );
         $response = $this->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         Config::set( 'grapher.access.customer', 'blah' );
         $response = $this->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         Config::set( 'grapher.access.customer', null );
         $response = $this->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
     }
 
     /**
@@ -94,23 +94,23 @@ class MembersWebAccessTest extends Access
     {
         Config::set( 'grapher.access.customer', 'own_graphs_only' );
         $response = $this->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         // a customer user
         $response = $this->actingAs( $this->getCustUser( 'hecustuser' ) )->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         // a customer admin user
         $response = $this->actingAs( $this->getCustAdminUser( 'hecustadmin' ) )->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         // another customer user
         $response = $this->actingAs( $this->getCustUser( 'imcustuser' ) )->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         // another customer admin user
         $response = $this->actingAs( $this->getCustAdminUser( 'imcustadmin' ) )->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         // superadmin
         $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/members');
@@ -126,7 +126,7 @@ class MembersWebAccessTest extends Access
     {
         Config::set( 'grapher.access.customer', '1' );
         $response = $this->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/members');
         $response->assertStatus(200);
@@ -147,10 +147,10 @@ class MembersWebAccessTest extends Access
     {
         Config::set( 'grapher.access.customer', '2' );
         $response = $this->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/members');
         $response->assertStatus(200);
@@ -167,13 +167,13 @@ class MembersWebAccessTest extends Access
     {
         Config::set( 'grapher.access.customer', '3' );
         $response = $this->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         $response = $this->actingAs( $this->getCustUser() )->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         $response = $this->actingAs( $this->getCustAdminUser() )->get('/statistics/members');
-        $response->assertStatus(302);
+        $response->assertStatus(403);
 
         $response = $this->actingAs( $this->getSuperUser() )->get('/statistics/members');
         $response->assertStatus(200);

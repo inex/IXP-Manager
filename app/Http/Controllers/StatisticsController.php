@@ -287,8 +287,7 @@ class StatisticsController extends Controller
     public function members( StatisticsRequest $r ) {
 
         if( !CustomerGraph::authorisedForAllCustomers() ) {
-            AlertContainer::push( "You are not authorised to view all member graphs.", Alert::DANGER );
-            return redirect('');
+            abort( 403, "You are not authorised to view this member's graphs." );
         }
 
         $grapher = App::make('IXP\Services\Grapher');
@@ -380,8 +379,7 @@ class StatisticsController extends Controller
         try {
             $grapher->customer( $c )->authorise();
         } catch( AuthorizationException $e ) {
-            AlertContainer::push( "You are not authorised to view this member's graphs.", Alert::DANGER );
-            return redirect()->back();
+            abort( 403, "You are not authorised to view this member's graphs." );
         }
 
         if( !$c->hasInterfacesConnectedOrInQuarantine() ) {

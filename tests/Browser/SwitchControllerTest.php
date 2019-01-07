@@ -34,7 +34,6 @@ class SwitchControllerTest extends DuskTestCase
      */
     public function testAdd()
     {
-
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
                     ->visit('/login')

@@ -1,13 +1,9 @@
-<?php namespace IXP\Exceptions;
+<?php
+namespace IXP\Exceptions;
 
-use Exception,Redirect;
+use Exception, Redirect;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
-use IXP\Utils\View\Alert\Alert;
-use IXP\Utils\View\Alert\Container as AlertContainer;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
-use Illuminate\Auth\Access\AuthorizationException;
 
 class Handler extends ExceptionHandler
 {
@@ -33,35 +29,31 @@ class Handler extends ExceptionHandler
     /**
      * Report or log an exception.
      *
-     * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
-     *
-     * @param  \Exception  $e
-     *
+     * @param  \Exception  $exception
      * @return void
-     *
-     * @throws
      */
-    public function report(Exception $e)
+    public function report(Exception $exception)
     {
-        return parent::report($e);
+        parent::report($exception);
     }
 
     /**
      * Render an exception into an HTTP response.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \Exception  $e
-     * @return \Illuminate\Http\Response|\Symfony\Component\HttpFoundation\Response
+     * @param  \Exception  $exception
+     * @return \Illuminate\Http\Response
      */
-    public function render($request, Exception $e)
+    public function render($request, Exception $exception)
     {
-        if( $this->isHttpException($e) ) {
-            return $this->renderHttpException($e);
-        } else if( $e instanceof AuthorizationException && request()->route()->action['middleware'] != 'grapher' ) {
-            return Redirect::to( '' );
-        } else {
-            return parent::render($request, $e);
-        }
+        return parent::render($request, $exception);
+//        if( $this->isHttpException($exception) ) {
+//            return $this->renderHttpException($exception);
+//        } else if( $exception instanceof AuthorizationException && request()->route()->action['middleware'] != 'grapher' ) {
+//            return Redirect::to( '' );
+//        } else {
+//            return parent::render($request, $exception);
+//        }
     }
 
 }

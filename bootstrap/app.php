@@ -27,18 +27,18 @@ $app = new Illuminate\Foundation\Application(
 */
 
 $app->singleton(
-	'Illuminate\Contracts\Http\Kernel',
-	'IXP\Http\Kernel'
+    Illuminate\Contracts\Http\Kernel::class,
+    IXP\Http\Kernel::class
 );
 
 $app->singleton(
-	'Illuminate\Contracts\Console\Kernel',
-	'IXP\Console\Kernel'
+	Illuminate\Contracts\Console\Kernel::class,
+	IXP\Console\Kernel::class
 );
 
 $app->singleton(
-	'Illuminate\Contracts\Debug\ExceptionHandler',
-	'IXP\Exceptions\Handler'
+	Illuminate\Contracts\Debug\ExceptionHandler::class,
+	IXP\Exceptions\Handler::class
 );
 
 /*

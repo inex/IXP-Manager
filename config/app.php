@@ -53,6 +53,8 @@ return [
 
     'url' => env( 'APP_URL', 'http://localhost' ),
 
+    'asset_url' => env('ASSET_URL', null ),
+
     /*
     |--------------------------------------------------------------------------
     | Application Timezone
@@ -92,6 +94,20 @@ return [
 
     'fallback_locale' => 'en',
 
+
+    /*
+    |--------------------------------------------------------------------------
+    | Faker Locale
+    |--------------------------------------------------------------------------
+    |
+    | This locale will be used by the Faker PHP library when generating fake
+    | data for your database seeds. For example, this will be used to get
+    | localized telephone numbers, street address information and more.
+    |
+    */
+    'faker_locale' => 'en_US',
+
+
     /*
     |--------------------------------------------------------------------------
     | Encryption Key
@@ -107,22 +123,6 @@ return [
 
     'cipher' => 'AES-256-CBC',
 
-    /*
-    |--------------------------------------------------------------------------
-    | Logging Configuration
-    |--------------------------------------------------------------------------
-    |
-    | Here you may configure the log settings for your application. Out of
-    | the box, Laravel uses the Monolog PHP logging library. This gives
-    | you a variety of powerful log handlers / formatters to utilize.
-    |
-    | Available Settings: "single", "daily", "syslog", "errorlog"
-    |
-    */
-
-    'log' => env('APP_LOG', 'daily'),
-
-    'log_level' => env('APP_LOG_LEVEL', 'info'),
 
     /*
     |--------------------------------------------------------------------------
@@ -152,6 +152,7 @@ return [
          Illuminate\Foundation\Providers\FoundationServiceProvider::class,
          Illuminate\Hashing\HashServiceProvider::class,
          Illuminate\Mail\MailServiceProvider::class,
+         Illuminate\Notifications\NotificationServiceProvider::class,
          Illuminate\Pagination\PaginationServiceProvider::class,
          Illuminate\Pipeline\PipelineServiceProvider::class,
          Illuminate\Queue\QueueServiceProvider::class,
@@ -209,6 +210,7 @@ return [
         'Artisan'   => 'Illuminate\Support\Facades\Artisan',
         'Auth'      => 'Illuminate\Support\Facades\Auth',
         'Blade'     => 'Illuminate\Support\Facades\Blade',
+        'Broadcast' => Illuminate\Support\Facades\Broadcast::class,
         'Bus'       => 'Illuminate\Support\Facades\Bus',
         'Cache'     => 'Illuminate\Support\Facades\Cache',
         'Config'    => 'Illuminate\Support\Facades\Config',
@@ -218,12 +220,13 @@ return [
         'Eloquent'  => 'Illuminate\Database\Eloquent\Model',
         'Event'     => 'Illuminate\Support\Facades\Event',
         'File'      => 'Illuminate\Support\Facades\File',
+        'Gate'      => Illuminate\Support\Facades\Gate::class,
         'Hash'      => 'Illuminate\Support\Facades\Hash',
         'Input'     => 'Illuminate\Support\Facades\Input',
-        'Inspiring' => 'Illuminate\Foundation\Inspiring',
         'Lang'      => 'Illuminate\Support\Facades\Lang',
         'Log'       => 'Illuminate\Support\Facades\Log',
         'Mail'      => 'Illuminate\Support\Facades\Mail',
+        'Notification' => Illuminate\Support\Facades\Notification::class,
         'Password'  => 'Illuminate\Support\Facades\Password',
         'Queue'     => 'Illuminate\Support\Facades\Queue',
         'Redirect'  => 'Illuminate\Support\Facades\Redirect',
@@ -246,7 +249,6 @@ return [
         'Image'     => Intervention\Image\Facades\Image::class,
 
         'Former'    => Former\Facades\Former::class,
-        'Flysystem' => GrahamCampbell\Flysystem\Facades\Flysystem::class,
         'Purifier'  => LukeTowers\Purifier\Facades\Purifier::class,
         'PDF'       => Barryvdh\DomPDF\Facade::class,
 

@@ -21,8 +21,8 @@
 
         "opensolutions/oss-snmp": "^1.0",
 
-        "fideloper/proxy": "~3.3",
-        "laravel/framework": "5.5.*",
+        "fideloper/proxy": "^4.0",
+        "laravel/framework": "5.7.*",
         "laravel/tinker": "~1.0",
         "laravel-doctrine/orm": "1.4.*",
         
@@ -38,20 +38,21 @@
         "php-ds/php-ds": "^1.1",
         "beberlei/DoctrineExtensions": "^1.0",
         "laravel-doctrine/extensions": "1.0.*",
-        "graham-campbell/flysystem": "^4.0",
         "s1lentium/iptools": "^1.1",
         "parsedown/laravel": "^1.0",
         "webpatser/laravel-countries": "^1.5"
 
     },
     "require-dev": {
+        "beyondcode/laravel-dump-server": "^1.0",
         "filp/whoops": "~2.0",
-        "phpunit/phpunit": "~6.0",
+        "phpunit/phpunit": "^7.0",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "~1.0",
         "barryvdh/laravel-ide-helper": "^2.3",
         "barryvdh/laravel-debugbar": "^3.1",
-        "laravel/dusk": "^2.0"
+        "laravel/dusk": "^3.0",
+        "nunomaduro/collision": "^2.0"
      },
     "support": {
         "issues": "https://www.ixpmanager.org/support.php",

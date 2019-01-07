@@ -123,21 +123,18 @@ return [
     ],
 
 
+
     /*
     |--------------------------------------------------------------------------
-    | Zend Framework authentication
+    | Log Channel
     |--------------------------------------------------------------------------
     |
-    | This is only passed through to Zend Framework for emails still handled
-    | there.
-    |
-    | See: https://framework.zend.com/manual/1.12/en/zend.mail.smtp-authentication.html
-    |
-    | One of: plain, login, cram-md5
+    | If you are using the "log" driver, you may specify the logging channel
+    | if you prefer to keep mail messages separate from other log entries
+    | for simpler reading. Otherwise, the default channel will be used.
     |
     */
-
-    'auth' => env( 'MAIL_AUTH' ),
+    'log_channel' => env('MAIL_LOG_CHANNEL'),
 
 
 ];

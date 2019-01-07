@@ -20,9 +20,11 @@
     </filter>
     <php>
         <env name="APP_ENV" value="testing"/>
+        <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="CACHE_DRIVER" value="array"/>
+        <env name="MAIL_DRIVER" value="array"/>
+        <env name="QUEUE_CONNECTION" value="sync"/>
         <env name="SESSION_DRIVER" value="array"/>
-        <env name="QUEUE_DRIVER" value="sync"/>
         <env name="IXP_PHPUNIT_RUNNING" value="1"/>
         <const name="IXP_PHPUNIT_API_URL" value="http://localhost:8000/apiv1" />
         <const name="IXP_PHPUNIT_API_KEY" value="Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9" />
