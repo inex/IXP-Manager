@@ -17,9 +17,9 @@
         }
     ],
     "require": {
-        "php": "7.0.*",
+        "php": "^7.2",
 
-        "opensolutions/oss-snmp": "dev-master",
+        "opensolutions/oss-snmp": "^1.0",
 
         "fideloper/proxy": "~3.3",
         "laravel/framework": "5.5.*",
@@ -108,9 +108,6 @@
             "preferred-install": "dist",
             "sort-packages": true,
             "optimize-autoloader": true
-        },
-        "platform": {
-            "php": "7.0.10"
         }
    },
    "minimum-stability": "stable"

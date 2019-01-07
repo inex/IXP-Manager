@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.5.44 on 2019-01-07 11:05:06.
+ * Generated for Laravel 5.5.44 on 2019-01-07 14:25:16.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -14459,6 +14459,7 @@ namespace LaravelDoctrine\ORM\Facades {
          * @return void 
          * @throws \Doctrine\ORM\OptimisticLockException If a version check on an entity that
          *         makes use of optimistic locking fails.
+         * @throws ORMException
          * @static 
          */ 
         public static function flush($entity = null)
@@ -14514,6 +14515,9 @@ namespace LaravelDoctrine\ORM\Facades {
          *
          * @param string|null $entityName if given, only entities of this type will get detached
          * @return void 
+         * @throws ORMInvalidArgumentException                           if a non-null non-string value is given
+         * @throws \Doctrine\Common\Persistence\Mapping\MappingException if a $entityName is given, but that entity is not
+         *                                                               found in the mappings
          * @static 
          */ 
         public static function clear($entityName = null)
@@ -14543,6 +14547,7 @@ namespace LaravelDoctrine\ORM\Facades {
          * @param object $entity The instance to make managed and persistent.
          * @return void 
          * @throws ORMInvalidArgumentException
+         * @throws ORMException
          * @static 
          */ 
         public static function persist($entity)
@@ -14559,6 +14564,7 @@ namespace LaravelDoctrine\ORM\Facades {
          * @param object $entity The entity instance to remove.
          * @return void 
          * @throws ORMInvalidArgumentException
+         * @throws ORMException
          * @static 
          */ 
         public static function remove($entity)
@@ -14573,6 +14579,7 @@ namespace LaravelDoctrine\ORM\Facades {
          * @param object $entity The entity to refresh.
          * @return void 
          * @throws ORMInvalidArgumentException
+         * @throws ORMException
          * @static 
          */ 
         public static function refresh($entity)
@@ -14607,6 +14614,7 @@ namespace LaravelDoctrine\ORM\Facades {
          * @param object $entity The detached entity to merge into the persistence context.
          * @return object The managed copy of the entity.
          * @throws ORMInvalidArgumentException
+         * @throws ORMException
          * @static 
          */ 
         public static function merge($entity)
@@ -14640,7 +14648,7 @@ namespace LaravelDoctrine\ORM\Facades {
          * Gets the repository for an entity class.
          *
          * @param string $entityName The name of the entity.
-         * @return \Doctrine\ORM\EntityRepository The repository class.
+         * @return \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository The repository class.
          * @static 
          */ 
         public static function getRepository($entityName)
@@ -14743,7 +14751,7 @@ namespace LaravelDoctrine\ORM\Facades {
         /**
          * Factory method to create EntityManager instances.
          *
-         * @param mixed $conn An array with the connection parameters or an existing Connection instance.
+         * @param array|\Doctrine\ORM\Connection $connection An array with the connection parameters or an existing Connection instance.
          * @param \Doctrine\ORM\Configuration $config The Configuration instance to use.
          * @param \Doctrine\ORM\EventManager $eventManager The EventManager instance to use.
          * @return \EntityManager The created EntityManager.
@@ -14751,9 +14759,9 @@ namespace LaravelDoctrine\ORM\Facades {
          * @throws ORMException
          * @static 
          */ 
-        public static function create($conn, $config, $eventManager = null)
+        public static function create($connection, $config, $eventManager = null)
         {
-            return \Doctrine\ORM\EntityManager::create($conn, $config, $eventManager);
+            return \Doctrine\ORM\EntityManager::create($connection, $config, $eventManager);
         }
         
         /**
@@ -15316,6 +15324,7 @@ namespace LaravelDoctrine\ORM\Facades {
          * @return void 
          * @throws \Doctrine\ORM\OptimisticLockException If a version check on an entity that
          *         makes use of optimistic locking fails.
+         * @throws ORMException
          * @static 
          */ 
         public static function flush($entity = null)
@@ -15371,6 +15380,9 @@ namespace LaravelDoctrine\ORM\Facades {
          *
          * @param string|null $entityName if given, only entities of this type will get detached
          * @return void 
+         * @throws ORMInvalidArgumentException                           if a non-null non-string value is given
+         * @throws \Doctrine\Common\Persistence\Mapping\MappingException if a $entityName is given, but that entity is not
+         *                                                               found in the mappings
          * @static 
          */ 
         public static function clear($entityName = null)
@@ -15400,6 +15412,7 @@ namespace LaravelDoctrine\ORM\Facades {
          * @param object $entity The instance to make managed and persistent.
          * @return void 
          * @throws ORMInvalidArgumentException
+         * @throws ORMException
          * @static 
          */ 
         public static function persist($entity)
@@ -15416,6 +15429,7 @@ namespace LaravelDoctrine\ORM\Facades {
          * @param object $entity The entity instance to remove.
          * @return void 
          * @throws ORMInvalidArgumentException
+         * @throws ORMException
          * @static 
          */ 
         public static function remove($entity)
@@ -15430,6 +15444,7 @@ namespace LaravelDoctrine\ORM\Facades {
          * @param object $entity The entity to refresh.
          * @return void 
          * @throws ORMInvalidArgumentException
+         * @throws ORMException
          * @static 
          */ 
         public static function refresh($entity)
@@ -15464,6 +15479,7 @@ namespace LaravelDoctrine\ORM\Facades {
          * @param object $entity The detached entity to merge into the persistence context.
          * @return object The managed copy of the entity.
          * @throws ORMInvalidArgumentException
+         * @throws ORMException
          * @static 
          */ 
         public static function merge($entity)
@@ -15497,7 +15513,7 @@ namespace LaravelDoctrine\ORM\Facades {
          * Gets the repository for an entity class.
          *
          * @param string $entityName The name of the entity.
-         * @return \Doctrine\ORM\EntityRepository The repository class.
+         * @return \Doctrine\Common\Persistence\ObjectRepository|\Doctrine\ORM\EntityRepository The repository class.
          * @static 
          */ 
         public static function getRepository($entityName)
@@ -15600,7 +15616,7 @@ namespace LaravelDoctrine\ORM\Facades {
         /**
          * Factory method to create EntityManager instances.
          *
-         * @param mixed $conn An array with the connection parameters or an existing Connection instance.
+         * @param array|\Doctrine\ORM\Connection $connection An array with the connection parameters or an existing Connection instance.
          * @param \Doctrine\ORM\Configuration $config The Configuration instance to use.
          * @param \Doctrine\ORM\EventManager $eventManager The EventManager instance to use.
          * @return \EntityManager The created EntityManager.
@@ -15608,9 +15624,9 @@ namespace LaravelDoctrine\ORM\Facades {
          * @throws ORMException
          * @static 
          */ 
-        public static function create($conn, $config, $eventManager = null)
+        public static function create($connection, $config, $eventManager = null)
         {
-            return \Doctrine\ORM\EntityManager::create($conn, $config, $eventManager);
+            return \Doctrine\ORM\EntityManager::create($connection, $config, $eventManager);
         }
         
         /**
