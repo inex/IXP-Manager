@@ -52,7 +52,7 @@
             <tr>
                 <td></td>
                 <td><b>Type:</b></td>
-                <td><?= $t->ee( $ppp->getPatchPanel()->resolveCableType() ) ?> / <?= $t->ee( $ppp->getPatchPanel()->resolveConnectorType() ) ?></td>
+                <td><?= $t->ee( $t->ppp->getPatchPanel()->resolveCableType() ) ?> / <?= $t->ee( $t->ppp->getPatchPanel()->resolveConnectorType() ) ?></td>
             </tr>
             <tr>
                 <td></td>
