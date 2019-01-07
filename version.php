@@ -3,5 +3,6 @@
 # Basic version information
 #
 
-define( 'APPLICATION_VERSION', '4.8.999' );
-define( 'APPLICATION_VERDATE', '201807060000' );
+define( 'APPLICATION_VERSION', '4.99.999' );      # 4.99.999 == v5 development
+define( 'APPLICATION_VERDATE', '201901070000' );  
+
