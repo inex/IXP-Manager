@@ -27,6 +27,7 @@ CREATE VIEW view_vlaninterface_details_by_custid AS
         	`pi`.`id` AS `id`,
 		vi.custid,
 		pi.virtualinterfaceid,
+		pi.status,
 		CONCAT(vi.name,vi.channelgroup) AS virtualinterfacename,
 		vlan.number AS vlan,
 		vlan.name AS vlanname,
