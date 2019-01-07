@@ -33,7 +33,11 @@ Mention the OS you are running IXP Manager on (including Linux variant if releva
 
 ##### VERSION
 
-<!--- Paste verbatim the output from “cat library/IXP/Version.php | grep APPLICATION” 
+<!--- Paste verbatim the output from either:
+ 
+  - IXP Manager <4.9: “cat library/IXP/Version.php | grep APPLICATION” 
+  - IXP Manager >= 4.9: “cat version.php | grep APPLICATION”
+   
 between quotes below. NB: run this command from IXP Manager's root directory (e.g.
 /srv/ixpmanager -->
 
