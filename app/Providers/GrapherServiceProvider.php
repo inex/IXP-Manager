@@ -1,7 +1,7 @@
-<?php namespace IXP\Providers;
+<?php
 
 /*
- * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,7 +21,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
+namespace IXP\Providers;
 
 use Illuminate\Support\ServiceProvider;
 
@@ -39,7 +39,7 @@ use Route;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   IXP
  * @package    IXP\Providers
- * @copyright  Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class GrapherServiceProvider extends ServiceProvider {
