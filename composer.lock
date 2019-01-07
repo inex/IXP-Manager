@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "dadf73c4bf3b9397eac7f3d05188c6f0",
+    "content-hash": "07fe80a54e90e382038b180bf2faa848",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -2623,16 +2623,16 @@
         },
         {
             "name": "opensolutions/oss-snmp",
-            "version": "dev-master",
+            "version": "v1.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/opensolutions/OSS_SNMP.git",
-                "reference": "fded4fc443d841ee6211100d0924598a8afdac2f"
+                "reference": "64df767c1469a4b988b78f66ce1902bc64efead7"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/opensolutions/OSS_SNMP/zipball/fded4fc443d841ee6211100d0924598a8afdac2f",
-                "reference": "fded4fc443d841ee6211100d0924598a8afdac2f",
+                "url": "https://api.github.com/repos/opensolutions/OSS_SNMP/zipball/64df767c1469a4b988b78f66ce1902bc64efead7",
+                "reference": "64df767c1469a4b988b78f66ce1902bc64efead7",
                 "shasum": ""
             },
             "require": {
@@ -2660,7 +2660,7 @@
                 "oss_snmp",
                 "snmp"
             ],
-            "time": "2018-11-20T19:24:44+00:00"
+            "time": "2017-11-28T13:23:43+00:00"
         },
         {
             "name": "paragonie/random_compat",
@@ -7194,9 +7194,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "opensolutions/oss-snmp": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
