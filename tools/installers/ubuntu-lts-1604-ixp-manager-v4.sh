@@ -5,7 +5,7 @@
 # Barry O'Donovan <barry.odonovan ~at~ inex.ie>
 # First version: 2016-10-19
 
-# Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+# Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
 # All Rights Reserved.
 #
 # This file is part of IXP Manager.
