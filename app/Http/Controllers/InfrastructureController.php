@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -47,7 +47,7 @@ use Repositories\{
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class InfrastructureController extends Doctrine2Frontend {
@@ -223,7 +223,7 @@ class InfrastructureController extends Doctrine2Frontend {
         if( ( $cnt = count( $this->object->getSwitchers() ) ) ) {
             AlertContainer::push( "You cannot delete this infrastructure there are {$cnt} switch(es) associated with it. "
                 . "You can view and then reassign or delete those switches <a href=\""
-                . url('') . "/switch/list/infra/" . $this->object->getId()
+                . route("switch@list", [ "infra" => $this->object->getId() ] )
                 . "\">by clicking here</a>.", Alert::DANGER
             );
             $okay = false;

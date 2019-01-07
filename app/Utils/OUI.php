@@ -3,7 +3,7 @@
 namespace IXP\Utils;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,7 +23,7 @@ namespace IXP\Utils;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP_Exception;
+use IXP\Exceptions\GeneralException;
 
 /**
  * OUI functions
@@ -67,13 +67,13 @@ class OUI
      * Load the raw OUI data from the specificed location
      *
      * @return OUI An instance of this class for fluent interfaces
-     * @throws IXP_Exception
+     * @throws GeneralException
      */
     public function loadList(): OUI {
         $this->raw = @file_get_contents( $this->file );
 
         if( $this->raw === false ) {
-            throw new IXP_Exception( 'IXP\\Utils\\OUI - could not load OUI list from ' . $this->file );
+            throw new GeneralException( 'IXP\\Utils\\OUI - could not load OUI list from ' . $this->file );
         }
 
         return $this;
@@ -81,7 +81,7 @@ class OUI
 
     public function processRawData( $data = false ): array {
         if( $data == false && $this->raw === null ) {
-            throw new IXP_Exception( 'IXP\\Utils\\OUI - cannot process when no data has been loaded or provided' );
+            throw new GeneralException( 'IXP\\Utils\\OUI - cannot process when no data has been loaded or provided' );
         }
 
         if( $data == false ) {

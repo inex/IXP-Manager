@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -38,7 +38,7 @@ use IXP\Http\Requests\EmailPatchPanelPort as EmailPatchPanelPortRequest;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   PatchPanel
  * @package    IXP\Mail\PatchPanelPort
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 abstract class Email extends Mailable
@@ -151,6 +151,12 @@ abstract class Email extends Mailable
      * @param \IXP\Http\Requests\EmailPatchPanelPort $request
      */
     public function prepareFromRequest( EmailPatchPanelPortRequest $request ) {
+
+        // in the constructor, we add the NOC address of the customer (if we have one)
+        // to the recipients. This is for presetting the To: field in the HTML form.
+        // we wipe there here and just use what was submitted in the form.
+        $this->to = [];
+
         // recipients
         foreach( [ 'to', 'cc', 'bcc' ] as $r ) {
             $hasFn = 'has' . ucfirst( $r );

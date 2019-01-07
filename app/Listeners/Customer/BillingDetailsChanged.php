@@ -3,7 +3,7 @@
 namespace IXP\Listeners\Customer;
 
 /*
- * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -49,7 +49,7 @@ class BillingDetailsChanged
      */
     public function handle( BillingDetailsChangedEvent $e )
     {
-        if( !config( 'ixp_fe.customer.billing_updates_notify' ) ) {
+        if( !config( 'ixp_fe.customer.billing_updates_notify' ) || $e->ocbd->getCustomer()->isResoldCustomer() ) {
             return;
         }
 

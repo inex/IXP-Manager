@@ -3,7 +3,7 @@
 namespace IXP\Console\Commands\Upgrade;
 
 /*
- * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,6 +23,7 @@ namespace IXP\Console\Commands\Upgrade;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+
 use IXP\Console\Commands\Command;
 
 use D2EM;
@@ -33,14 +34,13 @@ use Entities\{
     ConsoleServerConnection     as ConsoleServerConnectionEntity
 };
 
-
 /**
  * Class SplitSwitchConserver - tool to split the console servers from the switches
  *
  * @author Yann Robin <yann@islandbridgenetworks.ie>
  * @author Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @package IXP\Console\Commands\Upgrade
- * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SplitSwitchConserver extends Command
@@ -112,6 +112,7 @@ class SplitSwitchConserver extends Command
                     }
 
                     $em->remove( $s );
+
                 });
 
             }

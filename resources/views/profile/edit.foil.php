@@ -86,33 +86,17 @@
                 ->id( "infos" )
                 ->action( route ( "profile@update-profile" ) )
                 ->customWidthClass( 'col-sm-8' )
-                ->rules([
-                    'name'            => 'required|max:255',
-                    'position'        => 'max:50',
-                    'email'           => 'required|email',
-                    'actual_password' => 'required'
-                ])
             ?>
 
-            <?= Former::text( 'name' )
-                ->label( 'Name' )
-            ?>
-
-            <?= Former::text( 'position' )
-                ->label( 'Position / Role' )
+            <?= Former::text( 'username' )
+                ->label( 'Username' )
             ?>
 
             <?= Former::text( 'email' )
                 ->label( 'Email' )
             ?>
 
-            <?= Former::text( 'phone' )
-                ->label( 'Phone' )
-                ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
-            ?>
-
-
-            <?= Former::text( 'mobile' )
+            <?= Former::text( 'authorisedMobile' )
                 ->label( 'Mobile' )
                 ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
             ?>

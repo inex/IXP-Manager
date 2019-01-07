@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -39,7 +39,6 @@ use Illuminate\Http\{
     RedirectResponse
 };
 
-use OSS_String;
 
 
 /**
@@ -47,7 +46,7 @@ use OSS_String;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ApiKeyController extends Doctrine2Frontend {
@@ -86,6 +85,8 @@ class ApiKeyController extends Doctrine2Frontend {
 
             'viewFolderName'    => 'api-key',
 
+            'documentation'     => 'https://docs.ixpmanager.org/features/api/',
+
             'listColumns'    => [
 
                 'id'           => [ 'title' => 'UID', 'display' => false ],
@@ -111,7 +112,6 @@ class ApiKeyController extends Doctrine2Frontend {
 
         // phpunit / artisan trips up here without the cli test:
         if( php_sapi_name() !== 'cli' ) {
-
             // custom access controls:
             switch( Auth::check() ? Auth::user()->getPrivs() : UserEntity::AUTH_PUBLIC ) {
                 case UserEntity::AUTH_SUPERUSER:

@@ -1,4 +1,27 @@
-<?php namespace IXP\Providers;
+<?php
+
+/*
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+namespace IXP\Providers;
 
 // based on: https://github.com/franzliedke/laravel-plates
 
@@ -40,30 +63,6 @@ class FoilServiceProvider extends ServiceProvider
         $app->resolving('view', function($view) use ($app) {
 
             $engine = new Engine($app->make('Foil\Engine'));
-
-            View::composer('*', function($view) {
-
-                // FIXME @yannrobin - need to remove this once ZF is gone.
-                if(app('request')->route() != null) {
-                    $action = app('request')->route()->getAction();
-                    if( isset( $action['controller'] ) ) {
-                        $controller = class_basename( $action[ 'controller' ] );
-                        $subFolder = isset( $action[ 'subFolder' ] ) ? $action[ 'subFolder' ] : '';
-                        list( $controller, $action ) = explode( '@', $controller );
-                    } else {
-                        $subFolder  = '';
-                        $controller = '';
-                    }
-                } else {
-                    $action     = null;
-                    $controller = null;
-                    $subFolder  = null;
-                }
-
-                $switched_user_from = (isset($_SESSION['Application']['switched_user_from']))? true : false;
-                $view->with('subFolder' , $subFolder )->with('controller' , $controller)->with('action',$action)->with('switched_user_from', $switched_user_from);
-
-            });
 
             // we have a few rendering functions we want to include here:
             $engine->engine()->loadExtension( new IXPFoilExtensions(), [ 'alerts' ] );

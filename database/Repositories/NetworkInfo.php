@@ -1,5 +1,26 @@
 <?php
 
+/*
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
@@ -104,6 +125,46 @@ class NetworkInfo extends EntityRepository
         }
 
         return $data;
+    }
+
+
+    /**
+     * Get all networkinfo (or a particular one) for listing on the frontend CRUD
+     *
+     * @see \IXP\Http\Controllers\Doctrine2Frontend
+     *
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     * @return array Array of networkinfo (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeList( \stdClass $feParams, int $id = null )
+    {
+        $dql = "SELECT  ni.id AS id, 
+                        ni.protocol AS protocol, 
+                        ni.network AS network, 
+                        ni.masklen AS masklen, 
+                        ni.rs1address AS rs1address, 
+                        ni.rs2address AS rs2address, 
+                        ni.dnsfile AS dnsfile,
+                        vl.name AS vlanname,
+                        vl.id AS vlanid
+                FROM Entities\\NetworkInfo ni
+                LEFT JOIN ni.Vlan vl     
+                WHERE 1 = 1";
+
+        if( $id ) {
+            $dql .= " AND ni.id = " . (int)$id;
+        }
+
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        return $query->getArrayResult();
     }
 
 }

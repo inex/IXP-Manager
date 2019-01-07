@@ -1,5 +1,26 @@
 <?php
 
+/*
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 namespace Tests\Browser;
 
 use D2EM;
@@ -13,6 +34,18 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class RouterControllerTest extends DuskTestCase
 {
+
+    public function tearDown()
+    {
+        $router = D2EM::getRepository( RouterEntity::class )->findOneBy( [ 'handle' => 'dusk-ci-test' ] );
+        if( $router ) {
+            D2EM::remove( $router );
+            D2EM::flush();
+        }
+
+        parent::tearDown();
+    }
+
     /**
      * A Dusk test example.
      *
@@ -24,10 +57,10 @@ class RouterControllerTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
-                    ->visit('/auth/login')
+                    ->visit('/login')
                     ->type( 'username', 'travis' )
                     ->type( 'password', 'travisci' )
-                    ->press( 'submit' )
+                    ->press( 'Login' )
                     ->assertPathIs( '/admin' );
 
             $browser->visit( '/router/add' )

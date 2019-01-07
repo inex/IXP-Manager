@@ -20,16 +20,6 @@
         ->blockHelp( "This field exists as you may co-locate some equipment for your customers. Ordinarily, just pick your IXP customer." );
     ?>
 
-    <?= Former::select( 'consoleserverid' )
-        ->id( 'consoleserverid' )
-        ->label( 'Console Server' )
-        ->placeholder( 'Select the console server' )
-        ->fromQuery( $t->data[ 'params'][ 'consoleservers' ], 'name' )
-        ->addClass( 'chzn-select' )
-        ->blockHelp( "Select the console server to which this device is connected.<br><br>"
-            . "Console servers are added via the <em>Console Servers</em> menu option.");
-    ?>
-
     <?= Former::text( 'port' )
         ->label( 'Port' )
         ->blockHelp( "Enter the port number." );
@@ -115,7 +105,7 @@
 
     <?= Former::actions(
         Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' ),
-        Former::default_link( 'Cancel' )->href( $t->data[ 'params'][ "cs" ]  ? route ($t->feParams->route_prefix . '@listPort' , [ "id " => $t->data[ 'params'][ "cs" ] ] )  : route ($t->feParams->route_prefix . '@list') ),
+        Former::default_link( 'Cancel' )->href( isset( $t->data[ 'params'][ "cs" ] ) ? route ($t->feParams->route_prefix . '@listPort' , [ "id " => $t->data[ 'params'][ "cs" ] ] )  : route ($t->feParams->route_prefix . '@list') ),
         Former::success_button( 'Help' )->id( 'help-btn' )
     );
     ?>
@@ -125,7 +115,7 @@
     ?>
 
     <?= Former::hidden( 'cs' )
-        ->value( $t->data[ 'params'][ "cs" ]  ? $t->data[ 'params'][ "cs" ] : "" )
+        ->value( isset( $t->data[ 'params'][ "cs" ] ) ? $t->data[ 'params'][ "cs" ] : "" )
     ?>
 
     <?= Former::close() ?>

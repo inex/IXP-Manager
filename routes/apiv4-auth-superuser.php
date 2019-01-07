@@ -1,4 +1,26 @@
 <?php
+
+/*
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 use Illuminate\Http\Request;
 /*
 |--------------------------------------------------------------------------
@@ -47,19 +69,19 @@ Route::get(  'patch-panel-port/deep/{id}',                      'PatchPanelPortC
 Route::post( 'patch-panel/{id}/patch-panel-port-free',          'PatchPanelController@getFreePatchPanelPort');
 
 Route::get('provisioner/layer2interfaces/switch/{switchid}.{outformat}',        'Provisioner\YamlController@forSwitch');
-Route::get('provisioner/layer2interfaces/switch-name/{switchname}.{outformat}', 'Provisioner\YamlController@forSwitchByName');
+Route::get('provisioner/layer2interfaces/switch-name/{switchname}.{outformat}', 'Provisioner\YamlController@forSwitchByName')->where(['switchname' => '[A-Za-z0-9\.\-]+']);
 
 Route::get('provisioner/layer3interfaces/switch-id/{switchid}.{outformat}',     'Provisioner\YamlController@coreLinkForSwitch');
-Route::get('provisioner/layer3interfaces/switch-name/{switchname}.{outformat}', 'Provisioner\YamlController@coreLinkForSwitchByName');
+Route::get('provisioner/layer3interfaces/switch-name/{switchname}.{outformat}', 'Provisioner\YamlController@coreLinkForSwitchByName')->where(['switchname' => '[A-Za-z0-9\.\-]+']);
 
 Route::get('provisioner/vlans/switch-id/{switchid}.{outformat}',                'Provisioner\YamlController@vlansForSwitch');
-Route::get('provisioner/vlans/switch-name/{switchname}.{outformat}',            'Provisioner\YamlController@vlansForSwitchByName');
+Route::get('provisioner/vlans/switch-name/{switchname}.{outformat}',            'Provisioner\YamlController@vlansForSwitchByName')->where(['switchname' => '[A-Za-z0-9\.\-]+']);
 
 Route::get('provisioner/routing/switch-id/{switchid}.{outformat}',              'Provisioner\YamlController@bgpForSwitch');
-Route::get('provisioner/routing/switch-name/{switchname}.{outformat}',          'Provisioner\YamlController@bgpForSwitchByName');
+Route::get('provisioner/routing/switch-name/{switchname}.{outformat}',          'Provisioner\YamlController@bgpForSwitchByName')->where(['switchname' => '[A-Za-z0-9\.\-]+']);
 
-Route::get( 'provisioner/switch/switch-id/{switchid}.{outformat}',               'Provisioner\YamlController@showSwitch' );
-Route::get( 'provisioner/switch/switch-name/{switchname}.{outformat}',           'Provisioner\YamlController@showSwitchByName' );
+Route::get( 'provisioner/switch/switch-id/{switchid}.{outformat}',               'Provisioner\YamlController@showSwitch');
+Route::get( 'provisioner/switch/switch-name/{switchname}.{outformat}',           'Provisioner\YamlController@showSwitchByName')->where(['switchname' => '[A-Za-z0-9\.\-]+']);
 
 Route::get('switch-port/{id}/customer',                         'SwitchPortController@customer' );
 Route::get('switch-port/{id}/physical-interface',               'SwitchPortController@physicalInterface' );
@@ -71,7 +93,6 @@ Route::group( [  'prefix' => 'switch' ], function() {
     Route::post( '{id}/switch-port',                  'SwitchController@switchPort' );
 });
 
-Route::post( 'utils/markdown',                                  'UtilsController@markdown' )->name( "utils@markdown" );
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Layer 2 Address
@@ -99,6 +120,4 @@ Route::group( [ 'namespace' => 'Customer\Note', 'prefix' => 'customer-note' ], f
     Route::post(    'delete/{id}',                     'CustomerNotesController@delete'                 )->name( 'customer-notes@delete');
 
 });
-
-
 

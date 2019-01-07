@@ -1,7 +1,7 @@
 <?php
 
 /**
- * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  *
  * This file is part of IXP Manager.
  *
@@ -40,6 +40,13 @@ class IRRDBs extends Seeder
                 'protocol' => 'ripe',
                 'source'   => 'RIPE',
                 'notes'    => 'RIPE Query from RIPE Database'
+            ],
+
+            [
+                'host'     => 'whois.ripe.net',
+                'protocol' => 'ripe',
+                'source'   => 'RIPE,RIPE-NONAUTH',
+                'notes'    => 'RIPE+RIPE-NONAUTH Query from RIPE Database'
             ],
 
             [

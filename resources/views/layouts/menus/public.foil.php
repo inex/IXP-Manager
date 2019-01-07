@@ -16,10 +16,6 @@
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav navbar-right">
 
-                <li>
-                    <a href="<?= url('') ?>">Home</a>
-                </li>
-
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Member Information <b class="caret"></b></a>
                     <ul class="dropdown-menu">
@@ -37,6 +33,9 @@
                     <ul class="dropdown-menu">
                         <?php if( !config('ixp_fe.frontend.disabled.lg' ) ): ?>
                             <li><a href="<?= url('lg') ?>">Looking Glass</a></li>
+                        <?php endif; ?>
+                        <?php if( ixp_min_auth( config( 'ixp.peering-matrix.min-auth' ) ) && !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
+                            <li><a href="<?= route('peering-matrix@index') ?>">Peering Matrix</a></li>
                         <?php endif; ?>
                     </ul>
                 </li>
@@ -98,11 +97,9 @@
                 <li class="">
                     <a href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>">Support</a>
                 </li>
-                <li>
-                    <a href="http://www.ixpmanager.org/" target="_blank">About</a>
-                </li>
+
                 <li class="">
-                    <a href="<?= url( '/auth/login' ) ?>">Login</a>
+                    <a href="<?= route( 'login@showForm' ) ?>">Login</a>
                 </li>
             </ul>
         </div>

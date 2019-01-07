@@ -5,10 +5,10 @@ namespace Repositories;
 use Doctrine\ORM\EntityRepository;
 
 use Entities\{
-    Infrastructure as InfrastructureEntity,
-    Router as RouterEntity,
-    Vlan as VlanEntity,
-    VlanInterface as VlanInterfaceEntity
+    Infrastructure  as InfrastructureEntity,
+    Router          as RouterEntity,
+    Vlan            as VlanEntity,
+    VlanInterface   as VlanInterfaceEntity
 };
 
 
@@ -138,7 +138,7 @@ class Vlan extends EntityRepository
      * @param int $vid The VLAN ID to find interfaces on
      * @param int $protocol The protocol to find interfaces on ( `4` or `6`)
      * @param bool $forceDb Set to true to ignore the cache and force the query to the database
-     * @return An array as described above
+     * @return array as described above
      * @throws \IXP_Exception Thrown if an invalid protocol is specified
      */
     public function getInterfaces( $vid, $protocol, $forceDb = false )
@@ -159,7 +159,6 @@ class Vlan extends EntityRepository
                     " . Customer::DQL_CUST_CURRENT . "
                     AND " . Customer::DQL_CUST_TRAFFICING . "
                     AND " . Customer::DQL_CUST_EXTERNAL . "
-                    AND c.activepeeringmatrix = 1
                     AND v.id = ?1
                     AND vli.ipv{$protocol}enabled = 1
 
@@ -167,8 +166,9 @@ class Vlan extends EntityRepository
             )
             ->setParameter( 1, $vid );
 
-        if( !$forceDb )
+        if( !$forceDb ) {
             $interfaces->useResultCache( true, 3600 );
+        }
 
         return $interfaces->getArrayResult();
     }
@@ -185,6 +185,7 @@ class Vlan extends EntityRepository
      *             ["name"] => string(25) "Packet Clearing House DNS"
      *             ["shortname"] => string(10) "pchanycast"
      *             ["rsclient"] => bool(true)
+     *             ["activepeeringmatrix"] => bool(true)
      *             ["custid"] => int(72)
      *         }
      *         [112] => array(5) {
@@ -215,11 +216,12 @@ class Vlan extends EntityRepository
         foreach( $acusts as $c )
         {
             $custs[ $c['VirtualInterface']['Customer']['autsys'] ] = [];
-            $custs[ $c['VirtualInterface']['Customer']['autsys'] ]['autsys']    = $c['VirtualInterface']['Customer']['autsys'];
-            $custs[ $c['VirtualInterface']['Customer']['autsys'] ]['name']      = $c['VirtualInterface']['Customer']['name'];
-            $custs[ $c['VirtualInterface']['Customer']['autsys'] ]['shortname'] = $c['VirtualInterface']['Customer']['shortname'];
-            $custs[ $c['VirtualInterface']['Customer']['autsys'] ]['rsclient']  = $c['rsclient'];
-            $custs[ $c['VirtualInterface']['Customer']['autsys'] ]['custid']    = $c['VirtualInterface']['Customer']['id'];
+            $custs[ $c['VirtualInterface']['Customer']['autsys'] ]['autsys']              = $c['VirtualInterface']['Customer']['autsys'];
+            $custs[ $c['VirtualInterface']['Customer']['autsys'] ]['name']                = $c['VirtualInterface']['Customer']['name'];
+            $custs[ $c['VirtualInterface']['Customer']['autsys'] ]['shortname']           = $c['VirtualInterface']['Customer']['shortname'];
+            $custs[ $c['VirtualInterface']['Customer']['autsys'] ]['rsclient']            = $c['rsclient'];
+            $custs[ $c['VirtualInterface']['Customer']['autsys'] ]['activepeeringmatrix'] = $c['VirtualInterface']['Customer']['activepeeringmatrix'];
+            $custs[ $c['VirtualInterface']['Customer']['autsys'] ]['custid']              = $c['VirtualInterface']['Customer']['id'];
         }
 
         Cache::put( $key, $custs, 86400 );
@@ -230,7 +232,7 @@ class Vlan extends EntityRepository
     /**
      * Find all VLANs marked for inclusion in the peering manager.
      *
-     * @return Entities\Vlan[]
+     * @return VlanEntity[]
      */
     public function getPeeringManagerVLANs()
     {
@@ -246,16 +248,24 @@ class Vlan extends EntityRepository
     /**
     * Find all VLANs marked for inclusion in the peering matrices.
     *
-    * @return Entities\Vlan[]
+    * @return VlanEntity[]
     */
     public function getPeeringMatrixVLANs()
     {
-        return $this->getEntityManager()->createQuery(
+        $vlanEnts = $this->getEntityManager()->createQuery(
                 "SELECT v FROM \\Entities\\Vlan v
                     WHERE v.peering_matrix = 1
                 ORDER BY v.number ASC"
             )
             ->getResult();
+
+        $vlans = [];
+
+        foreach( $vlanEnts as $v ){
+            $vlans[ $v->getId() ] = $v->getName();
+        }
+
+        return $vlans;
     }
 
 
@@ -369,18 +379,21 @@ class Vlan extends EntityRepository
         if( !in_array( $proto, [ 4, 6 ] ) ) {
             throw new \IXP_Exception( 'Invalid protocol specified' );
         }
-        
-        $qstr = "SELECT vli.ipv{$proto}enabled AS enabled, addr.address AS address,
-                        vli.ipv{$proto}hostname AS hostname
-                    FROM Entities\\VlanInterface vli
-                        JOIN vli.IPv{$proto}Address addr
-                        JOIN vli.Vlan v
-                    WHERE
-                        v = :vlan
-                        AND vli.ipv{$proto}hostname IS NOT NULL
-                        AND vli.ipv{$proto}hostname != ''";
 
-        $qstr .= " ORDER BY addr.address ASC";
+        $qstr = sprintf( "SELECT vli.ipv{$proto}enabled AS enabled, addr.address AS address,
+                                vli.ipv{$proto}hostname AS hostname,
+                                %s( addr.address )%s AS aton
+                          FROM Entities\\VlanInterface vli
+                                JOIN vli.IPv{$proto}Address addr
+                                JOIN vli.Vlan v
+                            WHERE
+                                v = :vlan
+                                AND vli.ipv{$proto}hostname IS NOT NULL
+                                AND vli.ipv{$proto}hostname != ''",
+            $proto == 4 ? 'INET_ATON' : 'HEX(INET6_ATON', $proto == 4 ? '' : ')'
+        );
+
+        $qstr .= " ORDER BY aton ASC";
 
         $q = $this->getEntityManager()->createQuery( $qstr );
         $q->setParameter( 'vlan', $vlan );

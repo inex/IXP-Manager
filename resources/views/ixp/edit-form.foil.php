@@ -12,12 +12,12 @@
 
             <?= Former::text( 'name' )
                 ->label( 'Name' )
-                ->blockHelp( "" );
+                ->blockHelp( "The legal / official name of your IXP. For example: Some City Internet Exchange Point Ltd." );
             ?>
 
             <?= Former::text( 'shortname' )
                 ->label( 'Shortname' )
-                ->blockHelp( "" );
+                ->blockHelp( "The name your IXP normally goes by. May be the same as name above or, for example: SIXP" );
             ?>
 
             <?= Former::text( 'address1' )

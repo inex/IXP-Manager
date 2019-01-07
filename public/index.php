@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -77,7 +77,7 @@ $app = require_once __DIR__.'/../bootstrap/app.php';
 |
 */
 
-include base_path() . '/library/IXP/Version.php';
+include base_path() . '/version.php';
 
 $kernel = $app->make('Illuminate\Contracts\Http\Kernel');
 

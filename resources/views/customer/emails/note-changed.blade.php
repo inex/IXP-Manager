@@ -2,7 +2,7 @@
 
 # Note {{$event->getActionDescription()}} :: {{$event->getCustomer()->getFormattedName()}}
 
-**{{$event->getActionDescription()}} by:** [{{$event->getUser()->getContact()->getName()}}](mailto:{{$event->getUser()->getContact()->getEmail()}})
+**{{$event->getActionDescription()}} by:** [{{$event->getUser()->getUsername()}}](mailto:{{$event->getUser()->getEmail()}})
 
 **Visibility:** @if( $event->getEitherNote()->getPrivate()) Admins only @else Admins and customer @endif
 

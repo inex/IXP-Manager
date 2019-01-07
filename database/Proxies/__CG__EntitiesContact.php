@@ -64,10 +64,10 @@ class Contact extends \Entities\Contact implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'email', 'phone', 'mobile', 'facilityaccess', 'mayauthorize', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Customer', 'position', 'User', 'Groups', 'notes'];
+            return ['__isInitialized__', 'name', 'email', 'phone', 'mobile', 'facilityaccess', 'mayauthorize', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Customer', 'position', 'Groups', 'notes', 'User'];
         }
 
-        return ['__isInitialized__', 'name', 'email', 'phone', 'mobile', 'facilityaccess', 'mayauthorize', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Customer', 'position', 'User', 'Groups', 'notes'];
+        return ['__isInitialized__', 'name', 'email', 'phone', 'mobile', 'facilityaccess', 'mayauthorize', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', 'Customer', 'position', 'Groups', 'notes', 'User'];
     }
 
     /**
@@ -455,39 +455,6 @@ class Contact extends \Entities\Contact implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setUser(\Entities\User $user)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', [$user]);
-
-        return parent::setUser($user);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function unsetUser()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'unsetUser', []);
-
-        return parent::unsetUser();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getUser()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', []);
-
-        return parent::getUser();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function addGroup(\Entities\ContactGroup $groups)
     {
 
@@ -538,6 +505,28 @@ class Contact extends \Entities\Contact implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getNotes', []);
 
         return parent::getNotes();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUser(\Entities\User $user)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', [$user]);
+
+        return parent::setUser($user);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUser()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', []);
+
+        return parent::getUser();
     }
 
 }

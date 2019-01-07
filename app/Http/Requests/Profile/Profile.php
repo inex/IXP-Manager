@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\Profile;
 
 /*
- * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -35,7 +35,7 @@ use Illuminate\Validation\Validator;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Profile
- * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class Profile extends FormRequest
@@ -60,11 +60,9 @@ class Profile extends FormRequest
     public function rules()
     {
         return [
-            'name'              => 'required|string|max:255',
-            'position'          => 'required|string|max:50',
+            'username'          => 'required|string|min:4|max:255|unique:Entities\User,username' . ( $this->input( 'id' ) ? ','. $this->input( 'id' ) : '' ),
             'email'             => 'required|email|max:255',
-            'phone'             => 'nullable|string|max:30',
-            'mobile'            => 'nullable|string|max:30',
+            'authorisedMobile'  => 'nullable|string|max:30',
             'actual_password'   => 'required|string|max:255',
         ];
     }

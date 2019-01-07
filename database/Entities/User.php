@@ -1,10 +1,30 @@
 <?php
 
+/*
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 namespace Entities;
 
 use Entities\{
     ApiKey              as ApiKeyEntity,
-    Contact             as ContactEntity,
     Customer            as CustomerEntity,
     User                as UserEntity,
     UserLoginHistory    as UserLoginHistoryEntity,
@@ -15,12 +35,20 @@ use Illuminate\Contracts\Auth\Authenticatable;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
+use Illuminate\Contracts\Auth\CanResetPassword as CanResetPasswordContract;
+use Illuminate\Auth\Passwords\CanResetPassword;
+
+use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
+
+use IXP\Utils\Doctrine2\WithPreferences as Doctrine2_WithPreferences;
+
 /**
  * Entities\User
  */
-class User implements Authenticatable
+class User implements Authenticatable, CanResetPasswordContract
 {
-    use \OSS_Doctrine2_WithPreferences;
+    use Doctrine2_WithPreferences;
+    use CanResetPassword;
 
     const AUTH_PUBLIC    = 0;
     const AUTH_CUSTUSER  = 1;
@@ -46,6 +74,15 @@ class User implements Authenticatable
         User::AUTH_SUPERUSER => 'Superuser'
     );
 
+    public static $PRIVILEGES_TEXT_NONSUPERUSER = array(
+        User::AUTH_CUSTUSER  => 'Customer User',
+        User::AUTH_CUSTADMIN => 'Customer Administrator',
+    );
+
+    /**
+     * @var string $name
+     */
+    protected $name;
 
     /**
      * @var string $username
@@ -103,6 +140,11 @@ class User implements Authenticatable
     protected $created;
 
     /**
+     * @var string $remember_token
+     */
+    protected $remember_token;
+
+    /**
      * @var integer $id
      */
     protected $id;
@@ -139,6 +181,29 @@ class User implements Authenticatable
     public function __construct()
     {
         $this->Preferences = new ArrayCollection();
+    }
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     * @return User
+     */
+    public function setName(string $name)
+    {
+        $this->name = $name;
+
+        return $this;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string|null
+     */
+    public function getName()
+    {
+        return $this->name;
     }
 
     /**
@@ -518,32 +583,6 @@ class User implements Authenticatable
         $this->Children->removeElement($children);
     }
 
-    protected $Contact;
-
-
-    /**
-     * Set Contact
-     *
-     * @param ContactEntity $contact
-     * @return User
-     */
-    public function setContact(ContactEntity $contact = null)
-    {
-        $this->Contact = $contact;
-
-        return $this;
-    }
-
-    /**
-     * Get Contact
-     *
-     * @return \Entities\Contact
-     */
-    public function getContact()
-    {
-        return $this->Contact;
-    }
-
     /**
      * Add LastLogins
      *
@@ -637,6 +676,34 @@ class User implements Authenticatable
     }
 
 
+    /**
+     * @var \Entities\Contact
+     */
+    protected $Contact;
+
+    /**
+     * Set Contact
+     *
+     * @param \Entities\Contact $contact
+     * @return User
+     */
+    public function setContact(Contact $contact)
+    {
+        $this->Contact = $contact;
+
+        return $this;
+    }
+
+    /**
+     * Get Contact
+     *
+     * @return \Entities\Contact
+     */
+    public function getContact()
+    {
+        return $this->Contact;
+    }
+
 
     /***************************************************************************
      | LARAVEL 5 USER PROVIDER INTERFACE METHODS
@@ -711,8 +778,28 @@ class User implements Authenticatable
         return 'remember_token';
     }
 
+    /**
+     * Send the password reset notification.
+     *
+     * @param  string  $token
+     * @return void
+     */
+    public function sendPasswordResetNotification($token)
+    {
+        event( new ForgotPasswordEvent( $token, $this ) );
+    }
+
+    public function getEmailForPasswordReset(){
+        return $this->getUsername();
+    }
+
     /***************************************************************************
      | END LARAVEL 5 USER PROVIDER INTERFACE METHODS
      ***************************************************************************/
+
+
+
+
+
 
 }

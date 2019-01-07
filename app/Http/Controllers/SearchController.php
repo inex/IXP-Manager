@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -36,6 +36,7 @@ use Entities\{
     MACAddress       as   MACAddressEntity,
     PatchPanelPort   as   PatchPanelPortEntity,
     RSPrefix         as   RSPrefixEntity,
+    User             as   UserEntity,
     VlanInterface    as   VlanInterfaceEntity
 };
 
@@ -50,7 +51,7 @@ use Illuminate\Http\{
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Interfaces
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SearchController extends Controller {
@@ -121,12 +122,14 @@ class SearchController extends Controller {
             else if( preg_match( '/^@([a-zA-Z0-9]+)$/', $search, $matches ) ) {
                 // user by username search
                 $type = 'username';
-                $results = D2EM::getRepository( ContactEntity::class )->findByUsername( $matches[1] . '%' );
+                $results = D2EM::getRepository( UserEntity::class )->findByUsername( $matches[1] . '%' );
             }
             else if( filter_var( $search, FILTER_VALIDATE_EMAIL ) !== false ) {
                 // user by email search
                 $type = 'email';
-                $results = D2EM::getRepository( ContactEntity::class )->findByEmail( $search );
+
+                $results[ 'users' ]     = D2EM::getRepository( UserEntity::class    )->findByEmail( $search );
+                $results[ 'contacts' ]  = D2EM::getRepository( ContactEntity::class )->findByEmail( $search );
             }
             else if( preg_match( '/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}\/\d{1,2}$/', $search ) || preg_match( '/^[0-9a-fA-F]{1,4}:.*:[0-9a-fA-F]{0,4}\/\d{1,3}$/', $search ) ) {
                 // rsprefix search

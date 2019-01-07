@@ -15,7 +15,7 @@
         <!-- Collect the nav links, forms, and other content for toggling -->
         <div class="collapse navbar-collapse" id="bs-example-navbar-collapse-1">
             <ul class="nav navbar-nav">
-                <li {if $controller eq "dashboard"}class="active"{/if}>
+                <li class="<?= request()->is( 'dashboard/*' ) ? 'active' : '' ?>">
                     <a href="{genUrl}">Home</a>
                 </li>
                 <li class="dropdown">
@@ -32,11 +32,11 @@
                 <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown">Peering<b class="caret"></b></a>
                     <ul class="dropdown-menu">
-                        <?php if( !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
-                            <li><a href="<?= url('') ?>/peering-matrix">Public Peering Matrix</a></li>
-                        <?php endif; ?>
                         <?php if( !config('ixp_fe.frontend.disabled.lg' ) ): ?>
                             <li><a href="<?= url('lg') ?>">Looking Glass</a></li>
+                        <?php endif; ?>
+                        <?php if( ixp_min_auth( config( 'ixp.peering-matrix.min-auth' ) ) && !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
+                            <li><a href="<?= route('peering-matrix@index') ?>">Peering Matrix</a></li>
                         <?php endif; ?>
                     </ul>
                 </li>
@@ -102,14 +102,14 @@
                         </li>
                         <li class="divider"></li>
                         <li>
-                            <a href="<?php url( 'auth/logout' ) ?>">Logout</a>
+                            <a href="<?= route( 'login@logout' ) ?>">Logout</a>
                         </li>
                     </ul>
                 </li>
             </ul>
 
             <ul class="nav navbar-nav navbar-right">
-                <li><a href="<?= url( 'auth/logout' ) ?>">Logout</a></li>
+                <li><a href="<?= route( 'login@logout' ) ?>">Logout</a></li>
             </ul>
         </div>
     </div>

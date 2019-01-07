@@ -2,7 +2,7 @@
 #
 # update-l2database.pl
 #
-# Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
+# Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
 # All Rights Reserved.
 # 
 # This file is part of IXP Manager.
@@ -55,6 +55,8 @@
 #				support.
 # Juniper ELS Images:		these images run on QFX and some EX platforms, and use the largely
 # 				undocumented Juniper-specific L2ALD MIB. Headwreck level 11.
+# HP Comware:			supports sub-tree walk for dot1qTpFdbPort, but doesn't support
+#				sub-tree walk for dot1qTpFdbPort.vlanindex oid.  Bizarre.
 
 use strict;
 use Net_SNMP_util;
@@ -322,12 +324,21 @@ sub trawl_switch_snmp ($$) {
 		}
 		$debug && print STDERR "DEBUG: $host: attempting Q-BRIDGE-MIB ($oids->{dot1qTpFdbPort}.$vlanid)\n";
 		$qbridgehash = snmpwalk2hash($host, $snmpcommunity, "$oids->{dot1qTpFdbPort}.$vlanid", \&oid2mac, undef);
-		if ($debug) {
+		if ($qbridgehash) {
+			$debug && print STDERR "DEBUG: $host: Q-BRIDGE-MIB query successful\n";
+		} else {
+			$debug && print STDERR "DEBUG: $host: dot1qTpFdbPort.$vlanid failed - attempting baseline dot1qTpFdbPort subtree walk in desperation\n";
+
+			# some stacks (e.g.  Comware) don't support mib walk for
+			# dot1qTpFdbPort.$vlanid, so we'll attempt dot1qTpFdbPort instead, then
+			# filter out all the unwanted entries.  This is inefficient and unusual, so
+			# it's the last option attempted.
+
+			$qbridgehash = snmpwalk2hash($host, $snmpcommunity, "$oids->{dot1qTpFdbPort}", \&oid2mac, undef, $vlanid);
 			if ($qbridgehash) {
-				print STDERR "DEBUG: $host: Q-BRIDGE-MIB query successful\n";
-			} else {
-				print STDERR "DEBUG: $host: failed to retrieve Q-BRIDGE-MIB. falling back to BRIDGE-MIB\n";
+				$debug && print STDERR "DEBUG: $host: Q-BRIDGE-MIB query ".($qbridgehash ? "successful" : "failed")."\n";
 			}
+			print STDERR "DEBUG: $host: failed to retrieve Q-BRIDGE-MIB. falling back to BRIDGE-MIB\n";
 		}
 	} else {
 		$debug && $qbridge_support && print STDERR "DEBUG: $host: vlan not specified - falling back to BRIDGE-MIB for compatibility\n";
@@ -389,7 +400,7 @@ sub trawl_switch_snmp ($$) {
 }
 
 sub snmpwalk2hash {
-	my($host, $snmpcommunity, $queryoid, $keycallback, $valuecallback) = @_;
+	my($host, $snmpcommunity, $queryoid, $keycallback, $valuecallback, $keyfilter) = @_;
 	my $returnhash;
 
 	my $comm = $snmpcommunity.'@'.$host;
@@ -397,6 +408,10 @@ sub snmpwalk2hash {
 	my @resultarray = &snmpwalk($comm, $queryoid);
 
 	foreach my $entry (@resultarray) {
+		if ($keyfilter) {
+			next unless ($entry =~ /^($keyfilter)\./);
+			$entry =~ s/^($keyfilter)\.//;
+		}
 		my ($returnoid, $descr) = split(':', $entry, 2);
 		if ($keycallback) {
 			$returnoid = &$keycallback($returnoid);

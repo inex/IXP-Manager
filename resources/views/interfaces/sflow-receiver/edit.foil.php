@@ -75,4 +75,21 @@ $this->layout( 'layouts/ixpv4' );
     </div>
 
 
+
+
+
+<br /><br />
+<div class="well">
+    <h3>Sflow Receivers / Exporting Sflow Telemetry</h3>
+
+    <p>
+        This feature allows you to export sflow telemetry to IXP participants using PMacct. Please see
+        <a href="https://www.ixpmanager.org/media/2016/201610-ripe73-inex-nh-exporting-sflow.pdf">these slides</a>
+        and <a href="https://ripe73.ripe.net/archives/video/1458/">this video</a> from Nick Hilliard at RIPE73
+        for more details.
+    </p>
+
+</div>
+
+
 <?php $this->append() ?>

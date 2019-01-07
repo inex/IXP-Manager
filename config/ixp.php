@@ -1,5 +1,26 @@
 <?php
 
+/*
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 return [
 
     /*
@@ -52,9 +73,6 @@ return [
        ;; For testing / experimentation you can enabled test mode below and, when enabled, all
        ;; peering requests will be sent to the testemail.
        ;;
-       ;; NB: This does not apply to any BCC emails you add. The CC recipient in the request
-       ;; dialog will be ignored in test mode.
-       ;;
        ;; Normally, the peering manager adds a note to the peer's notes and sets a request last
        ;; sent date when a peering request is sent. In test mode, this will not happen.
        ;; If you want this to happen in test mode, set testnote and testdate to true below.
@@ -67,6 +85,16 @@ return [
         'testdate'  => env( 'PEERING_MANAGER_TESTDATE', false ),
     ],
 
+
+    /* ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+       ;; Minimum user auth level for the peering matrix
+       ;;
+       ;; See https://docs.ixpmanager.org/usage/users/#types-of-users
+       ;;
+       ;; */
+    'peering-matrix' => [
+        'min-auth' => env( 'PEERING_MATRIX_MIN_AUTH', \Entities\User::AUTH_PUBLIC ),
+    ],
 
 
 

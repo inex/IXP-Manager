@@ -1,9 +1,30 @@
 <?php
 
+/*
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 namespace Entities;
 
 use Carbon\Carbon;
-use D2EM;
+use Auth, D2EM;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use IXP\Mail\PatchPanelPort\{
@@ -371,15 +392,28 @@ class PatchPanelPort
      */
     public function getStateCssClass()
     {
-        if( $this->isAvailableForUse() or $this->isStatePrewired()):
-            $class = 'success';
-        elseif($this->isStateAwaitingXConnect()):
-            $class = 'warning';
-        elseif($this->isStateConnected()):
-            $class = 'danger';
-        else:
-            $class = 'info';
-        endif;
+        if( Auth::getUser()->isSuperUser() ){
+            if( $this->isAvailableForUse() or $this->isStatePrewired()):
+                $class = 'success';
+            elseif($this->isStateAwaitingXConnect()):
+                $class = 'warning';
+            elseif($this->isStateConnected()):
+                $class = 'danger';
+            else:
+                $class = 'info';
+            endif;
+        } else {
+            if( $this->isStateConnected() ):
+                $class = 'success';
+            elseif($this->isStateAwaitingCease()):
+                $class = 'warning';
+            elseif($this->isStateAwaitingXConnect()):
+                $class = 'danger';
+            else:
+                $class = 'default';
+            endif;
+        }
+
 
         return $class;
     }

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace IXP\Tasks\Yaml;
 
 /*
- * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -39,7 +39,7 @@ use IXP\Exceptions\GeneralException;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Tasks
  * @package    IXP\Tasks\Router
- * @copyright  Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SwitchConfigurationGenerator
@@ -89,15 +89,14 @@ class SwitchConfigurationGenerator
         foreach( $this->getSwitch()->getPorts() as $sp ) {
 
             /** @var \Entities\SwitchPort $sp */
-/*
-            if( !$sp->isTypePeering() ) {
-            if( !$sp->isTypeUnset() && !$sp->isTypePeering() && !$sp->isTypeCore() ) {
-                continue;
-            }
-*/
 
             // is the port in use?
             if( !($pi = $sp->getPhysicalInterface()) ) {
+                continue;
+            }
+
+            // don't emit ports which aren't ready for production
+            if( $pi->statusIsAwaitingXConnect() ) {
                 continue;
             }
 
@@ -136,6 +135,11 @@ class SwitchConfigurationGenerator
                 $v[ 'macaddresses' ][] = $mac->getMacFormattedWithColons();
             }
             $p[ 'vlans' ][] = $v;
+        }
+
+        // return nothing if there are no vlans defined on the port
+        if( empty($p['vlans']) ) {
+            return [];
         }
 
         // we now have the base port config. If this is not a LAG, just return it:

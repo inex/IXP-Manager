@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\PatchPanel;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -73,7 +73,7 @@ use Repositories\PatchPanelPort as PatchPanelPortRepository;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   PatchPanel
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PatchPanelPortController extends Controller
@@ -230,20 +230,21 @@ class PatchPanelPortController extends Controller
             'owned_by'                  => array_key_exists( 'owned_by',                $old    ) ? $old['owned_by']                : $ppp->getOwnedBy()
         ]);
 
-        // display the duplex port if set or the list of all duplex ports available
-        // FIXME: We should allow editing this - see https://github.com/inex/IXP-Manager/issues/307
+
+        /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
+        $partnerPorts = D2EM::getRepository( PatchPanelPortEntity::class )->getAvailablePorts( $ppp->getPatchPanel()->getId(), [$ppp->getId()] );
+
         if( $ppp->hasSlavePort() ) {
-            $partnerPorts = [ $ppp->getDuplexSlavePortId() => $ppp->getDuplexSlavePortName() ];
-        } else {
-            /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
-            $partnerPorts = D2EM::getRepository( PatchPanelPortEntity::class )->getAvailablePorts( $ppp->getPatchPanel()->getId(), [$ppp->getId()] );
+            $partnerPorts = [ $ppp->getDuplexSlavePortId() => $ppp->getDuplexSlavePortName() ] + $partnerPorts;
+            ksort( $partnerPorts );
         }
+
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'patch-panel-port/edit' )->with([
             'states'                => $states,
             'customers'             => D2EM::getRepository( CustomerEntity::class )->getNames( false ),
-            'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNamesByLocation( true, SwitcherEntity::TYPE_SWITCH,$ppp->getPatchPanel()->getCabinet()->getLocation()->getId() ),
+            'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNamesByLocation( true, $ppp->getPatchPanel()->getCabinet()->getLocation()->getId() ),
             'switchPorts'           => $switchPorts ?? [],
             'chargeables'           => PatchPanelPortEntity::$CHARGEABLES,
             'ownedBy'               => PatchPanelPortEntity::$OWNED_BY,
@@ -381,19 +382,31 @@ class PatchPanelPortController extends Controller
         $ppp->setOwnedBy(         ( $request->input( 'owned_by'       ) ) ? $request->input( 'owned_by'       ) : false );
 
 
-        if( $request->input( 'duplex' ) ) {
-            if( !$ppp->hasSlavePort() ) {
 
-                if( $request->input( 'partner_port' ) != null ){
-                    /** @var PatchPanelPortEntity $partnerPort */
-                    $partnerPort = D2EM::getRepository( PatchPanelPortEntity::class )->find( $request->input( 'partner_port' ) );
-                    $ppp->setDuplexPort( $partnerPort );
-                } else{
-                    AlertContainer::push( 'You need to select a partner port as you checked duplex connection', Alert::DANGER );
-                    return Redirect::back()->withInput( Input::all() );
+        if( $request->input( 'duplex' ) ) {
+
+
+            if( $request->input( 'partner_port' ) != null ){
+                /** @var PatchPanelPortEntity $partnerPort */
+                $partnerPort = D2EM::getRepository( PatchPanelPortEntity::class )->find( $request->input( 'partner_port' ) );
+
+                if( $pppsp = $ppp->getDuplexSlavePort() ) {
+                    $pppsp->resetPatchPanelPort();
                 }
 
+                $ppp->setDuplexPort( $partnerPort );
+            } else{
+                AlertContainer::push( 'You need to select a partner port as you checked duplex connection', Alert::DANGER );
+                return Redirect::back()->withInput( Input::all() );
             }
+
+
+        } else {
+            // if ppp has a slave port and duplex port is uncheck => unlink the slave port and reset it
+            if( $pppsp = $ppp->getDuplexSlavePort() ){
+                $pppsp->resetPatchPanelPort();
+            }
+
         }
 
         // create a history and reset the patch panel port
@@ -582,7 +595,7 @@ class PatchPanelPortController extends Controller
         return view( 'patch-panel-port/email-form' )->with([
             'ppp'                           => $this->getPPP($id),
             'emailType'                     => $type,
-            'body'                      => $mailable->getBody()
+            'body'                          => $mailable->getBody()
         ]);
     }
 

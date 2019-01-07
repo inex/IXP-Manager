@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -33,8 +33,7 @@ use Illuminate\Http\{
 use Illuminate\View\View;
 
 use Entities\{
-    User        as  UserEntity,
-    Contact     as  ContactEntity
+    User        as  UserEntity
 };
 
 use IXP\Http\Requests\Profile\{
@@ -53,7 +52,7 @@ use IXP\Utils\View\Alert\{
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Profile
- * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ProfileController extends Controller
@@ -72,11 +71,9 @@ class ProfileController extends Controller
         // array used to populate the form to modify user information.
         // former doesn't allow us to populate a form the classic way when there is many forms on the same view.
         $profileDetails = [
-            'name'                  => $user->getContact()->getName(),
-            'position'              => $user->getContact()->getPosition(),
+            'username'              => $user->getUsername(),
             'email'                 => $user->getEmail(),
-            'phone'                 => $user->getContact()->getPhone(),
-            'mobile'                => $user->getContact()->getMobile(),
+            'authorisedMobile'      => $user->getAuthorisedMobile(),
         ];
 
         $customerNotesNotificationOption = [
@@ -139,17 +136,7 @@ class ProfileController extends Controller
         /** @var UserEntity $user */
         $user = Auth::getUser();
 
-        /** @var ContactEntity $contact */
-        $contact = Auth::getUser()->getContact();
-
-        $contact->setName(          $r->input( "name") );
-        $contact->setEmail(         $r->input( "email") );
-        $contact->setMobile(        $r->input( "mobile") );
-        $contact->setPhone(         $r->input( "phone") );
-        $contact->setPosition(      $r->input( "position") );
-        $contact->setLastUpdated(   new DateTime() );
-        $contact->setLastUpdatedBy( $user->getId() );
-
+        $user->setUsername(         $r->input( "username") );
         $user->setEmail(            $r->input( "email") );
         $user->setLastUpdated(      new DateTime() );
         $user->setLastUpdatedBy(    $user->getId() );

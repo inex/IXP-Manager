@@ -12,7 +12,7 @@
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
         <a href="<?= route( $c->isTypeAssociate() ? 'customer@associates' : 'customer@details' )?>"><?= $c->isTypeAssociate() ? 'Associate Members' : 'Customers' ?></a>
     <?php else: ?>
-        Customer Detail
+        Member Detail
     <?php endif; ?>
 <?php $this->append() ?>
 
@@ -57,6 +57,7 @@
 
         <div class="col-md-6">
             <table class="table_view_info">
+
                 <tr>
                     <td>
                         <b>
@@ -67,26 +68,31 @@
                         <?= $t->ee( $c->resolveType() ) ?>
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        <b>
-                            AS Number:
-                        </b>
-                    </td>
-                    <td>
-                        <?=  $t->asNumber( $c->getAutsys() ) ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <b>
-                            Peering Policy:
-                        </b>
-                    </td>
-                    <td>
-                        <?= ucfirst( $t->ee( $c->getPeeringPolicy() ) ) ?>
-                    </td>
-                </tr>
+
+                <?php if( !$c->isTypeAssociate() ): ?>
+                    <tr>
+                        <td>
+                            <b>
+                                AS Number:
+                            </b>
+                        </td>
+                        <td>
+                            <?=  $t->asNumber( $c->getAutsys() ) ?>
+                        </td>
+                    </tr>
+
+                    <tr>
+                        <td>
+                            <b>
+                                Peering Policy:
+                            </b>
+                        </td>
+                        <td>
+                            <?= ucfirst( $t->ee( $c->getPeeringPolicy() ) ) ?>
+                        </td>
+                    </tr>
+                <?php endif; ?>
+
                 <tr>
                     <td>
                         <b>
@@ -160,16 +166,21 @@
                         <?php endif; ?>
                     </td>
                 </tr>
-                <tr>
-                    <td>
-                        <b>
-                            Peering Macro:
-                        </b>
-                    </td>
-                    <td>
-                        <?=  $t->ee( $c->getPeeringmacro() ) ?>
-                    </td>
-                </tr>
+
+                <?php if( !$c->isTypeAssociate() ): ?>
+
+                    <tr>
+                        <td>
+                            <b>
+                                Peering Macro:
+                            </b>
+                        </td>
+                        <td>
+                            <?=  $t->ee( $c->getPeeringmacro() ) ?>
+                        </td>
+                    </tr>
+
+                <?php endif; ?>
 
                 <?php if( Auth::check() ): ?>
 

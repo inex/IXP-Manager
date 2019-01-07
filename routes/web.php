@@ -1,6 +1,27 @@
 <?php
 
 /*
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+/*
 |--------------------------------------------------------------------------
 | Web Routes
 |--------------------------------------------------------------------------
@@ -11,30 +32,6 @@
 |
 */
 
-$auth = Zend_Auth::getInstance();
-
-// phpunit trips up here without the cli test:
-if( php_sapi_name() !== 'cli' ) {
-
-    // this if equates to: if the user is logged into Zend but not Laravel:
-    if( $auth->hasIdentity() && \Auth::guest() ) {
-        // log the user is for Laravel5
-        // Note that we reload the user from the database as Zend uses a session cache
-        // which breaks associations, etc.
-        \Auth::login( d2r('User')->find( ($auth->getIdentity()['user'])->getId() ) );
-    } else if( !$auth->hasIdentity() ) {
-        \Auth::logout();
-    }
-}
-if( ( Auth::check() && Auth::user()->isSuperUser() ) || env( 'IXP_PHPUNIT_RUNNING', false ) ) {
-    // get an array of customer id => names
-    if( !( $customers = Cache::get( 'admin_home_customers' ) ) ) {
-        $customers = d2r( 'Customer' )->getNames( true );
-        Cache::put( 'admin_home_customers', $customers, 3600 );
-    }
-
-    app()->make('Foil\Engine')->useData(['customers' => $customers]);
-}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -48,6 +45,13 @@ Route::group( [ 'prefix' => 'customer', 'namespace' => 'Customer'], function() {
     Route::get( 'detail/{id}',              'CustomerController@detail'         )->name( "customer@detail"     );
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Peering Matrix
+///
+
+Route::get( 'peering-matrix', 'PeeringMatrixController@index' )->name( "peering-matrix@index" );
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -62,6 +66,7 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'verify-loa/{id}/{code}',       'PatchPanelPortController@verifyLoa'    )->name( "patch-panel-port@verify-loa"  );
 });
 
+Route::get( 'verify-loa/{id}/{code}',       'PatchPanel\PatchPanelPortController@verifyLoa'    )->name( "patch-panel-port@verify-loa"  );
 
 
 Route::get( 'weather-map/{id}',                    'WeatherMapController@index' )->name( 'weathermap');
@@ -106,6 +111,33 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
 });
 
 
+// Authentication routes...
+Route::group( [ 'namespace' => 'Auth' ], function() {
+    Route::get( 'logout',                   'LoginController@logout'                                )->name( "login@logout"                     );
+    Route::get( 'login',                    'LoginController@showLoginForm'                         )->name( "login@showForm"                   );
+    Route::post('login',                    'LoginController@login'                                 )->name( "login@login"                      );
+
+    Route::get( 'password/forgot',          'ForgotPasswordController@showLinkRequestForm'          )->name( "forgot-password@show-form"        );
+    Route::post('password/forgot',          'ForgotPasswordController@sendResetLinkEmail'           )->name( "forgot-password@reset-email"      );
+
+    Route::get( 'password/reset/{token}',   'ResetPasswordController@showResetForm'                 )->name( "reset-password@show-reset-form"   );
+    Route::post('password/reset',           'ResetPasswordController@reset'                         )->name( "reset-password@reset"             );
+
+    Route::get( 'username',                 'ForgotPasswordController@showUsernameForm'             )->name( "forgot-password@showUsernameForm" );
+    Route::post('forgot-username',          'ForgotPasswordController@sendUsernameEmail'            )->name( "forgot-password@username-email"   );
+
+
+    // IXP Manager <v4.9 aliases for static links
+    Route::redirect( '/auth/logout',        '/logout',          301 );
+    Route::redirect( '/auth/login',         '/login',           301 );
+    Route::redirect( '/auth/lost-password', '/password/forget', 301 );
+    Route::redirect( '/auth/lost-username', '/username',        301 );
+});
+
+
+
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
@@ -114,6 +146,8 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
 
 
 Route::get( 'participants.json', function() { return redirect(route('ixf-member-export')); });
+
+//Auth::routes();
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -125,15 +159,15 @@ Route::get( 'participants.json', function() { return redirect(route('ixf-member-
 Route::get( '/', function() {
 
     if( Auth::guest() ) {
-        return redirect('auth/login' );
+        return redirect(route( "login@showForm" ) );
     }
 
-    if( Auth::user()->isSuperUser() ) {
-        return redirect( 'admin' );
-    } else if( Auth::user()->isCustAdmin() ) {
-        return redirect( 'contact/list' );
+    if( Auth::getUser()->isSuperUser() ) {
+        return redirect( route( "admin@dashboard" ) );
+    } else if( Auth::getUser()->isCustAdmin() ) {
+        return redirect( route( 'contact@list' ) );
     } else {
-        return redirect( 'dashboard/index' );
+        return redirect( route( "dashboard@index" ) );
     }
 })->name( 'default' );
 

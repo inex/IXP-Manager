@@ -15,14 +15,7 @@
             <?php foreach( $t->c->getUsers() as $u ): ?>
                 <tr>
                     <td>
-                        <?php if(  $u->getContact() ): ?>
-                            <a href="<?= url( "contact/edit/id/" . $u->getContact()->getId() . "/cid/". $u->getCustomer()->getId() ) ?>">
-                                <?= $t->ee ( $u->getUsername() ) ?>
-                            </a>
-
-                        <?php else: ?>
-                            <?= $t->ee ( $u->getUsername() ) ?>
-                        <?php endif; ?>
+                        <?= $t->ee ( $u->getUsername() ) ?>
                     </td>
                     <td>
                         <?= $t->ee( $u->getEmail() ) ?>

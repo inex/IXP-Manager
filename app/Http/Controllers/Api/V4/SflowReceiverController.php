@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -82,6 +82,71 @@ class SflowReceiverController extends Controller {
         return response()
                 ->view('api/v4/sflow-receiver/receiversLst', ['map' => $map], 200)
                 ->header('Content-Type', 'text/html; charset=utf-8');
+    }
+
+    /**
+     * Generate a formatted output version of the given structure.
+     *
+     * This takes two arguments: the array structure and the output format.
+     *
+     * @return http response
+     */
+    public function structuredResponse ( $array, $format ) {
+
+        $output = null;
+        $contenttype = 'text/plain; charset=utf-8';
+        $httpresponse = 200;
+
+        $array['timestamp'] = date( 'Y-m-d', time() ) . 'T' . date( 'H:i:s', time() ) . 'Z';
+        $array['ixpmanager_version'] = APPLICATION_VERSION;
+
+        switch ($format) {
+            case 'yaml':
+                $output = yaml_emit ( $array, YAML_UTF8_ENCODING );
+                break;
+            case 'json':
+                $output = json_encode ( $array, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE )."\n";
+                $contenttype = 'application/json';
+                break;
+        }
+
+        if (!$output) {
+            $httpresponse = 200;
+        }
+
+        return response( $output, $httpresponse )->header('Content-Type', $contenttype);
+    }
+
+    /**
+     *
+     * @return Response
+     */
+    public function getReceiverList( Request $request, string $format = null )
+    {
+        $map = [];
+
+        foreach( d2r('SflowReceiver')->findAll() as $sr ) {
+            $m['virtualinterfaceid'] = $sr->getVirtualInterface()->getId();
+            $m['dst_ip']             = $sr->getDstIp();
+            $m['dst_port']           = $sr->getDstPort();
+            $macs = [];
+            foreach( $sr->getVirtualInterface()->getMACAddresses() as $mac ) {
+                $macs[] = $mac->getMacFormattedWithColons();
+            }
+            $m['macaddresses']['learned'] = $macs;
+            $macs = [];
+            foreach( $sr->getVirtualInterface()->getVlanInterfaces() as $vli ) {
+                foreach( $vli->getLayer2Addresses() as $mac ) {
+                    $macs[] = $mac->getMacFormattedWithColons();
+                }
+            }
+            $m['macaddresses']['configured'] = $macs;
+            $map[] = $m;
+        }
+
+        $output['receiver_list'] = $map;
+
+        return $this->structuredResponse($output, $format);
     }
 
 }

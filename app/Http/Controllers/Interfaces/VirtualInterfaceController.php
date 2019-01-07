@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Interfaces;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -58,7 +58,7 @@ use IXP\Utils\View\Alert\Container as AlertContainer;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Interfaces
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class VirtualInterfaceController extends Common
@@ -253,7 +253,7 @@ class VirtualInterfaceController extends Common
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getNames(),
             'vli'                   => false,
             'vlans'                 => D2EM::getRepository( VlanEntity::class )->getNames( false ),
-            'pi_switches'           => D2EM::getRepository( SwitcherEntity::class )->getNames( true, SwitcherEntity::TYPE_SWITCH ),
+            'pi_switches'           => D2EM::getRepository( SwitcherEntity::class )->getNames( true ),
             'resoldCusts'           => $this->resellerMode() ? json_encode( D2EM::getRepository( CustomerEntity::class )->getResoldCustomerNames() ) : json_encode([]) ,
             'selectedCust'          => $cust
         ]);
@@ -292,8 +292,6 @@ class VirtualInterfaceController extends Common
 
         $sp->setType( SwitchPortEntity::TYPE_PEERING );
         $pi->setSwitchPort( $sp );
-
-        $pi->setMonitorindex( D2EM::getRepository( PhysicalInterfaceEntity::class )->getNextMonitorIndex( $c ) );
 
         $vli = new VlanInterfaceEntity();
         D2EM::persist($vli);
@@ -339,6 +337,13 @@ class VirtualInterfaceController extends Common
             return abort( '404' );
         }
 
+
+        if( $vi->getCoreBundle() ) {
+            AlertContainer::push( 'The Virtual Interface is linked to a Core Bundle. Delete the Core Bundle first to be able to delete the Virtual Interface.', Alert::DANGER );
+
+            return response()->json( [ 'success' => false ]);
+        }
+
         foreach( $vi->getPhysicalInterfaces() as $pi) {
             /** @var PhysicalInterfaceEntity $pi */
             $vi->removePhysicalInterface( $pi );
@@ -353,6 +358,7 @@ class VirtualInterfaceController extends Common
 
                 $pi->getPeeringPhysicalInterface()->setFanoutPhysicalInterface( null );
             }
+
             D2EM::remove( $pi );
 
             if( $request->input( 'related' ) && $pi->getRelatedInterface() ){

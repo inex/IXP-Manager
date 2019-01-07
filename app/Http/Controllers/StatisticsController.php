@@ -1,6 +1,6 @@
 <?php
 /*
- * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -62,7 +62,7 @@ use Illuminate\Auth\Access\AuthorizationException;
  * Statistics Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Statistics
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class StatisticsController extends Controller
@@ -88,7 +88,6 @@ class StatisticsController extends Controller
      *
      * @param string $category Category of graph to show (e.g. bits / pkts)
      * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     * @throws \IXP_Exception
      * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      * @throws \Doctrine\ORM\ORMException
      */
@@ -318,16 +317,17 @@ class StatisticsController extends Controller
 
         $graphs = [];
         foreach( $targets as $t ) {
+
+            if( !$t->isGraphable() ) {
+                continue;
+            }
+
             if( $infra ) {
-                if( $t->isGraphable() ) {
-                    $g = $grapher->virtint( $t );
-                }
+                $g = $grapher->virtint( $t );
             } else if( $vlan ) {
                 $g = $grapher->vlanint( $t );
             } else {
-                if( $t->isGraphable() ) {
-                    $g = $grapher->customer( $t );
-                }
+                $g = $grapher->customer( $t );
             }
 
             /** @var Graph $g */
@@ -554,7 +554,7 @@ class StatisticsController extends Controller
         }
 
         // is the requested protocol support?
-        if( !$srcVli->isIPEnabled( $r->protocol ) ) {
+        if( !$srcVli->getVlan()->getPrivate() && !$srcVli->isIPEnabled( $r->protocol ) ) {
             AlertContainer::push( Graph::resolveProtocol( $r->protocol ) . " is not supported on the requested VLAN interface.", Alert::WARNING );
             return redirect()->back();
         }

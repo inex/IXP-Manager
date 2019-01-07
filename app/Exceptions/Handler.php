@@ -1,8 +1,34 @@
 <?php namespace IXP\Exceptions;
 
-use Exception;
+/*
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+use Exception,Redirect;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
+use IXP\Utils\View\Alert\Alert;
+use IXP\Utils\View\Alert\Container as AlertContainer;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+
+use Illuminate\Auth\Access\AuthorizationException;
 
 class Handler extends ExceptionHandler
 {
@@ -31,7 +57,10 @@ class Handler extends ExceptionHandler
      * This is a great spot to send exceptions to Sentry, Bugsnag, etc.
      *
      * @param  \Exception  $e
+     *
      * @return void
+     *
+     * @throws
      */
     public function report(Exception $e)
     {
@@ -47,29 +76,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        /**
-         * Zend Framework 1 fallback
-         *
-         * IXP Manager is transitioning from ZF1 to Laravel as a framework. It
-         * will take some time to move over everything and this will be done on
-         * an as needed basis. Realistically this means there may be some ZF1
-         * crud for the foreseeable future.
-         *
-         * We'll revert to ZF1 handling when Laravel throws a 404:
-         */
-        if( $e instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException ) {
-
-            \App::make('ZendFramework')->run();
-            die();
-
-        } else if ($this->isHttpException($e)) {
-
+        if( $this->isHttpException($e) ) {
             return $this->renderHttpException($e);
-
+        } else if( $e instanceof AuthorizationException && request()->route()->action['middleware'] != 'grapher' ) {
+            return Redirect::to( '' );
         } else {
-
             return parent::render($request, $e);
-
         }
     }
 

@@ -1,8 +1,32 @@
 <?php
 
+/*
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
+use Entities\{
+    ContactGroup    as ContactGroupEntity,
+    Customer        as CustomerEntity
+};
 
 /**
  * Entities\Contact
@@ -32,12 +56,12 @@ class Contact
     /**
      * @var integer $facilityaccess
      */
-    protected $facilityaccess;
+    protected $facilityaccess = false;
 
     /**
      * @var boolean $mayauthorize
      */
-    protected $mayauthorize;
+    protected $mayauthorize = false;
 
     /**
      * @var \DateTime $lastupdated
@@ -65,7 +89,7 @@ class Contact
     protected $id;
 
     /**
-     * @var |Entities\Customer
+     * @var CustomerEntity
      */
     protected $Customer;
     
@@ -73,11 +97,6 @@ class Contact
      * @var string
      */
     protected $position;
-
-    /**
-     * @var \Entities\User
-     */
-    protected $User;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
@@ -328,10 +347,10 @@ class Contact
     /**
      * Set Customer
      *
-     * @param |Entities\Customer $customer
+     * @param CustomerEntity $customer
      * @return Contact
      */
-    public function setCustomer(\Entities\Customer $customer = null)
+    public function setCustomer( CustomerEntity $customer = null)
     {
         $this->Customer = $customer;
     
@@ -341,7 +360,7 @@ class Contact
     /**
      * Get Customer
      *
-     * @return |Entities\Customer
+     * @return CustomerEntity
      */
     public function getCustomer()
     {
@@ -380,47 +399,12 @@ class Contact
     }
 
     /**
-     * Set User
-     *
-     * @param \Entities\User $user
-     * @return Contact
-     */
-    public function setUser(\Entities\User $user)
-    {
-        $this->User = $user;
-    
-        return $this;
-    }
-    
-    /**
-     * Unset User
-     *
-     * @return Contact
-     */
-    public function unsetUser()
-    {
-        $this->User = null;
-    
-        return $this;
-    }
-
-    /**
-     * Get User
-     *
-     * @return \Entities\User
-     */
-    public function getUser()
-    {
-        return $this->User;
-    }
-
-    /**
      * Add Groups
      *
-     * @param \Entities\ContactGroup $groups
+     * @param ContactGroupEntity $groups
      * @return Contact
      */
-    public function addGroup(\Entities\ContactGroup $groups)
+    public function addGroup( ContactGroupEntity $groups)
     {
         $this->Groups[] = $groups;
     
@@ -430,9 +414,9 @@ class Contact
     /**
      * Remove Groups
      *
-     * @param \Entities\ContactGroup $groups
+     * @param ContactGroupEntity $groups
      */
-    public function removeGroup(\Entities\ContactGroup $groups)
+    public function removeGroup( ContactGroupEntity $groups)
     {
         $this->Groups->removeElement($groups);
     }
@@ -474,4 +458,36 @@ class Contact
     {
         return $this->notes;
     }
+
+
+
+
+    /**
+     * @var \Entities\User
+     */
+    protected $User;
+
+    /**
+     * Set User
+     *
+     * @param \Entities\User $user
+     * @return User
+     */
+    public function setUser($user)
+    {
+        $this->User = $user;
+
+        return $this;
+    }
+
+    /**
+     * Get User
+     *
+     * @return \Entities\User
+     */
+    public function getUser()
+    {
+        return $this->User;
+    }
+
 }

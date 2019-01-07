@@ -771,4 +771,15 @@ class VlanInterface extends \Entities\VlanInterface implements \Doctrine\ORM\Pro
         return parent::isIPEnabled($protocol);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function isGraphable(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isGraphable', []);
+
+        return parent::isGraphable();
+    }
+
 }

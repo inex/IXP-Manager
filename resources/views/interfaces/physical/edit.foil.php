@@ -104,13 +104,6 @@ $this->layout( 'layouts/ixpv4' );
                         ->blockHelp( "Unless you are provisioning switches from IXP Manager, this is informational." );
                     ?>
 
-                    <?= Former::number( 'monitorindex' )
-                        ->label( 'Monitor Index' )
-                        ->blockHelp( '<b>DEPRECATED.</b> This was previously used as a unique index (per customer) for generating certain elements such as graphs. It is no '
-                            . 'longer used and will be removed during the lifetime of the v4 release. Until it is removed, the only condition is per customer uniqueness - but '
-                            . 'IXP Manager will generally <em>do the right thing</em>.' );
-                    ?>
-
 
                     <div class="form-group">
 
@@ -206,12 +199,6 @@ $this->layout( 'layouts/ixpv4' );
                             ->disabled( true )
                             ->blockHelp( "" ); ?>
 
-                        <?= Former::number( 'monitorindex-b' )
-                            ->label( 'Monitor Index' )
-                            ->disabled( true )
-                            ->blockHelp( '' );
-                        ?>
-
                         <div class="form-group">
 
                             <label for="notes" class="control-label col-lg-2 col-sm-4">Notes</label>
@@ -260,11 +247,6 @@ $this->layout( 'layouts/ixpv4' );
                             <?= Former::hidden( 'original-switch-port-fanout')
                                 ->id('original-switch-port-fanout')
                                 ->forceValue( old('switch-port-fanout') ? old('switch-port-fanout')  : ( $t->spFanout ? $t->spFanout : '' ) )
-                            ?>
-
-                            <?= Former::number( 'monitorindex-fanout' )
-                                ->label( 'Monitor Index' )
-                                ->blockHelp( '' );
                             ?>
 
                             <?= Former::hidden( 'sp-fanout' )

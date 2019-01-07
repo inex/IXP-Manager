@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace IXP\Tasks\Irrdb;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -27,13 +27,15 @@ namespace IXP\Tasks\Irrdb;
 use D2EM;
 use Log;
 
+use IXP\Rules\{IPv4Cidr as ValidateIPv4Cidr, IPv6Cidr as ValidateIPv6Cidr};
+
 /**
  * UpdatePrefixDb
  *
  * @author     Barry O'Donovan <barry@opensolutions.ie>
  * @category   Tasks
  * @package    IXP\Tasks\Irrdb
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class UpdatePrefixDb extends UpdateDb
@@ -86,13 +88,13 @@ class UpdatePrefixDb extends UpdateDb
      */
     protected function validate( array $prefixes, int $protocol ): array {
         if( $protocol == 4 ) {
-            $validator = new \OSS_Validate_OSSIPv4Cidr;
+            $validator = new ValidateIPv4Cidr;
         } else {
-            $validator = new \OSS_Validate_OSSIPv6Cidr;
+            $validator = new ValidateIPv6Cidr;
         }
 
         foreach( $prefixes as $i => $p ) {
-            if( !$validator->isValid( $p ) ) {
+            if( !$validator->passes( [], $p ) ) {
                 unset( $prefixes[$i] );
                 Log::alert( 'IRRDB CLI action - removing invalid prefix ' . $p . ' from IRRDB result set!' );
             }

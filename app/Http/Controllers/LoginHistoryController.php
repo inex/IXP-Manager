@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -39,7 +39,7 @@ use Illuminate\View\View;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   VlanInterface
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class LoginHistoryController extends Doctrine2Frontend {
@@ -48,16 +48,6 @@ class LoginHistoryController extends Doctrine2Frontend {
      * @var UserLoginHistoryEntity
      */
     protected $object = null;
-
-    /**
-    * The minimum privileges required to access this controller.
-    *
-    * If you set this to less than the superuser, you need to manage privileges and access
-    * within your own implementation yourself.
-    *
-    * @var int
-    */
-    public static $minimum_privilege = UserEntity::AUTH_SUPERUSER;
 
     /**
      * This function sets up the frontend controller

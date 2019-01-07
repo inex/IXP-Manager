@@ -1,4 +1,27 @@
-<?php namespace IXP\Providers;
+<?php
+
+/*
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+namespace IXP\Providers;
 
 use Entities\User as UserEntity;
 use Illuminate\Support\Facades\Route;
@@ -18,7 +41,6 @@ class RouteServiceProvider extends ServiceProvider {
     /**
      * Define your route model bindings, pattern filters, etc.
      *
-     * @param  \Illuminate\Routing\Router  $router
      * @return void
      */
     public function boot()
@@ -93,7 +115,7 @@ class RouteServiceProvider extends ServiceProvider {
     protected function mapWebAuthRoutes()
     {
         Route::group([
-            'middleware' => [ 'auth', 'web' ],
+            'middleware' => [ 'web', 'auth'  ],
             'namespace' => $this->namespace,
         ], function ($router) {
             require base_path('routes/web-auth.php');
@@ -110,7 +132,7 @@ class RouteServiceProvider extends ServiceProvider {
     protected function mapWebAuthSuperuserRoutes()
     {
         Route::group([
-                         'middleware' => [ 'auth', 'web', 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ],
+                         'middleware' => [ 'web' , 'auth' , 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ],
                          'namespace' => $this->namespace,
                      ], function ($router) {
             require base_path('routes/web-auth-superuser.php');

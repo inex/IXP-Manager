@@ -101,7 +101,7 @@
             <div class="page-header">
                 <?php $this->section('page-header-preamble') ?>
                 <?php $this->stop() ?>
-                <h1>
+                <h1 style="display: inline">
                     <?php $this->section('title') ?>
                     <?php $this->stop() ?>
                 </h1>

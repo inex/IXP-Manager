@@ -3,7 +3,7 @@
 namespace IXP\Utils\Export;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -27,8 +27,7 @@ use Entities\{Customer, Infrastructure, IXP, Router, Switcher, VirtualInterface}
 
 use IXP\Exceptions\Utils\ExportException;
 
-use OSS_Array;
-
+use IXP\Utils\ArrayUtilities;
 
 /**
  * JSON Schema Exporter
@@ -41,7 +40,7 @@ use OSS_Array;
  * @see        https://github.com/euro-ix/json-schemas
  * @author     Nick Hilliard <nick@foobar.org>
  * @author     Barry O'Donovan <barry@opensolutions.ie>
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class JsonSchema
@@ -191,7 +190,7 @@ class JsonSchema
 
         /** @var Switcher $switch */
         foreach( $infra->getSwitchers() as $switch ) {
-            if( $switch->getSwitchtype() != Switcher::TYPE_SWITCH || !$switch->getActive() ) {
+            if( !$switch->getActive() ) {
                 continue;
             }
 
@@ -232,8 +231,8 @@ class JsonSchema
             $routeCollectorIPs = d2r( 'Router' )->getAllPeeringIPs( Router::TYPE_ROUTE_COLLECTOR );
         }
 
-        $customers = OSS_Array::reindexObjects(
-            OSS_Array::reorderObjects( d2r( 'Customer' )->getConnected( false, false ),
+        $customers = ArrayUtilities::reindexObjects(
+            ArrayUtilities::reorderObjects( d2r( 'Customer' )->getConnected( false, false ),
                 'getAutsys', SORT_NUMERIC
             ),
             'getId'

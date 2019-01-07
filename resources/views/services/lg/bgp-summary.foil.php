@@ -32,7 +32,7 @@
     <tr <?= $p->state == 'up' ? '' : 'class="warning"' ?>>
         <td><?=$p->neighbor_address?></td>
         <td>
-            <?= isset( $p->description_short ) ? $p->description_short : $p->description ?>
+            <?= $p->description_short ?? $p->description ?? "" ?>
         </td>
         <td class="text-right"><?= $p->neighbor_as ?></td>
         <td>
@@ -79,7 +79,7 @@
         </td>
         <td>
             <a class="btn btn-default btn-xs" id="protocol_details-<?= $name ?>"
-                data-protocol="<?= $name ?>" title="<?= $p->description ?>">Details</a>
+                data-protocol="<?= $name ?>" title="<?= $p->description ?? "" ?>">Details</a>
         </td>
     </tr>
 

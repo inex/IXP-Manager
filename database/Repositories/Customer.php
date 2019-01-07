@@ -1,12 +1,33 @@
 <?php
 
+/*
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 use D2EM, Exception;
 
 use Entities\{
-    PatchPanelPort  as PatchPanelPortEntity,
+    BGPSessionData  as BGPSessionDataEntity,
     Customer        as CustomerEntity
 };
 
@@ -377,7 +398,238 @@ class Customer extends EntityRepository
                         
         return $custs;
     }
-                        
+
+
+    /**
+     * Build an array of data for the peering matrice
+     *
+     * Sample return:
+     *
+     *     [
+     *         "me" => [    "id" => 69
+     *                       "name" => "3 Ireland's"
+     *                       "shortname" => "three"
+     *                       "autsys" => 34218
+     *                       "maxprefixes" => 100
+     *                       "peeringemail" => "io.ip@three.co.uk"
+     *                       "peeringpolicy" => "open"
+     *                       "vlaninterfaces" => [
+     *                               10 => [
+     *                                   0 => [
+     *                                           "ipv4enabled" => true
+     *                                           "ipv6enabled" => false
+     *                                           "rsclient" => true
+     *                                       ]
+     *                               ]
+     *
+     *                          ]
+     *
+     *                  ]
+     *
+     *         "potential" => [
+     *               12041 => false
+     *               56767 => false
+     *               196737 => false
+     *          ]
+     *
+     *          "potential_bilat" => [
+     *               12041 => true
+     *               56767 => true
+     *               196737 => false
+     *          ]
+     *
+     *          "peered" => [
+     *               12041 => true
+     *               56767 => true
+     *               196737 => false
+     *          ]
+     *
+     *          "peered" => [
+     *               12041 => false
+     *               56767 => false
+     *               196737 => false
+     *          ]
+     *
+     *         "peers" => [
+     *               60 => [
+     *                   "id" => 44
+     *                   "custid" => 69
+     *                   "peerid" => 60
+     *                   "email_last_sent" => null
+     *                   "emails_sent" => 0
+     *                   "peered" => false
+     *                   "rejected" => false
+     *                   "notes" => ""
+     *                   "created" => DateTime
+     *                   "updated" => DateTime
+     *                   "email_days" => -1
+     *               ]
+     *           ]
+     *
+     *          "custs" => [
+     *               12041 => [
+     *                   "id" => 146
+     *                   "name" => "Afilias"
+     *                   "shortname" => "afilias"
+     *                   "autsys" => 12041
+     *                   "maxprefixes" => 500
+     *                   "peeringemail" => "peering@afilias-nst.info"
+     *                   "peeringpolicy" => "open"
+     *                   "vlaninterfaces" => [...]
+     *                   "ispotential" => true
+     *                   10 => [
+     *                   4 => 1
+     *                   ]
+     *               ]
+     *               56767 => [...]
+     *               196737 => [...]
+     *
+     *     ]
+     *
+     * @param CustomerEntity    $cust       Current customer
+     * @param \Entities\Vlan[]  $vlans      Array of Vlans
+     * @param array             $protos     Array of protos
+     *
+     * @return array
+     *
+     * @throws
+     */
+    public function getPeeringManagerArrayByType( CustomerEntity $cust , $vlans, $protos ){
+
+        if( !count( $vlans ) ) {
+
+            AlertContainer::push( 'No VLANs have been enabled for the peering manager. Please see <a href="'
+                . 'https://github.com/inex/IXP-Manager/wiki/Peering-Manager">these instructions</a>'
+                . ' / contact our support team.', Alert::DANGER );
+            return Redirect::to('');
+        }
+
+        $bilat = array();
+
+        foreach( $vlans as $vlan ){
+            foreach( $protos as $proto ){
+                $bilat[ $vlan->getNumber() ][ $proto ] = D2EM::getRepository( BGPSessionDataEntity::class )->getPeers( $vlan->getId(), $proto );
+            }
+        }
+
+        $custs = D2EM::getRepository( CustomerEntity::class )->getForPeeringManager();
+
+
+        $potential = $potential_bilat = $peered = $rejected = [];
+
+        if( isset( $custs[ $cust->getAutsys() ] ) ){
+            $me = $custs[ $cust->getAutsys() ];
+            unset( $custs[ $cust->getAutsys() ] );
+        } else {
+            $me = null;
+        }
+
+        foreach( $custs as $c ) {
+            $custs[ $c[ 'autsys' ] ][ 'ispotential' ] = false;
+
+            foreach( $vlans as $vlan ) {
+
+                if( isset( $me[ 'vlaninterfaces' ][ $vlan->getNumber() ] ) ) {
+
+                    if( isset( $c[ 'vlaninterfaces' ][$vlan->getNumber()] ) ) {
+
+                        foreach( $protos as $proto ) {
+
+                            if( $me[ 'vlaninterfaces' ][ $vlan->getNumber() ][ 0 ][ "ipv{$proto}enabled" ] && $c[ 'vlaninterfaces' ][ $vlan->getNumber() ][ 0 ][ "ipv{$proto}enabled" ] ) {
+
+                                if( isset( $bilat[ $vlan->getNumber() ][ 4 ][ $me['autsys' ] ][ 'peers' ] ) && in_array( $c[ 'autsys' ], $bilat[ $vlan->getNumber() ][ 4 ][ $me[ 'autsys' ] ][ 'peers' ] ) ){
+
+                                    $custs[ $c[ 'autsys' ] ][$vlan->getNumber()][$proto] = 2;
+                                } else if( $me[ 'vlaninterfaces' ][ $vlan->getNumber() ][ 0 ][ 'rsclient' ] && $c[ 'vlaninterfaces' ][ $vlan->getNumber() ][ 0 ][ 'rsclient' ] ){
+
+                                    $custs[ $c[ 'autsys' ] ][ $vlan->getNumber() ][ $proto ] = 1;
+                                    $custs[ $c[ 'autsys' ] ][ 'ispotential' ] = true;
+
+                                } else {
+
+                                    $custs[ $c[ 'autsys' ] ][ $vlan->getNumber() ][ $proto ] = 0;
+                                    $custs[ $c[ 'autsys' ] ][ 'ispotential' ] = true;
+
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        foreach( $custs as $c ) {
+            $peered[          $c[ 'autsys' ] ] = false;
+            $potential_bilat[ $c[ 'autsys' ] ] = false;
+            $potential[       $c[ 'autsys' ] ] = false;
+            $rejected[        $c[ 'autsys' ] ] = false;
+
+            foreach( $vlans as $vlan ) {
+                foreach( $protos as $proto ) {
+                    if( isset( $c[ $vlan->getNumber() ][ $proto ] ) ) {
+                        switch( $c[ $vlan->getNumber() ][ $proto ] ) {
+                            case 2:
+                                $peered[ $c[ 'autsys' ] ] = true;
+                                break;
+
+                            case 1:
+                                $peered[          $c[ 'autsys' ] ] = true;
+                                $potential_bilat[ $c[ 'autsys' ] ] = true;
+                                break;
+
+                            case 0:
+                                $potential[       $c[ 'autsys' ] ] = true;
+                                $potential_bilat[ $c[ 'autsys' ] ] = true;
+                                break;
+                        }
+                    }
+                }
+            }
+        }
+
+
+        foreach( $peers = D2EM::getRepository( CustomerEntity::class )->getPeers( $cust->getId() ) as $i => $p ) {
+            // days since last peering request email sent
+            if( !$p[ 'email_last_sent' ] ){
+                $peers[ $i ][ 'email_days' ] = -1;
+            } else {
+                $peers[ $i ][ 'email_days' ] = floor( ( time() - $p[ 'email_last_sent' ]->getTimestamp() ) / 86400 );
+            }
+
+        }
+
+        foreach( $custs as $c ) {
+            if( isset( $peers[ $c[ 'id' ] ] ) ) {
+                if( isset( $peers[ $c[ 'id' ] ][ 'peered' ] ) && $peers[ $c[ 'id' ] ][ 'peered' ] ) {
+                    $peered[            $c[ 'autsys' ] ] = true;
+                    $rejected[          $c[ 'autsys' ] ] = false;
+                    $potential[         $c[ 'autsys' ] ] = false;
+                    $potential_bilat[   $c[ 'autsys' ] ] = false;
+                } else if( isset( $peers[ $c[ 'id' ] ][ 'rejected' ] ) && $peers[ $c[ 'id' ] ][ 'rejected' ] ) {
+                    $peered[            $c['autsys' ] ] = false;
+                    $rejected[          $c['autsys' ] ] = true;
+                    $potential[         $c['autsys' ] ] = false;
+                    $potential_bilat[   $c['autsys' ] ] = false;
+                }
+            }
+        }
+
+
+        return [    "me"                => $me,
+                    "potential"         => $potential,
+                    "potential_bilat"   => $potential_bilat,
+                    "peered"            => $peered,
+                    "rejected"          => $rejected,
+                    "peers"             => $peers,
+                    "custs"             => $custs,
+                    "bilat"             => $bilat,
+                    "vlan"              => $vlans ,
+                    "protos"            => $protos
+        ];
+
+    }
+
+
     /**
      * Find customers by ASN
      * 

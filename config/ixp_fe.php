@@ -1,5 +1,26 @@
 <?php
 
+/*
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 // Front end config options for IXP Manager
 
 return [
@@ -53,13 +74,14 @@ return [
 
     'frontend' => [
         'disabled' => [
-            'console-server-connection' => env( 'IXP_FE_FRONTEND_DISABLED_CONSOLE',        false ),
-            'cust-kit'                  => env( 'IXP_FE_FRONTEND_DISABLED_CUSTKIT',        false ),
-            'logo'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGO',           true  ),
-            'lg'                        => env( 'IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS',  true  ),
-            'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',        true ),
-            'peering-matrix'            => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MATRIX', false ),
-            'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',    false ),
+            'console-server-connection' => env( 'IXP_FE_FRONTEND_DISABLED_CONSOLE',         false ),
+            'cust-kit'                  => env( 'IXP_FE_FRONTEND_DISABLED_CUSTKIT',         false ),
+            'logo'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGO',            true  ),
+            'lg'                        => env( 'IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS',   true  ),
+            'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',         true ),
+            'peering-manager'           => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MANAGER', false ),
+            'peering-matrix'            => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MATRIX',  false ),
+            'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',     false ),
         ],
 
         'beta' => [
@@ -159,6 +181,19 @@ return [
         'default_graph_period'       => env( 'IXP_FE_ADMIN_DASHBOARD_DEFAULT_GRAPH_PERIOD', 'week' ),
 
     ],
+
+    /*
+   |--------------------------------------------------------------------------
+   | Login History
+   |--------------------------------------------------------------------------
+   |
+   */
+    'login_history' => [
+
+        'enabled'       => env( 'IXP_FE_LOGIN_HISTORY_ENABLED', true ),
+
+    ],
+
 
 
 ];

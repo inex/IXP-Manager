@@ -53,7 +53,7 @@ Authors:
 * Nick Hilliard
 * Contact us via: operations (at) inex.ie
 
-Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
 All Rights Reserved.
 
  

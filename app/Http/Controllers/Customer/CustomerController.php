@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Customer;
 
 /*
- * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -37,6 +37,7 @@ use Illuminate\Http\{
 use Illuminate\View\View;
 
 use Entities\{
+    BgpSession              as BgpSessionEntity,
     CompanyBillingDetail    as CompanyBillingDetailEntity,
     CompanyRegisteredDetail as CompanyRegisteredDetailEntity,
     Customer                as CustomerEntity,
@@ -46,7 +47,8 @@ use Entities\{
     IXP                     as IXPEntity,
     NetworkInfo             as NetworkInfoEntity,
     RSPrefix                as RSPrefixEntity,
-    User                    as UserEntity
+    User                    as UserEntity,
+    Vlan                    as VlanEntity
 };
 
 
@@ -68,7 +70,7 @@ use IXP\Utils\View\Alert\{
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Customers
- * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CustomerController extends Controller
@@ -198,7 +200,7 @@ class CustomerController extends Controller
                 'nocphone'              => array_key_exists( 'nocphone',            $old    ) ? $old['nocphone']                : $cust->getNocphone(),
                 'noc24hphone'           => array_key_exists( 'noc24hphone',         $old    ) ? $old['noc24hphone']             : $cust->getNoc24hphone(),
                 'nocemail'              => array_key_exists( 'nocemail',            $old    ) ? $old['nocemail']                : $cust->getNocemail(),
-                'nochours'              => array_key_exists( 'nochours',            $old    ) ? $old['nochours']                : $cust->getNoc24hphone(),
+                'nochours'              => array_key_exists( 'nochours',            $old    ) ? $old['nochours']                : $cust->getNochours(),
                 'nocwww'                => array_key_exists( 'nocwww',              $old    ) ? $old['nocwww']                  : $cust->getNocwww(),
                 'isReseller'            => array_key_exists( 'isReseller',          $old    ) ? $old['isReseller']              : ( $cust->getIsReseller() ? 1 : 0 ),
                 'isResold'              => array_key_exists( 'isResold',            $old    ) ? $old['isResold']                : ( $this->resellerMode() && $cust->getReseller() ? 1 : 0 ),
@@ -495,6 +497,19 @@ class CustomerController extends Controller
         // get customer's notes
         $cns = D2EM::getRepository( CustomerNoteEntity::class )->fetchForCustomer( $c );
 
+        $peersStatus = [];
+
+        foreach( $c->getVirtualInterfaces() as $vi ) {
+            foreach( $vi->getVlanInterfaces() as $vli ) {
+                if( $vli->getVlan()->getPrivate() ) {
+                    continue;
+                }
+                
+                $peersStatus[ $vli->getId() ][] = D2EM::getRepository( BgpSessionEntity::class )->getPeersStatus( $vli );
+            }
+        }
+
+
         return view( 'customer/overview' )->with([
             'c'                         => $c,
             'customers'                 => D2EM::getRepository( CustomerEntity::class )->getNames( true ),
@@ -518,7 +533,8 @@ class CustomerController extends Controller
             'countries'                 => Countries::getList('name' ),
             'tab'                       => strtolower( $tab ),
             'notes'                     => $cns,
-            'notesInfo'                 => D2EM::getRepository( CustomerNoteEntity::class )->analyseForUser( $cns, $c, Auth::user() )
+            'notesInfo'                 => D2EM::getRepository( CustomerNoteEntity::class )->analyseForUser( $cns, $c, Auth::user() ),
+            'peers'                     => D2EM::getRepository( CustomerEntity::class )->getPeeringManagerArrayByType( $c , D2EM::getRepository( VlanEntity::class )->getPeeringManagerVLANs(), [ 4, 6 ] )
         ]);
     }
 

@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -51,7 +51,7 @@ use IXP\Utils\View\Alert\Container as AlertContainer;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   VlanInterface
- * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class ContactsController extends Doctrine2Frontend {
@@ -118,129 +118,7 @@ class ContactsController extends Doctrine2Frontend {
     }
 
 
-    /**
-     * Delete the user only
-     *
-     * @param   Request   $r HTTP request
-     *
-     * @return  RedirectResponse
-     *
-     * @throws
-     */
-    public function deleteUser( Request $r )  {
 
-        if( !Auth::getUser()->isSuperUser() ) {
-            if( $this->object->getCustomer()->getId() != Auth::getUser()->getCustomer()->getId() ) {
-                Log::notice( Auth::getUser()->getUsername() . "tried to delete other customer user " . $this->object->getUser()->getUsername()  );
-                AlertContainer::push( 'You are not authorised to delete this user. The administrators have been notified.', Alert::DANGER );
-                return Redirect::to( '' );
-            }
-        }
-
-        if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( $r->input( 'id' ) ) ) ) {
-            return abort( '404', "Unknown Contact" );
-        }
-
-        $this->removeUserData( $this->object );
-
-        D2EM::flush();
-
-        AlertContainer::push( 'User login account successfully removed.', Alert::SUCCESS );
-
-        return Redirect::to( route( "customer@overview", [ "id" => $this->object->getCustomer()->getId(), "tab" => "users" ] ) );
-    }
-
-    /**
-     * Function which can be over-ridden to perform any pre-deletion tasks
-     *
-     * You can stop the deletion by returning false but you should also add a
-     * message to explain why (to the AlertContainer).
-     *
-     * The object to be deleted is available via `$this->>object`
-     *
-     * @return bool Return false to stop / cancel the deletion
-     */
-    protected function preDelete( ): bool {
-
-        if( !Auth::getUser()->isSuperUser() ) {
-            if( $this->object->getCustomer()->getId() != Auth::getUser()->getCustomer()->getId() ) {
-                Log::notice( Auth::getUser()->getUsername() . "tried to delete other customer user " . $this->object->getUser()->getUsername() );
-                AlertContainer::push( 'You are not authorised to delete this user. The administrators have been notified.', Alert::DANGER );
-                return false;
-            }
-        } else {
-            // keep the customer ID for redirection on success
-            $this->request->session()->put( "ixp_contact_delete_custid", $this->object->getCustomer()->getId() );
-        }
-
-
-        if( $this->object->getUser() )
-            $this->removeUserData( $this->object );
-
-        return true;
-
-    }
-
-    /**
-     * Allow D2F implementations to override where the post-delete redirect goes.
-     *
-     * To implement this, have it return a valid route url (e.g. `return route( "route-name" );`
-     *
-     * @return null|string
-     */
-    protected function postDeleteRedirect(){
-
-        // retrieve the customer ID
-        if( $custid = $this->request->session()->get( "ixp_contact_delete_custid" ) ) {
-
-            $this->request->session()->remove( "ixp_contact_delete_custid" );
-
-            return route( "customer@overview" , [ "id" => $custid, "tab" => "contacts" ] );
-        }
-
-        return null;
-    }
-
-
-
-    /**
-     * Delete all the informations associated to the User (User preference, User logins, Api keys)
-     *
-     * @param ContactEntity $contact The contact entity
-     *
-     * @throws
-     */
-    private function removeUserData( ContactEntity $contact ){
-        /** @var UserEntity $user */
-        $user = $contact->getUser();
-        $userName = $user->getUsername();
-
-        // delete all the user's preferences
-        foreach( $user->getPreferences() as $pref ) {
-            $user->removePreference( $pref );
-            D2EM::remove( $pref );
-        }
-
-        // delete all the user's login records
-        foreach( $user->getLastLogins() as $ll ) {
-            $user->removeLastLogin( $ll );
-            D2EM::remove( $ll );
-        }
-
-        // delete all the user's API keys
-        foreach( $user->getApiKeys() as $ak ) {
-            $user->removeApiKey( $ak );
-            D2EM::remove( $ak );
-        }
-
-        // clear the user from the contact and remove the user then
-        $contact->unsetUser();
-        D2EM::remove( $user );
-
-        Cache::forget( 'oss_d2u_user_' . $user->getId() );
-
-        Log::notice( Auth::getUser()->getUsername()." deleted user" . $userName );
-    }
 
 
 }

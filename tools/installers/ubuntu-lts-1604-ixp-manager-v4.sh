@@ -5,7 +5,7 @@
 # Barry O'Donovan <barry.odonovan ~at~ inex.ie>
 # First version: 2016-10-19
 
-# Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+# Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
 # All Rights Reserved.
 #
 # This file is part of IXP Manager.
@@ -314,10 +314,10 @@ echo -n "Installing PHP, Apache, MySQL, etc. Please be very patient..."
 # Prevent mrtg from prompting
 echo mrtg mrtg/conf_mods boolean true | debconf-set-selections
 
-log_break && apt-get install -qy apache2 php7.0 php7.0-intl php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt \
+log_break && apt-get install -qy apache2 php7.0 php7.0-intl php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt  \
     php-memcached libapache2-mod-php7.0 mysql-server mysql-client php7.0-mysql memcached snmp nodejs nodejs-legacy npm           \
     php7.0-mbstring php7.0-xml php7.0-gd php7.0-bcmath php-gettext bgpq3 php-memcache unzip php7.0-zip git php-yaml php-ds       \
-    libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl            \
+    libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl curl          \
         &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
@@ -389,7 +389,7 @@ echo -n "Installing / updating composer - PHP's package manager..."
 log_break && echo -n "Installing composer - PHP's package manager... " &>> /tmp/ixp-manager-install.log
 cd $IXPROOT
 
-curl -so $IXPROOT/composer.phar https://getcomposer.org/download/1.6.5/composer.phar && \
+curl -so $IXPROOT/composer.phar https://getcomposer.org/download/1.7.3/composer.phar && \
     chmod a+x $IXPROOT/composer.phar && \
     $IXPROOT/composer.phar selfupdate
 
@@ -455,9 +455,6 @@ IDENTITY_LOGO="/srv/ixpmanager/public/images/ixp-manager.png"
 IDENTITY_BIGLOGO="http://www.ixpmanager.org/images/logos/ixp-manager.png"
 IDENTITY_BIGLOGO_OFFSET="offset4"
 IDENTITY_DEFAULT_VLAN=1
-
-# get your IXF ID from https://www.peeringdb.com/api/ix ('id' field)
-IDENTITY_IXFID=0
 
 #######################################################################################
 # See: https://github.com/inex/IXP-Manager/wiki/Euro-IX-Member-Data-Export
@@ -654,6 +651,16 @@ chmod -R ug+rwX,o+rX ${IXPROOT} &>> /tmp/ixp-manager-install.log
 
 # favicon
 cp ${IXPROOT}/public/favicon.ico.dist ${IXPROOT}/public/favicon.ico
+
+
+##################################################################
+### Local config options
+##################################################################
+
+# enable contact groups
+cp ${IXPROOT}/config/contact_group.php.dist ${IXPROOT}/config/contact_group.php
+
+
 
 ##################################################################
 ### Completion Details

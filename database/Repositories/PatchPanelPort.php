@@ -3,7 +3,7 @@
 namespace Repositories;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -107,8 +107,11 @@ class PatchPanelPort extends EntityRepository
 
         $listAvailablePort = array();
 
-        foreach($availablePorts as $port){
-            $listAvailablePort[$port->getId()] = $port->getPatchPanel()->getPortPrefix().$port->getNumber();
+        /** @var PatchPanelPortEntity $port */
+        foreach( $availablePorts as $port ){
+            if( !$port->getDuplexSlavePort() ){
+                $listAvailablePort[$port->getId()] = $port->getPatchPanel()->getPortPrefix().$port->getNumber();
+            }
         }
         return $listAvailablePort;
     }

@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -60,7 +60,6 @@ class StorePhysicalInterface extends FormRequest
             'status'                    => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$STATES ) ),
             'speed'                     => 'required|integer|in:' . implode( ',', array_keys( PhysicalInterfaceEntity::$SPEED ) ),
             'duplex'                    => 'required|string|in:'  . implode( ',', array_keys( PhysicalInterfaceEntity::$DUPLEX ) ),
-            'monitorindex'              => 'nullable|integer',
             'notes'                     => 'string|nullable',
             'switch-fanout'             => 'integer' . ( $this->input('fanout') ? '|required|exists:Entities\Switcher,id'   : '|nullable' ),
             'switch-port-fanout'        => 'integer' . ( $this->input('fanout') ? '|required|exists:Entities\SwitchPort,id' : '|nullable' ),

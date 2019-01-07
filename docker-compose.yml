@@ -21,6 +21,8 @@ services:
         build:
             context: tools/docker/containers/mysql
         image: ixpmanager/mysql:dev
+        ports:
+            - 33060:3306
         networks:
             ixpmanager:
                 ipv4_address: 172.30.201.10

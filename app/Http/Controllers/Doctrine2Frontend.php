@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -51,7 +51,7 @@ use IXP\Utils\View\Alert\Container as AlertContainer;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Http\Controllers
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 abstract class Doctrine2Frontend extends Controller {
@@ -121,8 +121,13 @@ abstract class Doctrine2Frontend extends Controller {
         'REPLACE'           => 'replace',
         'XLATE'             => 'xlate',
         'YES_NO'            => 'yes_no',
+        'INVERSE_YES_NO'    => 'yes_no_inverse',
+        'YES_NO_NULL'       => 'yes_no_null',
         'PARSDOWN'          => 'parsdown',
         'CONST'             => 'const',
+        'LABEL'             => 'label',
+        'ARRAY'             => 'array',
+        'INTEGER'           => 'integer',
     ];
 
 
@@ -131,8 +136,15 @@ abstract class Doctrine2Frontend extends Controller {
      *
      */
     public function __construct( ){
-        $this->feInit();
-        $this->data[ 'col_types' ] = self::$FE_COL_TYPES;
+
+        $this->middleware(function ($request, $next) {
+            $this->feInit();
+            $this->data[ 'col_types' ] = self::$FE_COL_TYPES;
+
+            return $next($request);
+        });
+
+
     }
 
 
@@ -167,13 +179,13 @@ abstract class Doctrine2Frontend extends Controller {
         });
 
         $class::additionalRoutes( $route_prefix );
+
     }
 
     /**
      * Work out the route prefix
      */
     public static function route_prefix() {
-
         $class = get_called_class();
 
         if( $class::$route_prefix ) {
@@ -219,7 +231,7 @@ abstract class Doctrine2Frontend extends Controller {
      *
      * @return View
      */
-    public function list(): View
+    public function list( Request $param ): View
     {
         $this->data[ 'rows' ] = $this->listGetData();
 
@@ -252,8 +264,17 @@ abstract class Doctrine2Frontend extends Controller {
             return $data[0];
         }
 
-        abort( 404);
+        abort( 404, "No Data" );
     }
+
+    /**
+     * Function which can be over-ridden to perform any pre-view tasks
+     *
+     * E.g. adding elements to $this->view for the pre/post-amble templates.
+     *
+     * @return void
+     */
+    protected function preView() {}
 
     /**
      * View an object
@@ -271,6 +292,8 @@ abstract class Doctrine2Frontend extends Controller {
         $this->data[ 'view' ][ 'viewPostamble']       = $this->resolveTemplate( 'view-postamble',     false );
         $this->data[ 'view' ][ 'viewRowOverride']     = $this->resolveTemplate( 'view-row-override',  false );
         $this->data[ 'view' ][ 'viewScript' ]         = $this->resolveTemplate( 'js/view',            false );
+
+        $this->preView();
 
         return $this->display( 'view' );
     }
@@ -291,11 +314,13 @@ abstract class Doctrine2Frontend extends Controller {
      */
     protected function addEditSetup()
     {
-        $this->data[ 'view' ][ 'editForm']        = $this->resolveTemplate( 'edit-form' );
+        $this->data[ 'view' ][ 'editForm']               = $this->resolveTemplate( 'edit-form' );
 
-        $this->data[ 'view' ][ 'editPreamble']    = $this->resolveTemplate( 'edit-preamble',      false );
-        $this->data[ 'view' ][ 'editPostamble']   = $this->resolveTemplate( 'edit-postamble',     false );
-        $this->data[ 'view' ][ 'editScript' ]     = $this->resolveTemplate( 'js/edit',            false );
+        $this->data[ 'view' ][ 'editPreamble']           = $this->resolveTemplate( 'edit-preamble',      false );
+        $this->data[ 'view' ][ 'editPostamble']          = $this->resolveTemplate( 'edit-postamble',     false );
+        $this->data[ 'view' ][ 'editHeaderPreamble']     = $this->resolveTemplate( 'edit-header-preamble',      false );
+        $this->data[ 'view' ][ 'editScript' ]            = $this->resolveTemplate( 'js/edit',            false );
+
     }
 
     /**
@@ -308,17 +333,24 @@ abstract class Doctrine2Frontend extends Controller {
         $this->data[ 'params' ]['isAdd'] = true;
         $this->addEditSetup();
 
+
+
         return $this->display( 'edit' );
     }
 
     /**
      * Edit an object
+     *
      * @param int $id ID of the object to edit
+     *
      * @return view
+     *
+     * @throws
      */
     public function edit( $id ){
         $this->data[ 'params' ] = $this->addEditPrepareForm( $id );
         $this->data[ 'params' ]['isAdd'] = false;
+
         $this->addEditSetup();
 
         return $this->display( 'edit' );
@@ -327,17 +359,30 @@ abstract class Doctrine2Frontend extends Controller {
 
     /**
      * Function to do the actual validation and storing of the submitted object.
+     *
      * @param Request $request
+     *
      * @throws GeneralException
      */
     public function doStore( Request $request ) {
         throw new GeneralException( 'For non-read-only Doctrine2Frontend controllers, you must override this method.' );
     }
 
+
+    /**
+     * Allow controllers to override the default successful store message
+     * @var string
+     */
+    protected $store_alert_success_message = null;
+
     /**
      * Action for storing a new/updated object
+     *
      * @param Request $request
+     *
      * @return RedirectResponse
+     *
+     * @throws
      */
     public function store( Request $request )
     {
@@ -352,10 +397,13 @@ abstract class Doctrine2Frontend extends Controller {
 
         Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action
             . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
-        AlertContainer::push(  $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
+
+
+        AlertContainer::push( $this->store_alert_success_message ?? $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
 
         return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
     }
+
 
     /**
      * Allow D2F implementations to override where the post-store redirect goes.
@@ -408,7 +456,6 @@ abstract class Doctrine2Frontend extends Controller {
         if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( $request->input( 'id' ) ) ) ) {
             return abort( '404' );
         }
-
 
         $this->request = $request;
 
@@ -469,7 +516,6 @@ abstract class Doctrine2Frontend extends Controller {
      * @return bool|string The template to use of false if none found
      */
     protected function resolveTemplate( $tpl, $quitOnMissing = true ) {
-
         if( ViewFacade::exists ( $this->feParams->viewFolderName . "/{$tpl}" ) ) {
             return $this->feParams->viewFolderName . "/{$tpl}";
         } else if( ViewFacade::exists( "frontend/{$tpl}"  ) ) {
