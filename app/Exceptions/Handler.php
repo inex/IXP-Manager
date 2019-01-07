@@ -55,34 +55,12 @@ class Handler extends ExceptionHandler
      */
     public function render($request, Exception $e)
     {
-        /**
-         * Zend Framework 1 fallback
-         *
-         * IXP Manager is transitioning from ZF1 to Laravel as a framework. It
-         * will take some time to move over everything and this will be done on
-         * an as needed basis. Realistically this means there may be some ZF1
-         * crud for the foreseeable future.
-         *
-         * We'll revert to ZF1 handling when Laravel throws a 404:
-         */
         if( $this->isHttpException($e) ) {
-
             return $this->renderHttpException($e);
-
         } else if( $e instanceof AuthorizationException && request()->route()->action['middleware'] != 'grapher' ) {
-            //AlertContainer::push( "Please login below.", Alert::DANGER );
-
-            // store in session url for a redirection after login
-            //$request->session()->put( "url.redirect.after.login", $request->path() );
-
-            // TEMPORARY : using classic php session to be able to get the session in the ZEND auth
-            $_SESSION["url.redirect.after.login"] = $request->path();
-
             return Redirect::to( '' );
         } else {
-
             return parent::render($request, $e);
-
         }
     }
 
