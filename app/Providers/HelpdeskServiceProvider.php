@@ -1,4 +1,4 @@
-<?php namespace IXP\Providers;
+<?php
 
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -21,7 +21,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-
+namespace IXP\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use IXP\Services\Helpdesk\ConfigurationException;
