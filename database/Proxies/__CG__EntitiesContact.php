@@ -510,7 +510,7 @@ class Contact extends \Entities\Contact implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setUser(\Entities\User $user)
+    public function setUser($user)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', [$user]);
