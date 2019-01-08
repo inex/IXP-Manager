@@ -26,6 +26,8 @@ use D2EM;
 
 use Entities\PhysicalInterface;
 
+use OSS_SNMP\MIBS\Iface as IfaceMIB;
+
 /**
  * Artisan command to audit configured port speeds against actual switch speeds
  *
@@ -71,7 +73,10 @@ class PortSpeeds extends Command {
         /** @var PhysicalInterface $pi */
         foreach( D2EM::getRepository(PhysicalInterface::class )->findAll() as $pi ) {
 
-            if( $pi->statusIsConnectedOrQuarantine() && $pi->getSwitchPort() && $pi->getSpeed() != $pi->getSwitchPort()->getIfHighSpeed() ) {
+            if( $pi->statusIsConnectedOrQuarantine() 
+                    && $pi->getSwitchPort() 
+                    && $pi->getSpeed() != $pi->getSwitchPort()->getIfHighSpeed()
+                    && $pi->getSwitchPort()->getIfOperStatus() == IfaceMIB::IF_OPER_STATUS_UP ) {
 
                 if( in_array( $pi->getId(), $ignorepiids ) ) {
                     continue;
