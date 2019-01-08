@@ -11,15 +11,37 @@
   },
   "devDependencies": {
     "axios": "^0.18",
+    "blueimp-file-upload": "^9.17.0",
+    "bootbox.js": "^4.3.0",
     "bootstrap": "^4.0.0",
-    "cross-env": "^5.1",
+    "clipboard": "^1.6.1",
+    "cross-env": "^5.2.0",
+    "datatables.net": "^1.10.12",
+    "datatables.net-bs": "^1.10.12",
+    "datatables.net-responsive": "^2.1.0",
+    "datatables.net-responsive-bs": "^2.1.0",
+    "font-awesome": "^4.7.0",
+    "ip-address": "^5.0",
     "jquery": "^3.2",
+    "jquery-knob": "^1.2.11",
+    "jquery-ui-dist": "^1.12.1",
     "laravel-mix": "^4.0.7",
     "lodash": "^4.17.5",
+    "moment": "^2.18.1",
     "popper.js": "^1.12",
     "resolve-url-loader": "^2.3.1",
+    "select2": "^4.0.3",
     "sass": "^1.15.2",
     "sass-loader": "^7.1.0",
     "vue": "^2.5.17"
+    "webpack-cli": "^3.0.8"
+  },
+  "dependencies": {
+    "@webpack-cli/init": "^0.0.8",
+    "bootstrap": "3.3.7",
+    "glyphicons": "^0.2.0",
+    "webpack": "^4.16.1",
+    "webpack-dev-server": "^3.1.4",
+    "webpack-mix": "^2.0.2"
   }
 }
