@@ -110,6 +110,7 @@ class Kernel extends HttpKernel {
         ],
 
         'lookingglass' => [
+            'web',
             Middleware\ControllerEnabled::class,
             Middleware\Services\LookingGlass::class,
         ],
