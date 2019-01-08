@@ -60,7 +60,7 @@ class LoginController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = '/';
+    protected $redirectTo = '';
 
 
     /**
@@ -163,7 +163,7 @@ class LoginController extends Controller
 
         AlertContainer::push( "You have been logged out." , Alert::SUCCESS );
 
-        return redirect('/');
+        return redirect('');
     }
 
 }
