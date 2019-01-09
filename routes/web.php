@@ -128,10 +128,10 @@ Route::group( [ 'namespace' => 'Auth' ], function() {
 
 
     // IXP Manager <v4.9 aliases for static links
-    Route::redirect( '/auth/logout',        '/logout',          301 );
-    Route::redirect( '/auth/login',         '/login',           301 );
-    Route::redirect( '/auth/lost-password', '/password/forget', 301 );
-    Route::redirect( '/auth/lost-username', '/username',        301 );
+    Route::redirect( 'auth/logout',        url( '' ) . '/logout',          301 );
+    Route::redirect( 'auth/login',         url( '' ) . '/login',           301 );
+    Route::redirect( 'auth/lost-password', url( '' ) . '/password/forget', 301 );
+    Route::redirect( 'auth/lost-username', url( '' ) . '/username',        301 );
 });
 
 
