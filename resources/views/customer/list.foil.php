@@ -5,25 +5,21 @@
 $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'customer@list' )?>">Customers</a>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Customers List <?= $t->summary ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li class="breadcrumb-item" aria-current="page">List <?= $t->summary ?> </li>
-<?php $this->append() ?>
-
-<?php $this->section( 'page-header-postamble-extra' ) ?>
 
 
     <div class="btn-group btn-group-sm ml-auto" role="group" aria-label="...">
-        <a id="btn-filter-options" class="btn btn-outline-dark" href="<?= route( "customer@list" ) . '?current-only=' . ( $t->showCurrentOnly ? '0' : '1' ) ?>">
+        <a id="btn-filter-options" class="btn btn-outline-secondary" href="<?= route( "customer@list" ) . '?current-only=' . ( $t->showCurrentOnly ? '0' : '1' ) ?>">
             <?= $t->showCurrentOnly ? "Show All Customers" : "Show Current Customers" ?>
         </a>
 
         <div class="btn-group btn-group-sm">
 
-            <button class="btn btn-outline-dark dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?= $t->state ? 'State: ' . \Entities\Customer::$CUST_STATUS_TEXT[ $t->state ] : "Limit to state..." ?>
             </button>
             <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
@@ -44,7 +40,7 @@ $this->layout( 'layouts/ixpv4' );
 
         <div class="btn-group btn-group-sm">
 
-            <button class="btn btn-outline-dark dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?= $t->type ? 'Type: ' . \Entities\Customer::$CUST_TYPES_TEXT[ $t->type ] : "Limit to type..." ?>
             </button>
 
@@ -62,7 +58,7 @@ $this->layout( 'layouts/ixpv4' );
 
         <div class="btn-group btn-group-sm">
 
-            <button class="btn btn-outline-dark btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-outline-secondary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?= $t->tag ? 'Tag: ' . $t->tags[ $t->tag ] : "Limit to tag..." ?> <span class="caret"></span>
             </button>
 
@@ -79,7 +75,7 @@ $this->layout( 'layouts/ixpv4' );
         </div>
 
 
-        <a class="btn btn-outline-dark" href="<?= route( 'customer@add' ) ?>">
+        <a class="btn btn-outline-secondary" href="<?= route( 'customer@add' ) ?>">
             <span class="fa fa-plus"></span>
         </a>
     </div>
@@ -162,10 +158,10 @@ $this->layout( 'layouts/ixpv4' );
                 </td>
                 <td>
                     <div class="btn-group btn-group-sm" role="group">
-                        <a class="btn btn-outline-dark" href="<?= route( "customer@overview" , [ "id" => $c->getId() ] ) ?>" title="Overview">
+                        <a class="btn btn-outline-secondary" href="<?= route( "customer@overview" , [ "id" => $c->getId() ] ) ?>" title="Overview">
                             <i class="fa fa-eye"></i>
                         </a>
-                        <a class="btn btn-outline-dark" href="<?= route ( "customer@delete-recap", [ "id" => $c->getId() ] )   ?>" title="Delete">
+                        <a class="btn btn-outline-secondary" href="<?= route ( "customer@delete-recap", [ "id" => $c->getId() ] )   ?>" title="Delete">
                             <i class="fa fa-trash"></i>
                         </a>
                     </div>

@@ -1,8 +1,8 @@
-<nav class="col-md-2 d-none d-md-block bg-light sidebar">
+<nav id="side-navbar" class="col-md-2 d-none d-md-block bg-light sidebar pb-4 pt-4">
     <div class="sidebar-sticky">
         <ul class="nav flex-column">
 
-            <form class="form-inline mt-4" method="get" action="<?= route( 'search' ) ?>">
+            <form class="bd-search d-flex align-items-center" method="get" action="<?= route( 'search' ) ?>">
 
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search for..." name="search">
@@ -14,7 +14,8 @@
                 </div>
             </form>
 
-            <h6 class="sidebar-heading d-flex justify-content-between align-items-center mt-4 mb-1 text-muted">
+            <hr class="w-100">
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center mt-2 mb-1 text-muted">
                 <span>IXP CUSTOMER ACTIONS</span>
             </h6>
 

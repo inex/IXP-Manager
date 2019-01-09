@@ -69,37 +69,26 @@
 
     <?php else: ?>
 
-        <div class="container">
+        <main class="container">
             <div class="row" >
 
     <?php endif; ?>
 
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 mt-2">
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 mt-2 pb-4">
 
         <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
 
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-
-                        <?php $this->section('page-header-preamble') ?>
-                        <?php $this->stop() ?>
-
-                        <li class="breadcrumb-item">
-                            <a href="<?= url('') ?>">Home</a>
-                        </li>
-                        <li class="breadcrumb-item active" aria-current="page">
-                            <?php $this->section('title') ?>
-                            <?php $this->stop() ?>
-                        </li>
-                        <?php $this->section('page-header-postamble') ?>
-                        <?php $this->stop() ?>
-
-
-
-                    <?php $this->section('page-header-postamble-extra') ?>
+            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                <h1 class="h2">
+                    <?php $this->section('page-header-preamble') ?>
                     <?php $this->stop() ?>
-                </ol>
-            </nav>
+                </h1>
+                <div class="btn-toolbar mb-2 mb-md-0">
+                    <?php $this->section('page-header-postamble') ?>
+                    <?php $this->stop() ?>
+                </div>
+            </div>
+
         <?php else: ?>
             <div class="page-content">
                 <div class="page-header">
@@ -129,9 +118,10 @@
     </div>
 
 <?php endif; ?>
-
+        </main>
+        </div>
 <?= $t->insert( 'footer-content' ); ?>
-            </main>
+
 </div> <!-- </div class="container"> -->
 
     <script> const RIPE_ASN_URL = "<?= url( "api/v4/aut-num" ) ?>"; </script>
