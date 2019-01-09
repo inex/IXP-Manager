@@ -83,6 +83,7 @@ class Kernel extends HttpKernel {
         ],
 
         'public/api/v4' => [
+            'web',
             'throttle:60,1',
             'bindings',
             'apimaybeauth',
@@ -90,6 +91,7 @@ class Kernel extends HttpKernel {
         ],
 
         'api/v4' => [
+            'web',
             'throttle:60,1',
             'bindings',
             'apiauth',
