@@ -4,7 +4,7 @@
     <p>
         IXP Manager V<?= APPLICATION_VERSION ?>
         &nbsp;&nbsp;|&nbsp;&nbsp;
-        Copyright &copy; 2010 - <?= date('Y') ?> <a href="http://www.inex.ie/">Internet Neutral Exchange Association Company Limited By Guarantee</a>.
+        Copyright <i class="fa fa-copyright"></i> 2010 - <?= date('Y') ?> <a href="http://www.inex.ie/">Internet Neutral Exchange Association Company Limited By Guarantee</a>.
         &nbsp;|&nbsp;
         <a href="http://www.ixpmanager.org/">http://www.ixpmanager.org/</a>
         &nbsp;|&nbsp;
@@ -24,38 +24,35 @@
     
     <p>
         Keep up with
-        <span class="label label-info">
-            <a class="aplain" href="http://www.inex.ie/">INEX</a>
-        </span>
-        
+        <a class="badge badge-info" href="http://www.inex.ie/">INEX</a>
+
         &nbsp;|&nbsp;
         
         Join the
-        <span class="label label-info">
-            <a class="aplain" href="http://www.linkedin.com/groups?gid=1853398">LinkedIn Group</a>
-        </span>
+
+        <a href="http://www.linkedin.com/groups?gid=1853398">
+            <i class="fa-linkedin-square fa"></i>
+        </a>
+
 
         &nbsp;|&nbsp;
 
         Like us on
-        <span class="label label-info">
-            <a class="aplain" href="https://www.facebook.com/comepeerwithme/">Facebook</a>
-        </span>
-        
+        <a href="https://www.facebook.com/comepeerwithme/">
+            <i class="fa-facebook-square fa"></i>
+        </a>
         &nbsp;|&nbsp;
         
         Follow us on
-        <span class="label label-info">
-            <a class="aplain" href="https://twitter.com/ComePeerWithMe">Twitter</a>
-        </span>
-        
+        <a class="" href="https://twitter.com/ComePeerWithMe">
+            <i class="fa-twitter fa"></i>
+        </a>
+
         &nbsp;|&nbsp;
         
         Creators of
-        <span class="label label-info">
-            <a class="aplain" href="http://www.ixpmanager.org/">IXP Manager</a>
-        </span>
-        
+        <a class="badge badge-info" href="http://www.ixpmanager.org/">IXP Manager</a>
+
     </p>
 
 </footer>

@@ -62,55 +62,66 @@
 
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
 
-        <div class="padding20LR container-fluid">
+        <div class="container-fluid">
+            <div class="row" >
+                <?= $t->insert( 'menu' ); ?>
 
-            <?= $t->insert( 'menu' ); ?>
 
     <?php else: ?>
 
         <div class="container">
+            <div class="row" >
 
     <?php endif; ?>
 
+    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 mt-2">
 
-    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-        <div id="breadcrumb-area">
-            <ol class="breadcrumb">
-                <?php $this->section('page-header-preamble') ?>
-                <?php $this->stop() ?>
-                <li>
-                    <a href="<?= url('') ?>">Home</a>
-                </li>
-                <li class="active">
-                    <?php $this->section('title') ?>
+        <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+
+                        <?php $this->section('page-header-preamble') ?>
+                        <?php $this->stop() ?>
+
+                        <li class="breadcrumb-item">
+                            <a href="<?= url('') ?>">Home</a>
+                        </li>
+                        <li class="breadcrumb-item active" aria-current="page">
+                            <?php $this->section('title') ?>
+                            <?php $this->stop() ?>
+                        </li>
+                        <?php $this->section('page-header-postamble') ?>
+                        <?php $this->stop() ?>
+
+
+
+                    <?php $this->section('page-header-postamble-extra') ?>
                     <?php $this->stop() ?>
-                </li>
-                <?php $this->section('page-header-postamble') ?>
-                <?php $this->stop() ?>
-            </ol>
-        </div>
-    <?php else: ?>
-        <div class="page-content">
-            <div class="page-header">
-                <?php $this->section('page-header-preamble') ?>
-                <?php $this->stop() ?>
-                <h1 style="display: inline">
-                    <?php $this->section('title') ?>
+                </ol>
+            </nav>
+        <?php else: ?>
+            <div class="page-content">
+                <div class="page-header">
+                    <?php $this->section('page-header-preamble') ?>
                     <?php $this->stop() ?>
-                </h1>
-                <?php $this->section('page-header-postamble') ?>
-                <?php $this->stop() ?>
-            </div>
-    <?php endif; ?>
+                    <h1 style="display: inline">
+                        <?php $this->section('title') ?>
+                        <?php $this->stop() ?>
+                    </h1>
+                    <?php $this->section('page-header-postamble') ?>
+                    <?php $this->stop() ?>
+                </div>
+        <?php endif; ?>
 
 
-<?php $this->section('content') ?>
-<?php $this->stop() ?>
+        <?php $this->section('content') ?>
+        <?php $this->stop() ?>
 
 
 
 <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-        </div><!--/span-->
+
     </div><!--/row-->
 
 <?php else: ?>
@@ -120,7 +131,7 @@
 <?php endif; ?>
 
 <?= $t->insert( 'footer-content' ); ?>
-
+            </main>
 </div> <!-- </div class="container"> -->
 
     <script> const RIPE_ASN_URL = "<?= url( "api/v4/aut-num" ) ?>"; </script>
