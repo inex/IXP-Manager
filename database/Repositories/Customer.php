@@ -31,6 +31,8 @@ use Entities\{
     Customer        as CustomerEntity
 };
 
+use IXP\Utils\View\Alert\Container as AlertContainer;
+
 /**
  * CustomerRepository
  *
@@ -498,6 +500,7 @@ class Customer extends EntityRepository
 
         if( !count( $vlans ) ) {
 
+            // FIXME controller logic should not be in a repository:
             AlertContainer::push( 'No VLANs have been enabled for the peering manager. Please see <a href="'
                 . 'https://github.com/inex/IXP-Manager/wiki/Peering-Manager">these instructions</a>'
                 . ' / contact our support team.', Alert::DANGER );
