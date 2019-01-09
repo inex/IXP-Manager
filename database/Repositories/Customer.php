@@ -24,7 +24,7 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
-use D2EM, Exception;
+use D2EM, Exception, Redirect;
 
 use Entities\{
     BGPSessionData  as BGPSessionDataEntity,
