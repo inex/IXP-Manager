@@ -32,6 +32,7 @@ use Entities\{
 };
 
 use IXP\Utils\View\Alert\Container as AlertContainer;
+use IXP\Utils\View\Alert\Alert;
 
 /**
  * CustomerRepository
