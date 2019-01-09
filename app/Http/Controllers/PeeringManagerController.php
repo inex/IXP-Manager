@@ -90,7 +90,14 @@ class PeeringManagerController extends Controller
 
         $protos = [ 4, 6 ];
 
-        $peers  = D2EM::getRepository( CustomerEntity::class )->getPeeringManagerArrayByType( $c, $vlans, $protos );
+        $peers  = D2EM::getRepository( CustomerEntity::class )->getPeeringManagerArrayByType( $c, $vlans, $protos ) ?? false;
+
+        if( !$peers ) {
+            AlertContainer::push( 'No peers have been found for the peering manager. Please see <a href="'
+                . 'https://github.com/inex/IXP-Manager/wiki/Peering-Manager">these instructions</a>'
+                . ' / ensure your database is populating with peering information.', Alert::DANGER );
+            return Redirect::to( '' );
+        }
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'peering-manager/index' )->with([
