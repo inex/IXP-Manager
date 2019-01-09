@@ -80,7 +80,7 @@ class ApiAuthenticate {
 	            return response( 'Valid API key required', 403 );
 	        }
 
-	        Auth::login( $key->getUser() );
+	        Auth::onceUsingId( $key->getUser()->getId() );
 
 	        $key->setLastseenAt( new \DateTime() );
 	        $key->setLastseenFrom( $_SERVER['REMOTE_ADDR'] );
