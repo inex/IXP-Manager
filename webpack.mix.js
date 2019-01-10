@@ -20,7 +20,7 @@ mix.scripts(
         'node_modules/datatables.net/js/jquery.dataTables.min.js',
         'node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js',
         'node_modules/select2/dist/js/select2.min.js',
-        'node_modules/bootbox.js/bootbox.min.js',
+        'node_modules/bootbox/bootbox.js',
 
 
         // etc. etc.

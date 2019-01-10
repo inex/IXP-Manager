@@ -2,7 +2,9 @@
 
 
 
-/* BEGIN CSS used for Bootstrap 4 */
+/*
+* BEGIN CSS used for Bootstrap 4
+*/
 
 #side-navbar a{
     color: #999;
@@ -27,9 +29,14 @@
     list-style-type: none;
 }
 
+/* Allow the bootbox-close-button to be on the right  */
+.bootbox .modal-header{
+    display: block;
+}
 
-
-/*  END CSS used for Bootstrap 4 */
+/*
+* END CSS used for Bootstrap 4
+*/
 
 
 

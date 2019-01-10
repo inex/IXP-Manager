@@ -1,14 +1,27 @@
-
-<table class="table">
+<table class="table mt-4">
     <thead>
         <tr>
-            <th>VLAN</th>
-            <th>Tag</th>
-            <th>Location</th>
-            <th>Switch</th>
-            <th>Port</th>
-            <th>Speed</th>
-            <th>Other Members</th>
+            <th>
+                VLAN
+            </th>
+            <th>
+                Tag
+            </th>
+            <th>
+                Location
+            </th>
+            <th>
+                Switch
+            </th>
+            <th>
+                Port
+            </th>
+            <th>
+                Speed
+            </th>
+            <th>
+                Other Members
+            </th>
         </tr>
     </thead>
     <tbody>

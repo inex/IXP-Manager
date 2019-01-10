@@ -6,37 +6,38 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Customers List <?= $t->summary ?>
+    Customers / List
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
 
 
-    <div class="btn-group btn-group-sm ml-auto" role="group" aria-label="...">
+    <div class="btn-group btn-group-sm ml-auto" role="group">
         <a id="btn-filter-options" class="btn btn-outline-secondary" href="<?= route( "customer@list" ) . '?current-only=' . ( $t->showCurrentOnly ? '0' : '1' ) ?>">
             <?= $t->showCurrentOnly ? "Show All Customers" : "Show Current Customers" ?>
         </a>
 
         <div class="btn-group btn-group-sm">
 
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?= $t->state ? 'State: ' . \Entities\Customer::$CUST_STATUS_TEXT[ $t->state ] : "Limit to state..." ?>
             </button>
-            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                <a class="dropdown-item" href="<?= route( "customer@list" ) . '?state=0' ?>">
+            <div class="dropdown-menu">
+                <a class="dropdown-item  <?= $t->state ?: "active" ?>" href="<?= route( "customer@list" ) . '?state=0' ?>">
                     All States
                 </a>
 
                 <div class="dropdown-divider"></div>
 
                 <?php foreach( \Entities\Customer::$CUST_STATUS_TEXT as $state => $text ): ?>
-                    <a class="dropdown-item <?= $t->state == $state ? "active" : "" ?>" href="<?= route( "customer@list" ) . '?state=' . $state ?>"><?= $text ?></a>
+                    <a class="dropdown-item <?= $t->state != $state ?: "active" ?>" href="<?= route( "customer@list" ) . '?state=' . $state ?>">
+                        <?= $text ?>
+                    </a>
                 <?php endforeach; ?>
 
             </div>
 
         </div>
-
 
         <div class="btn-group btn-group-sm">
 
@@ -45,12 +46,16 @@ $this->layout( 'layouts/ixpv4' );
             </button>
 
             <ul class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item <?= $t->type ? "" : "active" ?>" href="<?= route( "customer@list" ) . '?type=0' ?>">All Types</a>
+                <a class="dropdown-item <?= $t->type ?: "active" ?>" href="<?= route( "customer@list" ) . '?type=0' ?>">
+                    All Types
+                </a>
 
                 <div class="dropdown-divider"></div>
 
                 <?php foreach( \Entities\Customer::$CUST_TYPES_TEXT as $type => $text ): ?>
-                    <a class="dropdown-item <?= $t->type == $type ? "active" : "" ?>" href="<?= route( "customer@list" ) . '?type=' . $type ?>"><?= $text ?></a>
+                    <a class="dropdown-item <?= $t->type != $type ?: "active" ?>" href="<?= route( "customer@list" ) . '?type=' . $type ?>">
+                        <?= $text ?>
+                    </a>
                 <?php endforeach; ?>
 
             </ul>
@@ -59,16 +64,20 @@ $this->layout( 'layouts/ixpv4' );
         <div class="btn-group btn-group-sm">
 
             <button class="btn btn-outline-secondary btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <?= $t->tag ? 'Tag: ' . $t->tags[ $t->tag ] : "Limit to tag..." ?> <span class="caret"></span>
+                <?= $t->tag ? 'Tag: ' . $t->tags[ $t->tag ] : "Limit to tag..." ?>
             </button>
 
             <ul class="dropdown-menu dropdown-menu-right">
-                <a class="dropdown-item <?= $t->tag ? "" : "active" ?>" href="<?= route( "customer@list") . '?tag=0'  ?>">All Tags</a>
+                <a class="dropdown-item <?= $t->tag ?: "active" ?>" href="<?= route( "customer@list") . '?tag=0'  ?>">
+                    All Tags
+                </a>
 
                 <div class="dropdown-divider"></div>
 
                 <?php foreach( $t->tags as $id => $name ): ?>
-                    <a class="dropdown-item <?= $t->tag == $id ? "active" : "" ?>"href="<?= route( "customer@list" ) . '?tag=' . $id ?>"><?= $name ?></a>
+                    <a class="dropdown-item <?= $t->tag != $id ?: "active" ?>"href="<?= route( "customer@list" ) . '?tag=' . $id ?>">
+                        <?= $name ?>
+                    </a>
                 <?php endforeach; ?>
 
             </ul>
@@ -87,40 +96,38 @@ $this->layout( 'layouts/ixpv4' );
     <?= $t->alerts() ?>
     <table id='customer-list' class="table collapse" >
         <thead>
-        <tr>
-            <td>
-                Name
-            </td>
-            <td>
-                AS
-            </td>
-            <td>
-                ShortName
-            </td>
-            <td>
-                Peering Policy
-            </td>
-            <td>
-                Reseller
-            </td>
-            <td>
-                Type
-            </td>
-            <td>
-                Status
-            </td>
-            <td>
-                Joined
-            </td>
-            <td>
-                Action
-            </td>
-        </tr>
+            <tr>
+                <td>
+                    Name
+                </td>
+                <td>
+                    AS
+                </td>
+                <td>
+                    Peering Policy
+                </td>
+                <td>
+                    Reseller
+                </td>
+                <td>
+                    Type
+                </td>
+                <td>
+                    Status
+                </td>
+                <td>
+                    Joined
+                </td>
+                <td>
+                    Action
+                </td>
+            </tr>
         <thead>
         <tbody>
         <?php foreach( $t->custs as $c ):
             /** @var Entities\Customer $c */
             ?>
+
             <tr>
                 <td>
                     <a href="<?= route( "customer@overview" , [ "id" => $c->getId() ] ) ?>">
@@ -135,11 +142,6 @@ $this->layout( 'layouts/ixpv4' );
                         </a>
                     <?php endif; ?>
 
-                </td>
-                <td>
-                    <a href="<?= route( "customer@overview" , [ "id" => $c->getId() ] ) ?>">
-                        <?= $t->ee( $c->getShortname() ) ?>
-                    </a>
                 </td>
                 <td>
                     <?= $t->ee( $c->getPeeringpolicy() ) ?>
@@ -167,10 +169,10 @@ $this->layout( 'layouts/ixpv4' );
                     </div>
                 </td>
             </tr>
+
         <?php endforeach;?>
         <tbody>
     </table>
-
 
 <?php $this->append() ?>
 

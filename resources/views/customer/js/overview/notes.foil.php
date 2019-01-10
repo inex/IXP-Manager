@@ -59,35 +59,51 @@
     function coNotesDelete( event ) {
         let noteid = event.delegateTarget.id.substring( 15 );
 
-        bootbox.confirm( "Are you sure you want to delete this note?", function(result) {
-            if( result ) {
 
-                let urlAction = "<?= url( '/api/v4/customer-note/delete' ) ?>/"+ noteid;
-
-                $.ajax( urlAction , {
-                    type: 'POST',
-                })
-                .done( function( data ) {
-
-                    if( data['error'] ) {
-                        bootbox.alert( "Error! Server side error deleting the note." );
-                        return;
+            bootbox.confirm({
+                buttons: {
+                    confirm: {
+                        label: 'Confirm',
+                        className: 'btn-primary'
+                    },
+                    cancel: {
+                        label: 'Cancel',
+                        className: 'btn-secondary'
                     }
+                },
+                message: 'Are you sure you want to delete this note?',
+                callback: function(result) {
+                    if( result ) {
 
-                    $( "#co-notes-table-row-" + noteid ).fadeOut( 'slow', function() {
-                        $( "#co-notes-table-row-" + noteid ).remove();
-                    });
-                })
-                .fail( function(){
-                    alert( "Error running ajax query for " + urlAction );
-                    throw new Error( "Error running ajax query for " + urlAction );
-                })
-                .always( function() {
+                        let urlAction = "<?= url( '/api/v4/customer-note/delete' ) ?>/"+ noteid;
 
-                });
-            }
-        });
-    }
+                        $.ajax( urlAction , {
+                            type: 'POST',
+                        })
+                            .done( function( data ) {
+
+                                if( data['error'] ) {
+                                    bootbox.alert( "Error! Server side error deleting the note." );
+                                    return;
+                                }
+
+                                $( "#co-notes-table-row-" + noteid ).fadeOut( 'slow', function() {
+                                    $( "#co-notes-table-row-" + noteid ).remove();
+                                });
+                            })
+                            .fail( function(){
+                                alert( "Error running ajax query for " + urlAction );
+                                throw new Error( "Error running ajax query for " + urlAction );
+                            })
+                            .always( function() {
+
+                            });
+                    }
+                },
+
+            });
+        }
+
 
     function coNotesSubmitDialog( event ) {
         event.preventDefault();
@@ -158,16 +174,16 @@
             $( "#co-notes-table-tbody" ).prepend(
                 "<tr class=\"collapse\" id=\"co-notes-table-row-" + data.noteid + "\">"
                 + "<td>" + $( "#co-notes-ftitle" ).val() + "</td>"
-                + "<td>" + "<span class=\"label label-"
-                + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "default\">PRIVATE" )
+                + "<td>" + "<span class=\"badge badge-"
+                + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "secondary\">PRIVATE" )
                 + "</span></td>"
                 + "<td>Just Now</td>"
                 + "<td>"
                 + "<div class=\"btn-group btn-group-sm\">"
-                + "<button id=\"co-notes-notify-" + data.noteid + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-bell\"></i></button>"
-                + "<button id=\"co-notes-view-"   + data.noteid + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-eye-open\"></i></button>"
-                + "<button id=\"co-notes-edit-"   + data.noteid + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-pencil\"></i></button>"
-                + "<button id=\"co-notes-trash-"  + data.noteid + "\" class=\"btn btn-default\"><i class=\"glyphicon glyphicon-trash\"></i></button>"
+                + "<button id=\"co-notes-notify-" + data.noteid + "\" class=\"btn btn-outline-secondary\"><i class=\"fa fa-bell\"></i></button>"
+                + "<button id=\"co-notes-view-"   + data.noteid + "\" class=\"btn btn-outline-secondary\"><i class=\"fa fa-eye\"></i></button>"
+                + "<button id=\"co-notes-edit-"   + data.noteid + "\" class=\"btn btn-outline-secondary\"><i class=\"fa fa-pencil\"></i></button>"
+                + "<button id=\"co-notes-trash-"  + data.noteid + "\" class=\"btn btn-outline-secondary\"><i class=\"fa fa-trash\"></i></button>"
                 + "</div>"
                 + "</td>"
                 + "</tr>"

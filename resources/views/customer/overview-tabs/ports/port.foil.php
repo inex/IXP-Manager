@@ -1,4 +1,3 @@
-<div class="col-sm-12">
 
     <div class="col-sm-6">
 
@@ -28,7 +27,7 @@
                 &nbsp;&nbsp;&nbsp;&nbsp;Reseller Fanout
 
                     <?php if( count( $pis ) && $firstPi->getRelatedInterface() ): ?>
-                    for <a
+                        for <a
 
                         <?php if( Auth::user()->getPrivs() == \Entities\User::AUTH_SUPERUSER ): ?>
                             href="<?= route( "customer@overview" , [ 'id' => $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>"
@@ -57,7 +56,9 @@
             <?php if( Auth::getUser()->isSuperUser() ): ?>
 
                 <div class="btn-group" style="padding-left: 20px;">
-                    <a class="btn btn-xs btn-default" href="<?= route( "interfaces/virtual/edit", [ "id" => $t->vi->getId() ] ) ?>" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                    <a class="btn btn-sm btn-outline-secondary" href="<?= route( "interfaces/virtual/edit", [ "id" => $t->vi->getId() ] ) ?>" title="Edit">
+                        <i class="fa fa-pencil"></i>
+                    </a>
                 </div>
 
             <?php endif; ?>
@@ -67,8 +68,10 @@
 
 
         <?php if( count( $t->vi->getPhysicalInterfaces() ) > 0 ): ?>
+
             <?php $countPi = 1 ?>
             <?php foreach( $t->vi->getPhysicalInterfaces() as $pi ): ?>
+
                 <div class="row">
                     <div class="col-sm-12">
                         <?php if( $isLAG ): ?>
@@ -79,6 +82,7 @@
                         <?php endif; ?>
                     </div>
                 </div>
+
                 <div class="row">
                     <div class="col-sm-6">
                         <table class="table table-borderless">
@@ -253,8 +257,11 @@
                     <br />
                 <?php else: ?>
                     <div class="row">
-                        <h4><?= $t->ee( $vli->getVlan()->getName() ) ?>:</h4>
+                        <div class="col-sm-12">
+                            <h4><?= $t->ee( $vli->getVlan()->getName() ) ?>:</h4>
+                        </div>
                         <div class="col-sm-6">
+
                             <table class="table table-borderless">
                                 <tr>
                                     <td>
@@ -336,6 +343,7 @@
 
                             </table>
                         </div>
+
                     </div>
                 <?php endif; ?>
             <?php endforeach; ?>
@@ -358,14 +366,17 @@
             <?php
                 if( $t->vi->isGraphable() ): ?>
 
-                    <div class="well">
-                        <h4>
-                            Aggregate Day Graph for LAG
-                            <a class="btn btn-default btn-xs pull-right" href="<?= route( "statistics@member-drilldown", [ 'type' => 'vi', 'typeid' => $t->vi->getId() ] ) ?>">
-                                <i class="glyphicon glyphicon-zoom-in"></i>
+                    <div class="bg-light shadow-sm p-4 mt-4">
+                        <h4 class="d-flex mb-4">
+                            <span class="mr-auto">
+                                Aggregate Day Graph for LAG
+                            </span>
+
+                            <a class="btn btn-outline-secondary btn-sm " href="<?= route( "statistics@member-drilldown", [ 'type' => 'vi', 'typeid' => $t->vi->getId() ] ) ?>">
+                                <i class="fa fa-search"></i>
                             </a>
                         </h4>
-                        <br />
+
                         <?= $t->grapher->virtint( $t->vi )->renderer()->boxLegacy() ?>
                     </div>
 
@@ -377,17 +388,18 @@
         <?php foreach( $t->vi->getPhysicalInterfaces() as $pi ): ?>
             <?php if( !$pi->isGraphable() ) { continue; } ?>
 
-            <div class="well">
-                <h4>
-                    Day Graph for <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?> / <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
-                    <a class="btn btn-default btn-xs pull-right" href="<?= route( "statistics@member-drilldown", [ 'type' => 'pi', 'typeid' => $pi->getId() ] ) ?>">
-                        <i class="glyphicon glyphicon-zoom-in"></i>
+            <div class="bg-light shadow-sm p-4 mt-4">
+                <h4 class="d-flex mb-4">
+                    <span class="mr-auto">
+                        Day Graph for <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?> / <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
+                    </span>
+                    <a class="btn btn-outline-secondary btn-sm" href="<?= route( "statistics@member-drilldown", [ 'type' => 'pi', 'typeid' => $pi->getId() ] ) ?>">
+                        <i class="fa fa-search"></i>
                     </a>
                 </h4>
-                <br />
+
                 <?= $t->grapher->physint( $pi )->renderer()->boxLegacy() ?>
             </div>
         <?php endforeach; ?>
 
     </div>
-</div>

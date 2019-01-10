@@ -1,8 +1,7 @@
-<div class="row">
+<div class="d-flex mt-4 row">
 
-    <div class="col-sm-12">
+    <div class="col-md-12 row">
 
-        <br>
         <?php if( Auth::getUser()->isSuperUser() && !$t->c->statusIsNormal() ): ?>
 
             <div class="alert alert-danger" role="alert">

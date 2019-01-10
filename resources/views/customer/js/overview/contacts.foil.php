@@ -20,6 +20,7 @@
                 buttons: {
                     cancel: {
                         label: 'Close',
+                        className: 'btn-secondary',
                         callback: function () {
                             $('.bootbox.modal').modal('hide');
                             return false;
