@@ -94,33 +94,33 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section('content') ?>
 
     <?= $t->alerts() ?>
-    <table id='customer-list' class="table collapse" >
-        <thead>
+    <table id='customer-list' class="table collapse table-striped" >
+        <thead class="thead-dark">
             <tr>
-                <td>
+                <th>
                     Name
-                </td>
-                <td>
+                </th>
+                <th>
                     AS
-                </td>
-                <td>
+                </th>
+                <th>
                     Peering Policy
-                </td>
-                <td>
+                </th>
+                <th>
                     Reseller
-                </td>
-                <td>
+                </th>
+                <th>
                     Type
-                </td>
-                <td>
+                </th>
+                <th>
                     Status
-                </td>
-                <td>
+                </th>
+                <th>
                     Joined
-                </td>
-                <td>
+                </th>
+                <th>
                     Action
-                </td>
+                </th>
             </tr>
         <thead>
         <tbody>
