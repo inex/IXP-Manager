@@ -85,7 +85,7 @@
 
                 <div class="row">
                     <div class="col-sm-6">
-                        <table class="table table-borderless">
+                        <table class="table table-borderless table-striped">
                             <tr>
                                 <td>
                                     <b>Switch:</b>
@@ -139,7 +139,7 @@
                         </table>
                     </div>
                     <div class="col-sm-6">
-                        <table class="table table-borderless">
+                        <table class="table table-borderless table-striped">
                             <tr>
                                 <td>
                                     <b>Switch Port:</b>
@@ -262,7 +262,7 @@
                         </div>
                         <div class="col-sm-6">
 
-                            <table class="table table-borderless">
+                            <table class="table table-borderless table-striped">
                                 <tr>
                                     <td>
                                         <b>
@@ -312,7 +312,7 @@
                             </table>
                         </div>
                         <div class="col-sm-6">
-                            <table class="table table-borderless">
+                            <table class="table table-borderless table-striped">
                                 <tr>
                                     <td>
                                         <b>IPv4 Address:</b>

@@ -4,10 +4,10 @@
 ?>
 
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
 
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-        <a href="<?= route( 'customer@list' )?>"><?= $t->associates ? 'Associate Members' : 'Customers' ?></a> (Member Details Page)
+        <?= $t->associates ? 'Associate Members' : 'Customers' ?> / (Member Details Page)
     <?php else: ?>
         <?= $t->associates ? 'Associate' : '' ?> Members
     <?php endif; ?>
@@ -23,45 +23,45 @@
 
             <?= $t->alerts() ?>
 
-            <table id='customer-list' class="table" style="display: none;">
+            <table id='customer-list' class="table collapse table-striped table-responsive">
 
-                <thead>
-                <tr>
-                    <td>
-                        Member
-                    </td>
-                    <td>
-                        Joined
-                    </td>
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            Member
+                        </th>
+                        <th>
+                            Joined
+                        </th>
 
-                    <?php if( !$t->associates ): ?>
+                        <?php if( !$t->associates ): ?>
 
-                        <td>
-                            ASN
-                        </td>
+                            <th>
+                                ASN
+                            </th>
 
-                        <td>
-                            Peering Policy
-                        </td>
+                            <th>
+                                Peering Policy
+                            </th>
 
-                        <?php if( Auth::check() ): ?>
-                            <td>
-                                Peering Email
-                            </td>
-                            <td>
-                                NOC Phone
-                            </td>
-                            <td>
-                                NOC Hours
-                            </td>
+                            <?php if( Auth::check() ): ?>
+                                <th>
+                                    Peering Email
+                                </th>
+                                <th>
+                                    NOC Phone
+                                </th>
+                                <th>
+                                    NOC Hours
+                                </th>
+                            <?php endif; ?>
+
                         <?php endif; ?>
 
-                    <?php endif; ?>
-
-                    <td>
-                        Action
-                    </td>
-                </tr>
+                        <th>
+                            Action
+                        </th>
+                    </tr>
                 <thead>
 
                 <tbody>
@@ -116,8 +116,8 @@
 
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn btn-default" href="<?= route ( 'customer@detail' , [ 'id' => $c->getId() ] )  ?>" title="View">
-                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                <a class="btn btn btn-outline-secondary" href="<?= route ( 'customer@detail' , [ 'id' => $c->getId() ] )  ?>" title="View">
+                                    <i class="fa fa-eye"></i>
                                 </a>
                             </div>
                         </td>

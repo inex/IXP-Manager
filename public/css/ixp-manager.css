@@ -30,6 +30,14 @@
     display: block;
 }
 
+.former-help-text {
+    display: none;
+}
+
+.form-check input[type="checkbox"]{
+    margin-right: 10px !important;
+}
+
 /*
 * END CSS used for Bootstrap 4
 */
@@ -518,10 +526,6 @@ td a:hover{
     text-decoration: none;
 }
 
-
-.help-block {
-    display: none;
-}
 
 .badge-primary{
     color: #fff;

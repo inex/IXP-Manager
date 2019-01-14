@@ -1,6 +1,7 @@
 
-    <table class="table mt-4">
-        <thead>
+<div class="table-responsive">
+    <table class="table mt-4 table-striped">
+        <thead class="thead-dark">
         <tr>
             <th>
                 Name
@@ -88,3 +89,5 @@
         <?php endif;?>
         </tbody>
     </table>
+</div>
+

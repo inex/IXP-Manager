@@ -45,12 +45,12 @@ $( 'document' ).ready( function(){
      * display / hide help sections on click on the help button
      */
     $( "#help-btn" ).click( function() {
-        $( "p.help-block" ).toggle();
+        $( ".former-help-text" ).toggle();
         $( "#instructions-alert").toggle();
     });
 
     $( ".help-btn" ).click( function() {
-        $( "p.help-block" ).toggle();
+        $( ".former-help-text" ).toggle();
         $( "#instructions-alert").toggle();
     });
 

@@ -1,64 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
 
-<head>
+    <head>
 
-    <!--  IXP MANAGER - template directory: resources/[views|skins] -->
+        <!--  IXP MANAGER - template directory: resources/[views|skins] -->
 
-    <base href="<?= url('') ?>/index.php">
+        <base href="<?= url('') ?>/index.php">
 
-    <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
-    <meta charset="utf-8">
+        <meta http-equiv="Content-Type" content="text/html; charset=utf8" />
+        <meta charset="utf-8">
 
-    <title><?= config('identity.sitename' ) ?></title>
+        <title>
+            <?= config('identity.sitename' ) ?>
+        </title>
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="">
-    <meta name="author" content="">
-    <meta name="csrf-token" content="<?=  csrf_token() ?>">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <meta name="csrf-token" content="<?=  csrf_token() ?>">
 
-    <link rel="stylesheet" type="text/css" href="<?= asset('css/ixp-pack.css') ?>" />
-    <?php $this->section('headers') ?>
-    <?php $this->stop() ?>
-
-
-    <?php if( !Auth::check() || !Auth::user()->isSuperUser() ):
-        // and ( not isset( $mode ) or $mode neq 'fluid' )} ?>
-
-        <style>
-            html, body {
-              background-color: #eee;
-            }
-
-            body {
-                padding-top: 40px;
-            }
-        </style>
-    <?php endif; ?>
+        <link rel="stylesheet" type="text/css" href="<?= asset('css/ixp-pack.css') ?>" />
+        <?php $this->section('headers') ?>
+        <?php $this->stop() ?>
 
 
+        <?php if( !Auth::check() || !Auth::user()->isSuperUser() ):
+            // and ( not isset( $mode ) or $mode neq 'fluid' )} ?>
 
-</head>
+            <style>
+                html, body {
+                  background-color: #eee;
+                }
+
+                body {
+                    padding-top: 40px;
+                }
+            </style>
+        <?php endif; ?>
+
+    </head>
 
 <body>
 
-<?php
-    // We used to manage these menus with a lot of if / elseif / else clauses. It was a mess.
-    // Despite the drawbacks of replication, it's easier - by a distance - to mainatin standalone
-    // menu templates per user type:
+    <?php
+        // We used to manage these menus with a lot of if / elseif / else clauses. It was a mess.
+        // Despite the drawbacks of replication, it's easier - by a distance - to mainatin standalone
+        // menu templates per user type:
 
-    if( !Auth::check() ) {
-        echo $t->insert("layouts/menus/public");
-    } elseif( Auth::user()->isCustUser() && Auth::user()->getCustomer()->isTypeAssociate() ) {
-        echo $t->insert("layouts/menus/associate");
-    } elseif( Auth::user()->isCustUser() ) {
-        echo $t->insert("layouts/menus/custuser");
-    } elseif( Auth::user()->isCustAdmin() ) {
-        echo $t->insert("layouts/menus/custadmin");
-    } elseif( Auth::user()->isSuperUser() ) {
-        echo $t->insert("layouts/menus/superuser");
-    }
-?>
+        if( !Auth::check() ) {
+            echo $t->insert("layouts/menus/public");
+        } elseif( Auth::user()->isCustUser() && Auth::user()->getCustomer()->isTypeAssociate() ) {
+            echo $t->insert("layouts/menus/associate");
+        } elseif( Auth::user()->isCustUser() ) {
+            echo $t->insert("layouts/menus/custuser");
+        } elseif( Auth::user()->isCustAdmin() ) {
+            echo $t->insert("layouts/menus/custadmin");
+        } elseif( Auth::user()->isSuperUser() ) {
+            echo $t->insert("layouts/menus/superuser");
+        }
+    ?>
 
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
 
@@ -74,7 +74,7 @@
 
     <?php endif; ?>
 
-    <main role="main" class="col-md-9 ml-sm-auto col-lg-10 mt-2 pb-4">
+    <main role="main" class="col-md-10 ml-sm-auto col-lg-10 mt-2 pb-4">
 
         <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
 
@@ -103,66 +103,66 @@
                 </div>
         <?php endif; ?>
 
-
-        <?php $this->section('content') ?>
-        <?php $this->stop() ?>
-
-
-
-<?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-
-    </div><!--/row-->
-
-<?php else: ?>
-
-    </div>
-
-<?php endif; ?>
-        </main>
+        <div class="container-fluid">
+            <?php $this->section('content') ?>
+            <?php $this->stop() ?>
         </div>
-<?= $t->insert( 'footer-content' ); ?>
-
-</div> <!-- </div class="container"> -->
-
-    <script> const RIPE_ASN_URL = "<?= url( "api/v4/aut-num" ) ?>"; </script>
-    <script> const MARKDOWN_URL = "<?= route( "utils@markdown" ) ?>"; </script>
-    <script type="text/javascript" src="<?= asset('js/ixp-pack.js') ?>"></script>
-    <script type="text/javascript" src="<?= asset('js/ixp-manager.js') ?>"></script>
-
-    <script>
-
-        $( ".chzn-select" ).select2({ width: '100%', placeholder: function() {
-            $(this).data('placeholder');
-        }});
-
-        $( ".chzn-select-tag" ).select2({ width: '100%', tags: true, placeholder: function() {
-            $(this).data('placeholder');
-        }});
-
-        $( ".chzn-select-deselect" ).select2({ width: '100%', allowClear: true, placeholder: function() {
-            $(this).data('placeholder');
-        }});
-
-        $( ".chzn-select-deselect-tag" ).select2({ width: '100%', allowClear: true, tags: true, placeholder: function() {
-            $(this).data('placeholder');
-        }});
 
         <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-            $( "#menu-select-customer" ).select2({ placeholder: "Jump to customer...", allowClear: true }).change( function(){
-                document.location.href = '<?= url( "/customer/overview" ) ?>/' + $( "#menu-select-customer" ).val();
-            });
+
+            </div><!--/row-->
+
+        <?php else: ?>
+
+            </div>
+
         <?php endif; ?>
-    </script>
+    </main>
+        </div>
+
+    <?= $t->insert( 'footer-content' ); ?>
+
+    </div> <!-- </div class="container"> -->
+
+        <script> const RIPE_ASN_URL = "<?= url( "api/v4/aut-num" ) ?>"; </script>
+        <script> const MARKDOWN_URL = "<?= route( "utils@markdown" ) ?>"; </script>
+        <script type="text/javascript" src="<?= asset('js/ixp-pack.js') ?>"></script>
+        <script type="text/javascript" src="<?= asset('js/ixp-manager.js') ?>"></script>
+
+        <script>
+
+            $( ".chzn-select" ).select2({ width: '100%', placeholder: function() {
+                $(this).data('placeholder');
+            }});
+
+            $( ".chzn-select-tag" ).select2({ width: '100%', tags: true, placeholder: function() {
+                $(this).data('placeholder');
+            }});
+
+            $( ".chzn-select-deselect" ).select2({ width: '100%', allowClear: true, placeholder: function() {
+                $(this).data('placeholder');
+            }});
+
+            $( ".chzn-select-deselect-tag" ).select2({ width: '100%', allowClear: true, tags: true, placeholder: function() {
+                $(this).data('placeholder');
+            }});
+
+            <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                $( "#menu-select-customer" ).select2({ placeholder: "Jump to customer...", allowClear: true }).change( function(){
+                    document.location.href = '<?= url( "/customer/overview" ) ?>/' + $( "#menu-select-customer" ).val();
+                });
+            <?php endif; ?>
+        </script>
 
 
-    <?php $this->section('scripts') ?>
-    <?php $this->stop() ?>
+        <?php $this->section('scripts') ?>
+        <?php $this->stop() ?>
 
-    <?=
-        // Skin this file to add your own footer content such as
-        // Piwik / Google Analytics integration:
-        $t->insert( 'footer-custom' );
-    ?>
+        <?=
+            // Skin this file to add your own footer content such as
+            // Piwik / Google Analytics integration:
+            $t->insert( 'footer-custom' );
+        ?>
 
-</body>
+    </body>
 </html>

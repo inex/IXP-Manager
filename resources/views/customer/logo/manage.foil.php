@@ -3,34 +3,17 @@
     /** @var object $t */
 ?>
 
-<?php $this->section( 'title' ) ?>
-
-    <?php if( Auth::user()->isSuperUser() ): ?>
-
-        <a href="<?= route ( 'customer@list' )?>">
-            Customer
-        </a>
-
-    <?php else: ?>
-
-        Manage Your Logo
-
-    <?php endif; ?>
-
-<?php $this->append() ?>
-
-
 
 <?php if( Auth::user()->isSuperUser() ): ?>
 
-    <?php $this->section( 'page-header-postamble' ) ?>
+    <?php $this->section( 'page-header-preamble' ) ?>
 
-        <li>
-            <a href="<?= route( "customer@overview" , [ "id" => $t->c->getId() ] ) ?>" >
-                <?= $t->ee( $t->c->getName() ) ?>
-            </a>
-        </li>
-        <li>Manage Logo</li>
+
+        <a href="<?= route( "customer@overview" , [ "id" => $t->c->getId() ] ) ?>" >
+            <?= $t->ee( $t->c->getName() ) ?>
+        </a>
+        /
+        Manage Logo
 
     <?php $this->append() ?>
 
@@ -48,11 +31,13 @@
 
         <?php if( $t->logo ): ?>
 
-            <div class="col-md-6">
-                <h3>Your Existing Logo:</h3>
-            </div>
-            <div class="col-md-6">
-                <img src="<?= url( 'logos/'.$t->logo->getShardedPath() ) ?>" class="www80-padding img-responsive">
+            <div class="row">
+                <div class="col-md-6">
+                    <h3>Your Existing Logo:</h3>
+                </div>
+                <div class="col-md-6">
+                    <img src="<?= url( 'logos/'.$t->logo->getShardedPath() ) ?>" class="www80-padding img-responsive">
+                </div>
             </div>
 
         <?php endif; ?>
@@ -99,12 +84,14 @@
 
         ?>
 
-        <?= Former::actions(
-            Former::primary_submit( 'Upload' ),
-            Former::default_link( 'Cancel' )->href( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ "id" => $t->c->getId() ] ) : route( "dashboard@index" ) ),
-            Auth::getUser()->isSuperUser() ? Former::success_link( 'Help' )->href('http://docs.ixpmanager.org/usage/customers/#customer-logos') : ''
-        );
-        ?>
+        <div class="col-sm-12 text-center mt-4 bg-light shadow-sm p-3">
+            <?= Former::actions(
+                Former::primary_submit( 'Upload' ),
+                Former::secondary_link( 'Cancel' )->href( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ "id" => $t->c->getId() ] ) : route( "dashboard@index" ) ),
+                Auth::getUser()->isSuperUser() ? Former::success_link( 'Help' )->href('http://docs.ixpmanager.org/usage/customers/#customer-logos') : ''
+            );
+            ?>
+        </div>
 
         <?= Former::hidden( 'id' )
             ->value( $t->c ? $t->c->getId() : false )

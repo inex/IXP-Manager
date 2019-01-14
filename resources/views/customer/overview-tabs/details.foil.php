@@ -7,7 +7,7 @@
             Registration Details
         </h3>
 
-        <table class="table">
+        <table class="table table-striped">
             <tr>
                 <th>
                     Registered Name
@@ -61,7 +61,7 @@
                 Billing Details
             </h3>
             <?php $bdetails = $t->c->getBillingDetails() ?>
-            <table class="table">
+            <table class="table table-striped">
                 <tr>
                     <th>
                         Contact Name

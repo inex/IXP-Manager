@@ -94,85 +94,88 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section('content') ?>
 
     <?= $t->alerts() ?>
-    <table id='customer-list' class="table collapse table-striped" >
-        <thead class="thead-dark">
-            <tr>
-                <th>
-                    Name
-                </th>
-                <th>
-                    AS
-                </th>
-                <th>
-                    Peering Policy
-                </th>
-                <th>
-                    Reseller
-                </th>
-                <th>
-                    Type
-                </th>
-                <th>
-                    Status
-                </th>
-                <th>
-                    Joined
-                </th>
-                <th>
-                    Action
-                </th>
-            </tr>
-        <thead>
-        <tbody>
-        <?php foreach( $t->custs as $c ):
-            /** @var Entities\Customer $c */
-            ?>
+    <div class="table-responsive">
+        <table id='customer-list' class="table collapse table-striped" >
+            <thead class="thead-dark">
+                <tr>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        AS
+                    </th>
+                    <th>
+                        Peering Policy
+                    </th>
+                    <th>
+                        Reseller
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                    <th>
+                        Joined
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                </tr>
+            <thead>
+            <tbody>
+            <?php foreach( $t->custs as $c ):
+                /** @var Entities\Customer $c */
+                ?>
 
-            <tr>
-                <td>
-                    <a href="<?= route( "customer@overview" , [ "id" => $c->getId() ] ) ?>">
-                        <?= $t->ee( $c->getName() ) ?>
-                    </a>
-
-                </td>
-                <td>
-                    <?php if( $c->getAutsys() ): ?>
-                        <a href="#">
-                            <?=  $t->asNumber( $c->getAutsys() ) ?>
+                <tr>
+                    <td>
+                        <a href="<?= route( "customer@overview" , [ "id" => $c->getId() ] ) ?>">
+                            <?= $t->ee( $c->getName() ) ?>
                         </a>
-                    <?php endif; ?>
 
-                </td>
-                <td>
-                    <?= $t->ee( $c->getPeeringpolicy() ) ?>
-                </td>
-                <td>
-                    <?= $c->getReseller() ? "Yes" : "No" ?>
-                </td>
-                <td>
-                    <?= $t->insert( 'customer/list-type',   [ 'cust' => $c ] ) ?>
-                </td>
-                <td>
-                    <?= $t->insert( 'customer/list-status', [ 'cust' => $c ] ) ?>
-                </td>
-                <td>
-                    <?= $c->getDatejoin() != null ? $c->getDatejoin()->format( "Y-m-d" ) : "" ?>
-                </td>
-                <td>
-                    <div class="btn-group btn-group-sm" role="group">
-                        <a class="btn btn-outline-secondary" href="<?= route( "customer@overview" , [ "id" => $c->getId() ] ) ?>" title="Overview">
-                            <i class="fa fa-eye"></i>
-                        </a>
-                        <a class="btn btn-outline-secondary" href="<?= route ( "customer@delete-recap", [ "id" => $c->getId() ] )   ?>" title="Delete">
-                            <i class="fa fa-trash"></i>
-                        </a>
-                    </div>
-                </td>
-            </tr>
+                    </td>
+                    <td>
+                        <?php if( $c->getAutsys() ): ?>
+                            <a href="#">
+                                <?=  $t->asNumber( $c->getAutsys() ) ?>
+                            </a>
+                        <?php endif; ?>
 
-        <?php endforeach;?>
-        <tbody>
-    </table>
+                    </td>
+                    <td>
+                        <?= $t->ee( $c->getPeeringpolicy() ) ?>
+                    </td>
+                    <td>
+                        <?= $c->getReseller() ? "Yes" : "No" ?>
+                    </td>
+                    <td>
+                        <?= $t->insert( 'customer/list-type',   [ 'cust' => $c ] ) ?>
+                    </td>
+                    <td>
+                        <?= $t->insert( 'customer/list-status', [ 'cust' => $c ] ) ?>
+                    </td>
+                    <td>
+                        <?= $c->getDatejoin() != null ? $c->getDatejoin()->format( "Y-m-d" ) : "" ?>
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm" role="group">
+                            <a class="btn btn-outline-secondary" href="<?= route( "customer@overview" , [ "id" => $c->getId() ] ) ?>" title="Overview">
+                                <i class="fa fa-eye"></i>
+                            </a>
+                            <a class="btn btn-outline-secondary" href="<?= route ( "customer@delete-recap", [ "id" => $c->getId() ] )   ?>" title="Delete">
+                                <i class="fa fa-trash"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+
+            <?php endforeach;?>
+            <tbody>
+        </table>
+    </div>
+
 
 <?php $this->append() ?>
 

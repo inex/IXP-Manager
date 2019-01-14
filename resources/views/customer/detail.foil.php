@@ -8,24 +8,23 @@
 ?>
 
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
         <a href="<?= route( $c->isTypeAssociate() ? 'customer@associates' : 'customer@details' )?>"><?= $c->isTypeAssociate() ? 'Associate Members' : 'Customers' ?></a>
     <?php else: ?>
         Member Detail
     <?php endif; ?>
+
+    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+        /
+        <a href="<?= route( 'customer@overview', [ 'id' => $c->getId() ] ) ?>">
+            <?= $t->ee( $c->getName() ) ?>
+        </a>
+    <?php endif; ?>
 <?php $this->append() ?>
 
 
-<?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-    <?php $this->section( 'page-header-postamble' ) ?>
-        <li>
-            <a href="<?= route( 'customer@overview', [ 'id' => $c->getId() ] ) ?>">
-                <?= $t->ee( $c->getName() ) ?>
-            </a>
-        </li>
-    <?php $this->append() ?>
-<?php endif; ?>
+
 
 
 <?php $this->section('content') ?>
@@ -35,7 +34,7 @@
     <div class="col-sm-12">
 
 
-        <div class="well">
+        <div class="bg-light shadow-sm p-4">
             <div class="row">
                 <h3 class="col-sm-9">
                     <?= $t->ee( $c->getFormattedName() ) ?>
@@ -54,174 +53,179 @@
 
 
 
+        <div class="row">
+            <div class="col-md-6">
+                <table class="table table-striped mt-4">
 
-        <div class="col-md-6">
-            <table class="table_view_info">
-
-                <tr>
-                    <td>
-                        <b>
-                            Member Type:
-                        </b>
-                    </td>
-                    <td>
-                        <?= $t->ee( $c->resolveType() ) ?>
-                    </td>
-                </tr>
-
-                <?php if( !$c->isTypeAssociate() ): ?>
                     <tr>
                         <td>
                             <b>
-                                AS Number:
+                                Member Type:
                             </b>
                         </td>
                         <td>
-                            <?=  $t->asNumber( $c->getAutsys() ) ?>
+                            <?= $t->ee( $c->resolveType() ) ?>
                         </td>
                     </tr>
 
+                    <?php if( !$c->isTypeAssociate() ): ?>
+                        <tr>
+                            <td>
+                                <b>
+                                    AS Number:
+                                </b>
+                            </td>
+                            <td>
+                                <?=  $t->asNumber( $c->getAutsys() ) ?>
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>
+                                <b>
+                                    Peering Policy:
+                                </b>
+                            </td>
+                            <td>
+                                <?= ucfirst( $t->ee( $c->getPeeringPolicy() ) ) ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+
                     <tr>
                         <td>
                             <b>
-                                Peering Policy:
+                                Join Date:
                             </b>
                         </td>
                         <td>
-                            <?= ucfirst( $t->ee( $c->getPeeringPolicy() ) ) ?>
+                            <?= $c->getDatejoin()->format('Y-m-d') ?>
                         </td>
                     </tr>
-                <?php endif; ?>
 
-                <tr>
-                    <td>
-                        <b>
-                            Join Date:
-                        </b>
-                    </td>
-                    <td>
-                        <?= $c->getDatejoin()->format('Y-m-d') ?>
-                    </td>
-                </tr>
+                    <?php if( Auth::check() ): ?>
+                        <tr>
+                            <td>
+                                <b>
+                                    Peering Email:
+                                </b>
+                            </td>
+                            <td>
+                                <?php if( filter_var( $c->getPeeringemail(), FILTER_VALIDATE_EMAIL ) ): ?>
+                                    <a href="mailto:<?= $c->getPeeringemail() ?>"><?= $c->getPeeringemail() ?></a>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>
+                                    NOC Phone:
+                                </b>
+                            </td>
+                            <td>
+                                <?= $t->ee( $c->getNocphone() ) ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>
+                                    NOC Hours:
+                                </b>
+                            </td>
+                            <td>
+                                <?= $t->ee( $c->getNochours() ) ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
 
-                <?php if( Auth::check() ): ?>
+                </table>
+            </div>
+
+            <div class="col-md-6">
+                <table class="table table-striped mt-4">
                     <tr>
                         <td>
                             <b>
-                                Peering Email:
+                                Member Status:
                             </b>
                         </td>
                         <td>
-                            <?php if( filter_var( $c->getPeeringemail(), FILTER_VALIDATE_EMAIL ) ): ?>
-                                <a href="mailto:<?= $c->getPeeringemail() ?>"><?= $c->getPeeringemail() ?></a>
+                            <?= $t->ee( $c->resolveStatus() ) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>
+                                Website:
+                            </b>
+                        </td>
+                        <td>
+                            <?php if( filter_var( $c->getCorpwww(), FILTER_VALIDATE_URL ) ): ?>
+                                <a href="<?= $c->getCorpwww() ?>"><?= $c->getCorpwww() ?></a>
                             <?php endif; ?>
                         </td>
                     </tr>
-                    <tr>
-                        <td>
-                            <b>
-                                NOC Phone:
-                            </b>
-                        </td>
-                        <td>
-                            <?= $t->ee( $c->getNocphone() ) ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <b>
-                                NOC Hours:
-                            </b>
-                        </td>
-                        <td>
-                            <?= $t->ee( $c->getNochours() ) ?>
-                        </td>
-                    </tr>
-                <?php endif; ?>
 
-            </table>
+                    <?php if( !$c->isTypeAssociate() ): ?>
+
+                        <tr>
+                            <td>
+                                <b>
+                                    Peering Macro:
+                                </b>
+                            </td>
+                            <td>
+                                <?=  $t->ee( $c->getPeeringmacro() ) ?>
+                            </td>
+                        </tr>
+
+                    <?php endif; ?>
+
+                    <?php if( Auth::check() ): ?>
+
+                        <tr>
+                            <td>
+                                <b>
+                                    NOC Email
+                                </b>
+                            </td>
+                            <td>
+                                <?php if( filter_var( $c->getNocemail(), FILTER_VALIDATE_EMAIL ) ): ?>
+                                    <a href="mailto:<?= $c->getNocemail() ?>"><?= $c->getNocemail() ?></a>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>
+                                    NOC 24 Hour Phone
+                                </b>
+                            </td>
+                            <td>
+                                <?= $t->ee( $c->getNoc24hphone() ) ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>
+                                    NOC Website:
+                                </b>
+                            </td>
+                            <td>
+                                <?php if( filter_var( $c->getNocwww(), FILTER_VALIDATE_URL ) ): ?>
+                                    <a href="<?= $c->getNocwww() ?>"><?= $c->getNocwww() ?></a>
+                                <?php endif; ?>
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+
+                </table>
+            </div>
         </div>
 
-        <div class="col-md-6">
-            <table class="table_view_info">
-                <tr>
-                    <td>
-                        <b>
-                            Member Status:
-                        </b>
-                    </td>
-                    <td>
-                        <?= $t->ee( $c->resolveStatus() ) ?>
-                    </td>
-                </tr>
-                <tr>
-                    <td>
-                        <b>
-                            Website:
-                        </b>
-                    </td>
-                    <td>
-                        <?php if( filter_var( $c->getCorpwww(), FILTER_VALIDATE_URL ) ): ?>
-                            <a href="<?= $c->getCorpwww() ?>"><?= $c->getCorpwww() ?></a>
-                        <?php endif; ?>
-                    </td>
-                </tr>
 
-                <?php if( !$c->isTypeAssociate() ): ?>
 
-                    <tr>
-                        <td>
-                            <b>
-                                Peering Macro:
-                            </b>
-                        </td>
-                        <td>
-                            <?=  $t->ee( $c->getPeeringmacro() ) ?>
-                        </td>
-                    </tr>
 
-                <?php endif; ?>
-
-                <?php if( Auth::check() ): ?>
-
-                    <tr>
-                        <td>
-                            <b>
-                                NOC Email
-                            </b>
-                        </td>
-                        <td>
-                            <?php if( filter_var( $c->getNocemail(), FILTER_VALIDATE_EMAIL ) ): ?>
-                                <a href="mailto:<?= $c->getNocemail() ?>"><?= $c->getNocemail() ?></a>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <b>
-                                NOC 24 Hour Phone
-                            </b>
-                        </td>
-                        <td>
-                            <?= $t->ee( $c->getNoc24hphone() ) ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <b>
-                                NOC Website:
-                            </b>
-                        </td>
-                        <td>
-                            <?php if( filter_var( $c->getNocwww(), FILTER_VALIDATE_URL ) ): ?>
-                                <a href="<?= $c->getNocwww() ?>"><?= $c->getNocwww() ?></a>
-                            <?php endif; ?>
-                        </td>
-                    </tr>
-                <?php endif; ?>
-
-            </table>
-        </div>
 
 
 
@@ -249,58 +253,61 @@
 
             <?php foreach( $vi->getPhysicalInterfaces() as $pi ): ?>
 
-                <div class="col-md-12">
+                <div class="col-md-12 mt-4">
 
                     <?php if( $isLAG ): ?>
                         <h5>Port <?= $countPi ?> of <?= count( $vi->getPhysicalInterfaces() ) ?> in LAG</h5>
                     <?php endif; ?>
 
-                    <div class="col-md-6">
-                        <table>
-                            <tr>
-                                <td>
-                                    <b>
-                                        Location:&nbsp;&nbsp;
-                                    </b>
-                                </td>
-                                <td>
-                                    <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ) ?>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>
-                                        Speed:
-                                    </b>
-                                </td>
-                                <td>
-                                    <?= $pi->resolveSpeed() ?>
-                                </td>
-                            </tr>
-                        </table>
-                    </div>
-                    <div class="col-md-6" >
-                        <table>
-                            <tr>
-                                <td>
-                                    <b>
-                                        Switch:&nbsp;&nbsp;
-                                    </b>
-                                </td>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <table>
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Location:&nbsp;&nbsp;
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ) ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Speed:
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <?= $pi->resolveSpeed() ?>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div class="col-md-6" >
+                            <table>
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Switch:&nbsp;&nbsp;
+                                        </b>
+                                    </td>
 
-                                <td>
-                                    <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <b>Port:</b>
-                                </td>
-                                <td>
-                                    <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
-                                </td>
-                            </tr>
-                        </table>
+                                    <td>
+                                        <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>Port:</b>
+                                    </td>
+                                    <td>
+                                        <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
+                                    </td>
+                                </tr>
+                            </table>
+                        </div>
+
                     </div>
 
                 </div>
@@ -315,88 +322,90 @@
                         <?php continue; ?>
                     <?php endif; ?>
 
-                    <div class="col-md-12" style="margin-bottom: 20px; text-indent: 20px ">
+                    <div class="col-md-12 mt-4" style="text-indent: 20px ">
 
-                        <br>
                         <h4><?= $t->ee( $vli->getVlan()->getName() ) ?>:</h4>
 
-                        <div class="col-md-6" style="">
+                        <div class="row mb-4">
+                            <div class="col-md-6" style="">
 
-                            <table>
-                                <tr>
-                                    <td>
-                                        <b>
-                                            IPv6 Address:
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <?php if( $vli->getIpv6enabled() and $vli->getIpv6address() ): ?>
-                                            <?= $vli->getIPv6Address()->getAddress() ?>
-                                            /<?= isset( $t->netinfo[ $vli->getVlan()->getId() ][ 6 ][ 'masklen' ] ) ? $t->netinfo[ $vli->getVlan()->getId() ][ 6 ][ "masklen" ] : '??' ?>
-                                        <?php else: ?>
-                                            IPv6 not enabled.
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <b>
-                                            Route Server Client:&nbsp;&nbsp;
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <?= $vli->getRsclient() ? "Yes" : "No" ?>
-                                    </td>
-                                </tr>
-                            </table>
-
-                        </div>
-                        <div class="col-md-6">
-
-                            <table>
-                                <tr>
-                                    <td>
-                                        <b>IPv4 Address:&nbsp;&nbsp;</b>
-                                    </td>
-                                    <td>
-                                        <?php if( $vli->getIpv4enabled() and $vli->getIpv4address() ): ?>
-                                            <?= $vli->getIPv4Address()->getAddress() ?>
-                                            /<?= isset( $t->netinfo[ $vli->getVlan()->getId() ][ 4 ][ 'masklen' ] ) ? $t->netinfo[ $vli->getVlan()->getId() ][ 4 ][ "masklen" ] : '??' ?>
-                                        <?php else: ?>
-                                            IPv4 not enabled.
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-
-                                <?php if( $t->as112UiActive() ): ?>
+                                <table>
                                     <tr>
                                         <td>
                                             <b>
-                                                AS112 Client:&nbsp;&nbsp;
+                                                IPv6 Address:
                                             </b>
                                         </td>
                                         <td>
-                                            <?= $vli->getAs112client() ? "Yes" : "No" ?>
+                                            <?php if( $vli->getIpv6enabled() and $vli->getIpv6address() ): ?>
+                                                <?= $vli->getIPv6Address()->getAddress() ?>
+                                                /<?= isset( $t->netinfo[ $vli->getVlan()->getId() ][ 6 ][ 'masklen' ] ) ? $t->netinfo[ $vli->getVlan()->getId() ][ 6 ][ "masklen" ] : '??' ?>
+                                            <?php else: ?>
+                                                IPv6 not enabled.
+                                            <?php endif; ?>
                                         </td>
                                     </tr>
-                                <?php endif; ?>
-
-                                <?php if( Auth::check() ): ?>
                                     <tr>
                                         <td>
                                             <b>
-                                                Max Prefixes:&nbsp;&nbsp;
+                                                Route Server Client:&nbsp;&nbsp;
                                             </b>
                                         </td>
                                         <td>
-                                            global: <?= $c->getMaxprefixes() ?>, per-interface: <?= $vli->getMaxbgpprefix() ?>
+                                            <?= $vli->getRsclient() ? "Yes" : "No" ?>
                                         </td>
                                     </tr>
-                                <?php endif; ?>
+                                </table>
 
-                            </table>
+                            </div>
+                            <div class="col-md-6">
 
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <b>IPv4 Address:&nbsp;&nbsp;</b>
+                                        </td>
+                                        <td>
+                                            <?php if( $vli->getIpv4enabled() and $vli->getIpv4address() ): ?>
+                                                <?= $vli->getIPv4Address()->getAddress() ?>
+                                                /<?= isset( $t->netinfo[ $vli->getVlan()->getId() ][ 4 ][ 'masklen' ] ) ? $t->netinfo[ $vli->getVlan()->getId() ][ 4 ][ "masklen" ] : '??' ?>
+                                            <?php else: ?>
+                                                IPv4 not enabled.
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+
+                                    <?php if( $t->as112UiActive() ): ?>
+                                        <tr>
+                                            <td>
+                                                <b>
+                                                    AS112 Client:&nbsp;&nbsp;
+                                                </b>
+                                            </td>
+                                            <td>
+                                                <?= $vli->getAs112client() ? "Yes" : "No" ?>
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+
+                                    <?php if( Auth::check() ): ?>
+                                        <tr>
+                                            <td>
+                                                <b>
+                                                    Max Prefixes:&nbsp;&nbsp;
+                                                </b>
+                                            </td>
+                                            <td>
+                                                global: <?= $c->getMaxprefixes() ?>, per-interface: <?= $vli->getMaxbgpprefix() ?>
+                                            </td>
+                                        </tr>
+                                    <?php endif; ?>
+
+                                </table>
+
+                            </div>
                         </div>
+
                     </div>
 
                 <?php endforeach; /* foreach( $vi->getVlanInterfaces() as $vli ) */ ?>

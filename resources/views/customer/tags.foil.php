@@ -3,20 +3,15 @@
     $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'customer@list' )?>">Customers</a>
-<?php $this->append() ?>
 
+<?php $this->section( 'page-header-preamble' ) ?>
 
-<?php $this->section( 'page-header-postamble' ) ?>
-    <li>
-        <a href="<?= route( 'customer@overview', [ 'id' => $t->c->getId() ] ) ?>">
-            <?= $t->c->getFormattedName() ?>
-        </a>
-    </li>
-    <li>
-        Tags
-    </li>
+    <a href="<?= route( 'customer@overview', [ 'id' => $t->c->getId() ] ) ?>">
+        <?= $t->c->getFormattedName() ?>
+    </a>
+    /
+    Tags
+
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -41,15 +36,18 @@
                         ->text( $tag->getDisplayAs() . " (" . $tag->getTag() . ")" )
                         ->value( 1 )
                         ->blockHelp( $tag->getDescription() )
+                        ->inline()
                         ->check( array_key_exists( $tag->getId(), $t->selectedTags ) ? true : false );
                     ?>
 
                 <?php endforeach; ?>
 
-                <?= Former::actions( Former::primary_submit( 'Save Changes' ),
-                    Former::default_link( 'Cancel' )->href( route( "customer@overview" , [ "id" => $t->c->getId() ] ) ),
-                    Former::success_button( 'Help' )->id( 'help-btn' )
-                );?>
+                <div class="col-sm-12 text-center mt-4 bg-light p-3 shadow-sm">
+                    <?= Former::actions( Former::primary_submit( 'Save Changes' ),
+                        Former::secondary_link( 'Cancel' )->href( route( "customer@overview" , [ "id" => $t->c->getId() ] ) ),
+                        Former::success_button( 'Help' )->id( 'help-btn' )
+                    );?>
+                </div>
 
                 <?= Former::hidden( 'id' )
                     ->value( $t->c ? $t->c->getId() : '' )

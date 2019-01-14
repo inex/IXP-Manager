@@ -1,5 +1,6 @@
-<table class="table mt-4">
-    <thead>
+<div class="table-responsive">
+    <table class="table mt-4 table-striped">
+        <thead class="thead-black">
         <tr>
             <th>
                 VLAN
@@ -23,11 +24,11 @@
                 Other Members
             </th>
         </tr>
-    </thead>
-    <tbody>
+        </thead>
+        <tbody>
         <?php if( !isset( $pvlans ) ): ?>
             <?php $pvlans = $t->c->getPrivateVlanDetails() ?>
-         <?php endif; ?>
+        <?php endif; ?>
 
         <?php foreach( $pvlans as $vlanid => $pv ): ?>
             <?php foreach($pv[ "vlis" ] as $vli ): ?>
@@ -81,6 +82,6 @@
                 </tr>
             <?php endforeach; ?>
         <?php endforeach; ?>
-    </tbody>
-</table>
-
+        </tbody>
+    </table>
+</div>

@@ -6,14 +6,8 @@
     $c = $t->c; // for IDE convenience
 ?>
 
-
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'customer@list' )?>">Customers</a>
-<?php $this->append() ?>
-
-
-<?php $this->section( 'page-header-postamble' ) ?>
-    <li>Delete :: <?= $c->getFormattedName() ?></li>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Customers / Delete :: <?= $c->getFormattedName() ?>
 <?php $this->append() ?>
 
 
@@ -23,15 +17,21 @@
 
     <div class="col-sm-12">
 
-        <div class="well">
-            <h3>Delete Customer: <?= $c->getFormattedName() ?></h3>
+        <div class="bg-light p-4 shadow-sm">
+            <h3>
+                Delete Customer: <?= $c->getFormattedName() ?>
+            </h3>
 
             <p>
-                <b>Are you sure you want to delete this customer?</b>
+                <b>
+                    Are you sure you want to delete this customer?
+                </b>
             </p>
 
             <p>
-                <b>This action is permanent and irrevocable.</b>
+                <b>
+                    This action is permanent and irrevocable.
+                </b>
             </p>
 
             <p>
@@ -127,17 +127,19 @@
                 <div class="modal-content">
                     <form method="post" action="<?= route( "customer@delete" ); ?>">
                         <div class="modal-header">
-                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+
                             <h4 class="modal-title" id="notes-modal-label">Delete Customer</h4>
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                <i class="fa fa-times"></i>
+                            </button>
                         </div>
                         <div class="modal-body" id="notes-modal-body">
                             <p id="notes-modal-body-intro">
                                 Do you really really want to delete this customer?
-                                <br><br>
                             </p>
                         </div>
                         <div class="modal-footer">
-                            <button id="notes-modal-btn-cancel"  type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                            <button id="notes-modal-btn-cancel"  type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
                             <button id="notes-modal-btn-confirm" type="submit" class="btn btn-primary"                     ><i class="fa fa-check"></i> Confirm</button>
                             <input type="hidden" name="id" value="<?= $c->getId() ?>">
                             <input type="hidden" name="_token" value="<?= csrf_token() ?>">
@@ -148,7 +150,6 @@
         </div>
 
     </div>
-
 
 </div>
 

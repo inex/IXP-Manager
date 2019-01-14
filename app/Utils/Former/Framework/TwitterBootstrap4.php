@@ -22,7 +22,8 @@
  */
 
 
-use Former\Framework\TwitterBootstrap3 as FormerTwitterBootstrap3;
+use Former\Framework\TwitterBootstrap4 as FormerTwitterBootstrap4;
+use IXP\Utils\Former\Framework\Action as FormerAction;
 use Former\Traits\Field;
 use HtmlObject\Element;
 
@@ -33,7 +34,7 @@ use HtmlObject\Element;
  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class TwitterBootstrap3 extends FormerTwitterBootstrap3 {
+class TwitterBootstrap4 extends FormerTwitterBootstrap4  {
 
     /**
      * Create a new TwitterBootstrap instance
@@ -63,6 +64,19 @@ class TwitterBootstrap3 extends FormerTwitterBootstrap3 {
         }
 
         return $field;
+    }
+
+    /**
+     * Render an help text
+     *
+     * @param string $text
+     * @param array  $attributes
+     *
+     * @return Element
+     */
+    public function createBlockHelp($text, $attributes = array())
+    {
+        return Element::create('small', $text, $attributes)->addClass('form-text text-muted former-help-text');
     }
 
 }

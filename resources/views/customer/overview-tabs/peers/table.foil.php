@@ -1,27 +1,27 @@
 
-<div class="col-sm-12 mt-4">
-    <table id="peers-table" class="table peers-table">
-        <thead>
-        <tr>
-            <th>
-                Name
-            </th>
-            <th>
-                ASN
-            </th>
+<div class="col-sm-12 mt-4 table-responsive">
+    <table id="peers-table" class="table peers-table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    ASN
+                </th>
 
-            <?php foreach( $t->peers[ "vlan" ] as $vlan ): ?>
+                <?php foreach( $t->peers[ "vlan" ] as $vlan ): ?>
 
-                <?php $vlanid = $vlan->getNumber() ?>
+                    <?php $vlanid = $vlan->getNumber() ?>
 
-                <?php if( isset( $t->peers[ "me" ][ 'vlaninterfaces' ][ $vlanid ] ) ): ?>
-                    <th>
-                        <?= $vlan->getName() ?>
-                    </th>
-                <?php endif; ?>
+                    <?php if( isset( $t->peers[ "me" ][ 'vlaninterfaces' ][ $vlanid ] ) ): ?>
+                        <th>
+                            <?= $vlan->getName() ?>
+                        </th>
+                    <?php endif; ?>
 
-            <?php endforeach; ?>
-        </tr>
+                <?php endforeach; ?>
+            </tr>
         </thead>
         <tbody>
         <?php foreach( $t->listOfCusts as  $as => $p ): ?>
