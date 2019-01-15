@@ -2,7 +2,6 @@
 <html lang="en">
 
     <head>
-
         <!--  IXP MANAGER - template directory: resources/[views|skins] -->
 
         <base href="<?= url('') ?>/index.php">
@@ -22,21 +21,6 @@
         <link rel="stylesheet" type="text/css" href="<?= asset('css/ixp-pack.css') ?>" />
         <?php $this->section('headers') ?>
         <?php $this->stop() ?>
-
-
-        <?php if( !Auth::check() || !Auth::user()->isSuperUser() ):
-            // and ( not isset( $mode ) or $mode neq 'fluid' )} ?>
-
-            <style>
-                html, body {
-                  background-color: #eee;
-                }
-
-                body {
-                    padding-top: 40px;
-                }
-            </style>
-        <?php endif; ?>
 
     </head>
 

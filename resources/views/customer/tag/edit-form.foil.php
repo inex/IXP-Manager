@@ -1,4 +1,4 @@
-<div class="well col-sm-12">
+<div class="col-sm-12">
 
     <?= Former::open()->method( 'POST' )
         ->id( 'form' )
@@ -27,6 +27,7 @@
         ->label( '&nbsp;' )
         ->text( 'Internal Only' )
         ->value( 1 )
+        ->inline()
         ->blockHelp( "Tags marked as internal only are not included in exports (such as the IX-F Member Export) or in non-administrator views." );
     ?>
 

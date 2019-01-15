@@ -3,49 +3,42 @@
     $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <?php if( isset( $t->feParams->pagetitlepostamble )  ): ?>
-        <?php if( Route::has( $t->feParams->route_prefix_page_title . '@list' ) ): ?>
-            <a id="d2f-list-a" href="<?= route($t->feParams->route_prefix_page_title . '@list') ?>">
-         <?php endif; ?>
-            <?=  $t->feParams->pagetitle  ?>
-         <?php if( Route::has( $t->feParams->route_prefix_page_title . '@list' ) ): ?>
-            </a>
-        <?php endif; ?>
-    <?php else: ?>
-        <?= $t->feParams->pagetitle  ?>
+
+<?php $this->section( 'page-header-preamble' ) ?>
+
+    <?php if( isset( $t->feParams->pagetitle )  ): ?>
+        <?=  $t->feParams->pagetitle  ?>
     <?php endif; ?>
+
+    <?php if( isset( $t->feParams->pagetitlepostamble )  ): ?>
+            <?= $t->feParams->pagetitlepostamble ?>
+    <?php endif; ?>
+
 <?php $this->append() ?>
 
 
-<?php if( isset( $t->feParams->pagetitlepostamble )  ): ?>
-    <?php $this->section( 'page-header-postamble' ) ?>
-        <li class="active"> <?= $t->feParams->pagetitlepostamble ?> </li>
-    <?php $this->append() ?>
-<?php endif; ?>
-
-<?php $this->section( 'page-header-preamble' ) ?>
+<?php $this->section( 'page-header-postamble' ) ?>
     <?php if( $t->data[ 'view' ]['pageHeaderPreamble'] ): ?>
 
         <?= $t->insert( $t->data[ 'view' ]['pageHeaderPreamble'] ) ?>
 
     <?php else: ?>
 
-        <li class="pull-right">
-            <div class="btn-group btn-group-xs" role="group">
+        <div class="btn-group btn-group-sm ml-auto" role="group">
 
-                <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
-                    <a type="button" target="_blank" class="btn btn-default" href="<?= $t->feParams->documentation ?>">Documentation</a>
-                <?php endif; ?>
+            <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
+                <a target="_blank" class="btn btn-outline-secondary" href="<?= $t->feParams->documentation ?>">
+                    Documentation
+                </a>
+            <?php endif; ?>
 
-                <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-                    <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add') ?>">
-                        <span class="glyphicon glyphicon-plus"></span>
-                    </a>
-                <?php endif;?>
+            <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
+                <a class="btn btn-outline-secondary" href="<?= route($t->feParams->route_prefix.'@add') ?>">
+                    <i class="fa fa-plus"></i>
+                </a>
+            <?php endif;?>
 
-            </div>
-        </li>
+        </div>
 
     <?php endif;?>
 <?php $this->append() ?>
@@ -75,7 +68,7 @@
 
             <?php else:  /* !count( $t->data[ 'rows' ] ) */ ?>
 
-                <table id="table-list" class="table collapse">
+                <table id="table-list" class="table collapse table-striped">
 
                     <?php if( $t->data[ 'view' ]['listHeadOverride'] ): ?>
 
@@ -83,26 +76,28 @@
 
                     <?php else: ?>
 
-                        <thead>
+                        <thead class="thead-dark">
 
-                        <tr>
-                            <?php foreach( $t->feParams->listColumns as $col => $cconf ):?>
+                            <tr>
+                                <?php foreach( $t->feParams->listColumns as $col => $cconf ):?>
 
-                                <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display'] ) ||  $cconf[ 'display']   ):?>
-                                    <th>
-                                        <?php if( is_array( $cconf ) ) :?>
-                                            <?= $cconf[ 'title' ] ?>
-                                        <?php else: ?>
-                                            <?= $cconf ?>
-                                        <?php endif;?>
-                                    </th>
-                                <?php endif;?>
+                                    <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display'] ) ||  $cconf[ 'display']   ):?>
+                                        <th>
+                                            <?php if( is_array( $cconf ) ) :?>
+                                                <?= $cconf[ 'title' ] ?>
+                                            <?php else: ?>
+                                                <?= $cconf ?>
+                                            <?php endif;?>
+                                        </th>
+                                    <?php endif;?>
 
-                            <?php endforeach;?>
+                                <?php endforeach;?>
 
-                            <th></th> <!-- actions column -->
+                                <th>
+                                    Actions
+                                </th> <!-- actions column -->
 
-                        </tr>
+                            </tr>
 
                         </thead>
 
@@ -231,12 +226,12 @@
 
                                                             <?php foreach( $exploded as $explode ): ?>
 
-                                                                <span class="label label-success"><?= $t->ee( $explode ) ?> </span><?= $cconf[ 'explode' ][ 'replace' ] ?>
+                                                                <span class="badge badge-success"><?= $t->ee( $explode ) ?> </span><?= $cconf[ 'explode' ][ 'replace' ] ?>
 
                                                             <?php endforeach; ?>
 
                                                         <?php else: ?>
-                                                            <span class="label label-success"><?= $t->ee( $row[ $col ] ) ?></span>
+                                                            <span class="badge badge-success"><?= $t->ee( $row[ $col ] ) ?></span>
 
                                                         <?php endif;?>
 
@@ -244,13 +239,13 @@
 
                                                         <?php foreach( $row[ $col ] as $item ): ?>
 
-                                                            <span class="label label-success"><?= $t->ee( $item ) ?> </span><?= $cconf[ 'array' ][ 'replace' ] ?>
+                                                            <span class="badge badge-success"><?= $t->ee( $item ) ?> </span><?= $cconf[ 'array' ][ 'replace' ] ?>
 
                                                         <?php endforeach; ?>
 
                                                     <?php else: ?>
 
-                                                        <span class="label label-success"><?= $t->ee( $row[ $col ] ) ?></span>
+                                                        <span class="badge badge-success"><?= $t->ee( $row[ $col ] ) ?></span>
 
                                                     <?php endif; ?>
 
@@ -289,13 +284,19 @@
 
                                         <?php else: ?>
 
-                                            <div class="btn-group">
+                                            <div class="btn-group btn-group-sm">
 
-                                                <a id="d2f-list-view-<?= $row[ 'id' ] ?>" class="btn btn-sm btn-default" href="<?= route($t->feParams->route_prefix.'@view' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
+                                                <a id="d2f-list-view-<?= $row[ 'id' ] ?>" class="btn btn-outline-secondary" href="<?= route($t->feParams->route_prefix.'@view' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Preview">
+                                                    <i class="fa fa-eye"></i>
+                                                </a>
 
                                                 <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-                                                    <a class="btn btn-sm btn-default" id="d2f-list-edit-<?= $row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $row[ 'id' ] ] ) ?> " title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
-                                                    <a class="btn btn-sm btn-default" id='d2f-list-delete-<?= $row[ 'id' ] ?>' href="#" data-object-id="<?= $row[ 'id' ] ?>" title="Delete"><i class="glyphicon glyphicon-trash"></i></a>
+                                                    <a class="btn btn-outline-secondary" id="d2f-list-edit-<?= $row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $row[ 'id' ] ] ) ?> " title="Edit">
+                                                        <i class="fa fa-pencil"></i>
+                                                    </a>
+                                                    <a class="btn btn-outline-secondary" id='d2f-list-delete-<?= $row[ 'id' ] ?>' href="#" data-object-id="<?= $row[ 'id' ] ?>" title="Delete">
+                                                        <i class="fa fa-trash"></i>
+                                                    </a>
                                                 <?php endif;?>
 
                                             </div>

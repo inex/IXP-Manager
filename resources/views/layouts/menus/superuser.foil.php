@@ -14,9 +14,15 @@
                     Member Information
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="<?= route('customer@details') ?>">Member Details</a>
-                    <a class="dropdown-item" href="<?= route( "customer@associates" ) ?>">Associate Members</a>
-                    <a class="dropdown-item" href="<?= url('') ?>/switch/configuration">Switch Configuration</a>
+                    <a class="dropdown-item" href="<?= route('customer@details') ?>">
+                        Member Details
+                    </a>
+                    <a class="dropdown-item" href="<?= route( "customer@associates" ) ?>">
+                        Associate Members
+                    </a>
+                    <a class="dropdown-item" href="<?= url('') ?>/switch/configuration">
+                        Switch Configuration
+                    </a>
                 </div>
             </li>
 
@@ -27,10 +33,14 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <?php if( !config('ixp_fe.frontend.disabled.lg' ) ): ?>
-                        <a class="dropdown-item" href="<?= url('lg') ?>">Looking Glass</a>
+                        <a class="dropdown-item" href="<?= url('lg') ?>">
+                            Looking Glass
+                        </a>
                     <?php endif; ?>
                     <?php if( !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
-                        <a class="dropdown-item" href="<?= route('peering-matrix@index') ?>">Peering Matrix</a>
+                        <a class="dropdown-item" href="<?= route('peering-matrix@index') ?>">
+                            Peering Matrix
+                        </a>
                     <?php endif; ?>
                 </div>
             </li>
@@ -41,27 +51,39 @@
                 $this->insert('header-documentation');
             ?>
 
-
-
             <li class="nav-item dropdown <?= !request()->is( 'statistics/*', 'weather-map/*' ) ?: 'active' ?>">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Statistics
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
-                    <a class="dropdown-item" href="<?= route( 'statistics/ixp' ) ?>">Overall Peering Graphs</a>
-                    <a class="dropdown-item" href="<?= route( 'statistics/infrastructure' ) ?>">Infrastructure Graphs</a>
+                    <a class="dropdown-item" href="<?= route( 'statistics/ixp' ) ?>">
+                        Overall Peering Graphs
+                    </a>
+                    <a class="dropdown-item" href="<?= route( 'statistics/infrastructure' ) ?>">
+                        Infrastructure Graphs
+                    </a>
 
                     <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                        <a class="dropdown-item" href="<?= route( 'statistics/vlan' ) ?>">VLAN / Per-Protocol Graphs</a>
+                        <a class="dropdown-item" href="<?= route( 'statistics/vlan' ) ?>">
+                            VLAN / Per-Protocol Graphs
+                        </a>
                     <?php endif; ?>
 
-                    <a class="dropdown-item" href="<?= route('statistics/trunk') ?>">Inter-Switch / PoP Graphs</a>
-                    <a class="dropdown-item" href="<?= route('statistics/switch') ?>">Switch Aggregate Graphs</a>
+                    <a class="dropdown-item" href="<?= route('statistics/trunk') ?>">
+                        Inter-Switch / PoP Graphs
+                    </a>
+                    <a class="dropdown-item" href="<?= route('statistics/switch') ?>">
+                        Switch Aggregate Graphs
+                    </a>
 
                     <div class="dropdown-divider"></div>
-                    <a class="dropdown-item" href="<?= route( 'statistics/members' ) ?>">Member Graphs</a>
-                    <a class="dropdown-item" href="<?= route( 'statistics/league-table' ) ?>">League Table</a>
+                    <a class="dropdown-item" href="<?= route( 'statistics/members' ) ?>">
+                        Member Graphs
+                    </a>
+                    <a class="dropdown-item" href="<?= route( 'statistics/league-table' ) ?>">
+                        League Table
+                    </a>
 
 
                     <?php if( is_array( config( 'ixp_tools.weathermap', false ) ) ): ?>
@@ -75,7 +97,9 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>">Support</a>
+                <a class="nav-link" href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>">
+                    Support
+                </a>
             </li>
 
 
