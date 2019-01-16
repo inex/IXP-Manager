@@ -82,20 +82,26 @@ class Kernel extends HttpKernel {
             Middleware\ControllerEnabled::class,
         ],
 
-        'public/api/v4' => [
-            'web',
+        'apibase' => [
+            Middleware\EncryptCookies::class,
+            AddQueuedCookiesToResponse::class,
+            StartSession::class,
+            ShareErrorsFromSession::class,
+            SubstituteBindings::class,
+            Middleware\ControllerEnabled::class,
             'throttle:60,1',
             'bindings',
-            'apimaybeauth',
             Middleware\ControllerEnabled::class,
         ],
 
+        'public/api/v4' => [
+            'apibase',
+            'apimaybeauth',
+        ],
+
         'api/v4' => [
-            'web',
-            'throttle:60,1',
-            'bindings',
+            'apibase',
             'apiauth',
-            Middleware\ControllerEnabled::class,
         ],
 
         'd2frontend' => [
