@@ -227,7 +227,7 @@ class Switcher extends EntityRepository
                 LEFT JOIN s.Infrastructure inf
                 LEFT JOIN s.Cabinet cab
 
-            WHERE 1=1 ";
+            WHERE " . Customer::DQL_CUST_CURRENT . " ";
 
         if( $switchid !== null ) {
             $q .= 'AND s.id = ' . intval( $switchid ) . ' ';
