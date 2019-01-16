@@ -71,6 +71,7 @@ class ProfileController extends Controller
         // array used to populate the form to modify user information.
         // former doesn't allow us to populate a form the classic way when there is many forms on the same view.
         $profileDetails = [
+            'name'                  => $user->getName(),
             'username'              => $user->getUsername(),
             'email'                 => $user->getEmail(),
             'authorisedMobile'      => $user->getAuthorisedMobile(),
@@ -136,6 +137,7 @@ class ProfileController extends Controller
         /** @var UserEntity $user */
         $user = Auth::getUser();
 
+        $user->setName(             $r->input( "name") );
         $user->setUsername(         $r->input( "username") );
         $user->setEmail(            $r->input( "email") );
         $user->setLastUpdated(      new DateTime() );
