@@ -60,7 +60,8 @@ class Profile extends FormRequest
     public function rules()
     {
         return [
-            'username'          => 'required|string|min:4|max:255|unique:Entities\User,username' . ( $this->input( 'id' ) ? ','. $this->input( 'id' ) : '' ),
+            'name'              => 'required|string|min:2|max:255',
+            'username'          => 'required|string|min:3|max:255|unique:Entities\User,username,' . Auth::user()->getId(),
             'email'             => 'required|email|max:255',
             'authorisedMobile'  => 'nullable|string|max:30',
             'actual_password'   => 'required|string|max:255',
