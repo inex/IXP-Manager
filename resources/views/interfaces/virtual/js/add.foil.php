@@ -21,7 +21,9 @@ const div_fastlacp   = $( "#fastlacp-area" );
 ///
 
 // display or hide the advanced area
-btn_advanced.click( () => { div_advanced.slideToggle(); btn_delete.slideToggle(); } );
+
+
+btn_advanced.on('click', function(e){ e.preventDefault(); div_advanced.slideToggle();btn_delete.slideToggle();});
 
 // display or hide the fastlapc area
 cb_lag_framing.change( () => { cb_lag_framing.is(":checked") ? div_fastlacp.slideDown() : div_fastlacp.slideUp() } );

@@ -26,7 +26,7 @@
 
                 <?= Former::open()->method( 'POST' )
                     ->action( route ('customer@store-tags' ) )
-                    ->customWidthClass( 'col-sm-6' )
+                    ->customInputWidthClass( 'col-sm-6' )
                 ?>
 
                 <?php foreach( $t->tags as $tag ): ?>

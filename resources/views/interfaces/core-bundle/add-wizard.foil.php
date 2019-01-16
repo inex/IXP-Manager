@@ -55,7 +55,7 @@ $this->layout( 'layouts/ixpv4' );
             <?= Former::open()->method( 'POST' )
                 ->id( 'core-bundle-form' )
                 ->action( route( 'core-bundle/store' ) )
-                ->customWidthClass( 'col-sm-6' )
+                ->customInputWidthClass( 'col-sm-6' )
             ?>
                 <div class="well col-sm-12">
 

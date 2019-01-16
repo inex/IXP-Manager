@@ -56,14 +56,33 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4  {
      */
     public function wrapField($field)
     {
-        $width = isset( $this->app['former.form']->getAttributes()['custom-width-class'] )
-            ? $this->app['former.form']->getAttributes()['custom-width-class'] : $this->fieldWidth;
+        $width = isset( $this->app['former.form']->getAttributes()['custom-input-width-class'] )
+            ? $this->app['former.form']->getAttributes()['custom-input-width-class'] : $this->fieldWidth;
 
         if ($this->app['former.form']->isOfType('horizontal')) {
                 return Element::create('div', $field)->addClass($width);
         }
 
         return $field;
+    }
+
+    /**
+     * Add label classes
+     *
+     * @return string[] An array of attributes with the label class
+     */
+    public function getLabelClasses()
+    {
+        $width = isset( $this->app['former.form']->getAttributes()['custom-label-width-class'] )
+            ? $this->app['former.form']->getAttributes()['custom-label-width-class'] : $this->labelWidth;
+
+        if ($this->app['former.form']->isOfType('horizontal')) {
+            return array('control-label', $width);
+        } elseif ($this->app['former.form']->isOfType('inline')) {
+            return array('sr-only');
+        } else {
+            return array('control-label');
+        }
     }
 
     /**

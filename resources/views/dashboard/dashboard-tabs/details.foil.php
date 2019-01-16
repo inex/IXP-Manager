@@ -10,7 +10,7 @@
                 ->method( 'post' )
                 ->id( "noc" )
                 ->action( route ( "dashboard@store-noc-details" ) )
-                ->customWidthClass( 'col-sm-8' )
+                ->customInputWidthClass( 'col-sm-8' )
             ?>
 
             <?= Former::phone( 'nocphone' )
@@ -67,7 +67,7 @@
                         ->method( 'post' )
                         ->id( "billing" )
                         ->action( route ( "dashboard@store-billing-details" ) )
-                        ->customWidthClass( 'col-sm-8' )
+                        ->customInputWidthClass( 'col-sm-8' )
                     ?>
 
                     <?= Former::text( 'billingContactName' )

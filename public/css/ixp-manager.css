@@ -546,16 +546,6 @@ td a:hover{
     100% { transform: rotate(360deg); }
 }
 
-.table-borderless > tbody > tr > td,
-.table-borderless > tbody > tr > th,
-.table-borderless > tfoot > tr > td,
-.table-borderless > tfoot > tr > th,
-.table-borderless > thead > tr > td,
-.table-borderless > thead > tr > th {
-    border: none;
-}
-
-
 .wrap {
     -ms-word-break: break-all;
     word-break: break-all;

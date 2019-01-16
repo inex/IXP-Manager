@@ -1,6 +1,6 @@
 <?= Former::open()->method( 'POST' )
     ->action( "#" )
-    ->customWidthClass( 'col-sm-8' )
+    ->customInputWidthClass( 'col-sm-8' )
     ->id( "form-peering-request" );
 ?>
 

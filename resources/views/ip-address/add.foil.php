@@ -37,7 +37,7 @@
 
         <?= Former::open()->method( 'post' )
             ->action( route ('ip-address@store' ) )
-            ->customWidthClass( 'col-sm-6' )
+            ->customInputWidthClass( 'col-sm-6' )
             ->addClass( 'col-md-10' );
         ?>
 

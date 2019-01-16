@@ -22,7 +22,7 @@
             <?= Former::open()->method( 'POST' )
                 ->id( "form" )
                 ->action( route('customer@store' ) )
-                ->customWidthClass( 'col-sm-6' )
+                ->customInputWidthClass( 'col-sm-6' )
 
             ?>
 

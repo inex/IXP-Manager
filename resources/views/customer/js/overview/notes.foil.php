@@ -261,9 +261,7 @@
 
     $(document).ready(function(){
 
-
         <?php if( Auth::getUser()->isSuperUser() ): ?>
-
 
         $( "#co-notes-add-btn" ).on( "click", function( event ){
             event.preventDefault();

@@ -36,7 +36,7 @@
 
         <?= Former::open()->method( 'POST' )
                 ->action( route( 'login@login' ) )
-                ->customWidthClass( 'col-sm-4' )
+                ->customInputWidthClass( 'col-sm-4' )
                 ->addClass( 'col-md-offset-4' );
         ?>
 

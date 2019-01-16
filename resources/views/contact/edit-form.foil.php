@@ -3,7 +3,7 @@
     <?= Former::open()->method( 'POST' )
         ->id( 'form' )
         ->action( route( $t->feParams->route_prefix . '@store' ) )
-        ->customWidthClass( 'col-sm-6' )
+        ->customInputWidthClass( 'col-sm-6' )
     ?>
     <div class="col-sm-6">
         <?= Former::text( 'name' )

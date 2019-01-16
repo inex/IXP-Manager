@@ -1,4 +1,4 @@
-<div class="d-flex mt-4 row">
+<div class="d-flex row">
 
     <div class="col-md-12 row">
 

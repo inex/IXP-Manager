@@ -65,7 +65,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?= Former::open()->method( 'POST' )
                     ->id( 'core-bundle-form' )
                     ->action( route ( 'core-bundle/store' ) )
-                    ->customWidthClass( 'col-sm-6' )
+                    ->customInputWidthClass( 'col-sm-6' )
                 ?>
 
                     <h3>
@@ -238,7 +238,7 @@ $this->layout( 'layouts/ixpv4' );
                         <?= Former::open()->method( 'POST' )
                             ->id( 'core-link-form' )
                             ->action( route( 'core-bundle/store-core-link', [ 'id' => $t->cb->getId() ] ) )
-                            ->customWidthClass( 'col-sm-10' )
+                            ->customInputWidthClass( 'col-sm-10' )
                         ?>
 
                             <table id="" class="table table-bordered">
@@ -362,7 +362,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?= Former::open()->method( 'POST' )
                     ->id( 'core-link-form' )
                     ->action( route( "core-bundle/add-core-link" ) )
-                    ->customWidthClass( 'col-sm-6' )
+                    ->customInputWidthClass( 'col-sm-6' )
                 ?>
                     <div id="core-links"></div>
 

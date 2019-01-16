@@ -3,34 +3,27 @@
     $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route('interfaces/virtual/list') ?>">Virtual Interfaces</a>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Virtual Interfaces / List
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>List</li>
-<?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
-        <div class=" btn-group btn-group-xs" role="group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="glyphicon glyphicon-plus"></i> <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-right">
-                <li>
-                    <a id="" href="<?= route( 'interfaces/virtual/wizard' ) ?>" >
-                        Add Interface Wizard...
-                    </a>
-                </li>
-                <li>
-                    <a id="" href="<?= route( 'interfaces/virtual/add' ) ?>" >
-                        Add Virtual Interface Object Only...
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </li>
+    <div class=" btn-group btn-group-sm" role="group">
+        <button class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-plus"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="<?= route( 'interfaces/virtual/wizard' ) ?>" >
+                Add Interface Wizard...
+            </a>
+
+            <a class="dropdown-item" href="<?= route( 'interfaces/virtual/add' ) ?>" >
+                Add Virtual Interface Object Only...
+            </a>
+        </ul>
+    </div>
+
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -42,83 +35,83 @@
         <?= $t->alerts() ?>
         <div id="message-vi"></div>
         <div id="area-vi" class="collapse">
-            <table id='table-vi' class="table">
-                <thead>
-                <tr>
-                    <td>
-                        Customer
-                    </td>
-                    <td>
-                        Facility
-                    </td>
-                    <td>
-                        Switch
-                    </td>
-                    <td>
-                        Port(s)
-                    </td>
-                    <td>
-                        Speed
-                    </td>
-                    <td>
-                        Raw Speed
-                    </td>
-                    <td>
-                        Action
-                    </td>
-                </tr>
+            <table id='table-vi' class="table table-stripped">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            Customer
+                        </th>
+                        <th>
+                            Facility
+                        </th>
+                        <th>
+                            Switch
+                        </th>
+                        <th>
+                            Port(s)
+                        </th>
+                        <th>
+                            Speed
+                        </th>
+                        <th>
+                            Raw Speed
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                    </tr>
                 <thead>
                 <tbody>
-                <?php foreach( $t->vis as $vi ):
-                    /** @var Entities\VirtualInterface $vi */ ?>
-                    <tr>
-                        <td>
-                            <a href="<?= route( "customer@overview" , [ "id" => $vi->getCustomer()->getId() ] ) ?>">
-                                <?= $t->ee( $vi->getCustomer()->getName() ) ?>
-                            </a>
-                        </td>
-                        <?php if( count( $vi->getPhysicalInterfaces() ) ): ?>
+                    <?php foreach( $t->vis as $vi ):
+                        /** @var Entities\VirtualInterface $vi */ ?>
+                        <tr>
                             <td>
-                                <?= $t->ee( $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ) ?>
-                            </td>
-                            <td>
-                                <?= $t->ee( $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getName() ) ?>
-                            </td>
-                            <td>
-                                <?php
-                                $speed = 0;
-                                foreach( $vi->getPhysicalInterfaces() as $pi ) {
-                                    echo $t->ee( $pi->getSwitchPort()->getName() ) . "<br>";
-                                    $speed += $pi->getSpeed();
-                                }
-                                ?>
-                            </td>
-                            <td>
-                                <?= $t->scaleBits( $speed*1000*1000, 0 ) ?>
-                            </td>
-                            <td>
-                                <?= $speed ?>
-                            </td>
-                        <?php else: ?>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
-                        <?php endif; ?>
-                        <td>
-                            <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn btn-default" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vi->getId() ]) ?>" title="Edit">
-                                    <i class="glyphicon glyphicon-pencil"></i>
+                                <a href="<?= route( "customer@overview" , [ "id" => $vi->getCustomer()->getId() ] ) ?>">
+                                    <?= $t->ee( $vi->getCustomer()->getName() ) ?>
                                 </a>
+                            </td>
+                            <?php if( count( $vi->getPhysicalInterfaces() ) ): ?>
+                                <td>
+                                    <?= $t->ee( $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ) ?>
+                                </td>
+                                <td>
+                                    <?= $t->ee( $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getName() ) ?>
+                                </td>
+                                <td>
+                                    <?php
+                                    $speed = 0;
+                                    foreach( $vi->getPhysicalInterfaces() as $pi ) {
+                                        echo $t->ee( $pi->getSwitchPort()->getName() ) . "<br>";
+                                        $speed += $pi->getSpeed();
+                                    }
+                                    ?>
+                                </td>
+                                <td>
+                                    <?= $t->scaleBits( $speed*1000*1000, 0 ) ?>
+                                </td>
+                                <td>
+                                    <?= $speed ?>
+                                </td>
+                            <?php else: ?>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                                <td></td>
+                            <?php endif; ?>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <a class="btn btn btn-outline-secondary" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vi->getId() ]) ?>" title="Edit">
+                                        <i class="fa fa-pencil"></i>
+                                    </a>
 
-                                <a class="btn btn btn-default" id="delete-vi-<?= $vi->getId() ?>" href="" <?php if( $t->resellerMode() && ( count( $vi->getPeeringPhysicalInterface()) > 0  || count( $vi->getFanoutPhysicalInterface() ) > 0 ) ) :?> data-related="1" <?php endif; ?> <?php if( $vi->getSwitchPort() ): ?> data-type="<?= $vi->getSwitchPort()->getType() ?>" <?php endif; ?> title="Delete Virtual Interface">
-                                    <i class="glyphicon glyphicon-trash"></i>
-                                </a>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endforeach;?>
+                                    <a class="btn btn btn-outline-secondary" id="delete-vi-<?= $vi->getId() ?>" href="" <?php if( $t->resellerMode() && ( count( $vi->getPeeringPhysicalInterface()) > 0  || count( $vi->getFanoutPhysicalInterface() ) > 0 ) ) :?> data-related="1" <?php endif; ?> <?php if( $vi->getSwitchPort() ): ?> data-type="<?= $vi->getSwitchPort()->getType() ?>" <?php endif; ?> title="Delete Virtual Interface">
+                                        <i class="fa fa-trash"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+                    <?php endforeach;?>
                 <tbody>
             </table>
         </div>

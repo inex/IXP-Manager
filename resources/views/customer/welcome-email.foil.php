@@ -50,23 +50,26 @@
             ?>
 
             <div class="col-lg-offset-2 col-sm-offset-2">
-
-                <ul class="nav nav-tabs">
-                    <li role="presentation" class="nav-item">
-                        <a class="tab-link-body-note nav-link active" href="#body">Body</a>
-                    </li>
-                    <li role="presentation" class="active nav-item">
-                        <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
-                    </li>
-                </ul>
-
-                <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active show" id="body">
-                        <textarea class="form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= old( 'message' ) ?? $t->body ?></textarea>
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs">
+                            <li role="presentation" class="nav-item">
+                                <a class="tab-link-body-note nav-link active" href="#body">Body</a>
+                            </li>
+                            <li role="presentation" class="nav-item">
+                                <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
+                            </li>
+                        </ul>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="preview">
-                        <div class="bg-light p-4 well-preview">
-                            Loading...
+
+                    <div class="tab-content card-body">
+                        <div role="tabpanel" class="tab-pane show active" id="body">
+                            <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= old( 'message' ) ?? $t->body ?></textarea>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="preview">
+                            <div class="bg-light p-4 well-preview">
+                                Loading...
+                            </div>
                         </div>
                     </div>
                 </div>

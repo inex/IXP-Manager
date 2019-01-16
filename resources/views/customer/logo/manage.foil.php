@@ -74,7 +74,7 @@
         <?= Former::open()->method( 'POST' )
             ->action( route ('logo@store' ) )
             ->enctype( "multipart/form-data" )
-            ->customWidthClass( 'col-sm-3' )
+            ->customInputWidthClass( 'col-sm-3' )
             ->addClass( 'col-md-10' );
         ?>
 

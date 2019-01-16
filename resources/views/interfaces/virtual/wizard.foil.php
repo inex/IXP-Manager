@@ -3,37 +3,30 @@
 $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'interfaces/virtual/list' )?>">Virtual Interfaces</a>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Virtual Interfaces / Add Interface Wizard
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>Add Interface Wizard</li>
-<?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
-<li class="pull-right">
-    <div class=" btn-group btn-group-xs" role="group">
-        <a type="button" class="btn btn-default" href="<?= action( 'Interfaces\VirtualInterfaceController@list' )?>" title="list">
-            <span class="glyphicon glyphicon-th-list"></span>
+    <div class=" btn-group btn-group-sm" role="group">
+        <a class="btn btn-outline-secondary" href="<?= action( 'Interfaces\VirtualInterfaceController@list' )?>" title="list">
+            <span class="fa fa-th-list"></span>
         </a>
-        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="glyphicon glyphicon-plus"></i> <span class="caret"></span>
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-plus"></i>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
-            <li>
-                <a id="" href="<?= action( 'Interfaces\VirtualInterfaceController@wizard' )?>" >
-                    Add Interface Wizard...
-                </a>
-            </li>
-            <li>
-                <a id="" href="<?= action( 'Interfaces\VirtualInterfaceController@add' )?>" >
-                    Virtual Interface Only...
-                </a>
-            </li>
+            <a class="dropdown-item" href="<?= action( 'Interfaces\VirtualInterfaceController@wizard' )?>" >
+                Add Interface Wizard...
+            </a>
+
+            <a class="dropdown-item" href="<?= action( 'Interfaces\VirtualInterfaceController@add' )?>" >
+                Virtual Interface Only...
+            </a>
         </ul>
     </div>
-</li>
+
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -45,12 +38,12 @@ $this->layout( 'layouts/ixpv4' );
 
         <?= Former::open()->method( 'POST' )
             ->action( route( 'interfaces/virtual/wizard-save' ) )
-            ->customWidthClass( 'col-sm-7' )
+            ->customInputWidthClass( 'col-sm-7' )
         ?>
 
-        <div id="div-well" class="well collapse"> <?php /* collapse as we change CSS is JS and will reveal it afterwards */ ?>
+        <div id="div-well" class="card bg-light collapse"> <?php /* collapse as we change CSS is JS and will reveal it afterwards */ ?>
 
-            <div class="row">
+            <div class="row card-body">
 
                 <div class="col-sm-4">
                     <h3>
@@ -85,6 +78,7 @@ $this->layout( 'layouts/ixpv4' );
                         ->text( 'Use 802.1q framing' )
                         ->blockHelp( 'Indicates if this port should be configured for 802.1q framing / tagged packets.' )
                         ->value( 1 )
+                        ->inline()
                     ?>
 
                     <?= Former::checkbox( 'ipv6-enabled' )
@@ -92,6 +86,7 @@ $this->layout( 'layouts/ixpv4' );
                         ->text( 'IPv6 Enabled' )
                         ->blockHelp( ' ' )
                         ->value( 1 )
+                        ->inline()
                     ?>
 
                     <?= Former::checkbox( 'ipv4-enabled' )
@@ -99,6 +94,7 @@ $this->layout( 'layouts/ixpv4' );
                         ->text( 'IPv4 Enabled' )
                         ->blockHelp( ' ' )
                         ->value( 1 )
+                        ->inline()
                     ?>
 
                 </div>
@@ -114,6 +110,7 @@ $this->layout( 'layouts/ixpv4' );
                             ->text( 'Associate a fanout port' )
                             ->blockHelp( ' ' )
                             ->value( 1 )
+                            ->inline()
                         ?>
                     </div>
                     <?= Former::select( 'switch' )
@@ -177,6 +174,7 @@ $this->layout( 'layouts/ixpv4' );
                         ->text( 'Route Server Client' )
                         ->blockHelp( 'Indicates if IXP Manager should configure route server BGP sessions for this interface.' )
                         ->value( 1 )
+                        ->inline()
                     ?>
 
                     <?= Former::checkbox( 'irrdbfilter' )
@@ -185,6 +183,7 @@ $this->layout( 'layouts/ixpv4' );
                         ->blockHelp( "<strong>Strongly recommended!</strong> Filter routes learned on route servers based on the customer's IRRDB entries." )
                         ->value( 1 )
                         ->check( true )
+                        ->inline()
                     ?>
 
                     <div id="div-rsmorespecifics" style="<?= old( 'irrdbfilter' ) || $t->vli && $t->vli->getIrrdbfilter() ?: 'display: none;' ?>">
@@ -192,6 +191,7 @@ $this->layout( 'layouts/ixpv4' );
                             ->label('&nbsp;')
                             ->text( 'IRRDB - Allow More Specifics?' )
                             ->value( 1 )
+                            ->inline()
                             ->blockHelp( 'If checked, then IXP Manager will configure the route server BGP peer for this connection such that it will '
                                 . 'allow more specific prefixes than those registered in the IRRDB. See the '
                                 . '<a href="http://docs.ixpmanager.org/features/route-servers/">route server configuration documenation for more details</a>.' )
@@ -203,45 +203,35 @@ $this->layout( 'layouts/ixpv4' );
                         ->text( 'AS112 Client' )
                         ->blockHelp( 'Indicates if IXP Manager should configure AS112 BGP sessions for this interface.' )
                         ->value( 1 )
+                        ->inline()
                     ?>
                 </div>
             </div>
         </div>
+        
+        <div class="row mt-4">
+            <div id='ipv6-area' class="col-sm-6" style="<?= old( 'ipv6-enabled' ) || Former::checkbox( 'ipv6-enabled')->getValue() !== null ?: 'display: none' ?>">
+                <?= $t->insert( 'interfaces/common/vli/ipv6.foil.php' ) ?>
+            </div>
 
-        <br/>
-
-
-
-        <div id='ipv6-area' class="col-sm-4" style="<?= old( 'ipv6-enabled' ) || Former::checkbox( 'ipv6-enabled')->getValue() !== null ?: 'display: none' ?>">
-            <?= $t->insert( 'interfaces/common/vli/ipv6.foil.php' ) ?>
+            <div id='ipv4-area' class="col-sm-6" style="<?= old( 'ipv4-enabled' ) || Former::checkbox( 'ipv4-enabled')->getValue() !== null ?: 'display: none' ?>">
+                <?= $t->insert( 'interfaces/common/vli/ipv4.foil.php' ) ?>
+            </div>
         </div>
 
-        <div id='ipv4-area' class="col-sm-4" style="<?= old( 'ipv4-enabled' ) || Former::checkbox( 'ipv4-enabled')->getValue() !== null ?: 'display: none' ?>">
-            <?= $t->insert( 'interfaces/common/vli/ipv4.foil.php' ) ?>
-        </div>
-
-
-
-
-        <div style="clear: both"></div>
-        <br><br>
 
         <?=Former::actions(
             Former::primary_submit( 'Save Changes' ),
-            Former::default_link( 'Cancel' )->href( route( 'interfaces/virtual/list' ) ),
+            Former::secondary_link( 'Cancel' )->href( route( 'interfaces/virtual/list' ) ),
             Former::success_button( 'Help' )->id( 'help-btn' ),
             Former::info_link( 'External Documentation &Gt;' )->href( 'http://docs.ixpmanager.org/usage/interfaces/' )->target( '_blank' )->id( 'help-btn' )
-        )->id('btn-group');?>
-
+        )->id('btn-group')->class( "text-center bg-light mt-4 p-4 shadow-sm");?>
 
         <?= Former::close() ?>
 
     </div>
 
-
 </div>
-
-
 
 <?php $this->append() ?>
 

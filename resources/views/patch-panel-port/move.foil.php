@@ -16,7 +16,7 @@ $this->layout( 'layouts/ixpv4' )
             <div class="well">
                 <?= Former::open()->method( 'POST' )
                     ->action( route ( 'patch-panel-port@move' ) )
-                    ->customWidthClass( 'col-sm-3' )
+                    ->customInputWidthClass( 'col-sm-3' )
                 ?>
 
                     <?= Former::text( 'current-pos' )

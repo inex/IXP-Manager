@@ -46,7 +46,7 @@
                 ->method( 'post' )
                 ->id( "password" )
                 ->action( route ( "profile@update-password" ) )
-                ->customWidthClass( 'col-sm-8' )
+                ->customInputWidthClass( 'col-sm-8' )
                 ->rules([
                     'current_password'   => 'required|max:255',
                     'new_password'       => 'required|max:255',
@@ -85,7 +85,7 @@
                 ->method( 'post' )
                 ->id( "infos" )
                 ->action( route ( "profile@update-profile" ) )
-                ->customWidthClass( 'col-sm-8' )
+                ->customInputWidthClass( 'col-sm-8' )
             ?>
 
             <?= Former::text( 'username' )
@@ -129,7 +129,7 @@
                     ->method( 'post' )
                     ->id( "note" )
                     ->action( route ( "profile@update-notification-preference" ) )
-                    ->customWidthClass( 'col-sm-10' );
+                    ->customInputWidthClass( 'col-sm-10' );
                 ?>
 
                 <?=  Former::radios('')
@@ -175,7 +175,7 @@
                     ->method( 'post' )
                     ->id( "mailing" )
                     ->action( route ( "profile@update-mailing-lists" ) )
-                    ->customWidthClass( 'col-sm-10' );
+                    ->customInputWidthClass( 'col-sm-10' );
                 ?>
 
                 <?php foreach( config( "mailinglists.lists") as $name => $ml ): ?>

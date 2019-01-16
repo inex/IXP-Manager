@@ -61,14 +61,14 @@ $( 'document' ).ready( function(){
     });
 
     $('.tab-link-preview-note').on( 'click', function(e) {
-        const well_div = $(this).closest('div').find( ".well-preview" );
+        const well_div = $(this).closest('div').parent( 'div' ).find( ".well-preview" );
         e.preventDefault();
 
         $(this).tab('show');
 
         $.ajax( MARKDOWN_URL, {
             data: {
-                text: $(this).closest('div').find( "textarea" ).val()
+                text: $(this).closest('div').parent( 'div' ).find( "textarea" ).val()
             },
             type: 'POST'
         })

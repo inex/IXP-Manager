@@ -5,25 +5,21 @@ $pi = $t->pi; // for convenience
 $this->layout( 'layouts/ixpv4' )
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'interfaces/physical/list' )?>">Physical Interfaces</a>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Physical Interfaces / View
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>View Physical Interface</li>
-<?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
-        <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= route( 'interfaces/physical/list' ) ?>" title="list">
-                <span class="glyphicon glyphicon-th-list"></span>
-            </a>
-            <a type="button" class="btn btn-default" href="<?= route('interfaces/physical/edit' , [ 'id' => $pi->getId() ]) ?>" title="edit">
-                <span class="glyphicon glyphicon-pencil"></span>
-            </a>
-        </div>
-    </li>
+    <div class="btn-group btn-group-sm" role="group">
+        <a class="btn btn-outline-secondary" href="<?= route( 'interfaces/physical/list' ) ?>" title="list">
+            <span class="fa fa-th-list"></span>
+        </a>
+        <a class="btn btn-outline-secondary" href="<?= route('interfaces/physical/edit' , [ 'id' => $pi->getId() ]) ?>" title="edit">
+            <span class="fa fa-pencil"></span>
+        </a>
+    </div>
+
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -31,107 +27,109 @@ $this->layout( 'layouts/ixpv4' )
 
     <div class="col-sm-12">
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Informations
+        <div class="card">
+            <div class="card-header">
+                <h3>
+                    Informations
+                </h3>
             </div>
-            <div class="panel-body">
-                <div class="col-xs-6">
-                    <table class="table_view_info">
-                        <tr>
-                            <td>
-                                <b>
-                                    Customer:
-                                </b>
-                            </td>
-                            <td>
-                                <?= $t->ee( $pi->getVirtualInterface()->getCustomer()->getName() ) ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>
-                                    Facility:
-                                </b>
-                            </td>
-                            <td>
-                                <a href="<?= route( 'facility@view', ['id' => $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getId() ] ) ?> ">
-                                    <?= $t->ee(  $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() )?>
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>
-                                    Switch:
-                                </b>
-                            </td>
-                            <td>
-                                <?= $t->ee(  $pi->getSwitchPort()->getSwitcher()->getName() ) ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>
-                                    Port:
-                                </b>
-                            </td>
-                            <td>
-                                <?= $t->ee(  $pi->getSwitchPort()->getName() ) ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>
-                                    Status:
-                                </b>
-                            </td>
-                            <td>
-                                <?= $pi->resolveStatus()  ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>
-                                    Speed:
-                                </b>
-                            </td>
-                            <td>
-                                <?= $pi->resolveSpeed() ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>
-                                    Duplex:
-                                </b>
-                            </td>
-                            <td>
-                                <?= ucfirst( $pi->getDuplex() ) ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>
-                                    Auto-Neg:
-                                </b>
-                            </td>
-                            <td>
-                                <?= $pi->getAutoneg() ? 'Yes' : 'No' ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>
-                                    Notes:
-                                </b>
-                            </td>
-                            <td>
-                                <?= @parsedown( $pi->getNotes() ) ?>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
+            <div class="card-body">
+
+                <table class="table_view_info">
+                    <tr>
+                        <td>
+                            <b>
+                                Customer:
+                            </b>
+                        </td>
+                        <td>
+                            <?= $t->ee( $pi->getVirtualInterface()->getCustomer()->getName() ) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>
+                                Facility:
+                            </b>
+                        </td>
+                        <td>
+                            <a href="<?= route( 'facility@view', ['id' => $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getId() ] ) ?> ">
+                                <?= $t->ee(  $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() )?>
+                            </a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>
+                                Switch:
+                            </b>
+                        </td>
+                        <td>
+                            <?= $t->ee(  $pi->getSwitchPort()->getSwitcher()->getName() ) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>
+                                Port:
+                            </b>
+                        </td>
+                        <td>
+                            <?= $t->ee(  $pi->getSwitchPort()->getName() ) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>
+                                Status:
+                            </b>
+                        </td>
+                        <td>
+                            <?= $pi->resolveStatus()  ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>
+                                Speed:
+                            </b>
+                        </td>
+                        <td>
+                            <?= $pi->resolveSpeed() ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>
+                                Duplex:
+                            </b>
+                        </td>
+                        <td>
+                            <?= ucfirst( $pi->getDuplex() ) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>
+                                Auto-Neg:
+                            </b>
+                        </td>
+                        <td>
+                            <?= $pi->getAutoneg() ? 'Yes' : 'No' ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>
+                                Notes:
+                            </b>
+                        </td>
+                        <td>
+                            <?= @parsedown( $pi->getNotes() ) ?>
+                        </td>
+                    </tr>
+                </table>
+
             </div>
         </div>
 

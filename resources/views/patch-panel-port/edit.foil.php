@@ -36,7 +36,7 @@
 
 <?= Former::open()->method( 'POST' )
     ->action( route( 'patch-panel-port@store' ) )
-    ->customWidthClass( 'col-sm-3' )
+    ->customInputWidthClass( 'col-sm-3' )
     ->addClass( 'col-md-10' );
 ?>
 

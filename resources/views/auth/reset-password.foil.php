@@ -33,7 +33,7 @@
 
             <?= Former::open()->method( 'POST' )
                 ->action( route( 'reset-password@reset' ) )
-                ->customWidthClass( 'col-sm-5' )
+                ->customInputWidthClass( 'col-sm-5' )
                 ->addClass( 'col-md-offset-4' );
 
             ?>

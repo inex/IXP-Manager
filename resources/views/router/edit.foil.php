@@ -45,7 +45,7 @@
 
                 <?= Former::open()->method( 'POST' )
                     ->action( route( 'router@store' ) )
-                    ->customWidthClass( 'col-sm-6' )
+                    ->customInputWidthClass( 'col-sm-6' )
                     ->addClass( 'col-md-10' );
                 ?>
 

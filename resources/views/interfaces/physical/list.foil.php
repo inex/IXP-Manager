@@ -3,12 +3,8 @@
 $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'interfaces/physical/list' ) ?>">Physical Interfaces</a>
-<?php $this->append() ?>
-
-<?php $this->section( 'page-header-postamble' ) ?>
-    <li>List</li>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Physical Interfaces / List
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -21,40 +17,40 @@ $this->layout( 'layouts/ixpv4' );
 
             <span id="message-pi"></span>
 
-            <div id="area-pi" class="collapse">
-                <table id='table-pi' class="table">
-                    <thead>
+            <div id="area-pi" class="collapse table-responsive">
+                <table id='table-pi' class="table table-striped">
+                    <thead class="thead-dark">
                         <tr>
-                            <td>
+                            <th>
                                 Customer
-                            </td>
-                            <td>
+                            </th>
+                            <th>
                                 Facility
-                            </td>
-                            <td>
+                            </th>
+                            <th>
                                 Switch
-                            </td>
-                            <td>
+                            </th>
+                            <th>
                                 Port
-                            </td>
-                            <td>
+                            </th>
+                            <th>
                                 Status
-                            </td>
-                            <td>
+                            </th>
+                            <th>
                                 Speed
-                            </td>
-                            <td>
+                            </th>
+                            <th>
                                 Raw Speed
-                            </td>
-                            <td>
+                            </th>
+                            <th>
                                 Duplex
-                            </td>
-                            <td>
+                            </th>
+                            <th>
                                 Auto-neg
-                            </td>
-                            <td>
+                            </th>
+                            <th>
                                 Action
-                            </td>
+                            </th>
                         </tr>
                     <thead>
                     <tbody>
@@ -95,19 +91,19 @@ $this->layout( 'layouts/ixpv4' );
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a class="btn btn btn-default" href="<?= route( 'interfaces/physical/view' , [ 'id' => $pi['id'] ] ) ?>" title="View">
-                                            <i class="glyphicon glyphicon-eye-open"></i>
+                                        <a class="btn btn-outline-secondary" href="<?= route( 'interfaces/physical/view' , [ 'id' => $pi['id'] ] ) ?>" title="View">
+                                            <i class="fa fa-eye"></i>
                                         </a>
 
-                                        <a class="btn btn btn-default" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi['vintid'] ] ) ?>" title="Virtual Interface">
-                                            <i class="glyphicon glyphicon-filter"></i>
+                                        <a class="btn btn-outline-secondary" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi['vintid'] ] ) ?>" title="Virtual Interface">
+                                            <i class="fa fa-filter"></i>
                                         </a>
 
-                                        <a class="btn btn btn-default" href="<?= route ( 'interfaces/physical/edit', [ 'id' => $pi['id'] ] ) ?>" title="Edit">
-                                            <i class="glyphicon glyphicon-pencil"></i>
+                                        <a class="btn btn-outline-secondary" href="<?= route ( 'interfaces/physical/edit', [ 'id' => $pi['id'] ] ) ?>" title="Edit">
+                                            <i class="fa fa-pencil"></i>
                                         </a>
-                                        <a class="btn btn btn-default" id="delete-pi-<?= $pi['id'] ?>" <?php if( $t->resellerMode() && ( $pi['ppid'] || $pi['fpid'] ) ) :?> data-related="1" <?php endif; ?> data-type="<?= $pi['type'] ?>" href="" title="Delete">
-                                            <i class="glyphicon glyphicon-trash"></i>
+                                        <a class="btn btn-outline-secondary" id="delete-pi-<?= $pi['id'] ?>" <?php if( $t->resellerMode() && ( $pi['ppid'] || $pi['fpid'] ) ) :?> data-related="1" <?php endif; ?> data-type="<?= $pi['type'] ?>" href="" title="Delete">
+                                            <i class="fa fa-trash"></i>
                                         </a>
                                     </div>
                                 </td>
@@ -143,7 +139,7 @@ $this->layout( 'layouts/ixpv4' );
          */
         $(document).on('click', "a[id|='delete-pi']" ,function(e){
             e.preventDefault();
-            var pi = (this.id).substring(10);
+            let pi = (this.id).substring(10);
             deletePopup( pi, false, 'pi');
         });
 

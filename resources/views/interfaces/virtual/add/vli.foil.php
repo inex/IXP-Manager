@@ -10,24 +10,24 @@
 
 ?>
 
-<div class="row">
+<div class="row mt-4">
 
     <h3 class="col-md-12">
         VLAN Interfaces
-        <a class="btn btn-default btn-xs" id="add-vli" href="<?= route('interfaces/vlan/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
-            <i class="glyphicon glyphicon-plus"></i>
+        <a class="btn btn-outline-secondary btn-sm" id="add-vli" href="<?= route('interfaces/vlan/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
+            <i class="fa fa-plus"></i>
         </a>
     </h3>
 
     <div id="message-vli" class="col-md-12"></div>
 
-    <div  class="col-md-12" id="area-vli">
+    <div  class="col-md-12 table-responsive" id="area-vli">
 
         <?php if( count( $t->vi->getVlanInterfaces()  ) ) : ?>
 
-            <table id="table-vli" class="table">
+            <table id="table-vli" class="table table-striped">
 
-                <thead>
+                <thead class="thead-dark">
                     <tr>
                         <th>
                             VLAN Name
@@ -45,6 +45,7 @@
                             IPv6 Address
                         </th>
                         <th>
+                            Actions
                         </th>
                     </tr>
                 </thead>
@@ -66,9 +67,9 @@
                             <td>
                                 <a href="<?= route( "layer2-address@forVlanInterface" , [ 'id' => $vli->getId() ] )?> " >
                                     <?php if ( !count( $vli->getLayer2Addresses() ) ) : ?>
-                                        <span class="label btn-warning">(none)</span>
+                                        <span class="badge badge-warning">(none)</span>
                                     <?php elseif ( count( $vli->getLayer2Addresses() ) > 1 ) : ?>
-                                        <span class="label btn-warning">(multiple)</span>
+                                        <span class="badge badge-warning">(multiple)</span>
                                     <?php else: ?>
                                         <?php $l2a = $vli->getLayer2Addresses() ?>
                                         <?= $l2a[0]->getMacFormattedWithColons() ?>
@@ -90,19 +91,19 @@
 
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn btn-default" id="view-vli-<?= $vli->getId()?>" href="<?= route ( 'interfaces/vlan/view', [ 'id' => $vli->getId() ] ) ?>" title="View">
-                                        <i class="glyphicon glyphicon-eye-open"></i>
+                                    <a class="btn btn-outline-secondary" id="view-vli-<?= $vli->getId()?>" href="<?= route ( 'interfaces/vlan/view', [ 'id' => $vli->getId() ] ) ?>" title="View">
+                                        <i class="fa fa-eye"></i>
                                     </a>
 
-                                    <a class="btn btn btn-default" id="edit-vli-<?= $vli->getId()?>" href="<?= route ( 'interfaces/vlan/edit/from-virtual-interface', [ 'id' => $vli->getId(), 'viid' => $t->vi->getId() ] ) ?>" title="Edit">
-                                        <i class="glyphicon glyphicon-pencil"></i>
+                                    <a class="btn btn-outline-secondary" id="edit-vli-<?= $vli->getId()?>" href="<?= route ( 'interfaces/vlan/edit/from-virtual-interface', [ 'id' => $vli->getId(), 'viid' => $t->vi->getId() ] ) ?>" title="Edit">
+                                        <i class="fa fa-pencil"></i>
                                     </a>
 
-                                    <a class="btn btn btn-default" id="delete-vli-<?= $vli->getId()?>" href="" title="Delete Vlan Interface">
-                                        <i class="glyphicon glyphicon-trash"></i>
+                                    <a class="btn btn-outline-secondary" id="delete-vli-<?= $vli->getId()?>" href="" title="Delete Vlan Interface">
+                                        <i class="fa fa-trash"></i>
                                     </a>
-                                    <a class="btn btn btn-default" id="duplicate-vli-<?= $vli->getId()?>" href="" title="Duplicate Vlan Interface">
-                                        <i class="glyphicon glyphicon-duplicate"></i>
+                                    <a class="btn btn-outline-secondary" id="duplicate-vli-<?= $vli->getId()?>" href="" title="Duplicate Vlan Interface">
+                                        <i class="fa fa-copy"></i>
                                     </a>
                                 </div>
                             </td>
@@ -116,7 +117,7 @@
         <?php else: ?>
 
             <div id="table-vli" class="alert alert-info" role="alert">
-                <span class="glyphicon glyphicon-info-sign" aria-hidden="true"></span>
+                <span class="fa fa-info-circle" aria-hidden="true"></span>
                 <span class="sr-only">Information:</span>
                 There are no VLAN interfaces defined for this virtual interface.
                 <a href="<?= route('interfaces/vlan/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">

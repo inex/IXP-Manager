@@ -122,22 +122,26 @@
 
                         <input type="text" placeholder="Title" class="bootbox-input bootbox-input form-control" name="title" id="co-notes-ftitle" />
 
-                        <ul class="nav nav-tabs mt-4">
-                            <li role="presentation" class="nav-item" >
-                                <a class="tab-link-body-note nav-link active" href="#body" data-toggle="tab">Notes</a>
-                            </li>
-                            <li role="presentation" class="nav-item">
-                                <a class="tab-link-preview-note nav-link" href="#preview" data-toggle="tab">Preview</a>
-                            </li>
-                        </ul>
-
-                        <div class="tab-content">
-                            <div role="tabpanel" class="tab-pane show active" id="body">
-                                <textarea rows="6" class="bootbox-input bootbox-input-textarea form-control mt-4" name="note" id="co-notes-fnote"></textarea>
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <ul class="nav nav-tabs card-header-tabs">
+                                    <li role="presentation" class="nav-item" >
+                                        <a class="tab-link-body-note nav-link active" href="#body" data-toggle="tab">Notes</a>
+                                    </li>
+                                    <li role="presentation" class="nav-item">
+                                        <a class="tab-link-preview-note nav-link" href="#preview" data-toggle="tab">Preview</a>
+                                    </li>
+                                </ul>
                             </div>
-                            <div role="tabpanel" class="tab-pane" id="preview">
-                                <div id="co-notes-fpreview" class="bg-light shadow-sm well-preview mt-4 p-4">
-                                    Loading...
+
+                            <div class="tab-content card-body">
+                                <div role="tabpanel" class="tab-pane show active" id="body">
+                                    <textarea rows="6" class="bootbox-input bootbox-input-textarea form-control" name="note" id="co-notes-fnote"></textarea>
+                                </div>
+                                <div role="tabpanel" class="tab-pane" id="preview">
+                                    <div id="co-notes-fpreview" class="bg-light shadow-sm well-preview p-4">
+                                        Loading...
+                                    </div>
                                 </div>
                             </div>
                         </div>

@@ -13,40 +13,31 @@
     $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= action( 'Interfaces\VirtualInterfaceController@list' )?>">(Virtual) Interfaces</a>
+<?php $this->section( 'page-header-preamble' ) ?>
+    (Virtual) Interfaces / Add/Edit Virtual Interface</li>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>Add/Edit Virtual Interface</li>
-<?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
-        <div class=" btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= action( 'Interfaces\VirtualInterfaceController@list' )?>" title="list">
-                <span class="glyphicon glyphicon-th-list"></span>
+    <div class=" btn-group btn-group-sm" role="group">
+        <a class="btn btn-outline-secondary" href="<?= action( 'Interfaces\VirtualInterfaceController@list' )?>" title="list">
+            <i class="fa fa-th-list"></i>
+        </a>
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-plus"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="<?= action( 'Interfaces\VirtualInterfaceController@wizard' )?>" >
+                Add Interface Wizard...
             </a>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="glyphicon glyphicon-plus"></i> <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-right">
-                <li>
-                    <a id="" href="<?= action( 'Interfaces\VirtualInterfaceController@wizard' )?>" >
-                        Add Interface Wizard...
-                    </a>
-                </li>
-                <li>
-                    <a id="" href="<?= action( 'Interfaces\VirtualInterfaceController@add' )?>" >
-                        Virtual Interface Only...
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </li>
+
+            <a class="dropdown-item" href="<?= action( 'Interfaces\VirtualInterfaceController@add' )?>" >
+                Virtual Interface Only...
+            </a>
+        </ul>
+    </div>
+
 <?php $this->append() ?>
-
-
 
 
 <?php $this->section('content') ?>
@@ -78,9 +69,6 @@
     </div>
 
 <?php $this->append() ?>
-
-
-
 
 <?php $this->section( 'scripts' ) ?>
     <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>

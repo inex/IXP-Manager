@@ -48,7 +48,7 @@
                 <?= Former::open()
                     ->method( 'post' )
                     ->action( route( 'patch-panel@store' ) )
-                    ->customWidthClass( 'col-sm-3' );
+                    ->customInputWidthClass( 'col-sm-3' );
                 ?>
 
                 <?= Former::text( 'name' )

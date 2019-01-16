@@ -56,7 +56,7 @@ $this->layout( 'layouts/ixpv4' );
             <?= Former::open()->method( 'POST' )
                 ->id( 'form' )
                 ->action( route( $t->feParams->route_prefix.'@store-by-snmp' ) )
-                ->customWidthClass( 'col-sm-3' )
+                ->customInputWidthClass( 'col-sm-3' )
             ?>
 
             <?= Former::text( 'hostname' )

@@ -41,7 +41,7 @@
 
                 <?= Former::open()->method( 'POST' )
                     ->action( route ('customer@store-billing-and-reg-details' ) )
-                    ->customWidthClass( 'col-sm-6' )
+                    ->customInputWidthClass( 'col-sm-6' )
                 ?>
 
 
