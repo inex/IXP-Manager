@@ -24,12 +24,13 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
-use D2EM, Exception;
+use D2EM, Exception, Redirect;
 
 use Entities\{
     BGPSessionData  as BGPSessionDataEntity,
     Customer        as CustomerEntity
 };
+
 
 /**
  * CustomerRepository
@@ -494,14 +495,10 @@ class Customer extends EntityRepository
      *
      * @throws
      */
-    public function getPeeringManagerArrayByType( CustomerEntity $cust , $vlans, $protos ){
+    public function getPeeringManagerArrayByType( CustomerEntity $cust , $vlans, $protos ) {
 
         if( !count( $vlans ) ) {
-
-            AlertContainer::push( 'No VLANs have been enabled for the peering manager. Please see <a href="'
-                . 'https://github.com/inex/IXP-Manager/wiki/Peering-Manager">these instructions</a>'
-                . ' / contact our support team.', Alert::DANGER );
-            return Redirect::to('');
+            return null;
         }
 
         $bilat = array();
