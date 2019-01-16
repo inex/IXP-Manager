@@ -92,6 +92,11 @@
                 ->label( 'Username' )
             ?>
 
+            <?= Former::text( 'name' )
+                ->label( 'Name' )
+                ->placeholder( 'Firstname Lastname' )
+            ?>
+
             <?= Former::text( 'email' )
                 ->label( 'Email' )
             ?>
