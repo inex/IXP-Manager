@@ -41,173 +41,188 @@ $this->layout( 'layouts/ixpv4' );
             ->customInputWidthClass( 'col-sm-7' )
         ?>
 
-        <div id="div-well" class="card bg-light collapse"> <?php /* collapse as we change CSS is JS and will reveal it afterwards */ ?>
-
-            <div class="row card-body">
-
+        <div id="div-well" class="collapse row"> <?php /* collapse as we change CSS is JS and will reveal it afterwards */ ?>
+            <div class="row" style="height: 400px">
                 <div class="col-sm-4">
-                    <h3>
-                        Virtual Interface Settings
-                    </h3>
-                    <hr>
-                    <?= Former::select( 'cust' )
-                        ->label( 'Customer' )
-                        ->fromQuery( $t->custs, 'name' )
-                        ->placeholder( 'Choose a Customer' )
-                        ->addClass( 'chzn-select' )
-                        ->disabled( $t->selectedCust ? true : false )
-                        ->blockHelp( '' );
-                    ?>
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h3>
+                                Virtual Interface Settings
+                            </h3>
+                        </div>
+                        <div class="card-body">
 
-                    <?php if( $t->selectedCust ): ?>
-                        <?= Former::hidden( 'cust' )
-                            ->value( $t->selectedCust->getId() )
-                        ?>
-                    <?php endif; ?>
+                            <?= Former::select( 'cust' )
+                                ->label( 'Customer' )
+                                ->fromQuery( $t->custs, 'name' )
+                                ->placeholder( 'Choose a Customer' )
+                                ->addClass( 'chzn-select' )
+                                ->disabled( $t->selectedCust ? true : false )
+                                ->blockHelp( '' );
+                            ?>
 
-                    <?= Former::select( 'vlan' )
-                        ->label( 'Vlan' )
-                        ->fromQuery( $t->vlans, 'name' )
-                        ->placeholder( 'Choose a Vlan' )
-                        ->addClass( 'chzn-select' )
-                        ->blockHelp( '' );
-                    ?>
+                            <?php if( $t->selectedCust ): ?>
+                                <?= Former::hidden( 'cust' )
+                                    ->value( $t->selectedCust->getId() )
+                                ?>
+                            <?php endif; ?>
 
-                    <?= Former::checkbox( 'trunk' )
-                        ->label('&nbsp;')
-                        ->text( 'Use 802.1q framing' )
-                        ->blockHelp( 'Indicates if this port should be configured for 802.1q framing / tagged packets.' )
-                        ->value( 1 )
-                        ->inline()
-                    ?>
+                            <?= Former::select( 'vlan' )
+                                ->label( 'Vlan' )
+                                ->fromQuery( $t->vlans, 'name' )
+                                ->placeholder( 'Choose a Vlan' )
+                                ->addClass( 'chzn-select' )
+                                ->blockHelp( '' );
+                            ?>
 
-                    <?= Former::checkbox( 'ipv6-enabled' )
-                        ->label('&nbsp;')
-                        ->text( 'IPv6 Enabled' )
-                        ->blockHelp( ' ' )
-                        ->value( 1 )
-                        ->inline()
-                    ?>
+                            <?= Former::checkbox( 'trunk' )
+                                ->label('&nbsp;')
+                                ->text( 'Use 802.1q framing' )
+                                ->blockHelp( 'Indicates if this port should be configured for 802.1q framing / tagged packets.' )
+                                ->value( 1 )
+                                ->inline()
+                            ?>
 
-                    <?= Former::checkbox( 'ipv4-enabled' )
-                        ->label('&nbsp;')
-                        ->text( 'IPv4 Enabled' )
-                        ->blockHelp( ' ' )
-                        ->value( 1 )
-                        ->inline()
-                    ?>
+                            <?= Former::checkbox( 'ipv6-enabled' )
+                                ->label('&nbsp;')
+                                ->text( 'IPv6 Enabled' )
+                                ->blockHelp( ' ' )
+                                ->value( 1 )
+                                ->inline()
+                            ?>
 
+                            <?= Former::checkbox( 'ipv4-enabled' )
+                                ->label('&nbsp;')
+                                ->text( 'IPv4 Enabled' )
+                                ->blockHelp( ' ' )
+                                ->value( 1 )
+                                ->inline()
+                            ?>
+
+                        </div>
+
+                    </div>
                 </div>
 
                 <div class="col-sm-4">
-                    <h3>
-                        Physical Interface Settings
-                    </h3>
-                    <hr>
-                    <div id="fanout-box" class="collapse">
-                        <?= Former::checkbox( 'fanout' )
-                            ->label('&nbsp;')
-                            ->text( 'Associate a fanout port' )
-                            ->blockHelp( ' ' )
-                            ->value( 1 )
-                            ->inline()
-                        ?>
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h3>
+                                Physical Interface Settings
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="fanout-box" class="collapse">
+                                <?= Former::checkbox( 'fanout' )
+                                    ->label('&nbsp;')
+                                    ->text( 'Associate a fanout port' )
+                                    ->blockHelp( ' ' )
+                                    ->value( 1 )
+                                    ->inline()
+                                ?>
+                            </div>
+                            <?= Former::select( 'switch' )
+                                ->label( 'Switch' )
+                                ->fromQuery( $t->pi_switches, 'name' )
+                                ->placeholder( 'Choose a switch' )
+                                ->addClass( 'chzn-select' )
+                                ->blockHelp( '' );
+                            ?>
+
+                            <?= Former::select( 'switch-port' )
+                                ->label( 'Switch Port' )
+                                ->placeholder( 'Choose a switch port' )
+                                ->addClass( 'chzn-select' )
+                                ->blockHelp( 'Shows ports that have a type of <em>Peering</em> or <em>Unknown</em> and have not been associated with any other customer / virtual interface.' );
+                            ?>
+
+                            <?= Former::hidden( 'original-switch-port')
+                                ->id('original-switch-port')
+                                ->forceValue( old('switch-port') )
+                            ?>
+
+                            <?= Former::select( 'status' )
+                                ->label( 'Status' )
+                                ->fromQuery( Entities\PhysicalInterface::$STATES , 'name' )
+                                ->placeholder( 'Choose a status' )
+                                ->addClass( 'chzn-select' )
+                                ->blockHelp( 'Only virtual interfaces with at least one <em>connected</em> interface will be considered for monitoring / route server configuration, etc.' );
+                            ?>
+
+                            <?= Former::select( 'speed' )
+                                ->label( 'Speed' )
+                                ->fromQuery( Entities\PhysicalInterface::$SPEED , 'name' )
+                                ->placeholder( 'Choose a speed' )
+                                ->addClass( 'chzn-select' )
+                                ->blockHelp( '' );
+                            ?>
+
+                            <?= Former::select( 'duplex' )
+                                ->label( 'Duplex' )
+                                ->fromQuery( Entities\PhysicalInterface::$DUPLEX , 'name' )
+                                ->placeholder( 'Choose Duplex' )
+                                ->addClass( 'chzn-select' )
+                                ->value(1)
+                                ->blockHelp( '' );
+                            ?>
+                        </div>
                     </div>
-                    <?= Former::select( 'switch' )
-                        ->label( 'Switch' )
-                        ->fromQuery( $t->pi_switches, 'name' )
-                        ->placeholder( 'Choose a switch' )
-                        ->addClass( 'chzn-select' )
-                        ->blockHelp( '' );
-                    ?>
-
-                    <?= Former::select( 'switch-port' )
-                        ->label( 'Switch Port' )
-                        ->placeholder( 'Choose a switch port' )
-                        ->addClass( 'chzn-select' )
-                        ->blockHelp( 'Shows ports that have a type of <em>Peering</em> or <em>Unknown</em> and have not been associated with any other customer / virtual interface.' );
-                    ?>
-
-                    <?= Former::hidden( 'original-switch-port')
-                        ->id('original-switch-port')
-                        ->forceValue( old('switch-port') )
-                    ?>
-
-                    <?= Former::select( 'status' )
-                        ->label( 'Status' )
-                        ->fromQuery( Entities\PhysicalInterface::$STATES , 'name' )
-                        ->placeholder( 'Choose a status' )
-                        ->addClass( 'chzn-select' )
-                        ->blockHelp( 'Only virtual interfaces with at least one <em>connected</em> interface will be considered for monitoring / route server configuration, etc.' );
-                    ?>
-
-                    <?= Former::select( 'speed' )
-                        ->label( 'Speed' )
-                        ->fromQuery( Entities\PhysicalInterface::$SPEED , 'name' )
-                        ->placeholder( 'Choose a speed' )
-                        ->addClass( 'chzn-select' )
-                        ->blockHelp( '' );
-                    ?>
-
-                    <?= Former::select( 'duplex' )
-                        ->label( 'Duplex' )
-                        ->fromQuery( Entities\PhysicalInterface::$DUPLEX , 'name' )
-                        ->placeholder( 'Choose Duplex' )
-                        ->addClass( 'chzn-select' )
-                        ->value(1)
-                        ->blockHelp( '' );
-                    ?>
                 </div>
 
                 <div class="col-sm-4">
-                    <h3>
-                        General VLAN Settings
-                    </h3>
-                    <hr>
-                    <?= Former::number( 'maxbgpprefix' )
-                        ->label( 'Max BGP Prefixes' )
-                        ->blockHelp( 'Setting this will override the overall customer setting. Leave blank to use the overall setting.' );
-                    ?>
+                    <div class="card h-100">
+                        <div class="card-header">
+                            <h3>
+                                General VLAN Settings
+                            </h3>
+                        </div>
+                        <div class="card-body">
+                            <?= Former::number( 'maxbgpprefix' )
+                                ->label( 'Max BGP Prefixes' )
+                                ->blockHelp( 'Setting this will override the overall customer setting. Leave blank to use the overall setting.' );
+                            ?>
 
-                    <?= Former::checkbox( 'rsclient' )
-                        ->label('&nbsp;')
-                        ->text( 'Route Server Client' )
-                        ->blockHelp( 'Indicates if IXP Manager should configure route server BGP sessions for this interface.' )
-                        ->value( 1 )
-                        ->inline()
-                    ?>
+                            <?= Former::checkbox( 'rsclient' )
+                                ->label('&nbsp;')
+                                ->text( 'Route Server Client' )
+                                ->blockHelp( 'Indicates if IXP Manager should configure route server BGP sessions for this interface.' )
+                                ->value( 1 )
+                                ->inline()
+                            ?>
 
-                    <?= Former::checkbox( 'irrdbfilter' )
-                        ->label('&nbsp')
-                        ->text( 'Apply IRRDB Filtering' )
-                        ->blockHelp( "<strong>Strongly recommended!</strong> Filter routes learned on route servers based on the customer's IRRDB entries." )
-                        ->value( 1 )
-                        ->check( true )
-                        ->inline()
-                    ?>
+                            <?= Former::checkbox( 'irrdbfilter' )
+                                ->label('&nbsp')
+                                ->text( 'Apply IRRDB Filtering' )
+                                ->blockHelp( "<strong>Strongly recommended!</strong> Filter routes learned on route servers based on the customer's IRRDB entries." )
+                                ->value( 1 )
+                                ->check( true )
+                                ->inline()
+                            ?>
 
-                    <div id="div-rsmorespecifics" style="<?= old( 'irrdbfilter' ) || $t->vli && $t->vli->getIrrdbfilter() ?: 'display: none;' ?>">
-                        <?= Former::checkbox( 'rsmorespecifics' )
-                            ->label('&nbsp;')
-                            ->text( 'IRRDB - Allow More Specifics?' )
-                            ->value( 1 )
-                            ->inline()
-                            ->blockHelp( 'If checked, then IXP Manager will configure the route server BGP peer for this connection such that it will '
-                                . 'allow more specific prefixes than those registered in the IRRDB. See the '
-                                . '<a href="http://docs.ixpmanager.org/features/route-servers/">route server configuration documenation for more details</a>.' )
-                        ?>
+                            <div id="div-rsmorespecifics" style="<?= old( 'irrdbfilter' ) || $t->vli && $t->vli->getIrrdbfilter() ?: 'display: none;' ?>">
+                                <?= Former::checkbox( 'rsmorespecifics' )
+                                    ->label('&nbsp;')
+                                    ->text( 'IRRDB - Allow More Specifics?' )
+                                    ->value( 1 )
+                                    ->inline()
+                                    ->blockHelp( 'If checked, then IXP Manager will configure the route server BGP peer for this connection such that it will '
+                                        . 'allow more specific prefixes than those registered in the IRRDB. See the '
+                                        . '<a href="http://docs.ixpmanager.org/features/route-servers/">route server configuration documenation for more details</a>.' )
+                                ?>
+                            </div>
+
+                            <?= Former::checkbox( 'as112client' )
+                                ->label( '&nbsp;' )
+                                ->text( 'AS112 Client' )
+                                ->blockHelp( 'Indicates if IXP Manager should configure AS112 BGP sessions for this interface.' )
+                                ->value( 1 )
+                                ->inline()
+                            ?>
+                        </div>
                     </div>
-
-                    <?= Former::checkbox( 'as112client' )
-                        ->label( '&nbsp;' )
-                        ->text( 'AS112 Client' )
-                        ->blockHelp( 'Indicates if IXP Manager should configure AS112 BGP sessions for this interface.' )
-                        ->value( 1 )
-                        ->inline()
-                    ?>
                 </div>
             </div>
-        </div>
+
         
         <div class="row mt-4">
             <div id='ipv6-area' class="col-sm-6" style="<?= old( 'ipv6-enabled' ) || Former::checkbox( 'ipv6-enabled')->getValue() !== null ?: 'display: none' ?>">

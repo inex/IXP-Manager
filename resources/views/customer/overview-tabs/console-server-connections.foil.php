@@ -1,5 +1,5 @@
- <div>
-     <table class="table mt-4 table-striped">
+ <div class="table-responsive">
+     <table class="table table-striped">
          <thead class="thead-dark">
          <tr>
              <th>

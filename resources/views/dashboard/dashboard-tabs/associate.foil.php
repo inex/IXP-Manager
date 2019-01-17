@@ -6,16 +6,24 @@
         Have you arranged peering with them yet?
     <?php endif; ?>
 
-    <table class="table">
-        <thead>
-        <tr>
-            <th>Name</th>
-            <th>AS Number</th>
-            <th>Date Joined</th>
-            <?php if( !$t->c->isTypeAssociate() ): ?>
-                <th>Peering Contact</th>
-            <?php endif; ?>
-        </tr>
+    <table class="table table-striped">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    Name
+                </th>
+                <th>
+                    AS Number
+                </th>
+                <th>
+                    Date Joined
+                </th>
+                <?php if( !$t->c->isTypeAssociate() ): ?>
+                    <th>
+                        Peering Contact
+                    </th>
+                <?php endif; ?>
+            </tr>
         </thead>
         <tbody>
         <?php foreach( $t->recentMembers as $recentMember ): ?>
@@ -31,11 +39,13 @@
                         <?= $recentMember->getDatejoin()->format( 'Y-m-d' ) ?>
                     <?php endif; ?>
                 </td>
-                <td>
-                    <?php if( $recentMember->getpeeringemail() ): ?>
-                        <a href="mailto:<?= $t->ee( $recentMember->getpeeringemail() ) ?>" > <?= $t->ee( $recentMember->getpeeringemail() ) ?> </a>
-                    <?php endif; ?>
-                </td>
+                <?php if( !$t->c->isTypeAssociate() ): ?>
+                    <td>
+                        <?php if( $recentMember->getpeeringemail() ): ?>
+                            <a href="mailto:<?= $t->ee( $recentMember->getpeeringemail() ) ?>" > <?= $t->ee( $recentMember->getpeeringemail() ) ?> </a>
+                        <?php endif; ?>
+                    </td>
+                <?php endif; ?>
             </tr>
         <?php endforeach; ?>
         </tbody>

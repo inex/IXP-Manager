@@ -81,7 +81,7 @@
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td colspan="4">
+                <td colspan="6" class="text-center">
                     No users found.<br><br>
                     Users can be added by creating / editing contacts and giving the contact login privileges.
                 </td>

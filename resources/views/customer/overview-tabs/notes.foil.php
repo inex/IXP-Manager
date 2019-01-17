@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table table-striped mt-4 <?php if( !count( $t->notes ) ): ?>collapse <?php endif; ?>" id="co-notes-table">
+    <table class="table table-striped <?php if( !count( $t->notes ) ): ?>collapse <?php endif; ?>" id="co-notes-table">
         <thead class="thead-dark">
             <tr>
                 <th>

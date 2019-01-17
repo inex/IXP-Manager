@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table mt-4 table-striped">
+    <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
                 <th>
@@ -77,7 +77,9 @@
                 <?php endforeach; ?>
             <?php else: ?>
                 <tr>
-                    <td>No Patch Panel available</td>
+                    <td colspan="9" class="text-center">
+                        No Patch Panel available
+                    </td>
                 </tr>
             <?php endif; ?>
         </tbody>

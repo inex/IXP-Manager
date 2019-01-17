@@ -1,67 +1,80 @@
 <div class="row">
-    <div class="col-sm-12">
-        <br>
-        <div class="col-sm-6">
 
-            <h3>NOC Details</h3>
+    <div class="col-sm-6">
+        <div class="card">
+            <div class="card-header">
+                <h3>
+                    NOC Details
+                </h3>
+            </div>
+            <div class="card-body">
+                <?= Former::open()
+                    ->populate( $t->dataNocDetail )
+                    ->method( 'post' )
+                    ->id( "noc" )
+                    ->action( route ( "dashboard@store-noc-details" ) )
+                    ->customInputWidthClass( 'col-sm-8' )
+                ?>
 
-            <?= Former::open()
-                ->populate( $t->dataNocDetail )
-                ->method( 'post' )
-                ->id( "noc" )
-                ->action( route ( "dashboard@store-noc-details" ) )
-                ->customInputWidthClass( 'col-sm-8' )
-            ?>
+                <?= Former::phone( 'nocphone' )
+                    ->label( 'Phone' )
+                    ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
+                    ->blockHelp( 'Working hours phone number for contacting the customer NOC.<br><br>'
+                        . 'This is available to all other customers.' );
+                ?>
 
-            <?= Former::phone( 'nocphone' )
-                ->label( 'Phone' )
-                ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
-                ->blockHelp( 'Working hours phone number for contacting the customer NOC.<br><br>'
-                    . 'This is available to all other customers.' );
-            ?>
+                <?= Former::phone( 'noc24hphone' )
+                    ->label( '24h Phone' )
+                    ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
+                    ->blockHelp( '24/7 emergency phone number for contacting the customer NOC..<br><br>'
+                        . 'This is available to all other customers.' );
+                ?>
 
-            <?= Former::phone( 'noc24hphone' )
-                ->label( '24h Phone' )
-                ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
-                ->blockHelp( '24/7 emergency phone number for contacting the customer NOC..<br><br>'
-                    . 'This is available to all other customers.' );
-            ?>
+                <?= Former::email( 'nocemail' )
+                    ->label( 'Email' )
+                    ->placeholder( 'noc@example.com' )
+                    ->blockHelp( 'The NOC email is used in customer lists. We try and encourage "
+                . "the use of a role alias such as noc@example.com but this does not "
+                . "always work out.<br><br>'
+                        . 'This is available to all other customers.' );
+                ?>
 
-            <?= Former::email( 'nocemail' )
-                ->label( 'Email' )
-                ->placeholder( 'noc@example.com' )
-                ->blockHelp( 'The NOC email is used in customer lists. We try and encourage "
-                    . "the use of a role alias such as noc@example.com but this does not "
-                    . "always work out.<br><br>'
-                    . 'This is available to all other customers.' );
-            ?>
+                <?= Former::select( 'nochours' )
+                    ->label( 'Hours' )
+                    ->fromQuery( \Entities\Customer::$NOC_HOURS )
+                    ->placeholder( 'Choose NOC Hours' )
+                    ->addClass( 'chzn-select' )
+                    ->blockHelp( 'The hours during which the NOC is available.' );
+                ?>
 
-            <?= Former::select( 'nochours' )
-                ->label( 'Hours' )
-                ->fromQuery( \Entities\Customer::$NOC_HOURS )
-                ->placeholder( 'Choose NOC Hours' )
-                ->addClass( 'chzn-select' )
-                ->blockHelp( 'The hours during which the NOC is available.' );
-            ?>
+                <?= Former::url( 'nocwww' )
+                    ->label( 'Website' )
+                    ->placeholder( 'http://www.noc.example.com/' )
+                    ->blockHelp( 'An optional NOC information email page / status page.' );
+                ?>
 
-            <?= Former::url( 'nocwww' )
-                ->label( 'Website' )
-                ->placeholder( 'http://www.noc.example.com/' )
-                ->blockHelp( 'An optional NOC information email page / status page.' );
-            ?>
-
-            <?= Former::actions(
+                <?= Former::actions(
                     Former::primary_submit( 'Update NOC Details' ),
                     Former::success_button( 'Help' )->id( 'help-btn' )
-                );
-            ?>
+                )->class( "bg-light text-center p-4 mt-4" );
+                ?>
 
-            <?= Former::close() ?>
+                <?= Former::close() ?>
+            </div>
 
         </div>
-        <div class="col-sm-6">
-            <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode() || !$t->c->isResoldCustomer() ): ?>
-                <h3>Billing Details</h3>
+
+    </div>
+    <div class="col-sm-6">
+        <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode() || !$t->c->isResoldCustomer() ): ?>
+            <div class="card">
+                <div class="card-header">
+                    <h3>
+                        Billing Details
+                    </h3>
+                </div>
+
+                <div class="card-body">
                     <?= Former::open()
                         ->populate( $t->dataBillingDetail )
                         ->method( 'post' )
@@ -136,13 +149,14 @@
 
                     <?= Former::actions(
                         Former::primary_submit( 'Update Billing Details' )
-                    );
+                    )->class( "bg-light text-center p-4 mt-4" );
                     ?>
 
                     <?= Former::close() ?>
 
                 </div>
-
-            <?php endif; ?>
-        </div>
+            </div>
+        <?php endif; ?>
     </div>
+
+</div>

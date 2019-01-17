@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table mt-4 table-striped">
+    <table class="table table-striped">
         <thead class="thead-dark">
         <tr>
             <th>
@@ -54,7 +54,7 @@
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td>
+                <td colspan="6" class="text-center">
                     No users found.<br><br>
                     Users can be added by creating / editing contacts and giving the contact login privileges.
                 </td>

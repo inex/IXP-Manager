@@ -45,68 +45,62 @@
     ?>
 
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-
         <div class="container-fluid">
             <div class="row" >
                 <?= $t->insert( 'menu' ); ?>
 
-
     <?php else: ?>
-
-        <main class="container">
+        <div class="container-fluid">
             <div class="row" >
 
     <?php endif; ?>
+                <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                    <main role="main" class="col-md-10 ml-sm-auto col-lg-10 mt-2 pb-4">
+                <?php else: ?>
+                    <main role="main" class="col-md-10 mx-auto mt-2 pb-4">
+                <?php endif; ?>
 
-    <main role="main" class="col-md-10 ml-sm-auto col-lg-10 mt-2 pb-4">
+                    <?php /*if( Auth::check() && Auth::user()->isSuperUser() ): */?>
 
-        <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                        <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+                            <h1 class="h2">
+                                <?php $this->section('page-header-preamble') ?>
+                                <?php $this->stop() ?>
+                            </h1>
+                            <div class="btn-toolbar mb-2 mb-md-0">
+                                <?php $this->section('page-header-postamble') ?>
+                                <?php $this->stop() ?>
+                            </div>
+                        </div>
 
-            <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                <h1 class="h2">
-                    <?php $this->section('page-header-preamble') ?>
-                    <?php $this->stop() ?>
-                </h1>
-                <div class="btn-toolbar mb-2 mb-md-0">
-                    <?php $this->section('page-header-postamble') ?>
-                    <?php $this->stop() ?>
-                </div>
-            </div>
+                    <?php /*else: */?><!--
+                        <div class="page-content">
+                            <div class="page-header">
+                                <?php /*$this->section('page-header-preamble') */?>
+                                <?php /*$this->stop() */?>
+                                <h1 style="display: inline">
+                                    <?php /*$this->section('title') */?>
+                                    <?php /*$this->stop() */?>
+                                </h1>
+                                <?php /*$this->section('page-header-postamble') */?>
+                                <?php /*$this->stop() */?>
+                            </div>
+                    --><?php /*endif; */?>
 
-        <?php else: ?>
-            <div class="page-content">
-                <div class="page-header">
-                    <?php $this->section('page-header-preamble') ?>
-                    <?php $this->stop() ?>
-                    <h1 style="display: inline">
-                        <?php $this->section('title') ?>
+                    <div class="container-fluid">
+                        <?php $this->section('content') ?>
                         <?php $this->stop() ?>
-                    </h1>
-                    <?php $this->section('page-header-postamble') ?>
-                    <?php $this->stop() ?>
-                </div>
-        <?php endif; ?>
+                    </div>
 
-        <div class="container-fluid">
-            <?php $this->section('content') ?>
-            <?php $this->stop() ?>
-        </div>
 
-        <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                </main>
 
-            </div><!--/row-->
+            </div> <!-- </div class="row"> -->
 
-        <?php else: ?>
+        </div> <!-- </div class="container"> -->
 
-            </div>
+        <?= $t->insert( 'footer-content' ); ?>
 
-        <?php endif; ?>
-    </main>
-        </div>
-
-    <?= $t->insert( 'footer-content' ); ?>
-
-    </div> <!-- </div class="container"> -->
 
         <script> const RIPE_ASN_URL = "<?= url( "api/v4/aut-num" ) ?>"; </script>
         <script> const MARKDOWN_URL = "<?= route( "utils@markdown" ) ?>"; </script>

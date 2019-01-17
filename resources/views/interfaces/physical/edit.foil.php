@@ -33,7 +33,7 @@ Physical Interfaces / Edit
                 <div class="card">
                     <div class="card-header ">
                         <h3>
-                            Physical Interface Settings
+                            Settings
                         </h3>
                     </div>
 

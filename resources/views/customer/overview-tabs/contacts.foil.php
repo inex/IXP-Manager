@@ -1,5 +1,5 @@
 <div class="table-responsive">
-    <table class="table mt-4 table-striped">
+    <table class="table table-striped">
         <thead class="thead-dark">
             <tr>
                 <th>
@@ -62,7 +62,7 @@
             <?php endforeach; ?>
         <?php else: ?>
             <tr>
-                <td>
+                <td colspan="6" class="text-center">
                     No contacts found.
                     <a href="<?= route( "contact@add" ) . "?cust=" . $t->c->getId() ?>">Add a new contact...</a>
                 </td>
