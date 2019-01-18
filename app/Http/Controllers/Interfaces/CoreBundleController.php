@@ -211,7 +211,7 @@ class CoreBundleController extends Common
         // if we edit the core bundle we stop here
         if( $edit ){
             D2EM::flush();
-            AlertContainer::push( 'The core bundle has been updated successfully.', Alert::SUCCESS );
+            AlertContainer::push( 'Core bundle updated successfully.', Alert::SUCCESS );
             return Redirect::to( route( "core-bundle/edit", [ "id" => $cb->getId() ] ) );
         }
 
@@ -279,7 +279,7 @@ class CoreBundleController extends Common
 
         D2EM::flush();
 
-        AlertContainer::push( 'The core links have been edited with success.', Alert::SUCCESS );
+        AlertContainer::push( 'The core links have been edited successfully.', Alert::SUCCESS );
 
         return Redirect::to( route( "core-bundle/edit", [ "id" => $cb->getId() ] ) );
 
@@ -423,7 +423,7 @@ class CoreBundleController extends Common
 
         D2EM::flush();
 
-        AlertContainer::push( 'The core bundle has been deleted with success.', Alert::SUCCESS );
+        AlertContainer::push( 'Core bundle deleted successfully.', Alert::SUCCESS );
 
         return response()->json( [ 'success' => true ] );
 
