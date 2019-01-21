@@ -187,10 +187,14 @@
                          <?php if( $conf[ "rsclient" ] ): ?>Yes<?php else: ?>No<?php endif; ?>
                     </td>
                     <td>
-                        <?= str_replace( ",", "<br>" , $conf[ "ipv4address" ] ) ?>
+                        <?php if( $conf['ipv4enabled'] ): ?>
+                            <?= str_replace( ",", "<br>" , $conf[ "ipv4address" ] ) ?>
+                        <?php endif; ?>
                     </td>
                     <td>
-                        <?= str_replace( ",", "<br>" , $conf[ "ipv6address" ] ) ?>
+                        <?php if( $conf['ipv6enabled'] ): ?>
+                            <?= str_replace( ",", "<br>" , $conf[ "ipv6address" ] ) ?>
+                        <?php endif; ?>
                     </td>
                     <td>
                         <?php if( isset( Entities\PhysicalInterface::$STATES[ $conf[ "portstatus" ] ] ) ): ?>

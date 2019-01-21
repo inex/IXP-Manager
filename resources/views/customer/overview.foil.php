@@ -304,6 +304,7 @@
                         <?= $t->insert( 'customer/overview-tabs/private-vlans' ); ?>
                     </div>
                 <?php endif ?>
+<<<<<<< HEAD
             <?php endif ?>
             <div id="users" class="tab-pane fade <?php if( $t->tab == 'users' ): ?> active show <?php endif; ?> ">
                 <?= $t->insert( 'customer/overview-tabs/users' ); ?>
@@ -325,6 +326,33 @@
             </div>
             <div id="console-server-connections" class="tab-pane fade">
                 <?= $t->insert( 'customer/overview-tabs/console-server-connections' ); ?>
+=======
+                <div id="users" class="tab-pane fade <?php if( $t->tab == 'users' ): ?> in active <?php endif; ?> ">
+                    <?= $t->insert( 'customer/overview-tabs/users' ); ?>
+                </div>
+                <div id="contacts" class="tab-pane fade <?php if( $t->tab == 'contacts' ): ?> in active <?php endif; ?>">
+                    <?= $t->insert( 'customer/overview-tabs/contacts' ); ?>
+                </div>
+                <div id="logins" class="tab-pane fade <?php if( $t->tab == 'logins' ): ?> in active <?php endif; ?>">
+                    <?= $t->insert( 'customer/overview-tabs/logins' ); ?>
+                </div>
+                <div id="notes" class="tab-pane fade <?php if( $t->tab == 'notes' ): ?> in active <?php endif; ?>">
+                    <?= $t->insert( 'customer/overview-tabs/notes' ); ?>
+                </div>
+                <div id="cross-connects" class="tab-pane fade">
+                    <?= $t->insert( 'customer/overview-tabs/cross-connects' ); ?>
+                </div>
+
+                <?php if( $t->peers ): ?>
+                    <div id="peers" class="tab-pane fade <?php if( $t->tab == 'peers' ): ?> in active <?php endif; ?>">
+                        <?= $t->insert( 'customer/overview-tabs/peers' ); ?>
+                    </div>
+                <?php endif; ?>
+
+                <div id="console-server-connections" class="tab-pane fade">
+                    <?= $t->insert( 'customer/overview-tabs/console-server-connections' ); ?>
+                </div>
+>>>>>>> v5
             </div>
         </div>
     </div>
@@ -336,7 +364,10 @@
     <?= $t->insert( 'customer/js/overview/users' ); ?>
     <?= $t->insert( 'customer/js/overview/contacts' ); ?>
     <?= $t->insert( 'customer/js/overview/notes' ); ?>
-    <?= $t->insert( 'customer/js/overview/peers' ); ?>
+
+    <?php if( $t->peers ): ?>
+        <?= $t->insert( 'customer/js/overview/peers' ); ?>
+    <?php endif; ?>
 
     <script>
         /**

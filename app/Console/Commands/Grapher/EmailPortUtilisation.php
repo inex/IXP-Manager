@@ -1,7 +1,7 @@
 <?php namespace IXP\Console\Commands\Grapher;
 
 /*
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -37,7 +37,7 @@ use IXP\Mail\Grapher\PortUtilisation as PortUtilisationMail;
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
   * @category   Grapher
   * @package    IXP\Console\Commands
-  * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
 class EmailPortUtilisation extends GrapherCommand {

@@ -3,7 +3,7 @@
 namespace IXP\Mail\Customer;
 
 /*
- * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -37,7 +37,7 @@ use Entities\CompanyBillingDetail as CompanyBillingDetailEntity;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Customer
  * @package    IXP\Mail\Customer
- * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class BillingDetailsChanged extends Mailable

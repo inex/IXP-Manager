@@ -3,7 +3,7 @@
 namespace IXP\Contracts\Grapher;
 
 /*
- * Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -35,7 +35,7 @@ use IXP\Services\Grapher\Graph;
   * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
   * @category   Graphing
   * @package    IXP\Contracts
-  * @copyright  Copyright (C) 2009-2016 Internet Neutral Exchange Association Company Limited By Guarantee
+  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
   * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
   */
 interface Backend {
