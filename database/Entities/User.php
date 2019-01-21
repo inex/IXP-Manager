@@ -797,9 +797,4 @@ class User implements Authenticatable, CanResetPasswordContract
      | END LARAVEL 5 USER PROVIDER INTERFACE METHODS
      ***************************************************************************/
 
-
-
-
-
-
 }
