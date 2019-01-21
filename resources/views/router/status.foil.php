@@ -4,18 +4,16 @@
 $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
-    Router
+<?php $this->section( 'page-header-preamble' ) ?>
+    Router / Live Status
 <?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
-        <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= route('router@add') ?>">
-                <span class="glyphicon glyphicon-plus"></span>
-            </a>
-        </div>
-    </li>
+<?php $this->section( 'page-header-postamble' ) ?>
+    <div class="btn-group btn-group-sm" role="group">
+        <a class="btn btn-outline-secondary" href="<?= route('router@add') ?>">
+            <span class="fa fa-plus"></span>
+        </a>
+    </div>
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -34,103 +32,103 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php else: ?>
 
-
-    <div class="row">
-        <div class="col-md-12">
-            <p>
-                This page performs a live query of all routers configured with an API interface and reports live data.
-            </p>
-            <p>
-                <em>Sessions</em> indicates the number of BGP sessions configured on the router while <em>Up</em> shows how many of these are actually established.
-            </p>
-        </div>
+    <div class="alert alert-info">
+        <p>
+            This page performs a live query of all routers configured with an API interface and reports live data.
+        </p>
+        <p>
+            <em>Sessions</em> indicates the number of BGP sessions configured on the router while <em>Up</em> shows how many of these are actually established.
+        </p>
     </div>
 
     <div id="fetched-alert" class="alert alert-info">
         <p>Fetched <span id="fetched">0</span> of <span id="fetched-total">0</span> router details with <span id="fetched-errors">0</span> errors.</p>
+
         <p id="daemon-stats" class="collapse">
-            <b>Daemon Version Counts for Bird:</b>&nbsp;&nbsp;
+            <b>
+                Daemon Version Counts for Bird:
+            </b>&nbsp;&nbsp;
         </p>
     </div>
 
 
-        <table id='router-list' class="table">
-            <thead>
-            <tr>
-                <th>
-                    Handle
-                </th>
-                <th>
-                    Name
-                </th>
-                <th>
-                    Router ID
-                </th>
-                <th>
-                    Type
-                </th>
-                <th>
-                    Version
-                </th>
-                <th>
-                    API Version
-                </th>
-                <th>
-                    Sessions
-                </th>
-                <th>
-                    Up
-                </th>
-                <th>
-                    Last Updated
-                </th>
-                <th>
-                    Last Reboot
-                </th>
-            </tr>
+        <table id='router-list' class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>
+                        Handle
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Router ID
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Version
+                    </th>
+                    <th>
+                        API Version
+                    </th>
+                    <th>
+                        Sessions
+                    </th>
+                    <th>
+                        Up
+                    </th>
+                    <th>
+                        Last Updated
+                    </th>
+                    <th>
+                        Last Reboot
+                    </th>
+                </tr>
             <thead>
             <tbody>
-            <?php foreach( $t->routers as $router ):
-                /** @var Entities\Router $router */ ?>
-                <tr>
-                    <td>
-                        <?php if( !config( 'ixp_fe.frontend.disabled.lg' ) ): ?>
-                            <a href="<?= route( "lg::bgp-sum", [ 'handle' => $router->getHandle() ] ) ?>">
-                        <?php endif; ?>
-                            <?= $router->getHandle() ?>
-                        <?= config( 'ixp_fe.frontend.disabled.lg' ) ?: '</a>' ?>
-                    </td>
-                    <td>
-                        <?= $router->getShortName() ?>
-                    </td>
-                    <td>
-                        <?= $router->getRouterId() ?>
-                    </td>
-                    <td>
-                        <?= $router->resolveSoftware() ?>
-                    </td>
+                <?php foreach( $t->routers as $router ):
+                    /** @var Entities\Router $router */ ?>
+                    <tr>
+                        <td>
+                            <?php if( !config( 'ixp_fe.frontend.disabled.lg' ) ): ?>
+                                <a href="<?= route( "lg::bgp-sum", [ 'handle' => $router->getHandle() ] ) ?>">
+                            <?php endif; ?>
+                                <?= $router->getHandle() ?>
+                            <?= config( 'ixp_fe.frontend.disabled.lg' ) ?: '</a>' ?>
+                        </td>
+                        <td>
+                            <?= $router->getShortName() ?>
+                        </td>
+                        <td>
+                            <?= $router->getRouterId() ?>
+                        </td>
+                        <td>
+                            <?= $router->resolveSoftware() ?>
+                        </td>
 
-                    <td id="<?= $router->getHandle() ?>-version">
-                        <?php if( $router->hasApi() ): ?>
-                            <i class="fa fa-spinner fa-spin fa-fw"></i>
-                        <?php else: ?>
-                            <em>No API access.</em>
-                        <?php endif; ?>
-                    </td>
+                        <td id="<?= $router->getHandle() ?>-version">
+                            <?php if( $router->hasApi() ): ?>
+                                <i class="fa fa-spinner fa-spin fa-fw"></i>
+                            <?php else: ?>
+                                <em>No API access.</em>
+                            <?php endif; ?>
+                        </td>
 
-                    <td id="<?= $router->getHandle() ?>-api-version">
-                    </td>
-                    <td id="<?= $router->getHandle() ?>-bgp-sessions">
-                    </td>
-                    <td id="<?= $router->getHandle() ?>-bgp-sessions-up">
-                    </td>
-                    <td id="<?= $router->getHandle() ?>-last-updated">
-                    </td>
-                    <td id="<?= $router->getHandle() ?>-last-reboot">
-                    </td>
+                        <td id="<?= $router->getHandle() ?>-api-version">
+                        </td>
+                        <td id="<?= $router->getHandle() ?>-bgp-sessions">
+                        </td>
+                        <td id="<?= $router->getHandle() ?>-bgp-sessions-up">
+                        </td>
+                        <td id="<?= $router->getHandle() ?>-last-updated">
+                        </td>
+                        <td id="<?= $router->getHandle() ?>-last-reboot">
+                        </td>
 
-                </tr>
-            <?php endforeach;?>
+                    </tr>
+                <?php endforeach;?>
             <tbody>
         </table>
 
@@ -210,7 +208,7 @@ $this->layout( 'layouts/ixpv4' );
                             table.api().rows().invalidate().draw();
                         })
                         .fail(function () {
-                            $('#' + handle + '-bgp-sessions').html('<span class="label label-danger">Error</span>');
+                            $('#' + handle + '-bgp-sessions').html('<i class="badge badge-danger">Error</i>');
                         });
 
 
@@ -218,7 +216,7 @@ $this->layout( 'layouts/ixpv4' );
                 .fail(function () {
                     let numFetchedErrors = $('#fetched-errors');
                     numFetchedErrors.html(parseInt(numFetchedErrors.html()) + 1);
-                    $('#' + handle + '-version').html('<span class="label label-danger">Error</span>');
+                    $('#' + handle + '-version').html('<i class="badge badge-danger">Error</i>');
                 })
                 .always( function() {
                     let numFetched       = parseInt( $('#fetched').html() );
@@ -234,7 +232,7 @@ $this->layout( 'layouts/ixpv4' );
                         let vdiv = $("#daemon-stats");
 
                         for( let v in versions.bird ) {
-                            vdiv.append( `<span class="label label-default">${v}:&nbsp;&nbsp;${versions.bird[v]}</span>&nbsp;&nbsp;` );
+                            vdiv.append( `<span class="badge badge-secondary">${v}:&nbsp;&nbsp;${versions.bird[v]}</span>&nbsp;&nbsp;` );
                         }
 
                         vdiv.show();

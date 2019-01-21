@@ -131,7 +131,7 @@
             <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ): ?>
 
                 <div class="col-sm-4">
-                    <img class="www80-padding img-responsive" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
+                    <img class="www80-padding img-fluid" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
                 </div>
 
             <?php endif; ?>
