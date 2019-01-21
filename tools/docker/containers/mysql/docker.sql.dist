@@ -1,13 +1,13 @@
--- MySQL dump 10.13  Distrib 5.7.21, for Linux (x86_64)
+-- MySQL dump 10.16  Distrib 10.1.37-MariaDB, for debian-linux-gnu (x86_64)
 --
--- Host: localhost    Database: ixpmanager
+-- Host: ixpmanager-mysql    Database: ixpmanager
 -- ------------------------------------------------------
 -- Server version	5.7.21
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8 */;
+/*!40101 SET NAMES utf8mb4 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -44,8 +44,37 @@ CREATE TABLE `api_keys` (
 
 LOCK TABLES `api_keys` WRITE;
 /*!40000 ALTER TABLE `api_keys` DISABLE KEYS */;
-INSERT INTO `api_keys` VALUES (2,4,'daEpzL0faxeFHDPGP3JmXDutMQTMZxOlzk7LErYnIGUBK2Zt',NULL,'','2018-01-19 12:03:30','2018-11-21 07:01:57','fd99::30');
+INSERT INTO `api_keys` VALUES (2,4,'daEpzL0faxeFHDPGP3JmXDutMQTMZxOlzk7LErYnIGUBK2Zt',NULL,'','2018-01-19 12:03:30','2019-01-21 14:41:56','fd99::30');
 /*!40000 ALTER TABLE `api_keys` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `bgp_sessions`
+--
+
+DROP TABLE IF EXISTS `bgp_sessions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bgp_sessions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `srcipaddressid` int(11) NOT NULL,
+  `protocol` int(11) NOT NULL,
+  `dstipaddressid` int(11) NOT NULL,
+  `packetcount` int(11) NOT NULL DEFAULT '0',
+  `last_seen` datetime NOT NULL,
+  `source` varchar(40) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `src_protocol_dst` (`srcipaddressid`,`protocol`,`dstipaddressid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bgp_sessions`
+--
+
+LOCK TABLES `bgp_sessions` WRITE;
+/*!40000 ALTER TABLE `bgp_sessions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bgp_sessions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -77,6 +106,51 @@ LOCK TABLES `bgpsessiondata` WRITE;
 /*!40000 ALTER TABLE `bgpsessiondata` DISABLE KEYS */;
 /*!40000 ALTER TABLE `bgpsessiondata` ENABLE KEYS */;
 UNLOCK TABLES;
+/*!50003 SET @saved_cs_client      = @@character_set_client */ ;
+/*!50003 SET @saved_cs_results     = @@character_set_results */ ;
+/*!50003 SET @saved_col_connection = @@collation_connection */ ;
+/*!50003 SET character_set_client  = utf8mb4 */ ;
+/*!50003 SET character_set_results = utf8mb4 */ ;
+/*!50003 SET collation_connection  = utf8mb4_general_ci */ ;
+/*!50003 SET @saved_sql_mode       = @@sql_mode */ ;
+/*!50003 SET sql_mode              = 'ONLY_FULL_GROUP_BY,STRICT_TRANS_TABLES,NO_ZERO_IN_DATE,NO_ZERO_DATE,ERROR_FOR_DIVISION_BY_ZERO,NO_AUTO_CREATE_USER,NO_ENGINE_SUBSTITUTION' */ ;
+DELIMITER ;;
+/*!50003 CREATE*/ /*!50017 DEFINER=`ixpmanager`@`%`*/ /*!50003 TRIGGER bgp_sessions_update AFTER INSERT ON `bgpsessiondata` FOR EACH ROW
+
+	BEGIN
+
+		IF NOT EXISTS ( SELECT 1 FROM bgp_sessions WHERE srcipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND dstipaddressid = NEW.dstipaddressid ) THEN
+			INSERT INTO bgp_sessions
+				( srcipaddressid, protocol, dstipaddressid, packetcount, last_seen, source )
+			VALUES
+				( NEW.srcipaddressid, NEW.protocol, NEW.dstipaddressid, NEW.packetcount, NOW(), NEW.source );
+		ELSE
+			UPDATE bgp_sessions SET
+				last_seen   = NOW(),
+				packetcount = packetcount + NEW.packetcount
+			WHERE
+				srcipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND dstipaddressid = NEW.dstipaddressid;
+		END IF;
+
+		IF NOT EXISTS ( SELECT 1 FROM bgp_sessions WHERE dstipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND srcipaddressid = NEW.dstipaddressid ) THEN
+			INSERT INTO bgp_sessions
+				( srcipaddressid, protocol, dstipaddressid, packetcount, last_seen, source )
+			VALUES
+				( NEW.dstipaddressid, NEW.protocol, NEW.srcipaddressid, NEW.packetcount, NOW(), NEW.source );
+		ELSE
+			UPDATE bgp_sessions SET
+				last_seen   = NOW(),
+				packetcount = packetcount + NEW.packetcount
+			WHERE
+				dstipaddressid = NEW.srcipaddressid AND protocol = NEW.protocol AND srcipaddressid = NEW.dstipaddressid;
+		END IF;
+
+	END */;;
+DELIMITER ;
+/*!50003 SET sql_mode              = @saved_sql_mode */ ;
+/*!50003 SET character_set_client  = @saved_cs_client */ ;
+/*!50003 SET character_set_results = @saved_cs_results */ ;
+/*!50003 SET collation_connection  = @saved_col_connection */ ;
 
 --
 -- Table structure for table `cabinet`
@@ -192,19 +266,19 @@ CREATE TABLE `console_server` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `vendor_id` int(11) DEFAULT NULL,
   `cabinet_id` int(11) DEFAULT NULL,
-  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `hostname` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `model` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `serialNumber` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `hostname` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `model` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `serialNumber` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `active` tinyint(1) DEFAULT '1',
-  `notes` longtext COLLATE utf8_unicode_ci,
+  `notes` longtext COLLATE utf8mb4_unicode_ci,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_92A539235E237E06` (`name`),
   KEY `IDX_92A53923F603EE73` (`vendor_id`),
   KEY `IDX_92A53923D351EC` (`cabinet_id`),
   CONSTRAINT `FK_92A53923D351EC` FOREIGN KEY (`cabinet_id`) REFERENCES `cabinet` (`id`),
   CONSTRAINT `FK_92A53923F603EE73` FOREIGN KEY (`vendor_id`) REFERENCES `vendor` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -291,7 +365,7 @@ CREATE TABLE `contact` (
 
 LOCK TABLES `contact` WRITE;
 /*!40000 ALTER TABLE `contact` DISABLE KEYS */;
-INSERT INTO `contact` VALUES (4,4,1,'Docker Superuser','','joe@example.com','','',1,1,'','2018-01-18 21:27:41',1,'vagrant','2018-01-18 21:27:41'),(5,5,4,'AS112 CustAdmin','','joe@exmaple.com','','',0,0,'','2018-01-18 21:29:48',4,'docker','2018-01-18 21:29:48'),(6,6,4,'as112user','','joe@example.com','','',0,0,'','2018-01-18 21:30:16',4,'docker','2018-01-18 21:30:16');
+INSERT INTO `contact` VALUES (4,NULL,1,'Docker Superuser','','joe@example.com','','',1,1,'','2018-01-18 21:27:41',1,'vagrant','2018-01-18 21:27:41'),(5,NULL,4,'AS112 CustAdmin','','joe@exmaple.com','','',0,0,'','2018-01-18 21:29:48',4,'docker','2018-01-18 21:29:48'),(6,NULL,4,'as112user','','joe@example.com','','',0,0,'','2018-01-18 21:30:16',4,'docker','2018-01-18 21:30:16');
 /*!40000 ALTER TABLE `contact` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -547,15 +621,15 @@ DROP TABLE IF EXISTS `cust_tag`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `cust_tag` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `tag` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `display_as` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
-  `description` longtext COLLATE utf8_unicode_ci,
+  `tag` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `display_as` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci,
   `internal_only` tinyint(1) NOT NULL DEFAULT '0',
   `created` datetime NOT NULL,
   `updated` datetime NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_6B54CFB8389B783` (`tag`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -582,7 +656,7 @@ CREATE TABLE `cust_to_cust_tag` (
   KEY `IDX_A6CFB30C9395C3F3` (`customer_id`),
   CONSTRAINT `FK_A6CFB30C9395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `cust` (`id`),
   CONSTRAINT `FK_A6CFB30CB17BF40` FOREIGN KEY (`customer_tag_id`) REFERENCES `cust_tag` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1703,6 +1777,7 @@ CREATE TABLE `user` (
   `lastupdatedby` int(11) DEFAULT NULL,
   `creator` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created` datetime DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_8D93D649F85E0677` (`username`),
   KEY `IDX_8D93D649DA0209B9` (`custid`),
@@ -1716,7 +1791,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (4,1,'docker','$2y$10$3wob28r7Oqlfwmqw0mFUq.k0/JHdXv4tONZ3wrjI87zDMCeENmg0y','joe@example.com',NULL,NULL,3,0,'2018-01-18 21:27:41',1,'vagrant','2018-01-18 21:27:41'),(5,4,'as112admin','$2y$10$pW.5k3BxS74UbSH5HCOlhOJXzHgUioMAUd8hoHicW.u.lZkFFXkWS','joe@exmaple.com',NULL,NULL,2,0,'2018-01-18 21:29:48',4,'docker','2018-01-18 21:29:48'),(6,4,'as112user','$2y$10$WjV0rRnERI/.IFQZXxzKle03xXueC6RayuYiT6CKtuU84uQhG2a.G','joe@example.com',NULL,NULL,1,0,'2018-01-18 21:30:16',4,'docker','2018-01-18 21:30:16');
+INSERT INTO `user` VALUES (4,1,'docker','$2y$10$3wob28r7Oqlfwmqw0mFUq.k0/JHdXv4tONZ3wrjI87zDMCeENmg0y','joe@example.com',NULL,NULL,3,0,'2018-01-18 21:27:41',1,'vagrant','2018-01-18 21:27:41','Docker Superuser'),(5,4,'as112admin','$2y$10$pW.5k3BxS74UbSH5HCOlhOJXzHgUioMAUd8hoHicW.u.lZkFFXkWS','joe@exmaple.com',NULL,NULL,2,0,'2018-01-18 21:29:48',4,'docker','2018-01-18 21:29:48','AS112 CustAdmin'),(6,4,'as112user','$2y$10$WjV0rRnERI/.IFQZXxzKle03xXueC6RayuYiT6CKtuU84uQhG2a.G','joe@example.com',NULL,NULL,1,0,'2018-01-18 21:30:16',4,'docker','2018-01-18 21:30:16','as112user');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1736,7 +1811,7 @@ CREATE TABLE `user_logins` (
   KEY `IDX_6341CC99A76ED395` (`user_id`),
   KEY `at_idx` (`at`,`user_id`),
   CONSTRAINT `FK_6341CC99A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1745,7 +1820,6 @@ CREATE TABLE `user_logins` (
 
 LOCK TABLES `user_logins` WRITE;
 /*!40000 ALTER TABLE `user_logins` DISABLE KEYS */;
-INSERT INTO `user_logins` VALUES (6,4,'172.30.201.1','2018-01-18 21:27:49'),(7,4,'172.30.201.1','2018-01-19 11:57:53'),(8,4,'172.30.201.1','2018-01-22 13:43:03'),(9,4,'172.30.201.1','2018-11-21 07:03:47');
 /*!40000 ALTER TABLE `user_logins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1777,7 +1851,7 @@ CREATE TABLE `user_pref` (
 
 LOCK TABLES `user_pref` WRITE;
 /*!40000 ALTER TABLE `user_pref` DISABLE KEYS */;
-INSERT INTO `user_pref` VALUES (5,4,'customer-notes.read_upto',0,'=','1516310861',0),(6,4,'auth.last_login_from',0,'=','172.30.201.1',0),(7,4,'auth.last_login_at',0,'=','1542783827',0),(8,4,'tokens.password_reset',0,'=','NJJAKH2jZG3WqPmDwvN7ExyTKnDoQaesh2fppBBP',1516629247);
+INSERT INTO `user_pref` VALUES (5,4,'customer-notes.read_upto',0,'=','1516310861',0),(6,4,'auth.last_login_from',0,'=','172.30.201.1',0),(7,4,'auth.last_login_at',0,'=','1516628583',0),(8,4,'tokens.password_reset',0,'=','NJJAKH2jZG3WqPmDwvN7ExyTKnDoQaesh2fppBBP',1516629247);
 /*!40000 ALTER TABLE `user_pref` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1809,6 +1883,123 @@ INSERT INTO `vendor` VALUES (1,'Cisco Systems','Cisco','cisco',NULL),(2,'Foundry
 UNLOCK TABLES;
 
 --
+-- Temporary table structure for view `view_cust_current_active`
+--
+
+DROP TABLE IF EXISTS `view_cust_current_active`;
+/*!50001 DROP VIEW IF EXISTS `view_cust_current_active`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `view_cust_current_active` (
+  `id` tinyint NOT NULL,
+  `irrdb` tinyint NOT NULL,
+  `company_registered_detail_id` tinyint NOT NULL,
+  `company_billing_details_id` tinyint NOT NULL,
+  `reseller` tinyint NOT NULL,
+  `name` tinyint NOT NULL,
+  `type` tinyint NOT NULL,
+  `shortname` tinyint NOT NULL,
+  `abbreviatedName` tinyint NOT NULL,
+  `autsys` tinyint NOT NULL,
+  `maxprefixes` tinyint NOT NULL,
+  `peeringemail` tinyint NOT NULL,
+  `nocphone` tinyint NOT NULL,
+  `noc24hphone` tinyint NOT NULL,
+  `nocfax` tinyint NOT NULL,
+  `nocemail` tinyint NOT NULL,
+  `nochours` tinyint NOT NULL,
+  `nocwww` tinyint NOT NULL,
+  `peeringmacro` tinyint NOT NULL,
+  `peeringmacrov6` tinyint NOT NULL,
+  `peeringpolicy` tinyint NOT NULL,
+  `corpwww` tinyint NOT NULL,
+  `datejoin` tinyint NOT NULL,
+  `dateleave` tinyint NOT NULL,
+  `status` tinyint NOT NULL,
+  `activepeeringmatrix` tinyint NOT NULL,
+  `peeringDb` tinyint NOT NULL,
+  `lastupdated` tinyint NOT NULL,
+  `lastupdatedby` tinyint NOT NULL,
+  `creator` tinyint NOT NULL,
+  `created` tinyint NOT NULL,
+  `MD5Support` tinyint NOT NULL,
+  `isReseller` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `view_switch_details_by_custid`
+--
+
+DROP TABLE IF EXISTS `view_switch_details_by_custid`;
+/*!50001 DROP VIEW IF EXISTS `view_switch_details_by_custid`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `view_switch_details_by_custid` (
+  `id` tinyint NOT NULL,
+  `custid` tinyint NOT NULL,
+  `virtualinterfacename` tinyint NOT NULL,
+  `virtualinterfaceid` tinyint NOT NULL,
+  `status` tinyint NOT NULL,
+  `speed` tinyint NOT NULL,
+  `duplex` tinyint NOT NULL,
+  `notes` tinyint NOT NULL,
+  `switchport` tinyint NOT NULL,
+  `switchportid` tinyint NOT NULL,
+  `spifname` tinyint NOT NULL,
+  `switch` tinyint NOT NULL,
+  `switchhostname` tinyint NOT NULL,
+  `switchid` tinyint NOT NULL,
+  `vendorid` tinyint NOT NULL,
+  `snmppasswd` tinyint NOT NULL,
+  `infrastructure` tinyint NOT NULL,
+  `cabinet` tinyint NOT NULL,
+  `colocabinet` tinyint NOT NULL,
+  `locationname` tinyint NOT NULL,
+  `locationshortname` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
+-- Temporary table structure for view `view_vlaninterface_details_by_custid`
+--
+
+DROP TABLE IF EXISTS `view_vlaninterface_details_by_custid`;
+/*!50001 DROP VIEW IF EXISTS `view_vlaninterface_details_by_custid`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `view_vlaninterface_details_by_custid` (
+  `id` tinyint NOT NULL,
+  `custid` tinyint NOT NULL,
+  `virtualinterfaceid` tinyint NOT NULL,
+  `status` tinyint NOT NULL,
+  `virtualinterfacename` tinyint NOT NULL,
+  `vlan` tinyint NOT NULL,
+  `vlanname` tinyint NOT NULL,
+  `vlanid` tinyint NOT NULL,
+  `vlaninterfaceid` tinyint NOT NULL,
+  `ipv4enabled` tinyint NOT NULL,
+  `ipv4hostname` tinyint NOT NULL,
+  `ipv4canping` tinyint NOT NULL,
+  `ipv4monitorrcbgp` tinyint NOT NULL,
+  `ipv6enabled` tinyint NOT NULL,
+  `ipv6hostname` tinyint NOT NULL,
+  `ipv6canping` tinyint NOT NULL,
+  `ipv6monitorrcbgp` tinyint NOT NULL,
+  `as112client` tinyint NOT NULL,
+  `mcastenabled` tinyint NOT NULL,
+  `ipv4bgpmd5secret` tinyint NOT NULL,
+  `ipv6bgpmd5secret` tinyint NOT NULL,
+  `rsclient` tinyint NOT NULL,
+  `irrdbfilter` tinyint NOT NULL,
+  `busyhost` tinyint NOT NULL,
+  `notes` tinyint NOT NULL,
+  `ipv4address` tinyint NOT NULL,
+  `ipv6address` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
+
+--
 -- Table structure for table `virtualinterface`
 --
 
@@ -1837,7 +2028,7 @@ CREATE TABLE `virtualinterface` (
 
 LOCK TABLES `virtualinterface` WRITE;
 /*!40000 ALTER TABLE `virtualinterface` DISABLE KEYS */;
-INSERT INTO `virtualinterface` VALUES (1,2,'Port-Channel',NULL,NULL,0,1,1,1),(3,3,'','',0,0,0,0,0),(4,4,'','',0,0,0,0,0),(6,5,'','',0,0,0,0,0);
+INSERT INTO `virtualinterface` VALUES (1,2,'Port-Channel',NULL,NULL,0,1,1,1),(3,3,'','',NULL,0,NULL,0,0),(4,4,'','',NULL,0,NULL,0,0),(6,5,'','',NULL,0,NULL,0,0);
 /*!40000 ALTER TABLE `virtualinterface` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1928,6 +2119,63 @@ LOCK TABLES `vlaninterface` WRITE;
 INSERT INTO `vlaninterface` VALUES (1,254,801,1,1,1,'a.heanet.ie',1,'a.heanet.ie',0,1,NULL,'N7rX2SdfbRsyBLTm','N7rX2SdfbRsyBLTm',1000,1,1,1,1,1,1,0,NULL,0),(3,255,NULL,3,1,1,'a.pch.ie',0,NULL,0,1,NULL,'mcWsqMdzGwTKt67g','mcWsqMdzGwTKt67g',2000,1,1,0,1,0,1,0,NULL,0),(4,253,NULL,4,1,1,'a.as112.net',0,NULL,0,1,NULL,'w83fmGpRDtaKomQo','w83fmGpRDtaKomQo',20,1,1,0,1,0,0,0,NULL,0),(6,NULL,802,6,1,0,NULL,1,'a.imagine.ie',0,1,NULL,'X8Ks9QnbER9cyzU3','X8Ks9QnbER9cyzU3',1000,1,0,1,0,1,0,0,NULL,0);
 /*!40000 ALTER TABLE `vlaninterface` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Final view structure for view `view_cust_current_active`
+--
+
+/*!50001 DROP TABLE IF EXISTS `view_cust_current_active`*/;
+/*!50001 DROP VIEW IF EXISTS `view_cust_current_active`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`ixpmanager`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `view_cust_current_active` AS select `cu`.`id` AS `id`,`cu`.`irrdb` AS `irrdb`,`cu`.`company_registered_detail_id` AS `company_registered_detail_id`,`cu`.`company_billing_details_id` AS `company_billing_details_id`,`cu`.`reseller` AS `reseller`,`cu`.`name` AS `name`,`cu`.`type` AS `type`,`cu`.`shortname` AS `shortname`,`cu`.`abbreviatedName` AS `abbreviatedName`,`cu`.`autsys` AS `autsys`,`cu`.`maxprefixes` AS `maxprefixes`,`cu`.`peeringemail` AS `peeringemail`,`cu`.`nocphone` AS `nocphone`,`cu`.`noc24hphone` AS `noc24hphone`,`cu`.`nocfax` AS `nocfax`,`cu`.`nocemail` AS `nocemail`,`cu`.`nochours` AS `nochours`,`cu`.`nocwww` AS `nocwww`,`cu`.`peeringmacro` AS `peeringmacro`,`cu`.`peeringmacrov6` AS `peeringmacrov6`,`cu`.`peeringpolicy` AS `peeringpolicy`,`cu`.`corpwww` AS `corpwww`,`cu`.`datejoin` AS `datejoin`,`cu`.`dateleave` AS `dateleave`,`cu`.`status` AS `status`,`cu`.`activepeeringmatrix` AS `activepeeringmatrix`,`cu`.`peeringDb` AS `peeringDb`,`cu`.`lastupdated` AS `lastupdated`,`cu`.`lastupdatedby` AS `lastupdatedby`,`cu`.`creator` AS `creator`,`cu`.`created` AS `created`,`cu`.`MD5Support` AS `MD5Support`,`cu`.`isReseller` AS `isReseller` from `cust` `cu` where ((`cu`.`datejoin` <= curdate()) and (isnull(`cu`.`dateleave`) or (`cu`.`dateleave` < '1970-01-01') or (`cu`.`dateleave` >= curdate())) and ((`cu`.`status` = 1) or (`cu`.`status` = 2))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `view_switch_details_by_custid`
+--
+
+/*!50001 DROP TABLE IF EXISTS `view_switch_details_by_custid`*/;
+/*!50001 DROP VIEW IF EXISTS `view_switch_details_by_custid`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`ixpmanager`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `view_switch_details_by_custid` AS select `vi`.`id` AS `id`,`vi`.`custid` AS `custid`,concat(`vi`.`name`,`vi`.`channelgroup`) AS `virtualinterfacename`,`pi`.`virtualinterfaceid` AS `virtualinterfaceid`,`pi`.`status` AS `status`,`pi`.`speed` AS `speed`,`pi`.`duplex` AS `duplex`,`pi`.`notes` AS `notes`,`sp`.`name` AS `switchport`,`sp`.`id` AS `switchportid`,`sp`.`ifName` AS `spifname`,`sw`.`name` AS `switch`,`sw`.`hostname` AS `switchhostname`,`sw`.`id` AS `switchid`,`sw`.`vendorid` AS `vendorid`,`sw`.`snmppasswd` AS `snmppasswd`,`sw`.`infrastructure` AS `infrastructure`,`ca`.`name` AS `cabinet`,`ca`.`cololocation` AS `colocabinet`,`lo`.`name` AS `locationname`,`lo`.`shortname` AS `locationshortname` from (((((`virtualinterface` `vi` join `physicalinterface` `pi`) join `switchport` `sp`) join `switch` `sw`) join `cabinet` `ca`) join `location` `lo`) where ((`pi`.`virtualinterfaceid` = `vi`.`id`) and (`pi`.`switchportid` = `sp`.`id`) and (`sp`.`switchid` = `sw`.`id`) and (`sw`.`cabinetid` = `ca`.`id`) and (`ca`.`locationid` = `lo`.`id`)) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
+
+--
+-- Final view structure for view `view_vlaninterface_details_by_custid`
+--
+
+/*!50001 DROP TABLE IF EXISTS `view_vlaninterface_details_by_custid`*/;
+/*!50001 DROP VIEW IF EXISTS `view_vlaninterface_details_by_custid`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8mb4 */;
+/*!50001 SET character_set_results     = utf8mb4 */;
+/*!50001 SET collation_connection      = utf8mb4_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=`ixpmanager`@`%` SQL SECURITY DEFINER */
+/*!50001 VIEW `view_vlaninterface_details_by_custid` AS select `pi`.`id` AS `id`,`vi`.`custid` AS `custid`,`pi`.`virtualinterfaceid` AS `virtualinterfaceid`,`pi`.`status` AS `status`,concat(`vi`.`name`,`vi`.`channelgroup`) AS `virtualinterfacename`,`vlan`.`number` AS `vlan`,`vlan`.`name` AS `vlanname`,`vlan`.`id` AS `vlanid`,`vli`.`id` AS `vlaninterfaceid`,`vli`.`ipv4enabled` AS `ipv4enabled`,`vli`.`ipv4hostname` AS `ipv4hostname`,`vli`.`ipv4canping` AS `ipv4canping`,`vli`.`ipv4monitorrcbgp` AS `ipv4monitorrcbgp`,`vli`.`ipv6enabled` AS `ipv6enabled`,`vli`.`ipv6hostname` AS `ipv6hostname`,`vli`.`ipv6canping` AS `ipv6canping`,`vli`.`ipv6monitorrcbgp` AS `ipv6monitorrcbgp`,`vli`.`as112client` AS `as112client`,`vli`.`mcastenabled` AS `mcastenabled`,`vli`.`ipv4bgpmd5secret` AS `ipv4bgpmd5secret`,`vli`.`ipv6bgpmd5secret` AS `ipv6bgpmd5secret`,`vli`.`rsclient` AS `rsclient`,`vli`.`irrdbfilter` AS `irrdbfilter`,`vli`.`busyhost` AS `busyhost`,`vli`.`notes` AS `notes`,`v4`.`address` AS `ipv4address`,`v6`.`address` AS `ipv6address` from ((`physicalinterface` `pi` join `virtualinterface` `vi`) join (((`vlaninterface` `vli` left join `ipv4address` `v4` on((`vli`.`ipv4addressid` = `v4`.`id`))) left join `ipv6address` `v6` on((`vli`.`ipv6addressid` = `v6`.`id`))) left join `vlan` on((`vli`.`vlanid` = `vlan`.`id`)))) where ((`pi`.`virtualinterfaceid` = `vi`.`id`) and (`vli`.`virtualinterfaceid` = `vi`.`id`)) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1938,4 +2186,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-11-21  7:08:14
+-- Dump completed on 2019-01-21 14:51:41

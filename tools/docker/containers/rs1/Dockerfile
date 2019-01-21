@@ -1,4 +1,4 @@
-FROM ubuntu:16.04
+FROM ubuntu:18.04
 
 MAINTAINER Barry O'Donovan <barry.odonovan@inex.ie>
 
@@ -6,16 +6,10 @@ RUN apt-get -y update && \
     apt-get -y upgrade && \
     apt-get -y autoremove --purge
 
-RUN apt-key adv --keyserver keyserver.ubuntu.com --recv-keys 52463488670E69A092007C24F2331238F9C59A45 && \
-    echo "deb http://ppa.launchpad.net/cz.nic-labs/bird/ubuntu xenial main" >>/etc/apt/sources.list && \
-    apt-get -y update && \
-    apt-get -y install bird && \
-    apt-get -y autoremove --purge && \
-    apt-get -y clean && \
-    mkdir -p /run/bird /var/log/bird && \
-    chown bird: /run/bird /var/log/bird
+RUN apt-get -y install build-essential wget flex bison libncurses-dev libreadline-dev git && \
+    apt-get -y clean
 
-RUN apt-get -y install php-cgi php-mbstring php-xml unzip lighttpd wget bzip2 sudo joe curl \
+RUN TZ=Europe/Dublin DEBIAN_FRONTEND=noninteractive apt-get -y install php-cgi php-mbstring php-xml unzip lighttpd wget bzip2 sudo joe curl \
         iputils-ping dnsutils && \
     apt-get -y autoremove --purge && \
     apt-get -y clean && \
@@ -24,16 +18,26 @@ RUN apt-get -y install php-cgi php-mbstring php-xml unzip lighttpd wget bzip2 su
     lighty-enable-mod fastcgi && \
     lighty-enable-mod fastcgi-php
 
+RUN cd /usr/local/src && \
+    wget ftp://bird.network.cz/pub/bird/bird-2.0.3.tar.gz && \
+    tar zxf bird-2.0.3.tar.gz && \
+    cd bird-2.0.3 && \
+    ./configure && \
+    make && \
+    make install && \
+    mkdir -p /run/bird /var/log/bird
+
+
 COPY lighttpd.conf              /etc/lighttpd/lighttpd.conf
 COPY start-rs.sh                /usr/local/sbin
 COPY api-reconfigure-all-v4.sh  /usr/local/sbin
 COPY api-reconfigure-v4.sh      /usr/local/sbin
 
 RUN cd /srv && \
-    wget https://github.com/inex/birdseye/releases/download/v1.1.0/birdseye-v1.1.0.tar.bz2 && \
-    tar jxf birdseye-v1.1.0.tar.bz2  && \
-    ln -s birdseye-v1.1.0 birdseye  && \
-    cd birdseye-v1.1.0  && \
+    wget https://github.com/inex/birdseye/releases/download/v1.1.4/birdseye-v1.1.4.tar.bz2 && \
+    tar jxf birdseye-v1.1.4.tar.bz2  && \
+    ln -s birdseye-v1.1.4 birdseye  && \
+    cd birdseye-v1.1.4  && \
     chown -R www-data: storage && \
     echo "www-data        ALL=(ALL)       NOPASSWD: /srv/birdseye/bin/birdc\n" >/etc/sudoers.d/birdseye && \
     chmod a+x /usr/local/sbin/start-rs.sh /usr/local/sbin/api-reconfigure-all-v4.sh /usr/local/sbin/api-reconfigure-v4.sh
