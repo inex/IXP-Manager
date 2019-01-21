@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -59,7 +59,7 @@ use IXP\Mail\PeeringManager\RequestPeeringManager;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   PatchPanel
- * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PeeringManagerController extends Controller
@@ -90,7 +90,14 @@ class PeeringManagerController extends Controller
 
         $protos = [ 4, 6 ];
 
-        $peers  = D2EM::getRepository( CustomerEntity::class )->getPeeringManagerArrayByType( $c, $vlans, $protos );
+        $peers  = D2EM::getRepository( CustomerEntity::class )->getPeeringManagerArrayByType( $c, $vlans, $protos ) ?? false;
+
+        if( !$peers ) {
+            AlertContainer::push( 'No peers have been found for the peering manager. Please see <a href="'
+                . 'https://github.com/inex/IXP-Manager/wiki/Peering-Manager">these instructions</a>'
+                . ' / ensure your database is populating with peering information.', Alert::DANGER );
+            return Redirect::to( '' );
+        }
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'peering-manager/index' )->with([

@@ -1,5 +1,26 @@
 <?php
 
+/*
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
@@ -169,15 +190,12 @@ class Switcher extends EntityRepository
      * Return an array of configurations
      *
      * @param int   $switchid     Switcher id for filtering results
-     * @param int   $vlanid       Vlan id for filtering results
-     * @param int   $ixpid        IXP id for filtering results
-     * @param bool  $superuser    Does the user is super user ?
      * @param int   $infra        Infrastructure id for filtering results
      * @param int   $facility     Facility id for filtering results
      *
      * @return array
      */
-    public function getConfiguration( $switchid = null, $vlanid = null, $ixpid = null, $superuser = true, $infra = null, $facility = null )
+    public function getConfiguration( $switchid = null, $infra = null, $facility = null )
     {
         $q =
             "SELECT s.name AS switchname, 
@@ -191,54 +209,44 @@ class Switcher extends EntityRepository
                     c.id AS custid, 
                     c.autsys AS asn,
                     vli.rsclient AS rsclient,
+                    vli.ipv4enabled AS ipv4enabled, 
+                    vli.ipv6enabled AS ipv6enabled, 
                     v.name AS vlan,
                     GROUP_CONCAT( DISTINCT ipv4.address ) AS ipv4address, 
                     GROUP_CONCAT( DISTINCT ipv6.address ) AS ipv6address
 
-            FROM \\Entities\\VlanInterface vli
+            FROM Entities\\VlanInterface vli
                 JOIN vli.IPv4Address ipv4
-                LEFT JOIN vli.IPv6Address ipv6
+                JOIN vli.IPv6Address ipv6
                 LEFT JOIN vli.Vlan v
                 LEFT JOIN vli.VirtualInterface vi
                 LEFT JOIN vi.Customer c
                 LEFT JOIN vi.PhysicalInterfaces pi
                 LEFT JOIN pi.SwitchPort sp
                 LEFT JOIN sp.Switcher s
-                LEFT JOIN v.Infrastructure vinf
-                LEFT JOIN vinf.IXP vixp
-                LEFT JOIN s.Infrastructure sinf
-                LEFT JOIN sinf.IXP sixp
+                LEFT JOIN s.Infrastructure inf
                 LEFT JOIN s.Cabinet cab
 
-            WHERE 1=1 ";
+            WHERE " . Customer::DQL_CUST_CURRENT . " ";
 
-        if( $switchid !== null )
+        if( $switchid !== null ) {
             $q .= 'AND s.id = ' . intval( $switchid ) . ' ';
+        }
 
-        if( $vlanid !== null )
-            $q .= 'AND v.id = ' . intval( $vlanid ) . ' ';
+        if( $infra !== null ) {
+            $q .= 'AND inf.id = ' . intval( $infra ) . ' ';
+        }
 
-        if( $ixpid !== null )
-            $q .= 'AND ( sixp.id = ' . intval( $ixpid ) . ' OR vixp.id = ' . intval( $ixpid ) . ' ) ';
-
-        if( !$superuser && $ixpid )
-            $q .= 'AND ?1 MEMBER OF c.IXPs ';
-
-        if( $infra !== null )
-            $q .= 'AND sinf.id = ' . intval( $infra ) . ' ';
-
-        if( $facility !== null )
+        if( $facility !== null ) {
             $q .= 'AND cab.Location = ' . intval( $facility ) . ' ';
+        }
 
 
-        $q .= " GROUP BY switchname, switchid, duplex, portstatus, customer, custid, asn, rsclient, vlan ";
+        $q .= " GROUP BY switchname, switchid, duplex, portstatus, customer, custid, asn, rsclient, ipv4enabled, ipv6enabled, vlan ";
 
         $q .= " ORDER BY customer ASC";
 
         $query = $this->getEntityManager()->createQuery( $q );
-
-        if( !$superuser && $ixpid )
-            $query->setParameter( 1, $ixpid );
 
         return $query->getArrayResult();
     }

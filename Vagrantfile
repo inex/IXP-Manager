@@ -14,12 +14,6 @@ Vagrant.configure(2) do |config|
   # boxes at https://atlas.hashicorp.com/search.
   config.vm.box = "ubuntu/xenial64"
 
-  # in case you want to use VMware Fusion instead of Virtualbox we need a
-  # slightly different base box
-  config.vm.provider "vmware_fusion" do |v, override|
-    override.vm.box = "vmtrooper/ubuntu-15.04-x64"
-  end
-
   # Disable automatic box update checking. If you disable this, then
   # boxes will only be checked for updates when the user runs
   # `vagrant box outdated`. This is not recommended.
@@ -53,11 +47,6 @@ Vagrant.configure(2) do |config|
       group: "www-data",
       mount_options: ["dmode=775,fmode=664"]
 
-  config.vm.synced_folder "./var", "/vagrant/var", id: "vagrant-root2",
-      owner: "ubuntu",
-      group: "www-data",
-      mount_options: ["dmode=775,fmode=664"]
-
   config.vm.synced_folder "./database/Proxies", "/vagrant/database/Proxies", id: "vagrant-root3",
       owner: "ubuntu",
       group: "www-data",
@@ -87,11 +76,6 @@ Vagrant.configure(2) do |config|
   #
   # View the documentation for the provider you are using for more
   # information on available options.
-
-  config.vm.provider "vmware_fusion" do |vm|
-    vm.vmx["memsize"] = "1024"
-    vm.vmx["numvcpus"] = "2"
-  end
 
   # Define a Vagrant Push strategy for pushing to Atlas. Other push strategies
   # such as FTP and Heroku are also available. See the documentation at

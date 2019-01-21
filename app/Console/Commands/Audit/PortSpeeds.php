@@ -1,7 +1,7 @@
 <?php namespace IXP\Console\Commands\Audit;
 
 /*
- * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -26,13 +26,15 @@ use D2EM;
 
 use Entities\PhysicalInterface;
 
+use OSS_SNMP\MIBS\Iface as IfaceMIB;
+
 /**
  * Artisan command to audit configured port speeds against actual switch speeds
  *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Audit
  * @package    IXP\Console\Commands
- * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class PortSpeeds extends Command {
@@ -71,7 +73,10 @@ class PortSpeeds extends Command {
         /** @var PhysicalInterface $pi */
         foreach( D2EM::getRepository(PhysicalInterface::class )->findAll() as $pi ) {
 
-            if( $pi->statusIsConnectedOrQuarantine() && $pi->getSwitchPort() && $pi->getSpeed() != $pi->getSwitchPort()->getIfHighSpeed() ) {
+            if( $pi->statusIsConnectedOrQuarantine() 
+                    && $pi->getSwitchPort() 
+                    && $pi->getSpeed() != $pi->getSwitchPort()->getIfHighSpeed()
+                    && $pi->getSwitchPort()->getIfOperStatus() == IfaceMIB::IF_OPER_STATUS_UP ) {
 
                 if( in_array( $pi->getId(), $ignorepiids ) ) {
                     continue;

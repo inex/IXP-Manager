@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Customer;
 
 /*
- * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -70,7 +70,7 @@ use IXP\Utils\View\Alert\{
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Customers
- * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class CustomerController extends Controller
@@ -534,7 +534,7 @@ class CustomerController extends Controller
             'tab'                       => strtolower( $tab ),
             'notes'                     => $cns,
             'notesInfo'                 => D2EM::getRepository( CustomerNoteEntity::class )->analyseForUser( $cns, $c, Auth::user() ),
-            'peers'                     => D2EM::getRepository( CustomerEntity::class )->getPeeringManagerArrayByType( $c , D2EM::getRepository( VlanEntity::class )->getPeeringManagerVLANs(), [ 4, 6 ] )
+            'peers'                     => D2EM::getRepository( CustomerEntity::class )->getPeeringManagerArrayByType( $c , D2EM::getRepository( VlanEntity::class )->getPeeringManagerVLANs(), [ 4, 6 ] ) ?? false,
         ]);
     }
 

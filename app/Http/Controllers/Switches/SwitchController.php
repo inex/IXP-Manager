@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Switches;
 
 /*
- * Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -59,7 +59,7 @@ use OSS_SNMP\{
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class SwitchController extends Doctrine2Frontend {
@@ -755,7 +755,7 @@ class SwitchController extends Doctrine2Frontend {
             'infras'                    => $s ? [ $s->getInfrastructure()->getId()          => $s->getInfrastructure()->getName()           ] : D2EM::getRepository( InfrastructureEntity::class     )->getNames( true ),
             'locations'                 => $s ? [ $s->getCabinet()->getLocation()->getId()  => $s->getCabinet()->getLocation()->getName()   ] : D2EM::getRepository( LocationEntity::class           )->getNames(),
             'switches'                  => D2EM::getRepository( SwitcherEntity::class           )->getByLocationAndInfrastructure( $infra, $location ),
-            'config'                    => D2EM::getRepository( SwitcherEntity::class           )->getConfiguration(  $s ? $s->getId() : null , null, null, Auth::getUser()->isSuperUser() , $infra ? $infra->getId() : null, $location ? $location->getId() : null  )
+            'config'                    => D2EM::getRepository( SwitcherEntity::class           )->getConfiguration(  $s ? $s->getId() : null ,$infra ? $infra->getId() : null, $location ? $location->getId() : null  )
         ]);
     }
 

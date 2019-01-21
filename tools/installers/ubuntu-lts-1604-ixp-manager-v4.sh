@@ -5,7 +5,7 @@
 # Barry O'Donovan <barry.odonovan ~at~ inex.ie>
 # First version: 2016-10-19
 
-# Copyright (C) 2009-2018 Internet Neutral Exchange Association Company Limited By Guarantee.
+# Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
 # All Rights Reserved.
 #
 # This file is part of IXP Manager.
@@ -37,7 +37,7 @@ DBNAME=ixpmanager
 DBUSER=ixpmanager
 
 # the version / branch to use:
-IXPMANAGER_VERSION="v4.8"
+IXPMANAGER_VERSION="release-v4"
 
 touch /tmp/ixp-manager-install.log
 chmod a+w /tmp/ixp-manager-install.log
@@ -589,11 +589,10 @@ SET @custid = LAST_INSERT_ID();
 
 INSERT INTO customer_to_ixp ( customer_id, ixp_id ) VALUES ( @custid, @ixpid );
 
-INSERT INTO user ( custid, username, password, email, privs, disabled, created )
-    VALUES ( @custid, '${USERNAME}', ${HASH_PW}, '${USEREMAIL}', 3, 0, NOW() );
-SET @userid = LAST_INSERT_ID();
+INSERT INTO user ( custid, name, username, password, email, privs, disabled, created )
+    VALUES ( @custid, '${NAME}', '${USERNAME}', ${HASH_PW}, '${USEREMAIL}', 3, 0, NOW() );
 
-INSERT INTO contact ( custid, name, email, created, user_id ) VALUES ( @custid, '${NAME}', '${USEREMAIL}', NOW(), @userid );
+INSERT INTO contact ( custid, name, email, created ) VALUES ( @custid, '${NAME}', '${USEREMAIL}', NOW() );
 END_SQL
 
 # And seed the database:
@@ -645,7 +644,7 @@ echo '[done]'
 ##################################################################
 
 chown -R root: ${IXPROOT}
-chown -R www-data: ${IXPROOT}/storage ${IXPROOT}/var ${IXPROOT}/bootstrap/cache ${IXPROOT}/database/Proxies \
+chown -R www-data: ${IXPROOT}/storage ${IXPROOT}/bootstrap/cache ${IXPROOT}/database/Proxies \
     ${IXPROOT}/vendor ${IXPROOT}/bower.json ${IXPROOT}/public/bower_components ${IXPROOT}/public/logos   &>> /tmp/ixp-manager-install.log
 chmod -R ug+rwX,o+rX ${IXPROOT} &>> /tmp/ixp-manager-install.log
 

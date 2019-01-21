@@ -5,7 +5,7 @@ namespace IXP\Utils\View\Alert;
 /**
  * A class to encapsulate Bootstrap v3 messages.
  *
- * Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -29,7 +29,7 @@ namespace IXP\Utils\View\Alert;
  * Alert
  *
  * @author Barry O'Donovan <barry@opensolutions.ie>
- * @copyright  Copyright (C) 2009-2017 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  */
 class Container
 {
