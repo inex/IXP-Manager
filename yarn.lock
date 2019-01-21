@@ -3217,29 +3217,14 @@ data-urls@^1.0.0:
     whatwg-mimetype "^2.2.0"
     whatwg-url "^7.0.0"
 
-datatables.net-bs4@^1.10.15, datatables.net-bs4@^1.10.19:
+datatables.net-bs4@^1.10.19:
   version "1.10.19"
   resolved "https://registry.yarnpkg.com/datatables.net-bs4/-/datatables.net-bs4-1.10.19.tgz#0608dff22008cf3c7b8a68b1bc702ed255b404fb"
   dependencies:
     datatables.net "1.10.19"
     jquery ">=1.7"
 
-datatables.net-responsive-bs4@^2.2.3:
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/datatables.net-responsive-bs4/-/datatables.net-responsive-bs4-2.2.3.tgz#639de17c1d31210ebf2b3c25f1c774c13f729e94"
-  dependencies:
-    datatables.net-bs4 "^1.10.15"
-    datatables.net-responsive "2.2.3"
-    jquery ">=1.7"
-
-datatables.net-responsive@2.2.3:
-  version "2.2.3"
-  resolved "https://registry.yarnpkg.com/datatables.net-responsive/-/datatables.net-responsive-2.2.3.tgz#50a2b1b4955b16b32f573a3f00f473b0bfbee913"
-  dependencies:
-    datatables.net "^1.10.15"
-    jquery ">=1.7"
-
-datatables.net@1.10.19, datatables.net@^1.10.15:
+datatables.net@1.10.19:
   version "1.10.19"
   resolved "https://registry.yarnpkg.com/datatables.net/-/datatables.net-1.10.19.tgz#97a1ed41c85e62d61040603481b59790a172dd1f"
   dependencies:
@@ -7223,7 +7208,7 @@ mkdirp@0.5.x, "mkdirp@>=0.5 0", mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.0, mkd
   dependencies:
     minimist "0.0.8"
 
-moment@^2.18.1:
+moment@^2.23.0:
   version "2.23.0"
   resolved "https://registry.yarnpkg.com/moment/-/moment-2.23.0.tgz#759ea491ac97d54bac5ad776996e2a58cc1bc225"
 

@@ -166,17 +166,19 @@
                 <?php endif; ?>
             </li>
 
-            <li class="nav-item <?= request()->is( 'router/*' ) && !request()->is( 'router/status' ) ? 'active' : '' ?>" >
-                <a href="<?= route('router@list' ) ?>" class="nav-link" >
+            <li class="nav-item" >
+                <a href="<?= route('router@list' ) ?>" class="nav-link <?= request()->is( 'router/*' ) && !request()->is( 'router/status' ) ? 'active' : '' ?>" >
                     Routers
                 </a>
 
                 <?php if( request()->is( 'router/*' ) ): ?>
+                <ul class="sub-menu">
                     <li class="nav-item sub-menu <?= request()->is( 'router/*' ) && request()->is( 'router/status' ) ? 'active' : '' ?> " >
                         <a href="<?= route('router@status' ) ?>" class="nav-link" >
                             Live Status
                         </a>
                     </li>
+                </ul>
                 <?php endif;?>
 
             </li>
