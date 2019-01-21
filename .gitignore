@@ -76,7 +76,7 @@ application/configs/application.ini.bup
 /bird/
 ixpmanager-preferred.sql.bz2
 mrtg-shite/
-ubuntu-xenial-16.04-cloudimg-console.log
+ubuntu-*-cloudimg-console.log
 /inex-*.sql.bz2
 
 .cache/
