@@ -9,8 +9,8 @@
                     <th>Ticket Ref</th>
                 <?php endif; ?>
                 <th>State</th>
-                <th>Cabinet</th>
                 <th>Location</th>
+                <th>Cabinet</th>
                 <th>Assigned At</th>
                 <th>Chargeable</th>
                 <th>Owned By</th>
