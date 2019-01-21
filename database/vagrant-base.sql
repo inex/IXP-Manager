@@ -1732,6 +1732,7 @@ CREATE TABLE `user` (
   `creator` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_8D93D649F85E0677` (`username`),
   KEY `IDX_8D93D649DA0209B9` (`custid`),
@@ -1745,7 +1746,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,1,'vagrant','$2a$09$kI2ORSzVnuekb9XERfL1we2tENnDJXsR.oxlWM5ELHX9G3aoCdvne','joe@example.com',NULL,NULL,3,0,'2015-08-20 15:19:12',1,'travis','2014-01-06 13:54:22','Vagrant'),(2,4,'as112','$2a$09$bYMQzLJs6VdISr3OlwqGAe7LVe0K6xALQUkThuhQ27hwB4EJ.g/1a','none@example.com',NULL,NULL,2,0,'2015-08-20 15:24:41',1,'vagrant','2015-08-20 15:24:41','Customer AS112'),(3,4,'as112user','$2a$09$O1rXly8ResuQdbkZGQx6perb2FH72PvFsoVvjVvY5bd6DlyVNKwna','none@example.com',NULL,NULL,1,0,'2015-08-20 15:25:30',1,'vagrant','2015-08-20 15:25:20','AS112 User');
+INSERT INTO `user` VALUES (1,1,'vagrant','$2a$09$kI2ORSzVnuekb9XERfL1we2tENnDJXsR.oxlWM5ELHX9G3aoCdvne','joe@example.com',NULL,NULL,3,0,'2015-08-20 15:19:12',1,'travis','2014-01-06 13:54:22','Vagrant',NULL),(2,4,'as112','$2a$09$bYMQzLJs6VdISr3OlwqGAe7LVe0K6xALQUkThuhQ27hwB4EJ.g/1a','none@example.com',NULL,NULL,2,0,'2015-08-20 15:24:41',1,'vagrant','2015-08-20 15:24:41','Customer AS112',NULL),(3,4,'as112user','$2a$09$O1rXly8ResuQdbkZGQx6perb2FH72PvFsoVvjVvY5bd6DlyVNKwna','none@example.com',NULL,NULL,1,0,'2015-08-20 15:25:30',1,'vagrant','2015-08-20 15:25:20','AS112 User',NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1765,7 +1766,7 @@ CREATE TABLE `user_logins` (
   KEY `IDX_6341CC99A76ED395` (`user_id`),
   KEY `at_idx` (`at`,`user_id`),
   CONSTRAINT `FK_6341CC99A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1774,7 +1775,7 @@ CREATE TABLE `user_logins` (
 
 LOCK TABLES `user_logins` WRITE;
 /*!40000 ALTER TABLE `user_logins` DISABLE KEYS */;
-INSERT INTO `user_logins` VALUES (1,1,'10.37.129.2','2014-01-06 13:54:52'),(2,1,'10.37.129.2','2014-01-13 10:38:11'),(3,1,'10.0.2.2','2015-08-20 14:44:45'),(4,1,'10.0.2.2','2017-11-09 12:14:12');
+INSERT INTO `user_logins` VALUES (1,1,'10.37.129.2','2014-01-06 13:54:52'),(2,1,'10.37.129.2','2014-01-13 10:38:11'),(3,1,'10.0.2.2','2015-08-20 14:44:45'),(4,1,'10.0.2.2','2017-11-09 12:14:12'),(5,1,'10.0.2.2','2019-01-21 16:10:47');
 /*!40000 ALTER TABLE `user_logins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1967,4 +1968,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-21 16:10:39
+-- Dump completed on 2019-01-21 16:15:03
