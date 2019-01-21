@@ -78,6 +78,7 @@ class Router
      * CONST SOFTWARES
      */
     const SOFTWARE_BIRD                     = 1;
+    const SOFTWARE_BIRD2                    = 6;
     const SOFTWARE_QUAGGA                   = 2;
     const SOFTWARE_FRROUTING                = 3;
     const SOFTWARE_OPENBGPD                 = 4;
@@ -88,7 +89,8 @@ class Router
      * @var array Email ids to classes
      */
     public static $SOFTWARES = [
-        self::SOFTWARE_BIRD                 => 'Bird',
+        self::SOFTWARE_BIRD                 => 'Bird v1',
+        self::SOFTWARE_BIRD2                => 'Bird v2',
         self::SOFTWARE_QUAGGA               => 'Quagga',
         self::SOFTWARE_FRROUTING            => 'FRRouting',
         self::SOFTWARE_OPENBGPD             => 'OpenBGPd',
@@ -192,6 +194,11 @@ class Router
      * @var boolean
      */
     private $bgp_lc = false;
+
+    /**
+     * @var boolean
+     */
+    private $rpki = false;
 
     /**
      * @var boolean
@@ -543,6 +550,15 @@ class Router
         return $this->getBgpLc();
     }
 
+    /**
+     * Get rpki enabled state
+     *
+     * @return bool
+     */
+    public function getRPKI(): bool
+    {
+        return $this->rpki;
+    }
 
     /**
      * Get skip MD5
@@ -871,6 +887,19 @@ class Router
     public function setBgpLc($bgp_lc)
     {
         $this->bgp_lc = $bgp_lc;
+        return $this;
+    }
+
+    /**
+     * Set rpki enabled state
+     *
+     * @param bool $rpki
+     *
+     * @return Router
+     */
+    public function setRPKI( bool $rpki ): Router
+    {
+        $this->rpki = $rpki;
         return $this;
     }
 

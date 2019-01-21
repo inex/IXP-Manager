@@ -171,6 +171,15 @@
                     template and the software / platform!" );
                     ?>
 
+                    <?= Former::checkbox( 'rpki' )
+                        ->label('RPKI')
+                        ->text( 'Enable RPKI filtering' )
+                        ->value( 1 )
+                        ->inline()
+                        ->blockHelp( "Enable support for RPKI filtering. NB: must be supported by both the 
+                    template and the software / platform! Ensure you have created at least one RPKI-RTR daemon also." );
+                    ?>
+
                     <?= Former::checkbox( 'skip_md5' )
                         ->label( 'Skip MD5' )
                         ->text( 'Do not include any MD5 configuration' )
@@ -188,7 +197,8 @@
                     used at INEX can be used with the bundled templates by entering one of the following:<br><br>
                         &middot; <code>api/v4/router/server/bird/standard</code><br>
                         &middot; <code>api/v4/router/collector/bird/standard</code><br>
-                        &middot; <code>api/v4/router/as112/bird/standard</code>
+                        &middot; <code>api/v4/router/as112/bird/standard</code><br><br>
+                        &middot; <code>api/v4/router/server/bird2/standard</code><br>
                     " );
                     ?>
 
