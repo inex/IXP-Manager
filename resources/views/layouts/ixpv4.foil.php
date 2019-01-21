@@ -57,7 +57,7 @@
                 <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
                     <main role="main" class="col-md-10 ml-sm-auto col-lg-10 mt-2 pb-4">
                 <?php else: ?>
-                    <main role="main" class="col-md-10 mx-auto mt-2 pb-4">
+                    <main role="main" class="col-md-10 mt-2 pb-4">
                 <?php endif; ?>
 
                     <?php /*if( Auth::check() && Auth::user()->isSuperUser() ): */?>

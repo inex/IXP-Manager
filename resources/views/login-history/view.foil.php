@@ -3,35 +3,28 @@
     $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route('login-history@list') ?>">Login History</a>
-<?php $this->append() ?>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Login History /
+    <a href="<?= route( 'customer@overview', [ 'id' => $t->user->getCustomer()->getId(), 'tab' => 'users' ] ) ?>">
+        <?= $t->ee( $t->user->getCustomer()->getFormattedName() ) ?>
+    </a>
+    /
+    <?= $t->ee( $t->user->getUsername() ) ?>
 
-<?php $this->section( 'page-header-postamble' ) ?>
-    <li>
-        <a href="<?= route( 'customer@overview', [ 'id' => $t->user->getCustomer()->getId(), 'tab' => 'users' ] ) ?>">
-            <?= $t->ee( $t->user->getCustomer()->getFormattedName() ) ?>
-        </a>
-    </li>
-    <li>
-        <?= $t->ee( $t->user->getUsername() ) ?>
-    </li>
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
 
 
-    <div class="well">
-        Login history for <?= $t->ee( $t->user->getUsername() ) ?>. <em>Typically logs older than six months are expunged.</em>
+    <div class="alert alert-info" role="alert">
+        Login history for <b><?= $t->ee( $t->user->getUsername() ) ?></b>. <em>Typically logs older than six months are expunged.</em>
     </div>
 
 
-    <div class="row">
+    <div class="table-responsive">
 
-        <div class="col-sm-12">
-
-            <table id="table-list" class="table collapse">
-                <thead>
+        <table id="table-list" class="table collapse table-striped">
+            <thead class="thead-dark">
                 <tr>
                     <th>
                         IP
@@ -40,8 +33,8 @@
                         At
                     </th>
                 </tr>
-                </thead>
-                <tbody>
+            </thead>
+            <tbody>
                 <?php foreach( $t->histories as $history ): ?>
                     <tr>
                         <td>
@@ -52,10 +45,9 @@
                         </td>
                     </tr>
                 <?php endforeach; ?>
-                </tbody>
-            </table>
+            </tbody>
+        </table>
 
-        </div>
 
     </div>
 

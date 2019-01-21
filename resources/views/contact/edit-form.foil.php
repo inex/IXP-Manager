@@ -5,149 +5,157 @@
         ->action( route( $t->feParams->route_prefix . '@store' ) )
         ->customInputWidthClass( 'col-sm-6' )
     ?>
-    <div class="col-sm-6">
-        <?= Former::text( 'name' )
-            ->label( 'Name' )
-            ->placeholder( 'Firstname Lastname' )
-            ->blockHelp( "The full name of the contact." );
-        ?>
-
-        <?= Former::text( 'position' )
-            ->label( 'Position' )
-            ->placeholder( 'Senior Network Engineer' )
-            ->blockHelp( "The contact's job title / position." );
-        ?>
-
-        <?php if( Auth::getUser()->isSuperUser() ):?>
-            <?= Former::select( 'custid' )
-                ->id( 'cust' )
-                ->label( 'Customer' )
-                ->placeholder( 'Select a customer' )
-                ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
-                ->addClass( 'chzn-select' )
-                ->blockHelp( "Customer to assign this contact to." );
+    <div class="row">
+        <div class="col-sm-6">
+            <?= Former::text( 'name' )
+                ->label( 'Name' )
+                ->placeholder( 'Firstname Lastname' )
+                ->blockHelp( "The full name of the contact." );
             ?>
-        <?php endif; ?>
 
-        <?= Former::text( 'email' )
-            ->label( 'Email' )
-            ->placeholder( 'firstname.lastname@example.com' )
-            ->blockHelp( "Email address of the contact." );
-        ?>
+            <?= Former::text( 'position' )
+                ->label( 'Position' )
+                ->placeholder( 'Senior Network Engineer' )
+                ->blockHelp( "The contact's job title / position." );
+            ?>
 
-        <?= Former::text( 'phone' )
-            ->label( 'Phone' )
-            ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
-            ->blockHelp( "Office / landline phone number of the contact." );
-        ?>
-
-        <?= Former::text( 'mobile' )
-            ->label( 'Mobile' )
-            ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
-            ->blockHelp( "Mobile phone / cell number of the contact." );
-        ?>
-    </div>
-
-    <div class="col-sm-6">
-
-        <div class="form-group" style="display: inline; display: inline-flex">
-            <label for="" class="control-label col-lg-2 col-sm-4">&nbsp;Role&nbsp;</label>
-            <?php if( $t->data[ 'params'][ "allGroups" ] && isset( $t->data[ 'params'][ "allGroups" ][ 'ROLE' ] ) ): ?>
-
-                <?php foreach( $t->data[ 'params'][ "allGroups" ][ 'ROLE' ] as $role ): ?>
-                    <?= Former::checkbox( "ROLE_" . $role[ 'id' ] )
-                        ->label( '&nbsp;')
-                        ->text( $role[ 'name' ] )
-                        ->value( 1 )
-                        ->blockHelp( '' )
-                        ->class( "inline" )
-
-                    ?>
-                <?php endforeach; ?>
-
+            <?php if( Auth::getUser()->isSuperUser() ):?>
+                <?= Former::select( 'custid' )
+                    ->id( 'cust' )
+                    ->label( 'Customer' )
+                    ->placeholder( 'Select a customer' )
+                    ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
+                    ->addClass( 'chzn-select' )
+                    ->blockHelp( "Customer to assign this contact to." );
+                ?>
             <?php endif; ?>
 
+            <?= Former::text( 'email' )
+                ->label( 'Email' )
+                ->placeholder( 'firstname.lastname@example.com' )
+                ->blockHelp( "Email address of the contact." );
+            ?>
+
+            <?= Former::text( 'phone' )
+                ->label( 'Phone' )
+                ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
+                ->blockHelp( "Office / landline phone number of the contact." );
+            ?>
+
+            <?= Former::text( 'mobile' )
+                ->label( 'Mobile' )
+                ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
+                ->blockHelp( "Mobile phone / cell number of the contact." );
+            ?>
         </div>
 
+        <div class="col-sm-6">
 
-
-        <div class="form-group">
-
-            <label for="notes" class="control-label col-lg-2 col-sm-4">Notes</label>
-            <div class="col-sm-8">
-
-                <ul class="nav nav-tabs">
-                    <li role="presentation" class="active">
-                        <a class="tab-link-body-note" href="#body">Notes</a>
-                    </li>
-                    <li role="presentation">
-                        <a class="tab-link-preview-note" href="#preview">Preview</a>
-                    </li>
-                </ul>
-
-                <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="body">
-
-                        <textarea class="form-control" style="font-family:monospace;" rows="10" id="notes" name="notes"><?= $t->data[ 'params'][ 'notes' ] ?></textarea>
-                    </div>
-                    <div role="tabpanel" class="tab-pane" id="preview">
-                        <div class="well well-preview" style="background: rgb(255,255,255);">
-                            Loading...
-                        </div>
-                    </div>
+            <div class="form-group row" >
+                <div class="">
+                    <label class="control-label col-lg-2 col-sm-4">&nbsp;Role&nbsp;</label>
                 </div>
 
-                <br><br>
+
+                <?php if( $t->data[ 'params'][ "allGroups" ] && isset( $t->data[ 'params'][ "allGroups" ][ 'ROLE' ] ) ): ?>
+                    <div>
+                        <?php foreach( $t->data[ 'params'][ "allGroups" ][ 'ROLE' ] as $role ): ?>
+
+                            <?= Former::checkbox( "ROLE_" . $role[ 'id' ] )
+                                ->label( '&nbsp;')
+                                ->text( $role[ 'name' ] )
+                                ->value( 1 )
+                                ->blockHelp( '' )
+                                ->inline()
+
+                            ?>
+                        <?php endforeach; ?>
+                    </div>
+                <?php endif; ?>
+
             </div>
 
-        </div>
 
-        <?php if( Auth::getUser()->isSuperUser() ): ?>
 
-            <?php if( $t->data[ 'params'][ "allGroups" ] && count( $t->data[ 'params'][ "allGroups" ] ) > 1 || ( count( $t->data[ 'params'][ "allGroups" ] ) == 1 && !isset( $t->data[ 'params'][ "allGroups" ]['ROLE'] ) )): ?>
+            <div class="form-group">
 
-                <div class="form-group" style="display: inline; display: inline-flex">
 
-                    <label for="mayauthorize" class="control-label col-lg-2 col-sm-4">&nbsp;Groups&nbsp;</label>
+                    <div class="card mt-4">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs">
+                                <li role="presentation" class="nav-item">
+                                    <a class="tab-link-body-note nav-link active" href="#body">Notes</a>
+                                </li>
+                                <li role="presentation" class="nav-item">
+                                    <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
+                                </li>
+                            </ul>
+                        </div>
 
-                    <table class="table table-no-border">
+                        <div class="tab-content card-body">
+                            <div role="tabpanel" class="tab-pane show active" id="body">
+                                <textarea class="form-control" style="font-family:monospace;" rows="10" id="notes" name="notes"><?= $t->data[ 'params'][ 'notes' ] ?></textarea>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="preview">
+                                <div class="bg-light p-4 well-preview">
+                                    Loading...
+                                </div>
+                            </div>
+                        </div>
+                    </div>
 
-                        <?php foreach( $t->data[ 'params'][ "allGroups" ] as $gname => $gvalue ): ?>
 
-                            <?php if( $gname != "ROLE" && config('contact_group.types.' . $gname ) ): ?>
-                                <tr>
-                                    <td>
-                                        <label for="mayauthorize" class="control-label col-lg-2 col-sm-4">&nbsp;<?= $gname ?>&nbsp;</label>
-                                    </td>
+            </div>
 
-                                    <?php foreach( $gvalue as $ggroup ): ?>
+            <?php if( Auth::getUser()->isSuperUser() ): ?>
 
+                <?php if( $t->data[ 'params'][ "allGroups" ] && count( $t->data[ 'params'][ "allGroups" ] ) > 1 || ( count( $t->data[ 'params'][ "allGroups" ] ) == 1 && !isset( $t->data[ 'params'][ "allGroups" ]['ROLE'] ) )): ?>
+
+                    <div class="form-group" style="display: inline; display: inline-flex">
+
+                        <label for="mayauthorize" class="control-label col-lg-2 col-sm-4">&nbsp;Groups&nbsp;</label>
+
+                        <table class="table table-no-border">
+
+                            <?php foreach( $t->data[ 'params'][ "allGroups" ] as $gname => $gvalue ): ?>
+
+                                <?php if( $gname != "ROLE" && config('contact_group.types.' . $gname ) ): ?>
+                                    <tr>
                                         <td>
-
-                                            <?= Former::checkbox( $gname . "_" . $ggroup[ 'id' ] )
-                                                ->label('&nbsp;')
-                                                ->text( $ggroup[ 'name' ] )
-                                                ->value( 1 )
-                                                ->blockHelp( '' )
-                                                ->class( 'inline' )
-                                            ?>
-
+                                            <label for="mayauthorize" class="control-label col-lg-2 col-sm-4">&nbsp;<?= $gname ?>&nbsp;</label>
                                         </td>
 
-                                    <?php endforeach; ?>
+                                        <?php foreach( $gvalue as $ggroup ): ?>
 
-                                </tr>
-                            <?php endif; ?>
+                                            <td>
 
-                        <?php endforeach; ?>
+                                                <?= Former::checkbox( $gname . "_" . $ggroup[ 'id' ] )
+                                                    ->label('&nbsp;')
+                                                    ->text( $ggroup[ 'name' ] )
+                                                    ->value( 1 )
+                                                    ->blockHelp( '' )
+                                                    ->inline()
 
-                    </table>
-                </div>
+                                                ?>
+
+                                            </td>
+
+                                        <?php endforeach; ?>
+
+                                    </tr>
+                                <?php endif; ?>
+
+                            <?php endforeach; ?>
+
+                        </table>
+                    </div>
+                <?php endif; ?>
+
             <?php endif; ?>
 
-        <?php endif; ?>
-
+        </div>
     </div>
+
 
 <div style="clear: both"></div>
 
@@ -175,9 +183,9 @@
 
     <?= Former::actions(
         Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' ),
-        Former::default_link( 'Cancel' )->href( $cancel_url ),
+        Former::secondary_link( 'Cancel' )->href( $cancel_url ),
         Former::success_button( 'Help' )->id( 'help-btn' )
-    );
+    )->class( "bg-light mt-4 p-4 shadow-sm text-center" );
     ?>
 
     <?= Former::hidden( 'id' )
