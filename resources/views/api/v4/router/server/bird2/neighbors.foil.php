@@ -94,22 +94,8 @@ int set allas;
         accept;
     }
 
-<?php if( $t->router->rpki() ): ?>
-
-    # RPKI test - if it's INVALID or VALID, we are done
-    if filter_rpki() then accept;
-
-<?php else: ?>
-
-    # Skipping RPKI check, protocol not enabled.
-    bgp_large_community.add( IXP_LC_INFO_RPKI_NOT_CHECKED );
-
-<?php endif; ?>
-
-
-
 <?php
-    // Only do IRRDB ASN/prefix filtering if this is enabled per client:
+    // Only do IRRDB ASN filtering if this is enabled per client:
     if( $int['irrdbfilter'] ?? true ):
 
         if( count( $int['irrdbfilter_asns'] ) ):
@@ -131,6 +117,25 @@ int set allas;
     }
 
 <?php
+    endif; ?>
+
+<?php if( $t->router->rpki() ): ?>
+
+    # RPKI test - if it's INVALID or VALID, we are done
+    if filter_rpki() then accept;
+
+<?php else: ?>
+
+    # Skipping RPKI check, protocol not enabled.
+    bgp_large_community.add( IXP_LC_INFO_RPKI_NOT_CHECKED );
+
+<?php endif; ?>
+
+
+<?php
+    // Only do IRRDB prefix filtering if this is enabled per client:
+    if( $int['irrdbfilter'] ?? true ):
+
         if( count( $int['irrdbfilter_prefixes'] ) ):
 ?>
 
