@@ -561,6 +561,17 @@ class Router
     }
 
     /**
+     * Alias get rpki enabled state
+     *
+     * @return bool
+     */
+    public function rpki(): bool
+    {
+        return $this->getRPKI();
+    }
+
+
+    /**
      * Get skip MD5
      *
      * @return bool
