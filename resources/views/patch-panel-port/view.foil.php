@@ -597,7 +597,7 @@
                                                                                         <i id="file-toggle-private-i-<?= $file->getId() ?>" class="fa fa-<?= $file->getIsPrivate() ? 'unlock' : 'lock' ?>"></i>
                                                                                     </a>
                                                                                 <?php endif; ?>
-                                                                                <a class="btn btn btn-default" target="_blank" href="<?= route('patch-panel-port@download-file', [ 'pppfid' => $file->getId() ] ) ?>" title="Download">
+                                                                                <a class="btn btn btn-outline-secondary" target="_blank" href="<?= route('patch-panel-port@download-file', [ 'pppfid' => $file->getId() ] ) ?>" title="Download">
                                                                                     <i class="fa fa-download"></i>
                                                                                 </a>
                                                                                 <?php if( Auth::user()->isSuperUser() ): ?>
