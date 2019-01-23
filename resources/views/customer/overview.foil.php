@@ -239,11 +239,15 @@
                     Cross Connects
                 </a>
             </li>
-            <li role="peers" class="nav-item">
-                <a class="nav-link <?php if( $t->tab == 'peers' ): ?> active <?php endif; ?>" data-toggle="tab" href="#peers" data-toggle="tab">
-                    Peers
-                </a>
-            </li>
+
+            <?php if( $t->peers ): ?>
+                <li role="peers" class="nav-item">
+                    <a class="nav-link <?php if( $t->tab == 'peers' ): ?> active <?php endif; ?>" data-toggle="tab" href="#peers" data-toggle="tab">
+                        Peers
+                    </a>
+                </li>
+            <?php endif; ?>
+
             <?php if( count( $c->getConsoleServerConnections() ) ): ?>
                 <li role="console-server-connections" class="nav-item ">
                     <a class="nav-link <?php if( $t->tab == 'console-server-connections' ): ?>active<?php endif; ?>" data-toggle="tab" href="#console-server-connections" data-toggle="tab">
@@ -304,7 +308,6 @@
                         <?= $t->insert( 'customer/overview-tabs/private-vlans' ); ?>
                     </div>
                 <?php endif ?>
-<<<<<<< HEAD
             <?php endif ?>
             <div id="users" class="tab-pane fade <?php if( $t->tab == 'users' ): ?> active show <?php endif; ?> ">
                 <?= $t->insert( 'customer/overview-tabs/users' ); ?>
@@ -321,38 +324,15 @@
             <div id="cross-connects" class="tab-pane fade">
                 <?= $t->insert( 'customer/overview-tabs/cross-connects' ); ?>
             </div>
-            <div id="peers" class="tab-pane fade <?php if( $t->tab == 'peers' ): ?> active show <?php endif; ?>">
-                <?= $t->insert( 'customer/overview-tabs/peers' ); ?>
-            </div>
+
+            <?php if( $t->peers ): ?>
+                <div id="peers" class="tab-pane fade <?php if( $t->tab == 'peers' ): ?> active show <?php endif; ?>">
+                    <?= $t->insert( 'customer/overview-tabs/peers' ); ?>
+                </div>
+            <?php endif; ?>
+
             <div id="console-server-connections" class="tab-pane fade">
                 <?= $t->insert( 'customer/overview-tabs/console-server-connections' ); ?>
-=======
-                <div id="users" class="tab-pane fade <?php if( $t->tab == 'users' ): ?> in active <?php endif; ?> ">
-                    <?= $t->insert( 'customer/overview-tabs/users' ); ?>
-                </div>
-                <div id="contacts" class="tab-pane fade <?php if( $t->tab == 'contacts' ): ?> in active <?php endif; ?>">
-                    <?= $t->insert( 'customer/overview-tabs/contacts' ); ?>
-                </div>
-                <div id="logins" class="tab-pane fade <?php if( $t->tab == 'logins' ): ?> in active <?php endif; ?>">
-                    <?= $t->insert( 'customer/overview-tabs/logins' ); ?>
-                </div>
-                <div id="notes" class="tab-pane fade <?php if( $t->tab == 'notes' ): ?> in active <?php endif; ?>">
-                    <?= $t->insert( 'customer/overview-tabs/notes' ); ?>
-                </div>
-                <div id="cross-connects" class="tab-pane fade">
-                    <?= $t->insert( 'customer/overview-tabs/cross-connects' ); ?>
-                </div>
-
-                <?php if( $t->peers ): ?>
-                    <div id="peers" class="tab-pane fade <?php if( $t->tab == 'peers' ): ?> in active <?php endif; ?>">
-                        <?= $t->insert( 'customer/overview-tabs/peers' ); ?>
-                    </div>
-                <?php endif; ?>
-
-                <div id="console-server-connections" class="tab-pane fade">
-                    <?= $t->insert( 'customer/overview-tabs/console-server-connections' ); ?>
-                </div>
->>>>>>> v5
             </div>
         </div>
     </div>

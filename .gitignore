@@ -3,81 +3,24 @@
 .env*.local
 .project
 .buildpath
+.settings/
 .vagrant/
 
 /vendor/
-MAINT_MODE_ENABLED
-.settings/
-ixp-manager.sublime-workspace
-bin/mailing-list-sync.sh
 bin/fixtures.php
 public/.htaccess
 public/logos/*
-application/configs/pp-application.ini*
-data/mrtg
-var/cache/*
-var/log/*
-var/meetings/*
-var/session/*
-var/templates_c/*
-var/tmp/*
-var/spool/*
-var/uploads/*
-*~
+
 public/favicon.ico
-public/maintenance.php
-public/images/.directory
-public/images/joomla-admin/.directory
-public/images/joomla-admin/menu/.directory
+
+.directory
+.DS_Store
+*~
+
 public/bower_components/
-tools/perl-lib/IXPManager/MYMETA.yml
-tools/perl-lib/IXPManager/Makefile
-tools/perl-lib/IXPManager/blib/
-tools/perl-lib/IXPManager/pm_to_blib
-tools/perl-lib/IXPManager/ixpmanager.conf
-*.sublime-project
-*.sublime-workspace
-application/views/router-cli/tacacs/tacplus/key.cfg
-application/views/_skins/*/router-cli/tacacs/*/key.cfg
-application/configs/rc-inex-*conf
-application/configs/rs*-inex-*.conf
-application/configs/ci-*
-application/configs/application.ini
-*.DS_Store
 
-config/contact_group.php
-config/grapher_cli.php
-config/grapher_trunks.php
-config/grapher_smokeping_overrides.php
-config/ixp_tools.php
-config/mailinglists.php
-config/routers.php
-config/trustedproxy.php
-
-application/configs/rs*.conf
-
-# local INEX dev stuff:
-ixpmanager-dump.sql.bz2
-
-# LONAP Skins
-application/modules/apiv1/views/_skins/lonap/
-application/views/_skins/lonap/
-
-
-# bits from v4.2
-config/contact_group.php
-config/grapher_trunks.php
-config/mailinglists.php
-config/custom.php
-config/lookingglass.php
-
-# barryo local development crud
-application/configs/application.ini.bup
-/bird/
-ixpmanager-preferred.sql.bz2
-mrtg-shite/
-ubuntu-xenial-16.04-cloudimg-console.log
-/inex-*.sql.bz2
+public/css/ixp-pack.css
+public/js/ixp-pack.js
 
 .cache/
 .composer/
@@ -91,6 +34,28 @@ storage/grapher/
 storage/files/*
 storage/tmp/*
 
+tools/perl-lib/IXPManager/MYMETA.yml
+tools/perl-lib/IXPManager/Makefile
+tools/perl-lib/IXPManager/blib/
+tools/perl-lib/IXPManager/pm_to_blib
+tools/perl-lib/IXPManager/ixpmanager.conf
+
+config/contact_group.php
+config/custom.php
+config/grapher_cli.php
+config/grapher_trunks.php
+config/grapher_smokeping_overrides.php
+config/ixp_tools.php
+config/lookingglass.php
+config/mailinglists.php
+config/trustedproxy.php
+
+# local INEX dev stuff:
+ixpmanager-dump.sql.bz2
+ixpmanager-preferred.sql.bz2
+ubuntu-*-cloudimg-console.log
+inex-*.sql.bz2
+
 .idea/workspace.xml
 .idea/tasks.xml
 .idea/codeStyles/
@@ -101,6 +66,8 @@ storage/tmp/*
 .idea/ixpv.iml
 .idea/php.xml
 .idea/symfony2.xml
+.idea/composerJson.xml
+.idea/misc.xml
 
 
 # Let's not accidently add SQL dumps to Git
@@ -110,9 +77,6 @@ storage/tmp/*
 
 /node_modules/
 /package-lock.json
-.idea/composerJson.xml
-.idea/misc.xml
-mrtg/
 npm-debug.log
 yarn-error.log
 

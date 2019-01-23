@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<skipper version="3.2.14.1430" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
+<skipper version="3.2.15.1478" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
   <module name="\IXP-Manager" local-name="IXP-Manager" namespace="\Entities" local-namespace="Entities" export-format="Doctrine2Xml" export-path="xml" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
     <entity name="\Entities\IrrdbAsn" local-name="IrrdbAsn" namespace="\Entities" uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c">
       <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="033ed9da-4165-432b-8b57-e21110abe29e"/>
@@ -1029,6 +1029,7 @@
       <field name="username" type="string" size="255" unique="true" uuid="1d5e1545-7815-4067-9bb5-c8286cfe24b5"/>
       <field name="password" type="string" size="255" uuid="eab94e07-d600-49ca-88ce-0dd664f19425"/>
       <field name="email" type="string" size="255" uuid="7ce655e0-508e-444f-ac26-cb27e349bebf"/>
+      <field name="remember_token" type="string" size="100" uuid="7e502493-82c6-4c76-acd8-e28026373cba"/>
       <field name="authorisedMobile" type="string" size="30" uuid="d36f8a6a-1f67-400e-9fad-33a12ec3d10a">
         <orm-attributes>
           <attribute name="column">authorisedMobile</attribute>
@@ -1386,6 +1387,7 @@
       <field name="lg_access" type="smallint" unsigned="true" uuid="b7ef8eed-d171-4a56-b005-f174fdfe839d"/>
       <field name="quarantine" type="boolean" required="true" uuid="1c35a4ba-d690-45f0-bf52-9f75f9a05217"/>
       <field name="bgp_lc" type="boolean" required="true" uuid="940978a5-70fe-420e-92b0-f03b8c04ec2b"/>
+      <field name="rpki" type="boolean" default="0" required="true" uuid="4ed5e671-194b-4815-b9c3-6e219b4a763a"/>
       <field name="template" type="string" required="true" uuid="a1e53f31-945e-40b2-8621-a1ced0d81384"/>
       <field name="skip_md5" type="boolean" required="true" uuid="1a576d6a-f681-43a4-93c0-5f31524248b0"/>
       <field name="last_updated" type="datetime" uuid="e6d82ff3-94c4-496a-803e-e295ff49c9b9"/>

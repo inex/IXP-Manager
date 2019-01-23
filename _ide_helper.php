@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.7.19 on 2019-01-07 16:50:12.
+ * Generated for Laravel 5.7.21 on 2019-01-21 11:13:57.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -5788,6 +5788,17 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Determine if the request is the result of an prefetch call.
+         *
+         * @return bool 
+         * @static 
+         */ 
+        public static function prefetch()
+        {
+            return \Illuminate\Http\Request::prefetch();
+        }
+        
+        /**
          * Determine if the request is over HTTPS.
          *
          * @return bool 
@@ -7491,7 +7502,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $key
          * @param mixed $default
-         * @return \Illuminate\Http\UploadedFile|array|null 
+         * @return \Illuminate\Http\UploadedFile|\Illuminate\Http\UploadedFile[]|array|null 
          * @static 
          */ 
         public static function file($key = null, $default = null)
@@ -9182,6 +9193,17 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Get the jobs that have been pushed.
+         *
+         * @return array 
+         * @static 
+         */ 
+        public static function pushedJobs()
+        {
+            return \Illuminate\Support\Testing\Fakes\QueueFake::pushedJobs();
+        }
+        
+        /**
          * Get the connection name for the queue.
          *
          * @return string 
@@ -9656,6 +9678,17 @@ namespace Illuminate\Support\Facades {
         public static function pjax()
         {
             return \Illuminate\Http\Request::pjax();
+        }
+        
+        /**
+         * Determine if the request is the result of an prefetch call.
+         *
+         * @return bool 
+         * @static 
+         */ 
+        public static function prefetch()
+        {
+            return \Illuminate\Http\Request::prefetch();
         }
         
         /**
@@ -11362,7 +11395,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $key
          * @param mixed $default
-         * @return \Illuminate\Http\UploadedFile|array|null 
+         * @return \Illuminate\Http\UploadedFile|\Illuminate\Http\UploadedFile[]|array|null 
          * @static 
          */ 
         public static function file($key = null, $default = null)
@@ -13507,25 +13540,25 @@ namespace Illuminate\Support\Facades {
         /**
          * Assert that the given file exists.
          *
-         * @param string $path
-         * @return void 
+         * @param string|array $path
+         * @return $this 
          * @static 
          */ 
         public static function assertExists($path)
         {
-            \Illuminate\Filesystem\FilesystemAdapter::assertExists($path);
+            return \Illuminate\Filesystem\FilesystemAdapter::assertExists($path);
         }
         
         /**
          * Assert that the given file does not exist.
          *
-         * @param string $path
-         * @return void 
+         * @param string|array $path
+         * @return $this 
          * @static 
          */ 
         public static function assertMissing($path)
         {
-            \Illuminate\Filesystem\FilesystemAdapter::assertMissing($path);
+            return \Illuminate\Filesystem\FilesystemAdapter::assertMissing($path);
         }
         
         /**
@@ -14073,7 +14106,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $name
          * @param array $parameters
-         * @param \DateTimeInterface|int $expiration
+         * @param \DateTimeInterface|\DateInterval|int $expiration
          * @param bool $absolute
          * @return string 
          * @static 
@@ -14087,7 +14120,7 @@ namespace Illuminate\Support\Facades {
          * Create a temporary signed route URL for a named route.
          *
          * @param string $name
-         * @param \DateTimeInterface|int $expiration
+         * @param \DateTimeInterface|\DateInterval|int $expiration
          * @param array $parameters
          * @param bool $absolute
          * @return string 
@@ -18709,7 +18742,7 @@ namespace Webpatser\Countries {
         }
         
         /**
-         * Determine if the model or given attribute(s) have been modified.
+         * Determine if the model or any of the given attribute(s) have been modified.
          *
          * @param array|string|null $attributes
          * @return bool 
@@ -18722,7 +18755,7 @@ namespace Webpatser\Countries {
         }
         
         /**
-         * Determine if the model or given attribute(s) have remained the same.
+         * Determine if the model and all the given attribute(s) have remained the same.
          *
          * @param array|string|null $attributes
          * @return bool 
@@ -18735,7 +18768,7 @@ namespace Webpatser\Countries {
         }
         
         /**
-         * Determine if the model or given attribute(s) have been modified.
+         * Determine if the model or any of the given attribute(s) have been modified.
          *
          * @param array|string|null $attributes
          * @return bool 

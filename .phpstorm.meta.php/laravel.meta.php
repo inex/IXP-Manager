@@ -5,7 +5,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2019-01-07 16:50:13.
+    * Generated on 2019-01-21 11:13:59.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -24,6 +24,7 @@ namespace PHPSTORM_META {
         'Illuminate\Console\Scheduling\ScheduleFinishCommand' => \Illuminate\Console\Scheduling\ScheduleFinishCommand::class,
         'Illuminate\Console\Scheduling\ScheduleRunCommand' => \Illuminate\Console\Scheduling\ScheduleRunCommand::class,
         'Illuminate\Contracts\Auth\Access\Gate' => \Illuminate\Auth\Access\Gate::class,
+        'Illuminate\Contracts\Broadcasting\Broadcaster' => \Illuminate\Broadcasting\Broadcasters\NullBroadcaster::class,
         'Illuminate\Contracts\Console\Kernel' => \IXP\Console\Kernel::class,
         'Illuminate\Contracts\Debug\ExceptionHandler' => \NunoMaduro\Collision\Adapters\Laravel\ExceptionHandler::class,
         'Illuminate\Contracts\Http\Kernel' => \IXP\Http\Kernel::class,
@@ -186,6 +187,7 @@ namespace PHPSTORM_META {
         'Illuminate\Console\Scheduling\ScheduleFinishCommand' => \Illuminate\Console\Scheduling\ScheduleFinishCommand::class,
         'Illuminate\Console\Scheduling\ScheduleRunCommand' => \Illuminate\Console\Scheduling\ScheduleRunCommand::class,
         'Illuminate\Contracts\Auth\Access\Gate' => \Illuminate\Auth\Access\Gate::class,
+        'Illuminate\Contracts\Broadcasting\Broadcaster' => \Illuminate\Broadcasting\Broadcasters\NullBroadcaster::class,
         'Illuminate\Contracts\Console\Kernel' => \IXP\Console\Kernel::class,
         'Illuminate\Contracts\Debug\ExceptionHandler' => \NunoMaduro\Collision\Adapters\Laravel\ExceptionHandler::class,
         'Illuminate\Contracts\Http\Kernel' => \IXP\Http\Kernel::class,
@@ -348,6 +350,7 @@ namespace PHPSTORM_META {
         'Illuminate\Console\Scheduling\ScheduleFinishCommand' => \Illuminate\Console\Scheduling\ScheduleFinishCommand::class,
         'Illuminate\Console\Scheduling\ScheduleRunCommand' => \Illuminate\Console\Scheduling\ScheduleRunCommand::class,
         'Illuminate\Contracts\Auth\Access\Gate' => \Illuminate\Auth\Access\Gate::class,
+        'Illuminate\Contracts\Broadcasting\Broadcaster' => \Illuminate\Broadcasting\Broadcasters\NullBroadcaster::class,
         'Illuminate\Contracts\Console\Kernel' => \IXP\Console\Kernel::class,
         'Illuminate\Contracts\Debug\ExceptionHandler' => \NunoMaduro\Collision\Adapters\Laravel\ExceptionHandler::class,
         'Illuminate\Contracts\Http\Kernel' => \IXP\Http\Kernel::class,
@@ -510,6 +513,7 @@ namespace PHPSTORM_META {
         'Illuminate\Console\Scheduling\ScheduleFinishCommand' => \Illuminate\Console\Scheduling\ScheduleFinishCommand::class,
         'Illuminate\Console\Scheduling\ScheduleRunCommand' => \Illuminate\Console\Scheduling\ScheduleRunCommand::class,
         'Illuminate\Contracts\Auth\Access\Gate' => \Illuminate\Auth\Access\Gate::class,
+        'Illuminate\Contracts\Broadcasting\Broadcaster' => \Illuminate\Broadcasting\Broadcasters\NullBroadcaster::class,
         'Illuminate\Contracts\Console\Kernel' => \IXP\Console\Kernel::class,
         'Illuminate\Contracts\Debug\ExceptionHandler' => \NunoMaduro\Collision\Adapters\Laravel\ExceptionHandler::class,
         'Illuminate\Contracts\Http\Kernel' => \IXP\Http\Kernel::class,
@@ -672,6 +676,7 @@ namespace PHPSTORM_META {
         'Illuminate\Console\Scheduling\ScheduleFinishCommand' => \Illuminate\Console\Scheduling\ScheduleFinishCommand::class,
         'Illuminate\Console\Scheduling\ScheduleRunCommand' => \Illuminate\Console\Scheduling\ScheduleRunCommand::class,
         'Illuminate\Contracts\Auth\Access\Gate' => \Illuminate\Auth\Access\Gate::class,
+        'Illuminate\Contracts\Broadcasting\Broadcaster' => \Illuminate\Broadcasting\Broadcasters\NullBroadcaster::class,
         'Illuminate\Contracts\Console\Kernel' => \IXP\Console\Kernel::class,
         'Illuminate\Contracts\Debug\ExceptionHandler' => \NunoMaduro\Collision\Adapters\Laravel\ExceptionHandler::class,
         'Illuminate\Contracts\Http\Kernel' => \IXP\Http\Kernel::class,
@@ -834,6 +839,7 @@ namespace PHPSTORM_META {
         'Illuminate\Console\Scheduling\ScheduleFinishCommand' => \Illuminate\Console\Scheduling\ScheduleFinishCommand::class,
         'Illuminate\Console\Scheduling\ScheduleRunCommand' => \Illuminate\Console\Scheduling\ScheduleRunCommand::class,
         'Illuminate\Contracts\Auth\Access\Gate' => \Illuminate\Auth\Access\Gate::class,
+        'Illuminate\Contracts\Broadcasting\Broadcaster' => \Illuminate\Broadcasting\Broadcasters\NullBroadcaster::class,
         'Illuminate\Contracts\Console\Kernel' => \IXP\Console\Kernel::class,
         'Illuminate\Contracts\Debug\ExceptionHandler' => \NunoMaduro\Collision\Adapters\Laravel\ExceptionHandler::class,
         'Illuminate\Contracts\Http\Kernel' => \IXP\Http\Kernel::class,
@@ -996,6 +1002,7 @@ namespace PHPSTORM_META {
         'Illuminate\Console\Scheduling\ScheduleFinishCommand' => \Illuminate\Console\Scheduling\ScheduleFinishCommand::class,
         'Illuminate\Console\Scheduling\ScheduleRunCommand' => \Illuminate\Console\Scheduling\ScheduleRunCommand::class,
         'Illuminate\Contracts\Auth\Access\Gate' => \Illuminate\Auth\Access\Gate::class,
+        'Illuminate\Contracts\Broadcasting\Broadcaster' => \Illuminate\Broadcasting\Broadcasters\NullBroadcaster::class,
         'Illuminate\Contracts\Console\Kernel' => \IXP\Console\Kernel::class,
         'Illuminate\Contracts\Debug\ExceptionHandler' => \NunoMaduro\Collision\Adapters\Laravel\ExceptionHandler::class,
         'Illuminate\Contracts\Http\Kernel' => \IXP\Http\Kernel::class,
