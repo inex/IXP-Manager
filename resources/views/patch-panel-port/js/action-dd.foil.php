@@ -226,8 +226,8 @@
 
         let html = `<form id="upload" method="post" action='<?= url("patch-panel-port/upload-file" )?>/${pppid}' enctype='multipart/form-data'>
             <div id='drop'>Drop Files Here &nbsp;
-                <a id="upload-drop-a" class="btn btn-success">
-                    <i class="glyphicon glyphicon-upload"></i> Browse</a> <br/>
+                <a href="#" id="upload-drop-a" class="btn btn-success color-white">
+                    <i class="fa fa-upload"></i> Browse</a> <br/>
                     <span class="info"> (max size <?= $t->maxFileUploadSize() ?> </span>
                     <input type="file" name="upl" multiple />
             </div>
@@ -257,7 +257,8 @@
 
             let ul = $('#upload-ul');
 
-            $('#upload-drop-a').click( function(){
+            $('#upload-drop-a').click( function(e){
+                e.preventDefault();
                 // Simulate a click on the file input button
                 // to show the file browser dialog
                 $(this).parent().find('input').click();

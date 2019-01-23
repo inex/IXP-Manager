@@ -272,8 +272,7 @@
 
                         <tbody>
 
-                            <?php $rsclients = 0 ?>
-                            <?php $total     = 0 ?>
+                            <?php $rsclients = $total = 0 ?>
 
                             <?php foreach( $t->stats[ "rsUsage"] as  $vlan ): ?>
                                 <tr>
@@ -421,7 +420,7 @@
             <div class="mb-4">
                 <?php foreach( $t->graph_periods as $period => $desc ): ?>
 
-                    <a class="mr-4"href="<?= route('admin@dashboard') ?>?graph_period=<?= $period ?>">
+                    <a class="mr-4" href="<?= route('admin@dashboard') ?>?graph_period=<?= $period ?>">
                         <span class="badge badge-info">
                             <?= $desc ?>
                         </span>

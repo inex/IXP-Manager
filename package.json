@@ -11,7 +11,7 @@
   },
   "devDependencies": {
     "axios": "^0.18",
-    "blueimp-file-upload": "^9.17.0",
+    "blueimp-file-upload": "^9.28.0",
     "clipboard": "^1.6.1",
     "cross-env": "^5.2.0",
     "font-awesome": "^4.7.0",

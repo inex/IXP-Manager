@@ -4,32 +4,24 @@
     $this->layout( 'layouts/ixpv4' )
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'patch-panel/list' )?>">
-        Patch Panels
-    </a>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Patch Panels / View : <?= $t->pp->getId().' '. $t->ee( $t->pp->getName() )?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>
-        View : <?= $t->pp->getId().' '. $t->ee( $t->pp->getName() )?>
-    </li>
-<?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
-        <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= route('patch-panel/list' ) ?>" title="Patch panel list">
-                <span class="glyphicon glyphicon-th-list"></span>
-            </a>
-            <a type="button" class="btn btn-default" href="<?= route ('patch-panel/edit' , [ 'id' => $t->pp->getId() ] ) ?>" title="Edit">
-                <span class="glyphicon glyphicon-pencil"></span>
-            </a>
-            <a type="button" class="btn btn-default" href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'id' => $t->pp->getId() ]  ) ?>" title="Ports list">
-                <span class="glyphicon glyphicon-th"></span>
-            </a>
-        </div>
-    </li>
+    <div class="btn-group btn-group-sm" role="group">
+        <a class="btn btn-outline-secondary" href="<?= route('patch-panel/list' ) ?>" title="Patch panel list">
+            <i class="fa fa-th-list"></i>
+        </a>
+        <a class="btn btn-outline-secondary" href="<?= route ('patch-panel/edit' , [ 'id' => $t->pp->getId() ] ) ?>" title="Edit">
+            <i class="fa fa-pencil"></i>
+        </a>
+        <a class="btn btn-outline-secondary" href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'id' => $t->pp->getId() ]  ) ?>" title="Ports list">
+            <i class="fa fa-th"></i>
+        </a>
+    </div>
+
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -37,12 +29,12 @@
 
         <div class="col-sm-12">
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     Informations
                 </div>
-                <div class="panel-body">
-                    <div class="col-xs-6">
+                <div class="card-body row">
+                    <div class="col-sm-6">
                         <table class="table_view_info">
                             <tr>
                                 <td>
@@ -136,7 +128,7 @@
                         </table>
                     </div>
 
-                    <div class="col-xs-6">
+                    <div class="col-sm-6">
                         <table class="table_view_info">
                             <tr>
                                 <td>
