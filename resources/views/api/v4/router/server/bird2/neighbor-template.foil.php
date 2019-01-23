@@ -40,25 +40,16 @@
 
 
 template bgp tb_rsclient {
-        local as routeserverasn;
-        source address routeserveraddress;
-        strict bind yes;
+    local as routeserverasn;
+    source address routeserveraddress;
+    strict bind yes;
 
-        <?= $t->ipproto ?> {
-            import filter {
-                    ## Prevent BGP NEXT_HOP Hijacking
-                    if !( from = bgp_next_hop ) then
-                        reject "BGP neighbor address [", from, "] != next hop address [", bgp_next_hop, "]", ", net:[", net, "], path:[", bgp_path, "]";
-
-                    accept;
-            };
-
-            export all;
-        };
-
-        rs client;
+    <?= $t->ipproto ?> {
+        export all;
 <?php if( $t->router->protocol() == 6 ): ?>
         missing lladdr ignore;
 <?php endif; ?>
+    };
 
+    rs client;
 }

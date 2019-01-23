@@ -95,7 +95,8 @@ services:
             - mrtg-data:/srv/mrtg
 
     rs1:
-        image: ixpmanager/rs1:4.7.0
+        build:
+            context: tools/docker/containers/rs1
         ports:
             - 8881:80
         depends_on:

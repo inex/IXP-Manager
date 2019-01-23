@@ -6,7 +6,7 @@ RUN apt-get -y update && \
     apt-get -y upgrade && \
     apt-get -y autoremove --purge
 
-RUN apt-get -y install build-essential wget flex bison libncurses-dev libreadline-dev git && \
+RUN apt-get -y install build-essential wget flex bison libncurses-dev libreadline-dev libssh-dev git && \
     apt-get -y clean
 
 RUN TZ=Europe/Dublin DEBIAN_FRONTEND=noninteractive apt-get -y install php-cgi php-mbstring php-xml unzip lighttpd wget bzip2 sudo joe curl \

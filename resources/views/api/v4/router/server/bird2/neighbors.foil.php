@@ -78,12 +78,18 @@ int set allas;
         accept;
     }
 
-    # Route servers peering with route servers will cause the universe
-    # to collapse.  Recommend evasive manoeuvers.
+    # Peer ASN == route's first ASN?
     if (bgp_path.first != <?= $int['autsys'] ?> ) then {
         bgp_large_community.add( IXP_LC_FILTERED_FIRST_AS_NOT_PEER_AS );
         accept;
     }
+
+    # Prevent BGP NEXT_HOP Hijacking
+    if !( from = bgp_next_hop ) then {
+        bgp_large_community.add( IXP_LC_FILTERED_NEXT_HOP_NOT_PEER_IP );
+        accept;
+    }
+
 
     # Filter Known Transit Networks
     if filter_has_transit_path() then accept;
