@@ -58,13 +58,13 @@
 <script type="text/javascript">
 
 
-var tables    = <?= json_encode($t->content->symbols->{'routing table'}) ?>.sort();
-var protocols = <?= json_encode($t->content->symbols->protocol) ?>.sort();
-var source    = 'table';
+let tables    = <?= json_encode($t->content->symbols->{'routing table'}) ?>.sort();
+let protocols = <?= json_encode($t->content->symbols->protocol) ?>.sort();
+let source    = 'table';
 
 $("#submit").on( 'click', function(){
-    var net     = $("#net").val().trim();
-    var masklen = 32;
+    let net     = $("#net").val().trim();
+    let masklen = 32;
     if( net == "" ) {
         return;
     }
