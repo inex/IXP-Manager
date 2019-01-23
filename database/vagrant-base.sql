@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.20, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.24, for Linux (x86_64)
 --
 -- Host: localhost    Database: ixp
 -- ------------------------------------------------------
--- Server version	5.7.20-0ubuntu0.16.04.1
+-- Server version	5.7.24-0ubuntu0.18.04.1
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -34,7 +34,7 @@ CREATE TABLE `api_keys` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_9579321F800A1141` (`apiKey`),
   KEY `IDX_9579321FA76ED395` (`user_id`),
-  CONSTRAINT `FK_9579321FA76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `FK_9579321FA76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -46,6 +46,35 @@ LOCK TABLES `api_keys` WRITE;
 /*!40000 ALTER TABLE `api_keys` DISABLE KEYS */;
 INSERT INTO `api_keys` VALUES (1,1,'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9',NULL,'','2014-01-06 14:43:19','2014-12-08 21:02:12','127.0.0.1');
 /*!40000 ALTER TABLE `api_keys` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `bgp_sessions`
+--
+
+DROP TABLE IF EXISTS `bgp_sessions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bgp_sessions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `srcipaddressid` int(11) NOT NULL,
+  `protocol` int(11) NOT NULL,
+  `dstipaddressid` int(11) NOT NULL,
+  `packetcount` int(11) NOT NULL DEFAULT '0',
+  `last_seen` datetime NOT NULL,
+  `source` varchar(40) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `src_protocol_dst` (`srcipaddressid`,`protocol`,`dstipaddressid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bgp_sessions`
+--
+
+LOCK TABLES `bgp_sessions` WRITE;
+/*!40000 ALTER TABLE `bgp_sessions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bgp_sessions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -182,6 +211,41 @@ INSERT INTO `company_registration_detail` VALUES (1,'INEX','123456','Ireland','5
 UNLOCK TABLES;
 
 --
+-- Table structure for table `console_server`
+--
+
+DROP TABLE IF EXISTS `console_server`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `console_server` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `vendor_id` int(11) DEFAULT NULL,
+  `cabinet_id` int(11) DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `hostname` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `model` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `serialNumber` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `active` tinyint(1) DEFAULT '1',
+  `notes` longtext COLLATE utf8mb4_unicode_ci,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_92A539235E237E06` (`name`),
+  KEY `IDX_92A53923F603EE73` (`vendor_id`),
+  KEY `IDX_92A53923D351EC` (`cabinet_id`),
+  CONSTRAINT `FK_92A53923D351EC` FOREIGN KEY (`cabinet_id`) REFERENCES `cabinet` (`id`),
+  CONSTRAINT `FK_92A53923F603EE73` FOREIGN KEY (`vendor_id`) REFERENCES `vendor` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `console_server`
+--
+
+LOCK TABLES `console_server` WRITE;
+/*!40000 ALTER TABLE `console_server` DISABLE KEYS */;
+/*!40000 ALTER TABLE `console_server` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `consoleserverconnection`
 --
 
@@ -200,11 +264,13 @@ CREATE TABLE `consoleserverconnection` (
   `flowcontrol` int(11) DEFAULT NULL,
   `autobaud` tinyint(1) DEFAULT NULL,
   `notes` longtext COLLATE utf8_unicode_ci,
+  `console_server_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
+  UNIQUE KEY `console_server_port_uniq` (`console_server_id`,`port`),
   KEY `IDX_530316DCDA0209B9` (`custid`),
-  KEY `IDX_530316DCDC2C08F8` (`switchid`),
-  CONSTRAINT `FK_530316DCDA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`),
-  CONSTRAINT `FK_530316DCDC2C08F8` FOREIGN KEY (`switchid`) REFERENCES `switch` (`id`)
+  KEY `IDX_530316DCF472E7C6` (`console_server_id`),
+  CONSTRAINT `FK_530316DCDA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_530316DCF472E7C6` FOREIGN KEY (`console_server_id`) REFERENCES `console_server` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -243,8 +309,8 @@ CREATE TABLE `contact` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_4C62E638A76ED395` (`user_id`),
   KEY `IDX_4C62E638DA0209B9` (`custid`),
-  CONSTRAINT `FK_4C62E638A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`),
-  CONSTRAINT `FK_4C62E638DA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`)
+  CONSTRAINT `FK_4C62E638A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_4C62E638DA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -254,7 +320,7 @@ CREATE TABLE `contact` (
 
 LOCK TABLES `contact` WRITE;
 /*!40000 ALTER TABLE `contact` DISABLE KEYS */;
-INSERT INTO `contact` VALUES (1,1,1,'Vagrant','Master of the Universe','joe@example.com','+353 86 123 4567','+353 1 123 4567',0,0,'','2015-08-20 15:19:12',1,'1','2014-01-06 13:54:22'),(2,2,4,'Customer AS112','','none@example.com','','',0,0,'','2015-08-20 15:24:41',1,'vagrant','2015-08-20 15:24:41'),(3,3,4,'AS112 User','','none@example.com','','',0,0,'','2015-08-20 15:25:30',1,'vagrant','2015-08-20 15:25:20');
+INSERT INTO `contact` VALUES (1,NULL,1,'Vagrant','Master of the Universe','joe@example.com','+353 86 123 4567','+353 1 123 4567',0,0,'','2015-08-20 15:19:12',1,'1','2014-01-06 13:54:22'),(2,NULL,4,'Customer AS112','','none@example.com','','',0,0,'','2015-08-20 15:24:41',1,'vagrant','2015-08-20 15:24:41'),(3,NULL,4,'AS112 User','','none@example.com','','',0,0,'','2015-08-20 15:25:30',1,'vagrant','2015-08-20 15:25:20');
 /*!40000 ALTER TABLE `contact` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -450,9 +516,9 @@ CREATE TABLE `cust` (
   `isReseller` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_997B25A64082763` (`shortname`),
+  UNIQUE KEY `UNIQ_997B25A98386213` (`company_registered_detail_id`),
+  UNIQUE KEY `UNIQ_997B25A84478F0C` (`company_billing_details_id`),
   KEY `IDX_997B25A666E98DF` (`irrdb`),
-  KEY `IDX_997B25A98386213` (`company_registered_detail_id`),
-  KEY `IDX_997B25A84478F0C` (`company_billing_details_id`),
   KEY `IDX_997B25A18015899` (`reseller`),
   CONSTRAINT `FK_997B25A18015899` FOREIGN KEY (`reseller`) REFERENCES `cust` (`id`),
   CONSTRAINT `FK_997B25A666E98DF` FOREIGN KEY (`irrdb`) REFERENCES `irrdbconfig` (`id`),
@@ -488,7 +554,7 @@ CREATE TABLE `cust_notes` (
   `updated` datetime NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_6377D8679395C3F3` (`customer_id`),
-  CONSTRAINT `FK_6377D8679395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `cust` (`id`)
+  CONSTRAINT `FK_6377D8679395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `cust` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -499,6 +565,62 @@ CREATE TABLE `cust_notes` (
 LOCK TABLES `cust_notes` WRITE;
 /*!40000 ALTER TABLE `cust_notes` DISABLE KEYS */;
 /*!40000 ALTER TABLE `cust_notes` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cust_tag`
+--
+
+DROP TABLE IF EXISTS `cust_tag`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cust_tag` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `tag` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `display_as` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` longtext COLLATE utf8mb4_unicode_ci,
+  `internal_only` tinyint(1) NOT NULL DEFAULT '0',
+  `created` datetime NOT NULL,
+  `updated` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_6B54CFB8389B783` (`tag`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cust_tag`
+--
+
+LOCK TABLES `cust_tag` WRITE;
+/*!40000 ALTER TABLE `cust_tag` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cust_tag` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `cust_to_cust_tag`
+--
+
+DROP TABLE IF EXISTS `cust_to_cust_tag`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `cust_to_cust_tag` (
+  `customer_tag_id` int(11) NOT NULL,
+  `customer_id` int(11) NOT NULL,
+  PRIMARY KEY (`customer_tag_id`,`customer_id`),
+  KEY `IDX_A6CFB30CB17BF40` (`customer_tag_id`),
+  KEY `IDX_A6CFB30C9395C3F3` (`customer_id`),
+  CONSTRAINT `FK_A6CFB30C9395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `cust` (`id`),
+  CONSTRAINT `FK_A6CFB30CB17BF40` FOREIGN KEY (`customer_tag_id`) REFERENCES `cust_tag` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `cust_to_cust_tag`
+--
+
+LOCK TABLES `cust_to_cust_tag` WRITE;
+/*!40000 ALTER TABLE `cust_to_cust_tag` DISABLE KEYS */;
+/*!40000 ALTER TABLE `cust_to_cust_tag` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -518,7 +640,7 @@ CREATE TABLE `custkit` (
   KEY `IDX_8127F9AADA0209B9` (`custid`),
   KEY `IDX_8127F9AA2B96718A` (`cabinetid`),
   CONSTRAINT `FK_8127F9AA2B96718A` FOREIGN KEY (`cabinetid`) REFERENCES `cabinet` (`id`),
-  CONSTRAINT `FK_8127F9AADA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`)
+  CONSTRAINT `FK_8127F9AADA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -664,7 +786,7 @@ CREATE TABLE `irrdb_asn` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `custasn` (`asn`,`protocol`,`customer_id`),
   KEY `IDX_87BFC5569395C3F3` (`customer_id`),
-  CONSTRAINT `FK_87BFC5569395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `cust` (`id`)
+  CONSTRAINT `FK_87BFC5569395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `cust` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=105 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -695,7 +817,7 @@ CREATE TABLE `irrdb_prefix` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `custprefix` (`prefix`,`protocol`,`customer_id`),
   KEY `IDX_FE73E77C9395C3F3` (`customer_id`),
-  CONSTRAINT `FK_FE73E77C9395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `cust` (`id`)
+  CONSTRAINT `FK_FE73E77C9395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `cust` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=649 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -784,7 +906,7 @@ CREATE TABLE `l2address` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `mac_vlanint` (`mac`,`vlan_interface_id`),
   KEY `IDX_B9482E1D6AB5F82` (`vlan_interface_id`),
-  CONSTRAINT `FK_B9482E1D6AB5F82` FOREIGN KEY (`vlan_interface_id`) REFERENCES `vlaninterface` (`id`)
+  CONSTRAINT `FK_B9482E1D6AB5F82` FOREIGN KEY (`vlan_interface_id`) REFERENCES `vlaninterface` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -880,7 +1002,7 @@ CREATE TABLE `macaddress` (
   `mac` varchar(12) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_42CD65F6BFDF15D5` (`virtualinterfaceid`),
-  CONSTRAINT `FK_42CD65F6BFDF15D5` FOREIGN KEY (`virtualinterfaceid`) REFERENCES `virtualinterface` (`id`)
+  CONSTRAINT `FK_42CD65F6BFDF15D5` FOREIGN KEY (`virtualinterfaceid`) REFERENCES `virtualinterface` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1044,6 +1166,7 @@ CREATE TABLE `patch_panel_port` (
   `chargeable` int(11) NOT NULL DEFAULT '0',
   `owned_by` int(11) NOT NULL DEFAULT '0',
   `loa_code` varchar(25) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `colo_billing_ref` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_4BE40BC2C1DA6A2A` (`switch_port_id`),
   KEY `IDX_4BE40BC2635D5D87` (`patch_panel_id`),
@@ -1124,6 +1247,7 @@ CREATE TABLE `patch_panel_port_history` (
   `owned_by` int(11) NOT NULL DEFAULT '0',
   `customer` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `switchport` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `colo_billing_ref` varchar(30) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_CB80B54AB0F978FF` (`patch_panel_port_id`),
   KEY `IDX_CB80B54A3838446` (`duplex_master_id`),
@@ -1194,8 +1318,8 @@ CREATE TABLE `peering_manager` (
   PRIMARY KEY (`id`),
   KEY `IDX_35A72597DA0209B9` (`custid`),
   KEY `IDX_35A725974E5F9AFF` (`peerid`),
-  CONSTRAINT `FK_35A725974E5F9AFF` FOREIGN KEY (`peerid`) REFERENCES `cust` (`id`),
-  CONSTRAINT `FK_35A72597DA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`)
+  CONSTRAINT `FK_35A725974E5F9AFF` FOREIGN KEY (`peerid`) REFERENCES `cust` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_35A72597DA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1227,8 +1351,8 @@ CREATE TABLE `peering_matrix` (
   PRIMARY KEY (`id`),
   KEY `IDX_C1A6F6F9A4CA6408` (`x_custid`),
   KEY `IDX_C1A6F6F968606496` (`y_custid`),
-  CONSTRAINT `FK_C1A6F6F968606496` FOREIGN KEY (`y_custid`) REFERENCES `cust` (`id`),
-  CONSTRAINT `FK_C1A6F6F9A4CA6408` FOREIGN KEY (`x_custid`) REFERENCES `cust` (`id`)
+  CONSTRAINT `FK_C1A6F6F968606496` FOREIGN KEY (`y_custid`) REFERENCES `cust` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_C1A6F6F9A4CA6408` FOREIGN KEY (`x_custid`) REFERENCES `cust` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1263,7 +1387,7 @@ CREATE TABLE `physicalinterface` (
   UNIQUE KEY `UNIQ_5FFF4D602E68AB8C` (`fanout_physical_interface_id`),
   KEY `IDX_5FFF4D60BFDF15D5` (`virtualinterfaceid`),
   CONSTRAINT `FK_5FFF4D602E68AB8C` FOREIGN KEY (`fanout_physical_interface_id`) REFERENCES `physicalinterface` (`id`),
-  CONSTRAINT `FK_5FFF4D60BFDF15D5` FOREIGN KEY (`virtualinterfaceid`) REFERENCES `virtualinterface` (`id`),
+  CONSTRAINT `FK_5FFF4D60BFDF15D5` FOREIGN KEY (`virtualinterfaceid`) REFERENCES `virtualinterface` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_5FFF4D60E5F6FACB` FOREIGN KEY (`switchportid`) REFERENCES `switchport` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1339,7 +1463,7 @@ CREATE TABLE `rs_prefixes` (
   `rs_origin` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_29FA9871DA0209B9` (`custid`),
-  CONSTRAINT `FK_29FA9871DA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`)
+  CONSTRAINT `FK_29FA9871DA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1366,7 +1490,7 @@ CREATE TABLE `sflow_receiver` (
   `dst_port` int(11) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_E633EA142C0D6F5F` (`virtual_interface_id`),
-  CONSTRAINT `FK_E633EA142C0D6F5F` FOREIGN KEY (`virtual_interface_id`) REFERENCES `virtualinterface` (`id`)
+  CONSTRAINT `FK_E633EA142C0D6F5F` FOREIGN KEY (`virtual_interface_id`) REFERENCES `virtualinterface` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1408,6 +1532,7 @@ CREATE TABLE `switch` (
   `asn` int(10) unsigned DEFAULT NULL,
   `loopback_ip` varchar(39) COLLATE utf8_unicode_ci DEFAULT NULL,
   `loopback_name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `mgmt_mac_address` varchar(12) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_6FE94B185E237E06` (`name`),
   UNIQUE KEY `UNIQ_6FE94B1850C101F8` (`loopback_ip`),
@@ -1426,7 +1551,7 @@ CREATE TABLE `switch` (
 
 LOCK TABLES `switch` WRITE;
 /*!40000 ALTER TABLE `switch` DISABLE KEYS */;
-INSERT INTO `switch` VALUES (1,1,1,12,'Switch 1','s1','10.0.0.1','','public','FESX624',1,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL),(2,2,1,12,'Switch 2','s2','10.0.0.2','','public','FESX624',1,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `switch` VALUES (1,1,1,12,'Switch 1','s1','10.0.0.1','','public','FESX624',1,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL),(2,2,1,12,'Switch 2','s2','10.0.0.2','','public','FESX624',1,NULL,NULL,NULL,NULL,'',NULL,NULL,NULL,NULL,NULL,NULL);
 /*!40000 ALTER TABLE `switch` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1491,7 +1616,7 @@ CREATE TABLE `traffic_95th` (
   `max` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_70BB409ABFF2A482` (`cust_id`),
-  CONSTRAINT `FK_70BB409ABFF2A482` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`)
+  CONSTRAINT `FK_70BB409ABFF2A482` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1518,7 +1643,7 @@ CREATE TABLE `traffic_95th_monthly` (
   `max_95th` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `IDX_ED79F9DCBFF2A482` (`cust_id`),
-  CONSTRAINT `FK_ED79F9DCBFF2A482` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`)
+  CONSTRAINT `FK_ED79F9DCBFF2A482` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1572,7 +1697,7 @@ CREATE TABLE `traffic_daily` (
   KEY `IDX_1F0F81A7BFF2A482` (`cust_id`),
   KEY `IDX_1F0F81A7A5A4E881` (`ixp_id`),
   CONSTRAINT `FK_1F0F81A7A5A4E881` FOREIGN KEY (`ixp_id`) REFERENCES `ixp` (`id`),
-  CONSTRAINT `FK_1F0F81A7BFF2A482` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`)
+  CONSTRAINT `FK_1F0F81A7BFF2A482` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1606,10 +1731,12 @@ CREATE TABLE `user` (
   `lastupdatedby` int(11) DEFAULT NULL,
   `creator` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created` datetime DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_8D93D649F85E0677` (`username`),
   KEY `IDX_8D93D649DA0209B9` (`custid`),
-  CONSTRAINT `FK_8D93D649DA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`)
+  CONSTRAINT `FK_8D93D649DA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1619,7 +1746,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,1,'vagrant','$2a$09$kI2ORSzVnuekb9XERfL1we2tENnDJXsR.oxlWM5ELHX9G3aoCdvne','joe@example.com',NULL,NULL,3,0,'2015-08-20 15:19:12',1,'travis','2014-01-06 13:54:22'),(2,4,'as112','$2a$09$bYMQzLJs6VdISr3OlwqGAe7LVe0K6xALQUkThuhQ27hwB4EJ.g/1a','none@example.com',NULL,NULL,2,0,'2015-08-20 15:24:41',1,'vagrant','2015-08-20 15:24:41'),(3,4,'as112user','$2a$09$O1rXly8ResuQdbkZGQx6perb2FH72PvFsoVvjVvY5bd6DlyVNKwna','none@example.com',NULL,NULL,1,0,'2015-08-20 15:25:30',1,'vagrant','2015-08-20 15:25:20');
+INSERT INTO `user` VALUES (1,1,'vagrant','$2a$09$kI2ORSzVnuekb9XERfL1we2tENnDJXsR.oxlWM5ELHX9G3aoCdvne','joe@example.com',NULL,NULL,3,0,'2015-08-20 15:19:12',1,'travis','2014-01-06 13:54:22','Vagrant',NULL),(2,4,'as112','$2a$09$bYMQzLJs6VdISr3OlwqGAe7LVe0K6xALQUkThuhQ27hwB4EJ.g/1a','none@example.com',NULL,NULL,2,0,'2015-08-20 15:24:41',1,'vagrant','2015-08-20 15:24:41','Customer AS112',NULL),(3,4,'as112user','$2a$09$O1rXly8ResuQdbkZGQx6perb2FH72PvFsoVvjVvY5bd6DlyVNKwna','none@example.com',NULL,NULL,1,0,'2015-08-20 15:25:30',1,'vagrant','2015-08-20 15:25:20','AS112 User',NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1638,8 +1765,8 @@ CREATE TABLE `user_logins` (
   PRIMARY KEY (`id`),
   KEY `IDX_6341CC99A76ED395` (`user_id`),
   KEY `at_idx` (`at`,`user_id`),
-  CONSTRAINT `FK_6341CC99A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  CONSTRAINT `FK_6341CC99A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1648,7 +1775,7 @@ CREATE TABLE `user_logins` (
 
 LOCK TABLES `user_logins` WRITE;
 /*!40000 ALTER TABLE `user_logins` DISABLE KEYS */;
-INSERT INTO `user_logins` VALUES (1,1,'10.37.129.2','2014-01-06 13:54:52'),(2,1,'10.37.129.2','2014-01-13 10:38:11'),(3,1,'10.0.2.2','2015-08-20 14:44:45'),(4,1,'10.0.2.2','2017-11-09 12:14:12');
+INSERT INTO `user_logins` VALUES (1,1,'10.37.129.2','2014-01-06 13:54:52'),(2,1,'10.37.129.2','2014-01-13 10:38:11'),(3,1,'10.0.2.2','2015-08-20 14:44:45'),(4,1,'10.0.2.2','2017-11-09 12:14:12'),(5,1,'10.0.2.2','2019-01-21 16:10:47');
 /*!40000 ALTER TABLE `user_logins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1670,7 +1797,7 @@ CREATE TABLE `user_pref` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `IX_UserPreference_1` (`user_id`,`attribute`,`op`,`ix`),
   KEY `IDX_DBD4D4F8A76ED395` (`user_id`),
-  CONSTRAINT `FK_DBD4D4F8A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+  CONSTRAINT `FK_DBD4D4F8A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1730,7 +1857,7 @@ CREATE TABLE `virtualinterface` (
   `fastlacp` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `IDX_11D9014FDA0209B9` (`custid`),
-  CONSTRAINT `FK_11D9014FDA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`)
+  CONSTRAINT `FK_11D9014FDA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1809,6 +1936,7 @@ CREATE TABLE `vlaninterface` (
   `as112client` tinyint(1) DEFAULT NULL,
   `busyhost` tinyint(1) DEFAULT NULL,
   `notes` longtext COLLATE utf8_unicode_ci,
+  `rsmorespecifics` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_B4B4411A73720641` (`ipv4addressid`),
   UNIQUE KEY `UNIQ_B4B4411A7787D67C` (`ipv6addressid`),
@@ -1816,7 +1944,7 @@ CREATE TABLE `vlaninterface` (
   KEY `IDX_B4B4411AF48D6D0` (`vlanid`),
   CONSTRAINT `FK_B4B4411A73720641` FOREIGN KEY (`ipv4addressid`) REFERENCES `ipv4address` (`id`),
   CONSTRAINT `FK_B4B4411A7787D67C` FOREIGN KEY (`ipv6addressid`) REFERENCES `ipv6address` (`id`),
-  CONSTRAINT `FK_B4B4411ABFDF15D5` FOREIGN KEY (`virtualinterfaceid`) REFERENCES `virtualinterface` (`id`),
+  CONSTRAINT `FK_B4B4411ABFDF15D5` FOREIGN KEY (`virtualinterfaceid`) REFERENCES `virtualinterface` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_B4B4411AF48D6D0` FOREIGN KEY (`vlanid`) REFERENCES `vlan` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1827,7 +1955,7 @@ CREATE TABLE `vlaninterface` (
 
 LOCK TABLES `vlaninterface` WRITE;
 /*!40000 ALTER TABLE `vlaninterface` DISABLE KEYS */;
-INSERT INTO `vlaninterface` VALUES (1,10,16,1,1,1,'a.heanet.ie',1,'a.heanet.ie',0,1,NULL,'N7rX2SdfbRsyBLTm','N7rX2SdfbRsyBLTm',1000,1,1,1,1,1,1,0,NULL),(2,137,417,2,2,1,'b.heanet.ie',1,'b.heanet.ie',0,1,NULL,'u5zSNJLAVT87RGXQ','u5zSNJLAVT87RGXQ',1000,1,1,1,1,1,0,0,NULL),(3,36,NULL,3,1,1,'a.pch.ie',0,'',0,1,NULL,'mcWsqMdzGwTKt67g','mcWsqMdzGwTKt67g',2000,1,1,0,1,0,1,0,NULL),(4,6,NULL,4,1,1,'a.as112.net',0,'',0,1,NULL,'w83fmGpRDtaKomQo','w83fmGpRDtaKomQo',20,1,1,0,1,0,0,0,NULL),(5,132,NULL,5,2,1,'b.as112.net',0,'',0,1,NULL,'Pz8VYMNwEdCjKz68','Pz8VYMNwEdCjKz68',20,1,1,0,1,0,0,0,NULL),(6,NULL,8,6,1,0,'',1,'a.imagine.ie',0,1,NULL,'X8Ks9QnbER9cyzU3','X8Ks9QnbER9cyzU3',1000,1,0,1,0,1,0,0,NULL),(7,172,470,7,2,1,'b.imagine.ie',1,'b.imagine.ie',0,1,NULL,'LyJND4eoKuQz5j49','LyJND4eoKuQz5j49',1000,1,1,1,1,1,0,0,NULL);
+INSERT INTO `vlaninterface` VALUES (1,10,16,1,1,1,'a.heanet.ie',1,'a.heanet.ie',0,1,NULL,'N7rX2SdfbRsyBLTm','N7rX2SdfbRsyBLTm',1000,1,1,1,1,1,1,0,NULL,0),(2,137,417,2,2,1,'b.heanet.ie',1,'b.heanet.ie',0,1,NULL,'u5zSNJLAVT87RGXQ','u5zSNJLAVT87RGXQ',1000,1,1,1,1,1,0,0,NULL,0),(3,36,NULL,3,1,1,'a.pch.ie',0,'',0,1,NULL,'mcWsqMdzGwTKt67g','mcWsqMdzGwTKt67g',2000,1,1,0,1,0,1,0,NULL,0),(4,6,NULL,4,1,1,'a.as112.net',0,'',0,1,NULL,'w83fmGpRDtaKomQo','w83fmGpRDtaKomQo',20,1,1,0,1,0,0,0,NULL,0),(5,132,NULL,5,2,1,'b.as112.net',0,'',0,1,NULL,'Pz8VYMNwEdCjKz68','Pz8VYMNwEdCjKz68',20,1,1,0,1,0,0,0,NULL,0),(6,NULL,8,6,1,0,'',1,'a.imagine.ie',0,1,NULL,'X8Ks9QnbER9cyzU3','X8Ks9QnbER9cyzU3',1000,1,0,1,0,1,0,0,NULL,0),(7,172,470,7,2,1,'b.imagine.ie',1,'b.imagine.ie',0,1,NULL,'LyJND4eoKuQz5j49','LyJND4eoKuQz5j49',1000,1,1,1,1,1,0,0,NULL,0);
 /*!40000 ALTER TABLE `vlaninterface` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -1840,4 +1968,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2017-11-09 12:16:04
+-- Dump completed on 2019-01-21 16:15:03

@@ -10,6 +10,10 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
+        <a target="_blank" class="btn btn-outline-secondary" href="https://docs.ixpmanager.org/features/routers/">
+            Documentation
+        </a>
+
         <a class="btn btn-outline-secondary" href="<?= route ('router@add') ?>">
             <i class="fa fa-plus"></i>
         </a>

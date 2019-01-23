@@ -1,22 +1,23 @@
-FROM php:7.0-apache
+FROM php:7.3-apache
 
 MAINTAINER Barry O'Donovan <barry.odonovan@inex.ie>
 
 RUN apt-get -y update && \
     apt-get -y upgrade && \
     apt-get -y install libmcrypt-dev snmp libsnmp-dev libicu-dev librrd-dev \
-        libyaml-dev git mysql-client npm nodejs-legacy joe wget \
+        libyaml-dev git mysql-client yarn joe wget libpng-dev libzip-dev \
         iputils-ping dnsutils && \
     apt-get -y autoremove --purge && \
+    apt-get clean && \
     rm -rf /tmp/*
 
 RUN docker-php-source extract && \
-    docker-php-ext-install -j$(nproc) mcrypt snmp intl bcmath gd gettext zip pdo_mysql && \
-    pecl install ds rrd xdebug && \
+    docker-php-ext-install -j$(nproc) snmp intl bcmath gd gettext zip pdo_mysql && \
+    pecl install ds rrd xdebug-2.7.0beta1 && \
     printf "\n" | pecl install yaml && \
     docker-php-source delete
 
-RUN curl -so /usr/local/bin/composer.phar https://getcomposer.org/download/1.6.2/composer.phar && \
+RUN curl -so /usr/local/bin/composer.phar https://getcomposer.org/download/1.8.0/composer.phar && \
     chmod a+x /usr/local/bin/composer.phar
 
 RUN echo "extension=ds.so\nextension=rrd.so\nextension=yaml.so\n" >/usr/local/etc/php/conf.d/local-ixpmanager.ini && \

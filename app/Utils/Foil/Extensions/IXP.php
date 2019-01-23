@@ -194,9 +194,10 @@ class IXP implements ExtensionInterface {
     * @param string $elementSeparator
     * @param string $lineEnding
     * @param int    $indent
+    * @param int    $pad
     * @return string            Scaled / formatted number / type.
     */
-    public function softwrap( array $data, int $perline, string $elementSeparator, string $lineEnding, int $indent = 0 ): string {
+    public function softwrap( array $data, int $perline, string $elementSeparator, string $lineEnding, int $indent = 0, int $pad = 0 ): string {
         if( !( $cnt = \count( $data ) ) ) {
             return '';
         }
@@ -209,14 +210,14 @@ class IXP implements ExtensionInterface {
                 break;
             }
 
-            $str .= $d;
-
             if( $itrn === 0 && $cnt > 1 && $perline === 1 ) {
-                $str .= $lineEnding . "\n" . str_repeat(' ', $indent);
+                $str .= $d . $lineEnding . "\n" . str_repeat(' ', $indent);
             } else if( ($itrn+1) !== $cnt && ($itrn+1) % $perline !== 0 ) {
-                $str .= $elementSeparator;
+                $str .= str_pad( $d . $elementSeparator, $pad );
             } else if( $itrn > 0 && ($itrn+1) !== $cnt && ($itrn+1) % $perline == 0 ) {
-                $str .= $lineEnding . "\n" . str_repeat( ' ', $indent );
+                $str .= $d . $lineEnding . "\n" . str_repeat( ' ', $indent );
+            } else {
+                $str .= $d;
             }
 
             $itrn++;

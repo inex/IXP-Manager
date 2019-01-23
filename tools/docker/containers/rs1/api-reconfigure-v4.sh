@@ -26,7 +26,7 @@ URL_DONE="http://ixpmanager-www/api/v4/router/updated"
 ETCPATH="/usr/local/etc/bird"
 RUNPATH="/var/run/bird"
 LOGPATH="/var/log/bird"
-BIN="/usr/sbin/bird"
+BIN="/usr/local/sbin/bird"
 
 # Parse arguments
 export DEBUG=0
@@ -58,13 +58,6 @@ mkdir -p $ETCPATH
 mkdir -p $LOGPATH
 mkdir -p $RUNPATH
 
-# generate the appropriate bird commands:
-if [[ $handle == *ipv6 ]]; then
-    PROTOCOL="6"
-else
-    PROTOCOL=""
-fi
-
 cfile="${ETCPATH}/bird-${handle}.conf"
 dest="${cfile}.$$"
 socket="${RUNPATH}/bird-${handle}.ctl"
@@ -93,11 +86,11 @@ if [[ $( cat $dest | grep "protocol bgp pb_" | wc -l ) -lt 2 ]]; then
 fi
 
 # parse and check the config
-cmd="${BIN}${PROTOCOL} -p -c $dest"
+cmd="${BIN} -p -c $dest"
 if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
 eval $cmd &>/dev/null
 if [[ $? -ne 0 ]]; then
-    echo "ERROR: non-zero return from bird${PROTOCOL} when parsing $dest"
+    echo "ERROR: non-zero return from bird when parsing $dest"
     exit 7
 fi
 
@@ -108,22 +101,22 @@ fi
 mv $dest $cfile
 
 # are we running or do we need to be started?
-cmd="${BIN}c${PROTOCOL} -s $socket show memory"
+cmd="${BIN}c -s $socket show memory"
 if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
 eval $cmd &>/dev/null
 
 if [[ $? -ne 0 ]]; then
-    cmd="${BIN}${PROTOCOL} -c ${cfile} -s $socket"
+    cmd="${BIN} -c ${cfile} -s $socket"
 
     if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
     eval $cmd &>/dev/null
 
     if [[ $? -ne 0 ]]; then
-        echo "ERROR: bird{$PROTOCOL} was not running for $dest and could not be started"
+        echo "ERROR: bird was not running for $dest and could not be started"
         exit 5
     fi
 else
-    cmd="${BIN}c${PROTOCOL} -s $socket configure"
+    cmd="${BIN}c -s $socket configure"
     if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
     eval $cmd &>/dev/null
 
@@ -134,7 +127,7 @@ else
             echo "Trying to revert to previous"
             mv ${cfile}.conf $dest
             mv ${cfile}.old ${cfile}
-            cmd="${BIN}c${PROTOCOL} -s $socket configure"
+            cmd="${BIN}c -s $socket configure"
             if [[ $DEBUG -eq 1 ]]; then echo $cmd; fi
             eval $cmd &>/dev/null
             if [[ $? -eq 0 ]]; then
