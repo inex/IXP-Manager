@@ -55,7 +55,7 @@ for vlanid in $VLANS; do
         if [ $DEBUG -ne 0 ]; then echo -n "Processing $vlanid - $proto.... "; fi
 
     	curl --fail -s -H "X-IXP-Manager-API-Key: ${KEY}"  \
-    	    "${URL}&vlanid=${vlanid}&protocol=${proto}"" >${ETCPATH}/targets-vlan${vlanid}-${proto}.cfg.$$
+    	    "${URL}&vlanid=${vlanid}&protocol=${proto}" >${ETCPATH}/targets-vlan${vlanid}-${proto}.cfg.$$
 
         if [[ $? -ne 0 ]]; then
             rm -f ${ETCPATH}/targets-vlan${vlanid}-${proto}.cfg.$$
