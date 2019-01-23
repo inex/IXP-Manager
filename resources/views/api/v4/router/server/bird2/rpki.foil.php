@@ -16,7 +16,7 @@ protocol rpki {
 
     roa<?= $t->router->protocol() ?> { table t_roa; };
 
-    remote "127.0.0.1" port 3323;
+    remote "<?= config( 'ixp.rpki.host' ) ?>" port <?= config( 'ixp.rpki.port' ) ?>;
 
     retry keep 5;
     refresh keep 30;

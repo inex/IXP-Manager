@@ -124,5 +124,10 @@ return [
 
     ],
 
+    'rpki' => [
+        'host' => env( 'IXP_RPKI_RTR_HOST', '127.0.0.1' ),
+        'port' => env( 'IXP_RPKI_RTR_PORT', '3323' ),
+    ],
+
 
 ];

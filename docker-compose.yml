@@ -94,6 +94,14 @@ services:
             - .:/srv/ixpmanager
             - mrtg-data:/srv/mrtg
 
+    routinator:
+        build:
+            context: tools/docker/containers/routinator
+        networks:
+            ixpmanager:
+                ipv4_address: 172.30.201.31
+                ipv6_address: fd99::31
+
     rs1:
         build:
             context: tools/docker/containers/rs1
@@ -101,6 +109,7 @@ services:
             - 8881:80
         depends_on:
             - "www"
+            - "routinator"
         networks:
             ixpmanager:
                 ipv4_address: 172.30.201.30
