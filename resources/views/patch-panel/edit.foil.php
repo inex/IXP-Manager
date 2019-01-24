@@ -128,7 +128,7 @@
 
                     <?= Former::date( 'installation_date' )
                         ->label( 'Installation Date' )
-                        ->append( '<div class="input-group-append"><button class="btn-outline-secondary btn rounded-right" id="date-today" type="button">Today</button></div>' )
+                        ->append( '<button class="btn-outline-secondary btn rounded-right" id="date-today" type="button">Today</button>' )
                         ->value( date( 'Y-m-d' ) );
                     ?>
 

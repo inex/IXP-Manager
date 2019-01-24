@@ -15,13 +15,13 @@
 
     <?php $this->section( 'page-header-postamble' ) ?>
 
-        <div class="btn-group btn-group-xs" role="group">
+        <div class="btn-group btn-group-sm" role="group">
 
             <a class="btn btn-outline-secondary extra-action" href="<?= route('patch-panel-port@edit' , [ "id" => $t->ppp->getId() ] ) ?>" title="edit">
                 <span class="fa fa-pencil"></span>
             </a>
 
-            <?= $t->insert( 'patch-panel-port/action-dd', [ 'ppp' => $t->ppp, 'btnClass' => 'btn-group-xs', 'tpl' => 'view' ] ); ?>
+            <?= $t->insert( 'patch-panel-port/action-dd', [ 'ppp' => $t->ppp, 'btnClass' => 'btn-group-sm', 'tpl' => 'view' ] ); ?>
 
             <a class="btn btn-outline-secondary" href="<?= route('patch-panel-port/list/patch-panel' , [ "id" => $t->ppp->getPatchPanel()->getId() ] ) ?>" title="list">
                 <span class="fa fa-th-list"></span>
@@ -49,7 +49,7 @@
                             $current = get_class( $p ) == \Entities\PatchPanelPort::class;
                         ?>
                             <li class="nav-item">
-                                <a href="#<?= $p->getId() ?>" data-toggle="tab" class="nav-link <?php if( $current ): ?> active <?php endif; ?>" >
+                                <a href="#ppp-<?= $p->getId() ?>" data-toggle="tab" class="nav-link <?php if( $current ): ?> active <?php endif; ?>" >
                                     <?php if( $current ): ?>Current<?php else: ?> <?= $p->getCeasedAtFormated(); ?> <?php endif; ?>
                                 </a>
                             </li>
@@ -68,7 +68,7 @@
                             $current = get_class( $p ) == \Entities\PatchPanelPort::class;
                         ?>
 
-                            <div class="tab-pane fade <?php if( $current ) { ?> active show <?php } ?>" id="<?= $p->getId() ?>">
+                            <div class="tab-pane fade <?php if( $current ) { ?> active show <?php } ?>" id="ppp-<?= $p->getId() ?>">
                                 <div class="row">
                                 <div class="col-sm-6">
                                     <table class="table_view_info">
@@ -675,7 +675,8 @@
                 message: "Are you sure you want to delete this object ?",
                 buttons: {
                     cancel: {
-                        label: '<i class="fa fa-times"></i> Cancel'
+                        label: '<i class="fa fa-times"></i> Cancel',
+                        className: 'btn-secondary'
                     },
                     confirm: {
                         label: '<i class="fa fa-check"></i> Confirm'

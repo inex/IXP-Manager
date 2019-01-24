@@ -37,15 +37,4 @@
         });
     }
 
-    /**
-     * allow to refresh the table without reloading the page
-     * reloading only a part of the DOM
-     */
-    function refreshDataTable( htmlId ) {
-        $( "#area-"+htmlId).load( $(location).attr('pathname')+" #table-"+ htmlId ,function( ) {
-            table.destroy();
-            loadDataTable( htmlId );
-        });
-    }
-
 </script>

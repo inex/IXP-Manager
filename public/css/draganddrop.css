@@ -79,7 +79,7 @@
     border-top:1px solid #e5e5e5;
     border-bottom:1px solid #e5e5e5;
     padding:15px;
-    height: 90px;
+    height: 100px;
 
     position: relative;
 }
@@ -122,7 +122,7 @@
 }
 
 #upload ul li canvas{
-    top: 15px;
+    top: 25px;
     left: 32px;
     position: absolute;
 }
