@@ -18,9 +18,9 @@ protocol rpki {
 
     remote "<?= config( 'ixp.rpki.host' ) ?>" port <?= config( 'ixp.rpki.port' ) ?>;
 
-    retry keep 5;
-    refresh keep 30;
-    expire 600;
+    retry keep 90;
+    refresh keep 900;
+    expire keep 172800;
 }
 
 

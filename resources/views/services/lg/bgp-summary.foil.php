@@ -25,8 +25,8 @@
                 PfxLimit
             </th>
             <th>
-                State/PfxRcd<
-                /th>
+                State/PfxRcd
+            </th>
             <th>
                 PfxExp
             </th>
@@ -37,7 +37,7 @@
     </thead>
     <tbody>
 
-        <?php if( !count( $t->content->protocols ) ): ?>
+        <?php if( !count( (array)$t->content->protocols ) ): ?>
 
             <tr>
                 <td colspan="8">No BGP sessions found</td>

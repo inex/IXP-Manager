@@ -34,10 +34,10 @@ COPY api-reconfigure-all-v4.sh  /usr/local/sbin
 COPY api-reconfigure-v4.sh      /usr/local/sbin
 
 RUN cd /srv && \
-    wget https://github.com/inex/birdseye/releases/download/v1.1.4/birdseye-v1.1.4.tar.bz2 && \
-    tar jxf birdseye-v1.1.4.tar.bz2  && \
-    ln -s birdseye-v1.1.4 birdseye  && \
-    cd birdseye-v1.1.4  && \
+    wget https://github.com/inex/birdseye/archive/master.zip && \
+    unzip master.zip  && \
+    ln -s birdseye-master birdseye  && \
+    cd birdseye  && \
     chown -R www-data: storage && \
     echo "www-data        ALL=(ALL)       NOPASSWD: /srv/birdseye/bin/birdc\n" >/etc/sudoers.d/birdseye && \
     chmod a+x /usr/local/sbin/start-rs.sh /usr/local/sbin/api-reconfigure-all-v4.sh /usr/local/sbin/api-reconfigure-v4.sh

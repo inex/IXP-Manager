@@ -44,6 +44,10 @@ template bgp tb_rsclient {
     source address routeserveraddress;
     strict bind yes;
 
+    # give RPKI-RTR a chance to start and populate
+    # (may not affect inbound connections -> check)
+    connect delay time 120;
+
     <?= $t->ipproto ?> {
         export all;
 <?php if( $t->router->protocol() == 6 ): ?>
