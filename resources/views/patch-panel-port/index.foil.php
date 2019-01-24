@@ -2,7 +2,7 @@
     /** @var object $t */
 ?>
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
     Patch Panel Port
     <?php if( $t->pp ): ?>
         - <?= $t->ee( $t->pp->getName() ) ?>
@@ -10,27 +10,19 @@
     <?= isset( $t->data()['summary'] ) ? ' :: ' . $t->summary : '' ?>
 <?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
-        <?php if( $t->pp && $t->pp->hasDuplexPort() ): ?>
-            <!-- div class="btn-group btn-group-xs" role="group">
-                <button id="toggle-potential-slaves" class="btn btn-default">
-                    <span class="potential-slave">Split Duplex Ports</span>
-                    <span class="potential-slave" style="display: none;">Hide Duplex Ports</span>
-                </button>
-            </div -->
-        <?php endif; ?>
-        <div class="btn-group btn-group-xs" role="group">
-            <?php if( $t->pp ): ?>
-                <a type="button" class="btn btn-default" href="<?= route('patch-panel/edit' , [ 'id' => $t->pp->getId() ] ) ?>" title="Edit Patch Panel">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                </a>
-                <a type="button" class="btn btn-default" href="<?= route('patch-panel@view' , [ 'id' => $t->pp->getId() ] ) ?>" title="View Patch Panel">
-                    <span class="glyphicon glyphicon-eye-open"></span>
-                </a>
-            <?php endif;?>
-        </div>
-    </li>
+<?php $this->section( 'page-header-postamble' ) ?>
+
+    <div class="btn-group btn-group-sm" role="group">
+        <?php if( $t->pp ): ?>
+            <a class="btn btn-outline-secondary" href="<?= route('patch-panel/edit' , [ 'id' => $t->pp->getId() ] ) ?>" title="Edit Patch Panel">
+                <span class="fa fa-pencil"></span>
+            </a>
+            <a class="btn btn-outline-secondary" href="<?= route('patch-panel@view' , [ 'id' => $t->pp->getId() ] ) ?>" title="View Patch Panel">
+                <span class="fa fa-eye"></span>
+            </a>
+        <?php endif;?>
+    </div>
+
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -59,21 +51,41 @@
 
             <div id="area-ppp" class="collapse">
 
-                <table id='table-ppp' class="table">
-                    <thead>
+                <table id='table-ppp' class="table table-striped">
+                    <thead class="thead-dark">
                         <tr>
-                            <td>Id</td>
-                            <td>Name</td>
+                            <th>
+                                Id
+                            </th>
+                            <th>
+                                Name
+                            </th>
                             <?php if( !$t->pp ): ?>
-                                <td>Patch Panel</td>
+                                <th>
+                                    Patch Panel
+                                </th>
                             <?php endif;?>
-                            <td>Description / Switch / Port</td>
-                            <td>Customer</td>
-                            <td>Colocation Ref</td>
-                            <td>Flags</td>
-                            <td>Assigned at</td>
-                            <td>State</td>
-                            <td>Action</td>
+                            <th>
+                                Description / Switch / Port
+                            </th>
+                            <th>
+                                Customer
+                            </th>
+                            <th>
+                                Colocation Ref
+                            </th>
+                            <th>
+                                Flags
+                            </th>
+                            <th>
+                                Assigned at
+                            </th>
+                            <th>
+                                State
+                            </th>
+                            <th>
+                                Action
+                            </th>
                         </tr>
                     <thead>
                     <tbody>
@@ -115,7 +127,7 @@
                                     <td>
                                         <?php if( trim( $ppp->getDescription() ) != '' ): ?>
                                             <?= @parsedown( $t->ee( $ppp->getDescription() ) ) ?>
-                                            <?= $ppp->getSwitchPort() ? "<br" : "" ?>
+                                            <?= $ppp->getSwitchPort() ? "<br>" : "" ?>
                                         <?php endif; ?>
                                         <?php if( $ppp->getSwitchPort() ): ?>
                                             <?= $t->ee( $ppp->getSwitchPort()->getSwitcher()->getName() ) ?> :: <?= $t->ee( $ppp->getSwitchPort()->getName() ) ?>
@@ -134,23 +146,23 @@
                                         <!-- FLAGS -->
 
                                         <?php if( $ppp->getInternalUse() ): ?>
-                                            <span class="label label-default" data-toggle="tooltip" title="Internal Use">INT</span>
+                                            <span class="badge badge-secondary" data-toggle="tooltip" title="Internal Use">INT</span>
                                         <?php endif; ?>
 
                                         <?php if( $ppp->getChargeable() != Entities\PatchPanelPort::CHARGEABLE_NO ): ?>
-                                            <span class="label label-default" data-toggle="tooltip" title="<?= $ppp->resolveChargeable() ?>"><?= env( 'CURRENCY_HTML_ENTITY', '&euro;' ) ?></span>
+                                            <span class="badge badge-secondary" data-toggle="tooltip" title="<?= $ppp->resolveChargeable() ?>"><?= env( 'CURRENCY_HTML_ENTITY', '&euro;' ) ?></span>
                                         <?php endif; ?>
 
                                         <?php if( count( $ppp->getPatchPanelPortFiles() ) ): ?>
-                                            <span class="label label-default" data-toggle="tooltip" title="Files">F</span>
+                                            <span class="badge badge-secondary" data-toggle="tooltip" title="Files">F</span>
                                         <?php endif; ?>
 
                                         <?php if( trim( $ppp->getNotes() ) != '' ): ?>
-                                            <span class="label label-default" data-toggle="tooltip" title="Public Note">N+</span>
+                                            <span class="badge badge-secondary" data-toggle="tooltip" title="Public Note">N+</span>
                                         <?php endif; ?>
 
                                         <?php if( trim( $ppp->getPrivateNotes() ) != '' ): ?>
-                                            <span class="label label-default" data-toggle="tooltip" title="Private Note">N-</span>
+                                            <span class="badge badge-secondary" data-toggle="tooltip" title="Private Note">N-</span>
                                         <?php endif; ?>
 
                                     </td>
@@ -158,7 +170,7 @@
                                         <?= $ppp->getAssignedAtFormated() ?>
                                     </td>
                                     <td>
-                                        <span title="" class="label label-<?= $ppp->getStateCssClass() ?>">
+                                        <span title="" class="badge badge-<?= $ppp->getStateCssClass() ?>">
                                             <?= $ppp->resolveStates() ?>
                                         </span>
                                     </td>
@@ -167,11 +179,11 @@
 
                                             <?= $t->insert( 'patch-panel-port/action-dd', [ 'ppp' => $ppp, 'btnClass' => 'btn-group-sm', 'tpl' => 'index' ] ); ?>
 
-                                            <a class="btn btn btn-default" style="height: 30px;" title="History"
+                                            <a class="btn btn-outline-secondary" title="History"
                                                     href="<?= route( 'patch-panel-port@view' , [ 'id' => $ppp->getId() ] ) ?>  ">
-                                                <i class="glyphicon glyphicon-folder-open"></i>
+                                                <i class="fa fa-folder-open"></i>
                                                 &nbsp;
-                                                <span class="badge"><?= count( $ppp->getPatchPanelPortHistory() ) ?></span>
+                                                <span class="badge badge-dark"><?= count( $ppp->getPatchPanelPortHistory() ) ?></span>
                                             </a>
                                         </div>
                                     </td>

@@ -64,8 +64,6 @@ use IXP\Utils\View\Alert\{
 
 use Auth, D2EM, Former, Input, Log, Mail, Redirect, Storage;
 
-use GrahamCampbell\Flysystem\FlysystemManager;
-
 use Repositories\PatchPanelPort as PatchPanelPortRepository;
 
 /**
@@ -928,13 +926,12 @@ class PatchPanelPortController extends Controller
      *
      * @param  int $id patch panel port ID
      * @param  Request $request instance of the current HTTP request
-     * @param  FlysystemManager $filesystem instance of the file manager
      *
      * @return  JsonResponse
      *
      * @throws
      */
-    public function uploadFile( Request $request, FlysystemManager $filesystem, int $id ): JsonResponse {
+    public function uploadFile( Request $request, int $id ): JsonResponse {
         if( !( $ppp = D2EM::getRepository( PatchPanelPortEntity::class )->find($id) ) ) {
             abort(404);
         }
@@ -954,15 +951,15 @@ class PatchPanelPortController extends Controller
 
         $path = $pppFile->getPath();
 
-        if( $filesystem->has( $path ) ) {
+        if( Storage::exists( $path ) ) {
             return response()->json( [ 'success' => false, 'message' => 'File of the same name already exists for this port' ] );
         }
 
         $stream = fopen( $file->getRealPath(), 'r+' );
-        if( $filesystem->writeStream( $path, $stream ) ) {
+        if( Storage::put( $path, $stream ) ) {
 
-            $pppFile->setSize(  $filesystem->getSize($path) );
-            $pppFile->setType(  $filesystem->getMimetype($path) );
+            $pppFile->setSize(  Storage::size( $path ) );
+            $pppFile->setType(  Storage::mimeType( $path ) );
             D2EM::persist(      $pppFile );
 
             $ppp->addPatchPanelPortFile( $pppFile );
@@ -972,8 +969,8 @@ class PatchPanelPortController extends Controller
             $resp = [ 'success' => false, 'message' => 'Could not save file ti storage location' ];
         }
 
-        fclose($stream);
-        return response()->json($resp);
+        fclose( $stream );
+        return response()->json( $resp );
     }
 
     /**
