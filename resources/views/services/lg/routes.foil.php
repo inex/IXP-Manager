@@ -133,6 +133,19 @@
                     { type: 'string', targets: 0 }
                 ]
             });
+
+            $('body').on('click', '[data-toggle="modal"]', function() {
+
+                $($(this).data("target")+' .modal-content').html( `
+                    <div class="text-center">
+                        <div class="spinner-border m-5" style="width: 5rem; height: 5rem;" role="status">
+                            <span class="sr-only">Loading...</span>
+                        </div>
+                    </div>
+                ` );
+
+                $($(this).data("target")+' .modal-content').load($(this).attr('href'));
+            });
         });
 
     </script>

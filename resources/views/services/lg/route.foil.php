@@ -61,7 +61,7 @@
                     <b>Age</b>
                 </td>
                 <td>
-                    <?= strtotime( $r->age ) ? date( "Y-m-d H:i:s", strtotime( $r->age ) ) : '' ?>
+                    <?= isset( $r->age ) && $r->age ? date( "Y-m-d H:i:s", strtotime( $r->age ) ) : '' ?>
                 </td>
             </tr>
             <tr>
@@ -169,7 +169,7 @@
                     </td>
                     <td>
                         <?php foreach( $r->bgp->large_communities as $c ): ?>
-                            (<?= implode(', ',$c) ?>)
+                            <code><?= implode(':',$c) ?></code><br>
                         <?php endforeach; ?>
                     </td>
                 </tr>

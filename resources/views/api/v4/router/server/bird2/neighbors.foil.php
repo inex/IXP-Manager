@@ -78,6 +78,12 @@ int set allas;
         accept;
     }
 
+    # Belt and braces: must have at least one ASN in the path
+    if( bgp_path.len < 1 ) then {
+        bgp_large_community.add( IXP_LC_FILTERED_AS_PATH_TOO_SHORT );
+        accept;
+    }
+
     # Peer ASN == route's first ASN?
     if (bgp_path.first != <?= $int['autsys'] ?> ) then {
         bgp_large_community.add( IXP_LC_FILTERED_FIRST_AS_NOT_PEER_AS );
@@ -100,7 +106,8 @@ int set allas;
         accept;
     }
 
-<?php
+
+        <?php
     // Only do IRRDB ASN filtering if this is enabled per client:
     if( $int['irrdbfilter'] ?? true ):
 
@@ -117,6 +124,7 @@ int set allas;
 
 <?php   endif; ?>
 
+    # Ensure origin ASN is in the neighbors AS-SET
     if !(bgp_path.last ~ allas) then {
         bgp_large_community.add( IXP_LC_FILTERED_IRRDB_ORIGIN_AS_FILTERED );
         accept;
@@ -153,7 +161,7 @@ int set allas;
 
     if ! (net ~ allnet) then {
         bgp_large_community.add( IXP_LC_FILTERED_IRRDB_PREFIX_FILTERED );
-        bgp_large_community.add( <?= $int['rsmorespecifics'] ? 'IXP_LC_FILTERED_IRRDB_FILTERED_LOOSE' : 'IXP_LC_FILTERED_IRRDB_FILTERED_STRICT' ?> );
+        bgp_large_community.add( <?= $int['rsmorespecifics'] ? 'IXP_LC_INFO_IRRDB_FILTERED_LOOSE' : 'IXP_LC_INFO_IRRDB_FILTERED_STRICT' ?> );
         accept;
     } else {
         bgp_large_community.add( IXP_LC_INFO_IRRDB_VALID );
@@ -163,7 +171,7 @@ int set allas;
 
     # Deny everything because the IRR database returned nothing
     bgp_large_community.add( IXP_LC_FILTERED_IRRDB_PREFIX_FILTERED );
-    bgp_large_community.add( IXP_LC_FILTERED_IRRDB_PREFIX_EMPTY );
+    bgp_large_community.add( IXP_LC_INFO_IRRDB_PREFIX_EMPTY );
     accept;
 
 <?php   endif; ?>

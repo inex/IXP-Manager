@@ -32,13 +32,10 @@ define IXP_LC_FILTERED_RPKI_INVALID             = ( routeserverasn, 1101, 13 );
 define IXP_LC_FILTERED_TRANSIT_FREE_ASN         = ( routeserverasn, 1101, 14 );
 define IXP_LC_FILTERED_TOO_MANY_COMMUNITIES     = ( routeserverasn, 1101, 15 );
 
-define IXP_LC_FILTERED_IRRDB_FILTERED_LOOSE     = ( routeserverasn, 1101, 1000 );
-define IXP_LC_FILTERED_IRRDB_FILTERED_STRICT    = ( routeserverasn, 1101, 1001 );
-define IXP_LC_FILTERED_IRRDB_PREFIX_EMPTY       = ( routeserverasn, 1101, 1002 );
 
 
 
-# Information prefixes
+# Informational prefixes
 
 define IXP_LC_INFO_RPKI_VALID       = ( routeserverasn, 1000, 1  );
 define IXP_LC_INFO_RPKI_UNKNOWN     = ( routeserverasn, 1000, 2  );
@@ -47,6 +44,10 @@ define IXP_LC_INFO_RPKI_NOT_CHECKED = ( routeserverasn, 1000, 3  );
 define IXP_LC_INFO_IRRDB_VALID         = ( routeserverasn, 1001, 1  );
 define IXP_LC_INFO_IRRDB_NOT_CHECKED   = ( routeserverasn, 1001, 2  );
 define IXP_LC_INFO_IRRDB_MORE_SPECIFIC = ( routeserverasn, 1001, 3  );
+
+define IXP_LC_INFO_IRRDB_FILTERED_LOOSE  = ( routeserverasn, 1001, 1000 );
+define IXP_LC_INFO_IRRDB_FILTERED_STRICT = ( routeserverasn, 1001, 1001 );
+define IXP_LC_INFO_IRRDB_PREFIX_EMPTY    = ( routeserverasn, 1001, 1002 );
 
 
 
