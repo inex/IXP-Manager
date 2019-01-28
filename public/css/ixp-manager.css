@@ -62,6 +62,12 @@
         left: -163px;
         margin-top: -1px;
     }
+
+    .former-input-col-sm-6 .form-group > div{
+        -ms-flex:0 0 50%;
+        flex:0 0 50%;
+        max-width:50%
+    }
 /*
 * END CSS used for Bootstrap 4
 */

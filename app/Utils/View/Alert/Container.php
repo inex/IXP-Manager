@@ -77,10 +77,28 @@ class Container
         $alerts = '';
 
         while( $alert = self::pop() ) {
+
+            switch ($alert->class()) {
+                case 'danger':
+                    $icon = "fa-exclamation-triangle";
+                    break;
+                case 'info':
+                    $icon = "fa-info";
+                    break;
+                case 'success':
+                    $icon = "fa-check";
+                    break;
+            }
+
             $alerts .= '<div class="alert alert-' . $alert->class() . ' alert-dismissible" role="alert">' . "\n"
                 . '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . "\n"
-                . clean( $alert->message() ) . "\n"
-                . '</div>' . "\n\n";
+                . '<div class="d-flex align-items-center">'
+                . '<div class="mr-4 text-center"><i class="fa ' . $icon . ' fa-2x "></i></div>'
+                . '<div>' . clean( $alert->message() ) . "</div> \n"
+                . '</div></div>' . "\n\n";
+
+
+
         }
 
         return $alerts;

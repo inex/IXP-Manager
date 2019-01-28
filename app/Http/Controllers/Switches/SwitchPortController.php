@@ -166,7 +166,7 @@ class SwitchPortController extends Doctrine2Frontend {
     }
 
 
-    public function list( Request $r  ) : View{
+    public function list( Request $r = null ) : View{
 
         if( $r->input( 'switch' )  !== null ) {
             /** @var SwitcherEntity $s */
