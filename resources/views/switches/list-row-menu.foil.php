@@ -1,39 +1,50 @@
-<div class="btn-group">
+<div class="btn-group btn-group-sm">
 
-    <a class="btn btn-sm btn-default" id="d2f-list-view-<?= $t->row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@view' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
-    <a class="btn btn-sm btn-default" id="d2f-list-edit-<?= $t->row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
-    <a class="btn btn-sm btn-default" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>"  title="Delete"><i class="glyphicon glyphicon-trash"></i></a>
+    <a class="btn btn-outline-secondary" id="d2f-list-view-<?= $t->row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@view' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Preview">
+        <i class="fa fa-eye"></i>
+    </a>
+    <a class="btn btn-outline-secondary" id="d2f-list-edit-<?= $t->row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Edit">
+        <i class="fa fa-pencil"></i>
+    </a>
+    <a class="btn btn-outline-secondary" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>"  title="Delete">
+        <i class="fa fa-trash"></i>
+    </a>
 
-    <button type="button" class="btn btn-sm btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-         <span class="caret"></span>
-    </button>
-    <ul class="dropdown-menu dropdown-menu-right">
+    <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+    <div class="dropdown-menu dropdown-menu-right">
 
-        <li class="dropdown-header">SNMP Actions</li>
+        <h6 class="dropdown-header">
+            SNMP Actions
+        </h6>
 
-        <li <?php if( !$t->row[ "active" ] ): ?> class="disabled" <?php endif; ?> >
-            <a href="<?= route( "switch-port@snmp-poll", [ "switch" => $t->row[ 'id' ] ] ) ?>">View / Edit Ports</a>
-        </li>
+        <a class="dropdown-item <?php if( !$t->row[ "active" ] ): ?> disabled <?php endif; ?>" href="<?= route( "switch-port@snmp-poll", [ "switch" => $t->row[ 'id' ] ] ) ?>">
+            View / Edit Ports
+        </a>
 
-        <li <?php if( !$t->row[ "active" ] ): ?> class="disabled" <?php endif; ?> >
-            <a href="<?= route( "switch-port@list-op-status", [ "switch" => $t->row[ 'id' ] ] ) ?>">Live Port States</a>
-        </li>
+        <a class="dropdown-item <?php if( !$t->row[ "active" ] ): ?> disabled <?php endif; ?>" href="<?= route( "switch-port@list-op-status", [ "switch" => $t->row[ 'id' ] ] ) ?>">
+            Live Port States
+        </a>
 
-        <li role="separator" class="divider"></li>
-        <li class="dropdown-header">Database Actions</li>
+        <div class="dropdown-divider"></div>
 
-        <li>
-            <a href="<?= route( "switch-port@list", [ "switch" => $t->row[ 'id' ] ] ) ?>">View / Edit Ports</a>
-        </li>
+        <h6 class="dropdown-header">
+            Database Actions
+        </h6>
 
-        <li <?php if( !$t->row[ "mauSupported" ] ): ?> class="disabled" <?php endif; ?> >
-            <a href="<?= route( "switch-port@list-mau", [ "switch" => $t->row[ 'id' ] ] ) ?> ">Port MAU Detail</a>
-        </li>
 
-        <li>
-            <a href="<?= route( "switch@port-report", [ "id" => $t->row[ 'id' ] ] ) ?>">Port Report</a>
-        </li>
+        <a class="dropdown-item" href="<?= route( "switch-port@list", [ "switch" => $t->row[ 'id' ] ] ) ?>">
+            View / Edit Ports
+        </a>
 
-    </ul>
+        <a class="dropdown-item <?php if( !$t->row[ "mauSupported" ] ): ?> disabled <?php endif; ?>" href="<?= route( "switch-port@list-mau", [ "switch" => $t->row[ 'id' ] ] ) ?> ">
+            Port MAU Detail
+        </a>
+
+        <a class="dropdown-item" href="<?= route( "switch@port-report", [ "id" => $t->row[ 'id' ] ] ) ?>">
+            Port Report
+        </a>
+
+
+    </div>
 
 </div>
