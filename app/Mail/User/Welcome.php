@@ -81,6 +81,7 @@ class Welcome extends Mailable
     public function build()
     {
         return $this->markdown( 'user.emails.welcome' )
-            ->subject("INEX IXP Manager - Your Access Details " );
+            ->subject( config('identity.sitename' ) . " - Your Access Details" );
+        
     }
 }
