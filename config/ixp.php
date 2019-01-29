@@ -125,8 +125,14 @@ return [
     ],
 
     'rpki' => [
-        'host' => env( 'IXP_RPKI_RTR_HOST', '127.0.0.1' ),
-        'port' => env( 'IXP_RPKI_RTR_PORT', '3323' ),
+        'rtr1' => [
+            'host' => env( 'IXP_RPKI_RTR1_HOST', false ),
+            'port' => env( 'IXP_RPKI_RTR1_PORT', '3323' ),
+        ],
+        'rtr2' => [
+            'host' => env( 'IXP_RPKI_RTR2_HOST', false ),
+            'port' => env( 'IXP_RPKI_RTR2_PORT', false ),
+        ],
     ],
 
 

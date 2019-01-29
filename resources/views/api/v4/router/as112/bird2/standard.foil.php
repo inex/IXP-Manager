@@ -31,6 +31,8 @@
 ?>
 <?= $this->insert('api/v4/router/as112/bird2/header')           ?>
 
+<?= $this->insert('api/v4/router/as112/bird2/rpki')           ?>
+
 <?= $this->insert('api/v4/router/as112/bird2/custom-neighbors') ?>
 
 <?= $this->insert('api/v4/router/as112/bird2/neighbors')        ?>
