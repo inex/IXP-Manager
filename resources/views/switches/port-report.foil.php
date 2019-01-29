@@ -105,7 +105,7 @@
         $( document ).ready( function() {
 
             $('#list-port').show();
-            
+
             $('#list-port').dataTable({
                 "columnDefs": [
                     { "targets": [ 0 ], "visible": false },

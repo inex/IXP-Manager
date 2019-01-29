@@ -1,14 +1,12 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'switch@list' )?>">Switches</a>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Switches
+    /
+    Ports for <?= $t->s->getName() ?> (via SNMP)
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>View / Edit Ports for <?= $t->s->getName() ?> (via SNMP)</li>
-<?php $this->append() ?>
-
-<?php $this->section( 'page-header-preamble' ) ?>
 
     <?= $t->insert( "switch-port/page-header-preamble", [ "data" => [ "params" => [ "switch" => $t->s->getId(), "switches" => $t->switches ] ] , "feParams" => (object)[ "route_prefix" => "switch-port", "route_action" => "snmp-poll" ] ] ) ?>
 
@@ -65,21 +63,21 @@
 
         <table id="list-port" class="table table-bordered table-hover">
 
-            <thead>
-            <tr>
-                <th>
-                    <input type="checkbox" name="select-all" id="select-all" value="" />
-                    &nbsp; &nbsp;
-                    <i id="checkbox-reverse" style="cursor: pointer" class="glyphicon glyphicon-retweet"></i>
-                </th>
-                <th>Name</th>
-                <th>Customer</th>
-                <th>Description</th>
-                <th>Alias</th>
-                <th>Active</th>
-                <th>Type</th>
-                <th>Status</th>
-            </tr>
+            <thead class="thead-dark">
+                <tr>
+                    <th>
+                        <input type="checkbox" name="select-all" id="select-all" value="" />
+                        &nbsp; &nbsp;
+                        <i id="checkbox-reverse" style="cursor: pointer" class="glyphicon glyphicon-retweet"></i>
+                    </th>
+                    <th>Name</th>
+                    <th>Customer</th>
+                    <th>Description</th>
+                    <th>Alias</th>
+                    <th>Active</th>
+                    <th>Type</th>
+                    <th>Status</th>
+                </tr>
             </thead>
 
             <tbody>

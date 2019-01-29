@@ -92,11 +92,11 @@
                                     <?php endif;?>
 
                                 <?php endforeach;?>
-
-                                <th>
-                                    Actions
-                                </th> <!-- actions column -->
-
+                                <?php if( !isset( $t->feParams->hideactioncolumn ) || !$t->feParams->hideactioncolumn ): ?>
+                                    <th>
+                                        Actions
+                                    </th> <!-- actions column -->
+                                <?php endif; ?>
                             </tr>
 
                         </thead>

@@ -83,7 +83,7 @@ class Container
                     $icon = "fa-exclamation-triangle";
                     break;
                 case 'info':
-                    $icon = "fa-info";
+                    $icon = "fa-info-circle";
                     break;
                 case 'success':
                     $icon = "fa-check";
@@ -93,8 +93,8 @@ class Container
             $alerts .= '<div class="alert alert-' . $alert->class() . ' alert-dismissible" role="alert">' . "\n"
                 . '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . "\n"
                 . '<div class="d-flex align-items-center">'
-                . '<div class="mr-4 text-center"><i class="fa ' . $icon . ' fa-2x "></i></div>'
-                . '<div>' . clean( $alert->message() ) . "</div> \n"
+                . '<div class="text-center"><i class="fa ' . $icon . ' fa-2x "></i></div>'
+                . '<div class="col-sm-12">' . clean( $alert->message() ) . "</div> \n"
                 . '</div></div>' . "\n\n";
 
 
