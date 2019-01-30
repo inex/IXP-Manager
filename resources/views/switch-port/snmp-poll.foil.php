@@ -85,9 +85,11 @@
             <thead class="thead-dark">
                 <tr>
                     <th>
-                        <input type="checkbox" name="select-all" id="select-all" value="" />
-                        &nbsp; &nbsp;
-                        <i id="checkbox-reverse" style="cursor: pointer" class="fa fa-retweet"></i>
+                        <div class="d-flex">
+                            <input type="checkbox" name="select-all" id="select-all" value="" />
+                            <i id="checkbox-reverse" style="cursor: pointer" class="fa fa-retweet ml-2"></i>
+                        </div>
+
                     </th>
                     <th>
                         Name
@@ -145,7 +147,7 @@
                             </td>
                             <td>
                                 <div style="float: left;">
-                                    <select id="port-type-<?= $port[ "port"]->getId() ?>" class="chzn-select" style="width: 150px">
+                                    <select id="port-type-<?= $port[ "port"]->getId() ?>" style="width: 100px!important">
                                         <?php foreach( Entities\SwitchPort::$TYPES as $idx => $name ): ?>
                                             <option value="<?= $idx ?>" label="<?= $name ?>" <?= $port[ "port"]->getType() == $idx ? "selected='selected'" : "" ?>>
                                                 <?= $name ?>
@@ -153,7 +155,7 @@
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
-                                <div id="port-type-state-<?= $port[ "port"]->getId() ?>" style="float: left; padding: 2px 0px 0px 5px; width: 30px; margin-left:10px"></div>
+                                <div id="port-type-state-<?= $port[ "port"]->getId() ?>" class="text-secondary ml-1 float-left" style="width: 25px; height: 25px"></div>
                             </td>
 
                             <td>
