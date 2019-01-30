@@ -1,10 +1,10 @@
 
 <div class="alert alert-info mt-4" role="alert">
     <div class="d-flex align-items-center">
-        <div class="mr-4 text-center">
+        <div class="text-center">
             <i class="fa fa-question-circle fa-2x"></i>
         </div>
-        <div>
+        <div class="col-sm-12">
 
             Out of band access (for emergencies, firmware upgrades, etc) is normally achieved with the use of a console server of some form.
             These devices provide console port access to switches. Depending on your console server type, it may not have an easy interface

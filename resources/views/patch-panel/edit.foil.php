@@ -175,7 +175,7 @@
 
                     <?= Former::actions(
                         Former::primary_submit( 'Save Changes' ),
-                        Former::default_link( 'Cancel' )->href(  route( 'patch-panel/list' ) ),
+                        Former::secondary_link( 'Cancel' )->href(  route( 'patch-panel/list' ) ),
                         Former::success_button( 'Help' )->id( 'help-btn' )
                     )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
                     ?>

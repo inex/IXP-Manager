@@ -88,10 +88,11 @@ class IpAddressController extends Controller
     /**
      * Display the list of the IP Address (IPv4 or IPv6)
      *
-     * @param int   $protocol   Protocol of the IP address
-     * @param int   $vid        ID of the vlan
+     * @param int $protocol Protocol of the IP address
+     * @param int $vid ID of the vlan
      *
      * @return view
+     * @throws
      */
     public function list( int $protocol, int $vid = null ): View
     {

@@ -1,23 +1,23 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "d790f13fef58baf7e5139450bf63ba37",
+    "content-hash": "8e8b85b395db04c15b34c81678f8b001",
     "packages": [
         {
             "name": "anahkiasen/former",
-            "version": "4.1.10",
+            "version": "4.1.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/formers/former.git",
-                "reference": "1a0349f7b286d658aebe313a03b45a9c778cf905"
+                "reference": "c60a32e5a447cd4e420b27da21e58cbde174d427"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/formers/former/zipball/1a0349f7b286d658aebe313a03b45a9c778cf905",
-                "reference": "1a0349f7b286d658aebe313a03b45a9c778cf905",
+                "url": "https://api.github.com/repos/formers/former/zipball/c60a32e5a447cd4e420b27da21e58cbde174d427",
+                "reference": "c60a32e5a447cd4e420b27da21e58cbde174d427",
                 "shasum": ""
             },
             "require": {
@@ -76,7 +76,7 @@
                 "foundation",
                 "laravel"
             ],
-            "time": "2018-10-25T21:17:51+00:00"
+            "time": "2019-01-30T14:25:11+00:00"
         },
         {
             "name": "anahkiasen/html-object",
