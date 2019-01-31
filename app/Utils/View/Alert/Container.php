@@ -86,7 +86,8 @@ class Container
                     $icon = "fa-info-circle";
                     break;
                 case 'success':
-                    $icon = "fa-check";
+                    $icon = "fa-check-circle";
+                    break;
                 case 'warning':
                     $icon = "fa-exclamation-circle";
                     break;
