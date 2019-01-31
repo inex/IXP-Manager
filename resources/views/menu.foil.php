@@ -244,7 +244,7 @@
                 <ul class="sub-menu">
                     <li class="nav-item">
                         <a href="<?= route( 'layer2-address@list' ) ?>" class="nav-link <?= !request()->is( 'layer2-address/*' ) ?: 'active' ?> ">
-                            &nbsp;&nbsp;&nbsp;&nbsp;Configured Addresses
+                            Configured Addresses
                         </a>
                     </li>
 
@@ -252,7 +252,7 @@
 
                         <li class="nav-item" >
                             <a href="<?= route('mac-address@list') ?>" class="nav-link <?= !request()->is( 'mac-address/*' ) ?: 'active' ?>">
-                                &nbsp;&nbsp;&nbsp;&nbsp;Discovered Addresses
+                                Discovered Addresses
                             </a>
                         </li>
 

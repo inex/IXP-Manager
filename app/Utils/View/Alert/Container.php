@@ -87,6 +87,8 @@ class Container
                     break;
                 case 'success':
                     $icon = "fa-check";
+                case 'warning':
+                    $icon = "fa-exclamation-circle";
                     break;
             }
 

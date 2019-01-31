@@ -21,6 +21,14 @@
 
             title: "Enter a MAC Address.",
             inputType: 'text',
+            buttons: {
+                cancel: {
+                    className: "btn-secondary"
+                },
+                confirm: {
+                    label: "Add"
+                }
+            },
             callback: function ( result ) {
 
                 if( result != null ) {

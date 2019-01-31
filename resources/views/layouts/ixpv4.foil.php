@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html class="h-100" lang="en">
 
     <head>
         <!--  IXP MANAGER - template directory: resources/[views|skins] -->
@@ -24,40 +24,38 @@
 
     </head>
 
-<body>
+    <body class="d-flex flex-column h-100">
+        <header>
+            <?php
+            // We used to manage these menus with a lot of if / elseif / else clauses. It was a mess.
+            // Despite the drawbacks of replication, it's easier - by a distance - to mainatin standalone
+            // menu templates per user type:
 
-    <?php
-        // We used to manage these menus with a lot of if / elseif / else clauses. It was a mess.
-        // Despite the drawbacks of replication, it's easier - by a distance - to mainatin standalone
-        // menu templates per user type:
+            if( !Auth::check() ) {
+                echo $t->insert("layouts/menus/public");
+            } elseif( Auth::user()->isCustUser() && Auth::user()->getCustomer()->isTypeAssociate() ) {
+                echo $t->insert("layouts/menus/associate");
+            } elseif( Auth::user()->isCustUser() ) {
+                echo $t->insert("layouts/menus/custuser");
+            } elseif( Auth::user()->isCustAdmin() ) {
+                echo $t->insert("layouts/menus/custadmin");
+            } elseif( Auth::user()->isSuperUser() ) {
+                echo $t->insert("layouts/menus/superuser");
+            }
+            ?>
+        </header>
 
-        if( !Auth::check() ) {
-            echo $t->insert("layouts/menus/public");
-        } elseif( Auth::user()->isCustUser() && Auth::user()->getCustomer()->isTypeAssociate() ) {
-            echo $t->insert("layouts/menus/associate");
-        } elseif( Auth::user()->isCustUser() ) {
-            echo $t->insert("layouts/menus/custuser");
-        } elseif( Auth::user()->isCustAdmin() ) {
-            echo $t->insert("layouts/menus/custadmin");
-        } elseif( Auth::user()->isSuperUser() ) {
-            echo $t->insert("layouts/menus/superuser");
-        }
-    ?>
 
-    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
         <div class="container-fluid">
             <div class="row" >
-                <?= $t->insert( 'menu' ); ?>
+                <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                    <?= $t->insert( 'menu' ); ?>
+                <?php endif; ?>
 
-    <?php else: ?>
-        <div class="container-fluid">
-            <div class="row" >
-
-    <?php endif; ?>
                 <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
                     <main role="main" class="col-md-10 ml-sm-auto col-lg-10 mt-2 pb-4">
-                <?php else: ?>
-                    <main role="main" class="col-md-10 mt-2 pb-4">
+                 <?php else: ?>
+                    <main role="main" class="col-md-10 mx-sm-auto mt-2 pb-4">
                 <?php endif; ?>
 
                     <?php /*if( Auth::check() && Auth::user()->isSuperUser() ): */?>
@@ -87,13 +85,17 @@
                             </div>
                     --><?php /*endif; */?>
 
-                    <div class="container-fluid">
-                        <?php $this->section('content') ?>
-                        <?php $this->stop() ?>
-                    </div>
+                        <div class="container-fluid">
+                            <div class="col-sm-12">
+                                <?php $this->section('content') ?>
+
+                                <?php $this->stop() ?>
+                            </div>
+
+                        </div>
 
 
-                </main>
+                    </main>
 
             </div> <!-- </div class="row"> -->
 

@@ -51,9 +51,11 @@ $row = $t->row;
 
     <td>
 
-        <div class="btn-group">
+        <div class="btn-group btn-group-sm">
 
-            <a class="btn btn-sm btn-default" href="<?= route( $t->feParams->route_prefix . '@view' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Preview"><i class="glyphicon glyphicon-eye-open"></i></a>
+            <a class="btn btn-outline-secondary" href="<?= route( $t->feParams->route_prefix . '@view' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Preview">
+                <i class="fa fa-eye"></i>
+            </a>
 
         </div>
 

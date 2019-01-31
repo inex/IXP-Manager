@@ -1,9 +1,9 @@
-<script type="text/javascript" src="<?= asset( '/bower_components/clipboard/dist/clipboard.min.js' ) ?>"></script>
+<!--<script type="text/javascript" src="<?/*= asset( '/bower_components/clipboard/dist/clipboard.min.js' ) */?>"></script>-->
 <script>
     /**
      * initialisation of the Clipboard even on the class in parameter
      */
-    var clipboard = new Clipboard( '.btn-copy' );
+    let clipboard = new ClipboardJS( '.btn-copy' );
 
     /**
      * initialisation of tooltip

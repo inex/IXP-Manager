@@ -23,6 +23,7 @@ mix.scripts(
         'node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js',
         'node_modules/blueimp-file-upload/js/jquery.fileupload.js',
         'node_modules/jquery-knob/js/jquery.knob.js',
+        'node_modules/clipboard/dist/clipboard.min.js',
 
 
 
