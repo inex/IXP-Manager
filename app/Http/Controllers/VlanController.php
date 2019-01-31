@@ -308,7 +308,7 @@ class VlanController extends Doctrine2Frontend {
 
         $this->feParams->infra = $infra;
 
-        return $this->list();
+        return $this->list( request() );
     }
 
 }

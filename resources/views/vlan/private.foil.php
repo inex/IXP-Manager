@@ -3,16 +3,10 @@
 $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( $t->feParams->route_prefix . '@list') ?>">
-        <?=  $t->feParams->pagetitle  ?>
-    </a>
-<?php $this->append() ?>
+<?php $this->section( 'page-header-preamble' ) ?>
 
-<?php $this->section( 'page-header-postamble' ) ?>
-    <li>
-        Private VLAN Details
-    </li>
+    <?=  $t->feParams->pagetitle  ?> / Private VLAN Details
+
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -24,24 +18,32 @@ $this->layout( 'layouts/ixpv4' );
         <?= $t->alerts() ?>
 
         <?php if( $t->data[ 'params'][ 'infra' ] ): ?>
-            <div class="row-fluid">
-                <div class="alert alert-info">
-                    Only showing
-                    VLANs for: <strong><?=  $t->ee( $t->data[ 'params'][ 'infra' ]->getName() ) ?></strong>.
-
-                    <div class="pull-right">
-                        <div class="btn-group btn-group-xs" role="group">
-                            <a href="<?= route( $t->feParams->route_prefix . '@list' ) ?>" class='btn btn-default'>Show All VLANs</a>
+            <div class="alert alert-info mt-4" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="text-center">
+                        <i class="fa fa-info-circle fa-2x"></i>
+                    </div>
+                    <div class="col-sm-12 d-flex">
+                        <div class=" mr-auto">
+                            Only showing
+                            VLANs for: <b><?=  $t->ee( $t->data[ 'params'][ 'infra' ]->getName() ) ?></b>.
                         </div>
+
+
+                        <a href="<?= route( $t->feParams->route_prefix . '@list' ) ?>" class='btn btn-sm btn-outline-info'>
+                            Show All VLANs
+                        </a>
+
+
                     </div>
                 </div>
             </div>
         <?php endif; ?>
 
 
-        <table id="table-list" class="table">
+        <table id="table-list" class="table table-striped">
 
-            <thead>
+            <thead class="thead-dark">
 
                 <tr>
 
@@ -76,41 +78,41 @@ $this->layout( 'layouts/ixpv4' );
 
             <tbody>
 
-            <?php foreach( $t->data[ 'rows' ] as $idx => $row ): ?>
-                <tr>
+                <?php foreach( $t->data[ 'rows' ] as $idx => $row ): ?>
+                    <tr>
 
-                    <td>
-                        <?= $t->ee( $row[ 'name' ] ) ?>
-                    </td>
+                        <td>
+                            <?= $t->ee( $row[ 'name' ] ) ?>
+                        </td>
 
-                    <td>
-                        <?= $t->ee( $row[ 'number' ] ) ?>
-                    </td>
+                        <td>
+                            <?= $t->ee( $row[ 'number' ] ) ?>
+                        </td>
 
-                    <td>
-                        <?= $t->ee( $row[ 'infrastructure' ] ) ?>
-                    </td>
+                        <td>
+                            <?= $t->ee( $row[ 'infrastructure' ] ) ?>
+                        </td>
 
-                    <td>
-                        <?php foreach( $row[ "members" ] as $custid => $cust ): ?>
-                            <a href="<?= route( "customer@overview" , [ "id" => $custid ] ) ?>"><?= $t->ee( $cust[ 'name' ] ) ?></a>
-                            (<a href=" <?= route( 'interfaces/virtual/edit', [ 'id' => $cust['viid'] ] ) ?>">interface details</a>)<br />
-                        <?php endforeach; ?>
-                    </td>
-                    <td>
-                        <?php foreach( $row[ 'locations'] as $locid => $locname ): ?>
-                            <?= $t->ee( $locname ) ?><br />
-                        <?php endforeach; ?>
-                    </td>
-                    <td>
-                        <?php foreach( $row[ 'switches'] as $swid => $swname ): ?>
-                            <?= $t->ee( $swname ) ?><br />
-                        <?php endforeach; ?>
-                    </td>
+                        <td>
+                            <?php foreach( $row[ "members" ] as $custid => $cust ): ?>
+                                <a href="<?= route( "customer@overview" , [ "id" => $custid ] ) ?>"><?= $t->ee( $cust[ 'name' ] ) ?></a>
+                                (<a href=" <?= route( 'interfaces/virtual/edit', [ 'id' => $cust['viid'] ] ) ?>">interface details</a>)<br />
+                            <?php endforeach; ?>
+                        </td>
+                        <td>
+                            <?php foreach( $row[ 'locations'] as $locid => $locname ): ?>
+                                <?= $t->ee( $locname ) ?><br />
+                            <?php endforeach; ?>
+                        </td>
+                        <td>
+                            <?php foreach( $row[ 'switches'] as $swid => $swname ): ?>
+                                <?= $t->ee( $swname ) ?><br />
+                            <?php endforeach; ?>
+                        </td>
 
-                </tr>
+                    </tr>
 
-            <?php endforeach; ?>
+                <?php endforeach; ?>
             </tbody>
 
         </table>
