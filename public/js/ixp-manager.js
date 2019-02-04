@@ -72,12 +72,12 @@ $( 'document' ).ready( function(){
             },
             type: 'POST'
         })
-            .done( function( data ) {
-                well_div.html( data.html );
-            })
-            .fail( function() {
-                well_div.html('Error!');
-            });
+        .done( function( data ) {
+            well_div.html( data.html );
+        })
+        .fail( function() {
+            well_div.html('Error!');
+        });
     });
 
 

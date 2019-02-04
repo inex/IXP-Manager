@@ -45,7 +45,6 @@ use IXP\Utils\View\Alert\{
 
 use Illuminate\View\View;
 
-use Monolog\Logger;
 use OSS_SNMP\{
     Exception,
     SNMP
@@ -166,9 +165,9 @@ class SwitchPortController extends Doctrine2Frontend {
     }
 
 
-    public function list( Request $r  ) : View{
+    public function list( Request $r ) : View{
 
-        if( $r->input( 'switch' )  !== null ) {
+        if( $r && $r->input( 'switch' )  !== null ) {
             /** @var SwitcherEntity $s */
             if(  $s = D2EM::getRepository( SwitcherEntity::class )->find( $r->input( 'switch' ) ) ) {
                 $sid = $s->getId();
@@ -177,7 +176,7 @@ class SwitchPortController extends Doctrine2Frontend {
                 $r->session()->remove( "switch-port-list" );
                 $sid = false;
             }
-        } else if( $r->session()->exists( "switch-port-list" ) ) {
+        } else if( $r && $r->session()->exists( "switch-port-list" ) ) {
             $sid = $r->session()->get( "switch-port-list" );
         } else {
             $sid = false;

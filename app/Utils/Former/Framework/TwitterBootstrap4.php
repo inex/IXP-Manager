@@ -98,4 +98,21 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4  {
         return Element::create('small', $text, $attributes)->addClass('form-text text-muted former-help-text');
     }
 
+    /**
+     * Wrap an item to be prepended or appended to the current field
+     *
+     * @return Element A wrapped item
+     */
+    public function placeAround($item)
+    {
+        // Render object
+        if (is_object($item) and method_exists($item, '__toString')) {
+            $item = $item->__toString();
+        }
+
+        // Get class to use
+        $class = (strpos($item, '<button') !== false) ? 'append' : 'addon';
+
+        return Element::create('span', $item)->addClass('input-group-'.$class);
+    }
 }

@@ -38,6 +38,36 @@
         margin-right: 10px !important;
     }
 
+    .reset-button-well{
+        float: right;
+        position: absolute;
+        margin-left: 55%;
+    }
+
+    .table_view_info{
+        border-collapse: separate;
+        border-spacing: 15px 15px;
+    }
+
+    .table_view_info tr td{
+        vertical-align: top;
+    }
+
+    .dropdown-submenu {
+        position: relative !important;
+    }
+
+    .dropdown-submenu .dropdown-menu-l {
+        top: 0;
+        left: -163px;
+        margin-top: -1px;
+    }
+
+    .former-input-col-sm-6 .form-group > div{
+        -ms-flex:0 0 50%;
+        flex:0 0 50%;
+        max-width:50%
+    }
 /*
 * END CSS used for Bootstrap 4
 */
@@ -61,19 +91,7 @@
     line-height: 20px;
 }
 
-.reset-button-well{
-    float: right;
-    position: absolute;
-    margin-left: 55%;
-}
 
-.container > footer p {
-  text-align: center; /* center align it with the container */
-}
-
-.container-fluid > footer p {
-  text-align: center; /* center align it with the container */
-}
 
 /* The white background content wrapper */
 .page-content {
@@ -343,24 +361,6 @@
 }
 
 
-/* Chosen width issues: https://github.com/harvesthq/chosen/issues/92
-
-.chzn-container, .chzn-drop {
-    width: 100% !important;
-}
-
-*/
-
-
-.panel.with-nav-tabs .panel-heading{
-    padding: 5px 5px 0 5px;
-}
-.panel.with-nav-tabs .nav-tabs{
-    border-bottom: none;
-}
-.panel.with-nav-tabs .nav-justified{
-    margin-bottom: -1px;
-}
 /********************************************************************/
 /*** PANEL DEFAULT ***/
 .with-nav-tabs.panel-default .nav-tabs > li > a,
@@ -369,14 +369,7 @@
     color: #777;
 }
 
-.table_view_info{
-    border-collapse: separate;
-    border-spacing: 15px 15px;
-}
 
-.table_view_info tr td{
-    vertical-align: top;
-}
 
 
 
@@ -452,39 +445,12 @@ a.delInputRow {
     text-transform:lowercase;
 }
 
-.dropdown-submenu {
-    position: relative !important;
-}
 
-.dropdown-submenu .dropdown-menu-l {
-    top: 0;
-    left: -163px;
-    margin-top: -1px;
-}
 
 td a:hover{
     text-decoration: none;
 }
 
-
-.badge-primary{
-    color: #fff;
-    background-color: #007bff;
-}
-
-.badge-success{
-    color: #fff;
-    background-color: #5cb85c;
-}
-
-.badge-danger{
-    color: #fff;
-    background-color: #d9534f;
-}
-.badge-warning{
-    color: #fff;
-    background-color: #f0ad4e;
-}
 
 .lb-sm {
     font-size: 12px;
@@ -562,10 +528,6 @@ td a:hover{
 
 .cursor-pointer{
     cursor: pointer;
-}
-
-li.pull-right{
-    list-style-type: none;
 }
 
 

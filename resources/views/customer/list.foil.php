@@ -12,7 +12,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'page-header-postamble' ) ?>
 
 
-    <div class="btn-group btn-group-sm ml-auto" role="group">
+    <div class="btn-group btn-group-sm" role="group">
         <a id="btn-filter-options" class="btn btn-outline-secondary" href="<?= route( "customer@list" ) . '?current-only=' . ( $t->showCurrentOnly ? '0' : '1' ) ?>">
             <?= $t->showCurrentOnly ? "Show All Customers" : "Show Current Customers" ?>
         </a>

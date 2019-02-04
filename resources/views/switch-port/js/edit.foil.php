@@ -73,7 +73,7 @@
             }
 
 
-            let portsList = "<h3>The following ports will be created:</h3>\n\n<table class='table table-bordered'>\n";
+            let portsList = "<div class='card mt-4'><div class='card-header'><h3>The following ports will be created:</h3></div><div class='card-body'><table class='table table-bordered'>\n";
             let prefix = $("#prefix").val();
             for (var i = numFirst; i < (numFirst + numPorts); i++) {
 
@@ -83,11 +83,11 @@
 
 
 
-                portsList += `<tr><td><div class='form-group'><label for="${inputPortName}" class='control-label col-lg-2 col-sm-4'>Name</label><div class='col-sm-6'><input type='text' class='form-control port-name' id="${inputPortName}" name="${inputPortName}" value="${sprintf(prefix, i)}" /></div></div></td>
-                                <td><div class='form-group'><label class='control-label col-lg-2 col-sm-4'>Type</label><div class='col-sm-6'><select class='form-control chzn-select port-type' id="${inputPortType}" name="${inputPortType}"></select></div></div></td></tr>`;
+                portsList += `<tr><td><div class='form-group row'><label for="${inputPortName}" class='control-label col-lg-3 col-sm-6'>Name</label><div class='col-sm-6'><input type='text' class='form-control port-name' id="${inputPortName}" name="${inputPortName}" value="${sprintf(prefix, i)}" /></div></div></td>
+                                <td><div class='form-group row'><label class='control-label col-lg-3 col-sm-6'>Type</label><div class='col-sm-6'><select class='form-control chzn-select port-type' id="${inputPortType}" name="${inputPortType}"></select></div></div></td></tr>`;
             }
 
-            portsList += "</table>";
+            portsList += "</table></div></div>";
 
             $("#ports-area").html(portsList);
             $("#ports-area").show();

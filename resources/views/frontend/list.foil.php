@@ -92,11 +92,11 @@
                                     <?php endif;?>
 
                                 <?php endforeach;?>
-
-                                <th>
-                                    Actions
-                                </th> <!-- actions column -->
-
+                                <?php if( !isset( $t->feParams->hideactioncolumn ) || !$t->feParams->hideactioncolumn ): ?>
+                                    <th>
+                                        Actions
+                                    </th> <!-- actions column -->
+                                <?php endif; ?>
                             </tr>
 
                         </thead>
@@ -160,11 +160,11 @@
 
                                                 <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'YES_NO'] ): ?>
 
-                                                    <?= $row[ $col ] ? "<label class='label label-success'>Yes</label>" : "<label class='label label-danger'>No</label>" ?>
+                                                    <?= $row[ $col ] ? "<span class='badge badge-success'>Yes</span>" : "<span class='badge badge-danger'>No</span>" ?>
 
                                                 <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'INVERSE_YES_NO'] ): ?>
 
-                                                    <?= !$row[ $col ] ? "<label class='label label-success'>Yes</label>" : "<label class='label label-danger'>No</label>" ?>
+                                                    <?= !$row[ $col ] ? "<span class='badge badge-success'>Yes</span>" : "<span class='badge badge-danger'>No</span>" ?>
 
                                                 <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'REPLACE'] ): ?>
 

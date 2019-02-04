@@ -102,7 +102,7 @@
             if( element === "port-type" ) {
                 portType = $( '#port-type-state-' + id );
                 portType.html( "" );
-                portType.addClass( "loader" );
+                portType.addClass( "spinner-border" );
                 returnMessage = 0;
             } else {
                 disableInputsAction();
@@ -134,7 +134,7 @@
                 })
                 .always( function() {
                     if( portType ) {
-                        portType.removeClass("loader");
+                        portType.removeClass("spinner-border");
                     }
                 });
         }

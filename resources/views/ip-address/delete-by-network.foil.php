@@ -1,17 +1,10 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
 
-
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route ( 'vlan@list' ) ?>">VLANs</a>
-<?php $this->append() ?>
-
-
-
-<?php $this->section( 'page-header-postamble' ) ?>
-    <li>
-        Delete Free IP Addresses
-    </li>
+<?php $this->section( 'page-header-preamble' ) ?>
+    VLANs
+    /
+    Delete Free IP Addresses
 <?php $this->append() ?>
 
 
@@ -26,115 +19,123 @@
 
             <?= $t->alerts() ?>
 
-            <h3>Delete Free IP Addresses for VLAN: <?= $t->vlan->getName() ?></h3>
-
-            <div class="col-md-12 well">
-
-                <div class="col-md-6">
-
-                    <?= Former::open()->method( 'post' )
-                        ->action( route( 'ip-address@delete-by-network', [ "vlanid" => $t->vlan->getId() ] ) )
-                    ?>
 
 
-                    <?= Former::text( 'network' )
-                        ->label("Network")
-                        ->addClass("col-md-6 col-ld-6")
-                        ->id( 'network' )
-                        ->placeholder( '2a01:db8::/124 | 192.0.2.0/28' )
-                        ->blockHelp( 'Enter a subnet is CIDR format.' )
+            <div class="card">
+                <div class="card-header">
+                    <h3>Delete Free IP Addresses for VLAN: <?= $t->vlan->getName() ?></h3>
+                </div>
+                <div class="card-body row">
 
-                    ?>
+                    <div class="col-md-6">
 
-                    <?=
-                    Former::actions(
-                        Former::primary_submit( 'Find Free Addresses' ),
-                        Former::default_link( 'Cancel' )->href( route( 'ip-address@list', [ 'protocol' => 6, 'vlanid' => $t->vlan->getId() ] ) )
-                    );
-                    ?>
+                        <?= Former::open()->method( 'post' )
+                            ->action( route( 'ip-address@delete-by-network', [ "vlanid" => $t->vlan->getId() ] ) )
+                        ?>
 
 
-                    <?= Former::close() ?>
+                        <?= Former::text( 'network' )
+                            ->label("Network")
+                            ->addClass("col-md-6 col-ld-6")
+                            ->id( 'network' )
+                            ->placeholder( '2a01:db8::/124 | 192.0.2.0/28' )
+                            ->blockHelp( 'Enter a subnet is CIDR format.' )
+
+                        ?>
+
+                        <?=
+                        Former::actions(
+                            Former::primary_submit( 'Find Free Addresses' ),
+                            Former::secondary_link( 'Cancel' )->href( route( 'ip-address@list', [ 'protocol' => 6, 'vlanid' => $t->vlan->getId() ] ) )
+                        )->class( "text-center" );
+                        ?>
+
+
+                        <?= Former::close() ?>
+
+                    </div>
+
+                    <div class="col-md-6">
+
+                        <p>
+                            This tool allows you to delete free (unused / unallocated) IP addresses in a given CIDR network.
+                        </p>
+
+                        <p>
+                            Enter a network in the input box such as <code>2a01:db8::/124</code> or <code>192.0.2.0/28</code>.
+                        </p>
+
+                        <p>
+                            Once you click <em>Find IP Addresses</em>, IXP Manager will find and show you the available IP addresses
+                            that would be deleted. You will have the opportunity to confirm this action before it is processes.
+                        </p>
+
+                    </div>
 
                 </div>
-
-                <div class="col-md-6">
-
-                    <p>
-                        This tool allows you to delete free (unused / unallocated) IP addresses in a given CIDR network.
-                    </p>
-
-                    <p>
-                        Enter a network in the input box such as <code>2a01:db8::/124</code> or <code>192.0.2.0/28</code>.
-                    </p>
-
-                    <p>
-                        Once you click <em>Find IP Addresses</em>, IXP Manager will find and show you the available IP addresses
-                        that would be deleted. You will have the opportunity to confirm this action before it is processes.
-                    </p>
-
-                </div>
-
             </div>
 
-
-
             <?php if( $t->ips ): ?>
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h3>List of Free IP Addresses To Be Deleted</h3>
+                    </div>
+                    <div class="card-body">
+                        <table id='table-ip' class="table table-striped">
 
+                            <thead class="thead-dark">
+                            <tr>
+                                <th colspan="3">
+                                    IP Addresses
+                                </th>
+                            </tr>
+                            </thead>
 
-                <h3>List of Free IP Addresses To Be Deleted</h3>
+                            <tbody>
 
-                    <table id='table-ip' class="table table-striped">
+                            <?php $count = 1; ?>
+                            <tr>
+                                <?php foreach( $t->ips as $ip ): ?>
 
-                        <thead>
-                        <tr>
-                            <th colspan="3">
-                                IP Addresses
-                            </th>
-                        </tr>
-                        </thead>
+                                    <td>
+                                        <?= $ip->getAddress() ?>
+                                    </td>
 
-                        <tbody>
+                                    <?php if( $count++ % 3 == 0 ) { echo "</tr>\n<tr>"; } ?>
 
-                        <?php $count = 1; ?>
-                        <tr>
-                            <?php foreach( $t->ips as $ip ): ?>
+                                <?php
 
-                                <td>
-                                    <?= $ip->getAddress() ?>
-                                </td>
+                                endforeach;
 
-                                <?php if( $count++ % 3 == 0 ) { echo "</tr>\n<tr>"; } ?>
-
-                            <?php
-
-                            endforeach;
-
-                            if( !$count % 3 == 0 ) {
-                                while( $count % 3 != 0 ) {
-                                    echo '<td></td>';
-                                    $count++;
+                                if( !$count % 3 == 0 ) {
+                                    while( $count % 3 != 0 ) {
+                                        echo '<td></td>';
+                                        $count++;
+                                    }
+                                    echo "</tr>";
                                 }
-                                echo "</tr>";
-                            }
 
-                            ?>
+                                ?>
 
 
-                        </tbody>
+                            </tbody>
 
-                    </table>
-
-
-                    <br><br>
+                        </table>
 
 
-                <div class="alert alert-danger" role="alert">
-                    <strong>Delete all the IP addresses displayed above?</strong>
-                    <a class="btn btn-sm btn-danger pull-right" id="delete" href="#">Delete</a>
+                        <div class="alert alert-danger mt-4" role="alert">
+                            <div class="d-flex align-items-center">
+                                <div class="text-center">
+                                    <i class="fa fa-exclamation-circle fa-2x"></i>
+                                </div>
+                                <div class="col-sm-12">
+                                    <b>Delete all the IP addresses displayed above?</b>
+                                    <a class="btn btn-sm btn-danger pull-right" id="delete" href="#">Delete</a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-
-
 
             <?php endif; ?>
 
@@ -165,6 +166,7 @@
                 buttons: {
                     cancel: {
                         label: 'Close',
+                        className: 'btn-secondary',
                         callback: function () {
                             $('.bootbox.modal').modal('hide');
                             return false;

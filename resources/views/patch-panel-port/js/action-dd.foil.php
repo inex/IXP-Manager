@@ -236,6 +236,7 @@
 
 
         let dialog = bootbox.dialog({
+            size: "large",
             message: html,
             title: "Files Upload (Files will be public by default)",
             onEscape: function() {
@@ -402,7 +403,8 @@
             message: message,
             buttons: {
                 cancel: {
-                    label: '<i class="fa fa-times"></i> Cancel'
+                    label: '<i class="fa fa-times"></i> Cancel',
+                    className : "btn-secondary",
                 },
                 confirm: {
                     label: '<i class="fa fa-check"></i> Confirm'

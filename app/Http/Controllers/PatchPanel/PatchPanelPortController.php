@@ -715,6 +715,7 @@ class PatchPanelPortController extends Controller
         /** @var PatchPanelPortEntity $ppp */
         $ppp = D2EM::getRepository(PatchPanelPortEntity::class)->find($id);
 
+
         if( !$ppp ) {
             Log::alert( "Failed PPP LoA verification for non-existent port {$id} from {$_SERVER['REMOTE_ADDR']}" );
         } else if( $ppp->getLoaCode() != $loaCode ) {
@@ -949,7 +950,7 @@ class PatchPanelPortController extends Controller
         $pppFile->setUploadedAt(        new \DateTime );
         $pppFile->setUploadedBy(        Auth::user()->getUsername() );
 
-        $path = $pppFile->getPath();
+        $path = "files/" . $pppFile->getPath();
 
         if( Storage::exists( $path ) ) {
             return response()->json( [ 'success' => false, 'message' => 'File of the same name already exists for this port' ] );

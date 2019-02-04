@@ -4,7 +4,7 @@
 $this->layout( 'layouts/ixpv4' )
 ?>
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
     Move Patch Panel Port - <?= $t->ee( $t->ppp->getPatchPanel()->getName() ) ?> :: <?= $t->ee( $t->ppp->getName() )?>
 <?php $this->append() ?>
 
@@ -13,11 +13,12 @@ $this->layout( 'layouts/ixpv4' )
 
         <div class="col-sm-12">
 
-            <div class="well">
-                <?= Former::open()->method( 'POST' )
-                    ->action( route ( 'patch-panel-port@move' ) )
-                    ->customInputWidthClass( 'col-sm-3' )
-                ?>
+            <div class="card">
+                <div class="card-body">
+                    <?= Former::open()->method( 'POST' )
+                        ->action( route ( 'patch-panel-port@move' ) )
+                        ->customInputWidthClass( 'col-sm-3' )
+                    ?>
 
                     <?= Former::text( 'current-pos' )
                         ->label( 'Current position :' )
@@ -60,11 +61,13 @@ $this->layout( 'layouts/ixpv4' )
 
                     <?=Former::actions(
                         Former::primary_submit( 'Save Changes' ),
-                        Former::default_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) ),
+                        Former::secondary_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) ),
                         Former::success_button( 'Help' )->id( 'help-btn' )
-                    )->id('btn-group');?>
+                    )->id('btn-group')->class( "bg-light p-4 d-4 shadow-sm text-center" )?>
 
-                <?= Former::close() ?>
+                    <?= Former::close() ?>
+                </div>
+
             </div>
 
         </div>

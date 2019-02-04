@@ -128,7 +128,7 @@
 
                     <?= Former::date( 'installation_date' )
                         ->label( 'Installation Date' )
-                        ->append( '<div class="input-group-append"><button class="btn-outline-secondary btn rounded-right" id="date-today" type="button">Today</button></div>' )
+                        ->append( '<button class="btn-outline-secondary btn rounded-right" id="date-today" type="button">Today</button>' )
                         ->value( date( 'Y-m-d' ) );
                     ?>
 
@@ -175,7 +175,7 @@
 
                     <?= Former::actions(
                         Former::primary_submit( 'Save Changes' ),
-                        Former::default_link( 'Cancel' )->href(  route( 'patch-panel/list' ) ),
+                        Former::secondary_link( 'Cancel' )->href(  route( 'patch-panel/list' ) ),
                         Former::success_button( 'Help' )->id( 'help-btn' )
                     )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
                     ?>
