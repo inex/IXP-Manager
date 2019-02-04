@@ -1,6 +1,5 @@
 <div class="row">
     <div class="col-sm-12">
-        <br/>
         <p>
             Using redundant route servers means that you do not need to goto the effort of
             establishing bilateral peering sessions with every member of the exchange.
