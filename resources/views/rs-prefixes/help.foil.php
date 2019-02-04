@@ -1,8 +1,6 @@
-<br/>
 <p>
     This <em>Route Server Prefix Filtering Analysis</em> tool allows one to examine what routes a
     network is advertising to the <?= config( 'identity.orgname' ) ?> Route Servers.
-    <br /><br />
 </p>
 
 <h4>Source of IRRDB Information</h4>

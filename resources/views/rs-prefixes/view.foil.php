@@ -3,108 +3,100 @@
 ?>
 
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
+
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-        <a href="<?= route( "rs-prefixes@list" ) ?>">Route Server Prefix Filtering Analysis Tool</a>
-    <?php else: ?>
-        Route Server Prefix Filtering Analysis Tool
-        <small>
-            <br>
-            <?= $t->ee( $t->c->getName() ) ?> [<?= $t->asNumber( $t->c->getAutsys() ) ?>]
-            <?php if( $t->protocol ): ?>[IPv<?= $t->protocol ?>]<?php endif; ?>
-        </small>
+        Route Server Prefix /
     <?php endif; ?>
+    Route Server Prefix Filtering Analysis Tool
+
 <?php $this->append() ?>
 
 
 
-<?php if( Auth::user()->isSuperUser() ): ?>
 
-    <?php $this->section( 'page-header-postamble' ) ?>
-        <li>
-            <a href="<?=  route( "customer@overview" , [ "id" => $t->c->getId() ] ) ?>" >
-                <?= $t->ee( $t->c->getName() ) ?>
-            </a>
+<?php $this->section( 'page-header-postamble' ) ?>
 
-            [<?= $t->asNumber( $t->c->getAutsys() ) ?>]
+    <?= $t->insert( 'rs-prefixes/list-filter' ) ?>
 
-            <?php if( $t->protocol ): ?>
-                [IPv<?= $t->protocol ?>]
-            <?php endif; ?>
-        </li>
-    <?php $this->append() ?>
-
-<?php endif; ?>
-
-
-
-<?php $this->section( 'page-header-preamble' ) ?>
-    <?php if( Auth::user()->isSuperUser() ): ?>
-        <li class="pull-right">
-            <?= $t->insert( 'rs-prefixes/list-filter' ) ?>
-        </li>
-    <?php else: ?>
-        <div class="pull-right">
-            <?= $t->insert( 'rs-prefixes/list-filter' ) ?>
-        </div>
-    <?php endif; ?>
 <?php $this->append() ?>
 
 
 
 <?php $this->section( 'content' ) ?>
 
-    <div class="row">
 
+
+    <div class="row">
         <div class="col-sm-12">
 
             <?php if( $t->totalVl != $t->filteredVl ): ?>
-                <div class="alert alert-warning" role="alert">
-                    <b>Warning!</b>
-                    <?php if( $t->filteredVl ): ?>
-                        Not all ports have IRRDB filtered applied.
-                    <?php else: ?>
-                        No ports have IRRDB filtering applied so, while this information is useful,
-                        it has no impact on services for this member.
-                    <?php endif;?>
+                <div class="alert alert-warning mt-4" role="alert">
+                    <div class="d-flex align-items-center">
+                        <div class="text-center">
+                            <i class="fa fa-exclamation-circle fa-2x"></i>
+                        </div>
+                        <div class="col-sm-12">
+                            <b>Warning!</b>
+                            <?php if( $t->filteredVl ): ?>
+                                Not all ports have IRRDB filtered applied.
+                            <?php else: ?>
+                                No ports have IRRDB filtering applied so, while this information is useful,
+                                it has no impact on services for this member.
+                            <?php endif;?>
+                        </div>
+                    </div>
                 </div>
             <?php endif; ?>
 
-            <ul class="nav nav-tabs" role="tab-list">
-                <li role="presentation" class="active" id="nav-adv_nacc">
-                    <a href="#adv_nacc" aria-controls="adv_nacc" role="tab" data-toggle="tab"   >Advertised but Not Accepted  (<?= count( $t->aggRoutes[ 'adv_nacc' ] )  ?>)</a>
-                </li>
-                <li role="presentation" id="nav-adv_acc">
-                    <a href="#adv_acc" aria-controls="adv_acc" role="tab" data-toggle="tab"     >Advertised & Accepted (<?=       count( $t->aggRoutes[ 'adv_acc' ] )   ?>)</a>
-                </li>
-                <li role="presentation" id="nav-nadv_acc">
-                    <a href="#nadv_acc" aria-controls="nadv_acc" role="tab" data-toggle="tab"   >Not Advertised but Accepted (<?= count( $t->aggRoutes[ 'nadv_acc' ] )  ?>)</a>
-                </li>
-                <li role="presentation">
-                    <a href="#help" aria-controls="help" role="tab" data-toggle="tab">Help</a>
-                </li>
-            </ul>
+            <div class="card mt-4">
+                <div class="card-header">
 
-            <!-- Tab panes -->
-            <div class="tab-content" id='type-tabs'>
-                <div role="tab-list" class="tab-pane active" id="adv_nacc">
-                    <?= $t->insert( 'rs-prefixes/view-route', [ 'type' => 'adv_nacc',   'protocol'  => $t->protocol, 'aggRoutes' => $t->aggRoutes ] ); ?>
+                    <ul class="nav nav-tabs card-header-tabs">
+
+                        <li role="presentation" class="nav-item" id="nav-adv_nacc">
+                            <a href="#adv_nacc" class="nav-link active" aria-controls="adv_nacc" role="tab" data-toggle="tab">
+                                Advertised but Not Accepted  (<?= count( $t->aggRoutes[ 'adv_nacc' ] )  ?>)
+                            </a>
+                        </li>
+                        <li role="presentation" class="nav-item" id="nav-adv_acc">
+                            <a href="#adv_acc" class="nav-link" aria-controls="adv_acc" role="tab" data-toggle="tab" >
+                                Advertised & Accepted (<?= count( $t->aggRoutes[ 'adv_acc' ] )   ?>)
+                            </a>
+                        </li>
+                        <li role="presentation" class="nav-item" id="nav-nadv_acc">
+                            <a href="#nadv_acc" class="nav-link" aria-controls="nadv_acc" role="tab" data-toggle="tab"   >
+                                Not Advertised but Accepted (<?= count( $t->aggRoutes[ 'nadv_acc' ] )  ?>)
+                            </a>
+                        </li>
+                        <li role="presentation" class="nav-item">
+                            <a href="#help" class="nav-link" aria-controls="help" role="tab" data-toggle="tab">
+                                Help
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-                <div role="tab-list" class="tab-pane" id="adv_acc">
-                    <?= $t->insert( 'rs-prefixes/view-route', [ 'type' => 'adv_acc',    'protocol'  => $t->protocol, 'aggRoutes' => $t->aggRoutes ] ); ?>
-                </div>
-                <div role="tab-list" class="tab-pane" id="nadv_acc">
-                    <?= $t->insert( 'rs-prefixes/view-route', [ 'type' => 'nadv_acc',   'protocol'  => $t->protocol, 'aggRoutes' => $t->aggRoutes ] ); ?>
-                </div>
-                <div role="tab-list" class="tab-pane" id="help">
-                    <?= $t->insert( 'rs-prefixes/help', [ 'c' => $t->c, 'aggRoutes' => $t->aggRoutes ] ); ?>
+
+                <!-- Tab panes -->
+                <div class="card-body tab-content" id='type-tabs'>
+                    <div role="tab-list" class="tab-pane active show" id="adv_nacc">
+                        <?= $t->insert( 'rs-prefixes/view-route', [ 'type' => 'adv_nacc',   'protocol'  => $t->protocol, 'aggRoutes' => $t->aggRoutes ] ); ?>
+                    </div>
+                    <div role="tab-list" class="tab-pane" id="adv_acc">
+                        <?= $t->insert( 'rs-prefixes/view-route', [ 'type' => 'adv_acc',    'protocol'  => $t->protocol, 'aggRoutes' => $t->aggRoutes ] ); ?>
+                    </div>
+                    <div role="tab-list" class="tab-pane" id="nadv_acc">
+                        <?= $t->insert( 'rs-prefixes/view-route', [ 'type' => 'nadv_acc',   'protocol'  => $t->protocol, 'aggRoutes' => $t->aggRoutes ] ); ?>
+                    </div>
+                    <div role="tab-list" class="tab-pane" id="help">
+                        <?= $t->insert( 'rs-prefixes/help', [ 'c' => $t->c, 'aggRoutes' => $t->aggRoutes ] ); ?>
+                    </div>
                 </div>
             </div>
-
-
         </div>
-
     </div>
+
+
 
 
 <?php $this->append() ?>
