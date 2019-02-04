@@ -15,9 +15,15 @@
 
     The API key can be passed in the header (preferred) or on the URL. For example:
 <ul>
-    <li> <code>curl -X GET -H "X-IXP-Manager-API-Key: <?= $example_api_key?> " <?= url( "/api/v4/test" ) ?></code></li>
-    <li> <code>wget <?= url( "/api/v4/test" ) ?>?apikey=<?= $example_api_key ?></code></li>
-    <li> <a href="<?= url( "/api/v4/test" ) ?>?apikey=<?= $example_api_key ?>"><?= url( "/api/v4/test" ) ?>?apikey=<?= $example_api_key ?></a></li>
+    <li>
+        <code>curl -X GET -H "X-IXP-Manager-API-Key: <?= $example_api_key?>" <?= url( "/api/v4/test" ) ?></code>
+    </li>
+    <li>
+        <code>wget <?= url( "/api/v4/test" ) ?>?apikey=<?= $example_api_key ?></code>
+    </li>
+    <li>
+        <a href="<?= url( "/api/v4/test" ) ?>?apikey=<?= $example_api_key ?>"><?= url( "/api/v4/test" ) ?>?apikey=<?= $example_api_key ?></a>
+    </li>
 </ul>
 </p>
 
@@ -40,9 +46,6 @@
                 </li>
             <?php endforeach; ?>
         </ul>
-        <br><br>
     </dd>
-
-
 
 </dl>
