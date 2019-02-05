@@ -169,7 +169,13 @@
                     </td>
                     <td>
                         <?php foreach( $r->bgp->large_communities as $c ): ?>
-                            <code><?= implode(':',$c) ?></code><br>
+                            <code><?= implode(':',$c) ?></code>
+
+                            <?php if( $lcinfo = $t->bird()->translateBgpFilteringLargeCommunity( $r, ':' . $c[1] . ':' . $c[2] ) ): ?>
+                                <span class="badge badge-<?= $lcinfo[1] ?>"><?= $lcinfo[0] ?></span>
+                            <?php endif; ?>
+
+                            <br>
                         <?php endforeach; ?>
                     </td>
                 </tr>
