@@ -157,7 +157,7 @@
                     </td>
                     <td>
                         <?php foreach( $r->bgp->communities as $c ): ?>
-                            (<?= implode(', ',$c) ?>)
+                            <tt><?= implode(':',$c) ?></tt>
                         <?php endforeach; ?>
                     </td>
                 </tr>
@@ -169,9 +169,9 @@
                     </td>
                     <td>
                         <?php foreach( $r->bgp->large_communities as $c ): ?>
-                            <code><?= implode(':',$c) ?></code>
+                            <tt><?= implode(':',$c) ?></tt>
 
-                            <?php if( $lcinfo = $t->bird()->translateBgpFilteringLargeCommunity( $r, ':' . $c[1] . ':' . $c[2] ) ): ?>
+                            <?php if( $lcinfo = $t->bird()->translateBgpFilteringLargeCommunity( ':' . $c[1] . ':' . $c[2] ) ): ?>
                                 <span class="badge badge-<?= $lcinfo[1] ?>"><?= $lcinfo[0] ?></span>
                             <?php endif; ?>
 

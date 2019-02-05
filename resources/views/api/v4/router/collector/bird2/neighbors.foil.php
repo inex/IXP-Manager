@@ -10,6 +10,8 @@
 function fn_import ( int remote_as )
 int set transit_asns;
 {
+    <?= $t->insert( 'api/v4/router/collector/bird2/import-pre-extra' ) ?>
+
     if !(avoid_martians()) then {
         bgp_large_community.add( IXP_LC_FILTERED_BOGON );
     }

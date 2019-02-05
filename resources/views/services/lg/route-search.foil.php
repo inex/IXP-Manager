@@ -37,7 +37,7 @@
     </div>
     <div class="form-group">
         <div class="col-sm-10 col-sm-offset-2">
-            <button id="submit" type="button" class="btn btn-default">Submit</button>
+            <button id="submit" type="button" class="btn btn-primary">Submit</button>
         </div>
     </div>
 </form>
@@ -98,7 +98,7 @@ $('input:radio[name="sourceSelector"]').change( function(){
                     .text(e)
                 );
             });
-            $("#source").val('master');
+            $("#source").val('master<?= $t->lg->router()->protocol() ?>');
         } else {
             source = 'protocol'
             $("#source").html("");
@@ -120,7 +120,7 @@ $(document).ready(function() {
             .text(e)
         );
     });
-    $("#source").val('master');
+    $("#source").val('master<?= $t->lg->router()->protocol() ?>');
 });
 
 </script>

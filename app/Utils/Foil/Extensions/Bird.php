@@ -111,14 +111,15 @@ class Bird implements ExtensionInterface {
         ':1001:1000'  => [ 'IRRDB FILTERED LOOSE', 'info' ],
         ':1001:1001'  => [ 'IRRDB FILTERED STRICT', 'info' ],
         ':1001:1002'  => [ 'IRRDB PREFIX EMPTY', 'warning' ],
-    ];
 
+        ':1001:1100'  => [ 'FROM IX ROUTESERVER', 'info' ],
+];
 
 
     /**
      * Get information on a BGP large community used for filtering / info by IXP Manager
      */
-    public function translateBgpFilteringLargeCommunity( Router $r, string $lc ): ?array {
+    public function translateBgpFilteringLargeCommunity( string $lc ): ?array {
 
         foreach( self::$BGPLCS as $k => $v ) {
             if( $k === $lc ) {

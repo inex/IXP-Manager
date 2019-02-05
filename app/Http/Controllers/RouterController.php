@@ -126,7 +126,7 @@ class RouterController extends Controller
                 'lg_access'             => array_key_exists( 'lg_access',   $old ) ? $old['lg_access']      : $rt->getLgAccess(),
                 'quarantine'            => array_key_exists( 'quarantine',  $old ) ? $old['quarantine']     : ( $rt->getQuarantine()    ? 1 : 0 ),
                 'bgp_lc'                => array_key_exists( 'bgp_lc',      $old ) ? $old['bgp_lc']         : ( $rt->getBgpLc()         ? 1 : 0 ),
-                'rpki'                  => array_key_exists( 'rpki',        $old ) ? $old['rpki']           : ( $rt->getRPKI()         ? 1 : 0 ),
+                'rpki'                  => array_key_exists( 'rpki',        $old ) ? $old['rpki']           : ( $rt->getRPKI()          ? 1 : 0 ),
                 'skip_md5'              => array_key_exists( 'skip_md5',    $old ) ? $old['skip_md5']       : ( $rt->getSkipMd5()       ? 1 : 0 ),
                 'template'              => array_key_exists( 'template',    $old ) ? $old['template']       : $rt->getTemplate(),
             ]);

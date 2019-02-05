@@ -49,3 +49,6 @@ define IXP_LC_INFO_IRRDB_FILTERED_LOOSE  = ( routerasn, 1001, 1000 );
 define IXP_LC_INFO_IRRDB_FILTERED_STRICT = ( routerasn, 1001, 1001 );
 define IXP_LC_INFO_IRRDB_PREFIX_EMPTY    = ( routerasn, 1001, 1002 );
 
+define IXP_LC_INFO_FROM_IXROUTESERVER = ( routerasn, 1001, 1100 );
+
+
