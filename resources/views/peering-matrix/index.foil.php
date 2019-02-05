@@ -15,7 +15,7 @@
         <div class="btn-group btn-group-sm" id="peer-btn-group">
 
             <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                All peering
+                All peerings
             </button>
 
             <div id="ul-dd-peer" class="dropdown-menu dropdown-menu-right">

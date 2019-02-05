@@ -57,7 +57,7 @@
 
 <?php if( !Auth::check() ): ?>
     <?php $this->section('page-header-postamble') ?>
-        <em>This is the public looking glass. Uncached results and additional routers available when logged in.</em>
+        <em>This is the public looking glass. Uncached results and additional routers available when logged in.&nbsp;&nbsp;&nbsp;&nbsp;</em>
     <?php $this->replace() ?>
 <?php endif; ?>
 

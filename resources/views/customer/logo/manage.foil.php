@@ -104,7 +104,8 @@
         <?php if( $t->logo ): ?>
 
             <!-- Delete Core Bundle area -->
-            <div class="col-sm-12 alert alert-danger" style="float: right;" role="alert">
+            <br><br><br>
+            <div class="col-sm-8 alert alert-danger" style="float: right;" role="alert">
 
                 <span style="line-height: 34px;">
                     <strong> Delete your logo ... </strong>

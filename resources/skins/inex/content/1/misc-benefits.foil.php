@@ -3,7 +3,7 @@
     $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
     Miscellaneous Benefits
 <?php $this->append() ?>
 

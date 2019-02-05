@@ -32,7 +32,7 @@
                 <div class="row col-sm-12">
                     <?php if( $logo = $t->c->getLogo( Entities\Logo::TYPE_WWW80 ) ): ?>
                         <div class="col-sm-3">
-                            Your actual logo.<br/>
+                            This is your current logo.<br/>
                             Please <a href="<?= route( 'logo@manage', [ 'id' => $t->c->getId() ] ) ?>">click here</a> to change it.
                         </div>
                         <div class="col-sm-3">

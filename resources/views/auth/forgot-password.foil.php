@@ -1,8 +1,9 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
-<?php $this->section( 'title' ) ?>
-    Lost Password
+<?php $this->section( 'page-header-preamble' ) ?>
+    Reset Password
 <?php $this->append() ?>
+
 
 <?php $this->section( 'page-header-postamble' ) ?>
 
@@ -15,8 +16,8 @@
 
             <?= $t->alerts() ?>
 
-            <div align="center">
-
+            <div class="text-center mt-4">
+            
                 <?php if( config( "identity.biglogo" ) ) :?>
                     <img src="<?= config( "identity.biglogo" ) ?>" />
                 <?php else: ?>
@@ -29,6 +30,7 @@
                 <?php endif; ?>
             </div>
 
+            <div class="col-sm-8 mt-4 ml-auto">
             <br /><br />
 
             <?= Former::open()->method( 'POST' )
@@ -51,13 +53,13 @@
             ?>
 
             <?= Former::actions( Former::primary_submit( 'Reset Password' ),
-                Former::default_link( 'Return to login' )->href( route( "login@showForm" ) )
+                '<a href="' . route( "login@showForm" ) . '"  class="btn btn-secondary">Return to Login</a>'
             );?>
 
             <br />
 
             <div>
-                For help please contact <a href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>"><?= config( "identity.legalname" ) ?></a>
+                For help please contact <a href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>"><?= config( "identity.name" ) ?></a>
             </div>
 
             <?= Former::close() ?>
