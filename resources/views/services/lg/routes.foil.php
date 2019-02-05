@@ -15,7 +15,7 @@
         </div>
     </div>
 
-    <table class="table table-striped" id="routes">
+    <table class="table table-striped table-sm" id="routes">
         <thead class="thead-dark">
             <tr>
                 <th>

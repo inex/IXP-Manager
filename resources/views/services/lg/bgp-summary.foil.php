@@ -6,7 +6,7 @@
 
 <?php $this->section('content') ?>
 
-<table class="table table-striped" id="bgpsummary">
+<table class="table table-striped table-sm" id="bgpsummary">
     <thead class="thead-dark">
         <tr>
             <th>
