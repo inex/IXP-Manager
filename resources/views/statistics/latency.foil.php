@@ -3,44 +3,35 @@
     $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
 
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
 
-        <a href="<?= route( 'customer@list' )?>">Customers</a>
 
-        <li>
-            <a href="<?= route( 'customer@overview', [ 'id' => $t->c->getId() ] ) ?>" >
-                <?= $t->c->getFormattedName() ?>
-            </a>
-        </li>
-
-        <li>
-            <a href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>" >
-                Statistics
-            </a>
-        </li>
+        <a href="<?= route( 'customer@overview', [ 'id' => $t->c->getId() ] ) ?>" >
+            <?= $t->c->getFormattedName() ?>
+        </a>
+       /
+        <a href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>" >
+            Statistics
+        </a>
+        /
+        Latency Graphs
 
     <?php else: ?>
 
         Latency Graphs
-
-        <div class="pull-right">
-            <a class="btn btn-default" href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>">All Ports</a>
-        </div>
 
     <?php endif; ?>
 
 <?php $this->append() ?>
 
 
-<?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+<?php if( Auth::check() && !Auth::user()->isSuperUser() ): ?>
 
     <?php $this->section( 'page-header-postamble' ) ?>
 
-    <li>
-        Latency
-    </li>
+        <a class="btn btn-outline-secondary" href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>">All Ports</a>
 
     <?php $this->append() ?>
 
@@ -56,51 +47,65 @@
 
     <div class="col-md-12">
 
-        <nav class="navbar navbar-default">
+            <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
 
-            <div class="navbar-header">
                 <a class="navbar-brand">Latency Graphs for <?= $t->vli->getVlan()->getName() ?> on <?= $t->ip ?></a>
-            </div>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
 
-            <?php if( $t->vli->canGraphForLatency( IXP\Services\Grapher\Graph::PROTOCOL_IPV4 ) && $t->vli->canGraphForLatency( IXP\Services\Grapher\Graph::PROTOCOL_IPV6 ) ): ?>
-                <form class="navbar-form navbar-left form-inline">
-                    <div class="form-group">
-                        <label for="select_protocol">Protocol:</label>
-                        <select id="select_protocol" name="protocol" class="form-control">
-                            <?php foreach( IXP\Services\Grapher\Graph::PROTOCOLS_REAL as $pvalue => $pname ): ?>
-                                <?php if( $t->vli->canGraphForLatency( $pvalue ) ): ?>
-                                    <option value="<?= $pvalue ?>" <?php if( $t->protocol == $pvalue ): ?> selected <?php endif; ?>  >
-                                        <?= IXP\Services\Grapher\Graph::PROTOCOL_DESCS[ $pvalue ] ?> :: <?= $t->vli->getIPAddress( $pvalue )->getAddress() ?>
-                                    </option>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                        </select>
-                    </div>
-                </form>
-            <?php endif; ?>
+                        <?php if( $t->vli->canGraphForLatency( IXP\Services\Grapher\Graph::PROTOCOL_IPV4 ) && $t->vli->canGraphForLatency( IXP\Services\Grapher\Graph::PROTOCOL_IPV6 ) ): ?>
+                            <form class="navbar-form navbar-left form-inline">
+                                <li class="nav-item mr-2">
+                                    <div class="nav-link d-flex ">
+                                        <label for="select_protocol" class="mr-2">Protocol:</label>
+                                        <select id="select_protocol" name="protocol" class="form-control">
+                                            <?php foreach( IXP\Services\Grapher\Graph::PROTOCOLS_REAL as $pvalue => $pname ): ?>
+                                                <?php if( $t->vli->canGraphForLatency( $pvalue ) ): ?>
+                                                    <option value="<?= $pvalue ?>" <?php if( $t->protocol == $pvalue ): ?> selected <?php endif; ?>  >
+                                                        <?= IXP\Services\Grapher\Graph::PROTOCOL_DESCS[ $pvalue ] ?> :: <?= $t->vli->getIPAddress( $pvalue )->getAddress() ?>
+                                                    </option>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </div>
+                                </li>
+                            </form>
+                        <?php endif; ?>
+                    </ul>
+                </div>
 
-        </nav>
+            </nav>
 
     </div>
 
     <div class="col-md-12">
-        <div class="alert alert-info">
-            Latency graphs are a tool for monitoring network latency and is an invaluable asset when diagnosing some IXP issues.
-            <b>While they should never be used as a tool for monitoring IXP latency or packet loss</b> (as routers de-prioritise ICMP requests
-            and/or may not have a suitably powerful management plane), they can act as an extremely useful tool for identifying and diagnosing
-            customer / member issues. What we really look for here is recent changes over time.
+        <div class="alert alert-info" role="alert">
+            <div class="d-flex align-items-center">
+                <div class="text-center">
+                    <i class="fa fa-info-circle fa-2x"></i>
+                </div>
+                <div class="col-sm-12">
+                    Latency graphs are a tool for monitoring network latency and is an invaluable asset when diagnosing some IXP issues.
+                    <b>While they should never be used as a tool for monitoring IXP latency or packet loss</b> (as routers de-prioritise ICMP requests
+                    and/or may not have a suitably powerful management plane), they can act as an extremely useful tool for identifying and diagnosing
+                    customer / member issues. What we really look for here is recent changes over time.
+                </div>
+            </div>
         </div>
     </div>
 
     <?php foreach( IXP\Services\Grapher\Graph\Latency::PERIODS_DESC as $scale => $name ): ?>
 
         <div class="col-md-12">
+            <div class="card mt-4">
+                <div class="card-header">
+                    <h4>Last <?= $name ?></h4>
+                </div>
+                <div class="card-body">
+                    <img border="0" src="<?= $t->graph->setPeriod( $scale )->url() ?>" />
+                </div>
 
-            <h4>Last <?= $name ?></h4>
-
-            <img border="0" src="<?= $t->graph->setPeriod( $scale )->url() ?>" />
-            <br><br><br>
-
+            </div>
         </div>
 
     <?php endforeach; ?>

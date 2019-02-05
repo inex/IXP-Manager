@@ -3,23 +3,8 @@
     $this->layout( 'layouts/ixpv4' )
 ?>
 
-
-<?php $this->section( 'title' ) ?>
-
-        Statistics
-    </li>
-
-    <li>
-        League Table
-        (<?php foreach( IXP\Services\Grapher\Graph::CATEGORIES as $cname => $cvalue ) { if( $t->category == $cvalue ) { echo $cname; } } ?>)
-
-
-<?php $this->append() ?>
-
-
-
-
-<?php $this->section( 'page-header-postamble' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
+        Statistics /  League Table  (<?php foreach( IXP\Services\Grapher\Graph::CATEGORIES as $cname => $cvalue ) { if( $t->category == $cvalue ) { echo $cname; } } ?>)
 <?php $this->append() ?>
 
 
@@ -31,53 +16,59 @@
 
             <?= $t->alerts() ?>
 
-            <nav class="navbar navbar-default">
-                <div class="container-fluid">
 
-                    <div class="col-md-12">
+            <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
 
-                        <div class="navbar-header">
-                            <a class="navbar-brand" href="<?= route('statistics/members') ?>">League Table:</a>
-                        </div>
+                <a class="navbar-brand" href="<?= route('statistics/members') ?>">
+                    League Table:
+                </a>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
 
-                        <form class="navbar-form navbar-left action="<?= route('statistics/league-table' ) ?>" method="post">
+                        <form class="navbar-form navbar-left form-inline" action="<?= route('statistics/league-table' ) ?>" method="post">
 
-                        <div class="form-group">
-                            <label for="metric">Metric:</label>
-                            <select id="metric" class="form-control" name="metric">
-                                <?php foreach( $t->metrics as $mname => $mvalue ): ?>
-                                    <option value="<?= $mvalue ?>" <?= $t->metric == $mvalue ? 'selected="selected"' : '' ?>><?= $mname ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
+                            <li class="nav-item mr-2">
+                                <div class="nav-link d-flex ">
+                                    <label for="metric" class="mr-2">Metric:</label>
+                                    <select id="metric" class="form-control" name="metric">
+                                        <?php foreach( $t->metrics as $mname => $mvalue ): ?>
+                                            <option value="<?= $mvalue ?>" <?= $t->metric == $mvalue ? 'selected="selected"' : '' ?>><?= $mname ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </li>
 
-                        <div class="form-group">
-                            <label for="category">Category:</label>
-                            <select id="category" class="form-control" name="category">
-                                <?php foreach( IXP\Services\Grapher\Graph::CATEGORY_DESCS as $c => $d ): ?>
-                                    <option value="<?= $c ?>" <?= $t->category == $c ? 'selected="selected"' : '' ?>><?= $d ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
+                            <li class="nav-item mr-2">
+                                <div class="nav-link d-flex ">
+                                    <label for="category" class="mr-2">Category:</label>
+                                    <select id="category" class="form-control" name="category">
+                                        <?php foreach( IXP\Services\Grapher\Graph::CATEGORY_DESCS as $c => $d ): ?>
+                                            <option value="<?= $c ?>" <?= $t->category == $c ? 'selected="selected"' : '' ?>><?= $d ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </li>
 
-                        <div class="form-group">
-                            <label for="day">Day:</label>
-                            <input type="text" name="day" value="<?= $t->day->format( 'Y-m-d' ) ?>" size="10" maxlength="10">
-                        </div>
+                            <li class="nav-item mr-2">
+                                <div class="nav-link d-flex ">
+                                    <label for="day" class="mr-2">Day:</label>
+                                    <input type="text" class="form-control" name="day" value="<?= $t->day->format( 'Y-m-d' ) ?>" size="10" maxlength="10">
+                                </div>
+                            </li>
 
-                        <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                        <input class="btn btn-default" type="submit" name="submit" value="Submit" />
+                            <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                            <input class="btn btn-outline-secondary" type="submit" name="submit" value="Submit" />
 
                         </form>
+                    </ul>
 
-                    </div>
                 </div>
             </nav>
 
 
             <table id="ixpDataTable" class="table table-striped table-bordered" cellspacing="0" cellpadding="0" border="0" style="display: none;">
                 
-                <thead>
+                <thead class="thead-dark">
                     <tr>
                         <th class="ui-state-default" ></th>
                         <th class="ui-state-default" ></th>
@@ -168,12 +159,19 @@
 
             <?php if( !count( $t->trafficDaily ) ): ?>
 
-                <div class="alert alert-info">
-                    No records for found for <?= $t->day->format('Y-m-d') ?>. This may be expected (date in future / date before records were kept / etc.).
-                    However, if you have Grapher with the Mrtg backend working, then please ensure you are
-                    <a href="https://docs.ixpmanager.org/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails" target="_blank">inserting
-                    traffic data into the database</a>.
+            <div class="alert alert-info mt-4" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="text-center">
+                        <i class="fa fa-info-circle fa-2x"></i>
+                    </div>
+                    <div class="col-sm-12">
+                        No records for found for <?= $t->day->format('Y-m-d') ?>. This may be expected (date in future / date before records were kept / etc.).
+                        However, if you have Grapher with the Mrtg backend working, then please ensure you are
+                        <a href="https://docs.ixpmanager.org/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails" target="_blank">inserting
+                        traffic data into the database</a>.
+                    </div>
                 </div>
+            </div>
 
             <?php endif; ?>
 

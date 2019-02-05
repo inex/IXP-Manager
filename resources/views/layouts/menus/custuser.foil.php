@@ -164,12 +164,6 @@
 
                     <div class="dropdown-divider"></div>
 
-                    <a class="dropdown-item" href="<?= route( 'customerNotes@unreadNotes' ) ?>">
-                        Unread Notes
-                    </a>
-
-                    <div class="dropdown-divider"></div>
-
                     <a class="dropdown-item" href="<?= route( 'login@logout' ) ?>">
                         Logout
                     </a>
