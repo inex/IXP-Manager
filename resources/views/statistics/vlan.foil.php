@@ -3,7 +3,7 @@
     $this->layout( 'layouts/ixpv4' )
 ?>
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
     VLAN Graphs - <?= $t->vlan->getName() ?> (<?= IXP\Services\Grapher\Graph::resolveProtocol( $t->protocol ) ?>)
 <?php $this->append() ?>
 
@@ -16,57 +16,72 @@
 
             <?= $t->alerts() ?>
 
-            <div class="alert alert-info">
-                VLAN graphs are based on sflow sampling. These can under/over report true traffic levels due to known issues
-                with some switching hardware. See the
-                <a href="<?= route( 'statistics/infrastructure' ) ?>">infrastructure graphs</a>
-                for a more realistic representation of overall traffic.
+            <div class="alert alert-info" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="text-center">
+                        <i class="fa fa-info-circle fa-2x"></i>
+                    </div>
+                    <div class="col-sm-12">
+                        VLAN graphs are based on sflow sampling. These can under/over report true traffic levels due to known issues
+                        with some switching hardware. See the
+                        <a href="<?= route( 'statistics/infrastructure' ) ?>">infrastructure graphs</a>
+                        for a more realistic representation of overall traffic.
+                    </div>
+                </div>
             </div>
 
-            <nav class="navbar navbar-default">
-                <div class="">
 
-                    <div class="navbar-header">
+                    <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
+
                         <a class="navbar-brand" href="<?= route( "statistics/vlan" ) ?>">Graph Options:</a>
-                    </div>
 
-                    <form class="navbar-form navbar-left form-inline">
+                        <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                            <ul class="navbar-nav">
 
-                        <div class="form-group">
-                            <label for="form-select-vlanid">Vlan:</label>
+                                <form class="navbar-form navbar-left form-inline">
 
-                            <select id="form-select-vlanid" name="vlanid" class="form-control" >
-                                <?php foreach( $t->vlans as $id => $v ): ?>
-                                    <option value="<?= $id ?>" <?= $t->vlanid != $id ?: 'selected="selected"' ?>><?= $v ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                                    <li class="nav-item mr-2">
+                                        <div class="nav-link d-flex ">
+                                            <label for="form-select-vlanid">Vlan:</label>
 
-                        </div>
+                                            <select id="form-select-vlanid" name="vlanid" class="form-control" >
+                                                <?php foreach( $t->vlans as $id => $v ): ?>
+                                                    <option value="<?= $id ?>" <?= $t->vlanid != $id ?: 'selected="selected"' ?>><?= $v ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
 
-                        <div class="form-group">
-                            <label for="form-select-protocol">Protocol:</label>
-                            <select id="form-select-protocol" name="protocol" class="form-control">
-                                <?php foreach( IXP\Services\Grapher\Graph::PROTOCOL_REAL_DESCS as $pvalue => $pname ): ?>
-                                    <option value="<?= $pvalue ?>" <?= $t->protocol != $pvalue ?: 'selected="selected"' ?>><?= $pname ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                                        </div>
+                                    </li>
 
-                        </div>
+                                    <li class="nav-item mr-2">
+                                        <div class="nav-link d-flex ">
+                                            <label for="form-select-protocol">Protocol:</label>
+                                            <select id="form-select-protocol" name="protocol" class="form-control">
+                                                <?php foreach( IXP\Services\Grapher\Graph::PROTOCOL_REAL_DESCS as $pvalue => $pname ): ?>
+                                                    <option value="<?= $pvalue ?>" <?= $t->protocol != $pvalue ?: 'selected="selected"' ?>><?= $pname ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
 
-                        <div class="form-group">
-                            <label for="form-select-category">Category:</label>
-                            <select id="form-select-category" name="category" class="form-control">
-                                <?php foreach( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS_DESCS as $cvalue => $cname ): ?>
-                                    <option value="<?= $cvalue ?>" <?= $t->category != $cvalue ?: 'selected="selected"' ?>><?= $cname ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                                        </div>
+                                    </li>
 
-                        </div>
+                                    <li class="nav-item mr-2">
+                                        <div class="nav-link d-flex ">
+                                            <label for="form-select-category">Category:</label>
+                                            <select id="form-select-category" name="category" class="form-control">
+                                                <?php foreach( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS_DESCS as $cvalue => $cname ): ?>
+                                                    <option value="<?= $cvalue ?>" <?= $t->category != $cvalue ?: 'selected="selected"' ?>><?= $cname ?></option>
+                                                <?php endforeach; ?>
+                                            </select>
 
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <a class="btn btn-default" href="<?= route( 'statistics/infrastructure' ) ?>">Infrastructure Graphs</a>
+                                        </div>
+                                    </li>
 
-                    </form>
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    <a class="btn btn-outline-secondary" href="<?= route( 'statistics/infrastructure' ) ?>">Infrastructure Graphs</a>
+
+                                </form>
+                            </ul>
 
                 </div>
             </nav>

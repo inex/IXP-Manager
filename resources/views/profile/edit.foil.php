@@ -3,23 +3,10 @@
     $this->layout( 'layouts/ixpv4' )
 ?>
 
-<?php $this->section( 'title' ) ?>
 
-    <?php if( Auth::user()->isSuperUser() ): ?>
-        <a href="<?= route ( "profile@edit" )?>">My Profile</a>
-    <?php else: ?>
-        My Profile
-    <?php endif; ?>
+<?php $this->section( 'page-header-preamble' ) ?>
+    My Profile
 <?php $this->append() ?>
-
-
-
-<?php if( Auth::user()->isSuperUser() ): ?>
-    <?php $this->section( 'page-header-postamble' ) ?>
-        <li>Edit</li>
-    <?php $this->append() ?>
-<?php endif; ?>
-
 
 
 <?php $this->section('content') ?>
@@ -36,11 +23,19 @@
             <h3>
                 Change Your Password
             </h3>
+            <hr>
 
-            <p>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <em>Passwords are stored in IXP Manager using <a href="https://en.wikipedia.org/wiki/Bcrypt">bcrypt</a>.</em>
-            </p>
+            <div class="alert alert-info mt-4" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="text-center">
+                        <i class="fa fa-info-circle fa-2x"></i>
+                    </div>
+                    <div class="col-sm-12">
+                        Passwords are stored in IXP Manager using <a href="https://en.wikipedia.org/wiki/Bcrypt">bcrypt</a>.
+                    </div>
+                </div>
+            </div>
+
 
             <?= Former::open()
                 ->method( 'post' )
@@ -68,7 +63,7 @@
 
             <?= Former::actions(
                 Former::primary_submit( 'Update Password' )
-            );
+            )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
             ?>
 
             <?= Former::close() ?>
@@ -79,7 +74,7 @@
             <h3>
                 Update Your Profile
             </h3>
-
+            <hr>
             <?= Former::open()
                 ->populate( $t->profileDetails )
                 ->method( 'post' )
@@ -112,7 +107,7 @@
 
             <?= Former::actions(
                 Former::primary_submit( 'Update Profile' )
-            );
+            )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
             ?>
 
             <?= Former::close() ?>
@@ -120,7 +115,7 @@
 
     </div>
 
-    <div class="row">
+    <div class="row mt-4">
 
         <?php if( Auth::getUser()->isSuperUser() ): ?>
 
@@ -128,7 +123,7 @@
                 <h3>
                     Customer Notes
                 </h3>
-
+                <hr>
                 <?= Former::open()
                     ->populate( $t->customerNotesNotificationOption )
                     ->method( 'post' )
@@ -139,9 +134,9 @@
 
                 <?=  Former::radios('')
                     ->radios([
-                        'Disable all email notifications'                           => [ 'name' => 'notify', 'id' => 'notify-none',     'value' => 'none'    ],
-                        'Email me on changes to only watched customers and notes'   => [ 'name' => 'notify', 'id' => 'notify-watched',  'value' => 'watched' ],
-                        'Email me on any change to any customer note'               => [ 'name' => 'notify', 'id' => 'id="notify-all"', 'value' => 'all'     ],
+                        '&nbsp;&nbsp;&nbsp;Disable all email notifications'                           => [ 'name' => 'notify', 'id' => 'notify-none',     'value' => 'none'    ],
+                        '&nbsp;&nbsp;&nbsp;Email me on changes to only watched customers and notes'   => [ 'name' => 'notify', 'id' => 'notify-watched',  'value' => 'watched' ],
+                        '&nbsp;&nbsp;&nbsp;Email me on any change to any customer note'               => [ 'name' => 'notify', 'id' => 'id="notify-all"', 'value' => 'all'     ],
                     ])
                     ->name( 'notify' )
                     ->label( '' )
@@ -150,7 +145,7 @@
 
                 <?= Former::actions(
                     Former::primary_submit( 'Set Notification Preference' )
-                );
+                )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
                 ?>
 
                 <?= Former::close() ?>
@@ -164,16 +159,14 @@
                 <h3>
                     Your Mailing List Subscriptions
                 </h3>
-
+                <hr>
                 <p>
-                    <br />
                     <?= config( "identity.orgname" ) ?> operates the below mailing lists to help us interact with our
                     members and for our members to interact with each other.
                 </p>
                 <p>
                     The below are your subscriptions for <strong><?= Auth::getUser()->getEmail() ?></strong>.
                 </p>
-                <br />
 
                 <?= Former::open()
                     ->populate( $t->mailingListSubscriptions )
@@ -190,6 +183,7 @@
                         <?= Former::checkbox( 'ml_'. $name )
                             ->label( '' )
                             ->value(1)
+                            ->inline()
                             ->check( $t->mailingListSubscriptions[ $name ] ? true : false )
                             ->text( "<strong>".$ml[ "name"] ."</strong> - " . $ml[ "desc" ]
                                 . "(" . ( ( $ml[ "email" ] ) ? "<a href='mailto:" .$ml[ "email" ]. " '>" . $ml[ "email" ] . "</a> - " : '' )
@@ -203,7 +197,7 @@
 
                 <?= Former::actions(
                         Former::primary_submit( 'Update Subscriptions' )
-                    );
+                )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
                 ?>
 
                 <?= Former::close() ?>

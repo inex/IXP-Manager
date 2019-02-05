@@ -3,7 +3,7 @@
     $this->layout( 'layouts/ixpv4' )
 ?>
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
     Trunk Graphs - <?= $t->ee( $t->graph->title() ) ?>
 <?php $this->append() ?>
 
@@ -16,52 +16,63 @@
 
             <?= $t->alerts() ?>
 
-            <nav class="navbar navbar-default">
-                <div class="">
+            <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
 
-                    <div class="navbar-header">
-                        <a class="navbar-brand" href="<?= route( "statistics/trunk" ) ?>">Graph Options:</a>
-                    </div>
+                <a class="navbar-brand" href="<?= route( "statistics/trunk" ) ?>">Graph Options:</a>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
 
-                    <form class="navbar-form navbar-left form-inline">
+                        <form class="navbar-form navbar-left form-inline">
 
-                        <div class="form-group">
+                            <li class="nav-item mr-2">
+                                <div class="nav-link d-flex ">
 
-                            <label for="trunkid">Trunk:</label>
-                            <select id="form-select-trunkid" name="trunkid" class="form-control">
-                                <?php foreach( $t->graphs as $id => $name ): ?>
-                                    <option value="<?= $id ?>" <?= $t->trunkid != $id ?: 'selected="selected"' ?>><?= $name ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                                    <label for="trunkid" class="mr-2">Trunk:</label>
+                                    <select id="form-select-trunkid" name="trunkid" class="form-control">
+                                        <?php foreach( $t->graphs as $id => $name ): ?>
+                                            <option value="<?= $id ?>" <?= $t->trunkid != $id ?: 'selected="selected"' ?>><?= $name ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
 
-                        </div>
+                                </div>
+                            </li>
 
-                        <div class="form-group">
-                            <label for="category">Category:</label>
-                            <select id="form-select-category" name="category" class="form-control">
-                                <?php foreach( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS_DESCS as $cvalue => $cname ): ?>
-                                    <option value="<?= $cvalue ?>" <?= $t->category != $cvalue ?: 'selected="selected"' ?>><?= $cname ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                            <li class="nav-item mr-2">
+                                <div class="nav-link d-flex ">
+                                    <label for="category" class="mr-2">Category:</label>
+                                    <select id="form-select-category" name="category" class="form-control">
+                                        <?php foreach( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS_DESCS as $cvalue => $cname ): ?>
+                                            <option value="<?= $cvalue ?>" <?= $t->category != $cvalue ?: 'selected="selected"' ?>><?= $cname ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
 
-                        </div>
+                                </div>
+                            </li>
 
-                    </form>
+                        </form>
+                    </ul>
 
                 </div>
-            </nav>
+             </nav>
 
-            <?php foreach( IXP\Services\Grapher\Graph::PERIODS as $pvalue => $pname ): ?>
+            <div class="row">
+                <?php foreach( IXP\Services\Grapher\Graph::PERIODS as $pvalue => $pname ): ?>
 
-                <div class="col-md-6">
+                    <div class="col-md-6 mt-4">
 
-                    <div class="well">
-                        <h3><?= IXP\Services\Grapher\Graph::resolvePeriod( $pvalue ) ?> Graph</h3>
-                        <?= $t->graph->setPeriod( $pvalue )->renderer()->boxLegacy() ?>
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><?= IXP\Services\Grapher\Graph::resolvePeriod( $pvalue ) ?> Graph</h3>
+                            </div>
+                            <div class="card-body">
+                                <?= $t->graph->setPeriod( $pvalue )->renderer()->boxLegacy() ?>
+                            </div>
+                        </div>
                     </div>
-                </div>
 
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
+
 
         </div>
 
