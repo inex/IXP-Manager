@@ -89,7 +89,7 @@ class Kernel extends HttpKernel {
             ShareErrorsFromSession::class,
             SubstituteBindings::class,
             Middleware\ControllerEnabled::class,
-            'throttle:60,1',
+            //'throttle:60,1',
             'bindings',
             Middleware\ControllerEnabled::class,
         ],
