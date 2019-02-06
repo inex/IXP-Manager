@@ -10,7 +10,13 @@
 function fn_import ( int remote_as )
 int set transit_asns;
 {
-    <?= $t->insert( 'api/v4/router/collector/bird2/import-pre-extra' ) ?>
+
+    # Tag routes learnt from our own route servers with an informational
+    # community and accept them as is:
+    if( remote_as ~ [ <?= implode( ', ', $t->rs_asns ) ?> ] ) then {
+        bgp_large_community.add( IXP_LC_INFO_FROM_IXROUTESERVER );
+        return true;
+    }
 
     if !(avoid_martians()) then {
         bgp_large_community.add( IXP_LC_FILTERED_BOGON );
@@ -60,10 +66,6 @@ int set transit_asns;
     bgp_large_community.add( IXP_LC_INFO_RPKI_NOT_CHECKED );
 
 <?php endif; ?>
-
-
-    # Route collector does not use IRRDB filtering
-    bgp_large_community.add( IXP_LC_INFO_IRRDB_NOT_CHECKED );
 
     return true;
 }
