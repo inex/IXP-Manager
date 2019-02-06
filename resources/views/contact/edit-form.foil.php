@@ -76,9 +76,8 @@
             </div>
 
 
-
-            <div class="form-group">
-
+            <?php if( !Auth::getUser()->isCustAdmin() ): ?>
+                <div class="form-group">
 
                     <div class="card mt-4">
                         <div class="card-header">
@@ -104,8 +103,8 @@
                         </div>
                     </div>
 
-
-            </div>
+                </div>
+            <?php endif; ?>
 
             <?php if( Auth::getUser()->isSuperUser() ): ?>
 

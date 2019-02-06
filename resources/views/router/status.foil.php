@@ -141,7 +141,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-<script src="<?= asset( 'bower_components/moment/min/moment.min.js' ) ?>"></script>
+
 <script>
 
     const lgEnabled = <?= $t->lgEnabled ? 'true' : 'false' ?>;
