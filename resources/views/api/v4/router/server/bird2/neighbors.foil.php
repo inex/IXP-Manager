@@ -68,11 +68,22 @@
         $asn_filters[] = $int['autsys'];
 ?>
 
+
 filter f_import_as<?= $int['autsys'] ?>
 
 prefix set allnet;
 int set allas;
 {
+
+<?php
+    // We allow per customer AS headers here which IXPs can define as skinned files.
+    // For example, to solve a Facebook issue, INEX created the following:
+    //     resources/skins/api/v4/router/server/bird2/f_import_as32934.foil.php
+    echo $t->insertif( 'api/v4/router/server/bird2/f_import_as' . $int['autsys'] );
+
+?>
+
+
     if !(avoid_martians()) then {
         bgp_large_community.add( IXP_LC_FILTERED_BOGON );
         accept;
@@ -133,14 +144,14 @@ int set allas;
 <?php
     endif; ?>
 
-<?php if( $t->router->rpki() ): ?>
+<?php if( $t->router->rpki() && config( 'ixp.rpki.rtr1.host' ) ): ?>
 
     # RPKI test - if it's INVALID or VALID, we are done
     if filter_rpki() then accept;
 
 <?php else: ?>
 
-    # Skipping RPKI check, protocol not enabled.
+    # Skipping RPKI check -> RPKI not enabled / configured correctly.
     bgp_large_community.add( IXP_LC_INFO_RPKI_NOT_CHECKED );
 
 <?php endif; ?>
@@ -206,6 +217,14 @@ protocol bgp pb_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?> from tb_rsclient {
             import limit <?= $int['maxprefixes'] ?> action restart;
             import filter f_import_as<?= $int['autsys'] ?>;
             table t_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?>;
+
+            <?php
+            // We allow per customer AS export code here which IXPs can define as skinned files.
+            // For example, to solve a Facebook issue, INEX created the following:
+            //     resources/skins/api/v4/router/server/bird2/f_export_as32934.foil.php
+            echo $t->insertif( 'api/v4/router/server/bird2/f_export_as' . $int['autsys'] );
+            ?>
+
         };
         <?php if( $int['bgpmd5secret'] && !$t->router->skipMD5() ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
 
