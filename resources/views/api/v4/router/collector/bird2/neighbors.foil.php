@@ -42,7 +42,7 @@ int set transit_asns;
         bgp_large_community.add( IXP_LC_FILTERED_AS_PATH_TOO_LONG );
     }
 
-<?php if( $t->router->rpki() ): ?>
+<?php if( $t->router->rpki() && config( 'ixp.rpki.rtr1.host' ) ): ?>
 
     # RPKI check
     if( roa_check( t_roa, net, bgp_path.last ) = ROA_INVALID ) then {
@@ -56,7 +56,7 @@ int set transit_asns;
 
 <?php else: ?>
 
-    # Skipping RPKI check, protocol not enabled.
+    # Skipping RPKI check -> RPKI not enabled / configured correctly.
     bgp_large_community.add( IXP_LC_INFO_RPKI_NOT_CHECKED );
 
 <?php endif; ?>

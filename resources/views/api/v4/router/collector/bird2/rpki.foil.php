@@ -42,7 +42,7 @@ protocol rpki rpki2 {
 
     <?php if( $t->router->rpki() ): ?>
 
-        # RPKI is enabled but not RPKI routers configured in your .env file.
+        # RPKI is enabled but no RPKI routers configured in your .env file.
 
     <?php else: ?>
 
