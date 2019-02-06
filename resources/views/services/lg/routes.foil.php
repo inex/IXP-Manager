@@ -55,7 +55,7 @@
                                 // need to split the ip/netmask so we don't urlencode() the '/' between them:
                                 list( $ip, $mask ) = explode( '/', $r->network );
                             ?>
-                            <a href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/route/<?= urlencode($ip) ?>/<?= $mask ?>/table/master"
+                            <a href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/route/<?= urlencode($ip) ?>/<?= $mask ?>/table/master<?= $t->lg->router()->software() == Entities\Router::SOFTWARE_BIRD2 ? $t->lg->router()->protocol() : '' ?>"
                                     data-toggle="modal" data-target="#route-modal">
                                 <?= $r->network ?>
                             </a>
