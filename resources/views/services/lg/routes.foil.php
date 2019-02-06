@@ -12,6 +12,8 @@
             - Primary / active route.
             <span class="badge badge-warning">N</span>
             - Inactive route.
+            <i class="fa fa-exclamation-triangle"></i>
+            - Blocked / filtered route.
         </div>
     </div>
 
@@ -82,6 +84,16 @@
                                 <span class="badge badge-secondary">LC:
                                     <?= count( $r->bgp->large_communities ) ?>
                                 </span>
+
+                                <?php
+                                    // any blocked routes?
+                                    foreach( $r->bgp->large_communities as $lc ) {
+                                        if( $lc[0] == $t->lg->router()->asn() && $lc[1] == 1101 ) {
+                                            echo '<i class="fa fa-exclamation-triangle"></i>';
+                                            break;
+                                        }
+                                    }
+                                ?>
                             <?php endif; ?>
                         </td>
                         <td>
