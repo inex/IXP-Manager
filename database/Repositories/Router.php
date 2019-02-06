@@ -139,28 +139,6 @@ class Router extends EntityRepository
     }
 
 
-    /**
-     * Get an array of unique int values of the ASN of all routers of a particular type
-     *
-     * @param int $type
-     * @param int $vlanid
-     * @return array
-     */
-    public function getASNsForType( int $type, int $vlanid ): array {
-        $r = $this->getEntityManager()->createQuery(
-            "SELECT r.asn AS asns FROM Entities\Router r 
-                    LEFT JOIN r.vlan AS v
-                    WHERE r.type = " . $type . " 
-                        AND v.id = " . $vlanid
-        )->getScalarResult();
-
-        if( $r ) {
-            return array_map('intval', array_unique( array_column( $r, 'asns' ) ) );
-        }
-
-        return [];
-    }
-
 
     /**
      * Gather the data for looking glass dropdowns

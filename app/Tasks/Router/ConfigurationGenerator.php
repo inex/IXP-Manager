@@ -28,7 +28,10 @@ use D2EM;
 use IXP\Exceptions\GeneralException;
 use Illuminate\Contracts\View\View as ViewContract;
 
-use Entities\{Router as RouterEntity, Router, VlanInterface as VlanInterfaceEntity};
+use Entities\{
+    Router as RouterEntity,
+    VlanInterface as VlanInterfaceEntity
+};
 
 /**
  * ConfigurationGenerator
@@ -83,13 +86,9 @@ class ConfigurationGenerator
         $ints = D2EM::getRepository( VlanInterfaceEntity::class )->sanitiseVlanInterfaces(
             $this->router()->getVlan(), $this->router()->getProtocol(), $this->router()->getType(), $this->router()->getQuarantine() );
 
-        return view( $this->router()->getTemplate() )->with( [
-            'handle'  => $this->router()->getHandle(),
-            'ints'    => $ints,
-            'router'  => $this->router(),
-            'vlan'    => $this->router()->getVlan(),
-            'rs_asns' => D2EM::getRepository( RouterEntity::class )->getASNsForType( RouterEntity::TYPE_ROUTE_SERVER, $this->router()->getVlan()->getId() ),
-        ] );
+        return view( $this->router()->getTemplate() )->with(
+            [ 'handle' => $this->router()->getHandle(), 'ints' => $ints, 'router' => $this->router(), 'vlan' => $this->router()->getVlan() ]
+        );
     }
 
 }
