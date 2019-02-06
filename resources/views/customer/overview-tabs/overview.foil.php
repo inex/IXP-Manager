@@ -3,22 +3,32 @@
     <div class="col-sm-12">
 
         <?php if( $t->aggregateGraph ): ?>
-            <div class="bg-light shadow-sm p-4">
+            <div class="card">
+                <div class="card-header d-flex">
+                    <div class="mr-auto">
+                        <h3>
+                            Aggregate Traffic Statistics
+                        </h3>
+                    </div>
+                    <div class="my-auto">
+                        <a class="btn btn-sm btn-outline-secondary" href="<?= route( "statistics@member", [ 'id' => $t->c->getId() ] )?>">
+                            <i class="fa fa-search-plus"></i>
+                        </a>
+                    </div>
 
-                <h3>
-                    Aggregate Traffic Statistics
-                    <a class="btn btn-outline-secondary" href="<?= route( "statistics@member", [ 'id' => $t->c->getId() ] )?>">
-                        <i class="fa fa-search-plus"></i>
-                    </a>
-                </h3>
 
-                <?= $t->aggregateGraph->renderer()->boxLegacy() ?>
+                </div>
+                <div class="card-body">
+                    <?= $t->aggregateGraph->renderer()->boxLegacy() ?>
+                </div>
+
+
 
             </div>
         <?php endif; ?>
 
         <div class="table-responsive">
-            <table class="table table-striped">
+            <table class="table table-striped mt-4">
                 <tbody>
                 <tr>
                     <td>
@@ -30,13 +40,13 @@
                     <td colspan="2">
                         <?php if( !$t->c->isTypeAssociate() ):?>
                             <span class="badge badge-<?php if( $t->rsclient ): ?>success<?php else: ?>danger<?php endif; ?>">
-                                        RS Client
-                                    </span>
+                                RS Client
+                            </span>
                             <?php if( $t->as112UiActive ): ?>
                                 &nbsp;&nbsp;&nbsp;
                                 <span class="badge badge-<?php if( $t->as112client ): ?>success<?php else: ?>danger<?php endif; ?>">
-                                            AS112
-                                        </span>
+                                    AS112
+                                </span>
                             <?php endif; ?>
                         <?php endif; ?>
                     </td>

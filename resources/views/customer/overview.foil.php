@@ -7,11 +7,6 @@
 ?>
 
 
-
-<?php $this->section( 'page-header-preamble' ) ?>
-    Customers / <?= $c->getFormattedName() ?>
-<?php $this->append() ?>
-
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <div class="btn-group btn-group-sm ml-auto" role="group" aria-label="...">
@@ -128,14 +123,7 @@
 
     <div class="bg-light rounded shadow-sm p-4">
         <div class="row">
-            <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ): ?>
-
-                <div class="col-sm-4">
-                    <img class="www80-padding img-fluid" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
-                </div>
-
-            <?php endif; ?>
-            <h3 class="col-sm-9">
+            <h1 class="col-sm-9 my-auto">
                 <?= $c->getFormattedName() ?>
                 <br>
                 <?php if( $c->isResoldCustomer() ): ?>
@@ -143,7 +131,16 @@
                         &nbspReseller: <?= $c->getReseller()->getName() ?>
                     </small>
                 <?php endif; ?>
-            </h3>
+            </h1>
+
+            <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ): ?>
+
+                <div class="col-sm-3">
+                    <img class="img-fluid" style="max-height:100px!important" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
+                </div>
+
+            <?php endif; ?>
+
 
 
         </div>

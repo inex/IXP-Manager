@@ -363,22 +363,26 @@
     <div class="col-sm-6">
         <?php if( $isLAG ): ?>
 
-            <?php
-                if( $t->vi->isGraphable() ): ?>
+            <?php if( $t->vi->isGraphable() ): ?>
 
-                    <div class="bg-light shadow-sm p-4 mt-4">
-                        <h4 class="d-flex mb-4">
-                            <span class="mr-auto">
+                <div class="card mb-4">
+                    <div class="card-header d-flex">
+                        <div class="mr-auto">
+                            <h4>
                                 Aggregate Day Graph for LAG
-                            </span>
-
+                            </h4>
+                        </div>
+                        <div clas="my-auto">
                             <a class="btn btn-outline-secondary btn-sm " href="<?= route( "statistics@member-drilldown", [ 'type' => 'vi', 'typeid' => $t->vi->getId() ] ) ?>">
                                 <i class="fa fa-search"></i>
                             </a>
-                        </h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
 
                         <?= $t->grapher->virtint( $t->vi )->renderer()->boxLegacy() ?>
                     </div>
+                </div>
 
                 <?php endif; ?>
 
@@ -388,17 +392,24 @@
         <?php foreach( $t->vi->getPhysicalInterfaces() as $pi ): ?>
             <?php if( !$pi->isGraphable() ) { continue; } ?>
 
-            <div class="bg-light shadow-sm p-4 mt-4">
-                <h4 class="d-flex mb-4">
-                    <span class="mr-auto">
-                        Day Graph for <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?> / <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
-                    </span>
-                    <a class="btn btn-outline-secondary btn-sm" href="<?= route( "statistics@member-drilldown", [ 'type' => 'pi', 'typeid' => $pi->getId() ] ) ?>">
-                        <i class="fa fa-search"></i>
-                    </a>
-                </h4>
+            <div class="card mb-4">
+                <div class="card-header d-flex">
+                    <div class="mr-auto">
+                        <h4>
+                            Day Graph for <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?> / <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
+                        </h4>
+                    </div>
 
-                <?= $t->grapher->physint( $pi )->renderer()->boxLegacy() ?>
+                    <div clas="my-auto">
+                        <a class="btn btn-outline-secondary btn-sm" href="<?= route( "statistics@member-drilldown", [ 'type' => 'pi', 'typeid' => $pi->getId() ] ) ?>">
+                            <i class="fa fa-search"></i>
+                        </a>
+                    </div>
+
+                </div>
+                <div class="card-body">
+                    <?= $t->grapher->physint( $pi )->renderer()->boxLegacy() ?>
+                </div>
             </div>
         <?php endforeach; ?>
 

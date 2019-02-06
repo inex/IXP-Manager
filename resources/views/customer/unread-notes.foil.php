@@ -2,28 +2,18 @@
 /** @var object $t */
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'customer@list' )?>">
-        Customer
-    </a>
-<?php $this->append() ?>
-
-
-
-<?php $this->section( 'page-header-postamble' ) ?>
-    <li>Unread Notes for You</li>
-
-<?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
+    Customer / Unread Notes for You</li>
+<?php $this->append() ?>
+
+<?php $this->section( 'page-header-postamble' ) ?>
     <?php if( count( $t->notes ) ): ?>
-        <li class="pull-right">
-            <div class="btn-group btn-group-xs" role="group">
-                <a type="button" class="btn btn-default" href="<?= route('customerNotes@readAll') ?>">
-                    Mark All As Read
-                </a>
-            </div>
-        </li>
+        <div class="btn-group btn-group-sm" role="group">
+            <a class="btn btn-outline-secondary" href="<?= route('customerNotes@readAll') ?>">
+                Mark All As Read
+            </a>
+        </div>
     <?php endif;?>
 <?php $this->append() ?>
 
@@ -35,34 +25,45 @@
 
         <?= $t->alerts() ?>
 
-        <div class="alert alert-info" role="alert">
-            <?php if( count( $t->notes ) ): ?>
-                The following customers have new or updated notes that you have not seen.
-            <?php else: ?>
-                There are no notes for any customers that you have not seen.
-            <?php endif; ?>
+        <div class="alert alert-info mt-4" role="alert">
+            <div class="d-flex align-items-center">
+                <div class="text-center">
+                    <i class="fa fa-info-circle fa-2x"></i>
+                </div>
+                <div class="col-sm-12">
+                    <?php if( count( $t->notes ) ): ?>
+                        The following customers have new or updated notes that you have not seen.
+                    <?php else: ?>
+                        There are no notes for any customers that you have not seen.
+                    <?php endif; ?>
+                </div>
+            </div>
         </div>
 
         <?php if( count( $t->notes ) ): ?>
 
-            <table class="table" id="list-table-notes">
-                <thead>
-                <th>Customer</th>
-                <th>Notes Last Created / Updated</th>
+            <table class="table table-striped" id="list-table-notes">
+                <thead class="thead-dark">
+                    <th>
+                        Customer
+                    </th>
+                    <th>
+                        Notes Last Created / Updated
+                    </th>
                 </thead>
                 <tbody>
-                <?php foreach( $t->notes as $n ): ?>
-                    <tr>
-                        <td>
-                            <a href="<?= route( "customer@overview" , [ "id" => $n[ 'cid' ] ] ) ?>" >
-                                <?= $n[ 'cname' ] ?>
-                            </a>
-                        </td>
-                        <td>
-                            <?= $n[ 'latest' ] ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
+                    <?php foreach( $t->notes as $n ): ?>
+                        <tr>
+                            <td>
+                                <a href="<?= route( "customer@overview" , [ "id" => $n[ 'cid' ] ] ) ?>" >
+                                    <?= $n[ 'cname' ] ?>
+                                </a>
+                            </td>
+                            <td>
+                                <?= $n[ 'latest' ] ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
 
@@ -70,8 +71,6 @@
     </div>
 
 </div>
-
-
 
 
 <?php $this->append() ?>
