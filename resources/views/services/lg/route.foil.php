@@ -157,7 +157,7 @@
                     </td>
                     <td>
                         <?php foreach( $r->bgp->communities as $c ): ?>
-                            <tt><?= implode(':',$c) ?></tt>
+                            <tt><?= implode(':',$c) ?></tt><br>
                         <?php endforeach; ?>
                     </td>
                 </tr>
