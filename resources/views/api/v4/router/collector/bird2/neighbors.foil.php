@@ -61,10 +61,6 @@ int set transit_asns;
 
 <?php endif; ?>
 
-
-    # Route collector does not use IRRDB filtering
-    bgp_large_community.add( IXP_LC_INFO_IRRDB_NOT_CHECKED );
-
     return true;
 }
 
