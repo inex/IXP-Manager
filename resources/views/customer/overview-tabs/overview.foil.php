@@ -3,7 +3,7 @@
     <div class="col-sm-12">
 
         <?php if( $t->aggregateGraph ): ?>
-            <div class="card">
+            <div class="card mb-4">
                 <div class="card-header d-flex">
                     <div class="mr-auto">
                         <h3>
@@ -21,14 +21,11 @@
                 <div class="card-body">
                     <?= $t->aggregateGraph->renderer()->boxLegacy() ?>
                 </div>
-
-
-
             </div>
         <?php endif; ?>
 
         <div class="table-responsive">
-            <table class="table table-striped mt-4">
+            <table class="table table-striped">
                 <tbody>
                 <tr>
                     <td>

@@ -11,10 +11,17 @@ $this->layout( 'layouts/ixpv4' );
 
 <div class="row">
 
-    <div class="col-sm-12">
+    <div class="col-lg-12">
 
-        <div class="alert alert-info">
-            You can add sflow receivers via the customers virtual interface edit page.
+        <div class="alert alert-info" role="alert">
+            <div class="d-flex align-items-center">
+                <div class="text-center">
+                    <i class="fa fa-info-circle fa-2x"></i>
+                </div>
+                <div class="col-sm-12">
+                    You can add sflow receivers via the customers virtual interface edit page.
+                </div>
+            </div>
         </div>
 
         <?= $t->alerts() ?>

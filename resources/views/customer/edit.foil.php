@@ -17,7 +17,7 @@
 
     <div class="row">
 
-        <div class="col-sm-12">
+        <div class="col-lg-12">
 
             <?= Former::open()->method( 'POST' )
                 ->id( "form" )
@@ -36,25 +36,27 @@
                     <b>Prepopulate this form from PeeringDB by entering the network ASN here:</b>
                 </p>
 
-                <div class="form-group col-sm-3">
-                    <input type="text" class="form-control" id="asn-search">
-                </div>
 
-                <div class="btn-group">
-                <span class="btn btn-primary" id="btn-populate" style="margin-left: 15px" href="">
-                    Populate
-                </span>
-                </div>
+                    <div class="form-group d-flex">
+                        <input type="text" class="form-control col-lg-3" id="asn-search">
+                        <button class="btn btn-primary " id="btn-populate" style="margin-left: 15px" href="">
+                            Populate
+                        </button>
+                        <button class="btn-success btn help-btn ml-4" type="button">
+                            Help
+                        </button>
+                    </div>
 
-                <div class="pull-right">
-                    <button class="btn-success btn help-btn" type="button">Help</button>
-                </div>
+
+
+
+
             </div>
 
 
             <div class="mt-4 row">
 
-                <div class="col-md-6">
+                <div class="col-lg-6 col-md-12">
 
                     <h3>Customer Details</h3>
                     <hr>
@@ -129,7 +131,7 @@
                 </div>
 
 
-                <div class="col-md-6 full-member-details" style="<?=
+                <div class="col-lg-6 col-md-12 full-member-details" style="<?=
                 old( 'type' ) == Entities\Customer::TYPE_ASSOCIATE || ( $t->cust && $t->cust->isTypeAssociate() ) ? 'display: none;' : ''
                 ?>">
 
@@ -212,7 +214,7 @@
             old( 'type' ) == Entities\Customer::TYPE_ASSOCIATE || ( $t->cust && $t->cust->isTypeAssociate() ) ? 'display: none;' : ''
             ?>">
 
-                <div class="col-md-6">
+                <div class="col-lg-6 col-md-12">
                     <h3>NOC Details</h3>
                     <hr>
                     <?= Former::phone( 'nocphone' )
@@ -258,7 +260,7 @@
 
                 <?php if( $t->resellerMode() ): ?>
 
-                    <div class="col-md-6">
+                    <div class="col-lg-6 col-md-12">
                         <h3>Reseller Details</h3>
                         <hr>
                         <?= Former::checkbox( 'isReseller' )

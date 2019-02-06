@@ -66,7 +66,7 @@
                     ?>
 
                     <div class="row">
-                        <div class="col-sm-6">
+                        <div class="col-md-12 col-lg-6">
 
                             <?= Former::select( 'vlan' )
                                 ->label( 'Vlan' )
@@ -110,7 +110,7 @@
 
                         </div>
 
-                        <div class="col-sm-6">
+                        <div class="col-md-12 col-lg-6">
 
                             <?= Former::number( 'maxbgpprefix' )
                                 ->label( 'Max BGP Prefixes' )
@@ -165,12 +165,12 @@
             </div>
 
 
-            <div class="row mt-4">
-                <div id='ipv6-area' class="col-md-6" style="<?= old( 'ipv6-enabled' ) || $t->vli && $t->vli->getIPv6Enabled() ?: 'display: none;' ?>">
+            <div class="row">
+                <div id='ipv6-area' class="col-md-12 col-lg-6 mt-4" style="<?= old( 'ipv6-enabled' ) || $t->vli && $t->vli->getIPv6Enabled() ?: 'display: none;' ?>">
                     <?= $t->insert( 'interfaces/common/vli/ipv6.foil.php' ) ?>
                 </div>
 
-                <div id='ipv4-area' class="col-md-6" style="<?= old( 'ipv4-enabled' ) || Former::checkbox( 'ipv4-enabled' )->getValue() ?: 'display: none;' ?>">
+                <div id='ipv4-area' class="col-md-12 col-lg-6 mt-4" style="<?= old( 'ipv4-enabled' ) || Former::checkbox( 'ipv4-enabled' )->getValue() ?: 'display: none;' ?>">
                     <?= $t->insert( 'interfaces/common/vli/ipv4.foil.php' ) ?>
                 </div>
             </div>
