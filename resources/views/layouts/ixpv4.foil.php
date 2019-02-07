@@ -19,6 +19,7 @@
         <meta name="csrf-token" content="<?=  csrf_token() ?>">
 
         <link rel="stylesheet" type="text/css" href="<?= asset('css/ixp-pack.css') ?>" />
+        <style>body { font-size: 14px; }</style>
         <?php $this->section('headers') ?>
         <?php $this->stop() ?>
 
