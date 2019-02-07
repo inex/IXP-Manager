@@ -77,7 +77,7 @@
                     </td>
                     <td class="text-right pr-4">
                         <?php if( $p->state != 'up' ): ?>
-                            <?= $p->bgp_state ?>
+                            <span class="badge badge-warning"><?= $p->bgp_state ?></span>
                         <?php else: ?>
                             <?php if( is_int( $p->routes->imported ) and is_int( $t->content->api->max_routes ) and $p->routes->imported < $t->content->api->max_routes ): ?>
                                 <a href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/routes/protocol/<?= $name ?>">
