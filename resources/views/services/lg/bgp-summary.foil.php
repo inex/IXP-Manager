@@ -130,11 +130,9 @@
   Description:    <span id="p_description"></span>
   Preference:     <span id="p_preference"></span>
   Input filter:   <span id="p_input_filter"></span>
-  Output filter:  <span id="p_output_filter"></span>
-<span id="p_o_import_limit">
+  Output filter:  <span id="p_output_filter"></span><span id="p_o_import_limit">
   Import limit:   <span id="p_import_limit"></span>
-    Action:       <span id="p_limit_action"></span>
-</span>
+    Action:       <span id="p_limit_action"></span></span>
   Routes:         <span id="p_routes_imported"></span> imported, <span id="p_routes_exported"></span> exported, <span id="p_routes_preferred"></span> preferred
   Route change stats:     received   rejected   filtered    ignored   accepted
     Import updates:     <span id="p_import_updates_received"></span> <span id="p_import_updates_rejected"></span> <span id="p_import_updates_filtered"></span> <span id="p_import_updates_ignored"></span> <span id="p_import_updates_accepted"></span>
@@ -147,10 +145,8 @@
     Neighbor ID:      <span id="p_neighbor_id"></span>
     Neighbor caps:    <span id="p_neighbor_capabilities"></span>
     Session:          <span id="p_bgp_session"></span>
-    Source address:   <span id="p_source_address"></span>
-<span id="p_o_route_limit_at">
-    Route limit:      <span id="p_route_limit_at"></span>/<span id="p_import_limit2"></span>
-</span>
+    Source address:   <span id="p_source_address"></span><span id="p_o_route_limit_at">
+    Route limit:      <span id="p_route_limit_at"></span>/<span id="p_import_limit2"></span></span>
     Hold timer:       <span id="p_hold_timer"></span>
     Keepalive timer:  <span id="p_keepalive"></span>
 </pre>
