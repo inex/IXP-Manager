@@ -52,10 +52,12 @@
                     <?php
                         // any blocked routes?
                         $blocked = false;
-                        foreach( $r->bgp->large_communities as $lc ) {
-                            if( $lc[0] == $t->lg->router()->asn() && $lc[1] == 1101 ) {
-                                $blocked = true;
-                                break;
+                        if( isset( $r->bgp->large_communities ) ) {
+                            foreach( $r->bgp->large_communities as $lc ) {
+                                if( $lc[0] == $t->lg->router()->asn() && $lc[1] == 1101 ) {
+                                    $blocked = true;
+                                    break;
+                                }
                             }
                         }
                     ?>
