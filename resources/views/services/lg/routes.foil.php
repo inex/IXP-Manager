@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <table class="table table-striped table-sm text-monospace" id="routes">
+    <table class="table table-striped table-sm text-monospace"  style="font-size: 14px;" id="routes">
         <thead class="thead-dark">
             <tr>
                 <th>
@@ -106,7 +106,7 @@
                             <?php endif; ?>
                         </td>
                         <td>
-                            <a class="btn btn-outline-secondary btn-sm" data-toggle="modal"
+                            <a class="btn btn-outline-secondary btn-sm" style="font-size: 14px;" data-toggle="modal"
                                 href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/route/<?= urlencode( explode('/',$r->network)[0] ) ?>/<?= explode('/',$r->network)[1] ?>/<?= $t->source ?>/<?= $t->name ?>"
                                 data-target="#route-modal">Details</a>
                         </td>

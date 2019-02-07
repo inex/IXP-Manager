@@ -6,7 +6,7 @@
 
 <?php $this->section('content') ?>
 
-<table class="table table-striped table-sm text-monospace" id="bgpsummary">
+<table class="table table-striped table-sm text-monospace" style="font-size: 14px;" id="bgpsummary">
     <thead class="thead-dark">
         <tr>
             <th>
@@ -48,10 +48,10 @@
             <?php foreach( $t->content->protocols as $name => $p ): ?>
 
                 <tr <?= $p->state == 'up' ? '' : 'class="warning"' ?>>
-                    <td>
+                    <td class="pr-4">
                         <?=$p->neighbor_address?>
                     </td>
-                    <td>
+                    <td class="pr-4">
                         <?= $p->description_short ?? $p->description ?? "" ?>
                     </td>
                     <td class="text-right pr-4">
@@ -100,7 +100,7 @@
                         <?php endif; ?>
                     </td>
                     <td class="text-reset">
-                        <a class="btn btn-outline-secondary btn-sm" id="protocol_details-<?= $name ?>"
+                        <a class="btn btn-outline-secondary btn-sm" style="font-size: 14px;" id="protocol_details-<?= $name ?>"
                             data-protocol="<?= $name ?>" title="<?= $p->description ?? "" ?>">
                             Details
                         </a>
