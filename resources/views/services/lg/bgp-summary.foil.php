@@ -261,8 +261,8 @@
         $('#p_source_address'   ).html( p.source_address );
         $('#p_route_limit_at'   ).html( p.route_limit_at );
         $('#p_import_limit2'    ).html( p.import_limit );
-        $('#p_hold_timer'       ).html( ( typeof p.hold_timer_now !== 'undefined' ? p.hold_timer_now + '/' : '' ) + p.hold_timer );
-        $('#p_keepalive'        ).html( ( typeof p.keepalive_now  !== 'undefined' ? p.keepalive_now  + '/' : '' ) + p.keepalive );
+        $('#p_hold_timer'       ).html( p.hold_timer );
+        $('#p_keepalive'        ).html( p.keepalive );
         $('#protocol-info-modal').modal('show', {backdrop: 'static'});
     });
 </script>
