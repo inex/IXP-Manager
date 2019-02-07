@@ -8,7 +8,11 @@
 
     <div class="card mb-4">
         <div class="card-body">
-            Key: <span class="badge badge-success">P</span>
+            <?php if( $t->source ?? false ): ?>
+                <b>Routes <?= $t->source == 'export to protocol' ? 'exported to protocol' : 'from ' . $t->source ?>: <code><?= $t->name ?></code>.</b>
+            <?php endif; ?>
+            
+            <b>Key:</b> <span class="badge badge-success">P</span>
             - Primary / active route.
             <span class="badge badge-warning">N</span>
             - Inactive route.

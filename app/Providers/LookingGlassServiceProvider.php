@@ -65,7 +65,7 @@ class LookingGlassServiceProvider extends ServiceProvider {
             Route::get( '{handle}/routes/protocol/{protocol}',      'LookingGlass@routesForProtocol' );
             Route::get( '{handle}/routes/export/{protocol}',        'LookingGlass@routesForExport'   );
 
-            Route::get( '{handle}/route-search',                           'LookingGlass@routeSearch'       );
+            Route::get( '{handle}/route-search',                           'LookingGlass@routeSearch'       )->name( 'route-search' );
             Route::get( '{handle}/route/{net}/{mask}/protocol/{protocol}', 'LookingGlass@routeProtocol'     );
             Route::get( '{handle}/route/{net}/{mask}/table/{table}',       'LookingGlass@routeTable'        );
 
