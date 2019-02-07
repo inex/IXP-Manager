@@ -17,7 +17,7 @@
         </div>
     </div>
 
-    <table class="table table-striped table-sm" id="routes">
+    <table class="table table-striped table-sm text-monospace" id="routes">
         <thead class="thead-dark">
             <tr>
                 <th>
@@ -28,10 +28,10 @@
                 </th>
                 <th></th>
                 <th>
-                    Metric
+                    Metric&nbsp;
                 </th>
                 <th>
-                    Communities?
+                    Communities?&nbsp;
                 </th>
                 <th>
                     AS Path
@@ -48,6 +48,18 @@
             <?php else: ?>
 
                 <?php foreach( $t->content->routes as $r ): ?>
+
+                    <?php
+                        // any blocked routes?
+                        $blocked = false;
+                        foreach( $r->bgp->large_communities as $lc ) {
+                            if( $lc[0] == $t->lg->router()->asn() && $lc[1] == 1101 ) {
+                                $blocked = true;
+                                break;
+                            }
+                        }
+                    ?>
+
 
                     <tr>
                         <td>
@@ -85,15 +97,7 @@
                                     <?= count( $r->bgp->large_communities ) ?>
                                 </span>
 
-                                <?php
-                                    // any blocked routes?
-                                    foreach( $r->bgp->large_communities as $lc ) {
-                                        if( $lc[0] == $t->lg->router()->asn() && $lc[1] == 1101 ) {
-                                            echo '<i class="fa fa-exclamation-triangle"></i>';
-                                            break;
-                                        }
-                                    }
-                                ?>
+                                <?= !$blocked ? '' : '<i class="fa fa-exclamation-triangle"></i>' ?>
                             <?php endif; ?>
                         </td>
                         <td>

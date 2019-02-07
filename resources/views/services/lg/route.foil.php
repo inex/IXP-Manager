@@ -12,7 +12,7 @@
 <div class="modal-body">
     <?php foreach( $t->content->routes as $r ): ?>
 
-    <table class="table table-striped">
+    <table class="table table-striped text-monospace">
         <tbody>
             <tr>
                 <td>

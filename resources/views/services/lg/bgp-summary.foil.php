@@ -6,7 +6,7 @@
 
 <?php $this->section('content') ?>
 
-<table class="table table-striped table-sm" id="bgpsummary">
+<table class="table table-striped table-sm text-monospace" id="bgpsummary">
     <thead class="thead-dark">
         <tr>
             <th>
@@ -15,20 +15,20 @@
             <th>
                 Description
             </th>
-            <th>
-                ASN
+            <th class="text-right">
+                ASN&nbsp;
             </th>
             <th>
                 Table
             </th>
-            <th>
-                PfxLimit
+            <th class="text-right">
+                PfxLimit&nbsp;
             </th>
-            <th>
-                State/PfxRcd
+            <th class="text-right">
+                State/PfxRcd&nbsp;
             </th>
-            <th>
-                PfxExp
+            <th class="text-right">
+                PfxExp&nbsp;
             </th>
             <th>
                 Actions
@@ -54,7 +54,7 @@
                     <td>
                         <?= $p->description_short ?? $p->description ?? "" ?>
                     </td>
-                    <td class="text-right">
+                    <td class="text-right pr-4">
                         <?= $p->neighbor_as ?>
                     </td>
                     <td>
@@ -62,7 +62,7 @@
                             <?= $p->table ?>
                         </a>
                     </td>
-                    <td class="text-right">
+                    <td class="text-right pr-4">
                         <?php if( isset($p->import_limit) and isset( $p->route_limit_at ) and $p->import_limit ): ?>
                             <span
                                 <?php if( ( (float)$p->route_limit_at / $p->import_limit ) >= .9 ): ?>
@@ -75,7 +75,7 @@
                             </span>
                         <?php endif; ?>
                     </td>
-                    <td class="text-right">
+                    <td class="text-right pr-4">
                         <?php if( $p->state != 'up' ): ?>
                             <?= $p->bgp_state ?>
                         <?php else: ?>
@@ -88,7 +88,7 @@
                             <?php endif; ?>
                         <?php endif; ?>
                     </td>
-                    <td class="text-right">
+                    <td class="text-right pr-4">
                         <?php if( $p->state == 'up' ): ?>
                             <?php if( is_int( $p->routes->exported ) and is_int( $t->content->api->max_routes ) and $p->routes->exported < $t->content->api->max_routes ): ?>
                                 <a href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/routes/export/<?= $name ?>">
@@ -99,7 +99,7 @@
                             <?php endif; ?>
                         <?php endif; ?>
                     </td>
-                    <td>
+                    <td class="text-reset">
                         <a class="btn btn-outline-secondary btn-sm" id="protocol_details-<?= $name ?>"
                             data-protocol="<?= $name ?>" title="<?= $p->description ?? "" ?>">
                             Details
