@@ -115,4 +115,70 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4  {
 
         return Element::create('span', $item)->addClass('input-group-'.$class);
     }
+
+    /**
+     * Add group classes
+     *
+     * @return string A list of group classes
+     */
+    public function getGroupClasses()
+    {
+        if ($this->app['former.form']->isOfType('horizontal')) {
+            $classes = 'form-group row ';
+        } else {
+            $classes = 'form-group ';
+        }
+
+        if( isset( $this->app['former.form']->getAttributes()['inputs-position'] ) ){
+            $classes .= $this->app['former.form']->getAttributes()['inputs-position'];
+        }
+
+        return $classes;
+    }
+
+
+    /**
+     * Add actions block class
+     *
+     * @return string|null
+     */
+    public function getActionClasses()
+    {
+        if ($this->app['former.form']->isOfType('horizontal') || $this->app['former.form']->isOfType('inline')) {
+            $classes = 'form-group row ';
+
+            if( isset( $this->app['former.form']->getAttributes()['inputs-position'] ) ){
+                $classes .= $this->app['former.form']->getAttributes()['inputs-position'];
+            }
+
+            return $classes;
+        }
+
+        return null;
+    }
+
+
+    /**
+     * Wrap actions block with potential additional tags
+     *
+     * @param  Actions $actions
+     *
+     * @return string A wrapped actions block
+     */
+    public function wrapActions($actions)
+    {
+
+        // For horizontal forms, we wrap the actions in a div
+        if ($this->app['former.form']->isOfType('horizontal')) {
+
+            $class = isset( $this->app['former.form']->getAttributes()['action-buttons-custom-class'] ) ? $this->app['former.form']->getAttributes()['action-buttons-custom-class'] : "";
+
+            $element = Element::create('div', $actions)->addClass(array($this->fieldOffset, $this->fieldWidth , $class ));
+
+
+            return $element;
+        }
+
+        return $actions;
+    }
 }

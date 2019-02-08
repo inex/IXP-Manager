@@ -36,20 +36,15 @@
                     <b>Prepopulate this form from PeeringDB by entering the network ASN here:</b>
                 </p>
 
-
-                    <div class="form-group d-flex">
-                        <input type="text" class="form-control col-lg-3" id="asn-search">
-                        <button class="btn btn-primary " id="btn-populate" style="margin-left: 15px" href="">
-                            Populate
-                        </button>
-                        <button class="btn-success btn help-btn ml-4" type="button">
-                            Help
-                        </button>
-                    </div>
-
-
-
-
+                <div class="form-group d-flex">
+                    <input type="text" class="form-control col-lg-3" id="asn-search">
+                    <button class="btn btn-primary " id="btn-populate" style="margin-left: 15px" href="">
+                        Populate
+                    </button>
+                    <button class="btn-success btn help-btn ml-4" type="button">
+                        Help
+                    </button>
+                </div>
 
             </div>
 
