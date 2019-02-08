@@ -19,7 +19,6 @@
         <meta name="csrf-token" content="<?=  csrf_token() ?>">
 
         <link rel="stylesheet" type="text/css" href="<?= asset('css/ixp-pack.css') ?>" />
-        <style>body { font-size: 14px; }</style>
         <?php $this->section('headers') ?>
         <?php $this->stop() ?>
 
@@ -62,10 +61,10 @@
                     <?php /*if( Auth::check() && Auth::user()->isSuperUser() ): */?>
 
                         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                            <h2>
+                            <h1 class="h2">
                                 <?php $this->section('page-header-preamble') ?>
                                 <?php $this->stop() ?>
-                            </h2>
+                            </h1>
                             <div class="btn-toolbar mb-2 mb-md-0">
                                 <?php $this->section('page-header-postamble') ?>
                                 <?php $this->stop() ?>
@@ -111,6 +110,8 @@
         <script type="text/javascript" src="<?= asset('js/ixp-manager.js') ?>"></script>
 
         <script>
+
+
 
             $( ".chzn-select" ).select2({ width: '100%', placeholder: function() {
                 $(this).data('placeholder');

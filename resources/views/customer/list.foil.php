@@ -94,8 +94,8 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section('content') ?>
 
     <?= $t->alerts() ?>
-    <div class="table-responsive">
-        <table id='customer-list' class="table collapse table-striped" >
+
+        <table id='customer-list' class="table collapse table-striped no-wrap responsive" style="width:100%" >
             <thead class="thead-dark">
                 <tr>
                     <th>
@@ -174,7 +174,7 @@ $this->layout( 'layouts/ixpv4' );
             <?php endforeach;?>
             <tbody>
         </table>
-    </div>
+
 
 
 <?php $this->append() ?>
@@ -182,9 +182,13 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'scripts' ) ?>
     <script>
         $(document).ready( function() {
-            $( '#customer-list' ).dataTable( { "autoWidth": false } );
 
             $( '#customer-list' ).show();
+
+            $('#customer-list').DataTable( {
+                responsive: true
+            } );
+
         });
     </script>
 <?php $this->append() ?>

@@ -35,7 +35,7 @@
         <?= $t->alerts() ?>
         <div id="message-vi"></div>
         <div id="area-vi" class="collapse">
-            <table id='table-vi' class="table table-stripped">
+            <table id='table-vi' class="table table-stripped no-wrap" style="width: 100%!important">
                 <thead class="thead-dark">
                     <tr>
                         <th>
@@ -129,15 +129,18 @@
 
     <script>
         $(document).ready( function() {
+
+            $('#area-vi').show();
+
             $( '#table-vi' ).DataTable( {
-                "autoWidth": false,
-                "iDisplayLength": 100,
+                responsive: true,
+                pageLength : 100,
                 "columnDefs": [
                     { "targets": [ 4 ], "orderData": 5 },
                     { "targets": [ 5 ], "visible": false, "searchable": false }
                 ],
             });
-            $('#area-vi').show();
+
         });
 
         /**

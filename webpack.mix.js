@@ -21,6 +21,9 @@ mix.scripts(
         'node_modules/bootstrap/dist/js/bootstrap.min.js',
         'node_modules/datatables.net/js/jquery.dataTables.min.js',
         'node_modules/datatables.net-bs4/js/dataTables.bootstrap4.min.js',
+        'node_modules/datatables.net-responsive/js/dataTables.responsive.min.js',
+        'node_modules/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js',
+
         'node_modules/blueimp-file-upload/js/jquery.fileupload.js',
         'node_modules/jquery-knob/dist/jquery.knob.min.js',
         'node_modules/clipboard/dist/clipboard.min.js',
@@ -39,6 +42,8 @@ mix.styles(
         'node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css',
         'node_modules/select2/dist/css/select2.min.css',
         'node_modules/font-awesome/css/font-awesome.css',
+        'node_modules/datatables.net-bs4/css/dataTables.bootstrap4.min.css',
+        'node_modules/datatables.net-responsive-bs4/css/responsive.bootstrap4.css',
         'public/css/draganddrop.css',
         'public/css/ixp-manager.css'
         // etc. etc.
