@@ -12,7 +12,7 @@
 <div class="modal-body">
     <?php foreach( $t->content->routes as $r ): ?>
 
-    <table class="table table-striped">
+    <table class="table table-striped text-monospace" style="font-size: 14px;">
         <tbody>
             <tr>
                 <td>
@@ -38,14 +38,6 @@
                             NOT PRIMARY
                         </span>
                     <?php endif; ?>
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <b>Interface</b>
-                </td>
-                <td>
-                    <?= $r->interface ?>
                 </td>
             </tr>
             <tr>
@@ -80,16 +72,6 @@
                     <?= implode( ' ', $r->type ) ?>
                 </td>
             </tr>
-            <?php if(isset( $r->bgp->origin )): ?>
-                <tr>
-                    <td>
-                        <b>BGP :: Origin</b>
-                    </td>
-                    <td>
-                        <?= $r->bgp->origin ?>
-                    </td>
-                </tr>
-            <?php endif; ?>
             <?php if (isset( $r->bgp->as_path )): ?>
                 <tr>
                     <td>
@@ -157,7 +139,7 @@
                     </td>
                     <td>
                         <?php foreach( $r->bgp->communities as $c ): ?>
-                            <tt><?= implode(':',$c) ?></tt>
+                            <tt><?= implode(':',$c) ?></tt><br>
                         <?php endforeach; ?>
                     </td>
                 </tr>

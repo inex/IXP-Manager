@@ -105,6 +105,9 @@
                                 <a target="_blank" class="btn btn-outline-secondary" href="<?= route('apiv4-router-gen-config', [ 'handle' => $router->getHandle() ] ) ?>" title="Configuration">
                                     <i class="fa fa-file"></i>
                                 </a>
+                                <a target="_blank" class="btn btn-outline-secondary <?= $router->hasApi() ? '' : 'disabled' ?>" href="<?= route('lg::bgp-sum', [ 'handle' => $router->getHandle() ] ) ?>" title="Looking Glass">
+                                    <i class="fa fa-search"></i>
+                                </a>
                                 <a class="btn btn-outline-secondary" href="<?= route('router@view' , [ 'id' => $router->getId() ] ) ?>" title="Preview">
                                     <i class="fa fa-eye"></i>
                                 </a>

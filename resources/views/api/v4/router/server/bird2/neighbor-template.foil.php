@@ -45,8 +45,8 @@ template bgp tb_rsclient {
     strict bind yes;
 
     # give RPKI-RTR a chance to start and populate
-    # (may not affect inbound connections -> check)
-    connect delay time 120;
+    # (RPKI is /really/ quick)
+    connect delay time 30;
 
     <?= $t->ipproto ?> {
         export all;

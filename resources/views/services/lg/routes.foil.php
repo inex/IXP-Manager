@@ -8,14 +8,20 @@
 
     <div class="card mb-4">
         <div class="card-body">
-            Key: <span class="badge badge-success">P</span>
+            <?php if( $t->source ?? false ): ?>
+                <b>Routes <?= $t->source == 'export to protocol' ? 'exported to protocol' : 'from ' . $t->source ?>: <code><?= $t->name ?></code>.</b>
+            <?php endif; ?>
+            
+            <b>Key:</b> <span class="badge badge-success">P</span>
             - Primary / active route.
             <span class="badge badge-warning">N</span>
             - Inactive route.
+            <i class="fa fa-exclamation-triangle"></i>
+            - Blocked / filtered route.
         </div>
     </div>
 
-    <table class="table table-striped table-sm" id="routes">
+    <table class="table table-striped table-sm text-monospace"  style="font-size: 14px;" id="routes">
         <thead class="thead-dark">
             <tr>
                 <th>
@@ -26,10 +32,10 @@
                 </th>
                 <th></th>
                 <th>
-                    Metric
+                    Metric&nbsp;
                 </th>
                 <th>
-                    Communities?
+                    Communities?&nbsp;
                 </th>
                 <th>
                     AS Path
@@ -47,13 +53,27 @@
 
                 <?php foreach( $t->content->routes as $r ): ?>
 
+                    <?php
+                        // any blocked routes?
+                        $blocked = false;
+                        if( isset( $r->bgp->large_communities ) ) {
+                            foreach( $r->bgp->large_communities as $lc ) {
+                                if( $lc[0] == $t->lg->router()->asn() && $lc[1] == 1101 ) {
+                                    $blocked = true;
+                                    break;
+                                }
+                            }
+                        }
+                    ?>
+
+
                     <tr>
                         <td>
                             <?php
                                 // need to split the ip/netmask so we don't urlencode() the '/' between them:
                                 list( $ip, $mask ) = explode( '/', $r->network );
                             ?>
-                            <a href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/route/<?= urlencode($ip) ?>/<?= $mask ?>/table/master"
+                            <a href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/route/<?= urlencode($ip) ?>/<?= $mask ?>/table/master<?= $t->lg->router()->software() == Entities\Router::SOFTWARE_BIRD2 ? $t->lg->router()->protocol() : '' ?>"
                                     data-toggle="modal" data-target="#route-modal">
                                 <?= $r->network ?>
                             </a>
@@ -82,6 +102,8 @@
                                 <span class="badge badge-secondary">LC:
                                     <?= count( $r->bgp->large_communities ) ?>
                                 </span>
+
+                                <?= !$blocked ? '' : '<i class="fa fa-exclamation-triangle"></i>' ?>
                             <?php endif; ?>
                         </td>
                         <td>
@@ -90,7 +112,7 @@
                             <?php endif; ?>
                         </td>
                         <td>
-                            <a class="btn btn-outline-secondary btn-sm" data-toggle="modal"
+                            <a class="btn btn-outline-secondary btn-sm" style="font-size: 14px;" data-toggle="modal"
                                 href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/route/<?= urlencode( explode('/',$r->network)[0] ) ?>/<?= explode('/',$r->network)[1] ?>/<?= $t->source ?>/<?= $t->name ?>"
                                 data-target="#route-modal">Details</a>
                         </td>

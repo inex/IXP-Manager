@@ -6,7 +6,7 @@
 
 <?php $this->section('content') ?>
 
-<table class="table table-striped table-sm" id="bgpsummary">
+<table class="table table-striped table-sm text-monospace" style="font-size: 14px;" id="bgpsummary">
     <thead class="thead-dark">
         <tr>
             <th>
@@ -15,20 +15,20 @@
             <th>
                 Description
             </th>
-            <th>
-                ASN
+            <th class="text-right">
+                ASN&nbsp;
             </th>
             <th>
                 Table
             </th>
-            <th>
-                PfxLimit
+            <th class="text-right">
+                PfxLimit&nbsp;
             </th>
-            <th>
-                State/PfxRcd
+            <th class="text-right">
+                State/PfxRcd&nbsp;
             </th>
-            <th>
-                PfxExp
+            <th class="text-right">
+                PfxExp&nbsp;
             </th>
             <th>
                 Actions
@@ -48,13 +48,13 @@
             <?php foreach( $t->content->protocols as $name => $p ): ?>
 
                 <tr <?= $p->state == 'up' ? '' : 'class="warning"' ?>>
-                    <td>
+                    <td class="pr-4">
                         <?=$p->neighbor_address?>
                     </td>
-                    <td>
+                    <td class="pr-4">
                         <?= $p->description_short ?? $p->description ?? "" ?>
                     </td>
-                    <td class="text-right">
+                    <td class="text-right pr-4">
                         <?= $p->neighbor_as ?>
                     </td>
                     <td>
@@ -62,7 +62,7 @@
                             <?= $p->table ?>
                         </a>
                     </td>
-                    <td class="text-right">
+                    <td class="text-right pr-4">
                         <?php if( isset($p->import_limit) and isset( $p->route_limit_at ) and $p->import_limit ): ?>
                             <span
                                 <?php if( ( (float)$p->route_limit_at / $p->import_limit ) >= .9 ): ?>
@@ -75,9 +75,9 @@
                             </span>
                         <?php endif; ?>
                     </td>
-                    <td class="text-right">
+                    <td class="text-right pr-4">
                         <?php if( $p->state != 'up' ): ?>
-                            <?= $p->bgp_state ?>
+                            <span class="badge badge-warning"><?= $p->bgp_state ?></span>
                         <?php else: ?>
                             <?php if( is_int( $p->routes->imported ) and is_int( $t->content->api->max_routes ) and $p->routes->imported < $t->content->api->max_routes ): ?>
                                 <a href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/routes/protocol/<?= $name ?>">
@@ -88,7 +88,7 @@
                             <?php endif; ?>
                         <?php endif; ?>
                     </td>
-                    <td class="text-right">
+                    <td class="text-right pr-4">
                         <?php if( $p->state == 'up' ): ?>
                             <?php if( is_int( $p->routes->exported ) and is_int( $t->content->api->max_routes ) and $p->routes->exported < $t->content->api->max_routes ): ?>
                                 <a href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/routes/export/<?= $name ?>">
@@ -99,8 +99,8 @@
                             <?php endif; ?>
                         <?php endif; ?>
                     </td>
-                    <td>
-                        <a class="btn btn-outline-secondary btn-sm" id="protocol_details-<?= $name ?>"
+                    <td class="text-reset">
+                        <a class="btn btn-outline-secondary btn-sm" style="font-size: 14px;" id="protocol_details-<?= $name ?>"
                             data-protocol="<?= $name ?>" title="<?= $p->description ?? "" ?>">
                             Details
                         </a>
@@ -130,9 +130,9 @@
   Description:    <span id="p_description"></span>
   Preference:     <span id="p_preference"></span>
   Input filter:   <span id="p_input_filter"></span>
-  Output filter:  <span id="p_output_filter"></span>
+  Output filter:  <span id="p_output_filter"></span><span id="p_o_import_limit">
   Import limit:   <span id="p_import_limit"></span>
-    Action:       <span id="p_limit_action"></span>
+    Action:       <span id="p_limit_action"></span></span>
   Routes:         <span id="p_routes_imported"></span> imported, <span id="p_routes_exported"></span> exported, <span id="p_routes_preferred"></span> preferred
   Route change stats:     received   rejected   filtered    ignored   accepted
     Import updates:     <span id="p_import_updates_received"></span> <span id="p_import_updates_rejected"></span> <span id="p_import_updates_filtered"></span> <span id="p_import_updates_ignored"></span> <span id="p_import_updates_accepted"></span>
@@ -145,8 +145,8 @@
     Neighbor ID:      <span id="p_neighbor_id"></span>
     Neighbor caps:    <span id="p_neighbor_capabilities"></span>
     Session:          <span id="p_bgp_session"></span>
-    Source address:   <span id="p_source_address"></span>
-    Route limit:      <span id="p_route_limit_at"></span>/<span id="p_import_limit2"></span>
+    Source address:   <span id="p_source_address"></span><span id="p_o_route_limit_at">
+    Route limit:      <span id="p_route_limit_at"></span>/<span id="p_import_limit2"></span></span>
     Hold timer:       <span id="p_hold_timer"></span>
     Keepalive timer:  <span id="p_keepalive"></span>
 </pre>
@@ -219,7 +219,12 @@
         $('#p_preference'   ).html( p.preference );
         $('#p_input_filter' ).html( p.input_filter );
         $('#p_output_filter').html( p.output_filter );
-        $('#p_import_limit' ).html( p.import_limit );
+        if( p.import_limit ) {
+            $('#p_import_limit').html(p.import_limit);
+        } else {
+            $('#p_o_import_limit').hide();
+            $('#p_o_route_limit_at').hide();
+        }
         $('#p_limit_action' ).html( p.limit_action );
         $('#p_routes_imported'  ).html( p.routes.imported );
         $('#p_routes_exported'  ).html( p.routes.exported );
