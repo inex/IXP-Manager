@@ -46,7 +46,7 @@
 <?php $this->section('content') ?>
     <div class="row">
 
-        <div class="col-sm-12">
+        <div class="col-lg-12">
 
             <?= $t->alerts() ?>
 
@@ -68,7 +68,7 @@
 
             <?php else:  /* !count( $t->data[ 'rows' ] ) */ ?>
 
-                <table id="table-list" class="table collapse table-striped">
+                <table id="table-list" class="table collapse table-striped" style="width: 100%">
 
                     <?php if( $t->data[ 'view' ]['listHeadOverride'] ): ?>
 

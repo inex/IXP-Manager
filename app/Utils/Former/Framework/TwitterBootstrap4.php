@@ -145,10 +145,16 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4  {
     public function getActionClasses()
     {
         if ($this->app['former.form']->isOfType('horizontal') || $this->app['former.form']->isOfType('inline')) {
-            $classes = 'form-group row ';
+            $classes = 'form-group';
 
-            if( isset( $this->app['former.form']->getAttributes()['inputs-position'] ) ){
-                $classes .= $this->app['former.form']->getAttributes()['inputs-position'];
+            if( isset( $this->app['former.form']->getAttributes()['inputs-positions'] ) ){
+                $classes .= $this->app['former.form']->getAttributes()['inputs-positions'];
+            }
+
+            if( isset( $this->app['former.form']->getAttributes()['action-buttons-custom-class'] ) &&  $this->app['former.form']->getAttributes()['action-buttons-custom-class'] == "grey-box" ){
+                $classes .= " col-sm-12";
+            } else{
+                $classes .= " row";
             }
 
             return $classes;
@@ -173,8 +179,11 @@ class TwitterBootstrap4 extends FormerTwitterBootstrap4  {
 
             $class = isset( $this->app['former.form']->getAttributes()['action-buttons-custom-class'] ) ? $this->app['former.form']->getAttributes()['action-buttons-custom-class'] : "";
 
-            $element = Element::create('div', $actions)->addClass(array($this->fieldOffset, $this->fieldWidth , $class ));
-
+            if( $class == "grey-box" ){
+                $element = Element::create('div', $actions)->addClass( "bg-light p-4 mt-4 shadow-sm text-center col-lg-12" );
+            } else{
+                $element = Element::create('div', $actions)->addClass(array($this->fieldOffset, $this->fieldWidth , $class ));
+            }
 
             return $element;
         }

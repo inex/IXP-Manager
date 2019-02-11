@@ -19,7 +19,7 @@
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-lg-6 mb-4">
             <h3>
                 Change Your Password
             </h3>
@@ -41,7 +41,9 @@
                 ->method( 'post' )
                 ->id( "password" )
                 ->action( route ( "profile@update-password" ) )
-                ->customInputWidthClass( 'col-sm-8' )
+                ->customInputWidthClass( 'col-lg-6' )
+                ->customLabelWidthClass( 'col-lg-4' )
+                ->actionButtonsCustomClass( "grey-box")
                 ->rules([
                     'current_password'   => 'required|max:255',
                     'new_password'       => 'required|max:255',
@@ -63,14 +65,14 @@
 
             <?= Former::actions(
                 Former::primary_submit( 'Update Password' )
-            )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
+            );
             ?>
 
             <?= Former::close() ?>
 
         </div>
 
-        <div class="col-md-6">
+        <div class="col-lg-6 mb-4">
             <h3>
                 Update Your Profile
             </h3>
@@ -80,7 +82,9 @@
                 ->method( 'post' )
                 ->id( "infos" )
                 ->action( route ( "profile@update-profile" ) )
-                ->customInputWidthClass( 'col-sm-8' )
+                ->customInputWidthClass( 'col-lg-6' )
+                ->customLabelWidthClass( 'col-lg-4' )
+                ->actionButtonsCustomClass( "grey-box");
             ?>
 
             <?= Former::text( 'username' )
@@ -107,7 +111,7 @@
 
             <?= Former::actions(
                 Former::primary_submit( 'Update Profile' )
-            )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
+            );
             ?>
 
             <?= Former::close() ?>
@@ -119,7 +123,7 @@
 
         <?php if( Auth::getUser()->isSuperUser() ): ?>
 
-            <div class="col-md-6">
+            <div class="col-lg-6">
                 <h3>
                     Customer Notes
                 </h3>
@@ -129,7 +133,8 @@
                     ->method( 'post' )
                     ->id( "note" )
                     ->action( route ( "profile@update-notification-preference" ) )
-                    ->customInputWidthClass( 'col-sm-10' );
+                    ->customInputWidthClass( 'col-sm-10' )
+                    ->actionButtonsCustomClass( "grey-box");
                 ?>
 
                 <?=  Former::radios('')
@@ -145,7 +150,7 @@
 
                 <?= Former::actions(
                     Former::primary_submit( 'Set Notification Preference' )
-                )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
+                );
                 ?>
 
                 <?= Former::close() ?>
@@ -155,7 +160,7 @@
 
         <?php if( $t->mailingListsEnabled ): ?>
 
-            <div class="col-md-6">
+            <div class="col-lg-6">
                 <h3>
                     Your Mailing List Subscriptions
                 </h3>
@@ -173,6 +178,7 @@
                     ->method( 'post' )
                     ->id( "mailing" )
                     ->action( route ( "profile@update-mailing-lists" ) )
+                    ->actionButtonsCustomClass( "grey-box")
                     ->customInputWidthClass( 'col-sm-10' );
                 ?>
 
@@ -197,7 +203,7 @@
 
                 <?= Former::actions(
                         Former::primary_submit( 'Update Subscriptions' )
-                )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
+                );
                 ?>
 
                 <?= Former::close() ?>

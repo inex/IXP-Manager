@@ -10,9 +10,6 @@
 <?php $this->append() ?>
 
 
-
-
-
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <div class="btn-group btn-group-sm" role="group">
@@ -42,7 +39,7 @@
 <?php $this->section('content') ?>
     <div class="row">
 
-        <div class="col-sm-12">
+        <div class="col-lg-12">
 
             <?= $t->alerts() ?>
 

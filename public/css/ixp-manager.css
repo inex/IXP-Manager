@@ -1,7 +1,6 @@
 @CHARSET "UTF-8";
 
 
-
 /*
 * BEGIN CSS used for Bootstrap 4
 */
@@ -68,6 +67,37 @@
         flex:0 0 50%;
         max-width:50%
     }
+
+
+    /*
+    ####################################################
+    M E D I A  Q U E R I E S
+    ####################################################
+    */
+
+    /*
+    ::::::::::::::::::::::::::::::::::::::::::::::::::::
+    Bootstrap 4 breakpoints
+    */
+    /* Small devices (landscape phones, 544px and up) */
+    @media (max-width: 576px) {
+        .h2 {font-size: 1.6rem}
+    }
+
+    /* Medium devices (tablets, 768px and up) */
+    @media (min-width: 768px) {
+
+    }
+
+    /* Large devices (desktops, 992px and up) */
+    @media (min-width: 992px) {
+
+
+    /* Extra large devices (large desktops, 1200px and up) */
+    @media (min-width: 1200px) {
+
+    }
+
 /*
 * END CSS used for Bootstrap 4
 */
@@ -313,11 +343,6 @@
     transition: border 0.2s linear 0s, box-shadow 0.2s linear 0s;
 }
 
-.info_box {
-    /* margin-top: 20px;
-    margin-bottom: 20px; */
-}
-
 .info_box .title {
     position: relative;
     top: -30px;
@@ -353,20 +378,6 @@
        http://stackoverflow.com/questions/12194573/bootstrap-dropdown-within-breadcrumb */
 .dropdown-menu li {
   display: block;
-}
-
-
-.www80-padding {
-    padding: 10px;
-}
-
-
-/********************************************************************/
-/*** PANEL DEFAULT ***/
-.with-nav-tabs.panel-default .nav-tabs > li > a,
-.with-nav-tabs.panel-default .nav-tabs > li > a:hover,
-.with-nav-tabs.panel-default .nav-tabs > li > a:focus {
-    color: #777;
 }
 
 

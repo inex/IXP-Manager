@@ -110,11 +110,17 @@
     </div>
 </div>
 
-<div class="alert alert-info mt-4">
-    <h5>User Passwords</h5>
-    <p>
-        In previous versions of <b>IXP Manager</b>, administrators had the facility to set a user's password. This
-        has been removed as we believe it to be bad practice - only a user should know their own password. User's
-        can set (and reset) their passwords via their <i>Profile</i> page or using the password reset functionality.
-    </p>
+<div class="alert alert-info mt-4" role="alert">
+    <div class="d-flex align-items-center">
+        <div class="text-center">
+            <i class="fa fa-question-circle fa-2x"></i>
+        </div>
+        <div class="col-sm-12">
+            <p>
+                In previous versions of <b>IXP Manager</b>, administrators had the facility to set a user's password. This
+                has been removed as we believe it to be bad practice - only a user should know their own password. User's
+                can set (and reset) their passwords via their <i>Profile</i> page or using the password reset functionality.
+            </p>
+        </div>
+    </div>
 </div>

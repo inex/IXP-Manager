@@ -46,11 +46,15 @@
 
         let tableList = $( '#table-list' );
 
+        tableList.show();
+
         tableList.dataTable({
+
+            responsive: true,
 
             "aLengthMenu": [ [ 20, 50, 100, 500, -1 ], [ 20, 50, 100, 500, "All" ] ],
 
-            "bAutoWidth": false,
+
 
             <?php
                 $count = 0;
@@ -80,6 +84,5 @@
             ]
         });
 
-        tableList.show();
     });
 </script>

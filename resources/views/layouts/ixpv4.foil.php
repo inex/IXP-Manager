@@ -65,7 +65,7 @@
                                 <?php $this->section('page-header-preamble') ?>
                                 <?php $this->stop() ?>
                             </h1>
-                            <div class="btn-toolbar mb-2 mb-md-0">
+                            <div class="btn-toolbar mb-2 mb-md-0 ml-auto">
                                 <?php $this->section('page-header-postamble') ?>
                                 <?php $this->stop() ?>
                             </div>
@@ -111,7 +111,22 @@
 
         <script>
 
-
+            $(document).ready(function(){
+                $(window).on('resize',function(){
+                    var winWidth =  $(window).width();
+                    if(winWidth < 576 ){
+                        console.log('Window Width: '+ winWidth + ' class used: col-xs');
+                    }else if( winWidth <= 767){
+                        console.log('Window Width: '+ winWidth + ' class used: col-sm');
+                    }else if( winWidth <= 991){
+                        console.log('Window Width: '+ winWidth + ' class used: col-md');
+                    }else if( winWidth <= 1199){
+                        console.log('Window Width: '+ winWidth + ' class used: col-lg');
+                    }else{
+                        console.log('Window Width: '+ winWidth + ' class used: col-xl');
+                    }
+                });
+            });
 
             $( ".chzn-select" ).select2({ width: '100%', placeholder: function() {
                 $(this).data('placeholder');

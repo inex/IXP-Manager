@@ -49,7 +49,7 @@
 
 <?php $this->section('content') ?>
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-lg-12">
 
             <?= $t->alerts() ?>
 
