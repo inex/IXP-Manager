@@ -1,8 +1,7 @@
 <div class="row">
     <div class="col-sm-12">
-        <br/>
 
-        <table class="table table-bordered table-striped">
+        <table class="table table-bordered table-striped collapse" style="width: 100%">
 
             <thead class="thead-dark">
                 <tr>
@@ -64,16 +63,16 @@
                             <?php endforeach; ?>
 
                             <td>
-                                <div class="btn-group">
+                                <div class="btn-group btn-group-sm my-auto">
 
                                     <button id="peering-request-<?= $cid ?>"
                                             data-days="<?= isset( $t->peers[ $cid ] ) ? $t->peers[ $cid ][ "email_days" ] : -1 ?>"
-                                            class="btn btn-outline-secondary btn-sm" <?= !$c[ "ispotential" ] ? "disabled" : "" ?>>
+                                            class="btn btn-outline-secondary btn-sm peering-request" <?= !$c[ "ispotential" ] ? "disabled" : "" ?>>
                                         <i id="peering-request-icon-<?= $cid ?>"
                                            class="fa  <?= isset( $t->peers[ $cid ][ "emails_sent"] ) && $t->peers[ $cid ][ "emails_sent" ] ? "fa-repeat" : "fa-envelope" ?>"></i> Request Peering
                                     </button>
 
-                                    <button id="peering-notes-<?= $cid ?>" class="btn btn-outline-secondary btn-sm">
+                                    <button id="peering-notes-<?= $cid ?>" class="btn btn-outline-secondary btn-sm peering-note">
                                         <i id="peering-notes-icon-<?= $cid ?>" class="fa fa-star" <?= isset( $t->peers[ $cid ][ "notes" ] ) && strlen( $t->peers[ $cid ][ "notes" ] ) ?: "style='color:lightgrey'" ?>></i> Notes
                                     </button>
 

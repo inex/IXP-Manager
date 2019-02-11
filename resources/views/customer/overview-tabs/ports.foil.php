@@ -1,6 +1,6 @@
 <div class="d-flex row">
 
-    <div class="col-md-12 row">
+
 
         <?php if( Auth::getUser()->isSuperUser() && !$t->c->statusIsNormal() ): ?>
 
@@ -20,5 +20,5 @@
             <?php $nbVi++ ?>
         <?php endforeach; ?>
 
-    </div>
+
 </div>

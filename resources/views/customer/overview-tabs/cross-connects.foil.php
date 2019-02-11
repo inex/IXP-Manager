@@ -1,75 +1,74 @@
-<div class="table-responsive">
-    <table class="table table-striped">
-        <thead class="thead-dark">
-            <tr>
-                <th>
-                    Name
-                </th>
-                <th>
-                    Colocation Circuit Ref
-                </th>
-                <?php if( Auth::getUser()->isSuperUser() ): ?>
-                    <th>
-                        Ticket Ref
-                    </th>
-                <?php endif; ?>
-                <th>State</th>
-                <th>Location</th>
-                <th>Cabinet</th>
-                <th>Assigned At</th>
-                <th>Chargeable</th>
-                <th>Owned By</th>
-            </tr>
-        </thead>
-        <tbody>
-            <?php if( count( $t->crossConnects) > 0 ): ?>
-                <?php foreach( $t->crossConnects as $patchPanelPort ): ?>
-                    <tr>
-                        <td>
-                            <a href="<?= route( "patch-panel-port@view" , [ "id" => $patchPanelPort->getId() ] ) ?>">
-                                <?= $t->ee($patchPanelPort->getPatchPanel()->getName() ) ?>
-                                <?= $t->ee( $patchPanelPort->getName() ) ?>
-                            </a>
-                        </td>
-                        <td>
-                            <?= $t->ee( $patchPanelPort->getColoCircuitRef() ) ?>
-                        </td>
-                        <?php if( Auth::getUser()->isSuperUser() ): ?>
-                            <td>
-                                <?= $t->ee( $patchPanelPort->getTicketRef() ) ?>
-                            </td>
-                        <?php endif; ?>
-                        <td>
-                            <?php $class = $patchPanelPort->getStateCssClass() ?>
 
-                            <span title="" class="badge badge-<?=$class ?>">
-                            <?= $patchPanelPort->resolveStates() ?>
-                            </span>
-                        </td>
-                        <td>
-                            <?= $t->ee( $patchPanelPort->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?>
-                        </td>
-                        <td>
-                            <?= $t->ee( $patchPanelPort->getPatchPanel()->getCabinet()->getName() ) ?>
-                        </td>
-                        <td>
-                            <?= $patchPanelPort->getAssignedAtFormated() ?>
-                        </td>
-                        <td>
-                            <?= $patchPanelPort->resolveChargeable() ?>
-                        </td>
-                        <td>
-                            <?= $patchPanelPort->resolveOwnedBy() ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            <?php else: ?>
+<table id="cross-connect-table" class="table table-striped" style="width: 100%">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                Name
+            </th>
+            <th>
+                Colocation Circuit Ref
+            </th>
+            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                <th>
+                    Ticket Ref
+                </th>
+            <?php endif; ?>
+            <th>State</th>
+            <th>Location</th>
+            <th>Cabinet</th>
+            <th>Assigned At</th>
+            <th>Chargeable</th>
+            <th>Owned By</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php if( count( $t->crossConnects) > 0 ): ?>
+            <?php foreach( $t->crossConnects as $patchPanelPort ): ?>
                 <tr>
-                    <td colspan="9" class="text-center">
-                        No Patch Panel available
+                    <td>
+                        <a href="<?= route( "patch-panel-port@view" , [ "id" => $patchPanelPort->getId() ] ) ?>">
+                            <?= $t->ee($patchPanelPort->getPatchPanel()->getName() ) ?>
+                            <?= $t->ee( $patchPanelPort->getName() ) ?>
+                        </a>
+                    </td>
+                    <td>
+                        <?= $t->ee( $patchPanelPort->getColoCircuitRef() ) ?>
+                    </td>
+                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                        <td>
+                            <?= $t->ee( $patchPanelPort->getTicketRef() ) ?>
+                        </td>
+                    <?php endif; ?>
+                    <td>
+                        <?php $class = $patchPanelPort->getStateCssClass() ?>
+
+                        <span title="" class="badge badge-<?=$class ?>">
+                        <?= $patchPanelPort->resolveStates() ?>
+                        </span>
+                    </td>
+                    <td>
+                        <?= $t->ee( $patchPanelPort->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?>
+                    </td>
+                    <td>
+                        <?= $t->ee( $patchPanelPort->getPatchPanel()->getCabinet()->getName() ) ?>
+                    </td>
+                    <td>
+                        <?= $patchPanelPort->getAssignedAtFormated() ?>
+                    </td>
+                    <td>
+                        <?= $patchPanelPort->resolveChargeable() ?>
+                    </td>
+                    <td>
+                        <?= $patchPanelPort->resolveOwnedBy() ?>
                     </td>
                 </tr>
-            <?php endif; ?>
-        </tbody>
-    </table>
-</div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <tr>
+                <td colspan="9" class="text-center">
+                    No Patch Panel available
+                </td>
+            </tr>
+        <?php endif; ?>
+    </tbody>
+</table>

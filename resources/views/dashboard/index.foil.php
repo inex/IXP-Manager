@@ -15,7 +15,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section('content') ?>
 <div class="row">
 
-    <div class="col-sm-12">
+    <div class="col-lg-12">
 
 
         <?= $t->alerts() ?>
@@ -149,7 +149,22 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'scripts' ) ?>
     <?= $t->insert( 'customer/js/overview/notes' ); ?>
-<script>
+    <script>
 
-</script>
+        $('#associate-table').DataTable( {
+            responsive: true,
+            ordering: false,
+            searching: false,
+            paging:   false,
+            info:   false,
+        } );
+
+        $('#cross-connect-table').DataTable( {
+            responsive: true,
+            ordering: false,
+            searching: false,
+            paging:   false,
+            info:   false,
+        } );
+    </script>
 <?php $this->append() ?>

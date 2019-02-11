@@ -1,5 +1,5 @@
 
-    <div class="col-sm-6">
+    <div class="col-lg-6 col-md-12">
 
         <h3>
             Connection <?= $t->nbVi ?>
@@ -83,15 +83,22 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-sm-6">
-                        <table class="table table-borderless table-striped">
+
+                <div class="row mb-4">
+                    <div class="col-lg-12">
+                        <table class="table table-sm table-borderless table-striped table-connection">
                             <tr>
                                 <td>
                                     <b>Switch:</b>
                                 </td>
                                 <td>
                                     <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?>
+                                </td>
+                                <td>
+                                    <b>Switch Port:</b>
+                                </td>
+                                <td>
+                                    <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
                                 </td>
                             </tr>
                             <tr>
@@ -104,6 +111,21 @@
                                         (HD)
                                     <?php endif; ?>
                                 </td>
+                                <?php if( $pi->getSwitchPort()->getSwitcher()->getMauSupported() ): ?>
+                                    <td>
+                                        <b>Media:</b>
+                                    </td>
+                                    <td>
+                                        <?= $t->ee( $pi->getSwitchPort()->getMauType() ) ?>
+                                    </td>
+                                <?php else: ?>
+                                    <td>
+                                        <b>Duplex:</b>
+                                    </td>
+                                    <td>
+                                        <?= $t->ee( $pi->getDuplex() ) ?>
+                                    </td>
+                                <?php endif; ?>
                             </tr>
 
                             <?php if( $pi->getSwitchPort()->getSwitcher()->getCabinet() ): ?>
@@ -114,6 +136,26 @@
                                     <td>
                                         <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ) ?>
                                     </td>
+
+                                    <?php if( $pi->getSwitchPort()->getSwitcher()->getCabinet() ): ?>
+
+                                        <td>
+                                            <b>
+                                                Colo Cabinet ID:
+                                            </b>
+                                        </td>
+                                        <td>
+                                            <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getCabinet()->getName() ) ?>
+                                        </td>
+                                    <?php else: ?>
+                                        <td>
+
+                                        </td>
+                                        <td>
+
+                                        </td>
+                                    <?php endif; ?>
+
                                 </tr>
                             <?php endif; ?>
 
@@ -133,52 +175,6 @@
                                             <?= $t->ee( $pi->getSwitchPort()->getPatchPanelPort()->getName() ) ?>
                                         <?php endif; ?>
                                     </td>
-
-                                </tr>
-                            <?php endif; ?>
-                        </table>
-                    </div>
-                    <div class="col-sm-6">
-                        <table class="table table-borderless table-striped">
-                            <tr>
-                                <td>
-                                    <b>Switch Port:</b>
-                                </td>
-                                <td>
-                                    <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
-                                </td>
-                            </tr>
-                            <tr>
-                                <?php if( $pi->getSwitchPort()->getSwitcher()->getMauSupported() ): ?>
-                                    <td>
-                                        <b>Media:</b>
-                                    </td>
-                                    <td>
-                                        <?= $t->ee( $pi->getSwitchPort()->getMauType() ) ?>
-                                    </td>
-                                <?php else: ?>
-                                    <td>
-                                        <b>Duplex:</b>
-                                    </td>
-                                    <td>
-                                        <?= $t->ee( $pi->getDuplex() ) ?>
-                                    </td>
-                                <?php endif; ?>
-                            </tr>
-                            <?php if( $pi->getSwitchPort()->getSwitcher()->getCabinet() ): ?>
-                                <tr>
-                                    <td>
-                                        <b>
-                                            Colo Cabinet ID:
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getCabinet()->getName() ) ?>
-                                    </td>
-                                </tr>
-                            <?php endif; ?>
-                            <?php if( $pi->getSwitchPort()->getPatchPanelPort() ): ?>
-                                <tr>
                                     <td>
                                         <b>XConnect Status:</b>
                                     </td>
@@ -188,6 +184,7 @@
                                             <?= $pi->getSwitchPort()->getPatchPanelPort()->getConnectedAtFormated() ?>
                                         <?php endif; ?>
                                     </td>
+
                                 </tr>
                             <?php endif; ?>
                         </table>
@@ -258,11 +255,18 @@
                 <?php else: ?>
                     <div class="row">
                         <div class="col-sm-12">
-                            <h4><?= $t->ee( $vli->getVlan()->getName() ) ?>:</h4>
+                            <h4>
+                                <?= $t->ee( $vli->getVlan()->getName() ) ?>:
+                            </h4>
                         </div>
-                        <div class="col-sm-6">
+                    </div>
 
-                            <table class="table table-borderless table-striped">
+
+
+                    <div class="row mb-4">
+                        <div class="col-lg-12">
+
+                            <table class="table table-sm table-borderless table-striped">
                                 <tr>
                                     <td>
                                         <b>
@@ -276,6 +280,16 @@
                                             IPv6 not enabled.
                                         <?php endif; ?>
                                     </td>
+                                    <td>
+                                        <b>IPv4 Address:</b>
+                                    </td>
+                                    <td>
+                                        <?php if( $vli->getIpv4enabled() and $vli->getIpv4address() ): ?>
+                                            <?= $t->ee( $vli->getIPv4Address()->getAddress() ) ?> <?php if( isset( $netinfo[ $vlanid ][ 4 ][ 'masklen' ] ) ) : ?> /<?= $netinfo[ $vlanid ][ 4 ][ "masklen" ] ?> <?php endif;?>
+                                        <?php else: ?>
+                                            IPv4 not enabled.
+                                        <?php endif; ?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -285,6 +299,19 @@
                                     </td>
                                     <td>
                                         <?= $vli->getMcastenabled() ? "Yes" : "No" ?>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            Mac Address:
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <?php foreach( $vli->getLayer2AddressesAsArray() as $l2a ): ?>
+                                            <?= $l2a ?><br />
+                                        <?php endforeach; ?>
+                                        <?php if( count( $vli->getLayer2AddressesAsArray() ) > 0 && config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ): ?>
+                                            <a href="<?= route( "layer2-address@forVlanInterface", [ "id" => $vli->getId() ] ) ?>">Edit</a>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                                 <tr>
@@ -311,40 +338,9 @@
                                 <?php endif; ?>
                             </table>
                         </div>
-                        <div class="col-sm-6">
-                            <table class="table table-borderless table-striped">
-                                <tr>
-                                    <td>
-                                        <b>IPv4 Address:</b>
-                                    </td>
-                                    <td>
-                                        <?php if( $vli->getIpv4enabled() and $vli->getIpv4address() ): ?>
-                                            <?= $t->ee( $vli->getIPv4Address()->getAddress() ) ?> <?php if( isset( $netinfo[ $vlanid ][ 4 ][ 'masklen' ] ) ) : ?> /<?= $netinfo[ $vlanid ][ 4 ][ "masklen" ] ?> <?php endif;?>
-                                        <?php else: ?>
-                                            IPv4 not enabled.
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <b>
-                                            Mac Address:
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <?php foreach( $vli->getLayer2AddressesAsArray() as $l2a ): ?>
-                                            <?= $l2a ?><br />
-                                        <?php endforeach; ?>
-                                        <?php if( count( $vli->getLayer2AddressesAsArray() ) > 0 && config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ): ?>
-                                            <a href="<?= route( "layer2-address@forVlanInterface", [ "id" => $vli->getId() ] ) ?>">Edit</a>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-
-                            </table>
-                        </div>
-
                     </div>
+
+
                 <?php endif; ?>
             <?php endforeach; ?>
         <?php else: ?>
@@ -360,7 +356,7 @@
 
     </div>
 
-    <div class="col-sm-6">
+    <div class="col-lg-6 col-md-12">
         <?php if( $isLAG ): ?>
 
             <?php if( $t->vi->isGraphable() ): ?>
