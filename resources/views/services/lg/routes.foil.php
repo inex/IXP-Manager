@@ -113,7 +113,7 @@
                         </td>
                         <td>
                             <a class="btn btn-outline-secondary btn-sm" style="font-size: 14px;" data-toggle="modal"
-                                href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/route/<?= urlencode( explode('/',$r->network)[0] ) ?>/<?= explode('/',$r->network)[1] ?>/<?= $t->source ?>/<?= $t->name ?>"
+                                href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/route/<?= urlencode( explode('/',$r->network)[0] ) ?>/<?= explode('/',$r->network)[1] ?>/<?= $t->source == 'export to protocol' ? 'export' : $t->source ?>/<?= $t->name ?>"
                                 data-target="#route-modal">Details</a>
                         </td>
                     </tr>

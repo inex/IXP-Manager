@@ -224,6 +224,15 @@ class LookingGlass extends Controller
         ]);
     }
 
+    public function routeExport( string $handle, string $network, string $mask, string $protocol ): View {
+        return app()->make('view')->make('services/lg/route')->with([
+            'content' => json_decode( $this->lg()->exportRoute($protocol,$network,(int)$mask) ),
+            'source'  => 'export',
+            'name'    => $protocol,
+            'net' => urldecode($network.'/'.$mask),
+        ]);
+    }
+
     public function routeSearch( string $handle ): View {
         $view = app()->make('view')->make('services/lg/route-search')->with( [
             'content' => json_decode( $this->lg()->symbols() ),
