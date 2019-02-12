@@ -52,4 +52,5 @@ define IXP_LC_INFO_IRRDB_PREFIX_EMPTY    = ( routerasn, 1001, 1002 );
 
 define IXP_LC_INFO_FROM_IXROUTESERVER = ( routerasn, 1001, 1100 );
 
+define IXP_LC_INFO_SAME_AS_NEXT_HOP = ( routerasn, 1001, 1200 );
 

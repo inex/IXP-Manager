@@ -493,6 +493,7 @@ class VlanInterface extends EntityRepository
      *
      * @param Vlan $vlan
      * @return array As defined above
+     * @throws \Exception
      */
     public function sanitiseVlanInterfaces( VlanEntity $vlan, int $protocol = 4, int $target = RouterEntity::TYPE_ROUTE_SERVER, bool $quarantine = false ): array {
 
@@ -550,6 +551,8 @@ class VlanInterface extends EntityRepository
                 $int['bgpmd5secret'] = false;
             }
 
+            $int['allpeeringips'] = $this->getAllIPsForASN( $vlan, $int['autsys'], $protocol );
+
             if( $int['irrdbfilter'] ) {
                 $int['irrdbfilter_prefixes'] = d2r( 'IrrdbPrefix' )->getForCustomerAndProtocol( $int[ 'cid' ], $protocol, true );
                 $int['irrdbfilter_asns'    ] = d2r( 'IrrdbAsn'    )->getForCustomerAndProtocol( $int[ 'cid' ], $protocol, true );
@@ -559,6 +562,45 @@ class VlanInterface extends EntityRepository
         }
 
         return $newints;
+    }
+
+
+    /**
+     * Find all IP addresses on a given VLAN for a given ASN and protocol.
+     *
+     * This is used (for example) when generating router configuration
+     * which prevents next-hop hijacking but allows the same ASN to
+     * set its other IPs as the next hop.
+     *
+     * @param VlanEntity $v
+     * @param int $asn
+     * @param int $proto
+     * @return array Array of IP addresses [ '192.0.2.2', '192.0.2.23', ]
+     * @throws \Exception
+     */
+    public function getAllIPsForASN( VlanEntity $v, int $asn, int $proto ): array
+    {
+        if( !in_array( $proto, [4,6] ) ) {
+            throw new \Exception( 'Invalid inet protocol' );
+        }
+
+        $ipe = "IPv{$proto}Address";
+
+        $dql = "SELECT ip.address AS ipaddress
+         
+                    FROM Entities\Vlan v
+                        LEFT JOIN v.VlanInterfaces vli
+                        LEFT JOIN vli.{$ipe} ip
+                        LEFT JOIN vli.VirtualInterface vi
+                        LEFT JOIN vi.Customer c
+            
+                    WHERE c.autsys = :asn AND v = :vlan";
+
+        $q = $this->getEntityManager()->createQuery( $dql )
+            ->setParameter( 'asn', $asn )
+            ->setParameter( 'vlan', $v );
+
+        return array_column( $q->getScalarResult(), 'ipaddress' );
     }
 
 

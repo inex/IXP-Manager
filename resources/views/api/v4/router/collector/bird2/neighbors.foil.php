@@ -71,6 +71,7 @@
 function f_import_as<?= $int['autsys'] ?>()
 
 prefix set allnet;
+prefix set allips;
 int set allas;
 {
 
@@ -102,9 +103,20 @@ int set allas;
         bgp_large_community.add( IXP_LC_FILTERED_FIRST_AS_NOT_PEER_AS );
     }
 
+    # set of all IPs this ASN uses to peer with on this VLAN
+    allips = [ <?= implode( '/' . ( $t->router->protocol() == 6 ? '128' : '32' ) . ', ', $int['allpeeringips'] )
+        . '/' . ( $t->router->protocol() == 6 ? '128' : '32' ) ?> ];
+
     # Prevent BGP NEXT_HOP Hijacking
     if !( from = bgp_next_hop ) then {
-        bgp_large_community.add( IXP_LC_FILTERED_NEXT_HOP_NOT_PEER_IP );
+
+        # need to differentiate between same ASN next hop or actual next hop hijacking
+        if( bgp_next_hop ~ allips ) then {
+            bgp_large_community.add( IXP_LC_INFO_SAME_AS_NEXT_HOP );
+        } else {
+            # looks like hijacking (intentional or not)
+            bgp_large_community.add( IXP_LC_FILTERED_NEXT_HOP_NOT_PEER_IP );
+        }
     }
 
     # Filter Known Transit Networks

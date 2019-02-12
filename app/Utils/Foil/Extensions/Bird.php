@@ -114,6 +114,8 @@ class Bird implements ExtensionInterface {
         ':1001:1002'  => [ 'IRRDB PREFIX EMPTY', 'warning' ],
 
         ':1001:1100'  => [ 'FROM IX ROUTESERVER', 'info' ],
+
+        ':1001:1200'  => [ 'SAME AS NEXT HOP', 'info' ],
 ];
 
 
