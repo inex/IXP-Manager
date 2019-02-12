@@ -181,5 +181,16 @@ class BirdsEye implements LookingGlassContract {
         return $this->apiCall( 'route/' . urlencode($network.'/'.$mask) . '/table/' . urlencode($table) );
     }
 
+    /**
+     * Get details for a specific route in a named protocol export
+     * @param string $protocol Protocol name
+     * @param string $network The route to lookup
+     * @param int $mask The mask of the route to look up
+     * @return string
+     */
+    public function exportRoute(string $protocol,string $network,int $mask): string {
+        return $this->apiCall( 'route/' . urlencode($network.'/'.$mask) . '/export/' . urlencode($protocol) );
+    }
+
 
 }
