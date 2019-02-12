@@ -90,8 +90,7 @@ prefix set martians;
         fc00::/7+,              # Unicast Unique Local Addresses (ULA) - RFC 4193
         fe80::/10+,             # Link-local Unicast
         fec0::/10+,             # Site-local Unicast - deprecated by RFC 3879 (replaced by ULA)
-        ff00::/8+,              # Multicast
-        ::/0{<?= config( 'ixp.irrdb.min_v6_subnet_size', 48 ) + 1 ?>,128}            # Filter small prefixes
+        ff00::/8+               # Multicast
     ];
 
 <?php else: ?>
@@ -111,7 +110,6 @@ prefix set martians;
         224.0.0.0/4+,           # RFC3171 - Multicast
         240.0.0.0/4+,           # RFC1112 - Reserved
         0.0.0.0/32-,
-        0.0.0.0/0{<?= config( 'ixp.irrdb.min_v4_subnet_size', 24 ) + 1 ?>,32},
         0.0.0.0/0{0,7}
     ];
 

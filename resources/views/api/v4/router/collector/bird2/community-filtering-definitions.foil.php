@@ -41,6 +41,7 @@ define IXP_LC_INFO_RPKI_VALID       = ( routerasn, 1000, 1  );
 define IXP_LC_INFO_RPKI_UNKNOWN     = ( routerasn, 1000, 2  );
 define IXP_LC_INFO_RPKI_NOT_CHECKED = ( routerasn, 1000, 3  );
 
+define IXP_LC_INFO_IRRDB_INVALID       = ( routerasn, 1001, 0  );
 define IXP_LC_INFO_IRRDB_VALID         = ( routerasn, 1001, 1  );
 define IXP_LC_INFO_IRRDB_NOT_CHECKED   = ( routerasn, 1001, 2  );
 define IXP_LC_INFO_IRRDB_MORE_SPECIFIC = ( routerasn, 1001, 3  );
@@ -51,4 +52,5 @@ define IXP_LC_INFO_IRRDB_PREFIX_EMPTY    = ( routerasn, 1001, 1002 );
 
 define IXP_LC_INFO_FROM_IXROUTESERVER = ( routerasn, 1001, 1100 );
 
+define IXP_LC_INFO_SAME_AS_NEXT_HOP = ( routerasn, 1001, 1200 );
 

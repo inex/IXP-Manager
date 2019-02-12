@@ -41,32 +41,33 @@
 
 function ixp_community_filter(int peerasn)
 {
-        if !(source = RTS_BGP) then
-                return false;
+    if !(source = RTS_BGP) then
+            return false;
 
 <?php if( $t->router->bgpLargeCommunities() ): ?>
-        # support for BGP Large Communities
-        if (routeserverasn, 0, peerasn) ~ bgp_large_community then
-                return false;
-        if (routeserverasn, 1, peerasn) ~ bgp_large_community then
-                return true;
-        if (routeserverasn, 0, 0) ~ bgp_large_community then
-                return false;
-        if (routeserverasn, 1, 0) ~ bgp_large_community then
-                return true;
+    # support for BGP Large Communities
+    if (routeserverasn, 0, peerasn) ~ bgp_large_community then
+            return false;
+    if (routeserverasn, 1, peerasn) ~ bgp_large_community then
+            return true;
+    if (routeserverasn, 0, 0) ~ bgp_large_community then
+            return false;
+    if (routeserverasn, 1, 0) ~ bgp_large_community then
+            return true;
 
 <?php endif; ?>
-        # it's unwise to conduct a 32-bit check on a 16-bit value
-        if peerasn > 65535 then
-                return true;
+    # it's unwise to conduct a 32-bit check on a 16-bit value
+    if peerasn > 65535 then
+            return true;
 
-        # Implement widely used community filtering schema.
-        if (0, peerasn) ~ bgp_community then
-                return false;
-        if (routeserverasn, peerasn) ~ bgp_community then
-                return true;
-        if (0, routeserverasn) ~ bgp_community then
-                return false;
+    # Implement widely used community filtering schema.
+    if (0, peerasn) ~ bgp_community then
+            return false;
+    if (routeserverasn, peerasn) ~ bgp_community then
+            return true;
+    if (0, routeserverasn) ~ bgp_community then
+            return false;
 
-        return true;
+    return true;
 }
+
