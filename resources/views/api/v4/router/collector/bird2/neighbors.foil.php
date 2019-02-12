@@ -71,7 +71,7 @@
 function f_import_as<?= $int['autsys'] ?>()
 
 prefix set allnet;
-prefix set allips;
+ip set allips;
 int set allas;
 {
 
@@ -104,8 +104,7 @@ int set allas;
     }
 
     # set of all IPs this ASN uses to peer with on this VLAN
-    allips = [ <?= implode( '/' . ( $t->router->protocol() == 6 ? '128' : '32' ) . ', ', $int['allpeeringips'] )
-        . '/' . ( $t->router->protocol() == 6 ? '128' : '32' ) ?> ];
+    allips = [ <?= implode( ', ', $int['allpeeringips'] ) ?> ];
 
     # Prevent BGP NEXT_HOP Hijacking
     if !( from = bgp_next_hop ) then {
