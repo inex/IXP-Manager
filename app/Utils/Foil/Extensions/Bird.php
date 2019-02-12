@@ -104,6 +104,7 @@ class Bird implements ExtensionInterface {
         ':1000:2'  => [ 'RPKI UNKNOWN', 'info' ],
         ':1000:3'  => [ 'RPKI NOT CHECKED', 'warning' ],
 
+        ':1001:0'  => [ 'IRRDB INVALID', 'info' ],
         ':1001:1'  => [ 'IRRDB VALID', 'success' ],
         ':1001:2'  => [ 'IRRDB NOT CHECKED', 'warning' ],
         ':1001:3'  => [ 'IRRDB MORE SPECIFIC', 'info' ],

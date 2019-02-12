@@ -176,7 +176,12 @@ int set allas;
     ];
 
     if ! (net ~ allnet) then {
-        bgp_large_community.add( IXP_LC_FILTERED_IRRDB_PREFIX_FILTERED );
+        if bgp_large_community ~ [IXP_LC_INFO_RPKI_VALID] then {
+            bgp_large_community.add( IXP_LC_INFO_IRRDB_INVALID );
+        } else {
+            bgp_large_community.add( IXP_LC_FILTERED_IRRDB_PREFIX_FILTERED );
+        }
+
         bgp_large_community.add( <?= $int['rsmorespecifics'] ? 'IXP_LC_INFO_IRRDB_FILTERED_LOOSE' : 'IXP_LC_INFO_IRRDB_FILTERED_STRICT' ?> );
     } else {
         bgp_large_community.add( IXP_LC_INFO_IRRDB_VALID );
