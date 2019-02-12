@@ -34,7 +34,7 @@ function filter_has_transit_path()
 int set transit_asns;
 {
     transit_asns = TRANSIT_ASNS;
-    if (bgp_path ~ transit_asns) then {
+    if (bgp_path.first !~ transit_asns && bgp_path ~ transit_asns) then {
         bgp_large_community.add( IXP_LC_FILTERED_TRANSIT_FREE_ASN );
         return true;
     }
