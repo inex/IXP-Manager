@@ -1,5 +1,5 @@
 
-<table id="cross-connect-table" class="table table-striped" style="width: 100%">
+<table class="table table-striped table-responsive-ixp collapse" style="width: 100%">
     <thead class="thead-dark">
         <tr>
             <th>

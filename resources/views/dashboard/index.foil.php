@@ -150,8 +150,9 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'scripts' ) ?>
     <?= $t->insert( 'customer/js/overview/notes' ); ?>
     <script>
+        $('.table-responsive-ixp').show();
 
-        $('#associate-table').DataTable( {
+        $('.table-responsive-ixp').DataTable( {
             responsive: true,
             ordering: false,
             searching: false,
@@ -159,12 +160,11 @@ $this->layout( 'layouts/ixpv4' );
             info:   false,
         } );
 
-        $('#cross-connect-table').DataTable( {
-            responsive: true,
-            ordering: false,
-            searching: false,
-            paging:   false,
-            info:   false,
-        } );
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            $($.fn.dataTable.tables(true)).DataTable()
+                .columns.adjust()
+                .responsive.recalc();
+        })
+
     </script>
 <?php $this->append() ?>

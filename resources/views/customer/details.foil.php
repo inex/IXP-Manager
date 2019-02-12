@@ -23,7 +23,7 @@
 
             <?= $t->alerts() ?>
 
-            <table id='customer-list' class="table collapse table-striped table-responsive">
+            <table id='customer-list' class="table collapse table-striped" style="width: 100%">
 
                 <thead class="thead-dark">
                     <tr>
@@ -139,7 +139,7 @@
 
     <script>
         $(document).ready( function() {
-            $( '#customer-list' ).dataTable( { "autoWidth": false, "iDisplayLength": 100 } ).show();
+            $( '#customer-list' ).dataTable( { responsive: true, "iDisplayLength": 100 } ).show();
         });
     </script>
 

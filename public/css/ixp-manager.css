@@ -69,6 +69,27 @@
     }
 
 
+    .fa-facebook:hover {
+        color: #3B5998;
+
+    }
+
+    .fa-twitter:hover {
+        color: #4099FF;
+
+    }
+
+    .fa-linkedin:hover {
+        color: #007bb5;
+
+    }
+
+    .fa-globe:hover {
+        color: grey;
+
+    }
+
+
     /*
     ####################################################
     M E D I A  Q U E R I E S
