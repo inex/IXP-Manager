@@ -118,7 +118,7 @@ int set allas;
 
 <?php
     // Only do IRRDB ASN filtering if this is enabled per client:
-    if( $int['irrdbfilter'] ?? true ):
+    if( ( $int['rsclient'] ?? false ) && $int['irrdbfilter'] ?? true ):
 
         if( count( $int['irrdbfilter_asns'] ) ): ?>
 
@@ -165,7 +165,7 @@ int set allas;
 
 <?php
     // Only do IRRDB prefix filtering if this is enabled per client:
-    if( $int['irrdbfilter'] ?? true ):
+    if( ( $int['rsclient'] ?? false ) && $int['irrdbfilter'] ?? true ):
 
         if( count( $int['irrdbfilter_prefixes'] ) ): ?>
 
