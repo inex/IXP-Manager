@@ -146,7 +146,7 @@ int set allas;
 <?php   endif; ?>
 
     # Ensure origin ASN is in the neighbors AS-SET
-    if !(bgp_path.last ~ allas) then {
+    if !(bgp_path.last_nonaggregated ~ allas) then {
         bgp_large_community.add( IXP_LC_FILTERED_IRRDB_ORIGIN_AS_FILTERED );
         accept;
     }
