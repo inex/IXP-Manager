@@ -38,6 +38,7 @@
     $asn_filters = [];
 ?>
 
+
 ########################################################################################
 ########################################################################################
 #
@@ -72,6 +73,7 @@
 filter f_import_as<?= $int['autsys'] ?>
 
 prefix set allnet;
+ip set allips;
 int set allas;
 {
 
@@ -111,10 +113,19 @@ int set allas;
         accept;
     }
 
+    # set of all IPs this ASN uses to peer with on this VLAN
+    allips = [ <?= implode( ', ', $int['allpeeringips'] ) ?> ];
+
     # Prevent BGP NEXT_HOP Hijacking
     if !( from = bgp_next_hop ) then {
-        bgp_large_community.add( IXP_LC_FILTERED_NEXT_HOP_NOT_PEER_IP );
-        accept;
+
+        # need to differentiate between same ASN next hop or actual next hop hijacking
+        if( bgp_next_hop ~ allips ) then {
+            bgp_large_community.add( IXP_LC_INFO_SAME_AS_NEXT_HOP );
+        } else {
+            # looks like hijacking (intentional or not)
+            bgp_large_community.add( IXP_LC_FILTERED_NEXT_HOP_NOT_PEER_IP );
+        }
     }
 
 
@@ -208,7 +219,36 @@ int set allas;
 }
 
 
+# The route server export filter exists as the export gateway on the BGP protocol.
+#
+# Remember that standard IXP community filtering has already happened on the
+# master -> bgp protocol pipe.
+
+filter f_export_as<?= $int['autsys'] ?>
+{
+
 <?php
+    // We allow per customer AS export code here which IXPs can define as skinned files.
+    // For example, to solve a Facebook issue, INEX created the following:
+    //     resources/skins/api/v4/router/server/bird2/f_export_as32934.foil.php
+    echo $t->insertif( 'api/v4/router/server/bird2/f_export_as' . $int['autsys'] );
+?>
+
+
+    # we should strip our own communities which we used for the looking glass
+    bgp_large_community.delete( [( routeserverasn, *, * )] );
+
+    # default position is to accept:
+    accept;
+
+}
+
+
+
+
+
+
+    <?php
     endif; // if( !in_array( $asn_filters[ $int['autsys'] ] ) ):
 ?>
 
@@ -227,14 +267,7 @@ protocol bgp pb_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?> from tb_rsclient {
             import limit <?= $int['maxprefixes'] ?> action restart;
             import filter f_import_as<?= $int['autsys'] ?>;
             table t_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?>;
-
-            <?php
-            // We allow per customer AS export code here which IXPs can define as skinned files.
-            // For example, to solve a Facebook issue, INEX created the following:
-            //     resources/skins/api/v4/router/server/bird2/f_export_as32934.foil.php
-            echo $t->insertif( 'api/v4/router/server/bird2/f_export_as' . $int['autsys'] );
-            ?>
-
+            export filter f_export_as<?= $int['autsys'] ?>;
         };
         <?php if( $int['bgpmd5secret'] && !$t->router->skipMD5() ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
 
