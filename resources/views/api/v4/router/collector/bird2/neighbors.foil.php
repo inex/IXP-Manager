@@ -74,7 +74,7 @@ prefix set allnet;
 int set allas;
 {
 
-    <?= $t->insert( 'api/v4/router/collector/bird2/import-pre-extra' ) ?>
+    <?= $t->insert( 'api/v4/router/collector/bird2/import-pre-extra', [ 'int' => $int ] ) ?>
 
     # Filter small prefixes
 <?php if( $t->router->protocol() == 6 ): ?>
