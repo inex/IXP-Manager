@@ -5,7 +5,7 @@
     # route servers with an information community and accept
     # them as is.
 
-    if( 43760 = remote_as ) then {
+    if( 43760 = <?= $t->int['autsys'] ?> ) then {
         bgp_large_community.add( IXP_LC_INFO_FROM_IXROUTESERVER );
         return true;
     }
