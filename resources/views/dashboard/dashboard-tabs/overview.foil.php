@@ -48,11 +48,18 @@
 
                 <?php else: ?>
 
-                    <div class="alert alert-danger">
-                        No logo uploaded which means it is not currently displayed on our public
-                        website.
-                        Please <a href="<?= route( 'logo@manage', [ 'id' => $t->c->getId() ] ) ?>">click here</a>
-                        to add one now.
+                    <div class="alert alert-danger mt-4" role="alert">
+                        <div class="d-flex align-items-center">
+                            <div class="text-center">
+                                <i class="fa fa-exclamation-triangle fa-2x"></i>
+                            </div>
+                            <div class="col-sm-12">
+                                No logo uploaded which means it is not currently displayed on our public
+                                website.
+                                Please <a href="<?= route( 'logo@manage', [ 'id' => $t->c->getId() ] ) ?>">click here</a>
+                                to add one now.
+                            </div>
+                        </div>
                     </div>
 
                 <?php endif; ?>

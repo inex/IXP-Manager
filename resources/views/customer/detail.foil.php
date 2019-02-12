@@ -25,26 +25,24 @@
 
 
 
-
-
 <?php $this->section('content') ?>
 
 <div class="row">
 
-    <div class="col-sm-12">
+    <div class="col-lg-12">
 
 
         <div class="bg-light shadow-sm p-4">
             <div class="row">
-                <h3 class="col-sm-9">
+                <h3 class="<?= $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ? "col-lg-9" : "col-lg-12" ?>">
                     <?= $t->ee( $c->getFormattedName() ) ?>
                     <?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?>
                 </h3>
 
                 <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ): ?>
 
-                    <div class="col-sm-3">
-                        <img class="www80-padding img-responsive" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
+                    <div class="col-lg-3">
+                        <img class="img-fluid" style="max-height: 100px;" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
                     </div>
 
                 <?php endif; ?>
@@ -54,7 +52,7 @@
 
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-lg-6">
                 <table class="table table-striped mt-4">
 
                     <tr>
@@ -141,7 +139,7 @@
                 </table>
             </div>
 
-            <div class="col-md-6">
+            <div class="col-lg-6">
                 <table class="table table-striped mt-4">
                     <tr>
                         <td>
@@ -234,7 +232,7 @@
 
 
 
-            <div class="col-md-12">
+            <div class="col-lg-12">
                 <hr>
 
                 <h3>
@@ -253,14 +251,14 @@
 
             <?php foreach( $vi->getPhysicalInterfaces() as $pi ): ?>
 
-                <div class="col-md-12 mt-4">
+                <div class="col-lg-12 mt-4">
 
                     <?php if( $isLAG ): ?>
                         <h5>Port <?= $countPi ?> of <?= count( $vi->getPhysicalInterfaces() ) ?> in LAG</h5>
                     <?php endif; ?>
 
                     <div class="row">
-                        <div class="col-md-6">
+                        <div class="col-lg-6">
                             <table>
                                 <tr>
                                     <td>
@@ -284,7 +282,7 @@
                                 </tr>
                             </table>
                         </div>
-                        <div class="col-md-6" >
+                        <div class="col-lg-6" >
                             <table>
                                 <tr>
                                     <td>
@@ -322,12 +320,12 @@
                         <?php continue; ?>
                     <?php endif; ?>
 
-                    <div class="col-md-12 mt-4" style="text-indent: 20px ">
+                    <div class="col-lg-12 mt-4" style="text-indent: 20px ">
 
                         <h4><?= $t->ee( $vli->getVlan()->getName() ) ?>:</h4>
 
                         <div class="row mb-4">
-                            <div class="col-md-6" style="">
+                            <div class="col-lg-6">
 
                                 <table>
                                     <tr>
@@ -358,7 +356,7 @@
                                 </table>
 
                             </div>
-                            <div class="col-md-6">
+                            <div class="col-lg-6">
 
                                 <table>
                                     <tr>

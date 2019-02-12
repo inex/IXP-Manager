@@ -10,7 +10,7 @@
     </div>
 
 
-    <table id="associate-table" class="table table-striped responsive " style="width: 100%">
+    <table  class="table-responsive-ixp table table-striped collapse" style="width: 100%">
         <thead class="thead-dark">
             <tr>
                 <th>
