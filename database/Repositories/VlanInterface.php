@@ -601,7 +601,16 @@ class VlanInterface extends EntityRepository
             ->setParameter( 'asn', $asn )
             ->setParameter( 'vlan', $v );
 
-        return array_column( $q->getScalarResult(), 'ipaddress' );
+        $ips = array_column( $q->getScalarResult(), 'ipaddress' );
+        $vips = [];
+
+        foreach( $ips as $ip ) {
+            if( filter_var( $ip, FILTER_VALIDATE_IP ) ) {
+                $vips[] = $ip;
+            }
+        }
+
+        return $vips;
     }
 
 
