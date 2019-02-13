@@ -44,6 +44,19 @@ function ixp_community_filter(int peerasn)
     if !(source = RTS_BGP) then
             return false;
 
+    # AS path prepending
+    if (routeserverasn, 103, peerasn) ~ bgp_large_community then {
+        bgp_path.prepend( bgp_path.first );
+        bgp_path.prepend( bgp_path.first );
+        bgp_path.prepend( bgp_path.first );
+    } else if (routeserverasn, 102, peerasn) ~ bgp_large_community then {
+        bgp_path.prepend( bgp_path.first );
+        bgp_path.prepend( bgp_path.first );
+    } else if (routeserverasn, 101, peerasn) ~ bgp_large_community then {
+        bgp_path.prepend( bgp_path.first );
+    }
+
+
 <?php if( $t->router->bgpLargeCommunities() ): ?>
     # support for BGP Large Communities
     if (routeserverasn, 0, peerasn) ~ bgp_large_community then

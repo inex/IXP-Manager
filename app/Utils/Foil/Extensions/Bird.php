@@ -116,7 +116,14 @@ class Bird implements ExtensionInterface {
         ':1001:1100'  => [ 'FROM IX ROUTESERVER', 'info' ],
 
         ':1001:1200'  => [ 'SAME AS NEXT HOP', 'info' ],
-];
+    ];
+
+    // FIXME: need to find a place for this that allows end users to customise it
+    public static $BGPLCS_REGEX = [
+        ':101:\d+'  => [ 'PREPEND TO PEERAS - ONCE', 'info' ],
+        ':102:\d+'  => [ 'PREPEND TO PEERAS - TWICE', 'info' ],
+        ':103:\d+'  => [ 'PREPEND TO PEERAS - THREE TIMES', 'info' ],
+    ];
 
 
     /**
@@ -126,6 +133,12 @@ class Bird implements ExtensionInterface {
 
         foreach( self::$BGPLCS as $k => $v ) {
             if( $k === $lc ) {
+                return $v;
+            }
+        }
+
+        foreach( self::$BGPLCS_REGEX as $re => $v ) {
+            if( preg_match( '/^' . $re . '$/', $lc ) ) {
                 return $v;
             }
         }
