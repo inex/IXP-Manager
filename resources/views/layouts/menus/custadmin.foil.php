@@ -1,6 +1,6 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="<?= url('') ?>">
-        <?= $this->insert('ixp-logo-header'); ?>
+        <?= $this->insert('layouts/ixp-logo-header'); ?>
     </a>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -25,8 +25,8 @@
 
             <?php
                 // STATIC DOCUMENTATION LINKS - SPECIFIC TO INDIVIDUAL IXPS
-                // Add a skinned file in views/_skins/xxx/header-documentation.phtml for your IXP to override the sample
-                echo $this->insert('header-documentation');
+                // Add a skinned file for your IXP to override the sample
+                echo $this->insert('layouts/header-documentation');
             ?>
 
             <li class="nav-item">

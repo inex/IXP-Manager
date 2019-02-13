@@ -1,5 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <?= $this->insert('ixp-logo-header'); ?>
+    <?= $this->insert('layouts/ixp-logo-header'); ?>
 
 
 
@@ -47,8 +47,8 @@
 
             <?=
                 // STATIC DOCUMENTATION LINKS - SPECIFIC TO INDIVIDUAL IXPS
-                // Add a skinned file in views/_skins/xxx/header-documentation.phtml for your IXP to override the sample
-                $this->insert('header-documentation');
+                // Add a skinned file in for your IXP to override the sample
+                $this->insert('layouts/header-documentation');
             ?>
 
             <li class="nav-item dropdown <?= !request()->is( 'statistics/*', 'weather-map/*' ) ?: 'active' ?>">
@@ -103,7 +103,7 @@
             </li>
 
 
-            <?= $this->insert('staff-links'); ?>
+            <?= $this->insert('layouts/staff-links'); ?>
 
         </ul>
 

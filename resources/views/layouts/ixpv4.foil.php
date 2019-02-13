@@ -49,7 +49,7 @@
         <div class="container-fluid">
             <div class="row" >
                 <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-                    <?= $t->insert( 'menu' ); ?>
+                    <?= $t->insert( 'layouts/menu' ); ?>
                 <?php endif; ?>
 
                 <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
@@ -101,7 +101,7 @@
 
         </div> <!-- </div class="container"> -->
 
-        <?= $t->insert( 'footer-content' ); ?>
+        <?= $t->insert( 'layouts/footer-content' ); ?>
 
 
         <script> const RIPE_ASN_URL = "<?= url( "api/v4/aut-num" ) ?>"; </script>
@@ -158,7 +158,7 @@
         <?=
             // Skin this file to add your own footer content such as
             // Piwik / Google Analytics integration:
-            $t->insert( 'footer-custom' );
+            $t->insert( 'layouts/footer-custom' );
         ?>
 
     </body>
