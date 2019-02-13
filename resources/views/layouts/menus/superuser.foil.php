@@ -1,9 +1,5 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <a class="navbar-brand" href="<?= url('') ?>">
-        <?= $this->insert('ixp-logo-header'); ?>
-
-        <?= config('identity.sitename' ) ?>
-    </a>
+    <?= $this->insert('ixp-logo-header'); ?>
 
 
 
