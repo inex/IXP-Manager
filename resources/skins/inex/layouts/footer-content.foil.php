@@ -12,7 +12,7 @@
                 <i class="fa fa-globe fa-inverse mx-1"></i>
             </a>
 
-            <a href="http://www.linkedin.com/groups?gid=1853398">
+            <a href="https://www.linkedin.com/groups/1853398/">
                 <i class="fa fa-linkedin fa-inverse mx-1"></i>
             </a>
 
