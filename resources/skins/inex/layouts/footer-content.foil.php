@@ -7,7 +7,8 @@
             <?= sprintf( "%0.3f", microtime(true) - APPLICATION_STARTTIME ) ?>
             seconds
             |
-            <a class="aplain" href="http://www.inex.ie/">
+            Discover INEX at:
+            <a href="https://www.inex.ie/">
                 <i class="fa fa-globe fa-inverse mx-1"></i>
             </a>
 
