@@ -2,11 +2,17 @@
     <div class="navbar-nav w-100 text-light text-center">
         <div>
             IXP Manager V<?= APPLICATION_VERSION ?>
-            |
-            Generated in
-            <?= sprintf( "%0.3f", microtime(true) - APPLICATION_STARTTIME ) ?>
-            seconds
-            |
+            <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                |
+                Generated in
+                <?= sprintf( "%0.3f", microtime(true) - APPLICATION_STARTTIME ) ?>
+                seconds
+            <?php else: ?>
+
+                Copyright &copy; 2009 - <?php date('Y') ?> Internet Neutral Exchange Association CLG
+                |
+
+            <?php endif; ?>
             Discover INEX at:
             <a href="https://www.inex.ie/">
                 <i class="fa fa-globe fa-inverse mx-1"></i>
@@ -22,6 +28,10 @@
 
             <a  href="https://twitter.com/ComePeerWithMe">
                 <i class="fa fa-twitter fa-inverse mx-1"></i>
+            </a>
+
+            <a  href="https://github.com/inex">
+                <i class="fa fa-github fa-inverse mx-1"></i>
             </a>
 
         </div>
