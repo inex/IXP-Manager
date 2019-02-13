@@ -2,8 +2,11 @@
     <div class="navbar-nav w-100 text-light text-center">
         <div>
 
+            <small>
+
             IXP Manager V<?= APPLICATION_VERSION ?>
-            |
+
+            &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
 
             <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
 
@@ -13,11 +16,11 @@
 
             <?php else: ?>
 
-                Copyright &copy; 2009 - <?php date('Y') ?> Internet Neutral Exchange Association CLG
+                Copyright &copy; 2009 - <?= date('Y') ?> Internet Neutral Exchange Association CLG
 
             <?php endif; ?>
 
-            |
+            &nbsp;&nbsp;&nbsp;&nbsp;|&nbsp;&nbsp;&nbsp;&nbsp;
 
             Discover IXP Manager at:
 
@@ -41,6 +44,8 @@
                 <i class="fa fa-book fa-inverse mx-1"></i>
             </a>
 
+
+            </small>
 
         </div>
     </div>

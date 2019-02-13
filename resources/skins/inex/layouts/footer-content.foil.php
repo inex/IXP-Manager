@@ -1,6 +1,8 @@
 <footer class="footer p-3 mt-auto bg-dark">
     <div class="navbar-nav w-100 text-light text-center">
         <div>
+            <small>
+
             IXP Manager V<?= APPLICATION_VERSION ?>
 
             |
@@ -13,7 +15,7 @@
 
             <?php else: ?>
 
-                Copyright &copy; 2009 - <?php date('Y') ?> Internet Neutral Exchange Association CLG
+                Copyright &copy; 2009 - <?= date('Y') ?> Internet Neutral Exchange Association CLG
 
             <?php endif; ?>
 
@@ -40,6 +42,8 @@
                 <i class="fa fa-github fa-inverse mx-1"></i>
             </a>
 
+            </small>
+            
         </div>
     </div>
 </footer>
