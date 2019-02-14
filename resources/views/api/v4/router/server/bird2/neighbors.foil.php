@@ -237,6 +237,7 @@ filter f_export_as<?= $int['autsys'] ?>
 
     # we should strip our own communities which we used for the looking glass
     bgp_large_community.delete( [( routeserverasn, *, * )] );
+    bgp_community.delete( [( routeserverasn, * )] );
 
     # default position is to accept:
     accept;
