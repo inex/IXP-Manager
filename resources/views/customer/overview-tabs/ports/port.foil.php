@@ -1,71 +1,68 @@
-
+<div class="row">
     <div class="col-lg-6 col-md-12">
+        <div class="d-flex">
+            <h3 class="mr-auto">
+                Connection <?= $t->nbVi ?>
 
-        <h3>
-            Connection <?= $t->nbVi ?>
+                <?php $vlis = $t->vi->getVlanInterfaces() ?>
 
-            <?php $vlis = $t->vi->getVlanInterfaces() ?>
-
-            <?php if( count( $vlis ) ): ?>
-                <?php $vli = $vlis[ 0 ] ?>
-            <?php else: ?>
-                <?php $vli = 0 ?>
-            <?php endif; ?>
-
-            <small>
-                <?php $pis = $t->vi->getPhysicalInterfaces() ?>
-
-                <?php if( count( $pis ) ): ?>
-                    <?php $firstPi = $pis[ 0 ] ?>
+                <?php if( count( $vlis ) ): ?>
+                    <?php $vli = $vlis[ 0 ] ?>
                 <?php else: ?>
-                    <?php $firstPi = 0 ?>
+                    <?php $vli = 0 ?>
                 <?php endif; ?>
 
-                <?php if( $t->vi->getType() == \Entities\SwitchPort::TYPE_PEERING && count( $pis ) ): ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;<?= $t->ee( $firstPi->getSwitchPort()->getSwitcher()->getInfrastructure()->getName() ) ?>
-                <?php elseif( $t->vi->getType() == \Entities\SwitchPort::TYPE_FANOUT ): ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;Reseller Fanout
+                <small>
+                    <?php $pis = $t->vi->getPhysicalInterfaces() ?>
 
-                    <?php if( count( $pis ) && $firstPi->getRelatedInterface() ): ?>
-                        for <a
-
-                        <?php if( Auth::user()->getPrivs() == \Entities\User::AUTH_SUPERUSER ): ?>
-                            href="<?= route( "customer@overview" , [ 'id' => $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>"
-                        <?php else: ?>
-                            href="<?= route( "customer@detail" , [ "id" => $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>"
-                        <?php endif; ?>
-
-                        ><?= $t->ee( $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getAbbreviatedName() ) ?></a>
+                    <?php if( count( $pis ) ): ?>
+                        <?php $firstPi = $pis[ 0 ] ?>
                     <?php else: ?>
-                        <em>(unassigned)</em>
+                        <?php $firstPi = 0 ?>
                     <?php endif; ?>
 
-                <?php elseif( $t->vi->getType() == \Entities\SwitchPort::TYPE_RESELLER ): ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Resller Uplink
-                <?php endif; ?>
+                    <?php if( $t->vi->getType() == \Entities\SwitchPort::TYPE_PEERING && count( $pis ) ): ?>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<?= $t->ee( $firstPi->getSwitchPort()->getSwitcher()->getInfrastructure()->getName() ) ?>
+                    <?php elseif( $t->vi->getType() == \Entities\SwitchPort::TYPE_FANOUT ): ?>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Reseller Fanout
 
-                <?php if( count( $t->vi->getPhysicalInterfaces() ) > 1 ): ?>
-                    <?php $isLAG = 1 ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAG Port
-                <?php else: ?>
-                    <?= $t->insert( 'customer/overview-tabs/ports/pi-status', [ 'pi' => $firstPi, 'vi' => $t->vi ] ); ?>
-                    <?php $isLAG = 0 ?>
-                <?php endif; ?>
-            </small>
+                        <?php if( count( $pis ) && $firstPi->getRelatedInterface() ): ?>
+                            for <a
 
+                                <?php if( Auth::user()->getPrivs() == \Entities\User::AUTH_SUPERUSER ): ?>
+                                    href="<?= route( "customer@overview" , [ 'id' => $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>"
+                                <?php else: ?>
+                                    href="<?= route( "customer@detail" , [ "id" => $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>"
+                                <?php endif; ?>
+
+                            ><?= $t->ee( $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getAbbreviatedName() ) ?></a>
+                        <?php else: ?>
+                            <em>(unassigned)</em>
+                        <?php endif; ?>
+
+                    <?php elseif( $t->vi->getType() == \Entities\SwitchPort::TYPE_RESELLER ): ?>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reseller Uplink
+                    <?php endif; ?>
+
+                    <?php if( count( $t->vi->getPhysicalInterfaces() ) > 1 ): ?>
+                        <?php $isLAG = 1 ?>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAG Port
+                    <?php else: ?>
+                        <?= $t->insert( 'customer/overview-tabs/ports/pi-status', [ 'pi' => $firstPi, 'vi' => $t->vi ] ); ?>
+                        <?php $isLAG = 0 ?>
+                    <?php endif; ?>
+                </small>
+            </h3>
             <?php if( Auth::getUser()->isSuperUser() ): ?>
 
-                <div class="btn-group" style="padding-left: 20px;">
+                <div class="btn-group my-auto">
                     <a class="btn btn-sm btn-outline-secondary" href="<?= route( "interfaces/virtual/edit", [ "id" => $t->vi->getId() ] ) ?>" title="Edit">
                         <i class="fa fa-pencil"></i>
                     </a>
                 </div>
 
             <?php endif; ?>
-
-        </h3>
-
-
+        </div>
 
         <?php if( count( $t->vi->getPhysicalInterfaces() ) > 0 ): ?>
 
@@ -348,7 +345,6 @@
                 <div class="row">
                     <p>
                         No VLAN interfaces defined.
-
                     </p>
                 </div>
             <?php endif; ?>
@@ -364,9 +360,9 @@
                 <div class="card mb-4">
                     <div class="card-header d-flex">
                         <div class="mr-auto">
-                            <h4>
+                            <h5>
                                 Aggregate Day Graph for LAG
-                            </h4>
+                            </h5>
                         </div>
                         <div clas="my-auto">
                             <a class="btn btn-outline-secondary btn-sm " href="<?= route( "statistics@member-drilldown", [ 'type' => 'vi', 'typeid' => $t->vi->getId() ] ) ?>">
@@ -380,7 +376,7 @@
                     </div>
                 </div>
 
-                <?php endif; ?>
+            <?php endif; ?>
 
         <?php endif; ?>
 
@@ -391,9 +387,9 @@
             <div class="card mb-4">
                 <div class="card-header d-flex">
                     <div class="mr-auto">
-                        <h4>
+                        <h5>
                             Day Graph for <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?> / <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
-                        </h4>
+                        </h5>
                     </div>
 
                     <div clas="my-auto">
@@ -410,3 +406,6 @@
         <?php endforeach; ?>
 
     </div>
+
+
+</div>

@@ -21,14 +21,19 @@
 
                 <a class="navbar-brand" href="<?= route( "statistics/infrastructure" ) ?>">Graph Options:</a>
 
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
 
-                        <form class="navbar-form navbar-left form-inline">
+                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex">
 
-                            <li class="nav-item mr-2">
+                            <li class="nav-item">
                                 <div class="nav-link d-flex ">
-                                    <label for="category" class="mr-2">Infrastructure:</label>
+                                    <label for="category" class="col-lg-6 col-sm-4">Infrastructure:</label>
 
                                     <select id="form-select-infraid" name="infraid" class="form-control" >
                                         <?php foreach( $t->infras as $id => $i ): ?>
@@ -38,9 +43,9 @@
 
                                 </div>
                             </li>
-                            <li class="nav-item mr-2">
+                            <li class="nav-item">
                                 <div class="nav-link d-flex ">
-                                    <label for="period" class="mr-2" >Category:</label>
+                                    <label for="period" class="col-lg-6 col-sm-4" >Category:</label>
                                     <select id="form-select-category" name="category" class="form-control">
                                         <?php foreach( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS_DESCS as $cvalue => $cname ): ?>
                                             <option value="<?= $cvalue ?>" <?= $t->category != $cvalue ?: 'selected="selected"' ?>><?= $cname ?></option>
@@ -49,7 +54,7 @@
 
                                 </div>
                             </li>
-                            <a class="btn btn-outline-secondary" href="<?= route( 'statistics/ixp' ) ?>">Overall IXP Graphs</a>
+                            <a class="btn btn-outline-secondary float-right" href="<?= route( 'statistics/ixp' ) ?>">Overall IXP Graphs</a>
 
                         </form>
                     </ul>
@@ -59,7 +64,7 @@
             <div class="row">
                 <?php foreach( IXP\Services\Grapher\Graph::PERIODS as $pvalue => $pname ): ?>
 
-                    <div class="col-md-6">
+                    <div class="col-md-12 col-lg-6">
 
                         <div class="card">
                             <div class="card-header">

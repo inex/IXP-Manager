@@ -39,12 +39,14 @@
                     ->label( 'Username' )
                     ->required()
                     ->class( "align-items-center" )
+                    ->autofocus( old( 'username' ) ? false : true )
                 ?>
 
                 <?= Former::password( 'password' )
                     ->label( 'Password' )
                     ->required()
-                    ->blockHelp( '' );
+                    ->blockHelp( '' )
+                    ->autofocus( old( 'username' ) ? true : false );
                 ?>
 
                 <?= Former::checkbox( 'remember' )

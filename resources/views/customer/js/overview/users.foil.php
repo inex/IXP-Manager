@@ -1,9 +1,7 @@
 <script>
     $(document).ready( function() {
 
-
-        $( 'a[id|="usr-list-delete"]' ).off( 'click' ).on(  'click', function( event ) {
-
+        $( '.table' ).on( 'click', '.usr-list-delete', function( e ){
             event.preventDefault();
 
             let objectId = $( "#" + this.id ).attr( "data-object-id" );

@@ -53,12 +53,16 @@
                         MRTG:
                     </a>
 
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+
                     <div class="collapse navbar-collapse" id="navbarNavDropdown">
                         <ul class="navbar-nav">
-                            <form class="navbar-form navbar-left form-inline" method="post" action="<?= route('statistics/members' ) ?>">
-                                <li class="nav-item mr-2">
+                            <form class="navbar-form navbar-left form-inline d-block d-lg-flex" method="post" action="<?= route('statistics/members' ) ?>">
+                                <li class="nav-item">
                                     <div class="nav-link d-flex ">
-                                        <label for="selectInfra" class="mr-2">Infrastructure:</label>
+                                        <label for="selectInfra" class="col-sm-4 col-lg-6">Infrastructure:</label>
                                         <select id="selectInfra" class="form-control" name="infra">
                                             <option>All</option>
                                             <?php foreach( $t->infras as $id => $i ): ?>
@@ -68,9 +72,9 @@
                                     </div>
                                 </li>
 
-                                <li class="nav-item mr-2">
+                                <li class="nav-item">
                                     <div class="nav-link d-flex ">
-                                        <label for="selectCategory" class="mr-2">Category:</label>
+                                        <label for="selectCategory" class="col-sm-4 col-lg-6">Category:</label>
                                         <select id="selectCategory" class="form-control" name="category">
                                             <?php foreach( IXP\Services\Grapher\Graph::CATEGORY_DESCS as $c => $d ): ?>
                                                 <option value="<?= $c ?>" <?= $t->r->category == $c ? 'selected="selected"' : '' ?>><?= $d ?></option>
@@ -79,9 +83,9 @@
                                     </div>
                                 </li>
 
-                                <li class="nav-item mr-2">
+                                <li class="nav-item">
                                     <div class="nav-link d-flex ">
-                                        <label for="selectPeriod" class="mr-2">Period:</label>
+                                        <label for="selectPeriod" class="col-sm-4 col-lg-6">Period:</label>
                                         <select id="selectPeriod" class="form-control" name="period">
                                             <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $p => $d ): ?>
                                                 <option value="<?= $p ?>" <?= $t->r->period == $p ? 'selected="selected"' : '' ?>><?= $d ?></option>
@@ -93,7 +97,7 @@
                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
 
                                 <li class="nav-item">
-                                    <input class="btn btn-outline-secondary" type="submit" name="submit" value="Show Graphs" />
+                                    <input class="btn btn-outline-secondary float-right" type="submit" name="submit" value="Show Graphs" />
                                 </li>
 
                             </form>
@@ -110,13 +114,16 @@
                     <a class="navbar-brand" href="<?= route('statistics/members') ?>">
                         SFlow:
                     </a>
-                    <div class="navbar-collapse" id="navbarNavDropdown">
+                    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown2" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNavDropdown2">
                         <ul class="navbar-nav">
 
-                            <form class="navbar-form navbar-left form-inline"  action="<?= route('statistics/members' ) ?>" method="post">
-                                <li class="nav-item mr-2">
+                            <form class="navbar-form navbar-left form-inline d-block d-lg-flex"  action="<?= route('statistics/members' ) ?>" method="post">
+                                <li class="nav-item">
                                     <div class="nav-link d-flex ">
-                                        <label for="selectVlan" class="mr-2">VLAN:</label>
+                                        <label for="selectVlan" class="col-sm-4 col-lg-3">VLAN:</label>
                                         <select id="selectVlan" class="form-control" name="vlan">
                                             <option>All</option>
                                             <?php foreach( $t->vlans as $id => $i ): ?>
@@ -126,9 +133,9 @@
                                     </div>
                                 </li>
 
-                                <li class="nav-item mr-2">
+                                <li class="nav-item">
                                     <div class="nav-link d-flex ">
-                                        <label for="selectVlan" class="mr-2">Protocol:</label>
+                                        <label for="selectVlan" class="col-sm-4 col-lg-6">Protocol:</label>
                                         <select id="selectVlan" class="form-control" name="protocol">
                                             <option>All</option>
                                             <?php foreach( \IXP\Services\Grapher\Graph::PROTOCOL_REAL_DESCS as $p => $n ): ?>
@@ -138,9 +145,9 @@
                                     </div>
                                 </li>
 
-                                <li class="nav-item mr-2">
+                                <li class="nav-item">
                                     <div class="nav-link d-flex ">
-                                        <label for="selectCategory2" class="mr-2">Category:</label>
+                                        <label for="selectCategory2" class="col-sm-4 col-lg-6">Category:</label>
                                         <select id="selectCategory2" class="form-control" name="category">
                                             <?php foreach( IXP\Services\Grapher\Graph::CATEGORY_DESCS as $c => $d ): ?>
                                                 <option value="<?= $c ?>" <?= $t->r->category == $c ? 'selected="selected"' : '' ?>><?= $d ?></option>
@@ -149,9 +156,9 @@
                                     </div>
                                 </li>
 
-                                <li class="nav-item mr-2">
+                                <li class="nav-item">
                                     <div class="nav-link d-flex ">
-                                        <label for="selectPeriod2" class="mr-2">Period:</label>
+                                        <label for="selectPeriod2" class="col-sm-4 col-lg-6">Period:</label>
                                         <select id="selectPeriod2" class="form-control" name="period">
                                             <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $p => $d ): ?>
                                                 <option value="<?= $p ?>" <?= $t->r->period == $p ? 'selected="selected"' : '' ?>><?= $d ?></option>
@@ -161,7 +168,7 @@
                                 </li>
 
                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                                <input class="btn btn-outline-secondary" type="submit" name="submit" value="Show Graphs" />
+                                <input class="btn btn-outline-secondary float-right" type="submit" name="submit" value="Show Graphs" />
 
                             </form>
                         </ul>
@@ -193,7 +200,7 @@
                 <div class="row">
                     <?php foreach( $t->graphs as $graph ): ?>
 
-                        <div id="graph-row" class="col-xs-12 col-sm-12 col-md-6 col-lg-4 mb-4">
+                        <div id="graph-row" class="col-sm-12 col-md-6 mb-4">
 
                             <div class="card">
                                 <div class="card-header d-flex">
@@ -203,7 +210,7 @@
                                         </b>
 
                                     </div>
-                                    <div class="btn-group btn-group-sm" role="group">
+                                    <div class="btn-group btn-group-sm my-auto" role="group">
 
                                         <?php if( config('grapher.backends.sflow.enabled') && isset( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS[$graph->category()] ) && $t->grapher()->canAccessAllCustomerP2pGraphs() ): ?>
                                             <a class="btn btn-outline-secondary" href="<?= route('statistics@p2p', [ 'cid' => $graph->customer()->getId() ] ) . "?category={$graph->category()}&period={$graph->period()}" ?>">

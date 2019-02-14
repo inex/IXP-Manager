@@ -50,14 +50,18 @@
             <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
 
                 <a class="navbar-brand">Latency Graphs for <?= $t->vli->getVlan()->getName() ?> on <?= $t->ip ?></a>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
-
                         <?php if( $t->vli->canGraphForLatency( IXP\Services\Grapher\Graph::PROTOCOL_IPV4 ) && $t->vli->canGraphForLatency( IXP\Services\Grapher\Graph::PROTOCOL_IPV6 ) ): ?>
-                            <form class="navbar-form navbar-left form-inline">
-                                <li class="nav-item mr-2">
+                            <form class="navbar-form navbar-left form-inline d-block d-lg-flex">
+                                <li class="nav-item">
                                     <div class="nav-link d-flex ">
-                                        <label for="select_protocol" class="mr-2">Protocol:</label>
+                                        <label for="select_protocol" class="col-sm-4 col-lg-4">Protocol:</label>
                                         <select id="select_protocol" name="protocol" class="form-control">
                                             <?php foreach( IXP\Services\Grapher\Graph::PROTOCOLS_REAL as $pvalue => $pname ): ?>
                                                 <?php if( $t->vli->canGraphForLatency( $pvalue ) ): ?>
@@ -102,7 +106,7 @@
                     <h4>Last <?= $name ?></h4>
                 </div>
                 <div class="card-body">
-                    <img border="0" src="<?= $t->graph->setPeriod( $scale )->url() ?>" />
+                    <img border="0" class="img-fluid" src="<?= $t->graph->setPeriod( $scale )->url() ?>" />
                 </div>
 
             </div>
@@ -117,19 +121,19 @@
 
 <?php $this->section( 'scripts' ) ?>
 
-<?php if( $t->vli->canGraphForLatency( IXP\Services\Grapher\Graph::PROTOCOL_IPV4 ) && $t->vli->canGraphForLatency( IXP\Services\Grapher\Graph::PROTOCOL_IPV6 ) ): ?>
+    <?php if( $t->vli->canGraphForLatency( IXP\Services\Grapher\Graph::PROTOCOL_IPV4 ) && $t->vli->canGraphForLatency( IXP\Services\Grapher\Graph::PROTOCOL_IPV6 ) ): ?>
 
-<script>
+        <script>
 
-    let base_route   = "<?= url( 'statistics/latency' ) . '/' . $t->vli->getId() ?>";
-    let dd_protocol = $('#select_protocol');
+            let base_route   = "<?= url( 'statistics/latency' ) . '/' . $t->vli->getId() ?>";
+            let dd_protocol = $('#select_protocol');
 
-    dd_protocol.change( function() {
-        window.location = `${base_route}/${dd_protocol.val()}`;
-    });
+            dd_protocol.change( function() {
+                window.location = `${base_route}/${dd_protocol.val()}`;
+            });
 
-</script>
+        </script>
 
-<?php endif; ?>
+    <?php endif; ?>
 
 <?php $this->append() ?>

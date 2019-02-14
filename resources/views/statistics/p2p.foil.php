@@ -64,14 +64,19 @@
                 <div class="navbar-header">
                     <a class="navbar-brand">P2P Graphs</a>
                 </div>
+
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
 
-                        <form class="navbar-form navbar-left form-inline" action="<?= route( 'statistics@p2p', [ 'cid' => $this->c->getId() ] ) ?>" method="post">
+                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex" action="<?= route( 'statistics@p2p', [ 'cid' => $this->c->getId() ] ) ?>" method="post">
 
-                            <li class="nav-item mr-2">
+                            <li class="nav-item">
                                 <div class="nav-link d-flex ">
-                                    <label for="select_network" class="mr-2">Interface:</label>
+                                    <label for="select_network" class="col-sm-4 col-lg-3">Interface:</label>
                                     <select id="select_network" name="svli" class="form-control">
                                         <?php foreach( $t->srcVlis as $id => $vli ): ?>
                                             <option value="<?= $id ?>" <?php if( $t->srcVli->getId() == $id ): ?> selected <?php endif; ?>  >
@@ -85,9 +90,9 @@
 
                             <?php if( $t->showGraphs ): ?>
 
-                                <li class="nav-item mr-2">
+                                <li class="nav-item">
                                     <div class="nav-link d-flex ">
-                                        <label for="select_category" class="mr-2">Category:</label>
+                                        <label for="select_category" class="col-sm-4 col-lg-6">Category:</label>
                                         <select id="select_category" name="category" class="form-control">
                                             <?php foreach( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS_DESCS as $cvalue => $cname ): ?>
                                                 <option value="<?= $cvalue ?>" <?php if( $t->category == $cvalue ): ?> selected <?php endif; ?>  >
@@ -98,9 +103,9 @@
                                     </div>
                                 </li>
 
-                                <li class="nav-item mr-2">
+                                <li class="nav-item">
                                     <div class="nav-link d-flex ">
-                                        <label for="select_period" class="mr-2">Period:</label>
+                                        <label for="select_period" class="col-sm-4 col-lg-6">Period:</label>
                                         <select id="select_period" name="period" class="form-control">
                                             <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $pvalue => $pname ): ?>
                                                 <option value="<?= $pvalue ?>" <?php if( $t->period == $pvalue ): ?> selected <?php endif; ?>  >
@@ -113,9 +118,9 @@
 
                             <?php endif; ?>
 
-                            <li class="nav-item mr-2">
+                            <li class="nav-item">
                                 <div class="nav-link d-flex ">
-                                    <label for="select_protocol" class="mr-2">Protocol:</label>
+                                    <label for="select_protocol" class="col-sm-4 col-lg-6">Protocol:</label>
                                     <select id="select_protocol" name="protocol" class="form-control">
                                         <?php foreach( IXP\Services\Grapher\Graph::PROTOCOL_REAL_DESCS as $pvalue => $pname ): ?>
                                             <?php if( $t->srcVli->getVlan()->getPrivate() || $t->srcVli->isIPEnabled( $pvalue ) ): ?>
@@ -129,12 +134,14 @@
                             </li>
 
                             <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                            <input class="btn btn-outline-secondary" type="submit" name="submit" value="Submit" />
+                            <div class="float-right">
+                                <input class="btn btn-outline-secondary  mr-2" type="submit" name="submit" value="Submit" />
 
-                            <?php if( $t->showGraphsOption ): ?>
-                                &nbsp;&nbsp;&nbsp;&nbsp;
-                                <input class="btn btn-outline-secondary" type="submit" name="submit" value="<?= $t->showGraphs ? 'Hide' : 'Show' ?> Graphs" />
-                            <?php endif; ?>
+                                <?php if( $t->showGraphsOption ): ?>
+                                    <input class="btn btn-outline-secondary " type="submit" name="submit" value="<?= $t->showGraphs ? 'Hide' : 'Show' ?> Graphs" />
+                                <?php endif; ?>
+                            </div>
+
 
                         </form>
                     </ul>
@@ -208,16 +215,16 @@
 
         <?php foreach( $dstVlis as $dvli ): ?>
 
-            <div class="col-xs-12 col-sm-12 col-md-12 col-lg-6">
+            <div class="col-md-12 col-lg-6">
 
-                <div class="well">
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h4>
+                            <?= $dvli->getVirtualInterface()->getCustomer()->getFormattedName() ?> :: <?= $dvli->getIPAddress( $t->protocol ) ? $dvli->getIPAddress( $t->protocol )->getAddress() : 'No IP' ?>
+                        </h4>
+                    </div>
+                    <div class="card-body">
 
-                    <h4>
-                        <?= $dvli->getVirtualInterface()->getCustomer()->getFormattedName() ?> :: <?= $dvli->getIPAddress( $t->protocol ) ? $dvli->getIPAddress( $t->protocol )->getAddress() : 'No IP' ?>
-                    </h4>
-
-                    <p>
-                        <br />
                         <a href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] )
                             . '?svli='     . $t->srcVli->getId()
                             . '&dvli='     . $dvli->getId()
@@ -225,9 +232,10 @@
                             . '&period='   . $t->period
                             . '&protocol=' . $t->protocol
                         ?>">
-                            <img class="img-responsive" src="<?= $t->graph->setDestinationVlanInterface( $dvli, false )->setType('png')->url() ?>">
+                            <img class="img-fluid" src="<?= $t->graph->setDestinationVlanInterface( $dvli, false )->setType('png')->url() ?>">
                         </a>
-                    </p>
+
+                    </div>
                 </div>
             </div>
 
@@ -242,7 +250,7 @@
 
 
 <?php $this->section( 'scripts' ) ?>
-<?= $t->insert( 'statistics/js/p2p' ); ?>
+    <?= $t->insert( 'statistics/js/p2p' ); ?>
 <?php $this->append() ?>
 
 

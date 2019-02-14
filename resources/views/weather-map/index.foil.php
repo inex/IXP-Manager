@@ -2,19 +2,19 @@
 /** @var object $t */
 ?>
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
    <?= $t->wm[ 'name' ]?>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
     <div class="row">
 
-        <div class="col-sm-12">
+        <div class="col-lg-12">
 
             <?php if( $t->wm ): ?>
                 <iframe src="<?= $t->wm[ 'url' ] ?>"
                         frameborder="0"
-                        scrolling="no"
+                        scrolling="yes"
                         width="100%"
                         height="<?= $t->wm[ 'height' ] ?>"
                         style="margin: 0; padding: 0; margin-left: auto; margin-right: auto;"

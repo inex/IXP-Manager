@@ -1,6 +1,6 @@
 
-<div class="col-sm-12 mt-4 table-responsive">
-    <table id="peers-table" class="table peers-table table-striped">
+<div class="col-sm-12 mt-4">
+    <table id="peers-table" class="table peers-table table-striped " style="width:100%">
         <thead class="thead-dark">
             <tr>
                 <th>
@@ -60,7 +60,4 @@
         <?php endforeach; ?>
         </tbody>
     </table>
-
-
-
 </div>

@@ -1,6 +1,6 @@
-<div class="table-responsive">
-    <table class="table mt-4 table-striped">
-        <thead class="thead-black">
+
+<table class="table table-striped table-responsive-ixp collapse" style="width:100%">
+    <thead class="thead-dark">
         <tr>
             <th>
                 VLAN
@@ -24,8 +24,8 @@
                 Other Members
             </th>
         </tr>
-        </thead>
-        <tbody>
+    </thead>
+    <tbody>
         <?php if( !isset( $pvlans ) ): ?>
             <?php $pvlans = $t->c->getPrivateVlanDetails() ?>
         <?php endif; ?>
@@ -82,6 +82,6 @@
                 </tr>
             <?php endforeach; ?>
         <?php endforeach; ?>
-        </tbody>
-    </table>
-</div>
+    </tbody>
+</table>
+

@@ -61,7 +61,7 @@
 
         <?php endif; ?>
 
-        <div class="btn-group">
+        <div class="btn-group btn-group btn-group-sm">
 
             <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?= $t->protos[ $t->proto ] ?>
@@ -80,7 +80,7 @@
 
         </div>
 
-        <div class="btn-group">
+        <div class="btn-group btn-group btn-group-sm">
             <button id="btn-zoom-out" class="btn btn-outline-secondary btn-xs">
                 <i class="fa fa-search-minus"></i>
             </button>
@@ -97,7 +97,7 @@
 <?php $this->section('content') ?>
 
 
-<div class="col-sm-12">
+<div class="col-lg-12">
     <table id="table-pm" class="pm-table collapse">
 
         <colgroup id="cg-name"></colgroup>

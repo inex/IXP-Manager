@@ -2,7 +2,7 @@
     $(document).ready( function() {
 
 
-        $( 'a[id|="cont-list-delete"]' ).off( 'click' ).on(  'click', function( event ) {
+        $( '.table' ).on( 'click', '.cont-list-delete', function( e ){
 
             event.preventDefault();
 

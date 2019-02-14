@@ -89,6 +89,9 @@
 
     }
 
+    .dropup .dropdown-toggle:after{
+        margin-top : 4px;
+    }
 
     /*
     ####################################################

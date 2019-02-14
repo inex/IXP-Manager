@@ -7,22 +7,19 @@
 <?php $this->section( 'page-header-preamble' ) ?>
 
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+        <a href="<?= route( 'customer@overview', [ 'id' => $t->c->getId() ] ) ?>" >
+            <?= $t->c->getFormattedName() ?>
+        </a>
 
+        /
 
+        <a href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>" >
+            Port Graphs
+        </a>
 
-            <a href="<?= route( 'customer@overview', [ 'id' => $t->c->getId() ] ) ?>" >
-                <?= $t->c->getFormattedName() ?>
-            </a>
+        /
 
-            /
-
-            <a href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>" >
-                Port Graphs
-            </a>
-
-            /
-
-            Statistics Drilldown (<?= $t->graph->resolveMyCategory() ?>)
+        Statistics Drilldown (<?= $t->graph->resolveMyCategory() ?>)
 
     <?php else: ?>
 
@@ -39,38 +36,36 @@
 
             <?= $t->alerts() ?>
 
+            <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
 
+                <a class="navbar-brand" href="#">Graph Options:</a>
 
-                    <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                        <a class="navbar-brand" href="#">Graph Options:</a>
+                <div class="collapse navbar-collapse mr-auto" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
 
-                        <div class="collapse navbar-collapse mr-auto" id="navbarNavDropdown">
-                            <ul class="navbar-nav">
+                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex">
 
-                                <form class="navbar-form navbar-left form-inline">
+                            <li class="nav-item mr-2">
+                                <div class="nav-link d-flex ">
+                                    <label for="category" class="mr-2">Type:</label>
+                                    <select id="category" name="category" onchange="this.form.submit()" class="form-control">
+                                        <?php foreach( IXP\Services\Grapher\Graph::CATEGORY_DESCS as $cvalue => $cname ): ?>
+                                            <option value="<?= $cvalue ?>" <?= $t->graph->category() == $cvalue ? 'selected="selected"' : '' ?>><?= $cname ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </li>
 
-                                    <li class="nav-item mr-2">
-                                        <div class="nav-link d-flex ">
-                                            <label for="category" class="mr-2">Type:</label>
-                                            <select id="category" name="category" onchange="this.form.submit()" class="form-control">
-                                                <?php foreach( IXP\Services\Grapher\Graph::CATEGORY_DESCS as $cvalue => $cname ): ?>
-                                                    <option value="<?= $cvalue ?>" <?= $t->graph->category() == $cvalue ? 'selected="selected"' : '' ?>><?= $cname ?></option>
-                                                <?php endforeach; ?>
-                                            </select>
-                                        </div>
-                                    </li>
+                            <a class="btn btn-outline-secondary float-right" href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>?category=<?= $t->graph->category() ?>">All Ports</a>
+                        </form>
+                    </ul>
 
-                                </form>
-                            </ul>
-
-                        </div>
-                        <div class="">
-                            <form class="navbar-form navbar-right form-inline">
-                                <a class="btn btn-outline-secondary" href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>?category=<?= $t->graph->category() ?>">All Ports</a>
-                            </form>
-                        </div>
-                    </nav>
+                </div>
+            </nav>
 
             <h3>
 
@@ -125,7 +120,7 @@
             <div class="row">
                 <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $pvalue => $pname ): ?>
 
-                    <div class="col-sm-6 mt-4">
+                    <div class="col-sm-12 col-lg-6 mt-4">
                         <div class="card">
                             <div class="card-header">
                                 <h3><?= $pname ?> Graph</h3>

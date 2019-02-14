@@ -22,7 +22,9 @@
     }
 
     function coNotesEditDialog( event ) {
-        let noteid = event.delegateTarget.id.substring( 14 );
+
+        event.preventDefault();
+        let noteid = ( this.id ).substring( 14 );
 
         let urlAction = "<?= url( '/api/v4/customer-note/get' ) ?>/"+ noteid;
 
@@ -57,8 +59,8 @@
 
 
     function coNotesDelete( event ) {
-        let noteid = event.delegateTarget.id.substring( 15 );
-
+        event.preventDefault();
+        let noteid = ( this.id ).substring( 15 );
 
             bootbox.confirm({
                 buttons: {
@@ -144,7 +146,8 @@
 
 
     function coNotesViewDialog( event ) {
-        let noteid = event.delegateTarget.id.substring(14);
+        event.preventDefault();
+        let noteid = ( this.id ).substring( 14 );
 
         let urlAction = "<?= url( '/api/v4/customer-note/get' ) ?>/"+ noteid;
 
@@ -172,7 +175,7 @@
         if( $( "#co-notes-fadd" ).html() === 'Add' ) {
 
             $( "#co-notes-table-tbody" ).prepend(
-                "<tr class=\"collapse\" id=\"co-notes-table-row-" + data.noteid + "\">"
+                "<tr  id=\"co-notes-table-row-" + data.noteid + "\">"
                 + "<td>" + $( "#co-notes-ftitle" ).val() + "</td>"
                 + "<td>" + "<span class=\"badge badge-"
                 + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "secondary\">PRIVATE" )
@@ -196,7 +199,7 @@
             $( "#co-notes-no-notes-msg" ).hide();
             $( "#co-notes-table" ).show();
 
-            $( "#co-notes-table-row-" + data.noteid ).fadeIn( 'slow' );
+
         }
         else {
             let noteid = $( "#notes-dialog-noteid" ).val();
@@ -220,14 +223,16 @@
 
 
     function coCustomerNotifyToggle( event ){
-        let custid = event.delegateTarget.id.substring( 15 );
+        event.preventDefault();
+        let custid = ( this.id ).substring( 15 );
+        let btnid = $("#" + this.id );
 
         let urlAction = "<?= url( '/api/v4/customer-note/notify-toggle/customer' ) ?>/"+ custid;
 
         $.ajax( urlAction )
             .done( function( data ) {
                 if( data ){
-                    $( event.delegateTarget ).toggleClass( "active" );
+                    btnid.addClass( "active" );
                 }
             })
             .fail( function(){
@@ -240,14 +245,16 @@
     }
 
     function coNotesNotifyToggle( event ){
-        let noteid = event.delegateTarget.id.substring( 16 );
+        event.preventDefault();
+        let noteid = ( this.id ).substring( 16 );
+        let btnid = $("#" + this.id );
+
         let urlAction = "<?= url( '/api/v4/customer-note/notify-toggle/note' ) ?>/"+ noteid;
 
         $.ajax( urlAction )
             .done( function( data ) {
                 if( data ){
-                    $( event.delegateTarget ).toggleClass( "active" );
-
+                    btnid.toggleClass( "active" );
                 }
             })
             .fail( function(){
@@ -261,44 +268,59 @@
 
     $(document).ready(function(){
 
+        $('.table-note').show();
+
+        $('.table-note').DataTable( {
+            responsive: true,
+            ordering: false,
+            searching: false,
+            paging:   false,
+            info:   false,
+            columnDefs: [
+                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 2, targets: -1 }
+            ]
+        } );
+
         <?php if( Auth::getUser()->isSuperUser() ): ?>
 
-        $( "#co-notes-add-btn" ).on( "click", function( event ){
-            event.preventDefault();
-            $( "#co-notes-dialog-title-action" ).html( 'Add a' );
-            $( "#co-notes-fadd" ).html( 'Add' );
-            $( "#co-notes-dialog-date" ).html( '' );
-            $( "#notes-dialog-noteid" ).val( '0' );
-            coNotesClearDialog();
-            coNotesOpenDialog();
-        });
+            $( ".table-note" ).on( "click", ".co-notes-add-btn", function( event ){
+                event.preventDefault();
+                $( "#co-notes-dialog-title-action" ).html( 'Add a' );
+                $( "#co-notes-fadd" ).html( 'Add' );
+                $( "#co-notes-dialog-date" ).html( '' );
+                $( "#notes-dialog-noteid" ).val( '0' );
+                coNotesClearDialog();
+                coNotesOpenDialog();
+            });
 
-        $( "#co-notes-add-link" ).on( "click", function( event ){
-            event.preventDefault();
-            $( "#co-notes-add-btn" ).trigger( 'click' );
-        });
+            $( "#co-notes-add-link" ).on( "click", function( event ){
+                event.preventDefault();
+                $( "#co-notes-add-btn" ).trigger( 'click' );
+            });
 
-        $( 'button[id|="co-cust-notify"]' ).on( 'click', coCustomerNotifyToggle );
-        $( 'button[id|="co-notes-notify"]' ).on( 'click', coNotesNotifyToggle );
 
-        $( 'button[id|="co-notes-edit"]' ).on( 'click', coNotesEditDialog );
-        $( 'button[id|="co-notes-trash"]' ).on( 'click', coNotesDelete );
+            $( '.table-note' ).on( 'click', '.co-cust-notify',  coCustomerNotifyToggle );
+            $( '.table-note' ).on( 'click', '.co-notes-notify', coNotesNotifyToggle );
+            $( '.table-note' ).on( 'click', '.co-notes-edit',   coNotesEditDialog );
+            $( '.table-note' ).on( 'click', '.co-notes-trash',  coNotesDelete );
+            $( '.table-note' ).on( 'click', '.co-notes-view',   coNotesViewDialog );
 
-        $( "#co-notes-fpublic" ).on( "click", function() {
-            coNotesPublicCheckbox();
-        });
+            $( "#co-notes-fpublic" ).on( "click", function() {
+                coNotesPublicCheckbox();
+            });
 
-        $( "#co-notes-fadd" ).on( "click", coNotesSubmitDialog );
+            $( "#co-notes-fadd" ).on( "click", coNotesSubmitDialog );
 
-        $( '#co-notes-form' ).on( 'submit', function( event ) {
-            event.preventDefault();
-            coNotesSubmitDialog( event );
-            return false;
-        });
+            $( '#co-notes-form' ).on( 'submit', function( event ) {
+                event.preventDefault();
+                coNotesSubmitDialog( event );
+                return false;
+            });
 
-        $( "#co-notes-dialog" ).on( 'shown', function() {
-            $( "#co-notes-ftitle" ).focus();
-        });
+            $( "#co-notes-dialog" ).on( 'shown', function() {
+                $( "#co-notes-ftitle" ).focus();
+            });
 
         <?php endif; ?>
 
@@ -313,7 +335,7 @@
             <?php endif; ?>
         });
 
-        $( 'button[id|="co-notes-view"]' ).on( 'click', coNotesViewDialog );
+
     });
 
 

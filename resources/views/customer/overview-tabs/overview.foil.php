@@ -24,8 +24,8 @@
             </div>
         <?php endif; ?>
 
-        <div class="table-responsive">
-            <table class="table table-striped">
+        <div class="row">
+            <table class="table table-striped col-lg-6 col-sm-12">
                 <tbody>
                 <tr>
                     <td>
@@ -33,19 +33,6 @@
                     </td>
                     <td>
                         <?= $t->ee( $t->c->getAbbreviatedName() ) ?>
-                    </td>
-                    <td colspan="2">
-                        <?php if( !$t->c->isTypeAssociate() ):?>
-                            <span class="badge badge-<?php if( $t->rsclient ): ?>success<?php else: ?>danger<?php endif; ?>">
-                                RS Client
-                            </span>
-                            <?php if( $t->as112UiActive ): ?>
-                                &nbsp;&nbsp;&nbsp;
-                                <span class="badge badge-<?php if( $t->as112client ): ?>success<?php else: ?>danger<?php endif; ?>">
-                                    AS112
-                                </span>
-                            <?php endif; ?>
-                        <?php endif; ?>
                     </td>
                 </tr>
                 <tr>
@@ -55,18 +42,6 @@
                     <td>
                         <a target="_blank" href="<?= $t->ee( $t->c->getCorpwww() )?>"><?= $t->ee( $t->c->getCorpwww() ) ?></a>
                     </td>
-                    <?php if( $t->c->isTypeAssociate() ): ?>
-                        <td colspan="2"></td>
-                    <?php else: ?>
-                        <td>
-                            <b>Peering Email</b>
-                        </td>
-                        <td>
-                            <?php if( $t->c->getpeeringemail() ): ?>
-                                <a href="mailto:<?= $t->ee( $t->c->getpeeringemail() ) ?>" > <?= $t->ee( $t->c->getpeeringemail() ) ?> </a>
-                            <?php endif; ?>
-                        </td>
-                    <?php endif; ?>
                 </tr>
                 <tr>
                     <td>
@@ -74,14 +49,6 @@
                     </td>
                     <td>
                         <?= \Entities\Customer::$CUST_STATUS_TEXT[ $t->c->getStatus() ] ?>
-                    </td>
-                    <td>
-                        <b>Joined</b>
-                    </td>
-                    <td>
-                        <?php if( $t->c->getDatejoin() ): ?>
-                            <?= $t->c->getDatejoin()->format( 'Y-m-d' ) ?>
-                        <?php endif; ?>
                     </td>
                 </tr>
                 <tr>
@@ -91,12 +58,6 @@
                     <td>
                         <?= \Entities\Customer::$CUST_TYPES_TEXT[ $t->c->getType() ] ?>
                     </td>
-                    <td>
-                        <b>Left</b>
-                    </td>
-                    <td>
-                        <?php if( $t->c->hasLeft() ):?> <?= $t->c->getDateleave()->format( 'Y-m-d' ) ?> <?php endif; ?>
-                    </td>
                 </tr>
                 <?php if( !$t->c->isTypeAssociate() ): ?>
                     <tr>
@@ -105,12 +66,6 @@
                         </td>
                         <td>
                             <?= $t->ee( $t->c->getPeeringpolicy() ) ?>
-                        </td>
-                        <td>
-                            <b>ASN</b>
-                        </td>
-                        <td>
-                            <?= $t->asNumber( $t->c->getAutsys() ) ?>
                         </td>
                     </tr>
                     <tr>
@@ -126,12 +81,6 @@
                                 </em>
                             <?php endif; ?>
                         </td>
-                        <td>
-                            <b>IPv4 AS-SET</b>
-                        </td>
-                        <td>
-                            <?= $t->ee( $t->c->getPeeringmacro() ) ?>
-                        </td>
                     </tr>
                     <tr>
                         <td>
@@ -141,12 +90,6 @@
                             <?php if( $t->c->getIRRDB() ): ?>
                                 <?= $t->ee( $t->c->getIRRDB()->getSource() )?>
                             <?php endif; ?>
-                        </td>
-                        <td>
-                            <b>IPv6 AS-SET</b>
-                        </td>
-                        <td>
-                            <?= $t->ee( $t->c->getPeeringmacrov6() ) ?>
                         </td>
                     </tr>
                 <?php endif; ?>
@@ -165,6 +108,87 @@
                             <?php if( $t->c->getNoc24hphone()   ): ?>   <?= $t->ee( $t->c->getNoc24hphone() ) ?> (24h) <?php endif; ?>
                         <?php endif; ?>
                     </td>
+                </tr>
+                </tbody>
+            </table>
+
+
+            <table class="table table-striped col-lg-6 col-sm-12">
+                <tbody>
+                <tr>
+                    <td colspan="2">
+                        <?php if( !$t->c->isTypeAssociate() ):?>
+                            <span class="badge badge-<?php if( $t->rsclient ): ?>success<?php else: ?>danger<?php endif; ?>">
+                                    RS Client
+                                </span>
+                            <?php if( $t->as112UiActive ): ?>
+                                &nbsp;&nbsp;&nbsp;
+                                <span class="badge badge-<?php if( $t->as112client ): ?>success<?php else: ?>danger<?php endif; ?>">
+                                        AS112
+                                    </span>
+                            <?php endif; ?>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <?php if( $t->c->isTypeAssociate() ): ?>
+                        <td colspan="2"></td>
+                    <?php else: ?>
+                        <td>
+                            <b>Peering Email</b>
+                        </td>
+                        <td>
+                            <?php if( $t->c->getpeeringemail() ): ?>
+                                <a href="mailto:<?= $t->ee( $t->c->getpeeringemail() ) ?>" > <?= $t->ee( $t->c->getpeeringemail() ) ?> </a>
+                            <?php endif; ?>
+                        </td>
+                    <?php endif; ?>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Joined</b>
+                    </td>
+                    <td>
+                        <?php if( $t->c->getDatejoin() ): ?>
+                            <?= $t->c->getDatejoin()->format( 'Y-m-d' ) ?>
+                        <?php endif; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <b>Left</b>
+                    </td>
+                    <td>
+                        <?php if( $t->c->hasLeft() ):?> <?= $t->c->getDateleave()->format( 'Y-m-d' ) ?> <?php endif; ?>
+                    </td>
+                </tr>
+                <?php if( !$t->c->isTypeAssociate() ): ?>
+                    <tr>
+                        <td>
+                            <b>ASN</b>
+                        </td>
+                        <td>
+                            <?= $t->asNumber( $t->c->getAutsys() ) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>IPv4 AS-SET</b>
+                        </td>
+                        <td>
+                            <?= $t->ee( $t->c->getPeeringmacro() ) ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <b>IPv6 AS-SET</b>
+                        </td>
+                        <td>
+                            <?= $t->ee( $t->c->getPeeringmacrov6() ) ?>
+                        </td>
+                    </tr>
+                <?php endif; ?>
+                <tr>
                     <td>
                         <b>Max Prefixes</b>
                     </td>
@@ -183,6 +207,7 @@
                 </tr>
                 </tbody>
             </table>
+
         </div>
 
     </div>
