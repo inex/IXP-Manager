@@ -1,4 +1,4 @@
-<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+<nav id="navbar-header" class="navbar navbar-expand-lg navbar-dark bg-dark">
     <?= $this->insert('layouts/ixp-logo-header'); ?>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -105,8 +105,8 @@
 
         </ul>
 
-        <form class="form-inline my-2 my-lg-0">
-            <select id="menu-select-customer" type="select" name="id" class="chzn-select col-sm-7">
+        <form id="div-header-select-customer" class="form-inline my-2 my-lg-0">
+            <select id="menu-select-customer" type="select" name="id" class="chzn-select col-xl-7 col-lg-6">
                 <option></option>
                 <?php foreach( $t->customers as $k => $i ): ?>
                     <option value="<?= $k ?>"><?= $i ?></option>

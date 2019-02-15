@@ -93,6 +93,12 @@
         margin-top : 4px;
     }
 
+    #navbarSupportedContent a{
+        font-size: 15px;
+    }
+
+
+
     /*
     ####################################################
     M E D I A  Q U E R I E S
@@ -110,16 +116,37 @@
 
     /* Medium devices (tablets, 768px and up) */
     @media (min-width: 768px) {
-
+        #div-header-select-customer{
+            width: 300px;
+        }
     }
 
     /* Large devices (desktops, 992px and up) */
     @media (min-width: 992px) {
+        #navbarSupportedContent a{
+            font-size: 14px;
+        }
 
+        #div-header-select-customer{
+            width: 150px;
+        }
+
+    }
+
+    /* Large devices (desktops, 992px and up) */
+    @media (min-width: 992px ) and (max-width: 1205px) {
+
+        .navbar-expand-lg #navbarSupportedContent .navbar-nav .nav-link{
+            padding-right:.3rem;
+            padding-left:.3rem
+        }
+    }
 
     /* Extra large devices (large desktops, 1200px and up) */
     @media (min-width: 1200px) {
-
+        #div-header-select-customer{
+            width: 175px;
+        }
     }
 
 /*
