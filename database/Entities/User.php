@@ -168,7 +168,13 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * @var CustomerEntity
      */
-    protected $Customer;
+    protected $DefaultCustomer;
+
+    /**
+     * @var CustomerEntity
+     */
+    protected $Customers;
+
 
     /**
      * @var UserEntity
@@ -181,6 +187,8 @@ class User implements Authenticatable, CanResetPasswordContract
     public function __construct()
     {
         $this->Preferences = new ArrayCollection();
+        $this->Customers = new \Doctrine\Common\Collections\ArrayCollection();
+
     }
 
     /**
@@ -508,9 +516,9 @@ class User implements Authenticatable, CanResetPasswordContract
      * @param CustomerEntity $customer
      * @return User
      */
-    public function setCustomer(CustomerEntity $customer = null)
+    public function setDefaultCustomer(CustomerEntity $customer = null)
     {
-        $this->Customer = $customer;
+        $this->DefaultCustomer = $customer;
 
         return $this;
     }
@@ -520,10 +528,53 @@ class User implements Authenticatable, CanResetPasswordContract
      *
      * @return Customer
      */
-    public function getCustomer()
+    public function getDefaultCustomer()
     {
-        return $this->Customer;
+        return $this->DefaultCustomer;
     }
+
+
+
+
+
+
+
+
+    /**
+     * Add Customer
+     *
+     * @param Entities\Customer $customer
+     * @return User
+     */
+    public function addCustomer(\Entities\Customer $customer)
+    {
+        $this->Customers[] = $customer;
+
+        return $this;
+    }
+
+    /**
+     * Remove Customer
+     *
+     * @param Entities\Customer $customer
+     */
+    public function removeCustomer(\Entities\Customer $customer)
+    {
+        $this->Customers->removeElement($customer);
+    }
+
+    /**
+     * Get Customers
+     *
+     * @return \Doctrine\Common\Collections\Collection|Customer[]
+     */
+    public function getCustomers()
+    {
+        return $this->Customers;
+    }
+
+
+
 
     /**
      * Set Children

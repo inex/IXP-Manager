@@ -17,7 +17,7 @@
     <field name="lastupdatedby" type="integer" nullable="true"/>
     <field name="creator" type="string" nullable="true"/>
     <field name="created" type="datetime" nullable="true"/>
-    <many-to-one field="Customer" target-entity="Entities\Customer" inversed-by="Users">
+    <many-to-one field="DefaultCustomer" target-entity="Entities\Customer" inversed-by="DefaultUsers">
       <join-columns>
         <join-column name="custid" referenced-column-name="id" on-delete="CASCADE"/>
       </join-columns>
@@ -26,5 +26,6 @@
     <one-to-many field="LastLogins" target-entity="Entities\UserLoginHistory" mapped-by="User"/>
     <one-to-one field="Contact" target-entity="Entities\Contact" mapped-by="User"/>
     <one-to-many field="Preferences" target-entity="Entities\UserPreference" mapped-by="User"/>
+    <one-to-many field="customerToUser" target-entity="Entities\CustomerToUser" mapped-by="user"/>
   </entity>
 </doctrine-mapping>

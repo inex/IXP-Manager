@@ -1,0 +1,20 @@
+<?xml version="1.0"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+  <entity name="Entities\CustomerToUser">
+    <id name="id" type="integer">
+      <generator strategy="AUTO"/>
+    </id>
+    <field name="privs" type="integer" nullable="false"/>
+    <field name="created_at" type="datetime" nullable="false"/>
+    <many-to-one field="customer" target-entity="Entities\Customer" inversed-by="customerToUser">
+      <join-columns>
+        <join-column name="customer_id" referenced-column-name="id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+    <many-to-one field="user" target-entity="Entities\User" inversed-by="customerToUser">
+      <join-columns>
+        <join-column name="user_id" referenced-column-name="id" nullable="false"/>
+      </join-columns>
+    </many-to-one>
+  </entity>
+</doctrine-mapping>

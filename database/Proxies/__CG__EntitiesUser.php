@@ -108,10 +108,10 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Children', 'Contact', '_className', '_preferenceClassName'];
+            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'DefaultCustomer', 'Children', 'Contact', '_className', '_preferenceClassName'];
         }
 
-        return ['__isInitialized__', 'name', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Children', 'Contact', '_className', '_preferenceClassName'];
+        return ['__isInitialized__', 'name', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'DefaultCustomer', 'Children', 'Contact', '_className', '_preferenceClassName'];
     }
 
     /**
@@ -533,23 +533,23 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setCustomer(\Entities\Customer $customer = NULL)
+    public function setDefaultCustomer(\Entities\Customer $customer = NULL)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', [$customer]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDefaultCustomer', [$customer]);
 
-        return parent::setCustomer($customer);
+        return parent::setDefaultCustomer($customer);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getCustomer()
+    public function getDefaultCustomer()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultCustomer', []);
 
-        return parent::getCustomer();
+        return parent::getDefaultCustomer();
     }
 
     /**
