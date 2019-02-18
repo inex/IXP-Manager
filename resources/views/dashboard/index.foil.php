@@ -119,7 +119,6 @@ $this->layout( 'layouts/ixpv4' );
 
                         </div>
 
-
                         <?php if( $t->resellerMode() && $t->c->isReseller() ): ?>
                             <div id="resold-customers" class="tab-pane fade <?php if( $t->tab == 'resold-customers' ): ?> show active <?php endif; ?>">
                                 <?= $t->insert( 'customer/overview-tabs/resold-customers' ); ?>

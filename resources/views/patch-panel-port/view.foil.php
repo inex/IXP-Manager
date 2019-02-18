@@ -194,10 +194,13 @@
                                                     <?php if( !$current ): ?>
                                                         <?= $t->ee( $p->getCustomer() ) ?>
                                                     <?php else: ?>
-
-                                                        <a href="<?= route( 'customer@overview' , [ 'id' => $p->getCustomer()->getId() ] ) ?>" >
+                                                        <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                                            <a href="<?= route( 'customer@overview' , [ 'id' => $p->getCustomer()->getId() ] ) ?>" >
+                                                                <?= $t->ee( $p->getCustomer()->getName() ) ?>
+                                                            </a>
+                                                        <?php else: ?>
                                                             <?= $t->ee( $p->getCustomer()->getName() ) ?>
-                                                        </a>
+                                                        <?php endif; ?>
                                                     <?php endif; ?>
                                                 </td>
                                             </tr>

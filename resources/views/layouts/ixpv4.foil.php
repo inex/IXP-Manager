@@ -35,10 +35,8 @@
                 echo $t->insert("layouts/menus/public");
             } elseif( Auth::user()->isCustUser() && Auth::user()->getCustomer()->isTypeAssociate() ) {
                 echo $t->insert("layouts/menus/associate");
-            } elseif( Auth::user()->isCustUser() ) {
+            } elseif( Auth::user()->isCustUser() || Auth::user()->isCustAdmin() ) {
                 echo $t->insert("layouts/menus/custuser");
-            } elseif( Auth::user()->isCustAdmin() ) {
-                echo $t->insert("layouts/menus/custadmin");
             } elseif( Auth::user()->isSuperUser() ) {
                 echo $t->insert("layouts/menus/superuser");
             }
@@ -150,6 +148,8 @@
                     document.location.href = '<?= url( "/customer/overview" ) ?>/' + $( "#menu-select-customer" ).val();
                 });
             <?php endif; ?>
+
+
         </script>
 
 
