@@ -23,33 +23,28 @@ $this->layout( 'layouts/ixpv4' );
     </style>
 <?php $this->append() ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'core-bundle/list' )?>">Core Bundles</a>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Core Bundles / Edit
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>Edit Core bundle</li>
-<?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
 
-    <li class="pull-right">
-        <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= route( 'core-bundle/list' )?>" title="list">
-                <span class="glyphicon glyphicon-th-list"></span>
+    <div class="btn-group btn-group-sm" role="group">
+        <a class="btn btn-outline-secondary" href="<?= route( 'core-bundle/list' )?>" title="list">
+            <span class="fa fa-th-list"></span>
+        </a>
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-plus"></i> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="<?= route( 'interfaces/virtual/wizard' )?>" >
+                Add Core Bundle Wizard...
             </a>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="glyphicon glyphicon-plus"></i> <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-right">
-                <li>
-                    <a href="<?= route( 'interfaces/virtual/wizard' )?>" >
-                        Add Core Bundle Wizard...
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </li>
+
+        </ul>
+    </div>
+
 
 <?php $this->append() ?>
 
@@ -61,122 +56,125 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= $t->alerts() ?>
 
-            <div class="well">
-                <?= Former::open()->method( 'POST' )
-                    ->id( 'core-bundle-form' )
-                    ->action( route ( 'core-bundle/store' ) )
-                    ->customInputWidthClass( 'col-sm-6' )
-                ?>
+            <div class="card">
+                <div class="card-body">
+                    <?= Former::open()->method( 'POST' )
+                        ->id( 'core-bundle-form' )
+                        ->action( route ( 'core-bundle/store' ) )
+                        ->customInputWidthClass( 'col-lg-8 col-md-8 col-sm-6' )
+                        ->customLabelWidthClass( 'col-lg-4 col-md-4 col-sm-4' )
+                    ?>
 
-                    <h3>
-                        General Core Bundle Settings :
-                    </h3>
-                    <hr>
-                    <div class="col-sm-6">
+                        <h3>
+                            General Core Bundle Settings :
+                        </h3>
+                        <hr>
+                        <div class="col-sm-6">
 
-                        <?= Former::select( 'customer' )
-                            ->label( 'Customer' )
-                            ->fromQuery( $t->customers, 'name' )
-                            ->placeholder( 'Choose a customer' )
-                            ->addClass( 'chzn-select' )
-                            ->blockHelp( '' );
-                        ?>
-
-                        <?= Former::text( 'description' )
-                            ->label( 'Description' )
-                            ->placeholder( 'Description' )
-                            ->blockHelp( 'help text' );
-                        ?>
-
-                        <?= Former::text( 'graph-title' )
-                            ->label( 'Graph Title' )
-                            ->placeholder( 'Graph Title' )
-                            ->blockHelp( 'help text' );
-                        ?>
-
-                        <?= Former::select( 'type' )
-                            ->label( 'Type<sup>*</sup>' )
-                            ->fromQuery( Entities\CoreBundle::$TYPES , 'name' )
-                            ->placeholder( 'Choose Core Bundle type' )
-                            ->addClass( 'chzn-select' )
-                            ->blockHelp( '' )
-                            ->value( Entities\CoreBundle::TYPE_ECMP )
-                            ->disabled( true );
-                        ?>
-
-                    </div>
-
-                    <div class="col-sm-6">
-
-                        <?php if( $t->cb->isL2LAG() ): ?>
-                            <?= Former::checkbox( 'stp' )
-                                ->id('stp')
-                                ->label( 'STP' )
-                                ->value( 1 )
-                                ->blockHelp( "" );
+                            <?= Former::select( 'customer' )
+                                ->label( 'Customer' )
+                                ->fromQuery( $t->customers, 'name' )
+                                ->placeholder( 'Choose a customer' )
+                                ->addClass( 'chzn-select' )
+                                ->blockHelp( '' );
                             ?>
-                        <?php endif; ?>
 
-                        <?= Former::number( 'cost' )
-                            ->label( 'Cost' )
-                            ->placeholder( '10' )
-                            ->min( 0 )
-                            ->blockHelp( 'help text' );
-                        ?>
+                            <?= Former::text( 'description' )
+                                ->label( 'Description' )
+                                ->placeholder( 'Description' )
+                                ->blockHelp( 'help text' );
+                            ?>
 
-                        <?= Former::number( 'preference' )
-                            ->label( 'Preference' )
-                            ->placeholder( '10' )
-                            ->min( 0 )
-                            ->blockHelp( 'help text' );
-                        ?>
+                            <?= Former::text( 'graph-title' )
+                                ->label( 'Graph Title' )
+                                ->placeholder( 'Graph Title' )
+                                ->blockHelp( 'help text' );
+                            ?>
 
-                        <?= Former::checkbox( 'enabled' )
-                            ->id( 'enabled' )
-                            ->label( 'Enabled' )
-                            ->value( 1 )
-                            ->blockHelp( "" );
-                        ?>
+                            <?= Former::select( 'type' )
+                                ->label( 'Type<sup>*</sup>' )
+                                ->fromQuery( Entities\CoreBundle::$TYPES , 'name' )
+                                ->placeholder( 'Choose Core Bundle type' )
+                                ->addClass( 'chzn-select' )
+                                ->blockHelp( '' )
+                                ->value( Entities\CoreBundle::TYPE_ECMP )
+                                ->disabled( true );
+                            ?>
 
-                        <?php if( $t->cb->isL3LAG() ): ?>
+                        </div>
 
-                            <?= Former::checkbox( 'bfd' )
-                                ->label( 'BFD' )
+                        <div class="col-sm-6">
+
+                            <?php if( $t->cb->isL2LAG() ): ?>
+                                <?= Former::checkbox( 'stp' )
+                                    ->id('stp')
+                                    ->label( 'STP' )
+                                    ->value( 1 )
+                                    ->blockHelp( "" );
+                                ?>
+                            <?php endif; ?>
+
+                            <?= Former::number( 'cost' )
+                                ->label( 'Cost' )
+                                ->placeholder( '10' )
+                                ->min( 0 )
+                                ->blockHelp( 'help text' );
+                            ?>
+
+                            <?= Former::number( 'preference' )
+                                ->label( 'Preference' )
+                                ->placeholder( '10' )
+                                ->min( 0 )
+                                ->blockHelp( 'help text' );
+                            ?>
+
+                            <?= Former::checkbox( 'enabled' )
+                                ->id( 'enabled' )
+                                ->label( 'Enabled' )
                                 ->value( 1 )
                                 ->blockHelp( "" );
                             ?>
 
-                            <?= Former::text( 'subnet' )
-                                ->label( 'SubNet' )
-                                ->placeholder( '192.0.2.0/30' )
+                            <?php if( $t->cb->isL3LAG() ): ?>
+
+                                <?= Former::checkbox( 'bfd' )
+                                    ->label( 'BFD' )
+                                    ->value( 1 )
+                                    ->blockHelp( "" );
+                                ?>
+
+                                <?= Former::text( 'subnet' )
+                                    ->label( 'SubNet' )
+                                    ->placeholder( '192.0.2.0/30' )
+                                    ->blockHelp( "" );
+                                ?>
+                            <?php endif; ?>
+
+                            <?= Former::hidden( 'type' )
+                                ->id( 'type')
+                                ->value( $t->cb->getType() )
                                 ->blockHelp( "" );
                             ?>
-                        <?php endif; ?>
 
-                        <?= Former::hidden( 'type' )
-                            ->id( 'type')
-                            ->value( $t->cb->getType() )
-                            ->blockHelp( "" );
-                        ?>
+                            <?= Former::hidden( 'cb' )
+                                ->id( 'cb')
+                                ->value( $t->cb->getId() )
+                            ?>
 
-                        <?= Former::hidden( 'cb' )
-                            ->id( 'cb')
-                            ->value( $t->cb->getId() )
-                        ?>
+                        </div>
 
-                    </div>
-
-                    <?=Former::actions(
-                        Former::primary_submit( 'Save Changes' )->id( 'core-bundle-submit-btn' ),
-                        Former::default_link( 'Cancel' )->href( route( 'core-bundle/list' ) ),
-                        Former::success_button( 'Help' )->id( 'help-btn' )
-                    )->class('text-center')?>
+                        <?=Former::actions(
+                            Former::primary_submit( 'Save Changes' )->id( 'core-bundle-submit-btn' ),
+                            Former::default_link( 'Cancel' )->href( route( 'core-bundle/list' ) ),
+                            Former::success_button( 'Help' )->id( 'help-btn' )
+                        )->class('text-center')?>
 
 
-                <?= Former::close() ?>
+                    <?= Former::close() ?>
 
-                <div style="clear: both"></div>
+                    <div style="clear: both"></div>
 
+                </div>
             </div>
 
 

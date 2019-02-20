@@ -23,6 +23,9 @@ const div_fastlacp   = $( "#fastlacp-area" );
 // display or hide the advanced area
 
 
+
+
+
 btn_advanced.on('click', function(e){ e.preventDefault(); div_advanced.slideToggle();btn_delete.slideToggle();});
 
 // display or hide the fastlapc area
@@ -86,7 +89,7 @@ cb_lag_framing.trigger( 'change' );
 
 if ( $( '#name' ).val() != '' || $( '#description' ).val() != '' || $( '#channel-group' ).val() != '' || $( '#mtu' ).val() != '' ) {
     div_advanced.show();
-    btn_delete.show();
+    btn_delete.css( "display", "inline-block" );
 } else {
     btn_delete.hide();
 }

@@ -1,11 +1,9 @@
 <div class="card">
-    <div class="card-header">
+    <div class="card-body">
         <h4>
             IPv4 Details
         </h4>
-    </div>
-
-    <div class="card-body">
+        <hr>
         <div id='alert-ipv4-address' class="alert alert-warning collapse ip-is-used-alert" role="alert"></div>
 
         <?= Former::select( 'ipv4-address' )
@@ -29,7 +27,7 @@
 
         <?= Former::text( 'ipv4-bgp-md5-secret' )
             ->label( 'IPv4 BGP MD5 Secret' )
-            ->appendIcon( 'generator-ipv4 glyphicon glyphicon-refresh' )
+            ->append( '<button class="btn-outline-secondary btn glyphicon-generator-ipv4" id="generator-ipv4" type="button"><i class="fa fa-refresh"> </i></button>' )
             ->blockHelp( 'MD5 secret for route server / collector / AS112 BGP sessions. If supported by your browser, it can be generated in a cryptographically secure manner by clicking the <em>refresh</em> button.' );
         ?>
 

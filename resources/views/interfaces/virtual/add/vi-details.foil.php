@@ -1,18 +1,27 @@
-<div class="card bg-light">
-    <div class="card-body">
-        <?php if( $t->cb ): ?>
-            <div class="alert alert-warning" role="alert">
+<?php if( $t->cb ): ?>
+    <div class="alert alert-warning mt-4" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="text-center">
+                <i class="fa fa-exclamation-circle fa-2x"></i>
+            </div>
+            <div class="col-sm-12">
                 The Virtual Interface belongs to a Core Bundle: ensure you match any changes to MTU, 802.1q framing, etc. to the other half which can be
                 <a href="<?= route('core-bundle/edit' , [ 'id' => $t->cb->getId() ]) ?>"> accessed by clicking here </a>
             </div>
-        <?php endif; ?>
+        </div>
+    </div>
+<?php endif; ?>
+
+<div class="card">
+    <div class="card-body">
         <?= Former::open()->method( 'POST' )
             ->action( route( 'interfaces/virtual/store' ) )
-            ->customInputWidthClass( 'col-sm-6' )
-            ->customLabelWidthClass( 'col-sm-4' )
+            ->customInputWidthClass( 'col-lg-6 col-md-7' )
+            ->customLabelWidthClass( 'col-lg-4 col-md-5' )
+            ->actionButtonsCustomClass( "grey-box")
         ?>
 
-        <div class="col-sm-12">
+        <div class="col-lg-12">
             <div class="row">
                 <div class="col-sm-6">
                     <?= Former::select( 'cust' )
@@ -33,9 +42,16 @@
                     ?>
 
                     <?php if( $t->vi && count( $t->vi->getPhysicalInterfaces() ) > 1 && !$t->vi->getLagFraming() ): ?>
-                        <div class="alert alert-warning" role="alert">
-                            <span class="label label-warning">WARNING</span>
-                            LAG framing is not set and there is >1 physical interfaces. This may be intended but should be verified:
+                        <div class="alert alert-warning mt-4" role="alert">
+                            <div class="d-flex align-items-center">
+                                <div class="text-center">
+                                    <i class="fa fa-exclamation-circle fa-2x"></i>
+                                </div>
+                                <div class="col-sm-12">
+                                    <b class="label label-warning">WARNING</b>
+                                    LAG framing is not set and there is >1 physical interfaces. This may be intended but should be verified:
+                                </div>
+                            </div>
                         </div>
                     <?php endif; ?>
 
@@ -58,10 +74,10 @@
                     </div>
 
                     <?php if ($t->vi && $t->vi->getBundleName() ): ?>
-                        <div class="form-group">
+                        <div class="form-group row">
                             <label for="custid" class="control-label col-sm-4">Bundle Name</label>
                             <div class="col-sm-6">
-                                <label class="badge badge-primary">
+                                <label class="">
                                     <b>
                                         <code>
                                             <?= $t->ee( $t->vi->getBundleName() ) ?>
@@ -107,10 +123,9 @@
 
                     <?php endif; ?>
 
-                    <hr>
                 </div>
 
-                <div id='advanced-area' class="col-sm-6" style="display: none">
+                <div id='advanced-area' class="col-sm-6 mt-4 mt-sm-0" style="display: none">
                     <?= Former::text( 'name' )
                         ->label( 'Virtual Interface Name' )
                         ->blockHelp( 'Ordinarily this is left blank. In the case of LAGs with provisioning systems, this is used to indicate the '
@@ -156,22 +171,22 @@
 
                 <?php
                 if( $t->cb ) {
-                    $bbtn = '<a style="margin-left: 5px;" href="' . route( 'core-bundle/edit', [ 'id' => $t->cb->getId() ] ) . '" class="btn btn-btn-secondary">Return to Core Bundle</a>';
+                    $bbtn = '<a href="' . route( 'core-bundle/edit', [ 'id' => $t->cb->getId() ] ) . '" class="btn btn-btn-secondary mb-2 mb-md-2 mb-lg-0">Return to Core Bundle</a>';
                 } elseif( $t->vi ) {
-                    $bbtn  = '<a style="margin-left: 5px;" href="' . route( "customer@overview" , [ "id" => $t->vi->getCustomer()->getId(), "tab" => "ports" ] ) . '" class="btn btn-secondary">Return to Customer Overview</a>';
-                    $bbtn .= '<a style="margin-left: 5px; display: none;" class="btn btn-danger pull-right" id="delete-vi-' . $t->vi->getId() . '" href="">Delete Interface</a>';
+                    $bbtn  = '<a href="' . route( "customer@overview" , [ "id" => $t->vi->getCustomer()->getId(), "tab" => "ports" ] ) . '" class="btn btn-secondary mb-2 mb-md-2 mb-lg-0">Return to Customer Overview</a>';
+                    $bbtn .= '<a class="collapse btn btn-danger mb-2 mb-md-2 mt-lg-2 ml-1" id="delete-vi-' . $t->vi->getId() . '" href="">Delete Interface</a>';
                 } else {
-                    $bbtn = '<a style="margin-left: 5px;" href="' . action( 'Interfaces\VirtualInterfaceController@list' ) . '" class="btn btn-secondary" >Cancel</a>';
+                    $bbtn = '<a href="' . action( 'Interfaces\VirtualInterfaceController@list' ) . '" class="btn btn-secondary mmb-2 mb-md-2 mb-lg-0" >Cancel</a>';
                 }
                 ?>
 
                 <?=
                 Former::actions(
-                    Former::primary_submit( 'Save Changes' ),
-                    Former::success_button( 'Help' )->id( 'help-btn' ),
-                    '<a class="btn btn-secondary" href="#" id="advanced-options">Advanced Options</a>',
+                    Former::primary_submit( 'Save Changes' )->class( "mb-2 mb-md-2 mb-lg-0" ),
+                    Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-md-2 mb-lg-0" ),
+                    '<a class="btn btn-secondary mb-2 mb-md-2 mb-lg-0" href="#" id="advanced-options">Advanced Options</a>',
                     $bbtn
-                )->id('btn-group')->class( "col-sm-12" );?>
+                )->id('btn-group')?>
 
                 <?= Former::close() ?>
             </div>

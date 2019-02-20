@@ -1,18 +1,34 @@
 <script>
 
-/**
- * allow to refresh the table without reloading the page
- * reloading only a part of the DOM
- */
-function refreshDataTable( htmlId, urlListReload, viid) {
-    $( "#area-"+htmlId).load( urlListReload+" #table-"+ htmlId ,function( ) {
-        if( !viid ){
-            table.destroy();
-            loadDataTable( htmlId );
-        }
 
-    });
-}
+$( document ).ready(function() {
+
+    $('[data-toggle="tooltip"]').tooltip();
+
+    $('.table-responsive-ixp-no-header').show();
+
+    $('.table-responsive-ixp-no-header').DataTable( {
+        responsive: true,
+        ordering: false,
+        searching: false,
+        paging:   false,
+        info:   false,
+        columnDefs: [
+            { responsivePriority: 1, targets: 0 },
+            { responsivePriority: 2, targets: -1 }
+        ],
+    } );
+
+    $('.table-responsive-ixp-with-header').show();
+
+    $('.table-responsive-ixp-with-header').DataTable( {
+        responsive: true,
+        columnDefs: [
+            { responsivePriority: 1, targets: 0 },
+            { responsivePriority: 2, targets: -1 }
+        ],
+    } );
+});
 
 /**
  * function to delete a virtual/physical/vlan interface

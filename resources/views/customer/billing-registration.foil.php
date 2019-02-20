@@ -19,17 +19,24 @@
 
         <div class="row">
 
-            <div class="col-md-12">
+            <div class="col-lg-12">
 
                 <?= $t->alerts() ?>
 
                 <?php if( config( 'ixp_fe.customer.billing_updates_notify' ) ): ?>
 
-                    <div class="alert alert-info">
-                        <b>NB:</b> Billing update notifications have been enabled. As such, any changes to the below form will be
-                        emailed to
-                        <a href="mailto:<?= config( 'ixp_fe.customer.billing_updates_notify' ) ?>"><?= config( 'ixp_fe.customer.billing_updates_notify' ) ?></a>
-                        on submission.
+                    <div class="alert alert-info mt-4" role="alert">
+                        <div class="d-flex align-items-center">
+                            <div class="text-center">
+                                <i class="fa fa-question-circle fa-2x"></i>
+                            </div>
+                            <div class="col-sm-12">
+                                <b>NB:</b> Billing update notifications have been enabled. As such, any changes to the below form will be
+                                emailed to
+                                <a href="mailto:<?= config( 'ixp_fe.customer.billing_updates_notify' ) ?>"><?= config( 'ixp_fe.customer.billing_updates_notify' ) ?></a>
+                                on submission.
+                            </div>
+                        </div>
                     </div>
 
                 <?php endif; ?>
@@ -42,11 +49,13 @@
                 <?= Former::open()->method( 'POST' )
                     ->action( route ('customer@store-billing-and-reg-details' ) )
                     ->customInputWidthClass( 'col-sm-6' )
+                    ->customLabelWidthClass( 'col-sm-4' )
+                    ->actionButtonsCustomClass( "grey-box")
                 ?>
 
 
                 <div class="row">
-                    <div class="col-md-6">
+                    <div class="col-lg-6 col-md-12">
 
                         <h3>Registration Details</h3>
                         <hr>
@@ -112,7 +121,7 @@
 
                     <?php if( !( $t->resellerMode() && $t->c->isResoldCustomer() ) ): ?>
 
-                        <div class="col-md-6 full-member-details">
+                        <div class="col-lg-6 col-md-12 full-member-details">
 
                             <h3>Billing Details</h3>
                             <hr>
@@ -134,7 +143,7 @@
                                 ->id( 'billingAddress1' )
                                 ->label( 'Address' )
                                 ->blockHelp( '' )
-                                ->append( '<button class="btn-default btn" id="copy-address" type="button"><i class="glyphicon glyphicon-retweet"> </i></button>' );
+                                ->append( '<button class="btn-outline-secondary btn" id="copy-address" type="button"><i class="fa fa-retweet"> </i></button>' );
                             ?>
 
                             <?= Former::text( 'billingAddress2' )
@@ -220,12 +229,12 @@
                     <?php endif; ?>
                 </div>
 
-                <div class="col-sm-12 text-center mt-4 bg-light shadow-sm p-3">
-                    <?=Former::actions( Former::primary_submit( 'Save Changes' ),
-                        Former::secondary_link( 'Cancel' )->href( route( "customer@overview" , [ "id" => $t->c->getId() ] ) ),
-                        Former::success_button( 'Help' )->id( 'help-btn' )
+
+                <?=Former::actions( Former::primary_submit( 'Save Changes' )->class( "mb-2 mb-sm-0" ),
+                    Former::secondary_link( 'Cancel' )->href( route( "customer@overview" , [ "id" => $t->c->getId() ] ) )->class( "mb-2 mb-sm-0" ),
+                    Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0")
                     );?>
-                </div>
+
 
 
                 <?= Former::hidden( 'id' )

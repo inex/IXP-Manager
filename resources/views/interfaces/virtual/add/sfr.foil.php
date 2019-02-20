@@ -26,11 +26,11 @@
 
     <div class="col-md-12" id="message-sflr"></div>
 
-    <div class="col-md-12 table-responsive" id="area-sflr">
+    <div class="col-md-12 table" id="area-sflr">
 
         <?php if( count( $t->vi->getSflowReceivers() ) ): ?>
 
-            <table id="table-sflr" class="table table-striped ">
+            <table id="table-sflr" class="table table-striped table-responsive-ixp-no-header" style="width: 100%">
 
                 <thead class="thead-dark">
                     <tr>
@@ -82,13 +82,18 @@
 
         <?php else: ?>
 
-            <div id="table-sflr" class="alert alert-info" role="alert">
-                <span class="fa fa-info-circle" aria-hidden="true"></span>
-                <span class="sr-only">Information :</span>
-                There are no Sflow receivers defined for this virtual interface.
-                <a href="<?= route('interfaces/sflow-receiver/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
-                    Add one now...
-                </a>
+            <div class="alert alert-info" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="text-center">
+                        <i class="fa fa-question-circle fa-2x"></i>
+                    </div>
+                    <div class="col-sm-12">
+                        There are no Sflow receivers defined for this virtual interface.
+                        <a class="btn btn-outline-secondary" href="<?= route('interfaces/sflow-receiver/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
+                            Add one now...
+                        </a>
+                    </div>
+                </div>
             </div>
 
         <?php endif; ?>

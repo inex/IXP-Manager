@@ -23,6 +23,8 @@
                 ->id( "form" )
                 ->action( route('customer@store' ) )
                 ->customInputWidthClass( 'col-sm-6' )
+                ->customLabelWidthClass( 'col-sm-3' )
+                ->actionButtonsCustomClass( "grey-box")
 
             ?>
 
@@ -36,22 +38,27 @@
                     <b>Prepopulate this form from PeeringDB by entering the network ASN here:</b>
                 </p>
 
-                <div class="form-group d-flex">
-                    <input type="text" class="form-control col-lg-3" id="asn-search">
-                    <button class="btn btn-primary " id="btn-populate" style="margin-left: 15px" href="">
-                        Populate
-                    </button>
-                    <button class="btn-success btn help-btn ml-4" type="button">
-                        Help
-                    </button>
+                <div class="d-sm-flex">
+                    <div class="form-group col-lg-4 col-sm-6 col-12">
+                        <input type="text" class="form-control " id="asn-search">
+                    </div>
+                    <div class="form-group ml-2">
+                        <button class="btn btn-primary " id="btn-populate">
+                            Populate
+                        </button>
+                        <button class="btn-success btn help-btn " type="button">
+                            Help
+                        </button>
+                    </div>
                 </div>
+
 
             </div>
 
 
             <div class="mt-4 row">
 
-                <div class="col-lg-6 col-md-12">
+                <div class="col-lg-6 col-md-12 mb-4 mb-sm-0">
 
                     <h3>Customer Details</h3>
                     <hr>
@@ -299,13 +306,13 @@
             <br/>
 
 
-            <div class="col-sm-12 text-center bg-light mt-4 p-4 shadow-sm">
-                <?= Former::actions( Former::primary_submit( 'Save Changes' ),
-                    Former::secondary_link( 'Cancel' )->href( route( 'customer@list' ) ),
-                    Former::success_button( 'Help' )->id( 'help-btn' )
+
+                <?= Former::actions( Former::primary_submit( 'Save Changes' )->class( "mb-2 mb-sm-0" ),
+                    Former::secondary_link( 'Cancel' )->href( route( 'customer@list' ) )->class( "mb-2 mb-sm-0" ),
+                    Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
                 );
                 ?>
-            </div>
+
 
 
             <?= Former::close() ?>
