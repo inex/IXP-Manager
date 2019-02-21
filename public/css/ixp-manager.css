@@ -65,7 +65,13 @@
     .former-input-col-sm-6 .form-group > div{
         -ms-flex:0 0 50%;
         flex:0 0 50%;
-        max-width:50%
+        max-width:50%;
+    }
+
+    .former-label-col-sm-6 .form-group > label{
+        -ms-flex:0 0 33.333333%;
+        flex:0 0 33.333333%;
+        max-width:33.333333%;
     }
 
 
