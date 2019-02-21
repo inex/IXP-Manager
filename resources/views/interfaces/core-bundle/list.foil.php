@@ -110,6 +110,8 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'scripts' ) ?>
     <script>
         $( document ).ready( function() {
+            $( "#table-cb" ).show();
+
             $( '#table-cb' ).DataTable( {
                 responsive : true,
                 "iDisplayLength": 100,
@@ -122,7 +124,6 @@ $this->layout( 'layouts/ixpv4' );
                 ],
             });
 
-            $( "#table-cb" ).show();
         });
     </script>
 <?php $this->append() ?>

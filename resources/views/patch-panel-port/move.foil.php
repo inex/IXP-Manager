@@ -17,7 +17,9 @@ $this->layout( 'layouts/ixpv4' )
                 <div class="card-body">
                     <?= Former::open()->method( 'POST' )
                         ->action( route ( 'patch-panel-port@move' ) )
-                        ->customInputWidthClass( 'col-sm-3' )
+                        ->customInputWidthClass( 'col-lg-4 col-sm-6' )
+                        ->customLabelWidthClass( 'col-lg-3 col-sm-4' )
+                        ->actionButtonsCustomClass( "grey-box")
                     ?>
 
                     <?= Former::text( 'current-pos' )
@@ -60,10 +62,10 @@ $this->layout( 'layouts/ixpv4' )
                     ?>
 
                     <?=Former::actions(
-                        Former::primary_submit( 'Save Changes' ),
-                        Former::secondary_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) ),
-                        Former::success_button( 'Help' )->id( 'help-btn' )
-                    )->id('btn-group')->class( "bg-light p-4 d-4 shadow-sm text-center" )?>
+                        Former::primary_submit( 'Save Changes' )->class( "mb-2 mb-sm-0" ),
+                        Former::secondary_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) )->class( "mb-2 mb-sm-0" ),
+                        Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
+                    )->id('btn-group')?>
 
                     <?= Former::close() ?>
                 </div>

@@ -97,6 +97,11 @@
         font-size: 15px;
     }
 
+    .center-dd-caret:after{
+        margin-bottom: auto;
+        margin-top: auto;
+    }
+
 
 
     /*

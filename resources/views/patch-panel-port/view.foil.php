@@ -70,7 +70,7 @@
 
                             <div class="tab-pane fade <?php if( $current ) { ?> active show <?php } ?>" id="ppp-<?= $p->getId() ?>">
                                 <div class="row">
-                                <div class="col-sm-6">
+                                <div class="col-lg-6 col-md-12">
                                     <table class="table_view_info">
                                         <?php if( !$current && ( $p->getDuplexMasterPort() || $p->getDuplexSlavePort() ) ): ?>
                                             <tr>
@@ -336,7 +336,7 @@
                                 </div>
 
 
-                                <div class="col-sm-6">
+                                <div class="col-lg-6 col-md-12">
                                     <table class="table_view_info">
 
                                         <?php if( Auth::user()->isSuperUser() ): ?>
@@ -464,13 +464,11 @@
                                 </div>
                                 </div> <!-- row -->
 
-                                <div style="clear: both;"></div>
-
                                 <div class="row">
 
                                     <?php if( Auth::user()->isSuperUser() ): ?>
 
-                                        <div class="col-sm-6">
+                                        <div class="col-lg-6 col-md-12 mt-4 mt-lg-0">
                                             <div class="card">
                                                 <div class="card-header padding-10">
                                                     Public Notes:
@@ -486,7 +484,7 @@
                                             </div>
                                         </div>
 
-                                        <div class="col-sm-6">
+                                        <div class="col-lg-6 col-md-12 mt-4 mt-lg-0">
                                             <div class="card">
                                                 <div class="card-header padding-10">
                                                         Private Notes:
@@ -548,34 +546,42 @@
                                                 </div>
                                                 <div class="card-body">
                                                     <?php if( count( $listFile ) > 0 ): ?>
-                                                        <table class="table table-bordered table-striped" >
-                                                            <tr>
-                                                                <th>
-                                                                    Name
-                                                                </th>
-                                                                <th>
-                                                                    Size
-                                                                </th>
-                                                                <th>
-                                                                    Type
-                                                                </th>
-                                                                <th>
-                                                                    Uploaded at
-                                                                </th>
-                                                                <th>
-                                                                    Uploaded By
-                                                                </th>
-                                                                <th>
-                                                                    Action
-                                                                </th>
-                                                            </tr>
+                                                        <table class="table table-bordered table-striped table-responsive-ixp-no-header" width="100%" >
+                                                            <thead class="thead-dark">
+                                                                <tr>
+                                                                    <th>
+                                                                        Name
+                                                                    </th>
+                                                                    <th>
+                                                                        Size
+                                                                    </th>
+                                                                    <th>
+                                                                        Type
+                                                                    </th>
+                                                                    <th>
+                                                                        Uploaded at
+                                                                    </th>
+                                                                    <th>
+                                                                        Uploaded By
+                                                                    </th>
+                                                                    <th>
+                                                                        Action
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+
                                                             <?php foreach ( $listFile as $file ):?>
                                                                 <?php if( Auth::user()->isSuperUser() || !$file->getIsPrivate() ): ?>
                                                                     <tr id="file_row_<?=$file->getId()?>">
-                                                                        <td>
-                                                                            <?= $file->getNameTruncate() ?>
-                                                                            <i id="file-private-state-<?= $file->getId() ?>"
-                                                                                class="pull-right fa fa-<?= $file->getIsPrivate() ? 'lock' : 'unlock' ?> fa-lg" aria-hidden="true"></i>
+                                                                        <td class="d-flex">
+                                                                            <div class="mr-auto">
+                                                                                <?= $file->getNameTruncate() ?>
+                                                                            </div>
+                                                                            <div>
+                                                                                <i id="file-private-state-<?= $file->getId() ?>"
+                                                                                   class="pull-right fa fa-<?= $file->getIsPrivate() ? 'lock' : 'unlock' ?> fa-lg" aria-hidden="true"></i>
+                                                                            </div>
+
                                                                         </td>
                                                                         <td>
                                                                             <?= $file->getSizeFormated() ?>
@@ -592,7 +598,7 @@
                                                                         <td>
                                                                             <div class="btn-group btn-group-sm" role="group">
                                                                                 <?php if( Auth::user()->isSuperUser() ): ?>
-                                                                                    <a id="file-toggle-private-<?= $file->getId() ?>" class="btn btn-outline-secondary" target="_blank" href="<?= url()->current() ?>"
+                                                                                    <a id="file-toggle-private-<?= $file->getId() ?>" class="btn btn-outline-secondary file-toggle-private" target="_blank" href="<?= url()->current() ?>"
                                                                                             title="Toggle Public / Private">
                                                                                         <i id="file-toggle-private-i-<?= $file->getId() ?>" class="fa fa-<?= $file->getIsPrivate() ? 'unlock' : 'lock' ?>"></i>
                                                                                     </a>
@@ -634,80 +640,5 @@
 
 <?php $this->section('scripts') ?>
     <?= $t->insert( 'patch-panel-port/js/action-dd' ); ?>
-
-
-
-    <script>
-        $(document).ready(function() {
-
-            // Hide actions if PPP history is selected
-            $( ".nav-tabs li" ).click( function(){
-                if( $( this ).children().text() != "Current" ){
-                    $( ".extra-action" ).addClass( 'disabled' )
-                } else{
-                    $( ".extra-action" ).removeClass( 'disabled' )
-                }
-            });
-
-            $("a[id|='file-toggle-private']").on('click', function (e) {
-                e.preventDefault();
-
-                let pppfid = (this.id).substring(20);
-
-                $.ajax( "<?= url('patch-panel-port/toggle-file-privacy') ?>/" + pppfid, {
-                    type : 'POST'
-                } )
-                .done( function( data ) {
-                    if( data.isPrivate ) {
-                        $( '#file-toggle-private-i-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-unlock');
-                        $( '#file-private-state-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-lock');
-                    } else {
-                        $( '#file-toggle-private-i-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-lock');
-                        $( '#file-private-state-' + pppfid ).removeClass('fa-lock').removeClass('fa-unlock').addClass('fa-unlock');
-                    }
-                });
-            });
-        });
-
-        function deletePopup( idFile, idHistory, objectType ){
-            bootbox.confirm({
-                title: "Delete",
-                message: "Are you sure you want to delete this object ?",
-                buttons: {
-                    cancel: {
-                        label: '<i class="fa fa-times"></i> Cancel',
-                        className: 'btn-secondary'
-                    },
-                    confirm: {
-                        label: '<i class="fa fa-check"></i> Confirm'
-                    }
-                },
-                callback: function ( result ) {
-                    if( result ){
-
-                        let urlAction = objectType == 'ppp' ? "<?= url('patch-panel-port/delete-file') ?>" : "<?= url('patch-panel-port/delete-history-file') ?>";
-
-                        $.ajax( urlAction + "/" + idFile , {
-                            type : 'POST'
-                        })
-                        .done( function( data ) {
-                            if( data.success ){
-                                $( "#area_file_"+idHistory+'_'+objectType ).load( "<?= route('patch-panel-port@view' , [ 'id' => $t->ppp->getId() ] ) ?> #list_file_"+idHistory+'_'+objectType );
-                                $( '.bootbox.modal' ).modal( 'hide' );
-                            }
-                            else{
-                                $( '#message-'+idHistory+'-'+objectType ).html("<div class='alert alert-danger' role='alert'>" + data.message + "</div>");
-                                $( '#delete_'+idFile ).remove();
-                            }
-                        })
-                        .fail( function() {
-                            throw new Error( "Error running ajax query for patch-panel-port/deleteFile/" );
-                            alert( "Error running ajax query for patch-panel-port/deleteFile/" );
-                            $( "#customer" ).html("");
-                        })
-                    }
-                }
-            });
-        }
-    </script>
+    <?= $t->insert( 'patch-panel-port/js/view' ); ?>
 <?php $this->append() ?>

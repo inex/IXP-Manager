@@ -1,5 +1,22 @@
 <script>
 
+    $( document ).ready( function() {
+        $('.table-responsive-ixp-no-header').show();
+
+        $('.table-responsive-ixp-no-header').DataTable( {
+            responsive: true,
+            ordering: false,
+            searching: false,
+            paging:   false,
+            info:   false,
+            columnDefs: [
+                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 2, targets: -1 }
+            ],
+        } );
+
+    });
+
     //////////////////////////////////////////////////////////////////////////////////////
     // action bindings:
 
@@ -17,6 +34,12 @@
         e.preventDefault();
         let clid = (this.id).substring(10);
         deleteElement( true , clid );
+    });
+
+
+    $( "a[id|='cb-delete']" ).on( 'click', function(e){
+        e.preventDefault();
+        deleteElement( false , null );
     });
 
     /**
@@ -84,6 +107,7 @@
             message: `Do you really want to delete this ${elementName}?` ,
             buttons: {
                 cancel: {
+                    className : "btn-secondary",
                     label: '<i class="fa fa-times"></i> Cancel'
                 },
                 confirm: {
@@ -148,6 +172,7 @@
                 $('#core-links').append( data.htmlFrag );
 
                 $('#core-links-area').css( 'opacity' , '100' );
+                $('#core-links-area').show();
                 $('#add-new-core-link').attr( 'disabled', 'disabled' );
 
                 oldNbLink = $("#nb-core-links").val( );
