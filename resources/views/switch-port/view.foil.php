@@ -56,7 +56,7 @@
 
                     <div class="row">
 
-                        <div class="col-sm-6">
+                        <div class="col-lg-6 col-md-12">
 
                             <table class="table_view_info">
                                 <tbody>
@@ -163,7 +163,7 @@
 
 
 
-                        <div class="col-md-6">
+                        <div class="col-lg-6 col-md-12">
 
 
                             <table class="table_view_info">

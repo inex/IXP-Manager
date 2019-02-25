@@ -9,8 +9,8 @@
             <i class="fa fa-pencil"></i>
         </a>
 
-        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa fa-trash"></i> <span class="caret"></span>
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-trash"></i>
         </button>
 
         <div class="dropdown-menu dropdown-menu-right">

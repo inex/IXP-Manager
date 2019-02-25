@@ -11,16 +11,15 @@
 
 <?php $this->section( 'content' ) ?>
     <div class="row">
-
         <div class="col-md-12">
             <div class="row">
                 <?php $count = 0 ?>
                 <?php foreach( $t->logos as $logo ): ?>
 
-                    <div class="col-sm-3">
+                    <div class="col-lg-3 col-md-4 col-sm-6 mb-4 my-4">
 
                         <a href="<?= route( "logo@manage" , [ "id" => $logo->getCustomer()->getId() ] ) ?>">
-                            <img class="www80-padding img-responsive" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
+                            <img class="img-fluid" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
                         </a>
 
                     </div>
@@ -31,10 +30,7 @@
 
             </div>
         </div>
-
     </div>
-
-
 
 <?php $this->append() ?>
 

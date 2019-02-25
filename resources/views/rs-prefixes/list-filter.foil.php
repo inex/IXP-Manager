@@ -1,6 +1,6 @@
 
 <div class="btn-group btn-group-sm" role="group">
-    <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+    <button type="button" class="btn btn-outline-secondary dropdown-toggle center-dd-caret d-flex " data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         <?php if( $t->protocol ): ?> Filtered for IPv<?= $t->protocol ?><?php else: ?>Limit to Protocol...<?php endif;?>
     </button>
     <div class="dropdown-menu dropdown-menu-right">

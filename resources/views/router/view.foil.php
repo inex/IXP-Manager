@@ -37,7 +37,7 @@ $this->layout( 'layouts/ixpv4' )
                 Details for Router
             </div>
             <div class="card-body row">
-                <div class="col-sm-6">
+                <div class="col-lg-6 col-md-12">
                     <table class="table_view_info">
                         <tr>
                             <td>
@@ -135,7 +135,7 @@ $this->layout( 'layouts/ixpv4' )
                     </table>
                 </div>
 
-                <div class="col-sm-6">
+                <div class="col-lg-6 col-md-12">
                     <table class="table_view_info">
                         <tr>
                             <td>

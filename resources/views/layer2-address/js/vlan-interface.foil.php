@@ -133,12 +133,12 @@
      */
     function loadDataTable(){
         table = $( '#layer-2-interface-list' ).DataTable( {
-            "autoWidth": false,
-            "columnDefs": [{
-                "targets": [ 0 ],
-                "visible": false,
-                "searchable": false,
-            }],
+            responsive : true,
+            columnDefs: [
+                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 2, targets: -1 },
+                { "targets": [ 0 ], "visible": false, "searchable": false, }
+            ],
             "order": [[ 0, "asc" ]]
         });
     }

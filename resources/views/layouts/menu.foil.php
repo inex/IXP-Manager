@@ -173,8 +173,8 @@
 
                 <?php if( request()->is( 'router/*' ) ): ?>
                 <ul class="sub-menu">
-                    <li class="nav-item sub-menu <?= request()->is( 'router/*' ) && request()->is( 'router/status' ) ? 'active' : '' ?> " >
-                        <a href="<?= route('router@status' ) ?>" class="nav-link" >
+                    <li class="nav-item sub-menu" >
+                        <a href="<?= route('router@status' ) ?>" class="nav-link <?= request()->is( 'router/status' ) ? 'active' : '' ?> " >
                             Live Status
                         </a>
                     </li>
@@ -191,8 +191,8 @@
                 <?php if( request()->is( 'console-server/*' ) || request()->is( 'console-server-connection/*' ) ): ?>
                     <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection', false ) ): ?>
                         <ul class="sub-menu">
-                            <li class="nav-item <?= !request()->is( 'console-server-connection/*' ) ?: 'active' ?>" >
-                                <a href="<?= route('console-server-connection@list' ) ?>" class="nav-link">
+                            <li class="nav-item" >
+                                <a href="<?= route('console-server-connection@list' ) ?>" class="nav-link <?= !request()->is( 'console-server-connection/*' ) ?: 'active' ?>">
                                     Console Server Connections
                                 </a>
                             </li>

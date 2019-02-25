@@ -4,7 +4,9 @@
         <?= Former::open()->method( 'POST' )
             ->id( 'form' )
             ->action( route ( $t->feParams->route_prefix . '@store' ) )
-            ->customInputWidthClass( 'col-sm-3' )
+            ->customInputWidthClass( 'col-lg-4 col-sm-6' )
+            ->customLabelWidthClass( 'col-lg-3 col-sm-4' )
+            ->actionButtonsCustomClass( "grey-box")
         ?>
 
         <?= Former::text( 'name' )
@@ -89,10 +91,10 @@
         </div>
 
         <?= Former::actions(
-            Former::primary_submit( $t->data[ 'params']['isAdd'] ? 'Add' : 'Save Changes' ),
-            Former::secondary_link( 'Cancel' )->href( route ($t->feParams->route_prefix . '@list') ),
-            Former::success_button( 'Help' )->id( 'help-btn' )
-        )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
+            Former::primary_submit( $t->data[ 'params']['isAdd'] ? 'Add' : 'Save Changes' )->class( "mb-2 mb-sm-0" ),
+            Former::secondary_link( 'Cancel' )->href( route ($t->feParams->route_prefix . '@list') )->class( "mb-2 mb-sm-0" ),
+            Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
+        );
         ?>
 
         <?= Former::hidden( 'id' )

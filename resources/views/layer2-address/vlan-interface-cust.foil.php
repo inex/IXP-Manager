@@ -21,9 +21,9 @@ MAC Address Management
 
 
 <?php $this->section( 'content' ) ?>
-<div>
+<div class="row">
 
-    <div>
+    <div class="col-sm-12">
 
         <?= $t->alerts() ?>
 
@@ -34,7 +34,7 @@ MAC Address Management
 
         <div id="message"></div>
         <div id="list-area" class="collapse">
-            <table id='layer-2-interface-list' class="table table-striped">
+            <table id='layer-2-interface-list' class="table table-striped" width="100%">
                 <thead class="thead-dark">
                     <tr>
                         <th>
