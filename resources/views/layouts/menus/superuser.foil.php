@@ -8,7 +8,7 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle <?= !request()->is( 'customer/details', 'customer/associates', 'switch/configuration' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle center-dd-caret d-flex <?= !request()->is( 'customer/details', 'customer/associates', 'switch/configuration' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Member Information
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -26,7 +26,7 @@
 
 
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle <?= !request()->is( 'lg', 'peering-matrix' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle center-dd-caret d-flex <?= !request()->is( 'lg', 'peering-matrix' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Peering
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -50,7 +50,7 @@
             ?>
 
             <li class="nav-item dropdown <?= !request()->is( 'statistics/*', 'weather-map/*' ) ?: 'active' ?>">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle center-dd-caret d-flex" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Statistics
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -116,7 +116,7 @@
 
         <ul class="navbar-nav mt-lg-0">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle <?= !request()->is( 'profile', 'api-key/list', 'customer-note/unread-notes' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle center-dd-caret d-flex <?= !request()->is( 'profile', 'api-key/list', 'customer-note/unread-notes' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     My Account
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right">

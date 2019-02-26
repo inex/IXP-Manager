@@ -84,7 +84,7 @@ $this->layout( 'layouts/ixpv4' );
                                     <i class="fa fa-pencil"></i>
                                 </a>
 
-                                <a class="btn btn-outline-secondary" id="delete-sflr-<?= $sflr->getId() ?>" href="" title="Delete">
+                                <a class="btn btn-outline-secondary delete-sflr" id="delete-sflr-<?= $sflr->getId() ?>" href="" title="Delete">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </div>
@@ -117,7 +117,7 @@ $this->layout( 'layouts/ixpv4' );
         /**
          * on click event to to delete a sflow receiver
          */
-        $( "a[id|='delete-sflr']" ).on('click', function(e) {
+        $( "#table-sflr" ).on('click', '.delete-sflr', function(e) {
             e.preventDefault();
             let sflr = (this.id).substring(12);
             deletePopup( sflr , false, 'sflr' );

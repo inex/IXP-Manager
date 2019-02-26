@@ -80,7 +80,7 @@ function deletePopup( id, viid, type ) {
             buttons: {
                 cancel: {
                     label: 'Cancel',
-                    className: 'btn-primary'
+                    className: 'btn-secondary'
                 },
                 confirm: {
                     label: 'Delete',
@@ -112,10 +112,7 @@ function deletePopup( id, viid, type ) {
             buttons: {
                 cancel: {
                     label: "Cancel",
-                    className: 'btn-primary',
-                    callback: function(){
-                        return false;
-                    }
+                    className: 'btn-secondary',
                 },
                 deleteRelated: {
                     label: `Delete with related ${reltype} interface`,
@@ -127,12 +124,12 @@ function deletePopup( id, viid, type ) {
                                 related : true
                             },
                         })
-                            .done( function( data ) {
-                                location.reload();
-                            })
-                            .fail( function(){
-                                throw new Error( `Error running ajax query for ${urlDelete}/${id}` );
-                            })
+                        .done( function( data ) {
+                            location.reload();
+                        })
+                        .fail( function(){
+                            throw new Error( `Error running ajax query for ${urlDelete}/${id}` );
+                        })
                     }
                 },
                 confirm: {
@@ -142,27 +139,16 @@ function deletePopup( id, viid, type ) {
                         $.ajax( urlDelete + "/" + id,{
                             type : 'POST'
                         })
-                            .done( function( data ) {
-                                location.reload();
-                            })
-                            .fail( function(){
-                                throw new Error( `Error running ajax query for ${urlDelete}/${id}` );
-                            })
+                        .done( function( data ) {
+                            location.reload();
+                        })
+                        .fail( function(){
+                            throw new Error( `Error running ajax query for ${urlDelete}/${id}` );
+                        })
                     }
                 }
             }
         });
     }
-}
-
-
-/**
- * initialise the datatable table
- */
-function loadDataTable( tableId ){
-    table = $( '#table-' + tableId ).DataTable( {
-        "autoWidth": false,
-        "iDisplayLength": 100
-    });
 }
 </script>
