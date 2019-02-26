@@ -206,8 +206,8 @@
 
             <?php if( config( 'ixp_fe.frontend.beta.core_bundles', false ) ): ?>
 
-                <li class="nav-item <?= !request()->is( 'interfaces/core-bundle/*' ) ?: 'active' ?>" >
-                    <a href="<?= route('core-bundle/list' ) ?>" class="nav-link">
+                <li class="nav-item" >
+                    <a href="<?= route('core-bundle/list' ) ?>" class="nav-link <?= !request()->is( 'interfaces/core-bundle/*' ) ?: 'active' ?>">
                         Core Bundles
                     </a>
                 </li>

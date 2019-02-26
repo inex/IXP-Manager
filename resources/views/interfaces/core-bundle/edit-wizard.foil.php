@@ -56,6 +56,8 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= $t->alerts() ?>
 
+            <div id="message-cb"></div>
+
             <div class="card">
                 <div class="card-body">
                     <?= Former::open()->method( 'POST' )
@@ -418,7 +420,6 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script type="text/javascript" src="<?= asset( '/bower_components/ip-address/dist/ip-address-globals.js' ) ?>"></script>
     <?= $t->insert( 'interfaces/core-bundle/js/edit-wizard' ); ?>
     <?= $t->insert( 'interfaces/common/js/cb-functions' ); ?>
 <?php $this->append() ?>

@@ -1,7 +1,3 @@
-<!--<script type="text/javascript" src="--><?//= asset( '/bower_components/jquery-ui/ui/widget.js' ) ?><!--"></script>-->
-<!--<script type="text/javascript" src="--><?//= asset( '/bower_components/blueimp-file-upload/js/jquery.iframe-transport.js' ) ?><!--"></script>-->
-<!--<script type="text/javascript" src="--><?//= asset( '/bower_components/jquery-knob/js/jquery.knob.js' ) ?><!--"></script>-->
-<!--<script type="text/javascript" src="--><?//= asset( '/bower_components/blueimp-file-upload/js/jquery.fileupload.js' ) ?><!--"></script>-->
 <script>
 
     //////////////////////////////////////////////////////////////////////////////////////

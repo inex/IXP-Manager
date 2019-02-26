@@ -57,6 +57,22 @@
         });
     });
 
+    /**
+     * Check if all the switch ports have been chosen before submit
+     */
+    $('#core-bundle-form').submit(function( e ) {
+        if( $( "#subnet" ).val() !== '' ){
+            if( !validSubnet( $( "#subnet" ).val() ) ){
+                $("#message-cb").html("<div class='alert alert-danger' role='alert'> The subnet " + $( this ).val() + " is not valid! </div>");
+                e.preventDefault();
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                return false;
+            }
+        }
+
+
+    });
+
 
     /**
      * Check if all the switch ports have been chosen before submit
