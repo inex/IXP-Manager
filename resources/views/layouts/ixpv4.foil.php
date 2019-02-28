@@ -45,17 +45,16 @@
             ?>
         </header>
 
-
         <div class="container-fluid">
             <div class="row" >
                 <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
                     <?= $t->insert( 'layouts/menu' ); ?>
                 <?php endif; ?>
-
+                <div id="slide-reveal-overlay" class="collapse"></div>
                 <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-                    <main role="main" class="col-md-10 ml-sm-auto col-lg-10 mt-2 pb-4">
+                    <main role="main" id="main-div" class="col-md-10 ml-sm-auto col-lg-10 mt-2 pb-4">
                  <?php else: ?>
-                    <main role="main" class="col-md-10 mx-sm-auto mt-2 pb-4">
+                    <main role="main" id="main-div" class="col-md-10 mx-sm-auto mt-2 pb-4">
                 <?php endif; ?>
 
                     <?php /*if( Auth::check() && Auth::user()->isSuperUser() ): */?>
@@ -127,6 +126,7 @@
                         console.log('Window Width: '+ winWidth + ' class used: col-xl');
                     }
                 });
+
             });
 
             $( ".chzn-select" ).select2({ width: '100%', placeholder: function() {
@@ -149,6 +149,27 @@
                 $( "#menu-select-customer" ).select2({ width: '100%',placeholder: "Jump to customer...", allowClear: true }).change( function(){
                     document.location.href = '<?= url( "/customer/overview" ) ?>/' + $( "#menu-select-customer" ).val();
                 });
+
+
+                $('#sidebarCollapse').on('click', function () {
+                    sidebar();
+                });
+
+                $(document).on('keyup',function(evt) {
+                    if (evt.keyCode == 27) {
+                        if ($('#side-navbar').hasClass('active')) {
+                            sidebar();
+                        }
+                    }
+                });
+
+                function sidebar(){
+                    $('#menu-icon').toggleClass('fa-bars').toggleClass('fa-times');
+                    $('#side-navbar').toggleClass('active');
+                    $('#slide-reveal-overlay').toggleClass('collapse');
+                    $('body').toggleClass('overflow-hidden');
+                }
+
             <?php endif; ?>
         </script>
 

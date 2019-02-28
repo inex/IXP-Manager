@@ -1,17 +1,19 @@
+
 <nav id="side-navbar" class="col-md-2 d-none d-md-block bg-light sidebar pb-4 pt-4">
     <div class="sidebar-sticky">
-        <ul class="nav flex-column">
+        <ul class="nav d-inline">
 
             <form class="bd-search d-flex align-items-center" method="get" action="<?= route( 'search' ) ?>">
 
                 <div class="input-group">
                     <input type="text" class="form-control" placeholder="Search for..." name="search">
                     <div class="input-group-append">
-                      <a class="btn btn-light input-group-text"  id="searchHelp" data-toggle="modal" data-target="#searchHelpModal">
-                          <i class="fa fa-question-circle"></i>
-                      </a>
+                        <button class="btn btn-light input-group-text" type="button" id="searchHelp" data-toggle="modal" data-target="#searchHelpModal">
+                            <i class="fa fa-question-circle"></i>
+                        </button>
                     </div>
                 </div>
+
             </form>
 
             <hr class="w-100">
@@ -329,9 +331,9 @@
                 </a>
             </li>
 
-            <li class="nav-header">
-                IXP Utilities
-            </li>
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center mt-4 mb-1 text-muted">
+                IXP UTILITIES
+            </h6>
 
             <li class="nav-item" >
                 <a href="<?= route( 'utils/phpinfo' ) ?>" class="nav-link <?= !request()->is( 'utils/phpinfo' ) ?: 'active' ?>">
