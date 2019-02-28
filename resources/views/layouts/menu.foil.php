@@ -285,7 +285,7 @@
                     </li>
 
                     <li class="nav-item">
-                        <a href="<?= route( 'vlan@private' ) ?>" class="nav-link <?= request()->is( 'vlan/private' ) ? 'active' : '' ?>">
+                        <a href="<?= route( 'vlan@private' ) ?>" class="nav-link <?= !request()->is( 'vlan/private' ) ?: 'active' ?>">
                             Private VLANs
                         </a>
                     </li>

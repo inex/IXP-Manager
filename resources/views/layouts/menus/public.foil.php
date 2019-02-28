@@ -9,31 +9,31 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle <?= !request()->is( 'customer/details', 'customer/associates' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Member Information
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item" href="<?= route('customer@details') ?>">
+                    <a class="dropdown-item <?= !request()->is( 'customer/details' ) ?: 'active' ?>" href="<?= route('customer@details') ?>">
                         Member Details
                     </a>
-                    <a class="dropdown-item" href="<?= route( "customer@associates" ) ?>">
+                    <a class="dropdown-item <?= !request()->is( 'customer/associates' ) ?: 'active' ?>" href="<?= route( "customer@associates" ) ?>">
                         Associate Members
                     </a>
                 </div>
             </li>
 
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle <?= !request()->is( 'lg', 'peering-matrix' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Peering
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <?php if( !config('ixp_fe.frontend.disabled.lg' ) ): ?>
-                        <a class="dropdown-item" href="<?= url('lg') ?>">
+                        <a class="dropdown-item <?= !request()->is( 'lg' ) ?: 'active' ?>" href="<?= url('lg') ?>">
                             Looking Glass
                         </a>
                     <?php endif; ?>
                     <?php if( ixp_min_auth( config( 'ixp.peering-matrix.min-auth' ) ) && !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
-                        <a class="dropdown-item" href="<?= route('peering-matrix@index') ?>">
+                        <a class="dropdown-item <?= !request()->is( 'peering-matrix' ) ?: 'active' ?>" href="<?= route('peering-matrix@index') ?>">
                             Peering Matrix
                         </a>
                     <?php endif; ?>
@@ -47,31 +47,31 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <?php if( is_numeric( config( 'grapher.access.ixp' ) ) && config( 'grapher.access.ixp' ) == Entities\User::AUTH_PUBLIC ): ?>
-                        <a class="dropdown-item" href="<?= route( 'statistics/ixp' ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/ixp' ) ?: 'active' ?>" href="<?= route( 'statistics/ixp' ) ?>">
                             Overall Peering Graphs
                         </a>
                     <?php endif; ?>
 
                     <?php if( is_numeric( config( 'grapher.access.infrastructure' ) ) && config( 'grapher.access.infrastructure' ) == Entities\User::AUTH_PUBLIC ): ?>
-                        <a class="dropdown-item" href="<?= route( 'statistics/infrastructure' ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/infrastructure' ) ?: 'active' ?>" href="<?= route( 'statistics/infrastructure' ) ?>">
                             Infrastructure Graphs
                         </a>
                     <?php endif; ?>
 
                     <?php if( is_numeric( config( 'grapher.access.vlan' ) ) && config( 'grapher.access.vlan' ) == Entities\User::AUTH_PUBLIC && config( 'grapher.backends.sflow.enabled' ) ): ?>
-                        <a class="dropdown-item" href="<?= route( 'statistics/vlan' ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/vlan' ) ?: 'active' ?>" href="<?= route( 'statistics/vlan' ) ?>">
                             VLAN / Per-Protocol Graphs
                         </a>
                     <?php endif; ?>
 
                     <?php if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) == Entities\User::AUTH_PUBLIC ): ?>
-                        <a class="dropdown-item" href="<?= route('statistics/trunk') ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/trunk' ) ?: 'active' ?>" href="<?= route('statistics/trunk') ?>">
                             Inter-Switch / PoP Graphs
                         </a>
                     <?php endif; ?>
 
                     <?php if( is_numeric( config( 'grapher.access.switch' ) ) && config( 'grapher.access.switch' ) == Entities\User::AUTH_PUBLIC ): ?>
-                        <a class="dropdown-item" href="<?= route('statistics/switch') ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/switch' ) ?: 'active' ?>" href="<?= route('statistics/switch') ?>">
                             Switch Aggregate Graphs
                         </a>
                     <?php endif; ?>
@@ -79,7 +79,7 @@
                     <?php if( $this->grapher()->canAccessAllCustomerGraphs() ): ?>
                         <div class="dropdown-divider"></div>
 
-                        <a class="dropdown-item" href="<?= route( 'statistics/members' ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/members' ) ?: 'active' ?>" href="<?= route( 'statistics/members' ) ?>">
                             Member Graphs
                         </a>
                     <?php endif; ?>
@@ -88,21 +88,21 @@
                         <div class="dropdown-divider"></div>
 
                         <?php foreach( config( 'ixp_tools.weathermap' ) as $k => $w ): ?>
-                            <a class="dropdown-item" href="<?= route( 'weathermap' , [ 'id' => $k ] ) ?>"><?= $w['menu'] ?></a>
+                            <a class="dropdown-item <?= !request()->is( 'weather-map/' . $k ) ?: 'active' ?>" href="<?= route( 'weathermap' , [ 'id' => $k ] ) ?>"><?= $w['menu'] ?></a>
                         <?php endforeach; ?>
                     <?php endif; ?>
                 </div>
             </li>
 
             <li class="nav-item">
-                <a class="nav-link" href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>">
+                <a class="nav-link <?= !request()->is( 'public-content/support' ) ?: 'active' ?>" href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>">
                     Support
                 </a>
             </li>
         </ul>
         <ul class="navbar-nav mt-lg-0">
             <li class="nav-item">
-                <a class="nav-link" href="<?= route( 'login@showForm' ) ?>">
+                <a class="nav-link <?= !request()->is( 'login' ) ?: 'active' ?>" href="<?= route( 'login@showForm' ) ?>">
                     Login
                 </a>
             </li>

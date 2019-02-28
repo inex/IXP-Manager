@@ -61,7 +61,15 @@
                 <?php else: ?>
 
                     <div class="alert alert-info" role="alert">
-                        <b>No <?= ucfirst( $t->feParams->pagetitle ) ?> exist.</b> <a href="<?= route($t->feParams->route_prefix.'@add') ?>">Add one...</a>
+                        <div class="d-flex align-items-center">
+                            <div class="text-center">
+                                <i class="fa fa-info-circle fa-2x"></i>
+                            </div>
+                            <div class="col-sm-12">
+                                <b>No <?= ucfirst( $t->feParams->pagetitle ) ?> exist.</b>
+                                <a class="btn btn-outline-secondary ml-2" href="<?= route($t->feParams->route_prefix.'@add') ?>">Add one...</a>
+                            </div>
+                        </div>
                     </div>
 
                 <?php endif; /* listEmptyMessage */ ?>

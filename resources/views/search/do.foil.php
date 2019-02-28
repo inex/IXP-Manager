@@ -159,6 +159,6 @@
         paging:   false,
         info:   false,
     } );
-    
+
 </script>
 <?php $this->append() ?>

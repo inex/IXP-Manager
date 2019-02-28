@@ -29,23 +29,23 @@
             ?>
 
             <li class="nav-item">
-                <a class="nav-link" href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>">
+                <a class="nav-link <?= !request()->is( 'public-content/support' ) ?: 'active' ?>" href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>">
                     Support
                 </a>
             </li>
         </ul>
         <ul class="navbar-nav mt-lg-0">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle <?= !request()->is( 'profile', 'api-key/list' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     My Account
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right">
 
-                    <a class="dropdown-item" href="<?= route( 'profile@edit' ) ?>">
+                    <a class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
                         Profile
                     </a>
 
-                    <a class="dropdown-item" href="<?= route('api-key@list' )?>">
+                    <a class="dropdown-item <?= !request()->is( 'api-key/list' ) ?: 'active' ?>" href="<?= route('api-key@list' )?>">
                         API Keys
                     </a>
 

@@ -93,7 +93,7 @@
 
     }
 
-    .fa-globe:hover {
+    .fa-globe:hover, .fa-github:hover {
         color: grey;
 
     }
