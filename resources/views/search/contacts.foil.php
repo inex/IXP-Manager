@@ -1,12 +1,22 @@
 <div class="col-sm-12">
-    <h3> Contacts</h3>
-    <table class="table">
-        <thead>
+    <h3>
+        Contacts
+    </h3>
+    <table class="table table-striped" width="100%">
+        <thead class="thead-dark">
             <tr>
-                <th>Name</th>
-                <th>E-Mail</th>
-                <th>Customer</th>
-                <th>Created</th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    E-Mail
+                </th>
+                <th>
+                    Customer
+                </th>
+                <th>
+                    Created
+                </th>
             </tr>
         </thead>
         <tbody>
