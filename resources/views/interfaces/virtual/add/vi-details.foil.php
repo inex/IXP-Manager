@@ -182,7 +182,7 @@
 
                 <?=
                 Former::actions(
-                    Former::primary_submit( 'Save Changes' )->class( "mb-2 mb-md-2 mb-lg-0" ),
+                    Former::primary_submit( $t->vi ? 'Save Changes' : 'Add' )->class( "mb-2 mb-md-2 mb-lg-0" ),
                     Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-md-2 mb-lg-0" ),
                     '<a class="btn btn-secondary mb-2 mb-md-2 mb-lg-0" href="#" id="advanced-options">Advanced Options</a>',
                     $bbtn

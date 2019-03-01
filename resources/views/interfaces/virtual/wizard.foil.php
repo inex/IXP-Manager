@@ -228,7 +228,7 @@ $this->layout( 'layouts/ixpv4' );
 
 
                 <?=Former::actions(
-                    Former::primary_submit( 'Save Changes' )->class( "mb-2 mb-sm-0" ),
+                    Former::primary_submit( 'Add' )->class( "mb-2 mb-sm-0" ),
                     Former::secondary_link( 'Cancel' )->href( route( 'interfaces/virtual/list' ) )->class( "mb-2 mb-sm-0" ),
                     Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" ),
                     Former::info_link( 'External Documentation &Gt;' )->href( 'http://docs.ixpmanager.org/usage/interfaces/' )->target( '_blank' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )

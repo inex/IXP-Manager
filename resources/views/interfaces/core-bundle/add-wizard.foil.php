@@ -320,7 +320,7 @@ $this->layout( 'layouts/ixpv4' );
                 ?>
 
                 <?=Former::actions(
-                    Former::primary_submit( 'Save Changes' )->id( 'core-bundle-submit-btn' )->class( "mb-2 mb-sm-0" ),
+                    Former::primary_submit( 'Add' )->id( 'core-bundle-submit-btn' )->class( "mb-2 mb-sm-0" ),
                     Former::secondary_link( 'Cancel' )->href( route( 'core-bundle/list' ) )->class( "mb-2 mb-sm-0" ),
                     Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
                 )->id('btn-group-add')

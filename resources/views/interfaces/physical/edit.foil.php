@@ -283,7 +283,7 @@ Physical Interfaces / Edit
                 <div class="clearfix"></div>
 
                 <?= Former::actions(
-                    Former::primary_submit( 'Save Changes' )->class( "mb-2 mb-sm-0" ),
+                    Former::primary_submit( $t->pi ? 'Save Changes' : 'Add' )->class( "mb-2 mb-sm-0" ),
                     Former::secondary_link( 'Cancel' )->id( 'cancel-btn' )->href( $t->vi ? route( 'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) : route( 'interfaces/physical/list' ) )->class( "mb-2 mb-sm-0" ),
                     Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
                 )->id('btn-group')?>

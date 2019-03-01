@@ -307,7 +307,7 @@
 
 
 
-                <?= Former::actions( Former::primary_submit( 'Save Changes' )->class( "mb-2 mb-sm-0" ),
+                <?= Former::actions( Former::primary_submit( $t->cust ? 'Save Changes' : 'Add' )->class( "mb-2 mb-sm-0" ),
                     Former::secondary_link( 'Cancel' )->href( route( 'customer@list' ) )->class( "mb-2 mb-sm-0" ),
                     Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
                 );
