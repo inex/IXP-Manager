@@ -185,7 +185,7 @@
                                         </a>
 
                                         <?php if( $pp->getActive() ): ?>
-                                            <a class="btn btn-outline-secondary" id='list-delete-<?= $pp->getId() ?>' href="<?= route( 'patch-panel@change-status' , [ 'id' => $pp->getId(), 'status' => ( $pp->getActive() ? '0' : '1' ) ] ) ?>" title="Make Inactive">
+                                            <a class="btn btn-outline-secondary list-delete" id='list-delete-<?= $pp->getId() ?>' href="#" title="Make Inactive">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         <?php else: ?>
@@ -242,6 +242,38 @@
             }
 
             $('#adv-search-select-cabinets').html( opts );
+        });
+
+
+
+        $( '#patch-panel-list' ).on( 'click', '.list-delete', function( event ) {
+
+            event.preventDefault();
+            let ppid = ( this.id ).substring( 12 );
+            let url = "<?= route( 'patch-panel@change-status' , [ 'id' => $pp->getId(), 'status' => ( $pp->getActive() ? '0' : '1' ) ] ) ?>";
+
+            console.log($(this).attr('href'));
+            bootbox.dialog({
+                message: 'Are you sure that you want to delete this Patch Panel ? It will become deactivated.',
+                title: "Delete Patch Panel",
+                buttons: {
+                    cancel: {
+                        label: 'Close',
+                        className: 'btn-secondary',
+                        callback: function () {
+                            $('.bootbox.modal').modal('hide');
+                            return false;
+                        }
+                    },
+                    submit: {
+                        label: 'Delete',
+                        className: 'btn-danger',
+                        callback: function () {
+                            window.location = url;
+                        }
+                    },
+                }
+            });
         });
     });
 </script>
