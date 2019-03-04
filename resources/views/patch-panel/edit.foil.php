@@ -108,7 +108,8 @@
 
                     <?= Former::number( 'numberOfPorts' )
                         ->label( ( $t->pp ? 'Add ' : '' ) . 'Number of Ports' )
-                        ->appendIcon( 'nb-port glyphicon glyphicon-info-sign' )
+
+                        ->append( '<button class="btn-outline-secondary btn rounded-right" id="icon-nb-port" type="button"><i class="nb-port fa fa-info-circle"></i></button>' )
                         ->min( 0 )
                         ->blockHelp(
                             $t->pp ? 'There are ' . $t->pp->getPortCount() . " ports in this panel already. Enter the number of ports <b> you want to add</b> above."
@@ -229,7 +230,7 @@
             /**
             * set data to the tooltip
             */
-            $( ".glyphicon-nb-port" ).parent().attr( 'data-toggle','popover' ).attr( 'title' , 'Help - Number of Ports' ).attr( 'data-content' , '<b>Note that duplex ports should be entered as two ports.</b>' );
+            $( "#icon-nb-port" ).parent().attr( 'data-toggle','popover' ).attr( 'title' , 'Help - Number of Ports' ).attr( 'data-content' , '<b>Note that duplex ports should be entered as two ports.</b>' );
 
             /**
              * configuration of the tooltip

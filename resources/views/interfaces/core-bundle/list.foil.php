@@ -70,11 +70,11 @@ $this->layout( 'layouts/ixpv4' );
                         </td>
                         <td>
                             <?php if( !$cb->getEnabled() ):?>
-                                <i class="glyphicon glyphicon-remove"></i>
+                                <i class="fa fa-remove"></i>
                             <?php elseif( $cb->getEnabled() && $cb->doAllCoreLinksEnabled() ): ?>
-                                <i class="glyphicon glyphicon-ok"></i>
+                                <i class="fa fa-check"></i>
                             <?php else:?>
-                                <span class="label label-warning"> <?= count( $cb->getCoreLinksEnabled() ) ?> / <?= count( $cb->getCoreLinks() )?> </span>
+                                <span class="badge badge-warning"> <?= count( $cb->getCoreLinksEnabled() ) ?> / <?= count( $cb->getCoreLinks() )?> </span>
                             <?php endif; ?>
                         </td>
                         <td>

@@ -217,7 +217,7 @@
                                                     </div>
 
                                                         <?php if( Auth::user()->isSuperUser() ): ?>
-                                                            <div class="float-right dropdown btn-group-sm">
+                                                            <div class="float-right dropdown btn-group-sm ml-2">
                                                                 <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                                                     Change State
                                                                 </button>
@@ -470,11 +470,11 @@
 
                                         <div class="col-lg-6 col-md-12 mt-4 mt-lg-0">
                                             <div class="card">
-                                                <div class="card-header padding-10">
+                                                <div class="card-header">
                                                     Public Notes:
                                                     <?php if( $current ): ?>
-                                                        <a class="btn btn-default btn-xs pull-right" id="edit-notes-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" title="edit note" >
-                                                            <i class="glyphicon glyphicon-pencil"></i>
+                                                        <a class="btn btn-outline-secondary btn-sm pull-right" id="edit-notes-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" title="edit note" >
+                                                            <i class="fa fa-pencil"></i>
                                                         </a>
                                                     <?php endif; ?>
                                                 </div>
@@ -486,11 +486,11 @@
 
                                         <div class="col-lg-6 col-md-12 mt-4 mt-lg-0">
                                             <div class="card">
-                                                <div class="card-header padding-10">
+                                                <div class="card-header">
                                                         Private Notes:
                                                     <?php if( $current ): ?>
-                                                        <a class="btn btn-default btn-xs pull-right" id="edit-notes-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" title="edit note" >
-                                                            <i class="glyphicon glyphicon-pencil"></i>
+                                                        <a class="btn btn-outline-secondary btn-sm pull-right" id="edit-notes-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" title="edit note" >
+                                                            <i class="fa fa-pencil"></i>
                                                         </a>
                                                     <?php endif; ?>
                                                 </div>
@@ -505,7 +505,7 @@
                                         <div class="col-sm-12">
                                             <?php if ( $p->getNotes() ): ?>
                                                 <div class="card">
-                                                    <div class="card-header padding-10">
+                                                    <div class="card-header">
                                                         Notes:
                                                     </div>
                                                     <div class="card-body">

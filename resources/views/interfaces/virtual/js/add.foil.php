@@ -145,7 +145,7 @@ function duplicateVliPopup( id, viid ){
                 }
             },
             confirm: {
-                label: '<i class="glyphicon glyphicon-ok"></i> Duplicate',
+                label: '<i class="fa fa-check"></i> Duplicate',
                 callback: function () {
                     let duplicateTo = $( "#duplicateTo" );
                     if( duplicateTo.val() ) {

@@ -98,7 +98,7 @@
                                 </td>
                                 <td>
                                     <a href="<?= route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->pp->getId() ] ) ?>">
-                                    <span title="" class="label label-<?= $t->pp->getCssClassPortCount() ?>">
+                                    <span title="" class="badge badge-<?= $t->pp->getCssClassPortCount() ?>">
                                             <?php if( $t->pp->hasDuplexPort() ): ?>
                                                 <?= $t->pp->getAvailableOnTotalPort(true) ?>
                                             <?php else: ?>
@@ -108,7 +108,7 @@
 
                                         <?php if( $t->pp->hasDuplexPort() ): ?>
                                             &nbsp;
-                                            <span class="label label-info">
+                                            <span class="badge badge-info">
                                             <?= $t->pp->getAvailableOnTotalPort(false) ?>
                                         </span>
                                         <?php endif; ?>

@@ -292,7 +292,7 @@
                                 tpl.attr( 'id','uploaded-file-' + result.id );
                                 tpl.find( 'span' ).addClass( 'success' );
                                 tpl.append( `<span id="uploaded-file-toggle-private-${result.id}" class="private fa fa-unlock fa-lg"></span>` );
-                                tpl.append( `<span id="uploaded-file-delete-${result.id}" class="delete glyphicon glyphicon-trash"></span>` );
+                                tpl.append( `<span id="uploaded-file-delete-${result.id}" class="delete fa fa-trash"></span>` );
                                 tpl.find('p').append( `<i id="message-${result.id}" class="success">${result.message}</i>` );
 
                                 $('#uploaded-file-toggle-private-' + result.id).on( 'click', toggleFilePrivacy );

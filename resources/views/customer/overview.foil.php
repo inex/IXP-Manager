@@ -108,7 +108,7 @@
             <span class="fa fa-chevron-left"></span>
         </a>
         <a class="btn btn-outline-secondary" href="<?= route( "customer@overview", [ 'id' => $c->getId() ] ) ?>">
-            <span class="fa glyphicon fa-refresh"></span>
+            <span class="fa fa-refresh"></span>
         </a>
         <a class="btn btn-outline-secondary" href="<?= route( "customer@overview", [ 'id' => $cidnext ] ) ?>">
             <span class="fa fa-chevron-right"></span>

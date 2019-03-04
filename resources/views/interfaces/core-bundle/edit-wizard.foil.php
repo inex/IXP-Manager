@@ -251,7 +251,7 @@ $this->layout( 'layouts/ixpv4' );
                                             <?= $t->cb->getSwitchSideX( true )->getName() ?>
                                             <input type="hidden" value="<?= $t->cb->getSwitchSideX( true )->getId() ?>" id="switch-a">
                                         <?php else: ?>
-                                            <span class="label label-warning">Multiple</span>
+                                            <span class="badge badge-warning">Multiple</span>
                                         <?php endif;?>
                                     </td>
                                     <td>
@@ -260,7 +260,7 @@ $this->layout( 'layouts/ixpv4' );
                                             <?= $t->cb->getSwitchSideX( false )->getName() ?>
                                             <input type="hidden" value="<?= $t->cb->getSwitchSideX( false )->getId() ?>" id="switch-b">
                                         <?php else: ?>
-                                            <span class="label label-warning">Multiple</span>
+                                            <span class="badge badge-warning">Multiple</span>
                                         <?php endif;?>
                                     </td>
                                 </tr>
