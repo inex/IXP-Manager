@@ -66,11 +66,24 @@ class Kernel extends ConsoleKernel {
         // $schedule->command('inspire')
         //          ->hourly();
 
+
+        // IRRDB - https://docs.ixpmanager.org/features/irrdb/
+        if( config( 'ixp.irrdb.bgpq3.path' ) && is_executable( config( 'ixp.irrdb.bgpq3.path' ) ) ) {
+            $schedule->command( 'irrdb:update-prefix-db --quiet' )->cron( '7 */6 * * *' )
+                ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_IRRDB_UPDATE_PREFIX_DB', false ); } );
+
+            $schedule->command( 'irrdb:update-asn-db --quiet' )->cron( '37 */6 * * *' )
+                ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_IRRDB_UPDATE_ASN_DB', false ); } );
+        }
+
+
         // OUI Update - https://docs.ixpmanager.org/features/layer2-addresses/#oui-database
-        $schedule->command( 'utils:oui-update --quiet' )->weekly()->mondays()->at('9:15');
+        $schedule->command( 'utils:oui-update --quiet' )->weekly()->mondays()->at('9:15')
+            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UTILS_OUI_UPDATE', false ); } );
 
         // Switch SNMP pool - https://docs.ixpmanager.org/usage/switches/#automated-polling-snmp-updates
-        $schedule->command( 'switch:snmp-poll --quiet' )->hourlyAt(10);
+        $schedule->command( 'switch:snmp-poll --via-scheduler --quiet' )->hourlyAt(10)
+            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_SWITCH_SNMP_POLL', false ); } );
 
     }
 
