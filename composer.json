@@ -1,5 +1,5 @@
 {
-    "name": "inex/IXP-Manager",
+    "name": "inex/ixp-manager",
     "description": "An application by INEX to manage Internet Exchange Points (IXPs) - https://www.ixpmanager.org/",
     "type": "project",
     "keywords": ["ixp manager", "ixpm", "inex", "ixp"],
