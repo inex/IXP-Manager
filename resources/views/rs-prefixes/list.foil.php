@@ -59,7 +59,12 @@
 <?php $this->section( 'scripts' ) ?>
     <script>
         $(document).ready( function() {
-            $( '.table' ).dataTable( { "autoWidth": false, pageLength: 100 } ).show();
+            $( '.table' ).show();
+
+            $( '.table' ).dataTable({
+                responsive : true,
+                pageLength: 100
+            } );
         });
     </script>
 <?php $this->append() ?>

@@ -28,8 +28,9 @@
 
             <?= Former::open()->method( 'post' )
                 ->action( route ('ip-address@store' ) )
-                ->customInputWidthClass( 'col-sm-6' )
-                ->addClass( 'col-md-10' );
+                ->customInputWidthClass( 'col-lg-4 col-sm-6' )
+                ->customLabelWidthClass( 'col-lg-2 col-sm-3' )
+                ->actionButtonsCustomClass( "grey-box");
             ?>
 
             <?= Former::select( 'vlan' )
@@ -88,10 +89,10 @@
                     . 'Checking this will just skip over any addresses that already exist and only add the new ones.' );
             ?>
 
-            <?=Former::actions( Former::primary_submit( 'Add Addresses' ),
-                Former::secondary_link( 'Cancel' )->href( route ( 'ip-address@list', [ 'protocol' => $t->protocol, 'vlanid' => request()->input( 'vlan' ) ] ) ),
-                Former::success_button( 'Help' )->id( 'help-btn' )
-            )->class( "bg-light shadow-sm p-4 mt-4 text-center" );?>
+            <?=Former::actions( Former::primary_submit( 'Add Addresses' )->class( "mb-2 mb-sm-0"),
+                Former::secondary_link( 'Cancel' )->href( route ( 'ip-address@list', [ 'protocol' => $t->protocol, 'vlanid' => request()->input( 'vlan' ) ] ) )->class( "mb-2 mb-sm-0"),
+                Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0")
+            );?>
 
             <?= Former::close() ?>
         </div>

@@ -9,13 +9,13 @@
             <i class="fa fa-pencil"></i>
         </a>
 
-        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            <i class="fa fa-trash"></i> <span class="caret"></span>
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-trash"></i>
         </button>
 
         <div class="dropdown-menu dropdown-menu-right">
 
-            <a class="dropdown-item" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>" title="Delete">
+            <a class="dropdown-item d2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>" title="Delete">
                 Delete the Vlan
             </a>
             <a class="dropdown-item" href="<?= route( 'ip-address@delete-by-network' , [ 'vlan' => $t->row['id']  ] ) ?>">

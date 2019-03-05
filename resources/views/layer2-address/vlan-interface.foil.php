@@ -10,13 +10,16 @@ Vlan Interface / Configured MAC Address Management
 
 <?php $this->section( 'page-header-postamble' ) ?>
 
-    <a href="<?= route( "interfaces/virtual/edit" , [ "id" => $t->vli->getVirtualInterface()->getId() ] ) ?>" class="btn btn-sm btn-outline-secondary mr-2">
+<div class="btn-group btn-sm">
+    <a href="<?= route( "interfaces/virtual/edit" , [ "id" => $t->vli->getVirtualInterface()->getId() ] ) ?>" class="btn btn-sm btn-outline-secondary">
         Virtual Interface Details
     </a>
 
     <a class="btn  btn-sm btn-outline-secondary" href="#" id="add-l2a">
         <i class="fa fa-plus"></i>
     </a>
+</div>
+
 
 <?php $this->append() ?>
 
@@ -58,7 +61,7 @@ Vlan Interface / Configured MAC Address Management
         <div id="message"></div>
 
         <div id="list-area" class="collapse">
-            <table id='layer-2-interface-list' class="table table-striped">
+            <table id='layer-2-interface-list' class="table table-striped" width="100%">
                 <thead class="thead-dark">
                     <tr>
                         <th>

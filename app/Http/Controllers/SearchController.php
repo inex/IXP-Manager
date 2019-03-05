@@ -122,7 +122,7 @@ class SearchController extends Controller {
             else if( preg_match( '/^@([a-zA-Z0-9]+)$/', $search, $matches ) ) {
                 // user by username search
                 $type = 'username';
-                $results = D2EM::getRepository( UserEntity::class )->findByUsername( $matches[1] . '%' );
+                $results[ 'users' ] = D2EM::getRepository( UserEntity::class )->findByUsername( $matches[1] . '%' );
             }
             else if( filter_var( $search, FILTER_VALIDATE_EMAIL ) !== false ) {
                 // user by email search

@@ -69,16 +69,16 @@
      * check if the subnet is valid and display a message
      */
     function checkSubnet( subnet ){
-        $( "#"+subnet ).parent().parent().removeClass( 'has-error' );
+        $( "#"+subnet ).removeClass( 'is-invalid' );
         $( "#"+subnet ).parent().find('span').remove();
         if( $( "#"+subnet ).val() != '' ){
             if( !validSubnet( $( "#"+subnet ).val() ) ){
-                $( "#"+subnet ).parent().parent().addClass( 'has-error' );
-                $( "#"+subnet ).parent().append("<span class='help-block' style='display: block'>The subnet is not valid</span> ");
+                $( "#"+subnet ).addClass( 'is-invalid' );
+                $( "#"+subnet ).parent().append("<span class='help-block invalid-feedback' style='display: block'>The subnet is not valid</span> ");
             }
             else{
-                $( "#"+subnet ).parent().parent().addClass( 'has-success' );
-                $( "#"+subnet ).parent().append("<span class='help-block' style='display: block' >The subnet is valid</span> ");
+                $( "#"+subnet ).addClass( 'is-valid' );
+                $( "#"+subnet ).parent().append("<span class='help-block valid-feedback' style='display: block' >The subnet is valid</span> ");
             }
         }
     }

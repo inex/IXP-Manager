@@ -1,4 +1,4 @@
-<table class="table collapse table-striped" id="list-table-<?= $t->type ?>">
+<table class="table collapse table-striped" id="list-table-<?= $t->type ?>" width="100%">
     <thead class="thead-dark">
         <th>
             Prefix
@@ -18,8 +18,12 @@
     <tbody>
         <?php foreach( $t->aggRoutes[ $t->type ] as $r ): ?>
             <tr>
-                <td><?= $t->ee( $r[ 'prefix'] ) ?></td>
-                <td>IPv<?= $t->ee( $r[ 'protocol'] ) ?></td>
+                <td>
+                    <?= $t->ee( $r[ 'prefix'] ) ?>
+                </td>
+                <td>
+                    IPv<?= $t->ee( $r[ 'protocol'] ) ?>
+                </td>
                 <td>
                     <?= $r[ 'timestamp']->format('Y-m-d H:i:s') ?>
                 </td>

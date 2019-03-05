@@ -1,4 +1,4 @@
-<div class="alert alert-warning mt-4" role="alert">
+<div class="alert alert-warning" role="alert">
     <div class="d-flex align-items-center">
         <div class="text-center">
             <i class="fa fa-exclamation-circle fa-2x"></i>

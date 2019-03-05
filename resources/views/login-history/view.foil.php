@@ -16,40 +16,44 @@
 <?php $this->section('content') ?>
 
 
-    <div class="alert alert-info" role="alert">
-        Login history for <b><?= $t->ee( $t->user->getUsername() ) ?></b>. <em>Typically logs older than six months are expunged.</em>
+    <div class="alert alert-info mt-4" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="text-center">
+                <i class="fa fa-question-circle fa-2x"></i>
+            </div>
+            <div class="col-sm-12">
+                Login history for <b><?= $t->ee( $t->user->getUsername() ) ?></b>. <em>Typically logs older than six months are expunged.</em>
+            </div>
+        </div>
     </div>
 
 
-    <div class="table-responsive">
 
-        <table id="table-list" class="table collapse table-striped">
-            <thead class="thead-dark">
+    <table id="table-list" class="table collapse table-striped table-responsive-ixp-with-header" width="100%">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    IP
+                </th>
+                <th>
+                    At
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach( $t->histories as $history ): ?>
                 <tr>
-                    <th>
-                        IP
-                    </th>
-                    <th>
-                        At
-                    </th>
+                    <td>
+                        <?= $t->ee( $history[ "ip" ] ) ?>
+                    </td>
+                    <td>
+                        <?= $history[ "at" ]->format( "Y-m-d H:i:s" ) ?>
+                    </td>
                 </tr>
-            </thead>
-            <tbody>
-                <?php foreach( $t->histories as $history ): ?>
-                    <tr>
-                        <td>
-                            <?= $t->ee( $history[ "ip" ] ) ?>
-                        </td>
-                        <td>
-                            <?= $history[ "at" ]->format( "Y-m-d H:i:s" ) ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
 
-
-    </div>
 
 <?php $this->append() ?>
 
@@ -58,7 +62,16 @@
     <script>
 
         $(document).ready( function() {
-            $( '#table-list' ).dataTable( { "autoWidth": false } ).show();
+
+            $( '.table-responsive-ixp-with-header' ).show();
+
+            $( '.table-responsive-ixp-with-header' ).DataTable({
+                responsive: true,
+                columnDefs: [
+                    { responsivePriority: 1, targets: 0 },
+                    { responsivePriority: 2, targets: -1 },
+                ]
+            });
         });
 
     </script>

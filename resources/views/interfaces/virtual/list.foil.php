@@ -33,88 +33,90 @@
     <div class="col-sm-12">
 
         <?= $t->alerts() ?>
-        <div id="message-vi"></div>
-        <div id="area-vi" class="collapse">
-            <table id='table-vi' class="table table-stripped no-wrap" style="width: 100%!important">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>
-                            Customer
-                        </th>
-                        <th>
-                            Facility
-                        </th>
-                        <th>
-                            Switch
-                        </th>
-                        <th>
-                            Port(s)
-                        </th>
-                        <th>
-                            Speed
-                        </th>
-                        <th>
-                            Raw Speed
-                        </th>
-                        <th>
-                            Action
-                        </th>
-                    </tr>
-                <thead>
-                <tbody>
-                    <?php foreach( $t->vis as $vi ):
-                        /** @var Entities\VirtualInterface $vi */ ?>
-                        <tr>
-                            <td>
-                                <a href="<?= route( "customer@overview" , [ "id" => $vi->getCustomer()->getId() ] ) ?>">
-                                    <?= $t->ee( $vi->getCustomer()->getName() ) ?>
-                                </a>
-                            </td>
-                            <?php if( count( $vi->getPhysicalInterfaces() ) ): ?>
-                                <td>
-                                    <?= $t->ee( $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ) ?>
-                                </td>
-                                <td>
-                                    <?= $t->ee( $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getName() ) ?>
-                                </td>
-                                <td>
-                                    <?php
-                                    $speed = 0;
-                                    foreach( $vi->getPhysicalInterfaces() as $pi ) {
-                                        echo $t->ee( $pi->getSwitchPort()->getName() ) . "<br>";
-                                        $speed += $pi->getSpeed();
-                                    }
-                                    ?>
-                                </td>
-                                <td>
-                                    <?= $t->scaleBits( $speed*1000*1000, 0 ) ?>
-                                </td>
-                                <td>
-                                    <?= $speed ?>
-                                </td>
-                            <?php else: ?>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                                <td></td>
-                            <?php endif; ?>
-                            <td>
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn btn-outline-secondary" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vi->getId() ]) ?>" title="Edit">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
 
-                                    <a class="btn btn btn-outline-secondary" id="delete-vi-<?= $vi->getId() ?>" href="" <?php if( $t->resellerMode() && ( count( $vi->getPeeringPhysicalInterface()) > 0  || count( $vi->getFanoutPhysicalInterface() ) > 0 ) ) :?> data-related="1" <?php endif; ?> <?php if( $vi->getSwitchPort() ): ?> data-type="<?= $vi->getSwitchPort()->getType() ?>" <?php endif; ?> title="Delete Virtual Interface">
-                                        <i class="fa fa-trash"></i>
-                                    </a>
-                                </div>
+        <div id="message-vi"></div>
+
+
+        <table id='table-vi' class="collapse table table-stripped no-wrap table-responsive-ixp-with-header" style="width: 100%!important">
+            <thead class="thead-dark">
+                <tr>
+                    <th>
+                        Customer
+                    </th>
+                    <th>
+                        Facility
+                    </th>
+                    <th>
+                        Switch
+                    </th>
+                    <th>
+                        Port(s)
+                    </th>
+                    <th>
+                        Speed
+                    </th>
+                    <th>
+                        Raw Speed
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                </tr>
+            <thead>
+            <tbody>
+                <?php foreach( $t->vis as $vi ):
+                    /** @var Entities\VirtualInterface $vi */ ?>
+                    <tr>
+                        <td>
+                            <a href="<?= route( "customer@overview" , [ "id" => $vi->getCustomer()->getId() ] ) ?>">
+                                <?= $t->ee( $vi->getCustomer()->getName() ) ?>
+                            </a>
+                        </td>
+                        <?php if( count( $vi->getPhysicalInterfaces() ) ): ?>
+                            <td>
+                                <?= $t->ee( $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ) ?>
                             </td>
-                        </tr>
-                    <?php endforeach;?>
-                <tbody>
-            </table>
-        </div>
+                            <td>
+                                <?= $t->ee( $vi->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getName() ) ?>
+                            </td>
+                            <td>
+                                <?php
+                                $speed = 0;
+                                foreach( $vi->getPhysicalInterfaces() as $pi ) {
+                                    echo $t->ee( $pi->getSwitchPort()->getName() ) . "<br>";
+                                    $speed += $pi->getSpeed();
+                                }
+                                ?>
+                            </td>
+                            <td>
+                                <?= $t->scaleBits( $speed*1000*1000, 0 ) ?>
+                            </td>
+                            <td>
+                                <?= $speed ?>
+                            </td>
+                        <?php else: ?>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                            <td></td>
+                        <?php endif; ?>
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a class="btn btn btn-outline-secondary" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vi->getId() ]) ?>" title="Edit">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+
+                                <a class="btn btn btn-outline-secondary" id="delete-vi-<?= $vi->getId() ?>" href="" <?php if( $t->resellerMode() && ( count( $vi->getPeeringPhysicalInterface()) > 0  || count( $vi->getFanoutPhysicalInterface() ) > 0 ) ) :?> data-related="1" <?php endif; ?> <?php if( $vi->getSwitchPort() ): ?> data-type="<?= $vi->getSwitchPort()->getType() ?>" <?php endif; ?> title="Delete Virtual Interface">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                <?php endforeach;?>
+            <tbody>
+        </table>
+
 
     </div>
 
@@ -130,16 +132,7 @@
     <script>
         $(document).ready( function() {
 
-            $('#area-vi').show();
 
-            $( '#table-vi' ).DataTable( {
-                responsive: true,
-                pageLength : 100,
-                "columnDefs": [
-                    { "targets": [ 4 ], "orderData": 5 },
-                    { "targets": [ 5 ], "visible": false, "searchable": false }
-                ],
-            });
 
         });
 
@@ -148,7 +141,7 @@
          */
         $(document).on('click', "a[id|='delete-vi']" ,function(e){
             e.preventDefault();
-            var vi = (this.id).substring(10);
+            let vi = (this.id).substring(10);
             deletePopup( vi , false, 'vi');
         });
 

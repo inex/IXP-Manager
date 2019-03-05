@@ -4,7 +4,9 @@
         <?= Former::open()->method( 'POST' )
             ->id( 'form' )
             ->action( route( $t->feParams->route_prefix . '@store' ) )
-            ->customInputWidthClass( 'col-sm-3' )
+            ->customInputWidthClass( 'col-lg-4 col-md-5 col-sm-5' )
+            ->customLabelWidthClass( 'col-lg-2 col-sm-3' )
+            ->actionButtonsCustomClass( "grey-box")
         ?>
 
         <?= Former::text( 'name' )
@@ -35,19 +37,18 @@
         <?= Former::textarea( 'address' )
             ->label( 'Address' )
             ->rows( 5 )
-            ->style( 'width:500px' )
+            ->style( 'width:100%' )
             ->blockHelp( '' );
         ?>
 
         <div class="row mt-4">
-            <div class="col-sm-6">
+            <div class="col-lg-6 col-md-12">
                 <div class="card">
-                    <div class="card-header">
+                    <div class="card-body former-input-col-sm-6 former-label-col-sm-6">
                         <h3>
                             NOC Details
                         </h3>
-                    </div>
-                    <div class="card-body former-input-col-sm-6">
+                        <hr>
                         <?= Former::text( 'nocphone' )
                             ->label( 'Phone' )
                             ->blockHelp( "" );
@@ -67,31 +68,30 @@
             </div>
 
 
-            <div class="col-sm-6">
-            <div class="card">
-                <div class="card-header">
-                    <h3>
-                        Office Details
-                    </h3>
+            <div class="col-lg-6 col-md-12 mt-4 mt-sm-4 mt-lg-0">
+                <div class="card">
+                    <div class="card-body former-input-col-sm-6 former-label-col-sm-6">
+                        <h3>
+                            Office Details
+                        </h3>
+                        <hr>
+
+                        <?= Former::text( 'officephone' )
+                            ->label( 'Phone' )
+                            ->blockHelp( "" );
+                        ?>
+
+                        <?= Former::text( 'officefax' )
+                            ->label( 'Fax' )
+                            ->blockHelp( "" );
+                        ?>
+
+                        <?= Former::text( 'officeemail' )
+                            ->label( 'E-mail' )
+                            ->blockHelp( "" );
+                        ?>
+                    </div>
                 </div>
-                <div class="card-body former-input-col-sm-6">
-
-                    <?= Former::text( 'officephone' )
-                        ->label( 'Phone' )
-                        ->blockHelp( "" );
-                    ?>
-
-                    <?= Former::text( 'officefax' )
-                        ->label( 'Fax' )
-                        ->blockHelp( "" );
-                    ?>
-
-                    <?= Former::text( 'officeemail' )
-                        ->label( 'E-mail' )
-                        ->blockHelp( "" );
-                    ?>
-                </div>
-            </div>
             </div>
         </div>
 
@@ -127,10 +127,10 @@
 
 
         <?= Former::actions(
-            Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' )->disabled( true ),
-            Former::secondary_link( 'Cancel' )->href( route( $t->feParams->route_prefix . '@list') ),
-            Former::success_button( 'Help' )->id( 'help-btn' )
-        )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
+            Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' )->disabled( true )->class( "mb-2 mb-sm-0" ),
+            Former::secondary_link( 'Cancel' )->href( route( $t->feParams->route_prefix . '@list') )->class( "mb-2 mb-sm-0" ),
+            Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
+        );
         ?>
 
         <?= Former::hidden( 'id' )

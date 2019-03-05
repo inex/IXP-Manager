@@ -15,7 +15,7 @@
 
         <?= Former::open()->method( 'POST' )
             ->action( route ( 'patch-panel-port@send-email' , [ 'id' =>  $t->ppp->getId() , 'type' => $t->emailType  ] ) )
-            ->addClass( 'col-md-10' );
+            ->actionButtonsCustomClass( "grey-box");
         ?>
         <?= Former::text( 'email_to' )
             ->label( 'To' );
@@ -72,7 +72,7 @@
         <?= Former::actions(
             Former::primary_submit( 'Send Email' ),
             Former::secondary_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) )
-        )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
+        );
         ?>
 
         <?= Former::hidden( 'emailType' )

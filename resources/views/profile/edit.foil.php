@@ -19,7 +19,7 @@
     </div>
 
     <div class="row">
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-6 col-md-12 mb-4">
             <h3>
                 Change Your Password
             </h3>
@@ -41,8 +41,8 @@
                 ->method( 'post' )
                 ->id( "password" )
                 ->action( route ( "profile@update-password" ) )
-                ->customInputWidthClass( 'col-lg-6' )
-                ->customLabelWidthClass( 'col-lg-4' )
+                ->customInputWidthClass( 'col-xl-6 col-lg-8 col-sm-6' )
+                ->customLabelWidthClass( 'col-sm-4' )
                 ->actionButtonsCustomClass( "grey-box")
                 ->rules([
                     'current_password'   => 'required|max:255',
@@ -72,7 +72,7 @@
 
         </div>
 
-        <div class="col-lg-6 mb-4">
+        <div class="col-lg-6 col-md-12 mb-4">
             <h3>
                 Update Your Profile
             </h3>
@@ -82,8 +82,8 @@
                 ->method( 'post' )
                 ->id( "infos" )
                 ->action( route ( "profile@update-profile" ) )
-                ->customInputWidthClass( 'col-lg-6' )
-                ->customLabelWidthClass( 'col-lg-4' )
+                ->customInputWidthClass( 'col-xl-6 col-lg-8 col-sm-6' )
+                ->customLabelWidthClass( 'col-sm-4' )
                 ->actionButtonsCustomClass( "grey-box");
             ?>
 
@@ -123,7 +123,7 @@
 
         <?php if( Auth::getUser()->isSuperUser() ): ?>
 
-            <div class="col-lg-6">
+            <div class="col-lg-6 col-md-12">
                 <h3>
                     Customer Notes
                 </h3>
@@ -160,7 +160,7 @@
 
         <?php if( $t->mailingListsEnabled ): ?>
 
-            <div class="col-lg-6">
+            <div class="col-lg-6 col-md-12">
                 <h3>
                     Your Mailing List Subscriptions
                 </h3>

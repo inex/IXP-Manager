@@ -3,29 +3,23 @@
 $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'core-bundle/list' )?>">Core Bundle</a>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Core Bundle / List
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>List</li>
-<?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
-        <div class=" btn-group btn-group-xs" role="group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="glyphicon glyphicon-plus"></i> <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-right">
-                <li>
-                    <a href="<?= route( 'core-bundle/add' )?>" >
-                        Add Core Bundle Wizard...
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </li>
+    <div class=" btn-group btn-group-sm" role="group">
+        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-plus"></i> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="<?= route( 'core-bundle/add' )?>" >
+                Add Core Bundle Wizard...
+            </a>
+        </ul>
+    </div>
+
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -35,80 +29,77 @@ $this->layout( 'layouts/ixpv4' );
 
         <?= $t->alerts() ?>
         <span id="message-cb"></span>
-        <div id="area-cb" class="collapse">
-            <table id='table-cb' class="table">
-                <thead>
+        <table id='table-cb' class="table collapse table-striped" width="100%">
+            <thead class="thead-dark">
+                <tr>
+                    <th>
+                        Description
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Enabled
+                    </th>
+                    <th>
+                        Switch A
+                    </th>
+                    <th>
+                        Switch B
+                    </th>
+                    <th>
+                        Capacity
+                    </th>
+                    <th>
+                        Raw speed
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                </tr>
+            <thead>
+            <tbody>
+                <?php foreach( $t->cbs as $cb ):
+                    /** @var \Entities\CoreBundle $cb */?>
                     <tr>
                         <td>
-                            Description
+                            <?= $t->ee( $cb->getDescription() )  ?>
                         </td>
                         <td>
-                            Type
+                            <?= $t->ee( $cb->resolveType() )  ?>
                         </td>
                         <td>
-                            Enabled
+                            <?php if( !$cb->getEnabled() ):?>
+                                <i class="fa fa-remove"></i>
+                            <?php elseif( $cb->getEnabled() && $cb->doAllCoreLinksEnabled() ): ?>
+                                <i class="fa fa-check"></i>
+                            <?php else:?>
+                                <span class="badge badge-warning"> <?= count( $cb->getCoreLinksEnabled() ) ?> / <?= count( $cb->getCoreLinks() )?> </span>
+                            <?php endif; ?>
                         </td>
                         <td>
-                            Switch A
+                            <?= $t->ee( $cb->getSwitchSideX( true )->getName() )  ?>
                         </td>
                         <td>
-                            Switch B
+                            <?= $t->ee( $cb->getSwitchSideX( false )->getName() )  ?>
                         </td>
                         <td>
-                            Capacity
+                            <?= $t->scaleBits( count( $cb->getCoreLinks() ) * $cb->getSpeedPi() * 1000000, 0 )  ?>
                         </td>
                         <td>
-                            Raw speed
+                            <?= count( $cb->getCoreLinks() ) * $cb->getSpeedPi() ?>
                         </td>
                         <td>
-                            Action
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a class="btn btn-outline-secondary" href="<?= route( 'core-bundle/edit' , [ 'id' => $cb->getId() ] ) ?>" title="Edit">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+                            </div>
                         </td>
                     </tr>
-                <thead>
-                <tbody>
-                    <?php foreach( $t->cbs as $cb ):
-                        /** @var \Entities\CoreBundle $cb */?>
-                        <tr>
-                            <td>
-                                <?= $t->ee( $cb->getDescription() )  ?>
-                            </td>
-                            <td>
-                                <?= $t->ee( $cb->resolveType() )  ?>
-                            </td>
-                            <td>
-                                <?php if( !$cb->getEnabled() ):?>
-                                    <i class="glyphicon glyphicon-remove"></i>
-                                <?php elseif( $cb->getEnabled() && $cb->doAllCoreLinksEnabled() ): ?>
-                                    <i class="glyphicon glyphicon-ok"></i>
-                                <?php else:?>
-                                    <span class="label label-warning"> <?= count( $cb->getCoreLinksEnabled() ) ?> / <?= count( $cb->getCoreLinks() )?> </span>
-                                <?php endif; ?>
-                            </td>
-                            <td>
-                                <?= $t->ee( $cb->getSwitchSideX( true )->getName() )  ?>
-                            </td>
-                            <td>
-                                <?= $t->ee( $cb->getSwitchSideX( false )->getName() )  ?>
-                            </td>
-                            <td>
-                                <?= $t->scaleBits( count( $cb->getCoreLinks() ) * $cb->getSpeedPi() * 1000000, 0 )  ?>
-                            </td>
-                            <td>
-                                <?= count( $cb->getCoreLinks() ) * $cb->getSpeedPi() ?>
-                            </td>
-                            <td>
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn btn-default" href="<?= route( 'core-bundle/edit' , [ 'id' => $cb->getId() ] ) ?>" title="Edit">
-                                        <i class="glyphicon glyphicon-pencil"></i>
-                                    </a>
-                                </div>
-                            </td>
-                        </tr>
-                    <?php endforeach;?>
-                <tbody>
-            </table>
-        </div>
-
+                <?php endforeach;?>
+            <tbody>
+        </table>
     </div>
 
 </div>
@@ -119,17 +110,20 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'scripts' ) ?>
     <script>
         $( document ).ready( function() {
+            $( "#table-cb" ).show();
+
             $( '#table-cb' ).DataTable( {
-                "autoWidth": false,
+                responsive : true,
                 "iDisplayLength": 100,
                 "columnDefs": [
+                    { responsivePriority: 1, targets: 0 },
+                    { responsivePriority: 2, targets: -1 },
                     { "targets": [ 2 ], "type": "string" },
                     { "targets": [ 5 ], "orderData": 6 },
                     { "targets": [ 6 ], "visible": false, "searchable": false }
                 ],
             });
 
-            $( "#area-cb" ).show();
         });
     </script>
 <?php $this->append() ?>

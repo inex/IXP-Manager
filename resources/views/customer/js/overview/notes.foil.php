@@ -206,7 +206,7 @@
             $( "#co-notes-table-row-title-" + noteid ).html( $( "#co-notes-ftitle" ).val() );
             $( "#co-notes-table-row-updated-" + noteid ).html( "Just Now" );
             $( "#co-notes-table-row-public-" + noteid ).html(
-                "<span class=\"label label-"
+                "<span class=\"badge badge-"
                 + ( $( "#co-notes-fpublic" ).is( ':checked' ) ? "success\">PUBLIC" : "default\">PRIVATE" )
                 + "</span>"
             );

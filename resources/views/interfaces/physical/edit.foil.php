@@ -24,130 +24,128 @@ Physical Interfaces / Edit
 <?php $this->section('content') ?>
     <div class="row">
 
-        <div class="col-sm-12 row">
+        <?= $t->alerts() ?>
 
-            <?= $t->alerts() ?>
+        <div class="card col-lg-12">
 
+            <div class="card-body row">
+                <div class="<?= $t->otherPICoreLink || $t->enableFanout ? 'col-lg-6 col-sm-12': 'col-lg-12'  ?>">
 
-            <div class="<?= $t->otherPICoreLink || $t->enableFanout ? 'col-sm-6': 'col-sm-12'  ?>">
-                <div class="card">
-                    <div class="card-header ">
+                    <?php if( $t->otherPICoreLink || $t->enableFanout ): ?>
                         <h3>
-                            Settings
+                            Main Physical Interface
                         </h3>
-                    </div>
+                        <hr>
+                    <?php endif; ?>
 
-                    <div class="card-body">
-                        <?= Former::open()->method( 'POST' )
-                            ->action( route( 'interfaces/physical/store' ) )
-                            ->customInputWidthClass( $t->otherPICoreLink || $t->enableFanout ? 'col-sm-6' : 'col-sm-3' )
-                        ?>
+                    <?= Former::open()->method( 'POST' )
+                        ->action( route( 'interfaces/physical/store' ) )
+                        ->customInputWidthClass( $t->otherPICoreLink || $t->enableFanout ? 'col-sm-6' : 'col-lg-4 col-md-6 col-sm-6' )
+                        ->customLabelWidthClass( $t->otherPICoreLink || $t->enableFanout ? 'col-lg-6 col-sm-4' : 'col-lg-2 col-md-3 col-sm-3' )
+                        ->actionButtonsCustomClass( "grey-box")
+                    ?>
 
-                        <?= Former::select( 'switch' )
-                            ->label( 'Switch' )
-                            ->fromQuery( $t->switches, 'name' )
-                            ->placeholder( 'Choose a switch' )
-                            ->addClass( 'chzn-select' )
-                            ->blockHelp( 'The switch where the port will be located. Selected / changing this updates the port list below.' );
-                        ?>
+                    <?= Former::select( 'switch' )
+                        ->label( 'Switch' )
+                        ->fromQuery( $t->switches, 'name' )
+                        ->placeholder( 'Choose a switch' )
+                        ->addClass( 'chzn-select' )
+                        ->blockHelp( 'The switch where the port will be located. Selected / changing this updates the port list below.' );
+                    ?>
 
-                        <?= Former::select( 'switch-port' )
-                            ->label( 'Switch Port' )
-                            ->fromQuery( $t->switchports, 'name' )
-                            ->placeholder( 'Choose a switch port' )
-                            ->addClass( 'chzn-select' )
-                            ->blockHelp( 'Suitable available ports. For example, when adding a peering interface, only ports of type <em>Peering</em> or <em>Unset / Unknown</em> are shown. '
-                                . 'Port types can be set by editing the appropriate switch.');
-                        ?>
+                    <?= Former::select( 'switch-port' )
+                        ->label( 'Switch Port' )
+                        ->fromQuery( $t->switchports, 'name' )
+                        ->placeholder( 'Choose a switch port' )
+                        ->addClass( 'chzn-select' )
+                        ->blockHelp( 'Suitable available ports. For example, when adding a peering interface, only ports of type <em>Peering</em> or <em>Unset / Unknown</em> are shown. '
+                            . 'Port types can be set by editing the appropriate switch.');
+                    ?>
 
-                        <?=
-                        Former::hidden( 'original-switch-port')
-                            ->id('original-switch-port')
-                            ->forceValue( old('switch-port') ? old('switch-port')  : ( $t->pi && $t->pi->getSwitchPort() ? $t->pi->getSwitchPort()->getId() : '' ) )
-                        ?>
+                    <?=
+                    Former::hidden( 'original-switch-port')
+                        ->id('original-switch-port')
+                        ->forceValue( old('switch-port') ? old('switch-port')  : ( $t->pi && $t->pi->getSwitchPort() ? $t->pi->getSwitchPort()->getId() : '' ) )
+                    ?>
 
-                        <?= Former::select( 'status' )
-                            ->label( 'Status' )
-                            ->fromQuery( \Entities\PhysicalInterface::$STATES, 'name' )
-                            ->placeholder( 'Choose a status' )
-                            ->addClass( 'chzn-select' )
-                            ->blockHelp( 'This is an important setting. Only ports (or LAGs) with at least one physical interface set to <em>Connected</em> which have elements such as '
-                                . 'route server configurations built, monitoring configuration generated, etc. Similarly, for a quarantine route collector session to be generated, the '
-                                . 'port must have the <em>Quarantine</em> state. Currently all other states are just informational.' );
-                        ?>
+                    <?= Former::select( 'status' )
+                        ->label( 'Status' )
+                        ->fromQuery( \Entities\PhysicalInterface::$STATES, 'name' )
+                        ->placeholder( 'Choose a status' )
+                        ->addClass( 'chzn-select' )
+                        ->blockHelp( 'This is an important setting. Only ports (or LAGs) with at least one physical interface set to <em>Connected</em> which have elements such as '
+                            . 'route server configurations built, monitoring configuration generated, etc. Similarly, for a quarantine route collector session to be generated, the '
+                            . 'port must have the <em>Quarantine</em> state. Currently all other states are just informational.' );
+                    ?>
 
-                        <?= Former::select( 'speed' )
-                            ->label( 'Speed' )
-                            ->fromQuery( \Entities\PhysicalInterface::$SPEED, 'name' )
-                            ->placeholder( 'Choose a speed' )
-                            ->addClass( 'chzn-select' )
-                            ->blockHelp( 'The port speed to be configured. Unless you are provisioning switches from IXP Manager, this is informational / useful for billing. It is also '
-                                . 'presented publically to other members in a number of places. For statistics / graphing, it dictates the maximum data rate accepted also. ' );
-                        ?>
+                    <?= Former::select( 'speed' )
+                        ->label( 'Speed' )
+                        ->fromQuery( \Entities\PhysicalInterface::$SPEED, 'name' )
+                        ->placeholder( 'Choose a speed' )
+                        ->addClass( 'chzn-select' )
+                        ->blockHelp( 'The port speed to be configured. Unless you are provisioning switches from IXP Manager, this is informational / useful for billing. It is also '
+                            . 'presented publically to other members in a number of places. For statistics / graphing, it dictates the maximum data rate accepted also. ' );
+                    ?>
 
-                        <?= Former::select( 'duplex' )
-                            ->label( 'Duplex' )
-                            ->fromQuery( \Entities\PhysicalInterface::$DUPLEX, 'name' )
-                            ->placeholder( 'Choose Duplex' )
-                            ->addClass( 'chzn-select' )
-                            ->blockHelp( 'Is half duplex even a thing anymore?' );
-                        ?>
+                    <?= Former::select( 'duplex' )
+                        ->label( 'Duplex' )
+                        ->fromQuery( \Entities\PhysicalInterface::$DUPLEX, 'name' )
+                        ->placeholder( 'Choose Duplex' )
+                        ->addClass( 'chzn-select' )
+                        ->blockHelp( 'Is half duplex even a thing anymore?' );
+                    ?>
 
-                        <?= Former::checkbox( 'autoneg-label' )
-                            ->label( '&nbsp;' )
-                            ->text( 'Auto-Negotiation Enabled' )
-                            ->value( 1 )
-                            ->inline()
-                            ->blockHelp( "Unless you are provisioning switches from IXP Manager, this is informational." );
-                        ?>
+                    <?= Former::checkbox( 'autoneg-label' )
+                        ->label( '&nbsp;' )
+                        ->text( 'Auto-Negotiation Enabled' )
+                        ->value( 1 )
+                        ->inline()
+                        ->blockHelp( "Unless you are provisioning switches from IXP Manager, this is informational." );
+                    ?>
 
-                        <div class="form-group row">
+                    <div class="form-group row">
 
-                            <div class="<?= $t->otherPICoreLink || $t->enableFanout ? 'col-sm-10': 'col-sm-8'  ?>">
+                        <div class="<?= $t->otherPICoreLink || $t->enableFanout ? 'col-sm-10': 'col-sm-8'  ?>">
 
-                                <div class="card mt-4">
-                                    <div class="card-header">
-                                        <ul class="nav nav-tabs card-header-tabs">
-                                            <li role="presentation" class="nav-item">
-                                                <a class="tab-link-body-note nav-link active" href="#body">Notes</a>
-                                            </li>
-                                            <li role="presentation" class="nav-item">
-                                                <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
-                                            </li>
-                                        </ul>
+                            <div class="card mt-4">
+                                <div class="card-header">
+                                    <ul class="nav nav-tabs card-header-tabs">
+                                        <li role="presentation" class="nav-item">
+                                            <a class="tab-link-body-note nav-link active" href="#body">Notes</a>
+                                        </li>
+                                        <li role="presentation" class="nav-item">
+                                            <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
+                                        </li>
+                                    </ul>
+                                </div>
+
+                                <div class="tab-content card-body">
+                                    <div role="tabpanel" class="tab-pane show active" id="body">
+                                        <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?=  $t->notes ?></textarea>
                                     </div>
-
-                                    <div class="tab-content card-body">
-                                        <div role="tabpanel" class="tab-pane show active" id="body">
-                                            <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?=  $t->notes ?></textarea>
-                                        </div>
-                                        <div role="tabpanel" class="tab-pane" id="preview">
-                                            <div class="bg-light p-4 well-preview" style="background: rgb(255,255,255);">
-                                                Loading...
-                                            </div>
+                                    <div role="tabpanel" class="tab-pane" id="preview">
+                                        <div class="bg-light p-4 well-preview" style="background: rgb(255,255,255);">
+                                            Loading...
                                         </div>
                                     </div>
                                 </div>
-
                             </div>
 
                         </div>
+
                     </div>
+
                 </div>
-            </div>
 
-            <div class="col-sm-6 d-block">
-            <?php if( $t->otherPICoreLink ): ?>
+                <div class="col-lg-6 col-sm-12 d-block mt-4 mt-md-4 mt-lg-0 ">
+                    <?php if( $t->otherPICoreLink ): ?>
 
-                <div class="col-sm-12 mb-4">
-                    <div class="card">
-                        <div class="card-header ">
+                        <div class="col-sm-12 mb-4">
+
                             <h3>
                                 Other Side of the Core Link
                             </h3>
-                        </div>
-
-                        <div class="card-body">
+                            <hr>
 
                             <?= Former::select( 'switch-b' )
                                 ->label( 'Switch' )
@@ -203,32 +201,25 @@ Physical Interfaces / Edit
                                 ->blockHelp( "" ); ?>
 
                             <div class="form-group">
-
-                                <label for="notes" class="control-label col-lg-2 col-sm-4">Notes</label>
+                                <label for="notes" class="control-label col-lg-6 col-sm-6">Notes</label>
                                 <div class="col-sm-8">
                                     <?= @parsedown( $t->notesb )?>
                                 </div>
-
                             </div>
 
                         </div>
 
-                    </div>
-                </div>
+                    <?php endif; ?>
 
-            <?php endif; ?>
+                    <?php if( $t->enableFanout ): ?>
 
-            <?php if( $t->enableFanout ): ?>
+                        <div class="col-sm-12">
 
-                <div class="col-sm-12">
-                    <div class="card">
-                        <div class="card-header ">
                             <h3>
                                 Fanout Port
                             </h3>
-                        </div>
 
-                        <div class="card-body">
+                            <hr>
 
                             <?= Former::checkbox( 'fanout' )
                                 ->label( '&nbsp;' )
@@ -273,37 +264,39 @@ Physical Interfaces / Edit
 
                         </div>
 
-                    </div>
+                    <?php endif; ?>
+
+                    <?= Former::hidden( 'id' )
+                        ->value( $t->pi ? $t->pi->getId() : false )
+                    ?>
+
+                    <?= Former::hidden( 'viid' )
+                        ->value( $t->pi ? $t->pi->getVirtualInterface()->getId() : $t->vi->getId() )
+                    ?>
+
+                    <?= Former::hidden( 'cb' )
+                        ->value( $t->cb  )
+                    ?>
+
                 </div>
 
-            <?php endif; ?>
+                <div class="clearfix"></div>
+
+                <?= Former::actions(
+                    Former::primary_submit( $t->pi ? 'Save Changes' : 'Add' )->class( "mb-2 mb-sm-0" ),
+                    Former::secondary_link( 'Cancel' )->id( 'cancel-btn' )->href( $t->vi ? route( 'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) : route( 'interfaces/physical/list' ) )->class( "mb-2 mb-sm-0" ),
+                    Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
+                )->id('btn-group')?>
+
+                <?= Former::close() ?>
             </div>
-
-            <?= Former::hidden( 'id' )
-                ->value( $t->pi ? $t->pi->getId() : false )
-            ?>
-
-            <?= Former::hidden( 'viid' )
-                ->value( $t->pi ? $t->pi->getVirtualInterface()->getId() : $t->vi->getId() )
-            ?>
-
-            <?= Former::hidden( 'cb' )
-                ->value( $t->cb  )
-            ?>
-
-            <div class="clearfix"></div>
-
-            <?= Former::actions(
-                Former::primary_submit( 'Save Changes' ),
-                Former::secondary_link( 'Cancel' )->id( 'cancel-btn' )->href( $t->vi ? route( 'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) : route( 'interfaces/physical/list' ) ),
-                Former::success_button( 'Help' )->id( 'help-btn' )
-            )->id('btn-group')->class( "text-center p-4 bg-light shadow-sm p-4 mt-4 col-sm-12" );?>
-
-            <?= Former::close() ?>
-
         </div>
-
     </div>
+
+
+
+
+
 
 <?php $this->append() ?>
 

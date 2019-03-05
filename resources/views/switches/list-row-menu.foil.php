@@ -6,7 +6,7 @@
     <a class="btn btn-outline-secondary" id="d2f-list-edit-<?= $t->row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Edit">
         <i class="fa fa-pencil"></i>
     </a>
-    <a class="btn btn-outline-secondary" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>"  title="Delete">
+    <a class="btn btn-outline-secondary d2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>"  title="Delete">
         <i class="fa fa-trash"></i>
     </a>
 

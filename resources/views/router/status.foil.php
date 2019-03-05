@@ -25,23 +25,35 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php if( !$t->lgEnabled ): ?>
 
-    <div class="alert alert-warning">
-        <b>Warning:</b> the looking glass functionality is currently disabled and thus this <em>Live Status</em> feature will not work.
-        Additionally, the <em>Looking Glass</em> links will not appear in IXP Manager. To enable looking glass functionality, first
-        configure it <a href="http://docs.ixpmanager.org/features/looking-glass/">as per the documentation</a> and ensure you set the
-        following in your <code>.env</code> file: <br><br>
-        <code>IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS=false</code>
+    <div class="alert alert-warning" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="text-center">
+                <i class="fa fa-exclamation-circle fa-2x"></i>
+            </div>
+            <div class="col-sm-12">
+                <b>Warning:</b> the looking glass functionality is currently disabled and thus this <em>Live Status</em> feature will not work.
+                Additionally, the <em>Looking Glass</em> links will not appear in IXP Manager. To enable looking glass functionality, first
+                configure it <a href="http://docs.ixpmanager.org/features/looking-glass/">as per the documentation</a> and ensure you set the
+                following in your <code>.env</code> file: <br><br>
+                <code>IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS=false</code>
+            </div>
+        </div>
     </div>
 
 <?php else: ?>
 
-    <div class="alert alert-info">
-        <p>
-            This page performs a live query of all routers configured with an API interface and reports live data.
-        </p>
-        <p>
-            <em>Sessions</em> indicates the number of BGP sessions configured on the router while <em>Up</em> shows how many of these are actually established.
-        </p>
+    <div class="alert alert-info mt-4" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="text-center">
+                <i class="fa fa-question-circle fa-2x"></i>
+            </div>
+            <div class="col-sm-12">
+                <p>
+                    This page performs a live query of all routers configured with an API interface and reports live data.
+                </p>
+                <em>Sessions</em> indicates the number of BGP sessions configured on the router while <em>Up</em> shows how many of these are actually established.
+            </div>
+        </div>
     </div>
 
     <div id="fetched-alert" class="alert alert-info">
@@ -55,85 +67,85 @@ $this->layout( 'layouts/ixpv4' );
     </div>
 
 
-        <table id='router-list' class="table table-striped">
-            <thead class="thead-dark">
+    <table id='router-list' class="table table-striped" width="100%">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    Handle
+                </th>
+                <th>
+                    Name
+                </th>
+                <th>
+                    Router ID
+                </th>
+                <th>
+                    Type
+                </th>
+                <th>
+                    Version
+                </th>
+                <th>
+                    API Version
+                </th>
+                <th>
+                    Sessions
+                </th>
+                <th>
+                    Up
+                </th>
+                <th>
+                    Last Updated
+                </th>
+                <th>
+                    Last Reboot
+                </th>
+            </tr>
+        <thead>
+        <tbody>
+            <?php foreach( $t->routers as $router ):
+                /** @var Entities\Router $router */ ?>
                 <tr>
-                    <th>
-                        Handle
-                    </th>
-                    <th>
-                        Name
-                    </th>
-                    <th>
-                        Router ID
-                    </th>
-                    <th>
-                        Type
-                    </th>
-                    <th>
-                        Version
-                    </th>
-                    <th>
-                        API Version
-                    </th>
-                    <th>
-                        Sessions
-                    </th>
-                    <th>
-                        Up
-                    </th>
-                    <th>
-                        Last Updated
-                    </th>
-                    <th>
-                        Last Reboot
-                    </th>
+                    <td>
+                        <?php if( !config( 'ixp_fe.frontend.disabled.lg' ) ): ?>
+                            <a href="<?= route( "lg::bgp-sum", [ 'handle' => $router->getHandle() ] ) ?>">
+                        <?php endif; ?>
+                            <?= $router->getHandle() ?>
+                        <?= config( 'ixp_fe.frontend.disabled.lg' ) ?: '</a>' ?>
+                    </td>
+                    <td>
+                        <?= $router->getShortName() ?>
+                    </td>
+                    <td>
+                        <?= $router->getRouterId() ?>
+                    </td>
+                    <td>
+                        <?= $router->resolveSoftware() ?>
+                    </td>
+
+                    <td id="<?= $router->getHandle() ?>-version">
+                        <?php if( $router->hasApi() ): ?>
+                            <i class="fa fa-spinner fa-spin fa-fw"></i>
+                        <?php else: ?>
+                            <em>No API access.</em>
+                        <?php endif; ?>
+                    </td>
+
+                    <td id="<?= $router->getHandle() ?>-api-version">
+                    </td>
+                    <td id="<?= $router->getHandle() ?>-bgp-sessions">
+                    </td>
+                    <td id="<?= $router->getHandle() ?>-bgp-sessions-up">
+                    </td>
+                    <td id="<?= $router->getHandle() ?>-last-updated">
+                    </td>
+                    <td id="<?= $router->getHandle() ?>-last-reboot">
+                    </td>
+
                 </tr>
-            <thead>
-            <tbody>
-                <?php foreach( $t->routers as $router ):
-                    /** @var Entities\Router $router */ ?>
-                    <tr>
-                        <td>
-                            <?php if( !config( 'ixp_fe.frontend.disabled.lg' ) ): ?>
-                                <a href="<?= route( "lg::bgp-sum", [ 'handle' => $router->getHandle() ] ) ?>">
-                            <?php endif; ?>
-                                <?= $router->getHandle() ?>
-                            <?= config( 'ixp_fe.frontend.disabled.lg' ) ?: '</a>' ?>
-                        </td>
-                        <td>
-                            <?= $router->getShortName() ?>
-                        </td>
-                        <td>
-                            <?= $router->getRouterId() ?>
-                        </td>
-                        <td>
-                            <?= $router->resolveSoftware() ?>
-                        </td>
-
-                        <td id="<?= $router->getHandle() ?>-version">
-                            <?php if( $router->hasApi() ): ?>
-                                <i class="fa fa-spinner fa-spin fa-fw"></i>
-                            <?php else: ?>
-                                <em>No API access.</em>
-                            <?php endif; ?>
-                        </td>
-
-                        <td id="<?= $router->getHandle() ?>-api-version">
-                        </td>
-                        <td id="<?= $router->getHandle() ?>-bgp-sessions">
-                        </td>
-                        <td id="<?= $router->getHandle() ?>-bgp-sessions-up">
-                        </td>
-                        <td id="<?= $router->getHandle() ?>-last-updated">
-                        </td>
-                        <td id="<?= $router->getHandle() ?>-last-reboot">
-                        </td>
-
-                    </tr>
-                <?php endforeach;?>
-            <tbody>
-        </table>
+            <?php endforeach;?>
+        <tbody>
+    </table>
 
 <?php endif; ?>
 
@@ -246,11 +258,10 @@ $this->layout( 'layouts/ixpv4' );
         }); // handles.forEach( function( handle, index ) {
 
     }).dataTable({
-        "autoWidth": false,
+        responsive: true,
         // paging is disabled as it's complicated to update off screen cells with pagination
         "paging": false
 });
-
 
 </script>
 <?php $this->append() ?>

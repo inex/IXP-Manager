@@ -61,14 +61,22 @@
                 <?php else: ?>
 
                     <div class="alert alert-info" role="alert">
-                        <b>No <?= ucfirst( $t->feParams->pagetitle ) ?> exist.</b> <a href="<?= route($t->feParams->route_prefix.'@add') ?>">Add one...</a>
+                        <div class="d-flex align-items-center">
+                            <div class="text-center">
+                                <i class="fa fa-info-circle fa-2x"></i>
+                            </div>
+                            <div class="col-sm-12">
+                                <b>No <?= ucfirst( $t->feParams->pagetitle ) ?> exist.</b>
+                                <a class="btn btn-outline-secondary ml-2" href="<?= route($t->feParams->route_prefix.'@add') ?>">Add one...</a>
+                            </div>
+                        </div>
                     </div>
 
                 <?php endif; /* listEmptyMessage */ ?>
 
             <?php else:  /* !count( $t->data[ 'rows' ] ) */ ?>
 
-                <table id="table-list" class="table collapse table-striped" style="width: 100%">
+                <table id="table-list" class="table collapse table-striped" width="100%">
 
                     <?php if( $t->data[ 'view' ]['listHeadOverride'] ): ?>
 
@@ -294,7 +302,7 @@
                                                     <a class="btn btn-outline-secondary" id="d2f-list-edit-<?= $row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $row[ 'id' ] ] ) ?> " title="Edit">
                                                         <i class="fa fa-pencil"></i>
                                                     </a>
-                                                    <a class="btn btn-outline-secondary" id='d2f-list-delete-<?= $row[ 'id' ] ?>' href="#" data-object-id="<?= $row[ 'id' ] ?>" title="Delete">
+                                                    <a class="btn btn-outline-secondary d2f-list-delete" id='d2f-list-delete-<?= $row[ 'id' ] ?>' href="#" data-object-id="<?= $row[ 'id' ] ?>" title="Delete">
                                                         <i class="fa fa-trash"></i>
                                                     </a>
                                                 <?php endif;?>

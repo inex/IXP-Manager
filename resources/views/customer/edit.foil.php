@@ -23,6 +23,8 @@
                 ->id( "form" )
                 ->action( route('customer@store' ) )
                 ->customInputWidthClass( 'col-sm-6' )
+                ->customLabelWidthClass( 'col-sm-3' )
+                ->actionButtonsCustomClass( "grey-box")
 
             ?>
 
@@ -46,12 +48,13 @@
                     </button>
                 </div>
 
+
             </div>
 
 
             <div class="mt-4 row">
 
-                <div class="col-lg-6 col-md-12">
+                <div class="col-lg-6 col-md-12 mb-4 mb-sm-0">
 
                     <h3>Customer Details</h3>
                     <hr>
@@ -299,13 +302,13 @@
             <br/>
 
 
-            <div class="col-sm-12 text-center bg-light mt-4 p-4 shadow-sm">
-                <?= Former::actions( Former::primary_submit( 'Save Changes' ),
-                    Former::secondary_link( 'Cancel' )->href( route( 'customer@list' ) ),
-                    Former::success_button( 'Help' )->id( 'help-btn' )
+
+                <?= Former::actions( Former::primary_submit( $t->cust ? 'Save Changes' : 'Add' )->class( "mb-2 mb-sm-0" ),
+                    Former::secondary_link( 'Cancel' )->href( route( 'customer@list' ) )->class( "mb-2 mb-sm-0" ),
+                    Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
                 );
                 ?>
-            </div>
+
 
 
             <?= Former::close() ?>

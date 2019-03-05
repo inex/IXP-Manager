@@ -8,9 +8,6 @@ const duplicate       = $("#duplicate").val() === "1";
 
 $(document).ready( function() {
 
-    $('label.col-lg-2').removeClass('col-lg-2');
-    $('.input-group-addon').addClass('btn btn-default');
-
     // if we are duplicating the need to select / set the IP addresses
     // BUT ONLY AFTER ALL THE AJAX HAS RUN
     if( duplicate ) {

@@ -1,14 +1,14 @@
-<div class="">
+<div class="mt-2">
     <?php foreach( $t->interfaces[ $t->cust->getId() ] as $vli ) :?>
     <h5>
         IP Address: <?php if( $t->type == 'ipv4' ): ?> <?= $t->ee( $vli->getIPv4Address()->getAddress() ) ?> <?php else: ?> <?= $t->ee( $vli->getIPv6Address()->getAddress() ) ?> <?php endif; ?>
-        &nbsp;&nbsp;&nbsp;&nbsp;
-        <a class="btn btn-default" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vli->getVirtualInterface()->getId() ] ) ?>">
+
+        <a class="ml-2 btn btn-outline-secondary btn-sm" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vli->getVirtualInterface()->getId() ] ) ?>">
             Virtual Interface
         </a>
     </h5>
 
-    <div class="row-fluid">
+    <div class="row">
         <div class="col-sm-6">
             <ul>
                 <?php foreach( $vli->getVirtualInterface()->getPhysicalInterfaces() as $pi ): ?>
@@ -23,7 +23,7 @@
                 <?php if( $vli->getIPv4Address() ): ?>
                 <li>
                     <a href="<?= route( 'interfaces/vlan/edit' , [ 'id' => $vli->getId() ] ) ?>">
-                        <span class="label label-<?php if( $vli->getIpv6enabled() ): ?>success<?php else: ?>danger<?php endif; ?>">
+                        <span class="badge badge-<?php if( $vli->getIpv6enabled() ): ?>success<?php else: ?>danger<?php endif; ?>">
                             <?= $t->ee( $vli->getIPv4Address()->getAddress() ) ?>
                         </span>
                     </a>
@@ -33,7 +33,7 @@
                 <?php if($vli->getIPv6Address() ): ?>
                     <li>
                         <a href="<?= route( 'interfaces/vlan/edit' , [ 'id' => $vli->getId() ] ) ?>">
-                            <span class="label label-<?php if( $vli->getIpv6enabled() ): ?>success<?php else: ?>danger<?php endif; ?>">
+                            <span class="badge badge-<?php if( $vli->getIpv6enabled() ): ?>success<?php else: ?>danger<?php endif; ?>">
                                 <?= $t->ee( $vli->getIPv6Address()->getAddress() ) ?>
                             </span>
                         </a>

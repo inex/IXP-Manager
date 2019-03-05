@@ -30,7 +30,9 @@ $this->layout( 'layouts/ixpv4' );
                 <div class="card-body">
                     <?= Former::open()->method( 'post' )
                         ->action( route( 'sflow-receiver@store' ) )
-                        ->customInputWidthClass( 'col-sm-4' )
+                        ->customInputWidthClass( 'col-sm-6 col-lg-4' )
+                        ->customLabelWidthClass( 'col-lg-2 col-md-4 col-sm-4' )
+                        ->actionButtonsCustomClass( "grey-box")
                     ?>
 
                     <?= Former::text( 'dst_ip' )
@@ -52,10 +54,10 @@ $this->layout( 'layouts/ixpv4' );
                     ?>
 
                     <?=Former::actions(
-                        Former::primary_submit( $t->sflr ? 'Save Changes' : 'Add' ),
-                        Former::secondary_link( 'Cancel' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) :  route( 'interfaces/sflow-receiver/list' ) ),
-                        Former::success_button( 'Help' )->id( 'help-btn' )
-                    )->id('btn-group')->class( "bg-light p-4 mt-4 shadow-sm text-center" );?>
+                        Former::primary_submit( $t->sflr ? 'Save Changes' : 'Add' )->class( "mb-2 mb-sm-0" ),
+                        Former::secondary_link( 'Cancel' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) :  route( 'interfaces/sflow-receiver/list' ) )->class( "mb-2 mb-sm-0" ),
+                        Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
+                    )->id('btn-group');?>
 
                     <?= Former::close() ?>
                 </div>

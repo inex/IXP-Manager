@@ -1,4 +1,3 @@
-<!--<script type="text/javascript" src="<?/*= asset( '/bower_components/clipboard/dist/clipboard.min.js' ) */?>"></script>-->
 <script>
     /**
      * initialisation of the Clipboard even on the class in parameter
@@ -67,10 +66,10 @@
         e.preventDefault();
         if($( ".mac-input" ).hasClass( 'upperCase' ) ){
             $( ".mac-input" ).removeClass( 'upperCase' ).addClass( 'lowerCase' );
-            $( "#notes-modal-btn-case" ).html( '<i class="glyphicon glyphicon-text-size"></i>Uppercase' );
+            $( "#notes-modal-btn-case" ).html( '<i class="fa fa-text-height"></i> Uppercase' );
         }  else {
             $( ".mac-input" ).removeClass( 'lowerCase' ).addClass( 'upperCase' );
-            $( "#notes-modal-btn-case" ).html( '<i class="glyphicon glyphicon-text-size"></i>Lowercase' );
+            $( "#notes-modal-btn-case" ).html( '<i class="fa fa-text-height"></i> Lowercase' );
         }
     });
 </script>

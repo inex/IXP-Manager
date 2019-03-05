@@ -10,10 +10,16 @@
 
 <?php if( !$t->ppp || $t->ppp->getLoaCode() != $t->loaCode ): ?>
 
-    <div class="alert alert-danger">
-        <i class="fa fa-exclamation-triangle"></i>
-        <b>Verification Failed!</b> We could not verify the LoA details you sent.
-        <b>Contact us before proceeding with this cross connect installation!</b>
+    <div class="alert alert-danger" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="text-center">
+                <i class="fa fa-exclamation-triangle fa-2x"></i>
+            </div>
+            <div class="col-sm-12">
+                <b>Verification Failed!</b> We could not verify the LoA details you sent.
+                <b>Contact us before proceeding with this cross connect installation!</b>
+            </div>
+        </div>
     </div>
 
 <?php /*elseif( !$t->ppp->isStateAwaitingXConnect() ): */?><!--
@@ -26,10 +32,17 @@
 
 <?php elseif( $t->ppp->getLoaCode() == $t->loaCode ): ?>
 
-    <div class="alert alert-success">
-        <b>Verification Succeeded!</b> This is a valid LoA for a new cross connect
-        where our circuit ID is <?= $t->ee( $t->ppp->getCircuitReference() ) ?>. Please proceed with
-        this cross connect installation with the following confirming details.
+    <div class="alert alert-success" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="text-center">
+                <i class="fa fa-check-circle fa-2x"></i>
+            </div>
+            <div class="col-sm-12">
+                <b>Verification Succeeded!</b> This is a valid LoA for a new cross connect
+                where our circuit ID is <?= $t->ee( $t->ppp->getCircuitReference() ) ?>. Please proceed with
+                this cross connect installation with the following confirming details.
+            </div>
+        </div>
     </div>
 
 
@@ -69,13 +82,13 @@
     </div>
 
     <blockquote class="blockquote border-left pl-2 m-4" style="border-width : 4px!important; border-color : #f8f9fa" >
-        <h4>
+        <h5>
             Prior to connecting to our demarcation as described below, the co-location provider must ensure that
             this link does not terminate on any active ports. If it does, please contact our NOC immediately.
             The co-location provider must also advise us by email to when this new connection has been completed
             and at that time provide the co-location reference for the cross connect as well as any test results
             of the new circuit.
-        </h4>
+        </h5>
     </blockquote>
 
 <?php else: ?>
@@ -88,7 +101,7 @@
 <?php endif; ?>
 
 
-<div class="card bg-light">
+<div class="card bg-light mt-4">
     <div class="card-body">
         <h5>Contact Details</h5>
         If you need to contact us, please use the <em>Support</em> link above or email us on

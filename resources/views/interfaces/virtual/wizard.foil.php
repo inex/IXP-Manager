@@ -39,6 +39,8 @@ $this->layout( 'layouts/ixpv4' );
         <?= Former::open()->method( 'POST' )
             ->action( route( 'interfaces/virtual/wizard-save' ) )
             ->customInputWidthClass( 'col-sm-7' )
+            ->customLabelWidthClass( 'col-sm-3' )
+            ->actionButtonsCustomClass( "grey-box")
         ?>
 
         <div id="div-well" class="collapse"> <?php /* collapse as we change CSS is JS and will reveal it afterwards */ ?>
@@ -99,7 +101,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 </div>
 
-                <div class="col-md-12 col-lg-4 mt-md-4">
+                <div class="col-md-12 col-lg-4 mt-4 mt-md-4">
 
                     <h3>
                         Physical Interface Settings
@@ -162,7 +164,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 </div>
 
-                <div class="col-md-12 col-lg-4 mt-md-4">
+                <div class="col-md-12 col-lg-4 mt-4 mt-md-4">
 
                     <h3>
                         General VLAN Settings
@@ -215,24 +217,25 @@ $this->layout( 'layouts/ixpv4' );
 
         
             <div class="row mt-4">
-                <div id='ipv6-area' class="col-md-12 col-lg-6 mt-md-4" style="<?= old( 'ipv6-enabled' ) || Former::checkbox( 'ipv6-enabled')->getValue() !== null ?: 'display: none' ?>">
+                <div id='ipv6-area' class="col-md-12 col-lg-6 mt-4" style="<?= old( 'ipv6-enabled' ) || Former::checkbox( 'ipv6-enabled')->getValue() !== null ?: 'display: none' ?>">
                     <?= $t->insert( 'interfaces/common/vli/ipv6.foil.php' ) ?>
                 </div>
 
-                <div id='ipv4-area' class="col-md-12 col-lg-6 mt-md-4" style="<?= old( 'ipv4-enabled' ) || Former::checkbox( 'ipv4-enabled')->getValue() !== null ?: 'display: none' ?>">
+                <div id='ipv4-area' class="col-md-12 col-lg-6 mt-4" style="<?= old( 'ipv4-enabled' ) || Former::checkbox( 'ipv4-enabled')->getValue() !== null ?: 'display: none' ?>">
                     <?= $t->insert( 'interfaces/common/vli/ipv4.foil.php' ) ?>
                 </div>
             </div>
 
-            <div class="row mt-4 mt-md-4 ">
-                <?=Former::actions(
-                    Former::primary_submit( 'Save Changes' ),
-                    Former::secondary_link( 'Cancel' )->href( route( 'interfaces/virtual/list' ) ),
-                    Former::success_button( 'Help' )->id( 'help-btn' ),
-                    Former::info_link( 'External Documentation &Gt;' )->href( 'http://docs.ixpmanager.org/usage/interfaces/' )->target( '_blank' )->id( 'help-btn' )
-                )->id('btn-group')->class( "text-center bg-light mt-4 p-4 shadow-sm col-md-12");?>
 
-            </div>
+                <?=Former::actions(
+                    Former::primary_submit( 'Add' )->class( "mb-2 mb-sm-0" ),
+                    Former::secondary_link( 'Cancel' )->href( route( 'interfaces/virtual/list' ) )->class( "mb-2 mb-sm-0" ),
+                    Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" ),
+                    Former::info_link( 'External Documentation &Gt;' )->href( 'http://docs.ixpmanager.org/usage/interfaces/' )->target( '_blank' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
+                )->id('btn-group')
+                ?>
+
+
             <?= Former::close() ?>
 
         </div>
