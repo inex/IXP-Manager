@@ -65,6 +65,13 @@ class Kernel extends ConsoleKernel {
     protected function schedule(Schedule $schedule) {
         // $schedule->command('inspire')
         //          ->hourly();
+
+        // OUI Update - https://docs.ixpmanager.org/features/layer2-addresses/#oui-database
+        $schedule->command( 'utils:oui-update --quiet' )->weekly()->mondays()->at('9:15');
+
+        // Switch SNMP pool - https://docs.ixpmanager.org/usage/switches/#automated-polling-snmp-updates
+        $schedule->command( 'switch:snmp-poll --quiet' )->hourlyAt(10);
+
     }
 
     /**
