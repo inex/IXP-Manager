@@ -843,7 +843,7 @@
     <association from="\Entities\Contact" to="\Entities\User" owner-alias="Contact" inverse-alias="User" many-owner="false" many-inverse="false" uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287">
       <association-field from="user_id" to="id" uuid="75d79600-a7b0-4e01-8ff4-ff818f24003d"/>
       <orm-attributes>
-        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="on-delete">SET NULL</attribute>
       </orm-attributes>
     </association>
     <entity name="\Entities\ConsoleServerConnection" local-name="ConsoleServerConnection" namespace="\Entities" uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8">
@@ -1615,7 +1615,7 @@
     <entity uuid="3da990c1-6ab8-436e-8800-e09a08ebee16" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1032" position-y="1017" size-x="0" size-x2="135" size-y="0" size-y2="129"/>
     <entity uuid="4322485e-ef2f-4893-a334-d1f7554c2fdb" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1039" position-y="-319" size-x="0" size-x2="141" size-y="0" size-y2="241"/>
     <entity uuid="4365d7b5-d069-4c14-8f53-57e4a0a33786" bg-color="4294967295" hdr-color="4292006610" position-x="1709" position-y="-32" size-x="0" size-x2="109" size-y="0" size-y2="74"/>
-    <entity uuid="47af3a5d-875a-4488-a39f-d2a3178e4d66" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="919" position-y="757" size-x="0" size-x2="139" size-y="0" size-y2="199"/>
+    <entity uuid="47af3a5d-875a-4488-a39f-d2a3178e4d66" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="905" position-y="725" size-x="0" size-x2="143" size-y="0" size-y2="227"/>
     <entity uuid="48d00263-155b-4410-b5da-4f7b2ef3bfc4" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="228" position-y="-191" size-x="0" size-x2="122" size-y="0" size-y2="185"/>
     <entity uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="81" position-y="1042" size-x="0" size-x2="109" size-y="0" size-y2="87"/>
     <entity uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a" bg-color="4294967295" hdr-color="4292006610" position-x="98" position-y="698" size-x="0" size-x2="101" size-y="0" size-y2="87"/>
