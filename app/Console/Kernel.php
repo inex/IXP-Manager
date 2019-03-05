@@ -67,6 +67,15 @@ class Kernel extends ConsoleKernel {
         //          ->hourly();
 
 
+        // Expunge logs / GDPR data / etc.
+        $schedule->command( 'utils:expunge-logs' )->dailyAt( '3:04' );
+        
+        // Grapher - https://docs.ixpmanager.org/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails
+        $schedule->command( 'grapher:upload-stats-to-db' )->dailyAt( '2:00' )
+            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_GRAPHER_UPLOAD_STATS_TO_DB', false ); } );
+
+
+
         // IRRDB - https://docs.ixpmanager.org/features/irrdb/
         if( config( 'ixp.irrdb.bgpq3.path' ) && is_executable( config( 'ixp.irrdb.bgpq3.path' ) ) ) {
             $schedule->command( 'irrdb:update-prefix-db --quiet' )->cron( '7 */6 * * *' )
