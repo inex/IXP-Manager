@@ -108,10 +108,10 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'DefaultCustomer', 'Children', 'Contact', '_className', '_preferenceClassName'];
+            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'DefaultCustomer', 'Customers', 'Children', 'Contact', '_className', '_preferenceClassName'];
         }
 
-        return ['__isInitialized__', 'name', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'DefaultCustomer', 'Children', 'Contact', '_className', '_preferenceClassName'];
+        return ['__isInitialized__', 'name', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'DefaultCustomer', 'Customers', 'Children', 'Contact', '_className', '_preferenceClassName'];
     }
 
     /**
@@ -550,6 +550,39 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDefaultCustomer', []);
 
         return parent::getDefaultCustomer();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addCustomer(\Entities\Customer $customer)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addCustomer', [$customer]);
+
+        return parent::addCustomer($customer);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeCustomer(\Entities\Customer $customer)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeCustomer', [$customer]);
+
+        return parent::removeCustomer($customer);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCustomers()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomers', []);
+
+        return parent::getCustomers();
     }
 
     /**

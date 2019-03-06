@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Cache, D2EM, Former, Hash, Redirect, Route, Validator;
+use Auth, Cache, D2EM, Former, Hash, Log, Redirect, Route, Validator;
 
 use IXP\Events\User\Welcome as WelcomeEvent;
 
@@ -31,14 +31,17 @@ use Entities\{
     Customer            as CustomerEntity,
     User                as UserEntity
 };
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\{
+    Request,
+    RedirectResponse
+};
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
-use Log;
+
+use Illuminate\View\View;
 
 
 /**
@@ -179,7 +182,10 @@ class UserController extends Doctrine2Frontend {
     protected static function additionalRoutes( string $route_prefix ) {
         // FIXME @yannrobin: should be POST
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get(     'welcome-email/{id}/{resend?}',                          'UserController@sendWelcomeEmail'    )->name( $route_prefix . '@welcome-email' );
+            Route::get(     'welcome-email/{id}/{resend?}',     'UserController@sendWelcomeEmail'   )->name( $route_prefix . '@welcome-email'       );
+            Route::get(     'add',                              'UserController@addForm'            )->name( $route_prefix . '@add'                 );
+            Route::get(     'add/info/{id?}',                   'UserController@addEditPrepareForm' )->name( $route_prefix . '@add-info'            );
+            Route::post(     'add/check-email',                 'UserController@addCheckEmail'      )->name( $route_prefix . '@add-check-email'     );
         });
     }
 
@@ -196,21 +202,12 @@ class UserController extends Doctrine2Frontend {
         return D2EM::getRepository( UserEntity::class )->getAllForFeList( $this->feParams, $id, Auth::getUser() );
     }
 
-
-
     /**
-     * Display the form to add/edit an object
+     * All to set the url under the cancel button on the edit/add form depending on the entry point (customer overview/ user list)
      *
-     * @param   int $id ID of the row to edit
-     *
-     * @return array
-     *
-     * @throws
+     * @return Void
      */
-    protected function addEditPrepareForm( $id = null ): array {
-
-        $old = request()->old();
-
+    public function manageCancelbutton(){
         request()->session()->remove( "user_post_store_redirect" );
 
         // check if we come from the customer overview or the user list
@@ -221,40 +218,124 @@ class UserController extends Doctrine2Frontend {
             session()->put( 'user_post_store_redirect', 'user@list' );
             session()->put( 'user_post_store_redirect_cid', null );
         }
+    }
+
+    /**
+     * Display the form to Add an object
+     *
+     * @return View
+     */
+    public function addForm(): View {
+        $this->manageCancelbutton();
+
+        $this->addEditSetup();
+        return $this->display( 'add-form' );
+
+    }
 
 
+    /**
+     * Function to check if the Email address is already used by a User
+     *
+     *      if yes we get the user information and display the information of the user
+     *      if no we display the add/edit form
+     *
+     * @param Request $request
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function addCheckEmail( Request $request )
+    {
+        $validator = Validator::make( $request->all(), [
+            'email'                 => 'required|email|max:255',
+        ]);
 
-        if( $id !== null ) {
+        if( $validator->fails() ) {
+            return Redirect::back()->withErrors($validator)->withInput();
+        }
 
-            if( !( $this->object = D2EM::getRepository( UserEntity::class )->find( $id ) ) ) {
-                abort(404, 'User not found');
+        $userid = null;
+
+        if( $this->object = D2EM::getRepository( UserEntity::class )->findOneBy( [ 'email' => $request->input( 'email' ) ] ) ) {
+            $userid = $this->object->getId();
+        }
+
+        return redirect( route( "user@add-info" , [ 'user' => $userid ] ) );
+    }
+
+    /**
+     * Display the form to edit an object
+     *
+     * @param   int $id ID of the row to edit
+     *
+     * @return array
+     *
+     * @throws
+     */
+    protected function addEditPrepareForm( $id = null ): array {
+
+        $old = request()->old();
+        $existingUser = false;
+
+        $this->manageCancelbutton();
+        if( request()->is( 'user/edit/*' ) ){
+
+            if( $id !== null ) {
+
+                if( !( $this->object = D2EM::getRepository( UserEntity::class )->find( $id ) ) ) {
+                    abort(404, 'User not found');
+                }
+
+                if( !Auth::getUser()->isSuperUser() && Auth::getUser()->getCustomer()->getId() != $this->object->getCustomer()->getId() ){
+                    $this->unauthorized();
+                }
+
+                Former::populate([
+                    'name'             => array_key_exists( 'name',                $old ) ? $old['name']                 : $this->object->getName(),
+                    'username'         => array_key_exists( 'username',            $old ) ? $old['username']             : $this->object->getUsername(),
+                    'custid'           => array_key_exists( 'custid',              $old ) ? $old['custid']               : $this->object->getCustomer()->getId(),
+                    'email'            => array_key_exists( 'email',               $old ) ? $old['email']                : $this->object->getEmail(),
+                    'authorisedMobile' => array_key_exists( 'authorisedMobile',    $old ) ? $old['authorisedMobile']     : $this->object->getAuthorisedMobile(),
+                    'enabled'          => array_key_exists( 'enabled',             $old ) ? ( $old['enabled'] ? 1 : 0 )  : ( $this->object->getDisabled() ? 0 : 1 ),
+                    'privs'            => array_key_exists( 'privs',               $old ) ? $old['privs']                : $this->object->getPrivs(),
+                ]);
+
+            } else {
+
+                if( request()->input( "cust" ) && ( $cust = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "cust" ) ) ) ){
+                    Former::populate( [
+                        'custid'                    => $cust->getId(),
+                    ] );
+                }
+
             }
-
-            if( !Auth::getUser()->isSuperUser() && Auth::getUser()->getCustomer()->getId() != $this->object->getCustomer()->getId() ){
-                $this->unauthorized();
-            }
-
-            Former::populate([
-                'name'             => array_key_exists( 'name',                $old ) ? $old['name']                 : $this->object->getName(),
-                'username'         => array_key_exists( 'username',            $old ) ? $old['username']             : $this->object->getUsername(),
-                'custid'           => array_key_exists( 'custid',              $old ) ? $old['custid']               : $this->object->getCustomer()->getId(),
-                'email'            => array_key_exists( 'email',               $old ) ? $old['email']                : $this->object->getEmail(),
-                'authorisedMobile' => array_key_exists( 'authorisedMobile',    $old ) ? $old['authorisedMobile']     : $this->object->getAuthorisedMobile(),
-                'enabled'          => array_key_exists( 'enabled',             $old ) ? ( $old['enabled'] ? 1 : 0 )  : ( $this->object->getDisabled() ? 0 : 1 ),
-                'privs'            => array_key_exists( 'privs',               $old ) ? $old['privs']                : $this->object->getPrivs(),
-            ]);
 
         } else {
 
-            if( request()->input( "cust" ) && ( $cust = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "cust" ) ) ) ){
-                Former::populate( [
-                    'custid'                    => $cust->getId(),
-                ] );
+            if( $id !== null ) {
+                if( !( $this->object = D2EM::getRepository( UserEntity::class )->find( $id ) ) ) {
+                    abort(404, 'User not found');
+                }
+
+                if( !Auth::getUser()->isSuperUser() && Auth::getUser()->getCustomer()->getId() != $this->object->getCustomer()->getId() ){
+                    $this->unauthorized();
+                }
+
+                $existingUser = true;
+            } else {
+                Former::populate([
+                    'email'            => array_key_exists( 'email',               $old ) ? $old['email']                : "myemail",
+                ]);
             }
 
         }
 
+
+
         return [
+            'existingUser'          => $existingUser,
             'object'                => $this->object,
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
         ];

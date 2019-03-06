@@ -257,7 +257,7 @@ class Customer
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    protected $DefaultUsers;
+    protected $User;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
@@ -318,7 +318,6 @@ class Customer
         $this->PeersWith = new \Doctrine\Common\Collections\ArrayCollection();
         $this->XCusts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->YCusts = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->DefaultUsers = new \Doctrine\Common\Collections\ArrayCollection();
         $this->Users = new \Doctrine\Common\Collections\ArrayCollection();
         $this->Traffic95ths = new \Doctrine\Common\Collections\ArrayCollection();
         $this->Traffic95thMonthlys = new \Doctrine\Common\Collections\ArrayCollection();

@@ -6,12 +6,12 @@
     </id>
     <field name="privs" type="integer" nullable="false"/>
     <field name="created_at" type="datetime" nullable="false"/>
-    <many-to-one field="customer" target-entity="Entities\Customer" inversed-by="customerToUser">
+    <many-to-one field="customer" target-entity="Entities\Customer" inversed-by="Users">
       <join-columns>
         <join-column name="customer_id" referenced-column-name="id" nullable="false"/>
       </join-columns>
     </many-to-one>
-    <many-to-one field="user" target-entity="Entities\User" inversed-by="customerToUser">
+    <many-to-one field="user" target-entity="Entities\User" inversed-by="Customers">
       <join-columns>
         <join-column name="user_id" referenced-column-name="id" nullable="false"/>
       </join-columns>

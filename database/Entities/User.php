@@ -168,7 +168,7 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * @var CustomerEntity
      */
-    protected $DefaultCustomer;
+    protected $Customer;
 
     /**
      * @var CustomerEntity
@@ -422,6 +422,16 @@ class User implements Authenticatable, CanResetPasswordContract
     }
 
     /**
+     * Get Customer
+     *
+     * @return \Entities\Customer
+     */
+    public function getCustomer()
+    {
+        return $this->Customer;
+    }
+
+    /**
      * Set creator
      *
      * @param string $creator
@@ -516,9 +526,9 @@ class User implements Authenticatable, CanResetPasswordContract
      * @param CustomerEntity $customer
      * @return User
      */
-    public function setDefaultCustomer(CustomerEntity $customer = null)
+    public function setCurrentCustomer(CustomerEntity $customer = null)
     {
-        $this->DefaultCustomer = $customer;
+        $this->currentCustomer = $customer;
 
         return $this;
     }
@@ -528,22 +538,16 @@ class User implements Authenticatable, CanResetPasswordContract
      *
      * @return Customer
      */
-    public function getDefaultCustomer()
+    public function getCurrentCustomer()
     {
-        return $this->DefaultCustomer;
+        return $this->currentCustomer;
     }
-
-
-
-
-
-
 
 
     /**
      * Add Customer
      *
-     * @param Entities\Customer $customer
+     * @param \Entities\Customer $customer
      * @return User
      */
     public function addCustomer(\Entities\Customer $customer)
@@ -568,8 +572,7 @@ class User implements Authenticatable, CanResetPasswordContract
      *
      * @return \Doctrine\Common\Collections\Collection|Customer[]
      */
-    public function getCustomers()
-    {
+    public function getCustomers(){
         return $this->Customers;
     }
 
