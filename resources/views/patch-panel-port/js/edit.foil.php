@@ -7,6 +7,8 @@
     const cb_duplex         = $( '#duplex' );
     const div_duplex_port   = $( '#duplex-port-area' );
     const dd_partner_port   = $( '#partner_port' );
+    const btn_reset_cust    = $( '#resetCustomer' );
+    const btn_reset_swtich  = $( '#resetSwitchSelect' );
 
     let publicNotes     = $( '#notes' );
     let privateNotes    = $( '#private_notes' );
@@ -101,7 +103,7 @@
      */
     dd_customer.change( function(){
         dd_switch.html( `<option value=''>Loading please wait</option>` ).trigger('change.select2');
-        dd_switch_port.html("").trigger('change.select2');
+        dd_switch_port.html(`<option value=''>Choose a Swotch Port</option>`).trigger('change.select2');
 
         let customerId = dd_customer.val();
 
@@ -136,7 +138,7 @@
     /**
      * allow to reset the dropdowns (switch/switch port/customer)
      */
-    $( ".reset-btn" ).click( function(){
+    btn_reset_swtich.click( function(){
         let $switch;
         let options = `<option value=''> Choose a Switch</option>`;
 
@@ -147,6 +149,11 @@
 
         dd_switch.html( options ).trigger('change.select2');
         dd_switch_port.html(`<option value=''> Choose a Switch Port</option>`).trigger('change.select2');
+
+        $( "#pi_status_area" ).hide();
+    });
+
+    btn_reset_cust.click( function(){
         resetCustomer();
         $( "#pi_status_area" ).hide();
     });
