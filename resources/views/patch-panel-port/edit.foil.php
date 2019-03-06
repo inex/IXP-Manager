@@ -168,7 +168,7 @@
                 </div>
 
                 <div class="my-auto">
-                    <buttton id="resetSwitchSelect" class="btn btn-outline-secondary d-flex">
+                    <buttton id="resetSwitchSelect" class="btn btn-outline-secondary d-flex reset-btn">
                         <i class="my-auto fa fa-retweet"></i>
                         Reset
                     </buttton>
@@ -194,7 +194,7 @@
 
 
                     <div class="my-auto">
-                        <buttton id="resetCustomer" class="btn btn-outline-secondary d-flex">
+                        <buttton id="resetCustomer" class="btn btn-outline-secondary d-flex reset-btn">
                             <i class="my-auto fa fa-retweet"></i>
                             Reset
                         </buttton>

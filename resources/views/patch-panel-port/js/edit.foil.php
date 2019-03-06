@@ -146,7 +146,7 @@
         <?php endforeach; ?>
 
         dd_switch.html( options ).trigger('change.select2');
-        dd_switch_port.html('').trigger('change.select2');
+        dd_switch_port.html(`<option value=''> Choose a Switch Port</option>`).trigger('change.select2');
         resetCustomer();
         $( "#pi_status_area" ).hide();
     });
