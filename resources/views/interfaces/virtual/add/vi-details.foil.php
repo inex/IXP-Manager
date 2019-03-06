@@ -95,7 +95,7 @@
 
                             <div class="col-sm-6">
 
-                                <span class="badge <?php if( $t->vi->isTypePeering() ): ?> badge-success <?php elseif( $t->vi->isTypeFanout() ): ?>badge-secondary <?php endif; ?>">
+                                <span class="badge <?php if( $t->vi->isTypePeering() ): ?> badge-success <?php elseif( $t->vi->isTypeFanout() ): ?>badge-secondary <?php elseif( $t->vi->isTypeReseller() ): ?>badge-dark <?php endif; ?>">
                                     <?= $t->vi->resolveType() ?>
                                 </span>
 
