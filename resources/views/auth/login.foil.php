@@ -38,15 +38,14 @@
                 <?= Former::text( 'username' )
                     ->label( 'Username' )
                     ->required()
-                    ->class( "align-items-center" )
-                    ->autofocus( old( 'username' ) ? false : true )
+                    ->autofocus( old( 'username' ) || request()->input( "username") ? false : true )
                 ?>
 
                 <?= Former::password( 'password' )
                     ->label( 'Password' )
                     ->required()
                     ->blockHelp( '' )
-                    ->autofocus( old( 'username' ) ? true : false );
+                    ->autofocus( old( 'username' ) || request()->input( "username") ? true : false );
                 ?>
 
                 <?= Former::checkbox( 'remember' )
@@ -57,9 +56,7 @@
                     ->blockHelp( "" );
                 ?>
 
-
                 <?= Former::actions( Former::primary_submit( 'Login' ) )?>
-
 
                 <div class="text-center">
                     <a href="<?= route( "forgot-password@show-form" ) ?>"        class="btn-info btn mt-2">
@@ -69,8 +66,6 @@
                         Forgot Username
                     </a>
                 </div>
-
-
 
             <?= Former::close() ?>
 
@@ -88,5 +83,9 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
+<script>
+
+</script>
+
 
 <?php $this->append() ?>

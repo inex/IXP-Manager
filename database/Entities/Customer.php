@@ -1239,9 +1239,13 @@ class Customer
      *
      * @return \Doctrine\Common\Collections\Collection|User[]
      */
-    public function getUsers()
-    {
-        return $this->Users;
+    public function getUsers(){
+        $users = [];
+        foreach( $this->Users as $c2u ){
+            $users[] = $c2u->getUser();
+        }
+
+        return $users;
     }
 
 

@@ -526,22 +526,13 @@ class User implements Authenticatable, CanResetPasswordContract
      * @param CustomerEntity $customer
      * @return User
      */
-    public function setCurrentCustomer(CustomerEntity $customer = null)
+    public function setCustomer(CustomerEntity $customer = null)
     {
-        $this->currentCustomer = $customer;
+        $this->Customer = $customer;
 
         return $this;
     }
 
-    /**
-     * Get Customer
-     *
-     * @return Customer
-     */
-    public function getCurrentCustomer()
-    {
-        return $this->currentCustomer;
-    }
 
 
     /**
@@ -573,7 +564,12 @@ class User implements Authenticatable, CanResetPasswordContract
      * @return \Doctrine\Common\Collections\Collection|Customer[]
      */
     public function getCustomers(){
-        return $this->Customers;
+        $custs = [];
+        foreach( $this->Customers as $c2u ){
+            $custs[] = $c2u->getCustomer();
+        }
+
+        return $custs;
     }
 
 

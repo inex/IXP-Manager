@@ -97,8 +97,20 @@
         font-size: 15px;
     }
 
+    .a-disabled {
+        pointer-events: none;
+        cursor: default;
+        opacity: 0.6;
+    }
 
+    .cursor-pointer{
+        cursor: pointer;
+    }
 
+    .cursor-default{
+        pointer-events: none;
+        cursor: default;
+    }
     /*
     ####################################################
     M E D I A  Q U E R I E S
@@ -588,13 +600,3 @@ td a:hover{
 }
 
 
-.cursor-pointer{
-    cursor: pointer;
-}
-
-
-.a-disabled {
-    pointer-events: none;
-    cursor: default;
-    opacity: 0.6;
-}

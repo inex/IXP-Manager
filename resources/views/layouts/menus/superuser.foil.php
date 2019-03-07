@@ -131,6 +131,20 @@
 
                     <div class="dropdown-divider"></div>
 
+                    <h6 class="dropdown-header">
+                        Switch to :
+                    </h6>
+
+                    <?php foreach( Auth::getUser()->getCustomers() as $cust ): ?>
+
+                        <a class="dropdown-item <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: 'active cursor-default' ?>" <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: "onclick='return false;'" ?> href="<?= Auth::getUser()->getCustomer()->getId() == $cust->getId() ? '#' : route( 'customerNotes@unreadNotes' ) ?>">
+                            <?= $cust->getName() ?>
+                        </a>
+
+                    <?php endforeach; ?>
+
+                    <div class="dropdown-divider"></div>
+
                     <?php if( session()->exists( "switched_user_from" ) ): ?>
                         <a class="dropdown-item" href="<?= route( 'switch-user@switchBack' ) ?>">Switch Back</a>
                     <?php else: ?>

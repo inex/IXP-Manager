@@ -35,6 +35,7 @@ use IXP\Utils\View\Alert\{
 };
 
 use Entities\{
+    CustomerToUser      as CustomerToUserEntity,
     User                as UserEntity,
     UserLoginHistory    as UserLoginHistoryEntity
 };
@@ -123,10 +124,12 @@ class LoginController extends Controller
         if( config( "ixp_fe.login_history.enabled" ) ) {
 
             $log = new UserLoginHistoryEntity;
-            $log->setAt( new \DateTime() );
-            $log->setIp( request()->ip() );
-            $log->setUser( $user );
             D2EM::persist( $log );
+
+            $log->setAt(    new \DateTime() );
+            $log->setIp(    request()->ip() );
+            $log->setUser(  $user           );
+
             D2EM::flush();
         }
 
@@ -134,6 +137,28 @@ class LoginController extends Controller
             $user->setPreference( 'auth.last_login_from', request()->ip() );
             $user->setPreference( 'auth.last_login_at',   time()                );
         }
+
+        // Check if the user has Customer(s) linked
+        if( count( $user->getCustomers() ) > 0 ){
+
+            // Check if the user has a default Customer, if not assign one
+            if( !$user->getCustomer() ){
+                $user->setCustomer( $user->getCustomers()[0] );
+                D2EM::flush();
+            } else{
+                // Check If the link between the customer and the user is still valid (database row in the customer2user table)
+                if( !D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "customer" => $user->getCustomer(), "user" => $user ] ) ){
+                    $user->setCustomer( $user->getCustomers()[0] );
+                    D2EM::flush();
+                }
+
+            }
+
+        } else {
+            // No customer linked, logout
+            $this->logout( $request, [ 'message' => "No customer assigned to this user. Please contact the support Team.", 'class' => Alert::DANGER ] );
+        }
+
     }
 
     /**
@@ -153,15 +178,17 @@ class LoginController extends Controller
      * Log the user out of the application.
      *
      * @param  \Illuminate\Http\Request  $request
+     * @param  array|null  $customMessage Custom message to display
+     *
      * @return \Illuminate\Http\Response
      */
-    public function logout(Request $request)
+    public function logout(Request $request, $customMessage = null)
     {
         $this->guard()->logout();
 
         $request->session()->invalidate();
 
-        AlertContainer::push( "You have been logged out." , Alert::SUCCESS );
+        AlertContainer::push( $customMessage ? $customMessage[ "message" ] : "You have been logged out." , $customMessage ? $customMessage[ "class" ] : Alert::SUCCESS );
 
         return redirect('');
     }
