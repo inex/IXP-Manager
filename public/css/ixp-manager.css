@@ -600,10 +600,12 @@ td a:hover{
 
 .asn-table{
     margin-left: 30px;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 .asn-table tr td{
-    padding : 4px;
+    padding : 1px;
+    padding-left: 5px;
 }
 
 .scrollable-dropdown {
