@@ -118,29 +118,29 @@ function populateFormViaAsn() {
                 if( typeof response.net !== "undefined" ) {
 
                     // fill inputs with info received
-                    input_name.val(             response.net.name ).closest( 'div.form-group' ).addClass( 'has-success' );
-                    input_abbreviated_name.val( response.net.name ).closest( 'div.form-group' ).addClass( 'has-success' );
-                    input_shortname.val(        response.net.name.replace( /[^a-zA-Z0-9]+/g, "" ).toLowerCase().substr( 0, 10 ) ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    input_name.val(             htmlEntities( response.net.name ) ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    input_abbreviated_name.val( htmlEntities( response.net.name ) ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    input_shortname.val(        htmlEntities( response.net.name ).replace( /[^a-zA-Z0-9]+/g, "" ).toLowerCase().substr( 0, 10 ) ).closest( 'div.form-group' ).addClass( 'has-success' );
                     input_datejoin.val(         getCurrentDate() ).closest( 'div.form-group' ).addClass( 'has-success' );
-                    input_corp_www.val(         response.net.website ).closest( 'div.form-group' ).addClass( 'has-success' );
-                    input_autsys.val(           response.net.asn ).closest( 'div.form-group' ).addClass( 'has-success' );
-                    input_peeringmacro.val(     response.net.irr_as_set ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    input_corp_www.val(         htmlEntities( response.net.website ) ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    input_autsys.val(           htmlEntities( response.net.asn ) ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    input_peeringmacro.val(     htmlEntities( response.net.irr_as_set ) ).closest( 'div.form-group' ).addClass( 'has-success' );
 
                     if( response.net.info_prefixes4 !== "undefined" ) {
-                        input_maxprefixes.val( Math.ceil( response.net.info_prefixes4 * 1.2 ) ).closest( 'div.form-group' ).addClass( 'has-success' );
+                        input_maxprefixes.val( Math.ceil( htmlEntities( response.net.info_prefixes4 ) * 1.2 ) ).closest( 'div.form-group' ).addClass( 'has-success' );
                     }
 
-                    dd_peering_policy.val(  response.net.policy_general.toLowerCase() ).trigger( "change" ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    dd_peering_policy.val(  htmlEntities( response.net.policy_general ).toLowerCase() ).trigger( "change" ).closest( 'div.form-group' ).addClass( 'has-success' );
 
                     if( response.net.poc_set !== "undefined" ) {
                         $.each( response.net.poc_set, function( key, noc ) {
                             if( noc.role.toUpperCase() === "NOC" ) {
                                 if( noc.phone !== "undefined" ){
-                                    input_nocphone.val( noc.phone ).closest( 'div.form-group' ).addClass( 'has-success' );
+                                    input_nocphone.val( htmlEntities( noc.phone ) ).closest( 'div.form-group' ).addClass( 'has-success' );
                                 }
                                 if( noc.email !== "undefined" ) {
-                                    input_nocemail.val( noc.email );
-                                    input_peeringemail.val( noc.email ).closest( 'div.form-group' ).addClass( 'has-success' );
+                                    input_nocemail.val( htmlEntities( noc.email ) );
+                                    input_peeringemail.val( htmlEntities( noc.email ) ).closest( 'div.form-group' ).addClass( 'has-success' );
                                 }
                             }
                         });
