@@ -33,7 +33,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class SwitchControllerTest extends DuskTestCase
 {
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach( [ 'phpunit', 'phpunit2' ] as $name ) {
             $switch = D2EM::getRepository( SwitcherEntity::class )->findOneBy( [ 'name' => $name ] );

@@ -40,10 +40,6 @@ class IxpServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-
-        app()->bind('DatabaseTokenRepository', function() {
-            // your binding logic
-        });
     }
 
     /**

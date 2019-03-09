@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.7.28 on 2019-03-05 16:25:33.
+ * Generated for Laravel 5.8.3 on 2019-03-09 15:20:52.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -16,7 +16,7 @@ namespace Illuminate\Support\Facades {
     /**
      * 
      *
-     * @see \Illuminate\Foundation\Application
+     * @see \Illuminate\Contracts\Foundation\Application
      */ 
     class App {
         
@@ -329,13 +329,14 @@ namespace Illuminate\Support\Facades {
         /**
          * Get or check the current application environment.
          *
+         * @param string|array $environments
          * @return string|bool 
          * @static 
          */ 
-        public static function environment()
+        public static function environment($environments = null)
         {
                         /** @var \Illuminate\Foundation\Application $instance */
-                        return $instance->environment();
+                        return $instance->environment($environments);
         }
         
         /**
@@ -698,7 +699,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Register a terminating callback with the application.
          *
-         * @param \Closure $callback
+         * @param callable|string $callback
          * @return \Illuminate\Foundation\Application 
          * @static 
          */ 
@@ -1103,7 +1104,7 @@ namespace Illuminate\Support\Facades {
          * Resolve all of the bindings for a given tag.
          *
          * @param string $tag
-         * @return array 
+         * @return \Illuminate\Container\iterable 
          * @static 
          */ 
         public static function tagged($tag)
@@ -1119,6 +1120,7 @@ namespace Illuminate\Support\Facades {
          * @param string $abstract
          * @param string $alias
          * @return void 
+         * @throws \LogicException
          * @static 
          */ 
         public static function alias($abstract, $alias)
@@ -1298,7 +1300,6 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $abstract
          * @return string 
-         * @throws \LogicException
          * @static 
          */ 
         public static function getAlias($abstract)
@@ -1506,6 +1507,7 @@ namespace Illuminate\Support\Facades {
          * @param array $parameters
          * @param \Symfony\Component\Console\Output\OutputInterface $outputBuffer
          * @return int 
+         * @throws \Symfony\Component\Console\Exception\CommandNotFoundException
          * @static 
          */ 
         public static function call($command, $parameters = array(), $outputBuffer = null)
@@ -2193,13 +2195,14 @@ namespace Illuminate\Support\Facades {
          * Mix another object into the class.
          *
          * @param object $mixin
+         * @param bool $replace
          * @return void 
          * @throws \ReflectionException
          * @static 
          */ 
-        public static function mixin($mixin)
+        public static function mixin($mixin, $replace = true)
         {
-                        \Illuminate\Auth\SessionGuard::mixin($mixin);
+                        \Illuminate\Auth\SessionGuard::mixin($mixin, $replace);
         }
         
         /**
@@ -2936,14 +2939,14 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $key
          * @param mixed $value
-         * @param \DateTimeInterface|\DateInterval|float|int|null $minutes
-         * @return void 
+         * @param \DateTimeInterface|\DateInterval|int|null $ttl
+         * @return bool 
          * @static 
          */ 
-        public static function put($key, $value, $minutes = null)
+        public static function put($key, $value, $ttl = null)
         {
                         /** @var \Illuminate\Cache\Repository $instance */
-                        $instance->put($key, $value, $minutes);
+                        return $instance->put($key, $value, $ttl);
         }
         
         /**
@@ -2966,17 +2969,17 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Store multiple items in the cache for a given number of minutes.
+         * Store multiple items in the cache for a given number of seconds.
          *
          * @param array $values
-         * @param \DateTimeInterface|\DateInterval|float|int $minutes
-         * @return void 
+         * @param \DateTimeInterface|\DateInterval|int|null $ttl
+         * @return bool 
          * @static 
          */ 
-        public static function putMany($values, $minutes)
+        public static function putMany($values, $ttl = null)
         {
                         /** @var \Illuminate\Cache\Repository $instance */
-                        $instance->putMany($values, $minutes);
+                        return $instance->putMany($values, $ttl);
         }
         
         /**
@@ -3003,14 +3006,14 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $key
          * @param mixed $value
-         * @param \DateTimeInterface|\DateInterval|float|int $minutes
+         * @param \DateTimeInterface|\DateInterval|int|null $ttl
          * @return bool 
          * @static 
          */ 
-        public static function add($key, $value, $minutes)
+        public static function add($key, $value, $ttl = null)
         {
                         /** @var \Illuminate\Cache\Repository $instance */
-                        return $instance->add($key, $value, $minutes);
+                        return $instance->add($key, $value, $ttl);
         }
         
         /**
@@ -3046,28 +3049,28 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $key
          * @param mixed $value
-         * @return void 
+         * @return bool 
          * @static 
          */ 
         public static function forever($key, $value)
         {
                         /** @var \Illuminate\Cache\Repository $instance */
-                        $instance->forever($key, $value);
+                        return $instance->forever($key, $value);
         }
         
         /**
          * Get an item from the cache, or execute the given Closure and store the result.
          *
          * @param string $key
-         * @param \DateTimeInterface|\DateInterval|float|int $minutes
+         * @param \DateTimeInterface|\DateInterval|int|null $ttl
          * @param \Closure $callback
          * @return mixed 
          * @static 
          */ 
-        public static function remember($key, $minutes, $callback)
+        public static function remember($key, $ttl, $callback)
         {
                         /** @var \Illuminate\Cache\Repository $instance */
-                        return $instance->remember($key, $minutes, $callback);
+                        return $instance->remember($key, $ttl, $callback);
         }
         
         /**
@@ -3171,7 +3174,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Get the default cache time.
          *
-         * @return float|int 
+         * @return int 
          * @static 
          */ 
         public static function getDefaultCacheTime()
@@ -3181,16 +3184,16 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Set the default cache time in minutes.
+         * Set the default cache time in seconds.
          *
-         * @param float|int $minutes
+         * @param int|null $seconds
          * @return \Illuminate\Cache\Repository 
          * @static 
          */ 
-        public static function setDefaultCacheTime($minutes)
+        public static function setDefaultCacheTime($seconds)
         {
                         /** @var \Illuminate\Cache\Repository $instance */
-                        return $instance->setDefaultCacheTime($minutes);
+                        return $instance->setDefaultCacheTime($seconds);
         }
         
         /**
@@ -3288,13 +3291,14 @@ namespace Illuminate\Support\Facades {
          * Mix another object into the class.
          *
          * @param object $mixin
+         * @param bool $replace
          * @return void 
          * @throws \ReflectionException
          * @static 
          */ 
-        public static function mixin($mixin)
+        public static function mixin($mixin, $replace = true)
         {
-                        \Illuminate\Cache\Repository::mixin($mixin);
+                        \Illuminate\Cache\Repository::mixin($mixin, $replace);
         }
         
         /**
@@ -3691,13 +3695,14 @@ namespace Illuminate\Support\Facades {
          * Mix another object into the class.
          *
          * @param object $mixin
+         * @param bool $replace
          * @return void 
          * @throws \ReflectionException
          * @static 
          */ 
-        public static function mixin($mixin)
+        public static function mixin($mixin, $replace = true)
         {
-                        \Illuminate\Cookie\CookieJar::mixin($mixin);
+                        \Illuminate\Cookie\CookieJar::mixin($mixin, $replace);
         }
         
         /**
@@ -3766,6 +3771,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $value
          * @return string 
+         * @throws \Illuminate\Contracts\Encryption\EncryptException
          * @static 
          */ 
         public static function encryptString($value)
@@ -3794,6 +3800,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $payload
          * @return string 
+         * @throws \Illuminate\Contracts\Encryption\DecryptException
          * @static 
          */ 
         public static function decryptString($payload)
@@ -4907,21 +4914,6 @@ namespace Illuminate\Support\Facades {
          * @return array|null 
          * @static 
          */ 
-        public static function fire($event, $payload = array(), $halt = false)
-        {
-                        /** @var \Illuminate\Events\Dispatcher $instance */
-                        return $instance->fire($event, $payload, $halt);
-        }
-        
-        /**
-         * Fire an event and call the listeners.
-         *
-         * @param string|object $event
-         * @param mixed $payload
-         * @param bool $halt
-         * @return array|null 
-         * @static 
-         */ 
         public static function dispatch($event, $payload = array(), $halt = false)
         {
                         /** @var \Illuminate\Events\Dispatcher $instance */
@@ -5172,7 +5164,7 @@ namespace Illuminate\Support\Facades {
          * @param string $path
          * @param string $contents
          * @param bool $lock
-         * @return int 
+         * @return int|bool 
          * @static 
          */ 
         public static function put($path, $contents, $lock = false)
@@ -5608,13 +5600,14 @@ namespace Illuminate\Support\Facades {
          * Mix another object into the class.
          *
          * @param object $mixin
+         * @param bool $replace
          * @return void 
          * @throws \ReflectionException
          * @static 
          */ 
-        public static function mixin($mixin)
+        public static function mixin($mixin, $replace = true)
         {
-                        \Illuminate\Filesystem\Filesystem::mixin($mixin);
+                        \Illuminate\Filesystem\Filesystem::mixin($mixin, $replace);
         }
         
         /**
@@ -5817,6 +5810,19 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Auth\Access\Gate $instance */
                         return $instance->getPolicyFor($class);
+        }
+        
+        /**
+         * Specify a callback to be used to guess policy names.
+         *
+         * @param callable $callback
+         * @return \Illuminate\Auth\Access\Gate 
+         * @static 
+         */ 
+        public static function guessPolicyNamesUsing($callback)
+        {
+                        /** @var \Illuminate\Auth\Access\Gate $instance */
+                        return $instance->guessPolicyNamesUsing($callback);
         }
         
         /**
@@ -6364,7 +6370,7 @@ namespace Illuminate\Support\Facades {
          * Create an Illuminate request from a Symfony instance.
          *
          * @param \Symfony\Component\HttpFoundation\Request $request
-         * @return \Illuminate\Http\Request 
+         * @return static 
          * @static 
          */ 
         public static function createFromBase($request)
@@ -8086,13 +8092,14 @@ namespace Illuminate\Support\Facades {
          * Mix another object into the class.
          *
          * @param object $mixin
+         * @param bool $replace
          * @return void 
          * @throws \ReflectionException
          * @static 
          */ 
-        public static function mixin($mixin)
+        public static function mixin($mixin, $replace = true)
         {
-                        \Illuminate\Http\Request::mixin($mixin);
+                        \Illuminate\Http\Request::mixin($mixin, $replace);
         }
         
         /**
@@ -8459,13 +8466,14 @@ namespace Illuminate\Support\Facades {
          * Mix another object into the class.
          *
          * @param object $mixin
+         * @param bool $replace
          * @return void 
          * @throws \ReflectionException
          * @static 
          */ 
-        public static function mixin($mixin)
+        public static function mixin($mixin, $replace = true)
         {
-                        \Illuminate\Translation\Translator::mixin($mixin);
+                        \Illuminate\Translation\Translator::mixin($mixin, $replace);
         }
         
         /**
@@ -8935,15 +8943,15 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Get the view factory instance.
+         * Get the array of failed recipients.
          *
-         * @return \Illuminate\Contracts\View\Factory 
+         * @return array 
          * @static 
          */ 
-        public static function getViewFactory()
+        public static function failures()
         {
                         /** @var \Illuminate\Mail\Mailer $instance */
-                        return $instance->getViewFactory();
+                        return $instance->failures();
         }
         
         /**
@@ -8959,15 +8967,15 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Get the array of failed recipients.
+         * Get the view factory instance.
          *
-         * @return array 
+         * @return \Illuminate\Contracts\View\Factory 
          * @static 
          */ 
-        public static function failures()
+        public static function getViewFactory()
         {
                         /** @var \Illuminate\Mail\Mailer $instance */
-                        return $instance->failures();
+                        return $instance->getViewFactory();
         }
         
         /**
@@ -9013,13 +9021,14 @@ namespace Illuminate\Support\Facades {
          * Mix another object into the class.
          *
          * @param object $mixin
+         * @param bool $replace
          * @return void 
          * @throws \ReflectionException
          * @static 
          */ 
-        public static function mixin($mixin)
+        public static function mixin($mixin, $replace = true)
         {
-                        \Illuminate\Mail\Mailer::mixin($mixin);
+                        \Illuminate\Mail\Mailer::mixin($mixin, $replace);
         }
         
         /**
@@ -10164,13 +10173,14 @@ namespace Illuminate\Support\Facades {
          * Mix another object into the class.
          *
          * @param object $mixin
+         * @param bool $replace
          * @return void 
          * @throws \ReflectionException
          * @static 
          */ 
-        public static function mixin($mixin)
+        public static function mixin($mixin, $replace = true)
         {
-                        \Illuminate\Routing\Redirector::mixin($mixin);
+                        \Illuminate\Routing\Redirector::mixin($mixin, $replace);
         }
         
         /**
@@ -10524,7 +10534,7 @@ namespace Illuminate\Support\Facades {
          * Create an Illuminate request from a Symfony instance.
          *
          * @param \Symfony\Component\HttpFoundation\Request $request
-         * @return \Illuminate\Http\Request 
+         * @return static 
          * @static 
          */ 
         public static function createFromBase($request)
@@ -12246,13 +12256,14 @@ namespace Illuminate\Support\Facades {
          * Mix another object into the class.
          *
          * @param object $mixin
+         * @param bool $replace
          * @return void 
          * @throws \ReflectionException
          * @static 
          */ 
-        public static function mixin($mixin)
+        public static function mixin($mixin, $replace = true)
         {
-                        \Illuminate\Http\Request::mixin($mixin);
+                        \Illuminate\Http\Request::mixin($mixin, $replace);
         }
         
         /**
@@ -12534,13 +12545,14 @@ namespace Illuminate\Support\Facades {
          * Mix another object into the class.
          *
          * @param object $mixin
+         * @param bool $replace
          * @return void 
          * @throws \ReflectionException
          * @static 
          */ 
-        public static function mixin($mixin)
+        public static function mixin($mixin, $replace = true)
         {
-                        \Illuminate\Routing\ResponseFactory::mixin($mixin);
+                        \Illuminate\Routing\ResponseFactory::mixin($mixin, $replace);
         }
         
         /**
@@ -12857,7 +12869,7 @@ namespace Illuminate\Support\Facades {
          * Return the response returned by the given route.
          *
          * @param string $name
-         * @return mixed 
+         * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse 
          * @static 
          */ 
         public static function respondWithRoute($name)
@@ -12883,7 +12895,7 @@ namespace Illuminate\Support\Facades {
          * Dispatch the request to a route and return the response.
          *
          * @param \Illuminate\Http\Request $request
-         * @return mixed 
+         * @return \Illuminate\Http\Response|\Illuminate\Http\JsonResponse 
          * @static 
          */ 
         public static function dispatchToRoute($request)
@@ -12937,6 +12949,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param \Illuminate\Routing\Route $route
          * @return \Illuminate\Routing\Route 
+         * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
          * @static 
          */ 
         public static function substituteBindings($route)
@@ -12950,6 +12963,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param \Illuminate\Routing\Route $route
          * @return void 
+         * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
          * @static 
          */ 
         public static function substituteImplicitBindings($route)
@@ -13089,7 +13103,6 @@ namespace Illuminate\Support\Facades {
          * @param string $class
          * @param \Closure|null $callback
          * @return void 
-         * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
          * @static 
          */ 
         public static function model($key, $class, $callback = null)
@@ -13431,13 +13444,14 @@ namespace Illuminate\Support\Facades {
          * Mix another object into the class.
          *
          * @param object $mixin
+         * @param bool $replace
          * @return void 
          * @throws \ReflectionException
          * @static 
          */ 
-        public static function mixin($mixin)
+        public static function mixin($mixin, $replace = true)
         {
-                        \Illuminate\Routing\Router::mixin($mixin);
+                        \Illuminate\Routing\Router::mixin($mixin, $replace);
         }
         
         /**
@@ -15442,13 +15456,14 @@ namespace Illuminate\Support\Facades {
          * Mix another object into the class.
          *
          * @param object $mixin
+         * @param bool $replace
          * @return void 
          * @throws \ReflectionException
          * @static 
          */ 
-        public static function mixin($mixin)
+        public static function mixin($mixin, $replace = true)
         {
-                        \Illuminate\Routing\UrlGenerator::mixin($mixin);
+                        \Illuminate\Routing\UrlGenerator::mixin($mixin, $replace);
         }
         
         /**
@@ -16026,13 +16041,14 @@ namespace Illuminate\Support\Facades {
          * Mix another object into the class.
          *
          * @param object $mixin
+         * @param bool $replace
          * @return void 
          * @throws \ReflectionException
          * @static 
          */ 
-        public static function mixin($mixin)
+        public static function mixin($mixin, $replace = true)
         {
-                        \Illuminate\View\Factory::mixin($mixin);
+                        \Illuminate\View\Factory::mixin($mixin, $replace);
         }
         
         /**
@@ -16475,6 +16491,26 @@ namespace Illuminate\Support\Facades {
                         /** @var \Illuminate\View\Factory $instance */
                         return $instance->renderTranslation();
         }
+         
+    }
+ 
+}
+
+namespace Illuminate\Support { 
+
+    /**
+     * 
+     *
+     */ 
+    class Arr {
+         
+    }
+
+    /**
+     * 
+     *
+     */ 
+    class Str {
          
     }
  
@@ -19008,6 +19044,20 @@ namespace Webpatser\Countries {
         }
         
         /**
+         * Eager load relation counts on the model.
+         *
+         * @param array|string $relations
+         * @return \Webpatser\Countries\Countries 
+         * @static 
+         */ 
+        public static function loadCount($relations)
+        {
+            //Method inherited from \Illuminate\Database\Eloquent\Model            
+                        /** @var \Webpatser\Countries\Countries $instance */
+                        return $instance->loadCount($relations);
+        }
+        
+        /**
          * Update the model in the database.
          *
          * @param array $attributes
@@ -20185,6 +20235,21 @@ namespace Webpatser\Countries {
         }
         
         /**
+         * Determine if the new and old values for a given key are equivalent.
+         *
+         * @param string $key
+         * @param mixed $current
+         * @return bool 
+         * @static 
+         */ 
+        public static function originalIsEquivalent($key, $current)
+        {
+            //Method inherited from \Illuminate\Database\Eloquent\Model            
+                        /** @var \Webpatser\Countries\Countries $instance */
+                        return $instance->originalIsEquivalent($key, $current);
+        }
+        
+        /**
          * Append attributes to query when building a query.
          *
          * @param array|string $attributes
@@ -20243,6 +20308,7 @@ namespace Webpatser\Countries {
          *
          * @param object|array|string $classes
          * @return void 
+         * @throws \RuntimeException
          * @static 
          */ 
         public static function observe($classes)
@@ -20553,6 +20619,25 @@ namespace Webpatser\Countries {
             //Method inherited from \Illuminate\Database\Eloquent\Model            
                         /** @var \Webpatser\Countries\Countries $instance */
                         return $instance->hasOne($related, $foreignKey, $localKey);
+        }
+        
+        /**
+         * Define a has-one-through relationship.
+         *
+         * @param string $related
+         * @param string $through
+         * @param string|null $firstKey
+         * @param string|null $secondKey
+         * @param string|null $localKey
+         * @param string|null $secondLocalKey
+         * @return \Illuminate\Database\Eloquent\Relations\HasOneThrough 
+         * @static 
+         */ 
+        public static function hasOneThrough($related, $through, $firstKey = null, $secondKey = null, $localKey = null, $secondLocalKey = null)
+        {
+            //Method inherited from \Illuminate\Database\Eloquent\Model            
+                        /** @var \Webpatser\Countries\Countries $instance */
+                        return $instance->hasOneThrough($related, $through, $firstKey, $secondKey, $localKey, $secondLocalKey);
         }
         
         /**
@@ -21278,616 +21363,12 @@ namespace Webpatser\Countries {
  
 }
 
-namespace Barryvdh\Debugbar { 
-
-    /**
-     * 
-     *
-     * @method static void alert(string $message)
-     * @method static void critical(string $message)
-     * @method static void debug(string $message)
-     * @method static void emergency(string $message)
-     * @method static void error(string $message)
-     * @method static void info(string $message)
-     * @method static void log(string $message)
-     * @method static void notice(string $message)
-     * @method static void warning(string $message)
-     * @see \Barryvdh\Debugbar\LaravelDebugbar
-     */ 
-    class Facade {
-        
-        /**
-         * Enable the Debugbar and boot, if not already booted.
-         *
-         * @static 
-         */ 
-        public static function enable()
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->enable();
-        }
-        
-        /**
-         * Boot the debugbar (add collectors, renderer and listener)
-         *
-         * @static 
-         */ 
-        public static function boot()
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->boot();
-        }
-        
-        /**
-         * 
-         *
-         * @static 
-         */ 
-        public static function shouldCollect($name, $default = false)
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->shouldCollect($name, $default);
-        }
-        
-        /**
-         * Adds a data collector
-         *
-         * @param \Barryvdh\Debugbar\DataCollectorInterface $collector
-         * @throws DebugBarException
-         * @return \Barryvdh\Debugbar\LaravelDebugbar 
-         * @static 
-         */ 
-        public static function addCollector($collector)
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->addCollector($collector);
-        }
-        
-        /**
-         * Handle silenced errors
-         *
-         * @param $level
-         * @param $message
-         * @param string $file
-         * @param int $line
-         * @param array $context
-         * @throws \ErrorException
-         * @static 
-         */ 
-        public static function handleError($level, $message, $file = '', $line = 0, $context = array())
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->handleError($level, $message, $file, $line, $context);
-        }
-        
-        /**
-         * Starts a measure
-         *
-         * @param string $name Internal name, used to stop the measure
-         * @param string $label Public name
-         * @static 
-         */ 
-        public static function startMeasure($name, $label = null)
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->startMeasure($name, $label);
-        }
-        
-        /**
-         * Stops a measure
-         *
-         * @param string $name
-         * @static 
-         */ 
-        public static function stopMeasure($name)
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->stopMeasure($name);
-        }
-        
-        /**
-         * Adds an exception to be profiled in the debug bar
-         *
-         * @param \Exception $e
-         * @deprecated in favor of addThrowable
-         * @static 
-         */ 
-        public static function addException($e)
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->addException($e);
-        }
-        
-        /**
-         * Adds an exception to be profiled in the debug bar
-         *
-         * @param \Exception $e
-         * @static 
-         */ 
-        public static function addThrowable($e)
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->addThrowable($e);
-        }
-        
-        /**
-         * Returns a JavascriptRenderer for this instance
-         *
-         * @param string $baseUrl
-         * @param string $basePathng
-         * @return \Barryvdh\Debugbar\JavascriptRenderer 
-         * @static 
-         */ 
-        public static function getJavascriptRenderer($baseUrl = null, $basePath = null)
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->getJavascriptRenderer($baseUrl, $basePath);
-        }
-        
-        /**
-         * Modify the response and inject the debugbar (or data in headers)
-         *
-         * @param \Symfony\Component\HttpFoundation\Request $request
-         * @param \Symfony\Component\HttpFoundation\Response $response
-         * @return \Symfony\Component\HttpFoundation\Response 
-         * @static 
-         */ 
-        public static function modifyResponse($request, $response)
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->modifyResponse($request, $response);
-        }
-        
-        /**
-         * Check if the Debugbar is enabled
-         *
-         * @return boolean 
-         * @static 
-         */ 
-        public static function isEnabled()
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->isEnabled();
-        }
-        
-        /**
-         * Collects the data from the collectors
-         *
-         * @return array 
-         * @static 
-         */ 
-        public static function collect()
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->collect();
-        }
-        
-        /**
-         * Injects the web debug toolbar into the given Response.
-         *
-         * @param \Symfony\Component\HttpFoundation\Response $response A Response instance
-         * Based on https://github.com/symfony/WebProfilerBundle/blob/master/EventListener/WebDebugToolbarListener.php
-         * @static 
-         */ 
-        public static function injectDebugbar($response)
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->injectDebugbar($response);
-        }
-        
-        /**
-         * Disable the Debugbar
-         *
-         * @static 
-         */ 
-        public static function disable()
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->disable();
-        }
-        
-        /**
-         * Adds a measure
-         *
-         * @param string $label
-         * @param float $start
-         * @param float $end
-         * @static 
-         */ 
-        public static function addMeasure($label, $start, $end)
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->addMeasure($label, $start, $end);
-        }
-        
-        /**
-         * Utility function to measure the execution of a Closure
-         *
-         * @param string $label
-         * @param \Closure $closure
-         * @static 
-         */ 
-        public static function measure($label, $closure)
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->measure($label, $closure);
-        }
-        
-        /**
-         * Collect data in a CLI request
-         *
-         * @return array 
-         * @static 
-         */ 
-        public static function collectConsole()
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->collectConsole();
-        }
-        
-        /**
-         * Adds a message to the MessagesCollector
-         * 
-         * A message can be anything from an object to a string
-         *
-         * @param mixed $message
-         * @param string $label
-         * @static 
-         */ 
-        public static function addMessage($message, $label = 'info')
-        {
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->addMessage($message, $label);
-        }
-        
-        /**
-         * Checks if a data collector has been added
-         *
-         * @param string $name
-         * @return boolean 
-         * @static 
-         */ 
-        public static function hasCollector($name)
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->hasCollector($name);
-        }
-        
-        /**
-         * Returns a data collector
-         *
-         * @param string $name
-         * @return \DebugBar\DataCollectorInterface 
-         * @throws DebugBarException
-         * @static 
-         */ 
-        public static function getCollector($name)
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->getCollector($name);
-        }
-        
-        /**
-         * Returns an array of all data collectors
-         *
-         * @return \DebugBar\array[DataCollectorInterface] 
-         * @static 
-         */ 
-        public static function getCollectors()
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->getCollectors();
-        }
-        
-        /**
-         * Sets the request id generator
-         *
-         * @param \DebugBar\RequestIdGeneratorInterface $generator
-         * @return \Barryvdh\Debugbar\LaravelDebugbar 
-         * @static 
-         */ 
-        public static function setRequestIdGenerator($generator)
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->setRequestIdGenerator($generator);
-        }
-        
-        /**
-         * 
-         *
-         * @return \DebugBar\RequestIdGeneratorInterface 
-         * @static 
-         */ 
-        public static function getRequestIdGenerator()
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->getRequestIdGenerator();
-        }
-        
-        /**
-         * Returns the id of the current request
-         *
-         * @return string 
-         * @static 
-         */ 
-        public static function getCurrentRequestId()
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->getCurrentRequestId();
-        }
-        
-        /**
-         * Sets the storage backend to use to store the collected data
-         *
-         * @param \DebugBar\StorageInterface $storage
-         * @return \Barryvdh\Debugbar\LaravelDebugbar 
-         * @static 
-         */ 
-        public static function setStorage($storage = null)
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->setStorage($storage);
-        }
-        
-        /**
-         * 
-         *
-         * @return \DebugBar\StorageInterface 
-         * @static 
-         */ 
-        public static function getStorage()
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->getStorage();
-        }
-        
-        /**
-         * Checks if the data will be persisted
-         *
-         * @return boolean 
-         * @static 
-         */ 
-        public static function isDataPersisted()
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->isDataPersisted();
-        }
-        
-        /**
-         * Sets the HTTP driver
-         *
-         * @param \DebugBar\HttpDriverInterface $driver
-         * @return \Barryvdh\Debugbar\LaravelDebugbar 
-         * @static 
-         */ 
-        public static function setHttpDriver($driver)
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->setHttpDriver($driver);
-        }
-        
-        /**
-         * Returns the HTTP driver
-         * 
-         * If no http driver where defined, a PhpHttpDriver is automatically created
-         *
-         * @return \DebugBar\HttpDriverInterface 
-         * @static 
-         */ 
-        public static function getHttpDriver()
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->getHttpDriver();
-        }
-        
-        /**
-         * Returns collected data
-         * 
-         * Will collect the data if none have been collected yet
-         *
-         * @return array 
-         * @static 
-         */ 
-        public static function getData()
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->getData();
-        }
-        
-        /**
-         * Returns an array of HTTP headers containing the data
-         *
-         * @param string $headerName
-         * @param integer $maxHeaderLength
-         * @return array 
-         * @static 
-         */ 
-        public static function getDataAsHeaders($headerName = 'phpdebugbar', $maxHeaderLength = 4096, $maxTotalHeaderLength = 250000)
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->getDataAsHeaders($headerName, $maxHeaderLength, $maxTotalHeaderLength);
-        }
-        
-        /**
-         * Sends the data through the HTTP headers
-         *
-         * @param bool $useOpenHandler
-         * @param string $headerName
-         * @param integer $maxHeaderLength
-         * @return \Barryvdh\Debugbar\LaravelDebugbar 
-         * @static 
-         */ 
-        public static function sendDataInHeaders($useOpenHandler = null, $headerName = 'phpdebugbar', $maxHeaderLength = 4096)
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->sendDataInHeaders($useOpenHandler, $headerName, $maxHeaderLength);
-        }
-        
-        /**
-         * Stacks the data in the session for later rendering
-         *
-         * @static 
-         */ 
-        public static function stackData()
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->stackData();
-        }
-        
-        /**
-         * Checks if there is stacked data in the session
-         *
-         * @return boolean 
-         * @static 
-         */ 
-        public static function hasStackedData()
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->hasStackedData();
-        }
-        
-        /**
-         * Returns the data stacked in the session
-         *
-         * @param boolean $delete Whether to delete the data in the session
-         * @return array 
-         * @static 
-         */ 
-        public static function getStackedData($delete = true)
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->getStackedData($delete);
-        }
-        
-        /**
-         * Sets the key to use in the $_SESSION array
-         *
-         * @param string $ns
-         * @return \Barryvdh\Debugbar\LaravelDebugbar 
-         * @static 
-         */ 
-        public static function setStackDataSessionNamespace($ns)
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->setStackDataSessionNamespace($ns);
-        }
-        
-        /**
-         * Returns the key used in the $_SESSION array
-         *
-         * @return string 
-         * @static 
-         */ 
-        public static function getStackDataSessionNamespace()
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->getStackDataSessionNamespace();
-        }
-        
-        /**
-         * Sets whether to only use the session to store stacked data even
-         * if a storage is enabled
-         *
-         * @param boolean $enabled
-         * @return \Barryvdh\Debugbar\LaravelDebugbar 
-         * @static 
-         */ 
-        public static function setStackAlwaysUseSessionStorage($enabled = true)
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->setStackAlwaysUseSessionStorage($enabled);
-        }
-        
-        /**
-         * Checks if the session is always used to store stacked data
-         * even if a storage is enabled
-         *
-         * @return boolean 
-         * @static 
-         */ 
-        public static function isStackAlwaysUseSessionStorage()
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->isStackAlwaysUseSessionStorage();
-        }
-        
-        /**
-         * 
-         *
-         * @static 
-         */ 
-        public static function offsetSet($key, $value)
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->offsetSet($key, $value);
-        }
-        
-        /**
-         * 
-         *
-         * @static 
-         */ 
-        public static function offsetGet($key)
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->offsetGet($key);
-        }
-        
-        /**
-         * 
-         *
-         * @static 
-         */ 
-        public static function offsetExists($key)
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->offsetExists($key);
-        }
-        
-        /**
-         * 
-         *
-         * @static 
-         */ 
-        public static function offsetUnset($key)
-        {
-            //Method inherited from \DebugBar\DebugBar            
-                        /** @var \Barryvdh\Debugbar\LaravelDebugbar $instance */
-                        return $instance->offsetUnset($key);
-        }
-         
-    }
- 
-}
-
 
 namespace  { 
 
     class App extends \Illuminate\Support\Facades\App {}
+
+    class Arr extends \Illuminate\Support\Arr {}
 
     class Artisan extends \Illuminate\Support\Facades\Artisan {}
 
@@ -23827,6 +23308,7 @@ namespace  {
              * @param string $column
              * @param string $direction
              * @return \Illuminate\Database\Query\Builder 
+             * @throws \InvalidArgumentException
              * @static 
              */ 
             public static function orderBy($column, $direction = 'asc')
@@ -24415,13 +23897,14 @@ namespace  {
              * Mix another object into the class.
              *
              * @param object $mixin
+             * @param bool $replace
              * @return void 
              * @throws \ReflectionException
              * @static 
              */ 
-            public static function mixin($mixin)
+            public static function mixin($mixin, $replace = true)
             {
-                                \Illuminate\Database\Query\Builder::mixin($mixin);
+                                \Illuminate\Database\Query\Builder::mixin($mixin, $replace);
             }
          
             /**
@@ -24488,6 +23971,8 @@ namespace  {
 
     class Storage extends \Illuminate\Support\Facades\Storage {}
 
+    class Str extends \Illuminate\Support\Str {}
+
     class URL extends \Illuminate\Support\Facades\URL {}
 
     class Validator extends \Illuminate\Support\Facades\Validator {}
@@ -24512,8 +23997,6 @@ namespace  {
 
     class Countries extends \Webpatser\Countries\CountriesFacade {}
 
-    class Debugbar extends \Barryvdh\Debugbar\Facade {}
-
     class EntityManager extends \LaravelDoctrine\ORM\Facades\EntityManager {}
  
 }
@@ -24522,12 +24005,16 @@ namespace  {
 namespace {
 
 
+use PhpOption\Option;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 use Illuminate\Support\Optional;
 use Illuminate\Support\Collection;
+use Dotenv\Environment\DotenvFactory;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HigherOrderTapProxy;
+use Dotenv\Environment\Adapter\EnvConstAdapter;
+use Dotenv\Environment\Adapter\ServerConstAdapter;
 
 if (! function_exists('append_config')) {
     /**
@@ -24560,6 +24047,8 @@ if (! function_exists('array_add')) {
      * @param  string  $key
      * @param  mixed   $value
      * @return array
+     *
+     * @deprecated Arr::add() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_add($array, $key, $value)
     {
@@ -24573,6 +24062,8 @@ if (! function_exists('array_collapse')) {
      *
      * @param  array  $array
      * @return array
+     *
+     * @deprecated Arr::collapse() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_collapse($array)
     {
@@ -24586,6 +24077,8 @@ if (! function_exists('array_divide')) {
      *
      * @param  array  $array
      * @return array
+     *
+     * @deprecated Arr::divide() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_divide($array)
     {
@@ -24600,6 +24093,8 @@ if (! function_exists('array_dot')) {
      * @param  array   $array
      * @param  string  $prepend
      * @return array
+     *
+     * @deprecated Arr::dot() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_dot($array, $prepend = '')
     {
@@ -24614,6 +24109,8 @@ if (! function_exists('array_except')) {
      * @param  array  $array
      * @param  array|string  $keys
      * @return array
+     *
+     * @deprecated Arr::except() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_except($array, $keys)
     {
@@ -24629,6 +24126,8 @@ if (! function_exists('array_first')) {
      * @param  callable|null  $callback
      * @param  mixed  $default
      * @return mixed
+     *
+     * @deprecated Arr::first() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_first($array, callable $callback = null, $default = null)
     {
@@ -24643,6 +24142,8 @@ if (! function_exists('array_flatten')) {
      * @param  array  $array
      * @param  int  $depth
      * @return array
+     *
+     * @deprecated Arr::flatten() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_flatten($array, $depth = INF)
     {
@@ -24657,6 +24158,8 @@ if (! function_exists('array_forget')) {
      * @param  array  $array
      * @param  array|string  $keys
      * @return void
+     *
+     * @deprecated Arr::forget() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_forget(&$array, $keys)
     {
@@ -24672,6 +24175,8 @@ if (! function_exists('array_get')) {
      * @param  string  $key
      * @param  mixed   $default
      * @return mixed
+     *
+     * @deprecated Arr::get() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_get($array, $key, $default = null)
     {
@@ -24686,6 +24191,8 @@ if (! function_exists('array_has')) {
      * @param  \ArrayAccess|array  $array
      * @param  string|array  $keys
      * @return bool
+     *
+     * @deprecated Arr::has() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_has($array, $keys)
     {
@@ -24701,6 +24208,8 @@ if (! function_exists('array_last')) {
      * @param  callable|null  $callback
      * @param  mixed  $default
      * @return mixed
+     *
+     * @deprecated Arr::last() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_last($array, callable $callback = null, $default = null)
     {
@@ -24715,6 +24224,8 @@ if (! function_exists('array_only')) {
      * @param  array  $array
      * @param  array|string  $keys
      * @return array
+     *
+     * @deprecated Arr::only() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_only($array, $keys)
     {
@@ -24730,6 +24241,8 @@ if (! function_exists('array_pluck')) {
      * @param  string|array  $value
      * @param  string|array|null  $key
      * @return array
+     *
+     * @deprecated Arr::pluck() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_pluck($array, $value, $key = null)
     {
@@ -24745,6 +24258,8 @@ if (! function_exists('array_prepend')) {
      * @param  mixed  $value
      * @param  mixed  $key
      * @return array
+     *
+     * @deprecated Arr::prepend() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_prepend($array, $value, $key = null)
     {
@@ -24760,6 +24275,8 @@ if (! function_exists('array_pull')) {
      * @param  string  $key
      * @param  mixed   $default
      * @return mixed
+     *
+     * @deprecated Arr::pull() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_pull(&$array, $key, $default = null)
     {
@@ -24774,6 +24291,8 @@ if (! function_exists('array_random')) {
      * @param  array  $array
      * @param  int|null  $num
      * @return mixed
+     *
+     * @deprecated Arr::random() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_random($array, $num = null)
     {
@@ -24791,6 +24310,8 @@ if (! function_exists('array_set')) {
      * @param  string  $key
      * @param  mixed   $value
      * @return array
+     *
+     * @deprecated Arr::set() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_set(&$array, $key, $value)
     {
@@ -24805,6 +24326,8 @@ if (! function_exists('array_sort')) {
      * @param  array  $array
      * @param  callable|string|null  $callback
      * @return array
+     *
+     * @deprecated Arr::sort() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_sort($array, $callback = null)
     {
@@ -24818,6 +24341,8 @@ if (! function_exists('array_sort_recursive')) {
      *
      * @param  array  $array
      * @return array
+     *
+     * @deprecated Arr::sortRecursive() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_sort_recursive($array)
     {
@@ -24832,6 +24357,8 @@ if (! function_exists('array_where')) {
      * @param  array  $array
      * @param  callable  $callback
      * @return array
+     *
+     * @deprecated Arr::where() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_where($array, callable $callback)
     {
@@ -24845,6 +24372,8 @@ if (! function_exists('array_wrap')) {
      *
      * @param  mixed  $value
      * @return array
+     *
+     * @deprecated Arr::wrap() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function array_wrap($value)
     {
@@ -24887,6 +24416,8 @@ if (! function_exists('camel_case')) {
      *
      * @param  string  $value
      * @return string
+     *
+     * @deprecated Str::camel() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function camel_case($value)
     {
@@ -25071,7 +24602,7 @@ if (! function_exists('data_set')) {
 
 if (! function_exists('e')) {
     /**
-     * Escape HTML special characters in a string.
+     * Encode HTML special characters in a string.
      *
      * @param  \Illuminate\Contracts\Support\Htmlable|string  $value
      * @param  bool  $doubleEncode
@@ -25094,6 +24625,8 @@ if (! function_exists('ends_with')) {
      * @param  string  $haystack
      * @param  string|array  $needles
      * @return bool
+     *
+     * @deprecated Str::endsWith() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function ends_with($haystack, $needles)
     {
@@ -25111,32 +24644,38 @@ if (! function_exists('env')) {
      */
     function env($key, $default = null)
     {
-        $value = getenv($key);
+        static $variables;
 
-        if ($value === false) {
-            return value($default);
+        if ($variables === null) {
+            $variables = (new DotenvFactory([new EnvConstAdapter, new ServerConstAdapter]))->createImmutable();
         }
 
-        switch (strtolower($value)) {
-            case 'true':
-            case '(true)':
-                return true;
-            case 'false':
-            case '(false)':
-                return false;
-            case 'empty':
-            case '(empty)':
-                return '';
-            case 'null':
-            case '(null)':
-                return;
-        }
+        return Option::fromValue($variables->get($key))
+            ->map(function ($value) {
+                switch (strtolower($value)) {
+                    case 'true':
+                    case '(true)':
+                        return true;
+                    case 'false':
+                    case '(false)':
+                        return false;
+                    case 'empty':
+                    case '(empty)':
+                        return '';
+                    case 'null':
+                    case '(null)':
+                        return;
+                }
 
-        if (($valueLength = strlen($value)) > 1 && $value[0] === '"' && $value[$valueLength - 1] === '"') {
-            return substr($value, 1, -1);
-        }
+                if (preg_match('/\A([\'"])(.*)\1\z/', $value, $matches)) {
+                    return $matches[2];
+                }
 
-        return $value;
+                return $value;
+            })
+            ->getOrCall(function () use ($default) {
+                return value($default);
+            });
     }
 }
 
@@ -25172,6 +24711,8 @@ if (! function_exists('kebab_case')) {
      *
      * @param  string  $value
      * @return string
+     *
+     * @deprecated Str::kebab() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function kebab_case($value)
     {
@@ -25269,11 +24810,14 @@ if (! function_exists('retry')) {
      */
     function retry($times, callable $callback, $sleep = 0)
     {
+        $attempts = 0;
         $times--;
 
         beginning:
+        $attempts++;
+
         try {
-            return $callback();
+            return $callback($attempts);
         } catch (Exception $e) {
             if (! $times) {
                 throw $e;
@@ -25297,6 +24841,8 @@ if (! function_exists('snake_case')) {
      * @param  string  $value
      * @param  string  $delimiter
      * @return string
+     *
+     * @deprecated Str::snake() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function snake_case($value, $delimiter = '_')
     {
@@ -25311,6 +24857,8 @@ if (! function_exists('starts_with')) {
      * @param  string  $haystack
      * @param  string|array  $needles
      * @return bool
+     *
+     * @deprecated Str::startsWith() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function starts_with($haystack, $needles)
     {
@@ -25325,6 +24873,8 @@ if (! function_exists('str_after')) {
      * @param  string  $subject
      * @param  string  $search
      * @return string
+     *
+     * @deprecated Str::after() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function str_after($subject, $search)
     {
@@ -25339,6 +24889,8 @@ if (! function_exists('str_before')) {
      * @param  string  $subject
      * @param  string  $search
      * @return string
+     *
+     * @deprecated Str::before() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function str_before($subject, $search)
     {
@@ -25353,6 +24905,8 @@ if (! function_exists('str_contains')) {
      * @param  string  $haystack
      * @param  string|array  $needles
      * @return bool
+     *
+     * @deprecated Str::contains() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function str_contains($haystack, $needles)
     {
@@ -25367,6 +24921,8 @@ if (! function_exists('str_finish')) {
      * @param  string  $value
      * @param  string  $cap
      * @return string
+     *
+     * @deprecated Str::finish() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function str_finish($value, $cap)
     {
@@ -25381,6 +24937,8 @@ if (! function_exists('str_is')) {
      * @param  string|array  $pattern
      * @param  string  $value
      * @return bool
+     *
+     * @deprecated Str::is() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function str_is($pattern, $value)
     {
@@ -25396,6 +24954,8 @@ if (! function_exists('str_limit')) {
      * @param  int     $limit
      * @param  string  $end
      * @return string
+     *
+     * @deprecated Str::limit() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function str_limit($value, $limit = 100, $end = '...')
     {
@@ -25410,6 +24970,8 @@ if (! function_exists('str_plural')) {
      * @param  string  $value
      * @param  int     $count
      * @return string
+     *
+     * @deprecated Str::plural() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function str_plural($value, $count = 2)
     {
@@ -25425,6 +24987,8 @@ if (! function_exists('str_random')) {
      * @return string
      *
      * @throws \RuntimeException
+     *
+     * @deprecated Str::random() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function str_random($length = 16)
     {
@@ -25440,6 +25004,8 @@ if (! function_exists('str_replace_array')) {
      * @param  array   $replace
      * @param  string  $subject
      * @return string
+     *
+     * @deprecated Str::replaceArray() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function str_replace_array($search, array $replace, $subject)
     {
@@ -25455,6 +25021,8 @@ if (! function_exists('str_replace_first')) {
      * @param  string  $replace
      * @param  string  $subject
      * @return string
+     *
+     * @deprecated Str::replaceFirst() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function str_replace_first($search, $replace, $subject)
     {
@@ -25470,6 +25038,8 @@ if (! function_exists('str_replace_last')) {
      * @param  string  $replace
      * @param  string  $subject
      * @return string
+     *
+     * @deprecated Str::replaceLast() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function str_replace_last($search, $replace, $subject)
     {
@@ -25483,6 +25053,8 @@ if (! function_exists('str_singular')) {
      *
      * @param  string  $value
      * @return string
+     *
+     * @deprecated Str::singular() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function str_singular($value)
     {
@@ -25498,6 +25070,8 @@ if (! function_exists('str_slug')) {
      * @param  string  $separator
      * @param  string  $language
      * @return string
+     *
+     * @deprecated Str::slug() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function str_slug($title, $separator = '-', $language = 'en')
     {
@@ -25512,6 +25086,8 @@ if (! function_exists('str_start')) {
      * @param  string  $value
      * @param  string  $prefix
      * @return string
+     *
+     * @deprecated Str::start() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function str_start($value, $prefix)
     {
@@ -25525,6 +25101,8 @@ if (! function_exists('studly_case')) {
      *
      * @param  string  $value
      * @return string
+     *
+     * @deprecated Str::studly() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function studly_case($value)
     {
@@ -25599,6 +25177,8 @@ if (! function_exists('title_case')) {
      *
      * @param  string  $value
      * @return string
+     *
+     * @deprecated Str::title() should be used directly instead. Will be removed in Laravel 5.9.
      */
     function title_case($value)
     {
