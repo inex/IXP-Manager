@@ -20,10 +20,6 @@
         {
             "type": "vcs",
             "url": "https://github.com/barryo/orm"
-        },
-        {
-            "type": "vcs",
-            "url": "https://github.com/barryo/purifier"
         }
     ],
     "require": {
