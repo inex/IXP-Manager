@@ -26,6 +26,7 @@ namespace Entities;
 use Entities\{
     ApiKey              as ApiKeyEntity,
     Customer            as CustomerEntity,
+    CustomerToUser      as CustomerToUserEntity,
     User                as UserEntity,
     UserLoginHistory    as UserLoginHistoryEntity,
     UserPreference      as UserPreferenceEntity
@@ -41,6 +42,8 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
 
 use IXP\Utils\Doctrine2\WithPreferences as Doctrine2_WithPreferences;
+
+use D2EM;
 
 /**
  * Entities\User
@@ -58,20 +61,20 @@ class User implements Authenticatable, CanResetPasswordContract
     public static $PRIVILEGES = array(
         User::AUTH_CUSTUSER  => 'CUSTUSER',
         User::AUTH_CUSTADMIN => 'CUSTADMIN',
-        User::AUTH_SUPERUSER => 'SUPERUSER'
+        User::AUTH_SUPERUSER => 'SUPERUSER',
     );
 
     public static $PRIVILEGES_ALL = array(
         User::AUTH_PUBLIC    => 'PUBLIC',
         User::AUTH_CUSTUSER  => 'CUSTUSER',
         User::AUTH_CUSTADMIN => 'CUSTADMIN',
-        User::AUTH_SUPERUSER => 'SUPERUSER'
+        User::AUTH_SUPERUSER => 'SUPERUSER',
     );
 
     public static $PRIVILEGES_TEXT = array(
         User::AUTH_CUSTUSER  => 'Customer User',
         User::AUTH_CUSTADMIN => 'Customer Administrator',
-        User::AUTH_SUPERUSER => 'Superuser'
+        User::AUTH_SUPERUSER => 'Superuser',
     );
 
     public static $PRIVILEGES_TEXT_NONSUPERUSER = array(
@@ -349,7 +352,9 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function getPrivs()
     {
-        return $this->privs;
+        $listC2u = D2EM::getRepository( CustomerToUserEntity::class )->findBy( [ 'customer' => $this->getCustomer(), 'user' => $this->getId() ] );
+
+        return $listC2u[0]->getPrivs();
     }
 
     /**

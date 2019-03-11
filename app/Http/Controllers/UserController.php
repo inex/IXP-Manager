@@ -72,8 +72,7 @@ class UserController extends Doctrine2Frontend {
      *
      * @var int
      */
-    public static $minimum_privilege = UserEntity::AUTH_CUSTADMIN;
-
+    public static $minimum_privilege = UserEntity::AUTH_CUSTUSER;
     /**
      * This function sets up the frontend controller
      */
@@ -142,7 +141,7 @@ class UserController extends Doctrine2Frontend {
 
                 break;
 
-            case UserEntity::AUTH_CUSTADMIN:
+            case UserEntity::AUTH_CUSTADMIN || UserEntity::AUTH_CUSTUSER:
 
                 $this->feParams->pagetitle = 'Your Users';
 
@@ -334,10 +333,6 @@ class UserController extends Doctrine2Frontend {
                     abort(404, 'User not found');
                 }
 
-                if( !Auth::getUser()->isSuperUser() && Auth::getUser()->getCustomer()->getId() != $this->object->getCustomer()->getId() ){
-                    $this->unauthorized();
-                }
-
                 $existingUser = true;
 
             } else {
@@ -371,12 +366,18 @@ class UserController extends Doctrine2Frontend {
         if( $request->input( 'existingUser' ) ) {
 
             $validator = Validator::make( $request->all(), [
+                'custid'            => 'required|integer|exists:Entities\Customer,id',
                 'existingUserId'    => 'required|integer|exists:Entities\User,id',
                 'privs'             => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ),
             ] );
 
             if( $request->input( 'existingUserId' ) == null ){
                 AlertContainer::push( "You need to select one User from the list." , Alert::DANGER );
+            }
+
+            if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => $request->input( 'custid' ) , "user" => $request->input( 'existingUserId' ) ] ) ){
+                AlertContainer::push( "The association User/Customer already exist." , Alert::DANGER );
+                return Redirect::back()->withErrors($validator)->withInput();
             }
 
         }else{
@@ -405,10 +406,10 @@ class UserController extends Doctrine2Frontend {
             $this->object = new CustomerToUserEntity;
             D2EM::persist( $this->object );
 
-            $this->object->setCustomer(      Auth::getUser()->getCustomer()  );
-            $this->object->setUser(          $existingUser                   );
-            $this->object->setPrivs(         $request->input( 'privs' ) );
-            $this->object->setCreatedAt(      new \DateTime                  );
+            $this->object->setCustomer(     D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) );
+            $this->object->setUser(         $existingUser                   );
+            $this->object->setPrivs(        $request->input( 'privs' ) );
+            $this->object->setCreatedAt(    new \DateTime                   );
 
             D2EM::flush();
 
@@ -628,10 +629,6 @@ class UserController extends Doctrine2Frontend {
      * @throws
      */
     public function deleteCustomer( Request $request,  int $userid, int $custid ): JsonResponse {
-
-        if( !Auth::getUser()->isSuperUser() ){
-            return abort( "403" );
-        }
 
         /** @var UserEntity $user */
         if( !( $user = D2EM::getRepository( UserEntity::class )->find( $userid ) ) ) {

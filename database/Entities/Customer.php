@@ -1248,6 +1248,15 @@ class Customer
         return $users;
     }
 
+    /**
+     * Get Users from Customer2User
+     *
+     * @return \Doctrine\Common\Collections\Collection|User[]
+     */
+    public function getC2Users(){
+        return $this->Users;
+    }
+
 
 
     /**

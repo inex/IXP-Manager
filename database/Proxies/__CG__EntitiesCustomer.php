@@ -1049,6 +1049,17 @@ class Customer extends \Entities\Customer implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getC2Users()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getC2Users', []);
+
+        return parent::getC2Users();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getUsersEmail()
     {
 

@@ -113,6 +113,23 @@
                 );
             ?>
 
+            <?php if( Auth::getUser()->isSuperUser() ): ?>
+
+                <?= Former::select( 'custid' )
+                    ->id( 'cust' )
+                    ->label( 'Customer' )
+                    ->placeholder( 'Select a customer' )
+                    ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
+                    ->addClass( 'chzn-select' )
+                    ->blockHelp( "The customer to create the user for.<br><br>If creating a customer for your own IXP, then pick the IXP customer entry." );
+                ?>
+
+            <?php else: ?>
+
+                <?= Former::hidden( 'custid' )->value( Auth::getUser()->getCustomer()->getId() ) ?>
+
+            <?php endif; ?>
+
             <?= Former::actions(
                 Former::primary_submit( 'Add User' ),
                 Former::secondary_link( 'Cancel' )->href( $cancel_url ),

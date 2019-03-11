@@ -2,10 +2,11 @@
 
 namespace Repositories;
 
-use Auth;
+use D2EM;
 
 use Entities\{
-    User    as UserEntity
+    CustomerToUser      as CustomerToUserEntity,
+    User                as UserEntity
 };
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -217,23 +218,25 @@ class User extends EntityRepository
         $dql = "SELECT  u.id as id, 
                         u.name AS name,
                         u.username as username, 
-                        u.email as email, 
-                        u.privs AS privileges,
+                        u.email as email,
                         u.created as created, 
                         u.disabled as disabled, 
                         c.id as custid, 
                         c.name as customer,
                         u.lastupdated AS lastupdated
                   FROM Entities\\User u
-                  LEFT JOIN u.Customer c
-                  WHERE 1 = 1";
-
-
-
+                  LEFT JOIN u.Customer as c ";
 
         if( $user && !$user->isSuperUser() ) {
-            $dql .= " AND u.Customer = " . $user->getCustomer()->getId() . "
-                      AND u.privs <= " . UserEntity::AUTH_CUSTADMIN;
+            $dql .= "LEFT JOIN u.Customers as c2u";
+        }
+
+
+        $dql .= " WHERE 1 = 1";
+
+        if( $user && !$user->isSuperUser() ) {
+            $dql .= " AND c2u.customer = " . $user->getCustomer()->getId() . "
+                      AND c2u.privs <= " . UserEntity::AUTH_CUSTADMIN;
         }
 
         if( $id ) {
@@ -249,6 +252,35 @@ class User extends EntityRepository
 
     }
 
+    public function getHighestPrivsForUser( int $userid, int $custid = null )
+    {
+        $dql = "SELECT  c2u
+                FROM Entities\\CustomerToUser c2u
+                WHERE c2u.user = " . (int)$userid;
+
+        if( $custid ){
+            $dql .= " AND c2u.customer = " . (int)$custid;
+        }
+
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        if( count( $query->getArrayResult() ) > 1 ){
+            $result = UserEntity::AUTH_CUSTUSER;
+
+            foreach( $query->getArrayResult() as $c2u ){
+                if( $c2u[ 'privs'] > $result ){
+                    $result = $c2u[ 'privs'];
+                }
+            }
+            $result = UserEntity::$PRIVILEGES_TEXT[ $result ] . "*";
+        } else {
+            $result = UserEntity::$PRIVILEGES_TEXT[ $query->getArrayResult()[0][ 'privs' ] ];
+        }
+
+
+        return $result;
+    }
 
     /**
      * Find users by username

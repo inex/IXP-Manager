@@ -60,7 +60,7 @@ class SwitchUserController extends Controller
         if( !( $nuser = D2EM::getRepository( UserEntity::class )->find( $id ) ) ){
             abort( "404", "Unknown User" );
         }
-
+        
         $user = Auth::getUser();
 
         Auth::login( $nuser );

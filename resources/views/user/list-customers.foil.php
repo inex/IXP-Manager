@@ -72,7 +72,8 @@ $this->layout( 'layouts/ixpv4' );
                                 <a class="btn btn-outline-secondary" href="<?= route( "customer@overview" , [ "id" => $c->getId() ] ) ?>" title="Overview">
                                     <i class="fa fa-eye"></i>
                                 </a>
-                                <a class="btn btn-outline-secondary delete-cu2"  id="cust-<?= $c->getId() ?>" href="" title="Delete">
+
+                                <a class="btn btn-outline-secondary delete-cu2"  data-user="<?= $t->user->getId() ?>" data-customer="<?= $c->getId() ?>" href="" title="Delete">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </div>
@@ -87,7 +88,10 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
+<?= $t->insert( 'user/js/common' ); ?>
     <script>
+
+
 
         $(document).ready( function() {
             $( '#customer-list' ).show();
@@ -99,44 +103,6 @@ $this->layout( 'layouts/ixpv4' );
                 ]
 
             } );
-
-
-            $(document).on('click', ".delete-cu2" ,function(e){
-                e.preventDefault();
-                let custid = (this.id).substring(5);
-                let userid = "<?= $t->user->getId() ?>";
-
-                let urlDelete  = "<?= url( 'user' ) ?>/" + userid + "/delete-customer/" + custid;
-
-                console.log( urlDelete );
-                bootbox.confirm({
-                    message: `Do you really want to remove the association user/customer ?` ,
-                    buttons: {
-                        cancel: {
-                            label: 'Cancel',
-                            className: 'btn-primary'
-                        },
-                        confirm: {
-                            label: 'Remove',
-                            className: 'btn-danger'
-                        }
-                    },
-                    callback: function ( result ) {
-                        if( result) {
-                            $.ajax( urlDelete ,{
-                                type : 'POST'
-                            })
-                                .done( function( data ) {
-                                    window.location.href = "<?= route( 'user@list' ) ?>";
-                                })
-                                .fail( function(){
-                                    throw new Error( `Error running ajax query for ${urlDelete}` );
-                                })
-                        }
-                    }
-                });
-
-            });
 
         });
     </script>
