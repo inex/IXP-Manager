@@ -561,7 +561,7 @@ class SwitchController extends Doctrine2Frontend {
             $platform = $request->session()->get( "snmp-platform" );
 
             $this->object->setOs(           $platform->getOs() );
-            $this->object->setOsDate(       new \DateTime( $platform->getOsDate() ) );
+            $this->object->setOsDate(       $platform->getOsDate() ?? null );
             $this->object->setOsVersion(    $platform->getOsVersion() );
             $this->object->setSerialNumber( $platform->getSerialNumber() );
             $request->session()->remove( "snmp-platform" );
