@@ -1,15 +1,16 @@
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
     <?= $this->insert('layouts/ixp-logo-header'); ?>
 
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-        <span class="navbar-toggler-icon"></span>
+        <i class="fa fa-ellipsis-v"></i>
     </button>
 
         <!-- Collect the nav links, forms, and other content for toggling -->
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
 
-            <li class="nav-item <?= request()->is( 'dashboard' ) ? 'active' : '' ?>">
+            <li class="nav-item <?= !request()->is( 'dashboard' ) ?: 'active' ?>">
                 <a class="nav-link" href="<?= url('') ?>">
                    Home
                 </a>
@@ -27,8 +28,8 @@
                 </a>
             </li>
 
-            <li class="nav-item dropdown <?= !request()->is( 'customer/*', 'switch/configuration' ) ?: 'active' ?>">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle <?= !request()->is( 'customer/*' , 'switch/configuration' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Member Information
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -44,8 +45,8 @@
                 </div>
             </li>
 
-            <li class="nav-item dropdown <?= !request()->is( 'peering-*' , 'lg', 'rs-prefixes/view/*' ) ?: 'active' ?>">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle <?= !request()->is( 'peering-manager' , 'lg', 'peering-matrix', 'rs-prefixes/list' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Peering
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -56,13 +57,13 @@
                     <?php endif; ?>
                     <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) ): ?>
                         <?php if( Auth::user()->getCustomer()->isRouteServerClient() ): ?>
-                            <a class="dropdown-item <?= !request()->is( 'rs-prefixes/view/*' ) ?: 'active' ?>" href="<?= route('rs-prefixes@view', [ "id" => Auth::getUser()->getCustomer()->getId() ]) ?>">
+                            <a class="dropdown-item <?= !request()->is( 'rs-prefixes/list' ) ?: 'active' ?>" href="<?= route('rs-prefixes@list') ?>">
                                 Route Server Prefixes
                             </a>
                         <?php endif; ?>
                     <?php endif; ?>
                     <?php if( !config('ixp_fe.frontend.disabled.lg' ) ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'lg' ) ?: 'active' ?>" href="<?= url('lg') ?>">
+                        <a class="dropdown-item <?= !request()->is( 'lg'  ) ?: 'active' ?>" href="<?= url('lg') ?>">
                             Looking Glass
                         </a>
                     <?php endif; ?>
@@ -87,8 +88,8 @@
                     Statistics
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item " href="<?= route( 'statistics@member' ) ?>"
-                       My Statistics
+                    <a class="dropdown-item <?= !request()->is( 'statistics/member' ) ?: 'active' ?>" href="<?= route( 'statistics@member' ) ?>">
+                        My Statistics
                     </a>
 
                     <?php if( config('grapher.backends.sflow.enabled') ): ?>
@@ -129,7 +130,7 @@
 
                         <div class="dropdown-divider"></div>
 
-                        <a class="dropdown-item" href="<?= route( 'statistics/members' ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/members' ) ?: 'active' ?>" href="<?= route( 'statistics/members' ) ?>">
                             Member Graphs
                         </a>
 
@@ -158,8 +159,8 @@
         </ul>
 
         <ul class="navbar-nav mt-lg-0">
-            <li class="nav-item dropdown <?= !request()->is( 'profile', 'api-key/list' ) ?: 'active' ?>">
-                <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <li class="nav-item dropdown">
+                <a class="nav-link dropdown-toggle <?= !request()->is( 'profile' , 'api-key/list' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     My Account
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right">

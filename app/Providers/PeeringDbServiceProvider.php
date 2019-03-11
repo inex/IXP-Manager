@@ -38,15 +38,15 @@ class PeeringDbServiceProvider extends ServiceProvider{
     public function boot(){
 
         Route::get( 'peeringdb/ix', function() {
-            return response()->json( Cache::remember('peeringdb/ix', 120, function() {
+            return response()->json( Cache::remember('peeringdb/ix', 3600, function() {
                 $ixps = [];
                 if( $ixs = file_get_contents('https://www.peeringdb.com/api/ix') ) {
                     foreach( json_decode($ixs)->data as $ix ) {
                         $ixps[$ix->id] = [
                             'pdb_id' => $ix->id,
-                            'name' => $ix->name,
-                            'city' => $ix->city,
-                            'country' => $ix->country,
+                            'name' => htmlentities( $ix->name, ENT_QUOTES ),
+                            'city' => htmlentities( $ix->city, ENT_QUOTES ),
+                            'country' => htmlentities( $ix->country,ENT_QUOTES ),
                         ];
                     }
                 }
@@ -57,13 +57,13 @@ class PeeringDbServiceProvider extends ServiceProvider{
 
 
         Route::get( 'peering-db/fac', function() {
-            return response()->json( Cache::remember('peering-db/fac', 120, function() {
+            return response()->json( Cache::remember('peering-db/fac', 3600, function() {
                 $pdbs = [];
                 if( $pdb = file_get_contents('https://api.peeringdb.com/api/fac') ) {
                     foreach( json_decode( $pdb )->data as $db ) {
                         $pdbs[ $db->id ] = [
                             'id' => $db->id,
-                            'name' => $db->name,
+                            'name' => htmlentities( $db->name, ENT_QUOTES ),
                         ];
                     }
                 }

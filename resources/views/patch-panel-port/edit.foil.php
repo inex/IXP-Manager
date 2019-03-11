@@ -21,10 +21,17 @@
 
     <?php if (!$t->allocating and  !$t->prewired): ?>
         <div class="alert alert-warning" role="alert">
-            <b>Note:</b>
-            IXP Manager provides context-aware actions for allocating / setting connected / requested ceases / ceasing a patch
-            panel port and these <i>do the right thing</i>. As such, editing a patch panel port manually through this
-            interface is discouraged for lifecycle changes.
+            <div class="d-flex align-items-center">
+                <div class="text-center">
+                    <i class="fa fa-exclamation-circle fa-2x"></i>
+                </div>
+                <div class="col-sm-12">
+                    <b>Note:</b>
+                    IXP Manager provides context-aware actions for allocating / setting connected / requested ceases / ceasing a patch
+                    panel port and these <i>do the right thing</i>. As such, editing a patch panel port manually through this
+                    interface is discouraged for lifecycle changes.
+                </div>
+            </div>
         </div>
     <?php endif; ?>
 
@@ -32,8 +39,10 @@
 
     <?= Former::open()->method( 'POST' )
         ->action( route( 'patch-panel-port@store' ) )
-        ->customInputWidthClass( 'col-sm-4' )
-        ->addClass( 'col-md-10' );
+        ->customInputWidthClass( 'col-lg-4 col-md-4 col-sm-6' )
+        ->customLabelWidthClass( 'col-lg-3 col-md-4 col-sm-4' )
+        ->actionButtonsCustomClass( "grey-box")
+
     ?>
 
         <?php if (!$t->allocating and  !$t->prewired): ?>
@@ -138,28 +147,33 @@
 
 
         <div class="card bg-light mb-4">
-            <div class="card-body">
+            <div class="card-body d-flex ">
 
-                <?= Former::select( 'switch' )
-                    ->label( 'Switch' )
-                    ->fromQuery( $t->switches, 'name' )
-                    ->placeholder( 'Choose a switch' )
-                    ->addClass( 'chzn-select' )
-                    ->append(  $t->ppp ? $t->ppp->getSwitchPort() ? "<span class='badge badge-info'> Was " .$t->ppp->getSwitchPort()->getSwitcher()->getName(). " </span>" : "" : ""  );
-                ?>
+                <div class="mr-auto col-lg-11 col-md-10">
+                    <?= Former::select( 'switch' )
+                        ->label( 'Switch' )
+                        ->fromQuery( $t->switches, 'name' )
+                        ->placeholder( 'Choose a switch' )
+                        ->addClass( 'chzn-select' )
+                        ->append(  $t->ppp ? $t->ppp->getSwitchPort() ? "<span class='badge badge-info'> Was " .$t->ppp->getSwitchPort()->getSwitcher()->getName(). " </span>" : "" : ""  );
+                    ?>
 
-                <buttton id="resetSwitchSelect" class="reset-button-well btn btn-outline-secondary reset-btn">
-                    <i class="fa fa-retweet"></i>
-                    Reset
-                </buttton>
+                    <?= Former::select( 'switch_port' )
+                        ->label( 'Switch Port' )
+                        ->fromQuery( $t->switchPorts, 'name' )
+                        ->placeholder( 'Choose a switch port' )
+                        ->addClass( 'chzn-select' )
+                        ->append(  $t->ppp ? $t->ppp->getSwitchPort() ? "<span class='badge badge-info'> Was " .$t->ppp->getSwitchPort()->getName(). " </span>" : "" : ""  );
+                    ?>
+                </div>
 
-                <?= Former::select( 'switch_port' )
-                    ->label( 'Switch Port' )
-                    ->fromQuery( $t->switchPorts, 'name' )
-                    ->placeholder( 'Choose a switch port' )
-                    ->addClass( 'chzn-select' )
-                    ->append(  $t->ppp ? $t->ppp->getSwitchPort() ? "<span class='badge badge-info'> Was " .$t->ppp->getSwitchPort()->getName(). " </span>" : "" : ""  );
-                ?>
+                <div class="my-auto">
+                    <buttton id="resetSwitchSelect" class="btn btn-outline-secondary d-flex">
+                        <i class="my-auto fa fa-retweet"></i>
+                        &nbsp;Reset
+                    </buttton>
+                </div>
+
 
 
             </div>
@@ -167,21 +181,23 @@
 
         <?php if ( !$t->prewired ): ?>
             <div class="card bg-light mb-4">
-                <div class="card-body">
+                <div class="card-body d-flex">
+                    <div class="mr-auto col-lg-11 col-md-10">
+                        <?= Former::select( 'customer' )
+                            ->label( 'Customer' )
+                            ->fromQuery( $t->customers, 'name' )
+                            ->placeholder( 'Choose a customer' )
+                            ->addClass( 'chzn-select' )
+                            ->append(  $t->ppp ? $t->ppp->getCustomer() ? "<span class='badge badge-info'> Was " .$t->ppp->getCustomer()->getName(). " </span>" : "" : ""  );
+                        ?>
+                    </div>
 
-                    <buttton id="resetCustomer" class="reset-button-well btn btn-outline-secondary reset-btn" style="margin-top : 10px">
-                        <i class="fa fa-retweet"></i>
-                        Reset
-                    </buttton>
-
-                    <?= Former::select( 'customer' )
-                        ->label( 'Customer' )
-                        ->fromQuery( $t->customers, 'name' )
-                        ->placeholder( 'Choose a customer' )
-                        ->addClass( 'chzn-select' )
-                        ->append(  $t->ppp ? $t->ppp->getCustomer() ? "<span class='badge badge-info'> Was " .$t->ppp->getCustomer()->getName(). " </span>" : "" : ""  );
-                    ?>
-
+                    <div class="my-auto">
+                        <buttton id="resetCustomer" class="btn btn-outline-secondary d-flex">
+                            <i class="my-auto fa fa-retweet"></i>
+                            &nbsp;Reset
+                        </buttton>
+                    </div>
                 </div>
             </div>
         <?php endif; ?>
@@ -372,10 +388,10 @@
             ?>
         <?php endif; ?>
 
-        <?=Former::actions( Former::primary_submit( 'Save Changes' ),
-            Former::secondary_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) ),
-            Former::success_button( 'Help' )->id( 'help-btn' )
-        )->class( "bg-light mt-4 shdow-sm p-4 text-center" )?>
+        <?=Former::actions( Former::primary_submit( 'Save Changes' )->class( "mb-2 mb-sm-0" ),
+            Former::secondary_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) )->class( "mb-2 mb-sm-0" ),
+            Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
+        )?>
 
         <?= Former::hidden( 'date' )
             ->id( 'date' )

@@ -22,7 +22,7 @@
             <a class="dropdown-item" href="<?= route( "login-history@view",     [ 'id' => $t->row['id'] ]   )    ?>">
                 Login history
             </a>
-            <a class="dropdown-item <?= $t->row[ 'disabled' ] || Auth::getUser()->getId() == $t->row['id'] ? "disabled" : "" ?>" href="<?= url( "auth/switch-user/id/". $t->row['id'] ) ?>">
+            <a class="dropdown-item <?= $t->row[ 'disabled' ] || Auth::getUser()->getId() == $t->row['id'] ? "disabled" : "" ?>" href="<?= route( "switch-user@switch", [ "id" => $t->row['id'] ] ) ?>">
                 Login as
             </a>
         </ul>

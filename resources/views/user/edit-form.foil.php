@@ -25,7 +25,9 @@
         <?= Former::open()->method( 'POST' )
             ->id( 'form' )
             ->action( route( $t->feParams->route_prefix . '@store' ) )
-            ->customInputWidthClass( 'col-sm-3' )
+            ->customInputWidthClass( 'col-lg-4 col-sm-6' )
+            ->customLabelWidthClass( 'col-lg-2 col-sm-3' )
+            ->actionButtonsCustomClass( "grey-box")
         ?>
 
 
@@ -186,7 +188,6 @@
                         . 'the official documentation here</a>.'
                     );
                 ?>
-
 
                 <?= Former::checkbox( 'enabled' )
                     ->label('&nbsp;')

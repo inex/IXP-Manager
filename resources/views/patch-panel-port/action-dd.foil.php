@@ -1,6 +1,6 @@
 <div class="btn-group <?= $t->btnClass ?> " role="group">
-    <button type="button" class="btn btn-outline-secondary dropdown-toggle extra-action" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-        Action <span class="caret"></span>
+    <button type="button" class="d-flex btn btn-outline-secondary dropdown-toggle extra-action center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        Action
     </button>
 
     <ul class="dropdown-menu dropdown-menu-right">

@@ -26,24 +26,22 @@
 <?php $this->section('content') ?>
     <div class="row">
 
-        <div class="col-sm-12">
+        <div class="col-md-12">
 
+            <nav id="filter-row" class="collapse navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
 
-            <nav id="filter-row" style="display: none" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
-                <a class="navbar-brand" href="<?= route( "patch-panel/list" ) ?>">
-                    Filter Options:
-                </a>
+                <a class="navbar-brand" href="<?= route( "patch-panel/list" ) ?>">Graph Options:</a>
 
-                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                <button class="navbar-toggler float-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
-                        <form class="navbar-form navbar-left form-inline" method="post" action="<?= route('patch-panel-port@advanced-list' ) ?>">
-                            <li class="nav-item">
-                                <div class="form-group">
+                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex">
 
+                            <li class="nav-item">
+                                <div class="nav-link d-flex ">
                                     <select id="adv-search-select-locations" name="location" class="form-control">
                                         <option value="all">All Facilities</option>
                                         <?php foreach( $t->locations as $i => $l ): ?>
@@ -53,10 +51,8 @@
 
                                 </div>
                             </li>
-
                             <li class="nav-item">
-                                <div class="nav-link">
-
+                                <div class="nav-link d-flex ">
                                     <select id="adv-search-select-cabinets" name="cabinet" class="form-control">
                                         <option value="all">All Racks</option>
                                     </select>
@@ -65,7 +61,7 @@
                             </li>
 
                             <li class="nav-item">
-                                <div class="nav-link">
+                                <div class="nav-link d-flex ">
                                     <select id="adv-search-select-types" name="type" class="form-control">
                                         <option value="all">All Types</option>
                                         <?php foreach( \Entities\PatchPanel::$CABLE_TYPES as $i => $type ): ?>
@@ -78,7 +74,7 @@
                             <input type="hidden" name="_token" value="<?= csrf_token() ?>">
 
                             <li class="nav-item">
-                                <div class="nav-link">
+                                <div class="nav-link d-flex ">
                                     <label>
                                         <input name="available" value='true' id="available" class="mr-2" type="checkbox">
                                         Available for use
@@ -87,13 +83,12 @@
                             </li>
 
                             <li class="nav-item">
-                                <button type="submit" class="color-white nav-link btn btn-outline-secondary">
+                                <button type="submit" class="float-right btn btn-outline-secondary">
                                     Filter Ports
                                 </button>
                             </li>
 
                         </form>
-
                     </ul>
                 </div>
             </nav>
@@ -102,10 +97,17 @@
 
             <?php if( !count( $t->patchPanels ) && $t->active ): ?>
                 <div class="alert alert-info" role="alert">
-                    <b>No active patch panels exist.</b> <a href="<?= route( 'patch-panel/add' ) ?>">Add one...</a>
+                    <div class="d-flex align-items-center">
+                        <div class="text-center">
+                            <i class="fa fa-question-circle fa-2x"></i>
+                        </div>
+                        <div class="col-sm-12">
+                            <b>No active patch panels exist.</b> <a class="btn btn-outline-secondary" href="<?= route( 'patch-panel/add' ) ?>">Add one...</a>
+                        </div>
+                    </div>
                 </div>
             <?php else:  /* !count( $t->patchPanels ) */ ?>
-                <table id='patch-panel-list' class="table collapse table-striped" >
+                <table id='patch-panel-list' class="table collapse table-striped table-responsive-ixp-with-header" width="100%">
                     <thead class="thead-dark">
                         <tr>
                             <th>
@@ -183,7 +185,7 @@
                                         </a>
 
                                         <?php if( $pp->getActive() ): ?>
-                                            <a class="btn btn-outline-secondary" id='list-delete-<?= $pp->getId() ?>' href="<?= route( 'patch-panel@change-status' , [ 'id' => $pp->getId(), 'status' => ( $pp->getActive() ? '0' : '1' ) ] ) ?>" title="Make Inactive">
+                                            <a class="btn btn-outline-secondary list-delete" id='list-delete-<?= $pp->getId() ?>' href="#" title="Make Inactive">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         <?php else: ?>
@@ -212,9 +214,18 @@
     let locations = JSON.parse( '<?= json_encode( $t->locations ) ?>' );
 
     $(document).ready( function() {
-        $( '#patch-panel-list' ).dataTable( { "autoWidth": false } );
 
-        $( '#patch-panel-list' ).show();
+        $('.table-responsive-ixp-with-header').show();
+
+        $('.table-responsive-ixp-with-header').DataTable( {
+            responsive: true,
+            columnDefs: [
+                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 2, targets: -1 }
+            ],
+        } );
+
+
 
         $('#btn-filter-options').on( 'click', function( e ) {
             e.preventDefault();
@@ -231,6 +242,38 @@
             }
 
             $('#adv-search-select-cabinets').html( opts );
+        });
+
+
+
+        $( '#patch-panel-list' ).on( 'click', '.list-delete', function( event ) {
+
+            event.preventDefault();
+            let ppid = ( this.id ).substring( 12 );
+            let url = "<?= route( 'patch-panel@change-status' , [ 'id' => $pp->getId(), 'status' => ( $pp->getActive() ? '0' : '1' ) ] ) ?>";
+
+            console.log($(this).attr('href'));
+            bootbox.dialog({
+                message: 'Are you sure that you want to delete this Patch Panel ? It will become deactivated.',
+                title: "Delete Patch Panel",
+                buttons: {
+                    cancel: {
+                        label: 'Close',
+                        className: 'btn-secondary',
+                        callback: function () {
+                            $('.bootbox.modal').modal('hide');
+                            return false;
+                        }
+                    },
+                    submit: {
+                        label: 'Delete',
+                        className: 'btn-danger',
+                        callback: function () {
+                            window.location = url;
+                        }
+                    },
+                }
+            });
         });
     });
 </script>

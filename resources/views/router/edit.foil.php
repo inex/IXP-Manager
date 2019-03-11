@@ -30,9 +30,16 @@
 
             <?php if( $t->rt ): ?>
 
-                <div class="alert alert-warning">
-                    <b>WARNING:</b> Do not change any parameters of a router object if it is in production. Please consider
-                    change control procedures when ever editing the configuration of a critical service such as a route server.
+                <div class="alert alert-warning" role="alert">
+                    <div class="d-flex align-items-center">
+                        <div class="text-center">
+                            <i class="fa fa-exclamation-circle fa-2x"></i>
+                        </div>
+                        <div class="col-sm-12">
+                            <b>WARNING:</b> Do not change any parameters of a router object if it is in production. Please consider
+                            change control procedures when ever editing the configuration of a critical service such as a route server.
+                        </div>
+                    </div>
                 </div>
 
             <?php endif; ?>
@@ -43,7 +50,8 @@
                     <?= Former::open()->method( 'POST' )
                         ->action( route( 'router@store' ) )
                         ->customInputWidthClass( 'col-sm-6' )
-                        ->addClass( 'col-md-10' );
+                        ->addClass( 'col-md-10' )
+                        ->actionButtonsCustomClass( "grey-box");
                     ?>
 
                     <?= Former::text( 'handle' )
@@ -205,10 +213,10 @@
                     " );
                     ?>
 
-                    <?=Former::actions( Former::primary_submit( $t->rt ? 'Save Changes' : 'Add Router' )->id('btn-submit-form'),
-                        Former::secondary_link( 'Cancel' )->href( route( 'router@list' ) ),
-                        Former::success_button( 'Help' )->id( 'help-btn' )
-                    )->class( "bg-light p-4 mt-4 shadow-sm text-center" );?>
+                    <?=Former::actions( Former::primary_submit( $t->rt ? 'Save Changes' : 'Add Router' )->id('btn-submit-form')->class( "mb-2 mb-sm-0"),
+                        Former::secondary_link( 'Cancel' )->href( route( 'router@list' ) )->class( "mb-2 mb-sm-0"),
+                        Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0")
+                    );?>
 
                     <?= Former::hidden( 'id' )
                         ->value( $t->rt ? $t->rt->getId() : null )

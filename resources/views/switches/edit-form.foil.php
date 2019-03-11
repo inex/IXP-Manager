@@ -4,12 +4,13 @@
         <?= Former::open()->method( 'POST' )
             ->id( 'form' )
             ->action( route( $t->feParams->route_prefix.'@store' ) )
-            ->customInputWidthClass( 'col-sm-6' )
-            ->customLabelWidthClass( 'col-sm-3' )
+            ->customInputWidthClass( 'col-lg-8 col-sm-6' )
+            ->customLabelWidthClass( 'col-lg-4 col-sm-4' )
+            ->actionButtonsCustomClass( "grey-box")
         ?>
 
         <div class="row">
-            <div class="col-sm-6">
+            <div class="col-lg-6">
                 <?= Former::text( 'name' )
                     ->label( 'Name' )
                     ->placeholder( 'switch01' )
@@ -47,7 +48,7 @@
                 ?>
             </div>
 
-            <div class="col-sm-6">
+            <div class="col-lg-6">
                 <?= Former::text( 'snmppasswd' )
                     ->label( 'SNMP Community' )
                     ->placeholder( 'yourcommunity' )
@@ -88,7 +89,7 @@
         </div>
 
         <div class="row mt-4">
-            <div class="col-sm-6">
+            <div class="col-lg-6">
                 <h3>Management Configuration:</h3>
                 <hr>
                 <?= Former::text( 'ipv4addr' )
@@ -115,7 +116,7 @@
 
             </div>
 
-            <div class="col-sm-6">
+            <div class="col-lg-6 mt-4 mt-lg-0">
                 <h3>Layer 3 Configuration:</h3>
                 <hr>
                 <?= Former::text( 'asn' )
@@ -171,11 +172,11 @@
 
 
         <?= Former::actions(
-                Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' ),
-                Former::secondary_link( 'Cancel' )->href( route( $t->feParams->route_prefix.'@list') ),
-                Former::success_button( 'Help' )->id( 'help-btn' ),
-                Former::secondary_link( $t->data[ 'params'][ 'addBySnmp'] ? "Manual / Non-SNMP Add" : "Add by SNMP" )->href( route( $t->data[ 'params'][ 'addBySnmp'] ? $t->feParams->route_prefix.'@add' : $t->feParams->route_prefix.'@add-by-snmp' ) . ( $t->data[ 'params'][ 'addBySnmp'] ? "?manual=1" : "" ) )
-            )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
+                Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' )->class( "mb-2 mb-sm-0" ),
+                Former::secondary_link( 'Cancel' )->href( route( $t->feParams->route_prefix.'@list') )->class( "mb-2 mb-sm-0" ),
+                Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" ),
+                Former::secondary_link( $t->data[ 'params'][ 'addBySnmp'] ? "Manual / Non-SNMP Add" : "Add by SNMP" )->href( route( $t->data[ 'params'][ 'addBySnmp'] ? $t->feParams->route_prefix.'@add' : $t->feParams->route_prefix.'@add-by-snmp' ) . ( $t->data[ 'params'][ 'addBySnmp'] ? "?manual=1" : "" ) )->class( "mb-2 mb-sm-0" )
+            );
         ?>
 
         <?= Former::hidden( 'id' )

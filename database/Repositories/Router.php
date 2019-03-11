@@ -182,7 +182,7 @@ class Router extends EntityRepository
             $dd[$r->resolveType()][$key] = $r->getName();
         }
 
-        Cache::put( $cacheKey, $dd, 15 );
+        Cache::put( $cacheKey, $dd, 900 );
         return $dd;
     }
 

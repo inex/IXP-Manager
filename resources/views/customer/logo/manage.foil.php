@@ -25,17 +25,17 @@
 
 <div class="row">
 
-    <div class="col-sm-12">
+    <div class="col-lg-12">
 
         <?= $t->alerts() ?>
 
         <?php if( $t->logo ): ?>
 
-            <div class="row">
-                <div class="col-md-6">
+            <div class="row mb-4">
+                <div class="col-md-6 col-sm-12">
                     <h3>Your Existing Logo:</h3>
                 </div>
-                <div class="col-md-6">
+                <div class="col-md-6 text-center col-sm-12">
                     <img src="<?= url( 'logos/'.$t->logo->getShardedPath() ) ?>" class="www80-padding img-responsive">
                 </div>
             </div>
@@ -80,6 +80,7 @@
                     ->action( route ('logo@store' ) )
                     ->enctype( "multipart/form-data" )
                     ->customInputWidthClass( 'col-sm-3' )
+                    ->actionButtonsCustomClass( "grey-box")
                     ->addClass( 'col-md-12 mt-4' );
                 ?>
 
@@ -90,10 +91,10 @@
                 ?>
 
                 <?= Former::actions(
-                    Former::primary_submit( 'Upload' ),
-                    Former::secondary_link( 'Cancel' )->href( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ "id" => $t->c->getId() ] ) : route( "dashboard@index" ) ),
-                    Auth::getUser()->isSuperUser() ? Former::success_link( 'Help' )->href('http://docs.ixpmanager.org/usage/customers/#customer-logos') : ''
-                )->class( "text-center mt-4 bg-light shadow-sm p-4" );
+                    Former::primary_submit( 'Upload' )->class( "mb-2 mb-sm-0" ),
+                    Former::secondary_link( 'Cancel' )->href( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ "id" => $t->c->getId() ] ) : route( "dashboard@index" ) )->class( "mb-2 mb-sm-0" ),
+                    Auth::getUser()->isSuperUser() ? Former::success_link( 'Help' )->href('http://docs.ixpmanager.org/usage/customers/#customer-logos')->class( "mb-2 mb-sm-0" ) : ''
+                );
                 ?>
 
                 <?= Former::hidden( 'id' )
@@ -109,17 +110,16 @@
         <?php if( $t->logo ): ?>
 
         <div class="alert alert-danger mt-4" role="alert">
-            <div class="d-flex align-items-center">
+            <div class="d-flex align-items-center ">
                 <div class="text-center">
                     <i class="fa fa-exclamation-triangle fa-2x"></i>
                 </div>
                 <div class="col-sm-12 d-flex">
-
-                    <div class="col-auto mr-auto">
+                    <div class="mr-auto">
                         <b> Delete your logo ... </b>
                     </div>
 
-                    <div class="col-auto">
+                    <div>
                         <a id="delete" class="btn btn-danger" href="#">
                             Remove My Logo
                         </a>

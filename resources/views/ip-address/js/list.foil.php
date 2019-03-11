@@ -3,7 +3,17 @@
     const protocol = "<?= $t->protocol ?>";
 
     $(document).ready( function() {
-        $( '#ip-address-list' ).dataTable( { "autoWidth": false, pageLength: 50 } ).show();
+        $( '#ip-address-list' ).show();
+
+        $( '#ip-address-list' ).dataTable( {
+            responsive : true,
+            "autoWidth": false,
+            pageLength: 50,
+            columnDefs: [
+            { responsivePriority: 1, targets: 0 },
+            { responsivePriority: 2, targets: -1 }
+        ],
+        });
     });
 
     $( "#vlan" ).select2({ placeholder: "Select a VLAN..." }).on( 'change', function(e) {
@@ -24,7 +34,7 @@
                 },
                 cancel: {
                     label: 'Cancel',
-                    className: 'btn-default',
+                    className: 'btn-secondary',
                 }
             },
             callback: function ( result ) {

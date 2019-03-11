@@ -38,7 +38,14 @@
 
             <?php if( $t->pp ): ?>
                 <div class="alert alert-info" role="alert">
-                    To add additional ports to an existing patch panel, just add the number of ports <b>you want to add</b> in <em>Add Number of Ports</em> below.
+                    <div class="d-flex align-items-center">
+                        <div class="text-center">
+                            <i class="fa fa-question-circle fa-2x"></i>
+                        </div>
+                        <div class="col-sm-12">
+                            To add additional ports to an existing patch panel, just add the number of ports <b>you want to add</b> in <em>Add Number of Ports</em> below.
+                        </div>
+                    </div>
                 </div>
             <?php endif; ?>
 
@@ -49,7 +56,9 @@
                     <?= Former::open()
                         ->method( 'post' )
                         ->action( route( 'patch-panel@store' ) )
-                        ->customInputWidthClass( 'col-sm-3' );
+                        ->customInputWidthClass( 'col-lg-4 col-md-6 col-sm-6' )
+                        ->customLabelWidthClass( 'col-sm-4 col-md-4 col-lg-3' )
+                        ->actionButtonsCustomClass( "grey-box");
                     ?>
 
                     <?= Former::text( 'name' )
@@ -99,7 +108,8 @@
 
                     <?= Former::number( 'numberOfPorts' )
                         ->label( ( $t->pp ? 'Add ' : '' ) . 'Number of Ports' )
-                        ->appendIcon( 'nb-port glyphicon glyphicon-info-sign' )
+
+                        ->append( '<button class="btn-outline-secondary btn rounded-right" id="icon-nb-port" type="button"><i class="nb-port fa fa-info-circle"></i></button>' )
                         ->min( 0 )
                         ->blockHelp(
                             $t->pp ? 'There are ' . $t->pp->getPortCount() . " ports in this panel already. Enter the number of ports <b> you want to add</b> above."
@@ -174,10 +184,10 @@
                     ?>
 
                     <?= Former::actions(
-                        Former::primary_submit( 'Save Changes' ),
-                        Former::secondary_link( 'Cancel' )->href(  route( 'patch-panel/list' ) ),
-                        Former::success_button( 'Help' )->id( 'help-btn' )
-                    )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
+                        Former::primary_submit( $t->pp ? 'Save Changes' : 'Add' )->class( "mb-2 mb-sm-0" ),
+                        Former::secondary_link( 'Cancel' )->href(  route( 'patch-panel/list' ) )->class( "mb-2 mb-sm-0" ),
+                        Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
+                    );
                     ?>
 
                     <?= Former::close() ?>
@@ -220,7 +230,7 @@
             /**
             * set data to the tooltip
             */
-            $( ".glyphicon-nb-port" ).parent().attr( 'data-toggle','popover' ).attr( 'title' , 'Help - Number of Ports' ).attr( 'data-content' , '<b>Note that duplex ports should be entered as two ports.</b>' );
+            $( "#icon-nb-port" ).parent().attr( 'data-toggle','popover' ).attr( 'title' , 'Help - Number of Ports' ).attr( 'data-content' , '<b>Note that duplex ports should be entered as two ports.</b>' );
 
             /**
              * configuration of the tooltip

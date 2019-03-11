@@ -27,7 +27,7 @@
     <div class="col-sm-12">
 
         <?= $t->alerts() ?>
-        <table id='router-list' class="table table-striped">
+        <table id='router-list' class="table table-striped table-responsive-ixp-with-header" width="100%">
             <thead class="thead-dark">
                 <tr>
                     <th>
@@ -105,9 +105,11 @@
                                 <a target="_blank" class="btn btn-outline-secondary" href="<?= route('apiv4-router-gen-config', [ 'handle' => $router->getHandle() ] ) ?>" title="Configuration">
                                     <i class="fa fa-file"></i>
                                 </a>
-                                <a target="_blank" class="btn btn-outline-secondary <?= $router->hasApi() ? '' : 'disabled' ?>" href="<?= route('lg::bgp-sum', [ 'handle' => $router->getHandle() ] ) ?>" title="Looking Glass">
-                                    <i class="fa fa-search"></i>
-                                </a>
+                                <?php if( !config('ixp_fe.frontend.disabled.lg' ) ): ?>
+                                    <a target="_blank" class="btn btn-outline-secondary <?= $router->hasApi() ? '' : 'disabled' ?>" href="<?= route('lg::bgp-sum', [ 'handle' => $router->getHandle() ] ) ?>" title="Looking Glass">
+                                        <i class="fa fa-search"></i>
+                                    </a>
+                                <?php endif; ?>
                                 <a class="btn btn-outline-secondary" href="<?= route('router@view' , [ 'id' => $router->getId() ] ) ?>" title="Preview">
                                     <i class="fa fa-eye"></i>
                                 </a>
@@ -134,9 +136,15 @@
 
 <?php $this->section( 'scripts' ) ?>
     <script>
-        $('#router-list').DataTable({
-            "autoWidth": false
-        });
+        $('.table-responsive-ixp-with-header').show();
+
+        $('.table-responsive-ixp-with-header').DataTable( {
+            responsive: true,
+            columnDefs: [
+                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 2, targets: -1 }
+            ],
+        } );
 
         $( "a[id|='delete-router']" ).on( 'click', function( e ) {
             e.preventDefault();

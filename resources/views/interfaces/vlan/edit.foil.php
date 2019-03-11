@@ -38,31 +38,46 @@
 
             <?php if( $t->duplicateTo ): ?>
 
-                <div class="alert alert-info">
-                    This form allows you to duplicate the selected VLAN interface from <em><?= $t->vli->getVlan()->getName() ?></em> to your chosen VLAN as indicated below.
-                    The IP address(es) will be created if they do not already exist (and will be checked to ensure they are not already in use). The new interface will not
-                    be created until you click the <em>Save Changes</em> button below.
+                <div class="alert alert-info mt-4" role="alert">
+                    <div class="d-flex align-items-center">
+                        <div class="text-center">
+                            <i class="fa fa-question-circle fa-2x"></i>
+                        </div>
+                        <div class="col-sm-12">
+                            This form allows you to duplicate the selected VLAN interface from <em><?= $t->vli->getVlan()->getName() ?></em> to your chosen VLAN as indicated below.
+                            The IP address(es) will be created if they do not already exist (and will be checked to ensure they are not already in use). The new interface will not
+                            be created until you click the <em>Save Changes</em> button below.
+                        </div>
+                    </div>
                 </div>
 
             <?php endif; ?>
 
-            <div id="instructions-alert" class="alert alert-info" style="display: none;">
-                <b>Instructions: </b> You are strongly advised to review <a href="http://docs.ixpmanager.org/usage/interfaces/">the official documentation</a> before adding / editing interfaces
-                on a production system.
+            <div id="instructions-alert" class="collapse alert alert-info mt-4" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="text-center">
+                        <i class="fa fa-question-circle fa-2x"></i>
+                    </div>
+                    <div class="col-sm-12">
+                        <b>Instructions: </b> You are strongly advised to review <a href="http://docs.ixpmanager.org/usage/interfaces/">the official documentation</a> before adding / editing interfaces
+                        on a production system.
+                    </div>
+                </div>
             </div>
 
             <div class="card">
-                <div class="card-header">
+                <div class="card-body">
+
                     <h3>
                         General VLAN Settings
                     </h3>
-                </div>
-
-                <div class="card-body">
+                    <hr>
 
                     <?= Former::open()->method( 'post' )
                         ->action( route( 'interfaces/vlan/store' ) )
                         ->customInputWidthClass( 'col-sm-6' )
+                        ->customLabelWidthClass( 'col-md-3 col-sm-3 col-lg-4' )
+                        ->actionButtonsCustomClass( "grey-box")
                     ?>
 
                     <div class="row">
@@ -209,10 +224,10 @@
                 ?>
 
                 <?=Former::actions(
-                    Former::primary_submit( $t->vli ? 'Save Changes' : 'Add' ),
-                    Former::secondary_link( 'Cancel' )->id( 'cancel-btn' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) :  route( 'interfaces/vlan/list' ) ),
-                    Former::success_button( 'Help' )->id( 'help-btn' )
-                )->id('btn-group')->class( "text-center bg-light mt-4 p-4 shadow-sm" );?>
+                    Former::primary_submit( $t->vli ? 'Save Changes' : 'Add' )->class( "mb-2 mb-sm-0" ),
+                    Former::secondary_link( 'Cancel' )->id( 'cancel-btn' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) :  route( 'interfaces/vlan/list' ) )->class( "mb-2 mb-sm-0" ),
+                    Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
+                )->id('btn-group') ?>
 
                 <?= Former::close() ?>
 

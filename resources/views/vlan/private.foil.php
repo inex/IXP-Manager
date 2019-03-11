@@ -29,7 +29,6 @@ $this->layout( 'layouts/ixpv4' );
                             VLANs for: <b><?=  $t->ee( $t->data[ 'params'][ 'infra' ]->getName() ) ?></b>.
                         </div>
 
-
                         <a href="<?= route( $t->feParams->route_prefix . '@list' ) ?>" class='btn btn-sm btn-outline-info'>
                             Show All VLANs
                         </a>
@@ -41,10 +40,8 @@ $this->layout( 'layouts/ixpv4' );
         <?php endif; ?>
 
 
-        <table id="table-list" class="table table-striped">
-
+        <table id="table-list" class="table table-striped" width="100%">
             <thead class="thead-dark">
-
                 <tr>
 
                     <th>
@@ -71,13 +68,9 @@ $this->layout( 'layouts/ixpv4' );
                     <th>
                         Switches
                     </th>
-
                 </tr>
-
             </thead>
-
             <tbody>
-
                 <?php foreach( $t->data[ 'rows' ] as $idx => $row ): ?>
                     <tr>
 
@@ -126,4 +119,17 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'scripts' ) ?>
 
+<script>
+
+    $(document).ready( function() {
+        $('#table-list').DataTable( {
+            responsive: true,
+            ordering: false,
+            searching: false,
+            paging:   false,
+            info:   false,
+        } );
+
+    });
+</script>
 <?php $this->append() ?>

@@ -1,11 +1,9 @@
 <div class="card">
-    <div class="card-header">
+    <div class="card-body">
         <h4>
             IPv6 Details
         </h4>
-    </div>
-
-    <div class="card-body">
+        <hr>
         <div id='alert-ipv6-address' class="alert alert-warning collapse ip-is-used-alert" role="alert"></div>
 
         <?= Former::select( 'ipv6-address' )
@@ -28,7 +26,7 @@
 
         <?= Former::text( 'ipv6-bgp-md5-secret' )
             ->label( 'IPv6 BGP MD5 Secret' )
-            ->appendIcon( 'generator-ipv6 glyphicon glyphicon-refresh' )
+            ->append( '<button class="btn-outline-secondary btn glyphicon-generator-ipv6" id="generator-ipv4" type="button"><i class="fa fa-refresh"> </i></button>' )
             ->blockHelp( 'MD5 secret for route server / collector / AS112 BGP sessions. Can be copied from the IPv4 version if set or (if supported by your browser), it can be generated in a cryptographically secure manner by clicking the <em>refresh</em> button.' );
         ?>
 

@@ -119,9 +119,9 @@
                 .done( function( data ) {
                     if( element === "port-type" ){
                         if( data.success ) {
-                            portType.html( '<i style="color:#3c763d" class="glyphicon glyphicon-ok"></i>' );
+                            portType.html( '<i style="color:#3c763d" class="fa fa-check"></i>' );
                         } else {
-                            portType.html( '<i style="color:#a94442" class="glyphicon glyphicon-remove"></i>' );
+                            portType.html( '<i style="color:#a94442" class="fa fa-times"></i>' );
                         }
                     } else {
                         window.location.reload();

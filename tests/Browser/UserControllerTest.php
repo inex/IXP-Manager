@@ -34,7 +34,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class UserControllerTest extends DuskTestCase
 {
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach( [ 'testuser1', 'testuser2' ] as $name ) {
             $u = D2EM::getRepository( UserEntity::class )->findOneBy( [ 'username' => $name ] );

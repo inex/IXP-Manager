@@ -1,4 +1,4 @@
-<table class="table collapse table-striped" id="summary-table-<?= $t->type ?>">
+<table class="table collapse table-striped" id="summary-table-<?= $t->type ?>" width="100%">
     <thead class="thead-dark">
         <th>
             Customer

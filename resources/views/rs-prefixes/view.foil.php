@@ -111,7 +111,12 @@
                 $( '#nav-<?=  $t->type ?>' ).addClass( 'active' );
             <?php endif; ?>
 
-            $( '.table' ).dataTable( { "autoWidth": false, pageLength: 50 } ).show();
+            $( '.table' ).show();
+
+            $( '.table' ).dataTable({
+                    responsive : true,
+                    pageLength: 50
+            });
         });
     </script>
 <?php $this->append() ?>

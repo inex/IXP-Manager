@@ -1,5 +1,22 @@
 <script>
 
+    $( document ).ready( function() {
+        $('.table-responsive-ixp-no-header').show();
+
+        $('.table-responsive-ixp-no-header').DataTable( {
+            responsive: true,
+            ordering: false,
+            searching: false,
+            paging:   false,
+            info:   false,
+            columnDefs: [
+                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 2, targets: -1 }
+            ],
+        } );
+
+    });
+
     //////////////////////////////////////////////////////////////////////////////////////
     // action bindings:
 
@@ -19,6 +36,12 @@
         deleteElement( true , clid );
     });
 
+
+    $( "a[id|='cb-delete']" ).on( 'click', function(e){
+        e.preventDefault();
+        deleteElement( false , null );
+    });
+
     /**
      * Check if all the switch ports have been chosen before submit
      */
@@ -32,6 +55,22 @@
             }
 
         });
+    });
+
+    /**
+     * Check if all the switch ports have been chosen before submit
+     */
+    $('#core-bundle-form').submit(function( e ) {
+        if( $( "#subnet" ).val() !== '' ){
+            if( !validSubnet( $( "#subnet" ).val() ) ){
+                $("#message-cb").html("<div class='alert alert-danger' role='alert'> The subnet " + $( this ).val() + " is not valid! </div>");
+                e.preventDefault();
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                return false;
+            }
+        }
+
+
     });
 
 
@@ -84,6 +123,7 @@
             message: `Do you really want to delete this ${elementName}?` ,
             buttons: {
                 cancel: {
+                    className : "btn-secondary",
                     label: '<i class="fa fa-times"></i> Cancel'
                 },
                 confirm: {
@@ -148,6 +188,7 @@
                 $('#core-links').append( data.htmlFrag );
 
                 $('#core-links-area').css( 'opacity' , '100' );
+                $('#core-links-area').show();
                 $('#add-new-core-link').attr( 'disabled', 'disabled' );
 
                 oldNbLink = $("#nb-core-links").val( );

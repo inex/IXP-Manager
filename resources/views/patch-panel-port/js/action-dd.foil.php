@@ -1,7 +1,3 @@
-<!--<script type="text/javascript" src="--><?//= asset( '/bower_components/jquery-ui/ui/widget.js' ) ?><!--"></script>-->
-<!--<script type="text/javascript" src="--><?//= asset( '/bower_components/blueimp-file-upload/js/jquery.iframe-transport.js' ) ?><!--"></script>-->
-<!--<script type="text/javascript" src="--><?//= asset( '/bower_components/jquery-knob/js/jquery.knob.js' ) ?><!--"></script>-->
-<!--<script type="text/javascript" src="--><?//= asset( '/bower_components/blueimp-file-upload/js/jquery.fileupload.js' ) ?><!--"></script>-->
 <script>
 
     //////////////////////////////////////////////////////////////////////////////////////
@@ -296,7 +292,7 @@
                                 tpl.attr( 'id','uploaded-file-' + result.id );
                                 tpl.find( 'span' ).addClass( 'success' );
                                 tpl.append( `<span id="uploaded-file-toggle-private-${result.id}" class="private fa fa-unlock fa-lg"></span>` );
-                                tpl.append( `<span id="uploaded-file-delete-${result.id}" class="delete glyphicon glyphicon-trash"></span>` );
+                                tpl.append( `<span id="uploaded-file-delete-${result.id}" class="delete fa fa-trash"></span>` );
                                 tpl.find('p').append( `<i id="message-${result.id}" class="success">${result.message}</i>` );
 
                                 $('#uploaded-file-toggle-private-' + result.id).on( 'click', toggleFilePrivacy );

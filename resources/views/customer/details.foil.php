@@ -139,7 +139,12 @@
 
     <script>
         $(document).ready( function() {
-            $( '#customer-list' ).dataTable( { responsive: true, "iDisplayLength": 100 } ).show();
+            $( '#customer-list' ).show();
+
+            $( '#customer-list' ).dataTable( {
+                responsive: true,
+                "iDisplayLength": 100
+            });
         });
     </script>
 

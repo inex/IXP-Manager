@@ -278,7 +278,10 @@ class Generator
             }
         }
 
-        ksort( $rsclients[ 'clients' ], SORT_NUMERIC );
+        if( isset( $rsclients[ 'clients' ] ) ){
+            ksort( $rsclients[ 'clients' ], SORT_NUMERIC );
+        }
+
 
         return $rsclients;
     }

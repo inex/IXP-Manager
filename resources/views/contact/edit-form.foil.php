@@ -5,7 +5,8 @@
             ->id( 'form' )
             ->action( route( $t->feParams->route_prefix . '@store' ) )
             ->customInputWidthClass( 'col-sm-6 col-md-6 col-lg-8 col-xl-6' )
-            ->customLabelWidthClass( 'col-sm-2 col-md-2 col-lg-2 text-xs-center' )
+            ->customLabelWidthClass( 'col-sm-2 col-md-2 col-lg-3 text-xs-center' )
+            ->actionButtonsCustomClass( "grey-box")
         ?>
         <div class="row">
             <div class="col-lg-6">
@@ -54,8 +55,8 @@
             <div class="col-lg-6">
 
                 <div class="form-group row" >
-                    <div class="">
-                        <label class="control-label col-lg-2 col-sm-4">&nbsp;Role&nbsp;</label>
+                    <div class="" style="display: contents">
+                        <label class="control-label col-lg-3 col-sm-3">&nbsp;Role&nbsp;</label>
                     </div>
 
 
@@ -179,10 +180,10 @@
         ?>
 
         <?= Former::actions(
-            Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' ),
-            Former::secondary_link( 'Cancel' )->href( $cancel_url ),
-            Former::success_button( 'Help' )->id( 'help-btn' )
-        )->class( "bg-light mt-4 p-4 shadow-sm text-center" );
+            Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->class( "mb-2 mb-sm-0" ),
+            Former::secondary_link( 'Cancel' )->href( $cancel_url )->class( "mb-2 mb-sm-0" ),
+            Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
+        );
         ?>
 
         <?= Former::hidden( 'id' )

@@ -6,7 +6,7 @@
 
         <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
 
-            $( 'a[id|="d2f-list-delete"]' ).on( 'click', function( event ) {
+            $( '#table-list' ).on( 'click', '.d2f-list-delete', function( event ) {
 
                 event.preventDefault();
 
@@ -54,7 +54,10 @@
 
             "aLengthMenu": [ [ 20, 50, 100, 500, -1 ], [ 20, 50, 100, 500, "All" ] ],
 
-
+            columnDefs: [
+                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 2, targets: -1 }
+            ],
 
             <?php
                 $count = 0;

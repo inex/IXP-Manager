@@ -25,7 +25,7 @@
 
         <?= $t->alerts() ?>
 
-        <div class="alert alert-info mt-4" role="alert">
+        <div class="alert alert-info" role="alert">
             <div class="d-flex align-items-center">
                 <div class="text-center">
                     <i class="fa fa-info-circle fa-2x"></i>
@@ -42,7 +42,7 @@
 
         <?php if( count( $t->notes ) ): ?>
 
-            <table class="table table-striped" id="list-table-notes">
+            <table class="table table-striped table-responsive-ixp" id="list-table-notes" width="100%">
                 <thead class="thead-dark">
                     <th>
                         Customer
@@ -69,9 +69,31 @@
 
         <?php endif; ?>
     </div>
-
 </div>
-
 
 <?php $this->append() ?>
 
+
+<?php $this->section( 'scripts' ) ?>
+
+<script>
+
+
+    $(document).ready( function() {
+
+        $('.table-responsive-ixp').show();
+
+        $('.table-responsive-ixp').DataTable( {
+            responsive: true,
+            ordering: false,
+            searching: false,
+            paging:   false,
+            info:   false,
+        } );
+
+
+
+
+    });
+</script>
+<?php $this->append() ?>

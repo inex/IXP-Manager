@@ -9,12 +9,14 @@
 
     dd_ixp.select2({
         placeholder: 'Please wait, loading...',
-        allowClear: true
+        allowClear: true,
+        width: '100%',
     });
 
     dd_pdb.select2({
         placeholder: 'Please wait, loading...',
-        allowClear: true
+        allowClear: true,
+        width: '100%',
     });
 
     $(document).ready(function() {

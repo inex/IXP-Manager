@@ -11,32 +11,32 @@
 
 <?php $this->section( 'content' ) ?>
 
-
-
     <div class="row">
 
         <div class="col-md-12">
 
             <?= $t->alerts() ?>
 
-
-
             <div class="card">
                 <div class="card-header">
                     <h3>Delete Free IP Addresses for VLAN: <?= $t->vlan->getName() ?></h3>
                 </div>
+
                 <div class="card-body row">
 
                     <div class="col-md-6">
 
                         <?= Former::open()->method( 'post' )
                             ->action( route( 'ip-address@delete-by-network', [ "vlanid" => $t->vlan->getId() ] ) )
+                            ->actionButtonsCustomClass( "grey-box")
+                            ->customInputWidthClass( 'col-lg-8 col-sm-6' )
+                            ->customLabelWidthClass( 'col-lg-4 col-sm-4' )
+
                         ?>
 
 
                         <?= Former::text( 'network' )
                             ->label("Network")
-                            ->addClass("col-md-6 col-ld-6")
                             ->id( 'network' )
                             ->placeholder( '2a01:db8::/124 | 192.0.2.0/28' )
                             ->blockHelp( 'Enter a subnet is CIDR format.' )
@@ -45,8 +45,8 @@
 
                         <?=
                         Former::actions(
-                            Former::primary_submit( 'Find Free Addresses' ),
-                            Former::secondary_link( 'Cancel' )->href( route( 'ip-address@list', [ 'protocol' => 6, 'vlanid' => $t->vlan->getId() ] ) )
+                            Former::primary_submit( 'Find Free Addresses' )->class( "mb-2 mb-lg-0"),
+                            Former::secondary_link( 'Cancel' )->href( route( 'ip-address@list', [ 'protocol' => 6, 'vlanid' => $t->vlan->getId() ] ) )->class( "mb-2 mb-lg-0")
                         )->class( "text-center" );
                         ?>
 
@@ -55,7 +55,7 @@
 
                     </div>
 
-                    <div class="col-md-6">
+                    <div class="col-md-6 mt-4 mt-md-0">
 
                         <p>
                             This tool allows you to delete free (unused / unallocated) IP addresses in a given CIDR network.
@@ -81,14 +81,20 @@
                         <h3>List of Free IP Addresses To Be Deleted</h3>
                     </div>
                     <div class="card-body">
-                        <table id='table-ip' class="table table-striped">
+                        <table id='table-ip' class="table table-striped" width="100%">
 
                             <thead class="thead-dark">
-                            <tr>
-                                <th colspan="3">
-                                    IP Addresses
-                                </th>
-                            </tr>
+                                <tr>
+                                    <th>
+                                        IP Addresses
+                                    </th>
+                                    <th>
+
+                                    </th>
+                                    <th>
+
+                                    </th>
+                                </tr>
                             </thead>
 
                             <tbody>
@@ -101,14 +107,14 @@
                                         <?= $ip->getAddress() ?>
                                     </td>
 
-                                    <?php if( $count++ % 3 == 0 ) { echo "</tr>\n<tr>"; } ?>
+                                    <?php if( $count++ % 3 == 0 ) { echo "</tr><tr>"; } ?>
 
                                 <?php
 
                                 endforeach;
 
                                 if( !$count % 3 == 0 ) {
-                                    while( $count % 3 != 0 ) {
+                                    while( $count % 3 == 0 ) {
                                         echo '<td></td>';
                                         $count++;
                                     }
@@ -184,7 +190,13 @@
         });
 
         $(document).ready( function() {
-            $( '#table-ip'   ).dataTable( { "autoWidth": false, "pageLength": 50 } );
+            $( '#table-ip'   ).dataTable( {
+                responsive : true,
+                ordering: false,
+                paging:   false,
+                "autoWidth": false,
+                "pageLength": 50
+            } );
         });
 
     </script>

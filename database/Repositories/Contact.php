@@ -161,6 +161,7 @@ class Contact extends EntityRepository
                         c.position AS position,
                         c.creator AS creator, 
                         c.created AS created, 
+                        c.notes AS notes, 
                         cust.name AS customer, 
                         cust.id AS custid
                      

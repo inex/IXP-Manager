@@ -21,11 +21,11 @@
 
     <div id="message-vli" class="col-md-12"></div>
 
-    <div  class="col-md-12 table-responsive" id="area-vli">
+    <div  class="col-md-12">
 
         <?php if( count( $t->vi->getVlanInterfaces()  ) ) : ?>
 
-            <table id="table-vli" class="table table-striped">
+            <table id="table-vli" class="table table-striped table-responsive-ixp-no-header" style="width: 100%">
 
                 <thead class="thead-dark">
                     <tr>
@@ -116,13 +116,18 @@
 
         <?php else: ?>
 
-            <div id="table-vli" class="alert alert-info" role="alert">
-                <span class="fa fa-info-circle" aria-hidden="true"></span>
-                <span class="sr-only">Information:</span>
-                There are no VLAN interfaces defined for this virtual interface.
-                <a href="<?= route('interfaces/vlan/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
-                    Add one now...
-                </a>
+            <div class="alert alert-info" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="text-center">
+                        <i class="fa fa-question-circle fa-2x"></i>
+                    </div>
+                    <div class="col-sm-12">
+                        There are no VLAN interfaces defined for this virtual interface.
+                        <a class="btn btn-outline-secondary" href="<?= route('interfaces/vlan/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
+                            Add one now...
+                        </a>
+                    </div>
+                </div>
             </div>
 
         <?php endif; ?>

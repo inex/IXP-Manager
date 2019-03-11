@@ -843,7 +843,7 @@
     <association from="\Entities\Contact" to="\Entities\User" owner-alias="Contact" inverse-alias="User" many-owner="false" many-inverse="false" uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287">
       <association-field from="user_id" to="id" uuid="75d79600-a7b0-4e01-8ff4-ff818f24003d"/>
       <orm-attributes>
-        <attribute name="on-delete">CASCADE</attribute>
+        <attribute name="on-delete">SET NULL</attribute>
       </orm-attributes>
     </association>
     <entity name="\Entities\ConsoleServerConnection" local-name="ConsoleServerConnection" namespace="\Entities" uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8">

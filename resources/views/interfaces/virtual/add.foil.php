@@ -43,11 +43,18 @@
 <?php $this->section('content') ?>
     <div class="row">
 
-        <div class="col-sm-12">
+        <div class="col-lg-12">
 
-            <div id="instructions-alert" class="alert alert-info" style="display: none;">
-                <b>Instructions: </b> You are strongly advised to review <a href="http://docs.ixpmanager.org/usage/interfaces/">the official documentation</a> before adding / editing interfaces
-                on a production system.
+            <div id="instructions-alert" class="alert alert-info mt-4 collapse" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="text-center">
+                        <i class="fa fa-question-circle fa-2x"></i>
+                    </div>
+                    <div class="col-sm-12">
+                        <b>Instructions: </b> You are strongly advised to review <a href="http://docs.ixpmanager.org/usage/interfaces/">the official documentation</a> before adding / editing interfaces
+                        on a production system.
+                    </div>
+                </div>
             </div>
 
             <?= $t->alerts() ?>

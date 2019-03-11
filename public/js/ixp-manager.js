@@ -148,6 +148,20 @@ function ixpRandomString( length = 12 ) {
 
 
 /**
+ * Equivalent of PHP's htmlentities()
+ * @param str
+ * @returns {string}
+ */
+function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&quot;');
+}
+
+
+/**
  * Replaces an AS  Number with some JS magic to invoke a BootBox.
  *
  * @param string asNumber The AS number
@@ -162,21 +176,8 @@ function ixpAsnumber( asNumber ) {
             $.each(data, function (i, info) {
                 datas += `<tr><td>${info.name}:</td><td>`;
 
-                if (info.link !== undefined) {
-                    let link = info.link;
-                    if (!link.includes(".json")) {
-                        link = link + ".json";
-                    }
+                datas += htmlEntities( info.value );
 
-                    datas += ` <a target="_blank" href="${link}">${info.value}<a/>`;
-                } else {
-                    datas += `${info.value}`;
-                }
-
-                if (info.comment !== undefined) {
-                    datas += ` # ${info.comment}`;
-
-                }
                 datas += `</td>`;
             });
 

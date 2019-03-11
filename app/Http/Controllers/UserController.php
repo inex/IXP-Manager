@@ -361,6 +361,7 @@ class UserController extends Doctrine2Frontend {
      *
      * @throws
      */
+
     public function doStore( Request $request ){
 
         if( $request->input( 'existingUser' ) ) {
@@ -391,7 +392,6 @@ class UserController extends Doctrine2Frontend {
                 'privs'            => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ),
             ] );
         }
-
 
         if( $validator->fails() ) {
             return Redirect::back()->withErrors($validator)->withInput();

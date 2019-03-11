@@ -1,18 +1,34 @@
 <script>
 
-/**
- * allow to refresh the table without reloading the page
- * reloading only a part of the DOM
- */
-function refreshDataTable( htmlId, urlListReload, viid) {
-    $( "#area-"+htmlId).load( urlListReload+" #table-"+ htmlId ,function( ) {
-        if( !viid ){
-            table.destroy();
-            loadDataTable( htmlId );
-        }
 
-    });
-}
+$( document ).ready(function() {
+
+    $('[data-toggle="tooltip"]').tooltip();
+
+    $('.table-responsive-ixp-no-header').show();
+
+    $('.table-responsive-ixp-no-header').DataTable( {
+        responsive: true,
+        ordering: false,
+        searching: false,
+        paging:   false,
+        info:   false,
+        columnDefs: [
+            { responsivePriority: 1, targets: 0 },
+            { responsivePriority: 2, targets: -1 }
+        ],
+    } );
+
+    $('.table-responsive-ixp-with-header').show();
+
+    $('.table-responsive-ixp-with-header').DataTable( {
+        responsive: true,
+        columnDefs: [
+            { responsivePriority: 1, targets: 0 },
+            { responsivePriority: 2, targets: -1 }
+        ],
+    } );
+});
 
 /**
  * function to delete a virtual/physical/vlan interface
@@ -64,7 +80,7 @@ function deletePopup( id, viid, type ) {
             buttons: {
                 cancel: {
                     label: 'Cancel',
-                    className: 'btn-primary'
+                    className: 'btn-secondary'
                 },
                 confirm: {
                     label: 'Delete',
@@ -96,10 +112,7 @@ function deletePopup( id, viid, type ) {
             buttons: {
                 cancel: {
                     label: "Cancel",
-                    className: 'btn-primary',
-                    callback: function(){
-                        return false;
-                    }
+                    className: 'btn-secondary',
                 },
                 deleteRelated: {
                     label: `Delete with related ${reltype} interface`,
@@ -111,12 +124,12 @@ function deletePopup( id, viid, type ) {
                                 related : true
                             },
                         })
-                            .done( function( data ) {
-                                location.reload();
-                            })
-                            .fail( function(){
-                                throw new Error( `Error running ajax query for ${urlDelete}/${id}` );
-                            })
+                        .done( function( data ) {
+                            location.reload();
+                        })
+                        .fail( function(){
+                            throw new Error( `Error running ajax query for ${urlDelete}/${id}` );
+                        })
                     }
                 },
                 confirm: {
@@ -126,27 +139,16 @@ function deletePopup( id, viid, type ) {
                         $.ajax( urlDelete + "/" + id,{
                             type : 'POST'
                         })
-                            .done( function( data ) {
-                                location.reload();
-                            })
-                            .fail( function(){
-                                throw new Error( `Error running ajax query for ${urlDelete}/${id}` );
-                            })
+                        .done( function( data ) {
+                            location.reload();
+                        })
+                        .fail( function(){
+                            throw new Error( `Error running ajax query for ${urlDelete}/${id}` );
+                        })
                     }
                 }
             }
         });
     }
-}
-
-
-/**
- * initialise the datatable table
- */
-function loadDataTable( tableId ){
-    table = $( '#table-' + tableId ).DataTable( {
-        "autoWidth": false,
-        "iDisplayLength": 100
-    });
 }
 </script>

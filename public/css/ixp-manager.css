@@ -5,6 +5,9 @@
 * BEGIN CSS used for Bootstrap 4
 */
 
+    #side-navbar{
+        border-right: 1px solid #dee2e6;
+    }
     #side-navbar a{
         color: #999;
         font-weight : 500;
@@ -65,7 +68,13 @@
     .former-input-col-sm-6 .form-group > div{
         -ms-flex:0 0 50%;
         flex:0 0 50%;
-        max-width:50%
+        max-width:50%;
+    }
+
+    .former-label-col-sm-6 .form-group > label{
+        -ms-flex:0 0 33.333333%;
+        flex:0 0 33.333333%;
+        max-width:33.333333%;
     }
 
 
@@ -84,7 +93,7 @@
 
     }
 
-    .fa-globe:hover {
+    .fa-globe:hover, .fa-github:hover {
         color: grey;
 
     }
@@ -97,14 +106,21 @@
         font-size: 15px;
     }
 
+
     .a-disabled {
         pointer-events: none;
         cursor: default;
         opacity: 0.6;
     }
 
-    .cursor-pointer{
+    .cursor-pointer {
         cursor: pointer;
+    }
+
+    .center-dd-caret:after{
+        margin-bottom: auto;
+        margin-top: auto;
+
     }
 
     .cursor-default{
@@ -121,17 +137,73 @@
     ::::::::::::::::::::::::::::::::::::::::::::::::::::
     Bootstrap 4 breakpoints
     */
+
+
+    /*
+    ::::::::::::::::::::::::::::::::::::::::::::::::::::
+    COL-SM
+    */
     /* Small devices (landscape phones, 544px and up) */
     @media (max-width: 576px) {
         .h2 {font-size: 1.6rem}
     }
 
+
+
+    /*
+    ::::::::::::::::::::::::::::::::::::::::::::::::::::
+    COL-MD
+    */
     /* Medium devices (tablets, 768px and up) */
     @media (min-width: 768px) {
         #div-header-select-customer{
             width: 300px;
         }
     }
+
+    @media (max-width: 768px) {
+        #side-navbar {
+            display: block;
+            margin-left: -220px;
+            width: 220px!important;
+            height: 96%;
+            overflow: scroll;
+            transition: all 0.3s ease;
+        }
+
+        #side-navbar.active {
+            margin-left: 0;
+            z-index: 200;
+            position: absolute;
+            display: block!important;
+        }
+
+
+        #slide-reveal-overlay{
+            position: fixed;
+            left: 0px;
+            height: 100%;
+            width: 100%;
+            z-index: 100;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+    }
+
+    @media (max-width: 992px) {
+        #side-navbar .nav-item a{
+            font-size: 0.9rem;
+        }
+
+        #side-navbar h6{
+            font-size: 0.9rem;
+        }
+    }
+
+
+    /*
+    ::::::::::::::::::::::::::::::::::::::::::::::::::::
+    COL-LG
+    */
 
     /* Large devices (desktops, 992px and up) */
     @media (min-width: 992px) {
@@ -154,6 +226,10 @@
         }
     }
 
+    /*
+    ::::::::::::::::::::::::::::::::::::::::::::::::::::
+    COL-XL
+    */
     /* Extra large devices (large desktops, 1200px and up) */
     @media (min-width: 1200px) {
         #div-header-select-customer{
@@ -540,10 +616,12 @@ td a:hover{
 
 .asn-table{
     margin-left: 30px;
+    font-family: 'Courier New', Courier, monospace;
 }
 
 .asn-table tr td{
-    padding : 4px;
+    padding : 1px;
+    padding-left: 5px;
 }
 
 .scrollable-dropdown {

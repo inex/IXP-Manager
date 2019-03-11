@@ -38,7 +38,7 @@
 
         <div class="col-sm-12">
 
-            <table id="list-port" class="collapse table table-striped table-bordered">
+            <table id="list-port" class="collapse table table-striped table-bordered" width="100%">
 
                 <thead class="thead-dark">
                     <tr>
@@ -107,6 +107,7 @@
             $('#list-port').show();
 
             $('#list-port').dataTable({
+                responsive : true,
                 "columnDefs": [
                     { "targets": [ 0 ], "visible": false },
                     { "orderData": [ 0 ],    "targets": 1 },

@@ -5,14 +5,13 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2019-02-07 09:44:19.
+    * Generated on 2019-03-10 11:47:15.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
     */
     override(new \Illuminate\Contracts\Container\Container, map([
         '' => '@',
-        'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
         'Foil\Engine' => \Foil\Engine::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
@@ -31,6 +30,7 @@ namespace PHPSTORM_META {
         'Illuminate\Contracts\Pipeline\Hub' => \Illuminate\Pipeline\Hub::class,
         'Illuminate\Contracts\Queue\EntityResolver' => \Illuminate\Database\Eloquent\QueueEntityResolver::class,
         'Illuminate\Contracts\Routing\ResponseFactory' => \Illuminate\Routing\ResponseFactory::class,
+        'Illuminate\Foundation\Mix' => \Illuminate\Foundation\Mix::class,
         'Illuminate\Mail\Markdown' => \Illuminate\Mail\Markdown::class,
         'Illuminate\Notifications\ChannelManager' => \Illuminate\Notifications\ChannelManager::class,
         'Illuminate\Routing\Contracts\ControllerDispatcher' => \Illuminate\Routing\ControllerDispatcher::class,
@@ -41,7 +41,6 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
         'NunoMaduro\Collision\Contracts\Adapters\Phpunit\Listener' => \NunoMaduro\Collision\Adapters\Phpunit\Listener::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
-        'Psr\Http\Message\ResponseInterface' => \Zend\Diactoros\Response::class,
         'auth' => \Illuminate\Auth\AuthManager::class,
         'auth.driver' => \Illuminate\Auth\SessionGuard::class,
         'auth.password' => \Illuminate\Auth\Passwords\PasswordBrokerManager::class,
@@ -62,7 +61,6 @@ namespace PHPSTORM_META {
         'command.console.make' => \Illuminate\Foundation\Console\ConsoleMakeCommand::class,
         'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
         'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
-        'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
         'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
         'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
@@ -175,7 +173,6 @@ namespace PHPSTORM_META {
     ]));
     override(\Illuminate\Contracts\Container\Container::make(0), map([
         '' => '@',
-        'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
         'Foil\Engine' => \Foil\Engine::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
@@ -194,6 +191,7 @@ namespace PHPSTORM_META {
         'Illuminate\Contracts\Pipeline\Hub' => \Illuminate\Pipeline\Hub::class,
         'Illuminate\Contracts\Queue\EntityResolver' => \Illuminate\Database\Eloquent\QueueEntityResolver::class,
         'Illuminate\Contracts\Routing\ResponseFactory' => \Illuminate\Routing\ResponseFactory::class,
+        'Illuminate\Foundation\Mix' => \Illuminate\Foundation\Mix::class,
         'Illuminate\Mail\Markdown' => \Illuminate\Mail\Markdown::class,
         'Illuminate\Notifications\ChannelManager' => \Illuminate\Notifications\ChannelManager::class,
         'Illuminate\Routing\Contracts\ControllerDispatcher' => \Illuminate\Routing\ControllerDispatcher::class,
@@ -204,7 +202,6 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
         'NunoMaduro\Collision\Contracts\Adapters\Phpunit\Listener' => \NunoMaduro\Collision\Adapters\Phpunit\Listener::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
-        'Psr\Http\Message\ResponseInterface' => \Zend\Diactoros\Response::class,
         'auth' => \Illuminate\Auth\AuthManager::class,
         'auth.driver' => \Illuminate\Auth\SessionGuard::class,
         'auth.password' => \Illuminate\Auth\Passwords\PasswordBrokerManager::class,
@@ -225,7 +222,6 @@ namespace PHPSTORM_META {
         'command.console.make' => \Illuminate\Foundation\Console\ConsoleMakeCommand::class,
         'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
         'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
-        'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
         'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
         'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
@@ -338,7 +334,6 @@ namespace PHPSTORM_META {
     ]));
     override(\Illuminate\Contracts\Container\Container::makeWith(0), map([
         '' => '@',
-        'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
         'Foil\Engine' => \Foil\Engine::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
@@ -357,6 +352,7 @@ namespace PHPSTORM_META {
         'Illuminate\Contracts\Pipeline\Hub' => \Illuminate\Pipeline\Hub::class,
         'Illuminate\Contracts\Queue\EntityResolver' => \Illuminate\Database\Eloquent\QueueEntityResolver::class,
         'Illuminate\Contracts\Routing\ResponseFactory' => \Illuminate\Routing\ResponseFactory::class,
+        'Illuminate\Foundation\Mix' => \Illuminate\Foundation\Mix::class,
         'Illuminate\Mail\Markdown' => \Illuminate\Mail\Markdown::class,
         'Illuminate\Notifications\ChannelManager' => \Illuminate\Notifications\ChannelManager::class,
         'Illuminate\Routing\Contracts\ControllerDispatcher' => \Illuminate\Routing\ControllerDispatcher::class,
@@ -367,7 +363,6 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
         'NunoMaduro\Collision\Contracts\Adapters\Phpunit\Listener' => \NunoMaduro\Collision\Adapters\Phpunit\Listener::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
-        'Psr\Http\Message\ResponseInterface' => \Zend\Diactoros\Response::class,
         'auth' => \Illuminate\Auth\AuthManager::class,
         'auth.driver' => \Illuminate\Auth\SessionGuard::class,
         'auth.password' => \Illuminate\Auth\Passwords\PasswordBrokerManager::class,
@@ -388,7 +383,6 @@ namespace PHPSTORM_META {
         'command.console.make' => \Illuminate\Foundation\Console\ConsoleMakeCommand::class,
         'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
         'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
-        'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
         'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
         'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
@@ -501,7 +495,6 @@ namespace PHPSTORM_META {
     ]));
     override(\App::make(0), map([
         '' => '@',
-        'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
         'Foil\Engine' => \Foil\Engine::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
@@ -520,6 +513,7 @@ namespace PHPSTORM_META {
         'Illuminate\Contracts\Pipeline\Hub' => \Illuminate\Pipeline\Hub::class,
         'Illuminate\Contracts\Queue\EntityResolver' => \Illuminate\Database\Eloquent\QueueEntityResolver::class,
         'Illuminate\Contracts\Routing\ResponseFactory' => \Illuminate\Routing\ResponseFactory::class,
+        'Illuminate\Foundation\Mix' => \Illuminate\Foundation\Mix::class,
         'Illuminate\Mail\Markdown' => \Illuminate\Mail\Markdown::class,
         'Illuminate\Notifications\ChannelManager' => \Illuminate\Notifications\ChannelManager::class,
         'Illuminate\Routing\Contracts\ControllerDispatcher' => \Illuminate\Routing\ControllerDispatcher::class,
@@ -530,7 +524,6 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
         'NunoMaduro\Collision\Contracts\Adapters\Phpunit\Listener' => \NunoMaduro\Collision\Adapters\Phpunit\Listener::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
-        'Psr\Http\Message\ResponseInterface' => \Zend\Diactoros\Response::class,
         'auth' => \Illuminate\Auth\AuthManager::class,
         'auth.driver' => \Illuminate\Auth\SessionGuard::class,
         'auth.password' => \Illuminate\Auth\Passwords\PasswordBrokerManager::class,
@@ -551,7 +544,6 @@ namespace PHPSTORM_META {
         'command.console.make' => \Illuminate\Foundation\Console\ConsoleMakeCommand::class,
         'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
         'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
-        'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
         'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
         'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
@@ -664,7 +656,6 @@ namespace PHPSTORM_META {
     ]));
     override(\App::makeWith(0), map([
         '' => '@',
-        'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
         'Foil\Engine' => \Foil\Engine::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
@@ -683,6 +674,7 @@ namespace PHPSTORM_META {
         'Illuminate\Contracts\Pipeline\Hub' => \Illuminate\Pipeline\Hub::class,
         'Illuminate\Contracts\Queue\EntityResolver' => \Illuminate\Database\Eloquent\QueueEntityResolver::class,
         'Illuminate\Contracts\Routing\ResponseFactory' => \Illuminate\Routing\ResponseFactory::class,
+        'Illuminate\Foundation\Mix' => \Illuminate\Foundation\Mix::class,
         'Illuminate\Mail\Markdown' => \Illuminate\Mail\Markdown::class,
         'Illuminate\Notifications\ChannelManager' => \Illuminate\Notifications\ChannelManager::class,
         'Illuminate\Routing\Contracts\ControllerDispatcher' => \Illuminate\Routing\ControllerDispatcher::class,
@@ -693,7 +685,6 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
         'NunoMaduro\Collision\Contracts\Adapters\Phpunit\Listener' => \NunoMaduro\Collision\Adapters\Phpunit\Listener::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
-        'Psr\Http\Message\ResponseInterface' => \Zend\Diactoros\Response::class,
         'auth' => \Illuminate\Auth\AuthManager::class,
         'auth.driver' => \Illuminate\Auth\SessionGuard::class,
         'auth.password' => \Illuminate\Auth\Passwords\PasswordBrokerManager::class,
@@ -714,7 +705,6 @@ namespace PHPSTORM_META {
         'command.console.make' => \Illuminate\Foundation\Console\ConsoleMakeCommand::class,
         'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
         'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
-        'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
         'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
         'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
@@ -827,7 +817,6 @@ namespace PHPSTORM_META {
     ]));
     override(\app(0), map([
         '' => '@',
-        'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
         'Foil\Engine' => \Foil\Engine::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
@@ -846,6 +835,7 @@ namespace PHPSTORM_META {
         'Illuminate\Contracts\Pipeline\Hub' => \Illuminate\Pipeline\Hub::class,
         'Illuminate\Contracts\Queue\EntityResolver' => \Illuminate\Database\Eloquent\QueueEntityResolver::class,
         'Illuminate\Contracts\Routing\ResponseFactory' => \Illuminate\Routing\ResponseFactory::class,
+        'Illuminate\Foundation\Mix' => \Illuminate\Foundation\Mix::class,
         'Illuminate\Mail\Markdown' => \Illuminate\Mail\Markdown::class,
         'Illuminate\Notifications\ChannelManager' => \Illuminate\Notifications\ChannelManager::class,
         'Illuminate\Routing\Contracts\ControllerDispatcher' => \Illuminate\Routing\ControllerDispatcher::class,
@@ -856,7 +846,6 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
         'NunoMaduro\Collision\Contracts\Adapters\Phpunit\Listener' => \NunoMaduro\Collision\Adapters\Phpunit\Listener::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
-        'Psr\Http\Message\ResponseInterface' => \Zend\Diactoros\Response::class,
         'auth' => \Illuminate\Auth\AuthManager::class,
         'auth.driver' => \Illuminate\Auth\SessionGuard::class,
         'auth.password' => \Illuminate\Auth\Passwords\PasswordBrokerManager::class,
@@ -877,7 +866,6 @@ namespace PHPSTORM_META {
         'command.console.make' => \Illuminate\Foundation\Console\ConsoleMakeCommand::class,
         'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
         'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
-        'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
         'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
         'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,
@@ -990,7 +978,6 @@ namespace PHPSTORM_META {
     ]));
     override(\resolve(0), map([
         '' => '@',
-        'Barryvdh\Debugbar\LaravelDebugbar' => \Barryvdh\Debugbar\LaravelDebugbar::class,
         'Doctrine\ORM\Mapping\ClassMetadataFactory' => \Doctrine\ORM\Mapping\ClassMetadataFactory::class,
         'Foil\Engine' => \Foil\Engine::class,
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
@@ -1009,6 +996,7 @@ namespace PHPSTORM_META {
         'Illuminate\Contracts\Pipeline\Hub' => \Illuminate\Pipeline\Hub::class,
         'Illuminate\Contracts\Queue\EntityResolver' => \Illuminate\Database\Eloquent\QueueEntityResolver::class,
         'Illuminate\Contracts\Routing\ResponseFactory' => \Illuminate\Routing\ResponseFactory::class,
+        'Illuminate\Foundation\Mix' => \Illuminate\Foundation\Mix::class,
         'Illuminate\Mail\Markdown' => \Illuminate\Mail\Markdown::class,
         'Illuminate\Notifications\ChannelManager' => \Illuminate\Notifications\ChannelManager::class,
         'Illuminate\Routing\Contracts\ControllerDispatcher' => \Illuminate\Routing\ControllerDispatcher::class,
@@ -1019,7 +1007,6 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
         'NunoMaduro\Collision\Contracts\Adapters\Phpunit\Listener' => \NunoMaduro\Collision\Adapters\Phpunit\Listener::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
-        'Psr\Http\Message\ResponseInterface' => \Zend\Diactoros\Response::class,
         'auth' => \Illuminate\Auth\AuthManager::class,
         'auth.driver' => \Illuminate\Auth\SessionGuard::class,
         'auth.password' => \Illuminate\Auth\Passwords\PasswordBrokerManager::class,
@@ -1040,7 +1027,6 @@ namespace PHPSTORM_META {
         'command.console.make' => \Illuminate\Foundation\Console\ConsoleMakeCommand::class,
         'command.controller.make' => \Illuminate\Routing\Console\ControllerMakeCommand::class,
         'command.countries.migration' => \Webpatser\Countries\MigrationCommand::class,
-        'command.debugbar.clear' => \Barryvdh\Debugbar\Console\ClearCommand::class,
         'command.down' => \Illuminate\Foundation\Console\DownCommand::class,
         'command.dumpserver' => \BeyondCode\DumpServer\DumpServerCommand::class,
         'command.environment' => \Illuminate\Foundation\Console\EnvironmentCommand::class,

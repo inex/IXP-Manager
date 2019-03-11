@@ -14,7 +14,7 @@
     <div class="btn-group btn-group-sm" role="group">
 
         <div class="btn-group btn-group-sm">
-            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?= $t->s ? $t->s->getInfrastructure()->getName() : ( $t->infra ? $t->infra->getName() : "All Infrastructures" ) ?>
             </button>
 
@@ -39,7 +39,7 @@
 
 
         <div class="btn-group btn-group-sm">
-            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?= $t->s ? $t->s->getCabinet()->getLocation()->getName() : ( $t->location ? $t->location->getName() : "All Facilities" ) ?>
             </button>
 
@@ -65,7 +65,7 @@
 
 
         <div class="btn-group btn-group-sm">
-            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-outline-secondary dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?= $t->s ? $t->s->getName() : "All switches" ?>
             </button>
 
@@ -101,7 +101,7 @@
 
     <div class="col-sm-12">
 
-        <table id="list-configuration" class="table table-striped table-bordered">
+        <table id="list-configuration" class="table table-striped table-bordered" width="100%">
 
             <thead class="thead-dark">
                 <tr>
@@ -222,6 +222,7 @@
     $( document ).ready( function() {
 
         $('#list-configuration').dataTable({
+            responsive : true,
             "columnDefs": [
                 { "targets": [ 0 ], "visible": false, "searchable": false },
                 { "targets": [ 4 ], "orderData": 5 },

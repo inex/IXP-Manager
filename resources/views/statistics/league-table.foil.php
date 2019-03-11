@@ -79,12 +79,12 @@
                 
                 <thead class="thead-dark">
                     <tr>
-                        <th class="ui-state-default" ></th>
-                        <th class="ui-state-default" ></th>
-                        <th class="ui-state-default" colspan="3">Day</th>
-                        <th class="ui-state-default" colspan="3">Week</th>
-                        <th class="ui-state-default" colspan="3">Month</th>
-                        <th class="ui-state-default" colspan="3">Year</th>
+                        <th></th>
+                        <th></th>
+                        <th colspan="3">Day</th>
+                        <th colspan="3">Week</th>
+                        <th colspan="3">Month</th>
+                        <th colspan="3">Year</th>
                     </tr>
                     <tr>
                         <th></th>

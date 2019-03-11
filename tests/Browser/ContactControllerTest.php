@@ -33,7 +33,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class ContactControllerTest extends DuskTestCase
 {
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach( [ 'Test Contact 1', 'Test Contact 2' ] as $name ) {
             $c = D2EM::getRepository( ContactEntity::class )->findOneBy( [ 'name' => $name ] );

@@ -1,5 +1,5 @@
 {
-    "name": "inex/IXP-Manager",
+    "name": "inex/ixp-manager",
     "description": "An application by INEX to manage Internet Exchange Points (IXPs) - https://www.ixpmanager.org/",
     "type": "project",
     "keywords": ["ixp manager", "ixpm", "inex", "ixp"],
@@ -16,17 +16,22 @@
             "homepage": "https://www.ixpmanager.org/"
         }
     ],
+    "repositories": [
+        {
+            "type": "vcs",
+            "url": "https://github.com/barryo/orm"
+        }
+    ],
     "require": {
         "php": "^7.2",
 
         "opensolutions/oss-snmp": "^1.0",
 
         "fideloper/proxy": "^4.0",
-        "laravel/framework": "5.7.*",
+        "laravel/framework": "5.8.*",
         "laravel/tinker": "~1.0",
         "laravel-doctrine/orm": "1.4.*",
         
-        "smarty/smarty": "~3.1",
         "foil/foil": "~0.6",
 
         "zendesk/zendesk_api_client_php": "2.*",
@@ -46,13 +51,12 @@
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
         "filp/whoops": "~2.0",
-        "phpunit/phpunit": "^7.0",
+        "phpunit/phpunit": "^7.5",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "~1.0",
         "barryvdh/laravel-ide-helper": "^2.3",
-        "barryvdh/laravel-debugbar": "^3.1",
-        "laravel/dusk": "^3.0",
-        "nunomaduro/collision": "^2.0"
+        "laravel/dusk": "^5.0",
+        "nunomaduro/collision": "^3.0"
      },
     "support": {
         "issues": "https://www.ixpmanager.org/support.php",

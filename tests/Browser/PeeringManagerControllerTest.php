@@ -38,7 +38,7 @@ use Entities\{
 class PeeringManagerControllerTest extends DuskTestCase
 {
 
-    public function tearDown()
+    public function tearDown(): void
     {
 
         /** @var UserEntity $user */

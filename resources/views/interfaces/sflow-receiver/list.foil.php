@@ -28,79 +28,77 @@ $this->layout( 'layouts/ixpv4' );
 
         <span id="message-sflr"></span>
 
-        <div id="area-sflr" class="collapse table-responsive">
+        <table id='table-sflr' class="table table-striped table-responsive-ixp-with-header collapse" style="width: 100%;">
 
-            <table id='table-sflr' class="table table-striped">
+            <thead class="thead-dark">
+                <tr>
+                    <th>
+                        Customer
+                    </th>
+                    <th>
+                        Source Switch
+                    </th>
+                    <th>
+                        Destination IP
+                    </th>
+                    <th>
+                        Destination Port
+                    </th>
+                    <th>
+                        Action
+                    </th>
+                </tr>
+            <thead>
 
-                <thead class="thead-dark">
+            <tbody>
+
+                <?php foreach( $t->listSr as $sflr ): /** @var Entities\SflowReceiver $sflr */ ?>
+
                     <tr>
-                        <th>
-                            Customer
-                        </th>
-                        <th>
-                            Source Switch
-                        </th>
-                        <th>
-                            Destination IP
-                        </th>
-                        <th>
-                            Destination Port
-                        </th>
-                        <th>
-                            Action
-                        </th>
+
+                        <td>
+                            <a href="<?= route( "customer@overview" , [ "id" => $sflr->getCustomer()->getId() ] ) ?>">
+                                <?= $t->ee( $sflr->getCustomer()->getName() )   ?>
+                            </a>
+                        </td>
+
+                        <td>
+                            <a href="<?= route( "interfaces/virtual/edit", [ 'id' => $sflr->getVirtualInterface()->getId() ] ) ?>">
+                                <?php if( count( $pis = $sflr->getVirtualInterface()->getPhysicalInterfaces() ) ): /** @var Entities\PhysicalInterface[] $pis */ ?>
+                                    <?= $pis[0]->getSwitchPort()->getSwitcher()->getName() ?>
+                                <?php endif; ?>
+                            </a>
+                        </td>
+
+                        <td>
+                            <?= $t->ee( $sflr->getDstIp() ) ?>
+                        </td>
+
+                        <td>
+                            <?= $sflr->getDstPort() ?>
+                        </td>
+
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group">
+                                <a class="btn btn-outline-secondary" href="<?= route( 'interfaces/sflow-receiver/edit' , [ 'id' => $sflr->getId() ] ) ?>" title="Edit">
+                                    <i class="fa fa-pencil"></i>
+                                </a>
+
+                                <a class="btn btn-outline-secondary delete-sflr" id="delete-sflr-<?= $sflr->getId() ?>" href="" title="Delete">
+                                    <i class="fa fa-trash"></i>
+                                </a>
+                            </div>
+                        </td>
+
                     </tr>
-                <thead>
 
-                <tbody>
+                <?php endforeach;?>
 
-                    <?php foreach( $t->listSr as $sflr ): /** @var Entities\SflowReceiver $sflr */ ?>
+            <tbody>
 
-                        <tr>
+        </table>
 
-                            <td>
-                                <a href="<?= route( "customer@overview" , [ "id" => $sflr->getCustomer()->getId() ] ) ?>">
-                                    <?= $t->ee( $sflr->getCustomer()->getName() )   ?>
-                                </a>
-                            </td>
 
-                            <td>
-                                <a href="<?= route( "interfaces/virtual/edit", [ 'id' => $sflr->getVirtualInterface()->getId() ] ) ?>">
-                                    <?php if( count( $pis = $sflr->getVirtualInterface()->getPhysicalInterfaces() ) ): /** @var Entities\PhysicalInterface[] $pis */ ?>
-                                        <?= $pis[0]->getSwitchPort()->getSwitcher()->getName() ?>
-                                    <?php endif; ?>
-                                </a>
-                            </td>
-
-                            <td>
-                                <?= $t->ee( $sflr->getDstIp() ) ?>
-                            </td>
-
-                            <td>
-                                <?= $sflr->getDstPort() ?>
-                            </td>
-
-                            <td>
-                                <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn-outline-secondary" href="<?= route( 'interfaces/sflow-receiver/edit' , [ 'id' => $sflr->getId() ] ) ?>" title="Edit">
-                                        <i class="fa fa-pencil"></i>
-                                    </a>
-
-                                    <a class="btn btn-outline-secondary" id="delete-sflr-<?= $sflr->getId() ?>" href="" title="Delete">
-                                        <i class="fa fa-trash"></i>
-                                    </a>
-                                </div>
-                            </td>
-
-                        </tr>
-
-                    <?php endforeach;?>
-
-                <tbody>
-
-            </table>
-
-        </div>
 
     </div>
 
@@ -116,15 +114,10 @@ $this->layout( 'layouts/ixpv4' );
 
     <script>
 
-        $(document).ready( function() {
-            loadDataTable( 'sflr' );
-            $( "#area-sflr" ).show();
-        });
-
         /**
          * on click event to to delete a sflow receiver
          */
-        $( "a[id|='delete-sflr']" ).on('click', function(e) {
+        $( "#table-sflr" ).on('click', '.delete-sflr', function(e) {
             e.preventDefault();
             let sflr = (this.id).substring(12);
             deletePopup( sflr , false, 'sflr' );

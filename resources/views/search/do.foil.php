@@ -2,7 +2,7 @@
 /** @var object $t */
 ?>
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
     Search - <?= $t->type ?> - <?= $t->ee( $t->search ) ?>
 <?php $this->append() ?>
 
@@ -12,108 +12,132 @@
 
         <div class="col-sm-12">
             <?= $t->alerts() ?>
-            <div class="well">
+            <div class="card bg-light">
+                <div class="card-body">
+                    <form class="form-inline" method="get" action="<?= route( 'search' ) ?>">
 
-                <form class="form-inline" method="get" action="<?= route( 'search' ) ?>">
-
-                    <div class="form-group">
-                        <input type="text" class="form-control" placeholder="Search for..." name="search" value="<?= $t->search ?>">
-                        <button class="btn btn-default" type="submit">Search</button>
-                        <a class="btn btn-default" id="searchHelp" data-toggle="modal" data-target="#searchHelpModal">
-                            <span class="glyphicon glyphicon-question-sign"></span>
-                        </a>
-                    </div>
-
-                </form>
-
+                        <div class="input-group">
+                            <input type="text" class="form-control" placeholder="Search for..." name="search" value="<?= $t->search ?>">
+                            <div class="input-group-append">
+                                <button class="btn btn-outline-secondary" type="submit">Search</button>
+                                <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#searchHelpModal">
+                                    <span class="fa fa-question-circle"></span>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
             </div>
 
 
             <?php if( count( $t->results ) ): ?>
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h4>
+                            <?= count( $t->results ) ?> Result(s)
 
-                <h4>
-                    <?= count( $t->results ) ?> Result(s)
+                            <?php
+                            switch( $t->type ) {
+                                case 'asn':       echo ' - AS Number'; break;
+                                case 'asmacro':   echo ' - AS Macro'; break;
+                                case 'cust_wild': echo ' - Wildcard Customer Search'; break;
+                                case 'email':     echo ' - Email Address'; break;
+                                case 'ipv4':      echo ' - IPv4 Addresses'; break;
+                                case 'ipv6':      echo ' - IPv6 Addresses'; break;
+                                case 'mac':       echo ' - MAC Addresses'; break;
+                                case 'ppp-xc':    echo ' - Patch Panel Port Colo Circuit Reference'; break;
+                                case 'rsprefix':  echo ' - Route Server Prefix'; break;
+                                case 'username':  echo ' - Users from Username'; break;
+                            }
+                            ?>
+                        </h4>
+                    </div>
+                    <div class="card-body">
+                        <?php if( $t->type == 'email' ): ?>
 
-                    <?php
-                    switch( $t->type ) {
-                        case 'asn':       echo ' - AS Number'; break;
-                        case 'asmacro':   echo ' - AS Macro'; break;
-                        case 'cust_wild': echo ' - Wildcard Customer Search'; break;
-                        case 'email':     echo ' - Email Address'; break;
-                        case 'ipv4':      echo ' - IPv4 Addresses'; break;
-                        case 'ipv6':      echo ' - IPv6 Addresses'; break;
-                        case 'mac':       echo ' - MAC Addresses'; break;
-                        case 'ppp-xc':    echo ' - Patch Panel Port Colo Circuit Reference'; break;
-                        case 'rsprefix':  echo ' - Route Server Prefix'; break;
-                        case 'username':  echo ' - Users from Username'; break;
-                    }
-                    ?>
-                </h4>
+                            <?= $t->insert( 'search/users' ) ?>
+                            <?= $t->insert( 'search/contacts' ) ?>
 
+                        <?php elseif( $t->type == 'username' ): ?>
 
-                <?php if( $t->type == 'email' ): ?>
+                            <?= $t->insert( 'search/users' ) ?>
 
-                    <?= $t->insert( 'search/users' ) ?>
-                    <?= $t->insert( 'search/contacts' ) ?>
+                        <?php elseif( $t->type == 'rsprefix' ): ?>
 
-                <?php elseif( $t->type == 'username' ): ?>
+                            <?= $t->insert( 'search/rsprefixes' ) ?>
 
-                    <?= $t->insert( 'search/users' ) ?>
+                        <?php elseif( $t->type == 'ppp-xc' ): ?>
 
-                <?php elseif( $t->type == 'rsprefix' ): ?>
+                            <?= $t->insert( 'search/ppps' ) ?>
 
-                    <?= $t->insert( 'search/rsprefixes' ) ?>
+                        <?php else: ?>
 
-                <?php elseif( $t->type == 'ppp-xc' ): ?>
+                            <div class="list-group">
+                                <?php foreach( $t->results as $cust ): ?>
+                                    <div class="list-group-item">
+                                        <div>
+                                            <b class="mr-2">
+                                                <a style="font-size: x-large" href="<?= route( "customer@overview" , [ "id" => $cust->getId() ] ) ?>">
+                                                    <?= $t->ee( $cust->getAbbreviatedName() ) ?> - AS<?= $t->ee( $cust->getAutsys() )?>
+                                                </a>
+                                            </b>
 
-                    <?= $t->insert( 'search/ppps' ) ?>
+                                            <?= $t->insert( 'customer/cust-type', [ 'cust' => $cust  ] ) ?>
+                                        </div>
 
-                <?php else: ?>
+                                        <?php if( count( $t->interfaces ) ): ?>
+                                            <?php if( $t->type == 'mac' ): ?>
+                                                <?= $t->insert( 'search/additional/mac', [ 'cust' => $cust ,'interfaces' => $t->interfaces , 'type' => $t->type, 'search' => $t->search ]  ) ?>
+                                            <?php elseif( $t->type == 'ipv4' || $t->type == 'ipv6' ): ?>
+                                                <?= $t->insert( 'search/additional/ip', [ 'cust' => $cust ,'interfaces' => $t->interfaces , 'type' => $t->type ] ) ?>
+                                            <?php endif; ?>
+                                        <?php endif; ?>
 
-                    <div class="list-group">
-                        <?php foreach( $t->results as $cust ): ?>
-                            <div class="list-group-item">
-                                <div>
-                                    <b>
-                                        <a style="font-size: x-large" href="<?= route( "customer@overview" , [ "id" => $cust->getId() ] ) ?>">
-                                            <?= $t->ee( $cust->getAbbreviatedName() ) ?> - AS<?= $t->ee( $cust->getAutsys() )?>
-                                        </a>
-                                    </b>
-                                    &nbsp;&nbsp;&nbsp;&nbsp;
-                                    <?= $t->insert( 'customer/cust-type', [ 'cust' => $cust  ] ) ?>
-                                </div>
+                                        <div class="btn-group flex-wrap">
+                                            <a class="btn btn-outline-secondary" href="<?= route( "customer@overview" , [ "id" => $cust->getId() ] ) ?>">
+                                                Overview
+                                            </a>
+                                            <a class="btn btn-outline-secondary" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "ports" ] ) ?>">
+                                                Ports
+                                            </a>
+                                            <a class="btn btn-outline-secondary" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $cust->getId(), "type" => "agg" ] ) ?>">
+                                                Statistics
+                                            </a>
+                                            <a class="btn btn-outline-secondary" href="<?= route( 'statistics@p2p-get', [ "id" => $cust->getId() ] )?>">
+                                                P2P
+                                            </a>
+                                            <a class="btn btn-outline-secondary" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "users" ] ) ?>">
+                                                Users
+                                            </a>
+                                            <a class="btn btn-outline-secondary" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "contacts" ] )?>">
+                                                Contacts
+                                            </a>
+                                        </div>
 
-                                <?php if( count( $t->interfaces ) ): ?>
-                                    <?php if( $t->type == 'mac' ): ?>
-                                        <?= $t->insert( 'search/additional/mac', [ 'cust' => $cust ,'interfaces' => $t->interfaces , 'type' => $t->type, 'search' => $t->search ]  ) ?>
-                                    <?php elseif( $t->type == 'ipv4' || $t->type == 'ipv6' ): ?>
-                                        <?= $t->insert( 'search/additional/ip', [ 'cust' => $cust ,'interfaces' => $t->interfaces , 'type' => $t->type ] ) ?>
-                                    <?php endif; ?>
-                                <?php endif; ?>
+                                    </div>
 
-                                <div class="btn-group">
-                                    <a class="btn btn-default" href="<?= route( "customer@overview" , [ "id" => $cust->getId() ] ) ?>">Overview</a>
-                                    <a class="btn btn-default" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "ports" ] ) ?>">Ports</a>
-                                    <a class="btn btn-default" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $cust->getId(), "type" => "agg" ] ) ?>">
-                                        Statistics
-                                    </a>
-                                    <a class="btn btn-default" href="<?= route( 'statistics@p2p-get', [ "id" => $cust->getId() ] )?>">
-                                        P2P
-                                    </a>
-                                    <a class="btn btn-default" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "users" ] ) ?>">Users</a>
-                                    <a class="btn btn-default" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "contacts" ] )?>">Contacts</a>
-                                </div>
-
+                                <?php endforeach; ?>
                             </div>
 
-                        <?php endforeach; ?>
+                        <?php endif; ?>
+
                     </div>
 
-                <?php endif; ?>
+                </div>
+
 
             <?php else: ?>
 
-                <h3>No results found.</h3>
+                <div class="alert alert-info mt-4" role="alert">
+                    <div class="d-flex align-items-center">
+                        <div class="text-center">
+                            <i class="fa fa-question-circle fa-2x"></i>
+                        </div>
+                        <div class="col-sm-12">
+                            Sorry, we couldn't find any results matching with "<?= $t->ee( $t->search ) ?>"
+                        </div>
+                    </div>
+                </div>
 
             <?php endif; ?>
 
@@ -122,4 +146,19 @@
 
     </div>
 
+<?php $this->append() ?>
+
+<?php $this->section( 'scripts' ) ?>
+<script>
+    $('.table').show();
+
+    $('.table').DataTable( {
+        responsive: true,
+        ordering: false,
+        searching: false,
+        paging:   false,
+        info:   false,
+    } );
+
+</script>
 <?php $this->append() ?>

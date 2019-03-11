@@ -24,7 +24,6 @@
 namespace IXP\Providers;
 
 use IXP\Services\Grapher\Graph;
-use IXP\Policies\Services\GrapherPolicy;
 
 
 use Illuminate\Support\Facades\Gate;
@@ -39,8 +38,7 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        Graph::class => GrapherPolicy::class,
-        'App\Model' => 'App\Policies\ModelPolicy',
+        // 'App\Model' => 'App\Policies\ModelPolicy',
     ];
 
     /**

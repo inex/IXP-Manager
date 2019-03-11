@@ -37,7 +37,7 @@ class GrapherTest extends TestCase
 {
     protected $g;
 
-    protected function setUp() {
+    protected function setUp(): void {
         $this->g = new GrapherFoilExtension;
     }
 

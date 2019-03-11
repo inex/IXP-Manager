@@ -1,4 +1,4 @@
-<div class="row">
+<div class="row col-sm-12">
     <div class="col-lg-6 col-md-12">
         <div class="d-flex">
             <h3 class="mr-auto">
@@ -190,7 +190,7 @@
                 <?php $countPi++ ?>
             <?php endforeach; ?>
         <?php else: ?>
-            <div class="row">
+            <div class="col-lg-12 mb-4">
                 <p>
                     No physical interfaces defined.
                     <?php if( Auth::getUser()->isSuperUser() ): ?>

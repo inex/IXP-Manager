@@ -36,7 +36,7 @@ class IXPTest extends TestCase
 {
     protected $ixp;
 
-    protected function setUp()
+    protected function setUp(): void
     {
         $this->ixp = new IXPFoilExtension;
     }
