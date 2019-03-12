@@ -4,8 +4,8 @@ MAINTAINER Barry O'Donovan <barry.odonovan@inex.ie>
 
 RUN apt-get -y update && \
     apt-get -y upgrade && \
-    apt-get -y install libmcrypt-dev snmp libsnmp-dev libicu-dev librrd-dev \
-        libyaml-dev git mysql-client npm nodejs-legacy joe wget \
+    apt-get -y install libmcrypt-dev snmp libsnmp-dev libicu-dev librrd-dev libpng-dev \
+        libyaml-dev git mysql-client joe wget \
         iputils-ping dnsutils && \
     apt-get -y autoremove --purge && \
     rm -rf /tmp/*
@@ -18,6 +18,12 @@ RUN docker-php-source extract && \
 
 RUN curl -so /usr/local/bin/composer.phar https://getcomposer.org/download/1.6.2/composer.phar && \
     chmod a+x /usr/local/bin/composer.phar
+
+RUN apt-get -y install gnupg && \
+    curl -sL https://deb.nodesource.com/setup_11.x | bash - && \
+    apt-get -y install nodejs
+
+RUN npm install -g bower
 
 RUN echo "extension=ds.so\nextension=rrd.so\nextension=yaml.so\n" >/usr/local/etc/php/conf.d/local-ixpmanager.ini && \
     echo "[xdebug]\nzend_extension=$(find /usr/local/lib/php/extensions/ -name xdebug.so)\n" >/usr/local/etc/php/conf.d/local-ixpmanager-xdebug.ini && \
