@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "03cf707e994c75bb9392fa4ca2aeaa06",
+    "content-hash": "38406a1dc3f1d50ba7aef8b23af077b9",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -2151,16 +2151,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.8.3",
+            "version": "v5.8.4",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "d36d74acd3added5abbe7e7a84342b54bb0b0521"
+                "reference": "d651f8bd25c6baf7ae4913bc51f02849fad4e925"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/d36d74acd3added5abbe7e7a84342b54bb0b0521",
-                "reference": "d36d74acd3added5abbe7e7a84342b54bb0b0521",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/d651f8bd25c6baf7ae4913bc51f02849fad4e925",
+                "reference": "d651f8bd25c6baf7ae4913bc51f02849fad4e925",
                 "shasum": ""
             },
             "require": {
@@ -2294,7 +2294,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2019-03-05T13:51:19+00:00"
+            "time": "2019-03-12T13:33:14+00:00"
         },
         {
             "name": "laravel/telescope",
@@ -2512,12 +2512,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/LukeTowers/Purifier.git",
-                "reference": "704fb85b23b83c67617736e5f5edf18b7dfa3cbd"
+                "reference": "688c4187a59800cf581496965dfed52448111601"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LukeTowers/Purifier/zipball/704fb85b23b83c67617736e5f5edf18b7dfa3cbd",
-                "reference": "704fb85b23b83c67617736e5f5edf18b7dfa3cbd",
+                "url": "https://api.github.com/repos/LukeTowers/Purifier/zipball/688c4187a59800cf581496965dfed52448111601",
+                "reference": "688c4187a59800cf581496965dfed52448111601",
                 "shasum": ""
             },
             "require": {
@@ -2763,16 +2763,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.14.2",
+            "version": "2.16.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "a1f4f9abcde8241ce33bf5090896e9c16d0b4232"
+                "reference": "dd16fedc022180ea4292a03aabe95e9895677911"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/a1f4f9abcde8241ce33bf5090896e9c16d0b4232",
-                "reference": "a1f4f9abcde8241ce33bf5090896e9c16d0b4232",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/dd16fedc022180ea4292a03aabe95e9895677911",
+                "reference": "dd16fedc022180ea4292a03aabe95e9895677911",
                 "shasum": ""
             },
             "require": {
@@ -2819,7 +2819,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2019-02-28T09:07:12+00:00"
+            "time": "2019-03-12T09:31:40+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -5968,16 +5968,16 @@
         },
         {
             "name": "laravel/dusk",
-            "version": "v5.0.1",
+            "version": "v5.0.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/dusk.git",
-                "reference": "23a6a072c35b50a172d8fc2e45ca3afbe10a7197"
+                "reference": "5ffd0603ec6ad68eb9f4bd0ea98c6d4005b2f7cf"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/dusk/zipball/23a6a072c35b50a172d8fc2e45ca3afbe10a7197",
-                "reference": "23a6a072c35b50a172d8fc2e45ca3afbe10a7197",
+                "url": "https://api.github.com/repos/laravel/dusk/zipball/5ffd0603ec6ad68eb9f4bd0ea98c6d4005b2f7cf",
+                "reference": "5ffd0603ec6ad68eb9f4bd0ea98c6d4005b2f7cf",
                 "shasum": ""
             },
             "require": {
@@ -6027,7 +6027,7 @@
                 "testing",
                 "webdriver"
             ],
-            "time": "2019-02-27T11:22:13+00:00"
+            "time": "2019-03-12T15:52:39+00:00"
         },
         {
             "name": "mockery/mockery",
