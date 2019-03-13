@@ -93,7 +93,7 @@ class Container
                     break;
             }
 
-            $alerts .= '<div class="alert alert-' . $alert->class() . ' alert-dismissible" role="alert">' . "\n"
+            $alerts .= '<div class="alert alert-' . $alert->class() . ' alert-dismissible mb-16" role="alert">' . "\n"
                 . '<button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button>' . "\n"
                 . '<div class="d-flex align-items-center">'
                 . '<div class="text-center"><i class="fa ' . $icon . ' fa-2x "></i></div>'
