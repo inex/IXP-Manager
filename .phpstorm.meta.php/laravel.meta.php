@@ -5,7 +5,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2019-03-10 11:47:15.
+    * Generated on 2019-03-13 11:21:46.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -39,6 +39,9 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Configuration\Connections\ConnectionManager' => \LaravelDoctrine\ORM\Configuration\Connections\ConnectionManager::class,
         'LaravelDoctrine\ORM\Configuration\MetaData\MetaDataManager' => \LaravelDoctrine\ORM\Configuration\MetaData\MetaDataManager::class,
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
+        'Laravel\Telescope\Contracts\ClearableRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
+        'Laravel\Telescope\Contracts\EntriesRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
+        'Laravel\Telescope\Contracts\PrunableRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
         'NunoMaduro\Collision\Contracts\Adapters\Phpunit\Listener' => \NunoMaduro\Collision\Adapters\Phpunit\Listener::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
         'auth' => \Illuminate\Auth\AuthManager::class,
@@ -200,6 +203,9 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Configuration\Connections\ConnectionManager' => \LaravelDoctrine\ORM\Configuration\Connections\ConnectionManager::class,
         'LaravelDoctrine\ORM\Configuration\MetaData\MetaDataManager' => \LaravelDoctrine\ORM\Configuration\MetaData\MetaDataManager::class,
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
+        'Laravel\Telescope\Contracts\ClearableRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
+        'Laravel\Telescope\Contracts\EntriesRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
+        'Laravel\Telescope\Contracts\PrunableRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
         'NunoMaduro\Collision\Contracts\Adapters\Phpunit\Listener' => \NunoMaduro\Collision\Adapters\Phpunit\Listener::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
         'auth' => \Illuminate\Auth\AuthManager::class,
@@ -361,6 +367,9 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Configuration\Connections\ConnectionManager' => \LaravelDoctrine\ORM\Configuration\Connections\ConnectionManager::class,
         'LaravelDoctrine\ORM\Configuration\MetaData\MetaDataManager' => \LaravelDoctrine\ORM\Configuration\MetaData\MetaDataManager::class,
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
+        'Laravel\Telescope\Contracts\ClearableRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
+        'Laravel\Telescope\Contracts\EntriesRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
+        'Laravel\Telescope\Contracts\PrunableRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
         'NunoMaduro\Collision\Contracts\Adapters\Phpunit\Listener' => \NunoMaduro\Collision\Adapters\Phpunit\Listener::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
         'auth' => \Illuminate\Auth\AuthManager::class,
@@ -522,6 +531,9 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Configuration\Connections\ConnectionManager' => \LaravelDoctrine\ORM\Configuration\Connections\ConnectionManager::class,
         'LaravelDoctrine\ORM\Configuration\MetaData\MetaDataManager' => \LaravelDoctrine\ORM\Configuration\MetaData\MetaDataManager::class,
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
+        'Laravel\Telescope\Contracts\ClearableRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
+        'Laravel\Telescope\Contracts\EntriesRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
+        'Laravel\Telescope\Contracts\PrunableRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
         'NunoMaduro\Collision\Contracts\Adapters\Phpunit\Listener' => \NunoMaduro\Collision\Adapters\Phpunit\Listener::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
         'auth' => \Illuminate\Auth\AuthManager::class,
@@ -683,6 +695,9 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Configuration\Connections\ConnectionManager' => \LaravelDoctrine\ORM\Configuration\Connections\ConnectionManager::class,
         'LaravelDoctrine\ORM\Configuration\MetaData\MetaDataManager' => \LaravelDoctrine\ORM\Configuration\MetaData\MetaDataManager::class,
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
+        'Laravel\Telescope\Contracts\ClearableRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
+        'Laravel\Telescope\Contracts\EntriesRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
+        'Laravel\Telescope\Contracts\PrunableRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
         'NunoMaduro\Collision\Contracts\Adapters\Phpunit\Listener' => \NunoMaduro\Collision\Adapters\Phpunit\Listener::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
         'auth' => \Illuminate\Auth\AuthManager::class,
@@ -844,6 +859,9 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Configuration\Connections\ConnectionManager' => \LaravelDoctrine\ORM\Configuration\Connections\ConnectionManager::class,
         'LaravelDoctrine\ORM\Configuration\MetaData\MetaDataManager' => \LaravelDoctrine\ORM\Configuration\MetaData\MetaDataManager::class,
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
+        'Laravel\Telescope\Contracts\ClearableRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
+        'Laravel\Telescope\Contracts\EntriesRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
+        'Laravel\Telescope\Contracts\PrunableRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
         'NunoMaduro\Collision\Contracts\Adapters\Phpunit\Listener' => \NunoMaduro\Collision\Adapters\Phpunit\Listener::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
         'auth' => \Illuminate\Auth\AuthManager::class,
@@ -1005,6 +1023,9 @@ namespace PHPSTORM_META {
         'LaravelDoctrine\ORM\Configuration\Connections\ConnectionManager' => \LaravelDoctrine\ORM\Configuration\Connections\ConnectionManager::class,
         'LaravelDoctrine\ORM\Configuration\MetaData\MetaDataManager' => \LaravelDoctrine\ORM\Configuration\MetaData\MetaDataManager::class,
         'LaravelDoctrine\ORM\Extensions\ExtensionManager' => \LaravelDoctrine\ORM\Extensions\ExtensionManager::class,
+        'Laravel\Telescope\Contracts\ClearableRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
+        'Laravel\Telescope\Contracts\EntriesRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
+        'Laravel\Telescope\Contracts\PrunableRepository' => \Laravel\Telescope\Storage\DatabaseEntriesRepository::class,
         'NunoMaduro\Collision\Contracts\Adapters\Phpunit\Listener' => \NunoMaduro\Collision\Adapters\Phpunit\Listener::class,
         'NunoMaduro\Collision\Contracts\Provider' => \NunoMaduro\Collision\Provider::class,
         'auth' => \Illuminate\Auth\AuthManager::class,

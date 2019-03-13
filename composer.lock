@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "9f23dd939e156ad57c9207f11ea59644",
+    "content-hash": "03cf707e994c75bb9392fa4ca2aeaa06",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -2145,7 +2145,7 @@
                 "orm"
             ],
             "support": {
-                "source": "https://github.com/barryo/orm/tree/1.4.10"
+                "source": "https://github.com/barryo/orm/tree/1.4"
             },
             "time": "2019-03-04T11:26:49+00:00"
         },
@@ -2295,6 +2295,69 @@
                 "laravel"
             ],
             "time": "2019-03-05T13:51:19+00:00"
+        },
+        {
+            "name": "laravel/telescope",
+            "version": "v2.0.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/laravel/telescope.git",
+                "reference": "2b976e5d6f5273d8ac86e2db9487386dd27a19ef"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/laravel/telescope/zipball/2b976e5d6f5273d8ac86e2db9487386dd27a19ef",
+                "reference": "2b976e5d6f5273d8ac86e2db9487386dd27a19ef",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "laravel/framework": "~5.8.0",
+                "moontoast/math": "^1.1",
+                "php": "^7.1.3",
+                "symfony/var-dumper": "^4.1"
+            },
+            "require-dev": {
+                "nunomaduro/larastan": "^0.3.7",
+                "orchestra/testbench": "~3.7"
+            },
+            "type": "library",
+            "extra": {
+                "branch-alias": {
+                    "dev-master": "3.0-dev"
+                },
+                "laravel": {
+                    "providers": [
+                        "Laravel\\Telescope\\TelescopeServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Laravel\\Telescope\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Taylor Otwell",
+                    "email": "taylor@laravel.com"
+                },
+                {
+                    "name": "Mohamed Said",
+                    "email": "mohamed@laravel.com"
+                }
+            ],
+            "description": "An elegant debug assistant for the Laravel framework.",
+            "keywords": [
+                "debugging",
+                "laravel",
+                "monitoring"
+            ],
+            "time": "2019-03-05T14:07:56+00:00"
         },
         {
             "name": "laravel/tinker",
@@ -2449,12 +2512,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/LukeTowers/Purifier.git",
-                "reference": "688c4187a59800cf581496965dfed52448111601"
+                "reference": "704fb85b23b83c67617736e5f5edf18b7dfa3cbd"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/LukeTowers/Purifier/zipball/688c4187a59800cf581496965dfed52448111601",
-                "reference": "688c4187a59800cf581496965dfed52448111601",
+                "url": "https://api.github.com/repos/LukeTowers/Purifier/zipball/704fb85b23b83c67617736e5f5edf18b7dfa3cbd",
+                "reference": "704fb85b23b83c67617736e5f5edf18b7dfa3cbd",
                 "shasum": ""
             },
             "require": {
@@ -2483,7 +2546,11 @@
                     "src/helpers.php"
                 ]
             },
-            "notification-url": "https://packagist.org/downloads/",
+            "autoload-dev": {
+                "psr-4": {
+                    "LukeTowers\\Tests\\Purifier\\": "tests/"
+                }
+            },
             "license": [
                 "MIT"
             ],
@@ -2504,15 +2571,18 @@
             "description": "Laravel 5 HtmlPurifier Package",
             "homepage": "https://github.com/LukeTowers/Purifier",
             "keywords": [
+                "HtmlPurifier",
                 "Purifier",
-                "htmlpurifier",
                 "laravel5 HtmlPurifier",
                 "laravel5 Purifier",
                 "laravel5 Security",
                 "security",
                 "xss"
             ],
-            "time": "2019-03-09T16:52:48+00:00"
+            "support": {
+                "source": "https://github.com/barryo/Purifier/tree/master"
+            },
+            "time": "2019-03-09T12:04:30+00:00"
         },
         {
             "name": "mmucklo/inflect",
@@ -2641,6 +2711,55 @@
                 "psr-3"
             ],
             "time": "2018-11-05T09:00:11+00:00"
+        },
+        {
+            "name": "moontoast/math",
+            "version": "1.1.2",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/ramsey/moontoast-math.git",
+                "reference": "c2792a25df5cad4ff3d760dd37078fc5b6fccc79"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/ramsey/moontoast-math/zipball/c2792a25df5cad4ff3d760dd37078fc5b6fccc79",
+                "reference": "c2792a25df5cad4ff3d760dd37078fc5b6fccc79",
+                "shasum": ""
+            },
+            "require": {
+                "ext-bcmath": "*",
+                "php": ">=5.3.3"
+            },
+            "require-dev": {
+                "jakub-onderka/php-parallel-lint": "^0.9.0",
+                "phpunit/phpunit": "^4.7|>=5.0 <5.4",
+                "satooshi/php-coveralls": "^0.6.1",
+                "squizlabs/php_codesniffer": "^2.3"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Moontoast\\Math\\": "src/Moontoast/Math/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "Ben Ramsey",
+                    "email": "ben@benramsey.com",
+                    "homepage": "https://benramsey.com"
+                }
+            ],
+            "description": "A mathematics library, providing functionality for large numbers",
+            "homepage": "https://github.com/ramsey/moontoast-math",
+            "keywords": [
+                "bcmath",
+                "math"
+            ],
+            "time": "2017-02-16T16:54:46+00:00"
         },
         {
             "name": "nesbot/carbon",
