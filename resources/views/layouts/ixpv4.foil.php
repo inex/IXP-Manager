@@ -19,6 +19,9 @@
         <meta name="csrf-token" content="<?=  csrf_token() ?>">
 
         <link rel="stylesheet" type="text/css" href="<?= mix('css/ixp-pack.css') ?>" />
+
+        <link rel="shortcut icon" type="image/ico" href="<?= file_exists( base_path( 'public/favicon.ico' ) ) ? asset( "favicon.ico" ) : asset( "favicon.ico.dist" ) ?>" />
+
         <?php $this->section('headers') ?>
         <?php $this->stop() ?>
 
