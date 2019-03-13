@@ -18,7 +18,7 @@
         <meta name="author" content="">
         <meta name="csrf-token" content="<?=  csrf_token() ?>">
 
-        <link rel="stylesheet" type="text/css" href="<?= asset('css/ixp-pack.css') ?>" />
+        <link rel="stylesheet" type="text/css" href="<?= mix('css/ixp-pack.css') ?>" />
         <?php $this->section('headers') ?>
         <?php $this->stop() ?>
 
@@ -105,8 +105,7 @@
 
         <script> const RIPE_ASN_URL = "<?= url( "api/v4/aut-num" ) ?>"; </script>
         <script> const MARKDOWN_URL = "<?= route( "utils@markdown" ) ?>"; </script>
-        <script type="text/javascript" src="<?= asset('js/ixp-pack.js') ?>"></script>
-        <script type="text/javascript" src="<?= asset('js/ixp-manager.js') ?>"></script>
+        <script type="text/javascript" src="<?= mix('js/ixp-pack.js') ?>"></script>
 
         <script>
 
