@@ -97,7 +97,7 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * @var string $email
      */
-    protected $email;
+    public $email;
 
     /**
      * @var string $authorisedMobile

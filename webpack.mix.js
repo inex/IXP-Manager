@@ -32,12 +32,13 @@ mix.scripts(
         'node_modules/moment/moment.js',
         'node_modules/ip-address/dist/ip-address-globals.js',
 
+        'public/js/ixp-manager.js',
 
 
         // etc. etc.
     ],
     'public/js/ixp-pack.js'
-);
+).version();
 
 mix
     .sass('resources/scss/tailwind.scss', 'public/css')
@@ -62,6 +63,6 @@ mix.styles(
     ],
     'public/css/ixp-pack.css',
 
-);
+).version();
 
 mix.copyDirectory( 'node_modules/font-awesome/fonts', 'public/fonts' );

@@ -335,6 +335,14 @@
                 IXP UTILITIES
             </h6>
 
+            <?php if( Gate::allows( 'viewTelescope' ) ): ?>
+                <li class="nav-item" >
+                    <a href="<?= route( 'telescope' ) ?>" class="nav-link" target="_ixpm_telescope">
+                        Laravel Telescope
+                    </a>
+                </li>
+            <?php endif; ?>
+
             <li class="nav-item" >
                 <a href="<?= route( 'utils/phpinfo' ) ?>" class="nav-link <?= !request()->is( 'utils/phpinfo' ) ?: 'active' ?>">
                     PHP Info

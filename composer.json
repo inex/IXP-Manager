@@ -41,11 +41,12 @@
         "barryvdh/laravel-dompdf": "^0.8.0",
         "luketowers/purifier": "~3.0",
         "php-ds/php-ds": "^1.1",
-        "beberlei/DoctrineExtensions": "^1.0",
+        "beberlei/doctrineextensions": "^1.0",
         "laravel-doctrine/extensions": "1.0.*",
         "s1lentium/iptools": "^1.1",
         "parsedown/laravel": "^1.0",
-        "webpatser/laravel-countries": "^1.5"
+        "webpatser/laravel-countries": "^1.5",
+        "laravel/telescope": "^2.0"
 
     },
     "require-dev": {
@@ -105,7 +106,8 @@
         "post-update-cmd": [
             "@php artisan clear-compiled",
             "@php artisan ide-helper:generate",
-            "@php artisan ide-helper:meta --filename=.phpstorm.meta.php/laravel.meta.php"
+            "@php artisan ide-helper:meta --filename=.phpstorm.meta.php/laravel.meta.php",
+            "@php artisan telescope:publish"
         ]
     },
     "config": {
