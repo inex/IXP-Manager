@@ -1,5 +1,7 @@
 let mix = require('laravel-mix');
 
+var tailwindcss = require('tailwindcss');
+
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -37,6 +39,13 @@ mix.scripts(
     'public/js/ixp-pack.js'
 );
 
+mix
+    .sass('resources/scss/tailwind.scss', 'public/css')
+    .options({
+            postCss: [tailwindcss('./tailwind.js')]
+    });
+
+
 mix.styles(
     [
         'node_modules/bootstrap/dist/css/bootstrap.min.css',
@@ -48,6 +57,7 @@ mix.styles(
 
         'public/css/draganddrop.css',
         'public/css/ixp-manager.css',
+        'public/css/tailwind.css',
         // etc. etc.
     ],
     'public/css/ixp-pack.css',

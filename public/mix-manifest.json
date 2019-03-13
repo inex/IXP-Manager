@@ -1,4 +1,5 @@
 {
+    "/css/tailwind.css": "/css/tailwind.css",
     "/js/ixp-pack.js": "/js/ixp-pack.js",
     "/css/ixp-pack.css": "/css/ixp-pack.css"
 }
