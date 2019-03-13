@@ -1,7 +1,7 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Reset Password
+    Password Reset
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -29,63 +29,85 @@
                 <?php endif; ?>
             </div>
 
-            <div class="row">
-                <div class="col-lg-8 mt-4 mx-auto text-center">
+        </div>
+    </div>
 
-                    <div class="mb-4">
-                        Please enter your username, the token that was emailed to you and a new password:
-                    </div>
+    <div class="row"
+         <div class="col-12">
 
-                    <?= Former::open()->method( 'POST' )
-                        ->action( route( 'reset-password@reset' ) )
-                        ->customInputWidthClass( 'col-sm-auto col-md-auto col-lg-auto ' )
-                        ->customLabelWidthClass( 'col-lg-4 col-md-4 col-sm-4 text-sm-right' )
-                        ->actionButtonsCustomClass( 'text-center col-sm-12 col-md-12 col-lg-12' )
+            <div class="w-full max-w-sm mx-auto">
 
-                    ?>
-
-                        <?= Former::text( 'username' )
-                            ->label( 'Username' )
-                            ->required()
-                            ->blockHelp( '' )
-                        ?>
-
-                        <?= Former::text( 'token' )
-                            ->label( 'Token' )
-                            ->required()
-                            ->blockHelp( '' )
-                        ?>
-
-                        <?= Former::password( 'password' )
-                            ->label( 'Password' )
-                            ->required()
-                            ->blockHelp( '' )
-                        ?>
-
-                        <?= Former::password( 'password_confirmation' )
-                            ->label( 'Confirm Password' )
-                            ->required()
-                            ->blockHelp( '' )
-                        ?>
+                <?= Former::open()->method( 'POST' )
+                    ->action( route( 'reset-password@reset' ) )
+                    ->class( "bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" )
+                ?>
 
 
-                        <?= Former::actions( Former::primary_submit( 'Reset Password' )->class( 'mt-2' ),
-                            '<a href="' . route( "login@showForm" ) . '"  class="btn btn-secondary mt-2">Return to Login</a>'
-                        );?>
+                <p class="mb-4 text-grey-dark font-bold">
+                    Please enter your username, the token that was emailed to you and a new password below.
+                </p>
 
-
-
-                        <p class="text-center">
-                            For help please contact <a href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>"><?= config( "identity.legalname" ) ?></a>
-                        </p>
-
-                    <?= Former::close() ?>
+                <div class="mb-4">
+                    <label class="block text-grey-darker text-sm font-bold mb-2" for="username">
+                        Username
+                    </label>
+                    <input name="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
+                           id="username" type="text" placeholder="Username" value="<?= $t->username ?? old('username') ?>">
+                    <?php foreach( $t->errors->get( 'username' ) as $err ): ?>
+                        <p class="text-red text-xs italic mt-2"><?= $err ?></p>
+                    <?php endforeach; ?>
                 </div>
+
+                <div class="mb-4">
+                    <label class="block text-grey-darker text-sm font-bold mb-2" for="token">
+                        Token
+                    </label>
+                    <input name="token" class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
+                           id="token" type="text" placeholder="" value="<?= $t->token ?? old('token') ?>">
+                    <?php foreach( $t->errors->get( 'token' ) as $err ): ?>
+                        <p class="text-red text-xs italic mt-2"><?= $err ?></p>
+                    <?php endforeach; ?>
+
+                </div>
+
+
+                <div class="mb-6">
+                    <label class="block text-grey-darker text-sm font-bold mb-2" for="password">
+                        Password
+                    </label>
+                    <input name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="******************">
+                    <?php foreach( $t->errors->get( 'password' ) as $err ): ?>
+                        <p class="text-red text-xs italic mt-2"><?= $err ?></p>
+                    <?php endforeach; ?>
+                </div>
+
+                <div class="mb-6">
+                    <label class="block text-grey-darker text-sm font-bold mb-2" for="password_confirmation">
+                        Confirm Password
+                    </label>
+                    <input name="password_confirmation" class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline" id="password_confirmation" type="password" placeholder="******************">
+                    <?php foreach( $t->errors->get( 'password_confirmation' ) as $err ): ?>
+                        <p class="text-red text-xs italic mt-2"><?= $err ?></p>
+                    <?php endforeach; ?>
+                </div>
+
+
+                <div class="flex items-center justify-between">
+                    <a class="inline-block align-baseline font-bold text-sm text-blue-light
+                            hover:no-underline  hover:text-blue-dark" href="<?= route( "login@login" ) ?>">
+                        Return to Login
+                    </a>
+                    <button class="bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                        Reset
+                    </button>
+                </div>
+
             </div>
 
+            <?= Former::close() ?>
         </div>
-
     </div>
+
 
 
 
