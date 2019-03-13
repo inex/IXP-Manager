@@ -75,6 +75,9 @@ $this->layout( 'layouts/ixpv4' );
 
         ?>
 
+        <?= Former::hidden( 'custid' )
+            ->value( $t->data[ 'params'][ 'custid'] );
+        ?>
 
         <?= Former::actions(
             Former::primary_submit( 'Add' ),

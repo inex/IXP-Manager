@@ -16,18 +16,6 @@
                 </a>
             </li>
 
-            <li class="nav-item <?= !request()->is( 'contact/*' ) ?: 'active' ?>">
-                <a class="nav-link" href="<?= route( 'contact@list' ) ?>">
-                    Contacts
-                </a>
-            </li>
-
-            <li class="nav-item <?= !request()->is( 'user/*' ) ?: 'active' ?>">
-                <a class="nav-link" href="<?= route( 'user@list' ) ?>">
-                    Users
-                </a>
-            </li>
-
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle <?= !request()->is( 'customer/*' , 'switch/configuration' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     Member Information

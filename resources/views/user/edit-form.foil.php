@@ -89,7 +89,10 @@
                             <?= $user->getEmail()?>
                         </td>
                         <td>
-                            <?= $user->getCustomer()->getName()?>
+                            <?php foreach( $user->getCustomers() as $customer ): ?>
+                                <?= $customer->getName()?><br>
+                            <?php endforeach; ?>
+
                         </td>
 
                     </tr>
@@ -137,7 +140,7 @@
                 Former::secondary_link( 'Cancel' )->href( $cancel_url ),
                 Former::success_button( 'Help' )->id( 'help-btn' ),
                 Former::secondary_link( 'Add an Other User ' )->href( "" )
-            )->class( "bg-light mt-4 p-4 text-center shadow-sm" );
+            );
             ?>
 
         <?php else: ?>
@@ -163,19 +166,22 @@
                 <?= Former::text( 'name' )
                     ->label( 'Name' )
                     ->placeholder( 'Firstname Lastname' )
-                    ->blockHelp( "The full name of the user." );
+                    ->blockHelp( "The full name of the user." )
+                    ->disabled( $t->data[ 'params'][ 'object'] ? ( Auth::getUser()->getId() != $t->data[ 'params'][ 'object']->getId() ?: false ) : $t->data[ 'params'][ "disabledInputs" ] );
                 ?>
 
                 <?= Former::text( 'username' )
                     ->label( 'Username' )
                     ->placeholder( 'joebloggs123' )
-                    ->blockHelp( "The user's username. A single lowercase word matching the regular expression:<br><br><code>/^[a-z0-9\-_]{3,255}$/</code>" );
+                    ->blockHelp( "The user's username. A single lowercase word matching the regular expression:<br><br><code>/^[a-z0-9\-_]{3,255}$/</code>" )
+                    ->disabled( $t->data[ 'params'][ "disabledInputs" ] );
                 ?>
 
                 <?= Former::text( 'email' )
                     ->label( 'Email' )
                     ->placeholder( 'name@example.com' )
-                    ->blockHelp( "The user's email address." );
+                    ->blockHelp( "The user's email address." )
+                    ->disabled( $t->data[ 'params'][ "disabledInputs" ] );
                 ?>
 
                 <?= Former::select( 'privs' )
@@ -195,25 +201,24 @@
                     ->value( 1 )
                     ->check()
                     ->inline()
-                    ->blockHelp( 'Disabled users cannot login to IXP Manager.' );
+                    ->blockHelp( 'Disabled users cannot login to IXP Manager.' )
+                    ->disabled( $t->data[ 'params'][ "disabledInputs" ] );
                 ?>
 
                 <?= Former::text( 'authorisedMobile' )
                     ->label( 'Mobile' )
                     ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
-                    ->blockHelp( "The user's mobile phone number." );
+                    ->blockHelp( "The user's mobile phone number." )
+                    ->disabled( $t->data[ 'params'][ 'object'] ? ( Auth::getUser()->getId() != $t->data[ 'params'][ 'object']->getId() ?: false ) : $t->data[ 'params'][ "disabledInputs" ] );
                 ?>
 
             </div>
-
-
-
 
             <?= Former::actions(
                 Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' ),
                 Former::secondary_link( 'Cancel' )->href( $cancel_url ),
                 Former::success_button( 'Help' )->id( 'help-btn' )
-            )->class( "bg-light mt-4 p-4 text-center shadow-sm" );
+            );
             ?>
 
 

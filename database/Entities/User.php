@@ -23,6 +23,8 @@
 
 namespace Entities;
 
+use Auth, D2EM, Redirect;
+
 use Entities\{
     ApiKey              as ApiKeyEntity,
     Customer            as CustomerEntity,
@@ -43,7 +45,9 @@ use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
 
 use IXP\Utils\Doctrine2\WithPreferences as Doctrine2_WithPreferences;
 
-use D2EM;
+use Illuminate\Http\{
+    RedirectResponse
+};
 
 /**
  * Entities\User
@@ -338,7 +342,7 @@ class User implements Authenticatable, CanResetPasswordContract
      * @param integer $privs
      * @return User
      */
-    public function setPrivs($privs)
+    public function setPrivs( $privs )
     {
         $this->privs = $privs;
 
@@ -346,7 +350,17 @@ class User implements Authenticatable, CanResetPasswordContract
     }
 
     /**
-     * Get privs
+     * Get User privilege from the User table
+     *
+     * @return integer
+     */
+    public function getUserPrivs()
+    {
+        return $this->privs;
+    }
+
+    /**
+     * Get privilege from the table CustomerToUser
      *
      * @return integer
      */
@@ -354,7 +368,7 @@ class User implements Authenticatable, CanResetPasswordContract
     {
         $listC2u = D2EM::getRepository( CustomerToUserEntity::class )->findBy( [ 'customer' => $this->getCustomer(), 'user' => $this->getId() ] );
 
-        return $listC2u[0]->getPrivs();
+        return isset( $listC2u[0] ) ? $listC2u[0]->getPrivs() : null;
     }
 
     /**
@@ -556,9 +570,9 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Remove Customer
      *
-     * @param Entities\Customer $customer
+     * @param Entities\CustomerToUser $customer
      */
-    public function removeCustomer(\Entities\Customer $customer)
+    public function removeCustomer(\Entities\CustomerToUser $customer)
     {
         $this->Customers->removeElement($customer);
     }
@@ -576,6 +590,13 @@ class User implements Authenticatable, CanResetPasswordContract
 
         return $custs;
     }
+
+
+    public function getCustomers2User(){
+        return $this->Customers;
+    }
+
+
 
 
 

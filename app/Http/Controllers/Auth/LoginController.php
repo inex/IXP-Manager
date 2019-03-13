@@ -141,17 +141,10 @@ class LoginController extends Controller
         // Check if the user has Customer(s) linked
         if( count( $user->getCustomers() ) > 0 ){
 
-            // Check if the user has a default Customer, if not assign one
-            if( !$user->getCustomer() ){
+            // Check if the user has a default Customer OR if the default customer is no longer in the C2U, then assign one
+            if( !$user->getCustomer() || !D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => $user , "customer" => $user->getCustomer() ] ) ){
                 $user->setCustomer( $user->getCustomers()[0] );
                 D2EM::flush();
-            } else{
-                // Check If the link between the customer and the user is still valid (database row in the customer2user table)
-                if( !D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "customer" => $user->getCustomer(), "user" => $user ] ) ){
-                    $user->setCustomer( $user->getCustomers()[0] );
-                    D2EM::flush();
-                }
-
             }
 
         } else {

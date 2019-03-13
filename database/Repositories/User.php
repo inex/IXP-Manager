@@ -2,12 +2,9 @@
 
 namespace Repositories;
 
-use D2EM;
+use Auth, D2EM;
 
-use Entities\{
-    CustomerToUser      as CustomerToUserEntity,
-    User                as UserEntity
-};
+use Entities\{CustomerToUser as CustomerToUserEntity, CustomerToUser, User as UserEntity};
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -248,7 +245,17 @@ class User extends EntityRepository
             $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
         }
 
-        return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
+        $result = [];
+
+        foreach( $this->getEntityManager()->createQuery( $dql )->getArrayResult() as $index => $user ){
+            $result[ $index ] = $user;
+            $result[ $index ][ "privileges" ]   = D2EM::getRepository( UserEntity::class )->getHighestPrivsForUser( $user['id'], Auth::getUser()->isSuperUser() ? null : Auth::getUser()->getCustomer()->getId() );
+            $result[ $index ][ "nbC2U" ]        = count( D2EM::getRepository( CustomerToUser::class )->findBy( [ "user" => $user['id'] ] ) );
+        }
+
+
+
+        return $result;
 
     }
 
@@ -262,7 +269,6 @@ class User extends EntityRepository
             $dql .= " AND c2u.customer = " . (int)$custid;
         }
 
-
         $query = $this->getEntityManager()->createQuery( $dql );
 
         if( count( $query->getArrayResult() ) > 1 ){
@@ -275,7 +281,13 @@ class User extends EntityRepository
             }
             $result = UserEntity::$PRIVILEGES_TEXT[ $result ] . "*";
         } else {
-            $result = UserEntity::$PRIVILEGES_TEXT[ $query->getArrayResult()[0][ 'privs' ] ];
+            if( isset( $query->getArrayResult()[0] ) ){
+                $result = UserEntity::$PRIVILEGES_TEXT[ $query->getArrayResult()[0][ 'privs' ] ];
+            } else {
+                // Should not happen
+                $result = "Something wrong";
+            }
+
         }
 
 

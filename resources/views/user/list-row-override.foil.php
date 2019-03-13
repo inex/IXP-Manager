@@ -35,7 +35,7 @@ $row = $t->row;
 
 
     <td>
-        <?= D2EM::getRepository( \Entities\User::class)->getHighestPrivsForUser( $row['id'], Auth::getUser()->isSuperUser() ? null : $row['custid'] ) ?>
+        <?= $row['privileges'] ?>
     </td>
 
     <td>

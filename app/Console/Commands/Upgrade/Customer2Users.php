@@ -87,13 +87,12 @@ class Customer2Users extends IXPCommand
                 /** @var UserEntity $u */
                 $u = D2EM::getRepository( UserEntity::class )->find( $user->id );
 
-
                 // create the new CustomerToUserEntity entity with the information of the current User and Customer table entries
                 $c2u = new CustomerToUserEntity();
                 $c2u->setUser(      $u )
                     ->setCustomer(  $u->getCustomer() )
                     ->setCreatedAt( new \DateTime )
-                    ->setPrivs(     $u->getPrivs() );
+                    ->setPrivs(     $u->getUserPrivs() );
                 D2EM::persist(      $c2u );
                 D2EM::flush();
 

@@ -63,12 +63,17 @@ class SwitchUserController extends Controller
         
         $user = Auth::getUser();
 
+        if( !$nuser->getCustomer() || count( $nuser->getCustomers() ) < 1 ){
+            AlertContainer::push( "This user doesnt have customer associated.", Alert::DANGER );
+            return redirect()->to( "/" );
+        }
+
         Auth::login( $nuser );
 
         session()->put( "switched_user_from", $user->getId() );
         session()->put( "redirect_after_switch_back", request()->headers->get('referer', "" ) );
 
-        AlertContainer::push( "You are now logged in as {$nuser->getUsername()}.", Alert::SUCCESS );
+        AlertContainer::push( "You are now logged in as {$nuser->getUsername()} ". "(" . Auth::getUser()->getName() . ")", Alert::SUCCESS );
 
         return redirect()->to( "/" );
     }
@@ -76,7 +81,7 @@ class SwitchUserController extends Controller
     public function switchBack(){
 
         if( !session()->exists( "switched_user_from" ) ){
-            AlertContainer::push( "You are not currently logged in as another user. You are logged in as: " . Auth::getUser()->getUsername(), Alert::DANGER );
+            AlertContainer::push( "You are not currently logged in as another user. You are logged in as: " . Auth::getUser()->getUsername() . "( " . Auth::getUser()->getName() . " )", Alert::DANGER );
             return redirect()->to( "/" );
         }
 

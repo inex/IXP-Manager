@@ -20,7 +20,7 @@
         </th>
         <th>
             Actions
-            <a id="users-add-btn" class="btn btn-outline-secondary btn-sm ml-2" href="<?= route( "user@add" ) . "?cust=" . $t->c->getId() ?>">
+            <a id="users-add-btn" class="btn btn-outline-secondary btn-sm ml-2" href="<?= route( "user@add-wizard" ) . "?cust=" . $t->c->getId() ?>">
                 <i class="fa fa-plus"></i>
             </a>
         </th>

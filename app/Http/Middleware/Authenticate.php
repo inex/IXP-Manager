@@ -21,8 +21,12 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth,Closure;
+use Auth, Closure, D2EM;
 use Illuminate\Contracts\Auth\Guard;
+
+use Entities\{
+    CustomerToUser as CustomerToUserEntity
+};
 
 class Authenticate {
 
@@ -53,6 +57,7 @@ class Authenticate {
 	 */
 	public function handle($request, Closure $next)
 	{
+
 		if ($this->auth->guest())
 		{
 			if ($request->ajax())
@@ -64,6 +69,11 @@ class Authenticate {
 				return redirect()->guest(route( "login@showForm" ) );
 			}
 		}
+
+        if( !Auth::user()->getCustomer() || !D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => Auth::user() , "customer" => Auth::user()->getCustomer() ] ) ){
+            Auth::logout();
+            return redirect()->guest(route( "login@showForm" ) );
+        }
 
 		return $next($request);
 	}

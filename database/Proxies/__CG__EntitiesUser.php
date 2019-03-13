@@ -364,6 +364,17 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getUserPrivs()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUserPrivs', []);
+
+        return parent::getUserPrivs();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getPrivs()
     {
 
@@ -566,7 +577,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function removeCustomer(\Entities\Customer $customer)
+    public function removeCustomer(\Entities\CustomerToUser $customer)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeCustomer', [$customer]);
@@ -583,6 +594,17 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomers', []);
 
         return parent::getCustomers();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCustomers2User()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomers2User', []);
+
+        return parent::getCustomers2User();
     }
 
     /**
