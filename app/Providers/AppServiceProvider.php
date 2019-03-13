@@ -41,6 +41,11 @@ class AppServiceProvider extends ServiceProvider {
             $view->with('controllerAction' , app('request')->route()->getAction()['as']);
         });
 
+        view()->composer(['telescope::layout'], function ($view) { 
+            $view->with('telescopeScriptVariables', [ 'path' => config( 'telescope.url_path' ), 'timezone' => config('app.timezone'), 
+            'recording' => ! cache('telescope:pause-recording'), ]); });
+
+
         Former::framework( TwitterBootstrap4::class );
 
     }
