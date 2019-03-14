@@ -10,6 +10,7 @@
 
 <?php $this->section( 'content' ) ?>
 
+<div class="container mx-auto">
 
 <div class="bg-blue-lightest border-t border-b border-blue text-blue-dark px-4 mb-8" role="alert">
     <div class="flex">
@@ -55,6 +56,7 @@
     attended to immediately.
 </p>
 
+</div>
 
 
 <?php $this->append() ?>
