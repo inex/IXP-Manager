@@ -87,6 +87,9 @@ class Kernel extends ConsoleKernel {
         }
 
 
+        // https://laravel.com/docs/5.8/telescope#data-pruning
+        $schedule->command('telescope:prune --hours=48')->daily();
+
         // OUI Update - https://docs.ixpmanager.org/features/layer2-addresses/#oui-database
         $schedule->command( 'utils:oui-update --quiet' )->weekly()->mondays()->at('9:15')
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UTILS_OUI_UPDATE', false ); } );

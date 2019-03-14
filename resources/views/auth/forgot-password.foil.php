@@ -1,7 +1,7 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Reset Password
+    Forget Password
 <?php $this->append() ?>
 
 
@@ -16,7 +16,7 @@
 
             <?= $t->alerts() ?>
 
-            <div class="text-center">
+            <div class="text-center mt-16 mb-16">
                 <?php if( config( "identity.biglogo" ) ) :?>
                     <img class="img-fluid" src="<?= config( "identity.biglogo" ) ?>" />
                 <?php else: ?>
@@ -30,44 +30,59 @@
 
             </div>
 
-            <div class="row">
-                <div class="col-lg-8 mt-4 mx-auto text-center">
-
-                    <p class="mb-4">
-                        Please enter your username and we will send you a password reset token by email.
-                    </p>
-
-                    <?= Former::open()->method( 'POST' )
-                        ->action( route( 'forgot-password@reset-email' ) )
-                        ->customInputWidthClass( 'col-sm-auto col-md-auto col-lg-auto' )
-                        ->customLabelWidthClass( 'col-lg-4 col-md-4 col-sm-4 text-sm-right' )
-                        ->actionButtonsCustomClass( 'text-center col-sm-12 col-md-12 col-lg-12' )
-
-                    ?>
-
-
-                    <?= Former::text( 'username' )
-                        ->label( 'Username' )
-                        ->required()
-                        ->blockHelp( '' )
-                    ?>
-
-                    <?= Former::actions( Former::primary_submit( 'Reset Password' )->class( "mt-2" ),
-                        '<a href="' . route( "login@showForm" ) . '"  class="btn btn-secondary mt-2">Return to Login</a>'
-                    );?>
-
-
-
-                    <p class="mt-4">
-                        For help please contact <a href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>"><?= config( "identity.name" ) ?></a>
-                    </p>
-
-                    <?= Former::close() ?>
-                </div>
-            </div>
 
         </div>
 
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+
+            <div class="w-full max-w-sm mx-auto">
+
+                <?= Former::open()->method( 'POST' )
+                    ->action( route( 'forgot-password@reset-email' ) )
+                    ->class( "bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" )
+                ?>
+
+                <p class="mb-4 text-grey-dark font-bold">
+                    Please enter your username and we will send you a password reset token by email.
+                </p>
+
+                <div class="mb-16">
+                    <label class="block text-grey-darker text-sm font-bold mb-2" for="username">
+                        Username
+                    </label>
+                    <input name="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
+                           id="username" type="text" placeholder="Username" value="<?= old('username') ?>">
+                    <?php foreach( $t->errors->get( 'username' ) as $err ): ?>
+                        <p class="text-red text-xs italic mt-2"><?= $err ?></p>
+                    <?php endforeach; ?>
+
+                </div>
+
+
+
+                <div class="flex items-center justify-between">
+                    <a class="inline-block align-baseline font-bold text-sm text-blue-light
+                            hover:no-underline  hover:text-blue-dark" href="<?= route( "forgot-password@showUsernameForm" ) ?>">
+                        Forgot Username?
+                    </a>
+
+                    <a class="hover:no-underline bg-transparent hover:bg-blue text-blue-light font-semibold hover:text-blue-dark py-1 px-4 border border-blue hover:border-transparent rounded"
+                                href="<?= route('login@login' ) ?>">
+                        Cancel
+                    </a>
+
+                    <button class="bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                        Submit
+                    </button>
+                </div>
+
+            </div>
+
+            <?= Former::close() ?>
+        </div>
     </div>
 
 

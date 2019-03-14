@@ -1,5 +1,7 @@
 let mix = require('laravel-mix');
 
+var tailwindcss = require('tailwindcss');
+
 /*
  |--------------------------------------------------------------------------
  | Mix Asset Management
@@ -30,12 +32,20 @@ mix.scripts(
         'node_modules/moment/moment.js',
         'node_modules/ip-address/dist/ip-address-globals.js',
 
+        'public/js/ixp-manager.js',
 
 
         // etc. etc.
     ],
     'public/js/ixp-pack.js'
-);
+).version();
+
+mix
+    .sass('resources/scss/tailwind.scss', 'public/css')
+    .options({
+            postCss: [tailwindcss('./tailwind.js')]
+    });
+
 
 mix.styles(
     [
@@ -48,10 +58,11 @@ mix.styles(
 
         'public/css/draganddrop.css',
         'public/css/ixp-manager.css',
+        'public/css/tailwind.css',
         // etc. etc.
     ],
     'public/css/ixp-pack.css',
 
-);
+).version();
 
 mix.copyDirectory( 'node_modules/font-awesome/fonts', 'public/fonts' );
