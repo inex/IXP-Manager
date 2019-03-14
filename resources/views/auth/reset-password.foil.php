@@ -75,7 +75,8 @@
                     <label class="block text-grey-darker text-sm font-bold mb-2" for="password">
                         Password
                     </label>
-                    <input name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="******************">
+                    <input name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
+                            id="password" type="password" autofocus placeholder="******************">
                     <?php foreach( $t->errors->get( 'password' ) as $err ): ?>
                         <p class="text-red text-xs italic mt-2"><?= $err ?></p>
                     <?php endforeach; ?>

@@ -54,7 +54,7 @@
                         Email
                     </label>
                     <input name="email" class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
-                           id="email" type="text" placeholder="name@example.com" value="<?= old('email') ?>">
+                           id="email" type="text" placeholder="name@example.com" autofocus value="<?= old('email') ?>">
                     <?php foreach( $t->errors->get( 'email' ) as $err ): ?>
                         <p class="text-red text-xs italic mt-2"><?= $err ?></p>
                     <?php endforeach; ?>
