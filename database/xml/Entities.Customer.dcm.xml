@@ -25,7 +25,6 @@
     <field name="dateleave" type="date" nullable="true"/>
     <field name="status" type="smallint" nullable="true"/>
     <field name="activepeeringmatrix" type="boolean" nullable="true"/>
-    <field name="peeringDb" type="string" length="255" nullable="true" column="peeringDb"/>
     <field name="lastupdated" type="date" nullable="true"/>
     <field name="lastupdatedby" type="integer" nullable="true"/>
     <field name="creator" type="string" length="255" nullable="true"/>
@@ -36,6 +35,16 @@
       </options>
     </field>
     <field name="isReseller" type="boolean" nullable="false" column="isReseller">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="in_manrs" type="boolean" nullable="false">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="in_peeringdb" type="boolean" nullable="false">
       <options>
         <option name="default">0</option>
       </options>

@@ -35,6 +35,8 @@ class Kernel extends ConsoleKernel {
      */
     protected $commands = [
 
+        \IXP\Console\Commands\InPeeringDb::class,
+
         \IXP\Console\Commands\Audit\PortSpeeds::class,
 
         \IXP\Console\Commands\Irrdb\UpdateAsnDb::class,
@@ -74,6 +76,8 @@ class Kernel extends ConsoleKernel {
         $schedule->command( 'grapher:upload-stats-to-db' )->dailyAt( '2:00' )
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_GRAPHER_UPLOAD_STATS_TO_DB', false ); } );
 
+        // FIXME
+        $schedule->command('ixp-manager:update-in-peeringdb')->daily();
 
 
         // IRRDB - https://docs.ixpmanager.org/features/irrdb/

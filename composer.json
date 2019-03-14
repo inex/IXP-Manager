@@ -18,6 +18,7 @@
     ],
     "require": {
         "php": "^7.2",
+        "ext-json": "*",
 
         "opensolutions/oss-snmp": "^1.0",
 
@@ -100,6 +101,7 @@
             "@php artisan clear-compiled",
             "@php artisan ide-helper:generate",
             "@php artisan ide-helper:meta --filename=.phpstorm.meta.php/laravel.meta.php",
+            "@php artisan ide-helper:models -W",
             "@php artisan telescope:publish"
         ]
     },
