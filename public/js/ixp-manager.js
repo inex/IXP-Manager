@@ -169,33 +169,31 @@ function htmlEntities(str) {
  * @return html
  */
 function ixpAsnumber( asNumber ) {
-    let url = RIPE_ASN_URL + "/AS" + asNumber;
-    let datas = `<table class="asn-table"><tbody>`;
+    let url = RIPE_ASN_URL + "/" + asNumber;
+    let content = `<div class="asn-table"><pre class="font-mono text-xs">`;
+
+    let bb = bootbox.dialog({
+        message: '<div><p class="text-center"><i class="fa fa-spinner fa-spin text-5xl"></i></p></div>',
+        size: "large",
+        title: "AS Number Lookup",
+        onEscape: true,
+        buttons: {
+            cancel: {
+                label: 'Close',
+                callback: function () {
+                    $('.bootbox.modal').modal('hide');
+                    return false;
+                }
+            }
+        }
+    });
+
+
     $.ajax(url)
         .done(function (data) {
-            $.each(data, function (i, info) {
-                datas += `<tr><td>${info.name}:</td><td>`;
+            content += data + '</pre>';
 
-                datas += htmlEntities( info.value );
-
-                datas += `</td>`;
-            });
-
-            datas += `</table>`;
-            bootbox.dialog({
-                message: datas,
-                size: "large",
-                title: "AS Number Lookup",
-                buttons: {
-                    cancel: {
-                        label: 'Close',
-                        callback: function () {
-                            $('.bootbox.modal').modal('hide');
-                            return false;
-                        }
-                    }
-                }
-            });
+            $('.bootbox-body').html( content ).scrollTop();
         })
         .fail(function () {
             alert(`Error running ajax query for ${url}`);

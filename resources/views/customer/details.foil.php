@@ -88,9 +88,7 @@
                                     <em>(associate)</em>
                                 <?php else: ?>
                                     <?php if( $c->getAutsys() ): ?>
-                                        <a href="#">
-                                            <?=  $t->asNumber( $c->getAutsys() ) ?>
-                                        </a>
+                                        <?=  $t->asNumber( $c->getAutsys() ) ?>
                                     <?php endif; ?>
                                 <?php endif; ?>
 
