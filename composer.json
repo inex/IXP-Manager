@@ -16,12 +16,6 @@
             "homepage": "https://www.ixpmanager.org/"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/barryo/orm"
-        }
-    ],
     "require": {
         "php": "^7.2",
 
@@ -47,7 +41,6 @@
         "parsedown/laravel": "^1.0",
         "webpatser/laravel-countries": "^1.5",
         "laravel/telescope": "^2.0"
-
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
