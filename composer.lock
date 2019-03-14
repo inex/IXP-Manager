@@ -2058,7 +2058,7 @@
         },
         {
             "name": "laravel-doctrine/orm",
-            "version": "1.4.10",
+            "version": "v1.4.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel-doctrine/orm.git",
@@ -2122,11 +2122,7 @@
                     "src/helpers.php"
                 ]
             },
-            "autoload-dev": {
-                "classmap": [
-                    "tests"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2144,10 +2140,7 @@
                 "laravel",
                 "orm"
             ],
-            "support": {
-                "source": "https://github.com/barryo/orm/tree/1.4.10"
-            },
-            "time": "2019-03-04T11:26:49+00:00"
+            "time": "2019-03-14T08:26:16+00:00"
         },
         {
             "name": "laravel/framework",
