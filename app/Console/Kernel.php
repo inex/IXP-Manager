@@ -64,9 +64,6 @@ class Kernel extends ConsoleKernel {
      * @return void
      */
     protected function schedule(Schedule $schedule) {
-        // $schedule->command('inspire')
-        //          ->hourly();
-
 
         // Expunge logs / GDPR data / etc.
         $schedule->command( 'utils:expunge-logs' )->dailyAt( '3:04' );
@@ -75,6 +72,13 @@ class Kernel extends ConsoleKernel {
         $schedule->command( 'grapher:upload-stats-to-db' )->dailyAt( '2:00' )
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_GRAPHER_UPLOAD_STATS_TO_DB', false ); } );
 
+        // FIXME docs
+        $schedule->command('ixp-manager:update-in-peeringdb')->daily()
+            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UPDATE_IN_PEERINGDB', false ); } );
+
+        // FIXME docs
+        $schedule->command('ixp-manager:update-in-manrs')->daily()
+            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UPDATE_IN_MANRS', false ); } );
 
 
         // IRRDB - https://docs.ixpmanager.org/features/irrdb/

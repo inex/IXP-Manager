@@ -1743,32 +1743,64 @@ class Customer
     }
 
     /**
-     * @var string
+     * Does this customer have a PeeringDB entry?
+     * @var bool
      */
-    protected $peeringDb;
+    protected $in_peeringdb = false;
 
 
     /**
      * Set peeringDb
      *
-     * @param string $peeringDb
+     * @param bool $in_peeringdb
      * @return Customer
      */
-    public function setPeeringDb($peeringDb)
+    public function setInPeeringdb( $in_peeringdb )
     {
-        $this->peeringDb = $peeringDb;
+        $this->in_peeringdb = $in_peeringdb;
 
         return $this;
     }
 
     /**
-     * Get peeringDb
+     * Get $in_peeringdb
      *
-     * @return string
+     * @return bool
      */
-    public function getPeeringDb()
+    public function getInPeeringdb()
     {
-        return $this->peeringDb;
+        return $this->in_peeringdb;
+    }
+
+
+    /**
+     * Is this customer a member of MANRS
+     * @var bool
+     */
+    protected $in_manrs = false;
+
+
+    /**
+     * Set $in_manrs
+     *
+     * @param string $in_manrs
+     * @return Customer
+     */
+    public function setInManrs( bool $in_manrs ): Customer
+    {
+        $this->in_manrs = $in_manrs;
+
+        return $this;
+    }
+
+    /**
+     * Get $in_manrs
+     *
+     * @return bool
+     */
+    public function getInManrs(): bool
+    {
+        return $this->in_manrs;
     }
 
     /**

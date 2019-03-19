@@ -16,14 +16,9 @@
             "homepage": "https://www.ixpmanager.org/"
         }
     ],
-    "repositories": [
-        {
-            "type": "vcs",
-            "url": "https://github.com/barryo/orm"
-        }
-    ],
     "require": {
         "php": "^7.2",
+        "ext-json": "*",
 
         "opensolutions/oss-snmp": "^1.0",
 
@@ -47,7 +42,6 @@
         "parsedown/laravel": "^1.0",
         "webpatser/laravel-countries": "^1.5",
         "laravel/telescope": "^2.0"
-
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
@@ -107,6 +101,7 @@
             "@php artisan clear-compiled",
             "@php artisan ide-helper:generate",
             "@php artisan ide-helper:meta --filename=.phpstorm.meta.php/laravel.meta.php",
+            "@php artisan ide-helper:models -W",
             "@php artisan telescope:publish"
         ]
     },

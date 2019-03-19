@@ -29,6 +29,9 @@ use Illuminate\Http\Request;
 use IXP\Http\Controllers\Controller;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
+use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Log;
+
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
@@ -59,6 +62,7 @@ class LoginController extends Controller
     /**
      * Where to redirect users after login.
      *
+     * THis isn't used unless the RedirectIfAuthenticated middleware's handle() method is coded to use it.
      * @var string
      */
     protected $redirectTo = '';
@@ -83,14 +87,15 @@ class LoginController extends Controller
     public function __construct()
     {
         $this->middleware( 'guest' )->except( 'logout' );
-        $this->redirectTo = url('');
     }
 
 
     public function showLoginForm()
     {
         if( !session()->has('url.intended') ) {
-            session(['url.intended' => url()->previous()]);
+            if( Str::startsWith( url()->previous(), url('') ) ) {
+                session(['url.intended' => url()->previous()]);
+            }
         }
 
         return view( 'auth/login' );

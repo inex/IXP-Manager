@@ -25,6 +25,8 @@ use Foil\Contracts\ExtensionInterface;
 
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
+use Illuminate\Support\Facades\Auth;
+
 /**
  * Grapher -> Renderer view extensions
  *
@@ -309,7 +311,7 @@ class IXP implements ExtensionInterface {
      */
     public function asNumber( $asn, $addAs = true )
     {
-        if( $asn ) {
+        if( Auth::check() && $asn ) {
             return '<a href="#ixpm-asnumber-' . $asn . '" onClick="ixpAsnumber( ' . $asn . ' ); return false;">' . ( $addAs ? 'AS' : '' ) . $asn . '</a>';
         }
 

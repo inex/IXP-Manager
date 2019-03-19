@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "38406a1dc3f1d50ba7aef8b23af077b9",
+    "content-hash": "6ab69ca94992a70c255973fdedcecfe9",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -2058,16 +2058,16 @@
         },
         {
             "name": "laravel-doctrine/orm",
-            "version": "1.4.10",
+            "version": "v1.4.10",
             "source": {
                 "type": "git",
-                "url": "https://github.com/barryo/orm.git",
-                "reference": "1181af23f5d187ed545925500f9c95e22d876a4a"
+                "url": "https://github.com/laravel-doctrine/orm.git",
+                "reference": "7b45d97b8345d532747b8b946c36eb0926018fcc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryo/orm/zipball/1181af23f5d187ed545925500f9c95e22d876a4a",
-                "reference": "1181af23f5d187ed545925500f9c95e22d876a4a",
+                "url": "https://api.github.com/repos/laravel-doctrine/orm/zipball/7b45d97b8345d532747b8b946c36eb0926018fcc",
+                "reference": "7b45d97b8345d532747b8b946c36eb0926018fcc",
                 "shasum": ""
             },
             "require": {
@@ -2122,11 +2122,7 @@
                     "src/helpers.php"
                 ]
             },
-            "autoload-dev": {
-                "classmap": [
-                    "tests"
-                ]
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2144,10 +2140,7 @@
                 "laravel",
                 "orm"
             ],
-            "support": {
-                "source": "https://github.com/barryo/orm/tree/1.4"
-            },
-            "time": "2019-03-04T11:26:49+00:00"
+            "time": "2019-03-14T08:26:16+00:00"
         },
         {
             "name": "laravel/framework",
@@ -2546,11 +2539,7 @@
                     "src/helpers.php"
                 ]
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "LukeTowers\\Tests\\Purifier\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2571,18 +2560,15 @@
             "description": "Laravel 5 HtmlPurifier Package",
             "homepage": "https://github.com/LukeTowers/Purifier",
             "keywords": [
-                "HtmlPurifier",
                 "Purifier",
+                "htmlpurifier",
                 "laravel5 HtmlPurifier",
                 "laravel5 Purifier",
                 "laravel5 Security",
                 "security",
                 "xss"
             ],
-            "support": {
-                "source": "https://github.com/barryo/Purifier/tree/master"
-            },
-            "time": "2019-03-09T12:04:30+00:00"
+            "time": "2019-03-09T16:52:48+00:00"
         },
         {
             "name": "mmucklo/inflect",

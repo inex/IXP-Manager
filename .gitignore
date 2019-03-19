@@ -19,9 +19,6 @@ public/favicon.ico
 
 public/bower_components/
 
-public/css/ixp-pack.css
-public/js/ixp-pack.js
-
 .cache/
 .composer/
 .config/

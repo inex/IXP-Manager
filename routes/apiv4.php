@@ -130,31 +130,5 @@ Route::get( 'peering-db/fac', function() {
 Route::get( 'statistics/overall-by-month', 'StatisticsController@overallByMonth' );
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ASN Number
-//
-Route::get( 'aut-num/{asn}', function( $asn ) {
 
-    $infos = [];
-
-    if( $values = file_get_contents("https://rest.db.ripe.net/ripe/aut-num/". $asn . ".json" ) ) {
-        $i = 0;
-
-        foreach( json_decode( $values)->objects->object[0]->attributes->attribute as $val ) {
-            $infos[ $i ][ 'name' ] = $val->name;
-            $infos[ $i ][ 'value' ] = $val->value;
-            if( isset( $val->link ) ){
-                $infos[ $i ][ 'link' ] = $val->link->href;
-            }
-
-            if( isset( $val->comment ) ){
-                $infos[ $i ][ 'comment' ] = $val->comment;
-            }
-
-            $i++;
-        }
-    }
-
-    return response()->json(  $infos );
-})->name('api-v4-aut-num');
 

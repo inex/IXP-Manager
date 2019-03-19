@@ -44,7 +44,7 @@
                     Username
                 </label>
                 <input name="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
-                       id="username" type="text" placeholder="Username" value="<?= old('username') ?>">
+                       id="username" type="text" placeholder="Username" autofocus value="<?= old('username') ?>">
                 <?php foreach( $t->errors->get( 'username' ) as $err ): ?>
                     <p class="text-red text-xs italic mt-2"><?= $err ?></p>
                 <?php endforeach; ?>

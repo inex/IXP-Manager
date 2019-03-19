@@ -43,3 +43,15 @@ Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer\Note'], fu
 });
 
 Route::post( 'utils/markdown',                                  'UtilsController@markdown' )->name( "utils@markdown" );
+
+
+
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// ASN Number
+//
+Route::get( 'aut-num/{asn}', function( $asn ) {
+    $whois = new IXP\Utils\PeeringDbWhois();
+    return response( $whois->whois( (int)$asn ), 200 )->header('Content-Type', 'text/plain');
+})->name('api-v4-aut-num');
+
+
