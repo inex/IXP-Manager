@@ -6,6 +6,7 @@
     </id>
     <field name="privs" type="integer" nullable="false"/>
     <field name="created_at" type="datetime" nullable="false"/>
+    <field name="extra_attributes" type="json" nullable="true"/>
     <many-to-one field="customer" target-entity="Entities\Customer" inversed-by="Users">
       <join-columns>
         <join-column name="customer_id" referenced-column-name="id" nullable="false"/>

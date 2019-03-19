@@ -36,7 +36,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
      *
      * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = ['username' => NULL];
+    public static $lazyPropertiesDefaults = ['username' => NULL, 'email' => NULL];
 
 
 
@@ -46,7 +46,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
      */
     public function __construct($initializer = null, $cloner = null)
     {
-        unset($this->username);
+        unset($this->username, $this->email);
 
         $this->__initializer__ = $initializer;
         $this->__cloner__      = $cloner;
@@ -111,7 +111,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
             return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', 'Contact', '_className', '_preferenceClassName'];
         }
 
-        return ['__isInitialized__', 'name', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', 'Contact', '_className', '_preferenceClassName'];
+        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', 'Contact', '_className', '_preferenceClassName'];
     }
 
     /**
@@ -133,7 +133,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
                 }
             };
 
-            unset($this->username);
+            unset($this->username, $this->email);
         }
     }
 

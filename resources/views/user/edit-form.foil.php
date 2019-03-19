@@ -31,8 +31,8 @@
         ?>
 
 
-
         <?php if( $t->data[ 'params'][ 'existingUser' ] ): ?>
+        <div class="col-sm-12">
             <div class="alert alert-info " role="alert">
                 <div class="d-flex align-items-center">
                     <div class="text-center">
@@ -46,12 +46,8 @@
                 </div>
             </div>
 
-            <h4>
-                <?php if( $t->data[ 'params'][ 'listUsers' ] > 1 ): ?>
-                    The following users have been found :
-                <?php else: ?>
-                    The following user has been found :
-                <?php endif;?>
+            <h4 class="mb-2">
+                The following user(s) have been found :
             </h4>
 
             <table class="table table-striped" width="100%">
@@ -72,31 +68,31 @@
                     </tr>
                 </thead>
                 <tbody>
-                <?php foreach( $t->data[ 'params'][ 'listUsers' ] as $user ): ?>
-                    <tr>
-                        <td>
-                            <?= Former::radios( 'user-' . $user->getId() )
-                                ->class( 'radio-button' )
-                                ->label( '' )
-                                ->value( $user->getId() )
-                                ->id( 'user-' . $user->getId() );
-                            ?>
-                        </td>
-                        <td>
-                            <?= $user->getUsername()?>
-                        </td>
-                        <td>
-                            <?= $user->getEmail()?>
-                        </td>
-                        <td>
-                            <?php foreach( $user->getCustomers() as $customer ): ?>
-                                <?= $customer->getName()?><br>
-                            <?php endforeach; ?>
+                    <?php foreach( $t->data[ 'params'][ 'listUsers' ] as $user ): ?>
+                        <tr>
+                            <td>
+                                <?= Former::radios( 'user-' . $user->getId() )
+                                    ->class( 'radio-button' )
+                                    ->label( '' )
+                                    ->value( $user->getId() )
+                                    ->id( 'user-' . $user->getId() );
+                                ?>
+                            </td>
+                            <td>
+                                <?= $user->getUsername()?>
+                            </td>
+                            <td>
+                                <?= $user->getEmail()?>
+                            </td>
+                            <td>
+                                <?php foreach( $user->getCustomers() as $customer ): ?>
+                                    <?= $customer->getName()?><br>
+                                <?php endforeach; ?>
 
-                        </td>
+                            </td>
 
-                    </tr>
-                <?php endforeach; ?>
+                        </tr>
+                    <?php endforeach; ?>
 
                 </tbody>
 
@@ -138,11 +134,10 @@
             <?= Former::actions(
                 Former::primary_submit( 'Add User' ),
                 Former::secondary_link( 'Cancel' )->href( $cancel_url ),
-                Former::success_button( 'Help' )->id( 'help-btn' ),
-                Former::secondary_link( 'Add an Other User ' )->href( "" )
+                Former::success_button( 'Help' )->id( 'help-btn' )
             );
             ?>
-
+        </div>
         <?php else: ?>
             <div class="col-sm-12">
 

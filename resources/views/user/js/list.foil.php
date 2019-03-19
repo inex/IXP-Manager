@@ -1,6 +1,6 @@
 
 <?php if( !Auth::getUser()->isSuperUser() ):?>
-    <?= $t->insert( 'frontend/js/common' ); ?>
+    <?= $t->insert( 'user/js/common' ); ?>
     <script>
         let tableList = $( '#table-list' );
 

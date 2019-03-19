@@ -266,7 +266,7 @@ class UserController extends Doctrine2Frontend {
 
 
         if( $validator->fails() ) {
-            return Redirect::back()->withErrors($validator)->withInput();
+            return Redirect::back()->withErrors( $validator )->withInput();
         }
 
         $userEmail = null;
@@ -275,8 +275,8 @@ class UserController extends Doctrine2Frontend {
             $userEmail = $request->input( 'email' );
         }
 
+        // building the redirect url
         $url = $userEmail ? route( "user@add-info", [ 'user' => $userEmail ] ) : route("user@add" ). '?email=' . $request->input( 'email' );
-
 
         if( $request->input( "custid" ) ){
             $separator = $userEmail ? "?" : "&";
@@ -297,40 +297,43 @@ class UserController extends Doctrine2Frontend {
      */
     protected function addEditPrepareForm( $id = null ): array {
 
-
-
         $old = request()->old();
         $existingUser = $disabledInputs = false;
         $listUsers = [];
 
         $this->manageCancelbutton();
 
-
+        // Id we edit the user
         if( request()->is( 'user/edit/*' ) ){
 
             if( $id !== null ) {
 
+                var_dump( 1 );
                 if( !( $this->object = D2EM::getRepository( UserEntity::class )->find( $id ) ) ) {
                     abort(404, 'User not found');
                 }
 
+                if( !Auth::getUser()->isSuperUser() ){
+                    if( !( $this->c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => Auth::getUser()->getCustomer()->getId() , "user" => $this->object->getId() ] ) ) ){
+                        $this->unauthorized();
+                    }
+                } else {
 
-                if( !( $this->c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => Auth::getUser()->getCustomer()->getId() , "user" => $this->object->getId() ] ) ) ){
-                    $this->unauthorized();
                 }
+
                 
                 Former::populate([
                     'name'             => array_key_exists( 'name',                $old ) ? $old['name']                 : $this->object->getName(),
                     'username'         => array_key_exists( 'username',            $old ) ? $old['username']             : $this->object->getUsername(),
-                    'custid'           => array_key_exists( 'custid',              $old ) ? $old['custid']               : $this->c2u->getCustomer()->getId(),
+                    //'custid'           => array_key_exists( 'custid',              $old ) ? $old['custid']               : $this->c2u->getCustomer()->getId(),
                     'email'            => array_key_exists( 'email',               $old ) ? $old['email']                : $this->object->getEmail(),
                     'authorisedMobile' => array_key_exists( 'authorisedMobile',    $old ) ? $old['authorisedMobile']     : $this->object->getAuthorisedMobile(),
                     'enabled'          => array_key_exists( 'enabled',             $old ) ? ( $old['enabled'] ? 1 : 0 )  : ( $this->object->getDisabled() ? 0 : 1 ),
-                    'privs'            => array_key_exists( 'privs',               $old ) ? $old['privs']                : $this->c2u->getPrivs(),
+                    //'privs'            => array_key_exists( 'privs',               $old ) ? $old['privs']                : $this->c2u->getPrivs(),
                 ]);
 
             } else {
-
+                var_dump( 2 );
                 if( request()->input( "cust" ) && ( $cust = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "cust" ) ) ) ){
                     $dataCust = [
                         'custid'                    => $cust->getId(),
@@ -350,11 +353,11 @@ class UserController extends Doctrine2Frontend {
             }
 
         } else {
-
+            // Adding user / associate existing user with a customer
             $this->feParams->customBreadcrumb = "Add";
 
+            // If we found user with the provided email address
             if( $id !== null ) {
-                $listUsers = [];
                 if( !( $listUsers = D2EM::getRepository( UserEntity::class )->findBy( [ 'email' => $id ] ) ) ) {
                     abort(404, 'User not found');
                 }
@@ -366,7 +369,7 @@ class UserController extends Doctrine2Frontend {
                 $existingUser = true;
 
             } else {
-
+                // The provided email address didnt match with any existing user => creating new user
                 Former::populate([
                     'email'            => array_key_exists( 'email',               $old ) ? $old['email']                : request()->input( "email" ),
                     'custid'           => array_key_exists( 'custid',              $old ) ? $old['custid']               : request()->input( "custid" ),

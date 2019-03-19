@@ -64,10 +64,10 @@ class CustomerToUser extends \Entities\CustomerToUser implements \Doctrine\ORM\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'privs', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'created_at', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'customer', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'user'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'privs', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'created_at', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'extra_attributes', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'customer', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'user'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'privs', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'created_at', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'customer', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'user'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'privs', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'created_at', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'extra_attributes', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'customer', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'user'];
     }
 
     /**
@@ -173,4 +173,129 @@ class CustomerToUser extends \Entities\CustomerToUser implements \Doctrine\ORM\P
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
+    public function getId()
+    {
+        if ($this->__isInitialized__ === false) {
+            return (int)  parent::getId();
+        }
+
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getId', []);
+
+        return parent::getId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUser()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', []);
+
+        return parent::getUser();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCustomer()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', []);
+
+        return parent::getCustomer();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPrivs()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPrivs', []);
+
+        return parent::getPrivs();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCreatedAt()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCreatedAt', []);
+
+        return parent::getCreatedAt();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getExtraAttributes()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getExtraAttributes', []);
+
+        return parent::getExtraAttributes();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUser($user)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', [$user]);
+
+        return parent::setUser($user);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCustomer($cust)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomer', [$cust]);
+
+        return parent::setCustomer($cust);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPrivs($privs)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPrivs', [$privs]);
+
+        return parent::setPrivs($privs);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setExtraAttributes($extra_attributes)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setExtraAttributes', [$extra_attributes]);
+
+        return parent::setExtraAttributes($extra_attributes);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCreatedAt($created_at)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreatedAt', [$created_at]);
+
+        return parent::setCreatedAt($created_at);
+    }
+
 }

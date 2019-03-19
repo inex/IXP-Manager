@@ -57,7 +57,7 @@ class Customer2Users extends IXPCommand
      *
      * @var string
      */
-    protected $description = 'This command will migrate datas from Customer - User to the customer_to_users';
+    protected $description = 'This command will migrate datas from table Customer and User to the table CustomerToUser';
 
     /**
      * Execute the console command.
@@ -80,7 +80,7 @@ class Customer2Users extends IXPCommand
         $this->info( 'Migration in progress, please wait...' );
 
         // get all the entries form the macaddress table
-        DB::table( 'user' )->orderBy( 'id' )->chunk( 100, function( $listUsers ) {
+        DB::table('user' )->orderBy( 'id' )->chunk( 100, function( $listUsers ) {
 
             foreach( $listUsers as $user ) {
 
@@ -92,7 +92,8 @@ class Customer2Users extends IXPCommand
                 $c2u->setUser(      $u )
                     ->setCustomer(  $u->getCustomer() )
                     ->setCreatedAt( new \DateTime )
-                    ->setPrivs(     $u->getUserPrivs() );
+                    ->setPrivs(     $u->getUserPrivs() )
+                    ->setExtraAttributes( [ "created_by" => [ "type" => "user" , "user_id" => $u->getId() ] ] );
                 D2EM::persist(      $c2u );
                 D2EM::flush();
 

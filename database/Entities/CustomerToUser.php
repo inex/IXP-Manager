@@ -18,6 +18,13 @@ class CustomerToUser
     private $created_at;
 
     /**
+     * @var \Json
+     */
+    private $extra_attributes = [
+        'created_by'  => 'array'
+    ];
+
+    /**
      * @var int
      */
     private $id;
@@ -85,6 +92,16 @@ class CustomerToUser
     }
 
     /**
+     * Get Extra attributes
+     *
+     * @return \Json
+     */
+    public function getExtraAttributes()
+    {
+        return $this->extra_attributes;
+    }
+
+    /**
      * Set user
      *
      * @param \Entities\User
@@ -119,6 +136,19 @@ class CustomerToUser
     public function setPrivs( $privs )
     {
         $this->privs = $privs;
+
+        return $this;
+    }
+
+    /**
+     * Set extra attributes
+     *
+     * @param Json $extra_attributes
+     * @return CustomerToUser
+     */
+    public function setExtraAttributes( $extra_attributes )
+    {
+        $this->extra_attributes = $extra_attributes;
 
         return $this;
     }
