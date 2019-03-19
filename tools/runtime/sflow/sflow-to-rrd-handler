@@ -57,7 +57,7 @@ my $timer_period = 60;
 my $mactabletimeout = 86400;
 my $daemon = 1;
 my $infraid = undef;
-my $macdbtype = '';
+my $macdbtype = defined($ixp->{ixp}->{macdbtype}) ? $ixp->{ixp}->{macdbtype} : '';
 my $macdbrest;
 
 # conundrum: do we run GetOptions() before creating a new IXPManager::Config
