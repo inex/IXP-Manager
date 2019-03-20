@@ -69,6 +69,15 @@
                                 </span>
                             <?php endif; ?>
 
+                            <?php if( $c->getInManrs() ): ?>
+                                <a href="https://www.manrs.org/" target="_blank" class="hover:no-underline">
+                                    <span class="hidden md:inline border border-green p-1 rounded-full text-green text-uppercase text-xs mx-3" style="border-color: #38c172 !important;">
+                                        MANRS
+                                    </span>
+                                </a>
+                            <?php endif; ?>
+
+
                         </td>
 
                         <td class="font-mono hidden md:table-cell">
