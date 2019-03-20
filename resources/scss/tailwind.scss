@@ -36,6 +36,19 @@
  * @import "components/forms";
  */
 
+
+
+.ixpm-table a {
+  @apply text-blue-dark no-underline;
+}
+
+.ixpm-table a:hover {
+  @apply text-blue underline;
+}
+
+
+
+
 /**
  * This injects all of Tailwind's utility classes, generated based on your
  * config file.
