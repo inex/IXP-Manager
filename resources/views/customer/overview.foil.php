@@ -346,43 +346,6 @@
     <?php endif; ?>
 
     <script>
-        /**
-         * Iframe to display peeringDB website
-         *
-         * @param string asNumber The AS number
-         *
-         * @return html
-         */
-        function perringDb( ) {
-            var str = "<?= config('ixp_tools.peeringdb_url' ) ?>";
-            var mapObj = {
-                '%ID%':"<?= $c->getPeeringDb() ?>",
-                '%ASN%':"<?= $c->getAutsys() ?>",
-
-            };
-            var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
-            str = str.replace(re, function(matched){
-                return mapObj[matched];
-            });
-
-            let html = `<iframe width="100%" height="500px" src="${str}" frameborder="0" allowfullscreen></iframe>`;
-
-            bootbox.dialog({
-                message: html,
-                size: "large",
-                title: "AS Number Lookup",
-                buttons: {
-                    cancel: {
-                        label: 'Close',
-                        callback: function () {
-                            $('.bootbox.modal').modal('hide');
-                            return false;
-                        }
-                    }
-                }
-            });
-        }
-
         $(document).ready( function() {
 
             $('.table-responsive-ixp').show();

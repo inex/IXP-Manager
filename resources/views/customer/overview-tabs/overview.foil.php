@@ -73,12 +73,10 @@
                             <b>PeeringDB</b>
                         </td>
                         <td>
-                            <?php if( $t->c->getPeeringDb() && config('ixp_tools.peeringdb_url' ) !== null ): ?>
-                                <em>
-                                    <a class="btn btn-outline-secondary btn-sm" onclick="perringDb();return false;">
-                                        <i class="fa fa-eye"></i>
-                                    </a>
-                                </em>
+                            <?php if( $t->c->getInPeeringdb() ): ?>
+                                <a href="https://www.peeringdb.com/asn/<?= $t->c->getAutsys() ?>" target="_blank">Yes &raquo;</a>
+                            <?php else: ?>
+                                No
                             <?php endif; ?>
                         </td>
                     </tr>
