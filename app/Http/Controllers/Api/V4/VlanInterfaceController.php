@@ -81,7 +81,7 @@ class VlanInterfaceController extends Controller
             $output[$macentry['infrastructure']][$macentry['tag']][$macentry['mac']] = $macentry['vliid'];
         }
 
-        return response()->json($output);
+        return response()->json($output ?? []);
     }
 
     /**
@@ -99,7 +99,7 @@ class VlanInterfaceController extends Controller
             $output[$macentry['infrastructure']][$macentry['tag']][$macentry['mac']] = $macentry['vliid'];
         }
 
-        return response()->json($output);
+        return response()->json($output ?? []);
     }
 
 }
