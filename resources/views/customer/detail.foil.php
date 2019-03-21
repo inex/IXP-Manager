@@ -207,17 +207,17 @@
 
 
                                 <?php if( $vli->getRsclient() ): ?>
-                                    <span class="inline-block border border-green p-1 rounded-full text-green-dark font-semibold text-uppercase text-sm px-3 py-1 mr-2" style="border-color: #1f9d55 !important;">
+                                    <span class="inline-block border border-green p-1 rounded-full text-green-dark  font-semibold text-uppercase text-sm px-3 py-1 mr-2" style="border-color: #1f9d55 !important;">
                                 <?php else: ?>
-                                    <span class="inline-block border border-red   p-1 rounded-full text-red        font-semibold text-uppercase text-sm px-3 py-1 mr-2" style="border-color: #e3342f !important;">
+                                    <span class="inline-block border border-red   p-1 rounded-full text-red-lighter font-semibold text-uppercase text-sm px-3 py-1 mr-2" style="border-color: #f9acaa !important;">
                                 <?php endif; ?>
                                     Route Server
                                 </span>
 
                                 <?php if( $vli->getAs112client() ): ?>
-                                    <span class="inline-block border border-green p-1 rounded-full text-green-dark font-semibold text-uppercase text-sm px-3 py-1 mr-2 my-2" style="border-color: #1f9d55 !important;">
+                                    <span class="inline-block border border-green p-1 rounded-full text-green-dark  font-semibold text-uppercase text-sm px-3 py-1 mr-2 my-2" style="border-color: #1f9d55 !important;">
                                 <?php else: ?>
-                                    <span class="inline-block border border-red   p-1 rounded-full text-red        font-semibold text-uppercase text-sm px-3 py-1 mr-2 my-2" style="border-color: #e3342f !important;">
+                                    <span class="inline-block border border-red   p-1 rounded-full text-red-lighter font-semibold text-uppercase text-sm px-3 py-1 mr-2 my-2" style="border-color: #f9acaa !important;">
                                 <?php endif; ?>
                                     AS112
                                 </span>
@@ -234,7 +234,7 @@
             <?php endforeach; ?>
 
         </div>
-        
+
     </div>
 
 </div>
