@@ -13,7 +13,7 @@
 <div class="container mx-auto">
 
 <div class="bg-blue-lightest border-t border-b border-blue text-blue-dark px-4 mb-8" role="alert">
-    <div class="flex">
+    <div class="flex flex-wrap">
         <div class="flex-1 px-4 py-2 m-2">
             <p class="font-bold">Technical Support</p>
             <p class="text-sm">
