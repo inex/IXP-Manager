@@ -51,40 +51,25 @@
                         - since <?= $c->getDatejoin()->format('Y') ?>
                     </p>
 
-                    <p class="mt-4">
+                    <?php if( !$t->c->isTypeAssociate() ): ?>
+                        <p class="mt-4">
 
-                        <?php if( $c->getInManrs() ): ?>
-                            <a href="https://www.manrs.org/" target="_blank" class="hover:no-underline">
-                                    <span class="border border-green p-1 rounded-full text-green text-uppercase text-xs mr-3" style="border-color: #38c172 !important;">
-                                        MANRS
-                                    </span>
-                            </a>
-                        <?php endif; ?>
+                            <?php if( $c->getInManrs() ): ?>
+                                <a href="https://www.manrs.org/" target="_blank" class="hover:no-underline">
+                                        <span class="border border-green p-1 rounded-full text-green text-uppercase text-xs mr-3" style="border-color: #38c172 !important;">
+                                            MANRS
+                                        </span>
+                                </a>
+                            <?php endif; ?>
 
-                        <?php if( $c->getPeeringpolicy() != \Entities\Customer::PEERING_POLICY_OPEN ): ?>
-                            <span class="border border-black p-1 rounded-full text-black text-uppercase text-xs mr-3" style="border-color: #000000 !important;">
-                                <?= $c->getPeeringpolicy() ?>
-                            </span>
-                        <?php endif; ?>
+                            <?php if( $c->getPeeringpolicy() != \Entities\Customer::PEERING_POLICY_OPEN ): ?>
+                                <span class="border border-black p-1 rounded-full text-black text-uppercase text-xs mr-3" style="border-color: #000000 !important;">
+                                    <?= $c->getPeeringpolicy() ?>
+                                </span>
+                            <?php endif; ?>
 
-                        <?php if( $c->isRouteServerClient() ): ?>
-                            <span class="border border-green p-1 rounded-full text-green-dark text-uppercase text-xs mr-3" style="border-color: #1f9d55 !important;">
-                        <?php else: ?>
-                            <span class="border border-red   p-1 rounded-full text-red        text-uppercase text-xs mr-3" style="border-color: #e3342f !important;">
-                        <?php endif; ?>
-                            Route Server
-                        </span>
-
-                        <?php if( $c->isAS112Client() ): ?>
-                            <span class="border border-green p-1 rounded-full text-green-dark text-uppercase text-xs" style="border-color: #1f9d55 !important;">
-                        <?php else: ?>
-                            <span class="border border-red   p-1 rounded-full text-red        text-uppercase text-xs" style="border-color: #e3342f !important;">
-                        <?php endif; ?>
-                            AS112
-                        </span>
-
-                    </p>
-
+                        </p>
+                    <?php endif; ?>
                 </div>
 
                 <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ): ?>
@@ -145,193 +130,111 @@
 
 
 
+        <div class="row mt-4">
 
-        <?php $countVi = 1 ?>
-        <?php foreach( $c->getVirtualInterfaces() as $vi ): ?>
+            <?php $countVi = 1 ?>
+            <?php foreach( $c->getVirtualInterfaces() as $vi ):
+
+                if( !$vi->isConnected() ) {
+                    continue;
+                }
+            ?>
+
+            <div class="col-12 col-md-6 col-lg-4 mt-4">
+
+                <div class="max-w-sm rounded overflow-hidden shadow-lg">
+                    <div class="px-6 py-4">
+                        <div class="font-bold text-xl mb-2">
+                            <?= $vi->getInfrastructure() ? $vi->getInfrastructure()->getName() : '<em>Unknwon Infrastructure</em>' ?>
+                            -
+                            <?= $t->scaleBits( $vi->speed() * 1000 * 1000, 0 ) ?>
+
+                        </div>
+
+                        <?php if( $vi->getPhysicalInterfaces() ):
+                            $pi = $vi->getPhysicalInterfaces()[0]; ?>
+
+                            <p class="text-grey-dark text-sm">
+                                Location
+                            </p>
+                            <p class="text-grey-darker text-base">
+                                <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ) ?>
+                            </p>
+                        <?php endif; ?>
+
+                        <br>
+
+                        <?php if( $vi->getVlanInterfaces() ): ?>
+
+                            <?php foreach( $vi->getVlanInterfaces() as $vli ): ?>
+
+                                <?php if( $vli->getVlan()->getPrivate() ): ?>
+                                    <?php continue; ?>
+                                <?php endif; ?>
+
+                                <p class="text-grey-dark text-sm">
+                                    <?= $vi->numberOfPublicVlans() > 1 ? $t->ee( $vli->getVlan()->getName() ) : 'IP Addresses' ?>
+                                </p>
+
+                                <p class="text-grey-darker text-base">
+
+                                    <?php if( $vli->getIpv6enabled() and $vli->getIpv6address() ): ?>
+                                        <?= $vli->getIPv6Address()->getAddress() ?><?= isset( $t->netinfo[ $vli->getVlan()->getId() ][ 6 ][ 'masklen' ] ) ? '/' . $t->netinfo[ $vli->getVlan()->getId() ][ 6 ][ "masklen" ] : '' ?>
+                                    <?php else: ?>
+                                        IPv6 not enabled.
+                                    <?php endif; ?>
+                                    <br>
+                                    <?php if( $vli->getIpv4enabled() and $vli->getIpv4address() ): ?>
+                                        <?= $vli->getIPv4Address()->getAddress() ?><?= isset( $t->netinfo[ $vli->getVlan()->getId() ][ 4 ][ 'masklen' ] ) ? '/' . $t->netinfo[ $vli->getVlan()->getId() ][ 4 ][ "masklen" ] : '' ?>
+                                    <?php else: ?>
+                                        IPv4 not enabled.
+                                    <?php endif; ?>
+                                </p>
+
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+
+                    </div>
+                    <div class="px-6 py-4">
+
+                        <?php if( $vi->getVlanInterfaces() ): ?>
+
+                            <?php foreach( $vi->getVlanInterfaces() as $vli ): ?>
+
+                                <?php if( $vli->getVlan()->getPrivate() ): ?>
+                                    <?php continue; ?>
+                                <?php endif; ?>
 
 
+                                <?php if( $vli->getRsclient() ): ?>
+                                    <span class="inline-block border border-green p-1 rounded-full text-green-dark font-semibold text-uppercase text-sm px-3 py-1 mr-2" style="border-color: #1f9d55 !important;">
+                                <?php else: ?>
+                                    <span class="inline-block border border-red   p-1 rounded-full text-red        font-semibold text-uppercase text-sm px-3 py-1 mr-2" style="border-color: #e3342f !important;">
+                                <?php endif; ?>
+                                    Route Server
+                                </span>
 
-            <div class="col-lg-12">
-                <hr>
+                                <?php if( $vli->getAs112client() ): ?>
+                                    <span class="inline-block border border-green p-1 rounded-full text-green-dark font-semibold text-uppercase text-sm px-3 py-1 mr-2 my-2" style="border-color: #1f9d55 !important;">
+                                <?php else: ?>
+                                    <span class="inline-block border border-red   p-1 rounded-full text-red        font-semibold text-uppercase text-sm px-3 py-1 mr-2 my-2" style="border-color: #e3342f !important;">
+                                <?php endif; ?>
+                                    AS112
+                                </span>
 
-                <h3>
-                    Connection <?= $countVi ?>
-                    <?php
-                    $countPi  = 1;
-                    $isLAG = count( $vi->getPhysicalInterfaces() ) > 1;
-                    ?>
+                            <?php endforeach; ?>
 
-                    <small>
-                        <?= $vi->getInfrastructure() ? $vi->getInfrastructure()->getName() : '<em>Unknwon Infrastructure</em>' ?>
-                        <?= $isLAG ? '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAG Port' : '' ?>
-                    </small>
-                </h3>
+                        <?php endif; ?>
+
+                    </div>
+                </div>
+
             </div>
 
-            <?php foreach( $vi->getPhysicalInterfaces() as $pi ): ?>
+            <?php endforeach; ?>
 
-                <div class="col-lg-12 mt-4">
-
-                    <?php if( $isLAG ): ?>
-                        <h5>Port <?= $countPi ?> of <?= count( $vi->getPhysicalInterfaces() ) ?> in LAG</h5>
-                    <?php endif; ?>
-
-                    <div class="row">
-                        <div class="col-lg-6">
-                            <table>
-                                <tr>
-                                    <td>
-                                        <b>
-                                            Location:&nbsp;&nbsp;
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ) ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <b>
-                                            Speed:
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <?= $pi->resolveSpeed() ?>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-                        <div class="col-lg-6" >
-                            <table>
-                                <tr>
-                                    <td>
-                                        <b>
-                                            Switch:&nbsp;&nbsp;
-                                        </b>
-                                    </td>
-
-                                    <td>
-                                        <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <b>Port:</b>
-                                    </td>
-                                    <td>
-                                        <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
-                                    </td>
-                                </tr>
-                            </table>
-                        </div>
-
-                    </div>
-
-                </div>
-                <?php $countPi++ ?>
-
-            <?php endforeach; /* foreach( $vi->getPhysicalInterfaces() as $pi ) */ ?>
-
-
-                <?php foreach( $vi->getVlanInterfaces() as $vli ): ?>
-
-                    <?php if( $vli->getVlan()->getPrivate() ): ?>
-                        <?php continue; ?>
-                    <?php endif; ?>
-
-                    <div class="col-lg-12 mt-4" style="text-indent: 20px ">
-
-                        <h4><?= $t->ee( $vli->getVlan()->getName() ) ?>:</h4>
-
-                        <div class="row mb-4">
-                            <div class="col-lg-6">
-
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <b>
-                                                IPv6 Address:
-                                            </b>
-                                        </td>
-                                        <td>
-                                            <?php if( $vli->getIpv6enabled() and $vli->getIpv6address() ): ?>
-                                                <?= $vli->getIPv6Address()->getAddress() ?>
-                                                /<?= isset( $t->netinfo[ $vli->getVlan()->getId() ][ 6 ][ 'masklen' ] ) ? $t->netinfo[ $vli->getVlan()->getId() ][ 6 ][ "masklen" ] : '??' ?>
-                                            <?php else: ?>
-                                                IPv6 not enabled.
-                                            <?php endif; ?>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <b>
-                                                Route Server Client:&nbsp;&nbsp;
-                                            </b>
-                                        </td>
-                                        <td>
-                                            <?= $vli->getRsclient() ? "Yes" : "No" ?>
-                                        </td>
-                                    </tr>
-                                </table>
-
-                            </div>
-                            <div class="col-lg-6">
-
-                                <table>
-                                    <tr>
-                                        <td>
-                                            <b>IPv4 Address:&nbsp;&nbsp;</b>
-                                        </td>
-                                        <td>
-                                            <?php if( $vli->getIpv4enabled() and $vli->getIpv4address() ): ?>
-                                                <?= $vli->getIPv4Address()->getAddress() ?>
-                                                /<?= isset( $t->netinfo[ $vli->getVlan()->getId() ][ 4 ][ 'masklen' ] ) ? $t->netinfo[ $vli->getVlan()->getId() ][ 4 ][ "masklen" ] : '??' ?>
-                                            <?php else: ?>
-                                                IPv4 not enabled.
-                                            <?php endif; ?>
-                                        </td>
-                                    </tr>
-
-                                    <?php if( $t->as112UiActive() ): ?>
-                                        <tr>
-                                            <td>
-                                                <b>
-                                                    AS112 Client:&nbsp;&nbsp;
-                                                </b>
-                                            </td>
-                                            <td>
-                                                <?= $vli->getAs112client() ? "Yes" : "No" ?>
-                                            </td>
-                                        </tr>
-                                    <?php endif; ?>
-
-                                    <?php if( Auth::check() ): ?>
-                                        <tr>
-                                            <td>
-                                                <b>
-                                                    Max Prefixes:&nbsp;&nbsp;
-                                                </b>
-                                            </td>
-                                            <td>
-                                                global: <?= $c->getMaxprefixes() ?>, per-interface: <?= $vli->getMaxbgpprefix() ?>
-                                            </td>
-                                        </tr>
-                                    <?php endif; ?>
-
-                                </table>
-
-                            </div>
-                        </div>
-
-                    </div>
-
-                <?php endforeach; /* foreach( $vi->getVlanInterfaces() as $vli ) */ ?>
-
-
-
-            <?php $countVi++ ?>
-        <?php endforeach; ?>
-
+        </div>
+        
     </div>
 
 </div>
