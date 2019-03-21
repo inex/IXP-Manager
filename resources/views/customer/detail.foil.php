@@ -179,13 +179,13 @@
                                 <p class="text-grey-darker text-base">
 
                                     <?php if( $vli->getIpv6enabled() and $vli->getIpv6address() ): ?>
-                                        <?= $vli->getIPv6Address()->getAddress() ?><?= isset( $t->netinfo[ $vli->getVlan()->getId() ][ 6 ][ 'masklen' ] ) ? '/' . $t->netinfo[ $vli->getVlan()->getId() ][ 6 ][ "masklen" ] : '' ?>
+                                        <?= $vli->getIPv6Address()->getAddress() ?>
                                     <?php else: ?>
                                         IPv6 not enabled.
                                     <?php endif; ?>
                                     <br>
                                     <?php if( $vli->getIpv4enabled() and $vli->getIpv4address() ): ?>
-                                        <?= $vli->getIPv4Address()->getAddress() ?><?= isset( $t->netinfo[ $vli->getVlan()->getId() ][ 4 ][ 'masklen' ] ) ? '/' . $t->netinfo[ $vli->getVlan()->getId() ][ 4 ][ "masklen" ] : '' ?>
+                                        <?= $vli->getIPv4Address()->getAddress() ?>
                                     <?php else: ?>
                                         IPv4 not enabled.
                                     <?php endif; ?>
