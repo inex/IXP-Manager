@@ -32,113 +32,116 @@
 
 
         <?php if( $t->data[ 'params'][ 'existingUser' ] ): ?>
-        <div class="col-sm-12">
-            <div class="alert alert-info " role="alert">
-                <div class="d-flex align-items-center">
-                    <div class="text-center">
-                        <i class="fa fa-question-circle fa-2x"></i>
-                    </div>
-                    <div class="col-sm-12">
 
-                        Select a user on the list below and a privilege to add the user to your member account
+            <div class="col-sm-12">
+                <div class="alert alert-info " role="alert">
+                    <div class="d-flex align-items-center">
+                        <div class="text-center">
+                            <i class="fa fa-question-circle fa-2x"></i>
+                        </div>
+                        <div class="col-sm-12">
 
+                            Select a user on the list below and a privilege to add the user to your member account
+
+                        </div>
                     </div>
                 </div>
-            </div>
 
-            <h4 class="mb-2">
-                The following user(s) have been found :
-            </h4>
+                <h4 class="mb-2">
+                    The following user(s) have been found :
+                </h4>
 
-            <table class="table table-striped" width="100%">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>
-
-                        </th>
-                        <th>
-                            Name
-                        </th>
-                        <th>
-                            Email
-                        </th>
-                        <th>
-                            Customer
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach( $t->data[ 'params'][ 'listUsers' ] as $user ): ?>
+                <table class="table table-striped" width="100%">
+                    <thead class="thead-dark">
                         <tr>
-                            <td>
-                                <?= Former::radios( 'user-' . $user->getId() )
-                                    ->class( 'radio-button' )
-                                    ->label( '' )
-                                    ->value( $user->getId() )
-                                    ->id( 'user-' . $user->getId() );
-                                ?>
-                            </td>
-                            <td>
-                                <?= $user->getUsername()?>
-                            </td>
-                            <td>
-                                <?= $user->getEmail()?>
-                            </td>
-                            <td>
-                                <?php foreach( $user->getCustomers() as $customer ): ?>
-                                    <?= $customer->getName()?><br>
-                                <?php endforeach; ?>
+                            <th>
 
-                            </td>
-
+                            </th>
+                            <th>
+                                Name
+                            </th>
+                            <th>
+                                Email
+                            </th>
+                            <th>
+                                Customer
+                            </th>
                         </tr>
-                    <?php endforeach; ?>
+                    </thead>
+                    <tbody>
+                        <?php foreach( $t->data[ 'params'][ 'listUsers' ] as $user ): ?>
+                            <tr>
+                                <td>
+                                    <?= Former::radios( 'user-' . $user->getId() )
+                                        ->class( 'radio-button' )
+                                        ->label( '' )
+                                        ->value( $user->getId() )
+                                        ->id( 'user-' . $user->getId() );
+                                    ?>
+                                </td>
+                                <td>
+                                    <?= $user->getUsername()?>
+                                </td>
+                                <td>
+                                    <?= $user->getEmail()?>
+                                </td>
+                                <td>
+                                    <?php foreach( $user->getCustomers() as $customer ): ?>
+                                        <?= $customer->getName()?><br>
+                                    <?php endforeach; ?>
 
-                </tbody>
+                                </td>
 
-            </table>
+                            </tr>
+                        <?php endforeach; ?>
 
-            <?= Former::hidden( 'existingUserId' )
-                ->id( 'existingUserId' )
-                ->value( null )
-            ?>
+                    </tbody>
 
-            <?= Former::select( 'privs_' . Auth::getUser()->getCustomer()->getId() )
-                ->id( 'privs' )
-                ->label( 'Privileges' )
-                ->placeholder( 'Select a privilege' )
-                ->fromQuery( Auth::getUser()->isSuperUser() ? \Entities\User::$PRIVILEGES_TEXT : \Entities\User::$PRIVILEGES_TEXT_NONSUPERUSER, 'name' )
-                ->addClass( 'chzn-select' )
-                ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/usage/users/#types-of-users">'
-                    . 'the official documentation here</a>.'
-                );
-            ?>
+                </table>
 
-            <?php if( Auth::getUser()->isSuperUser() ): ?>
-
-                <?= Former::select( 'custid_' . Auth::getUser()->getCustomer()->getId() )
-                    ->id( 'cust' )
-                    ->label( 'Customer' )
-                    ->placeholder( 'Select a customer' )
-                    ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
-                    ->addClass( 'chzn-select' )
-                    ->blockHelp( "The customer to create the user for.<br><br>If creating a customer for your own IXP, then pick the IXP customer entry." );
+                <?= Former::hidden( 'existingUserId' )
+                    ->id( 'existingUserId' )
+                    ->value( null )
                 ?>
 
-            <?php else: ?>
+                <?= Former::select( 'privs_' . Auth::getUser()->getCustomer()->getId() )
+                    ->id( 'privs' )
+                    ->label( 'Privileges' )
+                    ->placeholder( 'Select a privilege' )
+                    ->fromQuery( Auth::getUser()->isSuperUser() ? \Entities\User::$PRIVILEGES_TEXT : \Entities\User::$PRIVILEGES_TEXT_NONSUPERUSER, 'name' )
+                    ->addClass( 'chzn-select' )
+                    ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/usage/users/#types-of-users">'
+                        . 'the official documentation here</a>.'
+                    );
+                ?>
 
-                <?= Former::hidden( 'custid_' . Auth::getUser()->getCustomer()->getId() )->value( Auth::getUser()->getCustomer()->getId() ) ?>
+                <?php if( Auth::getUser()->isSuperUser() ): ?>
 
-            <?php endif; ?>
+                    <?= Former::select( 'custid_' . Auth::getUser()->getCustomer()->getId() )
+                        ->id( 'cust' )
+                        ->label( 'Customer' )
+                        ->placeholder( 'Select a customer' )
+                        ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
+                        ->addClass( 'chzn-select' )
+                        ->blockHelp( "The customer to create the user for.<br><br>If creating a customer for your own IXP, then pick the IXP customer entry." );
+                    ?>
 
-            <?= Former::actions(
-                Former::primary_submit( 'Add User' ),
-                Former::secondary_link( 'Cancel' )->href( $cancel_url ),
-                Former::success_button( 'Help' )->id( 'help-btn' )
-            );
-            ?>
-        </div>
+                <?php else: ?>
+
+                    <?= Former::hidden( 'custid_' . Auth::getUser()->getCustomer()->getId() )->value( Auth::getUser()->getCustomer()->getId() ) ?>
+
+                <?php endif; ?>
+
+                <?= Former::actions(
+                    Former::primary_submit( 'Add User' ),
+                    Former::secondary_link( 'Cancel' )->href( $cancel_url ),
+                    Former::success_button( 'Help' )->id( 'help-btn' )
+                );
+                ?>
+            </div>
+
         <?php else: ?>
+
             <div class="col-sm-12">
 
                 <?= Former::text( 'name' )
@@ -258,16 +261,13 @@
 
                 <?php endif; ?>
 
-
-
-
             </div>
 
             <?= Former::actions(
                 Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' ),
                 Former::secondary_link( 'Cancel' )->href( $cancel_url ),
                 Former::success_button( 'Help' )->id( 'help-btn' )
-            );
+                );
             ?>
 
 

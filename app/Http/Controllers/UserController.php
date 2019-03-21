@@ -343,6 +343,7 @@ class UserController extends Doctrine2Frontend {
 
             } else {
 
+                // if we provide the customer via the customer overview tab user
                 if( request()->input( "cust" ) && ( $cust = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "cust" ) ) ) ){
                     $dataCust = [
                         'custid'                    => $cust->getId(),
