@@ -1,38 +1,40 @@
 <script>
-    $(document).on('click', ".delete-cu2" ,function(e){
-        e.preventDefault();
 
-        let custid = $(this).attr( "data-customer" );
-        let userid = $(this).attr( "data-user" );
+    $( document ).on( 'click', '.d2f-list-delete', function( event ) {
 
-        let urlDelete  = "<?= url( 'user' ) ?>/" + userid + "/delete-customer/" + custid;
+        event.preventDefault();
 
-        bootbox.confirm({
-            message: `Do you really want to remove the association user/customer ?` ,
+        let objectId    = $(this).attr( "data-object-id" );
+        let custId      = $(this).attr( "data-cust-id" );
+
+        let html = `<form id="d2f-form-delete" method="POST" action="<?= route($t->feParams->route_prefix.'@delete' ) ?>">
+                                <div>Do you really want to delete this <?= $t->feParams->nameSingular ?>?</div>
+                                <?php if( isset( $t->feParams->extraDeleteMessage ) ): ?><div> <?= $t->feParams->extraDeleteMessage ?> </div><?php endif;?>
+                                <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                                <input type="hidden" name="id" value="${objectId}">
+                                <input type="hidden" name="custid" value="${custId}">
+                            </form>`;
+
+        bootbox.dialog({
+            message: html,
+            title: "Delete <?= $t->feParams->titleSingular ?>",
             buttons: {
                 cancel: {
-                    label: 'Cancel',
-                    className: 'btn-primary'
+                    label: 'Close',
+                    className: 'btn-secondary',
+                    callback: function () {
+                        $('.bootbox.modal').modal('hide');
+                        return false;
+                    }
                 },
-                confirm: {
-                    label: 'Remove',
-                    className: 'btn-danger'
-                }
-            },
-            callback: function ( result ) {
-                if( result) {
-                    $.ajax( urlDelete ,{
-                        type : 'POST'
-                    })
-                        .done( function( data ) {
-                            window.location.href = "<?= route( 'user@list' ) ?>";
-                        })
-                        .fail( function(){
-                            throw new Error( `Error running ajax query for ${urlDelete}` );
-                        })
-                }
+                submit: {
+                    label: 'Delete',
+                    className: 'btn-danger',
+                    callback: function () {
+                        $('#d2f-form-delete').submit();
+                    }
+                },
             }
         });
-
     });
 </script>

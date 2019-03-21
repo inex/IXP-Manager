@@ -127,6 +127,14 @@
         pointer-events: none;
         cursor: default;
     }
+
+    .dataTable .dropdown-item:focus, .dropdown-item:hover{
+        width: auto;
+        color: #16181b;
+        text-decoration: none;
+        background-color: #f8f9fa;
+
+    }
     /*
     ####################################################
     M E D I A  Q U E R I E S

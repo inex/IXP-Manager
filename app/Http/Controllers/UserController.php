@@ -120,13 +120,13 @@ class UserController extends Doctrine2Frontend {
                         'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                         'controller' => 'customer',
                         'action'     => 'overview',
-                        'idField'    => 'custid'
+                        'idField'    => 'custid',
                     ],
 
                     'privileges'    => [
                         'title'     => 'Privileges',
                         'type'      => self::$FE_COL_TYPES[ 'XLATE' ],
-                        'xlator'    => UserEntity::$PRIVILEGES_TEXT
+                        'xlator'    => UserEntity::$PRIVILEGES_TEXT,
                     ],
 
                     'disabled'       => [
@@ -136,13 +136,13 @@ class UserController extends Doctrine2Frontend {
 
                     'created'       => [
                         'title'     => 'Created',
-                        'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
+                        'type'      => self::$FE_COL_TYPES[ 'DATETIME' ],
                     ],
 
                     'lastupdated'   => [
                         'title'     => 'Updated',
-                        'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
-                    ]
+                        'type'      => self::$FE_COL_TYPES[ 'DATETIME' ],
+                    ],
                 ];
 
                 break;
@@ -159,7 +159,7 @@ class UserController extends Doctrine2Frontend {
                     'privileges'    => [
                         'title'     => 'Privileges',
                         'type'      => self::$FE_COL_TYPES[ 'XLATE' ],
-                        'xlator'    => UserEntity::$PRIVILEGES_TEXT
+                        'xlator'    => UserEntity::$PRIVILEGES_TEXT,
                     ],
 
                     'disabled'       => [
@@ -169,8 +169,8 @@ class UserController extends Doctrine2Frontend {
 
                     'created'       => [
                         'title'         => 'Created',
-                        'type'          => self::$FE_COL_TYPES[ 'DATETIME' ]
-                    ]
+                        'type'          => self::$FE_COL_TYPES[ 'DATETIME' ],
+                    ],
                 ];
                 break;
 
@@ -308,32 +308,41 @@ class UserController extends Doctrine2Frontend {
 
             if( $id !== null ) {
 
-                var_dump( 1 );
                 if( !( $this->object = D2EM::getRepository( UserEntity::class )->find( $id ) ) ) {
                     abort(404, 'User not found');
                 }
 
                 if( !Auth::getUser()->isSuperUser() ){
-                    if( !( $this->c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => Auth::getUser()->getCustomer()->getId() , "user" => $this->object->getId() ] ) ) ){
+                    if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "customer" => Auth::getUser()->getCustomer()->getId() , "user" => $this->object->getId() ] ) ) ){
                         $this->unauthorized();
                     }
                 } else {
-
+                    if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "user" => $this->object->getId() ] ) ) ){
+                        $this->unauthorized();
+                    }
                 }
 
-                
-                Former::populate([
+                $dataCust = [
                     'name'             => array_key_exists( 'name',                $old ) ? $old['name']                 : $this->object->getName(),
                     'username'         => array_key_exists( 'username',            $old ) ? $old['username']             : $this->object->getUsername(),
-                    //'custid'           => array_key_exists( 'custid',              $old ) ? $old['custid']               : $this->c2u->getCustomer()->getId(),
                     'email'            => array_key_exists( 'email',               $old ) ? $old['email']                : $this->object->getEmail(),
                     'authorisedMobile' => array_key_exists( 'authorisedMobile',    $old ) ? $old['authorisedMobile']     : $this->object->getAuthorisedMobile(),
                     'enabled'          => array_key_exists( 'enabled',             $old ) ? ( $old['enabled'] ? 1 : 0 )  : ( $this->object->getDisabled() ? 0 : 1 ),
-                    //'privs'            => array_key_exists( 'privs',               $old ) ? $old['privs']                : $this->c2u->getPrivs(),
-                ]);
+                ];
+
+                $datac2u = [];
+
+                /** @var CustomerToUserEntity $c2u */
+                foreach( $listC2u as $c2u ){
+                    $datac2u[ 'custid_' . $c2u->getCustomer()->getId() ] = array_key_exists( 'custid',  $old    ) ? $old[ 'custid' . $c2u->getCustomer()->getId()  ]   : $c2u->getCustomer()->getId();
+                    $datac2u[ 'privs_'  . $c2u->getCustomer()->getId() ] = array_key_exists( 'privs_',  $old    ) ? $old[ 'privs_' . $c2u->getCustomer()->getId()  ]   : $c2u->getPrivs();
+                }
+
+
+                Former::populate( array_merge( $dataCust, $datac2u ) );
 
             } else {
-                var_dump( 2 );
+
                 if( request()->input( "cust" ) && ( $cust = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "cust" ) ) ) ){
                     $dataCust = [
                         'custid'                    => $cust->getId(),
@@ -388,6 +397,62 @@ class UserController extends Doctrine2Frontend {
     }
 
 
+
+
+
+
+
+
+    /**
+     * Function to add to an existing user a new customer
+     *
+     * @param Request $request
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function storeCustomerToExistingUser( Request $request ){
+
+        $validator = Validator::make( $request->all(), [
+            'custid_'. Auth::getUser()->getCustomer()->getId()              => 'required|integer|exists:Entities\Customer,id',
+            'existingUserId'                                                => 'required|integer|exists:Entities\User,id',
+            'privs_'. Auth::getUser()->getCustomer()->getId()               => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ),
+        ] );
+
+        if( !$request->input( 'existingUserId' ) ){
+            AlertContainer::push( "You need to select one User from the list." , Alert::DANGER );
+        }
+
+        if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => $request->input( 'custid_'. Auth::getUser()->getCustomer()->getId() ) , "user" => $request->input( 'existingUserId' ) ] ) ){
+            AlertContainer::push( "The association User/Customer already exist." , Alert::DANGER );
+            return Redirect::back()->withErrors($validator)->withInput();
+        }
+
+        if( $validator->fails() ) {
+            return Redirect::back()->withErrors($validator)->withInput();
+        }
+
+        $this->feParams->nameSingular = "Customer2User";
+
+        /** @var UserEntity $existingUser */
+        $existingUser = D2EM::getRepository( UserEntity::class )->find( $request->input( 'existingUserId' ) );
+
+        $this->object = new CustomerToUserEntity;
+        D2EM::persist( $this->object );
+
+        $this->object->setCustomer(     D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid_'. Auth::getUser()->getCustomer()->getId() ) ) );
+        $this->object->setUser(         $existingUser                   );
+        $this->object->setPrivs(        $request->input( 'privs_'. Auth::getUser()->getCustomer()->getId() ) );
+        $this->object->setCreatedAt(    new \DateTime                   );
+
+        D2EM::flush();
+
+        event( new WelcomeEvent( $existingUser, false ) );
+
+    }
+
+
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
@@ -403,73 +468,73 @@ class UserController extends Doctrine2Frontend {
         // If the User already exist
         if( $request->input( 'existingUser' ) ) {
 
-            $validator = Validator::make( $request->all(), [
-                'custid'            => 'required|integer|exists:Entities\Customer,id',
-                'existingUserId'    => 'required|integer|exists:Entities\User,id',
-                'privs'             => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ),
-            ] );
+            $this->storeCustomerToExistingUser( $request );
 
-            if( $request->input( 'existingUserId' ) == null ){
-                AlertContainer::push( "You need to select one User from the list." , Alert::DANGER );
-            }
+        } else {
 
-            if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => $request->input( 'custid' ) , "user" => $request->input( 'existingUserId' ) ] ) ){
-                AlertContainer::push( "The association User/Customer already exist." , Alert::DANGER );
-                return Redirect::back()->withErrors($validator)->withInput();
-            }
+            $isEditing = $request->input( 'id' ) ? true : false;
 
-        }else{
+            $infoArray  = [];
+            $datac2u    = [];
+
             // If its a superuser or if we are adding a new user
-            if( Auth::getUser()->isSuperUser() || !$request->input( 'id' ) ) {
-                $validator = Validator::make( $request->all(), [
-                    'name'             => 'required|string|max:255',
-                    'username'         => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_]{3,255}$/|unique:Entities\User,username' . ( $request->input( 'id' ) ? ',' . $request->input( 'id' ) : '' ),
-                    'custid'           => 'required|integer|exists:Entities\Customer,id',
-                    'email'            => 'required|email|max:255',
-                    'authorisedMobile' => 'nullable|string|max:50',
-                    'privs'            => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ),
-                ] );
-            }else{
-                // If custadmin editing
-                $validator = Validator::make( $request->all(), [
-                    'privs'            => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ),
-                ] );
+            if( Auth::getUser()->isSuperUser() || !$isEditing ) {
+                $infoArray = [
+                    'name'                                              => 'required|string|max:255',
+                    'username'                                          => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_]{3,255}$/|unique:Entities\User,username' . ( $request->input( 'id' ) ? ',' . $request->input( 'id' ) : '' ),
+                    'email'                                             => 'required|email|max:255',
+                    'authorisedMobile'                                  => 'nullable|string|max:50',
+                ];
+
+                if( !$isEditing ){
+
+                    $addUserInfo = [
+                        'custid_'. Auth::getUser()->getCustomer()->getId()  => 'required|integer|exists:Entities\Customer,id',
+                        'privs_'. Auth::getUser()->getCustomer()->getId()   => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) )
+                    ];
+
+                    $infoArray = array_merge( $infoArray, $addUserInfo );
+
+                }
+
             }
-        }
 
-        if( $validator->fails() ) {
-            return Redirect::back()->withErrors($validator)->withInput();
-        }
+            if( $isEditing ){
 
-        // Existing user, we create the CustomerToUser association
-        if( $request->input( 'existingUser' ) ) {
-
-            $this->feParams->nameSingular = "Customer2User";
-
-            /** @var UserEntity $existingUser */
-            $existingUser = D2EM::getRepository( UserEntity::class )->find( $request->input( 'existingUserId' ) );
-
-            $this->object = new CustomerToUserEntity;
-            D2EM::persist( $this->object );
-
-            $this->object->setCustomer(     D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) );
-            $this->object->setUser(         $existingUser                   );
-            $this->object->setPrivs(        $request->input( 'privs' ) );
-            $this->object->setCreatedAt(    new \DateTime                   );
-
-            D2EM::flush();
-
-            event( new WelcomeEvent( $existingUser, false ) );
-
-        } else{
-            // Editing user
-            if( $request->input( 'id', false ) ) {
                 if( !( $this->object = D2EM::getRepository( UserEntity::class )->find( $request->input( 'id' ) ) ) ) {
                     abort(404, 'User not found');
                 }
 
-            } else {
+                // Getting the Customer2User the user and customer that we are loggued
+                if( !Auth::getUser()->isSuperUser() ){
+                    if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "customer" => Auth::getUser()->getCustomer()->getId() , "user" => $this->object->getId() ] ) ) ){
+                        $this->unauthorized();
+                    }
+                } else {
 
+                    // Get the list of customer2user for the user
+                    if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "user" => $this->object->getId() ] ) ) ){
+                        $this->unauthorized();
+                    }
+                }
+
+                $datac2u = [];
+
+                /** @var CustomerToUserEntity $c2u */
+                foreach( $listC2u as $c2u ){
+                    $datac2u[ 'custid_' . $c2u->getCustomer()->getId() ] = 'required|integer|exists:Entities\Customer,id';
+                    $datac2u[ 'privs_'  . $c2u->getCustomer()->getId() ] = 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) );
+                }
+            }
+
+            $validator = Validator::make( $request->all(), array_merge( $infoArray , $datac2u ) );
+
+            if( $validator->fails() ) {
+                return Redirect::back()->withErrors($validator)->withInput();
+            }
+
+
+            if( !$isEditing ) {
                 // Adding user
                 $this->object = new UserEntity;
                 D2EM::persist( $this->object );
@@ -504,13 +569,16 @@ class UserController extends Doctrine2Frontend {
 
             $originalPrivs = $this->object->getPrivs();
 
+            // Adding new user => set customer and priv
+            if( !$this->object->getId() ){
+                if( Auth::user()->isSuperUser() ) {
+                    $this->object->setPrivs( $request->input( 'privs_'. Auth::getUser()->getCustomer()->getId() ) );
+                    $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid_'. Auth::getUser()->getCustomer()->getId() ) ) );
 
-            if( Auth::user()->isSuperUser() ) {
-                $this->object->setPrivs( $request->input( 'privs' ) );
-                $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) );
-            } else {
-                $this->object->setPrivs( $request->input( 'privs' ) < UserEntity::AUTH_SUPERUSER ? $request->input( 'privs' ) : UserEntity::AUTH_CUSTUSER );
-                $this->object->setCustomer( Auth::getUser()->getCustomer() );
+                } else {
+                    $this->object->setPrivs( $request->input( 'privs_' . Auth::getUser()->getCustomer()->getId() ) < UserEntity::AUTH_SUPERUSER ? $request->input( 'privs_' . Auth::getUser()->getCustomer()->getId() ) : UserEntity::AUTH_CUSTUSER );
+                    $this->object->setCustomer( Auth::getUser()->getCustomer() );
+                }
             }
 
 
@@ -526,34 +594,50 @@ class UserController extends Doctrine2Frontend {
 
             D2EM::flush();
 
-            // Adding A non existing user /Editing
-            if( !$request->input( 'existingUser' ) ) {
-                // Editing
-                if( $request->input( 'id', false ) ) {
+
+            // Editing
+            if( $isEditing ) {
+
+                $listC2u = [];
+                if( Auth::getUser()->isSuperUser() ){
                     // Getting the CustomerToUser object
-                    if( !( $this->c2u = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "user" => $request->input( 'id' ) , "customer" => $request->input( 'custid' ) ] ) ) ) {
+                    if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class )->findBy( [ "user" => $request->input( 'id' ) ] ) ) ) {
                         abort(404, 'Customer to user link not found');
                     }
-
                 } else {
-                    // Creating the CustomerToUser object
-                    $this->c2u = new CustomerToUserEntity();
-                    D2EM::persist( $this->c2u );
-
-                    $this->c2u->setCustomer(  $this->object->getCustomer()  );
-                    $this->c2u->setUser(  $this->object  );
-                    $this->c2u->setCreatedAt(  new \DateTime  );
-
+                    // Getting the CustomerToUser object
+                    if( !( $listC2u[] = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "user" => $request->input( 'id' ), "customer" => Auth::getUser()->getCustomer()->getId() ] ) ) ) {
+                        abort(404, 'Customer to user link not found');
+                    }
                 }
 
-                $this->c2u->setPrivs( $request->input( 'privs' ) );
+                /** @var CustomerToUserEntity $c2u */
+                foreach( $listC2u as $c2u ){
+                    $c2u->setPrivs(     $request->input( 'privs_'   . $c2u->getCustomer()->getId() ) );
+                    $c2u->setCustomer(  D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid_'  . $c2u->getCustomer()->getId() ) ) );
+                }
 
-                D2EM::flush();
+
+            } else {
+                // Creating the CustomerToUser object
+                $this->c2u = new CustomerToUserEntity();
+                D2EM::persist( $this->c2u );
+
+                $this->c2u->setCustomer(  $this->object->getCustomer()  );
+                $this->c2u->setUser(  $this->object  );
+                $this->c2u->setCreatedAt(  new \DateTime  );
+                $this->c2u->setPrivs( $request->input( 'privs_' . Auth::getUser()->getCustomer()->getId() ) );
+
             }
 
-            if( !$request->input( 'id') ) {
+
+            D2EM::flush();
+
+
+            if( !$isEditing ) {
                 event( new WelcomeEvent( $this->object, false ) );
             }
+
         }
 
         return true;
@@ -591,50 +675,104 @@ class UserController extends Doctrine2Frontend {
      * The object to be deleted is available via `$this->>object`
      *
      * @return bool Return false to stop / cancel the deletion
+     * @throws
      */
     protected function preDelete(): bool {
+        $c = null;
 
-        if( !Auth::getUser()->isSuperUser() ) {
-            if( $this->object->getCustomer()->getId() != Auth::getUser()->getCustomer()->getId() ) {
-                Log::notice( Auth::getUser()->getUsername() . " tried to delete other customer user " . $this->object->getUsername() );
-                abort( 401, 'You are not authorised to delete this user. The administrators have been notified.' );
-            }
-        }
+        $deleteWholeUser = false;
 
         if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( request()->input( 'id' ) ) ) ) {
             return abort( '404', 'User not found' );
         }
 
-        // delete all the user's preferences
-        foreach( $this->object->getPreferences() as $pref ) {
-            $this->object->removePreference( $pref );
-            D2EM::remove( $pref );
-        }
-
-        // delete all the user's login records
-        foreach( $this->object->getLastLogins() as $ll ) {
-            $this->object->removeLastLogin( $ll );
-            D2EM::remove( $ll );
-        }
-
-        // delete all the user's API keys
-        foreach( $this->object->getApiKeys() as $ak ) {
-            $this->object->removeApiKey( $ak );
-            D2EM::remove( $ak );
+        if( !Auth::getUser()->isSuperUser() ) {
+            if( !D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "user" => $this->object , "customer" => Auth::getUser()->getCustomer()->getId() ] ) ) {
+                Log::notice( Auth::getUser()->getUsername() . " tried to delete other customer user " . $this->object->getUsername() );
+                abort( 401, 'You are not authorised to delete this user. The administrators have been notified.' );
+            }
         }
 
 
-        // delete all the C2U for the user
-        foreach( $this->object->getCustomers2User() as $c2u ) {
+        if( !Auth::getUser()->isSuperUser() && !request()->input( 'custid' ) ){
+            redirect::to( "/" );
+        }
+
+        if( request()->input( 'custid' ) ){
+            if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( request()->input( 'custid' ) ) ) ) {
+                return abort( '404', 'Customer not found' );
+            }
+        }
+
+
+
+        if( Auth::getUser()->isSuperUser() && !$c ){
+            $deleteWholeUser = true;
+        } elseif( count( $this->object->getCustomers() ) == 1  ){
+            $deleteWholeUser = true;
+        }
+
+
+        // delete the user and everything linked to this user
+        if( $deleteWholeUser  ){
+
+            // delete all the user's preferences
+            foreach( $this->object->getPreferences() as $pref ) {
+                $this->object->removePreference( $pref );
+                D2EM::remove( $pref );
+            }
+
+            // delete all the user's login records
+            foreach( $this->object->getLastLogins() as $ll ) {
+                $this->object->removeLastLogin( $ll );
+                D2EM::remove( $ll );
+            }
+
+            // delete all the user's API keys
+            foreach( $this->object->getApiKeys() as $ak ) {
+                $this->object->removeApiKey( $ak );
+                D2EM::remove( $ak );
+            }
+
+
+            // delete all the C2U for the user
+            foreach( $this->object->getCustomers2User() as $c2u ) {
+                $this->object->removeCustomer( $c2u );
+                D2EM::remove( $c2u );
+            }
+
+            if( request()->input( "redirect-to" ) ) {
+                session()->put( "ixp_user_delete_custid", $this->object->getCustomer()->getId() );
+            }
+
+            Cache::forget( 'oss_d2u_user_' . $this->object->getId() );
+
+        } else {
+
+            // Delete the customer2user link
+            if( !( $c2u = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "user" => $this->object , "customer" => $c ] ) ) ) {
+                return abort( '404', 'Customer2User not found' );
+            }
+
+            if( $this->object->getCustomer()->getId() == $c->getId() ){
+                // Will set a new when login
+                $this->object->setCustomer( null );
+            }
+
             $this->object->removeCustomer( $c2u );
             D2EM::remove( $c2u );
+
+            D2EM::flush();
+
+            AlertContainer::push( 'The link customer/user ( ' . $c->getName() . '/' . $this->object->getName() . ' ) has been deleted.', Alert::SUCCESS );
+
+            Log::notice( Auth::getUser()->getUsername()." deleted customer2user" . $c->getName() . '/' . $this->object->getName() );
+
+            // We do not want to delete the user, just the customer2user link
+            return false;
+
         }
 
-        if( request()->input( "redirect-to" ) ) {
-            session()->put( "ixp_user_delete_custid", $this->object->getCustomer()->getId() );
-        }
-
-        Cache::forget( 'oss_d2u_user_' . $this->object->getId() );
         Log::notice( Auth::getUser()->getUsername()." deleted user" . $this->object->getUsername() );
 
         return true;
@@ -694,7 +832,7 @@ class UserController extends Doctrine2Frontend {
         }
 
         return view( 'user/list-customers' )->with([
-            'user'                          => $user
+            'user'                          => $user,
         ]);
     }
 
