@@ -135,7 +135,7 @@
             <?php $countVi = 1 ?>
             <?php foreach( $c->getVirtualInterfaces() as $vi ):
 
-                if( !$vi->isConnected() ) {
+                if( !$vi->isConnected() || !$vi->isPeeringPort() ) {
                     continue;
                 }
             ?>
@@ -190,6 +190,7 @@
                                         IPv4 not enabled.
                                     <?php endif; ?>
                                 </p>
+                                <br>
 
                             <?php endforeach; ?>
                         <?php endif; ?>

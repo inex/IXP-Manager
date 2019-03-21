@@ -836,6 +836,18 @@ class VirtualInterface
     }
 
     /**
+     * Is this a peering port?
+     *
+     *  @return bool
+     */
+    public function isPeeringPort(): bool {
+        foreach( $this->getPhysicalInterfaces() as $pi ) {
+            return $pi->getSwitchPort()->isTypePeering();
+        }
+    }
+
+
+    /**
      * Convenience function to resolve the infrastructure of a virtual interface
      *
      * @return Infrastructure|null
