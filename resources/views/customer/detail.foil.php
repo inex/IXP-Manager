@@ -48,7 +48,7 @@
                             - <?=  $t->ee( $c->getPeeringmacro() ) ?>
                         <?php endif; ?>
 
-                        - since <?= $c->getDatejoin()->format('Y') ?>
+                        - joined <?= $c->getDatejoin()->format('Y') ?>
                     </p>
 
                     <?php if( !$t->c->isTypeAssociate() ): ?>
@@ -140,14 +140,17 @@
                 }
             ?>
 
-            <div class="col-12 col-md-6 col-lg-4 mt-4">
+            <div class="col-12 col-md-6 col-xl-4 mt-4">
 
                 <div class="max-w-sm rounded overflow-hidden shadow-lg">
                     <div class="px-6 py-4">
+
                         <div class="font-bold text-xl mb-2">
                             <?= $vi->getInfrastructure() ? $vi->getInfrastructure()->getName() : '<em>Unknwon Infrastructure</em>' ?>
-                            -
-                            <?= $t->scaleBits( $vi->speed() * 1000 * 1000, 0 ) ?>
+
+                            <span class="block float-right ml-4 text-lg font-semibold">
+                                <?= $t->scaleBits( $vi->speed() * 1000 * 1000, 0 ) ?>
+                            </span>
 
                         </div>
 
