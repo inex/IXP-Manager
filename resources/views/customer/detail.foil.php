@@ -180,14 +180,10 @@
 
                                     <?php if( $vli->getIpv6enabled() and $vli->getIpv6address() ): ?>
                                         <?= $vli->getIPv6Address()->getAddress() ?>
-                                    <?php else: ?>
-                                        IPv6 not enabled.
                                     <?php endif; ?>
                                     <br>
                                     <?php if( $vli->getIpv4enabled() and $vli->getIpv4address() ): ?>
                                         <?= $vli->getIPv4Address()->getAddress() ?>
-                                    <?php else: ?>
-                                        IPv4 not enabled.
                                     <?php endif; ?>
                                 </p>
                                 <br>
