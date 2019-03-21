@@ -55,14 +55,14 @@
 
                             <?php if( $c->getInManrs() ): ?>
                                 <a href="https://www.manrs.org/" target="_blank" class="hover:no-underline">
-                                        <span class="border border-green p-1 rounded-full text-green text-uppercase text-xs mr-3" style="border-color: #38c172 !important;">
+                                        <span class="inline-block border border-green p-1 rounded-full text-green-dark font-semibold text-uppercase text-sm px-3 py-1 mr-3" style="border-color: #38c172 !important;">
                                             MANRS
                                         </span>
                                 </a>
                             <?php endif; ?>
 
                             <?php if( $c->getPeeringpolicy() != \Entities\Customer::PEERING_POLICY_OPEN ): ?>
-                                <span class="border border-black p-1 rounded-full text-black text-uppercase text-xs mr-3" style="border-color: #000000 !important;">
+                                <span class="inline-block border border-black p-1 rounded-full text-black text-uppercase text-sm px-3 py-1 mr-3" style="border-color: #000000 !important;">
                                     <?= $c->getPeeringpolicy() ?>
                                 </span>
                             <?php endif; ?>
