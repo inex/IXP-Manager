@@ -180,8 +180,8 @@
 
                                     <?php if( $vli->getIpv6enabled() and $vli->getIpv6address() ): ?>
                                         <?= $vli->getIPv6Address()->getAddress() ?>
+                                        <br>
                                     <?php endif; ?>
-                                    <br>
                                     <?php if( $vli->getIpv4enabled() and $vli->getIpv4address() ): ?>
                                         <?= $vli->getIPv4Address()->getAddress() ?>
                                     <?php endif; ?>
