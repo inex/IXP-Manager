@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.21, for Linux (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.25, for Linux (x86_64)
 --
 -- Host: localhost    Database: ixpmanager
 -- ------------------------------------------------------
--- Server version	5.7.21
+-- Server version	5.7.25
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -44,8 +44,37 @@ CREATE TABLE `api_keys` (
 
 LOCK TABLES `api_keys` WRITE;
 /*!40000 ALTER TABLE `api_keys` DISABLE KEYS */;
-INSERT INTO `api_keys` VALUES (2,4,'daEpzL0faxeFHDPGP3JmXDutMQTMZxOlzk7LErYnIGUBK2Zt',NULL,'','2018-01-19 12:03:30','2018-11-21 07:01:57','fd99::30');
+INSERT INTO `api_keys` VALUES (2,4,'daEpzL0faxeFHDPGP3JmXDutMQTMZxOlzk7LErYnIGUBK2Zt',NULL,'','2018-01-19 12:03:30','2019-03-21 06:15:25','fd99::30');
 /*!40000 ALTER TABLE `api_keys` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `bgp_sessions`
+--
+
+DROP TABLE IF EXISTS `bgp_sessions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `bgp_sessions` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `srcipaddressid` int(11) NOT NULL,
+  `protocol` int(11) NOT NULL,
+  `dstipaddressid` int(11) NOT NULL,
+  `packetcount` int(11) NOT NULL DEFAULT '0',
+  `last_seen` datetime NOT NULL,
+  `source` varchar(40) COLLATE utf8_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `src_protocol_dst` (`srcipaddressid`,`protocol`,`dstipaddressid`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `bgp_sessions`
+--
+
+LOCK TABLES `bgp_sessions` WRITE;
+/*!40000 ALTER TABLE `bgp_sessions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `bgp_sessions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -280,7 +309,7 @@ CREATE TABLE `contact` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_4C62E638A76ED395` (`user_id`),
   KEY `IDX_4C62E638DA0209B9` (`custid`),
-  CONSTRAINT `FK_4C62E638A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `FK_4C62E638A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE SET NULL,
   CONSTRAINT `FK_4C62E638DA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1703,6 +1732,8 @@ CREATE TABLE `user` (
   `lastupdatedby` int(11) DEFAULT NULL,
   `creator` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created` datetime DEFAULT NULL,
+  `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_8D93D649F85E0677` (`username`),
   KEY `IDX_8D93D649DA0209B9` (`custid`),
@@ -1716,7 +1747,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (4,1,'docker','$2y$10$3wob28r7Oqlfwmqw0mFUq.k0/JHdXv4tONZ3wrjI87zDMCeENmg0y','joe@example.com',NULL,NULL,3,0,'2018-01-18 21:27:41',1,'vagrant','2018-01-18 21:27:41'),(5,4,'as112admin','$2y$10$pW.5k3BxS74UbSH5HCOlhOJXzHgUioMAUd8hoHicW.u.lZkFFXkWS','joe@exmaple.com',NULL,NULL,2,0,'2018-01-18 21:29:48',4,'docker','2018-01-18 21:29:48'),(6,4,'as112user','$2y$10$WjV0rRnERI/.IFQZXxzKle03xXueC6RayuYiT6CKtuU84uQhG2a.G','joe@example.com',NULL,NULL,1,0,'2018-01-18 21:30:16',4,'docker','2018-01-18 21:30:16');
+INSERT INTO `user` VALUES (4,1,'docker','$2y$10$3wob28r7Oqlfwmqw0mFUq.k0/JHdXv4tONZ3wrjI87zDMCeENmg0y','joe@example.com',NULL,NULL,3,0,'2018-01-18 21:27:41',1,'vagrant','2018-01-18 21:27:41',NULL,NULL),(5,4,'as112admin','$2y$10$pW.5k3BxS74UbSH5HCOlhOJXzHgUioMAUd8hoHicW.u.lZkFFXkWS','joe@exmaple.com',NULL,NULL,2,0,'2018-01-18 21:29:48',4,'docker','2018-01-18 21:29:48',NULL,NULL),(6,4,'as112user','$2y$10$WjV0rRnERI/.IFQZXxzKle03xXueC6RayuYiT6CKtuU84uQhG2a.G','joe@example.com',NULL,NULL,1,0,'2018-01-18 21:30:16',4,'docker','2018-01-18 21:30:16',NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1736,7 +1767,7 @@ CREATE TABLE `user_logins` (
   KEY `IDX_6341CC99A76ED395` (`user_id`),
   KEY `at_idx` (`at`,`user_id`),
   CONSTRAINT `FK_6341CC99A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1745,7 +1776,7 @@ CREATE TABLE `user_logins` (
 
 LOCK TABLES `user_logins` WRITE;
 /*!40000 ALTER TABLE `user_logins` DISABLE KEYS */;
-INSERT INTO `user_logins` VALUES (6,4,'172.30.201.1','2018-01-18 21:27:49'),(7,4,'172.30.201.1','2018-01-19 11:57:53'),(8,4,'172.30.201.1','2018-01-22 13:43:03'),(9,4,'172.30.201.1','2018-11-21 07:03:47');
+INSERT INTO `user_logins` VALUES (6,4,'172.30.201.1','2018-01-18 21:27:49'),(7,4,'172.30.201.1','2018-01-19 11:57:53'),(8,4,'172.30.201.1','2018-01-22 13:43:03'),(9,4,'172.30.201.1','2018-11-21 07:03:47'),(10,4,'172.30.201.1','2019-03-21 06:42:14');
 /*!40000 ALTER TABLE `user_logins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1938,4 +1969,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2018-11-21  7:08:14
+-- Dump completed on 2019-03-21  6:43:09
