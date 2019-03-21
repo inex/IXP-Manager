@@ -195,7 +195,15 @@
                                     <?php endif; ?>
                                     <?php if( $vli->getIpv4enabled() and $vli->getIpv4address() ): ?>
                                         <?= $vli->getIPv4Address()->getAddress() ?>
+                                        <br>
+                                    <?php else: ?>
+                                        &nbsp;<br>
                                     <?php endif; ?>
+
+                                    <?php if( !$vli->getIpv6enabled() ): ?>
+                                        &nbsp;<br>
+                                    <?php endif; ?>
+
                                 </p>
                                 <br>
 
@@ -203,7 +211,7 @@
                         <?php endif; ?>
 
                     </div>
-                    <div class="px-6 py-4">
+                    <div class="px-6 pb-4">
 
                         <?php if( $vi->getVlanInterfaces() ): ?>
 
