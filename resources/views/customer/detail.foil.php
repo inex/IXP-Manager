@@ -41,12 +41,8 @@
                         <span class="text-sm"><?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?></span>
                     </h3>
 
-                    <p>
+                    <p class="mt-2">
                         <a href="<?= $t->c->getCorpwww() ?>" target="_blank"><?= $t->nakedUrl( $t->c->getCorpwww() ) ?></a>
-
-                        <?php if( !$c->isTypeAssociate() && strlen( $c->getPeeringmacro() ?? "" ) ): ?>
-                            - <?=  $t->ee( $c->getPeeringmacro() ) ?>
-                        <?php endif; ?>
 
                         - joined <?= $c->getDatejoin()->format('Y') ?>
                     </p>
@@ -120,6 +116,18 @@
                             <?php endif; ?>
                         </div>
                     </div>
+
+                    <?php if( !$c->isTypeAssociate() && strlen( $c->getPeeringmacro() ?? "" ) ): ?>
+                        <div class="row">
+                            <div class="col-12 col-md-3 text-center md:ixpm-im-text-right">
+                                <span class="font-bold mr-3">Peering&nbsp;Macro:</span>
+                            </div>
+                            <div class="col-12 col-md-9 text-center md:ixpm-im-text-left">
+                                <?=  $t->ee( $c->getPeeringmacro() ) ?>
+                            </div>
+                        </div>
+                    <?php endif; ?>
+
 
                 </div>
             </div>
