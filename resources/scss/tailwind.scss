@@ -36,6 +36,37 @@
  * @import "components/forms";
  */
 
+
+
+.ixpm-table a {
+  @apply text-blue-dark no-underline;
+}
+
+.ixpm-table a:hover {
+  @apply text-blue underline;
+}
+
+
+/* barryo: Bootstrap4 is litered with !important's which override tailwindcss' versions of same, sigh. this creates later overrides: */
+
+@responsive {
+  .ixpm-im-text-right {
+    text-align: right !important;
+  }
+
+  .ixpm-im-text-left {
+    text-align: left !important;
+  }
+
+  .ixpm-im-mt-0 {
+    margin-top: 0 !important;
+  }
+
+  .ixpm-im-mt-4 {
+    margin-top: 1rem !important;
+  }
+}
+
 /**
  * This injects all of Tailwind's utility classes, generated based on your
  * config file.

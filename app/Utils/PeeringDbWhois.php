@@ -72,7 +72,7 @@ class PeeringDbWhois
 
         // assume this is for display on a website
         if( $htmlencode ) {
-            return htmlspecialchars( $data, ENT_QUOTES );
+            return clean( $data );
         }
 
         return $data;

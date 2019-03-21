@@ -45,10 +45,6 @@ return [
     // the primary / only / main peering LAN (the 'number' column in the vlan table)
     'primary_peering_lan_vlan_tag' => 1,
 
-    // The URL used to display PeeringDB entries.
-    // %ASN% is replaced with the customer's ASN
-    'peeringdb_url' => "https://www.peeringdb.com/view.php?asn=%ASN%",
-
     //;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     // Billing updates notifications
     //
