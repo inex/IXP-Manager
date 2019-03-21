@@ -66,9 +66,14 @@
 
                         <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                         <ul class="dropdown-menu dropdown-menu-right">
-                            <a class="dropdown-item" href="<?= route('user@welcome-email',  [ 'id' => $c2u->getUser()->getId(), 'resend' => 1 ] ) ?>">
-                                Resend welcome email
-                            </a>
+                            <form id="welcome-email" method="POST" action="<?= route('user@welcome-email' ) ?>">
+                                <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                                <input type="hidden" name="id" value="<?= $c2u->getUser()->getId() ?>">
+                                <input type="hidden" name="resend" value="1">
+                                <button class="dropdown-item" type="submit">
+                                    Resend welcome email
+                                </button>
+                            </form>
                             <a class="dropdown-item" href="<?= route( "login-history@view", [ 'id' => $c2u->getUser()->getId() ]   )              ?>">
                                 Login history
                             </a>

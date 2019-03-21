@@ -1,27 +1,6 @@
 <div class="card">
     <div class="card-body">
 
-        <?php
-        // need to figure out where the cancel button foes. shouldn't be this hard :-(
-        if( session()->get( 'user_post_store_redirect' ) === 'user@list' || session()->get( 'user_post_store_redirect' ) === 'user@add' ) {
-            $cancel_url = route('user@list' );
-        } else {
-            $custid = null;
-            if( isset( $t->data[ 'params'][ 'object'] ) && $t->data[ 'params'][ 'object'] instanceof \Entities\User ) {
-                $custid = $t->data[ 'params'][ 'object']->getCustomer()->getId();
-            } else if( session()->get( 'user_post_store_redirect_cid', null ) !== null ) {
-                $custid = session()->get( 'user_post_store_redirect_cid' );
-            }
-
-            if( $custid !== null ) {
-                $cancel_url = route( 'customer@overview', [ "id" => $custid,  "tab" => "users" ] );
-            } else {
-                $cancel_url = route( 'user@list' );
-            }
-        }
-
-        ?>
-
         <?= Former::open()->method( 'POST' )
             ->id( 'form' )
             ->action( route( $t->feParams->route_prefix . '@store' ) )
@@ -104,7 +83,7 @@
                     ->value( null )
                 ?>
 
-                <?= Former::select( 'privs_' . Auth::getUser()->getCustomer()->getId() )
+                <?= Former::select( 'privs' )
                     ->id( 'privs' )
                     ->label( 'Privileges' )
                     ->placeholder( 'Select a privilege' )
@@ -117,7 +96,7 @@
 
                 <?php if( Auth::getUser()->isSuperUser() ): ?>
 
-                    <?= Former::select( 'custid_' . Auth::getUser()->getCustomer()->getId() )
+                    <?= Former::select( 'custid' )
                         ->id( 'cust' )
                         ->label( 'Customer' )
                         ->placeholder( 'Select a customer' )
@@ -128,13 +107,13 @@
 
                 <?php else: ?>
 
-                    <?= Former::hidden( 'custid_' . Auth::getUser()->getCustomer()->getId() )->value( Auth::getUser()->getCustomer()->getId() ) ?>
+                    <?= Former::hidden( 'custid' ) ?>
 
                 <?php endif; ?>
 
                 <?= Former::actions(
                     Former::primary_submit( 'Add User' ),
-                    Former::secondary_link( 'Cancel' )->href( $cancel_url ),
+                    Former::secondary_link( 'Cancel' )->href( session()->get( 'user_post_store_redirect' ) ),
                     Former::success_button( 'Help' )->id( 'help-btn' )
                 );
                 ?>
@@ -265,7 +244,7 @@
 
             <?= Former::actions(
                 Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' ),
-                Former::secondary_link( 'Cancel' )->href( $cancel_url ),
+                Former::secondary_link( 'Cancel' )->href( session()->get( 'user_post_store_redirect' ) ),
                 Former::success_button( 'Help' )->id( 'help-btn' )
                 );
             ?>

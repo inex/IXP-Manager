@@ -187,14 +187,13 @@ class UserController extends Doctrine2Frontend {
 
 
     protected static function additionalRoutes( string $route_prefix ) {
-        // FIXME @yannrobin: should be POST
+
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get(     'welcome-email/{id}/{resend?}',     'UserController@sendWelcomeEmail'       )->name( $route_prefix . '@welcome-email'       );
             Route::get(     'add-wizard',                       'UserController@addForm'                )->name( $route_prefix . '@add-wizard'          );
             Route::get(     'add/info/{id?}',                   'UserController@edit'                   )->name( $route_prefix . '@add-info'            );
-            Route::get(     '{id}/list-customers',              'UserController@listCustomers'          )->name( $route_prefix . '@list-customers'      );
             Route::post(     'add/check-email',                 'UserController@addCheckEmail'          )->name( $route_prefix . '@add-check-email'     );
             Route::post(     '{id}/delete-customer/{custid}',   'UserController@deleteCustomerToUser'   )->name( $route_prefix . '@delete-customer'     );
+            Route::post(     'welcome-email',                   'UserController@sendWelcomeEmail'       )->name( $route_prefix . '@welcome-email'       );
         });
     }
 
@@ -218,15 +217,8 @@ class UserController extends Doctrine2Frontend {
      */
     public function manageCancelbutton(){
         request()->session()->remove( "user_post_store_redirect" );
+        session()->put( 'user_post_store_redirect',     request()->headers->get('referer', "" ) );
 
-        // check if we come from the customer overview or the user list
-        if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
-            session()->put( 'user_post_store_redirect',     'customer@overview' );
-            session()->put( 'user_post_store_redirect_cid', request()->input('cust', null ) );
-        } else {
-            session()->put( 'user_post_store_redirect', 'user@list' );
-            session()->put( 'user_post_store_redirect_cid', null );
-        }
     }
 
     /**
@@ -338,24 +330,8 @@ class UserController extends Doctrine2Frontend {
                     $datac2u[ 'privs_'  . $c2u->getCustomer()->getId() ] = array_key_exists( 'privs_',  $old    ) ? $old[ 'privs_' . $c2u->getCustomer()->getId()  ]   : $c2u->getPrivs();
                 }
 
-
                 Former::populate( array_merge( $dataCust, $datac2u ) );
 
-            } else {
-
-                // if we provide the customer via the customer overview tab user
-                if( request()->input( "cust" ) && ( $cust = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "cust" ) ) ) ){
-                    $dataCust = [
-                        'custid'                    => $cust->getId(),
-                    ];
-
-                }
-
-                $dataEmail = [
-                    'email'                    => request()->input( 'email' ),
-                ];
-
-                Former::populate( array_merge( $dataCust, $dataEmail ) );
             }
 
             if( !Auth::getUser()->isSuperUser() ){
@@ -373,7 +349,7 @@ class UserController extends Doctrine2Frontend {
                 }
 
                 Former::populate([
-                    'custid'           => array_key_exists( 'email',               $old ) ? $old['email']                : request()->input( "cust" ),
+                    'custid'           => array_key_exists( 'custid',               $old ) ? $old['custid']                : request()->input( "custid" ),
                 ]);
 
                 $existingUser = true;
@@ -381,8 +357,8 @@ class UserController extends Doctrine2Frontend {
             } else {
                 // The provided email address didnt match with any existing user => creating new user
                 Former::populate([
-                    'email'            => array_key_exists( 'email',               $old ) ? $old['email']                : request()->input( "email" ),
-                    'custid'           => array_key_exists( 'custid',              $old ) ? $old['custid']               : request()->input( "custid" ),
+                    'email'         => array_key_exists( 'email',               $old ) ? $old['email']                : request()->input( "email" ),
+                    'custid'        => array_key_exists( 'custid',              $old ) ? $old['custid']               : request()->input( "custid" ),
                 ]);
             }
 
@@ -415,41 +391,9 @@ class UserController extends Doctrine2Frontend {
      */
     public function storeCustomerToExistingUser( Request $request ){
 
-        $validator = Validator::make( $request->all(), [
-            'custid_'. Auth::getUser()->getCustomer()->getId()              => 'required|integer|exists:Entities\Customer,id',
-            'existingUserId'                                                => 'required|integer|exists:Entities\User,id',
-            'privs_'. Auth::getUser()->getCustomer()->getId()               => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ),
-        ] );
 
-        if( !$request->input( 'existingUserId' ) ){
-            AlertContainer::push( "You need to select one User from the list." , Alert::DANGER );
-        }
 
-        if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => $request->input( 'custid_'. Auth::getUser()->getCustomer()->getId() ) , "user" => $request->input( 'existingUserId' ) ] ) ){
-            AlertContainer::push( "The association User/Customer already exist." , Alert::DANGER );
-            return Redirect::back()->withErrors($validator)->withInput();
-        }
 
-        if( $validator->fails() ) {
-            return Redirect::back()->withErrors($validator)->withInput();
-        }
-
-        $this->feParams->nameSingular = "Customer2User";
-
-        /** @var UserEntity $existingUser */
-        $existingUser = D2EM::getRepository( UserEntity::class )->find( $request->input( 'existingUserId' ) );
-
-        $this->object = new CustomerToUserEntity;
-        D2EM::persist( $this->object );
-
-        $this->object->setCustomer(     D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid_'. Auth::getUser()->getCustomer()->getId() ) ) );
-        $this->object->setUser(         $existingUser                   );
-        $this->object->setPrivs(        $request->input( 'privs_'. Auth::getUser()->getCustomer()->getId() ) );
-        $this->object->setCreatedAt(    new \DateTime                   );
-
-        D2EM::flush();
-
-        event( new WelcomeEvent( $existingUser, false ) );
 
     }
 
@@ -469,7 +413,41 @@ class UserController extends Doctrine2Frontend {
         // If the User already exist
         if( $request->input( 'existingUser' ) ) {
 
-            $this->storeCustomerToExistingUser( $request );
+            $validator = Validator::make( $request->all(), [
+                'custid'                => 'required|integer|exists:Entities\Customer,id',
+                'existingUserId'        => 'required|integer|exists:Entities\User,id',
+                'privs'                 => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ),
+            ] );
+
+            if( !$request->input( 'existingUserId' ) ){
+                AlertContainer::push( "You need to select one User from the list." , Alert::DANGER );
+            }
+
+            if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => $request->input( 'custid' ) , "user" => $request->input( 'existingUserId' ) ] ) ){
+                AlertContainer::push( "The association User/Customer already exist." , Alert::DANGER );
+                return Redirect::back()->withErrors($validator)->withInput();
+            }
+
+            if( $validator->fails() ) {
+                return Redirect::back()->withErrors($validator)->withInput();
+            }
+
+            $this->feParams->nameSingular = "Customer2User";
+
+            /** @var UserEntity $existingUser */
+            $existingUser = D2EM::getRepository( UserEntity::class )->find( $request->input( 'existingUserId' ) );
+
+            $this->object = new CustomerToUserEntity;
+            D2EM::persist( $this->object );
+
+            $this->object->setCustomer(     D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) );
+            $this->object->setUser(         $existingUser                   );
+            $this->object->setPrivs(        $request->input( 'privs' ) );
+            $this->object->setCreatedAt(    new \DateTime                   );
+
+            D2EM::flush();
+
+            event( new WelcomeEvent( $existingUser, false ) );
 
         } else {
 
@@ -799,17 +777,18 @@ class UserController extends Doctrine2Frontend {
     /**
      * Send or resend the welcome email to a new user
      *
-     * @param int   $id         ID of the user
-     * @param bool  $resend     Do we need to resend the welcome email ?
+     * @param Request $request
      *
      * @return bool|RedirectResponse
      */
-    public function sendWelcomeEmail( int $id, bool $resend = false ) {
+    public function sendWelcomeEmail( Request $request ) {
 
         /** @var UserEntity $user */
-        if( !( $user = D2EM::getRepository( UserEntity::class )->find( $id ) ) ) {
+        if( !( $user = D2EM::getRepository( UserEntity::class )->find( $request->input( "id" ) ) ) ) {
             abort(404, 'User not found');
         }
+
+        $resend = $request->input( "resend" ) ? true : false;
 
         event( new WelcomeEvent( $user, $resend ) );
 

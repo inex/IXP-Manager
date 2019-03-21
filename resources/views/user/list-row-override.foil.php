@@ -24,7 +24,7 @@ $row = $t->row;
 
             <?php $user = D2EM::getRepository( Entities\User::class )->find( $row[ 'id' ] ) ?>
             <?php if( count( $user->getCustomers() ) > 1 ) : ?>
-                <a href="<?= route( "user@list-customers" , [ "id" => $row[ 'id' ] ] ) ?>" class="badge badge-info"> Multiple (<?= count( $user->getCustomers() ) ?>)</a>
+                <a href="<?= route( "user@edit" , [ "id" => $row[ 'id' ] ] ) ?>" class="badge badge-info"> Multiple (<?= count( $user->getCustomers() ) ?>)</a>
             <?php else: ?>
                 <a href="<?=  route( "customer@overview" , [ "id" => $row[ 'custid' ] ] ) ?>">
                     <?= $t->ee( $row['customer'] ) ?>
