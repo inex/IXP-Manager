@@ -5,6 +5,9 @@
     // convenience for IDE autocompletion
     /** @var Entities\Customer $c */
     $c = $t->c;
+
+    // list of route server asns
+    $rsasns = d2r( 'Router' )->getAllPeeringASNs( \Entities\Router::TYPE_ROUTE_SERVER );
 ?>
 
 
@@ -222,13 +225,15 @@
                                 <?php endif; ?>
 
 
-                                <?php if( $vli->getRsclient() ): ?>
-                                    <span class="inline-block border border-green p-1 rounded-full text-green-dark  font-semibold text-uppercase text-sm px-3 py-1 mr-2" style="border-color: #1f9d55 !important;">
-                                <?php else: ?>
-                                    <span class="inline-block border border-red   p-1 rounded-full text-red-lighter font-semibold text-uppercase text-sm px-3 py-1 mr-2" style="border-color: #f9acaa !important;">
+                                <?php if( !in_array( $t->c->getAutsys(), $rsasns ) ): ?>
+                                    <?php if( $vli->getRsclient() ): ?>
+                                        <span class="inline-block border border-green p-1 rounded-full text-green-dark  font-semibold text-uppercase text-sm px-3 py-1 mr-2" style="border-color: #1f9d55 !important;">
+                                    <?php else: ?>
+                                        <span class="inline-block border border-red   p-1 rounded-full text-red-lighter font-semibold text-uppercase text-sm px-3 py-1 mr-2" style="border-color: #f9acaa !important;">
+                                    <?php endif; ?>
+                                        Route Server
+                                    </span>
                                 <?php endif; ?>
-                                    Route Server
-                                </span>
 
                                 <?php if( $t->c->getAutsys() !== 112 ): ?>
                                     <?php if( $vli->getAs112client() ): ?>
