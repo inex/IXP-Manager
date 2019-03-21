@@ -56,7 +56,7 @@ return [
     | Default (as of v4.1):
     | "%a [AS%j]"
     */
-    'customer_name_format' => "%a %j",
+    'customer_name_format' => "%a (AS%i)",
 
     /*
     |--------------------------------------------------------------------------

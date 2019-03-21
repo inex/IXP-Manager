@@ -34,14 +34,62 @@
 
         <div class="bg-light shadow-sm p-4">
             <div class="row">
-                <h3 class="<?= $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ? "col-lg-9" : "col-lg-12" ?>">
-                    <?= $t->ee( $c->getFormattedName() ) ?>
-                    <?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?>
-                </h3>
+                <div class="<?= $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ? "col-md-9 col-lg-8" : "col-12" ?>">
+
+                    <h3>
+                        <?= $t->ee( $c->getFormattedName() ) ?>
+                        <span class="text-sm"><?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?></span>
+                    </h3>
+
+                    <p>
+                        <a href="<?= $t->c->getCorpwww() ?>" target="_blank"><?= $t->nakedUrl( $t->c->getCorpwww() ) ?></a>
+
+                        <?php if( !$c->isTypeAssociate() && strlen( $c->getPeeringmacro() ?? "" ) ): ?>
+                            - <?=  $t->ee( $c->getPeeringmacro() ) ?>
+                        <?php endif; ?>
+
+                        - since <?= $c->getDatejoin()->format('Y') ?>
+                    </p>
+
+                    <p class="mt-4">
+
+                        <?php if( $c->getInManrs() ): ?>
+                            <a href="https://www.manrs.org/" target="_blank" class="hover:no-underline">
+                                    <span class="border border-green p-1 rounded-full text-green text-uppercase text-xs mr-3" style="border-color: #38c172 !important;">
+                                        MANRS
+                                    </span>
+                            </a>
+                        <?php endif; ?>
+
+                        <?php if( $c->getPeeringpolicy() != \Entities\Customer::PEERING_POLICY_OPEN ): ?>
+                            <span class="border border-black p-1 rounded-full text-black text-uppercase text-xs mr-3" style="border-color: #000000 !important;">
+                                <?= $c->getPeeringpolicy() ?>
+                            </span>
+                        <?php endif; ?>
+
+                        <?php if( $c->isRouteServerClient() ): ?>
+                            <span class="border border-green p-1 rounded-full text-green-dark text-uppercase text-xs mr-3" style="border-color: #1f9d55 !important;">
+                        <?php else: ?>
+                            <span class="border border-red   p-1 rounded-full text-red        text-uppercase text-xs mr-3" style="border-color: #e3342f !important;">
+                        <?php endif; ?>
+                            Route Server
+                        </span>
+
+                        <?php if( $c->isAS112Client() ): ?>
+                            <span class="border border-green p-1 rounded-full text-green-dark text-uppercase text-xs" style="border-color: #1f9d55 !important;">
+                        <?php else: ?>
+                            <span class="border border-red   p-1 rounded-full text-red        text-uppercase text-xs" style="border-color: #e3342f !important;">
+                        <?php endif; ?>
+                            AS112
+                        </span>
+
+                    </p>
+
+                </div>
 
                 <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ): ?>
 
-                    <div class="col-lg-3">
+                    <div class="col-md-3 col-lg-4 col-12 ixpm-im-mt-4 md:ixpm-im-mt-0 text-right">
                         <img class="img-fluid" style="max-height: 100px;" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
                     </div>
 
@@ -50,176 +98,47 @@
         </div>
 
 
+        <?php if( Auth::check() && !$t->c->isTypeAssociate() ): ?>
 
-        <div class="row">
-            <div class="col-lg-6">
-                <table class="table table-striped mt-4">
+            <div class="row mt-4 mx-3">
+                <div class="col-12 border border-grey p-3 text-black ">
 
-                    <tr>
-                        <td>
-                            <b>
-                                Member Type:
-                            </b>
-                        </td>
-                        <td>
-                            <?= $t->ee( $c->resolveType() ) ?>
-                        </td>
-                    </tr>
 
-                    <?php if( !$c->isTypeAssociate() ): ?>
-                        <tr>
-                            <td>
-                                <b>
-                                    AS Number:
-                                </b>
-                            </td>
-                            <td>
-                                <?=  $t->asNumber( $c->getAutsys() ) ?>
-                            </td>
-                        </tr>
-
-                        <tr>
-                            <td>
-                                <b>
-                                    Peering Policy:
-                                </b>
-                            </td>
-                            <td>
-                                <?= ucfirst( $t->ee( $c->getPeeringPolicy() ) ) ?>
-                            </td>
-                        </tr>
+                    <?php if( filter_var( $c->getPeeringemail(), FILTER_VALIDATE_EMAIL ) ): ?>
+                        <div class="row">
+                            <div class="col-12 col-md-3 text-center md:ixpm-im-text-right">
+                                <span class="font-bold mr-3">Peering&nbsp;Email:</span>
+                            </div>
+                            <div class="col-12 col-md-9 text-center md:ixpm-im-text-left">
+                                <a href="mailto:<?= $c->getPeeringemail() ?>"><?= $c->getPeeringemail() ?></a>
+                            </div>
+                        </div>
                     <?php endif; ?>
 
-                    <tr>
-                        <td>
-                            <b>
-                                Join Date:
-                            </b>
-                        </td>
-                        <td>
-                            <?= $c->getDatejoin()->format('Y-m-d') ?>
-                        </td>
-                    </tr>
-
-                    <?php if( Auth::check() ): ?>
-                        <tr>
-                            <td>
-                                <b>
-                                    Peering Email:
-                                </b>
-                            </td>
-                            <td>
-                                <?php if( filter_var( $c->getPeeringemail(), FILTER_VALIDATE_EMAIL ) ): ?>
-                                    <a href="mailto:<?= $c->getPeeringemail() ?>"><?= $c->getPeeringemail() ?></a>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>
-                                    NOC Phone:
-                                </b>
-                            </td>
-                            <td>
-                                <?= $t->ee( $c->getNocphone() ) ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>
-                                    NOC Hours:
-                                </b>
-                            </td>
-                            <td>
-                                <?= $t->ee( $c->getNochours() ) ?>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-
-                </table>
-            </div>
-
-            <div class="col-lg-6">
-                <table class="table table-striped mt-4">
-                    <tr>
-                        <td>
-                            <b>
-                                Member Status:
-                            </b>
-                        </td>
-                        <td>
-                            <?= $t->ee( $c->resolveStatus() ) ?>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                            <b>
-                                Website:
-                            </b>
-                        </td>
-                        <td>
-                            <?php if( filter_var( $c->getCorpwww(), FILTER_VALIDATE_URL ) ): ?>
-                                <a href="<?= $c->getCorpwww() ?>"><?= $c->getCorpwww() ?></a>
+                    <div class="row">
+                        <div class="col-12 col-md-3 text-center md:ixpm-im-text-right">
+                            <span class="font-bold  mr-3">NOC&nbsp;Contact:</span>
+                        </div>
+                        <div class="col-12 col-md-9 text-center md:ixpm-im-text-left">
+                            <?php if( filter_var( $c->getNocemail(), FILTER_VALIDATE_EMAIL ) ): ?>
+                                <a href="mailto:<?= $c->getNocemail() ?>"><?= $c->getNocemail() ?></a> /
                             <?php endif; ?>
-                        </td>
-                    </tr>
 
-                    <?php if( !$c->isTypeAssociate() ): ?>
+                            <?= $t->ee( $c->getNocphone() ) ?> (<?= $t->ee( $c->getNochours() ) ?>)
 
-                        <tr>
-                            <td>
-                                <b>
-                                    Peering Macro:
-                                </b>
-                            </td>
-                            <td>
-                                <?=  $t->ee( $c->getPeeringmacro() ) ?>
-                            </td>
-                        </tr>
+                            <?php if( $c->getNoc24hphone() && $c->getNocphone() != $c->getNoc24hphone() ): ?>
+                                / <?= $t->ee( $c->getNoc24hphone() ) ?> (24/7)
+                            <?php endif; ?>
 
-                    <?php endif; ?>
+                            <?php if( filter_var( $c->getNocwww(), FILTER_VALIDATE_URL ) ): ?>
+                                / <a href="<?= $c->getNocwww() ?>"><?= $c->getNocwww() ?></a>
+                            <?php endif; ?>
+                        </div>
+                    </div>
 
-                    <?php if( Auth::check() ): ?>
-
-                        <tr>
-                            <td>
-                                <b>
-                                    NOC Email
-                                </b>
-                            </td>
-                            <td>
-                                <?php if( filter_var( $c->getNocemail(), FILTER_VALIDATE_EMAIL ) ): ?>
-                                    <a href="mailto:<?= $c->getNocemail() ?>"><?= $c->getNocemail() ?></a>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>
-                                    NOC 24 Hour Phone
-                                </b>
-                            </td>
-                            <td>
-                                <?= $t->ee( $c->getNoc24hphone() ) ?>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                                <b>
-                                    NOC Website:
-                                </b>
-                            </td>
-                            <td>
-                                <?php if( filter_var( $c->getNocwww(), FILTER_VALIDATE_URL ) ): ?>
-                                    <a href="<?= $c->getNocwww() ?>"><?= $c->getNocwww() ?></a>
-                                <?php endif; ?>
-                            </td>
-                        </tr>
-                    <?php endif; ?>
-
-                </table>
+                </div>
             </div>
-        </div>
+        <?php endif; ?>
 
 
 

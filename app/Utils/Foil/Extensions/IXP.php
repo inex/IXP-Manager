@@ -59,6 +59,7 @@ class IXP implements ExtensionInterface {
             'maxFileUploadSize'     => [ $this, 'maxFileUploadSize' ],
             'multiIXP'              => [ $this, 'multiIXP' ],
             'nagiosHostname'        => [ $this, 'nagiosHostname' ],
+            'nakedUrl'              => [ $this, 'nakedUrl' ],
             'resellerMode'          => [ $this, 'resellerMode' ],
             'scaleBits'             => [ $this, 'scaleBits' ],
             'scaleBytes'            => [ $this, 'scaleBytes' ],
@@ -318,4 +319,15 @@ class IXP implements ExtensionInterface {
         return ( $addAs ? 'AS' : '' ) . $asn;
     }
 
+    /**
+     * Takes a URL with https://xxx/ and returns xxx
+     *
+     * @param  string $url      The URL
+     * @return string
+     */
+    public function nakedUrl( string $url ): string
+    {
+        $url = preg_replace( '/^http[s]?:\/\//', '', $url );
+        return preg_replace( '/\/$/', '', $url );
+    }
 }
