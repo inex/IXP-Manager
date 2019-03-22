@@ -16,7 +16,7 @@
 
             <?= $t->alerts() ?>
 
-            <div class="text-center mt-16 mb-16">
+            <div class="text-center my-4">
                 <?php if( config( "identity.biglogo" ) ) :?>
                     <img class="img-fluid" src="<?= config( "identity.biglogo" ) ?>" />
                 <?php else: ?>
@@ -27,7 +27,6 @@
                         Configure <code>IDENTITY_BIGLOGO</code> in <code>.env</code>.
                     </div>
                 <?php endif; ?>
-
             </div>
 
 

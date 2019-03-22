@@ -61,10 +61,6 @@ return [
     'logo'          => env( 'IDENTITY_LOGO', '*** CONFIG IDENTITY IN .env ***' ),
     'biglogo'       => env( 'IDENTITY_BIGLOGO', '*** CONFIG IDENTITY IN .env ***' ),
 
-    'biglogoconf' => [
-            'offset'             => env( 'IDENTITY_BIGLOGO_OFFSET', '*** CONFIG IDENTITY IN .env ***' ),
-        ],
-
     'vlans'       => [
             'default' => env( 'IDENTITY_DEFAULT_VLAN', 1 ),
     ],
