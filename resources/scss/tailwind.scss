@@ -38,6 +38,17 @@
 
 
 
+#side-navbar li {
+  @apply hover:border hover:border-grey hover:bg-grey-light hover:rounded px-3 py-1 my-1;
+}
+
+#side-navbar li.navbar-active {
+  @apply border border-grey-darkest bg-grey rounded text-white px-3 py-1 my-1;
+}
+
+
+
+
 .ixpm-table a {
   @apply text-blue-dark no-underline;
 }

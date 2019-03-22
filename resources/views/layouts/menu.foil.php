@@ -1,5 +1,5 @@
 
-<nav id="side-navbar" class="col-md-2 d-none d-md-block bg-light sidebar pb-4 pt-4">
+<nav id="side-navbar" class="col-md-3 col-xl-2 d-none d-md-block sidebar pb-4 pt-4 border-r border-grey bg-grey-lightest text">
     <div class="sidebar-sticky">
         <ul class="nav d-inline">
 
@@ -17,7 +17,8 @@
             </form>
 
             <hr class="w-100">
-            <h6 class="sidebar-heading d-flex justify-content-between align-items-center mt-2 mb-1 text-muted">
+
+            <h6 class="sidebar-heading d-flex justify-content-between align-items-center my-2">
                 <span>IXP CUSTOMER ACTIONS</span>
             </h6>
 
@@ -124,14 +125,14 @@
             </h6>
 
 
-            <li class="nav-item">
-                <a class="nav-link <?= !request()->is( 'infrastructure/*' ) ?: 'active' ?>" href="<?= route('infrastructure@list') ?>">
+            <li class="">
+                <a class="block <?= !request()->is( 'infrastructure/*' ) ?: 'active' ?>" href="<?= route('infrastructure@list') ?>">
                     Infrastructures
                 </a>
             </li>
 
-            <li class="nav-item">
-                <a class="nav-link <?= !request()->is( 'facility/*' ) ?: 'active' ?>" href="<?= route( 'facility@list' ) ?>">
+            <li class="">
+                <a class="block text-white font-medium <?= !request()->is( 'facility/*' ) ?: '' ?>" href="<?= route( 'facility@list' ) ?>">
                     Facilities
                 </a>
             </li>

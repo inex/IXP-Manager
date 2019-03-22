@@ -5,27 +5,117 @@
 * BEGIN CSS used for Bootstrap 4
 */
 
-    #side-navbar{
-        border-right: 1px solid #dee2e6;
-    }
-    #side-navbar a{
-        color: #999;
-        font-weight : 500;
+
+/***********************************************************************************/
+/************************************* NAV BAR *************************************/
+/***********************************************************************************/
+/*
+#side-navbar a{
+    color: #999;
+    font-weight : 500;
+}
+
+#side-navbar a.active{
+    color: #007bff;
+
+}
+
+#side-navbar a.active:hover{
+    color: #0056b3;
+
+}
+
+#side-navbar a:hover{
+    color: #333;
+}
+*/
+
+#navbarSupportedContent a{
+    font-size: 15px;
+}
+
+
+
+
+
+@media (max-width: 768px) {
+    #side-navbar {
+        display: block;
+        margin-left: -220px;
+        width: 220px!important;
+        height: 96%;
+        overflow: scroll;
+        transition: all 0.3s ease;
     }
 
-    #side-navbar a.active{
-        color: #007bff;
-
+    #side-navbar.active {
+        margin-left: 0;
+        z-index: 200;
+        position: absolute;
+        display: block!important;
     }
 
-    #side-navbar a.active:hover{
-        color: #0056b3;
 
+    #slide-reveal-overlay{
+        position: fixed;
+        left: 0px;
+        height: 100%;
+        width: 100%;
+        z-index: 100;
+        background-color: rgba(0, 0, 0, 0.5);
+    }
+}
+
+@media (max-width: 992px) {
+    #side-navbar .nav-item a{
+        font-size: 0.9rem;
     }
 
-    #side-navbar a:hover{
-        color: #333;
+    #side-navbar h6{
+        font-size: 0.9rem;
     }
+}
+
+
+/*
+::::::::::::::::::::::::::::::::::::::::::::::::::::
+COL-LG
+*/
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px) {
+    #navbarSupportedContent a{
+        font-size: 14px;
+    }
+
+    #div-header-select-customer{
+        width: 150px;
+    }
+
+}
+
+/* Large devices (desktops, 992px and up) */
+@media (min-width: 992px ) and (max-width: 1205px) {
+
+    .navbar-expand-lg #navbarSupportedContent .navbar-nav .nav-link{
+        padding-right:.3rem;
+        padding-left:.3rem
+    }
+}
+
+/*
+::::::::::::::::::::::::::::::::::::::::::::::::::::
+COL-XL
+*/
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+    #div-header-select-customer{
+        width: 175px;
+    }
+}
+
+
+
 
     /* Allow the bootbox-close-button to be on the right  */
     .bootbox .modal-header{
@@ -102,9 +192,6 @@
         margin-top : 4px;
     }
 
-    #navbarSupportedContent a{
-        font-size: 15px;
-    }
 
     .center-dd-caret:after{
         margin-bottom: auto;
@@ -145,81 +232,6 @@
         }
     }
 
-    @media (max-width: 768px) {
-        #side-navbar {
-            display: block;
-            margin-left: -220px;
-            width: 220px!important;
-            height: 96%;
-            overflow: scroll;
-            transition: all 0.3s ease;
-        }
-
-        #side-navbar.active {
-            margin-left: 0;
-            z-index: 200;
-            position: absolute;
-            display: block!important;
-        }
-
-
-        #slide-reveal-overlay{
-            position: fixed;
-            left: 0px;
-            height: 100%;
-            width: 100%;
-            z-index: 100;
-            background-color: rgba(0, 0, 0, 0.5);
-        }
-    }
-
-    @media (max-width: 992px) {
-        #side-navbar .nav-item a{
-            font-size: 0.9rem;
-        }
-
-        #side-navbar h6{
-            font-size: 0.9rem;
-        }
-    }
-
-
-    /*
-    ::::::::::::::::::::::::::::::::::::::::::::::::::::
-    COL-LG
-    */
-
-    /* Large devices (desktops, 992px and up) */
-    @media (min-width: 992px) {
-        #navbarSupportedContent a{
-            font-size: 14px;
-        }
-
-        #div-header-select-customer{
-            width: 150px;
-        }
-
-    }
-
-    /* Large devices (desktops, 992px and up) */
-    @media (min-width: 992px ) and (max-width: 1205px) {
-
-        .navbar-expand-lg #navbarSupportedContent .navbar-nav .nav-link{
-            padding-right:.3rem;
-            padding-left:.3rem
-        }
-    }
-
-    /*
-    ::::::::::::::::::::::::::::::::::::::::::::::::::::
-    COL-XL
-    */
-    /* Extra large devices (large desktops, 1200px and up) */
-    @media (min-width: 1200px) {
-        #div-header-select-customer{
-            width: 175px;
-        }
-    }
 
 /*
 * END CSS used for Bootstrap 4
