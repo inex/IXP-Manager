@@ -97,7 +97,7 @@ class AdminController extends Controller
                 $infrastructure = $vi['infrastructure'];
 
                 if( !isset( $custsByLocation[ $location ] ) ) {
-                    $custsByLocation[ $location ] = [];
+                    $custsByLocation[ $location ] = 0;
                 }
 
                 if( !isset( $byLocation[ $location ] ) ) {
@@ -119,7 +119,7 @@ class AdminController extends Controller
                 }
 
                 if( !isset( $custsByLocation[ $location ][ $vi['customerid'] ] ) ) {
-                    $custsByLocation[ $location ][] = $vi['customerid'];
+                    $custsByLocation[ $location ]++;
                 }
 
 
@@ -143,7 +143,7 @@ class AdminController extends Controller
             }
 
             ksort( $speeds, SORT_NUMERIC );
-            ksort( $custsByLocation );
+            arsort( $custsByLocation, SORT_NUMERIC );
 
             $cTypes['speeds']           = $speeds;
             $cTypes['custsByLocation']  = $custsByLocation;
