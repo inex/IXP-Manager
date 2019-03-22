@@ -1,25 +1,3 @@
-
-
-<?php if( Auth::getUser()->isSuperUser() ): ?>
-    <tr>
-        <td>
-            <b>
-                Customer
-            </b>
-        </td>
-        <td>
-
-            <?php $user = D2EM::getRepository( Entities\User::class )->find( $t->data[ 'item' ][ 'id' ] ) ?>
-            <?php if( count( $user->getCustomers() ) > 1 ) : ?>
-                <a href="<?= route( "user@list-customers" , [ "id" => $t->data[ 'item' ][ 'id' ] ] ) ?>" class="badge badge-info"> Multiple (<?= count( $user->getCustomers() ) ?>)</a>
-            <?php else: ?>
-                <a href="<?=  route( "customer@overview" , [ "id" => $t->data[ 'item' ][ 'custid' ] ] ) ?>">
-                    <?= $t->ee( $t->data[ 'item' ]['customer'] ) ?>
-                </a>
-            <?php endif; ?>
-        </td>
-    </tr>
-<?php endif; ?>
 <tr>
     <td>
         <b>
@@ -99,6 +77,38 @@
                 <?= $t->data[ 'item' ]['lastupdated']->format( 'Y-m-d H:i:s' ) ?>
             <?php endif; ?>
 
+        </td>
+    </tr>
+<?php endif; ?>
+<?php if( Auth::getUser()->isSuperUser() ): ?>
+    <tr>
+
+        <td colspan="2">
+
+            <?php $user = D2EM::getRepository( Entities\User::class )->find( $t->data[ 'item' ][ 'id' ] ) ?>
+            <table class="table table-striped" width="100%">
+                <thead class="thead-dark">
+                    <th>
+                        Customer
+                    </th>
+                    <th>
+                        Privilege
+                    </th>
+                </thead>
+                <tbody>
+                    <?php foreach( $user->getCustomers2User() as $c ): ?>
+                        <tr>
+                            <td>
+                                <?= $t->ee( $c->getCustomer()->getName() ) ?>
+                            </td>
+                            <td>
+                                <?=  \Entities\User::$PRIVILEGES_TEXT[ $c->getPrivs() ] ?>
+                            </td>
+                        </tr>
+                    <?php endforeach;?>
+
+                </tbody>
+            </table>
         </td>
     </tr>
 <?php endif; ?>

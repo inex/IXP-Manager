@@ -216,7 +216,7 @@
                 <?php else: ?>
 
                     <?php if( Auth::getUser()->isSuperUser() ): ?>
-                        <?= Former::select( 'custid_' . Auth::getUser()->getCustomer()->getId() )
+                        <?= Former::select( 'custid')
                             ->label( 'Customer' )
                             ->placeholder( 'Select a customer' )
                             ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
@@ -224,10 +224,10 @@
                             ->blockHelp( "The customer to create the user for.<br><br>If creating a customer for your own IXP, then pick the IXP customer entry." );
                         ?>
                     <?php else: ?>
-                        <?= Former::hidden( 'custid_' . Auth::getUser()->getCustomer()->getId() )->value( Auth::getUser()->getCustomer()->getId() ) ?>
+                        <?= Former::hidden( 'custid' )->value( Auth::getUser()->getCustomer()->getId() ) ?>
                     <?php endif; ?>
 
-                    <?= Former::select( 'privs_' . Auth::getUser()->getCustomer()->getId() )
+                    <?= Former::select( 'privs')
                         ->id( 'privs' )
                         ->label( 'Privilege' )
                         ->placeholder( 'Select a privilege' )
@@ -274,9 +274,10 @@
                 <b class="mr-auto my-auto">
                     If you are sure you want to delete User:
                 </b>
-                <a class="btn btn-danger mr-4 d2f-list-delete" id='d2f-list-delete-<?= $t->data[ 'params'][ 'object']->getId() ?>' data-object-id="<?= $t->data[ 'params'][ 'object']->getId() ?>" data-cust-id="0" href="#" title="Delete">
+                <a class="btn btn-danger mr-4 d2f-list-delete btn-delete-user" id='' data-object-id="<?= $t->data[ 'params'][ 'object']->getId() ?>" data-cust-id="0" data-nb-c2u="<?= count( $t->data[ 'params'][ 'object']->getCustomers() ) ?>" href="#" title="Delete">
                     Delete
                 </a>
+
             </div>
         </div>
     </div>

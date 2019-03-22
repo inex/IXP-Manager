@@ -54,7 +54,7 @@
                             <i class="fa fa-pencil"></i>
                         </a>
 
-                        <a class="btn btn-outline-secondary usr-list-delete" id="usr-list-delete-<?= $c2u->getUser()->getId() ?>" data-object-id="<?=  $c2u->getUser()->getId() ?>" href="#">
+                        <a class="btn btn-outline-secondary usr-list-delete" id="usr-list-delete-<?= $c2u->getUser()->getId() ?>" data-object-id="<?=  $c2u->getUser()->getId() ?>" data-cust-id="<?=  $t->c->getId() ?>" href="#">
                             <i class="fa fa-trash"></i>
                         </a>
                         <a class="btn btn-outline-secondary <?= $c2u->getUser()->getDisabled() || Auth::getUser()->getId() == $c2u->getUser()->getId() ? "disabled" : "" ?>"

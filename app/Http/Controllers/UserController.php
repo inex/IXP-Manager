@@ -104,8 +104,6 @@ class UserController extends Doctrine2Frontend {
 
         ];
 
-
-
         switch( Auth::getUser()->getPrivs() ) {
             case UserEntity::AUTH_SUPERUSER:
 
@@ -182,12 +180,10 @@ class UserController extends Doctrine2Frontend {
 
         $this->feParams->viewColumns = $this->feParams->listColumns;
 
-
     }
 
 
     protected static function additionalRoutes( string $route_prefix ) {
-
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
             Route::get(     'add-wizard',                       'UserController@addForm'                )->name( $route_prefix . '@add-wizard'          );
             Route::get(     'add/info/{id?}',                   'UserController@edit'                   )->name( $route_prefix . '@add-info'            );
@@ -222,7 +218,7 @@ class UserController extends Doctrine2Frontend {
     }
 
     /**
-     * Display the form to Add an object
+     * Display the first step form to Add an object via email address
      *
      * @return View
      */
@@ -231,10 +227,9 @@ class UserController extends Doctrine2Frontend {
 
         $this->addEditSetup();
 
-        $this->data[ 'params' ][ 'custid' ]         = request()->input("cust" );
+        $this->data[ 'params' ][ 'custid' ] = request()->input("cust" );
 
         return $this->display( 'add-form' );
-
     }
 
 
@@ -250,12 +245,10 @@ class UserController extends Doctrine2Frontend {
      *
      * @throws
      */
-    public function addCheckEmail( Request $request )
-    {
+    public function addCheckEmail( Request $request ){
         $validator = Validator::make( $request->all(), [
             'email'                 => 'required|email|max:255',
         ]);
-
 
         if( $validator->fails() ) {
             return Redirect::back()->withErrors( $validator )->withInput();
@@ -278,6 +271,23 @@ class UserController extends Doctrine2Frontend {
         return redirect( $url );
     }
 
+    private function getC2Ulist( UserEntity $user ){
+        // Getting the Customer2User list
+        if( Auth::getUser()->isSuperUser() ){
+            // Getting all the customer for the user
+            if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "user" => $user->getId() ] ) ) ){
+                $this->unauthorized();
+            }
+        } else {
+            // Getting only the current logged customer for the user
+            if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "customer" => Auth::getUser()->getCustomer()->getId() , "user" => $user->getId() ] ) ) ){
+                $this->unauthorized();
+            }
+        }
+
+        return $listC2u;
+    }
+
     /**
      * Display the form to edit an object
      *
@@ -288,7 +298,6 @@ class UserController extends Doctrine2Frontend {
      * @throws
      */
     protected function addEditPrepareForm( $id = null ): array {
-
         $old = request()->old();
         $existingUser = $disabledInputs = false;
         $listUsers = [];
@@ -304,16 +313,6 @@ class UserController extends Doctrine2Frontend {
                     abort(404, 'User not found');
                 }
 
-                if( !Auth::getUser()->isSuperUser() ){
-                    if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "customer" => Auth::getUser()->getCustomer()->getId() , "user" => $this->object->getId() ] ) ) ){
-                        $this->unauthorized();
-                    }
-                } else {
-                    if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "user" => $this->object->getId() ] ) ) ){
-                        $this->unauthorized();
-                    }
-                }
-
                 $dataCust = [
                     'name'             => array_key_exists( 'name',                $old ) ? $old['name']                 : $this->object->getName(),
                     'username'         => array_key_exists( 'username',            $old ) ? $old['username']             : $this->object->getUsername(),
@@ -325,17 +324,24 @@ class UserController extends Doctrine2Frontend {
                 $datac2u = [];
 
                 /** @var CustomerToUserEntity $c2u */
-                foreach( $listC2u as $c2u ){
-                    $datac2u[ 'custid_' . $c2u->getCustomer()->getId() ] = array_key_exists( 'custid',  $old    ) ? $old[ 'custid' . $c2u->getCustomer()->getId()  ]   : $c2u->getCustomer()->getId();
-                    $datac2u[ 'privs_'  . $c2u->getCustomer()->getId() ] = array_key_exists( 'privs_',  $old    ) ? $old[ 'privs_' . $c2u->getCustomer()->getId()  ]   : $c2u->getPrivs();
+                foreach( $this->getC2Ulist( $this->object ) as $c2u ){
+
+                    if( Auth::getUser()->isSuperUser() ){
+                        $datac2u[ 'custid_' . $c2u->getCustomer()->getId() ] = array_key_exists( 'privs_' . $c2u->getCustomer()->getId(),  $old    ) ? $old[ 'custid' . $c2u->getCustomer()->getId()  ]   : $c2u->getCustomer()->getId();
+                        $datac2u[ 'privs_'  . $c2u->getCustomer()->getId() ] = array_key_exists( 'privs_' . $c2u->getCustomer()->getId(),  $old    ) ? $old[ 'privs_' . $c2u->getCustomer()->getId()  ]   : $c2u->getPrivs();
+
+                    } else {
+                        $datac2u[ 'custid' ] = array_key_exists( 'custid',  $old   ) ? $old[ 'custid' ]   : $c2u->getCustomer()->getId();
+                        $datac2u[ 'privs'  ] = array_key_exists( 'privs',  $old    ) ? $old[ 'privs'   ]  : $c2u->getPrivs();
+
+                    }
                 }
 
                 Former::populate( array_merge( $dataCust, $datac2u ) );
 
-            }
-
-            if( !Auth::getUser()->isSuperUser() ){
-                $disabledInputs = true;
+                if( !Auth::getUser()->isSuperUser() ){
+                    $disabledInputs = true;
+                }
             }
 
         } else {
@@ -344,17 +350,20 @@ class UserController extends Doctrine2Frontend {
 
             // If we found user with the provided email address
             if( $id !== null ) {
+
+                // search user via email address
                 if( !( $listUsers = D2EM::getRepository( UserEntity::class )->findBy( [ 'email' => $id ] ) ) ) {
                     abort(404, 'User not found');
                 }
 
                 Former::populate([
-                    'custid'           => array_key_exists( 'custid',               $old ) ? $old['custid']                : request()->input( "custid" ),
+                    'custid'           => array_key_exists( 'custid',   $old ) ? $old['custid'] : request()->input( "custid" ),
                 ]);
 
                 $existingUser = true;
 
             } else {
+
                 // The provided email address didnt match with any existing user => creating new user
                 Former::populate([
                     'email'         => array_key_exists( 'email',               $old ) ? $old['email']                : request()->input( "email" ),
@@ -372,32 +381,7 @@ class UserController extends Doctrine2Frontend {
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
         ];
     }
-
-
-
-
-
-
-
-
-    /**
-     * Function to add to an existing user a new customer
-     *
-     * @param Request $request
-     *
-     * @return bool|RedirectResponse
-     *
-     * @throws
-     */
-    public function storeCustomerToExistingUser( Request $request ){
-
-
-
-
-
-    }
-
-
+    
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
@@ -440,10 +424,11 @@ class UserController extends Doctrine2Frontend {
             $this->object = new CustomerToUserEntity;
             D2EM::persist( $this->object );
 
-            $this->object->setCustomer(     D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) );
-            $this->object->setUser(         $existingUser                   );
-            $this->object->setPrivs(        $request->input( 'privs' ) );
-            $this->object->setCreatedAt(    new \DateTime                   );
+            $this->object->setCustomer(         D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) );
+            $this->object->setUser(             $existingUser                   );
+            $this->object->setPrivs(            $request->input( 'privs' ) );
+            $this->object->setCreatedAt(        new \DateTime                   );
+            $this->object->setExtraAttributes(  [ "created_by" => [ "type" => "user" , "user_id" => $existingUser->getId() ] ] );
 
             D2EM::flush();
 
@@ -466,10 +451,9 @@ class UserController extends Doctrine2Frontend {
                 ];
 
                 if( !$isEditing ){
-
                     $addUserInfo = [
-                        'custid_'. Auth::getUser()->getCustomer()->getId()  => 'required|integer|exists:Entities\Customer,id',
-                        'privs_'. Auth::getUser()->getCustomer()->getId()   => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) )
+                        'custid'    => 'required|integer|exists:Entities\Customer,id',
+                        'privs'     => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) )
                     ];
 
                     $infoArray = array_merge( $infoArray, $addUserInfo );
@@ -484,25 +468,13 @@ class UserController extends Doctrine2Frontend {
                     abort(404, 'User not found');
                 }
 
-                // Getting the Customer2User the user and customer that we are loggued
-                if( !Auth::getUser()->isSuperUser() ){
-                    if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "customer" => Auth::getUser()->getCustomer()->getId() , "user" => $this->object->getId() ] ) ) ){
-                        $this->unauthorized();
-                    }
-                } else {
-
-                    // Get the list of customer2user for the user
-                    if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "user" => $this->object->getId() ] ) ) ){
-                        $this->unauthorized();
-                    }
-                }
-
                 $datac2u = [];
 
                 /** @var CustomerToUserEntity $c2u */
-                foreach( $listC2u as $c2u ){
-                    $datac2u[ 'custid_' . $c2u->getCustomer()->getId() ] = 'required|integer|exists:Entities\Customer,id';
-                    $datac2u[ 'privs_'  . $c2u->getCustomer()->getId() ] = 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) );
+                foreach( $this->getC2Ulist( $this->object ) as $c2u ){
+                    $inputExt = Auth::getUser()->isSuperUser() ? '_'. $c2u->getCustomer()->getId() : '' ;
+                    $datac2u[ 'custid' . $inputExt ] = 'required|integer|exists:Entities\Customer,id';
+                    $datac2u[ 'privs'  . $inputExt ] = 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) );
                 }
             }
 
@@ -512,14 +484,17 @@ class UserController extends Doctrine2Frontend {
                 return Redirect::back()->withErrors($validator)->withInput();
             }
 
-
+            // Adding user
             if( !$isEditing ) {
-                // Adding user
                 $this->object = new UserEntity;
                 D2EM::persist( $this->object );
 
                 $this->object->setCreated(  new \DateTime  );
                 $this->object->setCreator(  Auth::getUser()->getUsername() );
+
+                $this->object->setPassword( Hash::make( str_random(16) ) );
+                $this->store_alert_success_message = "User added successfully. A welcome email is being sent to {$this->object->getEmail()} with "
+                    . "instructions on how to set their password.";
 
             }
 
@@ -539,23 +514,16 @@ class UserController extends Doctrine2Frontend {
             $this->object->setLastupdated(       new \DateTime  );
             $this->object->setLastupdatedby(     Auth::getUser()->getId() );
 
-            if( !$this->object->getId() ) {
-                // adding a new user -> set a random password
-                $this->object->setPassword( Hash::make( str_random(16) ) );
-                $this->store_alert_success_message = "User added successfully. A welcome email is being sent to {$this->object->getEmail()} with "
-                    . "instructions on how to set their password.";
-            }
-
             $originalPrivs = $this->object->getPrivs();
 
             // Adding new user => set customer and priv
             if( !$this->object->getId() ){
                 if( Auth::user()->isSuperUser() ) {
-                    $this->object->setPrivs( $request->input( 'privs_'. Auth::getUser()->getCustomer()->getId() ) );
-                    $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid_'. Auth::getUser()->getCustomer()->getId() ) ) );
+                    $this->object->setPrivs( $request->input( 'privs' ) );
+                    $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) );
 
                 } else {
-                    $this->object->setPrivs( $request->input( 'privs_' . Auth::getUser()->getCustomer()->getId() ) < UserEntity::AUTH_SUPERUSER ? $request->input( 'privs_' . Auth::getUser()->getCustomer()->getId() ) : UserEntity::AUTH_CUSTUSER );
+                    $this->object->setPrivs( $request->input( 'privs' ) < UserEntity::AUTH_SUPERUSER ? $request->input( 'privs' ) : UserEntity::AUTH_CUSTUSER );
                     $this->object->setCustomer( Auth::getUser()->getCustomer() );
                 }
             }
@@ -577,23 +545,11 @@ class UserController extends Doctrine2Frontend {
             // Editing
             if( $isEditing ) {
 
-                $listC2u = [];
-                if( Auth::getUser()->isSuperUser() ){
-                    // Getting the CustomerToUser object
-                    if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class )->findBy( [ "user" => $request->input( 'id' ) ] ) ) ) {
-                        abort(404, 'Customer to user link not found');
-                    }
-                } else {
-                    // Getting the CustomerToUser object
-                    if( !( $listC2u[] = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "user" => $request->input( 'id' ), "customer" => Auth::getUser()->getCustomer()->getId() ] ) ) ) {
-                        abort(404, 'Customer to user link not found');
-                    }
-                }
-
                 /** @var CustomerToUserEntity $c2u */
-                foreach( $listC2u as $c2u ){
-                    $c2u->setPrivs(     $request->input( 'privs_'   . $c2u->getCustomer()->getId() ) );
-                    $c2u->setCustomer(  D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid_'  . $c2u->getCustomer()->getId() ) ) );
+                foreach( $this->getC2Ulist( $this->object ) as $c2u ){
+                    $inputExt = Auth::getUser()->isSuperUser() ? '_'. $c2u->getCustomer()->getId() : '' ;
+                    $c2u->setPrivs(     $request->input( 'privs' . $inputExt ) );
+                    $c2u->setCustomer(  D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' . $inputExt ) ) );
                 }
 
 
@@ -602,10 +558,11 @@ class UserController extends Doctrine2Frontend {
                 $this->c2u = new CustomerToUserEntity();
                 D2EM::persist( $this->c2u );
 
-                $this->c2u->setCustomer(  $this->object->getCustomer()  );
-                $this->c2u->setUser(  $this->object  );
-                $this->c2u->setCreatedAt(  new \DateTime  );
-                $this->c2u->setPrivs( $request->input( 'privs_' . Auth::getUser()->getCustomer()->getId() ) );
+                $this->c2u->setCustomer(        $this->object->getCustomer()  );
+                $this->c2u->setUser(            $this->object  );
+                $this->c2u->setCreatedAt(       new \DateTime  );
+                $this->c2u->setPrivs(           $request->input( 'privs' ) );
+                $this->c2u->setExtraAttributes( [ "created_by" => [ "type" => "user" , "user_id" => $this->object->getId() ] ] );
 
             }
 
@@ -627,8 +584,7 @@ class UserController extends Doctrine2Frontend {
      *
      * @return null|string
      */
-    protected function postStoreRedirect()
-    {
+    protected function postStoreRedirect(){
         if( !Auth::getUser()->isSuperUser() ) {
             return route( 'user@list' );
         } else {
@@ -637,7 +593,7 @@ class UserController extends Doctrine2Frontend {
             session()->remove( "user_post_store_redirect" );
 
             // retrieve the customer ID
-            if( $redirect === 'customer@overview' ) {
+            if( strpos( $redirect, "customer/overview" ) ) {
                 return route( 'customer@overview' , [ 'id' => $this->object->getCustomer()->getId() , 'tab' => 'users' ] );
             }
         }
@@ -658,8 +614,7 @@ class UserController extends Doctrine2Frontend {
      */
     protected function preDelete(): bool {
         $c = null;
-
-        $deleteWholeUser = false;
+        $deleteUser = false;
 
         if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( request()->input( 'id' ) ) ) ) {
             return abort( '404', 'User not found' );
@@ -686,14 +641,14 @@ class UserController extends Doctrine2Frontend {
 
 
         if( Auth::getUser()->isSuperUser() && !$c ){
-            $deleteWholeUser = true;
+            $deleteUser = true;
         } elseif( count( $this->object->getCustomers() ) == 1  ){
-            $deleteWholeUser = true;
+            $deleteUser = true;
         }
 
 
         // delete the user and everything linked to this user
-        if( $deleteWholeUser  ){
+        if( $deleteUser  ){
 
             // delete all the user's preferences
             foreach( $this->object->getPreferences() as $pref ) {
@@ -721,7 +676,10 @@ class UserController extends Doctrine2Frontend {
             }
 
             if( request()->input( "redirect-to" ) ) {
-                session()->put( "ixp_user_delete_custid", $this->object->getCustomer()->getId() );
+                if( ($c = D2EM::getRepository( CustomerEntity::class)->find( request()->input( "redirect-to" ) ) ) ) {
+                    session()->put( "ixp_user_delete_custid", $c->getId() );
+                }
+
             }
 
             Cache::forget( 'oss_d2u_user_' . $this->object->getId() );
@@ -734,7 +692,7 @@ class UserController extends Doctrine2Frontend {
             }
 
             if( $this->object->getCustomer()->getId() == $c->getId() ){
-                // Will set a new when login
+                // Will set a new default customer when login
                 $this->object->setCustomer( null );
             }
 
@@ -798,65 +756,6 @@ class UserController extends Doctrine2Frontend {
         }
 
         return true;
-    }
-
-    public function listCustomers( int $id ){
-
-        if( !Auth::getUser()->isSuperUser() ){
-            return abort( "403" );
-        }
-
-        /** @var UserEntity $user */
-        if( !( $user = D2EM::getRepository( UserEntity::class )->find( $id ) ) ) {
-            abort(404, 'User not found');
-        }
-
-        return view( 'user/list-customers' )->with([
-            'user'                          => $user,
-        ]);
-    }
-
-
-    /**
-     * Delete a Virtual Interface
-     *
-     * @param   Request $request instance of the current HTTP request
-     * @param   int $userid ID of the User
-     * @param   int $custid ID of the Customer
-     *
-     * @return  JsonResponse
-     *
-     * @throws
-     */
-    public function deleteCustomerToUser( Request $request,  int $userid, int $custid ): JsonResponse {
-
-        /** @var UserEntity $user */
-        if( !( $user = D2EM::getRepository( UserEntity::class )->find( $userid ) ) ) {
-            return abort( '404', "Unknown User" );
-        }
-
-        /** @var CustomerEntity $cust */
-        if( !( $cust = D2EM::getRepository( CustomerEntity::class )->find( $custid ) ) ) {
-            return abort( '404', "Unknown Customer" );
-        }
-
-        /** @var CustomerToUserEntity $c2u */
-        if( !( $c2u = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "user" => $userid, "customer" => $custid ]  ) ) ) {
-            return abort( '404', "Unknown Customer to User relation" );
-        }
-
-        if( $user->getCustomer()->getId() == $cust->getId() ){
-            // Will set a new when login
-            $user->setCustomer( null );
-        }
-
-
-        D2EM::remove( $c2u );
-        D2EM::flush();
-
-        AlertContainer::push( 'The Association User/Customer (' .$user->getName(). ' / ' .$cust->getName(). ') has been deleted successfully.', Alert::SUCCESS );
-
-        return response()->json( [ 'success' => true ]);
     }
 
 }
