@@ -43,7 +43,10 @@ mix.scripts(
 mix
     .sass('resources/scss/tailwind.scss', 'public/css')
     .options({
-            postCss: [tailwindcss('./tailwind.js')]
+            processCssUrls: false,
+            postCss: [
+                tailwindcss('./tailwind.js')
+            ]
     });
 
 
