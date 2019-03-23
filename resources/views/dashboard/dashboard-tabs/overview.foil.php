@@ -1,12 +1,12 @@
 <div class="row">
 
-    <div class="col-lg-6 col-md-12">
+    <div class="col-xl-6 col12">
         <div class="card mb-4">
             <div class="card-header  d-flex">
                 <div class="mr-auto">
-                    <h4>
+                    <h5>
                         Aggregate Traffic Statistics
-                    </h4>
+                    </h5>
                 </div>
 
                 <a class="btn btn-outline-secondary btn-sm my-auto" href="<?= route( "statistics@member-drilldown", [ 'type' => 'agg', 'typeid' => $t->c->getId() ] )?>">
@@ -24,7 +24,7 @@
 
     </div>
 
-    <div class="col-lg-6 col-md-12">
+    <div class="col-xl-6 col-12">
 
         <?= $t->insert( 'dashboard/dashboard-tabs/associate' ); ?>
 

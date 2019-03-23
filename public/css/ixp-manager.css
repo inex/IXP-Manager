@@ -11,19 +11,15 @@
 /***********************************************************************************/
 
 
-#navbarSupportedContent a{
+#navbarSupportedContent a {
     font-size: 15px;
 }
-
-
-
-
 
 @media (max-width: 768px) {
     #side-navbar {
         display: block;
         margin-left: -220px;
-        width: 220px!important;
+        width: 220px !important;
         height: 96%;
         overflow: scroll;
         transition: all 0.3s ease;
@@ -33,7 +29,7 @@
         margin-left: 0;
         z-index: 200;
         position: absolute;
-        display: block!important;
+        display: block !important;
     }
 
 

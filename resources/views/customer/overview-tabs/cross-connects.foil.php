@@ -19,9 +19,11 @@
             <th>
                 Location
             </th>
-            <th>
-                Cabinet
-            </th>
+            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                <th>
+                    Cabinet
+                </th>
+            <?php endif; ?>
             <th>
                 Assigned At
             </th>
@@ -61,9 +63,11 @@
                     <td>
                         <?= $t->ee( $patchPanelPort->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?>
                     </td>
-                    <td>
-                        <?= $t->ee( $patchPanelPort->getPatchPanel()->getCabinet()->getName() ) ?>
-                    </td>
+                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                        <td>
+                            <?= $t->ee( $patchPanelPort->getPatchPanel()->getCabinet()->getName() ) ?>
+                        </td>
+                    <?php endif; ?>
                     <td>
                         <?= $patchPanelPort->getAssignedAtFormated() ?>
                     </td>
