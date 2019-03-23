@@ -17,7 +17,7 @@
 
             <div class="tw-text-center tw-my-6">
                 <?php if( config( "identity.biglogo" ) ) :?>
-                    <img class="img-fluid" src="<?= config( "identity.biglogo" ) ?>" />
+                    <img class="tw-inline img-fluid" src="<?= config( "identity.biglogo" ) ?>" />
                 <?php else: ?>
                     <h2>
                         [Your Logo Here]
@@ -53,7 +53,7 @@
                     <input name="username" class="tw-shadow-md tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
                            id="username" type="text" placeholder="Username" value="<?= $t->username ?? old('username') ?>">
                     <?php foreach( $t->errors->get( 'username' ) as $err ): ?>
-                        <p class="tw-text-red tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
+                        <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
                     <?php endforeach; ?>
                 </div>
 
@@ -64,7 +64,7 @@
                     <input name="token" class="tw-shadow-md tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
                            id="token" type="text" placeholder="" value="<?= $t->token ?? old('token') ?>">
                     <?php foreach( $t->errors->get( 'token' ) as $err ): ?>
-                        <p class="tw-text-red tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
+                        <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
                     <?php endforeach; ?>
 
                 </div>
@@ -77,7 +77,7 @@
                     <input name="password" class="tw-shadow-md tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
                             id="password" type="password" autofocus placeholder="******************">
                     <?php foreach( $t->errors->get( 'password' ) as $err ): ?>
-                        <p class="tw-text-red tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
+                        <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
                     <?php endforeach; ?>
                 </div>
 
@@ -87,7 +87,7 @@
                     </label>
                     <input name="password_confirmation" class="tw-shadow-md tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline" id="password_confirmation" type="password" placeholder="******************">
                     <?php foreach( $t->errors->get( 'password_confirmation' ) as $err ): ?>
-                        <p class="tw-text-red tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
+                        <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
                     <?php endforeach; ?>
                 </div>
 
@@ -97,7 +97,7 @@
                         hover:tw-no-underline  hover:tw-text-blue-dark" href="<?= route( "login@login" ) ?>">
                         Return to Login
                     </a>
-                    <button class="tw-bg-blue hover:tw-bg-blue-dark tw-text-white tw-font-bold tw-py-2 tw-px-6 tw-rounded focus:tw-outline-none focus:tw-shadow-outline" type="submit">
+                    <button class="tw-bg-blue-500 hover:tw-bg-blue-500-dark tw-text-white tw-font-bold tw-py-2 tw-px-6 tw-rounded focus:tw-outline-none focus:tw-shadow-outline" type="submit">
                         Reset
                     </button>
                 </div>

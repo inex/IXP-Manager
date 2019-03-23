@@ -35,7 +35,7 @@
     <div class="col-lg-12">
 
 
-        <div class="bg-light shadow-sm tw-p-6">
+        <div class="tw-bg-gray-100 shadow-sm tw-p-6">
 
             <div class="row">
                 <div class="<?= $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ? "col-md-9 col-lg-8" : "col-12" ?>">
@@ -48,7 +48,9 @@
                     <p class="tw-mt-2">
                         <a href="<?= $t->c->getCorpwww() ?>" target="_blank"><?= $t->nakedUrl( $t->c->getCorpwww() ) ?></a>
 
-                        - joined <?= $c->getDatejoin()->format('Y') ?>
+                        <span class="tw-text-gray-600">
+                            - joined <?= $c->getDatejoin()->format('Y') ?>
+                        </span>
                     </p>
 
                     <?php if( !$t->c->isTypeAssociate() ): ?>
@@ -56,14 +58,14 @@
 
                             <?php if( $c->getInManrs() ): ?>
                                 <a href="https://www.manrs.org/" target="_blank" class="hover:tw-no-underline">
-                                        <span class="tw-inline-block tw-border tw-border-green tw-p-1 tw-rounded-full tw-text-green-dark tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-3">
+                                        <span class="tw-inline-block tw-border tw-border-green-500 tw-p-1 tw-rounded-full tw-text-green-500 tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-3">
                                             MANRS
                                         </span>
                                 </a>
                             <?php endif; ?>
 
                             <?php if( $c->getPeeringpolicy() != \Entities\Customer::PEERING_POLICY_OPEN ): ?>
-                                <span class="tw-inline-block tw-border tw-border-black tw-p-1 tw-rounded-full tw-text-black tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-3">
+                                <span class="tw-inline-block tw-border tw-border-gray-600 tw-p-1 tw-rounded-full tw-text-gray-600 tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-3">
                                     <?= $c->getPeeringpolicy() ?>
                                 </span>
                             <?php endif; ?>
@@ -74,8 +76,9 @@
 
                 <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ): ?>
 
-                    <div class="col-md-3 col-lg-4 col-12 tw-mt-6 md:tw-mt-0 tw-text-right">
-                        <img class="img-fluid" style="max-height: 100px;" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
+                    <div class="col-md-3 col-lg-4 col-12 tw-mt-6 md:tw-mt-0 tw-text-center">
+                        <span class="lg:tw-inline-block xl:tw-h-full lg:tw-align-middle"></span>
+                        <img class="img-fluid lg:tw-inline-block tw-align-middle" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>">
                     </div>
 
                 <?php endif; ?>
@@ -87,7 +90,7 @@
 
             <div class="row tw-mt-6 tw-mx-4">
 
-                <div class="col-12 tw-border tw-border-grey-light tw-p-4 tw-text-black ">
+                <div class="col-12 tw-border tw-border-grey-light tw-p-4 tw-text-gray-700 ">
 
 
                     <?php if( filter_var( $c->getPeeringemail(), FILTER_VALIDATE_EMAIL ) ): ?>
@@ -159,7 +162,7 @@
                     <div class="tw-px-6 tw-py-6">
 
                         <div class="tw-font-bold tw-text-xl tw-mb-2">
-                            <?= $vi->getInfrastructure() ? $vi->getInfrastructure()->getName() : '<em>Unknwon Infrastructure</em>' ?>
+                            <?= $vi->getInfrastructure() ? $vi->getInfrastructure()->getName() : '<em>Unknown Infrastructure</em>' ?>
 
                             <span class="tw-block tw-float-right tw-ml-6 tw-text-lg tw-font-semibold">
                                 <?= $t->scaleBits( $vi->speed() * 1000 * 1000, 0 ) ?>
@@ -229,9 +232,9 @@
 
                                 <?php if( !in_array( $t->c->getAutsys(), $rsasns ) ): ?>
                                     <?php if( $vli->getRsclient() ): ?>
-                                        <span class="tw-inline-block tw-border tw-border-green       tw-p-1 tw-rounded-full tw-text-green-dark  tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2">
+                                        <span class="tw-inline-block tw-border tw-border-green-500       tw-p-1 tw-rounded-full tw-text-green-dark  tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2">
                                     <?php else: ?>
-                                        <span class="tw-inline-block tw-border tw-border-red-lighter tw-p-1 tw-rounded-full tw-text-red-lighter tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2">
+                                        <span class="tw-inline-block tw-border tw-border-red-lighter     tw-p-1 tw-rounded-full tw-text-red-lighter tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2">
                                     <?php endif; ?>
                                         Route Server
                                     </span>
@@ -239,9 +242,9 @@
 
                                 <?php if( $t->c->getAutsys() !== 112 ): ?>
                                     <?php if( $vli->getAs112client() ): ?>
-                                        <span class="tw-inline-block tw-border tw-border-green       tw-p-1 tw-rounded-full tw-text-green-dark  tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2">
+                                        <span class="tw-inline-block tw-border tw-border-green-500       tw-p-1 tw-rounded-full tw-text-green-dark  tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2">
                                     <?php else: ?>
-                                        <span class="tw-inline-block tw-border tw-border-red-lighter tw-p-1 tw-rounded-full tw-text-red-lighter tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2">
+                                        <span class="tw-inline-block tw-border tw-border-red-lighter     tw-p-1 tw-rounded-full tw-text-red-lighter tw-font-semibold tw-uppercase tw-text-sm tw-px-3 tw-py-1 tw-mr-2">
                                     <?php endif; ?>
                                         AS112
                                     </span>

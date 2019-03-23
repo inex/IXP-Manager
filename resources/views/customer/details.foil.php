@@ -72,7 +72,7 @@
 
                                 <?php if( $c->getInManrs() ): ?>
                                     <a href="https://www.manrs.org/" target="_blank" class="hover:no-underline">
-                                        <span class="tw-hidden md:tw-inline tw-border tw-border-green tw-p-1 tw-rounded-full tw-text-green tw-uppercase tw-text-xs tw-mx-3">
+                                        <span class="tw-hidden md:tw-inline tw-border tw-border-green-500 tw-p-1 tw-rounded-full tw-text-green-500 tw-uppercase tw-text-xs tw-mx-3">
                                             MANRS
                                         </span>
                                     </a>

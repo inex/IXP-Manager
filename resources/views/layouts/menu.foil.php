@@ -126,13 +126,13 @@
 
 
             <li class="">
-                <a class="block <?= !request()->is( 'infrastructure/*' ) ?: 'active' ?>" href="<?= route('infrastructure@list') ?>">
+                <a class=" <?= !request()->is( 'infrastructure/*' ) ?: 'active' ?>" href="<?= route('infrastructure@list') ?>">
                     Infrastructures
                 </a>
             </li>
 
-            <li class="">
-                <a class="block text-white font-medium <?= !request()->is( 'facility/*' ) ?: '' ?>" href="<?= route( 'facility@list' ) ?>">
+            <li>
+                <a class="tw-block tw-text-white tw-font-medium <?= !request()->is( 'facility/*' ) ?: 'active' ?>" href="<?= route( 'facility@list' ) ?>">
                     Facilities
                 </a>
             </li>

@@ -12,7 +12,7 @@
 
 <div class="container tw-mx-auto">
 
-<div class="tw-bg-blue-lightest tw-border-t tw-border-b tw-border-blue tw-text-blue-dark tw-px-6 tw-mb-8" role="alert">
+<div class="tw-bg-blue-lightest tw-border-t tw-border-b tw-border-blue-500 tw-text-blue-dark tw-px-6 tw-mb-8" role="alert">
     <div class="tw-flex tw-flex-wrap">
         <div class="tw-flex-1 tw-px-6 tw-py-2 tw-m-2">
             <p class="tw-font-bold">Technical Support</p>

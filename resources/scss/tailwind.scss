@@ -9,7 +9,7 @@
  *
  * @import "tailwindcss/preflight";
  */
-@tailwind preflight;
+@tailwind base;
 
 /**
  * This injects any component classes registered by plugins.
@@ -37,15 +37,87 @@
  */
 
 
-/*
-#side-navbar li {
-  @apply hover:border hover:border-grey hover:bg-grey-light hover:rounded px-3 py-1 my-1;
+/****************************************************************************************
+ **** Reset headings to ~ Bootstrap4 defaults
+ ****************************************************************************************/
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2;
 }
 
-#side-navbar li.navbar-active {
+h2 {
+  font-size: 2rem;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+h3 {
+  font-size: 1.75rem;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+h4 {
+  font-size: 1.5rem;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+h5 {
+  font-size: 1.25rem;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+h6 {
+  font-size: 1rem;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+
+/****************************************************************************************
+ **** Reset anchors
+ ****************************************************************************************/
+
+a {
+  @apply tw-text-blue-500
+}
+
+a:hover {
+  @apply tw-underline
+}
+
+
+/****************************************************************************************
+ **** LHS Menu in IXP Manager
+ ****************************************************************************************/
+
+
+#side-navbar {
+  @apply border-r border-grey-light;
+}
+
+
+#side-navbar li {
+  @apply px-3 py-1 my-1;
+}
+
+#side-navbar li:hover {
+  @apply border border-grey bg-grey-light rounded;
+}
+
+#side-navbar-li-active {
   @apply border border-grey-darkest bg-grey rounded text-white px-3 py-1 my-1;
 }
-*/
 
 
 
@@ -54,7 +126,7 @@
 }
 
 .ixpm-table a:hover {
-  @apply tw-text-blue tw-underline;
+  @apply tw-text-blue-500 tw-underline;
 }
 
 
