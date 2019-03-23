@@ -19,7 +19,7 @@
 
     <div class="row">
 
-        <div class="col-sm-12">
+        <div class="col-12">
 
             <?= $t->alerts() ?>
 
@@ -30,18 +30,18 @@
                         <th>
                             Member
                         </th>
-                        <th class="hidden md:table-cell">
+                        <th class="hidden md:tw-table-cell">
                             Joined
                         </th>
 
                         <?php if( !$t->associates ): ?>
 
-                            <th class="text-right">
+                            <th class="tw-text-right">
                                 ASN
                             </th>
 
                             <?php if( Auth::check() ): ?>
-                                <th class="hidden lg:table-cell">
+                                <th class="hidden lg:tw-table-cell">
                                     Peering Email
                                 </th>
                             <?php endif; ?>
@@ -63,30 +63,32 @@
                                 <?= $t->ee( $c->getName() ) ?>
                             </a>
 
-                            <?php if( $c->getPeeringpolicy() != \Entities\Customer::PEERING_POLICY_OPEN ): ?>
-                                <span class="hidden lg:inline border p-1 rounded-full float-right text-grey-dark text-uppercase text-xs">
-                                    <?= $c->getPeeringpolicy() ?>
-                                </span>
-                            <?php endif; ?>
-
-                            <?php if( $c->getInManrs() ): ?>
-                                <a href="https://www.manrs.org/" target="_blank" class="hover:no-underline">
-                                    <span class="hidden md:inline border border-green p-1 rounded-full text-green text-uppercase text-xs mx-3" style="border-color: #38c172 !important;">
-                                        MANRS
+                            <?php if( !$t->associates ): ?>
+                                <?php if( $c->getPeeringpolicy() != \Entities\Customer::PEERING_POLICY_OPEN ): ?>
+                                    <span class="tw-hidden lg:tw-inline tw-border tw-p-1 tw-rounded-full tw-float-right tw-text-grey-dark tw-uppercase tw-text-xs">
+                                        <?= $c->getPeeringpolicy() ?>
                                     </span>
-                                </a>
+                                <?php endif; ?>
+
+                                <?php if( $c->getInManrs() ): ?>
+                                    <a href="https://www.manrs.org/" target="_blank" class="hover:no-underline">
+                                        <span class="tw-hidden md:tw-inline tw-border tw-border-green tw-p-1 tw-rounded-full tw-text-green tw-uppercase tw-text-xs tw-mx-3">
+                                            MANRS
+                                        </span>
+                                    </a>
+                                <?php endif; ?>
                             <?php endif; ?>
 
 
                         </td>
 
-                        <td class="font-mono hidden md:table-cell">
+                        <td class="tw-font-mono tw-hidden md:tw-table-cell">
                             <?= $c->getDatejoin()->format( 'Y-m-d' ) ?>
                         </td>
 
                         <?php if( !$t->associates ): ?>
 
-                            <td class="font-mono text-right">
+                            <td class="tw-font-mono tw-text-right">
                                 <?php if( $c->getInPeeringdb() ): ?>
                                     <?php if( Auth::check() ): ?>
                                         <?=  $t->asNumber( $c->getAutsys(), false ) ?>
@@ -101,7 +103,7 @@
                             </td>
 
                             <?php if( Auth::check() ): ?>
-                                <td  class="hidden lg:table-cell">
+                                <td  class="hidden lg:tw-table-cell">
                                     <a href="mailto:<?= $t->ee( $c->getPeeringemail() ) ?>">
                                         <?= $t->ee( $c->getPeeringemail() ) ?>
                                     </a>

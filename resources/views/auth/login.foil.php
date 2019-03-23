@@ -11,7 +11,7 @@
 
         <?= $t->alerts() ?>
 
-        <div class="text-center my-4">
+        <div class="tw-text-center tw-my-6">
             <?php if( config( "identity.biglogo" ) ) :?>
                 <img class="img-fluid" src="<?= config( "identity.biglogo" ) ?>" />
             <?php else: ?>
@@ -30,53 +30,53 @@
 <div class="row">
     <div class="col-12">
 
-        <div class="w-full max-w-sm mx-auto">
+        <div class="tw-w-full tw-max-w-sm tw-mx-auto">
 
             <?= Former::open()->method( 'POST' )
                 ->action( route( 'login@login' ) )
-                ->class( "bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4" )
+                ->class( "tw-bg-white tw-shadow-md tw-rounded tw-px-8 tw-pt-6 tw-pb-8 tw-mb-6" )
             ?>
 
 
-            <div class="mb-4">
-                <label class="block text-grey-darker text-sm font-bold mb-2" for="username">
+            <div class="tw-mb-6">
+                <label class="tw-block tw-text-grey-darker tw-text-sm tw-font-bold tw-mb-2" for="username">
                     Username
                 </label>
-                <input name="username" class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline"
+                <input name="username" class="tw-shadow-md tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
                        id="username" type="text" placeholder="Username" autofocus value="<?= old('username') ?>">
                 <?php foreach( $t->errors->get( 'username' ) as $err ): ?>
-                    <p class="text-red text-xs italic mt-2"><?= $err ?></p>
+                    <p class="tw-text-red tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
                 <?php endforeach; ?>
 
             </div>
 
 
-            <div class="mb-6">
-                <label class="block text-grey-darker text-sm font-bold mb-2" for="password">
+            <div class="tw-mb-6">
+                <label class="tw-block tw-text-grey-darker tw-text-sm tw-font-bold tw-mb-2" for="password">
                     Password
                 </label>
-                <input name="password" class="shadow appearance-none border rounded w-full py-2 px-3 text-grey-darker leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="******************">
+                <input name="password" class="tw-shadow-md tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline" id="password" type="password" placeholder="******************">
                 <?php foreach( $t->errors->get( 'password' ) as $err ): ?>
-                    <p class="text-red text-xs italic mt-2"><?= $err ?></p>
+                    <p class="tw-text-red tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
                 <?php endforeach; ?>
             </div>
 
-            <div class="mb-6">
-                <label class="block text-grey-dark font-bold">
-                    <input class="mr-2 leading-tight" type="checkbox" name="remember" value="1">
-                    <span class="text-sm">
+            <div class="tw-mb-6">
+                <label class="tw-block tw-text-grey-dark tw-font-bold">
+                    <input class="tw-mr-2 tw-leading-tight" type="checkbox" name="remember" value="1">
+                    <span class="tw-text-sm">
                         Remember me
                     </span>
                 </label>
             </div>
 
 
-            <div class="flex items-center justify-between">
-                <a class="inline-block align-baseline font-bold text-sm text-blue-light
-                        hover:no-underline  hover:text-blue-dark" href="<?= route( "forgot-password@show-form" ) ?>">
+            <div class="tw-flex tw-items-center tw-justify-between">
+                <a class="tw-inline-block tw-align-baseline tw-font-bold tw-text-sm tw-text-blue-light
+                        hover:tw-no-underline  hover:tw-text-blue-dark" href="<?= route( "forgot-password@show-form" ) ?>">
                     Forgot Password?
                 </a>
-                <button class="bg-blue hover:bg-blue-dark text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit">
+                <button class="tw-bg-blue hover:tw-bg-blue-dark tw-text-white tw-font-bold tw-py-2 tw-px-6 tw-rounded focus:tw-outline-none focus:tw-shadow-outline" type="submit">
                     Sign In
                 </button>
             </div>
