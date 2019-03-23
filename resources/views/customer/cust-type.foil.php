@@ -2,7 +2,7 @@
 /** @var Foil\Template\Template $t */
 ?>
 <?php if( $t->cust->isTypeAssociate() ): ?>
-    <span class="badge badge-warning">ASSOCIATE MEMBER</span>
+    <span class="badge badge-warning tw-p-1">ASSOCIATE MEMBER</span>
 <?php elseif( $t->cust->isTypeProBono() ): ?>
     <span class="badge badge-info">PROBONO MEMBER</span>
 <?php elseif( $t->cust->isTypeInternal() ): ?>
