@@ -89,36 +89,65 @@ h6 {
  ****************************************************************************************/
 
 a {
-  @apply tw-text-blue-500
+  @apply tw-text-blue-500;
 }
 
 a:hover {
-  @apply tw-underline
+  @apply tw-underline;
 }
 
 
 /****************************************************************************************
  **** LHS Menu in IXP Manager
+
+
+        <div class="tw-bg-white tw-shadow tw-w-64 tw-my-2">
+            <ul class="list-reset">
+                <li >
+                    <a href="#" class="tw-block tw-p-4 tw-text-grey-darker tw-font-bold tw-border-purple hover:tw-bg-grey-lighter tw-border-r-4">Home</a>
+                </li>
+                <li >
+                    <a href="#" class="tw-block tw-p-4 tw-text-grey-darker tw-font-bold tw-border-grey-lighter hover:tw-border-purple-light hover:tw-bg-grey-lighter tw-border-r-4">About us</a>
+                </li>
+            </ul>
+        </div>
+
+
  ****************************************************************************************/
 
 
 #side-navbar {
-  @apply border-r border-grey-light;
+  @apply tw-shadow tw-pr-0;
 }
 
+#side-navbar h6 {
+  @apply tw-block tw-p-4 tw-pl-1 tw-text-grey-darker tw-font-bold tw-border-grey-lighter tw-border-r-4 tw-m-0;
+}
+
+.nav-link {
+  @apply tw-block tw-p-2 tw-pl-3 tw-text-grey-darker tw-no-underline tw-text-sm;
+}
+
+.nav-link:hover {
+  @apply tw-text-grey-darker;
+}
 
 #side-navbar li {
-  @apply px-3 py-1 my-1;
+  @apply tw-block tw-p-0 tw-text-grey-darker tw-border-grey-lighter tw-border-r-4 tw-font-medium;
+}
+
+#side-navbar li.active {
+  @apply tw-border-green-600 tw-bg-grey-lighter tw-font-bold;
+  font-weight: 700 !important;
 }
 
 #side-navbar li:hover {
-  @apply border border-grey bg-grey-light rounded;
+  @apply tw-border-green-600 tw-bg-grey-lighter tw-text-grey-darker;
 }
 
-#side-navbar-li-active {
-  @apply border border-grey-darkest bg-grey rounded text-white px-3 py-1 my-1;
+.nav-sub-menu-item {
+  @apply tw-ml-8;
 }
-
 
 
 .ixpm-table a {
