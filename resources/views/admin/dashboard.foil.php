@@ -11,34 +11,35 @@
 
 <div class="row">
 
-    <div class="col-sm-12">
+    <div class="col-12">
 
         <?= $t->alerts() ?>
 
         <div class="row">
 
-            <div class="col-md-6 table-responsive">
-                <div>
-                    <h3>Overall Customer Numbers</h3>
+            <div class="col-12 col-xl-6">
 
-                    <table class="table table-striped">
+                <div>
+                    <h4>Overall Customer Numbers</h4>
+
+                    <table class="table table-sm table-hover tw-mt-6">
                         <thead>
                         <tr>
                             <th>
                                 Customer Type
                             </th>
-                            <th>
+                            <th class="tw-text-right">
                                 Count
                             </th>
                         </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="tw-text-sm">
                         <?php foreach( $t->stats[ "types" ] as $type => $count  ): ?>
                             <tr>
                                 <td>
                                     <?= \Entities\Customer::resolveGivenType( $type ) ?>
                                 </td>
-                                <td>
+                                <td class="tw-text-right">
                                     <a href="<?= route( "customer@list" ) . '?type=' . $type ?>">
                                         <?= $count ?>
                                     </a>
@@ -52,28 +53,29 @@
 
 
                 <?php if( count( $t->stats[ "custsByLocation" ] ) ): ?>
-                    <div class="mt-4">
-                        <h3>Customers by Location</h3>
 
-                        <table class="table  table-striped">
+                    <div class="tw-my-12">
+                        <h4 class="tw-mb-6">Customers by Location</h4>
+
+                        <table class="table table-sm table-hover">
                             <thead>
                             <tr>
                                 <th>
                                     Location
                                 </th>
-                                <th>
+                                <th class="tw-text-right">
                                     Customers
                                 </th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <?php foreach( $t->stats[ "custsByLocation" ] as $loc => $custids  ): ?>
+                            <tbody class="tw-text-sm">
+                            <?php foreach( $t->stats[ "custsByLocation" ] as $loc => $cnt  ): ?>
                                 <tr>
                                     <td>
                                         <?= $loc ?>
                                     </td>
-                                    <td>
-                                        <?= count( $custids ) ?>
+                                    <td class="tw-text-right">
+                                        <?= $cnt ?>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -83,31 +85,31 @@
                 <?php endif; ?>
 
                 <?php if( count( $t->stats[ "byLocation" ] ) ): ?>
-                    <div class="mt-4">
+                    <div class="tw-my-12">
 
-                        <h3>
+                        <h4 class="tw-mb-6">
                             Customer Ports by Location
-                        </h3>
+                        </h4>
 
-                        <table class="table table-striped">
-                            <thead>
+                        <table class="table table-sm table-hover">
+                            <thead class="tw-text-sm">
                                 <tr>
                                     <th>
                                         Location
                                     </th>
 
                                     <?php foreach( $t->stats[ "speeds" ] as $speed => $count ): ?>
-                                        <th class="text-right">
+                                        <th class="tw-text-right">
                                             <?= $t->scaleBits( $speed * 1000000, 0 ) ?>
                                         </th>
                                     <?php endforeach; ?>
 
-                                    <th class="text-right">
+                                    <th class="tw-text-right">
                                         Total
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="tw-text-sm">
                                 <?php $colcount = 0 ?>
                                 <?php foreach( $t->stats[ "byLocation"] as $location => $speed ): ?>
                                     <?php $rowcount = 0 ?>
@@ -117,7 +119,7 @@
                                             <?= $t->ee( $location ) ?>
                                         </td>
                                         <?php foreach( $t->stats[ "speeds"] as $s => $c ): ?>
-                                            <td class="text-right">
+                                            <td class="tw-text-right">
                                                 <?php if( isset( $speed[ $s ] ) ): ?>
                                                     <?= $speed[ $s ] ?>
                                                     <?php $rowcount = $rowcount + $speed[ $s ] ?>
@@ -126,7 +128,7 @@
                                                 <?php endif; ?>
                                             </td>
                                         <?php endforeach; ?>
-                                        <td class="text-right">
+                                        <td class="tw-text-right">
                                             <b>
                                                 <?= $rowcount ?>
                                             </b>
@@ -141,13 +143,13 @@
                                         <b>Totals</b>
                                     </td>
                                     <?php foreach( $t->stats[ "speeds"] as $s => $c ): ?>
-                                        <td class="text-right">
+                                        <td class="tw-text-right">
                                             <b>
                                                 <?= $c ?>
                                             </b>
                                         </td>
                                     <?php endforeach; ?>
-                                    <td class="text-right">
+                                    <td class="tw-text-right">
                                         <b>
                                             <?= $colcount ?>
                                         </b>
@@ -161,31 +163,31 @@
                 <?php endif; ?>
 
                 <?php if( count( $t->stats[ "byLan" ] ) ): ?>
-                    <div class="mt-4">
+                    <div class="tw-my-10">
 
-                        <h3>Customer Ports by Infrastructure</h3>
+                        <h4  class="tw-mb-6">Customer Ports by Infrastructure</h4>
 
-                        <table class="table table-striped">
+                        <table class="table table-sm table-hover">
                             <thead>
                                 <tr>
                                     <th>
                                         Infrastructure
                                     </th>
                                     <?php foreach( $t->stats[ "speeds"] as $speed => $count ): ?>
-                                        <th class="text-right">
+                                        <th class="tw-text-right">
                                             <?= $t->scaleBits( $speed * 1000000, 0 ) ?>
                                         </th>
                                     <?php endforeach; ?>
-                                    <th class="text-right">
+                                    <th class="tw-text-right">
                                         Total
                                     </th>
-                                    <th class="text-right">
+                                    <th class="tw-text-right">
                                         Connected<br>
                                         Capacity
                                     </th>
                                 </tr>
                             </thead>
-                            <tbody>
+                            <tbody class="tw-text-sm">
                                 <?php $colcount = 0 ?>
                                 <?php foreach( $t->stats[ "byLan"] as  $inf => $spds ): ?>
 
@@ -197,7 +199,7 @@
                                             <?= $t->ee( $inf ) ?>
                                         </td>
                                         <?php foreach( $t->stats[ "speeds"] as $speed => $count ): ?>
-                                            <td class="text-right">
+                                            <td class="tw-text-right">
                                                 <?php if( isset( $spds[ $speed ] ) ): ?>
                                                     <?= $spds[ $speed ] ?>
                                                     <?php $rowcount = $rowcount+$spds[ $speed ] ?>
@@ -207,10 +209,10 @@
                                                 <?php endif; ?>
                                             </td>
                                         <?php endforeach; ?>
-                                        <td class="text-right">
+                                        <td class="tw-text-right">
                                             <?= $rowcount ?>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="tw-text-right">
                                             <?= $t->scaleBits( $rowcap * 1000000, 2 ) ?>
                                         </td>
                                     </tr>
@@ -227,16 +229,16 @@
 
                                     <?php foreach( $t->stats[ "speeds"] as $k => $i ): ?>
                                         <?php $rowcap = $rowcap + $i * $k ?>
-                                        <td class="text-right">
+                                        <td class="tw-text-right">
                                             <b>
                                                 <?= $i ?>
                                             </b>
                                         </td>
                                     <?php endforeach; ?>
-                                    <td class="text-right">
+                                    <td class="tw-text-right">
                                         <b><?= $colcount ?></b>
                                     </td>
-                                    <td class="text-right">
+                                    <td class="tw-text-right">
                                         <b>
                                             <?= $t->scaleBits( $rowcap * 1000000, 3 ) ?>
                                         </b>
@@ -250,29 +252,29 @@
                 <?php endif; ?>
 
                 <?php if( count( $t->stats[ "rsUsage" ] ) ): ?>
-                    <div class="mt-4">
+                    <div class="tw-my-10">
 
-                        <h3>Customer Route Server Usage by VLAN</h3>
+                        <h4 class="tw-mb-6">Customer Route Server Usage by VLAN</h4>
 
-                        <table class="table table-striped">
+                        <table class="table table-sm table-hover">
                             <thead>
                                 <tr>
                                     <th>
                                         Infrastructure
                                     </th>
-                                    <th class="text-right">
+                                    <th class="tw-text-right">
                                         RS Clients
                                     </th>
-                                    <th class="text-right">
+                                    <th class="tw-text-right">
                                         Total
                                     </th>
-                                    <th class="text-right">
+                                    <th class="tw-text-right">
                                         Percentage
                                     </th>
                                 </tr>
                             </thead>
 
-                            <tbody>
+                            <tbody class="tw-text-sm">
 
                                 <?php $rsclients = $total = 0 ?>
 
@@ -281,15 +283,15 @@
                                         <td>
                                             <?= $t->ee( $vlan->vlanname ) ?>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="tw-text-right">
                                             <?php $rsclients += $vlan->rsclient_count ?>
                                             <?= $vlan->rsclient_count ?>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="tw-text-right">
                                             <?php $total += $vlan->overall_count ?>
                                             <?= $vlan->overall_count ?>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="tw-text-right">
                                             <?= round( (100.0 * $vlan->rsclient_count ) / $vlan->overall_count ) ?>%
                                         </td>
                                     </tr>
@@ -297,23 +299,23 @@
 
                             </tbody>
 
-                            <tfoot>
+                            <tfoot class="tw-text-sm">
                                 <tr>
                                     <td>
                                         <b>Totals</b>
                                     </td>
 
-                                    <td class="text-right">
+                                    <td class="tw-text-right">
                                         <b>
                                             <?= $rsclients ?>
                                         </b>
                                     </td>
-                                    <td class="text-right">
+                                    <td class="tw-text-right">
                                         <b>
                                             <?= $total ?>
                                         </b>
                                     </td>
-                                    <td class="text-right">
+                                    <td class="tw-text-right">
                                         <b>
                                             <?= $total ? round( (100.0 * $rsclients ) / $total ) : 0 ?>%
                                         </b>
@@ -328,31 +330,31 @@
                 <?php endif; ?>
 
                 <?php if( count( $t->stats[ "ipv6Usage" ] ) ): ?>
-                    <div class="mt-4">
+                    <div class="tw-my-10">
 
-                        <h3>
+                        <h4 class="tw-mb-6">
                             Customer IPv6 Usage by VLAN
-                        </h3>
+                        </h4>
 
-                        <table class="table table-striped">
+                        <table class="table table-sm table-hover">
                             <thead>
                                 <tr>
                                     <th>
                                         Infrastructure
                                     </th>
-                                    <th class="text-right">
+                                    <th class="tw-text-right">
                                         IPv6 Enabled
                                     </th>
-                                    <th class="text-right">
+                                    <th class="tw-text-right">
                                         Total
                                     </th>
-                                    <th class="text-right">
+                                    <th class="tw-text-right">
                                         Percentage
                                     </th>
                                 </tr>
                             </thead>
 
-                            <tbody>
+                            <tbody class="tw-text-sm">
 
                                 <?php $ipv6 = $total = 0 ?>
                                 <?php foreach( $t->stats[ "ipv6Usage"] as  $vlan ): ?>
@@ -360,15 +362,15 @@
                                         <td>
                                             <?= $t->ee( $vlan->vlanname ) ?>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="tw-text-right">
                                             <?php $ipv6 += $vlan->ipv6_count ?>
                                             <?= $vlan->ipv6_count ?>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="tw-text-right">
                                             <?php $total += $vlan->overall_count ?>
                                             <?= $vlan->overall_count ?>
                                         </td>
-                                        <td class="text-right">
+                                        <td class="tw-text-right">
                                             <?= round( (100.0 * $vlan->ipv6_count ) / $vlan->overall_count ) ?>%
                                         </td>
                                     </tr>
@@ -376,7 +378,7 @@
 
                             </tbody>
 
-                            <tfoot>
+                            <tfoot class="tw-text-sm">
                                 <tr>
                                     <td>
                                         <b>
@@ -407,23 +409,14 @@
 
                 <?php endif; ?>
 
-
-                <div class="alert alert-info">
-                    Dashboard statistics are cached for 1 hour (graphs for 5mins). These dashboard statistics were last cached
-                    <?= $t->stats['cached_at']->diffForHumans() ?>.
-                    <a href="<?= route('admin@dashboard') ?>?graph_period=<?= $t->graph_period ?>&refresh_cache=1">Click
-                    here</a> to refresh the cache now.
-                </div>
-
-
             </div>
 
-            <div class="col-md-6">
-                <div class="mb-4">
+            <div class="col-12 col-xl-6">
+                <div class="tw-mb-6">
                     <?php foreach( $t->graph_periods as $period => $desc ): ?>
 
-                        <a class="mr-4" href="<?= route('admin@dashboard') ?>?graph_period=<?= $period ?>">
-                            <span class="badge badge-info">
+                        <a class="tw-mr-6 hover:tw-no-underline" href="<?= route('admin@dashboard') ?>?graph_period=<?= $period ?>">
+                            <span class="tw-inline-block tw-bg-grey-lighter tw-rounded-full tw-px-3 tw-py-1 tw-text-sm <?= $t->graph_period === $period ? 'tw-font-semibold tw-text-grey-darker' : 'tw-text-grey-dark' ?> mr-2">
                                 <?= $desc ?>
                             </span>
                         </a>
@@ -436,7 +429,7 @@
                     <?php foreach( $t->graphs as $id => $graph ): ?>
                         <div class="card mb-4">
                             <div class="card-header ">
-                                <h3 class="d-flex mb-0">
+                                <h5 class="d-flex mb-0">
                                     <span class="mr-auto">
                                         <?= $t->ee( $graph->name() ) ?> Aggregate Traffic
                                     </span>
@@ -449,7 +442,7 @@
                                         <?php endif; ?>
                                     >
                                         <i class="fa fa-search"></i></a>
-                                </h3>
+                                </h5>
                             </div>
 
                             <div class="card-body">
@@ -477,6 +470,16 @@
                 <?php endif; ?>
             </div>
         </div>
+
+        <div class="alert alert-info tw-text-xs">
+            Dashboard statistics are cached for 1 hour (graphs for 5mins). These dashboard statistics were last cached
+            <?= $t->stats['cached_at']->diffForHumans() ?>.
+            <a href="<?= route('admin@dashboard') ?>?graph_period=<?= $t->graph_period ?>&refresh_cache=1">Click
+                here</a> to refresh the cache now.
+        </div>
+
+
+
     </div>
 
 </div>

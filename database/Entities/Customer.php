@@ -2391,6 +2391,10 @@ class Customer
      */
     public function getFormattedName( $fmt = null )
     {
+        if( $this->isTypeAssociate() ) {
+            return $this->getName();
+        }
+
         if( $fmt === null && ( !function_exists( 'config' ) || ( $fmt = config('ixp_fe.customer_name_format') ) === null ) ) {
             $fmt = "%a %j";
         }

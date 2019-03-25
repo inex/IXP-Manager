@@ -9,7 +9,7 @@
  *
  * @import "tailwindcss/preflight";
  */
-@tailwind preflight;
+@tailwind base;
 
 /**
  * This injects any component classes registered by plugins.
@@ -37,35 +37,127 @@
  */
 
 
+/****************************************************************************************
+ **** Reset headings to ~ Bootstrap4 defaults
+ ****************************************************************************************/
+
+h1 {
+  font-size: 2.5rem;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+h3 {
+  font-size: 1.75rem;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+h4 {
+  font-size: 1.5rem;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+h5 {
+  font-size: 1.25rem;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+h6 {
+  font-size: 1rem;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+
+/****************************************************************************************
+ **** Reset anchors
+ ****************************************************************************************/
+
+a {
+  @apply tw-text-blue-500;
+}
+
+a:hover {
+  @apply tw-underline;
+}
+
+
+/****************************************************************************************
+ **** LHS Menu in IXP Manager
+
+
+        <div class="tw-bg-white tw-shadow tw-w-64 tw-my-2">
+            <ul class="list-reset">
+                <li >
+                    <a href="#" class="tw-block tw-p-4 tw-text-grey-darker tw-font-bold tw-border-purple hover:tw-bg-grey-lighter tw-border-r-4">Home</a>
+                </li>
+                <li >
+                    <a href="#" class="tw-block tw-p-4 tw-text-grey-darker tw-font-bold tw-border-grey-lighter hover:tw-border-purple-light hover:tw-bg-grey-lighter tw-border-r-4">About us</a>
+                </li>
+            </ul>
+        </div>
+
+
+ ****************************************************************************************/
+
+
+#side-navbar {
+  @apply tw-shadow tw-pr-0 tw-bg-white;
+}
+
+#side-navbar h6 {
+  @apply tw-block tw-p-4 tw-pl-1 tw-text-grey-darker tw-font-bold tw-border-grey-lighter tw-border-r-4 tw-m-0;
+}
+
+.nav-link {
+  @apply tw-block tw-p-2 tw-pl-3 tw-text-grey-darker tw-no-underline tw-text-sm;
+}
+
+.nav-link:hover {
+  @apply tw-text-grey-darker;
+}
+
+#side-navbar li {
+  @apply tw-block tw-p-0 tw-text-grey-darker tw-border-grey-lighter tw-border-r-4 tw-font-medium;
+}
+
+#side-navbar li.active {
+  @apply tw-border-green-600 tw-bg-grey-lighter tw-font-bold;
+  font-weight: 700 !important;
+}
+
+#side-navbar li:hover {
+  @apply tw-border-green-600 tw-bg-grey-lighter tw-text-grey-darker;
+}
+
+.nav-sub-menu-item {
+  @apply tw-ml-8;
+}
+
 
 .ixpm-table a {
-  @apply text-blue-dark no-underline;
+  @apply tw-text-blue-dark tw-no-underline;
 }
 
 .ixpm-table a:hover {
-  @apply text-blue underline;
+  @apply tw-text-blue-500 tw-underline;
 }
 
-
-/* barryo: Bootstrap4 is litered with !important's which override tailwindcss' versions of same, sigh. this creates later overrides: */
-
-@responsive {
-  .ixpm-im-text-right {
-    text-align: right !important;
-  }
-
-  .ixpm-im-text-left {
-    text-align: left !important;
-  }
-
-  .ixpm-im-mt-0 {
-    margin-top: 0 !important;
-  }
-
-  .ixpm-im-mt-4 {
-    margin-top: 1rem !important;
-  }
-}
 
 /**
  * This injects all of Tailwind's utility classes, generated based on your

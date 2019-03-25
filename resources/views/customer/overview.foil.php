@@ -121,53 +121,71 @@
 <?php $this->section('content') ?>
     <?= $t->alerts() ?>
 
-    <div class="bg-light rounded shadow-sm p-4">
+    <div class="tw-bg-gray-100 shadow-sm tw-p-6">
+
         <div class="row">
-            <h1 class="col-sm-9 my-auto">
-                <?= $c->getFormattedName() ?>
-                <br>
-                <?php if( $c->isResoldCustomer() ): ?>
-                    <small>
-                        &nbspReseller: <?= $c->getReseller()->getName() ?>
-                    </small>
-                <?php endif; ?>
-            </h1>
+            <div class="<?= $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ? "col-md-9 col-lg-8" : "col-12" ?>">
+
+                <h3>
+                    <?= $t->ee( $c->getFormattedName() ) ?>
+                    <span class="tw-text-sm"><?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?></span>
+                </h3>
+
+                <p class="tw-mt-2">
+                    <a href="<?= $t->c->getCorpwww() ?>" target="_blank"><?= $t->nakedUrl( $t->c->getCorpwww() ) ?></a>
+
+                    <span class="tw-text-gray-600">
+                                - joined <?= $c->getDatejoin()->format('Y') ?>
+                            </span>
+                </p>
+
+                <p class="tw-mt-6">
+
+                    <?php if( !$t->c->isTypeAssociate() ): ?>
+                        <?php if( $c->getInManrs() ): ?>
+                            <a href="https://www.manrs.org/" target="_blank" class="hover:tw-no-underline">
+                                <span class="tw-inline-block tw-border tw-border-green-500 tw-rounded-full tw-text-green-500 tw-font-semibold tw-uppercase tw-text-xs tw-px-3 tw-py-1 tw-mr-3">
+                                    MANRS
+                                </span>
+                            </a>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <?php if( $c->getTags()->count() ): ?>
+
+                        <?php foreach( $c->getTags() as $tag ): ?>
+                            <span class="tw-inline-block tw-bg-grey-light tw-rounded-full tw-px-3 tw-py-1 tw-text-sm tw-font-semibold tw-text-grey-darker mr-2">
+                                <?= $tag->getDisplayAs() ?>
+                            </span>
+                        <?php endforeach; ?>
+
+                        <a class="btn btn-outline-secondary btn-sm tw-rounded-full tw-text-xs" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">
+                            Edit tags...
+                        </a>
+
+                    <?php elseif( count( D2EM::getRepository( Entities\CustomerTag::class )->findAll() ) ): ?>
+
+                        <a class="btn btn-outline-secondary btn-sm tw-rounded-full tw-border-gray-500 tw-text-gray-500 tw-text-xs" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">
+                            Add tags...
+                        </a>
+
+
+                    <?php endif; ?>
+
+                </p>
+            </div>
 
             <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ): ?>
 
-                <div class="col-sm-3">
-                    <img class="img-fluid" style="max-height:100px!important" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
+                <div class="col-md-3 col-lg-4 col-12 tw-mt-6 md:tw-mt-0 tw-text-center">
+                    <span class="lg:tw-inline-block xl:tw-h-full lg:tw-align-middle"></span>
+                    <img class="img-fluid lg:tw-inline-block tw-align-middle" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>">
                 </div>
 
             <?php endif; ?>
-
-
-
         </div>
-
-        <br>
-        <div>
-            <?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?>
-
-            <?php if( $c->getTags()->count() ): ?>
-
-                <?php foreach( $c->getTags() as $tag ): ?>
-                    <span class="badge badge-secondary">
-                        <?= $tag->getDisplayAs() ?>
-                    </span>
-                <?php endforeach; ?>
-
-                    <a class="btn btn-outline-secondary btn-sm" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">
-                        <i class="fa fa-pencil"></i>
-                    </a>
-            <?php elseif( count( D2EM::getRepository( Entities\CustomerTag::class )->findAll() ) ): ?>
-                <a class="btn btn-outline-secondary btn-sm" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">
-                    <i class="fa fa-pencil"></i>&nbsp;Add tags...
-                </a>
-            <?php endif; ?>
-        </div>
-
     </div>
+
     <div class="card mt-4">
         <div class="card-header">
             <ul class="nav nav-tabs card-header-tabs">

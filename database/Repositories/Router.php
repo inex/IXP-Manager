@@ -68,6 +68,25 @@ class Router extends EntityRepository
         return $ips;
     }
 
+    /**
+     * Find all peering ASNs for a given router type
+     *
+     * @param int $type
+     * @return array
+     */
+    public function getAllPeeringASNs( int $type ): array {
+        $asns = [];
+
+        /** @var RouterEntity $r */
+        foreach( $this->filterCollectionOnType( $this->findAll(), $type ) as $r ) {
+            if( !in_array( $r->getAsn(), $asns ) ) {
+                $asns[] = $r->getAsn();
+            }
+        }
+
+        return $asns;
+    }
+
 
 
     /**
