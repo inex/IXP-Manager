@@ -55,7 +55,7 @@
                 <?php endif; ?>
                 <div id="slide-reveal-overlay" class="collapse"></div>
                 <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-                    <main role="main" id="main-div" class="col-md-10 ml-sm-auto col-lg-10 mt-2 pb-4">
+                    <main role="main" id="main-div" class="col-md-9 ml-sm-auto col-lg-9 col-xl-10 mt-2 pb-4">
                  <?php else: ?>
                     <main role="main" id="main-div" class="col-md-10 mx-sm-auto mt-2 pb-4">
                 <?php endif; ?>
