@@ -30,7 +30,7 @@
                     The following user(s) have been found :
                 </h4>
 
-                <table class="table table-striped" width="100%">
+                <table id="list-user" class="table table-striped table-hover" width="100%">
                     <thead class="thead-dark">
                         <tr>
                             <th>
@@ -47,7 +47,7 @@
                             </th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody class="cursor-pointer">
                         <?php foreach( $t->data[ 'params'][ 'listUsers' ] as $user ): ?>
                             <tr>
                                 <td>
@@ -175,6 +175,12 @@
                                 </th>
                                 <th>
                                     Action
+
+                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                        <a class="btn btn-outline-secondary btn-sm ml-2" href="<?= route( "user@add-info" , [ "id" => $t->data[ 'params'][ 'object']->getEmail() ] ) ?>">
+                                            <i class="fa fa-plus"></i>
+                                        </a>
+                                    <?php endif; ?>
                                 </th>
                             </tr>
                         </thead>

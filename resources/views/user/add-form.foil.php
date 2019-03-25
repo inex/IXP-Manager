@@ -54,34 +54,13 @@ $this->layout( 'layouts/ixpv4' );
 
         </div>
 
-        <?php
-        // need to figure out where the cancel button foes. shouldn't be this hard :-(
-        if( session()->get( 'user_post_store_redirect' ) === 'user@list' || session()->get( 'user_post_store_redirect' ) === 'user@add' ) {
-            $cancel_url = route('user@list' );
-        } else {
-            $custid = null;
-            if( isset( $t->data[ 'params'][ 'object'] ) && $t->data[ 'params'][ 'object'] instanceof \Entities\User ) {
-                $custid = $t->data[ 'params'][ 'object']->getCustomer()->getId();
-            } else if( session()->get( 'user_post_store_redirect_cid', null ) !== null ) {
-                $custid = session()->get( 'user_post_store_redirect_cid' );
-            }
-
-            if( $custid !== null ) {
-                $cancel_url = route( 'customer@overview', [ "id" => $custid,  "tab" => "users" ] );
-            } else {
-                $cancel_url = route( 'user@list' );
-            }
-        }
-
-        ?>
-
         <?= Former::hidden( 'custid' )
             ->value( $t->data[ 'params'][ 'custid'] );
         ?>
 
         <?= Former::actions(
             Former::primary_submit( 'Add' ),
-            Former::secondary_link( 'Cancel' )->href( $cancel_url ),
+            Former::secondary_link( 'Cancel' )->href( session()->get( 'user_post_store_redirect' ) ),
             Former::success_button( 'Help' )->id( 'help-btn' )
         );
         ?>
