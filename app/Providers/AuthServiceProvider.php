@@ -50,6 +50,12 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
+        // autoload model policies
+        Gate::guessPolicyNamesUsing(function ($modelClass) {
+            return 'IXP\\Policies\\' . class_basename( $modelClass ) . 'Policy';
+        });
+
+
         //
     }
 }

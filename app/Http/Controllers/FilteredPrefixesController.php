@@ -28,7 +28,6 @@ use Auth, Cache, D2EM, Former, Hash, Redirect, Route, Validator;
 use IXP\Events\User\Welcome as WelcomeEvent;
 
 use Entities\{
-    Customer            as CustomerEntity,
     User                as UserEntity
 };
 use Illuminate\Http\Request;
@@ -40,6 +39,7 @@ use IXP\Utils\View\Alert\{
 };
 use Log;
 
+use IXP\Models\Customer;
 
 /**
  * Filtered Prefixes Controller
@@ -50,6 +50,16 @@ use Log;
  */
 class FilteredPrefixesController extends Controller
 {
+
+    /**
+     * @param Request $r
+     * @param Customer $customer
+     * @throws \Illuminate\Auth\Access\AuthorizationException
+     */
+    public function list( Request $r, Customer $customer ) {
+        $this->authorize('view', $customer);
+
+    }
 
 
 }
