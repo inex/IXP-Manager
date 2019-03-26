@@ -101,7 +101,7 @@
                                     <?php foreach( $detail['routers'] as $handle => $protocol ): ?>
 
                                         <a href="<?= route( 'lg::route-protocol', [ 'handle' => $handle, 'protocol' => $protocol ] ) ?>" target="_ixpm_lg">
-                                            <span class="tw-inline-block tw-bg-grey-lighter tw-rounded-full tw-px-3 tw-py-1 tw-text-sm mr-2">
+                                            <span class="tw-inline-block tw-bg-grey-lighter tw-rounded-full tw-px-3 tw-py-1 tw-text-sm tw-mr-2 tw-my-1">
                                                 <?= $handle ?>
                                             </span>
                                         </a>
@@ -146,10 +146,6 @@
 
 <?php $this->append() ?>
 
-<?php $this->section( 'scripts' ) ?>
-
-
-<?php $this->append() ?>
 
 
 
