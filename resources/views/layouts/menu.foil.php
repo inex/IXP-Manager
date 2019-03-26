@@ -339,6 +339,17 @@
                 IXP UTILITIES
             </h6>
 
+            <?php if( Gate::allows( 'viewHorizon' ) ): ?>
+                <li class="" >
+                    <a href="<?= route( 'horizon.index' ) ?>" class="nav-link" target="_ixpm_horizon">
+                        Laravel Horizon
+                        <?php if( \Horizon::status() !== \Horizon::STATUS_RUNNING ): ?>
+                            <i class="fa fa-exclamation-triangle"></i>
+                        <?php endif; ?>
+                    </a>
+                </li>
+            <?php endif; ?>
+
             <?php if( Gate::allows( 'viewTelescope' ) ): ?>
                 <li class="" >
                     <a href="<?= route( 'telescope' ) ?>" class="nav-link" target="_ixpm_telescope">
