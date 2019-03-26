@@ -339,6 +339,19 @@
                 IXP UTILITIES
             </h6>
 
+            <?php if( Gate::allows( 'viewHorizon' ) && config( 'queue.default' ) === 'redis' ): ?>
+                <li>
+                    <a href="<?= route( 'horizon.index' ) ?>" class="nav-link" target="_ixpm_horizon">
+                        Laravel Horizon
+                        <?php if( \IXP\Utils\Horizon::status() === \IXP\Utils\Horizon::STATUS_INACTIVE ): ?>
+                            <span class="tw-text-red-500"><i class="fa fa-exclamation-triangle"></i></span>
+                        <?php elseif( \IXP\Utils\Horizon::status() === \IXP\Utils\Horizon::STATUS_PAUSED ): ?>
+                            <span class="tw-text-orange-500"><i class="fa fa-pause"></i></span>
+                        <?php endif; ?>
+                    </a>
+                </li>
+            <?php endif; ?>
+
             <?php if( Gate::allows( 'viewTelescope' ) ): ?>
                 <li class="" >
                     <a href="<?= route( 'telescope' ) ?>" class="nav-link" target="_ixpm_telescope">

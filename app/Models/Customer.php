@@ -81,6 +81,7 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer trafficking()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer current()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VirtualInterface[] $virtualInterfaces
  */
 class Customer extends Model
 {
@@ -137,6 +138,15 @@ class Customer extends Model
 
 
     /**
+     * Get the virtual interfaces for the customer
+     */
+    public function virtualInterfaces()
+    {
+        return $this->hasMany('IXP\Models\VirtualInterface', 'custid');
+    }
+
+
+    /**
      * Scope a query to only include trafficking members.
      *
      * Not that the IXP's own internal customers are included in this.
@@ -163,6 +173,40 @@ class Customer extends Model
                     ->orWhere( 'dateleave', '=', '0000-00-00' )
                     ->orWhere( 'dateleave', '>=', today() );
             });
+    }
+
+
+
+    /**
+     * Get formatted name
+     *
+     * @return string
+     */
+    public function getFormattedName( $fmt = null )
+    {
+        if( $this->type === self::TYPE_ASSOCIATE ) {
+            return $this->abbreviatedName;
+        }
+
+        if( $fmt === null || ( $fmt = config('ixp_fe.customer_name_format') ) === null ) {
+            $fmt = "%a %j";
+        }
+
+        $as = $this->autsys ? $this->autsys : false;
+
+        return str_replace(
+            [ '%n', '%a', '%s', '%i', '%j', '%k', '%l' ],
+            [
+                $this->name,
+                $this->abbreviatedName,
+                $this->shortname,
+                $as ? $as          : '',
+                $as ? "[AS{$as}]"  : '',
+                $as ? "AS{$as}"    : '',
+                $as ? " - AS{$as}" : ''
+            ],
+            $fmt
+        );
     }
 
 

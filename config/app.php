@@ -190,6 +190,7 @@ return [
         IXP\Providers\AppServiceProvider::class,
         IXP\Providers\AuthServiceProvider::class,
         IXP\Providers\EventServiceProvider::class,
+        IXP\Providers\HorizonServiceProvider::class,
         IXP\Providers\TelescopeServiceProvider::class,
         IXP\Providers\RouteServiceProvider::class,
 
