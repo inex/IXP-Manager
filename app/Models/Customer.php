@@ -81,6 +81,7 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer trafficking()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer current()
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VirtualInterface[] $virtualInterfaces
  */
 class Customer extends Model
 {
@@ -134,6 +135,15 @@ class Customer extends Model
         self::STATUS_NOTCONNECTED     => 'Not Connected',
         self::STATUS_SUSPENDED        => 'Suspended',
     ];
+
+
+    /**
+     * Get the virtual interfaces for the customer
+     */
+    public function virtualInterfaces()
+    {
+        return $this->hasMany('IXP\Models\VirtualInterface', 'custid');
+    }
 
 
     /**
