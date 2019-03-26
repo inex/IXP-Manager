@@ -76,7 +76,7 @@
                         hover:tw-no-underline  hover:tw-text-blue-dark" href="<?= route( "forgot-password@show-form" ) ?>">
                     Forgot Password?
                 </a>
-                <button class="tw-bg-blue-500 hover:tw-bg-blue-500-dark tw-text-white tw-font-bold tw-py-2 tw-px-6 tw-rounded focus:tw-outline-none focus:tw-shadow-outline" type="submit">
+                <button id="login-btn" class="tw-bg-blue-500 hover:tw-bg-blue-500-dark tw-text-white tw-font-bold tw-py-2 tw-px-6 tw-rounded focus:tw-outline-none focus:tw-shadow-outline" type="submit">
                     Sign In
                 </button>
             </div>
