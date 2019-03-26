@@ -23,21 +23,11 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Cache, D2EM, Former, Hash, Redirect, Route, Validator;
+use Auth, Cache;
 
-use IXP\Events\User\Welcome as WelcomeEvent;
+use IXP\Jobs\FetchFilteredPrefixesForCustomer;
 
-use Entities\{
-    User                as UserEntity
-};
 use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
-
-use IXP\Utils\View\Alert\{
-    Alert,
-    Container as AlertContainer
-};
-use Log;
 
 use IXP\Models\Customer;
 
@@ -59,6 +49,26 @@ class FilteredPrefixesController extends Controller
     public function list( Request $r, Customer $customer ) {
         $this->authorize('view', $customer);
 
+        // are we busting the cache?
+        if( Auth::user()->isSuperUser() && $r->reset_cache === "1" ) {
+            Cache::forget('filtered-prefixes-' . $customer->id );
+        }
+
+        // get the prefixes
+        $filteredPrefixes = Cache::get( 'filtered-prefixes-' . $customer->id, false );
+
+        if( $filteredPrefixes === false ) {
+            // no cached result so schedule a job to gather them:
+            FetchFilteredPrefixesForCustomer::dispatch( $customer );
+
+            // if we are using the sync queue runner, it will have completed
+            $filteredPrefixes = Cache::get( 'filtered-prefixes-' . $customer->id, false );
+        };
+
+        return view( 'filtered-prefixes.view' )->with([
+            'customer'         => $customer,
+            'filteredPrefixes' => $filteredPrefixes,
+        ]);
     }
 
 

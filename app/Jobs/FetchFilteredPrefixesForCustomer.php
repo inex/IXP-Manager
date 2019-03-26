@@ -102,7 +102,7 @@ class FetchFilteredPrefixesForCustomer implements ShouldQueue
         }
 
         // and jam the results into the cache
-        Cache::put('filtered-prefixes-' . $this->customer->id, $this->filteredPrefixes, 600);
+        Cache::put('filtered-prefixes-' . $this->customer->id, $this->filteredPrefixes, 900);
     }
 
     /**
@@ -136,9 +136,11 @@ class FetchFilteredPrefixesForCustomer implements ShouldQueue
             foreach( $resp->routes as $route ) {
                 if( !isset( $this->filteredPrefixes[ $route->network ] ) ) {
                     $this->filteredPrefixes[ $route->network ] = [];
+                    $this->filteredPrefixes[ $route->network ]['found_at'] = now();
                     $this->filteredPrefixes[ $route->network ]['reasons'] = [];
                 }
 
+                $this->filteredPrefixes[ $route->network ]['routers'][      $router->handle ] = $bird_protocol;
                 $this->filteredPrefixes[ $route->network ]['age'][          $router->handle ] = Carbon::parse($route->age);
                 $this->filteredPrefixes[ $route->network ]['primary'][      $router->handle ] = $route->primary;
                 $this->filteredPrefixes[ $route->network ]['as_path'][      $router->handle ] = $route->bgp->as_path;

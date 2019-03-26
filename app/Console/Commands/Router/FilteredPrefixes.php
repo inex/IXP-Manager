@@ -68,12 +68,10 @@ class FilteredPrefixes extends Command {
 
         $this->info( "Checking route server filtering for " . $customer->abbreviatedName . ". Please wait..." );
 
-        $filteredPrefixes = Cache::remember( 'filtered-prefixes-' . $customer->id, 1600, function() use ($customer) {
-            FetchFilteredPrefixesForCustomer::dispatchNow( $customer );
-            return Cache::get( 'filtered-prefixes-' . $customer->id );
-        });
+        FetchFilteredPrefixesForCustomer::dispatchNow( $customer );
+        $filteredPrefixes = Cache::get( 'filtered-prefixes-' . $customer->id );
 
-        if( !is_array( $filteredPrefixes ) || !count( $filteredPrefixes ) ) {
+        if( $filteredPrefixes === [] ) {
             $this->info( "No filtered prefixes found" );
         }
 
