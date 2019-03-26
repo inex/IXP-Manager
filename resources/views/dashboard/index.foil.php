@@ -75,7 +75,7 @@ $this->layout( 'layouts/ixpv4' );
                         <?php endif ?>
 
                         <?php if( !config( 'ixp_fe.frontend.disabled.filtered-prefixes' ) && $t->c->isRouteServerClient() ): ?>
-                            <li class="nav-item" onclick="window.location.href = '<?= route( "filtered-prefixes@list", [ 'customer' =>  $c->getId() ] ) ?>'">
+                            <li class="nav-item" onclick="window.location.href = '<?= route( "filtered-prefixes@list", [ 'customer' =>  $t->c->getId() ] ) ?>'">
                                 <a class="nav-link" data-toggle="tab"  href="">
                                     Filtered Prefixes &raquo;
                                 </a>
