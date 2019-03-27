@@ -125,6 +125,7 @@ int set allas;
         } else {
             # looks like hijacking (intentional or not)
             bgp_large_community.add( IXP_LC_FILTERED_NEXT_HOP_NOT_PEER_IP );
+            accept;
         }
     }
 
