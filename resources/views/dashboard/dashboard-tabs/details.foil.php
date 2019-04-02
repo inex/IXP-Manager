@@ -23,7 +23,7 @@
             <?= Former::phone( 'noc24hphone' )
                 ->label( '24h Phone' )
                 ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
-                ->blockHelp( '24/7 emergency phone number for contacting the customer NOC..<br><br>'
+                ->blockHelp( '24/7 emergency phone number for contacting the customer NOC.<br><br>'
                     . 'This is available to all other customers.' );
             ?>
 
