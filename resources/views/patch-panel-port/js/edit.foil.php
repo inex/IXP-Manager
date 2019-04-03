@@ -103,7 +103,7 @@
      */
     dd_customer.change( function(){
         dd_switch.html( `<option value=''>Loading please wait</option>` ).trigger('change.select2');
-        dd_switch_port.html(`<option value=''>Choose a Swotch Port</option>`).trigger('change.select2');
+        dd_switch_port.html(`<option value=''>Choose a Switch Port</option>`).trigger('change.select2');
 
         let customerId = dd_customer.val();
 

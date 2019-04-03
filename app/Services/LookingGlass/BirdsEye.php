@@ -25,7 +25,9 @@ namespace IXP\Services\LookingGlass;
 
 use IXP\Contracts\LookingGlass as LookingGlassContract;
 
-use Entities\Router;
+use Entities\Router as RouterEntity;
+use IXP\Models\Router as Router;
+
 
 /**
  * LookingGlass Backend -> Bird's Eye
@@ -40,7 +42,7 @@ class BirdsEye implements LookingGlassContract {
 
     /**
      * Instance of a router object representing the looking glass target
-     * @var Router
+     * @var Router|RouterEntity
      */
     private $router;
 
@@ -53,9 +55,9 @@ class BirdsEye implements LookingGlassContract {
 
     /**
      * Constructor
-     * @param Router $r
+     * @param Router|RouterEntity $r
      */
-    public function __construct( Router $r ) {
+    public function __construct( $r ) {
         $this->setRouter($r);
     }
 
@@ -79,19 +81,19 @@ class BirdsEye implements LookingGlassContract {
 
     /**
      * Set the router object
-     * @param Router $r
+     * @param Router|RouterEntity $r
      * @return BirdsEye For fluent interfaces
      */
-    public function setRouter( Router $r ): LookingGlassContract {
+    public function setRouter( $r ): LookingGlassContract {
         $this->router = $r;
         return $this;
     }
 
     /**
      * Get the router object
-     * @return Router
+     * @return Router|RouterEntity
      */
-    public function router(): Router {
+    public function router() {
         return $this->router;
     }
 
@@ -101,7 +103,8 @@ class BirdsEye implements LookingGlassContract {
      * @return string
      */
     private function apiCall( string $cmd ): string {
-        return file_get_contents( $this->router()->api() . '/' . $cmd . ( $this->cacheEnabled ? '' : '?use_cache=0' ) );
+        $ret = @file_get_contents( $this->router()->api() . '/' . $cmd . ( $this->cacheEnabled ? '' : '?use_cache=0' ) );
+        return $ret ? $ret : "";
     }
 
 
@@ -190,6 +193,18 @@ class BirdsEye implements LookingGlassContract {
      */
     public function exportRoute(string $protocol,string $network,int $mask): string {
         return $this->apiCall( 'route/' . urlencode($network.'/'.$mask) . '/export/' . urlencode($protocol) );
+    }
+
+
+    /**
+     * Get wildcard large communities in protocol tabe of form ( x, y, * )
+     * @param string $protocol Protocol name
+     * @param int $x
+     * @param int $y
+     * @return string
+     */
+    public function routesProtocolLargeCommunityWildXYRoutes( string $protocol, int $x, int $y ): string {
+        return $this->apiCall( 'routes/lc-zwild/protocol/' . urlencode($protocol ) . '/' . $x . '/' . $y );
     }
 
 

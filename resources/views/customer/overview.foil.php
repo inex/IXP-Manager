@@ -285,6 +285,14 @@
                         </li>
                     <?php endif ?>
 
+                    <?php if( !config( 'ixp_fe.frontend.disabled.filtered-prefixes' ) && $c->isRouteServerClient() ): ?>
+                        <li class="nav-item" onclick="window.location.href = '<?= route( "filtered-prefixes@list", [ 'customer' =>  $c->getId() ] ) ?>'">
+                            <a class="nav-link" data-toggle="tab"  href="">
+                                Filtered Prefixes &raquo;
+                            </a>
+                        </li>
+                    <?php endif ?>
+
                     <?php if( config('grapher.backends.sflow.enabled') ) : ?>
                         <li class="nav-item" onclick="window.location.href = '<?= route( "statistics@p2p", [ 'cid' => $c->getId() ] )  ?>'">
                             <a class="nav-link" data-toggle="tab" href="">P2P &raquo;</a>

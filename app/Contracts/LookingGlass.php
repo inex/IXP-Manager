@@ -3,8 +3,8 @@
 declare(strict_types=1);
 namespace IXP\Contracts;
 
-use Entities\Router;
-
+use Entities\Router as RouterEntity;
+use IXP\Models\Router;
 
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -42,16 +42,16 @@ interface LookingGlass {
 
     /**
      * Set the router object
-     * @param Router $r
+     * @param Router|RouterEntity $r
      * @return LookingGlass For fluent interfaces
      */
-    public function setRouter( Router $r ): LookingGlass;
+    public function setRouter( $r ): LookingGlass;
 
     /**
      * Get the router object
-     * @return Router
+     * @return Router|RouterEntity
      */
-    public function router(): Router;
+    public function router();
 
     /**
      * Get BGP Summary information as JSON
@@ -121,5 +121,14 @@ interface LookingGlass {
      */
     public function protocolTable(string $table,string $network,int $mask): string;
 
+
+    /**
+     * Get wildcard large communities in protocol tabe of form ( x, y, * )
+     * @param string $protocol Protocol name
+     * @param int $x
+     * @param int $y
+     * @return string
+     */
+    public function routesProtocolLargeCommunityWildXYRoutes( string $protocol, int $x, int $y ): string;
 
 }

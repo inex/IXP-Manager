@@ -74,6 +74,14 @@ $this->layout( 'layouts/ixpv4' );
                             </li>
                         <?php endif ?>
 
+                        <?php if( !config( 'ixp_fe.frontend.disabled.filtered-prefixes' ) && $t->c->isRouteServerClient() ): ?>
+                            <li class="nav-item" onclick="window.location.href = '<?= route( "filtered-prefixes@list", [ 'customer' =>  $t->c->getId() ] ) ?>'">
+                                <a class="nav-link" data-toggle="tab"  href="">
+                                    Filtered Prefixes &raquo;
+                                </a>
+                            </li>
+                        <?php endif ?>
+
                         <?php if( !config( 'ixp_fe.frontend.disabled.peering-manager' ) ): ?>
                             <li class="nav-item">
                                 <a class="nav-link" id="peering-manager-a" href=<?= url('') ?>/peering-manager>

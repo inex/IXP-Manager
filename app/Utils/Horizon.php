@@ -1,4 +1,6 @@
-<?php
+<?php declare(strict_types=1);
+
+namespace IXP\Utils;
 
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -21,41 +23,34 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace IXP\Providers;
-
-use IXP\Services\Grapher\Graph;
+use Laravel\Horizon\Contracts\MasterSupervisorRepository;
 
 
-use Illuminate\Support\Facades\Gate;
-use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
-class AuthServiceProvider extends ServiceProvider
+/**
+ * Class Horizon
+ *
+ * @package App\Utils
+ */
+class Horizon
 {
+    public const STATUS_INACTIVE = 'inactive';
+    public const STATUS_PAUSED   = 'paused';
+    public const STATUS_RUNNING  = 'running';
+
 
     /**
-     * The policy mappings for the application.
+     * Returns with Horizon's current status: 'inactive', 'paused' or 'running'
      *
-     * @var array
+     * @param void
+     * @return string
      */
-    protected $policies = [
-        // 'App\Model' => 'App\Policies\ModelPolicy',
-    ];
-
-    /**
-     * Register any authentication / authorization services.
-     *
-     * @return void
-     */
-    public function boot()
-    {
-        $this->registerPolicies();
-
-        // autoload model policies
-        Gate::guessPolicyNamesUsing(function ($modelClass) {
-            return 'IXP\\Policies\\' . class_basename( $modelClass ) . 'Policy';
-        });
-
-
-        //
+    public static function status() {
+        if( !$masters = app(MasterSupervisorRepository::class )->all() ) {
+            return self::STATUS_INACTIVE;
+        }
+        return collect( $masters )->contains( function( $master ) {
+            return $master->status === self::STATUS_PAUSED;
+        } ) ? self::STATUS_PAUSED : self::STATUS_RUNNING;
     }
 }
