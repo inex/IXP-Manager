@@ -113,7 +113,7 @@
 
                 <?= Former::actions(
                     Former::primary_submit( 'Add User' ),
-                    Former::secondary_link( 'Cancel' )->href( session()->get( 'user_post_store_redirect' ) ),
+                    Former::secondary_link( 'Cancel' )->href( $t->data['params']['canbelBtnLink'] ),
                     Former::success_button( 'Help' )->id( 'help-btn' )
                 );
                 ?>
@@ -210,7 +210,7 @@
                                         ?>
                                     </td>
                                     <td>
-                                        <a class="btn btn-outline-secondary d2f-list-delete" data-object-id="<?= $t->data[ 'params'][ 'object']->getId() ?>" data-cust-id="<?= $c->getId() ?>" href="#" title="Delete">
+                                        <a class="btn btn-outline-secondary d2f-list-delete" data-object-id="<?= $t->data[ 'params'][ 'object']->getId() ?>" data-cust-id="<?= $c->getId() ?>" id="d2f-list-delete-<?= $c->getId() ?>" href="#" title="Delete">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </td>
@@ -250,7 +250,7 @@
 
             <?= Former::actions(
                 Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' ),
-                Former::secondary_link( 'Cancel' )->href( session()->get( 'user_post_store_redirect' ) ),
+                Former::secondary_link( 'Cancel' )->href( $t->data['params']['canbelBtnLink'] ),
                 Former::success_button( 'Help' )->id( 'help-btn' )
                 );
             ?>

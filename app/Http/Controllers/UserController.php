@@ -206,16 +206,6 @@ class UserController extends Doctrine2Frontend {
         return D2EM::getRepository( UserEntity::class )->getAllForFeList( $this->feParams, $id, Auth::getUser() );
     }
 
-    /**
-     * All to set the url under the cancel button on the edit/add form depending on the entry point (customer overview/ user list)
-     *
-     * @return Void
-     */
-    public function manageCancelbutton(){
-        request()->session()->remove( "user_post_store_redirect" );
-        session()->put( 'user_post_store_redirect',     request()->headers->get('referer', "" ) );
-
-    }
 
     /**
      * Display the first step form to Add an object via email address
@@ -223,11 +213,13 @@ class UserController extends Doctrine2Frontend {
      * @return View
      */
     public function addForm(): View {
-        $this->manageCancelbutton();
+        request()->session()->remove( "user_post_store_redirect" );
+        session()->put( 'user_post_store_redirect',     request()->headers->get('referer', "" ) );
 
         $this->addEditSetup();
 
         $this->data[ 'params' ][ 'custid' ] = request()->input("cust" );
+        $this->data[ 'params' ][ 'canbelBtnLink' ] = request()->headers->get('referer', "" );
 
         return $this->display( 'add-form' );
     }
@@ -271,6 +263,15 @@ class UserController extends Doctrine2Frontend {
         return redirect( $url );
     }
 
+    /**
+     * Get the Customer2User list for a user or the customer/user link
+     *
+     * @param   UserEntity $user
+     *
+     * @return array
+     *
+     * @throws
+     */
     private function getC2Ulist( UserEntity $user ){
         // Getting the Customer2User list
         if( Auth::getUser()->isSuperUser() ){
@@ -301,8 +302,6 @@ class UserController extends Doctrine2Frontend {
         $old = request()->old();
         $existingUser = $disabledInputs = false;
         $listUsers = [];
-
-        $this->manageCancelbutton();
 
         // Id we edit the user
         if( request()->is( 'user/edit/*' ) ){
@@ -373,11 +372,14 @@ class UserController extends Doctrine2Frontend {
 
         }
 
+        //"http://127.0.0.1:8000/login"
+
         return [
             'existingUser'          => $existingUser,
             "disabledInputs"        => $disabledInputs,
             'listUsers'             => $listUsers,
             'object'                => $this->object,
+            'canbelBtnLink'         => request()->headers->get('referer', "" ),
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
         ];
     }

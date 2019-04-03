@@ -60,7 +60,7 @@ $this->layout( 'layouts/ixpv4' );
 
         <?= Former::actions(
             Former::primary_submit( 'Add' ),
-            Former::secondary_link( 'Cancel' )->href( session()->get( 'user_post_store_redirect' ) ),
+            Former::secondary_link( 'Cancel' )->href( $t->data['params']['canbelBtnLink'] ),
             Former::success_button( 'Help' )->id( 'help-btn' )
         );
         ?>

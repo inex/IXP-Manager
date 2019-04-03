@@ -4,7 +4,7 @@
     </a>
 
     <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-        <a class="btn btn-outline-secondary" href="<?= route($t->feParams->route_prefix . '@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?> " title="Edit">
+        <a class="btn btn-outline-secondary" id='d2f-list-edit-<?= $t->row[ 'id' ] ?>' href="<?= route($t->feParams->route_prefix . '@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?> " title="Edit">
             <i class="fa fa-pencil"></i>
         </a>
         <a class="btn btn-outline-secondary d2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' data-object-id="<?= $t->row[ 'id' ] ?>" data-cust-id="<?= Auth::getUser()->isSuperUser() ? null : Auth::getUser()->getCustomer()->getId() ?>" data-nb-c2u="<?= $t->row[ 'nbC2U' ] ?>" href="#" title="Delete">

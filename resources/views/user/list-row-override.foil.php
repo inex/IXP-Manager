@@ -27,7 +27,7 @@ $row = $t->row;
                 <a href="<?= route( "user@edit" , [ "id" => $row[ 'id' ] ] ) ?>" class="badge badge-info"> Multiple (<?= count( $user->getCustomers() ) ?>)</a>
             <?php else: ?>
                 <a href="<?=  route( "customer@overview" , [ "id" => $row[ 'custid' ] ] ) ?>">
-                    <?= $t->ee( $row['customer'] ) ?>
+                    <?= $t->ee( $user->getCustomers()[0]->getName() ) ?>
                 </a>
             <?php endif; ?>
         </td>
