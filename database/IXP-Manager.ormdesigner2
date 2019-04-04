@@ -1535,6 +1535,8 @@
       <field name="customer_id" type="integer" required="true" uuid="f886b52c-936a-48af-b6b9-f2393eb8e0f4"/>
       <field name="user_id" type="integer" required="true" uuid="1c63df73-77bc-4181-b73a-245d21bd51ce"/>
       <field name="privs" type="integer" required="true" uuid="9ca903ad-1bad-45dd-ba5e-a253cf441a5f"/>
+      <field name="last_login_date" type="datetime" uuid="9cdb997b-28a3-4b60-ad00-154776fdeb3e"/>
+      <field name="last_login_from" type="text" size="39" uuid="cb5cdbfd-0dde-4caf-b7ca-e43994c1aa4c"/>
       <field name="created_at" type="datetime" required="true" uuid="214c0558-46e3-4119-8e40-fdf790ec7685"/>
     </entity>
     <association from="\Entities\CustomerToUser" to="\Entities\Customer" owner-alias="customerToUser" inverse-alias="customer" many-owner="true" many-inverse="false" parent-required="true" uuid="5314e876-cb85-4645-a068-cfbd93753e65">
