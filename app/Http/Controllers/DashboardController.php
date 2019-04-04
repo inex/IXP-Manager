@@ -145,6 +145,10 @@ class DashboardController extends Controller
      */
     public function storeNocDetails( NocDetailsRequest $r ){
 
+        if( Auth::getUser()->isCustUser() ){
+            abort( 403, 'Insufficient Permissions.' );
+        }
+
         /** @var CustomerEntity $c */
         $c = Auth::getUser()->getCustomer();
 
@@ -173,6 +177,10 @@ class DashboardController extends Controller
      * @throws
      */
     public function storeBillingDetails( BillingDetailsRequest $r ){
+
+        if( Auth::getUser()->isCustUser() ){
+            abort( 403, 'Insufficient Permissions.' );
+        }
 
         /** @var CustomerEntity $c */
         $c = Auth::getUser()->getCustomer();

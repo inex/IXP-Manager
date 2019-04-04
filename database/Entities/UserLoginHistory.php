@@ -50,6 +50,11 @@ class UserLoginHistory
      */
     protected $User;
 
+    /**
+     * @var \Entities\CustomerToUser
+     */
+    protected $customerToUser;
+
 
     /**
      * Set ip

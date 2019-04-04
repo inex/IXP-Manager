@@ -50,7 +50,7 @@ class Customer2Users extends IXPCommand
      *
      * @var string
      */
-    protected $signature = 'customer2users:migrate';
+    protected $signature = 'update:customer2users';
 
     /**
      * The console command description.
@@ -93,7 +93,7 @@ class Customer2Users extends IXPCommand
                     ->setCustomer(  $u->getCustomer() )
                     ->setCreatedAt( new \DateTime )
                     ->setPrivs(     $u->getUserPrivs() )
-                    ->setExtraAttributes( [ "created_by" => [ "type" => "user" , "user_id" => $u->getId() ] ] );
+                    ->setExtraAttributes( [ "created_by" => [ "type" => "migration-script" ] ] );
                 D2EM::persist(      $c2u );
                 D2EM::flush();
 

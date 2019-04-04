@@ -134,19 +134,24 @@
 
                     <a class="dropdown-item <?= !request()->is( 'customer-note/unread-notes' ) ?: 'active' ?>" href="<?= route( 'customerNotes@unreadNotes' ) ?>">Unread Notes</a>
 
-                    <div class="dropdown-divider"></div>
+                    <?php if( count( Auth::getUser()->getCustomers() ) > 1 ): ?>
 
-                    <h6 class="dropdown-header">
-                        Switch to :
-                    </h6>
+                        <div class="dropdown-divider"></div>
 
-                    <?php foreach( Auth::getUser()->getCustomers() as $cust ): ?>
+                        <h6 class="dropdown-header">
+                            Switch to:
+                        </h6>
 
-                        <a class="dropdown-item <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: 'active cursor-default' ?>" <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: "onclick='return false;'" ?> href="<?= Auth::getUser()->getCustomer()->getId() == $cust->getId() ? '#' : route( 'switch-customer@switch' , [ "id" => $cust->getId() ]  ) ?>">
-                            <?= $cust->getName() ?>
-                        </a>
+                        <?php foreach( Auth::getUser()->getCustomers() as $cust ): ?>
 
-                    <?php endforeach; ?>
+                            <a class="dropdown-item <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: 'active cursor-default' ?>" <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: "onclick='return false;'" ?> href="<?= Auth::getUser()->getCustomer()->getId() == $cust->getId() ? '#' : route( 'switch-customer@switch' , [ "id" => $cust->getId() ]  ) ?>">
+                                <?= $cust->getName() ?>
+                            </a>
+
+                        <?php endforeach; ?>
+
+                    <?php endif; ?>
+
 
                     <div class="dropdown-divider"></div>
 

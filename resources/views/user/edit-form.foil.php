@@ -43,7 +43,7 @@
                                 Email
                             </th>
                             <th>
-                                Customer
+                                Customers
                             </th>
                         </tr>
                     </thead>
@@ -188,15 +188,7 @@
                             <?php foreach( $t->data[ 'params'][ 'object']->getCustomers() as $c ): ?>
                                 <tr>
                                     <td>
-
-                                        <?= Former::select( 'custid_' . $c->getId() )
-                                            ->label( '' )
-                                            ->placeholder( 'Select a customer' )
-                                            ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
-                                            ->addClass( 'chzn-select' )
-                                            ->blockHelp( "The customer to create the user for.<br><br>If creating a customer for your own IXP, then pick the IXP customer entry." );
-                                        ?>
-
+                                        <?= $t->ee( $c->getName() ) ?>
                                     </td>
                                     <td>
                                         <?= Former::select( 'privs_' . $c->getId() )

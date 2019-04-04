@@ -158,6 +158,7 @@ class LoginController extends Controller
             $this->logout( $request, [ 'message' => "No customer assigned to this user. Please contact the support Team.", 'class' => Alert::DANGER ] );
         }
 
+        D2EM::flush();
     }
 
     /**

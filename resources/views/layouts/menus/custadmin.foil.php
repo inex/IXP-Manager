@@ -171,18 +171,23 @@
                         API Keys
                     </a>
 
-                    <div class="dropdown-divider"></div>
+                    <?php if( count( Auth::getUser()->getCustomers() ) > 1 ): ?>
 
-                    <h6 class="dropdown-header">
-                        Switch to :
-                    </h6>
+                        <div class="dropdown-divider"></div>
 
-                    <?php foreach( Auth::getUser()->getCustomers() as $cust ): ?>
-                        <a class="dropdown-item <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: 'active cursor-default' ?>" <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: "onclick='return false;'" ?> href="<?= Auth::getUser()->getCustomer()->getId() == $cust->getId() ? '#' : route( 'switch-customer@switch', [ "id" => $cust->getId() ] ) ?>">
-                            <?= $cust->getName() ?>
-                        </a>
+                        <h6 class="dropdown-header">
+                            Switch to:
+                        </h6>
 
-                    <?php endforeach; ?>
+                        <?php foreach( Auth::getUser()->getCustomers() as $cust ): ?>
+
+                            <a class="dropdown-item <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: 'active cursor-default' ?>" <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: "onclick='return false;'" ?> href="<?= Auth::getUser()->getCustomer()->getId() == $cust->getId() ? '#' : route( 'switch-customer@switch' , [ "id" => $cust->getId() ]  ) ?>">
+                                <?= $cust->getName() ?>
+                            </a>
+
+                        <?php endforeach; ?>
+
+                    <?php endif; ?>
 
                     <div class="dropdown-divider"></div>
 

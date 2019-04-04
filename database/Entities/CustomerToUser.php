@@ -39,6 +39,11 @@ class CustomerToUser
      */
     private $user;
 
+    /**
+     * @var \Entities\UserLoginHistory
+     */
+    private $userLoginHistory;
+
 
 
     /**
