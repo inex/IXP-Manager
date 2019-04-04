@@ -23,7 +23,7 @@
 
 namespace IXP\Providers;
 
-use Former;
+use Auth, Former, Horizon;
 use Illuminate\Support\ServiceProvider;
 use IXP\Utils\Former\Framework\TwitterBootstrap4;
 

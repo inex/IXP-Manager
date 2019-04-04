@@ -30,7 +30,9 @@ use Auth;
 use IXP\Contracts\LookingGlass as LookingGlassContract;
 use IXP\Exceptions\Services\LookingGlass\ConfigurationException;
 use IXP\Services\LookingGlass\BirdsEye as BirdseyeLookingGlass;
-use Entities\Router as Router;
+
+use Entities\Router as RouterEntity;
+use IXP\Models\Router as Router;
 
 /**
  * LookingGlass
@@ -45,10 +47,10 @@ class LookingGlass {
 
     /**
      * Get a looking glass implementation for a given router
-     * @param Router $router
+     * @param Router|RouterEntity $router
      * @return LookingGlassContract
      */
-    public function forRouter( Router $r ) {
+    public function forRouter( $r ) {
         switch( $r->apiType() ) {
             case Router::API_TYPE_BIRDSEYE:
                 $be = new BirdseyeLookingGlass( $r );
