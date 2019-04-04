@@ -6,19 +6,16 @@
     </id>
     <field name="privs" type="integer" nullable="false"/>
     <field name="created_at" type="datetime" nullable="false"/>
-    <field name="extra_attributes" type="json" nullable="true"/>
-    <many-to-one field="customer" target-entity="Entities\Customer" inversed-by="Users">
+    <many-to-one field="customer" target-entity="Entities\Customer" inversed-by="customerToUser">
       <join-columns>
         <join-column name="customer_id" referenced-column-name="id" nullable="false"/>
       </join-columns>
     </many-to-one>
-    <many-to-one field="user" target-entity="Entities\User" inversed-by="Customers">
+    <many-to-one field="user" target-entity="Entities\User" inversed-by="customerToUser">
       <join-columns>
         <join-column name="user_id" referenced-column-name="id" nullable="false"/>
       </join-columns>
     </many-to-one>
-    <unique-constraints>
-      <unique-constraint name="customer_user" columns="customer_id,user_id"/>
-    </unique-constraints>
+    <one-to-many field="userLoginHistory" target-entity="Entities\UserLoginHistory" mapped-by="customerToUser"/>
   </entity>
 </doctrine-mapping>
