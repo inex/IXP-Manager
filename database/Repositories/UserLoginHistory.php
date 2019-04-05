@@ -49,11 +49,12 @@ class UserLoginHistory extends EntityRepository
                         lh.ip AS ip, 
                         u.id  AS user_id
                 FROM Entities\\UserLoginHistory lh
-                LEFT JOIN lh.User u
+                LEFT JOIN lh.customerToUser c2u
+                LEFT JOIN c2u.user u
                 WHERE 1 = 1";
 
         if( $userid ) {
-            $dql .= " AND u.id = " . (int)$userid;
+            $dql .= " AND c2u.id = " . (int)$userid;
         }
 
         $dql .= "ORDER BY at DESC";

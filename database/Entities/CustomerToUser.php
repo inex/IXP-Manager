@@ -17,6 +17,7 @@ class CustomerToUser
      */
     private $created_at;
 
+
     /**
      * @var \Json
      */
@@ -28,6 +29,16 @@ class CustomerToUser
      * @var int
      */
     private $id;
+
+    /**
+     * @var \DateTime
+     */
+    private $last_login_date;
+
+    /**
+     * @var string
+     */
+    private $last_login_from;
 
     /**
      * @var \Entities\Customer
@@ -77,6 +88,17 @@ class CustomerToUser
     }
 
     /**
+     * Get User history
+     *
+     * @return \Entities\UserLoginHistory
+     */
+    public function getUserLoginHistory()
+    {
+        return $this->userLoginHistory;
+    }
+
+
+    /**
      * Get privs
      *
      * @return integer
@@ -94,6 +116,26 @@ class CustomerToUser
     public function getCreatedAt()
     {
         return $this->created_at;
+    }
+
+    /**
+     * Get last login date
+     *
+     * @return \DateTime
+     */
+    public function getLastLoginDate()
+    {
+        return $this->last_login_date;
+    }
+
+    /**
+     * Get last login from
+     *
+     * @return string
+     */
+    public function getLastLoginFrom()
+    {
+        return $this->last_login_from;
     }
 
     /**
@@ -133,6 +175,19 @@ class CustomerToUser
     }
 
     /**
+     * Set user login history
+     *
+     * @param \Entities\UserLoginHistory
+     * @return CustomerToUser
+     */
+    public function setUserLoginHistory( $userLoginHistory )
+    {
+        $this->userLoginHistory = $userLoginHistory;
+
+        return $this;
+    }
+
+    /**
      * Set privs
      *
      * @param integer $privs
@@ -167,6 +222,32 @@ class CustomerToUser
     public function setCreatedAt( $created_at )
     {
         $this->created_at = $created_at;
+
+        return $this;
+    }
+
+    /**
+     * Set last login at
+     *
+     * @param \DateTime $last_login_date
+     * @return CustomerToUser
+     */
+    public function setLastLoginAt( $last_login_date )
+    {
+        $this->last_login_date = $last_login_date;
+
+        return $this;
+    }
+
+    /**
+     * Set last login at
+     *
+     * @param string $last_login_from
+     * @return CustomerToUser
+     */
+    public function setLastLoginFrom( $last_login_from )
+    {
+        $this->last_login_from = $last_login_from;
 
         return $this;
     }

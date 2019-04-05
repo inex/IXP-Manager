@@ -134,4 +134,27 @@ class UserLoginHistory
     {
         return $this->User;
     }
+
+    /**
+     * Set User
+     *
+     * @param \Entities\CustomerToUser $c2u
+     * @return UserLoginHistory
+     */
+    public function setCustomerToUser(\Entities\CustomerToUser $c2u)
+    {
+        $this->customerToUser = $c2u;
+
+        return $this;
+    }
+
+    /**
+     * Get User
+     *
+     * @return \Entities\CustomerToUser
+     */
+    public function getCustomerToUser()
+    {
+        return $this->customerToUser;
+    }
 }

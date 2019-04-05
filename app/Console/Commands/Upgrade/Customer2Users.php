@@ -27,8 +27,9 @@ namespace IXP\Console\Commands\Upgrade;
 use D2EM, DB;
 
 use Entities\{
-    CustomerToUser  as CustomerToUserEntity,
-    User            as UserEntity
+    CustomerToUser      as CustomerToUserEntity,
+    User                as UserEntity,
+    UserLoginHistory    as UserLoginHistoryEntity
 };
 
 use IXP\Console\Commands\Command as IXPCommand;
@@ -73,8 +74,9 @@ class Customer2Users extends IXPCommand
             return 1;
         }
 
-        // Delete all the rows from the table Layer2Address
-        DB::table( 'customer_to_users' )->truncate();
+        // Delete all the rows from the table Customer2User
+        DB::table( 'customer_to_users' )->delete();
+
         $this->info( 'The customer_to_users table has been truncated' );
 
         $this->info( 'Migration in progress, please wait...' );
@@ -93,8 +95,19 @@ class Customer2Users extends IXPCommand
                     ->setCustomer(  $u->getCustomer() )
                     ->setCreatedAt( new \DateTime )
                     ->setPrivs(     $u->getUserPrivs() )
+                    ->setLastLoginAt(     new \DateTime( date( 'Y-m-d H:i:s' , $u->getPreference( 'auth.last_login_at' ) ) ) )
+                    ->setLastLoginFrom(     $u->getPreference( 'auth.last_login_from' ) )
                     ->setExtraAttributes( [ "created_by" => [ "type" => "migration-script" ] ] );
                 D2EM::persist(      $c2u );
+                D2EM::flush();
+
+                /** @var UserLoginHistoryEntity $loginHistory */
+                $loginHistories = D2EM::getRepository( UserLoginHistoryEntity::class )->findBy( [ "User" => $u->getId() ] );
+
+                foreach( $loginHistories as $login ){
+                    $login->setCustomerToUser( $c2u );
+                }
+
                 D2EM::flush();
 
             }

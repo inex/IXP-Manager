@@ -26,9 +26,10 @@ namespace IXP\Http\Controllers\Auth;
 use Auth, D2EM;
 
 use Entities\{
-    Customer        as CustomerEntity,
-    CustomerToUser  as CustomerToUserEntity,
-    User            as UserEntity
+    Customer            as CustomerEntity,
+    CustomerToUser      as CustomerToUserEntity,
+    User                as UserEntity,
+    UserLoginHistory    as UserLoginHistoryEntity
 };
 
 use IXP\Http\Controllers\Controller;
@@ -57,12 +58,27 @@ class SwitchCustomerController extends Controller
 
         $user = Auth::getUser();
 
-        if( ! D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "customer" => $cust, "user" => $user ] ) ){
+        if( !( $c2u = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "customer" => $cust, "user" => $user ] ) ) ){
             AlertContainer::push( "You are not allowed to access to this customer.", Alert::DANGER );
 
             return redirect()->to( "/" );
         }
 
+        $c2u->setLastLoginAt(  new \DateTime );
+        $c2u->setLastLoginFrom( request()->ip() );
+
+        if( config( "ixp_fe.login_history.enabled" ) ) {
+
+            $log = new UserLoginHistoryEntity;
+            D2EM::persist( $log );
+
+            $log->setAt(    new \DateTime() );
+            $log->setIp(    request()->ip() );
+            $log->setUser(  $user           );
+            $log->setCustomerToUser(  $c2u  );
+
+            D2EM::flush();
+        }
 
         $user->setCustomer( $cust );
 

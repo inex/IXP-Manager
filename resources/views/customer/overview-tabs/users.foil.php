@@ -42,8 +42,8 @@
                     <?= $t->ee( $c2u->getUser()->getEmail() ) ?>
                 </td>
                 <td>
-                    <?php if( $c2u->getUser()->getPreference( 'auth.last_login_at' ) ): ?>
-                        <?= date("Y-m-d H:i:s", $c2u->getUser()->getPreference( 'auth.last_login_at' )  ) ?>
+                    <?php if( $c2u->getLastLoginDate() ): ?>
+                        <?= $c2u->getLastLoginDate()->format('Y-m-d H:i:s') ?>
                     <?php else: ?>
                         <em>Never</em>
                     <?php endif;?>

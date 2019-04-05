@@ -107,17 +107,15 @@ class User extends EntityRepository
      */
     public function getLastLoginsForFeList( $feParams )
     {
-        $dql = "SELECT  up.attribute AS attribute, 
-                        up.value AS lastlogin, 
+        $dql = "SELECT  c2u.last_login_date AS last_login_date, 
                         u.username AS username,
                         u.email AS email, 
                         c.name AS cust_name, 
                         c.id AS cust_id, 
-                        u.id AS id
-                    FROM Entities\\UserPreference up
-                        JOIN up.User u
-                        JOIN u.Customer c
-                    WHERE up.attribute = 'auth.last_login_at'";
+                        c2u.id AS id
+                    FROM Entities\\CustomerToUser c2u
+                        JOIN c2u.user u
+                        JOIN c2u.customer c";
 
 
         if( isset( $feParams->listOrderBy ) ) {

@@ -127,29 +127,32 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-        if( config( "ixp_fe.login_history.enabled" ) ) {
-
-            $log = new UserLoginHistoryEntity;
-            D2EM::persist( $log );
-
-            $log->setAt(    new \DateTime() );
-            $log->setIp(    request()->ip() );
-            $log->setUser(  $user           );
-
-            D2EM::flush();
-        }
-
-        if( method_exists( $user, 'hasPreference' ) ) {
-            $user->setPreference( 'auth.last_login_from', request()->ip() );
-            $user->setPreference( 'auth.last_login_at',   time()                );
-        }
 
         // Check if the user has Customer(s) linked
         if( count( $user->getCustomers() ) > 0 ){
 
+            /** @var CustomerToUserEntity $c2u */
+            $c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => $user , "customer" => $user->getCustomer() ] );
+
             // Check if the user has a default Customer OR if the default customer is no longer in the C2U, then assign one
-            if( !$user->getCustomer() || !D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => $user , "customer" => $user->getCustomer() ] ) ){
+            if( !$user->getCustomer() || !$c2u ){
                 $user->setCustomer( $user->getCustomers()[0] );
+                D2EM::flush();
+            }
+
+            $c2u->setLastLoginAt(  new \DateTime );
+            $c2u->setLastLoginFrom( request()->ip() );
+
+            if( config( "ixp_fe.login_history.enabled" ) ) {
+
+                $log = new UserLoginHistoryEntity;
+                D2EM::persist( $log );
+
+                $log->setAt(    new \DateTime() );
+                $log->setIp(    request()->ip() );
+                $log->setUser(  $user           );
+                $log->setCustomerToUser(  $c2u  );
+
                 D2EM::flush();
             }
 
