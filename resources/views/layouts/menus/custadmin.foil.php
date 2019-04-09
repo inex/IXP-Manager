@@ -158,10 +158,10 @@
         </ul>
         <ul class="navbar-nav mt-lg-0">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle <?= !request()->is( 'profile', 'api-key/list' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle <?= !request()->is( 'profile', 'api-key/list' ) ?: 'active' ?>" href="#" id="my-account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     My Account
                 </a>
-                <ul class="dropdown-menu dropdown-menu-right">
+                <ul class="dropdown-menu dropdown-menu-right" id="my-account-dd">
 
                     <a class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
                         Profile
@@ -181,7 +181,7 @@
 
                         <?php foreach( Auth::getUser()->getCustomers() as $cust ): ?>
 
-                            <a class="dropdown-item <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: 'active cursor-default' ?>" <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: "onclick='return false;'" ?> href="<?= Auth::getUser()->getCustomer()->getId() == $cust->getId() ? '#' : route( 'switch-customer@switch' , [ "id" => $cust->getId() ]  ) ?>">
+                            <a id="switch-cust-<?= $cust->getId() ?>" class="dropdown-item <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: 'active cursor-default' ?>" <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: "onclick='return false;'" ?> href="<?= Auth::getUser()->getCustomer()->getId() == $cust->getId() ? '#' : route( 'switch-customer@switch' , [ "id" => $cust->getId() ]  ) ?>">
                                 <?= $cust->getName() ?>
                             </a>
 
