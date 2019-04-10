@@ -370,7 +370,7 @@ class SwitchPortController extends Doctrine2Frontend {
 
         $this->feParams->listOrderBy                = 'switch';
         $this->feParams->pagetitle                  = 'Switches';
-        $this->feParams->pagetitlepostamble         = 'Unsed Optics';
+        $this->feParams->pagetitlepostamble         = 'Unused Optics';
         $this->feParams->route_prefix_page_title    = 'switch';
 
         $this->feParams->readonly                   = true;
