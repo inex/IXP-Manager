@@ -91,14 +91,6 @@ COL-XL
     }
 }
 
-
-
-
-    /* Allow the bootbox-close-button to be on the right  */
-    .bootbox .modal-header{
-        display: block;
-    }
-
     .former-help-text {
         display: none;
     }
