@@ -11,7 +11,7 @@
                         </h3>
                     </div>
                     <div class="my-auto">
-                        <a class="btn btn-sm btn-outline-secondary" href="<?= route( "statistics@member", [ 'id' => $t->c->getId() ] )?>">
+                        <a class="btn btn-sm btn-white" href="<?= route( "statistics@member", [ 'id' => $t->c->getId() ] )?>">
                             <i class="fa fa-search-plus"></i>
                         </a>
                     </div>
