@@ -22,7 +22,7 @@
                 <div>
                     <h4>Overall Customer Numbers</h4>
 
-                    <table class="table table-sm table-hover tw-mt-6">
+                    <table class="table table-sm table-light tw-shadow-md tw-rounded-sm table-hover tw-mt-6">
                         <thead>
                         <tr>
                             <th>
@@ -57,7 +57,7 @@
                     <div class="tw-my-12">
                         <h4 class="tw-mb-6">Customers by Location</h4>
 
-                        <table class="table table-sm table-hover">
+                        <table class="table table-sm table-hover table-light tw-shadow-md tw-rounded-sm">
                             <thead>
                             <tr>
                                 <th>
@@ -91,7 +91,7 @@
                             Customer Ports by Location
                         </h4>
 
-                        <table class="table table-sm table-hover">
+                        <table class="table table-sm table-hover table-light tw-shadow-md tw-rounded-sm">
                             <thead class="tw-text-sm">
                                 <tr>
                                     <th>
@@ -167,7 +167,7 @@
 
                         <h4  class="tw-mb-6">Customer Ports by Infrastructure</h4>
 
-                        <table class="table table-sm table-hover">
+                        <table class="table table-sm table-hover table-light tw-shadow-md tw-rounded-sm">
                             <thead>
                                 <tr>
                                     <th>
@@ -256,7 +256,7 @@
 
                         <h4 class="tw-mb-6">Customer Route Server Usage by VLAN</h4>
 
-                        <table class="table table-sm table-hover">
+                        <table class="table table-sm table-hover table-light tw-shadow-md tw-rounded-sm">
                             <thead>
                                 <tr>
                                     <th>
@@ -336,7 +336,7 @@
                             Customer IPv6 Usage by VLAN
                         </h4>
 
-                        <table class="table table-sm table-hover">
+                        <table class="table table-sm table-hover table-light tw-shadow-md tw-rounded-sm">
                             <thead>
                                 <tr>
                                     <th>
@@ -416,7 +416,7 @@
                     <?php foreach( $t->graph_periods as $period => $desc ): ?>
 
                         <a class="tw-mr-6 hover:tw-no-underline" href="<?= route('admin@dashboard') ?>?graph_period=<?= $period ?>">
-                            <span class="tw-inline-block tw-bg-grey-lighter tw-rounded-full tw-px-3 tw-py-1 tw-text-sm <?= $t->graph_period === $period ? 'tw-font-semibold tw-text-grey-darker' : 'tw-text-grey-dark' ?> mr-2">
+                            <span class="btn btn-white tw-rounded-full <?= $t->graph_period === $period ? 'tw-font-semibold tw-text-grey-darkest' : 'tw-text-grey-dark' ?> mr-2">
                                 <?= $desc ?>
                             </span>
                         </a>
@@ -434,7 +434,7 @@
                                         <?= $t->ee( $graph->name() ) ?> Aggregate Traffic
                                     </span>
 
-                                    <a class="btn btn-outline-secondary btn-sm"
+                                    <a class="btn btn-white btn-sm"
                                         <?php if( $id == 'ixp' ): ?>
                                             href="<?= route('statistics/ixp') ?>"
                                         <?php else: ?>
@@ -471,7 +471,8 @@
             </div>
         </div>
 
-        <div class="alert alert-info tw-text-xs">
+
+        <div class="tw-bg-blue-100 tw-border-l-4 tw-border-blue-500 tw-text-blue-700 tw-p-4 tw-shadow-md" role="alert">
             Dashboard statistics are cached for 1 hour (graphs for 5mins). These dashboard statistics were last cached
             <?= $t->stats['cached_at']->diffForHumans() ?>.
             <a href="<?= route('admin@dashboard') ?>?graph_period=<?= $t->graph_period ?>&refresh_cache=1">Click

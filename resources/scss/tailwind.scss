@@ -255,6 +255,25 @@ label.control-label, label.form-check-label{
     @apply tw-bg-grey;
 }
 
+/****************************************************************************************
+ **** Card
+ ****************************************************************************************/
+
+.card{
+    border-color : #dae1e7;
+    @apply tw-shadow-md tw-rounded-sm;
+ }
+
+ .card .card-header{
+    @apply rounded-tl-sm rounded-tr-sm border-b-0;
+    background-color : #FAFAFA;
+ }
+
+
+
+
+
+
 a{
     @apply tw-inline-block tw-align-baseline tw-font-bold tw-text-blue-light;
 }
@@ -263,6 +282,9 @@ a:hover{
     @apply tw-no-underline tw-text-blue-dark;
 }
 
+/****************************************************************************************
+ **** table
+ ****************************************************************************************/
 
 .table-light td, .table-light thead th{
     border-color : #ced4da;

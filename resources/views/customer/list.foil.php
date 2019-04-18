@@ -95,7 +95,7 @@ $this->layout( 'layouts/ixpv4' );
 
     <?= $t->alerts() ?>
 
-        <table id='customer-list' class="table table-light collapse table-striped table-bordered no-wrap responsive" style="width:100%" >
+        <table id='customer-list' class="table table-light collapse table-striped table-bordered no-wrap responsive tw-shadow-md" style="width:100%" >
             <thead class="">
                 <tr>
                     <th>
