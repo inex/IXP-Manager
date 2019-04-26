@@ -69,7 +69,7 @@ class VlanController extends Doctrine2Frontend {
             'pagetitle'         => 'VLANs',
 
             'titleSingular'     => 'VLAN',
-            'nameSingular'      => 'a VLAN',
+            'nameSingular'      => 'VLAN',
 
             'listOrderBy'       => 'number',
             'listOrderByDir'    => 'ASC',
