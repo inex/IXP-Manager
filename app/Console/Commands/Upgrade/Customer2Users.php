@@ -58,7 +58,7 @@ class Customer2Users extends IXPCommand
      *
      * @var string
      */
-    protected $description = 'This command will migrate datas from table Customer and User to the table CustomerToUser';
+    protected $description = 'Migrate customer/user from 1:m to n:m (part of the upgrade to V5.0.0 process)';
 
     /**
      * Execute the console command.
@@ -68,9 +68,15 @@ class Customer2Users extends IXPCommand
      * @return mixed
      */
     public function handle() {
-        if( !$this->confirm( 'Are you sure you wish to proceed? This command will CLEAR the customer_to_users table and then copy '
-            . 'customer and user data in customer_to_user table. Generally, this command should only ever be run once when initially '
-            . 'populating the new table.' ) ) {
+
+        echo "\n\n";
+        $this->warn( "ONLY RUN ONCE AND ONLY WHEN UPGRADING TO IXP Manager v5.0.0 from v4.9.x" );
+        echo "\n";
+        $this->warn( "THIS WILL TRUNCATE THE customer:user n:m TABLE - meaning any users created after upgrading to v5.0.0 will be unlinked from their customers." );
+
+        if( !$this->confirm( "\nThis command will restructure the customer/user data from 1:m to n:m.\n\n"
+            ."Generally, this command should only ever be run once and only when migrating to V5.0.0.\n\n"
+            . 'Are you sure you wish to proceed? ' ) ) {
             return 1;
         }
 
@@ -81,38 +87,34 @@ class Customer2Users extends IXPCommand
 
         $this->info( 'Migration in progress, please wait...' );
 
-        // get all the entries form the macaddress table
-        DB::table('user' )->orderBy( 'id' )->chunk( 100, function( $listUsers ) {
+        /** @var UserEntity[] $users */
+        $users = D2EM::getRepository( UserEntity::class )->findAll();
 
-            foreach( $listUsers as $user ) {
+        $bar = $this->output->createProgressBar(count($users));
+        $bar->start();
 
-                /** @var UserEntity $u */
-                $u = D2EM::getRepository( UserEntity::class )->find( $user->id );
+        foreach( $users as $u ) {
 
-                // create the new CustomerToUserEntity entity with the information of the current User and Customer table entries
-                $c2u = new CustomerToUserEntity();
-                $c2u->setUser(      $u )
-                    ->setCustomer(  $u->getCustomer() )
-                    ->setCreatedAt( new \DateTime )
-                    ->setPrivs(     $u->getUserPrivs() )
-                    ->setLastLoginAt(     new \DateTime( date( 'Y-m-d H:i:s' , $u->getPreference( 'auth.last_login_at' ) ) ) )
-                    ->setLastLoginFrom(     $u->getPreference( 'auth.last_login_from' ) )
-                    ->setExtraAttributes( [ "created_by" => [ "type" => "migration-script" ] ] );
-                D2EM::persist(      $c2u );
-                D2EM::flush();
+            // create the new CustomerToUserEntity entity with the information of the current User and Customer table entries
+            $c2u = new CustomerToUserEntity();
+            $c2u->setUser(      $u )
+                ->setCustomer(  $u->getCustomer() )
+                ->setCreatedAt( new \DateTime )
+                ->setPrivs(     $u->getUserPrivs() )
+                ->setLastLoginAt(     new \DateTime( date( 'Y-m-d H:i:s' , $u->getPreference( 'auth.last_login_at' ) ) ) )
+                ->setLastLoginFrom(     $u->getPreference( 'auth.last_login_from' ) )
+                ->setExtraAttributes( [ "created_by" => [ "type" => "migration-script" ] ] );
+            D2EM::persist( $c2u );
+            D2EM::flush();
 
-                /** @var UserLoginHistoryEntity $loginHistory */
-                $loginHistories = D2EM::getRepository( UserLoginHistoryEntity::class )->findBy( [ "User" => $u->getId() ] );
+            /** @var UserLoginHistoryEntity $loginHistory */
+            DB::table( 'user_logins' )->where( 'user_id', $u->getId() )->update( ['customer_to_user_id' => $c2u->getId() ] );
 
-                foreach( $loginHistories as $login ){
-                    $login->setCustomerToUser( $c2u );
-                }
+            $bar->advance();
+        };
 
-                D2EM::flush();
-
-            }
-        });
-
+        $bar->finish();
+        echo "\n\n";
         $this->info( 'Migration completed successfully' );
     }
 }
