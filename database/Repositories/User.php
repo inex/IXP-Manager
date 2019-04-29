@@ -209,7 +209,6 @@ class User extends EntityRepository
      */
     public function getAllForFeList( \stdClass $feParams, int $id = null, UserEntity $user = null )
     {
-        $where = false;
         $dql = "SELECT  u.id as id, 
                         u.name AS name,
                         u.username as username, 
@@ -250,7 +249,6 @@ class User extends EntityRepository
             $result[ $index ][ "privileges" ]   = D2EM::getRepository( UserEntity::class )->getHighestPrivsForUser( $user['id'], Auth::getUser()->isSuperUser() ? null : Auth::getUser()->getCustomer()->getId() );
             $result[ $index ][ "nbC2U" ]        = count( D2EM::getRepository( CustomerToUser::class )->findBy( [ "user" => $user['id'] ] ) );
         }
-
 
 
         return $result;

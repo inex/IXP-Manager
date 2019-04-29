@@ -120,7 +120,7 @@ class UserController extends Doctrine2Frontend {
                     'privileges'    => [
                         'title'     => 'Privileges',
                         'type'      => self::$FE_COL_TYPES[ 'XLATE' ],
-                        'xlator'    => UserEntity::$PRIVILEGES_TEXT,
+                        'xlator'    => UserEntity::$PRIVILEGES_TEXT_SHORT,
                     ],
 
                     'disabled'       => [
