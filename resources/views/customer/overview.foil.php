@@ -11,12 +11,12 @@
 
     <div class="btn-group btn-group-sm ml-auto" role="group" aria-label="...">
 
-        <a class="btn btn-outline-secondary" href="<?= route('statistics@member', [ 'id' => $c->getId() ] ) ?>">
+        <a class="btn btn-white" href="<?= route('statistics@member', [ 'id' => $c->getId() ] ) ?>">
             Port Graphs
         </a>
 
         <div class="btn-group btn-group-sm">
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-cog"></i>
             </button>
 
@@ -37,7 +37,7 @@
 
         <div class="btn-group btn-group-sm">
 
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-pencil"></i>
             </button>
             <div class="dropdown-menu dropdown-menu-right">
@@ -104,13 +104,13 @@
 
         <?php endforeach; ?>
 
-        <a class="btn btn-outline-secondary" href="<?= route( "customer@overview", [ 'id' => $cidprev ] ) ?>">
+        <a class="btn btn-white" href="<?= route( "customer@overview", [ 'id' => $cidprev ] ) ?>">
             <span class="fa fa-chevron-left"></span>
         </a>
-        <a class="btn btn-outline-secondary" href="<?= route( "customer@overview", [ 'id' => $c->getId() ] ) ?>">
+        <a class="btn btn-white" href="<?= route( "customer@overview", [ 'id' => $c->getId() ] ) ?>">
             <span class="fa fa-refresh"></span>
         </a>
-        <a class="btn btn-outline-secondary" href="<?= route( "customer@overview", [ 'id' => $cidnext ] ) ?>">
+        <a class="btn btn-white" href="<?= route( "customer@overview", [ 'id' => $cidnext ] ) ?>">
             <span class="fa fa-chevron-right"></span>
         </a>
 
@@ -121,7 +121,7 @@
 <?php $this->section('content') ?>
     <?= $t->alerts() ?>
 
-    <div class="tw-bg-gray-100 shadow-sm tw-p-6">
+    <div class="tw-bg-white shadow-sm tw-p-6">
 
         <div class="row">
             <div class="<?= $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ? "col-md-9 col-lg-8" : "col-12" ?>">
@@ -154,12 +154,12 @@
                     <?php if( $c->getTags()->count() ): ?>
 
                         <?php foreach( $c->getTags() as $tag ): ?>
-                            <span class="tw-inline-block tw-bg-grey-light tw-rounded-full tw-px-3 tw-py-1 tw-text-sm tw-font-semibold tw-text-grey-darker mr-2">
+                            <span class="badge badge-secondary">
                                 <?= $tag->getDisplayAs() ?>
                             </span>
                         <?php endforeach; ?>
 
-                        <a class="btn btn-outline-secondary btn-sm tw-rounded-full tw-text-xs" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">
+                        <a class="btn btn-white btn-sm tw-rounded-full tw-text-xs" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">
                             Edit tags...
                         </a>
 

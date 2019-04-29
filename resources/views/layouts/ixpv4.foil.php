@@ -27,7 +27,7 @@
 
     </head>
 
-    <body class="d-flex flex-column h-100">
+    <body class="d-flex flex-column h-100 tw-bg-grey-lighter">
         <header>
             <?php
             // We used to manage these menus with a lot of if / elseif / else clauses. It was a mess.
@@ -63,7 +63,7 @@
                     <?php /*if( Auth::check() && Auth::user()->isSuperUser() ): */?>
 
                         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                            <h1 class="h2">
+                            <h1>
                                 <?php $this->section('page-header-preamble') ?>
                                 <?php $this->stop() ?>
                             </h1>
