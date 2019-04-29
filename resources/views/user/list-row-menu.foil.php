@@ -1,19 +1,19 @@
 <div class="btn-group btn-group-sm">
-    <a class="btn btn-outline-secondary" href="<?= route($t->feParams->route_prefix . '@view' , [ 'id' => $t->row[ 'id' ] ] ) ?>"  title="Preview">
+    <a class="btn btn-white" href="<?= route($t->feParams->route_prefix . '@view' , [ 'id' => $t->row[ 'id' ] ] ) ?>"  title="Preview">
         <i class="fa fa-eye"></i>
     </a>
 
     <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-        <a class="btn btn-outline-secondary" id='d2f-list-edit-<?= $t->row[ 'id' ] ?>' href="<?= route($t->feParams->route_prefix . '@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?> " title="Edit">
+        <a class="btn btn-white" id='d2f-list-edit-<?= $t->row[ 'id' ] ?>' href="<?= route($t->feParams->route_prefix . '@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?> " title="Edit">
             <i class="fa fa-pencil"></i>
         </a>
-        <a class="btn btn-outline-secondary d2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' data-object-id="<?= $t->row[ 'id' ] ?>" data-cust-id="<?= Auth::getUser()->isSuperUser() ? null : Auth::getUser()->getCustomer()->getId() ?>" data-nb-c2u="<?= $t->row[ 'nbC2U' ] ?>" href="#" title="Delete">
+        <a class="btn btn-white d2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' data-object-id="<?= $t->row[ 'id' ] ?>" data-cust-id="<?= Auth::getUser()->isSuperUser() ? null : Auth::getUser()->getCustomer()->getId() ?>" data-nb-c2u="<?= $t->row[ 'nbC2U' ] ?>" href="#" title="Delete">
             <i class="fa fa-trash"></i>
         </a>
     <?php endif;?>
 
     <?php if( Auth::getUser()->isSuperUser() ): ?>
-        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
             <form id="welcome-email" method="POST" action="<?= route($t->feParams->route_prefix.'@welcome-email' ) ?>">
