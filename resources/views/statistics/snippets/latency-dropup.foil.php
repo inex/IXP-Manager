@@ -20,7 +20,7 @@
     <?php if( $t->grapher()->canAccessAllCustomerLatencyGraphs() || ( Auth::check() && Auth::user()->getCustomer()->getId() == $t->vi->getCustomer()->getId() ) ): ?>
 
         <div class="btn-group btn-group-sm dropup">
-            <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle d-flex" data-toggle="dropdown" title="Latency Graphs"  aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-white btn-sm dropdown-toggle d-flex" data-toggle="dropdown" title="Latency Graphs"  aria-haspopup="true" aria-expanded="false">
                 <i class="fa fa-clock-o"></i>
             </button>
 

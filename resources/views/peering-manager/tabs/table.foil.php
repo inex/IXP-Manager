@@ -67,16 +67,16 @@
 
                                     <button id="peering-request-<?= $cid ?>"
                                             data-days="<?= isset( $t->peers[ $cid ] ) ? $t->peers[ $cid ][ "email_days" ] : -1 ?>"
-                                            class="btn btn-outline-secondary btn-sm peering-request" <?= !$c[ "ispotential" ] ? "disabled" : "" ?>>
+                                            class="btn btn-white btn-sm peering-request" <?= !$c[ "ispotential" ] ? "disabled" : "" ?>>
                                         <i id="peering-request-icon-<?= $cid ?>"
                                            class="fa  <?= isset( $t->peers[ $cid ][ "emails_sent"] ) && $t->peers[ $cid ][ "emails_sent" ] ? "fa-repeat" : "fa-envelope" ?>"></i> Request Peering
                                     </button>
 
-                                    <button id="peering-notes-<?= $cid ?>" class="btn btn-outline-secondary btn-sm peering-note">
+                                    <button id="peering-notes-<?= $cid ?>" class="btn btn-white btn-sm peering-note">
                                         <i id="peering-notes-icon-<?= $cid ?>" class="fa fa-star" <?= isset( $t->peers[ $cid ][ "notes" ] ) && strlen( $t->peers[ $cid ][ "notes" ] ) ?: "style='color:lightgrey'" ?>></i> Notes
                                     </button>
 
-                                    <button id="dropdown-mark-peering-<?= $cid ?>" class="btn btn-sm <?= isset( $t->peers[ $cid ] ) && ( $t->peers[ $cid ][ "peered"] || $t->peers[ $cid ][ "rejected" ] ) ? "btn-outline-info" : "btn-outline-secondary" ?> dropdown-toggle" data-toggle="dropdown"></button>
+                                    <button id="dropdown-mark-peering-<?= $cid ?>" class="btn btn-sm <?= isset( $t->peers[ $cid ] ) && ( $t->peers[ $cid ][ "peered"] || $t->peers[ $cid ][ "rejected" ] ) ? "btn-outline-info" : "btn-white" ?> dropdown-toggle" data-toggle="dropdown"></button>
 
                                     <div class="dropdown-menu" >
                                         <a class="dropdown-item" id="mark-peered-<?= $cid ?>" href="<?= route( "peering-manager@mark-peering", [ "id" => $cid, "status" => "peered" ] ) ?>">

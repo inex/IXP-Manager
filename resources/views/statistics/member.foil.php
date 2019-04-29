@@ -73,10 +73,10 @@
                             </li>
 
                             <li class="nav-item float-right">
-                                <input type="submit" class="btn btn-outline-secondary" value="Show Graphs">
+                                <input type="submit" class="btn btn-white" value="Show Graphs">
 
                                 <?php if( config('grapher.backends.sflow.enabled') && $t->grapher()->canAccessAllCustomerP2pGraphs() ): ?>
-                                    <a class="btn btn-outline-secondary ml-2" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] ) ?>">
+                                    <a class="btn btn-white ml-2" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] ) ?>">
                                         <i class="fa fa-random"></i>&nbsp;&nbsp;P2P Graphs
                                     </a>&nbsp;&nbsp;&nbsp;&nbsp;
                                 <?php endif; ?>
@@ -103,11 +103,11 @@
 
                             <div class="btn-group btn-group-sm my-auto">
                                 <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                                    <a class="btn btn-sm btn-outline-secondary" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] ) ?>">
+                                    <a class="btn btn-sm btn-white" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] ) ?>">
                                         <span class="fa fa-random"></span>
                                     </a>
                                 <?php endif; ?>
-                                <a class="btn btn-outline-secondary" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $t->c->getId(), "type" => "agg" ] ) ?>/?category=<?= $t->category ?>">
+                                <a class="btn btn-white" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $t->c->getId(), "type" => "agg" ] ) ?>/?category=<?= $t->category ?>">
                                     <i class="fa fa-search-plus"></i>
                                 </a>
                             </div>
@@ -156,14 +156,14 @@
                                                 <?= $t->insert( 'statistics/snippets/latency-dropup', [ 'vi' => $vi ] ) ?>
 
                                                 <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                                                    <a class="btn btn-outline-secondary" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] )
+                                                    <a class="btn btn-white" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] )
                                                         . ( $vi->getVlanInterfaces() ? '?svli=' . $vi->getVlanInterfaces()[0]->getId() : '' )
                                                     ?>">
                                                         <span class="fa fa-random"></span>
                                                     </a>
                                                 <?php endif; ?>
 
-                                                <a class="btn btn-outline-secondary" href="<?= route( "statistics@member-drilldown" , [ "type" => "vi", "typeid" => $vi->getId()  ] ) ?>/?category=<?= $t->category ?>" title="Drilldown">
+                                                <a class="btn btn-white" href="<?= route( "statistics@member-drilldown" , [ "type" => "vi", "typeid" => $vi->getId()  ] ) ?>/?category=<?= $t->category ?>" title="Drilldown">
                                                     <i class="fa fa-search-plus"></i>
                                                 </a>
                                             </div>
@@ -206,13 +206,13 @@
                                                         <?= $t->insert( 'statistics/snippets/latency-dropup', [ 'vi' => $vi ] ) ?>
                                                     <?php endif; ?>
                                                     <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                                                        <a class="btn btn-outline-secondary btn-sm" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] )
+                                                        <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] )
                                                         . ( $vi->getVlanInterfaces()[0] ? '?svli=' . $vi->getVlanInterfaces()[0]->getId() : '' )
                                                         ?>">
                                                             <span class="fa fa-random"></span>
                                                         </a>
                                                     <?php endif; ?>
-                                                    <a class="btn btn-outline-secondary btn-sm" href="<?= route( "statistics@member-drilldown" , [ "type" => "pi", "typeid" => $pi->getId()  ] ) ?>/?category=<?= $t->category ?>">
+                                                    <a class="btn btn-white btn-sm" href="<?= route( "statistics@member-drilldown" , [ "type" => "pi", "typeid" => $pi->getId()  ] ) ?>/?category=<?= $t->category ?>">
                                                         <i class="fa fa-search-plus"></i>
                                                     </a>
                                                 </div>

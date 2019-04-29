@@ -11,7 +11,7 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-outline-secondary" href="<?= route( 'interfaces/sflow-receiver/list' ) ?>" title="list">
+        <a class="btn btn-white" href="<?= route( 'interfaces/sflow-receiver/list' ) ?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
     </div>

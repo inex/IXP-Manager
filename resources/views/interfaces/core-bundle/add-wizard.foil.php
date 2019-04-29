@@ -38,7 +38,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-outline-secondary" href="<?= route( 'core-bundle/list' )?>" title="list">
+        <a class="btn btn-white" href="<?= route( 'core-bundle/list' )?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
     </div>
@@ -301,7 +301,7 @@ $this->layout( 'layouts/ixpv4' );
                         </div>
 
                         <div clas="my-auto">
-                            <button style="float: right; margin-right: 20px" id="add-new-core-link" type="button" class=" btn-sm btn btn-outline-secondary" href="#" title="Add Core link">
+                            <button style="float: right; margin-right: 20px" id="add-new-core-link" type="button" class=" btn-sm btn btn-white" href="#" title="Add Core link">
                                 <span class="fa fa-plus"></span>
                             </button>
                         </div>

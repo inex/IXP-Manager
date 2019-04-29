@@ -9,7 +9,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-outline-secondary" href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'id' => $t->ppp->getPAtchPanel()->getId() ]  ) ?>" title="list">
+        <a class="btn btn-white" href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'id' => $t->ppp->getPAtchPanel()->getId() ]  ) ?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
     </div>
@@ -168,7 +168,7 @@
                 </div>
 
                 <div class="my-auto">
-                    <buttton id="resetSwitchSelect" class="btn btn-outline-secondary d-flex">
+                    <buttton id="resetSwitchSelect" class="btn btn-white d-flex">
                         <i class="my-auto fa fa-retweet"></i>
                         &nbsp;Reset
                     </buttton>
@@ -193,7 +193,7 @@
                     </div>
 
                     <div class="my-auto">
-                        <buttton id="resetCustomer" class="btn btn-outline-secondary d-flex">
+                        <buttton id="resetCustomer" class="btn btn-white d-flex">
                             <i class="my-auto fa fa-retweet"></i>
                             &nbsp;Reset
                         </buttton>
@@ -303,26 +303,26 @@
             <?php if( !$t->allocating ): ?>
                 <?= Former::date( 'assigned_at' )
                     ->label( 'Assigned At' )
-                    ->append( '<button class="btn-outline-secondary btn" onclick="setToday( \'assigned_at\' )" type="button">Today</button>' )
+                    ->append( '<button class="btn-white btn" onclick="setToday( \'assigned_at\' )" type="button">Today</button>' )
                     ->blockHelp( 'help text' )
                     ->value( date( 'Y-m-d' ) );
                 ?>
 
                 <?= Former::date( 'connected_at' )
                     ->label( 'Connected At' )
-                    ->append( '<button class="btn-outline-secondary btn" onclick="setToday( \'connected_at\' )" type="button">Today</button>' )
+                    ->append( '<button class="btn-white btn" onclick="setToday( \'connected_at\' )" type="button">Today</button>' )
                     ->blockHelp( 'help text' );
                 ?>
 
                 <?= Former::date( 'ceased_requested_at' )
                     ->label( 'Ceased Requested At' )
-                    ->append( '<button class="btn-outline-secondary btn" onclick="setToday( \'ceased_requested_at\' )" type="button">Today</button>' )
+                    ->append( '<button class="btn-white btn" onclick="setToday( \'ceased_requested_at\' )" type="button">Today</button>' )
                     ->blockHelp( 'help text' );
                 ?>
 
                 <?= Former::date( 'ceased_at' )
                     ->label( 'Ceased At' )
-                    ->append( '<button class="btn-outline-secondary btn" onclick="setToday( \'ceased_at\' )" type="button"">Today</button>' )
+                    ->append( '<button class="btn-white btn" onclick="setToday( \'ceased_at\' )" type="button"">Today</button>' )
                     ->blockHelp( 'help text' );
                 ?>
 

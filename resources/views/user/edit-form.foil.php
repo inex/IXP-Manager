@@ -177,7 +177,7 @@
                                     Action
 
                                     <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                        <a class="btn btn-outline-secondary btn-sm ml-2" href="<?= route( "user@add-info" , [ "id" => $t->data[ 'params'][ 'object']->getEmail() ] ) ?>">
+                                        <a class="btn btn-white btn-sm ml-2" href="<?= route( "user@add-info" , [ "id" => $t->data[ 'params'][ 'object']->getEmail() ] ) ?>">
                                             <i class="fa fa-plus"></i>
                                         </a>
                                     <?php endif; ?>
@@ -202,7 +202,7 @@
                                         ?>
                                     </td>
                                     <td>
-                                        <a class="btn btn-outline-secondary d2f-list-delete" data-object-id="<?= $t->data[ 'params'][ 'object']->getId() ?>" data-cust-id="<?= $c->getId() ?>" id="d2f-list-delete-<?= $c->getId() ?>" href="#" title="Delete">
+                                        <a class="btn btn-white d2f-list-delete" data-object-id="<?= $t->data[ 'params'][ 'object']->getId() ?>" data-cust-id="<?= $c->getId() ?>" id="d2f-list-delete-<?= $c->getId() ?>" href="#" title="Delete">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </td>

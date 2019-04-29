@@ -19,8 +19,8 @@
                         <div class="input-group">
                             <input type="text" class="form-control" placeholder="Search for..." name="search" value="<?= $t->search ?>">
                             <div class="input-group-append">
-                                <button class="btn btn-outline-secondary" type="submit">Search</button>
-                                <button class="btn btn-outline-secondary" type="button" data-toggle="modal" data-target="#searchHelpModal">
+                                <button class="btn btn-white" type="submit">Search</button>
+                                <button class="btn btn-white" type="button" data-toggle="modal" data-target="#searchHelpModal">
                                     <span class="fa fa-question-circle"></span>
                                 </button>
                             </div>
@@ -94,22 +94,22 @@
                                         <?php endif; ?>
 
                                         <div class="btn-group flex-wrap">
-                                            <a class="btn btn-outline-secondary" href="<?= route( "customer@overview" , [ "id" => $cust->getId() ] ) ?>">
+                                            <a class="btn btn-white" href="<?= route( "customer@overview" , [ "id" => $cust->getId() ] ) ?>">
                                                 Overview
                                             </a>
-                                            <a class="btn btn-outline-secondary" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "ports" ] ) ?>">
+                                            <a class="btn btn-white" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "ports" ] ) ?>">
                                                 Ports
                                             </a>
-                                            <a class="btn btn-outline-secondary" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $cust->getId(), "type" => "agg" ] ) ?>">
+                                            <a class="btn btn-white" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $cust->getId(), "type" => "agg" ] ) ?>">
                                                 Statistics
                                             </a>
-                                            <a class="btn btn-outline-secondary" href="<?= route( 'statistics@p2p-get', [ "id" => $cust->getId() ] )?>">
+                                            <a class="btn btn-white" href="<?= route( 'statistics@p2p-get', [ "id" => $cust->getId() ] )?>">
                                                 P2P
                                             </a>
-                                            <a class="btn btn-outline-secondary" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "users" ] ) ?>">
+                                            <a class="btn btn-white" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "users" ] ) ?>">
                                                 Users
                                             </a>
-                                            <a class="btn btn-outline-secondary" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "contacts" ] )?>">
+                                            <a class="btn btn-white" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "contacts" ] )?>">
                                                 Contacts
                                             </a>
                                         </div>

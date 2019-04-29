@@ -12,7 +12,7 @@
 
                 <div class="btn-group btn-group-sm">
 
-                    <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <?php if( request()->is( 'switch-port/op-status/*' ) ): ?>
 
                             Live Port States (via SNMP poll)
@@ -70,7 +70,7 @@
 
             <div class="btn-group btn-group-sm">
 
-                <button type="button" class="btn btn-outline-secondary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button type="button" class="btn btn-white btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <?= $t->data[ 'params'][ "switch" ] ? $t->data[ 'params'][ "switches" ][ $t->data[ 'params'][ "switch" ] ] : "All Switches" ?>
                 </button>
 
@@ -93,7 +93,7 @@
 
             </div>
 
-            <a id="add-switch-port"  class="btn btn-outline-secondary" href="<?= route($t->feParams->route_prefix.'@add' ) ?>">
+            <a id="add-switch-port"  class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@add' ) ?>">
                 <span class="fa fa-plus"></span>
             </a>
 

@@ -11,13 +11,13 @@
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-outline-secondary" href="<?= route('patch-panel/list' ) ?>" title="Patch panel list">
+        <a class="btn btn-white" href="<?= route('patch-panel/list' ) ?>" title="Patch panel list">
             <i class="fa fa-th-list"></i>
         </a>
-        <a class="btn btn-outline-secondary" href="<?= route ('patch-panel/edit' , [ 'id' => $t->pp->getId() ] ) ?>" title="Edit">
+        <a class="btn btn-white" href="<?= route ('patch-panel/edit' , [ 'id' => $t->pp->getId() ] ) ?>" title="Edit">
             <i class="fa fa-pencil"></i>
         </a>
-        <a class="btn btn-outline-secondary" href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'id' => $t->pp->getId() ]  ) ?>" title="Ports list">
+        <a class="btn btn-white" href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'id' => $t->pp->getId() ]  ) ?>" title="Ports list">
             <i class="fa fa-th"></i>
         </a>
     </div>

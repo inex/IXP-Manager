@@ -9,12 +9,12 @@ Physical Interfaces / Edit
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-outline-secondary" href="<?= route( 'interfaces/physical/list' )?>" title="list">
+        <a class="btn btn-white" href="<?= route( 'interfaces/physical/list' )?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
 
         <?php if( $t->pi ): ?>
-            <a class="btn btn-outline-secondary" href="<?= route( 'interfaces/physical/view' , [ "id" => $t->pi->getId() ])?>" title="list">
+            <a class="btn btn-white" href="<?= route( 'interfaces/physical/view' , [ "id" => $t->pi->getId() ])?>" title="list">
                 <span class="fa fa-eye"></span>
             </a>
         <?php endif;?>

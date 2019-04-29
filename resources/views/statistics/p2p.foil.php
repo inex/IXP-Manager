@@ -43,7 +43,7 @@
 
         <?php if( $t->grapher()->canAccessAllCustomerGraphs() ): ?>
 
-                <a class="btn btn-outline-secondary" href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>">All Ports</a>
+                <a class="btn btn-white" href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>">All Ports</a>
 
         <?php endif; ?>
 
@@ -135,10 +135,10 @@
 
                             <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                             <div class="float-right">
-                                <input class="btn btn-outline-secondary  mr-2" type="submit" name="submit" value="Submit" />
+                                <input class="btn btn-white  mr-2" type="submit" name="submit" value="Submit" />
 
                                 <?php if( $t->showGraphsOption ): ?>
-                                    <input class="btn btn-outline-secondary " type="submit" name="submit" value="<?= $t->showGraphs ? 'Hide' : 'Show' ?> Graphs" />
+                                    <input class="btn btn-white " type="submit" name="submit" value="<?= $t->showGraphs ? 'Hide' : 'Show' ?> Graphs" />
                                 <?php endif; ?>
                             </div>
 

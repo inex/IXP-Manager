@@ -143,7 +143,7 @@
                                 ->id( 'billingAddress1' )
                                 ->label( 'Address' )
                                 ->blockHelp( '' )
-                                ->append( '<button class="btn-outline-secondary btn" id="copy-address" type="button"><i class="fa fa-retweet"> </i></button>' );
+                                ->append( '<button class="btn-white btn" id="copy-address" type="button"><i class="fa fa-retweet"> </i></button>' );
                             ?>
 
                             <?= Former::text( 'billingAddress2' )

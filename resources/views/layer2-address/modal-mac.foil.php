@@ -10,7 +10,7 @@
                 <div class="input-group">
                     <input class="form-control mac-input lowerCase" readonly id="mac">
                     <div class="input-group-append">
-                        <button id="btn-copy-mac" class="btn btn-copy btn-outline-secondary" data-clipboard-action="copy" data-clipboard-target="#mac">
+                        <button id="btn-copy-mac" class="btn btn-copy btn-white" data-clipboard-action="copy" data-clipboard-target="#mac">
                             <span class="fa fa-copy"></span>
                         </button>
                     </div>
@@ -19,7 +19,7 @@
                 <div class="input-group">
                     <input class="form-control mac-input lowerCase" readonly id="macComma">
                     <div class="input-group-append">
-                        <button id="btn-copy-mac-comma" class="btn btn-copy btn-outline-secondary" data-clipboard-action="copy" data-clipboard-target="#macComma">
+                        <button id="btn-copy-mac-comma" class="btn btn-copy btn-white" data-clipboard-action="copy" data-clipboard-target="#macComma">
                             <span class="fa fa-copy"></span>
                         </button>
                     </div>
@@ -28,7 +28,7 @@
                 <div class="input-group">
                     <input class="form-control mac-input lowerCase" readonly id="macDot">
                     <div class="input-group-append">
-                        <button id="btn-copy-mac-dot" class="btn btn-copy btn-outline-secondary" data-clipboard-action="copy" data-clipboard-target="#macDot">
+                        <button id="btn-copy-mac-dot" class="btn btn-copy btn-white" data-clipboard-action="copy" data-clipboard-target="#macDot">
                             <span class="fa fa-copy"></span>
                         </button>
                     </div>
@@ -37,7 +37,7 @@
                 <div class="input-group">
                     <input class="form-control mac-input lowerCase" readonly id="macDash">
                     <div class="input-group-append">
-                        <button id="btn-copy-mac-dash" class="btn btn-copy btn-outline-secondary" data-clipboard-action="copy" data-clipboard-target="#macDash">
+                        <button id="btn-copy-mac-dash" class="btn btn-copy btn-white" data-clipboard-action="copy" data-clipboard-target="#macDash">
                             <span class="fa fa-copy"></span>
                         </button>
                     </div>

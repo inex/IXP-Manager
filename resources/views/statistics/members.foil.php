@@ -97,7 +97,7 @@
                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
 
                                 <li class="nav-item">
-                                    <input class="btn btn-outline-secondary float-right" type="submit" name="submit" value="Show Graphs" />
+                                    <input class="btn btn-white float-right" type="submit" name="submit" value="Show Graphs" />
                                 </li>
 
                             </form>
@@ -168,7 +168,7 @@
                                 </li>
 
                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                                <input class="btn btn-outline-secondary float-right" type="submit" name="submit" value="Show Graphs" />
+                                <input class="btn btn-white float-right" type="submit" name="submit" value="Show Graphs" />
 
                             </form>
                         </ul>
@@ -213,13 +213,13 @@
                                     <div class="btn-group btn-group-sm my-auto" role="group">
 
                                         <?php if( config('grapher.backends.sflow.enabled') && isset( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS[$graph->category()] ) && $t->grapher()->canAccessAllCustomerP2pGraphs() ): ?>
-                                            <a class="btn btn-outline-secondary" href="<?= route('statistics@p2p', [ 'cid' => $graph->customer()->getId() ] ) . "?category={$graph->category()}&period={$graph->period()}" ?>">
+                                            <a class="btn btn-white" href="<?= route('statistics@p2p', [ 'cid' => $graph->customer()->getId() ] ) . "?category={$graph->category()}&period={$graph->period()}" ?>">
                                                 <span class="fa fa-random"></span>
                                             </a>
                                         <?php endif; ?>
 
                                         <?php if( $t->grapher()->canAccessAllCustomerGraphs() ): ?>
-                                            <a class="btn btn-outline-secondary" href="<?= route( 'statistics@member', [ $graph->customer()->getId() ] ) ?>">
+                                            <a class="btn btn-white" href="<?= route( 'statistics@member', [ $graph->customer()->getId() ] ) ?>">
                                                 <span class="fa fa-search-plus"></span>
                                             </a>
                                         <?php endif; ?>

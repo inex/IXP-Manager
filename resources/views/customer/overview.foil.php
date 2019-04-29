@@ -165,7 +165,7 @@
 
                     <?php elseif( count( D2EM::getRepository( Entities\CustomerTag::class )->findAll() ) ): ?>
 
-                        <a class="btn btn-outline-secondary btn-sm tw-rounded-full tw-border-gray-500 tw-text-gray-500 tw-text-xs" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">
+                        <a class="btn btn-white btn-sm tw-rounded-full tw-border-gray-500 tw-text-gray-500 tw-text-xs" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">
                             Add tags...
                         </a>
 

@@ -17,10 +17,10 @@
                 Action
                 <?php if( Auth::getUser()->isSuperUser() ): ?>
                     &nbsp;<div class="btn-group btn-group-sm ml-2">
-                        <button id="co-notes-add-btn" class="btn btn-outline-secondary co-notes-add-btn">
+                        <button id="co-notes-add-btn" class="btn btn-white co-notes-add-btn">
                             <i class="fa fa-plus"></i>
                         </button>
-                        <button id="co-cust-notify-<?= $t->c->getId() ?>"  class="btn btn-outline-secondary co-cust-notify <?= $t->coNotifyAll ? 'active' : '' ?>">
+                        <button id="co-cust-notify-<?= $t->c->getId() ?>"  class="btn btn-white co-cust-notify <?= $t->coNotifyAll ? 'active' : '' ?>">
                             <i class="fa fa-bell"></i>
                         </button>
 
@@ -66,20 +66,20 @@
                     <td>
                         <div class="btn-group btn-group-sm">
                             <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                <button id="co-notes-notify-<?= $n->getId() ?>"  class="btn btn-outline-secondary co-notes-notify <?php if( is_array( $t->coNotify ) && array_key_exists( $n->getId(), $t->coNotify ) && $t->coNotify[ $n->getId() ] ): ?>active<?php endif; ?>">
+                                <button id="co-notes-notify-<?= $n->getId() ?>"  class="btn btn-white co-notes-notify <?php if( is_array( $t->coNotify ) && array_key_exists( $n->getId(), $t->coNotify ) && $t->coNotify[ $n->getId() ] ): ?>active<?php endif; ?>">
                                     <i class="fa fa-bell"></i>
                                 </button>
                             <?php endif; ?>
 
-                            <button id="co-notes-view-<?= $n->getId() ?>"  class="btn btn-outline-secondary co-notes-view">
+                            <button id="co-notes-view-<?= $n->getId() ?>"  class="btn btn-white co-notes-view">
                                 <i class="fa fa-eye"></i>
                             </button>
 
                             <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                <button id="co-notes-edit-<?= $n->getId() ?>"  class="btn btn-outline-secondary co-notes-edit">
+                                <button id="co-notes-edit-<?= $n->getId() ?>"  class="btn btn-white co-notes-edit">
                                     <i class="fa fa-pencil"></i>
                                 </button>
-                                <button id="co-notes-trash-<?= $n->getId() ?>" class="btn btn-outline-secondary co-notes-trash">
+                                <button id="co-notes-trash-<?= $n->getId() ?>" class="btn btn-white co-notes-trash">
                                     <i class="fa fa-trash"></i>
                                 </button>
                             <?php endif; ?>
@@ -94,7 +94,7 @@
 <?php if( !count( $t->notes ) ): ?>
     <p class="mt-4" id="co-notes-no-notes-msg">
         There are no notes for this customer.
-        <a class="btn btn-outline-secondary ml-2" href="#" id="co-notes-add-link">Add one...</a>
+        <a class="btn btn-white ml-2" href="#" id="co-notes-add-link">Add one...</a>
     </p>
 <?php endif; ?>
 

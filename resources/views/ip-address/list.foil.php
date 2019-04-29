@@ -14,7 +14,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-outline-secondary" href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol ]) ?>">
+        <a class="btn btn-white" href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol ]) ?>">
             <span class="fa fa-plus"></span>
         </a>
     </div>
@@ -52,11 +52,11 @@
 
                             <div class="btn-group btn-group-sm">
 
-                                <a class="btn btn-outline-secondary" href="<?= route( 'ip-address@list', [ 'vid' => $t->vlan->getId(), 'protocol' => ( $t->protocol == 4 ? 6 : 4 ) ] ) ?>">
+                                <a class="btn btn-white" href="<?= route( 'ip-address@list', [ 'vid' => $t->vlan->getId(), 'protocol' => ( $t->protocol == 4 ? 6 : 4 ) ] ) ?>">
                                     Switch to IPv<?= $t->protocol == 4 ? 6 : 4 ?>
                                 </a>
 
-                                <a class="btn btn-outline-secondary" href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol ]) ?>?vlan=<?= $t->vlan->getId() ?>">
+                                <a class="btn btn-white" href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol ]) ?>?vlan=<?= $t->vlan->getId() ?>">
                                     <span class="fa fa-plus"></span>
                                 </a>
 
@@ -114,10 +114,10 @@
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a class="btn btn-outline-secondary <?= $ip[ 'viid' ] ? '' : 'disabled' ?>" href="<?= $ip[ 'viid' ] ? route( "interfaces/virtual/edit" , [ 'id' => $ip[ 'viid' ] ] ) : '#' ?>" title="See interface">
+                                        <a class="btn btn-white <?= $ip[ 'viid' ] ? '' : 'disabled' ?>" href="<?= $ip[ 'viid' ] ? route( "interfaces/virtual/edit" , [ 'id' => $ip[ 'viid' ] ] ) : '#' ?>" title="See interface">
                                             <i class="fa fa-eye"></i>
                                         </a>
-                                        <a class="btn btn-outline-secondary <?= !$ip[ 'vliid' ] ? '' : 'disabled' ?>" id="delete-ip-<?=$ip[ 'id' ] ?>" href="#" title="Delete">
+                                        <a class="btn btn-white <?= !$ip[ 'vliid' ] ? '' : 'disabled' ?>" id="delete-ip-<?=$ip[ 'id' ] ?>" href="#" title="Delete">
                                             <i class="fa fa-trash"></i>
                                         </a>
 

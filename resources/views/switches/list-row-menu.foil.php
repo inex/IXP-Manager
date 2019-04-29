@@ -1,16 +1,16 @@
 <div class="btn-group btn-group-sm">
 
-    <a class="btn btn-outline-secondary" id="d2f-list-view-<?= $t->row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@view' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Preview">
+    <a class="btn btn-white" id="d2f-list-view-<?= $t->row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@view' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Preview">
         <i class="fa fa-eye"></i>
     </a>
-    <a class="btn btn-outline-secondary" id="d2f-list-edit-<?= $t->row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Edit">
+    <a class="btn btn-white" id="d2f-list-edit-<?= $t->row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?>" title="Edit">
         <i class="fa fa-pencil"></i>
     </a>
-    <a class="btn btn-outline-secondary d2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>"  title="Delete">
+    <a class="btn btn-white d2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>"  title="Delete">
         <i class="fa fa-trash"></i>
     </a>
 
-    <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+    <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
     <div class="dropdown-menu dropdown-menu-right">
 
         <h6 class="dropdown-header">

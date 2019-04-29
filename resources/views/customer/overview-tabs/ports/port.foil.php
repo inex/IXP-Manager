@@ -56,7 +56,7 @@
             <?php if( Auth::getUser()->isSuperUser() ): ?>
 
                 <div class="btn-group my-auto">
-                    <a class="btn btn-sm btn-outline-secondary" href="<?= route( "interfaces/virtual/edit", [ "id" => $t->vi->getId() ] ) ?>" title="Edit">
+                    <a class="btn btn-sm btn-white" href="<?= route( "interfaces/virtual/edit", [ "id" => $t->vi->getId() ] ) ?>" title="Edit">
                         <i class="fa fa-pencil"></i>
                     </a>
                 </div>
@@ -365,7 +365,7 @@
                             </h5>
                         </div>
                         <div clas="my-auto">
-                            <a class="btn btn-outline-secondary btn-sm " href="<?= route( "statistics@member-drilldown", [ 'type' => 'vi', 'typeid' => $t->vi->getId() ] ) ?>">
+                            <a class="btn btn-white btn-sm " href="<?= route( "statistics@member-drilldown", [ 'type' => 'vi', 'typeid' => $t->vi->getId() ] ) ?>">
                                 <i class="fa fa-search"></i>
                             </a>
                         </div>
@@ -393,7 +393,7 @@
                     </div>
 
                     <div clas="my-auto">
-                        <a class="btn btn-outline-secondary btn-sm" href="<?= route( "statistics@member-drilldown", [ 'type' => 'pi', 'typeid' => $pi->getId() ] ) ?>">
+                        <a class="btn btn-white btn-sm" href="<?= route( "statistics@member-drilldown", [ 'type' => 'pi', 'typeid' => $pi->getId() ] ) ?>">
                             <i class="fa fa-search"></i>
                         </a>
                     </div>

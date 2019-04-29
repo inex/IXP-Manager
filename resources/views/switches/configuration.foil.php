@@ -14,7 +14,7 @@
     <div class="btn-group btn-group-sm" role="group">
 
         <div class="btn-group btn-group-sm">
-            <button type="button" class="btn btn-outline-secondary dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?= $t->s ? $t->s->getInfrastructure()->getName() : ( $t->infra ? $t->infra->getName() : "All Infrastructures" ) ?>
             </button>
 
@@ -39,7 +39,7 @@
 
 
         <div class="btn-group btn-group-sm">
-            <button type="button" class="btn btn-outline-secondary dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?= $t->s ? $t->s->getCabinet()->getLocation()->getName() : ( $t->location ? $t->location->getName() : "All Facilities" ) ?>
             </button>
 
@@ -65,7 +65,7 @@
 
 
         <div class="btn-group btn-group-sm">
-            <button type="button" class="btn btn-outline-secondary dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?= $t->s ? $t->s->getName() : "All switches" ?>
             </button>
 
@@ -87,7 +87,7 @@
         </div>
 
 
-        <a class="btn btn-outline-secondary" href="<?= route( "switch@configuration", [ "switch" => 0, "infra" => 0, "location" => 0 ] ) ?>">
+        <a class="btn btn-white" href="<?= route( "switch@configuration", [ "switch" => 0, "infra" => 0, "location" => 0 ] ) ?>">
             Clear
         </a>
 

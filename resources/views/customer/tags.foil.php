@@ -69,7 +69,7 @@
                             <i class="fa fa-question-circle fa-2x"></i>
                         </div>
                         <div class="col-sm-12">
-                            No Customer tag available.  <a class="btn btn-outline-secondary" href="<?= route( "customer-tag@add" ) ?>">Add one</a>
+                            No Customer tag available.  <a class="btn btn-white" href="<?= route( "customer-tag@add" ) ?>">Add one</a>
                         </div>
                     </div>
                 </div>

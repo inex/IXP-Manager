@@ -17,12 +17,12 @@
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-outline-secondary" href="<?= route('patch-panel/list' ) ?>" title="Patch panel list">
+        <a class="btn btn-white" href="<?= route('patch-panel/list' ) ?>" title="Patch panel list">
             <i class="fa fa-th-list"></i>
         </a>
 
         <?php if( $t->pp ): ?>
-            <a class="btn btn-outline-secondary" href="<?= route('patch-panel@view', [ "id" => $t->pp->getId() ] ) ?>" title="Patch panel list">
+            <a class="btn btn-white" href="<?= route('patch-panel@view', [ "id" => $t->pp->getId() ] ) ?>" title="Patch panel list">
                 <i class="fa fa-eye"></i>
             </a>
         <?php endif; ?>
@@ -109,7 +109,7 @@
                     <?= Former::number( 'numberOfPorts' )
                         ->label( ( $t->pp ? 'Add ' : '' ) . 'Number of Ports' )
 
-                        ->append( '<button class="btn-outline-secondary btn rounded-right" id="icon-nb-port" type="button"><i class="nb-port fa fa-info-circle"></i></button>' )
+                        ->append( '<button class="btn-white btn rounded-right" id="icon-nb-port" type="button"><i class="nb-port fa fa-info-circle"></i></button>' )
                         ->min( 0 )
                         ->blockHelp(
                             $t->pp ? 'There are ' . $t->pp->getPortCount() . " ports in this panel already. Enter the number of ports <b> you want to add</b> above."
@@ -138,7 +138,7 @@
 
                     <?= Former::date( 'installation_date' )
                         ->label( 'Installation Date' )
-                        ->append( '<button class="btn-outline-secondary btn rounded-right" id="date-today" type="button">Today</button>' )
+                        ->append( '<button class="btn-white btn rounded-right" id="date-today" type="button">Today</button>' )
                         ->value( date( 'Y-m-d' ) );
                     ?>
 

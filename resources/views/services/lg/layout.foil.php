@@ -11,7 +11,7 @@
 
     <div class="btn-group btn-group-sm" role="group">
         <div class="btn-group btn-group-sm" role="group">
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            <button class="btn btn-white dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <?= $t->lg ? $t->lg->router()->name() : 'Select a router...' ?>
             </button>
             <div class="dropdown-menu dropdown-menu-right">
@@ -46,11 +46,11 @@
             </div>
         </div>
         <?php if( $t->lg ): ?>
-            <a class="btn btn-outline-secondary" href="<?= url('lg/' . $t->lg->router()->handle() . '/route-search') ?>">
+            <a class="btn btn-white" href="<?= url('lg/' . $t->lg->router()->handle() . '/route-search') ?>">
                 <span class="fa fa-search"></span>
             </a>
         <?php endif; ?>
-        <a class="btn btn-outline-secondary" href="<?= url('lg') .'/' . ( $t->lg ? $t->lg->router()->handle() : '' ) ?>">
+        <a class="btn btn-white" href="<?= url('lg') .'/' . ( $t->lg ? $t->lg->router()->handle() : '' ) ?>">
             <span class="fa fa-home"></span>
         </a>
     </div>

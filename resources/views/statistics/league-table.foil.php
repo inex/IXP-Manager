@@ -64,7 +64,7 @@
                             <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                             <li class="nav-item float-right">
 
-                                <input class="btn btn-outline-secondary float-right" type="submit" name="submit" value="Submit" />
+                                <input class="btn btn-white float-right" type="submit" name="submit" value="Submit" />
 
                             </li>
 

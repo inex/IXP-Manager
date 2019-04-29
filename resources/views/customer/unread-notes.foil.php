@@ -10,7 +10,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
     <?php if( count( $t->notes ) ): ?>
         <div class="btn-group btn-group-sm" role="group">
-            <a class="btn btn-outline-secondary" href="<?= route('customerNotes@readAll') ?>">
+            <a class="btn btn-white" href="<?= route('customerNotes@readAll') ?>">
                 Mark All As Read
             </a>
         </div>

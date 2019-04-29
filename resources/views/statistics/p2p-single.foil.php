@@ -60,7 +60,7 @@
 <?php if( Auth::check() && !Auth::user()->isSuperUser() ): ?>
     <?php $this->section( 'page-header-postamble' ) ?>
 
-            <a class="btn btn-outline-secondary btn-sm" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] ) ?>">P2P Overview</a>
+            <a class="btn btn-white btn-sm" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->getId() ] ) ?>">P2P Overview</a>
 
     <?php $this->append() ?>
 <?php endif; ?>
@@ -143,7 +143,7 @@
 
                             <input type="hidden" name="dvli" value="<?= $dstVli->getId() ?>">
                             <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                            <input class="btn btn-outline-secondary float-right" type="submit" name="submit" value="Submit" />
+                            <input class="btn btn-white float-right" type="submit" name="submit" value="Submit" />
 
                         </form>
                     </ul>

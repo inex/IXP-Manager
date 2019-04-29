@@ -14,7 +14,7 @@
 
         <div class="btn-group btn-group-sm" id="peer-btn-group">
 
-            <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 All peerings
             </button>
 
@@ -42,7 +42,7 @@
 
             <div class="btn-group btn-group-sm">
 
-                <button class="btn btn-outline-secondary dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <?= $t->vl ? 'Vlan: ' . $t->vlans[ $t->vl ] : "Limit to Vlan..." ?>
                 </button>
 
@@ -63,7 +63,7 @@
 
         <div class="btn-group btn-group btn-group-sm">
 
-            <button class="btn btn-outline-secondary btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button class="btn btn-white btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?= $t->protos[ $t->proto ] ?>
             </button>
 
@@ -81,10 +81,10 @@
         </div>
 
         <div class="btn-group btn-group btn-group-sm">
-            <button id="btn-zoom-out" class="btn btn-outline-secondary btn-xs">
+            <button id="btn-zoom-out" class="btn btn-white btn-xs">
                 <i class="fa fa-search-minus"></i>
             </button>
-            <button id="btn-zoom-in"  class="btn btn-outline-secondary btn-xs">
+            <button id="btn-zoom-in"  class="btn btn-white btn-xs">
                 <i class="fa fa-search-plus"></i>
             </button>
         </div>

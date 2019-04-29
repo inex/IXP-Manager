@@ -65,17 +65,17 @@ $this->layout( 'layouts/ixpv4' );
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn-outline-secondary" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vli['vintid'] ] ) ?>" title="Virtual Interface">
+                                    <a class="btn btn-white" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vli['vintid'] ] ) ?>" title="Virtual Interface">
                                         <i class="fa fa-filter"></i>
                                     </a>
-                                    <a class="btn btn-outline-secondary" href="<?= route( 'interfaces/vlan/view' , [ 'id' => $vli['id'] ] ) ?>" title="Preview">
+                                    <a class="btn btn-white" href="<?= route( 'interfaces/vlan/view' , [ 'id' => $vli['id'] ] ) ?>" title="Preview">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    <a class="btn btn-outline-secondary"  href="<?= route( 'interfaces/vlan/edit' , [ 'id' => $vli['id'] ] ) ?>" title="Edit">
+                                    <a class="btn btn-white"  href="<?= route( 'interfaces/vlan/edit' , [ 'id' => $vli['id'] ] ) ?>" title="Edit">
                                         <i class="fa fa-pencil"></i>
                                     </a>
 
-                                    <a class="btn btn-outline-secondary" id="delete-vli-<?= $vli['id'] ?>" href="" title="Delete">
+                                    <a class="btn btn-white" id="delete-vli-<?= $vli['id'] ?>" href="" title="Delete">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </div>
