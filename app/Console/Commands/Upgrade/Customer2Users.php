@@ -66,6 +66,9 @@ class Customer2Users extends IXPCommand
      * Transfers data from the table 'customer' and 'user' to the table 'customer_to_users'
      *
      * @return mixed
+     *
+     * @throws
+     *
      */
     public function handle() {
 

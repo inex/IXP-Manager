@@ -48,6 +48,7 @@ class Kernel extends ConsoleKernel {
         \IXP\Console\Commands\Upgrade\Customer2Users::class,
         \IXP\Console\Commands\Upgrade\CopyContactNamesToUsers::class,
         \IXP\Console\Commands\Upgrade\MigrateL2Addresses::class,
+        \IXP\Console\Commands\Upgrade\RemoveCustAdmin::class,
 
         \IXP\Console\Commands\Utils\Export\JsonSchema\Post::class,
 
