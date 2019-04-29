@@ -74,7 +74,8 @@
                 <a href="<?= route( "forgot-password@show-form" ) ?>">
                     Forgot Password?
                 </a>
-                <button class="btn btn-primary" type="submit">
+
+                <button id="login-btn" class="btn btn-primary" type="submit">
                     Sign In
                 </button>
             </div>
