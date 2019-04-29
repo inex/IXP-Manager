@@ -144,9 +144,8 @@ class ResetPasswordController extends Controller{
 
         event( new PasswordResetEvent( $user ) );
 
-        $this->guard()->login( $user );
+        $this->redirectTo = route("login@showForm" ) . '?username=' . $user->getUsername();
     }
-
     /**
      * Get the response for a failed password reset.
      *

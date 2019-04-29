@@ -162,11 +162,35 @@ COL-XL
     }
 
 
+
+    .a-disabled {
+        pointer-events: none;
+        cursor: default;
+        opacity: 0.6;
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+
     .center-dd-caret:after{
         margin-bottom: auto;
         margin-top: auto;
+
     }
 
+    .cursor-default{
+        pointer-events: none;
+        cursor: default;
+    }
+
+    .dataTable .dropdown-item:focus, .dropdown-item:hover{
+        width: auto;
+        color: #16181b;
+        text-decoration: none;
+        background-color: #f8f9fa;
+
+    }
     /*
     ####################################################
     M E D I A  Q U E R I E S
@@ -641,19 +665,3 @@ td a:hover{
     -ms-hyphens: auto;
     hyphens: auto;
 }
-
-
-.cursor-pointer{
-    cursor: pointer;
-}
-
-
-.a-disabled {
-    pointer-events: none;
-    cursor: default;
-    opacity: 0.6;
-}
-
-
-
-

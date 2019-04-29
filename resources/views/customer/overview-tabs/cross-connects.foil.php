@@ -36,55 +36,47 @@
         </tr>
     </thead>
     <tbody>
-        <?php if( count( $t->crossConnects) > 0 ): ?>
-            <?php foreach( $t->crossConnects as $patchPanelPort ): ?>
-                <tr>
-                    <td>
-                        <a href="<?= route( "patch-panel-port@view" , [ "id" => $patchPanelPort->getId() ] ) ?>">
-                            <?= $t->ee($patchPanelPort->getPatchPanel()->getName() ) ?>
-                            <?= $t->ee( $patchPanelPort->getName() ) ?>
-                        </a>
-                    </td>
-                    <td>
-                        <?= $t->ee( $patchPanelPort->getColoCircuitRef() ) ?>
-                    </td>
-                    <?php if( Auth::getUser()->isSuperUser() ): ?>
-                        <td>
-                            <?= $t->ee( $patchPanelPort->getTicketRef() ) ?>
-                        </td>
-                    <?php endif; ?>
-                    <td>
-                        <?php $class = $patchPanelPort->getStateCssClass() ?>
-
-                        <span title="" class="badge badge-<?=$class ?>">
-                        <?= $patchPanelPort->resolveStates() ?>
-                        </span>
-                    </td>
-                    <td>
-                        <?= $t->ee( $patchPanelPort->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?>
-                    </td>
-                    <?php if( Auth::getUser()->isSuperUser() ): ?>
-                        <td>
-                            <?= $t->ee( $patchPanelPort->getPatchPanel()->getCabinet()->getName() ) ?>
-                        </td>
-                    <?php endif; ?>
-                    <td>
-                        <?= $patchPanelPort->getAssignedAtFormated() ?>
-                    </td>
-                    <td>
-                        <?= $patchPanelPort->resolveChargeable() ?>
-                    </td>
-                    <td>
-                        <?= $patchPanelPort->resolveOwnedBy() ?>
-                    </td>
-                </tr>
-            <?php endforeach; ?>
-        <?php else: ?>
+        <?php foreach( $t->crossConnects as $patchPanelPort ): ?>
             <tr>
-                <td colspan="9" class="text-center">
-                    No Patch Panel available
+                <td>
+                    <a href="<?= route( "patch-panel-port@view" , [ "id" => $patchPanelPort->getId() ] ) ?>">
+                        <?= $t->ee($patchPanelPort->getPatchPanel()->getName() ) ?>
+                        <?= $t->ee( $patchPanelPort->getName() ) ?>
+                    </a>
+                </td>
+                <td>
+                    <?= $t->ee( $patchPanelPort->getColoCircuitRef() ) ?>
+                </td>
+                <?php if( Auth::getUser()->isSuperUser() ): ?>
+                    <td>
+                        <?= $t->ee( $patchPanelPort->getTicketRef() ) ?>
+                    </td>
+                <?php endif; ?>
+                <td>
+                    <?php $class = $patchPanelPort->getStateCssClass() ?>
+
+                    <span title="" class="badge badge-<?=$class ?>">
+                    <?= $patchPanelPort->resolveStates() ?>
+                    </span>
+                </td>
+                <td>
+                    <?= $t->ee( $patchPanelPort->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?>
+                </td>
+                <?php if( Auth::getUser()->isSuperUser() ): ?>
+                    <td>
+                        <?= $t->ee( $patchPanelPort->getPatchPanel()->getCabinet()->getName() ) ?>
+                    </td>
+                <?php endif; ?>
+                <td>
+                    <?= $patchPanelPort->getAssignedAtFormated() ?>
+                </td>
+                <td>
+                    <?= $patchPanelPort->resolveChargeable() ?>
+                </td>
+                <td>
+                    <?= $patchPanelPort->resolveOwnedBy() ?>
                 </td>
             </tr>
-        <?php endif; ?>
+        <?php endforeach; ?>
     </tbody>
 </table>

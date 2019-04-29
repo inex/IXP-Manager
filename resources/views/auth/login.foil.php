@@ -91,5 +91,9 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
+<script>
+
+</script>
+
 
 <?php $this->append() ?>

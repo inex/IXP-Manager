@@ -2,11 +2,9 @@
 
 namespace Repositories;
 
-use Auth;
+use Auth, D2EM;
 
-use Entities\{
-    User    as UserEntity
-};
+use Entities\{CustomerToUser as CustomerToUserEntity, CustomerToUser, User as UserEntity};
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -109,17 +107,15 @@ class User extends EntityRepository
      */
     public function getLastLoginsForFeList( $feParams )
     {
-        $dql = "SELECT  up.attribute AS attribute, 
-                        up.value AS lastlogin, 
+        $dql = "SELECT  c2u.last_login_date AS last_login_date, 
                         u.username AS username,
                         u.email AS email, 
                         c.name AS cust_name, 
                         c.id AS cust_id, 
-                        u.id AS id
-                    FROM Entities\\UserPreference up
-                        JOIN up.User u
-                        JOIN u.Customer c
-                    WHERE up.attribute = 'auth.last_login_at'";
+                        c2u.id AS id
+                    FROM Entities\\CustomerToUser c2u
+                        JOIN c2u.user u
+                        JOIN c2u.customer c";
 
 
         if( isset( $feParams->listOrderBy ) ) {
@@ -217,23 +213,25 @@ class User extends EntityRepository
         $dql = "SELECT  u.id as id, 
                         u.name AS name,
                         u.username as username, 
-                        u.email as email, 
-                        u.privs AS privileges,
+                        u.email as email,
                         u.created as created, 
                         u.disabled as disabled, 
                         c.id as custid, 
                         c.name as customer,
                         u.lastupdated AS lastupdated
                   FROM Entities\\User u
-                  LEFT JOIN u.Customer c
-                  WHERE 1 = 1";
-
-
-
+                  LEFT JOIN u.Customer as c ";
 
         if( $user && !$user->isSuperUser() ) {
-            $dql .= " AND u.Customer = " . $user->getCustomer()->getId() . "
-                      AND u.privs <= " . UserEntity::AUTH_CUSTADMIN;
+            $dql .= "LEFT JOIN u.Customers as c2u";
+        }
+
+
+        $dql .= " WHERE 1 = 1";
+
+        if( $user && !$user->isSuperUser() ) {
+            $dql .= " AND c2u.customer = " . $user->getCustomer()->getId() . "
+                      AND c2u.privs <= " . UserEntity::AUTH_CUSTADMIN;
         }
 
         if( $id ) {
@@ -245,10 +243,54 @@ class User extends EntityRepository
             $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
         }
 
-        return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
+        $result = [];
+
+        foreach( $this->getEntityManager()->createQuery( $dql )->getArrayResult() as $index => $user ){
+            $result[ $index ] = $user;
+            $result[ $index ][ "privileges" ]   = D2EM::getRepository( UserEntity::class )->getHighestPrivsForUser( $user['id'], Auth::getUser()->isSuperUser() ? null : Auth::getUser()->getCustomer()->getId() );
+            $result[ $index ][ "nbC2U" ]        = count( D2EM::getRepository( CustomerToUser::class )->findBy( [ "user" => $user['id'] ] ) );
+        }
+
+
+
+        return $result;
 
     }
 
+    public function getHighestPrivsForUser( int $userid, int $custid = null )
+    {
+        $dql = "SELECT  c2u
+                FROM Entities\\CustomerToUser c2u
+                WHERE c2u.user = " . (int)$userid;
+
+        if( $custid ){
+            $dql .= " AND c2u.customer = " . (int)$custid;
+        }
+
+        $query = $this->getEntityManager()->createQuery( $dql );
+
+        if( count( $query->getArrayResult() ) > 1 ){
+            $result = UserEntity::AUTH_CUSTUSER;
+
+            foreach( $query->getArrayResult() as $c2u ){
+                if( $c2u[ 'privs'] > $result ){
+                    $result = $c2u[ 'privs'];
+                }
+            }
+            $result = UserEntity::$PRIVILEGES_TEXT[ $result ] . "*";
+        } else {
+            if( isset( $query->getArrayResult()[0] ) ){
+                $result = UserEntity::$PRIVILEGES_TEXT[ $query->getArrayResult()[0][ 'privs' ] ];
+            } else {
+                // Should not happen
+                $result = "Something wrong";
+            }
+
+        }
+
+
+        return $result;
+    }
 
     /**
      * Find users by username

@@ -5,11 +5,11 @@
 
 <?php $this->section( 'page-header-preamble' ) ?>
     Login History /
-    <a href="<?= route( 'customer@overview', [ 'id' => $t->user->getCustomer()->getId(), 'tab' => 'users' ] ) ?>">
-        <?= $t->ee( $t->user->getCustomer()->getFormattedName() ) ?>
+    <a href="<?= route( 'customer@overview', [ 'id' => $t->c2u->getUser()->getCustomer()->getId(), 'tab' => 'users' ] ) ?>">
+        <?= $t->ee( $t->c2u->getCustomer()->getFormattedName() ) ?>
     </a>
     /
-    <?= $t->ee( $t->user->getUsername() ) ?>
+    <?= $t->ee( $t->c2u->getUser()->getUsername() ) ?>
 
 <?php $this->append() ?>
 
@@ -22,7 +22,7 @@
                 <i class="fa fa-question-circle fa-2x"></i>
             </div>
             <div class="col-sm-12">
-                Login history for <b><?= $t->ee( $t->user->getUsername() ) ?></b>. <em>Typically logs older than six months are expunged.</em>
+                Login history for <b><?= $t->ee( $t->c2u->getUser()->getUsername() ) ?></b>. <em>Typically logs older than six months are expunged.</em>
             </div>
         </div>
     </div>

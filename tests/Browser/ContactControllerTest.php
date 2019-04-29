@@ -62,7 +62,7 @@ class ContactControllerTest extends DuskTestCase
                     ->visit('/login')
                     ->type( 'username', 'travis' )
                     ->type( 'password', 'travisci' )
-                    ->press( 'Login' )
+                    ->press( '#login-btn' )
                     ->assertPathIs( '/admin' );
 
             $browser->visit( '/contact/list' )
@@ -295,8 +295,9 @@ class ContactControllerTest extends DuskTestCase
                 ->visit('/login')
                 ->type( 'username', 'imcustadmin' )
                 ->type( 'password', 'travisci' )
-                ->press( 'Login' )
-                ->assertPathIs( '/contact/list' )
+                ->press( '#login-btn' )
+                ->assertPathIs( '/dashboard' )
+                ->visit('/contact/list')
                 ->assertSee( 'Your Contacts' )
                 ->assertSee( 'Imagine CustAdmin' )
                 ->assertSee( 'imagine-custadmin@example.com' );
@@ -315,7 +316,7 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'mobile',   '0209120000' )
                 // ->check( 'facilityaccess' )
                 // ->check( 'mayauthorize' )
-                ->type( 'notes', 'Test note' )
+                //->type( 'notes', 'Test note' )
                 ->press('Add' )
                 ->assertPathIs('/contact/list' )
                 ->assertSee( 'Contact added' )
@@ -336,7 +337,7 @@ class ContactControllerTest extends DuskTestCase
             $this->assertEquals( 5,                           $c->getCustomer()->getId() );
             // $this->assertEquals( true,                        $c->getFacilityaccess() );
             // $this->assertEquals( true,                        $c->getMayauthorize() );
-            $this->assertEquals( 'Test note',                 $c->getNotes() );
+            //$this->assertEquals( 'Test note',                 $c->getNotes() );
 
 
             // test that editing while not making any changes and saving changes nothing
@@ -360,7 +361,7 @@ class ContactControllerTest extends DuskTestCase
             $this->assertEquals( 5,                           $c->getCustomer()->getId() );
             // $this->assertEquals( true,                        $c->getFacilityaccess() );
             // $this->assertEquals( true,                        $c->getMayauthorize() );
-            $this->assertEquals( 'Test note',                 $c->getNotes() );
+            //$this->assertEquals( 'Test note',                 $c->getNotes() );
 
 
 
@@ -375,7 +376,7 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'mobile',   '0209120002' )
                 // ->uncheck( 'facilityaccess' )
                 // ->uncheck( 'mayauthorize' )
-                ->type( 'notes', 'Test note 2' )
+                //->type( 'notes', 'Test note 2' )
                 ->press( 'Save Changes' )
                 ->assertPathIs('/contact/list' )
                 ->assertSee( 'Contact edited' )
@@ -393,7 +394,7 @@ class ContactControllerTest extends DuskTestCase
             $this->assertEquals( 5,                           $c->getCustomer()->getId() );
             // $this->assertEquals( false,                       $c->getFacilityaccess() );
             // $this->assertEquals( false,                       $c->getMayauthorize() );
-            $this->assertEquals( 'Test note 2',                 $c->getNotes() );
+            //$this->assertEquals( 'Test note 2',                 $c->getNotes() );
 
 
             // test that editing while not making any changes and saving changes nothing
@@ -417,7 +418,7 @@ class ContactControllerTest extends DuskTestCase
             $this->assertEquals( 5,                           $c->getCustomer()->getId() );
             // $this->assertEquals( false,                       $c->getFacilityaccess() );
             // $this->assertEquals( false,                       $c->getMayauthorize() );
-            $this->assertEquals( 'Test note 2',               $c->getNotes() );
+            //$this->assertEquals( 'Test note 2',               $c->getNotes() );
 
             // delete this contact
             $browser->press( '#d2f-list-delete-' . $c->getId() )

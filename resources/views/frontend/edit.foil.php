@@ -7,7 +7,12 @@
 
     <?=  $t->feParams->pagetitle  ?>
     /
-    <?= $t->data[ 'params']['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->feParams->titleSingular  ?>
+
+    <?php if( isset( $t->feParams->customBreadcrumb ) ): ?>
+        <?= $t->feParams->customBreadcrumb ?>
+    <?php else: ?>
+        <?= $t->data[ 'params']['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->feParams->titleSingular  ?>
+     <?php endif; ?>
 
 <?php $this->append() ?>
 

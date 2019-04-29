@@ -14,5 +14,10 @@
         <join-column name="user_id" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
+    <many-to-one field="customerToUser" target-entity="Entities\CustomerToUser" inversed-by="userLoginHistory">
+      <join-columns>
+        <join-column name="customer_to_user_id" referenced-column-name="id"/>
+      </join-columns>
+    </many-to-one>
   </entity>
 </doctrine-mapping>

@@ -138,7 +138,7 @@ class ContactController extends Doctrine2Frontend
 
                 break;
 
-            case UserEntity::AUTH_CUSTADMIN:
+            case UserEntity::AUTH_CUSTADMIN || UserEntity::AUTH_CUSTUSER:
 
 
                 $this->feParams->pagetitle = 'Your Contacts';

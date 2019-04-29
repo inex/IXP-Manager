@@ -56,7 +56,7 @@
                         </a>
                     <?php endif; ?>
                     <?php if( ixp_min_auth( config( 'ixp.peering-matrix.min-auth' ) ) && !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'peering-matrix'  ) ?: 'active' ?>" href="<?= route('peering-matrix@index') ?>">
+                        <a class="dropdown-item <?= !request()->is( 'peering-matrix' ) ?: 'active' ?>" href="<?= route('peering-matrix@index') ?>">
                             Peering Matrix
                         </a>
                     <?php endif; ?>
@@ -76,7 +76,6 @@
                     Statistics
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-
                     <a class="dropdown-item <?= !request()->is( 'statistics/member' ) ?: 'active' ?>" href="<?= route( 'statistics@member' ) ?>">
                         My Statistics
                     </a>
@@ -132,7 +131,7 @@
                         <div class="dropdown-divider"></div>
 
                         <?php foreach( config( 'ixp_tools.weathermap' ) as $k => $w ): ?>
-                            <a class="dropdown-item <?= !request()->is( 'weather-map/' . $k ) ?: 'active' ?>" href="<?= route( 'weathermap' , [ 'id' => $k ] ) ?>">
+                            <a class="dropdown-item <?= !request()->is( 'weather-map/'. $k ) ?: 'active' ?>" href="<?= route( 'weathermap' , [ 'id' => $k ] ) ?>">
                                 <?= $w['menu'] ?>
                             </a>
                         <?php endforeach; ?>
@@ -141,7 +140,7 @@
             </li>
 
             <li class="nav-item">
-                <a class="nav-link <?= !request()->is( 'public-content/support' ) ?: 'active' ?>" href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>">
+                <a class="nav-link <?= !request()->is(  'public-content/support' ) ?: 'active' ?>" href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>">
                     Support
                 </a>
             </li>
@@ -149,10 +148,10 @@
 
         <ul class="navbar-nav mt-lg-0">
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle <?= !request()->is( 'profile' , 'api-key/list' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle <?= !request()->is( 'profile' , 'api-key/list' ) ?: 'active' ?>" href="#" id="my-account" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     My Account
                 </a>
-                <ul class="dropdown-menu dropdown-menu-right">
+                <ul class="dropdown-menu dropdown-menu-right" id="my-account-dd">
 
                     <a class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
                         Profile
@@ -161,6 +160,24 @@
                     <a class="dropdown-item <?= !request()->is( 'api-key/list' ) ?: 'active' ?>" href="<?= route('api-key@list' )?>">
                         API Keys
                     </a>
+
+                    <?php if( count( Auth::getUser()->getCustomers() ) > 1 ): ?>
+
+                        <div class="dropdown-divider"></div>
+
+                        <h6 class="dropdown-header">
+                            Switch to:
+                        </h6>
+
+                        <?php foreach( Auth::getUser()->getCustomers() as $cust ): ?>
+
+                            <a id="switch-cust-<?= $cust->getId() ?>" class="dropdown-item <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: 'active cursor-default' ?>" <?= Auth::getUser()->getCustomer()->getId() != $cust->getId() ?: "onclick='return false;'" ?> href="<?= Auth::getUser()->getCustomer()->getId() == $cust->getId() ? '#' : route( 'switch-customer@switch' , [ "id" => $cust->getId() ]  ) ?>">
+                                <?= $cust->getName() ?>
+                            </a>
+
+                        <?php endforeach; ?>
+
+                    <?php endif; ?>
 
                     <div class="dropdown-divider"></div>
 

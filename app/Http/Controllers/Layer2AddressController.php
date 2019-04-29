@@ -115,7 +115,7 @@ class Layer2AddressController extends Doctrine2Frontend {
                 case UserEntity::AUTH_SUPERUSER:
                     break;
 
-                case UserEntity::AUTH_CUSTUSER:
+                case UserEntity::AUTH_CUSTUSER || UserEntity::AUTH_CUSTADMIN:
                     switch( Route::current()->getName() ) {
                         case 'layer2-address@forVlanInterface':
                             break;
