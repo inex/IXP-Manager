@@ -194,7 +194,7 @@
                                         <?= Former::select( 'privs_' . $c->getId() )
                                             ->label( '' )
                                             ->placeholder( 'Select a privilege' )
-                                            ->fromQuery( Auth::getUser()->isSuperUser() ? \Entities\User::$PRIVILEGES_TEXT : \Entities\User::$PRIVILEGES_TEXT_NONSUPERUSER, 'name' )
+                                            ->fromQuery( Auth::getUser()->isSuperUser() && $c->isTypeInternal()  ?  \Entities\User::$PRIVILEGES_TEXT : \Entities\User::$PRIVILEGES_TEXT_NONSUPERUSER, 'name' )
                                             ->addClass( 'chzn-select' )
                                             ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/usage/users/#types-of-users">'
                                                 . 'the official documentation here</a>.'

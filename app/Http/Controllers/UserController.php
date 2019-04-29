@@ -366,8 +366,6 @@ class UserController extends Doctrine2Frontend {
 
         }
 
-        //"http://127.0.0.1:8000/login"
-
         return [
             'existingUser'          => $existingUser,
             "disabledInputs"        => $disabledInputs,
@@ -526,17 +524,6 @@ class UserController extends Doctrine2Frontend {
             }
 
 
-
-            // we should only add admin users to customer type internal
-            if( $this->object->isSuperUser() && !$this->object->getCustomer()->isTypeInternal() ) {
-                AlertContainer::push( 'Users with full administrative access can only be added to internal customer types.', Alert::DANGER );
-                return Redirect::back()->withErrors( $validator )->withInput();
-            }
-
-            if( $this->object->isSuperUser() && $originalPrivs != UserEntity::AUTH_SUPERUSER ) {
-                AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
-            }
-
             D2EM::flush();
 
 
@@ -562,6 +549,16 @@ class UserController extends Doctrine2Frontend {
                 $this->c2u->setPrivs(           $request->input( 'privs' ) );
                 $this->c2u->setExtraAttributes( [ "created_by" => [ "type" => "user" , "user_id" => $this->object->getId() ] ] );
 
+            }
+
+            // we should only add admin users to customer type internal
+            if( $this->object->isSuperUser() && !$this->object->getCustomer()->isTypeInternal() ) {
+                AlertContainer::push( 'Users with full administrative access can only be added to internal customer types.', Alert::DANGER );
+                return Redirect::back()->withErrors( $validator )->withInput();
+            }
+
+            if( $this->object->isSuperUser() && $originalPrivs != UserEntity::AUTH_SUPERUSER ) {
+                AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
             }
 
 
