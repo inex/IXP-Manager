@@ -1,7 +1,7 @@
 
 
-<table class="table tw-border tw-border-grey-light tw-shadow-md table-striped table-light table-responsive-ixp-action collapse" style="width:100%">
-    <thead class="">
+<table class="table tw-border tw-border-grey-light tw-shadow-md table-striped table-responsive-ixp-action collapse" style="width:100%">
+    <thead class="thead-dark">
     <tr>
         <th>
             Name

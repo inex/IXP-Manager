@@ -240,7 +240,7 @@ label.control-label, label.form-check-label{
  ****************************************************************************************/
 
 .badge{
-   @apply text-white font-bold py-2 px-3 rounded-full
+   @apply text-white font-bold py-1 px-3 rounded-full
 }
 
 .badge-info{
@@ -255,6 +255,10 @@ label.control-label, label.form-check-label{
     @apply tw-bg-grey;
 }
 
+.badge-warning{
+    @apply tw-text-black tw-bg-orange-400;
+}
+
 /****************************************************************************************
  **** Card
  ****************************************************************************************/
@@ -266,7 +270,6 @@ label.control-label, label.form-check-label{
 
  .card .card-header{
     @apply rounded-tl-sm rounded-tr-sm border-b-0;
-    background-color : #FAFAFA;
  }
 
 

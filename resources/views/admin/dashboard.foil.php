@@ -22,7 +22,7 @@
                 <div>
                     <h4>Overall Customer Numbers</h4>
 
-                    <table class="table table-sm table-light tw-shadow-md tw-rounded-sm table-hover tw-mt-6">
+                    <table class="table table-sm table-striped tw-shadow-md tw-rounded-sm table-hover tw-mt-6">
                         <thead>
                         <tr>
                             <th>
@@ -57,7 +57,7 @@
                     <div class="tw-my-12">
                         <h4 class="tw-mb-6">Customers by Location</h4>
 
-                        <table class="table table-sm table-hover table-light tw-shadow-md tw-rounded-sm">
+                        <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">
                             <thead>
                             <tr>
                                 <th>
@@ -91,7 +91,7 @@
                             Customer Ports by Location
                         </h4>
 
-                        <table class="table table-sm table-hover table-light tw-shadow-md tw-rounded-sm">
+                        <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">
                             <thead class="tw-text-sm">
                                 <tr>
                                     <th>
@@ -167,7 +167,7 @@
 
                         <h4  class="tw-mb-6">Customer Ports by Infrastructure</h4>
 
-                        <table class="table table-sm table-hover table-light tw-shadow-md tw-rounded-sm">
+                        <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">
                             <thead>
                                 <tr>
                                     <th>
@@ -256,7 +256,7 @@
 
                         <h4 class="tw-mb-6">Customer Route Server Usage by VLAN</h4>
 
-                        <table class="table table-sm table-hover table-light tw-shadow-md tw-rounded-sm">
+                        <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">
                             <thead>
                                 <tr>
                                     <th>
@@ -336,7 +336,7 @@
                             Customer IPv6 Usage by VLAN
                         </h4>
 
-                        <table class="table table-sm table-hover table-light tw-shadow-md tw-rounded-sm">
+                        <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">
                             <thead>
                                 <tr>
                                     <th>
