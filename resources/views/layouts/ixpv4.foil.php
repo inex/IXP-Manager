@@ -27,7 +27,7 @@
 
     </head>
 
-    <body class="d-flex flex-column h-100 tw-bg-grey-lighter">
+    <body class="d-flex flex-column h-100">
         <header>
             <?php
             // We used to manage these menus with a lot of if / elseif / else clauses. It was a mess.
