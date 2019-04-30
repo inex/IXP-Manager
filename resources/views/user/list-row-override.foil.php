@@ -21,13 +21,11 @@ $row = $t->row;
 
     <?php if( Auth::getUser()->isSuperUser() ): ?>
         <td>
-
-            <?php $user = D2EM::getRepository( Entities\User::class )->find( $row[ 'id' ] ) ?>
-            <?php if( count( $user->getCustomers() ) > 1 ) : ?>
-                <a href="<?= route( "user@edit" , [ "id" => $row[ 'id' ] ] ) ?>" class="badge badge-info"> Multiple (<?= count( $user->getCustomers() ) ?>)</a>
+            <?php if( $row['nbC2U'] > 1 ) : ?>
+                <a href="<?= route( "user@edit" , [ "id" => $row[ 'id' ] ] ) ?>" class="badge badge-info"> Multiple (<?= $row['nbC2U'] ?>)</a>
             <?php else: ?>
                 <a href="<?=  route( "customer@overview" , [ "id" => $row[ 'custid' ] ] ) ?>">
-                    <?= $t->ee( $user->getCustomers()[0]->getName() ) ?>
+                    <?= $t->ee( $row['customer'] ) ?>
                 </a>
             <?php endif; ?>
         </td>
@@ -35,7 +33,9 @@ $row = $t->row;
 
 
     <td>
-        <?= $row['privileges'] ?>
+        <?= \Entities\User::$PRIVILEGES_TEXT[ $row['privileges'] ] ?>
+
+        <?= ( $row['nbC2U'] > 1 ) ? "*": "" ?>
     </td>
 
     <td>

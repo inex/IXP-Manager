@@ -199,7 +199,16 @@ class UserController extends Doctrine2Frontend {
      * @throws
      */
     protected function listGetData( $id = null ) {
-        return D2EM::getRepository( UserEntity::class )->getAllForFeList( $this->feParams, $id, Auth::getUser() );
+
+        // Return the list of User depending on the privilege of the Authentificated User
+        if( Auth::getUser()->isSuperUser() ){
+            // Getting All the Users
+            return D2EM::getRepository( UserEntity::class )->getAllForFeListSuperUser( $this->feParams, Auth::getUser(), $id  );
+        } else {
+            // Getting all the User for A Customer
+            return D2EM::getRepository( UserEntity::class )->getAllForFeListCustAdmin( $this->feParams, Auth::getUser(), $id );
+        }
+
     }
 
 

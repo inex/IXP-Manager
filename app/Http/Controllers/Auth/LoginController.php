@@ -127,7 +127,6 @@ class LoginController extends Controller
      */
     protected function authenticated(Request $request, $user)
     {
-
         // Check if the user has Customer(s) linked
         if( count( $user->getCustomers() ) > 0 ){
 
@@ -138,7 +137,9 @@ class LoginController extends Controller
             if( !$user->getCustomer() || !$c2u ){
                 $user->setCustomer( $user->getCustomers()[0] );
                 D2EM::flush();
+                $c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => $user , "customer" => $user->getCustomer() ] );
             }
+
 
             $c2u->setLastLoginAt(  new \DateTime );
             $c2u->setLastLoginFrom( request()->ip() );

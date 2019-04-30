@@ -196,7 +196,7 @@ class User extends EntityRepository
 
 
     /**
-     * Get all Users for listing on the frontend CRUD
+     * Get all Users for listing on the frontend CRUD for a SuperUser
      *
      * @see \IXP\Http\Controllers\Doctrine2Frontend
      *
@@ -205,9 +205,31 @@ class User extends EntityRepository
      * @param int|null $id
      *
      * @param UserEntity|null $user
+     *
+     * Returns an array of the form:
+     *
+     *     [
+     *         [0] => array:11 [
+     *               [id] => 664
+     *               [name]         => "Joe Doe"
+     *               [username]     => "joe"
+     *               [email]        => "joe@example.com"
+     *               [created]      => DateTime @1550050069 {#1523 …1}
+     *               [disabled]     => false
+     *               [custid]       => 69
+     *               [customer]     => "Customer Name"
+     *               [lastupdated]  => DateTime @1553249875 {#1524 …1}
+     *               [nbC2U]        => "1"
+     *               [privileges]   => "1"
+     *           ]
+     *          [1] => [
+     *                    ...
+     *                ],
+     *     ]
+     *
      * @return array Array of User (as associated arrays) (or single element if `$id` passed)
      */
-    public function getAllForFeList( \stdClass $feParams, int $id = null, UserEntity $user = null )
+    public function getAllForFeListSuperUser( \stdClass $feParams, UserEntity $user, int $id = null )
     {
         $dql = "SELECT  u.id as id, 
                         u.name AS name,
@@ -217,41 +239,97 @@ class User extends EntityRepository
                         u.disabled as disabled, 
                         c.id as custid, 
                         c.name as customer,
-                        u.lastupdated AS lastupdated
+                        u.lastupdated AS lastupdated,
+                        COUNT( c2u ) as nbC2U,
+                        MAX( c2u.privs ) as privileges
                   FROM Entities\\User u
-                  LEFT JOIN u.Customer as c ";
-
-        if( $user && !$user->isSuperUser() ) {
-            $dql .= "LEFT JOIN u.Customers as c2u";
-        }
-
-
-        $dql .= " WHERE 1 = 1";
-
-        if( $user && !$user->isSuperUser() ) {
-            $dql .= " AND c2u.customer = " . $user->getCustomer()->getId() . "
-                      AND c2u.privs <= " . UserEntity::AUTH_CUSTADMIN;
-        }
+                  LEFT JOIN u.Customer as c
+                  LEFT JOIN u.Customers as c2u
+                  WHERE 1 = 1";
 
         if( $id ) {
             $dql .= " AND u.id = " . $id ;
         }
+
+        $dql .= " GROUP BY id";
 
         if( isset( $feParams->listOrderBy ) ) {
             $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
             $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
         }
 
-        $result = [];
+        return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
 
-        foreach( $this->getEntityManager()->createQuery( $dql )->getArrayResult() as $index => $user ){
-            $result[ $index ] = $user;
-            $result[ $index ][ "privileges" ]   = D2EM::getRepository( UserEntity::class )->getHighestPrivsForUser( $user['id'], Auth::getUser()->isSuperUser() ? null : Auth::getUser()->getCustomer()->getId() );
-            $result[ $index ][ "nbC2U" ]        = count( D2EM::getRepository( CustomerToUser::class )->findBy( [ "user" => $user['id'] ] ) );
+    }
+
+
+
+    /**
+     * Get all Users for listing on the frontend CRUD for a CustAdmin Restricted by The selected customer
+     *
+     * @see \IXP\Http\Controllers\Doctrine2Frontend
+     *
+     *
+     * @param \stdClass $feParams
+     * @param int|null $id
+     *
+     *
+     * Returns an array of the form:
+     *
+     *     [
+     *         [0] => array:11 [
+     *               [id] => 664
+     *               [name]         => "Joe Doe"
+     *               [username]     => "joe"
+     *               [email]        => "joe@example.com"
+     *               [created]      => DateTime @1550050069 {#1523 …1}
+     *               [disabled]     => false
+     *               [custid]       => 69
+     *               [customer]     => "Customer Name"
+     *               [lastupdated]  => DateTime @1553249875 {#1524 …1}
+     *               [nbC2U]        => "1"
+     *               [privileges]   => "1"
+     *           ]
+     *          [1] => [
+     *                    ...
+     *                ],
+     *     ]
+     *
+     * @param UserEntity|null $user
+     * @return array Array of User (as associated arrays) (or single element if `$id` passed)
+     */
+    public function getAllForFeListCustAdmin( \stdClass $feParams, UserEntity $user, int $id = null )
+    {
+        $dql = "SELECT  u.id as id, 
+                        u.name AS name,
+                        u.username as username, 
+                        u.email as email,
+                        u.created as created, 
+                        u.disabled as disabled, 
+                        c.id as custid, 
+                        c.name as customer,
+                        u.lastupdated AS lastupdated,
+                        COUNT( c2u ) as nbC2U,
+                        MAX( c2u.privs ) as privileges
+                  FROM Entities\\User u
+                  LEFT JOIN u.Customer as c 
+                  LEFT JOIN u.Customers as c2u
+                  WHERE 1 = 1
+                  AND c2u.customer = " . $user->getCustomer()->getId() . "
+                  AND c2u.privs <= " . UserEntity::AUTH_CUSTADMIN;
+
+        if( $id ) {
+            $dql .= " AND u.id = " . $id ;
         }
 
+        $dql .= " GROUP BY id";
 
-        return $result;
+        if( isset( $feParams->listOrderBy ) ) {
+            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
+            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
+        }
+
+        return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
 
     }
 
