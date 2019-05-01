@@ -26,16 +26,15 @@ namespace IXP\Console\Commands\Upgrade;
 
 use D2EM;
 
-use Entities\{
-    CustomerToUser      as CustomerToUserEntity,
-    User                as UserEntity
+use Entities\{CustomerToUser as CustomerToUserEntity,
+    User as UserEntity
 };
 
 use IXP\Console\Commands\Command as IXPCommand;
 
 
 /**
- * Class RemoveCustAdmin - tool to delete CustAdmin and everything linked from the datable
+ * Class PromoteCustUser - tool to promote the CustUser into CustAdmin
  *
  * @author      Yann Robin <yann@islandbridgenetworks.ie>
  * @author      Barry O'Donovan <barry@islandbridgenetworks.ie>
@@ -43,21 +42,21 @@ use IXP\Console\Commands\Command as IXPCommand;
  * @copyright   Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license     http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class RemoveCustAdmin extends IXPCommand
+class PromoteCustUser extends IXPCommand
 {
     /**
      * The name and signature of the console command.
      *
      * @var string
      */
-    protected $signature = 'update:remove-custadmins';
+    protected $signature = 'update:promote-custusers';
 
     /**
      * The console command description.
      *
      * @var string
      */
-    protected $description = 'Remove all the Custadmin from the datable (part of the upgrade to V5.0.0 process)';
+    protected $description = 'Promote the CustUser into CustAdmin (part of the upgrade to V5.0.0 process)';
 
     /**
      * Execute the console command.
@@ -74,9 +73,11 @@ class RemoveCustAdmin extends IXPCommand
         echo "\n\n";
         $this->warn( "ONLY RUN ONCE AND ONLY WHEN UPGRADING TO IXP Manager v5.0.0 from v4.9.x" );
         echo "\n";
-        $this->warn( "THIS WILL DELETE ALL the CUSTADMIN from the USER TABLE." );
+        $this->warn( "THIS HAS TO BE RUN AFTER THE COMMAND : update:remove-custadmins" );
+        echo "\n";
+        $this->warn( "THIS WILL PROMOTE ALL the CUSTUSER INTO CUSTADMIN." );
 
-        if( !$this->confirm( "\nThis command will remove all the custadmin from the user table.\n\n"
+        if( !$this->confirm( "\nThis command will promote all the CustUser into CustAdmin.\n\n"
             ."Generally, this command should only ever be run once and only when migrating to V5.0.0.\n\n"
             . 'Are you sure you wish to proceed? ' ) ) {
             return 1;
@@ -84,48 +85,16 @@ class RemoveCustAdmin extends IXPCommand
 
         $this->info( 'Migration in progress, please wait...' );
 
-        /** @var CustomerToUserEntity[] $C2Ucustadmin */
-        $C2Ucustadmin = D2EM::getRepository( CustomerToUserEntity::class )->findBy( [ "privs" => UserEntity::AUTH_CUSTADMIN ] );
+        /** @var CustomerToUserEntity[] $C2UCustUser */
+        $C2UCustUser = D2EM::getRepository( CustomerToUserEntity::class )->findBy( [ "privs" => UserEntity::AUTH_CUSTUSER ] );
 
-        $bar = $this->output->createProgressBar( count( $C2Ucustadmin ) );
+        $bar = $this->output->createProgressBar( count( $C2UCustUser ) );
         $bar->start();
 
-        foreach( $C2Ucustadmin as $c2u ) {
+        foreach( $C2UCustUser as $c2u ) {
 
-            $user = $c2u->getUser();
-
-            $user->removeCustomer( $c2u );
-
-            // Deleting the history user
-            foreach( $c2u->getUserLoginHistory() as $userLogin ){
-                D2EM::remove( $userLogin );
-            }
-
-            D2EM::remove( $c2u );
-
-            // Check if the user has c2u left, if not we delete the user
-            if( !count( $c2u->getUser()->getCustomers2User() ) ){
-
-
-                // delete all the user's preferences
-                foreach( $user->getPreferences() as $pref ) {
-                    $user->removePreference( $pref );
-                    D2EM::remove( $pref );
-                }
-
-                // delete all the user's API keys
-                foreach( $user->getApiKeys() as $ak ) {
-                    $user->removeApiKey( $ak );
-                    D2EM::remove( $ak );
-                }
-
-                D2EM::remove( $user );
-
-
-            } else {
-                // setting a new default customer for the user
-                $user->setCustomer( $c2u->getUser()->getCustomers()[0] );
-            }
+            // Changing user privilege
+            $c2u->setPrivs( UserEntity::AUTH_CUSTADMIN );
 
             $bar->advance();
         };
@@ -135,6 +104,7 @@ class RemoveCustAdmin extends IXPCommand
         $bar->finish();
         echo "\n\n";
         $this->info( 'Migration completed successfully' );
+
         return 0;
     }
 }
