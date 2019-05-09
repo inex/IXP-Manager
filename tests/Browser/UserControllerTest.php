@@ -25,12 +25,14 @@ namespace Tests\Browser;
 
 use D2EM;
 
-use Entities\{Customer as CustomerEntity, CustomerToUser as CustomerToUserEntity, CustomerToUser, User as UserEntity};
+use Entities\{
+    Customer as CustomerEntity,
+    CustomerToUser as CustomerToUserEntity,
+    User as UserEntity
+};
 
-use IXP\User;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class UserControllerTest extends DuskTestCase
 {
@@ -109,7 +111,7 @@ class UserControllerTest extends DuskTestCase
             $c2u = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ 'user' => $u , "customer" => 5 ] );
 
             $this->assertInstanceOf( UserEntity::class   , $u );
-            $this->assertInstanceOf( CustomerToUser::class   , $c2u );
+            $this->assertInstanceOf( CustomerToUserEntity::class   , $c2u );
             $this->assertEquals( 'Test User 1',             $u->getName() );
             $this->assertEquals( 'testuser1',               $u->getUsername() );
             $this->assertEquals( 'test-user1@example.com',  $u->getEmail() );
@@ -155,7 +157,7 @@ class UserControllerTest extends DuskTestCase
 
 
             $this->assertInstanceOf( UserEntity::class   , $u );
-            $this->assertInstanceOf( CustomerToUser::class   , $c2u );
+            $this->assertInstanceOf( CustomerToUserEntity::class   , $c2u );
             $this->assertEquals( 'Test User',             $u->getName() );
             $this->assertEquals( 'testuser',               $u->getUsername() );
             $this->assertEquals( 'test-user@example.com',  $u->getEmail() );
@@ -350,6 +352,7 @@ class UserControllerTest extends DuskTestCase
             $this->browse(function (Browser $browser) {
 
                 $browser->visit( '/customer/overview/5/users' )
+                    ->pause(2000)
                     ->assertSee( 'imcustadmin' )
                     ->assertSee( 'imagine-custadmin@example.com' )
                     ->press( '#users-add-btn' )
@@ -449,10 +452,7 @@ class UserControllerTest extends DuskTestCase
                 ->assertSeeIn( "#my-account-dd", "INEX" )
                 ->assertSeeIn( "#my-account-dd", "Imagine" );
 
-            $browser->click( "#switch-cust-1" )
-                ->assertPathIs( "/user/list" )
-                ->click( "#my-account" )
-                ->click( "#switch-cust-5" )
+            $browser->click( "#switch-cust-5" )
                 ->assertPathIs( "/dashboard" )
                 ->assertSee( "You are now logged in for Imagine." );
 
@@ -591,7 +591,7 @@ class UserControllerTest extends DuskTestCase
             D2EM::refresh($u);
             $c2u = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ 'user' => $u , "customer" => 5 ] );
 
-            $this->assertInstanceOf( CustomerToUser::class   , $c2u );
+            $this->assertInstanceOf( CustomerToUserEntity::class   , $c2u );
             $this->assertEquals( 5,                        $c2u->getCustomer()->getId() );
             $this->assertEquals( 'Test User 1',            $u->getName() );
             $this->assertEquals( 'test-user1@example.com', $u->getEmail() );
@@ -699,6 +699,195 @@ class UserControllerTest extends DuskTestCase
             $this->assertFalse( $u2->getDisabled() );
 
         });
+
+
+    }
+
+
+    public function testSuperAdminPrivs(){
+        $this->browse(function (Browser $browser) {
+
+            $browser->resize( 1600, 1200 )
+                ->visit( '/logout' )
+                ->visit( '/login' )
+                ->type( 'username', 'travis' )
+                ->type( 'password', 'travisci' )
+                ->press( '#login-btn' )
+                ->assertPathIs( '/admin' );
+
+            /** @var CustomerEntity $nonInternalCust */
+            $nonInternalCust = D2EM::getRepository( CustomerEntity::class )->findOneBy( [ 'type' => CustomerEntity::TYPE_FULL ] );
+
+            /** @var CustomerEntity $nonInternalCust */
+            $internalCust = D2EM::getRepository( CustomerEntity::class )->findOneBy( [ 'type' => CustomerEntity::TYPE_INTERNAL ] );
+
+            /** @var UserEntity $existingUser */
+            $existingUser = D2EM::getRepository( UserEntity::class )->findOneBy( [ 'username' => 'travis' ] );
+
+
+            // 1. customer overview -> non internal customer -> add user from tab -> no super option
+            $browser->visit( 'customer/overview/' . $nonInternalCust->getId() . '/users' )
+                    ->click( "#users-add-btn" )
+                    ->type( '#email' , 'test@example.com' )
+                    ->click( '.btn-primary' );
+
+            $browser->assertSelectMissingOption( "#privs" , UserEntity::AUTH_SUPERUSER );
+
+            // 2. customer overview -> non internal customer -> add existing user from tab -> no super option
+
+            $browser->visit( 'customer/overview/' . $nonInternalCust->getId() . '/users' )
+                ->click( "#users-add-btn" )
+                ->type( '#email' , $existingUser->getEmail() )
+                ->click( '.btn-primary' );
+
+            $browser->assertSelectMissingOption( "#privs" , UserEntity::AUTH_SUPERUSER );
+
+            // 3. customer overview -> internal customer -> add user from tab -> super option
+
+
+            $browser->visit( 'customer/overview/' . $internalCust->getId() . '/users' )
+                ->click( "#users-add-btn" )
+                ->type( '#email' , 'test2@example.com' )
+                ->click( '.btn-primary' );
+
+            $browser->assertSelectHasOption( "#privs" , UserEntity::AUTH_SUPERUSER );
+
+            // 4. customer overview -> internal customer -> add existing user from tab -> super option
+
+            $browser->visit( 'customer/overview/' . $internalCust->getId() . '/users' )
+                ->click( "#users-add-btn" )
+                ->type( '#email' , $existingUser->getEmail() )
+                ->click( '.btn-primary' );
+
+            $browser->assertSelectHasOption( "#privs" , UserEntity::AUTH_SUPERUSER );
+
+
+            // 5. lhs users menu option -> add -> non existing user as super user set on non-internal -> error
+            $browser->visit( 'user/list' )
+                    ->click( "#add-user" )
+                    ->type( "#email", "test@example.com" )
+                    ->click( '.btn-primary' )
+                    ->type( 'name', 'Test User 1' )
+                    ->type( 'username', 'testuser1' )
+                    ->select( 'privs', 3 )
+                    ->select( 'custid', 4 )
+                    ->check( 'enabled' )
+                    ->type( 'authorisedMobile', '12125551000' )
+                    ->press('Add' );
+
+            $browser->assertSee( "You are not allowed to set this User as a Super User" );
+
+            // 6. lhs users menu option -> add -> existing user as super user set on non-internal -> error
+
+            $browser->visit( 'user/list' )
+                ->click( "#add-user" )
+                ->type( "#email", $existingUser->getEmail() )
+                ->click( '.btn-primary' )
+                ->click( '#user-' . $existingUser->getId()  )
+                ->select( 'privs', 3 )
+                ->select( 'custid', 4 )
+                ->press('Add User' );
+
+            $browser->assertSee( "You are not allowed to set this User as a Super User" );
+
+
+            // 7. lhs users menu option -> add -> non existing user super set on internal -> success + warning
+            $browser->visit( 'user/list' )
+                ->click( "#add-user" )
+                ->type( "#email", "test@example.com" )
+                ->click( '.btn-primary' )
+                ->type( 'name', 'Test User 1' )
+                ->type( 'username', 'testuser1' )
+                ->select( 'privs', 3 )
+                ->select( 'custid', 1 )
+                ->check( 'enabled' )
+                ->type( 'authorisedMobile', '12125551000' )
+                ->press('Add' );
+
+            $browser->assertSee( "Please note that you have given this user full administrative access" );
+
+            // 8. lhs users menu option -> add -> existing user super set on internal -> success + warning
+            $browser->visit( 'user/list' )
+                ->click( "#add-user" )
+                ->type( "#email", "imagine-custadmin@example.com" )
+                ->click( '.btn-primary' )
+                ->click( '#user-2' )
+                ->select( 'privs', 3 )
+                ->select( 'custid', 1 )
+                ->press('Add User' );
+
+            $browser->assertSee( "Please note that you have given this user full administrative access" );
+
+            // 9. lhs users menu option -> edit -> non-internal -> no super option
+            $browser->visit( 'user/list' )
+                ->click( "#d2f-list-edit-3" );
+
+            $browser->assertSelectMissingOption( "#privs_5" , UserEntity::AUTH_SUPERUSER );
+
+            // 10. lhs users menu option -> edit -> internal -> super option (for originally non super user)
+            $browser->visit( 'user/edit/2' )
+                    ->select( 'privs_1' , UserEntity::AUTH_CUSTADMIN )
+                    ->press('Save Changes' );
+
+            $browser->visit( 'user/list' )
+                ->click( "#d2f-list-edit-2" );
+
+            $browser->assertSelectHasOption( "#privs_1" , UserEntity::AUTH_SUPERUSER );
+
+            // 10. customer admin -> add non existing user -> no super option
+            $browser->visit( 'user/list' )
+                ->click( "#d2f-more-options-2" )
+                ->click( '#d2f-option-login-as-2');
+
+            $browser->assertPathIs( "/dashboard" );
+
+            $browser->visit( 'user/list' )
+                ->click( "#add-user" )
+                ->type( "#email" , "test2@example.com" )
+                ->click( '.btn-primary' );
+
+            // 11. customer admin -> add existing user -> no super option*/
+            $browser->visit( 'user/list' )
+                ->click( "#add-user" )
+                ->type( "#email" , "joe@siep.com" )
+                ->click( '.btn-primary' );
+
+            $browser->assertSelectMissingOption( "#privs" , UserEntity::AUTH_SUPERUSER );
+
+
+            // 12. customer admin -> edit user -> no super option
+            $browser->visit( 'user/list' )
+                    ->click( "#d2f-list-edit-3" );
+
+            $browser->assertSelectMissingOption( "#privs" , UserEntity::AUTH_SUPERUSER );
+
+
+            // Deleting created users for the tests
+
+
+            $browser->visit( '/switch-user-back' );
+
+            $addedUser = D2EM::getRepository( UserEntity::class )->findOneBy( [ 'email' => 'test@example.com' ] );
+            $addedUser2 = D2EM::getRepository( UserEntity::class )->findOneBy( [ 'email' => 'imagine-custadmin@example.com' ] );
+
+            $browser->visit( '/user/list' )
+                ->click( "#d2f-list-delete-" . $addedUser->getId() )
+                ->press( "Delete" );
+
+            $browser->visit( "/user/edit/" . $addedUser2->getId() )
+                ->pause( 2000 )
+                ->click( "#d2f-list-delete-1" )
+                ->press( "Delete" );
+        });
+
+
+
+
+
+
+
+
+
 
 
     }

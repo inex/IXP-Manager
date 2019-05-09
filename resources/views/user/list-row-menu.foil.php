@@ -13,7 +13,7 @@
     <?php endif;?>
 
     <?php if( Auth::getUser()->isSuperUser() ): ?>
-        <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button id="d2f-more-options-<?= $t->row[ 'id' ] ?>" type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
             <form id="welcome-email" method="POST" action="<?= route($t->feParams->route_prefix.'@welcome-email' ) ?>">
@@ -28,7 +28,7 @@
             <a class="dropdown-item" href="<?= route( "login-history@view",     [ 'id' => $t->row['id'] ]   )    ?>">
                 Login history
             </a>
-            <a class="dropdown-item <?= $t->row[ 'disabled' ] || Auth::getUser()->getId() == $t->row['id'] ? "disabled" : "" ?>" href="<?= route( "switch-user@switch", [ "id" => $t->row['id'] ] ) ?>">
+            <a id="d2f-option-login-as-<?= $t->row[ 'id' ] ?>" class="dropdown-item <?= $t->row[ 'disabled' ] || Auth::getUser()->getId() == $t->row['id'] ? "disabled" : "" ?>" href="<?= route( "switch-user@switch", [ "id" => $t->row['id'] ] ) ?>">
                 Login as
             </a>
         </ul>

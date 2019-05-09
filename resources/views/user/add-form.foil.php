@@ -37,6 +37,8 @@ $this->layout( 'layouts/ixpv4' );
 <div class="card">
     <div class="card-body">
 
+        <?= $t->alerts() ?>
+
         <?= Former::open()->method( 'POST' )
             ->id( 'form' )
             ->action( route( 'user@add-check-email' ) )

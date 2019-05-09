@@ -211,6 +211,33 @@ class UserController extends Doctrine2Frontend {
 
     }
 
+    /**
+     * Set as a session the redirect link
+     *
+     * @return Void
+     *
+     * @throws
+     */
+    private function redirectLink(){
+        if( !request()->old() ) {
+            request()->session()->remove( "user_post_store_redirect" );
+            session()->put( 'user_post_store_redirect', request()->headers->get( 'referer', "" ) );
+        }
+    }
+
+    /**
+     * Set as a session the cancel link for cancel buttons
+     *
+     * @return Void
+     *
+     * @throws
+     */
+    private function cancelLink(){
+        if( !request()->old() ) {
+            request()->session()->remove( "user_cancel_redirect" );
+            session()->put( 'user_cancel_redirect', request()->headers->get( 'referer', "" ) );
+        }
+    }
 
     /**
      * Display the first step form to Add an object via email address
@@ -218,13 +245,13 @@ class UserController extends Doctrine2Frontend {
      * @return View
      */
     public function addForm(): View {
-        request()->session()->remove( "user_post_store_redirect" );
-        session()->put( 'user_post_store_redirect',     request()->headers->get('referer', "" ) );
+        $this->redirectLink();
 
         $this->addEditSetup();
+        $this->cancelLink();
 
         $this->data[ 'params' ][ 'custid' ] = request()->input("cust" );
-        $this->data[ 'params' ][ 'canbelBtnLink' ] = request()->headers->get('referer', "" );
+        $this->data[ 'params' ][ 'canbelBtnLink' ] = session()->get( 'user_cancel_redirect' );
 
         return $this->display( 'add-form' );
     }
@@ -253,7 +280,13 @@ class UserController extends Doctrine2Frontend {
 
         $userEmail = null;
 
-        if( D2EM::getRepository( UserEntity::class )->findBy( [ 'email' => $request->input( 'email' ) ] ) ) {
+        if( $user = D2EM::getRepository( UserEntity::class )->findBy( [ 'email' => $request->input( 'email' ) ] ) ) {
+            if( !Auth::getUser()->isSuperUser() ){
+                if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => Auth::getUser()->getCustomer() , "user" => $user ] ) ){
+                    AlertContainer::push( "A user already exists with that email address for your company." , Alert::DANGER );
+                    return Redirect::back()->withErrors($validator)->withInput();
+                }
+            }
             $userEmail = $request->input( 'email' );
         }
 
@@ -266,6 +299,56 @@ class UserController extends Doctrine2Frontend {
         }
 
         return redirect( $url );
+    }
+
+    /**
+     * Return the list of privileges for the dropdown depending on the loggued user priv and if the customer is internal or not
+     *
+     * @return array List of privileges
+     *
+     * @throws
+     */
+    private function getAllowedPrivs(){
+
+        $privs = UserEntity::$PRIVILEGES_TEXT_NONSUPERUSER;
+
+        // If we add a user via the customer overview users list
+        if( request()->is( 'user/add*' ) && request()->input( "custid" ) ){
+
+            /** @var $c CustomerEntity */
+            if( ( $c = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "custid" ) ) ) ){
+                // Internal customer and SuperUser
+                if( $c->isTypeInternal() && Auth::getUser()->isSuperUser() ){
+                    $privs = UserEntity::$PRIVILEGES_TEXT;
+                }
+            }
+        // If we add a user and we are a SuperUser
+        } elseif( request()->is( 'user/add*' ) && Auth::getUser()->isSuperUser() ){
+            $privs = UserEntity::$PRIVILEGES_TEXT;
+        }
+
+        return $privs;
+    }
+
+
+    /**
+     * Check if we can set to a user the SuperUser priv
+     *
+     * @param  int                  $privs
+     * @param  CustomerToUserEntity $cust
+     *
+     * @return bool
+     *
+     * @throws
+     */
+    private function allowPrivSuperUser( $privs, $cust ){
+        if( $privs == UserEntity::AUTH_SUPERUSER ){
+            if( !Auth::getUser()->isSuperUser() || Auth::getUser()->isSuperUser() && !$cust->isTypeInternal()  ){
+                return false;
+            }
+        }
+
+        return true;
     }
 
     /**
@@ -305,8 +388,15 @@ class UserController extends Doctrine2Frontend {
      */
     protected function addEditPrepareForm( $id = null ): array {
         $old = request()->old();
-        $existingUser = $disabledInputs = false;
+        $existingUser = $disabledInputs = $c = false;
         $listUsers = [];
+
+
+        if( !request()->session()->exists( 'user_post_store_redirect' ) ){
+            $this->redirectLink();
+        }
+
+        $this->cancelLink();
 
         // Id we edit the user
         if( request()->is( 'user/edit/*' ) ){
@@ -350,6 +440,8 @@ class UserController extends Doctrine2Frontend {
             // Adding user / associate existing user with a customer
             $this->feParams->customBreadcrumb = "Add";
 
+
+
             // If we found user with the provided email address
             if( $id !== null ) {
 
@@ -380,11 +472,14 @@ class UserController extends Doctrine2Frontend {
             "disabledInputs"        => $disabledInputs,
             'listUsers'             => $listUsers,
             'object'                => $this->object,
-            'canbelBtnLink'         => request()->headers->get('referer', "" ),
+            'canbelBtnLink'         => session()->get( 'user_cancel_redirect' ),
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
+            'privs'                 => $this->getAllowedPrivs(),
+            'c'                     => $c
         ];
     }
-    
+
+
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
@@ -396,6 +491,7 @@ class UserController extends Doctrine2Frontend {
      */
 
     public function doStore( Request $request ){
+
 
         // If the User already exist
         if( $request->input( 'existingUser' ) ) {
@@ -410,6 +506,11 @@ class UserController extends Doctrine2Frontend {
                 AlertContainer::push( "You need to select one User from the list." , Alert::DANGER );
             }
 
+            if( $validator->fails() ) {
+                return Redirect::back()->withErrors($validator)->withInput();
+            }
+
+            /** @var CustomerEntity $cust */
             $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) );
 
             if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => $cust , "user" => $request->input( 'existingUserId' ) ] ) ){
@@ -417,9 +518,15 @@ class UserController extends Doctrine2Frontend {
                 return Redirect::back()->withErrors($validator)->withInput();
             }
 
-            if( $validator->fails() ) {
+            if( !$this->allowPrivSuperUser( $request->input( 'privs' ), $cust ) ){
+                AlertContainer::push( "You are not allowed to set this User as a Super User for " . $cust->getName()  , Alert::DANGER );
                 return Redirect::back()->withErrors($validator)->withInput();
             }
+
+            if( $request->input( 'privs' ) == UserEntity::AUTH_SUPERUSER ){
+                AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
+            }
+
 
             $this->feParams->nameSingular = "Customer2User";
 
@@ -501,8 +608,7 @@ class UserController extends Doctrine2Frontend {
 
             }
 
-            $originalPrivs = $this->object->getPrivs();
-            $privsLogguedUeser = Auth::getUser()->getPrivs();
+            $privsLogguedUeser  = Auth::getUser()->getPrivs();
 
             // Superuser OR Adding user OR Logged User edit his own user
             if( Auth::getUser()->isSuperUser() || !$this->object->getId() || $this->object->getId() == Auth::getUser()->getId() ) {
@@ -520,32 +626,47 @@ class UserController extends Doctrine2Frontend {
             $this->object->setLastupdated(       new \DateTime  );
             $this->object->setLastupdatedby(     Auth::getUser()->getId() );
 
-            // Adding new user => set customer and priv
+            // Adding new user => set customer and priv to the User Object
             if( !$this->object->getId() ){
-                if( Auth::user()->isSuperUser() ) {
-                    $this->object->setPrivs( $request->input( 'privs' ) );
-                    $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) );
 
-                } else {
-                    $this->object->setPrivs( $request->input( 'privs' ) < UserEntity::AUTH_SUPERUSER ? $request->input( 'privs' ) : UserEntity::AUTH_CUSTUSER );
-                    $this->object->setCustomer( Auth::getUser()->getCustomer() );
+                $cust = Auth::user()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) : Auth::getUser()->getCustomer();
+
+                if( !$this->allowPrivSuperUser( $request->input( 'privs' ), $cust ) ){
+                    AlertContainer::push( "You are not allowed to set this User as a Super User for " . $cust->getName() , Alert::DANGER );
+                    return Redirect::back()->withErrors($validator)->withInput();
                 }
+
+                $this->object->setPrivs( $request->input( 'privs' ) );
+                $this->object->setCustomer( $cust );
             }
 
 
             D2EM::flush();
 
 
+            // Creating or Editing Customer2User
+
             // Editing
             if( $isEditing ) {
 
                 /** @var CustomerToUserEntity $c2u */
                 foreach( $this->getC2Ulist( $this->object ) as $c2u ){
+
                     $inputExt =  $privsLogguedUeser == UserEntity::AUTH_SUPERUSER ? '_' . $c2u->getCustomer()->getId() : '' ;
-                    $c2u->setPrivs(     $request->input( 'privs' . $inputExt ) );
+
+                    if( !$this->allowPrivSuperUser( $request->input( 'privs' ), $c2u->getCustomer() ) ){
+                        AlertContainer::push( "You are not allowed to set this User as a Super User for " . $c2u->getCustomer()->getName()  , Alert::DANGER );
+                        return Redirect::back()->withErrors($validator)->withInput();
+                    } else {
+
+                        if( $c2u->getPrivs() != $request->input( 'privs' . $inputExt ) && $request->input( 'privs' . $inputExt ) == UserEntity::AUTH_SUPERUSER ){
+                            AlertContainer::push( 'Please note that you have given this user full administrative access for ' . $c2u->getCustomer()->getName() , Alert::WARNING );
+                        }
+
+                        $c2u->setPrivs(     $request->input( 'privs' . $inputExt ) );
+                    }
+
                 }
-
-
 
             } else {
                 // Creating the CustomerToUser object
@@ -558,21 +679,13 @@ class UserController extends Doctrine2Frontend {
                 $this->c2u->setPrivs(           $request->input( 'privs' ) );
                 $this->c2u->setExtraAttributes( [ "created_by" => [ "type" => "user" , "user_id" => $this->object->getId() ] ] );
 
-            }
+                if( $request->input( 'privs' ) == UserEntity::AUTH_SUPERUSER ){
+                    AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
+                }
 
-            // we should only add admin users to customer type internal
-            if( $this->object->isSuperUser() && !$this->object->getCustomer()->isTypeInternal() ) {
-                AlertContainer::push( 'Users with full administrative access can only be added to internal customer types.', Alert::DANGER );
-                return Redirect::back()->withErrors( $validator )->withInput();
             }
-
-            if( $this->object->isSuperUser() && $originalPrivs != UserEntity::AUTH_SUPERUSER ) {
-                AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
-            }
-
 
             D2EM::flush();
-
 
             if( !$isEditing ) {
                 event( new WelcomeEvent( $this->object, false ) );
