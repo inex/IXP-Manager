@@ -47,22 +47,21 @@
                 </p>
 
                  <div class="tw-mb-6">
-                    <label class="tw-block tw-text-grey-darker tw-text-sm tw-font-bold tw-mb-2" for="username">
-                        Username
-                    </label>
-                    <input name="username" class="tw-shadow-md tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
-                           id="username" type="text" placeholder="Username" value="<?= $t->username ?? old('username') ?>">
+                     <label class="control-label" for="username">
+                         Username
+                     </label>
+
+                    <input name="username" class="form-control" id="username" type="text" placeholder="Username" value="<?= $t->username ?? old('username') ?>">
                     <?php foreach( $t->errors->get( 'username' ) as $err ): ?>
                         <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
                     <?php endforeach; ?>
                 </div>
 
                  <div class="tw-mb-6">
-                    <label class="tw-block tw-text-grey-darker tw-text-sm tw-font-bold tw-mb-2" for="token">
-                        Token
-                    </label>
-                    <input name="token" class="tw-shadow-md tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
-                           id="token" type="text" placeholder="" value="<?= $t->token ?? old('token') ?>">
+                     <label class="control-label" for="token">
+                         Token
+                     </label>
+                    <input name="token" class="form-control" id="token" type="text" placeholder="" value="<?= $t->token ?? old('token') ?>">
                     <?php foreach( $t->errors->get( 'token' ) as $err ): ?>
                         <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
                     <?php endforeach; ?>
@@ -71,21 +70,20 @@
 
 
                  <div class="tw-mb-6">
-                    <label class="tw-block tw-text-grey-darker tw-text-sm tw-font-bold tw-mb-2" for="password">
-                        Password
-                    </label>
-                    <input name="password" class="tw-shadow-md tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
-                            id="password" type="password" autofocus placeholder="******************">
+                     <label class="control-label" for="password">
+                         Password
+                     </label>
+                    <input name="password" class="form-control" id="password" type="password" autofocus placeholder="******************">
                     <?php foreach( $t->errors->get( 'password' ) as $err ): ?>
                         <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
                     <?php endforeach; ?>
                 </div>
 
                  <div class="tw-mb-6">
-                    <label class="tw-block tw-text-grey-darker tw-text-sm tw-font-bold tw-mb-2" for="password_confirmation">
-                        Confirm Password
-                    </label>
-                    <input name="password_confirmation" class="tw-shadow-md tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline" id="password_confirmation" type="password" placeholder="******************">
+                     <label class="control-label" for="password_confirmation">
+                         Confirm Password
+                     </label>
+                    <input name="password_confirmation" class="form-control" id="password_confirmation" type="password" placeholder="******************">
                     <?php foreach( $t->errors->get( 'password_confirmation' ) as $err ): ?>
                         <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
                     <?php endforeach; ?>
@@ -93,11 +91,10 @@
 
 
                 <div class="tw-flex tw-items-center tw-justify-between">
-                    <a class="tw-inline-block tw-align-baseline tw-font-bold tw-text-sm tw-text-blue-light
-                        hover:tw-no-underline  hover:tw-text-blue-dark" href="<?= route( "login@login" ) ?>">
+                    <a href="<?= route( "login@login" ) ?>">
                         Return to Login
                     </a>
-                    <button class="tw-bg-blue-500 hover:tw-bg-blue-500-dark tw-text-white tw-font-bold tw-py-2 tw-px-6 tw-rounded focus:tw-outline-none focus:tw-shadow-outline" type="submit">
+                    <button class="btn btn-primary" type="submit">
                         Reset
                     </button>
                 </div>
