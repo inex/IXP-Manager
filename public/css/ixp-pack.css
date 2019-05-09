@@ -3414,6 +3414,14 @@ td a:hover{
     hyphens: auto;
 }
 
+
+
+.form-control::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    font-weight: lighter;
+    opacity: 1; /* Firefox */
+}
+
+
 /**
  * This injects Tailwind's base styles, which is a combination of
  * Normalize.css and some additional base styles.
