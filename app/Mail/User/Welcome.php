@@ -65,6 +65,12 @@ class Welcome extends Mailable
      */
     public $existing;
 
+    /**
+     * Existing?
+     * @var bool
+     */
+    public $token = null;
+
 
     /**
      * Create a new message instance.
@@ -89,6 +95,10 @@ class Welcome extends Mailable
      */
     public function build()
     {
+        if( !$this->existing  ){
+            $this->token = app('auth.password.broker')->createToken($this->user);
+        }
+
 
         return $this->markdown( $this->existing ? 'user.emails.welcome-existing' : 'user.emails.welcome' )
             ->subject( config('identity.sitename' ) . " - Your Access Details" );

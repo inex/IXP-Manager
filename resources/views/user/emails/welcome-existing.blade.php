@@ -3,12 +3,14 @@
 {{ config( 'identity.sitename' ) }} - Your Access Details
 
 
+EXISTING USER
+
 To whom it may concern,
 
 @if( $resend )
-**This email is being sent to you because either you requested a reminder of your account details or an administrator thought it appropriate to send you a reminder.**
+    **This email is being sent to you because either you requested a reminder of your account details or an administrator thought it appropriate to send you a reminder.**
 @else
-A new user account has been created for you on the {{ config( 'identity.sitename' ) }}.
+    A new user account has been created for you on the {{ config( 'identity.sitename' ) }}.
 @endif
 
 You can login to your account using the following details:
@@ -42,10 +44,6 @@ To get your new password (or reset it), please use the *lost password* procedure
 
 
 [Click here to reset password]({{ route( "forgot-password@show-form" ) }})
-
-@component('mail::button', ['url' => route( "reset-password@show-reset-form", [ "token" => $token, "username" => $user->getUsername() ] ), 'color' => 'blue'])
-    Reset password
-@endcomponent
 
 
 
