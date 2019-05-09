@@ -54,10 +54,16 @@ class Welcome extends Mailable
     public $user;
 
     /**
-     * User
-     * @var UserEntity
+     * Resend?
+     * @var bool
      */
     public $resend;
+
+    /**
+     * Existing?
+     * @var bool
+     */
+    public $existing;
 
 
     /**
@@ -66,11 +72,14 @@ class Welcome extends Mailable
      * @param UserEntity $user
      *
      * @param bool $resend
+     *
+     * @param bool $existing
      */
-    public function __construct( UserEntity $user, bool $resend = false )
+    public function __construct( UserEntity $user, bool $resend = false, bool $existing = false )
     {
         $this->user     = $user;
         $this->resend   = $resend;
+        $this->existing = $existing;
     }
 
     /**
@@ -80,7 +89,8 @@ class Welcome extends Mailable
      */
     public function build()
     {
-        return $this->markdown( 'user.emails.welcome' )
+
+        return $this->markdown( $this->existing ? 'user.emails.welcome-existing' : 'user.emails.welcome' )
             ->subject( config('identity.sitename' ) . " - Your Access Details" );
         
     }

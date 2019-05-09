@@ -51,14 +51,22 @@ class Welcome
     public $resend;
 
     /**
+     * @var boolean
+     */
+    public $existing;
+
+    /**
      * Create a new event instance.
      *
      * @param UserEntity    $u
-     * @param bool       $resend
+     * @param bool          $resend     Do you need to resend the email ?
+     * @param bool          $existing   Does the user already exist ?
      */
-    public function __construct(  UserEntity $u, bool $resend = false )
+    public function __construct(  UserEntity $u, bool $resend = false, bool $existing = false )
     {
+
         $this->user     = $u;
         $this->resend   = $resend;
+        $this->existing = $existing;
     }
 }
