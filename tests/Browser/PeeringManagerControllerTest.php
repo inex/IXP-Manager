@@ -179,6 +179,7 @@ test-note", $pm->getNotes() );
             ->press('OK' )
             ->waitForText( "Send Peering Request by Email" )
             ->click( $sentToMe ? '#modal-peering-request-sendtome' : '#modal-peering-request-send' )
+            ->pause(5000)
             ->waitForText( "Success" )
             ->assertSee( $sentToMe ? "Peering request sample sent to your own email address (" . $user->getEmail() . ")." : "Peering request sent to" )
             ->pause( "3000" )->click( ".bootbox-close-button" )

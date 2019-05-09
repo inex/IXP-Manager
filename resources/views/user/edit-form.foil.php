@@ -45,9 +45,11 @@
                             <th>
                                 Email
                             </th>
-                            <th>
-                                Customers
-                            </th>
+                            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                <th>
+                                    Customers
+                                </th>
+                            <?php endif; ?>
                         </tr>
                     </thead>
                     <tbody class="cursor-pointer">
@@ -70,13 +72,14 @@
                                 <td>
                                     <?= $user->getEmail()?>
                                 </td>
-                                <td>
-                                    <?php foreach( $user->getCustomers() as $customer ): ?>
-                                        <?= $customer->getName()?><br>
-                                    <?php endforeach; ?>
+                                <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                    <td>
+                                        <?php foreach( $user->getCustomers() as $customer ): ?>
+                                            <?= $customer->getName()?><br>
+                                        <?php endforeach; ?>
 
-                                </td>
-
+                                    </td>
+                                <?php endif; ?>
                             </tr>
                         <?php endforeach; ?>
 
@@ -93,7 +96,7 @@
                     ->id( 'privs' )
                     ->label( 'Privileges' )
                     ->placeholder( 'Select a privilege' )
-                    ->fromQuery( Auth::getUser()->isSuperUser() ? \Entities\User::$PRIVILEGES_TEXT : \Entities\User::$PRIVILEGES_TEXT_NONSUPERUSER, 'name' )
+                    ->fromQuery( $t->data[ 'params'][ 'privs' ], 'name' )
                     ->addClass( 'chzn-select' )
                     ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/usage/users/#types-of-users">'
                         . 'the official documentation here</a>.'
@@ -108,12 +111,17 @@
                         ->placeholder( 'Select a customer' )
                         ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
                         ->addClass( 'chzn-select' )
-                        ->blockHelp( "The customer to create the user for.<br><br>If creating a customer for your own IXP, then pick the IXP customer entry." );
+                        ->blockHelp( "The customer to create the user for.<br><br>If creating a customer for your own IXP, then pick the IXP customer entry." )
+                        ->disabled( $t->data[ 'params'][ 'c' ] ? true : false );
                     ?>
+
+                    <?php if( $t->data[ 'params'][ 'c' ] ):?>
+                        <?= Former::hidden( 'custid' )->value( Auth::getUser()->getCustomer()->getId() ) ?>
+                    <?php endif;?>
 
                 <?php else: ?>
 
-                    <?= Former::hidden( 'custid' ) ?>
+                    <?= Former::hidden( 'custid' )->value( Auth::getUser()->getCustomer()->getId() ) ?>
 
                 <?php endif; ?>
 
@@ -225,8 +233,15 @@
                             ->placeholder( 'Select a customer' )
                             ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
                             ->addClass( 'chzn-select' )
-                            ->blockHelp( "The customer to create the user for.<br><br>If creating a customer for your own IXP, then pick the IXP customer entry." );
+                            ->blockHelp( "The customer to create the user for.<br><br>If creating a customer for your own IXP, then pick the IXP customer entry." )
+                            ->disabled( $t->data[ 'params'][ 'c' ] ? true : false );
+
                         ?>
+
+                        <?php if( $t->data[ 'params'][ 'c' ] ):?>
+                            <?= Former::hidden( 'custid' )->value( Auth::getUser()->getCustomer()->getId() ) ?>
+                        <?php endif;?>
+
                     <?php else: ?>
                         <?= Former::hidden( 'custid' )->value( Auth::getUser()->getCustomer()->getId() ) ?>
                     <?php endif; ?>
@@ -235,7 +250,7 @@
                         ->id( 'privs' )
                         ->label( 'Privilege' )
                         ->placeholder( 'Select a privilege' )
-                        ->fromQuery( Auth::getUser()->isSuperUser() ? \Entities\User::$PRIVILEGES_TEXT : \Entities\User::$PRIVILEGES_TEXT_NONSUPERUSER, 'name' )
+                        ->fromQuery( $t->data[ 'params'][ 'privs' ] , 'name' )
                         ->addClass( 'chzn-select' )
                         ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/usage/users/#types-of-users">'
                             . 'the official documentation here</a>.'
