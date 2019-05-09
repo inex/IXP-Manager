@@ -56,7 +56,7 @@ class PromoteCustUser extends IXPCommand
      *
      * @var string
      */
-    protected $description = 'Promote the CustUser into CustAdmin (part of the upgrade to V5.0.0 process)';
+    protected $description = 'Promote users with CustUser privilege to CustAdmin (part of the upgrade to V5.0.0 process)';
 
     /**
      * Execute the console command.
@@ -73,11 +73,11 @@ class PromoteCustUser extends IXPCommand
         echo "\n\n";
         $this->warn( "ONLY RUN ONCE AND ONLY WHEN UPGRADING TO IXP Manager v5.0.0 from v4.9.x" );
         echo "\n";
-        $this->warn( "THIS HAS TO BE RUN AFTER THE COMMAND : update:remove-custadmins" );
+        $this->warn( "THIS HAS TO BE RUN AFTER THE COMMAND: update:remove-custadmins" );
         echo "\n";
-        $this->warn( "THIS WILL PROMOTE ALL the CUSTUSER INTO CUSTADMIN." );
+        $this->warn( "THIS WILL PROMOTE ALL the CUSTUSER users to CUSTADMIN users." );
 
-        if( !$this->confirm( "\nThis command will promote all the CustUser into CustAdmin.\n\n"
+        if( !$this->confirm( "\nThis command will promote all the CustUser users to CustAdmin users.\n\n"
             ."Generally, this command should only ever be run once and only when migrating to V5.0.0.\n\n"
             . 'Are you sure you wish to proceed? ' ) ) {
             return 1;
@@ -95,11 +95,10 @@ class PromoteCustUser extends IXPCommand
 
             // Changing user privilege
             $c2u->setPrivs( UserEntity::AUTH_CUSTADMIN );
+            D2EM::flush();
 
             $bar->advance();
         };
-
-        D2EM::flush();
 
         $bar->finish();
         echo "\n\n";
