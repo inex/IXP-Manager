@@ -664,3 +664,11 @@ td a:hover{
     -ms-hyphens: auto;
     hyphens: auto;
 }
+
+
+
+.form-control::placeholder { /* Chrome, Firefox, Opera, Safari 10.1+ */
+    font-weight: lighter;
+    opacity: 1; /* Firefox */
+}
+

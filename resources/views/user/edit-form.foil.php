@@ -40,6 +40,9 @@
                                 Name
                             </th>
                             <th>
+                                Username
+                            </th>
+                            <th>
                                 Email
                             </th>
                             <th>
@@ -57,6 +60,9 @@
                                         ->value( $user->getId() )
                                         ->id( 'user-' . $user->getId() );
                                     ?>
+                                </td>
+                                <td>
+                                    <?= $user->getName()?>
                                 </td>
                                 <td>
                                     <?= $user->getUsername()?>

@@ -75,6 +75,8 @@ class UserController extends Doctrine2Frontend {
      * @var int
      */
     public static $minimum_privilege = UserEntity::AUTH_CUSTADMIN;
+
+
     /**
      * This function sets up the frontend controller
      */
