@@ -21,9 +21,11 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use IXP\Exceptions\GeneralException;
 use Tests\TestCase;
 
 use IXP\Utils\OUI as OUIUtil;
+
 
 
 
@@ -80,10 +82,10 @@ END_DATA;
 
 
     /**
-     * @expectedException IXP\Exceptions\GeneralException
      */
     public function testBadFile()
     {
+        $this->expectException( GeneralException::class );
         $oui = new OUIUtil( '/path/that/does/not/exist/I/hope.txt' );
         $oui->loadList();
     }
