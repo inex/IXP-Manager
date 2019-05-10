@@ -141,6 +141,7 @@ class LocationControllerTest extends DuskTestCase
             // 5. uncheck checkboxes, change selects and values, ->press('Save Changes'), assertPathIs(....)  (repeat 1)
             $browser->select( 'pdb_facility_id',     '10' )
                     ->press('Save Changes')
+                    ->pause( 2000)
                     ->assertPathIs('/facility/list')
                     ->assertSee( "Facility edited" );
 
@@ -244,6 +245,7 @@ class LocationControllerTest extends DuskTestCase
 
             // 11. delete the router in the UI and verify via success message text and location
             $browser->visit( '/facility/list/' )
+                ->pause(2000)
                 ->click('#d2f-list-delete-' . $location->getId() )
                 ->waitForText( 'Do you really want to delete this a facility' )
                 ->press('Delete' );

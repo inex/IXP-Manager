@@ -197,6 +197,8 @@ test-note", $pm->getNotes() );
      * @param PeeringManagerEntity  $pm
      * @param CustomerEntity        $c
      * @param string                $status
+     *
+     * @throws
      */
     public function markPeering( $browser, $pm , $c, $status ){
 

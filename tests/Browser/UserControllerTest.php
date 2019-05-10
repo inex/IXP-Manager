@@ -145,7 +145,7 @@ class UserControllerTest extends DuskTestCase
                 ->type( 'authorisedMobile', '12125551011' )
                 ->select('privs_5', UserEntity::AUTH_CUSTADMIN )
                 ->press('Save Changes' )
-                ->waitForLocation('/user/list' )
+                ->assertPathIs('/user/list' )
                 ->assertSee( 'User edited' )
                 ->assertSee( 'Test User' )
                 ->assertSee( 'testuser' )
@@ -223,7 +223,7 @@ class UserControllerTest extends DuskTestCase
                 ->assertSee('Imagine' )
                 ->assertSelected('privs_2', UserEntity::AUTH_CUSTADMIN )
                 ->press( 'Save Changes' )
-                ->waitForLocation('/user/list' )
+                ->assertPathIs('/user/list' )
                 ->assertSee( 'User edited' )
                 ->assertSee( 'Test User' )
                 ->assertSee( 'testuser' );

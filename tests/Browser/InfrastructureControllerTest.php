@@ -87,6 +87,7 @@ class InfrastructureControllerTest extends DuskTestCase
                     ->assertPathIs('/infrastructure/add')
                     ->assertSee( "The name has already been taken" )
                     ->type( 'name',         'INEX TEST')
+                    ->pause(2000)
                     ->press('Add')
                     ->assertPathIs('/infrastructure/list')
                     ->assertSee( "Infrastructure added" );
@@ -171,6 +172,7 @@ class InfrastructureControllerTest extends DuskTestCase
                 ->waitUntilMissing( "Please wait, loading");
 
             $browser->check('primary')
+                ->pause(2000)
                 ->press('Save Changes')
                 ->assertPathIs('/infrastructure/list');
 
