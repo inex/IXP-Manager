@@ -26,6 +26,7 @@
         <server name="QUEUE_CONNECTION" value="sync"/>
         <server name="SESSION_DRIVER" value="array"/>
         <server name="IXP_PHPUNIT_RUNNING" value="1"/>
+        <server name="TELESCOPE_ENABLED" value="false"/>
         <const name="IXP_PHPUNIT_API_URL" value="http://localhost:8000/apiv1" />
         <const name="IXP_PHPUNIT_API_KEY" value="Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9" />
         <const name="APPLICATION_VERSION" value="999.9.9" />
