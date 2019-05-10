@@ -128,12 +128,12 @@ class LoginController extends Controller
     protected function authenticated(Request $request, $user)
     {
         // Check if the user has Customer(s) linked
-        if( count( $user->getCustomers() ) > 0 ){
+        if( count( $user->getCustomers() ) > 0 ) {
 
             /** @var CustomerToUserEntity $c2u */
             $c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => $user , "customer" => $user->getCustomer() ] );
 
-            // Check if the user has a default Customer OR if the default customer is no longer in the C2U, then assign one
+            // Check if the user has a default customer OR if the default customer is no longer in the C2U, then assign one
             if( !$user->getCustomer() || !$c2u ){
                 $user->setCustomer( $user->getCustomers()[0] );
                 D2EM::flush();
@@ -159,7 +159,7 @@ class LoginController extends Controller
 
         } else {
             // No customer linked, logout
-            $this->logout( $request, [ 'message' => "No customer assigned to this user. Please contact the support Team.", 'class' => Alert::DANGER ] );
+            $this->logout( $request, [ 'message' => "Your user account is not associated with any customers.", 'class' => Alert::DANGER ] );
         }
 
         D2EM::flush();

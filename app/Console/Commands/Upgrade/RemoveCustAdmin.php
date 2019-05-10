@@ -24,7 +24,7 @@ namespace IXP\Console\Commands\Upgrade;
  */
 
 
-use D2EM;
+use D2EM, DB;
 
 use Entities\{
     CustomerToUser      as CustomerToUserEntity,
@@ -57,7 +57,7 @@ class RemoveCustAdmin extends IXPCommand
      *
      * @var string
      */
-    protected $description = 'Remove all the Custadmin from the datable (part of the upgrade to V5.0.0 process)';
+    protected $description = 'Remove all users with CustAdmin privilege (part of the upgrade to V5.0.0 process)';
 
     /**
      * Execute the console command.
@@ -74,15 +74,15 @@ class RemoveCustAdmin extends IXPCommand
         echo "\n\n";
         $this->warn( "ONLY RUN ONCE AND ONLY WHEN UPGRADING TO IXP Manager v5.0.0 from v4.9.x" );
         echo "\n";
-        $this->warn( "THIS WILL DELETE ALL the CUSTADMIN from the USER TABLE." );
+        $this->warn( "THIS WILL DELETE ALL the CUSTADMIN USERS." );
 
-        if( !$this->confirm( "\nThis command will remove all the custadmin from the user table.\n\n"
+        if( !$this->confirm( "\nThis command will remove all the custadmin users from the database.\n\n"
             ."Generally, this command should only ever be run once and only when migrating to V5.0.0.\n\n"
             . 'Are you sure you wish to proceed? ' ) ) {
             return 1;
         }
 
-        $this->info( 'Migration in progress, please wait...' );
+        $this->info( 'Deletion in progress, please wait...' );
 
         /** @var CustomerToUserEntity[] $C2Ucustadmin */
         $C2Ucustadmin = D2EM::getRepository( CustomerToUserEntity::class )->findBy( [ "privs" => UserEntity::AUTH_CUSTADMIN ] );
@@ -92,45 +92,33 @@ class RemoveCustAdmin extends IXPCommand
 
         foreach( $C2Ucustadmin as $c2u ) {
 
-            $user = $c2u->getUser();
-
-            $user->removeCustomer( $c2u );
-
             // Deleting the history user
-            foreach( $c2u->getUserLoginHistory() as $userLogin ){
-                D2EM::remove( $userLogin );
-            }
+            DB::table( 'user_logins' )->where( 'customer_to_user_id', $c2u->getId() )->delete();
 
+            $user = $c2u->getUser();
+            $user->removeCustomer( $c2u );
             D2EM::remove( $c2u );
 
             // Check if the user has c2u left, if not we delete the user
-            if( !count( $c2u->getUser()->getCustomers2User() ) ){
-
+            if( !count( $c2u->getUser()->getCustomers2User() ) ) {
 
                 // delete all the user's preferences
-                foreach( $user->getPreferences() as $pref ) {
-                    $user->removePreference( $pref );
-                    D2EM::remove( $pref );
-                }
+                DB::table( 'user_pref' )->where( 'user_id', $user->getId() )->delete();
 
                 // delete all the user's API keys
-                foreach( $user->getApiKeys() as $ak ) {
-                    $user->removeApiKey( $ak );
-                    D2EM::remove( $ak );
-                }
+                DB::table( 'api_keys' )->where( 'user_id', $user->getId() )->delete();
 
                 D2EM::remove( $user );
-
 
             } else {
                 // setting a new default customer for the user
                 $user->setCustomer( $c2u->getUser()->getCustomers()[0] );
             }
 
+            D2EM::flush();
             $bar->advance();
         };
 
-        D2EM::flush();
 
         $bar->finish();
         echo "\n\n";
