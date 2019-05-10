@@ -1,10 +1,10 @@
 {
     "_readme": [
         "This file locks the dependencies of your project to a known state",
-        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "971894550407dc6a4a930c7f23071d86",
+    "content-hash": "935832aeef14aa9dea16a93ca559d076",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -2202,7 +2202,7 @@
                 "orm"
             ],
             "support": {
-                "source": "https://github.com/barryo/orm/tree/1.4"
+                "source": "https://github.com/barryo/orm/tree/1.4.10"
             },
             "time": "2019-03-04T11:26:49+00:00"
         },
@@ -2672,11 +2672,7 @@
                     "src/helpers.php"
                 ]
             },
-            "autoload-dev": {
-                "psr-4": {
-                    "LukeTowers\\Tests\\Purifier\\": "tests/"
-                }
-            },
+            "notification-url": "https://packagist.org/downloads/",
             "license": [
                 "MIT"
             ],
@@ -2697,18 +2693,15 @@
             "description": "Laravel 5 HtmlPurifier Package",
             "homepage": "https://github.com/LukeTowers/Purifier",
             "keywords": [
-                "HtmlPurifier",
                 "Purifier",
+                "htmlpurifier",
                 "laravel5 HtmlPurifier",
                 "laravel5 Purifier",
                 "laravel5 Security",
                 "security",
                 "xss"
             ],
-            "support": {
-                "source": "https://github.com/barryo/Purifier/tree/master"
-            },
-            "time": "2019-03-09T12:04:30+00:00"
+            "time": "2019-03-09T16:52:48+00:00"
         },
         {
             "name": "mmucklo/inflect",
@@ -7693,6 +7686,51 @@
                 "phra"
             ],
             "time": "2015-10-13T18:44:15+00:00"
+        },
+        {
+            "name": "staudenmeir/dusk-updater",
+            "version": "v1.0.4",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/staudenmeir/dusk-updater.git",
+                "reference": "a92b183070f4d37eedbd4a64465c7bda023aa1e2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/staudenmeir/dusk-updater/zipball/a92b183070f4d37eedbd4a64465c7bda023aa1e2",
+                "reference": "a92b183070f4d37eedbd4a64465c7bda023aa1e2",
+                "shasum": ""
+            },
+            "require": {
+                "ext-openssl": "*",
+                "ext-zip": "*",
+                "php": ">=5.6.4"
+            },
+            "type": "library",
+            "extra": {
+                "laravel": {
+                    "providers": [
+                        "Staudenmeir\\DuskUpdater\\DuskServiceProvider"
+                    ]
+                }
+            },
+            "autoload": {
+                "psr-4": {
+                    "Staudenmeir\\DuskUpdater\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Jonas Staudenmeir",
+                    "email": "mail@jonas-staudenmeir.de"
+                }
+            ],
+            "description": "Updater for Laravel Dusk ChromeDriver binaries",
+            "time": "2019-04-30T12:40:42+00:00"
         },
         {
             "name": "symfony/filesystem",
