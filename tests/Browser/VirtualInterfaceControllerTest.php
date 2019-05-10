@@ -611,6 +611,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->check( 'ipv4-monitor-rcbgp' )
             ->check( 'ipv6-monitor-rcbgp' )
             ->press('Save Changes')
+            ->pause( 5000 )
             ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() )
             ->assertSee('Vlan Interface updated successfully.');
 

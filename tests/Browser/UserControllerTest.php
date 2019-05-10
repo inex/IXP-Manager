@@ -406,6 +406,7 @@ class UserControllerTest extends DuskTestCase
             $browser->press( '#usr-list-delete-' . $u2->getId() )
                 ->waitForText( 'Do you really want to delete this user?' )
                 ->press( 'Delete' )
+                ->pause( 5000 )
                 ->assertPathIs('/customer/overview/5/users' )
                 ->assertSee( 'User deleted' )
                 ->assertDontSee( 'Test User 1' )
@@ -848,6 +849,7 @@ class UserControllerTest extends DuskTestCase
 
             // 11. customer admin -> add existing user -> no super option*/
             $browser->visit( 'user/list' )
+                ->pause(2000)
                 ->click( "#add-user" )
                 ->type( "#email" , "joe@siep.com" )
                 ->click( '.btn-primary' );

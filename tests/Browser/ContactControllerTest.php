@@ -424,6 +424,7 @@ class ContactControllerTest extends DuskTestCase
             $browser->press( '#d2f-list-delete-' . $c->getId() )
                 ->waitForText( 'Do you really want to delete this contact?' )
                 ->press( 'Delete' )
+                ->pause( 5000 )
                 ->assertPathIs('/contact/list' )
                 ->assertDontSee( 'Test Contact 2' )
                 ->assertDontSee( 'Test Position2' )

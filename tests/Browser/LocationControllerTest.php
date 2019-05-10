@@ -141,7 +141,7 @@ class LocationControllerTest extends DuskTestCase
             // 5. uncheck checkboxes, change selects and values, ->press('Save Changes'), assertPathIs(....)  (repeat 1)
             $browser->select( 'pdb_facility_id',     '10' )
                     ->press('Save Changes')
-                    ->pause( 2000)
+                    ->pause( 5000)
                     ->assertPathIs('/facility/list')
                     ->assertSee( "Facility edited" );
 

@@ -74,6 +74,7 @@ class InfrastructureControllerTest extends DuskTestCase
             // 1. test add empty inputs
             $browser->press('Add')
                 ->assertPathIs('/infrastructure/add')
+                ->pause( 2000 )
                 ->assertSee( "The name field is required." )
                 ->assertSee( "The shortname field is required." );
 
