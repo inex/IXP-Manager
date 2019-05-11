@@ -43,7 +43,7 @@ apt full-upgrade -y
 apt autoremove -y
 
 apt-get install -y apache2 php7.3 php7.3-intl php7.3-mysql php-rrd php7.3-cgi php7.3-cli php7.3-snmp php7.3-curl               \
-    php-memcached libapache2-mod-php7.3 mysql-server mysql-client php-mysql memcached snmp nodejs npm                          \
+    php-memcached libapache2-mod-php7.3 mysql-server mysql-client php-mysql memcached snmp                                     \
     php7.3-mbstring php7.3-xml php7.3-gd php-gettext bgpq3 php-memcache unzip php-zip git php-yaml php-ds php7.3-bcmath        \
     libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl
 
@@ -53,7 +53,6 @@ if ! [ -L /var/www ]; then
 fi
 
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
-npm install -g bower
 
 export MYSQL_PWD=password
 
@@ -80,8 +79,7 @@ php /vagrant/artisan key:generate --force
 
 
 cd /vagrant
-su - ubuntu -c "cd /vagrant && composer install"
-su - ubuntu -c "cd /vagrant && bower --config.interactive=false -f update"
+su - ubuntu -c "cd /vagrant && composer install --prefer-dist --no-dev"
 
 cat >/etc/apache2/sites-available/000-default.conf <<END_APACHE
 <VirtualHost *:80>
@@ -124,5 +122,8 @@ screen -t bash     0
 altscreen on
 END_SCREEN
 
+
+# enable scheduler
+echo -e "\n\n# IXP Manager cron jobs:\n*  *   * * *   www-data    /usr/bin/php /vagrant/artisan schedule:run\n\n" >>/etc/crontab
 
 cd /vagrant
