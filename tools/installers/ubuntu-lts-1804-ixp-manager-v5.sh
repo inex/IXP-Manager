@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-# Installation script for IXP Manager v4 on Ubuntu LTS 16.04
+# Installation script for IXP Manager v5 on Ubuntu LTS 18.04
 
 # Barry O'Donovan <barry.odonovan ~at~ inex.ie>
 # First version: 2016-10-19
@@ -37,7 +37,7 @@ DBNAME=ixpmanager
 DBUSER=ixpmanager
 
 # the version / branch to use:
-IXPMANAGER_VERSION="release-v4"
+IXPMANAGER_VERSION="v5.0.0.alpha"
 
 touch /tmp/ixp-manager-install.log
 chmod a+w /tmp/ixp-manager-install.log
@@ -54,8 +54,8 @@ cat <<WELCOME
 
 Welcome!
 
-This installation script is for installing IXP Manager v4
-on Ubuntu LTS 16.04 **only**.
+This installation script is for installing IXP Manager v5
+on Ubuntu LTS 18.04 **only**.
 
 This script should only be run on a newly installed Ubuntu
 system.
@@ -100,7 +100,7 @@ export DEBIAN_FRONTEND=noninteractive
 
 echo -n "Doing a full system upgrade to ensure latest packages are installed (be patient)... "
 log_break && apt-get dist-upgrade -o "Dpkg::Options::=--force-confold" -yq &>> /tmp/ixp-manager-install.log
-apt-get install -yq ubuntu-minimal openssl wget &>> /tmp/ixp-manager-install.log
+apt-get install -yq ubuntu-minimal openssl wget net-tools &>> /tmp/ixp-manager-install.log
 apt-get autoremove -yq &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
@@ -314,9 +314,9 @@ echo -n "Installing PHP, Apache, MySQL, etc. Please be very patient..."
 # Prevent mrtg from prompting
 echo mrtg mrtg/conf_mods boolean true | debconf-set-selections
 
-log_break && apt-get install -qy apache2 php7.0 php7.0-intl php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt  \
-    php-memcached libapache2-mod-php7.0 mysql-server mysql-client php7.0-mysql memcached snmp nodejs nodejs-legacy npm           \
-    php7.0-mbstring php7.0-xml php7.0-gd php7.0-bcmath php-gettext bgpq3 php-memcache unzip php7.0-zip git php-yaml php-ds       \
+log_break && apt-get install -qy apache2 php7.3 php7.3-intl php-rrd php7.3-cgi php7.3-cli php7.3-snmp php7.3-curl                \
+    php-memcached libapache2-mod-php7.3 mysql-server mysql-client php7.3-mysql memcached snmp                                    \
+    php7.3-mbstring php7.3-xml php7.3-gd php7.3-bcmath php-gettext bgpq3 php-memcache unzip php7.3-zip git php-yaml php-ds       \
     libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl curl          \
         &>> /tmp/ixp-manager-install.log
 echo '[done]'
@@ -523,14 +523,6 @@ log_break
 sudo -u www-data bash -c "HOME=$IXPROOT && cd $IXPROOT && ./composer.phar --no-ansi --no-interaction --no-dev --prefer-dist install &>> /tmp/ixp-manager-install.log"
 echo '[done]'
 
-##################################################################
-### NPM Bower
-##################################################################
-echo -n "Installing bower - the frontend package manager..."
-log_break && npm install -g bower &>> /tmp/ixp-manager-install.log
-cd $IXPROOT
-sudo -u www-data bash -c "HOME=$IXPROOT && cd $IXPROOT && bower --config.interactive=false -f update &>> /tmp/ixp-manager-install.log"
-echo '[done]'
 
 ##################################################################
 ### Generate application key
@@ -592,8 +584,13 @@ INSERT INTO customer_to_ixp ( customer_id, ixp_id ) VALUES ( @custid, @ixpid );
 
 INSERT INTO user ( custid, name, username, password, email, privs, disabled, created )
     VALUES ( @custid, '${NAME}', '${USERNAME}', ${HASH_PW}, '${USEREMAIL}', 3, 0, NOW() );
+SET @userid = LAST_INSERT_ID();
 
-INSERT INTO contact ( custid, name, email, created ) VALUES ( @custid, '${NAME}', '${USEREMAIL}', NOW() );
+INSERT INTO customer_to_users ( customer_id, user_id, privs, created_at )
+    VALUES ( @custid, @userid, 3, NOW() );
+
+INSERT INTO contact ( custid, name, email, created )
+    VALUES ( @custid, '${NAME}', '${USEREMAIL}', NOW() );
 END_SQL
 
 # And seed the database:
@@ -660,6 +657,15 @@ cp ${IXPROOT}/public/favicon.ico.dist ${IXPROOT}/public/favicon.ico
 # enable contact groups
 cp ${IXPROOT}/config/contact_group.php.dist ${IXPROOT}/config/contact_group.php
 
+
+
+
+##################################################################
+### Scheduler
+##################################################################
+
+# enable scheduler
+echo -e "\n\n# IXP Manager cron jobs:\n*  *   * * *   www-data    /usr/bin/php /vagrant/artisan schedule:run\n\n" >>/etc/crontab
 
 
 ##################################################################
