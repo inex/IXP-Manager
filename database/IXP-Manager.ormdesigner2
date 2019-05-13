@@ -1531,6 +1531,10 @@
       <field name="last_login_date" type="datetime" uuid="9cdb997b-28a3-4b60-ad00-154776fdeb3e"/>
       <field name="last_login_from" type="text" size="39" uuid="cb5cdbfd-0dde-4caf-b7ca-e43994c1aa4c"/>
       <field name="created_at" type="datetime" required="true" uuid="214c0558-46e3-4119-8e40-fdf790ec7685"/>
+      <index name="customer_user" unique="true" uuid="eb43a785-7678-4c27-a7c3-690e24538288">
+        <index-field name="customer_id" uuid="746d51e6-f430-480c-9b61-54203fae8900"/>
+        <index-field name="user_id" uuid="f337856e-75c0-4029-8f8e-f09384485f10"/>
+      </index>
     </entity>
     <association from="\Entities\CustomerToUser" to="\Entities\Customer" owner-alias="customerToUser" inverse-alias="customer" many-owner="true" many-inverse="false" parent-required="true" uuid="5314e876-cb85-4645-a068-cfbd93753e65">
       <association-field from="customer_id" to="id" uuid="9f698042-ad15-4f14-8211-acc0f474d46c"/>
