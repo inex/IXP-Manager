@@ -4,16 +4,13 @@
     <id name="id" type="bigint">
       <generator strategy="AUTO"/>
     </id>
+    <field name="user_id" type="integer" nullable="true"/>
     <field name="ip" type="string" length="39" nullable="false"/>
     <field name="at" type="datetime" nullable="false"/>
     <indexes>
-      <index name="at_idx" columns="at,user_id"/>
+      <index name="at_idx" columns="at"/>
+      <index name="user_id_idx" columns="user_id"/>
     </indexes>
-    <many-to-one field="User" target-entity="Entities\User" inversed-by="LastLogins">
-      <join-columns>
-        <join-column name="user_id" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
-      </join-columns>
-    </many-to-one>
     <many-to-one field="customerToUser" target-entity="Entities\CustomerToUser" inversed-by="userLoginHistory">
       <join-columns>
         <join-column name="customer_to_user_id" referenced-column-name="id"/>

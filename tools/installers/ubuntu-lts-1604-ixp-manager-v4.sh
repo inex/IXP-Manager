@@ -548,7 +548,7 @@ echo '[done]'
 echo -n "Setting up IXP Manager database... "
 cd $IXPROOT
 log_break && php artisan doctrine:schema:create &>> /tmp/ixp-manager-install.log
-log_break && php artisan migrate &>> /tmp/ixp-manager-install.log
+log_break && php artisan migrate --force &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
 echo -n "Creating IXP Manager database views... "

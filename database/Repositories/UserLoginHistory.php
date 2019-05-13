@@ -44,17 +44,19 @@ class UserLoginHistory extends EntityRepository
      */
     public function getAllForFeList( int $userid = null , int $limit = 0 )
     {
-        $dql = "SELECT  lh.id AS id, 
-                        lh.at AS at, 
-                        lh.ip AS ip, 
-                        u.id  AS user_id
+        $dql = "SELECT  lh.id  AS id, 
+                        lh.at  AS at, 
+                        lh.ip  AS ip, 
+                        u.id   AS user_id,
+                        c.name AS cust_name
                 FROM Entities\\UserLoginHistory lh
                 LEFT JOIN lh.customerToUser c2u
+                LEFT JOIN c2u.customer AS c
                 LEFT JOIN c2u.user u
                 WHERE 1 = 1";
 
         if( $userid ) {
-            $dql .= " AND c2u.id = " . (int)$userid;
+            $dql .= " AND u.id = " . (int)$userid;
         }
 
         $dql .= "ORDER BY at DESC";

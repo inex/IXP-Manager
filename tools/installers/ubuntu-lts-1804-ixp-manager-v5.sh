@@ -115,7 +115,7 @@ apt-get update -q &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
 
-IPADDRESS=$( ifconfig | awk '/inet addr/{print substr($2,6)}' | grep -v '127.0.0.1' | head -1 )
+IPADDRESS=$( ifconfig | awk '/inet /{print $2}' | grep -v '127.0.0.1' | head -1 )
 
 
 
@@ -540,7 +540,7 @@ echo '[done]'
 echo -n "Setting up IXP Manager database... "
 cd $IXPROOT
 log_break && php artisan doctrine:schema:create &>> /tmp/ixp-manager-install.log
-log_break && php artisan migrate &>> /tmp/ixp-manager-install.log
+log_break && php artisan migrate --force &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
 echo -n "Creating IXP Manager database views... "
@@ -643,7 +643,7 @@ echo '[done]'
 
 chown -R root: ${IXPROOT}
 chown -R www-data: ${IXPROOT}/storage ${IXPROOT}/bootstrap/cache ${IXPROOT}/database/Proxies \
-    ${IXPROOT}/vendor ${IXPROOT}/bower.json ${IXPROOT}/public/bower_components ${IXPROOT}/public/logos   &>> /tmp/ixp-manager-install.log
+    ${IXPROOT}/vendor ${IXPROOT}/public/logos   &>> /tmp/ixp-manager-install.log
 chmod -R ug+rwX,o+rX ${IXPROOT} &>> /tmp/ixp-manager-install.log
 
 # favicon
