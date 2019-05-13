@@ -38,14 +38,14 @@ class UserControllerTest extends DuskTestCase
 {
     public function tearDown(): void
     {
-//        foreach( [ 'testuser1', 'testuser2' ] as $name ) {
-//            $u = D2EM::getRepository( UserEntity::class )->findOneBy( [ 'username' => $name ] );
-//
-//            if( $u ) {
-//                D2EM::remove( $u );
-//                D2EM::flush();
-//            }
-//        }
+        foreach( [ 'test13@example.com' ] as $email ) {
+            $u = D2EM::getRepository( UserEntity::class )->findOneBy( [ 'username' => $email ] );
+
+            if( $u ) {
+                D2EM::remove( $u );
+                D2EM::flush();
+            }
+        }
 
         parent::tearDown();
     }
@@ -145,7 +145,7 @@ class UserControllerTest extends DuskTestCase
                 ->type( 'authorisedMobile', '12125551011' )
                 ->select('privs_5', UserEntity::AUTH_CUSTADMIN )
                 ->press('Save Changes' )
-                ->waitForLocation('/user/list' )
+                ->assertPathIs('/user/list' )
                 ->assertSee( 'User edited' )
                 ->assertSee( 'Test User' )
                 ->assertSee( 'testuser' )
@@ -223,7 +223,7 @@ class UserControllerTest extends DuskTestCase
                 ->assertSee('Imagine' )
                 ->assertSelected('privs_2', UserEntity::AUTH_CUSTADMIN )
                 ->press( 'Save Changes' )
-                ->waitForLocation('/user/list' )
+                ->assertPathIs('/user/list' )
                 ->assertSee( 'User edited' )
                 ->assertSee( 'Test User' )
                 ->assertSee( 'testuser' );
@@ -349,7 +349,7 @@ class UserControllerTest extends DuskTestCase
              *  Add User Via customer overview
              *
              */
-            $this->browse(function (Browser $browser) {
+
 
                 $browser->visit( '/customer/overview/5/users' )
                     ->pause(2000)
@@ -362,60 +362,61 @@ class UserControllerTest extends DuskTestCase
                     ->click( '.btn-primary' );
 
 
-            $browser->assertSee( 'Users / Add' )
-                    ->assertInputValue( 'email', 'test-user2@example.com' )
-                    ->assertSelected( 'custid', 5 )
-                    ->type( 'name', 'Test User 2' )
-                    ->type( 'username', 'testuser2' )
-                    ->select( 'privs', UserEntity::AUTH_CUSTUSER )
-                    ->check( 'enabled' )
-                    ->type( 'authorisedMobile', '12125551000' )
-                    ->press('Add' )
+                $browser->assertSee( 'Users / Add' )
+                        ->assertInputValue( 'email', 'test-user2@example.com' )
+                        ->assertSelected( 'custid', 5 )
+                        ->type( 'name', 'Test User 2' )
+                        ->type( 'username', 'testuser2' )
+                        ->select( 'privs', UserEntity::AUTH_CUSTUSER )
+                        ->check( 'enabled' )
+                        ->type( 'authorisedMobile', '12125551000' )
+                        ->press('Add' )
+                        ->assertPathIs('/customer/overview/5/users' )
+                        ->assertSee( 'User added successfully. A welcome email' )
+                        ->assertSee( 'Test User 2' )
+                        ->assertSee( 'testuser2' )
+                        ->assertSee( 'test-user2@example.com' );
+
+                /** @var UserEntity $u2 */
+                $u2 = D2EM::getRepository( UserEntity::class )->findOneBy( [ "username" => 'testuser2'] );
+
+                /** @var CustomerToUserEntity $c2u3 */
+                $c2u3 = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ 'user' => $u2 , "customer" => 5 ] );
+
+                $this->assertInstanceOf( UserEntity::class   , $u2 );
+
+                $this->assertEquals( 'Test User 2'            , $u2->getName() );
+                $this->assertEquals( 'testuser2'             , $u2->getUsername() );
+                $this->assertEquals( 'test-user2@example.com', $u2->getEmail() );
+                $this->assertEquals( '12125551000'          , $u2->getAuthorisedMobile() );
+                $this->assertFalse( $u2->getDisabled() );
+                $this->assertInstanceOf( CustomerToUserEntity::class   , $c2u3 );
+                $this->assertEquals( 5                                 , $c2u3->getCustomer()->getId() );
+                $this->assertEquals( $u2->getId()                                , $c2u3->getUser()->getId() );
+                $this->assertEquals( UserEntity::AUTH_CUSTUSER        , $c2u3->getPrivs() );
+                $this->assertNotNull( $c2u3->getCreatedAt() );
+
+
+
+                /**
+                 *
+                 *  Delete User Via customer overview
+                 *
+                 */
+                $browser->press( '#usr-list-delete-' . $u2->getId() )
+                    ->waitForText( 'Do you really want to delete this user?' )
+                    ->press( 'Delete' )
+                    ->pause( 5000 )
                     ->assertPathIs('/customer/overview/5/users' )
-                    ->assertSee( 'User added successfully. A welcome email' )
-                    ->assertSee( 'Test User 2' )
-                    ->assertSee( 'testuser2' )
-                    ->assertSee( 'test-user2@example.com' );
+                    ->assertSee( 'User deleted' )
+                    ->assertDontSee( 'Test User 1' )
+                    ->assertDontSee( 'testuser1' )
+                    ->assertDontSee( 'test-user1@example.com' );
 
-            /** @var UserEntity $u2 */
-            $u2 = D2EM::getRepository( UserEntity::class )->findOneBy( [ "username" => 'testuser2'] );
-
-            /** @var CustomerToUserEntity $c2u3 */
-            $c2u3 = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ 'user' => $u2 , "customer" => 5 ] );
-
-            $this->assertInstanceOf( UserEntity::class   , $u2 );
-
-            $this->assertEquals( 'Test User 2'            , $u2->getName() );
-            $this->assertEquals( 'testuser2'             , $u2->getUsername() );
-            $this->assertEquals( 'test-user2@example.com', $u2->getEmail() );
-            $this->assertEquals( '12125551000'          , $u2->getAuthorisedMobile() );
-            $this->assertFalse( $u2->getDisabled() );
-            $this->assertInstanceOf( CustomerToUserEntity::class   , $c2u3 );
-            $this->assertEquals( 5                                 , $c2u3->getCustomer()->getId() );
-            $this->assertEquals( $u2->getId()                                , $c2u3->getUser()->getId() );
-            $this->assertEquals( UserEntity::AUTH_CUSTUSER        , $c2u3->getPrivs() );
-            $this->assertNotNull( $c2u3->getCreatedAt() );
+                $this->assertNull( D2EM::getRepository( UserEntity::class )->findOneBy( [ 'username' => 'testuser2' ] ) );
+                $this->assertNull( D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ 'user' => $u2 , "customer" => 5 ] ) );
 
 
-
-            /**
-             *
-             *  Delete User Via customer overview
-             *
-             */
-            $browser->press( '#usr-list-delete-' . $u2->getId() )
-                ->waitForText( 'Do you really want to delete this user?' )
-                ->press( 'Delete' )
-                ->assertPathIs('/customer/overview/5/users' )
-                ->assertSee( 'User deleted' )
-                ->assertDontSee( 'Test User 1' )
-                ->assertDontSee( 'testuser1' )
-                ->assertDontSee( 'test-user1@example.com' );
-
-            $this->assertNull( D2EM::getRepository( UserEntity::class )->findOneBy( [ 'username' => 'testuser2' ] ) );
-            $this->assertNull( D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ 'user' => $u2 , "customer" => 5 ] ) );
-
-            });
 
 
             /**
@@ -765,10 +766,10 @@ class UserControllerTest extends DuskTestCase
             // 5. lhs users menu option -> add -> non existing user as super user set on non-internal -> error
             $browser->visit( 'user/list' )
                     ->click( "#add-user" )
-                    ->type( "#email", "test@example.com" )
+                    ->type( "#email", "test12@example.com" )
                     ->click( '.btn-primary' )
-                    ->type( 'name', 'Test User 1' )
-                    ->type( 'username', 'testuser1' )
+                    ->type( 'name', 'Test User 12' )
+                    ->type( 'username', 'testuser12' )
                     ->select( 'privs', 3 )
                     ->select( 'custid', 4 )
                     ->check( 'enabled' )
@@ -794,10 +795,10 @@ class UserControllerTest extends DuskTestCase
             // 7. lhs users menu option -> add -> non existing user super set on internal -> success + warning
             $browser->visit( 'user/list' )
                 ->click( "#add-user" )
-                ->type( "#email", "test@example.com" )
+                ->type( "#email", "test13@example.com" )
                 ->click( '.btn-primary' )
-                ->type( 'name', 'Test User 1' )
-                ->type( 'username', 'testuser1' )
+                ->type( 'name', 'Test User 13' )
+                ->type( 'username', 'testuser13' )
                 ->select( 'privs', 3 )
                 ->select( 'custid', 1 )
                 ->check( 'enabled' )
@@ -809,9 +810,9 @@ class UserControllerTest extends DuskTestCase
             // 8. lhs users menu option -> add -> existing user super set on internal -> success + warning
             $browser->visit( 'user/list' )
                 ->click( "#add-user" )
-                ->type( "#email", "imagine-custadmin@example.com" )
+                ->type( "#email", "heanet-custadmin@example.com" )
                 ->click( '.btn-primary' )
-                ->click( '#user-2' )
+                ->click( '#user-5' )
                 ->select( 'privs', 3 )
                 ->select( 'custid', 1 )
                 ->press('Add User' );
@@ -826,11 +827,11 @@ class UserControllerTest extends DuskTestCase
 
             // 10. lhs users menu option -> edit -> internal -> super option (for originally non super user)
             $browser->visit( 'user/edit/2' )
-                    ->select( 'privs_1' , UserEntity::AUTH_CUSTADMIN )
+                    ->select( 'privs_5' , UserEntity::AUTH_CUSTADMIN )
                     ->press('Save Changes' );
 
             $browser->visit( 'user/list' )
-                ->click( "#d2f-list-edit-2" );
+                ->click( "#d2f-list-edit-5" );
 
             $browser->assertSelectHasOption( "#privs_1" , UserEntity::AUTH_SUPERUSER );
 
@@ -843,11 +844,13 @@ class UserControllerTest extends DuskTestCase
 
             $browser->visit( 'user/list' )
                 ->click( "#add-user" )
+                ->pause( 5000)
                 ->type( "#email" , "test2@example.com" )
                 ->click( '.btn-primary' );
 
             // 11. customer admin -> add existing user -> no super option*/
             $browser->visit( 'user/list' )
+                ->pause(2000)
                 ->click( "#add-user" )
                 ->type( "#email" , "joe@siep.com" )
                 ->click( '.btn-primary' );
@@ -867,8 +870,8 @@ class UserControllerTest extends DuskTestCase
 
             $browser->visit( '/switch-user-back' );
 
-            $addedUser = D2EM::getRepository( UserEntity::class )->findOneBy( [ 'email' => 'test@example.com' ] );
-            $addedUser2 = D2EM::getRepository( UserEntity::class )->findOneBy( [ 'email' => 'imagine-custadmin@example.com' ] );
+            $addedUser = D2EM::getRepository( UserEntity::class )->findOneBy( [ 'email' => 'test13@example.com' ] );
+            $addedUser2 = D2EM::getRepository( UserEntity::class )->findOneBy( [ 'email' => 'heanet-custadmin@example.com' ] );
 
             $browser->visit( '/user/list' )
                 ->click( "#d2f-list-delete-" . $addedUser->getId() )
