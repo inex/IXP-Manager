@@ -531,7 +531,7 @@ class SwitchController extends Doctrine2Frontend {
                 });
 
                 if( count( $asnExist ) ){
-                    AlertContainer::push( "WARNING: you have supplied a AS number that is already is use by at least one other switch. If you are using eBGP, this will be a problem.", Alert::WARNING );
+                    AlertContainer::push( "Note: this ASN is already is use by at least one other switch. If you are using eBGP, this may cause prefixes to be black-holed.", Alert::WARNING );
                 }
             }
         }
@@ -602,21 +602,16 @@ class SwitchController extends Doctrine2Frontend {
             /** @var SwitchPortEntity $port */
             if( $port->getPhysicalInterface() ) {
                 $okay = false;
-                AlertContainer::push( "You cannot delete this switch there are switch(es) port assigned to a physical interface for a customer.", Alert::DANGER );
+                AlertContainer::push( "Cannot delete switch: there are switch ports assigned to one or more physical interfaces.", Alert::DANGER );
                 break;
             }
-        }
-
-        if( $this->object->getConsoleServerConnections() && ( $cntCsc = count( $this->object->getConsoleServerConnections() ) ) ) {
-            AlertContainer::push( "You cannot delete this switch there are {$cntCsc} console port connection exists for this switch", Alert::DANGER );
-            $okay = false;
         }
 
         foreach( $this->object->getPorts() as $port ) {
             /** @var SwitchPortEntity $port */
             if( $port->getPatchPanelPort() ) {
                 $okay = false;
-                AlertContainer::push( "You cannot delete this switch there are switch(es) port assigned to patch panel ports", Alert::DANGER );
+                AlertContainer::push( "Cannot delete switch: there are switch ports assigned to patch panel ports", Alert::DANGER );
                 break;
             }
         }
