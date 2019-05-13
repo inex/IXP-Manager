@@ -108,10 +108,10 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'customerToUser', 'DefaultCustomer', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', '_className', '_preferenceClassName'];
+            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', 'Contact', '_className', '_preferenceClassName'];
         }
 
-        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'customerToUser', 'DefaultCustomer', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', '_className', '_preferenceClassName'];
+        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', 'Contact', '_className', '_preferenceClassName'];
     }
 
     /**
@@ -759,6 +759,28 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'isSuperUser', []);
 
         return parent::isSuperUser();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setContact(\Entities\Contact $contact)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setContact', [$contact]);
+
+        return parent::setContact($contact);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getContact()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getContact', []);
+
+        return parent::getContact();
     }
 
     /**

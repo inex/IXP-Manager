@@ -64,10 +64,10 @@ class CustomerToUser extends \Entities\CustomerToUser implements \Doctrine\ORM\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'privs', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'created_at', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'extra_attributes', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'last_login_date', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'last_login_from', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'customer', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'user', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'userLoginHistory'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'privs', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'created_at', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'extra_attributes', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'customer', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'user'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'privs', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'created_at', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'extra_attributes', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'last_login_date', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'last_login_from', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'customer', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'user', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'userLoginHistory'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'privs', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'created_at', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'extra_attributes', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'customer', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'user'];
     }
 
     /**
@@ -213,17 +213,6 @@ class CustomerToUser extends \Entities\CustomerToUser implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function getUserLoginHistory()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUserLoginHistory', []);
-
-        return parent::getUserLoginHistory();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getPrivs()
     {
 
@@ -241,28 +230,6 @@ class CustomerToUser extends \Entities\CustomerToUser implements \Doctrine\ORM\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCreatedAt', []);
 
         return parent::getCreatedAt();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getLastLoginDate()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastLoginDate', []);
-
-        return parent::getLastLoginDate();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getLastLoginFrom()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastLoginFrom', []);
-
-        return parent::getLastLoginFrom();
     }
 
     /**
@@ -301,17 +268,6 @@ class CustomerToUser extends \Entities\CustomerToUser implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function setUserLoginHistory($userLoginHistory)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUserLoginHistory', [$userLoginHistory]);
-
-        return parent::setUserLoginHistory($userLoginHistory);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function setPrivs($privs)
     {
 
@@ -340,28 +296,6 @@ class CustomerToUser extends \Entities\CustomerToUser implements \Doctrine\ORM\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreatedAt', [$created_at]);
 
         return parent::setCreatedAt($created_at);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setLastLoginAt($last_login_date)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastLoginAt', [$last_login_date]);
-
-        return parent::setLastLoginAt($last_login_date);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setLastLoginFrom($last_login_from)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastLoginFrom', [$last_login_from]);
-
-        return parent::setLastLoginFrom($last_login_from);
     }
 
 }

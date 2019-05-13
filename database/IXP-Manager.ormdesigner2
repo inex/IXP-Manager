@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<skipper version="3.2.18.1536" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
+<skipper version="3.2.18.1524" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
   <module name="\IXP-Manager" local-name="IXP-Manager" namespace="\Entities" local-namespace="Entities" export-format="Doctrine2Xml" export-path="xml" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
     <entity name="\Entities\IrrdbAsn" local-name="IrrdbAsn" namespace="\Entities" uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c">
       <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="033ed9da-4165-432b-8b57-e21110abe29e"/>
@@ -828,6 +828,7 @@
       <field name="lastupdatedby" type="integer" uuid="25eb724e-cdd4-4a4f-952b-1aa687125be5"/>
       <field name="creator" type="string" size="32" uuid="c1f3b201-d3b2-418a-8277-f5b26c7a64ac"/>
       <field name="created" type="datetime" uuid="fd89f19a-1739-463e-bedf-9f3432f946e0"/>
+      <field name="user_id" type="integer" unique="true" uuid="216c6fa2-5980-4e7c-ad04-4be5416614b8"/>
       <orm-attributes>
         <attribute name="repository-class">Repositories\Contact</attribute>
         <attribute name="table">contact</attribute>
@@ -838,6 +839,12 @@
       <association-field from="custid" to="id" uuid="5957574b-75d9-4879-b87d-951f349f4bf1"/>
       <orm-attributes>
         <attribute name="on-delete">CASCADE</attribute>
+      </orm-attributes>
+    </association>
+    <association from="\Entities\Contact" to="\Entities\User" owner-alias="Contact" inverse-alias="User" many-owner="false" many-inverse="false" uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287">
+      <association-field from="user_id" to="id" uuid="75d79600-a7b0-4e01-8ff4-ff818f24003d"/>
+      <orm-attributes>
+        <attribute name="on-delete">SET NULL</attribute>
       </orm-attributes>
     </association>
     <entity name="\Entities\ConsoleServerConnection" local-name="ConsoleServerConnection" namespace="\Entities" uuid="28b1e175-e09d-4f09-912b-326de7d4d5d8">
@@ -1046,7 +1053,7 @@
     <association from="\Entities\User" to="\Entities\Customer" owner-alias="DefaultUsers" inverse-alias="DefaultCustomer" many-owner="true" many-inverse="false" uuid="f2a9c016-2e92-44b2-92dd-ca881cb6d1c5">
       <association-field from="custid" to="id" uuid="4e93febb-7838-4b8f-8533-85e6edd0ab2e"/>
       <orm-attributes>
-        <attribute name="on-delete">SET NULL</attribute>
+        <attribute name="on-delete">CASCADE</attribute>
       </orm-attributes>
     </association>
     <entity name="\Entities\UserPreference" local-name="UserPreference" namespace="\Entities" uuid="04946ae3-fa99-4cf0-a31a-f0b49f85c326">
@@ -1553,6 +1560,7 @@
     <association uuid="212269bb-5626-4a46-b864-1a94ecee88f3" center-position-x="-5" center-position-y="0" color="#969696"/>
     <association uuid="263cdc09-054e-49c3-9b3e-c310b4edc711" center-position-x="0" center-position-y="-20" color="#969696"/>
     <association uuid="2c958365-0e49-4b74-b291-dedac8a85f74" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
+    <association uuid="3841a332-222d-4dfa-8ef2-775e8bdb0287" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696" split="1"/>
     <association uuid="39ad3dd5-487b-4152-9190-558bd7e80668" center-position-x="-7" center-position-y="0" color="#969696"/>
     <association uuid="3de69308-a3d5-4138-97be-111724303344" caption1-position-x="-1" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
     <association uuid="4bc1d72f-a2b3-43b8-89f6-e5aaeb3b6d59" caption1-position-x="0" caption1-position-y="0" center-position-x="0" center-position-y="0" color="#969696"/>
