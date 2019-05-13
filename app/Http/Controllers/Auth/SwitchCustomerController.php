@@ -65,15 +65,17 @@ class SwitchCustomerController extends Controller
         }
 
         $c2u->setLastLoginAt(  new \DateTime );
-        $c2u->setLastLoginFrom( request()->ip() );
+        $c2u->setLastLoginFrom( $this->getIp() );
 
         if( config( "ixp_fe.login_history.enabled" ) ) {
 
             $log = new UserLoginHistoryEntity;
             D2EM::persist( $log );
 
+
+
             $log->setAt(    new \DateTime() );
-            $log->setIp(    request()->ip() );
+            $log->setIp(    $this->getIp() );
             $log->setCustomerToUser(  $c2u  );
 
             D2EM::flush();
