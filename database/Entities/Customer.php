@@ -297,12 +297,20 @@ class Customer
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
+    protected $DefaultUsers;
+
+    /**
+     * @var \Doctrine\Common\Collections\Collection
+     */
     protected $tags;
 
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
     private $patchPanelPorts;
+
+    protected $customerToUser;
+
 
 
     /**
@@ -1256,6 +1264,9 @@ class Customer
     public function getC2Users(){
         return $this->Users;
     }
+
+
+
 
 
 

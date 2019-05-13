@@ -163,6 +163,9 @@ class User implements Authenticatable, CanResetPasswordContract
     protected $id;
 
 
+    protected $customerToUser;
+    protected $DefaultCustomer;
+
     /**
      * @var \Doctrine\Common\Collections\Collection
      */
@@ -757,34 +760,6 @@ class User implements Authenticatable, CanResetPasswordContract
         return $this->getPrivs() == self::AUTH_SUPERUSER;
     }
 
-
-    /**
-     * @var \Entities\Contact
-     */
-    protected $Contact;
-
-    /**
-     * Set Contact
-     *
-     * @param \Entities\Contact $contact
-     * @return User
-     */
-    public function setContact(Contact $contact)
-    {
-        $this->Contact = $contact;
-
-        return $this;
-    }
-
-    /**
-     * Get Contact
-     *
-     * @return \Entities\Contact
-     */
-    public function getContact()
-    {
-        return $this->Contact;
-    }
 
 
     /***************************************************************************

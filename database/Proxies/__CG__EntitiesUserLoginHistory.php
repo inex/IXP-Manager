@@ -64,10 +64,10 @@ class UserLoginHistory extends \Entities\UserLoginHistory implements \Doctrine\O
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'ip', 'at', 'id', 'User'];
+            return ['__isInitialized__', 'ip', 'at', 'id', 'User', 'customerToUser'];
         }
 
-        return ['__isInitialized__', 'ip', 'at', 'id', 'User'];
+        return ['__isInitialized__', 'ip', 'at', 'id', 'User', 'customerToUser'];
     }
 
     /**
@@ -252,6 +252,28 @@ class UserLoginHistory extends \Entities\UserLoginHistory implements \Doctrine\O
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser', []);
 
         return parent::getUser();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCustomerToUser(\Entities\CustomerToUser $c2u)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustomerToUser', [$c2u]);
+
+        return parent::setCustomerToUser($c2u);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCustomerToUser()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomerToUser', []);
+
+        return parent::getCustomerToUser();
     }
 
 }

@@ -460,34 +460,4 @@ class Contact
     }
 
 
-
-
-    /**
-     * @var \Entities\User
-     */
-    protected $User;
-
-    /**
-     * Set User
-     *
-     * @param \Entities\User $user
-     * @return User
-     */
-    public function setUser($user)
-    {
-        $this->User = $user;
-
-        return $this;
-    }
-
-    /**
-     * Get User
-     *
-     * @return \Entities\User
-     */
-    public function getUser()
-    {
-        return $this->User;
-    }
-
 }
