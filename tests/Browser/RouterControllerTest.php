@@ -246,7 +246,7 @@ class RouterControllerTest extends DuskTestCase
                 ->press('Save Changes')
                 ->assertPathIs('/router/list');
 
-            
+
             // 10. verify checkbox bool elements in database are all true
             D2EM::refresh( $router );
 

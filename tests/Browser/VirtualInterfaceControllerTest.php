@@ -73,7 +73,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
 
     }
-    
+
     /**
      * Test the Virtual interface add/edit/delete functions
      *
@@ -228,8 +228,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         // Check the form with new values
         $browser->assertSelected('cust', '2' )
             ->assertChecked('trunk' )
-            ->assertChecked('lag_framing' )
             ->assertChecked('fastlacp' )
+            ->assertChecked('lag_framing' )
             ->assertInputValue('name', 'name-test' )
             ->assertInputValue('description', 'description-test' )
             ->assertInputValue('channel-group', '666' )
@@ -611,6 +611,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->check( 'ipv4-monitor-rcbgp' )
             ->check( 'ipv6-monitor-rcbgp' )
             ->press('Save Changes')
+            ->pause( 5000 )
             ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() )
             ->assertSee('Vlan Interface updated successfully.');
 

@@ -121,8 +121,7 @@ class LocationControllerTest extends DuskTestCase
             $this->assertEquals( 'test notes',              $location->getNotes() );
 
             // 3. browse to edit infrastructure object:
-            $browser->click( '#d2f-list-edit-' .  $location->getId() )
-                    ->pause( 5000);
+            $browser->click( '#d2f-list-edit-' .  $location->getId() );
 
             // 4. test that form contains settings as above using assertChecked(), assertNotChecked(), assertSelected(), assertInputValue, ...
             $browser->assertInputValue('name',                  'Infrastructure Test')

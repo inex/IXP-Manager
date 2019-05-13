@@ -560,7 +560,7 @@ class UserController extends Doctrine2Frontend {
                 $infoArray = [
                     'name'                                              => 'required|string|max:255',
                     'username'                                          => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_]{3,255}$/|unique:Entities\User,username' . ( $request->input( 'id' ) ? ',' . $request->input( 'id' ) : '' ),
-                    'email'                                             => 'required|email|max:255|unique:Entities\User,email' . ( $request->input( 'email' ) ? ',' . $request->input( 'email' ) : '' ),
+                    'email'                                             => 'required|email|max:255|unique:Entities\User,email' . ( $request->input( 'id' ) ? ',' . $request->input( 'id' ) : '' ),
                     'authorisedMobile'                                  => 'nullable|string|max:50',
                 ];
 
