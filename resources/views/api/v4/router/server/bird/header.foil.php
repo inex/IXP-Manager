@@ -41,6 +41,13 @@
 
 # For VLAN: <?= $t->vlan->getName() ?> (Tag: <?= $t->vlan->getNumber() ?>, Database ID: <?= $t->vlan->getId() ?>)
 
+# standardise time formats:
+timeformat base         iso long;
+timeformat log          iso long;
+timeformat protocol     iso long;
+timeformat route        iso long;
+
+
 log "/var/log/bird/<?= $t->handle ?>.log" all;
 log syslog all;
 
