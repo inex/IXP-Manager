@@ -73,7 +73,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
 
     }
-    
+
     /**
      * Test the Virtual interface add/edit/delete functions
      *
@@ -228,8 +228,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         // Check the form with new values
         $browser->assertSelected('cust', '2' )
             ->assertChecked('trunk' )
-            ->assertChecked('lag_framing' )
             ->assertChecked('fastlacp' )
+            ->assertChecked('lag_framing' )
             ->assertInputValue('name', 'name-test' )
             ->assertInputValue('description', 'description-test' )
             ->assertInputValue('channel-group', '666' )

@@ -74,7 +74,7 @@ class InfrastructureControllerTest extends DuskTestCase
             // 1. test add empty inputs
             $browser->press('Add')
                 ->assertPathIs('/infrastructure/add')
-                ->pause( 2000 )
+                ->waitForText( "Choose the matching IX-F IXP" )
                 ->assertSee( "The name field is required." )
                 ->assertSee( "The shortname field is required." );
 
@@ -141,19 +141,18 @@ class InfrastructureControllerTest extends DuskTestCase
 
             // 7. edit again and assert that all checkboxes are unchecked and assert select values are as expected
             $browser->visit( '/infrastructure/edit/' .  $infra->getId() )
-                ->assertSee( 'Edit Infrastructure' )
-                ->pause( 5000);
+                ->assertSee( 'Edit Infrastructure' );
 
             $browser->assertInputValue('name',      'INEX TEST')
                 ->assertInputValue('shortname', 'test')
                 ->assertNotChecked( 'primary' )
+                ->waitUntilMissing( "Please wait, loading")
                 ->assertSelected('ixf_ix_id', '2')
                 ->assertSelected('pdb_ixp', '2');
 
 
             // 8. submit with no changes and verify no changes in database
-            $browser->press('Save Changes')
-                ->assertPathIs('/infrastructure/list');
+            $browser->press('Save Changes');
 
 
             // 6. repeat database load and database object check for new values (repeat 2)
@@ -170,10 +169,8 @@ class InfrastructureControllerTest extends DuskTestCase
             // 9. edit again and check all checkboxes and submit
             $browser->visit( '/infrastructure/edit/' .  $infra->getId() )
                 ->assertSee( 'Edit Infrastructure' )
-                ->waitUntilMissing( "Please wait, loading");
-
-            $browser->check('primary')
-                ->pause(2000)
+                ->waitUntilMissing( "Please wait, loading")
+                ->check('primary')
                 ->press('Save Changes')
                 ->assertPathIs('/infrastructure/list');
 
