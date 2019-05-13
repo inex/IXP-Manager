@@ -16,7 +16,7 @@
             </th>
             <th>
                 Actions
-                <a id="contacts-add-btn" class="btn btn-outline-secondary btn-sm ml-2" href="<?= route( "contact@add" ) . "?cust=" . $t->c->getId() ?>">
+                <a id="contacts-add-btn" class="btn btn-white btn-sm ml-2" href="<?= route( "contact@add" ) . "?cust=" . $t->c->getId() ?>">
                     <i class="fa fa-plus"></i>
                 </a>
             </th>
@@ -49,10 +49,10 @@
                 </td>
                 <td>
                     <div class="btn-group btn-group-sm">
-                        <a class="btn btn-outline-secondary" id="cont-list-edit-<?= $co->getId() ?>"href="<?= route( "contact@edit", [ "id" => $co->getId() ] ) ?>">
+                        <a class="btn btn-white" id="cont-list-edit-<?= $co->getId() ?>"href="<?= route( "contact@edit", [ "id" => $co->getId() ] ) ?>">
                             <i class="fa fa-pencil"></i>
                         </a>
-                        <a class="btn btn-outline-secondary cont-list-delete" id="cont-list-delete-<?= $co->getId() ?>" data-object-id="<?= $co->getId() ?>" href="#">
+                        <a class="btn btn-white cont-list-delete" id="cont-list-delete-<?= $co->getId() ?>" data-object-id="<?= $co->getId() ?>" href="#">
                             <i class="fa fa-trash"></i>
                         </a>
                     </div>

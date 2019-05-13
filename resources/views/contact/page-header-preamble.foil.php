@@ -3,13 +3,13 @@
     <div class="btn-group btn-group-sm" role="group">
 
         <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
-            <a target="_blank" class="btn btn-outline-secondary" href="<?= $t->feParams->documentation ?>">
+            <a target="_blank" class="btn btn-white" href="<?= $t->feParams->documentation ?>">
                 Documentation
             </a>
         <?php endif; ?>
 
         <?php if( config('contact_group.types.ROLE') ): ?>
-            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?= isset( $t->data[ 'params'][ "role" ] ) ? $t->data[ 'params'][ "roles" ][ $t->data[ 'params'][ "role" ] ][ 'name']  : "All Roles" ?>
             </button>
             <ul class="dropdown-menu dropdown-menu-right">
@@ -27,7 +27,7 @@
             </ul>
         <?php endif;?>
 
-        <a class="btn btn-outline-secondary" href="<?= route($t->feParams->route_prefix.'@add' ) ?>">
+        <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@add' ) ?>">
             <span class="fa fa-plus"></span>
         </a>
 

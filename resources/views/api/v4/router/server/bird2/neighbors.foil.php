@@ -80,7 +80,7 @@ int set allas;
 <?php
     // We allow per customer AS headers here which IXPs can define as skinned files.
     // For example, to solve a Facebook issue, INEX created the following:
-    //     resources/skins/api/v4/router/server/bird2/f_import_as32934.foil.php
+    //     resources/skins/inex/api/v4/router/server/bird2/f_import_as32934.foil.php
     echo $t->insertif( 'api/v4/router/server/bird2/f_import_as' . $int['autsys'] );
 
 ?>

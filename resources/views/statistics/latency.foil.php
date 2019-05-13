@@ -31,7 +31,7 @@
 
     <?php $this->section( 'page-header-postamble' ) ?>
 
-        <a class="btn btn-outline-secondary" href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>">All Ports</a>
+        <a class="btn btn-white" href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>">All Ports</a>
 
     <?php $this->append() ?>
 

@@ -13,7 +13,7 @@
         <!-- Single button -->
         <div class="btn-group btn-group-sm">
 
-            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?=  $t->s->getName() ?> <span class="caret"></span>
             </button>
 
@@ -24,7 +24,7 @@
             </div>
         </div>
 
-        <a class="btn btn-outline-secondary" href="<?= route ('switch@list' ) ?>" title="list">
+        <a class="btn btn-white" href="<?= route ('switch@list' ) ?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
 

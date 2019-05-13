@@ -9,7 +9,7 @@
                     </h5>
                 </div>
 
-                <a class="btn btn-outline-secondary btn-sm my-auto" href="<?= route( "statistics@member-drilldown", [ 'type' => 'agg', 'typeid' => $t->c->getId() ] )?>">
+                <a class="btn btn-white btn-sm my-auto" href="<?= route( "statistics@member-drilldown", [ 'type' => 'agg', 'typeid' => $t->c->getId() ] )?>">
                     <i class="fa fa-search"></i>
                 </a>
 

@@ -44,8 +44,8 @@ class BillingDetailsRequest extends FormRequest
      */
     public function authorize()
     {
-        // middleware ensures custuser access only so always authorised here:
-        return Auth::getUser()->isCustUser();
+        // middleware ensures custuser or custadmin access only so always authorised here:
+        return Auth::getUser()->isCustUser() || Auth::getUser()->isCustAdmin();
     }
 
     /**

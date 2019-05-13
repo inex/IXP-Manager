@@ -257,6 +257,11 @@ class Customer
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
+    protected $User;
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
     protected $Users;
 
     /**
@@ -1171,26 +1176,62 @@ class Customer
     }
 
     /**
-     * Add Users
+     * Add Default User
      *
-     * @param Entities\User $users
+     * @param Entities\User $user
      * @return Customer
      */
-    public function addUser(\Entities\User $users)
+    public function addDefaultUser(\Entities\User $user)
     {
-        $this->Users[] = $users;
+        $this->DefaultUsers[] = $user;
 
         return $this;
     }
 
     /**
-     * Remove Users
+     * Remove Default User
      *
-     * @param Entities\User $users
+     * @param Entities\User $user
      */
-    public function removeUser(\Entities\User $users)
+    public function removeDefaultUser(\Entities\User $user)
     {
-        $this->Users->removeElement($users);
+        $this->DefaultUsers->removeElement($user);
+    }
+
+    /**
+     * Get Default Users
+     *
+     * @return \Doctrine\Common\Collections\Collection|User[]
+     */
+    public function getDefaultUsers()
+    {
+        return $this->DefaultUsers;
+    }
+
+
+
+
+    /**
+     * Add User
+     *
+     * @param Entities\User $user
+     * @return Customer
+     */
+    public function addUser(\Entities\User $user)
+    {
+        $this->Users[] = $user;
+
+        return $this;
+    }
+
+    /**
+     * Remove User
+     *
+     * @param Entities\User $user
+     */
+    public function removeUser(\Entities\User $user)
+    {
+        $this->Users->removeElement($user);
     }
 
     /**
@@ -1198,10 +1239,25 @@ class Customer
      *
      * @return \Doctrine\Common\Collections\Collection|User[]
      */
-    public function getUsers()
-    {
+    public function getUsers(){
+        $users = [];
+        foreach( $this->Users as $c2u ){
+            $users[] = $c2u->getUser();
+        }
+
+        return $users;
+    }
+
+    /**
+     * Get Users from Customer2User
+     *
+     * @return \Doctrine\Common\Collections\Collection|User[]
+     */
+    public function getC2Users(){
         return $this->Users;
     }
+
+
 
     /**
      * Get Users

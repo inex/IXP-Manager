@@ -14,7 +14,7 @@
 
     <h3 class="col-md-12">
         VLAN Interfaces
-        <a class="btn btn-outline-secondary btn-sm" id="add-vli" href="<?= route('interfaces/vlan/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
+        <a class="btn btn-white btn-sm" id="add-vli" href="<?= route('interfaces/vlan/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
             <i class="fa fa-plus"></i>
         </a>
     </h3>
@@ -91,18 +91,18 @@
 
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn-outline-secondary" id="view-vli-<?= $vli->getId()?>" href="<?= route ( 'interfaces/vlan/view', [ 'id' => $vli->getId() ] ) ?>" title="View">
+                                    <a class="btn btn-white" id="view-vli-<?= $vli->getId()?>" href="<?= route ( 'interfaces/vlan/view', [ 'id' => $vli->getId() ] ) ?>" title="View">
                                         <i class="fa fa-eye"></i>
                                     </a>
 
-                                    <a class="btn btn-outline-secondary" id="edit-vli-<?= $vli->getId()?>" href="<?= route ( 'interfaces/vlan/edit/from-virtual-interface', [ 'id' => $vli->getId(), 'viid' => $t->vi->getId() ] ) ?>" title="Edit">
+                                    <a class="btn btn-white" id="edit-vli-<?= $vli->getId()?>" href="<?= route ( 'interfaces/vlan/edit/from-virtual-interface', [ 'id' => $vli->getId(), 'viid' => $t->vi->getId() ] ) ?>" title="Edit">
                                         <i class="fa fa-pencil"></i>
                                     </a>
 
-                                    <a class="btn btn-outline-secondary" id="delete-vli-<?= $vli->getId()?>" href="" title="Delete Vlan Interface">
+                                    <a class="btn btn-white" id="delete-vli-<?= $vli->getId()?>" href="" title="Delete Vlan Interface">
                                         <i class="fa fa-trash"></i>
                                     </a>
-                                    <a class="btn btn-outline-secondary" id="duplicate-vli-<?= $vli->getId()?>" href="" title="Duplicate Vlan Interface">
+                                    <a class="btn btn-white" id="duplicate-vli-<?= $vli->getId()?>" href="" title="Duplicate Vlan Interface">
                                         <i class="fa fa-copy"></i>
                                     </a>
                                 </div>
@@ -123,7 +123,7 @@
                     </div>
                     <div class="col-sm-12">
                         There are no VLAN interfaces defined for this virtual interface.
-                        <a class="btn btn-outline-secondary" href="<?= route('interfaces/vlan/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
+                        <a class="btn btn-white" href="<?= route('interfaces/vlan/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
                             Add one now...
                         </a>
                     </div>

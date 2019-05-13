@@ -60,7 +60,7 @@ class RouterControllerTest extends DuskTestCase
                     ->visit('/login')
                     ->type( 'username', 'travis' )
                     ->type( 'password', 'travisci' )
-                    ->press( 'Login' )
+                    ->press( '#login-btn' )
                     ->assertPathIs( '/admin' );
 
             $browser->visit( '/router/add' )
@@ -246,7 +246,7 @@ class RouterControllerTest extends DuskTestCase
                 ->press('Save Changes')
                 ->assertPathIs('/router/list');
 
-            
+
             // 10. verify checkbox bool elements in database are all true
             D2EM::refresh( $router );
 

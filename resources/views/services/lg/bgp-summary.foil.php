@@ -100,7 +100,7 @@
                         <?php endif; ?>
                     </td>
                     <td class="text-reset">
-                        <a class="btn btn-outline-secondary btn-sm" style="font-size: 14px;" id="protocol_details-<?= $name ?>"
+                        <a class="btn btn-white btn-sm" style="font-size: 14px;" id="protocol_details-<?= $name ?>"
                             data-protocol="<?= $name ?>" title="<?= $p->description ?? "" ?>">
                             Details
                         </a>

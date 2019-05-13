@@ -1,67 +1,73 @@
 <div class="d-flex row">
 
     <div class="col-md-6">
-
         <?php $rdetails = $t->c->getRegistrationDetails() ?>
-        <h3>
-            Registration Details
-        </h3>
 
-        <table class="table table-striped">
-            <tr>
-                <th>
-                    Registered Name
-                </th>
-                <td>
-                    <?= $t->ee( $rdetails->getRegisteredName() ) ?>
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Company Number
-                </th>
-                <td>
-                    <?= $t->ee( $rdetails->getCompanyNumber() ) ?>
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Jurisdiction
-                </th>
-                <td>
-                    <?= $t->ee( $rdetails->getJurisdiction() ) ?>
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Address
-                </th>
-                <td>
-                    <?php if( $rdetails->getAddress1() ): ?><?= $t->ee( $rdetails->getAddress1() ) ?><br/><?php endif; ?>
-                    <?php if( $rdetails->getAddress2() ): ?><?= $t->ee( $rdetails->getAddress2() ) ?><br/><?php endif; ?>
-                    <?php if( $rdetails->getAddress3() ): ?><?= $t->ee( $rdetails->getAddress3() ) ?><br/><?php endif; ?>
-                    <?php if( $rdetails->getTownCity() ): ?><?= $t->ee( $rdetails->getTownCity() ) ?><br/><?php endif; ?>
-                    <?php if( $rdetails->getPostcode() ): ?><?= $t->ee( $rdetails->getPostcode() ) ?><?php endif; ?>
-                </td>
-            </tr>
-            <tr>
-                <th>
-                    Country
-                </th>
-                <td>
-                    <?= $t->ee( $rdetails->getCountryName() ) ?>
-                </td>
-            </tr>
-        </table>
+        <div class="tw-rounded tw-p-4 tw-shadow-md tw-border tw-border-grey-light">
+            <header class="tw-pb-2 tw-pl-2 tw-flex tw-border-b tw-border-grey-300">
+                <h3>
+                    Registration Details
+                </h3>
+            </header>
+            <table class="table ">
+                <tr>
+                    <th>
+                        Registered Name
+                    </th>
+                    <td>
+                        <?= $t->ee( $rdetails->getRegisteredName() ) ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Company Number
+                    </th>
+                    <td>
+                        <?= $t->ee( $rdetails->getCompanyNumber() ) ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Jurisdiction
+                    </th>
+                    <td>
+                        <?= $t->ee( $rdetails->getJurisdiction() ) ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Address
+                    </th>
+                    <td>
+                        <?php if( $rdetails->getAddress1() ): ?><?= $t->ee( $rdetails->getAddress1() ) ?><br/><?php endif; ?>
+                        <?php if( $rdetails->getAddress2() ): ?><?= $t->ee( $rdetails->getAddress2() ) ?><br/><?php endif; ?>
+                        <?php if( $rdetails->getAddress3() ): ?><?= $t->ee( $rdetails->getAddress3() ) ?><br/><?php endif; ?>
+                        <?php if( $rdetails->getTownCity() ): ?><?= $t->ee( $rdetails->getTownCity() ) ?><br/><?php endif; ?>
+                        <?php if( $rdetails->getPostcode() ): ?><?= $t->ee( $rdetails->getPostcode() ) ?><?php endif; ?>
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        Country
+                    </th>
+                    <td>
+                        <?= $t->ee( $rdetails->getCountryName() ) ?>
+                    </td>
+                </tr>
+            </table>
+        </div>
     </div>
 
     <div class="col-md-6">
         <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode() || !$t->c->isResoldCustomer() ): ?>
-            <h3>
-                Billing Details
-            </h3>
+        <div class="tw-rounded tw-p-4 tw-shadow-md tw-border tw-border-grey-light">
+            <header class="tw-pb-2 tw-pl-2 tw-flex tw-border-b tw-border-grey-300">
+                <h3>
+                    Billing Details
+                </h3>
+            </header>
             <?php $bdetails = $t->c->getBillingDetails() ?>
-            <table class="table table-striped">
+            <table class="table">
                 <tr>
                     <th>
                         Contact Name
@@ -167,6 +173,7 @@
                     </td>
                 </tr>
             </table>
+        </div>
         <?php endif; ?>
     </div>
 </div>

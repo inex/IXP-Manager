@@ -12,7 +12,7 @@
 
     <div class="btn-group btn-group-sm" role="group">
 
-<!--        <a  target="_blank" class="btn btn-outline-secondary" href="#xxx">-->
+<!--        <a  target="_blank" class="btn btn-white" href="#xxx">-->
 <!--            Documentation-->
 <!--        </a>-->
 

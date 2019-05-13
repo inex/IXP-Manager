@@ -31,10 +31,10 @@ $this->layout( 'layouts/ixpv4' );
 
 
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-outline-secondary" href="<?= route( 'core-bundle/list' )?>" title="list">
+        <a class="btn btn-white" href="<?= route( 'core-bundle/list' )?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
-        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-plus"></i> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
@@ -203,7 +203,7 @@ $this->layout( 'layouts/ixpv4' );
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a class="btn btn btn-outline-secondary" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vi->getId() ] )?>" title="Edit">
+                                        <a class="btn btn btn-white" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vi->getId() ] )?>" title="Edit">
                                             <i class="fa fa-pencil"></i>
                                         </a>
                                     </div>
@@ -228,7 +228,7 @@ $this->layout( 'layouts/ixpv4' );
                     <h3>
                         Core Links
                         <?php if( $t->cb->sameSwitchForEachPIFromCL( true ) && $t->cb->sameSwitchForEachPIFromCL( false ) ): ?>
-                            <button style="float: right; margin-right: 20px" id="add-new-core-link" type="button" class=" btn-sm btn btn-outline-secondary" href="#" title="Add Core link">
+                            <button style="float: right; margin-right: 20px" id="add-new-core-link" type="button" class=" btn-sm btn btn-white" href="#" title="Add Core link">
                                 <span class="fa fa-plus"></span>
                             </button>
                         <?php endif;?>
@@ -305,11 +305,11 @@ $this->layout( 'layouts/ixpv4' );
                                         </td>
                                         <td>
                                             <?= $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getSwitchPort()->getName() ?>
-                                            <a class="btn btn-sm btn-outline-secondary" href="<?= route('interfaces/physical/edit/from-core-bundle' , [ 'id' => $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getId(), 'cb' => $t->cb->getId() ] ) ?>"><i class="fa fa-pencil"></i></a>
+                                            <a class="btn btn-sm btn-white" href="<?= route('interfaces/physical/edit/from-core-bundle' , [ 'id' => $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getId(), 'cb' => $t->cb->getId() ] ) ?>"><i class="fa fa-pencil"></i></a>
                                         </td>
                                         <td>
                                             <?= $cl->getCoreInterfaceSideB()->getPhysicalInterface()->getSwitchPort()->getName() ?>
-                                            <a class="btn btn-sm btn-outline-secondary" href="<?= route('interfaces/physical/edit/from-core-bundle' , [ 'id' => $cl->getCoreInterfaceSideB()->getPhysicalInterface()->getId(), 'cb' => $t->cb->getId() ] ) ?>"><i class="fa fa-pencil"></i></a>
+                                            <a class="btn btn-sm btn-white" href="<?= route('interfaces/physical/edit/from-core-bundle' , [ 'id' => $cl->getCoreInterfaceSideB()->getPhysicalInterface()->getId(), 'cb' => $t->cb->getId() ] ) ?>"><i class="fa fa-pencil"></i></a>
                                         </td>
                                         <td>
                                             <?= Former::checkbox( 'enabled-'.$cl->getId() )
@@ -341,7 +341,7 @@ $this->layout( 'layouts/ixpv4' );
                                         <td>
                                             <?php if( count( $t->cb->getCoreLinks() ) > 1 ): ?>
                                                 <div class="btn-group btn-group-sm" role="group">
-                                                    <a class="btn btn btn-outline-secondary" id="delete-cl-<?=  $cl->getId() ?>" href="#" title="Delete">
+                                                    <a class="btn btn btn-white" id="delete-cl-<?=  $cl->getId() ?>" href="#" title="Delete">
                                                         <i class="fa fa-trash"></i>
                                                     </a>
                                                 </div>

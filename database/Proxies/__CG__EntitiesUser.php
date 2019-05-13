@@ -108,10 +108,10 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Children', 'Contact', '_className', '_preferenceClassName'];
+            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', 'Contact', '_className', '_preferenceClassName'];
         }
 
-        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Children', 'Contact', '_className', '_preferenceClassName'];
+        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', 'Contact', '_className', '_preferenceClassName'];
     }
 
     /**
@@ -364,6 +364,17 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getUserPrivs()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUserPrivs', []);
+
+        return parent::getUserPrivs();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getPrivs()
     {
 
@@ -436,6 +447,17 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastupdatedby', []);
 
         return parent::getLastupdatedby();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCustomer()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', []);
+
+        return parent::getCustomer();
     }
 
     /**
@@ -544,12 +566,45 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function getCustomer()
+    public function addCustomer(\Entities\Customer $customer)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addCustomer', [$customer]);
 
-        return parent::getCustomer();
+        return parent::addCustomer($customer);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeCustomer(\Entities\CustomerToUser $customer)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeCustomer', [$customer]);
+
+        return parent::removeCustomer($customer);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCustomers()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomers', []);
+
+        return parent::getCustomers();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCustomers2User()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomers2User', []);
+
+        return parent::getCustomers2User();
     }
 
     /**

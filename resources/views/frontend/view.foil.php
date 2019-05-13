@@ -15,20 +15,20 @@
     <div class="btn-group btn-group-sm" role="group">
 
         <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
-            <a  target="_blank" class="btn btn-outline-secondary" href="<?= $t->feParams->documentation ?>">
+            <a  target="_blank" class="btn btn-white" href="<?= $t->feParams->documentation ?>">
                 Documentation
             </a>
         <?php endif; ?>
 
-        <a class="btn btn-outline-secondary" href="<?= route($t->feParams->route_prefix.'@list') ?>">
+        <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@list') ?>">
             <span class="fa fa-th-list"></span>
         </a>
 
         <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-            <a class="btn btn-outline-secondary" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->data[ 'item' ][ 'id' ] ]) ?>">
+            <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->data[ 'item' ][ 'id' ] ]) ?>">
                 <span class="fa fa-pencil"></span>
             </a>
-            <a class="btn btn-outline-secondary" href="<?= route($t->feParams->route_prefix.'@add') ?>">
+            <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@add') ?>">
                 <span class="fa fa-plus"></span>
             </a>
         <?php endif; ?>

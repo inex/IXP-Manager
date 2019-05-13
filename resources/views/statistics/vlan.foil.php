@@ -81,7 +81,7 @@
                                 </div>
                             </li>
 
-                            <a class="btn btn-outline-secondary float-right" href="<?= route( 'statistics/infrastructure' ) ?>">Infrastructure Graphs</a>
+                            <a class="btn btn-white float-right" href="<?= route( 'statistics/infrastructure' ) ?>">Infrastructure Graphs</a>
 
                         </form>
                     </ul>

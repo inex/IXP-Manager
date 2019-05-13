@@ -11,13 +11,13 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a id="btn-filter-options" class="btn btn-outline-secondary" href="<?= url()->current() ?>">
+        <a id="btn-filter-options" class="btn btn-white" href="<?= url()->current() ?>">
             Filter Options
         </a>
-        <a class="btn btn-outline-secondary" href="<?= route( $t->active ? "patch-panel/list/inactive" : 'patch-panel/list' ) ?>">
+        <a class="btn btn-white" href="<?= route( $t->active ? "patch-panel/list/inactive" : 'patch-panel/list' ) ?>">
             Show <?= $t->active ? 'Inactive' : 'Active' ?>
         </a>
-        <a class="btn btn-outline-secondary" href="<?= route('patch-panel/add' ) ?>">
+        <a class="btn btn-white" href="<?= route('patch-panel/add' ) ?>">
             <span class="fa fa-plus"></span>
         </a>
     </div>
@@ -83,7 +83,7 @@
                             </li>
 
                             <li class="nav-item">
-                                <button type="submit" class="float-right btn btn-outline-secondary">
+                                <button type="submit" class="float-right btn btn-white">
                                     Filter Ports
                                 </button>
                             </li>
@@ -102,7 +102,7 @@
                             <i class="fa fa-question-circle fa-2x"></i>
                         </div>
                         <div class="col-sm-12">
-                            <b>No active patch panels exist.</b> <a class="btn btn-outline-secondary" href="<?= route( 'patch-panel/add' ) ?>">Add one...</a>
+                            <b>No active patch panels exist.</b> <a class="btn btn-white" href="<?= route( 'patch-panel/add' ) ?>">Add one...</a>
                         </div>
                     </div>
                 </div>
@@ -177,23 +177,23 @@
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a class="btn btn-outline-secondary" href="<?= route( 'patch-panel@view' , [ 'id' =>  $pp->getId() ] ) ?>" title="Preview">
+                                        <a class="btn btn-white" href="<?= route( 'patch-panel@view' , [ 'id' =>  $pp->getId() ] ) ?>" title="Preview">
                                             <i class="fa fa-eye"></i>
                                         </a>
-                                        <a class="btn btn-outline-secondary" href="<?= route( 'patch-panel/edit' , [ 'id' =>  $pp->getId() ] ) ?>" title="Edit">
+                                        <a class="btn btn-white" href="<?= route( 'patch-panel/edit' , [ 'id' =>  $pp->getId() ] ) ?>" title="Edit">
                                             <i class="fa fa-pencil"></i>
                                         </a>
 
                                         <?php if( $pp->getActive() ): ?>
-                                            <a class="btn btn-outline-secondary list-delete" id='list-delete-<?= $pp->getId() ?>' href="#" title="Make Inactive">
+                                            <a class="btn btn-white list-delete" id='list-delete-<?= $pp->getId() ?>' href="#" title="Make Inactive">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         <?php else: ?>
-                                            <a class="btn btn-outline-secondary" id='list-reactivate-<?= $pp->getId() ?>' href="<?= route( 'patch-panel@change-status' , [ 'id' => $pp->getId(), 'status' => ( $pp->getActive() ? '0' : '1' ) ] ) ?>" title="Reactive">
+                                            <a class="btn btn-white" id='list-reactivate-<?= $pp->getId() ?>' href="<?= route( 'patch-panel@change-status' , [ 'id' => $pp->getId(), 'status' => ( $pp->getActive() ? '0' : '1' ) ] ) ?>" title="Reactive">
                                                 <i class="fa fa-repeat"></i>
                                             </a>
                                         <?php endif; ?>
-                                        <a class="btn btn-outline-secondary" href="<?= route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $pp->getId() ] ) ?>" title="See Ports">
+                                        <a class="btn btn-white" href="<?= route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $pp->getId() ] ) ?>" title="See Ports">
                                             <i class="fa fa-th"></i>
                                         </a>
                                     </div>

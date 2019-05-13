@@ -23,9 +23,12 @@
 
 namespace Entities;
 
+use Auth, D2EM, Redirect;
+
 use Entities\{
     ApiKey              as ApiKeyEntity,
     Customer            as CustomerEntity,
+    CustomerToUser      as CustomerToUserEntity,
     User                as UserEntity,
     UserLoginHistory    as UserLoginHistoryEntity,
     UserPreference      as UserPreferenceEntity
@@ -41,6 +44,10 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
 
 use IXP\Utils\Doctrine2\WithPreferences as Doctrine2_WithPreferences;
+
+use Illuminate\Http\{
+    RedirectResponse
+};
 
 /**
  * Entities\User
@@ -58,20 +65,26 @@ class User implements Authenticatable, CanResetPasswordContract
     public static $PRIVILEGES = array(
         User::AUTH_CUSTUSER  => 'CUSTUSER',
         User::AUTH_CUSTADMIN => 'CUSTADMIN',
-        User::AUTH_SUPERUSER => 'SUPERUSER'
+        User::AUTH_SUPERUSER => 'SUPERUSER',
     );
 
     public static $PRIVILEGES_ALL = array(
         User::AUTH_PUBLIC    => 'PUBLIC',
         User::AUTH_CUSTUSER  => 'CUSTUSER',
         User::AUTH_CUSTADMIN => 'CUSTADMIN',
-        User::AUTH_SUPERUSER => 'SUPERUSER'
+        User::AUTH_SUPERUSER => 'SUPERUSER',
     );
 
     public static $PRIVILEGES_TEXT = array(
         User::AUTH_CUSTUSER  => 'Customer User',
         User::AUTH_CUSTADMIN => 'Customer Administrator',
-        User::AUTH_SUPERUSER => 'Superuser'
+        User::AUTH_SUPERUSER => 'Superuser',
+    );
+
+    public static $PRIVILEGES_TEXT_SHORT = array(
+        User::AUTH_CUSTUSER  => 'Cust User',
+        User::AUTH_CUSTADMIN => 'Cust Admin',
+        User::AUTH_SUPERUSER => 'Superuser',
     );
 
     public static $PRIVILEGES_TEXT_NONSUPERUSER = array(
@@ -171,6 +184,12 @@ class User implements Authenticatable, CanResetPasswordContract
     protected $Customer;
 
     /**
+     * @var CustomerEntity
+     */
+    protected $Customers;
+
+
+    /**
      * @var UserEntity
      */
     protected $Children;
@@ -181,6 +200,8 @@ class User implements Authenticatable, CanResetPasswordContract
     public function __construct()
     {
         $this->Preferences = new ArrayCollection();
+        $this->Customers = new \Doctrine\Common\Collections\ArrayCollection();
+
     }
 
     /**
@@ -327,7 +348,7 @@ class User implements Authenticatable, CanResetPasswordContract
      * @param integer $privs
      * @return User
      */
-    public function setPrivs($privs)
+    public function setPrivs( $privs )
     {
         $this->privs = $privs;
 
@@ -335,13 +356,25 @@ class User implements Authenticatable, CanResetPasswordContract
     }
 
     /**
-     * Get privs
+     * Get User privilege from the User table
+     *
+     * @return integer
+     */
+    public function getUserPrivs()
+    {
+        return $this->privs;
+    }
+
+    /**
+     * Get privilege from the table CustomerToUser
      *
      * @return integer
      */
     public function getPrivs()
     {
-        return $this->privs;
+        $listC2u = D2EM::getRepository( CustomerToUserEntity::class )->findBy( [ 'customer' => $this->getCustomer(), 'user' => $this->getId() ] );
+
+        return isset( $listC2u[0] ) ? $listC2u[0]->getPrivs() : null;
     }
 
     /**
@@ -411,6 +444,16 @@ class User implements Authenticatable, CanResetPasswordContract
     public function getLastupdatedby()
     {
         return $this->lastupdatedby;
+    }
+
+    /**
+     * Get Customer
+     *
+     * @return \Entities\Customer
+     */
+    public function getCustomer()
+    {
+        return $this->Customer;
     }
 
     /**
@@ -515,15 +558,54 @@ class User implements Authenticatable, CanResetPasswordContract
         return $this;
     }
 
+
+
     /**
-     * Get Customer
+     * Add Customer
      *
-     * @return Customer
+     * @param \Entities\Customer $customer
+     * @return User
      */
-    public function getCustomer()
+    public function addCustomer(\Entities\Customer $customer)
     {
-        return $this->Customer;
+        $this->Customers[] = $customer;
+
+        return $this;
     }
+
+    /**
+     * Remove Customer
+     *
+     * @param Entities\CustomerToUser $customer
+     */
+    public function removeCustomer(\Entities\CustomerToUser $customer)
+    {
+        $this->Customers->removeElement($customer);
+    }
+
+    /**
+     * Get Customers
+     *
+     * @return \Doctrine\Common\Collections\Collection|Customer[]
+     */
+    public function getCustomers(){
+        $custs = [];
+        foreach( $this->Customers as $c2u ){
+            $custs[] = $c2u->getCustomer();
+        }
+
+        return $custs;
+    }
+
+
+    public function getCustomers2User(){
+        return $this->Customers;
+    }
+
+
+
+
+
 
     /**
      * Set Children

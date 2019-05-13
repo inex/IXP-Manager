@@ -60,7 +60,7 @@
                                 </div>
                             </li>
 
-                            <a class="btn btn-outline-secondary float-right" href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>?category=<?= $t->graph->category() ?>">All Ports</a>
+                            <a class="btn btn-white float-right" href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>?category=<?= $t->graph->category() ?>">All Ports</a>
                         </form>
                     </ul>
 

@@ -54,11 +54,13 @@
             ->blockHelp( 'An optional NOC information email page / status page.' );
         ?>
 
-        <?= Former::actions(
-            Former::primary_submit( 'Update NOC Details' )->class( "mb-sm-0 mb-2" ),
-            Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-sm-0 mb-2" )
-        );
-        ?>
+        <?php if( !Auth::getUser()->isCustUser() ): ?>
+            <?= Former::actions(
+                Former::primary_submit( 'Update NOC Details' )->class( "mb-sm-0 mb-2" ),
+                Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-sm-0 mb-2" )
+            );
+            ?>
+        <?php endif; ?>
 
         <?= Former::close() ?>
 
@@ -145,10 +147,14 @@
                 ->blockHelp( '' );
             ?>
 
-            <?= Former::actions(
-                Former::primary_submit( 'Update Billing Details' )
-            );
-            ?>
+            <?php if( !Auth::getUser()->isCustUser() ): ?>
+                <?= Former::actions(
+                    Former::primary_submit( 'Update Billing Details' ),
+                    Former::success_button( 'Help' )->class( "help-btn mb-sm-0 mb-2" )
+                );
+                ?>
+            <?php endif; ?>
+
 
             <?= Former::close() ?>
 
@@ -156,3 +162,15 @@
     </div>
 
 </div>
+
+
+<?php $this->section( 'scripts' ) ?>
+    <script>
+        <?php if( Auth::getUser()->isCustUser() ): ?>
+            $( document ).ready(function() {
+                $( "input" ).attr( "disabled", "disabled" );
+                $( "select" ).attr( "disabled", "disabled" )
+            });
+        <?php endif; ?>
+    </script>
+<?php $this->append() ?>

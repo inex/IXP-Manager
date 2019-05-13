@@ -8,7 +8,7 @@
         </div>
         <?php if( $t->nbLink > 1 ): ?>
             <div clas="my-auto">
-                <button title="Remove link" id="remove-core-link-<?= $t->nbLink ?>" class="btn btn-sm btn-outline-secondary"><i class="fa fa-trash"></i></button>
+                <button title="Remove link" id="remove-core-link-<?= $t->nbLink ?>" class="btn btn-sm btn-white"><i class="fa fa-trash"></i></button>
             </div>
         <?php endif; ?>
     </div>

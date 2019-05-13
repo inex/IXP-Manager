@@ -17,7 +17,7 @@
 
             </form>
 
-            <hr class="w-100 tw-my-0">
+            <hr class="w-100 tw-my-0" style="margin-left: -10px ">
 
             <h6>
                 <span>IXP CUSTOMER ACTIONS</span>

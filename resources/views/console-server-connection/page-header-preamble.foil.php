@@ -3,7 +3,7 @@
     <div class="btn-group btn-group-sm" role="group">
 
         <div class="btn-group btn-group-sm">
-            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 <?= isset($t->data[ 'params'][ "cs" ]) ? $t->data[ 'params'][ "css" ][$t->data[ 'params'][ "cs" ] ] : "All Console Server Ports" ?> <span class="caret"></span>
             </button>
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
@@ -21,7 +21,7 @@
         </div>
 
 
-        <a  class="btn btn-outline-secondary" href="<?= route($t->feParams->route_prefix.'@add' ) ?><?= isset( $t->data[ 'params'][ "cs" ] ) ? "?console-server=" . $t->data[ 'params'][ "cs" ] : ""  ?>">
+        <a  class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@add' ) ?><?= isset( $t->data[ 'params'][ "cs" ] ) ? "?console-server=" . $t->data[ 'params'][ "cs" ] : ""  ?>">
             <i class="fa fa-plus"></i>
         </a>
 

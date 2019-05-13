@@ -10,7 +10,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <div class=" btn-group btn-group-sm" role="group">
-        <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-plus"></i> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
@@ -91,7 +91,7 @@ $this->layout( 'layouts/ixpv4' );
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn-outline-secondary" href="<?= route( 'core-bundle/edit' , [ 'id' => $cb->getId() ] ) ?>" title="Edit">
+                                <a class="btn btn-white" href="<?= route( 'core-bundle/edit' , [ 'id' => $cb->getId() ] ) ?>" title="Edit">
                                     <i class="fa fa-pencil"></i>
                                 </a>
                             </div>

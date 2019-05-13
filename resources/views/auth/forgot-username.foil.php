@@ -31,9 +31,6 @@
         </div>
     </div>
 
-
-
-
     <div class="row"
         <div class="col-12">
 
@@ -49,11 +46,10 @@
                 </p>
 
                 <div class="tw-mb-16">
-                    <label class="tw-block tw-text-grey-darker tw-text-sm tw-font-bold tw-mb-2" for="email">
+                    <label class="control-label" for="email">
                         Email
                     </label>
-                    <input name="email" class="tw-shadow-md tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight focus:tw-outline-none focus:tw-shadow-outline"
-                           id="email" type="text" placeholder="name@example.com" autofocus value="<?= old('email') ?>">
+                    <input name="email" class="form-control" id="email" type="text" placeholder="name@example.com" autofocus value="<?= old('email') ?>">
                     <?php foreach( $t->errors->get( 'email' ) as $err ): ?>
                         <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
                     <?php endforeach; ?>
@@ -61,19 +57,17 @@
                 </div>
 
 
-
                 <div class="tw-flex tw-items-center tw-justify-between">
-                    <a class="tw-inline-block tw-align-baseline tw-font-bold tw-text-sm tw-text-blue-light
-                        hover:tw-no-underline  hover:tw-text-blue-dark" href="<?= route( "forgot-password@show-form" ) ?>">
+                    <a href="<?= route( "forgot-password@show-form" ) ?>">
                         Forgot Password?
                     </a>
 
-                    <a class="hover:tw-no-underline tw-bg-transparent hover:tw-bg-blue-500 tw-text-blue-light tw-font-semibold hover:tw-text-blue-dark tw-py-1 tw-px-6 tw-border tw-border-blue-lighter hover:tw-border-transparent tw-rounded"
+                    <a class="btn btn-white"
                        href="<?= route('login@login' ) ?>">
                         Cancel
                     </a>
 
-                    <button class="tw-bg-blue-500 hover:tw-bg-blue-500-dark tw-text-white tw-font-bold tw-py-2 tw-px-6 tw-rounded focus:tw-outline-none focus:tw-shadow-outline" type="submit">
+                    <button class="btn btn-primary" type="submit">
                         Submit
                     </button>
                 </div>

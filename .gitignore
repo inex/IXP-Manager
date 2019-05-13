@@ -17,8 +17,6 @@ public/favicon.ico
 .DS_Store
 *~
 
-public/bower_components/
-
 .cache/
 .composer/
 .config/
@@ -47,11 +45,7 @@ config/lookingglass.php
 config/mailinglists.php
 config/trustedproxy.php
 
-# local INEX dev stuff:
-ixpmanager-dump.sql.bz2
-ixpmanager-preferred.sql.bz2
 ubuntu-*-cloudimg-console.log
-inex-*.sql.bz2
 
 .idea/workspace.xml
 .idea/tasks.xml
@@ -73,9 +67,9 @@ inex-*.sql.bz2
 /*.sql
 
 /node_modules/
-/package-lock.json
 npm-debug.log
 yarn-error.log
 
 tools/docker/containers/mysql/docker.sql
 
+.phpunit.result.cache

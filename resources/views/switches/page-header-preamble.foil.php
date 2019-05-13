@@ -6,20 +6,20 @@
 
             <?php if( isset($t->data[ 'params'][ "activeOnly" ] ) && $t->data[ 'params'][ "activeOnly" ] ): ?>
 
-                <a class="btn btn-outline-secondary" href="<?= route( $t->feParams->route_prefix."@list" , [ "active-only" => 0 ] ) ?>">
+                <a class="btn btn-white" href="<?= route( $t->feParams->route_prefix."@list" , [ "active-only" => 0 ] ) ?>">
                     Show Active &amp; Inactive
                 </a>
 
             <?php else: ?>
 
-                <a class="btn btn-outline-secondary" href="<?= route( $t->feParams->route_prefix."@list" , [ "active-only" => 1 ] ) ?>">
+                <a class="btn btn-white" href="<?= route( $t->feParams->route_prefix."@list" , [ "active-only" => 1 ] ) ?>">
                     Show Active Only
                 </a>
 
             <?php endif; ?>
 
 
-            <button type="button" class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                 List Mode: <?= $t->data[ 'params']['vtype'] ?>
             </button>
 
@@ -32,13 +32,13 @@
             </div>
 
 
-            <a class="btn btn-outline-secondary"  target="_blank" href="https://docs.ixpmanager.org/usage/switches/">
+            <a class="btn btn-white"  target="_blank" href="https://docs.ixpmanager.org/usage/switches/">
                 Help
             </a>
 
         </div>
 
-        <a class="btn btn-outline-secondary" href="<?= route($t->feParams->route_prefix.'@add-by-snmp') ?>">
+        <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@add-by-snmp') ?>">
             <span class="fa fa-plus"></span>
         </a>
 

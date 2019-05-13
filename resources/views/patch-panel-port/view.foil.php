@@ -17,13 +17,13 @@
 
         <div class="btn-group btn-group-sm" role="group">
 
-            <a class="btn btn-outline-secondary extra-action" href="<?= route('patch-panel-port@edit' , [ "id" => $t->ppp->getId() ] ) ?>" title="edit">
+            <a class="btn btn-white extra-action" href="<?= route('patch-panel-port@edit' , [ "id" => $t->ppp->getId() ] ) ?>" title="edit">
                 <span class="fa fa-pencil"></span>
             </a>
 
             <?= $t->insert( 'patch-panel-port/action-dd', [ 'ppp' => $t->ppp, 'btnClass' => 'btn-group-sm', 'tpl' => 'view' ] ); ?>
 
-            <a class="btn btn-outline-secondary" href="<?= route('patch-panel-port/list/patch-panel' , [ "id" => $t->ppp->getPatchPanel()->getId() ] ) ?>" title="list">
+            <a class="btn btn-white" href="<?= route('patch-panel-port/list/patch-panel' , [ "id" => $t->ppp->getPatchPanel()->getId() ] ) ?>" title="list">
                 <span class="fa fa-th-list"></span>
             </a>
         </div>
@@ -194,10 +194,13 @@
                                                     <?php if( !$current ): ?>
                                                         <?= $t->ee( $p->getCustomer() ) ?>
                                                     <?php else: ?>
-
-                                                        <a href="<?= route( 'customer@overview' , [ 'id' => $p->getCustomer()->getId() ] ) ?>" >
+                                                        <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                                            <a href="<?= route( 'customer@overview' , [ 'id' => $p->getCustomer()->getId() ] ) ?>" >
+                                                                <?= $t->ee( $p->getCustomer()->getName() ) ?>
+                                                            </a>
+                                                        <?php else: ?>
                                                             <?= $t->ee( $p->getCustomer()->getName() ) ?>
-                                                        </a>
+                                                        <?php endif; ?>
                                                     <?php endif; ?>
                                                 </td>
                                             </tr>
@@ -218,7 +221,7 @@
 
                                                         <?php if( Auth::user()->isSuperUser() ): ?>
                                                             <div class="float-right dropdown btn-group-sm ml-2">
-                                                                <button class="btn btn-outline-secondary dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                                                <button class="btn btn-white dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                                                     Change State
                                                                 </button>
                                                                 <div class="dropdown-menu" aria-labelledby="dropdownMenu1">
@@ -302,10 +305,10 @@
                                                     </b>
                                                 </td>
                                                 <td>
-                                                    <a class="btn btn-outline-secondary btn-sm" href="<?= route( 'patch-panel-port@download-loa' , [ 'id' => $p->getId() ] ) ?>">
+                                                    <a class="btn btn-white btn-sm" href="<?= route( 'patch-panel-port@download-loa' , [ 'id' => $p->getId() ] ) ?>">
                                                         Download
                                                     </a>
-                                                    <a class="btn btn-outline-secondary btn-sm" target="_blank" href="<?= route( 'patch-panel-port@view-loa' , [ 'id' => $p->getId() ] ) ?>">
+                                                    <a class="btn btn-white btn-sm" target="_blank" href="<?= route( 'patch-panel-port@view-loa' , [ 'id' => $p->getId() ] ) ?>">
                                                         View
                                                     </a>
                                                 </td>
@@ -473,7 +476,7 @@
                                                 <div class="card-header">
                                                     Public Notes:
                                                     <?php if( $current ): ?>
-                                                        <a class="btn btn-outline-secondary btn-sm pull-right" id="edit-notes-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" title="edit note" >
+                                                        <a class="btn btn-white btn-sm pull-right" id="edit-notes-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" title="edit note" >
                                                             <i class="fa fa-pencil"></i>
                                                         </a>
                                                     <?php endif; ?>
@@ -489,7 +492,7 @@
                                                 <div class="card-header">
                                                         Private Notes:
                                                     <?php if( $current ): ?>
-                                                        <a class="btn btn-outline-secondary btn-sm pull-right" id="edit-notes-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" title="edit note" >
+                                                        <a class="btn btn-white btn-sm pull-right" id="edit-notes-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" title="edit note" >
                                                             <i class="fa fa-pencil"></i>
                                                         </a>
                                                     <?php endif; ?>
@@ -538,7 +541,7 @@
 
                                                     <?php if( $current ): ?>
                                                         <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                                            <a class="btn btn-outline-secondary btn-sm ml-auto " id="attach-file-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" >
+                                                            <a class="btn btn-white btn-sm ml-auto " id="attach-file-<?= $t->ppp->getId() ?>" href="<?= url()->current() ?>" >
                                                                 <i class="fa fa-upload"></i>
                                                             </a>
                                                         <?php endif; ?>
@@ -598,16 +601,16 @@
                                                                         <td>
                                                                             <div class="btn-group btn-group-sm" role="group">
                                                                                 <?php if( Auth::user()->isSuperUser() ): ?>
-                                                                                    <a id="file-toggle-private-<?= $file->getId() ?>" class="btn btn-outline-secondary file-toggle-private" target="_blank" href="<?= url()->current() ?>"
+                                                                                    <a id="file-toggle-private-<?= $file->getId() ?>" class="btn btn-white file-toggle-private" target="_blank" href="<?= url()->current() ?>"
                                                                                             title="Toggle Public / Private">
                                                                                         <i id="file-toggle-private-i-<?= $file->getId() ?>" class="fa fa-<?= $file->getIsPrivate() ? 'unlock' : 'lock' ?>"></i>
                                                                                     </a>
                                                                                 <?php endif; ?>
-                                                                                <a class="btn btn btn-outline-secondary" target="_blank" href="<?= route('patch-panel-port@download-file', [ 'pppfid' => $file->getId() ] ) ?>" title="Download">
+                                                                                <a class="btn btn-white" target="_blank" href="<?= route('patch-panel-port@download-file', [ 'pppfid' => $file->getId() ] ) ?>" title="Download">
                                                                                     <i class="fa fa-download"></i>
                                                                                 </a>
                                                                                 <?php if( Auth::user()->isSuperUser() ): ?>
-                                                                                    <button id="delete_<?=$file->getId()?>" class="btn btn-outline-secondary" onclick="deletePopup(<?=$file->getId()?>,<?= $p->getId()?>,'<?=$objectType?>')" title="Delete">
+                                                                                    <button id="delete_<?=$file->getId()?>" class="btn btn-white" onclick="deletePopup(<?=$file->getId()?>,<?= $p->getId()?>,'<?=$objectType?>')" title="Delete">
                                                                                         <i class="fa fa-trash"></i></button>
                                                                                 <?php endif; ?>
                                                                             </div>

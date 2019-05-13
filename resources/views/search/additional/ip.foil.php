@@ -3,7 +3,7 @@
     <h5>
         IP Address: <?php if( $t->type == 'ipv4' ): ?> <?= $t->ee( $vli->getIPv4Address()->getAddress() ) ?> <?php else: ?> <?= $t->ee( $vli->getIPv6Address()->getAddress() ) ?> <?php endif; ?>
 
-        <a class="ml-2 btn btn-outline-secondary btn-sm" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vli->getVirtualInterface()->getId() ] ) ?>">
+        <a class="ml-2 btn btn-white btn-sm" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vli->getVirtualInterface()->getId() ] ) ?>">
             Virtual Interface
         </a>
     </h5>

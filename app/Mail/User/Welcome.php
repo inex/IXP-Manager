@@ -30,6 +30,7 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
 use Entities\{
+    Customer as CustomerEntity,
     User as UserEntity
 };
 
@@ -54,23 +55,44 @@ class Welcome extends Mailable
     public $user;
 
     /**
-     * User
-     * @var UserEntity
+     * Customer
+     * @var CustomerEntity
+     */
+    public $customer;
+
+    /**
+     * Resend?
+     * @var bool
      */
     public $resend;
+
+    /**
+     * Existing?
+     * @var bool
+     */
+    public $existing;
+
+    /**
+     * Existing?
+     * @var bool
+     */
+    public $token = null;
 
 
     /**
      * Create a new message instance.
      *
+     * @param CustomerEntity $customer
      * @param UserEntity $user
-     *
      * @param bool $resend
+     * @param bool $existing
      */
-    public function __construct( UserEntity $user, bool $resend = false )
+    public function __construct( CustomerEntity $customer, UserEntity $user, bool $resend = false, bool $existing = false )
     {
+        $this->customer = $customer;
         $this->user     = $user;
         $this->resend   = $resend;
+        $this->existing = $existing;
     }
 
     /**
@@ -80,7 +102,12 @@ class Welcome extends Mailable
      */
     public function build()
     {
-        return $this->markdown( 'user.emails.welcome' )
+        if( !$this->existing  ){
+            $this->token = app('auth.password.broker')->createToken($this->user);
+        }
+
+
+        return $this->markdown( $this->existing ? 'user.emails.welcome-existing' : 'user.emails.welcome' )
             ->subject( config('identity.sitename' ) . " - Your Access Details" );
         
     }

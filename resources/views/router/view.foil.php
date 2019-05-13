@@ -10,16 +10,16 @@ $this->layout( 'layouts/ixpv4' )
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a target="_blank" class="btn btn-outline-secondary" href="https://docs.ixpmanager.org/features/routers/">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/routers/">
             Documentation
         </a>
-        <a class="btn btn-outline-secondary" href="<?= route('router@list' ) ?>" title="list">
+        <a class="btn btn-white" href="<?= route('router@list' ) ?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
-        <a class="btn btn-outline-secondary" href="<?= route ('router@add' ) ?>" title="add">
+        <a class="btn btn-white" href="<?= route ('router@add' ) ?>" title="add">
             <span class="fa fa-plus"></span>
         </a>
-        <a class="btn btn-outline-secondary" href="<?= route ('router@edit' , [ 'id' => $t->rt->getId() ] ) ?>" title="edit">
+        <a class="btn btn-white" href="<?= route ('router@edit' , [ 'id' => $t->rt->getId() ] ) ?>" title="edit">
             <span class="fa fa-pencil"></span>
         </a>
 

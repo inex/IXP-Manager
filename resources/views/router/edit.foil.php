@@ -6,14 +6,14 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a target="_blank" class="btn btn-outline-secondary" href="https://docs.ixpmanager.org/features/routers/">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/routers/">
             Documentation
         </a>
-        <a class="btn btn-outline-secondary" href="<?= route('router@list' ) ?>" title="list">
+        <a class="btn btn-white" href="<?= route('router@list' ) ?>" title="list">
             <i class="fa fa-th-list"></i>
         </a>
         <?php if( $t->rt ): ?>
-            <a class="btn btn-outline-secondary" href="<?= route ('router@add' ) ?>" title="add">
+            <a class="btn btn-white" href="<?= route ('router@add' ) ?>" title="add">
                 <i class="fa fa-plus"></i>
             </a>
         <?php endif; ?>
@@ -206,10 +206,14 @@
                     starting at either the <code>resources/views</code> or <code>resources/skins/\$skin</code>. It is best
                     to read the documentation for this but examples of route server, route collector and AS112 configs as
                     used at INEX can be used with the bundled templates by entering one of the following:<br><br>
+                        &middot; <code>api/v4/router/server/bird2/standard</code><br>
+                        &middot; <code>api/v4/router/collector/bird2/standard</code><br>
+                        &middot; <code>api/v4/router/as112/bird2/standard</code><br>
                         &middot; <code>api/v4/router/server/bird/standard</code><br>
                         &middot; <code>api/v4/router/collector/bird/standard</code><br>
                         &middot; <code>api/v4/router/as112/bird/standard</code><br><br>
-                        &middot; <code>api/v4/router/server/bird2/standard</code><br>
+                        
+                        <b>NB: only <code>bird2</code> templates support RPKI and advanced looking glass features.</b>
                     " );
                     ?>
 

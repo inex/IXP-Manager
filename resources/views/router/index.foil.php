@@ -10,11 +10,11 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a target="_blank" class="btn btn-outline-secondary" href="https://docs.ixpmanager.org/features/routers/">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/routers/">
             Documentation
         </a>
 
-        <a class="btn btn-outline-secondary" href="<?= route ('router@add') ?>">
+        <a class="btn btn-white" href="<?= route ('router@add') ?>">
             <i class="fa fa-plus"></i>
         </a>
     </div>
@@ -102,21 +102,21 @@
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a target="_blank" class="btn btn-outline-secondary" href="<?= route('apiv4-router-gen-config', [ 'handle' => $router->getHandle() ] ) ?>" title="Configuration">
+                                <a target="_blank" class="btn btn-white" href="<?= route('apiv4-router-gen-config', [ 'handle' => $router->getHandle() ] ) ?>" title="Configuration">
                                     <i class="fa fa-file"></i>
                                 </a>
                                 <?php if( !config('ixp_fe.frontend.disabled.lg' ) ): ?>
-                                    <a target="_blank" class="btn btn-outline-secondary <?= $router->hasApi() ? '' : 'disabled' ?>" href="<?= route('lg::bgp-sum', [ 'handle' => $router->getHandle() ] ) ?>" title="Looking Glass">
+                                    <a target="_blank" class="btn btn-white <?= $router->hasApi() ? '' : 'disabled' ?>" href="<?= route('lg::bgp-sum', [ 'handle' => $router->getHandle() ] ) ?>" title="Looking Glass">
                                         <i class="fa fa-search"></i>
                                     </a>
                                 <?php endif; ?>
-                                <a class="btn btn-outline-secondary" href="<?= route('router@view' , [ 'id' => $router->getId() ] ) ?>" title="Preview">
+                                <a class="btn btn-white" href="<?= route('router@view' , [ 'id' => $router->getId() ] ) ?>" title="Preview">
                                     <i class="fa fa-eye"></i>
                                 </a>
-                                <a class="btn btn-outline-secondary" href="<?= route('router@edit' , [ 'id' => $router->getId() ] )?>" title="Edit">
+                                <a class="btn btn-white" href="<?= route('router@edit' , [ 'id' => $router->getId() ] )?>" title="Edit">
                                     <i class="fa fa-pencil"></i>
                                 </a>
-                                <a class="btn btn-outline-secondary" id="delete-router-<?=$router->getId() ?>" href="" title="Delete">
+                                <a class="btn btn-white" id="delete-router-<?=$router->getId() ?>" href="" title="Delete">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </div>

@@ -79,11 +79,6 @@ class PeeringManagerController extends Controller
             return Redirect::to('');
         }
 
-        if( !Auth::getUser()->isCustUser() ) {
-            AlertContainer::push( 'Only standard customer users can access the peering manager.', Alert::DANGER );
-            return Redirect::to('');
-        }
-
         $c      = Auth::getUser()->getCustomer();
 
         $vlans  = D2EM::getRepository( VlanEntity::class )->getPeeringManagerVLANs();

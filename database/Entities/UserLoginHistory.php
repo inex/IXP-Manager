@@ -46,9 +46,14 @@ class UserLoginHistory
     protected $id;
 
     /**
-     * @var \Entities\User
+     * @var int Link to \Entities\User
      */
-    protected $User;
+    protected $user_id;
+
+    /**
+     * @var \Entities\CustomerToUser
+     */
+    protected $customerToUser;
 
 
     /**
@@ -110,23 +115,23 @@ class UserLoginHistory
     /**
      * Set User
      *
-     * @param \Entities\User $user
+     * @param \Entities\CustomerToUser $c2u
      * @return UserLoginHistory
      */
-    public function setUser(\Entities\User $user)
+    public function setCustomerToUser(\Entities\CustomerToUser $c2u)
     {
-        $this->User = $user;
-    
+        $this->customerToUser = $c2u;
+
         return $this;
     }
 
     /**
      * Get User
      *
-     * @return \Entities\User 
+     * @return \Entities\CustomerToUser
      */
-    public function getUser()
+    public function getCustomerToUser()
     {
-        return $this->User;
+        return $this->customerToUser;
     }
 }

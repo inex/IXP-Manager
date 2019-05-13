@@ -80,11 +80,11 @@ $this->layout( 'layouts/ixpv4' );
 
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn-outline-secondary" href="<?= route( 'interfaces/sflow-receiver/edit' , [ 'id' => $sflr->getId() ] ) ?>" title="Edit">
+                                <a class="btn btn-white" href="<?= route( 'interfaces/sflow-receiver/edit' , [ 'id' => $sflr->getId() ] ) ?>" title="Edit">
                                     <i class="fa fa-pencil"></i>
                                 </a>
 
-                                <a class="btn btn-outline-secondary delete-sflr" id="delete-sflr-<?= $sflr->getId() ?>" href="" title="Delete">
+                                <a class="btn btn-white delete-sflr" id="delete-sflr-<?= $sflr->getId() ?>" href="" title="Delete">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </div>

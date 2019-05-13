@@ -14,10 +14,10 @@
 
     <div class="btn-group btn-group-sm" role="group">
         <?php if( $t->pp ): ?>
-            <a class="btn btn-outline-secondary" href="<?= route('patch-panel/edit' , [ 'id' => $t->pp->getId() ] ) ?>" title="Edit Patch Panel">
+            <a class="btn btn-white" href="<?= route('patch-panel/edit' , [ 'id' => $t->pp->getId() ] ) ?>" title="Edit Patch Panel">
                 <span class="fa fa-pencil"></span>
             </a>
-            <a class="btn btn-outline-secondary" href="<?= route('patch-panel@view' , [ 'id' => $t->pp->getId() ] ) ?>" title="View Patch Panel">
+            <a class="btn btn-white" href="<?= route('patch-panel@view' , [ 'id' => $t->pp->getId() ] ) ?>" title="View Patch Panel">
                 <span class="fa fa-eye"></span>
             </a>
         <?php endif;?>
@@ -177,7 +177,7 @@
 
                                         <?= $t->insert( 'patch-panel-port/action-dd', [ 'ppp' => $ppp, 'btnClass' => 'btn-group-sm', 'tpl' => 'index' ] ); ?>
 
-                                        <a class="btn btn-outline-secondary" title="History"
+                                        <a class="btn btn-white" title="History"
                                                 href="<?= route( 'patch-panel-port@view' , [ 'id' => $ppp->getId() ] ) ?>  ">
                                             <div class="d-flex mt-1">
                                                 <i class="fa fa-folder-open"></i>

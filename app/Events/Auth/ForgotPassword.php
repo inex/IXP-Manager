@@ -36,7 +36,7 @@ class ForgotPassword{
 
 
     /**
-     * @var array of users
+     * @var token
      */
     public $token;
 

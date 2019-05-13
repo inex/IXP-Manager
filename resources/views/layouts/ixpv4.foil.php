@@ -38,10 +38,10 @@
                 echo $t->insert("layouts/menus/public");
             } elseif( Auth::user()->isCustUser() && Auth::user()->getCustomer()->isTypeAssociate() ) {
                 echo $t->insert("layouts/menus/associate");
+            } elseif( Auth::user()->isCustAdmin() ) {
+                echo $t->insert( "layouts/menus/custadmin" );
             } elseif( Auth::user()->isCustUser() ) {
                 echo $t->insert("layouts/menus/custuser");
-            } elseif( Auth::user()->isCustAdmin() ) {
-                echo $t->insert("layouts/menus/custadmin");
             } elseif( Auth::user()->isSuperUser() ) {
                 echo $t->insert("layouts/menus/superuser");
             }
@@ -63,7 +63,7 @@
                     <?php /*if( Auth::check() && Auth::user()->isSuperUser() ): */?>
 
                         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                            <h1 class="h2">
+                            <h1>
                                 <?php $this->section('page-header-preamble') ?>
                                 <?php $this->stop() ?>
                             </h1>
@@ -164,6 +164,8 @@
                 }
 
             <?php endif; ?>
+
+
         </script>
 
 

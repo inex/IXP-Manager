@@ -115,7 +115,7 @@ class ApiKeyController extends Doctrine2Frontend {
             // custom access controls:
             switch( Auth::check() ? Auth::user()->getPrivs() : UserEntity::AUTH_PUBLIC ) {
                 case UserEntity::AUTH_SUPERUSER:
-                case UserEntity::AUTH_CUSTUSER:
+                case UserEntity::AUTH_CUSTUSER || UserEntity::AUTH_CUSTADMIN:
                     break;
 
                 default:
