@@ -774,6 +774,39 @@ class VirtualInterface extends \Entities\VirtualInterface implements \Doctrine\O
     /**
      * {@inheritDoc}
      */
+    public function isConnected(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isConnected', []);
+
+        return parent::isConnected();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function numberOfPublicVlans(): int
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'numberOfPublicVlans', []);
+
+        return parent::numberOfPublicVlans();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isPeeringPort(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isPeeringPort', []);
+
+        return parent::isPeeringPort();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getInfrastructure()
     {
 

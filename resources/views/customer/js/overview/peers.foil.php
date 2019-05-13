@@ -1,7 +1,7 @@
 <script>
 
     $( '.peers-table').DataTable({
-        "autoWidth": false,
+        responsive: true,
         "columns": [
             null,
             null,

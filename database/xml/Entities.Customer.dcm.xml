@@ -25,7 +25,6 @@
     <field name="dateleave" type="date" nullable="true"/>
     <field name="status" type="smallint" nullable="true"/>
     <field name="activepeeringmatrix" type="boolean" nullable="true"/>
-    <field name="peeringDb" type="string" length="255" nullable="true" column="peeringDb"/>
     <field name="lastupdated" type="date" nullable="true"/>
     <field name="lastupdatedby" type="integer" nullable="true"/>
     <field name="creator" type="string" length="255" nullable="true"/>
@@ -36,6 +35,16 @@
       </options>
     </field>
     <field name="isReseller" type="boolean" nullable="false" column="isReseller">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="in_manrs" type="boolean" nullable="false">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
+    <field name="in_peeringdb" type="boolean" nullable="false">
       <options>
         <option name="default">0</option>
       </options>
@@ -73,12 +82,13 @@
     <one-to-many field="XCusts" target-entity="Entities\PeeringMatrix" mapped-by="XCustomer"/>
     <one-to-many field="YCusts" target-entity="Entities\PeeringMatrix" mapped-by="YCustomer"/>
     <one-to-many field="RSPrefixes" target-entity="Entities\RSPrefix" mapped-by="Customer"/>
-    <one-to-many field="Users" target-entity="Entities\User" mapped-by="Customer"/>
+    <one-to-many field="User" target-entity="Entities\User" mapped-by="Customer"/>
     <one-to-many field="Traffic95ths" target-entity="Entities\Traffic95th" mapped-by="Customer"/>
     <one-to-many field="Traffic95thMonthlys" target-entity="Entities\Traffic95thMonthly" mapped-by="Customer"/>
     <one-to-many field="TrafficDailies" target-entity="Entities\TrafficDaily" mapped-by="Customer"/>
     <one-to-many field="logos" target-entity="Entities\Logo" mapped-by="customer"/>
     <one-to-many field="patchPanelPorts" target-entity="Entities\PatchPanelPort" mapped-by="customer"/>
+    <one-to-many field="Users" target-entity="Entities\CustomerToUser" mapped-by="customer"/>
     <many-to-many field="IXPs" target-entity="Entities\IXP" inversed-by="Customers">
       <join-table name="customer_to_ixp">
         <join-columns>

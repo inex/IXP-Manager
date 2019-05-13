@@ -35,7 +35,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 class RouterControllerTest extends DuskTestCase
 {
 
-    public function tearDown()
+    public function tearDown(): void
     {
         $router = D2EM::getRepository( RouterEntity::class )->findOneBy( [ 'handle' => 'dusk-ci-test' ] );
         if( $router ) {
@@ -60,7 +60,7 @@ class RouterControllerTest extends DuskTestCase
                     ->visit('/login')
                     ->type( 'username', 'travis' )
                     ->type( 'password', 'travisci' )
-                    ->press( 'Login' )
+                    ->press( '#login-btn' )
                     ->assertPathIs( '/admin' );
 
             $browser->visit( '/router/add' )
@@ -83,6 +83,7 @@ class RouterControllerTest extends DuskTestCase
                 ->select( 'lg_access', 2 )
                 ->check('quarantine')
                 ->check('bgp_lc')
+                ->check('rpki')
                 ->check('skip_md5')
                 ->type( 'template', 'api/v4/router/server/bird/standard' )
                 ->press('Add Router')
@@ -110,6 +111,7 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( '2', $router->getLgAccess() );
             $this->assertEquals( true, $router->getQuarantine() );
             $this->assertEquals( true, $router->getBgpLc() );
+            $this->assertEquals( true, $router->getRPKI() );
             $this->assertEquals( true, $router->getSkipMd5() );
             $this->assertEquals( 'api/v4/router/server/bird/standard', $router->getTemplate() );
 
@@ -133,6 +135,7 @@ class RouterControllerTest extends DuskTestCase
                 ->assertSelected( 'lg_access', '2' )
                 ->assertChecked( 'quarantine' )
                 ->assertChecked( 'bgp_lc' )
+                ->assertChecked( 'rpki' )
                 ->assertChecked( 'skip_md5' )
                 ->assertInputValue( 'template', 'api/v4/router/server/bird/standard' );
 
@@ -155,6 +158,7 @@ class RouterControllerTest extends DuskTestCase
                 ->select( 'lg_access', '1' )
                 ->uncheck('quarantine')
                 ->uncheck('bgp_lc')
+                ->uncheck('rpki')
                 ->uncheck('skip_md5')
                 ->type( 'template', 'api/v4/router/as112/bird/standard' )
                 ->press('Save Changes')
@@ -181,6 +185,7 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( '1', $router->getLgAccess() );
             $this->assertEquals( false, $router->getQuarantine() );
             $this->assertEquals( false, $router->getBgpLc() );
+            $this->assertEquals( false, $router->getRPKI() );
             $this->assertEquals( false, $router->getSkipMd5() );
             $this->assertEquals( 'api/v4/router/as112/bird/standard', $router->getTemplate() );
 
@@ -197,6 +202,7 @@ class RouterControllerTest extends DuskTestCase
                 ->assertSelected( 'lg_access', '1' )
                 ->assertNotChecked( 'quarantine' )
                 ->assertNotChecked( 'bgp_lc' )
+                ->assertNotChecked( 'rpki' )
                 ->assertNotChecked( 'skip_md5' );
 
 
@@ -225,6 +231,7 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( '1', $router->getLgAccess() );
             $this->assertEquals( false, $router->getQuarantine() );
             $this->assertEquals( false, $router->getBgpLc() );
+            $this->assertEquals( false, $router->getRPKI() );
             $this->assertEquals( false, $router->getSkipMd5() );
             $this->assertEquals( 'api/v4/router/as112/bird/standard', $router->getTemplate() );
 
@@ -234,6 +241,7 @@ class RouterControllerTest extends DuskTestCase
 
             $browser->check('quarantine')
                 ->check('bgp_lc')
+                ->check('rpki')
                 ->check('skip_md5')
                 ->press('Save Changes')
                 ->assertPathIs('/router/list');
@@ -244,6 +252,7 @@ class RouterControllerTest extends DuskTestCase
 
             $this->assertEquals( true, $router->getQuarantine() );
             $this->assertEquals( true, $router->getBgpLc() );
+            $this->assertEquals( true, $router->getRPKI() );
             $this->assertEquals( true, $router->getSkipMd5() );
 
             // 11. delete the router in the UI and verify via success message text and location

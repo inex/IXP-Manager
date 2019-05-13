@@ -30,10 +30,6 @@ return [
      */
 
 
-    // ****************************************************************************************
-    // IXP Manager v3 legacy below. Needs to be configured!
-    // ****************************************************************************************
-
     'legalname'   => env( 'IDENTITY_LEGALNAME', '*** CONFIG IDENTITY IN .env ***' ),
 
     'location'    => [
@@ -58,14 +54,12 @@ return [
     'billing_hours'       => env( 'IDENTITY_BILLING_HOURS', '*** CONFIG IDENTITY IN .env ***' ),
 
     'sitename'      => env( 'IDENTITY_SITENAME', '*** CONFIG IDENTITY IN .env ***' ),
+    'titlename'     => env( 'IDENTITY_TITLENAME', env( 'IDENTITY_SITENAME', 'IXP Manager' ) ),
+
     'corporate_url' => env( 'IDENTITY_CORPORATE_URL', '*** CONFIG IDENTITY IN .env ***' ),
     'url'           => env( 'APP_URL', '*** CONFIG APP_URL IN .env ***' ),
     'logo'          => env( 'IDENTITY_LOGO', '*** CONFIG IDENTITY IN .env ***' ),
     'biglogo'       => env( 'IDENTITY_BIGLOGO', '*** CONFIG IDENTITY IN .env ***' ),
-
-    'biglogoconf' => [
-            'offset'             => env( 'IDENTITY_BIGLOGO_OFFSET', '*** CONFIG IDENTITY IN .env ***' ),
-        ],
 
     'vlans'       => [
             'default' => env( 'IDENTITY_DEFAULT_VLAN', 1 ),

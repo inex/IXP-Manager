@@ -73,10 +73,6 @@ class DashboardController extends Controller
      */
     public function index( string $tab = null ) {
 
-        if( Auth::getUser()->getPrivs() != UserEntity::AUTH_CUSTUSER ){
-            return Redirect::to( '' );
-        }
-
         $c = Auth::getUser()->getCustomer();
         $grapher = null;
 
@@ -103,7 +99,7 @@ class DashboardController extends Controller
             'nocphone'                  => array_key_exists( 'nocphone',                $old    ) ? $old['nocphone']                : $c->getNocphone(),
             'noc24hphone'               => array_key_exists( 'noc24hphone',             $old    ) ? $old['noc24hphone']             : $c->getNoc24hphone(),
             'nocemail'                  => array_key_exists( 'nocemail',                $old    ) ? $old['nocemail']                : $c->getNocemail(),
-            'nochours'                  => array_key_exists( 'nochours',                $old    ) ? $old['nochours']                : $c->getNoc24hphone(),
+            'nochours'                  => array_key_exists( 'nochours',                $old    ) ? $old['nochours']                : $c->getNochours(),
             'nocwww'                    => array_key_exists( 'nocwww',                  $old    ) ? $old['nocwww']                  : $c->getNocwww(),
         ];
 
@@ -149,6 +145,10 @@ class DashboardController extends Controller
      */
     public function storeNocDetails( NocDetailsRequest $r ){
 
+        if( Auth::getUser()->isCustUser() ){
+            abort( 403, 'Insufficient Permissions.' );
+        }
+
         /** @var CustomerEntity $c */
         $c = Auth::getUser()->getCustomer();
 
@@ -177,6 +177,10 @@ class DashboardController extends Controller
      * @throws
      */
     public function storeBillingDetails( BillingDetailsRequest $r ){
+
+        if( Auth::getUser()->isCustUser() ){
+            abort( 403, 'Insufficient Permissions.' );
+        }
 
         /** @var CustomerEntity $c */
         $c = Auth::getUser()->getCustomer();

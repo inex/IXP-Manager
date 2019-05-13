@@ -257,6 +257,11 @@ class Customer
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
+    protected $User;
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
     protected $Users;
 
     /**
@@ -1171,26 +1176,62 @@ class Customer
     }
 
     /**
-     * Add Users
+     * Add Default User
      *
-     * @param Entities\User $users
+     * @param Entities\User $user
      * @return Customer
      */
-    public function addUser(\Entities\User $users)
+    public function addDefaultUser(\Entities\User $user)
     {
-        $this->Users[] = $users;
+        $this->DefaultUsers[] = $user;
 
         return $this;
     }
 
     /**
-     * Remove Users
+     * Remove Default User
      *
-     * @param Entities\User $users
+     * @param Entities\User $user
      */
-    public function removeUser(\Entities\User $users)
+    public function removeDefaultUser(\Entities\User $user)
     {
-        $this->Users->removeElement($users);
+        $this->DefaultUsers->removeElement($user);
+    }
+
+    /**
+     * Get Default Users
+     *
+     * @return \Doctrine\Common\Collections\Collection|User[]
+     */
+    public function getDefaultUsers()
+    {
+        return $this->DefaultUsers;
+    }
+
+
+
+
+    /**
+     * Add User
+     *
+     * @param Entities\User $user
+     * @return Customer
+     */
+    public function addUser(\Entities\User $user)
+    {
+        $this->Users[] = $user;
+
+        return $this;
+    }
+
+    /**
+     * Remove User
+     *
+     * @param Entities\User $user
+     */
+    public function removeUser(\Entities\User $user)
+    {
+        $this->Users->removeElement($user);
     }
 
     /**
@@ -1198,10 +1239,25 @@ class Customer
      *
      * @return \Doctrine\Common\Collections\Collection|User[]
      */
-    public function getUsers()
-    {
+    public function getUsers(){
+        $users = [];
+        foreach( $this->Users as $c2u ){
+            $users[] = $c2u->getUser();
+        }
+
+        return $users;
+    }
+
+    /**
+     * Get Users from Customer2User
+     *
+     * @return \Doctrine\Common\Collections\Collection|User[]
+     */
+    public function getC2Users(){
         return $this->Users;
     }
+
+
 
     /**
      * Get Users
@@ -1687,32 +1743,64 @@ class Customer
     }
 
     /**
-     * @var string
+     * Does this customer have a PeeringDB entry?
+     * @var bool
      */
-    protected $peeringDb;
+    protected $in_peeringdb = false;
 
 
     /**
      * Set peeringDb
      *
-     * @param string $peeringDb
+     * @param bool $in_peeringdb
      * @return Customer
      */
-    public function setPeeringDb($peeringDb)
+    public function setInPeeringdb( $in_peeringdb )
     {
-        $this->peeringDb = $peeringDb;
+        $this->in_peeringdb = $in_peeringdb;
 
         return $this;
     }
 
     /**
-     * Get peeringDb
+     * Get $in_peeringdb
      *
-     * @return string
+     * @return bool
      */
-    public function getPeeringDb()
+    public function getInPeeringdb()
     {
-        return $this->peeringDb;
+        return $this->in_peeringdb;
+    }
+
+
+    /**
+     * Is this customer a member of MANRS
+     * @var bool
+     */
+    protected $in_manrs = false;
+
+
+    /**
+     * Set $in_manrs
+     *
+     * @param string $in_manrs
+     * @return Customer
+     */
+    public function setInManrs( bool $in_manrs ): Customer
+    {
+        $this->in_manrs = $in_manrs;
+
+        return $this;
+    }
+
+    /**
+     * Get $in_manrs
+     *
+     * @return bool
+     */
+    public function getInManrs(): bool
+    {
+        return $this->in_manrs;
     }
 
     /**
@@ -2303,6 +2391,10 @@ class Customer
      */
     public function getFormattedName( $fmt = null )
     {
+        if( $this->isTypeAssociate() ) {
+            return $this->getName();
+        }
+
         if( $fmt === null && ( !function_exists( 'config' ) || ( $fmt = config('ixp_fe.customer_name_format') ) === null ) ) {
             $fmt = "%a %j";
         }

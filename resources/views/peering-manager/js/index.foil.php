@@ -43,11 +43,10 @@
         });
 
 
-        $( 'button[id|="peering-request"]' ).on( 'click', function( e ){
+        $( '.table' ).on( 'click', '.peering-request', function( e ){
             e.preventDefault();
             let custid  = ( this.id ).substring( 16 );
             let days    = $( "#" + this.id ).attr( 'data-days' );
-
             if( days >= 0 && days < 30 ) {
                 bootbox.confirm( "Are you sure you want to send a peering request to this member? You already sent one " + ( days == 0 ? "today" : ( days == 1 ? "yesterday" : days + " days ago" ) ) + ".",
                     function( result ) {
@@ -65,13 +64,28 @@
         });
 
 
-        $( 'button[id|="peering-notes"]' ).on( 'click', function( e ){
+        $( '.table' ).on( 'click', '.peering-note', function( e ){
             e.preventDefault();
             let peerid = ( this.id ).substring( 14 );
             peeringPopup( peerid, "note" );
 
         });
 
+        $('.table').show();
+
+        $('.table').DataTable( {
+            responsive: true,
+            ordering: false,
+            searching: false,
+            paging:   false,
+            info:   false,
+        } );
+
+        $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+            $($.fn.dataTable.tables(true)).DataTable()
+                .columns.adjust()
+                .responsive.recalc();
+        });
 
     });
 
@@ -129,7 +143,7 @@
             if (data.error) {
 
                 bootbox.dialog({
-                    title: "<i class='glyphicon glyphicon-remove'></i> Error",
+                    title: "<i class='fa fa-cross'></i> Error",
                     message: data.message,
                     buttons: {
                         ok: {
@@ -148,7 +162,7 @@
                 $('#modal-peering-request').modal('hide');
 
                 bootbox.dialog({
-                    title: "<i class='glyphicon glyphicon-ok'></i> Success",
+                    title: "<i class='fa fa-check'></i> Success",
                     message: data.message,
                 });
             }
@@ -210,7 +224,7 @@
             .done( function( data ) {
                 if( data.error ){
                     bootbox.dialog({
-                        title: "<i class='glyphicon glyphicon-remove'></i> Error",
+                        title: "<i class='fa fa-cross'></i> Error",
                         message: data.message,
                         buttons: {
                             ok: {
@@ -229,12 +243,12 @@
 
                     if ( $( '#input-sendtome' ).val() == '0' ) {
                         $('#peering-request-'       + custid    ).attr( 'data-days', 0 );
-                        $('#peering-request-icon-'  + custid    ).attr( 'class', 'glyphicon glyphicon-repeat'    );
-                        $('#peering-notes-icon-'    + custid    ).attr( 'class', 'glyphicon glyphicon-star'      );
+                        $('#peering-request-icon-'  + custid    ).attr( 'class', 'fa fa-repeat'    );
+                        $('#peering-notes-icon-'    + custid    ).attr( 'class', 'fa fa-star'      );
                     }
 
                     bootbox.dialog({
-                        title: "<i class='glyphicon glyphicon-ok'></i> Success",
+                        title: "<i class='fa fa-check'></i> Success",
                         message: data.message,
                     });
 

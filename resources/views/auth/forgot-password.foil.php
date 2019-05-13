@@ -1,8 +1,9 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
-<?php $this->section( 'title' ) ?>
-    Lost Password
+<?php $this->section( 'page-header-preamble' ) ?>
+    Forget Password
 <?php $this->append() ?>
+
 
 <?php $this->section( 'page-header-postamble' ) ?>
 
@@ -11,14 +12,13 @@
 
 <?php $this->section( 'content' ) ?>
     <div class="row">
-        <div class="col-sm-12">
+        <div class="col-lg-12">
 
             <?= $t->alerts() ?>
 
-            <div align="center">
-
+            <div class="tw-text-center tw-my-6">
                 <?php if( config( "identity.biglogo" ) ) :?>
-                    <img src="<?= config( "identity.biglogo" ) ?>" />
+                    <img class="tw-inline img-fluid" src="<?= config( "identity.biglogo" ) ?>" />
                 <?php else: ?>
                     <h2>
                         [Your Logo Here]
@@ -29,41 +29,57 @@
                 <?php endif; ?>
             </div>
 
-            <br /><br />
-
-            <?= Former::open()->method( 'POST' )
-                ->action( route( 'forgot-password@reset-email' ) )
-                ->customWidthClass( 'col-sm-5' )
-                ->addClass( 'col-md-offset-4' );
-
-            ?>
-
-            <div>
-                Please enter your username and we will send you a password reset token by email.
-            </div>
-
-            <br />
-
-            <?= Former::text( 'username' )
-                ->label( 'Username' )
-                ->required()
-                ->blockHelp( '' )
-            ?>
-
-            <?= Former::actions( Former::primary_submit( 'Reset Password' ),
-                Former::default_link( 'Return to login' )->href( route( "login@showForm" ) )
-            );?>
-
-            <br />
-
-            <div>
-                For help please contact <a href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>"><?= config( "identity.legalname" ) ?></a>
-            </div>
-
-            <?= Former::close() ?>
 
         </div>
 
+    </div>
+
+    <div class="row">
+        <div class="col-12">
+
+            <div class="tw-w-full tw-max-w-sm tw-mx-auto">
+
+                <?= Former::open()->method( 'POST' )
+                    ->action( route( 'forgot-password@reset-email' ) )
+                    ->class( "tw-bg-white tw-shadow-md tw-rounded tw-px-8 tw-pt-6 tw-pb-8 tw-mb-6" )
+                ?>
+
+                <p class="tw-mb-6 tw-text-grey-dark tw-font-bold">
+                    Please enter your username and we will send you a password reset token by email.
+                </p>
+
+                <div class="tw-mb-16">
+                    <label class="control-label" for="username">
+                        Username
+                    </label>
+                    <input name="username" class="form-control" id="username" type="text" placeholder="Username" autofocus value="<?= old('username') ?>">
+                    <?php foreach( $t->errors->get( 'username' ) as $err ): ?>
+                        <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
+                    <?php endforeach; ?>
+
+                </div>
+
+
+
+                <div class="tw-flex tw-items-center tw-justify-between">
+                    <a href="<?= route( "forgot-password@showUsernameForm" ) ?>">
+                        Forgot Username?
+                    </a>
+
+                    <a class="btn btn-white"
+                                href="<?= route('login@login' ) ?>">
+                        Cancel
+                    </a>
+
+                    <button class="btn btn-primary" type="submit">
+                        Submit
+                    </button>
+                </div>
+
+            </div>
+
+            <?= Former::close() ?>
+        </div>
     </div>
 
 

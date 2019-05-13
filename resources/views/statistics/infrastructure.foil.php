@@ -3,7 +3,7 @@
     $this->layout( 'layouts/ixpv4' )
 ?>
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
     Infrastructure Aggregate Graphs - <?= $t->infra->getName() ?> (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
 <?php $this->append() ?>
 
@@ -16,53 +16,70 @@
 
         <div class="col-md-12">
 
-            <nav class="navbar navbar-default">
-                <div class="">
 
-                    <div class="navbar-header">
-                        <a class="navbar-brand" href="<?= route( "statistics/infrastructure" ) ?>">Graph Options:</a>
-                    </div>
+            <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
 
-                    <form class="navbar-form navbar-left form-inline">
+                <a class="navbar-brand" href="<?= route( "statistics/infrastructure" ) ?>">Graph Options:</a>
 
-                        <div class="form-group">
-                            <label for="category">Infrastructure:</label>
 
-                            <select id="form-select-infraid" name="infraid" class="form-control" >
-                                <?php foreach( $t->infras as $id => $i ): ?>
-                                    <option value="<?= $id ?>" <?= $t->infraid != $id ?: 'selected="selected"' ?>><?= $i ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                        </div>
-                        <div class="form-group">
-                            <label for="period">Category:</label>
-                            <select id="form-select-category" name="category" class="form-control">
-                                <?php foreach( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS_DESCS as $cvalue => $cname ): ?>
-                                    <option value="<?= $cvalue ?>" <?= $t->category != $cvalue ?: 'selected="selected"' ?>><?= $cname ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
 
-                        </div>
-                        <a class="btn btn-default" href="<?= route( 'statistics/ixp' ) ?>">Overall IXP Graphs</a>
+                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex">
 
-                    </form>
+                            <li class="nav-item">
+                                <div class="nav-link d-flex ">
+                                    <label for="category" class="col-lg-6 col-sm-4">Infrastructure:</label>
 
+                                    <select id="form-select-infraid" name="infraid" class="form-control" >
+                                        <?php foreach( $t->infras as $id => $i ): ?>
+                                            <option value="<?= $id ?>" <?= $t->infraid != $id ?: 'selected="selected"' ?>><?= $i ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+
+                                </div>
+                            </li>
+                            <li class="nav-item">
+                                <div class="nav-link d-flex ">
+                                    <label for="period" class="col-lg-6 col-sm-4" >Category:</label>
+                                    <select id="form-select-category" name="category" class="form-control">
+                                        <?php foreach( IXP\Services\Grapher\Graph::CATEGORIES_BITS_PKTS_DESCS as $cvalue => $cname ): ?>
+                                            <option value="<?= $cvalue ?>" <?= $t->category != $cvalue ?: 'selected="selected"' ?>><?= $cname ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+
+                                </div>
+                            </li>
+                            <a class="btn btn-white float-right" href="<?= route( 'statistics/ixp' ) ?>">Overall IXP Graphs</a>
+
+                        </form>
+                    </ul>
                 </div>
             </nav>
 
+            <div class="row">
+                <?php foreach( IXP\Services\Grapher\Graph::PERIODS as $pvalue => $pname ): ?>
 
-            <?php foreach( IXP\Services\Grapher\Graph::PERIODS as $pvalue => $pname ): ?>
+                    <div class="col-md-12 col-lg-6">
 
-                <div class="col-md-6">
+                        <div class="card">
+                            <div class="card-header">
+                                <h3><?= IXP\Services\Grapher\Graph::resolvePeriod( $pvalue ) ?> Graph</h3>
+                            </div>
+                            <div class="card-body">
+                                <?= $t->graph->setPeriod( $pvalue )->renderer()->boxLegacy() ?>
+                            </div>
 
-                    <div class="well">
-                        <h3><?= IXP\Services\Grapher\Graph::resolvePeriod( $pvalue ) ?> Graph</h3>
-                        <?= $t->graph->setPeriod( $pvalue )->renderer()->boxLegacy() ?>
+                        </div>
                     </div>
-                </div>
 
-            <?php endforeach; ?>
+                <?php endforeach; ?>
+            </div>
+
 
         </div>
 

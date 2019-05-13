@@ -2,60 +2,31 @@
 /** @var object $t */
 ?>
 
-<?php $this->section( 'title' ) ?>
-<a href="<?= route ( 'customer@list' )?>">
-    Customer
-</a>
-<?php $this->append() ?>
+<?php $this->section( 'page-header-preamble' ) ?>
 
-<?php $this->section( 'page-header-postamble' ) ?>
-
-    <li>Logos</li>
+    Customer / Logos
 
 <?php $this->append() ?>
 
 
 <?php $this->section( 'content' ) ?>
     <div class="row">
-
         <div class="col-md-12">
-            <?php $count = 0 ?>
-            <?php foreach( $t->logos as $logo ): ?>
-
-            <div class="col-sm-3">
-
-                <a href="<?= route( "logo@manage" , [ "id" => $logo->getCustomer()->getId() ] ) ?>">
-                    <img class="www80-padding img-responsive" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
-                </a>
-
+            <div class="row content-center">
+                <?php foreach( $t->logos as $logo ): ?>
+                    <a class="col-lg-3 col-sm-6 my-2 tw-bg-white rounded-t-lg border tw-border-gray-400 p-4 justify-center tw-shadow-md hover:tw-bg-grey-lighter text-center" href="<?= route( "logo@manage" , [ "id" => $logo->getCustomer()->getId() ] ) ?>">
+                        <div>
+                            <img class="img-fluid mx-auto" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
+                            <hr>
+                            <h5>
+                                <?= $logo->getCustomer()->getName() ?>
+                            </h5>
+                        </div>
+                    </a>
+                <?php endforeach; ?>
             </div>
-
-            <?php $count++ ?>
-
-            <?php if( $count%4 == 0 ): ?>
-        </div><br /><div class="col-md-12">
-            <?php endif; ?>
-
-            <?php endforeach; ?>
-
-            <?php if( $count%4 != 0 ): ?>
-                <div class="span3"></div>
-                <?php $count++ ?>
-                <?php if( $count%4 != 0): ?>
-                    <div class="span3"></div>
-                    <?php $count++ ?>
-                    <?php if( $count%4 != 0): ?>
-                        <div class="span3"></div>
-                        <?php $count++ ?>
-                    <?php endif; ?>
-                <?php endif; ?>
-            <?php endif; ?>
-
         </div>
-
     </div>
-
-
 
 <?php $this->append() ?>
 

@@ -1,26 +1,19 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
     Login to <?= config( "identity.sitename" ) ?>
-<?php $this->append() ?>
-
-<?php $this->section( 'page-header-postamble' ) ?>
-
 <?php $this->append() ?>
 
 
 <?php $this->section( 'content' ) ?>
 <div class="row">
-    <div class="col-sm-12">
+    <div class="col-12">
 
         <?= $t->alerts() ?>
 
-        <br /><br />
-
-        <div align="center">
-
+        <div class="tw-text-center tw-my-6">
             <?php if( config( "identity.biglogo" ) ) :?>
-                <img src="<?= config( "identity.biglogo" ) ?>" />
+                <img class="tw-inline img-fluid" src="<?= config( "identity.biglogo" ) ?>" />
             <?php else: ?>
                 <h2>
                     [Your Logo Here]
@@ -31,42 +24,64 @@
             <?php endif; ?>
         </div>
 
-        <br /><br />
-        <br /><br />
+    </div>
+</div>
 
-        <?= Former::open()->method( 'POST' )
+<div class="row">
+    <div class="col-12">
+
+        <div class="tw-w-full tw-max-w-sm tw-mx-auto">
+
+            <?= Former::open()->method( 'POST' )
                 ->action( route( 'login@login' ) )
-                ->customWidthClass( 'col-sm-4' )
-                ->addClass( 'col-md-offset-4' );
-        ?>
-
-        <?= Former::text( 'username' )
-                ->label( 'Username' )
-        ?>
-
-        <?= Former::password( 'password' )
-            ->label( 'Password' )
-            ->blockHelp( '' );
-        ?>
-
-        <?= Former::checkbox( 'remember' )
-            ->label( '&nbsp;' )
-            ->text( 'Remember Me' )
-            ->value( 1 )
-            ->blockHelp( "" );
-        ?>
-
-        <?= Former::actions( Former::primary_submit( 'Login' ) );?>
-
-        <br><br>
+                ->class( "tw-bg-white tw-shadow-md tw-rounded tw-px-8 tw-pt-6 tw-pb-8 tw-mb-6" )
+            ?>
 
 
-        <a href="<?= route( "forgot-password@show-form" ) ?>"        class="btn-info btn">Forgot Password</a>
-        <a href="<?= route( "forgot-password@showUsernameForm" ) ?>" class="btn-info btn">Forgot Username</a>
+            <div class="tw-mb-6">
+                <label class="control-label" for="username">
+                    Username
+                </label>
+                <input name="username" class="form-control" id="username" type="text" placeholder="Username" autofocus value="<?= old('username') ?>">
+                <?php foreach( $t->errors->get( 'username' ) as $err ): ?>
+                    <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
+                <?php endforeach; ?>
 
-        <br><br>
+            </div>
 
-        <?= Former::close() ?>
+
+            <div class="tw-mb-6">
+                <label class="control-label" for="password">
+                    Password
+                </label>
+                <input name="password" class="form-control" id="password" type="password" placeholder="******************">
+                <?php foreach( $t->errors->get( 'password' ) as $err ): ?>
+                    <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="tw-mb-6">
+                <label class="tw-block tw-text-grey-dark tw-font-bold">
+                    <input class="tw-mr-2 tw-leading-tight" type="checkbox" name="remember" value="1">
+                    <span class="tw-text-sm">
+                        Remember me
+                    </span>
+                </label>
+            </div>
+
+
+            <div class="tw-flex tw-items-center tw-justify-between">
+                <a href="<?= route( "forgot-password@show-form" ) ?>">
+                    Forgot Password?
+                </a>
+
+                <button id="login-btn" class="btn btn-primary" type="submit">
+                    Sign In
+                </button>
+            </div>
+
+            <?= Former::close() ?>
+        </div>
 
     </div>
 
@@ -77,5 +92,9 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
+<script>
+
+</script>
+
 
 <?php $this->append() ?>

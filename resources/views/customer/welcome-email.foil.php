@@ -2,22 +2,13 @@
 /** @var object $t */
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'customer@list' )?>">
-        Customer
+<?php $this->section( 'page-header-preamble' ) ?>
+
+    <a href="<?=  route( "customer@overview" , [ "id" => $t->c->getId() ] ) ?>" >
+        <?= $t->ee( $t->c->getName() ) ?>
     </a>
-<?php $this->append() ?>
-
-
-
-<?php $this->section( 'page-header-postamble' ) ?>
-
-    <li>
-        <a href="<?=  route( "customer@overview" , [ "id" => $t->c->getId() ] ) ?>" >
-            <?= $t->ee( $t->c->getName() ) ?>
-        </a>
-    </li>
-    <li>Welcome Email</li>
+    /
+    Welcome Email
 
 <?php $this->append() ?>
 
@@ -30,15 +21,17 @@
 
             <?= $t->alerts() ?>
 
-            <div class="well">
+            <div class="alert alert-info" role="alert">
                 Please see the <a target="_blank" href="http://docs.ixpmanager.org/usage/customers/#welcome-emails">official documentation</a> for information on welcome emails and instructions on how to customise the content.
             </div>
 
-            <legend>Send Welcome Email</legend>
+            <legend>
+                Send Welcome Email
+            </legend>
 
             <?= Former::open()->method( 'POST' )
                 ->action( route( 'customer@send-welcome-email' ) )
-                ->addClass( 'col-md-10' );
+                ->addClass( 'col-md-12' );
             ?>
             <?= Former::text( 'to' )
                 ->label( 'To' );
@@ -57,23 +50,26 @@
             ?>
 
             <div class="col-lg-offset-2 col-sm-offset-2">
-
-                <ul class="nav nav-tabs">
-                    <li role="presentation" class="active">
-                        <a class="tab-link-body-note" href="#body">Body</a>
-                    </li>
-                    <li role="presentation">
-                        <a class="tab-link-preview-note" href="#preview">Preview</a>
-                    </li>
-                </ul>
-
-                <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="body">
-                        <textarea class="form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= old( 'message' ) ?? $t->body ?></textarea>
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs">
+                            <li role="presentation" class="nav-item">
+                                <a class="tab-link-body-note nav-link active" href="#body">Body</a>
+                            </li>
+                            <li role="presentation" class="nav-item">
+                                <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
+                            </li>
+                        </ul>
                     </div>
-                    <div role="tabpanel" class="tab-pane" id="preview">
-                        <div class="well well-preview" style="background: rgb(255,255,255);">
-                            Loading...
+
+                    <div class="tab-content card-body">
+                        <div role="tabpanel" class="tab-pane show active" id="body">
+                            <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= old( 'message' ) ?? $t->body ?></textarea>
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="preview">
+                            <div class="bg-light p-4 well-preview">
+                                Loading...
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -81,17 +77,19 @@
                 <br><br>
             </div>
 
-            <?= Former::actions(
-                Former::primary_submit( 'Send Email' ),
-                Former::default_link( 'Cancel' )->href( route( "customer@overview" , [ "id" => $t->c->getId() ] ) )
-            );
-            ?>
-
+            <div class="col-sm-12 text-center mt-4 bg-light shadow-sm p-3">
+                <?= Former::actions(
+                    Former::primary_submit( 'Send Email' ),
+                    Former::secondary_link( 'Cancel' )->href( route( "customer@overview" , [ "id" => $t->c->getId() ] ) )
+                );
+                ?>
+            </div>
 
             <?= Former::hidden( 'id' )
                 ->value( $t->c->getId() )
             ?>
             <?= Former::close() ?>
+
 
         </div>
     </div>

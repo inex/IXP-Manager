@@ -1,14 +1,12 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'switch@list' )?>">Switches</a>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Switches
+    /
+    Ports for <?= $t->s->getName() ?> (via SNMP)
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>View / Edit Ports for <?= $t->s->getName() ?> (via SNMP)</li>
-<?php $this->append() ?>
-
-<?php $this->section( 'page-header-preamble' ) ?>
 
     <?= $t->insert( "switch-port/page-header-preamble", [ "data" => [ "params" => [ "switch" => $t->s->getId(), "switches" => $t->switches ] ] , "feParams" => (object)[ "route_prefix" => "switch-port", "route_action" => "snmp-poll" ] ] ) ?>
 
@@ -22,64 +20,99 @@
 
         <?= $t->alerts() ?>
 
+
         <?php if( count( $t->ports ) ): ?>
-            <nav class="navbar navbar-default">
-                <div id="actions-area">
 
-                    <div class="navbar-header">
-                        <a class="navbar-brand" href="#"> With selected:</a>
-                    </div>
+            <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
+                <a class="navbar-brand" href="#">
+                    With selected:
+                </a>
 
-                    <form class="navbar-form navbar-left form-inline">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                        <div class="form-group">
-                            <a href="#" class="btn btn-danger input-sp-action" id="poll-group-delete">Delete</a>
-                        </div>
-                        |
-                        <div class="form-group">
-                            <label for="shared-type">Set type:</label>
-                            <select id="shared-type" name="shared-type" class="form-control input-sp-action">
-                                <option value="" label="Choose a type">Choose a type</option>
-                                <?php foreach( Entities\SwitchPort::$TYPES as $idx => $name ): ?>
-                                    <option value="<?= $idx ?>" label="<?= $name ?>"><?= $name ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
+                        <form class="navbar-form navbar-left form-inline">
+                            <li class="nav-item mr-2">
+                                <div class="form-group">
+                                    <a href="#" class="btn btn-danger input-sp-action" id="poll-group-delete">
+                                        Delete
+                                    </a>
+                                </div>
+                            </li>
+                            |
+                            <li class="nav-item mr-2">
+                                <div class="nav-link d-flex ">
+                                    <label for="shared-type">Set type:</label>
+                                    <select id="shared-type" name="shared-type" class="form-control input-sp-action">
+                                        <option value="" label="Choose a type">Choose a type</option>
+                                        <?php foreach( Entities\SwitchPort::$TYPES as $idx => $name ): ?>
+                                            <option value="<?= $idx ?>" label="<?= $name ?>"><?= $name ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </li>
+                            |
+                            <li class="nav-item mr-2">
+                                <div class="nav-link">
+                                    <a href="#" class="btn btn-success input-sp-action" id="poll-group-active">
+                                        Set Active
+                                    </a>
+                                </div>
+                            </li>
+                            |
+                            <li class="nav-item mr-2">
+                                <div class="nav-link">
+                                    <a href="#" class="btn btn-warning input-sp-action" id="poll-group-inactive">
+                                        Set Inactive
+                                    </a>
+                                </div>
+                            </li>
 
-                        </div>
-                        |
-                        <div class="form-group">
-                            <a href="#" class="btn btn-success input-sp-action" id="poll-group-active">Set Active</a>
-                        </div>
-                        |
-                        <div class="form-group">
-                            <a href="#" class="btn btn-warning input-sp-action" id="poll-group-inactive">Set Inactive</a>
-                        </div>
+                            <div id="loading" class="form-group" style="margin-left: 10px"></div>
+                        </form>
 
-                        <div id="loading" class="form-group" style="margin-left: 10px"></div>
-
-                    </form>
-
+                    </ul>
                 </div>
             </nav>
+
         <?php endif; ?>
 
         <table id="list-port" class="table table-bordered table-hover">
 
-            <thead>
-            <tr>
-                <th>
-                    <input type="checkbox" name="select-all" id="select-all" value="" />
-                    &nbsp; &nbsp;
-                    <i id="checkbox-reverse" style="cursor: pointer" class="glyphicon glyphicon-retweet"></i>
-                </th>
-                <th>Name</th>
-                <th>Customer</th>
-                <th>Description</th>
-                <th>Alias</th>
-                <th>Active</th>
-                <th>Type</th>
-                <th>Status</th>
-            </tr>
+            <thead class="thead-dark">
+                <tr>
+                    <th>
+                        <div class="d-flex">
+                            <input type="checkbox" name="select-all" id="select-all" value="" />
+                            <i id="checkbox-reverse" style="cursor: pointer" class="fa fa-retweet ml-2"></i>
+                        </div>
+
+                    </th>
+                    <th>
+                        Name
+                    </th>
+                    <th>
+                        Customer
+                    </th>
+                    <th>
+                        Description
+                    </th>
+                    <th>
+                        Alias
+                    </th>
+                    <th>
+                        Active
+                    </th>
+                    <th>
+                        Type
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                </tr>
             </thead>
 
             <tbody>
@@ -114,7 +147,7 @@
                             </td>
                             <td>
                                 <div style="float: left;">
-                                    <select id="port-type-<?= $port[ "port"]->getId() ?>" class="chzn-select" style="width: 150px">
+                                    <select id="port-type-<?= $port[ "port"]->getId() ?>" style="width: 100px!important">
                                         <?php foreach( Entities\SwitchPort::$TYPES as $idx => $name ): ?>
                                             <option value="<?= $idx ?>" label="<?= $name ?>" <?= $port[ "port"]->getType() == $idx ? "selected='selected'" : "" ?>>
                                                 <?= $name ?>
@@ -122,7 +155,7 @@
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
-                                <div id="port-type-state-<?= $port[ "port"]->getId() ?>" style="float: left; padding: 2px 0px 0px 5px; width: 30px; margin-left:10px"></div>
+                                <div id="port-type-state-<?= $port[ "port"]->getId() ?>" class="text-secondary ml-1 float-left" style="width: 25px; height: 25px"></div>
                             </td>
 
                             <td>

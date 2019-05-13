@@ -25,6 +25,8 @@ namespace IXP\Http\Controllers\Interfaces;
 
 use D2EM, Former, Input, Redirect;
 
+use IXP\Utils\Former\Framework\TwitterBootstrap4;
+
 use Entities\{
     CoreBundle as CoreBundleEntity,
     CoreLink as CoreLinkEntity,
@@ -109,8 +111,11 @@ class CoreBundleController extends Common
     public function addCoreLinkFrag( Request $request ) :JsonResponse {
         $nb = $request->input("nbCoreLink") + 1;
 
+
+
         $returnHTML = view('interfaces/core-bundle/core-link-frag')->with([
             'nbLink'                        => $nb,
+            'formerrrrrr'                   => 'dd',
             'enabled'                       => $request->input("enabled" ) ? true : false,
             'bundleType'                    => array_key_exists( $request->input("bundleType" ), CoreBundleEntity::$TYPES ) ? $request->input("bundleType" ) : CoreBundleEntity::TYPE_ECMP ,
         ])->render();
@@ -211,7 +216,7 @@ class CoreBundleController extends Common
         // if we edit the core bundle we stop here
         if( $edit ){
             D2EM::flush();
-            AlertContainer::push( 'The core bundle has been updated successfully.', Alert::SUCCESS );
+            AlertContainer::push( 'Core bundle updated successfully.', Alert::SUCCESS );
             return Redirect::to( route( "core-bundle/edit", [ "id" => $cb->getId() ] ) );
         }
 
@@ -279,7 +284,7 @@ class CoreBundleController extends Common
 
         D2EM::flush();
 
-        AlertContainer::push( 'The core links have been edited with success.', Alert::SUCCESS );
+        AlertContainer::push( 'The core links have been edited successfully.', Alert::SUCCESS );
 
         return Redirect::to( route( "core-bundle/edit", [ "id" => $cb->getId() ] ) );
 
@@ -423,7 +428,7 @@ class CoreBundleController extends Common
 
         D2EM::flush();
 
-        AlertContainer::push( 'The core bundle has been deleted with success.', Alert::SUCCESS );
+        AlertContainer::push( 'Core bundle deleted successfully.', Alert::SUCCESS );
 
         return response()->json( [ 'success' => true ] );
 

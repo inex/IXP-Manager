@@ -1,8 +1,6 @@
-<br/>
 <p>
     This <em>Route Server Prefix Filtering Analysis</em> tool allows one to examine what routes a
     network is advertising to the <?= config( 'identity.orgname' ) ?> Route Servers.
-    <br /><br />
 </p>
 
 <h4>Source of IRRDB Information</h4>
@@ -26,7 +24,6 @@
     If this is incorrect or if there is a better source, please
     <a href="<?= route( 'public-content', 'support' ) ?>">contact us</a>
     to have this changed.
-    <br /><br />
 </p>
 
 
@@ -48,7 +45,7 @@
 </p>
 
 
-<div class="col-md-4 col-md-offset-1">
+<div>
 
     <pre>
         route:          192.0.2.0/24
@@ -61,7 +58,7 @@
 
 </div>
 
-<div class="col-md-4 col-md-offset-1">
+<div>
 
     <pre>
         route6:         2001:DB8::/32
@@ -74,11 +71,8 @@
 
 </div>
 
-<div style="clear:both"></div>
 
-<br /><br />
-
-<h4>
+<h4 class="mt-2">
     Not Advertised but Acceptable
     <span class="badge badge-<?php if( count( $t->aggRoutes[ 'nadv_acc' ] ) > 0 ): ?>warning<?php else: ?>success<?php endif; ?>"><?= count( $t->aggRoutes[ 'nadv_acc' ] ) ?></span>
 </h4>
@@ -86,10 +80,9 @@
 <p>
     These are prefixes for which this network has valid route objects but does not advertise the them to the route servers.
     This may be intentional or accidental.
-    <br /><br />
 </p>
 
-<h4>
+<h4 class="mt-2">
     Advertised and Accepted
     <span class="badge badge-<?php if( count( $t->aggRoutes[ 'adv_acc' ] ) > 0 ): ?>success<?php else: ?>danger<?php endif; ?>"><?= count( $t->aggRoutes[ 'adv_acc' ] ) ?></span>
 </h4>
@@ -97,5 +90,4 @@
 <p>
     These are routes that are being advertised to the route servers and that the route servers are accepting as valid.
     As such, these routes are distributed to the other route server users.
-    <br /><br />
 </p>

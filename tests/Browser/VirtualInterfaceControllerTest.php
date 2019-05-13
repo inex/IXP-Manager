@@ -36,6 +36,7 @@ use Entities\{
 
 class VirtualInterfaceControllerTest extends DuskTestCase
 {
+
     /**
      * Test the whole Interfaces functionalities (virtuel, physical, vlan)
      *
@@ -51,7 +52,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
                 ->visit('/login' )
                 ->type('username', 'travis' )
                 ->type('password', 'travisci' )
-                ->press('Login' )
+                ->press('#login-btn' )
                 ->assertPathIs('/admin' );
 
             $vi = $this->intTestVi( $browser );
@@ -115,7 +116,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->check( 'ipv6-can-ping' )
             ->check( 'ipv4-monitor-rcbgp' )
             ->check( 'ipv6-monitor-rcbgp' )
-            ->press('Save Changes' )
+            ->press('Add' )
             ->assertSee('New interface created!' );
 
         $url = explode( '/', $browser->driver->getCurrentURL() );
@@ -315,7 +316,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->select( 'duplex', 'half' )
             ->check( 'autoneg-label' )
             ->type( 'notes', '### note test' )
-            ->press( "Save Changes" )
+            ->press( "Add" )
             ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() )
             ->assertSee( 'Physical Interface updated successfully.' );
 
@@ -337,7 +338,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
         $browser->click( "#edit-pi-" . $pi->getId() )
             ->assertPathIs('/interfaces/physical/edit/' . $pi->getId() . "/vintid/" . $vi->getId() )
-            ->assertSee( "Edit Physical Interface" );
+            ->assertSee( "Physical Interfaces / Edit" );
 
 
         // Check the form values
@@ -380,7 +381,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
         $browser->click( "#edit-pi-" . $pi->getId() );
 
-        $browser->assertSee( "Edit Physical Interface" );
+        $browser->assertSee( "Physical Interfaces / Edit" );
 
         // Check the form values
         $browser->assertSelected('switch', '1')
@@ -406,7 +407,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
 
         $browser->click( "#edit-pi-" . $pi->getId() );
 
-        $browser->assertSee( "Edit Physical Interface" );
+        $browser->assertSee( "Physical Interfaces / Edit" );
 
         // Check the form values
         $browser->assertChecked('autoneg-label' );

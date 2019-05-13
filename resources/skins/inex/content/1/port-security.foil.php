@@ -3,7 +3,7 @@
     $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
     INEX Port Security Policies
 <?php $this->append() ?>
 
@@ -88,8 +88,6 @@
 	</li>
 </ul>
 
-
-<h3>Multicast PIM / IGMP snooping</h3>
 
 <h3>Broadcast Traffic Monitoring </h3>
 

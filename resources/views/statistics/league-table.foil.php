@@ -3,23 +3,8 @@
     $this->layout( 'layouts/ixpv4' )
 ?>
 
-
-<?php $this->section( 'title' ) ?>
-
-        Statistics
-    </li>
-
-    <li>
-        League Table
-        (<?php foreach( IXP\Services\Grapher\Graph::CATEGORIES as $cname => $cvalue ) { if( $t->category == $cvalue ) { echo $cname; } } ?>)
-
-
-<?php $this->append() ?>
-
-
-
-
-<?php $this->section( 'page-header-postamble' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
+        Statistics /  League Table  (<?php foreach( IXP\Services\Grapher\Graph::CATEGORIES as $cname => $cvalue ) { if( $t->category == $cvalue ) { echo $cname; } } ?>)
 <?php $this->append() ?>
 
 
@@ -31,60 +16,75 @@
 
             <?= $t->alerts() ?>
 
-            <nav class="navbar navbar-default">
-                <div class="container-fluid">
 
-                    <div class="col-md-12">
+            <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
 
-                        <div class="navbar-header">
-                            <a class="navbar-brand" href="<?= route('statistics/members') ?>">League Table:</a>
-                        </div>
+                <a class="navbar-brand" href="<?= route('statistics/members') ?>">
+                    League Table:
+                </a>
 
-                        <form class="navbar-form navbar-left action="<?= route('statistics/league-table' ) ?>" method="post">
+                <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
+                    <span class="navbar-toggler-icon"></span>
+                </button>
 
-                        <div class="form-group">
-                            <label for="metric">Metric:</label>
-                            <select id="metric" class="form-control" name="metric">
-                                <?php foreach( $t->metrics as $mname => $mvalue ): ?>
-                                    <option value="<?= $mvalue ?>" <?= $t->metric == $mvalue ? 'selected="selected"' : '' ?>><?= $mname ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
+                <div class="collapse navbar-collapse" id="navbarNavDropdown">
+                    <ul class="navbar-nav">
 
-                        <div class="form-group">
-                            <label for="category">Category:</label>
-                            <select id="category" class="form-control" name="category">
-                                <?php foreach( IXP\Services\Grapher\Graph::CATEGORY_DESCS as $c => $d ): ?>
-                                    <option value="<?= $c ?>" <?= $t->category == $c ? 'selected="selected"' : '' ?>><?= $d ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
+                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex" action="<?= route('statistics/league-table' ) ?>" method="post">
 
-                        <div class="form-group">
-                            <label for="day">Day:</label>
-                            <input type="text" name="day" value="<?= $t->day->format( 'Y-m-d' ) ?>" size="10" maxlength="10">
-                        </div>
+                            <li class="nav-item">
+                                <div class="nav-link d-flex ">
+                                    <label for="metric" class="col-sm-4 col-lg-4">Metric:</label>
+                                    <select id="metric" class="form-control" name="metric">
+                                        <?php foreach( $t->metrics as $mname => $mvalue ): ?>
+                                            <option value="<?= $mvalue ?>" <?= $t->metric == $mvalue ? 'selected="selected"' : '' ?>><?= $mname ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </li>
 
-                        <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                        <input class="btn btn-default" type="submit" name="submit" value="Submit" />
+                            <li class="nav-item">
+                                <div class="nav-link d-flex ">
+                                    <label for="category" class="col-sm-4 col-lg-5">Category:</label>
+                                    <select id="category" class="form-control" name="category">
+                                        <?php foreach( IXP\Services\Grapher\Graph::CATEGORY_DESCS as $c => $d ): ?>
+                                            <option value="<?= $c ?>" <?= $t->category == $c ? 'selected="selected"' : '' ?>><?= $d ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </li>
+
+                            <li class="nav-item">
+                                <div class="nav-link d-flex ">
+                                    <label for="day" class="col-sm-4 col-lg-3">Day:</label>
+                                    <input type="text" class="form-control" name="day" value="<?= $t->day->format( 'Y-m-d' ) ?>" size="10" maxlength="10">
+                                </div>
+                            </li>
+
+                            <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                            <li class="nav-item float-right">
+
+                                <input class="btn btn-white float-right" type="submit" name="submit" value="Submit" />
+
+                            </li>
 
                         </form>
+                    </ul>
 
-                    </div>
                 </div>
             </nav>
 
 
-            <table id="ixpDataTable" class="table table-striped table-bordered" cellspacing="0" cellpadding="0" border="0" style="display: none;">
+            <table id="ixpDataTable" class="table table-striped table-bordered collapse" style="width:100%">
                 
-                <thead>
+                <thead class="thead-dark">
                     <tr>
-                        <th class="ui-state-default" ></th>
-                        <th class="ui-state-default" ></th>
-                        <th class="ui-state-default" colspan="3">Day</th>
-                        <th class="ui-state-default" colspan="3">Week</th>
-                        <th class="ui-state-default" colspan="3">Month</th>
-                        <th class="ui-state-default" colspan="3">Year</th>
+                        <th></th>
+                        <th></th>
+                        <th colspan="3">Day</th>
+                        <th colspan="3">Week</th>
+                        <th colspan="3">Month</th>
+                        <th colspan="3">Year</th>
                     </tr>
                     <tr>
                         <th></th>
@@ -168,12 +168,19 @@
 
             <?php if( !count( $t->trafficDaily ) ): ?>
 
-                <div class="alert alert-info">
-                    No records for found for <?= $t->day->format('Y-m-d') ?>. This may be expected (date in future / date before records were kept / etc.).
-                    However, if you have Grapher with the Mrtg backend working, then please ensure you are
-                    <a href="https://docs.ixpmanager.org/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails" target="_blank">inserting
-                    traffic data into the database</a>.
+            <div class="alert alert-info mt-4" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="text-center">
+                        <i class="fa fa-info-circle fa-2x"></i>
+                    </div>
+                    <div class="col-sm-12">
+                        No records for found for <?= $t->day->format('Y-m-d') ?>. This may be expected (date in future / date before records were kept / etc.).
+                        However, if you have Grapher with the Mrtg backend working, then please ensure you are
+                        <a href="https://docs.ixpmanager.org/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails" target="_blank">inserting
+                        traffic data into the database</a>.
+                    </div>
                 </div>
+            </div>
 
             <?php endif; ?>
 
@@ -185,136 +192,5 @@
 
 
 <?php $this->section( 'scripts' ) ?>
-
-<script>
-
-let category = "<?= $t->category ?>";
-
-// from phpjs - MIT license:
-function number_format (number, decimals, dec_point, thousands_sep) {
-    // Strip all characters but numerical ones.
-    number = (number + '').replace(/[^0-9+\-Ee.]/g, '');
-    let n = !isFinite(+number) ? 0 : +number,
-        prec = !isFinite(+decimals) ? 0 : Math.abs(decimals),
-        sep = (typeof thousands_sep === 'undefined') ? ',' : thousands_sep,
-        dec = (typeof dec_point === 'undefined') ? '.' : dec_point,
-        s = '',
-        toFixedFix = function (n, prec) {
-            let k = Math.pow(10, prec);
-            return '' + Math.round(n * k) / k;
-        };
-    // Fix for IE parseFloat(0.55).toFixed(0) = 0;
-    s = (prec ? toFixedFix(n, prec) : '' + Math.round(n)).split('.');
-    if (s[0].length > 3) {
-        s[0] = s[0].replace(/\B(?=(?:\d{3})+(?!\d))/g, sep);
-    }
-    if ((s[1] || '').length < prec) {
-        s[1] = s[1] || '';
-        s[1] += new Array(prec - s[1].length + 1).join('0');
-    }
-    return s.join(dec);
-}
-
-//Define a custom format function for scale and type
-let myScale = function( data, type, full ) {
-
-    if( type == 'sort' || type == 'type' ) {
-        return data;
-    }
-
-    let strFormat;
-
-    switch( category ) {
-        case 'bytes':
-            strFormat = [ "Bytes", "KBytes", "MBytes", "GBytes", "TBytes" ];
-            // According to http://oss.oetiker.ch/mrtg/doc/mrtg-logfile.en.html, data is stored in bytes
-            // data = data / 8.0;
-            break;
-        case 'errs':
-        case 'discs':
-        case 'pkts':
-            strFormat = [ "pps", "Kpps", "Mpps", "Gpps", "Tpps" ];
-            break;
-        default:
-            // According to http://oss.oetiker.ch/mrtg/doc/mrtg-logfile.en.html, data is stored in bytes
-            data = data * 8.0;
-            strFormat = [ "bps", "Kbps", "Mbps", "Gbps", "Tbps" ];
-            break;
-    }
-
-    let retString = "";
-
-    for( let i = 0; i < strFormat.length; i++ )  {
-        if( ( data / 1000 < 1 ) || ( strFormat.length === i + 1 ) ) {
-            retString =  number_format( data, 0 ) + '&nbsp;' + strFormat[i];
-            break;
-        } else {
-            data = data / 1000;
-        }
-    }
-
-    return retString;
-};
-
-let myScaleTotal = function( data, type, full ) {
-
-    if( type == 'sort' || type == 'type' ) {
-        return data;
-    }
-
-    let strFormat;
-
-	switch( category ) {
-        case 'errs':
-        case 'discs':
-        case 'pkts':
-            strFormat = [ "p", "Kp", "Mp", "Gp", "Tp" ];
-            break;
-        default:
-            strFormat = [ "B", "KB", "MB", "GB", "TB" ];
-            // According to http://oss.oetiker.ch/mrtg/doc/mrtg-logfile.en.html, data is stored in bytes
-            // oData /= 8;
-            break;
-    }
-
-    let retString = "";
-
-    for( let i = 0; i < strFormat.length; i++ )  {
-        if( ( data / 1000 < 1 ) || ( strFormat.length === i + 1 ) ) {
-            retString =  number_format( data, 0 ) + strFormat[i];
-            break;
-        } else {
-            data = data / 1000;
-        }
-    }
-
-    return retString;
-};
-
-let scalefn  = <?= $t->metric == 'data' ? 'myScaleTotal' : 'myScale' ?>;
-let tableList = $( '#ixpDataTable' );
-
-tableList.dataTable({
-
-    "aLengthMenu": [[20, 50, 100, 500, -1], [20, 50, 100, 500, "All"]],
-
-    "bAutoWidth": false,
-
-    "aaSorting": [[6, 'desc']],
-    "iDisplayLength": 100,
-    "aoColumnDefs": [
-        {"bVisible": false, "aTargets": [0]},
-        {"render": scalefn, "aTargets": [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13]}
-    ]
-});
-
-
-$(document).ready(function() {
-
-    tableList.show();
-
-});
-
-</script>
-
+    <?= $t->insert( 'statistics/js/league-table' ); ?>
 <?php $this->append() ?>

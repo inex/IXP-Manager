@@ -1,10 +1,18 @@
-<table class="table">
-    <thead>
+<table class="table table-striped" width="100%">
+    <thead class="thead-dark">
         <tr>
-            <th>Prefix</th>
-            <th>Customer</th>
-            <th>IRRDB Entry</th>
-            <th>Origin ASN</th>
+            <th>
+                Prefix
+            </th>
+            <th>
+                Customer
+            </th>
+            <th>
+                IRRDB Entry
+            </th>
+            <th>
+                Origin ASN
+            </th>
         </tr>
     </thead>
     <tbody>

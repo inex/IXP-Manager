@@ -73,6 +73,15 @@
      * Check if all the switch ports have been chosen before submit
      */
     $('#core-bundle-submit-btn').click(function() {
+
+        if( $( "#type" ).val() == 3 && $("#subnet" ).val() !== '' ){
+            if( !validSubnet( $( "#subnet" ).val() ) ){
+                $("#message-cb").html("<div class='alert alert-danger' role='alert'> The subnet " + $( this ).val() + " is not valid! </div>");
+                $("html, body").animate({ scrollTop: 0 }, "slow");
+                return false;
+            }
+        }
+
         $("[id|='message']").html('');
         for (let i = 1; i <= hidden_nb_cls.val(); i++) {
             if( !$( "#sp-a-" + i ).val() || !$( "#sp-b-" + i ).val() ){
@@ -86,6 +95,10 @@
             $('html, body').animate({ scrollTop:$("#core-link-1").offset().top }, 'slow');
             return false;
         }
+
+
+
+        return false;
     });
 
     /**

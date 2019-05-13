@@ -1,167 +1,194 @@
-<div class="col-sm-12">
-    <br>
-    <table class="table <?php if( !count( $t->notes ) ): ?>collapse <?php endif; ?>" id="co-notes-table">
 
-
-        <thead>
-            <tr>
-                <th>Title</th>
-                <?php if( Auth::getUser()->isSuperUser() ): ?>
-                    <th>Visibility</th>
-                <?php endif; ?>
-                <th>Updated</th>
+<table class="table table-striped table-note <?php if( !count( $t->notes ) ): ?>collapse <?php endif; ?>" id="co-notes-table" style="width: 100%">
+    <thead class="thead-dark">
+        <tr>
+            <th>
+                Title
+            </th>
+            <?php if( Auth::getUser()->isSuperUser() ): ?>
                 <th>
-                    Action
-                    <?php if( Auth::getUser()->isSuperUser() ): ?>
-                        &nbsp;<div class="btn-group btn-group-sm">
-                            <button id="co-notes-add-btn" class="btn btn-default"><i class="glyphicon glyphicon-plus"></i></button>
-                            <button id="co-cust-notify-<?= $t->c->getId() ?>"  class="btn btn-default <?= $t->coNotifyAll ? 'active' : '' ?>"><i class="glyphicon glyphicon-bell"></i></button>
-                            <a class="btn btn-info" href="https://docs.ixpmanager.org/usage/customer-notes/" target="_blank">
-                                Help
-                            </a>
-                        </div>
-                    <?php endif; ?>
+                    Visibility
                 </th>
-            </tr>
-        </thead>
+            <?php endif; ?>
+            <th>
+                Updated
+            </th>
+            <th>
+                Action
+                <?php if( Auth::getUser()->isSuperUser() ): ?>
+                    &nbsp;<div class="btn-group btn-group-sm ml-2">
+                        <button id="co-notes-add-btn" class="btn btn-white co-notes-add-btn">
+                            <i class="fa fa-plus"></i>
+                        </button>
+                        <button id="co-cust-notify-<?= $t->c->getId() ?>"  class="btn btn-white co-cust-notify <?= $t->coNotifyAll ? 'active' : '' ?>">
+                            <i class="fa fa-bell"></i>
+                        </button>
 
-
-        <tbody id="co-notes-table-tbody">
-            <?php
-                /** @var \Entities\CustomerNote $n */
-            foreach( $t->notes as $n ):
-            ?>
-                <?php if( Auth::getUser()->isSuperUser() || !$n->getPrivate() ): ?>
-                    <tr id="co-notes-table-row-<?= $n->getId() ?>">
-                        <td id="co-notes-table-row-title-<?= $n->getId() ?>">
-                            <?php if( ( !$t->notesInfo[ "notesLastRead" ] || $n->getUpdated()->format( 'U' ) > $t->notesInfo[ "notesLastRead" ] ) && ( !$t->notesInfo[ "notesReadUpto" ] || $n->getUpdated()->format( 'U' ) >  $t->notesInfo[ "notesReadUpto" ]  ) ): ?>
-                                <span class="label label-success">
-                                    <?php if( $n->getUpdated() == $n->getCreated() ): ?>
-                                        NEW
-                                    <?php else: ?>
-                                        UPDATED
-                                    <?php endif; ?>
-                                </span>
-                                &nbsp;&nbsp;
-                            <?php endif; ?>
-                            <?= $t->ee( $n->getTitle() ) ?>
-                        </td>
-
-                        <?php if( Auth::getUser()->isSuperUser() ): ?>
-                            <td id="co-notes-table-row-public-<?= $n->getId() ?>">
-                                <span class="label label-<?php if( !$n->getPrivate() ): ?>success">PUBLIC<?php else: ?>default">PRIVATE<?php endif; ?></span>
-                            </td>
-                        <?php endif; ?>
-                        <td id="co-notes-table-row-updated-<?= $n->getId() ?>">
-                            <?= $n->getUpdated()->format( 'Y-m-d H:i' ) ?>
-                        </td>
-                        <td>
-                            <div class="btn-group btn-group-sm">
-                                <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                    <button id="co-notes-notify-<?= $n->getId() ?>"  class="btn btn-default <?php if( is_array( $t->coNotify ) && array_key_exists( $n->getId(), $t->coNotify ) && $t->coNotify[ $n->getId() ] ): ?>active<?php endif; ?>"><i class="glyphicon glyphicon-bell"></i></button>
-                                <?php endif; ?>
-
-                                <button id="co-notes-view-<?= $n->getId() ?>"  class="btn btn-default"><i class="glyphicon glyphicon-eye-open"></i></button>
-
-                                <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                    <button id="co-notes-edit-<?= $n->getId() ?>"  class="btn btn-default"><i class="glyphicon glyphicon-pencil"></i></button>
-                                    <button id="co-notes-trash-<?= $n->getId() ?>" class="btn btn-default"><i class="glyphicon glyphicon-trash"></i></button>
-                                <?php endif; ?>
-                            </div>
-                        </td>
-                    </tr>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </tbody>
-    </table>
-
-    <?php if( !count( $t->notes ) ): ?>
-        <p id="co-notes-no-notes-msg">
-            There are no notes for this customer. <a href="#" id="co-notes-add-link">Add one...</a>
-        </p>
-    <?php endif; ?>
-
-    <?php if( Auth::getUser()->isSuperUser() ): ?>
-
-        <!-- Modal dialog for notes / state changes -->
-        <div class="modal fade" id="co-notes-dialog" tabindex="-1" role="dialog" aria-labelledby="notes-modal-label">
-            <div class="modal-dialog" role="document">
-                <div class="modal-content">
-                    <div class="modal-header">
-                        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-                        <h4 class="modal-title" id="notes-modal-label"><span id="co-notes-dialog-title-action">Add a</span> Note for <?= $t->c->getName() ?> </h4>
+                        <a class="btn btn-outline-info" href="https://docs.ixpmanager.org/usage/customer-notes/" target="_blank">
+                            Help
+                        </a>
                     </div>
-                    <div class="modal-body" id="notes-modal-body">
+                <?php endif; ?>
+            </th>
+        </tr>
+    </thead>
 
-                        <div class="alert alert-warning" id="co-notes-warning" style="display: none;">
-                            <strong>Warning!</strong> Your customer will be able to read this note!
+
+    <tbody id="co-notes-table-tbody">
+        <?php
+            /** @var \Entities\CustomerNote $n */
+        foreach( $t->notes as $n ):
+        ?>
+            <?php if( Auth::getUser()->isSuperUser() || !$n->getPrivate() ): ?>
+                <tr id="co-notes-table-row-<?= $n->getId() ?>">
+                    <td id="co-notes-table-row-title-<?= $n->getId() ?>">
+                        <?php if( ( !$t->notesInfo[ "notesLastRead" ] || $n->getUpdated()->format( 'U' ) > $t->notesInfo[ "notesLastRead" ] ) && ( !$t->notesInfo[ "notesReadUpto" ] || $n->getUpdated()->format( 'U' ) >  $t->notesInfo[ "notesReadUpto" ]  ) ): ?>
+                            <span class="badge badge-success">
+                                <?php if( $n->getUpdated() == $n->getCreated() ): ?>
+                                    NEW
+                                <?php else: ?>
+                                    UPDATED
+                                <?php endif; ?>
+                            </span>
+                            &nbsp;&nbsp;
+                        <?php endif; ?>
+                        <?= $t->ee( $n->getTitle() ) ?>
+                    </td>
+
+                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                        <td id="co-notes-table-row-public-<?= $n->getId() ?>">
+                            <span class="badge badge-<?php if( !$n->getPrivate() ): ?>success">PUBLIC<?php else: ?>secondary">PRIVATE<?php endif; ?></span>
+                        </td>
+                    <?php endif; ?>
+                    <td id="co-notes-table-row-updated-<?= $n->getId() ?>">
+                        <?= $n->getUpdated()->format( 'Y-m-d H:i' ) ?>
+                    </td>
+                    <td>
+                        <div class="btn-group btn-group-sm">
+                            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                <button id="co-notes-notify-<?= $n->getId() ?>"  class="btn btn-white co-notes-notify <?php if( is_array( $t->coNotify ) && array_key_exists( $n->getId(), $t->coNotify ) && $t->coNotify[ $n->getId() ] ): ?>active<?php endif; ?>">
+                                    <i class="fa fa-bell"></i>
+                                </button>
+                            <?php endif; ?>
+
+                            <button id="co-notes-view-<?= $n->getId() ?>"  class="btn btn-white co-notes-view">
+                                <i class="fa fa-eye"></i>
+                            </button>
+
+                            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                <button id="co-notes-edit-<?= $n->getId() ?>"  class="btn btn-white co-notes-edit">
+                                    <i class="fa fa-pencil"></i>
+                                </button>
+                                <button id="co-notes-trash-<?= $n->getId() ?>" class="btn btn-white co-notes-trash">
+                                    <i class="fa fa-trash"></i>
+                                </button>
+                            <?php endif; ?>
                         </div>
+                    </td>
+                </tr>
+            <?php endif; ?>
+        <?php endforeach; ?>
+    </tbody>
+</table>
 
-                        <form class="bootbox-form" id="co-notes-form">
+<?php if( !count( $t->notes ) ): ?>
+    <p class="mt-4" id="co-notes-no-notes-msg">
+        There are no notes for this customer.
+        <a class="btn btn-white ml-2" href="#" id="co-notes-add-link">Add one...</a>
+    </p>
+<?php endif; ?>
 
-                            <input type="text" placeholder="Title" class="bootbox-input bootbox-input form-control" name="title" id="co-notes-ftitle" />
-                            <br />
+<?php if( Auth::getUser()->isSuperUser() ): ?>
 
-                            <ul class="nav nav-tabs">
-                                <li role="presentation" class="active" >
-                                    <a class="tab-link-body-note" href="#body" data-toggle="tab">Notes</a>
-                                </li>
-                                <li role="presentation">
-                                    <a class="tab-link-preview-note" href="#preview" data-toggle="tab">Preview</a>
-                                </li>
-                            </ul>
+    <!-- Modal dialog for notes / state changes -->
+    <div class="modal fade" id="co-notes-dialog" tabindex="-1" role="dialog" aria-labelledby="notes-modal-label">
+        <div class="modal-dialog modal-lg" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title" id="notes-modal-label">
+                        <span id="co-notes-dialog-title-action">Add a</span> Note for <?= $t->c->getName() ?>
+                    </h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <i class="fa fa-times"></i>
+                    </button>
+                </div>
+                <div class="modal-body" id="notes-modal-body">
 
-                            <div class="tab-content">
-                                <div role="tabpanel" class="tab-pane active" id="body">
-                                    <br>
+                    <div class="alert alert-warning" id="co-notes-warning" style="display: none;">
+                        <strong>Warning!</strong> Your customer will be able to read this note!
+                    </div>
+
+                    <form class="bootbox-form" id="co-notes-form">
+
+                        <input type="text" placeholder="Title" class="bootbox-input bootbox-input form-control" name="title" id="co-notes-ftitle" />
+
+                        <div class="card mt-4">
+                            <div class="card-header">
+                                <ul class="nav nav-tabs card-header-tabs">
+                                    <li role="presentation" class="nav-item" >
+                                        <a class="tab-link-body-note nav-link active" href="#body" data-toggle="tab">Notes</a>
+                                    </li>
+                                    <li role="presentation" class="nav-item">
+                                        <a class="tab-link-preview-note nav-link" href="#preview" data-toggle="tab">Preview</a>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="tab-content card-body">
+                                <div role="tabpanel" class="tab-pane show active" id="body">
                                     <textarea rows="6" class="bootbox-input bootbox-input-textarea form-control" name="note" id="co-notes-fnote"></textarea>
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="preview">
-                                    <br>
-                                    <div id="co-notes-fpreview" class="well well-preview" style="background: rgb(255,255,255);">
+                                    <div id="co-notes-fpreview" class="bg-light shadow-sm well-preview p-4">
                                         Loading...
                                     </div>
                                 </div>
                             </div>
+                        </div>
 
+                        <label class="mt-4">
+                            <input type="checkbox" name="public" id="co-notes-fpublic" class="bootbox-input bootbox-input-checkbox" value="makePublic" />
+                            Make note visible to customer
+                        </label>
+                        <p>
+                            <em>Markdown formatting supported (and encouraged!)</em>
+                        </p>
+                        <input type="hidden" name="custid" value="<?= $t->c->getId() ?>" />
+                        <input type="hidden" id="notes-dialog-noteid" name="noteid" value="0" />
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <span class="mr-auto"  id="co-notes-dialog-date"></span>
+                    <button id="notes-modal-btn-cancel"  type="button" class="btn btn-secondary" data-dismiss="modal">
+                        <i class="fa fa-times"></i> Cancel
+                    </button>
+                    <button id="co-notes-fadd"  type="button" class="btn btn-primary">
+                        Add
+                    </button>
 
-                            <br />
-                            <label>
-                                <input type="checkbox" name="public" id="co-notes-fpublic" class="bootbox-input bootbox-input-checkbox" value="makePublic" />
-                                Make note visible to customer
-                            </label>
-                            <p>
-                                <em>Markdown formatting supported (and encouraged!)</em>
-                            </p>
-                            <input type="hidden" name="custid" value="<?= $t->c->getId() ?>" />
-                            <input type="hidden" id="notes-dialog-noteid" name="noteid" value="0" />
-                        </form>
-                    </div>
-                    <div class="modal-footer">
-                        <span class="pull-left"  id="co-notes-dialog-date"></span>
-                        <button id="notes-modal-btn-cancel"  type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
-                        <button id="co-notes-fadd"  type="button" class="btn btn-primary"                               >Add</button>
-
-                    </div>
                 </div>
             </div>
         </div>
-    <?php endif; ?>
+    </div>
+<?php endif; ?>
 
-    <div class="modal fade" id="co-notes-view-dialog" tabindex="-1" role="dialog" aria-labelledby="notes-modal-label">
-        <div class="modal-dialog" role="document">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                    <h4 class="modal-title" id="co-notes-view-dialog-title"></h4>
-                </div>
-                <div class="modal-body">
-                    <div class="bootbox-body" id="co-notes-view-dialog-note"></div>
-                </div>
-                <div class="modal-footer">
-                    <span class="pull-left"  id="co-notes-view-dialog-date"></span>
-                    <button id="notes-modal-btn-cancel"  type="button" class="btn btn-primary" data-dismiss="modal"><i class="fa fa-times"></i> Close</button>
-                </div>
+<div class="modal fade" id="co-notes-view-dialog" tabindex="-1" role="dialog" aria-labelledby="notes-modal-label">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="co-notes-view-dialog-title"></h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <i class="fa fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <div class="bootbox-body" id="co-notes-view-dialog-note"></div>
+            </div>
+            <div class="modal-footer">
+                <span class="mr-auto"  id="co-notes-view-dialog-date"></span>
+                <button id="notes-modal-btn-cancel"  type="button" class="btn btn-secondary" data-dismiss="modal">
+                    <i class="fa fa-times"></i> Close
+                </button>
             </div>
         </div>
     </div>

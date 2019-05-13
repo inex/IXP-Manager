@@ -18,6 +18,8 @@
 
                 <?php if( $t->data[ 'params'][ 'object' ] && $t->data[ 'params'][ 'object' ]->getPdbFacilityId() ): ?>
                     selectedpdb = <?= $t->data[ 'params'][ 'object' ]->getPdbFacilityId() ?>;
+                <?php elseif( Request::old('pdb_facility_id' ) ): ?>
+                    selectedpdb = <?= Request::old('pdb_facility_id' ) ?>;
                 <?php else: ?>
                     selectedpdb = false;
                 <?php endif; ?>

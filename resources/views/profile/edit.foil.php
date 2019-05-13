@@ -3,23 +3,10 @@
     $this->layout( 'layouts/ixpv4' )
 ?>
 
-<?php $this->section( 'title' ) ?>
 
-    <?php if( Auth::user()->isSuperUser() ): ?>
-        <a href="<?= route ( "profile@edit" )?>">My Profile</a>
-    <?php else: ?>
-        My Profile
-    <?php endif; ?>
+<?php $this->section( 'page-header-preamble' ) ?>
+    My Profile
 <?php $this->append() ?>
-
-
-
-<?php if( Auth::user()->isSuperUser() ): ?>
-    <?php $this->section( 'page-header-postamble' ) ?>
-        <li>Edit</li>
-    <?php $this->append() ?>
-<?php endif; ?>
-
 
 
 <?php $this->section('content') ?>
@@ -32,21 +19,31 @@
     </div>
 
     <div class="row">
-        <div class="col-md-6">
+        <div class="col-lg-6 col-md-12 mb-4">
             <h3>
                 Change Your Password
             </h3>
+            <hr>
 
-            <p>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                <em>Passwords are stored in IXP Manager using <a href="https://en.wikipedia.org/wiki/Bcrypt">bcrypt</a>.</em>
-            </p>
+            <div class="alert alert-info mt-4" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="text-center">
+                        <i class="fa fa-info-circle fa-2x"></i>
+                    </div>
+                    <div class="col-sm-12">
+                        Passwords are stored in IXP Manager using <a href="https://en.wikipedia.org/wiki/Bcrypt">bcrypt</a>.
+                    </div>
+                </div>
+            </div>
+
 
             <?= Former::open()
                 ->method( 'post' )
                 ->id( "password" )
                 ->action( route ( "profile@update-password" ) )
-                ->customWidthClass( 'col-sm-8' )
+                ->customInputWidthClass( 'col-xl-6 col-lg-8 col-sm-6' )
+                ->customLabelWidthClass( 'col-sm-4' )
+                ->actionButtonsCustomClass( "grey-box")
                 ->rules([
                     'current_password'   => 'required|max:255',
                     'new_password'       => 'required|max:255',
@@ -75,17 +72,19 @@
 
         </div>
 
-        <div class="col-md-6">
+        <div class="col-lg-6 col-md-12 mb-4">
             <h3>
                 Update Your Profile
             </h3>
-
+            <hr>
             <?= Former::open()
                 ->populate( $t->profileDetails )
                 ->method( 'post' )
                 ->id( "infos" )
                 ->action( route ( "profile@update-profile" ) )
-                ->customWidthClass( 'col-sm-8' )
+                ->customInputWidthClass( 'col-xl-6 col-lg-8 col-sm-6' )
+                ->customLabelWidthClass( 'col-sm-4' )
+                ->actionButtonsCustomClass( "grey-box");
             ?>
 
             <?= Former::text( 'username' )
@@ -120,28 +119,29 @@
 
     </div>
 
-    <div class="row">
+    <div class="row mt-4">
 
         <?php if( Auth::getUser()->isSuperUser() ): ?>
 
-            <div class="col-md-6">
+            <div class="col-lg-6 col-md-12">
                 <h3>
                     Customer Notes
                 </h3>
-
+                <hr>
                 <?= Former::open()
                     ->populate( $t->customerNotesNotificationOption )
                     ->method( 'post' )
                     ->id( "note" )
                     ->action( route ( "profile@update-notification-preference" ) )
-                    ->customWidthClass( 'col-sm-10' );
+                    ->customInputWidthClass( 'col-sm-10' )
+                    ->actionButtonsCustomClass( "grey-box");
                 ?>
 
                 <?=  Former::radios('')
                     ->radios([
-                        'Disable all email notifications'                           => [ 'name' => 'notify', 'id' => 'notify-none',     'value' => 'none'    ],
-                        'Email me on changes to only watched customers and notes'   => [ 'name' => 'notify', 'id' => 'notify-watched',  'value' => 'watched' ],
-                        'Email me on any change to any customer note'               => [ 'name' => 'notify', 'id' => 'id="notify-all"', 'value' => 'all'     ],
+                        '&nbsp;&nbsp;&nbsp;Disable all email notifications'                           => [ 'name' => 'notify', 'id' => 'notify-none',     'value' => 'none'    ],
+                        '&nbsp;&nbsp;&nbsp;Email me on changes to only watched customers and notes'   => [ 'name' => 'notify', 'id' => 'notify-watched',  'value' => 'watched' ],
+                        '&nbsp;&nbsp;&nbsp;Email me on any change to any customer note'               => [ 'name' => 'notify', 'id' => 'id="notify-all"', 'value' => 'all'     ],
                     ])
                     ->name( 'notify' )
                     ->label( '' )
@@ -160,27 +160,26 @@
 
         <?php if( $t->mailingListsEnabled ): ?>
 
-            <div class="col-md-6">
+            <div class="col-lg-6 col-md-12">
                 <h3>
                     Your Mailing List Subscriptions
                 </h3>
-
+                <hr>
                 <p>
-                    <br />
                     <?= config( "identity.orgname" ) ?> operates the below mailing lists to help us interact with our
                     members and for our members to interact with each other.
                 </p>
                 <p>
                     The below are your subscriptions for <strong><?= Auth::getUser()->getEmail() ?></strong>.
                 </p>
-                <br />
 
                 <?= Former::open()
                     ->populate( $t->mailingListSubscriptions )
                     ->method( 'post' )
                     ->id( "mailing" )
                     ->action( route ( "profile@update-mailing-lists" ) )
-                    ->customWidthClass( 'col-sm-10' );
+                    ->actionButtonsCustomClass( "grey-box")
+                    ->customInputWidthClass( 'col-sm-10' );
                 ?>
 
                 <?php foreach( config( "mailinglists.lists") as $name => $ml ): ?>
@@ -190,6 +189,7 @@
                         <?= Former::checkbox( 'ml_'. $name )
                             ->label( '' )
                             ->value(1)
+                            ->inline()
                             ->check( $t->mailingListSubscriptions[ $name ] ? true : false )
                             ->text( "<strong>".$ml[ "name"] ."</strong> - " . $ml[ "desc" ]
                                 . "(" . ( ( $ml[ "email" ] ) ? "<a href='mailto:" .$ml[ "email" ]. " '>" . $ml[ "email" ] . "</a> - " : '' )
@@ -203,7 +203,7 @@
 
                 <?= Former::actions(
                         Former::primary_submit( 'Update Subscriptions' )
-                    );
+                );
                 ?>
 
                 <?= Former::close() ?>

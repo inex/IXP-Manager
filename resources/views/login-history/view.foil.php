@@ -3,61 +3,57 @@
     $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route('login-history@list') ?>">Login History</a>
-<?php $this->append() ?>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Login History /
+    <a href="<?= route( 'customer@overview', [ 'id' => $t->c2u->getUser()->getCustomer()->getId(), 'tab' => 'users' ] ) ?>">
+        <?= $t->ee( $t->c2u->getCustomer()->getFormattedName() ) ?>
+    </a>
+    /
+    <?= $t->ee( $t->c2u->getUser()->getUsername() ) ?>
 
-<?php $this->section( 'page-header-postamble' ) ?>
-    <li>
-        <a href="<?= route( 'customer@overview', [ 'id' => $t->user->getCustomer()->getId(), 'tab' => 'users' ] ) ?>">
-            <?= $t->ee( $t->user->getCustomer()->getFormattedName() ) ?>
-        </a>
-    </li>
-    <li>
-        <?= $t->ee( $t->user->getUsername() ) ?>
-    </li>
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
 
 
-    <div class="well">
-        Login history for <?= $t->ee( $t->user->getUsername() ) ?>. <em>Typically logs older than six months are expunged.</em>
-    </div>
-
-
-    <div class="row">
-
-        <div class="col-sm-12">
-
-            <table id="table-list" class="table collapse">
-                <thead>
-                <tr>
-                    <th>
-                        IP
-                    </th>
-                    <th>
-                        At
-                    </th>
-                </tr>
-                </thead>
-                <tbody>
-                <?php foreach( $t->histories as $history ): ?>
-                    <tr>
-                        <td>
-                            <?= $t->ee( $history[ "ip" ] ) ?>
-                        </td>
-                        <td>
-                            <?= $history[ "at" ]->format( "Y-m-d H:i:s" ) ?>
-                        </td>
-                    </tr>
-                <?php endforeach; ?>
-                </tbody>
-            </table>
-
+    <div class="alert alert-info mt-4" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="text-center">
+                <i class="fa fa-question-circle fa-2x"></i>
+            </div>
+            <div class="col-sm-12">
+                Login history for <b><?= $t->ee( $t->c2u->getUser()->getUsername() ) ?></b>. <em>Typically logs older than six months are expunged.</em>
+            </div>
         </div>
-
     </div>
+
+
+
+    <table id="table-list" class="table collapse table-striped table-responsive-ixp-with-header" width="100%">
+        <thead class="thead-dark">
+            <tr>
+                <th>
+                    IP
+                </th>
+                <th>
+                    At
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach( $t->histories as $history ): ?>
+                <tr>
+                    <td>
+                        <?= $t->ee( $history[ "ip" ] ) ?>
+                    </td>
+                    <td>
+                        <?= $history[ "at" ]->format( "Y-m-d H:i:s" ) ?>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+
 
 <?php $this->append() ?>
 
@@ -66,7 +62,16 @@
     <script>
 
         $(document).ready( function() {
-            $( '#table-list' ).dataTable( { "autoWidth": false } ).show();
+
+            $( '.table-responsive-ixp-with-header' ).show();
+
+            $( '.table-responsive-ixp-with-header' ).DataTable({
+                responsive: true,
+                columnDefs: [
+                    { responsivePriority: 1, targets: 0 },
+                    { responsivePriority: 2, targets: -1 },
+                ]
+            });
         });
 
     </script>

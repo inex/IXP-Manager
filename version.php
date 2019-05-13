@@ -25,6 +25,6 @@
 # Basic version information
 #
 
-define( 'APPLICATION_VERSION', '4.99.999' );      # 4.99.999 == v5 development
-define( 'APPLICATION_VERDATE', '201901070000' );  
+define( 'APPLICATION_VERSION', 'v5.0.0.aplha' );
+define( 'APPLICATION_VERDATE', '2019051100' );  
 

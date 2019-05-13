@@ -72,7 +72,7 @@ services:
             context: tools/docker/containers/www
         environment:
             XDEBUG_CONFIG: remote_host=${DOCKER_XDEBUG_CONFIG_REMOTE_HOST}
-        image: ixpmanager/www:dev
+        image: ixpmanager/www:v5.0.0
         ports:
             - 8880:80
         depends_on:
@@ -94,12 +94,22 @@ services:
             - .:/srv/ixpmanager
             - mrtg-data:/srv/mrtg
 
+    routinator:
+        build:
+            context: tools/docker/containers/routinator
+        networks:
+            ixpmanager:
+                ipv4_address: 172.30.201.31
+                ipv6_address: fd99::31
+
     rs1:
-        image: ixpmanager/rs1:4.7.0
+        build:
+            context: tools/docker/containers/rs1
         ports:
             - 8881:80
         depends_on:
             - "www"
+            - "routinator"
         networks:
             ixpmanager:
                 ipv4_address: 172.30.201.30

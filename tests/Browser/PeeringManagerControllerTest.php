@@ -38,7 +38,7 @@ use Entities\{
 class PeeringManagerControllerTest extends DuskTestCase
 {
 
-    public function tearDown()
+    public function tearDown(): void
     {
 
         /** @var UserEntity $user */
@@ -78,7 +78,7 @@ class PeeringManagerControllerTest extends DuskTestCase
                 ->visit('/login' )
                 ->type('username', 'hecustadmin' )
                 ->type('password', 'travisci' )
-                ->press('Login' )
+                ->press( '#login-btn' )
                 ->assertPathIs('/dashboard' );
 
 
@@ -107,30 +107,40 @@ class PeeringManagerControllerTest extends DuskTestCase
 
 
             $browser->click( "#peering-notes-icon-" . $c[ "id" ] )
-                ->waitForText( "Peering Notes for " . $c[ "name" ] )
-                ->type('#peering-manager-notes', 'test note' );
+                ->whenAvailable( '.modal', function ( $modal ) use ( $c ) {
+                    $modal->assertSee( "Peering Notes for " . $c[ "name" ] )
+                        //->type('textarea[name=peering-manager-notes]', 'test-note' )
+                        ->keys( 'textarea[name=peering-manager-notes]', 'test-note'  )
+                        ->pause( "3000")->click('#modal-peering-notes-save' );
 
-            $browser->click('#modal-peering-notes-save' )
-                ->waitForText( "Peering notes updated for Imagine" )
-                ->click( ".bootbox-close-button" )
-                ->waitUntilMissing( ".modal-backdrop" );
 
-            // we need a pause here as it can sometimes break CI tests
-            sleep(5);
+                });
+
+
+            $browser->whenAvailable( '.bootbox', function ( $bootbox ) use ( $c ) {
+                $bootbox->assertSee( "Peering notes updated for Imagine" )
+                        ->pause( "1000")->click( ".close" );
+            });
+
+            $browser->pause( "3000");
 
             // Check value in DB
             $this->assertInstanceOf( PeeringManagerEntity::class , $pm = D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $c[ "id" ] ] ) );
-            $this->assertEquals( "test note", $pm->getNotes() );
+
+
+            $this->assertEquals( "### " . date( "Y-m-d" ) . " - hecustadmin 
+
+
+test-note", $pm->getNotes() );
 
 
             /** Test peering request */
 
-            // Test Mark as sent
             $browser->click( "#peering-request-" . $c[ "id" ] )
                 ->waitForText( "Send Peering Request by Email" )
                 ->click('#modal-peering-request-marksent' )
                 ->waitForText( "Peering request marked as sent in your Peering Manager." )
-                ->click( ".bootbox-close-button" )
+                ->pause( "3000" )->click( ".bootbox-close-button" )
                 ->waitUntilMissing( ".modal-backdrop" );
 
             // Check value in DB
@@ -159,6 +169,7 @@ class PeeringManagerControllerTest extends DuskTestCase
      * @param integer                   $nbSent
      *
      * @return void
+     * @throws
      */
     public function sendEmail( $browser, $pm, $c, $user, $sentToMe, $nbSent ){
 
@@ -168,9 +179,10 @@ class PeeringManagerControllerTest extends DuskTestCase
             ->press('OK' )
             ->waitForText( "Send Peering Request by Email" )
             ->click( $sentToMe ? '#modal-peering-request-sendtome' : '#modal-peering-request-send' )
+            ->pause(5000)
             ->waitForText( "Success" )
             ->assertSee( $sentToMe ? "Peering request sample sent to your own email address (" . $user->getEmail() . ")." : "Peering request sent to" )
-            ->click( ".bootbox-close-button" )
+            ->pause( "3000" )->click( ".bootbox-close-button" )
             ->waitUntilMissing( ".modal-backdrop" );
 
         // Check value in DB

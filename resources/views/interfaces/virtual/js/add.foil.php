@@ -21,7 +21,12 @@ const div_fastlacp   = $( "#fastlacp-area" );
 ///
 
 // display or hide the advanced area
-btn_advanced.click( () => { div_advanced.slideToggle(); btn_delete.slideToggle(); } );
+
+
+
+
+
+btn_advanced.on('click', function(e){ e.preventDefault(); div_advanced.slideToggle();btn_delete.slideToggle();});
 
 // display or hide the fastlapc area
 cb_lag_framing.change( () => { cb_lag_framing.is(":checked") ? div_fastlacp.slideDown() : div_fastlacp.slideUp() } );
@@ -84,7 +89,7 @@ cb_lag_framing.trigger( 'change' );
 
 if ( $( '#name' ).val() != '' || $( '#description' ).val() != '' || $( '#channel-group' ).val() != '' || $( '#mtu' ).val() != '' ) {
     div_advanced.show();
-    btn_delete.show();
+    btn_delete.css( "display", "inline-block" );
 } else {
     btn_delete.hide();
 }
@@ -140,7 +145,7 @@ function duplicateVliPopup( id, viid ){
                 }
             },
             confirm: {
-                label: '<i class="glyphicon glyphicon-ok"></i> Duplicate',
+                label: '<i class="fa fa-check"></i> Duplicate',
                 callback: function () {
                     let duplicateTo = $( "#duplicateTo" );
                     if( duplicateTo.val() ) {

@@ -69,7 +69,7 @@ class VlanController extends Doctrine2Frontend {
             'pagetitle'         => 'VLANs',
 
             'titleSingular'     => 'VLAN',
-            'nameSingular'      => 'a VLAN',
+            'nameSingular'      => 'VLAN',
 
             'listOrderBy'       => 'number',
             'listOrderByDir'    => 'ASC',
@@ -308,7 +308,7 @@ class VlanController extends Doctrine2Frontend {
 
         $this->feParams->infra = $infra;
 
-        return $this->list();
+        return $this->list( request() );
     }
 
 }

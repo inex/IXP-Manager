@@ -700,7 +700,7 @@ class Switcher
         foreach( $host->useIface()->indexes() as $index ) {
 
             // we're only interested in Ethernet ports here (right?)
-            if( $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_ETHERNETCSMACD )
+            if( $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_ETHERNETCSMACD && $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_L3IPVLAN )
                 continue;
 
             // find the matching switchport that may already be in the database (or create a new one)

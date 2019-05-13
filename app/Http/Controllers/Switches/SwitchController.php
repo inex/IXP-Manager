@@ -171,7 +171,7 @@ class SwitchController extends Doctrine2Frontend {
                 case UserEntity::AUTH_SUPERUSER:
                     break;
 
-                case UserEntity::AUTH_CUSTUSER:
+                case UserEntity::AUTH_CUSTUSER || UserEntity::AUTH_CUSTADMIN:
                     switch( Route::current()->getName() ) {
 
                         case 'switch@configuration':
@@ -561,7 +561,7 @@ class SwitchController extends Doctrine2Frontend {
             $platform = $request->session()->get( "snmp-platform" );
 
             $this->object->setOs(           $platform->getOs() );
-            $this->object->setOsDate(       new \DateTime( $platform->getOsDate() ) );
+            $this->object->setOsDate(       $platform->getOsDate() ?? null );
             $this->object->setOsVersion(    $platform->getOsVersion() );
             $this->object->setSerialNumber( $platform->getSerialNumber() );
             $request->session()->remove( "snmp-platform" );

@@ -1,6 +1,6 @@
-<li class="pull-right">
 
-    <div class="btn-group btn-group-xs" role="group">
+
+    <div class="btn-group btn-group-sm" role="group">
 
         <?php if( isset( $t->data[ 'params'][ "switch" ] ) ): ?>
 
@@ -10,10 +10,9 @@
                 $s = D2EM::getRepository( Entities\Switcher::class )->find( $t->data[ 'params'][ "switch" ] );
             ?>
 
-                <!-- Single button -->
-                <div class="btn-group">
+                <div class="btn-group btn-group-sm">
 
-                    <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         <?php if( request()->is( 'switch-port/op-status/*' ) ): ?>
 
                             Live Port States (via SNMP poll)
@@ -35,78 +34,71 @@
                             Unknown action?
 
                         <?php endif; ?>
-
-                        &nbsp;
-                        <span class="caret"></span>
                     </button>
 
-                    <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
+                    <div class="dropdown-menu dropdown-menu-right">
 
-                        <li class="dropdown-header">SNMP Actions</li>
+                        <h6 class="dropdown-header">SNMP Actions</h6>
 
-                        <li class="<?= !request()->is( 'switch-port/op-status/*' ) ?: 'active' ?> <?= $s->getActive() ?: 'a-disabled' ?> " >
-                            <a href="<?= route( "switch-port@list-op-status", [ "switch" => $s->getId() ] ) ?>">Live Port States</a>
-                        </li>
+                        <a class="dropdown-item <?= !request()->is( 'switch-port/op-status/*' ) ?: 'active' ?> <?= $s->getActive() ?: 'a-disabled' ?>" href="<?= route( "switch-port@list-op-status", [ "switch" => $s->getId() ] ) ?>">
+                            Live Port States
+                        </a>
+                        <a class="dropdown-item <?= !request()->is( 'switch-port/snmp-poll/*' ) ?: 'active' ?> <?= $s->getActive() ?: 'a-disabled' ?> " href="<?= route( "switch-port@snmp-poll", [ "switch" => $s->getId() ] ) ?>">
+                            View / Edit Ports
+                        </a>
 
-                        <li class="<?= !request()->is( 'switch-port/snmp-poll/*' ) ?: 'active' ?> <?= $s->getActive() ?: 'a-disabled' ?> " >
-                            <a href="<?= route( "switch-port@snmp-poll", [ "switch" => $s->getId() ] ) ?>">View / Edit Ports</a>
-                        </li>
+                        <div class="dropdown-divider"></div>
+                        <h6 class="dropdown-header">Database Actions</h6>
 
-                        <li role="separator" class="divider"></li>
-                        <li class="dropdown-header">Database Actions</li>
-
-                        <li class="<?= !request()->is( 'switch-port/list' ) ?: 'active' ?>" >
-                            <a href="<?= route( "switch-port@list", [ "switch" => $s->getId() ] ) ?>">View / Edit Ports</a>
-                        </li>
+                        <a class="dropdown-item <?= !request()->is( 'switch-port/list' ) ?: 'active' ?>" href="<?= route( "switch-port@list", [ "switch" => $s->getId() ] ) ?>">
+                            View / Edit Ports
+                        </a>
 
                         <?php if( $s->getMauSupported() ): ?>
-                            <li class="<?= !request()->is( 'switch-port/list-mau/*' ) ?: 'active' ?>">
-                                <a href="<?= route( "switch-port@list-mau", [ "switch" => $s->getId() ] ) ?>">Port MAU Detail</a>
-                            </li>
+                            <a class="dropdown-item <?= !request()->is( 'switch-port/list-mau/*' ) ?: 'active' ?>" href="<?= route( "switch-port@list-mau", [ "switch" => $s->getId() ] ) ?>">
+                                Port MAU Detail
+                            </a>
                         <?php endif; ?>
 
-                    </ul>
+                    </div>
 
                 </div>
 
 
             <?php endif; ?>
 
-            <!-- Single button -->
-            <div class="btn-group">
 
-                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <div class="btn-group btn-group-sm">
+
+                <button type="button" class="btn btn-white btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <?= $t->data[ 'params'][ "switch" ] ? $t->data[ 'params'][ "switches" ][ $t->data[ 'params'][ "switch" ] ] : "All Switches" ?>
-                    &nbsp;
-                    <span class="caret"></span>
                 </button>
 
-                <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
+                <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
 
-                    <li class="<?= $t->data[ 'params'][ "switch" ] ? "" : "active" ?>">
-                        <a href="<?= route( "switch-port@list" , [ "switch" => 0 ] ) ?>">All Switches</a>
-                    </li>
+                    <a class="dropdown-item <?= $t->data[ 'params'][ "switch" ] ? "" : "active" ?>" href="<?= route( "switch-port@list" , [ "switch" => 0 ] ) ?>">
+                        All Switches
+                    </a>
 
-                    <li role="separator" class="divider"></li>
+
+                    <div class="dropdown-divider"></div>
 
                     <?php foreach( $t->data[ 'params'][ "switches" ] as $id => $name ): ?>
 
-                        <li class="<?= isset( $t->data[ 'params'][ "switch" ]) && $t->data[ 'params'][ "switch" ] === $id ? 'active' : '' ?>">
-                            <a href="<?= route( $t->feParams->route_prefix . "@" . $t->feParams->route_action, [ "switch" => $id ] ) ?>"><?= $name ?></a>
-                        </li>
+                        <a class="dropdown-item <?= isset( $t->data[ 'params'][ "switch" ]) && $t->data[ 'params'][ "switch" ] === $id ? 'active' : '' ?>" href="<?= route( $t->feParams->route_prefix . "@" . $t->feParams->route_action, [ "switch" => $id ] ) ?>"><?= $name ?></a>
 
                     <?php endforeach; ?>
 
-                </ul>
+                </div>
 
             </div>
 
-            <a id="add-switch-port" type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add' ) ?>">
-                <span class="glyphicon glyphicon-plus"></span>
+            <a id="add-switch-port"  class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@add' ) ?>">
+                <span class="fa fa-plus"></span>
             </a>
 
         <?php endif; ?>
 
     </div>
 
-</li>
+

@@ -6,25 +6,19 @@
 $this->layout( 'layouts/ixpv4' )
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'interfaces/vlan/list' )?>">Vlan Interfaces</a>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Vlan Interfaces / View
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>View Vlan Interface</li>
-<?php $this->append() ?>
-
-<?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
-        <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= route( 'interfaces/vlan/list' )?>" title="list">
-                <span class="glyphicon glyphicon-th-list"></span>
-            </a>
-            <a type="button" class="btn btn-default" href="<?= route('interfaces/vlan/edit' , [ 'id' => $t->vli->getId() ] ) ?>" title="edit">
-                <span class="glyphicon glyphicon-pencil"></span>
-            </a>
-        </div>
-    </li>
+    <div class="btn-group btn-group-sm" role="group">
+        <a class="btn btn-white" href="<?= route( 'interfaces/vlan/list' )?>" title="list">
+            <span class="fa fa-th-list"></span>
+        </a>
+        <a class="btn btn-white" href="<?= route('interfaces/vlan/edit' , [ 'id' => $t->vli->getId() ] ) ?>" title="edit">
+            <span class="fa fa-pencil"></span>
+        </a>
+    </div>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -33,12 +27,12 @@ $this->layout( 'layouts/ixpv4' )
 
     <div class="col-sm-12">
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
+        <div class="card">
+            <div class="card-header">
                 VLAN Interface Details
             </div>
-            <div class="panel-body">
-                <div class="col-xs-6">
+            <div class="card-body row">
+                <div class="col-lg-6 col-md-12">
                     <table class="table_view_info">
                         <tr>
                             <td>
@@ -71,16 +65,16 @@ $this->layout( 'layouts/ixpv4' )
                                 </b>
                             </td>
                             <td>
-                                <?= $t->vli->getIpv4enabled() ? '<span class="label label-success">Enabled</span>' : '<span class="label label-danger">Disabled</span>' ?>
+                                <?= $t->vli->getIpv4enabled() ? '<span class="badge badge-success">Enabled</span>' : '<span class="badge badge-danger">Disabled</span>' ?>
                                 <?php if( $t->vli->getIpv4enabled() ): ?>
                                     <br><br>
                                     <?= $t->ee( $t->vli->getIPv4Address()->getAddress() ) ?>
                                     <br>
                                     <?= $t->ee( $t->vli->getIPv4HostName() ) ?>
                                     <br>
-                                    <?= $t->vli->getIPv4CanPing() ? '<span class="label label-success">Can Ping</span>' : '' ?>
+                                    <?= $t->vli->getIPv4CanPing() ? '<span class="badge badge-success">Can Ping</span>' : '' ?>
                                     &nbsp;
-                                    <?= $t->vli->getIpv4monitorrcbgp() ? '<span class="label label-success">Monitor RC BGP</span>' : '' ?>
+                                    <?= $t->vli->getIpv4monitorrcbgp() ? '<span class="badge badge-success">Monitor RC BGP</span>' : '' ?>
                                     <br>
                                 <?php endif ?>
                                 <br/>
@@ -103,7 +97,7 @@ $this->layout( 'layouts/ixpv4' )
                                 </b>
                             </td>
                             <td>
-                                <?= $t->vli->getRsclient() ? '<i class="glyphicon glyphicon-ok"></i>' : '<i class="glyphicon glyphicon-remove"></i>'   ?>
+                                <?= $t->vli->getRsclient() ? '<i class="fa fa-check"></i>' : '<i class="fa fa-cross"></i>'   ?>
                             </td>
                         </tr>
                         <?php if( $t->vli->getRsClient() ): ?>
@@ -114,7 +108,7 @@ $this->layout( 'layouts/ixpv4' )
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $t->vli->getIrrdbfilter() ? '<i class="glyphicon glyphicon-ok"></i>' : '<i class="glyphicon glyphicon-remove"></i>' ?>
+                                    <?= $t->vli->getIrrdbfilter() ? '<i class="fa fa-check"></i>' : '<i class="fa fa-cross"></i>' ?>
                                 </td>
                             </tr>
                             <tr>
@@ -124,7 +118,7 @@ $this->layout( 'layouts/ixpv4' )
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $t->vli->getRsmorespecifics() ? '<i class="glyphicon glyphicon-ok"></i>' : '<i class="glyphicon glyphicon-remove"></i>' ?>
+                                    <?= $t->vli->getRsmorespecifics() ? '<i class="fa fa-check"></i>' : '<i class="fa fa-cross"></i>' ?>
                                 </td>
                             </tr>
                         <?php endif; ?>
@@ -141,7 +135,7 @@ $this->layout( 'layouts/ixpv4' )
                     </table>
                 </div>
 
-                <div class="col-xs-6">
+                <div class="col-lg-6 col-md-12">
                     <table class="table_view_info">
                         <tr>
                             <td>
@@ -150,7 +144,7 @@ $this->layout( 'layouts/ixpv4' )
                                 </b>
                             </td>
                             <td>
-                                <?= $t->vli->getMcastenabled() ? '<span class="label label-success">Enabled</span>' : '<span class="label label-danger">Disabled</span>' ?>
+                                <?= $t->vli->getMcastenabled() ? '<span class="badge badge-success">Enabled</span>' : '<span class="badge badge-danger">Disabled</span>' ?>
                             </td>
                         </tr>
                         <tr>
@@ -170,16 +164,16 @@ $this->layout( 'layouts/ixpv4' )
                                 </b>
                             </td>
                             <td>
-                                <?= $t->vli->getIpv6enabled() ? '<span class="label label-success">Enabled</span>' : '<span class="label label-danger">Disabled</span>' ?>
+                                <?= $t->vli->getIpv6enabled() ? '<span class="badge badge-success">Enabled</span>' : '<span class="badge badge-danger">Disabled</span>' ?>
                                 <?php if( $t->vli->getIpv6enabled() ): ?>
                                     <br><br>
                                     <?= $t->ee( $t->vli->getIPv6Address()->getAddress() ) ?>
                                     <br>
                                     <?= $t->ee( $t->vli->getIPv6HostName() )?>
                                     <br>
-                                    <?= $t->vli->getIPv6CanPing() ? '<span class="label label-success">Can Ping</span>' : '' ?>
+                                    <?= $t->vli->getIPv6CanPing() ? '<span class="badge badge-success">Can Ping</span>' : '' ?>
                                     &nbsp;
-                                    <?= $t->vli->getIpv6monitorrcbgp() ? '<span class="label label-success">Monitor RC BGP</span>' : '' ?>
+                                    <?= $t->vli->getIpv6monitorrcbgp() ? '<span class="badge badge-success">Monitor RC BGP</span>' : '' ?>
                                     <br>
                                 <?php endif; ?>
                                 <br/>

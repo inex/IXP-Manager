@@ -43,6 +43,10 @@ To get your new password (or reset it), please use the *lost password* procedure
 
 [Click here to reset password]({{ route( "forgot-password@show-form" ) }})
 
+@component('mail::button', ['url' => route( "reset-password@show-reset-form", [ "token" => $token, "username" => $user->getUsername() ] ), 'color' => 'blue'])
+    Reset password
+@endcomponent
+
 
 
 Thanks and kind regards,

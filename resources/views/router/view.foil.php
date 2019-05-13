@@ -4,29 +4,26 @@
 $this->layout( 'layouts/ixpv4' )
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= action( 'RouterController@list' )?>">Routers</a>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Routers / <?= $t->ee( $t->rt->getName() ) ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li><?= $t->ee( $t->rt->getName() ) ?></li>
-<?php $this->append() ?>
+    <div class="btn-group btn-group-sm" role="group">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/routers/">
+            Documentation
+        </a>
+        <a class="btn btn-white" href="<?= route('router@list' ) ?>" title="list">
+            <span class="fa fa-th-list"></span>
+        </a>
+        <a class="btn btn-white" href="<?= route ('router@add' ) ?>" title="add">
+            <span class="fa fa-plus"></span>
+        </a>
+        <a class="btn btn-white" href="<?= route ('router@edit' , [ 'id' => $t->rt->getId() ] ) ?>" title="edit">
+            <span class="fa fa-pencil"></span>
+        </a>
 
-<?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
-        <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= route('router@list' ) ?>" title="list">
-                <span class="glyphicon glyphicon-th-list"></span>
-            </a>
-            <a type="button" class="btn btn-default" href="<?= route ('router@add' ) ?>" title="add">
-                <span class="glyphicon glyphicon-plus"></span>
-            </a>
-            <a type="button" class="btn btn-default" href="<?= route ('router@edit' , [ 'id' => $t->rt->getId() ] ) ?>" title="edit">
-                <span class="glyphicon glyphicon-pencil"></span>
-            </a>
-
-        </div>
-    </li>
+    </div>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -35,12 +32,12 @@ $this->layout( 'layouts/ixpv4' )
 
     <div class="col-sm-12">
 
-        <div class="panel panel-default">
-            <div class="panel-heading">
-                Router Details
+        <div class="card">
+            <div class="card-header">
+                Details for Router
             </div>
-            <div class="panel-body">
-                <div class="col-xs-6">
+            <div class="card-body row">
+                <div class="col-lg-6 col-md-12">
                     <table class="table_view_info">
                         <tr>
                             <td>
@@ -138,7 +135,7 @@ $this->layout( 'layouts/ixpv4' )
                     </table>
                 </div>
 
-                <div class="col-xs-6">
+                <div class="col-lg-6 col-md-12">
                     <table class="table_view_info">
                         <tr>
                             <td>
@@ -241,7 +238,9 @@ $this->layout( 'layouts/ixpv4' )
                             <td>
                                 <?= $t->rt->getLastUpdated() ? $t->rt->getLastUpdated()->format('Y-m-d H:i:s') : '(unknown)' ?>
                                 <?php if( $t->rt->getLastUpdated() && $t->rt->lastUpdatedGreaterThanSeconds( 86400 ) ): ?>
-                                    <span class="label label-danger"><i class="glyphicon glyphicon-exclamation-sign" title="Last updated more than 1 day ago"></i></span>
+                                    <span class="badge badge-danger">
+                                        <i class="fa fa-exclamation-triangle" title="Last updated more than 1 day ago"></i>
+                                    </span>
                                 <?php endif; ?>
                             </td>
                         </tr>

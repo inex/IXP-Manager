@@ -41,7 +41,7 @@ class LoginTest extends DuskTestCase
             $browser->visit('/login')
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
-                ->press( 'Login' )
+                ->press( '#login-btn' )
                 ->assertPathIs( '/admin' );
         });
     }

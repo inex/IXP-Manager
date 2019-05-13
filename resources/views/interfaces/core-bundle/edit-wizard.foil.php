@@ -23,33 +23,28 @@ $this->layout( 'layouts/ixpv4' );
     </style>
 <?php $this->append() ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'core-bundle/list' )?>">Core Bundles</a>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Core Bundles / Edit
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>Edit Core bundle</li>
-<?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
 
-    <li class="pull-right">
-        <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= route( 'core-bundle/list' )?>" title="list">
-                <span class="glyphicon glyphicon-th-list"></span>
+    <div class="btn-group btn-group-sm" role="group">
+        <a class="btn btn-white" href="<?= route( 'core-bundle/list' )?>" title="list">
+            <span class="fa fa-th-list"></span>
+        </a>
+        <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-plus"></i> <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="<?= route( 'core-bundle/add' )?>" >
+                Add Core Bundle Wizard...
             </a>
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="glyphicon glyphicon-plus"></i> <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-right">
-                <li>
-                    <a href="<?= route( 'interfaces/virtual/wizard' )?>" >
-                        Add Core Bundle Wizard...
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </li>
+
+        </ul>
+    </div>
+
 
 <?php $this->append() ?>
 
@@ -61,126 +56,132 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= $t->alerts() ?>
 
-            <div class="well">
-                <?= Former::open()->method( 'POST' )
-                    ->id( 'core-bundle-form' )
-                    ->action( route ( 'core-bundle/store' ) )
-                    ->customWidthClass( 'col-sm-6' )
-                ?>
+            <div id="message-cb"></div>
 
-                    <h3>
-                        General Core Bundle Settings :
-                    </h3>
-                    <hr>
-                    <div class="col-sm-6">
+            <div class="card">
+                <div class="card-body">
+                    <?= Former::open()->method( 'POST' )
+                        ->id( 'core-bundle-form' )
+                        ->action( route ( 'core-bundle/store' ) )
+                        ->customInputWidthClass( 'col-lg-8 col-md-6 col-sm-6' )
+                        ->customLabelWidthClass( 'col-lg-4 col-md-3 col-sm-4' )
+                        ->actionButtonsCustomClass( "grey-box")
+                    ?>
 
-                        <?= Former::select( 'customer' )
-                            ->label( 'Customer' )
-                            ->fromQuery( $t->customers, 'name' )
-                            ->placeholder( 'Choose a customer' )
-                            ->addClass( 'chzn-select' )
-                            ->blockHelp( '' );
-                        ?>
+                        <h3>
+                            General Core Bundle Settings :
+                        </h3>
+                        <hr>
+                        <div class="col-lg-6 col-sm-12">
 
-                        <?= Former::text( 'description' )
-                            ->label( 'Description' )
-                            ->placeholder( 'Description' )
-                            ->blockHelp( 'help text' );
-                        ?>
+                            <?= Former::select( 'customer' )
+                                ->label( 'Customer' )
+                                ->fromQuery( $t->customers, 'name' )
+                                ->placeholder( 'Choose a customer' )
+                                ->addClass( 'chzn-select' )
+                                ->blockHelp( '' );
+                            ?>
 
-                        <?= Former::text( 'graph-title' )
-                            ->label( 'Graph Title' )
-                            ->placeholder( 'Graph Title' )
-                            ->blockHelp( 'help text' );
-                        ?>
+                            <?= Former::text( 'description' )
+                                ->label( 'Description' )
+                                ->placeholder( 'Description' )
+                                ->blockHelp( 'help text' );
+                            ?>
 
-                        <?= Former::select( 'type' )
-                            ->label( 'Type<sup>*</sup>' )
-                            ->fromQuery( Entities\CoreBundle::$TYPES , 'name' )
-                            ->placeholder( 'Choose Core Bundle type' )
-                            ->addClass( 'chzn-select' )
-                            ->blockHelp( '' )
-                            ->value( Entities\CoreBundle::TYPE_ECMP )
-                            ->disabled( true );
-                        ?>
+                            <?= Former::text( 'graph-title' )
+                                ->label( 'Graph Title' )
+                                ->placeholder( 'Graph Title' )
+                                ->blockHelp( 'help text' );
+                            ?>
 
-                    </div>
+                            <?= Former::select( 'type' )
+                                ->label( 'Type<sup>*</sup>' )
+                                ->fromQuery( Entities\CoreBundle::$TYPES , 'name' )
+                                ->placeholder( 'Choose Core Bundle type' )
+                                ->addClass( 'chzn-select' )
+                                ->blockHelp( '' )
+                                ->value( Entities\CoreBundle::TYPE_ECMP )
+                                ->disabled( true );
+                            ?>
 
-                    <div class="col-sm-6">
+                        </div>
 
-                        <?php if( $t->cb->isL2LAG() ): ?>
-                            <?= Former::checkbox( 'stp' )
-                                ->id('stp')
-                                ->label( 'STP' )
+                        <div class="col-lg-6 col-sm-12">
+
+                            <?php if( $t->cb->isL2LAG() ): ?>
+                                <?= Former::checkbox( 'stp' )
+                                    ->id('stp')
+                                    ->label( 'STP' )
+                                    ->value( 1 )
+                                    ->inline()
+                                    ->blockHelp( "" );
+                                ?>
+                            <?php endif; ?>
+
+                            <?= Former::number( 'cost' )
+                                ->label( 'Cost' )
+                                ->placeholder( '10' )
+                                ->min( 0 )
+                                ->blockHelp( 'help text' );
+                            ?>
+
+                            <?= Former::number( 'preference' )
+                                ->label( 'Preference' )
+                                ->placeholder( '10' )
+                                ->min( 0 )
+                                ->blockHelp( 'help text' );
+                            ?>
+
+                            <?= Former::checkbox( 'enabled' )
+                                ->id( 'enabled' )
+                                ->label( 'Enabled' )
                                 ->value( 1 )
                                 ->blockHelp( "" );
                             ?>
-                        <?php endif; ?>
 
-                        <?= Former::number( 'cost' )
-                            ->label( 'Cost' )
-                            ->placeholder( '10' )
-                            ->min( 0 )
-                            ->blockHelp( 'help text' );
-                        ?>
+                            <?php if( $t->cb->isL3LAG() ): ?>
 
-                        <?= Former::number( 'preference' )
-                            ->label( 'Preference' )
-                            ->placeholder( '10' )
-                            ->min( 0 )
-                            ->blockHelp( 'help text' );
-                        ?>
+                                <?= Former::checkbox( 'bfd' )
+                                    ->label( 'BFD' )
+                                    ->value( 1 )
+                                    ->inline()
+                                    ->blockHelp( "" );
+                                ?>
 
-                        <?= Former::checkbox( 'enabled' )
-                            ->id( 'enabled' )
-                            ->label( 'Enabled' )
-                            ->value( 1 )
-                            ->blockHelp( "" );
-                        ?>
+                                <?= Former::text( 'subnet' )
+                                    ->label( 'SubNet' )
+                                    ->placeholder( '192.0.2.0/30' )
+                                    ->blockHelp( "" );
+                                ?>
+                            <?php endif; ?>
 
-                        <?php if( $t->cb->isL3LAG() ): ?>
-
-                            <?= Former::checkbox( 'bfd' )
-                                ->label( 'BFD' )
-                                ->value( 1 )
+                            <?= Former::hidden( 'type' )
+                                ->id( 'type')
+                                ->value( $t->cb->getType() )
                                 ->blockHelp( "" );
                             ?>
 
-                            <?= Former::text( 'subnet' )
-                                ->label( 'SubNet' )
-                                ->placeholder( '192.0.2.0/30' )
-                                ->blockHelp( "" );
+                            <?= Former::hidden( 'cb' )
+                                ->id( 'cb')
+                                ->value( $t->cb->getId() )
                             ?>
-                        <?php endif; ?>
 
-                        <?= Former::hidden( 'type' )
-                            ->id( 'type')
-                            ->value( $t->cb->getType() )
-                            ->blockHelp( "" );
-                        ?>
+                        </div>
 
-                        <?= Former::hidden( 'cb' )
-                            ->id( 'cb')
-                            ->value( $t->cb->getId() )
-                        ?>
-
-                    </div>
-
-                    <?=Former::actions(
-                        Former::primary_submit( 'Save Changes' )->id( 'core-bundle-submit-btn' ),
-                        Former::default_link( 'Cancel' )->href( route( 'core-bundle/list' ) ),
-                        Former::success_button( 'Help' )->id( 'help-btn' )
-                    )->class('text-center')?>
+                        <?=Former::actions(
+                            Former::primary_submit( 'Save Changes' )->id( 'core-bundle-submit-btn' ),
+                            Former::secondary_link( 'Cancel' )->href( route( 'core-bundle/list' ) ),
+                            Former::success_button( 'Help' )->id( 'help-btn' )
+                        )?>
 
 
-                <?= Former::close() ?>
+                    <?= Former::close() ?>
 
-                <div style="clear: both"></div>
-
+                </div>
             </div>
 
 
-            <div>
+            <div class="mt-4">
 
                 <h3>
                     Virtual Interfaces
@@ -202,8 +203,8 @@ $this->layout( 'layouts/ixpv4' );
                                 </td>
                                 <td>
                                     <div class="btn-group btn-group-sm" role="group">
-                                        <a class="btn btn btn-default" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vi->getId() ] )?>" title="Edit">
-                                            <i class="glyphicon glyphicon-pencil"></i>
+                                        <a class="btn btn btn-white" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vi->getId() ] )?>" title="Edit">
+                                            <i class="fa fa-pencil"></i>
                                         </a>
                                     </div>
                                 </td>
@@ -218,18 +219,17 @@ $this->layout( 'layouts/ixpv4' );
             </div>
 
 
+            <div class="card">
 
-            <div class="panel panel-default">
-
-                <div class="panel-body">
+                <div class="card-body">
 
                     <div id="message-cl"></div>
 
                     <h3>
                         Core Links
                         <?php if( $t->cb->sameSwitchForEachPIFromCL( true ) && $t->cb->sameSwitchForEachPIFromCL( false ) ): ?>
-                            <button style="float: right; margin-right: 20px" id="add-new-core-link" type="button" class=" btn-xs btn btn-default" href="#" title="Add Core link">
-                                <span class="glyphicon glyphicon-plus"></span>
+                            <button style="float: right; margin-right: 20px" id="add-new-core-link" type="button" class=" btn-sm btn btn-white" href="#" title="Add Core link">
+                                <span class="fa fa-plus"></span>
                             </button>
                         <?php endif;?>
                     </h3>
@@ -238,7 +238,8 @@ $this->layout( 'layouts/ixpv4' );
                         <?= Former::open()->method( 'POST' )
                             ->id( 'core-link-form' )
                             ->action( route( 'core-bundle/store-core-link', [ 'id' => $t->cb->getId() ] ) )
-                            ->customWidthClass( 'col-sm-10' )
+                            ->customInputWidthClass( 'col-sm-10' )
+                            ->actionButtonsCustomClass( "grey-box")
                         ?>
 
                             <table id="" class="table table-bordered">
@@ -250,7 +251,7 @@ $this->layout( 'layouts/ixpv4' );
                                             <?= $t->cb->getSwitchSideX( true )->getName() ?>
                                             <input type="hidden" value="<?= $t->cb->getSwitchSideX( true )->getId() ?>" id="switch-a">
                                         <?php else: ?>
-                                            <span class="label label-warning">Multiple</span>
+                                            <span class="badge badge-warning">Multiple</span>
                                         <?php endif;?>
                                     </td>
                                     <td>
@@ -259,39 +260,42 @@ $this->layout( 'layouts/ixpv4' );
                                             <?= $t->cb->getSwitchSideX( false )->getName() ?>
                                             <input type="hidden" value="<?= $t->cb->getSwitchSideX( false )->getId() ?>" id="switch-b">
                                         <?php else: ?>
-                                            <span class="label label-warning">Multiple</span>
+                                            <span class="badge badge-warning">Multiple</span>
                                         <?php endif;?>
                                     </td>
                                 </tr>
 
                             </table>
 
-                            <table id="table-core-link" class="table table-bordered">
-                                <tr>
-                                    <th>
-                                        Number
-                                    </th>
-                                    <th>
-                                        Switch Port A
-                                    </th>
-                                    <th>
-                                        Switch Port B
-                                    </th>
-                                    <th>
-                                        Enabled
-                                    </th>
-                                    <?php if( $t->cb->isECMP () ): ?>
+                            <table id="table-core-link" class="table table-bordered table-striped table-responsive-ixp-no-header" width="100%">
+
+                                <thead class="thead-dark">
+                                    <tr>
                                         <th>
-                                            BFD
+                                            Number
                                         </th>
                                         <th>
-                                            Subnet
+                                            Switch Port A
                                         </th>
-                                    <?php endif; ?>
-                                    <th>
-                                        Action
-                                    </th>
-                                </tr>
+                                        <th>
+                                            Switch Port B
+                                        </th>
+                                        <th>
+                                            Enabled
+                                        </th>
+                                        <?php if( $t->cb->isECMP () ): ?>
+                                            <th>
+                                                BFD
+                                            </th>
+                                            <th>
+                                                Subnet
+                                            </th>
+                                        <?php endif; ?>
+                                        <th>
+                                            Action
+                                        </th>
+                                    </tr>
+                                </thead>
                                 <?php $nbCl = 1 ?>
                                 <?php foreach( $t->cb->getCoreLinks() as $cl ) :
                                     /** @var Entities\CoreLink $cl */ ?>
@@ -301,16 +305,17 @@ $this->layout( 'layouts/ixpv4' );
                                         </td>
                                         <td>
                                             <?= $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getSwitchPort()->getName() ?>
-                                            <a class="btn btn-sm btn-default" href="<?= route('interfaces/physical/edit/from-core-bundle' , [ 'id' => $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getId(), 'cb' => $t->cb->getId() ] ) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
+                                            <a class="btn btn-sm btn-white" href="<?= route('interfaces/physical/edit/from-core-bundle' , [ 'id' => $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getId(), 'cb' => $t->cb->getId() ] ) ?>"><i class="fa fa-pencil"></i></a>
                                         </td>
                                         <td>
                                             <?= $cl->getCoreInterfaceSideB()->getPhysicalInterface()->getSwitchPort()->getName() ?>
-                                            <a class="btn btn-sm btn-default" href="<?= route('interfaces/physical/edit/from-core-bundle' , [ 'id' => $cl->getCoreInterfaceSideB()->getPhysicalInterface()->getId(), 'cb' => $t->cb->getId() ] ) ?>"><i class="glyphicon glyphicon-pencil"></i></a>
+                                            <a class="btn btn-sm btn-white" href="<?= route('interfaces/physical/edit/from-core-bundle' , [ 'id' => $cl->getCoreInterfaceSideB()->getPhysicalInterface()->getId(), 'cb' => $t->cb->getId() ] ) ?>"><i class="fa fa-pencil"></i></a>
                                         </td>
                                         <td>
                                             <?= Former::checkbox( 'enabled-'.$cl->getId() )
                                                 ->label( '' )
                                                 ->value( 1 )
+                                                ->inline()
                                                 ->check( $cl->getEnabled() ? true : false )
                                             ?>
                                         </td>
@@ -319,6 +324,7 @@ $this->layout( 'layouts/ixpv4' );
                                                 <?= Former::checkbox( 'bfd-'.$cl->getId() )
                                                     ->label( '' )
                                                     ->value( 1 )
+                                                    ->inline()
                                                     ->check( $cl->getBFD() ? true : false )
                                                 ?>
 
@@ -335,8 +341,8 @@ $this->layout( 'layouts/ixpv4' );
                                         <td>
                                             <?php if( count( $t->cb->getCoreLinks() ) > 1 ): ?>
                                                 <div class="btn-group btn-group-sm" role="group">
-                                                    <a class="btn btn btn-default" id="delete-cl-<?=  $cl->getId() ?>" href="#" title="Delete">
-                                                        <i class="glyphicon glyphicon-trash"></i>
+                                                    <a class="btn btn btn-white" id="delete-cl-<?=  $cl->getId() ?>" href="#" title="Delete">
+                                                        <i class="fa fa-trash"></i>
                                                     </a>
                                                 </div>
                                             <?php endif; ?>
@@ -348,7 +354,7 @@ $this->layout( 'layouts/ixpv4' );
 
                         <?=Former::actions(
                             Former::primary_submit( 'Save Changes' )->id( 'core-links-submit-btn' )
-                        )->class('text-center');?>
+                        );?>
 
                         <?= Former::close() ?>
                     </div>
@@ -357,12 +363,13 @@ $this->layout( 'layouts/ixpv4' );
 
 
             <!-- If a new Core link is added it will appear here  -->
-            <div id="core-links-area" style="opacity: 0; margin-bottom: 20px" >
+            <div id="core-links-area" class="mb-4" style="display: none;" >
 
-                <?= Former::open()->method( 'POST' )
+                <?= Former::horizontal_open()->method( 'POST' )
                     ->id( 'core-link-form' )
                     ->action( route( "core-bundle/add-core-link" ) )
-                    ->customWidthClass( 'col-sm-6' )
+                    ->customInputWidthClass( 'col-sm-6' )
+                    ->actionButtonsCustomClass( "grey-box")
                 ?>
                     <div id="core-links"></div>
 
@@ -381,22 +388,28 @@ $this->layout( 'layouts/ixpv4' );
                     )->class('text-center');?>
 
                 <?= Former::close() ?>
-                <div style="clear: both"></div>
             </div>
 
             <br/>
 
             <!-- Delete Core Bundle area -->
-            <div class="col-sm-12 alert alert-danger" style="float: right;" role="alert">
 
-                <span style="line-height: 34px;">
-                    <strong>Delete core bundle ....</strong>
-                </span>
-
-                <a id="cb-delete-<?= $t->cb->getId() ?>" class="btn btn btn-danger" onclick="deleteElement( false , null )" style="float: right;" title="Delete">
-                    Delete
-                </a>
-
+            <div class="alert alert-danger mt-4" role="alert">
+                <div class="d-flex align-items-center">
+                    <div class="text-center">
+                        <i class="fa fa-exclamation-triangle fa-2x"></i>
+                    </div>
+                    <div class="col-sm-12 d-flex">
+                        <div class="mr-auto">
+                            <b>If you are sure you want to delete this Core Bundle:</b>
+                        </div>
+                        <div class="my-auto">
+                            <a id="cb-delete-<?= $t->cb->getId() ?>" class="btn btn btn-danger" href="#" title="Delete">
+                                Delete
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </div>
@@ -407,7 +420,6 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script type="text/javascript" src="<?= asset( '/bower_components/ip-address/dist/ip-address-globals.js' ) ?>"></script>
     <?= $t->insert( 'interfaces/core-bundle/js/edit-wizard' ); ?>
     <?= $t->insert( 'interfaces/common/js/cb-functions' ); ?>
 <?php $this->append() ?>

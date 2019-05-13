@@ -4,10 +4,10 @@
 ?>
 
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
 
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-        <a href="<?= route( 'customer@list' )?>"><?= $t->associates ? 'Associate Members' : 'Customers' ?></a> (Member Details Page)
+        <?= $t->associates ? 'Associate Members' : 'Customers' ?>
     <?php else: ?>
         <?= $t->associates ? 'Associate' : '' ?> Members
     <?php endif; ?>
@@ -19,49 +19,36 @@
 
     <div class="row">
 
-        <div class="col-sm-12">
+        <div class="col-12">
 
             <?= $t->alerts() ?>
 
-            <table id='customer-list' class="table" style="display: none;">
+            <table id='customer-list' class="table table-hover ixpm-table">
 
-                <thead>
-                <tr>
-                    <td>
-                        Member
-                    </td>
-                    <td>
-                        Joined
-                    </td>
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            Member
+                        </th>
+                        <th class="hidden md:tw-table-cell">
+                            Joined
+                        </th>
 
-                    <?php if( !$t->associates ): ?>
+                        <?php if( !$t->associates ): ?>
 
-                        <td>
-                            ASN
-                        </td>
+                            <th class="tw-text-right">
+                                ASN
+                            </th>
 
-                        <td>
-                            Peering Policy
-                        </td>
+                            <?php if( Auth::check() ): ?>
+                                <th class="hidden lg:tw-table-cell">
+                                    Peering Email
+                                </th>
+                            <?php endif; ?>
 
-                        <?php if( Auth::check() ): ?>
-                            <td>
-                                Peering Email
-                            </td>
-                            <td>
-                                NOC Phone
-                            </td>
-                            <td>
-                                NOC Hours
-                            </td>
                         <?php endif; ?>
 
-                    <?php endif; ?>
-
-                    <td>
-                        Action
-                    </td>
-                </tr>
+                    </tr>
                 <thead>
 
                 <tbody>
@@ -72,55 +59,59 @@
 
                     <tr>
                         <td>
-                            <a href="<?= $c->getCorpwww() ?>">
+                            <a href="<?= route ( 'customer@detail' , [ 'id' => $c->getId() ] )  ?>">
                                 <?= $t->ee( $c->getName() ) ?>
                             </a>
+
+                            <?php if( !$t->associates ): ?>
+                                <?php if( $c->getPeeringpolicy() != \Entities\Customer::PEERING_POLICY_OPEN ): ?>
+                                    <span class="tw-hidden lg:tw-inline tw-border tw-p-1 tw-rounded-full tw-float-right tw-text-grey-dark tw-uppercase tw-text-xs">
+                                        <?= $c->getPeeringpolicy() ?>
+                                    </span>
+                                <?php endif; ?>
+
+                                <?php if( $c->getInManrs() ): ?>
+                                    <a href="https://www.manrs.org/" target="_blank" class="hover:no-underline">
+                                        <span class="tw-hidden md:tw-inline tw-border tw-border-green-500 tw-p-1 tw-rounded-full tw-text-green-500 tw-uppercase tw-text-xs tw-mx-3">
+                                            MANRS
+                                        </span>
+                                    </a>
+                                <?php endif; ?>
+                            <?php endif; ?>
+
+
                         </td>
 
-                        <td>
+                        <td class="tw-font-mono tw-hidden md:tw-table-cell">
                             <?= $c->getDatejoin()->format( 'Y-m-d' ) ?>
                         </td>
 
                         <?php if( !$t->associates ): ?>
 
-                            <td>
-                                <?php if( $c->isTypeAssociate() ): ?>
-                                    <em>(associate)</em>
-                                <?php else: ?>
-                                    <?php if( $c->getAutsys() ): ?>
-                                        <a href="#">
-                                            <?=  $t->asNumber( $c->getAutsys() ) ?>
+                            <td class="tw-font-mono tw-text-right">
+                                <?php if( $c->getInPeeringdb() ): ?>
+                                    <?php if( Auth::check() ): ?>
+                                        <?=  $t->asNumber( $c->getAutsys(), false ) ?>
+                                    <?php else: ?>
+                                        <a href="https://www.peeringdb.com/asn/<?= $c->getAutsys() ?>" target="_peeringdb">
+                                            <?= $c->getAutsys() ?>
                                         </a>
                                     <?php endif; ?>
+                                <?php else: ?>
+                                    <?= $c->getAutsys() ?>
                                 <?php endif; ?>
-
-                            </td>
-
-                            <td>
-                                <?= ucfirst( $c->getPeeringpolicy() ) ?>
                             </td>
 
                             <?php if( Auth::check() ): ?>
-                                <td>
-                                    <?= $t->ee( $c->getPeeringemail() ) ?>
-                                </td>
-                                <td>
-                                    <?= $c->getNocphone() ?>
-                                </td>
-                                <td>
-                                    <?= $c->getNochours() ?>
+                                <td  class="hidden lg:tw-table-cell">
+                                    <a href="mailto:<?= $t->ee( $c->getPeeringemail() ) ?>">
+                                        <?= $t->ee( $c->getPeeringemail() ) ?>
+                                    </a>
                                 </td>
                             <?php endif; ?>
 
                         <?php endif; ?>
 
-                        <td>
-                            <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn btn-default" href="<?= route ( 'customer@detail' , [ 'id' => $c->getId() ] )  ?>" title="View">
-                                    <i class="glyphicon glyphicon-eye-open"></i>
-                                </a>
-                            </div>
-                        </td>
                     </tr>
                 <?php endforeach;?>
                 <tbody>
@@ -139,7 +130,12 @@
 
     <script>
         $(document).ready( function() {
-            $( '#customer-list' ).dataTable( { "autoWidth": false, "iDisplayLength": 100 } ).show();
+            $( '#customer-list' ).show();
+
+            $( '#customer-list' ).dataTable( {
+                responsive: false,
+                "iDisplayLength": 100
+            });
         });
     </script>
 

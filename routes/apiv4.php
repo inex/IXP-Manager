@@ -78,9 +78,9 @@ Route::get( 'peeringdb/ix', function() {
             foreach( json_decode($ixs)->data as $ix ) {
                 $ixps[$ix->id] = [
                     'pdb_id' => $ix->id,
-                    'name' => $ix->name,
-                    'city' => $ix->city,
-                    'country' => $ix->country,
+                    'name' => htmlentities( $ix->name, ENT_QUOTES ),
+                    'city' => htmlentities( $ix->city, ENT_QUOTES ),
+                    'country' => htmlentities( $ix->country, ENT_QUOTES ),
                 ];
             }
         }
@@ -96,9 +96,9 @@ Route::get( 'ix-f/ixp', function() {
                 foreach( json_decode($ixs) as $ix ) {
                     $ixps[$ix->id] = [
                         'ixf_id' => $ix->id,
-                        'name' => $ix->name,
-                        'city' => $ix->city,
-                        'country' => $ix->country,
+                        'name' => htmlentities( $ix->name, ENT_QUOTES ),
+                        'city' => htmlentities( $ix->city, ENT_QUOTES ),
+                        'country' => htmlentities( $ix->country, ENT_QUOTES ),
                     ];
                 }
             }
@@ -114,7 +114,7 @@ Route::get( 'peering-db/fac', function() {
             foreach( json_decode( $pdb )->data as $db ) {
                 $pdbs[ $db->id ] = [
                     'id' => $db->id,
-                    'name' => $db->name,
+                    'name' => htmlentities( $db->name, ENT_QUOTES ),
                 ];
             }
         }
@@ -130,31 +130,5 @@ Route::get( 'peering-db/fac', function() {
 Route::get( 'statistics/overall-by-month', 'StatisticsController@overallByMonth' );
 
 
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ASN Number
-//
-Route::get( 'aut-num/{asn}', function( $asn ) {
 
-    $infos = [];
-
-    if( $values = file_get_contents("https://rest.db.ripe.net/ripe/aut-num/". $asn . ".json" ) ) {
-        $i = 0;
-
-        foreach( json_decode( $values)->objects->object[0]->attributes->attribute as $val ) {
-            $infos[ $i ][ 'name' ] = $val->name;
-            $infos[ $i ][ 'value' ] = $val->value;
-            if( isset( $val->link ) ){
-                $infos[ $i ][ 'link' ] = $val->link->href;
-            }
-
-            if( isset( $val->comment ) ){
-                $infos[ $i ][ 'comment' ] = $val->comment;
-            }
-
-            $i++;
-        }
-    }
-
-    return response()->json(  $infos );
-})->name('api-v4-aut-num');
 

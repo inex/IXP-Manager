@@ -803,6 +803,51 @@ class VirtualInterface
     }
 
     /**
+     * Is this VI connected with at least one PI?
+     *
+     * @return bool
+     */
+    public function isConnected(): bool {
+        foreach( $this->getPhysicalInterfaces() as $pi ) {
+            if( $pi->statusIsConnected() ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Number of non-private VLANs
+     *
+     * Usually just one but we use this for labeling on the frontend if >1
+     *
+     * @return int
+     */
+    public function numberOfPublicVlans(): int {
+        $num = 0;
+        foreach( $this->getVlanInterfaces() as $vli ) {
+            if( !$vli->getVlan()->getPrivate() ) {
+                $num++;
+            }
+        }
+
+        return $num;
+    }
+
+    /**
+     * Is this a peering port?
+     *
+     *  @return bool
+     */
+    public function isPeeringPort(): bool {
+        foreach( $this->getPhysicalInterfaces() as $pi ) {
+            return $pi->getSwitchPort()->isTypePeering();
+        }
+    }
+
+
+    /**
      * Convenience function to resolve the infrastructure of a virtual interface
      *
      * @return Infrastructure|null

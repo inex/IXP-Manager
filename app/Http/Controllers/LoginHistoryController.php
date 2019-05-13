@@ -26,8 +26,9 @@ namespace IXP\Http\Controllers;
 use Auth, D2EM, Route;
 
 use Entities\{
-    UserLoginHistory    as UserLoginHistoryEntity,
-    User                as UserEntity
+    CustomerToUser as CustomerToUserEntity,
+    User as UserEntity,
+    UserLoginHistory as UserLoginHistoryEntity,
 };
 
 use Illuminate\Http\Request;
@@ -62,7 +63,7 @@ class LoginHistoryController extends Doctrine2Frontend {
             'titleSingular'     => 'Login History',
             'nameSingular'      => 'a Login History',
 
-            'listOrderBy'       => 'lastlogin',
+            'listOrderBy'       => 'last_login_date',
             'listOrderByDir'    => 'DESC',
 
             'readonly'       => 'true',
@@ -83,9 +84,9 @@ class LoginHistoryController extends Doctrine2Frontend {
                     'idField'    => 'cust_id'
                 ],
 
-                'lastlogin'         => [
+                'last_login_date'         => [
                     'title'     => 'Last Login',
-                    'type'      => self::$FE_COL_TYPES[ 'UNIX_TIMESTAMP' ]
+                    'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ]
             ]
         ];
@@ -130,20 +131,20 @@ class LoginHistoryController extends Doctrine2Frontend {
 
 
     /**
-     * Display the login history list for a user
+     * Display the login history list for a user/customer
      *
      * @inheritdoc
      */
     public function view( Request $r, $id ): View
     {
 
-        if( !( $user = D2EM::getRepository( UserEntity::class )->find( $id ) ) ) {
+        if( !( $c2u = D2EM::getRepository( CustomerToUserEntity::class )->find( $id ) ) ) {
             abort(404 );
         }
 
         return view( 'login-history/view' )->with([
-            'histories'                 => D2EM::getRepository( UserLoginHistoryEntity::class)->getAllForFeList( $user->getId(), $r->input( 'limit', 0 ) ),
-            'user'                      => $user,
+            'histories'                 => D2EM::getRepository( UserLoginHistoryEntity::class)->getAllForFeList( $c2u->getId(), $r->input( 'limit', 0 ) ),
+            'c2u'                       => $c2u,
         ]);
     }
 }

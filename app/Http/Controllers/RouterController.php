@@ -126,6 +126,7 @@ class RouterController extends Controller
                 'lg_access'             => array_key_exists( 'lg_access',   $old ) ? $old['lg_access']      : $rt->getLgAccess(),
                 'quarantine'            => array_key_exists( 'quarantine',  $old ) ? $old['quarantine']     : ( $rt->getQuarantine()    ? 1 : 0 ),
                 'bgp_lc'                => array_key_exists( 'bgp_lc',      $old ) ? $old['bgp_lc']         : ( $rt->getBgpLc()         ? 1 : 0 ),
+                'rpki'                  => array_key_exists( 'rpki',        $old ) ? $old['rpki']           : ( $rt->getRPKI()          ? 1 : 0 ),
                 'skip_md5'              => array_key_exists( 'skip_md5',    $old ) ? $old['skip_md5']       : ( $rt->getSkipMd5()       ? 1 : 0 ),
                 'template'              => array_key_exists( 'template',    $old ) ? $old['template']       : $rt->getTemplate(),
             ]);
@@ -189,6 +190,7 @@ class RouterController extends Controller
 
         $rt->setQuarantine(( $request->input( 'quarantine'  ) ) ? $request->input( 'quarantine'     ) : 0 );
         $rt->setBgpLc(       ( $request->input( 'bgp_lc'       ) ) ? $request->input( 'bgp_lc'         ) : 0 );
+        $rt->setRPKI(        ( $request->input( 'rpki'         ) ) ? $request->input( 'rpki'           ) : 0 );
         $rt->setSkipMd5(   ( $request->input( 'skip_md5'     ) ) ? $request->input( 'skip_md5'       ) : 0 );
 
 

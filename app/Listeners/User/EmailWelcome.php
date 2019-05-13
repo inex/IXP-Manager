@@ -50,6 +50,6 @@ class EmailWelcome
     public function handle( WelcomeEvent $e )
     {
 
-        Mail::to( $e->user->getEmail() )->send( new WelcomeMailable( $e->user, $e->resend ) );
+        Mail::to( $e->user->getEmail() )->send( new WelcomeMailable( $e->user, $e->resend, $e->existing ) );
     }
 }

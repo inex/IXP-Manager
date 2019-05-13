@@ -1,45 +1,35 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'switch@list' )?>">Switches</a>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Switches
+    /
+    Port Report for <?= $t->s->getName() ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>Port Report for <?= $t->s->getName() ?></li>
-<?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
+    <div class="btn-group btn-group-sm" role="group">
 
-        <div class="btn-group btn-group-xs" role="group">
+        <!-- Single button -->
+        <div class="btn-group btn-group-sm">
 
-            <!-- Single button -->
-            <div class="btn-group">
+            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <?=  $t->s->getName() ?> <span class="caret"></span>
+            </button>
 
-                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?=  $t->s->getName() ?> <span class="caret"></span>
-                </button>
-
-                <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
-
-                    <?php foreach( $t->switches as $id => $name ): ?>
-
-                        <li class="<?= $t->s->getId() == $id ? 'active' : '' ?>">
-                            <a href="<?= route( "switch@port-report", [ "port" => $id ] ) ?>"><?= $name ?></a>
-                        </li>
-
-                    <?php endforeach; ?>
-
-                </ul>
+            <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
+                <?php foreach( $t->switches as $id => $name ): ?>
+                    <a class="dropdown-item <?= $t->s->getId() == $id ? 'active' : '' ?>" href="<?= route( "switch@port-report", [ "port" => $id ] ) ?>"><?= $name ?></a>
+                <?php endforeach; ?>
             </div>
-
-            <a type="button" class="btn btn-default" href="<?= route ('switch@list' ) ?>" title="list">
-                <span class="glyphicon glyphicon-th-list"></span>
-            </a>
-
         </div>
 
-    </li>
+        <a class="btn btn-white" href="<?= route ('switch@list' ) ?>" title="list">
+            <span class="fa fa-th-list"></span>
+        </a>
+
+    </div>
+
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -48,15 +38,25 @@
 
         <div class="col-sm-12">
 
-            <table id="list-port" class="table table-striped table-bordered">
+            <table id="list-port" class="collapse table table-striped table-bordered" width="100%">
 
-                <thead>
+                <thead class="thead-dark">
                     <tr>
-                        <th>ID</th>
-                        <th>Port Name</th>
-                        <th>Type</th>
-                        <th>Speed/Duplex</th>
-                        <th>Customer</th>
+                        <th>
+                            ID
+                        </th>
+                        <th>
+                            Port Name
+                        </th>
+                        <th>
+                            Type
+                        </th>
+                        <th>
+                            Speed/Duplex
+                        </th>
+                        <th>
+                            Customer
+                        </th>
                     </tr>
                 </thead>
 
@@ -104,7 +104,10 @@
     <script>
         $( document ).ready( function() {
 
+            $('#list-port').show();
+
             $('#list-port').dataTable({
+                responsive : true,
                 "columnDefs": [
                     { "targets": [ 0 ], "visible": false },
                     { "orderData": [ 0 ],    "targets": 1 },

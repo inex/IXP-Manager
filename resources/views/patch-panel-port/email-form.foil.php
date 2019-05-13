@@ -3,31 +3,20 @@
     $this->layout( 'layouts/ixpv4' )
 ?>
 
-<?php $this->section('headers') ?>
-<!--    <link rel="stylesheet" type="text/css" href="--><?//= asset( 'bower_components/bootstrap-tagsinput/dist/bootstrap-tagsinput.css' ) ?><!--" />-->
-<?php $this->append() ?>
-
-
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) ?>">
-        Patch Panel Port
-    </a>
-<?php $this->append() ?>
-
-<?php $this->section( 'page-header-postamble' ) ?>
-    <li>
-        Email : <?= $t->ee( $t->ppp->getName() )?>
-    </li>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Patch Panel Port
+    /
+    Email : <?= $t->ee( $t->ppp->getName() )?>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
+    <div class="col-sm-12">
+        <?= $t->alerts() ?>
 
-    <?= $t->alerts() ?>
-
-    <?= Former::open()->method( 'POST' )
-        ->action( route ( 'patch-panel-port@send-email' , [ 'id' =>  $t->ppp->getId() , 'type' => $t->emailType  ] ) )
-        ->addClass( 'col-md-10' );
-    ?>
+        <?= Former::open()->method( 'POST' )
+            ->action( route ( 'patch-panel-port@send-email' , [ 'id' =>  $t->ppp->getId() , 'type' => $t->emailType  ] ) )
+            ->actionButtonsCustomClass( "grey-box");
+        ?>
         <?= Former::text( 'email_to' )
             ->label( 'To' );
         ?>
@@ -49,38 +38,41 @@
                 ->label( 'Attach LoA as a PDF' )
                 ->check( $t->emailType == 1 /* connect */ || $t->emailType == 4 /* send loa */ )
                 ->value( 1 )
+                ->inline()
             ?>
         <?php endif; ?>
 
         <div class="col-lg-offset-2 col-sm-offset-2">
-
-            <ul class="nav nav-tabs">
-                <li role="presentation" class="active">
-                    <a class="tab-link-body-note" href="#body">Body</a>
-                </li>
-                <li role="presentation">
-                    <a class="tab-link-preview-note" href="#preview">Preview</a>
-                </li>
-            </ul>
-
-            <div class="tab-content">
-                <div role="tabpanel" class="tab-pane active" id="body">
-                    <textarea class="form-control" style="font-family:monospace;" rows="30" id="email_text" name="email_text"><?= $t->ee( $t->body )?></textarea>
+            <div class="card mt-4">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li role="presentation" class="nav-item">
+                            <a class="tab-link-body-note nav-link active" href="#body">Body</a>
+                        </li>
+                        <li role="presentation" class="nav-item">
+                            <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
+                        </li>
+                    </ul>
                 </div>
-                <div role="tabpanel" class="tab-pane" id="preview">
-                    <div class="well well-preview" style="background: rgb(255,255,255);">
-                        Loading...
+
+                <div class="tab-content card-body">
+                    <div role="tabpanel" class="tab-pane show active" id="body">
+                        <textarea class="form-control" style="font-family:monospace;" rows="30" id="email_text" name="email_text"><?= $t->ee( $t->body )?></textarea>
+                    </div>
+                    <div role="tabpanel" class="tab-pane" id="preview">
+                        <div class="bg-light p-4 well-preview">
+                            Loading...
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <br><br>
         </div>
 
+
         <?= Former::actions(
-                Former::primary_submit( 'Send Email' ),
-                Former::default_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) )
-            );
+            Former::primary_submit( 'Send Email' ),
+            Former::secondary_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) )
+        );
         ?>
 
         <?= Former::hidden( 'emailType' )
@@ -90,7 +82,10 @@
         <?= Former::hidden( 'patch_panel_port_id' )
             ->value( $t->ppp->getId() )
         ?>
-    <?= Former::close() ?>
+        <?= Former::close() ?>
+
+    </div>
+
 
 <?php $this->append() ?>
 

@@ -11,41 +11,26 @@
     // action bindings:
 
     $(document).ready(function(){
-        loadDataTable( 'ppp' );
-        $( '#area-ppp' ).show();
+
+        $( '#table-ppp' ).show();
+
+        $( '#table-ppp' ).DataTable({
+            responsive : true,
+            "paging":   pagination,
+            columnDefs: [
+
+                    { responsivePriority: 1, targets: 0 },
+                    { responsivePriority: 2, targets: -1 },
+                    { responsivePriority: 3, targets: 8 },
+                    { "targets": [ 0 ], "visible": false, "searchable": false,}
+                ],
+            "order": [[ 0, "asc" ]]
+        });
 
     });
 
     $('[data-toggle="tooltip"]').tooltip();
 
-    //////////////////////////////////////////////////////////////////////////////////////
-    // functions:
 
-    /**
-     * initialise the datatable table
-     */
-    function loadDataTable( tableId ){
-        table = $( '#table-' + tableId ).DataTable({
-            "paging":   pagination,
-            "autoWidth": false,
-            "columnDefs": [{
-                "targets": [ 0 ],
-                "visible": false,
-                "searchable": false,
-            }],
-            "order": [[ 0, "asc" ]]
-        });
-    }
-
-    /**
-     * allow to refresh the table without reloading the page
-     * reloading only a part of the DOM
-     */
-    function refreshDataTable( htmlId ) {
-        $( "#area-"+htmlId).load( $(location).attr('pathname')+" #table-"+ htmlId ,function( ) {
-            table.destroy();
-            loadDataTable( htmlId );
-        });
-    }
 
 </script>

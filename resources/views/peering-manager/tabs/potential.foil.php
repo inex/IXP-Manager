@@ -1,6 +1,5 @@
 <div class="row">
     <div class="col-sm-12">
-        <br/>
         <p>
             You currently do not exchange any routes in any way with the following members of the exchange
             <strong>over the highlighted - in red - protocol(s) and LAN(s)</strong> because:

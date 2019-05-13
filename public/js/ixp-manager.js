@@ -45,12 +45,12 @@ $( 'document' ).ready( function(){
      * display / hide help sections on click on the help button
      */
     $( "#help-btn" ).click( function() {
-        $( "p.help-block" ).toggle();
+        $( ".former-help-text" ).toggle();
         $( "#instructions-alert").toggle();
     });
 
     $( ".help-btn" ).click( function() {
-        $( "p.help-block" ).toggle();
+        $( ".former-help-text" ).toggle();
         $( "#instructions-alert").toggle();
     });
 
@@ -61,23 +61,23 @@ $( 'document' ).ready( function(){
     });
 
     $('.tab-link-preview-note').on( 'click', function(e) {
-        const well_div = $(this).closest('div').find( ".well-preview" );
+        const well_div = $(this).closest('div').parent( 'div' ).find( ".well-preview" );
         e.preventDefault();
 
         $(this).tab('show');
 
         $.ajax( MARKDOWN_URL, {
             data: {
-                text: $(this).closest('div').find( "textarea" ).val()
+                text: $(this).closest('div').parent( 'div' ).find( "textarea" ).val()
             },
             type: 'POST'
         })
-            .done( function( data ) {
-                well_div.html( data.html );
-            })
-            .fail( function() {
-                well_div.html('Error!');
-            });
+        .done( function( data ) {
+            well_div.html( data.html );
+        })
+        .fail( function() {
+            well_div.html('Error!');
+        });
     });
 
 
@@ -148,6 +148,20 @@ function ixpRandomString( length = 12 ) {
 
 
 /**
+ * Equivalent of PHP's htmlentities()
+ * @param str
+ * @returns {string}
+ */
+function htmlEntities(str) {
+    return String(str).replace(/&/g, '&amp;')
+                        .replace(/</g, '&lt;')
+                        .replace(/>/g, '&gt;')
+                        .replace(/"/g, '&quot;')
+                        .replace(/'/g, '&quot;');
+}
+
+
+/**
  * Replaces an AS  Number with some JS magic to invoke a BootBox.
  *
  * @param string asNumber The AS number
@@ -155,46 +169,31 @@ function ixpRandomString( length = 12 ) {
  * @return html
  */
 function ixpAsnumber( asNumber ) {
-    let url = RIPE_ASN_URL + "/AS" + asNumber;
-    let datas = `<table class="asn-table"><tbody>`;
+    let url = RIPE_ASN_URL + "/" + asNumber;
+    let content = `<div class="asn-table"><pre class="font-mono text-xs">`;
+
+    let bb = bootbox.dialog({
+        message: '<div><p class="text-center"><i class="fa fa-spinner fa-spin text-5xl"></i></p></div>',
+        size: "large",
+        title: "AS Number Lookup",
+        onEscape: true,
+        buttons: {
+            cancel: {
+                label: 'Close',
+                callback: function () {
+                    $('.bootbox.modal').modal('hide');
+                    return false;
+                }
+            }
+        }
+    });
+
+
     $.ajax(url)
         .done(function (data) {
-            $.each(data, function (i, info) {
-                datas += `<tr><td>${info.name}:</td><td>`;
+            content += data + '</pre>';
 
-                if (info.link !== undefined) {
-                    let link = info.link;
-                    if (!link.includes(".json")) {
-                        link = link + ".json";
-                    }
-
-                    datas += ` <a target="_blank" href="${link}">${info.value}<a/>`;
-                } else {
-                    datas += `${info.value}`;
-                }
-
-                if (info.comment !== undefined) {
-                    datas += ` # ${info.comment}`;
-
-                }
-                datas += `</td>`;
-            });
-
-            datas += `</table>`;
-            bootbox.dialog({
-                message: datas,
-                size: "large",
-                title: "AS Number Lookup",
-                buttons: {
-                    cancel: {
-                        label: 'Close',
-                        callback: function () {
-                            $('.bootbox.modal').modal('hide');
-                            return false;
-                        }
-                    }
-                }
-            });
+            $('.bootbox-body').html( content ).scrollTop();
         })
         .fail(function () {
             alert(`Error running ajax query for ${url}`);

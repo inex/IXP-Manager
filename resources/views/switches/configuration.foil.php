@@ -1,121 +1,99 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
 
-    <?php $this->section( 'title' ) ?>
-
-        <?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
-
-            <a href="<?= route( 'switch@list' )?>">Switches</a>
-
-        <?php else: ?>
-
-            Switch Configuration
-
-        <?php endif; ?>
-    <?php $this->append() ?>
-
-<?php if( Auth::check() && Auth::getUser()->isSuperUser() ): ?>
-    <?php $this->section( 'page-header-postamble' ) ?>
-        <li class="active">Configuration <?= $t->summary ?></li>
-    <?php $this->append() ?>
-<?php endif; ?>
-
-    <?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
-
-        <div class="btn-group btn-group-xs" role="group">
-
-            <!-- Single button -->
-            <div class="btn-group">
-
-                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?= $t->s ? $t->s->getInfrastructure()->getName() : ( $t->infra ? $t->infra->getName() : "All Infrastructures" ) ?> <span class="caret"></span>
-                </button>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Switch Configuration
+    /
+    Configuration
+<?php $this->append() ?>
 
 
-                <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
-
-                    <li class="<?= $t->s ? "" : ( !$t->infra ? "active" : "" ) ?>">
-                        <a href="<?= route( "switch@configuration", [ "infra" => 0 ] ) ?>">All Infrastructures</a>
-                    </li>
-
-                    <li role="separator" class="divider"></li>
-                    
-                    <?php foreach( $t->infras as $id => $name ): ?>
-
-                        <li class="<?= $t->s ? "active" : ( $t->infra && $t->infra->getId() == $id ? "active" : "" )?>">
-                            <a href="<?= route( "switch@configuration", [ "infra" => $id ] ) ?>"><?= $name ?></a>
-                        </li>
+<?php $this->section( 'page-header-postamble' ) ?>
 
 
-                    <?php endforeach; ?>
+    <div class="btn-group btn-group-sm" role="group">
 
-                </ul>
+        <div class="btn-group btn-group-sm">
+            <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <?= $t->s ? $t->s->getInfrastructure()->getName() : ( $t->infra ? $t->infra->getName() : "All Infrastructures" ) ?>
+            </button>
+
+
+            <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
+                <a class="dropdown-item <?= $t->s ? "" : ( !$t->infra ? "active" : "" ) ?>" href="<?= route( "switch@configuration", [ "infra" => 0 ] ) ?>">
+                    All Infrastructures
+                </a>
+
+
+                <div class="dropdown-divider"></div>
+
+                <?php foreach( $t->infras as $id => $name ): ?>
+                    <a class="dropdown-item <?= $t->s ? "active" : ( $t->infra && $t->infra->getId() == $id ? "active" : "" )?>" href="<?= route( "switch@configuration", [ "infra" => $id ] ) ?>">
+                        <?= $name ?>
+                    </a>
+
+                <?php endforeach; ?>
+
             </div>
-
-
-            <!-- Single button -->
-            <div class="btn-group">
-
-                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?= $t->s ? $t->s->getCabinet()->getLocation()->getName() : ( $t->location ? $t->location->getName() : "All Facilities" ) ?> <span class="caret"></span>
-                </button>
-
-                <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
-
-                    <li class="<?= $t->s ? "" : ( !$t->location ? "active" : "" ) ?>">
-                        <a href="<?= route( "switch@configuration", [ "location" => 0 ] ) ?>">All Facilities</a>
-                    </li>
-
-                    <li role="separator" class="divider"></li>
-
-                    <?php foreach( $t->locations as $id => $name ): ?>
-
-                        <li class="<?= $t->s ? "active" : ( $t->location && $t->location->getId() == $id ? "active" : "" ) ?>">
-                            <a href="<?= route( "switch@configuration", [ "location" => $id ] ) ?>"><?= $name ?></a>
-                        </li>
-
-
-                    <?php endforeach; ?>
-
-                </ul>
-            </div>
-
-            <!-- Single button -->
-            <div class="btn-group">
-
-                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?= $t->s ? $t->s->getName() : "All switches" ?> <span class="caret"></span>
-                </button>
-
-
-                <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
-
-                    <li class="<?= !$t->s ? "active" : "" ?>">
-                        <a href="<?= route( "switch@configuration", [ "switch" => 0 ] ) ?>">All Switch</a>
-                    </li>
-
-                    <li role="separator" class="divider"></li>
-
-
-                    <?php foreach( $t->switches as $s ): ?>
-
-                        <li class="<?= $t->s && $t->s->getId() == $s->getId() ? "active" : "" ?>">
-                            <a href="<?= route( "switch@configuration", [ "switch" => $s->getId() ] ) ?>"><?= $s->getName() ?></a>
-                        </li>
-
-
-                    <?php endforeach; ?>
-
-                </ul>
-            </div>
-
-            <a class="btn btn-default btn-xs" href="<?= route( "switch@configuration", [ "switch" => 0, "infra" => 0, "location" => 0 ] ) ?>">Clear</a>
-
         </div>
 
-    </li>
-    <?php $this->append() ?>
+
+        <div class="btn-group btn-group-sm">
+            <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <?= $t->s ? $t->s->getCabinet()->getLocation()->getName() : ( $t->location ? $t->location->getName() : "All Facilities" ) ?>
+            </button>
+
+            <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
+
+                <a class="dropdown-item <?= $t->s ? "" : ( !$t->location ? "active" : "" ) ?>" href="<?= route( "switch@configuration", [ "location" => 0 ] ) ?>">
+                    All Facilities
+                </a>
+
+
+                <div class="dropdown-divider"></div>
+
+                <?php foreach( $t->locations as $id => $name ): ?>
+
+                    <a class="dropdown-item <?= $t->s ? "active" : ( $t->location && $t->location->getId() == $id ? "active" : "" ) ?>" href="<?= route( "switch@configuration", [ "location" => $id ] ) ?>">
+                        <?= $name ?>
+                    </a>
+
+                <?php endforeach; ?>
+
+            </div>
+        </div>
+
+
+        <div class="btn-group btn-group-sm">
+            <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <?= $t->s ? $t->s->getName() : "All switches" ?>
+            </button>
+
+
+            <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
+
+                <a class="dropdown-item <?= !$t->s ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "switch" => 0 ] ) ?>">All Switch</a>
+
+
+                <div class="dropdown-divider"></div>
+
+                <?php foreach( $t->switches as $s ): ?>
+
+                    <a class="dropdown-item <?= $t->s && $t->s->getId() == $s->getId() ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "switch" => $s->getId() ] ) ?>"><?= $s->getName() ?></a>
+
+                <?php endforeach; ?>
+
+            </div>
+        </div>
+
+
+        <a class="btn btn-white" href="<?= route( "switch@configuration", [ "switch" => 0, "infra" => 0, "location" => 0 ] ) ?>">
+            Clear
+        </a>
+
+    </div>
+
+<?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
 
@@ -123,23 +101,46 @@
 
     <div class="col-sm-12">
 
-        <table id="list-configuration" class="table table-striped table-bordered">
+        <table id="list-configuration" class="table table-striped table-bordered" width="100%">
 
-            <thead>
-            <tr>
-                <th>ID</th>
-                <th>Customer</th>
-                <th>Switch</th>
-                <th>Port</th>
-                <th>Speed</th>
-                <th>Raw Speed</th>
-                <th>Peering LAN</th>
-                <th>ASN</th>
-                <th>Route Server</th>
-                <th>IPv4</th>
-                <th>IPv6</th>
-                <th>Status</th>
-            </tr>
+            <thead class="thead-dark">
+                <tr>
+                    <th>
+                        ID
+                    </th>
+                    <th>
+                        Customer
+                    </th>
+                    <th>
+                        Switch
+                    </th>
+                    <th>
+                        Port
+                    </th>
+                    <th>
+                        Speed
+                    </th>
+                    <th>
+                        Raw Speed
+                    </th>
+                    <th>
+                        Peering LAN
+                    </th>
+                    <th>
+                        ASN
+                    </th>
+                    <th>
+                        Route Server
+                    </th>
+                    <th>
+                        IPv4</th>
+                    <th>
+                        IPv6
+                    </th>
+                    <th>
+                        Status
+                    </th>
+                </tr>
             </thead>
 
             <tbody>
@@ -221,6 +222,7 @@
     $( document ).ready( function() {
 
         $('#list-configuration').dataTable({
+            responsive : true,
             "columnDefs": [
                 { "targets": [ 0 ], "visible": false, "searchable": false },
                 { "targets": [ 4 ], "orderData": 5 },
