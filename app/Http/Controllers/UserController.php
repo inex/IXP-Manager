@@ -546,7 +546,7 @@ class UserController extends Doctrine2Frontend {
 
             D2EM::flush();
 
-            event( new WelcomeEvent( $existingUser, false, true ) );
+            event( new WelcomeEvent( $cust, $existingUser, false, true ) );
 
         } else {
 
@@ -690,7 +690,7 @@ class UserController extends Doctrine2Frontend {
             D2EM::flush();
 
             if( !$isEditing ) {
-                event( new WelcomeEvent( $this->object, false, false ) );
+                event( new WelcomeEvent( $this->object->getCustomer(), $this->object, false, false ) );
             }
 
         }
@@ -879,7 +879,7 @@ class UserController extends Doctrine2Frontend {
 
         $resend = $request->input( "resend" ) ? true : false;
 
-        event( new WelcomeEvent( $user, $resend , false ) );
+        event( new WelcomeEvent( $user->getCustomer(), $user, $resend , false ) );
 
         if( $resend ){
             AlertContainer::push( sprintf( 'The welcome email has been %s.', $resend ? 'resent' : 'sent' ), Alert::SUCCESS );
