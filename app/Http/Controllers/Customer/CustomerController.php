@@ -521,7 +521,8 @@ class CustomerController extends Controller
             // what specific notes is this user watching?
             'coNotify'                  => Auth::getUser()->getAssocPreference( "customer-notes.watching" ) ? Auth::getUser()->getAssocPreference( "customer-notes.watching" )[0] : [],
 
-            'rsRoutes'                  => $c->isRouteServerClient() ? D2EM::getRepository( RSPrefixEntity::class )->aggregateRouteSummariesForCustomer( $c->getId() ) : false,
+            'rsRoutes'                  => ( config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) && $c->isRouteServerClient() )
+                                                ? D2EM::getRepository( RSPrefixEntity::class )->aggregateRouteSummariesForCustomer( $c->getId() ) : false,
 
             'crossConnects'             => D2EM::getRepository( CustomerEntity::class )->getCrossConnects( $c->getId() ),
             'aggregateGraph'            => $c->isGraphable() ? $grapher->customer( $c ) : false,
