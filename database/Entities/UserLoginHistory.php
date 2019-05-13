@@ -46,9 +46,9 @@ class UserLoginHistory
     protected $id;
 
     /**
-     * @var \Entities\User
+     * @var int Link to \Entities\User
      */
-    protected $User;
+    protected $user_id;
 
     /**
      * @var \Entities\CustomerToUser
@@ -110,29 +110,6 @@ class UserLoginHistory
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set User
-     *
-     * @param \Entities\User $user
-     * @return UserLoginHistory
-     */
-    public function setUser(\Entities\User $user)
-    {
-        $this->User = $user;
-    
-        return $this;
-    }
-
-    /**
-     * Get User
-     *
-     * @return \Entities\User 
-     */
-    public function getUser()
-    {
-        return $this->User;
     }
 
     /**

@@ -4,12 +4,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Login History /
-    <a href="<?= route( 'customer@overview', [ 'id' => $t->c2u->getUser()->getCustomer()->getId(), 'tab' => 'users' ] ) ?>">
-        <?= $t->ee( $t->c2u->getCustomer()->getFormattedName() ) ?>
-    </a>
-    /
-    <?= $t->ee( $t->c2u->getUser()->getUsername() ) ?>
+    Login History / <?= $t->ee( $t->c2u->getUser()->getUsername() ) ?>
 
 <?php $this->append() ?>
 
@@ -33,6 +28,9 @@
         <thead class="thead-dark">
             <tr>
                 <th>
+                    Customer
+                </th>
+                <th>
                     IP
                 </th>
                 <th>
@@ -43,6 +41,9 @@
         <tbody>
             <?php foreach( $t->histories as $history ): ?>
                 <tr>
+                    <td>
+                        <?= $t->ee( $history['cust_name'] ) ?>
+                    </td>
                     <td>
                         <?= $t->ee( $history[ "ip" ] ) ?>
                     </td>

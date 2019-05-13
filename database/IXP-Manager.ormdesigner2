@@ -89,12 +89,14 @@
     <entity name="\Entities\UserLoginHistory" local-name="UserLoginHistory" namespace="\Entities" uuid="9f26679f-99e4-48b9-b544-4d7377988044">
       <field name="id" type="bigint" required="true" primary="true" auto-increment="true" uuid="2ec9db54-1a9e-4bea-b669-1842199f515f"/>
       <field name="customer_to_user_id" type="integer" uuid="0c42ab38-34e3-434a-bde2-0ac04ee0365f"/>
-      <field name="user_id" type="integer" required="true" uuid="99836e5c-d45b-4622-af11-a66b52ef9d93"/>
+      <field name="user_id" type="integer" uuid="e55d441f-8bcf-432c-a291-a1b33fd832a0"/>
       <field name="ip" type="string" size="39" required="true" uuid="cb30ab15-2f18-462f-81b7-6304e752aad2"/>
       <field name="at" type="datetime" required="true" uuid="0696d2a8-2a83-4330-9f7d-53f020738b1f"/>
       <index name="at_idx" uuid="cf5f1160-2185-449b-be09-ab144cc5c2b1">
         <index-field name="at" uuid="e15c76ed-30f6-4403-be4a-eadebda2b26a"/>
-        <index-field name="user_id" uuid="f59d5837-4d9d-4780-bc47-8bb36ea5ba01"/>
+      </index>
+      <index name="user_id_idx" uuid="d42803e0-4172-4670-ac17-f20063b9886a">
+        <index-field name="user_id" uuid="3d0f42c6-8212-4469-a7ac-670e9b7f1a24"/>
       </index>
       <orm-attributes>
         <attribute name="table">user_logins</attribute>
@@ -102,12 +104,6 @@
         <attribute name="repository-class">Repositories\UserLoginHistory</attribute>
       </orm-attributes>
     </entity>
-    <association from="\Entities\UserLoginHistory" to="\Entities\User" owner-alias="LastLogins" inverse-alias="User" many-owner="true" many-inverse="false" parent-required="true" uuid="c5ff57b1-59d0-4fb0-8a7f-5b3cbee96543">
-      <association-field from="user_id" to="id" uuid="666cb238-2a7e-45d2-9bef-39ed2128de1a"/>
-      <orm-attributes>
-        <attribute name="on-delete">CASCADE</attribute>
-      </orm-attributes>
-    </association>
     <association from="\Entities\UserLoginHistory" to="\Entities\CustomerToUser" owner-alias="userLoginHistory" inverse-alias="customerToUser" many-owner="true" many-inverse="false" uuid="03d7316d-9288-480e-857c-f2ad1a31212e">
       <association-field from="customer_to_user_id" to="id" uuid="1faee547-f4f4-4b85-8fb1-d51b1d332643"/>
     </association>
@@ -1642,7 +1638,7 @@
     <entity uuid="6ed4d8a0-e20d-426a-ac5a-0b966a455f64" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="160" position-y="880" size-x="0" size-x2="112" size-y="0" size-y2="87"/>
     <entity uuid="6f5416c6-f6a1-4fef-8745-7affa8571ea8" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="232" position-y="-492" size-x="0" size-x2="119" size-y="0" size-y2="129"/>
     <entity uuid="709f0b3a-19e0-4026-88d3-1904231644ec" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="997" position-y="-4" size-x="0" size-x2="135" size-y="0" size-y2="73"/>
-    <entity uuid="753386db-2877-463e-8e8a-e8fbabac79b5" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="879" position-y="809" size-x="0" size-x2="109" size-y="0" size-y2="59"/>
+    <entity uuid="753386db-2877-463e-8e8a-e8fbabac79b5" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="901" position-y="799" size-x="0" size-x2="127" size-y="0" size-y2="129"/>
     <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="337" position-y="874" size-x="0" size-x2="113" size-y="0" size-y2="115"/>
     <entity uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135" bg-color="4294967295" hdr-color="4292006610" position-x="173" position-y="438" size-x="0" size-x2="138" size-y="0" size-y2="74"/>
     <entity uuid="8f91adda-06e6-43ed-bea6-0aec9aeb9f2e" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1454" position-y="971" size-x="0" size-x2="118" size-y="0" size-y2="129"/>

@@ -74,7 +74,6 @@ class SwitchCustomerController extends Controller
 
             $log->setAt(    new \DateTime() );
             $log->setIp(    request()->ip() );
-            $log->setUser(  $user           );
             $log->setCustomerToUser(  $c2u  );
 
             D2EM::flush();
