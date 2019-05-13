@@ -262,7 +262,7 @@ class Customer
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
-    protected $customerToUser;
+    protected $Users;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
@@ -309,6 +309,7 @@ class Customer
      */
     private $patchPanelPorts;
 
+    protected $customerToUser;
 
 
 
@@ -325,7 +326,7 @@ class Customer
         $this->PeersWith = new \Doctrine\Common\Collections\ArrayCollection();
         $this->XCusts = new \Doctrine\Common\Collections\ArrayCollection();
         $this->YCusts = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->customerToUser = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->Users = new \Doctrine\Common\Collections\ArrayCollection();
         $this->Traffic95ths = new \Doctrine\Common\Collections\ArrayCollection();
         $this->Traffic95thMonthlys = new \Doctrine\Common\Collections\ArrayCollection();
         $this->TrafficDailies = new \Doctrine\Common\Collections\ArrayCollection();
@@ -1226,7 +1227,7 @@ class Customer
      */
     public function addUser(\Entities\User $user)
     {
-        $this->customerToUser[] = $user;
+        $this->Users[] = $user;
 
         return $this;
     }
@@ -1238,7 +1239,7 @@ class Customer
      */
     public function removeUser(\Entities\User $user)
     {
-        $this->customerToUser->removeElement($user);
+        $this->Users->removeElement($user);
     }
 
     /**
@@ -1248,7 +1249,7 @@ class Customer
      */
     public function getUsers(){
         $users = [];
-        foreach( $this->customerToUser as $c2u ){
+        foreach( $this->Users as $c2u ){
             $users[] = $c2u->getUser();
         }
 
@@ -1261,7 +1262,7 @@ class Customer
      * @return \Doctrine\Common\Collections\Collection|User[]
      */
     public function getC2Users(){
-        return $this->customerToUser;
+        return $this->Users;
     }
 
 

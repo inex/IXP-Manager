@@ -108,10 +108,10 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'DefaultCustomer', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'customerToUser', 'Children', '_className', '_preferenceClassName'];
+            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'customerToUser', 'DefaultCustomer', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', '_className', '_preferenceClassName'];
         }
 
-        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'DefaultCustomer', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'customerToUser', 'Children', '_className', '_preferenceClassName'];
+        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'customerToUser', 'DefaultCustomer', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', '_className', '_preferenceClassName'];
     }
 
     /**

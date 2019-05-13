@@ -163,6 +163,7 @@ class User implements Authenticatable, CanResetPasswordContract
     protected $id;
 
 
+    protected $customerToUser;
     protected $DefaultCustomer;
 
     /**
@@ -186,9 +187,9 @@ class User implements Authenticatable, CanResetPasswordContract
     protected $Customer;
 
     /**
-     * @var CustomerToUser
+     * @var CustomerEntity
      */
-    protected $customerToUser;
+    protected $Customers;
 
 
     /**
@@ -202,7 +203,7 @@ class User implements Authenticatable, CanResetPasswordContract
     public function __construct()
     {
         $this->Preferences = new ArrayCollection();
-        $this->customerToUser = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->Customers = new \Doctrine\Common\Collections\ArrayCollection();
 
     }
 
@@ -570,7 +571,7 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function addCustomer(\Entities\Customer $customer)
     {
-        $this->customerToUser[] = $customer;
+        $this->Customers[] = $customer;
 
         return $this;
     }
@@ -582,7 +583,7 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function removeCustomer(\Entities\CustomerToUser $customer)
     {
-        $this->customerToUser->removeElement($customer);
+        $this->Customers->removeElement($customer);
     }
 
     /**
@@ -592,7 +593,7 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function getCustomers(){
         $custs = [];
-        foreach( $this->customerToUser as $c2u ){
+        foreach( $this->Customers as $c2u ){
             $custs[] = $c2u->getCustomer();
         }
 
@@ -601,7 +602,7 @@ class User implements Authenticatable, CanResetPasswordContract
 
 
     public function getCustomers2User(){
-        return $this->customerToUser;
+        return $this->Customers;
     }
 
 
