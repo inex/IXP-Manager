@@ -23,10 +23,9 @@
 
 namespace IXP\Providers;
 
-use Former;
+use Auth, Former, Horizon;
 use Illuminate\Support\ServiceProvider;
-use IXP\Utils\Former\Framework\TwitterBootstrap3;
-use URL;
+use IXP\Utils\Former\Framework\TwitterBootstrap4;
 
 class AppServiceProvider extends ServiceProvider {
 
@@ -42,7 +41,12 @@ class AppServiceProvider extends ServiceProvider {
             $view->with('controllerAction' , app('request')->route()->getAction()['as']);
         });
 
-        Former::framework( TwitterBootstrap3::class );
+        view()->composer(['telescope::layout'], function ($view) { 
+            $view->with('telescopeScriptVariables', [ 'path' => config( 'telescope.url_path' ), 'timezone' => config('app.timezone'), 
+            'recording' => ! cache('telescope:pause-recording'), ]); });
+
+
+        Former::framework( TwitterBootstrap4::class );
 
     }
 

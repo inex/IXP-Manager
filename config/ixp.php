@@ -124,5 +124,16 @@ return [
 
     ],
 
+    'rpki' => [
+        'rtr1' => [
+            'host' => env( 'IXP_RPKI_RTR1_HOST', false ),
+            'port' => env( 'IXP_RPKI_RTR1_PORT', '3323' ),
+        ],
+        'rtr2' => [
+            'host' => env( 'IXP_RPKI_RTR2_HOST', false ),
+            'port' => env( 'IXP_RPKI_RTR2_PORT', false ),
+        ],
+    ],
+
 
 ];

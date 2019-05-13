@@ -56,7 +56,7 @@ return [
     | Default (as of v4.1):
     | "%a [AS%j]"
     */
-    'customer_name_format' => "%a %j",
+    'customer_name_format' => "%a (AS%i)",
 
     /*
     |--------------------------------------------------------------------------
@@ -74,14 +74,15 @@ return [
 
     'frontend' => [
         'disabled' => [
-            'console-server-connection' => env( 'IXP_FE_FRONTEND_DISABLED_CONSOLE',         false ),
-            'cust-kit'                  => env( 'IXP_FE_FRONTEND_DISABLED_CUSTKIT',         false ),
-            'logo'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGO',            true  ),
-            'lg'                        => env( 'IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS',   true  ),
-            'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',         true ),
-            'peering-manager'           => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MANAGER', false ),
-            'peering-matrix'            => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MATRIX',  false ),
-            'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',     false ),
+            'console-server-connection' => env( 'IXP_FE_FRONTEND_DISABLED_CONSOLE',           false ),
+            'cust-kit'                  => env( 'IXP_FE_FRONTEND_DISABLED_CUSTKIT',           false ),
+            'logo'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGO',              true  ),
+            'lg'                        => env( 'IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS',     true  ),
+            'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',           true ),
+            'peering-manager'           => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MANAGER',   false ),
+            'peering-matrix'            => env( 'IXP_FE_FRONTEND_DISABLED_PEERING_MATRIX',    false ),
+            'rs-prefixes'               => env( 'IXP_FE_FRONTEND_DISABLED_RS_PREFIXES',       true  ),
+            'filtered-prefixes'         => env( 'IXP_FE_FRONTEND_DISABLED_FILTERED_PREFIXES', true  ),
         ],
 
         'beta' => [

@@ -1,6 +1,6 @@
 <?php $this->layout( 'layouts/ixpv4' ) ?>
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
     Forgot Username
 <?php $this->append() ?>
 
@@ -15,10 +15,9 @@
 
             <?= $t->alerts() ?>
 
-            <div align="center">
-
+            <div class="tw-text-center tw-my-6">
                 <?php if( config( "identity.biglogo" ) ) :?>
-                    <img src="<?= config( "identity.biglogo" ) ?>" />
+                    <img class="tw-inline img-fluid" src="<?= config( "identity.biglogo" ) ?>" />
                 <?php else: ?>
                     <h2>
                         [Your Logo Here]
@@ -29,47 +28,56 @@
                 <?php endif; ?>
             </div>
 
-            <br /><br />
+        </div>
+    </div>
 
-            <?= Former::open()->method( 'POST' )
-                ->action( route( 'forgot-password@username-email' ) )
-                ->customWidthClass( 'col-sm-5' )
-                ->addClass( 'col-md-offset-4' );
+    <div class="row"
+        <div class="col-12">
 
-            ?>
+            <div class="tw-w-full tw-max-w-sm tw-mx-auto">
 
-            <div>
-                Please enter your email address and we will send you any related username(s) by email.
-            </div>
+                <?= Former::open()->method( 'POST' )
+                    ->action( route( 'forgot-password@username-email' ) )
+                    ->class( "tw-bg-white tw-shadow-md tw-rounded tw-px-8 tw-pt-6 tw-pb-8 tw-mb-6" )
+                ?>
 
-            <br />
+                <p class="tw-mb-6 tw-text-grey-dark tw-font-bold">
+                    Please enter your email address and we will send you any related username(s) by email.
+                </p>
 
-            <?= Former::text( 'email' )
-                ->label( 'Email' )
-                ->required()
-                ->blockHelp( '' )
-            ?>
+                <div class="tw-mb-16">
+                    <label class="control-label" for="email">
+                        Email
+                    </label>
+                    <input name="email" class="form-control" id="email" type="text" placeholder="name@example.com" autofocus value="<?= old('email') ?>">
+                    <?php foreach( $t->errors->get( 'email' ) as $err ): ?>
+                        <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
+                    <?php endforeach; ?>
 
-            <?= Former::actions( Former::primary_submit( 'Find Username(s)' ),
-                Former::default_link( 'Return to login' )->href( route( "login@showForm" ) )
-            );?>
+                </div>
 
-            <br />
 
-            <div>
-                For help please contact <a href="<?= route( 'public-content', [ 'page' => 'support' ] ) ?>"><?= config( "identity.legalname" ) ?></a>
+                <div class="tw-flex tw-items-center tw-justify-between">
+                    <a href="<?= route( "forgot-password@show-form" ) ?>">
+                        Forgot Password?
+                    </a>
+
+                    <a class="btn btn-white"
+                       href="<?= route('login@login' ) ?>">
+                        Cancel
+                    </a>
+
+                    <button class="btn btn-primary" type="submit">
+                        Submit
+                    </button>
+                </div>
+
             </div>
 
             <?= Former::close() ?>
-
         </div>
-
     </div>
 
 
-
-<?php $this->append() ?>
-
-<?php $this->section( 'scripts' ) ?>
 
 <?php $this->append() ?>

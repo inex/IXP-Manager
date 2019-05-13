@@ -147,9 +147,6 @@ Route::group( [ 'namespace' => 'Auth' ], function() {
 
 Route::get( 'participants.json', function() { return redirect(route('ixf-member-export')); });
 
-//Auth::routes();
-
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
@@ -164,8 +161,6 @@ Route::get( '/', function() {
 
     if( Auth::getUser()->isSuperUser() ) {
         return redirect( route( "admin@dashboard" ) );
-    } else if( Auth::getUser()->isCustAdmin() ) {
-        return redirect( route( 'contact@list' ) );
     } else {
         return redirect( route( "dashboard@index" ) );
     }

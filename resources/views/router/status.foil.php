@@ -4,18 +4,19 @@
 $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
-    Router
+<?php $this->section( 'page-header-preamble' ) ?>
+    Router / Live Status
 <?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
-        <div class="btn-group btn-group-xs" role="group">
-            <a type="button" class="btn btn-default" href="<?= route('router@add') ?>">
-                <span class="glyphicon glyphicon-plus"></span>
-            </a>
-        </div>
-    </li>
+<?php $this->section( 'page-header-postamble' ) ?>
+    <div class="btn-group btn-group-sm" role="group">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/routers/">
+            Documentation
+        </a>
+        <a class="btn btn-white" href="<?= route('router@add') ?>">
+            <span class="fa fa-plus"></span>
+        </a>
+    </div>
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -24,38 +25,50 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php if( !$t->lgEnabled ): ?>
 
-    <div class="alert alert-warning">
-        <b>Warning:</b> the looking glass functionality is currently disabled and thus this <em>Live Status</em> feature will not work.
-        Additionally, the <em>Looking Glass</em> links will not appear in IXP Manager. To enable looking glass functionality, first
-        configure it <a href="http://docs.ixpmanager.org/features/looking-glass/">as per the documentation</a> and ensure you set the
-        following in your <code>.env</code> file: <br><br>
-        <code>IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS=false</code>
+    <div class="alert alert-warning" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="text-center">
+                <i class="fa fa-exclamation-circle fa-2x"></i>
+            </div>
+            <div class="col-sm-12">
+                <b>Warning:</b> the looking glass functionality is currently disabled and thus this <em>Live Status</em> feature will not work.
+                Additionally, the <em>Looking Glass</em> links will not appear in IXP Manager. To enable looking glass functionality, first
+                configure it <a href="http://docs.ixpmanager.org/features/looking-glass/">as per the documentation</a> and ensure you set the
+                following in your <code>.env</code> file: <br><br>
+                <code>IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS=false</code>
+            </div>
+        </div>
     </div>
 
 <?php else: ?>
 
-
-    <div class="row">
-        <div class="col-md-12">
-            <p>
-                This page performs a live query of all routers configured with an API interface and reports live data.
-            </p>
-            <p>
+    <div class="alert alert-info mt-4" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="text-center">
+                <i class="fa fa-question-circle fa-2x"></i>
+            </div>
+            <div class="col-sm-12">
+                <p>
+                    This page performs a live query of all routers configured with an API interface and reports live data.
+                </p>
                 <em>Sessions</em> indicates the number of BGP sessions configured on the router while <em>Up</em> shows how many of these are actually established.
-            </p>
+            </div>
         </div>
     </div>
 
     <div id="fetched-alert" class="alert alert-info">
         <p>Fetched <span id="fetched">0</span> of <span id="fetched-total">0</span> router details with <span id="fetched-errors">0</span> errors.</p>
+
         <p id="daemon-stats" class="collapse">
-            <b>Daemon Version Counts for Bird:</b>&nbsp;&nbsp;
+            <b>
+                Daemon Version Counts for Bird:
+            </b>&nbsp;&nbsp;
         </p>
     </div>
 
 
-        <table id='router-list' class="table">
-            <thead>
+    <table id='router-list' class="table table-striped" width="100%">
+        <thead class="thead-dark">
             <tr>
                 <th>
                     Handle
@@ -88,8 +101,8 @@ $this->layout( 'layouts/ixpv4' );
                     Last Reboot
                 </th>
             </tr>
-            <thead>
-            <tbody>
+        <thead>
+        <tbody>
             <?php foreach( $t->routers as $router ):
                 /** @var Entities\Router $router */ ?>
                 <tr>
@@ -131,8 +144,8 @@ $this->layout( 'layouts/ixpv4' );
 
                 </tr>
             <?php endforeach;?>
-            <tbody>
-        </table>
+        <tbody>
+    </table>
 
 <?php endif; ?>
 
@@ -140,7 +153,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-<script src="<?= asset( 'bower_components/moment/min/moment.min.js' ) ?>"></script>
+
 <script>
 
     const lgEnabled = <?= $t->lgEnabled ? 'true' : 'false' ?>;
@@ -210,7 +223,7 @@ $this->layout( 'layouts/ixpv4' );
                             table.api().rows().invalidate().draw();
                         })
                         .fail(function () {
-                            $('#' + handle + '-bgp-sessions').html('<span class="label label-danger">Error</span>');
+                            $('#' + handle + '-bgp-sessions').html('<i class="badge badge-danger">Error</i>');
                         });
 
 
@@ -218,7 +231,7 @@ $this->layout( 'layouts/ixpv4' );
                 .fail(function () {
                     let numFetchedErrors = $('#fetched-errors');
                     numFetchedErrors.html(parseInt(numFetchedErrors.html()) + 1);
-                    $('#' + handle + '-version').html('<span class="label label-danger">Error</span>');
+                    $('#' + handle + '-version').html('<i class="badge badge-danger">Error</i>');
                 })
                 .always( function() {
                     let numFetched       = parseInt( $('#fetched').html() );
@@ -234,7 +247,7 @@ $this->layout( 'layouts/ixpv4' );
                         let vdiv = $("#daemon-stats");
 
                         for( let v in versions.bird ) {
-                            vdiv.append( `<span class="label label-default">${v}:&nbsp;&nbsp;${versions.bird[v]}</span>&nbsp;&nbsp;` );
+                            vdiv.append( `<span class="badge badge-secondary">${v}:&nbsp;&nbsp;${versions.bird[v]}</span>&nbsp;&nbsp;` );
                         }
 
                         vdiv.show();
@@ -245,11 +258,10 @@ $this->layout( 'layouts/ixpv4' );
         }); // handles.forEach( function( handle, index ) {
 
     }).dataTable({
-        "autoWidth": false,
+        responsive: true,
         // paging is disabled as it's complicated to update off screen cells with pagination
         "paging": false
 });
-
 
 </script>
 <?php $this->append() ?>

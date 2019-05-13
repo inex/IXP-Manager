@@ -139,7 +139,7 @@ class OUI extends EntityRepository
             }
         }
 
-        Cache::put( self::CACHE_KEY_FORLAYER2ADDRESSES, $ouis, 60 * 24 * 7 );
+        Cache::put( self::CACHE_KEY_FORLAYER2ADDRESSES, $ouis, 86400 );
 
         return $ouis;
     }

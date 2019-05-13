@@ -1,0 +1,319 @@
+/**
+ * This injects Tailwind's base styles, which is a combination of
+ * Normalize.css and some additional base styles.
+ *
+ * You can see the styles here:
+ * https://github.com/tailwindcss/tailwindcss/blob/master/css/preflight.css
+ *
+ * If using `postcss-import`, use this import instead:
+ *
+ * @import "tailwindcss/preflight";
+ */
+@tailwind base;
+
+/**
+ * This injects any component classes registered by plugins.
+ *
+ * If using `postcss-import`, use this import instead:
+ *
+ * @import "tailwindcss/components";
+ */
+@tailwind components;
+
+/**
+ * Here you would add any of your custom component classes; stuff that you'd
+ * want loaded *before* the utilities so that the utilities could still
+ * override them.
+ *
+ * Example:
+ *
+ * .btn { ... }
+ * .form-input { ... }
+ *
+ * Or if using a preprocessor or `postcss-import`:
+ *
+ * @import "components/buttons";
+ * @import "components/forms";
+ */
+
+
+/****************************************************************************************
+ **** Reset headings to ~ Bootstrap4 defaults
+ ****************************************************************************************/
+
+h1 {
+  font-size: 2.4rem;
+  line-height: 1;
+  color: #1a202c;
+  font-weight: 300;
+}
+
+h2 {
+  font-size: 2rem;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+h3 {
+  font-size: 1.75rem;
+  margin-bottom: .5rem;
+  font-weight: 300;
+  line-height: 1.2;
+  color:#1a202c;
+}
+
+h4 {
+  font-size: 1.5rem;
+  margin-bottom: .5rem;
+  font-weight: 300;
+  color:#1a202c;
+  line-height:1;
+}
+
+h5 {
+  font-size: 1.25rem;
+  margin-bottom: .5rem;
+  font-weight: 400;
+  line-height: 1.2;
+}
+
+h6 {
+  font-size: 1rem;
+  margin-bottom: .5rem;
+  font-weight: 500;
+  line-height: 1.2;
+}
+
+
+/****************************************************************************************
+ **** Reset anchors
+ ****************************************************************************************/
+
+a {
+  @apply tw-text-blue-500;
+}
+
+a:hover {
+  @apply tw-underline;
+}
+
+
+/****************************************************************************************
+ **** LHS Menu in IXP Manager
+
+
+        <div class="tw-bg-white tw-shadow tw-w-64 tw-my-2">
+            <ul class="list-reset">
+                <li >
+                    <a href="#" class="tw-block tw-p-4 tw-text-grey-darker tw-font-bold tw-border-purple hover:tw-bg-grey-lighter tw-border-r-4">Home</a>
+                </li>
+                <li >
+                    <a href="#" class="tw-block tw-p-4 tw-text-grey-darker tw-font-bold tw-border-grey-lighter hover:tw-border-purple-light hover:tw-bg-grey-lighter tw-border-r-4">About us</a>
+                </li>
+            </ul>
+        </div>
+
+
+ ****************************************************************************************/
+
+
+#side-navbar {
+  @apply tw-shadow tw-pr-0 tw-bg-white;
+}
+
+#side-navbar h6 {
+  @apply tw-block tw-p-4 tw-pl-1 tw-text-grey-darker tw-border-grey-lighter tw-border-r-4 tw-m-0;
+}
+
+.nav-link {
+  @apply tw-block tw-p-2 tw-pl-3 tw-text-grey-darker tw-no-underline tw-text-sm;
+}
+
+.nav-link:hover {
+  @apply tw-text-grey-darker;
+}
+
+#side-navbar li {
+  @apply tw-block tw-p-0 tw-text-grey-darker tw-border-grey-lighter tw-border-r-4 tw-font-medium;
+}
+
+#side-navbar li.active {
+  @apply tw-border-green-600 tw-bg-grey-lighter tw-font-bold;
+  font-weight: 700 !important;
+}
+
+#side-navbar li:hover {
+  @apply tw-border-green-600 tw-bg-grey-lighter tw-text-grey-darker;
+}
+
+.nav-sub-menu-item {
+  @apply tw-ml-8;
+}
+
+
+.ixpm-table a {
+  @apply tw-text-blue-dark tw-no-underline;
+}
+
+.ixpm-table a:hover {
+  @apply tw-text-blue-500 tw-underline;
+}
+
+
+/****************************************************************************************
+ **** Buttons
+ ****************************************************************************************/
+
+.btn {
+    @apply font-bold rounded tw-border-transparent;
+}
+
+.btn:hover {
+    @apply tw-border-transparent;
+}
+
+.btn-primary {
+    @apply tw-bg-blue-500 tw-text-white tw-font-bold;
+}
+
+.btn-primary:hover {
+    @apply tw-bg-blue-dark;
+}
+
+.btn-success {
+    @apply tw-bg-green-500 tw-text-white tw-font-bold;
+}
+
+.btn-success:hover {
+    @apply tw-bg-green-dark;
+}
+
+.btn-secondary {
+    @apply tw-bg-grey-dark tw-text-white tw-font-bold;
+}
+
+.btn-secondary:hover {
+    @apply tw-bg-grey-darker;
+}
+
+.btn-outline-secondary{
+    @apply bg-transparent text-grey font-semibold border border-grey rounded;
+}
+
+.btn-outline-secondary:hover{
+    @apply tw-bg-grey;
+}
+
+.btn-white{
+    @apply bg-white text-grey-darkest font-semibold border border-grey-light rounded shadow;
+}
+
+.btn-white:hover{
+    @apply bg-grey-lighter border border-grey-light;
+}
+
+/****************************************************************************************ea
+ **** Inputs
+ ****************************************************************************************/
+
+input.form-control{
+    @apply tw-shadow-md tw-appearance-none tw-border tw-rounded tw-w-full tw-py-2 tw-px-4 tw-text-grey-darker tw-leading-tight;
+}
+
+input.form-control:focus{
+    @apply tw-outline-none tw-shadow-outline tw-text-grey-darker tw-leading-tight;
+}
+
+.input-group-append .btn{
+    @apply tw-shadow-md; border-color : #ced4da;
+}
+
+label.control-label, label.form-check-label{
+    @apply block text-grey-darker text-sm font-bold;
+}
+
+
+
+/****************************************************************************************
+ **** Badge
+ ****************************************************************************************/
+
+.badge{
+   @apply text-white font-bold py-1 px-3 rounded-full
+}
+
+.badge-info{
+    @apply bg-teal-500;
+}
+
+.badge-success{
+    @apply tw-bg-green-500;
+}
+
+.badge-secondary{
+    @apply tw-bg-grey;
+}
+
+.badge-warning{
+    @apply tw-text-black tw-bg-orange-400;
+}
+
+/****************************************************************************************
+ **** Card
+ ****************************************************************************************/
+
+.card{
+    border-color : #dae1e7;
+    @apply tw-shadow-md tw-rounded-sm;
+ }
+
+ .card .card-header{
+    @apply rounded-tl-sm rounded-tr-sm border-b-0;
+ }
+
+
+
+
+
+
+a{
+    @apply tw-inline-block tw-align-baseline tw-font-bold tw-text-blue-light;
+}
+
+a:hover{
+    @apply tw-no-underline tw-text-blue-dark;
+}
+
+/****************************************************************************************
+ **** table
+ ****************************************************************************************/
+
+.table-light td, .table-light thead th{
+    border-color : #ced4da;
+}
+
+/**
+ * This injects all of Tailwind's utility classes, generated based on your
+ * config file.
+ *
+ * If using `postcss-import`, use this import instead:
+ *
+ * @import "tailwindcss/utilities";
+ */
+@tailwind utilities;
+
+/**
+ * Here you would add any custom utilities you need that don't come out of the
+ * box with Tailwind.
+ *
+ * Example :
+ *
+ * .bg-pattern-graph-paper { ... }
+ * .skew-45 { ... }
+ *
+ * Or if using a preprocessor or `postcss-import`:
+ *
+ * @import "utilities/background-patterns";
+ * @import "utilities/skew-transforms";
+ */

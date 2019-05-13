@@ -2,15 +2,15 @@
 <?php if( $t->pi && !$t->pi->statusIsConnected() ): ?>
     <a href="<?= route( 'interfaces/physical/edit/from-virtual-interface', [ "id" => $t->pi->getId(), "vintid" => $t->pi->getVirtualInterface()->getId() ] ) ?>">
         <?php if( $t->pi->statusIsQuarantine() ): ?>
-            <span class="label label-warning">IN QUARANTINE</span>
+            <span class="badge badge-warning">IN QUARANTINE</span>
         <?php elseif( $t->pi->statusIsDisabled() ): ?>
-            <span class="label label-warning">DISABLED</span>
+            <span class="badge badge-warning">DISABLED</span>
         <?php elseif( $t->pi->statusIsNotConnected() ): ?>
-            <span class="label label-warning">NOT CONNECTED</span>
+            <span class="badge badge-warning">NOT CONNECTED</span>
         <?php elseif( $t->pi->statusIsAwaitingXConnect() ): ?>
-            <span class="label label-warning">AWAITING XCONNECT</span>
+            <span class="badge badge-warning">AWAITING XCONNECT</span>
         <?php else: ?>
-            <span class="label label-inverse">UNKNOWN STATE</span>
+            <span class="badge badge-inverse">UNKNOWN STATE</span>
         <?php endif; ?>
     </a>
 <?php endif; ?>

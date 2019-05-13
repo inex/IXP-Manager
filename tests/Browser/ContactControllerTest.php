@@ -33,7 +33,7 @@ use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class ContactControllerTest extends DuskTestCase
 {
-    public function tearDown()
+    public function tearDown(): void
     {
         foreach( [ 'Test Contact 1', 'Test Contact 2' ] as $name ) {
             $c = D2EM::getRepository( ContactEntity::class )->findOneBy( [ 'name' => $name ] );
@@ -62,7 +62,7 @@ class ContactControllerTest extends DuskTestCase
                     ->visit('/login')
                     ->type( 'username', 'travis' )
                     ->type( 'password', 'travisci' )
-                    ->press( 'Login' )
+                    ->press( '#login-btn' )
                     ->assertPathIs( '/admin' );
 
             $browser->visit( '/contact/list' )
@@ -295,8 +295,9 @@ class ContactControllerTest extends DuskTestCase
                 ->visit('/login')
                 ->type( 'username', 'imcustadmin' )
                 ->type( 'password', 'travisci' )
-                ->press( 'Login' )
-                ->assertPathIs( '/contact/list' )
+                ->press( '#login-btn' )
+                ->assertPathIs( '/dashboard' )
+                ->visit('/contact/list')
                 ->assertSee( 'Your Contacts' )
                 ->assertSee( 'Imagine CustAdmin' )
                 ->assertSee( 'imagine-custadmin@example.com' );
@@ -313,9 +314,6 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'email',    'test-contact1@example.com' )
                 ->type( 'phone',    '0209110000' )
                 ->type( 'mobile',   '0209120000' )
-                // ->check( 'facilityaccess' )
-                // ->check( 'mayauthorize' )
-                ->type( 'notes', 'Test note' )
                 ->press('Add' )
                 ->assertPathIs('/contact/list' )
                 ->assertSee( 'Contact added' )
@@ -334,10 +332,6 @@ class ContactControllerTest extends DuskTestCase
             $this->assertEquals( '0209110000',                $c->getPhone() );
             $this->assertEquals( '0209120000',                $c->getMobile() );
             $this->assertEquals( 5,                           $c->getCustomer()->getId() );
-            // $this->assertEquals( true,                        $c->getFacilityaccess() );
-            // $this->assertEquals( true,                        $c->getMayauthorize() );
-            $this->assertEquals( 'Test note',                 $c->getNotes() );
-
 
             // test that editing while not making any changes and saving changes nothing
 
@@ -358,11 +352,6 @@ class ContactControllerTest extends DuskTestCase
             $this->assertEquals( '0209110000',                $c->getPhone() );
             $this->assertEquals( '0209120000',                $c->getMobile() );
             $this->assertEquals( 5,                           $c->getCustomer()->getId() );
-            // $this->assertEquals( true,                        $c->getFacilityaccess() );
-            // $this->assertEquals( true,                        $c->getMayauthorize() );
-            $this->assertEquals( 'Test note',                 $c->getNotes() );
-
-
 
 
             // now test that editing while making changes works
@@ -373,10 +362,7 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'email',    'test-contact2@example.com' )
                 ->type( 'phone',    '0209110002' )
                 ->type( 'mobile',   '0209120002' )
-                // ->uncheck( 'facilityaccess' )
-                // ->uncheck( 'mayauthorize' )
-                ->type( 'notes', 'Test note 2' )
-                ->press( 'Save Changes' )
+                ->click( '.btn-primary' )
                 ->assertPathIs('/contact/list' )
                 ->assertSee( 'Contact edited' )
                 ->assertSee( 'Test Contact 2' )
@@ -391,16 +377,13 @@ class ContactControllerTest extends DuskTestCase
             $this->assertEquals( '0209110002',                $c->getPhone() );
             $this->assertEquals( '0209120002',                $c->getMobile() );
             $this->assertEquals( 5,                           $c->getCustomer()->getId() );
-            // $this->assertEquals( false,                       $c->getFacilityaccess() );
-            // $this->assertEquals( false,                       $c->getMayauthorize() );
-            $this->assertEquals( 'Test note 2',                 $c->getNotes() );
 
 
             // test that editing while not making any changes and saving changes nothing
             // (this is a retest for, e.g. unchecked checkboxes)
             $browser->visit( '/contact/edit/' . $c->getId() )
                 ->assertPathIs('/contact/edit/' . $c->getId() )
-                ->press( 'Save Changes' )
+                ->click( '.btn-primary' )
                 ->assertPathIs('/contact/list' )
                 ->assertSee( 'Contact edited' )
                 ->assertSee( 'Test Contact 2' )
@@ -415,9 +398,6 @@ class ContactControllerTest extends DuskTestCase
             $this->assertEquals( '0209110002',                $c->getPhone() );
             $this->assertEquals( '0209120002',                $c->getMobile() );
             $this->assertEquals( 5,                           $c->getCustomer()->getId() );
-            // $this->assertEquals( false,                       $c->getFacilityaccess() );
-            // $this->assertEquals( false,                       $c->getMayauthorize() );
-            $this->assertEquals( 'Test note 2',               $c->getNotes() );
 
             // delete this contact
             $browser->press( '#d2f-list-delete-' . $c->getId() )

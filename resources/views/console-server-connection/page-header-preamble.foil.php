@@ -1,35 +1,30 @@
 <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-    <li class="pull-right">
-        <div class="btn-group btn-group-xs" role="group">
 
-            <!-- Single button -->
-            <div class="btn-group">
-                <button type="button" class="btn btn-default btn-xs dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?= isset($t->data[ 'params'][ "cs" ]) ? $t->data[ 'params'][ "css" ][$t->data[ 'params'][ "cs" ] ] : "All Console Server Ports" ?> <span class="caret"></span>
-                </button>
-                <ul class="dropdown-menu dropdown-menu-right scrollable-dropdown">
+    <div class="btn-group btn-group-sm" role="group">
 
-                    <li class="<?= isset($t->data[ 'params'][ "cs" ]) ? "" : "active" ?>">
-                        <a href="<?= route( "console-server-connection@list" ) ?>">All Console Server Ports</a>
-                    </li>
+        <div class="btn-group btn-group-sm">
+            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <?= isset($t->data[ 'params'][ "cs" ]) ? $t->data[ 'params'][ "css" ][$t->data[ 'params'][ "cs" ] ] : "All Console Server Ports" ?> <span class="caret"></span>
+            </button>
+            <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
+                <a class="dropdown-item <?= isset($t->data[ 'params'][ "cs" ]) ? "" : "active" ?>" href="<?= route( "console-server-connection@list" ) ?>">
+                    All Console Server Ports
+                </a>
 
-                    <li role="separator" class="divider"></li>
+                <div class="dropdown-divider"></div>
 
-                    <?php foreach( $t->data[ 'params'][ "css" ] as $id => $name ): ?>
-                        <li class="<?= isset($t->data[ 'params'][ "cs" ]) && $t->data[ 'params'][ "cs" ] === $id ? 'active' : '' ?>">
-                            <a href="<?= route( "console-server-connection@listPort", [ "port" => $id ] ) ?>"><?= $name ?></a>
-                        </li>
+                <?php foreach( $t->data[ 'params'][ "css" ] as $id => $name ): ?>
+                    <a class="dropdown-item <?= isset($t->data[ 'params'][ "cs" ]) && $t->data[ 'params'][ "cs" ] === $id ? 'active' : '' ?>" href="<?= route( "console-server-connection@listPort", [ "port" => $id ] ) ?>"><?= $name ?></a>
+                <?php endforeach; ?>
 
-
-                    <?php endforeach; ?>
-
-                </ul>
             </div>
-
-            <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add' ) ?><?= isset( $t->data[ 'params'][ "cs" ] ) ? "?console-server=" . $t->data[ 'params'][ "cs" ] : ""  ?>">
-                <span class="glyphicon glyphicon-plus"></span>
-            </a>
-
         </div>
-    </li>
+
+
+        <a  class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@add' ) ?><?= isset( $t->data[ 'params'][ "cs" ] ) ? "?console-server=" . $t->data[ 'params'][ "cs" ] : ""  ?>">
+            <i class="fa fa-plus"></i>
+        </a>
+
+    </div>
+
 <?php endif;?>

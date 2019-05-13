@@ -1,6 +1,5 @@
 <div class="row">
     <div class="col-sm-12">
-        <br/>
         <p>
             You exchange routes by some mechanism (router server and / or bilateral peerings) with the following members.
         </p>

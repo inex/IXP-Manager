@@ -2,5 +2,7 @@
 <project version="4">
   <component name="VcsDirectoryMappings">
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vendor/opensolutions/oss-snmp" vcs="Git" />
+    <mapping directory="$PROJECT_DIR$/vendor/webpatser/laravel-countries" vcs="Git" />
   </component>
 </project>

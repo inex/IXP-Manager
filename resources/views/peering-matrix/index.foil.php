@@ -3,168 +3,169 @@
     $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
+<?php $this->section( 'page-header-preamble' ) ?>
     Peering Matrix
     <small><?= $t->vlans[ $t->vl ] ?></small>
 <?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
+<?php $this->section( 'page-header-postamble' ) ?>
 
-    <li class="pull-right">
+    <div class="btn-group btn-group-sm" role="group">
 
-        <div class="btn-group btn-group-xs" role="group">
+        <div class="btn-group btn-group-sm" id="peer-btn-group">
 
-            <div class="btn-group" id="peer-btn-group">
+            <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                All peerings
+            </button>
 
-                <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    All peering<span class="caret"></span>
-                </button>
+            <div id="ul-dd-peer" class="dropdown-menu dropdown-menu-right">
 
-                <ul id="ul-dd-peer" class="dropdown-menu dropdown-menu-right">
+                <a id="peer-filter-all" href="#" class="dropdown-item active" >
+                    All Peerings
+                </a>
 
-                    <li id="peer-filter-all" class="active cursor-pointer">
-                        <a >All Peerings</a>
-                    </li>
+                <div class="dropdown-divider"></div>
 
-                    <li role="separator" class="divider"></li>
+                <a id="peer-filter-bi" href="#" class="dropdown-item" >
+                    Bilateral Peerings
+                </a>
 
-                    <li id="peer-filter-bi" class="cursor-pointer">
-                        <a >Bilateral Peerings</a>
-                    </li>
-                    <li id="peer-filter-rs" class="cursor-pointer">
-                        <a>Route Server Peerings</a>
-                    </li>
+                <a id="peer-filter-rs" href="#" class="dropdown-item" >
+                    Route Server Peerings
+                </a>
 
-                </ul>
-
-            </div>
-
-            <?php if( count( $t->vlans ) > 1 ): ?>
-
-                <div class="btn-group">
-
-                    <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <?= $t->vl ? 'Vlan: ' . $t->vlans[ $t->vl ] : "Limit to Vlan..." ?> <span class="caret"></span>
-                    </button>
-
-                    <ul class="dropdown-menu dropdown-menu-right">
-
-                        <?php foreach( $t->vlans as $id => $name ): ?>
-
-                            <li class="<?= $t->vl == $id ? "active" : "" ?>">
-                                <a href="<?= route( "peering-matrix@index" ) . '?vlan=' . $id ?>"><?= $name ?></a>
-                            </li>
-
-                        <?php endforeach; ?>
-
-                    </ul>
-                </div>
-
-            <?php endif; ?>
-
-            <div class="btn-group">
-
-                <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?= $t->protos[ $t->proto ] ?> <span class="caret"></span>
-                </button>
-
-                <ul class="dropdown-menu dropdown-menu-right">
-
-                    <?php foreach( $t->protos as $id => $name ): ?>
-
-                        <li class="<?= $t->proto == $id ? "active" : "" ?>">
-                            <a href="<?= route( "peering-matrix@index" ) . '?proto=' . $id ?>"><?= $t->ee( $name ) ?></a>
-                        </li>
-
-                    <?php endforeach; ?>
-                </ul>
-
-            </div>
-
-            <div class="btn-group">
-                <button id="btn-zoom-out" class="btn btn-default btn-xs"><i class="glyphicon glyphicon-zoom-out"></i></button>
-                <button id="btn-zoom-in"  class="btn btn-default btn-xs"><i class="glyphicon glyphicon-zoom-in"></i></button>
             </div>
 
         </div>
-    </li>
+
+        <?php if( count( $t->vlans ) > 1 ): ?>
+
+            <div class="btn-group btn-group-sm">
+
+                <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <?= $t->vl ? 'Vlan: ' . $t->vlans[ $t->vl ] : "Limit to Vlan..." ?>
+                </button>
+
+                <div class="dropdown-menu dropdown-menu-right">
+
+                    <?php foreach( $t->vlans as $id => $name ): ?>
+
+                        <a class="dropdown-item <?= $t->vl == $id ? "active" : "" ?>" href="<?= route( "peering-matrix@index" ) . '?vlan=' . $id ?>">
+                            <?= $name ?>
+                        </a>
+
+                    <?php endforeach; ?>
+
+                </div>
+            </div>
+
+        <?php endif; ?>
+
+        <div class="btn-group btn-group btn-group-sm">
+
+            <button class="btn btn-white btn-sm dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <?= $t->protos[ $t->proto ] ?>
+            </button>
+
+            <div class="dropdown-menu dropdown-menu-right">
+
+                <?php foreach( $t->protos as $id => $name ): ?>
+
+                    <a class="dropdown-item <?= $t->proto == $id ? "active" : "" ?>" href="<?= route( "peering-matrix@index" ) . '?proto=' . $id ?>">
+                        <?= $t->ee( $name ) ?>
+                    </a>
+
+                <?php endforeach; ?>
+            </div>
+
+        </div>
+
+        <div class="btn-group btn-group btn-group-sm">
+            <button id="btn-zoom-out" class="btn btn-white btn-xs">
+                <i class="fa fa-search-minus"></i>
+            </button>
+            <button id="btn-zoom-in"  class="btn btn-white btn-xs">
+                <i class="fa fa-search-plus"></i>
+            </button>
+        </div>
+
+    </div>
 
 <?php $this->append() ?>
 
 
 <?php $this->section('content') ?>
-    <div class="row">
-
-        <div class="col-sm-12">
-
-            <table id="table-pm" class="pm-table collapse">
-
-                <colgroup id="cg-name"></colgroup>
-                <colgroup id="cg-asn"></colgroup>
-                <?php foreach( $t->custs as $x_as => $peers ): ?>
-                    <colgroup id="cg-as-<?= $x_as ?>"></colgroup>
-                <?php endforeach; ?>
-
-                <thead>
-
-                    <tr>
-
-                        <th id="th-name" class="name zoom2"></th>
-                        <th id="th-asn" class="asn zoom2"></th>
-
-                        <?php foreach( $t->custs as $x_as => $peers ):
-
-                            if( !$peers['activepeeringmatrix'] ) {
-                                continue;
-                            }
-                        ?>
 
 
-                            <th id="th-as-<?= $x_as ?>" class="zoom2 asn">
-                                <?php $asn = sprintf( $t->asnStringFormat, $x_as ) ?>
-                                <?php $len = strlen( $asn ) ?>
-                                <?php for( $pos = 0; $pos <= $len; $pos++ ): ?>
-                                    <?= str_limit( $asn ,1 ,'' ) ?>
-                                    <?php if( $pos < $len ): ?>
-                                        <br />
-                                    <?php endif; ?>
-                                    <?php $asn = substr( $asn, 1 ) ?>
-                                <?php endfor; ?>
-                            </th>
+<div class="col-lg-12">
+    <table id="table-pm" class="pm-table collapse">
 
-                        <?php endforeach; ?>
+        <colgroup id="cg-name"></colgroup>
+        <colgroup id="cg-asn"></colgroup>
+        <?php foreach( $t->custs as $x_as => $peers ): ?>
+            <colgroup id="cg-as-<?= $x_as ?>"></colgroup>
+        <?php endforeach; ?>
 
-                    </tr>
+        <thead>
 
-                </thead>
+        <tr>
 
-                <tbody id="tbody-pm" class="zoom2 ">
+            <th id="th-name" class="name zoom2"></th>
+            <th id="th-asn" class="asn zoom2"></th>
 
-                    <?php $outer = $rspeer = $bilat = 0; ?>
+            <?php foreach( $t->custs as $x_as => $peers ):
 
-                    <?php foreach( $t->custs as $x_as => $x ):
-
-                            if( !$x['activepeeringmatrix'] ) {
-                                continue;
-                            }
-                    ?>
+                if( !$peers['activepeeringmatrix'] ) {
+                    continue;
+                }
+                ?>
 
 
-                        <tr id="tr-name-<?= $x_as ?>">
+                <th id="th-as-<?= $x_as ?>" class="zoom2 asn">
+                    <?php $asn = sprintf( $t->asnStringFormat, $x_as ) ?>
+                    <?php $len = strlen( $asn ) ?>
+                    <?php for( $pos = 0; $pos <= $len; $pos++ ): ?>
+                        <?= str_limit( $asn ,1 ,'' ) ?>
+                        <?php if( $pos < $len ): ?>
+                            <br />
+                        <?php endif; ?>
+                        <?php $asn = substr( $asn, 1 ) ?>
+                    <?php endfor; ?>
+                </th>
 
-                            <td id="td-name-<?= $x_as ?>" class="name zoom2">
-                                <?= str_replace( '' , '&nbsp;' , $t->ee( $x[ 'name' ] ) ) ?>
-                            </td>
+            <?php endforeach; ?>
 
-                            <td id="td-asn-<?= $x_as ?>" class="asn zoom2">
-                                <?= $x[ 'autsys' ] ?>
-                            </td>
+        </tr>
 
-                            <?php $inner = 0 ?>
+        </thead>
 
-                            <?php foreach( $t->custs as $y_as => $y ): ?>
+        <tbody id="tbody-pm" class="zoom2 ">
 
-                                <td id="td-<?= $x_as ?>-<?= $y_as ?>" class="col-yasn-<?= $y_as ?> peering
+        <?php $outer = $rspeer = $bilat = 0; ?>
+
+        <?php foreach( $t->custs as $x_as => $x ):
+
+            if( !$x['activepeeringmatrix'] ) {
+                continue;
+            }
+            ?>
+
+
+            <tr id="tr-name-<?= $x_as ?>">
+
+                <td id="td-name-<?= $x_as ?>" class="name zoom2">
+                    <?= str_replace( '' , '&nbsp;' , $t->ee( $x[ 'name' ] ) ) ?>
+                </td>
+
+                <td id="td-asn-<?= $x_as ?>" class="asn zoom2">
+                    <?= $x[ 'autsys' ] ?>
+                </td>
+
+                <?php $inner = 0 ?>
+
+                <?php foreach( $t->custs as $y_as => $y ): ?>
+
+                    <td id="td-<?= $x_as ?>-<?= $y_as ?>" class="col-yasn-<?= $y_as ?> peering
 
                                     <?php if( $y[ 'autsys' ] != $x[ 'autsys' ] ): ?>
 
@@ -194,35 +195,38 @@
 
                                     zoom2">
 
-                                </td>
+                    </td>
 
-                                <?php $inner = $inner ++ ?>
+                    <?php $inner = $inner ++ ?>
 
-                                <?php if( $outer == count( $t->custs ) && $inner == count( $t->custs ) ): ?>
+                    <?php if( $outer == count( $t->custs ) && $inner == count( $t->custs ) ): ?>
 
-                                    <td></td>
+                        <td></td>
 
-                                <?php endif; ?>
+                    <?php endif; ?>
 
-                            <?php endforeach; ?>
+                <?php endforeach; ?>
 
-                        </tr>
+            </tr>
 
-                        <?php $outer = $outer ++ ?>
+            <?php $outer = $outer ++ ?>
 
-                    <?php endforeach; ?>
+        <?php endforeach; ?>
 
-                    <?php $bilat = $bilat / 2 ?>
-                    <?php $rspeer = $rspeer / 2 ?>
+        <?php $bilat = $bilat / 2 ?>
+        <?php $rspeer = $rspeer / 2 ?>
 
-                </tbody>
+        </tbody>
 
-            </table>
+    </table>
 
 
-            <div class="well">
-
-                <h3>Notes on the Peering Matrix</h3>
+    <div class="alert alert-info mt-4" role="alert">
+        <div class="d-flex align-items-center">
+            <div class="text-center">
+                <i class="fa fa-question-circle fa-2x"></i>
+            </div>
+            <div class="col-sm-12">
 
                 <ul>
                     <li>
@@ -248,9 +252,13 @@
                 </ul>
 
             </div>
-
         </div>
     </div>
+</div>
+
+
+
+
 
 <?php $this->append() ?>
 

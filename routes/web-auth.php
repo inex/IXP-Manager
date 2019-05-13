@@ -70,6 +70,13 @@ Route::group( [ 'prefix' => 'rs-prefixes', 'middleware' => [ 'rs-prefixes' ] ], 
 });
 
 
+Route::get('filtered-prefixes/{customer}', 'FilteredPrefixesController@list' )->name( 'filtered-prefixes@list' );
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+
 Route::group( [ 'prefix' => 'profile' ], function() {
 
     Route::get( '', 'ProfileController@edit' )->name( 'profile@edit' );
@@ -81,13 +88,24 @@ Route::group( [ 'prefix' => 'profile' ], function() {
 
 });
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+
 Route::get(  'switch/configuration',       'Switches\SwitchController@configuration'       )->name( "switch@configuration" );
 
 // Authentication routes...
 Route::group( [ 'namespace' => 'Auth' ], function() {
     Route::get('switch-user/{id}',         'SwitchUserController@switch'                            )->name( "switch-user@switch"            );
     Route::get('switch-user-back',         'SwitchUserController@switchBack'                        )->name( "switch-user@switchBack"        );
+    Route::get('switch-customer/{id}',     'SwitchCustomerController@switch'                        )->name( "switch-customer@switch"        );
 });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
 
 Route::group( [ 'prefix' => 'dashboard' ], function() {
     Route::get(  '{tab?}',                          'DashboardController@index'                 )->name( "dashboard@index"                  );
@@ -95,6 +113,12 @@ Route::group( [ 'prefix' => 'dashboard' ], function() {
     Route::post(  'store-billing-details',          'DashboardController@storeBillingDetails'   )->name( "dashboard@store-billing-details"  );
 
 });
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+
 
 Route::get(  'peering-manager',                            'PeeringManagerController@index'            )->name( "peering-manager@index"            );
 Route::get(  'peering-manager/{id}/mark-peering/{status}', 'PeeringManagerController@markPeering'      )->name( 'peering-manager@mark-peering'     );

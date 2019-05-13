@@ -171,7 +171,14 @@ class LookingGlass extends Controller
         try{
             $routes = $this->lg()->routesForTable($table);
         } catch( ErrorException $e ) {
-            return redirect( 'lg/'.$handle )->with('msg', 'The Message');
+            if( strpos( $e->getMessage(), 'HTTP/1.0 403' ) !== false ) {
+                return redirect( 'lg/'.$handle )->with( 'msg', 
+                    "The routing table <code>{$table}</code> has too many routes to display in the web interface. Please use "
+                    . "<a href=\"" . route( 'lg::route-search', [ 'handle' => $this->lg()->router()->handle() ] ) 
+                    . "\">the route search tool</a> to query this table."
+                );
+            }
+            return redirect( 'lg/'.$handle )->with('msg', 'An error occurred - please contact our support team if you wish.' );
         }
 
         $view = app()->make('view')->make('services/lg/routes')->with([
@@ -213,6 +220,15 @@ class LookingGlass extends Controller
             'content' => json_decode( $this->lg()->protocolTable($table,$network,intval($mask)) ),
             'source'  => 'table',
             'name'    => $table,
+            'net' => urldecode($network.'/'.$mask),
+        ]);
+    }
+
+    public function routeExport( string $handle, string $network, string $mask, string $protocol ): View {
+        return app()->make('view')->make('services/lg/route')->with([
+            'content' => json_decode( $this->lg()->exportRoute($protocol,$network,(int)$mask) ),
+            'source'  => 'export',
+            'name'    => $protocol,
             'net' => urldecode($network.'/'.$mask),
         ]);
     }

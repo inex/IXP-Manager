@@ -102,7 +102,7 @@
             if( element === "port-type" ) {
                 portType = $( '#port-type-state-' + id );
                 portType.html( "" );
-                portType.addClass( "loader" );
+                portType.addClass( "spinner-border" );
                 returnMessage = 0;
             } else {
                 disableInputsAction();
@@ -119,9 +119,9 @@
                 .done( function( data ) {
                     if( element === "port-type" ){
                         if( data.success ) {
-                            portType.html( '<i style="color:#3c763d" class="glyphicon glyphicon-ok"></i>' );
+                            portType.html( '<i style="color:#3c763d" class="fa fa-check"></i>' );
                         } else {
-                            portType.html( '<i style="color:#a94442" class="glyphicon glyphicon-remove"></i>' );
+                            portType.html( '<i style="color:#a94442" class="fa fa-times"></i>' );
                         }
                     } else {
                         window.location.reload();
@@ -134,7 +134,7 @@
                 })
                 .always( function() {
                     if( portType ) {
-                        portType.removeClass("loader");
+                        portType.removeClass("spinner-border");
                     }
                 });
         }

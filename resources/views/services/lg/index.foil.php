@@ -8,7 +8,14 @@
 
 
 <div class="alert alert-info" role="alert">
-    Please select a router to examine from the dropdown on the top right.
+    <div class="d-flex align-items-center">
+        <div class="text-center">
+            <i class="fa fa-question-circle fa-2x"></i>
+        </div>
+        <div class="col-sm-12">
+            Please select a router to examine from the dropdown on the top right.
+        </div>
+    </div>
 </div>
 
 

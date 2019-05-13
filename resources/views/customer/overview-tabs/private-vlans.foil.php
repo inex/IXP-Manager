@@ -1,20 +1,34 @@
 
-<table class="table">
-    <thead>
+<table class="table table-striped table-responsive-ixp collapse" style="width:100%">
+    <thead class="thead-dark">
         <tr>
-            <th>VLAN</th>
-            <th>Tag</th>
-            <th>Location</th>
-            <th>Switch</th>
-            <th>Port</th>
-            <th>Speed</th>
-            <th>Other Members</th>
+            <th>
+                VLAN
+            </th>
+            <th>
+                Tag
+            </th>
+            <th>
+                Location
+            </th>
+            <th>
+                Switch
+            </th>
+            <th>
+                Port
+            </th>
+            <th>
+                Speed
+            </th>
+            <th>
+                Other Members
+            </th>
         </tr>
     </thead>
     <tbody>
         <?php if( !isset( $pvlans ) ): ?>
             <?php $pvlans = $t->c->getPrivateVlanDetails() ?>
-         <?php endif; ?>
+        <?php endif; ?>
 
         <?php foreach( $pvlans as $vlanid => $pv ): ?>
             <?php foreach($pv[ "vlis" ] as $vli ): ?>

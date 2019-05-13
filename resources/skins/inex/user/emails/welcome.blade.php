@@ -41,11 +41,11 @@ You will always find our current support contact details at: https://www.inex.ie
 ## Getting Your Password
 
 
-To get your new password (or reset it), please use the *lost password* procedure by visiting the following link and entering your username as above:
+To set your password, please use following link:
 
-
-[Click here to reset password]({{ route( "forgot-password@show-form" ) }})
-
+@component('mail::button', ['url' => route( "reset-password@show-reset-form", [ "token" => $token, "username" => $user->getUsername() ] ), 'color' => 'blue'])
+    Reset password
+@endcomponent
 
 
 ## Additional/Miscellaneous Benefits

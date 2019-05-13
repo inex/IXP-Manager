@@ -21,6 +21,7 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Entities\Router;
 use Foil\Contracts\ExtensionInterface;
 
 /**
@@ -78,6 +79,71 @@ class Bird implements ExtensionInterface {
         }
 
         return $prefixes;
+    }
+
+
+    // FIXME: need to find a place for this that allows end users to customise it
+    public static $BGPLCS = [
+        ':1101:1'  => [ 'PREFIX LENGTH TOO LONG', 'danger' ],
+        ':1101:2'  => [ 'PREFIX LENGTH TOO SHORT', 'danger' ],
+        ':1101:3'  => [ 'BOGON', 'danger' ],
+        ':1101:4'  => [ 'BOGON ASN', 'danger' ],
+        ':1101:5'  => [ 'AS PATH TOO LONG', 'danger' ],
+        ':1101:6'  => [ 'AS PATH TOO SHORT', 'danger' ],
+        ':1101:7'  => [ 'FIRST AS NOT PEER AS', 'danger' ],
+        ':1101:8'  => [ 'NEXT HOP NOT PEER IP', 'danger' ],
+        ':1101:9'  => [ 'IRRDB PREFIX FILTERED', 'danger' ],
+        ':1101:10' => [ 'IRRDB ORIGIN AS FILTERED', 'danger' ],
+        ':1101:11' => [ 'PREFIX NOT IN ORIGIN AS', 'danger' ],
+        ':1101:12' => [ 'RPKI UNKNOWN', 'danger' ],
+        ':1101:13' => [ 'RPKI INVALID', 'danger' ],
+        ':1101:14' => [ 'TRANSIT FREE ASN', 'danger' ],
+        ':1101:15' => [ 'TOO MANY COMMUNITIES', 'danger' ],
+
+        ':1000:1'  => [ 'RPKI VALID', 'success' ],
+        ':1000:2'  => [ 'RPKI UNKNOWN', 'info' ],
+        ':1000:3'  => [ 'RPKI NOT CHECKED', 'warning' ],
+
+        ':1001:0'  => [ 'IRRDB INVALID', 'info' ],
+        ':1001:1'  => [ 'IRRDB VALID', 'success' ],
+        ':1001:2'  => [ 'IRRDB NOT CHECKED', 'warning' ],
+        ':1001:3'  => [ 'IRRDB MORE SPECIFIC', 'info' ],
+
+        ':1001:1000'  => [ 'IRRDB FILTERED LOOSE', 'info' ],
+        ':1001:1001'  => [ 'IRRDB FILTERED STRICT', 'info' ],
+        ':1001:1002'  => [ 'IRRDB PREFIX EMPTY', 'warning' ],
+
+        ':1001:1100'  => [ 'FROM IX ROUTESERVER', 'info' ],
+
+        ':1001:1200'  => [ 'SAME AS NEXT HOP', 'info' ],
+    ];
+
+    // FIXME: need to find a place for this that allows end users to customise it
+    public static $BGPLCS_REGEX = [
+        ':101:\d+'  => [ 'PREPEND TO PEERAS - ONCE', 'info' ],
+        ':102:\d+'  => [ 'PREPEND TO PEERAS - TWICE', 'info' ],
+        ':103:\d+'  => [ 'PREPEND TO PEERAS - THREE TIMES', 'info' ],
+    ];
+
+
+    /**
+     * Get information on a BGP large community used for filtering / info by IXP Manager
+     */
+    public function translateBgpFilteringLargeCommunity( string $lc ): ?array {
+
+        foreach( self::$BGPLCS as $k => $v ) {
+            if( $k === $lc ) {
+                return $v;
+            }
+        }
+
+        foreach( self::$BGPLCS_REGEX as $re => $v ) {
+            if( preg_match( '/^' . $re . '$/', $lc ) ) {
+                return $v;
+            }
+        }
+
+        return null;
     }
 
 }

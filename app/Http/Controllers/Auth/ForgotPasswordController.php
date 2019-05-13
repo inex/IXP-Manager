@@ -89,7 +89,10 @@ class ForgotPasswordController extends Controller
      * Send a reset link to the given user.
      *
      * @param  \Illuminate\Http\Request  $request
+     *
      * @return \Illuminate\Http\RedirectResponse|\Illuminate\Http\JsonResponse
+     *
+     * @throws
      */
     public function sendResetLinkEmail(Request $request){
 
@@ -104,7 +107,7 @@ class ForgotPasswordController extends Controller
 
 
         return $response == Password::RESET_LINK_SENT
-            ? $this->sendResetLinkResponse($response)
+            ? $this->sendResetLinkResponse($request, $response)
             : $this->sendResetLinkFailedResponse($request, $response);
     }
 
@@ -118,7 +121,7 @@ class ForgotPasswordController extends Controller
     protected function sendResetLinkResponse(Request $request, $response)
     {
         AlertContainer::push( 'The reset link have been sent to you email address.', Alert::SUCCESS );
-        return back();
+        return redirect( route( 'login@login' ) );
     }
 
     /**

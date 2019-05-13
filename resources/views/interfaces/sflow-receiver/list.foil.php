@@ -3,33 +3,34 @@
 $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'interfaces/sflow-receiver/list' )?>">SflowReceiver</a>
-<?php $this->append() ?>
-
-<?php $this->section( 'page-header-postamble' ) ?>
-    <li>List</li>
+<?php $this->section( 'page-header-preamble' ) ?>
+    SflowReceiver / List
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
 
 <div class="row">
 
-    <div class="col-sm-12">
+    <div class="col-lg-12">
 
-        <div class="alert alert-info">
-            You can add sflow receivers via the customers virtual interface edit page.
+        <div class="alert alert-info" role="alert">
+            <div class="d-flex align-items-center">
+                <div class="text-center">
+                    <i class="fa fa-info-circle fa-2x"></i>
+                </div>
+                <div class="col-sm-12">
+                    You can add sflow receivers via the customers virtual interface edit page.
+                </div>
+            </div>
         </div>
 
         <?= $t->alerts() ?>
 
         <span id="message-sflr"></span>
 
-        <div id="area-sflr" class="collapse">
+        <table id='table-sflr' class="table table-striped table-responsive-ixp-with-header collapse" style="width: 100%;">
 
-            <table id='table-sflr' class="table">
-
-                <thead>
+            <thead class="thead-dark">
                 <tr>
                     <th>
                         Customer
@@ -47,9 +48,9 @@ $this->layout( 'layouts/ixpv4' );
                         Action
                     </th>
                 </tr>
-                <thead>
+            <thead>
 
-                <tbody>
+            <tbody>
 
                 <?php foreach( $t->listSr as $sflr ): /** @var Entities\SflowReceiver $sflr */ ?>
 
@@ -79,12 +80,12 @@ $this->layout( 'layouts/ixpv4' );
 
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn btn-default" href="<?= route( 'interfaces/sflow-receiver/edit' , [ 'id' => $sflr->getId() ] ) ?>" title="Edit">
-                                    <i class="glyphicon glyphicon-pencil"></i>
+                                <a class="btn btn-white" href="<?= route( 'interfaces/sflow-receiver/edit' , [ 'id' => $sflr->getId() ] ) ?>" title="Edit">
+                                    <i class="fa fa-pencil"></i>
                                 </a>
 
-                                <a class="btn btn btn-default" id="delete-sflr-<?= $sflr->getId() ?>" href="" title="Delete">
-                                    <i class="glyphicon glyphicon-trash"></i>
+                                <a class="btn btn-white delete-sflr" id="delete-sflr-<?= $sflr->getId() ?>" href="" title="Delete">
+                                    <i class="fa fa-trash"></i>
                                 </a>
                             </div>
                         </td>
@@ -93,11 +94,11 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?php endforeach;?>
 
-                <tbody>
+            <tbody>
 
-            </table>
+        </table>
 
-        </div>
+
 
     </div>
 
@@ -113,15 +114,10 @@ $this->layout( 'layouts/ixpv4' );
 
     <script>
 
-        $(document).ready( function() {
-            loadDataTable( 'sflr' );
-            $( "#area-sflr" ).show();
-        });
-
         /**
          * on click event to to delete a sflow receiver
          */
-        $( "a[id|='delete-sflr']" ).on('click', function(e) {
+        $( "#table-sflr" ).on('click', '.delete-sflr', function(e) {
             e.preventDefault();
             let sflr = (this.id).substring(12);
             deletePopup( sflr , false, 'sflr' );

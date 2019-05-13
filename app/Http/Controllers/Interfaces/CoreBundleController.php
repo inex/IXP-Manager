@@ -25,6 +25,8 @@ namespace IXP\Http\Controllers\Interfaces;
 
 use D2EM, Former, Input, Redirect;
 
+use IXP\Utils\Former\Framework\TwitterBootstrap4;
+
 use Entities\{
     CoreBundle as CoreBundleEntity,
     CoreLink as CoreLinkEntity,
@@ -109,8 +111,11 @@ class CoreBundleController extends Common
     public function addCoreLinkFrag( Request $request ) :JsonResponse {
         $nb = $request->input("nbCoreLink") + 1;
 
+
+
         $returnHTML = view('interfaces/core-bundle/core-link-frag')->with([
             'nbLink'                        => $nb,
+            'formerrrrrr'                   => 'dd',
             'enabled'                       => $request->input("enabled" ) ? true : false,
             'bundleType'                    => array_key_exists( $request->input("bundleType" ), CoreBundleEntity::$TYPES ) ? $request->input("bundleType" ) : CoreBundleEntity::TYPE_ECMP ,
         ])->render();

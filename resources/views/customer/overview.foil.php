@@ -6,76 +6,80 @@
     $c = $t->c;
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'customer@list' )?>">Customers</a>
-<?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li><?= $c->getFormattedName() ?></li>
-<?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
-<li class="pull-right">
-    <div class="btn-group btn-group-xs">
+    <div class="btn-group btn-group-sm ml-auto" role="group" aria-label="...">
 
-        <a class="btn btn-default btn-xs" href="<?= route('statistics@member', [ 'id' => $c->getId() ] ) ?>">Port Graphs</a>
+        <a class="btn btn-white" href="<?= route('statistics@member', [ 'id' => $c->getId() ] ) ?>">
+            Port Graphs
+        </a>
 
-        <div class="btn-group">
-            <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="glyphicon glyphicon-cog"></i> &nbsp;<span class="caret"></span>
+        <div class="btn-group btn-group-sm">
+            <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-cog"></i>
             </button>
-            <ul class="dropdown-menu pull-right">
-                <li>
-                    <a href="<?= route( 'interfaces/virtual/add-wizard/custid', [ 'id' => $c->getId() ] ) ?>">Provision new port...</a>
-                </li>
-                <li role="separator" class="divider"></li>
-                <li >
-                    <a href="<?= route( 'customer@welcome-email', [ 'id' => $c->getId() ] ) ?>"               >Send Welcome Email...</a>
-                </li>
-            </ul>
+
+            <div class="dropdown-menu dropdown-menu-right">
+
+                <a class="dropdown-item" href="<?= route( 'interfaces/virtual/add-wizard/custid', [ 'id' => $c->getId() ] ) ?>">
+                    Provision new port...
+                </a>
+
+                <div class="dropdown-divider"></div>
+
+                <a class="dropdown-item" href="<?= route( 'customer@welcome-email', [ 'id' => $c->getId() ] ) ?>">
+                    Send Welcome Email...
+                </a>
+
+            </div>
         </div>
 
-        <div class="btn-group">
-            <button class="btn btn-default btn-xs dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="glyphicon glyphicon-pencil"></i> &nbsp;<span class="caret"></span>
+        <div class="btn-group btn-group-sm">
+
+            <button class="btn btn-white dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <i class="fa fa-pencil"></i>
             </button>
-            <ul class="dropdown-menu pull-right">
+            <div class="dropdown-menu dropdown-menu-right">
 
-                <li>
-                    <a href="<?= route( 'customer@edit' , [ 'id' => $c->getId() ] ) ?>">Edit Customer Details</a>
-                </li>
+                <a class="dropdown-item" href="<?= route( 'customer@edit' , [ 'id' => $c->getId() ] ) ?>">
+                    Edit Customer Details
+                </a>
 
-                <li>
-                    <a href="<?= route( 'customer@billing-registration' , [ 'id' => $c->getId() ] ) ?>" >
-                        <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode() || !$c->isResoldCustomer() ): ?>
-                            Edit Billing/Registration Details
-                        <?php else: ?>
-                            Edit Registration Details
-                        <?php endif; ?>
-                    </a>
-                </li>
+                <a class="dropdown-item" href="<?= route( 'customer@billing-registration' , [ 'id' => $c->getId() ] ) ?>" >
+                    <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode() || !$c->isResoldCustomer() ): ?>
+                        Edit Billing/Registration Details
+                    <?php else: ?>
+                        Edit Registration Details
+                    <?php endif; ?>
+                </a>
 
-                <li class="divider"></li>
-                <li>
-                    <a href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">Manage Tags...</a>
-                </li>
+
+                <div class="dropdown-divider"></div>
+
+                <a class="dropdown-item" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">
+                    Manage Tags...
+                </a>
+
 
                 <?php if( $t->logoManagementEnabled() ): ?>
-                    <li class="divider"></li>
-                    <li>
-                        <a href="<?= route( 'logo@manage', [ 'id' => $c->getId() ] ) ?>">Manage Logo...</a>
-                    </li>
+                    <div class="dropdown-divider"></div>
+
+                    <a class="dropdown-item" href="<?= route( 'logo@manage', [ 'id' => $c->getId() ] ) ?>">
+                        Manage Logo...
+                    </a>
+
                 <?php endif; ?>
 
-                <li class="divider"></li>
-                <li>
-                    <a href="<?= route( 'customer@delete-recap', [ 'id' => $c->getId() ] ) ?>">Delete Customer...</a>
-                </li>
-            </ul>
+                <div class="dropdown-divider"></div>
+
+                <a class="dropdown-item" href="<?= route( 'customer@delete-recap', [ 'id' => $c->getId() ] ) ?>">Delete Customer...</a>
+
+            </div>
+
         </div>
 
-        <?php $haveprev = 0 ?>
-        <?php $havenext = 0 ?>
+        <?php $haveprev = $havenext = 0 ?>
         <?php $keyCustomers = array_keys( $t->customers ) ?>
         <?php foreach( $t->customers as $id => $name ): ?>
 
@@ -100,129 +104,178 @@
 
         <?php endforeach; ?>
 
-        <a type="button" class="btn btn-default" href="<?= route( "customer@overview", [ 'id' => $cidprev ] ) ?>">
-            <span class="glyphicon glyphicon-chevron-left"></span>
+        <a class="btn btn-white" href="<?= route( "customer@overview", [ 'id' => $cidprev ] ) ?>">
+            <span class="fa fa-chevron-left"></span>
         </a>
-        <a type="button" class="btn btn-default" href="<?= route( "customer@overview", [ 'id' => $c->getId() ] ) ?>">
-            <span class="glyphicon glyphicon glyphicon-refresh"></span>
+        <a class="btn btn-white" href="<?= route( "customer@overview", [ 'id' => $c->getId() ] ) ?>">
+            <span class="fa fa-refresh"></span>
         </a>
-        <a type="button" class="btn btn-default" href="<?= route( "customer@overview", [ 'id' => $cidnext ] ) ?>">
-            <span class="glyphicon glyphicon-chevron-right"></span>
+        <a class="btn btn-white" href="<?= route( "customer@overview", [ 'id' => $cidnext ] ) ?>">
+            <span class="fa fa-chevron-right"></span>
         </a>
+
     </div>
-</li>
+
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
     <?= $t->alerts() ?>
 
-    <div class="row">
+    <div class="tw-bg-white shadow-sm tw-p-6">
 
-        <div class="col-sm-12">
+        <div class="row">
+            <div class="<?= $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ? "col-md-9 col-lg-7" : "col-12" ?>">
 
-            <div class="well">
-                <div class="row">
-                    <h3 class="col-sm-9">
-                        <?= $c->getFormattedName() ?>
+                <h3>
+                    <?= $t->ee( $c->getFormattedName() ) ?>
+                    <span class="tw-text-sm"><?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?></span>
+                </h3>
 
-                        <?php if( $c->isResoldCustomer() ): ?>
-                            <small>
-                                <br>&nbsp;&nbsp;Reseller: <?= $c->getReseller()->getName() ?>
-                            </small>
+                <p class="tw-mt-2">
+                    <a href="<?= $t->c->getCorpwww() ?>" target="_blank"><?= $t->nakedUrl( $t->c->getCorpwww() ) ?></a>
+
+                    <span class="tw-text-gray-600">
+                                - joined <?= $c->getDatejoin()->format('Y') ?>
+                            </span>
+                </p>
+
+                <p class="tw-mt-6">
+
+                    <?php if( !$t->c->isTypeAssociate() ): ?>
+                        <?php if( $c->getInManrs() ): ?>
+                            <a href="https://www.manrs.org/" target="_blank" class="hover:tw-no-underline">
+                                <span class="tw-inline-block tw-border tw-border-green-500 tw-rounded-full tw-text-green-500 tw-font-semibold tw-uppercase tw-text-xs tw-px-3 tw-py-1 tw-mr-3">
+                                    MANRS
+                                </span>
+                            </a>
                         <?php endif; ?>
-
-                    </h3>
-
-                    <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ): ?>
-
-                        <div class="col-sm-3">
-                            <img class="www80-padding img-responsive" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>" />
-                        </div>
-
                     <?php endif; ?>
-                </div>
 
-                <br>
-                <div>
-                    <?= $t->insert( 'customer/cust-type', [ 'cust' => $t->c ] ); ?>
                     <?php if( $c->getTags()->count() ): ?>
-                            <?php foreach( $c->getTags() as $tag ): ?>
-                                <span class="label label-default"><?= $tag->getDisplayAs() ?></span>
-                            <?php endforeach; ?>
-                            <a class="btn btn-xs btn-default" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>"><span class="glyphicon glyphicon-pencil"></span></a>
-                    <?php elseif( count( D2EM::getRepository( Entities\CustomerTag::class )->findAll() ) ): ?>
-                        <a class="btn btn-xs btn-default" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>"><span class="glyphicon glyphicon-pencil"></span>&nbsp;Add tags...</a>
-                    <?php endif; ?>
-                </div>
 
+                        <?php foreach( $c->getTags() as $tag ): ?>
+                            <span class="badge badge-secondary">
+                                <?= $tag->getDisplayAs() ?>
+                            </span>
+                        <?php endforeach; ?>
+
+                        <a class="btn btn-white btn-sm tw-rounded-full tw-text-xs" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">
+                            Edit tags...
+                        </a>
+
+                    <?php elseif( count( D2EM::getRepository( Entities\CustomerTag::class )->findAll() ) ): ?>
+
+                        <a class="btn btn-white btn-sm tw-rounded-full tw-border-gray-500 tw-text-gray-500 tw-text-xs" href="<?= route( 'customer@tags', [ 'id' => $c->getId() ] ) ?>">
+                            Add tags...
+                        </a>
+
+
+                    <?php endif; ?>
+
+                </p>
             </div>
 
-            <ul class="nav nav-tabs">
-                <li role="overview" <?php if( $t->tab == null || $t->tab == 'overview' ): ?> class="active" <?php endif; ?>>
-                    <a data-toggle="tab" href="#overview">Overview</a>
+            <?php if( $t->logoManagementEnabled() && ( $logo = $c->getLogo( Entities\Logo::TYPE_WWW80 ) ) ): ?>
+
+                <div class="col-md-3 col-lg-5 col-12 tw-mt-6 md:tw-mt-0 tw-text-center">
+                    <span class="lg:tw-inline-block xl:tw-h-full lg:tw-align-middle"></span>
+                    <img class="img-fluid lg:tw-inline-block tw-align-middle" src="<?= url( 'logos/'.$logo->getShardedPath() ) ?>">
+                </div>
+
+            <?php endif; ?>
+        </div>
+    </div>
+
+    <div class="card mt-4">
+        <div class="card-header">
+            <ul class="nav nav-tabs card-header-tabs">
+                <li role="overview" class="nav-item">
+                    <a class="nav-link <?php if( $t->tab == null || $t->tab == 'overview' ): ?> active <?php endif; ?>" data-toggle="tab" href="#overview">
+                        Overview
+                    </a>
                 </li>
-                <li role="details" <?php if( $t->tab == 'details' ): ?> class="active" <?php endif; ?> >
-                    <a data-toggle="tab" href="#details">Details</a>
+                <li role="details" class="nav-item" >
+                    <a class="nav-link <?php if( $t->tab == 'details' ): ?> active <?php endif; ?>" data-toggle="tab" href="#details">
+                        Details
+                    </a>
                 </li>
 
                 <?php if( $t->resellerMode() && $c->isReseller() ): ?>
 
-                    <li role="resold-customers" <?php if( $t->tab == 'resold-customers' ): ?> class="active" <?php endif; ?>>
-                        <a data-toggle="tab" href="#resold-customers" data-toggle="tab">Resold Customers</a>
+                    <li role="resold-customers" class="nav-item <?php if( $t->tab == 'resold-customers' ): ?>active<?php endif; ?>">
+                        <a class="nav-link " data-toggle="tab" href="#resold-customers" data-toggle="tab">
+                            Resold Customers
+                        </a>
                     </li>
                 <?php endif; ?>
                 <?php if( $c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $c->hasLeft() ) ):?>
-                    <li role="ports" <?php if( $t->tab == 'ports' ): ?> class="active" <?php endif; ?>>
-                        <a data-toggle="tab" href="#ports" data-toggle="tab">Ports</a>
+                    <li role="ports" class="nav-item ">
+                        <a class="nav-link <?php if( $t->tab == 'ports' ): ?> active <?php endif; ?>" data-toggle="tab" href="#ports" data-toggle="tab">
+                            Ports
+                        </a>
                     </li>
 
                     <?php if( $c->hasPrivateVLANs() ): ?>
-                        <li role="private-vlans" <?php if( $t->tab == 'private-vlans' ): ?> class="active" <?php endif; ?>>
-                            <a data-toggle="tab" href="#private-vlans" data-toggle="tab">Private VLANs</a>
+                        <li role="private-vlans" class="nav-item ">
+                            <a class="nav-link <?php if( $t->tab == 'private-vlans' ): ?> active <?php endif; ?>" data-toggle="tab" href="#private-vlans" data-toggle="tab">
+                                Private VLANs
+                            </a>
                         </li>
                     <?php endif; ?>
                 <?php endif; ?>
-                <li role="users" <?php if( $t->tab == 'users' ): ?> class="active" <?php endif; ?>>
-                    <a data-toggle="tab" href="#users" data-toggle="tab">Users</a>
+                <li role="users" class="nav-item ">
+                    <a class="nav-link <?php if( $t->tab == 'users' ): ?> active <?php endif; ?>" data-toggle="tab" href="#users" data-toggle="tab">
+                        Users
+                    </a>
                 </li>
 
-                <li role="contacts" <?php if( $t->tab == 'contacts' ): ?> class="active" <?php endif; ?>>
-                    <a data-toggle="tab" href="#contacts" data-toggle="tab">Contacts</a>
+                <li role="contacts" class="nav-item ">
+                    <a class="nav-link <?php if( $t->tab == 'contacts' ): ?> active <?php endif; ?>" data-toggle="tab" href="#contacts" data-toggle="tab">
+                        Contacts
+                    </a>
                 </li>
 
-                <li role="logins" <?php if( $t->tab == 'logins' ): ?> class="active" <?php endif; ?>>
-                    <a data-toggle="tab" href="#logins" data-toggle="tab">Logins</a>
+                <li role="logins" class="nav-item">
+                    <a class="nav-link <?php if( $t->tab == 'logins' ): ?> active <?php endif; ?>" data-toggle="tab" href="#logins" data-toggle="tab">
+                        Logins
+                    </a>
                 </li>
 
-                <li role="notes" <?php if( $t->tab == 'notes' ): ?> class="active" <?php endif; ?>>
-                    <a data-toggle="tab" href="#notes" id="tab-notes" data-toggle="tab">
+                <li role="notes" class="nav-item ">
+                    <a class="nav-link <?php if( $t->tab == 'notes' ): ?> active <?php endif; ?>" data-toggle="tab" href="#notes" id="tab-notes" data-toggle="tab">
                         Notes
                         <?php if( $t->notesInfo[ "unreadNotes"] > 0 ): ?>
                             <span id="notes-unread-indicator" class="badge badge-success"><?= $t->notesInfo[ "unreadNotes"] ?></span>
                         <?php endif ?>
                     </a>
                 </li>
-                <li role="cross-connects" <?php if( $t->tab == 'cross-connects' ): ?> class="active" <?php endif; ?>>
-                    <a data-toggle="tab" href="#cross-connects" data-toggle="tab">Cross Connects</a>
+                <li role="cross-connects" class="nav-item ">
+                    <a class="nav-link <?php if( $t->tab == 'cross-connects' ): ?> active <?php endif; ?>" data-toggle="tab" href="#cross-connects" data-toggle="tab">
+                        Cross Connects
+                    </a>
                 </li>
 
                 <?php if( $t->peers ): ?>
-                    <li role="peers" <?php if( $t->tab == 'peers' ): ?> class="active" <?php endif; ?>>
-                        <a data-toggle="tab" href="#peers" data-toggle="tab">Peers</a>
+                    <li role="peers" class="nav-item">
+                        <a class="nav-link <?php if( $t->tab == 'peers' ): ?> active <?php endif; ?>" data-toggle="tab" href="#peers" data-toggle="tab">
+                            Peers
+                        </a>
                     </li>
                 <?php endif; ?>
 
                 <?php if( count( $c->getConsoleServerConnections() ) ): ?>
-                    <li role="console-server-connections" <?php if( $t->tab == 'console-server-connections' ): ?> class="active" <?php endif; ?>>
-                        <a data-toggle="tab" href="#console-server-connections" data-toggle="tab">OOB Access</a>
+                    <li role="console-server-connections" class="nav-item ">
+                        <a class="nav-link <?php if( $t->tab == 'console-server-connections' ): ?>active<?php endif; ?>" data-toggle="tab" href="#console-server-connections" data-toggle="tab">
+                            OOB Access
+                        </a>
                     </li>
                 <?php endif ?>
 
                 <?php if( $c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $c->hasLeft() ) ): ?>
 
                     <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes' ) && $c->isRouteServerClient() ): ?>
-                        <li onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'id' =>  $c->getId() ] ) ?>'">
-                            <a data-toggle="tab"  href="">
+                        <li class="nav-item" onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'id' =>  $c->getId() ] ) ?>'">
+                            <a class="nav-link" data-toggle="tab"  href="">
                                 RS Prefixes
                                 <?php if( $t->rsRoutes[ 'adv_nacc' ][ 'total' ] > 0 ): ?>
                                     <span class="badge badge-danger"><?= $t->rsRoutes[ 'adv_nacc' ][ 'total' ] ?></span>
@@ -232,21 +285,30 @@
                         </li>
                     <?php endif ?>
 
+                    <?php if( !config( 'ixp_fe.frontend.disabled.filtered-prefixes' ) && $c->isRouteServerClient() ): ?>
+                        <li class="nav-item" onclick="window.location.href = '<?= route( "filtered-prefixes@list", [ 'customer' =>  $c->getId() ] ) ?>'">
+                            <a class="nav-link" data-toggle="tab"  href="">
+                                Filtered Prefixes &raquo;
+                            </a>
+                        </li>
+                    <?php endif ?>
+
                     <?php if( config('grapher.backends.sflow.enabled') ) : ?>
-                        <li onclick="window.location.href = '<?= route( "statistics@p2p", [ 'cid' => $c->getId() ] )  ?>'">
-                            <a data-toggle="tab" href="">P2P &raquo;</a>
+                        <li class="nav-item" onclick="window.location.href = '<?= route( "statistics@p2p", [ 'cid' => $c->getId() ] )  ?>'">
+                            <a class="nav-link" data-toggle="tab" href="">P2P &raquo;</a>
                         </li>
                     <?php endif ?>
                 <?php endif ?>
             </ul>
+        </div>
 
-
+        <div class="card-body">
 
             <div class="tab-content">
-                <div id="overview" class="tab-pane fade <?php if( $t->tab == null || $t->tab == 'overview' ): ?> in active <?php endif; ?>">
+                <div id="overview" class="tab-pane fade <?php if( $t->tab == null || $t->tab == 'overview' ): ?> active show <?php endif; ?>">
                     <?= $t->insert( 'customer/overview-tabs/overview' ); ?>
                 </div>
-                <div id="details" class="tab-pane fade <?php if( $t->tab == 'details' ): ?> in active <?php endif; ?>">
+                <div id="details" class="tab-pane fade <?php if( $t->tab == 'details' ): ?> active show <?php endif; ?>">
                     <?= $t->insert( 'customer/overview-tabs/details' ); ?>
                 </div>
                 <?php if( $t->resellerMode() && $c->isReseller() ): ?>
@@ -255,31 +317,29 @@
                     </div>
                 <?php endif ?>
                 <?php if( $c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $c->hasLeft() ) ):?>
-                    <div id="ports" class="tab-pane fade <?php if( $t->tab == 'ports' ): ?> in active <?php endif; ?> ">
+                    <div id="ports" class="tab-pane fade <?php if( $t->tab == 'ports' ): ?> active show <?php endif; ?> ">
                         <?php if( $t->resellerMode() && $c->isReseller() ): ?>
                             <?= $t->insert( 'customer/overview-tabs/reseller-ports' ); ?>
                         <?php else: ?>
                             <?= $t->insert( 'customer/overview-tabs/ports' ); ?>
                         <?php endif ?>
-
-
                     </div>
                     <?php if( $c->hasPrivateVLANs() ): ?>
-                        <div id="private-vlans" class="tab-pane fade <?php if( $t->tab == 'private-vlans' ): ?> in active <?php endif; ?> ">
+                        <div id="private-vlans" class="tab-pane fade <?php if( $t->tab == 'private-vlans' ): ?> active show <?php endif; ?> ">
                             <?= $t->insert( 'customer/overview-tabs/private-vlans' ); ?>
                         </div>
                     <?php endif ?>
                 <?php endif ?>
-                <div id="users" class="tab-pane fade <?php if( $t->tab == 'users' ): ?> in active <?php endif; ?> ">
+                <div id="users" class="tab-pane fade <?php if( $t->tab == 'users' ): ?> active show <?php endif; ?> ">
                     <?= $t->insert( 'customer/overview-tabs/users' ); ?>
                 </div>
-                <div id="contacts" class="tab-pane fade <?php if( $t->tab == 'contacts' ): ?> in active <?php endif; ?>">
+                <div id="contacts" class="tab-pane fade <?php if( $t->tab == 'contacts' ): ?> active show <?php endif; ?>">
                     <?= $t->insert( 'customer/overview-tabs/contacts' ); ?>
                 </div>
-                <div id="logins" class="tab-pane fade <?php if( $t->tab == 'logins' ): ?> in active <?php endif; ?>">
+                <div id="logins" class="tab-pane fade <?php if( $t->tab == 'logins' ): ?> active show <?php endif; ?>">
                     <?= $t->insert( 'customer/overview-tabs/logins' ); ?>
                 </div>
-                <div id="notes" class="tab-pane fade <?php if( $t->tab == 'notes' ): ?> in active <?php endif; ?>">
+                <div id="notes" class="tab-pane fade <?php if( $t->tab == 'notes' ): ?> active show <?php endif; ?>">
                     <?= $t->insert( 'customer/overview-tabs/notes' ); ?>
                 </div>
                 <div id="cross-connects" class="tab-pane fade">
@@ -287,7 +347,7 @@
                 </div>
 
                 <?php if( $t->peers ): ?>
-                    <div id="peers" class="tab-pane fade <?php if( $t->tab == 'peers' ): ?> in active <?php endif; ?>">
+                    <div id="peers" class="tab-pane fade <?php if( $t->tab == 'peers' ): ?> active show <?php endif; ?>">
                         <?= $t->insert( 'customer/overview-tabs/peers' ); ?>
                     </div>
                 <?php endif; ?>
@@ -298,7 +358,6 @@
             </div>
         </div>
     </div>
-
 
 <?php $this->append() ?>
 
@@ -313,41 +372,39 @@
     <?php endif; ?>
 
     <script>
-        /**
-         * Iframe to display peeringDB website
-         *
-         * @param string asNumber The AS number
-         *
-         * @return html
-         */
-        function perringDb( ) {
-            var str = "<?= config('ixp_tools.peeringdb_url' ) ?>";
-            var mapObj = {
-                '%ID%':"<?= $c->getPeeringDb() ?>",
-                '%ASN%':"<?= $c->getAutsys() ?>",
+        $(document).ready( function() {
 
-            };
-            var re = new RegExp(Object.keys(mapObj).join("|"),"gi");
-            str = str.replace(re, function(matched){
-                return mapObj[matched];
-            });
+            $('.table-responsive-ixp').show();
 
-            let html = `<iframe width="100%" height="500px" src="${str}" frameborder="0" allowfullscreen></iframe>`;
+            $('.table-responsive-ixp').DataTable( {
+                responsive: true,
+                ordering: false,
+                searching: false,
+                paging:   false,
+                info:   false,
+            } );
 
-            bootbox.dialog({
-                message: html,
-                size: "large",
-                title: "AS Number Lookup",
-                buttons: {
-                    cancel: {
-                        label: 'Close',
-                        callback: function () {
-                            $('.bootbox.modal').modal('hide');
-                            return false;
-                        }
-                    }
-                }
-            });
-        }
+            $('.table-responsive-ixp-action').show();
+            $('.table-responsive-ixp-action').DataTable( {
+                responsive: true,
+                ordering: false,
+                searching: false,
+                paging:   false,
+                info:   false,
+                columnDefs: [
+                    { responsivePriority: 1, targets: 0 },
+                    { responsivePriority: 2, targets: -1 }
+                ],
+            } );
+
+            $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+                $($.fn.dataTable.tables(true)).DataTable()
+                    .columns.adjust()
+                    .responsive.recalc();
+            })
+
+
+
+        });
     </script>
 <?php $this->append() ?>

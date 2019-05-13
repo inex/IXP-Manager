@@ -6,17 +6,30 @@
 ?>
 
 
-<table class="table">
-
-    <thead>
+<table class="table table-striped" width="100%">
+    <thead class="thead-dark">
         <tr>
-            <th>Facility</th>
-            <th>Cabinet</th>
-            <th>Patch Panel</th>
-            <th>Port</th>
-            <th>Customer</th>
-            <th>Colo Ref</th>
-            <th>Colo Billing Ref</th>
+            <th>
+                Facility
+            </th>
+            <th>
+                Cabinet
+            </th>
+            <th>
+                Patch Panel
+            </th>
+            <th>
+                Port
+            </th>
+            <th>
+                Customer
+            </th>
+            <th>
+                Colo Ref
+            </th>
+            <th>
+                Colo Billing Ref
+            </th>
         </tr>
     </thead>
 

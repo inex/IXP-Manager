@@ -50,7 +50,7 @@ class IrrdbPrefix extends EntityRepository
         $prefixes = $this->getEntityManager()->createQuery(
                     "SELECT p.id, p.prefix FROM \\Entities\\IrrdbPrefix p
                         WHERE p.Customer = :cust AND p.protocol = :protocol
-                        ORDER BY p.prefix ASC, p.id ASC"
+                        ORDER BY INET" . ( $protocol == 6 ? '6' : '' ) . "_ATON( p.prefix ) ASC, p.id ASC"
                 )
                 ->setParameter( 'cust', $cust )
                 ->setParameter( 'protocol', $protocol )

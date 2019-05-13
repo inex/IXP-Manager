@@ -1,6 +1,6 @@
 <?= Former::open()->method( 'POST' )
     ->action( "#" )
-    ->customWidthClass( 'col-sm-8' )
+    ->customInputWidthClass( 'col-sm-8' )
     ->id( "form-peering-request" );
 ?>
 
@@ -24,31 +24,30 @@
 
         <div class="form-group">
 
-            <label for="notes" class="control-label col-lg-2 col-sm-4">Message</label>
-            <div class="col-sm-8">
+            <div class="card mt-4">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li role="presentation" class="nav-item">
+                            <a class="tab-link-body-note nav-link active" href="#body">Messages</a>
+                        </li>
+                        <li role="presentation" class="nav-item">
+                            <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
+                        </li>
+                    </ul>
+                </div>
 
-                <ul class="nav nav-tabs">
-                    <li role="presentation" class="active">
-                        <a class="tab-link-body-note" href="#body">Markdown</a>
-                    </li>
-                    <li role="presentation">
-                        <a class="tab-link-preview-note" href="#preview">Preview</a>
-                    </li>
-                </ul>
-
-                <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="body">
-                        <textarea class="form-control readonlyChange" style="font-family:monospace;" rows="20" id="message" name="message"><?= $t->insert( 'peering-manager/peering-message', [ "peer" => $t->peer, "pp" => $t->pp, "user" => Auth::getUser() ] ); ?></textarea>
+                <div class="tab-content card-body">
+                    <div role="tabpanel" class="tab-pane show active" id="body">
+                        <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="30" id="message" name="message"><?= $t->insert( 'peering-manager/peering-message', [ "peer" => $t->peer, "pp" => $t->pp, "user" => Auth::getUser() ] ); ?></textarea>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="preview">
-                        <div class="well well-preview" style="background: rgb(255,255,255);">
+                        <div class="bg-light p-4 well-preview">
                             Loading...
                         </div>
                     </div>
                 </div>
-
-                <br><br>
             </div>
+
 
         </div>
 
@@ -66,30 +65,28 @@
 
         <div class="form-group">
 
-            <label for="notes" class="control-label col-lg-2 col-sm-4">Notes</label>
-            <div class="col-sm-8">
+            <div class="card mt-4">
+                <div class="card-header">
+                    <ul class="nav nav-tabs card-header-tabs">
+                        <li role="presentation" class="nav-item">
+                            <a class="tab-link-body-note nav-link active" href="#body">Notes</a>
+                        </li>
+                        <li role="presentation" class="nav-item">
+                            <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
+                        </li>
+                    </ul>
+                </div>
 
-                <ul class="nav nav-tabs">
-                    <li role="presentation" class="active">
-                        <a class="tab-link-body-note" href="#body">Notes</a>
-                    </li>
-                    <li role="presentation">
-                        <a class="tab-link-preview-note" href="#preview">Preview</a>
-                    </li>
-                </ul>
-
-                <div class="tab-content">
-                    <div role="tabpanel" class="tab-pane active" id="body">
-                        <textarea class="form-control" style="font-family:monospace;" rows="20" id="peering-manager-notes" name="peering-manager-notes"><?= $t->peeringManager->getNotes() ?></textarea>
+                <div class="tab-content card-body">
+                    <div role="tabpanel" class="tab-pane show active" id="body">
+                        <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="20" id="peering-manager-notes" name="peering-manager-notes"><?= $t->peeringManager->getNotes() ?></textarea>
                     </div>
                     <div role="tabpanel" class="tab-pane" id="preview">
-                        <div class="well well-preview" style="background: rgb(255,255,255);">
+                        <div class="bg-light p-4 well-preview">
                             Loading...
                         </div>
                     </div>
                 </div>
-
-                <br><br>
             </div>
 
         </div>
@@ -138,15 +135,20 @@
             .on( 'keyup change', function() { $(this).off('blur focus focusout keyup change') } );
 
 
+        $('.tab-link-body-note').on( 'click', function(e) {
+            e.preventDefault();
+            $(this).tab('show');
+        });
+
         $('.tab-link-preview-note').on( 'click', function(e) {
-            const well_div = $(this).closest('div').find( ".well-preview" );
+            const well_div = $(this).closest('div').parent( 'div' ).find( ".well-preview" );
             e.preventDefault();
 
             $(this).tab('show');
 
             $.ajax( MARKDOWN_URL, {
                 data: {
-                    text: $(this).closest('div').find( "textarea" ).val()
+                    text: $(this).closest('div').parent( 'div' ).find( "textarea" ).val()
                 },
                 type: 'POST'
             })
@@ -156,13 +158,7 @@
                 .fail( function() {
                     well_div.html('Error!');
                 });
-        });
-
-        $('.tab-link-body-note').on( 'click', function(e) {
-            e.preventDefault();
-            $(this).tab('show');
-        });
-
+        })
 
     });
 

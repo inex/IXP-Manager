@@ -1,11 +1,17 @@
-<br>
-
-<table class="table collapse" id="summary-table-<?= $t->type ?>">
-    <thead>
-        <th>Customer</th>
-        <th>IPv4</th>
-        <th>IPv6</th>
-        <th>Total</th>
+<table class="table collapse table-striped" id="summary-table-<?= $t->type ?>" width="100%">
+    <thead class="thead-dark">
+        <th>
+            Customer
+        </th>
+        <th>
+            IPv4
+        </th>
+        <th>
+            IPv6
+        </th>
+        <th>
+            Total
+        </th>
     </thead>
     <tbody>
         <?php foreach( $t->cPrefixes as $id => $cp ): ?>

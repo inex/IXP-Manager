@@ -1,25 +1,20 @@
-<div class="row">
+<div class="d-flex row">
+    <?php if( Auth::getUser()->isSuperUser() && !$t->c->statusIsNormal() ): ?>
 
-    <div class="col-sm-12">
+        <div class="alert alert-danger" role="alert">
+            <b>Warning! Customer status is not normal.</b>
+            Many backend processes that configure interface related systems (for example
+            MRTG, P2P statistics, Nagios, Smokeping, route collector, route servers, etc.)
+            will skip members that do not have a normal status.
+        </div>
 
-        <br>
-        <?php if( Auth::getUser()->isSuperUser() && !$t->c->statusIsNormal() ): ?>
+    <?php endif; ?>
 
-            <div class="alert alert-danger" role="alert">
-                <b>Warning! Customer status is not normal.</b>
-                Many backend processes that configure interface related systems (for example
-                MRTG, P2P statistics, Nagios, Smokeping, route collector, route servers, etc.)
-                will skip members that do not have a normal status.
-            </div>
+    <?php $nbVi = 1 ?>
 
-        <?php endif; ?>
+    <?php foreach( $t->c->getVirtualInterfaces() as $vi ): ?>
+        <?= $t->insert( 'customer/overview-tabs/ports/port', [ 'c' => $t->c ,'vi' => $vi, 'nbVi' => $nbVi ] ); ?>
+        <?php $nbVi++ ?>
+    <?php endforeach; ?>
 
-        <?php $nbVi = 1 ?>
-
-        <?php foreach( $t->c->getVirtualInterfaces() as $vi ): ?>
-            <?= $t->insert( 'customer/overview-tabs/ports/port', [ 'c' => $t->c ,'vi' => $vi, 'nbVi' => $nbVi ] ); ?>
-            <?php $nbVi++ ?>
-        <?php endforeach; ?>
-
-    </div>
 </div>

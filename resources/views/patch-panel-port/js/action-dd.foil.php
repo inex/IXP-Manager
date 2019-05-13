@@ -1,7 +1,3 @@
-<script type="text/javascript" src="<?= asset( '/bower_components/jquery-ui/ui/widget.js' ) ?>"></script>
-<script type="text/javascript" src="<?= asset( '/bower_components/blueimp-file-upload/js/jquery.iframe-transport.js' ) ?>"></script>
-<script type="text/javascript" src="<?= asset( '/bower_components/jquery-knob/js/jquery.knob.js' ) ?>"></script>
-<script type="text/javascript" src="<?= asset( '/bower_components/blueimp-file-upload/js/jquery.fileupload.js' ) ?>"></script>
 <script>
 
     //////////////////////////////////////////////////////////////////////////////////////
@@ -226,8 +222,8 @@
 
         let html = `<form id="upload" method="post" action='<?= url("patch-panel-port/upload-file" )?>/${pppid}' enctype='multipart/form-data'>
             <div id='drop'>Drop Files Here &nbsp;
-                <a id="upload-drop-a" class="btn btn-success">
-                    <i class="glyphicon glyphicon-upload"></i> Browse</a> <br/>
+                <a href="#" id="upload-drop-a" class="btn btn-success color-white">
+                    <i class="fa fa-upload"></i> Browse</a> <br/>
                     <span class="info"> (max size <?= $t->maxFileUploadSize() ?> </span>
                     <input type="file" name="upl" multiple />
             </div>
@@ -236,6 +232,7 @@
 
 
         let dialog = bootbox.dialog({
+            size: "large",
             message: html,
             title: "Files Upload (Files will be public by default)",
             onEscape: function() {
@@ -257,7 +254,8 @@
 
             let ul = $('#upload-ul');
 
-            $('#upload-drop-a').click( function(){
+            $('#upload-drop-a').click( function(e){
+                e.preventDefault();
                 // Simulate a click on the file input button
                 // to show the file browser dialog
                 $(this).parent().find('input').click();
@@ -294,7 +292,7 @@
                                 tpl.attr( 'id','uploaded-file-' + result.id );
                                 tpl.find( 'span' ).addClass( 'success' );
                                 tpl.append( `<span id="uploaded-file-toggle-private-${result.id}" class="private fa fa-unlock fa-lg"></span>` );
-                                tpl.append( `<span id="uploaded-file-delete-${result.id}" class="delete glyphicon glyphicon-trash"></span>` );
+                                tpl.append( `<span id="uploaded-file-delete-${result.id}" class="delete fa fa-trash"></span>` );
                                 tpl.find('p').append( `<i id="message-${result.id}" class="success">${result.message}</i>` );
 
                                 $('#uploaded-file-toggle-private-' + result.id).on( 'click', toggleFilePrivacy );
@@ -401,7 +399,8 @@
             message: message,
             buttons: {
                 cancel: {
-                    label: '<i class="fa fa-times"></i> Cancel'
+                    label: '<i class="fa fa-times"></i> Cancel',
+                    className : "btn-secondary",
                 },
                 confirm: {
                     label: '<i class="fa fa-check"></i> Confirm'

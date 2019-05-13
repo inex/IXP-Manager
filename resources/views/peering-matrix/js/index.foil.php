@@ -154,7 +154,7 @@
         $( '[id|="peer-filter"]' ).on( "click", function( e ){
             let filter = this.id.substr( this.id.lastIndexOf( '-' ) + 1 );
 
-            $( "#ul-dd-peer li" ).removeClass( 'active' );
+            $( "#ul-dd-peer a" ).removeClass( 'active' );
 
             $( 'td.bilateral-rs'    ).removeClass( 'peered' );
             $( 'td.bilateral-only'  ).removeClass( 'peered' );

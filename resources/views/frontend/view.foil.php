@@ -3,77 +3,54 @@
     $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <?php if( Auth::getUser()->isSuperUser() ): ?>
-        <a id="d2f-list-a" href="<?= route($t->feParams->route_prefix.'@list') ?>">
-    <?php endif; ?>
-
+<?php $this->section( 'page-header-preamble' ) ?>
     <?=  $t->feParams->pagetitle  ?>
-
-    <?php if( Auth::getUser()->isSuperUser() ): ?>
-        </a>
-    <?php endif; ?>
+    /
+    View <?=  $t->feParams->titleSingular  ?>
 <?php $this->append() ?>
-
-
 
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <?php if( Auth::getUser()->isSuperUser() ): ?>
-        <li>
-            View <?=  $t->feParams->titleSingular  ?>
-        </li>
-    <?php else:?>
-        <h3 style="display:inline;color: #999999">
-            View <?=  $t->feParams->titleSingular  ?>
-        </h3>
-    <?php endif; ?>
-<?php $this->append() ?>
 
+    <div class="btn-group btn-group-sm" role="group">
 
-
-
-
-<?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right" style=<?= Auth::getUser()->isSuperUser() ? "margin-top: 10px" : "" ?>>
-        <div class="btn-group btn-group-xs" role="group">
-
-            <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
-                <a type="button" target="_blank" class="btn btn-default" href="<?= $t->feParams->documentation ?>">Documentation</a>
-            <?php endif; ?>
-
-            <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@list') ?>">
-                <span class="glyphicon glyphicon-th-list"></span>
+        <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
+            <a  target="_blank" class="btn btn-white" href="<?= $t->feParams->documentation ?>">
+                Documentation
             </a>
+        <?php endif; ?>
 
-            <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-                <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->data[ 'item' ][ 'id' ] ]) ?>">
-                    <span class="glyphicon glyphicon-pencil"></span>
-                </a>
-                <a type="button" class="btn btn-default" href="<?= route($t->feParams->route_prefix.'@add') ?>">
-                    <span class="glyphicon glyphicon-plus"></span>
-                </a>
-            <?php endif; ?>
-        </div>
-    </li>
+        <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@list') ?>">
+            <span class="fa fa-th-list"></span>
+        </a>
+
+        <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
+            <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->data[ 'item' ][ 'id' ] ]) ?>">
+                <span class="fa fa-pencil"></span>
+            </a>
+            <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@add') ?>">
+                <span class="fa fa-plus"></span>
+            </a>
+        <?php endif; ?>
+    </div>
 
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
     <div class="row">
 
-        <div class="col-sm-12">
+        <div class="col-lg-12">
 
             <?= $t->alerts() ?>
 
             <?= $t->data[ 'view' ]['viewPreamble'] ? $t->insert( $t->data[ 'view' ]['viewPreamble'] ) : '' ?>
 
-            <div class="panel panel-default">
-                <div class="panel-heading">
+            <div class="card">
+                <div class="card-header">
                     Details for <?=  $t->feParams->titleSingular  ?> <?= !isset( $t->data[ 'item' ]['id'] ) ?: '(DB ID: ' . $t->data[ 'item' ]['id'] . ')' ?>
                 </div>
 
-                <div class="panel-body">
+                <div class="card-body">
 
                     <table class="table_view_info">
                         <?php if( $t->data[ 'view' ]['viewRowOverride'] ): ?>
@@ -199,13 +176,13 @@
 
                                                                         <?php foreach( $exploded as $explode ): ?>
 
-                                                                            <span class="label label-success"><?= $t->ee( $explode ) ?> </span><?= $cconf[ 'explode' ][ 'replace' ] ?>
+                                                                            <span class="badge badge-success"><?= $t->ee( $explode ) ?> </span><?= $cconf[ 'explode' ][ 'replace' ] ?>
 
                                                                         <?php endforeach; ?>
 
                                                                     <?php else: ?>
 
-                                                                        <span class="label label-success"><?= $t->ee( $t->data[ 'item' ][ $col ] ) ?></span>
+                                                                        <span class="badge badge-success"><?= $t->ee( $t->data[ 'item' ][ $col ] ) ?></span>
 
                                                                     <?php endif;?>
 
@@ -213,13 +190,13 @@
 
                                                                     <?php foreach( $t->data[ 'item' ][ $col ] as $item ): ?>
 
-                                                                        <span class="label label-success"><?= $t->ee( $item ) ?> </span><?= $cconf[ 'array' ][ 'replace' ] ?>
+                                                                        <span class="badge badge-success"><?= $t->ee( $item ) ?> </span><?= $cconf[ 'array' ][ 'replace' ] ?>
 
                                                                     <?php endforeach; ?>
 
                                                                 <?php else: ?>
 
-                                                                    <span class="label label-success"><?= $t->ee( $t->data[ 'item' ][ $col ] ) ?></span>
+                                                                    <span class="badge badge-success"><?= $t->ee( $t->data[ 'item' ][ $col ] ) ?></span>
 
                                                                 <?php endif; ?>
 

@@ -2,8 +2,8 @@
 /** @var object $t */
 ?>
 
-<?php $this->section( 'title' ) ?>
-phpinfo()
+<?php $this->section( 'page-header-preamble' ) ?>
+    phpinfo()
 <?php $this->append() ?>
 
 
@@ -15,8 +15,6 @@ phpinfo()
             src="<?= route( 'phpinfo' ) ?>"></iframe>
 
 <?php $this->append() ?>
-
-
 
 
 <?php $this->section( 'scripts' ) ?>

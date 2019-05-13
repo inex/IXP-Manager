@@ -118,29 +118,29 @@ function populateFormViaAsn() {
                 if( typeof response.net !== "undefined" ) {
 
                     // fill inputs with info received
-                    input_name.val(             response.net.name ).closest( 'div.form-group' ).addClass( 'has-success' );
-                    input_abbreviated_name.val( response.net.name ).closest( 'div.form-group' ).addClass( 'has-success' );
-                    input_shortname.val(        response.net.name.replace( /[^a-zA-Z0-9]+/g, "" ).toLowerCase().substr( 0, 10 ) ).closest( 'div.form-group' ).addClass( 'has-success' );
-                    input_datejoin.val(         getCurrentDate() ).closest( 'div.form-group' ).addClass( 'has-success' );
-                    input_corp_www.val(         response.net.website ).closest( 'div.form-group' ).addClass( 'has-success' );
-                    input_autsys.val(           response.net.asn ).closest( 'div.form-group' ).addClass( 'has-success' );
-                    input_peeringmacro.val(     response.net.irr_as_set ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    input_name.val(             htmlEntities( response.net.name ) ).addClass( 'is-valid' );
+                    input_abbreviated_name.val( htmlEntities( response.net.name ) ).addClass( 'is-valid' );
+                    input_shortname.val(        htmlEntities( response.net.name ).replace( /[^a-zA-Z0-9]+/g, "" ).toLowerCase().substr( 0, 10 ) ).addClass( 'is-valid' );
+                    input_datejoin.val(         getCurrentDate() ).addClass( 'is-valid' );
+                    input_corp_www.val(         htmlEntities( response.net.website ) ).addClass( 'is-valid' );
+                    input_autsys.val(           htmlEntities( response.net.asn ) ).addClass( 'is-valid' );
+                    input_peeringmacro.val(     htmlEntities( response.net.irr_as_set ) ).addClass( 'is-valid' );
 
                     if( response.net.info_prefixes4 !== "undefined" ) {
-                        input_maxprefixes.val( Math.ceil( response.net.info_prefixes4 * 1.2 ) ).closest( 'div.form-group' ).addClass( 'has-success' );
+                        input_maxprefixes.val( Math.ceil( htmlEntities( response.net.info_prefixes4 ) * 1.2 ) ).addClass( 'is-valid' );
                     }
 
-                    dd_peering_policy.val(  response.net.policy_general.toLowerCase() ).trigger( "change" ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    dd_peering_policy.val(  htmlEntities( response.net.policy_general ).toLowerCase() ).trigger( "change" ).addClass( 'is-valid' );
 
                     if( response.net.poc_set !== "undefined" ) {
                         $.each( response.net.poc_set, function( key, noc ) {
                             if( noc.role.toUpperCase() === "NOC" ) {
                                 if( noc.phone !== "undefined" ){
-                                    input_nocphone.val( noc.phone ).closest( 'div.form-group' ).addClass( 'has-success' );
+                                    input_nocphone.val( htmlEntities( noc.phone ) ).addClass( 'is-valid' );
                                 }
                                 if( noc.email !== "undefined" ) {
-                                    input_nocemail.val( noc.email );
-                                    input_peeringemail.val( noc.email ).closest( 'div.form-group' ).addClass( 'has-success' );
+                                    input_nocemail.val( htmlEntities( noc.email ) );
+                                    input_peeringemail.val( htmlEntities( noc.email ) ).addClass( 'is-valid' );
                                 }
                             }
                         });
@@ -158,7 +158,7 @@ function populateFormViaAsn() {
                             break;
                     }
 
-                    dd_peering_policy.val( peering_policy ).trigger( "change" ).closest( 'div.form-group' ).addClass( 'has-success' );
+                    dd_peering_policy.val( peering_policy ).trigger( "change" ).addClass( 'is-valid' );
 
                 } else {
 

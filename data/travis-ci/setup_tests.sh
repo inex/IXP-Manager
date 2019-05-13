@@ -25,11 +25,7 @@ echo cp .env.travisci .env
 cp .env.travisci .env
 
 # Set up IXP Manager
-sudo cp data/travis-ci/configs/* application/configs
 sudo touch public/.htaccess
-
-sudo npm install -g bower
-bower install --production
 
 echo composer install --no-interaction --prefer-dist --no-suggest
 composer install --no-interaction --prefer-dist --no-suggest
@@ -43,3 +39,4 @@ google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http:
 
 
 ./artisan serve  &>php-built-in.log &
+

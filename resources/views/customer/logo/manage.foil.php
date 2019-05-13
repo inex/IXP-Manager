@@ -3,34 +3,17 @@
     /** @var object $t */
 ?>
 
-<?php $this->section( 'title' ) ?>
-
-    <?php if( Auth::user()->isSuperUser() ): ?>
-
-        <a href="<?= route ( 'customer@list' )?>">
-            Customer
-        </a>
-
-    <?php else: ?>
-
-        Manage Your Logo
-
-    <?php endif; ?>
-
-<?php $this->append() ?>
-
-
 
 <?php if( Auth::user()->isSuperUser() ): ?>
 
-    <?php $this->section( 'page-header-postamble' ) ?>
+    <?php $this->section( 'page-header-preamble' ) ?>
 
-        <li>
-            <a href="<?= route( "customer@overview" , [ "id" => $t->c->getId() ] ) ?>" >
-                <?= $t->ee( $t->c->getName() ) ?>
-            </a>
-        </li>
-        <li>Manage Logo</li>
+
+        <a href="<?= route( "customer@overview" , [ "id" => $t->c->getId() ] ) ?>" >
+            <?= $t->ee( $t->c->getName() ) ?>
+        </a>
+        /
+        Manage Logo
 
     <?php $this->append() ?>
 
@@ -42,23 +25,22 @@
 
 <div class="row">
 
-    <div class="col-sm-12">
+    <div class="col-lg-12">
 
         <?= $t->alerts() ?>
 
         <?php if( $t->logo ): ?>
 
-            <div class="col-md-6">
-                <h3>Your Existing Logo:</h3>
-            </div>
-            <div class="col-md-6">
-                <img src="<?= url( 'logos/'.$t->logo->getShardedPath() ) ?>" class="www80-padding img-responsive">
+            <div class="row mb-4">
+                <div class="col-md-6 col-sm-12">
+                    <h3>Your Existing Logo:</h3>
+                </div>
+                <div class="col-md-6 text-center col-sm-12">
+                    <img src="<?= url( 'logos/'.$t->logo->getShardedPath() ) ?>" class="www80-padding img-responsive">
+                </div>
             </div>
 
         <?php endif; ?>
-
-
-
 
         <p>
             <?php if( $t->logo ): ?>
@@ -73,8 +55,15 @@
         </p>
 
 
-        <div class="alert alert-info">
-            <strong>For best results, your logo must be uploaded as a PNG image with a <u>transparent background</u> that is 80px high and without any margin.</strong>
+        <div class="alert alert-info mt-4" role="alert">
+            <div class="d-flex align-items-center">
+                <div class="text-center">
+                    <i class="fa fa-info-circle fa-2x"></i>
+                </div>
+                <div class="col-sm-12">
+                    <b>For best results, your logo must be uploaded as a PNG image with a <u>transparent background</u> that is 80px high and without any margin.</b>
+                </div>
+            </div>
         </div>
 
         <p>
@@ -83,51 +72,63 @@
 
         <p>
             If your logo does not conform to these specifications, we may remove it as it will not look appropriate to our website design.
-            <br><br><br>
         </p>
 
-        <?= Former::open()->method( 'POST' )
-            ->action( route ('logo@store' ) )
-            ->enctype( "multipart/form-data" )
-            ->customWidthClass( 'col-sm-3' )
-            ->addClass( 'col-md-10' );
-        ?>
+        <div class="card">
+            <div class="card-body">
+                <?= Former::open()->method( 'POST' )
+                    ->action( route ('logo@store' ) )
+                    ->enctype( "multipart/form-data" )
+                    ->customInputWidthClass( 'col-sm-3' )
+                    ->actionButtonsCustomClass( "grey-box")
+                    ->addClass( 'col-md-12 mt-4' );
+                ?>
 
-        <?= Former::file( 'logo' )
-            ->label( 'Upload a PNG logo' )
-            ->accept( 'png' );
+                <?= Former::file( 'logo' )
+                    ->label( 'Upload a PNG logo' )
+                    ->accept( 'png' );
 
-        ?>
+                ?>
 
-        <?= Former::actions(
-            Former::primary_submit( 'Upload' ),
-            Former::default_link( 'Cancel' )->href( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ "id" => $t->c->getId() ] ) : route( "dashboard@index" ) ),
-            Auth::getUser()->isSuperUser() ? Former::success_link( 'Help' )->href('http://docs.ixpmanager.org/usage/customers/#customer-logos') : ''
-        );
-        ?>
+                <?= Former::actions(
+                    Former::primary_submit( 'Upload' )->class( "mb-2 mb-sm-0" ),
+                    Former::secondary_link( 'Cancel' )->href( Auth::getUser()->isSuperUser() ? route( "customer@overview" , [ "id" => $t->c->getId() ] ) : route( "dashboard@index" ) )->class( "mb-2 mb-sm-0" ),
+                    Auth::getUser()->isSuperUser() ? Former::success_link( 'Help' )->href('http://docs.ixpmanager.org/usage/customers/#customer-logos')->class( "mb-2 mb-sm-0" ) : ''
+                );
+                ?>
 
-        <?= Former::hidden( 'id' )
-            ->value( $t->c ? $t->c->getId() : false )
-        ?>
+                <?= Former::hidden( 'id' )
+                    ->value( $t->c ? $t->c->getId() : false )
+                ?>
 
-        <?= Former::close() ?>
+                <?= Former::close() ?>
+            </div>
+        </div>
 
-        <div style="clear:both;"></div>
+
 
         <?php if( $t->logo ): ?>
 
-            <!-- Delete Core Bundle area -->
-            <div class="col-sm-12 alert alert-danger" style="float: right;" role="alert">
+        <div class="alert alert-danger mt-4" role="alert">
+            <div class="d-flex align-items-center ">
+                <div class="text-center">
+                    <i class="fa fa-exclamation-triangle fa-2x"></i>
+                </div>
+                <div class="col-sm-12 d-flex">
+                    <div class="mr-auto">
+                        <b> Delete your logo ... </b>
+                    </div>
 
-                <span style="line-height: 34px;">
-                    <strong> Delete your logo ... </strong>
-                </span>
+                    <div>
+                        <a id="delete" class="btn btn-danger" href="#">
+                            Remove My Logo
+                        </a>
+                    </div>
 
-                <a id="delete" class="btn btn-danger" href="" style="float: right;">
-                    Remove My Logo
-                </a>
 
+                </div>
             </div>
+        </div>
 
 
         <?php endif; ?>
@@ -159,7 +160,7 @@
                     },
                     cancel: {
                         label: 'Cancel',
-                        className: 'btn-default',
+                        className: 'btn-secondary',
                     }
                 },
                 callback: function ( result ) {

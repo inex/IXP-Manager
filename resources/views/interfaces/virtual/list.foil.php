@@ -3,34 +3,27 @@
     $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route('interfaces/virtual/list') ?>">Virtual Interfaces</a>
+<?php $this->section( 'page-header-preamble' ) ?>
+    Virtual Interfaces / List
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <li>List</li>
-<?php $this->append() ?>
 
-<?php $this->section( 'page-header-preamble' ) ?>
-    <li class="pull-right">
-        <div class=" btn-group btn-group-xs" role="group">
-            <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                <i class="glyphicon glyphicon-plus"></i> <span class="caret"></span>
-            </button>
-            <ul class="dropdown-menu dropdown-menu-right">
-                <li>
-                    <a id="" href="<?= route( 'interfaces/virtual/wizard' ) ?>" >
-                        Add Interface Wizard...
-                    </a>
-                </li>
-                <li>
-                    <a id="" href="<?= route( 'interfaces/virtual/add' ) ?>" >
-                        Add Virtual Interface Object Only...
-                    </a>
-                </li>
-            </ul>
-        </div>
-    </li>
+    <div class=" btn-group btn-group-sm" role="group">
+        <button class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            <i class="fa fa-plus"></i>
+        </button>
+        <ul class="dropdown-menu dropdown-menu-right">
+            <a class="dropdown-item" href="<?= route( 'interfaces/virtual/wizard' ) ?>" >
+                Add Interface Wizard...
+            </a>
+
+            <a class="dropdown-item" href="<?= route( 'interfaces/virtual/add' ) ?>" >
+                Add Virtual Interface Object Only...
+            </a>
+        </ul>
+    </div>
+
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -40,35 +33,37 @@
     <div class="col-sm-12">
 
         <?= $t->alerts() ?>
+
         <div id="message-vi"></div>
-        <div id="area-vi" class="collapse">
-            <table id='table-vi' class="table">
-                <thead>
+
+
+        <table id='table-vi' class="collapse table table-stripped no-wrap table-responsive-ixp-with-header" style="width: 100%!important">
+            <thead class="thead-dark">
                 <tr>
-                    <td>
+                    <th>
                         Customer
-                    </td>
-                    <td>
+                    </th>
+                    <th>
                         Facility
-                    </td>
-                    <td>
+                    </th>
+                    <th>
                         Switch
-                    </td>
-                    <td>
+                    </th>
+                    <th>
                         Port(s)
-                    </td>
-                    <td>
+                    </th>
+                    <th>
                         Speed
-                    </td>
-                    <td>
+                    </th>
+                    <th>
                         Raw Speed
-                    </td>
-                    <td>
+                    </th>
+                    <th>
                         Action
-                    </td>
+                    </th>
                 </tr>
-                <thead>
-                <tbody>
+            <thead>
+            <tbody>
                 <?php foreach( $t->vis as $vi ):
                     /** @var Entities\VirtualInterface $vi */ ?>
                     <tr>
@@ -108,20 +103,20 @@
                         <?php endif; ?>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn btn-default" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vi->getId() ]) ?>" title="Edit">
-                                    <i class="glyphicon glyphicon-pencil"></i>
+                                <a class="btn btn btn-outline-secondary" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vi->getId() ]) ?>" title="Edit">
+                                    <i class="fa fa-pencil"></i>
                                 </a>
 
-                                <a class="btn btn btn-default" id="delete-vi-<?= $vi->getId() ?>" href="" <?php if( $t->resellerMode() && ( count( $vi->getPeeringPhysicalInterface()) > 0  || count( $vi->getFanoutPhysicalInterface() ) > 0 ) ) :?> data-related="1" <?php endif; ?> <?php if( $vi->getSwitchPort() ): ?> data-type="<?= $vi->getSwitchPort()->getType() ?>" <?php endif; ?> title="Delete Virtual Interface">
-                                    <i class="glyphicon glyphicon-trash"></i>
+                                <a class="btn btn btn-outline-secondary" id="delete-vi-<?= $vi->getId() ?>" href="" <?php if( $t->resellerMode() && ( count( $vi->getPeeringPhysicalInterface()) > 0  || count( $vi->getFanoutPhysicalInterface() ) > 0 ) ) :?> data-related="1" <?php endif; ?> <?php if( $vi->getSwitchPort() ): ?> data-type="<?= $vi->getSwitchPort()->getType() ?>" <?php endif; ?> title="Delete Virtual Interface">
+                                    <i class="fa fa-trash"></i>
                                 </a>
                             </div>
                         </td>
                     </tr>
                 <?php endforeach;?>
-                <tbody>
-            </table>
-        </div>
+            <tbody>
+        </table>
+
 
     </div>
 
@@ -136,15 +131,9 @@
 
     <script>
         $(document).ready( function() {
-            $( '#table-vi' ).DataTable( {
-                "autoWidth": false,
-                "iDisplayLength": 100,
-                "columnDefs": [
-                    { "targets": [ 4 ], "orderData": 5 },
-                    { "targets": [ 5 ], "visible": false, "searchable": false }
-                ],
-            });
-            $('#area-vi').show();
+
+
+
         });
 
         /**
@@ -152,7 +141,7 @@
          */
         $(document).on('click', "a[id|='delete-vi']" ,function(e){
             e.preventDefault();
-            var vi = (this.id).substring(10);
+            let vi = (this.id).substring(10);
             deletePopup( vi , false, 'vi');
         });
 

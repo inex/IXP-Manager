@@ -1,95 +1,96 @@
 
-<div class="well col-sm-12">
+<div class="card">
+    <div class="card-body">
 
-    <?= Former::open()->method( 'POST' )
-        ->id( 'form' )
-        ->action( route( $t->feParams->route_prefix.'@store' ) )
-        ->customWidthClass( 'col-sm-3' )
-    ?>
-
-        <?= Former::select( 'switchid' )
-            ->label( 'Switch' )
-            ->fromQuery( $t->data[ 'params'][ 'switches'], 'name' )
-            ->placeholder( 'Choose a Switch' )
-            ->addClass( 'chzn-select' )
-            ->blockHelp( "The switch that this port belongs to." );
+        <?= Former::open()->method( 'POST' )
+            ->id( 'form' )
+            ->action( route( $t->feParams->route_prefix.'@store' ) )
+            ->customInputWidthClass( 'col-lg-4 col-sm-6' )
+            ->customLabelWidthClass( 'col-lg-2 col-sm-3' )
+            ->actionButtonsCustomClass( "grey-box")
         ?>
 
+            <?= Former::select( 'switchid' )
+                ->label( 'Switch' )
+                ->fromQuery( $t->data[ 'params'][ 'switches'], 'name' )
+                ->placeholder( 'Choose a Switch' )
+                ->addClass( 'chzn-select' )
+                ->blockHelp( "The switch that this port belongs to." );
+            ?>
+
+            <?php if( !$t->data[ 'params'][ 'isAdd'] ): ?>
+                <?= Former::text( 'name' )
+                    ->label( 'Name' )
+                    ->blockHelp( "The port name." );
+                ?>
+            <?php endif; ?>
+
+            <?= Former::select( 'type' )
+                ->label( 'Type' )
+                ->fromQuery( \Entities\SwitchPort::$TYPES )
+                ->placeholder( 'Choose a Type' )
+                ->addClass( 'chzn-select' )
+                ->blockHelp( "The port type." );
+            ?>
+
         <?php if( !$t->data[ 'params'][ 'isAdd'] ): ?>
-            <?= Former::text( 'name' )
-                ->label( 'Name' )
-                ->blockHelp( "The port name." );
+            <?= Former::checkbox( 'active' )
+                ->label( '&nbsp;' )
+                ->text( 'Active' )
+                ->value( 1 )
+                ->check()
+                ->inline()
+                ->blockHelp( "Is the port active?" );
             ?>
         <?php endif; ?>
 
-        <?= Former::select( 'type' )
-            ->label( 'Type' )
-            ->fromQuery( \Entities\SwitchPort::$TYPES )
-            ->placeholder( 'Choose a Type' )
-            ->addClass( 'chzn-select' )
-            ->blockHelp( "The port type." );
-        ?>
 
-    <?php if( !$t->data[ 'params'][ 'isAdd'] ): ?>
-        <?= Former::checkbox( 'active' )
-            ->label( '&nbsp;' )
-            ->text( 'Active' )
-            ->value( 1 )
-            ->check()
-            ->blockHelp( "Is the port active?" );
-        ?>
-    <?php endif; ?>
+        <?php if( $t->data[ 'params'][ 'isAdd'] ): ?>
 
+            <?= Former::number( 'numfirst' )
+                ->label( 'Number of First Port' )
+                ->blockHelp( "The number of the first port to add. This will be incremented by 1 for <em>Number of Ports</em> below." );
+            ?>
 
-    <?php if( $t->data[ 'params'][ 'isAdd'] ): ?>
+            <?= Former::number( 'numports' )
+                ->label( 'Number of Ports' )
+                ->blockHelp( "The number of ports to be created starting from <em>Number of First Port</em> above." );
+            ?>
 
-        <?= Former::number( 'numfirst' )
-            ->label( 'Number of First Port' )
-            ->blockHelp( "The number of the first port to add. This will be incremented by 1 for <em>Number of Ports</em> below." );
-        ?>
+            <?= Former::text( 'prefix' )
+                ->label( 'Name in printf Format' )
+                ->blockHelp( "The name of the port using printf format with a <code>%d</code> handle for the port number. For example: <code>Ethernet%d</code>." );
+            ?>
 
-        <?= Former::number( 'numports' )
-            ->label( 'Number of Ports' )
-            ->blockHelp( "The number of ports to be created starting from <em>Number of First Port</em> above." );
-        ?>
+            <?= Former::actions(
+                Former::primary_button( 'Generate' )->id( "generate-btn" ),
+                Former::success_button( 'Help' )->id( 'help-btn' )
+            )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
+            ?>
 
-        <?= Former::text( 'prefix' )
-            ->label( 'Name in printf Format' )
-            ->blockHelp( "The name of the port using printf format with a <code>%d</code> handle for the port number. For example: <code>Ethernet%d</code>." );
-        ?>
+            <div class="collapse col-sm-12 row" id="ports-area"></div>
+
+        <?php endif; ?>
 
         <?= Former::actions(
-            Former::default_link( 'Generate' )->id( "generate-btn" ),
-            Former::success_button( 'Help' )->id( 'help-btn' )
-        );
+            Former::primary_submit( $t->data[ 'params'][ 'isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' )->class( "mb-2 mb-sm-0"),
+            Former::secondary_link( 'Cancel' )->href( route( $t->feParams->route_prefix.'@list') )->class( "mb-2 mb-sm-0"),
+            Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0") )
+            ->id( "submit-area" )->class(  $t->data[ 'params'][ 'isAdd'] ? "collapse" : '' )->class( "mb-2 mb-sm-0");
         ?>
 
-        <div class="collapse col-sm-8" id="ports-area"></div>
 
-        <div style="clear: both"></div>
-        <br>
-        <br>
 
-    <?php endif; ?>
+        <?= Former::hidden( 'id' )
+            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
+        ?>
 
-    <?= Former::actions(
-        Former::primary_submit( $t->data[ 'params'][ 'isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' ),
-        Former::default_link( 'Cancel' )->href( route( $t->feParams->route_prefix.'@list') ),
-        Former::success_button( 'Help' )->id( 'help-btn' ) )
-        ->id( "submit-area" )->class( $t->data[ 'params'][ 'isAdd'] ? "collapse" : '' );
-    ?>
+        <?= Former::hidden( 'isAdd' )
+            ->value( $t->data[ 'params'][ 'isAdd'] ? 1 : 0 )
+        ?>
 
-    <div style="clear: both"></div>
+        <?= Former::close() ?>
 
-    <?= Former::hidden( 'id' )
-        ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
-    ?>
-
-    <?= Former::hidden( 'isAdd' )
-        ->value( $t->data[ 'params'][ 'isAdd'] ? 1 : 0 )
-    ?>
-
-    <?= Former::close() ?>
-
+    </div>
 </div>
 

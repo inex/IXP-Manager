@@ -3,25 +3,27 @@
     $this->layout( 'layouts/ixpv4' )
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <h3>
-        MAC Address Management
+<?php $this->section( 'page-header-preamble' ) ?>
+MAC Address Management
+<?php $this->append() ?>
 
-        <span class="pull-right" id="span-cust-add-btn" style="<?= count( $t->vli->getLayer2Addresses() ) >= config( 'ixp_fe.layer2-addresses.customer_params.max_addresses' ) ? 'display: none;' : '' ?>">
-            <div class="btn-group btn-group-sm" id="add-btn" role="group">
-                <a type="button" class="btn btn-default" id="add-l2a">
-                    <span class="glyphicon glyphicon-plus"></span>
-                </a>
-            </div>
-        </span>
-    </h3>
+<?php $this->section( 'page-header-postamble' ) ?>
+
+    <span id="span-cust-add-btn" style="<?= count( $t->vli->getLayer2Addresses() ) >= config( 'ixp_fe.layer2-addresses.customer_params.max_addresses' ) ? 'display: none;' : '' ?>">
+        <div class="btn-group btn-group-sm" id="add-btn" role="group">
+            <a class="btn btn-outline-secondary" id="add-l2a">
+                <span class="fa fa-plus"></span>
+            </a>
+        </div>
+    </span>
+
 <?php $this->append() ?>
 
 
 <?php $this->section( 'content' ) ?>
-<div>
+<div class="row">
 
-    <div>
+    <div class="col-sm-12">
 
         <?= $t->alerts() ?>
 
@@ -32,14 +34,22 @@
 
         <div id="message"></div>
         <div id="list-area" class="collapse">
-            <table id='layer-2-interface-list' class="table">
-                <thead>
-                <tr>
-                    <td>ID</td>
-                    <td>MAC Address</td>
-                    <td>Created At</td>
-                    <td>Action</td>
-                </tr>
+            <table id='layer-2-interface-list' class="table table-striped" width="100%">
+                <thead class="thead-dark">
+                    <tr>
+                        <th>
+                            ID
+                        </th>
+                        <th>
+                            MAC Address
+                        </th>
+                        <th>
+                            Created At
+                        </th>
+                        <th>
+                            Action
+                        </th>
+                    </tr>
                 <thead>
                 <tbody >
                 <?php foreach( $t->vli->getLayer2Addresses() as $l2a ):
@@ -57,12 +67,12 @@
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn btn-default" id="view-l2a-<?= $l2a->getId() ?>" name="<?= $l2a->getMac() ?>" href="#" title="View">
-                                    <i class="glyphicon glyphicon-eye-open"></i>
+                                <a class="btn btn-outline-secondary" id="view-l2a-<?= $l2a->getId() ?>" name="<?= $l2a->getMac() ?>" href="#" title="View">
+                                    <i class="fa fa-eye"></i>
                                 </a>
                                 <?php if( count( $t->vli->getLayer2Addresses() ) > config( 'ixp_fe.layer2-addresses.customer_params.min_addresses' ) ): ?>
-                                    <button class="btn btn btn-default" id="delete-l2a-<?= $l2a->getId() ?>" href="#" title="Delete">
-                                        <i class="glyphicon glyphicon-trash"></i>
+                                    <button class="btn btn-outline-secondary" id="delete-l2a-<?= $l2a->getId() ?>" href="#" title="Delete">
+                                        <i class="fa fa-trash"></i>
                                     </button>
                                 <?php endif; ?>
                             </div>

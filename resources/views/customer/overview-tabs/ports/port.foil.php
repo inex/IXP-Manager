@@ -1,74 +1,74 @@
-<div class="col-sm-12">
+<div class="row col-sm-12">
+    <div class="col-lg-6 col-md-12">
+        <div class="d-flex">
+            <h3 class="mr-auto">
+                Connection <?= $t->nbVi ?>
 
-    <div class="col-sm-6">
+                <?php $vlis = $t->vi->getVlanInterfaces() ?>
 
-        <h3>
-            Connection <?= $t->nbVi ?>
-
-            <?php $vlis = $t->vi->getVlanInterfaces() ?>
-
-            <?php if( count( $vlis ) ): ?>
-                <?php $vli = $vlis[ 0 ] ?>
-            <?php else: ?>
-                <?php $vli = 0 ?>
-            <?php endif; ?>
-
-            <small>
-                <?php $pis = $t->vi->getPhysicalInterfaces() ?>
-
-                <?php if( count( $pis ) ): ?>
-                    <?php $firstPi = $pis[ 0 ] ?>
+                <?php if( count( $vlis ) ): ?>
+                    <?php $vli = $vlis[ 0 ] ?>
                 <?php else: ?>
-                    <?php $firstPi = 0 ?>
+                    <?php $vli = 0 ?>
                 <?php endif; ?>
 
-                <?php if( $t->vi->getType() == \Entities\SwitchPort::TYPE_PEERING && count( $pis ) ): ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;<?= $t->ee( $firstPi->getSwitchPort()->getSwitcher()->getInfrastructure()->getName() ) ?>
-                <?php elseif( $t->vi->getType() == \Entities\SwitchPort::TYPE_FANOUT ): ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;Reseller Fanout
+                <small>
+                    <?php $pis = $t->vi->getPhysicalInterfaces() ?>
 
-                    <?php if( count( $pis ) && $firstPi->getRelatedInterface() ): ?>
-                    for <a
-
-                        <?php if( Auth::user()->getPrivs() == \Entities\User::AUTH_SUPERUSER ): ?>
-                            href="<?= route( "customer@overview" , [ 'id' => $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>"
-                        <?php else: ?>
-                            href="<?= route( "customer@detail" , [ "id" => $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>"
-                        <?php endif; ?>
-
-                        ><?= $t->ee( $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getAbbreviatedName() ) ?></a>
+                    <?php if( count( $pis ) ): ?>
+                        <?php $firstPi = $pis[ 0 ] ?>
                     <?php else: ?>
-                        <em>(unassigned)</em>
+                        <?php $firstPi = 0 ?>
                     <?php endif; ?>
 
-                <?php elseif( $t->vi->getType() == \Entities\SwitchPort::TYPE_RESELLER ): ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Resller Uplink
-                <?php endif; ?>
+                    <?php if( $t->vi->getType() == \Entities\SwitchPort::TYPE_PEERING && count( $pis ) ): ?>
+                        &nbsp;&nbsp;&nbsp;&nbsp;<?= $t->ee( $firstPi->getSwitchPort()->getSwitcher()->getInfrastructure()->getName() ) ?>
+                    <?php elseif( $t->vi->getType() == \Entities\SwitchPort::TYPE_FANOUT ): ?>
+                        &nbsp;&nbsp;&nbsp;&nbsp;Reseller Fanout
 
-                <?php if( count( $t->vi->getPhysicalInterfaces() ) > 1 ): ?>
-                    <?php $isLAG = 1 ?>
-                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAG Port
-                <?php else: ?>
-                    <?= $t->insert( 'customer/overview-tabs/ports/pi-status', [ 'pi' => $firstPi, 'vi' => $t->vi ] ); ?>
-                    <?php $isLAG = 0 ?>
-                <?php endif; ?>
-            </small>
+                        <?php if( count( $pis ) && $firstPi->getRelatedInterface() ): ?>
+                            for <a
 
+                                <?php if( Auth::user()->getPrivs() == \Entities\User::AUTH_SUPERUSER ): ?>
+                                    href="<?= route( "customer@overview" , [ 'id' => $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>"
+                                <?php else: ?>
+                                    href="<?= route( "customer@detail" , [ "id" => $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getId() ] ) ?>"
+                                <?php endif; ?>
+
+                            ><?= $t->ee( $firstPi->getRelatedInterface()->getVirtualInterface()->getCustomer()->getAbbreviatedName() ) ?></a>
+                        <?php else: ?>
+                            <em>(unassigned)</em>
+                        <?php endif; ?>
+
+                    <?php elseif( $t->vi->getType() == \Entities\SwitchPort::TYPE_RESELLER ): ?>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Reseller Uplink
+                    <?php endif; ?>
+
+                    <?php if( count( $t->vi->getPhysicalInterfaces() ) > 1 ): ?>
+                        <?php $isLAG = 1 ?>
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;LAG Port
+                    <?php else: ?>
+                        <?= $t->insert( 'customer/overview-tabs/ports/pi-status', [ 'pi' => $firstPi, 'vi' => $t->vi ] ); ?>
+                        <?php $isLAG = 0 ?>
+                    <?php endif; ?>
+                </small>
+            </h3>
             <?php if( Auth::getUser()->isSuperUser() ): ?>
 
-                <div class="btn-group" style="padding-left: 20px;">
-                    <a class="btn btn-xs btn-default" href="<?= route( "interfaces/virtual/edit", [ "id" => $t->vi->getId() ] ) ?>" title="Edit"><i class="glyphicon glyphicon-pencil"></i></a>
+                <div class="btn-group my-auto">
+                    <a class="btn btn-sm btn-white" href="<?= route( "interfaces/virtual/edit", [ "id" => $t->vi->getId() ] ) ?>" title="Edit">
+                        <i class="fa fa-pencil"></i>
+                    </a>
                 </div>
 
             <?php endif; ?>
-
-        </h3>
-
-
+        </div>
 
         <?php if( count( $t->vi->getPhysicalInterfaces() ) > 0 ): ?>
+
             <?php $countPi = 1 ?>
             <?php foreach( $t->vi->getPhysicalInterfaces() as $pi ): ?>
+
                 <div class="row">
                     <div class="col-sm-12">
                         <?php if( $isLAG ): ?>
@@ -79,15 +79,23 @@
                         <?php endif; ?>
                     </div>
                 </div>
-                <div class="row">
-                    <div class="col-sm-6">
-                        <table class="table table-borderless">
+
+
+                <div class="row mb-4">
+                    <div class="col-lg-12">
+                        <table class="table table-sm table-borderless table-striped table-connection">
                             <tr>
                                 <td>
                                     <b>Switch:</b>
                                 </td>
                                 <td>
                                     <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?>
+                                </td>
+                                <td>
+                                    <b>Switch Port:</b>
+                                </td>
+                                <td>
+                                    <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
                                 </td>
                             </tr>
                             <tr>
@@ -100,6 +108,21 @@
                                         (HD)
                                     <?php endif; ?>
                                 </td>
+                                <?php if( $pi->getSwitchPort()->getSwitcher()->getMauSupported() ): ?>
+                                    <td>
+                                        <b>Media:</b>
+                                    </td>
+                                    <td>
+                                        <?= $t->ee( $pi->getSwitchPort()->getMauType() ) ?>
+                                    </td>
+                                <?php else: ?>
+                                    <td>
+                                        <b>Duplex:</b>
+                                    </td>
+                                    <td>
+                                        <?= $t->ee( $pi->getDuplex() ) ?>
+                                    </td>
+                                <?php endif; ?>
                             </tr>
 
                             <?php if( $pi->getSwitchPort()->getSwitcher()->getCabinet() ): ?>
@@ -110,6 +133,26 @@
                                     <td>
                                         <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getCabinet()->getLocation()->getName() ) ?>
                                     </td>
+
+                                    <?php if( $pi->getSwitchPort()->getSwitcher()->getCabinet() ): ?>
+
+                                        <td>
+                                            <b>
+                                                Colo Cabinet ID:
+                                            </b>
+                                        </td>
+                                        <td>
+                                            <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getCabinet()->getName() ) ?>
+                                        </td>
+                                    <?php else: ?>
+                                        <td>
+
+                                        </td>
+                                        <td>
+
+                                        </td>
+                                    <?php endif; ?>
+
                                 </tr>
                             <?php endif; ?>
 
@@ -129,52 +172,6 @@
                                             <?= $t->ee( $pi->getSwitchPort()->getPatchPanelPort()->getName() ) ?>
                                         <?php endif; ?>
                                     </td>
-
-                                </tr>
-                            <?php endif; ?>
-                        </table>
-                    </div>
-                    <div class="col-sm-6">
-                        <table class="table table-borderless">
-                            <tr>
-                                <td>
-                                    <b>Switch Port:</b>
-                                </td>
-                                <td>
-                                    <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
-                                </td>
-                            </tr>
-                            <tr>
-                                <?php if( $pi->getSwitchPort()->getSwitcher()->getMauSupported() ): ?>
-                                    <td>
-                                        <b>Media:</b>
-                                    </td>
-                                    <td>
-                                        <?= $t->ee( $pi->getSwitchPort()->getMauType() ) ?>
-                                    </td>
-                                <?php else: ?>
-                                    <td>
-                                        <b>Duplex:</b>
-                                    </td>
-                                    <td>
-                                        <?= $t->ee( $pi->getDuplex() ) ?>
-                                    </td>
-                                <?php endif; ?>
-                            </tr>
-                            <?php if( $pi->getSwitchPort()->getSwitcher()->getCabinet() ): ?>
-                                <tr>
-                                    <td>
-                                        <b>
-                                            Colo Cabinet ID:
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getCabinet()->getName() ) ?>
-                                    </td>
-                                </tr>
-                            <?php endif; ?>
-                            <?php if( $pi->getSwitchPort()->getPatchPanelPort() ): ?>
-                                <tr>
                                     <td>
                                         <b>XConnect Status:</b>
                                     </td>
@@ -184,6 +181,7 @@
                                             <?= $pi->getSwitchPort()->getPatchPanelPort()->getConnectedAtFormated() ?>
                                         <?php endif; ?>
                                     </td>
+
                                 </tr>
                             <?php endif; ?>
                         </table>
@@ -192,7 +190,7 @@
                 <?php $countPi++ ?>
             <?php endforeach; ?>
         <?php else: ?>
-            <div class="row">
+            <div class="col-lg-12 mb-4">
                 <p>
                     No physical interfaces defined.
                     <?php if( Auth::getUser()->isSuperUser() ): ?>
@@ -253,9 +251,19 @@
                     <br />
                 <?php else: ?>
                     <div class="row">
-                        <h4><?= $t->ee( $vli->getVlan()->getName() ) ?>:</h4>
-                        <div class="col-sm-6">
-                            <table class="table table-borderless">
+                        <div class="col-sm-12">
+                            <h4>
+                                <?= $t->ee( $vli->getVlan()->getName() ) ?>:
+                            </h4>
+                        </div>
+                    </div>
+
+
+
+                    <div class="row mb-4">
+                        <div class="col-lg-12">
+
+                            <table class="table table-sm table-borderless table-striped">
                                 <tr>
                                     <td>
                                         <b>
@@ -269,6 +277,16 @@
                                             IPv6 not enabled.
                                         <?php endif; ?>
                                     </td>
+                                    <td>
+                                        <b>IPv4 Address:</b>
+                                    </td>
+                                    <td>
+                                        <?php if( $vli->getIpv4enabled() and $vli->getIpv4address() ): ?>
+                                            <?= $t->ee( $vli->getIPv4Address()->getAddress() ) ?> <?php if( isset( $netinfo[ $vlanid ][ 4 ][ 'masklen' ] ) ) : ?> /<?= $netinfo[ $vlanid ][ 4 ][ "masklen" ] ?> <?php endif;?>
+                                        <?php else: ?>
+                                            IPv4 not enabled.
+                                        <?php endif; ?>
+                                    </td>
                                 </tr>
                                 <tr>
                                     <td>
@@ -278,6 +296,19 @@
                                     </td>
                                     <td>
                                         <?= $vli->getMcastenabled() ? "Yes" : "No" ?>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            Mac Address:
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <?php foreach( $vli->getLayer2AddressesAsArray() as $l2a ): ?>
+                                            <?= $l2a ?><br />
+                                        <?php endforeach; ?>
+                                        <?php if( count( $vli->getLayer2AddressesAsArray() ) > 0 && config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ): ?>
+                                            <a href="<?= route( "layer2-address@forVlanInterface", [ "id" => $vli->getId() ] ) ?>">Edit</a>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                                 <tr>
@@ -304,39 +335,9 @@
                                 <?php endif; ?>
                             </table>
                         </div>
-                        <div class="col-sm-6">
-                            <table class="table table-borderless">
-                                <tr>
-                                    <td>
-                                        <b>IPv4 Address:</b>
-                                    </td>
-                                    <td>
-                                        <?php if( $vli->getIpv4enabled() and $vli->getIpv4address() ): ?>
-                                            <?= $t->ee( $vli->getIPv4Address()->getAddress() ) ?> <?php if( isset( $netinfo[ $vlanid ][ 4 ][ 'masklen' ] ) ) : ?> /<?= $netinfo[ $vlanid ][ 4 ][ "masklen" ] ?> <?php endif;?>
-                                        <?php else: ?>
-                                            IPv4 not enabled.
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <b>
-                                            Mac Address:
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <?php foreach( $vli->getLayer2AddressesAsArray() as $l2a ): ?>
-                                            <?= $l2a ?><br />
-                                        <?php endforeach; ?>
-                                        <?php if( count( $vli->getLayer2AddressesAsArray() ) > 0 && config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ): ?>
-                                            <a href="<?= route( "layer2-address@forVlanInterface", [ "id" => $vli->getId() ] ) ?>">Edit</a>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-
-                            </table>
-                        </div>
                     </div>
+
+
                 <?php endif; ?>
             <?php endforeach; ?>
         <?php else: ?>
@@ -344,7 +345,6 @@
                 <div class="row">
                     <p>
                         No VLAN interfaces defined.
-
                     </p>
                 </div>
             <?php endif; ?>
@@ -352,24 +352,31 @@
 
     </div>
 
-    <div class="col-sm-6">
+    <div class="col-lg-6 col-md-12">
         <?php if( $isLAG ): ?>
 
-            <?php
-                if( $t->vi->isGraphable() ): ?>
+            <?php if( $t->vi->isGraphable() ): ?>
 
-                    <div class="well">
-                        <h4>
-                            Aggregate Day Graph for LAG
-                            <a class="btn btn-default btn-xs pull-right" href="<?= route( "statistics@member-drilldown", [ 'type' => 'vi', 'typeid' => $t->vi->getId() ] ) ?>">
-                                <i class="glyphicon glyphicon-zoom-in"></i>
+                <div class="card mb-4">
+                    <div class="card-header d-flex">
+                        <div class="mr-auto">
+                            <h5>
+                                Aggregate Day Graph for LAG
+                            </h5>
+                        </div>
+                        <div clas="my-auto">
+                            <a class="btn btn-white btn-sm " href="<?= route( "statistics@member-drilldown", [ 'type' => 'vi', 'typeid' => $t->vi->getId() ] ) ?>">
+                                <i class="fa fa-search"></i>
                             </a>
-                        </h4>
-                        <br />
+                        </div>
+                    </div>
+                    <div class="card-body">
+
                         <?= $t->grapher->virtint( $t->vi )->renderer()->boxLegacy() ?>
                     </div>
+                </div>
 
-                <?php endif; ?>
+            <?php endif; ?>
 
         <?php endif; ?>
 
@@ -377,17 +384,28 @@
         <?php foreach( $t->vi->getPhysicalInterfaces() as $pi ): ?>
             <?php if( !$pi->isGraphable() ) { continue; } ?>
 
-            <div class="well">
-                <h4>
-                    Day Graph for <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?> / <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
-                    <a class="btn btn-default btn-xs pull-right" href="<?= route( "statistics@member-drilldown", [ 'type' => 'pi', 'typeid' => $pi->getId() ] ) ?>">
-                        <i class="glyphicon glyphicon-zoom-in"></i>
-                    </a>
-                </h4>
-                <br />
-                <?= $t->grapher->physint( $pi )->renderer()->boxLegacy() ?>
+            <div class="card mb-4">
+                <div class="card-header d-flex">
+                    <div class="mr-auto">
+                        <h5>
+                            Day Graph for <?= $t->ee( $pi->getSwitchPort()->getSwitcher()->getName() ) ?> / <?= $t->ee( $pi->getSwitchPort()->getName() ) ?>
+                        </h5>
+                    </div>
+
+                    <div clas="my-auto">
+                        <a class="btn btn-white btn-sm" href="<?= route( "statistics@member-drilldown", [ 'type' => 'pi', 'typeid' => $pi->getId() ] ) ?>">
+                            <i class="fa fa-search"></i>
+                        </a>
+                    </div>
+
+                </div>
+                <div class="card-body">
+                    <?= $t->grapher->physint( $pi )->renderer()->boxLegacy() ?>
+                </div>
             </div>
         <?php endforeach; ?>
 
     </div>
+
+
 </div>

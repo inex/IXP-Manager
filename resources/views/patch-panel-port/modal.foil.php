@@ -3,8 +3,8 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
                 <h4 class="modal-title" id="notes-modal-label">Notes</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
             </div>
             <div class="modal-body" id="notes-modal-body">
                 <p id="notes-modal-body-intro">
@@ -14,57 +14,55 @@
 
                 <h4>Public Notes</h4>
 
-                <div class="">
-                    <ul class="nav nav-tabs">
-                        <li role="presentation" class="active">
-                            <a class="tab-link-body-note" href="#body1">Notes</a>
-                        </li>
-                        <li role="presentation">
-                            <a class="tab-link-preview-note" href="#preview1">Preview</a>
-                        </li>
-                    </ul>
 
-                    <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane active" id="body1">
-
-                            <textarea id="notes-modal-body-public-notes" rows="8" class="bootbox-input bootbox-input-textarea form-control" title="Public Notes"></textarea>
+                    <div class="card mt-4 mb-4">
+                        <div class="card-header">
+                            <ul class="nav nav-tabs card-header-tabs">
+                                <li role="presentation" class="nav-item">
+                                    <a class="tab-link-body-note nav-link active" href="#body1">Notes</a>
+                                </li>
+                                <li role="presentation" class="nav-item">
+                                    <a class="tab-link-preview-note nav-link" href="#preview1">Preview</a>
+                                </li>
+                            </ul>
                         </div>
-                        <div role="tabpanel" class="tab-pane" id="preview1">
-                            <div class="well well-preview" style="background: rgb(255,255,255);">
-                                Loading...
+
+                        <div class="tab-content card-body">
+                            <div role="tabpanel" class="tab-pane show active" id="body1">
+                                <textarea id="notes-modal-body-public-notes" rows="8" class="bootbox-input bootbox-input-textarea form-control" title="Public Notes"></textarea>
+                            </div>
+                            <div role="tabpanel" class="tab-pane" id="preview1">
+                                <div class="bg-light p-4 well-preview">
+                                    Loading...
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-
-                <br>
-                <br>
 
                 <h4>Private Notes</h4>
-                <div class="">
-                    <ul class="nav nav-tabs">
-                        <li role="presentation" class="active">
-                            <a class="tab-link-body-note" href="#body2">Notes</a>
-                        </li>
-                        <li role="presentation">
-                            <a class="tab-link-preview-note" href="#preview2">Preview</a>
-                        </li>
-                    </ul>
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <ul class="nav nav-tabs card-header-tabs">
+                            <li role="presentation" class="nav-item">
+                                <a class="tab-link-body-note nav-link active" href="#body2">Notes</a>
+                            </li>
+                            <li role="presentation" class="nav-item">
+                                <a class="tab-link-preview-note nav-link" href="#preview2">Preview</a>
+                            </li>
+                        </ul>
+                    </div>
 
-                    <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane active" id="body2">
-
+                    <div class="tab-content card-body">
+                        <div role="tabpanel" class="tab-pane show active" id="body2">
                             <textarea id="notes-modal-body-private-notes" rows="8" class="bootbox-input bootbox-input-textarea form-control" title="Private Notes"></textarea>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="preview2">
-                            <div id="well-preview" class="well well-preview" style="background: rgb(255,255,255);">
+                            <div class="bg-light p-4 well-preview">
                                 Loading...
                             </div>
                         </div>
                     </div>
                 </div>
-
-
 
                 <div id="notes-modal-body-div-pi-status">
                     <br><br>
@@ -79,7 +77,7 @@
             </div>
             <div class="modal-footer">
                 <input  id="notes-modal-ppp-id"      type="hidden" name="notes-modal-ppp-id" value="">
-                <button id="notes-modal-btn-cancel"  type="button" class="btn btn-default" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
+                <button id="notes-modal-btn-cancel"  type="button" class="btn btn-secondary" data-dismiss="modal"><i class="fa fa-times"></i> Cancel</button>
                 <button id="notes-modal-btn-confirm" type="button" class="btn btn-primary"                     ><i class="fa fa-check"></i> Confirm</button>
             </div>
         </div>
