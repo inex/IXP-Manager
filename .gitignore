@@ -72,3 +72,4 @@ yarn-error.log
 
 tools/docker/containers/mysql/docker.sql
 
+.phpunit.result.cache
