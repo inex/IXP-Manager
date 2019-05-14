@@ -30,6 +30,8 @@ sudo touch public/.htaccess
 echo composer install --no-interaction --prefer-dist --no-suggest
 composer install --no-interaction --prefer-dist --no-suggest
 
+
+echo php artisan dusk:chrome-driver
 php artisan dusk:chrome-driver
 
 mysql -e "CREATE DATABASE myapp_test CHARACTER SET = 'utf8mb4' COLLATE = 'utf8mb4_unicode_ci';"
