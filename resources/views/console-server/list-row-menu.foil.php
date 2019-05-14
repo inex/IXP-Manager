@@ -13,7 +13,7 @@
         </a>
     <?php endif;?>
 
-    <a class="btn btn-outline-secondary" href="<?= route('console-server-connection@listPort' , [ 'port' => $t->row[ 'id' ] ] ) ?>" title="List Console Server Connections">
+    <a class="btn btn-white" href="<?= route('console-server-connection@listPort' , [ 'port' => $t->row[ 'id' ] ] ) ?>" title="List Console Server Connections">
         <i class="fa fa-list"></i>
     </a>
 </div>

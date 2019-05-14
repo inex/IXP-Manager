@@ -11,11 +11,11 @@ Vlan Interface / Configured MAC Address Management
 <?php $this->section( 'page-header-postamble' ) ?>
 
 <div class="btn-group btn-sm">
-    <a href="<?= route( "interfaces/virtual/edit" , [ "id" => $t->vli->getVirtualInterface()->getId() ] ) ?>" class="btn btn-sm btn-outline-secondary">
+    <a href="<?= route( "interfaces/virtual/edit" , [ "id" => $t->vli->getVirtualInterface()->getId() ] ) ?>" class="btn btn-sm btn-white">
         Virtual Interface Details
     </a>
 
-    <a class="btn  btn-sm btn-outline-secondary" href="#" id="add-l2a">
+    <a class="btn  btn-sm btn-white" href="#" id="add-l2a">
         <i class="fa fa-plus"></i>
     </a>
 </div>
@@ -94,10 +94,10 @@ Vlan Interface / Configured MAC Address Management
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn btn-outline-secondary" id="view-l2a-<?= $l2a->getId() ?>" name="<?= $l2a->getMac() ?>" href="#" title="View">
+                                    <a class="btn btn-white" id="view-l2a-<?= $l2a->getId() ?>" name="<?= $l2a->getMac() ?>" href="#" title="View">
                                         <i class="fa fa-eye"></i>
                                     </a>
-                                    <button class="btn btn btn-outline-secondary" id="delete-l2a-<?= $l2a->getId() ?>" href="#" title="Delete">
+                                    <button class="btn btn-white" id="delete-l2a-<?= $l2a->getId() ?>" href="#" title="Delete">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 </div>

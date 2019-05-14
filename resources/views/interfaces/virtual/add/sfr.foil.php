@@ -19,7 +19,7 @@
 
     <h3 class="col-md-12">
         Sflow Receivers
-        <a class="btn btn-outline-secondary btn-sm" href="<?= route('interfaces/sflow-receiver/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
+        <a class="btn btn-white btn-sm" href="<?= route('interfaces/sflow-receiver/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
             <i class="fa fa-plus"></i>
         </a>
     </h3>
@@ -63,10 +63,10 @@
 
                             <td>
                                 <div class="btn-group btn-group-sm">
-                                    <a class="btn btn-outline-secondary" href="<?= route('interfaces/sflow-receiver/edit/from-virtual-interface' , [ 'id' => $sflr->getId(), 'viid' => $t->vi->getId() ] ) ?>">
+                                    <a class="btn btn-white" href="<?= route('interfaces/sflow-receiver/edit/from-virtual-interface' , [ 'id' => $sflr->getId(), 'viid' => $t->vi->getId() ] ) ?>">
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                    <a class="btn btn-outline-secondary" id="delete-sflr-<?= $sflr->getId()?>" href="" title="Delete Sflow Receiver">
+                                    <a class="btn btn-white" id="delete-sflr-<?= $sflr->getId()?>" href="" title="Delete Sflow Receiver">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </div>
@@ -89,7 +89,7 @@
                     </div>
                     <div class="col-sm-12">
                         There are no Sflow receivers defined for this virtual interface.
-                        <a class="btn btn-outline-secondary" href="<?= route('interfaces/sflow-receiver/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
+                        <a class="btn btn-white" href="<?= route('interfaces/sflow-receiver/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
                             Add one now...
                         </a>
                     </div>

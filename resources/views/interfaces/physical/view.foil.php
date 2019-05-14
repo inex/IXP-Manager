@@ -12,10 +12,10 @@ $this->layout( 'layouts/ixpv4' )
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-outline-secondary" href="<?= route( 'interfaces/physical/list' ) ?>" title="list">
+        <a class="btn btn-white" href="<?= route( 'interfaces/physical/list' ) ?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
-        <a class="btn btn-outline-secondary" href="<?= route('interfaces/physical/edit' , [ 'id' => $pi->getId() ]) ?>" title="edit">
+        <a class="btn btn-white" href="<?= route('interfaces/physical/edit' , [ 'id' => $pi->getId() ]) ?>" title="edit">
             <span class="fa fa-pencil"></span>
         </a>
     </div>

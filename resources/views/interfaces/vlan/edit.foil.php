@@ -14,11 +14,11 @@
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-outline-secondary" href="<?= route( 'interfaces/vlan/list' )?>" title="list">
+        <a class="btn btn-white" href="<?= route( 'interfaces/vlan/list' )?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
         <?php if( $t->vli ): ?>
-            <a class="btn btn-outline-secondary" href="<?= route( 'interfaces/vlan/view', [ 'id' => $t->vli->getId() ] )?>" title="edit">
+            <a class="btn btn-white" href="<?= route( 'interfaces/vlan/view', [ 'id' => $t->vli->getId() ] )?>" title="edit">
                 <span class="fa fa-eye"></span>
             </a>
         <?php endif;?>

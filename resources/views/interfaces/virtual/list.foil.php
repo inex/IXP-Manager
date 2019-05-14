@@ -10,7 +10,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <div class=" btn-group btn-group-sm" role="group">
-        <button class="btn btn-outline-secondary dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+        <button class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-plus"></i>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
@@ -103,11 +103,11 @@
                         <?php endif; ?>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn btn-outline-secondary" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vi->getId() ]) ?>" title="Edit">
+                                <a class="btn btn btn-white" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $vi->getId() ]) ?>" title="Edit">
                                     <i class="fa fa-pencil"></i>
                                 </a>
 
-                                <a class="btn btn btn-outline-secondary" id="delete-vi-<?= $vi->getId() ?>" href="" <?php if( $t->resellerMode() && ( count( $vi->getPeeringPhysicalInterface()) > 0  || count( $vi->getFanoutPhysicalInterface() ) > 0 ) ) :?> data-related="1" <?php endif; ?> <?php if( $vi->getSwitchPort() ): ?> data-type="<?= $vi->getSwitchPort()->getType() ?>" <?php endif; ?> title="Delete Virtual Interface">
+                                <a class="btn btn btn-white" id="delete-vi-<?= $vi->getId() ?>" href="" <?php if( $t->resellerMode() && ( count( $vi->getPeeringPhysicalInterface()) > 0  || count( $vi->getFanoutPhysicalInterface() ) > 0 ) ) :?> data-related="1" <?php endif; ?> <?php if( $vi->getSwitchPort() ): ?> data-type="<?= $vi->getSwitchPort()->getType() ?>" <?php endif; ?> title="Delete Virtual Interface">
                                     <i class="fa fa-trash"></i>
                                 </a>
                             </div>

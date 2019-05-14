@@ -91,18 +91,18 @@ $this->layout( 'layouts/ixpv4' );
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn-outline-secondary" href="<?= route( 'interfaces/physical/view' , [ 'id' => $pi['id'] ] ) ?>" title="View">
+                                    <a class="btn btn-white" href="<?= route( 'interfaces/physical/view' , [ 'id' => $pi['id'] ] ) ?>" title="View">
                                         <i class="fa fa-eye"></i>
                                     </a>
 
-                                    <a class="btn btn-outline-secondary" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi['vintid'] ] ) ?>" title="Virtual Interface">
+                                    <a class="btn btn-white" href="<?= route( 'interfaces/virtual/edit' , [ 'id' => $pi['vintid'] ] ) ?>" title="Virtual Interface">
                                         <i class="fa fa-filter"></i>
                                     </a>
 
-                                    <a class="btn btn-outline-secondary" href="<?= route ( 'interfaces/physical/edit', [ 'id' => $pi['id'] ] ) ?>" title="Edit">
+                                    <a class="btn btn-white" href="<?= route ( 'interfaces/physical/edit', [ 'id' => $pi['id'] ] ) ?>" title="Edit">
                                         <i class="fa fa-pencil"></i>
                                     </a>
-                                    <a class="btn btn-outline-secondary" id="delete-pi-<?= $pi['id'] ?>" <?php if( $t->resellerMode() && ( $pi['ppid'] || $pi['fpid'] ) ) :?> data-related="1" <?php endif; ?> data-type="<?= $pi['type'] ?>" href="" title="Delete">
+                                    <a class="btn btn-white" id="delete-pi-<?= $pi['id'] ?>" <?php if( $t->resellerMode() && ( $pi['ppid'] || $pi['fpid'] ) ) :?> data-related="1" <?php endif; ?> data-type="<?= $pi['type'] ?>" href="" title="Delete">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </div>

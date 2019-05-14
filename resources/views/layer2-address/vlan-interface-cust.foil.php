@@ -11,7 +11,7 @@ MAC Address Management
 
     <span id="span-cust-add-btn" style="<?= count( $t->vli->getLayer2Addresses() ) >= config( 'ixp_fe.layer2-addresses.customer_params.max_addresses' ) ? 'display: none;' : '' ?>">
         <div class="btn-group btn-group-sm" id="add-btn" role="group">
-            <a class="btn btn-outline-secondary" id="add-l2a">
+            <a class="btn btn-white" id="add-l2a">
                 <span class="fa fa-plus"></span>
             </a>
         </div>
@@ -67,11 +67,11 @@ MAC Address Management
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn-outline-secondary" id="view-l2a-<?= $l2a->getId() ?>" name="<?= $l2a->getMac() ?>" href="#" title="View">
+                                <a class="btn btn-white" id="view-l2a-<?= $l2a->getId() ?>" name="<?= $l2a->getMac() ?>" href="#" title="View">
                                     <i class="fa fa-eye"></i>
                                 </a>
                                 <?php if( count( $t->vli->getLayer2Addresses() ) > config( 'ixp_fe.layer2-addresses.customer_params.min_addresses' ) ): ?>
-                                    <button class="btn btn-outline-secondary" id="delete-l2a-<?= $l2a->getId() ?>" href="#" title="Delete">
+                                    <button class="btn btn-white" id="delete-l2a-<?= $l2a->getId() ?>" href="#" title="Delete">
                                         <i class="fa fa-trash"></i>
                                     </button>
                                 <?php endif; ?>

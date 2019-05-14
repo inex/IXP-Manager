@@ -14,7 +14,7 @@
 
     <h3 class="col-md-12">
         Physical Interfaces
-        <a class="btn btn-outline-secondary btn-sm" id="add-pi" href="<?= route('interfaces/physical/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
+        <a class="btn btn-white btn-sm" id="add-pi" href="<?= route('interfaces/physical/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
             <i class="fa fa-plus"></i>
         </a>
     </h3>
@@ -123,15 +123,15 @@
                             <?php endif; ?>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
-                                    <a class="btn btn-outline-secondary" id="view-pi-<?= $pi->getId()?>" href="<?= route( 'interfaces/physical/view' , [ 'id' => $pi->getId() ] )?>" title="View">
+                                    <a class="btn btn-white" id="view-pi-<?= $pi->getId()?>" href="<?= route( 'interfaces/physical/view' , [ 'id' => $pi->getId() ] )?>" title="View">
                                         <i class="fa fa-eye"></i>
                                     </a>
 
-                                    <a class="btn btn-outline-secondary" id="edit-pi-<?= $pi->getId()?>" href="<?= route( 'interfaces/physical/edit/from-virtual-interface' , [ 'id' => $pi->getId() , 'vintid' => $t->vi->getId() ] )?>" title="Edit">
+                                    <a class="btn btn-white" id="edit-pi-<?= $pi->getId()?>" href="<?= route( 'interfaces/physical/edit/from-virtual-interface' , [ 'id' => $pi->getId() , 'vintid' => $t->vi->getId() ] )?>" title="Edit">
                                         <i class="fa fa-pencil"></i>
                                     </a>
 
-                                    <a class="btn btn-outline-secondary" id="delete-pi-<?= $pi->getId()?>" <?php if( $t->resellerMode() && ( $pi->getPeeringPhysicalInterface() || $pi->getFanoutPhysicalInterface() ) ) :?> data-related="1" <?php endif; ?> data-type="<?= $pi->getSwitchPort()->getType() ?>" href="" title="Delete Physical Interface">
+                                    <a class="btn btn-white" id="delete-pi-<?= $pi->getId()?>" <?php if( $t->resellerMode() && ( $pi->getPeeringPhysicalInterface() || $pi->getFanoutPhysicalInterface() ) ) :?> data-related="1" <?php endif; ?> data-type="<?= $pi->getSwitchPort()->getType() ?>" href="" title="Delete Physical Interface">
                                         <i class="fa fa-trash"></i>
                                     </a>
                                 </div>
@@ -149,7 +149,7 @@
                     </div>
                     <div class="col-sm-12">
                         There are no physical interfaces defined for this virtual interface.
-                        <a class="btn btn-outline-secondary" href="<?= route('interfaces/physical/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
+                        <a class="btn btn-white" href="<?= route('interfaces/physical/add' , ['id' => 0 , 'viid' => $t->vi->getId() ] ) ?>">
                             Add one now...
                         </a>
                     </div>

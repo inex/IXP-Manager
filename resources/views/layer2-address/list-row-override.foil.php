@@ -57,7 +57,7 @@ $row = $t->row;
 
         <div class="btn-group btn-group-sm">
 
-            <a class="btn btn-outline-secondary" href="<?= route( $t->feParams->route_prefix . '@forVlanInterface' , [ 'id' => $row[ 'vliid' ] ] ) ?>" title="Preview">
+            <a class="btn btn-white" href="<?= route( $t->feParams->route_prefix . '@forVlanInterface' , [ 'id' => $row[ 'vliid' ] ] ) ?>" title="Preview">
                 <i class="fa fa-eye"></i>
             </a>
 
