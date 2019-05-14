@@ -111,6 +111,8 @@ class Controller extends BaseController
                 }
             }
         }
+
+        return request()->getClientIp();
     }
 
 }
