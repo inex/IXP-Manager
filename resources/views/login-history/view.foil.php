@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Login History / <?= $t->ee( $t->c2u->getUser()->getUsername() ) ?>
+    Login History / <?= $t->ee( $t->user->getUsername() ) ?>
 
 <?php $this->append() ?>
 
@@ -17,7 +17,7 @@
                 <i class="fa fa-question-circle fa-2x"></i>
             </div>
             <div class="col-sm-12">
-                Login history for <b><?= $t->ee( $t->c2u->getUser()->getUsername() ) ?></b>. <em>Typically logs older than six months are expunged.</em>
+                Login history for <b><?= $t->ee( $t->user->getUsername() ) ?></b>. <em>Typically logs older than six months are expunged.</em>
             </div>
         </div>
     </div>
