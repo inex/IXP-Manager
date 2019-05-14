@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Switches;
 
 use Auth, D2EM, Former, Redirect,Route, Validator;
 
+use Carbon\Carbon;
 use Entities\{
     Cabinet             as CabinetEntity,
     Infrastructure      as InfrastructureEntity,
@@ -38,6 +39,7 @@ use Entities\{
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
+use Illuminate\Support\Facades\Date;
 use IXP\Http\Controllers\Doctrine2Frontend;
 
 use IXP\Utils\View\Alert\{
@@ -560,8 +562,18 @@ class SwitchController extends Doctrine2Frontend {
             /** @var Platform $platform */
             $platform = $request->session()->get( "snmp-platform" );
 
+            if( $platform->getOsDate() instanceof \DateTime ) {
+                $osdate = $platform->getOsDate();
+            } else if( is_string( $platform->getOsDate() ) ) {
+                $osdate = new \DateTime( $platform->getOsDate() );
+            }
+
+            if( !$osdate ) {
+                $osdate = null;
+            }
+
             $this->object->setOs(           $platform->getOs() );
-            $this->object->setOsDate(       $platform->getOsDate() ?? null );
+            $this->object->setOsDate(       $osdate );
             $this->object->setOsVersion(    $platform->getOsVersion() );
             $this->object->setSerialNumber( $platform->getSerialNumber() );
             $request->session()->remove( "snmp-platform" );
