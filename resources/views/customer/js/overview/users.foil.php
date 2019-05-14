@@ -11,7 +11,7 @@
                                 <div>Do you really want to delete this user?</div>
                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                                 <input type="hidden" name="id" value="${objectId}">
-                                <input type="hidden" name="redirect-to" value="${custId}">
+                                <input type="hidden" name="custid" value="${custId}">
                             </form>`;
 
 

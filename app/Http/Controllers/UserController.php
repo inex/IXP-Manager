@@ -775,10 +775,6 @@ class UserController extends Doctrine2Frontend {
                 D2EM::remove( $pref );
             }
 
-//            foreach( $this->object->getLastLogins() as $ll ) {
-//                $this->object->removeLastLogin( $ll );
-//                D2EM::remove( $ll );
-//            }
 
             // delete all the user's API keys
             foreach( $this->object->getApiKeys() as $ak ) {
@@ -800,11 +796,8 @@ class UserController extends Doctrine2Frontend {
                 D2EM::remove( $c2u );
             }
 
-            if( request()->input( "redirect-to" ) ) {
-                if( ($c = D2EM::getRepository( CustomerEntity::class)->find( request()->input( "redirect-to" ) ) ) ) {
-                    session()->put( "ixp_user_delete_custid", $c->getId() );
-                }
-
+            if( $c ) {
+                session()->put( "ixp_user_delete_custid", $c->getId() );
             }
 
             Cache::forget( 'oss_d2u_user_' . $this->object->getId() );
