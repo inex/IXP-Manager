@@ -30,7 +30,7 @@
                         <th>
                             Member
                         </th>
-                        <th class="hidden md:tw-table-cell">
+                        <th class="tw-hidden md:tw-table-cell">
                             Joined
                         </th>
 

@@ -142,7 +142,7 @@ class LoginController extends Controller
 
 
             $c2u->setLastLoginAt(  new \DateTime );
-            $c2u->setLastLoginFrom( request()->ip() );
+            $c2u->setLastLoginFrom( $this->getIP() );
 
             if( config( "ixp_fe.login_history.enabled" ) ) {
 
@@ -150,7 +150,7 @@ class LoginController extends Controller
                 D2EM::persist( $log );
 
                 $log->setAt(    new \DateTime() );
-                $log->setIp(    request()->ip() );
+                $log->setIp(    $this->getIP() );
                 $log->setCustomerToUser(  $c2u  );
 
                 D2EM::flush();

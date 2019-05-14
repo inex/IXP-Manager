@@ -45,7 +45,7 @@ class Controller extends BaseController
      */
     protected function resellerMode(): bool
     {
-        return boolval( config( 'ixp.reseller.enabled', false ) );
+        return (bool)config( 'ixp.reseller.enabled', false );
     }
 
     /**
@@ -62,7 +62,7 @@ class Controller extends BaseController
      */
     protected function multiIXP(): bool
     {
-        return boolval( config( 'ixp.multiixp.enabled', false ) );
+        return (bool)config( 'ixp.multiixp.enabled', false );
     }
 
     /**
@@ -76,7 +76,7 @@ class Controller extends BaseController
      */
     protected function as112UiActive(): bool
     {
-        return boolval( config( 'ixp.as112.ui_active', false ) );
+        return (bool)config( 'ixp.as112.ui_active', false );
     }
 
     /**
@@ -88,7 +88,29 @@ class Controller extends BaseController
      */
     protected function logoManagementEnabled()
     {
-        return !boolval( config( 'ixp_fe.frontend.disabled.logo' ) );
+        return !(bool)config( 'ixp_fe.frontend.disabled.logo' );
+    }
+
+
+    /**
+     * Try to get the clients real IP address even when behind a proxy.
+     *
+     * Source: https://stackoverflow.com/questions/33268683/how-to-get-client-ip-address-in-laravel-5/41769505#41769505
+     *
+     * @return string
+     */
+    protected function getIp()
+    {
+        foreach( [ 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR' ] as $key ) {
+            if( array_key_exists( $key, $_SERVER ) === true ) {
+                foreach( explode(',', $_SERVER[$key] ) as $ip ) {
+                    $ip = trim($ip);
+                    if( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) !== false ) {
+                        return $ip;
+                    }
+                }
+            }
+        }
     }
 
 }

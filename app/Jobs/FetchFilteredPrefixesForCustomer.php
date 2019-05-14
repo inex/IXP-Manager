@@ -146,8 +146,8 @@ class FetchFilteredPrefixesForCustomer implements ShouldQueue
                 $this->filteredPrefixes[ $route->network ]['as_path'][      $router->handle ] = $route->bgp->as_path;
                 $this->filteredPrefixes[ $route->network ]['gateway'][      $router->handle ] = $route->gateway;
                 $this->filteredPrefixes[ $route->network ]['learnt_from'][  $router->handle ] = $route->learnt_from;
-                $this->filteredPrefixes[ $route->network ]['communities'][  $router->handle ] = $route->bgp->communities;
-                $this->filteredPrefixes[ $route->network ]['lcommunities'][ $router->handle ] = $route->bgp->large_communities;
+                $this->filteredPrefixes[ $route->network ]['communities'][  $router->handle ] = $route->bgp->communities ?? [];
+                $this->filteredPrefixes[ $route->network ]['lcommunities'][ $router->handle ] = $route->bgp->large_communities ?? [];
 
                 foreach( $route->bgp->large_communities as $lc ) {
                     if( $lc[0] !== $router->asn || $lc[1] !== 1101 ) {

@@ -381,7 +381,7 @@
       <field name="officephone" type="string" size="255" uuid="8b7cd8c4-e521-4e64-be13-14b4d8b99f85"/>
       <field name="officefax" type="string" size="255" uuid="7d7d2da3-43ef-4596-84d3-e5507443788c"/>
       <field name="officeemail" type="string" size="255" uuid="c6998daa-08a9-4083-81da-bae9eb79ee02"/>
-      <field name="notes" type="string" size="255" uuid="bd0477d5-9e1e-4161-93d6-38ab7b0dde94"/>
+      <field name="notes" type="text" uuid="bd0477d5-9e1e-4161-93d6-38ab7b0dde94"/>
       <orm-attributes>
         <attribute name="repository-class">Repositories\Location</attribute>
         <attribute name="table">location</attribute>

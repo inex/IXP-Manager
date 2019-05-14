@@ -30,7 +30,7 @@
 
             <nav id="filter-row" class="collapse navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
 
-                <a class="navbar-brand" href="<?= route( "patch-panel/list" ) ?>">Graph Options:</a>
+                <a class="navbar-brand" href="<?= route( "patch-panel/list" ) ?>">Filter Options:</a>
 
                 <button class="navbar-toggler float-right" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarNavDropdown" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -38,7 +38,7 @@
 
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
-                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex">
+                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex" method="post" action="<?= route('patch-panel-port@advanced-list' ) ?>" >
 
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">

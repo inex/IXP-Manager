@@ -15,7 +15,7 @@
     <field name="officephone" type="string" length="255" nullable="true"/>
     <field name="officefax" type="string" length="255" nullable="true"/>
     <field name="officeemail" type="string" length="255" nullable="true"/>
-    <field name="notes" type="string" length="255" nullable="true"/>
+    <field name="notes" type="text" nullable="true"/>
     <one-to-many field="Cabinets" target-entity="Entities\Cabinet" mapped-by="Location"/>
   </entity>
 </doctrine-mapping>
