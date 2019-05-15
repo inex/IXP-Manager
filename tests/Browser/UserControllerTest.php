@@ -69,7 +69,7 @@ class UserControllerTest extends DuskTestCase
                     ->press('#login-btn' )
                     ->assertPathIs( '/admin' );
 
-            $browser->visit( 'user/list' )
+            $browser->visit( '/user/list' )
                     ->assertSee( 'hecustadmin' )
                     ->assertSee( 'heanet-custadmin@example.com' );
 
@@ -490,7 +490,7 @@ class UserControllerTest extends DuskTestCase
                 ->press('Delete' );
 
             $browser->assertPathIs( "/user/list" )
-                ->assertSee( "The link customer/user ( Imagine/ ) has been deleted" );
+                ->assertSee( "The link customer/user ( Imagine ) has been deleted" );
 
 
 
