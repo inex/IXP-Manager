@@ -229,6 +229,28 @@ $this->layout( 'layouts/ixpv4' );
                                     ->addClass( 'chzn-select' )
                                 ?>
 
+                                <?= Former::select( 'switch-b' )
+                                    ->id( 'switch-b' )
+                                    ->label( 'Switch B' )
+                                    ->required( true )
+                                    ->placeholder( 'Choose a switch' )
+                                    ->addClass( 'chzn-select' )
+                                ?>
+
+                            </div>
+
+                            <div class="col-lg-6 col-md-12">
+
+                                <?= Former::select( 'duplex' )
+                                    ->id( 'duplex' )
+                                    ->label( 'Duplex' )
+                                    ->fromQuery( Entities\PhysicalInterface::$DUPLEX, 'name' )
+                                    ->placeholder( 'Choose a duplex' )
+                                    ->required( true )
+                                    ->select( 'full' )
+                                    ->addClass( 'chzn-select' )
+                                ?>
+
                                 <?= Former::select( 'speed' )
                                     ->label( 'Speed' )
                                     ->id( 'speed' )
@@ -243,28 +265,6 @@ $this->layout( 'layouts/ixpv4' );
                                     ->label( 'Auto-Neg' )
                                     ->value( 1 )
                                     ->check()
-                                ?>
-
-                            </div>
-
-                            <div class="col-lg-6 col-md-12">
-
-                                <?= Former::select( 'switch-b' )
-                                    ->id( 'switch-b' )
-                                    ->label( 'Switch B' )
-                                    ->required( true )
-                                    ->placeholder( 'Choose a switch' )
-                                    ->addClass( 'chzn-select' )
-                                ?>
-
-                                <?= Former::select( 'duplex' )
-                                    ->id( 'duplex' )
-                                    ->label( 'Duplex' )
-                                    ->fromQuery( Entities\PhysicalInterface::$DUPLEX, 'name' )
-                                    ->placeholder( 'Choose a duplex' )
-                                    ->required( true )
-                                    ->select( 'full' )
-                                    ->addClass( 'chzn-select' )
                                 ?>
 
                             </div>
