@@ -54,8 +54,7 @@ class PeeringManagerControllerTest extends DuskTestCase
 
         }
 
-        $p = D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $c[ "id" ] ] );
-        if( $p ) {
+        if( $p = D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $c[ "id" ] ] ) ) {
             D2EM::remove( $p );
             D2EM::flush();
         }
@@ -108,21 +107,20 @@ class PeeringManagerControllerTest extends DuskTestCase
 
             $browser->click( "#peering-notes-icon-" . $c[ "id" ] )
                 ->whenAvailable( '.modal', function ( $modal ) use ( $c ) {
-                    $modal->assertSee( "Peering Notes for " . $c[ "name" ] )
-                        //->type('textarea[name=peering-manager-notes]', 'test-note' )
-                        ->keys( 'textarea[name=peering-manager-notes]', 'test-note'  )
-                        ->pause( "3000")->click('#modal-peering-notes-save' );
+                    $modal->waitForText( "Peering Notes for " . $c[ "name" ] )
+                        ->keys( 'textarea[name=peering-manager-notes]', 'note'  )
+                        ->click('#modal-peering-notes-save' );
 
 
                 });
 
+            $browser->whenAvailable( '.bootbox', function ( $bootbox ){
+                $bootbox->waitForText( "Peering notes updated for Imagine" )
+                        ->press( "Close" );
 
-            $browser->whenAvailable( '.bootbox', function ( $bootbox ) use ( $c ) {
-                $bootbox->assertSee( "Peering notes updated for Imagine" )
-                        ->pause( "1000")->click( ".close" );
             });
 
-            $browser->pause( "3000");
+            $browser->waitUntilMissing( ".modal-backdrop" );
 
             // Check value in DB
             $this->assertInstanceOf( PeeringManagerEntity::class , $pm = D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $c[ "id" ] ] ) );
@@ -131,7 +129,7 @@ class PeeringManagerControllerTest extends DuskTestCase
             $this->assertEquals( "### " . date( "Y-m-d" ) . " - hecustadmin 
 
 
-test-note", $pm->getNotes() );
+note", $pm->getNotes() );
 
 
             /** Test peering request */
@@ -140,8 +138,9 @@ test-note", $pm->getNotes() );
                 ->waitForText( "Send Peering Request by Email" )
                 ->click('#modal-peering-request-marksent' )
                 ->waitForText( "Peering request marked as sent in your Peering Manager." )
-                ->pause( "3000" )->click( ".bootbox-close-button" )
-                ->waitUntilMissing( ".modal-backdrop" );
+                ->press( "Close" );
+
+            $browser->waitUntilMissing( ".modal-backdrop"  );
 
             // Check value in DB
             D2EM::refresh( $pm );
@@ -179,10 +178,9 @@ test-note", $pm->getNotes() );
             ->press('OK' )
             ->waitForText( "Send Peering Request by Email" )
             ->click( $sentToMe ? '#modal-peering-request-sendtome' : '#modal-peering-request-send' )
-            ->pause(5000)
             ->waitForText( "Success" )
             ->assertSee( $sentToMe ? "Peering request sample sent to your own email address (" . $user->getEmail() . ")." : "Peering request sent to" )
-            ->pause( "3000" )->click( ".bootbox-close-button" )
+            ->press( "Close" )
             ->waitUntilMissing( ".modal-backdrop" );
 
         // Check value in DB

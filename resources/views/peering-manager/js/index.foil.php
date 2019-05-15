@@ -161,10 +161,15 @@
 
                 $('#modal-peering-request').modal('hide');
 
-                bootbox.dialog({
+                bootbox.alert({
                     title: "<i class='fa fa-check'></i> Success",
                     message: data.message,
-                });
+                    buttons: {
+                        ok: {
+                            label: "Close"
+                        }
+                    }
+                })
             }
         })
         .fail(function () {
@@ -228,7 +233,7 @@
                         message: data.message,
                         buttons: {
                             ok: {
-                                label: "Ok",
+                                label: "Close",
                                 callback: function(){
                                     $( ".btn-footer-modal"          ).removeAttr(      'disabled', 'disabled' ).removeClass( 'disabled' );
                                     $( "#modal-peering-request"     ).css( "overflow" , "scroll");
@@ -247,9 +252,14 @@
                         $('#peering-notes-icon-'    + custid    ).attr( 'class', 'fa fa-star'      );
                     }
 
-                    bootbox.dialog({
+                    bootbox.alert({
                         title: "<i class='fa fa-check'></i> Success",
                         message: data.message,
+                        buttons: {
+                            ok: {
+                                label: "Close"
+                            }
+                        }
                     });
 
                     $( ".btn-footer-modal" ).removeAttr( 'disabled', 'disabled' ).removeClass( 'disabled' );
