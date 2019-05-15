@@ -30,7 +30,7 @@
             <input id="<?= 'hidden-sp-a-'.$t->nbLink ?>" type="hidden" name="<?= 'hidden-sp-a-'.$t->nbLink ?>" value="null">
 
             <div class="form-group row">
-                <label for="sp-a-1" class="control-label col-sm-6 col-lg-3"> Side A Switch Port</label>
+                <label for="sp-a-1" class="control-label col-sm-6 col-lg-3"> Side B Switch Port</label>
                 <div class="col-lg-4 col-sm-6">
                     <select class="chzn-select form-control" id="<?= 'sp-b-'.$t->nbLink ?>" name="<?= 'sp-b-'.$t->nbLink ?>">
                     </select>
