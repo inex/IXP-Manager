@@ -855,6 +855,11 @@ class UserController extends Doctrine2Frontend {
      * @return null|string
      */
     protected function postDeleteRedirect() {
+
+        if( !Auth::getUser()->isSuperUser() ){
+            return route( "user@list" );
+        }
+
         // retrieve the customer ID
         if( $custid = session()->get( "ixp_user_delete_custid" ) ) {
             session()->remove( "ixp_user_delete_custid" );
