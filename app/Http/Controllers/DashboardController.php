@@ -27,8 +27,7 @@ use Entities\{
     Customer                    as CustomerEntity,
     CustomerNote                as CustomerNoteEntity,
     NetworkInfo                 as NetworkInfoEntity,
-    RSPrefix                    as RSPrefixEntity,
-    User                        as UserEntity
+    RSPrefix                    as RSPrefixEntity
 };
 
 use Illuminate\Http\{
@@ -72,6 +71,11 @@ class DashboardController extends Controller
      * @throws
      */
     public function index( string $tab = null ) {
+
+        // Redirect Super user
+        if( Auth::getUser()->isSuperUser() ){
+            return Redirect::to( '/');
+        }
 
         $c = Auth::getUser()->getCustomer();
         $grapher = null;

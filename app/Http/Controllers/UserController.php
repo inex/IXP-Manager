@@ -796,6 +796,7 @@ class UserController extends Doctrine2Frontend {
                 D2EM::remove( $c2u );
             }
 
+            // Set the customer ID in session to redirect the user to the customer overview after deleting
             if( $c ) {
                 session()->put( "ixp_user_delete_custid", $c->getId() );
             }
@@ -811,8 +812,8 @@ class UserController extends Doctrine2Frontend {
             }
 
             if( $this->object->getCustomer()->getId() == $c->getId() ){
-                // Will set a new default customer when login
-                $this->object->setCustomer( null );
+                // setting an available new default customer
+                $this->object->setCustomer( $this->object->getCustomers()[0] );
             }
 
             $this->object->removeCustomer( $c2u );
@@ -828,6 +829,13 @@ class UserController extends Doctrine2Frontend {
             AlertContainer::push( 'The link customer/user ( ' . $c->getName() . '/' . $this->object->getName() . ' ) has been deleted.', Alert::SUCCESS );
 
             Log::notice( Auth::getUser()->getUsername()." deleted customer2user" . $c->getName() . '/' . $this->object->getName() );
+
+
+            // If the user delete itself, logout
+            if( Auth::getUser()->getId() == $this->object->getId() ){
+                Auth::logout();
+            }
+
 
             // We do not want to delete the user, just the customer2user link
             return false;
@@ -851,6 +859,11 @@ class UserController extends Doctrine2Frontend {
         if( $custid = session()->get( "ixp_user_delete_custid" ) ) {
             session()->remove( "ixp_user_delete_custid" );
             return route( "customer@overview" , [ "id" => $custid, "tab" => "users" ] );
+        }
+
+        // If user not logged in redirect to the login form ( this happen when the user delete itself)
+        if( !Auth::check() ){
+            return route( "login@showForm" );
         }
 
         return null;
