@@ -38,8 +38,7 @@ class InfrastructureControllerTest extends DuskTestCase
 
     public function tearDown(): void
     {
-        $infra = D2EM::getRepository( InfrastructureEntity::class )->findOneBy( [ 'name' => 'INEX TEST' ] );
-        if( $infra ) {
+        if( $infra = D2EM::getRepository( InfrastructureEntity::class )->findOneBy( [ 'name' => 'Infrastructure PHPUnit' ] ) ) {
             D2EM::remove( $infra );
             D2EM::flush();
         }
@@ -65,62 +64,68 @@ class InfrastructureControllerTest extends DuskTestCase
                 ->assertPathIs( '/admin' );
 
             $browser->visit( '/infrastructure/list' )
-                ->assertSee( 'Infrastructures' );
+                ->assertSee( 'Infrastructures' )
+                ->assertSee( 'represents a collection of switches which form an IXP\'s peering LAN' );
 
             $browser->visit( '/infrastructure/add' )
                 ->assertSee( 'Add Infrastructure' )
-                ->waitForText( "Choose the matching IX-F IXP" );
+                ->waitForText( "Choose the matching IX-F IXP" )
+                ->waitForText( "Choose the matching PeeringDB IXP" );
 
             // 1. test add empty inputs
             $browser->press('Add')
                 ->assertPathIs('/infrastructure/add')
                 ->waitForText( "Choose the matching IX-F IXP" )
+                ->waitForText( "Choose the matching PeeringDB IXP" )
                 ->assertSee( "The name field is required." )
                 ->assertSee( "The shortname field is required." );
 
             // 1. test add
             $browser->type( 'name',         'Infrastructure #1')
-                    ->type( 'shortname',    'test' )
+                    ->type( 'shortname',    'phpunit' )
                     ->check('primary')
                     ->select( 'ixf_ix_id',  1 )
                     ->select( 'pdb_ixp',    1 )
                     ->press('Add')
                     ->assertPathIs('/infrastructure/add')
                     ->assertSee( "The name has already been taken" )
-                    ->type( 'name',         'INEX TEST')
-                    ->pause(2000)
+                    ->type( 'name', 'Infrastructure PHPUnit')
+                    ->waitForText( "LINX LON1" )
+                    ->waitForText( "Equinix Ashburn" )
                     ->press('Add')
                     ->assertPathIs('/infrastructure/list')
-                    ->assertSee( "Infrastructure added" );
+                    ->assertSee( "Infrastructure added" )
+                    ->assertSee( "Infrastructure PHPUnit" )
+                    ->assertSee( "phpunit" );
 
             /** @var InfrastructureEntity $infra */
-            $infra = D2EM::getRepository( InfrastructureEntity::class )->findOneBy( [ 'name' => 'INEX TEST' ] );
+            $infra = D2EM::getRepository( InfrastructureEntity::class )->findOneBy( [ 'name' => 'Infrastructure PHPUnit' ] );
 
             // 2. test added data in database against expected values
             $this->assertInstanceOf( InfrastructureEntity::class, $infra );
-            $this->assertEquals( 'INEX TEST',   $infra->getName() );
-            $this->assertEquals( 'test',        $infra->getShortname() );
-            $this->assertEquals( true,          $infra->getIsPrimary() );
-            $this->assertEquals( '1',           $infra->getIxfIxId() );
-            $this->assertEquals( '1',           $infra->getPeeringdbIxId() );
+            $this->assertEquals( 'Infrastructure PHPUnit',   $infra->getName() );
+            $this->assertEquals( 'phpunit',                  $infra->getShortname() );
+            $this->assertEquals( true,                       $infra->getIsPrimary() );
+            $this->assertEquals( '1',                        $infra->getIxfIxId() );
+            $this->assertEquals( '1',                        $infra->getPeeringdbIxId() );
             $this->assertEquals( D2EM::getRepository( IXPEntity::class )->getDefault()->getId() , $infra->getIXP()->getId() );
 
             // 3. browse to edit infrastructure object:
             $browser->click( '#d2f-list-edit-' .  $infra->getId() );
 
             // 4. test that form contains settings as above using assertChecked(), assertNotChecked(), assertSelected(), assertInputValue, ...
-            $browser->assertInputValue('name',      'INEX TEST')
-                    ->assertInputValue('shortname', 'test')
+            $browser->assertInputValue('name',      'Infrastructure PHPUnit')
+                    ->assertInputValue('shortname', 'phpunit')
                     ->assertChecked( 'primary' )
+                    ->waitForText( "LINX LON1" )
+                    ->waitForText( "Equinix Ashburn" )
                     ->assertSelected('ixf_ix_id', '1')
                     ->assertSelected('pdb_ixp', '1');
 
 
-
-
             // 5. uncheck checkboxes, change selects and values, ->press('Save Changes'), assertPathIs(....)  (repeat 1)
-            $browser->select( 'ixf_ix_id',     '2' )
-                    ->select( 'pdb_ixp',  '2' )
+            $browser->select( 'ixf_ix_id', '2' )
+                    ->select( 'pdb_ixp',   '2' )
                     ->uncheck('primary')
                     ->press('Save Changes')
                     ->assertPathIs('/infrastructure/list')
@@ -131,22 +136,22 @@ class InfrastructureControllerTest extends DuskTestCase
             D2EM::refresh( $infra );
 
             $this->assertInstanceOf( InfrastructureEntity::class, $infra );
-            $this->assertEquals( 'INEX TEST',   $infra->getName() );
-            $this->assertEquals( 'test',        $infra->getShortname() );
-            $this->assertEquals( false,          $infra->getIsPrimary() );
-            $this->assertEquals( '2',           $infra->getIxfIxId() );
-            $this->assertEquals( '2',           $infra->getPeeringdbIxId() );
-            $this->assertEquals( D2EM::getRepository( IXPEntity::class )->getDefault()->getId() , $infra->getIXP()->getId() );
+            $this->assertEquals( 'Infrastructure PHPUnit',   $infra->getName() );
+            $this->assertEquals( 'phpunit',                  $infra->getShortname() );
+            $this->assertEquals( false,                      $infra->getIsPrimary() );
+            $this->assertEquals( '2',                        $infra->getIxfIxId() );
+            $this->assertEquals( '2',                        $infra->getPeeringdbIxId() );
 
 
             // 7. edit again and assert that all checkboxes are unchecked and assert select values are as expected
             $browser->visit( '/infrastructure/edit/' .  $infra->getId() )
-                ->assertSee( 'Edit Infrastructure' );
+                ->assertSee( 'Edit Infrastructure' )
+                ->waitForText( "AMS-IX" )
+                ->waitForText( "Equinix Chicago" );
 
-            $browser->assertInputValue('name',      'INEX TEST')
-                ->assertInputValue('shortname', 'test')
+            $browser->assertInputValue('name',      'Infrastructure PHPUnit')
+                ->assertInputValue('shortname', 'phpunit')
                 ->assertNotChecked( 'primary' )
-                ->waitUntilMissing( "Please wait, loading")
                 ->assertSelected('ixf_ix_id', '2')
                 ->assertSelected('pdb_ixp', '2');
 
@@ -159,17 +164,18 @@ class InfrastructureControllerTest extends DuskTestCase
             D2EM::refresh( $infra );
 
             $this->assertInstanceOf( InfrastructureEntity::class, $infra );
-            $this->assertEquals( 'INEX TEST',   $infra->getName() );
-            $this->assertEquals( 'test',        $infra->getShortname() );
+            $this->assertEquals( 'Infrastructure PHPUnit',   $infra->getName() );
+            $this->assertEquals( 'phpunit',        $infra->getShortname() );
             $this->assertEquals( false,          $infra->getIsPrimary() );
             $this->assertEquals( '2',           $infra->getIxfIxId() );
             $this->assertEquals( '2',           $infra->getPeeringdbIxId() );
-            $this->assertEquals( D2EM::getRepository( IXPEntity::class )->getDefault()->getId() , $infra->getIXP()->getId() );
+
 
             // 9. edit again and check all checkboxes and submit
             $browser->visit( '/infrastructure/edit/' .  $infra->getId() )
                 ->assertSee( 'Edit Infrastructure' )
-                ->waitUntilMissing( "Please wait, loading")
+                ->waitForText( "AMS-IX" )
+                ->waitForText( "Equinix Chicago" )
                 ->check('primary')
                 ->press('Save Changes')
                 ->assertPathIs('/infrastructure/list');
@@ -189,7 +195,7 @@ class InfrastructureControllerTest extends DuskTestCase
             $browser->assertSee( 'Infrastructure deleted.' );
 
             // 12. do a D2EM findOneBy and verify false/null
-            $this->assertEquals( null, D2EM::getRepository( InfrastructureEntity::class )->findOneBy( [ 'name' => 'INEX TEST' ] ) );
+            $this->assertEquals( null, D2EM::getRepository( InfrastructureEntity::class )->findOneBy( [ 'name' => 'Infrastructure PHPUnit' ] ) );
         });
 
     }

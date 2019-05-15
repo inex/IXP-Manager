@@ -36,7 +36,7 @@
             .fail( function() {
                 dd_pdb.prop( 'disabled', true );
                 <?php if( !$t->data[ 'params' ][ 'isAdd' ] && $t->data[ 'params'][ 'object']->getPdbFacilityId() ): ?>
-                    errorOption = `<option value=''>Choose the matching PeeringDB Facility...</option>\n`;
+                    errorOption = `<option value=''>Choose the matching PeeringDB facility...</option>\n`;
                     errorOption += `<option selected="selected" value="<?= $t->data[ 'params'][ 'object']->getPdbFacilityId() ?>">PeeringDB ID: <?= $t->data[ 'params'][ 'object']->getPdbFacilityId() ?></option>` ;
                     dd_pdb.prop( 'disabled', false );
                 <?php endif; ?>
@@ -47,7 +47,7 @@
                                         Please try again later and set the PeeringDB facility ID. </div>` );
             })
             .always( function() {
-                dd_pdb.select2({ allowClear: true, placeholder: 'Choose the matching PeeringDB Facility...' });
+                dd_pdb.select2({ allowClear: true, placeholder: 'Choose the matching PeeringDB facility...' });
                 dd_pdb.trigger( "changed.select2" );
                 $( '#btn-submit' ).prop('disabled', false);
             });

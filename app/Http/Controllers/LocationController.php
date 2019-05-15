@@ -66,7 +66,7 @@ class LocationController extends Doctrine2Frontend {
             'pagetitle'         => 'Facilities',
 
             'titleSingular'     => 'Facility',
-            'nameSingular'      => 'a facility',
+            'nameSingular'      => 'facility',
 
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',

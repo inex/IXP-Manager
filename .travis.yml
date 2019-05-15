@@ -1,8 +1,8 @@
 sudo: required
-dist: trusty
+dist: xenial
 
 addons:
-   chrome: stable
+    chrome: stable
 
 language: php
 
@@ -11,14 +11,18 @@ php:
 
 services:
     - memcached
+    - mysql
 
 notifications:
   email:
     - barryo@inex.ie
 
 before_install:
-    - sudo apt-get update
-    - "./data/travis-ci/setup_tests.sh"
+  - sudo mysql -e "use mysql; update user set authentication_string=PASSWORD('new_password') where User='root'; update user set plugin='mysql_native_password';FLUSH PRIVILEGES;"
+  - mysql -u root -pnew_password -e 'CREATE DATABASE myapp_test CHARACTER SET = "utf8mb4" COLLATE = "utf8mb4_unicode_ci";'
+  - mysql -u root -pnew_password -e 'GRANT ALL ON myapp_test.* TO travis@127.0.0.1 IDENTIFIED BY "";'
+  - sudo apt-get update
+  - "./data/travis-ci/setup_tests.sh"
 
 after_failure:
     - "./data/travis-ci/after_failure.sh"
