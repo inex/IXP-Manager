@@ -804,6 +804,8 @@ class UserController extends Doctrine2Frontend {
             Cache::forget( 'oss_d2u_user_' . $this->object->getId() );
 
         } else {
+            // Store the Customer that we are loggued in
+            $logguedCustomer = Auth::getUser()->getCustomer();
 
             // Delete the customer2user link
             /** @var CustomerToUserEntity $c2u  */
@@ -831,8 +833,8 @@ class UserController extends Doctrine2Frontend {
             Log::notice( Auth::getUser()->getUsername()." deleted customer2user" . $c->getName() . '/' . $this->object->getName() );
 
 
-            // If the user delete itself, logout
-            if( Auth::getUser()->getId() == $this->object->getId() ){
+            // If the user delete itself and is loggued as the same customer logout
+            if( Auth::getUser()->getId() == $this->object->getId() && $logguedCustomer->getId() == $c->getId() ){
                 Auth::logout();
             }
 
@@ -855,7 +857,7 @@ class UserController extends Doctrine2Frontend {
      * @return null|string
      */
     protected function postDeleteRedirect() {
-        
+
         // retrieve the customer ID
         if( $custid = session()->get( "ixp_user_delete_custid" ) ) {
             session()->remove( "ixp_user_delete_custid" );
