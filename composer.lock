@@ -2884,16 +2884,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.17.1",
+            "version": "2.18.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "96acbc0c03782e8115156dd4dd8b736267155066"
+                "reference": "8322b7bd1805be31867c13bf3cdaab948a0dd406"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/96acbc0c03782e8115156dd4dd8b736267155066",
-                "reference": "96acbc0c03782e8115156dd4dd8b736267155066",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/8322b7bd1805be31867c13bf3cdaab948a0dd406",
+                "reference": "8322b7bd1805be31867c13bf3cdaab948a0dd406",
                 "shasum": ""
             },
             "require": {
@@ -2940,7 +2940,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2019-04-27T18:04:27+00:00"
+            "time": "2019-05-16T18:44:35+00:00"
         },
         {
             "name": "nikic/php-parser",
@@ -7697,22 +7697,25 @@
         },
         {
             "name": "staudenmeir/dusk-updater",
-            "version": "v1.0.4",
+            "version": "v1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/staudenmeir/dusk-updater.git",
-                "reference": "a92b183070f4d37eedbd4a64465c7bda023aa1e2"
+                "reference": "430aec0894fb1247eaaffac7a6b1d8aa7c39244d"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/staudenmeir/dusk-updater/zipball/a92b183070f4d37eedbd4a64465c7bda023aa1e2",
-                "reference": "a92b183070f4d37eedbd4a64465c7bda023aa1e2",
+                "url": "https://api.github.com/repos/staudenmeir/dusk-updater/zipball/430aec0894fb1247eaaffac7a6b1d8aa7c39244d",
+                "reference": "430aec0894fb1247eaaffac7a6b1d8aa7c39244d",
                 "shasum": ""
             },
             "require": {
                 "ext-openssl": "*",
                 "ext-zip": "*",
                 "php": ">=5.6.4"
+            },
+            "require-dev": {
+                "orchestra/testbench": "^3.8"
             },
             "type": "library",
             "extra": {
@@ -7738,7 +7741,7 @@
                 }
             ],
             "description": "Updater for Laravel Dusk ChromeDriver binaries",
-            "time": "2019-04-30T12:40:42+00:00"
+            "time": "2019-05-16T01:59:08+00:00"
         },
         {
             "name": "symfony/filesystem",
