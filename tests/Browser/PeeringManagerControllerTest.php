@@ -93,11 +93,10 @@ class PeeringManagerControllerTest extends DuskTestCase
             $peers = D2EM::getRepository( CustomerEntity::class )->getPeeringManagerArrayByType( $cust , D2EM::getRepository( VlanEntity::class )->getPeeringManagerVLANs(), [ 4, 6 ] );
 
             foreach( $peers[ "potential" ] as  $as => $p ){
-                if($p){
+                if( $p ) {
                     $c = $peers[ "custs" ][ $as ];
                     break;
                 }
-
             }
 
             // Check data in DB
@@ -106,16 +105,14 @@ class PeeringManagerControllerTest extends DuskTestCase
 
 
             $browser->click( "#peering-notes-icon-" . $c[ "id" ] )
-                ->whenAvailable( '.modal', function ( $modal ) use ( $c ) {
+                ->whenAvailable( '#modal-peering-request', function ( $modal ) use ( $c ) {
                     $modal->waitForText( "Peering Notes for " . $c[ "name" ] )
-                        ->keys( 'textarea[name=peering-manager-notes]', 'note'  )
+                        ->type( '#peering-manager-notes', 'note'  )
                         ->click('#modal-peering-notes-save' );
                     });
 
-            $browser->whenAvailable( '.bootbox', function ( $bootbox ) {
-                    $bootbox->waitForText( "Peering notes updated for Imagine" )
-                        ->press( "Close" );
-                });
+            $browser->waitForText( "Peering notes updated for Imagine" )
+                ->press( "Close" );
 
             $browser->waitUntilMissing( ".modal-backdrop" );
 
