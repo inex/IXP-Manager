@@ -110,21 +110,17 @@ class PeeringManagerControllerTest extends DuskTestCase
                     $modal->waitForText( "Peering Notes for " . $c[ "name" ] )
                         ->keys( 'textarea[name=peering-manager-notes]', 'note'  )
                         ->click('#modal-peering-notes-save' );
+                    });
 
-
-                });
-
-            $browser->whenAvailable( '.bootbox', function ( $bootbox ){
-                $bootbox->waitForText( "Peering notes updated for Imagine" )
+            $browser->whenAvailable( '.bootbox', function ( $bootbox ) {
+                    $bootbox->waitForText( "Peering notes updated for Imagine" )
                         ->press( "Close" );
-
-            });
+                });
 
             $browser->waitUntilMissing( ".modal-backdrop" );
 
             // Check value in DB
-            $this->assertInstanceOf( PeeringManagerEntity::class , $pm = D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $c[ "id" ] ] ) );
-
+            D2EM::refresh( $pm );
 
 //            $this->assertEquals( "### " . date( "Y-m-d" ) . " - hecustadmin
 //
@@ -133,7 +129,6 @@ class PeeringManagerControllerTest extends DuskTestCase
 
 
             /** Test peering request */
-
             $browser->click( "#peering-request-" . $c[ "id" ] )
                 ->waitForText( "Send Peering Request by Email" )
                 ->click('#modal-peering-request-marksent' )
