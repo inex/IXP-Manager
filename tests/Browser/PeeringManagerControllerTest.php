@@ -102,7 +102,7 @@ class PeeringManagerControllerTest extends DuskTestCase
 
             // Check data in DB
             /** @var $pm PeeringManagerEntity */
-            $this->assertEquals( null , $pm = D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $c[ "id" ] ] ) );
+            $this->assertEquals( null , D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $c[ "id" ] ] ) );
 
 
             $browser->click( "#peering-notes-icon-" . $c[ "id" ] )
@@ -120,7 +120,7 @@ class PeeringManagerControllerTest extends DuskTestCase
             $browser->waitUntilMissing( ".modal-backdrop" );
 
             // Check value in DB
-            D2EM::refresh( $pm );
+            $this->assertInstanceOf( PeeringManagerEntity::class , $pm = D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $c[ "id" ] ] ) );
 
 //            $this->assertEquals( "### " . date( "Y-m-d" ) . " - hecustadmin
 //
