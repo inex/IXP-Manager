@@ -102,7 +102,7 @@ class PeeringManagerControllerTest extends DuskTestCase
 
             // Check data in DB
             /** @var $pm PeeringManagerEntity */
-            $this->assertEquals( null , D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $c[ "id" ] ] ) );
+            $this->assertEquals( null , $pm = D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $c[ "id" ] ] ) );
 
 
             $browser->click( "#peering-notes-icon-" . $c[ "id" ] )
