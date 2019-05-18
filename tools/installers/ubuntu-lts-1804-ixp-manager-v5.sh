@@ -37,7 +37,7 @@ DBNAME=ixpmanager
 DBUSER=ixpmanager
 
 # the version / branch to use:
-IXPMANAGER_VERSION="v5.0.0.alpha"
+IXPMANAGER_VERSION="release-v5"
 
 touch /tmp/ixp-manager-install.log
 chmod a+w /tmp/ixp-manager-install.log
