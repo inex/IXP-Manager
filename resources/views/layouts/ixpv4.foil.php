@@ -60,32 +60,16 @@
                     <main role="main" id="main-div" class="col-md-10 mx-sm-auto mt-2 pb-4">
                 <?php endif; ?>
 
-                    <?php /*if( Auth::check() && Auth::user()->isSuperUser() ): */?>
-
                         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-                            <h1>
+                            <h3>
                                 <?php $this->section('page-header-preamble') ?>
                                 <?php $this->stop() ?>
-                            </h1>
+                            </h3>
                             <div class="btn-toolbar mb-2 mb-md-0 ml-auto">
                                 <?php $this->section('page-header-postamble') ?>
                                 <?php $this->stop() ?>
                             </div>
                         </div>
-
-                    <?php /*else: */?><!--
-                        <div class="page-content">
-                            <div class="page-header">
-                                <?php /*$this->section('page-header-preamble') */?>
-                                <?php /*$this->stop() */?>
-                                <h1 style="display: inline">
-                                    <?php /*$this->section('title') */?>
-                                    <?php /*$this->stop() */?>
-                                </h1>
-                                <?php /*$this->section('page-header-postamble') */?>
-                                <?php /*$this->stop() */?>
-                            </div>
-                    --><?php /*endif; */?>
 
                         <div class="container-fluid">
                             <div class="col-sm-12">

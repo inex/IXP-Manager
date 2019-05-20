@@ -169,7 +169,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
             Former::populate([
                 'description'   => array_key_exists( 'description', $old ) ? $old['description']    : $this->object->getDescription(),
                 'custid'        => array_key_exists( 'custid',      $old ) ? $old['custid']         : $this->object->getCustomer()->getId(),
-                'switchid'      => array_key_exists( 'switchid',    $old ) ? $old['switchid']       : $this->object->getSwitchId(),
+                'serverid'      => array_key_exists( 'serverid',    $old ) ? $old['serverid']       : $this->object->getId(),
                 'port'          => array_key_exists( 'port',        $old ) ? $old['port']           : $this->object->getPort(),
                 'speed'         => array_key_exists( 'speed',       $old ) ? $old['speed']          : $this->object->getSpeed(),
                 'parity'        => array_key_exists( 'parity',      $old ) ? $old['parity']         : $this->object->getParity(),
@@ -182,7 +182,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
         return [
             'object'                => $this->object,
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
-            'switches'              => D2EM::getRepository( SwitcherEntity::class )->getNames( true, false ),
+            'servers'               => D2EM::getRepository( ConsoleServerEntity::class )->getAsArray(),
             'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : null )
         ];
     }
@@ -201,7 +201,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
         $validator = Validator::make( $request->all(), [
             'description'           => 'required|string|max:255',
             'custid'                => 'required|int|exists:Entities\Customer,id',
-            'switchid'              => 'required|int|exists:Entities\Switcher,id',
+            'serverid'              => 'required|int|exists:Entities\ConsoleServer,id',
             'port'                  => 'required|string|max:255',
             'speed'                 => 'nullable|integer',
             'parity'                => 'nullable|string',
@@ -226,8 +226,8 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
 
         $validator->after( function ( $validator ) use( $request ) {
 
-            if( $request->input( 'consoleserverid' ) != null && $request->input( 'port' ) != null ){
-                if( $csFound = D2EM::getRepository( ConsoleServerConnectionEntity::class )->getByServerAndPort( $request->input( 'consoleserverid' ), $request->input( 'port' ) ) ) {
+            if( $request->input( 'serverid' ) != null && $request->input( 'port' ) != null ){
+                if( $csFound = D2EM::getRepository( ConsoleServerConnectionEntity::class )->getByServerAndPort( $request->input( 'serverid' ), $request->input( 'port' ) ) ) {
 
                     if( $this->object->getId() !== $csFound[0]->getId() ) {
 
@@ -251,7 +251,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
         $this->object->setNotes(         $request->input( 'notes'        ) );
         $this->object->setAutobaud(     $request->input( 'autobaud'     ) ? 1 : 0  );
         $this->object->setCustomer(      D2EM::getRepository( CustomerEntity::class  )->find( $request->input( 'custid'      ) ) );
-        $this->object->setConsoleServer( D2EM::getRepository( ConsoleServerEntity::class  )->find( $request->input( 'consoleserverid'    ) ) );
+        $this->object->setConsoleServer( D2EM::getRepository( ConsoleServerEntity::class  )->find( $request->input( 'serverid'    ) ) );
 
         D2EM::flush($this->object);
 
@@ -301,8 +301,8 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
      */
     protected function postStoreRedirect() {
 
-        if( request()->input( "cs" ) && ( $cs = D2EM::getRepository( ConsoleServerEntity::class )->find( request()->input( "cs" ) ) ) ){
-            return route( 'console-server-connection@listPort' , [ "id" => $cs->getId() ] ) ;
+        if( request()->input( "serverid" ) && ( $cs = D2EM::getRepository( ConsoleServerEntity::class )->find( request()->input( "serverid" ) ) ) ){
+            return route( 'console-server-connection@listPort' , [ "id" => request()->input( "serverid" ) ] ) ;
         }else{
             return route( 'console-server-connection@list' );
         }
