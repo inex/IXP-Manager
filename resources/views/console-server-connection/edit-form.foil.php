@@ -14,6 +14,15 @@
             ->blockHelp( "Description of the device that this console port connects to. Usually a switch hostname." );
         ?>
 
+        <?= Former::select( 'serverid' )
+            ->id( 'Server' )
+            ->label( 'Console Server' )
+            ->placeholder( 'Select a console server' )
+            ->fromQuery( $t->data[ 'params'][ 'servers' ], 'name' )
+            ->addClass( 'chzn-select' )
+            ->blockHelp( "Chose the console server." );
+        ?>
+
         <?= Former::select( 'custid' )
             ->id( 'cust' )
             ->label( 'Customer' )

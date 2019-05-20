@@ -5,7 +5,7 @@
     </a>
 
     <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-        <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?><?= isset( $t->data[ 'params'][ "cs" ] ) ? "?console-server=" . $t->data[ 'params'][ "cs" ] : ""  ?> " title="Edit">
+        <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?><?= isset( $t->data[ 'params'][ "cs" ] ) ? "?serverid=" . $t->data[ 'params'][ "cs" ] : ""  ?> " title="Edit">
             <i class="fa fa-pencil"></i>
         </a>
         <a class="btn btn-white d2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>" title="Delete">

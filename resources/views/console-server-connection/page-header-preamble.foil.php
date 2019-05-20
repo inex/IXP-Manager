@@ -21,7 +21,7 @@
         </div>
 
 
-        <a  class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@add' ) ?><?= isset( $t->data[ 'params'][ "cs" ] ) ? "?console-server=" . $t->data[ 'params'][ "cs" ] : ""  ?>">
+        <a  class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@add' ) ?><?= isset( $t->data[ 'params'][ "cs" ] ) ? "?serverid=" . $t->data[ 'params'][ "cs" ] : ""  ?>">
             <i class="fa fa-plus"></i>
         </a>
 
