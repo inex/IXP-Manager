@@ -32,7 +32,7 @@
   "dependencies": {
     "@webpack-cli/init": "^0.0.8",
     "bootbox": "^5.1.1",
-    "bootstrap": "4.2",
+    "bootstrap": "^4.3",
     "datatables-responsive": "^1.0.7",
     "datatables.net-bs4": "^1.10.19",
     "datatables.net-responsive-bs4": "^2.2.3",
