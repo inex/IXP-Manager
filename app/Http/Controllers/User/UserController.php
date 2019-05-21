@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Http\Controllers;
+namespace IXP\Http\Controllers\User;
 
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -27,11 +27,19 @@ use Auth, Cache, D2EM, Former, Hash, Log, Redirect, Route, Validator;
 
 use IXP\Events\User\Welcome as WelcomeEvent;
 
-use Entities\{Customer as CustomerEntity, CustomerToUser as CustomerToUserEntity, CustomerToUser, User as UserEntity};
+use Entities\{
+    Customer as CustomerEntity,
+    CustomerToUser as CustomerToUserEntity,
+    User as UserEntity
+};
+
 use Illuminate\Http\{
     Request,
-    JsonResponse,
     RedirectResponse
+};
+
+use IXP\Http\Requests\User\{
+    Store as StoreUser
 };
 
 use IXP\Utils\View\Alert\{
@@ -40,6 +48,8 @@ use IXP\Utils\View\Alert\{
 };
 
 use Illuminate\View\View;
+
+use IXP\Http\Controllers\Doctrine2Frontend;
 
 
 /**
@@ -183,11 +193,12 @@ class UserController extends Doctrine2Frontend {
 
     protected static function additionalRoutes( string $route_prefix ) {
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get(     'add-wizard',                       'UserController@addForm'                )->name( $route_prefix . '@add-wizard'          );
-            Route::get(     'add/info/{id?}',                   'UserController@edit'                   )->name( $route_prefix . '@add-info'            );
-            Route::post(     'add/check-email',                 'UserController@addCheckEmail'          )->name( $route_prefix . '@add-check-email'     );
-            Route::post(     '{id}/delete-customer/{custid}',   'UserController@deleteCustomerToUser'   )->name( $route_prefix . '@delete-customer'     );
-            Route::post(     'welcome-email',                   'UserController@sendWelcomeEmail'       )->name( $route_prefix . '@welcome-email'       );
+            Route::get(     'add-wizard',                       'User\UserController@addForm'                )->name( $route_prefix . '@add-wizard'          );
+            Route::get(     'add/info/{id?}',                   'User\UserController@edit'                   )->name( $route_prefix . '@add-info'            );
+            Route::post(     'add/check-email',                 'User\UserController@addCheckEmail'          )->name( $route_prefix . '@add-check-email'     );
+            Route::post(     '{id}/delete-customer/{custid}',   'User\UserController@deleteCustomerToUser'   )->name( $route_prefix . '@delete-customer'     );
+            Route::post(     'welcome-email',                   'User\UserController@sendWelcomeEmail'       )->name( $route_prefix . '@welcome-email'       );
+            Route::post(     'custom-store',                    'User\UserController@customerStore'          )->name( $route_prefix . '@custom-store'        );
         });
     }
 
@@ -241,8 +252,69 @@ class UserController extends Doctrine2Frontend {
         }
     }
 
+
     /**
-     * Display the first step form to Add an object via email address
+     * Return the list of privileges for the dropdown depending on the loggued user priv and if the customer is internal or not
+     *
+     * @return array List of privileges
+     *
+     * @throws
+     */
+    private function getAllowedPrivs(){
+
+        $privs = UserEntity::$PRIVILEGES_TEXT_NONSUPERUSER;
+
+        // If we add a user via the customer overview users list
+        if( request()->is( 'user/add*' ) && request()->input( "custid" ) ){
+
+            /** @var $c CustomerEntity */
+            if( ( $c = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "custid" ) ) ) ){
+                // Internal customer and SuperUser
+                if( $c->isTypeInternal() && Auth::getUser()->isSuperUser() ){
+                    $privs = UserEntity::$PRIVILEGES_TEXT;
+                }
+            }
+            // If we add a user and we are a SuperUser
+        } elseif( request()->is( 'user/add*' ) && Auth::getUser()->isSuperUser() ){
+            $privs = UserEntity::$PRIVILEGES_TEXT;
+        }
+
+        return $privs;
+    }
+
+    /**
+     * Get the Customer2User list for a user or the customer/user link
+     *
+     * @param   UserEntity $user
+     *
+     * @return array
+     *
+     * @throws
+     */
+    private function getC2Ulist( UserEntity $user )
+    {
+        // Getting the Customer2User list
+        if( Auth::getUser()->isSuperUser() )
+        {
+            // Getting all the customer for the user
+            if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "user" => $user->getId() ] ) ) )
+            {
+                $this->unauthorized();
+            }
+        } else {
+            // Getting only the current logged customer for the user
+            if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "customer" => Auth::getUser()->getCustomer()->getId() , "user" => $user->getId() ] ) ) )
+            {
+                $this->unauthorized();
+            }
+        }
+
+        return $listC2u;
+    }
+
+
+    /**
+     * Display the first step form to Add a User object via email address
      *
      * @return View
      */
@@ -252,8 +324,11 @@ class UserController extends Doctrine2Frontend {
         $this->addEditSetup();
         $this->cancelLink();
 
-        $this->data[ 'params' ][ 'custid' ] = request()->input("cust" );
-        $this->data[ 'params' ][ 'canbelBtnLink' ] = session()->get( 'user_cancel_redirect' );
+        if(){
+
+        }
+        $this->data[ 'params' ][ 'custid' ]         = request()->input("cust" );
+        $this->data[ 'params' ][ 'canbelBtnLink' ]  = request()->input("cust" ) ? route( "customer@overview", [ "id" => request()->input("cust" ) ] ) : route( "user@list" ) ;
 
         return $this->display( 'add-form' );
     }
@@ -280,104 +355,29 @@ class UserController extends Doctrine2Frontend {
             return Redirect::back()->withErrors( $validator )->withInput();
         }
 
-        $userEmail = null;
-
-        if( $user = D2EM::getRepository( UserEntity::class )->findBy( [ 'email' => $request->input( 'email' ) ] ) ) {
+        /** @var UserEntity $user */
+        if( $user = D2EM::getRepository( UserEntity::class )->findOneBy( [ 'email' => $request->input( 'email' ) ] ) ) {
             if( !Auth::getUser()->isSuperUser() ){
                 if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => Auth::getUser()->getCustomer() , "user" => $user ] ) ){
                     AlertContainer::push( "A user already exists with that email address for your company." , Alert::DANGER );
                     return Redirect::back()->withErrors($validator)->withInput();
                 }
             }
-            $userEmail = $request->input( 'email' );
         }
+
 
         // building the redirect url
-        $url = $userEmail ? route( "user@add-info", [ 'user' => $userEmail ] ) : route("user@add" ). '?email=' . $request->input( 'email' );
+        $url = $user ? route( "user@add-info", [ 'user' => $user->getEmail() ] ) : route("user@add" ). '?email=' . $request->input( 'email' );
 
         if( $request->input( "custid" ) ){
-            $separator = $userEmail ? "?" : "&";
+            $separator = $user ? "?" : "&";
             $url = $url . $separator . "custid=" . $request->input( "custid" );
         }
+
 
         return redirect( $url );
     }
 
-    /**
-     * Return the list of privileges for the dropdown depending on the loggued user priv and if the customer is internal or not
-     *
-     * @return array List of privileges
-     *
-     * @throws
-     */
-    private function getAllowedPrivs(){
-
-        $privs = UserEntity::$PRIVILEGES_TEXT_NONSUPERUSER;
-
-        // If we add a user via the customer overview users list
-        if( request()->is( 'user/add*' ) && request()->input( "custid" ) ){
-
-            /** @var $c CustomerEntity */
-            if( ( $c = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "custid" ) ) ) ){
-                // Internal customer and SuperUser
-                if( $c->isTypeInternal() && Auth::getUser()->isSuperUser() ){
-                    $privs = UserEntity::$PRIVILEGES_TEXT;
-                }
-            }
-        // If we add a user and we are a SuperUser
-        } elseif( request()->is( 'user/add*' ) && Auth::getUser()->isSuperUser() ){
-            $privs = UserEntity::$PRIVILEGES_TEXT;
-        }
-
-        return $privs;
-    }
-
-
-    /**
-     * Check if we can set to a user the SuperUser priv
-     *
-     * @param  int                  $privs
-     * @param  CustomerToUserEntity $cust
-     *
-     * @return bool
-     *
-     * @throws
-     */
-    private function allowPrivSuperUser( $privs, $cust ){
-        if( $privs == UserEntity::AUTH_SUPERUSER ){
-            if( !Auth::getUser()->isSuperUser() || Auth::getUser()->isSuperUser() && !$cust->isTypeInternal()  ){
-                return false;
-            }
-        }
-
-        return true;
-    }
-
-    /**
-     * Get the Customer2User list for a user or the customer/user link
-     *
-     * @param   UserEntity $user
-     *
-     * @return array
-     *
-     * @throws
-     */
-    private function getC2Ulist( UserEntity $user ){
-        // Getting the Customer2User list
-        if( Auth::getUser()->isSuperUser() ){
-            // Getting all the customer for the user
-            if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "user" => $user->getId() ] ) ) ){
-                $this->unauthorized();
-            }
-        } else {
-            // Getting only the current logged customer for the user
-            if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "customer" => Auth::getUser()->getCustomer()->getId() , "user" => $user->getId() ] ) ) ){
-                $this->unauthorized();
-            }
-        }
-
-        return $listC2u;
-    }
 
     /**
      * Display the form to edit an object
@@ -390,9 +390,8 @@ class UserController extends Doctrine2Frontend {
      */
     protected function addEditPrepareForm( $id = null ): array {
         $old = request()->old();
-        $existingUser = $disabledInputs = $c = false;
+        $existingUser = $disabledInputs = $c = $addEditTpl = false;
         $listUsers = [];
-
 
         if( !request()->session()->exists( 'user_post_store_redirect' ) ){
             $this->redirectLink();
@@ -439,10 +438,9 @@ class UserController extends Doctrine2Frontend {
             }
 
         } else {
+
             // Adding user / associate existing user with a customer
             $this->feParams->customBreadcrumb = "Add";
-
-
 
             // If we found user with the provided email address
             if( $id !== null ) {
@@ -452,20 +450,21 @@ class UserController extends Doctrine2Frontend {
                     abort(404, 'User not found');
                 }
 
-                Former::populate([
-                    'custid'           => array_key_exists( 'custid',   $old ) ? $old['custid'] : request()->input( "custid" ),
-                ]);
-
                 $existingUser = true;
+                $addEditTpl = "customer2-user/add";
 
-            } else {
-
-                // The provided email address didnt match with any existing user => creating new user
-                Former::populate([
-                    'email'         => array_key_exists( 'email',               $old ) ? $old['email']                : request()->input( "email" ),
-                    'custid'        => array_key_exists( 'custid',              $old ) ? $old['custid']               : request()->input( "custid" ),
-                ]);
             }
+
+
+            Former::populate([
+                'name'                  => array_key_exists( 'name',                $old ) ? $old['name']               : request()->input( "name" ),
+                'username'              => array_key_exists( 'username',            $old ) ? $old['username']           : request()->input( "username" ),
+                'email'                 => array_key_exists( 'email',               $old ) ? $old['email']              : request()->input( "email" ),
+                'authorisedMobile'      => array_key_exists( 'authorisedMobile',    $old ) ? $old['authorisedMobile']   : request()->input( "authorisedMobile" ),
+                'enabled'               => array_key_exists( 'enabled',             $old ) ? $old['enabled']            : request()->input( "enabled" ),
+                'custid'                => array_key_exists( 'custid',              $old ) ? $old['custid']             : request()->input( "custid" ),
+            ]);
+
 
         }
 
@@ -477,7 +476,8 @@ class UserController extends Doctrine2Frontend {
             'canbelBtnLink'         => session()->get( 'user_cancel_redirect' ),
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
             'privs'                 => $this->getAllowedPrivs(),
-            'c'                     => $c
+            'c'                     => $c,
+            'addEditTpl'            => $addEditTpl,
         ];
     }
 
@@ -485,217 +485,98 @@ class UserController extends Doctrine2Frontend {
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param StoreUser $request
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
 
-    public function doStore( Request $request ){
+    public function customerStore( StoreUser $request )
+    {
 
+        $isAdding = $request->input( 'id' ) ? false : true;
 
-        // If the User already exist
-        if( $request->input( 'existingUser' ) ) {
-
-            $validator = Validator::make( $request->all(), [
-                'custid'                => 'required|integer|exists:Entities\Customer,id',
-                'existingUserId'        => 'required|integer|exists:Entities\User,id',
-                'privs'                 => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ),
-            ] );
-
-            if( !$request->input( 'existingUserId' ) ){
-                AlertContainer::push( "You need to select one User from the list." , Alert::DANGER );
-            }
-
-            if( $validator->fails() ) {
-                return Redirect::back()->withErrors($validator)->withInput();
-            }
-
-            /** @var CustomerEntity $cust */
-            $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) );
-
-            if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => $cust , "user" => $request->input( 'existingUserId' ) ] ) ){
-                AlertContainer::push( "This user is already associated with " . $cust->getName()  , Alert::DANGER );
-                return Redirect::back()->withErrors($validator)->withInput();
-            }
-
-            if( !$this->allowPrivSuperUser( $request->input( 'privs' ), $cust ) ){
-                AlertContainer::push( "You are not allowed to set this User as a Super User for " . $cust->getName()  , Alert::DANGER );
-                return Redirect::back()->withErrors($validator)->withInput();
-            }
-
-            if( $request->input( 'privs' ) == UserEntity::AUTH_SUPERUSER ){
-                AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
-            }
-
-
-            $this->feParams->nameSingular = "Customer2User";
-
-            /** @var UserEntity $existingUser */
-            $existingUser = D2EM::getRepository( UserEntity::class )->find( $request->input( 'existingUserId' ) );
-
-            $this->object = new CustomerToUserEntity;
+        if( $isAdding )
+        {
+            $this->object = new UserEntity;
             D2EM::persist( $this->object );
 
-            $this->object->setCustomer(         $cust );
-            $this->object->setUser(             $existingUser                   );
-            $this->object->setPrivs(            $request->input( 'privs' ) );
-            $this->object->setCreatedAt(        new \DateTime                   );
-            $this->object->setExtraAttributes(  [ "created_by" => [ "type" => "user" , "user_id" => $existingUser->getId() ] ] );
+            $this->object->setCreated(  new \DateTime  );
+            $this->object->setCreator(  Auth::getUser()->getUsername() );
 
-            D2EM::flush();
-
-            event( new WelcomeEvent( $cust, $existingUser, false, true ) );
+            $this->object->setPassword( Hash::make( str_random(16) ) );
+            $this->store_alert_success_message = "User added successfully. A welcome email is being sent to {$this->object->getEmail()} with "
+                . "instructions on how to set their password.";
 
         } else {
 
-            $isEditing = $request->input( 'id' ) ? true : false;
-
-            $infoArray  = [];
-            $datac2u    = [];
-
-            // If its a superuser or if we are adding a new user
-            if( Auth::getUser()->isSuperUser() || !$isEditing ) {
-                $infoArray = [
-                    'name'                                              => 'required|string|max:255',
-                    'username'                                          => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:Entities\User,username' . ( $request->input( 'id' ) ? ',' . $request->input( 'id' ) : '' ),
-                    'email'                                             => 'required|email|max:255|unique:Entities\User,email' . ( $request->input( 'id' ) ? ',' . $request->input( 'id' ) : '' ),
-                    'authorisedMobile'                                  => 'nullable|string|max:50',
-                ];
-
-                if( !$isEditing ){
-                    $addUserInfo = [
-                        'privs'     => 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ),
-                    ];
-
-                    $infoArray = array_merge( $infoArray, $addUserInfo );
-
-                }
-
-            }
-
-            if( $isEditing ){
-
-                if( !( $this->object = D2EM::getRepository( UserEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                    abort(404, 'User not found');
-                }
-
-                $datac2u = [];
-
-                /** @var CustomerToUserEntity $c2u */
-                foreach( $this->getC2Ulist( $this->object ) as $c2u ){
-                    $inputExt = Auth::getUser()->isSuperUser() ? '_'. $c2u->getCustomer()->getId() : '' ;
-                    $datac2u[ 'privs'  . $inputExt ] = 'required|integer|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) );
-                }
-            }
-
-            $validator = Validator::make( $request->all(), array_merge( $infoArray , $datac2u ) );
-
-            if( $validator->fails() ) {
-                return Redirect::back()->withErrors($validator)->withInput();
-            }
-
-            // Adding user
-            if( !$isEditing ) {
-                $this->object = new UserEntity;
-                D2EM::persist( $this->object );
-
-                $this->object->setCreated(  new \DateTime  );
-                $this->object->setCreator(  Auth::getUser()->getUsername() );
-
-                $this->object->setPassword( Hash::make( str_random(16) ) );
-                $this->store_alert_success_message = "User added successfully. A welcome email is being sent to {$this->object->getEmail()} with "
-                    . "instructions on how to set their password.";
-
-            }
-
-            $privsLogguedUeser  = Auth::getUser()->getPrivs();
-
-            // Superuser OR Adding user OR Logged User edit his own user
-            if( Auth::getUser()->isSuperUser() || !$this->object->getId() || $this->object->getId() == Auth::getUser()->getId() ) {
-                $this->object->setName( $request->input( 'name' ) );
-                $this->object->setAuthorisedMobile( $request->input( 'authorisedMobile' ) );
-            }
-
-            // Superuser OR Adding user
-            if( Auth::getUser()->isSuperUser() || !$this->object->getId() ){
-                $this->object->setUsername(          strtolower( $request->input( 'username' ) ) );
-                $this->object->setEmail(             $request->input( 'email'                ) );
-                $this->object->setDisabled( $request->input( 'enabled', 0 ) == "1" ? false : true );
-            }
-
-            $this->object->setLastupdated(       new \DateTime  );
-            $this->object->setLastupdatedby(     Auth::getUser()->getId() );
-
-            // Adding new user => set customer and priv to the User Object
-            if( !$this->object->getId() ){
-
-                $cust = Auth::user()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) : Auth::getUser()->getCustomer();
-
-                if( !$this->allowPrivSuperUser( $request->input( 'privs' ), $cust ) ){
-                    AlertContainer::push( "You are not allowed to set this User as a Super User for " . $cust->getName() , Alert::DANGER );
-                    return Redirect::back()->withErrors($validator)->withInput();
-                }
-
-                $this->object->setPrivs( $request->input( 'privs' ) );
-                $this->object->setCustomer( $cust );
-            }
-
-
-            D2EM::flush();
-
-
-            // Creating or Editing Customer2User
-
-            // Editing
-            if( $isEditing ) {
-
-                /** @var CustomerToUserEntity $c2u */
-                foreach( $this->getC2Ulist( $this->object ) as $c2u ){
-
-                    $inputExt =  $privsLogguedUeser == UserEntity::AUTH_SUPERUSER ? '_' . $c2u->getCustomer()->getId() : '' ;
-
-                    if( !$this->allowPrivSuperUser( $request->input( 'privs' ), $c2u->getCustomer() ) ){
-                        AlertContainer::push( "You are not allowed to set this User as a Super User for " . $c2u->getCustomer()->getName()  , Alert::DANGER );
-                        return Redirect::back()->withErrors($validator)->withInput();
-                    } else {
-
-                        if( $c2u->getPrivs() != $request->input( 'privs' . $inputExt ) && $request->input( 'privs' . $inputExt ) == UserEntity::AUTH_SUPERUSER ){
-                            AlertContainer::push( 'Please note that you have given this user full administrative access for ' . $c2u->getCustomer()->getName() , Alert::WARNING );
-                        }
-
-                        $c2u->setPrivs(     $request->input( 'privs' . $inputExt ) );
-                    }
-
-                }
-
-            } else {
-                // Creating the CustomerToUser object
-                $this->c2u = new CustomerToUserEntity();
-                D2EM::persist( $this->c2u );
-
-                $this->c2u->setCustomer(        $this->object->getCustomer()  );
-                $this->c2u->setUser(            $this->object  );
-                $this->c2u->setCreatedAt(       new \DateTime  );
-                $this->c2u->setPrivs(           $request->input( 'privs' ) );
-                $this->c2u->setExtraAttributes( [ "created_by" => [ "type" => "user" , "user_id" => $this->object->getId() ] ] );
-
-                if( $request->input( 'privs' ) == UserEntity::AUTH_SUPERUSER ){
-                    AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
-                }
-
-            }
-
-            D2EM::flush();
-
-            if( !$isEditing ) {
-                event( new WelcomeEvent( $this->object->getCustomer(), $this->object, false, false ) );
+            if( !( $this->object = D2EM::getRepository( UserEntity::class )->find( $request->input( 'id' ) ) ) )
+            {
+                abort(404, 'User not found');
             }
 
         }
 
-        return true;
+        // Superuser OR Adding user OR Logged User edit his own user
+        if( Auth::getUser()->isSuperUser() || !$this->object->getId() || $this->object->getId() == Auth::getUser()->getId() ) {
+            $this->object->setName( $request->input( 'name' ) );
+            $this->object->setAuthorisedMobile( $request->input( 'authorisedMobile' ) );
+        }
+
+        // Superuser OR Adding user
+        if( Auth::getUser()->isSuperUser() || !$this->object->getId() ){
+            $this->object->setUsername(          strtolower( $request->input( 'username' ) ) );
+            $this->object->setEmail(             $request->input( 'email'                ) );
+            $this->object->setDisabled( $request->input( 'enabled', 0 ) == "1" ? false : true );
+        }
+
+        $this->object->setLastupdated(       new \DateTime  );
+        $this->object->setLastupdatedby(     Auth::getUser()->getId() );
+
+        // Adding new user => set customer and priv to the User Object
+        if( !$this->object->getId() ){
+            $this->object->setPrivs( $request->input( 'privs' ) );
+            $this->object->setCustomer( Auth::user()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) : Auth::getUser()->getCustomer() );
+        }
+
+        D2EM::flush();
+
+        if( $isAdding )
+        {
+            // Creating the CustomerToUser object
+            $this->c2u = new CustomerToUserEntity();
+            D2EM::persist( $this->c2u );
+
+            $this->c2u->setCustomer(        $this->object->getCustomer()  );
+            $this->c2u->setUser(            $this->object  );
+            $this->c2u->setCreatedAt(       new \DateTime  );
+            $this->c2u->setPrivs(           $request->input( 'privs' ) );
+            $this->c2u->setExtraAttributes( [ "created_by" => [ "type" => "user" , "user_id" => $this->object->getId() ] ] );
+
+            D2EM::flush();
+
+            if( $request->input( 'privs' ) == UserEntity::AUTH_SUPERUSER ){
+                AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
+            }
+        }
+
+        if( $isAdding )
+        {
+            // change me
+            event( new WelcomeEvent( $this->object->getCustomer(), $this->object, false, false ) );
+        }
+
+
+        $action = $request->input( 'id', '' )  ? "edited" : "added";
+
+        Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action
+            . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
+
+
+        AlertContainer::push( $this->store_alert_success_message ?? $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
+
+        return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
     }
 
     /**
@@ -804,40 +685,10 @@ class UserController extends Doctrine2Frontend {
             Cache::forget( 'oss_d2u_user_' . $this->object->getId() );
 
         } else {
-            // Store the Customer that we are loggued in
-            $logguedCustomer = Auth::getUser()->getCustomer();
-
-            // Delete the customer2user link
-            /** @var CustomerToUserEntity $c2u  */
-            if( !( $c2u = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "user" => $this->object , "customer" => $c ] ) ) ) {
-                return abort( '404', 'Customer2User not found' );
-            }
-
-            if( $this->object->getCustomer()->getId() == $c->getId() ){
-                // setting an available new default customer
-                $this->object->setCustomer( $this->object->getCustomers()[0] );
-            }
-
-            $this->object->removeCustomer( $c2u );
-
-            foreach( $c2u->getUserLoginHistory() as $userLogin ){
-                D2EM::remove( $userLogin );
-            }
-
-            D2EM::remove( $c2u );
-
-            D2EM::flush();
-
-            AlertContainer::push( 'The link customer/user ( ' . $c->getName() . '/' . $this->object->getName() . ' ) has been deleted.', Alert::SUCCESS );
-
-            Log::notice( Auth::getUser()->getUsername()." deleted customer2user" . $c->getName() . '/' . $this->object->getName() );
-
-
-            // If the user delete itself and is loggued as the same customer logout
-            if( Auth::getUser()->getId() == $this->object->getId() && $logguedCustomer->getId() == $c->getId() ){
-                Auth::logout();
-            }
-
+            ///
+            ////
+            ///// MOVE THIS PART TO CUSTOMERTOUSERCONTROLLER
+            /// ///
 
             // We do not want to delete the user, just the customer2user link
             return false;

@@ -108,7 +108,7 @@ class PeeringManagerControllerTest extends DuskTestCase
             $browser->click( "#peering-notes-icon-" . $c[ "id" ] )
                 ->whenAvailable( '.modal', function ( $modal ) use ( $c ) {
                     $modal->waitForText( "Peering Notes for " . $c[ "name" ] )
-                        ->keys( 'textarea[name=peering-manager-notes]', 'note'  )
+                        ->append( 'textarea[name=peering-manager-notes]', 'note'  )
                         ->click('#modal-peering-notes-save' );
 
 
