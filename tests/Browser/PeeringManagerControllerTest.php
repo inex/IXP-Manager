@@ -138,8 +138,8 @@ class PeeringManagerControllerTest extends DuskTestCase
 
             $this->assertEquals( 1 ,$pm->getEmailsSent() );
 
-            $this->sendEmail( $browser, $pm, $c, $user, true, 1);
-            $this->sendEmail( $browser, $pm, $c, $user, false, 2);
+//            $this->sendEmail( $browser, $pm, $c, $user, true, 1);
+//            $this->sendEmail( $browser, $pm, $c, $user, false, 2);
 
             // Test Mark Peering
 
@@ -161,25 +161,25 @@ class PeeringManagerControllerTest extends DuskTestCase
      * @return void
      * @throws
      */
-//    public function sendEmail( $browser, $pm, $c, $user, $sentToMe, $nbSent ){
-//
-//        // Test Send email to me
-//        $browser->click( "#peering-request-" . $c[ "id" ] )
-//            ->waitForText( "Are you sure you want to send a peering request to this member? You already sent one today." )
-//            ->press('OK' )
-//            ->waitForText( "Send Peering Request by Email" )
-//            ->click( $sentToMe ? '#modal-peering-request-sendtome' : '#modal-peering-request-send' )
-//            ->waitForText( "Success" )
-//            ->assertSee( $sentToMe ? "Peering request sample sent to your own email address (" . $user->getEmail() . ")." : "Peering request sent to" )
-//            ->press( "Close" )
-//            ->waitUntilMissing( ".modal-backdrop" );
-//
-//        // Check value in DB
-//        D2EM::refresh( $pm );
-//
-//        $this->assertEquals( $nbSent ,$pm->getEmailsSent() );
-//
-//    }
+    public function sendEmail( $browser, $pm, $c, $user, $sentToMe, $nbSent ){
+
+        // Test Send email to me
+        $browser->click( "#peering-request-" . $c[ "id" ] )
+            ->waitForText( "Are you sure you want to send a peering request to this member? You already sent one today." )
+            ->press('OK' )
+            ->waitForText( "Send Peering Request by Email" )
+            ->click( $sentToMe ? '#modal-peering-request-sendtome' : '#modal-peering-request-send' )
+            ->waitForText( "Success" )
+            ->assertSee( $sentToMe ? "Peering request sample sent to your own email address (" . $user->getEmail() . ")." : "Peering request sent to" )
+            ->press( "Close" )
+            ->waitUntilMissing( ".modal-backdrop" );
+
+        // Check value in DB
+        D2EM::refresh( $pm );
+
+        $this->assertEquals( $nbSent ,$pm->getEmailsSent() );
+
+    }
 
     /**
      * @param Browser               $browser
