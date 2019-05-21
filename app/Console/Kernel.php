@@ -23,39 +23,8 @@
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
-use IXP\Console\Commands\Audit\PostSpeeds;
-use IXP\Console\Commands\Upgrade\RouterImport;
 
 class Kernel extends ConsoleKernel {
-
-    /**
-     * The Artisan commands provided by your application.
-     *
-     * @var array
-     */
-    protected $commands = [
-
-        \IXP\Console\Commands\Audit\PortSpeeds::class,
-
-        \IXP\Console\Commands\Irrdb\UpdateAsnDb::class,
-        \IXP\Console\Commands\Irrdb\UpdatePrefixDb::class,
-
-        \IXP\Console\Commands\Router\GenerateConfiguration::class,
-
-        \IXP\Console\Commands\Utils\ConvertPlaintextPasswords::class,
-        \IXP\Console\Commands\Utils\UpdateOuiDatabase::class,
-
-        \IXP\Console\Commands\Upgrade\Customer2Users::class,
-        \IXP\Console\Commands\Upgrade\MigrateL2Addresses::class,
-        \IXP\Console\Commands\Upgrade\RemoveCustAdmin::class,
-
-        \IXP\Console\Commands\Utils\Export\JsonSchema\Post::class,
-
-        \IXP\Console\Commands\Switches\SnmpPoll::class,
-
-        \IXP\Console\Commands\Rir\GenerateObject::class,
-
-    ];
 
     /**
      * Define the application's command schedule.
@@ -72,14 +41,13 @@ class Kernel extends ConsoleKernel {
         $schedule->command( 'grapher:upload-stats-to-db' )->dailyAt( '2:00' )
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_GRAPHER_UPLOAD_STATS_TO_DB', false ); } );
 
-        // FIXME docs
+        // https://docs.ixpmanager.org/features/peeringdb/#existence-of-peeringdb-records
         $schedule->command('ixp-manager:update-in-peeringdb')->daily()
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UPDATE_IN_PEERINGDB', false ); } );
 
-        // FIXME docs
+        // https://docs.ixpmanager.org/features/manrs/
         $schedule->command('ixp-manager:update-in-manrs')->daily()
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UPDATE_IN_MANRS', false ); } );
-
 
         // IRRDB - https://docs.ixpmanager.org/features/irrdb/
         if( config( 'ixp.irrdb.bgpq3.path' ) && is_executable( config( 'ixp.irrdb.bgpq3.path' ) ) ) {
@@ -89,7 +57,6 @@ class Kernel extends ConsoleKernel {
             $schedule->command( 'irrdb:update-asn-db' )->cron( '37 */6 * * *' )
                 ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_IRRDB_UPDATE_ASN_DB', false ); } );
         }
-
 
         // https://laravel.com/docs/5.8/telescope#data-pruning
         $schedule->command('telescope:prune --hours=72')->daily();
