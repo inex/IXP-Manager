@@ -31,7 +31,7 @@ need contributors to follow so that we can accept them.
 
 ## Submitting Changes
 
-* Sign the [Contributor License Agreement](https://github.com/inex/IXP-Manager/wiki/Contributor-License-Agreement) (`gpg --clearsign inex-cla.txt`) and email it to ''operations (at) inex (dot) ie''.
+* Sign the [Contributor License Agreement](https://docs.ixpmanager.org/dev/cla/) (`gpg --clearsign inex-cla.txt`) and email it to ''operations (at) inex (dot) ie''.
 * Push your changes to a topic branch in your fork of the repository.
 * Submit a pull request to the repository in the inex organisation.
 * Submit a parallel pull request [with new/updated documentation](http://docs.ixpmanager.org/dev/docs/)
