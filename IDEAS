@@ -26,15 +26,11 @@ Potential Todo / Feature Ideas
 
 * Email members on >80% of port utilisation
 
-* Show who a member peers with (or not) on the overview page
-
 * Member audit - port states, errors / discards, route collector session
   status, route server session status, etc.
 
 * Would be useful to display last login information in the user edit screen or
   the list of users. Also the created by, last updated date?
-
-* Show per-member peering matrix on member overview page?
 
 * Member health report
 
