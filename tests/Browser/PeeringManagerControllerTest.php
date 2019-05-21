@@ -124,7 +124,6 @@ class PeeringManagerControllerTest extends DuskTestCase
 //
 //note", $pm->getNotes() );
 
-
             /** Test peering request */
             $browser->click( "#peering-request-" . $c[ "id" ] )
                 ->waitForText( "Send Peering Request by Email" )
