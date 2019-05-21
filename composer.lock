@@ -2552,16 +2552,16 @@
         },
         {
             "name": "league/flysystem",
-            "version": "1.0.51",
+            "version": "1.0.52",
             "source": {
                 "type": "git",
                 "url": "https://github.com/thephpleague/flysystem.git",
-                "reference": "755ba7bf3fb9031e6581d091db84d78275874396"
+                "reference": "c5a5097156387970e6f0ccfcdf03f752856f3391"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/755ba7bf3fb9031e6581d091db84d78275874396",
-                "reference": "755ba7bf3fb9031e6581d091db84d78275874396",
+                "url": "https://api.github.com/repos/thephpleague/flysystem/zipball/c5a5097156387970e6f0ccfcdf03f752856f3391",
+                "reference": "c5a5097156387970e6f0ccfcdf03f752856f3391",
                 "shasum": ""
             },
             "require": {
@@ -2632,7 +2632,7 @@
                 "sftp",
                 "storage"
             ],
-            "time": "2019-03-30T13:22:34+00:00"
+            "time": "2019-05-20T20:21:14+00:00"
         },
         {
             "name": "luketowers/purifier",
@@ -7697,16 +7697,16 @@
         },
         {
             "name": "staudenmeir/dusk-updater",
-            "version": "v1.1",
+            "version": "v1.1.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/staudenmeir/dusk-updater.git",
-                "reference": "430aec0894fb1247eaaffac7a6b1d8aa7c39244d"
+                "reference": "c639afc8eb7d1dd3ac7b76159ace21e1d3da65ba"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/staudenmeir/dusk-updater/zipball/430aec0894fb1247eaaffac7a6b1d8aa7c39244d",
-                "reference": "430aec0894fb1247eaaffac7a6b1d8aa7c39244d",
+                "url": "https://api.github.com/repos/staudenmeir/dusk-updater/zipball/c639afc8eb7d1dd3ac7b76159ace21e1d3da65ba",
+                "reference": "c639afc8eb7d1dd3ac7b76159ace21e1d3da65ba",
                 "shasum": ""
             },
             "require": {
@@ -7741,7 +7741,7 @@
                 }
             ],
             "description": "Updater for Laravel Dusk ChromeDriver binaries",
-            "time": "2019-05-16T01:59:08+00:00"
+            "time": "2019-05-17T20:53:33+00:00"
         },
         {
             "name": "symfony/filesystem",
