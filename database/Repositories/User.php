@@ -333,40 +333,44 @@ class User extends EntityRepository
 
     }
 
-    public function getHighestPrivsForUser( int $userid, int $custid = null )
+    /**
+     * Get the number of CustomerToUser Per User
+     *
+     * Returns an array of the form:
+     *
+     *     [
+     *         [0] => array:2 [
+     *               [id]       => 1
+     *               [nbC2U]    => '2'
+     *           ]
+     *          [1] => [
+     *               id]        => 1
+     *               [nbC2U]    => '1'
+     *          ],
+     *     ]
+     *
+     * @return array Array of info
+     */
+    public function getNbC2UByUser()
     {
-        $dql = "SELECT  c2u
-                FROM Entities\\CustomerToUser c2u
-                WHERE c2u.user = " . (int)$userid;
 
-        if( $custid ){
-            $dql .= " AND c2u.customer = " . (int)$custid;
+        $dql = "SELECT u.id as id, 
+                       COUNT( c2u ) as nbC2U
+                       FROM Entities\\User u
+                       LEFT JOIN u.Customers as c2u
+                       GROUP BY id";
+
+        $result = [];
+        foreach( $this->getEntityManager()->createQuery( $dql )->getArrayResult() as $item ){
+            $result[ $item[ 'id' ] ] = $item[ 'nbC2U' ];
         }
-
-        $query = $this->getEntityManager()->createQuery( $dql );
-
-        if( count( $query->getArrayResult() ) > 1 ){
-            $result = UserEntity::AUTH_CUSTUSER;
-
-            foreach( $query->getArrayResult() as $c2u ){
-                if( $c2u[ 'privs'] > $result ){
-                    $result = $c2u[ 'privs'];
-                }
-            }
-            $result = UserEntity::$PRIVILEGES_TEXT[ $result ] . "*";
-        } else {
-            if( isset( $query->getArrayResult()[0] ) ){
-                $result = UserEntity::$PRIVILEGES_TEXT[ $query->getArrayResult()[0][ 'privs' ] ];
-            } else {
-                // Should not happen
-                $result = "Something wrong";
-            }
-
-        }
-
 
         return $result;
+
     }
+
+
+
 
     /**
      * Find users by username

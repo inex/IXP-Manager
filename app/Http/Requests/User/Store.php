@@ -109,21 +109,26 @@ class Store extends FormRequest
         if( !$validator->fails() )
         {
 
-            $validator->after( function( $validator )
+            if( !Auth::getUser()->isSuperUser() && $this->input( 'id' ) )
             {
-
-                $cust = Auth::user()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $this->input( 'custid' ) ) : Auth::getUser()->getCustomer();
-
-                if( $this->input( 'privs' ) == UserEntity::AUTH_SUPERUSER )
+                $validator->after( function( Validator $validator )
                 {
-                    if( !Auth::getUser()->isSuperUser() || Auth::getUser()->isSuperUser() && !$cust->isTypeInternal() )
-                    {
-                        return false;
-                    }
-                }
 
-                return true;
-            });
+                    $cust = Auth::user()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $this->input( 'custid' ) ) : Auth::getUser()->getCustomer();
+
+                    if( $this->input( 'privs' ) == UserEntity::AUTH_SUPERUSER )
+                    {
+                        if( !Auth::getUser()->isSuperUser() || Auth::getUser()->isSuperUser() && !$cust->isTypeInternal() )
+                        {
+                            $validator->errors()->add( 'privs', "You are not allowed to set this User as a Super User for " . $cust->getName() );
+                            return false;
+                        }
+                    }
+
+                    return true;
+                });
+            }
+
         }
 
         return false;

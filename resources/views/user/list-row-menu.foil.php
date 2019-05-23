@@ -7,9 +7,11 @@
         <a class="btn btn-white" id='d2f-list-edit-<?= $t->row[ 'id' ] ?>' href="<?= route($t->feParams->route_prefix . '@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?> " title="Edit">
             <i class="fa fa-pencil"></i>
         </a>
-        <a class="btn btn-white d2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' data-object-id="<?= $t->row[ 'id' ] ?>" data-cust-id="<?= Auth::getUser()->isSuperUser() ? null : Auth::getUser()->getCustomer()->getId() ?>" data-nb-c2u="<?= $t->row[ 'nbC2U' ] ?>" href="#" title="Delete">
+
+        <a class="btn btn-white d2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' data-nb-c2u="<?= $t->row[ 'nbC2U' ] ?>" href="<?= $t->data[ 'params'][ 'nbC2u'][ $t->row[ 'id' ] ] > 1 ? route( 'customer-to-user@delete' ) : route( $t->feParams->route_prefix . '@delete' )  ?>" title="Delete">
             <i class="fa fa-trash"></i>
         </a>
+
     <?php endif;?>
 
     <?php if( Auth::getUser()->isSuperUser() ): ?>

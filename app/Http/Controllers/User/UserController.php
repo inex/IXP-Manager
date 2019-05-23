@@ -196,12 +196,14 @@ class UserController extends Doctrine2Frontend {
             Route::get(     'add-wizard',                       'User\UserController@addForm'                )->name( $route_prefix . '@add-wizard'          );
             Route::get(     'add/info/{id?}',                   'User\UserController@edit'                   )->name( $route_prefix . '@add-info'            );
             Route::post(     'add/check-email',                 'User\UserController@addCheckEmail'          )->name( $route_prefix . '@add-check-email'     );
-            Route::post(     '{id}/delete-customer/{custid}',   'User\UserController@deleteCustomerToUser'   )->name( $route_prefix . '@delete-customer'     );
             Route::post(     'welcome-email',                   'User\UserController@sendWelcomeEmail'       )->name( $route_prefix . '@welcome-email'       );
             Route::post(     'custom-store',                    'User\UserController@customerStore'          )->name( $route_prefix . '@custom-store'        );
         });
     }
 
+    protected function preList() {
+        $this->data[ 'params' ][ 'nbC2u' ]         = D2EM::getRepository( UserEntity::class )->getNbC2UByUser();
+    }
 
     /**
      * Provide array of rows for the list action and view action
@@ -322,13 +324,11 @@ class UserController extends Doctrine2Frontend {
         $this->redirectLink();
 
         $this->addEditSetup();
-        $this->cancelLink();
 
-        if(){
+        $cust = D2EM::getRepository( CustomerEntity::class )->find( request()->input("cust" , "" ) );
 
-        }
-        $this->data[ 'params' ][ 'custid' ]         = request()->input("cust" );
-        $this->data[ 'params' ][ 'canbelBtnLink' ]  = request()->input("cust" ) ? route( "customer@overview", [ "id" => request()->input("cust" ) ] ) : route( "user@list" ) ;
+        $this->data[ 'params' ][ 'custid' ]         = $cust ? $cust->getId() : '';
+        $this->data[ 'params' ][ 'canbelBtnLink' ]  = $cust ? route( "customer@overview", [ "id" => $cust->getId() ] ) : route( "user@list" ) ;
 
         return $this->display( 'add-form' );
     }
@@ -367,11 +367,11 @@ class UserController extends Doctrine2Frontend {
 
 
         // building the redirect url
-        $url = $user ? route( "user@add-info", [ 'user' => $user->getEmail() ] ) : route("user@add" ). '?email=' . $request->input( 'email' );
+        $url = $user ? route( "user@add-info", [ 'user' => $user->getEmail() ] ) : route("user@add" ). '?e-mail=' . $request->input( 'email' );
 
-        if( $request->input( "custid" ) ){
+        if( $request->input( "custid" ) && ( $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( "custid" ) ) ) ){
             $separator = $user ? "?" : "&";
-            $url = $url . $separator . "custid=" . $request->input( "custid" );
+            $url = $url . $separator . "cust=" . $cust->getId();
         }
 
 
@@ -422,7 +422,7 @@ class UserController extends Doctrine2Frontend {
                 foreach( $this->getC2Ulist( $this->object ) as $c2u ){
 
                     if( Auth::getUser()->isSuperUser() ){
-                        $datac2u[ 'privs_'  . $c2u->getCustomer()->getId() ] = array_key_exists( 'privs_' . $c2u->getCustomer()->getId(),  $old    ) ? $old[ 'privs_' . $c2u->getCustomer()->getId()  ]   : $c2u->getPrivs();
+                        $datac2u[ 'privs_'  . $c2u->getId() ] = array_key_exists( 'privs_' . $c2u->getId(),  $old    ) ? $old[ 'privs_' . $c2u->getId()  ]   : $c2u->getPrivs();
 
                     } else {
                         $datac2u[ 'privs'  ] = array_key_exists( 'privs',  $old    ) ? $old[ 'privs'   ]  : $c2u->getPrivs();
@@ -455,14 +455,13 @@ class UserController extends Doctrine2Frontend {
 
             }
 
-
             Former::populate([
                 'name'                  => array_key_exists( 'name',                $old ) ? $old['name']               : request()->input( "name" ),
                 'username'              => array_key_exists( 'username',            $old ) ? $old['username']           : request()->input( "username" ),
-                'email'                 => array_key_exists( 'email',               $old ) ? $old['email']              : request()->input( "email" ),
+                'email'                 => array_key_exists( 'email',               $old ) ? $old['email']              : request()->input( "e-mail" ),
                 'authorisedMobile'      => array_key_exists( 'authorisedMobile',    $old ) ? $old['authorisedMobile']   : request()->input( "authorisedMobile" ),
                 'enabled'               => array_key_exists( 'enabled',             $old ) ? $old['enabled']            : request()->input( "enabled" ),
-                'custid'                => array_key_exists( 'custid',              $old ) ? $old['custid']             : request()->input( "custid" ),
+                'custid'                => array_key_exists( 'custid',              $old ) ? $old['custid']             : request()->input( "cust" ),
             ]);
 
 
@@ -612,7 +611,8 @@ class UserController extends Doctrine2Frontend {
      * @return bool Return false to stop / cancel the deletion
      * @throws
      */
-    protected function preDelete(): bool {
+    protected function preDelete(): bool
+    {
         $c = null;
         $deleteUser = false;
 
@@ -684,20 +684,17 @@ class UserController extends Doctrine2Frontend {
 
             Cache::forget( 'oss_d2u_user_' . $this->object->getId() );
 
-        } else {
-            ///
-            ////
-            ///// MOVE THIS PART TO CUSTOMERTOUSERCONTROLLER
-            /// ///
+            Log::notice( Auth::getUser()->getUsername()." deleted user" . $this->object->getUsername() );
 
-            // We do not want to delete the user, just the customer2user link
-            return false;
+            // If the user delete itself and is loggued as the same customer logout
+            if( Auth::getUser()->getId() == $this->object->getId() ){
+                Auth::logout();
+            }
 
+            return true;
         }
 
-        Log::notice( Auth::getUser()->getUsername()." deleted user" . $this->object->getUsername() );
-
-        return true;
+        return false;
     }
 
 

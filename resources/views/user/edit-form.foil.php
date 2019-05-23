@@ -79,24 +79,24 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach( $t->data[ 'params'][ 'object']->getCustomers() as $c ): ?>
+                            <?php foreach( $t->data[ 'params'][ 'object']->getCustomers2User() as $c2u ): ?>
                                 <tr>
                                     <td>
-                                        <?= $t->ee( $c->getName() ) ?>
+                                        <?= $t->ee( $c2u->getCustomer()->getName() ) ?>
                                     </td>
                                     <td>
-                                        <?= Former::select( 'privs_' . $c->getId() )
+                                        <?= Former::select( 'privs_' . $c2u->getId() )
                                             ->label( '' )
                                             ->placeholder( 'Select a privilege' )
-                                            ->fromQuery( Auth::getUser()->isSuperUser() && $c->isTypeInternal()  ?  \Entities\User::$PRIVILEGES_TEXT : \Entities\User::$PRIVILEGES_TEXT_NONSUPERUSER, 'name' )
-                                            ->addClass( 'chzn-select' )
+                                            ->fromQuery( Auth::getUser()->isSuperUser() && $c2u->getCustomer()->isTypeInternal()  ?  \Entities\User::$PRIVILEGES_TEXT : \Entities\User::$PRIVILEGES_TEXT_NONSUPERUSER, 'name' )
+                                            ->addClass( 'chzn-select privs' )
                                             ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/usage/users/#types-of-users">'
                                                 . 'the official documentation here</a>.'
                                             );
                                         ?>
                                     </td>
                                     <td>
-                                        <a class="btn btn-white d2f-list-delete" data-object-id="<?= $t->data[ 'params'][ 'object']->getId() ?>" data-cust-id="<?= $c->getId() ?>" id="d2f-list-delete-<?= $c->getId() ?>" href="#" title="Delete">
+                                        <a class="btn btn-white d2f-list-delete btn-delete-c2u" id="d2f-list-delete-<?= $c2u->getId() ?>" href="<?= count( $t->data[ 'params'][ 'object']->getCustomers2User() ) > 1 ? route( 'customer-to-user@delete' ) : route( $t->feParams->route_prefix . '@delete' )  ?>" title="Delete">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </td>
@@ -167,7 +167,7 @@
                 <b class="mr-auto my-auto">
                     If you are sure you want to delete User:
                 </b>
-                <a class="btn btn-danger mr-4 d2f-list-delete btn-delete-user" id='' data-object-id="<?= $t->data[ 'params'][ 'object']->getId() ?>" data-cust-id="0" data-nb-c2u="<?= count( $t->data[ 'params'][ 'object']->getCustomers() ) ?>" href="#" title="Delete">
+                <a class="btn btn-danger mr-4 d2f-list-delete btn-delete-user" id="d2f-list-delete-<?= $t->data[ 'params'][ 'object']->getId() ?>" data-nb-c2u="<?= count( $t->data[ 'params'][ 'object']->getCustomers() ) ?>" href="<?= route( $t->feParams->route_prefix . '@delete' ) ?>" title="Delete">
                     Delete
                 </a>
 
