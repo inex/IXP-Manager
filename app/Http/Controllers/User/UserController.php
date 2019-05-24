@@ -197,7 +197,7 @@ class UserController extends Doctrine2Frontend {
             Route::get(     'add/info/{id?}',                   'User\UserController@edit'                   )->name( $route_prefix . '@add-info'            );
             Route::post(     'add/check-email',                 'User\UserController@addCheckEmail'          )->name( $route_prefix . '@add-check-email'     );
             Route::post(     'welcome-email',                   'User\UserController@sendWelcomeEmail'       )->name( $route_prefix . '@welcome-email'       );
-            Route::post(     'custom-store',                    'User\UserController@customerStore'          )->name( $route_prefix . '@custom-store'        );
+            Route::post(     'custom-store',                    'User\UserController@customStore'            )->name( $route_prefix . '@custom-store'        );
         });
     }
 
@@ -491,7 +491,7 @@ class UserController extends Doctrine2Frontend {
      * @throws
      */
 
-    public function customerStore( StoreUser $request )
+    public function customStore( StoreUser $request )
     {
 
         $isAdding = $request->input( 'id' ) ? false : true;

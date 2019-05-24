@@ -138,14 +138,14 @@ class UserControllerTest extends DuskTestCase
                     ->assertInputValue( 'authorisedMobile', '12125551000')
                     ->assertChecked(    'enabled' )
                     ->assertSee(        'Imagine' )
-                    ->assertSelected(   'privs_5', UserEntity::AUTH_CUSTUSER );
+                    ->assertSelected(   'privs_' . $c2u->getId() , UserEntity::AUTH_CUSTUSER );
 
 
             $browser->type( 'name',             'Test User' )
                     ->type( 'username',         'testuser' )
                     ->type( 'email',            'test-user@example.com' )
                     ->type( 'authorisedMobile', '12125551011' )
-                    ->select('privs_5',         UserEntity::AUTH_CUSTADMIN )
+                    ->select('privs_' . $c2u->getId(),         UserEntity::AUTH_CUSTADMIN )
                     ->uncheck( 'enabled' )
                     ->press(  'Save Changes' )
                     ->assertPathIs('/user/list' )
@@ -195,7 +195,7 @@ class UserControllerTest extends DuskTestCase
                     ->click( ".btn-primary" );
 
             $browser->assertPathIs( "/user/list")
-                    ->assertSee( "User added");
+                    ->assertSee( "has been added");
 
 
             /** @var CustomerToUserEntity $c2u */
@@ -223,9 +223,9 @@ class UserControllerTest extends DuskTestCase
                     ->assertNotChecked( 'enabled' )
                     ->assertInputValue('authorisedMobile', '12125551011')
                     ->assertSee('AS112' )
-                    ->assertSelected('privs_5', UserEntity::AUTH_CUSTADMIN )
+                    ->assertSelected('privs_' . $c2u->getId() , UserEntity::AUTH_CUSTADMIN )
                     ->assertSee('Imagine' )
-                    ->assertSelected('privs_2', UserEntity::AUTH_CUSTADMIN )
+                    ->assertSelected('privs_' . $c2u2->getId(), UserEntity::AUTH_CUSTADMIN )
                     ->press( 'Save Changes' )
                     ->assertPathIs('/user/list' )
                     ->assertSee( 'User edited' )
@@ -264,8 +264,8 @@ class UserControllerTest extends DuskTestCase
                     ->type(     'email'     , 'test-user1@example.com' )
                     ->check(    'enabled' )
                     ->type(     'authorisedMobile'  , '12125551000' )
-                    ->select(   'privs_5'           , UserEntity::AUTH_CUSTUSER )
-                    ->select(   'privs_2'           , UserEntity::AUTH_CUSTUSER )
+                    ->select(   'privs_' . $c2u->getId()           , UserEntity::AUTH_CUSTUSER )
+                    ->select(   'privs_' . $c2u2->getId()           , UserEntity::AUTH_CUSTUSER )
                     ->press(    'Save Changes' )
                     ->waitForLocation('/user/list' )
                     ->assertSee( 'User edited' )
@@ -309,7 +309,7 @@ class UserControllerTest extends DuskTestCase
 
             $browser->assertPathIs(     "/user/edit/" . $u->getId() )
                     ->waitForText(      'Imagine' )
-                    ->click(         "#d2f-list-delete-" . $c2u2->getCustomer()->getId() )
+                    ->click(         "#d2f-list-delete-" . $c2u2->getId() )
                     ->waitForText(      "Delete User" )
                     ->assertSee(        "Do you really want to delete" )
                     ->press(          "Delete" );

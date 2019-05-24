@@ -106,11 +106,10 @@ class Store extends FormRequest
 
     public function withValidator( Validator $validator )
     {
-        if( !$validator->fails() )
-        {
-
-            if( !Auth::getUser()->isSuperUser() && $this->input( 'id' ) )
+        if( !$this->input( 'id' ) ){
+            if( !$validator->fails() )
             {
+
                 $validator->after( function( Validator $validator )
                 {
 
@@ -127,9 +126,10 @@ class Store extends FormRequest
 
                     return true;
                 });
-            }
 
+            }
         }
+
 
         return false;
 
