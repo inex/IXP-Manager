@@ -304,7 +304,6 @@
             $( '.table-note' ).on( 'click', '.co-notes-notify', coNotesNotifyToggle );
             $( '.table-note' ).on( 'click', '.co-notes-edit',   coNotesEditDialog );
             $( '.table-note' ).on( 'click', '.co-notes-trash',  coNotesDelete );
-            $( '.table-note' ).on( 'click', '.co-notes-view',   coNotesViewDialog );
 
             $( "#co-notes-fpublic" ).on( "click", function() {
                 coNotesPublicCheckbox();
@@ -323,6 +322,8 @@
             });
 
         <?php endif; ?>
+
+        $( '.table-note' ).on( 'click', '.co-notes-view',   coNotesViewDialog );
 
         $( "#tab-notes" ).on( 'shown.bs.tab', function( ) {
             // mark notes as read and update the users last read time

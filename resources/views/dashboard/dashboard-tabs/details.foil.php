@@ -162,15 +162,3 @@
     </div>
 
 </div>
-
-
-<?php $this->section( 'scripts' ) ?>
-    <script>
-        <?php if( Auth::getUser()->isCustUser() ): ?>
-            $( document ).ready(function() {
-                $( "input" ).attr( "disabled", "disabled" );
-                $( "select" ).attr( "disabled", "disabled" )
-            });
-        <?php endif; ?>
-    </script>
-<?php $this->append() ?>
