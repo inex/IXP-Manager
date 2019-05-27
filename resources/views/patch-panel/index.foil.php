@@ -185,7 +185,7 @@
                                         </a>
 
                                         <?php if( $pp->getActive() ): ?>
-                                            <a class="btn btn-white list-delete" id='list-delete-<?= $pp->getId() ?>' href="#" title="Make Inactive">
+                                            <a class="btn btn-white list-delete" id='list-delete-<?= $pp->getId() ?>' href="<?= route( 'patch-panel@change-status' , [ 'id' => $pp->getId(), 'status' => ( $pp->getActive() ? '0' : '1' ) ] ) ?>" title="Make Inactive">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         <?php else: ?>
@@ -249,10 +249,8 @@
         $( '#patch-panel-list' ).on( 'click', '.list-delete', function( event ) {
 
             event.preventDefault();
-            let ppid = ( this.id ).substring( 12 );
-            let url = "<?= route( 'patch-panel@change-status' , [ 'id' => $pp->getId(), 'status' => ( $pp->getActive() ? '0' : '1' ) ] ) ?>";
+            let url = $(this).attr('href');
 
-            console.log($(this).attr('href'));
             bootbox.dialog({
                 message: 'Are you sure that you want to delete this Patch Panel ? It will become deactivated.',
                 title: "Delete Patch Panel",
