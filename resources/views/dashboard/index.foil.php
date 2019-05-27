@@ -171,7 +171,13 @@ $this->layout( 'layouts/ixpv4' );
             $($.fn.dataTable.tables(true)).DataTable()
                 .columns.adjust()
                 .responsive.recalc();
-        })
+        });
 
+        <?php if( Auth::getUser()->isCustUser() ): ?>
+            $( document ).ready(function() {
+                $( "#details input" ).attr( "disabled", "disabled" );
+                $( "#details select" ).attr( "disabled", "disabled" )
+            });
+        <?php endif; ?>
     </script>
 <?php $this->append() ?>
