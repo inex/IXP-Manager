@@ -405,7 +405,7 @@ class UserControllerTest extends DuskTestCase
                  *  Delete User Via customer overview
                  *
                  */
-                $browser->press(        '#usr-list-delete-' . $u2->getId() )
+                $browser->press(        '#usr-list-delete-' . $c2u3->getId() )
                         ->waitForText(    'Do you really want to delete this user?' )
                         ->press(        'Delete' )
                         ->assertPathIs(   '/customer/overview/5/users' )
