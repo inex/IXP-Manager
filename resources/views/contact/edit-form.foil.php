@@ -113,7 +113,7 @@
 
                     <?php if( $t->data[ 'params'][ "allGroups" ] && count( $t->data[ 'params'][ "allGroups" ] ) > 1 || ( count( $t->data[ 'params'][ "allGroups" ] ) == 1 && !isset( $t->data[ 'params'][ "allGroups" ]['ROLE'] ) )): ?>
 
-                        <div class="form-group" style="display: inline; display: inline-flex">
+                        <div class="form-group">
 
                             <label for="mayauthorize" class="control-label col-lg-2 col-sm-4">&nbsp;Groups&nbsp;</label>
 
@@ -124,7 +124,7 @@
                                     <?php if( $gname != "ROLE" && config('contact_group.types.' . $gname ) ): ?>
                                         <tr>
                                             <td>
-                                                <label for="mayauthorize" class="control-label col-lg-2 col-sm-4">&nbsp;<?= $gname ?>&nbsp;</label>
+                                                <label for="mayauthorize" class="control-label col-lg-2 col-sm-4" style="display: grid">&nbsp;<?= $gname ?>&nbsp;</label>
                                             </td>
 
                                             <?php foreach( $gvalue as $ggroup ): ?>
