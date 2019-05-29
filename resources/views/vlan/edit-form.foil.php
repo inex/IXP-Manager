@@ -16,7 +16,10 @@
 
         <?= Former::number( 'number' )
             ->label( '802.1q Tag' )
-            ->blockHelp( "The VLAN number / 802.1q tag for this VLAN. (A number between 1 and 4096 but some switch platforms may have reserved numbers)." );
+            ->blockHelp( "The VLAN number / 802.1q tag for this VLAN. (A number between 1 and 4096 but some switch platforms may have reserved numbers).<br><br>"
+                . "<b>NB:</b> While it is technically possible to use the same VLAN across different infrastructures, this is a bad idea in IXP Manager. "
+                . 'See <a href="https://github.com/inex/IXP-Manager/issues/517" target="_blank">this GitHub issue as one example for this</a>.'
+            );
         ?>
 
         <?= Former::select( 'infrastructureid' )
@@ -77,7 +80,7 @@
 
                     <div class="tab-content card-body">
                         <div role="tabpanel" class="tab-pane show active" id="body">
-                            <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->data['params']['notes'] ?></textarea>
+                            <textarea class="form-control" style="font-family:monospace;" rows="5" id="notes" name="notes"><?= $t->data['params']['notes'] ?></textarea>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="preview">
                             <div class="bg-light p-4 well-preview">
@@ -89,6 +92,8 @@
             </div>
 
         </div>
+
+
 
         <?= Former::actions(
             Former::primary_submit( $t->data[ 'params']['isAdd'] ? 'Add' : 'Save Changes' )->class( "mb-2 mb-sm-0" ),
@@ -103,5 +108,10 @@
 
         <?= Former::close() ?>
 
+        <div class="alert alert-info tw-mt-8" role="alert">
+            When choosing a VLAN / 802.1q tag, note that while it is technically possible to use the same VLAN tag across different infrastructures,
+            this is a bad idea in IXP Manager. Some components expect unique tags for peering LANs.
+            See <a href="https://github.com/inex/IXP-Manager/issues/517" target="_blank">this GitHub issue as one example for this</a>.
+        </div>
     </div>
 </div>
