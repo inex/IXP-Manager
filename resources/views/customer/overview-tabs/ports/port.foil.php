@@ -271,8 +271,8 @@
                                         </b>
                                     </td>
                                     <td>
-                                        <?php if( $vli->getIpv6enabled() and $vli->getIpv6address() ): ?>
-                                            <?= $t->ee( $vli->getIPv6Address()->getAddress() ) ?> <?php if( isset( $netinfo[ $vlanid ][ 6 ][ 'masklen' ] ) ) : ?> /<?= $netinfo[ $vlanid ][ 6 ][ "masklen" ] ?> <?php endif;?>
+                                        <?php if( $vli->getIpv6enabled() && $vli->getIpv6address() ): ?>
+                                            <?= $t->ee( $vli->getIPv6Address()->getAddress() ) ?><?php if( isset( $t->netInfo[ $vlanid ][ 6 ][ 'masklen' ] ) ) : ?>/<?= $t->netInfo[ $vlanid ][ 6 ][ "masklen" ] ?> <?php endif;?>
                                         <?php else: ?>
                                             IPv6 not enabled.
                                         <?php endif; ?>
@@ -281,8 +281,8 @@
                                         <b>IPv4 Address:</b>
                                     </td>
                                     <td>
-                                        <?php if( $vli->getIpv4enabled() and $vli->getIpv4address() ): ?>
-                                            <?= $t->ee( $vli->getIPv4Address()->getAddress() ) ?> <?php if( isset( $netinfo[ $vlanid ][ 4 ][ 'masklen' ] ) ) : ?> /<?= $netinfo[ $vlanid ][ 4 ][ "masklen" ] ?> <?php endif;?>
+                                        <?php if( $vli->getIpv4enabled() && $vli->getIpv4address() ): ?>
+                                            <?= $t->ee( $vli->getIPv4Address()->getAddress() ) ?><?php if( isset( $t->netInfo[ $vlanid ][ 4 ][ 'masklen' ] ) ) : ?>/<?= $t->netInfo[ $vlanid ][ 4 ][ "masklen" ] ?> <?php endif;?>
                                         <?php else: ?>
                                             IPv4 not enabled.
                                         <?php endif; ?>
