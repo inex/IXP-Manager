@@ -96,7 +96,7 @@
                                         ?>
                                     </td>
                                     <td>
-                                        <a class="btn btn-white d2f-list-delete btn-delete-c2u" id="d2f-list-delete-<?= $c2u->getId() ?>" href="<?= count( $t->data[ 'params'][ 'object']->getCustomers2User() ) > 1 ? route( 'customer-to-user@delete' ) : route( $t->feParams->route_prefix . '@delete' )  ?>" title="Delete">
+                                        <a class="btn btn-white d2f-list-delete btn-delete-c2u" id="d2f-list-delete-<?= count( $t->data[ 'params'][ 'object']->getCustomers2User() ) > 1 ? $c2u->getId() : $c2u->getUser()->getId() ?>" href="<?= count( $t->data[ 'params'][ 'object']->getCustomers2User() ) > 1 ? route( 'customer-to-user@delete' ) : route( $t->feParams->route_prefix . '@delete' )  ?>" title="Delete">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     </td>

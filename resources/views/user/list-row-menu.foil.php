@@ -8,9 +8,16 @@
             <i class="fa fa-pencil"></i>
         </a>
 
-        <a class="btn btn-white d2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' data-nb-c2u="<?= $t->row[ 'nbC2U' ] ?>" href="<?= $t->data[ 'params'][ 'nbC2u'][ $t->row[ 'id' ] ] > 1 ? route( 'customer-to-user@delete' ) : route( $t->feParams->route_prefix . '@delete' )  ?>" title="Delete">
-            <i class="fa fa-trash"></i>
-        </a>
+        <?php if( Auth::getUser()->isSuperUser() ): ?>
+            <a class="btn btn-white d2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="<?= $t->data[ 'params'][ 'nbC2u'][ $t->row[ 'id' ] ] > 1 ? route( 'customer-to-user@delete' ) : route( $t->feParams->route_prefix . '@delete' )  ?>" title="Delete">
+                <i class="fa fa-trash"></i>
+            </a>
+        <?php else: ?>
+            <a class="btn btn-white d2f-list-delete" id='d2f-list-delete-<?= $t->data[ 'params'][ 'nbC2u'][ $t->row[ 'id' ] ] > 1 ? $t->row[ 'c2uid' ] : $t->row[ 'id' ] ?>' href="<?= $t->data[ 'params'][ 'nbC2u'][ $t->row[ 'id' ] ] > 1 ? route( 'customer-to-user@delete' ) : route( $t->feParams->route_prefix . '@delete' )  ?>" title="Delete">
+                <i class="fa fa-trash"></i>
+            </a>
+        <?php endif; ?>
+
 
     <?php endif;?>
 
