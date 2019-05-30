@@ -267,10 +267,10 @@ class UserController extends Doctrine2Frontend {
         $privs = UserEntity::$PRIVILEGES_TEXT_NONSUPERUSER;
 
         // If we add a user via the customer overview users list
-        if( request()->is( 'user/add*' ) && request()->input( "custid" ) ){
+        if( request()->is( 'user/add*' ) && request()->input( "cust" ) ){
 
             /** @var $c CustomerEntity */
-            if( ( $c = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "custid" ) ) ) ){
+            if( ( $c = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "cust" ) ) ) ){
                 // Internal customer and SuperUser
                 if( $c->isTypeInternal() && Auth::getUser()->isSuperUser() ){
                     $privs = UserEntity::$PRIVILEGES_TEXT;
@@ -390,12 +390,14 @@ class UserController extends Doctrine2Frontend {
      */
     protected function addEditPrepareForm( $id = null ): array {
         $old = request()->old();
-        $existingUser = $disabledInputs = $c = $addEditTpl = false;
+        $existingUser = $disabledInputs = $addEditTpl = false;
         $listUsers = [];
 
         if( !request()->session()->exists( 'user_post_store_redirect' ) ){
             $this->redirectLink();
         }
+
+        $c = D2EM::getRepository( CustomerEntity::class)->find( request()->input( "cust", false ) );
 
         $this->cancelLink();
 
@@ -463,7 +465,6 @@ class UserController extends Doctrine2Frontend {
                 'enabled'               => array_key_exists( 'enabled',             $old ) ? $old['enabled']            : request()->input( "enabled" ),
                 'custid'                => array_key_exists( 'custid',              $old ) ? $old['custid']             : request()->input( "cust" ),
             ]);
-
 
         }
 
@@ -558,14 +559,24 @@ class UserController extends Doctrine2Frontend {
             if( $request->input( 'privs' ) == UserEntity::AUTH_SUPERUSER ){
                 AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
             }
-        }
 
-        if( $isAdding )
-        {
             // change me
             event( new WelcomeEvent( $this->object->getCustomer(), $this->object, false, false ) );
         }
 
+        // if efiting and not super user
+        if( !$isAdding && !Auth::getUser()->isSuperUser() ){
+
+            /** @var $c2u CustomerToUserEntity */
+            if( !( $c2u = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ 'user' => $this->object , 'customer' => Auth::getUser()->getCustomer() ] ) ) )
+            {
+                abort(404, 'UserToCustomer not found');
+            }
+
+            $c2u->setPrivs( $request->input( "privs" ) );
+            D2EM::flush();
+
+        }
 
         $action = $request->input( 'id', '' )  ? "edited" : "added";
 
@@ -648,7 +659,7 @@ class UserController extends Doctrine2Frontend {
 
 
         // delete the user and everything linked to this user
-        if( $deleteUser  ){
+        if( $deleteUser ){
 
             // delete all the user's preferences
             foreach( $this->object->getPreferences() as $pref ) {
@@ -678,8 +689,11 @@ class UserController extends Doctrine2Frontend {
             }
 
             // Set the customer ID in session to redirect the user to the customer overview after deleting
-            if( Auth::getUser()->isSuperUser() && $c ) {
-                session()->put( "ixp_user_delete_custid", $c->getId() );
+            if( Auth::getUser()->isSuperUser() ) {
+                if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
+                    session()->put( "ixp_user_delete_redirect", route( "customer@overview", [ "id" => $this->object->getCustomer()->getId() , "tab" => "users"] ) );
+                }
+
             }
 
             Cache::forget( 'oss_d2u_user_' . $this->object->getId() );
@@ -707,9 +721,9 @@ class UserController extends Doctrine2Frontend {
     protected function postDeleteRedirect() {
 
         // retrieve the customer ID
-        if( $custid = session()->get( "ixp_user_delete_custid" ) ) {
-            session()->remove( "ixp_user_delete_custid" );
-            return route( "customer@overview" , [ "id" => $custid, "tab" => "users" ] );
+        if( $urlRedirect = session()->get( "ixp_user_delete_redirect" ) ) {
+            session()->remove( "ixp_user_delete_redirect" );
+            return $urlRedirect;
         }
 
         // If user not logged in redirect to the login form ( this happen when the user delete itself)

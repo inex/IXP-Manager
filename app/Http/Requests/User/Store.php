@@ -62,7 +62,8 @@ class Store extends FormRequest
             $infoArray = [
                 'name'                                              => 'required|string|max:255',
                 'username'                                          => 'required|string|min:3|max:255|regex:/^[a-z0-9\-_\.]{3,255}$/|unique:Entities\User,username' . ( $this->input( 'id' ) ? ',' . $this->input( 'id' ) : '' ),
-                'email'                                             => 'required|email|max:255|unique:Entities\User,email' . ( $this->input( 'id' ) ? ',' . $this->input( 'id' ) : '' ),
+                //'email'                                             => 'required|email|max:255|unique:Entities\User,email' . ( $this->input( 'id' ) ? ',' . $this->input( 'id' ) : '' ),
+                'email'                                             => 'required|email|max:255',
                 'authorisedMobile'                                  => 'nullable|string|max:50',
             ];
 
@@ -106,7 +107,7 @@ class Store extends FormRequest
 
     public function withValidator( Validator $validator )
     {
-        if( !$this->input( 'id' ) ){
+        if( !$this->input( 'id' ) || !Auth::getUser()->isSuperUser() ){
             if( !$validator->fails() )
             {
 
