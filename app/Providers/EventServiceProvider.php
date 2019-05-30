@@ -59,6 +59,10 @@ class EventServiceProvider extends ServiceProvider {
             'IXP\Listeners\User\EmailWelcome'
         ],
 
+        'IXP\Events\User\C2uWelcome' => [
+            'IXP\Listeners\User\C2uEmailWelcome'
+        ],
+
         'IXP\Events\Auth\ForgotUsername' => [
             'IXP\Listeners\Auth\ForgotUsername'
         ],

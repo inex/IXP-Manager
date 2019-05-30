@@ -41,10 +41,6 @@ class Welcome
 {
     use Dispatchable, SerializesModels;
 
-    /**
-     * @var CustomerEntity
-     */
-    public $customer;
 
     /**
      * @var UserEntity
@@ -57,22 +53,14 @@ class Welcome
     public $resend;
 
     /**
-     * @var boolean
-     */
-    public $existing;
-
-    /**
      * Create a new event instance.
      *
      * @param UserEntity    $u
      * @param bool          $resend     Do you need to resend the email ?
-     * @param bool          $existing   Does the user already exist ?
      */
-    public function __construct(  ?CustomerEntity $c, UserEntity $u, bool $resend = false, bool $existing = false )
+    public function __construct(  UserEntity $u, bool $resend = false )
     {
-        $this->customer = $c;
         $this->user     = $u;
         $this->resend   = $resend;
-        $this->existing = $existing;
     }
 }

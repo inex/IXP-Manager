@@ -23,9 +23,7 @@ namespace IXP\Http\Controllers\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Cache, D2EM, Former, Hash, Log, Redirect, Route, Validator;
-
-use IXP\Events\User\Welcome as WelcomeEvent;
+use Auth, Cache, D2EM, Former, Hash, Log, Mail, Redirect, Route;
 
 use Entities\{
     Customer as CustomerEntity,
@@ -39,8 +37,8 @@ use Illuminate\Http\{
 };
 
 use IXP\Http\Requests\User\{
-    Store as StoreUser
-};
+    AddCheckEmail as AddCheckEmailRequest,
+    Store as StoreUser};
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -50,6 +48,10 @@ use IXP\Utils\View\Alert\{
 use Illuminate\View\View;
 
 use IXP\Http\Controllers\Doctrine2Frontend;
+
+use IXP\Mail\User\Welcome as WelcomeMailable;
+
+use IXP\Events\User\Welcome as WelcomeEvent;
 
 
 /**
@@ -196,7 +198,7 @@ class UserController extends Doctrine2Frontend {
             Route::get(     'add-wizard',                       'User\UserController@addForm'                )->name( $route_prefix . '@add-wizard'          );
             Route::get(     'add/info/{id?}',                   'User\UserController@edit'                   )->name( $route_prefix . '@add-info'            );
             Route::post(     'add/check-email',                 'User\UserController@addCheckEmail'          )->name( $route_prefix . '@add-check-email'     );
-            Route::post(     'welcome-email',                   'User\UserController@sendWelcomeEmail'       )->name( $route_prefix . '@welcome-email'       );
+            Route::post(     'welcome-email',                   'User\UserController@resendWelcomeEmail'     )->name( $route_prefix . '@welcome-email'       );
             Route::post(     'custom-store',                    'User\UserController@customStore'            )->name( $route_prefix . '@custom-store'        );
         });
     }
@@ -320,7 +322,8 @@ class UserController extends Doctrine2Frontend {
      *
      * @return View
      */
-    public function addForm(): View {
+    public function addForm(): View
+    {
         $this->redirectLink();
 
         $this->addEditSetup();
@@ -340,31 +343,16 @@ class UserController extends Doctrine2Frontend {
      *      if yes we get the user information and display the information of the user
      *      if no we display the add/edit form
      *
-     * @param Request $request
+     * @param AddCheckEmailRequest $request
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function addCheckEmail( Request $request ){
-        $validator = Validator::make( $request->all(), [
-            'email'                 => 'required|email|max:255',
-        ]);
-
-        if( $validator->fails() ) {
-            return Redirect::back()->withErrors( $validator )->withInput();
-        }
+    public function addCheckEmail( AddCheckEmailRequest $request ){
 
         /** @var UserEntity $user */
-        if( $user = D2EM::getRepository( UserEntity::class )->findOneBy( [ 'email' => $request->input( 'email' ) ] ) ) {
-            if( !Auth::getUser()->isSuperUser() ){
-                if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => Auth::getUser()->getCustomer() , "user" => $user ] ) ){
-                    AlertContainer::push( "A user already exists with that email address for your company." , Alert::DANGER );
-                    return Redirect::back()->withErrors($validator)->withInput();
-                }
-            }
-        }
-
+        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [ 'email' => $request->input( 'email' ) ] );
 
         // building the redirect url
         $url = $user ? route( "user@add-info", [ 'user' => $user->getEmail() ] ) : route("user@add" ). '?e-mail=' . $request->input( 'email' );
@@ -388,7 +376,8 @@ class UserController extends Doctrine2Frontend {
      *
      * @throws
      */
-    protected function addEditPrepareForm( $id = null ): array {
+    protected function addEditPrepareForm( $id = null ): array
+    {
         $old = request()->old();
         $existingUser = $disabledInputs = $addEditTpl = false;
         $listUsers = [];
@@ -519,13 +508,15 @@ class UserController extends Doctrine2Frontend {
         }
 
         // Superuser OR Adding user OR Logged User edit his own user
-        if( Auth::getUser()->isSuperUser() || !$this->object->getId() || $this->object->getId() == Auth::getUser()->getId() ) {
+        if( Auth::getUser()->isSuperUser() || !$this->object->getId() || $this->object->getId() == Auth::getUser()->getId() )
+        {
             $this->object->setName( $request->input( 'name' ) );
             $this->object->setAuthorisedMobile( $request->input( 'authorisedMobile' ) );
         }
 
         // Superuser OR Adding user
-        if( Auth::getUser()->isSuperUser() || !$this->object->getId() ){
+        if( Auth::getUser()->isSuperUser() || !$this->object->getId() )
+        {
             $this->object->setUsername(          strtolower( $request->input( 'username' ) ) );
             $this->object->setEmail(             $request->input( 'email'                ) );
             $this->object->setDisabled( $request->input( 'enabled', 0 ) == "1" ? false : true );
@@ -535,7 +526,8 @@ class UserController extends Doctrine2Frontend {
         $this->object->setLastupdatedby(     Auth::getUser()->getId() );
 
         // Adding new user => set customer and priv to the User Object
-        if( !$this->object->getId() ){
+        if( !$this->object->getId() )
+        {
             $this->object->setPrivs( $request->input( 'privs' ) );
             $this->object->setCustomer( Auth::user()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) : Auth::getUser()->getCustomer() );
         }
@@ -556,16 +548,17 @@ class UserController extends Doctrine2Frontend {
 
             D2EM::flush();
 
-            if( $request->input( 'privs' ) == UserEntity::AUTH_SUPERUSER ){
+            if( $request->input( 'privs' ) == UserEntity::AUTH_SUPERUSER )
+            {
                 AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
             }
 
-            // change me
-            event( new WelcomeEvent( $this->object->getCustomer(), $this->object, false, false ) );
+            event( new WelcomeEvent( $this->object, false ) );
         }
 
-        // if efiting and not super user
-        if( !$isAdding && !Auth::getUser()->isSuperUser() ){
+        // if editing and not super user
+        if( !$isAdding && !Auth::getUser()->isSuperUser() )
+        {
 
             /** @var $c2u CustomerToUserEntity */
             if( !( $c2u = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ 'user' => $this->object , 'customer' => Auth::getUser()->getCustomer() ] ) ) )
@@ -580,9 +573,7 @@ class UserController extends Doctrine2Frontend {
 
         $action = $request->input( 'id', '' )  ? "edited" : "added";
 
-        Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action
-            . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
-
+        Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
 
         AlertContainer::push( $this->store_alert_success_message ?? $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
 
@@ -594,8 +585,10 @@ class UserController extends Doctrine2Frontend {
      *
      * @return null|string
      */
-    protected function postStoreRedirect(){
-        if( !Auth::getUser()->isSuperUser() ) {
+    protected function postStoreRedirect()
+    {
+        if( !Auth::getUser()->isSuperUser() )
+        {
             return route( 'user@list' );
         } else {
 
@@ -627,49 +620,59 @@ class UserController extends Doctrine2Frontend {
         $c = null;
         $deleteUser = false;
 
-        if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( request()->input( 'id' ) ) ) ) {
+        if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( request()->input( 'id' ) ) ) )
+        {
             return abort( '404', 'User not found' );
         }
 
-        if( !Auth::getUser()->isSuperUser() ) {
-            if( !D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "user" => $this->object , "customer" => Auth::getUser()->getCustomer()->getId() ] ) ) {
+        if( !Auth::getUser()->isSuperUser() )
+        {
+            if( !D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ "user" => $this->object , "customer" => Auth::getUser()->getCustomer()->getId() ] ) )
+            {
                 Log::notice( Auth::getUser()->getUsername() . " tried to delete other customer user " . $this->object->getUsername() );
                 abort( 401, 'You are not authorised to delete this user. The administrators have been notified.' );
             }
         }
 
 
-        if( !Auth::getUser()->isSuperUser() && !request()->input( 'custid' ) ){
+        if( !Auth::getUser()->isSuperUser() && !request()->input( 'custid' ) )
+        {
             redirect::to( "/" );
         }
 
-        if( request()->input( 'custid' ) ){
-            if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( request()->input( 'custid' ) ) ) ) {
+        if( request()->input( 'custid' ) )
+        {
+            if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( request()->input( 'custid' ) ) ) )
+            {
                 return abort( '404', 'Customer not found' );
             }
         }
 
 
 
-        if( Auth::getUser()->isSuperUser() && !$c ){
+        if( Auth::getUser()->isSuperUser() && !$c )
+        {
             $deleteUser = true;
-        } elseif( count( $this->object->getCustomers() ) == 1  ){
+        }
+        elseif( count( $this->object->getCustomers() ) == 1  )
+        {
             $deleteUser = true;
         }
 
 
         // delete the user and everything linked to this user
-        if( $deleteUser ){
-
+        if( $deleteUser )
+        {
             // delete all the user's preferences
-            foreach( $this->object->getPreferences() as $pref ) {
+            foreach( $this->object->getPreferences() as $pref )
+            {
                 $this->object->removePreference( $pref );
                 D2EM::remove( $pref );
             }
 
-
             // delete all the user's API keys
-            foreach( $this->object->getApiKeys() as $ak ) {
+            foreach( $this->object->getApiKeys() as $ak )
+            {
                 $this->object->removeApiKey( $ak );
                 D2EM::remove( $ak );
             }
@@ -677,10 +680,11 @@ class UserController extends Doctrine2Frontend {
 
             // delete all the C2U for the user
             /** @var CustomerToUserEntity $c2u */
-            foreach( $this->object->getCustomers2User() as $c2u ) {
-
+            foreach( $this->object->getCustomers2User() as $c2u )
+            {
                 // delete all the user's login records
-                foreach( $c2u->getUserLoginHistory() as $loginHistory ){
+                foreach( $c2u->getUserLoginHistory() as $loginHistory )
+                {
                     D2EM::remove( $loginHistory );
                 }
 
@@ -689,8 +693,10 @@ class UserController extends Doctrine2Frontend {
             }
 
             // Set the customer ID in session to redirect the user to the customer overview after deleting
-            if( Auth::getUser()->isSuperUser() ) {
-                if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
+            if( Auth::getUser()->isSuperUser() )
+            {
+                if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) )
+                {
                     session()->put( "ixp_user_delete_redirect", route( "customer@overview", [ "id" => $this->object->getCustomer()->getId() , "tab" => "users"] ) );
                 }
 
@@ -701,7 +707,8 @@ class UserController extends Doctrine2Frontend {
             Log::notice( Auth::getUser()->getUsername()." deleted user" . $this->object->getUsername() );
 
             // If the user delete itself and is loggued as the same customer logout
-            if( Auth::getUser()->getId() == $this->object->getId() ){
+            if( Auth::getUser()->getId() == $this->object->getId() )
+            {
                 Auth::logout();
             }
 
@@ -721,13 +728,15 @@ class UserController extends Doctrine2Frontend {
     protected function postDeleteRedirect() {
 
         // retrieve the customer ID
-        if( $urlRedirect = session()->get( "ixp_user_delete_redirect" ) ) {
+        if( $urlRedirect = session()->get( "ixp_user_delete_redirect" ) )
+        {
             session()->remove( "ixp_user_delete_redirect" );
             return $urlRedirect;
         }
 
         // If user not logged in redirect to the login form ( this happen when the user delete itself)
-        if( !Auth::check() ){
+        if( !Auth::check() )
+        {
             return route( "login@showForm" );
         }
 
@@ -741,23 +750,20 @@ class UserController extends Doctrine2Frontend {
      *
      * @return bool|RedirectResponse
      */
-    public function sendWelcomeEmail( Request $request ) {
-
+    public function resendWelcomeEmail( Request $request )
+    {
         /** @var UserEntity $user */
-        if( !( $user = D2EM::getRepository( UserEntity::class )->find( $request->input( "id" ) ) ) ) {
+        if( !( $user = D2EM::getRepository( UserEntity::class )->find( $request->input( "id" ) ) ) )
+        {
             abort(404, 'User not found');
         }
 
-        $resend = $request->input( "resend" ) ? true : false;
+        Mail::to( $user->getEmail() )->send( new WelcomeMailable( $user, true ) );
 
-        event( new WelcomeEvent( $user->getCustomer(), $user, $resend , false ) );
+        AlertContainer::push( sprintf( 'The welcome email has been resent' ), Alert::SUCCESS );
 
-        if( $resend ){
-            AlertContainer::push( sprintf( 'The welcome email has been %s.', $resend ? 'resent' : 'sent' ), Alert::SUCCESS );
-            return redirect::to( route( $this::$route_prefix . "@list" ) );
-        }
+        return redirect::to( route( $this::$route_prefix . "@list" ) );
 
-        return true;
     }
 
 }

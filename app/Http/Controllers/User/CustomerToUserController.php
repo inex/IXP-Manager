@@ -25,7 +25,7 @@ namespace IXP\Http\Controllers\User;
 
 use Auth, D2EM, Log, Redirect;
 
-use IXP\Events\User\Welcome as WelcomeEvent;
+use IXP\Events\User\C2uWelcome as C2uWelcomeEvent;
 
 use Entities\{
     Customer        as CustomerEntity,
@@ -66,6 +66,7 @@ class CustomerToUserController extends Controller
      * @param StoreCustomerToUser $request
      *
      * @return redirect
+     *
      * @throws
      */
     public function store( StoreCustomerToUser $request )
@@ -73,22 +74,22 @@ class CustomerToUserController extends Controller
         /** @var CustomerEntity $cust */
         $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) );
 
-        /** @var UserEntity $existingUser */
-        $existingUser = D2EM::getRepository( UserEntity::class )->find( $request->input( 'existingUserId' ) );
+        /** @var UserEntity $user */
+        $user = D2EM::getRepository( UserEntity::class )->find( $request->input( 'existingUserId' ) );
 
         /** @var CustomerToUserEntity $c2u */
         $c2u = new CustomerToUserEntity;
         D2EM::persist( $c2u );
 
         $c2u->setCustomer(         $cust );
-        $c2u->setUser(             $existingUser                   );
+        $c2u->setUser(             $user                   );
         $c2u->setPrivs(            $request->input( 'privs' ) );
         $c2u->setCreatedAt(        new \DateTime                   );
-        $c2u->setExtraAttributes(  [ "created_by" => [ "type" => "user" , "user_id" => $existingUser->getId() ] ] );
+        $c2u->setExtraAttributes(  [ "created_by" => [ "type" => "user" , "user_id" => $user->getId() ] ] );
 
         D2EM::flush();
 
-        event( new WelcomeEvent( $cust, $existingUser, false, true ) );
+        event( new C2uWelcomeEvent( $c2u ) );
 
         $redirect = session()->get( "user_post_store_redirect" );
         session()->remove( "user_post_store_redirect" );
@@ -96,7 +97,7 @@ class CustomerToUserController extends Controller
         Log::notice( Auth::user()->getUsername() . ' added a CustomerToUser with ID ' . $c2u->getId() );
 
 
-        AlertContainer::push( "The link customer/user ( " . $cust->getName() . "/" . $existingUser->getName() . " ) has been added." , Alert::SUCCESS );
+        AlertContainer::push( "The link customer/user ( " . $cust->getName() . "/" . $user->getName() . " ) has been added." , Alert::SUCCESS );
 
         // retrieve the customer ID
         if( strpos( $redirect, "customer/overview" ) ) {
@@ -143,15 +144,17 @@ class CustomerToUserController extends Controller
         return response()->json( [ 'success' => true, 'message' => 'The privs has been updated.' ] );
     }
 
-
-
-
-
-
-
+    /**
+     * Function to Delete a customer to user link
+     *
+     * @param Request $request
+     *
+     * @return redirect
+     *
+     * @throws
+     */
     public function delete( Request $request )
     {
-
         // Delete the customer2user link
         /** @var CustomerToUserEntity $c2u  */
         if( !( $c2u = D2EM::getRepository( CustomerToUserEntity::class )->find( $request->input( "id" ) ) ) ) {
@@ -165,12 +168,11 @@ class CustomerToUserController extends Controller
             }
         }
 
-
-
         /** @var UserEntity $user */
         $user   = $c2u->getUser();
         /** @var CustomerEntity $c */
         $c      = $c2u->getCustomer();
+
         // Store the Customer that we are loggued in
         $logguedCustomer = Auth::getUser()->getCustomer();
 
