@@ -843,14 +843,15 @@ class UserControllerTest extends DuskTestCase
 
             $browser->visit( 'user/list' )
                 ->click( "#add-user" )
-                ->pause( 5000)
+                ->waitForText( "Users / Add" )
                 ->type( "#email" , "test2@example.com" )
                 ->click( '.btn-primary' );
 
             // 11. customer admin -> add existing user -> no super option*/
             $browser->visit( 'user/list' )
-                ->pause(2000)
+                ->waitForText('Privileges' )
                 ->click( "#add-user" )
+                ->waitForText( "Users / Add" )
                 ->type( "#email" , "joe@siep.com" )
                 ->press( 'Add' )
                 ->waitForText( "travis" );
