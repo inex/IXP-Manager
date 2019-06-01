@@ -45,6 +45,7 @@ use Illuminate\Http\{
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
 
+use IXP\Exceptions\Services\Grapher\GraphCannotBeProcessedException;
 use IXP\Http\Requests\StatisticsRequest;
 use IXP\Services\Grapher\Graph;
 
@@ -153,6 +154,7 @@ class StatisticsController extends Controller
      *
      * @throws \Doctrine\ORM\ORMException
      * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     * @throws \IXP\Exceptions\Services\Grapher\ConfigurationException
      */
     public function vlan( int $vlanid = 0, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ){
         /** @var VlanEntity[] $eVlans */
@@ -178,6 +180,12 @@ class StatisticsController extends Controller
         $vlan     = D2EM::getRepository( VlanEntity::class )->find( $vlanid );
         $graph    = $grapher->vlan( $vlan )->setType( Graph::TYPE_PNG )->setProtocol( $protocol )
                         ->setCategory( $category );
+
+        try {
+            $graph->backend();
+        } catch( GraphCannotBeProcessedException $e ) {
+            abort( 404, 'No backend available to process VLAN graphs' );
+        }
 
         $graph->authorise();
 

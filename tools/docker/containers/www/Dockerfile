@@ -13,11 +13,11 @@ RUN apt-get -y update && \
 
 RUN docker-php-source extract && \
     docker-php-ext-install -j$(nproc) snmp intl bcmath gd gettext zip pdo_mysql && \
-    pecl install ds rrd xdebug-2.7.0beta1 && \
+    pecl install ds rrd xdebug-2.7.2 && \
     printf "\n" | pecl install yaml && \
     docker-php-source delete
 
-RUN curl -so /usr/local/bin/composer.phar https://getcomposer.org/download/1.8.0/composer.phar && \
+RUN curl -so /usr/local/bin/composer.phar https://getcomposer.org/download/1.8.5/composer.phar && \
     chmod a+x /usr/local/bin/composer.phar
 
 RUN echo "extension=ds.so\nextension=rrd.so\nextension=yaml.so\n" >/usr/local/etc/php/conf.d/local-ixpmanager.ini && \

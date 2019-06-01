@@ -1,13 +1,13 @@
--- MySQL dump 10.16  Distrib 10.1.37-MariaDB, for debian-linux-gnu (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.26, for Linux (x86_64)
 --
--- Host: mysql    Database: ixpmanager
+-- Host: localhost    Database: ixpmanager
 -- ------------------------------------------------------
--- Server version	5.7.25
+-- Server version	5.7.26
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
-/*!40101 SET NAMES utf8mb4 */;
+/*!40101 SET NAMES utf8 */;
 /*!40103 SET @OLD_TIME_ZONE=@@TIME_ZONE */;
 /*!40103 SET TIME_ZONE='+00:00' */;
 /*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
@@ -44,7 +44,7 @@ CREATE TABLE `api_keys` (
 
 LOCK TABLES `api_keys` WRITE;
 /*!40000 ALTER TABLE `api_keys` DISABLE KEYS */;
-INSERT INTO `api_keys` VALUES (2,4,'daEpzL0faxeFHDPGP3JmXDutMQTMZxOlzk7LErYnIGUBK2Zt',NULL,'','2018-01-19 12:03:30','2018-11-21 07:01:57','fd99::30');
+INSERT INTO `api_keys` VALUES (2,4,'daEpzL0faxeFHDPGP3JmXDutMQTMZxOlzk7LErYnIGUBK2Zt',NULL,'','2018-01-19 12:03:30','2019-05-31 10:37:04','fd99::30');
 /*!40000 ALTER TABLE `api_keys` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -292,7 +292,6 @@ DROP TABLE IF EXISTS `contact`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `contact` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) DEFAULT NULL,
   `custid` int(11) DEFAULT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci NOT NULL,
   `position` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
@@ -307,9 +306,7 @@ CREATE TABLE `contact` (
   `creator` varchar(32) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `UNIQ_4C62E638A76ED395` (`user_id`),
   KEY `IDX_4C62E638DA0209B9` (`custid`),
-  CONSTRAINT `FK_4C62E638A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE,
   CONSTRAINT `FK_4C62E638DA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -320,7 +317,7 @@ CREATE TABLE `contact` (
 
 LOCK TABLES `contact` WRITE;
 /*!40000 ALTER TABLE `contact` DISABLE KEYS */;
-INSERT INTO `contact` VALUES (4,NULL,1,'Docker Superuser','','joe@example.com','','',1,1,'','2018-01-18 21:27:41',1,'vagrant','2018-01-18 21:27:41'),(5,NULL,4,'AS112 CustAdmin','','joe@exmaple.com','','',0,0,'','2018-01-18 21:29:48',4,'docker','2018-01-18 21:29:48'),(6,NULL,4,'as112user','','joe@example.com','','',0,0,'','2018-01-18 21:30:16',4,'docker','2018-01-18 21:30:16');
+INSERT INTO `contact` VALUES (4,1,'Docker Superuser','','joe@example.com','','',1,1,'','2018-01-18 21:27:41',1,'vagrant','2018-01-18 21:27:41'),(5,4,'AS112 CustAdmin','','joe@exmaple.com','','',0,0,'','2018-01-18 21:29:48',4,'docker','2018-01-18 21:29:48'),(6,4,'as112user','','joe@example.com','','',0,0,'','2018-01-18 21:30:16',4,'docker','2018-01-18 21:30:16');
 /*!40000 ALTER TABLE `contact` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -507,13 +504,14 @@ CREATE TABLE `cust` (
   `dateleave` date DEFAULT NULL,
   `status` smallint(6) DEFAULT NULL,
   `activepeeringmatrix` tinyint(1) DEFAULT NULL,
-  `peeringDb` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `lastupdated` date DEFAULT NULL,
   `lastupdatedby` int(11) DEFAULT NULL,
   `creator` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created` date DEFAULT NULL,
   `MD5Support` varchar(255) COLLATE utf8_unicode_ci DEFAULT 'UNKNOWN',
   `isReseller` tinyint(1) NOT NULL DEFAULT '0',
+  `in_manrs` tinyint(1) NOT NULL DEFAULT '0',
+  `in_peeringdb` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_997B25A64082763` (`shortname`),
   UNIQUE KEY `UNIQ_997B25A98386213` (`company_registered_detail_id`),
@@ -533,7 +531,7 @@ CREATE TABLE `cust` (
 
 LOCK TABLES `cust` WRITE;
 /*!40000 ALTER TABLE `cust` DISABLE KEYS */;
-INSERT INTO `cust` VALUES (1,NULL,1,1,NULL,'VAGRANT IXP',3,'vagrant','VAGRANT IXP',2128,1000,'peering@example.com','+353 1 123 4567','+353 1 123 4567','+353 1 123 4568','noc@siep.com','24x7','http://www.example.com/noc/','AS-INEX','AS-INEX','mandatory','http://www.example.com/','2014-01-06',NULL,1,1,NULL,'2015-08-20',1,'travis','2014-01-06','YES',0),(2,1,2,2,NULL,'HEAnet',1,'heanet','HEAnet',1213,1000,'peering@example.com','','','','','0','','AS-HEANET',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,NULL,NULL,'travis','2014-01-06','UNKNOWN',0),(3,13,3,3,NULL,'PCH DNS',1,'pchdns','PCH DNS',42,2000,'peering@example.com','','','','','0','','AS-PCH',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,'2014-01-06',1,'travis','2014-01-06','YES',0),(4,2,4,4,NULL,'AS112',4,'as112','AS112',112,20,'peering@example.com','','','','','0','','',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,NULL,NULL,'travis','2014-01-06','NO',0),(5,1,5,5,NULL,'Imagine',1,'imagine','Imagine',25441,1000,'peering@example.com','','','','','0','','AS-IBIS',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,NULL,NULL,'travis','2014-01-06','YES',0);
+INSERT INTO `cust` VALUES (1,NULL,1,1,NULL,'VAGRANT IXP',3,'vagrant','VAGRANT IXP',2128,1000,'peering@example.com','+353 1 123 4567','+353 1 123 4567','+353 1 123 4568','noc@siep.com','24x7','http://www.example.com/noc/','AS-INEX','AS-INEX','mandatory','http://www.example.com/','2014-01-06',NULL,1,1,'2015-08-20',1,'travis','2014-01-06','YES',0,0,0),(2,1,2,2,NULL,'HEAnet',1,'heanet','HEAnet',1213,1000,'peering@example.com','','','','','0','','AS-HEANET',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,NULL,'travis','2014-01-06','UNKNOWN',0,0,0),(3,13,3,3,NULL,'PCH DNS',1,'pchdns','PCH DNS',42,2000,'peering@example.com','','','','','0','','AS-PCH',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,'2014-01-06',1,'travis','2014-01-06','YES',0,0,0),(4,2,4,4,NULL,'AS112',4,'as112','AS112',112,20,'peering@example.com','','','','','0','','',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,NULL,'travis','2014-01-06','NO',0,0,0),(5,1,5,5,NULL,'Imagine',1,'imagine','Imagine',25441,1000,'peering@example.com','','','','','0','','AS-IBIS',NULL,'open','http://www.example.com/','2014-01-06',NULL,1,1,NULL,NULL,'travis','2014-01-06','YES',0,0,0);
 /*!40000 ALTER TABLE `cust` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -679,6 +677,68 @@ LOCK TABLES `customer_to_ixp` WRITE;
 /*!40000 ALTER TABLE `customer_to_ixp` DISABLE KEYS */;
 INSERT INTO `customer_to_ixp` VALUES (1,1),(2,1),(3,1),(4,1),(5,1);
 /*!40000 ALTER TABLE `customer_to_ixp` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `customer_to_users`
+--
+
+DROP TABLE IF EXISTS `customer_to_users`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `customer_to_users` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `customer_id` int(11) NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `privs` int(11) NOT NULL,
+  `extra_attributes` json DEFAULT NULL COMMENT '(DC2Type:json)',
+  `last_login_date` datetime DEFAULT NULL,
+  `last_login_from` tinytext COLLATE utf8mb4_unicode_ci,
+  `created_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `customer_user` (`customer_id`,`user_id`),
+  KEY `IDX_337AD7F69395C3F3` (`customer_id`),
+  KEY `IDX_337AD7F6A76ED395` (`user_id`),
+  CONSTRAINT `FK_337AD7F69395C3F3` FOREIGN KEY (`customer_id`) REFERENCES `cust` (`id`),
+  CONSTRAINT `FK_337AD7F6A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `customer_to_users`
+--
+
+LOCK TABLES `customer_to_users` WRITE;
+/*!40000 ALTER TABLE `customer_to_users` DISABLE KEYS */;
+INSERT INTO `customer_to_users` VALUES (1,1,4,3,'{\"created_by\": {\"type\": \"migration-script\"}}','2019-05-31 10:38:47','172.30.201.1','2019-05-31 10:38:20'),(2,4,5,2,'{\"created_by\": {\"type\": \"migration-script\"}}','1970-01-01 00:00:00','','2019-05-31 10:38:20'),(3,4,6,1,'{\"created_by\": {\"type\": \"migration-script\"}}','1970-01-01 00:00:00','','2019-05-31 10:38:20');
+/*!40000 ALTER TABLE `customer_to_users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `failed_jobs`
+--
+
+DROP TABLE IF EXISTS `failed_jobs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `failed_jobs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `connection` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `queue` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `payload` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `exception` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `failed_at` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `failed_jobs`
+--
+
+LOCK TABLES `failed_jobs` WRITE;
+/*!40000 ALTER TABLE `failed_jobs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `failed_jobs` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -938,7 +998,7 @@ CREATE TABLE `location` (
   `officephone` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `officefax` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `officeemail` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `notes` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `notes` longtext COLLATE utf8_unicode_ci,
   `pdb_facility_id` bigint(20) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_5E9E89CB64082763` (`shortname`)
@@ -1013,6 +1073,31 @@ CREATE TABLE `macaddress` (
 LOCK TABLES `macaddress` WRITE;
 /*!40000 ALTER TABLE `macaddress` DISABLE KEYS */;
 /*!40000 ALTER TABLE `macaddress` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `migrations`
+--
+
+DROP TABLE IF EXISTS `migrations`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `migrations` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch` int(11) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `migrations`
+--
+
+LOCK TABLES `migrations` WRITE;
+/*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
+INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1);
+/*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1099,6 +1184,30 @@ CREATE TABLE `oui` (
 LOCK TABLES `oui` WRITE;
 /*!40000 ALTER TABLE `oui` DISABLE KEYS */;
 /*!40000 ALTER TABLE `oui` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `password_resets`
+--
+
+DROP TABLE IF EXISTS `password_resets`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `password_resets` (
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  KEY `password_resets_email_index` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `password_resets`
+--
+
+LOCK TABLES `password_resets` WRITE;
+/*!40000 ALTER TABLE `password_resets` DISABLE KEYS */;
+/*!40000 ALTER TABLE `password_resets` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1604,6 +1713,85 @@ INSERT INTO `switchport` VALUES (25,2,0,'Ethernet1',1,1,'Ethernet1','',10000,921
 UNLOCK TABLES;
 
 --
+-- Table structure for table `telescope_entries`
+--
+
+DROP TABLE IF EXISTS `telescope_entries`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `telescope_entries` (
+  `sequence` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `uuid` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `batch_id` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `family_hash` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `should_display_on_index` tinyint(1) NOT NULL DEFAULT '1',
+  `type` varchar(20) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `content` longtext COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`sequence`),
+  UNIQUE KEY `telescope_entries_uuid_unique` (`uuid`),
+  KEY `telescope_entries_batch_id_index` (`batch_id`),
+  KEY `telescope_entries_type_should_display_on_index_index` (`type`,`should_display_on_index`),
+  KEY `telescope_entries_family_hash_index` (`family_hash`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `telescope_entries`
+--
+
+LOCK TABLES `telescope_entries` WRITE;
+/*!40000 ALTER TABLE `telescope_entries` DISABLE KEYS */;
+/*!40000 ALTER TABLE `telescope_entries` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `telescope_entries_tags`
+--
+
+DROP TABLE IF EXISTS `telescope_entries_tags`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `telescope_entries_tags` (
+  `entry_uuid` char(36) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tag` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  KEY `telescope_entries_tags_entry_uuid_tag_index` (`entry_uuid`,`tag`),
+  KEY `telescope_entries_tags_tag_index` (`tag`),
+  CONSTRAINT `telescope_entries_tags_entry_uuid_foreign` FOREIGN KEY (`entry_uuid`) REFERENCES `telescope_entries` (`uuid`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `telescope_entries_tags`
+--
+
+LOCK TABLES `telescope_entries_tags` WRITE;
+/*!40000 ALTER TABLE `telescope_entries_tags` DISABLE KEYS */;
+/*!40000 ALTER TABLE `telescope_entries_tags` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `telescope_monitoring`
+--
+
+DROP TABLE IF EXISTS `telescope_monitoring`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `telescope_monitoring` (
+  `tag` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `telescope_monitoring`
+--
+
+LOCK TABLES `telescope_monitoring` WRITE;
+/*!40000 ALTER TABLE `telescope_monitoring` DISABLE KEYS */;
+/*!40000 ALTER TABLE `telescope_monitoring` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `traffic_95th`
 --
 
@@ -1738,7 +1926,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQ_8D93D649F85E0677` (`username`),
   KEY `IDX_8D93D649DA0209B9` (`custid`),
-  CONSTRAINT `FK_8D93D649DA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`) ON DELETE CASCADE
+  CONSTRAINT `FK_8D93D649DA0209B9` FOREIGN KEY (`custid`) REFERENCES `cust` (`id`) ON DELETE SET NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1761,14 +1949,16 @@ DROP TABLE IF EXISTS `user_logins`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `user_logins` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT,
-  `user_id` int(11) NOT NULL,
+  `user_id` int(11) DEFAULT NULL,
   `ip` varchar(39) COLLATE utf8_unicode_ci NOT NULL,
   `at` datetime NOT NULL,
+  `customer_to_user_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `IDX_6341CC99A76ED395` (`user_id`),
-  KEY `at_idx` (`at`,`user_id`),
-  CONSTRAINT `FK_6341CC99A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+  KEY `user_id_idx` (`user_id`),
+  KEY `IDX_6341CC99D43FEAE2` (`customer_to_user_id`),
+  KEY `at_idx` (`at`),
+  CONSTRAINT `FK_6341CC99D43FEAE2` FOREIGN KEY (`customer_to_user_id`) REFERENCES `customer_to_users` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1777,7 +1967,7 @@ CREATE TABLE `user_logins` (
 
 LOCK TABLES `user_logins` WRITE;
 /*!40000 ALTER TABLE `user_logins` DISABLE KEYS */;
-INSERT INTO `user_logins` VALUES (6,4,'172.30.201.1','2018-01-18 21:27:49'),(7,4,'172.30.201.1','2018-01-19 11:57:53'),(8,4,'172.30.201.1','2018-01-22 13:43:03'),(9,4,'172.30.201.1','2018-11-21 07:03:47'),(10,4,'172.30.201.1','2019-01-22 20:28:59');
+INSERT INTO `user_logins` VALUES (10,4,'172.30.201.1','2019-01-22 20:28:59',1),(11,NULL,'172.30.201.1','2019-05-31 10:38:47',1);
 /*!40000 ALTER TABLE `user_logins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1970,4 +2160,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-01-22 21:27:45
+-- Dump completed on 2019-05-31 10:40:56
