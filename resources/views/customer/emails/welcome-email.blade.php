@@ -80,11 +80,9 @@ to peer graphs (how much traffic you are sending and receiving from each member)
 of all other members, a Peering Manager tool, documentation, support information, mailing list subscription
 management and much more.
 
-Every member is assigned an administration account with which you then create individual user accounts. The
-administration account is only meant for this purpose and as such, all functionality is only available through
-user accounts.
-
 @if( count($admins) )
+Customer users with *admin* previleges can create and manage other user accounts.
+
 We have created your administration account(s) with the following username(s) and email address(es):
 
 @foreach( $admins as $a )
