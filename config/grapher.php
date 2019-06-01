@@ -94,7 +94,7 @@ return [
         ],
 
         'smokeping' => [
-            // show sflow / p2p links on the frontend
+            // show smokeping links on the frontend
             'enabled' => env( 'GRAPHER_BACKEND_SMOKEPING_ENABLED', false ),
 
             // where to find the smokeping files

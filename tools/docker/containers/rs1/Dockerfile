@@ -19,9 +19,9 @@ RUN TZ=Europe/Dublin DEBIAN_FRONTEND=noninteractive apt-get -y install php-cgi p
     lighty-enable-mod fastcgi-php
 
 RUN cd /usr/local/src && \
-    wget ftp://bird.network.cz/pub/bird/bird-2.0.3.tar.gz && \
-    tar zxf bird-2.0.3.tar.gz && \
-    cd bird-2.0.3 && \
+    wget ftp://bird.network.cz/pub/bird/bird-2.0.4.tar.gz && \
+    tar zxf bird-2.0.4.tar.gz && \
+    cd bird-2.0.4 && \
     ./configure && \
     make && \
     make install && \
