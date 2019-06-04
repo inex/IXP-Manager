@@ -203,7 +203,7 @@
                             <?= Former::select( 'invoiceMethod' )
                                 ->label( 'Invoice Method' )
                                 ->fromQuery( \Entities\CompanyBillingDetail::$INVOICE_METHODS )
-                                ->placeholder( 'Choose an invoice Method' )
+                                ->placeholder( 'Choose an invoice method' )
                                 ->addClass( 'chzn-select' )
                                 ->blockHelp( '' );
                             ?>
@@ -211,7 +211,7 @@
                             <?= Former::text( 'invoiceEmail' )
                                 ->id( 'invoiceEmail' )
                                 ->label( 'Invoice E-Mail' )
-                                ->placeholder( 'invoicing@example.com8' )
+                                ->placeholder( 'invoicing@example.com' )
                                 ->blockHelp( '' );
                             ?>
 

@@ -127,7 +127,7 @@ class DashboardController extends Controller
             'notesInfo'                     => D2EM::getRepository( CustomerNoteEntity::class   )->analyseForUser(      $cns, $c, Auth::user()  ),
             'rsRoutes'                      => $rsRoutes        ?? null,
             'resoldCustomer'                => $resoldCustomer  ?? null,
-            'netinfo'                       => $netinfo         ?? null,
+            'netInfo'                       => $netinfo         ?? null,
             'c'                             => $c,
             'notes'                         => $cns,
             'grapher'                       => $grapher,

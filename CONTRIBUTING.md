@@ -9,7 +9,7 @@ need contributors to follow so that we can accept them.
 
 ## Getting Started
 
-* Make sure you have a [GitHub account](https://github.com/signup/free)
+* Make sure you have a [GitHub account](https://github.com/)
 * Submit a ticket for your issue, assuming one does not already exist.
   * Clearly describe the issue including steps to reproduce when it is a bug.
   * Make sure you fill in the earliest version that you know has the issue.
@@ -31,7 +31,7 @@ need contributors to follow so that we can accept them.
 
 ## Submitting Changes
 
-* Sign the [Contributor License Agreement](https://github.com/inex/IXP-Manager/wiki/Contributor-License-Agreement) (`gpg --clearsign inex-cla.txt`) and email it to ''operations (at) inex (dot) ie''.
+* Sign the [Contributor License Agreement](https://docs.ixpmanager.org/dev/cla/) (`gpg --clearsign inex-cla.txt`) and email it to ''operations (at) inex (dot) ie''.
 * Push your changes to a topic branch in your fork of the repository.
 * Submit a pull request to the repository in the inex organisation.
 * Submit a parallel pull request [with new/updated documentation](http://docs.ixpmanager.org/dev/docs/)
