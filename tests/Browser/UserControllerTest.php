@@ -458,8 +458,8 @@ class UserControllerTest extends DuskTestCase
                     ->assertSeeIn( "#my-account-dd"                 , "Imagine" );
 
             $browser->click(        "#switch-cust-5" )
-                    ->assertPathIs(   "/dashboard" )
-                    ->assertSee(       "You are now logged in for Imagine." );
+                    ->waitForText(       "You are now logged in for Imagine." )
+                    ->assertPathIs(   "/dashboard" );
 
             // test the values:
             D2EM::refresh($u3);

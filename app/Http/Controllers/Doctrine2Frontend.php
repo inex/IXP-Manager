@@ -350,7 +350,7 @@ abstract class Doctrine2Frontend extends Controller {
 
         $this->addEditSetup();
 
-        return $this->display( $this->data[ 'params' ]['addEditTpl'] ?? 'edit' );
+        return $this->display( $this->data[ 'params' ]['addEditTpl'] ?: 'edit' );
     }
 
 
