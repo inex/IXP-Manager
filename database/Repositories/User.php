@@ -352,7 +352,7 @@ class User extends EntityRepository
      *
      * @return array Array of info
      */
-    public function getNbC2UByUser()
+    public function getNumberOfCustomers()
     {
 
         $dql = "SELECT u.id as id, 

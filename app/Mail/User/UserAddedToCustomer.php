@@ -43,7 +43,7 @@ use Entities\{
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class C2uWelcome extends Mailable
+class UserAddedToCustomer extends Mailable
 {
     use Queueable, SerializesModels;
 

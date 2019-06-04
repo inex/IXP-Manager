@@ -25,11 +25,11 @@ namespace IXP\Listeners\User;
 
 use Mail;
 
-use IXP\Events\User\C2uWelcome as C2uWelcomeEvent;
+use IXP\Events\User\UserCreated as UserCreatedEvent;
 
-use IXP\Mail\User\C2UWelcome as C2UWelcomeMailable;
+use IXP\Mail\User\UserCreated as UserCreatedMailable;
 
-class C2uEmailWelcome
+class UserCreated
 {
     /**
      * Create the event listener.
@@ -44,11 +44,11 @@ class C2uEmailWelcome
     /**
      * Handle the event.
      *
-     * @param  C2uWelcomeEvent  $e
+     * @param  UserCreatedEvent $e
      * @return void
      */
-    public function handle( C2uWelcomeEvent $e )
+    public function handle( UserCreatedEvent $e )
     {
-        Mail::to( $e->c2u->getUser()->getEmail() )->send( new C2UWelcomeMailable( $e->c2u ) );
+        Mail::to( $e->c2u->getUser()->getEmail() )->send( new UserCreatedMailable( $e->c2u, false ) );
     }
 }

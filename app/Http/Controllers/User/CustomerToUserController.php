@@ -25,7 +25,7 @@ namespace IXP\Http\Controllers\User;
 
 use Auth, D2EM, Log, Redirect;
 
-use IXP\Events\User\C2uWelcome as C2uWelcomeEvent;
+use IXP\Events\User\UserAddedToCustomer as UserAddedToCustomerEvent;
 
 use Entities\{
     Customer        as CustomerEntity,
@@ -89,7 +89,7 @@ class CustomerToUserController extends Controller
 
         D2EM::flush();
 
-        event( new C2uWelcomeEvent( $c2u ) );
+        event( new UserAddedToCustomerEvent( $c2u ) );
 
         $redirect = session()->get( "user_post_store_redirect" );
         session()->remove( "user_post_store_redirect" );
@@ -149,7 +149,7 @@ class CustomerToUserController extends Controller
      *
      * @param Request $request
      *
-     * @return redirect
+     * @return \Illuminate\Http\RedirectResponse
      *
      * @throws
      */

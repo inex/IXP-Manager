@@ -49,9 +49,9 @@ use Illuminate\View\View;
 
 use IXP\Http\Controllers\Doctrine2Frontend;
 
-use IXP\Mail\User\Welcome as WelcomeMailable;
+use IXP\Mail\User\UserCreated as UserCreatedeMailable;
 
-use IXP\Events\User\Welcome as WelcomeEvent;
+use IXP\Events\User\UserCreated as UserCreatedEvent;
 
 
 /**
@@ -193,7 +193,8 @@ class UserController extends Doctrine2Frontend {
     }
 
 
-    protected static function additionalRoutes( string $route_prefix ) {
+    protected static function additionalRoutes( string $route_prefix )
+    {
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
             Route::get(     'add-wizard',                       'User\UserController@addForm'                )->name( $route_prefix . '@add-wizard'          );
             Route::get(     'add/info/{id?}',                   'User\UserController@edit'                   )->name( $route_prefix . '@add-info'            );
@@ -204,7 +205,7 @@ class UserController extends Doctrine2Frontend {
     }
 
     protected function preList() {
-        $this->data[ 'params' ][ 'nbC2u' ]         = D2EM::getRepository( UserEntity::class )->getNbC2UByUser();
+        $this->data[ 'params' ][ 'nbC2u' ]         = D2EM::getRepository( UserEntity::class )->getNumberOfCustomers();
     }
 
     /**
@@ -215,7 +216,8 @@ class UserController extends Doctrine2Frontend {
      *
      * @throws
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
 
         // Return the list of User depending on the privilege of the Authentificated User
         if( Auth::getUser()->isSuperUser() ){
@@ -235,7 +237,8 @@ class UserController extends Doctrine2Frontend {
      *
      * @throws
      */
-    private function redirectLink(){
+    private function redirectLink()
+    {
         if( !request()->old() ) {
             request()->session()->remove( "user_post_store_redirect" );
             session()->put( 'user_post_store_redirect', request()->headers->get( 'referer', "" ) );
@@ -249,7 +252,8 @@ class UserController extends Doctrine2Frontend {
      *
      * @throws
      */
-    private function cancelLink(){
+    private function cancelLink()
+    {
         if( !request()->old() ) {
             request()->session()->remove( "user_cancel_redirect" );
             session()->put( 'user_cancel_redirect', request()->headers->get( 'referer', "" ) );
@@ -264,8 +268,8 @@ class UserController extends Doctrine2Frontend {
      *
      * @throws
      */
-    private function getAllowedPrivs(){
-
+    private function getAllowedPrivs()
+    {
         $privs = UserEntity::$PRIVILEGES_TEXT_NONSUPERUSER;
 
         // If we add a user via the customer overview users list
@@ -553,7 +557,7 @@ class UserController extends Doctrine2Frontend {
                 AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
             }
 
-            event( new WelcomeEvent( $this->object, false ) );
+            event( new UserCreatedEvent( $this->c2u ) );
         }
 
         // if editing and not super user
@@ -758,7 +762,7 @@ class UserController extends Doctrine2Frontend {
             abort(404, 'User not found');
         }
 
-        Mail::to( $user->getEmail() )->send( new WelcomeMailable( $user, true ) );
+        Mail::to( $user->getEmail() )->send( new UserCreatedeMailable( $user, true ) );
 
         AlertContainer::push( sprintf( 'The welcome email has been resent' ), Alert::SUCCESS );
 

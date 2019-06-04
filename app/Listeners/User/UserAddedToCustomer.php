@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Events\User;
+namespace IXP\Listeners\User;
 
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -14,7 +14,7 @@ namespace IXP\Events\User;
  *
  * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
  * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
- * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GpNU General Public License for
  * more details.
  *
  * You should have received a copy of the GNU General Public License v2.0
@@ -23,35 +23,32 @@ namespace IXP\Events\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Entities\{
-    CustomerToUser        as CustomerToUserEntity
-};
+use Mail;
 
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Foundation\Events\Dispatchable;
+use IXP\Events\User\UserAddedToCustomer as UserAddedToCustomerEvent;
 
-/**
- * Event to trigger the (re)sending of a user welcome email
- *
- * @package IXP\Events\User
- */
-class C2uWelcome
+use IXP\Mail\User\UserAddedToCustomer as UserAddedToCustomerMailable;
+
+class UserAddedToCustomer
 {
-    use Dispatchable, SerializesModels;
-
-
     /**
-     * @var CustomerToUserEntity
-     */
-    public $c2u;
-
-    /**
-     * Create a new event instance.
+     * Create the event listener.
      *
-     * @param CustomerToUserEntity    $c2u
+     * @return void
      */
-    public function __construct(  CustomerToUserEntity $c2u )
+    public function __construct()
     {
-        $this->c2u     = $c2u;
+        //
+    }
+
+    /**
+     * Handle the event.
+     *
+     * @param  UserAddedToCustomerEvent  $e
+     * @return void
+     */
+    public function handle( UserAddedToCustomerEvent $e )
+    {
+        Mail::to( $e->c2u->getUser()->getEmail() )->send( new UserAddedToCustomerMailable( $e->c2u ) );
     }
 }
