@@ -142,9 +142,11 @@ while (<SFLOWTOOL>) {
 	# moment, but it's useful to collect it anyway
 	# FLOW,193.242.111.152,2,21,0013136f2fc0,0010a52f261f,0x0800,10,10,94.1.115.114,80.1.2.222,6,0x00,124,1863,750,0x18,179,165,1024
 	my @sample = split (/,/);			# don't use regexp here for performance reasons
-	my (undef, $agent, $srcswport, $dstswport, $srcmac, $dstmac, $ethertype, $vlan, undef, 
+	my ($sampletype, $agent, $srcswport, $dstswport, $srcmac, $dstmac, $ethertype, $vlan, undef,
 		$srcip, $dstip, $protocol, $tos, $ttl,
 		$srcport, $dstport, $tcpflags, $pktsize, $payloadsize, $samplerate) = @sample;
+
+	next unless ($sampletype eq 'FLOW');
 
 	if ($ethertype eq '0x0800') {
 		$ipprotocol = 4;
