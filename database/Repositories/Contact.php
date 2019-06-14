@@ -67,7 +67,8 @@ class Contact extends EntityRepository
                 FROM \\Entities\\Contact c
                 LEFT JOIN c.Groups cg
                 WHERE cg.type = '" . ContactGroupEntity::TYPE_ROLE . "'
-                AND c.id IN ('" . implode( "','", array_values( $ids ) ) . "')";
+                AND c.id IN ('" . implode( "','", array_values( $ids ) ) . "')
+                AND cg.active = 1";
 
         $data = [];
 

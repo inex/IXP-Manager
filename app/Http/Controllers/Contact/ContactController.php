@@ -224,7 +224,8 @@ class ContactController extends Doctrine2Frontend
         $cgs = [];
 
         if( config('contact_group.types.ROLE') ) {
-            $groups = D2EM::getRepository( ContactGroupEntity::class )->getGroupNamesTypeArray();
+            $groups = D2EM::getRepository( ContactGroupEntity::class )->getGroupNamesTypeArray( false, false , true);
+            $allGroups = D2EM::getRepository( ContactGroupEntity::class )->getGroupNamesTypeArray();
 
             if( !in_array( $role = request()->input( "role" ) , array_column( $groups[ "ROLE" ], 'id')  ) ){
                 $role = null;
@@ -239,30 +240,29 @@ class ContactController extends Doctrine2Frontend
                     }
                 }
 
-                if( !array_key_exists( $cg, $cgs ) ) {
+                if( !array_key_exists( $cg, $allGroups['ROLE'] ) ) {
                     $cg = null;
                 }
             }
 
-
             $this->data[ 'params' ] = [
-                'role'          => $role,
-                'roles'         => $groups[ "ROLE" ],
-                'cg'            => $cg,
-                'contactGroups' => $cgs
+                'role'              => $role,
+                'roles'             => $groups[ "ROLE" ],
+                'cg'                => $cg,
+                'contactGroups'     => $cgs,
+                'AllContactGroups'  => $allGroups[ "ROLE" ]
             ];
 
         } else {
 
             $this->data[ 'params' ] = [
-                'role'          => $role,
-                'roles'         => [],
-                'cg'            => $cg,
-                'contactGroups' => $cgs
+                'role'              => $role,
+                'roles'             => [],
+                'cg'                => $cg,
+                'contactGroups'     => $cgs,
+                'AllContactGroups'  => $allGroups[ "ROLE" ]
             ];
-
         }
-
 
         return D2EM::getRepository( ContactEntity::class )->getAllForFeList( $this->feParams, $id, $role, $cg );
     }
@@ -295,7 +295,7 @@ class ContactController extends Doctrine2Frontend
 
         if( config('contact_group.types.ROLE') ) {
             $roles      = D2EM::getRepository( ContactGroupEntity::class )->getGroupNamesTypeArray( 'ROLE' )[ "ROLE" ];
-            $allGroups  = D2EM::getRepository( ContactGroupEntity::class )->getGroupNamesTypeArray();
+            $allGroups  = D2EM::getRepository( ContactGroupEntity::class )->getGroupNamesTypeArray( false, false, true);
         } else {
             $roles     = null;
             $allGroups = [];
@@ -450,11 +450,14 @@ class ContactController extends Doctrine2Frontend
             }
         }
 
-        foreach( $this->object->getGroups() as $key => $group ) {
 
-            if( !in_array( $group, $groups ) ) {
-                $this->object->getGroups()->remove( $key );
+        foreach( $this->object->getGroups() as $key => $group ) {
+            if( $group->getActive() ){
+                if( !in_array( $group, $groups ) ) {
+                    $this->object->getGroups()->remove( $key );
+                }
             }
+
         }
 
         D2EM::flush($this->object);
