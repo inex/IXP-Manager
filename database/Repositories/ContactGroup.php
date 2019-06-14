@@ -53,15 +53,18 @@ class ContactGroup extends EntityRepository
      *
      * @return array
      */
-    public function getGroupNamesTypeArray( $type = false, $cid = false )
+    public function getGroupNamesTypeArray( $type = false, $cid = false, $active = false )
     {
         $dql =  "SELECT cg.id AS id, cg.type AS type, cg.name AS name
              FROM \\Entities\\ContactGroup cg ";
              
         if( $cid )
             $dql .= " LEFT JOIN cg.Contacts c";
-            
-        $dql .= " WHERE cg.active = 1";
+
+        $dql .= " WHERE 1 = 1";
+
+        if( $active )
+            $dql .= " AND cg.active = 1";
             
         if( $type )
             $dql .= " AND cg.type = ?1";
