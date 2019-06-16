@@ -104,7 +104,7 @@ class Customer2Users extends IXPCommand
                 ->setCustomer(  $u->getCustomer() )
                 ->setCreatedAt( new \DateTime )
                 ->setPrivs(     $u->getUserPrivs() )
-                ->setLastLoginAt(     new \DateTime( date( 'Y-m-d H:i:s' , $u->getPreference( 'auth.last_login_at' ) ) ) )
+                ->setLastLoginAt( $u->getPreference( 'auth.last_login_at' ) ? new \DateTime( date( 'Y-m-d H:i:s' , $u->getPreference( 'auth.last_login_at' ) ) ) : null )
                 ->setLastLoginFrom(     $u->getPreference( 'auth.last_login_from' ) )
                 ->setExtraAttributes( [ "created_by" => [ "type" => "migration-script" ] ] );
             D2EM::persist( $c2u );
