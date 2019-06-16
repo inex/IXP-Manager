@@ -558,7 +558,7 @@ class UserController extends Doctrine2Frontend {
 
         $action = $request->input( 'id', '' )  ? "edited" : "added";
 
-        Log::notice( ( Auth::user()->getUsername() . ' ' . $action . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
+        Log::notice( Auth::user()->getUsername() . ' ' . $action . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
 
         AlertContainer::push( $this->store_alert_success_message ?? $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
 
