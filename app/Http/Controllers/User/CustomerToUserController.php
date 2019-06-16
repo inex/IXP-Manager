@@ -77,16 +77,19 @@ class CustomerToUserController extends Controller
         /** @var UserEntity $user */
         $user = D2EM::getRepository( UserEntity::class )->find( $request->input( 'existingUserId' ) );
 
+        // check that this user can effect these changes
+        abort_if( !Auth::user()->isSuperUser() && $user->getCustomer()->getId() != $cust->getId(), 403 );
+        abort_if( Auth::user()->isCustUser() , 403 );
+
         /** @var CustomerToUserEntity $c2u */
         $c2u = new CustomerToUserEntity;
+        $c2u->setCustomer( $cust );
+        $c2u->setUser( $user );
+        $c2u->setPrivs( $request->input( 'privs' ) );
+        $c2u->setCreatedAt( now() );
+        $c2u->setExtraAttributes( [ "created_by" => [ "type" => "user" , "user_id" => $user->getId() ] ] );
+
         D2EM::persist( $c2u );
-
-        $c2u->setCustomer(         $cust );
-        $c2u->setUser(             $user                   );
-        $c2u->setPrivs(            $request->input( 'privs' ) );
-        $c2u->setCreatedAt(        new \DateTime                   );
-        $c2u->setExtraAttributes(  [ "created_by" => [ "type" => "user" , "user_id" => $user->getId() ] ] );
-
         D2EM::flush();
 
         event( new UserAddedToCustomerEvent( $c2u ) );
@@ -94,18 +97,16 @@ class CustomerToUserController extends Controller
         $redirect = session()->get( "user_post_store_redirect" );
         session()->remove( "user_post_store_redirect" );
 
-        Log::notice( Auth::user()->getUsername() . ' added a CustomerToUser with ID ' . $c2u->getId() );
+        Log::notice( Auth::user()->getUsername() . ' added ' . $user->getUsername() . ' via CustomerToUser ID [' . $c2u->getId() . '] to ' . $cust->getName() );
 
-
-        AlertContainer::push( "The link customer/user ( " . $cust->getName() . "/" . $user->getName() . " ) has been added." , Alert::SUCCESS );
+        AlertContainer::push( $user->getName() . '/' . $user->getUsername() . ' has been added to ' . $cust->getName(), Alert::SUCCESS );
 
         // retrieve the customer ID
         if( strpos( $redirect, "customer/overview" ) ) {
             return redirect( route( 'customer@overview' , [ 'id' => $c2u->getCustomer()->getId() , 'tab' => 'users' ] ) );
-        } else {
-            return redirect( route( "user@list" )  );
         }
 
+        return redirect( route( "user@list" )  );
     }
 
 
@@ -122,26 +123,28 @@ class CustomerToUserController extends Controller
     {
         /** @var $c2u CustomerToUserEntity */
         if( !( $c2u = D2EM::getRepository(CustomerToUserEntity::class)->find( $request->input( "id" ) ) ) ) {
-            return abort( '404' , 'Unknown CustomerTo User ');
+            return abort( '404' , 'Unknown customer/user association');
         }
 
         if( in_array( $request->input( "privs" ) , UserEntity::$PRIVILEGES_ALL ) ) {
-            return abort( '404', 'Unknown privs' );
+            return abort( '404', 'Unknown privilege requested' );
         }
 
         if( $request->input( 'privs' ) == UserEntity::AUTH_SUPERUSER )
         {
+            if( !Auth::getUser()->isSuperUser() ) {
+                return response()->json( [ 'success' => false, 'message' => "You are not allowed to set the super user privilege" ] );
+            }
 
-            if( !Auth::getUser()->isSuperUser() || Auth::getUser()->isSuperUser() && !$c2u->getCustomer()->isTypeInternal() )
-            {
-                return response()->json( [ 'success' => false, 'message' => "You are not allowed to set this User as a Super User for " . $c2u->getCustomer()->getName() ] );
+            if( !$c2u->getCustomer()->isTypeInternal() ) {
+                return response()->json( [ 'success' => false, 'message' => "You are not allowed to set super user privileges for non-internal (IXP) customer types" ] );
             }
         }
 
         $c2u->setPrivs( $request->input( "privs" ) );
         D2EM::flush();
 
-        return response()->json( [ 'success' => true, 'message' => 'The privs has been updated.' ] );
+        return response()->json( [ 'success' => true, 'message' => "The user's privilege has been updated." ] );
     }
 
     /**
@@ -158,29 +161,24 @@ class CustomerToUserController extends Controller
         // Delete the customer2user link
         /** @var CustomerToUserEntity $c2u  */
         if( !( $c2u = D2EM::getRepository( CustomerToUserEntity::class )->find( $request->input( "id" ) ) ) ) {
-            return abort( '404', 'Customer2User not found' );
+            return abort( '404', 'Customer/user association not found' );
         }
 
         if( !Auth::getUser()->isSuperUser() ) {
             if( $c2u->getCustomer()->getId() != Auth::getUser()->getCustomer()->getId() ) {
-                Log::notice( Auth::getUser()->getUsername() . " tried to delete other customer user " . $c2u->getUser()->getName() . " from " . $c2u->getCustomer()->getName() );
+                Log::notice( Auth::getUser()->getUsername() . " tried to delete another customer's user: " . $c2u->getUser()->getName() . " from " . $c2u->getCustomer()->getName() );
                 abort( 401, 'You are not authorised to delete this user. The administrators have been notified.' );
             }
         }
 
         /** @var UserEntity $user */
-        $user   = $c2u->getUser();
+        $user = $c2u->getUser();
+
         /** @var CustomerEntity $c */
-        $c      = $c2u->getCustomer();
+        $c = $c2u->getCustomer();
 
-        // Store the Customer that we are loggued in
-        $logguedCustomer = Auth::getUser()->getCustomer();
-
-        // If the User default customer is the customer that we delete
-        if( $user->getCustomer()->getId() == $c->getId() ){
-            // setting an available new default customer
-            $user->setCustomer( $user->getCustomers()[0] );
-        }
+        // Store the Customer that we are logged in
+        $loggedCustomer = Auth::getUser()->getCustomer();
 
         $user->removeCustomer( $c2u );
 
@@ -189,22 +187,29 @@ class CustomerToUserController extends Controller
         }
 
         D2EM::remove( $c2u );
-
         D2EM::flush();
 
-        AlertContainer::push( 'The link customer/user ( ' . $c->getName() . '/' . $user->getName() . ' ) has been deleted.', Alert::SUCCESS );
+        // if the User default customer is the customer that we delete
+        if( $user->getCustomer()->getId() == $c->getId() ) {
+            // setting an available new default customer
+            $user->setCustomer( $user->getCustomers() ? $user->getCustomers()[0] : null );
+        }
+
+        AlertContainer::push( $user->getName()  . '/' . $user->getUsername() . ' has been removed from ' . $c->getName(), Alert::SUCCESS );
 
         Log::notice( Auth::getUser()->getUsername()." deleted customer2user" . $c->getName() . '/' . $user->getName() );
 
-        // If the user delete itself and is loggued as the same customer logout
-        if( Auth::getUser()->getId() == $user->getId() && $logguedCustomer->getId() == $c->getId() ){
+        // If the user delete itself and is logged as the same customer logout
+        if( Auth::getUser()->getId() == $user->getId() && $loggedCustomer->getId() == $c->getId() ){
             Auth::logout();
         }
 
-        // If user not logged in redirect to the login form ( this happen when the user delete itself)
+        // If user not logged in redirect to the login form ( this happens when the user delete itself)
         if( !Auth::check() ){
             return Redirect::to( route( "login@showForm" ) );
         }
+
+        // @yannrobin - do we not delete the user if there are no associated customers?
 
         // retrieve the customer ID
         if( strpos( request()->headers->get( 'referer', "" ), "customer/overview" ) !== false ) {

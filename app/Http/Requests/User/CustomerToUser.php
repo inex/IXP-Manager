@@ -76,7 +76,7 @@ class CustomerToUser extends FormRequest
 
             if( !$this->input( 'existingUserId' ) )
             {
-                AlertContainer::push( "You need to select one User from the list." , Alert::DANGER );
+                AlertContainer::push( "You must select one user from the list." , Alert::DANGER );
                 return false;
             }
 
@@ -93,16 +93,19 @@ class CustomerToUser extends FormRequest
 
                 $cust = Auth::user()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $this->input( 'custid' ) ) : Auth::getUser()->getCustomer();
 
-                if( !Auth::getUser()->isSuperUser() || Auth::getUser()->isSuperUser() && !$cust->isTypeInternal()  )
+                if( !Auth::getUser()->isSuperUser() )
                 {
-                    $validator->errors()->add( 'privs',  "You are not allowed to set this User as a Super User for " . $cust->getName() );
+                    $validator->errors()->add( 'privs',  "You are not allowed to set any user as a super user." );
                     return false;
                 }
-            }
 
-            if( $this->input( 'privs' ) == UserEntity::AUTH_SUPERUSER )
-            {
-                AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
+                if( !$cust->isTypeInternal() )
+                {
+                    $validator->errors()->add( 'privs',  "You are not allowed to set super user privileges for non-internal (IXP) customer types." );
+                    return false;
+                }
+
+                AlertContainer::push( 'Please note that you have given this user full administrative access (super user privilege).', Alert::WARNING );
             }
 
             return true;
