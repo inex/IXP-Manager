@@ -139,6 +139,9 @@ class CustomerToUserController extends Controller
             if( !$c2u->getCustomer()->isTypeInternal() ) {
                 return response()->json( [ 'success' => false, 'message' => "You are not allowed to set super user privileges for non-internal (IXP) customer types" ] );
             }
+
+            //FIXME -> this message is also required in the response
+            // AlertContainer::push( 'Please note that you have given this user full administrative access (super user privilege).', Alert::WARNING );
         }
 
         $c2u->setPrivs( $request->input( "privs" ) );
@@ -165,58 +168,46 @@ class CustomerToUserController extends Controller
         }
 
         if( !Auth::getUser()->isSuperUser() ) {
-            if( $c2u->getCustomer()->getId() != Auth::getUser()->getCustomer()->getId() ) {
+            if( $c2u->getCustomer()->getId() != $request->user()->getCustomer()->getId() ) {
                 Log::notice( Auth::getUser()->getUsername() . " tried to delete another customer's user: " . $c2u->getUser()->getName() . " from " . $c2u->getCustomer()->getName() );
-                abort( 401, 'You are not authorised to delete this user. The administrators have been notified.' );
+                abort( 403, 'You are not authorised to delete this user. The administrators have been notified.' );
             }
         }
 
-        /** @var UserEntity $user */
+        // FIXME: rename to $disassociatedUser and $disassociatedCustomer
         $user = $c2u->getUser();
-
-        /** @var CustomerEntity $c */
         $c = $c2u->getCustomer();
-
-        // Store the Customer that we are logged in
-        $loggedCustomer = Auth::getUser()->getCustomer();
 
         $user->removeCustomer( $c2u );
 
-        foreach( $c2u->getUserLoginHistory() as $userLogin ){
+        // FIXME: inefficient -> create repository function with single SQL DELETE
+        foreach( $c2u->getUserLoginHistory() as $userLogin ) {
             D2EM::remove( $userLogin );
         }
 
         D2EM::remove( $c2u );
         D2EM::flush();
 
-        // if the User default customer is the customer that we delete
-        if( $user->getCustomer()->getId() == $c->getId() ) {
-            // setting an available new default customer
-            $user->setCustomer( $user->getCustomers() ? $user->getCustomers()[0] : null );
-        }
-
         AlertContainer::push( $user->getName()  . '/' . $user->getUsername() . ' has been removed from ' . $c->getName(), Alert::SUCCESS );
-
         Log::notice( Auth::getUser()->getUsername()." deleted customer2user" . $c->getName() . '/' . $user->getName() );
 
-        // If the user delete itself and is logged as the same customer logout
-        if( Auth::getUser()->getId() == $user->getId() && $loggedCustomer->getId() == $c->getId() ){
-            Auth::logout();
-        }
+        // a) If the user's default customer is the customer that we deleted; or
+        // b) If the user deleted itself and is logged in as the same customer:
+        // then reset default customer and logout
+        if( ( $user->getCustomer()->getId() == $c->getId() )
+                || ( $request->user()->getId() == $user->getId() && $request->user()->getCustomer()->getId() == $c->getId() ) ) {
 
-        // If user not logged in redirect to the login form ( this happens when the user delete itself)
-        if( !Auth::check() ){
+            $user->setCustomer( $user->getCustomers() ? $user->getCustomers()[0] : null );
+            D2EM::flush();
+            Auth::logout();
             return Redirect::to( route( "login@showForm" ) );
         }
 
-        // @yannrobin - do we not delete the user if there are no associated customers?
-
         // retrieve the customer ID
-        if( strpos( request()->headers->get( 'referer', "" ), "customer/overview" ) !== false ) {
+        if( strpos( $request->headers->get( 'referer', "" ), "customer/overview" ) !== false ) {
             return Redirect::to( route( "customer@overview" , [ "id" => $c->getId() , "tab" => "users" ] ) );
         }
 
         return Redirect::to( route( "user@list" ) );
-
     }
 }

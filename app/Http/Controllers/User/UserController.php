@@ -195,6 +195,9 @@ class UserController extends Doctrine2Frontend {
 
     protected static function additionalRoutes( string $route_prefix )
     {
+
+        // FIXME - are the default routes used  secure??
+
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
             Route::get(     'add-wizard',                       'User\UserController@addForm'                )->name( $route_prefix . '@add-wizard'          );
             Route::get(     'add/info/{id?}',                   'User\UserController@edit'                   )->name( $route_prefix . '@add-info'            );
@@ -261,7 +264,7 @@ class UserController extends Doctrine2Frontend {
 
 
     /**
-     * Return the list of privileges for the dropdown depending on the loggued user priv and if the customer is internal or not
+     * Return the list of privileges for the dropdown depending on the logged in user priv and if the customer is internal or not
      *
      * @return array List of privileges
      *
@@ -357,7 +360,7 @@ class UserController extends Doctrine2Frontend {
         $url = $user ? route( "user@add-info", [ 'user' => $user->getEmail() ] ) : route("user@add" ). '?e-mail=' . $request->input( 'email' );
 
         // FIXME yannrobin
-        if( $request->input( "custid" ) && ( $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( "custid" ) ) ) ){
+        if( $request->input( "custid" ) && ( $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( "custid" ) ) ) ) {
             $separator = $user ? "?" : "&";
             $url = $url . $separator . "cust=" . $cust->getId();
         }
@@ -381,7 +384,7 @@ class UserController extends Doctrine2Frontend {
         $existingUser = $disabledInputs = $addEditTpl = false;
         $listUsers = [];
 
-        if( !request()->session()->exists( 'user_post_store_redirect' ) ){
+        if( !request()->session()->exists( 'user_post_store_redirect' ) ) {
             $this->redirectLink();
         }
 
@@ -410,7 +413,7 @@ class UserController extends Doctrine2Frontend {
                 $datac2u = [];
 
                 /** @var CustomerToUserEntity $c2u */
-                foreach( $this->getC2Ulist( $this->object ) as $c2u ){
+                foreach( $this->getC2Ulist( $this->object ) as $c2u ) {
 
                     if( Auth::getUser()->isSuperUser() ){
                         $datac2u[ 'privs_' . $c2u->getId() ] = array_key_exists( 'privs_' . $c2u->getId(),  $old ) ? $old[ 'privs_' . $c2u->getId() ]   : $c2u->getPrivs();
@@ -717,8 +720,7 @@ class UserController extends Doctrine2Frontend {
     public function resendWelcomeEmail( Request $request )
     {
         /** @var UserEntity $user */
-        if( !( $user = D2EM::getRepository( UserEntity::class )->find( $request->input( "id" ) ) ) )
-        {
+        if( !( $user = D2EM::getRepository( UserEntity::class )->find( $request->input( "id" ) ) ) ) {
             abort(404, 'User not found');
         }
 
@@ -727,7 +729,6 @@ class UserController extends Doctrine2Frontend {
         AlertContainer::push( sprintf( 'The welcome email has been resent' ), Alert::SUCCESS );
 
         return redirect::to( route( $this::$route_prefix . "@list" ) );
-
     }
 
 }

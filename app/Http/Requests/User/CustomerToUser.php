@@ -48,7 +48,9 @@ class CustomerToUser extends FormRequest
      */
     public function authorize()
     {
-        // middleware ensures superuser access only so always authorised here:
+        // web-auth route ensures a logged in user...
+        // FIXME yann....
+
         return true;
     }
 
@@ -93,14 +95,12 @@ class CustomerToUser extends FormRequest
 
                 $cust = Auth::user()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $this->input( 'custid' ) ) : Auth::getUser()->getCustomer();
 
-                if( !Auth::getUser()->isSuperUser() )
-                {
+                if( !Auth::getUser()->isSuperUser() )  {
                     $validator->errors()->add( 'privs',  "You are not allowed to set any user as a super user." );
                     return false;
                 }
 
-                if( !$cust->isTypeInternal() )
-                {
+                if( !$cust->isTypeInternal() ) {
                     $validator->errors()->add( 'privs',  "You are not allowed to set super user privileges for non-internal (IXP) customer types." );
                     return false;
                 }
