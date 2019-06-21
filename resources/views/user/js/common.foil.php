@@ -8,17 +8,19 @@
         let urlDelete   =   this.href;
         let nbC2U       = $(this).attr( "data-nb-c2u" );
         let superUser   = <?= Auth::getUser()->isSuperUser() ? 'true' : 'false' ?> ;
-        let message = 'Do you really want to delete this <?= $t->feParams->nameSingular ?>?';
+        let message = 'Do you really want to delete this user ?';
+        let objectName = 'User';
 
         if( superUser && !$(this).hasClass( "btn-delete-c2u"  )  ) {
             message = `Are you sure you want to delete this user and its ${nbC2U} customer links?`;
+            objectName = 'Customer To User';
         } else {
             message = 'Do you really want to delete this Customer from this User ?';
         }
 
         let html = `<form id="d2f-form-delete" method="POST" action="${urlDelete}">
                                 <div>${message}</div>
-                                <?php if( isset( $t->feParams->extraDeleteMessage ) ): ?><div> <?= $t->feParams->extraDeleteMessage ?> </div><?php endif;?>
+
                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                                 <input type="hidden" name="id" value="${objectId}">
                             </form>`;
@@ -56,7 +58,7 @@
 
         bootbox.dialog({
             message: html,
-            title: "Delete <?= $t->feParams->titleSingular ?>",
+            title: "Delete " + objectName,
             buttons: buttons
         });
     });

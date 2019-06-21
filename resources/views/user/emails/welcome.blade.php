@@ -16,7 +16,7 @@ You can login to your account using the following details:
 |                                |                                                                  |
 | ------------------------------ | ---------------------------------------------------------------  |
 | **URL:     **                  | [{{ config( 'identity.url' ) }}]({{ config( 'identity.url' ) }}) |
-| **Username:**                  | {{ $c2u->getUser()->getUsername() }}                                       |
+| **Username:**                  | {{ $user->getUsername() }}                                       |
 | **Password:**                  | (see below)                                                      |
 
 
@@ -40,7 +40,7 @@ If you require any assistance, please contact {{ config('identity.name') }} on [
 
 To set your password, please use following link:
 
-@component('mail::button', ['url' => route( "reset-password@show-reset-form", [ "token" => $token, "username" => $c2u->getUser()->getUsername() ] ), 'color' => 'blue'])
+@component('mail::button', ['url' => route( "reset-password@show-reset-form", [ "token" => $token, "username" => $user->getUsername() ] ), 'color' => 'blue'])
     Reset password
 @endcomponent
 

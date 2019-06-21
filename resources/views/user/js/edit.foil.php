@@ -3,7 +3,9 @@
 
     $( document ).ready(function() {
 
-        <?php if( Auth::getUser()->isSuperUser() && $t->data[ 'params'][ 'object'] ): ?>
+        $( "#btnCancel" ).attr( "href", $( "#linkCancel" ).val() );
+
+        <?php if( Auth::getUser()->isSuperUser() && $t->user ): ?>
 
             let tableList = $( '.table' );
 
@@ -36,6 +38,7 @@
                 let dd_privs = $( "#" + this.id );
 
                 clearSelect( dd_privs );
+                $( "#extra-message" ).html( "" );
 
                 let ajaxCall = $.ajax( "<?= route( 'customer-to-user@privs' ) ?>", {
                     data: {
@@ -50,15 +53,27 @@
                         dd_privs.addClass( "is-valid" );
                         dd_privs.closest('div').append( "<div class='valid-feedback feedback'> " + data.message + " </div>" );
                         $( "#select2-" +dd_privs.attr( "id" )+ "-container" ).parent( 'span' ).addClass( "valid-border-select" );
+
+                        if( data.extraMessage !== null ){
+                            $( "#extra-message" ).html( `<div class="alert alert-warning mt-4" role="alert">
+                                <div class="d-flex align-items-center">
+                                    <div class="text-center">
+                                        <i class="fa fa-exclamation-circle fa-2x"></i>
+                                    </div>
+                                    <div class="col-sm-12">
+                                        <p>
+                                            ${data.extraMessage}
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>` );
+                        }
                     } else {
                         dd_privs.addClass( "is-invalid" );
                         dd_privs.closest('div').append( "<div class='invalid-feedback feedback'> " + data.message + " </div>" );
                         $( "#select2-" +dd_privs.attr( "id" )+ "-container" ).parent( 'span' ).addClass( "error-border-select" );
                     }
 
-                    // setTimeout(function () {
-                    //     clearSelect( dd_privs )
-                    // }, 2000);
                 })
                 .fail( function() {
                     throw new Error( "Error running ajax query for " + "<?= route( 'customer-to-user@privs' ) ?>" );

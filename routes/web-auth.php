@@ -119,8 +119,22 @@ Route::group( [ 'prefix' => 'dashboard' ], function() {
 ///
 
 Route::group( [ 'namespace' => 'User', 'prefix' => 'customer-to-user' ], function() {
-    Route::post('store',     'CustomerToUserController@store'                        )->name( "customer-to-user@store"        );
-    Route::post('delete',    'CustomerToUserController@delete'                       )->name( "customer-to-user@delete"       );
+    Route::get( 'add/{id?}/{cust?}',      'CustomerToUserController@add'                              )->name( "customer-to-user@add"          );
+    Route::post('store',     'CustomerToUserController@store'                           )->name( "customer-to-user@store"        );
+    Route::post('delete',    'CustomerToUserController@delete'                          )->name( "customer-to-user@delete"       );
+});
+
+Route::group( [ 'namespace' => 'User', 'prefix' => 'user' ], function() {
+    Route::get(     'list',                     'UserController@index'                 )->name("user@list"              );
+    Route::get(     'view/{id}',                'UserController@view'                  )->name("user@view"              );
+    Route::get(     'add',                      'UserController@add'                   )->name('user@add'               );
+    Route::get(     'add-wizard/{custid?}',     'UserController@addForm'               )->name('user@add-wizard'        );
+    Route::get(     'edit/{id}',                'UserController@edit'                  )->name('user@edit'              );
+    Route::post(    'welcome-email',            'UserController@resendWelcomeEmail'    )->name('user@welcome-email'     );
+    Route::post(    'add-store',                'UserController@addStore'              )->name('user@add-store'         );
+    Route::post(    'edit-store',               'UserController@editStore'             )->name('user@edit-store'        );
+    Route::post(    'delete',                   'UserController@delete'                )->name('user@delete'            );
+    Route::post(     'add/check-email',         'UserController@addCheckEmail'         )->name('user@add-check-email'   );
 });
 
 

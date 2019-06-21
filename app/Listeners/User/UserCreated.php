@@ -49,6 +49,6 @@ class UserCreated
      */
     public function handle( UserCreatedEvent $e )
     {
-        Mail::to( $e->c2u->getUser()->getEmail() )->send( new UserCreatedMailable( $e->c2u, false ) );
+        Mail::to( $e->user->getEmail() )->send( new UserCreatedMailable( $e->user, false ) );
     }
 }

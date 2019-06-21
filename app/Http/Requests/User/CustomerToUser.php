@@ -42,14 +42,29 @@ use IXP\Utils\View\Alert\{
 class CustomerToUser extends FormRequest
 {
     /**
+     * The Customer object
+     * @var CustomerEntity
+     */
+    public $cust = null;
+
+    /**
+     * The User object
+     * @var UserEntity
+     */
+    public $existingUser = null;
+
+    /**
      * Determine if the user is authorized to make this request.
      *
      * @return bool
      */
     public function authorize()
     {
-        // web-auth route ensures a logged in user...
-        // FIXME yann....
+
+        // check that this user can effect these changes
+        if( $this->user()->isCustUser() ){
+            return false;
+        }
 
         return true;
     }
@@ -61,7 +76,6 @@ class CustomerToUser extends FormRequest
      */
     public function rules()
     {
-
         return [
             'custid'                => 'required|integer|exists:Entities\Customer,id',
             'existingUserId'        => 'required|integer|exists:Entities\User,id',
@@ -73,29 +87,34 @@ class CustomerToUser extends FormRequest
 
     public function withValidator( Validator $validator )
     {
+
         $validator->after( function( Validator $validator )
         {
-
-            if( !$this->input( 'existingUserId' ) )
-            {
+            if( !$this->input( 'existingUserId' ) ) {
                 AlertContainer::push( "You must select one user from the list." , Alert::DANGER );
                 return false;
             }
 
-            $cust = D2EM::getRepository( CustomerEntity::class )->find( $this->input( 'custid', '' ) );
+            $this->cust = D2EM::getRepository( CustomerEntity::class )->find( $this->input( 'custid' ) );
 
-            if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => $cust , "user" => $this->input( 'existingUserId' ) ] ) )
+            $this->existingUser = D2EM::getRepository( UserEntity::class )->find( $this->input( 'existingUserId' ) );
+
+            if( !$this->user()->isSuperUser() && $this->existingUser->getCustomer()->getId() != $this->cust->getId() ) {
+                abort( "403" );
+            }
+
+            if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => $this->cust , "user" => $this->existingUser ] ) )
             {
-                $validator->errors()->add('custid',  "This user is already associated with " . $cust->getName() );
+                $validator->errors()->add('custid',  "This user is already associated with " . $this->cust->getName() );
                 return false;
             }
 
             if( $this->input( 'privs' ) == UserEntity::AUTH_SUPERUSER )
             {
 
-                $cust = Auth::user()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $this->input( 'custid' ) ) : Auth::getUser()->getCustomer();
+                $cust = Auth::user()->isSuperUser() ? $this->cust : Auth::getUser()->getCustomer();
 
-                if( !Auth::getUser()->isSuperUser() )  {
+                if( !$this->user::getUser()->isSuperUser() )  {
                     $validator->errors()->add( 'privs',  "You are not allowed to set any user as a super user." );
                     return false;
                 }

@@ -4,7 +4,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?=  $t->feParams->pagetitle  ?>
+    User
     /
     Add
 
@@ -13,21 +13,13 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <div class="btn-group btn-group-sm" role="group">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/usage/users/">
+            Documentation
+        </a>
 
-        <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
-            <a target="_blank" class="btn btn-white" href="<?= $t->feParams->documentation ?>">
-                Documentation
-            </a>
-        <?php endif; ?>
-
-        <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-            <?php if( Route::has( $t->feParams->route_prefix . '@list' ) ): ?>
-                <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@list') ?>">
-                    <span class="fa fa-th-list"></span>
-                </a>
-            <?php endif; ?>
-        <?php endif;?>
-
+        <a class="btn btn-white" href="<?= route('user@list') ?>">
+            <span class="fa fa-th-list"></span>
+        </a>
     </div>
 
 <?php $this->append() ?>
@@ -57,12 +49,14 @@ $this->layout( 'layouts/ixpv4' );
         </div>
 
         <?= Former::hidden( 'custid' )
-            ->value( $t->data[ 'params'][ 'custid'] );
+            ->value( $t->custid );
         ?>
+
+        <?= Former::hidden( 'cancelBtn' ) ?>
 
         <?= Former::actions(
             Former::primary_submit( 'Add' ),
-            Former::secondary_link( 'Cancel' )->href( $t->data['params']['canbelBtnLink'] ),
+            Former::secondary_link( 'Cancel' )->href( $t->custid ? route( "customer@overview" , [ "id" => $t->custid ] ) : route( "user@list" ) ),
             Former::success_button( 'Help' )->id( 'help-btn' )
         );
         ?>

@@ -1,15 +1,12 @@
-<?php $this->layout( 'layouts/ixpv4' ) ?>
+<?php $this->layout( 'layouts/ixpv4' );
+/** @var object $t */
+?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
 
-<?=  $t->feParams->pagetitle  ?>
+User
 /
-
-<?php if( isset( $t->feParams->customBreadcrumb ) ): ?>
-    <?= $t->feParams->customBreadcrumb ?>
-<?php else: ?>
-    <?= $t->data[ 'params']['isAdd'] ? 'Add' : 'Edit' ?> <?= $t->feParams->titleSingular  ?>
-<?php endif; ?>
+Add
 
 <?php $this->append() ?>
 
@@ -17,17 +14,13 @@
 
 <div class="btn-group btn-group-sm ml-auto" role="group">
 
-    <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
-        <a target="_blank" class="btn btn-white" href="<?= $t->feParams->documentation ?>">
-            Documentation
-        </a>
-    <?php endif; ?>
+    <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/usage/users/">
+        Documentation
+    </a>
 
-    <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-        <a id="add-user" class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@add-wizard') ?>">
-            <i class="fa fa-plus"></i>
-        </a>
-    <?php endif;?>
+    <a id="add-user" class="btn btn-white" href="<?= route('user@add-wizard') ?>">
+        <i class="fa fa-plus"></i>
+    </a>
 
 </div>
 
@@ -91,7 +84,7 @@
                 </tr>
                 </thead>
                 <tbody class="cursor-pointer">
-                <?php foreach( $t->data[ 'params'][ 'listUsers' ] as $user ): ?>
+                <?php foreach( $t->listUsers as $user ): ?>
                     <tr>
                         <td>
                             <?= Former::radios( 'user-' . $user->getId() )
@@ -134,7 +127,7 @@
                 ->id( 'privs' )
                 ->label( 'Privileges' )
                 ->placeholder( 'Select a privilege' )
-                ->fromQuery( $t->data[ 'params'][ 'privs' ], 'name' )
+                ->fromQuery( $t->privs , 'name' )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( 'The user\'s privileges / access level. See <a target="_blank" href="https://docs.ixpmanager.org/usage/users/#types-of-users">'
                     . 'the official documentation here</a>.'
@@ -147,13 +140,13 @@
                     ->id( 'cust' )
                     ->label( 'Customer' )
                     ->placeholder( 'Select a customer' )
-                    ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
+                    ->fromQuery( $t->custs , 'name' )
                     ->addClass( 'chzn-select' )
                     ->blockHelp( "The customer to create the user for.<br><br>If creating a customer for your own IXP, then pick the IXP customer entry." )
-                    ->disabled( $t->data[ 'params'][ 'c' ] ? true : false );
+                    ->disabled( $t->c ? true : false );
                 ?>
 
-                <?php if( $t->data[ 'params'][ 'c' ] ):?>
+                <?php if( $t->c ):?>
                     <?= Former::hidden( 'custid' )->value( Auth::getUser()->getCustomer()->getId() ) ?>
                 <?php endif;?>
 
@@ -170,14 +163,6 @@
             );
             ?>
         </div>
-
-        <?= Former::hidden( 'id' )
-            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
-        ?>
-
-        <?= Former::hidden( 'existingUser' )
-            ->value( $t->data[ 'params'][ 'existingUser' ] ? true : false )
-        ?>
 
         <?= Former::close() ?>
 
