@@ -6,7 +6,7 @@ $this->layout( 'layouts/ixpv4' )
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-User / View User
+Users / View User
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>

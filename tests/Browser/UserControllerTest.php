@@ -142,7 +142,7 @@ class UserControllerTest extends DuskTestCase
 
 
             $browser->select('privs_' . $c2u->getId(),         UserEntity::AUTH_CUSTADMIN )
-                    ->waitForText( "The privs has been updated." )
+                    ->waitForText( "The user's privilege has been updated." )
                     ->type( 'name',             'Test User' )
                     ->type( 'username',         'testuser' )
                     ->type( 'email',            'test-user@example.com' )
@@ -150,7 +150,7 @@ class UserControllerTest extends DuskTestCase
                     ->uncheck( 'enabled' )
                     ->press(  'Save Changes' )
                     ->assertPathIs('/user/list' )
-                    ->assertSee( 'User edited' )
+                    ->assertSee( 'The User has been edited' )
                     ->assertSee( 'Test User' )
                     ->assertSee( 'testuser' )
                     ->assertSee( 'test-user@example.com' );
@@ -229,7 +229,7 @@ class UserControllerTest extends DuskTestCase
                     ->assertSelected('privs_' . $c2u2->getId(), UserEntity::AUTH_CUSTADMIN )
                     ->press( 'Save Changes' )
                     ->assertPathIs('/user/list' )
-                    ->assertSee( 'User edited' )
+                    ->assertSee( 'The User has been edited' )
                     ->assertSee( 'Test User' )
                     ->assertSee( 'testuser' );
 
@@ -261,9 +261,9 @@ class UserControllerTest extends DuskTestCase
              */
             $browser->click( "#d2f-list-edit-" . $u->getId() )
                     ->select(   'privs_' . $c2u->getId()           , UserEntity::AUTH_CUSTUSER )
-                    ->waitForText( "The privs has been updated." )
+                    ->waitForText( "The user's privilege has been updated." )
                     ->select(   'privs_' . $c2u2->getId()           , UserEntity::AUTH_CUSTUSER )
-                    ->waitForText( "The privs has been updated." )
+                    ->waitForText( "The user's privilege has been updated." )
                     ->type(     'name'      , 'Test User 1' )
                     ->type(     'username'  , 'testuser1' )
                     ->type(     'email'     , 'test-user1@example.com' )
@@ -271,7 +271,7 @@ class UserControllerTest extends DuskTestCase
                     ->type(     'authorisedMobile'  , '12125551000' )
                     ->press(    'Save Changes' )
                     ->waitForLocation('/user/list' )
-                    ->assertSee( 'User edited' )
+                    ->assertSee( 'The User has been edited' )
                     ->assertSee( 'Test User 1' )
                     ->assertSee( 'testuser1' )
                     ->assertSee( 'test-user1@example.com' );
@@ -313,13 +313,13 @@ class UserControllerTest extends DuskTestCase
             $browser->assertPathIs(     "/user/edit/" . $u->getId() )
                     ->waitForText(      'Imagine' )
                     ->click(         "#d2f-list-delete-" . $c2u2->getId() )
-                    ->waitForText(      "Delete User" )
+                    ->waitForText(      "Delete Customer To User" )
                     ->assertSee(        "Do you really want to delete" )
                     ->press(          "Delete" );
 
 
             $browser->assertPathIs( "/user/list" )
-                    ->assertSee(     "The link customer/user ( " . $c2u2->getCustomer()->getName() . "/" . $c2u2->getUser()->getName() . " ) has been deleted" );
+                    ->assertSee(     $c2u2->getUser()->getName() . "/" . $c2u2->getUser()->getUserName() . " has been removed from" );
 
 
             // test the values:
@@ -344,7 +344,7 @@ class UserControllerTest extends DuskTestCase
                     ->press(     'Delete' );
 
             $browser->assertPathIs("/user/list" )
-                    ->assertSee(    "User deleted" );
+                    ->assertSee(    "The User has been deleted" );
 
             $this->assertEquals( null   , D2EM::getRepository( CustomerToUserEntity::class  )->findOneBy( [ 'user' => $u , "customer" => 1 ] ) );
             $this->assertEquals( null   , D2EM::getRepository( UserEntity::class            )->findOneBy( [ "username" => 'testuser1'] ) );
@@ -412,7 +412,7 @@ class UserControllerTest extends DuskTestCase
                         ->waitForText(    'Do you really want to delete this user?' )
                         ->press(        'Delete' )
                         ->assertPathIs(   '/customer/overview/5/users' )
-                        ->assertSee(       'User deleted' )
+                        ->assertSee(       'The User has been deleted' )
                         ->assertDontSee(   'Test User 1' )
                         ->assertDontSee(   'testuser1' )
                         ->assertDontSee(   'test-user1@example.com' );
@@ -492,12 +492,12 @@ class UserControllerTest extends DuskTestCase
             $browser->assertPathIs(    "/user/edit/" . $u3->getId() )
                     ->waitForText(     'Imagine' )
                     ->click(        "#d2f-list-delete-" . $c2u4->getId() )
-                    ->waitForText(     "Delete User" )
+                    ->waitForText(     "Delete Customer To User" )
                     ->assertSee(       "Do you really want to delete" )
                     ->press(        'Delete' );
 
             $browser->assertPathIs( "/user/list" )
-                    ->assertSee(    "has been deleted" );
+                    ->assertSee(    "has been removed" );
 
 
 
@@ -526,7 +526,7 @@ class UserControllerTest extends DuskTestCase
 
 
             $browser->visit(        '/user/list' )
-                    ->assertSee(    'Your Users' )
+                    ->assertSee(    'Users' )
                     ->assertSee(    'imcustuser' )
                     ->assertSee(    'imagine-custuser@example.com' );
 
@@ -584,7 +584,7 @@ class UserControllerTest extends DuskTestCase
                 ->assertSelected('privs', UserEntity::AUTH_CUSTUSER )
                 ->press( 'Save Changes' )
                 ->assertPathIs('/user/list' )
-                ->assertSee( 'User edited' )
+                ->assertSee( 'The User has been edited' )
                 ->assertSee( 'Test User 11' )
                 ->assertSee( 'testuser11' )
                 ->assertSee( 'test-user11@example.com' );
@@ -616,7 +616,7 @@ class UserControllerTest extends DuskTestCase
                 ->assertDisabled( "authorisedMobile" )
                 ->press( 'Save Changes' )
                 ->assertPathIs('/user/list' )
-                ->assertSee( 'User edited' );
+                ->assertSee( 'The User has been edited' );
 
             // test the values:
             D2EM::refresh($u);
@@ -634,7 +634,7 @@ class UserControllerTest extends DuskTestCase
                 ->waitForText( 'Do you really want to delete this Customer from this User' )
                 ->press( 'Delete' )
                 ->assertPathIs('/user/list' )
-                ->assertSee( 'User deleted' )
+                ->assertSee( 'The User has been deleted' )
                 ->assertDontSee( 'Test User 11' )
                 ->assertDontSee( 'testuser11' )
                 ->assertDontSee( 'test-user11@example.com' );
@@ -662,7 +662,7 @@ class UserControllerTest extends DuskTestCase
                 ->assertDisabled( 'email' )
                 ->press( 'Save Changes' )
                 ->assertPathIs('/user/list' )
-                ->assertSee( 'User edited' )
+                ->assertSee( 'The User has been edited' )
                 ->assertSee( 'Test Test' )
                 ->assertSee( 'imcustadmin' )
                 ->assertSee( 'imagine-custadmin@example.com' );
@@ -684,7 +684,7 @@ class UserControllerTest extends DuskTestCase
                 ->type( 'authorisedMobile', '12125551000' )
                 ->press('Save Changes' )
                 ->assertPathIs('/user/list' )
-                ->assertSee( 'User edited' )
+                ->assertSee( 'The User has been edited' )
                 ->assertSee( 'Test Test 1' )
                 ->assertSee( 'imcustadmin' )
                 ->assertSee( 'imagine-custadmin@example.com' );
@@ -741,7 +741,7 @@ class UserControllerTest extends DuskTestCase
                 ->type( '#email' , $existingUser->getEmail() )
                 ->click( '.btn-primary' );
 
-            $browser->assertSelectMissingOption( "#privs" , UserEntity::AUTH_SUPERUSER );
+            //$browser->assertSelectMissingOption( "#privs" , UserEntity::AUTH_SUPERUSER );
 
             // 3. customer overview -> internal customer -> add user from tab -> super option
 
@@ -789,7 +789,7 @@ class UserControllerTest extends DuskTestCase
                 ->select( 'custid', 4 )
                 ->press('Add User' );
 
-            $browser->assertSee( "You are not allowed to set this User as a Super User" );
+            $browser->assertSee( "You are not allowed to set super user privileges" );
 
 
             // 7. lhs users menu option -> add -> non existing user super set on internal -> success + warning
@@ -832,7 +832,9 @@ class UserControllerTest extends DuskTestCase
             $browser->visit( 'user/list' )
                 ->click( "#d2f-list-edit-5" );
 
-            $browser->assertSelectHasOption( "#privs_7" , UserEntity::AUTH_SUPERUSER );
+            $c2u = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ 'user' => 5 , 'customer' => 1 ] );
+
+            $browser->assertSelectHasOption( "#privs_" . $c2u->getId() , UserEntity::AUTH_SUPERUSER );
 
             // 10. customer admin -> add non existing user -> no super option
             $browser->visit( 'user/list' )
@@ -862,7 +864,7 @@ class UserControllerTest extends DuskTestCase
             // 12. customer admin -> edit user -> no super option
             $browser->visit( 'user/list' )
                     ->click( "#d2f-list-edit-3" )
-                    ->waitForText( "Users / Edit User" );
+                    ->waitForText( "Users / Edit" );
 
             $browser->assertSelectMissingOption( "#privs" , UserEntity::AUTH_SUPERUSER );
 
@@ -881,8 +883,8 @@ class UserControllerTest extends DuskTestCase
 
             $browser->visit( "/user/edit/" . $addedUser2->getId() )
                 ->pause( 2000 )
-                ->click( "#d2f-list-delete-7" )
-                ->waitForText( "Delete User" )
+                ->click( "#d2f-list-delete-" . $c2u->getId() )
+                ->waitForText( "Delete Customer To User" )
                 ->press( "Delete" );
         });
 

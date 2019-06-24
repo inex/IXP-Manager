@@ -66,15 +66,19 @@ use IXP\Utils\View\Alert\{
 class UserController extends Controller
 {
 
-    protected $cancelButton = null;
-
-
-    public function __construct() {
-
-//        if( !request()->old() ){
-//            $this->cancelButton = request()->headers->get( 'referer', "" );
-//        }
-
+    /**
+     * Set as a session the redirect link
+     *
+     * @return Void
+     *
+     * @throws
+     */
+    private function redirectLink()
+    {
+        if( !request()->old() ) {
+            request()->session()->remove( "user_post_store_redirect" );
+            session()->put( 'user_post_store_redirect', request()->headers->get( 'referer', "" ) );
+        }
     }
 
     /**
@@ -84,7 +88,7 @@ class UserController extends Controller
      *
      * @return  array
      */
-    private function getListData( $id = null ){
+    private function getListData( $id = null ) {
         return Auth::getUser()->isSuperUser() ? D2EM::getRepository( UserEntity::class )->getAllForFeListSuperUser( $id ) : D2EM::getRepository( UserEntity::class )->getAllForFeListCustAdmin( Auth::getUser(), $id );
     }
 
@@ -107,10 +111,11 @@ class UserController extends Controller
      */
     public function addForm(): View
     {
-        //$this->redirectLink();
+
+        $this->redirectLink();
 
         Former::populate([
-            'cancelBtn'             => array_key_exists( 'cancelBtn',           request()->old() ) ? request()->old()['cancelBtn']          : request()->headers->get( 'referer', "" ),
+            'cancelBtn'             => array_key_exists( 'cancelBtn', request()->old() ) ? request()->old()['cancelBtn'] : request()->headers->get( 'referer', "" ),
         ]);
 
         $cust = D2EM::getRepository( CustomerEntity::class )->find( request()->input("cust" , "" ) );
@@ -132,7 +137,8 @@ class UserController extends Controller
      *
      * @throws
      */
-    public function addCheckEmail( AddCheckEmailRequest $request ){
+    public function addCheckEmail( AddCheckEmailRequest $request )
+    {
         $custid = null;
         /** @var UserEntity $user */
         $user = D2EM::getRepository( UserEntity::class )->findOneBy( [ 'email' => $request->input( 'email' ) ] );
@@ -152,12 +158,14 @@ class UserController extends Controller
      *
      * @return  View
      */
-    public function add(): View {
-        $old = request()->old();
+    public function add(): View
+    {
 
-//        if( !request()->session()->exists( 'user_post_store_redirect' ) ) {
-//            $this->redirectLink();
-//        }
+        if( !request()->session()->exists( 'user_post_store_redirect' ) ) {
+            $this->redirectLink();
+        }
+
+        $old = request()->old();
 
         Former::populate([
             'name'                  => array_key_exists( 'name',                $old ) ? $old['name']               : request()->input( "name" ),
@@ -179,32 +187,6 @@ class UserController extends Controller
         ]);
     }
 
-    /**
-     * Get the Customer2User list for a user or the customer/user link
-     *
-     * @param   UserEntity $user
-     *
-     * @return array
-     *
-     * @throws
-     */
-    private function getC2Ulist( UserEntity $user )
-    {
-        // Getting the Customer2User list
-        if( Auth::getUser()->isSuperUser() ) {
-            // Getting all the customer for the user
-            if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "user" => $user->getId() ] ) ) ) {
-                $this->unauthorized();
-            }
-        } else {
-            // Getting only the current logged customer for the user
-            if( !( $listC2u = D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "customer" => Auth::getUser()->getCustomer()->getId() , "user" => $user->getId() ] ) ) ) {
-                $this->unauthorized();
-            }
-        }
-
-        return $listC2u;
-    }
 
     /**
      * Allow to display the form to Edit a user
@@ -213,7 +195,12 @@ class UserController extends Controller
      *
      * @return  View
      */
-    public function edit( int $id ): View {
+    public function edit( int $id ): View
+    {
+        if( !request()->session()->exists( 'user_post_store_redirect' ) ) {
+            $this->redirectLink();
+        }
+
         $old = request()->old();
 
         if( !( $u = D2EM::getRepository( UserEntity::class )->find( $id ) ) ) {
@@ -231,10 +218,12 @@ class UserController extends Controller
 
         $datac2u = [];
 
-        /** @var CustomerToUserEntity $c2u */
-        foreach( $this->getC2Ulist( $u ) as $c2u ) {
+        $listC2u = Auth::getUser()->isSuperUser() ? D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "user" => $u->getId() ] ) : D2EM::getRepository( CustomerToUserEntity::class)->findBy( [ "customer" => Auth::getUser()->getCustomer()->getId() , "user" => $u->getId() ] );
 
-            if( Auth::getUser()->isSuperUser() ){
+        /** @var CustomerToUserEntity $c2u */
+        foreach( $listC2u as $c2u ) {
+
+            if( Auth::getUser()->isSuperUser() ) {
                 $datac2u[ 'privs_' . $c2u->getId() ] = array_key_exists( 'privs_' . $c2u->getId(),  $old ) ? $old[ 'privs_' . $c2u->getId() ]   : $c2u->getPrivs();
             } else {
                 $datac2u[ 'privs'  ] = array_key_exists( 'privs',  $old    ) ? $old[ 'privs']  : $c2u->getPrivs();
@@ -243,9 +232,7 @@ class UserController extends Controller
 
         Former::populate( array_merge( $dataCust, $datac2u ) );
 
-
         $disabledInputs = Auth::getUser()->isSuperUser() ? false : true;
-
 
         return view( 'user/edit' )->with([
             'user'                  => $u,
@@ -266,8 +253,8 @@ class UserController extends Controller
      *
      * @throws
      */
-    public function addStore( AddStoreUser $request ) {
-
+    public function addStore( AddStoreUser $request )
+    {
         // Creating the User object
         $user = new UserEntity;
         D2EM::persist( $user );
@@ -282,7 +269,7 @@ class UserController extends Controller
         $user->setLastupdated( now() );
         $user->setLastupdatedby( Auth::getUser()->getId() );
         $user->setPrivs( $request->input( 'privs' ) );
-        $user->setCustomer( Auth::user()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) : Auth::getUser()->getCustomer() );
+        $user->setCustomer( Auth::getUser()->isSuperUser() ? D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) : Auth::getUser()->getCustomer() );
 
         D2EM::flush();
 
@@ -301,14 +288,15 @@ class UserController extends Controller
             AlertContainer::push( 'Please note that you have given this user full administrative access.', Alert::WARNING );
         }
 
+        // Send Email related to the evenr
         event( new UserCreatedEvent( $user ) );
 
-        Log::notice( Auth::user()->getUsername() . ' Added a User  with ID ' . $user->getId() );
+        Log::notice( Auth::getUser()->getUsername() . ' Added a User  with ID ' . $user->getId() );
 
         AlertContainer::push( "User added successfully. A welcome email is being sent to {$user->getEmail()} with "
             . "instructions on how to set their password. ", Alert::SUCCESS );
 
-        return redirect()->to( $this->postStoreRedirect()  );
+        return redirect()->to( $this->postStoreRedirect() );
     }
 
     /**
@@ -320,20 +308,20 @@ class UserController extends Controller
      *
      * @throws
      */
-    public function editStore( EditStoreUser $request ) {
+    public function editStore( EditStoreUser $request )
+    {
 
         /** @var $user UserEntity*/
         if( !( $user = D2EM::getRepository( UserEntity::class )->find( $request->input( 'id' ) ) ) ) {
             abort(404, 'User not found');
         }
 
-        // Superuser OR Adding user OR Logged User edit his own user
+        // Superuser OR Logged User edit his own user
         if( Auth::getUser()->isSuperUser() || $user->getId() == Auth::getUser()->getId() ) {
             $user->setName( $request->input( 'name' ) );
             $user->setAuthorisedMobile( $request->input( 'authorisedMobile' ) );
         }
 
-        // Superuser OR Adding user
         if( Auth::getUser()->isSuperUser() ) {
             $user->setUsername( strtolower( $request->input( 'username' ) ) );
             $user->setEmail( $request->input( 'email' ) );
@@ -345,7 +333,6 @@ class UserController extends Controller
 
         D2EM::flush();
 
-        // if editing and not super user
         if( !Auth::getUser()->isSuperUser() ) {
 
             /** @var $c2u CustomerToUserEntity */
@@ -359,34 +346,32 @@ class UserController extends Controller
 
         Log::notice( Auth::user()->getUsername() . ' edited a User with ID ' . $user->getId() );
 
-        AlertContainer::push( 'The User has been added', Alert::SUCCESS );
+        AlertContainer::push( 'The User has been edited', Alert::SUCCESS );
 
         return redirect()->to( $this->postStoreRedirect() );
     }
 
 
     /**
+     * Redirect the user post store
+     *
      * @inheritdoc
      *
      * @return null|string
      */
-    protected function postStoreRedirect()
-    {
-        if( !Auth::getUser()->isSuperUser() )
-        {
-            return route( 'user@list' );
-        } else {
+    protected function postStoreRedirect() {
 
-            $redirect = session()->get( "user_post_store_redirect" );
-            session()->remove( "user_post_store_redirect" );
+        if( Auth::getUser()->isSuperUser() ) {
 
-            // retrieve the customer ID
+            $redirect = session( "user_post_store_redirect" );
+            session()->forget( "user_post_store_redirect" );
+
             if( strpos( $redirect, "customer/overview" ) ) {
-                return route( 'customer@overview' , [ 'id' => $this->object->getCustomer()->getId() , 'tab' => 'users' ] );
+                return $redirect;
             }
         }
 
-        return null;
+        return route( 'user@list' );
     }
 
     /**
@@ -397,7 +382,6 @@ class UserController extends Controller
      * @return  view
      */
     public function view( int $id = null ): View {
-
         return view( 'user/view' )->with([
             'u'                        => $this->getListData( $id )[0]
         ]);

@@ -23,7 +23,7 @@ namespace IXP\Http\Requests\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use AUth, D2EM, Redirect;
+use AUth, D2EM;
 
 use Entities\{
     CustomerToUser      as CustomerToUserEntity,
@@ -66,9 +66,8 @@ class AddCheckEmail extends FormRequest
 
     public function withValidator( Validator $validator )
     {
-        $validator->after( function( Validator $validator )
-        {
-            if( !Auth::getUser()->isSuperUser() ){
+        $validator->after( function( Validator $validator ) {
+            if( !Auth::getUser()->isSuperUser() ) {
                 /** @var UserEntity $user */
                 foreach( D2EM::getRepository( UserEntity::class )->findBy( [ 'email' => $this->input( 'email' ) ] ) as $user ) {
 

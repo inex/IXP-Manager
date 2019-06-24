@@ -4,7 +4,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    User
+    Users
     /
     Add
 

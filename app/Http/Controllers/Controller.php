@@ -134,7 +134,7 @@ class Controller extends BaseController
         $privs = UserEntity::$PRIVILEGES_TEXT_NONSUPERUSER;
 
         // If we add a user via the customer overview users list
-        if( request()->is( 'userx/add*' ) && request()->input( "cust" ) ) {
+        if( request()->is( 'user/add*' ) && request()->input( "cust" ) ) {
 
             /** @var $c CustomerEntity */
             if( ( $c = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "cust" ) ) ) ) {
@@ -144,7 +144,7 @@ class Controller extends BaseController
                 }
             }
             // If we add a user and we are a SuperUser
-        } elseif( request()->is( 'userx/add*' ) && Auth::getUser()->isSuperUser() ){
+        } elseif( Auth::getUser()->isSuperUser() && ( request()->is( 'user/add*' ) || request()->is( 'customer-to-user/add*' )  ) ) {
             $privs = UserEntity::$PRIVILEGES_TEXT;
         }
 

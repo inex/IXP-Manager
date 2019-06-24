@@ -3,7 +3,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-Users
+Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>

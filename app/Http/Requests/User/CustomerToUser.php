@@ -23,7 +23,7 @@ namespace IXP\Http\Requests\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use AUth, D2EM;
+use D2EM;
 
 use Entities\{
     Customer            as CustomerEntity,
@@ -60,9 +60,8 @@ class CustomerToUser extends FormRequest
      */
     public function authorize()
     {
-
         // check that this user can effect these changes
-        if( $this->user()->isCustUser() ){
+        if( $this->user()->isCustUser() ) {
             return false;
         }
 
@@ -88,33 +87,30 @@ class CustomerToUser extends FormRequest
     public function withValidator( Validator $validator )
     {
 
-        $validator->after( function( Validator $validator )
-        {
+        $validator->after( function( Validator $validator ) {
+
             if( !$this->input( 'existingUserId' ) ) {
                 AlertContainer::push( "You must select one user from the list." , Alert::DANGER );
                 return false;
             }
 
-            $this->cust = D2EM::getRepository( CustomerEntity::class )->find( $this->input( 'custid' ) );
-
-            $this->existingUser = D2EM::getRepository( UserEntity::class )->find( $this->input( 'existingUserId' ) );
+            $this->cust         = D2EM::getRepository( CustomerEntity::class    )->find( $this->input( 'custid'         ) );
+            $this->existingUser = D2EM::getRepository( UserEntity::class        )->find( $this->input( 'existingUserId' ) );
 
             if( !$this->user()->isSuperUser() && $this->existingUser->getCustomer()->getId() != $this->cust->getId() ) {
                 abort( "403" );
             }
 
-            if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => $this->cust , "user" => $this->existingUser ] ) )
-            {
+            if( D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "customer" => $this->cust , "user" => $this->existingUser ] ) ) {
                 $validator->errors()->add('custid',  "This user is already associated with " . $this->cust->getName() );
                 return false;
             }
 
-            if( $this->input( 'privs' ) == UserEntity::AUTH_SUPERUSER )
-            {
+            if( $this->input( 'privs' ) == UserEntity::AUTH_SUPERUSER ) {
 
-                $cust = Auth::user()->isSuperUser() ? $this->cust : Auth::getUser()->getCustomer();
+                $cust = $this->user()->isSuperUser() ? $this->cust : $this->user()->getCustomer();
 
-                if( !$this->user::getUser()->isSuperUser() )  {
+                if( !$this->user()->isSuperUser() )  {
                     $validator->errors()->add( 'privs',  "You are not allowed to set any user as a super user." );
                     return false;
                 }

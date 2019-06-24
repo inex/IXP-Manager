@@ -13,9 +13,10 @@
 
         if( superUser && !$(this).hasClass( "btn-delete-c2u"  )  ) {
             message = `Are you sure you want to delete this user and its ${nbC2U} customer links?`;
-            objectName = 'Customer To User';
+
         } else {
             message = 'Do you really want to delete this Customer from this User ?';
+            objectName = 'Customer To User';
         }
 
         let html = `<form id="d2f-form-delete" method="POST" action="${urlDelete}">

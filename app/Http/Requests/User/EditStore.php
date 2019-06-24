@@ -41,7 +41,8 @@ class EditStore extends FormRequest
      *
      * @return bool
      */
-    public function authorize() {
+    public function authorize()
+    {
         if( $this->user()->isCustUser() ){
             return false;
         }
@@ -54,7 +55,8 @@ class EditStore extends FormRequest
      *
      * @return array
      */
-    public function rules() {
+    public function rules()
+    {
          $addUserInfo = [];
 
         // If its a superuser
@@ -90,7 +92,8 @@ class EditStore extends FormRequest
 
 
 
-    public function withValidator( Validator $validator ){
+    public function withValidator( Validator $validator )
+    {
         if( !Auth::getUser()->isSuperUser() ) {
             if( !$validator->fails() ) {
 

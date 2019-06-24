@@ -118,7 +118,7 @@
                                     </a>
 
                                     <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                        <a class="btn btn-white d2f-list-delete" id='d2f-list-delete-<?= $u[ 'id' ] ?>' data-nb-c2u="<?= $u[ 'nbC2U' ] ?>" href="<?= $t->nbC2u[ $u[ 'id' ] ] > 1 ? route( 'customer-to-user@delete' ) : route( 'user@delete' )  ?>" title="Delete">
+                                        <a class="btn btn-white d2f-list-delete" id='d2f-list-delete-<?= $u[ 'id' ] ?>' data-nb-c2u="<?= $u[ 'nbC2U' ] ?>" href="<?= route( 'user@delete' )  ?>" title="Delete">
                                             <i class="fa fa-trash"></i>
                                         </a>
                                     <?php else: ?>
