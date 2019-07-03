@@ -51,6 +51,28 @@
             </dd>
 
 
+            <dt>Ping Endpoint</dt>
+            <dd>
+                A simple JSON endpoint providing IXP Manager version and IX information.<br>
+                <ul>
+                    <li>
+                        <a target="_blank" href="<?= route('api-v4:ping') ?>"><?= route('api-v4:ping') ?></a>
+                    </li>
+                </ul>
+            </dd>
+
+            <dt>Test Endpoint</dt>
+            <dd>
+                A simple test endpoint which is useful for testing if your are providing the API key correctly.
+                <em>Note that it will show that you are authenticated also if it receives a valid cookie.</em>
+                <br>
+                <ul>
+                    <li>
+                        <a target="_blank" href="<?= route('api-v4:test') ?>"><?= route('api-v4:test') ?></a>
+                    </li>
+                </ul>
+            </dd>
+
 
             <?php if( Auth::user()->isSuperUser() ): ?>
 

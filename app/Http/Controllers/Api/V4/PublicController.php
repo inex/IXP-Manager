@@ -24,13 +24,14 @@ namespace IXP\Http\Controllers\Api\V4;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth;
+use Auth, D2EM;
 
 use Illuminate\Http\{
     JsonResponse,
     Response
 };
 
+use Entities\Infrastructure;
 
 /**
  * PublicController
@@ -63,12 +64,27 @@ class PublicController extends Controller {
      */
     public function ping(): JsonResponse {
 
+        $infras = [];
+
+        /** @var Infrastructure $i */
+        foreach( D2EM::getRepository( Infrastructure::class )->findAll() as $i ) {
+            $infra = [];
+            $infra['name'] = $i->getName();
+            $infra['shortname'] = $i->getShortname();
+            $infra['ixf_ix_id'] = $i->getIxfIxId();
+            $infra['peeringdb_ix_id'] = $i->getPeeringdbIxId();
+
+            $infras[] = $infra;
+        }
+
+
         return response()->json([
             'software' => "IXP Manager",
             'version'  => APPLICATION_VERSION,
             'verdate'  => APPLICATION_VERDATE,
             'url'      => url(''),
             'ixf-export' => config( 'ixp_api.json_export_schema.public' ),
+            'infrastructures' => $infras,
             'identity' => [
                 'sitename'  => config( 'identity.sitename' ),
                 'legalname' => config( 'identity.legalname' ),
