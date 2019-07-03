@@ -90,7 +90,7 @@ Vlan Interface / Configured MAC Address Management
                                 <?= $l2a->getMacFormattedWithColons() ?>
                             </td>
                             <td>
-                                <?= $l2a->getCreatedAt()->format('Y-m-d') ?>
+                                <?= $l2a->getCreatedAt() ? $l2a->getCreatedAt()->format('Y-m-d') : '' ?>
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
