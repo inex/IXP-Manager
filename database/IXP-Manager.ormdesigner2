@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<skipper version="3.2.18.1536" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
+<skipper version="3.2.19.1545" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
   <module name="\IXP-Manager" local-name="IXP-Manager" namespace="\Entities" local-namespace="Entities" export-format="Doctrine2Xml" export-path="xml" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
     <entity name="\Entities\IrrdbAsn" local-name="IrrdbAsn" namespace="\Entities" uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c">
       <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="033ed9da-4165-432b-8b57-e21110abe29e"/>
@@ -32,6 +32,7 @@
           <attribute name="column">apiKey</attribute>
         </orm-attributes>
       </field>
+      <field name="description" type="text" uuid="11b1e441-ca9c-4034-a71a-8c141354eef9"/>
       <field name="expires" type="datetime" uuid="a4ca6f2b-63ec-4289-9172-28dea39d6bca"/>
       <field name="allowedIPs" type="text" uuid="7e487825-6517-454c-a154-49c69cd0f8bd">
         <orm-attributes>
