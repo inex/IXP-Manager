@@ -4,7 +4,38 @@ This directory contains officially supported install scripts for IXP Manager. Th
 
 These install scripts are **opinionated**! They are intended to run exactly as specified and only on the operating system they are targeted at.
 
-## IXP Manager v4 on Ubuntu LTS 16.04
+## IXP Manager v5 on Ubuntu LTS 18.04
+
+The recommended platform for the v5 branch of IXP Manager is Ubuntu LTS 18.04.
+
+To install on this platform, please proceed as follows:
+
+1. Prepare a physical / virtual machine with (minimum) 8GB of disk space and 2GB of RAM. We recommend LVM so so partitions can be grown on the fly.
+2. Attach / insert the latest [Ubuntu 18.04 LTS](http://releases.ubuntu.com/18.04/) 64-bit PC (AMD64) server install image and boot.
+3. At the initial menu where you choose *Install Ubuntu Server*, first:
+   * Press F4
+   * If installing on a physical server, select *Install a minimum system*
+   * If installing on a virtual server, select *Install a minimal virtual machine*
+4. Now select *Install Ubuntu Server* and step through the various options and configure as you like until:
+5. When you reach the *Software selection* screen, select **only** `OpenSSH Server` and then complete the installation and reboot.
+6. When your new server has rebooted, log in and: 
+
+```bash
+# change to root user
+sudo su -
+
+# download the installation script
+wget https://github.com/inex/IXP-Manager/raw/master/tools/installers/ubuntu-lts-1804-ixp-manager-v5.sh
+
+# and execute it:
+bash ./ubuntu-lts-1804-ixp-manager-v5.sh
+```
+
+
+
+## IXP Manager v4 on Ubuntu LTS 16.04 (deprecated)
+
+**We recommend installing IXP Manager v5 on Ubuntu 18.04 as above - v4 with 16.04 is an older deprecated version.**
 
 The recommended platform for the v4 branch of IXP Manager is Ubuntu LTS 16.04.
 
