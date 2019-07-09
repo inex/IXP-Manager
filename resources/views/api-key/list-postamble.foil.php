@@ -1,6 +1,6 @@
 
 <?php if( isset( $t->data[ 'rows' ][ 0 ] ) ) : ?>
-    <?php $example_api_key = $t->data[ 'rows' ][ 0 ][ 'apiKey' ] ?>
+    <?php $example_api_key = env( "IXP_FE_SECURITY_SHOW_API_KEYS" ) ? $t->data[ 'rows' ][ 0 ][ 'apiKey' ] : Str::limit( $t->data[ 'rows' ][ 0 ][ 'apiKey' ] , 6 ) ?>
 <?php else: ?>
     <?php $example_api_key = '$your_api_key' ?>
 <?php endif; ?>

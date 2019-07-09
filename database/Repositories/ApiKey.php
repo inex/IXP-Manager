@@ -50,6 +50,7 @@ class ApiKey extends EntityRepository
     {
         $dql = "SELECT  a.id           AS id, 
                         a.apiKey       AS apiKey, 
+                        a.description  AS description, 
                         a.created      AS created,
                         a.expires      AS expires,
                         a.lastseenAt   AS lastseenAt,

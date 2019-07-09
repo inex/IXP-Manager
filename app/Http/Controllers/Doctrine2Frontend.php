@@ -116,6 +116,7 @@ abstract class Doctrine2Frontend extends Controller {
         'DATE'              => 'date',
         'TIME'              => 'time',
         'UNIX_TIMESTAMP'    => 'unix_timestamp',
+        'STRING_TO_DATE'    => 'string_to_date',
         'SCRIPT'            => 'script',
         'SPRINTF'           => 'sprintf',
         'REPLACE'           => 'replace',
@@ -128,6 +129,8 @@ abstract class Doctrine2Frontend extends Controller {
         'LABEL'             => 'label',
         'ARRAY'             => 'array',
         'INTEGER'           => 'integer',
+        'LIMIT'             => 'limit',
+        'TEXT'              => 'text',
     ];
 
 

@@ -23,11 +23,11 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Redirect, Route;
+use Auth, D2EM, Former, Redirect, Validator;
 
 use Entities\{
-    ApiKey      as ApiKeyEntity,
-    User        as UserEntity
+    ApiKey  as ApiKeyEntity,
+    User    as UserEntity
 };
 
 use IXP\Utils\View\Alert\{
@@ -36,6 +36,7 @@ use IXP\Utils\View\Alert\{
 };
 
 use Illuminate\Http\{
+    Request,
     RedirectResponse
 };
 
@@ -90,14 +91,21 @@ class ApiKeyController extends Doctrine2Frontend {
             'listColumns'    => [
 
                 'id'           => [ 'title' => 'UID', 'display' => false ],
-                'apiKey'       => 'API Key',
+                'apiKey'       => [
+                    'title'        => 'API Key',
+                    'type'         => env( "IXP_FE_SECURITY_SHOW_API_KEYS" ) ? self::$FE_COL_TYPES[ 'TEXT' ] : self::$FE_COL_TYPES[ 'LIMIT' ],
+                    'limitTo'      => 6
+                ],
+
+                'description'   => 'Description',
+
                 'created'      => [
                     'title'        => 'Created',
                     'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ],
                 'expires'      => [
                     'title'        => 'Expires',
-                    'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
+                    'type'         => self::$FE_COL_TYPES[ 'STRING_TO_DATE' ]
                 ],
                 'lastseenAt'   => [
                     'title'        => 'Lastseen',
@@ -128,17 +136,6 @@ class ApiKeyController extends Doctrine2Frontend {
     }
 
     /**
-     * @inheritdoc
-     */
-    public static function routes() {
-        Route::group( [ 'prefix' => 'api-key' ], function() {
-            Route::get(  'list',    'ApiKeyController@list'     )->name( 'api-key@list'     );
-            Route::get(  'add',     'ApiKeyController@add'      )->name( 'api-key@add'      );
-            Route::post( 'delete',  'ApiKeyController@delete'   )->name( 'api-key@delete'   );
-        });
-    }
-
-    /**
      * Provide array of rows for the list action and view action
      *
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
@@ -148,34 +145,82 @@ class ApiKeyController extends Doctrine2Frontend {
         return D2EM::getRepository( ApiKeyEntity::class )->getAllForFeList( $this->feParams, Auth::user()->getId() );
     }
 
-    /**
-     * Add Api Key to the current user
+    /**w
+     * Display the form to add/edit an object
      *
-     * @return RedirectResponse
+     * @param   int $id ID of the row to edit
+     *
+     * @return array
+     */
+    protected function addEditPrepareForm( $id = null ): array {
+        if( $id !== null ) {
+
+            if( !( $this->object = D2EM::getRepository( ApiKeyEntity::class )->find( $id ) ) ) {
+                abort(404);
+            }
+
+            $old = request()->old();
+
+            Former::populate([
+                'key'               => array_key_exists( 'key',             $old ) ? $old['key']            : $this->object->getApiKey(),
+                'description'       => array_key_exists( 'description',     $old ) ? $old['description']    : $this->object->getDescription(),
+                'expires'           => array_key_exists( 'expires',         $old ) ? $old['expires']        : $this->object->getExpires() ? $this->object->getExpires()->format('Y-m-d') : null
+            ]);
+        }
+
+        return [
+            'object'          => $this->object,
+        ];
+    }
+
+
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request $request
+     *
+     * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function add() : RedirectResponse {
+    public function doStore( Request $request )
+    {
         if( count( Auth::user()->getApiKeys() ) >= 10 ) {
             AlertContainer::push( "We currently have a limit of 10 API keys per user. Please contact us if you require more.", Alert::DANGER );
-            return Redirect::back();
+            return Redirect::back()->withInput();
         }
 
-        $key = new ApiKeyEntity;
+        $validator = Validator::make( $request->all(), [
+            'description'        => 'nullable|string|max:255',
+            'expires'            => 'nullable|date',]
+        );
 
-        $key->setUser(          Auth::user()    );
-        $key->setCreated(       new \DateTime   );
-        $key->setAllowedIPs(    ''              );
-        $key->setExpires(       null            );
-        $key->setLastseenFrom(  ''              );
-        $key->setApiKey(        str_random(48)  );
+        if( $validator->fails() ) {
+            return Redirect::back()->withErrors( $validator )->withInput();
+        }
 
-        D2EM::persist( $key );
-        Auth::user()->addApiKey( $key );
-        D2EM::flush();
+        if( $request->input( 'id', false ) ) {
+            if( !( $this->object = D2EM::getRepository( ApiKeyEntity::class )->find( $request->input( 'id' ) ) ) ) {
+                abort(404);
+            }
+        } else {
+            $this->object = new ApiKeyEntity;
+            D2EM::persist( $this->object );
+            $this->object->setUser(         Auth::user()    );
+            $this->object->setCreated(      new \DateTime   );
+            $this->object->setAllowedIPs(''    );
+            $this->object->setLastseenFrom(''  );
+            $this->object->setApiKey(  $key = str_random(48)  );
+            Auth::user()->addApiKey( $this->object );
+            AlertContainer::push( "Following your new API Key, keep it safe it will be the only time that you will be able to see it - <code>" . $key . "</code>", Alert::SUCCESS );
+        }
 
-        AlertContainer::push( "Your new API key has been created - <code>" . $key->getApiKey() . "</code>", Alert::SUCCESS );
-        return Redirect::back();
+        $this->object->setExpires(      new \DateTime( $request->input( 'expires' ) ) );
+        $this->object->setDescription(  $request->input( 'description' )    );
+
+        D2EM::flush($this->object);
+
+        return true;
     }
 
 }
