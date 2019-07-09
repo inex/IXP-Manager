@@ -29,7 +29,12 @@ use Former;
 use Illuminate\View\View;
 use IXP\Events\User\UserAddedToCustomer as UserAddedToCustomerEvent;
 
-use Entities\{Customer as CustomerEntity, CustomerToUser as CustomerToUserEntity, User as UserEntity};
+use Entities\{
+    Customer            as CustomerEntity,
+    CustomerToUser      as CustomerToUserEntity,
+    User                as UserEntity,
+    UserLoginHistory    as UserLoginHistoryEntity
+};
 
 
 use Illuminate\Http\{
@@ -46,7 +51,8 @@ use IXP\Utils\View\Alert\{
 };
 
 use IXP\Http\Requests\User\{
-    CustomerToUser as StoreCustomerToUser
+    CustomerToUser          as StoreCustomerToUser,
+    DeleteCustomerToUser    as DeleteCustomerToUser,
 };
 
 
@@ -70,12 +76,6 @@ class CustomerToUserController extends Controller
     public function add( string $email ): View {
         $old = request()->old();
 
-        if( !request()->session()->exists( 'user_post_store_redirect' ) ) {
-            //$this->redirectLink();
-        }
-
-        //$this->cancelLink();
-
         // search user via email address
         if( !( $listUsers = D2EM::getRepository( UserEntity::class )->findBy( [ 'email' => $email ] ) ) ) {
             abort(404, 'User not found');
@@ -86,7 +86,7 @@ class CustomerToUserController extends Controller
             'linkCancel'            => array_key_exists( 'linkCancel',          $old ) ? $old['linkCancel']         : request()->headers->get( 'referer', "" ),
         ]);
 
-        return view( 'customer2-user/add' )->with([
+        return view( 'customer2user/add' )->with([
             'listUsers'             => $listUsers,
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
             'privs'                 => $this->getAllowedPrivs(),
@@ -155,8 +155,7 @@ class CustomerToUserController extends Controller
             return abort( '404', 'Unknown privilege requested' );
         }
 
-        if( $request->input( 'privs' ) == UserEntity::AUTH_SUPERUSER )
-        {
+        if( $request->input( 'privs' ) == UserEntity::AUTH_SUPERUSER ) {
             if( !Auth::getUser()->isSuperUser() ) {
                 return response()->json( [ 'success' => false, 'message' => "You are not allowed to set the super user privilege" ] );
             }
@@ -177,39 +176,26 @@ class CustomerToUserController extends Controller
     /**
      * Function to Delete a customer to user link
      *
-     * @param Request $request
+     * @param DeleteCustomerToUser $request
      *
      * @return RedirectResponse
      *
      * @throws
      */
-    public function delete( Request $request )
+    public function delete( DeleteCustomerToUser $request )
     {
-        // Delete the customer2user link
-        /** @var CustomerToUserEntity $c2u  */
-        if( !( $c2u = D2EM::getRepository( CustomerToUserEntity::class )->find( $request->input( "id" ) ) ) ) {
-            return abort( '404', 'Customer/user association not found' );
-        }
-
-        if( !Auth::getUser()->isSuperUser() ) {
-            if( $c2u->getCustomer()->getId() != $request->user()->getCustomer()->getId() ) {
-                Log::notice( Auth::getUser()->getUsername() . " tried to delete another customer's user: " . $c2u->getUser()->getName() . " from " . $c2u->getCustomer()->getName() );
-                abort( 403, 'You are not authorised to delete this user. The administrators have been notified.' );
-            }
-        }
-
-        $disassociatedUser     = $c2u->getUser();
-        $disassociatedCustomer = $c2u->getCustomer();
+        $disassociatedUser     = $request->c2u->getUser();
+        $disassociatedCustomer = $request->c2u->getCustomer();
 
         // Store the initial Customer before the deletion
         $initialCustomer = Auth::getUser()->getCustomer();
 
-        $disassociatedUser->removeCustomer( $c2u );
+        $disassociatedUser->removeCustomer( $request->c2u );
 
         // Delete User login history
-        D2EM::getRepository( CustomerToUserEntity::class )->deleteUserLoginHistory( $c2u->getId() );
+        D2EM::getRepository( UserLoginHistoryEntity::class )->deleteUserLoginHistory( $request->c2u->getId() );
 
-        D2EM::remove( $c2u );
+        D2EM::remove( $request->c2u );
 
         // then reset default customer
         if( $disassociatedUser->getCustomer()->getId() == $disassociatedCustomer->getId() ){

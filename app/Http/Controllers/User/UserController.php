@@ -26,9 +26,10 @@ namespace IXP\Http\Controllers\User;
 use Auth, D2EM, Former, Log, Mail, Redirect;
 
 use Entities\{
-    Customer        as CustomerEntity,
-    CustomerToUser  as CustomerToUserEntity,
-    User            as UserEntity,
+    Customer                as CustomerEntity,
+    CustomerToUser          as CustomerToUserEntity,
+    User                    as UserEntity,
+    UserLoginHistory        as UserLoginHistoryEntity
 };
 
 use Hash;
@@ -98,7 +99,7 @@ class UserController extends Controller
      * @return  view
      */
     public function index( ): View {
-        return view( 'User/index' )->with([
+        return view( 'user/index' )->with([
             'users'             => $this->getListData(),
             'nbC2u'             => D2EM::getRepository( UserEntity::class )->getNumberOfCustomers()
         ]);
@@ -111,7 +112,6 @@ class UserController extends Controller
      */
     public function addForm(): View
     {
-
         $this->redirectLink();
 
         Former::populate([
@@ -120,7 +120,7 @@ class UserController extends Controller
 
         $cust = D2EM::getRepository( CustomerEntity::class )->find( request()->input("cust" , "" ) );
 
-        return view( 'User/add-wizard' )->with([
+        return view( 'user/add-wizard' )->with([
             'custid'             => $cust ? $cust->getId() : false,
         ]);
     }
@@ -179,7 +179,7 @@ class UserController extends Controller
 
         return view( 'user/edit' )->with([
             'user'                  => false,
-            'disabledInputs'        => false,
+            'disableInputs'         => false,
             'isAdd'                 => true,
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
             'privs'                 => $this->getAllowedPrivs(),
@@ -232,11 +232,11 @@ class UserController extends Controller
 
         Former::populate( array_merge( $dataCust, $datac2u ) );
 
-        $disabledInputs = Auth::getUser()->isSuperUser() ? false : true;
+        $disableInputs = Auth::getUser()->isSuperUser() ? false : true;
 
         return view( 'user/edit' )->with([
             'user'                  => $u,
-            'disabledInputs'        => $disabledInputs,
+            'disableInputs'        => $disableInputs,
             'isAdd'                 => false,
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
             'privs'                 => $this->getAllowedPrivs(),
@@ -413,7 +413,7 @@ class UserController extends Controller
         /** @var CustomerToUserEntity $c2u */
         foreach( $request->user->getCustomers2User() as $c2u ) {
             // delete all the user's login records
-            D2EM::getRepository( CustomerToUserEntity::class )->deleteUserLoginHistory( $c2u->getId() );
+            D2EM::getRepository( UserLoginHistoryEntity::class )->deleteUserLoginHistory( $c2u->getId() );
 
             $request->user->removeCustomer( $c2u );
             D2EM::remove( $c2u );

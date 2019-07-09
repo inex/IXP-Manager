@@ -173,7 +173,7 @@ Add
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <?= $t->insert( 'customer2-user/js/add' ); ?>
+    <?= $t->insert( 'customer2user/js/add' ); ?>
 <?php $this->append() ?>
 
 

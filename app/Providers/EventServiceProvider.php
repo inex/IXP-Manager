@@ -56,11 +56,11 @@ class EventServiceProvider extends ServiceProvider {
         ],
 
         'IXP\Events\User\UserCreated' => [
-            'IXP\Listeners\User\UserCreated'
+            'IXP\Listeners\User\SendNewUserWelcomeEmail'
         ],
 
         'IXP\Events\User\UserAddedToCustomer' => [
-            'IXP\Listeners\User\UserAddedToCustomer'
+            'IXP\Listeners\User\SendUserAddedToCustomerWelcomeEmail'
         ],
 
         'IXP\Events\Auth\ForgotUsername' => [

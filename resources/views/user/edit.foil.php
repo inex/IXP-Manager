@@ -46,21 +46,21 @@ Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
                             ->label( 'Name' )
                             ->placeholder( 'Firstname Lastname' )
                             ->blockHelp( "The full name of the user." )
-                            ->disabled( $t->user ? ( !Auth::getUser()->isSuperUser() && Auth::getUser()->getId() != $t->user->getId() ? true : false ) : $t->disabledInputs );
+                            ->disabled( $t->user ? ( !Auth::getUser()->isSuperUser() && Auth::getUser()->getId() != $t->user->getId() ? true : false ) : $t->disableInputs );
                         ?>
 
                         <?= Former::text( 'username' )
                             ->label( 'Username' )
                             ->placeholder( 'joebloggs123' )
                             ->blockHelp( "The user's username. A single lowercase word matching the regular expression:<br><br><code>/^[a-z0-9\-_]{3,255}$/</code>" )
-                            ->disabled( $t->disabledInputs );
+                            ->disabled( $t->disableInputs );
                         ?>
 
                         <?= Former::text( 'email' )
                             ->label( 'Email' )
                             ->placeholder( 'name@example.com' )
                             ->blockHelp( "The user's email address." )
-                            ->disabled( $t->disabledInputs );
+                            ->disabled( $t->disableInputs );
                         ?>
 
                         <?= Former::checkbox( 'enabled' )
@@ -70,14 +70,14 @@ Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
                             ->check()
                             ->inline()
                             ->blockHelp( 'Disabled users cannot login to IXP Manager.' )
-                            ->disabled( $t->disabledInputs );
+                            ->disabled( $t->disableInputs );
                         ?>
 
                         <?= Former::text( 'authorisedMobile' )
                             ->label( 'Mobile' )
                             ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
                             ->blockHelp( "The user's mobile phone number." )
-                            ->disabled( $t->user ? ( !Auth::getUser()->isSuperUser() && Auth::getUser()->getId() != $t->user->getId() ? true : false ) : $t->disabledInputs);
+                            ->disabled( $t->user ? ( !Auth::getUser()->isSuperUser() && Auth::getUser()->getId() != $t->user->getId() ? true : false ) : $t->disableInputs);
                         ?>
 
 

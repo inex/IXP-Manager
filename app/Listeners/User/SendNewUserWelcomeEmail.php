@@ -25,11 +25,11 @@ namespace IXP\Listeners\User;
 
 use Mail;
 
-use IXP\Events\User\UserAddedToCustomer as UserAddedToCustomerEvent;
+use IXP\Events\User\UserCreated as UserCreatedEvent;
 
-use IXP\Mail\User\UserAddedToCustomer as UserAddedToCustomerMailable;
+use IXP\Mail\User\UserCreated as UserCreatedMailable;
 
-class UserAddedToCustomer
+class SendNewUserWelcomeEmail
 {
     /**
      * Create the event listener.
@@ -44,11 +44,11 @@ class UserAddedToCustomer
     /**
      * Handle the event.
      *
-     * @param  UserAddedToCustomerEvent  $e
+     * @param  UserCreatedEvent $e
      * @return void
      */
-    public function handle( UserAddedToCustomerEvent $e )
+    public function handle( UserCreatedEvent $e )
     {
-        Mail::to( $e->c2u->getUser()->getEmail() )->send( new UserAddedToCustomerMailable( $e->c2u ) );
+        Mail::to( $e->user->getEmail() )->send( new UserCreatedMailable( $e->user, false ) );
     }
 }
