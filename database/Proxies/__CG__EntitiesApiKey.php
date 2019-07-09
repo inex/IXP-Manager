@@ -64,10 +64,10 @@ class ApiKey extends \Entities\ApiKey implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'apiKey', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'expires', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'allowedIPs', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'created', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'lastseenAt', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'lastseenFrom', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'id', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'User'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'apiKey', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'expires', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'allowedIPs', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'created', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'lastseenAt', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'lastseenFrom', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'description', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'id', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'User'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'apiKey', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'expires', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'allowedIPs', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'created', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'lastseenAt', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'lastseenFrom', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'id', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'User'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'apiKey', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'expires', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'allowedIPs', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'created', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'lastseenAt', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'lastseenFrom', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'description', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'id', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'User'];
     }
 
     /**

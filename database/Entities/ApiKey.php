@@ -23,7 +23,7 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
+use Str;
 
 /**
  * ApiKey
@@ -61,6 +61,11 @@ class ApiKey
     private $lastseenFrom;
 
     /**
+     * @var string
+     */
+    private $description;
+
+    /**
      * @var integer
      */
     private $id;
@@ -91,7 +96,30 @@ class ApiKey
      */
     public function getApiKey()
     {
-        return $this->apiKey;
+        return env( "IXP_FE_SECURITY_SHOW_API_KEYS" ) ? $this->apiKey : Str::limit( $this->apiKey, 6 ) ;
+    }
+
+    /**
+     * Set description
+     *
+     * @param string $description
+     * @return ApiKey
+     */
+    public function setDescription($description)
+    {
+        $this->description = $description;
+
+        return $this;
+    }
+
+    /**
+     * Get description
+     *
+     * @return string
+     */
+    public function getDescription()
+    {
+        return $this->description;
     }
 
     /**
