@@ -135,9 +135,15 @@
                     <a href="<?= $t->c->getCorpwww() ?>" target="_blank"><?= $t->nakedUrl( $t->c->getCorpwww() ?? '' ) ?></a>
 
                     <span class="tw-text-gray-600">
-                                - joined <?= $c->getDatejoin()->format('Y') ?>
-                            </span>
+                        - joined <?= $c->getDatejoin()->format('Y') ?>
+                    </span>
                 </p>
+
+                <?php if( $c->isResoldCustomer() ): ?>
+                    <h5>
+                        Reseller: <?= $c->getReseller()->getName() ?>
+                    </h5>
+                <?php endif; ?>
 
                 <p class="tw-mt-6">
 
