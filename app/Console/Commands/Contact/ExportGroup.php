@@ -23,12 +23,6 @@
 
 use IXP\Console\Commands\Command;
 
-use IXP\Tasks\Router\ConfigurationGenerator as RouterConfigurationGenerator;
-
-use Entities\{
-    Router as RouterEntity
-};
-
 use D2EM;
 
  /**

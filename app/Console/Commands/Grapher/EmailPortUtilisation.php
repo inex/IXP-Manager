@@ -22,8 +22,6 @@
  */
 
 
-use IXP\Contracts\Grapher\Backend as GrapherBackend;
-
 use D2EM;
 use Grapher;
 use IXP\Services\Grapher\Graph;
