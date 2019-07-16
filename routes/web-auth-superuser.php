@@ -184,6 +184,11 @@ Route::group( [ 'namespace' => 'Customer', 'prefix' => 'customer-note' ], functi
     Route::get(    'unread-notes',                      'CustomerNotesController@unreadNotes'            )->name( "customerNotes@unreadNotes" );
 });
 
+
+Route::group( [ 'namespace' => 'User', 'prefix' => 'customer-to-user' ], function() {
+    Route::post('privs',     'CustomerToUserController@updatePrivs' )->name( "customer-to-user@privs" );
+});
+
 Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
 
 Route::get( 'search', 'SearchController@do' )->name( 'search' );

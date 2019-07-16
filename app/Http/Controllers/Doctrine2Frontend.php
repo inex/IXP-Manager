@@ -106,6 +106,15 @@ abstract class Doctrine2Frontend extends Controller {
     public static $read_only = false;
 
     /**
+     * Sometimes we need to pass a custom request object for validation / authorisation.
+     *
+     * Set the name of the function here and the route for store will be pointed to it instead of doStore()
+     *
+     * @var string
+     */
+    protected static $storeFn = 'store';
+
+    /**
      * Column / table data types when displaying data.
      * @var array
      */
@@ -171,10 +180,10 @@ abstract class Doctrine2Frontend extends Controller {
             Route::get( 'view/{id}', $class . '@view' )->name( $route_prefix . '@view' );
 
             if( !static::$read_only ) {
-                Route::get(  'add',         $class . '@add'     )->name( $route_prefix . '@add'     );
-                Route::post( 'delete',      $class . '@delete'  )->name( $route_prefix . '@delete'  );
-                Route::get(  'edit/{id}',   $class . '@edit'    )->name( $route_prefix . '@edit'    );
-                Route::post( 'store',       $class . '@store'   )->name( $route_prefix . '@store'   );
+                Route::get(  'add',         $class . '@add'           )->name( $route_prefix . '@add'     );
+                Route::post( 'delete',      $class . '@delete'        )->name( $route_prefix . '@delete'  );
+                Route::get(  'edit/{id}',   $class . '@edit'          )->name( $route_prefix . '@edit'    );
+                Route::post( 'store', $class . '@' . static::$storeFn )->name( $route_prefix . '@store' );
             }
         });
 
@@ -328,12 +337,9 @@ abstract class Doctrine2Frontend extends Controller {
      */
     public function add()
     {
-
         $this->data[ 'params' ] = $this->addEditPrepareForm();
         $this->data[ 'params' ]['isAdd'] = true;
         $this->addEditSetup();
-
-
 
         return $this->display( 'edit' );
     }
@@ -353,7 +359,7 @@ abstract class Doctrine2Frontend extends Controller {
 
         $this->addEditSetup();
 
-        return $this->display( 'edit' );
+        return $this->display('edit' );
     }
 
 

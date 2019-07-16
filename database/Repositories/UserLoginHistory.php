@@ -69,4 +69,16 @@ class UserLoginHistory extends EntityRepository
 
         return $query->getArrayResult();
     }
+
+    /**
+     * Delete all the User login history for a customer to user
+     *
+     * @param int $id
+     *
+     * @return void
+     */
+    public function deleteUserLoginHistory( int $id )
+    {
+        return $this->getEntityManager()->createQuery( "DELETE FROM Entities\\UserLoginHistory lh WHERE lh.customerToUser = ?1" )->setParameter(1, $id )->execute();
+    }
 }

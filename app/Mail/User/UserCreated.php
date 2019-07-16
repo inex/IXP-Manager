@@ -30,7 +30,6 @@ use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
 
 use Entities\{
-    Customer as CustomerEntity,
     User as UserEntity
 };
 
@@ -44,7 +43,7 @@ use Entities\{
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Welcome extends Mailable
+class UserCreated extends Mailable
 {
     use Queueable, SerializesModels;
 
@@ -53,12 +52,6 @@ class Welcome extends Mailable
      * @var UserEntity
      */
     public $user;
-
-    /**
-     * Customer
-     * @var CustomerEntity
-     */
-    public $customer;
 
     /**
      * Resend?
@@ -70,29 +63,19 @@ class Welcome extends Mailable
      * Existing?
      * @var bool
      */
-    public $existing;
-
-    /**
-     * Existing?
-     * @var bool
-     */
     public $token = null;
 
 
     /**
      * Create a new message instance.
      *
-     * @param CustomerEntity $customer
      * @param UserEntity $user
      * @param bool $resend
-     * @param bool $existing
      */
-    public function __construct( CustomerEntity $customer, UserEntity $user, bool $resend = false, bool $existing = false )
+    public function __construct( UserEntity $user, bool $resend = false )
     {
-        $this->customer = $customer;
         $this->user     = $user;
         $this->resend   = $resend;
-        $this->existing = $existing;
     }
 
     /**
@@ -102,13 +85,9 @@ class Welcome extends Mailable
      */
     public function build()
     {
-        if( !$this->existing  ){
-            $this->token = app('auth.password.broker')->createToken($this->user);
-        }
+        $this->token = app('auth.password.broker')->createToken( $this->user );
 
-
-        return $this->markdown( $this->existing ? 'user.emails.welcome-existing' : 'user.emails.welcome' )
-            ->subject( config('identity.sitename' ) . " - Your Access Details" );
+        return $this->markdown( 'user.emails.welcome' )->subject( config('identity.sitename' ) . " - Your Access Details" );
         
     }
 }
