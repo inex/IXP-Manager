@@ -136,14 +136,14 @@
 
                     <span class="tw-text-gray-600">
                         - joined <?= $c->getDatejoin()->format('Y') ?>
+
+                        <?php if( $c->isResoldCustomer() ): ?>
+                            - resold via <?= $c->getReseller()->getName() ?>
+                        <?php endif; ?>
+
                     </span>
                 </p>
 
-                <?php if( $c->isResoldCustomer() ): ?>
-                    <h5>
-                        Reseller: <?= $c->getReseller()->getName() ?>
-                    </h5>
-                <?php endif; ?>
 
                 <p class="tw-mt-6">
 
