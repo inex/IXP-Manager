@@ -27,6 +27,7 @@ use Entities\{CustomerToUser as CustomerToUserEntity, CustomerToUser, User as Us
  */
 
 use Doctrine\ORM\EntityRepository;
+use IXP\Http\Controllers\PatchPanel\UserxController;
 
 /**
  * User
@@ -229,7 +230,7 @@ class User extends EntityRepository
      *
      * @return array Array of User (as associated arrays) (or single element if `$id` passed)
      */
-    public function getAllForFeListSuperUser( \stdClass $feParams, UserEntity $user, int $id = null )
+    public function getAllForFeListSuperUser( int $id = null )
     {
         $dql = "SELECT  u.id as id, 
                         u.name AS name,
@@ -251,12 +252,9 @@ class User extends EntityRepository
             $dql .= " AND u.id = " . $id ;
         }
 
-        $dql .= " GROUP BY id";
+        $dql .= " GROUP BY id
+                  ORDER BY username ASC";
 
-        if( isset( $feParams->listOrderBy ) ) {
-            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
-            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
-        }
 
         return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
 
@@ -270,7 +268,7 @@ class User extends EntityRepository
      * @see \IXP\Http\Controllers\Doctrine2Frontend
      *
      *
-     * @param \stdClass $feParams
+     * @param UserEntity $user
      * @param int|null $id
      *
      *
@@ -295,10 +293,9 @@ class User extends EntityRepository
      *                ],
      *     ]
      *
-     * @param UserEntity|null $user
      * @return array Array of User (as associated arrays) (or single element if `$id` passed)
      */
-    public function getAllForFeListCustAdmin( \stdClass $feParams, UserEntity $user, int $id = null )
+    public function getAllForFeListCustAdmin( UserEntity $user, int $id = null )
     {
         $dql = "SELECT  u.id as id, 
                         u.name AS name,
@@ -310,7 +307,8 @@ class User extends EntityRepository
                         c.name as customer,
                         u.lastupdated AS lastupdated,
                         COUNT( c2u ) as nbC2U,
-                        MAX( c2u.privs ) as privileges
+                        MAX( c2u.privs ) as privileges,
+                        c2u.id as c2uid
                   FROM Entities\\User u
                   LEFT JOIN u.Customer as c 
                   LEFT JOIN u.Customers as c2u
@@ -322,51 +320,52 @@ class User extends EntityRepository
             $dql .= " AND u.id = " . $id ;
         }
 
-        $dql .= " GROUP BY id";
-
-        if( isset( $feParams->listOrderBy ) ) {
-            $dql .= " ORDER BY " . $feParams->listOrderBy . ' ';
-            $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
-        }
+        $dql .= " GROUP BY id
+                    ORDER BY username ASC";
+       
 
         return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
 
     }
 
-    public function getHighestPrivsForUser( int $userid, int $custid = null )
+    /**
+     * Get the number of CustomerToUser Per User
+     *
+     * Returns an array of the form:
+     *
+     *     [
+     *         [0] => array:2 [
+     *               [id]       => 1
+     *               [nbC2U]    => '2'
+     *           ]
+     *          [1] => [
+     *               id]        => 1
+     *               [nbC2U]    => '1'
+     *          ],
+     *     ]
+     *
+     * @return array Array of info
+     */
+    public function getNumberOfCustomers()
     {
-        $dql = "SELECT  c2u
-                FROM Entities\\CustomerToUser c2u
-                WHERE c2u.user = " . (int)$userid;
 
-        if( $custid ){
-            $dql .= " AND c2u.customer = " . (int)$custid;
+        $dql = "SELECT u.id as id, 
+                       COUNT( c2u ) as nbC2U
+                       FROM Entities\\User u
+                       LEFT JOIN u.Customers as c2u
+                       GROUP BY id";
+
+        $result = [];
+        foreach( $this->getEntityManager()->createQuery( $dql )->getArrayResult() as $item ){
+            $result[ $item[ 'id' ] ] = $item[ 'nbC2U' ];
         }
-
-        $query = $this->getEntityManager()->createQuery( $dql );
-
-        if( count( $query->getArrayResult() ) > 1 ){
-            $result = UserEntity::AUTH_CUSTUSER;
-
-            foreach( $query->getArrayResult() as $c2u ){
-                if( $c2u[ 'privs'] > $result ){
-                    $result = $c2u[ 'privs'];
-                }
-            }
-            $result = UserEntity::$PRIVILEGES_TEXT[ $result ] . "*";
-        } else {
-            if( isset( $query->getArrayResult()[0] ) ){
-                $result = UserEntity::$PRIVILEGES_TEXT[ $query->getArrayResult()[0][ 'privs' ] ];
-            } else {
-                // Should not happen
-                $result = "Something wrong";
-            }
-
-        }
-
 
         return $result;
+
     }
+
+
+
 
     /**
      * Find users by username

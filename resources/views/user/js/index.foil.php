@@ -1,0 +1,52 @@
+
+<?= $t->insert( 'user/js/common' ); ?>
+<?php if( !Auth::getUser()->isSuperUser() ):?>
+    <script>
+        let tableList = $( '#table-list' );
+
+        tableList.show();
+
+        tableList.dataTable({
+
+            responsive: true,
+            ordering: false,
+            searching: false,
+            paging:   false,
+            info:   false,
+            columnDefs: [
+                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 2, targets: -1 }
+            ],
+
+            "aaSorting": [1,'asc'],
+        });
+
+
+
+    </script>
+
+<?php else: ?>
+
+    <script>
+        let tableList = $( '#table-list' );
+
+        tableList.show();
+
+        tableList.dataTable({
+
+            responsive: true,
+
+            "aLengthMenu": [ [ 20, 50, 100, 500, -1 ], [ 20, 50, 100, 500, "All" ] ],
+
+            columnDefs: [
+                { responsivePriority: 1, targets: 0 },
+                { responsivePriority: 2, targets: -1 }
+            ],
+            "aaSorting": [1,'asc'],
+
+        });
+    </script>
+
+<?php endif; ?>
+
+

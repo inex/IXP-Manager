@@ -161,7 +161,13 @@ COL-XL
         margin-top : 4px;
     }
 
+    .error-border-select{
+        border: 1px solid #dc3545 !important;
+    }
 
+    .valid-border-select{
+        border: 1px solid #28a745 !important;
+    }
 
     .a-disabled {
         pointer-events: none;

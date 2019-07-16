@@ -53,8 +53,7 @@
                         <a class="btn btn-white" href="<?= route( "user@edit", [ "id" => $c2u->getUser()->getId() ] ) ?>">
                             <i class="fa fa-pencil"></i>
                         </a>
-
-                        <a class="btn btn-white usr-list-delete" id="usr-list-delete-<?= $c2u->getUser()->getId() ?>" data-object-id="<?=  $c2u->getUser()->getId() ?>" data-cust-id="<?=  $t->c->getId() ?>" href="#">
+                        <a class="btn btn-white usr-list-delete btn-delete-c2u" id="usr-list-delete-<?= count( $c2u->getUser()->getCustomers() ) > 1 ? $c2u->getId() : $c2u->getUser()->getId()  ?>" href="<?= count( $c2u->getUser()->getCustomers() ) > 1 ? route( 'customer-to-user@delete' ) : route(  'user@delete' )  ?>" title="Delete">
                             <i class="fa fa-trash"></i>
                         </a>
                         <a class="btn btn-white <?= $c2u->getUser()->getDisabled() || Auth::getUser()->getId() == $c2u->getUser()->getId() ? "disabled" : "" ?>"

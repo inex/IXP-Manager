@@ -24,55 +24,35 @@ namespace IXP\Events\User;
  */
 
 use Entities\{
-    Customer        as CustomerEntity,
-    User            as UserEntity
+    User      as UserEntity
 };
 
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Foundation\Events\Dispatchable;
-use IXP\Models\Customer;
 
 /**
  * Event to trigger the (re)sending of a user welcome email
  *
  * @package IXP\Events\User
  */
-class Welcome
+class UserCreated
 {
     use Dispatchable, SerializesModels;
 
-    /**
-     * @var CustomerEntity
-     */
-    public $customer;
 
     /**
      * @var UserEntity
      */
     public $user;
 
-    /**
-     * @var boolean
-     */
-    public $resend;
-
-    /**
-     * @var boolean
-     */
-    public $existing;
 
     /**
      * Create a new event instance.
      *
-     * @param UserEntity    $u
-     * @param bool          $resend     Do you need to resend the email ?
-     * @param bool          $existing   Does the user already exist ?
+     * @param UserEntity    $user
      */
-    public function __construct(  ?CustomerEntity $c, UserEntity $u, bool $resend = false, bool $existing = false )
+    public function __construct(  UserEntity $user )
     {
-        $this->customer = $c;
-        $this->user     = $u;
-        $this->resend   = $resend;
-        $this->existing = $existing;
+        $this->user     = $user;
     }
 }

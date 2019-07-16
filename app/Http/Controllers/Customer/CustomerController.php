@@ -508,6 +508,9 @@ class CustomerController extends Controller
             }
         }
 
+        if( !$tab ){
+            $tab = request()->input( "tab", false );
+        }
 
         return view( 'customer/overview' )->with([
             'c'                         => $c,

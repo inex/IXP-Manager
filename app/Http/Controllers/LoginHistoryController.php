@@ -137,14 +137,14 @@ class LoginHistoryController extends Doctrine2Frontend {
      */
     public function view( Request $r, $id ): View
     {
-        /** @var $c2u CustomerToUserEntity */
-        if( !( $c2u = D2EM::getRepository( CustomerToUserEntity::class )->find( $id ) ) ) {
+        /** @var $user UserEntity */
+        if( !( $user = D2EM::getRepository( UserEntity::class )->find( $id ) ) ) {
             abort(404 );
         }
 
         return view( 'login-history/view' )->with([
-            'histories'                 => D2EM::getRepository( UserLoginHistoryEntity::class)->getAllForFeList( $c2u->getUser()->getId(), $r->input( 'limit', 0 ) ),
-            'user'                      => $c2u->getUser(),
+            'histories'                 => D2EM::getRepository( UserLoginHistoryEntity::class)->getAllForFeList( $user->getId(), $r->input( 'limit', 0 ) ),
+            'user'                      => $user,
         ]);
     }
 }
