@@ -23,7 +23,7 @@
 
 namespace IXP\Http\Controllers\Auth;
 
-use D2EM;
+use Auth, D2EM, Socialite;
 
 use Illuminate\Http\Request;
 use IXP\Http\Controllers\Controller;
@@ -37,11 +37,11 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-use Entities\{
-    CustomerToUser      as CustomerToUserEntity,
-    User                as UserEntity,
-    UserLoginHistory    as UserLoginHistoryEntity
-};
+use Entities\{Customer,
+    CustomerToUser as CustomerToUserEntity,
+    User as UserEntity,
+    User,
+    UserLoginHistory as UserLoginHistoryEntity};
 
 class LoginController extends Controller
 {
@@ -171,8 +171,8 @@ class LoginController extends Controller
      * @return \Symfony\Component\HttpFoundation\Response
      *
      */
-    protected function sendFailedLoginResponse(Request $request){
-        AlertContainer::push( "Invalid username or password. Please try again." , Alert::DANGER );
+    protected function sendFailedLoginResponse( Request $request, $msg = null ) {
+        AlertContainer::push( $msg ?? "Invalid username or password. Please try again." , Alert::DANGER );
         return redirect()->back()->withInput( $request->only('username') );
     }
 
@@ -195,5 +195,124 @@ class LoginController extends Controller
 
         return redirect('');
     }
+
+
+
+
+
+    /**
+     * Redirect the user to the PeeringDB authentication page.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function peeringdbRedirectToProvider()
+    {
+        if( Auth::check() ) {
+            AlertContainer::push( "You are already logged in - Login via PeeringDB aborted." , Alert::WARNING );
+            return redirect('');
+        }
+
+        if( config( 'auth.peeringdb.enabled' ) ) {
+            return Socialite::driver( 'peeringdb' )->redirect();
+        }
+
+        AlertContainer::push( "Login with PeeringDB not enabled." , Alert::DANGER );
+        return redirect()->route('login@showForm' );
+    }
+
+    /**
+     * Obtain the user information from PeeringDB.
+     *
+     * Sample response:
+     *
+     * User {#1139 ▼
+     *  +accessTokenResponseBody: array:5 [▼
+     *    "access_token" => "xxxx"
+     *    "token_type" => "Bearer"
+     *    "expires_in" => 36000
+     *    "refresh_token" => "xxxx"
+     *    "scope" => "profile email networks"
+     *  ]
+     *  +token: "xxx"
+     *  +refreshToken: "xxx"
+     *  +expiresIn: 36000
+     *  +id: null
+     *  +nickname: null
+     *  +name: "Joe Bloggs"
+     *  +email: "ixpmanager@example.com"
+     *  +avatar: null
+     *  +user: array:8 [▼
+     *    "family_name" => "Bloggs"
+     *    "email" => "ixpmanager@example.com"
+     *    "name" => "Joe Bloggs"
+     *    "verified_user" => true
+     *    "verified_email" => true
+     *    "networks" => array:2 [▼
+     *      0 => array:4 [▼
+     *        "perms" => 1
+     *        "id" => 888
+     *        "name" => "INEX Route Collectors"
+     *        "asn" => 65501
+     *      ]
+     *      1 => array:4 [▼
+     *        "perms" => 1
+     *        "id" => 777
+     *        "name" => "INEX Route Servers"
+     *        "asn" => 65500
+     *      ]
+     *    ]
+     *    "id" => 666
+     *    "given_name" => "Joe"
+     *  ]
+     * }
+     *
+     */
+    public function peeringdbHandleProviderCallback( Request $request )
+    {
+        if( Auth::check() ) {
+            AlertContainer::push( "You are already logged in - Login via PeeringDB aborted." , Alert::WARNING );
+            return redirect('');
+        }
+
+        if( !config( 'auth.peeringdb.enabled' ) ) {
+            AlertContainer::push( "Login with PeeringDB not enabled.", Alert::DANGER );
+            return redirect()->route( 'login@showForm' );
+        }
+
+        $suser = Socialite::driver('peeringdb')->user();
+
+        // valid PeeringDB login with affiliations?
+        if( !$suser || !isset( $suser->user ) || !isset( $suser->user['networks'] ) || !is_array( $suser->user['networks'] ) || !count( $suser->user['networks'] ) ) {
+            AlertContainer::push( "Login with PeeringDB failed or you have no existing affiliations.", Alert::DANGER );
+            return redirect()->route( 'login@login' );
+        }
+
+        // user needs to be verified with PeeringDB first:
+        if( !$suser->user['verified_user'] || !$suser->user['verified_email'] ) {
+            return $this->sendFailedLoginResponse($request, 'Your PeeringDB user or email address has not been validated. Please complete your PeeringDB account registration first.');
+        }
+
+        $result = D2EM::getRepository( UserEntity::class )->findOrCreateFromPeeringDb( $suser->user );
+
+        if( $result['user'] === null || !( $result['user'] instanceof UserEntity ) ) {
+            return $this->sendFailedLoginResponse($request, 'Login with PeeringDB failed. Most likely there are no customers at this IXP that match your PeeringDB affiliation(s). '
+                . 'If you believe this to be an error or would like to get access to your account, please contact our support team.' );
+        }
+
+        /** @var Customer $c */
+        foreach( $result['added_to'] as $c ) {
+            AlertContainer::push( "Your PeeringDB affiliation with {$c->getFormattedName()} has been added to IXP Manager.", Alert::SUCCESS );
+        }
+
+        /** @var Customer $c */
+        foreach( $result['removed_from'] as $c ) {
+            AlertContainer::push( "Your PeeringDB affiliation with {$c->getFormattedName()} has been removed from IXP Manager as you are no longer affiliated with this network on PeeringDB.", Alert::WARNING );
+        }
+
+        Auth::login( $result['user'] );
+        $this->authenticated( $request, $result['user'] );
+        return redirect('');
+    }
+
 
 }

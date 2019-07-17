@@ -22,7 +22,7 @@ class CustomerToUser
      * @var \Json
      */
     private $extra_attributes = [
-        'created_by'  => 'array'
+        'created_by'  => []
     ];
 
     /**
@@ -203,7 +203,7 @@ class CustomerToUser
     /**
      * Set extra attributes
      *
-     * @param Json $extra_attributes
+     * @param array $extra_attributes
      * @return CustomerToUser
      */
     public function setExtraAttributes( $extra_attributes )

@@ -80,7 +80,23 @@
                 </button>
             </div>
 
+
+            <?php if( config( 'auth.peeringdb.enabled' ) ): ?>
+
+                <hr>
+
+                <p class="tw-text-center tw-text-lg tw-italic tw-text-grey-dark">or login with</p>
+
+                <p class="tw-text-center">
+                    <a href="<?= route('auth:login-peeringdb') ?>">
+                        <img class="tw-inline" width="60%" src="<?= asset( 'images/pdb-logo-coloured.png' ) ?>">
+                    </a>
+                </p>
+
+            <?php endif; ?>
+
             <?= Former::close() ?>
+
         </div>
 
     </div>

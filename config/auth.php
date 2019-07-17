@@ -127,4 +127,22 @@ return [
         ],
     ],
 
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | OAuth via PeeringDB
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'peeringdb' => [
+        'enabled'   => env( 'AUTH_PEERINGDB_ENABLED', false ),
+        'privs'     => env( 'AUTH_PEERINGDB_PRIVS',   \Entities\User::AUTH_CUSTUSER ),
+    ],
+
+
+
+
+
 ];
