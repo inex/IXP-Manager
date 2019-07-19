@@ -194,6 +194,12 @@
                                                         <?= Carbon\Carbon::createFromTimestamp( $row[ $col ] )->format( 'Y-m-d H:i:s' )  ?>
                                                     <?php endif; ?>
 
+                                                <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'STRING_TO_DATE'] ): ?>
+
+                                                    <?php if( $row[ $col ] != null): ?>
+                                                        <?= $row[ $col ]->format( 'Y-m-d' )  ?>
+                                                    <?php endif; ?>
+
                                                 <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
 
                                                     <?= date('Y-m-d', strtotime( $row[ $col ] ) ) ?>
@@ -265,7 +271,16 @@
 
                                                     <?= (int)$row[ $col ] ?>
 
+                                                <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'LIMIT'] ): ?>
+
+                                                    <?= Str::limit( $row[ $col ], $cconf[ 'limitTo'] )?>
+
+                                                <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'TEXT'] ): ?>
+
+                                                    <?= $t->ee( $row[ $col ] )?>
+
                                                 <?php else: ?>
+
 
                                                     Type?
 
