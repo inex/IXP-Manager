@@ -47,11 +47,15 @@ Route::post( 'utils/markdown',                                  'UtilsController
 
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-// ASN Number
+// Whois look ups for Prefix and ASN Number
 //
 Route::get( 'aut-num/{asn}', function( $asn ) {
-    $whois = new IXP\Utils\PeeringDbWhois();
-    return response( $whois->whois( (int)$asn ), 200 )->header('Content-Type', 'text/plain');
+    $whois = new IXP\Utils\Whois( config('ixp_api.whois.asn.host'), config('ixp_api.whois.asn.port') );
+    return response( $whois->whois( 'AS' . (int)$asn ), 200 )->header('Content-Type', 'text/plain');
 })->name('api-v4-aut-num');
 
+Route::get( 'prefix-whois/{prefix}/{mask}', function( $prefix, $mask ) {
+    $whois = new IXP\Utils\Whois( config('ixp_api.whois.prefix.host'), config('ixp_api.whois.prefix.port') );
+    return response( $whois->whois( $prefix .'/' . $mask ), 200 )->header('Content-Type', 'text/plain');
+})->name('api-v4-prefix-whois');
 
