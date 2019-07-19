@@ -23,9 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Former, Redirect, Str, Validator;
-
-use Illuminate\Support\Str;
+use Auth, D2EM, Former, Hash, Redirect, Str, Validator;
 
 use Entities\{
     ApiKey  as ApiKeyEntity,
@@ -41,7 +39,7 @@ use Illuminate\Http\{
     Request,
     RedirectResponse
 };
-
+use Route;
 
 
 /**
@@ -108,7 +106,7 @@ class ApiKeyController extends Doctrine2Frontend {
                 ],
                 'expires'      => [
                     'title'        => 'Expires',
-                    'type'         => self::$FE_COL_TYPES[ 'STRING_TO_DATE' ]
+                    'type'         => self::$FE_COL_TYPES[ 'DATE' ]
                 ],
                 'lastseenAt'   => [
                     'title'        => 'Lastseen',
@@ -139,13 +137,29 @@ class ApiKeyController extends Doctrine2Frontend {
     }
 
     /**
+     * Additional routes
+     *
+     *
+     * @param string $route_prefix
+     * @return void
+     */
+    protected static function additionalRoutes( string $route_prefix ){
+        // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
+
+        Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
+
+            Route::post(  'list-show-keys',      'ApiKeyController@listShowKeys'         )->name( "api-key@list-show-keys" );
+        });
+    }
+
+    /**
      * Provide array of rows for the list action and view action
      *
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
      * @return array
      */
     protected function listGetData( $id = null ) {
-        return D2EM::getRepository( ApiKeyEntity::class )->getAllForFeList( $this->feParams, Auth::user()->getId() );
+        return D2EM::getRepository( ApiKeyEntity::class )->getAllForFeList( $this->feParams, Auth::user()->getId(), $id  );
     }
 
     /**w
@@ -218,12 +232,32 @@ class ApiKeyController extends Doctrine2Frontend {
             AlertContainer::push( "API key created: <code>" . $key . "</code>.", Alert::SUCCESS );
         }
 
-        $this->object->setExpires( new \DateTime( $request->input( 'expires' ) ) );
+        $this->object->setExpires( $request->input( 'expires' ) ? new \DateTime( $request->input( 'expires' ) ) : null );
         $this->object->setDescription(  $request->input( 'description' )    );
 
         D2EM::flush($this->object);
 
         return true;
+    }
+
+
+    /**
+     * Show the API Keys if the password match
+     *
+     * @param Request $r
+     *
+     * @return \Illuminate\View\View
+     */
+    public function listShowKeys(Request $r )
+    {
+        if( !Hash::check( $r->input( 'pass' ), $r->user()->getPassword() ) ) {
+            AlertContainer::push( 'Wrong password', Alert::DANGER );
+        } else {
+            AlertContainer::push( 'You can now see the API Keys', Alert::SUCCESS );
+            config(['ixp_fe.api_keys.show_keys' => true]);
+        }
+
+        return $this->list( $r );
     }
 
 }

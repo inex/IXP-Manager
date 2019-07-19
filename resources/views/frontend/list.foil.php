@@ -201,8 +201,10 @@
                                                     <?php endif; ?>
 
                                                 <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
+                                                    <?php if( $row[ $col ] != null): ?>
+                                                        <?= $row[ $col ]->format( 'Y-m-d' )  ?>
 
-                                                    <?= date('Y-m-d', strtotime( $row[ $col ] ) ) ?>
+                                                    <?php endif; ?>
 
                                                 <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'TIME'] ): ?>
 
