@@ -24,7 +24,7 @@
                             <i class="fa fa-bell"></i>
                         </button>
 
-                        <a class="btn btn-outline-info" href="https://docs.ixpmanager.org/usage/customer-notes/" target="_blank">
+                        <a class="btn btn-white" href="https://docs.ixpmanager.org/usage/customer-notes/" target="_blank">
                             Help
                         </a>
                     </div>

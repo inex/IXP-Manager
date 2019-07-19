@@ -175,6 +175,12 @@ a:hover {
   @apply tw-shadow tw-pr-0 tw-bg-white;
 }
 
+#side-navbar ul, #side-navbar ol {
+   list-style: none;
+   margin: 0;
+   padding: 0;
+}
+
 #side-navbar h6 {
   @apply tw-block tw-p-4 tw-pl-1 tw-text-grey-darker tw-border-grey-lighter tw-border-r-4 tw-m-0;
 }

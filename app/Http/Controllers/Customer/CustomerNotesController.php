@@ -45,13 +45,15 @@ use Illuminate\View\View;
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class CustomerNotesController extends Controller {
+class CustomerNotesController extends Controller
+{
 
     /**
      * @return RedirectResponse
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws
      */
-    public function readAll() : RedirectResponse{
+    public function readAll() : RedirectResponse
+    {
         $lastReads = Auth::getUser()->getAssocPreference( 'customer-notes' )[0];
         foreach( $lastReads as $id => $data ) {
             if( is_numeric( $id ) )
@@ -69,7 +71,8 @@ class CustomerNotesController extends Controller {
      *
      * @return View
      */
-    public function unreadNotes() : View {
+    public function unreadNotes() : View
+    {
         $lastRead = Auth::getUser()->getAssocPreference( 'customer-notes' )[0];
 
         $latestNotes = [];

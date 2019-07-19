@@ -55,8 +55,12 @@ class EventServiceProvider extends ServiceProvider {
             'IXP\Listeners\Layer2Address\Changed',
         ],
 
-        'IXP\Events\User\Welcome' => [
-            'IXP\Listeners\User\EmailWelcome'
+        'IXP\Events\User\UserCreated' => [
+            'IXP\Listeners\User\SendNewUserWelcomeEmail'
+        ],
+
+        'IXP\Events\User\UserAddedToCustomer' => [
+            'IXP\Listeners\User\SendUserAddedToCustomerWelcomeEmail'
         ],
 
         'IXP\Events\Auth\ForgotUsername' => [

@@ -23,6 +23,13 @@
 
 namespace IXP\Http\Controllers;
 
+use Auth, D2EM;
+
+use Entities\{
+    Customer as CustomerEntity,
+    User as UserEntity
+};
+
 use Illuminate\Foundation\Bus\DispatchesJobs;
 use Illuminate\Routing\Controller as BaseController;
 use Illuminate\Foundation\Validation\ValidatesRequests;
@@ -113,6 +120,35 @@ class Controller extends BaseController
         }
 
         return request()->getClientIp();
+    }
+
+    /**
+     * Return the list of privileges for the dropdown depending on the logged in user priv and if the customer is internal or not
+     *
+     * @return array List of privileges
+     *
+     * @throws
+     */
+    protected function getAllowedPrivs()
+    {
+        $privs = UserEntity::$PRIVILEGES_TEXT_NONSUPERUSER;
+
+        // If we add a user via the customer overview users list
+        if( request()->is( 'user/add*' ) && request()->input( "cust" ) ) {
+
+            /** @var $c CustomerEntity */
+            if( ( $c = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "cust" ) ) ) ) {
+                // Internal customer and SuperUser
+                if( $c->isTypeInternal() && Auth::getUser()->isSuperUser() ){
+                    $privs = UserEntity::$PRIVILEGES_TEXT;
+                }
+            }
+            // If we add a user and we are a SuperUser
+        } elseif( Auth::getUser()->isSuperUser() && ( request()->is( 'user/add*' ) || request()->is( 'customer-to-user/add*' )  ) ) {
+            $privs = UserEntity::$PRIVILEGES_TEXT;
+        }
+
+        return $privs;
     }
 
 }
