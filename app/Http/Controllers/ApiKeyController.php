@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Former, Redirect, Validator;
+use Auth, D2EM, Former, Redirect, Str, Validator;
 
 use Entities\{
     ApiKey  as ApiKeyEntity,
@@ -163,7 +163,7 @@ class ApiKeyController extends Doctrine2Frontend {
             $old = request()->old();
 
             Former::populate([
-                'key'               => array_key_exists( 'key',             $old ) ? $old['key']            : $this->object->getApiKey(),
+                'key'               => array_key_exists( 'key',             $old ) ? $old['key']            : config( 'ixp_fe.api_keys.show_keys' ) ? $this->object->getApiKey() : Str::limit( $this->object->getApiKey(), 6 ),
                 'description'       => array_key_exists( 'description',     $old ) ? $old['description']    : $this->object->getDescription(),
                 'expires'           => array_key_exists( 'expires',         $old ) ? $old['expires']        : $this->object->getExpires() ? $this->object->getExpires()->format('Y-m-d') : null
             ]);
