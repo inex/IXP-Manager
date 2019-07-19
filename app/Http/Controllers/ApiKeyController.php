@@ -25,6 +25,8 @@ namespace IXP\Http\Controllers;
 
 use Auth, D2EM, Former, Redirect, Str, Validator;
 
+use Illuminate\Support\Str;
+
 use Entities\{
     ApiKey  as ApiKeyEntity,
     User    as UserEntity
@@ -207,16 +209,16 @@ class ApiKeyController extends Doctrine2Frontend {
         } else {
             $this->object = new ApiKeyEntity;
             D2EM::persist( $this->object );
-            $this->object->setUser(         Auth::user()    );
-            $this->object->setCreated(      new \DateTime   );
-            $this->object->setAllowedIPs(''    );
-            $this->object->setLastseenFrom(''  );
-            $this->object->setApiKey(  $key = str_random(48)  );
-            Auth::user()->addApiKey( $this->object );
-            AlertContainer::push( "Following your new API Key, keep it safe it will be the only time that you will be able to see it - <code>" . $key . "</code>", Alert::SUCCESS );
+            $this->object->setUser( $request->user() );
+            $this->object->setCreated( now() );
+            $this->object->setAllowedIPs('');
+            $this->object->setLastseenFrom('');
+            $this->object->setApiKey( $key = Str::random(48) );
+            $request->user()->addApiKey( $this->object );
+            AlertContainer::push( "API key created: <code>" . $key . "</code>.", Alert::SUCCESS );
         }
 
-        $this->object->setExpires(      new \DateTime( $request->input( 'expires' ) ) );
+        $this->object->setExpires( new \DateTime( $request->input( 'expires' ) ) );
         $this->object->setDescription(  $request->input( 'description' )    );
 
         D2EM::flush($this->object);
