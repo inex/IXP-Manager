@@ -91,9 +91,10 @@ class ApiKeyController extends Doctrine2Frontend {
             'listColumns'    => [
 
                 'id'           => [ 'title' => 'UID', 'display' => false ],
+
                 'apiKey'       => [
                     'title'        => 'API Key',
-                    'type'         => env( "IXP_FE_SECURITY_SHOW_API_KEYS" ) ? self::$FE_COL_TYPES[ 'TEXT' ] : self::$FE_COL_TYPES[ 'LIMIT' ],
+                    'type'         => config( 'ixp_fe.api_keys.show_keys' ) ? self::$FE_COL_TYPES[ 'TEXT' ] : self::$FE_COL_TYPES[ 'LIMIT' ],
                     'limitTo'      => 6
                 ],
 
@@ -185,8 +186,8 @@ class ApiKeyController extends Doctrine2Frontend {
      */
     public function doStore( Request $request )
     {
-        if( count( Auth::user()->getApiKeys() ) >= 10 ) {
-            AlertContainer::push( "We currently have a limit of 10 API keys per user. Please contact us if you require more.", Alert::DANGER );
+        if( count( $request->user()->getApiKeys() ) >= config( 'ixp_fe.api_keys.max_keys' ) ) {
+            AlertContainer::push( "We currently have a limit of " . config( 'ixp_fe.api_keys.max_keys' ) . " API keys per user. Please contact us if you require more.", Alert::DANGER );
             return Redirect::back()->withInput();
         }
 
