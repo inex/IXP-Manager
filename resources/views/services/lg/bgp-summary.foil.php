@@ -55,7 +55,7 @@
                         <?= $p->description_short ?? $p->description ?? "" ?>
                     </td>
                     <td class="text-right pr-4">
-                        <?= $p->neighbor_as ?>
+                        <?= $t->asNumber( $p->neighbor_as, false ) ?>
                     </td>
                     <td>
                         <a href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/routes/table/<?= $p->table ?>">
