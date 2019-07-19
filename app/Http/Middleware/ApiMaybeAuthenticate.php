@@ -72,25 +72,21 @@ class ApiMaybeAuthenticate {
 
 			if( $apikey ) {
                 try {
-                    $key = D2EM::createQuery(
-                        "SELECT a 
-                        FROM \\Entities\\ApiKey a 
-                        WHERE a.apiKey = ?1" )
+                    $key = D2EM::createQuery( "SELECT a FROM \\Entities\\ApiKey a WHERE a.apiKey = ?1" )
                                ->setParameter( 1, $apikey )
-                               ->useResultCache( true, 3600, 'oss_d2u_user_apikey_' . $apikey )
                                ->getSingleResult();
                 } catch( \Doctrine\ORM\NoResultException $e ) {
                     return response( 'Valid API key required', 403 );
                 }
 
-                if( $key->getExpires() && new \DateTime() > $key->getExpires()){
+                if( $key->getExpires() && now() > $key->getExpires()){
                     return response( 'API key expired', 403 );
                 }
 
                 Auth::onceUsingId( $key->getUser()->getId() );
 
                 $key->setLastseenAt( new \DateTime() );
-                $key->setLastseenFrom( $_SERVER[ 'REMOTE_ADDR' ] );
+                $key->setLastseenFrom( ixp_get_client_ip() );
                 D2EM::flush();
             }
 		}
