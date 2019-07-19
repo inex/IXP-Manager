@@ -96,7 +96,7 @@ class ApiKey
      */
     public function getApiKey()
     {
-        return env( "IXP_FE_SECURITY_SHOW_API_KEYS" ) ? $this->apiKey : Str::limit( $this->apiKey, 6 ) ;
+        return config( 'ixp_fe.api_keys.show_keys' ) ? $this->apiKey : Str::limit( $this->apiKey, 6 ) ;
     }
 
     /**

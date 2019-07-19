@@ -197,13 +197,19 @@ return [
 
     /*
    |--------------------------------------------------------------------------
-   | API KEY
+   | API Keys
    |--------------------------------------------------------------------------
    |
    */
-    'security' => [
 
-        'show_api_keys'       => env( 'IXP_FE_SECURITY_SHOW_API_KEYS', false ),
+    'api_keys' => [
+
+        // when an API key is created it is only shown once in the UI and there after it is hidden.
+        // set IXP_FE_API_KEYS_SHOW=true in .env to show the keys
+        'show_keys'       => env( 'IXP_FE_API_KEYS_SHOW', false ),
+
+        // maximum API keys per user
+        'max_keys'        => env( 'IXP_FE_API_KEYS_MAX', 10 ),
 
     ],
 
