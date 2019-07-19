@@ -115,7 +115,7 @@
 
                                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
 
-                                                            <?php if(  $t->data[ 'item' ][ $col ] ): ?>
+                                                            <?php if(  $t->data[ 'item' ][ $col ] != null ): ?>
                                                                 <?= $t->data[ 'item' ][ $col ]->format( 'Y-m-d' )  ?>
 
                                                             <?php endif; ?>
