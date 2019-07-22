@@ -108,7 +108,9 @@
                         </td>
                         <td>
                             <?php if( isset($r->bgp->as_path) ): ?>
-                                <?= implode(' ', $r->bgp->as_path) ?>
+                                <?php foreach( $r->bgp->as_path as $asp ): ?>
+                                    <?= $t->asNumber( $asp, false ) ?>
+                                <?php endforeach; ?>
                             <?php endif; ?>
                         </td>
                         <td>

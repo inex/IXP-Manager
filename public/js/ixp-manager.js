@@ -169,7 +169,7 @@ function htmlEntities(str) {
  * @return html
  */
 function ixpAsnumber( asNumber ) {
-    let url = RIPE_ASN_URL + "/" + asNumber;
+    let url = WHOIS_ASN_URL + "/" + asNumber;
     let content = `<div class="asn-table"><pre class="font-mono text-xs">`;
 
     let bb = bootbox.dialog({
@@ -201,6 +201,53 @@ function ixpAsnumber( asNumber ) {
         })
 }
 
+
+/**
+ * Replaces a prefix  with some JS magic to invoke a BootBox.
+ *
+ * @param string prefix The IP prefix
+ *
+ * @return html
+ */
+function ixpWhoisPrefix( prefix ) {
+
+    let parts = prefix.split('/');
+
+    if( parts.length !== 2 ) {
+        return false;
+    }
+
+    let url = encodeURI(WHOIS_PREFIX_URL + "/" + parts[0] + "/" + parts[1] );
+    let content = `<div class="prefix-table"><pre class="font-mono text-xs">`;
+    
+    let bb = bootbox.dialog({
+        message: '<div><p class="text-center"><i class="fa fa-spinner fa-spin text-5xl"></i></p></div>',
+        size: "large",
+        title: "Prefix Whois Lookup",
+        onEscape: true,
+        buttons: {
+            cancel: {
+                label: 'Close',
+                callback: function () {
+                    $('.bootbox.modal').modal('hide');
+                    return false;
+                }
+            }
+        }
+    });
+
+
+    $.ajax(url)
+        .done(function (data) {
+            content += data + '</pre>';
+
+            $('.bootbox-body').html( content ).scrollTop();
+        })
+        .fail(function () {
+            alert(`Error running ajax query for ${url}`);
+            throw `Error running ajax query for ${url}`;
+        })
+}
 
 
 

@@ -64,6 +64,7 @@ class IXP implements ExtensionInterface {
             'scaleBits'             => [ $this, 'scaleBits' ],
             'scaleBytes'            => [ $this, 'scaleBytes' ],
             'softwrap'              => [ $this, 'softwrap' ],
+            'whoisPrefix'           => [ $this, 'whoisPrefix' ],
         ];
     }
 
@@ -317,6 +318,21 @@ class IXP implements ExtensionInterface {
         }
 
         return ( $addAs ? 'AS' : '' ) . $asn;
+    }
+
+    /**
+     * Replaces an IP prefix with some JS magic to invoke a bootbox.
+     *
+     * @param  int    $asn      The IP prefix
+     * @return string
+     */
+    public function whoisPrefix( $prefix )
+    {
+        if( Auth::check() && $prefix ) {
+            return '<a href="#ixpm-prefix-whois-' . md5($prefix) . '" onClick="ixpWhoisPrefix( \'' . $prefix . '\' ); return false;">' . $prefix . '</a>';
+        }
+
+        return $prefix;
     }
 
     /**

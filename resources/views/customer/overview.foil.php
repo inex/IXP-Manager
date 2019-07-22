@@ -132,12 +132,18 @@
                 </h3>
 
                 <p class="tw-mt-2">
-                    <a href="<?= $t->c->getCorpwww() ?>" target="_blank"><?= $t->nakedUrl( $t->c->getCorpwww() ) ?></a>
+                    <a href="<?= $t->c->getCorpwww() ?>" target="_blank"><?= $t->nakedUrl( $t->c->getCorpwww() ?? '' ) ?></a>
 
                     <span class="tw-text-gray-600">
-                                - joined <?= $c->getDatejoin()->format('Y') ?>
-                            </span>
+                        - joined <?= $c->getDatejoin()->format('Y') ?>
+
+                        <?php if( $c->isResoldCustomer() ): ?>
+                            - resold via <?= $c->getReseller()->getName() ?>
+                        <?php endif; ?>
+
+                    </span>
                 </p>
+
 
                 <p class="tw-mt-6">
 

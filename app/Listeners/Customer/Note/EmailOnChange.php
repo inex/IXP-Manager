@@ -107,7 +107,7 @@ class EmailOnChange
             $to = [ config( 'ixp_fe.customer.notes.only_send_to' ) ];
         } else {
             // get admin users
-            $users = D2EM::getRepository( UserEntity::class )->findBy( [ 'privs' => UserEntity::AUTH_SUPERUSER ] );
+            $users = D2EM::getRepository( UserEntity::class )->findBy( [ 'privs' => UserEntity::AUTH_SUPERUSER, 'disabled' => false ] );
             $to = [];
 
             foreach( $users as $user ) {

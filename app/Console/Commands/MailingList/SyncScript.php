@@ -21,7 +21,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Ds\Set;
 use Entities\{
     User as UserEntity
 };

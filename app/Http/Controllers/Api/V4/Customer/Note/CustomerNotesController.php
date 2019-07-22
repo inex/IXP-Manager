@@ -28,22 +28,21 @@ use Auth, D2EM;
 use IXP\Exceptions\GeneralException;
 
 use IXP\Http\Controllers\Controller;
+
 use Illuminate\Http\{
     JsonResponse,
     Request
 };
 
-
 use Entities\{
-    Customer as CustomerEntity, CustomerNote as CustomerNoteEntity, CustomerNote
+    Customer as CustomerEntity,
+    CustomerNote as CustomerNoteEntity
 };
-
-
 
 use IXP\Events\Customer\Note\{
     Added       as CustomerNoteAddedEvent,
     Deleted     as CustomerNoteDeletedEvent,
-    Edited     as CustomerNoteUpdatedEvent
+    Edited      as CustomerNoteUpdatedEvent
 };
 
 /**
@@ -65,7 +64,8 @@ class CustomerNotesController extends Controller
      *
      * @throws
      */
-    public function add( Request $request ): JsonResponse{
+    public function add( Request $request ): JsonResponse
+    {
 
         /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid' ) ) ) ) {
@@ -118,7 +118,8 @@ class CustomerNotesController extends Controller
      *
      * @throws
      */
-    public function get( int $id = null ) {
+    public function get( int $id = null )
+    {
         if( !( $n = D2EM::getRepository( CustomerNoteEntity::class )->find( $id ) ) ) {
             abort( 404, 'Note not found.' );
         }
@@ -147,7 +148,8 @@ class CustomerNotesController extends Controller
      *
      * @throws
      */
-    public function delete( int $id = null ) : JsonResponse {
+    public function delete( int $id = null ) : JsonResponse
+    {
         if( !( $n = D2EM::getRepository( CustomerNoteEntity::class )->find( $id ) ) ) {
             abort( 404, 'Note not found.' );
         }
@@ -167,9 +169,10 @@ class CustomerNotesController extends Controller
      *
      * @param int|null $id
      * @return JsonResponse
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws
      */
-    public function ping( int $id = null ): JsonResponse {
+    public function ping( int $id = null ): JsonResponse
+    {
 
         if( Auth::getUser()->isSuperUser() ) {
             if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
@@ -189,30 +192,39 @@ class CustomerNotesController extends Controller
 
     /**
      * @param int $id  Customer ID
+     *
      * @return JsonResponse
+     *
      * @throws
      */
-    public function notifyToggleCustomer( int $id ): JsonResponse {
+    public function notifyToggleCustomer( int $id ): JsonResponse
+    {
         return  $this->notifyToggle( $id, null );
     }
 
     /**
      * @param int $id Note ID
+     *
      * @return JsonResponse
+     *
      * @throws
      */
-    public function notifyToggleNote( int $id ): JsonResponse {
+    public function notifyToggleNote( int $id ): JsonResponse
+    {
         return  $this->notifyToggle( null, $id );
     }
 
     /**
+     *
      * @param int|null $custid
      * @param int|null $noteId
+     *
      * @return JsonResponse
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws GeneralException
+     *
+     * @throws
      */
-    private function notifyToggle( int $custid = null, int $noteId = null ): JsonResponse {
+    private function notifyToggle( int $custid = null, int $noteId = null ): JsonResponse
+    {
         if( $custid ) {
             $id   = $custid;
             $name = sprintf( "customer-notes.%d.notify", $id );

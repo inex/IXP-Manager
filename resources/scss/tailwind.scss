@@ -46,6 +46,7 @@ h1 {
   line-height: 1;
   color: #1a202c;
   font-weight: 300;
+  margin-bottom: 1rem;
 }
 
 h2 {
@@ -86,6 +87,58 @@ h6 {
 }
 
 
+p {
+  margin-bottom: 1rem;
+}
+
+li {
+  display: list-item;
+}
+
+ol {
+  display: block;
+  list-style-type: decimal;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 40px;
+}
+
+ul {
+  display: block;
+  list-style-type: disc;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  margin-left: 0;
+  margin-right: 0;
+  padding-left: 40px;
+}
+
+dl {
+  display: block;
+  margin-top: 1em;
+  margin-bottom: 1em;
+  margin-left: 0;
+  margin-right: 0;
+}
+
+dt {
+  display: block;
+}
+
+code {
+  font-size: 0.9em;
+}
+
+pre {
+  display: block;
+  font-family: monospace;
+  white-space: pre;
+  margin: 1em 0;
+  font-size: 0.9em;
+}
+
 /****************************************************************************************
  **** Reset anchors
  ****************************************************************************************/
@@ -120,6 +173,12 @@ a:hover {
 
 #side-navbar {
   @apply tw-shadow tw-pr-0 tw-bg-white;
+}
+
+#side-navbar ul, #side-navbar ol {
+   list-style: none;
+   margin: 0;
+   padding: 0;
 }
 
 #side-navbar h6 {

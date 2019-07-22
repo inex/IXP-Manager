@@ -79,7 +79,7 @@
 
                             <tr>
 
-                                <td><span class="tw-font-mono"><?= $network ?></span></td>
+                                <td><span class="tw-font-mono"><?= $t->whoisPrefix( $network ) ?></span></td>
 
                                 <td>
 

@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\ConsoleServer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Redirect, Validator;
+use Auth, D2EM, Former, Log, Route;
 
 use Entities\{
     ConsoleServer       as ConsoleServerEntity,
@@ -31,10 +31,16 @@ use Entities\{
     Vendor              as VendorEntity
 };
 
-use Illuminate\Http\Request;
+
 use Illuminate\Http\RedirectResponse;
 use IXP\Http\Controllers\Doctrine2Frontend;
 
+use IXP\Http\Requests\StoreConsoleServer as StoreConsoleServerRequest;
+
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
 
 /**
  * ConsoleServerConnection Controller
@@ -51,6 +57,15 @@ class ConsoleServerController extends Doctrine2Frontend {
      * @var ConsoleServerEntity
      */
     protected $object = null;
+
+    /**
+     * Sometimes we need to pass a custom request object for validation / authorisation.
+     *
+     * Set the name of the function here and the route for store will be pointed to it instead of doStore()
+     *
+     * @var string
+     */
+    protected static $storeFn = 'customStore';
 
     /**
      * This function sets up the frontend controller
@@ -139,7 +154,6 @@ class ConsoleServerController extends Doctrine2Frontend {
 
     }
 
-
     /**
      * Provide array of rows for the list action and view action
      *
@@ -188,29 +202,14 @@ class ConsoleServerController extends Doctrine2Frontend {
         ];
     }
 
-
     /**
      * Function to do the actual validation and storing of the submitted object.
-     * @param Request $request
+     * @param StoreConsoleServerRequest $request
      * @return bool|RedirectResponse
      * @throws
      */
-    public function doStore( Request $request )
+    public function customStore( StoreConsoleServerRequest $request )
     {
-        $validator = Validator::make( $request->all(), [
-            'name'              => 'required|string|max:255|unique:Entities\ConsoleServer,name' . ( $request->input('id') ? ','. $request->input('id') : '' ),
-            'vendor'            => 'required|int|exists:Entities\Vendor,id',
-            'cabinet'           => 'required|int|exists:Entities\Cabinet,id',
-            'model'             => 'nullable|string|max:255',
-            'serial_number'     => 'nullable|string',
-            'notes'             => 'nullable|string',
-            'hostname'          => 'required|string',
-            'active'            => 'string',
-        ]);
-
-        if( $validator->fails() ) {
-            return Redirect::back()->withErrors($validator)->withInput();
-        }
 
         if( $request->input( 'id', false ) ) {
             if( !( $this->object = D2EM::getRepository( ConsoleServerEntity::class )->find( $request->input( 'id' ) ) ) ) {
@@ -232,7 +231,13 @@ class ConsoleServerController extends Doctrine2Frontend {
 
         D2EM::flush( $this->object );
 
-        return true;
+        $action = $request->input( 'id', '' )  ? "edited" : "added";
+
+        Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
+
+        AlertContainer::push( $this->store_alert_success_message ?? $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
+
+        return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
     }
 
 
