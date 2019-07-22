@@ -41,7 +41,11 @@ class MemberExportController extends Controller {
      */
     public function ixf( Request $r, string $version = JsonSchemaExporter::EUROIX_JSON_LATEST ) {
 
-        if( !Auth::check() && !config( 'ixp_api.json_export_schema.public', false ) ) {
+        if( $r->access_key ) {
+            if( $r->access_key !== config( 'ixp_api.json_export_schema.access_key' ) ) {
+                abort( 401, 'Invalid access key' );
+            }
+        } elseif( !Auth::check() && !config( 'ixp_api.json_export_schema.public', false ) ) {
             abort(401, 'Public access not permitted' );
         }
 

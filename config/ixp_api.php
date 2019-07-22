@@ -34,7 +34,10 @@ return [
     'json_export_schema' => [
 
         // if false, an API key is required
-        'public' => env( 'IXP_API_JSONEXPORTSCHEMA_PUBLIC', false ),
+        'public' => env( 'IXP_API_JSONEXPORTSCHEMA_PUBLIC', true ),
+
+        // or - we can set a static key here if we like:
+        'access_key' => env( 'IXP_API_JSONEXPORTSCHEMA_ACCESS_KEY', false ),
     ],
 
     /*
