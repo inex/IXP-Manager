@@ -71,11 +71,13 @@ class Bgpq3
 
         $this->path = $path;
 
-        if( $whois )
+        if( $whois ) {
             $this->whois = $whois;
+        }
 
-        if( $sources )
+        if( $sources ) {
             $this->sources = $sources;
+        }
     }
 
     /**
@@ -122,7 +124,7 @@ class Bgpq3
      */
     public function getAsnList( $asmacro, $proto = 4 )
     {
-        $json = $this->execute( '-3j -l pl -f 999 ' . escapeshellarg( $asmacro ), $proto );
+        $json = $this->execute( '-3j -l pl -f 999 ' . escapeshellarg( $asmacro ), false );
         $array = json_decode( $json, true );
 
         if( $array === null )

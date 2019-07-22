@@ -29,6 +29,8 @@ use IXP\Jobs\FetchFilteredPrefixesForCustomer;
 
 use Illuminate\Http\Request;
 
+use Illuminate\View\View;
+
 use IXP\Models\Customer;
 
 /**
@@ -42,11 +44,15 @@ class FilteredPrefixesController extends Controller
 {
 
     /**
+     *
      * @param Request $r
      * @param Customer $customer
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @return View
+     *
+     * @throws
      */
-    public function list( Request $r, Customer $customer ) {
+    public function list( Request $r, Customer $customer ) : View {
         $this->authorize('view', $customer);
 
         // are we busting the cache?
@@ -70,6 +76,5 @@ class FilteredPrefixesController extends Controller
             'filteredPrefixes' => $filteredPrefixes,
         ]);
     }
-
 
 }

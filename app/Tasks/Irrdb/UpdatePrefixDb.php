@@ -50,7 +50,7 @@ class UpdatePrefixDb extends UpdateDb
         if( $this->customer()->isRouteServerClient() && $this->customer()->isIrrdbFiltered() ) {
             $this->bgpq3()->setSources($this->customer()->getIRRDB()->getSource());
 
-            foreach( [4, 6] as $protocol ) {
+            foreach( $this->protocols() as $protocol ) {
                 $this->startTimer();
                 $prefixes = $this->bgpq3()->getPrefixList($this->customer()->resolveAsMacro($protocol, 'as'), $protocol);
                 $this->result['netTime'] += $this->timeElapsed();

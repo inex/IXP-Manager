@@ -38,7 +38,7 @@ use IXP\Exceptions\GeneralException;
 use IXP\Models\{Customer, Router, VlanInterface};
 use IXP\Services\LookingGlass;
 
-class FetchFilteredPrefixesForCustomer implements ShouldQueue
+class FetchFilteredPrefixesForCustomer extends Job implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
@@ -163,11 +163,4 @@ class FetchFilteredPrefixesForCustomer implements ShouldQueue
         }
     }
 
-    /**
-     * @return bool
-     */
-    private function havePersistentCache(): bool {
-        // we need a persistent cache or this is a waste of time
-        return !in_array( config( 'cache.default' ), [ 'array', 'none' ] );
-    }
 }
