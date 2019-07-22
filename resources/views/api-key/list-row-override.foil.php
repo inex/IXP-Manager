@@ -9,26 +9,26 @@ $row = $t->row;
 
     <td>
         <?= config( 'ixp_fe.api_keys.show_keys' ) ?  $t->ee( $row['apiKey'] ) : Str::limit(  $t->ee( $row['apiKey'] ), 6 ) ?>
-        <br>
-        <em> <?= $t->ee( $row['description'] ) ?> </em>
+        <?php if( $t->ee( $row['description'] ) ): ?>
+            <br>
+            <em><?= $t->ee( $row['description'] ) ?></em>
+        <?php endif; ?>
     </td>
 
-    <td>
-
-    </td>
     <td>
         <?= $row['created']->format( "Y-m-d H:i:s" ) ?>
     </td>
     <td>
         <?php if( $row['expires'] ): ?>
             <?= $row['expires']->format( "Y-m-d" ) ?>
+        <?php else: ?>
+            <em>Never</em>
         <?php endif; ?>
-
     </td>
 
     <td>
         <?php if( $row['lastseenAt'] ): ?>
-            <?= $row['first_seen']->format( "Y-m-d" ) ?>
+            <?= $row['lastseenAt']->format( "Y-m-d" ) ?>
         <?php endif; ?>
 
     </td>

@@ -98,8 +98,6 @@ class ApiKeyController extends Doctrine2Frontend {
                     'limitTo'      => 6
                 ],
 
-                'description'   => 'Description',
-
                 'created'      => [
                     'title'        => 'Created',
                     'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
@@ -251,9 +249,9 @@ class ApiKeyController extends Doctrine2Frontend {
     public function listShowKeys(Request $r )
     {
         if( !Hash::check( $r->input( 'pass' ), $r->user()->getPassword() ) ) {
-            AlertContainer::push( 'Wrong password', Alert::DANGER );
+            AlertContainer::push( 'Incorrect password entered', Alert::DANGER );
         } else {
-            AlertContainer::push( 'You can now see the API Keys', Alert::SUCCESS );
+            AlertContainer::push( 'API keys are visible for this request only. You will need to re-enter your password to view them again.', Alert::SUCCESS );
             config(['ixp_fe.api_keys.show_keys' => true]);
         }
 

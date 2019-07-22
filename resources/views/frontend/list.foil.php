@@ -194,16 +194,12 @@
                                                         <?= Carbon\Carbon::createFromTimestamp( $row[ $col ] )->format( 'Y-m-d H:i:s' )  ?>
                                                     <?php endif; ?>
 
-                                                <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'STRING_TO_DATE'] ): ?>
-
-                                                    <?php if( $row[ $col ] != null): ?>
-                                                        <?= $row[ $col ]->format( 'Y-m-d' )  ?>
-                                                    <?php endif; ?>
-
                                                 <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
-                                                    <?php if( $row[ $col ] != null): ?>
-                                                        <?= $row[ $col ]->format( 'Y-m-d' )  ?>
 
+                                                    <?php if( $row[ $col ] instanceof \DateTime ): ?>
+                                                        <?= $row[ $col ]->format( 'Y-m-d' )  ?>
+                                                    <?php elseif( $row[ $col ] ): ?>
+                                                        <?= date('Y-m-d', strtotime( $row[ $col ] ) ) ?>
                                                     <?php endif; ?>
 
                                                 <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'TIME'] ): ?>

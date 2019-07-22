@@ -125,7 +125,6 @@ abstract class Doctrine2Frontend extends Controller {
         'DATE'              => 'date',
         'TIME'              => 'time',
         'UNIX_TIMESTAMP'    => 'unix_timestamp',
-        'STRING_TO_DATE'    => 'string_to_date',
         'SCRIPT'            => 'script',
         'SPRINTF'           => 'sprintf',
         'REPLACE'           => 'replace',
