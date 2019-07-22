@@ -86,11 +86,6 @@ class Whois
         }
         fclose( $sock );
 
-        // nicer error message than PeeringDB's
-        if( $this->host === 'whois.peeringdb.com' && strpos( strtolower( $data ), "network matching query does not exist" ) !== false ) {
-            return "{$lookup} does not appear to have a record in PeeringDB.";
-        }
-
         // assume this is for display on a website
         if( $htmlencode ) {
             return clean( $data );
@@ -99,5 +94,12 @@ class Whois
         return $data;
     }
 
+    /**
+     * @return string
+     */
+    public function host(): string
+    {
+        return $this->host;
+    }
 
 }

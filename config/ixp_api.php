@@ -108,9 +108,18 @@ return [
     */
 
     'whois' => [
+        // all responses cached for:
+        'cache_ttl' => env( 'IXP_API_WHOIS_CACHE_TTL', 60 * 60 * 12 ),
+
+
         'asn' => [
             'host' => env( 'IXP_API_WHOIS_ASN_HOST',    'whois.peeringdb.com' ),
             'port' => env( 'IXP_API_WHOIS_ASN_PORT',    43 ),
+        ],
+
+        'asn2' => [
+            'host' => env( 'IXP_API_WHOIS_ASN2_HOST',    'whois.cymru.com' ),
+            'port' => env( 'IXP_API_WHOIS_ASN2_PORT',    43 ),
         ],
 
         'prefix' => [
