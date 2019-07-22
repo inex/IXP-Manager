@@ -23,11 +23,11 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Redirect, Route;
+use Auth, D2EM, Former, Hash, Redirect, Str, Validator;
 
 use Entities\{
-    ApiKey      as ApiKeyEntity,
-    User        as UserEntity
+    ApiKey  as ApiKeyEntity,
+    User    as UserEntity
 };
 
 use IXP\Utils\View\Alert\{
@@ -36,9 +36,10 @@ use IXP\Utils\View\Alert\{
 };
 
 use Illuminate\Http\{
+    Request,
     RedirectResponse
 };
-
+use Route;
 
 
 /**
@@ -90,14 +91,20 @@ class ApiKeyController extends Doctrine2Frontend {
             'listColumns'    => [
 
                 'id'           => [ 'title' => 'UID', 'display' => false ],
-                'apiKey'       => 'API Key',
+
+                'apiKey'       => [
+                    'title'        => 'API Key',
+                    'type'         => config( 'ixp_fe.api_keys.show_keys' ) ? self::$FE_COL_TYPES[ 'TEXT' ] : self::$FE_COL_TYPES[ 'LIMIT' ],
+                    'limitTo'      => 6
+                ],
+
                 'created'      => [
                     'title'        => 'Created',
                     'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ],
                 'expires'      => [
                     'title'        => 'Expires',
-                    'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
+                    'type'         => self::$FE_COL_TYPES[ 'DATE' ]
                 ],
                 'lastseenAt'   => [
                     'title'        => 'Lastseen',
@@ -128,13 +135,18 @@ class ApiKeyController extends Doctrine2Frontend {
     }
 
     /**
-     * @inheritdoc
+     * Additional routes
+     *
+     *
+     * @param string $route_prefix
+     * @return void
      */
-    public static function routes() {
-        Route::group( [ 'prefix' => 'api-key' ], function() {
-            Route::get(  'list',    'ApiKeyController@list'     )->name( 'api-key@list'     );
-            Route::get(  'add',     'ApiKeyController@add'      )->name( 'api-key@add'      );
-            Route::post( 'delete',  'ApiKeyController@delete'   )->name( 'api-key@delete'   );
+    protected static function additionalRoutes( string $route_prefix ){
+        // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
+
+        Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
+
+            Route::post(  'list-show-keys',      'ApiKeyController@listShowKeys'         )->name( "api-key@list-show-keys" );
         });
     }
 
@@ -145,37 +157,105 @@ class ApiKeyController extends Doctrine2Frontend {
      * @return array
      */
     protected function listGetData( $id = null ) {
-        return D2EM::getRepository( ApiKeyEntity::class )->getAllForFeList( $this->feParams, Auth::user()->getId() );
+        return D2EM::getRepository( ApiKeyEntity::class )->getAllForFeList( $this->feParams, Auth::user()->getId(), $id  );
     }
 
-    /**
-     * Add Api Key to the current user
+    /**w
+     * Display the form to add/edit an object
      *
-     * @return RedirectResponse
+     * @param   int $id ID of the row to edit
+     *
+     * @return array
+     */
+    protected function addEditPrepareForm( $id = null ): array {
+        if( $id !== null ) {
+
+            if( !( $this->object = D2EM::getRepository( ApiKeyEntity::class )->find( $id ) ) ) {
+                abort(404);
+            }
+
+            $old = request()->old();
+
+            Former::populate([
+                'key'               => array_key_exists( 'key',             $old ) ? $old['key']            : config( 'ixp_fe.api_keys.show_keys' ) ? $this->object->getApiKey() : Str::limit( $this->object->getApiKey(), 6 ),
+                'description'       => array_key_exists( 'description',     $old ) ? $old['description']    : $this->object->getDescription(),
+                'expires'           => array_key_exists( 'expires',         $old ) ? $old['expires']        : $this->object->getExpires() ? $this->object->getExpires()->format('Y-m-d') : null
+            ]);
+        }
+
+        return [
+            'object'          => $this->object,
+        ];
+    }
+
+
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request $request
+     *
+     * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function add() : RedirectResponse {
-        if( count( Auth::user()->getApiKeys() ) >= 10 ) {
-            AlertContainer::push( "We currently have a limit of 10 API keys per user. Please contact us if you require more.", Alert::DANGER );
-            return Redirect::back();
+    public function doStore( Request $request )
+    {
+        if( count( $request->user()->getApiKeys() ) >= config( 'ixp_fe.api_keys.max_keys' ) ) {
+            AlertContainer::push( "We currently have a limit of " . config( 'ixp_fe.api_keys.max_keys' ) . " API keys per user. Please contact us if you require more.", Alert::DANGER );
+            return Redirect::back()->withInput();
         }
 
-        $key = new ApiKeyEntity;
+        $validator = Validator::make( $request->all(), [
+            'description'        => 'nullable|string|max:255',
+            'expires'            => 'nullable|date',]
+        );
 
-        $key->setUser(          Auth::user()    );
-        $key->setCreated(       new \DateTime   );
-        $key->setAllowedIPs(    ''              );
-        $key->setExpires(       null            );
-        $key->setLastseenFrom(  ''              );
-        $key->setApiKey(        str_random(48)  );
+        if( $validator->fails() ) {
+            return Redirect::back()->withErrors( $validator )->withInput();
+        }
 
-        D2EM::persist( $key );
-        Auth::user()->addApiKey( $key );
-        D2EM::flush();
+        if( $request->input( 'id', false ) ) {
+            if( !( $this->object = D2EM::getRepository( ApiKeyEntity::class )->find( $request->input( 'id' ) ) ) ) {
+                abort(404);
+            }
+        } else {
+            $this->object = new ApiKeyEntity;
+            D2EM::persist( $this->object );
+            $this->object->setUser( $request->user() );
+            $this->object->setCreated( now() );
+            $this->object->setAllowedIPs('');
+            $this->object->setLastseenFrom('');
+            $this->object->setApiKey( $key = Str::random(48) );
+            $request->user()->addApiKey( $this->object );
+            AlertContainer::push( "API key created: <code>" . $key . "</code>.", Alert::SUCCESS );
+        }
 
-        AlertContainer::push( "Your new API key has been created - <code>" . $key->getApiKey() . "</code>", Alert::SUCCESS );
-        return Redirect::back();
+        $this->object->setExpires( $request->input( 'expires' ) ? new \DateTime( $request->input( 'expires' ) ) : null );
+        $this->object->setDescription(  $request->input( 'description' )    );
+
+        D2EM::flush($this->object);
+
+        return true;
+    }
+
+
+    /**
+     * Show the API Keys if the password match
+     *
+     * @param Request $r
+     *
+     * @return \Illuminate\View\View
+     */
+    public function listShowKeys(Request $r )
+    {
+        if( !Hash::check( $r->input( 'pass' ), $r->user()->getPassword() ) ) {
+            AlertContainer::push( 'Incorrect password entered', Alert::DANGER );
+        } else {
+            AlertContainer::push( 'API keys are visible for this request only. You will need to re-enter your password to view them again.', Alert::SUCCESS );
+            config(['ixp_fe.api_keys.show_keys' => true]);
+        }
+
+        return $this->list( $r );
     }
 
 }

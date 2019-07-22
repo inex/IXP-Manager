@@ -115,11 +115,11 @@
 
                                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
 
-                                                            <?php if(  $t->data[ 'item' ][ $col ] ): ?>
+                                                            <?php if( $t->data[ 'item' ][ $col ] instanceof \DateTime ): ?>
                                                                 <?= $t->data[ 'item' ][ $col ]->format( 'Y-m-d' )  ?>
-
+                                                            <?php elseif( $t->data[ 'item' ][ $col ] ): ?>
+                                                                <?= date('Y-m-d', strtotime( $t->data[ 'item' ][ $col ] ) ) ?>
                                                             <?php endif; ?>
-
 
                                                         <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'TIME'] ): ?>
 
@@ -209,6 +209,14 @@
                                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'INTEGER'] ): ?>
 
                                                             <?=  (int)$t->data[ 'item' ][ $col] ?>
+
+                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'LIMIT'] ): ?>
+
+                                                            <?= Str::limit( $t->data[ 'item' ][ $col ], $cconf[ 'limitTo'] )?>
+
+                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'TEXT'] ): ?>
+
+                                                            <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
 
                                                         <?php else: ?>
 

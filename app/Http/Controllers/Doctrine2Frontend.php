@@ -137,6 +137,8 @@ abstract class Doctrine2Frontend extends Controller {
         'LABEL'             => 'label',
         'ARRAY'             => 'array',
         'INTEGER'           => 'integer',
+        'LIMIT'             => 'limit',
+        'TEXT'              => 'text',
     ];
 
 

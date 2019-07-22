@@ -51,7 +51,10 @@ class ApiAuthenticate {
 	 *
 	 * @param  \Illuminate\Http\Request  $request
 	 * @param  \Closure  $next
+     *
 	 * @return mixed
+     *
+     * @throws
 	 */
 	public function handle($request, Closure $next)
 	{
@@ -71,23 +74,28 @@ class ApiAuthenticate {
 	        }
 
 	        try {
-	            $key = D2EM::createQuery(
-	                    "SELECT a FROM \\Entities\\ApiKey a WHERE a.apiKey = ?1" )
-	                ->setParameter( 1, $apikey )
-	                ->useResultCache( true, 3600, 'oss_d2u_user_apikey_' . $apikey )
-	                ->getSingleResult();
+	            $key = D2EM::createQuery( "SELECT a FROM \\Entities\\ApiKey a WHERE a.apiKey = ?1" )
+                        ->setParameter( 1, $apikey )
+                        ->getSingleResult();
 	        } catch( \Doctrine\ORM\NoResultException $e ) {
 	            return response( 'Valid API key required', 403 );
 	        }
 
+            if( $key->getExpires() !== null && now() > $key->getExpires() ){
+                return response( 'API key expired', 403 );
+            }
+
 	        Auth::onceUsingId( $key->getUser()->getId() );
 
 	        $key->setLastseenAt( new \DateTime() );
-	        $key->setLastseenFrom( $_SERVER['REMOTE_ADDR'] );
+	        $key->setLastseenFrom( ixp_get_client_ip() );
 	        D2EM::flush();
 		}
 		
 		return $next($request);
 	}
+
+
+
 
 }
