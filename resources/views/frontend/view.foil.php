@@ -115,17 +115,11 @@
 
                                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
 
-                                                            <?php if(  $t->data[ 'item' ][ $col ] != null ): ?>
+                                                            <?php if( $t->data[ 'item' ][ $col ] instanceof \DateTime ): ?>
                                                                 <?= $t->data[ 'item' ][ $col ]->format( 'Y-m-d' )  ?>
-
+                                                            <?php elseif( $t->data[ 'item' ][ $col ] ): ?>
+                                                                <?= date('Y-m-d', strtotime( $t->data[ 'item' ][ $col ] ) ) ?>
                                                             <?php endif; ?>
-
-                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'STRING_TO_DATE'] ): ?>
-
-                                                            <?php if( $t->data[ 'item' ][ $col ] ): ?>
-                                                                <?= $t->data[ 'item' ][ $col ]->format( 'Y-m-d' )  ?>
-                                                            <?php endif; ?>
-
 
                                                         <?php elseif( $cconf[ 'type' ] ==  $t->data[ 'col_types' ][ 'TIME'] ): ?>
 

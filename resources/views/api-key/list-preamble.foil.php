@@ -11,7 +11,7 @@
 
 <?php if( !config( 'ixp_fe.api_keys.show_keys' ) ): ?>
     <div class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm d-block">
-        <div>Enter your password to display the API KEYS</div>
+        <div>To protect your API keys from unintentional disclosure, you need to enter your password to display them:</div>
 
         <div>
             <ul class="navbar-nav">
