@@ -87,7 +87,7 @@ class ContactControllerTest extends DuskTestCase
                 ->type( 'notes', 'Test note' )
                 ->press('Add' )
                 ->assertPathIs('/contact/list' )
-                ->assertSee( 'Contact added' )
+                ->waitForText( 'Contact added' )
                 ->assertSee( 'Test Contact 1' )
                 ->assertSee( 'Test Position' )
                 ->assertSee( 'test-contact1@example.com' );
@@ -298,9 +298,9 @@ class ContactControllerTest extends DuskTestCase
                 ->press( '#login-btn' )
                 ->assertPathIs( '/dashboard' )
                 ->visit('/contact/list')
-                ->assertSee( 'Your Contacts' );
-                //->assertSee( 'Imagine CustAdmin' )
-                //->assertSee( 'imagine-custadmin@example.com' );
+                ->waitForText( 'Your Contacts' )
+                ->assertSee( 'Imagine CustAdmin' )
+                ->assertSee( 'imagine-custadmin@example.com' );
 
             $browser->visit( '/contact/add' )
                 ->assertSee( 'Add Contact' )
