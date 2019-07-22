@@ -1372,6 +1372,9 @@
       <field name="peering_ip" type="string" required="true" uuid="d0fea000-f2bd-4954-b932-263507f0369b"/>
       <field name="asn" type="integer" required="true" unsigned="true" uuid="6858a690-e57b-4a12-aaca-a3793383adad"/>
       <field name="software" type="string" required="true" uuid="dcd73ab9-14cb-4016-9837-496261fc56c4"/>
+      <field name="software_version" type="string" uuid="071c48eb-c360-4199-8fad-4c3cbea97b4c"/>
+      <field name="operating_system" type="string" uuid="39ba6823-20a3-4f33-890f-6792b723a804"/>
+      <field name="operating_system_version" type="string" uuid="c9c87603-434f-4801-b24c-696595bfd4cc"/>
       <field name="mgmt_host" type="string" required="true" uuid="ad9502ca-d93d-43f8-99e0-58fc00b534d9"/>
       <field name="api" type="string" uuid="e0a08104-f743-4af2-8a83-6804093a9aee"/>
       <field name="api_type" type="smallint" required="true" unsigned="true" uuid="a8ab20e2-2d16-4fd0-8b1c-71c54b6f7862"/>
@@ -1643,7 +1646,7 @@
     <entity uuid="783a63d3-7ca8-42bc-b949-a99a889d724a" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="337" position-y="874" size-x="0" size-x2="113" size-y="0" size-y2="115"/>
     <entity uuid="7e6970cf-b416-4c08-aa7c-204fd31ec135" bg-color="4294967295" hdr-color="4292006610" position-x="173" position-y="438" size-x="0" size-x2="138" size-y="0" size-y2="74"/>
     <entity uuid="8f91adda-06e6-43ed-bea6-0aec9aeb9f2e" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1454" position-y="971" size-x="0" size-x2="118" size-y="0" size-y2="129"/>
-    <entity uuid="90947ea1-a2fb-430b-b55e-a4901eb1fa30" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="30" position-y="-526" size-x="0" size-x2="118" size-y="0" size-y2="297"/>
+    <entity uuid="90947ea1-a2fb-430b-b55e-a4901eb1fa30" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="31" position-y="-541" size-x="0" size-x2="159" size-y="0" size-y2="353"/>
     <entity uuid="9f26679f-99e4-48b9-b544-4d7377988044" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="915" position-y="1047" size-x="0" size-x2="144" size-y="0" size-y2="87"/>
     <entity uuid="a4eeb330-c86b-4443-968b-c166863303b1" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="415" position-y="16" size-x="0" size-x2="104" size-y="0" size-y2="115"/>
     <entity uuid="a6d2adc6-7ce1-4c57-b4da-5b5f17d963f7" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="657" position-y="-436" size-x="0" size-x2="144" size-y="0" size-y2="45"/>
