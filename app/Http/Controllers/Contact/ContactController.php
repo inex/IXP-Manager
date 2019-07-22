@@ -222,6 +222,7 @@ class ContactController extends Doctrine2Frontend
 
         $role = $cg = null;
         $cgs = [];
+        $allGroups = [ 'ROLE' => 'Role' ];
 
         if( config('contact_group.types.ROLE') ) {
             $groups = D2EM::getRepository( ContactGroupEntity::class )->getGroupNamesTypeArray( false, false , true);
