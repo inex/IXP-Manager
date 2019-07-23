@@ -41,7 +41,7 @@ $row = $t->row;
             <a class="btn btn-white" href="<?= route('api-key@view' , [ 'id' => $t->row[ 'id' ] ] ) ?> " title="View">
                 <i class="fa fa-eye"></i>
             </a>
-            <a class="btn btn-white" href="<?= route('api-key@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?> " title="Edit">
+            <a class="btn btn-white" id='d2f-list-edit-<?= $t->row[ 'id' ] ?>' href="<?= route('api-key@edit' , [ 'id' => $t->row[ 'id' ] ] ) ?> " title="Edit">
                 <i class="fa fa-pencil"></i>
             </a>
             <a class="btn btn-white d2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>" title="Delete">

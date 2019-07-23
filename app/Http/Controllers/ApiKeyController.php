@@ -79,7 +79,7 @@ class ApiKeyController extends Doctrine2Frontend {
             'pagetitle'         => 'API Keys',
 
             'titleSingular'     => 'API Key',
-            'nameSingular'      => 'an API key',
+            'nameSingular'      => 'API key',
 
             'listOrderBy'       => 'created',
             'listOrderByDir'    => 'ASC',
