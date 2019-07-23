@@ -142,12 +142,9 @@ class ContactGroup extends EntityRepository
 
 
 
-        if( $types = config( "contact_group.types" ) ){
-
-
+        if( $types = config( "contact_group.types" ) ) {
             $dql .= " AND cg.type IN('" . implode( "','", array_keys( $types ) ) . "')";
         }
-
 
         if( $id ) {
             $dql .= " AND cg.id = " . (int)$id;
@@ -158,8 +155,6 @@ class ContactGroup extends EntityRepository
             $dql .= isset( $feParams->listOrderByDir ) ? $feParams->listOrderByDir : 'ASC';
         }
 
-
         return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
-
     }
 }

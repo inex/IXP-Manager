@@ -55,12 +55,13 @@
             <div class="col-lg-6">
 
                 <div class="form-group row" >
-                    <div class="" style="display: contents">
-                        <label class="control-label col-lg-3 col-sm-3">&nbsp;Role&nbsp;</label>
-                    </div>
-
 
                     <?php if( $t->data[ 'params'][ "allGroups" ] && isset( $t->data[ 'params'][ "allGroups" ][ 'ROLE' ] ) ): ?>
+
+                        <div class="" style="display: contents">
+                            <label class="control-label col-lg-3 col-sm-3">&nbsp;Role&nbsp;</label>
+                        </div>
+
                         <div>
                             <?php foreach( $t->data[ 'params'][ "allGroups" ][ 'ROLE' ] as $role ): ?>
 
