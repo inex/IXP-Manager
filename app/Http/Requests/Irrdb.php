@@ -46,7 +46,15 @@ class Irrdb extends FormRequest
      */
     public function authorize()
     {
-        return ixp_min_auth( User::AUTH_CUSTUSER );
+        if( !ixp_min_auth( User::AUTH_CUSTUSER ) ) {
+            return false;
+        }
+
+        if( $this->user()->isSuperUser() ) {
+            return true;
+        }
+
+        return $this->user()->getCustomer()->getId() === $this->customer->id;
     }
 
     /**
