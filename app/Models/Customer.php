@@ -4,6 +4,12 @@ namespace IXP\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+use D2EM;
+
+use Entities\Customer as CustomerEntity;
+
+use IXP\Exceptions\GeneralException as IXP_Exception;
+
 /**
  * IXP\Models\Customer
  *
@@ -209,6 +215,76 @@ class Customer extends Model
         );
     }
 
+    /**
+     * Is the customer a route server client on any of their VLAN interfaces?
+     * @param int $proto One of [4,6]. Defaults to 4.
+     * @return boolean
+     * @throws IXP_Exception
+     */
+    public function isRouteServerClient( int $proto = 4 ): bool
+    {
+        if( !in_array( $proto, [ 4, 6 ] ) ) {
+            throw new IXP_Exception( 'Invalid protocol' );
+        }
 
+        foreach( $this->virtualInterfaces as $vi ) {
+            foreach( $vi->vlanInterfaces as $vli ) {
+                if( $vli->protocolEnabled( $proto ) && $vli->rsclient ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Is the customer IRRDB filtered (usually for route server clients) on any of their VLAN interfaces?
+     * @return boolean
+     */
+    public function isIrrdbFiltered(): bool
+    {
+        foreach( $this->virtualInterfaces as $vi ) {
+            foreach( $vi->vlanInterfaces as $vli ) {
+                if( $vli->irrdbfilter ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Is the customer IPvX enabled on any of their VLAN interfaces?
+     * @param int $proto One of [4,6]. Defaults to 4.
+     * @return boolean
+     * @throws IXP_Exception
+     */
+    public function isIPvXEnabled( int $proto = 4 ): bool
+    {
+        if( !in_array( $proto, [ 4, 6 ] ) ) {
+            throw new IXP_Exception( 'Invalid protocol' );
+        }
+
+        foreach( $this->virtualInterfaces as $vi ) {
+            foreach( $vi->vlanInterfaces as $vli ) {
+                if( $vli->protocolEnabled( $proto ) ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * return the doctrine entity
+     *
+     * @return object|CustomerEntity
+     */
+    public function getDoctrineObject(): CustomerEntity {
+        return D2EM::getRepository( CustomerEntity::class )->find( $this->id );
+    }
 
 }

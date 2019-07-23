@@ -53,6 +53,8 @@ class UpdateAsnDb extends UpdateDb {
      * Execute the console command.
      *
      * @return mixed
+     *
+     * @throws
      */
     public function handle(): int {
 

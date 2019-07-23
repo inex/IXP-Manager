@@ -25,6 +25,9 @@
       </options>
     </field>
     <field name="software" type="string" nullable="false"/>
+    <field name="software_version" type="string" nullable="true"/>
+    <field name="operating_system" type="string" nullable="true"/>
+    <field name="operating_system_version" type="string" nullable="true"/>
     <field name="mgmt_host" type="string" nullable="false"/>
     <field name="api" type="string" nullable="true"/>
     <field name="api_type" type="smallint" nullable="false">

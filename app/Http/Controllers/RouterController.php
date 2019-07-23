@@ -119,7 +119,12 @@ class RouterController extends Controller
                 'router_id'             => array_key_exists( 'router_id',   $old ) ? $old['router_id']      : $rt->getRouterId(),
                 'peering_ip'            => array_key_exists( 'peering_ip',  $old ) ? $old['peering_ip']     : $rt->getPeeringIp(),
                 'asn'                   => array_key_exists( 'asn',         $old ) ? $old['asn']            : $rt->getAsn(),
-                'software'              => array_key_exists( 'software',    $old ) ? $old['software']       : $rt->getSoftware(),
+
+                'software'                 => array_key_exists( 'software',                    $old ) ? $old['software']                 : $rt->getSoftware(),
+                'software_version'         => array_key_exists( 'software_version',            $old ) ? $old['software_version']         : $rt->getSoftwareVersion(),
+                'operating_system'         => array_key_exists( 'operating_system',            $old ) ? $old['operating_system']         : $rt->getOperatingSystem(),
+                'operating_system_version' => array_key_exists( 'operating_system_version',    $old ) ? $old['operating_system_version'] : $rt->getOperatingSystemVersion(),
+
                 'mgmt_host'             => array_key_exists( 'mgmt_host',   $old ) ? $old['mgmt_host']      : $rt->getMgmtHost(),
                 'api_type'              => array_key_exists( 'api_type',    $old ) ? $old['api_type']       : $rt->getApiType(),
                 'api'                   => array_key_exists( 'api',         $old ) ? $old['api']            : $rt->getApi(),
@@ -179,7 +184,13 @@ class RouterController extends Controller
         $rt->setRouterId(   $request->input( 'router_id'    ) );
         $rt->setPeeringIp(  $request->input( 'peering_ip'   ) );
         $rt->setAsn(        $request->input( 'asn'          ) );
-        $rt->setSoftware(   $request->input( 'software'     ) );
+
+        $rt->setSoftware(               $request->input( 'software'                 ) );
+        $rt->setSoftwareVersion(        $request->input( 'software_version'         ) );
+        $rt->setOperatingSystem(        $request->input( 'operating_system'         ) );
+        $rt->setOperatingSystemVersion( $request->input( 'operating_system_version' ) );
+
+
         $rt->setMgmtHost(   $request->input( 'mgmt_host'    ) );
         $rt->setApiType(    $request->input( 'api_type'     ) );
         $rt->setApi(        $request->input( 'api'          ) );

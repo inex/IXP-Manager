@@ -34,6 +34,11 @@ use Illuminate\Http\RedirectResponse;
 
 use IXP\Http\Controllers\Doctrine2Frontend;
 
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
+
 
 /**
  * Contact Group Controller
@@ -66,7 +71,7 @@ class ContactGroupController extends Doctrine2Frontend {
     /**
      * This function sets up the frontend controller
      */
-    public function feInit(){
+    public function feInit() {
 
         $this->feParams         = ( object )[
 
@@ -138,6 +143,19 @@ class ContactGroupController extends Doctrine2Frontend {
     }
 
 
+    /**
+     * @return RedirectResponse|null
+     */
+    protected function canList(): ?RedirectResponse
+    {
+        // are contact groups configured?
+        if( config( 'contact_group.types', false ) === false ) {
+            AlertContainer::push( 'Contact groups are not configured. Please see <a href="https://docs.ixpmanager.org/usage/contacts/#contact-groups">the documentation here</a>.', Alert::INFO );
+            return redirect( route( 'contact@list' ) );
+        }
+
+        return null;
+    }
 
     /**
      * Display the form to add/edit an object

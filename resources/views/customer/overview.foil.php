@@ -28,6 +28,12 @@
 
                 <div class="dropdown-divider"></div>
 
+                <a class="dropdown-item" href="<?= route( "irrdb@list", [ "customer" => $c->getId(), "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">
+                    View / Update IRRDB Entries...
+                </a>
+
+                <div class="dropdown-divider"></div>
+
                 <a class="dropdown-item" href="<?= route( 'customer@welcome-email', [ 'id' => $c->getId() ] ) ?>">
                     Send Welcome Email...
                 </a>
@@ -279,24 +285,40 @@
 
                 <?php if( $c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $c->hasLeft() ) ): ?>
 
-                    <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes' ) && $c->isRouteServerClient() ): ?>
-                        <li class="nav-item" onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'id' =>  $c->getId() ] ) ?>'">
-                            <a class="nav-link" data-toggle="tab"  href="">
-                                RS Prefixes
-                                <?php if( $t->rsRoutes[ 'adv_nacc' ][ 'total' ] > 0 ): ?>
-                                    <span class="badge badge-danger"><?= $t->rsRoutes[ 'adv_nacc' ][ 'total' ] ?></span>
-                                <?php endif ?>
-                                &raquo;
-                            </a>
-                        </li>
-                    <?php endif ?>
 
-                    <?php if( !config( 'ixp_fe.frontend.disabled.filtered-prefixes' ) && $c->isRouteServerClient() ): ?>
-                        <li class="nav-item" onclick="window.location.href = '<?= route( "filtered-prefixes@list", [ 'customer' =>  $c->getId() ] ) ?>'">
-                            <a class="nav-link" data-toggle="tab"  href="">
-                                Filtered Prefixes &raquo;
-                            </a>
-                        </li>
+                    <?php if( $c->isRouteServerClient() ): ?>
+
+                        <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes' ) ): ?>
+                            <li class="nav-item" onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'id' =>  $c->getId() ] ) ?>'">
+                                <a class="nav-link" data-toggle="tab"  href="">
+                                    RS Prefixes
+                                    <?php if( $t->rsRoutes[ 'adv_nacc' ][ 'total' ] > 0 ): ?>
+                                        <span class="badge badge-danger"><?= $t->rsRoutes[ 'adv_nacc' ][ 'total' ] ?></span>
+                                    <?php endif ?>
+                                    &raquo;
+                                </a>
+                            </li>
+                        <?php endif ?>
+
+                        <?php if( !config( 'ixp_fe.frontend.disabled.filtered-prefixes' ) ): ?>
+
+                            <li class="nav-item" onclick="window.location.href = '<?= route( "filtered-prefixes@list", [ 'customer' =>  $c->getId() ] ) ?>'">
+                                <a class="nav-link" data-toggle="tab"  href="">
+                                    Filtered Prefixes &raquo;
+                                </a>
+                            </li>
+
+                        <?php elseif( $c->isIrrdbFiltered() ): ?>
+
+                            <li class="nav-item" onclick="window.location.href = '<?= route( "irrdb@list", [ "customer" => $c->getId(), "type" => 'prefix', "protocol" => $c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>'">
+                                <a class="nav-link" data-toggle="tab"  href="">
+                                    IRRDB Entries &raquo;
+                                </a>
+                            </li>
+
+                        <?php endif; ?>
+
+
                     <?php endif ?>
 
                     <?php if( config('grapher.backends.sflow.enabled') ) : ?>

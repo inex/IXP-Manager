@@ -261,7 +261,7 @@ class ContactController extends Doctrine2Frontend
                 'roles'             => [],
                 'cg'                => $cg,
                 'contactGroups'     => $cgs,
-                'AllContactGroups'  => $allGroups[ "ROLE" ]
+                'AllContactGroups'  => [],
             ];
         }
 
