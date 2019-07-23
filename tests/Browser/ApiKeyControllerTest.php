@@ -80,7 +80,7 @@ class ApiKeyControllerTest extends DuskTestCase
                 ->assertInputValue('expires', '')
                 ->assertDisabled('key' )
                 ->type( "description" , "description test" )
-                ->type("expires", "20/07/2019" )
+                ->type("expires", now()->add( "1day" )->format( "d-m-Y" ) )
                 ->press( "Save Changes" )
                 ->assertPathIs('/api-key/list')
                 ->assertSee( "API Key edited" );
@@ -89,7 +89,7 @@ class ApiKeyControllerTest extends DuskTestCase
 
             // 4. Check Value
             $this->assertEquals(            $keyLimited,              Str::limit( $apiKey->getApiKey() , 6 ) );
-            //$this->assertEquals( '2019-07-20',              $apiKey->getExpires()->format( "Y-m-d" ) );
+            $this->assertEquals( now()->add( "1day" )->format( "Y-m-d" ),              $apiKey->getExpires()->format( "Y-m-d" ) );
             $this->assertEquals( 'description test',        $apiKey->getDescription() );
 
             // 5. Enter wrong password to see the not limited API KEY
