@@ -24,6 +24,7 @@
 
         <?= Former::date( 'expires' )
             ->label( 'Expiry Date' )
+            ->min( now()->add( "1day" )->format( "Y-m-d" ) )
             ->blockHelp( 'Optional expiry date for the key. Key valid only before this date.' );
         ?>
 

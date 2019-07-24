@@ -79,7 +79,7 @@ class ApiKeyController extends Doctrine2Frontend {
             'pagetitle'         => 'API Keys',
 
             'titleSingular'     => 'API Key',
-            'nameSingular'      => 'an API key',
+            'nameSingular'      => 'API key',
 
             'listOrderBy'       => 'created',
             'listOrderByDir'    => 'ASC',
@@ -176,10 +176,11 @@ class ApiKeyController extends Doctrine2Frontend {
 
             $old = request()->old();
 
+
             Former::populate([
                 'key'               => array_key_exists( 'key',             $old ) ? $old['key']            : config( 'ixp_fe.api_keys.show_keys' ) ? $this->object->getApiKey() : Str::limit( $this->object->getApiKey(), 6 ),
                 'description'       => array_key_exists( 'description',     $old ) ? $old['description']    : $this->object->getDescription(),
-                'expires'           => array_key_exists( 'expires',         $old ) ? $old['expires']        : $this->object->getExpires() ? $this->object->getExpires()->format('Y-m-d') : null
+                'expires'           => array_key_exists( 'expires',         $old ) ? $old['expires']        :  ( $this->object->getExpires() ? $this->object->getExpires()->format( "Y-m-d" ) : null )
             ]);
         }
 
@@ -206,8 +207,9 @@ class ApiKeyController extends Doctrine2Frontend {
         }
 
         $validator = Validator::make( $request->all(), [
-            'description'        => 'nullable|string|max:255',
-            'expires'            => 'nullable|date',]
+                'description'        => 'nullable|string|max:255',
+                'expires'            => 'nullable|date|after:' . now()->format( "Y-m-d" ),
+            ]
         );
 
         if( $validator->fails() ) {
