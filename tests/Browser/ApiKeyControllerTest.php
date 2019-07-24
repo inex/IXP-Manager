@@ -72,7 +72,6 @@ class ApiKeyControllerTest extends DuskTestCase
 
             $browser->assertSee( Str::limit( $apiKey->getApiKey() , 6 ) );
 
-            $tomorrow = now()->add( "1day" );
             // 3. Edit API key
             $browser->click( '#d2f-list-edit-' . $apiKey->getId() )
                 ->assertSee( 'Edit API Key' )
@@ -81,10 +80,7 @@ class ApiKeyControllerTest extends DuskTestCase
                 ->assertInputValue('expires', '')
                 ->assertDisabled('key' )
                 ->type( "description" , "description test" )
-                //->type("expires", now()->add( "1day" )->format( "d-m-Y" ) )
-                ->keys('#expires', $tomorrow->day)
-                        ->keys('#expires', $tomorrow->month)
-                        ->keys('#expires', $tomorrow->year)
+                ->type("expires", now()->add( "1day" )->format( "d-m-Y" ) )
                 ->press( "Save Changes" )
                 ->assertPathIs('/api-key/list')
                 ->assertSee( "API Key edited" );
