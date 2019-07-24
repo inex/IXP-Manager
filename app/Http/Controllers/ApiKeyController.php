@@ -208,8 +208,7 @@ class ApiKeyController extends Doctrine2Frontend {
 
         $validator = Validator::make( $request->all(), [
                 'description'        => 'nullable|string|max:255',
-                //'expires'            => 'nullable|date|after:' . now()->format( "Y-m-d" ),
-                'expires'            => 'nullable|date',
+                'expires'            => 'nullable|date|after:' . now()->format( "Y-m-d" ),
             ]
         );
 
