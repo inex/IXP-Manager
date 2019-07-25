@@ -75,7 +75,7 @@
                             </span>
                         <?php endif; ?>
                     </td>
-                    <td class="text-right pr-4">
+                    <td class="text-right pr-4" data-order="<?= $p->state != 'up' ? "-1" : $p->routes->imported ?>">
                         <?php if( $p->state != 'up' ): ?>
                             <span class="badge badge-warning"><?= $p->bgp_state ?></span>
                         <?php else: ?>
@@ -183,12 +183,12 @@
             order: [[ 2, "asc" ]],
             columnDefs: [
                 { type: 'ip-address', targets: 0 },
-                { type: 'string', targets: 0 },
-                { type: 'int', targets: 0 },
-                { type: 'string', targets: 0 },
-                { type: 'string', targets: 0 },
-                { type: 'int', targets: 0 },
-                { type: 'int', targets: 0 }
+                { type: 'string', targets: 1 },
+                { type: 'int', targets: 2 },
+                { type: 'string', targets: 3 },
+                { type: 'string', targets: 4 },
+                { type: 'num', targets: 5 },
+                { type: 'num', targets: 6 }
             ]
         });
     });
