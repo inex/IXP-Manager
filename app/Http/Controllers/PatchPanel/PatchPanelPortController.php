@@ -237,7 +237,6 @@ class PatchPanelPortController extends Controller
             ksort( $partnerPorts );
         }
 
-
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'patch-panel-port/edit' )->with([
             'states'                => $states,
@@ -252,8 +251,8 @@ class PatchPanelPortController extends Controller
             'user'                  => Auth::user(),
             'allocating'            => $allocating,
             'prewired'              => $prewired,
-            'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']              : $ppp->getNotes() )        : ( array_key_exists( 'notes',              $old ) ? $old['notes']              : "" ),
-            'private_notes'         => $id ? ( array_key_exists( 'private_notes',   $old ) ? $old['private_notes']      : $ppp->getPrivateNotes() ) : ( array_key_exists( 'private_notes',      $old ) ? $old['private_notes']      : "" )
+            'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? ( $old['notes'] ? $old['notes'] : "" )                         : $ppp->getNotes() )        : ( array_key_exists( 'notes',              $old ) ? $old['notes']              : "" ),
+            'private_notes'         => $id ? ( array_key_exists( 'private_notes',   $old ) ? ( $old['private_notes'] ? $old['private_notes'] : "" )         : $ppp->getPrivateNotes() ) : ( array_key_exists( 'private_notes',      $old ) ? $old['private_notes']      : "" )
         ]);
     }
 

@@ -54,6 +54,10 @@ class StorePatchPanelPort extends FormRequest
         return [
             'number'                => $required.'|string|max:255',
             'patch_panel'           => $required,
+            'description'           => 'nullable|string|max:255',
+            'colo_circuit_ref'      => 'nullable|string|max:255',
+            'colo_billing_ref'      => 'nullable|string|max:255',
+            'ticket_ref'            => 'nullable|string|max:255',
             'state'                 => 'required|integer',
             'assigned_at'           => 'nullable|date',
             'connected_at'          => 'nullable|date',
