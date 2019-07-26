@@ -184,11 +184,10 @@
             columnDefs: [
                 { type: 'ip-address', targets: 0 },
                 { type: 'string', targets: 1 },
-                { type: 'int', targets: 2 },
                 { type: 'string', targets: 3 },
                 { type: 'string', targets: 4 },
                 { type: 'num', targets: 5 },
-                { type: 'num', targets: 6 }
+                { type: 'int', targets: 6 }
             ]
         });
     });
