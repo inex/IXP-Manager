@@ -54,7 +54,7 @@
                     <td class="pr-4">
                         <?= $p->description_short ?? $p->description ?? "" ?>
                     </td>
-                    <td class="text-right pr-4">
+                    <td class="text-right pr-4" data-order="<?= $p->neighbor_as ?>">
                         <?= $t->asNumber( $p->neighbor_as, false ) ?>
                     </td>
                     <td>
@@ -62,8 +62,8 @@
                             <?= $p->table ?>
                         </a>
                     </td>
-                    <td class="text-right pr-4">
-                        <?php if( isset($p->import_limit) and isset( $p->route_limit_at ) and $p->import_limit ): ?>
+                    <?php if( isset($p->import_limit) and isset( $p->route_limit_at ) and $p->import_limit ): ?>
+                        <td class="text-right pr-4" data-order="<?= $p->import_limit ?>">
                             <span
                                 <?php if( ( (float)$p->route_limit_at / $p->import_limit ) >= .9 ): ?>
                                     class="badge badge-danger"
@@ -73,9 +73,11 @@
                             >
                                 <?= $p->route_limit_at ?>/<?= $p->import_limit ?>
                             </span>
-                        <?php endif; ?>
+                    <?php else: ?>
+                        <td class="text-right pr-4">
+                    <?php endif; ?>
                     </td>
-                    <td class="text-right pr-4">
+                    <td class="text-right pr-4" data-order="<?= $p->state != 'up' ? "-1" : $p->routes->imported ?>">
                         <?php if( $p->state != 'up' ): ?>
                             <span class="badge badge-warning"><?= $p->bgp_state ?></span>
                         <?php else: ?>
@@ -88,7 +90,7 @@
                             <?php endif; ?>
                         <?php endif; ?>
                     </td>
-                    <td class="text-right pr-4">
+                    <td class="text-right pr-4" data-order="<?= $p->state == 'up' ? $p->routes->exported : -1 ?>">
                         <?php if( $p->state == 'up' ): ?>
                             <?php if( is_int( $p->routes->exported ) and is_int( $t->content->api->max_routes ) and $p->routes->exported < $t->content->api->max_routes ): ?>
                                 <a href="<?= url('/lg') . '/' . $t->lg->router()->handle() ?>/routes/export/<?= $name ?>">
@@ -182,13 +184,13 @@
             paging: false,
             order: [[ 2, "asc" ]],
             columnDefs: [
-                { type: 'ip-address', targets: 0 },
-                { type: 'string', targets: 0 },
-                { type: 'int', targets: 0 },
-                { type: 'string', targets: 0 },
-                { type: 'string', targets: 0 },
-                { type: 'int', targets: 0 },
-                { type: 'int', targets: 0 }
+                { type: 'ip-address', targets: [ 0 ] },
+                { type: 'string', targets: [ 1 ] },
+                { type: 'num', targets: [ 2 ] },
+                { type: 'string', targets: [ 3 ], "orderable": false },
+                { type: 'num', targets: [ 4 ] },
+                { type: 'num', targets: [ 5 ] },
+                { type: 'num', targets: [ 6 ] }
             ]
         });
     });
