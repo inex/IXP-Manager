@@ -201,7 +201,7 @@ class VirtualInterfaceController extends Common
         $vi->setTrunk(            $request->input( 'trunk' )          ? 1 : 0 );
         $vi->setLagFraming(  $request->input( 'lag_framing' )    ? 1 : 0 );
         $vi->setFastLACP(       $request->input( 'fastlacp' )       ? 1 : 0);
-        $vi->setName(                   ltrim( trim( $request->input('name' ) , '"') ) );
+        $vi->setName(                   trim( $request->input('name' ) , '"') );
         $vi->setDescription(            $request->input( 'description'      ) );
         $vi->setChannelgroup(           $request->input( 'channel-group'    ) );
         $vi->setMtu(                    $request->input( 'mtu'              ) );
