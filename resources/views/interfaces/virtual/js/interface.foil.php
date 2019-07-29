@@ -24,11 +24,6 @@ $( document ).ready(function() {
     $('.table-responsive-ixp-with-header').DataTable( {
         responsive: true,
         stateSave: true,
-        "stateSaveParams": function (settings, data) {
-            data.search.search = "";
-            data.order = [];
-            data.start = 0;
-        },
         columnDefs: [
             { responsivePriority: 1, targets: 0 },
             { responsivePriority: 2, targets: -1 }

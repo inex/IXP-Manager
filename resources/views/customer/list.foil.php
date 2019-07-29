@@ -187,14 +187,7 @@ $this->layout( 'layouts/ixpv4' );
 
             $('#customer-list').DataTable( {
                 responsive: true,
-                // if I did not put the parseInt, it did not work for "All" which is the "-1"
-                // pageLength:parseInt(pageLength),
                 stateSave: true,
-                "stateSaveParams": function (settings, data) {
-                    data.search.search = "";
-                    data.order = [];
-                    data.start = 0;
-                },
                 columnDefs: [
                     { responsivePriority: 1, targets: 0 },
                     { responsivePriority: 2, targets: -1 }

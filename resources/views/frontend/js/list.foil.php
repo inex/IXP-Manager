@@ -52,14 +52,6 @@
         tableList.dataTable({
 
             responsive: true,
-            stateSave: true,
-            "stateSaveParams": function (settings, data) {
-                data.search.search = "";
-                data.order = [];
-                data.start = 0;
-                console.log(settings);
-            },
-
             "aLengthMenu": [ [ 20, 50, 100, 500, -1 ], [ 20, 50, 100, 500, "All" ] ],
 
             columnDefs: [
