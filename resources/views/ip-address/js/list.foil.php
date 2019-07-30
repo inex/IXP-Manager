@@ -6,6 +6,8 @@
         $( '#ip-address-list' ).show();
 
         $( '#ip-address-list' ).dataTable( {
+            stateSave: true,
+            stateDuration : DATATABLE_STATE_DURATION,
             responsive : true,
             "autoWidth": false,
             pageLength: 50,

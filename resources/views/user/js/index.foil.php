@@ -7,7 +7,8 @@
         tableList.show();
 
         tableList.dataTable({
-
+            stateSave: true,
+            stateDuration : DATATABLE_STATE_DURATION,
             responsive: true,
             ordering: false,
             searching: false,
@@ -33,7 +34,8 @@
         tableList.show();
 
         tableList.dataTable({
-
+            stateSave: true,
+            stateDuration : DATATABLE_STATE_DURATION,
             responsive: true,
 
             "aLengthMenu": [ [ 20, 50, 100, 500, -1 ], [ 20, 50, 100, 500, "All" ] ],

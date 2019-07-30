@@ -148,6 +148,8 @@
 
         $(document).ready(function() {
             $('#routes').DataTable({
+                stateSave: true,
+                stateDuration : DATATABLE_STATE_DURATION,
                 paging: false,
                 order: [[ 0, "asc" ]],
                 columnDefs: [

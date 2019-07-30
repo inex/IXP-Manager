@@ -222,6 +222,8 @@
     $( document ).ready( function() {
 
         $('#list-configuration').dataTable({
+            stateSave: true,
+            stateDuration : DATATABLE_STATE_DURATION,
             responsive : true,
             "columnDefs": [
                 { "targets": [ 0 ], "visible": false, "searchable": false },

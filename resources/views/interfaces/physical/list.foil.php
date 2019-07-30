@@ -125,6 +125,8 @@ $this->layout( 'layouts/ixpv4' );
             $( '#table-pi' ).show();
 
             $( '#table-pi' ).DataTable( {
+                stateSave: true,
+                stateDuration : DATATABLE_STATE_DURATION,
                 responsive : true,
                 "iDisplayLength": 100,
                 "columnDefs": [
