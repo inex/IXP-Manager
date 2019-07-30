@@ -118,13 +118,20 @@ class VirtualInterfaceController extends Common
                 abort(404);
             }
 
+            $name = array_key_exists( 'name',         $old    ) ? $old['name']              : $vi->getName();
+
+            // Check if the last character of the Name is a white space, if its the case we add Double quotes to keep the space at the end
+            if( substr($name, -1) == " " ) {
+                $name = '"'. $name . '"';
+            }
+
             // fill the form with Virtual interface data
             Former::populate([
                 'cust'                  => array_key_exists( 'cust',         $old    ) ? $old['cust']              : $vi->getCustomer(),
                 'trunk'                 => array_key_exists( 'trunk',        $old    ) ? $old['trunk']             : ( $vi->getTrunk()      ? 1 : 0 ),
                 'lag_framing'           => array_key_exists( 'lag_framing',  $old    ) ? $old['lag_framing']       : ( $vi->getLagFraming() ? 1 : 0 ),
                 'fastlacp'              => array_key_exists( 'fastlacp',     $old    ) ? $old['fastlacp']          : ( $vi->getFastLACP()   ? 1 : 0 ),
-                'name'                  => array_key_exists( 'name',         $old    ) ? $old['name']              : $vi->getName(),
+                'name'                  => $name,
                 'description'           => array_key_exists( 'description',  $old    ) ? $old['description']       : $vi->getDescription(),
                 'channel-group'         => array_key_exists( 'channel-group',$old    ) ? $old['channel-group']     : $vi->getChannelgroup(),
                 'mtu'                   => array_key_exists( 'mtu',          $old    ) ? $old['mtu']               : $vi->getMtu(),
@@ -190,12 +197,11 @@ class VirtualInterfaceController extends Common
             $request->merge( [ 'name' => '' , 'channel-group' => null ] );
         }
 
-
         $vi->setCustomer(               $cust );
         $vi->setTrunk(            $request->input( 'trunk' )          ? 1 : 0 );
         $vi->setLagFraming(  $request->input( 'lag_framing' )    ? 1 : 0 );
         $vi->setFastLACP(       $request->input( 'fastlacp' )       ? 1 : 0);
-        $vi->setName(                   $request->input( 'name'             ) );
+        $vi->setName(                   trim( $request->input('name' ) , '"') );
         $vi->setDescription(            $request->input( 'description'      ) );
         $vi->setChannelgroup(           $request->input( 'channel-group'    ) );
         $vi->setMtu(                    $request->input( 'mtu'              ) );

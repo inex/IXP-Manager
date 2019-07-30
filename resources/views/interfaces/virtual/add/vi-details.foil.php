@@ -129,7 +129,9 @@
                     <?= Former::text( 'name' )
                         ->label( 'Virtual Interface Name' )
                         ->blockHelp( 'Ordinarily this is left blank. In the case of LAGs with provisioning systems, this is used to indicate the '
-                            . 'interface base name for LAGs. E.g. on a Cisco, this would be <em>Port-Channel</em>.' );
+                            . 'interface base name for LAGs. E.g. on a Cisco, this would be <code>Port-Channel</code>.<br><br>'
+                            . 'Some systems require trailing white space after the name. For this, use double-quotes which will '
+                            . 'be removed automatically. E.g. for a Force10 device, enter: <code>"Port-channel "</code>.' );
                     ?>
 
                     <?= Former::text( 'description' )
