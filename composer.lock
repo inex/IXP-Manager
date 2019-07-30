@@ -1375,16 +1375,16 @@
         },
         {
             "name": "egulias/email-validator",
-            "version": "2.1.9",
+            "version": "2.1.10",
             "source": {
                 "type": "git",
                 "url": "https://github.com/egulias/EmailValidator.git",
-                "reference": "128cc721d771ec2c46ce59698f4ca42b73f71b25"
+                "reference": "a6c8d7101b19a451c1707b1b79bbbc56e4bdb7ec"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/128cc721d771ec2c46ce59698f4ca42b73f71b25",
-                "reference": "128cc721d771ec2c46ce59698f4ca42b73f71b25",
+                "url": "https://api.github.com/repos/egulias/EmailValidator/zipball/a6c8d7101b19a451c1707b1b79bbbc56e4bdb7ec",
+                "reference": "a6c8d7101b19a451c1707b1b79bbbc56e4bdb7ec",
                 "shasum": ""
             },
             "require": {
@@ -1394,7 +1394,8 @@
             "require-dev": {
                 "dominicsayers/isemail": "dev-master",
                 "phpunit/phpunit": "^4.8.35||^5.7||^6.0",
-                "satooshi/php-coveralls": "^1.0.1"
+                "satooshi/php-coveralls": "^1.0.1",
+                "symfony/phpunit-bridge": "^4.4@dev"
             },
             "suggest": {
                 "ext-intl": "PHP Internationalization Libraries are required to use the SpoofChecking validation"
@@ -1428,7 +1429,7 @@
                 "validation",
                 "validator"
             ],
-            "time": "2019-06-23T10:14:27+00:00"
+            "time": "2019-07-19T20:52:08+00:00"
         },
         {
             "name": "erusev/parsedown",
@@ -2221,16 +2222,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v5.8.28",
+            "version": "v5.8.29",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "341fb54bea9693cada2a5b8d398621a57f82862d"
+                "reference": "489ae2218c7eb138caac780de584d8df9fe8160b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/341fb54bea9693cada2a5b8d398621a57f82862d",
-                "reference": "341fb54bea9693cada2a5b8d398621a57f82862d",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/489ae2218c7eb138caac780de584d8df9fe8160b",
+                "reference": "489ae2218c7eb138caac780de584d8df9fe8160b",
                 "shasum": ""
             },
             "require": {
@@ -2364,7 +2365,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2019-07-09T14:00:02+00:00"
+            "time": "2019-07-16T14:05:28+00:00"
         },
         {
             "name": "laravel/horizon",
@@ -2894,16 +2895,16 @@
         },
         {
             "name": "nesbot/carbon",
-            "version": "2.21.0",
+            "version": "2.21.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/briannesbitt/Carbon.git",
-                "reference": "da6410b77f74eecd98d24ffb6dfecefccf3ca17f"
+                "reference": "58bdbbfab17ccd2ec7347b99e997f18232def4dc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/da6410b77f74eecd98d24ffb6dfecefccf3ca17f",
-                "reference": "da6410b77f74eecd98d24ffb6dfecefccf3ca17f",
+                "url": "https://api.github.com/repos/briannesbitt/Carbon/zipball/58bdbbfab17ccd2ec7347b99e997f18232def4dc",
+                "reference": "58bdbbfab17ccd2ec7347b99e997f18232def4dc",
                 "shasum": ""
             },
             "require": {
@@ -2957,7 +2958,7 @@
                 "datetime",
                 "time"
             ],
-            "time": "2019-07-14T17:06:46+00:00"
+            "time": "2019-07-18T18:47:28+00:00"
         },
         {
             "name": "nikic/php-parser",

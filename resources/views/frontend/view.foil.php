@@ -204,7 +204,7 @@
 
                                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'ARRAY'] ): ?>
 
-                                                            <?= $cconf[ 'source' ][ $t->data[ 'item' ][ $col] ] ?>
+                                                            <?= $cconf[ 'source' ][ $t->data[ 'item' ][ $col] ] ?? $t->data[ 'item' ][ $col] ?>
 
                                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'INTEGER'] ): ?>
 

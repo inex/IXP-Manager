@@ -198,6 +198,28 @@ class ApiKey extends \Entities\ApiKey implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function setDescription($description)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDescription', [$description]);
+
+        return parent::setDescription($description);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDescription()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDescription', []);
+
+        return parent::getDescription();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setExpires($expires)
     {
 

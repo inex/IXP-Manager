@@ -1,6 +1,8 @@
 <script>
 
     $( '.peers-table').DataTable({
+        stateSave: true,
+        stateDuration : DATATABLE_STATE_DURATION,
         responsive: true,
         "columns": [
             null,

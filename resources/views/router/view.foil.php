@@ -144,7 +144,17 @@ $this->layout( 'layouts/ixpv4' )
                                 </b>
                             </td>
                             <td>
-                                <?= $t->rt->resolveSoftware() ?>
+                                <?= $t->rt->resolveSoftware() ?> <?= $t->rt->getSoftwareVersion() ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>
+                                    Operating System:
+                                </b>
+                            </td>
+                            <td>
+                                <?= $t->rt->getOperatingSystem() ?> <?= $t->rt->getOperatingSystemVersion() ?>
                             </td>
                         </tr>
                         <tr>

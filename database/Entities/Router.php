@@ -79,10 +79,12 @@ class Router
      */
     const SOFTWARE_BIRD                     = 1;
     const SOFTWARE_BIRD2                    = 6;
-    const SOFTWARE_QUAGGA                   = 2;
-    const SOFTWARE_FRROUTING                = 3;
-    const SOFTWARE_OPENBGPD                 = 4;
     const SOFTWARE_CISCO                    = 5;
+    const SOFTWARE_FRROUTING                = 3;
+    const SOFTWARE_GOBGP                    = 8;
+    const SOFTWARE_JUNOS                    = 7;
+    const SOFTWARE_QUAGGA                   = 2;
+    const SOFTWARE_OPENBGPD                 = 4;
     const SOFTWARE_OTHER                    = 99;
 
     /**
@@ -91,10 +93,12 @@ class Router
     public static $SOFTWARES = [
         self::SOFTWARE_BIRD                 => 'Bird v1',
         self::SOFTWARE_BIRD2                => 'Bird v2',
-        self::SOFTWARE_QUAGGA               => 'Quagga',
-        self::SOFTWARE_FRROUTING            => 'FRRouting',
-        self::SOFTWARE_OPENBGPD             => 'OpenBGPd',
         self::SOFTWARE_CISCO                => 'Cisco',
+        self::SOFTWARE_FRROUTING            => 'FRRouting',
+        self::SOFTWARE_GOBGP                => 'GoBGP',
+        self::SOFTWARE_JUNOS                => 'JunOS',
+        self::SOFTWARE_QUAGGA               => 'Quagga',
+        self::SOFTWARE_OPENBGPD             => 'OpenBGPd',
         self::SOFTWARE_OTHER                => 'Other'
     ];
 
@@ -164,6 +168,21 @@ class Router
      * @var string
      */
     private $software;
+
+    /**
+     * @var string
+     */
+    private $software_version = '';
+
+    /**
+     * @var string
+     */
+    private $operating_system = '';
+
+    /**
+     * @var string
+     */
+    private $operating_system_version = '';
 
     /**
      * @var string
@@ -416,6 +435,70 @@ class Router
     {
         return $this->getSoftware();
     }
+
+
+    /**
+     * Get software version
+     *
+     * @return string
+     */
+    public function getSoftwareVersion()
+    {
+        return $this->software_version;
+    }
+
+    /**
+     * Get software version
+     *
+     * @return string
+     */
+    public function softwareVersion()
+    {
+        return $this->getSoftwareVersion();
+    }
+
+    /**
+     * Get OS
+     *
+     * @return string
+     */
+    public function getOperatingSystem()
+    {
+        return $this->operating_system;
+    }
+
+    /**
+     * Get OS
+     *
+     * @return string
+     */
+    public function operatingSystem()
+    {
+        return $this->getOperatingSystem();
+    }
+
+    /**
+     * Get OS version
+     *
+     * @return string
+     */
+    public function getOperatingSystemVersion()
+    {
+        return $this->operating_system_version;
+    }
+
+    /**
+     * Get OS version
+     *
+     * @return string
+     */
+    public function operatingSystemVersion()
+    {
+        return $this->getOperatingSystemVersion();
+    }
+
+
+
 
 
     /**
@@ -822,6 +905,46 @@ class Router
         $this->software = $software;
         return $this;
     }
+
+
+    /**
+     * Set software version
+     *
+     * @param string $software_version
+     * @return Router
+     */
+    public function setSoftwareVersion($software_version)
+    {
+        $this->software_version = $software_version ?? '';
+        return $this;
+    }
+
+    /**
+     * Set os
+     *
+     * @param string $operating_system
+     * @return Router
+     */
+    public function setOperatingSystem($operating_system)
+    {
+        $this->operating_system = $operating_system ?? '';
+        return $this;
+    }
+
+    /**
+     * Set os version
+     *
+     * @param string $operating_system_version
+     * @return Router
+     */
+    public function setOperatingSystemVersion($operating_system_version)
+    {
+        $this->operating_system_version = $operating_system_version ?? '';
+        return $this;
+    }
+
+
+
 
     /**
      * Set mgmt_host

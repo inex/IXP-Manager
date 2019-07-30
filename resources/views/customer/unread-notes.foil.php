@@ -84,6 +84,8 @@
         $('.table-responsive-ixp').show();
 
         $('.table-responsive-ixp').DataTable( {
+            stateSave: true,
+            stateDuration : DATATABLE_STATE_DURATION,
             responsive: true,
             ordering: false,
             searching: false,

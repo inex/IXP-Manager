@@ -4,6 +4,8 @@
         $( '.table-responsive-ixp-no-header' ).show();
 
         $( '.table-responsive-ixp-no-header' ).DataTable({
+            stateSave: true,
+            stateDuration : DATATABLE_STATE_DURATION,
             responsive: true,
             ordering: false,
             searching: false,

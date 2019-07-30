@@ -33,7 +33,8 @@
 
             <dt>IX-F Member List Export</dt>
             <dd>
-                See <a href="http://ml.ix-f.net/">here for details on the IX-F Member List</a>
+                See <a href="https://ixpdb.euro-ix.net/en/">here for details on the IX-F Member List</a>
+                (or <a href="https://github.com/euro-ix/json-schemas/">the GitHub repo</a>)
                 and <a href="http://docs.ixpmanager.org/features/ixf-export/">here for IXP Manager's IX-F
                     Member List export instructions</a>.<br><br>
                 Examples:

@@ -289,6 +289,33 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->assertChecked('lag_framing' )
             ->assertChecked('fastlacp' );
 
+
+        // Test for the issue : https://github.com/inex/IXP-Manager/issues/513
+        $browser->visit('/interfaces/virtual/edit/' . $vi->getId() )
+            ->assertSee('Add/Edit Virtual Interface')
+            ->click(        "#advanced-options" )
+            ->type( "name" , '"test "')
+            ->press('Save Changes' )
+            ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() );
+
+        $browser->assertSourceHas( 'Virtual Interface added/updated successfully.' );
+
+        // Check value in DB
+        D2EM::refresh( $vi );
+
+        $this->assertEquals( "test ",     $vi->getName() );
+
+        $browser->visit('/interfaces/virtual/edit/' . $vi->getId() )
+                ->assertInputValue('name', '"test "' )
+                ->press('Save Changes' )
+                ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() )
+                ->assertSee('Virtual Interface added/updated successfully.' );
+
+        // Check value in DB
+        D2EM::refresh( $vi );
+
+        $this->assertEquals( "test ",     $vi->getName() );
+
         return $vi;
     }
 

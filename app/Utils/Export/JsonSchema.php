@@ -51,23 +51,26 @@ class JsonSchema
     // ended 201705: const EUROIX_JSON_VERSION_0_5 = "0.5";
     const EUROIX_JSON_VERSION_0_6 = "0.6";
     const EUROIX_JSON_VERSION_0_7 = "0.7";
+    const EUROIX_JSON_VERSION_1_0 = "1.0";
     // adding a new version? update sanitiseVersion() below also!
 
-    const EUROIX_JSON_LATEST = self::EUROIX_JSON_VERSION_0_7;
+    const EUROIX_JSON_LATEST = self::EUROIX_JSON_VERSION_1_0;
 
     const EUROIX_JSON_VERSIONS = [
         self::EUROIX_JSON_VERSION_0_6,
         self::EUROIX_JSON_VERSION_0_7,
+        self::EUROIX_JSON_VERSION_1_0,
     ];
 
     /**
      * Get the JSON schema (for a given version or for the latest version)
      *
      * @param string $version The version to get (or, if null / not present then the latest)
-     * @param bool   $asArray Do not convert to JSON but rather return the PHP array
-     * @param bool   $detailed Create the very detailed version (usually for logged in users)
-     * @param bool   $tags     Include customer tags
+     * @param bool $asArray Do not convert to JSON but rather return the PHP array
+     * @param bool $detailed Create the very detailed version (usually for logged in users)
+     * @param bool $tags Include customer tags
      * @return string|array
+     * @throws ExportException
      */
     public function get( $version = null, $asArray = false, $detailed = true, $tags = false )
     {
@@ -210,6 +213,10 @@ class JsonSchema
                 $switchentry['model']        = $switch->getModel();
             }
 
+            if( $version >= self::EUROIX_JSON_VERSION_1_0 ) {
+                $switchentry['software'] = trim( ( $switch->getOs() ?? '' ) . ' ' . ( $switch->getOsVersion() ?? '' ) );
+            }
+
             $data[] = $switchentry;
         }
 
@@ -226,9 +233,14 @@ class JsonSchema
     {
         $memberinfo = [];
 
-        if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
+        if( $version == self::EUROIX_JSON_VERSION_0_7 ) {
             $routeServerIPs = d2r( 'Router' )->getAllPeeringIPs( Router::TYPE_ROUTE_SERVER );
             $routeCollectorIPs = d2r( 'Router' )->getAllPeeringIPs( Router::TYPE_ROUTE_COLLECTOR );
+        }
+
+        if( $version == self::EUROIX_JSON_VERSION_1_0 ) {
+            $routeServersByIps    = d2r( 'Router' )->indexAllByPeeringIPs( Router::TYPE_ROUTE_SERVER );
+            $routeCollectorsByIps = d2r( 'Router' )->indexAllByPeeringIPs( Router::TYPE_ROUTE_COLLECTOR );
         }
 
         $customers = ArrayUtilities::reindexObjects(
@@ -242,6 +254,7 @@ class JsonSchema
 
         /** @var Customer $c */
         foreach( $customers as $c ) {
+
             $connlist = [];
             /** @var VirtualInterface $vi */
             foreach( $c->getVirtualInterfaces() as $vi ) {
@@ -306,6 +319,39 @@ class JsonSchema
                                 $vlanentry[ 'ipv4' ][ 'service_type' ] = $services;
                             }
                         }
+
+                        if( $version >= self::EUROIX_JSON_VERSION_1_0 ) {
+                            $services = [];
+
+                            if( isset( $routeServersByIps[ $vli->getVlan()->getId() ][$vli->getIPv4Address()->getAddress()] ) ) {
+                                /** @var Router $r */
+                                $r = $routeServersByIps[ $vli->getVlan()->getId() ][$vli->getIPv4Address()->getAddress()];
+                                $service = new \stdClass;
+                                $service->type           = 'ixrouteserver';
+                                $service->daemon         = $r->resolveSoftware();
+                                if( $r->getSoftwareVersion()        ) { $service->daemon_version = $r->getSoftwareVersion(); }
+                                if( $r->getOperatingSystem()        ) { $service->os             = $r->getOperatingSystem(); }
+                                if( $r->getOperatingSystemVersion() ) { $service->os_version     = $r->getOperatingSystemVersion(); }
+                                $services[] = $service;
+                            }
+
+                            if( isset( $routeCollectorsByIps[ $vli->getVlan()->getId() ][$vli->getIPv4Address()->getAddress()] ) ) {
+                                /** @var Router $r */
+                                $r = $routeCollectorsByIps[ $vli->getVlan()->getId() ][$vli->getIPv4Address()->getAddress()];
+                                $service = new \stdClass;
+                                $service->type           = 'ixroutecollector';
+                                $service->daemon         = $r->resolveSoftware();
+                                if( $r->getSoftwareVersion()        ) { $service->daemon_version = $r->getSoftwareVersion(); }
+                                if( $r->getOperatingSystem()        ) { $service->os             = $r->getOperatingSystem(); }
+                                if( $r->getOperatingSystemVersion() ) { $service->os_version     = $r->getOperatingSystemVersion(); }
+                                $services[] = $service;
+                            }
+
+                            if( count( $services ) ) {
+                                $vlanentry[ 'ipv4' ][ 'services' ] = $services;
+                            }
+                        }
+
                     }
 
                     if ($vli->getIpv6enabled()) {
@@ -330,6 +376,38 @@ class JsonSchema
 
                             if( count( $services ) ) {
                                 $vlanentry[ 'ipv6' ][ 'service_type' ] = $services;
+                            }
+                        }
+
+                        if( $version >= self::EUROIX_JSON_VERSION_1_0 ) {
+                            $services = [];
+
+                            if( isset( $routeServersByIps[ $vli->getVlan()->getId() ][$vli->getIPv6Address()->getAddress()] ) ) {
+                                /** @var Router $r */
+                                $r = $routeServersByIps[ $vli->getVlan()->getId() ][$vli->getIPv6Address()->getAddress()];
+                                $service = new \stdClass;
+                                $service->type           = 'ixrouteserver';
+                                $service->daemon         = $r->resolveSoftware();
+                                if( $r->getSoftwareVersion()        ) { $service->daemon_version = $r->getSoftwareVersion(); }
+                                if( $r->getOperatingSystem()        ) { $service->os             = $r->getOperatingSystem(); }
+                                if( $r->getOperatingSystemVersion() ) { $service->os_version     = $r->getOperatingSystemVersion(); }
+                                $services[] = $service;
+                            }
+
+                            if( isset( $routeCollectorsByIps[ $vli->getVlan()->getId() ][$vli->getIPv6Address()->getAddress()] ) ) {
+                                /** @var Router $r */
+                                $r = $routeCollectorsByIps[ $vli->getVlan()->getId() ][$vli->getIPv6Address()->getAddress()];
+                                $service = new \stdClass;
+                                $service->type           = 'ixroutecollector';
+                                $service->daemon         = $r->resolveSoftware();
+                                if( $r->getSoftwareVersion()        ) { $service->daemon_version = $r->getSoftwareVersion(); }
+                                if( $r->getOperatingSystem()        ) { $service->os             = $r->getOperatingSystem(); }
+                                if( $r->getOperatingSystemVersion() ) { $service->os_version     = $r->getOperatingSystemVersion(); }
+                                $services[] = $service;
+                            }
+
+                            if( count( $services ) ) {
+                                $vlanentry[ 'ipv6' ][ 'services' ] = $services;
                             }
                         }
                     }

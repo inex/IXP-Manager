@@ -123,6 +123,8 @@ $this->layout( 'layouts/ixpv4' );
 
     $(document).ready( function() {
         $('#table-list').DataTable( {
+            stateSave: true,
+            stateDuration : DATATABLE_STATE_DURATION,
             responsive: true,
             ordering: false,
             searching: false,

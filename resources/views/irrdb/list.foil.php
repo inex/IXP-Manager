@@ -169,6 +169,8 @@ $this->layout( 'layouts/ixpv4' );
             $('.table-responsive-ixp-with-header').show();
 
             $('.table-responsive-ixp-with-header').DataTable( {
+                stateSave: true,
+                stateDuration : DATATABLE_STATE_DURATION,
                 responsive: true,
                 paging: false,
                 columnDefs: [
