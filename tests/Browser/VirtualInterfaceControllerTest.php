@@ -297,7 +297,8 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->type( "name" , '"test "')
             ->press('Save Changes' )
             ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() );
-            //->assertSee('Virtual Interface added/updated successfully.' );
+
+        $browser->assertSourceHas( 'Virtual Interface added/updated successfully.' );
 
         // Check value in DB
         D2EM::refresh( $vi );
