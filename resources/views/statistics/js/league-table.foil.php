@@ -107,6 +107,8 @@
     let tableList = $( '#ixpDataTable' );
 
     tableList.dataTable({
+        stateSave: true,
+        stateDuration : DATATABLE_STATE_DURATION,
 
         "aLengthMenu": [[20, 50, 100, 500, -1], [20, 50, 100, 500, "All"]],
 

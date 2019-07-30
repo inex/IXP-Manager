@@ -139,6 +139,8 @@
         $('.table-responsive-ixp-with-header').show();
 
         $('.table-responsive-ixp-with-header').DataTable( {
+            stateSave: true,
+            stateDuration : DATATABLE_STATE_DURATION,
             responsive: true,
             columnDefs: [
                 { responsivePriority: 1, targets: 0 },

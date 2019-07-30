@@ -8,6 +8,8 @@ $( document ).ready(function() {
     $('.table-responsive-ixp-no-header').show();
 
     $('.table-responsive-ixp-no-header').DataTable( {
+        stateSave: true,
+        stateDuration : DATATABLE_STATE_DURATION,
         responsive: true,
         ordering: false,
         searching: false,
@@ -22,6 +24,8 @@ $( document ).ready(function() {
     $('.table-responsive-ixp-with-header').show();
 
     $('.table-responsive-ixp-with-header').DataTable( {
+        stateSave: true,
+        stateDuration : DATATABLE_STATE_DURATION,
         responsive: true,
         stateSave: true,
         columnDefs: [

@@ -178,6 +178,8 @@
     $(document).ready(function() {
 
         $('#bgpsummary').DataTable({
+            stateSave: true,
+            stateDuration : DATATABLE_STATE_DURATION,
             responsive: true,
             paging: false,
             order: [[ 2, "asc" ]],

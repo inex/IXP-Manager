@@ -114,6 +114,8 @@
             $( '.table' ).show();
 
             $( '.table' ).dataTable({
+                    stateSave: true,
+                    stateDuration : DATATABLE_STATE_DURATION,
                     responsive : true,
                     pageLength: 50
             });
