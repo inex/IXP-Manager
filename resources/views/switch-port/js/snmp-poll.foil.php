@@ -50,14 +50,16 @@
         /**
          * Change the status of the selected switch ports to active
          */
-        $( "#poll-group-active"  ).on( 'click', function() {
+        $( "#poll-group-active"  ).on( 'click', function( event ) {
+            event.preventDefault();
             changeSwitchPortStatus( 1 );
         });
 
         /**
          * Change the status of the selected switch ports to inactive
          */
-        $( "#poll-group-inactive"  ).on( 'click', function() {
+        $( "#poll-group-inactive"  ).on( 'click', function( event ) {
+            event.preventDefault();
             changeSwitchPortStatus( 0 );
         });
 
@@ -154,6 +156,7 @@
          * Delete the selected switch ports
          */
         $( "#poll-group-delete"  ).on( 'click', function( event ) {
+            event.preventDefault();
             if( id = getSelectedSwitchPorts() ) {
 
                 let urlAction = '<?= route( "switch-port@delete-snmp-poll" ) ?>';
