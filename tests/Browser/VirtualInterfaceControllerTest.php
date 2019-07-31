@@ -290,11 +290,10 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->assertChecked('fastlacp' );
 
 
-
         // Test for the issue : https://github.com/inex/IXP-Manager/issues/513
         $browser->visit('/interfaces/virtual/edit/' . $vi->getId() )
             ->assertSee('Add/Edit Virtual Interface')
-            //->click(        "#advanced-options" )
+            //->click(        "#advanced-options" ) (should already be open)
             ->type( "name" , '"test "')
             ->click('#submit-form' )
             ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() );

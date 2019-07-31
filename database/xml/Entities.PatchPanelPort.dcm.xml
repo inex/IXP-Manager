@@ -7,9 +7,9 @@
     <field name="description" type="string" length="255" nullable="true"/>
     <field name="number" type="smallint" nullable="false"/>
     <field name="state" type="integer" nullable="false"/>
-    <field name="colo_circuit_ref" type="string" length="30" nullable="true"/>
-    <field name="colo_billing_ref" type="string" length="30" nullable="true"/>
-    <field name="ticket_ref" type="string" length="30" nullable="true"/>
+    <field name="colo_circuit_ref" type="string" length="255" nullable="true"/>
+    <field name="colo_billing_ref" type="string" length="255" nullable="true"/>
+    <field name="ticket_ref" type="string" length="255" nullable="true"/>
     <field name="notes" type="text" nullable="true"/>
     <field name="private_notes" type="text" nullable="true"/>
     <field name="assigned_at" type="date" nullable="true"/>

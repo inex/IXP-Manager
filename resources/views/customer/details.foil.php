@@ -133,6 +133,8 @@
             $( '#customer-list' ).show();
 
             $( '#customer-list' ).dataTable( {
+                stateSave: true,
+                stateDuration : DATATABLE_STATE_DURATION,
                 responsive: false,
                 "iDisplayLength": 100
             });

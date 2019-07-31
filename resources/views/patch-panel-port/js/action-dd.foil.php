@@ -413,16 +413,11 @@
                     })
                         .done( function(  ) {
                             if( result ) {
-                                if( action == 'delete' ){
-                                    window.location = "<?= url( "patch-panel-port/list/" ); ?>";
-                                } else{
-                                    window.location.reload();
-                                }
-
+                                window.location = "<?= url( "patch-panel-port/list/patch-panel/" ); ?>/" + $( "#pp-id-admin-actions" ).val() ;
                             }
                         })
                         .fail( function(){
-                            alert( 'Could not update notes. API / AJAX / network error' );
+                            alert( 'Could not ' + action + ' the patch panel port . API / AJAX / network error' );
                             throw new Error("Error running ajax query for "+urlAction);
                         })
                         .always( function() {

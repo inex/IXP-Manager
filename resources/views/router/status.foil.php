@@ -258,6 +258,8 @@ $this->layout( 'layouts/ixpv4' );
         }); // handles.forEach( function( handle, index ) {
 
     }).dataTable({
+        stateSave: true,
+        stateDuration : DATATABLE_STATE_DURATION,
         responsive: true,
         // paging is disabled as it's complicated to update off screen cells with pagination
         "paging": false

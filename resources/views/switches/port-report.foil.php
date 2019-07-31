@@ -108,6 +108,8 @@
 
             $('#list-port').dataTable({
                 responsive : true,
+                stateSave: true,
+                stateDuration : DATATABLE_STATE_DURATION,
                 "columnDefs": [
                     { "targets": [ 0 ], "visible": false },
                     { "orderData": [ 0 ],    "targets": 1 },
