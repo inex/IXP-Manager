@@ -153,6 +153,14 @@ interface Backend {
     public function png( Graph $graph ): string;
 
     /**
+     * Get the path to the graphing data file (e.g. path to log or rrd file).
+     *
+     * @param Graph $graph
+     * @return string
+     */
+    public function dataPath( Graph $graph ): string;
+
+    /**
      * Get the RRD file for a given graph
      *
      * {inheritDoc}

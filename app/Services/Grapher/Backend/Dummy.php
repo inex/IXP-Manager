@@ -219,6 +219,20 @@ class Dummy extends GrapherBackend implements GrapherBackendContract {
 
 
     /**
+     * Get the path to the graphing data file (e.g. path to log or rrd file).
+     *
+     * {inheritDoc}
+     *
+     * @param Graph $graph
+     * @return string Path or empty string
+     * @throws CannotHandleRequestException
+     */
+    public function dataPath( Graph $graph ): string {
+            return $this->resolveFilePath( $graph, 'log' );
+    }
+
+
+    /**
      * For a given graph, return the path where the appropriate log file
      * will be found.
      *
