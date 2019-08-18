@@ -632,7 +632,8 @@ cat >/etc/apache2/sites-available/000-default.conf <<END_APACHE
 END_APACHE
 
 log_break && cat /etc/apache2/sites-available/000-default.conf &>> /tmp/ixp-manager-install.log
-a2enmod rewrite &>> /tmp/ixp-manager-install.log
+a2dismod mpm_worker mpm_event &>> /tmp/ixp-manager-install.log
+a2enmod rewrite php7.3 &>> /tmp/ixp-manager-install.log
 
 service apache2 restart &>> /tmp/ixp-manager-install.log
 echo '[done]'
