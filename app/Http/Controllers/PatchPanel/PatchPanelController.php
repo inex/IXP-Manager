@@ -58,7 +58,8 @@ class PatchPanelController extends Controller
      *
      * @return  view
      */
-    public function index( bool $active = true ): View {
+    public function index( bool $active = true ): View
+    {
         return view( 'patch-panel/index' )->with([
             'patchPanels'       => D2EM::getRepository( PatchPanelEntity::class )->findBy( [ 'active' => $active ] ),
             'locations'         => D2EM::getRepository( CabinetEntity::class    )->getByLocationAsArray(),
@@ -69,7 +70,8 @@ class PatchPanelController extends Controller
     /**
      * @inheritdoc index()
      */
-    public function indexInactive(): View {
+    public function indexInactive(): View
+    {
         return $this->index( false );
     }
 
@@ -80,17 +82,17 @@ class PatchPanelController extends Controller
      *
      * @return  View
      */
-    public function edit( int $id = null ): View {
+    public function edit( int $id = null ): View
+    {
         /** @var PatchPanelEntity $pp */
         $pp = false;
+        $locationNotes = "";
         $old = request()->old();
 
         if( $id != null ) {
             if( !( $pp = D2EM::getRepository( PatchPanelEntity::class )->find( $id) ) ) {
                 abort(404);
             }
-
-
 
             Former::populate([
                 'name'                      => array_key_exists( 'name',                $old    ) ? $old['name']                : $pp->getName(),
@@ -104,12 +106,19 @@ class PatchPanelController extends Controller
                 'port_prefix'               => array_key_exists( 'port_prefix',         $old    ) ? $old['port_prefix']         : $pp->getPortPrefix(),
                 'numberOfPorts'             => array_key_exists( 'numberOfPorts',       $old    ) ? $old['numberOfPorts']       : 0,
             ]);
+
+            $locationNotes = $pp->getLocationNotes();
+        }
+
+        // Set $locationNotes if there is an error in the form
+        if( array_key_exists( 'location_notes', $old ) && $old['location_notes'] != null ) {
+            $locationNotes = $old['location_notes'];
         }
 
         return view( 'patch-panel/edit' )->with([
             'pp'                            => $pp,
             'cabinets'                      => D2EM::getRepository( CabinetEntity::class )->getAsArray(),
-            'location_notes'                => $id ? ( array_key_exists( 'location_notes',           $old ) ? $old['location_notes']           : $pp->getLocationNotes() ) : ( array_key_exists( 'location_notes',           $old ) ? $old['location_notes']           : "" )
+            'location_notes'                => $locationNotes
         ]);
     }
 
