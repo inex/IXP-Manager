@@ -143,6 +143,29 @@
                 </a>
             </li>
 
+            <li class="<?= request()->is( 'vlan/*' ) && !request()->is( 'vlan/private' ) ? 'active' : '' ?>">
+                <a href="<?= route('vlan@list' ) ?>" class="nav-link">
+                    VLANs
+                </a>
+            </li>
+
+            <?php if( request()->is( 'vlan/*' ) || request()->is( 'network-info/*' ) ): ?>
+                <ul>
+                    <li class="nav-sub-menu-item <?= !request()->is( 'network-info/*' ) ?: 'active' ?>">
+                        <a href="<?= route('network-info@list' ) ?>" class="nav-link">
+                            Network Information
+                        </a>
+                    </li>
+
+                    <li class="nav-sub-menu-item <?= !request()->is( 'vlan/private' ) ?: 'active' ?>">
+                        <a href="<?= route( 'vlan@private' ) ?>" class="nav-link">
+                            Private VLANs
+                        </a>
+                    </li>
+                </ul>
+
+            <?php endif; ?>
+
             <li class="<?= !request()->is( 'switch/*' ) ?: 'active' ?>" >
                 <a id="lhs-menu-switches" class="nav-link" href="<?= route('switch@list') ?>">
                     Switches
@@ -273,29 +296,6 @@
                 </a>
             </li>
 
-
-            <li class="<?= request()->is( 'vlan/*' ) && !request()->is( 'vlan/private' ) ? 'active' : '' ?>">
-                <a href="<?= route('vlan@list' ) ?>" class="nav-link">
-                    VLANs
-                </a>
-            </li>
-
-            <?php if( request()->is( 'vlan/*' ) || request()->is( 'network-info/*' ) ): ?>
-                <ul>
-                    <li class="nav-sub-menu-item <?= !request()->is( 'network-info/*' ) ?: 'active' ?>">
-                        <a href="<?= route('network-info@list' ) ?>" class="nav-link">
-                            Network Information
-                        </a>
-                    </li>
-
-                    <li class="nav-sub-menu-item <?= !request()->is( 'vlan/private' ) ?: 'active' ?>">
-                        <a href="<?= route( 'vlan@private' ) ?>" class="nav-link">
-                            Private VLANs
-                        </a>
-                    </li>
-                </ul>
-
-            <?php endif; ?>
 
             <li class=" <?= !request()->is( 'irrdb-config/*' ) ?: 'active' ?>">
                 <a href="<?= route( 'irrdb-config@list' ) ?>" class="nav-link">

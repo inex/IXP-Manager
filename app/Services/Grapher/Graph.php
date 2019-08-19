@@ -475,6 +475,16 @@ abstract class Graph {
     }
 
     /**
+     * Get the path to the graphing data file (e.g. path to log or rrd file).
+     *
+     * @return string
+     */
+    public function dataPath(): string {
+        return $this->backend()->dataPath($this);
+    }
+
+
+    /**
      * For a given graph object ($this), get it's rrd
      *
      * @return string
