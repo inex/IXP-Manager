@@ -551,7 +551,7 @@ class SwitchController extends Doctrine2Frontend {
                 $osdate = new \DateTime( $platform->getOsDate() );
             }
 
-            if( !$osdate ) {
+            if( !isset( $osdate ) || !$osdate ) {
                 $osdate = null;
             }
 
