@@ -71,7 +71,7 @@ $this->layout( 'layouts/ixpv4' );
                         <td>
                             <?php if( !$cb->getEnabled() ):?>
                                 <i class="fa fa-remove"></i>
-                            <?php elseif( $cb->getEnabled() && $cb->doAllCoreLinksEnabled() ): ?>
+                            <?php elseif( $cb->getEnabled() && $cb->areAllCoreLinksEnabled() ): ?>
                                 <i class="fa fa-check"></i>
                             <?php else:?>
                                 <span class="badge badge-warning"> <?= count( $cb->getCoreLinksEnabled() ) ?> / <?= count( $cb->getCoreLinks() )?> </span>
