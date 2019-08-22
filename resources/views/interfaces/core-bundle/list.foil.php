@@ -42,6 +42,9 @@ $this->layout( 'layouts/ixpv4' );
                         Enabled
                     </th>
                     <th>
+                        Operational<sup>*</sup>
+                    </th>
+                    <th>
                         Switch A
                     </th>
                     <th>
@@ -78,6 +81,21 @@ $this->layout( 'layouts/ixpv4' );
                             <?php endif; ?>
                         </td>
                         <td>
+                            <?php if( $cb->getEnabled() ): ?>
+                                <?php
+                                    $linksup      = count( $cb->getCoreLinksWithIfOperStateX() ); // with no args this defaults to X = oper state up for enabled links
+                                    $linksenabled = count( $cb->getCoreLinksEnabled() );
+                                ?>
+                                <?php if( $linksup === $linksenabled ):?>
+                                    <span class="badge badge-success"><?= $linksup ?>/<?= $linksenabled ?></span>
+                                <?php elseif( $linksup === 0 ): ?>
+                                    <span class="badge badge-danger"><?= $linksup ?>/<?= $linksenabled ?></span>
+                                <?php else: ?>
+                                    <span class="badge badge-warning"><?= $linksup ?>/<?= $linksenabled ?></span>
+                                <?php endif; ?>
+                            <?php endif; ?>
+                        </td>
+                        <td>
                             <?= $t->ee( $cb->getSwitchSideX( true )->getName() )  ?>
                         </td>
                         <td>
@@ -104,6 +122,17 @@ $this->layout( 'layouts/ixpv4' );
 
 </div>
 
+<div class="row">
+
+    <div class="col-sm-10 offset-sm-1">
+        <p class="tw-italic">
+            <br><br>
+            <sup>*</sup> Operational means the number of enabled core links for which both sides had a SNMP IFace operational state of 'up' the last time the switch
+            was polled (typically every 5 mins).
+        </p>
+    </div>
+
+</div>
 
 <?php $this->append() ?>
 
