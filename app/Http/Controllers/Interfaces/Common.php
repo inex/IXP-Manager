@@ -24,29 +24,37 @@ namespace IXP\Http\Controllers\Interfaces;
  */
 
 
-use D2EM;
+use D2EM, Input, Redirect;
 
 use Entities\{
-    IPv4Address         as IPv4AddressEntity,
-    IPv6Address         as IPv6AddressEntity,
-    PhysicalInterface   as PhysicalInterfaceEntity,
-    SwitchPort          as SwitchPortEntity,
-    VirtualInterface    as VirtualInterfaceEntity,
-    Vlan                as VlanEntity,
-    VlanInterface       as VlanInterfaceEntity
+    CoreBundle as CoreBundleEntity,
+    CoreInterface as CoreInterfaceEntity,
+    CoreLink as CoreLinkEntity,
+    IPv4Address as IPv4AddressEntity,
+    IPv6Address as IPv6AddressEntity,
+    PhysicalInterface as PhysicalInterfaceEntity,
+    SwitchPort as SwitchPortEntity,
+    VirtualInterface as VirtualInterfaceEntity,
+    Vlan as VlanEntity,
+    VlanInterface as VlanInterfaceEntity
 };
 
-use Illuminate\Http\Request;
+use Illuminate\Http\{
+    Request,
+    RedirectResponse
+};
 
 use IXP\Http\Controllers\Controller;
 use IXP\Http\Requests\StoreVirtualInterfaceWizard;
 
-use IXP\Utils\View\Alert\Alert;
-use IXP\Utils\View\Alert\Container as AlertContainer;
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
 
 
 /**
- * Common Functions
+ * Common Functions for the Inferfaces Controllers
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Interfaces
@@ -55,7 +63,6 @@ use IXP\Utils\View\Alert\Container as AlertContainer;
  */
 abstract class Common extends Controller
 {
-
     /**
      * Removes related interface
      *
@@ -66,7 +73,8 @@ abstract class Common extends Controller
      * @return void
      * @throws
      */
-    public function removeRelatedInterface( $pi ){
+    public function removeRelatedInterface( $pi )
+    {
         if( $pi->getRelatedInterface() ) {
             /** @var PhysicalInterfaceEntity $pi */
             $pi->getRelatedInterface()->getSwitchPort()->setPhysicalInterface( null );
@@ -113,8 +121,8 @@ abstract class Common extends Controller
      * @return boolean
      * @throws
      */
-    public function processFanoutPhysicalInterface( $request, $pi, $vi ) {
-
+    public function processFanoutPhysicalInterface( $request, $pi, $vi )
+    {
         if( !$request->input('fanout' ) ) {
             $this->removeRelatedInterface( $pi );
             return true;
@@ -175,10 +183,13 @@ abstract class Common extends Controller
 
     /**
      * When we have >1 phys int / LAG framing, we need to set other elements of the virtual interface appropriately:
+     *
      * @param VirtualInterfaceEntity $vi
+     *
      * @throws
      */
-    public function setBundleDetails( VirtualInterfaceEntity $vi ){
+    public function setBundleDetails( VirtualInterfaceEntity $vi )
+    {
         if( count( $vi->getPhysicalInterfaces() ) ) {
 
             // LAGs must have a channel group and bundle name. But only if they have a phys int:
@@ -278,6 +289,73 @@ abstract class Common extends Controller
         }
     }
 
+
+    /**
+     * Build everything that a Core Bundle need (core link, core Interface etc)
+     *
+     * @param   CoreBundleEntity $cb Core bundle object
+     * @param   Request $request instance of the current HTTP request
+     * @param   array $vis array of the Virtual interfaces ( side A and B ) linked to the core bundle
+     * @param   int $clNumber
+     * @param   bool $edit Are we editing the core bundle ?
+     *
+     * @return bool
+     *
+     * @throws
+     */
+    public function buildCorelink( $cb, $request, $vis, $clNumber, $edit )
+    {
+        /** @var CoreLinkEntity $cl */
+        $cl = new CoreLinkEntity;
+        D2EM::persist( $cl );
+
+
+        $cl->setCoreBundle( $cb );
+        $cl->setEnabled( $request->input( "enabled-cl-$clNumber" ) ?? false );
+
+        $bfd = ( $request->input( "bfd-$clNumber") ?? false );
+
+        $type = $edit ? $cb->getType() : $request->input( 'type' ) ;
+
+        $cl->setBFD( ( $type == CoreBundleEntity::TYPE_ECMP ) ? $bfd : false );
+        $cl->setIPv4Subnet( $request->input( "subnet-$clNumber" ) );
+
+        foreach( $vis as $side => $vi ){
+            /** @var SwitchPortEntity $spa */
+            /** @var SwitchPortEntity $spb */
+            if( !( ${ 'sp'.$side } = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( "hidden-sp-$side-$clNumber" ) ) ) ) {
+                return Redirect::back()->withInput( Input::all() );
+            }
+
+            ${ 'sp'.$side }->setType( SwitchPortEntity::TYPE_CORE );
+
+            /** @var PhysicalInterfaceEntity $pia */
+            /** @var PhysicalInterfaceEntity $pib */
+            ${ 'pi'.$side } = new PhysicalInterfaceEntity;
+            D2EM::persist( ${ 'pi'.$side } );
+
+            ${ 'pi'.$side }->setSwitchPort(        ${ 'sp'.$side } );
+            ${ 'pi'.$side }->setVirtualInterface(  $vi );
+            ${ 'pi'.$side }->setSpeed(             $edit ? $cb->getSpeedPi() : $request->input( 'speed' ) );
+            ${ 'pi'.$side }->setDuplex(            $edit ? $cb->getDuplexPi() : $request->input( 'duplex'   )  );
+            ${ 'pi'.$side }->setAutoneg(           $edit ? $cb->getAutoNegPi() : $request->input( 'auto-neg' ) ?? false );
+            ${ 'pi'.$side }->setStatus(            PhysicalInterfaceEntity::STATUS_CONNECTED );
+
+            /** @var CoreInterfaceEntity $cia */
+            /** @var CoreInterfaceEntity $cib */
+            ${ 'ci'.$side } = new CoreInterfaceEntity;
+            D2EM::persist( ${ 'ci'.$side } );
+            ${ 'ci'.$side }->setPhysicalInterface( ${ 'pi'.$side } );
+        }
+
+        $cl->setCoreInterfaceSideA( $cia );
+        $cl->setCoreInterfaceSideB( $cib );
+
+        $vis[ 'a' ]->addPhysicalInterface( $pia );
+        $vis[ 'b' ]->addPhysicalInterface( $pib );
+
+        return true;
+    }
 
 
 }

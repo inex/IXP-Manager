@@ -31,7 +31,7 @@
         // display the core link form if the dropdown list is already set at loading
         if( dd_type.val() ) { displayCoreLinks() }
 
-        // initalise the Select2 lib on input
+        // instaciate Select2 dropdowns
         dd_speed.select2();
         dd_duplex.select2();
     });
@@ -96,8 +96,6 @@
             return false;
         }
 
-
-
         return true;
     });
 
@@ -107,7 +105,9 @@
     $(document).on('change', "[id|='switch']" ,function(e){
         e.preventDefault();
         let sside = ( this.id ).substring( 7 );
+
         setSwitchPort( sside , hidden_nb_cls.val(), false );
+
         setDropDownSwitchSideX( sside );
         if( sside == 'a' ){
             exludedSwitchPortSideA = []
@@ -136,22 +136,9 @@
     ///
 
     /**
-     * Display and set value to input depending on the type selected
+     * Display or hide the L3 lag area depending on the type selected
+     * Change property of the subnet input as required or not
      */
-    function displayCoreLinks(){
-        hidden_nb_cls.val( 0 );
-
-        $("#core-links-area").html( '' );
-        $("#div-links").show( );
-
-        actionForL3Lag();
-        actionForLxLag();
-
-        dd_type.val() == <?= \Entities\CoreBundle::TYPE_L2_LAG ?> ? div_stp.slideDown() : div_stp.slideUp();
-
-        loadBundleLinkSection( 'onChange' );
-    }
-
     function actionForL3Lag(){
         let required;
 
@@ -165,6 +152,10 @@
         $( '#subnet' ).prop( 'required', required );
     }
 
+    /**
+     * Display or hide the lag area depending on the type selected
+     * Change input properties as required or not (virtual Interface name/physical interface channel number)
+     */
     function actionForLxLag(){
         let required;
 
@@ -181,6 +172,25 @@
         $( '#pi-channel-number-a' ).prop( 'required', required );
         $( '#pi-channel-number-b' ).prop( 'required', required );
     }
+
+    /**
+     * Display Core link area and set value to input depending on the type selected
+     */
+    function displayCoreLinks(){
+        hidden_nb_cls.val( 0 );
+
+        $("#core-links-area").html( '' );
+        $("#div-links").show( );
+
+        actionForL3Lag();
+        actionForLxLag();
+
+        dd_type.val() == <?= \Entities\CoreBundle::TYPE_L2_LAG ?> ? div_stp.slideDown() : div_stp.slideUp();
+
+        loadBundleLinkSection( 'onChange' );
+    }
+
+
 
     /**
      * Function adding a new core link form in the core links area
@@ -232,7 +242,9 @@
             // stop the function if there the function is already running
             if( !actionRunnig ){
                 actionRunnig = true;
-                let ajaxCall = $.ajax( "<?= action( 'Interfaces\CoreBundleController@addCoreLinkFrag' ) ?>", {
+                let url = "<?= route( 'core-link@add-fragment' ) ?>";
+
+                let ajaxCall = $.ajax( url , {
                     data: {
                         nbCoreLink      : nbCoreLink,
                         enabled         : enabled,
@@ -260,10 +272,11 @@
                             setSwitchPort( 'b', hidden_nb_cls.val() , action, false );
                         }
 
-                        // event when the add icon has been clicked
+                        // event when the add button has been clicked
                         if( action == 'addBtn' ){
                             // disable the switch/switchport dropdown (side A/B) of the previous core link
                             disableDropDown( oldNbLink, true);
+
                             // disable the delete button of the previous core link
                             $( "#remove-core-link-" + oldNbLink ).prop( 'disabled', true );
 
@@ -271,7 +284,7 @@
                             dd_switch_a.val( dd_switch_a.val() ).prop('disabled', true).trigger('change.select2');
                             dd_switch_b.val( dd_switch_b.val() ).prop('disabled', true).trigger('change.select2');
 
-                            // set the setting from the first core link to the other
+                            // set the setting from the first core link to the new one
                             setSettingsToLinks( data.nbCoreLinks );
 
                             if( subnet ) {
@@ -284,8 +297,8 @@
                     }
                 })
                 .fail( function() {
-                    throw new Error( "Error running ajax query for core-bundle/add-core-link-frag" );
-                    alert( "Error running ajax query for core-bundle/add-core-link-frag" );
+                    throw new Error( "Error running ajax query for " + url );
+                    alert( "Error running ajax query for " + url );
                 })
             }
         }
@@ -293,7 +306,7 @@
 
 
     /**
-     * insert in array all the switch port selected from all the switch port dropdown
+     * Insert in array all the switch port selected from the switch port dropdowns for each side (A/B)
      * in order the exclude them from the new switch port dropdown that could be added
      */
     function excludedSwitchPort( sside ){
@@ -304,7 +317,6 @@
                 } else{
                     exludedSwitchPortSideB.push( this.value );
                 }
-
             }
         });
     }
@@ -326,18 +338,18 @@
         let oldvalue = otherSwitch.val();
 
         if( oldvalue == null || oldvalue == '' ){
-            options = "<option value=\"\">Choose a switch</option>\n";
+            options = `<option value="">Choose a switch</option>\n`;
         }
-        console.log( oldvalue );
+
         jQuery.each(switchArray, function( id , val ) {
             let select = '';
 
             if( oldvalue != null && id == oldvalue ){
-                select = "selected= 'selected'";
+                select = `selected= 'selected'`;
             }
 
             if( id != currentSwitch.val() ){
-                options += "<option " + select + " value=\"" + id + "\">" + val + " </option>\n";
+                options += `<option ${select} value="${id}">${val}</option>\n`;
             }
         });
 
@@ -345,7 +357,7 @@
     }
 
     /**
-     * Disable the switch/switch port of the both side
+     * Disable or eneable the switch/switch port of the both side
      */
     function disableDropDown( id, disable){
         dd_switch_a.prop('disabled', disable).trigger('change.select2');
@@ -369,7 +381,7 @@
 
 
     /**
-     * set the next valid subnet to the new corelink form
+     * set the next valid subnet to the new core link form
      */
     function setNextSubNet( id , subnet ){
         let address = new Address4( subnet );

@@ -31,14 +31,14 @@ $this->layout( 'layouts/ixpv4' );
 
 
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-white" href="<?= route( 'core-bundle/list' )?>" title="list">
+        <a class="btn btn-white" href="<?= route( 'core-bundle@list' )?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
         <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             <i class="fa fa-plus"></i> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="<?= route( 'core-bundle/add' )?>" >
+            <a class="dropdown-item" href="<?= route( 'core-bundle@add-wizard' )?>" >
                 Add Core Bundle Wizard...
             </a>
 
@@ -62,7 +62,7 @@ $this->layout( 'layouts/ixpv4' );
                 <div class="card-body">
                     <?= Former::open()->method( 'POST' )
                         ->id( 'core-bundle-form' )
-                        ->action( route ( 'core-bundle/store' ) )
+                        ->action( route ( 'core-bundle@edit-store' ) )
                         ->customInputWidthClass( 'col-lg-8 col-md-6 col-sm-6' )
                         ->customLabelWidthClass( 'col-lg-4 col-md-3 col-sm-4' )
                         ->actionButtonsCustomClass( "grey-box")
@@ -170,7 +170,7 @@ $this->layout( 'layouts/ixpv4' );
 
                         <?=Former::actions(
                             Former::primary_submit( 'Save Changes' )->id( 'core-bundle-submit-btn' ),
-                            Former::secondary_link( 'Cancel' )->href( route( 'core-bundle/list' ) ),
+                            Former::secondary_link( 'Cancel' )->href( route( 'core-bundle@list' ) ),
                             Former::success_button( 'Help' )->id( 'help-btn' )
                         )?>
 
@@ -237,7 +237,7 @@ $this->layout( 'layouts/ixpv4' );
 
                         <?= Former::open()->method( 'POST' )
                             ->id( 'core-link-form' )
-                            ->action( route( 'core-bundle/store-core-link', [ 'id' => $t->cb->getId() ] ) )
+                            ->action( route( 'core-link@store', [ 'id' => $t->cb->getId() ] ) )
                             ->customInputWidthClass( 'col-sm-10' )
                             ->actionButtonsCustomClass( "grey-box")
                         ?>
@@ -367,7 +367,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::horizontal_open()->method( 'POST' )
                     ->id( 'core-link-form' )
-                    ->action( route( "core-bundle/add-core-link" ) )
+                    ->action( route( "core-link@add" ) )
                     ->customInputWidthClass( 'col-sm-6' )
                     ->actionButtonsCustomClass( "grey-box")
                 ?>

@@ -55,7 +55,6 @@
                     e.preventDefault();
                 }
             }
-
         });
     });
 
@@ -110,50 +109,43 @@
      */
     function deleteElement( deletecl , clid ){
 
-        let urlAction, elementName;
+        let urlAction, elementName, elementId;
 
         if( deletecl ){
-             urlAction = "<?= url('interfaces/core-bundle/core-link/delete/') ?>/" + clid;
+             urlAction = "<?= route('core-link@delete') ?>";
              elementName = "Core link";
+             elementId = clid;
         } else {
-             urlAction = "<?= route('core-bundle/delete', [ 'id' => $t->cb->getId() ]) ?>/";
+             urlAction = "<?= route('core-bundle@delete' ) ?>";
              elementName = "Core Bundle";
+             elementId = <?= $t->cb->getId() ?>;
         }
 
-        bootbox.confirm({
+
+        let html = `<form id="form-delete" method="POST" action="${urlAction}">
+                        <div>Do you really want to delete this ${elementName}?</div>
+                        <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                        <input type="hidden" name="id" value="${elementId}">
+                    </form>`;
+
+        bootbox.dialog({
             title: `Delete ${elementName}`,
-            message: `Do you really want to delete this ${elementName}?` ,
+            message: html ,
             buttons: {
                 cancel: {
-                    className : "btn-secondary",
-                    label: '<i class="fa fa-times"></i> Cancel'
+                    label: 'Close',
+                    className: 'btn-secondary',
+                    callback: function () {
+                        $('.bootbox.modal').modal('hide');
+                        return false;
+                    }
                 },
-                confirm: {
-                    label: '<i class="fa fa-check"></i> Confirm'
-                }
-            },
-            callback: function (result) {
-                if (result) {
-                    $.ajax( urlAction, {
-                        type: 'POST'
-                    })
-                    .done( function( data ) {
-                        result = ( data.success ) ? 'success': 'danger';
-                        if( result ) {
-                            if( deletecl ) {
-                                location.reload();
-                            }else{
-                                window.location.href = "<?= route('core-bundle/list') ?>/";
-                            }
-                        }
-                    })
-                    .fail( function(){
-                        alert( 'Could not update notes. API / AJAX / network error' );
-                        throw new Error("Error running ajax query for " + urlAction);
-                    })
-                    .always( function() {
-                        $('#notes-modal').modal('hide');
-                    });
+                submit: {
+                    label: 'Delete',
+                    className: 'btn-danger',
+                    callback: function () {
+                        $( '#form-delete' ).submit();
+                    }
                 }
             }
         });
@@ -175,7 +167,7 @@
     function addCoreLink(){
         let enabled = $( "#enabled").is( ':checked' ) ? 1 : 0 ;
 
-        $.ajax( "<?= action( 'Interfaces\CoreBundleController@addCoreLinkFrag' ) ?>", {
+        $.ajax( "<?= route( 'core-link@add-fragment' ) ?>", {
             data: {
                 nbCoreLink      : 0,
                 enabled         : enabled,

@@ -14,7 +14,7 @@ $this->layout( 'layouts/ixpv4' );
             <i class="fa fa-plus"></i> <span class="caret"></span>
         </button>
         <ul class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="<?= route( 'core-bundle/add' )?>" >
+            <a class="dropdown-item" href="<?= route( 'core-bundle@add-wizard' )?>" >
                 Add Core Bundle Wizard...
             </a>
         </ul>
@@ -91,7 +91,7 @@ $this->layout( 'layouts/ixpv4' );
                         </td>
                         <td>
                             <div class="btn-group btn-group-sm" role="group">
-                                <a class="btn btn-white" href="<?= route( 'core-bundle/edit' , [ 'id' => $cb->getId() ] ) ?>" title="Edit">
+                                <a class="btn btn-white" href="<?= route( 'core-bundle@edit' , [ 'id' => $cb->getId() ] ) ?>" title="Edit">
                                     <i class="fa fa-pencil"></i>
                                 </a>
                             </div>
@@ -101,7 +101,6 @@ $this->layout( 'layouts/ixpv4' );
             <tbody>
         </table>
     </div>
-
 </div>
 
 

@@ -3,32 +3,8 @@
 $this->layout( 'layouts/ixpv4' );
 ?>
 
-<?php $this->section( 'headers' ) ?>
-    <style>
-        .checkbox input[type=checkbox]{
-            margin-left: 0px;
-        }
-
-        .col-lg-offset-2{
-            margin-left: 0px;
-        }
-
-        .checkbox{
-            text-align: center;
-        }
-
-        #table-core-link tr td{
-            vertical-align: middle;
-        }
-
-        #btn-group-add div{
-            text-align : center;
-        }
-    </style>
-<?php $this->append() ?>
-
 <?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'core-bundle/list' )?>"></a>
+    <a href="<?= route( 'core-bundle@list' )?>"></a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -38,7 +14,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-white" href="<?= route( 'core-bundle/list' )?>" title="list">
+        <a class="btn btn-white" href="<?= route( 'core-bundle@list' )?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
     </div>
@@ -56,7 +32,7 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= Former::open()->method( 'POST' )
                 ->id( 'core-bundle-form' )
-                ->action( route( 'core-bundle/store' ) )
+                ->action( route( 'core-bundle@add-store' ) )
                 ->customInputWidthClass( 'col-lg-6 col-sm-6' )
                 ->customLabelWidthClass( 'col-lg-4 col-md-2 col-sm-4' )
                 ->actionButtonsCustomClass( "grey-box")
@@ -151,13 +127,13 @@ $this->layout( 'layouts/ixpv4' );
                                 ->min( 0 )
                                 ->blockHelp( '' );
                             ?>
-                            <div class="lag-area" style="display: none" >
+                            <div class="lag-area collapse">
                                 <?= Former::checkbox( 'fast-lacp' )
                                     ->label( 'Use Fast LACP' )
                                     ->value( 1 )
                                 ?>
                             </div>
-                            <div id="l3-lag-area" style="display: none">
+                            <div id="l3-lag-area collapse">
                                 <?= Former::checkbox( 'bfd' )
                                     ->label( 'BFD' )
                                     ->value( 1 )
@@ -170,7 +146,7 @@ $this->layout( 'layouts/ixpv4' );
                             </div>
                         </div>
 
-                        <div class="lag-area row col-sm-12 mt-4" style="display: none" >
+                        <div class="lag-area row col-sm-12 mt-4 collapse">
 
                             <div class="col-lg-6 col-md-12">
                                 <h4>Side A:</h4>
@@ -205,11 +181,9 @@ $this->layout( 'layouts/ixpv4' );
                                     ->min( 0 );
                                 ?>
                             </div>
-
                         </div>
                     </div>
                 </div>
-
 
                 <div class="card mt-4">
                     <div class="card-body">
@@ -291,7 +265,7 @@ $this->layout( 'layouts/ixpv4' );
 
 
 
-                <div id="div-links" class="card mt-4" style="display: none">
+                <div id="div-links" class="card mt-4 collapse">
 
                     <div class="card-header d-flex">
                         <div class="mr-auto">
@@ -321,7 +295,7 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?=Former::actions(
                     Former::primary_submit( 'Add' )->id( 'core-bundle-submit-btn' )->class( "mb-2 mb-sm-0" ),
-                    Former::secondary_link( 'Cancel' )->href( route( 'core-bundle/list' ) )->class( "mb-2 mb-sm-0" ),
+                    Former::secondary_link( 'Cancel' )->href( route( 'core-bundle@list' ) )->class( "mb-2 mb-sm-0" ),
                     Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
                 )->id('btn-group-add')
                 ;?>

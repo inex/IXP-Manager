@@ -308,7 +308,7 @@ class PhysicalInterfaceController extends Common
         D2EM::flush();
 
         AlertContainer::push( 'Physical Interface updated successfully.', Alert::SUCCESS );
-        return Redirect::to( $request->input( 'cb' ) ? route( "core-bundle/edit", [ "id" => $request->input( 'cb' ) ] ) : route( "interfaces/virtual/edit", [ "id" => $pi->getVirtualInterface()->getId() ] ) );
+        return Redirect::to( $request->input( 'cb' ) ? route( "core-bundle@edit", [ "id" => $request->input( 'cb' ) ] ) : route( "interfaces/virtual/edit", [ "id" => $pi->getVirtualInterface()->getId() ] ) );
     }
 
 
