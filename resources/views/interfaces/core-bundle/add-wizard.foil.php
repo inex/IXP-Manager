@@ -8,7 +8,7 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Core Bundles / Add Wizard</li>
+    Core Bundles / Add Wizard
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -28,7 +28,7 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= $t->alerts() ?>
 
-            <div id="message-cb"></div>
+            <div id="message-cb" class="message"></div>
 
             <?= Former::open()->method( 'POST' )
                 ->id( 'core-bundle-form' )
@@ -68,7 +68,7 @@ $this->layout( 'layouts/ixpv4' );
                                 ->blockHelp( 'help text' );
                             ?>
 
-                            <div id="stp-div">
+                            <div id="stp-div" class="collapse">
                                 <?= Former::checkbox( 'stp' )
                                     ->id('stp')
                                     ->label( 'STP' )
@@ -127,13 +127,15 @@ $this->layout( 'layouts/ixpv4' );
                                 ->min( 0 )
                                 ->blockHelp( '' );
                             ?>
+
                             <div class="lag-area collapse">
                                 <?= Former::checkbox( 'fast-lacp' )
                                     ->label( 'Use Fast LACP' )
                                     ->value( 1 )
                                 ?>
                             </div>
-                            <div id="l3-lag-area collapse">
+
+                            <div id="l3-lag-area" class="collapse">
                                 <?= Former::checkbox( 'bfd' )
                                     ->label( 'BFD' )
                                     ->value( 1 )
@@ -142,46 +144,51 @@ $this->layout( 'layouts/ixpv4' );
                                 <?= Former::text( 'subnet' )
                                     ->label( 'SubNet<sup>*</sup>' )
                                     ->placeholder( '192.0.2.0/30' )
+                                    ->class( "subnet" )
                                 ?>
+                            </div>
+
+                        </div>
+
+                        <div class="lag-area col-sm-12 collapse">
+                            <div class="row mt-4 d-flex">
+
+                                <div class="col-lg-6 col-md-12">
+                                    <h4>Virtual Interface Side A:</h4>
+                                    <hr>
+                                    <?= Former::text( 'vi-name-a' )
+                                        ->label( 'Name<sup>*</sup>' )
+                                        ->placeholder( 'Name' )
+                                        ->blockHelp( 'help text' );
+                                    ?>
+
+                                    <?= Former::number( 'vi-channel-number-a' )
+                                        ->label( 'Channel Group Number<sup>*</sup>' )
+                                        ->placeholder( 'Channel Group Number' )
+                                        ->blockHelp( 'help text' )
+                                        ->min( 0 );
+                                    ?>
+                                </div>
+
+                                <div class="col-lg-6 col-md-12 mt-4 mt-md-0">
+                                    <h4>Virtual Interface Side B:</h4>
+                                    <hr>
+                                    <?= Former::text( 'vi-name-b' )
+                                        ->label( 'Name<sup>*</sup>' )
+                                        ->placeholder( 'Name' )
+                                        ->blockHelp( 'help text' );
+                                    ?>
+
+                                    <?= Former::number( 'vi-channel-number-b' )
+                                        ->label( 'Channel Group Number<sup>*</sup>' )
+                                        ->placeholder( 'Channel Group Number' )
+                                        ->blockHelp( 'help text' )
+                                        ->min( 0 );
+                                    ?>
+                                </div>
                             </div>
                         </div>
 
-                        <div class="lag-area row col-sm-12 mt-4 collapse">
-
-                            <div class="col-lg-6 col-md-12">
-                                <h4>Side A:</h4>
-                                <hr>
-                                <?= Former::text( 'vi-name-a' )
-                                    ->label( 'Name<sup>*</sup>' )
-                                    ->placeholder( 'Name' )
-                                    ->blockHelp( 'help text' );
-                                ?>
-
-                                <?= Former::number( 'vi-channel-number-a' )
-                                    ->label( 'Channel Group Number<sup>*</sup>' )
-                                    ->placeholder( 'Channel Group Number' )
-                                    ->blockHelp( 'help text' )
-                                    ->min( 0 );
-                                ?>
-                            </div>
-
-                            <div class="col-lg-6 col-md-12 mt-4 mt-md-0">
-                                <h4>Side B:</h4>
-                                <hr>
-                                <?= Former::text( 'vi-name-b' )
-                                    ->label( 'Name<sup>*</sup>' )
-                                    ->placeholder( 'Name' )
-                                    ->blockHelp( 'help text' );
-                                ?>
-
-                                <?= Former::number( 'vi-channel-number-b' )
-                                    ->label( 'Channel Group Number<sup>*</sup>' )
-                                    ->placeholder( 'Channel Group Number' )
-                                    ->blockHelp( 'help text' )
-                                    ->min( 0 );
-                                ?>
-                            </div>
-                        </div>
                     </div>
                 </div>
 
@@ -191,6 +198,8 @@ $this->layout( 'layouts/ixpv4' );
                             Common Link Settings :
                         </h4>
                         <hr>
+                        <div id="message-cl" class="message"></div>
+
                         <div class="row">
                             <div class="col-lg-6 col-md-12">
 
@@ -200,7 +209,8 @@ $this->layout( 'layouts/ixpv4' );
                                     ->fromQuery( $t->switches, 'name' )
                                     ->required( true )
                                     ->placeholder( 'Choose a switch' )
-                                    ->addClass( 'chzn-select' )
+                                    ->addClass( 'chzn-select switch-dd' )
+                                    ->dataValue( "a")
                                 ?>
 
                                 <?= Former::select( 'switch-b' )
@@ -208,7 +218,8 @@ $this->layout( 'layouts/ixpv4' );
                                     ->label( 'Switch B' )
                                     ->required( true )
                                     ->placeholder( 'Choose a switch' )
-                                    ->addClass( 'chzn-select' )
+                                    ->addClass( 'chzn-select switch-dd' )
+                                    ->dataValue( "b")
                                 ?>
 
                             </div>
@@ -264,7 +275,6 @@ $this->layout( 'layouts/ixpv4' );
                 </div>
 
 
-
                 <div id="div-links" class="card mt-4 collapse">
 
                     <div class="card-header d-flex">
@@ -274,17 +284,18 @@ $this->layout( 'layouts/ixpv4' );
                             </h3>
                         </div>
 
-                        <div clas="my-auto">
-                            <button style="float: right; margin-right: 20px" id="add-new-core-link" type="button" class=" btn-sm btn btn-white" href="#" title="Add Core link">
-                                <span class="fa fa-plus"></span>
-                            </button>
-                        </div>
-
                     </div>
 
                     <div class="card-body" id="core-links-area">
 
                     </div>
+
+                    <div class="form-group col-sm-12">
+                        <div class="p-4 text-center col-lg-12">
+                            <button id="add-new-core-link" type="button" class="btn btn-primary" title="Add Core link">Add Core Link</button>
+                        </div>
+                    </div>
+
 
                 </div>
 
@@ -300,6 +311,7 @@ $this->layout( 'layouts/ixpv4' );
                 )->id('btn-group-add')
                 ;?>
 
+                <?= $t->insert( 'interfaces/core-bundle/core-link-frag' ); ?>
             <?= Former::close() ?>
         </div>
     </div>

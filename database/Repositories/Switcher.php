@@ -526,8 +526,11 @@ class Switcher extends EntityRepository
 
         $ports = $query->getArrayResult();
 
-        foreach( $ports as $id => $port )
-            $ports[$id]['type'] = \Entities\SwitchPort::$TYPES[ $port['type'] ];
+
+        foreach( $ports as $id => $port ){
+            $ports[$id]['type']             = \Entities\SwitchPort::$TYPES[ $port['type'] ];
+            $ports[$id]['spname-sptype']    = $port[ "name" ] . ' (' . \Entities\SwitchPort::$TYPES[ $port['type'] ] . ')';
+        }
 
         return $ports;
     }

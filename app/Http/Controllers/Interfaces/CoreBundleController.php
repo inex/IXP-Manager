@@ -23,19 +23,19 @@ namespace IXP\Http\Controllers\Interfaces;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Input, Log, Redirect;
+use D2EM, Former, Log, Redirect;
 
 use Entities\{
-    CoreBundle as CoreBundleEntity,
-    CoreLink as CoreLinkEntity,
-    CoreInterface as CoreInterfaceEntity,
-    Customer as CustomerEntity,
-    Switcher as SwitcherEntity,
-    VirtualInterface as VirtualInterfaceEntity,
+    CoreBundle          as CoreBundleEntity,
+    CoreLink            as CoreLinkEntity,
+    CoreInterface       as CoreInterfaceEntity,
+    Customer            as CustomerEntity,
+    Switcher            as SwitcherEntity,
+    SwitchPort          as SwitchPortEntity,
+    VirtualInterface    as VirtualInterfaceEntity,
 };
 
 use Illuminate\Http\{
-    JsonResponse,
     RedirectResponse,
     Request
 };
@@ -87,7 +87,8 @@ class CoreBundleController extends Common
      *
      * @return View
      */
-    public function addWizard(): View {
+    public function addWizard(): View
+    {
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'interfaces/core-bundle/add-wizard' )->with([
             'switches'                      => D2EM::getRepository( SwitcherEntity::class )->getNames(),
@@ -108,9 +109,7 @@ class CoreBundleController extends Common
         /** @var CoreBundleEntity $cb */
         if( !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $id ) ) ){
             abort(404);
-        }
-
-        if( $cb ) {
+        } else {
             // fill the form with the core bundle data
             Former::populate([
                 'customer'                  => $request->old('customer', $cb->getCustomer() ),
@@ -120,15 +119,20 @@ class CoreBundleController extends Common
                 'preference'                => $request->old('preference', $cb->getPreference() ),
                 'type'                      => $request->old('type', $cb->getType() ),
                 'subnet'                    => $request->old('subnet', $cb->getIPv4Subnet() ) ,
-                'enabled'                   => $request->old('enabled', ( $cb->getEnabled()    ? 1 : 0 ) ),
-                'bfd'                       => $request->old('bfd', ( $cb->getBFD()        ? 1 : 0 ) ),
-                'stp'                       => $request->old('stp', ( $cb->getSTP()        ? 1 : 0 ) ),
+                'enabled'                   => $request->old('enabled', ( $cb->getEnabled()     ? 1 : 0 ) ),
+                'bfd'                       => $request->old('bfd', ( $cb->getBFD()     ? 1 : 0 ) ),
+                'stp'                       => $request->old('stp', ( $cb->getSTP()     ? 1 : 0 ) ),
             ]);
         }
 
+
+
         return view( 'interfaces/core-bundle/edit-wizard' )->with([
             'cb'                            => $cb,
-            'customers'                     => D2EM::getRepository( CustomerEntity::class )->getAsArray( null, [ CustomerEntity::TYPE_INTERNAL ] )
+            'customers'                     => D2EM::getRepository( CustomerEntity::class )->getAsArray( null, [ CustomerEntity::TYPE_INTERNAL ] ),
+            'switchPortsSideA'              => D2EM::getRepository(SwitcherEntity::class)->getAllPorts( $cb->getSwitchSideX( true )->getId() ,[ SwitchPortEntity::TYPE_CORE, SwitchPortEntity::TYPE_UNSET ], [], true ),
+            'switchPortsSideB'              => D2EM::getRepository(SwitcherEntity::class)->getAllPorts( $cb->getSwitchSideX( false )->getId() ,[ SwitchPortEntity::TYPE_CORE, SwitchPortEntity::TYPE_UNSET ], [], true ),
+
         ]);
     }
 
@@ -149,7 +153,7 @@ class CoreBundleController extends Common
         $cb->setPreference(     $request->input( 'preference'           ) );
         $cb->setType(           $request->input( 'type'                 ) );
         $cb->setEnabled(        $request->input( 'enabled'           ) ?? false );
-        $cb->setBFD(            $request->input( 'bfd'                  ) ?? false  );
+        $cb->setBFD(            $request->input( 'bfd'                  ) ?? false );
         $cb->setIPv4Subnet(     $request->input( 'subnet'         ) ?? null  );
         $cb->setSTP(            $request->input( 'stp',false     ) ?? false );
 
@@ -167,6 +171,7 @@ class CoreBundleController extends Common
      */
     public function addStoreWizard( StoreCoreBundle $request ): RedirectResponse
     {
+
         /** @var CoreBundleEntity $cb */
         $cb = new CoreBundleEntity;
         D2EM::persist( $cb );
@@ -177,15 +182,13 @@ class CoreBundleController extends Common
         $vib = new VirtualInterfaceEntity;
         D2EM::persist( $vib );
 
-        /** @var CustomerEntity $cust */
-        $cust = D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'customer' ) )  ;
-
+        // Set all the data to the new core bundle object
         $this->setDataToCB( $request, $cb );
 
         // Set values to the Virtual Interface side A and B
         foreach( [ 'a' => $via , 'b' => $vib ] as $side => $vi ){
             /** @var $vi VirtualInterfaceEntity */
-            $vi->setCustomer(           $cust );
+            $vi->setCustomer(           D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'customer' ) ) );
             $vi->setMtu(                $request->input( "mtu"                      ) );
             $vi->setName(               $request->input( "vi-name-$side"            ) );
             $vi->setChannelgroup(       $request->input( "vi-channel-number-$side"  ) );
@@ -197,21 +200,14 @@ class CoreBundleController extends Common
             }
         }
 
-        // Check if there is at least 1 core link created for the core bundle
-        if( $request->input( 'nb-core-links' ) == 0 || $request->input( 'nb-core-links' ) == null ){
-            return Redirect::to( route( "core-bundle@add-wizard" ) )->withInput( Input::all() );
-        }
-
-        // Creating all the element linked to the core bundle ( core link, core interface , physical interface)
-        for( $i = 1; $i <= $request->input( 'nb-core-links' ); $i++ ){
-            $this->buildCorelink( $cb, $request, [ 'a' => $via , 'b' => $vib], $i , false  );
-        }
+        // Creating all the elements linked to the new core bundle (core links, core interfaces, physical interfaces)
+        $this->buildCorelink( $cb, $request, [ 'a' => $via , 'b' => $vib ] , false );
 
         D2EM::flush();
 
         Log::notice( $request->user()->getUsername() . ' added a core bundle with (id: ' . $cb->getId() . ')' );
 
-        AlertContainer::push( 'New core bundle created', Alert::SUCCESS );
+        AlertContainer::push( 'Core bundle created', Alert::SUCCESS );
 
         return Redirect::to( route( "core-bundle@list" ) );
     }
@@ -225,7 +221,8 @@ class CoreBundleController extends Common
      *
      * @throws
      */
-    public function editStoreWizard( StoreCoreBundle $request ): RedirectResponse {
+    public function editStoreWizard( StoreCoreBundle $request ): RedirectResponse
+    {
         /** @var CoreBundleEntity $cb */
         if( !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $request->input( 'cb' ) ) ) ) {
             abort('404', 'Unknown Core Bundle');
@@ -241,6 +238,7 @@ class CoreBundleController extends Common
         $vis[ 'A' ]->setCustomer( $cust );
         $vis[ 'B' ]->setCustomer( $cust );
 
+        // Set all the data to the new core bundle object
         $this->setDataToCB( $request, $cb );
 
         D2EM::flush();

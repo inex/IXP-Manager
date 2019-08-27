@@ -5,18 +5,6 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'headers' ) ?>
     <style>
-        .checkbox input[type=checkbox]{
-            margin-left: 0px;
-        }
-
-        .col-lg-offset-2{
-            margin-left: 0px;
-        }
-
-        .checkbox{
-            text-align: center;
-        }
-
         #table-core-link tr td{
             vertical-align: middle;
         }
@@ -28,7 +16,6 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-
 
     <div class="btn-group btn-group-sm" role="group">
         <a class="btn btn-white" href="<?= route( 'core-bundle@list' )?>" title="list">
@@ -44,7 +31,6 @@ $this->layout( 'layouts/ixpv4' );
 
         </ul>
     </div>
-
 
 <?php $this->append() ?>
 
@@ -151,14 +137,14 @@ $this->layout( 'layouts/ixpv4' );
                                 <?= Former::text( 'subnet' )
                                     ->label( 'SubNet' )
                                     ->placeholder( '192.0.2.0/30' )
-                                    ->blockHelp( "" );
+                                    ->blockHelp( "" )
+                                    ->class( "subnet" );
                                 ?>
                             <?php endif; ?>
 
                             <?= Former::hidden( 'type' )
                                 ->id( 'type')
-                                ->value( $t->cb->getType() )
-                                ->blockHelp( "" );
+                                ->value( $t->cb->getType() );
                             ?>
 
                             <?= Former::hidden( 'cb' )
@@ -237,7 +223,7 @@ $this->layout( 'layouts/ixpv4' );
 
                         <?= Former::open()->method( 'POST' )
                             ->id( 'core-link-form' )
-                            ->action( route( 'core-link@store', [ 'id' => $t->cb->getId() ] ) )
+                            ->action( route( 'core-link@edit-store' ) )
                             ->customInputWidthClass( 'col-sm-10' )
                             ->actionButtonsCustomClass( "grey-box")
                         ?>
@@ -300,16 +286,20 @@ $this->layout( 'layouts/ixpv4' );
                                 <?php foreach( $t->cb->getCoreLinks() as $cl ) :
                                     /** @var Entities\CoreLink $cl */ ?>
                                     <tr>
-                                        <td style="vertical-align: middle">
+                                        <td>
                                             <?= $nbCl ?>
                                         </td>
                                         <td>
                                             <?= $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getSwitchPort()->getName() ?>
-                                            <a class="btn btn-sm btn-white" href="<?= route('interfaces/physical/edit/from-core-bundle' , [ 'id' => $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getId(), 'cb' => $t->cb->getId() ] ) ?>"><i class="fa fa-pencil"></i></a>
+                                            <a class="btn btn-sm btn-white" href="<?= route('interfaces/physical/edit/from-core-bundle' , [ 'id' => $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getId(), 'cb' => $t->cb->getId() ] ) ?>">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
                                         </td>
                                         <td>
                                             <?= $cl->getCoreInterfaceSideB()->getPhysicalInterface()->getSwitchPort()->getName() ?>
-                                            <a class="btn btn-sm btn-white" href="<?= route('interfaces/physical/edit/from-core-bundle' , [ 'id' => $cl->getCoreInterfaceSideB()->getPhysicalInterface()->getId(), 'cb' => $t->cb->getId() ] ) ?>"><i class="fa fa-pencil"></i></a>
+                                            <a class="btn btn-sm btn-white" href="<?= route('interfaces/physical/edit/from-core-bundle' , [ 'id' => $cl->getCoreInterfaceSideB()->getPhysicalInterface()->getId(), 'cb' => $t->cb->getId() ] ) ?>">
+                                                <i class="fa fa-pencil"></i>
+                                            </a>
                                         </td>
                                         <td>
                                             <?= Former::checkbox( 'enabled-'.$cl->getId() )
@@ -334,14 +324,15 @@ $this->layout( 'layouts/ixpv4' );
                                                     ->label( '' )
                                                     ->placeholder( '192.0.2.0/30' )
                                                     ->value( $t->ee( $cl->getIPv4Subnet() ) )
-                                                    ->class( 'subnet-cl form-control' )
+                                                    ->class( 'subnet-cl form-control subnet' )
+                                                    ->style( "padding: 0rem 1rem" )
                                                 ?>
                                             </td>
                                         <?php endif; ?>
                                         <td>
                                             <?php if( count( $t->cb->getCoreLinks() ) > 1 ): ?>
                                                 <div class="btn-group btn-group-sm" role="group">
-                                                    <a class="btn btn btn-white" id="delete-cl-<?=  $cl->getId() ?>" href="#" title="Delete">
+                                                    <a class="btn btn btn-white delete-cl" id="delete-cl-<?= $cl->getId() ?>" href="#" title="Delete">
                                                         <i class="fa fa-trash"></i>
                                                     </a>
                                                 </div>
@@ -351,6 +342,11 @@ $this->layout( 'layouts/ixpv4' );
                                     <?php $nbCl++ ?>
                                 <?php endforeach; ?>
                             </table>
+
+                        <?= Former::hidden( 'cb' )
+                            ->id( 'cb')
+                            ->value( $t->cb->getId() )
+                        ?>
 
                         <?=Former::actions(
                             Former::primary_submit( 'Save Changes' )->id( 'core-links-submit-btn' )
@@ -367,47 +363,116 @@ $this->layout( 'layouts/ixpv4' );
 
                 <?= Former::horizontal_open()->method( 'POST' )
                     ->id( 'core-link-form' )
-                    ->action( route( "core-link@add" ) )
+                    ->action( route( "core-link@add-store" ) )
                     ->customInputWidthClass( 'col-sm-6' )
                     ->actionButtonsCustomClass( "grey-box")
                 ?>
-                    <div id="core-links"></div>
+                    <div id="core-links">
+                        <div class="card mt-4">
+                            <div class="card-header d-flex">
+                                <div class="mr-auto">
+                                    <h4>
+                                        New Core Link:
+                                    </h4>
+                                </div>
+                            </div>
 
-                    <?= Former::hidden( 'nb-core-links' )
-                        ->id( 'nb-core-links')
-                        ->value( 0 )
-                    ?>
+                            <div class="card-body row">
 
-                    <?= Former::hidden( 'core-bundle' )
-                        ->id( 'core-bundle')
-                        ->value( $t->cb->getId() )
-                    ?>
+                                <div class="col-sm-12">
 
-                    <?=Former::actions(
-                        Former::primary_submit( 'Add new core link' )->id( 'new-core-links-submit-btn' )
-                    )->class('text-center');?>
+                                    <div id="message-new-cl"></div>
 
-                <?= Former::close() ?>
+                                    <?= Former::select( 'cl-details[1][sp-a]' )
+                                        ->id( "sp-a-1" )
+                                        ->label( 'Side A Switch Port' )
+                                        ->fromQuery( $t->switchPortsSideA, 'spname-sptype' )
+                                        ->placeholder( 'Choose a Switch Port' )
+                                        ->addClass( 'chzn-select new-core-link-input sp-dd' )
+                                        ->blockHelp( '' )
+                                        ->dataValue( "a" );
+                                    ?>
+
+                                    <?= Former::hidden( 'cl-details[1][hidden-sp-a]' )
+                                        ->id( 'hidden-sp-a-1')
+                                        ->value( null )
+                                    ?>
+
+                                    <?= Former::select( 'cl-details[1][sp-b]' )
+                                        ->id( "sp-b-1" )
+                                        ->label( 'Side B Switch Port' )
+                                        ->fromQuery( $t->switchPortsSideB, 'spname-sptype' )
+                                        ->placeholder( 'Choose a Switch Port' )
+                                        ->addClass( 'chzn-select new-core-link-input sp-dd' )
+                                        ->blockHelp( '' )
+                                        ->dataValue( "b" );
+                                    ?>
+
+                                    <?= Former::hidden( 'cl-details[1][hidden-sp-b]' )
+                                        ->id( 'hidden-sp-b-1')
+                                        ->value( null )
+                                    ?>
+
+                                    <?= Former::checkbox( 'cl-details[1][enabled-cl]' )
+                                        ->id( "" )
+                                        ->label( 'Enabled' )
+                                        ->addClass( 'new-core-link-input' )
+                                        ->value( 1 )
+                                        ->check( true )
+                                    ?>
+
+                                    <?php if( $t->cb->isECMP() ): ?>
+
+                                        <?= Former::checkbox( 'cl-details[1][bfd]' )
+                                            ->label( 'BFD' )
+                                            ->addClass( 'new-core-link-input' )
+                                            ->value( 1 )
+                                        ?>
+
+                                        <?= Former::text( 'cl-details[1][subnet]' )
+                                            ->id( "cl-subnet-1" )
+                                            ->label( 'Subnet' )
+                                            ->addClass( 'new-core-link-input subnet' )
+                                            ->placeholder( '192.0.2.0/30' )
+                                        ?>
+
+                                    <?php endif; ?>
+
+                                </div>
+
+                            </div>
+
+                        </div>
+
+
+                        <?= Former::hidden( 'core-bundle' )
+                            ->id( 'core-bundle')
+                            ->value( $t->cb->getId() )
+                        ?>
+
+                        <?=Former::actions(
+                            Former::primary_submit( 'Add new core link' )->id( 'new-core-links-submit-btn' )
+                        )->class('text-center');?>
+
+                    <?= Former::close() ?>
+                </div>
             </div>
 
-            <br/>
 
             <!-- Delete Core Bundle area -->
-
             <div class="alert alert-danger mt-4" role="alert">
                 <div class="d-flex align-items-center">
                     <div class="text-center">
                         <i class="fa fa-exclamation-triangle fa-2x"></i>
                     </div>
                     <div class="col-sm-12 d-flex">
-                        <div class="mr-auto">
-                            <b>If you are sure you want to delete this Core Bundle:</b>
-                        </div>
-                        <div class="my-auto">
-                            <a id="cb-delete-<?= $t->cb->getId() ?>" class="btn btn btn-danger" href="#" title="Delete">
-                                Delete
-                            </a>
-                        </div>
+                        <b class="mr-auto my-auto">
+                            If you are sure you want to delete this Core Bundle:
+                        </b>
+                        <a class="btn btn-danger mr-4" id="cb-delete-<?= $t->cb->getId() ?>" href="#" title="Delete">
+                            Delete
+                        </a>
+
                     </div>
                 </div>
             </div>
@@ -415,7 +480,6 @@ $this->layout( 'layouts/ixpv4' );
         </div>
 
     </div>
-
 
 <?php $this->append() ?>
 

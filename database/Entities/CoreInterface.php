@@ -23,6 +23,12 @@
 
 namespace Entities;
 
+use Entities\{
+    CoreInterface       as CoreInterfaceEntity,
+    CoreLink            as CoreLinkEntity,
+    PhysicalInterface   as PhysicalInterfaceEntity,
+};
+
 /**
  * CoreInterface
  */
@@ -34,17 +40,17 @@ class CoreInterface
     private $id;
 
     /**
-     * @var \Entities\PhysicalInterface
+     * @var PhysicalInterfaceEntity
      */
     private $physicalInterface;
 
     /**
-     * @var \Entities\CoreLink
+     * @var CoreLinkEntity
      */
     private $coreLink;
 
     /**
-     * @var \Entities\CoreLink
+     * @var CoreLinkEntity
      */
     private $coreLink2;
 
@@ -52,19 +58,19 @@ class CoreInterface
     /**
      * Get id
      *
-     * @return integer
+     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
 
     /**
-     * Get CoreBundle
+     * Get Physical Interface
      *
-     * @return \Entities\PhysicalInterface
+     * @return PhysicalInterface
      */
-    public function getPhysicalInterface()
+    public function getPhysicalInterface(): PhysicalInterface
     {
         return $this->physicalInterface;
     }
@@ -72,9 +78,9 @@ class CoreInterface
     /**
      * Get Core Link A
      *
-     * @return \Entities\CoreLink
+     * @return CoreLinkEntity
      */
-    public function getCoreLinkA()
+    public function getCoreLinkA(): CoreLinkEntity
     {
         return $this->coreLink;
     }
@@ -82,9 +88,9 @@ class CoreInterface
     /**
      * Get CoreLink B
      *
-     * @return \Entities\CoreLink
+     * @return CoreLinkEntity
      */
-    public function getCoreLinkB()
+    public function getCoreLinkB(): CoreLinkEntity
     {
         return $this->coreLink2;
     }
@@ -92,9 +98,9 @@ class CoreInterface
     /**
      * Check which side has a core link linked
      *
-     * @return \Entities\CoreLink
+     * @return CoreLinkEntity
      */
-    public function getCoreLink()
+    public function getCoreLink(): CoreLinkEntity
     {
         if( $this->getCoreLinkA() ){
             return $this->getCoreLinkA();
@@ -106,11 +112,11 @@ class CoreInterface
     /**
      * Set Physical Interface
      *
-     * @param \Entities\PhysicalInterface $physicalInterface
+     * @param PhysicalInterface $physicalInterface
      *
      * @return CoreInterface
      */
-    public function setPhysicalInterface( PhysicalInterface $physicalInterface = null )
+    public function setPhysicalInterface( PhysicalInterface $physicalInterface = null ): CoreInterfaceEntity
     {
         $this->physicalInterface = $physicalInterface;
         return $this;
@@ -119,11 +125,11 @@ class CoreInterface
     /**
      * Set Core Link A
      *
-     * @param \Entities\CoreLink $coreLinkA
+     * @param CoreLinkEntity $coreLinkA
      *
      * @return CoreInterface
      */
-    public function setCoreLinkA( CoreLink $coreLinkA = null )
+    public function setCoreLinkA( CoreLinkEntity $coreLinkA = null ): CoreInterface
     {
         $this->coreLink = $coreLinkA;
         return $this;
@@ -132,11 +138,11 @@ class CoreInterface
     /**
      * Set Core Link B
      *
-     * @param \Entities\CoreLink $coreLinkB
+     * @param CoreLinkEntity $coreLinkB
      *
      * @return CoreInterface
      */
-    public function setCoreLinkB( CoreLink $coreLinkB = null )
+    public function setCoreLinkB( CoreLink $coreLinkB = null ): CoreInterface
     {
         $this->coreLink2 = $coreLinkB;
         return $this;

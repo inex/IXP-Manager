@@ -17,6 +17,8 @@
             ],
         } );
 
+        $( ".subnet-cl" ).parent().removeClass().addClass( "col-sm-8" );
+
     });
 
     //////////////////////////////////////////////////////////////////////////////////////
@@ -25,20 +27,25 @@
     /**
      * check if the subnet is valid
      */
-    $( "input[id|='subnet']" ).blur( function() { checkSubnet(this.id) });
+    $( ".subnet" ).blur( function() { checkSubnet( this ) } );
 
     /**
-     * add a new link to the core bundle
+     * display the arra to add new link to the core bundle
      */
-    $( "#add-new-core-link" ).click(  () => { addCoreLink( ) } );
+    $( "#add-new-core-link" ).click(  () => { displayCoreLink() } );
 
-    $( "a[id|='delete-cl']" ).on( 'click', function(e){
+    /**
+     * Event to delete a core link
+     */
+    $( ".delete-cl" ).on( 'click', function(e){
         e.preventDefault();
-        let clid = (this.id).substring(10);
-        deleteElement( true , clid );
+        deleteElement( true , (this.id).substring(10) );
     });
 
 
+    /**
+     * Event to delete the core bundle
+     */
     $( "a[id|='cb-delete']" ).on( 'click', function(e){
         e.preventDefault();
         deleteElement( false , null );
@@ -59,7 +66,7 @@
     });
 
     /**
-     * Check if all the switch ports have been chosen before submit
+     * Check if the subnet is valid before submit the core bundle settings form
      */
     $('#core-bundle-form').submit(function( e ) {
         if( $( "#subnet" ).val() !== '' ){
@@ -70,8 +77,6 @@
                 return false;
             }
         }
-
-
     });
 
 
@@ -79,19 +84,19 @@
      * Check if all the switch ports have been chosen before submit
      */
     $('#new-core-links-submit-btn').click(function() {
-        $("#message-1").html('');
+        $("#message-new-cl").html('');
 
         if( !$( "#sp-a-1" ).val() || !$( "#sp-b-1" ).val() ){
-            $( "#message-1" ).append( "<div class='alert alert-danger' role='alert'>You need to select switch ports.</div>" );
+            $( "#message-new-cl" ).append( "<div class='alert alert-danger' role='alert'>You need to select switch ports.</div>" );
             return false;
         }
 
         // check if the subnet is valid
-        if( $( "#subnet-1").val() ) {
-            let subnet = $( "#subnet-1").val();
+        if( $( "#cl-subnet-1").val() ) {
+            let subnet = $( "#cl-subnet-1").val();
             if( !validSubnet( subnet ) ){
                 error = true;
-                $( "#message-1" ).append(  "<div class='alert alert-danger' role='alert'>The subnet " + subnet + " is not valid! </div>" );
+                $( "#message-new-cl" ).append(  "<div class='alert alert-danger' role='alert'>The subnet " + subnet + " is not valid! </div>" );
                 return false;
             }
         }
@@ -105,7 +110,11 @@
 
 
     /**
-     * Function that allow to delete a core link
+     * Function that allow to delete a Core Link or a Core Bundle
+     *
+     * @param {boolean}     deletecl    Do we need to delete the core link ? If not delete core bundle
+     * @param {integer}     clid        The core link Id
+     *
      */
     function deleteElement( deletecl , clid ){
 
@@ -154,50 +163,28 @@
 
     /**
      * event onchange on the switch port dropdowns
+     * Set the value of the switch port dropdown into input hidden
      */
-    $(document).on('change', "[id|='sp']" ,function(e){
+    $(document).on('change', ".sp-dd" ,function(e){
         e.preventDefault();
         let sid = ( this.id ).substring( 5 );
-        let sside = ( this.id ).substring( 3, 4 );
+        let sside = $( this ).attr( "data-value" );
 
         $( "#hidden-sp-" + sside + '-' + sid ).val( $("#sp-"+ sside + "-" + sid).val() );
 
     });
 
-    function addCoreLink(){
-        let enabled = $( "#enabled").is( ':checked' ) ? 1 : 0 ;
+    /**
+     * Display the form to add a new core link to the core bundle
+     */
+    function displayCoreLink(){
+        $('#core-links-area').find( 'label' ).removeClass().addClass( 'col-sm-6 col-lg-3' );
+        $('#core-links-area').find( '.new-core-link-input' ).parent().removeClass().addClass( 'col-lg-4 col-sm-6' );
 
-        $.ajax( "<?= route( 'core-link@add-fragment' ) ?>", {
-            data: {
-                nbCoreLink      : 0,
-                enabled         : enabled,
-                bundleType      : $( "#type").val(),
-                _token          : "<?= csrf_token() ?>"
-            },
-            type: 'POST'
-        })
-        .done( function( data ) {
-            if( data.success ){
-                // add the new core link form
-                $('#core-links').append( data.htmlFrag );
+        $('#core-links-area').css( 'opacity' , '100' );
+        $('#core-links-area').show();
+        $('#add-new-core-link').attr( 'disabled', 'disabled' );
 
-                $('#core-links-area').css( 'opacity' , '100' );
-                $('#core-links-area').show();
-                $('#add-new-core-link').attr( 'disabled', 'disabled' );
-
-                oldNbLink = $("#nb-core-links").val( );
-                setSwitchPort( 'a' , 1, null, true );
-                setSwitchPort( 'b' , 1, null, true);
-
-                // set the number of core links present for the core bundle
-                $("#nb-core-links").val( data.nbCoreLinks );
-            }
-
-        })
-        .fail( function() {
-            alert( "Error running ajax query for core-bundle/add-core-link-frag" );
-            throw new Error( "Error running ajax query for core-bundle/add-core-link-frag" );
-        })
     }
 
 </script>

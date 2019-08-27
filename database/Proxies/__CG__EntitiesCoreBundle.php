@@ -246,17 +246,6 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function isTypeOther(): bool
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeOther', []);
-
-        return parent::isTypeOther();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getGraphTitle()
     {
 
@@ -422,7 +411,7 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function setEnabled($enabled)
+    public function setEnabled(bool $enabled)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEnabled', [$enabled]);
@@ -444,7 +433,7 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function setBFD($bfd)
+    public function setBFD(bool $bfd)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBFD', [$bfd]);
@@ -521,7 +510,7 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function getSwitchSideX($sideA = true)
+    public function getSwitchSideX(bool $sideA = true)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitchSideX', [$sideA]);
@@ -565,7 +554,7 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function getCustomer()
+    public function getCustomer(): \Entities\Customer
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', []);
@@ -576,7 +565,7 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function getVirtualInterfaces()
+    public function getVirtualInterfaces(): array
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVirtualInterfaces', []);
@@ -620,7 +609,7 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function sameSwitchForEachPIFromCL($sideA)
+    public function sameSwitchForEachPIFromCL(bool $sideA = true): bool
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'sameSwitchForEachPIFromCL', [$sideA]);

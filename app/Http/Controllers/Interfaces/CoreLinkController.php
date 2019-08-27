@@ -30,7 +30,6 @@ use Entities\{
     CoreLink as CoreLinkEntity,
     CoreInterface as CoreInterfaceEntity,
     SwitchPort as SwitchPortEntity,
-    VirtualInterface as VirtualInterfaceEntity,
 };
 
 use Illuminate\Http\{
@@ -40,11 +39,13 @@ use Illuminate\Http\{
 };
 
 use IXP\Http\Requests\{
-    StoreCoreBundle
+    StoreCoreLink
 };
 
-use IXP\Utils\View\Alert\Alert;
-use IXP\Utils\View\Alert\Container as AlertContainer;
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
 
 /**
  * Core Link Controller
@@ -67,24 +68,21 @@ class CoreLinkController extends Common
     /**
      * Add a core link to a core bundle only when EDITING a core bundle
      *
-     * @param   Request $request instance of the current HTTP request
+     * @param   StoreCoreLink $request instance of the current HTTP request
      *
      * @return  RedirectResponse
      *
      * @throws
      */
-    public function add( Request $request ): RedirectResponse
+    public function addStore( StoreCoreLink $request ): RedirectResponse
     {
         /** @var CoreBundleEntity $cb */
         if( !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $request->input( 'core-bundle' ) ) ) ) {
             abort('404', 'Unknown Core Bundle');
         }
 
-        if( $request->input( 'nb-core-links' ) == 0 || $request->input( 'nb-core-links' ) == null ){
-            return Redirect::to( route( "core-bundle@edit", [ "id" => $cb->getId()] ) )->withInput( Input::all() );
-        }
-
-        $this->buildCorelink( $cb, $request, [ 'a' => $cb->getVirtualInterfaces()[ 'A' ] , 'b' =>  $cb->getVirtualInterfaces()[ 'B' ] ], 1 , true );
+        // Creating all the elements linked to the new core link (core interfaces, physical interfaces)
+        $this->buildCorelink( $cb, $request, [ 'a' => $cb->getVirtualInterfaces()[ 'A' ] , 'b' =>  $cb->getVirtualInterfaces()[ 'B' ] ] , true );
 
         D2EM::flush();
 
@@ -96,19 +94,17 @@ class CoreLinkController extends Common
     }
 
     /**
-     * Edit the core links associated to a core bundle
+     * Edit the core links (enabled/BFD/Subnet) associated to a core bundle
      *
      * @param   Request $request instance of the current HTTP request
-     *
-     * @param   int $id ID of the core bundle
      *
      * @return  RedirectResponse
      *
      * @throws
      */
-    public function store( Request $request, int $id ): RedirectResponse {
+    public function editStore( Request $request ): RedirectResponse {
         /** @var CoreBundleEntity $cb */
-        if( !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $id ) ) ) {
+        if( !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $request->input( "cb" ) ) ) ) {
             abort('404', 'Unknown Core bundle');
         }
 
@@ -186,7 +182,7 @@ class CoreLinkController extends Common
             D2EM::remove( $pi );
             D2EM::remove( $ci );
         }
-        
+
         D2EM::remove( $cl );
         D2EM::flush();
 

@@ -149,8 +149,8 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
 
     Route::group( [  'prefix' => 'core-link' ], function() {
         Route::post(    'add-fragment',     'CoreLinkController@addCoreLinkFrag'    )->name( 'core-link@add-fragment'   );
-        Route::post(    'add',              'CoreLinkController@add'                )->name( 'core-link@add'            );
-        Route::post(    'store',            'CoreLinkController@store'              )->name( 'core-link@store'          );
+        Route::post(    'add',              'CoreLinkController@addStore'           )->name( 'core-link@add-store'      );
+        Route::post(    'store',            'CoreLinkController@editStore'          )->name( 'core-link@edit-store'     );
         Route::post(    'delete',           'CoreLinkController@delete'             )->name( 'core-link@delete'         );
     });
 });

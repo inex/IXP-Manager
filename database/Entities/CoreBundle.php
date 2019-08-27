@@ -23,9 +23,15 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping\Entity;
+use Doctrine\Common\Collections\{
+    ArrayCollection,
+    Collection
+};
+
 use Entities\{
+    CoreBundle          as CoreBundleEntity,
     CoreLink            as CoreLinkEntity,
+    Customer            as CustomerEntity,
     Switcher            as SwitcherEntity
 };
 
@@ -42,8 +48,6 @@ class CoreBundle
     const TYPE_L2_LAG            = 2;
     const TYPE_L3_LAG            = 3;
 
-
-
     /**
      * Array STATES
      */
@@ -52,6 +56,7 @@ class CoreBundle
         self::TYPE_L2_LAG        => "L2-LAG (e.g. LACP)",
         self::TYPE_L3_LAG        => "L3-LAG",
     ];
+
     /**
      * @var string
      */
@@ -108,7 +113,7 @@ class CoreBundle
     private $id;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      */
     private $coreLinks;
 
@@ -117,7 +122,7 @@ class CoreBundle
      */
     public function __construct()
     {
-        $this->coreLinks = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->coreLinks = new ArrayCollection();
     }
 
     /**
@@ -143,7 +148,7 @@ class CoreBundle
     /**
      * Get type
      *
-     * @return interger
+     * @return int
      */
     public function getType()
     {
@@ -175,15 +180,6 @@ class CoreBundle
      */
     public function isTypeL3Lag(): bool {
         return $this->getType() === self::TYPE_L3_LAG;
-    }
-
-    /**
-     * Is the type isTypeOther?
-     *
-     * @return bool
-     */
-    public function isTypeOther(): bool {
-        return $this->getType() === self::TYPE_OTHER;
     }
 
     /**
@@ -270,7 +266,7 @@ class CoreBundle
     /**
      * Get CoreLinks
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getCoreLinks()
     {
@@ -282,7 +278,7 @@ class CoreBundle
      *
      * @param CoreLink $coreLink
      *
-     * @return PatchPanel
+     * @return CoreBundleEntity
      */
     public function addCoreLink( CoreLink $coreLink)
     {
@@ -359,7 +355,7 @@ class CoreBundle
      *
      * @return CoreBundle
      */
-    public function setEnabled( $enabled )
+    public function setEnabled( bool $enabled )
     {
         $this->enabled = $enabled;
         return $this;
@@ -385,7 +381,7 @@ class CoreBundle
      *
      * @return CoreBundle
      */
-    public function setBFD( $bfd )
+    public function setBFD( bool $bfd )
     {
         $this->bfd = $bfd;
         return $this;
@@ -444,8 +440,6 @@ class CoreBundle
     }
 
 
-
-
     /**
      * Check if all the core links for the core bundle are enabled
      *
@@ -484,11 +478,11 @@ class CoreBundle
     /**
      * get switch from side A or B
      *
-     * param bool $sideA if true get the side A if false Side B
+     * @param bool $sideA if true get the side A if false Side B
      *
-     * @return SwitcherEntity
+     * @return SwitcherEntity|bool
      */
-    public function getSwitchSideX( $sideA = true )
+    public function getSwitchSideX( bool $sideA = true )
     {
         foreach( $this->getCoreLinks() as $cl ){
             /** @var CoreLinkEntity $cl */
@@ -496,57 +490,68 @@ class CoreBundle
 
             return $side->getPhysicalInterface()->getSwitchPort()->getSwitcher();
         }
+
+        return false;
     }
 
     /**
      * get the speed of the Physical interface
      *
-     * @return integer
+     * @return int
      */
-    public function getSpeedPi( )
+    public function getSpeedPi()
     {
         foreach( $this->getCoreLinks() as $cl ){
             /** @var CoreLinkEntity $cl */
             return $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getSpeed();
         }
+
+        return 0;
     }
 
     /**
      * get the duplex of the Physical interface
      *
-     * @return integer
+     * @return int|false
      */
-    public function getDuplexPi( )
+    public function getDuplexPi()
     {
         foreach( $this->getCoreLinks() as $cl ){
             /** @var CoreLinkEntity $cl */
             return $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getDuplex();
         }
+
+        return false;
     }
 
     /**
      * get the auto neg of the Physical interface
      *
-     * @return integer
+     * @return int|false
      */
-    public function getAutoNegPi( )
+    public function getAutoNegPi()
     {
         foreach( $this->getCoreLinks() as $cl ){
             /** @var CoreLinkEntity $cl */
             return $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getAutoneg();
         }
+
+        return false;
     }
 
     /**
      * get the customer associated virtual interface of the core bundle
      *
-     * @return Entity|Customer
+     * @return CustomerEntity|false
      */
-    public function getCustomer(){
+    public function getCustomer(): CustomerEntity
+    {
         foreach( $this->getCoreLinks() as $cl ){
             /** @var CoreLinkEntity $cl */
             return $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getVirtualInterface()->getCustomer();
         }
+
+        return false;
     }
 
 
@@ -555,7 +560,8 @@ class CoreBundle
      *
      * @return array
      */
-    public function getVirtualInterfaces(){
+    public function getVirtualInterfaces(): array
+    {
         $vis = [];
 
         foreach( $this->getCoreLinks() as $cl ){
@@ -564,6 +570,7 @@ class CoreBundle
             return $vis;
         }
 
+        return $vis;
     }
 
     /**
@@ -580,7 +587,8 @@ class CoreBundle
      *
      * @return bool
      */
-    public function isL2LAG(): bool {
+    public function isL2LAG(): bool
+    {
         return $this->getType() == self::TYPE_L2_LAG;
     }
 
@@ -596,11 +604,12 @@ class CoreBundle
     /**
      * Check if the switch is the same for the Physical interfaces of the core links associated to the core bundle
      *
-     * param bool $sideA if true get the side A if false Side B
+     * @param bool $sideA if true get the side A if false Side B
      *
      * @return bool
      */
-    public function sameSwitchForEachPIFromCL( $sideA ){
+    public function sameSwitchForEachPIFromCL( bool $sideA = true ): bool
+    {
         $switches = [];
 
         foreach( $this->getCoreLinks() as $cl ){

@@ -39,7 +39,7 @@ use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
 
-class StoreCoreBundle extends FormRequest
+class StoreCoreLink extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -59,25 +59,6 @@ class StoreCoreBundle extends FormRequest
      */
     public function rules()
     {
-        $arrayCb = [
-            'customer'                  => 'required|integer|exists:Entities\Customer,id',
-            'description'               => 'required|string|max:255',
-            'graph-title'               => 'required|string|max:255',
-            'cost'                      => 'nullable|integer',
-            'preference'                => 'nullable|integer',
-            'type'                      => 'required|integer|in:' . implode( ',', array_keys( CoreBundleEntity::$TYPES ) ),
-            'subnet'                    => ( $this->input('type') == CoreBundleEntity::TYPE_L3_LAG ) ? "required" : "nullable",
-
-        ];
-
-        $arrayVi = [
-            'mtu'                       => 'required|integer|min:0|max:64000',
-            'vi-name-a'                 => ( $this->input('type') == CoreBundleEntity::TYPE_L2_LAG || $this->input('type') == CoreBundleEntity::TYPE_L3_LAG) ? "required|string|max:255" : "nullable",
-            'vi-name-b'                 => ( $this->input('type') == CoreBundleEntity::TYPE_L2_LAG || $this->input('type') == CoreBundleEntity::TYPE_L3_LAG) ? "required|string|max:255" : "nullable",
-            'vi-channel-number-a'       => ( $this->input('type') == CoreBundleEntity::TYPE_L2_LAG || $this->input('type') == CoreBundleEntity::TYPE_L3_LAG) ? "required|integer|min:0" : "nullable",
-            'vi-channel-number-b'       => ( $this->input('type') == CoreBundleEntity::TYPE_L2_LAG || $this->input('type') == CoreBundleEntity::TYPE_L3_LAG) ? "required|integer|min:0" : "nullable"
-        ];
-
         $arrayCl = [];
         for( $i = 1; $i <= $this->input( 'nb-core-links' ); $i++ ){
             $arrayCl = [
@@ -86,9 +67,6 @@ class StoreCoreBundle extends FormRequest
             ];
         }
 
-        $result = $this->input( 'cb' )  ? $arrayCb : array_merge( $arrayCb, $arrayVi) ;
-
-        return array_merge( $result, $arrayCl );
+        return $arrayCl;
     }
-
 }

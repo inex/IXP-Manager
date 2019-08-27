@@ -6,8 +6,9 @@
         let datas;
         let switchId = $( "#switch-" + sside ).val();
 
-        if( $("#nb-core-links").val() > 0 || edit ){
+        if( $( ".core-link-form" ).length > 0 || edit ){
             $( "#sp-" + sside + "-"+ id ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger('change.select2');
+
             if( !edit ) {
                 excludedSwitchPort();
             }
@@ -69,16 +70,16 @@
      * check if the subnet is valid and display a message
      */
     function checkSubnet( subnet ){
-        $( "#"+subnet ).removeClass( 'is-invalid' );
-        $( "#"+subnet ).parent().find('span').remove();
-        if( $( "#"+subnet ).val() != '' ){
-            if( !validSubnet( $( "#"+subnet ).val() ) ){
-                $( "#"+subnet ).addClass( 'is-invalid' );
-                $( "#"+subnet ).parent().append("<span class='help-block invalid-feedback' style='display: block'>The subnet is not valid</span> ");
+        $( subnet ).removeClass( 'is-invalid' );
+        $( subnet ).parent().find('span').remove();
+        if( $( subnet ).val() != '' ){
+            if( !validSubnet( $( subnet ).val() ) ){
+                $( subnet ).addClass( 'is-invalid' );
+                $( subnet ).parent().append("<span class='help-block invalid-feedback' style='display: block'>The subnet is not valid</span> ");
             }
             else{
-                $( "#"+subnet ).addClass( 'is-valid' );
-                $( "#"+subnet ).parent().append("<span class='help-block valid-feedback' style='display: block' >The subnet is valid</span> ");
+                $( subnet ).addClass( 'is-valid' );
+                $( subnet ).parent().append("<span class='help-block valid-feedback' style='display: block' >The subnet is valid</span> ");
             }
         }
     }
