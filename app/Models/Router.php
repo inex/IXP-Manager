@@ -62,6 +62,12 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router notQuarantine()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router routeServer()
+ * @property string|null $software_version
+ * @property string|null $operating_system
+ * @property string|null $operating_system_version
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereOperatingSystem($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereOperatingSystemVersion($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereSoftwareVersion($value)
  */
 class Router extends Model
 {

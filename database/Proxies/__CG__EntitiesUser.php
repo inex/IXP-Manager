@@ -108,10 +108,10 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', 'Contact', '_className', '_preferenceClassName'];
+            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', 'Contact', '_className', '_preferenceClassName'];
         }
 
-        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', 'Contact', '_className', '_preferenceClassName'];
+        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', 'Contact', '_className', '_preferenceClassName'];
     }
 
     /**
@@ -447,6 +447,50 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastupdatedby', []);
 
         return parent::getLastupdatedby();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPeeringDbId(): ?int
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPeeringDbId', []);
+
+        return parent::getPeeringDbId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPeeringDbId(?int $id)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPeeringDbId', [$id]);
+
+        return parent::setPeeringDbId($id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getExtraAttributes()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getExtraAttributes', []);
+
+        return parent::getExtraAttributes();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setExtraAttributes($extra_attributes)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setExtraAttributes', [$extra_attributes]);
+
+        return parent::setExtraAttributes($extra_attributes);
     }
 
     /**
