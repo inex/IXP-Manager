@@ -244,15 +244,17 @@ class User extends EntityRepository
                         u.username as username, 
                         u.email as email,
                         u.created as created, 
-                        u.disabled as disabled, 
+                        u.creator as creator, 
+                        u.disabled as disabled,
+                        u.peeringdb_id as peeringdb_id,
                         c.id as custid, 
                         c.name as customer,
                         u.lastupdated AS lastupdated,
                         COUNT( c2u ) as nbC2U,
                         MAX( c2u.privs ) as privileges
                   FROM Entities\\User u
-                  LEFT JOIN u.Customer as c
-                  LEFT JOIN u.Customers as c2u
+                      LEFT JOIN u.Customer as c
+                      LEFT JOIN u.Customers as c2u
                   WHERE 1 = 1";
 
         if( $id ) {
@@ -455,7 +457,7 @@ class User extends EntityRepository
             'removed_from' => [],
         ];
 
-        // let's make sure we have a reason to any work before we start:
+        // let's make sure we have a reason to do any work before we start:
         $asns = [];
         foreach( $pdbuser['networks'] as $nw ) {
             if( is_numeric($nw['asn']) && (int)$nw['asn'] > 0 ) {
@@ -479,6 +481,7 @@ class User extends EntityRepository
 
         // if we don't have a user already, create one with unique username
         if( !( $user = $this->findOneBy( ['peeringdb_id' => $pdbuser['id'] ] ) ) ) {
+
             $un = strtolower( $pdbuser['name'] ?? 'unknownpdbuser' );
             $un = preg_replace( '/[^a-z0-9\._\-]/', '.', $un );
 
@@ -486,15 +489,17 @@ class User extends EntityRepository
 
             do {
                 $int++;
-            } while( $this->findOneBy([ 'username' => "{$un}{$int}" ] ) );
+                $uname = $un . ( $int === 1 ? '' : "{$int}" );
+            } while( $this->findOneBy([ 'username' => $uname ] ) );
 
             $user = new UserEntity();
             $user->setPeeringDbId( $pdbuser['id'] );
-            $user->setUsername( "{$un}{$int}" );
+            $user->setUsername( $uname );
             $user->setPassword( Hash::make( Str::random() ) );
             $user->setPrivs( $priv );
             $user->setCreator( 'OAuth-PeeringDB' );
             $user->setCreated( now() );
+            $user->setLastupdated( now() );
             D2EM::persist( $user );
             D2EM::flush( $user );
 
@@ -519,7 +524,7 @@ class User extends EntityRepository
 
             if( $key === false ) {
                 // user has a network that's not in the current peeringdb list of affiliated networks
-                // if it came from peeringdb then remove it
+                // => if it came from peeringdb then remove it
                 $ea = $c2u->getExtraAttributes();
                 if( $ea && isset( $ea['created_by']['type'] ) && $ea['created_by']['type'] === 'PeeringDB' ) {
                     D2EM::getRepository( UserLoginHistoryEntity::class )->deleteUserLoginHistory( $c2u->getId() );
