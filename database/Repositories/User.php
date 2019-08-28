@@ -573,7 +573,14 @@ class User extends EntityRepository
 
                 $result['added_to'][] = $c2u->getCustomer();
                 Log::info( 'PeeringDB OAuth: user ' . $user->getId() . '/' . $user->getUsername() . ' linked with with ' . $cust->getFormattedName() );
-                $user_created ? event( new UserCreatedEvent( $user ) ) : event( new UserAddedToCustomerEvent( $c2u ) );
+                
+                if( $user_created ) {
+                    // should not emit any more UserCreatedEvent events
+                    $user_created = false;
+                    event( new UserCreatedEvent( $user ) );
+                } else {
+                     event( new UserAddedToCustomerEvent( $c2u ) );
+                }
             }
         }
 
