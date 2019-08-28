@@ -102,6 +102,9 @@ Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
                                             Privilege
                                         </th>
                                         <th>
+                                            Created By
+                                        </th>
+                                        <th>
                                             Action
 
                                             <a class="btn btn-white btn-sm ml-2" href="<?= route( "customer-to-user@add" , [ "id" => $t->user->getEmail() ] ) ?>">
@@ -126,6 +129,9 @@ Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
                                                         . 'the official documentation here</a>.'
                                                     );
                                                 ?>
+                                            </td>
+                                            <td>
+                                                <?= $t->ee( $c2u->getExtraAttributes()['created_by']['type'] ?? '' ) ?>
                                             </td>
                                             <td>
                                                 <a class="btn btn-white d2f-list-delete btn-delete-c2u" id="d2f-list-delete-<?= count( $t->user->getCustomers2User() ) > 1 ? $c2u->getId() : $c2u->getUser()->getId() ?>" href="<?= count( $t->user->getCustomers2User() ) > 1 ? route( 'customer-to-user@delete' ) : route('user@delete' )  ?>" title="Delete">
@@ -200,16 +206,18 @@ Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
                     </div>
                     <div class="col-sm-12 d-flex">
                         <b class="mr-auto my-auto">
-                            If you are sure you want to delete User:
+                            If you are sure you want to delete the user:
                         </b>
                         <a class="btn btn-danger mr-4 d2f-list-delete btn-delete-user" id="d2f-list-delete-<?= $t->user->getId() ?>" data-nb-c2u="<?= count( $t->user->getCustomers() ) ?>" href="<?= route( 'user@delete' ) ?>" title="Delete">
-                            Delete
+                            Delete User
                         </a>
 
                     </div>
                 </div>
             </div>
         <?php endif;?>
+
+
 
         <div class="alert alert-info mt-4" role="alert">
             <div class="d-flex align-items-center">
@@ -225,6 +233,17 @@ Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
                 </div>
             </div>
         </div>
+
+        <br><br><br>
+        <p>
+            The <em>created by</em> column indicates how the user was linked to the customer. The information you may see includes:
+        </p>
+        <ul>
+            <li> <em>migration-script:</em> the user originally belonged to this customer in versions of IXP Manager &lt;v5.0 when users where linked 1:1 with customers. </li>
+            <li> <em>user:</em> the user was linked to this customer by either a customer admin or a super admin. </li>
+            <li> <em>PeeringDB:</em> the user was added via a PeeringDB OAuth login. </li>
+        </ul>
+
     </div>
 </div>
 <?php $this->append() ?>

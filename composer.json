@@ -42,7 +42,8 @@
         "parsedown/laravel": "^1.0",
         "webpatser/laravel-countries": "^1.5",
         "laravel/telescope": "^2.0",
-        "laravel/horizon": "^3.0"
+        "laravel/horizon": "^3.0",
+        "socialiteproviders/manager": "^3.3"
     },
     "require-dev": {
         "beyondcode/laravel-dump-server": "^1.0",
@@ -67,8 +68,9 @@
             "database"
         ],
         "psr-4": {
-             "IXP\\": "app/"
-        },
+             "IXP\\": "app/",
+             "SocialiteProviders\\PeeringDB\\": "data/SocialiteProviders/PeeringDB/"
+       },
         "files": [
             "app/Support/helpers.php"
         ]

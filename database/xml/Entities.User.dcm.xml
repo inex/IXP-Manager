@@ -13,6 +13,8 @@
     <field name="uid" type="integer" nullable="true"/>
     <field name="privs" type="integer" nullable="true"/>
     <field name="disabled" type="boolean" nullable="true"/>
+    <field name="peeringdb_id" type="bigint" unique="true" nullable="true"/>
+    <field name="extra_attributes" type="json" nullable="true"/>
     <field name="lastupdated" type="datetime" nullable="true"/>
     <field name="lastupdatedby" type="integer" nullable="true"/>
     <field name="creator" type="string" nullable="true"/>

@@ -111,6 +111,17 @@ Users / View User
                             </td>
                         </tr>
 
+                        <tr>
+                            <td>
+                                <b>
+                                    Created By
+                                </b>
+                            </td>
+                            <td>
+                                    <?= $t->u['creator'] ?? '' ?>
+                            </td>
+                        </tr>
+
                         <?php if( Auth::getUser()->isSuperUser() ): ?>
                             <tr>
                                 <td>
@@ -140,6 +151,9 @@ Users / View User
                                         <th>
                                             Privilege
                                         </th>
+                                        <th>
+                                            Created By
+                                        </th>
                                         </thead>
                                         <tbody>
                                         <?php foreach( $user->getCustomers2User() as $c ): ?>
@@ -149,6 +163,9 @@ Users / View User
                                                 </td>
                                                 <td>
                                                     <?=  \Entities\User::$PRIVILEGES_TEXT[ $c->getPrivs() ] ?>
+                                                </td>
+                                                <td>
+                                                    <?= $t->ee( $c->getExtraAttributes()['created_by']['type'] ?? '' ) ?>
                                                 </td>
                                             </tr>
                                         <?php endforeach;?>
@@ -162,6 +179,16 @@ Users / View User
                 </div>
             </div>
         </div>
+
+        <br><br><br>
+        <p>
+            The <em>created by</em> column indicates how the user was linked to the customer. The information you may see includes:
+        </p>
+        <ul>
+            <li> <em>migration-script:</em> the user originally belonged to this customer in versions of IXP Manager &lt;v5.0 when users where linked 1:1 with customers. </li>
+            <li> <em>user:</em> the user was linked to this customer by either a customer admin or a super admin. </li>
+            <li> <em>PeeringDB:</em> the user was added via a PeeringDB OAuth login. </li>
+        </ul>
     </div>
 </div>
 <?php $this->append() ?>
