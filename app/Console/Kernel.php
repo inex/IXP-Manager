@@ -66,7 +66,7 @@ class Kernel extends ConsoleKernel {
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UTILS_OUI_UPDATE', false ); } );
 
         // Switch SNMP pool - https://docs.ixpmanager.org/usage/switches/#automated-polling-snmp-updates
-        $schedule->command( 'switch:snmp-poll' )->hourlyAt(10)
+        $schedule->command( 'switch:snmp-poll' )->everyFiveMinutes()
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_SWITCH_SNMP_POLL', false ); } );
 
     }
