@@ -191,6 +191,8 @@
 
         $(document).ready( function() {
             $( '#table-ip'   ).dataTable( {
+                stateSave: true,
+                stateDuration : DATATABLE_STATE_DURATION,
                 responsive : true,
                 ordering: false,
                 paging:   false,

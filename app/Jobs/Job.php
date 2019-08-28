@@ -1,5 +1,7 @@
 <?php
 
+namespace IXP\Jobs;
+
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -21,7 +23,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-namespace App\Jobs;
 use Illuminate\Bus\Queueable;
 
 abstract class Job
@@ -37,4 +38,16 @@ abstract class Job
     |
     */
     use Queueable;
+
+
+
+    /**
+     * Check if we have access to a persistent cache
+     * @return bool
+     */
+    protected function havePersistentCache(): bool {
+        // we need a persistent cache or this is a waste of time
+        return !in_array( config( 'cache.default' ), [ 'array', 'none' ] );
+    }
+
 }

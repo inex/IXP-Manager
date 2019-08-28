@@ -133,6 +133,8 @@
      */
     function loadDataTable(){
         table = $( '#layer-2-interface-list' ).DataTable( {
+            stateSave: true,
+            stateDuration : DATATABLE_STATE_DURATION,
             responsive : true,
             columnDefs: [
                 { responsivePriority: 1, targets: 0 },

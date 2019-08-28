@@ -78,6 +78,13 @@
                     </ul>
                 </div>
 
+
+                <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                    <button type="button" class="btn btn-outline-dark pull-right tw-text-gray-600" data-toggle="modal" data-target="#grapher-backend-info-modal">
+                        Backend Info
+                    </button>
+                <?php endif; ?>
+
             </nav>
 
     </div>
@@ -115,6 +122,58 @@
     <?php endforeach; ?>
 
 </div>
+
+
+<?php
+use IXP\Services\Grapher\Graph;
+if( Auth::check() && Auth::user()->isSuperUser() ):
+    ?>
+
+    <div class="modal" tabindex="-1" role="dialog" id="grapher-backend-info-modal">
+        <div class="modal-dialog modal-xl" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Grapher Backend Information</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <?php foreach( $t->graph::PERIODS_DESC as $pvalue => $pname ): ?>
+
+                        <h6><?= $pname ?></h6>
+
+                        <ul>
+
+                            <li>
+                                Backend: <?= $t->graph->setPeriod( $pvalue )->backend()->name() ?> <code><?= get_class( $t->graph->backend() ) ?></code>
+                            </li>
+
+                            <li>
+                                Data File Path: <code><?= $t->graph->dataPath() ?></code>
+                            </li>
+                        </ul>
+
+                    <?php endforeach; ?>
+
+
+                    <pre><?= print_r( $t->graph->toc() ) ?></pre>
+
+
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary">Save changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<?php endif; ?>
+
+
+
 
 <?php $this->append() ?>
 

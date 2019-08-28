@@ -237,7 +237,6 @@ class PatchPanelPortController extends Controller
             ksort( $partnerPorts );
         }
 
-
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'patch-panel-port/edit' )->with([
             'states'                => $states,
@@ -252,8 +251,8 @@ class PatchPanelPortController extends Controller
             'user'                  => Auth::user(),
             'allocating'            => $allocating,
             'prewired'              => $prewired,
-            'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']              : $ppp->getNotes() )        : ( array_key_exists( 'notes',              $old ) ? $old['notes']              : "" ),
-            'private_notes'         => $id ? ( array_key_exists( 'private_notes',   $old ) ? $old['private_notes']      : $ppp->getPrivateNotes() ) : ( array_key_exists( 'private_notes',      $old ) ? $old['private_notes']      : "" )
+            'notes'                 => array_key_exists( 'notes',           $old ) ? ( $old['notes'] ?? "" )            : $ppp->getNotes() ,
+            'private_notes'         => array_key_exists( 'private_notes',   $old ) ? ( $old['private_notes'] ?? "" )    : $ppp->getPrivateNotes()
         ]);
     }
 
@@ -284,10 +283,7 @@ class PatchPanelPortController extends Controller
      *
      * @return  RedirectResponse
      *
-     * @throws \Doctrine\ORM\NoResultException
-     * @throws \Doctrine\ORM\NonUniqueResultException
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
+     * @throws
      */
     public function store( StorePatchPanelPortRequest $request ): RedirectResponse {
 
@@ -383,8 +379,7 @@ class PatchPanelPortController extends Controller
 
         if( $request->input( 'duplex' ) ) {
 
-
-            if( $request->input( 'partner_port' ) != null ){
+            if( $request->input( 'partner_port' ) != null ) {
                 /** @var PatchPanelPortEntity $partnerPort */
                 $partnerPort = D2EM::getRepository( PatchPanelPortEntity::class )->find( $request->input( 'partner_port' ) );
 
@@ -463,8 +458,7 @@ class PatchPanelPortController extends Controller
      *
      * @return RedirectResponse
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
+     * @throws
      */
     public function changeStatus( int $id, int $status ): RedirectResponse {
         switch ( $status ) {
@@ -501,7 +495,7 @@ class PatchPanelPortController extends Controller
 
         $this->getPPP()->setLastStateChange( new \DateTime );
 
-        if( $status == PatchPanelPortEntity::STATE_CEASED ){
+        if( $status == PatchPanelPortEntity::STATE_CEASED ) {
             if( $this->getPPP()->getSwitchPort() ) {
                 AlertContainer::push( 'The patch panel port has been set to available again. Consider '
                       . 'setting it as  prewired if the cable is still in place. It was connected to '
@@ -653,7 +647,7 @@ class PatchPanelPortController extends Controller
     /**
      * Generate the LoA PDF
      *
-     * @param \Entities\PatchPanelPort $ppp
+     * @param PatchPanelPortEntity $ppp
      * @return array To be unpacked with list( $pdf, $pdfname )
      */
     private function createLoAPDF( PatchPanelPortEntity $ppp ): array {
@@ -713,8 +707,7 @@ class PatchPanelPortController extends Controller
      */
     public function verifyLoa( int $id, string $loaCode ): View {
         /** @var PatchPanelPortEntity $ppp */
-        $ppp = D2EM::getRepository(PatchPanelPortEntity::class)->find($id);
-
+        $ppp = D2EM::getRepository(PatchPanelPortEntity::class)->find( $id );
 
         if( !$ppp ) {
             Log::alert( "Failed PPP LoA verification for non-existent port {$id} from {$_SERVER['REMOTE_ADDR']}" );
@@ -725,7 +718,7 @@ class PatchPanelPortController extends Controller
         }
 
         return view( 'patch-panel-port/verify-loa' )->with([
-            'ppp'           => D2EM::getRepository(PatchPanelPortEntity::class)->find($id),
+            'ppp'           => $ppp,
             'loaCode'       => $loaCode
         ]);
     }
@@ -811,10 +804,9 @@ class PatchPanelPortController extends Controller
      *
      * @return  JsonResponse
      *
-     * @throws \Doctrine\ORM\OptimisticLockException
-     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
+     * @throws
      */
-    public function deleteHistoryFile( int $fileid ){
+    public function deleteHistoryFile( int $fileid ) {
         /** @var PatchPanelPortHistoryFileEntity $ppphf */
         if( !( $ppphf = D2EM::getRepository( PatchPanelPortHistoryFileEntity::class )->find( $fileid ) ) ) {
             abort( 404 );

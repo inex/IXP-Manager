@@ -48,7 +48,7 @@ class VirtualInterfaceControllerTest extends DuskTestCase
     {
         $this->browse( function ( Browser $browser ) {
 
-            $browser->resize(1600, 1200 )
+            $browser->maximize()
                 ->visit('/login' )
                 ->type('username', 'travis' )
                 ->type('password', 'travisci' )
@@ -288,6 +288,33 @@ class VirtualInterfaceControllerTest extends DuskTestCase
         $browser->assertChecked('trunk' )
             ->assertChecked('lag_framing' )
             ->assertChecked('fastlacp' );
+
+
+        // Test for the issue : https://github.com/inex/IXP-Manager/issues/513
+        $browser->visit('/interfaces/virtual/edit/' . $vi->getId() )
+            ->assertSee('Add/Edit Virtual Interface')
+            //->click(        "#advanced-options" ) (should already be open)
+            ->type( "name" , '"test "')
+            ->click('#submit-form' )
+            ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() );
+
+        $browser->assertSourceHas( 'Virtual Interface added/updated successfully.' );
+
+        // Check value in DB
+        D2EM::refresh( $vi );
+
+        $this->assertEquals( "test ",     $vi->getName() );
+
+        $browser->visit('/interfaces/virtual/edit/' . $vi->getId() )
+            ->assertInputValue('name', '"test "' )
+            ->press('Save Changes' )
+            ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() )
+            ->assertSee('Virtual Interface added/updated successfully.' );
+
+        // Check value in DB
+        D2EM::refresh( $vi );
+
+        $this->assertEquals( "test ",     $vi->getName() );
 
         return $vi;
     }

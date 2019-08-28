@@ -90,8 +90,12 @@
         <?= $t->insert( 'layouts/footer-content' ); ?>
 
 
-        <script> const RIPE_ASN_URL = "<?= url( "api/v4/aut-num" ) ?>"; </script>
-        <script> const MARKDOWN_URL = "<?= route( "utils@markdown" ) ?>"; </script>
+        <script>
+            const WHOIS_ASN_URL             = "<?= url( "api/v4/aut-num" )      ?>";
+            const WHOIS_PREFIX_URL          = "<?= url( "api/v4/prefix-whois" ) ?>";
+            const MARKDOWN_URL              = "<?= route( "utils@markdown" )   ?>";
+            const DATATABLE_STATE_DURATION  = 0;
+        </script>
         <script type="text/javascript" src="<?= url ('') . mix('js/ixp-pack.js') ?>"></script>
 
         <script>
@@ -122,11 +126,11 @@
                     sidebar();
                 });
 
-            $('#navbar-ixp').on('click', function () {
-                if ($('#side-navbar').hasClass('active')) {
-                    sidebar();
-                }
-            });
+                $('#navbar-ixp').on('click', function () {
+                    if ($('#side-navbar').hasClass('active')) {
+                        sidebar();
+                    }
+                });
 
                 $(document).on('keyup',function(evt) {
                     if (evt.keyCode == 27) {

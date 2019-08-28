@@ -10,13 +10,28 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
 
-    <div class="btn-group btn-group-sm" role="group">
+    <?php if( $t->customer->isRouteServerClient() && $t->customer->isIrrdbFiltered() ): ?>
 
-<!--        <a  target="_blank" class="btn btn-white" href="#xxx">-->
-<!--            Documentation-->
-<!--        </a>-->
+        <div class="btn-group btn-group-sm" role="group">
 
-    </div>
+            <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                View / Update IRRDB Entries
+            </button>
+
+            <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
+                <?php if( $t->customer->isIPvXEnabled( 4 ) ): ?>
+                    <a class="dropdown-item" href="<?= route( "irrdb@list", [ "customer" => $t->customer->id, "type" => "asn", "protocol" => 4 ] ) ?>">IPv4 IRRDB ASNs</a>
+                    <a class="dropdown-item" href="<?= route( "irrdb@list", [ "customer" => $t->customer->id, "type" => "prefix", "protocol" => 4 ] ) ?>">IPv4 IRRDB Prefixes</a>
+                <?php endif; ?>
+                <?php if( $t->customer->isIPvXEnabled( 6 ) ): ?>
+                    <a class="dropdown-item" href="<?= route( "irrdb@list", [ "customer" => $t->customer->id, "type" => "asn", "protocol" => 6 ] ) ?>">IPv6 IRRDB ASNs</a>
+                    <a class="dropdown-item" href="<?= route( "irrdb@list", [ "customer" => $t->customer->id, "type" => "prefix", "protocol" => 6 ] ) ?>">IPv6 IRRDB Prefixes</a>
+                <?php endif; ?>
+            </div>
+
+        </div>
+
+    <?php endif; ?>
 
 <?php $this->append() ?>
 
@@ -79,7 +94,7 @@
 
                             <tr>
 
-                                <td><span class="tw-font-mono"><?= $network ?></span></td>
+                                <td><span class="tw-font-mono"><?= $t->whoisPrefix( $network ) ?></span></td>
 
                                 <td>
 

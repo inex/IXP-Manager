@@ -27,21 +27,19 @@ namespace IXP\Http\Controllers\Interfaces;
 use D2EM;
 
 use Entities\{
-    IPv4Address as IPv4AddressEntity,
-    IPv6Address as IPv6AddressEntity,
-    PhysicalInterface as PhysicalInterfaceEntity,
-    SwitchPort as SwitchPortEntity,
-    VirtualInterface as VirtualInterfaceEntity,
-    Vlan as VlanEntity,
-    VlanInterface as VlanInterfaceEntity
+    IPv4Address         as IPv4AddressEntity,
+    IPv6Address         as IPv6AddressEntity,
+    PhysicalInterface   as PhysicalInterfaceEntity,
+    SwitchPort          as SwitchPortEntity,
+    VirtualInterface    as VirtualInterfaceEntity,
+    Vlan                as VlanEntity,
+    VlanInterface       as VlanInterfaceEntity
 };
 
 use Illuminate\Http\Request;
 
 use IXP\Http\Controllers\Controller;
 use IXP\Http\Requests\StoreVirtualInterfaceWizard;
-
-use IXP\Services\Grapher\Graph\VlanInterface;
 
 use IXP\Utils\View\Alert\Alert;
 use IXP\Utils\View\Alert\Container as AlertContainer;
@@ -63,10 +61,10 @@ abstract class Common extends Controller
      *
      * Removes a related interface and if it only has one physical interface, removes the virtual interface also
      *
-     * @param \Entities\PhysicalInterface $pi Physical interface to remove related physical interface.
+     * @param PhysicalInterfaceEntity $pi Physical interface to remove related physical interface.
      *
      * @return void
-     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
+     * @throws
      */
     public function removeRelatedInterface( $pi ){
         if( $pi->getRelatedInterface() ) {
@@ -110,10 +108,10 @@ abstract class Common extends Controller
      * if the peering port has a related interface and, if so, removes the relation.
      *
      * @param  Request|StoreVirtualInterfaceWizard $request instance of the current HTTP reques
-     * @param \Entities\PhysicalInterface $pi Peering physical interface to related with fanout physical interface (port).
-     * @param \Entities\VirtualInterface $vi Virtual interface of peering physical intreface
+     * @param PhysicalInterfaceEntity   $pi Peering physical interface to related with fanout physical interface (port).
+     * @param VirtualInterfaceEntity    $vi Virtual interface of peering physical intreface
      * @return boolean
-     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
+     * @throws
      */
     public function processFanoutPhysicalInterface( $request, $pi, $vi ) {
 
@@ -127,7 +125,7 @@ abstract class Common extends Controller
             abort( 404, 'Unknown customer' );
         }
 
-        $fnsp->setType( \Entities\SwitchPort::TYPE_FANOUT );
+        $fnsp->setType( SwitchPortEntity::TYPE_FANOUT );
 
         // if switch port does not have a physical interface then create one
         if( !$fnsp->getPhysicalInterface() ) {
@@ -178,7 +176,7 @@ abstract class Common extends Controller
     /**
      * When we have >1 phys int / LAG framing, we need to set other elements of the virtual interface appropriately:
      * @param VirtualInterfaceEntity $vi
-     * @throws \IXP\Exceptions\GeneralException
+     * @throws
      */
     public function setBundleDetails( VirtualInterfaceEntity $vi ){
         if( count( $vi->getPhysicalInterfaces() ) ) {
@@ -226,7 +224,7 @@ abstract class Common extends Controller
      * @param VlanInterfaceEntity $vli Vlan interface to assign IP to
      * @param bool $ipv6 Bool to define if IP address is IPv4 or IPv6
      * @return bool
-     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
+     * @throws
      */
     public function setIp( Request $request, VlanEntity $v, VlanInterfaceEntity $vli, bool $ipv6 = false )
     {

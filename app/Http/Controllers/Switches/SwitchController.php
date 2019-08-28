@@ -23,9 +23,8 @@ namespace IXP\Http\Controllers\Switches;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Former, Redirect,Route, Validator;
+use Auth, D2EM, Former, Log, Route;
 
-use Carbon\Carbon;
 use Entities\{
     Cabinet             as CabinetEntity,
     Infrastructure      as InfrastructureEntity,
@@ -39,8 +38,12 @@ use Entities\{
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
-use Illuminate\Support\Facades\Date;
 use IXP\Http\Controllers\Doctrine2Frontend;
+
+use IXP\Http\Requests\Switches\{
+    Store       as StoreRequest,
+    StoreBySmtp as StoreBySmtpRequest
+};
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -71,6 +74,15 @@ class SwitchController extends Doctrine2Frontend {
      * @var SwitcherEntity
      */
     protected $object = null;
+
+    /**
+     * Sometimes we need to pass a custom request object for validation / authorisation.
+     *
+     * Set the name of the function here and the route for store will be pointed to it instead of doStore()
+     *
+     * @var string
+     */
+    protected static $storeFn = 'customStore';
 
 
     /**
@@ -421,21 +433,12 @@ class SwitchController extends Doctrine2Frontend {
     /**
      * Process the hostname and SNMP community, poll the switch and set up the proper add/edit form
      *
-     * @param Request $request
+     * @param StoreBySmtpRequest $request
      * @return bool|RedirectResponse|View
      *
      * @throws
      */
-    public function storeBySmtp( Request $request ) {
-
-        $validator = Validator::make( $request->all(), [
-            'snmppasswd' => 'required|string|max:255',
-            'hostname'   => 'required|string|max:255|unique:Entities\Switcher,hostname' . ( $request->input('id') ? ','. $request->input('id') : '' ),
-        ] );
-
-        if( $validator->fails() ) {
-            return Redirect::back()->withErrors( $validator )->withInput();
-        }
+    public function storeBySmtp( StoreBySmtpRequest $request ) {
 
         $vendorid = null;
 
@@ -487,32 +490,12 @@ class SwitchController extends Doctrine2Frontend {
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param StoreRequest $request
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request ) {
-
-        $validator = Validator::make( $request->all(), [
-            'name'                      => 'required|string|max:255|unique:Entities\Switcher,name'      . ( $request->input('id') ? ','. $request->input('id') : '' ),
-            'hostname'                  => 'required|string|max:255|unique:Entities\Switcher,hostname'  . ( $request->input('id') ? ','. $request->input('id') : '' ),
-            'cabinetid'                 => 'required|integer|exists:Entities\Cabinet,id',
-            'infrastructure'            => 'required|integer|exists:Entities\Infrastructure,id',
-            'snmppasswd'                => 'nullable|string|max:255',
-            'vendorid'                  => 'required|integer|exists:Entities\Vendor,id',
-            'ipv4addr'                  => 'nullable|ipv4',
-            'ipv6addr'                  => 'nullable|ipv6',
-            'model'                     => 'nullable|string|max:255',
-            'asn'                       => 'nullable|integer|min:1',
-            'loopback_ip'               => 'nullable|string|max:255|unique:Entities\Switcher,loopback_ip' . ( $request->input('id') ? ','. $request->input('id') : '' ),
-            'loopback_name'             => 'nullable|string|max:255',
-            'mgmt_mac_address'          => 'nullable|string|max:17|regex:/^[a-f0-9:\.\-]{12,17}$/i',
-        ] );
-
-        if( $validator->fails() ) {
-            return Redirect::to( route( "switch@add") )->withErrors( $validator )->withInput();
-        }
+    public function customStore( StoreRequest $request ) {
 
         if( $request->input( 'id', false ) ) {
             if( !( $this->object = D2EM::getRepository( SwitcherEntity::class )->find( $request->input( 'id' ) ) ) ) {
@@ -585,7 +568,14 @@ class SwitchController extends Doctrine2Frontend {
 
         D2EM::flush();
 
-        return true;
+        $action = $request->input( 'id', '' )  ? "edited" : "added";
+
+        Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
+
+        AlertContainer::push( $this->store_alert_success_message ?? $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
+
+        return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
+
     }
 
 

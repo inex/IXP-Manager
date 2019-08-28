@@ -187,6 +187,8 @@ $this->layout( 'layouts/ixpv4' );
 
             $('#customer-list').DataTable( {
                 responsive: true,
+                stateSave: true,
+                stateDuration : DATATABLE_STATE_DURATION,
                 columnDefs: [
                     { responsivePriority: 1, targets: 0 },
                     { responsivePriority: 2, targets: -1 }

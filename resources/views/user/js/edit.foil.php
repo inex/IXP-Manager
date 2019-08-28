@@ -12,8 +12,8 @@
             tableList.show();
 
             tableList.dataTable({
-
-                responsive: true,
+                stateSave: true,
+                stateDuration : DATATABLE_STATE_DURATION,
                 responsive: true,
                 ordering: false,
                 searching: false,

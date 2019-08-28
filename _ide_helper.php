@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 5.8.29 on 2019-07-17 07:50:02.
+ * Generated for Laravel 5.8.29 on 2019-07-22 14:17:48.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -3372,8 +3372,32 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function flush()
         {
-                        /** @var \Illuminate\Cache\ArrayStore $instance */
+                        /** @var \Illuminate\Cache\FileStore $instance */
                         return $instance->flush();
+        }
+        
+        /**
+         * Get the Filesystem instance.
+         *
+         * @return \Illuminate\Filesystem\Filesystem 
+         * @static 
+         */ 
+        public static function getFilesystem()
+        {
+                        /** @var \Illuminate\Cache\FileStore $instance */
+                        return $instance->getFilesystem();
+        }
+        
+        /**
+         * Get the working directory of the cache.
+         *
+         * @return string 
+         * @static 
+         */ 
+        public static function getDirectory()
+        {
+                        /** @var \Illuminate\Cache\FileStore $instance */
+                        return $instance->getDirectory();
         }
         
         /**
@@ -3384,7 +3408,7 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function getPrefix()
         {
-                        /** @var \Illuminate\Cache\ArrayStore $instance */
+                        /** @var \Illuminate\Cache\FileStore $instance */
                         return $instance->getPrefix();
         }
          
@@ -21608,115 +21632,6 @@ namespace Laravel\Horizon {
  
 }
 
-namespace Laravel\Socialite\Facades { 
-
-    /**
-     * 
-     *
-     * @see \Laravel\Socialite\SocialiteManager
-     */ 
-    class Socialite {
-        
-        /**
-         * Get a driver instance.
-         *
-         * @param string $driver
-         * @return mixed 
-         * @static 
-         */ 
-        public static function with($driver)
-        {
-                        /** @var \Laravel\Socialite\SocialiteManager $instance */
-                        return $instance->with($driver);
-        }
-        
-        /**
-         * Build an OAuth 2 provider instance.
-         *
-         * @param string $provider
-         * @param array $config
-         * @return \Laravel\Socialite\Two\AbstractProvider 
-         * @static 
-         */ 
-        public static function buildProvider($provider, $config)
-        {
-                        /** @var \Laravel\Socialite\SocialiteManager $instance */
-                        return $instance->buildProvider($provider, $config);
-        }
-        
-        /**
-         * Format the server configuration.
-         *
-         * @param array $config
-         * @return array 
-         * @static 
-         */ 
-        public static function formatConfig($config)
-        {
-                        /** @var \Laravel\Socialite\SocialiteManager $instance */
-                        return $instance->formatConfig($config);
-        }
-        
-        /**
-         * Get the default driver name.
-         *
-         * @throws \InvalidArgumentException
-         * @return string 
-         * @static 
-         */ 
-        public static function getDefaultDriver()
-        {
-                        /** @var \Laravel\Socialite\SocialiteManager $instance */
-                        return $instance->getDefaultDriver();
-        }
-        
-        /**
-         * Get a driver instance.
-         *
-         * @param string $driver
-         * @return mixed 
-         * @throws \InvalidArgumentException
-         * @static 
-         */ 
-        public static function driver($driver = null)
-        {
-            //Method inherited from \Illuminate\Support\Manager            
-                        /** @var \Laravel\Socialite\SocialiteManager $instance */
-                        return $instance->driver($driver);
-        }
-        
-        /**
-         * Register a custom driver creator Closure.
-         *
-         * @param string $driver
-         * @param \Closure $callback
-         * @return \Laravel\Socialite\SocialiteManager 
-         * @static 
-         */ 
-        public static function extend($driver, $callback)
-        {
-            //Method inherited from \Illuminate\Support\Manager            
-                        /** @var \Laravel\Socialite\SocialiteManager $instance */
-                        return $instance->extend($driver, $callback);
-        }
-        
-        /**
-         * Get all of the created "drivers".
-         *
-         * @return array 
-         * @static 
-         */ 
-        public static function getDrivers()
-        {
-            //Method inherited from \Illuminate\Support\Manager            
-                        /** @var \Laravel\Socialite\SocialiteManager $instance */
-                        return $instance->getDrivers();
-        }
-         
-    }
- 
-}
-
 
 namespace  { 
 
@@ -24523,8 +24438,6 @@ namespace  {
     class EntityManager extends \LaravelDoctrine\ORM\Facades\EntityManager {}
 
     class Horizon extends \Laravel\Horizon\Horizon {}
-
-    class Socialite extends \Laravel\Socialite\Facades\Socialite {}
  
 }
 

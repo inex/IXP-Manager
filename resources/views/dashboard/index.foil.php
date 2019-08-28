@@ -62,25 +62,55 @@ $this->layout( 'layouts/ixpv4' );
                             </a>
                         </li>
 
-                        <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes' ) && $t->c->isRouteServerClient() ): ?>
-                            <li class="nav-item" onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'id' =>  $t->c->getId() ] ) ?>'">
-                                <a class="nav-link" data-toggle="tab"  href="">
-                                    RS Prefixes
-                                    <?php if( $t->rsRoutes[ 'adv_nacc' ][ 'total' ] > 0 ): ?>
-                                        <span class="badge badge-danger"><?= $t->rsRoutes[ 'adv_nacc' ][ 'total' ] ?></span>
-                                    <?php endif ?>
-                                    &raquo;
-                                </a>
-                            </li>
+
+                        <?php if( $t->c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $t->c->hasLeft() ) ): ?>
+
+
+                            <?php if( $t->c->isRouteServerClient() ): ?>
+
+
+                                <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes' ) ): ?>
+                                    <li class="nav-item" onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'id' =>  $t->c->getId() ] ) ?>'">
+                                        <a class="nav-link" data-toggle="tab"  href="">
+                                            RS Prefixes
+                                            <?php if( $t->rsRoutes[ 'adv_nacc' ][ 'total' ] > 0 ): ?>
+                                                <span class="badge badge-danger"><?= $t->rsRoutes[ 'adv_nacc' ][ 'total' ] ?></span>
+                                            <?php endif ?>
+                                            &raquo;
+                                        </a>
+                                    </li>
+                                <?php endif ?>
+
+
+                                <?php if( !config( 'ixp_fe.frontend.disabled.filtered-prefixes' ) ): ?>
+
+                                    <li class="nav-item" onclick="window.location.href = '<?= route( "filtered-prefixes@list", [ 'customer' =>  $t->c->getId() ] ) ?>'">
+                                        <a class="nav-link" data-toggle="tab"  href="">
+                                            Filtered Prefixes &raquo;
+                                        </a>
+                                    </li>
+
+                                <?php elseif( $t->c->isIrrdbFiltered() ): ?>
+
+                                    <li class="nav-item" onclick="window.location.href = '<?= route( "irrdb@list", [ "customer" => $t->c->getId(), "type" => 'prefix', "protocol" => $t->c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>'">
+                                        <a class="nav-link" data-toggle="tab"  href="">
+                                            IRRDB Entries &raquo;
+                                        </a>
+                                    </li>
+
+                                <?php endif; ?>
+
+
+                            <?php endif ?>
+
+                            <?php if( config('grapher.backends.sflow.enabled') ) : ?>
+                                <li class="nav-item" onclick="window.location.href = '<?= route( "statistics@p2p", [ 'cid' => $t->c->getId() ] )  ?>'">
+                                    <a class="nav-link" data-toggle="tab" href="">P2P &raquo;</a>
+                                </li>
+                            <?php endif ?>
+
                         <?php endif ?>
 
-                        <?php if( !config( 'ixp_fe.frontend.disabled.filtered-prefixes' ) && $t->c->isRouteServerClient() ): ?>
-                            <li class="nav-item" onclick="window.location.href = '<?= route( "filtered-prefixes@list", [ 'customer' =>  $t->c->getId() ] ) ?>'">
-                                <a class="nav-link" data-toggle="tab"  href="">
-                                    Filtered Prefixes &raquo;
-                                </a>
-                            </li>
-                        <?php endif ?>
 
                         <?php if( !config( 'ixp_fe.frontend.disabled.peering-manager' ) ): ?>
                             <li class="nav-item">
@@ -160,6 +190,8 @@ $this->layout( 'layouts/ixpv4' );
         $('.table-responsive-ixp').show();
 
         $('.table-responsive-ixp').DataTable( {
+            stateSave: true,
+            stateDuration : DATATABLE_STATE_DURATION,
             responsive: true,
             ordering: false,
             searching: false,
@@ -181,3 +213,7 @@ $this->layout( 'layouts/ixpv4' );
         <?php endif; ?>
     </script>
 <?php $this->append() ?>
+
+
+
+

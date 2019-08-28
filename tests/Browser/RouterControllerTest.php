@@ -77,6 +77,9 @@ class RouterControllerTest extends DuskTestCase
                 ->type( 'peering_ip', '2001:db8::1' )
                 ->type( 'asn', '65544' )
                 ->select( 'software', 1 )
+                ->type( 'software_version', '2.0.4' )
+                ->type( 'operating_system', 'Ubuntu Linux' )
+                ->type( 'operating_system_version', '18.04 LTS' )
                 ->type( 'mgmt_host', '192.0.2.1' )
                 ->select( 'api_type', 1 )
                 ->type( 'api', 'https://api.example.com' )
@@ -105,6 +108,9 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( '2001:db8::1', $router->peeringIp() );
             $this->assertEquals( '65544', $router->getAsn() );
             $this->assertEquals( '1', $router->getSoftware() );
+            $this->assertEquals( '2.0.4', $router->getSoftwareVersion() );
+            $this->assertEquals( 'Ubuntu Linux', $router->getOperatingSystem() );
+            $this->assertEquals( '18.04 LTS', $router->getOperatingSystemVersion() );
             $this->assertEquals( '192.0.2.1', $router->getMgmtHost() );
             $this->assertEquals( '1', $router->getApiType() );
             $this->assertEquals( 'https://api.example.com', $router->getApi() );
@@ -129,6 +135,9 @@ class RouterControllerTest extends DuskTestCase
                 ->assertInputValue('peering_ip', '2001:db8::1')
                 ->assertInputValue('asn', '65544')
                 ->assertSelected('software', '1')
+                ->assertInputValue( 'software_version', '2.0.4' )
+                ->assertInputValue( 'operating_system', 'Ubuntu Linux' )
+                ->assertInputValue( 'operating_system_version', '18.04 LTS' )
                 ->assertInputValue('mgmt_host', '192.0.2.1')
                 ->assertSelected('api_type', '1')
                 ->assertInputValue( 'api', 'https://api.example.com' )
@@ -152,6 +161,9 @@ class RouterControllerTest extends DuskTestCase
                 ->type( 'peering_ip', '192.0.2.21' )
                 ->type( 'asn', '65545' )
                 ->select( 'software', '2' )
+                ->type( 'software_version', '1.6.4' )
+                ->type( 'operating_system', 'FreeBSD' )
+                ->type( 'operating_system_version', '11.4' )
                 ->type( 'mgmt_host', '192.0.2.10' )
                 ->select( 'api_type', '0' )
                 ->type( 'api', 'https://api2.example.com' )
@@ -179,6 +191,9 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( '192.0.2.21', $router->peeringIp() );
             $this->assertEquals( '65545', $router->getAsn() );
             $this->assertEquals( '2', $router->getSoftware() );
+            $this->assertEquals( '1.6.4', $router->getSoftwareVersion() );
+            $this->assertEquals( 'FreeBSD', $router->getOperatingSystem() );
+            $this->assertEquals( '11.4', $router->getOperatingSystemVersion() );
             $this->assertEquals( '192.0.2.10', $router->getMgmtHost() );
             $this->assertEquals( '0', $router->getApiType() );
             $this->assertEquals( 'https://api2.example.com', $router->getApi() );
@@ -211,7 +226,7 @@ class RouterControllerTest extends DuskTestCase
                 ->assertPathIs('/router/list');
 
 
-            // 6. repeat database load and database object check for new values (repeat 2)
+            // . repeat database load and database object check for new values (repeat 2)
             D2EM::refresh( $router );
 
             $this->assertInstanceOf( RouterEntity::class, $router );
@@ -225,6 +240,9 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( '192.0.2.21', $router->peeringIp() );
             $this->assertEquals( '65545', $router->getAsn() );
             $this->assertEquals( '2', $router->getSoftware() );
+            $this->assertEquals( '1.6.4', $router->getSoftwareVersion() );
+            $this->assertEquals( 'FreeBSD', $router->getOperatingSystem() );
+            $this->assertEquals( '11.4', $router->getOperatingSystemVersion() );
             $this->assertEquals( '192.0.2.10', $router->getMgmtHost() );
             $this->assertEquals( '0', $router->getApiType() );
             $this->assertEquals( 'https://api2.example.com', $router->getApi() );

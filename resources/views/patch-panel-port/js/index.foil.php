@@ -15,6 +15,8 @@
         $( '#table-ppp' ).show();
 
         $( '#table-ppp' ).DataTable({
+            stateSave: true,
+            stateDuration : DATATABLE_STATE_DURATION,
             responsive : true,
             "paging":   pagination,
             columnDefs: [

@@ -143,7 +143,7 @@
 
                     <?php endif; ?>
                     <a class="dropdown-item" tabindex="-1" href="<?= route('patch-panel-port@move-form' , [ 'id' => $t->ppp->getId() ] ) ?>">Move Port</a>
-
+                    <input type="hidden" value="<?= $t->ppp->getPatchPanel()->getId()?>" id="pp-id-admin-actions">
                 </ul>
             </li>
         <?php endif; ?>

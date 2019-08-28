@@ -149,3 +149,9 @@ Route::post( 'peering-manager/form',                       'PeeringManagerContro
 Route::post( 'peering-manager/send-peering-email',      'PeeringManagerController@sendPeeringEmail' )->name( "peering-manager@send-peering-email" );
 Route::post( 'peering-manager/notes',                   'PeeringManagerController@peeringNotes'     )->name( "peering-manager@notes" );
 
+
+Route::group( [ 'prefix' => 'irrdb' ], function() {
+    Route::get(  'customer/{customer}/{type}/{protocol}',   'IrrdbController@list'            )->name( "irrdb@list"            );
+    Route::get(  'update/{customer}/{type}/{protocol}',                'IrrdbController@update'          )->name( "irrdb@update"          );
+});
+

@@ -137,6 +137,8 @@ abstract class Doctrine2Frontend extends Controller {
         'LABEL'             => 'label',
         'ARRAY'             => 'array',
         'INTEGER'           => 'integer',
+        'LIMIT'             => 'limit',
+        'TEXT'              => 'text',
     ];
 
 
@@ -234,14 +236,29 @@ abstract class Doctrine2Frontend extends Controller {
      */
     protected function preList() {}
 
+    /**
+     * Function which can be over-ridden to perform a "can list" authorisation step.
+     *
+     * Must return null (for okay) or a RedirectResponse (`redirect()`).
+     *
+     * @return ?RedirectResponse
+     */
+    protected function canList(): ?RedirectResponse {
+        return null;
+    }
+
 
     /**
      * List the contents of a database table.
      *
-     * @return View
+     * @return View|RedirectResponse
      */
-    public function list( Request $param ): View
+    public function list( Request $param )
     {
+        if( ( $r = $this->canList() ) !== null ) {
+            return $r;
+        }
+
         $this->data[ 'rows' ] = $this->listGetData();
 
         $this->data[ 'view' ][ 'listEmptyMessage']      = $this->resolveTemplate( 'list-empty-message', false );

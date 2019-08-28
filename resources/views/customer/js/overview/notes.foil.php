@@ -271,6 +271,8 @@
         $('.table-note').show();
 
         $('.table-note').DataTable( {
+            stateSave: true,
+            stateDuration : DATATABLE_STATE_DURATION,
             responsive: true,
             ordering: false,
             searching: false,

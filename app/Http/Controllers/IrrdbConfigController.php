@@ -23,12 +23,13 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Redirect, Validator;
+use Auth, D2EM, Former, Log, Route;
 
 use Entities\{
     IRRDBConfig      as IRRDBConfigEntity
 };
-use Illuminate\Http\Request;
+use IXP\Http\Requests\StoreIrrdbConfig as StoreIrrdbConfigRequest;
+
 use Illuminate\Http\RedirectResponse;
 
 use IXP\Utils\View\Alert\{
@@ -53,6 +54,15 @@ class IrrdbConfigController extends Doctrine2Frontend {
      * @var IRRDBConfigEntity
      */
     protected $object = null;
+
+    /**
+     * Sometimes we need to pass a custom request object for validation / authorisation.
+     *
+     * Set the name of the function here and the route for store will be pointed to it instead of doStore()
+     *
+     * @var string
+     */
+    protected static $storeFn = 'customStore';
 
     /**
      * This function sets up the frontend controller
@@ -95,7 +105,6 @@ class IrrdbConfigController extends Doctrine2Frontend {
 
 
     }
-
 
     /**
      * Provide array of rows for the list action and view action
@@ -141,23 +150,14 @@ class IrrdbConfigController extends Doctrine2Frontend {
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param Request $request
+     * @param StoreIrrdbConfigRequest $request
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function doStore( Request $request )
+    public function customStore( StoreIrrdbConfigRequest $request )
     {
-        $validator = Validator::make( $request->all(), [
-            'host'                  => 'required|string|max:255',
-            'protocol'              => 'required|string|max:255',
-            'source'                => 'required|string|max:255',
-        ]);
-
-        if( $validator->fails() ) {
-            return Redirect::back()->withErrors($validator)->withInput();
-        }
 
         if( $request->input( 'id', false ) ) {
             if( !( $this->object = D2EM::getRepository( IRRDBConfigEntity::class )->find( $request->input( 'id' ) ) ) ) {
@@ -177,7 +177,14 @@ class IrrdbConfigController extends Doctrine2Frontend {
         D2EM::flush($this->object);
 
 
-        return true;
+        $action = $request->input( 'id', '' )  ? "edited" : "added";
+
+        Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
+
+        AlertContainer::push( $this->store_alert_success_message ?? $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
+
+        return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
+
     }
 
     /**

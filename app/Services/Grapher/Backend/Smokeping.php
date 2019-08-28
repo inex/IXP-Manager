@@ -196,6 +196,19 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
     }
 
     /**
+     * Get the path to the graphing data file (e.g. path to log or rrd file).
+     *
+     * {inheritDoc}
+     *
+     * @param Graph $graph
+     * @return string Path or empty string
+     * @throws CannotHandleRequestException
+     */
+    public function dataPath( Graph $graph ): string {
+        return $this->resolveFilePath( $graph );
+    }
+
+    /**
      * Get the RRD file for a given graph
      *
      * {inheritDoc}

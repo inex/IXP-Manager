@@ -64,10 +64,10 @@ class ApiKey extends \Entities\ApiKey implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'apiKey', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'expires', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'allowedIPs', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'created', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'lastseenAt', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'lastseenFrom', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'id', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'User'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'apiKey', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'expires', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'allowedIPs', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'created', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'lastseenAt', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'lastseenFrom', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'description', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'id', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'User'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'apiKey', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'expires', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'allowedIPs', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'created', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'lastseenAt', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'lastseenFrom', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'id', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'User'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'apiKey', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'expires', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'allowedIPs', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'created', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'lastseenAt', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'lastseenFrom', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'description', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'id', '' . "\0" . 'Entities\\ApiKey' . "\0" . 'User'];
     }
 
     /**
@@ -193,6 +193,28 @@ class ApiKey extends \Entities\ApiKey implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getApiKey', []);
 
         return parent::getApiKey();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setDescription($description)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDescription', [$description]);
+
+        return parent::setDescription($description);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getDescription()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getDescription', []);
+
+        return parent::getDescription();
     }
 
     /**

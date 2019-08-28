@@ -82,8 +82,47 @@ if( !function_exists( 'ixp_min_auth' ) ) {
             return Auth::user()->getPrivs() >= $minauth;
         }
 
-        return $minauth == 0;
+        return $minauth === 0;
     }
 }
 
+
+if( !function_exists( 'ixp_get_client_ip' ) ) {
+
+    /**
+     * Try to get the clients real IP address even when behind a proxy.
+     *
+     * Source: https://stackoverflow.com/questions/33268683/how-to-get-client-ip-address-in-laravel-5/41769505#41769505
+     *
+     * @return string
+     */
+    function ixp_get_client_ip()
+    {
+        // look for public:
+        foreach( [ 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR' ] as $key ) {
+            if( array_key_exists( $key, $_SERVER ) === true ) {
+                foreach( explode(',', $_SERVER[$key] ) as $ip ) {
+                    $ip = trim($ip);
+                    if( filter_var( $ip, FILTER_VALIDATE_IP, FILTER_FLAG_NO_PRIV_RANGE | FILTER_FLAG_NO_RES_RANGE ) !== false ) {
+                        return $ip;
+                    }
+                }
+            }
+        }
+
+        // accept private:
+        foreach( [ 'HTTP_CLIENT_IP', 'HTTP_X_FORWARDED_FOR', 'HTTP_X_FORWARDED', 'HTTP_X_CLUSTER_CLIENT_IP', 'HTTP_FORWARDED_FOR', 'HTTP_FORWARDED', 'REMOTE_ADDR' ] as $key ) {
+            if( array_key_exists( $key, $_SERVER ) === true ) {
+                foreach( explode(',', $_SERVER[$key] ) as $ip ) {
+                    $ip = trim($ip);
+                    if( filter_var( $ip, FILTER_VALIDATE_IP ) !== false ) {
+                        return $ip;
+                    }
+                }
+            }
+        }
+
+        return '';
+    }
+}
 

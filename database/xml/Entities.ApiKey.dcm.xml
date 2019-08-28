@@ -5,6 +5,7 @@
       <generator strategy="AUTO"/>
     </id>
     <field name="apiKey" type="string" unique="true" length="255" nullable="false" column="apiKey"/>
+    <field name="description" type="text" nullable="true"/>
     <field name="expires" type="datetime" nullable="true"/>
     <field name="allowedIPs" type="text" nullable="true" column="allowedIPs"/>
     <field name="created" type="datetime" nullable="false"/>

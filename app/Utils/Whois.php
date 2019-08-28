@@ -24,23 +24,44 @@ namespace IXP\Utils;
  */
 
 /**
- * PeeringDbWhois
+ * Whois
  *
- * A Whois implementation for looking up networks by ASN in PeeringDB
+ * A Whois implementation
  *
  * @package IXP\Utils
  */
-class PeeringDbWhois
+class Whois
 {
 
     /**
-     * Do an ASN lookup on PeeringDB
+     * @var string Whois server hostname
+     */
+    private $host;
+
+    /**
+     * @var int Whois server port
+     */
+    private $port;
+
+
+    /**
+     * Whois constructor.
+     * @param string $host     Whois server hostname
+     * @param int $port        Whois server port
+     */
+    public function __construct(string $host, int $port) {
+        $this->host = $host;
+        $this->port = $port;
+    }
+
+    /**
+     * Do a whois lookup
      *
-     * @param int  $as         The AS number to lookup
+     * @param string $lookup   What to ask the whois server
      * @param bool $htmlencode If true, return output of htmlspecialchars()
      * @return string
      */
-    public function whois( int $as, bool $htmlencode = true ): string
+    public function whois( string $lookup, bool $htmlencode = true ): string
     {
         // Whois specification:
         //
@@ -51,12 +72,12 @@ class PeeringDbWhois
         // server closes its connections as soon as the output is finished.
 
         // Open a socket to PeeringDB's Whois service
-        if( !( $sock = fsockopen( 'whois.peeringdb.com', 43 ) ) ) {
-            return "Error: could not connect to whois.peeringdb.com:43\n\nCheck internet connectivity and PeeringDB status.";
+        if( !( $sock = fsockopen( $this->host, $this->port ) ) ) {
+            return "Error: could not connect to {$this->host}:{$this->port}\n\nCheck internet connectivity and {$this->host} status.";
         }
 
         // look up the ASN
-        fputs( $sock, sprintf( "AS%d\r\n", $as ) );
+        fwrite( $sock, $lookup . "\n" );
 
         // load the result (streaming text)
         $data = '';
@@ -64,11 +85,6 @@ class PeeringDbWhois
             $data .= fgets( $sock, 4096 );
         }
         fclose( $sock );
-
-        // nicer error message than PeeringDB's
-        if( strpos( strtolower( $data ), "network matching query does not exist" ) !== false ) {
-            return "AS{$as} does not appear to have a record in PeeringDB.";
-        }
 
         // assume this is for display on a website
         if( $htmlencode ) {
@@ -78,5 +94,12 @@ class PeeringDbWhois
         return $data;
     }
 
+    /**
+     * @return string
+     */
+    public function host(): string
+    {
+        return $this->host;
+    }
 
 }

@@ -132,6 +132,25 @@
                     your platform does not exist here, please open an issue on GitHub.' );
                     ?>
 
+                    <?= Former::text( 'software_version' )
+                        ->label( 'Software Version' )
+                        ->placeholder( '2.0.4')
+                        ->blockHelp( "The version of the BGP software daemon (free text, used in IX-F export" );
+                    ?>
+
+                    <?= Former::text( 'operating_system' )
+                        ->label( 'Operating System' )
+                        ->placeholder( 'Ubuntu Linux / FreeBSD / Debian / ...')
+                        ->blockHelp( "The operating system that runs the BGP software daemon (free text, used in IX-F export" );
+                    ?>
+
+                    <?= Former::text( 'operating_system_version' )
+                        ->label( 'OS Version' )
+                        ->placeholder( '18.04 / 11.2 / 7 / ...')
+                        ->blockHelp( "The operating system version that runs the BGP software daemon (free text, used in IX-F export" );
+                    ?>
+
+
                     <?= Former::text( 'mgmt_host' )
                         ->label( 'Management Host' )
                         ->placeholder( '192.0.2.89 / 2001:db8::89 / rs1-lan1-ipv4.mgmt.example.com')

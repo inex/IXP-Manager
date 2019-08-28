@@ -408,6 +408,28 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
     }
 
     /**
+     * Get the path to the graphing data file (e.g. path to log or rrd file).
+     *
+     * {inheritDoc}
+     *
+     * @param Graph $graph
+     * @return string Path or empty string
+     * @throws CannotHandleRequestException
+     */
+    public function dataPath( Graph $graph ): string {
+        try {
+            if( config( 'grapher.backends.mrtg.dbtype' ) == 'log' ) {
+                return $this->resolveFilePath( $graph, 'log' );
+            } else {
+                return $this->resolveFilePath( $graph, 'rrd' );
+            }
+        } catch( CannotHandleRequestException $e ) {
+            return '';
+        }
+    }
+
+
+    /**
      * For larger IXPs, allow sharding of directories over 16 possible base directories
      *
      * @param int $id The customer entity id

@@ -69,6 +69,20 @@ class Router extends EntityRepository
     }
 
     /**
+     * Find all routers indexed by peering IPs for a given router type
+     *
+     * @return array
+     */
+    public function indexAllByPeeringIPs( int $type ) {
+        $ips = [];
+        foreach( $this->filterCollectionOnType( $this->findAll(), $type ) as $r ) {
+            $ips[ $r->getVlan()->getId() ][ $r->getPeeringIp() ] = $r;
+        }
+
+        return $ips;
+    }
+
+    /**
      * Find all peering ASNs for a given router type
      *
      * @param int $type

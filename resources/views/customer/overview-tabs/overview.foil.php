@@ -90,6 +90,11 @@
                             <td>
                                 <?php if( $t->c->getIRRDB() ): ?>
                                     <?= $t->ee( $t->c->getIRRDB()->getSource() )?>
+
+                                    <?php if( $t->c->isRouteServerClient() && $t->c->isIrrdbFiltered() ): ?>
+                                        (<a href="<?= route( "irrdb@list", [ "customer" => $t->c->getId(), "type" => 'prefix', "protocol" => $t->c->isIPvXEnabled( 4) ? 4 : 6 ] ) ?>">entries</a>)
+                                    <?php endif; ?>
+
                                 <?php endif; ?>
                             </td>
                         </tr>

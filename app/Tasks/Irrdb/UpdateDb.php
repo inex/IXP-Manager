@@ -58,6 +58,13 @@ abstract class UpdateDb
     private $customer = null;
 
     /**
+     * Protocols to update
+     *
+     * @var array
+     */
+    private $protocols = [4,6];
+
+    /**
      * Variable for timing
      */
     private $time     = 0.0;
@@ -97,8 +104,13 @@ abstract class UpdateDb
      * @param Customer $c
      * @throws ConfigurationException
      */
-    public function __construct( Customer $c ) {
+    public function __construct( Customer $c, ?array $protocols = null ) {
         $this->setCustomer( $c );
+
+        if( $protocols !== null ) {
+            $this->protocols = $protocols;
+        }
+
         $this->setBgpq3( new Bgpq3( config( 'ixp.irrdb.bgpq3.path' ) ) );
     }
 
@@ -121,6 +133,17 @@ abstract class UpdateDb
     public function customer(): Customer {
         return $this->customer;
     }
+
+
+    /**
+     * Get the protocols to update
+     *
+     * @return array
+     */
+    public function protocols(): array {
+        return $this->protocols;
+    }
+
 
     /**
      * Set the Bgpq3 utility

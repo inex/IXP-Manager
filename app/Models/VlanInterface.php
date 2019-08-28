@@ -95,4 +95,5 @@ class VlanInterface extends Model
     public function protocolEnabled( int $p ): bool {
         return $p === 4 ? $this->ipv4enabled : $this->ipv6enabled;
     }
+
 }

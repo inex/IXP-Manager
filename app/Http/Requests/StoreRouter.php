@@ -56,20 +56,23 @@ class StoreRouter extends FormRequest
         $this->merge( [ 'handle' => preg_replace( "/[^a-z0-9\-]/", '' , strtolower( $this->input( 'handle', '' ) ) ) ] );
 
         return [
-            'handle'                => 'required|string|max:255|unique:Entities\Router,handle' . ( $this->input('id') ? ','. $this->input('id') : '' ),
-            'vlan'                  => 'required|integer|exists:Entities\Vlan,id',
-            'protocol'              => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$PROTOCOLS ) ),
-            'type'                  => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$TYPES ) ),
-            'name'                  => 'required|string|max:255',
-            'shortname'             => 'required|string|max:30',
-            'router_id'             => 'required|ipv4',
-            'peering_ip'            => 'required|ipv' . $this->input('protocol'),
-            'asn'                   => 'required|integer',
-            'software'              => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$SOFTWARES ) ),
-            'mgmt_host'             => 'required|string|max:255',
-            'api_type'              => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$API_TYPES ) ),
-            'api'                   => ( $this->input('api_type') != RouterEntity::API_TYPE_NONE ? 'url|required|regex:/.*[^\/]$/' : '' ),
-            'lg_access'             => 'integer' . ( $this->input('api') ? '|required|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ) : '' ),
+            'handle'                   => 'required|string|max:255|unique:Entities\Router,handle' . ( $this->input('id') ? ','. $this->input('id') : '' ),
+            'vlan'                     => 'required|integer|exists:Entities\Vlan,id',
+            'protocol'                 => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$PROTOCOLS ) ),
+            'type'                     => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$TYPES ) ),
+            'name'                     => 'required|string|max:255',
+            'shortname'                => 'required|string|max:30',
+            'router_id'                => 'required|ipv4',
+            'peering_ip'               => 'required|ipv' . $this->input('protocol'),
+            'asn'                      => 'required|integer',
+            'software'                 => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$SOFTWARES ) ),
+            'software_version'         => 'nullable|string|max:255',
+            'operating_system'         => 'nullable|string|max:255',
+            'operating_system_version' => 'nullable|string|max:255',
+            'mgmt_host'                => 'required|string|max:255',
+            'api_type'                 => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$API_TYPES ) ),
+            'api'                      => ( $this->input('api_type') != RouterEntity::API_TYPE_NONE ? 'url|required|regex:/.*[^\/]$/' : '' ),
+            'lg_access'                => 'integer' . ( $this->input('api') ? '|required|in:' . implode( ',', array_keys( UserEntity::$PRIVILEGES_ALL ) ) : '' ),
         ];
     }
 

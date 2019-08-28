@@ -48,8 +48,10 @@ class IrrdbAsn extends EntityRepository
     public function getForCustomerAndProtocol( $cust, $protocol, $flatten = false ): array
     {
         $asns = $this->getEntityManager()->createQuery(
-                    "SELECT p.id, p.asn FROM \\Entities\\IrrdbAsn p
-                        WHERE p.Customer = :cust AND p.protocol = :protocol
+                    "SELECT p.id, p.asn, p.first_seen, p.last_seen 
+                        FROM \\Entities\\IrrdbAsn p
+                        WHERE p.Customer = :cust 
+                        AND p.protocol = :protocol
                         ORDER BY p.asn ASC, p.id ASC"
                 )
                 ->setParameter( 'cust', $cust )
@@ -58,6 +60,7 @@ class IrrdbAsn extends EntityRepository
 
         // ASNs are an integer and should be returned as such:
         array_walk( $asns, function( &$element, $key ){ $element['asn'] = (int)$element['asn']; } );
+
 
         if( !$flatten ) {
             return $asns;
@@ -68,6 +71,7 @@ class IrrdbAsn extends EntityRepository
             $flat[ $p['id'] ] = $p['asn'];
         }
 
+
         return $flat;
     }
 
@@ -76,7 +80,10 @@ class IrrdbAsn extends EntityRepository
      *
      * @param \Entities\Customer $cust The customer entity
      * @param int $protocol The IP protocol (4/6)
+     *
      * @return int The number of prefixes found
+     *
+     * @throws
      */
     public function getCountForCustomerAndProtocol( $cust, $protocol )
     {

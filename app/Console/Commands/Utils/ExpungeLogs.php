@@ -24,7 +24,6 @@ namespace IXP\Console\Commands\Utils;
  */
 
 
-use Carbon\Carbon;
 use D2EM;
 
 use Repositories\UserLoginHistory as UserLoginHistoryRepo;
@@ -71,10 +70,18 @@ class ExpungeLogs extends IXPCommand
      */
     public function handle() {
 
-        $threemonthsago = Carbon::now()->subMonths(6)->format( 'Y-m-d 00:00:00' );
+        $sixmonthsago   = now()->subMonths(6)->format( 'Y-m-d 00:00:00' );
 
+        // Deleting user login logs older than 6 months
         $this->isVerbosityVerbose() && $this->output->write('Expunging user login records > 6 months...', false );
-        D2EM::createQuery( 'DELETE FROM Entities\\UserLoginHistory ulh WHERE ulh.at < ?1' )->execute( [ 1 => $threemonthsago ] );
+        D2EM::createQuery( 'DELETE FROM Entities\\UserLoginHistory ulh WHERE ulh.at < ?1' )->execute( [ 1 => $sixmonthsago ] );
+        $this->isVerbosityVerbose() && $this->info(' [done]' );
+
+        // Deleting expired API Keys older than 3 months
+        $this->isVerbosityVerbose() && $this->output->write('Expunging expired API Key records > 3 months...', false );
+        D2EM::createQuery( 'DELETE FROM Entities\\ApiKey a WHERE a.expires IS NOT NULL AND a.expires < ?1' )->execute( [
+            1 => now()->subWeek()->format( 'Y-m-d 00:00:00' )
+        ]);
         $this->isVerbosityVerbose() && $this->info(' [done]' );
 
         return 0;

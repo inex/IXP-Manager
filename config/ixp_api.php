@@ -34,7 +34,10 @@ return [
     'json_export_schema' => [
 
         // if false, an API key is required
-        'public' => env( 'IXP_API_JSONEXPORTSCHEMA_PUBLIC', false ),
+        'public' => env( 'IXP_API_JSONEXPORTSCHEMA_PUBLIC', true ),
+
+        // or - we can set a static key here if we like:
+        'access_key' => env( 'IXP_API_JSONEXPORTSCHEMA_ACCESS_KEY', false ),
     ],
 
     /*
@@ -84,6 +87,7 @@ return [
 
         'fac_api'         => env( 'IXP_API_PEERING_DB_FAC_URL',  "https://api.peeringdb.com/api/fac" ),
         'ixp_api'         => env( 'IXP_API_PEERING_DB_IXP_URL',  "https://api.peeringdb.com/api/ix"  ),
+
     ],
 
     /*
@@ -96,6 +100,33 @@ return [
         'ixp_api'         => env( 'IXP_API_IXPDB_IXP_URL',  "https://api.ixpdb.net/v1/provider/list"  ),
     ],
 
+    /*
+    |--------------------------------------------------------------------------
+    | Whois servers
+    |--------------------------------------------------------------------------
+    |
+    */
+
+    'whois' => [
+        // all responses cached for:
+        'cache_ttl' => env( 'IXP_API_WHOIS_CACHE_TTL', 60 * 60 * 12 ),
+
+
+        'asn' => [
+            'host' => env( 'IXP_API_WHOIS_ASN_HOST',    'whois.peeringdb.com' ),
+            'port' => env( 'IXP_API_WHOIS_ASN_PORT',    43 ),
+        ],
+
+        'asn2' => [
+            'host' => env( 'IXP_API_WHOIS_ASN2_HOST',    'whois.cymru.com' ),
+            'port' => env( 'IXP_API_WHOIS_ASN2_PORT',    43 ),
+        ],
+
+        'prefix' => [
+            'host' => env( 'IXP_API_WHOIS_PREFIX_HOST', 'whois.bgpmon.net' ),
+            'port' => env( 'IXP_API_WHOIS_PREFIX_PORT', 43 ),
+        ],
+    ],
 
 
 ];
