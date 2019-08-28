@@ -40,8 +40,9 @@ use Illuminate\Http\{
     Request
 };
 
-use IXP\Http\Requests\{
-    StoreCoreBundle
+use IXP\Http\Requests\CoreBundle\{
+    StoreAdd,
+    StoreEdit,
 };
 
 use Illuminate\View\View;
@@ -89,8 +90,7 @@ class CoreBundleController extends Common
      */
     public function addWizard(): View
     {
-        /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
-        return view( 'interfaces/core-bundle/add-wizard' )->with([
+        return view( 'interfaces/core-bundle/add/form-wizard' )->with([
             'switches'                      => D2EM::getRepository( SwitcherEntity::class )->getNames(),
             'customers'                     => D2EM::getRepository( CustomerEntity::class )->getAsArray( null, [ CustomerEntity::TYPE_INTERNAL ] ),
         ]);
@@ -112,26 +112,24 @@ class CoreBundleController extends Common
         } else {
             // fill the form with the core bundle data
             Former::populate([
-                'customer'                  => $request->old('customer', $cb->getCustomer() ),
-                'description'               => $request->old('description', $cb->getDescription() ),
-                'graph-title'               => $request->old('graph-title', $cb->getGraphTitle() ),
-                'cost'                      => $request->old('cost', $cb->getCost() ),
-                'preference'                => $request->old('preference', $cb->getPreference() ),
-                'type'                      => $request->old('type', $cb->getType() ),
-                'subnet'                    => $request->old('subnet', $cb->getIPv4Subnet() ) ,
-                'enabled'                   => $request->old('enabled', ( $cb->getEnabled()     ? 1 : 0 ) ),
-                'bfd'                       => $request->old('bfd', ( $cb->getBFD()     ? 1 : 0 ) ),
-                'stp'                       => $request->old('stp', ( $cb->getSTP()     ? 1 : 0 ) ),
+                'customer'                  => $request->old('customer',    $cb->getCustomer()      ),
+                'description'               => $request->old('description', $cb->getDescription()   ),
+                'graph-title'               => $request->old('graph-title', $cb->getGraphTitle()    ),
+                'cost'                      => $request->old('cost',        $cb->getCost()          ),
+                'preference'                => $request->old('preference',  $cb->getPreference()    ),
+                'type'                      => $request->old('type',        $cb->getType()          ),
+                'subnet'                    => $request->old('subnet',      $cb->getIPv4Subnet()    ),
+                'enabled'                   => $request->old('enabled',     ( $cb->getEnabled() ? 1 : 0 ) ),
+                'bfd'                       => $request->old('bfd',         ( $cb->getBFD()     ? 1 : 0 ) ),
+                'stp'                       => $request->old('stp',         ( $cb->getSTP()     ? 1 : 0 ) ),
             ]);
         }
 
-
-
-        return view( 'interfaces/core-bundle/edit-wizard' )->with([
+        return view( 'interfaces/core-bundle/edit/edit-wizard' )->with([
             'cb'                            => $cb,
             'customers'                     => D2EM::getRepository( CustomerEntity::class )->getAsArray( null, [ CustomerEntity::TYPE_INTERNAL ] ),
-            'switchPortsSideA'              => D2EM::getRepository(SwitcherEntity::class)->getAllPorts( $cb->getSwitchSideX( true )->getId() ,[ SwitchPortEntity::TYPE_CORE, SwitchPortEntity::TYPE_UNSET ], [], true ),
-            'switchPortsSideB'              => D2EM::getRepository(SwitcherEntity::class)->getAllPorts( $cb->getSwitchSideX( false )->getId() ,[ SwitchPortEntity::TYPE_CORE, SwitchPortEntity::TYPE_UNSET ], [], true ),
+            'switchPortsSideA'              => D2EM::getRepository( SwitcherEntity::class )->getAllPorts( $cb->getSwitchSideX( true  )->getId() ,[ SwitchPortEntity::TYPE_CORE, SwitchPortEntity::TYPE_UNSET ], [], true ),
+            'switchPortsSideB'              => D2EM::getRepository( SwitcherEntity::class )->getAllPorts( $cb->getSwitchSideX( false )->getId() ,[ SwitchPortEntity::TYPE_CORE, SwitchPortEntity::TYPE_UNSET ], [], true ),
 
         ]);
     }
@@ -152,26 +150,25 @@ class CoreBundleController extends Common
         $cb->setCost(           $request->input( 'cost'                 ) );
         $cb->setPreference(     $request->input( 'preference'           ) );
         $cb->setType(           $request->input( 'type'                 ) );
-        $cb->setEnabled(        $request->input( 'enabled'           ) ?? false );
-        $cb->setBFD(            $request->input( 'bfd'                  ) ?? false );
-        $cb->setIPv4Subnet(     $request->input( 'subnet'         ) ?? null  );
-        $cb->setSTP(            $request->input( 'stp',false     ) ?? false );
+        $cb->setSTP(            $request->input( 'stp',     false   ) );
+        $cb->setBFD(            $request->input( 'bfd',     false   ) );
+        $cb->setIPv4Subnet(     $request->input( 'subnet',  null    ) );
+        $cb->setEnabled(        $request->input( 'enabled', false   ) );
 
         return true;
     }
 
     /**
-     * Add a core bundle/core links
+     * Create a core bundle
      *
-     * @param   StoreCoreBundle $request instance of the current HTTP request
+     * @param   StoreAdd $request instance of the current HTTP request
      *
      * @return  RedirectResponse
      *
      * @throws
      */
-    public function addStoreWizard( StoreCoreBundle $request ): RedirectResponse
+    public function addStoreWizard( StoreAdd $request ): RedirectResponse
     {
-
         /** @var CoreBundleEntity $cb */
         $cb = new CoreBundleEntity;
         D2EM::persist( $cb );
@@ -215,13 +212,13 @@ class CoreBundleController extends Common
     /**
      * Edit core bundle
      *
-     * @param   StoreCoreBundle $request instance of the current HTTP request
+     * @param   StoreEdit $request instance of the current HTTP request
      *
      * @return  RedirectResponse
      *
      * @throws
      */
-    public function editStoreWizard( StoreCoreBundle $request ): RedirectResponse
+    public function editStoreWizard( StoreEdit $request ): RedirectResponse
     {
         /** @var CoreBundleEntity $cb */
         if( !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $request->input( 'cb' ) ) ) ) {
@@ -296,5 +293,4 @@ class CoreBundleController extends Common
 
         return Redirect::to( route( "core-bundle@list" ) );
     }
-
 }

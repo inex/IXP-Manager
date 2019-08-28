@@ -13,12 +13,12 @@
     <div class="card-body row">
 
         <div class="col-sm-12">
-            <div id="" class="message-new-cl"></div>
+            <div id="" class="message-new-cl message"></div>
 
             <div class="form-group row">
                 <label for="sp-a-1" class="control-label col-sm-6 col-lg-3"> Side A Switch Port</label>
                 <div class="col-lg-4 col-sm-6">
-                    <select class="form-control sp-dd cl-input" id="" data-value="sp-a" data-value-side="a" name="">
+                    <select class="form-control sp-dd cl-input sp-a" id="" data-value="sp-a" data-value-side="a" name="">
                     </select>
                 </div>
             </div>
@@ -28,7 +28,7 @@
             <div class="form-group row">
                 <label for="sp-a-1" class="control-label col-sm-6 col-lg-3"> Side B Switch Port</label>
                 <div class="col-lg-4 col-sm-6">
-                    <select class="form-control sp-dd cl-input" id="" data-value="sp-b" data-value-side="b" name="">
+                    <select class="form-control sp-dd cl-input sp-b" id="" data-value="sp-b" data-value-side="b" name="">
                     </select>
                 </div>
             </div>
@@ -48,7 +48,7 @@
                     <label class="control-label col-sm-6 col-lg-3">BFD</label>
                     <div class="col-lg-4 col-sm-6">
                         <input type="hidden" data-value="bfd" class="cl-input" name="" value="0">
-                        <input id="" data-value="bfd" type="checkbox" class="cl-input" name="" value="1">
+                        <input id="" data-value="bfd" type="checkbox" class="cl-input bfd" name="" value="1">
                     </div>
                 </div>
 

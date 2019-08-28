@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Interfaces;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Input, Log, Redirect;
+use D2EM, Log, Redirect;
 
 use Entities\{
     CoreBundle as CoreBundleEntity,
@@ -33,7 +33,6 @@ use Entities\{
 };
 
 use Illuminate\Http\{
-    JsonResponse,
     RedirectResponse,
     Request
 };
@@ -102,7 +101,8 @@ class CoreLinkController extends Common
      *
      * @throws
      */
-    public function editStore( Request $request ): RedirectResponse {
+    public function editStore( Request $request ): RedirectResponse
+    {
         /** @var CoreBundleEntity $cb */
         if( !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $request->input( "cb" ) ) ) ) {
             abort('404', 'Unknown Core bundle');
@@ -122,34 +122,11 @@ class CoreLinkController extends Common
 
         Log::notice( $request->user()->getUsername() . ' edited the core links from the core bundle with (id: ' . $cb->getId() . ')' );
 
-        AlertContainer::push( 'Core links edited.', Alert::SUCCESS );
+        AlertContainer::push( 'Core links updated.', Alert::SUCCESS );
 
         return Redirect::to( route( "core-bundle@edit", [ "id" => $cb->getId() ] ) );
 
     }
-
-    /**
-     * Display the form to add a core link to the bundle core form
-     *
-     * @param  Request    $request        instance of the current HTTP request
-     *
-     * @return JsonResponse
-     *
-     * @throws
-     */
-    public function addCoreLinkFrag( Request $request ) :JsonResponse
-    {
-        $nb = $request->input("nbCoreLink") + 1;
-
-        $returnHTML = view('interfaces/core-bundle/core-link-frag')->with([
-            'nbLink'                        => $nb,
-            'enabled'                       => $request->input("enabled" ) ? true : false,
-            'bundleType'                    => array_key_exists( $request->input("bundleType" ), CoreBundleEntity::$TYPES ) ? $request->input("bundleType" ) : CoreBundleEntity::TYPE_ECMP ,
-        ])->render();
-
-        return response()->json( ['success' => true, 'htmlFrag' => $returnHTML, 'nbCoreLinks' => $nb ] );
-    }
-
 
     /**
      * Delete a Core link
@@ -163,8 +140,8 @@ class CoreLinkController extends Common
      *
      * @throws
      */
-    public function delete( Request $request ) : RedirectResponse {
-
+    public function delete( Request $request ) : RedirectResponse
+    {
         /** @var CoreLinkEntity $cl */
         if( !( $cl = D2EM::getRepository( CoreLinkEntity::class )->find( $request->input( "id" ) ) ) ) {
             abort( 404 );

@@ -18,7 +18,7 @@
 
                 if( !edit ){
                     datas = {
-                        spIdsexcluded: exludedSwitchPortSideA.concat( exludedSwitchPortSideB )
+                        spIdsexcluded: excludedSwitchPortSideA.concat( excludedSwitchPortSideB )
                     };
                 } else {
                     datas = {
@@ -32,11 +32,13 @@
                 })
 
                 .done( function( data ) {
-                    let options = "<option value=\"\">Choose a switch port</option>\n";
+                    let options = `<option value="">Choose a switch port</option>\n`;
+
                     $.each( data.listPorts, function( key, value ){
-                        options += "<option value=\"" + value.id + "\">" + value.name + " (" + value.type + ")</option>\n";
+                        options += `<option value="${value.id}">${value.name} (${value.type})</option>\n`;
                     });
-                    $( "#sp-" + sside + "-"+ id ).html( options );
+
+                    $( "#sp-" + sside + "-" + id ).html( options );
 
                     if( action == 'addBtn' ){
                         selectNextSwitchPort( id, sside );
@@ -69,17 +71,17 @@
     /**
      * check if the subnet is valid and display a message
      */
-    function checkSubnet( subnet ){
+    function checkSubnet( subnet ) {
         $( subnet ).removeClass( 'is-invalid' );
         $( subnet ).parent().find('span').remove();
-        if( $( subnet ).val() != '' ){
-            if( !validSubnet( $( subnet ).val() ) ){
+        if( $( subnet ).val() != '' ) {
+            if( !validSubnet( $( subnet ).val() ) ) {
                 $( subnet ).addClass( 'is-invalid' );
-                $( subnet ).parent().append("<span class='help-block invalid-feedback' style='display: block'>The subnet is not valid</span> ");
+                $( subnet ).parent().append( `<span class='help-block invalid-feedback' style='display: block'>The subnet is not valid</span>` );
             }
-            else{
+            else {
                 $( subnet ).addClass( 'is-valid' );
-                $( subnet ).parent().append("<span class='help-block valid-feedback' style='display: block' >The subnet is valid</span> ");
+                $( subnet ).parent().append( `<span class='help-block valid-feedback' style='display: block' >The subnet is valid</span>` );
             }
         }
     }
@@ -89,10 +91,6 @@
      */
     function validSubnet( subnet ){
         let address = new Address4( subnet );
-        if( address.isValid() ){
-            return true;
-        } else {
-            return false;
-        }
+        return address.isValid();
     }
 </script>
