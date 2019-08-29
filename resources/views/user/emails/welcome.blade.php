@@ -7,6 +7,13 @@ To whom it may concern,
 
 @if( $resend )
 **This email is being sent to you because either you requested a reminder of your account details or an administrator thought it appropriate to send you a reminder.**
+@elseif( $user->getPeeringDbId() )
+A new user account has been created for you on the {{ config( 'identity.sitename' ) }} as you logged in with your PeeringDB account.
+
+@if( config( 'auth.peeringdb.privs' ) == \Entities\User::AUTH_CUSTUSER )
+**Accounts created with PeeringDB have non-admin access by default. If you would like your privileges escalated, please email us at {{ config( 'identity.support_email') }} with your username ({{ $user->getUsername() }}).**
+@endif
+
 @else
 A new user account has been created for you on the {{ config( 'identity.sitename' ) }}.
 @endif
