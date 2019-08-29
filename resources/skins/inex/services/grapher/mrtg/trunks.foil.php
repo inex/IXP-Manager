@@ -127,6 +127,25 @@ MaxBytes[core-pwt1-cwt2-lan1]: 12500000000
 Directory[core-pwt1-cwt2-lan1]: trunks
 Title[core-pwt1-cwt2-lan1]: Inter-POP Trunk Core - swi1-pwt1-3 - swi1-cwt2-1 - LAN1
 
+# pwt1-1 -> pwt2-1
+Target[core-pwt1-pwt2-lan1-west]: #Ethernet49/1:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-pwt1-1.mgmt.inex.ie:::::2
+MaxBytes[core-pwt1-pwt2-lan1-west]: 12500000000
+Directory[core-pwt1-pwt2-lan1-west]: trunks
+Title[core-pwt1-pwt2-lan1-west]: Inter-POP Trunk Core West Link - swi1-pwt1-1 - swi1-pwt2-1 - LAN1
+
+# pwt1-3 -> pwt2-1
+Target[core-pwt1-pwt2-lan1-east]: #Ethernet27/1:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-pwt1-3.mgmt.inex.ie:::::2
+MaxBytes[core-pwt1-pwt2-lan1-east]: 12500000000
+Directory[core-pwt1-pwt2-lan1-east]: trunks
+Title[core-pwt1-pwt2-lan1-east]: Inter-POP Trunk Core East Link - swi1-pwt1-3 - swi1-pwt2-1 - LAN1
+
+# cwt2 -> nwb1
+Target[core-cwt2-nwb1-lan1]: #Ethernet53/1:<?=config('custom.grapher.snmp_password','xxxxxx')?>@swi1-cwt2-1.mgmt.inex.ie:::::2
+MaxBytes[core-cwt2-nwb1-lan1]: 12500000000
+Directory[core-cwt2-nwb1-lan1]: trunks
+Title[core-cwt2-nwb1-lan1]: Inter-POP Trunk Core - swi1-cwt2-1 - swi1-nwb1-1 - LAN1
+
+
 
 ################
 #    LAN2      #

@@ -13,7 +13,7 @@ The next time you login, you can act for this member by selecting them in under 
 
 @if( ( $c2u->getExtraAttributes()['created_by']['type'] ?? '' ) === 'PeeringDB' and config( 'auth.peeringdb.privs' ) == \Entities\User::AUTH_CUSTUSER )
 **Accounts created with PeeringDB have non-admin access by default. If you would like your privileges escalated, please email us
-at {{ config( 'identity.support_email') }} quoting your username ({{ $user->getUsername() }}) and the member name.**
+at {{ config( 'identity.support_email') }} quoting your username ({{ $c2u->getUser()->getUsername() }}) and the member name.**
 @endif
 
 
