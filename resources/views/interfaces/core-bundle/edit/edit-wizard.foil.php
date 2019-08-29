@@ -198,5 +198,5 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'scripts' ) ?>
     <?= $t->insert( 'interfaces/core-bundle/js/edit-wizard' ); ?>
-    <?= $t->insert( 'interfaces/common/js/cb-functions' ); ?>
+    <?= $t->insert( 'interfaces/core-bundle/js/cb-functions' ); ?>
 <?php $this->append() ?>

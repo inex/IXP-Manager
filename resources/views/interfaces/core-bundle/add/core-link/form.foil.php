@@ -23,7 +23,7 @@
                 </div>
             </div>
 
-            <input id="" data-value="hidden-sp-a" class="cl-input" type="hidden" name="" value="null">
+            <input id="" data-value="hidden-sp-a" class="cl-input hidden-sp-a" type="hidden" name="" value="null">
 
             <div class="form-group row">
                 <label for="sp-a-1" class="control-label col-sm-6 col-lg-3"> Side B Switch Port</label>
@@ -33,7 +33,7 @@
                 </div>
             </div>
 
-            <input id="" data-value="hidden-sp-b" class="cl-input" type="hidden" name="" value="null">
+            <input id="" data-value="hidden-sp-b" class="cl-input hidden-sp-b" type="hidden" name="" value="null">
 
             <div class="form-group row">
                 <label class="control-label col-sm-6 col-lg-3">Enabled</label>

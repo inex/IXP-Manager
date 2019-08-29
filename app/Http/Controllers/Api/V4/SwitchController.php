@@ -81,7 +81,7 @@ class SwitchController extends Controller {
      * @return  JsonResponse JSON array of listPort
      */
     public function switchPort( Request $request, int $id) {
-        $listPorts = D2EM::getRepository(SwitcherEntity::class)->getAllPorts($id ,[SwitchPortEntity::TYPE_CORE,SwitchPortEntity::TYPE_UNSET], $request->input('spIdsexcluded'), true );
+        $listPorts = D2EM::getRepository(SwitcherEntity::class)->getAllPorts($id ,[SwitchPortEntity::TYPE_CORE,SwitchPortEntity::TYPE_UNSET], $request->input('spIdsExcluded'), true );
         return response()->json(['listPorts' => $listPorts]);
     }
 

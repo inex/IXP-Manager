@@ -2,12 +2,13 @@
     /**
      * set data to the switch port dropdown when we select a switcher
      */
-    function setSwitchPort( sside, id, action, edit ){
+    function setSwitchPort( sside, core_link_form, action, edit ) {
         let datas;
         let switchId = $( "#switch-" + sside ).val();
 
         if( $( ".core-link-form" ).length > 0 || edit ){
-            $( "#sp-" + sside + "-"+ id ).html( "<option value=\"\">Loading please wait</option>\n" ).trigger('change.select2');
+            let dd_switch_port = core_link_form.find( `.sp-${ sside }` );
+            dd_switch_port.html( `<option value="">Loading please wait</option>\n` ).trigger( 'change.select2' );
 
             if( !edit ) {
                 excludedSwitchPort();
@@ -18,11 +19,11 @@
 
                 if( !edit ){
                     datas = {
-                        spIdsexcluded: excludedSwitchPortSideA.concat( excludedSwitchPortSideB )
+                        spIdsExcluded: excludedSwitchPortSideA.concat( excludedSwitchPortSideB )
                     };
                 } else {
                     datas = {
-                        spIdsexcluded: []
+                        spIdsExcluded: []
                     };
                 }
 
@@ -30,7 +31,6 @@
                     data: datas,
                     type: 'POST'
                 })
-
                 .done( function( data ) {
                     let options = `<option value="">Choose a switch port</option>\n`;
 
@@ -38,10 +38,10 @@
                         options += `<option value="${value.id}">${value.name} (${value.type})</option>\n`;
                     });
 
-                    $( "#sp-" + sside + "-" + id ).html( options );
+                    dd_switch_port.html( options );
 
                     if( action == 'addBtn' ){
-                        selectNextSwitchPort( id, sside );
+                        selectNextSwitchPort( dd_switch_port, sside );
                     }
                 })
                 .fail( function() {
@@ -49,23 +49,37 @@
                     alert( `Error running ajax query for ${url}` );
                 })
                 .always( function() {
-                    $( "#sp-" + sside + "-"+ id ).trigger('change.select2');
+                    dd_switch_port.trigger('change.select2');
                 });
             }
         }
     }
 
     /**
+     * Insert in array all the switch port selected from the switch ports dropdown for each side (A/B)
+     * in order the exclude them from the new switch port dropdown that could be added
+     */
+    function excludedSwitchPort( sside ){
+        $( "[id|='sp'] :selected" ).each( function() {
+            if( this.value != '' ) {
+                if( sside == 'a' ) {
+                    excludedSwitchPortSideA.push( this.value );
+                } else {
+                    excludedSwitchPortSideB.push( this.value );
+                }
+            }
+        });
+    }
+
+    /**
      * Select the switch port depending of the previous core links
      */
-    function selectNextSwitchPort(id , side){
-        let lastIdSwitchPort = id - 1;
-        let nextValue = parseInt($( '#sp-' + side + '-'+ lastIdSwitchPort ).val()) + parseInt(1);
-        if( $( "#sp-" + side + "-" + id + " option[value='"+nextValue+"']" ).length ) {
-            $( '#sp-' + side + '-'+ id).val( nextValue ).trigger('change.select2');
-        }
+    function selectNextSwitchPort( dd_switch_port , side ) {
+        let previous_dd_sp = dd_switch_port.closest( '.core-link-form' ).prev().find( `.sp-${side}` );
+        let sp_val = previous_dd_sp.find( ":selected" ).next().val();
 
-        $("#hidden-sp-"+ side + '-' + id).val( $("#sp-"+ side + "-" + id).val() );
+        dd_switch_port.val( sp_val ).trigger( 'change.select2' );
+        dd_switch_port.closest( '.core-link-form' ).find( `.hidden-sp-${side}` ).val( sp_val );
     }
 
     /**
@@ -78,8 +92,7 @@
             if( !validSubnet( $( subnet ).val() ) ) {
                 $( subnet ).addClass( 'is-invalid' );
                 $( subnet ).parent().append( `<span class='help-block invalid-feedback' style='display: block'>The subnet is not valid</span>` );
-            }
-            else {
+            } else {
                 $( subnet ).addClass( 'is-valid' );
                 $( subnet ).parent().append( `<span class='help-block valid-feedback' style='display: block' >The subnet is valid</span>` );
             }

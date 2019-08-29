@@ -17,7 +17,6 @@
     const div_message_cl        = $( "#message-cl" );
     const div_l3_lag            = $( '#l3-lag-area' );
     const class_lag_area        = $( '.lag-area' );
-    const class_enable_cl       = $( ".enabled-cl" );
 
 
 
@@ -28,8 +27,8 @@
     let switchArray             = <?php echo json_encode( $t->switches ) ; ?>
 
 
-    $(document).ready( function() {
-        $( 'label.col-lg-2' ).removeClass('col-lg-2');
+    $( document ).ready( function() {
+        $( 'label.col-lg-2' ).removeClass( 'col-lg-2' );
 
         // display the core link form when the page load
         if( dd_type.val() ) { displayCoreLinks( "onLoad" ) }
@@ -56,7 +55,7 @@
     /**
      * Allow to set the value of the core bundle 'enabled' checkbox to the core links enable checkboxes
      */
-    cb_enabled.click( () => { cb_enabled.is(":checked") ? class_enable_cl.prop( 'checked', true ) :  class_enable_cl.prop( 'checked', false ) } );
+    cb_enabled.click( () => { cb_enabled.is(":checked") ? $( ".enabled-cl" ).attr( 'checked', true ) :  $( ".enabled-cl" ).attr( 'checked', false ) } );
 
     /**
      * check if the subnet is valid ( only for L3-LAG)
@@ -121,7 +120,7 @@
         e.preventDefault();
         let sside = $( this ).attr( "data-value" );
 
-        setSwitchPort( sside , $( ".core-link-form" ).length , false );
+        setSwitchPort( sside , $( "#core-links-area .core-link-form:last" ) , false );
 
         setDropDownSwitchSideX( sside );
 
@@ -131,6 +130,8 @@
         } else {
             excludedSwitchPortSideB = []
         }
+
+        $( `#hidden-switch-${sside}` ).val( $( this ).val() );
     });
 
 
@@ -139,10 +140,11 @@
      */
     $( document ).on( 'change', '.sp-dd' ,function( e ) {
         e.preventDefault();
-        let sid     = ( this.id ).substring( 5 );
         let sside   = $( this ).attr( "data-value-side" );
+        let hidden_sp = $( this ).closest( '.core-link-form' ).find( `.hidden-sp-${sside}` );
 
-        $( "#hidden-sp-" + sside + '-' + sid ).val( $("#sp-"+ sside + "-" + sid).val() );
+        // set the switch port dropdown value the hidden input
+        hidden_sp.val( $( this ).val() );
 
         // update the list of switch port that have already been select in order to exclude them
         excludedSwitchPort( sside );
@@ -188,7 +190,9 @@
     }
 
 
-
+    /**
+     * Check if the core link form is valid
+     */
     function checkClError( action , bundleType, subnet , previousElement ) {
 
         let currentMessage = previousElement.find( ".message-new-cl" );
@@ -227,7 +231,9 @@
     }
 
 
-    function initializeNewCoreLink( element, old_nb_link, nb_link ){
+    function initializeNewCoreLink( element, old_nb_link ){
+        let nb_link = $( ".core-link-form" ).length;
+
         element.find( ".sp-dd" ).select2( { width: '100%' } );
         element.find( ".title-new-cl" ).html( `Link ${nb_link}:` );
         element.find( ".message-new-cl" ).attr( "id",  `message-${nb_link}` );
@@ -260,7 +266,8 @@
         let previous_core_link_form = $( "#core-links-area .core-link-form:last" );
 
         let bundleType = dd_type.val();
-        let enabled = cb_enabled.is(':checked') ? 1 : 0 ;
+        let enabled = cb_enabled.is(':checked') ? true : false;
+
         let subnet = $( "#subnet-" + old_nb_link  ).val() ? $( "#subnet-" + old_nb_link  ).val() : null ;
 
         $( ".message" ).html( '' );
@@ -278,6 +285,8 @@
                 new_core_link_form.find( ".type-ecmp-only" ).remove();
             }
 
+            new_core_link_form.find( '.enabled-cl' ).attr( "checked", enabled );
+
             // insert the new core link form in the dedicated areaa
             new_core_link_form.appendTo( "#core-links-area" );
 
@@ -285,16 +294,16 @@
             let nb_link = $( ".core-link-form" ).length;
 
             // initialize the ne core link form
-            initializeNewCoreLink( new_core_link_form, old_nb_link, nb_link );
+            initializeNewCoreLink( new_core_link_form, old_nb_link );
 
             // Set values to the switch port side A if the Switch side A is set
             if( dd_switch_a.val() ){
-                setSwitchPort( 'a', nb_link, action, false );
+                setSwitchPort( 'a', new_core_link_form, action, false );
             }
 
             // Set values to the switch port side B if the Switch side B is set
             if( dd_switch_b.val() ){
-                setSwitchPort( 'b', nb_link , action, false );
+                setSwitchPort( 'b', new_core_link_form , action, false );
             }
 
             // event when the add button has been clicked
@@ -318,23 +327,6 @@
             // display the new core link ready to use
             new_core_link_form.show();
         }
-    }
-
-
-    /**
-     * Insert in array all the switch port selected from the switch ports dropdown for each side (A/B)
-     * in order the exclude them from the new switch port dropdown that could be added
-     */
-    function excludedSwitchPort( sside ){
-        $( "[id|='sp'] :selected" ).each( function() {
-            if( this.value != '' ) {
-                if( sside == 'a' ) {
-                    excludedSwitchPortSideA.push( this.value );
-                } else {
-                    excludedSwitchPortSideB.push( this.value );
-                }
-            }
-        });
     }
 
 
