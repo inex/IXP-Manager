@@ -103,6 +103,9 @@ Please browse to the following page and use the 'Lost Password' facility to set 
 Please contact us for your account details at {{ config( 'identity.email' ) }}.
 @endif
 
+@if( config( 'auth.peeringdb.enabled' ) )
+If your network is registered with PeeringDB, then members of your organisation with affiliated accounts on PeeringDB can log into IXP Manager using the *Login via PeeringDB* option.
+@endif
 
 ## Quarantine Procedure
 
