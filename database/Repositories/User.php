@@ -522,9 +522,10 @@ class User extends EntityRepository
         foreach( $user->getCustomers2User() as $c2u ) {
             $key = array_search( $c2u->getCustomer()->getAutsys(), $asns );
 
-            if( $key === false ) {
-                // user has a network that's not in the current peeringdb list of affiliated networks
-                // => if it came from peeringdb then remove it
+            if( $key === false || ( $key && !$c2u->getCustomer()->getPeeringdbOAuth() ) ) {
+                // either user has a network that's not in the current peeringdb list of affiliated networks
+                // or user has a network that (now) indicates PeeringDB OAuth should be disabled
+                // then => if it came from peeringdb, remove it
                 $ea = $c2u->getExtraAttributes();
                 if( $ea && isset( $ea['created_by']['type'] ) && $ea['created_by']['type'] === 'PeeringDB' ) {
                     D2EM::getRepository( UserLoginHistoryEntity::class )->deleteUserLoginHistory( $c2u->getId() );
@@ -555,7 +556,7 @@ class User extends EntityRepository
                 Log::info( 'PeeringDB OAuth: user ' . $user->getId() . '/' . $user->getUsername() . ' has PeeringDB affiliation with ' . $cust->getFormattedName() );
 
                 // is this a valid customer?
-                if( !( $cust->isTypeFull() || $cust->isTypeProBono() ) || !$cust->statusIsNormal() || $cust->hasLeft() ) {
+                if( !( $cust->isTypeFull() || $cust->isTypeProBono() ) || !$cust->statusIsNormal() || $cust->hasLeft() || !$cust->getPeeringdbOAuth() ) {
                     Log::info( 'PeeringDB OAuth: ' . $cust->getFormattedName() . ' not a suitable IXP Manager customer for PeeringDB, skipping.' );
                     continue;
                 }

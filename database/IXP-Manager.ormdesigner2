@@ -789,6 +789,7 @@
       <field name="reseller" type="integer" uuid="b021dc62-dad0-47c2-8fcd-6f537e9345f5"/>
       <field name="in_manrs" type="boolean" default="0" required="true" uuid="cb8e39a9-a7ce-43ed-b4e2-f261e8852546"/>
       <field name="in_peeringdb" type="boolean" default="0" required="true" uuid="24136282-2a36-44b7-959b-84b6db3acaf1"/>
+      <field name="peeringdb_oauth" type="boolean" default="1" required="true" uuid="6e97186b-0f53-49dc-bb91-db41ab29f0ff"/>
       <orm-attributes>
         <attribute name="repository-class">Repositories\Customer</attribute>
         <attribute name="table">cust</attribute>
@@ -1232,9 +1233,9 @@
       <field name="description" type="string" size="255" uuid="6f01844b-7e25-469f-b326-be3c73e9c26e"/>
       <field name="number" type="smallint" required="true" uuid="2d964dfa-53dd-4a04-92d1-938347172eca"/>
       <field name="state" type="integer" required="true" uuid="fb079291-7b0c-4ca4-b25a-9007b5d83153"/>
-      <field name="colo_circuit_ref" type="string" size="30" uuid="6b28819d-917d-4dfd-91f6-bcd1c07da533"/>
-      <field name="colo_billing_ref" type="string" size="30" uuid="329d627a-153b-4961-abf7-fb85f8b1a7d5"/>
-      <field name="ticket_ref" type="string" size="30" uuid="39eb482e-46c1-4739-94c1-ec29a4300a3c"/>
+      <field name="colo_circuit_ref" type="string" size="255" uuid="6b28819d-917d-4dfd-91f6-bcd1c07da533"/>
+      <field name="colo_billing_ref" type="string" size="255" uuid="329d627a-153b-4961-abf7-fb85f8b1a7d5"/>
+      <field name="ticket_ref" type="string" size="255" uuid="39eb482e-46c1-4739-94c1-ec29a4300a3c"/>
       <field name="notes" type="text" uuid="a137835d-7515-4d55-99ea-5367401ae2ba"/>
       <field name="private_notes" type="text" uuid="259e178b-7c07-44b5-9aaa-6012eceedfcc"/>
       <field name="assigned_at" type="date" uuid="600d8397-b25b-47ed-85d0-8608f677448c"/>
@@ -1276,9 +1277,9 @@
       <field name="description" type="string" size="255" uuid="68e9ad49-105b-45b9-b2cc-b01913efc4e1"/>
       <field name="number" type="smallint" required="true" uuid="1e130de3-d747-46ac-ba5a-1cadc245e4df"/>
       <field name="state" type="integer" required="true" uuid="07e6ab7b-b3a4-4df9-9753-87f2ef20ae57"/>
-      <field name="colo_circuit_ref" type="string" size="30" uuid="e59bfd83-0291-4644-a6c1-d4d3584760ca"/>
-      <field name="colo_billing_ref" type="string" size="30" uuid="980cb80b-493c-4a55-880e-127f7849f877"/>
-      <field name="ticket_ref" type="string" size="30" uuid="95ee474a-1bf1-4efe-a166-37da7bf12b75"/>
+      <field name="colo_circuit_ref" type="string" size="255" uuid="e59bfd83-0291-4644-a6c1-d4d3584760ca"/>
+      <field name="colo_billing_ref" type="string" size="255" uuid="980cb80b-493c-4a55-880e-127f7849f877"/>
+      <field name="ticket_ref" type="string" size="255" uuid="95ee474a-1bf1-4efe-a166-37da7bf12b75"/>
       <field name="notes" type="text" uuid="355eaa2c-a248-4900-bc91-6f228eb04c66"/>
       <field name="private_notes" type="text" uuid="80a23128-fca7-4232-ace5-edd19b8cddb0"/>
       <field name="assigned_at" type="date" uuid="cd4a7110-85bc-46e1-b6c8-a0131d548b6a"/>

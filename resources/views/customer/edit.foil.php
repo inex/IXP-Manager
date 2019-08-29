@@ -126,6 +126,23 @@
                         ->placeholder( "Acme" )
                         ->blockHelp( "The Abbreviated Name is a shorter version of the name that is used in space constrained areas such as graph labels." );
                     ?>
+
+                    <?php if( config( 'auth.peeringdb.enabled' ) ): ?>
+
+                        <?= Former::checkbox( 'peeringdb_oauth' )
+                            ->label( '&nbsp;' )
+                            ->text( 'Allow login via PeeringDB OAuth' )
+                            ->value( 1 )
+                            ->inline()
+                            ->blockHelp( "Disable this if this customer has explicitly asked to be excluded from the <em>Login with PeeringDB</em> OAuth service." );
+                        ?>
+
+                    <?php else: ?>
+
+                        <input type="hidden" name="peeringdb_oauth" value="1">
+
+                    <?php endif; ?>
+
                 </div>
 
 

@@ -204,6 +204,14 @@ class CustomerController extends Controller
                 'isReseller'            => array_key_exists( 'isReseller',          $old    ) ? $old['isReseller']              : ( $cust->getIsReseller() ? 1 : 0 ),
                 'isResold'              => array_key_exists( 'isResold',            $old    ) ? $old['isResold']                : ( $this->resellerMode() && $cust->getReseller() ? 1 : 0 ),
                 'reseller'              => array_key_exists( 'reseller',            $old    ) ? $old['reseller']                : ( $this->resellerMode() && $cust->getReseller() ? $cust->getReseller()->getId() : false ),
+                'peeringdb_oauth'       => array_key_exists( 'peeringdb_oauth',     $old    ) ? $old['peeringdb_oauth']         : $cust->getPeeringdbOAuth(),
+            ]);
+
+        } else {
+            // populate the form with default data
+            Former::populate([
+                'activepeeringmatrix'  => 1,
+                'peeringdb_oauth'      => 1,
             ]);
 
         }
@@ -264,6 +272,8 @@ class CustomerController extends Controller
         $c->setNocemail(             $r->input( 'nocemail'             ) );
         $c->setNochours(             $r->input( 'nochours'             ) );
         $c->setNocwww(               $r->input( 'nocwww'               ) );
+
+        $c->setPeeringdbOAuth($r->input( 'peeringdb_oauth' ) ? 1 : 0 );
 
         $c->setIsReseller( $r->input( 'isReseller'           ) ? 1 : 0 );
 
