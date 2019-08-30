@@ -314,6 +314,7 @@ class User extends EntityRepository
                         u.disabled as disabled, 
                         c.id as custid, 
                         c.name as customer,
+                        u.peeringdb_id as peeringdb_id,
                         u.lastupdated AS lastupdated,
                         COUNT( c2u ) as nbC2U,
                         MAX( c2u.privs ) as privileges,
