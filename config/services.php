@@ -65,4 +65,14 @@ return [
         ],
     ],
 
+
+
+    // PeeringDB Socialite
+    'peeringdb' => [
+        'client_id'     => env('PEERINGDB_OAUTH_CLIENT_ID'),
+        'client_secret' => env('PEERINGDB_OAUTH_CLIENT_SECRET'),
+        'redirect'      => env('PEERINGDB_OAUTH_REDIRECT'),
+    ],
+
+
 ];

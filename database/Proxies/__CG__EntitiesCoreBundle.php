@@ -246,6 +246,17 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
+    public function resolveType(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveType', []);
+
+        return parent::resolveType();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getGraphTitle()
     {
 
@@ -367,17 +378,6 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function resolveType(): string
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveType', []);
-
-        return parent::resolveType();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function setDescription($description)
     {
 
@@ -488,12 +488,12 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function doAllCoreLinksEnabled(): bool
+    public function areAllCoreLinksEnabled(): bool
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'doAllCoreLinksEnabled', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'areAllCoreLinksEnabled', []);
 
-        return parent::doAllCoreLinksEnabled();
+        return parent::areAllCoreLinksEnabled();
     }
 
     /**
@@ -615,6 +615,17 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'sameSwitchForEachPIFromCL', [$sideA]);
 
         return parent::sameSwitchForEachPIFromCL($sideA);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCoreLinksWithIfOperStateX(int $operstate = 1, bool $onlyEnabled = true): array
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreLinksWithIfOperStateX', [$operstate, $onlyEnabled]);
+
+        return parent::getCoreLinksWithIfOperStateX($operstate, $onlyEnabled);
     }
 
 }

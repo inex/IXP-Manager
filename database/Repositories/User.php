@@ -2,9 +2,6 @@
 
 namespace Repositories;
 
-use Auth, D2EM;
-
-use Entities\{CustomerToUser as CustomerToUserEntity, CustomerToUser, User as UserEntity};
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -26,8 +23,18 @@ use Entities\{CustomerToUser as CustomerToUserEntity, CustomerToUser, User as Us
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Auth, D2EM, Hash, Log;
+
+use Illuminate\Support\Str;
+
+use Entities\{CustomerToUser as CustomerToUserEntity, User as UserEntity, UserLoginHistory as UserLoginHistoryEntity};
+
 use Doctrine\ORM\EntityRepository;
-use IXP\Http\Controllers\PatchPanel\UserxController;
+
+use IXP\Events\User\{
+    UserAddedToCustomer as UserAddedToCustomerEvent,
+    UserCreated as UserCreatedEvent
+};
 
 /**
  * User
@@ -237,15 +244,17 @@ class User extends EntityRepository
                         u.username as username, 
                         u.email as email,
                         u.created as created, 
-                        u.disabled as disabled, 
+                        u.creator as creator, 
+                        u.disabled as disabled,
+                        u.peeringdb_id as peeringdb_id,
                         c.id as custid, 
                         c.name as customer,
                         u.lastupdated AS lastupdated,
                         COUNT( c2u ) as nbC2U,
                         MAX( c2u.privs ) as privileges
                   FROM Entities\\User u
-                  LEFT JOIN u.Customer as c
-                  LEFT JOIN u.Customers as c2u
+                      LEFT JOIN u.Customer as c
+                      LEFT JOIN u.Customers as c2u
                   WHERE 1 = 1";
 
         if( $id ) {
@@ -405,5 +414,199 @@ class User extends EntityRepository
         )
             ->setParameter( 'email', $email )
             ->getResult();
+    }
+
+
+    /**
+     * Find or create a user from PeeringDB information.
+     *
+     *
+     *  +pdbuser: array:8 [▼
+     *    "family_name" => "Bloggs"
+     *    "email" => "ixpmanager@example.com"
+     *    "name" => "Joe Bloggs"
+     *    "verified_user" => true
+     *    "verified_email" => true
+     *    "networks" => array:2 [▼
+     *      0 => array:4 [▼
+     *        "perms" => 1
+     *        "id" => 888
+     *        "name" => "INEX Route Collectors"
+     *        "asn" => 65501
+     *      ]
+     *      1 => array:4 [▼
+     *        "perms" => 1
+     *        "id" => 777
+     *        "name" => "INEX Route Servers"
+     *        "asn" => 65500
+     *      ]
+     *    ]
+     *    "id" => 666
+     *    "given_name" => "Joe"
+     *  ]
+     * }
+     *
+     * @throws \Doctrine\ORM\OptimisticLockException
+     */
+    public function findOrCreateFromPeeringDb( array $pdbuser )
+    {
+        // results to pass back:
+        $result = [
+            'user'         => null,
+            'added_to'     => [],
+            'removed_from' => [],
+        ];
+
+        // let's make sure we have a reason to do any work before we start:
+        $asns = [];
+        foreach( $pdbuser['networks'] as $nw ) {
+            if( is_numeric($nw['asn']) && (int)$nw['asn'] > 0 ) {
+                $asns[] = (int)$nw[ 'asn' ];
+            }
+        }
+
+        if( !count( $asns ) ) {
+            Log::info( 'PeeringDB OAuth: no valid affiliated networks for ' . $pdbuser['name'] . '/' . $pdbuser['email'] );
+            return $result;
+        }
+
+        if( (int)D2EM::createQuery( "SELECT COUNT(c.autsys) FROM Entities\Customer c where c.autsys IN ( " . implode( ',', $asns ) . " )" )->getSingleScalarResult() == 0 ) {
+            Log::info( 'PeeringDB OAuth: no customers for attempted login from ' . $pdbuser['name'] . '/' . $pdbuser['email'] . ' with networks: ' . implode( ',', $asns ) );
+            return $result;
+        }
+
+
+        // what privilege do we use?
+        $priv = isset( UserEntity::$PRIVILEGES_TEXT_NONSUPERUSER[ config( 'auth.peeringdb.privs' ) ] ) ? config( 'auth.peeringdb.privs' ) : UserEntity::AUTH_CUSTUSER;
+
+        // if we don't have a user already, create one with unique username
+        if( !( $user = $this->findOneBy( ['peeringdb_id' => $pdbuser['id'] ] ) ) ) {
+
+            $un = strtolower( $pdbuser['name'] ?? 'unknownpdbuser' );
+            $un = preg_replace( '/[^a-z0-9\._\-]/', '.', $un );
+
+            $int = 0;
+
+            do {
+                $int++;
+                $uname = $un . ( $int === 1 ? '' : "{$int}" );
+            } while( $this->findOneBy([ 'username' => $uname ] ) );
+
+            $user = new UserEntity();
+            $user->setPeeringDbId( $pdbuser['id'] );
+            $user->setUsername( $uname );
+            $user->setPassword( Hash::make( Str::random() ) );
+            $user->setPrivs( $priv );
+            $user->setCreator( 'OAuth-PeeringDB' );
+            $user->setCreated( now() );
+            $user->setLastupdated( now() );
+            D2EM::persist( $user );
+            D2EM::flush( $user );
+
+            $user_created = true;
+            Log::info( 'PeeringDB OAuth: created new user ' . $user->getId() . '/' . $user->getUsername() . ' for PeeringDB user: ' . $pdbuser['name'] . '/' . $pdbuser['email'] );
+        } else {
+            $user_created = false;
+            Log::info( 'PeeringDB OAuth: found existing user ' . $user->getId() . '/' . $user->getUsername() . ' for PeeringDB user: ' . $pdbuser['name'] . '/' . $pdbuser['email'] );
+        }
+
+        $user->setName( $pdbuser['name'] );
+        $user->setEmail( $pdbuser['email'] );
+        D2EM::flush();
+        $result['user'] = $user;
+
+        // user updated or created now.
+        // we still need to link to customers
+
+        // let's start with removing any customers that are no longer in the peeringdb networks list
+        foreach( $user->getCustomers2User() as $c2u ) {
+            $key = array_search( $c2u->getCustomer()->getAutsys(), $asns );
+
+            if( $key === false ) {
+                // user has a network that's not in the current peeringdb list of affiliated networks
+                // => if it came from peeringdb then remove it
+                $ea = $c2u->getExtraAttributes();
+                if( $ea && isset( $ea['created_by']['type'] ) && $ea['created_by']['type'] === 'PeeringDB' ) {
+                    D2EM::getRepository( UserLoginHistoryEntity::class )->deleteUserLoginHistory( $c2u->getId() );
+
+                    // if this is the user's default / last logged in as customer, reset it:
+                    if( !$user->getCustomer() || $user->getCustomer()->getId() === $c2u->getCustomer()->getId() ) {
+                        $user->setCustomer(null);
+                    }
+
+                    $result['removed_from'][] = $c2u->getCustomer();
+                    Log::info( 'PeeringDB OAuth: removing user ' . $user->getId() . '/' . $user->getUsername() . ' from ' . $c2u->getCustomer()->getFormattedName() );
+                    D2EM::remove( $c2u );
+                    D2EM::flush();
+
+                }
+            } else {
+                // we already have a link so take it out of the array
+                Log::info( 'PeeringDB OAuth: user ' . $user->getId() . '/' . $user->getUsername() . ' already linked to AS' . $asns[ $key ] );
+                unset( $asns[ $key ] );
+            }
+        }
+
+        // what's left in $asns is potential new customers:
+        foreach( $asns as $asn ) {
+            /** @var \Entities\Customer $cust */
+            if( $cust = D2EM::getRepository( 'Entities\Customer' )->findOneBy( ['autsys' => $asn ] ) ) {
+
+                Log::info( 'PeeringDB OAuth: user ' . $user->getId() . '/' . $user->getUsername() . ' has PeeringDB affiliation with ' . $cust->getFormattedName() );
+
+                // is this a valid customer?
+                if( !( $cust->isTypeFull() || $cust->isTypeProBono() ) || !$cust->statusIsNormal() || $cust->hasLeft() ) {
+                    Log::info( 'PeeringDB OAuth: ' . $cust->getFormattedName() . ' not a suitable IXP Manager customer for PeeringDB, skipping.' );
+                    continue;
+                }
+
+                /** @var CustomerToUserEntity $c2u */
+                $c2u = new CustomerToUserEntity;
+                $c2u->setCustomer( $cust );
+                $c2u->setUser( $user );
+                $c2u->setPrivs( $priv );
+                $c2u->setCreatedAt( now() );
+                $c2u->setExtraAttributes( [ "created_by" => [ "type" => "PeeringDB"  ] ] );
+
+                D2EM::persist( $c2u );
+                D2EM::flush();
+
+                $result['added_to'][] = $c2u->getCustomer();
+                Log::info( 'PeeringDB OAuth: user ' . $user->getId() . '/' . $user->getUsername() . ' linked with with ' . $cust->getFormattedName() );
+                $user_created ? event( new UserCreatedEvent( $user ) ) : event( new UserAddedToCustomerEvent( $c2u ) );
+            }
+        }
+
+        // refresh from database
+        D2EM::refresh($user);
+
+        // do we actually have any customers afterall this?
+        if( !count( $user->getCustomers() ) ) {
+
+            Log::info( 'PeeringDB OAuth: user ' . $user->getId() . '/' . $user->getUsername() . ' has no customers - deleting...' );
+
+            // delete all the user's preferences
+            foreach( $user->getPreferences() as $pref ) {
+                $user->removePreference( $pref );
+                D2EM::remove( $pref );
+            }
+
+            // delete all the user's API keys
+            foreach( $user->getApiKeys() as $ak ) {
+                $user->removeApiKey( $ak );
+                D2EM::remove( $ak );
+            }
+
+            D2EM::remove( $user );
+            $result['user'] = null;
+
+        } else if( $user->getCustomer() === null ) {
+            // set a default customer if we do not have one
+            Log::info( 'PeeringDB OAuth: user ' . $user->getId() . '/' . $user->getUsername() . ' given default customer: ' . ($user->getCustomers()[0])->getFormattedName() );
+            $user->setCustomer( $user->getCustomers()[0] );
+        }
+        D2EM::flush();
+
+        return $result;
     }
 }

@@ -55,11 +55,19 @@
                     <th>
                         Created
                     </th>
+
                     <?php if( Auth::getUser()->isSuperUser() ): ?>
                         <th>
                             Updated
                         </th>
                     <?php endif; ?>
+
+                    <?php if( config( 'auth.peeringdb.enabled' ) ): ?>
+                        <th>
+                            OAuth
+                        </th>
+                    <?php endif; ?>
+
                     <th>
                         Action
                     </th>
@@ -106,6 +114,13 @@
                                     <?= $u[ "lastupdated" ] ? $u[ "lastupdated" ]->format( 'Y-m-d H:i:s' ) : '' ?>
                                 </td>
                             <?php endif;?>
+
+                            <?php if( config( 'auth.peeringdb.enabled' ) ): ?>
+                                <td>
+                                    <?= $u['peeringdb_id'] ? 'Y' : 'N' ?>
+                                </td>
+                            <?php endif; ?>
+
                             <td>
 
                                 <div class="btn-group btn-group-sm">

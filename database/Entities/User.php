@@ -164,6 +164,18 @@ class User implements Authenticatable, CanResetPasswordContract
 
 
     /**
+     * @var integer $peeringdb_id
+     */
+    private $peeringdb_id;
+
+
+    /**
+     * @var \Json
+     */
+    private $extra_attributes = [];
+
+
+    /**
      * @var \Doctrine\Common\Collections\Collection
      */
     protected $LastLogins;
@@ -201,7 +213,7 @@ class User implements Authenticatable, CanResetPasswordContract
     {
         $this->Preferences = new ArrayCollection();
         $this->Customers = new \Doctrine\Common\Collections\ArrayCollection();
-
+        $this->ApiKeys = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
     /**
@@ -446,6 +458,61 @@ class User implements Authenticatable, CanResetPasswordContract
         return $this->lastupdatedby;
     }
 
+
+
+
+    /**
+     * Get PeeringDB ID
+     *
+     * @return int
+     */
+    public function getPeeringDbId(): ?int
+    {
+        return $this->peeringdb_id;
+    }
+
+
+    /**
+     * Set PeeringDB ID
+     *
+     * @param int $id
+     * @return User
+     */
+    public function setPeeringDbId( ?int $id )
+    {
+        $this->peeringdb_id = $id;
+
+        return $this;
+    }
+
+
+
+    /**
+     * Get Extra attributes
+     *
+     * @return \Json
+     */
+    public function getExtraAttributes()
+    {
+        return $this->extra_attributes;
+    }
+
+
+    /**
+     * Set extra attributes
+     *
+     * @param Json $extra_attributes
+     * @return User
+     */
+    public function setExtraAttributes( $extra_attributes )
+    {
+        $this->extra_attributes = $extra_attributes;
+
+        return $this;
+    }
+
+
+
     /**
      * Get Customer
      *
@@ -598,7 +665,10 @@ class User implements Authenticatable, CanResetPasswordContract
     }
 
 
-    public function getCustomers2User(){
+    /**
+     * @return \Doctrine\Common\Collections\Collection|CustomerToUser[]
+     */
+    public function getCustomers2User() {
         return $this->Customers;
     }
 

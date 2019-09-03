@@ -67,7 +67,7 @@ $this->layout( 'layouts/ixpv4' );
                             <td>
                                 <?php if( !$cb->getEnabled() ):?>
                                     <i class="fa fa-remove"></i>
-                                <?php elseif( $cb->getEnabled() && $cb->doAllCoreLinksEnabled() ): ?>
+                                <?php elseif( $cb->getEnabled() && $cb->areAllCoreLinksEnabled() ): ?>
                                     <i class="fa fa-check"></i>
                                 <?php else:?>
                                     <span class="badge badge-warning"> <?= count( $cb->getCoreLinksEnabled() ) ?> / <?= count( $cb->getCoreLinks() )?> </span>
@@ -98,6 +98,20 @@ $this->layout( 'layouts/ixpv4' );
             </table>
         </div>
     </div>
+</div>
+
+<div class="row">
+
+    <div class="col-sm-10 offset-sm-1">
+        <p class="tw-italic">
+            <br><br>
+            <sup>*</sup> Operational means the number of enabled core links for which both sides had a SNMP IFace operational state of 'up' the last time the switch
+            was polled (typically every 5 mins).
+        </p>
+    </div>
+
+</div>
+
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>

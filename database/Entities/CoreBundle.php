@@ -35,6 +35,8 @@ use Entities\{
     Switcher            as SwitcherEntity
 };
 
+use OSS_SNMP\MIBS\Iface as Iface;
+
 /**
  * CoreBundle
  */
@@ -183,6 +185,17 @@ class CoreBundle
     }
 
     /**
+     * Turn the database integer representation of the type into text as
+     * defined in the self::$TYPES array (or 'Unknown')
+     * @return string
+     */
+    public function resolveType(): string {
+        return self::$TYPES[ $this->getType() ] ?? 'Unknown';
+    }
+
+
+
+    /**
      * Get graph title
      *
      * @return string
@@ -295,15 +308,6 @@ class CoreBundle
     public function removeCoreLink( CoreLink $coreLink)
     {
         $this->coreLinks->removeElement( $coreLink );
-    }
-
-    /**
-     * Turn the database integer representation of the type into text as
-     * defined in the self::$TYPES array (or 'Unknown')
-     * @return string
-     */
-    public function resolveType(): string {
-        return self::$TYPES[ $this->getType() ] ?? 'Unknown';
     }
 
 
@@ -445,11 +449,11 @@ class CoreBundle
      *
      * @return boolean
      */
-    public function doAllCoreLinksEnabled( ): bool
+    public function areAllCoreLinksEnabled(): bool
     {
-        foreach( $this->getCoreLinks() as $cl ){
+        foreach( $this->getCoreLinks() as $cl ) {
             /** @var CoreLinkEntity $cl */
-            if( !$cl->getEnabled() ){
+            if( !$cl->getEnabled() ) {
                 return false;
             }
         }
@@ -462,7 +466,7 @@ class CoreBundle
      *
      * @return array
      */
-    public function getCoreLinksEnabled( ): array
+    public function getCoreLinksEnabled(): array
     {
         $cls = [];
         foreach( $this->getCoreLinks() as $cl ){
@@ -620,6 +624,32 @@ class CoreBundle
         }
 
         return ( count( array_unique( $switches ) ) == 1 ) ? true : false;
+    }
+
+
+    /**
+     * Get all core links where each side of the link has an SNMP IF Oper State as provided
+     * (defaults to operational state: UP).
+     *
+     * @param int $operstate
+     * @return CoreLink[]
+     */
+    public function getCoreLinksWithIfOperStateX( int $operstate = Iface::IF_ADMIN_STATUS_UP, bool $onlyEnabled = true ): array {
+        $cls = [];
+
+        foreach( $this->getCoreLinks() as $cl ) {
+            if( $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getSwitchPort()->getIfOperStatus() == $operstate
+                    && $cl->getCoreInterfaceSideB()->getPhysicalInterface()->getSwitchPort()->getIfOperStatus() == $operstate ) {
+
+                if( $onlyEnabled && !$cl->getEnabled() ) {
+                    continue;
+                }
+
+                $cls[] = $cl;
+            }
+        }
+
+        return $cls;
     }
 }
 
