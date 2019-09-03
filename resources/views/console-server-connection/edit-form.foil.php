@@ -25,11 +25,11 @@
 
         <?= Former::select( 'custid' )
             ->id( 'cust' )
-            ->label( 'Customer' )
-            ->placeholder( 'Select a customer' )
+            ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
+            ->placeholder( 'Select a ' . config( 'ixp_fe.lang.customer.one' ) )
             ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
             ->addClass( 'chzn-select' )
-            ->blockHelp( "This field exists as you may co-locate some equipment for your customers. Ordinarily, just pick your IXP customer." );
+            ->blockHelp( 'This field exists as you may co-locate some equipment for your ' . config( 'ixp_fe.lang.customer.one' )  . '. Ordinarily, just pick your IXP ' . config( 'ixp_fe.lang.customer.one' ) . '.' );
         ?>
 
         <?= Former::text( 'port' )

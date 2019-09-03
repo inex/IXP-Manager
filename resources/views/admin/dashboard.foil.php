@@ -20,13 +20,13 @@
             <div class="col-12 col-xl-6">
 
                 <div>
-                    <h4>Overall Customer Numbers</h4>
+                    <h4>Overall <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Numbers</h4>
 
                     <table class="table table-sm table-striped tw-shadow-md tw-rounded-sm table-hover tw-mt-6">
                         <thead>
                         <tr>
                             <th>
-                                Customer Type
+                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Type
                             </th>
                             <th class="tw-text-right">
                                 Count
@@ -55,7 +55,7 @@
                 <?php if( count( $t->stats[ "custsByLocation" ] ) ): ?>
 
                     <div class="tw-my-12">
-                        <h4 class="tw-mb-6">Customers by Location</h4>
+                        <h4 class="tw-mb-6"><?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?> by Location</h4>
 
                         <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">
                             <thead>
@@ -64,7 +64,7 @@
                                     Location
                                 </th>
                                 <th class="tw-text-right">
-                                    Customers
+                                    <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
                                 </th>
                             </tr>
                             </thead>
@@ -88,7 +88,7 @@
                     <div class="tw-my-12">
 
                         <h4 class="tw-mb-6">
-                            Customer Ports by Location
+                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Ports by Location
                         </h4>
 
                         <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">
@@ -165,7 +165,7 @@
                 <?php if( count( $t->stats[ "byLan" ] ) ): ?>
                     <div class="tw-my-10">
 
-                        <h4  class="tw-mb-6">Customer Ports by Infrastructure</h4>
+                        <h4  class="tw-mb-6"><?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Ports by Infrastructure</h4>
 
                         <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">
                             <thead>
@@ -254,7 +254,7 @@
                 <?php if( count( $t->stats[ "rsUsage" ] ) ): ?>
                     <div class="tw-my-10">
 
-                        <h4 class="tw-mb-6">Customer Route Server Usage by VLAN</h4>
+                        <h4 class="tw-mb-6"><?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Route Server Usage by VLAN</h4>
 
                         <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">
                             <thead>
@@ -333,7 +333,7 @@
                     <div class="tw-my-10">
 
                         <h4 class="tw-mb-6">
-                            Customer IPv6 Usage by VLAN
+                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> IPv6 Usage by VLAN
                         </h4>
 
                         <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">

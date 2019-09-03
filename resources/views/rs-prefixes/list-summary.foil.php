@@ -1,7 +1,7 @@
 <table class="table collapse table-striped" id="summary-table-<?= $t->type ?>" width="100%">
     <thead class="thead-dark">
         <th>
-            Customer
+            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
         </th>
         <th>
             IPv4

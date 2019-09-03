@@ -58,6 +58,19 @@ return [
     */
     'customer_name_format' => "%a (AS%i)",
 
+
+    /*
+     * Customer or Member?
+     */
+    'lang' => [
+        'customer' => [
+            'one'    => env( 'IXP_FE_FRONTEND_CUSTOMER_ONE',   'member' ),
+            'many'   => env( 'IXP_FE_FRONTEND_CUSTOMER_MANY',  'members' ),
+            'owner'  => env( 'IXP_FE_FRONTEND_CUSTOMER_OWNER',  "member's" ),
+            'owners' => env( 'IXP_FE_FRONTEND_CUSTOMER_OWNERS', "members'" ),
+        ],
+    ],
+
     /*
     |--------------------------------------------------------------------------
     | Front end components (Zend Framework Controllers)

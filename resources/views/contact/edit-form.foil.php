@@ -25,11 +25,11 @@
                 <?php if( Auth::getUser()->isSuperUser() ):?>
                     <?= Former::select( 'custid' )
                         ->id( 'cust' )
-                        ->label( 'Customer' )
-                        ->placeholder( 'Select a customer' )
+                        ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
+                        ->placeholder( 'Select a ' . config( 'ixp_fe.lang.customer.one' ) )
                         ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
                         ->addClass( 'chzn-select' )
-                        ->blockHelp( "Customer to assign this contact to." );
+                        ->blockHelp( ucfirst( config( 'ixp_fe.lang.customer.one' ) )  . ' to assign this contact to.' );
                     ?>
                 <?php endif; ?>
 

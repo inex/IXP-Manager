@@ -316,7 +316,7 @@
      */
     function resetCustomer(){
         let customer;
-        let options = "<option value=''> Choose a customer</option>\n";
+        let options = "<option value=''> Choose a <?= config( 'ixp_fe.lang.customer.one' ) ?></option>\n";
 
         <?php foreach ( $t->customers as $id => $customer ): ?>
             customer = `<?= $customer ?>`;

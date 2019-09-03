@@ -33,7 +33,7 @@ $this->layout( 'layouts/ixpv4' );
             <thead class="thead-dark">
                 <tr>
                     <th>
-                        Customer
+                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
                     </th>
                     <th>
                         Source Switch

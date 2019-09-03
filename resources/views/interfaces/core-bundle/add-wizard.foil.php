@@ -70,9 +70,9 @@ $this->layout( 'layouts/ixpv4' );
                             </h4>
                             <hr>
                             <?= Former::select( 'customer' )
-                                ->label( 'Customer' )
+                                ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
                                 ->fromQuery( $t->customers, 'name' )
-                                ->placeholder( 'Choose a customer' )
+                                ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
                                 ->addClass( 'chzn-select' )
                                 ->required( true )
                                 ->blockHelp( '' );
@@ -277,7 +277,8 @@ $this->layout( 'layouts/ixpv4' );
 
                                 <ul>
                                     <li>
-                                        If you have pre-wired the patch panel to a port, enter the switch and port here. So long as no customer has been
+                                        If you have pre-wired the patch panel to a port, enter the switch and port here. So long as no
+                                        <?= config( 'ixp_fe.lang.customer.one' ) ?> has been
                                         assigned to the switch port, the patch panel port will remain available but will be marked as connected to
                                         the given switch port in the patch panel port list.
                                     </li>

@@ -20,13 +20,13 @@
             <hr class="w-100 tw-my-0" style="margin-left: -10px ">
 
             <h6>
-                <span>IXP CUSTOMER ACTIONS</span>
+                <span>IXP <?= strtoupper( config( 'ixp_fe.lang.customer.one' ) ) ?> ACTIONS</span>
             </h6>
 
 
             <li class="<?= !request()->is( 'customer/*' ) ?: 'active' ?>">
                 <a class="nav-link" href="<?= route( 'customer@list' ) ?>">
-                    Customers
+                    <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
                 </a>
             </li>
 
@@ -435,7 +435,7 @@
                             </dd>
                             <dt>Wildcard</dt>
                             <dd>
-                                Any other text is searched as <code>%xxx%</code> on customer details
+                                Any other text is searched as <code>%xxx%</code> on <?= config( 'ixp_fe.lang.customer.one' ) ?> details
                             </dd>
                         </dl>
                     </div>

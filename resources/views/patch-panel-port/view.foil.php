@@ -187,7 +187,7 @@
                                             <tr>
                                                 <td>
                                                     <b>
-                                                        Customer:
+                                                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>:
                                                     </b>
                                                 </td>
                                                 <td>

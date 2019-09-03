@@ -22,7 +22,7 @@
 
         <?= Former::text( 'ipv4-hostname' )
             ->label( 'IPv4 Hostname' )
-            ->blockHelp( 'The PTR ARPA record that should be associated with this IP address. Normally selected by the customer. E.g. <code>customer.ixpname.net</code>.' );
+            ->blockHelp( 'The PTR ARPA record that should be associated with this IP address. Normally selected by the ' . config( 'ixp_fe.lang.customer.one' ) . '. E.g. <code>' . config( 'ixp_fe.lang.customer.one' ) . '.ixpname.net</code>.' );
         ?>
 
         <?= Former::text( 'ipv4-bgp-md5-secret' )
@@ -34,7 +34,7 @@
         <?= Former::checkbox( 'ipv4-can-ping' )
             ->label( '&nbsp;' )
             ->text( 'IPv4 Ping Allowed / Possible' )
-            ->blockHelp( "IXP's typically monitor customer interfaces for reachability / latency using pings. If the customer has asked you not to do this, uncheck this box." )
+            ->blockHelp( "IXP's typically monitor " . config( 'ixp_fe.lang.customer.one' ) . " interfaces for reachability / latency using pings. If the " . config( 'ixp_fe.lang.customer.one' ) . " has asked you not to do this, uncheck this box." )
             ->value( 1 )
             ->inline()
         ?>
@@ -42,7 +42,7 @@
         <?= Former::checkbox( 'ipv4-monitor-rcbgp' )
             ->label( '&nbsp;' )
             ->text( 'IPv4 Monitor Route Collector BGP' )
-            ->blockHelp( "IXP's often monitor a customer's route collector BGP session. If this is not possible / unsuitable for this customer, uncheck this box." )
+            ->blockHelp( "IXP's often monitor a " . config( 'ixp_fe.lang.customer.owner' ) . " route collector BGP session. If this is not possible / unsuitable for this " . config( 'ixp_fe.lang.customer.one' ) . ", uncheck this box." )
             ->value( 1 )
             ->inline()
         ?>

@@ -96,7 +96,7 @@ Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
                                 <thead class="thead-dark">
                                     <tr>
                                         <th>
-                                            Customer
+                                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
                                         </th>
                                         <th>
                                             Privilege
@@ -147,11 +147,11 @@ Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
 
                             <?php if( Auth::getUser()->isSuperUser() ): ?>
                                 <?= Former::select( 'custid')
-                                    ->label( 'Customer' )
-                                    ->placeholder( 'Select a customer' )
+                                    ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
+                                    ->placeholder( 'Select a ' . config( 'ixp_fe.lang.customer.one' ) )
                                     ->fromQuery( $t->custs, 'name' )
                                     ->addClass( 'chzn-select' )
-                                    ->blockHelp( "The customer to create the user for.<br><br>If creating a customer for your own IXP, then pick the IXP customer entry." )
+                                    ->blockHelp( 'The ' . config( 'ixp_fe.lang.customer.one' ) . ' to create the user for.<br><br>If creating a ' . config( 'ixp_fe.lang.customer.one' ) . ' for your own IXP, then pick the IXP ' . config( 'ixp_fe.lang.customer.one' ) . ' entry.' )
                                     ->disabled( $t->c ? true : false );
 
                                 ?>
@@ -236,11 +236,11 @@ Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
 
         <br><br><br>
         <p>
-            The <em>created by</em> column indicates how the user was linked to the customer. The information you may see includes:
+            The <em>created by</em> column indicates how the user was linked to the <?= config( 'ixp_fe.lang.customer.one' ) ?>. The information you may see includes:
         </p>
         <ul>
-            <li> <em>migration-script:</em> the user originally belonged to this customer in versions of IXP Manager &lt;v5.0 when users where linked 1:1 with customers. </li>
-            <li> <em>user:</em> the user was linked to this customer by either a customer admin or a super admin. </li>
+            <li> <em>migration-script:</em> the user originally belonged to this <?= config( 'ixp_fe.lang.customer.one' ) ?> in versions of IXP Manager &lt;v5.0 when users where linked 1:1 with <?= config( 'ixp_fe.lang.customer.many' ) ?>. </li>
+            <li> <em>user:</em> the user was linked to this <?= config( 'ixp_fe.lang.customer.one' ) ?> by either a <?= config( 'ixp_fe.lang.customer.one' ) ?> admin or a super admin. </li>
             <li> <em>PeeringDB:</em> the user was added via a PeeringDB OAuth login. </li>
         </ul>
 

@@ -43,7 +43,7 @@
                     </th>
                     <?php if( Auth::getUser()->isSuperUser() ): ?>
                         <th>
-                            Customer
+                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
                         </th>
                     <?php endif; ?>
                     <th>

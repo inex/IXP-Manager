@@ -88,8 +88,8 @@
         </p>
 
         <p>
-            The customer agrees that should the applicable service to which this LoA was issued be requested
-            to be cancelled at any time during service, the customer must prior to contract cease date arrange
+            The <?= config( 'ixp_fe.lang.customer.one' ) ?> agrees that should the applicable service to which this LoA was issued be requested
+            to be cancelled at any time during service, the <?= config( 'ixp_fe.lang.customer.one' ) ?> must prior to contract cease date arrange
             to have associated cross connects decommissioned from the equipment / ports and accept associated
             disconnect costs where applicable.
         </p>

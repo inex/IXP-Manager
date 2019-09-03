@@ -49,7 +49,7 @@
             <div class="dropdown-menu dropdown-menu-right">
 
                 <a class="dropdown-item" href="<?= route( 'customer@edit' , [ 'id' => $c->getId() ] ) ?>">
-                    Edit Customer Details
+                    Edit <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Details
                 </a>
 
                 <a class="dropdown-item" href="<?= route( 'customer@billing-registration' , [ 'id' => $c->getId() ] ) ?>" >
@@ -79,7 +79,7 @@
 
                 <div class="dropdown-divider"></div>
 
-                <a class="dropdown-item" href="<?= route( 'customer@delete-recap', [ 'id' => $c->getId() ] ) ?>">Delete Customer...</a>
+                <a class="dropdown-item" href="<?= route( 'customer@delete-recap', [ 'id' => $c->getId() ] ) ?>">Delete <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>...</a>
 
             </div>
 
@@ -216,7 +216,7 @@
 
                     <li role="resold-customers" class="nav-item <?php if( $t->tab == 'resold-customers' ): ?>active<?php endif; ?>">
                         <a class="nav-link " data-toggle="tab" href="#resold-customers" data-toggle="tab">
-                            Resold Customers
+                            Resold <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
                         </a>
                     </li>
                 <?php endif; ?>

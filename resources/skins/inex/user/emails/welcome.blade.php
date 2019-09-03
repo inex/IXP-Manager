@@ -8,14 +8,14 @@ To whom it may concern,
 @if( $resend )
 **This email is being sent to you because either you requested a reminder of your account details or an administrator thought it appropriate to send you a reminder.**
 @elseif( $user->getPeeringDbId() )
-A new user account has been created for you on INEX's customer portal (IXP Manager) as you logged in with your PeeringDB account.
+A new user account has been created for you on INEX's <?= config( 'ixp_fe.lang.customer.one' ) ?> portal (IXP Manager) as you logged in with your PeeringDB account.
 
 @if( config( 'auth.peeringdb.privs' ) == \Entities\User::AUTH_CUSTUSER )
 **Accounts created with PeeringDB have non-admin access by default. If you would like your privileges escalated, please email us at {{ config( 'identity.support_email') }} with your username ({{ $user->getUsername() }}).**
 @endif
 
 @else
-A new user account has been created for you on INEX's customer portal (IXP Manager).
+A new user account has been created for you on INEX's <?= config( 'ixp_fe.lang.customer.one' ) ?> portal (IXP Manager).
 @endif
 
 You can login to your account using the following details:

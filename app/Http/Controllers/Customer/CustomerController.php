@@ -131,7 +131,7 @@ class CustomerController extends Controller
 
 
         if( $state || $type || $showCurrentOnly || $tid ){
-            $summary = $showCurrentOnly ? ":: Current Customers" : ":: All Customers" ;
+            $summary = $showCurrentOnly ? ( ":: Current " . ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) : ( ":: All " . ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) ;
 
             if( $state ){
                 $summary .= " - State: " . CustomerEntity::$CUST_STATUS_TEXT[ $state ];
@@ -240,7 +240,7 @@ class CustomerController extends Controller
         /** @var CustomerEntity $c */
         if( $isEdit && $c = D2EM::getRepository( CustomerEntity::class )->find( $r->input( 'id' ) ) ) {
             if( !$c ) {
-                abort(404, 'Customer not found' );
+                abort(404, ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' not found' );
             }
         } else {
             $c = new CustomerEntity;
@@ -315,7 +315,7 @@ class CustomerController extends Controller
         D2EM::flush();
         Cache::forget( 'admin_home_customers' );
 
-        AlertContainer::push( 'Customer successfully ' . ( $isEdit ? ' edited.' : ' added.' ), Alert::SUCCESS );
+        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' successfully ' . ( $isEdit ? ' edited.' : ' added.' ), Alert::SUCCESS );
 
         if( $isEdit ){
             return Redirect::to( route( "customer@overview" , [ "id" => $c->getId() ] ) );
@@ -336,7 +336,7 @@ class CustomerController extends Controller
 
         $c = false; /** @var CustomerEntity $c */
         if( !$id || !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
-            abort( 404, 'Customer not found' );
+            abort( 404, ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' not found' );
         }
 
         $cbd = $c->getBillingDetails();

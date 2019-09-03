@@ -7,7 +7,7 @@ $row = $t->data[ 'item' ];
 
 <tr>
     <th>
-            Customer
+        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
     </th>
     <td>
         <a href="<?= route( "customer@overview" , [ "id" => $row[ 'customerid' ] ] ) ?>">
