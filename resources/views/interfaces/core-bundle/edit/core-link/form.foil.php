@@ -53,7 +53,7 @@
                     ?>
 
                     <?= Former::checkbox( 'cl-details[1][enabled-cl]' )
-                        ->id( "" )
+                        ->id( "enabled-1" )
                         ->label( 'Enabled' )
                         ->addClass( 'new-core-link-input' )
                         ->value( 1 )
@@ -63,6 +63,7 @@
                     <?php if( $t->cb->isECMP() ): ?>
 
                         <?= Former::checkbox( 'cl-details[1][bfd]' )
+                            ->id( "bfd-1" )
                             ->label( 'BFD' )
                             ->addClass( 'new-core-link-input' )
                             ->value( 1 )

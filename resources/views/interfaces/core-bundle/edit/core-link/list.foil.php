@@ -142,7 +142,7 @@
             ?>
 
             <?=Former::actions(
-                Former::primary_submit( 'Save Changes' )->id( 'core-links-submit-btn' )
+                Former::primary_submit( 'Save Core links Changes' )->id( 'core-links-submit-btn' )
             );?>
 
             <?= Former::close() ?>

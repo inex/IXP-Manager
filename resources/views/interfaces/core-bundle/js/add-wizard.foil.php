@@ -237,6 +237,7 @@
         element.find( ".sp-dd" ).select2( { width: '100%' } );
         element.find( ".title-new-cl" ).html( `Link ${nb_link}:` );
         element.find( ".message-new-cl" ).attr( "id",  `message-${nb_link}` );
+        element.find( ".delete-core-link" ).attr( "id",  `delete-cl-${nb_link}` );
 
         if( old_nb_link < 1){
             element.find( ".delete-core-link" ).remove();
@@ -254,6 +255,7 @@
             $( input ).attr( 'name' , `cl-details[${nb_link}][${$( input ).attr( "data-value" )}]` );
             $( input ).attr( 'id' , $( input ).attr( "data-value" ) + "-" + nb_link  );
         });
+        $( ".checkbox-cl-hidden" ).removeAttr( "id" )
     }
 
     /**

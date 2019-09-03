@@ -6,7 +6,7 @@
         </div>
 
         <div class="my-auto">
-            <button title="Remove link" class="btn btn-sm btn-white delete-core-link"><i class="fa fa-trash"></i></button>
+            <button title="Remove link" id="delete-core-bundle" class="btn btn-sm btn-white delete-core-link"><i class="fa fa-trash"></i></button>
         </div>
     </div>
 
@@ -38,7 +38,7 @@
             <div class="form-group row">
                 <label class="control-label col-sm-6 col-lg-3">Enabled</label>
                 <div class="col-lg-4 col-sm-6">
-                    <input type="hidden" name="" data-value="enabled-cl" class="cl-input" value="0">
+                    <input type="hidden" name="" data-value="enabled-cl" class="cl-input checkbox-cl-hidden" value="0">
                     <input id="" data-value="enabled-cl" class="cl-input enabled-cl" type="checkbox" name="" checked="checked" value="1">
                 </div>
             </div>
@@ -47,7 +47,7 @@
                 <div class="form-group row">
                     <label class="control-label col-sm-6 col-lg-3">BFD</label>
                     <div class="col-lg-4 col-sm-6">
-                        <input type="hidden" data-value="bfd" class="cl-input" name="" value="0">
+                        <input type="hidden" data-value="bfd" class="cl-input checkbox-cl-hidden" name="" value="0">
                         <input id="" data-value="bfd" type="checkbox" class="cl-input bfd" name="" value="1">
                     </div>
                 </div>
