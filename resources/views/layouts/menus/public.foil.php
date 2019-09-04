@@ -10,14 +10,14 @@
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle <?= !request()->is( 'customer/details', 'customer/associates' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Member Information
+                    <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Information
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
                     <a class="dropdown-item <?= !request()->is( 'customer/details' ) ?: 'active' ?>" href="<?= route('customer@details') ?>">
-                        Member Details
+                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Details
                     </a>
                     <a class="dropdown-item <?= !request()->is( 'customer/associates' ) ?: 'active' ?>" href="<?= route( "customer@associates" ) ?>">
-                        Associate Members
+                        Associate <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
                     </a>
                 </div>
             </li>
@@ -80,7 +80,7 @@
                         <div class="dropdown-divider"></div>
 
                         <a class="dropdown-item <?= !request()->is( 'statistics/members' ) ?: 'active' ?>" href="<?= route( 'statistics/members' ) ?>">
-                            Member Graphs
+                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Graphs
                         </a>
                     <?php endif; ?>
 
