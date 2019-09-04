@@ -8,7 +8,7 @@
         let urlDelete   =   this.href;
         let nbC2U       = $(this).attr( "data-nb-c2u" );
         let superUser   = <?= Auth::getUser()->isSuperUser() ? 'true' : 'false' ?> ;
-        let message = 'Do you really want to delete this user ?';
+        let message = 'Do you really want to delete this user?';
         let objectName = 'User';
 
         if( superUser && !$(this).hasClass( "btn-delete-c2u"  )  ) {

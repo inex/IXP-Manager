@@ -313,8 +313,8 @@ class UserControllerTest extends DuskTestCase
             $browser->assertPathIs(     "/user/edit/" . $u->getId() )
                     ->waitForText(      'Imagine' )
                     ->click(         "#d2f-list-delete-" . $c2u2->getId() )
-                    ->waitForText(      "Delete Customer To User" )
-                    ->assertSee(        "Do you really want to delete" )
+                    ->waitForText(      "Delete " . ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . " To User" )
+                    ->assertSee(        "Do you really want to unlink" )
                     ->press(          "Delete" );
 
 
@@ -631,7 +631,7 @@ class UserControllerTest extends DuskTestCase
 
             // delete this user
             $browser->press( '#d2f-list-delete-' . $u->getId() )
-                ->waitForText( 'Do you really want to delete this ' . config( 'ixp_fe.lang.customer.one' ) . ' from this user' )
+                ->waitForText( 'Do you really want to unlink this ' . config( 'ixp_fe.lang.customer.one' ) . ' from this user' )
                 ->press( 'Delete' )
                 ->assertPathIs('/user/list' )
                 ->assertSee( 'The User has been deleted' )
