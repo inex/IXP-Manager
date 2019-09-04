@@ -7,9 +7,9 @@
 <?php $this->section( 'page-header-preamble' ) ?>
 
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-        <?= $t->associates ? 'Associate Members' : 'Customers' ?>
+        <?= $t->associates ? ( 'Associate ' . ucfirst( config( 'ixp_fe.lang.customer.many' ) ) )  : ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
     <?php else: ?>
-        <?= $t->associates ? 'Associate' : '' ?> Members
+        <?= $t->associates ? 'Associate' : '' ?> <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
     <?php endif; ?>
 
 <?php $this->append() ?>
@@ -28,7 +28,7 @@
                 <thead class="thead-dark">
                     <tr>
                         <th>
-                            Member
+                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
                         </th>
                         <th class="tw-hidden md:tw-table-cell">
                             Joined
