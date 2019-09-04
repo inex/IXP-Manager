@@ -6,7 +6,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Customers / List
+    <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?> / List
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -14,7 +14,7 @@ $this->layout( 'layouts/ixpv4' );
 
     <div class="btn-group btn-group-sm" role="group">
         <a id="btn-filter-options" class="btn btn-white" href="<?= route( "customer@list" ) . '?current-only=' . ( $t->showCurrentOnly ? '0' : '1' ) ?>">
-            <?= $t->showCurrentOnly ? "Show All Customers" : "Show Current Customers" ?>
+            <?= $t->showCurrentOnly ? ( "Show All " . ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ) : ( "Show Current " . ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
         </a>
 
         <div class="btn-group btn-group-sm">

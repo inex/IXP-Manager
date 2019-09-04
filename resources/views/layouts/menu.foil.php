@@ -317,14 +317,14 @@
 
             <li class="<?= !request()->is( 'statistics/members' ) ?: 'active' ?>" >
                 <a href="<?= route( 'statistics/members' ) ?>" class="nav-link">
-                    Member Statistics
+                    <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Statistics
                 </a>
             </li>
 
             <?php if( !config( 'ixp_fe.frontend.disabled.logo', true ) ): ?>
                 <li class="<?= !request()->is( 'customer-logo/logos' ) ?: 'active' ?>">
                     <a href="<?= route('logo@logos' ) ?>" class="nav-link">
-                        Member Logos
+                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Logos
                     </a>
                 </li>
             <?php endif; ?>
