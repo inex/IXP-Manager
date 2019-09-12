@@ -88,6 +88,9 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer trafficking()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer current()
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VirtualInterface[] $virtualInterfaces
+ * @property int $peeringdb_oauth
+ * @property-read int|null $virtual_interfaces_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringdbOauth($value)
  */
 class Customer extends Model
 {
