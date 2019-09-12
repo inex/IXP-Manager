@@ -69,16 +69,12 @@ function ixp_community_filter(int peerasn)
             return true;
 
 <?php endif; ?>
-    # it's unwise to conduct a 32-bit check on a 16-bit value
-    if peerasn > 65535 then
-            return true;
-
     # Implement widely used community filtering schema.
-    if (0, peerasn) ~ bgp_community then
+    if ((peerasn < 65536) && ((0, peerasn) ~ bgp_community)) || (ro, 0, peerasn) ~ bgp_ext_community then
             return false;
-    if (routeserverasn, peerasn) ~ bgp_community then
+    if ((peerasn < 65536) && ((routeserverasn, peerasn) ~ bgp_community)) || (ro, routeserverasn, peerasn) ~ bgp_ext_community then
             return true;
-    if (0, routeserverasn) ~ bgp_community then
+    if (0, routeserverasn) ~ bgp_community || (ro, 0, routeserverasn) ~ bgp_ext_community then
             return false;
 
     return true;
