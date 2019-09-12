@@ -26,7 +26,6 @@ define TRANSIT_ASNS = [ 174,                  # Cogent
                         4134,                 # Chinanet
                         5511,                 # Orange opentransit
                         6453,                 # Tata Communications
-                        6461,                 # Zayo Bandwidth
                         6762,                 # Seabone / Telecom Italia
                         7018 ];               # AT&T
 
