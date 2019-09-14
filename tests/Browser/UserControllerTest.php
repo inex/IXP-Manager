@@ -729,7 +729,7 @@ class UserControllerTest extends DuskTestCase
             // 1. customer overview -> non internal customer -> add user from tab -> no super option
             $browser->visit( 'customer/overview/' . $nonInternalCust->getId() . '/users' )
                     ->pause(5000)
-                    ->click( "#users-add-btn" )
+                    ->press( "#users-add-btn" )
                     ->type( '#email' , 'test@example.com' )
                     ->click( '.btn-primary' );
 
