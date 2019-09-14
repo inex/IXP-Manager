@@ -91,7 +91,8 @@ class InfrastructureControllerTest extends DuskTestCase
                     ->assertSee( "The name has already been taken" )
                     ->type( 'name', 'Infrastructure PHPUnit')
                     ->waitForText( "LINX LON1" )
-                    ->waitForText( "Equinix Ashburn" )
+                    ->pause(5000)
+                    ->assertSee( "Equinix Ashburn" )
                     ->press('Add')
                     ->assertPathIs('/infrastructure/list')
                     ->assertSee( "Infrastructure added" )
@@ -118,7 +119,8 @@ class InfrastructureControllerTest extends DuskTestCase
                     ->assertInputValue('shortname', 'phpunit')
                     ->assertChecked( 'primary' )
                     ->waitForText( "LINX LON1" )
-                    ->waitForText( "Equinix Ashburn" )
+                    ->pause(5000)
+                    ->assertSee( "Equinix Ashburn" )
                     ->assertSelected('ixf_ix_id', '1')
                     ->assertSelected('pdb_ixp', '1');
 
@@ -147,7 +149,8 @@ class InfrastructureControllerTest extends DuskTestCase
             $browser->visit( '/infrastructure/edit/' .  $infra->getId() )
                 ->assertSee( 'Edit Infrastructure' )
                 ->waitForText( "AMS-IX" )
-                ->waitForText( "Equinix Chicago" );
+                ->pause(5000)
+                ->assertSee( "Equinix Chicago" );
 
             $browser->assertInputValue('name',      'Infrastructure PHPUnit')
                 ->assertInputValue('shortname', 'phpunit')
@@ -175,7 +178,8 @@ class InfrastructureControllerTest extends DuskTestCase
             $browser->visit( '/infrastructure/edit/' .  $infra->getId() )
                 ->assertSee( 'Edit Infrastructure' )
                 ->waitForText( "AMS-IX" )
-                ->waitForText( "Equinix Chicago" )
+                ->pause(5000)
+                ->assertSee( "Equinix Chicago" )
                 ->check('primary')
                 ->press('Save Changes')
                 ->assertPathIs('/infrastructure/list');
