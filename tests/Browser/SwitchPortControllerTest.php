@@ -57,9 +57,9 @@ class SwitchPortControllerTest extends DuskTestCase
              * Test view Switch information
              */
 
-                $browser->press( "#lhs-menu-switches" )
-                    ->waitForText( 'Switch Ports' )
-                    ->press( "#lhs-menu-switch-ports" )
+                $browser->clickLink( "Switches" )
+                    ->assertPathIs( '/switch/list' )
+                    ->clickLink( "Switch Ports" )
                     ->assertPathIs( '/switch-port/list' );
 
                 /** @var array SwitchPortEntity */
