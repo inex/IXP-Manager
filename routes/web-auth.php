@@ -119,7 +119,7 @@ Route::group( [ 'prefix' => 'dashboard' ], function() {
 ///
 
 Route::group( [ 'namespace' => 'User', 'prefix' => 'customer-to-user' ], function() {
-    Route::get( 'add/{id?}/{cust?}',      'CustomerToUserController@add'                              )->name( "customer-to-user@add"          );
+    Route::get( 'add/{email?}',      'CustomerToUserController@add'                              )->name( "customer-to-user@add"          );
     Route::post('store',     'CustomerToUserController@store'                           )->name( "customer-to-user@store"        );
     Route::post('delete',    'CustomerToUserController@delete'                          )->name( "customer-to-user@delete"       );
 });

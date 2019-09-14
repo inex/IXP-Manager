@@ -150,7 +150,7 @@ class UserController extends Controller
         }
 
         // building the redirect url
-        $url = $user ? route( "customer-to-user@add", [ 'user' => $user->getEmail() ] ) . ( $custid ? "?cust=" . $custid : '' ) : route("user@add" , [ 'e-mail' => $request->input( 'email' ) , 'cust' => $custid ] );
+        $url = $user ? route( "customer-to-user@add", [ 'email' => $user->getEmail() ] ) . ( $custid ? "?cust=" . $custid : '' ) : route("user@add" , [ 'email' => $request->input( 'email' ) , 'cust' => $custid ] );
 
         return redirect( $url );
     }
