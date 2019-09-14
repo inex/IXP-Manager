@@ -51,49 +51,45 @@ class SwitchPortControllerTest extends DuskTestCase
                 ->type( 'username', 'travis' )
                 ->type( 'password', 'travisci' )
                 ->press( '#login-btn' )
-                ->assertPathIs( '/admin' );
+                ->assertPathIs( '/admin' )
+                ->visit( '/switch-port/list' );
 
             /**
              * Test view Switch information
              */
 
-                $browser->clickLink( "Switches" )
-                    ->assertPathIs( '/switch/list' )
-                    ->clickLink( "Switch Ports" )
-                    ->assertPathIs( '/switch-port/list' );
+            /** @var array SwitchPortEntity */
+            $sps = D2EM::getRepository( SwitchPortEntity::class )->getAllForFeList( (object)[] );
 
-                /** @var array SwitchPortEntity */
-                $sps = D2EM::getRepository( SwitchPortEntity::class )->getAllForFeList( (object)[] );
+            /** @var SwitchPortEntity $sp */
+            $sp = D2EM::getRepository( SwitchPortEntity::class )->find( reset($sps )[ "id" ] );
 
-                /** @var SwitchPortEntity $sp */
-                $sp = D2EM::getRepository( SwitchPortEntity::class )->find( reset($sps )[ "id" ] );
+            $this->assertInstanceOf( SwitchPortEntity::class, $sp );
 
-                $this->assertInstanceOf( SwitchPortEntity::class, $sp );
+            $browser->press( "#d2f-list-view-" . $sp->getId() )
+                ->assertSee( "Details for switch port: " . $sp->getSwitcher()->getName() . " :: " . $sp->getName() . " (DB ID: " . $sp->getId() . ")" );
 
-                $browser->press( "#d2f-list-view-" . $sp->getId() )
-                    ->assertSee( "Details for switch port: " . $sp->getSwitcher()->getName() . " :: " . $sp->getName() . " (DB ID: " . $sp->getId() . ")" );
-
-                $browser->press( "#d2f-list-a" )
-                ->assertPathIs( "/switch-port/list" );
+            $browser->press( "#d2f-list-a" )
+            ->assertPathIs( "/switch-port/list" );
 
 
             /**
              * Test add Switch port form
              */
 
-                $browser->press( "#add-switch-port" )
-                    ->assertSee( "Add Switch Port" );
+            $browser->press( "#add-switch-port" )
+                ->assertSee( "Add Switch Port" );
 
-                // Fill the form with new value
-                $browser->select(   'switchid', 2   )
-                        ->select(   'type',     1   )
-                        ->type(     'numfirst', '1' )
-                        ->type(     'numports', '5' )
-                        ->type(     'prefix',   'travistest%d')
-                        ->click( "#generate-btn" )
-                        ->click( "#btn-submit" )
-                        ->assertPathIs( "/switch-port/list" )
-                        ->assertSee( "Switch Port added" );
+            // Fill the form with new value
+            $browser->select(   'switchid', 2   )
+                    ->select(   'type',     1   )
+                    ->type(     'numfirst', '1' )
+                    ->type(     'numports', '5' )
+                    ->type(     'prefix',   'travistest%d')
+                    ->click( "#generate-btn" )
+                    ->click( "#btn-submit" )
+                    ->assertPathIs( "/switch-port/list" )
+                    ->assertSee( "Switch Port added" );
 
 
 
