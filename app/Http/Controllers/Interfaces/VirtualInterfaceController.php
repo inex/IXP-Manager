@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Interfaces;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Redirect, Former, Input;
+use D2EM, Redirect, Former;
 
 use Illuminate\View\View;
 
@@ -313,7 +313,7 @@ class VirtualInterfaceController extends Common
         $vli->setBusyhost(          false );
 
         if( !$this->setIp($request, $v, $vli, false ) || !$this->setIp($request, $v, $vli, true ) ) {
-            return Redirect::to('virtualInterface/add-wizard' )->withInput( Input::all() );
+            return Redirect::to('virtualInterface/add-wizard' )->withInput( $request->all() );
         }
 
         D2EM::flush();

@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Interfaces;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Redirect, Former, Input;
+use D2EM, Redirect, Former;
 
 use Illuminate\View\View;
 
@@ -294,7 +294,7 @@ class PhysicalInterfaceController extends Common
 
 
         if( !$this->processFanoutPhysicalInterface( $request, $pi, $vi) ){
-            return Redirect::back( )->withInput( Input::all() );
+            return Redirect::back( )->withInput( $request->all() );
         }
 
         if( $related = $pi->getRelatedInterface() ) {

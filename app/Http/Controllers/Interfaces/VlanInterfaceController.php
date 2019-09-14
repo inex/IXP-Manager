@@ -24,7 +24,7 @@ namespace IXP\Http\Controllers\Interfaces;
  */
 
 
-use D2EM, Redirect, Former, Input;
+use D2EM, Redirect, Former;
 
 use Illuminate\View\View;
 
@@ -201,7 +201,7 @@ class VlanInterfaceController extends Common
         $v = D2EM::getRepository( VlanEntity::class )->find( $request->input( 'vlan' ) );   /** @var VlanEntity $v */
 
         if( !$this->setIp( $request, $v, $vli, false ) || !$this->setIp( $request, $v, $vli, true ) ) {
-            return Redirect::back()->withInput( Input::all() );
+            return Redirect::back()->withInput( $request->all() );
         }
 
         $vli->setVirtualInterface(  $vi );

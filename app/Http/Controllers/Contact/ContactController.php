@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Contact;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Former, Input, Redirect, Validator;
+use Auth, D2EM, Former, Redirect, Validator;
 
 use Entities\{
     Contact             as ContactEntity,
@@ -434,7 +434,7 @@ class ContactController extends Doctrine2Frontend
 
                             if( !$this->object->getGroups()->contains( $group ) && $group->getLimitedTo() <= $contactsWithGroupForCustomer ) {
                                 AlertContainer::push( "Contact group " . $gname . " : " . $role[ "name" ] . " has a limited membership and is full." , Alert::DANGER );
-                                return Redirect::back()->withInput( Input::all() );
+                                return Redirect::back()->withInput( $request->all() );
                             }
                         }
 

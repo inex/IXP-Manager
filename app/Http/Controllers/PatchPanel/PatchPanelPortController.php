@@ -62,7 +62,7 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-use Auth, D2EM, Former, Input, Log, Mail, Redirect, Storage;
+use Auth, D2EM, Former, Log, Mail, Redirect, Storage;
 
 use Repositories\PatchPanelPort as PatchPanelPortRepository;
 
@@ -304,7 +304,7 @@ class PatchPanelPortController extends Controller
                     $ppp->setSwitchPort($sp);
                 } else {
                     AlertContainer::push( 'The switch port selected is already used by an other patch panel port.', Alert::DANGER );
-                    return Redirect::back()->withInput( Input::all() );
+                    return Redirect::back()->withInput( $request->all() );
                 }
             }
 
@@ -316,14 +316,14 @@ class PatchPanelPortController extends Controller
                 if( $custId != null ) {
                     if( $custId != $request->input( 'customer' ) ) {
                         AlertContainer::push( 'The selected customer does not seem to have a relationship with the switch port', Alert::DANGER );
-                        return Redirect::back()->withInput( Input::all() );
+                        return Redirect::back()->withInput( $request->all() );
                     }
                 }
             }
         } else {
             if( $request->input('customer') and $request->input( 'switch' ) ) {
                 AlertContainer::push( 'You need to select a switch port when a switch is selected', Alert::DANGER );
-                return Redirect::back()->withInput( Input::all() );
+                return Redirect::back()->withInput( $request->all() );
             }
             $ppp->setSwitchPort( null );
         }
@@ -390,7 +390,7 @@ class PatchPanelPortController extends Controller
                 $ppp->setDuplexPort( $partnerPort );
             } else{
                 AlertContainer::push( 'You need to select a partner port as you checked duplex connection', Alert::DANGER );
-                return Redirect::back()->withInput( Input::all() );
+                return Redirect::back()->withInput( $request->all() );
             }
 
 

@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Input, Redirect;
+use D2EM, Former, Redirect;
 
 use Entities\{
     Router as RouterEntity,
@@ -173,7 +173,7 @@ class RouterController extends Controller
             AlertContainer::push( 'The template you entered cannot be found. Please check the help message for more information.', Alert::DANGER );
 
             return Redirect::to( $isEdit ? route( "router@edit", [ "id" => $request->input( 'id' ) ] ) : route( "router@add" ) )
-                ->withInput( Input::all() );
+                ->withInput( $request->all() );
         }
 
         $rt->setHandle(     $request->input( 'handle'       ) );
