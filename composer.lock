@@ -2264,16 +2264,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v6.0.3",
+            "version": "6.x-dev",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "56789e9dec750e0fbe8e9e6ae90a01a4e6887902"
+                "reference": "c2c5d6c7afb7c9feb8c1320d9f044a5de21cc7bc"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/56789e9dec750e0fbe8e9e6ae90a01a4e6887902",
-                "reference": "56789e9dec750e0fbe8e9e6ae90a01a4e6887902",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/c2c5d6c7afb7c9feb8c1320d9f044a5de21cc7bc",
+                "reference": "c2c5d6c7afb7c9feb8c1320d9f044a5de21cc7bc",
                 "shasum": ""
             },
             "require": {
@@ -2405,7 +2405,7 @@
                 "framework",
                 "laravel"
             ],
-            "time": "2019-09-10T18:46:24+00:00"
+            "time": "2019-09-13T20:49:09+00:00"
         },
         {
             "name": "laravel/horizon",
@@ -2818,19 +2818,19 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/barryo/Purifier.git",
-                "reference": "749ef7fe446f9ed81051d1b0266264cfcd0dd06e"
+                "reference": "d4f91d95c9696a9e5da5eccb05b4e421c15f14ab"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/barryo/Purifier/zipball/749ef7fe446f9ed81051d1b0266264cfcd0dd06e",
-                "reference": "749ef7fe446f9ed81051d1b0266264cfcd0dd06e",
+                "url": "https://api.github.com/repos/barryo/Purifier/zipball/d4f91d95c9696a9e5da5eccb05b4e421c15f14ab",
+                "reference": "d4f91d95c9696a9e5da5eccb05b4e421c15f14ab",
                 "shasum": ""
             },
             "require": {
                 "ezyang/htmlpurifier": "4.10.*",
-                "illuminate/config": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|6.0.*",
-                "illuminate/filesystem": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|6.0.*",
-                "illuminate/support": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|6.0.*",
+                "illuminate/config": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|^6.0",
+                "illuminate/filesystem": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|^6.0",
+                "illuminate/support": "5.1.*|5.2.*|5.3.*|5.4.*|5.5.*|5.6.*|5.7.*|5.8.*|^6.0",
                 "php": ">=5.5.9"
             },
             "require-dev": {
@@ -2888,7 +2888,7 @@
             "support": {
                 "source": "https://github.com/barryo/Purifier/tree/master"
             },
-            "time": "2019-09-14T08:32:11+00:00"
+            "time": "2019-09-14T09:30:33+00:00"
         },
         {
             "name": "mmucklo/inflect",
