@@ -25,6 +25,8 @@ namespace IXP\Http\Controllers\User;
 
 use Auth, D2EM, Former, Log, Mail, Redirect;
 
+use Illuminate\Support\Str;
+
 use Entities\{
     Customer                as CustomerEntity,
     CustomerToUser          as CustomerToUserEntity,
@@ -260,7 +262,7 @@ class UserController extends Controller
         D2EM::persist( $user );
         $user->setCreated( now() );
         $user->setCreator( Auth::getUser()->getUsername() );
-        $user->setPassword( Hash::make( str_random(16) ) );
+        $user->setPassword( Hash::make( Str::random(16) ) );
         $user->setName( $request->input( 'name' ) );
         $user->setAuthorisedMobile( $request->input( 'authorisedMobile' ) );
         $user->setUsername( strtolower( $request->input( 'username' ) ) );
