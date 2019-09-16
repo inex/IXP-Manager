@@ -206,8 +206,7 @@ class ContactControllerTest extends DuskTestCase
         $this->browse(function (Browser $browser) {
 
             $browser->visit( '/customer/overview/5/contacts' )
-                ->pause(5000)
-                ->assertSee( 'Imagine CustAdmin' )
+                ->waitForText( 'Imagine CustAdmin' )
                 ->assertSee( 'imagine-custadmin@example.com' )
                 ->press( '#contacts-add-btn' )
                 ->assertSee( 'Add Contact' )
