@@ -149,6 +149,8 @@ class CustomerController extends Controller
             $summary = false;
         }
 
+
+
         return view( 'customer/list' )->with([
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAllForFeList( $showCurrentOnly, $state, $type, $tid ),
             'state'                 => $state           ?? false,

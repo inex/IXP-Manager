@@ -351,7 +351,7 @@ class SwitchPortController extends Doctrine2Frontend {
             $ppp = $this->object->getPatchPanelPort();
 
             AlertContainer::push( "You cannot delete the switch port {$this->object->getName()} as it is assigned to a patch panel port for "
-                . "<a href=\"" . route('patch-panel-port/list/patch-panel', [ "id" => $ppp->getPatchPanel()->getId() ] ) . "\">{$ppp->getName()}</a>.", Alert::DANGER );
+                . "<a href=\"" . route('patch-panel-port/list/patch-panel', [ "ppid" => $ppp->getPatchPanel()->getId() ] ) . "\">{$ppp->getName()}</a>.", Alert::DANGER );
             return false;
         }
 
@@ -748,7 +748,7 @@ class SwitchPortController extends Doctrine2Frontend {
                 $ppp = $sp->getPatchPanelPort();
                 AlertContainer::push( "Could not delete switch port {$sp->getName()} as it is assigned to a patch panel port for "
                     . "<a href=\""
-                    . route( "patch-panel-port/list/patch-panel" , [ 'id' => $ppp->getId() ]  )
+                    . route( "patch-panel-port/list/patch-panel" , [ 'ppid' => $ppp->getId() ]  )
                     . "\">{$ppp->getName()}</a>.", Alert::DANGER
                 );
 

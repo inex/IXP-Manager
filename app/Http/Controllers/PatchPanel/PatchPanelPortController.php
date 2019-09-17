@@ -419,8 +419,7 @@ class PatchPanelPortController extends Controller
 
         D2EM::flush();
 
-        return Redirect::to( 'patch-panel-port/list/patch-panel/'.$ppp->getPatchPanel()->getId() );
-
+        return Redirect::to( route( 'patch-panel-port/list/patch-panel', [ "ppid" => $ppp->getPatchPanel()->getId() ] ) );
     }
 
     /**
@@ -641,7 +640,7 @@ class PatchPanelPortController extends Controller
 
         AlertContainer::push( "Email sent.", Alert::SUCCESS );
 
-        return Redirect::to( 'patch-panel-port/list/patch-panel/' . $this->getPPP()->getPatchPanel()->getId() );
+        return Redirect::to( route( 'patch-panel-port/list/patch-panel', [ "ppid" => $this->getPPP()->getPatchPanel()->getId() ] ) );
     }
 
     /**

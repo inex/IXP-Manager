@@ -65,7 +65,7 @@
                             </td>
 
                             <td>
-                                <a href="<?= route( "layer2-address@forVlanInterface" , [ 'id' => $vli->getId() ] )?> " >
+                                <a href="<?= route( "layer2-address@forVlanInterface" , [ 'vliid' => $vli->getId() ] )?> " >
                                     <?php if ( !count( $vli->getLayer2Addresses() ) ) : ?>
                                         <span class="badge badge-warning">(none)</span>
                                     <?php elseif ( count( $vli->getLayer2Addresses() ) > 1 ) : ?>

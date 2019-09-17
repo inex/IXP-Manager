@@ -117,7 +117,7 @@
                                 </td>
                                 <?php if(!$t->pp): ?>
                                     <td>
-                                        <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'id' => $ppp->getPatchPanel()->getId() ] ) ?>">
+                                        <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'ppid' => $ppp->getPatchPanel()->getId() ] ) ?>">
                                             <?= $t->ee( $ppp->getPatchPanel()->getName() ) ?>
                                         </a>
                                     </td>

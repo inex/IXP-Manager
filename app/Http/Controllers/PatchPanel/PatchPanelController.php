@@ -177,7 +177,7 @@ class PatchPanelController extends Controller
 
         D2EM::flush();
 
-        return redirect( route( "patch-panel-port/list/patch-panel", [ "id" => $pp->getId() ] )  );
+        return redirect( route( "patch-panel-port/list/patch-panel", [ "ppid" => $pp->getId() ] )  );
     }
 
     /**

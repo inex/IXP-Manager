@@ -9,7 +9,7 @@
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-white" href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'id' => $t->ppp->getPAtchPanel()->getId() ]  ) ?>" title="list">
+        <a class="btn btn-white" href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'ppid' => $t->ppp->getPAtchPanel()->getId() ]  ) ?>" title="list">
             <span class="fa fa-th-list"></span>
         </a>
     </div>
@@ -389,7 +389,7 @@
         <?php endif; ?>
 
         <?=Former::actions( Former::primary_submit( 'Save Changes' )->class( "mb-2 mb-sm-0" ),
-            Former::secondary_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) )->class( "mb-2 mb-sm-0" ),
+            Former::secondary_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'ppid' => $t->ppp->getPatchPanel()->getId() ] ) )->class( "mb-2 mb-sm-0" ),
             Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
         )?>
 
