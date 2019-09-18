@@ -103,6 +103,8 @@ class SwitchController extends Doctrine2Frontend {
 
             'viewFolderName'    => 'switches',
 
+            'documentation'     => 'https://docs.ixpmanager.org/usage/switches/',
+
             'listColumns'       => [
                 'id'        => [ 'title' => 'UID', 'display' => false ],
                 'name'           => 'Name',
