@@ -110,26 +110,20 @@
         <?php if( $t->logo ): ?>
 
         <div class="alert alert-danger mt-4" role="alert">
-            <div class="d-flex align-items-center ">
+            <div class="d-flex align-items-center">
                 <div class="text-center">
                     <i class="fa fa-exclamation-triangle fa-2x"></i>
                 </div>
                 <div class="col-sm-12 d-flex">
-                    <div class="mr-auto">
-                        <b> Delete your logo ... </b>
-                    </div>
-
-                    <div>
-                        <a id="delete" class="btn btn-danger" href="#">
-                            Remove My Logo
-                        </a>
-                    </div>
-
-
+                    <b class="mr-auto my-auto">
+                        Delete your logo ...
+                    </b>
+                    <a id="delete" class="btn btn-danger mr-4 " href="#">
+                        Remove My Logo
+                    </a>
                 </div>
             </div>
         </div>
-
 
         <?php endif; ?>
 

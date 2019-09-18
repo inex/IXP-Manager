@@ -179,7 +179,7 @@ class IpAddressController extends Controller
             Alert::SUCCESS
         );
 
-        return Redirect::to( route( 'ip-address@list', [ 'protocol' => $network->getFirstIP()->getVersion() == 'IPv6' ? '6' : '4', 'vlan' => $vlan->getId() ] ) );
+        return Redirect::to( route( 'ip-address@list', [ 'protocol' => $network->getFirstIP()->getVersion() == 'IPv6' ? '6' : '4', 'vlanid' => $vlan->getId() ] ) );
     }
 
 

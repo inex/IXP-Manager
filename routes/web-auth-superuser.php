@@ -30,7 +30,6 @@
 Route::group( [ 'prefix' => 'ip-address' ], function() {
     Route::get(     'list/{protocol}/{vlanid?}',                'IpAddressController@list'              )->name( 'ip-address@list'                 );
     Route::get(     'delete-by-network/vlan/{vlanid}',          'IpAddressController@deleteByNetwork'   )->name( 'ip-address@delete-by-network'    );
-    Route::post(    'delete-by-network/vlan/{vlanid}',          'IpAddressController@deleteByNetwork'   );
     Route::get(     'add/{protocol}',                           'IpAddressController@add'               )->name( 'ip-address@add'                  );
     Route::post(    'store',                                    'IpAddressController@store'             )->name( 'ip-address@store'                );
     Route::post(    'delete/{protocol}/{id}',                   'IpAddressController@delete'            )->name( 'ip-address@delete'               );

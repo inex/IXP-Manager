@@ -766,7 +766,7 @@ class PatchPanelPortController extends Controller
             AlertContainer::push( 'Something went wrong!', Alert::DANGER );
         }
 
-        return Redirect::to( 'patch-panel-port/list/patch-panel/' . $pppMaster->getPatchPanel()->getId() );
+        return Redirect::to( route('patch-panel-port/list/patch-panel' ,  [ 'ppid' => $pppMaster->getPatchPanel()->getId() ]  ) );
     }
 
     /**

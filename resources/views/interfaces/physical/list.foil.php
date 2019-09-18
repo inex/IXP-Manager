@@ -67,7 +67,7 @@ $this->layout( 'layouts/ixpv4' );
                                 </a>
                             </td>
                             <td>
-                                <a href="<?= url( 'switch/view/id' ).'/'.$pi['switchid']?>">
+                                <a href="<?= route( 'switch@view', [ "id" => $pi['switchid'] ] ) ?>">
                                     <?= $t->ee(  $pi['switch'] )   ?>
                                 </a>
                             </td>
