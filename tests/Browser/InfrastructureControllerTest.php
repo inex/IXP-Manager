@@ -70,13 +70,15 @@ class InfrastructureControllerTest extends DuskTestCase
             $browser->visit( '/infrastructure/add' )
                 ->assertSee( 'Add Infrastructure' )
                 ->waitForText( "Choose the matching IX-F IXP" )
-                ->waitForText( "Choose the matching PeeringDB IXP" );
+                ->pause(5000)
+                ->assertSee( "Choose the matching PeeringDB IXP" );
 
             // 1. test add empty inputs
             $browser->press('Add')
                 ->assertPathIs('/infrastructure/add')
                 ->waitForText( "Choose the matching IX-F IXP" )
-                ->waitForText( "Choose the matching PeeringDB IXP" )
+                ->pause(5000)
+                ->assertSee( "Choose the matching PeeringDB IXP" )
                 ->assertSee( "The name field is required." )
                 ->assertSee( "The shortname field is required." );
 
