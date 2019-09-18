@@ -36,6 +36,8 @@ use Entities\{
 
 use \OSS_SNMP\MIBS\Iface as SNMPIface;
 
+use IXP\Exceptions\Switches\RebootDiscoveryNotSupported;
+
 /**
  * Entities\Switcher
  */
@@ -401,7 +403,7 @@ class Switcher
     /**
      * Get Ports
      *
-     * @return ArrayCollection $ports
+     * @return ArrayCollection|SwitchPortEntity[] $ports
      */
     public function getPorts()
     {
@@ -732,8 +734,9 @@ class Switcher
         foreach( $host->useIface()->indexes() as $index ) {
 
             // we're only interested in Ethernet ports here (right?)
-            if( $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_ETHERNETCSMACD && $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_L3IPVLAN )
+            if( $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_ETHERNETCSMACD && $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_L3IPVLAN ) {
                 continue;
+            }
 
             // find the matching switchport that may already be in the database (or create a new one)
             $sp = false;
@@ -988,5 +991,58 @@ class Switcher
     {
         $this->snmp_system_uptime = $snmp_system_uptime;
         return $this;
+    }
+
+
+    /**
+     * Indicate if the switch (probably) recently rebooted.
+     *
+     * If this returns true, switch has /most likely/ rebooted.
+     *
+     * @param int $window Window in minutes for 'recently'. Defaults to 60.
+     * @return bool
+     * @throws RebootDiscoveryNotSupported
+     */
+    public function recentlyRebooted( int $window = 60 ): bool
+    {
+        if( $this->getSnmpEngineTime() === null && $this->getSnmpSystemUptime() === null ) {
+            throw new RebootDiscoveryNotSupported;
+        }
+
+        // convert window to seconds
+        $window *= 60;
+
+        // assume that the switch probably hasn't rebooted
+        $probably = false;
+
+        if( ( $this->getSnmpSystemUptime() / 100 ) < $window ) {
+            // Either sysuptime has rolled over or switch has rebooted.
+
+            // try to identify rollover from snmp engine uptime.
+            // we're ignore engine.boots here because it's not clear what causes that to increment.
+            if( $this->getSnmpEngineTime() !== null ) {
+                if( $this->getSnmpEngineTime() < $window ) {
+                    $probably = true;
+                }
+            } else {
+                $probably = true;
+            }
+        }
+
+        if( $probably === true ) {
+            // one additional check is that interface last change must be less than the sysuptime for a reboot
+            // to have taken place. We'll add a margin to the window here also.
+            $cutoff = time() - $window - 60; // 60 for some margin
+
+
+            foreach( $this->getPorts() as $sp ) {
+                if( $sp->getIfLastChange() < $cutoff && $sp->getPhysicalInterface() && $sp->getActive() ) {
+                    $probably = false;
+                    break;
+                }
+            }
+        }
+
+        return $probably;
     }
 }
