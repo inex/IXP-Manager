@@ -168,17 +168,21 @@ class LookingGlass extends Controller
 
     public function routesForTable( string $handle, string $table ) {
 
+        $tooManyRoutesMsg = "The routing table <code>{$table}</code> has too many routes to display in the web interface. Please use "
+            . "<a href=\"" . route( 'lg::route-search', [ 'handle' => $this->lg()->router()->handle() ] )
+            . "\">the route search tool</a> to query this table.";
+
         try{
             $routes = $this->lg()->routesForTable($table);
         } catch( ErrorException $e ) {
             if( strpos( $e->getMessage(), 'HTTP/1.0 403' ) !== false ) {
-                return redirect( 'lg/'.$handle )->with( 'msg', 
-                    "The routing table <code>{$table}</code> has too many routes to display in the web interface. Please use "
-                    . "<a href=\"" . route( 'lg::route-search', [ 'handle' => $this->lg()->router()->handle() ] ) 
-                    . "\">the route search tool</a> to query this table."
-                );
+                return redirect( 'lg/'.$handle )->with( 'msg', $tooManyRoutesMsg );
             }
             return redirect( 'lg/'.$handle )->with('msg', 'An error occurred - please contact our support team if you wish.' );
+        }
+
+        if( $routes === "" ) {
+            return redirect( 'lg/'.$handle )->with( 'msg', $tooManyRoutesMsg );
         }
 
         $view = app()->make('view')->make('services/lg/routes')->with([
