@@ -158,6 +158,24 @@ class Switcher
     protected $lastPolled;
 
     /**
+     * @var int
+     */
+    protected $snmp_engine_boots;
+
+
+
+    /**
+     * @var int
+     */
+    protected $snmp_engine_time;
+
+    /**
+     * @var int
+     */
+    protected $snmp_system_uptime;
+
+
+    /**
      * @var ArrayCollection
      */
     protected $Ports;
@@ -662,6 +680,20 @@ class Switcher
             $this->setMauSupported( false );
         }
 
+        // uptime data
+        try {
+            $this->setSnmpSystemUptime( $host->useSystem()->uptime() );
+        } catch( \OSS_SNMP\Exception $e ) {
+            //
+        }
+
+        try {
+            $this->setSnmpEngineTime( $host->useSNMP_Engine()->time() );
+            $this->setSnmpEngineBoots( $host->useSNMP_Engine()->boots() );
+        } catch( \OSS_SNMP\Exception $e ) {
+            //
+        }
+
         $this->setLastPolled( new \DateTime() );
         return $this;
     }
@@ -903,4 +935,58 @@ class Switcher
         return $this;
     }
 
+
+    /**
+     * @return int|null
+     */
+    public function getSnmpEngineBoots(): ?int
+    {
+        return $this->snmp_engine_boots;
+    }
+
+    /**
+     * @param int $snmp_engine_boots
+     * @return Switcher
+     */
+    public function setSnmpEngineBoots( int $snmp_engine_boots ): Switcher
+    {
+        $this->snmp_engine_boots = $snmp_engine_boots;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getSnmpEngineTime(): ?int
+    {
+        return $this->snmp_engine_time;
+    }
+
+    /**
+     * @param int $snmp_engine_time
+     * @return Switcher
+     */
+    public function setSnmpEngineTime( int $snmp_engine_time ): Switcher
+    {
+        $this->snmp_engine_time = $snmp_engine_time;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getSnmpSystemUptime(): ?int
+    {
+        return $this->snmp_system_uptime;
+    }
+
+    /**
+     * @param int $snmp_system_uptime
+     * @return Switcher
+     */
+    public function setSnmpSystemUptime( int $snmp_system_uptime ): Switcher
+    {
+        $this->snmp_system_uptime = $snmp_system_uptime;
+        return $this;
+    }
 }

@@ -994,6 +994,17 @@ class Router extends \Entities\Router implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function setRPKI(bool $rpki): \Entities\Router
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRPKI', [$rpki]);
+
+        return parent::setRPKI($rpki);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setRFC1997Passthru(bool $rfc1997_passthru): \Entities\Router
     {
 
