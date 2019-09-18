@@ -222,6 +222,12 @@ class Router
     /**
      * @var boolean
      */
+    private $rfc1997_passthru = false;
+
+
+    /**
+     * @var boolean
+     */
     private $skip_md5 = false;
 
     /**
@@ -653,6 +659,26 @@ class Router
         return $this->getRPKI();
     }
 
+    /**
+     * Get rfc1997_passthru enabled state
+     *
+     * @return bool
+     */
+    public function getRFC1997Passthru(): bool
+    {
+        return $this->rfc1997_passthru;
+    }
+
+    /**
+     * Alias get rfc1997_passthru enabled state
+     *
+     * @return bool
+     */
+    public function rfc1997Passthru(): bool
+    {
+        return $this->getRFC1997Passthru();
+    }
+
 
     /**
      * Get skip MD5
@@ -1034,6 +1060,19 @@ class Router
     public function setRPKI( bool $rpki ): Router
     {
         $this->rpki = $rpki;
+        return $this;
+    }
+
+    /**
+     * Set rfc1997 passthru enabled state
+     *
+     * @param bool $rfc1997_passthru
+     *
+     * @return Router
+     */
+    public function setRFC1997Passthru( bool $rfc1997_passthru ): Router
+    {
+        $this->rfc1997_passthru = $rfc1997_passthru;
         return $this;
     }
 

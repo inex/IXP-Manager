@@ -271,6 +271,8 @@ protocol bgp pb_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?> from tb_rsclient {
             table t_<?= $int['fvliid'] ?>_as<?= $int['autsys'] ?>;
             export filter f_export_as<?= $int['autsys'] ?>;
         };
+<?php if( $t->router->rfc1997Passthru() ): ?>        interpret communities off;  # enable rfc1997 well-known community pass through
+<?php endif; ?>
         <?php if( $int['bgpmd5secret'] && !$t->router->skipMD5() ): ?>password "<?= $int['bgpmd5secret'] ?>";<?php endif; ?>
 
 }
