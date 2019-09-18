@@ -222,6 +222,26 @@ $this->layout( 'layouts/ixpv4' )
                         <tr>
                             <td>
                                 <b>
+                                    RPKI:
+                                </b>
+                            </td>
+                            <td>
+                                <?= $t->rt->getRPKI() ? 'Yes' : 'No' ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>
+                                    RFC1997 Pass Through:
+                                </b>
+                            </td>
+                            <td>
+                                <?= $t->rt->getRFC1997Passthru() ? 'Yes' : 'No' ?>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                <b>
                                     Skip MD5:
                                 </b>
                             </td>

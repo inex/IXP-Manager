@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers;
 
 use D2EM, Former, Redirect;
 
+use Illuminate\Http\Request;
 use Entities\{
     Router as RouterEntity,
     Vlan as VlanEntity
@@ -98,7 +99,7 @@ class RouterController extends Controller
      *
      * @return View
      */
-    public function edit( int $id = null ): View {
+    public function edit( Request $request, int $id = null ): View {
 
         $rt = false; /** @var RouterEntity $rt */
         if( $id && !( $rt = D2EM::getRepository( RouterEntity::class )->find( $id ) ) ) {
@@ -132,6 +133,7 @@ class RouterController extends Controller
                 'quarantine'            => array_key_exists( 'quarantine',  $old ) ? $old['quarantine']     : ( $rt->getQuarantine()    ? 1 : 0 ),
                 'bgp_lc'                => array_key_exists( 'bgp_lc',      $old ) ? $old['bgp_lc']         : ( $rt->getBgpLc()         ? 1 : 0 ),
                 'rpki'                  => array_key_exists( 'rpki',        $old ) ? $old['rpki']           : ( $rt->getRPKI()          ? 1 : 0 ),
+                'rfc1997_passthru'      => array_key_exists( 'rfc1997_passthru', $old ) ? $old['rfc1997_passthru'] : ( $rt->getRFC1997Passthru() ? 1 : 0 ),
                 'skip_md5'              => array_key_exists( 'skip_md5',    $old ) ? $old['skip_md5']       : ( $rt->getSkipMd5()       ? 1 : 0 ),
                 'template'              => array_key_exists( 'template',    $old ) ? $old['template']       : $rt->getTemplate(),
             ]);
@@ -202,6 +204,7 @@ class RouterController extends Controller
         $rt->setQuarantine(( $request->input( 'quarantine'  ) ) ? $request->input( 'quarantine'     ) : 0 );
         $rt->setBgpLc(       ( $request->input( 'bgp_lc'       ) ) ? $request->input( 'bgp_lc'         ) : 0 );
         $rt->setRPKI(        ( $request->input( 'rpki'         ) ) ? $request->input( 'rpki'           ) : 0 );
+        $rt->setRFC1997Passthru( ( $request->input( 'rfc1997_passthru' ) ) ? $request->input( 'rfc1997_passthru' ) : 0 );
         $rt->setSkipMd5(   ( $request->input( 'skip_md5'     ) ) ? $request->input( 'skip_md5'       ) : 0 );
 
 
