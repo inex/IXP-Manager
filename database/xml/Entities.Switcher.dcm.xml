@@ -29,9 +29,9 @@
     <field name="serialNumber" type="string" length="255" nullable="true" column="serialNumber"/>
     <field name="mauSupported" type="boolean" nullable="true" column="mauSupported"/>
     <field name="lastPolled" type="datetime" nullable="true" column="lastPolled"/>
-    <field name="snmp_engine_time" type="integer" nullable="true"/>
-    <field name="snmp_system_uptime" type="integer" nullable="true"/>
-    <field name="snmp_engine_boots" type="integer" nullable="true"/>
+    <field name="snmp_engine_time" type="bigint" nullable="true"/>
+    <field name="snmp_system_uptime" type="bigint" nullable="true"/>
+    <field name="snmp_engine_boots" type="bigint" nullable="true"/>
     <field name="notes" type="text" nullable="true"/>
     <many-to-one field="Infrastructure" target-entity="Entities\Infrastructure" inversed-by="Switchers">
       <join-columns>

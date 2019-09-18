@@ -449,9 +449,9 @@
           <attribute name="column">lastPolled</attribute>
         </orm-attributes>
       </field>
-      <field name="snmp_engine_time" type="integer" uuid="65b18873-7eb7-48f7-9285-4713689df4fd"/>
-      <field name="snmp_system_uptime" type="integer" uuid="462d7e2f-f3c5-4924-8e1c-f35fd1875522"/>
-      <field name="snmp_engine_boots" type="integer" uuid="588538bb-1949-4651-8679-6e7e44a410ab"/>
+      <field name="snmp_engine_time" type="bigint" uuid="65b18873-7eb7-48f7-9285-4713689df4fd"/>
+      <field name="snmp_system_uptime" type="bigint" uuid="462d7e2f-f3c5-4924-8e1c-f35fd1875522"/>
+      <field name="snmp_engine_boots" type="bigint" uuid="588538bb-1949-4651-8679-6e7e44a410ab"/>
       <field name="notes" type="text" uuid="c56c30fa-0c98-4025-ae71-6c653d0b9624"/>
       <orm-attributes>
         <attribute name="table">switch</attribute>
