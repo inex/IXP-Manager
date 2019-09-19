@@ -74,6 +74,8 @@ define host {
 
     address                 <?= $s->getIpv4addr() ?>
 
+    _DBID                   <?= $s->getId() ?>
+
 }
 
 <?php endforeach; ?>
