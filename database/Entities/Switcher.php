@@ -1073,7 +1073,7 @@ class Switcher
                 $okay = false;
                 $msgs[] = 'WARNING: last polled ' . $lastPolled->diffForHumans() . '.';
             } else {
-                $msgs[] = 'Last polled ' . $lastPolled->diffForHumans();
+                $msgs[] = 'Last polled ' . $lastPolled->diffForHumans() . '.';;
             }
         } else {
             $okay = false;
@@ -1089,7 +1089,6 @@ class Switcher
         } catch( RebootDiscoveryNotSupported $e ) {
             $msgs[] = 'Switch does not support reboot checks.';
         }
-
 
         return [
             'name' => $this->getName(),
