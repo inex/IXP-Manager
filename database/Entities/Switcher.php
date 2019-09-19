@@ -23,6 +23,7 @@
 
 namespace Entities;
 
+use Carbon\Carbon;
 use D2EM, Log;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -1029,14 +1030,13 @@ class Switcher
             }
         }
 
-        if( $probably === true ) {
+        if( $probably === true && Carbon::instance( $this->getLastPolled() )->diffInMinutes() < 60 ) {
             // one additional check is that interface last change must be less than the sysuptime for a reboot
             // to have taken place. We'll add a margin to the window here also.
             $cutoff = time() - $window - 60; // 60 for some margin
 
-
             foreach( $this->getPorts() as $sp ) {
-                if( $sp->getIfLastChange() < $cutoff && $sp->getPhysicalInterface() && $sp->getActive() ) {
+                if( $sp->getIfLastChange() < $cutoff && $sp->getIfOperStatus() === SNMPIface::IF_ADMIN_STATUS_UP && $sp->getPhysicalInterface() && $sp->getActive() ) {
                     $probably = false;
                     break;
                 }
@@ -1044,5 +1044,57 @@ class Switcher
         }
 
         return $probably;
+    }
+
+
+    /**
+     * Evaluate the switches status.
+     *
+     * Checks for recent reboots and missed snmp polling.
+     */
+    public function status()
+    {
+        // assume we're okay
+        $okay = true;
+        $msgs = [];
+
+        if( !$this->getActive() ) {
+            return [
+                'name' => $this->getName(),
+                'status' => true,
+                'msgs' => [ 'Switch is inactive. Status tests skipped.' ],
+            ];
+        }
+
+        // last polled:
+        if( $this->getLastPolled() ) {
+            $lastPolled = Carbon::instance( $this->getLastPolled() );
+            if( $lastPolled->diffInMinutes() > 10 ) {
+                $okay = false;
+                $msgs[] = 'WARNING: last polled ' . $lastPolled->diffForHumans() . '.';
+            } else {
+                $msgs[] = 'Last polled ' . $lastPolled->diffForHumans();
+            }
+        } else {
+            $okay = false;
+            $msgs[] = 'Switch has never been polled via SNMP.';
+        }
+
+
+        try {
+            if( $this->recentlyRebooted() ) {
+                $okay = false;
+                $msgs[] = 'CRITICAL: rebooted within the last hour (probably).';
+            }
+        } catch( RebootDiscoveryNotSupported $e ) {
+            $msgs[] = 'Switch does not support reboot checks.';
+        }
+
+
+        return [
+            'name' => $this->getName(),
+            'status' => $okay,
+            'msgs' => $msgs,
+        ];
     }
 }

@@ -88,6 +88,7 @@ Route::get('switch-port/{id}/physical-interface',               'SwitchPortContr
 
 Route::group( [  'prefix' => 'switch' ], function() {
     Route::get( '{id}/ports',                        'SwitchController@ports' );
+    Route::get( '{id}/status',                       'SwitchController@status' );
     Route::post( '{id}/switch-port-for-ppp',          'SwitchController@switchPortForPPP' );
     Route::post( '{id}/switch-port-prewired',         'SwitchController@switchPortPrewired' );
     Route::post( '{id}/switch-port',                  'SwitchController@switchPort' );

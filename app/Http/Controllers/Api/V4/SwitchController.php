@@ -86,4 +86,15 @@ class SwitchController extends Controller {
     }
 
 
+    /**
+     * Get the switch status for monitoring purposes
+     */
+    public function status( Request $request, int $id ) {
+        if( !( $switch = D2EM::getRepository( SwitcherEntity::class )->find( $id ) ) ) {
+            abort( 404, "Unknown switch" );
+        }
+
+        return response()->json( $switch->status() );
+    }
+
 }
