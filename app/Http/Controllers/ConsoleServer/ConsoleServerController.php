@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\ConsoleServer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Former, Log, Route;
+use Auth, D2EM, Former, Log;
 
 use Entities\{
     ConsoleServer       as ConsoleServerEntity,
@@ -70,7 +70,8 @@ class ConsoleServerController extends Doctrine2Frontend {
     /**
      * This function sets up the frontend controller
      */
-    public function feInit(){
+    public function feInit()
+    {
 
         $this->feParams         = (object)[
 
@@ -160,8 +161,8 @@ class ConsoleServerController extends Doctrine2Frontend {
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
      * @return array
      */
-    protected function listGetData( $id = null ) {
-
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( ConsoleServerEntity::class )->getAllForFeList( $this->feParams, $id );
     }
 
@@ -172,11 +173,8 @@ class ConsoleServerController extends Doctrine2Frontend {
      * @param   int $id ID of the row to edit
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array {
-
-        $old = request()->old();
-
-
+    protected function addEditPrepareForm( $id = null ): array
+    {
         if( $id !== null ) {
 
             if( !( $this->object = D2EM::getRepository( ConsoleServerEntity::class )->find( $id) ) ) {
@@ -184,13 +182,14 @@ class ConsoleServerController extends Doctrine2Frontend {
             }
 
             Former::populate([
-                'name'              => array_key_exists( 'name',            $old ) ? $old['name']           : $this->object->getName(),
-                'hostname'          => array_key_exists( 'hostname',        $old ) ? $old['hostname']       : $this->object->getHostname(),
-                'model'             => array_key_exists( 'model',           $old ) ? $old['model']          : $this->object->getModel(),
-                'serial_number'     => array_key_exists( 'serial_number',   $old ) ? $old['serial_number']  : $this->object->getSerialNumber(),
-                'cabinet'           => array_key_exists( 'cabinet',         $old ) ? $old['cabinet']        : $this->object->getCabinet()->getId(),
-                'vendor'            => array_key_exists( 'vendor',          $old ) ? $old['vendor']         : $this->object->getVendor()->getId(),
-                'active'            => array_key_exists( 'active',          $old ) ? $old['active']         : ( $this->object->getActive() ? 1 : 0 ),
+                'name'              => request()->old( 'name',             $this->object->getName() ),
+                'hostname'          => request()->old( 'hostname',         $this->object->getHostname() ),
+                'model'             => request()->old( 'model',            $this->object->getModel() ),
+                'serial_number'     => request()->old( 'serial_number',    $this->object->getSerialNumber() ),
+                'cabinet'           => request()->old( 'cabinet',          $this->object->getCabinet()->getId() ),
+                'vendor'            => request()->old( 'vendor',           $this->object->getVendor()->getId() ),
+                'active'            => request()->old( 'active',           ( $this->object->getActive() ? 1 : 0 ) ),
+                'notes'             => request()->old( 'notes',             $this->object->getNote() ),
             ]);
         }
 
@@ -198,7 +197,6 @@ class ConsoleServerController extends Doctrine2Frontend {
             'object'                => $this->object,
             'cabinets'              => D2EM::getRepository( CabinetEntity::class    )->getAsArray(),
             'vendors'               => D2EM::getRepository( VendorEntity::class     )->getAsArray(),
-            'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNote() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : null )
         ];
     }
 
@@ -229,9 +227,9 @@ class ConsoleServerController extends Doctrine2Frontend {
         $this->object->setVendor(       D2EM::getRepository( VendorEntity::class    )->find( $request->input( 'vendor'     ) ) );
         $this->object->setCabinet(      D2EM::getRepository( CabinetEntity::class   )->find( $request->input( 'cabinet'    ) ) );
 
-        D2EM::flush( $this->object );
+        D2EM::flush( );
 
-        $action = $request->input( 'id', '' )  ? "edited" : "added";
+        $action = $request->input( 'id' )  ? "edited" : "added";
 
         Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
 
@@ -248,8 +246,8 @@ class ConsoleServerController extends Doctrine2Frontend {
      *
      * @return bool Return false to stop / cancel the deletion
      */
-    protected function preDelete(): bool {
-
+    protected function preDelete(): bool
+    {
         foreach( $this->object->getConsoleServerConnections() as $csc ) {
             D2EM::remove( $csc );
         }

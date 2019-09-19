@@ -283,7 +283,8 @@ abstract class Doctrine2Frontend extends Controller {
      * @param int $id The `id` of the row to load for `view` action.
      * @return array
      */
-    protected function viewGetData( $id ): array {
+    protected function viewGetData( $id ): array
+    {
 
         $data = $this->listGetData( $id );
 

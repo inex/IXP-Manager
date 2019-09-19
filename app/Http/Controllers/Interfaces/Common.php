@@ -66,7 +66,8 @@ abstract class Common extends Controller
      * @return void
      * @throws
      */
-    public function removeRelatedInterface( $pi ){
+    public function removeRelatedInterface( $pi )
+    {
         if( $pi->getRelatedInterface() ) {
             /** @var PhysicalInterfaceEntity $pi */
             $pi->getRelatedInterface()->getSwitchPort()->setPhysicalInterface( null );
@@ -113,7 +114,8 @@ abstract class Common extends Controller
      * @return boolean
      * @throws
      */
-    public function processFanoutPhysicalInterface( $request, $pi, $vi ) {
+    public function processFanoutPhysicalInterface( $request, $pi, $vi )
+    {
 
         if( !$request->input('fanout' ) ) {
             $this->removeRelatedInterface( $pi );
@@ -178,7 +180,8 @@ abstract class Common extends Controller
      * @param VirtualInterfaceEntity $vi
      * @throws
      */
-    public function setBundleDetails( VirtualInterfaceEntity $vi ){
+    public function setBundleDetails( VirtualInterfaceEntity $vi )
+    {
         if( count( $vi->getPhysicalInterfaces() ) ) {
 
             // LAGs must have a channel group and bundle name. But only if they have a phys int:

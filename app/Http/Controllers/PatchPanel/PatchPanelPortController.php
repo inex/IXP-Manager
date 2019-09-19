@@ -692,7 +692,7 @@ class PatchPanelPortController extends Controller
     public function viewLoA( int $id ): Response {
         $this->setupLoA();
         list($pdf, $pdfname) = $this->createLoAPDF($this->getPPP($id));
-
+        
         return $pdf->stream($pdfname);
     }
 

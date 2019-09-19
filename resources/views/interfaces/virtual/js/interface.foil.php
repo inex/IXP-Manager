@@ -48,7 +48,7 @@ function deletePopup( id, viid, type ) {
         urlRedirect = "<?= route( 'interfaces/vlan/list' ) ?>" ;
     } else if( type === "vi" ) {
         objectName = "Virtual Interface";
-        urlDelete = "<?= url( 'interfaces/virtual/delete' ) ?>" ;
+        urlDelete = "<?= route( 'virtual-interface@delete' ) ?>" ;
         if( $( "#custid" ).val() !== undefined ){
             urlRedirect = "<?= url( 'customer/overview' ) ?>/" + $( "#custid" ).val() + "/ports"  ;
         }else{
@@ -57,11 +57,11 @@ function deletePopup( id, viid, type ) {
 
     } else if( type === "sflr" ) {
         objectName = "Sflow Receiver";
-        urlDelete = "<?= url( 'interfaces/sflow-receiver/delete' ) ?>" ;
+        urlDelete = "<?= route( 'sflow-receiver@delete' ) ?>" ;
         urlRedirect = "<?= route( 'interfaces/sflow-receiver/list' ) ?>" ;
     } else if( type === "pi" ) {
         objectName = "Physical Interface";
-        urlDelete = "<?= url( 'interfaces/physical/delete' ) ?>";
+        urlDelete = "<?= route( 'interfaces/physical/delete' ) ?>";
         urlRedirect = "<?= route( 'interfaces/physical/list' ) ?>" ;
     }
 

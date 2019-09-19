@@ -35,13 +35,13 @@ use Illuminate\Http\{
 
 
 use Entities\{
-    VirtualInterface as VirtualInterfaceEntity,
-    Customer as CustomerEntity,
-    Vlan as VlanEntity,
-    Switcher as SwitcherEntity,
-    PhysicalInterface as PhysicalInterfaceEntity,
-    SwitchPort as SwitchPortEntity,
-    VlanInterface as VlanInterfaceEntity
+    Customer            as CustomerEntity,
+    PhysicalInterface   as PhysicalInterfaceEntity,
+    Switcher            as SwitcherEntity,
+    SwitchPort          as SwitchPortEntity,
+    VirtualInterface    as VirtualInterfaceEntity,
+    Vlan                as VlanEntity,
+    VlanInterface       as VlanInterfaceEntity
 };
 
 use IXP\Http\Requests\{
@@ -68,7 +68,8 @@ class VirtualInterfaceController extends Common
      *
      * @return  View
      */
-    public function list() : View {
+    public function list() : View
+    {
         return view( 'interfaces/virtual/list' )->with([
             'vis'               => D2EM::getRepository( VirtualInterfaceEntity::class )->getForList(),
             'resellerMode'      => $this->resellerMode()
@@ -82,10 +83,10 @@ class VirtualInterfaceController extends Common
      *
      * @return  View
      */
-    public function addWizardCustId( int $custId = null ) : View {
+    public function addWizardCustId( int $custId = null ) : View
+    {
         return $this->wizard( $custId );
     }
-
 
     /**
      * Display the form to add a virtual interface with a selected customer
@@ -94,7 +95,8 @@ class VirtualInterfaceController extends Common
      *
      * @return  View
      */
-    public function addCustId( int $custId = null ) : View {
+    public function addCustId( int $custId = null ) : View
+    {
         return $this->add( null, $custId);
     }
 
@@ -106,10 +108,9 @@ class VirtualInterfaceController extends Common
      *
      * @return View
      */
-    public function add( int $id = null, int $custId = null ): View {
+    public function add( Request $request,  int $id = null, int $custId = null ): View
+    {
         $vi = $cust = false;
-
-        $old = request()->old();
 
         /** @var VirtualInterfaceEntity $vi */
         if( $id != null ) {
@@ -118,7 +119,7 @@ class VirtualInterfaceController extends Common
                 abort(404);
             }
 
-            $name = array_key_exists( 'name',         $old    ) ? $old['name']              : $vi->getName();
+            $name = $request->old( 'name', $vi->getName() );
 
             // Check if the last character of the Name is a white space, if its the case we add Double quotes to keep the space at the end
             if( substr($name, -1) == " " ) {
@@ -127,14 +128,14 @@ class VirtualInterfaceController extends Common
 
             // fill the form with Virtual interface data
             Former::populate([
-                'cust'                  => array_key_exists( 'cust',         $old    ) ? $old['cust']              : $vi->getCustomer(),
-                'trunk'                 => array_key_exists( 'trunk',        $old    ) ? $old['trunk']             : ( $vi->getTrunk()      ? 1 : 0 ),
-                'lag_framing'           => array_key_exists( 'lag_framing',  $old    ) ? $old['lag_framing']       : ( $vi->getLagFraming() ? 1 : 0 ),
-                'fastlacp'              => array_key_exists( 'fastlacp',     $old    ) ? $old['fastlacp']          : ( $vi->getFastLACP()   ? 1 : 0 ),
+                'cust'                  => $request->old( 'cust',              $vi->getCustomer() ),
+                'trunk'                 => $request->old( 'trunk',             ( $vi->getTrunk()      ? 1 : 0 ) ),
+                'lag_framing'           => $request->old( 'lag_framing',       ( $vi->getLagFraming() ? 1 : 0 ) ),
+                'fastlacp'              => $request->old( 'fastlacp',          ( $vi->getFastLACP()   ? 1 : 0 ) ),
                 'name'                  => $name,
-                'description'           => array_key_exists( 'description',  $old    ) ? $old['description']       : $vi->getDescription(),
-                'channel-group'         => array_key_exists( 'channel-group',$old    ) ? $old['channel-group']     : $vi->getChannelgroup(),
-                'mtu'                   => array_key_exists( 'mtu',          $old    ) ? $old['mtu']               : $vi->getMtu(),
+                'description'           => $request->old( 'description',       $vi->getDescription() ),
+                'channel-group'         => $request->old( 'channel-group',     $vi->getChannelgroup() ),
+                'mtu'                   => $request->old( 'mtu',               $vi->getMtu() ),
             ]);
 
         }
@@ -146,7 +147,7 @@ class VirtualInterfaceController extends Common
             }
 
             Former::populate([
-                'cust'                  => array_key_exists( 'cust',          $old    ) ? $old['cust']               : $cust->getId(),
+                'cust'                  => $request->old( 'cust', $cust->getId() ),
             ]);
         }
 
@@ -156,7 +157,7 @@ class VirtualInterfaceController extends Common
         return view( 'interfaces/virtual/add' )->with([
             'cust'              => D2EM::getRepository( CustomerEntity::class   )->getNames(),
             'vls'               => D2EM::getRepository( VlanEntity::class       )->getNames(),
-            'vi'                => $vi ? $vi : false,
+            'vi'                => $vi,
             'cb'                => $vi ? $vi->getCoreBundle() : false,
             'selectedCust'      => $cust
         ]);
@@ -171,7 +172,8 @@ class VirtualInterfaceController extends Common
      *
      * @throws
      */
-    public function store( StoreVirtualInterface $request ): RedirectResponse {
+    public function store( StoreVirtualInterface $request ): RedirectResponse
+    {
         /** @var VirtualInterfaceEntity $vi */
         if( $request->input( 'id' ) && $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $request->input( 'id' ) ) ) {
             if( !$vi ) {
@@ -183,6 +185,7 @@ class VirtualInterfaceController extends Common
         }
 
         $inputCust = $request->input( 'cust' );
+
         if( $request->input( 'selectedCust' ) ){
             $inputCust = $request->input( 'selectedCust' );
         }
@@ -240,10 +243,11 @@ class VirtualInterfaceController extends Common
      *
      * @return View
      */
-    public function wizard( int $custId = null ): View {
-
-        $cust = false; /** @var CustomerEntity $cust */
+    public function wizard( int $custId = null ): View
+    {
+        $cust = false;
         if( $custId ) {
+            /** @var CustomerEntity $cust */
             if( $cust = D2EM::getRepository( CustomerEntity::class )->find( $custId ) ) {
                 // fill the form with Virtual interface data
                 Former::populate( [
@@ -274,7 +278,8 @@ class VirtualInterfaceController extends Common
      *
      * @throws
      */
-    public function storeWizard( StoreVirtualInterfaceWizard $request ): RedirectResponse {
+    public function storeWizard( StoreVirtualInterfaceWizard $request ): RedirectResponse
+    {
         // all validation of ids is in the request object, App\Http\Requests\StoreVirtualInterfaceWizard
         $c   = D2EM::getRepository( CustomerEntity::class   )->find( $request->input( 'cust'        ) );    /** @var CustomerEntity   $c      */
         $v   = D2EM::getRepository( VlanEntity::class       )->find( $request->input( 'vlan'        ) );    /** @var VlanEntity       $v      */
@@ -331,22 +336,21 @@ class VirtualInterfaceController extends Common
      * Delete a Virtual Interface
      *
      * @param   Request $request instance of the current HTTP request
-     * @param   int $id ID of the VirtualInterface
      *
      * @return  JsonResponse
      *
      * @throws
      */
-    public function delete( Request $request,  int $id ): JsonResponse {
+    public function delete( Request $request ): JsonResponse
+    {
         /** @var VirtualInterfaceEntity $vi */
-        if( !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $id ) ) ) {
+        if( !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $request->input( 'id' ) ) ) ) {
             return abort( '404' );
         }
 
 
         if( $vi->getCoreBundle() ) {
             AlertContainer::push( 'The Virtual Interface is linked to a Core Bundle. Delete the Core Bundle first to be able to delete the Virtual Interface.', Alert::DANGER );
-
             return response()->json( [ 'success' => false ]);
         }
 

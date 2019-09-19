@@ -70,7 +70,8 @@ class ContactController extends Doctrine2Frontend
     /**
      * This function sets up the frontend controller
      */
-    public function feInit(){
+    public function feInit()
+    {
 
         $this->feParams         = ( object )[
 
@@ -185,8 +186,8 @@ class ContactController extends Doctrine2Frontend
     /**
      * @inheritdoc
      */
-    protected function preView() {
-
+    protected function preView()
+    {
         if( !Auth::getUser()->isSuperUser() && Auth::getUser()->getCustomer()->getId() != $this->data[ 'item' ][ 'custid' ] ) {
             $this->unauthorized();
         }
@@ -195,7 +196,6 @@ class ContactController extends Doctrine2Frontend
             $this->feParams->viewColumns = array_merge(
                 $this->feParams->listColumns,
                 [
-
                     'group'     => [
                         'title'         => 'Group',
                         'type'          => self::$FE_COL_TYPES[ 'LABEL' ],
@@ -207,7 +207,6 @@ class ContactController extends Doctrine2Frontend
                 ]
             );
         }
-
     }
 
     /**
@@ -218,7 +217,8 @@ class ContactController extends Doctrine2Frontend
      *
      * @throws
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
 
         $role = $cg = null;
         $cgs = [];
@@ -234,7 +234,6 @@ class ContactController extends Doctrine2Frontend
             if( $cg = request()->input( "cgid" ) ) {
 
                 foreach( $groups as $gname => $gvalue ){
-
                     foreach( $gvalue as $index => $val ){
                         $cgs[$index] = $val[ 'name' ];
                     }
@@ -278,10 +277,9 @@ class ContactController extends Doctrine2Frontend
      *
      * @throws
      */
-    protected function addEditPrepareForm( $id = null ): array {
-
+    protected function addEditPrepareForm( $id = null ): array
+    {
         $old = request()->old();
-
         session()->remove( "contact_post_store_redirect" );
 
         // check if we come from the customer overview or the contact list
@@ -303,7 +301,6 @@ class ContactController extends Doctrine2Frontend
 
 
         if( $id !== null ) {
-
             if( !( $this->object = D2EM::getRepository( ContactEntity::class )->find( $id ) ) ) {
                 abort(404);
             }
@@ -313,14 +310,13 @@ class ContactController extends Doctrine2Frontend
             }
 
             $contactDetail = [
-                'name'                      => array_key_exists( 'name',            $old ) ? $old['name']                       : $this->object->getName(),
-                'position'                  => array_key_exists( 'position',        $old ) ? $old['position']                   : $this->object->getPosition(),
-                'custid'                    => array_key_exists( 'custid',          $old ) ? $old['custid']                     : $this->object->getCustomer()->getId(),
-                'email'                     => array_key_exists( 'email',           $old ) ? $old['email']                      : $this->object->getEmail(),
-                'phone'                     => array_key_exists( 'phone',           $old ) ? $old['phone']                      : $this->object->getPhone(),
-                'mobile'                    => array_key_exists( 'mobile',          $old ) ? $old['mobile']                     : $this->object->getMobile(),
-                // 'facilityaccess'            => array_key_exists( 'facilityaccess',  $old ) ? ( $old['facilityaccess'] ? 1 : 0 ) : ( $this->object->getFacilityaccess() ? 1 : 0 ),
-                // 'mayauthorize'              => array_key_exists( 'mayauthorize',    $old ) ? ( $old['mayauthorize']   ? 1 : 0 ) : ( $this->object->getMayauthorize() ? 1 : 0 ),
+                'name'                      => request()->old( 'name',      $this->object->getName() ),
+                'position'                  => request()->old( 'position',  $this->object->getPosition() ),
+                'custid'                    => request()->old( 'custid',    $this->object->getCustomer()->getId() ),
+                'email'                     => request()->old( 'email',     $this->object->getEmail() ),
+                'phone'                     => request()->old( 'phone',     $this->object->getPhone() ),
+                'mobile'                    => request()->old( 'mobile',    $this->object->getMobile() ),
+                'notes'                     => request()->old( 'notes',     $this->object->getNotes() ),
             ];
 
             $contactGroupDetail = [];
@@ -329,26 +325,23 @@ class ContactController extends Doctrine2Frontend
 
             foreach( $allGroups as $gname => $gvalue ) {
                 foreach( $gvalue as $g ){
-                    $contactGroupDetail[ $gname . '_' . $g[ 'id' ] ] =  array_key_exists( $gname . '_' . $g[ 'id' ] , $old ) ? $old[ $gname . '_' . $g[ 'id' ] ] : isset( $contactGroup[ $gname ][  $g[ 'id' ] ] ) ? 1 : 0 ;
+                    $contactGroupDetail[ $gname . '_' . $g[ 'id' ] ] =  request()->old( $gname . '_' . $g[ 'id' ] , isset( $contactGroup[ $gname ][  $g[ 'id' ] ] ) ? 1 : 0 ) ;
                 }
             }
 
             Former::populate( array_merge( $contactDetail, $contactGroupDetail ) );
 
         } else {
-
             if( request()->input( "cust" ) && ( $cust = D2EM::getRepository( CustomerEntity::class )->find( request()->input( "cust" ) ) ) ){
                 Former::populate( [
                     'custid'                    => $cust->getId(),
                 ] );
             }
-
         }
 
         return [
             'object'                => $this->object,
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
-            'notes'                 => $id ? ( array_key_exists( 'notes', $old ) ? $old['notes'] : $this->object->getNotes() ) : ( array_key_exists( 'notes', $old ) ? $old['notes'] : "" ),
             'roles'                 => $roles,
             'allGroups'             => $allGroups,
         ];
@@ -409,8 +402,6 @@ class ContactController extends Doctrine2Frontend
         $this->object->setEmail(             $request->input( 'email'           ) );
         $this->object->setPhone(             $request->input( 'phone'           ) );
         $this->object->setMobile(            $request->input( 'mobile'          ) );
-        // $this->object->setMayauthorize(      $request->input( 'mayauthorize'    ) );
-        // $this->object->setFacilityaccess(    $request->input( 'facilityaccess'  ) );
         $this->object->setNotes(             $request->input( 'notes'           ) );
 
         $this->object->setLastupdated(      new \DateTime  );
@@ -460,7 +451,7 @@ class ContactController extends Doctrine2Frontend
 
         }
 
-        D2EM::flush($this->object);
+        D2EM::flush();
 
         return true;
     }
@@ -469,8 +460,8 @@ class ContactController extends Doctrine2Frontend
     /**
      * @inheritdoc
      */
-    protected function postStoreRedirect() {
-
+    protected function postStoreRedirect()
+    {
         if( !Auth::getUser()->isSuperUser() ) {
             return route( 'contact@list' );
         } else {
@@ -498,8 +489,8 @@ class ContactController extends Doctrine2Frontend
      *
      * @return bool Return false to stop / cancel the deletion
      */
-    protected function preDelete(): bool {
-
+    protected function preDelete(): bool
+    {
         session()->remove( 'ixp_contact_delete_custid' );
 
         if( Auth::getUser()->isSuperUser() ) {
@@ -523,10 +514,10 @@ class ContactController extends Doctrine2Frontend
      *
      * @return null|string
      */
-    protected function postDeleteRedirect(){
+    protected function postDeleteRedirect()
+    {
 
         // retrieve the customer ID
-
         if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {
             if( $custid = $this->request->session()->get( "ixp_contact_delete_custid" ) ) {
                 $this->request->session()->remove( "ixp_contact_delete_custid" );
@@ -536,8 +527,4 @@ class ContactController extends Doctrine2Frontend
 
         return route( 'contact@list' );
     }
-
-
-
-
 }

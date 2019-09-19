@@ -100,7 +100,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get(     'wizard-add/custid/{custid}',       'VirtualInterfaceController@addWizardCustId'    )->name(   'interfaces/virtual/add-wizard/custid'   );
         Route::post(    'store',                            'VirtualInterfaceController@store'              )->name(   'interfaces/virtual/store'   );
         Route::post(    'wizard-add',                       'VirtualInterfaceController@storeWizard'        )->name(    'interfaces/virtual/wizard-save'        );
-        Route::post(    'delete/{id}',                      'VirtualInterfaceController@delete'             );
+        Route::post(    'delete/{id}',                      'VirtualInterfaceController@delete'             )->name(    'virtual-interface@delete' );
         
     });
 
@@ -124,8 +124,6 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get(     'add/{id}/vintid/{viid}',           'VlanInterfaceController@edit'      )->name(    'interfaces/vlan/add'                           );
         Route::post(    'store',                            'VlanInterfaceController@store'     )->name(    'interfaces/vlan/store'                         );
         Route::post(    'delete/{id}',                      'VlanInterfaceController@delete'    );
-        
-        
     });
 
     Route::group( [  'prefix' => 'sflow-receiver' ], function() {
@@ -134,7 +132,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get(     'edit/{id}/vintid/{viid}',          'SflowReceiverController@edit'  )->name( 'interfaces/sflow-receiver/edit/from-virtual-interface' );
         Route::get(     'add/{id}/vintid/{viid}',           'SflowReceiverController@edit'  )->name( 'interfaces/sflow-receiver/add'                         );
         Route::post(    'store',                            'SflowReceiverController@store' )->name( 'sflow-receiver@store'                                  );
-        Route::post(    'delete/{id}',                      'SflowReceiverController@delete');
+        Route::post(    'delete/{id}',                      'SflowReceiverController@delete')->name( 'sflow-receiver@delete' );
     });
 
     Route::group( [  'prefix' => 'core-bundle' ], function() {
@@ -151,19 +149,14 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
 });
 
 Route::group( [ 'namespace' => 'Customer' , 'prefix' => 'customer' ], function() {
-
     Route::get(     'list',                             'CustomerController@list'                       )->name( 'customer@list');
-
     Route::get(     'add',                              'CustomerController@edit'                       )->name( 'customer@add');
     Route::get(     'edit/{id}',                        'CustomerController@edit'                       )->name( 'customer@edit');
-
     Route::get(     'billing-registration/{id}',        'CustomerController@editBillingAndRegDetails'   )->name( 'customer@billing-registration');
-
     Route::get(     'welcome-email/{id}',               'CustomerController@welcomeEmail'               )->name( "customer@welcome-email" );
     Route::get(     'delete-recap/{id}',                'CustomerController@deleteRecap'                )->name( "customer@delete-recap" );
     Route::get(     'overview/{id}/{tab?}',             'CustomerController@overview'                   )->name( "customer@overview" );
-    Route::get(     '{id}/tags',                       'CustomerController@tags'                       )->name( "customer@tags" );
-
+    Route::get(     '{id}/tags',                       'CustomerController@tags'                        )->name( "customer@tags" );
     Route::post(    'store',                            'CustomerController@store'                      )->name( 'customer@store');
     Route::post(    'store-billing-and-reg-details',    'CustomerController@storeBillingAndRegDetails'  )->name( 'customer@store-billing-and-reg-details');
     Route::post(    'send-welcome-email',               'CustomerController@sendWelcomeEmail'           )->name( 'customer@send-welcome-email');

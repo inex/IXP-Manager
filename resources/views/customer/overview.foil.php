@@ -289,7 +289,7 @@
                     <?php if( $c->isRouteServerClient() ): ?>
 
                         <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes' ) ): ?>
-                            <li class="nav-item" onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'id' =>  $c->getId() ] ) ?>'">
+                            <li class="nav-item" onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'cid' =>  $c->getId() ] ) ?>'">
                                 <a class="nav-link" data-toggle="tab"  href="">
                                     RS Prefixes
                                     <?php if( $t->rsRoutes[ 'adv_nacc' ][ 'total' ] > 0 ): ?>
