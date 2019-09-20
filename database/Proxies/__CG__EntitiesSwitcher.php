@@ -804,4 +804,37 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
         return parent::setSnmpSystemUptime($snmp_system_uptime);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function recentlyRebooted(int $window = 60): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'recentlyRebooted', [$window]);
+
+        return parent::recentlyRebooted($window);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function status()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'status', []);
+
+        return parent::status();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCoreBundles(): array
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreBundles', []);
+
+        return parent::getCoreBundles();
+    }
+
 }

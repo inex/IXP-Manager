@@ -25,6 +25,9 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
+use Entities\CoreBundle as CoreBundleEntity;
+use Entities\Switcher as SwitchEntity;
+
 
 /**
  * CoreBundle
@@ -34,4 +37,8 @@ use Doctrine\ORM\EntityRepository;
  */
 class CoreBundle extends EntityRepository
 {
+
+
+
+
 }

@@ -1096,4 +1096,23 @@ class Switcher
             'msgs' => $msgs,
         ];
     }
+
+
+    public function getCoreBundles(): array
+    {
+        $cbs   = [];
+        $cbids = [];
+
+        foreach( $this->getPorts() as $sp ) {
+            if( $sp->getPhysicalInterface() && $sp->getPhysicalInterface()->getCoreInterface() ) {
+                if( !in_array( $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkA()->getCoreBundle()->getId(), $cbids ) ) {
+                    $cbids[] = $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkA()->getCoreBundle()->getId();
+                    $cbs[] = $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkA()->getCoreBundle();
+                }
+            }
+        }
+
+        return $cbs;
+    }
+
 }
