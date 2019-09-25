@@ -65,7 +65,6 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             $browser->press( "#delete-vi-" . $vi->getId() )
                 ->waitForText( 'Do you really want to delete this Virtual Interface?' )
                 ->press( "Delete" )
-                ->waitForReload()
                 ->assertPathIs('/customer/overview/' . $vi->getCustomer()->getId() . '/ports' )
                 ->assertSee('The Virtual Interface has been deleted successfully.' );
 
@@ -448,7 +447,6 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->waitForText( 'Do you really want to delete this Physical Interface?' )
             ->press('Delete')
             ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() )
-            ->waitForReload()
             ->assertSee( 'The Physical Interface has been deleted successfully.' );
 
     }
@@ -735,7 +733,6 @@ class VirtualInterfaceControllerTest extends DuskTestCase
             ->waitForText( 'Do you really want to delete this Vlan Interface?' )
             ->press('Delete')
             ->assertPathIs('/interfaces/virtual/edit/' . $vi->getId() )
-            ->waitForReload()
             ->assertSee( 'The Vlan Interface has been deleted successfully.' );
 
     }
