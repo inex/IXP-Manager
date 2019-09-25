@@ -314,20 +314,26 @@ class PhysicalInterfaceController extends Common
      *
      * @param   Request $request instance of the current HTTP request
      *
-     * @return  JsonResponse
+     * @return  RedirectResponse
      *
      * @throws
      */
-    public function delete( Request $request ): JsonResponse
+    public function delete( Request $request ): RedirectResponse
     {
         /** @var PhysicalInterfaceEntity $pi */
         if( !( $pi = D2EM::getRepository( PhysicalInterfaceEntity::class )->find( $request->input( "id" ) ) ) ) {
             return abort( '404' );
         }
 
+        if( $_SERVER[ "HTTP_REFERER" ] == route( "interfaces/physical/list" ) ){
+            $redirect = route( "interfaces/physical/list" );
+        } else {
+            $redirect = route( "interfaces/virtual/edit", [ "id" => $pi->getVirtualInterface()->getId() ] );
+        }
+
         if( $pi->getCoreInterface() ) {
             AlertContainer::push( 'You cannot delete this physical interface as there is a core bundle linked with it.', Alert::DANGER );
-            return response()->json( [ 'success' => false ] );
+            return Redirect::to( $redirect );
         }
 
         if( $pi->getSwitchPort()->isTypePeering() && $pi->getFanoutPhysicalInterface() ) {
@@ -354,6 +360,7 @@ class PhysicalInterfaceController extends Common
 
         AlertContainer::push( 'The Physical Interface has been deleted successfully.', Alert::SUCCESS );
 
-        return response()->json( [ 'success' => true ] );
+        return Redirect::to( $redirect );
+
     }
 }

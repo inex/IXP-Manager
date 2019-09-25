@@ -28,9 +28,7 @@ use Auth, D2EM;
 use Entities\{
     RSPrefix            as RSPrefixEntity,
     Customer            as CustomerEntity,
-    User                as UserEntity,
     VirtualInterface    as VirtualInterfaceEntity,
-    VlanInterface       as VlanInterfaceEntity
 };
 
 use Illuminate\Http\Request;
@@ -45,15 +43,16 @@ use Illuminate\View\View;
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class RsPrefixesController extends Controller {
+class RsPrefixesController extends Controller
+{
 
     /**
      * Display all the RsPrefixes
      *
      * @return  View
      */
-    public function list(): View {
-
+    public function list(): View
+    {
         return view( 'rs-prefixes/list' )->with([
             'types'                 => RSPrefixEntity::$SUMMARY_TYPES_FNS,
             'rsRouteTypes'          => array_keys( RSPrefixEntity::$ROUTES_TYPES_FNS ),
@@ -73,7 +72,8 @@ class RsPrefixesController extends Controller {
      * @param   int     $cid customer ID
      * @return  View
      */
-    public function view( Request $r, $cid ) : View {
+    public function view( Request $r, $cid ) : View
+    {
         /** @var CustomerEntity $c */
         if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $cid ) ) ) {
             abort(404);

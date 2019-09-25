@@ -938,6 +938,22 @@ a:hover {
   border-color: #dae1e7;
 }
 
+.btn-info {
+  background-color: #fff;
+  color: #38b2ac;
+  font-weight: 600;
+  border-width: 1px;
+  border-color: #38b2ac;
+  border-radius: .25rem;
+  box-shadow: 0 2px 4px 0 rgba(0,0,0,0.10);
+}
+
+.btn-info:hover {
+  background-color: #38b2ac;
+  border-width: 1px;
+  border-color: #dae1e7;
+}
+
 /****************************************************************************************ea
  **** Inputs
  ****************************************************************************************/

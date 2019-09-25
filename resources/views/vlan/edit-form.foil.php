@@ -64,7 +64,7 @@
                 sflow support for this</a>." );
         ?>
 
-        <div class="form-group">
+        <div class="form-group col-sm-8">
             <div class="col-lg-offset-2 col-sm-offset-2">
                 <div class="card mt-4">
                     <div class="card-header">
@@ -80,7 +80,12 @@
 
                     <div class="tab-content card-body">
                         <div role="tabpanel" class="tab-pane show active" id="body">
-                            <textarea class="form-control" style="font-family:monospace;" rows="5" id="notes" name="notes"><?= $t->data['params']['notes'] ?></textarea>
+                            <?= Former::textarea( 'notes' )
+                                ->id( 'notes' )
+                                ->label( '' )
+                                ->rows( 10 )
+                                ->blockHelp( "" )
+                            ?>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="preview">
                             <div class="bg-light p-4 well-preview">

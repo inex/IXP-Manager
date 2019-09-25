@@ -272,6 +272,14 @@ a:hover {
     @apply bg-grey-lighter border border-grey-light;
 }
 
+.btn-info{
+    @apply bg-white text-teal-500 font-semibold border border-teal-500 rounded shadow;
+}
+
+.btn-info:hover{
+    @apply bg-teal-500 border border-grey-light;
+}
+
 /****************************************************************************************ea
  **** Inputs
  ****************************************************************************************/

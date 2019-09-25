@@ -61,7 +61,8 @@ use OSS_SNMP\MIBS\Iface;
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class SwitchPortController extends Doctrine2Frontend {
+class SwitchPortController extends Doctrine2Frontend
+{
 
     /**
      * The object being added / edited
@@ -73,7 +74,8 @@ class SwitchPortController extends Doctrine2Frontend {
     /**
      * This function sets up the frontend controller
      */
-    public function feInit(){
+    public function feInit()
+    {
         $this->feParams         = (object)[
 
             'entity'            => SwitchPortEntity::class,
@@ -160,13 +162,14 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @return array
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( SwitchPortEntity::class )->getAllForFeList( $this->feParams, $id, $this->data );
     }
 
 
-    public function list( Request $r ) : View{
-
+    public function list( Request $r ) : View
+    {
         if( $r && $r->input( 'switch' )  !== null ) {
             /** @var SwitcherEntity $s */
             if(  $s = D2EM::getRepository( SwitcherEntity::class )->find( $r->input( 'switch' ) ) ) {
@@ -199,7 +202,8 @@ class SwitchPortController extends Doctrine2Frontend {
      *
 
      */
-    protected function addForm( ) {
+    protected function addForm()
+    {
         $this->addEditSetup();
         $this->data[ 'params' ]['isAdd']        = true;
         $this->data[ 'params' ]['switches']     = D2EM::getRepository( SwitcherEntity::class  )->getNames();
@@ -215,23 +219,20 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array {
-
-        $old = request()->old();
-
-        if( $id !== null ) {
+    protected function addEditPrepareForm( $id = null ): array
+    {
+        if( $id ) {
 
             if( !( $this->object = D2EM::getRepository( SwitchPortEntity::class )->find( $id) ) ) {
                 abort(404, "Unknown Switch port");
             }
 
             Former::populate([
-                'switchid'          => array_key_exists( 'switchid',    $old    ) ? $old['switchid']        :  $this->object->getSwitcher()->getId(),
-                'name'              => array_key_exists( 'name',        $old    ) ? $old['name']            :  $this->object->getName(),
-                'type'              => array_key_exists( 'type',        $old    ) ? $old['type']            :  $this->object->getType(),
-                'active'            => array_key_exists( 'active',      $old    ) ? $old['active']          : ( $this->object->getActive() ? 1 : 0 ) ,
+                'switchid'          => request()->old( 'switchid',    $this->object->getSwitcher()->getId() ),
+                'name'              => request()->old( 'name',        $this->object->getName() ),
+                'type'              => request()->old( 'type',        $this->object->getType() ),
+                'active'            => request()->old( 'active',      ( $this->object->getActive() ? 1 : 0 ) ) ,
             ]);
-
         }
 
         return [
@@ -251,7 +252,8 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @throws
      */
-    public function doStore( Request $request ) {
+    public function doStore( Request $request )
+    {
 
         if( $request->input( "isAdd" ) ){
 
@@ -322,8 +324,9 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @return string|null
      */
-    protected function postStoreRedirect() {
-        if( request()->input( "isAdd" ) ){
+    protected function postStoreRedirect()
+    {
+        if( request()->input( "isAdd" ) ) {
             return route( "switch-port@list", [ "switch" => request()->input( "switchid" ) ] );
         }
 
@@ -334,7 +337,8 @@ class SwitchPortController extends Doctrine2Frontend {
     /**
      * @inheritdoc
      */
-    protected function preDelete() : bool {
+    protected function preDelete() : bool
+    {
 
         if( ( $this->object->getPhysicalInterface() ) ) {
 
@@ -365,8 +369,8 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @bool
      */
-    public function setUpUnusedOptics( ){
-
+    public function setUpUnusedOptics()
+    {
         $this->feParams->listOrderBy                = 'switch';
         $this->feParams->pagetitle                  = 'Switches';
         $this->feParams->pagetitlepostamble         = 'Unused Optics';
@@ -395,8 +399,8 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @throws
      */
-    public function unusedOptics( ) : View {
-
+    public function unusedOptics() : View
+    {
         $this->setUpUnusedOptics();
 
         $this->data[ 'rows' ] =  D2EM::getRepository( SwitchPortEntity::class )->getUnusedOpticsForFeList( $this->feParams );
@@ -420,8 +424,8 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @bool
      */
-    public function setUpListMau( ){
-
+    public function setUpListMau()
+    {
         $this->feParams->pagetitle                  = 'Switches';
 
         $this->feParams->route_prefix_page_title    = 'switch';
@@ -478,7 +482,8 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @throws
      */
-    public function listMau( int $switchid = null ) {
+    public function listMau( int $switchid = null )
+    {
 
         /** @var $s SwitcherEntity */
         if( !( $s = D2EM::getRepository( SwitcherEntity::class )->find( $switchid ) ) ){
@@ -523,7 +528,8 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @bool
      */
-    public function setUpOpStatus( ){
+    public function setUpOpStatus( )
+    {
 
         $this->feParams->listOrderBy                = 'ifIndex';
         $this->feParams->pagetitle                  = 'Switches';
@@ -576,7 +582,8 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @throws
      */
-    public function listOpStatus( int $id = null ){
+    public function listOpStatus( int $id = null )
+    {
 
         /** @var $s SwitcherEntity */
         if( $id && ( $s = D2EM::getRepository( SwitcherEntity::class )->find( $id ) ) ) {
@@ -633,7 +640,8 @@ class SwitchPortController extends Doctrine2Frontend {
      * @return view
      * @throws
      */
-    public function snmpPoll( int $id ){
+    public function snmpPoll( int $id )
+    {
 
         /** @var $s SwitcherEntity */
         if( $id && !( $s = D2EM::getRepository( SwitcherEntity::class )->find( $id ) ) ) {
@@ -679,7 +687,8 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @throws
      */
-    public function setType( Request $r ): JsonResponse {
+    public function setType( Request $r ): JsonResponse
+    {
 
         if( !$r->input( "spid") ) {
             return response()->json( [ 'success' => false ] );
@@ -717,7 +726,8 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @throws
      */
-    public function deleteSnmpPoll( Request $r ): JsonResponse {
+    public function deleteSnmpPoll( Request $r ): JsonResponse
+    {
 
         if( !$r->input( "spid") ) {
             return response()->json( [ 'success' => false ] );
@@ -786,7 +796,8 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @throws
      */
-    public function changeStatus( Request $r ): JsonResponse {
+    public function changeStatus( Request $r ): JsonResponse
+    {
 
         if( $r->input( "spid") ){
             foreach( $r->input( "spid") as $id ){
@@ -813,7 +824,8 @@ class SwitchPortController extends Doctrine2Frontend {
     /**
      * Setup all the necessary view
      */
-    private function setUpViews(){
+    private function setUpViews()
+    {
         $this->data[ 'view' ][ 'listEmptyMessage']      = $this->resolveTemplate( 'list-empty-message',         false );
         $this->data[ 'view' ][ 'listHeadOverride']      = $this->resolveTemplate( 'list-head-override',         false );
         $this->data[ 'view' ][ 'listRowOverride']       = $this->resolveTemplate( 'list-row-override',          false );
@@ -829,7 +841,8 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @bool
      */
-    public function setUpOpticInventory( ){
+    public function setUpOpticInventory( )
+    {
 
         $this->feParams->listOrderBy                = 'cnt';
         $this->feParams->pagetitle                  = 'Switches';
@@ -863,7 +876,8 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @throws
      */
-    public function opticInventory(){
+    public function opticInventory()
+    {
 
         $this->setUpOpticInventory();
 
@@ -881,7 +895,8 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @bool
      */
-    public function setUpOpticList( ){
+    public function setUpOpticList( )
+    {
 
         $this->feParams->pagetitle                  = 'Switches';
 
@@ -939,7 +954,8 @@ class SwitchPortController extends Doctrine2Frontend {
      *
      * @throws
      */
-    public function opticList(){
+    public function opticList()
+    {
 
         $this->setUpOpticList();
 

@@ -30,7 +30,6 @@ use Illuminate\View\View;
 
 use Illuminate\Http\{
     RedirectResponse,
-    JsonResponse,
     Request
 };
 
@@ -147,19 +146,28 @@ class SflowReceiverController extends Common
      *
      * @param Request $request
      *
-     * @return  JsonResponse
+     * @return  RedirectResponse
      *
      */
-    public function delete( Request $request ): JsonResponse
+    public function delete( Request $request ): RedirectResponse
     {
         /** @var SflowReceiverEntity $sflr */
         if( !( $sflr = D2EM::getRepository( SflowReceiverEntity::class )->find( $request->input( "id" ) ) ) ) {
             return abort( '404' );
         }
 
+        $viid = $sflr->getVirtualInterface()->getId();
+
         D2EM::remove( $sflr );
         D2EM::flush();
 
-        return response()->json( [ 'success' => true ] );
+        AlertContainer::push( 'The Sflow receiver has been deleted successfully.', Alert::SUCCESS );
+
+        if( $_SERVER[ "HTTP_REFERER" ] == route( "interfaces/sflow-receiver/list" ) ){
+            return Redirect::to( route( "interfaces/sflow-receiver/list" ) );
+        } else {
+            return Redirect::to( route( "interfaces/virtual/edit" , [ "id" => $viid ] ) );
+        }
+
     }
 }

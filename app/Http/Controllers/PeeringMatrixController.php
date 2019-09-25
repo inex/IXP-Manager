@@ -65,7 +65,8 @@ class PeeringMatrixController extends Controller
      *
      * @throws
      */
-    public function index( Request $r ) {
+    public function index( Request $r )
+    {
 
         if( config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ) {
             AlertContainer::push( 'The peering matrix has been disabled.', Alert::DANGER );
@@ -149,7 +150,5 @@ class PeeringMatrixController extends Controller
             'asnStringFormat'               => count($asns) > 0 ? "% " . strlen( $asns[ count( $asns ) - 1 ] ) . "s" : "% 0s",
         ]);
     }
-
-
 
 }

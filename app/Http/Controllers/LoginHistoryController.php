@@ -26,12 +26,13 @@ namespace IXP\Http\Controllers;
 use Auth, D2EM, Route;
 
 use Entities\{
-    CustomerToUser as CustomerToUserEntity,
-    User as UserEntity,
-    UserLoginHistory as UserLoginHistoryEntity,
+    CustomerToUser      as CustomerToUserEntity,
+    User                as UserEntity,
+    UserLoginHistory    as UserLoginHistoryEntity,
 };
 
 use Illuminate\Http\Request;
+
 use Illuminate\View\View;
 
 
@@ -43,7 +44,8 @@ use Illuminate\View\View;
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class LoginHistoryController extends Doctrine2Frontend {
+class LoginHistoryController extends Doctrine2Frontend
+{
     /**
      * The object being added / edited
      * @var UserLoginHistoryEntity
@@ -111,7 +113,8 @@ class LoginHistoryController extends Doctrine2Frontend {
     /**
      * @inheritdoc
      */
-    public static function routes() {
+    public static function routes()
+    {
         Route::group( [ 'prefix' => 'login-history' ], function() {
             Route::get(  'list',                'LoginHistoryController@list'   )->name( 'login-history@list'   );
             Route::get(  'view/{id}',           'LoginHistoryController@view'   )->name( 'login-history@view'   );
@@ -125,7 +128,8 @@ class LoginHistoryController extends Doctrine2Frontend {
      * @param int $id The `id` of the row to load for `view`. `null` if `list`
      * @return array
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( UserEntity::class)->getLastLoginsForFeList( $this->feParams );
     }
 

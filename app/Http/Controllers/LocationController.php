@@ -46,7 +46,8 @@ use Illuminate\Http\RedirectResponse;
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class LocationController extends Doctrine2Frontend {
+class LocationController extends Doctrine2Frontend
+{
 
     /**
      * The object being added / edited
@@ -115,7 +116,8 @@ class LocationController extends Doctrine2Frontend {
      * @param int $id The `id` of the row to load for `view`. `null` if `list`
      * @return array
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( LocationEntity::class )->getAllForFeList( $this->feParams, $id );
     }
 
@@ -127,36 +129,32 @@ class LocationController extends Doctrine2Frontend {
      *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array {
-        $old = request()->old();
-
-        if( $id != null ) {
+    protected function addEditPrepareForm( $id = null ): array
+    {
+        if( $id ) {
             if( !( $this->object = D2EM::getRepository( LocationEntity::class )->find( $id ) ) ) {
                 abort(404);
             }
 
-
             Former::populate([
-                'name'                  => array_key_exists( 'name',        $old ) ? $old['name']        : $this->object->getName(),
-                'shortname'             => array_key_exists( 'shortname',   $old ) ? $old['shortname']   : $this->object->getShortname(),
-                'tag'                   => array_key_exists( 'tag',         $old ) ? $old['tag']         : $this->object->getTag(),
-                'address'               => array_key_exists( 'address',     $old ) ? $old['address']     : $this->object->getAddress(),
-                'nocphone'              => array_key_exists( 'nocphone',    $old ) ? $old['nocphone']    : $this->object->getNocphone(),
-                'nocfax'                => array_key_exists( 'nocfax',      $old ) ? $old['nocfax']      : $this->object->getNocfax(),
-                'nocemail'              => array_key_exists( 'nocemail',    $old ) ? $old['nocemail']    : $this->object->getNocemail(),
-                'officephone'           => array_key_exists( 'officephone', $old ) ? $old['officephone'] : $this->object->getOfficephone(),
-                'officefax'             => array_key_exists( 'officefax',   $old ) ? $old['officefax']   : $this->object->getOfficefax(),
-                'officeemail'           => array_key_exists( 'officeemail', $old ) ? $old['officeemail'] : $this->object->getOfficeemail(),
-                'notes'                 => array_key_exists( 'notes',       $old ) ? $old['notes']       : $this->object->getNotes(),
+                'name'                  => request()->old( 'name',        $this->object->getName() ),
+                'shortname'             => request()->old( 'shortname',   $this->object->getShortname() ),
+                'tag'                   => request()->old( 'tag',         $this->object->getTag() ),
+                'address'               => request()->old( 'address',     $this->object->getAddress() ),
+                'nocphone'              => request()->old( 'nocphone',    $this->object->getNocphone() ),
+                'nocfax'                => request()->old( 'nocfax',      $this->object->getNocfax() ),
+                'nocemail'              => request()->old( 'nocemail',    $this->object->getNocemail() ),
+                'officephone'           => request()->old( 'officephone', $this->object->getOfficephone() ),
+                'officefax'             => request()->old( 'officefax',   $this->object->getOfficefax() ),
+                'officeemail'           => request()->old( 'officeemail', $this->object->getOfficeemail() ),
+                'notes'                 => request()->old( 'notes',       $this->object->getNotes() ),
             ]);
         }
 
         return [
-            'object'       => $this->object,
-            'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : null )
+            'object'       => $this->object
         ];
     }
-
 
     /**
      * Function to do the actual validation and storing of the submitted object.
@@ -204,7 +202,7 @@ class LocationController extends Doctrine2Frontend {
         $this->object->setNotes(           $request->input( 'notes'            ) );
         $this->object->setPdbFacilityId(   $request->input( 'pdb_facility_id'  ) );
 
-        D2EM::flush( $this->object );
+        D2EM::flush();
 
         return true;
     }
@@ -212,7 +210,8 @@ class LocationController extends Doctrine2Frontend {
     /**
      * @inheritdoc
      */
-    protected function preDelete(): bool {
+    protected function preDelete(): bool
+    {
         if( ( $cnt = count( $this->object->getCabinets() ) ) ) {
             AlertContainer::push( "Could not delete the Facility ({$this->object->getName()}) as at least one rack is located here. Reassign or delete the rack first.", Alert::DANGER );
             return false;

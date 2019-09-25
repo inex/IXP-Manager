@@ -52,6 +52,7 @@
                 $( '#btn-submit' ).prop('disabled', false);
             });
 
+        $( "#notes" ).parent().removeClass().addClass( "col-sm-12" )
     });
 
 </script>

@@ -227,14 +227,12 @@
         <?php if ( !$t->prewired ): ?>
 
             <div class="form-group row">
-                <label for="notes" class="control-label col-lg-2 col-sm-4">Public Notes</label>
-
                 <div class="col-sm-8">
                     <div class="card">
                         <div class="card-header">
                             <ul class="nav nav-tabs card-header-tabs">
                                 <li role="presentation" class="nav-item">
-                                    <a class="tab-link-body-note nav-link active" href="#body1">Notes</a>
+                                    <a class="tab-link-body-note nav-link active" href="#body1">Public Notes</a>
                                 </li>
                                 <li role="presentation" class="nav-item">
                                     <a class="tab-link-preview-note nav-link " href="#preview1">Preview</a>
@@ -243,10 +241,13 @@
                         </div>
                         <div class="tab-content card-body">
                             <div role="tabpanel" class="tab-pane show active" id="body1">
-                                <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->notes ?></textarea>
-                                <small class="form-text text-muted former-help-text">
-                                    These notes are visible (but not editable) to the member. You can use markdown here.
-                                </small>
+                                <?= Former::textarea( 'notes' )
+                                    ->id( 'notes' )
+                                    ->class( 'notes' )
+                                    ->label( '' )
+                                    ->rows( 20 )
+                                    ->blockHelp( "These notes are visible (but not editable) to the member. You can use markdown here." )
+                                ?>
                             </div>
                             <div role="tabpanel" class="tab-pane" id="preview1">
                                 <div class="bg-light p-4 well-preview">
@@ -264,14 +265,12 @@
         <?php endif; ?>
 
         <div class="form-group row mt-4 mb-4">
-            <label for="private_notes"  class="control-label col-lg-2 col-sm-4">Private Notes</label>
-
             <div class="col-sm-8">
                 <div class="card">
                     <div class="card-header">
                         <ul class="nav nav-tabs card-header-tabs">
                             <li role="presentation" class="nav-item">
-                                <a class="tab-link-body-note nav-link active" href="#body2">Notes</a>
+                                <a class="tab-link-body-note nav-link active" href="#body2">Private Notes</a>
                             </li>
                             <li role="presentation" class="nav-item">
                                 <a class="tab-link-preview-note nav-link" href="#preview2">Preview</a>
@@ -282,10 +281,13 @@
 
                     <div class="tab-content card-body">
                         <div role="tabpanel" class="tab-pane show active" id="body2">
-                            <textarea class="form-control" style="font-family:monospace;" rows="20" id="private_notes" name="private_notes"><?= $t->private_notes ?></textarea>
-                            <small class="form-text text-muted former-help-text">
-                                These notes are <b>NOT</b> visible to the member. You can use markdown here.
-                            </small>
+                            <?= Former::textarea( 'private_notes' )
+                                ->id( 'private_notes' )
+                                ->label( '' )
+                                ->class( 'notes' )
+                                ->rows( 20 )
+                                ->blockHelp( "These notes are <b>NOT</b> visible to the member. You can use markdown here." )
+                            ?>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="preview2">
                             <div class="bg-light p-4 well-preview" style="background: rgb(255,255,255);">

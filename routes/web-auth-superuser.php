@@ -30,9 +30,10 @@
 Route::group( [ 'prefix' => 'ip-address' ], function() {
     Route::get(     'list/{protocol}/{vlanid?}',                'IpAddressController@list'              )->name( 'ip-address@list'                 );
     Route::get(     'delete-by-network/vlan/{vlanid}',          'IpAddressController@deleteByNetwork'   )->name( 'ip-address@delete-by-network'    );
+    Route::post(    'delete-by-network/vlan/{vlanid}',          'IpAddressController@deleteByNetwork'   );
     Route::get(     'add/{protocol}',                           'IpAddressController@add'               )->name( 'ip-address@add'                  );
     Route::post(    'store',                                    'IpAddressController@store'             )->name( 'ip-address@store'                );
-    Route::post(    'delete/{protocol}/{id}',                   'IpAddressController@delete'            )->name( 'ip-address@delete'               );
+    Route::post(    'delete',                                   'IpAddressController@delete'            )->name( 'ip-address@delete'               );
 });
 
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel' ], function() {
@@ -50,11 +51,11 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
     Route::post(    'advanced-list',                    'PatchPanelPortController@advancedIndex'        )->name('patch-panel-port@advanced-list'       );
     Route::get(     'list/patch-panel/{ppid}',          'PatchPanelPortController@index'                )->name('patch-panel-port/list/patch-panel'     );
     Route::get(     'edit/{id}',                        'PatchPanelPortController@edit'                 )->name('patch-panel-port@edit'                 );
-    Route::get(     'edit-to-allocate/{id}',            'PatchPanelPortController@editToAllocate'       )->name('patch-panel-port@edit-allocate'     );
-    Route::get(     'edit-to-prewired/{id}',            'PatchPanelPortController@editToPrewired'       )->name('patch-panel-port@edit-prewired'     );
+    Route::get(     'edit-to-allocate/{id}',            'PatchPanelPortController@editToAllocate'       )->name('patch-panel-port@edit-allocate'        );
+    Route::get(     'edit-to-prewired/{id}',            'PatchPanelPortController@editToPrewired'       )->name('patch-panel-port@edit-prewired'        );
     Route::get(     'change-status/{id}/{status}',      'PatchPanelPortController@changeStatus'         )->name('patch-panel-port@change-status'        );
     Route::get(     'email/{id}/{type}',                'PatchPanelPortController@email'                )->name('patch-panel-port@email'                );
-    Route::get(     'download-file/{id}',               'PatchPanelPortController@downloadFile'         )->name('patch-panel-port@download-file'        );
+    Route::get(     'download-file/{pppfid}',           'PatchPanelPortController@downloadFile'         )->name('patch-panel-port@download-file'        );
     Route::get(     'move-form/{id}',                   'PatchPanelPortController@moveForm'             )->name('patch-panel-port@move-form'            );
     Route::post(    'move',                             'PatchPanelPortController@move'                 )->name('patch-panel-port@move'                 );
     Route::post(    'store',                            'PatchPanelPortController@store'                )->name('patch-panel-port@store'                );
@@ -75,8 +76,8 @@ Route::group( [ 'prefix' => 'router' ], function() {
     Route::get(     'add',                              'RouterController@edit'     )->name( 'router@add'   );
     Route::get(     'edit/{id}',                        'RouterController@edit'     )->name( 'router@edit'  );
     Route::get(     'view/{id}',                        'RouterController@view'     )->name( 'router@view'  );
-    Route::get(     'delete/{id}',                      'RouterController@delete'   )->name( 'router@delete'  );
     Route::get(     'gen-config/{id}',                  'RouterController@genConfig');
+    Route::post(     'delete',                          'RouterController@delete'   )->name( 'router@delete'  );
     Route::post(    'store',                            'RouterController@store'    )->name( 'router@store'  );
 
 });
@@ -100,7 +101,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get(     'wizard-add/custid/{custid}',       'VirtualInterfaceController@addWizardCustId'    )->name(   'interfaces/virtual/add-wizard/custid'   );
         Route::post(    'store',                            'VirtualInterfaceController@store'              )->name(   'interfaces/virtual/store'   );
         Route::post(    'wizard-add',                       'VirtualInterfaceController@storeWizard'        )->name(    'interfaces/virtual/wizard-save'        );
-        Route::post(    'delete/{id}',                      'VirtualInterfaceController@delete'             )->name(    'virtual-interface@delete' );
+        Route::post(    'delete',                      'VirtualInterfaceController@delete'             )->name(    'virtual-interface@delete' );
         
     });
 
@@ -112,7 +113,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get(     'edit/{id}/vintid/{viid}',          'PhysicalInterfaceController@edit'          )->name( 'interfaces/physical/edit/from-virtual-interface'  );
         Route::get(     'add/{id}/vintid/{viid}',           'PhysicalInterfaceController@edit'          )->name( 'interfaces/physical/add'                          );
         Route::post(    'store',                            'PhysicalInterfaceController@store'         )->name( 'interfaces/physical/store'                        );
-        Route::post(    'delete/{id}',                      'PhysicalInterfaceController@delete'        )->name( 'interfaces/physical/delete'                       );
+        Route::post(    'delete',                           'PhysicalInterfaceController@delete'        )->name( 'interfaces/physical/delete'                       );
     });
 
     Route::group( [  'prefix' => 'vlan' ], function() {
@@ -123,7 +124,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get(     'edit/{id}/vintid/{viid}',          'VlanInterfaceController@edit'      )->name(    'interfaces/vlan/edit/from-virtual-interface'   );
         Route::get(     'add/{id}/vintid/{viid}',           'VlanInterfaceController@edit'      )->name(    'interfaces/vlan/add'                           );
         Route::post(    'store',                            'VlanInterfaceController@store'     )->name(    'interfaces/vlan/store'                         );
-        Route::post(    'delete/{id}',                      'VlanInterfaceController@delete'    );
+        Route::post(    'delete',                           'VlanInterfaceController@delete'    )->name(    'vlan-interface@delete'                         );
     });
 
     Route::group( [  'prefix' => 'sflow-receiver' ], function() {
@@ -132,7 +133,7 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
         Route::get(     'edit/{id}/vintid/{viid}',          'SflowReceiverController@edit'  )->name( 'interfaces/sflow-receiver/edit/from-virtual-interface' );
         Route::get(     'add/{id}/vintid/{viid}',           'SflowReceiverController@edit'  )->name( 'interfaces/sflow-receiver/add'                         );
         Route::post(    'store',                            'SflowReceiverController@store' )->name( 'sflow-receiver@store'                                  );
-        Route::post(    'delete/{id}',                      'SflowReceiverController@delete')->name( 'sflow-receiver@delete' );
+        Route::post(    'delete',                           'SflowReceiverController@delete')->name( 'sflow-receiver@delete'                                 );
     });
 
     Route::group( [  'prefix' => 'core-bundle' ], function() {

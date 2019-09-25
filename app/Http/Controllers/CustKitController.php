@@ -42,7 +42,8 @@ use Illuminate\Http\RedirectResponse;
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class CustKitController extends Doctrine2Frontend {
+class CustKitController extends Doctrine2Frontend
+{
     /**
      * The object being added / edited
      * @var CustomerEquipmentEntity
@@ -52,8 +53,8 @@ class CustKitController extends Doctrine2Frontend {
     /**
      * This function sets up the frontend controller
      */
-    public function feInit(){
-
+    public function feInit()
+    {
         $this->feParams         = (object)[
             'entity'            => CustomerEquipmentEntity::class,
 
@@ -109,7 +110,8 @@ class CustKitController extends Doctrine2Frontend {
      * @param int $id The `id` of the row to load for `view`. `null` if `list`
      * @return array
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( CustomerEquipmentEntity::class)->getAllForFeList( $this->feParams, $id );
     }
 
@@ -119,20 +121,19 @@ class CustKitController extends Doctrine2Frontend {
      * @param   int $id ID of the row to edit
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array {
-        if( $id != null ) {
+    protected function addEditPrepareForm( $id = null ): array
+    {
+        if( $id ) {
 
             if( !( $this->object = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $id ) ) ) {
                 abort(404);
             }
 
-            $old = request()->old();
-
             Former::populate([
-                'name'          => array_key_exists( 'name',        $old ) ? $old['name']           : $this->object->getName(),
-                'custid'        => array_key_exists( 'custid',      $old ) ? $old['custid']         : $this->object->getCustomer()->getId(),
-                'cabinetid'     => array_key_exists( 'cabinetid',   $old ) ? $old['cabinetid']      : $this->object->getCabinet()->getId(),
-                'descr'         => array_key_exists( 'descr',       $old ) ? $old['descr']          : $this->object->getDescr(),
+                'name'          => request()->old( 'name',        $this->object->getName() ),
+                'custid'        => request()->old( 'custid',      $this->object->getCustomer()->getId() ),
+                'cabinetid'     => request()->old( 'cabinetid',   $this->object->getCabinet()->getId() ),
+                'descr'         => request()->old( 'descr',       $this->object->getDescr() ),
             ]);
         }
 
@@ -181,7 +182,7 @@ class CustKitController extends Doctrine2Frontend {
         $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid'       ) ) );
         $this->object->setDescr(    $request->input( 'descr' ) );
 
-        D2EM::flush( $this->object );
+        D2EM::flush();
 
         return true;
     }

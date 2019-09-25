@@ -337,11 +337,11 @@ class VirtualInterfaceController extends Common
      *
      * @param   Request $request instance of the current HTTP request
      *
-     * @return  JsonResponse
+     * @return  RedirectResponse
      *
      * @throws
      */
-    public function delete( Request $request ): JsonResponse
+    public function delete( Request $request ): RedirectResponse
     {
         /** @var VirtualInterfaceEntity $vi */
         if( !( $vi = D2EM::getRepository( VirtualInterfaceEntity::class )->find( $request->input( 'id' ) ) ) ) {
@@ -396,7 +396,12 @@ class VirtualInterfaceController extends Common
 
         AlertContainer::push( 'The Virtual Interface has been deleted successfully.', Alert::SUCCESS );
 
-        return response()->json( [ 'success' => true ]);
+        if( $request->input( "user" ) ) {
+            return Redirect::to( route( "customer@overview", [ "id" => $request->input( "user" ), "tab" => "ports" ] ) );
+        } else {
+            return Redirect::to( route( "interfaces/virtual/list" ) );
+        }
+
     }
 
 }

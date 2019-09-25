@@ -76,7 +76,7 @@
                                         <i id="peering-notes-icon-<?= $cid ?>" class="fa fa-star" <?= isset( $t->peers[ $cid ][ "notes" ] ) && strlen( $t->peers[ $cid ][ "notes" ] ) ?: "style='color:lightgrey'" ?>></i> Notes
                                     </button>
 
-                                    <button id="dropdown-mark-peering-<?= $cid ?>" class="btn btn-sm <?= isset( $t->peers[ $cid ] ) && ( $t->peers[ $cid ][ "peered"] || $t->peers[ $cid ][ "rejected" ] ) ? "btn-outline-info" : "btn-white" ?> dropdown-toggle" data-toggle="dropdown"></button>
+                                    <button id="dropdown-mark-peering-<?= $cid ?>" class="btn btn-sm <?= isset( $t->peers[ $cid ] ) && ( $t->peers[ $cid ][ "peered"] || $t->peers[ $cid ][ "rejected" ] ) ? "btn-info" : "btn-white" ?> dropdown-toggle" data-toggle="dropdown"></button>
 
                                     <div class="dropdown-menu" >
                                         <a class="dropdown-item" id="mark-peered-<?= $cid ?>" href="<?= route( "peering-manager@mark-peering", [ "id" => $cid, "status" => "peered" ] ) ?>">

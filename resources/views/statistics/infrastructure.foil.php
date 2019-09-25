@@ -64,7 +64,7 @@
             <div class="row">
                 <?php foreach( IXP\Services\Grapher\Graph::PERIODS as $pvalue => $pname ): ?>
 
-                    <div class="col-md-12 col-lg-6">
+                    <div class="col-md-12 col-lg-6 mb-4">
 
                         <div class="card">
                             <div class="card-header">
