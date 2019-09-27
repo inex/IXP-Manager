@@ -700,26 +700,6 @@ class Customer extends EntityRepository
 
 
     /**
-     * Return an array of the patch panel port cross connected
-     *
-     * @param $cid int The customer ID
-     * @return array An array of all the  patch panel port entries
-     */
-    public function getCrossConnects( $cid )
-    {
-        $crossConnected = $this->getEntityManager()->createQuery(
-            "SELECT ppp
-             FROM \\Entities\\PatchPanelPort ppp
-             WHERE ppp.customer = ?1
-             AND ppp.duplexMasterPort IS NULL"
-        )
-            ->setParameter( 1, $cid )
-            ->getResult();
-
-        return $crossConnected;
-    }
-
-    /**
      * Return an array of one or all customer names where the array key is the customer id.
      *
      * @param $types array the types needed

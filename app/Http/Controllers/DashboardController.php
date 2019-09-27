@@ -27,6 +27,7 @@ use Entities\{
     Customer                    as CustomerEntity,
     CustomerNote                as CustomerNoteEntity,
     NetworkInfo                 as NetworkInfoEntity,
+    PatchPanelPort              as PatchPanelPortEntity,
     RSPrefix                    as RSPrefixEntity
 };
 
@@ -123,7 +124,7 @@ class DashboardController extends Controller
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
         return view( 'dashboard/index' )->with([
             'recentMembers'                 => array_slice( D2EM::getRepository( CustomerEntity::class )->getRecent(), 0 , 5 ),
-            'crossConnects'                 => D2EM::getRepository( CustomerEntity::class       )->getCrossConnects(    $c->getId()             ),
+            'crossConnects'                 => D2EM::getRepository( PatchPanelPortEntity::class       )->getForCustomer(    $c->getId()             ),
             'notesInfo'                     => D2EM::getRepository( CustomerNoteEntity::class   )->analyseForUser(      $cns, $c, Auth::user()  ),
             'rsRoutes'                      => $rsRoutes        ?? null,
             'resoldCustomer'                => $resoldCustomer  ?? null,
