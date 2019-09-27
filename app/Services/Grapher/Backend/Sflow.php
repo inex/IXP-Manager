@@ -110,6 +110,9 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
      * @return array
      */
     public static function supports(): array {
+        $graphProtocols = Graph::PROTOCOLS;
+        unset( $graphProtocols[ Graph::PROTOCOL_ALL ] );
+
         return [
             'vlan' => [
                 'protocols'   => Graph::PROTOCOLS_REAL,
@@ -119,14 +122,14 @@ class Sflow extends GrapherBackend implements GrapherBackendContract {
                 'types'       => Graph::TYPES,
             ],
             'vlaninterface' => [
-                'protocols'   => array_except( Graph::PROTOCOLS, Graph::PROTOCOL_ALL ),
+                'protocols'   => $graphProtocols,
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
                 'types'       => Graph::TYPES,
             ],
             'p2p' => [
-                'protocols'   => array_except( Graph::PROTOCOLS, Graph::PROTOCOL_ALL ),
+                'protocols'   => $graphProtocols,
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
