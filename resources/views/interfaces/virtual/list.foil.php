@@ -34,7 +34,7 @@
 
         <?= $t->alerts() ?>
 
-        <table id='table-vi' class="collapse table table-stripped no-wrap table-responsive-ixp-with-header" style="width: 100%!important">
+        <table id='table-vi' class="collapse table table-stripped no-wrap" style="width: 100%!important">
             <thead class="thead-dark">
                 <tr>
                     <th>
@@ -127,6 +127,26 @@
     <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
 
     <script>
+
+        $( document ).ready(function() {
+
+           $('#table-vi').show();
+
+           $('#table-vi').DataTable( {
+               stateSave: true,
+               stateDuration : DATATABLE_STATE_DURATION,
+               responsive: true,
+               columnDefs: [
+                   { responsivePriority: 1, targets: 0 },
+                   { responsivePriority: 2, targets: -1 },
+                   {
+                       "targets": [ 5 ],
+                       "visible": false
+                   }
+               ],
+           } );
+        });
+
 
         /**
          * on click even allow to delete a Virtual Interface
