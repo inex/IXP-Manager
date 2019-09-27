@@ -53,9 +53,6 @@
                         Speed
                     </th>
                     <th>
-                        Raw Speed
-                    </th>
-                    <th>
                         Action
                     </th>
                 </tr>
@@ -85,14 +82,10 @@
                                 }
                                 ?>
                             </td>
-                            <td>
+                            <td data-order="<?= $speed ?>">
                                 <?= $t->scaleBits( $speed*1000*1000, 0 ) ?>
                             </td>
-                            <td>
-                                <?= $speed ?>
-                            </td>
                         <?php else: ?>
-                            <td></td>
                             <td></td>
                             <td></td>
                             <td></td>
@@ -139,10 +132,7 @@
                columnDefs: [
                    { responsivePriority: 1, targets: 0 },
                    { responsivePriority: 2, targets: -1 },
-                   {
-                       "targets": [ 5 ],
-                       "visible": false
-                   }
+                   { type: 'num', targets: [ 4 ] },
                ],
            } );
         });
