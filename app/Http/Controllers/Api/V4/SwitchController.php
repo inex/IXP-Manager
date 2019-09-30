@@ -132,7 +132,7 @@ class SwitchController extends Controller {
             $msgs[] = "No core bundles configured for this switch";
         }
 
-        return response()->json( [ 'state' => $okay, 'msgs' => $msgs ] );
+        return response()->json( [ 'status' => $okay, 'switchname' => $switch->getName(), 'msgs' => $msgs ] );
     }
 
 
