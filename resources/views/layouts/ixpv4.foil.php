@@ -117,7 +117,7 @@
             }});
 
             <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-                $( "#menu-select-customer" ).select2({ width: '100%',placeholder: "Jump to customer...", allowClear: true }).change( function(){
+                $( "#menu-select-customer" ).select2({ width: '100%',placeholder: "Jump to <?= config( 'ixp_fe.lang.customer.one' ) ?>...", allowClear: true }).change( function(){
                     document.location.href = '<?= url( "/customer/overview" ) ?>/' + $( "#menu-select-customer" ).val();
                 });
 

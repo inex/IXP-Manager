@@ -23,7 +23,10 @@ namespace IXP\Http\Controllers\Interfaces;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+
 use D2EM, Former, Log, Redirect;
+
+use IXP\Utils\Former\Framework\TwitterBootstrap4;
 
 use Entities\{
     CoreBundle          as CoreBundleEntity,

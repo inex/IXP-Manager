@@ -31,7 +31,8 @@ use Entities\{
 };
 
 use Illuminate\Http\{
-    RedirectResponse
+    RedirectResponse,
+    Request
 };
 
 use IXP\Events\Customer\BillingDetailsChanged as CustomerBillingDetailsChangedEvent;
@@ -64,13 +65,14 @@ class DashboardController extends Controller
     /**
      * Display dashboard
      *
-     * @param   string $tab Tab from the overview selected
+     * @param Request $request
+     * @param string $tab Tab from the overview selected
      *
      * @return  View|RedirectResponse
      *
-     * @throws
      */
-    public function index( string $tab = null ) {
+    public function index( Request $request, string $tab = null )
+    {
 
         // Redirect Super user
         if( Auth::getUser()->isSuperUser() ){
@@ -95,29 +97,27 @@ class DashboardController extends Controller
         $cns = D2EM::getRepository( CustomerNoteEntity::class )->fetchForCustomer( $c, true );
         $cbd = $c->getBillingDetails();
 
-        $old = request()->old();
-
         // array used to populate the details forms
         // former doesn't allow us to populate a form the classic way when there is >1 forms on the same view.
         $dataNocDetail = [
-            'nocphone'                  => array_key_exists( 'nocphone',                $old    ) ? $old['nocphone']                : $c->getNocphone(),
-            'noc24hphone'               => array_key_exists( 'noc24hphone',             $old    ) ? $old['noc24hphone']             : $c->getNoc24hphone(),
-            'nocemail'                  => array_key_exists( 'nocemail',                $old    ) ? $old['nocemail']                : $c->getNocemail(),
-            'nochours'                  => array_key_exists( 'nochours',                $old    ) ? $old['nochours']                : $c->getNochours(),
-            'nocwww'                    => array_key_exists( 'nocwww',                  $old    ) ? $old['nocwww']                  : $c->getNocwww(),
+            'nocphone'                  => $request->old( 'nocphone',                $c->getNocphone() ),
+            'noc24hphone'               => $request->old( 'noc24hphone',             $c->getNoc24hphone() ),
+            'nocemail'                  => $request->old( 'nocemail',                $c->getNocemail() ),
+            'nochours'                  => $request->old( 'nochours',                $c->getNochours() ),
+            'nocwww'                    => $request->old( 'nocwww',                  $c->getNocwww() ),
         ];
 
         $dataBillingDetail = [
-            'billingContactName'        => array_key_exists( 'billingContactName',      $old    ) ? $old['billingContactName']      : $cbd->getBillingContactName(),
-            'billingAddress1'           => array_key_exists( 'billingAddress1',         $old    ) ? $old['billingAddress1']         : $cbd->getBillingAddress1(),
-            'billingAddress2'           => array_key_exists( 'billingAddress2',         $old    ) ? $old['billingAddress2']         : $cbd->getBillingAddress2(),
-            'billingAddress3'           => array_key_exists( 'billingAddress3',         $old    ) ? $old['billingAddress3']         : $cbd->getBillingAddress3(),
-            'billingTownCity'           => array_key_exists( 'billingTownCity',         $old    ) ? $old['billingTownCity']         : $cbd->getBillingTownCity(),
-            'billingPostcode'           => array_key_exists( 'billingPostcode',         $old    ) ? $old['billingPostcode']         : $cbd->getBillingPostcode(),
-            'billingCountry'            => array_key_exists( 'billingCountry',          $old    ) ? $old['billingCountry']          : in_array( $cbd->getBillingCountry(),  array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ) ? $cbd->getBillingCountry() : null,
-            'billingEmail'              => array_key_exists( 'billingEmail',            $old    ) ? $old['billingEmail']            : $cbd->getBillingEmail(),
-            'billingTelephone'          => array_key_exists( 'billingTelephone',        $old    ) ? $old['billingTelephone']        : $cbd->getBillingTelephone(),
-            'invoiceEmail'              => array_key_exists( 'invoiceEmail',            $old    ) ? $old['invoiceEmail']            : $cbd->getInvoiceEmail(),
+            'billingContactName'        => $request->old( 'billingContactName',      $cbd->getBillingContactName() ),
+            'billingAddress1'           => $request->old( 'billingAddress1',         $cbd->getBillingAddress1() ),
+            'billingAddress2'           => $request->old( 'billingAddress2',         $cbd->getBillingAddress2() ),
+            'billingAddress3'           => $request->old( 'billingAddress3',         $cbd->getBillingAddress3() ),
+            'billingTownCity'           => $request->old( 'billingTownCity',         $cbd->getBillingTownCity() ),
+            'billingPostcode'           => $request->old( 'billingPostcode',         $cbd->getBillingPostcode() ),
+            'billingCountry'            => $request->old( 'billingCountry',          in_array( $cbd->getBillingCountry(),  array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ) ? $cbd->getBillingCountry() : null ),
+            'billingEmail'              => $request->old( 'billingEmail',            $cbd->getBillingEmail() ),
+            'billingTelephone'          => $request->old( 'billingTelephone',        $cbd->getBillingTelephone() ),
+            'invoiceEmail'              => $request->old( 'invoiceEmail',            $cbd->getInvoiceEmail() ),
         ];
 
         /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
@@ -147,8 +147,8 @@ class DashboardController extends Controller
      * @return  RedirectResponse
      * @throws
      */
-    public function storeNocDetails( NocDetailsRequest $r ){
-
+    public function storeNocDetails( NocDetailsRequest $r )
+    {
         if( Auth::getUser()->isCustUser() ){
             abort( 403, 'Insufficient Permissions.' );
         }

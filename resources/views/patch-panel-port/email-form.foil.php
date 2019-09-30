@@ -71,7 +71,7 @@
 
         <?= Former::actions(
             Former::primary_submit( 'Send Email' ),
-            Former::secondary_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->ppp->getPatchPanel()->getId() ] ) )
+            Former::secondary_link( 'Cancel' )->href( route ( 'patch-panel-port/list/patch-panel' , [ 'ppid' => $t->ppp->getPatchPanel()->getId() ] ) )
         );
         ?>
 

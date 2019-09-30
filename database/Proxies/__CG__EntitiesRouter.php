@@ -64,10 +64,10 @@ class Router extends \Entities\Router implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\Router' . "\0" . 'id', '' . "\0" . 'Entities\\Router' . "\0" . 'handle', '' . "\0" . 'Entities\\Router' . "\0" . 'protocol', '' . "\0" . 'Entities\\Router' . "\0" . 'type', '' . "\0" . 'Entities\\Router' . "\0" . 'name', '' . "\0" . 'Entities\\Router' . "\0" . 'shortname', '' . "\0" . 'Entities\\Router' . "\0" . 'router_id', '' . "\0" . 'Entities\\Router' . "\0" . 'peering_ip', '' . "\0" . 'Entities\\Router' . "\0" . 'asn', '' . "\0" . 'Entities\\Router' . "\0" . 'software', '' . "\0" . 'Entities\\Router' . "\0" . 'software_version', '' . "\0" . 'Entities\\Router' . "\0" . 'operating_system', '' . "\0" . 'Entities\\Router' . "\0" . 'operating_system_version', '' . "\0" . 'Entities\\Router' . "\0" . 'mgmt_host', '' . "\0" . 'Entities\\Router' . "\0" . 'api', '' . "\0" . 'Entities\\Router' . "\0" . 'api_type', '' . "\0" . 'Entities\\Router' . "\0" . 'lg_access', '' . "\0" . 'Entities\\Router' . "\0" . 'quarantine', '' . "\0" . 'Entities\\Router' . "\0" . 'bgp_lc', '' . "\0" . 'Entities\\Router' . "\0" . 'rpki', '' . "\0" . 'Entities\\Router' . "\0" . 'skip_md5', '' . "\0" . 'Entities\\Router' . "\0" . 'template', '' . "\0" . 'Entities\\Router' . "\0" . 'last_updated', '' . "\0" . 'Entities\\Router' . "\0" . 'vlan'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\Router' . "\0" . 'id', '' . "\0" . 'Entities\\Router' . "\0" . 'handle', '' . "\0" . 'Entities\\Router' . "\0" . 'protocol', '' . "\0" . 'Entities\\Router' . "\0" . 'type', '' . "\0" . 'Entities\\Router' . "\0" . 'name', '' . "\0" . 'Entities\\Router' . "\0" . 'shortname', '' . "\0" . 'Entities\\Router' . "\0" . 'router_id', '' . "\0" . 'Entities\\Router' . "\0" . 'peering_ip', '' . "\0" . 'Entities\\Router' . "\0" . 'asn', '' . "\0" . 'Entities\\Router' . "\0" . 'software', '' . "\0" . 'Entities\\Router' . "\0" . 'software_version', '' . "\0" . 'Entities\\Router' . "\0" . 'operating_system', '' . "\0" . 'Entities\\Router' . "\0" . 'operating_system_version', '' . "\0" . 'Entities\\Router' . "\0" . 'mgmt_host', '' . "\0" . 'Entities\\Router' . "\0" . 'api', '' . "\0" . 'Entities\\Router' . "\0" . 'api_type', '' . "\0" . 'Entities\\Router' . "\0" . 'lg_access', '' . "\0" . 'Entities\\Router' . "\0" . 'quarantine', '' . "\0" . 'Entities\\Router' . "\0" . 'bgp_lc', '' . "\0" . 'Entities\\Router' . "\0" . 'rpki', '' . "\0" . 'Entities\\Router' . "\0" . 'rfc1997_passthru', '' . "\0" . 'Entities\\Router' . "\0" . 'skip_md5', '' . "\0" . 'Entities\\Router' . "\0" . 'template', '' . "\0" . 'Entities\\Router' . "\0" . 'last_updated', '' . "\0" . 'Entities\\Router' . "\0" . 'vlan'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\Router' . "\0" . 'id', '' . "\0" . 'Entities\\Router' . "\0" . 'handle', '' . "\0" . 'Entities\\Router' . "\0" . 'protocol', '' . "\0" . 'Entities\\Router' . "\0" . 'type', '' . "\0" . 'Entities\\Router' . "\0" . 'name', '' . "\0" . 'Entities\\Router' . "\0" . 'shortname', '' . "\0" . 'Entities\\Router' . "\0" . 'router_id', '' . "\0" . 'Entities\\Router' . "\0" . 'peering_ip', '' . "\0" . 'Entities\\Router' . "\0" . 'asn', '' . "\0" . 'Entities\\Router' . "\0" . 'software', '' . "\0" . 'Entities\\Router' . "\0" . 'software_version', '' . "\0" . 'Entities\\Router' . "\0" . 'operating_system', '' . "\0" . 'Entities\\Router' . "\0" . 'operating_system_version', '' . "\0" . 'Entities\\Router' . "\0" . 'mgmt_host', '' . "\0" . 'Entities\\Router' . "\0" . 'api', '' . "\0" . 'Entities\\Router' . "\0" . 'api_type', '' . "\0" . 'Entities\\Router' . "\0" . 'lg_access', '' . "\0" . 'Entities\\Router' . "\0" . 'quarantine', '' . "\0" . 'Entities\\Router' . "\0" . 'bgp_lc', '' . "\0" . 'Entities\\Router' . "\0" . 'rpki', '' . "\0" . 'Entities\\Router' . "\0" . 'skip_md5', '' . "\0" . 'Entities\\Router' . "\0" . 'template', '' . "\0" . 'Entities\\Router' . "\0" . 'last_updated', '' . "\0" . 'Entities\\Router' . "\0" . 'vlan'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\Router' . "\0" . 'id', '' . "\0" . 'Entities\\Router' . "\0" . 'handle', '' . "\0" . 'Entities\\Router' . "\0" . 'protocol', '' . "\0" . 'Entities\\Router' . "\0" . 'type', '' . "\0" . 'Entities\\Router' . "\0" . 'name', '' . "\0" . 'Entities\\Router' . "\0" . 'shortname', '' . "\0" . 'Entities\\Router' . "\0" . 'router_id', '' . "\0" . 'Entities\\Router' . "\0" . 'peering_ip', '' . "\0" . 'Entities\\Router' . "\0" . 'asn', '' . "\0" . 'Entities\\Router' . "\0" . 'software', '' . "\0" . 'Entities\\Router' . "\0" . 'software_version', '' . "\0" . 'Entities\\Router' . "\0" . 'operating_system', '' . "\0" . 'Entities\\Router' . "\0" . 'operating_system_version', '' . "\0" . 'Entities\\Router' . "\0" . 'mgmt_host', '' . "\0" . 'Entities\\Router' . "\0" . 'api', '' . "\0" . 'Entities\\Router' . "\0" . 'api_type', '' . "\0" . 'Entities\\Router' . "\0" . 'lg_access', '' . "\0" . 'Entities\\Router' . "\0" . 'quarantine', '' . "\0" . 'Entities\\Router' . "\0" . 'bgp_lc', '' . "\0" . 'Entities\\Router' . "\0" . 'rpki', '' . "\0" . 'Entities\\Router' . "\0" . 'rfc1997_passthru', '' . "\0" . 'Entities\\Router' . "\0" . 'skip_md5', '' . "\0" . 'Entities\\Router' . "\0" . 'template', '' . "\0" . 'Entities\\Router' . "\0" . 'last_updated', '' . "\0" . 'Entities\\Router' . "\0" . 'vlan'];
     }
 
     /**
@@ -620,6 +620,28 @@ class Router extends \Entities\Router implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getRFC1997Passthru(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRFC1997Passthru', []);
+
+        return parent::getRFC1997Passthru();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function rfc1997Passthru(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'rfc1997Passthru', []);
+
+        return parent::rfc1997Passthru();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getSkipMd5()
     {
 
@@ -978,6 +1000,17 @@ class Router extends \Entities\Router implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRPKI', [$rpki]);
 
         return parent::setRPKI($rpki);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setRFC1997Passthru(bool $rfc1997_passthru): \Entities\Router
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRFC1997Passthru', [$rfc1997_passthru]);
+
+        return parent::setRFC1997Passthru($rfc1997_passthru);
     }
 
     /**

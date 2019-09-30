@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<skipper version="3.2.19.1545" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
+<skipper version="3.2.20.1575" mvc="Without MVC" orm="Doctrine2" name="IXP-Manager" uuid="529b27e3-5e07-443f-9b7a-6a21c58fb543">
   <module name="\IXP-Manager" local-name="IXP-Manager" namespace="\Entities" local-namespace="Entities" export-format="Doctrine2Xml" export-path="xml" uuid="d5cf68dd-ab20-4e7b-95a9-b83b2a47049f">
     <entity name="\Entities\IrrdbAsn" local-name="IrrdbAsn" namespace="\Entities" uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c">
       <field name="id" type="bigint" required="true" unique="true" primary="true" auto-increment="true" uuid="033ed9da-4165-432b-8b57-e21110abe29e"/>
@@ -789,6 +789,7 @@
       <field name="reseller" type="integer" uuid="b021dc62-dad0-47c2-8fcd-6f537e9345f5"/>
       <field name="in_manrs" type="boolean" default="0" required="true" uuid="cb8e39a9-a7ce-43ed-b4e2-f261e8852546"/>
       <field name="in_peeringdb" type="boolean" default="0" required="true" uuid="24136282-2a36-44b7-959b-84b6db3acaf1"/>
+      <field name="peeringdb_oauth" type="boolean" default="1" required="true" uuid="6e97186b-0f53-49dc-bb91-db41ab29f0ff"/>
       <orm-attributes>
         <attribute name="repository-class">Repositories\Customer</attribute>
         <attribute name="table">cust</attribute>
@@ -1232,9 +1233,9 @@
       <field name="description" type="string" size="255" uuid="6f01844b-7e25-469f-b326-be3c73e9c26e"/>
       <field name="number" type="smallint" required="true" uuid="2d964dfa-53dd-4a04-92d1-938347172eca"/>
       <field name="state" type="integer" required="true" uuid="fb079291-7b0c-4ca4-b25a-9007b5d83153"/>
-      <field name="colo_circuit_ref" type="string" size="30" uuid="6b28819d-917d-4dfd-91f6-bcd1c07da533"/>
-      <field name="colo_billing_ref" type="string" size="30" uuid="329d627a-153b-4961-abf7-fb85f8b1a7d5"/>
-      <field name="ticket_ref" type="string" size="30" uuid="39eb482e-46c1-4739-94c1-ec29a4300a3c"/>
+      <field name="colo_circuit_ref" type="string" size="255" uuid="6b28819d-917d-4dfd-91f6-bcd1c07da533"/>
+      <field name="colo_billing_ref" type="string" size="255" uuid="329d627a-153b-4961-abf7-fb85f8b1a7d5"/>
+      <field name="ticket_ref" type="string" size="255" uuid="39eb482e-46c1-4739-94c1-ec29a4300a3c"/>
       <field name="notes" type="text" uuid="a137835d-7515-4d55-99ea-5367401ae2ba"/>
       <field name="private_notes" type="text" uuid="259e178b-7c07-44b5-9aaa-6012eceedfcc"/>
       <field name="assigned_at" type="date" uuid="600d8397-b25b-47ed-85d0-8608f677448c"/>
@@ -1276,9 +1277,9 @@
       <field name="description" type="string" size="255" uuid="68e9ad49-105b-45b9-b2cc-b01913efc4e1"/>
       <field name="number" type="smallint" required="true" uuid="1e130de3-d747-46ac-ba5a-1cadc245e4df"/>
       <field name="state" type="integer" required="true" uuid="07e6ab7b-b3a4-4df9-9753-87f2ef20ae57"/>
-      <field name="colo_circuit_ref" type="string" size="30" uuid="e59bfd83-0291-4644-a6c1-d4d3584760ca"/>
-      <field name="colo_billing_ref" type="string" size="30" uuid="980cb80b-493c-4a55-880e-127f7849f877"/>
-      <field name="ticket_ref" type="string" size="30" uuid="95ee474a-1bf1-4efe-a166-37da7bf12b75"/>
+      <field name="colo_circuit_ref" type="string" size="255" uuid="e59bfd83-0291-4644-a6c1-d4d3584760ca"/>
+      <field name="colo_billing_ref" type="string" size="255" uuid="980cb80b-493c-4a55-880e-127f7849f877"/>
+      <field name="ticket_ref" type="string" size="255" uuid="95ee474a-1bf1-4efe-a166-37da7bf12b75"/>
       <field name="notes" type="text" uuid="355eaa2c-a248-4900-bc91-6f228eb04c66"/>
       <field name="private_notes" type="text" uuid="80a23128-fca7-4232-ace5-edd19b8cddb0"/>
       <field name="assigned_at" type="date" uuid="cd4a7110-85bc-46e1-b6c8-a0131d548b6a"/>
@@ -1384,6 +1385,7 @@
       <field name="quarantine" type="boolean" required="true" uuid="1c35a4ba-d690-45f0-bf52-9f75f9a05217"/>
       <field name="bgp_lc" type="boolean" required="true" uuid="940978a5-70fe-420e-92b0-f03b8c04ec2b"/>
       <field name="rpki" type="boolean" default="0" required="true" uuid="4ed5e671-194b-4815-b9c3-6e219b4a763a"/>
+      <field name="rfc1997_passthru" type="boolean" default="0" required="true" uuid="d384e8b0-cadc-43b6-89a9-e6172030b231"/>
       <field name="template" type="string" required="true" uuid="a1e53f31-945e-40b2-8621-a1ced0d81384"/>
       <field name="skip_md5" type="boolean" required="true" uuid="1a576d6a-f681-43a4-93c0-5f31524248b0"/>
       <field name="last_updated" type="datetime" uuid="e6d82ff3-94c4-496a-803e-e295ff49c9b9"/>
@@ -1637,7 +1639,7 @@
     <entity uuid="48d00263-155b-4410-b5da-4f7b2ef3bfc4" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="228" position-y="-191" size-x="0" size-x2="122" size-y="0" size-y2="185"/>
     <entity uuid="4bcd4dff-cf81-432f-9ce6-d4e3e7458c0c" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="81" position-y="1042" size-x="0" size-x2="109" size-y="0" size-y2="87"/>
     <entity uuid="50faaf5d-8ede-4cc7-ab9c-ebc80562974a" bg-color="4294967295" hdr-color="4292006610" position-x="98" position-y="698" size-x="0" size-x2="101" size-y="0" size-y2="87"/>
-    <entity uuid="575cdaf6-dbcb-464d-b5be-70c7eae4bf8e" bg-color="4294967295" hdr-color="4292006610" position-x="466" position-y="848" size-x="0" size-x2="118" size-y="0" size-y2="129"/>
+    <entity uuid="575cdaf6-dbcb-464d-b5be-70c7eae4bf8e" bg-color="4294967295" hdr-color="4292006610" position-x="466" position-y="867" size-x="0" size-x2="113" size-y="0" size-y2="129"/>
     <entity uuid="6070e4d5-359b-4047-a550-8e130118632e" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="590" position-y="886" size-x="0" size-x2="129" size-y="0" size-y2="157"/>
     <entity uuid="6297699e-ca02-426a-b191-3270e7e93aa8" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1314" position-y="-303" size-x="0" size-x2="131" size-y="0" size-y2="297"/>
     <entity uuid="6747622b-df14-45da-828f-3c676799d963" bg-color="4294967295" hdr-color="4292006610" position-x="1439" position-y="193" size-x="0" size-x2="113" size-y="0" size-y2="101"/>

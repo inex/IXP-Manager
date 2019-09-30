@@ -25,6 +25,8 @@
             cb_duplex.prop('checked', true);
             div_duplex_port.show();
         }
+
+        $( ".notes" ).parent().removeClass().addClass( "col-sm-12" )
     });
 
     dd_switch.change(      () => { setSwitchPort();    } );
@@ -316,7 +318,7 @@
      */
     function resetCustomer(){
         let customer;
-        let options = "<option value=''> Choose a customer</option>\n";
+        let options = "<option value=''> Choose a <?= config( 'ixp_fe.lang.customer.one' ) ?></option>\n";
 
         <?php foreach ( $t->customers as $id => $customer ): ?>
             customer = `<?= $customer ?>`;

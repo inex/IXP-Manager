@@ -23,7 +23,7 @@
 
             <?= $t->insert( 'patch-panel-port/action-dd', [ 'ppp' => $t->ppp, 'btnClass' => 'btn-group-sm', 'tpl' => 'view' ] ); ?>
 
-            <a class="btn btn-white" href="<?= route('patch-panel-port/list/patch-panel' , [ "id" => $t->ppp->getPatchPanel()->getId() ] ) ?>" title="list">
+            <a class="btn btn-white" href="<?= route('patch-panel-port/list/patch-panel' , [ "ppid" => $t->ppp->getPatchPanel()->getId() ] ) ?>" title="list">
                 <span class="fa fa-th-list"></span>
             </a>
         </div>
@@ -123,7 +123,7 @@
                                             <td>
                                                 <?php if( $current ): ?>
                                                     <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                                        <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'id' => $p->getPatchPanel()->getId() ] ) ?>" >
+                                                        <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'ppid' => $p->getPatchPanel()->getId() ] ) ?>" >
                                                     <?php endif; ?>
 
                                                         <?= $t->ee( $p->getPatchPanel()->getName() ) ?>
@@ -133,7 +133,7 @@
                                                     <?php endif; ?>
                                                 <?php else: ?>
                                                     <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                                        <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'id' => $p->getPatchPanelPort()->getPatchPanel()->getId() ] ) ?>" >
+                                                        <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'ppid' => $p->getPatchPanelPort()->getPatchPanel()->getId() ] ) ?>" >
                                                     <?php endif; ?>
 
                                                         <?= $t->ee( $p->getPatchPanelPort()->getPatchPanel()->getName() ) ?>
@@ -187,7 +187,7 @@
                                             <tr>
                                                 <td>
                                                     <b>
-                                                        Customer:
+                                                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>:
                                                     </b>
                                                 </td>
                                                 <td>

@@ -156,8 +156,12 @@
 
                     <div class="tab-content card-body">
                         <div role="tabpanel" class="tab-pane show active" id="body">
-
-                            <textarea class="bootbox-input bootbox-input-textarea form-control" style="font-family:monospace;" rows="20" id="notes" name="notes" placeholder="This field supports Markdown..."><?= $t->data[ 'params'][ 'notes' ] ?? '' ?></textarea>
+                            <?= Former::textarea( 'notes' )
+                                ->id( 'notes' )
+                                ->label( '' )
+                                ->rows( 20 )
+                                ->blockHelp( "This field supports Markdown..." )
+                            ?>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="preview">
                             <div class="bg-light p-4 well-preview">

@@ -121,7 +121,11 @@ Physical Interfaces / Edit
 
                                 <div class="tab-content card-body">
                                     <div role="tabpanel" class="tab-pane show active" id="body">
-                                        <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?=  $t->notes ?></textarea>
+                                        <?= Former::textarea( 'notes' )
+                                            ->id( 'notes' )
+                                            ->label( '' )
+                                            ->rows( 10 )
+                                        ?>
                                     </div>
                                     <div role="tabpanel" class="tab-pane" id="preview">
                                         <div class="bg-light p-4 well-preview" style="background: rgb(255,255,255);">

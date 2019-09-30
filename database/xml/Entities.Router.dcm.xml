@@ -47,6 +47,11 @@
         <option name="default">0</option>
       </options>
     </field>
+    <field name="rfc1997_passthru" type="boolean" nullable="false">
+      <options>
+        <option name="default">0</option>
+      </options>
+    </field>
     <field name="template" type="string" nullable="false"/>
     <field name="skip_md5" type="boolean" nullable="false"/>
     <field name="last_updated" type="datetime" nullable="true"/>

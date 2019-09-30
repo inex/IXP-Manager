@@ -87,7 +87,7 @@ of all other members, a Peering Manager tool, documentation, support information
 management and much more.
 
 @if( count($admins) )
-Customer users with *admin* previleges can create and manage other user accounts.
+<?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> users with *admin* previleges can create and manage other user accounts.
 
 We have created your administration account(s) with the following username(s) and email address(es):
 
@@ -103,6 +103,9 @@ Please browse to the following page and use the 'Lost Password' facility to set 
 Please contact us for your account details at {{ config( 'identity.email' ) }}.
 @endif
 
+@if( config( 'auth.peeringdb.enabled' ) )
+If your network is registered with PeeringDB, then members of your organisation with affiliated accounts on PeeringDB can log into IXP Manager using the *Login via PeeringDB* option.
+@endif
 
 ## Quarantine Procedure
 

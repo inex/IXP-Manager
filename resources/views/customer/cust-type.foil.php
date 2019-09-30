@@ -29,7 +29,7 @@
     <?php if( $t->cust->statusIsNotConnected() ): ?>
         <span class="badge  badge-warning">NOT CONNECTED</span>
     <?php elseif( $t->cust->statusIsSuspended() ): ?>
-        <span class="badge  badge-important">SUSPENDED</span>
+        <span class="badge  badge-danger">SUSPENDED</span>
     <?php else: ?>
         <span class="badge  badge-primary">UNKNOWN CUSTOMER STATUS</span>
     <?php endif; ?>

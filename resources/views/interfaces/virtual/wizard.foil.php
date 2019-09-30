@@ -53,9 +53,9 @@ $this->layout( 'layouts/ixpv4' );
 
 
                     <?= Former::select( 'cust' )
-                        ->label( 'Customer' )
+                        ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
                         ->fromQuery( $t->custs, 'name' )
-                        ->placeholder( 'Choose a Customer' )
+                        ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
                         ->addClass( 'chzn-select' )
                         ->disabled( $t->selectedCust ? true : false )
                         ->blockHelp( '' );
@@ -128,7 +128,7 @@ $this->layout( 'layouts/ixpv4' );
                         ->label( 'Switch Port' )
                         ->placeholder( 'Choose a switch port' )
                         ->addClass( 'chzn-select' )
-                        ->blockHelp( 'Shows ports that have a type of <em>Peering</em> or <em>Unknown</em> and have not been associated with any other customer / virtual interface.' );
+                        ->blockHelp( 'Shows ports that have a type of <em>Peering</em> or <em>Unknown</em> and have not been associated with any other ' . config( 'ixp_fe.lang.customer.one' ) . ' / virtual interface.' );
                     ?>
 
                     <?= Former::hidden( 'original-switch-port')
@@ -172,7 +172,7 @@ $this->layout( 'layouts/ixpv4' );
                     <hr>
                     <?= Former::number( 'maxbgpprefix' )
                         ->label( 'Max BGP Prefixes' )
-                        ->blockHelp( 'Setting this will override the overall customer setting. Leave blank to use the overall setting.' );
+                        ->blockHelp( 'Setting this will override the overall ' . config( 'ixp_fe.lang.customer.one' ) . ' setting. Leave blank to use the overall setting.' );
                     ?>
 
                     <?= Former::checkbox( 'rsclient' )
@@ -186,7 +186,7 @@ $this->layout( 'layouts/ixpv4' );
                     <?= Former::checkbox( 'irrdbfilter' )
                         ->label('&nbsp')
                         ->text( 'Apply IRRDB Filtering' )
-                        ->blockHelp( "<strong>Strongly recommended!</strong> Filter routes learned on route servers based on the customer's IRRDB entries." )
+                        ->blockHelp( "<strong>Strongly recommended!</strong> Filter routes learned on route servers based on the " . config( 'ixp_fe.lang.customer.owner' ) . " IRRDB entries." )
                         ->value( 1 )
                         ->check( true )
                         ->inline()

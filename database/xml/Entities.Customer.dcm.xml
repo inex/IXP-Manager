@@ -49,6 +49,11 @@
         <option name="default">0</option>
       </options>
     </field>
+    <field name="peeringdb_oauth" type="boolean" nullable="false">
+      <options>
+        <option name="default">1</option>
+      </options>
+    </field>
     <many-to-one field="IRRDB" target-entity="Entities\IRRDBConfig" inversed-by="Customers">
       <join-columns>
         <join-column name="irrdb" referenced-column-name="id" on-delete="RESTRICT"/>

@@ -8,15 +8,15 @@
         let urlDelete   =   this.href;
         let nbC2U       = $(this).attr( "data-nb-c2u" );
         let superUser   = <?= Auth::getUser()->isSuperUser() ? 'true' : 'false' ?> ;
-        let message = 'Do you really want to delete this user ?';
+        let message = 'Do you really want to delete this user?';
         let objectName = 'User';
 
         if( superUser && !$(this).hasClass( "btn-delete-c2u"  )  ) {
-            message = `Are you sure you want to delete this user and its ${nbC2U} customer links?`;
+            message = `Are you sure you want to delete this user and its ${nbC2U} <?= config( 'ixp_fe.lang.customer.one' )  ?> links?`;
 
         } else {
-            message = 'Do you really want to delete this Customer from this User ?';
-            objectName = 'Customer To User';
+            message = 'Do you really want to unlink this <?=  config( 'ixp_fe.lang.customer.one' )  ?> from this user ?';
+            objectName = '<?=  ucfirst( config( 'ixp_fe.lang.customer.one' ) )  ?> To User';
         }
 
         let html = `<form id="d2f-form-delete" method="POST" action="${urlDelete}">
@@ -40,7 +40,7 @@
 
         if ( superUser && !$(this).hasClass( "btn-delete-user"  ) && !$(this).hasClass( "btn-delete-c2u"  ) ){
             buttons.seeC2U = {
-                label: `See Customer links`,
+                label: `See <?= config( 'ixp_fe.lang.customer.one' )  ?> links`,
                 display: 'none',
                 className: 'btn-warning',
                 callback: function () {

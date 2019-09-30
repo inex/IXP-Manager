@@ -1,4 +1,7 @@
-<?php $this->layout( 'layouts/ixpv4' ) ?>
+<?php
+$this->layout( 'layouts/ixpv4' );
+
+ ?>
 
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -123,20 +126,22 @@
 
                                 ?>
 
-
                             </tbody>
 
                         </table>
 
-
                         <div class="alert alert-danger mt-4" role="alert">
                             <div class="d-flex align-items-center">
                                 <div class="text-center">
-                                    <i class="fa fa-exclamation-circle fa-2x"></i>
+                                    <i class="fa fa-exclamation-triangle fa-2x"></i>
                                 </div>
-                                <div class="col-sm-12">
-                                    <b>Delete all the IP addresses displayed above?</b>
-                                    <a class="btn btn-sm btn-danger pull-right" id="delete" href="#">Delete</a>
+                                <div class="col-sm-12 d-flex">
+                                    <b class="mr-auto my-auto">
+                                        Delete all the IP addresses displayed above?
+                                    </b>
+                                    <a class="btn btn-danger mr-4" id="delete" href="#">
+                                        Delete
+                                    </a>
                                 </div>
                             </div>
                         </div>
@@ -146,60 +151,10 @@
             <?php endif; ?>
 
         </div>
-
     </div>
-
-
-
 
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
-
-        $( '#delete' ).on(  'click', function( event ) {
-            event.preventDefault();
-            let html = `<form id="delete-ips" method="POST" action="<?= route( 'ip-address@delete-by-network', [ 'vlanid' => $t->vlan->getId() ] ) ?>">
-                                <div>Do you really want to delete this IP Adresses?</div>
-                                <input type="hidden"   name="doDelete" value="1">
-                                <input type="hidden"   name="network"  value="<?= Input::get('network' ) ?>">
-                                <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                            </form>`;
-
-            bootbox.dialog({
-                title: "Delete IP addresses",
-                message: html,
-                buttons: {
-                    cancel: {
-                        label: 'Close',
-                        className: 'btn-secondary',
-                        callback: function () {
-                            $('.bootbox.modal').modal('hide');
-                            return false;
-                        }
-                    },
-                    submit: {
-                        label: 'Delete',
-                        className: 'btn-danger',
-                        callback: function () {
-                            $('#delete-ips').submit();
-                        }
-                    },
-                }
-            });
-        });
-
-        $(document).ready( function() {
-            $( '#table-ip'   ).dataTable( {
-                stateSave: true,
-                stateDuration : DATATABLE_STATE_DURATION,
-                responsive : true,
-                ordering: false,
-                paging:   false,
-                "autoWidth": false,
-                "pageLength": 50
-            } );
-        });
-
-    </script>
+    <?= $t->insert( 'ip-address/js/delete-by-network.foil.php' ) ?>
 <?php $this->append() ?>

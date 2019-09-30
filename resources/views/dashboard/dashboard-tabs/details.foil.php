@@ -20,24 +20,24 @@
         <?= Former::phone( 'nocphone' )
             ->label( 'Phone' )
             ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
-            ->blockHelp( 'Working hours phone number for contacting the customer NOC.<br><br>'
-                . 'This is available to all other customers.' );
+            ->blockHelp( 'Working hours phone number for contacting the ' . config( 'ixp_fe.lang.customer.one' ) . ' NOC.<br><br>'
+                . 'This is available to all other ' . config( 'ixp_fe.lang.customer.many' ) . '.' );
         ?>
 
         <?= Former::phone( 'noc24hphone' )
             ->label( '24h Phone' )
             ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
-            ->blockHelp( '24/7 emergency phone number for contacting the customer NOC..<br><br>'
-                . 'This is available to all other customers.' );
+            ->blockHelp( '24/7 emergency phone number for contacting the ' . config( 'ixp_fe.lang.customer.one' ) . ' NOC.<br><br>'
+                . 'This is available to all other ' . config( 'ixp_fe.lang.customer.many' ) . '.' );
         ?>
 
         <?= Former::email( 'nocemail' )
             ->label( 'Email' )
             ->placeholder( 'noc@example.com' )
-            ->blockHelp( 'The NOC email is used in customer lists. We try and encourage "
-        . "the use of a role alias such as noc@example.com but this does not "
-        . "always work out.<br><br>'
-                . 'This is available to all other customers.' );
+            ->blockHelp( 'The NOC email is used in ' . config( 'ixp_fe.lang.customer.one' ) . ' lists. We try to encourage '
+                . 'the use of a role alias such as noc@example.com but this does not '
+                . 'always work out.<br><br>'
+                . 'This is available to all other ' . config( 'ixp_fe.lang.customer.many' ) . '.' );
         ?>
 
         <?= Former::select( 'nochours' )

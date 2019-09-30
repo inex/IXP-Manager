@@ -81,6 +81,12 @@
                                 <?php else: ?>
                                     No
                                 <?php endif; ?>
+
+                                <?php if( config( 'auth.peeringdb.enabled' ) && !$t->c->getPeeringdbOAuth() ): ?>
+                                    <span class="badge badge-warning">
+                                        <i class="fa fa-exclamation-circle"></i> OAuth Disabled
+                                    </span>
+                                <?php endif; ?>
                             </td>
                         </tr>
                         <tr>

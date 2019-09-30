@@ -31,6 +31,7 @@ use Illuminate\Database\Eloquent\Model;
  * @mixin \Eloquent
  * @property-read \IXP\Models\Customer $customer
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
+ * @property-read int|null $vlan_interfaces_count
  */
 class VirtualInterface extends Model
 {

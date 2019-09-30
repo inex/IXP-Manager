@@ -58,7 +58,7 @@ Add
             </div>
 
             <h4 class="mb-2">
-                The following user(s) have been found :
+                The following user(s) have been found:<br><br>
             </h4>
 
             <table id="list-user" class="table table-striped table-hover" width="100%">
@@ -88,7 +88,7 @@ Add
                     <tr>
                         <td>
                             <?= Former::radios( 'user-' . $user->getId() )
-                                ->class( 'radio-button' )
+                                ->class( 'radio-button tw-ml-4' )
                                 ->label( '' )
                                 ->value( $user->getId() )
                                 ->id( 'user-' . $user->getId() );

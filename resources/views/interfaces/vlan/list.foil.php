@@ -15,13 +15,11 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= $t->alerts() ?>
 
-            <span id="message-vli"></span>
-
             <table id='table-vli' class="table table-striped table-responsive-ixp-with-header collapse" style="width: 100%;">
                 <thead class="thead-dark">
                     <tr>
                         <th>
-                            Customer
+                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
                         </th>
                         <th>
                             VLAN Name
@@ -84,9 +82,6 @@ $this->layout( 'layouts/ixpv4' );
                     <?php endforeach;?>
                 <tbody>
             </table>
-
-
-
         </div>
 
     </div>

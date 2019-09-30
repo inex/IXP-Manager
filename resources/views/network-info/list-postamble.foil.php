@@ -14,7 +14,6 @@
 
             Note this is not required for private VLANs.
 
-
         </div>
     </div>
 </div>

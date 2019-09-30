@@ -127,7 +127,7 @@
                                         <i class="fa fa-eye"></i>
                                     </a>
 
-                                    <a class="btn btn-white" id="edit-pi-<?= $pi->getId()?>" href="<?= route( 'interfaces/physical/edit/from-virtual-interface' , [ 'id' => $pi->getId() , 'vintid' => $t->vi->getId() ] )?>" title="Edit">
+                                    <a class="btn btn-white" id="edit-pi-<?= $pi->getId()?>" href="<?= route( 'interfaces/physical/edit/from-virtual-interface' , [ 'id' => $pi->getId() , 'viid' => $t->vi->getId() ] )?>" title="Edit">
                                         <i class="fa fa-pencil"></i>
                                     </a>
 

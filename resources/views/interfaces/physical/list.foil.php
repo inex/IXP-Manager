@@ -15,14 +15,11 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= $t->alerts() ?>
 
-            <span id="message-pi"></span>
-
-
             <table id='table-pi' class="collapse table table-striped" style="width: 100%">
                 <thead class="thead-dark">
                     <tr>
                         <th>
-                            Customer
+                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
                         </th>
                         <th>
                             Facility
@@ -67,7 +64,7 @@ $this->layout( 'layouts/ixpv4' );
                                 </a>
                             </td>
                             <td>
-                                <a href="<?= url( 'switch/view/id' ).'/'.$pi['switchid']?>">
+                                <a href="<?= route( 'switch@view', [ "id" => $pi['switchid'] ] ) ?>">
                                     <?= $t->ee(  $pi['switch'] )   ?>
                                 </a>
                             </td>

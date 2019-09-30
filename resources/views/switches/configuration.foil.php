@@ -1,4 +1,4 @@
-<?php $this->layout( 'layouts/ixpv4' ) ?>
+<?= config( 'ixp_fe.customer.one' ) ?><?php $this->layout( 'layouts/ixpv4' ) ?>
 
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -109,7 +109,7 @@
                         ID
                     </th>
                     <th>
-                        Customer
+                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
                     </th>
                     <th>
                         Switch

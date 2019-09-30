@@ -139,7 +139,7 @@
                             ?>
                             <tr>
                                 <td>
-                                    <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'id' => $pp->getId() ] ) ?>">
+                                    <a href="<?= route( 'patch-panel-port/list/patch-panel' , [ 'ppid' => $pp->getId() ] ) ?>">
                                         <?= $t->ee( $pp->getName() ) ?>
                                     </a>
 
@@ -185,15 +185,15 @@
                                         </a>
 
                                         <?php if( $pp->getActive() ): ?>
-                                            <a class="btn btn-white list-delete" id='list-delete-<?= $pp->getId() ?>' href="<?= route( 'patch-panel@change-status' , [ 'id' => $pp->getId(), 'status' => ( $pp->getActive() ? '0' : '1' ) ] ) ?>" title="Make Inactive">
+                                            <a class="btn btn-white list-delete" id='list-delete-<?= $pp->getId() ?>' href="<?= route( 'patch-panel@change-status' , [ 'id' => $pp->getId(), 'active' => ( $pp->getActive() ? '0' : '1' ) ] ) ?>" title="Make Inactive">
                                                 <i class="fa fa-trash"></i>
                                             </a>
                                         <?php else: ?>
-                                            <a class="btn btn-white" id='list-reactivate-<?= $pp->getId() ?>' href="<?= route( 'patch-panel@change-status' , [ 'id' => $pp->getId(), 'status' => ( $pp->getActive() ? '0' : '1' ) ] ) ?>" title="Reactive">
+                                            <a class="btn btn-white" id='list-reactivate-<?= $pp->getId() ?>' href="<?= route( 'patch-panel@change-status' , [ 'id' => $pp->getId(), 'active' => ( $pp->getActive() ? '0' : '1' ) ] ) ?>" title="Reactive">
                                                 <i class="fa fa-repeat"></i>
                                             </a>
                                         <?php endif; ?>
-                                        <a class="btn btn-white" href="<?= route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $pp->getId() ] ) ?>" title="See Ports">
+                                        <a class="btn btn-white" href="<?= route ( 'patch-panel-port/list/patch-panel' , [ 'ppid' => $pp->getId() ] ) ?>" title="See Ports">
                                             <i class="fa fa-th"></i>
                                         </a>
                                     </div>

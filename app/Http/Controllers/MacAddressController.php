@@ -39,7 +39,8 @@ use Entities\{
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class MacAddressController extends Doctrine2Frontend {
+class MacAddressController extends Doctrine2Frontend
+{
 
     /**
      * The object being added / edited
@@ -57,8 +58,8 @@ class MacAddressController extends Doctrine2Frontend {
     /**
      * This function sets up the frontend controller
      */
-    public function feInit(){
-
+    public function feInit()
+    {
         $this->feParams         = (object)[
 
             'entity'            => MACAddressEntity::class,
@@ -90,8 +91,6 @@ class MacAddressController extends Doctrine2Frontend {
 
         // display the same information in the view as the list
         $this->feParams->viewColumns = $this->feParams->listColumns;
-
-
     }
 
 
@@ -101,7 +100,8 @@ class MacAddressController extends Doctrine2Frontend {
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
      * @return array
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( MACAddressEntity::class )->getAllForFeList( $this->feParams, $id );
     }
 }

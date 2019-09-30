@@ -5,14 +5,14 @@ MAINTAINER Barry O'Donovan <barry.odonovan@inex.ie>
 RUN apt-get -y update && \
     apt-get -y upgrade && \
     apt-get -y install libmcrypt-dev snmp libsnmp-dev libicu-dev librrd-dev \
-        libyaml-dev git mysql-client yarn joe wget libpng-dev libzip-dev \
+        libyaml-dev git default-mysql-client yarn joe wget libpng-dev libzip-dev \
         iputils-ping dnsutils && \
     apt-get -y autoremove --purge && \
     apt-get clean && \
     rm -rf /tmp/*
 
 RUN docker-php-source extract && \
-    docker-php-ext-install -j$(nproc) snmp intl bcmath gd gettext zip pdo_mysql && \
+    docker-php-ext-install -j$(nproc) snmp intl bcmath gd gettext zip pdo_mysql pcntl && \
     pecl install ds rrd xdebug-2.7.2 && \
     printf "\n" | pecl install yaml && \
     docker-php-source delete

@@ -5,7 +5,7 @@
                 Prefix
             </th>
             <th>
-                Customer
+                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
             </th>
             <th>
                 IRRDB Entry
@@ -19,7 +19,7 @@
         <?php foreach( $t->results as $prefix ): ?>
             <tr>
                 <td>
-                    <a href="<?= route( "rs-prefixes@view", [ "id" => $prefix->getCustomer()->getId() ] ) ?>">
+                    <a href="<?= route( "rs-prefixes@view", [ "cid" => $prefix->getCustomer()->getId() ] ) ?>">
                         <?= $t->ee(  $prefix->getPrefix() ) ?>
                     </a>
                 </td>

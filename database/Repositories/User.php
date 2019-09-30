@@ -314,6 +314,7 @@ class User extends EntityRepository
                         u.disabled as disabled, 
                         c.id as custid, 
                         c.name as customer,
+                        u.peeringdb_id as peeringdb_id,
                         u.lastupdated AS lastupdated,
                         COUNT( c2u ) as nbC2U,
                         MAX( c2u.privs ) as privileges,
@@ -522,9 +523,10 @@ class User extends EntityRepository
         foreach( $user->getCustomers2User() as $c2u ) {
             $key = array_search( $c2u->getCustomer()->getAutsys(), $asns );
 
-            if( $key === false ) {
-                // user has a network that's not in the current peeringdb list of affiliated networks
-                // => if it came from peeringdb then remove it
+            if( $key === false || ( $key && !$c2u->getCustomer()->getPeeringdbOAuth() ) ) {
+                // either user has a network that's not in the current peeringdb list of affiliated networks
+                // or user has a network that (now) indicates PeeringDB OAuth should be disabled
+                // then => if it came from peeringdb, remove it
                 $ea = $c2u->getExtraAttributes();
                 if( $ea && isset( $ea['created_by']['type'] ) && $ea['created_by']['type'] === 'PeeringDB' ) {
                     D2EM::getRepository( UserLoginHistoryEntity::class )->deleteUserLoginHistory( $c2u->getId() );
@@ -555,7 +557,7 @@ class User extends EntityRepository
                 Log::info( 'PeeringDB OAuth: user ' . $user->getId() . '/' . $user->getUsername() . ' has PeeringDB affiliation with ' . $cust->getFormattedName() );
 
                 // is this a valid customer?
-                if( !( $cust->isTypeFull() || $cust->isTypeProBono() ) || !$cust->statusIsNormal() || $cust->hasLeft() ) {
+                if( !( $cust->isTypeFull() || $cust->isTypeProBono() ) || !$cust->statusIsNormal() || $cust->hasLeft() || !$cust->getPeeringdbOAuth() ) {
                     Log::info( 'PeeringDB OAuth: ' . $cust->getFormattedName() . ' not a suitable IXP Manager customer for PeeringDB, skipping.' );
                     continue;
                 }
@@ -573,7 +575,14 @@ class User extends EntityRepository
 
                 $result['added_to'][] = $c2u->getCustomer();
                 Log::info( 'PeeringDB OAuth: user ' . $user->getId() . '/' . $user->getUsername() . ' linked with with ' . $cust->getFormattedName() );
-                $user_created ? event( new UserCreatedEvent( $user ) ) : event( new UserAddedToCustomerEvent( $c2u ) );
+                
+                if( $user_created ) {
+                    // should not emit any more UserCreatedEvent events
+                    $user_created = false;
+                    event( new UserCreatedEvent( $user ) );
+                } else {
+                     event( new UserAddedToCustomerEvent( $c2u ) );
+                }
             }
         }
 

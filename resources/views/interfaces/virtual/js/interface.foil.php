@@ -42,27 +42,24 @@ function deletePopup( id, viid, type ) {
 
     let objectName, urlDelete;
 
+    let user = 0;
+
     if( type === "vli") {
         objectName = "Vlan Interface";
-        urlDelete  = "<?= url( 'interfaces/vlan/delete' ) ?>";
-        urlRedirect = "<?= route( 'interfaces/vlan/list' ) ?>" ;
+        urlDelete  = "<?= route( 'vlan-interface@delete' ) ?>";
     } else if( type === "vi" ) {
         objectName = "Virtual Interface";
-        urlDelete = "<?= url( 'interfaces/virtual/delete' ) ?>" ;
+        urlDelete = "<?= route( 'virtual-interface@delete' ) ?>" ;
         if( $( "#custid" ).val() !== undefined ){
-            urlRedirect = "<?= url( 'customer/overview' ) ?>/" + $( "#custid" ).val() + "/ports"  ;
-        }else{
-            urlRedirect = "<?= route( 'interfaces/virtual/list' ) ?>" ;
+            user = $( "#custid" ).val();
         }
 
     } else if( type === "sflr" ) {
         objectName = "Sflow Receiver";
-        urlDelete = "<?= url( 'interfaces/sflow-receiver/delete' ) ?>" ;
-        urlRedirect = "<?= route( 'interfaces/sflow-receiver/list' ) ?>" ;
+        urlDelete = "<?= route( 'sflow-receiver@delete' ) ?>" ;
     } else if( type === "pi" ) {
         objectName = "Physical Interface";
-        urlDelete = "<?= url( 'interfaces/physical/delete' ) ?>";
-        urlRedirect = "<?= route( 'interfaces/physical/list' ) ?>" ;
+        urlDelete = "<?= route( 'interfaces/physical/delete' ) ?>";
     }
 
     const btn_delete = $( '#delete-' +type+ '-' + id );
@@ -75,81 +72,69 @@ function deletePopup( id, viid, type ) {
     }
 
     let related = false;
+    let extraMessage = '';
     if( btn_delete.attr( "data-related" ) ){
         related = true;
+        extraMessage = `It has a related ${reltype} interface.`;
     }
 
+    let html = `<form id="form-delete" method="POST" action="${urlDelete}">
+                    <div>Do you really want to delete this ${objectName}? ${extraMessage}</div>
+
+                    <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                    <input type="hidden" name="id" value="${id}">
+                    <input type="hidden" id="related" name="related" value="0">
+                    <input type="hidden" id="user" name="user" value="${user}">
+                </form>`;
+
     if( !related ) {
-        bootbox.confirm({
-            message: `Do you really want to delete this ${objectName}?` ,
+        bootbox.dialog({
+            title: `Delete ${objectName}`,
+            message: html ,
             buttons: {
                 cancel: {
-                    label: 'Cancel',
-                    className: 'btn-secondary'
+                    label: 'Close',
+                    className: 'btn-secondary',
+                    callback: function () {
+                        $('.bootbox.modal').modal('hide');
+                        return false;
+                    }
                 },
-                confirm: {
+                submit: {
                     label: 'Delete',
-                    className: 'btn-danger'
-                }
-            },
-            callback: function ( result ) {
-                if( result) {
-                    $.ajax( urlDelete + "/" + id,{
-                        type : 'POST'
-                    })
-                        .done( function( data ) {
-                            if( type !== "vi" ) {
-                                location.reload();
-                            } else {
-                                window.location.href = urlRedirect;
-                            }
-                        })
-                        .fail( function(){
-                            throw new Error( `Error running ajax query for ${urlDelete}/${id}` );
-                        })
+                    className: 'btn-danger',
+                    callback: function () {
+                        $('#form-delete').submit();
+                    }
                 }
             }
         });
     } else {
         bootbox.dialog({
-            title: "",
-            message: `<b>Do you really want to delete this ${objectName}? It has a related ${reltype} interface.</b>`,
+            title: `Delete ${objectName}`,
+            message: html,
             buttons: {
                 cancel: {
-                    label: "Cancel",
+                    label: 'Close',
                     className: 'btn-secondary',
+                    callback: function () {
+                        $('.bootbox.modal').modal('hide');
+                        return false;
+                    }
                 },
                 deleteRelated: {
                     label: `Delete with related ${reltype} interface`,
                     className: 'btn-warning',
                     callback: function(){
-                        $.ajax( urlDelete + "/" + id,{
-                            type : 'POST',
-                            data: {
-                                related : true
-                            },
-                        })
-                        .done( function( data ) {
-                            location.reload();
-                        })
-                        .fail( function(){
-                            throw new Error( `Error running ajax query for ${urlDelete}/${id}` );
-                        })
+                        $( "#related" ).val( 1 );
+                        $('#form-delete').submit();
                     }
                 },
                 confirm: {
                     label: "Delete",
                     className: 'btn-danger',
-                    callback: function(){
-                        $.ajax( urlDelete + "/" + id,{
-                            type : 'POST'
-                        })
-                        .done( function( data ) {
-                            location.reload();
-                        })
-                        .fail( function(){
-                            throw new Error( `Error running ajax query for ${urlDelete}/${id}` );
-                        })
+                    callback: function () {
+                        $('#form-delete').submit();
                     }
                 }
             }

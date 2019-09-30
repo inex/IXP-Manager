@@ -20,13 +20,13 @@
             <hr class="w-100 tw-my-0" style="margin-left: -10px ">
 
             <h6>
-                <span>IXP CUSTOMER ACTIONS</span>
+                <span>IXP <?= strtoupper( config( 'ixp_fe.lang.customer.one' ) ) ?> ACTIONS</span>
             </h6>
 
 
             <li class="<?= !request()->is( 'customer/*' ) ?: 'active' ?>">
                 <a class="nav-link" href="<?= route( 'customer@list' ) ?>">
-                    Customers
+                    <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
                 </a>
             </li>
 
@@ -317,14 +317,14 @@
 
             <li class="<?= !request()->is( 'statistics/members' ) ?: 'active' ?>" >
                 <a href="<?= route( 'statistics/members' ) ?>" class="nav-link">
-                    Member Statistics
+                    <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Statistics
                 </a>
             </li>
 
             <?php if( !config( 'ixp_fe.frontend.disabled.logo', true ) ): ?>
                 <li class="<?= !request()->is( 'customer-logo/logos' ) ?: 'active' ?>">
                     <a href="<?= route('logo@logos' ) ?>" class="nav-link">
-                        Member Logos
+                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Logos
                     </a>
                 </li>
             <?php endif; ?>
@@ -435,7 +435,7 @@
                             </dd>
                             <dt>Wildcard</dt>
                             <dd>
-                                Any other text is searched as <code>%xxx%</code> on customer details
+                                Any other text is searched as <code>%xxx%</code> on <?= config( 'ixp_fe.lang.customer.one' ) ?> details
                             </dd>
                         </dl>
                     </div>

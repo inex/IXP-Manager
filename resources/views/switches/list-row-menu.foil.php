@@ -17,11 +17,11 @@
             SNMP Actions
         </h6>
 
-        <a class="dropdown-item <?php if( !$t->row[ "active" ] ): ?> disabled <?php endif; ?>" href="<?= route( "switch-port@snmp-poll", [ "switch" => $t->row[ 'id' ] ] ) ?>">
+        <a class="dropdown-item <?php if( !$t->row[ "active" ] ): ?> disabled <?php endif; ?>" href="<?= route( "switch-port@snmp-poll", [ "id" => $t->row[ 'id' ] ] ) ?>">
             View / Edit Ports
         </a>
 
-        <a class="dropdown-item <?php if( !$t->row[ "active" ] ): ?> disabled <?php endif; ?>" href="<?= route( "switch-port@list-op-status", [ "switch" => $t->row[ 'id' ] ] ) ?>">
+        <a class="dropdown-item <?php if( !$t->row[ "active" ] ): ?> disabled <?php endif; ?>" href="<?= route( "switch-port@list-op-status", [ "id" => $t->row[ 'id' ] ] ) ?>">
             Live Port States
         </a>
 
@@ -36,7 +36,7 @@
             View / Edit Ports
         </a>
 
-        <a class="dropdown-item <?php if( !$t->row[ "mauSupported" ] ): ?> disabled <?php endif; ?>" href="<?= route( "switch-port@list-mau", [ "switch" => $t->row[ 'id' ] ] ) ?> ">
+        <a class="dropdown-item <?php if( !$t->row[ "mauSupported" ] ): ?> disabled <?php endif; ?>" href="<?= route( "switch-port@list-mau", [ "id" => $t->row[ 'id' ] ] ) ?> ">
             Port MAU Detail
         </a>
 

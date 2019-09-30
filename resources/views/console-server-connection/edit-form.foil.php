@@ -25,11 +25,11 @@
 
         <?= Former::select( 'custid' )
             ->id( 'cust' )
-            ->label( 'Customer' )
-            ->placeholder( 'Select a customer' )
+            ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
+            ->placeholder( 'Select a ' . config( 'ixp_fe.lang.customer.one' ) )
             ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
             ->addClass( 'chzn-select' )
-            ->blockHelp( "This field exists as you may co-locate some equipment for your customers. Ordinarily, just pick your IXP customer." );
+            ->blockHelp( 'This field exists as you may co-locate some equipment for your ' . config( 'ixp_fe.lang.customer.one' )  . '. Ordinarily, just pick your IXP ' . config( 'ixp_fe.lang.customer.one' ) . '.' );
         ?>
 
         <?= Former::text( 'port' )
@@ -84,7 +84,7 @@
             ->blockHelp( "Indicate is autobaud is supported - used for your own informational purposes but could also be used for automated console server provisioning." );
         ?>
 
-        <div class="form-group">
+        <div class="form-group col-lg-8 col-sm-12">
 
             <div class="col-lg-offset-2 col-sm-offset-2">
                 <div class="card mt-4">
@@ -101,7 +101,11 @@
 
                     <div class="tab-content card-body">
                         <div role="tabpanel" class="tab-pane show active" id="body">
-                            <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->data[ 'params'][ 'notes' ] ?></textarea>
+                            <?= Former::textarea( 'notes' )
+                                ->id( 'notes' )
+                                ->label( '' )
+                                ->rows( 15 )
+                            ?>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="preview">
                             <div class="bg-light p-4 well-preview">
@@ -118,7 +122,7 @@
 
         <?= Former::actions(
             Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->class( "mb-2 mb-sm-0"),
-            Former::default_link( 'Cancel' )->href( isset( $t->data[ 'params'][ "cs" ] ) ? route ($t->feParams->route_prefix . '@listPort' , [ "id " => $t->data[ 'params'][ "cs" ] ] )  : route ($t->feParams->route_prefix . '@list') )->class( "mb-2 mb-sm-0"),
+            Former::secondary_link( 'Cancel' )->href( isset( $t->data[ 'params'][ "cs" ] ) ? route ($t->feParams->route_prefix . '@listPort' , [ "port" => $t->data[ 'params'][ "cs" ] ] )  : route ($t->feParams->route_prefix . '@list') )->class( "mb-2 mb-sm-0"),
             Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0")
         );
         ?>
