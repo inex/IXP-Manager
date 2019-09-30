@@ -34,7 +34,7 @@
 
         <?= $t->alerts() ?>
 
-        <table id='table-vi' class="collapse table table-stripped no-wrap" style="width: 100%!important">
+        <table id='table-vi' class="collapse table table-stripped no-wrap table-responsive-ixp-with-header" style="width: 100%!important">
             <thead class="thead-dark">
                 <tr>
                     <th>
