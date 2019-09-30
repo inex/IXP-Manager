@@ -138,10 +138,17 @@
                 </h3>
 
                 <p class="tw-mt-2">
-                    <a href="<?= $t->c->getCorpwww() ?>" target="_blank"><?= $t->nakedUrl( $t->c->getCorpwww() ?? '' ) ?></a>
+                    <?php if( $t->c->getCorpwww() ): ?>
+                        <a href="<?= $t->c->getCorpwww() ?>" target="_blank">
+                            <?= $t->nakedUrl( $t->c->getCorpwww() ) ?>
+                        </a>
+                        <span class="tw-text-gray-600">
+                            -
+                        </span>
+                    <?php endif; ?>
 
                     <span class="tw-text-gray-600">
-                        - joined <?= $c->getDatejoin()->format('Y') ?>
+                         joined <?= $c->getDatejoin()->format('Y') ?>
 
                         <?php if( $c->isResoldCustomer() ): ?>
                             - resold via <?= $c->getReseller()->getName() ?>

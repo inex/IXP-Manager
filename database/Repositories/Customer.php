@@ -30,7 +30,8 @@ use D2EM, Exception;
 use Entities\{
     BGPSessionData  as BGPSessionDataEntity,
     Customer        as CustomerEntity,
-    CustomerToUser  as CustomerToUserEntity
+    CustomerToUser  as CustomerToUserEntity,
+    CoreBundle      as CoreBundleEntity,
 };
 
 
@@ -795,7 +796,6 @@ class Customer extends EntityRepository
         return $this->getEntityManager()->createQuery( $q )->getResult();
     }
 
-
     /**
      * Delete the customer.
      *
@@ -862,6 +862,11 @@ class Customer extends EntityRepository
 
                     $c2User->getUser()->setCustomer( $newAssignatedCustomer );
                 }
+            }
+
+            // Delete the Core Bundle
+            foreach ( D2EM::getRepository( CoreBundleEntity::class)->getAllForCustomer( $c ) as $cb ) {
+                D2EM::getRepository( CoreBundleEntity::class)->delete( $cb );
             }
 
             $this->getEntityManager()->remove( $c );
