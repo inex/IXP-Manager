@@ -9,7 +9,7 @@ Verify first that your issue/request is not already reported on GitHub.
 
 Always test if the latest release is affected. Bug reports on older releases cannot be accepted and will be closed.
 
-If you can, we would appreciate it if you could also test against the master branch.
+If you can, we would appreciate it if you could also test against the master branch but this is not necessary.
 
 Do not create an issue for requests for help - use the mailing list:
   See: https://www.ixpmanager.org/support
@@ -90,3 +90,11 @@ NB: sanity check the output to make sure you are happy you are not leaking any s
 
 ##### IMPORTANCE
 <!-- Please let us know if the issue is affecting you in a production environment -->
+
+##### RELEVANT LOGS
+
+<!--
+
+Copy all relevant logs (here if reasonably sized or to [an online pastebin such as this one](https://pastebin.ibn.ie/) and place the URL you receive from the pastebin into this section. Logs will usually be found under $IXPROOT/storage/logs/.... 
+
+-->

@@ -19,14 +19,6 @@
     "repositories":[
         {
             "type": "vcs",
-            "url": "git@github.com:barryo/orm.git"
-        },
-        {
-            "type": "vcs",
-            "url": "git@github.com:barryo/extensions.git"
-        },
-        {
-            "type": "vcs",
             "url": "git@github.com:barryo/Purifier.git"
         }
     ],
@@ -39,7 +31,7 @@
         "fideloper/proxy": "^4.0",
         "laravel/framework": "^6.0",
         "laravel/tinker": "~1.0",
-        "laravel-doctrine/orm": "1.4.*",
+        "laravel-doctrine/orm": "1.5.*",
         
         "foil/foil": "~0.6",
 
@@ -51,7 +43,7 @@
         "luketowers/purifier": "dev-master",
         "php-ds/php-ds": "^1.1",
         "beberlei/doctrineextensions": "^1.0",
-        "laravel-doctrine/extensions": "1.0.*",
+        "laravel-doctrine/extensions": "1.1.*",
         "s1lentium/iptools": "^1.1",
         "parsedown/laravel": "^1.0",
         "webpatser/laravel-countries": "^1.5",
@@ -62,7 +54,6 @@
     "require-dev": {
         "facade/ignition": "^1.4",
         "beyondcode/laravel-dump-server": "^1.0",
-        "filp/whoops": "~2.0",
         "phpunit/phpunit": "^8.0",
         "fzaninotto/faker": "~1.4",
         "mockery/mockery": "~1.0",
@@ -132,5 +123,5 @@
             "optimize-autoloader": true
         }
    },
-   "minimum-stability": "dev"
+   "minimum-stability": "stable"
 }
