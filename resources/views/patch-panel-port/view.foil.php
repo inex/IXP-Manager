@@ -297,7 +297,7 @@
                                             </tr>
                                         <?php endif; ?>
 
-                                        <?php if( $current && ( Auth::user()->isSuperUser() || $p->isStateAwaitingXConnect() ) ): ?>
+                                        <?php if( $current && ( Auth::user()->isSuperUser() || $p->isStateAwaitingXConnect() ) && $t->ppp->getCustomer() ): ?>
                                             <tr>
                                                 <td>
                                                     <b>
