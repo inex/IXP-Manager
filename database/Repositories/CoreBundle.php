@@ -43,6 +43,13 @@ use Exception;
 class CoreBundle extends EntityRepository
 {
 
+    /**
+     * Return all the core bundles for a customer
+     *
+     * @param CustomerEntity $c
+     *
+     * @return array
+     */
     public function getAllForCustomer( CustomerEntity $c ) {
         return $this->getEntityManager()->createQuery(
             "SELECT cb
