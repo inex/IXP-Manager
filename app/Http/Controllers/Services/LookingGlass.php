@@ -224,7 +224,8 @@ class LookingGlass extends Controller
             'content' => json_decode( $this->lg()->protocolTable($table,$network,intval($mask)) ),
             'source'  => 'table',
             'name'    => $table,
-            'net' => urldecode($network.'/'.$mask),
+            'lg'      => $this->lg(),
+            'net'     => urldecode($network.'/'.$mask),
         ]);
     }
 
