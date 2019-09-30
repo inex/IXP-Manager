@@ -63,8 +63,8 @@ class ProfileController extends Controller
      *
      * @return View
      */
-    public function edit(): View {
-
+    public function edit(): View
+    {
         /** @var UserEntity $user */
         $user = Auth::getUser();
 
@@ -107,7 +107,8 @@ class ProfileController extends Controller
      *
      * @throws
      */
-    public function updatePassword( PasswordRequest $r  ): RedirectResponse {
+    public function updatePassword( PasswordRequest $r  ): RedirectResponse
+    {
         /** @var UserEntity $user */
         $user = Auth::getUser();
 
@@ -132,8 +133,8 @@ class ProfileController extends Controller
      *
      * @throws
      */
-    public function updateProfile( ProfileRequest $r  ): RedirectResponse {
-
+    public function updateProfile( ProfileRequest $r  ): RedirectResponse
+    {
         /** @var UserEntity $user */
         $user = Auth::getUser();
 
@@ -159,10 +160,13 @@ class ProfileController extends Controller
      *
      * @throws
      */
-    public function updateNotificationPreference( NotificationRequest $r ) : RedirectResponse {
+    public function updateNotificationPreference( NotificationRequest $r ) : RedirectResponse
+    {
         Auth::getUser()->setPreference( 'customer-notes.notify', $r->input( 'notify' ) );
         D2EM::flush();
+
         AlertContainer::push( 'Notification preference has been updated.', Alert::SUCCESS );
+
         return Redirect::to( route( "profile@edit"  ) );
     }
 
@@ -173,8 +177,8 @@ class ProfileController extends Controller
      * @return RedirectResponse
      * @throws
      */
-    public function updateMailingLists( Request $r ) : RedirectResponse {
-
+    public function updateMailingLists( Request $r ) : RedirectResponse
+    {
         /** @var UserEntity $user */
         $user = Auth::getUser();
 
@@ -187,6 +191,7 @@ class ProfileController extends Controller
         }
 
         AlertContainer::push( 'Your mailing list subscriptions have been updated and will take effect within 12 hours.', Alert::SUCCESS );
+
         return Redirect::to( route( "profile@edit"  ) );
     }
 

@@ -47,7 +47,8 @@ use IXP\Utils\View\Alert\{
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class CabinetController extends Doctrine2Frontend {
+class CabinetController extends Doctrine2Frontend
+{
 
     /**
      * The object being added / edited
@@ -123,7 +124,8 @@ class CabinetController extends Doctrine2Frontend {
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
      * @return array
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( CabinetEntity::class )->getAllForFeList( $this->feParams, $id );
     }
 
@@ -134,32 +136,28 @@ class CabinetController extends Doctrine2Frontend {
      * @param   int $id ID of the row to edit
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array {
-
-        $old = request()->old();
-
-        if( $id !== null ) {
+    protected function addEditPrepareForm( $id = null ): array
+    {
+        if( $id ) {
 
             if( !( $this->object = D2EM::getRepository( CabinetEntity::class )->find( $id ) ) ) {
                 abort(404);
             }
 
-
-
             Former::populate([
-                'name'                  => array_key_exists( 'name',          $old ) ? $old['name']          : $this->object->getName(),
-                'locationid'            => array_key_exists( 'locationid',    $old ) ? $old['locationid']    : $this->object->getLocation()->getId(),
-                'colocation'            => array_key_exists( 'colocation',    $old ) ? $old['colocation']    : $this->object->getCololocation(),
-                'type'                  => array_key_exists( 'type',          $old ) ? $old['type']          : $this->object->getType(),
-                'height'                => array_key_exists( 'height',        $old ) ? $old['height']        : $this->object->getHeight(),
-                'u_counts_from'         => array_key_exists( 'u_counts_from', $old ) ? $old['u_counts_from'] : $this->object->getUCountsFrom(),
+                'name'                  => request()->old( 'name',          $this->object->getName() ),
+                'locationid'            => request()->old( 'locationid',    $this->object->getLocation()->getId() ),
+                'colocation'            => request()->old( 'colocation',    $this->object->getCololocation() ),
+                'type'                  => request()->old( 'type',          $this->object->getType() ),
+                'height'                => request()->old( 'height',        $this->object->getHeight() ),
+                'u_counts_from'         => request()->old( 'u_counts_from', $this->object->getUCountsFrom() ),
+                'notes'                 => request()->old( 'notes',         $this->object->getNotes() ),
             ]);
         }
 
         return [
             'object'                => $this->object,
             'locations'             => D2EM::getRepository( LocationEntity::class )->getAsArray(),
-            'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : "" )
         ];
     }
 
@@ -206,7 +204,7 @@ class CabinetController extends Doctrine2Frontend {
         $this->object->setNotes(             $request->input( 'notes'           ) );
         $this->object->setLocation(          D2EM::getRepository( LocationEntity::class )->find( $request->input( 'locationid' ) ) );
 
-        D2EM::flush($this->object);
+        D2EM::flush();
 
         return true;
     }
@@ -215,7 +213,8 @@ class CabinetController extends Doctrine2Frontend {
     /**
      * @inheritdoc
      */
-    protected function preDelete(): bool {
+    protected function preDelete(): bool
+    {
         $okay = true;
 
         if( ( $cnt = count( $this->object->getCustomerEquipment() ) ) ) {

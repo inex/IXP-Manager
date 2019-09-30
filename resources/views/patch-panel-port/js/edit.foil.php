@@ -25,6 +25,8 @@
             cb_duplex.prop('checked', true);
             div_duplex_port.show();
         }
+
+        $( ".notes" ).parent().removeClass().addClass( "col-sm-12" )
     });
 
     dd_switch.change(      () => { setSwitchPort();    } );

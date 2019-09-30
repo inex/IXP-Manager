@@ -52,7 +52,7 @@
 
                             <div class="btn-group btn-group-sm">
 
-                                <a class="btn btn-white" href="<?= route( 'ip-address@list', [ 'vid' => $t->vlan->getId(), 'protocol' => ( $t->protocol == 4 ? 6 : 4 ) ] ) ?>">
+                                <a class="btn btn-white" href="<?= route( 'ip-address@list', [ 'vlanid' => $t->vlan->getId(), 'protocol' => ( $t->protocol == 4 ? 6 : 4 ) ] ) ?>">
                                     Switch to IPv<?= $t->protocol == 4 ? 6 : 4 ?>
                                 </a>
 

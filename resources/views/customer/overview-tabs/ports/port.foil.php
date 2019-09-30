@@ -165,7 +165,7 @@
                                         <?= $t->ee( $pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getColoReference() ) ?> -
 
                                         <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                            <a href="<?= route( "patch-panel-port/list/patch-panel" , [ "id" => $pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getId() ] ) ?>">
+                                            <a href="<?= route( "patch-panel-port/list/patch-panel" , [ "ppid" => $pi->getSwitchPort()->getPatchPanelPort()->getPatchPanel()->getId() ] ) ?>">
                                                 <?= $t->ee( $pi->getSwitchPort()->getPatchPanelPort()->getName() ) ?>
                                             </a>
                                         <?php else: ?>
@@ -307,7 +307,7 @@
                                             <?= $l2a ?><br />
                                         <?php endforeach; ?>
                                         <?php if( count( $vli->getLayer2AddressesAsArray() ) > 0 && config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ): ?>
-                                            <a href="<?= route( "layer2-address@forVlanInterface", [ "id" => $vli->getId() ] ) ?>">Edit</a>
+                                            <a href="<?= route( "layer2-address@forVlanInterface", [ "vliid" => $vli->getId() ] ) ?>">Edit</a>
                                         <?php endif; ?>
                                     </td>
                                 </tr>

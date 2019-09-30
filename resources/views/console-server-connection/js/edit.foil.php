@@ -6,7 +6,7 @@
 
     $(document).ready(function(){
         cb_autobaud.change( );
-
+        $( "#notes" ).parent().removeClass().addClass( "col-sm-12" )
     });
 
     /**

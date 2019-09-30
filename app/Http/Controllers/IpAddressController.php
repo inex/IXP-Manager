@@ -42,7 +42,7 @@ use Illuminate\View\View;
 
 use Illuminate\Http\{
     RedirectResponse,
-    JsonResponse
+    Request
 };
 
 use IXP\Http\Requests\{
@@ -96,20 +96,20 @@ class IpAddressController extends Controller
      */
     public function list( int $protocol, int $vid = null ): View
     {
-        $vlan = null;
+        $vlan = false;
         if( $vid ) {
             if( !( $vlan = D2EM::getRepository( VlanEntity::class )->find( $vid ) ) ) {
                 abort( 404 , 'Unknown vlan');
             }
         }
 
-        $ips = ( $vlan ) ? D2EM::getRepository( $this->processProtocol( $protocol, true ) )->getAllForList( $vlan->getId() ) : [] ;
+        $ips = $vlan ? D2EM::getRepository( $this->processProtocol( $protocol, true ) )->getAllForList( $vlan->getId() ) : [] ;
 
         return view( 'ip-address/list' )->with([
             'ips'                       => $ips,
             'vlans'                     => D2EM::getRepository( VlanEntity::class )->getNames(),
             'protocol'                  => $protocol,
-            'vlan'                      => $vlan ?? false
+            'vlan'                      => $vlan
 
         ]);
     }
@@ -139,8 +139,8 @@ class IpAddressController extends Controller
      *
      * @throws
      */
-    public function store( StoreIpAddress $request ): RedirectResponse {
-
+    public function store( StoreIpAddress $request ): RedirectResponse
+    {
         /** @var VlanEntity $vlan */
         $vlan     = D2EM::getRepository( VlanEntity::class )->find( $request->input('vlan' ) );
         $network  = Network::parse( trim( htmlspecialchars( $request->input('network' ) )  ) );
@@ -179,7 +179,7 @@ class IpAddressController extends Controller
             Alert::SUCCESS
         );
 
-        return Redirect::to( route( 'ip-address@list', [ 'protocol' => $network->getFirstIP()->getVersion() == 'IPv6' ? '6' : '4', 'vlan' => $vlan->getId() ] ) );
+        return Redirect::to( route( 'ip-address@list', [ 'protocol' => $network->getFirstIP()->getVersion() == 'IPv6' ? '6' : '4', 'vlanid' => $vlan->getId() ] ) );
     }
 
 
@@ -199,7 +199,8 @@ class IpAddressController extends Controller
      *
      * @throws
      */
-    public function deleteByNetwork( DeleteIpAddressesByNetwork $request, int $vlanid ) {
+    public function deleteByNetwork( DeleteIpAddressesByNetwork $request, int $vlanid )
+    {
 
         /** @var VlanEntity $v */
         if( !( $v = D2EM::getRepository( VlanEntity::class )->find( $vlanid ) ) ) {
@@ -233,6 +234,7 @@ class IpAddressController extends Controller
             D2EM::flush();
 
             AlertContainer::push( 'IP Addresses deleted.', Alert::SUCCESS );
+
             return redirect( route( 'ip-address@list', [ 'protocol' => $network->getFirstIP()->version == 'IPv6' ? 6 : 4, 'vlanid' => $v->getId() ] ) );
         }
 
@@ -247,16 +249,14 @@ class IpAddressController extends Controller
     /**
      * Delete an IP address
      *
-     * @param   int     $protocol   Protocol of the IP address
-     * @param   int     $id         Router that need to be deleted
+     * @param Request $request
      *
-     * @return JsonResponse
+     * @return RedirectResponse
      *
-     * @throws
      */
-    public function delete( int $protocol, int $id ): JsonResponse {
-
-        if( !( $ip = D2EM::getRepository( $this->processProtocol( $protocol, true ) )->find( $id ) ) ) {
+    public function delete( Request $request ): RedirectResponse
+    {
+        if( !( $ip = D2EM::getRepository( $this->processProtocol( $request->input( "protocol" ), true ) )->find( $request->input( "id" ) ) ) ) {
             abort(404);
         }
 
@@ -265,10 +265,12 @@ class IpAddressController extends Controller
             return response()->json( [ 'success' => false ] );
         }
 
-        D2EM::remove($ip);
+        D2EM::remove( $ip );
+
         D2EM::flush();
 
         AlertContainer::push( 'The IP has been successfully deleted.', Alert::SUCCESS );
-        return response()->json( [ 'success' => true ] );
+
+        return Redirect::to( route( "ip-address@list", [ "protocol" => $request->input( "protocol" ) , "vlanid" => $request->input( "vlanid" ) ] ) );
     }
 }

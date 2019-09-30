@@ -277,51 +277,54 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
     public static function supports(): array {
         $rrd = config('grapher.backends.mrtg.dbtype') == 'rrd';
 
+        $graphTypes = Graph::TYPES;
+        unset( $graphTypes[ Graph::TYPE_RRD ] );
+
         return [
             'ixp' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
-                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD ),
+                'types'       => $rrd ? Graph::TYPES : $graphTypes,
             ],
             'infrastructure' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
-                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD ),
+                'types'       => $rrd ? Graph::TYPES : $graphTypes,
             ],
             'switcher' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS,
                                     Graph::CATEGORY_PACKETS => Graph::CATEGORY_PACKETS ],
                 'periods'     => Graph::PERIODS,
-                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD ),
+                'types'       => $rrd ? Graph::TYPES : $graphTypes,
             ],
             'trunk' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS ],
                 'periods'     => Graph::PERIODS,
-                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD ),
+                'types'       => $rrd ? Graph::TYPES : $graphTypes,
             ],
             'physicalinterface' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => Graph::CATEGORIES,
                 'periods'     => Graph::PERIODS,
-                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD ),
+                'types'       => $rrd ? Graph::TYPES : $graphTypes,
             ],
             'virtualinterface' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => Graph::CATEGORIES,
                 'periods'     => Graph::PERIODS,
-                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD ),
+                'types'       => $rrd ? Graph::TYPES : $graphTypes,
             ],
             'customer' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => Graph::CATEGORIES,
                 'periods'     => Graph::PERIODS,
-                'types'       => $rrd ? Graph::TYPES : array_except( Graph::TYPES, Graph::TYPE_RRD ),
+                'types'       => $rrd ? Graph::TYPES : $graphTypes,
             ],
         ];
     }

@@ -1,6 +1,6 @@
 
 <?php if( $t->pi && !$t->pi->statusIsConnected() ): ?>
-    <a href="<?= route( 'interfaces/physical/edit/from-virtual-interface', [ "id" => $t->pi->getId(), "vintid" => $t->pi->getVirtualInterface()->getId() ] ) ?>">
+    <a href="<?= route( 'interfaces/physical/edit/from-virtual-interface', [ "id" => $t->pi->getId(), "viid" => $t->pi->getVirtualInterface()->getId() ] ) ?>">
         <?php if( $t->pi->statusIsQuarantine() ): ?>
             <span class="badge badge-warning">IN QUARANTINE</span>
         <?php elseif( $t->pi->statusIsDisabled() ): ?>

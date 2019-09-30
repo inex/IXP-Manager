@@ -35,6 +35,7 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
+use Illuminate\View\View;
 use Illuminate\Http\{
     Request,
     RedirectResponse
@@ -50,7 +51,8 @@ use Route;
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class ApiKeyController extends Doctrine2Frontend {
+class ApiKeyController extends Doctrine2Frontend
+{
 
     /**
      * The object being added / edited
@@ -141,11 +143,10 @@ class ApiKeyController extends Doctrine2Frontend {
      * @param string $route_prefix
      * @return void
      */
-    protected static function additionalRoutes( string $route_prefix ){
+    protected static function additionalRoutes( string $route_prefix )
+    {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
-
         Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-
             Route::post(  'list-show-keys',      'ApiKeyController@listShowKeys'         )->name( "api-key@list-show-keys" );
         });
     }
@@ -156,7 +157,8 @@ class ApiKeyController extends Doctrine2Frontend {
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
      * @return array
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( ApiKeyEntity::class )->getAllForFeList( $this->feParams, Auth::user()->getId(), $id  );
     }
 
@@ -168,19 +170,16 @@ class ApiKeyController extends Doctrine2Frontend {
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
-        if( $id !== null ) {
+        if( $id ) {
 
             if( !( $this->object = D2EM::getRepository( ApiKeyEntity::class )->find( $id ) ) ) {
                 abort(404);
             }
 
-            $old = request()->old();
-
-
             Former::populate([
-                'key'               => array_key_exists( 'key',             $old ) ? $old['key']            : config( 'ixp_fe.api_keys.show_keys' ) ? $this->object->getApiKey() : Str::limit( $this->object->getApiKey(), 6 ),
-                'description'       => array_key_exists( 'description',     $old ) ? $old['description']    : $this->object->getDescription(),
-                'expires'           => array_key_exists( 'expires',         $old ) ? $old['expires']        :  ( $this->object->getExpires() ? $this->object->getExpires()->format( "Y-m-d" ) : null )
+                'key'               => request()->old( 'key',             config( 'ixp_fe.api_keys.show_keys' ) ? $this->object->getApiKey() : Str::limit( $this->object->getApiKey(), 6 ) ),
+                'description'       => request()->old( 'description',      $this->object->getDescription() ),
+                'expires'           => request()->old( 'expires',         ( $this->object->getExpires() ? $this->object->getExpires()->format( "Y-m-d" ) : null ) )
             ]);
         }
 
@@ -235,7 +234,7 @@ class ApiKeyController extends Doctrine2Frontend {
         $this->object->setExpires( $request->input( 'expires' ) ? new \DateTime( $request->input( 'expires' ) ) : null );
         $this->object->setDescription(  $request->input( 'description' )    );
 
-        D2EM::flush($this->object);
+        D2EM::flush();
 
         return true;
     }
@@ -246,9 +245,9 @@ class ApiKeyController extends Doctrine2Frontend {
      *
      * @param Request $r
      *
-     * @return \Illuminate\View\View
+     * @return View
      */
-    public function listShowKeys(Request $r )
+    public function listShowKeys( Request $r )
     {
         if( !Hash::check( $r->input( 'pass' ), $r->user()->getPassword() ) ) {
             AlertContainer::push( 'Incorrect password entered', Alert::DANGER );

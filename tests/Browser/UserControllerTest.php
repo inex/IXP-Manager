@@ -340,7 +340,7 @@ class UserControllerTest extends DuskTestCase
 
             $browser->click(    "#d2f-list-delete-" . $u->getId() )
                     ->waitForText( "Delete User" )
-                    ->assertSee(   "Are you sure you want to delete this user and its 1 customer links" )
+                    ->assertSee(   "Are you sure you want to delete this user and its 1 " . config( 'ixp_fe.lang.customer.one' ) . " links" )
                     ->press(     'Delete' );
 
             $browser->assertPathIs("/user/list" )
@@ -358,8 +358,7 @@ class UserControllerTest extends DuskTestCase
 
 
                 $browser->visit(        '/customer/overview/5/users' )
-                        ->waitForText(  'Last Login' )
-                        ->assertSee(    'imcustadmin' )
+                        ->waitForText(    'imcustadmin' )
                         ->assertSee(    'imagine-custadmin@example.com' )
                         ->press(      '#users-add-btn' )
                         ->assertSee(    'Users / Add' )
@@ -492,13 +491,12 @@ class UserControllerTest extends DuskTestCase
             $browser->assertPathIs(    "/user/edit/" . $u3->getId() )
                     ->waitForText(     'Imagine' )
                     ->click(        "#d2f-list-delete-" . $c2u4->getId() )
-                    ->waitForText(     "Delete Customer To User" )
+                    ->waitForText(     "Delete " . ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . " To User" )
                     ->assertSee(       "Do you really want to unlink" )
                     ->press(        'Delete' );
 
             $browser->assertPathIs( "/user/list" )
                     ->assertSee(    "has been removed" );
-
 
 
         });
@@ -728,7 +726,8 @@ class UserControllerTest extends DuskTestCase
 
             // 1. customer overview -> non internal customer -> add user from tab -> no super option
             $browser->visit( 'customer/overview/' . $nonInternalCust->getId() . '/users' )
-                    ->click( "#users-add-btn" )
+                    ->pause(5000)
+                    ->press( "#users-add-btn" )
                     ->type( '#email' , 'test@example.com' )
                     ->click( '.btn-primary' );
 
@@ -884,7 +883,7 @@ class UserControllerTest extends DuskTestCase
             $browser->visit( "/user/edit/" . $addedUser2->getId() )
                 ->pause( 2000 )
                 ->click( "#d2f-list-delete-" . $c2u->getId() )
-                ->waitForText( "Delete Customer To User" )
+                ->waitForText( "Delete " . ucfirst( config( 'ixp_fe.lang.customer.one' ) ). " To User" )
                 ->press( "Delete" );
         });
 

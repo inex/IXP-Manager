@@ -72,7 +72,8 @@ class PeeringManagerController extends Controller
      *
      * @throws
      */
-    public function index() {
+    public function index()
+    {
 
         if( config( 'ixp_fe.frontend.disabled.peering-manager', false ) ) {
             AlertContainer::push( 'The peering manager has been disabled.', Alert::DANGER );
@@ -120,11 +121,10 @@ class PeeringManagerController extends Controller
      *
      * @throws
      */
-    public function formEmailFrag( Request $request ) {
-
+    public function formEmailFrag( Request $request )
+    {
         $success = true;
         $pp = $peer = $peeringManager = null;
-
 
         /** @var CustomerEntity $peer */
         if( !( $peer = D2EM::getRepository( CustomerEntity::class )->find( $request->input("peerid") ) ) ){
@@ -182,10 +182,13 @@ class PeeringManagerController extends Controller
 
     /**
      * @param PeeringManagerRequest $r
-     * @return \Illuminate\Http\JsonResponse
-     * @throws \Doctrine\ORM\OptimisticLockException
+     *
+     * @return JsonResponse
+     *
+     * @throws
      */
-    public function sendPeeringEmail( PeeringManagerRequest $r ){
+    public function sendPeeringEmail( PeeringManagerRequest $r ) : JsonResponse
+    {
 
         /** @var CustomerEntity $peer */
         if( !( $peer = D2EM::getRepository( CustomerEntity::class )->find( $r->input( 'peerid' ) ) ) ){
@@ -255,7 +258,8 @@ class PeeringManagerController extends Controller
      *
      * @throws
      */
-    public function peeringNotes( Request $r ){
+    public function peeringNotes( Request $r )
+    {
 
         /** @var CustomerEntity $peer */
         if( !( $peer = D2EM::getRepository( CustomerEntity::class )->find( $r->input( 'peerid' ) ) ) ){
@@ -269,7 +273,6 @@ class PeeringManagerController extends Controller
         if( trim( stripslashes( $r->input( 'notes' ) ) ) ) {
             $pm->setNotes( trim( stripslashes( $r->input( 'notes' ) ) ) );
         }
-
 
         D2EM::flush();
 
@@ -288,7 +291,8 @@ class PeeringManagerController extends Controller
      *
      * @throws
      */
-    public function markPeering( $custid, $status ){
+    public function markPeering( $custid, $status )
+    {
 
         /** @var CustomerEntity $peer */
         if( !( $peer = D2EM::getRepository( CustomerEntity::class )->find( $custid ) ) ){
@@ -333,7 +337,8 @@ class PeeringManagerController extends Controller
      *
      * @throws
      */
-    private function loadPeeringManager( CustomerEntity $cust, CustomerEntity $peer ){
+    private function loadPeeringManager( CustomerEntity $cust, CustomerEntity $peer )
+    {
 
         /** @var $pm PeeringManagerEntity */
         if( !( $pm = D2EM::getRepository( PeeringManagerEntity::class )->findOneBy( [ 'Customer' => $cust, 'Peer' => $peer ] ) ) ) {
@@ -352,7 +357,5 @@ class PeeringManagerController extends Controller
 
         return $pm;
     }
-
-
 
 }

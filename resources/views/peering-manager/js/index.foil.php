@@ -163,6 +163,7 @@
 
                 $('#modal-peering-request').modal('hide');
 
+                $( "#peering-notes-icon-" + $("#peerid").val() ).css( "color", "black" );
                 bootbox.alert({
                     title: "<i class='fa fa-check'></i> Success",
                     message: data.message,
@@ -172,6 +173,7 @@
                         }
                     }
                 })
+
             }
         })
         .fail(function () {

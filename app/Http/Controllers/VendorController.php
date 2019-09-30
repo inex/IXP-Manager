@@ -41,7 +41,8 @@ use Illuminate\Http\RedirectResponse;
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class VendorController extends Doctrine2Frontend {
+class VendorController extends Doctrine2Frontend
+{
 
     /**
      * The object being added / edited
@@ -81,8 +82,6 @@ class VendorController extends Doctrine2Frontend {
 
     }
 
-
-
     /**
      * Provide array of rows for the list and view
      *
@@ -90,7 +89,8 @@ class VendorController extends Doctrine2Frontend {
      *
      * @return array
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( VendorEntity::class )->getAllForFeList( $this->feParams, $id );
     }
 
@@ -102,19 +102,18 @@ class VendorController extends Doctrine2Frontend {
      *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array {
-        if( $id != null ) {
+    protected function addEditPrepareForm( $id = null ): array
+    {
+        if( $id ) {
             if( !( $this->object = D2EM::getRepository( VendorEntity::class )->find( $id ) ) ) {
                 abort(404);
             }
 
-            $old = request()->old();
-
             Former::populate([
-                'name'        => array_key_exists( 'name',        $old ) ? $old[ 'name' ]        : $this->object->getName(),
-                'shortname'   => array_key_exists( 'shortname',   $old ) ? $old[ 'shortname' ]   : $this->object->getShortname(),
-                'nagios_name' => array_key_exists( 'nagios_name', $old ) ? $old[ 'nagios_name' ] : $this->object->getNagiosName(),
-                'bundle_name' => array_key_exists( 'bundle_name', $old ) ? $old[ 'bundle_name' ] : $this->object->getBundleName(),
+                'name'        => request()->old( 'name',        $this->object->getName() ),
+                'shortname'   => request()->old( 'shortname',   $this->object->getShortname() ),
+                'nagios_name' => request()->old( 'nagios_name', $this->object->getNagiosName() ),
+                'bundle_name' => request()->old( 'bundle_name', $this->object->getBundleName() ),
             ]);
         }
 
@@ -160,9 +159,8 @@ class VendorController extends Doctrine2Frontend {
         $this->object->setNagiosName(       $request->input( 'nagios_name'      ) );
         $this->object->setBundleName(       $request->input( 'bundle_name'      ) );
 
-        D2EM::flush( $this->object );
+        D2EM::flush();
 
         return true;
     }
-
 }

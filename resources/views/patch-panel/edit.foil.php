@@ -147,13 +147,12 @@
 
                     <div class="form-group row">
 
-                        <label for="location_notes" class="control-label col-lg-2 col-sm-4">Facility Notes</label>
-                        <div class="col-sm-offset-2 col-sm-offset-2 col-sm-8">
+                        <div class="col-sm-8">
                             <div class="card mt-4">
                                 <div class="card-header">
                                     <ul class="nav nav-tabs card-header-tabs">
                                         <li role="presentation" class="nav-item">
-                                            <a class="tab-link-body-note nav-link active" href="#body">Notes</a>
+                                            <a class="tab-link-body-note nav-link active" href="#body">Facility Notes</a>
                                         </li>
                                         <li role="presentation" class="nav-item">
                                             <a class="tab-link-preview-note nav-link" href="#preview">Preview</a>
@@ -163,8 +162,14 @@
 
                                 <div class="tab-content card-body">
                                     <div role="tabpanel" class="tab-pane show active" id="body">
-                                        <textarea class="form-control" style="font-family:monospace;" rows="20" id="location_notes" name="location_notes"><?= $t->location_notes ?></textarea>
-                                        <p class="form-text text-muted former-help-text">These notes are included on connection and other emails to help co-location providers correctly identify their own co-location references. Unfortunately, it has been the experience of the authors that co-location providers change identifiers (and ownership) like the wind changes direction. These notes will be parsed as Markdown.</p>
+                                        <?= Former::textarea( 'location_notes' )
+                                            ->id( 'location_notes' )
+                                            ->label( '' )
+                                            ->rows( 10 )
+                                            ->blockHelp( "These notes are included on connection and other emails to help co-location providers correctly identify their 
+                                            own co-location references. Unfortunately, it has been the experience of the authors that co-location providers change identifiers (and ownership) 
+                                            like the wind changes direction. These notes will be parsed as Markdown." )
+                                        ?>
                                     </div>
                                     <div role="tabpanel" class="tab-pane" id="preview">
                                         <div class="bg-light p-4 well-preview">
@@ -204,39 +209,5 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-
-    <script>
-        $( document ).ready( function() {
-            //////////////////////////////////////////////////////////////////////////////////////
-            // we'll need these handles to html elements in a few places:
-
-            const input_name              = $( '#name' );
-            const input_colo_ref          = $( '#colo_reference' );
-
-            /**
-             * set the today date on click on the today button
-             */
-            $( "#date-today" ).click( () => { $( "#installation_date" ).val( '<?= date( "Y-m-d" ) ?>' ) } );
-
-            /**
-             * set the colo_reference in empty input by the name input value
-             */
-            input_name.blur( function() {
-                if( input_colo_ref.val() == '' ){
-                    input_colo_ref.val( input_name.val() );
-                }
-            });
-
-            /**
-            * set data to the tooltip
-            */
-            $( "#icon-nb-port" ).parent().attr( 'data-toggle','popover' ).attr( 'title' , 'Help - Number of Ports' ).attr( 'data-content' , '<b>Note that duplex ports should be entered as two ports.</b>' );
-
-            /**
-             * configuration of the tooltip
-             */
-            $( "[data-toggle=popover]" ).popover( { placement: 'left',container: 'body', html: true, trigger: "hover" } );
-        });
-    </script>
-
+    <?= $t->insert( 'patch-panel/js/edit' ); ?>
 <?php $this->append() ?>

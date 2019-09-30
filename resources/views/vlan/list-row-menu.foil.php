@@ -18,7 +18,7 @@
             <a class="dropdown-item d2f-list-delete" id='d2f-list-delete-<?= $t->row[ 'id' ] ?>' href="#" data-object-id="<?= $t->row[ 'id' ] ?>" title="Delete">
                 Delete the Vlan
             </a>
-            <a class="dropdown-item" href="<?= route( 'ip-address@delete-by-network' , [ 'vlan' => $t->row['id']  ] ) ?>">
+            <a class="dropdown-item" href="<?= route( 'ip-address@delete-by-network' , [ 'vlanid' => $t->row['id']  ] ) ?>">
                 Delete IP Addresses...
             </a>
 
