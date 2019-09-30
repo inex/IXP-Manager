@@ -99,25 +99,22 @@
 
                 <?php endforeach; ?>
 
-
-
                 <div class="alert alert-info mt-4" role="alert">
                     <div class="d-flex align-items-center">
                         <div class="text-center">
                             <i class="fa fa-info-circle fa-2x"></i>
                         </div>
                         <div class="col-sm-12 d-flex">
-                            <div class="mr-auto">
-                                <b>If you want to return without deleting the customer:</b>
-                            </div>
-                            <div class="my-auto">
-                                <a class="btn btn btn-success" href="<?= route( 'customer@overview', [ 'id' => $c->getId() ] ) ?>" style="float: right;"  href="#" title="Cancel">
-                                    Cancel
-                                </a>
-                            </div>
+                            <b class="mr-auto my-auto">
+                                If you want to return without deleting the <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>:
+                            </b>
+                            <a class="btn btn-success mr-4" href="<?= route( 'customer@overview', [ 'id' => $c->getId() ] ) ?>">
+                                Cancel
+                            </a>
                         </div>
                     </div>
                 </div>
+
 
                 <div class="alert alert-danger mt-4" role="alert">
                     <div class="d-flex align-items-center">
@@ -125,14 +122,12 @@
                             <i class="fa fa-exclamation-triangle fa-2x"></i>
                         </div>
                         <div class="col-sm-12 d-flex">
-                            <div class="mr-auto">
-                                <b>If you are sure you want to delete this customer:</b>
-                            </div>
-                            <div class="my-auto">
-                                <a class="btn btn btn-danger" id="delete-customer" style="float: right;" href="#" title="Delete">
-                                    Delete
-                                </a>
-                            </div>
+                            <b class="mr-auto my-auto">
+                                If you are sure you want to delete this <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>:
+                            </b>
+                            <a class="btn btn-danger mr-4" id="delete-customer" href="#">
+                                Delete
+                            </a>
                         </div>
                     </div>
                 </div>

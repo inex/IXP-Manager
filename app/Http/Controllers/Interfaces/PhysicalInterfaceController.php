@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Interfaces;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Redirect, Former, Input;
+use D2EM, Redirect, Former;
 
 use Illuminate\View\View;
 
@@ -63,7 +63,8 @@ class PhysicalInterfaceController extends Common
      *
      * @return  View
      */
-    public function list(): View {
+    public function list(): View
+    {
         return view( 'interfaces/physical/list' )->with([
             'pis'               => D2EM::getRepository( PhysicalInterfaceEntity::class )->getForList()
         ]);
@@ -75,7 +76,8 @@ class PhysicalInterfaceController extends Common
      * @param int $id ID of the physical interface
      * @return  View
      */
-    public function view( int $id ): View {
+    public function view( int $id ): View
+    {
         if( !( $pi = D2EM::getRepository( PhysicalInterfaceEntity::class )->find( $id ) ) ) {
             abort( 404 );
         }
@@ -93,20 +95,23 @@ class PhysicalInterfaceController extends Common
      *
      * @return View
      */
-    public function editFromCb( int $id , int $cb ){
+    public function editFromCb( int $id , int $cb )
+    {
         return $this->edit( $id , null, $cb );
     }
 
     /**
      * Display the form to edit a physical interface
      *
-     * @param   int $id ID of the physical interface
-     * @param   int $viid ID of the virtual interface
-     * @param   int $cb id we come from the core bundle edit form
+     * @param Request $request
+     * @param int $id ID of the physical interface
+     * @param int $viid ID of the virtual interface
+     * @param int $cb id we come from the core bundle edit form
      *
      * @return View|RedirectResponse
      */
-    public function edit( int $id, int $viid = null, int $cb = null ) {
+    public function edit( Request $request,  int $id, int $viid = null, int $cb = null )
+    {
 
         /** @var PhysicalInterfaceEntity $pi */
         /** @var VirtualInterfaceEntity $vi */
@@ -121,7 +126,6 @@ class PhysicalInterfaceController extends Common
             return Redirect::back();
         }
 
-        $old = request()->old();
         $data = [];
 
         if( $pi ) {
@@ -135,12 +139,13 @@ class PhysicalInterfaceController extends Common
 
             // fill the form with physical interface data
             $data = [
-                'switch'                  => array_key_exists( 'switch',        $old    ) ? $old['switch']          : $pi->getSwitchPort()->getSwitcher()->getId(),
-                'switch-port'             => array_key_exists( 'switch-port',   $old    ) ? $old['switch-port']     : $pi->getSwitchPort()->getId(),
-                'status'                  => array_key_exists( 'status',        $old    ) ? $old['status']          : $pi->getStatus(),
-                'speed'                   => array_key_exists( 'speed',         $old    ) ? $old['speed']           : $pi->getSpeed(),
-                'duplex'                  => array_key_exists( 'duplex',        $old    ) ? $old['duplex']          : $pi->getDuplex(),
-                'autoneg-label'           => array_key_exists( 'autoneg-label', $old    ) ? $old['autoneg-label']   : ( $pi->getAutoneg() ? 1 : 0 ),
+                'switch'                  => $request->old( 'switch',        $pi->getSwitchPort()->getSwitcher()->getId() ),
+                'switch-port'             => $request->old( 'switch-port',   $pi->getSwitchPort()->getId() ),
+                'status'                  => $request->old( 'status',        $pi->getStatus() ),
+                'speed'                   => $request->old( 'speed',         $pi->getSpeed() ),
+                'duplex'                  => $request->old( 'duplex',        $pi->getDuplex() ),
+                'autoneg-label'           => $request->old( 'autoneg-label', ( $pi->getAutoneg() ? 1 : 0 ) ),
+                'notes'                   => $request->old( 'notes',          $pi->getNotes() ),
             ];
 
             // get all the switch ports available and add the switch port associated to the physical interface in the list
@@ -173,7 +178,6 @@ class PhysicalInterfaceController extends Common
             'cb'                          => $cb ? $cb : false,
             'enableFanout'                => $this->resellerMode() && $vi && $vi->getCustomer()->isResoldCustomer(),
             'spFanout'                    => $pi && isset( $data['fanout'] ) && $data['fanout'] && $pi->getFanoutPhysicalInterface() ? $pi->getFanoutPhysicalInterface()->getSwitchPort()->getId() : false,
-            'notes'                       => $pi ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           :  $pi->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? ( $old['notes'] ?? '' )           : "" ),
             'notesb'                      => array_key_exists( 'notes-b',           $data ) ? $data['notes-b']           : ""
         ]);
     }
@@ -245,9 +249,6 @@ class PhysicalInterfaceController extends Common
      */
     public function store( StorePhysicalInterface $request ): RedirectResponse {
         /** @var PhysicalInterfaceEntity $pi */
-        /** @var VirtualInterfaceEntity $vi */
-        /** @var SwitchPortEntity $sp */
-
         if( $request->input( 'id', false ) ) {
             if( !( $pi = D2EM::getRepository( PhysicalInterfaceEntity::class )->find( $request->input( 'id' ) ) ) ) {
                 abort( 404, 'Unknown physical interface' );
@@ -289,12 +290,8 @@ class PhysicalInterfaceController extends Common
         $pi->setAutoneg(            $request->input( 'autoneg-label'    ) ? 1 : 0 );
         $pi->setNotes(              $request->input( 'notes'            ) );
 
-
-
-
-
         if( !$this->processFanoutPhysicalInterface( $request, $pi, $vi) ){
-            return Redirect::back( )->withInput( Input::all() );
+            return Redirect::back( )->withInput( $request->all() );
         }
 
         if( $related = $pi->getRelatedInterface() ) {
@@ -304,10 +301,10 @@ class PhysicalInterfaceController extends Common
             $related->setDuplex(    $request->input( 'duplex'   ) );
         }
 
-
         D2EM::flush();
 
         AlertContainer::push( 'Physical Interface updated successfully.', Alert::SUCCESS );
+
         return Redirect::to( $request->input( 'cb' ) ? route( "core-bundle/edit", [ "id" => $request->input( 'cb' ) ] ) : route( "interfaces/virtual/edit", [ "id" => $pi->getVirtualInterface()->getId() ] ) );
     }
 
@@ -316,21 +313,27 @@ class PhysicalInterfaceController extends Common
      * Delete a Physical Interface
      *
      * @param   Request $request instance of the current HTTP request
-     * @param   int $id ID of the Physical Interface
      *
-     * @return  JsonResponse
+     * @return  RedirectResponse
      *
      * @throws
      */
-    public function delete( Request $request,  int $id ): JsonResponse {
+    public function delete( Request $request ): RedirectResponse
+    {
         /** @var PhysicalInterfaceEntity $pi */
-        if( !( $pi = D2EM::getRepository( PhysicalInterfaceEntity::class )->find( $id ) ) ) {
+        if( !( $pi = D2EM::getRepository( PhysicalInterfaceEntity::class )->find( $request->input( "id" ) ) ) ) {
             return abort( '404' );
         }
 
-        if( $pi->getCoreInterface() ){
+        if( $_SERVER[ "HTTP_REFERER" ] == route( "interfaces/physical/list" ) ){
+            $redirect = route( "interfaces/physical/list" );
+        } else {
+            $redirect = route( "interfaces/virtual/edit", [ "id" => $pi->getVirtualInterface()->getId() ] );
+        }
+
+        if( $pi->getCoreInterface() ) {
             AlertContainer::push( 'You cannot delete this physical interface as there is a core bundle linked with it.', Alert::DANGER );
-            return response()->json( [ 'success' => false ] );
+            return Redirect::to( $redirect );
         }
 
         if( $pi->getSwitchPort()->isTypePeering() && $pi->getFanoutPhysicalInterface() ) {
@@ -352,12 +355,12 @@ class PhysicalInterfaceController extends Common
 
         $this->setBundleDetails( $pi->getVirtualInterface() );
 
-
         D2EM::remove( $pi );
         D2EM::flush();
 
         AlertContainer::push( 'The Physical Interface has been deleted successfully.', Alert::SUCCESS );
 
-        return response()->json( [ 'success' => true ] );
+        return Redirect::to( $redirect );
+
     }
 }

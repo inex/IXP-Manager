@@ -30,7 +30,7 @@ use Illuminate\View\View;
 
 use Illuminate\Http\{
     RedirectResponse,
-    JsonResponse
+    Request
 };
 
 use Entities\{
@@ -60,21 +60,24 @@ class SflowReceiverController extends Common
      *
      * @return  View
      */
-    public function list(): View {
+    public function list(): View
+    {
         return view(  'interfaces/sflow-receiver/list' )->with([
-            'listSr'       => D2EM::getRepository( SflowReceiverEntity::class )->findAll( )
+            'listSr'       => D2EM::getRepository( SflowReceiverEntity::class )->findAll()
         ]);
     }
 
     /**
      * Display the form to add/edit a sflow receiver
      *
+     * @param Request $request
      * @param int $id ID of the Sflow Receiver
      * @param int $viid ID of the Virtual Interface
      *
      * @return View
      */
-    public function edit( int $id = null, int $viid = null )  {
+    public function edit( Request $request, int $id = null, int $viid = null )
+    {
         $sflr = $vi = false;
 
         /** @var VirtualInterfaceEntity $vi */
@@ -90,19 +93,15 @@ class SflowReceiverController extends Common
                 abort(404);
             }
 
-            $old = request()->old();
-
             // fill the form with sflow receiver data
             Former::populate([
-                'dst_ip'                      => array_key_exists( 'dst_ip',        $old    ) ? $old['dst_ip']          :  $sflr->getDstIp() ,
-                'dst_port'                    => array_key_exists( 'dst_port',      $old    ) ? $old['dst_port']        :  $sflr->getDstPort() ,
+                'dst_ip'                      => $request->old( 'dst_ip',      $sflr->getDstIp() ),
+                'dst_port'                    => $request->old( 'dst_port',    $sflr->getDstPort() ),
             ]);
-
         }
 
-
         return view( 'interfaces/sflow-receiver/edit' )->with([
-            'sflr'  => $sflr ? $sflr : false,
+            'sflr'  => $sflr,
             'vi'    => $vi
         ]);
     }
@@ -117,7 +116,8 @@ class SflowReceiverController extends Common
      *
      * @throws
      */
-    public function store( StoreSflowReceiver $request ): RedirectResponse {
+    public function store( StoreSflowReceiver $request ): RedirectResponse
+    {
 
         /** @var SflowReceiverEntity $sflr */
         if( $request->input( 'id', false ) ) {
@@ -144,21 +144,30 @@ class SflowReceiverController extends Common
     /**
      * Delete a Sflow receiver
      *
-     * @param   int $id ID of the SflowReceiver
+     * @param Request $request
      *
-     * @return  JsonResponse
+     * @return  RedirectResponse
      *
-     * @throws
      */
-    public function delete( int $id ): JsonResponse{
+    public function delete( Request $request ): RedirectResponse
+    {
         /** @var SflowReceiverEntity $sflr */
-        if( !( $sflr = D2EM::getRepository( SflowReceiverEntity::class )->find( $id ) ) ) {
+        if( !( $sflr = D2EM::getRepository( SflowReceiverEntity::class )->find( $request->input( "id" ) ) ) ) {
             return abort( '404' );
         }
+
+        $viid = $sflr->getVirtualInterface()->getId();
 
         D2EM::remove( $sflr );
         D2EM::flush();
 
-        return response()->json( [ 'success' => true ] );
+        AlertContainer::push( 'The Sflow receiver has been deleted successfully.', Alert::SUCCESS );
+
+        if( $_SERVER[ "HTTP_REFERER" ] == route( "interfaces/sflow-receiver/list" ) ){
+            return Redirect::to( route( "interfaces/sflow-receiver/list" ) );
+        } else {
+            return Redirect::to( route( "interfaces/virtual/edit" , [ "id" => $viid ] ) );
+        }
+
     }
 }

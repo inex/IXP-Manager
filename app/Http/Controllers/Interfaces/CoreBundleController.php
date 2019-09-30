@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Interfaces;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Input, Redirect;
+use D2EM, Former, Redirect;
 
 use IXP\Utils\Former\Framework\TwitterBootstrap4;
 
@@ -238,7 +238,7 @@ class CoreBundleController extends Common
 
         // CHeck if there is at least 1 core link created for the core bundle
         if( $request->input( 'nb-core-links' ) == 0 || $request->input( 'nb-core-links' ) == null ){
-            return Redirect::to( route( "core-bundle/add" ) )->withInput( Input::all() );
+            return Redirect::to( route( "core-bundle/add" ) )->withInput( $request->all() );
         }
 
         for( $i = 1; $i <= $request->input( 'nb-core-links' ); $i++ ){
@@ -307,7 +307,7 @@ class CoreBundleController extends Common
         }
 
         if( $request->input( 'nb-core-links' ) == 0 || $request->input( 'nb-core-links' ) == null ){
-            return Redirect::to( route( "core-bundle/edit", [ "id" => $cb->getId()] ) )->withInput( Input::all() );
+            return Redirect::to( route( "core-bundle/edit", [ "id" => $cb->getId()] ) )->withInput( $request->all() );
         }
 
         /** @var VirtualInterfaceEntity $via */
@@ -357,7 +357,7 @@ class CoreBundleController extends Common
             /** @var SwitchPortEntity $spa */
             /** @var SwitchPortEntity $spb */
             if( !( ${ 'sp'.$side } = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( "hidden-sp-$side-$clNumber" ) ) ) ) {
-                return Redirect::back()->withInput( Input::all() );
+                return Redirect::back()->withInput( $request->all() );
             }
 
             ${ 'sp'.$side }->setType( SwitchPortEntity::TYPE_CORE );

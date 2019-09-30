@@ -26,8 +26,6 @@ $this->layout( 'layouts/ixpv4' );
 
         <?= $t->alerts() ?>
 
-        <span id="message-sflr"></span>
-
         <table id='table-sflr' class="table table-striped table-responsive-ixp-with-header collapse" style="width: 100%;">
 
             <thead class="thead-dark">
@@ -95,11 +93,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?php endforeach;?>
 
             <tbody>
-
         </table>
-
-
-
     </div>
 
 </div>

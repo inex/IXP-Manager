@@ -50,7 +50,8 @@ use Repositories\{
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class InfrastructureController extends Doctrine2Frontend {
+class InfrastructureController extends Doctrine2Frontend
+{
 
     /**
      * The object being added / edited
@@ -61,7 +62,8 @@ class InfrastructureController extends Doctrine2Frontend {
     /**
      * This function sets up the frontend controller
      */
-    public function feInit(){
+    public function feInit()
+    {
 
         $this->feParams         = (object)[
 
@@ -109,7 +111,8 @@ class InfrastructureController extends Doctrine2Frontend {
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
      * @return array
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( InfrastructureEntity::class )->getAllForFeList( $this->feParams, $id );
     }
 
@@ -123,22 +126,17 @@ class InfrastructureController extends Doctrine2Frontend {
      * @return array
      */
     protected function addEditPrepareForm( $id = null ): array {
-        if( $id !== null ) {
-
+        if( $id ) {
             if( !( $this->object = D2EM::getRepository( InfrastructureEntity::class )->find( $id) ) ) {
                 abort(404);
             }
 
-            $old = request()->old();
-
             Former::populate([
-                'name'             => array_key_exists( 'name',      $old ) ? $old['name']      : $this->object->getName(),
-                'shortname'        => array_key_exists( 'shortname', $old ) ? $old['shortname'] : $this->object->getShortname(),
-                'primary'          => array_key_exists( 'primary', $old   ) ? $old['primary']   : ( $this->object->getIsPrimary() ? 1 : 0 ) ,
+                'name'             => request()->old( 'name',      $this->object->getName() ),
+                'shortname'        => request()->old( 'shortname', $this->object->getShortname() ),
+                'primary'          => request()->old( 'primary', ( $this->object->getIsPrimary() ? 1 : 0 ) ),
             ]);
         }
-
-
 
         return [
             'object'          => $this->object,
@@ -182,7 +180,7 @@ class InfrastructureController extends Doctrine2Frontend {
         $this->object->setIsPrimary(   $request->input( 'primary'      ) ?? 0 );
         $this->object->setIXP(                  D2EM::getRepository( IXPEntity::class )->getDefault() );
 
-        D2EM::flush($this->object);
+        D2EM::flush();
 
         if( $this->object->getIsPrimary() ) {
             // reset the rest:
@@ -218,7 +216,8 @@ class InfrastructureController extends Doctrine2Frontend {
     /**
      * @inheritdoc
      */
-    protected function preDelete() : bool {
+    protected function preDelete() : bool
+    {
         $okay = true;
         if( ( $cnt = count( $this->object->getSwitchers() ) ) ) {
             AlertContainer::push( "You cannot delete this infrastructure there are {$cnt} switch(es) associated with it. "

@@ -26,31 +26,35 @@
     $( "a[id|='delete-ip']" ).on( 'click', function( e ) {
         e.preventDefault();
         let ipid = ( this.id ).substring( 10 );
+        let vlanid  = $( "#vlan" ).val();
+        let html = `<form id="form-delete" method="POST" action="<?= route("ip-address@delete" ) ?>">
+                                <div>Do you really want to delete this IP address?</div>
 
-        bootbox.confirm({
-            message: "Do you really want to delete this IP address?",
+                                <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                                <input type="hidden" name="id" value="${ipid}">
+                                <input type="hidden" name="protocol" value="${protocol}">
+                                <input type="hidden" name="vlanid" value="${vlanid}">
+                            </form>`;
+
+        bootbox.dialog({
+            message: html,
+            title: "Delete IP Address",
             buttons: {
-                confirm: {
-                    label: 'Confirm',
-                    className: 'btn-primary',
-                },
                 cancel: {
-                    label: 'Cancel',
+                    label: 'Close',
                     className: 'btn-secondary',
-                }
-            },
-            callback: function ( result ) {
-                if( result) {
-                    $.ajax( "<?= url('ip-address/delete/' )?>/" + protocol + "/" + ipid,{
-                        type : 'POST'
-                    })
-                    .done( function( data ) {
-                        location.reload();
-                    })
-                    .fail( function(){
-                        throw new Error( `Error running ajax query while delete IPv${protocol} address with database ID ${ipid}.` );
-                    })
-                }
+                    callback: function () {
+                        $('.bootbox.modal').modal('hide');
+                        return false;
+                    }
+                },
+                submit: {
+                    label: 'Delete',
+                    className: 'btn-danger',
+                    callback: function () {
+                        $('#form-delete').submit();
+                    }
+                },
             }
         });
     });

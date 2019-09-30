@@ -25,6 +25,8 @@ namespace IXP\Http\Controllers;
 
 use Auth, D2EM, Log, Route;
 
+use Illuminate\Support\Str;
+
 use Entities\{
     User as UserEntity
 };
@@ -202,7 +204,7 @@ abstract class Doctrine2Frontend extends Controller {
         if( $class::$route_prefix ) {
             return $class::$route_prefix;
         } else {
-            return kebab_case( substr( class_basename( $class ), 0, -10 ) );
+            return Str::kebab( substr( class_basename( $class ), 0, -10 ) );
         }
 
     }
@@ -281,7 +283,8 @@ abstract class Doctrine2Frontend extends Controller {
      * @param int $id The `id` of the row to load for `view` action.
      * @return array
      */
-    protected function viewGetData( $id ): array {
+    protected function viewGetData( $id ): array
+    {
 
         $data = $this->listGetData( $id );
 

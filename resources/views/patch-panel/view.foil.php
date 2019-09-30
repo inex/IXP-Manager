@@ -17,7 +17,7 @@
         <a class="btn btn-white" href="<?= route ('patch-panel/edit' , [ 'id' => $t->pp->getId() ] ) ?>" title="Edit">
             <i class="fa fa-pencil"></i>
         </a>
-        <a class="btn btn-white" href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'id' => $t->pp->getId() ]  ) ?>" title="Ports list">
+        <a class="btn btn-white" href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'ppid' => $t->pp->getId() ]  ) ?>" title="Ports list">
             <i class="fa fa-th"></i>
         </a>
     </div>
@@ -43,7 +43,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <a href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'id' => $t->pp->getId() ]  ) ?>">
+                                    <a href="<?= route('patch-panel-port/list/patch-panel' ,  [ 'ppid' => $t->pp->getId() ]  ) ?>">
                                         <?= $t->ee( $t->pp->getName() ) ?>
                                     </a>
                                 </td>
@@ -97,7 +97,7 @@
                                     </b>
                                 </td>
                                 <td>
-                                    <a href="<?= route ( 'patch-panel-port/list/patch-panel' , [ 'id' => $t->pp->getId() ] ) ?>">
+                                    <a href="<?= route ( 'patch-panel-port/list/patch-panel' , [ 'ppid' => $t->pp->getId() ] ) ?>">
                                     <span title="" class="badge badge-<?= $t->pp->getCssClassPortCount() ?>">
                                             <?php if( $t->pp->hasDuplexPort() ): ?>
                                                 <?= $t->pp->getAvailableOnTotalPort(true) ?>

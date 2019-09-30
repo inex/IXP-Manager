@@ -49,7 +49,8 @@ use IXP\Utils\View\Alert\{
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class NetworkInfoController extends Doctrine2Frontend {
+class NetworkInfoController extends Doctrine2Frontend
+{
 
     /**
      * The object being added / edited
@@ -60,8 +61,8 @@ class NetworkInfoController extends Doctrine2Frontend {
     /**
      * This function sets up the frontend controller
      */
-    public function feInit() {
-
+    public function feInit()
+    {
         $this->feParams         = (object)[
 
             'entity'            => NetworkInfoEntity::class,
@@ -97,7 +98,6 @@ class NetworkInfoController extends Doctrine2Frontend {
 
         // display the same information in the view as the list
         $this->feParams->viewColumns = $this->feParams->listColumns;
-
     }
 
 
@@ -110,7 +110,8 @@ class NetworkInfoController extends Doctrine2Frontend {
      *
      * @throws
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( NetworkInfoEntity::class )->getAllForFeList( $this->feParams, $id );
     }
 
@@ -121,20 +122,19 @@ class NetworkInfoController extends Doctrine2Frontend {
      * @param   int $id ID of the row to edit
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array {
-        $old = request()->old();
-
-        if( $id !== null ) {
+    protected function addEditPrepareForm( $id = null ): array
+    {
+        if( $id ) {
 
             if( !( $this->object = D2EM::getRepository( NetworkInfoEntity::class )->find( $id) ) ) {
                 abort(404);
             }
 
             Former::populate([
-                'vlanid'                => array_key_exists( 'vlan',        $old ) ? $old[ 'vlan' ]        : $this->object->getVlan()->getId(),
-                'protocol'              => array_key_exists( 'protocol',    $old ) ? $old[ 'protocol' ]    : $this->object->getProtocol(),
-                'network'               => array_key_exists( 'network',     $old ) ? $old[ 'network' ]     : $this->object->getNetwork(),
-                'masklen'               => array_key_exists( 'masklen',     $old ) ? $old[ 'masklen' ]     : $this->object->getMasklen(),
+                'vlanid'                => request()->old( 'vlan',        $this->object->getVlan()->getId() ),
+                'protocol'              => request()->old( 'protocol',    $this->object->getProtocol() ),
+                'network'               => request()->old( 'network',     $this->object->getNetwork() ),
+                'masklen'               => request()->old( 'masklen',     $this->object->getMasklen() ),
             ]);
         }
 
@@ -195,7 +195,7 @@ class NetworkInfoController extends Doctrine2Frontend {
         $this->object->setRs2address(       null );
         $this->object->setDnsfile(             null );
 
-        D2EM::flush($this->object);
+        D2EM::flush();
 
         return true;
     }

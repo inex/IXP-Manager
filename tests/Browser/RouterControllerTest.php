@@ -286,7 +286,7 @@ class RouterControllerTest extends DuskTestCase
             $browser->visit( '/router/list/' )
                 ->press('#delete-router-' . $router->getId() )
                 ->waitForText( 'Do you want to delete this router' )
-                ->press('Confirm' );
+                ->press('Delete' );
 
             $browser->assertSee( 'The router has been successfully deleted.' );
 

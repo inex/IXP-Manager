@@ -67,7 +67,8 @@ use OSS_SNMP\{
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class SwitchController extends Doctrine2Frontend {
+class SwitchController extends Doctrine2Frontend
+{
 
     /**
      * The object being added / edited
@@ -212,7 +213,8 @@ class SwitchController extends Doctrine2Frontend {
      * @param string $route_prefix
      * @return void
      */
-    protected static function additionalRoutes( string $route_prefix ){
+    protected static function additionalRoutes( string $route_prefix )
+    {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
 
         Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
@@ -225,8 +227,8 @@ class SwitchController extends Doctrine2Frontend {
         });
     }
 
-    public function list( Request $r  ) : View{
-
+    public function list( Request $r  ) : View
+    {
         if( ( $showActiveOnly = $r->input( 'active-only' ) ) !== null ) {
             $r->session()->put( "switch-list-active-only", $showActiveOnly );
         } else if( $r->session()->exists( "switch-list-active-only" ) ) {
@@ -237,14 +239,12 @@ class SwitchController extends Doctrine2Frontend {
 
         if( ( $vtype = $r->input( 'vtype' ) ) !== null ) {
             $r->session()->put( "switch-list-vtype", $vtype );
-        } else if( $r->session()->exists( "switch-list-vtype" ) ) {
+        } elseif( $r->session()->exists( "switch-list-vtype" ) ) {
             $vtype = $r->session()->get( "switch-list-vtype" );
         } else {
             $r->session()->remove( "switch-list-vtype" );
             $vtype = "Default";
         }
-
-
 
         if( $r->input( 'infra' )  !== null ) {
             /** @var SwitcherEntity $s */
@@ -261,7 +261,7 @@ class SwitchController extends Doctrine2Frontend {
         }
 
 
-        if( $vtype == "OS View" ){
+        if( $vtype == "OS View" ) {
             $this->setUpOsView();
         } else if( $vtype == "L3 View" ){
             $this->setUpL3View();
@@ -293,7 +293,8 @@ class SwitchController extends Doctrine2Frontend {
      *
      * @return bool
      */
-    private function setUpOsView( ){
+    private function setUpOsView( )
+    {
 
         $this->feParams->listColumns = [
             'id'        => [ 'title' => 'UID', 'display' => false ],
@@ -337,7 +338,8 @@ class SwitchController extends Doctrine2Frontend {
      *
      * @return bool
      */
-    private function setUpL3View( ){
+    private function setUpL3View( )
+    {
 
         $this->feParams->listColumns = [
             'id'                => [ 'title' => 'UID', 'display' => false ],
@@ -364,7 +366,8 @@ class SwitchController extends Doctrine2Frontend {
      *
      * @return array
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( SwitcherEntity::class )->getAllForFeList( $this->feParams, $id, $this->data );
     }
 
@@ -377,10 +380,8 @@ class SwitchController extends Doctrine2Frontend {
      *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array {
-
-        $old = request()->old();
-
+    protected function addEditPrepareForm( $id = null ): array
+    {
         if( $id !== null ) {
 
             if( !( $this->object = D2EM::getRepository( SwitcherEntity::class )->find( $id) ) ) {
@@ -388,32 +389,32 @@ class SwitchController extends Doctrine2Frontend {
             }
 
             Former::populate([
-                'name'              => array_key_exists( 'name',      $old         ) ? $old['name']               :  $this->object->getName(),
-                'hostname'          => array_key_exists( 'hostname', $old          ) ? $old['hostname']           :  $this->object->getHostname(),
-                'cabinetid'         => array_key_exists( 'cabinetid', $old         ) ? $old['cabinetid']          :  $this->object->getCabinet()         ? $this->object->getCabinet()->getId()          : null,
-                'infrastructure'    => array_key_exists( 'infrastructure', $old    ) ? $old['infrastructure']     :  $this->object->getInfrastructure()  ? $this->object->getInfrastructure()->getId()   : null,
-                'ipv4addr'          => array_key_exists( 'ipv4addr', $old          ) ? $old['ipv4addr']           :  $this->object->getIpv4addr(),
-                'ipv6addr'          => array_key_exists( 'ipv6addr', $old          ) ? $old['ipv6addr']           :  $this->object->getIpv6addr(),
-                'snmppasswd'        => array_key_exists( 'snmppasswd', $old        ) ? $old['snmppasswd']         :  $this->object->getSnmppasswd(),
-                'vendorid'          => array_key_exists( 'vendorid', $old          ) ? $old['vendorid']           :  $this->object->getVendor() ? $this->object->getVendor()->getId() : null,
-                'model'             => array_key_exists( 'model', $old             ) ? $old['model']              :  $this->object->getModel(),
-                'active'            => array_key_exists( 'active', $old            ) ? ( $old['active'] ? 1 : 0 ) :  ( $this->object->getActive() ? 1 : 0 ),
-                'asn'               => array_key_exists( 'asn', $old               ) ? $old['notes']              :  $this->object->getAsn(),
-                'loopback_ip'       => array_key_exists( 'loopback_ip', $old       ) ? $old['loopback_ip']        :  $this->object->getLoopbackIP(),
-                'loopback_name'     => array_key_exists( 'loopback_name', $old     ) ? $old['loopback_name']      :  $this->object->getLoopbackName(),
-                'mgmt_mac_address'  => array_key_exists( 'mgmt_mac_address', $old  ) ? $old['mgmt_mac_address']   :  $this->object->getMgmtMacAddress(),
+                'name'              => request()->old( 'name',                  $this->object->getName() ),
+                'hostname'          => request()->old( 'hostname',              $this->object->getHostname() ),
+                'cabinetid'         => request()->old( 'cabinetid',     $this->object->getCabinet()         ? $this->object->getCabinet()->getId()          : null ),
+                'infrastructure'    => request()->old( 'infrastructure',$this->object->getInfrastructure()  ? $this->object->getInfrastructure()->getId()   : null) ,
+                'ipv4addr'          => request()->old( 'ipv4addr',              $this->object->getIpv4addr() ),
+                'ipv6addr'          => request()->old( 'ipv6addr',              $this->object->getIpv6addr() ),
+                'snmppasswd'        => request()->old( 'snmppasswd',            $this->object->getSnmppasswd() ),
+                'vendorid'          => request()->old( 'vendorid',      $this->object->getVendor() ? $this->object->getVendor()->getId() : null ),
+                'model'             => request()->old( 'model',                 $this->object->getModel() ),
+                'active'            => request()->old( 'active',                ( $this->object->getActive() ? 1 : 0 ) ),
+                'asn'               => request()->old( 'asn',                   $this->object->getAsn() ),
+                'loopback_ip'       => request()->old( 'loopback_ip',           $this->object->getLoopbackIP() ),
+                'loopback_name'     => request()->old( 'loopback_name',         $this->object->getLoopbackName() ),
+                'mgmt_mac_address'  => request()->old( 'mgmt_mac_address',      $this->object->getMgmtMacAddress()) ,
+                'notes'             => request()->old( 'notes',                 $this->object->getNotes() ) ,
             ]);
         }
 
 
         return [
             'object'            => $this->object,
-            'addBySnmp'         => array_key_exists( 'add_by_snnp', $old  ) ? $old['add_by_snnp']  : false,
+            'addBySnmp'         => request()->old( 'add_by_snnp', false ),
             'preAddForm'        => false,
             'cabinets'          => D2EM::getRepository( CabinetEntity::class            )->getAsArray(),
             'infra'             => D2EM::getRepository( InfrastructureEntity::class     )->getAllAsArray(),
             'vendors'           => D2EM::getRepository( VendorEntity::class             )->getAsArray(),
-            'notes'             => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes() ) : ( array_key_exists( 'notes', $old ) ? $old['notes'] : "" )
         ];
     }
 
@@ -422,7 +423,8 @@ class SwitchController extends Doctrine2Frontend {
      *
      * @return View
      */
-    public function addBySnmp(): View {
+    public function addBySnmp(): View
+    {
         // wipe any preexisting cached switch platform entry:
         session()->remove( "snmp-platform" );
 
@@ -438,7 +440,8 @@ class SwitchController extends Doctrine2Frontend {
      *
      * @throws
      */
-    public function storeBySmtp( StoreBySmtpRequest $request ) {
+    public function storeBySmtp( StoreBySmtpRequest $request )
+    {
 
         $vendorid = null;
 
@@ -495,7 +498,8 @@ class SwitchController extends Doctrine2Frontend {
      *
      * @throws
      */
-    public function customStore( StoreRequest $request ) {
+    public function customStore( StoreRequest $request )
+    {
 
         if( $request->input( 'id', false ) ) {
             if( !( $this->object = D2EM::getRepository( SwitcherEntity::class )->find( $request->input( 'id' ) ) ) ) {
@@ -585,7 +589,8 @@ class SwitchController extends Doctrine2Frontend {
      * @param string $action Either 'add', 'edit', 'delete'
      * @return bool
      */
-    protected function postFlush( string $action ): bool{
+    protected function postFlush( string $action ): bool
+    {
         // wipe cached entries
         // this is created in Repositories\Switcher::getAndCache()
         D2EM::getRepository( SwitcherEntity::class )->clearCacheAll();
@@ -597,7 +602,8 @@ class SwitchController extends Doctrine2Frontend {
     /**
      * @inheritdoc
      */
-    protected function preDelete() : bool {
+    protected function preDelete() : bool
+    {
         $okay = $okayPPP = true;
 
         foreach( $this->object->getPorts() as $port ) {
@@ -636,7 +642,8 @@ class SwitchController extends Doctrine2Frontend {
      *
      * @return view
      */
-    function portReport( int $id = null ) : View {
+    function portReport( int $id = null ) : View
+    {
         $s = false;
 
         if( $id && !( $s = D2EM::getRepository( SwitcherEntity::class )->find( $id ) ) ) {
@@ -678,7 +685,8 @@ class SwitchController extends Doctrine2Frontend {
      *
      * @throws
      */
-    public function configuration( Request $r ) : View {
+    public function configuration( Request $r ) : View
+    {
 
         if( $r->input( 'switch' )  !== null ) {
             /** @var SwitcherEntity $s */
@@ -723,7 +731,6 @@ class SwitchController extends Doctrine2Frontend {
         } else {
             $location = false;
         }
-
 
 
         if( $s || $infra || $location ){

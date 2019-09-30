@@ -68,6 +68,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereOperatingSystem($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereOperatingSystemVersion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereSoftwareVersion($value)
+ * @property int $rfc1997_passthru
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereRfc1997Passthru($value)
  */
 class Router extends Model
 {

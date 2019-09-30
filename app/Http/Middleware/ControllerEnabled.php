@@ -26,6 +26,8 @@ namespace IXP\Http\Middleware;
 
 use Auth, Closure, Log, Route;
 
+use Illuminate\Support\Str;
+
 use Entities\{
     User as UserEntity
 };
@@ -81,7 +83,7 @@ class ControllerEnabled
                 continue;
             }
 
-            $name .= kebab_case( strtolower( $b ) ) . '-';
+            $name .= Str::kebab( strtolower( $b ) ) . '-';
         }
         $name = substr( $name, 0, -1 );
 

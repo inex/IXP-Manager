@@ -30,8 +30,11 @@ use Entities\{
     Infrastructure      as InfrastructureEntity
 };
 
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\{
+    RedirectResponse,
+    Request
+};
+
 use Illuminate\View\View;
 
 use IXP\Utils\View\Alert\{
@@ -50,7 +53,8 @@ use Repositories\Vlan as VlanRepository;
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class VlanController extends Doctrine2Frontend {
+class VlanController extends Doctrine2Frontend
+{
 
     /**
      * The object being added / edited
@@ -134,7 +138,8 @@ class VlanController extends Doctrine2Frontend {
      * @param int $id The `id` of the row to load for `view`. `null` if `list`
      * @return array
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( VlanEntity::class )->getAllForFeList( $this->feParams, $id );
     }
 
@@ -146,30 +151,29 @@ class VlanController extends Doctrine2Frontend {
      *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array {
-        $old = request()->old();
-
-        if( $id != null ) {
+    protected function addEditPrepareForm( $id = null ): array
+    {
+        if( $id ) {
 
             if( !( $this->object = D2EM::getRepository( VlanEntity::class )->find( $id ) ) ) {
                 abort(404);
             }
 
             Former::populate([
-                'name'                      =>  array_key_exists( 'name',               $old    ) ? $old['name']               : $this->object->getName(),
-                'number'                    =>  array_key_exists( 'number',             $old    ) ? $old['number']             : $this->object->getNumber(),
-                'infrastructureid'          =>  array_key_exists( 'infrastructureid',   $old    ) ? $old['infrastructureid']   : $this->object->getInfrastructure()->getId(),
-                'config_name'               =>  array_key_exists( 'config_name',        $old    ) ? $old['config_name']        : $this->object->getConfigName(),
-                'private'                   =>  array_key_exists( 'private',            $old    ) ? $old['private']            : ( $this->object->getPrivate()          ? 1 : 0 ),
-                'peering_matrix'            =>  array_key_exists( 'peering_matrix',     $old    ) ? $old['peering_matrix']     : ($this->object->getPeeringMatrix()     ? 1 : 0 ),
-                'peering_manager'           =>  array_key_exists( 'peering_manager',    $old    ) ? $old['peering_manager']    : ( $this->object->getPeeringManager()   ? 1 : 0 ),
+                'name'                      =>  request()->old( 'name',               $this->object->getName() ),
+                'number'                    =>  request()->old( 'number',             $this->object->getNumber() ),
+                'infrastructureid'          =>  request()->old( 'infrastructureid',   $this->object->getInfrastructure()->getId() ),
+                'config_name'               =>  request()->old( 'config_name',        $this->object->getConfigName() ),
+                'private'                   =>  request()->old( 'private',            ( $this->object->getPrivate()          ? 1 : 0 ) ),
+                'peering_matrix'            =>  request()->old( 'peering_matrix',     ($this->object->getPeeringMatrix()     ? 1 : 0 ) ),
+                'peering_manager'           =>  request()->old( 'peering_manager',    ( $this->object->getPeeringManager()   ? 1 : 0 ) ),
+                'notes'                     =>  request()->old( 'notes',              $this->object->getNotes() ),
             ]);
         }
 
         return [
             'object'            => $this->object,
             'infrastructure'    => D2EM::getRepository( InfrastructureEntity::class )->getNames( ),
-            'notes'             => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : "" )
         ];
     }
 
@@ -192,8 +196,6 @@ class VlanController extends Doctrine2Frontend {
             'config_name'       => 'required|string|max:32|alpha_dash'
 
         ]);
-
-
 
         if( $validator->fails() ) {
             return Redirect::back()->withErrors( $validator )->withInput();
@@ -223,7 +225,7 @@ class VlanController extends Doctrine2Frontend {
         $this->object->setPeeringManager($request->input( 'peering_manager'      ) ?? 0 );
         $this->object->setPeeringMatrix(   $request->input( 'peering_matrix'       ) ?? 0 );
         $this->object->setInfrastructure(   D2EM::getRepository( InfrastructureEntity::class )->find( $request->input( 'infrastructureid' ) ) );
-        D2EM::flush( $this->object );
+        D2EM::flush();
 
         return true;
     }
@@ -244,7 +246,8 @@ class VlanController extends Doctrine2Frontend {
     /**
      * @inheritdoc
      */
-    protected function preDelete(): bool {
+    protected function preDelete(): bool
+    {
         $okay = true;
 
         if( ( $cnt = count( $this->object->getRouters() ) ) ) {
@@ -276,7 +279,8 @@ class VlanController extends Doctrine2Frontend {
      * @param int $id ID of the vlan to display
      * @return View
      */
-    public function listPrivate( int $id = null ){
+    public function listPrivate( int $id = null )
+    {
         $infra = null;
         if( $id && !( $infra = D2EM::getRepository( InfrastructureEntity::class )->find( $id ) ) ) {
             abort(404);
@@ -296,8 +300,8 @@ class VlanController extends Doctrine2Frontend {
      *
      * @return View
      */
-    public function listInfra( int $id, $public = null ){
-
+    public function listInfra( int $id, $public = null )
+    {
         if( !( $infra = D2EM::getRepository( InfrastructureEntity::class )->find( $id ) ) ) {
             abort(404);
         }

@@ -191,45 +191,43 @@
             </div>
 
 
+            <?= Former::hidden( 'id' )
+                ->value( $t->vli ? $t->vli->getId() : null )
+            ?>
 
+            <?= Former::hidden( 'viid' )
+                ->id( 'viid' )
+                ->value( $t->vli ? $t->vli->getVirtualInterface()->getId() : $t->vi->getId())
+            ?>
 
-                <?= Former::hidden( 'id' )
-                    ->value( $t->vli ? $t->vli->getId() : null )
+            <?php if( $t->duplicateTo ): ?>
+                <?= Former::hidden( 'vlan' )
+                    ->id( 'vlan' )
+                    ->value(  $t->duplicateTo )
                 ?>
+            <?php endif; ?>
 
-                <?= Former::hidden( 'viid' )
-                    ->id( 'viid' )
-                    ->value( $t->vli ? $t->vli->getVirtualInterface()->getId() : $t->vi->getId())
-                ?>
+            <?= Former::hidden( 'duplicate' )
+                ->id( 'duplicate' )
+                ->value(  $t->duplicateTo ? true : false )
+            ?>
 
-                <?php if( $t->duplicateTo ): ?>
-                    <?= Former::hidden( 'vlan' )
-                        ->id( 'vlan' )
-                        ->value(  $t->duplicateTo )
-                    ?>
-                <?php endif; ?>
+            <?= Former::hidden( 'viid' )
+                ->id( 'viid' )
+                ->value( $t->vli ? $t->vli->getVirtualInterface()->getId() : $t->vi->getId())
+            ?>
 
-                <?= Former::hidden( 'duplicate' )
-                    ->id( 'duplicate' )
-                    ->value(  $t->duplicateTo ? true : false )
-                ?>
+            <?= Former::hidden( 'redirect2vi' )
+                ->value( $t->vi ? true : false )
+            ?>
 
-                <?= Former::hidden( 'viid' )
-                    ->id( 'viid' )
-                    ->value( $t->vli ? $t->vli->getVirtualInterface()->getId() : $t->vi->getId())
-                ?>
+            <?=Former::actions(
+                Former::primary_submit( $t->vli ? 'Save Changes' : 'Add' )->class( "mb-2 mb-sm-0" ),
+                Former::secondary_link( 'Cancel' )->id( 'cancel-btn' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) :  route( 'interfaces/vlan/list' ) )->class( "mb-2 mb-sm-0" ),
+                Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
+            )->id('btn-group') ?>
 
-                <?= Former::hidden( 'redirect2vi' )
-                    ->value( $t->vi ? true : false )
-                ?>
-
-                <?=Former::actions(
-                    Former::primary_submit( $t->vli ? 'Save Changes' : 'Add' )->class( "mb-2 mb-sm-0" ),
-                    Former::secondary_link( 'Cancel' )->id( 'cancel-btn' )->href( $t->vi ? route(  'interfaces/virtual/edit' , [ 'id' => $t->vi->getId() ] ) :  route( 'interfaces/vlan/list' ) )->class( "mb-2 mb-sm-0" ),
-                    Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
-                )->id('btn-group') ?>
-
-                <?= Former::close() ?>
+            <?= Former::close() ?>
 
         </div>
 

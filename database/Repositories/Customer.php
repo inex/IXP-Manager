@@ -24,11 +24,13 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
-use D2EM, Exception, Redirect;
+
+use D2EM, Exception;
 
 use Entities\{
     BGPSessionData  as BGPSessionDataEntity,
-    Customer        as CustomerEntity
+    Customer        as CustomerEntity,
+    CustomerToUser  as CustomerToUserEntity
 };
 
 
@@ -831,6 +833,36 @@ class Customer extends EntityRepository
                 $stmt->execute();
             }
 
+            // Delete User Logins
+            $stmt2 = $conn->prepare("DELETE FROM user_logins WHERE customer_to_user_id = :id");
+
+            /** @var CustomerToUserEntity $c2User */
+            foreach( $c->getC2Users() as $c2User ) {
+                $stmt2->bindValue('id', $c2User->getId() );
+                $stmt2->execute();
+
+                // Delete User, if that user only have the customer that we want to delete linked
+                if( $c2User->getUser()->getCustomers2User()->count() == 1 ) {
+                    $this->getEntityManager()->remove( $c2User->getUser() );
+                }
+
+                // Delete Customer2User
+                $conn->prepare("DELETE FROM customer_to_users WHERE id = " . $c2User->getId() )->execute();
+
+                // Set a new default customer to the user
+                if( $c2User->getUser()->getCustomer()->getId() == $c->getId() ) {
+                    $newAssignatedCustomer = null;
+
+                    foreach( $c2User->getUser()->getCustomers() as $cust ){
+                        if( $cust->getId() != $c->getId() ){
+                            $newAssignatedCustomer = $cust;
+                            break;
+                        }
+                    }
+
+                    $c2User->getUser()->setCustomer( $newAssignatedCustomer );
+                }
+            }
 
             $this->getEntityManager()->remove( $c );
             $this->getEntityManager()->remove( $cbd );

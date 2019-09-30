@@ -92,7 +92,8 @@ class LogoController extends Controller
      *
      * @return  View
      */
-    public function manage( $id = null ) {
+    public function manage( $id = null )
+    {
         $c = $this->loadCustomer( $id );
 
         return view( 'customer/logo/manage' )->with([
@@ -109,7 +110,8 @@ class LogoController extends Controller
      * @return  RedirectResponse
      * @throws
      */
-    public function store( LogoRequest $request ): RedirectResponse {
+    public function store( LogoRequest $request ): RedirectResponse
+    {
         $c = $this->loadCustomer( $request->input( 'id' ) );
 
         if( !$request->hasFile( 'logo' ) ) {
@@ -180,7 +182,8 @@ class LogoController extends Controller
      * @return  RedirectResponse
      * @throws
      */
-    public function delete( int $id = null ) {
+    public function delete( int $id = null )
+    {
         $c = $this->loadCustomer( $id );
 
         // do we have a logo?
@@ -209,7 +212,8 @@ class LogoController extends Controller
      * @return  View
      * @throws
      */
-    public function logos(){
+    public function logos()
+    {
         $logos = [];
         foreach( D2EM::getRepository( CustomerEntity::class )->findAll() as $c ) {
             /** @var CustomerEntity $c */

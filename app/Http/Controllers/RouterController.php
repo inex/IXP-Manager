@@ -23,22 +23,28 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Input, Redirect;
+use D2EM, Former, Redirect;
 
-use Illuminate\Http\Request;
+
 use Entities\{
     Router as RouterEntity,
     Vlan as VlanEntity
 };
 
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\{
+    RedirectResponse,
+    Request
+};
+
 use Illuminate\Support\Facades\View as FacadeView;
 use Illuminate\View\View;
 
 use IXP\Http\Requests\StoreRouter;
 
-use IXP\Utils\View\Alert\Alert;
-use IXP\Utils\View\Alert\Container as AlertContainer;
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
 
 use Repositories\Vlan as VlanRepository;
 
@@ -57,7 +63,8 @@ class RouterController extends Controller
      *
      * @return  View
      */
-    public function list( ): View {
+    public function list( ): View
+    {
         return view( 'router/index' )->with([
             'routers'       => D2EM::getRepository( RouterEntity::class )->findAll()
         ]);
@@ -68,8 +75,8 @@ class RouterController extends Controller
      *
      * @return  View
      */
-    public function status(): View {
-
+    public function status(): View
+    {
         /** @var RouterEntity[] $routers */
         $routers        = [];
         $routersWithApi = [];
@@ -95,47 +102,46 @@ class RouterController extends Controller
     /**
      * Display the form to edit a router
      *
-     * @param  int    $id        router that need to be edited
+     * @param Request $request
+     * @param int $id router that need to be edited
      *
      * @return View
      */
-    public function edit( Request $request, int $id = null ): View {
-
+    public function edit( Request $request, int $id = null ): View
+    {
         $rt = false; /** @var RouterEntity $rt */
         if( $id && !( $rt = D2EM::getRepository( RouterEntity::class )->find( $id ) ) ) {
             abort(404, "Unknown Router");
         }
 
-        $old = request()->old();
-
         if( $rt ) {
             // fill the form with router data
             Former::populate([
-                'handle'                => array_key_exists( 'handle',      $old ) ? $old['handle']         : $rt->getHandle(),
-                'vlan'                  => array_key_exists( 'vlan',        $old ) ? $old['vlan']           : $rt->getVlan()->getId(),
-                'protocol'              => array_key_exists( 'protocol',    $old ) ? $old['protocol']       : $rt->getProtocol(),
-                'type'                  => array_key_exists( 'type',        $old ) ? $old['type']           : $rt->getType(),
-                'name'                  => array_key_exists( 'name',        $old ) ? $old['name']           : $rt->getName(),
-                'shortname'             => array_key_exists( 'shortname',   $old ) ? $old['shortname']      : $rt->getShortName(),
-                'router_id'             => array_key_exists( 'router_id',   $old ) ? $old['router_id']      : $rt->getRouterId(),
-                'peering_ip'            => array_key_exists( 'peering_ip',  $old ) ? $old['peering_ip']     : $rt->getPeeringIp(),
-                'asn'                   => array_key_exists( 'asn',         $old ) ? $old['asn']            : $rt->getAsn(),
+                'handle'                => request()->old( 'handle',      $rt->getHandle() ),
+                'vlan'                  => request()->old( 'vlan',        $rt->getVlan()->getId() ),
+                'protocol'              => request()->old( 'protocol',    $rt->getProtocol() ),
+                'type'                  => request()->old( 'type',        $rt->getType() ),
+                'name'                  => request()->old( 'name',        $rt->getName() ),
+                'shortname'             => request()->old( 'shortname',   $rt->getShortName() ),
+                'router_id'             => request()->old( 'router_id',   $rt->getRouterId() ),
+                'peering_ip'            => request()->old( 'peering_ip',  $rt->getPeeringIp() ),
+                'asn'                   => request()->old( 'asn',         $rt->getAsn() ),
 
-                'software'                 => array_key_exists( 'software',                    $old ) ? $old['software']                 : $rt->getSoftware(),
-                'software_version'         => array_key_exists( 'software_version',            $old ) ? $old['software_version']         : $rt->getSoftwareVersion(),
-                'operating_system'         => array_key_exists( 'operating_system',            $old ) ? $old['operating_system']         : $rt->getOperatingSystem(),
-                'operating_system_version' => array_key_exists( 'operating_system_version',    $old ) ? $old['operating_system_version'] : $rt->getOperatingSystemVersion(),
+                'software'                 => request()->old( 'software',                    $rt->getSoftware() ),
+                'software_version'         => request()->old( 'software_version',            $rt->getSoftwareVersion() ),
+                'operating_system'         => request()->old( 'operating_system',            $rt->getOperatingSystem() ),
+                'operating_system_version' => request()->old( 'operating_system_version',    $rt->getOperatingSystemVersion() ),
 
-                'mgmt_host'             => array_key_exists( 'mgmt_host',   $old ) ? $old['mgmt_host']      : $rt->getMgmtHost(),
-                'api_type'              => array_key_exists( 'api_type',    $old ) ? $old['api_type']       : $rt->getApiType(),
-                'api'                   => array_key_exists( 'api',         $old ) ? $old['api']            : $rt->getApi(),
-                'lg_access'             => array_key_exists( 'lg_access',   $old ) ? $old['lg_access']      : $rt->getLgAccess(),
-                'quarantine'            => array_key_exists( 'quarantine',  $old ) ? $old['quarantine']     : ( $rt->getQuarantine()    ? 1 : 0 ),
-                'bgp_lc'                => array_key_exists( 'bgp_lc',      $old ) ? $old['bgp_lc']         : ( $rt->getBgpLc()         ? 1 : 0 ),
-                'rpki'                  => array_key_exists( 'rpki',        $old ) ? $old['rpki']           : ( $rt->getRPKI()          ? 1 : 0 ),
-                'rfc1997_passthru'      => array_key_exists( 'rfc1997_passthru', $old ) ? $old['rfc1997_passthru'] : ( $rt->getRFC1997Passthru() ? 1 : 0 ),
-                'skip_md5'              => array_key_exists( 'skip_md5',    $old ) ? $old['skip_md5']       : ( $rt->getSkipMd5()       ? 1 : 0 ),
-                'template'              => array_key_exists( 'template',    $old ) ? $old['template']       : $rt->getTemplate(),
+                'mgmt_host'             => request()->old( 'mgmt_host',   $rt->getMgmtHost() ),
+                'api_type'              => request()->old( 'api_type',    $rt->getApiType() ),
+                'api'                   => request()->old( 'api',         $rt->getApi() ),
+                'lg_access'             => request()->old( 'lg_access',   $rt->getLgAccess() ),
+                'quarantine'            => request()->old( 'quarantine',  ( $rt->getQuarantine()    ? 1 : 0 ) ),
+                'bgp_lc'                => request()->old( 'bgp_lc',      ( $rt->getBgpLc()         ? 1 : 0 ) ),
+                'rpki'                  => request()->old( 'rpki',        ( $rt->getRPKI()          ? 1 : 0 ) ),
+                'rfc1997_passthru'      => request()->old( 'rfc1997_passthru', ( $rt->getRFC1997Passthru() ? 1 : 0 ) ),
+                'skip_md5'              => request()->old( 'skip_md5',    ( $rt->getSkipMd5()       ? 1 : 0 ) ),
+                'template'              => request()->old( 'template',    $rt->getTemplate() ),
             ]);
         }
 
@@ -157,8 +163,8 @@ class RouterController extends Controller
      *
      * @throws
      */
-    public function store( StoreRouter $request ): RedirectResponse {
-
+    public function store( StoreRouter $request ): RedirectResponse
+    {
         $isEdit = $request->input( 'id' ) ? true : false;
 
         /** @var RouterEntity $rt */
@@ -175,7 +181,7 @@ class RouterController extends Controller
             AlertContainer::push( 'The template you entered cannot be found. Please check the help message for more information.', Alert::DANGER );
 
             return Redirect::to( $isEdit ? route( "router@edit", [ "id" => $request->input( 'id' ) ] ) : route( "router@add" ) )
-                ->withInput( Input::all() );
+                ->withInput( $request->all() );
         }
 
         $rt->setHandle(     $request->input( 'handle'       ) );
@@ -207,7 +213,6 @@ class RouterController extends Controller
         $rt->setRFC1997Passthru( ( $request->input( 'rfc1997_passthru' ) ) ? $request->input( 'rfc1997_passthru' ) : 0 );
         $rt->setSkipMd5(   ( $request->input( 'skip_md5'     ) ) ? $request->input( 'skip_md5'       ) : 0 );
 
-
         D2EM::flush();
 
         AlertContainer::push( 'Router added/updated successfully.', Alert::SUCCESS );
@@ -222,7 +227,8 @@ class RouterController extends Controller
      * @param  int    $id        router that need to be displayed
      * @return View
      */
-    public function view( int $id ): View {
+    public function view( int $id ): View
+    {
         /** @var RouterEntity $rt */
         if( !( $rt = D2EM::getRepository( RouterEntity::class )->find( $id ) ) ) {
             abort(404 , 'Unknown router' );
@@ -237,22 +243,23 @@ class RouterController extends Controller
     /**
      * Delete a router
      *
-     * @param  int    $id        router that need to be deleted
+     * @param Request $request
      *
      * @return redirectresponse
      *
-     * @throws
      */
-    public function delete( int $id ): RedirectResponse {
+    public function delete( Request $request ): RedirectResponse
+    {
         /** @var RouterEntity $rt */
-        if( !( $rt = D2EM::getRepository( RouterEntity::class )->find( $id ) ) ) {
+        if( !( $rt = D2EM::getRepository( RouterEntity::class )->find( $request->input( "id" ) ) ) ) {
             abort(404);
         }
 
-        D2EM::remove($rt);
+        D2EM::remove( $rt );
         D2EM::flush();
 
         AlertContainer::push( 'The router has been successfully deleted.', Alert::SUCCESS );
+
         return Redirect::to( route( "router@list" ) );
     }
 

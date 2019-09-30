@@ -43,7 +43,8 @@ use Entities\{
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Layer2AddressController extends Doctrine2Frontend {
+class Layer2AddressController extends Doctrine2Frontend
+{
 
     /**
      * The object being added / edited
@@ -72,8 +73,8 @@ class Layer2AddressController extends Doctrine2Frontend {
     /**
      * This function sets up the frontend controller
      */
-    public function feInit(){
-
+    public function feInit()
+    {
         $this->feParams         = (object)[
 
             'entity'            => Layer2AddressEntity::class,
@@ -130,8 +131,6 @@ class Layer2AddressController extends Doctrine2Frontend {
             }
 
         }
-
-
     }
 
     /**
@@ -144,7 +143,6 @@ class Layer2AddressController extends Doctrine2Frontend {
     protected static function additionalRoutes( string $route_prefix )
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
-
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
             Route::get(  'vlan-interface/{vliid}', 'Layer2AddressController@forVlanInterface' )->name( "layer2-address@forVlanInterface" );
         });
@@ -156,7 +154,8 @@ class Layer2AddressController extends Doctrine2Frontend {
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
      * @return array
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( Layer2AddressEntity::class )->getAllForFeList( $this->feParams, $id );
     }
 
@@ -166,7 +165,8 @@ class Layer2AddressController extends Doctrine2Frontend {
      * @param   int $vliid      ID if the VlanInterface
      * @return  View|RedirectResponse
      */
-    public function forVlanInterface( int $vliid )  {
+    public function forVlanInterface( int $vliid )
+    {
         if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $vliid ) ) ) {
             return abort( '404' );
         }

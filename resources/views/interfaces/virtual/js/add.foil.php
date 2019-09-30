@@ -26,7 +26,11 @@ const div_fastlacp   = $( "#fastlacp-area" );
 
 
 
-btn_advanced.on('click', function(e){ e.preventDefault(); div_advanced.slideToggle();btn_delete.slideToggle();});
+btn_advanced.on('click', function(e){ e.preventDefault(); div_advanced.slideToggle();btn_delete.slideToggle({
+    easing: "easeOutQuad",
+    start: function() {
+        jQuery(this).css('display','inline-flex');
+    }});});
 
 // display or hide the fastlapc area
 cb_lag_framing.change( () => { cb_lag_framing.is(":checked") ? div_fastlacp.slideDown() : div_fastlacp.slideUp() } );

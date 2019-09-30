@@ -28,8 +28,7 @@ use D2EM, Former, Redirect, Route, Validator;
 use Entities\{
     ConsoleServerConnection     as ConsoleServerConnectionEntity,
     ConsoleServer               as ConsoleServerEntity,
-    Customer                    as CustomerEntity,
-    Switcher                    as SwitcherEntity
+    Customer                    as CustomerEntity
 };
 
 use Illuminate\Http\Request;
@@ -47,7 +46,8 @@ use IXP\Http\Controllers\Doctrine2Frontend;
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class ConsoleServerConnectionController extends Doctrine2Frontend {
+class ConsoleServerConnectionController extends Doctrine2Frontend
+{
 
     /**
      * The object being added / edited
@@ -58,7 +58,8 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
     /**
      * This function sets up the frontend controller
      */
-    public function feInit() {
+    public function feInit()
+    {
 
         $this->feParams         = (object)[
 
@@ -81,7 +82,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
                     'title'      => 'Customer',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                     'controller' => 'customer',
-                    'action'     => 'view',
+                    'action'     => 'overview',
                     'idField'    => 'customerid'
                 ],
 
@@ -144,7 +145,8 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
      *
      * @return array
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( ConsoleServerConnectionEntity::class )->getAllForFeList( $this->feParams, $id );
     }
 
@@ -157,25 +159,24 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
      *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ) : array {
-        $old = request()->old();
-
+    protected function addEditPrepareForm( $id = null ) : array
+    {
         if( $id !== null ) {
-
-            if( !( $this->object = D2EM::getRepository( ConsoleServerConnectionEntity::class )->find( $id) ) ) {
+            if( !( $this->object = D2EM::getRepository( ConsoleServerConnectionEntity::class )->find( $id ) ) ) {
                 abort(404, "Console Server Connection not found." );
             }
 
             Former::populate([
-                'description'   => array_key_exists( 'description', $old ) ? $old['description']    : $this->object->getDescription(),
-                'custid'        => array_key_exists( 'custid',      $old ) ? $old['custid']         : $this->object->getCustomer()->getId(),
-                'serverid'      => array_key_exists( 'serverid',    $old ) ? $old['serverid']       : $this->object->getId(),
-                'port'          => array_key_exists( 'port',        $old ) ? $old['port']           : $this->object->getPort(),
-                'speed'         => array_key_exists( 'speed',       $old ) ? $old['speed']          : $this->object->getSpeed(),
-                'parity'        => array_key_exists( 'parity',      $old ) ? $old['parity']         : $this->object->getParity(),
-                'stopbits'      => array_key_exists( 'stopbits',    $old ) ? $old['stopbits']       : $this->object->getStopbits(),
-                'flowcontrol'   => array_key_exists( 'flowcontrol', $old ) ? $old['flowcontrol']    : $this->object->getFlowcontrol(),
-                'autobaud'      => array_key_exists( 'autobaud',    $old ) ? $old['autobaud']       : ( $this->object->getAutobaud() ?? false ),
+                'description'   => request()->old( 'description',    $this->object->getDescription() ),
+                'custid'        => request()->old( 'custid',         $this->object->getCustomer()->getId() ),
+                'serverid'      => request()->old( 'serverid',       $this->object->getId() ),
+                'port'          => request()->old( 'port',           $this->object->getPort() ),
+                'speed'         => request()->old( 'speed',          $this->object->getSpeed() ),
+                'parity'        => request()->old( 'parity',         $this->object->getParity() ),
+                'stopbits'      => request()->old( 'stopbits',       $this->object->getStopbits() ) ,
+                'flowcontrol'   => request()->old( 'flowcontrol',    $this->object->getFlowcontrol() ),
+                'autobaud'      => request()->old( 'autobaud',       ( $this->object->getAutobaud() ?? false ) ),
+                'notes'         => request()->old( 'notes',       $this->object->getNotes() )
             ]);
         }
 
@@ -183,7 +184,7 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
             'object'                => $this->object,
             'custs'                 => D2EM::getRepository( CustomerEntity::class )->getAsArray(),
             'servers'               => D2EM::getRepository( ConsoleServerEntity::class )->getAsArray(),
-            'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : null )
+            'cs'                    => request()->input( "serverid", false )
         ];
     }
 
@@ -197,7 +198,8 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
      *
      * @throws
      */
-    public function doStore( Request $request ) {
+    public function doStore( Request $request )
+    {
         $validator = Validator::make( $request->all(), [
             'description'           => 'required|string|max:255',
             'custid'                => 'required|int|exists:Entities\Customer,id',
@@ -235,7 +237,6 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
                     }
                 }
             }
-
         });
 
         if( $validator->fails() ) {
@@ -253,12 +254,13 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
         $this->object->setCustomer(      D2EM::getRepository( CustomerEntity::class  )->find( $request->input( 'custid'      ) ) );
         $this->object->setConsoleServer( D2EM::getRepository( ConsoleServerEntity::class  )->find( $request->input( 'serverid'    ) ) );
 
-        D2EM::flush($this->object);
+        D2EM::flush();
 
         return true;
     }
 
-    protected function preList() {
+    protected function preList()
+    {
         $this->data[ 'params' ]         = [ 'css' => D2EM::getRepository( ConsoleServerEntity::class )->getAsArray( ) ];
     }
 
@@ -269,8 +271,8 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
      *
      * @return View
      */
-    public function listPort( int $port = null ){
-
+    public function listPort( int $port = null )
+    {
         /** @var ConsoleServerEntity $cs */
         if( $port && !( $cs = D2EM::getRepository( ConsoleServerEntity::class )->find( $port ) ) ) {
             abort(404);
@@ -291,7 +293,6 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
 
         $this->data[ 'params' ][ "cs" ]                 = $cs->getId();
 
-
         return $this->display( 'list' );
     }
 
@@ -299,11 +300,11 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
     /**
      * @inheritdoc
      */
-    protected function postStoreRedirect() {
-
+    protected function postStoreRedirect()
+    {
         if( request()->input( "serverid" ) && ( $cs = D2EM::getRepository( ConsoleServerEntity::class )->find( request()->input( "serverid" ) ) ) ){
-            return route( 'console-server-connection@listPort' , [ "id" => request()->input( "serverid" ) ] ) ;
-        }else{
+            return route( 'console-server-connection@listPort' , [ "port" => request()->input( "serverid" ) ] ) ;
+        } else {
             return route( 'console-server-connection@list' );
         }
     }
@@ -313,7 +314,8 @@ class ConsoleServerConnectionController extends Doctrine2Frontend {
      *
      * @return null|string
      */
-    protected function postDeleteRedirect() {
+    protected function postDeleteRedirect()
+    {
         return route('console-server-connection@listPort' , [ 'port' => $this->object->getConsoleServer()->getId() ] );
     }
 

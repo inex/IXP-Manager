@@ -76,7 +76,8 @@ class StatisticsController extends Controller
      *
      * @param StatisticsRequest $r
      */
-    private function processGraphParams( StatisticsRequest $r ) {
+    private function processGraphParams( StatisticsRequest $r )
+    {
         $r->period   = Graph::processParameterPeriod(   $r->input( 'period',   '' ) );
         $r->category = Graph::processParameterCategory( $r->input( 'category', '' ) );
         $r->protocol = Graph::processParameterProtocol( $r->input( 'protocol', '' ) );
@@ -88,11 +89,13 @@ class StatisticsController extends Controller
      * Show overall IXP graphs
      *
      * @param string $category Category of graph to show (e.g. bits / pkts)
-     * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
-     * @throws \Doctrine\ORM\ORMException
+     *
+     * @return View
+     *
+     * @throws
      */
-    public function ixp( string $category = Graph::CATEGORY_BITS ){
+    public function ixp( string $category = Graph::CATEGORY_BITS ) : View
+    {
         $ixp      = D2EM::getRepository( IXPEntity::class )->getDefault();
         $grapher  = App::make('IXP\Services\Grapher');
         $category = Graph::processParameterCategory( $category, true );
@@ -112,11 +115,12 @@ class StatisticsController extends Controller
      * @param int $infraid ID of the infrastructure to show the graph of
      * @param string $category Category of graph to show (e.g. bits / pkts)
      *
-     * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return View
      *
      * @throws
      */
-    public function infrastructure( int $infraid = 0, string $category = Graph::CATEGORY_BITS ){
+    public function infrastructure( int $infraid = 0, string $category = Graph::CATEGORY_BITS ) : View
+    {
         /** @var InfrastructureEntity[] $eInfras */
         $eInfras  = D2EM::getRepository( InfrastructureEntity::class )->findBy( [], [ 'name' => 'ASC' ] );
         $grapher  = App::make('IXP\Services\Grapher');
@@ -148,15 +152,16 @@ class StatisticsController extends Controller
      *
      * @param int $vlanid ID of the VLAN to show the graph of
      * @param string $protocol IPv4/6
-     *
      * @param string $category
-     * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
      *
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
-     * @throws \IXP\Exceptions\Services\Grapher\ConfigurationException
+     * @return View
+     *
+     * @throws
      */
-    public function vlan( int $vlanid = 0, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ){
+    public function vlan( int $vlanid = 0, string $protocol = Graph::PROTOCOL_IPV4, string $category = Graph::CATEGORY_BITS ) : View
+    {
+
+
         /** @var VlanEntity[] $eVlans */
         $eVlans   = D2EM::getRepository( VlanEntity::class )->getAndCache( VlanRepository::TYPE_NORMAL, 'name', false );
         $grapher  = App::make('IXP\Services\Grapher');
@@ -205,11 +210,12 @@ class StatisticsController extends Controller
      * @param int $switchid ID of the switch to show the graph of
      * @param string $category Category of graph to show (e.g. bits / pkts)
      *
-     * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return View
      *
      * @throws
      */
-    public function switch( int $switchid = 0, string $category = Graph::CATEGORY_BITS ){
+    public function switch( int $switchid = 0, string $category = Graph::CATEGORY_BITS ) : View
+    {
         /** @var SwitchEntity[] $eSwitches */
         $eSwitches = D2EM::getRepository( SwitchEntity::class )->getAndCache( true );
         $grapher = App::make('IXP\Services\Grapher');
@@ -243,14 +249,15 @@ class StatisticsController extends Controller
      * @param string $trunkid ID of the trunk to show the graph of
      * @param string $category Category of graph to show (e.g. bits / pkts)
      *
-     * @return $this|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return RedirectResponse|View
      *
      * @throws
      */
-    public function trunk( string $trunkid = null, string $category = Graph::CATEGORY_BITS ){
+    public function trunk( string $trunkid = null, string $category = Graph::CATEGORY_BITS )
+    {
         if( !is_array( config('grapher.backends.mrtg.trunks') ) || !count( config('grapher.backends.mrtg.trunks') ) ) {
             AlertContainer::push(
-                "Trunk graphs have not been configured. Please see <a target='_blank' href=\"http://docs.ixpmanager.org/features/grapher/\">this documentation</a> for instructions.",
+                "Trunk graphs have not been configured. Please see <a target='_blank' href=\"https://docs.ixpmanager.org/grapher/introduction/\">this documentation</a> for instructions.",
                 Alert::DANGER
             );
             return redirect('');
@@ -288,11 +295,12 @@ class StatisticsController extends Controller
      *
      * @param StatisticsRequest $r
      *
-     * @return View|\Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector
+     * @return View
      *
      * @throws
      */
-    public function members( StatisticsRequest $r ) {
+    public function members( StatisticsRequest $r ): View
+    {
 
         if( !CustomerGraph::authorisedForAllCustomers() ) {
             abort( 403, "You are not authorised to view this member's graphs." );
@@ -369,7 +377,8 @@ class StatisticsController extends Controller
      *
      * @throws
      */
-    public function member( StatisticsRequest $r, int $id = null ) {
+    public function member( StatisticsRequest $r, int $id = null )
+    {
 
         if( $id === null && Auth::check() ) {
             $id = Auth::user()->getCustomer()->getId();
@@ -412,11 +421,13 @@ class StatisticsController extends Controller
      * @param   StatisticsRequest     $r
      * @param   string                $type       type
      * @param   integer               $typeid     ID of type
+     *
      * @return  View
      *
      * @throws
      */
-    public function memberDrilldown( StatisticsRequest $r, string $type, int $typeid ) {
+    public function memberDrilldown( StatisticsRequest $r, string $type, int $typeid ): View
+    {
         /** @var CustomerEntity $c */
         switch( strtolower( $type ) ) {
             case 'agg':
@@ -466,11 +477,13 @@ class StatisticsController extends Controller
      * @param Request $r
      * @param int $vliid
      * @param string $protocol
-     * @return $this|RedirectResponse
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
-     * @throws \Illuminate\Auth\Access\AuthorizationException
+     *
+     * @return View|RedirectResponse
+     *
+     * @throws
      */
-    public function latency( Request $r, int $vliid, string $protocol ){
+    public function latency( Request $r, int $vliid, string $protocol )
+    {
         /** @var VlanInterfaceEntity $vli */
         if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $vliid ) ) ){
             abort( 404, 'Unknown VLAN interface' );
@@ -505,8 +518,12 @@ class StatisticsController extends Controller
 
     /**
      * sFlow Peer to Peer statistics
-     * @throws \Doctrine\ORM\ORMException
-     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
+     *
+     * @param Request $r
+     * @param null $cid
+     *
+     * @return RedirectResponse|View
+     * @throws
      */
     public function p2p( Request $r, $cid = null )
     {
@@ -650,10 +667,12 @@ class StatisticsController extends Controller
      * Show daily traffic for customers in a table.
      *
      * @param Request $r
-     * @return \Illuminate\Contracts\View\Factory|View
-     * @throws \Doctrine\ORM\ORMException
+     *
+     * @return View
+     *
+     * @throws
      */
-    public function leagueTable( Request $r )
+    public function leagueTable( Request $r ): View
     {
         $metrics = [
             'Total'   => 'data',

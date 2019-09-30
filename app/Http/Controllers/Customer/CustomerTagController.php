@@ -28,8 +28,11 @@ use D2EM, Former, Redirect, Validator;
 use Entities\{
     CustomerTag         as CustomerTagEntity
 };
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\{
+    Request,
+    RedirectResponse
+};
+
 use IXP\Http\Controllers\Doctrine2Frontend;
 
 
@@ -112,7 +115,8 @@ class CustomerTagController extends Doctrine2Frontend {
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
      * @return array
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( CustomerTagEntity::class )->getAllForFeList( $this->feParams, $id );
     }
 
@@ -123,21 +127,19 @@ class CustomerTagController extends Doctrine2Frontend {
      * @param   int $id ID of the row to edit
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array {
-
-        $old = request()->old();
-
-        if( $id !== null ) {
+    protected function addEditPrepareForm( $id = null ): array
+    {
+        if( $id ) {
 
             if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( $id ) ) ) {
                 abort(404);
             }
 
             Former::populate([
-                'tag'                   => array_key_exists( 'tag',             $old ) ? $old['tag']            : $this->object->getTag(),
-                'description'           => array_key_exists( 'description',     $old ) ? $old['description']    : $this->object->getDescription(),
-                'display_as'            => array_key_exists( 'display_as',      $old ) ? $old['display_as']     : $this->object->getDisplayAs(),
-                'internal_only'         => array_key_exists( 'internal_only',   $old ) ? $old['internal_only']  : ( $this->object->isInternalOnly() ? 1 : 0 ),
+                'tag'                   => request()->old( 'tag',               $this->object->getTag() ),
+                'description'           => request()->old( 'description',       $this->object->getDescription() ),
+                'display_as'            => request()->old( 'display_as',        $this->object->getDisplayAs() ),
+                'internal_only'         => request()->old( 'internal_only',     ( $this->object->isInternalOnly() ? 1 : 0 ) ),
             ]);
         }
 
@@ -185,7 +187,7 @@ class CustomerTagController extends Doctrine2Frontend {
         $this->object->setDisplayAs(                $request->input( 'display_as'   ) );
         $this->object->setInternalOnly( $request->input( 'internal_only' ) ? 1 : 0 );
 
-        D2EM::flush($this->object);
+        D2EM::flush();
 
         return true;
     }
@@ -194,10 +196,10 @@ class CustomerTagController extends Doctrine2Frontend {
     /**
      * @inheritdoc
      */
-    protected function preDelete(): bool {
+    protected function preDelete(): bool
+    {
         request()->session()->remove( "cust-list-tag" );
         return true;
     }
-
 
 }

@@ -24,7 +24,7 @@
 namespace Entities;
 
 use Carbon\Carbon;
-use Auth, D2EM;
+use Auth, D2EM, Str;
 use Doctrine\Common\Collections\ArrayCollection;
 
 use IXP\Mail\PatchPanelPort\{
@@ -1121,7 +1121,7 @@ class PatchPanelPort
         $this->customer = $customer;
 
         if( $customer != null && !$this->getLoaCode() ) {
-            $this->setLoaCode(str_random(25));
+            $this->setLoaCode( Str::random(25));
         } else if( $customer == null ) {
             $this->setLoaCode('');
         }
