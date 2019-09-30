@@ -409,26 +409,11 @@ class CoreBundleController extends Common
             abort('404', 'Unknown Core bundle');
         }
 
-        foreach( $cb->getCoreLinks() as $cl ){
-            /** @var CoreLinkEntity $cl */
-            foreach( $cl->getCoreInterfaces() as $ci ){
-                /** @var CoreInterfaceEntity $ci */
-                $pi = $ci->getPhysicalInterface();
-
-                $vi = $pi->getVirtualInterface();
-
-                D2EM::remove( $ci );
-                D2EM::remove( $pi );
-                D2EM::remove( $vi );
-            }
-            D2EM::remove( $cl );
+        if( D2EM::getRepository( CoreBundleEntity::class )->delete( $cb ) ) {
+            AlertContainer::push( "Core bundle deleted successfully.", Alert::SUCCESS );
+        } else {
+            AlertContainer::push( "Error: core bundle could not be deleted. Please open a GitHub bug report.", Alert::DANGER );
         }
-
-        D2EM::remove( $cb );
-
-        D2EM::flush();
-
-        AlertContainer::push( 'Core bundle deleted successfully.', Alert::SUCCESS );
 
         return response()->json( [ 'success' => true ] );
 
