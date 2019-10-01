@@ -11,8 +11,6 @@
                 { targets: 0,  responsivePriority: 1 },    // visibility priority to the first column - https://datatables.net/reference/option/columns.responsivePriority
                 { targets: -1, responsivePriority: 2 },    // visibility priority to the last column
                 { targets: 2,  type: "string" },
-                { targets: 6,  orderData: 7 },
-                { targets: 7,  visible: false, searchable: false },
             ],
         });
 

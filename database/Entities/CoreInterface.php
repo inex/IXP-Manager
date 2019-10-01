@@ -80,7 +80,7 @@ class CoreInterface
      *
      * @return CoreLinkEntity
      */
-    public function getCoreLinkA(): CoreLinkEntity
+    public function getCoreLinkA()
     {
         return $this->coreLink;
     }
@@ -90,7 +90,7 @@ class CoreInterface
      *
      * @return CoreLinkEntity
      */
-    public function getCoreLinkB(): CoreLinkEntity
+    public function getCoreLinkB()
     {
         return $this->coreLink2;
     }

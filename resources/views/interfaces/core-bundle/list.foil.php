@@ -48,9 +48,6 @@ $this->layout( 'layouts/ixpv4' );
                             Capacity
                         </th>
                         <th>
-                            Raw speed
-                        </th>
-                        <th>
                             Action
                         </th>
                     </tr>
@@ -79,11 +76,8 @@ $this->layout( 'layouts/ixpv4' );
                             <td>
                                 <?= $t->ee( $cb->getSwitchSideX( false )->getName() )  ?>
                             </td>
-                            <td>
+                            <td data-sort="<?= count( $cb->getCoreLinks() ) * $cb->getSpeedPi() ?>" >
                                 <?= $t->scaleBits( count( $cb->getCoreLinks() ) * $cb->getSpeedPi() * 1000000, 0 )  ?>
-                            </td>
-                            <td>
-                                <?= count( $cb->getCoreLinks() ) * $cb->getSpeedPi() ?>
                             </td>
                             <td>
                                 <div class="btn-group btn-group-sm" role="group">
