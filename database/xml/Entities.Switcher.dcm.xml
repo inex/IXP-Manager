@@ -32,8 +32,6 @@
     <field name="snmp_engine_time" type="bigint" nullable="true"/>
     <field name="snmp_system_uptime" type="bigint" nullable="true"/>
     <field name="snmp_engine_boots" type="bigint" nullable="true"/>
-    <field name="city" type="string" nullable="true"/>
-    <field name="country" type="string" length="2" nullable="true"/>
     <field name="notes" type="text" nullable="true"/>
     <many-to-one field="Infrastructure" target-entity="Entities\Infrastructure" inversed-by="Switchers">
       <join-columns>

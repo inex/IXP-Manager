@@ -377,6 +377,8 @@
       <field name="shortname" type="string" size="255" unique="true" uuid="448524b7-b818-46b1-9635-cb1088cfacdd"/>
       <field name="tag" type="string" size="255" uuid="cdd75bf6-1d5a-4570-8190-ebd6adf2b59e"/>
       <field name="address" type="string" size="255" uuid="abafbf08-7aac-4492-8a10-e5fa396c9eba"/>
+      <field name="city" type="string" size="50" uuid="d6816b48-6189-4942-b917-4991683fd38d"/>
+      <field name="country" type="string" size="2" uuid="08969832-3904-4415-9394-80dd64b815d9"/>
       <field name="nocphone" type="string" size="255" uuid="cb01144f-1a94-46d3-85a7-3a8d339b7bf4"/>
       <field name="nocfax" type="string" size="255" uuid="9a62d766-6422-4e6d-939f-8d946b1ff55d"/>
       <field name="nocemail" type="string" size="255" uuid="cd1e2848-4e67-44c7-a0d4-f09b938a6709"/>
@@ -453,8 +455,6 @@
       <field name="snmp_engine_time" type="bigint" uuid="65b18873-7eb7-48f7-9285-4713689df4fd"/>
       <field name="snmp_system_uptime" type="bigint" uuid="462d7e2f-f3c5-4924-8e1c-f35fd1875522"/>
       <field name="snmp_engine_boots" type="bigint" uuid="588538bb-1949-4651-8679-6e7e44a410ab"/>
-      <field name="city" type="string" uuid="512d8316-44dd-4807-9341-1f3e2ca89da7"/>
-      <field name="country" type="string" size="2" uuid="1df2af21-8716-48e1-bc78-b6b2ce4a32b5"/>
       <field name="notes" type="text" uuid="c56c30fa-0c98-4025-ae71-6c653d0b9624"/>
       <orm-attributes>
         <attribute name="table">switch</attribute>
