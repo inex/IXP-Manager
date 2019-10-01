@@ -215,6 +215,7 @@ class LookingGlass extends Controller
             'content' => json_decode( $this->lg()->protocolRoute($protocol,$network,intval($mask)) ),
             'source'  => 'protocol',
             'name'    => $protocol,
+            'lg'      => $this->lg(),
             'net' => urldecode($network.'/'.$mask),
         ]);
     }
@@ -234,6 +235,7 @@ class LookingGlass extends Controller
             'content' => json_decode( $this->lg()->exportRoute($protocol,$network,(int)$mask) ),
             'source'  => 'export',
             'name'    => $protocol,
+            'lg'      => $this->lg(),
             'net' => urldecode($network.'/'.$mask),
         ]);
     }
