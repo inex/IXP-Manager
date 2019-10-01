@@ -64,10 +64,10 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'shortname', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary'];
+            return ['__isInitialized__', 'name', 'shortname', 'country', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary'];
         }
 
-        return ['__isInitialized__', 'name', 'shortname', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary'];
+        return ['__isInitialized__', 'name', 'shortname', 'country', 'id', 'IXP', 'Switchers', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'Vlans', 'peeringdb_ix_id', 'ixf_ix_id', '' . "\0" . 'Entities\\Infrastructure' . "\0" . 'isPrimary'];
     }
 
     /**
@@ -384,6 +384,28 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIxfIxId', [$id]);
 
         return parent::setIxfIxId($id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCountry(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCountry', []);
+
+        return parent::getCountry();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCountry(string $country): \Entities\Infrastructure
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCountry', [$country]);
+
+        return parent::setCountry($country);
     }
 
 }

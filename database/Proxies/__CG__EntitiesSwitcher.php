@@ -64,10 +64,10 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'model', 'hostname', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'os', 'active', 'osDate', 'osVersion', 'lastPolled', 'snmp_engine_boots', 'snmp_engine_time', 'snmp_system_uptime', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor'];
+            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'model', 'hostname', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'os', 'active', 'osDate', 'osVersion', 'lastPolled', 'snmp_engine_boots', 'country', 'city', 'snmp_engine_time', 'snmp_system_uptime', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor'];
         }
 
-        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'model', 'hostname', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'os', 'active', 'osDate', 'osVersion', 'lastPolled', 'snmp_engine_boots', 'snmp_engine_time', 'snmp_system_uptime', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor'];
+        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'model', 'hostname', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'os', 'active', 'osDate', 'osVersion', 'lastPolled', 'snmp_engine_boots', 'country', 'city', 'snmp_engine_time', 'snmp_system_uptime', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor'];
     }
 
     /**
@@ -835,6 +835,50 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreBundles', []);
 
         return parent::getCoreBundles();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCountry(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCountry', []);
+
+        return parent::getCountry();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCountry(string $country): \Entities\Switcher
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCountry', [$country]);
+
+        return parent::setCountry($country);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCity(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCity', []);
+
+        return parent::getCity();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCity(string $city): \Entities\Switcher
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCity', [$city]);
+
+        return parent::setCity($city);
     }
 
 }

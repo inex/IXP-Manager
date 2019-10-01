@@ -13,6 +13,7 @@
     </field>
     <field name="peeringdb_ix_id" type="bigint" nullable="true"/>
     <field name="ixf_ix_id" type="bigint" nullable="true"/>
+    <field name="country" type="string" length="2" nullable="true"/>
     <unique-constraints>
       <unique-constraint name="IXPSN" columns="shortname,ixp_id"/>
     </unique-constraints>

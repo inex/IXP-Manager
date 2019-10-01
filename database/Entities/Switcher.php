@@ -166,6 +166,17 @@ class Switcher
     protected $snmp_engine_boots;
 
 
+    /**
+     * @var string
+     */
+    protected $country;
+
+
+    /**
+     * @var string
+     */
+    protected $city;
+
 
     /**
      * @var int
@@ -1122,4 +1133,42 @@ class Switcher
         return $cbs;
     }
 
+
+    /**
+     * @return string
+     */
+    public function getCountry(): string
+    {
+        return $this->country;
+    }
+
+    /**
+     * @param string $country
+     * @return Switcher
+     */
+    public function setCountry( string $country ): Switcher
+    {
+        $this->country = $country;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCity(): string
+    {
+        return $this->city;
+    }
+
+    /**
+     * @param string $city
+     * @return Switcher
+     */
+    public function setCity( string $city ): Switcher
+    {
+        $this->city = $city;
+        return $this;
+    }
+
+    
 }
