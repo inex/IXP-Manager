@@ -444,16 +444,16 @@ class Location
     /**
      * @return string
      */
-    public function getCountry(): string
+    public function getCountry()
     {
         return $this->country;
     }
 
     /**
      * @param string $country
-     * @return Switcher
+     * @return Location
      */
-    public function setCountry( string $country ): Switcher
+    public function setCountry( string $country ): Location
     {
         $this->country = $country;
         return $this;
@@ -462,16 +462,16 @@ class Location
     /**
      * @return string
      */
-    public function getCity(): string
+    public function getCity()
     {
         return $this->city;
     }
 
     /**
      * @param string $city
-     * @return Switcher
+     * @return Location
      */
-    public function setCity( string $city ): Switcher
+    public function setCity( string $city ): Location
     {
         $this->city = $city;
         return $this;

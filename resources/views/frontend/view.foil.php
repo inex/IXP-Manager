@@ -218,6 +218,12 @@
 
                                                             <?= $t->ee( $t->data[ 'item' ][ $col ] ) ?>
 
+                                                        <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'COUNTRY'] ): ?>
+
+                                                            <?php if( $t->ee( $t->data[ 'item' ][ $col ] ) ): ?>
+                                                                <?= array_column(Countries::getList(), 'name', 'iso_3166_2' )[ $t->ee( $t->data[ 'item' ][ $col ] ) ] ?>
+                                                            <?php endif; ?>
+
                                                         <?php else: ?>
 
                                                             Type?

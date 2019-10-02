@@ -389,7 +389,7 @@ class Infrastructure extends \Entities\Infrastructure implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
-    public function getCountry(): string
+    public function getCountry()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCountry', []);

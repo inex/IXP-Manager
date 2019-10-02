@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Cache, D2EM, Former, Redirect, Validator;
+use Cache, Countries, D2EM, Former, Redirect, Validator;
 
 use Entities\{
     Infrastructure      as InfrastructureEntity,
@@ -99,7 +99,11 @@ class InfrastructureController extends Doctrine2Frontend
         ];
 
         // display the same information in the view as the list
-        $this->feParams->viewColumns = $this->feParams->listColumns;
+        $this->feParams->viewColumns = array_merge(
+            $this->feParams->listColumns, [
+                'country'   => [ 'title' => 'Country', 'type' => self::$FE_COL_TYPES[ 'COUNTRY' ] ],
+            ]
+        );
 
 
     }
@@ -135,11 +139,13 @@ class InfrastructureController extends Doctrine2Frontend
                 'name'             => request()->old( 'name',      $this->object->getName() ),
                 'shortname'        => request()->old( 'shortname', $this->object->getShortname() ),
                 'primary'          => request()->old( 'primary', ( $this->object->getIsPrimary() ? 1 : 0 ) ),
+                'country'          => request()->old( 'country', in_array( $this->object->getCountry(),  array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ) ? $this->object->getCountry() : null ),
             ]);
         }
 
         return [
-            'object'          => $this->object,
+            'object'            => $this->object,
+            'countries'         => Countries::getList('name' )
         ];
     }
 
@@ -158,6 +164,7 @@ class InfrastructureController extends Doctrine2Frontend
         $validator = Validator::make( $request->all(), [
             'name'                  => 'required|string|max:255|unique:Entities\Infrastructure,name'. ( $request->input('id') ? ','. $request->input('id') : '' ),
             'shortname'             => 'required|string|max:255',
+            'country'               => 'required|string|max:2|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
         ]);
 
         if( $validator->fails() ) {
@@ -175,6 +182,7 @@ class InfrastructureController extends Doctrine2Frontend
 
         $this->object->setName(                 $request->input( 'name'         ) );
         $this->object->setShortname(            $request->input( 'shortname'    ) );
+        $this->object->setCountry(              $request->input( 'country'      ) );
         $this->object->setIxfIxId(          $request->input( 'ixf_ix_id'    ) ? $request->input( 'ixf_ix_id'    ) : null );
         $this->object->setPeeringdbIxId(    $request->input( 'pdb_ixp'      ) ? $request->input( 'pdb_ixp'      ) : null );
         $this->object->setIsPrimary(   $request->input( 'primary'      ) ?? 0 );

@@ -89,6 +89,8 @@ class LocationControllerTest extends DuskTestCase
                 ->type( 'tag',              'test tag' )
                 ->select( 'pdb_facility_id', 4 )
                 ->type( 'address',          'test address' )
+                ->type( 'city',             'Dublin' )
+                ->select('country',        'IE' )
                 ->type( 'nocphone',         '0209101231' )
                 ->type( 'nocfax',           '0209101232' )
                 ->type( 'nocemail',         'bad-noc-email' )
@@ -122,6 +124,8 @@ class LocationControllerTest extends DuskTestCase
             $this->assertEquals( 'test tag',                   $location->getTag() );
             $this->assertEquals( '4',                          $location->getPdbFacilityId() );
             $this->assertEquals( 'test address',               $location->getAddress() );
+            $this->assertEquals( 'Dublin',                     $location->getCity() );
+            $this->assertEquals( 'IE',                         $location->getCountry() );
             $this->assertEquals( '0209101231',                 $location->getNocphone() );
             $this->assertEquals( '0209101232',                 $location->getNocfax() );
             $this->assertEquals( 'nocemail@example.com',       $location->getNocemail() );
@@ -139,6 +143,8 @@ class LocationControllerTest extends DuskTestCase
                     ->assertInputValue( 'shortname',            'test' )
                     ->assertInputValue( 'tag',                  'test tag' )
                     ->assertSelected( 'pdb_facility_id',        4 )
+                    ->assertInputValue( 'city',                   'Dublin' )
+                    ->assertSelected( 'country',                'IE' )
                     ->assertInputValue( 'address',              'test address' )
                     ->assertInputValue( 'nocphone',             '0209101231' )
                     ->assertInputValue( 'nocfax',               '0209101232' )
@@ -163,6 +169,8 @@ class LocationControllerTest extends DuskTestCase
             $this->assertEquals( 'test tag',                $location->getTag() );
             $this->assertEquals( '10',                      $location->getPdbFacilityId() );
             $this->assertEquals( 'test address',            $location->getAddress() );
+            $this->assertEquals( 'Dublin',                  $location->getCity() );
+            $this->assertEquals( 'IE',                      $location->getCountry() );
             $this->assertEquals( '0209101231',              $location->getNocphone() );
             $this->assertEquals( '0209101232',              $location->getNocfax() );
             $this->assertEquals( 'nocemail@example.com',       $location->getNocemail() );
@@ -204,6 +212,8 @@ class LocationControllerTest extends DuskTestCase
             $this->assertEquals( 'test tag',                $location->getTag() );
             $this->assertEquals( '10',                      $location->getPdbFacilityId() );
             $this->assertEquals( 'test address',            $location->getAddress() );
+            $this->assertEquals( 'Dublin',                  $location->getCity() );
+            $this->assertEquals( 'IE',                      $location->getCountry() );
             $this->assertEquals( '0209101231',              $location->getNocphone() );
             $this->assertEquals( '0209101232',              $location->getNocfax() );
             $this->assertEquals( 'nocemail@example.com',       $location->getNocemail() );
@@ -221,6 +231,8 @@ class LocationControllerTest extends DuskTestCase
                     ->type( 'shortname',        'test2' )
                     ->type( 'tag',              'test tag2' )
                     ->select( 'pdb_facility_id', 11 )
+                    ->select( 'country',        'FR' )
+                    ->type( 'city',             'Paris' )
                     ->type( 'address',          'test address2' )
                     ->type( 'nocphone',         '0209101235' )
                     ->type( 'nocfax',           '0209101236' )
@@ -241,6 +253,8 @@ class LocationControllerTest extends DuskTestCase
             $this->assertEquals( 'test tag2',                   $location->getTag() );
             $this->assertEquals( '11',                          $location->getPdbFacilityId() );
             $this->assertEquals( 'test address2',               $location->getAddress() );
+            $this->assertEquals( 'Paris',                       $location->getCity() );
+            $this->assertEquals( 'FR',                          $location->getCountry() );
             $this->assertEquals( '0209101235',                  $location->getNocphone() );
             $this->assertEquals( '0209101236',                  $location->getNocfax() );
             $this->assertEquals( 'nocemail2@example.com',          $location->getNocemail() );
