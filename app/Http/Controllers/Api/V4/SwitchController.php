@@ -28,6 +28,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 use Entities\{
+    CoreBundle as CoreBundleEntity,
     Switcher as SwitcherEntity, SwitchPort as SwitchPortEntity, SwitchPort
 };
 
@@ -91,6 +92,55 @@ class SwitchController extends Controller {
     public function switchPort( Request $request, int $id ) {
         $listPorts = D2EM::getRepository(SwitcherEntity::class )->getAllPorts( $id ,[ SwitchPortEntity::TYPE_CORE,SwitchPortEntity::TYPE_UNSET ], $request->input('spIdsExcluded' ), true );
         return response()->json( [ 'listPorts' => $listPorts ] );
+    }
+
+
+    /**
+     * Get the switch status for monitoring purposes
+     */
+    public function status( Request $request, int $id ) {
+        if( !( $switch = D2EM::getRepository( SwitcherEntity::class )->find( $id ) ) ) {
+            abort( 404, "Unknown switch" );
+        }
+
+        return response()->json( $switch->status() );
+    }
+
+    /**
+     * Get the switch status for monitoring purposes
+     */
+    public function coreBundlesStatus( Request $request, int $id ) {
+        /** @var SwitcherEntity $switch */
+        if( !( $switch = D2EM::getRepository( SwitcherEntity::class )->find( $id ) ) ) {
+            abort( 404, "Unknown switch" );
+        }
+
+        $okay = true;
+        $msgs = [];
+
+        /** @var CoreBundleEntity $cb */
+        foreach( $switch->getCoreBundles() as $cb ) {
+
+            if( $cb->getEnabled() ) {
+                $linksup      = count( $cb->getCoreLinksWithIfOperStateX() ); // with no args this defaults to X = oper state up for enabled links
+                $linksenabled = count( $cb->getCoreLinksEnabled() );
+
+                if( $linksup === $linksenabled ) {
+                    $msgs[] = $cb->getSwitchSideX( true )->getName() . ' - ' . $cb->getSwitchSideX( false )->getName() . " OK - {$linksup}/${linksenabled} links up";
+                } else {
+                    $okay = false;
+                    $msgs[] = 'ISSUE: ' . $cb->getSwitchSideX( true )->getName() . ' - ' . $cb->getSwitchSideX( false )->getName() . " has {$linksup}/${linksenabled} links up";
+                }
+            } else {
+                $msgs[] = 'Ignoring ' . $cb->getSwitchSideX( true )->getName() . ' - ' . $cb->getSwitchSideX( false )->getName() . ' as core bundle disabled';
+            }
+        }
+
+        if( $msgs === [] ) {
+            $msgs[] = "No core bundles configured for this switch";
+        }
+
+        return response()->json( [ 'status' => $okay, 'switchname' => $switch->getName(), 'msgs' => $msgs ] );
     }
 
 

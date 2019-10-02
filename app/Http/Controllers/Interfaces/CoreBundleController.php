@@ -271,29 +271,22 @@ class CoreBundleController extends Common
         if( !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $request->input( 'id' ) ) ) ) {
             abort('404', 'Unknown Core bundle');
         }
-
         foreach( $cb->getCoreLinks() as $cl ){
             /** @var CoreLinkEntity $cl */
             foreach( $cl->getCoreInterfaces() as $ci ){
                 /** @var CoreInterfaceEntity $ci */
                 $pi = $ci->getPhysicalInterface();
                 $vi = $pi->getVirtualInterface();
-
                 D2EM::remove( $ci );
                 D2EM::remove( $pi );
                 D2EM::remove( $vi );
             }
             D2EM::remove( $cl );
         }
-
         D2EM::remove( $cb );
-
         D2EM::flush();
-
         Log::notice( $request->user()->getUsername()." deleted a core bundle (id: " . $request->input( 'id' ) . ')' );
-
         AlertContainer::push( 'Core bundle deleted.', Alert::SUCCESS );
-
         return Redirect::to( route( "core-bundle@list" ) );
     }
 }

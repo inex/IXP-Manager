@@ -881,7 +881,11 @@ class Switcher extends EntityRepository
                         s.asn as asn, 
                         s.loopback_ip as loopback_ip, 
                         s.loopback_name as loopback_name,
-                        s.mgmt_mac_address as mgmt_mac_address
+                        s.mgmt_mac_address as mgmt_mac_address,
+                        s.snmp_engine_boots as snmp_engine_boots,
+                        s.snmp_engine_time as snmp_engine_time,
+                        s.snmp_system_uptime as snmp_system_uptime
+                            
                 FROM Entities\\Switcher s
                 LEFT JOIN s.Infrastructure i
                 LEFT JOIN s.Cabinet c

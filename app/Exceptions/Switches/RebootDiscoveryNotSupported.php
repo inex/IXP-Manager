@@ -1,5 +1,7 @@
 <?php
 
+namespace IXP\Exceptions\Switches;
+
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
@@ -21,10 +23,6 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-#
-# Basic version information
-#
+use Exception;
 
-define( 'APPLICATION_VERSION', '5.2.0' );
-define( 'APPLICATION_VERDATE', '2019093000' );
-
+class RebootDiscoveryNotSupported extends Exception {}

@@ -25,6 +25,14 @@ namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
 
+use Entities\{
+    CoreBundle as CoreBundleEntity,
+    CoreLink as CoreLinkEntity,
+    CoreInterface as CoreInterfaceEntity,
+    Customer as CustomerEntity,
+};
+
+use Exception;
 
 /**
  * CoreBundle
@@ -34,4 +42,67 @@ use Doctrine\ORM\EntityRepository;
  */
 class CoreBundle extends EntityRepository
 {
+    /**
+     * Return all the core bundles for a customer
+     *
+     * @param CustomerEntity $c
+     *
+     * @return array
+     */
+    public function getAllForCustomer( CustomerEntity $c ) {
+        return $this->getEntityManager()->createQuery(
+            "SELECT cb
+                    FROM Entities\\CoreBundle cb
+                    LEFT JOIN cb.coreLinks cl
+                    LEFT JOIN cl.coreInterfaceSideA ci
+                    LEFT JOIN ci.physicalInterface pi
+                    LEFT JOIN pi.VirtualInterface vi
+                    LEFT JOIN vi.Customer c
+                    WHERE c.id = ?1" )
+            ->setParameter( 1, $c->getId() )
+            ->getResult();
+    }
+
+
+    /**
+     * Delete the Core Bundle ans everything related.
+     *
+     * @param CoreBundleEntity $cb The Core Bundle Object
+     *
+     * @return bool
+     *
+     * @throws
+     */
+    public function delete( CoreBundleEntity $cb): bool {
+
+        try {
+            $this->getEntityManager()->getConnection()->beginTransaction();
+
+            foreach( $cb->getCoreLinks() as $cl ){
+                /** @var CoreLinkEntity $cl */
+                foreach( $cl->getCoreInterfaces() as $ci ){
+                    /** @var CoreInterfaceEntity $ci */
+                    $pi = $ci->getPhysicalInterface();
+                    $vi = $pi->getVirtualInterface();
+
+                    $this->getEntityManager()->remove( $ci );
+                    $this->getEntityManager()->remove( $pi );
+                    $this->getEntityManager()->remove( $vi );
+                }
+                $this->getEntityManager()->remove( $cl );
+            }
+
+            $this->getEntityManager()->remove( $cb );
+
+            $this->getEntityManager()->flush();
+            $this->getEntityManager()->getConnection()->commit();
+
+
+        } catch( Exception $e ) {
+            $this->getEntityManager()->getConnection()->rollBack();
+            throw $e;
+        }
+
+        return true;
+    }
 }

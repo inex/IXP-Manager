@@ -102,7 +102,7 @@
         <?php endif; ?>
 
         <?php if( $t->tpl == "index"):?>
-            <?php if( $t->ppp->isAllocated() ): ?>
+            <?php if( $t->ppp->isAllocated() && $t->ppp->getCustomer() ): ?>
 
                 <a class="dropdown-item" href="<?= route( 'patch-panel-port@download-loa' , [ 'id' => $t->ppp->getId() ] ) ?>">
                     Download LoA

@@ -449,6 +449,9 @@
           <attribute name="column">lastPolled</attribute>
         </orm-attributes>
       </field>
+      <field name="snmp_engine_time" type="bigint" uuid="65b18873-7eb7-48f7-9285-4713689df4fd"/>
+      <field name="snmp_system_uptime" type="bigint" uuid="462d7e2f-f3c5-4924-8e1c-f35fd1875522"/>
+      <field name="snmp_engine_boots" type="bigint" uuid="588538bb-1949-4651-8679-6e7e44a410ab"/>
       <field name="notes" type="text" uuid="c56c30fa-0c98-4025-ae71-6c653d0b9624"/>
       <orm-attributes>
         <attribute name="table">switch</attribute>
@@ -1660,7 +1663,7 @@
     <entity uuid="b8c028d1-c43e-44ef-b86e-7849c119d00f" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="459" position-y="1038" size-x="0" size-x2="116" size-y="0" size-y2="129"/>
     <entity uuid="bad4f785-8f04-4d84-8cc9-36f638715559" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1052" position-y="128" size-x="0" size-x2="155" size-y="0" size-y2="339"/>
     <entity uuid="c10dc8b2-b201-42e8-83cf-cb3813a435d8" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="411" position-y="-492" size-x="0" size-x2="155" size-y="0" size-y2="129"/>
-    <entity uuid="c2a2b054-bb69-48af-8f88-6a00f6fed667" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="532" position-y="-350" size-x="0" size-x2="152" size-y="0" size-y2="339"/>
+    <entity uuid="c2a2b054-bb69-48af-8f88-6a00f6fed667" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="559" position-y="-352" size-x="0" size-x2="152" size-y="0" size-y2="367"/>
     <entity uuid="cc05d49f-a5cf-4650-9300-be430837e73b" bg-color="4294967295" hdr-color="4292006610" position-x="356" position-y="417" size-x="0" size-x2="125" size-y="0" size-y2="213"/>
     <entity uuid="ceaae170-210b-45f6-81b2-9094b57e3848" bg-color="4294967295" hdr-color="4292006610" position-x="1244" position-y="637" size-x="0" size-x2="107" size-y="0" size-y2="87"/>
     <entity uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="554" position-y="103" size-x="0" size-x2="133" size-y="0" size-y2="73"/>
