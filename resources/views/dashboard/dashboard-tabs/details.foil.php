@@ -143,7 +143,7 @@
             <?= Former::text( 'invoiceEmail' )
                 ->id( 'invoiceEmail' )
                 ->label( 'Invoice E-Mail' )
-                ->placeholder( 'invoicing@example.com8' )
+                ->placeholder( 'invoicing@example.com' )
                 ->blockHelp( '' );
             ?>
 
