@@ -19,7 +19,7 @@ $this->layout( 'layouts/ixpv4' );
                     <i class="fa fa-info-circle fa-2x"></i>
                 </div>
                 <div class="col-sm-12">
-                    You can add sflow receivers via the customers virtual interface edit page.
+                    You can add sflow receivers via the <?= config( 'ixp_fe.lang.customer.many' ) ?> virtual interface edit page.
                 </div>
             </div>
         </div>
