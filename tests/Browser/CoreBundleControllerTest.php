@@ -95,7 +95,7 @@ class CoreBundleControllerTest extends DuskTestCase
                     "switch-port-a-3" => 51,
                     "switch-port-a-3-name" => 'GigabitEthernet27',
                     "switch-port-b-3" => 55,
-                    "switch-port-b-3-name" => 'GigabitEthernet31',
+                    "switch-port-b-3-name" => 'GigabitEthernet27',
                     "bfd-cl-3" => 1,
                     "subnet-cl-3" => '192.168.3.0/24',
                     "subnet-cl-4" => '192.168.3.0/24',
@@ -143,7 +143,7 @@ class CoreBundleControllerTest extends DuskTestCase
                     "switch-port-a-3" => 51,
                     "switch-port-a-3-name" => 'GigabitEthernet27',
                     "switch-port-b-3" => 55,
-                    "switch-port-b-3-name" => 'GigabitEthernet31',
+                    "switch-port-b-3-name" => 'GigabitEthernet27',
                     "bfd-cl-3" => 0,
                     "subnet-cl-3" => null,
                     "subnet-cl-4" => null,
@@ -192,7 +192,7 @@ class CoreBundleControllerTest extends DuskTestCase
                     "switch-port-a-3" => 51,
                     "switch-port-a-3-name" => 'GigabitEthernet27',
                     "switch-port-b-3" => 55,
-                    "switch-port-b-3-name" => 'GigabitEthernet31',
+                    "switch-port-b-3-name" => 'GigabitEthernet27',
                     "bfd-cl-3" => 0,
                     "subnet-cl-3" => null,
                     "subnet-cl-4" => null,
@@ -217,6 +217,7 @@ class CoreBundleControllerTest extends DuskTestCase
                         ->assertInputValue( 'graph-title', $coreBundle[ 'graph-title1' ] )
                         ->type(     'preference',   $coreBundle[ 'preference1' ] )
                         ->select( 'type', $type )
+                        ->check( 'enabled' )
                         ->check( 'enabled' )
                         ->check( 'framing' )
                         ->type(  'mtu', $coreBundle[ 'mtu' ] );
