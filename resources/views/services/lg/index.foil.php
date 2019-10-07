@@ -1,5 +1,17 @@
 <?php $this->layout('services/lg/layout') ?>
 
+<?php $this->section( 'headers' ) ?>
+    <style>
+        .table-router tbody tr{
+            cursor: pointer;
+        }
+
+        .table-router tbody tr:hover{
+            background-color: #dee2e6;
+        }
+    </style>
+<?php $this->append() ?>
+
 <?php $this->section('title') ?>
     <small>BGP Protocol Summary</small>
 <?php $this->append() ?>
@@ -13,12 +25,10 @@
 <?php else: ?>
     <div class="card mt-4">
         <div class="card-header">
-            <ul class="nav nav-tabs card-header-tabs" id="infra-tab">
+            <ul class="nav nav-tabs">
                 <?php foreach ( $t->tabRouters as $infra => $router): ?>
-                    <li role="<?= Str::kebab( strtolower( $infra ) ) ?>" class="nav-item">
-                        <a class="nav-link <?= !($infra === array_key_first( $t->tabRouters ) ) ?: 'active'?>" data-toggle="tab" href="#<?= Str::kebab( strtolower( $infra ) ) ?>">
-                            <?= $infra ?>
-                        </a>
+                    <li class="nav-item">
+                        <a class="nav-link <?= !($infra === array_key_first( $t->tabRouters ) ) ?: 'active'?>" href="#<?= Str::kebab( strtolower( $infra ) ) ?>" data-toggle="tab"><?=  $t->ee( $infra ) ?></a>
                     </li>
                 <?php endforeach; ?>
             </ul>
@@ -30,18 +40,18 @@
     </div>
 <?php endif; ?>
 
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
 <script>
-    $(document).ready(function(){
 
-        $('.nav-link').hover( function (e) {
-            e.preventDefault();
-            $(this).tab('show')
-        })
-
+    $(".table-router tbody tr").click(function() {
+        window.document.location = $( this ).data( "href");
     });
+
+    $( document ).on( 'mouseenter', '[data-toggle="tab"], [data-toggle="pill"]', function () {
+        $( this ).tab( 'show' );
+    });
+    
 </script>
 <?php $this->append() ?>
