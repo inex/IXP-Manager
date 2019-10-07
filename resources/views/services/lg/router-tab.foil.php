@@ -1,6 +1,6 @@
 <div class="tab-content">
     <?php foreach ( $t->tabRouters as $infra => $info ): ?>
-        <?php $formatedName = Str::kebab( strtolower( $infra ) ) ?>
+        <?php $formatedName = Str::kebab( strtolower( $t->ee( $infra ) ) ) ?>
         <div id="<?= $formatedName ?>" class="tab-pane fade <?= !($infra === array_key_first( $t->tabRouters ) ) ?: 'active show'?>">
             <div class="card">
                 <div class="card-header">
@@ -40,7 +40,7 @@
                                                 <?= $router[ 'last-updated' ]->format( "Y-m-d H:i:s" ) ?>
                                             </td>
                                             <td>
-                                                <a class="btn btn-primary" href="<?= url('/lg/' . $router[ 'handle' ]) ?>">Looking Glass</a>
+                                                <a class="btn btn-primary" href="<?= url('/lg/' . $t->ee( $router[ 'handle' ] ) ) ?>">Looking Glass</a>
                                             </td>
                                         </tr>
                                     <?php endforeach; ?>
