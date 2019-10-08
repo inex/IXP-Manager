@@ -24,7 +24,7 @@
                                             Router
                                         </th>
                                         <th>
-                                            Last Updated
+                                            Config Last Updated
                                         </th>
                                         <th></th>
                                     </thead>
