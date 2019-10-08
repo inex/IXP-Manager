@@ -94,6 +94,8 @@
     <one-to-many field="logos" target-entity="Entities\Logo" mapped-by="customer"/>
     <one-to-many field="patchPanelPorts" target-entity="Entities\PatchPanelPort" mapped-by="customer"/>
     <one-to-many field="Users" target-entity="Entities\CustomerToUser" mapped-by="customer"/>
+    <one-to-many field="routeServerFilters" target-entity="Entities\RouteServerFilter" mapped-by="customer"/>
+    <one-to-many field="peerRouteServerFilters" target-entity="Entities\RouteServerFilter" mapped-by="peer"/>
     <many-to-many field="IXPs" target-entity="Entities\IXP" inversed-by="Customers">
       <join-table name="customer_to_ixp">
         <join-columns>
