@@ -277,6 +277,7 @@ class CoreBundleControllerTest extends DuskTestCase
                 $browser->click( '#add-new-core-link' );
 
                 $browser->assertSee(    'Link 2' )
+                    ->pause( 5000)
                     ->assertSelected(   '#sp-a-2', $coreBundle[ 'switch-port-a-2' ] )
                     ->assertSelected(   '#sp-b-2', $coreBundle[ 'switch-port-b-2' ] )
                     ->assertChecked(    '#enabled-cl-2' );
