@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
-  <entity name="Entities\RouteServerFilter" schema="route_server_filters" table="route_server_filters" tableName="route_server_filters" repository-class="Repositories\RouteServerFilter">
+  <entity name="Entities\RouteServerFilter" table="route_server_filters" tableName="route_server_filters" repository-class="Repositories\RouteServerFilter">
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>
@@ -13,11 +13,11 @@
         <option name="default">1</option>
       </options>
     </field>
-    <field name="order" type="integer" nullable="false"/>
+    <field name="order_by" type="integer" nullable="false"/>
     <field name="live" type="string" nullable="false"/>
-    <indexes>
-      <index name="cust_order" columns="customer_id,order"/>
-    </indexes>
+    <unique-constraints>
+      <unique-constraint name="cust_order" columns="customer_id,order_by"/>
+    </unique-constraints>
     <many-to-one field="customer" target-entity="Entities\Customer" inversed-by="routeServerFilters">
       <join-columns>
         <join-column name="customer_id" referenced-column-name="id"/>

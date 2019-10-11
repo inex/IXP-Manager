@@ -107,8 +107,8 @@ class Vlan extends EntityRepository
     /**
      * Return an array of all VLAN names where the array key is the VLAN id (**not tag**).
      *
-     * @param int           $type The VLAN types to return (see TYPE_ constants).
-     * @param \Entities\IXP $ixp  IXP to filter vlan names
+     * @param int $type The VLAN types to return (see TYPE_ constants).
+     * @param bool $ixp IXP to filter vlan names
      * @return array An array of all VLAN names with the vlan id as the key.
      */
     public function getNames( $type = self::TYPE_NORMAL, $ixp = false )
@@ -623,5 +623,33 @@ class Vlan extends EntityRepository
         $q->setParameter( 'configname', $configName );
 
         return $q->getOneOrNullResult();
+    }
+
+
+    /**
+     * Return an array of all public peering manager vlans names where the array key is the vlan id.
+     *
+     * @param int $custid
+     *
+     * @return array An array of all vlans names with the vlan id as the key.
+     */
+    public function getPublicPeeringManagerAsArray( int $custid ): array {
+        $vlans = [];
+
+        $q = "SELECT DISTINCT v
+                FROM Entities\\Vlan v
+                LEFT JOIN v.VlanInterfaces vli
+                LEFT JOIN vli.VirtualInterface vi
+                WHERE v.private = false
+                AND v.peering_manager = true
+                AND vli.rsclient = true
+                AND vi.Customer = {$custid}
+                ORDER BY v.name ASC";
+
+        foreach( $this->getEntityManager()->createQuery( $q )->getResult() as $vlan ) {
+            $vlans[ $vlan->getId() ] = $vlan->getName();
+        }
+
+        return $vlans;
     }
 }

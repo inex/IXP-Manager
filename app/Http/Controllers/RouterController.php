@@ -247,6 +247,7 @@ class RouterController extends Controller
      *
      * @return redirectresponse
      *
+     * @throws
      */
     public function delete( Request $request ): RedirectResponse
     {

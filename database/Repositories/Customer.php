@@ -32,6 +32,7 @@ use Entities\{
     Customer        as CustomerEntity,
     CustomerToUser  as CustomerToUserEntity,
     CoreBundle      as CoreBundleEntity,
+    Vlan            as VlanEntity
 };
 
 
@@ -883,5 +884,39 @@ class Customer extends EntityRepository
         }
 
         return true;
+    }
+
+    /**
+     * Get All customer by vlan and protocol
+     *
+     * @param int|null $vlanid
+     * @param int $protocol
+     *
+     * @return array  Customers list
+     */
+    public function getByVlanAndProtocol( $vlanid = null, int $protocol = 4 )
+    {
+        $request = "SELECT DISTINCT c
+                    FROM \\Entities\\customer c
+                    LEFT JOIN c.VirtualInterfaces vi
+                    LEFT JOIN vi.VlanInterfaces vli
+                    LEFT JOIN vli.Vlan v
+                    LEFT JOIN v.routers r
+                    WHERE r.protocol = {$protocol}
+                    AND vli.ipv{$protocol}enabled = TRUE
+                    AND vli.rsclient = TRUE";
+
+        if( $vlanid ){
+            $request .= " AND v.id = {$vlanid}";
+        }
+
+        $request .= " ORDER BY c.name ASC";
+        $customers = [];
+
+        foreach( $this->getEntityManager()->createQuery( $request )->getArrayResult() as $customer ){
+            $customers[ $customer[ 'id' ] ] = $customer[ 'name' ];
+        }
+
+        return $customers;
     }
 }

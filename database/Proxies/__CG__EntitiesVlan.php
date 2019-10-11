@@ -64,10 +64,10 @@ class Vlan extends \Entities\Vlan implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'number', 'config_name', 'notes', 'id', 'VlanInterfaces', 'IPv4Addresses', 'IPv6Addresses', 'NetworkInfo', 'NetInfo', '' . "\0" . 'Entities\\Vlan' . "\0" . 'Infrastructure', '' . "\0" . 'Entities\\Vlan' . "\0" . 'routers', 'private', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_matrix', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_manager'];
+            return ['__isInitialized__', 'name', 'number', 'config_name', 'notes', 'id', 'VlanInterfaces', 'IPv4Addresses', 'IPv6Addresses', 'NetworkInfo', 'NetInfo', '' . "\0" . 'Entities\\Vlan' . "\0" . 'Infrastructure', '' . "\0" . 'Entities\\Vlan' . "\0" . 'routers', '' . "\0" . 'Entities\\Vlan' . "\0" . 'routeServerFilters', 'private', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_matrix', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_manager'];
         }
 
-        return ['__isInitialized__', 'name', 'number', 'config_name', 'notes', 'id', 'VlanInterfaces', 'IPv4Addresses', 'IPv6Addresses', 'NetworkInfo', 'NetInfo', '' . "\0" . 'Entities\\Vlan' . "\0" . 'Infrastructure', '' . "\0" . 'Entities\\Vlan' . "\0" . 'routers', 'private', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_matrix', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_manager'];
+        return ['__isInitialized__', 'name', 'number', 'config_name', 'notes', 'id', 'VlanInterfaces', 'IPv4Addresses', 'IPv6Addresses', 'NetworkInfo', 'NetInfo', '' . "\0" . 'Entities\\Vlan' . "\0" . 'Infrastructure', '' . "\0" . 'Entities\\Vlan' . "\0" . 'routers', '' . "\0" . 'Entities\\Vlan' . "\0" . 'routeServerFilters', 'private', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_matrix', '' . "\0" . 'Entities\\Vlan' . "\0" . 'peering_manager'];
     }
 
     /**

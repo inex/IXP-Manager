@@ -23,8 +23,13 @@
 
 namespace Entities;
 
+use Doctrine\Common\Collections\{
+    ArrayCollection,
+    Collection
+};
+
 use Entities\{
-    VlanInterface       as VlanInterfaceEntity
+    Infrastructure as InfrastructureEntity
 };
 
 /**
@@ -71,49 +76,54 @@ class Vlan
     protected $id;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $VlanInterfaces;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $IPv4Addresses;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $IPv6Addresses;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $NetworkInfo;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      */
     protected $NetInfo;
 
     /**
-     * @var \Entities\Infrastructure
+     * @var InfrastructureEntity
      */
     private $Infrastructure;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     private $routers;
+
+    /**
+     * @var ArrayCollection
+     */
+    private $routeServerFilters;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->VlanInterfaces = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->IPv4Addresses = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->IPv6Addresses = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->NetworkInfo = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->VlanInterfaces = new ArrayCollection();
+        $this->IPv4Addresses = new ArrayCollection();
+        $this->IPv6Addresses = new ArrayCollection();
+        $this->NetworkInfo = new ArrayCollection();
     }
 
     /**
@@ -244,7 +254,7 @@ class Vlan
     /**
      * Get VlanInterfaces
      *
-     * @return \Doctrine\Common\Collections\Collection|VlanInterface[]
+     * @return Collection|VlanInterface[]
      */
     public function getVlanInterfaces()
     {
@@ -277,7 +287,7 @@ class Vlan
     /**
      * Get IPv4Addresses
      *
-     * @return \Doctrine\Common\Collections\Collection|IPv4Address[]
+     * @return Collection|IPv4Address[]
      */
     public function getIPv4Addresses()
     {
@@ -310,7 +320,7 @@ class Vlan
     /**
      * Get IPv6Addresses
      *
-     * @return \Doctrine\Common\Collections\Collection|IPv6Address[]
+     * @return Collection|IPv6Address[]
      */
     public function getIPv6Addresses()
     {
@@ -406,7 +416,7 @@ class Vlan
     /**
      * Get NetInfo
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getNetInfos()
     {
@@ -1049,7 +1059,7 @@ class Vlan
     /**
      * Get routers
      *
-     * @return \Doctrine\Common\Collections\Collection|Router[]
+     * @return Collection|Router[]
      */
     public function getRouters()
     {
