@@ -38,11 +38,12 @@ use Entities\{
 
 use Illuminate\Http\{
     RedirectResponse,
-    Request
-
 };
 
-use IXP\Http\Requests\StoreRouteServerFilter;
+use IXP\Http\Requests\RouteServerFilter\{
+    CheckPrivsCustAdmin,
+    Store
+};
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -63,23 +64,15 @@ class RsFilterController extends Controller
     /**
      * Display the list of Route Server Filter
      *
-     * @param Request $request
-     * @param int $custid
+     * @param CheckPrivsCustAdmin $request
      *
      * @return  View
      */
-    public function list( Request $request,  int $custid ): View
+    public function list( CheckPrivsCustAdmin $request ): View
     {
-        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $custid ) ) ) {
-            abort( 404, "Unknown customer" );
-        }
-
-        if( $c->getId() != $request->user()->getCustomer->getId() ){
-            abort( 403, "Access forbidden" );
-        }
-
         return view( 'rs-filter/list' )->with([
-            "rsFilters"          => D2EM::getRepository( RouteServerFilterEntity::class )->findBy( [ "customer" => $c->getId() ], [ 'order_by' => 'ASC'] )
+            "rsFilters"         => D2EM::getRepository( RouteServerFilterEntity::class )->findBy( [ "customer" => $request->c->getId() ], [ 'order_by' => 'ASC'] ),
+            "c"                 => $request->c
         ]);
     }
 
@@ -102,206 +95,181 @@ class RsFilterController extends Controller
     }
 
     /**
-     * Allow to display the form to create/edit a route server filter
+     * Allow to display the form to create a route server filter
      *
-     * @param Request   $request
-     * @param int       $id       ID of the patch panel
+     * @param CheckPrivsCustAdmin $request
      *
      * @return  View
      */
-    public function edit( Request $request, int $id = null ): View
+    public function add( CheckPrivsCustAdmin $request ): View
     {
-        if( !$request->user()->getCustomer()->isRouteServerClient() ){
-            return Redirect::to( "");
-        }
+        $vlanid     = $request->old( 'vlan_id',         "Null" );
+        $protocol   = $request->old( 'protocol',        4      );
 
-        /** @var RouteServerFilterEntity $rsf */
-        $rsf = false;
-        if( $id ) {
-            if( !( $rsf = D2EM::getRepository( RouteServerFilterEntity::class )->find( $id ) ) ) {
-                abort( 404 );
-            }
+        Former::populate( [
+            'vlan_id'               => $vlanid,
+            'protocol'              => $protocol,
+            'action_advertise'      => $request->old( 'action_advertise',   "Null"  ),
+            'action_receive'        => $request->old( 'action_receive',     "Null"  ),
+        ] );
 
-            if( $rsf->getCustomer()->getId() != $request->user()->getCustomer->getId() ){
-                abort( 403, "Access forbidden" );
-            }
-
-            $vlanid     = $request->old( 'vlan_id',     $rsf->getVlan()->getId()    );
-            $protocol   = $request->old( 'protocol',    $rsf->getProtocol()         );
-
-            Former::populate( [
-                'vlan_id'               => $vlanid,
-                'protocol'              => $protocol,
-                'peer_id'               => $request->old( 'peer_id',            $rsf->getPeer()->getId() ),
-                'customer_id'           => $request->old( 'customer_id',        $rsf->getCustomer()->getId() ),
-                'prefix'                => $request->old( 'prefix',             $rsf->getPrefix() ),
-                'action_advertise'      => $request->old( 'action_advertise',   $rsf->getActionReceive() ),
-                'action_receive'        => $request->old( 'action_receive',     $rsf->getActionAdvertise() ),
-            ] );
-
-            $peers = D2EM::getRepository( CustomerEntity::class )->getByVlanAndProtocol( $vlanid, $protocol );
-
-        } else {
-
-            $vlanid     = $request->old( 'vlan_id',         "Null" );
-            $protocol   = $request->old( 'protocol',        4      );
-
-            Former::populate( [
-                'vlan_id'               => $vlanid,
-                'protocol'              => $protocol,
-                'action_advertise'      => $request->old( 'action_advertise',   "Null"    ),
-                'action_receive'        => $request->old( 'action_receive',     "Null"    ),
-
-            ] );
-
-            $vlanid     = $request->old( 'vlan_id',         null );
-
-            $peers = D2EM::getRepository( CustomerEntity::class )->getByVlanAndProtocol( $vlanid , $protocol );
-        }
+        $vlanid     = $request->old( 'vlan_id',         null );
 
         return view( 'rs-filter/edit' )->with( [
-            'rsf'       => $rsf,
-            'vlans'     => $this->addValueToArray( D2EM::getRepository( VlanEntity::class )->getPublicPeeringManagerAsArray( $request->user()->getCustomer()->getId() ), null, "All LANs" ),
-            'peers'     => $peers,
+            'rsf'       => false,
+            'c'         => $request->c,
+            'vlans'     => $this->addValueToArray( D2EM::getRepository( VlanEntity::class )->getPublicPeeringManagerAsArray( $request->c->getId() ), null, "All LANs" ),
+            'peers'     => D2EM::getRepository( CustomerEntity::class )->getByVlanAndProtocol( $vlanid , $protocol ),
+        ] );
+    }
+
+    /**
+     * Allow to display the form to create/edit a route server filter
+     *
+     * @param CheckPrivsCustAdmin   $request
+     *
+     * @return  View
+     */
+    public function edit( CheckPrivsCustAdmin $request ): View
+    {
+        $vlanid     = $request->old( 'vlan_id', $request->rsf->getVlan() ? $request->rsf->getVlan()->getId() : "Null" );
+        $protocol   = $request->old( 'protocol',        $request->rsf->getProtocol() );
+
+        Former::populate( [
+            'vlan_id'               => $vlanid,
+            'protocol'              => $protocol,
+            'peer_id'               => $request->old( 'peer_id',            $request->rsf->getPeer()->getId() ),
+            'prefix'                => $request->old( 'prefix',             $request->rsf->getPrefix() ),
+            'action_advertise'      => $request->old( 'action_advertise',   $request->rsf->getActionReceive() ),
+            'action_receive'        => $request->old( 'action_receive',     $request->rsf->getActionAdvertise() ),
+        ] );
+
+        $vlanid     = $request->old( 'vlan_id',         null );
+
+        return view( 'rs-filter/edit' )->with( [
+            'rsf'       => $request->rsf,
+            'c'         => $request->c,
+            'vlans'     => $this->addValueToArray( D2EM::getRepository( VlanEntity::class )->getPublicPeeringManagerAsArray( $request->c->getId() ), null, "All LANs" ),
+            'peers'     => D2EM::getRepository( CustomerEntity::class )->getByVlanAndProtocol( $vlanid , $protocol ),
         ] );
     }
 
     /**
      * Function to store A Route Server Filter object
      *
-     * @param StoreRouteServerFilter $request
+     * @param Store $request
      *
      * @return redirect
      *
      * @throws
      */
-    public function store( StoreRouteServerFilter $request )
+    public function store( Store $request )
     {
-        $isEdit = $request->input( 'id' ) ? true : false;
-
-        /** @var RouteServerFilterEntity $rsf */
-        if( $isEdit && $rsf = D2EM::getRepository( RouteServerFilterEntity::class )->find( $request->input( 'id' ) ) ) {
-            if( !$rsf ) {
-                abort(404, 'Router Server Filter not found' );
-            }
-
-            if( $rsf->getCustomer()->getId() != $request->user()->getCustomer->getId() ){
-                abort( 403, "Access forbidden" );
-            }
-        } else {
-            $rsf = new RouteServerFilterEntity;
-            D2EM::persist( $rsf );
+        // If we add
+        if( !$request->input( 'id' ) ) {
+            $request->rsf->setCustomer( $request->c );
+            $request->rsf->setEnabled( true );
+            $request->rsf->setOrderBy( D2EM::getRepository( RouteServerFilterEntity::class )->getNextOrderByForCustomer( $request->c->getId() ) );
         }
 
-        $rsf->setCustomer( $request->user()->getCustomer());
-        $rsf->setPeer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'peer_id' ) ) );
-        $rsf->setVlan( $request->input( 'vlan_id' ) ? D2EM::getRepository( VlanEntity::class )->find( $request->input( 'vlan_id' ) ) : null );
-        $rsf->setPrefix( $request->input( 'prefix' ) );
-        $rsf->setProtocol( $request->input( 'protocol' ) );
-        $rsf->setActionAdvertise( $request->input( 'action_advertise' ) );
-        $rsf->setActionReceive( $request->input( 'action_advertise' ));
-        $rsf->setEnabled( true );
-        $rsf->setOrderBy( D2EM::getRepository( RouteServerFilterEntity::class )->getNextOrderByForCustomer( $request->user()->getCustomer()->getId() ) );
-        $rsf->setLive( "test" );
+        $request->rsf->setPeer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'peer_id' ) ) );
+        $request->rsf->setVlan( $request->input( 'vlan_id' ) ? D2EM::getRepository( VlanEntity::class )->find( $request->input( 'vlan_id' ) ) : null );
+        $request->rsf->setPrefix(   $request->input( 'prefix'   ) );
+        $request->rsf->setProtocol( $request->input( 'protocol' ) );
+        $request->rsf->setActionAdvertise(  $request->input( 'action_advertise' ) );
+        $request->rsf->setActionReceive(    $request->input( 'action_receive'   ) );
+        $request->rsf->setLive( "" );
 
         D2EM::flush();
 
-        Log::notice( Auth::user()->getUsername() . ' ' . $isEdit ? 'edited' : 'added' . ' a router server filter with ID ' . $rsf->getId() );
+        $action = $request->input( 'id' ) ? 'edited' : 'added';
 
-        AlertContainer::push( "Route Server Filter " . $isEdit ? 'edited.' : 'added.', Alert::SUCCESS );
+        Log::notice( Auth::user()->getUsername() . ' ' . $action . ' a router server filter with ID ' . $request->rsf->getId() );
 
-        return redirect( route( "rs-filter@list", [ "custid" => $rsf->getCustomer()->getId() ] )  );
+        AlertContainer::push( "Route Server Filter " . $action, Alert::SUCCESS );
+
+        return redirect( route( "rs-filter@list", [ "custid" => $request->rsf->getCustomer()->getId() ] )  );
     }
 
     /**
      * Display the details of a Route Server Filter
      *
-     * @param  int    $id        Route Server Filter that need to be displayed
+     * @param CheckPrivsCustAdmin $request
+     *
      * @return View
      */
-    public function view( int $id ): View
+    public function view( CheckPrivsCustAdmin $request ): View
     {
-        /** @var RouteServerFilterEntity $rsf */
-        if( !( $rsf = D2EM::getRepository( RouteServerFilterEntity::class )->find( $id ) ) ) {
-            abort(404 , 'Unknown router' );
-        }
-
-        /** @noinspection PhpUndefinedMethodInspection - need to sort D2EM::getRepository factory inspection */
-        return view( 'rs-filter/view' )->with([
-            'rsf'                => $rsf
-        ]);
+        return view( 'rs-filter/view' )->with( [
+            'rsf'   => $request->rsf
+        ] );
     }
 
     /**
      * Enable or disable a router server filter
      *
+     * @param CheckPrivsCustAdmin $request
      * @param int $id
      * @param int $enable
      *
      * @return RedirectResponse
      *
-     * @throws
      */
-    public function toggleEnable( int $id, int $enable ): RedirectResponse
+    public function toggleEnable( CheckPrivsCustAdmin $request, int $id, int $enable ): RedirectResponse
     {
-        /** @var RouteServerFilterEntity $rsf  */
-        if( !( $rsf = D2EM::getRepository( RouteServerFilterEntity::class )->find( $id ) ) ) {
-            abort(404);
-        }
-
         $status = $enable ? 'enable' : 'disable';
 
-        $rsf->setEnabled( ( bool )$enable );
+        $request->rsf->setEnabled( ( bool )$enable );
 
         D2EM::flush();
 
         AlertContainer::push( 'The route server filter has been '.$status, Alert::SUCCESS );
 
-        return redirect( route( "rs-filter@list", [ "custid" => $rsf->getCustomer()->getId() ] ) );
+        return redirect( route( "rs-filter@list", [ "custid" => $request->rsf->getCustomer()->getId() ] ) );
     }
 
 
     /**
      * Change the order by of a route server filter (up/down)
      *
-     * @param Request $request
+     * @param CheckPrivsCustAdmin $request
      * @param int $id
-     * @param int $up
+     * @param int $up If true move up if false move down
+     *
      * @return RedirectResponse
      *
-     * @throws
      */
-    public function changeOrderBy( Request $request, int $id, int $up ): RedirectResponse
+    public function changeOrderBy( CheckPrivsCustAdmin $request, int $id,  int $up ): RedirectResponse
     {
-        /** @var RouteServerFilterEntity $rsf  */
-        if( !( $rsf = D2EM::getRepository( RouteServerFilterEntity::class )->find( $id ) ) ) {
-            abort(404);
-        }
+        // Getting the list of all the route server filters for the customer
+        $listRsf = D2EM::getRepository( RouteServerFilterEntity::class )->findBy( [ "customer" => $request->c->getId() ], [ 'order_by' => 'ASC'] );
 
-        $listRsf = D2EM::getRepository( RouteServerFilterEntity::class )->findBy( [ "customer" => $request->user()->getCustomer()->getId() ], [ 'order_by' => 'ASC'] );
+        // Getting the index of the requested route server filter within the list
+        $index = array_search( $request->rsf, $listRsf);
 
-        $index = array_search( $rsf, $listRsf);
-
+        // Adding +1 (moving up) or -1 (moveing down) to the index of the route serve filter
         $newIndex = $up ? $index - 1 : $index + 1;
 
         $upText = $up ? "up" : "down";
 
+        // Check if the new index exist in the list
         if( !array_key_exists( $newIndex, $listRsf ) ) {
             AlertContainer::push( "Not possible to move that route server filter " . $upText , Alert::DANGER );
-            return redirect( route( "rs-filter@list", [ "custid" => $rsf->getCustomer()->getId() ] ) );
+            return redirect( route( "rs-filter@list", [ "custid" => $request->rsf->getCustomer()->getId() ] ) );
         }
 
+        // Getting the route server filter object that we will have switch
         /** @var RouteServerFilterEntity $rsfToMove  */
         $rsfToMove = $listRsf[ $newIndex ];
 
         $newOrder = $rsfToMove->getOrderBy();
-        $oldOrder = $rsf->getOrderBy();
+        $oldOrder = $request->rsf->getOrderBy();
 
-        // temporary order
+        // temporary order to avoid unique constrain violation
         $rsfToMove->setOrderBy( 0 );
         D2EM::flush();
 
-        $rsf->setOrderBy( $newOrder );
+        $request->rsf->setOrderBy( $newOrder );
         D2EM::flush();
 
         $rsfToMove->setOrderBy( $oldOrder );
@@ -309,35 +277,26 @@ class RsFilterController extends Controller
 
         AlertContainer::push( 'The route server filter has been moved ' . $upText, Alert::SUCCESS );
 
-        return redirect( route( "rs-filter@list", [ "custid" => $rsf->getCustomer()->getId() ] ) );
+        return redirect( route( "rs-filter@list", [ "custid" => $request->rsf->getCustomer()->getId() ] ) );
     }
 
     /**
      * Function to Delete a route serve filter
      *
-     * @param Request $request
+     * @param CheckPrivsCustAdmin $request
      *
      * @return RedirectResponse
      *
      * @throws
      */
-    public function delete( Request $request )
+    public function delete( CheckPrivsCustAdmin $request )
     {
-        /** @var RouteServerFilterEntity $rsf */
-        if( !( $rsf = D2EM::getRepository( RouteServerFilterEntity::class )->find( $request->input( "id" ) ) ) ) {
-            abort(404);
-        }
-
-        if( $rsf->getCustomer()->getId() != $request->user()->getCustomer->getId() ){
-            abort( 403, "Access forbidden" );
-        }
-
-        D2EM::remove( $rsf );
+        D2EM::remove( $request->rsf );
         D2EM::flush();
 
         Log::notice( Auth::getUser()->getUsername()." deleted the route server filter with the ID:" . $request->input( "id" ) );
         AlertContainer::push( 'Router server filter deleted.', Alert::SUCCESS );
 
-        return Redirect::to( route( "rs-filter@list", [ "custid" => $request->user()->getCustomer()->getId() ] ) );
+        return Redirect::to( route( "rs-filter@list", [ "custid" => $request->c->getId() ] ) );
     }
 }

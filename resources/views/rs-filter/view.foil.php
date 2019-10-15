@@ -10,13 +10,18 @@ $this->layout( 'layouts/ixpv4' )
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-white" href="<?= route ('rs-filter@add' ) ?>" title="add">
-            <span class="fa fa-plus"></span>
-        </a>
-        <a class="btn btn-white" href="<?= route ('rs-filter@edit' , [ 'id' => $t->rsf->getId() ] ) ?>" title="edit">
-            <span class="fa fa-pencil"></span>
+        <a class="btn btn-white" href="<?= route ('rs-filter@list', [ "custid" => $t->rsf->getCustomer()->getId() ] ) ?>" title="list">
+            <span class="fa fa-list"></span>
         </a>
 
+        <?php if( !Auth::getUser()->isCustUser() ): ?>
+            <a class="btn btn-white" href="<?= route ('rs-filter@add', [ "custid" => $t->rsf->getCustomer()->getId() ] ) ?>" title="add">
+                <span class="fa fa-plus"></span>
+            </a>
+            <a class="btn btn-white" href="<?= route ('rs-filter@edit' , [ 'id' => $t->rsf->getId() ] ) ?>" title="edit">
+                <span class="fa fa-pencil"></span>
+            </a>
+        <?php endif; ?>
     </div>
 <?php $this->append() ?>
 
@@ -40,9 +45,13 @@ $this->layout( 'layouts/ixpv4' )
                                     </b>
                                 </td>
                                 <td>
-                                    <a href="<?= route( "customer@overview" , [ "id" => $t->rsf->getPeer()->getId() ] )?> ">
+                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                        <a href="<?= route( "customer@overview" , [ "id" => $t->rsf->getPeer()->getId() ] )?> ">
+                                            <?= $t->ee( $t->rsf->getPeer()->getName() )?>
+                                        </a>
+                                    <?php else: ?>
                                         <?= $t->ee( $t->rsf->getPeer()->getName() )?>
-                                    </a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                             <tr>
@@ -52,9 +61,13 @@ $this->layout( 'layouts/ixpv4' )
                                     </b>
                                 </td>
                                 <td>
-                                    <a href="<?= route( "customer@overview" , [ "id" => $t->rsf->getCustomer()->getId() ] )?> ">
+                                    <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                        <a href="<?= route( "customer@overview" , [ "id" => $t->rsf->getCustomer()->getId() ] )?> ">
+                                            <?= $t->ee( $t->rsf->getCustomer()->getName() )?>
+                                        </a>
+                                    <?php else: ?>
                                         <?= $t->ee( $t->rsf->getCustomer()->getName() )?>
-                                    </a>
+                                    <?php endif; ?>
                                 </td>
                             </tr>
                             <tr>
@@ -65,9 +78,13 @@ $this->layout( 'layouts/ixpv4' )
                                 </td>
                                 <td>
                                     <?php if( $t->rsf->getVlan() ): ?>
-                                        <a href="<?= route( "vlan@view" , [ "id" => $t->rsf->getCustomer()->getId() ] )?> ">
+                                        <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                            <a href="<?= route( "vlan@view" , [ "id" => $t->rsf->getCustomer()->getId() ] )?> ">
+                                                <?= $t->rsf->getVlan()->getName() ?>
+                                            </a>
+                                        <?php else: ?>
                                             <?= $t->rsf->getVlan()->getName() ?>
-                                        </a>
+                                        <?php endif; ?>
                                     <?php else: ?>
                                         All LAN's
                                     <?php endif; ?>

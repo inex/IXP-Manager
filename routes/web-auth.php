@@ -155,3 +155,17 @@ Route::group( [ 'prefix' => 'irrdb' ], function() {
     Route::get(  'update/{customer}/{type}/{protocol}',     'IrrdbController@update'          )->name( "irrdb@update"          );
 });
 
+
+Route::get( 'rs-filtering/{custid}', 'RsFilterController@list' )->name( 'rs-filter@list' );
+
+Route::group( [ 'prefix' => 'rs-filter' ], function() {
+    Route::get('add/{custid}',                  'RsFilterController@add'            )->name("rs-filter@add"             );
+    Route::get('edit/{id}',                     'RsFilterController@edit'           )->name("rs-filter@edit"            );
+    Route::get('view/{id}',                     'RsFilterController@view'           )->name("rs-filter@view"            );
+    Route::get('toogle-enable/{id}/{enable}',   'RsFilterController@toggleEnable'   )->name("rs-filter@toggle-enable"   );
+    Route::get('change-order/{id}/{up}',        'RsFilterController@changeOrderBy'  )->name("rs-filter@change-order"    );
+    Route::post('store',                        'RsFilterController@store'          )->name("rs-filter@store"           );
+    Route::post('delete',                       'RsFilterController@delete'         )->name("rs-filter@delete"          );
+
+    Route::view( "rs-filter/grant-cust-user", "rs-filter/grant-cust-user" )->name( "rs-filter@grant-cust-user" );
+});

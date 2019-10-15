@@ -185,19 +185,6 @@ Route::group( [ 'namespace' => 'User', 'prefix' => 'customer-to-user' ], functio
     Route::post('privs',     'CustomerToUserController@updatePrivs' )->name( "customer-to-user@privs" );
 });
 
-
-Route::get( 'rs-filtering/{custid}', 'RsFilterController@list' )->name( 'rs-filter@list' );
-
-Route::group( [ 'prefix' => 'rs-filter' ], function() {
-    Route::get('add',                           'RsFilterController@edit'           )->name("rs-filter@add"             );
-    Route::get('edit/{id}',                     'RsFilterController@edit'           )->name("rs-filter@edit"            );
-    Route::get('view/{id}',                     'RsFilterController@view'           )->name("rs-filter@view"            );
-    Route::get('toogle-enable/{id}/{enable}',   'RsFilterController@toggleEnable'   )->name("rs-filter@toggle-enable"   );
-    Route::get('change-order/{id}/{up}',        'RsFilterController@changeOrderBy'  )->name("rs-filter@change-order"    );
-    Route::post('store',                        'RsFilterController@store'          )->name("rs-filter@store"           );
-    Route::post('delete',                       'RsFilterController@delete'         )->name("rs-filter@delete"          );
-});
-
 Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
 
 Route::get( 'search', 'SearchController@do' )->name( 'search' );

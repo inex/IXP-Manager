@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Http\Requests;
+namespace IXP\Http\Requests\RouteServerFilter;
 
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -22,10 +22,13 @@ namespace IXP\Http\Requests;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use D2EM;
 
 use Entities\{
+    Customer            as CustomerEntity,
     Router              as RouterEntity,
-    RouteServerFilter   as RouteServerFilterEntity
+    RouteServerFilter   as RouteServerFilterEntity,
+    User                as UserEntity,
 };
 
 use Illuminate\Foundation\Http\FormRequest;
@@ -34,7 +37,7 @@ use IXP\Rules\IPv4Cidr;
 use IXP\Rules\IPv6Cidr;
 
 
-class StoreRouteServerFilter extends FormRequest
+class Store extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -43,7 +46,12 @@ class StoreRouteServerFilter extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        if( !ixp_min_auth( UserEntity::AUTH_CUSTADMIN ) ) {
+            return false;
+        } else {
+            return true;
+        }
+
     }
 
     /**
@@ -68,6 +76,50 @@ class StoreRouteServerFilter extends FormRequest
             'action_advertise'      => 'nullable|string|max:250|in:' . implode( ',', array_keys( RouteServerFilterEntity::$ADVERTISE_ACTION_TEXT ) ),
             'action_receive'        => 'nullable|string|max:250|in:' . implode( ',', array_keys( RouteServerFilterEntity::$RECEIVE_ACTION_TEXT ) ),
         ];
+    }
+
+    /**
+     * Configure the validator instance.
+     *
+     * @return void
+     */
+    public function withValidator( )
+    {
+        /** @var RouteServerFilterEntity $rsf */
+        if( $this->input( 'id' ) && $this->rsf = D2EM::getRepository( RouteServerFilterEntity::class )->find( $this->input( 'id' ) ) ) {
+            if( !$this->rsf ) {
+                abort(404, 'Router Server Filter not found' );
+            }
+
+            if( !$this->user()->isSuperUser() ) {
+                if( $this->rsf->getCustomer()->getId() != $this->user()->getCustomer()->getId() ) {
+                    abort( 403, "Access forbidden" );
+                }
+            }
+
+            $this->c = $this->rsf->getCustomer();
+
+        } else {
+            $this->rsf = new RouteServerFilterEntity;
+            D2EM::persist( $this->rsf );
+
+            if( !( $this->c = D2EM::getRepository( CustomerEntity::class )->find( request( "custid" ) ) ) ) {
+                abort( 404, "Unknown customer" );
+            }
+
+            if( !$this->user()->isSuperUser() ) {
+                if( $this->c->getId() != $this->user()->getCustomer()->getId() ){
+                    abort( 403, "Access forbidden" );
+                }
+            }
+        }
+
+        if( !$this->c->isRouteServerClient() ){
+            AlertContainer::push( "Only router server client customers can access this page", Alert::DANGER );
+            return Redirect::to( "");
+        }
+
+
     }
 
 }

@@ -3,14 +3,10 @@
 $this->layout( 'layouts/ixpv4' )
 ?>
 
-<?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'patch-panel/list' )?>">Patch Panels</a>
-<?php $this->append() ?>
-
 <?php $this->section( 'page-header-preamble' ) ?>
     Route Server Filter
     /
-    <?= $t->rsf ? 'Editing Router Server Filter : ' . $t->ee( $t->rsf->getId() ) : 'Add New Router Server Filter' ?>
+    <?= $t->c->getName() ?> / <?= $t->rsf ? 'Edit' : 'Add' ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -85,6 +81,10 @@ $this->layout( 'layouts/ixpv4' )
 
                     <?= Former::hidden( 'id' )
                         ->value( $t->rsf ? $t->rsf->getId() : '' )
+                    ?>
+
+                    <?= Former::hidden( 'custid' )
+                        ->value( $t->rsf ? $t->rsf->getCustomer()->getId() : $t->c->getId() )
                     ?>
 
                     <?= Former::actions(
