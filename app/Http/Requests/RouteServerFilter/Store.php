@@ -33,12 +33,31 @@ use Entities\{
 
 use Illuminate\Foundation\Http\FormRequest;
 
-use IXP\Rules\IPv4Cidr;
-use IXP\Rules\IPv6Cidr;
+use IXP\Rules\{
+    IPv4Cidr,
+    IPv6Cidr
+};
+
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
 
 
 class Store extends FormRequest
 {
+
+    /**
+     * The route to redirect to if validation fails.
+     *
+     * @var string
+     */
+    protected $redirectRoute;
+
+    public function __construct(){
+        $this->redirect = '/';
+    }
+
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -81,30 +100,28 @@ class Store extends FormRequest
     /**
      * Configure the validator instance.
      *
+     * @param $validator
+     *
      * @return void
      */
-    public function withValidator( )
+    public function withValidator( $validator )
     {
-        /** @var RouteServerFilterEntity $rsf */
-        if( $this->input( 'id' ) && $this->rsf = D2EM::getRepository( RouteServerFilterEntity::class )->find( $this->input( 'id' ) ) ) {
-            if( !$this->rsf ) {
-                abort(404, 'Router Server Filter not found' );
-            }
-
-            if( !$this->user()->isSuperUser() ) {
-                if( $this->rsf->getCustomer()->getId() != $this->user()->getCustomer()->getId() ) {
-                    abort( 403, "Access forbidden" );
+        $validator->after( function ( $validator ) {
+            /** @var RouteServerFilterEntity $rsf */
+            if( $this->input( 'id' ) && $this->rsf = D2EM::getRepository( RouteServerFilterEntity::class )->find( $this->input( 'id' ) ) ) {
+                if( !$this->rsf ) {
+                    abort(404, 'Router Server Filter not found' );
                 }
-            }
 
-            $this->c = $this->rsf->getCustomer();
+                $this->c = $this->rsf->getCustomer();
 
-        } else {
-            $this->rsf = new RouteServerFilterEntity;
-            D2EM::persist( $this->rsf );
+            } else {
+                $this->rsf = new RouteServerFilterEntity;
+                D2EM::persist( $this->rsf );
 
-            if( !( $this->c = D2EM::getRepository( CustomerEntity::class )->find( request( "custid" ) ) ) ) {
-                abort( 404, "Unknown customer" );
+                if( !( $this->c = D2EM::getRepository( CustomerEntity::class )->find( request( "custid" ) ) ) ) {
+                    abort( 404, "Unknown customer" );
+                }
             }
 
             if( !$this->user()->isSuperUser() ) {
@@ -112,13 +129,13 @@ class Store extends FormRequest
                     abort( 403, "Access forbidden" );
                 }
             }
-        }
 
-        if( !$this->c->isRouteServerClient() ){
-            AlertContainer::push( "Only router server client customers can access this page", Alert::DANGER );
-            return Redirect::to( "");
-        }
-
+            if( !$this->c->isRouteServerClient() ){
+                AlertContainer::push( "Only router server client customers can access this action.", Alert::DANGER );
+                $validator->errors()->add( '',  " " );
+                return false;
+            }
+        } );
 
     }
 

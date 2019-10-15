@@ -113,13 +113,11 @@ class RsFilterController extends Controller
             'action_receive'        => $request->old( 'action_receive',     "Null"  ),
         ] );
 
-        $vlanid     = $request->old( 'vlan_id',         null );
-
         return view( 'rs-filter/edit' )->with( [
             'rsf'       => false,
             'c'         => $request->c,
             'vlans'     => $this->addValueToArray( D2EM::getRepository( VlanEntity::class )->getPublicPeeringManagerAsArray( $request->c->getId() ), null, "All LANs" ),
-            'peers'     => D2EM::getRepository( CustomerEntity::class )->getByVlanAndProtocol( $vlanid , $protocol ),
+            'peers'     => D2EM::getRepository( CustomerEntity::class )->getByVlanAndProtocol( $request->old( 'vlan_id',null ) , $protocol ),
         ] );
     }
 
@@ -144,13 +142,11 @@ class RsFilterController extends Controller
             'action_receive'        => $request->old( 'action_receive',     $request->rsf->getActionAdvertise() ),
         ] );
 
-        $vlanid     = $request->old( 'vlan_id',         null );
-
         return view( 'rs-filter/edit' )->with( [
             'rsf'       => $request->rsf,
             'c'         => $request->c,
             'vlans'     => $this->addValueToArray( D2EM::getRepository( VlanEntity::class )->getPublicPeeringManagerAsArray( $request->c->getId() ), null, "All LANs" ),
-            'peers'     => D2EM::getRepository( CustomerEntity::class )->getByVlanAndProtocol( $vlanid , $protocol ),
+            'peers'     => D2EM::getRepository( CustomerEntity::class )->getByVlanAndProtocol( $request->old( 'vlan_id',null ) , $protocol ),
         ] );
     }
 
@@ -214,16 +210,20 @@ class RsFilterController extends Controller
      *
      * @return RedirectResponse
      *
+     * @throws
      */
     public function toggleEnable( CheckPrivsCustAdmin $request, int $id, int $enable ): RedirectResponse
     {
-        $status = $enable ? 'enable' : 'disable';
+        $status = $enable ? 'enabled' : 'disabled';
 
         $request->rsf->setEnabled( ( bool )$enable );
 
         D2EM::flush();
 
+        Log::notice( Auth::user()->getUsername() . ' ' . $status . ' a router server filter with ID ' . $request->rsf->getId() );
+
         AlertContainer::push( 'The route server filter has been '.$status, Alert::SUCCESS );
+
 
         return redirect( route( "rs-filter@list", [ "custid" => $request->rsf->getCustomer()->getId() ] ) );
     }
@@ -238,6 +238,7 @@ class RsFilterController extends Controller
      *
      * @return RedirectResponse
      *
+     * @throws
      */
     public function changeOrderBy( CheckPrivsCustAdmin $request, int $id,  int $up ): RedirectResponse
     {
@@ -295,6 +296,7 @@ class RsFilterController extends Controller
         D2EM::flush();
 
         Log::notice( Auth::getUser()->getUsername()." deleted the route server filter with the ID:" . $request->input( "id" ) );
+
         AlertContainer::push( 'Router server filter deleted.', Alert::SUCCESS );
 
         return Redirect::to( route( "rs-filter@list", [ "custid" => $request->c->getId() ] ) );

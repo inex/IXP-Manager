@@ -89,7 +89,7 @@ $this->layout( 'layouts/ixpv4' )
 
                     <?= Former::actions(
                         Former::primary_submit( $t->rsf ? 'Save Changes' : 'Add' )->class( "mb-2 mb-sm-0" ),
-                        Former::secondary_link( 'Cancel' )->href(  route( 'patch-panel/list' ) )->class( "mb-2 mb-sm-0" ),
+                        Former::secondary_link( 'Cancel' )->href(  route( 'rs-filter@list', [ "custid" => $t->rsf ? $t->rsf->getCustomer()->getId() : $t->c->getId() ] ) )->class( "mb-2 mb-sm-0" ),
                         Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
                     );
                     ?>

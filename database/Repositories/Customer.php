@@ -903,8 +903,8 @@ class Customer extends EntityRepository
                     LEFT JOIN vli.Vlan v
                     LEFT JOIN v.routers r
                     WHERE r.protocol = {$protocol}
-                    AND vli.ipv{$protocol}enabled = TRUE
-                    AND vli.rsclient = TRUE";
+                    AND vli.ipv{$protocol}enabled = true
+                    AND vli.rsclient = true";
 
         if( $vlanid ){
             $request .= " AND v.id = {$vlanid}";
