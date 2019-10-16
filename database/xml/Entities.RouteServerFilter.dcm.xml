@@ -4,8 +4,8 @@
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>
-    <field name="prefix" type="string" length="43" nullable="false"/>
-    <field name="protocol" type="smallint" nullable="false"/>
+    <field name="prefix" type="string" length="43" nullable="true"/>
+    <field name="protocol" type="smallint" nullable="true"/>
     <field name="action_advertise" type="string" nullable="true"/>
     <field name="action_receive" type="string" nullable="true"/>
     <field name="enabled" type="boolean" nullable="false">

@@ -35,7 +35,9 @@ use Illuminate\Foundation\Http\FormRequest;
 
 use IXP\Rules\{
     IPv4Cidr,
-    IPv6Cidr
+    Ipv4SubnetSize,
+    IPv6Cidr,
+    Ipv6SubnetSize
 };
 
 use IXP\Utils\View\Alert\{
@@ -46,18 +48,6 @@ use IXP\Utils\View\Alert\{
 
 class Store extends FormRequest
 {
-
-    /**
-     * The route to redirect to if validation fails.
-     *
-     * @var string
-     */
-    protected $redirectRoute;
-
-    public function __construct(){
-        $this->redirect = '/';
-    }
-
     /**
      * Determine if the user is authorized to make this request.
      *
@@ -81,17 +71,21 @@ class Store extends FormRequest
     public function rules()
     {
 
+        $prefixRequired = $this->input( "protocol" ) ? "required" : "nullable";
+
         if( $this->input( "prefix" ) != '*'){
             $ipvCheck = $this->input( "protocol" ) == 4 ? new IPv4Cidr() : new IPv6Cidr();
+            $subnetCheck = $this->input( "protocol" ) == 4 ? new Ipv4SubnetSize() : new Ipv6SubnetSize();
         } else {
             $ipvCheck = "string";
+            $subnetCheck = "";
         }
 
         return [
             'peer_id'               => 'required|integer|exists:Entities\Customer,id',
             'vlan_id'               => 'nullable|integer|exists:Entities\Vlan,id',
-            'prefix'                => [ 'required', 'max:43', $ipvCheck ],
-            'protocol'              => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$PROTOCOLS ) ),
+            'prefix'                => [ $prefixRequired , 'max:43', $ipvCheck, $subnetCheck ],
+            'protocol'              => 'nullable|integer|in:' . implode( ',', array_keys( RouterEntity::$PROTOCOLS ) ),
             'action_advertise'      => 'nullable|string|max:250|in:' . implode( ',', array_keys( RouteServerFilterEntity::$ADVERTISE_ACTION_TEXT ) ),
             'action_receive'        => 'nullable|string|max:250|in:' . implode( ',', array_keys( RouteServerFilterEntity::$RECEIVE_ACTION_TEXT ) ),
         ];

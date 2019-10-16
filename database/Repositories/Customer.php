@@ -890,11 +890,11 @@ class Customer extends EntityRepository
      * Get All customer by vlan and protocol
      *
      * @param int|null $vlanid
-     * @param int $protocol
+     * @param int|null $protocol
      *
      * @return array  Customers list
      */
-    public function getByVlanAndProtocol( $vlanid = null, int $protocol = 4 )
+    public function getByVlanAndProtocol( $vlanid = null, $protocol )
     {
         $request = "SELECT DISTINCT c
                     FROM \\Entities\\customer c
@@ -902,9 +902,16 @@ class Customer extends EntityRepository
                     LEFT JOIN vi.VlanInterfaces vli
                     LEFT JOIN vli.Vlan v
                     LEFT JOIN v.routers r
-                    WHERE r.protocol = {$protocol}
-                    AND vli.ipv{$protocol}enabled = true
-                    AND vli.rsclient = true";
+                    WHERE vli.rsclient = true";
+
+        if( $protocol ){
+            $request .= " AND r.protocol = {$protocol}
+                    AND vli.ipv{$protocol}enabled = true";
+        } else {
+            $request .= " AND ((r.protocol = 4)  OR (r.protocol = 6))
+                          AND ((vli.ipv4enabled = true)  OR (vli.ipv6enabled = true))";
+        }
+
 
         if( $vlanid ){
             $request .= " AND v.id = {$vlanid}";

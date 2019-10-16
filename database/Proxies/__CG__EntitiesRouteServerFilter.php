@@ -64,10 +64,10 @@ class RouteServerFilter extends \Entities\RouteServerFilter implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'prefix', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'protocol', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'action_advertise', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'action_receive', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'enabled', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'order', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'live', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'id', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'customer', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'peer', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'vlan'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'prefix', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'protocol', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'action_advertise', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'action_receive', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'enabled', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'order_by', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'live', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'id', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'customer', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'peer', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'vlan'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'prefix', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'protocol', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'action_advertise', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'action_receive', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'enabled', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'order', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'live', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'id', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'customer', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'peer', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'vlan'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'prefix', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'protocol', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'action_advertise', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'action_receive', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'enabled', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'order_by', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'live', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'id', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'customer', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'peer', '' . "\0" . 'Entities\\RouteServerFilter' . "\0" . 'vlan'];
     }
 
     /**
@@ -198,7 +198,7 @@ class RouteServerFilter extends \Entities\RouteServerFilter implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function getProtocol(): int
+    public function getProtocol()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProtocol', []);
@@ -209,7 +209,7 @@ class RouteServerFilter extends \Entities\RouteServerFilter implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function setProtocol(int $protocol): \Entities\RouteServerFilter
+    public function setProtocol($protocol): \Entities\RouteServerFilter
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setProtocol', [$protocol]);
@@ -286,23 +286,23 @@ class RouteServerFilter extends \Entities\RouteServerFilter implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function getOrder(): int
+    public function getOrderBy(): int
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOrder', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOrderBy', []);
 
-        return parent::getOrder();
+        return parent::getOrderBy();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function setOrder(int $order): \Entities\RouteServerFilter
+    public function setOrderBy(int $order_by): \Entities\RouteServerFilter
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOrder', [$order]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOrderBy', [$order_by]);
 
-        return parent::setOrder($order);
+        return parent::setOrderBy($order_by);
     }
 
     /**
@@ -400,7 +400,7 @@ class RouteServerFilter extends \Entities\RouteServerFilter implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function getVlan(): \Entities\Vlan
+    public function getVlan()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVlan', []);
@@ -417,6 +417,39 @@ class RouteServerFilter extends \Entities\RouteServerFilter implements \Doctrine
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVlan', [$vlan]);
 
         return parent::setVlan($vlan);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveActionAdvertise(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveActionAdvertise', []);
+
+        return parent::resolveActionAdvertise();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveActionReceive(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveActionReceive', []);
+
+        return parent::resolveActionReceive();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function resolveProtocol(): string
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveProtocol', []);
+
+        return parent::resolveProtocol();
     }
 
 }

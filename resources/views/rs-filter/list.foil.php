@@ -91,13 +91,7 @@ $this->layout( 'layouts/ixpv4' );
                                 </td>
                                 <td>
                                     <?php if($rsf->getVlan() ): ?>
-                                        <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                            <a href="<?= route( 'vlan@view', [ 'id' => $rsf->getVlan()->getId() ] ) ?>">
-                                                <?= $t->ee( $rsf->getVlan()->getName() ) ?>
-                                            </a>
-                                        <?php else: ?>
-                                            <?= $t->ee( $rsf->getVlan()->getName() ) ?>
-                                        <?php endif; ?>
+                                        <?= $t->ee( $rsf->getVlan()->getName() ) ?>
                                     <?php else: ?>
                                         All LAN's
                                     <?php endif; ?>
@@ -133,8 +127,9 @@ $this->layout( 'layouts/ixpv4' );
                                             <a class="btn btn-white" href="<?= route( "rs-filter@toggle-enable", [ "id" => $rsf->getId(), "enable" => $rsf->isEnabled() ? 0 : 1 ] ) ?>" title="<?= $rsf->isEnabled() ? "Disable" : "Enable" ?>">
                                                 <i class="fa <?= $rsf->isEnabled() ? "fa-times-circle" : "fa-check-circle" ?>"></i>
                                             </a>
-
-
+                                            <a class="btn btn-white" id="delete-rsf-<?=$rsf->getId() ?>" href="" title="Delete">
+                                                <i class="fa fa-trash"></i>
+                                            </a>
                                             <button type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
                                             <div class="dropdown-menu dropdown-menu-right">
 
@@ -151,9 +146,7 @@ $this->layout( 'layouts/ixpv4' );
                                                 </a>
 
                                             </div>
-                                            <a class="btn btn-white" id="delete-rsf-<?=$rsf->getId() ?>" href="" title="Delete">
-                                                <i class="fa fa-trash"></i>
-                                            </a>
+
                                         <?php endif; ?>
                                     </div>
                                 </td>

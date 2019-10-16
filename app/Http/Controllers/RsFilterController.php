@@ -31,6 +31,7 @@ use Illuminate\View\View;
 
 use Entities\{
     Customer            as CustomerEntity,
+    Router              as RouterEntity,
     RouteServerFilter   as RouteServerFilterEntity,
     Vlan                as VlanEntity
 };
@@ -103,21 +104,23 @@ class RsFilterController extends Controller
      */
     public function add( CheckPrivsCustAdmin $request ): View
     {
-        $vlanid     = $request->old( 'vlan_id',         "Null" );
+        $vlanid     = $request->old( 'vlan_id',         null );
         $protocol   = $request->old( 'protocol',        4      );
 
         Former::populate( [
-            'vlan_id'               => $vlanid,
-            'protocol'              => $protocol,
+            'vlan_id'               => $vlanid ?? "Null",
+            'protocol'              => $protocol ?? "Null",
             'action_advertise'      => $request->old( 'action_advertise',   "Null"  ),
             'action_receive'        => $request->old( 'action_receive',     "Null"  ),
+            'prefix'                => $request->old( 'action_receive',     "*"     ),
         ] );
 
         return view( 'rs-filter/edit' )->with( [
             'rsf'       => false,
             'c'         => $request->c,
             'vlans'     => $this->addValueToArray( D2EM::getRepository( VlanEntity::class )->getPublicPeeringManagerAsArray( $request->c->getId() ), null, "All LANs" ),
-            'peers'     => D2EM::getRepository( CustomerEntity::class )->getByVlanAndProtocol( $request->old( 'vlan_id',null ) , $protocol ),
+            'protocols' => $this->addValueToArray( RouterEntity::$PROTOCOLS , null, "Both" ),
+            'peers'     => D2EM::getRepository( CustomerEntity::class )->getByVlanAndProtocol( $vlanid , $protocol ),
         ] );
     }
 
@@ -130,12 +133,12 @@ class RsFilterController extends Controller
      */
     public function edit( CheckPrivsCustAdmin $request ): View
     {
-        $vlanid     = $request->old( 'vlan_id', $request->rsf->getVlan() ? $request->rsf->getVlan()->getId() : "Null" );
-        $protocol   = $request->old( 'protocol',        $request->rsf->getProtocol() );
+        $vlanid     = $request->old( 'vlan_id',     $request->rsf->getVlan() ? $request->rsf->getVlan()->getId() : null );
+        $protocol   = $request->old( 'protocol',    $request->rsf->getProtocol() ?? null );
 
         Former::populate( [
-            'vlan_id'               => $vlanid,
-            'protocol'              => $protocol,
+            'vlan_id'               => $vlanid      ?? "null",
+            'protocol'              => $protocol    ?? "null",
             'peer_id'               => $request->old( 'peer_id',            $request->rsf->getPeer()->getId() ),
             'prefix'                => $request->old( 'prefix',             $request->rsf->getPrefix() ),
             'action_advertise'      => $request->old( 'action_advertise',   $request->rsf->getActionReceive() ),
@@ -146,7 +149,8 @@ class RsFilterController extends Controller
             'rsf'       => $request->rsf,
             'c'         => $request->c,
             'vlans'     => $this->addValueToArray( D2EM::getRepository( VlanEntity::class )->getPublicPeeringManagerAsArray( $request->c->getId() ), null, "All LANs" ),
-            'peers'     => D2EM::getRepository( CustomerEntity::class )->getByVlanAndProtocol( $request->old( 'vlan_id',null ) , $protocol ),
+            'protocols' => $this->addValueToArray( RouterEntity::$PROTOCOLS , null, "Both" ),
+            'peers'     => D2EM::getRepository( CustomerEntity::class )->getByVlanAndProtocol( $vlanid , $protocol ),
         ] );
     }
 
@@ -170,7 +174,7 @@ class RsFilterController extends Controller
 
         $request->rsf->setPeer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'peer_id' ) ) );
         $request->rsf->setVlan( $request->input( 'vlan_id' ) ? D2EM::getRepository( VlanEntity::class )->find( $request->input( 'vlan_id' ) ) : null );
-        $request->rsf->setPrefix(   $request->input( 'prefix'   ) );
+        $request->rsf->setPrefix(   $request->input( 'prefix', null ) );
         $request->rsf->setProtocol( $request->input( 'protocol' ) );
         $request->rsf->setActionAdvertise(  $request->input( 'action_advertise' ) );
         $request->rsf->setActionReceive(    $request->input( 'action_receive'   ) );

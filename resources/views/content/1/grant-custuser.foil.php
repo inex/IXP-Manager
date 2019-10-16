@@ -5,7 +5,7 @@ $this->layout( 'layouts/ixpv4' )
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Route Server Filter / Grant Privileges
+    Grant Privileges
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>

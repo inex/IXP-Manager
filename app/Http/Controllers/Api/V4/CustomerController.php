@@ -104,18 +104,17 @@ class CustomerController extends Controller
      */
     public function byVlanAndProtocol( Request $request ): JsonResponse
     {
+        $vlanid = null;
+
         if( $request->input( "vlan_id" ) ) {
             if( !( $vlan = D2EM::getRepository( VlanEntity::class )->find( $request->input( "vlan_id" ) ) ) ){
                 abort( 404, 'No such Vlan' );
             }
             $vlanid = $vlan->getId();
 
-        } else {
-            $vlanid = null;
         }
 
-
-        if( !in_array( $protocol = $request->input( 'protocol' ), [ 4, 6 ] ) ) {
+        if( !in_array( $protocol = $request->input( 'protocol' ), [ null, 4, 6 ] ) ) {
             abort( 404 );
         }
 

@@ -55,7 +55,7 @@ $this->layout( 'layouts/ixpv4' )
 
                     <?= Former::select( 'protocol' )
                         ->label( 'Protocol' )
-                        ->fromQuery( Entities\Router::$PROTOCOLS )
+                        ->fromQuery( $t->protocols )
                         ->placeholder( 'Choose the protocol' )
                         ->addClass( 'chzn-select' );
                     ?>

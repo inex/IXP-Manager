@@ -96,16 +96,16 @@ class RouteServerFilter
     /**
      * @return string
      */
-    public function getPrefix(): string
+    public function getPrefix()
     {
         return $this->prefix;
     }
 
     /**
-     * @param string $prefix
+     * @param string|null $prefix
      * @return RouteServerFilter
      */
-    public function setPrefix( string $prefix ): RouteServerFilter
+    public function setPrefix( $prefix ): RouteServerFilter
     {
         $this->prefix = $prefix;
         return $this;
@@ -114,16 +114,16 @@ class RouteServerFilter
     /**
      * @return int
      */
-    public function getProtocol(): int
+    public function getProtocol()
     {
         return $this->protocol;
     }
 
     /**
-     * @param int $protocol
+     * @param int|null $protocol
      * @return RouteServerFilter
      */
-    public function setProtocol( int $protocol ): RouteServerFilter
+    public function setProtocol( $protocol ): RouteServerFilter
     {
         $this->protocol = $protocol;
         return $this;
@@ -316,6 +316,6 @@ class RouteServerFilter
      * @return string
      */
     public function resolveProtocol(): string {
-        return RouterEntity::$PROTOCOLS[ $this->getProtocol() ] ?? 'Unknown';
+        return RouterEntity::$PROTOCOLS[ $this->getProtocol() ] ?? 'Both';
     }
 }
