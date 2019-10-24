@@ -125,7 +125,7 @@
                     <?php $asn = sprintf( $t->asnStringFormat, $x_as ) ?>
                     <?php $len = strlen( $asn ) ?>
                     <?php for( $pos = 0; $pos <= $len; $pos++ ): ?>
-                        <?= str_limit( $asn ,1 ,'' ) ?>
+                        <?= \Illuminate\Support\Str::limit( $asn ,1 ,'' ) ?>
                         <?php if( $pos < $len ): ?>
                             <br />
                         <?php endif; ?>

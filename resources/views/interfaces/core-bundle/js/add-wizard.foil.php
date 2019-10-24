@@ -13,25 +13,27 @@
     const input_description     = $( "#description" );
     const input_graph_title     = $( "#graph-title" );
     const div_stp               = $( '#stp-div' );
-    const hidden_nb_cls         = $( '#nb-core-links' );
+    const div_core_link_area    = $( "#core-links-area" );
+    const div_message_cl        = $( "#message-cl" );
+    const div_l3_lag            = $( '#l3-lag-area' );
     const class_lag_area        = $( '.lag-area' );
 
+
+
     // Some global variable
-    let actionRunnig            = false;
-    let nbCoreLink              = 0;
-    let exludedSwitchPortSideA  = [];
-    let exludedSwitchPortSideB  = [];
+    let excludedSwitchPortSideA  = [];
+    let excludedSwitchPortSideB  = [];
 
-    let switchArray             = <?php echo json_encode( $t->switches ) ; ?>;
+    let switchArray             = <?php echo json_encode( $t->switches ) ; ?>
 
 
-    $(document).ready( function() {
-        $( 'label.col-lg-2' ).removeClass('col-lg-2');
+    $( document ).ready( function() {
+        $( 'label.col-lg-2' ).removeClass( 'col-lg-2' );
 
-        // display the core link form if the dropdown list is already set at loading
-        if( dd_type.val() ) { displayCoreLinks() }
+        // display the core link form when the page load
+        if( dd_type.val() ) { displayCoreLinks( "onLoad" ) }
 
-        // initalise the Select2 lib on input
+        // instaciate Select2 dropdowns
         dd_speed.select2();
         dd_duplex.select2();
     });
@@ -41,24 +43,24 @@
     // action bindings:
 
     /**
-     * display the core link form depending of the type selected
+     * display the core link form depending on the core bundle type selected
      */
-    dd_type.change( () => { displayCoreLinks( ); } );
+    dd_type.change( () => { displayCoreLinks( "onChange" ); } );
 
     /**
-     * add a new link to the core bundle
+     * add a new core link to the core bundle
      */
     $( "#add-new-core-link" ).click( () => { loadBundleLinkSection( 'addBtn' ); } );
 
     /**
-     * Allow to set the value of the core bundle 'enabled' checkbox to the core links
+     * Allow to set the value of the core bundle 'enabled' checkbox to the core links enable checkboxes
      */
-    cb_enabled.click( () => { cb_enabled.is(":checked") ? $( "input[id|='enabled-cl']" ).prop( 'checked', true ) :  $( "input[id|='enabled-cl']" ).prop( 'checked', false ) } );
+    cb_enabled.click( () => { cb_enabled.is(":checked") ? $( ".enabled-cl" ).attr( 'checked', true ) :  $( ".enabled-cl" ).attr( 'checked', false ) } );
 
     /**
      * check if the subnet is valid ( only for L3-LAG)
      */
-    input_subnet.blur( function() { checkSubnet( input_subnet.attr( 'id' ) ) } );
+    $(document).on( 'blur', ".subnet" ,function( e ){ checkSubnet( $( this ) ) } );
 
     /**
      * set description value in the graph name input if this one is empty
@@ -70,64 +72,100 @@
     });
 
     /**
-     * Check if all the switch ports have been chosen before submit
+     * Check if the inputs have been set before submitting the form
+     *
+     * Check the Core bundle subnet if the core bundle type is L3 LAG
+     *
+     * Check if the Core link(s) switch ports have been selected
+     *
+     * Check if the core link speed has been set
      */
     $('#core-bundle-submit-btn').click(function() {
+        $( ".message" ).html( '' );
 
-        if( $( "#type" ).val() == 3 && $("#subnet" ).val() !== '' ){
-            if( !validSubnet( $( "#subnet" ).val() ) ){
-                $("#message-cb").html("<div class='alert alert-danger' role='alert'> The subnet " + $( this ).val() + " is not valid! </div>");
+        if( dd_type.val() == <?= \Entities\CoreBundle::TYPE_L3_LAG ?> && input_subnet.val() !== '' ) {
+            if( !validSubnet( input_subnet.val() ) ) {
+                $("#message-cb").html(`<div class='alert alert-danger' role='alert'>The subnet ${input_subnet.val()} is not valid! </div>` );
                 $("html, body").animate({ scrollTop: 0 }, "slow");
                 return false;
             }
         }
 
-        $("[id|='message']").html('');
-        for (let i = 1; i <= hidden_nb_cls.val(); i++) {
-            if( !$( "#sp-a-" + i ).val() || !$( "#sp-b-" + i ).val() ){
-                $( "#message-" + i ).append( "<div class='alert alert-danger' role='alert'>You need to select switch ports.</div>" );
-                $('html, body').animate({ scrollTop:$("#core-link-" + i ).offset().top }, 'slow');
-                return false;
-            }
-        }
+        div_core_link_area.find( ".sp-dd" ).each( function( index, input ) {
+             if ( !$ ( input ).val() ) {
+                 let div_message = $( input ).parents().find( ".message-new-cl" );
+                 div_message.append("<div class='alert alert-danger' role='alert'>You need to select switch ports.</div>");
+                 $('html, body').animate( { scrollTop: div_message.offset().top }, 'slow');
+                 return false;
+             }
+        });
+
         if( !dd_speed.val() ){
-            $( "#message-1" ).append( "<div class='alert alert-danger' role='alert'>You need to select a speed.</div>" );
-            $('html, body').animate({ scrollTop:$("#core-link-1").offset().top }, 'slow');
+            div_message_cl.append( "<div class='alert alert-danger' role='alert'>You need to select a speed.</div>" );
+            $('html, body').animate( { scrollTop:div_message_cl.offset().top }, 'slow' );
             return false;
         }
-
-
 
         return true;
     });
 
     /**
-     * event onchange on the switch dropdowns
+     * Event onchange on the Switches dropdown
+     *
+     * Set the Switch ports list to the dedicated dropdown
+     *
+     * Set the list of switches to the switch dropdown of the other side
      */
-    $(document).on('change', "[id|='switch']" ,function(e){
+    $( document ).on( 'change', '.switch-dd' ,function( e ) {
         e.preventDefault();
-        let sside = ( this.id ).substring( 7 );
-        setSwitchPort( sside , hidden_nb_cls.val(), false );
+        let sside = $( this ).attr( "data-value" );
+
+        setSwitchPort( sside , $( "#core-links-area .core-link-form:last" ) , false );
+
         setDropDownSwitchSideX( sside );
+
+        // Reset the list of excluded port depending on the side
         if( sside == 'a' ){
-            exludedSwitchPortSideA = []
+            excludedSwitchPortSideA = []
         } else {
-            exludedSwitchPortSideB = []
+            excludedSwitchPortSideB = []
         }
+
+        $( `#hidden-switch-${sside}` ).val( $( this ).val() );
     });
 
 
     /**
-     * event onchange on the switch port dropdowns
+     * Event onchange on the switch ports dropdown
      */
-    $(document).on('change', "[id|='sp']" ,function(e){
+    $( document ).on( 'change', '.sp-dd' ,function( e ) {
         e.preventDefault();
-        let sid = ( this.id ).substring( 5 );
-        let sside = ( this.id ).substring( 3, 4 );
+        let sside   = $( this ).attr( "data-value-side" );
+        let hidden_sp = $( this ).closest( '.core-link-form' ).find( `.hidden-sp-${sside}` );
 
-        $( "#hidden-sp-" + sside + '-' + sid ).val( $("#sp-"+ sside + "-" + sid).val() );
+        // set the switch port dropdown value the hidden input
+        hidden_sp.val( $( this ).val() );
 
+        // update the list of switch port that have already been select in order to exclude them
         excludedSwitchPort( sside );
+    });
+
+    /**
+     * Delete a core link from
+     */
+    $( document ).on( 'click', '.delete-core-link' ,function( e ) {
+        e.preventDefault();
+        let currentCoreLinkForm     = $( this ).closest( '.core-link-form' );
+        let previousCoreLinkForm    = currentCoreLinkForm.closest( '.core-link-form' ).prev();
+
+        disableDropDown( previousCoreLinkForm , false );
+
+        // delete the current core link form
+        currentCoreLinkForm.remove();
+
+        // allow the click on the delete button for the previous core link
+        previousCoreLinkForm.find( '.delete-core-link' ).prop( 'disabled', false );
+
     });
 
     /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -135,13 +173,12 @@
     /// Functions
     ///
 
-    /**
-     * Display and set value to input depending on the type selected
-     */
-    function displayCoreLinks(){
-        hidden_nb_cls.val( 0 );
 
-        $("#core-links-area").html( '' );
+    /**
+     * Display Core link area and set value to input depending on the type selected
+     */
+    function displayCoreLinks( action ){
+        div_core_link_area.html( '' );
         $("#div-links").show( );
 
         actionForL3Lag();
@@ -149,164 +186,149 @@
 
         dd_type.val() == <?= \Entities\CoreBundle::TYPE_L2_LAG ?> ? div_stp.slideDown() : div_stp.slideUp();
 
-        loadBundleLinkSection( 'onChange' );
+        loadBundleLinkSection( action );
     }
 
-    function actionForL3Lag(){
-        let required;
 
-        if( dd_type.val() == <?= \Entities\CoreBundle::TYPE_L3_LAG ?>){
-            $( '#l3-lag-area' ).slideDown();
-            required = true ;
-        } else {
-            $( '#l3-lag-area' ).slideUp();
-            required = false ;
+    /**
+     * Check if the core link form is valid
+     */
+    function checkClError( action , bundleType, subnet , previousElement ) {
+
+        let currentMessage = previousElement.find( ".message-new-cl" );
+
+        if( action == 'addBtn' ) {
+            // check if the switch port for side A and B are set
+            if( !dd_switch_a.val() || !dd_switch_b.val()  ){
+                div_message_cl.append( "<div class='alert alert-danger' role='alert'>Please select Switches for Side A and B.</div>" );
+                $('html, body').animate({ scrollTop:div_message_cl.offset().top }, 'slow' );
+                return true;
+            }
+
+            // check if the switch port for side A and B are set
+            if( !previousElement.find( ".sp-a" ).val() || !previousElement.find( ".sp-b" ).val() ) {
+                currentMessage.append( "<div class='alert alert-danger' role='alert'>Please select Switch Ports for Side A and B.</div>" );
+                $('html, body').animate({ scrollTop:currentMessage.offset().top }, 'slow' );
+                return true;
+            }
+
+            // check if the subnet is valid
+            if( subnet ) {
+                if( !validSubnet( subnet ) ){
+                    currentMessage.append(  "<div class='alert alert-danger' role='alert'>The subnet " + subnet + " is not valid! </div>" );
+                    $('html, body').animate({ scrollTop:currentMessage.offset().top }, 'slow' );
+                    return true;
+                }
+            }
         }
-        $( '#subnet' ).prop( 'required', required );
+
+        if( !bundleType ) {
+            previousElement.find( ".message-new-cl" ).append(  "<div class='alert alert-danger' role='alert'>Please select a bundle type.</div>" );
+            return true;
+        }
+
+        return false;
     }
 
-    function actionForLxLag(){
-        let required;
 
-        if( dd_type.val() == <?= \Entities\CoreBundle::TYPE_L3_LAG ?> || dd_type.val() == <?= \Entities\CoreBundle::TYPE_L2_LAG ?> ){
-            class_lag_area.slideDown();
-            required = true ;
-        } else{
-            class_lag_area.slideUp();
-            required = false ;
+    function initializeNewCoreLink( element, old_nb_link ){
+        let nb_link = $( ".core-link-form" ).length;
+
+        element.find( ".sp-dd" ).select2( { width: '100%' } );
+        element.find( ".title-new-cl" ).html( `Link ${nb_link}:` );
+        element.find( ".message-new-cl" ).attr( "id",  `message-${nb_link}` );
+        element.find( ".delete-core-link" ).attr( "id",  `delete-cl-${nb_link}` );
+
+        if( old_nb_link < 1){
+            element.find( ".delete-core-link" ).remove();
         }
 
-        $( '#vi-name-a' ).prop( 'required', required );
-        $( '#vi-name-b' ).prop( 'required', required );
-        $( '#pi-channel-number-a' ).prop( 'required', required );
-        $( '#pi-channel-number-b' ).prop( 'required', required );
+        setDetailInputName( element, nb_link );
+    }
+
+
+    /**
+     *  Set the name to all the inputs, indexed by their order in the DOM
+     * */
+    function setDetailInputName( element, nb_link ){
+        element.find( ".cl-input" ).each( function( index, input ) {
+            $( input ).attr( 'name' , `cl-details[${nb_link}][${$( input ).attr( "data-value" )}]` );
+            $( input ).attr( 'id' , $( input ).attr( "data-value" ) + "-" + nb_link  );
+        });
+        $( ".checkbox-cl-hidden" ).removeAttr( "id" )
     }
 
     /**
      * Function adding a new core link form in the core links area
      */
     function loadBundleLinkSection( action ){
-        // global variable
-        nbCoreLink = hidden_nb_cls.val( );
+        // store the last value
+        let old_nb_link = $( ".core-link-form" ).length;
+
+        let previous_core_link_form = $( "#core-links-area .core-link-form:last" );
 
         let bundleType = dd_type.val();
-        let error = false;
+        let enabled = cb_enabled.is(':checked') ? true : false;
 
-        let subnet = $( "#subnet-" + nbCoreLink  ).val() ? $( "#subnet-" + nbCoreLink  ).val() : null ;
-        let enabled = cb_enabled.is(':checked') ? 1 : 0 ;
+        let subnet = $( "#subnet-" + old_nb_link  ).val() ? $( "#subnet-" + old_nb_link  ).val() : null ;
 
-        $("#message-" + nbCoreLink).html( '' );
+        $( ".message" ).html( '' );
 
-        if( action == 'addBtn' ){
-            // check if the switch port for side A and B are set
-            if( !dd_switch_a.val() || !$( "#sp-a-" + nbCoreLink ).val() || !dd_switch_b.val() || !$( "#sp-b-" + nbCoreLink ).val() ){
-                error = true;
-                $( "#message-" + nbCoreLink ).append( "<div class='alert alert-danger' role='alert'>Please select Switches and Switch Ports for Side A and B.</div>" );
-                return false;
+        if( !checkClError( action, bundleType, subnet, previous_core_link_form ) ){
+
+            // clone the default core link form in order to insert it as a new Core link form in the dedicated zone
+            let new_core_link_form = $( "#core-link-example" ).clone();
+
+            // deleting the id of the new core link to not mixed it up with the default one
+            new_core_link_form.addClass( "core-link-form" ).removeAttr( "id" );
+
+            // if the bundle type is not Type ECMP, delete the BFD and Subnet inputs from the core link form
+            if( bundleType != <?= \Entities\CoreBundle::TYPE_ECMP ?> ){
+                new_core_link_form.find( ".type-ecmp-only" ).remove();
             }
 
-            // check if there is available switch port for the selected switcher for side A and B
-            if( $( "#sp-a-" + nbCoreLink + " option" ).length < 3  ||   $( "#sp-b-" + nbCoreLink + " option" ).length < 3 ){
-                error = true;
-                $( "#message-"  + nbCoreLink ).append(  "<div class='alert alert-danger' role='alert'>Cannot add any more core links as there are no more available ports on side a/b</div>" );
-                return false;
+            new_core_link_form.find( '.enabled-cl' ).attr( "checked", enabled );
+
+            // insert the new core link form in the dedicated areaa
+            new_core_link_form.appendTo( "#core-links-area" );
+
+            // store number of core link adding the new one
+            let nb_link = $( ".core-link-form" ).length;
+
+            // initialize the ne core link form
+            initializeNewCoreLink( new_core_link_form, old_nb_link );
+
+            // Set values to the switch port side A if the Switch side A is set
+            if( dd_switch_a.val() ){
+                setSwitchPort( 'a', new_core_link_form, action, false );
             }
 
-            // check if the subnet is valid
-            if( subnet ) {
-                if( !validSubnet( subnet ) ){
-                    error = true;
-                    $( "#message-"  + nbCoreLink ).append(  "<div class='alert alert-danger' role='alert'>The subnet " + subnet + " is not valid! </div>" );
-                    return false;
+            // Set values to the switch port side B if the Switch side B is set
+            if( dd_switch_b.val() ){
+                setSwitchPort( 'b', new_core_link_form , action, false );
+            }
+
+            // event when the add button has been clicked
+            if( action == 'addBtn' ){
+
+                // disable the switch/switchport dropdown (side A/B) of the previous core link
+                disableDropDown( previous_core_link_form, true );
+
+                // disable the delete button of the previous core link
+                previous_core_link_form.find( ".delete-core-link" ).prop( 'disabled', true );
+
+                // set the setting from the first core link to the new one
+                setSettingsToLinks( previous_core_link_form, new_core_link_form );
+
+                if( subnet ) {
+                    // set the next valid subnet to the new core link
+                    setNextSubnet( new_core_link_form , subnet );
                 }
             }
+
+            // display the new core link ready to use
+            new_core_link_form.show();
         }
-
-        if( !bundleType ){
-            error = true;
-            $( "#message-"  + nbCoreLink ).append(  "<div class='alert alert-danger' role='alert'>Please select a bundle type.</div>" );
-            return false;
-        }
-
-        if( !error ){
-            // stop the function if there the function is already running
-            if( !actionRunnig ){
-                actionRunnig = true;
-                let ajaxCall = $.ajax( "<?= action( 'Interfaces\CoreBundleController@addCoreLinkFrag' ) ?>", {
-                    data: {
-                        nbCoreLink      : nbCoreLink,
-                        enabled         : enabled,
-                        bundleType      : bundleType,
-                        _token          : "<?= csrf_token() ?>"
-                    },
-                    type: 'POST'
-                })
-                .done( function( data ) {
-                    if( data.success ){
-                        // add the new core link form
-                        $('#core-links-area').append( data.htmlFrag );
-
-                        // store the last value
-                        let oldNbLink = hidden_nb_cls.val( );
-
-                        // set the number of core links present for the core bundle
-                        hidden_nb_cls.val( data.nbCoreLinks );
-
-                        if( dd_switch_a.val() ){
-                            setSwitchPort( 'a', hidden_nb_cls.val(), action, false );
-                        }
-
-                        if( dd_switch_b.val() ){
-                            setSwitchPort( 'b', hidden_nb_cls.val() , action, false );
-                        }
-
-                        // event when the add icon has been clicked
-                        if( action == 'addBtn' ){
-                            // disable the switch/switchport dropdown (side A/B) of the previous core link
-                            disableDropDown( oldNbLink, true);
-                            // disable the delete button of the previous core link
-                            $( "#remove-core-link-" + oldNbLink ).prop( 'disabled', true );
-
-                            // set the switcher dropdown (A/B) with the value of the first core link
-                            dd_switch_a.val( dd_switch_a.val() ).prop('disabled', true).trigger('change.select2');
-                            dd_switch_b.val( dd_switch_b.val() ).prop('disabled', true).trigger('change.select2');
-
-                            // set the setting from the first core link to the other
-                            setSettingsToLinks( data.nbCoreLinks );
-
-                            if( subnet ) {
-                                // set the next valid subnet to the new core link
-                                setNextSubNet( data.nbCoreLinks, subnet );
-                            }
-                        }
-                        // end of the function
-                        actionRunnig = false;
-                    }
-                })
-                .fail( function() {
-                    throw new Error( "Error running ajax query for core-bundle/add-core-link-frag" );
-                    alert( "Error running ajax query for core-bundle/add-core-link-frag" );
-                })
-            }
-        }
-    }
-
-
-    /**
-     * insert in array all the switch port selected from all the switch port dropdown
-     * in order the exclude them from the new switch port dropdown that could be added
-     */
-    function excludedSwitchPort( sside ){
-        $("[id|='sp'] :selected").each( function( ) {
-            if( this.value != '' ){
-                if( sside == 'a' ){
-                    exludedSwitchPortSideA.push( this.value );
-                } else{
-                    exludedSwitchPortSideB.push( this.value );
-                }
-
-            }
-        });
     }
 
 
@@ -314,30 +336,32 @@
      * Copy the switch dropdown from the side A to B excluding the switch selected in side A
      */
     function setDropDownSwitchSideX( sid ){
-        if( sid == 'a'){
-            otherSwitch = dd_switch_b;
-            currentSwitch = dd_switch_a;
+        let otherSwitch, currentSwitch;
+
+        if( sid == 'a' ) {
+            otherSwitch     = dd_switch_b;
+            currentSwitch   = dd_switch_a;
         } else {
-            otherSwitch = dd_switch_a;
-            currentSwitch = dd_switch_b;
+            otherSwitch     = dd_switch_a;
+            currentSwitch   = dd_switch_b;
         }
 
         let options = "";
         let oldvalue = otherSwitch.val();
 
         if( oldvalue == null || oldvalue == '' ){
-            options = "<option value=\"\">Choose a switch</option>\n";
+            options = `<option value="">Choose a switch</option>\n`;
         }
-        console.log( oldvalue );
-        jQuery.each(switchArray, function( id , val ) {
+
+        jQuery.each( switchArray, function( id , val ) {
             let select = '';
 
             if( oldvalue != null && id == oldvalue ){
-                select = "selected= 'selected'";
+                select = `selected= 'selected'`;
             }
 
             if( id != currentSwitch.val() ){
-                options += "<option " + select + " value=\"" + id + "\">" + val + " </option>\n";
+                options += `<option ${select} value="${id}">${val}</option>\n`;
             }
         });
 
@@ -345,43 +369,79 @@
     }
 
     /**
-     * Disable the switch/switch port of the both side
+     * Disable or enable the switch/switch port of the both side
      */
-    function disableDropDown( id, disable){
-        dd_switch_a.prop('disabled', disable).trigger('change.select2');
-        dd_switch_b.prop('disabled', disable).trigger('change.select2');
-        $( "#sp-a-"+ id ).prop('disabled', disable).trigger('change.select2');
-        $( "#sp-b-"+ id ).prop('disabled', disable).trigger('change.select2');
+    function disableDropDown( element, disable) {
+        if( $( ".core-link-form" ).length <= 2 ){
+            $( ".switch-dd" ).prop( 'disabled', disable ).trigger( 'change.select2' );
+        }
+
+        $( element ).find( ".sp-dd" ).prop( 'disabled', disable ).trigger( 'change.select2' );
     }
 
     /**
      * Set the BFD and ENABLED input with the first core link value
      */
-    function setSettingsToLinks( id ){
-        if($( '#bfd-1' ).is(':checked')){
-            $( '#bfd-'+ id ).prop('checked', true);
+    function setSettingsToLinks( previousCoreLinkForm, new_core_link_form ) {
+        if( previousCoreLinkForm.find( '.bfd' ).is( ':checked' ) ) {
+            new_core_link_form.find( '.bfd').prop( 'checked', true );
         }
 
-        if($( '#enabled-cl-1' ).is(':checked')){
-            $( '#enabled-cl-'+ id ).prop('checked', true);
+        if( previousCoreLinkForm.find( '.enabled-cl' ).is( ':checked') ) {
+            new_core_link_form.find( '.enabled-cl' ).prop(' checked', true );
         }
     }
 
 
     /**
-     * set the next valid subnet to the new corelink form
+     * set the next valid subnet to the new core link form
      */
-    function setNextSubNet( id , subnet ){
+    function setNextSubnet( new_core_link_form , subnet ){
         let address = new Address4( subnet );
         if( !address.isValid() ){
-            $( "#message-" + id ).html( "<div class='alert alert-danger' role='alert'>The subnet '" + subnet + "' is not valid!</div>" );
+            new_core_link_form.find( '.message-new-cl' ).html( `<div class='alert alert-danger' role='alert'>The subnet ${subnet} is not valid!</div>` );
             return false;
         }
 
         let nextAddressAsInt = parseInt( address.endAddress().bigInteger() ) + 1;
         let nextAddressStart = Address4.fromBigInteger( nextAddressAsInt );
         let nextAddress      = new Address4( nextAddressStart.address + '/' + address.subnetMask );
-        $("#subnet-" + id ).val( nextAddress.address );
+        new_core_link_form.find( '.subnet' ).val( nextAddress.address );
+    }
+
+    /**
+     * Display or hide the L3 lag area depending on the type selected
+     * Change property of the subnet input as required or not
+     */
+    function actionForL3Lag() {
+        let required;
+
+        if( dd_type.val() == <?= \Entities\CoreBundle::TYPE_L3_LAG ?> ) {
+            div_l3_lag.slideDown();
+            required = true ;
+        } else {
+            div_l3_lag.slideUp();
+            required = false ;
+        }
+        input_subnet.prop( 'required', required );
+    }
+
+    /**
+     * Display or hide the lag area depending on the type selected
+     * Change input properties as required or not (virtual Interface name/physical interface channel number)
+     */
+    function actionForLxLag() {
+        let required;
+
+        if( dd_type.val() == <?= \Entities\CoreBundle::TYPE_L3_LAG ?> || dd_type.val() == <?= \Entities\CoreBundle::TYPE_L2_LAG ?> ) {
+            class_lag_area.slideDown();
+            required = true ;
+        } else{
+            class_lag_area.slideUp();
+            required = false ;
+        }
+
+        $( '.input-lx-lag' ).prop( 'required', required );
     }
 
 </script>

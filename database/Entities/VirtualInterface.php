@@ -23,7 +23,17 @@
 
 namespace Entities;
 
-use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
+
+use Entities\{
+    CoreBundle    as CoreBundleEntity,
+    Customer            as CustomerEntity,
+    MACAddress          as MACAddressEntity,
+    PhysicalInterface   as PhysicalInterfaceEntity,
+    SflowReceiver       as SflowReceiverEntity,
+    VlanInterface       as VlanInterfaceEntity
+};
+use Doctrine\Common\Collections\Collection;
 
 /**
  * Entities\VirtualInterface
@@ -72,33 +82,38 @@ class VirtualInterface
     protected $id;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $PhysicalInterfaces;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $VlanInterfaces;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var ArrayCollection
      */
     protected $MACAddresses;
 
     /**
-     * @var \Entities\Customer
+     * @var CustomerEntity
      */
     protected $Customer;
+
+    /**
+     * @var Collection
+     */
+    private $SflowReceivers;
 
     /**
      * Constructor
      */
     public function __construct()
     {
-        $this->PhysicalInterfaces = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->VlanInterfaces = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->MACAddresses = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->PhysicalInterfaces   = new ArrayCollection();
+        $this->VlanInterfaces       = new ArrayCollection();
+        $this->MACAddresses         = new ArrayCollection();
     }
 
     /**
@@ -107,7 +122,7 @@ class VirtualInterface
      * @param string $name
      * @return VirtualInterface
      */
-    public function setName($name)
+    public function setName( $name )
     {
         $this->name = $name;
 
@@ -130,7 +145,7 @@ class VirtualInterface
      * @param string $description
      * @return VirtualInterface
      */
-    public function setDescription($description)
+    public function setDescription( $description )
     {
         $this->description = $description;
 
@@ -153,7 +168,7 @@ class VirtualInterface
      * @param integer $mtu
      * @return VirtualInterface
      */
-    public function setMtu($mtu)
+    public function setMtu( $mtu )
     {
         if( $mtu === '' ) {
             $mtu = null;
@@ -179,7 +194,7 @@ class VirtualInterface
      * @param boolean $trunk
      * @return VirtualInterface
      */
-    public function setTrunk($trunk)
+    public function setTrunk( $trunk )
     {
         $this->trunk = $trunk;
 
@@ -202,7 +217,7 @@ class VirtualInterface
      * @param boolean $lag_framing
      * @return VirtualInterface
      */
-    public function setLagFraming(bool $lag_framing): VirtualInterface
+    public function setLagFraming( bool $lag_framing ): VirtualInterface
     {
         $this->lag_framing = $lag_framing;
 
@@ -222,10 +237,11 @@ class VirtualInterface
     /**
      * Set lag framing - fastlacp
      *
-     * @param boolean $lag_framing
+     * @param bool $fastlacp
+     *
      * @return VirtualInterface
      */
-    public function setFastLACP(bool $fastlacp): VirtualInterface
+    public function setFastLACP( bool $fastlacp ): VirtualInterface
     {
         $this->fastlacp = $fastlacp;
 
@@ -250,7 +266,7 @@ class VirtualInterface
      * @param integer $channelgroup
      * @return VirtualInterface
      */
-    public function setChannelgroup($channelgroup)
+    public function setChannelgroup( $channelgroup )
     {
         $this->channelgroup = $channelgroup;
 
@@ -282,7 +298,8 @@ class VirtualInterface
      * Get the bundle name if name and channel group are set. Otherwise an empty string.
      * @return string
      */
-    public function getBundleName(): string {
+    public function getBundleName(): string
+    {
         if( $this->getName() && $this->getChannelgroup() ) {
             return $this->getName() . $this->getChannelgroup();
         } else {
@@ -293,10 +310,10 @@ class VirtualInterface
     /**
      * Add PhysicalInterfaces
      *
-     * @param PhysicalInterface $physicalInterfaces
+     * @param PhysicalInterfaceEntity $physicalInterfaces
      * @return VirtualInterface
      */
-    public function addPhysicalInterface(\Entities\PhysicalInterface $physicalInterfaces)
+    public function addPhysicalInterface( PhysicalInterfaceEntity $physicalInterfaces )
     {
         $this->PhysicalInterfaces[] = $physicalInterfaces;
 
@@ -306,9 +323,9 @@ class VirtualInterface
     /**
      * Remove PhysicalInterfaces
      *
-     * @param PhysicalInterface $physicalInterfaces
+     * @param PhysicalInterfaceEntity $physicalInterfaces
      */
-    public function removePhysicalInterface(\Entities\PhysicalInterface $physicalInterfaces)
+    public function removePhysicalInterface( PhysicalInterfaceEntity $physicalInterfaces )
     {
         $this->PhysicalInterfaces->removeElement($physicalInterfaces);
     }
@@ -316,7 +333,7 @@ class VirtualInterface
     /**
      * Get PhysicalInterfaces
      *
-     * @return \Doctrine\Common\Collections\Collection|PhysicalInterface[]
+     * @return Collection|PhysicalInterface[]
      */
     public function getPhysicalInterfaces()
     {
@@ -326,7 +343,7 @@ class VirtualInterface
     /**
      * Get peerring PhysicalInterfaces
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return array
      */
     public function getPeeringPhysicalInterface()
     {
@@ -340,7 +357,7 @@ class VirtualInterface
     /**
      * Get fanout PhysicalInterfaces
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return array
      */
     public function getFanoutPhysicalInterface()
     {
@@ -355,10 +372,10 @@ class VirtualInterface
     /**
      * Add VlanInterfaces
      *
-     * @param VlanInterface $vlanInterfaces
+     * @param VlanInterfaceEntity $vlanInterfaces
      * @return VirtualInterface
      */
-    public function addVlanInterface(\Entities\VlanInterface $vlanInterfaces)
+    public function addVlanInterface( VlanInterfaceEntity $vlanInterfaces)
     {
         $this->VlanInterfaces[] = $vlanInterfaces;
 
@@ -368,9 +385,9 @@ class VirtualInterface
     /**
      * Remove VlanInterfaces
      *
-     * @param VlanInterface $vlanInterfaces
+     * @param VlanInterfaceEntity $vlanInterfaces
      */
-    public function removeVlanInterface(\Entities\VlanInterface $vlanInterfaces)
+    public function removeVlanInterface( VlanInterfaceEntity $vlanInterfaces)
     {
         $this->VlanInterfaces->removeElement($vlanInterfaces);
     }
@@ -378,7 +395,7 @@ class VirtualInterface
     /**
      * Get VlanInterfaces
      *
-     * @return \Doctrine\Common\Collection|VlanInterface[]
+     * @return ArrayCollection
      */
     public function getVlanInterfaces()
     {
@@ -388,10 +405,10 @@ class VirtualInterface
     /**
      * Add MACAddresses
      *
-     * @param MACAddress $mACAddresses
+     * @param MACAddressEntity $mACAddresses
      * @return VirtualInterface
      */
-    public function addMACAddresses(\Entities\MACAddress $mACAddresses)
+    public function addMACAddresses( MACAddressEntity $mACAddresses)
     {
         $this->MACAddresses[] = $mACAddresses;
 
@@ -401,9 +418,9 @@ class VirtualInterface
     /**
      * Remove MACAddresses
      *
-     * @param MACAddress $mACAddresses
+     * @param MACAddressEntity $mACAddresses
      */
-    public function removeMACAddresses(\Entities\MACAddress $mACAddresses)
+    public function removeMACAddresses( MACAddressEntity $mACAddresses)
     {
         $this->MACAddresses->removeElement($mACAddresses);
     }
@@ -411,7 +428,7 @@ class VirtualInterface
     /**
      * Get MACAddresses
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getMACAddresses()
     {
@@ -421,10 +438,10 @@ class VirtualInterface
     /**
      * Set Customer
      *
-     * @param Customer $customer
+     * @param CustomerEntity $customer
      * @return VirtualInterface
      */
-    public function setCustomer(\Entities\Customer $customer = null)
+    public function setCustomer( CustomerEntity $customer = null)
     {
         $this->Customer = $customer;
 
@@ -526,7 +543,8 @@ class VirtualInterface
      *
      * @return bool
      */
-    public function isTypeUnset(): bool {
+    public function isTypeUnset(): bool
+    {
         if( $this->getType() ){
             return $this->getType() === SwitchPort::TYPE_UNSET;
         }
@@ -540,7 +558,8 @@ class VirtualInterface
      *
      * @return bool
      */
-    public function isTypePeering(): bool {
+    public function isTypePeering(): bool
+    {
         if( $this->getType() ){
             return $this->getType() === SwitchPort::TYPE_PEERING;
         }
@@ -554,7 +573,8 @@ class VirtualInterface
      *
      * @return bool
      */
-    public function isTypeMonitor(): bool {
+    public function isTypeMonitor(): bool
+    {
         if( $this->getType() ){
             return $this->getType() === SwitchPort::TYPE_MONITOR;
         }
@@ -568,7 +588,8 @@ class VirtualInterface
      *
      * @return bool
      */
-    public function isTypeCore(): bool {
+    public function isTypeCore(): bool
+    {
         if( $this->getType() ){
             return $this->getType() === SwitchPort::TYPE_CORE;
         }
@@ -582,7 +603,8 @@ class VirtualInterface
      *
      * @return bool
      */
-    public function isTypeOther(): bool {
+    public function isTypeOther(): bool
+    {
         if( $this->getType() ){
             return $this->getType() === SwitchPort::TYPE_OTHER;
         }
@@ -596,7 +618,8 @@ class VirtualInterface
      *
      * @return bool
      */
-    public function isTypeManagement(): bool {
+    public function isTypeManagement(): bool
+    {
         if( $this->getType() ){
             return $this->getType() === SwitchPort::TYPE_MANAGEMENT;
         }
@@ -610,7 +633,8 @@ class VirtualInterface
      *
      * @return bool
      */
-    public function isTypeFanout(): bool {
+    public function isTypeFanout(): bool
+    {
         if( $this->getType() ){
             return $this->getType() === SwitchPort::TYPE_FANOUT;
         }
@@ -624,7 +648,8 @@ class VirtualInterface
      *
      * @return bool
      */
-    public function isTypeReseller(): bool {
+    public function isTypeReseller(): bool
+    {
         if( $this->getType() ){
             return $this->getType() === SwitchPort::TYPE_RESELLER;
         }
@@ -639,17 +664,18 @@ class VirtualInterface
      * defined in the SwitchPort::$TYPES array (or 'Unknown')
      * @return string
      */
-    public function resolveType(): string {
+    public function resolveType(): string
+    {
         return SwitchPort::$TYPES[ $this->getType() ] ?? 'Unknown';
     }
 
     /**
      * Add MACAddresses
      *
-     * @param \Entities\MACAddress $mACAddresses
+     * @param MACAddressEntity $mACAddresses
      * @return VirtualInterface
      */
-    public function addMACAddresse(\Entities\MACAddress $mACAddresses)
+    public function addMACAddresse( MACAddressEntity $mACAddresses)
     {
         $this->MACAddresses[] = $mACAddresses;
 
@@ -659,9 +685,9 @@ class VirtualInterface
     /**
      * Remove MACAddresses
      *
-     * @param \Entities\MACAddress $mACAddresses
+     * @param MACAddressEntity $mACAddresses
      */
-    public function removeMACAddresse(\Entities\MACAddress $mACAddresses)
+    public function removeMACAddresse( MACAddressEntity $mACAddresses)
     {
         $this->MACAddresses->removeElement($mACAddresses);
     }
@@ -669,10 +695,10 @@ class VirtualInterface
     /**
      * Add MACAddresses
      *
-     * @param \Entities\MACAddress $mACAddresses
+     * @param MACAddressEntity $mACAddresses
      * @return VirtualInterface
      */
-    public function addMACAddress(\Entities\MACAddress $mACAddresses)
+    public function addMACAddress( MACAddressEntity $mACAddresses)
     {
         $this->MACAddresses[] = $mACAddresses;
 
@@ -682,9 +708,9 @@ class VirtualInterface
     /**
      * Remove MACAddresses
      *
-     * @param \Entities\MACAddress $mACAddresses
+     * @param MACAddressEntity $mACAddresses
      */
-    public function removeMACAddress(\Entities\MACAddress $mACAddresses)
+    public function removeMACAddress( MACAddressEntity $mACAddresses)
     {
         $this->MACAddresses->removeElement($mACAddresses);
     }
@@ -693,11 +719,11 @@ class VirtualInterface
     /**
      * Add sflowReceiver
      *
-     * @param \Entities\SflowReceiver $sflowReceiver
+     * @param SflowReceiverEntity $sflowReceiver
      *
      * @return VirtualInterface
      */
-    public function addSflowReceiver( \Entities\SflowReceiver $sflowReceiver )
+    public function addSflowReceiver( SflowReceiverEntity $sflowReceiver )
     {
         $this->SflowReceivers[] = $sflowReceiver;
 
@@ -707,9 +733,9 @@ class VirtualInterface
     /**
      * Remove sflowReceiver
      *
-     * @param \Entities\SflowReceiver $sflowReceiver
+     * @param SflowReceiverEntity $sflowReceiver
      */
-    public function removeSflowReceiver( \Entities\SflowReceiver $sflowReceiver )
+    public function removeSflowReceiver( SflowReceiverEntity $sflowReceiver )
     {
         $this->SflowReceivers->removeElement( $sflowReceiver );
     }
@@ -718,17 +744,14 @@ class VirtualInterface
     /**
      * Get sflowReceivers
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getSflowReceivers()
     {
         return $this->SflowReceivers;
     }
 
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     */
-    private $SflowReceivers;
+
 
 
     /**
@@ -754,9 +777,10 @@ class VirtualInterface
     /**
      * Return the core bundle associated to the virtual interface or false
      *
-     * @return \Entities\CoreBundle
+     * @return CoreBundleEntity|bool
      */
-    public function getCoreBundle() {
+    public function getCoreBundle()
+    {
         /** @var PhysicalInterface $pi */
         foreach( $this->getPhysicalInterfaces() as $pi ) {
             if( $ci = $pi->getCoreInterface() ) {
@@ -771,7 +795,8 @@ class VirtualInterface
      *
      * @return bool
      */
-    public function sameSwitchForEachPI() {
+    public function sameSwitchForEachPI()
+    {
         $lastSwitch = null;
 
         /** @var PhysicalInterface $pi */
@@ -792,7 +817,8 @@ class VirtualInterface
      *
      * @return bool
      */
-    public function isGraphable(): bool {
+    public function isGraphable(): bool
+    {
         foreach( $this->getPhysicalInterfaces() as $pi ) {
             if( $pi->isGraphable() ) {
                 return true;
@@ -807,7 +833,8 @@ class VirtualInterface
      *
      * @return bool
      */
-    public function isConnected(): bool {
+    public function isConnected(): bool
+    {
         foreach( $this->getPhysicalInterfaces() as $pi ) {
             if( $pi->statusIsConnected() ) {
                 return true;
@@ -824,7 +851,8 @@ class VirtualInterface
      *
      * @return int
      */
-    public function numberOfPublicVlans(): int {
+    public function numberOfPublicVlans(): int
+    {
         $num = 0;
         foreach( $this->getVlanInterfaces() as $vli ) {
             if( !$vli->getVlan()->getPrivate() ) {
@@ -840,10 +868,13 @@ class VirtualInterface
      *
      *  @return bool
      */
-    public function isPeeringPort(): bool {
+    public function isPeeringPort(): bool
+    {
         foreach( $this->getPhysicalInterfaces() as $pi ) {
             return $pi->getSwitchPort()->isTypePeering();
         }
+
+        return false;
     }
 
 

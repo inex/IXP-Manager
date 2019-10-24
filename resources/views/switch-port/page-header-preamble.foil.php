@@ -40,10 +40,10 @@
 
                         <h6 class="dropdown-header">SNMP Actions</h6>
 
-                        <a class="dropdown-item <?= !request()->is( 'switch-port/op-status/*' ) ?: 'active' ?> <?= $s->getActive() ?: 'a-disabled' ?>" href="<?= route( "switch-port@list-op-status", [ "switch" => $s->getId() ] ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'switch-port/op-status/*' ) ?: 'active' ?> <?= $s->getActive() ?: 'a-disabled' ?>" href="<?= route( "switch-port@list-op-status", [ "id" => $s->getId() ] ) ?>">
                             Live Port States
                         </a>
-                        <a class="dropdown-item <?= !request()->is( 'switch-port/snmp-poll/*' ) ?: 'active' ?> <?= $s->getActive() ?: 'a-disabled' ?> " href="<?= route( "switch-port@snmp-poll", [ "switch" => $s->getId() ] ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'switch-port/snmp-poll/*' ) ?: 'active' ?> <?= $s->getActive() ?: 'a-disabled' ?> " href="<?= route( "switch-port@snmp-poll", [ "id" => $s->getId() ] ) ?>">
                             View / Edit Ports
                         </a>
 
