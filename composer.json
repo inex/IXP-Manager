@@ -49,7 +49,9 @@
         "webpatser/laravel-countries": "^1.5",
         "laravel/telescope": "^2.0",
         "laravel/horizon": "^3.0",
-        "socialiteproviders/manager": "^3.3"
+        "socialiteproviders/manager": "^3.3",
+        "pragmarx/google2fa-laravel": "^1.2",
+        "bacon/bacon-qr-code": "~1.0.3"
     },
     "require-dev": {
         "facade/ignition": "^1.4",

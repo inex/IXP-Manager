@@ -38,6 +38,7 @@ use Entities\{
 
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use IXP\Support\Google2FAAuthenticator;
 
 
 /**
@@ -52,6 +53,10 @@ use Illuminate\View\View;
  */
 class AdminController extends Controller
 {
+
+    public function __construct() {
+        $this->middleware( "2fa");
+    }
 
     /**
      * Display the home page

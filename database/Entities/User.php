@@ -29,6 +29,7 @@ use Entities\{
     ApiKey              as ApiKeyEntity,
     Customer            as CustomerEntity,
     CustomerToUser      as CustomerToUserEntity,
+    PasswordSecurity    as PasswordSecurityEntity,
     User                as UserEntity,
     UserLoginHistory    as UserLoginHistoryEntity,
     UserPreference      as UserPreferenceEntity
@@ -45,9 +46,6 @@ use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
 
 use IXP\Utils\Doctrine2\WithPreferences as Doctrine2_WithPreferences;
 
-use Illuminate\Http\{
-    RedirectResponse
-};
 
 /**
  * Entities\User
@@ -205,6 +203,11 @@ class User implements Authenticatable, CanResetPasswordContract
      * @var UserEntity
      */
     protected $Children;
+
+    /**
+     * @var PasswordSecurityEntity
+     */
+    protected $PasswordSecurity;
 
     /**
      * Constructor
@@ -854,6 +857,29 @@ class User implements Authenticatable, CanResetPasswordContract
     public function getContact()
     {
         return $this->Contact;
+    }
+
+    /**
+     * Set Password Security
+     *
+     * @param PasswordSecurityEntity $passwordSecurity
+     * @return User
+     */
+    public function setPasswordSecurity( PasswordSecurityEntity $passwordSecurity )
+    {
+        $this->PasswordSecurity = $passwordSecurity;
+
+        return $this;
+    }
+
+    /**
+     * Get Password Security
+     *
+     * @return PasswordSecurityEntity
+     */
+    public function getPasswordSecurity()
+    {
+        return $this->PasswordSecurity;
     }
 
 

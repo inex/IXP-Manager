@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 6.0.4 on 2019-09-30 10:36:14.
+ * Generated for Laravel 6.0.4 on 2019-10-18 10:31:13.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -3413,8 +3413,32 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function flush()
         {
-                        /** @var \Illuminate\Cache\ArrayStore $instance */
+                        /** @var \Illuminate\Cache\FileStore $instance */
                         return $instance->flush();
+        }
+        
+        /**
+         * Get the Filesystem instance.
+         *
+         * @return \Illuminate\Filesystem\Filesystem 
+         * @static 
+         */ 
+        public static function getFilesystem()
+        {
+                        /** @var \Illuminate\Cache\FileStore $instance */
+                        return $instance->getFilesystem();
+        }
+        
+        /**
+         * Get the working directory of the cache.
+         *
+         * @return string 
+         * @static 
+         */ 
+        public static function getDirectory()
+        {
+                        /** @var \Illuminate\Cache\FileStore $instance */
+                        return $instance->getDirectory();
         }
         
         /**
@@ -3425,7 +3449,7 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function getPrefix()
         {
-                        /** @var \Illuminate\Cache\ArrayStore $instance */
+                        /** @var \Illuminate\Cache\FileStore $instance */
                         return $instance->getPrefix();
         }
          
@@ -19523,6 +19547,618 @@ namespace Webpatser\Countries {
  
 }
 
+namespace PragmaRX\Google2FALaravel { 
+
+    /**
+     * 
+     *
+     */ 
+    class Facade {
+        
+        /**
+         * Set the QRCode Backend.
+         *
+         * @param string $qrCodeBackend
+         * @return self 
+         * @static 
+         */ 
+        public static function setQrCodeBackend($qrCodeBackend)
+        {
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->setQrCodeBackend($qrCodeBackend);
+        }
+        
+        /**
+         * Authenticator boot.
+         *
+         * @param $request
+         * @return \Google2FA 
+         * @static 
+         */ 
+        public static function boot($request)
+        {
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->boot($request);
+        }
+        
+        /**
+         * The QRCode Backend.
+         *
+         * @return mixed 
+         * @static 
+         */ 
+        public static function getQRCodeBackend()
+        {
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->getQRCodeBackend();
+        }
+        
+        /**
+         * Check if the 2FA is activated for the user.
+         *
+         * @return bool 
+         * @static 
+         */ 
+        public static function isActivated()
+        {
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->isActivated();
+        }
+        
+        /**
+         * Set current auth as valid.
+         *
+         * @static 
+         */ 
+        public static function login()
+        {
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->login();
+        }
+        
+        /**
+         * OTP logout.
+         *
+         * @static 
+         */ 
+        public static function logout()
+        {
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->logout();
+        }
+        
+        /**
+         * Verify the OTP.
+         *
+         * @param $secret
+         * @param $one_time_password
+         * @return mixed 
+         * @static 
+         */ 
+        public static function verifyGoogle2FA($secret, $one_time_password)
+        {
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->verifyGoogle2FA($secret, $one_time_password);
+        }
+        
+        /**
+         * Generates a QR code data url to display inline.
+         *
+         * @param string $company
+         * @param string $holder
+         * @param string $secret
+         * @param int $size
+         * @param string $encoding Default to UTF-8
+         * @return string 
+         * @static 
+         */ 
+        public static function getQRCodeInline($company, $holder, $secret, $size = 200, $encoding = 'utf-8')
+        {
+            //Method inherited from \PragmaRX\Google2FAQRCode\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->getQRCodeInline($company, $holder, $secret, $size, $encoding);
+        }
+        
+        /**
+         * Generates a QR code data url to display inline for Bacon QRCode v1
+         *
+         * @param string $company
+         * @param string $holder
+         * @param string $secret
+         * @param int $size
+         * @param string $encoding Default to UTF-8
+         * @return string 
+         * @static 
+         */ 
+        public static function getQRCodeInlineV1($company, $holder, $secret, $size = 200, $encoding = 'utf-8')
+        {
+            //Method inherited from \PragmaRX\Google2FAQRCode\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->getQRCodeInlineV1($company, $holder, $secret, $size, $encoding);
+        }
+        
+        /**
+         * Generates a QR code data url to display inline for Bacon QRCode v2
+         *
+         * @param string $company
+         * @param string $holder
+         * @param string $secret
+         * @param int $size
+         * @param string $encoding Default to UTF-8
+         * @return string 
+         * @static 
+         */ 
+        public static function getQRCodeInlineV2($company, $holder, $secret, $size = 200, $encoding = 'utf-8')
+        {
+            //Method inherited from \PragmaRX\Google2FAQRCode\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->getQRCodeInlineV2($company, $holder, $secret, $size, $encoding);
+        }
+        
+        /**
+         * Get Bacon QRCode current version
+         *
+         * @return int 
+         * @static 
+         */ 
+        public static function getBaconQRCodeVersion()
+        {
+            //Method inherited from \PragmaRX\Google2FAQRCode\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->getBaconQRCodeVersion();
+        }
+        
+        /**
+         * Find a valid One Time Password.
+         *
+         * @param $secret
+         * @param $key
+         * @param $window
+         * @param $startingTimestamp
+         * @param $timestamp
+         * @param string $oldTimestamp
+         * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
+         * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+         * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
+         * @return bool 
+         * @static 
+         */ 
+        public static function findValidOTP($secret, $key, $window, $startingTimestamp, $timestamp, $oldTimestamp = '__not_set__')
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->findValidOTP($secret, $key, $window, $startingTimestamp, $timestamp, $oldTimestamp);
+        }
+        
+        /**
+         * Generate a digit secret key in base32 format.
+         *
+         * @param int $length
+         * @param string $prefix
+         * @throws Exceptions\InvalidCharactersException
+         * @throws Exceptions\IncompatibleWithGoogleAuthenticatorException
+         * @return string 
+         * @static 
+         */ 
+        public static function generateSecretKey($length = 16, $prefix = '')
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->generateSecretKey($length, $prefix);
+        }
+        
+        /**
+         * Get the current one time password for a key.
+         *
+         * @param $secret
+         * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
+         * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+         * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
+         * @return string 
+         * @static 
+         */ 
+        public static function getCurrentOtp($secret)
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->getCurrentOtp($secret);
+        }
+        
+        /**
+         * Get the HMAC algorithm.
+         *
+         * @param null|int $algorithm
+         * @return mixed 
+         * @static 
+         */ 
+        public static function getAlgorithm()
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->getAlgorithm();
+        }
+        
+        /**
+         * Get key regeneration.
+         *
+         * @return mixed 
+         * @static 
+         */ 
+        public static function getKeyRegeneration()
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->getKeyRegeneration();
+        }
+        
+        /**
+         * Get OTP length.
+         *
+         * @return mixed 
+         * @static 
+         */ 
+        public static function getOneTimePasswordLength()
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->getOneTimePasswordLength();
+        }
+        
+        /**
+         * Get secret.
+         *
+         * @param string|null $secret
+         * @return mixed 
+         * @static 
+         */ 
+        public static function getSecret($secret = null)
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->getSecret($secret);
+        }
+        
+        /**
+         * Returns the current Unix Timestamp divided by the $keyRegeneration
+         * period.
+         *
+         * @return int 
+         * @static 
+         */ 
+        public static function getTimestamp()
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->getTimestamp();
+        }
+        
+        /**
+         * Get the OTP window.
+         *
+         * @param null|int $window
+         * @return mixed 
+         * @static 
+         */ 
+        public static function getWindow($window = null)
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->getWindow($window);
+        }
+        
+        /**
+         * Takes the secret key and the timestamp and returns the one time
+         * password.
+         *
+         * @param string $secret - Secret key in binary form.
+         * @param int $counter - Timestamp as returned by getTimestamp.
+         * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
+         * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+         * @throws Exceptions\IncompatibleWithGoogleAuthenticatorException
+         * @return string 
+         * @static 
+         */ 
+        public static function oathTotp($secret, $counter)
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->oathTotp($secret, $counter);
+        }
+        
+        /**
+         * Extracts the OTP from the SHA1 hash.
+         *
+         * @param string $hash
+         * @return int 
+         * @static 
+         */ 
+        public static function oathTruncate($hash)
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->oathTruncate($hash);
+        }
+        
+        /**
+         * Remove invalid chars from a base 32 string.
+         *
+         * @param $string
+         * @return mixed 
+         * @static 
+         */ 
+        public static function removeInvalidChars($string)
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->removeInvalidChars($string);
+        }
+        
+        /**
+         * Setter for the enforce Google Authenticator compatibility property.
+         *
+         * @param mixed $enforceGoogleAuthenticatorCompatibility
+         * @return \PragmaRX\Google2FALaravel\Google2FA 
+         * @static 
+         */ 
+        public static function setEnforceGoogleAuthenticatorCompatibility($enforceGoogleAuthenticatorCompatibility)
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->setEnforceGoogleAuthenticatorCompatibility($enforceGoogleAuthenticatorCompatibility);
+        }
+        
+        /**
+         * Set the HMAC hashing algorithm.
+         *
+         * @param mixed $algorithm
+         * @return \PragmaRX\Google2FA\Google2FA 
+         * @static 
+         */ 
+        public static function setAlgorithm($algorithm)
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->setAlgorithm($algorithm);
+        }
+        
+        /**
+         * Set key regeneration.
+         *
+         * @param mixed $keyRegeneration
+         * @static 
+         */ 
+        public static function setKeyRegeneration($keyRegeneration)
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->setKeyRegeneration($keyRegeneration);
+        }
+        
+        /**
+         * Set OTP length.
+         *
+         * @param mixed $oneTimePasswordLength
+         * @static 
+         */ 
+        public static function setOneTimePasswordLength($oneTimePasswordLength)
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->setOneTimePasswordLength($oneTimePasswordLength);
+        }
+        
+        /**
+         * Set secret.
+         *
+         * @param mixed $secret
+         * @static 
+         */ 
+        public static function setSecret($secret)
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->setSecret($secret);
+        }
+        
+        /**
+         * Set the OTP window.
+         *
+         * @param mixed $window
+         * @static 
+         */ 
+        public static function setWindow($window)
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->setWindow($window);
+        }
+        
+        /**
+         * Verifies a user inputted key against the current timestamp. Checks $window
+         * keys either side of the timestamp.
+         *
+         * @param string $key - User specified key
+         * @param null|string $secret
+         * @param null|int $window
+         * @param null|int $timestamp
+         * @param null|string|int $oldTimestamp
+         * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
+         * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+         * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
+         * @return bool|int 
+         * @static 
+         */ 
+        public static function verify($key, $secret = null, $window = null, $timestamp = null, $oldTimestamp = '__not_set__')
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->verify($key, $secret, $window, $timestamp, $oldTimestamp);
+        }
+        
+        /**
+         * Verifies a user inputted key against the current timestamp. Checks $window
+         * keys either side of the timestamp.
+         *
+         * @param string $secret
+         * @param string $key - User specified key
+         * @param null|int $window
+         * @param null|int $timestamp
+         * @param null|string|int $oldTimestamp
+         * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
+         * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+         * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
+         * @return bool|int 
+         * @static 
+         */ 
+        public static function verifyKey($secret, $key, $window = null, $timestamp = null, $oldTimestamp = '__not_set__')
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->verifyKey($secret, $key, $window, $timestamp, $oldTimestamp);
+        }
+        
+        /**
+         * Verifies a user inputted key against the current timestamp. Checks $window
+         * keys either side of the timestamp, but ensures that the given key is newer than
+         * the given oldTimestamp. Useful if you need to ensure that a single key cannot
+         * be used twice.
+         *
+         * @param string $secret
+         * @param string $key - User specified key
+         * @param int $oldTimestamp - The timestamp from the last verified key
+         * @param int|null $window
+         * @param int|null $timestamp
+         * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
+         * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+         * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
+         * @return bool|int - false (not verified) or the timestamp of the verified key
+         * @static 
+         */ 
+        public static function verifyKeyNewer($secret, $key, $oldTimestamp, $window = null, $timestamp = null)
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->verifyKeyNewer($secret, $key, $oldTimestamp, $window, $timestamp);
+        }
+        
+        /**
+         * Creates a QR code url.
+         *
+         * @param $company
+         * @param $holder
+         * @param $secret
+         * @return string 
+         * @static 
+         */ 
+        public static function getQRCodeUrl($company, $holder, $secret)
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->getQRCodeUrl($company, $holder, $secret);
+        }
+        
+        /**
+         * Generate a digit secret key in base32 format.
+         *
+         * @param int $length
+         * @param string $prefix
+         * @throws IncompatibleWithGoogleAuthenticatorException
+         * @throws InvalidCharactersException
+         * @return string 
+         * @static 
+         */ 
+        public static function generateBase32RandomKey($length = 16, $prefix = '')
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->generateBase32RandomKey($length, $prefix);
+        }
+        
+        /**
+         * Decodes a base32 string into a binary string.
+         *
+         * @param string $b32
+         * @throws InvalidCharactersException
+         * @throws IncompatibleWithGoogleAuthenticatorException
+         * @return int 
+         * @static 
+         */ 
+        public static function base32Decode($b32)
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->base32Decode($b32);
+        }
+        
+        /**
+         * Encode a string to Base32.
+         *
+         * @param $string
+         * @return mixed 
+         * @static 
+         */ 
+        public static function toBase32($string)
+        {
+            //Method inherited from \PragmaRX\Google2FA\Google2FA            
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->toBase32($string);
+        }
+        
+        /**
+         * Get the request property.
+         *
+         * @return mixed 
+         * @static 
+         */ 
+        public static function getRequest()
+        {
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->getRequest();
+        }
+        
+        /**
+         * Set the request property.
+         *
+         * @param mixed $request
+         * @return \PragmaRX\Google2FALaravel\Google2FA 
+         * @static 
+         */ 
+        public static function setRequest($request)
+        {
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->setRequest($request);
+        }
+        
+        /**
+         * Get a session var value.
+         *
+         * @param null $var
+         * @return mixed 
+         * @static 
+         */ 
+        public static function sessionGet($var = null, $default = null)
+        {
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->sessionGet($var, $default);
+        }
+        
+        /**
+         * 
+         *
+         * @param mixed $stateless
+         * @return \PragmaRX\Google2FALaravel\Authenticator 
+         * @static 
+         */ 
+        public static function setStateless($stateless = true)
+        {
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->setStateless($stateless);
+        }
+         
+    }
+ 
+}
+
 namespace Facade\Ignition\Facades { 
 
     /**
@@ -22731,6 +23367,8 @@ namespace  {
     class PDF extends \Barryvdh\DomPDF\Facade {}
 
     class Countries extends \Webpatser\Countries\CountriesFacade {}
+
+    class Google2FA extends \PragmaRX\Google2FALaravel\Facade {}
 
     class Flare extends \Facade\Ignition\Facades\Flare {}
 

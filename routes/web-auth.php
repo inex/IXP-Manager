@@ -155,3 +155,20 @@ Route::group( [ 'prefix' => 'irrdb' ], function() {
     Route::get(  'update/{customer}/{type}/{protocol}',     'IrrdbController@update'          )->name( "irrdb@update"          );
 });
 
+
+Route::group( [ 'prefix' => '2fa' ], function() {
+
+    Route::post(  'check-password',      'SecurityPasswordController@checkPassword' )->name( "2fa@check-password"   );
+    Route::post(  'enable',         'SecurityPasswordController@enable2fa'      )->name( "2fa@enable"      );
+    Route::post(  'delete',         'SecurityPasswordController@delete2fa'      )->name( "2fa@delete"      );
+
+    Route::post('/authenticate', function () {
+        if( Session::exists( "intended.2fa" ) ) {
+            return redirect( Session::pull( "intended.2fa" ) );
+        }
+        return redirect( '' );
+
+    })->name('2fa@authenticate' )->middleware( '2fa' );
+
+});
+

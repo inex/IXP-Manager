@@ -19,6 +19,9 @@
             Last Login
         </th>
         <th>
+            2FA Enabled
+        </th>
+        <th>
             Actions
             <a id="users-add-btn" class="btn btn-white btn-sm ml-2" href="<?= route( "user@add-wizard" ) . "?cust=" . $t->c->getId() ?>">
                 <i class="fa fa-plus"></i>
@@ -49,6 +52,9 @@
                     <?php endif;?>
                 </td>
                 <td>
+                    <?= $c2u->getUser()->getPasswordSecurity() && $c2u->getUser()->getPasswordSecurity()->isGoogle2faEnable() ? "Yes" : "No" ?>
+                </td>
+                <td>
                     <div class="btn-group btn-group-sm">
                         <a class="btn btn-white" href="<?= route( "user@edit", [ "id" => $c2u->getUser()->getId() ] ) ?>">
                             <i class="fa fa-pencil"></i>
@@ -75,6 +81,13 @@
                             <a class="dropdown-item" href="<?= route( "login-history@view", [ 'id' => $c2u->getId() ] ) ?>">
                                 Login history
                             </a>
+                            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                <?php if( $c2u->getUser()->getPasswordSecurity() && $c2u->getUser()->getPasswordSecurity()->isGoogle2faEnable() ): ?>
+                                    <a id="d2f-option-remove-2fa-<?= $c2u->getUser()->getPasswordSecurity()->getId() ?>" class="dropdown-item remove-2fa" data-object-id="<?= $c2u->getUser()->getPasswordSecurity()->getId() ?>" href="#">
+                                        Remove 2FA
+                                    </a>
+                                <?php endif; ?>
+                            <?php endif; ?>
                         </ul>
 
                     </div>

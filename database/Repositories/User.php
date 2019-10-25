@@ -251,10 +251,13 @@ class User extends EntityRepository
                         c.name as customer,
                         u.lastupdated AS lastupdated,
                         COUNT( c2u ) as nbC2U,
-                        MAX( c2u.privs ) as privileges
+                        MAX( c2u.privs ) as privileges,
+                        ps.google2fa_enable as google2fa_enabled,
+                        ps.id as psid 
                   FROM Entities\\User u
-                      LEFT JOIN u.Customer as c
-                      LEFT JOIN u.Customers as c2u
+                        LEFT JOIN u.Customer as c
+                        LEFT JOIN u.Customers as c2u
+                        LEFT JOIN u.PasswordSecurity as ps
                   WHERE 1 = 1";
 
         if( $id ) {

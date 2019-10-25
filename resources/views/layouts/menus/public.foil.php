@@ -102,9 +102,16 @@
         </ul>
         <ul class="navbar-nav mt-lg-0">
             <li class="nav-item">
-                <a class="nav-link <?= !request()->is( 'login' ) ?: 'active' ?>" href="<?= route( 'login@showForm' ) ?>">
-                    Login
-                </a>
+                <?php if( Auth::check() ): ?>
+                    <a class="nav-link" href="<?= route( 'login@logout' ) ?>">
+                        Logout
+                    </a>
+                <?php else: ?>
+                    <a class="nav-link <?= !request()->is( 'login' ) ?: 'active' ?>" href="<?= route( 'login@showForm' ) ?>">
+                        Login
+                    </a>
+                <?php endif; ?>
+
             </li>
         </ul>
 

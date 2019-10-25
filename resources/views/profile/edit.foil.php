@@ -121,6 +121,48 @@
 
     <div class="row mt-4">
 
+        <div class="col-lg-6 col-md-12">
+            <h3>
+                Two Factor Authentification
+            </h3>
+            <hr>
+            <?= Former::open()
+                ->method( 'post' )
+                ->id( "2fa" )
+                ->action( Auth::getUser()->getPasswordSecurity() && Auth::getUser()->getPasswordSecurity()->isGoogle2faEnable() ? route ( "2fa@delete" ) : route ( "2fa@check-password" ) )
+                ->customInputWidthClass( 'col-xl-6 col-lg-8 col-sm-6' )
+                ->customLabelWidthClass( 'col-sm-4' )
+                ->actionButtonsCustomClass( "grey-box");
+            ?>
+
+            <?= Former::password( 'pass' )
+                ->label( 'Password' )
+                ->required( true )
+            ?>
+
+            <?php if( Auth::getUser()->getPasswordSecurity() && Auth::getUser()->getPasswordSecurity()->isGoogle2faEnable() ): ?>
+                <?= Former::actions(
+                    Former::primary_submit( 'Delete 2FA' )->id( "btn-delete2fa" ),
+                    Former::primary_submit( 'Get 2FA QRcode' )->id( "btn-enable-2fa" )
+                );
+                ?>
+
+                <?= Former::hidden( 'id' )
+                    ->value( Auth::getUser()->getPasswordSecurity()->getId() )
+                ?>
+            <?php else: ?>
+
+                <?= Former::actions(
+                    Former::primary_submit( 'Enable 2FA' )->id( "btn-enable-2fa" )
+                );
+                ?>
+
+            <?php endif; ?>
+
+
+            <?= Former::close() ?>
+        </div>
+
         <?php if( Auth::getUser()->isSuperUser() ): ?>
 
             <div class="col-lg-6 col-md-12">
@@ -215,4 +257,10 @@
 
 
 
+<?php $this->append() ?>
+
+<?php $this->section( 'scripts' ) ?>
+    <?php if( Auth::getUser()->getPasswordSecurity() && Auth::getUser()->getPasswordSecurity()->isGoogle2faEnable() ): ?>
+        <?= $t->insert( 'profile/js/edit' ); ?>
+    <?php endif; ?>
 <?php $this->append() ?>

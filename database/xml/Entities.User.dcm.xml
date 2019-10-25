@@ -27,5 +27,6 @@
     <one-to-many field="ApiKeys" target-entity="Entities\ApiKey" mapped-by="User"/>
     <one-to-many field="Preferences" target-entity="Entities\UserPreference" mapped-by="User"/>
     <one-to-many field="Customers" target-entity="Entities\CustomerToUser" mapped-by="user"/>
+    <one-to-one  field="PasswordSecurity" target-entity="Entities\PasswordSecurity" mapped-by="User"/>
   </entity>
 </doctrine-mapping>

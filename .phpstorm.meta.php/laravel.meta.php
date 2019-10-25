@@ -5,7 +5,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2019-09-30 10:36:15.
+    * Generated on 2019-10-18 10:31:14.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -184,6 +184,7 @@ namespace PHPSTORM_META {
         'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
         'migrator' => \Illuminate\Database\Migrations\Migrator::class,
         'parsedown' => \Parsedown::class,
+        'pragmarx.google2fa' => \PragmaRX\Google2FALaravel\Google2FA::class,
         'purifier' => \LukeTowers\Purifier\Purifier::class,
         'queue' => \Illuminate\Queue\QueueManager::class,
         'queue.connection' => \Illuminate\Queue\SyncQueue::class,
@@ -380,6 +381,7 @@ namespace PHPSTORM_META {
         'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
         'migrator' => \Illuminate\Database\Migrations\Migrator::class,
         'parsedown' => \Parsedown::class,
+        'pragmarx.google2fa' => \PragmaRX\Google2FALaravel\Google2FA::class,
         'purifier' => \LukeTowers\Purifier\Purifier::class,
         'queue' => \Illuminate\Queue\QueueManager::class,
         'queue.connection' => \Illuminate\Queue\SyncQueue::class,
@@ -576,6 +578,7 @@ namespace PHPSTORM_META {
         'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
         'migrator' => \Illuminate\Database\Migrations\Migrator::class,
         'parsedown' => \Parsedown::class,
+        'pragmarx.google2fa' => \PragmaRX\Google2FALaravel\Google2FA::class,
         'purifier' => \LukeTowers\Purifier\Purifier::class,
         'queue' => \Illuminate\Queue\QueueManager::class,
         'queue.connection' => \Illuminate\Queue\SyncQueue::class,
@@ -772,6 +775,7 @@ namespace PHPSTORM_META {
         'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
         'migrator' => \Illuminate\Database\Migrations\Migrator::class,
         'parsedown' => \Parsedown::class,
+        'pragmarx.google2fa' => \PragmaRX\Google2FALaravel\Google2FA::class,
         'purifier' => \LukeTowers\Purifier\Purifier::class,
         'queue' => \Illuminate\Queue\QueueManager::class,
         'queue.connection' => \Illuminate\Queue\SyncQueue::class,
@@ -968,6 +972,7 @@ namespace PHPSTORM_META {
         'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
         'migrator' => \Illuminate\Database\Migrations\Migrator::class,
         'parsedown' => \Parsedown::class,
+        'pragmarx.google2fa' => \PragmaRX\Google2FALaravel\Google2FA::class,
         'purifier' => \LukeTowers\Purifier\Purifier::class,
         'queue' => \Illuminate\Queue\QueueManager::class,
         'queue.connection' => \Illuminate\Queue\SyncQueue::class,
@@ -1164,6 +1169,7 @@ namespace PHPSTORM_META {
         'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
         'migrator' => \Illuminate\Database\Migrations\Migrator::class,
         'parsedown' => \Parsedown::class,
+        'pragmarx.google2fa' => \PragmaRX\Google2FALaravel\Google2FA::class,
         'purifier' => \LukeTowers\Purifier\Purifier::class,
         'queue' => \Illuminate\Queue\QueueManager::class,
         'queue.connection' => \Illuminate\Queue\SyncQueue::class,
@@ -1360,6 +1366,7 @@ namespace PHPSTORM_META {
         'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
         'migrator' => \Illuminate\Database\Migrations\Migrator::class,
         'parsedown' => \Parsedown::class,
+        'pragmarx.google2fa' => \PragmaRX\Google2FALaravel\Google2FA::class,
         'purifier' => \LukeTowers\Purifier\Purifier::class,
         'queue' => \Illuminate\Queue\QueueManager::class,
         'queue.connection' => \Illuminate\Queue\SyncQueue::class,
@@ -1556,6 +1563,7 @@ namespace PHPSTORM_META {
         'migration.repository' => \Illuminate\Database\Migrations\DatabaseMigrationRepository::class,
         'migrator' => \Illuminate\Database\Migrations\Migrator::class,
         'parsedown' => \Parsedown::class,
+        'pragmarx.google2fa' => \PragmaRX\Google2FALaravel\Google2FA::class,
         'purifier' => \LukeTowers\Purifier\Purifier::class,
         'queue' => \Illuminate\Queue\QueueManager::class,
         'queue.connection' => \Illuminate\Queue\SyncQueue::class,
