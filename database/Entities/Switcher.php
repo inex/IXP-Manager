@@ -1098,6 +1098,10 @@ class Switcher
     }
 
 
+    /**
+     * Return an array of core bundles
+     * @return CoreBundle[]
+     */
     public function getCoreBundles(): array
     {
         $cbs   = [];
@@ -1108,12 +1112,12 @@ class Switcher
                 if( $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkA() ) {
                     if( !in_array( $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkA()->getCoreBundle()->getId(), $cbids ) ) {
                         $cbids[] = $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkA()->getCoreBundle()->getId();
-                        $cbs[] = $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkA()->getCoreBundle();
+                        $cbs[]   = $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkA()->getCoreBundle();
                     }
                 } elseif( $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkB() ) {
                     if( !in_array( $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkB()->getCoreBundle()->getId(), $cbids ) ) {
                         $cbids[] = $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkB()->getCoreBundle()->getId();
-                        $cbs[] = $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkB()->getCoreBundle();
+                        $cbs[]   = $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkB()->getCoreBundle();
                     }
                 }
             }

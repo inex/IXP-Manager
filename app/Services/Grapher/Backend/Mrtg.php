@@ -219,7 +219,6 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
 
         // include core switch ports.
         // This is a slight hack as the template requires PhysicalInterfaces so we wrap core SwitchPorts in temporary PhyInts.
-        $cbseen = [];
         foreach( $ixp->getInfrastructures() as $infra ) {
             foreach( $infra->getSwitchers() as $switch ) {
                 /** @var SwitcherEntity $switch */
@@ -235,21 +234,19 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                 // Handle Core Bundles
                 foreach( $switch->getCoreBundles() as $cb ) {
                     // because we iterate through each switch, we see each $cb twice
-                    if (isset( $cbseen[ $cb->getId() ] )) {
+                    if( isset( $data['cbs'][ $cb->getId() ] ) ) {
                         continue;
                     }
-                    $cbseen[ $cb->getId() ] = 1;
 
-                    if( !isset( $data['cbs'][ $cb->getId() ] ) ) {
-                        $data['cbs'][ $cb->getId() ] = $cb;
-                    }
+                    $data['cbs'][ $cb->getId() ] = $cb;
 
                     foreach( $cb->getCoreLinks() as $cl ) {
-                        foreach( array ( 'sidea', 'sideb' ) as $side ) {
+                        foreach( [ 'sidea', 'sideb' ] as $side ) {
 
-                            $pi = ( $side == 'sidea' ) ?
-                                $cl->getCoreInterfaceSideA()->getPhysicalInterface() :
-                                $cl->getCoreInterfaceSideB()->getPhysicalInterface();
+                            $pi = ( $side === 'sidea' ) ?
+                                $cl->getCoreInterfaceSideA()->getPhysicalInterface()
+                                : $cl->getCoreInterfaceSideB()->getPhysicalInterface();
+
                             $data['cbports'][$cb->getId()][$cl->getId()][$side] = $pi->getId();
 
                             if( !isset( $data['pis'][$pi->getId()] ) ) {

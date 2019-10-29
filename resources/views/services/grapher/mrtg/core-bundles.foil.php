@@ -1,14 +1,14 @@
 <?php /*
     MRTG Configuration Templates
 
-    Please see: https://github.com/inex/IXP-Manager/wiki/MRTG---Traffic-Graphs
+    Please see: https://docs.ixpmanager.org/grapher/mrtg/
 
     You should not need to edit these files - instead use your own custom skins. If
     you can't effect the changes you need with skinning, consider posting to the mailing
     list to see if it can be achieved / incorporated.
 
-    Skinning: https://github.com/inex/IXP-Manager/wiki/Skinning */
-?>
+    Skinning: https://docs.ixpmanager.org/features/skinning/
+*/ ?>
 
 #####################################################################################################################
 #####################################################################################################################
@@ -34,7 +34,7 @@
 #####################################################################################################################
 #####################################################################################################################
 ###
-### Core Bundle: <?= $cb->getDescription()."\n" ?>
+### Core Bundle: <?= $cb->getDescription() . "\n" ?>
 ###
 
 
@@ -46,7 +46,7 @@
         // individual Core Bundle links:
         foreach( $t->data[ 'cbports' ][ $cb->getId() ] as $clid ):
 
-            foreach( array ( 'sidea', 'sideb' ) as $side ):
+            foreach( [ 'sidea', 'sideb' ] as $side ):
 
                 $piid = $clid[$side];
                 
@@ -59,8 +59,8 @@
                         'portIds'      => [ $piid ],
                         'data'         => $t->data,
                         'graphTitle'   => sprintf( "%s -- %s -- %s -- %s -- %%s / second",
-                                $t->data['cbs'][$cb->getId()]->getDescription(),
-                                ( $side == 'sidea' ) ? 'Side A' : 'Side B',
+                                $t->data['cbs'][$cb->getId()]->getGraphTitle(),
+                                ( $side === 'sidea' ) ? 'Side A' : 'Side B',
                                 $t->data['pis'][$piid]->getSwitchPort()->getName(),
                                 $t->data['pis'][$piid]->getSwitchPort()->getSwitcher()->getName()
                             ),
@@ -72,15 +72,15 @@
             endforeach;
 
             // aggregates
-            foreach( array ( 'sidea', 'sideb' ) as $side ):
+            foreach( [ 'sidea', 'sideb' ] as $side ):
                 echo $this->insert(
                     "services/grapher/mrtg/target", [
                         'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
                         'mrtgPrefix'   => sprintf( "cb-aggregate-%05d-%s", $cb->getId(), $side ),
                         'portIds'      => $t->data['cbbundles'][$cb->getId()][$side],
                         'data'         => $t->data,
-                        'graphTitle'   => sprintf( "%s -- Core Bundle Aggregate -- %s -- %%s / second",
-                            $t->data['cbs'][$cb->getId()]->getDescription(),
+                        'graphTitle'   => sprintf( "%s -- %s -- %%s / second",
+                            $t->data['cbs'][$cb->getId()]->getGraphTitle(),
                             ( $side == 'sidea' ) ? 'Side A' : 'Side B'
                         ),
                         'directory'    => sprintf("corebundles/%05d", $cb->getId()),
