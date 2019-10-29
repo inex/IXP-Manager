@@ -176,7 +176,7 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
-    public function getId()
+    public function getId(): int
     {
         if ($this->__isInitialized__ === false) {
             return (int)  parent::getId();
@@ -191,7 +191,7 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
-    public function getPhysicalInterface()
+    public function getPhysicalInterface(): \Entities\PhysicalInterface
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPhysicalInterface', []);
@@ -224,7 +224,7 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
-    public function getCoreLink()
+    public function getCoreLink(): \Entities\CoreLink
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreLink', []);
@@ -235,7 +235,7 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
-    public function setPhysicalInterface(\Entities\PhysicalInterface $physicalInterface = NULL)
+    public function setPhysicalInterface(\Entities\PhysicalInterface $physicalInterface = NULL): \Entities\CoreInterface
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPhysicalInterface', [$physicalInterface]);
@@ -246,7 +246,7 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
-    public function setCoreLinkA(\Entities\CoreLink $coreLinkA = NULL)
+    public function setCoreLinkA(\Entities\CoreLink $coreLinkA = NULL): \Entities\CoreInterface
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCoreLinkA', [$coreLinkA]);
@@ -257,7 +257,7 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
-    public function setCoreLinkB(\Entities\CoreLink $coreLinkB = NULL)
+    public function setCoreLinkB(\Entities\CoreLink $coreLinkB = NULL): \Entities\CoreInterface
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCoreLinkB', [$coreLinkB]);
