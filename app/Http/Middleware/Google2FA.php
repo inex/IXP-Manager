@@ -31,6 +31,9 @@ use Closure, Session;
 
 class Google2FA
 {
+    /**
+     * @var array List of excepted routes
+     */
     protected $except = [
         '2fa/superuser-verification',
         '2fa/enable',
@@ -47,13 +50,12 @@ class Google2FA
     {
         if( !$this->inExceptArray( $request ) ) {
 
-            $authenticator = app(Google2FAAuthenticator::class)->boot( $request );
-
             Session::remove( "2fa-". $request->user()->getId() );
 
             // Force the superuser to enable 2FA
-            if( $request->user()->isSuperUser() && config( "google2fa.superuser_required" ) && ( !$request->user()->getPasswordSecurity() || !$request->user()->getPasswordSecurity()->isGoogle2faEnable() ) ) {
+            if( $request->user()->is2FARequired() ) {
 
+                // If we come from the login back then redirect the the 2FA verification form. Otherwise logout
                 if( request()->headers->get('referer', '' ) == route( "login@login" ) ){
                     return redirect( route( "2fa@superuser-verification" ) );
                 }
@@ -61,10 +63,13 @@ class Google2FA
                 return redirect( route( "login@logout" ) );
             }
 
+            $authenticator = app(Google2FAAuthenticator::class)->boot( $request );
+
             if ( $authenticator->isAuthenticated() ) {
                 return $next( $request );
             }
 
+            // Session used to hide the lateral menu
             Session::put( "2fa-". $request->user()->getId() , true );
 
             return $authenticator->makeRequestOneTimePasswordResponse();
@@ -74,7 +79,7 @@ class Google2FA
     }
 
     /**
-     * Determine if the request has a URI that should pass through CSRF verification.
+     * Determine if the request has a URI that should pass through 2FA
      *
      * @param Request $request
      * @return bool

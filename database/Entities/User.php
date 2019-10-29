@@ -882,6 +882,13 @@ class User implements Authenticatable, CanResetPasswordContract
         return $this->PasswordSecurity;
     }
 
+    public function is2FARequired(){
+        if( $this->isSuperUser() && config( "google2fa.superuser_required" ) && ( !$this->getPasswordSecurity() || !$this->getPasswordSecurity()->isGoogle2faEnable() ) ) {
+            return true;
+        }
+        return false;
+    }
+
 
     /***************************************************************************
      | LARAVEL 5 USER PROVIDER INTERFACE METHODS

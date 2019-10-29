@@ -23,12 +23,19 @@ namespace IXP\Support;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use PragmaRX\Google2FALaravel\Exceptions\InvalidSecretKey;
-use PragmaRX\Google2FALaravel\Support\Authenticator;
+use PragmaRX\Google2FALaravel\{
+    Exceptions\InvalidSecretKey,
+    Support\Authenticator
+};
 
 class Google2FAAuthenticator extends Authenticator
 {
 
+    /**
+     * Check if it is already logged in or passable without checking for an OTP.
+     *
+     * @return bool
+     */
     protected function canPassWithoutCheckingOTP()
     {
         if( !( $this->getUser()->getPasswordSecurity() ) )
@@ -52,6 +59,13 @@ class Google2FAAuthenticator extends Authenticator
         return $this->verifyAndStoreOneTimePassword($this->getOneTimePassword() ?? '');
     }
 
+    /**
+     * Get the user Google2FA secret.
+     *
+     * @throws InvalidSecretKey
+     *
+     * @return mixed
+     */
     protected function getGoogle2FASecretKey()
     {
         $secret = $this->getUser()->getPasswordSecurity()->getGoogle2faSecret();

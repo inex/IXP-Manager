@@ -23,18 +23,7 @@
 
 namespace IXP\Http\Controllers\Auth;
 
-use Auth, D2EM, Socialite;
-
-use Illuminate\Http\Request;
-use IXP\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
-
-use Illuminate\Support\Str;
-
-use IXP\Utils\View\Alert\{
-    Alert,
-    Container as AlertContainer
-};
+use Auth, D2EM, Socialite, Str;
 
 use Entities\{
     Customer       as CustomerEntity ,
@@ -44,11 +33,22 @@ use Entities\{
     UserLoginHistory as UserLoginHistoryEntity
 };
 
+use Illuminate\Foundation\Auth\AuthenticatesUsers;
+use Illuminate\Http\Request;
+
+use Illuminate\View\View;
+
+use IXP\Http\Controllers\Controller;
+
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
+
 use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends Controller
 {
-
     /*
      |--------------------------------------------------------------------------
      | Login Controller
@@ -61,7 +61,6 @@ class LoginController extends Controller
      */
     use AuthenticatesUsers;
 
-
     /**
      * Where to redirect users after login.
      *
@@ -69,7 +68,6 @@ class LoginController extends Controller
      * @var string
      */
     protected $redirectTo = '';
-
 
     /**
      * Get the login username to be used by the controller.
@@ -81,7 +79,6 @@ class LoginController extends Controller
         return 'username';
     }
 
-
     /**
      * Create a new controller instance.
      *
@@ -92,19 +89,24 @@ class LoginController extends Controller
         $this->middleware( 'guest' )->except( 'logout' );
     }
 
-
-    public function showLoginForm()
+    /**
+     * Show the login form
+     *
+     * @return View
+     */
+    public function showLoginForm() : View
     {
         if( !session()->has('url.intended') ) {
             if( Str::startsWith( url()->previous(), url('') ) && strpos( url()->previous(), route( "2fa@authenticate" ) ) != 0 ) {
-                session(['url.intended' => url()->previous()]);
-                session(['intended.2fa' => url()->previous()]);
+                // Store intended url to redirect after login
+                session( ['url.intended' => url()->previous() ] );
+                // Store intended url to redirect after 2FA
+                session( ['url.intended.2fa' => url()->previous() ] );
             }
         }
 
         return view( 'auth/login' );
     }
-
 
     /**
      * Attempt to log the user into the application.
@@ -119,12 +121,12 @@ class LoginController extends Controller
         );
     }
 
-
     /**
      * The user has been authenticated.
      *
      * @param Request $request
      * @param  UserEntity  $user
+     *
      * @return mixed
      *
      * @throws
@@ -149,7 +151,6 @@ class LoginController extends Controller
             $c2u->setLastLoginFrom( $this->getIP() );
 
             if( config( "ixp_fe.login_history.enabled" ) ) {
-
                 $log = new UserLoginHistoryEntity;
                 D2EM::persist( $log );
 
@@ -166,16 +167,15 @@ class LoginController extends Controller
         }
 
         D2EM::flush();
-
-
     }
 
     /**
      * Get the failed login response instance.
      *
      * @param Request $request
-     * @return Response
+     * @param string|null $msg
      *
+     * @return Response
      */
     protected function sendFailedLoginResponse( Request $request, $msg = null ) : Response
     {
@@ -183,7 +183,6 @@ class LoginController extends Controller
 
         return redirect()->back()->withInput( $request->only('username') );
     }
-
 
     /**
      * Log the user out of the application.

@@ -26,6 +26,7 @@ namespace IXP\Http\Controllers;
 use App, Cache, D2EM;
 
 use Carbon\Carbon;
+
 use IXP\Services\Grapher\Graph as Graph;
 
 use Entities\{
@@ -35,10 +36,8 @@ use Entities\{
     VlanInterface       as VlanInterfaceEntity
 };
 
-
 use Illuminate\Http\Request;
 use Illuminate\View\View;
-use IXP\Support\Google2FAAuthenticator;
 
 
 /**
@@ -53,11 +52,6 @@ use IXP\Support\Google2FAAuthenticator;
  */
 class AdminController extends Controller
 {
-
-    public function __construct() {
-        $this->middleware( "2fa");
-    }
-
     /**
      * Display the home page
      *
@@ -78,6 +72,8 @@ class AdminController extends Controller
 
     /**
      * Get type counts statistics
+     *
+     * @param Request $request
      *
      * @return array array of statistics
      */
@@ -170,6 +166,7 @@ class AdminController extends Controller
     /**
      * Get public peering graphs
      *
+     * @param Request $request
      * @return array array of graphs
      *
      * @throws

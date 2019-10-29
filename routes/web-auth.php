@@ -163,8 +163,8 @@ Route::group( [ 'prefix' => '2fa' ], function() {
     Route::post(  'delete',         'SecurityPasswordController@delete2fa'      )->name( "2fa@delete"      );
 
     Route::post('/authenticate', function () {
-        if( Session::exists( "intended.2fa" ) ) {
-            return redirect( Session::pull( "intended.2fa" ) );
+        if( Session::exists( "url.intended.2fa" ) ) {
+            return redirect( Session::pull( "url.intended.2fa" ) );
         }
         return redirect( '' );
 

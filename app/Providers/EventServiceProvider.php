@@ -75,12 +75,6 @@ class EventServiceProvider extends ServiceProvider {
             'IXP\Listeners\Auth\PasswordReset'
         ],
 
-        'IXP\Events\Google2FA\LoginFail' => [
-            'IXP\Listeners\Google2FA\LoginFail'
-        ],
-
-
-
         \SocialiteProviders\Manager\SocialiteWasCalled::class => [
             'SocialiteProviders\\PeeringDB\\PeeringDBExtendSocialite@handle',
         ],
