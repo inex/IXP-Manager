@@ -137,8 +137,10 @@ class Grapher
 
             case 'corebundle':
                 $corebundle = CoreBundleGraph::processParameterCoreBundle( (int)$request->input( 'id', 0 ) );
+                $side       = CoreBundleGraph::processParameterSide( $request->input( 'side', 'a' ) );
                 $request->corebundle = $corebundle->getId();
-                $graph = $grapher->coreBundle( $corebundle )->setParamsFromArray( $request->all() );
+                $request->side       = $side;
+                $graph = $grapher->coreBundle( $corebundle, $side )->setParamsFromArray( $request->all() );
                 break;
 
             case 'switch':

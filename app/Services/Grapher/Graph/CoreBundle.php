@@ -48,15 +48,22 @@ class CoreBundle extends Graph {
      */
     private $cb = null;
 
+    /**
+     * Which side of the core bundle to show?
+     * @var string
+     */
+    private $side = 'a';
+
 
     /**
      * Constructor
      * @param Grapher $grapher
      * @param CoreBundleEntity $cb
      */
-    public function __construct( Grapher $grapher, CoreBundleEntity $cb ) {
+    public function __construct( Grapher $grapher, CoreBundleEntity $cb, string $side = 'a' ) {
         parent::__construct( $grapher );
         $this->cb = $cb;
+        $this->side = strtolower( $side );
     }
 
     /**
@@ -82,6 +89,19 @@ class CoreBundle extends Graph {
     }
 
     /**
+     * Get the side to show
+     *
+     * @return string
+     */
+    public function side(): string {
+        if( in_array( $this->side, [ 'a', 'b' ] ) ) {
+            return $this->side;
+        }
+
+        return 'a';
+    }
+
+    /**
      * The name of a graph (e.g. member name, IXP name, etc)
      * @return string
      */
@@ -96,7 +116,7 @@ class CoreBundle extends Graph {
      * @return string
      */
     public function identifier(): string {
-        return sprintf( "cb-%05d", $this->coreBundle()->getId() );
+        return sprintf( "cb-aggregate-%05d-side%s", $this->coreBundle()->getId(), $this->side() );
     }
 
 
@@ -113,6 +133,11 @@ class CoreBundle extends Graph {
 
         if( Auth::check() && Auth::user()->isSuperUser() ) {
             return $this->allow();
+        }
+
+        if( !in_array( $this->category(), Graph::CATEGORIES_BITS_PKTS ) ) {
+            $this->deny();
+            return false;
         }
 
         if( !Auth::check() && is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) == UserEntity::AUTH_PUBLIC ) {
@@ -149,6 +174,7 @@ class CoreBundle extends Graph {
     public function getParamsAsArray(): array {
         $p = parent::getParamsAsArray();
         $p['id'] = $this->coreBundle()->getId();
+        $p['side'] = $this->side();
         return $p;
     }
 
@@ -168,6 +194,23 @@ class CoreBundle extends Graph {
         }
 
         return $cb;
+    }
+
+    /**
+     * Process user input for the parameter: side
+     *
+     * Does a abort(404) if invalid
+     *
+     * @param string $s The user input value
+     * @return string The verified / sanitised / default value
+     */
+    public static function processParameterSide( string $s ): string {
+        $s = strtolower( $s );
+        if( !in_array( $s, [ 'a', 'b'] ) ) {
+            abort(404);
+        }
+
+        return $s;
     }
 
 }

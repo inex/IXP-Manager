@@ -296,10 +296,11 @@ class Grapher {
     /**
      * Get an instance of a CoreBundle aggregate graph
      * @param \Entities\CoreBundle $cb
+     * @param string $side
      * @return \IXP\Services\Grapher\Graph\CoreBundle
      */
-    public function coreBundle( CoreBundle $cb ): CoreBundleGraph {
-        return new CoreBundleGraph( $this, $cb );
+    public function coreBundle( CoreBundle $cb, string $side = 'a' ): CoreBundleGraph {
+        return new CoreBundleGraph( $this, $cb, $side );
     }
 
     /**
