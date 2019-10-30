@@ -189,6 +189,7 @@ class SecurityPasswordController extends Controller
         // Replace white space if any
         $code = str_replace(' ', '', $request->input('one_time_password' ) );
 
+        // If the one time password is not valid
         if( !$google2fa->verifyKey( $user->getPasswordSecurity()->getGoogle2faSecret(), $code ) ) {
             AlertContainer::push( "Invalid Verification Code, Please try again.", Alert::DANGER );
 

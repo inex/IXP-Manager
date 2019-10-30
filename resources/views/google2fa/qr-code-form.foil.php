@@ -31,7 +31,7 @@ $this->layout( 'layouts/ixpv4' )
                         <b>Step 1:</b> Set up your two factor authentication by scanning the barcode below. Alternatively, you can use the code: <b><?= $t->ps->getGoogle2faSecret() ?></b>
                     </p>
                     <p>
-                        <img class="img-fluid" src="<?= $t->qrCodeImg ?>">
+                        <img class="img-fluid mx-auto" src="<?= $t->qrCodeImg ?>">
                     </p>
 
                     <?php if( !$t->ps->isGoogle2faEnable() ): ?>
