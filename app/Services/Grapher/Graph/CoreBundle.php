@@ -102,6 +102,16 @@ class CoreBundle extends Graph {
     }
 
     /**
+     * Get the side to show
+     *
+     * @return CoreBundle
+     */
+    public function setSide( string $side ): CoreBundle {
+        $this->side = self::processParameterSide( $side );
+        return $this;
+    }
+
+    /**
      * The name of a graph (e.g. member name, IXP name, etc)
      * @return string
      */
