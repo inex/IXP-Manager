@@ -9,10 +9,10 @@
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
 
-        <?= $t->ee( $t->cb->getDescription() ) ?>
+        <?= $t->ee( $t->cb->getGraphTitle() ) ?>
 
     <?php else: ?>
-        <?= $t->ee( $t->cb->getDescription() ) ?>
+        <?= $t->ee( $t->cb->getGraphTitle() ) ?>
     <?php endif; ?>
 
         (<?= IXP\Services\Grapher\Graph::resolveCategory( $t->category ) ?>)
@@ -47,7 +47,7 @@
                                     <select id="form-select-corebundleid" name="cbid" class="form-control" >
                                         <?php foreach( d2r('CoreBundle')->getActive() as $cb ): ?>
                                             <option value="<?= $cb->getId() ?>" <?= $t->cb->getId() != $cb->getId() ?: 'selected="selected"' ?>>
-                                                <?= $cb->getDescription() ?>
+                                                <?= $cb->getGraphTitle() ?>
                                             </option>
                                         <?php endforeach; ?>
                                     </select>
@@ -111,10 +111,6 @@
                                         <?php endforeach; ?>
                                     </select>
                                 </div>
-                            </li>
-
-                            <li class="nav-item float-right">
-                                <input type="submit" class="btn btn-white" value="Show Graphs">
                             </li>
 
                         </form>
