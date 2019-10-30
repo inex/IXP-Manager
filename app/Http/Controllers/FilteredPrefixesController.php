@@ -52,7 +52,8 @@ class FilteredPrefixesController extends Controller
      *
      * @throws
      */
-    public function list( Request $r, Customer $customer ) : View {
+    public function list( Request $r, Customer $customer ) : View
+    {
         $this->authorize('view', $customer);
 
         // are we busting the cache?

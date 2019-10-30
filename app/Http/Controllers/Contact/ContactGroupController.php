@@ -48,7 +48,8 @@ use IXP\Utils\View\Alert\{
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class ContactGroupController extends Doctrine2Frontend {
+class ContactGroupController extends Doctrine2Frontend
+{
 
     /**
      * The object being added / edited
@@ -71,7 +72,8 @@ class ContactGroupController extends Doctrine2Frontend {
     /**
      * This function sets up the frontend controller
      */
-    public function feInit() {
+    public function feInit()
+    {
 
         $this->feParams         = ( object )[
 
@@ -137,8 +139,8 @@ class ContactGroupController extends Doctrine2Frontend {
      *
      * @throws
      */
-    protected function listGetData( $id = null ) {
-
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( ContactGroupEntity::class )->getAllForFeList( $this->feParams, $id );
     }
 
@@ -166,24 +168,21 @@ class ContactGroupController extends Doctrine2Frontend {
      *
      * @throws
      */
-    protected function addEditPrepareForm( $id = null ): array {
-
-        $old = request()->old();
-
-        if( $id !== null ) {
+    protected function addEditPrepareForm( $id = null ): array
+    {
+        if( $id ) {
 
             if( !( $this->object = D2EM::getRepository( ContactGroupEntity::class )->find( $id ) ) ) {
                 abort(404);
             }
 
             Former::populate( [
-                'name'                      => array_key_exists( 'name',            $old ) ? $old['name']           : $this->object->getName(),
-                'description'               => array_key_exists( 'description',     $old ) ? $old['description']    : $this->object->getDescription(),
-                'type'                      => array_key_exists( 'type',            $old ) ? $old['type']           : $this->object->getType(),
-                'active'                    => array_key_exists( 'active',          $old ) ? $old['active']         : ( $this->object->getActive()      ? 1 : 0 ),
-                'limit'                     => array_key_exists( 'limit',           $old ) ? $old['limit']          : $this->object->getLimitedTo(),
+                'name'                      => request()->old( 'name',              $this->object->getName() ),
+                'description'               => request()->old( 'description',       $this->object->getDescription() ),
+                'type'                      => request()->old( 'type',              $this->object->getType() ),
+                'active'                    => request()->old( 'active',            ( $this->object->getActive()      ? 1 : 0 ) ),
+                'limit'                     => request()->old( 'limit',             $this->object->getLimitedTo() ),
             ] );
-
         }
 
         return [
@@ -232,7 +231,7 @@ class ContactGroupController extends Doctrine2Frontend {
         $this->object->setActive(         $request->input( 'active'         ) ? 1 : 0 );
         $this->object->setLimitedTo(      $request->input( 'limit'          ) );
 
-        D2EM::flush($this->object);
+        D2EM::flush();
 
         return true;
     }

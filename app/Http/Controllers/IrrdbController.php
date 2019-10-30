@@ -63,8 +63,8 @@ class IrrdbController extends Controller
      *
      * @return View
      */
-    public function list( IrrdbRequest $r, CustomerModel $customer, $type, $protocol ) : View {
-
+    public function list( IrrdbRequest $r, CustomerModel $customer, $type, $protocol ) : View
+    {
         $entity = $type == "asn" ? IrrdbAsnEntity::class : IrrdbPrefixEntity::class;
 
         /** @var  $entity IrrdbAsnEntity::class|IrrdbPrefixEntity::class */

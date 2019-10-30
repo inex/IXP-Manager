@@ -1774,6 +1774,37 @@ class Customer
 
 
     /**
+     * If enabled, can users login via peeringdb oauth?
+     * @var bool
+     */
+    protected $peeringdb_oauth = true;
+
+
+    /**
+     * Set $peeringdb_oauth
+     *
+     * @param bool $peeringdb_oauth
+     * @return Customer
+     */
+    public function setPeeringdbOAuth( $peeringdb_oauth )
+    {
+        $this->peeringdb_oauth = $peeringdb_oauth;
+
+        return $this;
+    }
+
+    /**
+     * Get $peeringdb_oauth
+     *
+     * @return bool
+     */
+    public function getPeeringdbOAuth()
+    {
+        return $this->peeringdb_oauth;
+    }
+
+
+    /**
      * Is this customer a member of MANRS
      * @var bool
      */

@@ -12,14 +12,14 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
      *      three parameters, being respectively the proxy object to be initialized, the method that triggered the
      *      initialization process and an array of ordered parameters that were passed to that method.
      *
-     * @see \Doctrine\Common\Persistence\Proxy::__setInitializer
+     * @see \Doctrine\Common\Proxy\Proxy::__setInitializer
      */
     public $__initializer__;
 
     /**
      * @var \Closure the callback responsible of loading properties that need to be copied in the cloned object
      *
-     * @see \Doctrine\Common\Persistence\Proxy::__setCloner
+     * @see \Doctrine\Common\Proxy\Proxy::__setCloner
      */
     public $__cloner__;
 
@@ -34,7 +34,7 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
      * @var array properties to be lazy loaded, with keys being the property
      *            names and values being their default values
      *
-     * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
+     * @see \Doctrine\Common\Proxy\Proxy::__getLazyProperties
      */
     public static $lazyPropertiesDefaults = [];
 
@@ -246,12 +246,12 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function isTypeOther(): bool
+    public function resolveType(): string
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isTypeOther', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveType', []);
 
-        return parent::isTypeOther();
+        return parent::resolveType();
     }
 
     /**
@@ -422,7 +422,7 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function setEnabled($enabled)
+    public function setEnabled(bool $enabled)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEnabled', [$enabled]);
@@ -444,7 +444,7 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function setBFD($bfd)
+    public function setBFD(bool $bfd)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setBFD', [$bfd]);
@@ -521,7 +521,7 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function getSwitchSideX($sideA = true)
+    public function getSwitchSideX(bool $sideA = true)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSwitchSideX', [$sideA]);
@@ -565,7 +565,7 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function getCustomer()
+    public function getCustomer(): \Entities\Customer
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustomer', []);
@@ -576,7 +576,7 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function getVirtualInterfaces()
+    public function getVirtualInterfaces(): array
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVirtualInterfaces', []);
@@ -620,7 +620,7 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function sameSwitchForEachPIFromCL($sideA)
+    public function sameSwitchForEachPIFromCL(bool $sideA = true): bool
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'sameSwitchForEachPIFromCL', [$sideA]);

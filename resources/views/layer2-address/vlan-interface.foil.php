@@ -50,8 +50,8 @@ Vlan Interface / Configured MAC Address Management
                         Addresses
                     </dt>
                     <dd class="col-sm-9">
-                        <?= !$t->vli->getIPv4Address() ?: $t->vli->getIPv4Address()->getAddress() . ( !$t->vli->getIPv6Address() ?: ' / ' ) ?>
-                        <?= !$t->vli->getIPv6Address() ?: $t->vli->getIPv6Address()->getAddress() ?>
+                        <?= $t->vli->getIPv4Address() ? $t->vli->getIPv4Address()->getAddress() . ( $t->vli->getIPv6Address() ? ' / ': '' ) : ''  ?>
+                        <?= $t->vli->getIPv6Address() ? $t->vli->getIPv6Address()->getAddress() : '' ?>
                     </dd>
                 </dl>
             </div>

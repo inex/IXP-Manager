@@ -12,14 +12,14 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
      *      three parameters, being respectively the proxy object to be initialized, the method that triggered the
      *      initialization process and an array of ordered parameters that were passed to that method.
      *
-     * @see \Doctrine\Common\Persistence\Proxy::__setInitializer
+     * @see \Doctrine\Common\Proxy\Proxy::__setInitializer
      */
     public $__initializer__;
 
     /**
      * @var \Closure the callback responsible of loading properties that need to be copied in the cloned object
      *
-     * @see \Doctrine\Common\Persistence\Proxy::__setCloner
+     * @see \Doctrine\Common\Proxy\Proxy::__setCloner
      */
     public $__cloner__;
 
@@ -34,7 +34,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
      * @var array properties to be lazy loaded, with keys being the property
      *            names and values being their default values
      *
-     * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
+     * @see \Doctrine\Common\Proxy\Proxy::__getLazyProperties
      */
     public static $lazyPropertiesDefaults = [];
 
@@ -64,10 +64,10 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'model', 'hostname', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'os', 'active', 'osDate', 'osVersion', 'lastPolled', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor'];
+            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'model', 'hostname', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'os', 'active', 'osDate', 'osVersion', 'lastPolled', 'snmp_engine_boots', 'snmp_engine_time', 'snmp_system_uptime', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor'];
         }
 
-        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'model', 'hostname', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'os', 'active', 'osDate', 'osVersion', 'lastPolled', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor'];
+        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'model', 'hostname', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'os', 'active', 'osDate', 'osVersion', 'lastPolled', 'snmp_engine_boots', 'snmp_engine_time', 'snmp_system_uptime', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor'];
     }
 
     /**
@@ -736,6 +736,105 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setMgmtMacAddress', [$mgmt_mac_address]);
 
         return parent::setMgmtMacAddress($mgmt_mac_address);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSnmpEngineBoots(): ?int
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSnmpEngineBoots', []);
+
+        return parent::getSnmpEngineBoots();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setSnmpEngineBoots(int $snmp_engine_boots): \Entities\Switcher
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSnmpEngineBoots', [$snmp_engine_boots]);
+
+        return parent::setSnmpEngineBoots($snmp_engine_boots);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSnmpEngineTime(): ?int
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSnmpEngineTime', []);
+
+        return parent::getSnmpEngineTime();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setSnmpEngineTime(int $snmp_engine_time): \Entities\Switcher
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSnmpEngineTime', [$snmp_engine_time]);
+
+        return parent::setSnmpEngineTime($snmp_engine_time);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSnmpSystemUptime(): ?int
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSnmpSystemUptime', []);
+
+        return parent::getSnmpSystemUptime();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setSnmpSystemUptime(int $snmp_system_uptime): \Entities\Switcher
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSnmpSystemUptime', [$snmp_system_uptime]);
+
+        return parent::setSnmpSystemUptime($snmp_system_uptime);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function recentlyRebooted(int $window = 60): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'recentlyRebooted', [$window]);
+
+        return parent::recentlyRebooted($window);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function status()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'status', []);
+
+        return parent::status();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCoreBundles(): array
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreBundles', []);
+
+        return parent::getCoreBundles();
     }
 
 }

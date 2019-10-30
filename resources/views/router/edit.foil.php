@@ -210,6 +210,18 @@
                     template and the software / platform! Ensure you have created at least one RPKI-RTR daemon also." );
                     ?>
 
+                    <?= Former::checkbox( 'rfc1997_passthru' )
+                        ->label('RFC1997 Passthru')
+                        ->text( 'Pass through RFC1997 well-known communities (recommended)' )
+                        ->value( 1 )
+                        ->inline()
+                        ->blockHelp( 'Pass through RFC1997 well-known communities on route servers. It is recommended that this be
+                            enabled on route servers (note that it will reset BGP sessions on Bird so should be changed in a 
+                            planned maintenance window only). See 
+                            <a href="https://docs.ixpmanager.org/features/route-servers/#rfc1997-passthru">this documentation</a>
+                            for more details.' );
+                    ?>
+
                     <?= Former::checkbox( 'skip_md5' )
                         ->label( 'Skip MD5' )
                         ->text( 'Do not include any MD5 configuration' )

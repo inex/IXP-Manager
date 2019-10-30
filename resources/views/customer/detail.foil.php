@@ -13,9 +13,9 @@
 
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-        <a href="<?= route( $c->isTypeAssociate() ? 'customer@associates' : 'customer@details' )?>"><?= $c->isTypeAssociate() ? 'Associate Members' : 'Customers' ?></a>
+        <a href="<?= route( $c->isTypeAssociate() ? 'customer@associates' : 'customer@details' )?>"><?= $c->isTypeAssociate() ? 'Associate ' : '' ?><?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?></a>
     <?php else: ?>
-        Member Detail
+        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Detail
     <?php endif; ?>
 
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>

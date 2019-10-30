@@ -19,21 +19,19 @@ $this->layout( 'layouts/ixpv4' );
                     <i class="fa fa-info-circle fa-2x"></i>
                 </div>
                 <div class="col-sm-12">
-                    You can add sflow receivers via the customers virtual interface edit page.
+                    You can add sflow receivers via the <?= config( 'ixp_fe.lang.customer.many' ) ?> virtual interface edit page.
                 </div>
             </div>
         </div>
 
         <?= $t->alerts() ?>
 
-        <span id="message-sflr"></span>
-
         <table id='table-sflr' class="table table-striped table-responsive-ixp-with-header collapse" style="width: 100%;">
 
             <thead class="thead-dark">
                 <tr>
                     <th>
-                        Customer
+                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
                     </th>
                     <th>
                         Source Switch
@@ -95,11 +93,7 @@ $this->layout( 'layouts/ixpv4' );
                 <?php endforeach;?>
 
             <tbody>
-
         </table>
-
-
-
     </div>
 
 </div>

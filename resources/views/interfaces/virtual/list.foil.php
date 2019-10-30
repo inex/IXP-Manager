@@ -34,14 +34,11 @@
 
         <?= $t->alerts() ?>
 
-        <div id="message-vi"></div>
-
-
         <table id='table-vi' class="collapse table table-stripped no-wrap table-responsive-ixp-with-header" style="width: 100%!important">
             <thead class="thead-dark">
                 <tr>
                     <th>
-                        Customer
+                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>
                     </th>
                     <th>
                         Facility
@@ -130,11 +127,6 @@
     <?= $t->insert( 'interfaces/virtual/js/interface' ); ?>
 
     <script>
-        $(document).ready( function() {
-
-
-
-        });
 
         /**
          * on click even allow to delete a Virtual Interface

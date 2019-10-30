@@ -47,7 +47,8 @@ use IXP\Utils\View\Alert\{
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class IrrdbConfigController extends Doctrine2Frontend {
+class IrrdbConfigController extends Doctrine2Frontend
+{
 
     /**
      * The object being added / edited
@@ -67,8 +68,8 @@ class IrrdbConfigController extends Doctrine2Frontend {
     /**
      * This function sets up the frontend controller
      */
-    public function feInit() {
-
+    public function feInit()
+    {
         $this->feParams         = (object)[
 
             'entity'            => IRRDBConfigEntity::class,
@@ -112,7 +113,8 @@ class IrrdbConfigController extends Doctrine2Frontend {
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
      * @return array
      */
-    protected function listGetData( $id = null ) {
+    protected function listGetData( $id = null )
+    {
         return D2EM::getRepository( IRRDBConfigEntity::class )->getAllForFeList( $this->feParams, $id );
     }
 
@@ -123,26 +125,23 @@ class IrrdbConfigController extends Doctrine2Frontend {
      * @param   int $id ID of the row to edit
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array {
-        $old = request()->old();
-
-        if( $id !== null ) {
-
+    protected function addEditPrepareForm( $id = null ): array
+    {
+        if( $id ) {
             if( !( $this->object = D2EM::getRepository( IRRDBConfigEntity::class )->find( $id) ) ) {
                 abort(404);
             }
 
-
             Former::populate([
-                'host'              => array_key_exists( 'host',        $old ) ? $old['host']       : $this->object->getHost(),
-                'protocol'          => array_key_exists( 'protocol',    $old ) ? $old['protocol']   : $this->object->getProtocol(),
-                'source'            => array_key_exists( 'source',      $old ) ? $old['source']     : $this->object->getSource()  ,
+                'host'              => request()->old( 'host',         $this->object->getHost() ),
+                'protocol'          => request()->old( 'protocol',     $this->object->getProtocol() ),
+                'source'            => request()->old( 'source',       $this->object->getSource() ),
+                'notes'             => request()->old( 'notes',       $this->object->getNotes() ),
             ]);
         }
 
         return [
-            'object'                => $this->object,
-            'notes'                 => $id ? ( array_key_exists( 'notes',           $old ) ? $old['notes']           : $this->object->getNotes() ) : ( array_key_exists( 'notes',           $old ) ? $old['notes']           : "" )
+            'object'                => $this->object
         ];
     }
 
@@ -174,7 +173,7 @@ class IrrdbConfigController extends Doctrine2Frontend {
         $this->object->setNotes(        $request->input( 'notes'    ) );
 
 
-        D2EM::flush($this->object);
+        D2EM::flush();
 
 
         $action = $request->input( 'id', '' )  ? "edited" : "added";
@@ -190,13 +189,13 @@ class IrrdbConfigController extends Doctrine2Frontend {
     /**
      * @inheritdoc
      */
-    protected function preDelete() : bool {
+    protected function preDelete() : bool
+    {
         $okay = true;
         if( ( $cnt = count( $this->object->getCustomers() ) ) ) {
             AlertContainer::push( "You cannot delete this IRRDB Source there are {$cnt} customer(s) associated with it. ", Alert::DANGER );
             $okay = false;
         }
-
 
         return $okay;
     }

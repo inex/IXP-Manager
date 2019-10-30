@@ -28,6 +28,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 
 use Entities\{
+    CoreBundle as CoreBundleEntity,
     Switcher as SwitcherEntity, SwitchPort as SwitchPortEntity, SwitchPort
 };
 
@@ -44,7 +45,9 @@ class SwitchController extends Controller {
     /**
      * Get all switch ports for a given switch
      *
-     * @param   Request $request Instance of the current HTTP request
+     * @param Request $request Instance of the current HTTP request
+     * @param int $id
+     *
      * @return  JsonResponse Ports
      */
     public function ports( Request $request, int $id ) {
@@ -55,22 +58,28 @@ class SwitchController extends Controller {
      * Get the switch port for a Switch for patch panel port
      *
      * @params  $request instance of the current HTTP request
+     * @param Request $request
+     * @param int $id
+     *
      * @return  JSON array of listPort
      */
     public function switchPortForPPP( Request $request, int $id) {
-        $listPorts = D2EM::getRepository(SwitcherEntity::class)->getAllPortsForPPP($id ,$request->input('custId'), $request->input('spId'));
-        return response()->json(['listPorts' => $listPorts]);
+        $listPorts = D2EM::getRepository(SwitcherEntity::class )->getAllPortsForPPP( $id ,$request->input('custId' ), $request->input('spId' ) );
+        return response()->json( [ 'listPorts' => $listPorts ] );
     }
 
     /**
      * Get the Prewired switch port for a Switch
      *
      * @params  $request instance of the current HTTP request
+     * @param Request $request
+     * @param int $id
+     *
      * @return  JSON array of listPort
      */
-    public function switchPortPrewired( Request $request, int $id) {
-        $listPorts = D2EM::getRepository(SwitcherEntity::class)->getAllPortsPrewired($id ,$request->input('spId'));
-        return response()->json(['listPorts' => $listPorts]);
+    public function switchPortPrewired( Request $request, int $id ) {
+        $listPorts = D2EM::getRepository(SwitcherEntity::class )->getAllPortsPrewired( $id ,$request->input('spId' ) );
+        return response()->json( [ 'listPorts' => $listPorts ] );
     }
 
     /**
@@ -80,9 +89,58 @@ class SwitchController extends Controller {
      * @param   int     $id      switch ID
      * @return  JsonResponse JSON array of listPort
      */
-    public function switchPort( Request $request, int $id) {
-        $listPorts = D2EM::getRepository(SwitcherEntity::class)->getAllPorts($id ,[SwitchPortEntity::TYPE_CORE,SwitchPortEntity::TYPE_UNSET], $request->input('spIdsexcluded'), true );
-        return response()->json(['listPorts' => $listPorts]);
+    public function switchPort( Request $request, int $id ) {
+        $listPorts = D2EM::getRepository(SwitcherEntity::class )->getAllPorts( $id ,[ SwitchPortEntity::TYPE_CORE,SwitchPortEntity::TYPE_UNSET ], $request->input('spIdsExcluded' ), true );
+        return response()->json( [ 'listPorts' => $listPorts ] );
+    }
+
+
+    /**
+     * Get the switch status for monitoring purposes
+     */
+    public function status( Request $request, int $id ) {
+        if( !( $switch = D2EM::getRepository( SwitcherEntity::class )->find( $id ) ) ) {
+            abort( 404, "Unknown switch" );
+        }
+
+        return response()->json( $switch->status() );
+    }
+
+    /**
+     * Get the switch status for monitoring purposes
+     */
+    public function coreBundlesStatus( Request $request, int $id ) {
+        /** @var SwitcherEntity $switch */
+        if( !( $switch = D2EM::getRepository( SwitcherEntity::class )->find( $id ) ) ) {
+            abort( 404, "Unknown switch" );
+        }
+
+        $okay = true;
+        $msgs = [];
+
+        /** @var CoreBundleEntity $cb */
+        foreach( $switch->getCoreBundles() as $cb ) {
+
+            if( $cb->getEnabled() ) {
+                $linksup      = count( $cb->getCoreLinksWithIfOperStateX() ); // with no args this defaults to X = oper state up for enabled links
+                $linksenabled = count( $cb->getCoreLinksEnabled() );
+
+                if( $linksup === $linksenabled ) {
+                    $msgs[] = $cb->getSwitchSideX( true )->getName() . ' - ' . $cb->getSwitchSideX( false )->getName() . " OK - {$linksup}/${linksenabled} links up";
+                } else {
+                    $okay = false;
+                    $msgs[] = 'ISSUE: ' . $cb->getSwitchSideX( true )->getName() . ' - ' . $cb->getSwitchSideX( false )->getName() . " has {$linksup}/${linksenabled} links up";
+                }
+            } else {
+                $msgs[] = 'Ignoring ' . $cb->getSwitchSideX( true )->getName() . ' - ' . $cb->getSwitchSideX( false )->getName() . ' as core bundle disabled';
+            }
+        }
+
+        if( $msgs === [] ) {
+            $msgs[] = "No core bundles configured for this switch";
+        }
+
+        return response()->json( [ 'status' => $okay, 'switchname' => $switch->getName(), 'msgs' => $msgs ] );
     }
 
 

@@ -23,6 +23,7 @@
 
 namespace Entities;
 
+use Carbon\Carbon;
 use D2EM, Log;
 
 use Doctrine\Common\Collections\ArrayCollection;
@@ -35,6 +36,8 @@ use Entities\{
 };
 
 use \OSS_SNMP\MIBS\Iface as SNMPIface;
+
+use IXP\Exceptions\Switches\RebootDiscoveryNotSupported;
 
 /**
  * Entities\Switcher
@@ -156,6 +159,24 @@ class Switcher
      * @var \DateTime
      */
     protected $lastPolled;
+
+    /**
+     * @var int
+     */
+    protected $snmp_engine_boots;
+
+
+
+    /**
+     * @var int
+     */
+    protected $snmp_engine_time;
+
+    /**
+     * @var int
+     */
+    protected $snmp_system_uptime;
+
 
     /**
      * @var ArrayCollection
@@ -383,7 +404,7 @@ class Switcher
     /**
      * Get Ports
      *
-     * @return ArrayCollection $ports
+     * @return ArrayCollection|SwitchPortEntity[] $ports
      */
     public function getPorts()
     {
@@ -662,6 +683,20 @@ class Switcher
             $this->setMauSupported( false );
         }
 
+        // uptime data
+        try {
+            $this->setSnmpSystemUptime( $host->useSystem()->uptime() );
+        } catch( \OSS_SNMP\Exception $e ) {
+            //
+        }
+
+        try {
+            $this->setSnmpEngineTime( $host->useSNMP_Engine()->time() );
+            $this->setSnmpEngineBoots( $host->useSNMP_Engine()->boots() );
+        } catch( \OSS_SNMP\Exception $e ) {
+            //
+        }
+
         $this->setLastPolled( new \DateTime() );
         return $this;
     }
@@ -700,8 +735,9 @@ class Switcher
         foreach( $host->useIface()->indexes() as $index ) {
 
             // we're only interested in Ethernet ports here (right?)
-            if( $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_ETHERNETCSMACD && $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_L3IPVLAN )
+            if( $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_ETHERNETCSMACD && $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_L3IPVLAN ) {
                 continue;
+            }
 
             // find the matching switchport that may already be in the database (or create a new one)
             $sp = false;
@@ -901,6 +937,193 @@ class Switcher
         $this->mgmt_mac_address = $mgmt_mac_address;
 
         return $this;
+    }
+
+
+    /**
+     * @return int|null
+     */
+    public function getSnmpEngineBoots(): ?int
+    {
+        return $this->snmp_engine_boots;
+    }
+
+    /**
+     * @param int $snmp_engine_boots
+     * @return Switcher
+     */
+    public function setSnmpEngineBoots( int $snmp_engine_boots ): Switcher
+    {
+        $this->snmp_engine_boots = $snmp_engine_boots;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getSnmpEngineTime(): ?int
+    {
+        return $this->snmp_engine_time;
+    }
+
+    /**
+     * @param int $snmp_engine_time
+     * @return Switcher
+     */
+    public function setSnmpEngineTime( int $snmp_engine_time ): Switcher
+    {
+        $this->snmp_engine_time = $snmp_engine_time;
+        return $this;
+    }
+
+    /**
+     * @return int|null
+     */
+    public function getSnmpSystemUptime(): ?int
+    {
+        return $this->snmp_system_uptime;
+    }
+
+    /**
+     * @param int $snmp_system_uptime
+     * @return Switcher
+     */
+    public function setSnmpSystemUptime( int $snmp_system_uptime ): Switcher
+    {
+        $this->snmp_system_uptime = $snmp_system_uptime;
+        return $this;
+    }
+
+
+    /**
+     * Indicate if the switch (probably) recently rebooted.
+     *
+     * If this returns true, switch has /most likely/ rebooted.
+     *
+     * @param int $window Window in minutes for 'recently'. Defaults to 60.
+     * @return bool
+     * @throws RebootDiscoveryNotSupported
+     */
+    public function recentlyRebooted( int $window = 60 ): bool
+    {
+        if( $this->getSnmpEngineTime() === null && $this->getSnmpSystemUptime() === null ) {
+            throw new RebootDiscoveryNotSupported;
+        }
+
+        // convert window to seconds
+        $window *= 60;
+
+        // assume that the switch probably hasn't rebooted
+        $probably = false;
+
+        if( ( $this->getSnmpSystemUptime() / 100 ) < $window ) {
+            // Either sysuptime has rolled over or switch has rebooted.
+
+            // try to identify rollover from snmp engine uptime.
+            // we're ignore engine.boots here because it's not clear what causes that to increment.
+            if( $this->getSnmpEngineTime() !== null ) {
+                if( $this->getSnmpEngineTime() < $window ) {
+                    $probably = true;
+                }
+            } else {
+                $probably = true;
+            }
+        }
+
+        if( $probably === true && Carbon::instance( $this->getLastPolled() )->diffInMinutes() < 60 ) {
+            // one additional check is that interface last change must be less than the sysuptime for a reboot
+            // to have taken place. We'll add a margin to the window here also.
+            $cutoff = time() - $window - 60; // 60 for some margin
+
+            foreach( $this->getPorts() as $sp ) {
+                if( $sp->getIfLastChange() < $cutoff && $sp->getIfOperStatus() === SNMPIface::IF_ADMIN_STATUS_UP && $sp->getPhysicalInterface() && $sp->getActive() ) {
+                    $probably = false;
+                    break;
+                }
+            }
+        }
+
+        return $probably;
+    }
+
+
+    /**
+     * Evaluate the switches status.
+     *
+     * Checks for recent reboots and missed snmp polling.
+     */
+    public function status()
+    {
+        // assume we're okay
+        $okay = true;
+        $msgs = [];
+
+        if( !$this->getActive() ) {
+            return [
+                'name' => $this->getName(),
+                'status' => true,
+                'msgs' => [ 'Switch is inactive. Status tests skipped.' ],
+            ];
+        }
+
+        // last polled:
+        if( $this->getLastPolled() ) {
+            $lastPolled = Carbon::instance( $this->getLastPolled() );
+            if( $lastPolled->diffInMinutes() > 10 ) {
+                $okay = false;
+                $msgs[] = 'WARNING: last polled ' . $lastPolled->diffForHumans() . '.';
+            } else {
+                $msgs[] = 'Last polled ' . $lastPolled->diffForHumans() . '.';;
+            }
+        } else {
+            $okay = false;
+            $msgs[] = 'Switch has never been polled via SNMP.';
+        }
+
+
+        try {
+            if( $this->recentlyRebooted() ) {
+                $okay = false;
+                $msgs[] = 'CRITICAL: rebooted within the last hour (probably).';
+            }
+        } catch( RebootDiscoveryNotSupported $e ) {
+            $msgs[] = 'Switch does not support reboot checks.';
+        }
+
+        return [
+            'name' => $this->getName(),
+            'status' => $okay,
+            'msgs' => $msgs,
+        ];
+    }
+
+
+    /**
+     * Return an array of core bundles
+     * @return CoreBundle[]
+     */
+    public function getCoreBundles(): array
+    {
+        $cbs   = [];
+        $cbids = [];
+
+        foreach( $this->getPorts() as $sp ) {
+            if( $sp->getPhysicalInterface() && $sp->getPhysicalInterface()->getCoreInterface() ) {
+                if( $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkA() ) {
+                    if( !in_array( $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkA()->getCoreBundle()->getId(), $cbids ) ) {
+                        $cbids[] = $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkA()->getCoreBundle()->getId();
+                        $cbs[]   = $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkA()->getCoreBundle();
+                    }
+                } elseif( $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkB() ) {
+                    if( !in_array( $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkB()->getCoreBundle()->getId(), $cbids ) ) {
+                        $cbids[] = $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkB()->getCoreBundle()->getId();
+                        $cbs[]   = $sp->getPhysicalInterface()->getCoreInterface()->getCoreLinkB()->getCoreBundle();
+                    }
+                }
+            }
+        }
+
+        return $cbs;
     }
 
 }

@@ -11,6 +11,9 @@
 
     <div class="btn-group btn-group-sm" role="group">
         <div class="btn-group btn-group-sm" role="group">
+            <a class="btn btn-white" href="<?= url('lg') ?>">
+                <span class="fa fa-list"></span>
+            </a>
             <button class="btn btn-white dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                 <?= $t->lg ? $t->lg->router()->name() : 'Select a router...' ?>
             </button>

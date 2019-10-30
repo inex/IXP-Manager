@@ -119,9 +119,9 @@ Route::group( [ 'prefix' => 'dashboard' ], function() {
 ///
 
 Route::group( [ 'namespace' => 'User', 'prefix' => 'customer-to-user' ], function() {
-    Route::get( 'add/{id?}/{cust?}',      'CustomerToUserController@add'                              )->name( "customer-to-user@add"          );
-    Route::post('store',     'CustomerToUserController@store'                           )->name( "customer-to-user@store"        );
-    Route::post('delete',    'CustomerToUserController@delete'                          )->name( "customer-to-user@delete"       );
+    Route::get( 'add/{email?}', 'CustomerToUserController@add'                          )->name( "customer-to-user@add"    );
+    Route::post('store',        'CustomerToUserController@store'                        )->name( "customer-to-user@store"  );
+    Route::post('delete',       'CustomerToUserController@delete'                       )->name( "customer-to-user@delete" );
 });
 
 Route::group( [ 'namespace' => 'User', 'prefix' => 'user' ], function() {
@@ -143,15 +143,15 @@ Route::group( [ 'namespace' => 'User', 'prefix' => 'user' ], function() {
 ///
 
 
-Route::get(  'peering-manager',                            'PeeringManagerController@index'            )->name( "peering-manager@index"            );
-Route::get(  'peering-manager/{id}/mark-peering/{status}', 'PeeringManagerController@markPeering'      )->name( 'peering-manager@mark-peering'     );
-Route::post( 'peering-manager/form',                       'PeeringManagerController@formEmailFrag'    )->name( 'peering-manager@form-email-frag'  );
-Route::post( 'peering-manager/send-peering-email',      'PeeringManagerController@sendPeeringEmail' )->name( "peering-manager@send-peering-email" );
-Route::post( 'peering-manager/notes',                   'PeeringManagerController@peeringNotes'     )->name( "peering-manager@notes" );
+Route::get(  'peering-manager',                             'PeeringManagerController@index'            )->name( "peering-manager@index"            );
+Route::get(  'peering-manager/{id}/mark-peering/{status}',  'PeeringManagerController@markPeering'      )->name( 'peering-manager@mark-peering'     );
+Route::post( 'peering-manager/form',                        'PeeringManagerController@formEmailFrag'    )->name( 'peering-manager@form-email-frag'  );
+Route::post( 'peering-manager/send-peering-email',          'PeeringManagerController@sendPeeringEmail' )->name( "peering-manager@send-peering-email" );
+Route::post( 'peering-manager/notes',                       'PeeringManagerController@peeringNotes'     )->name( "peering-manager@notes" );
 
 
 Route::group( [ 'prefix' => 'irrdb' ], function() {
     Route::get(  'customer/{customer}/{type}/{protocol}',   'IrrdbController@list'            )->name( "irrdb@list"            );
-    Route::get(  'update/{customer}/{type}/{protocol}',                'IrrdbController@update'          )->name( "irrdb@update"          );
+    Route::get(  'update/{customer}/{type}/{protocol}',     'IrrdbController@update'          )->name( "irrdb@update"          );
 });
 

@@ -75,9 +75,9 @@ $this->layout( 'layouts/ixpv4' );
                         <div class="col-lg-6 col-sm-12">
 
                             <?= Former::select( 'customer' )
-                                ->label( 'Customer' )
+                                ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
                                 ->fromQuery( $t->customers, 'name' )
-                                ->placeholder( 'Choose a customer' )
+                                ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
                                 ->addClass( 'chzn-select' )
                                 ->blockHelp( '' );
                             ?>

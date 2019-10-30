@@ -12,14 +12,14 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
      *      three parameters, being respectively the proxy object to be initialized, the method that triggered the
      *      initialization process and an array of ordered parameters that were passed to that method.
      *
-     * @see \Doctrine\Common\Persistence\Proxy::__setInitializer
+     * @see \Doctrine\Common\Proxy\Proxy::__setInitializer
      */
     public $__initializer__;
 
     /**
      * @var \Closure the callback responsible of loading properties that need to be copied in the cloned object
      *
-     * @see \Doctrine\Common\Persistence\Proxy::__setCloner
+     * @see \Doctrine\Common\Proxy\Proxy::__setCloner
      */
     public $__cloner__;
 
@@ -34,7 +34,7 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
      * @var array properties to be lazy loaded, with keys being the property
      *            names and values being their default values
      *
-     * @see \Doctrine\Common\Persistence\Proxy::__getLazyProperties
+     * @see \Doctrine\Common\Proxy\Proxy::__getLazyProperties
      */
     public static $lazyPropertiesDefaults = [];
 
@@ -176,7 +176,7 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
-    public function getId()
+    public function getId(): int
     {
         if ($this->__isInitialized__ === false) {
             return (int)  parent::getId();
@@ -191,7 +191,7 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
-    public function getPhysicalInterface()
+    public function getPhysicalInterface(): \Entities\PhysicalInterface
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPhysicalInterface', []);
@@ -224,7 +224,7 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
-    public function getCoreLink()
+    public function getCoreLink(): \Entities\CoreLink
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreLink', []);
@@ -235,7 +235,7 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
-    public function setPhysicalInterface(\Entities\PhysicalInterface $physicalInterface = NULL)
+    public function setPhysicalInterface(\Entities\PhysicalInterface $physicalInterface = NULL): \Entities\CoreInterface
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPhysicalInterface', [$physicalInterface]);
@@ -246,7 +246,7 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
-    public function setCoreLinkA(\Entities\CoreLink $coreLinkA = NULL)
+    public function setCoreLinkA(\Entities\CoreLink $coreLinkA = NULL): \Entities\CoreInterface
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCoreLinkA', [$coreLinkA]);
@@ -257,7 +257,7 @@ class CoreInterface extends \Entities\CoreInterface implements \Doctrine\ORM\Pro
     /**
      * {@inheritDoc}
      */
-    public function setCoreLinkB(\Entities\CoreLink $coreLinkB = NULL)
+    public function setCoreLinkB(\Entities\CoreLink $coreLinkB = NULL): \Entities\CoreInterface
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCoreLinkB', [$coreLinkB]);

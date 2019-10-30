@@ -55,7 +55,7 @@
                 ->blockHelp( "Marking a console inactive will exclude it from, for example, Nagios configuration generation." );
             ?>
 
-        <div class="form-group">
+        <div class="form-group col-lg-8 col-sm-12">
 
             <div class="col-lg-offset-2 col-sm-offset-2">
                 <div class="card mt-4">
@@ -72,7 +72,11 @@
 
                     <div class="tab-content card-body">
                         <div role="tabpanel" class="tab-pane show active" id="body">
-                            <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->data[ 'params'][ 'notes' ] ?></textarea>
+                            <?= Former::textarea( 'notes' )
+                                ->id( 'notes' )
+                                ->label( '' )
+                                ->rows( 15 )
+                            ?>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="preview">
                             <div class="bg-light p-4 well-preview">

@@ -25,11 +25,11 @@
                 <?php if( Auth::getUser()->isSuperUser() ):?>
                     <?= Former::select( 'custid' )
                         ->id( 'cust' )
-                        ->label( 'Customer' )
-                        ->placeholder( 'Select a customer' )
+                        ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
+                        ->placeholder( 'Select a ' . config( 'ixp_fe.lang.customer.one' ) )
                         ->fromQuery( $t->data[ 'params'][ 'custs' ], 'name' )
                         ->addClass( 'chzn-select' )
-                        ->blockHelp( "Customer to assign this contact to." );
+                        ->blockHelp( ucfirst( config( 'ixp_fe.lang.customer.one' ) )  . ' to assign this contact to.' );
                     ?>
                 <?php endif; ?>
 
@@ -81,7 +81,7 @@
 
 
                 <?php if( !Auth::getUser()->isCustAdmin() ): ?>
-                    <div class="form-group">
+                    <div class="form-group col-sm-12">
 
                         <div class="card mt-4">
                             <div class="card-header">
@@ -97,7 +97,11 @@
 
                             <div class="tab-content card-body">
                                 <div role="tabpanel" class="tab-pane show active" id="body">
-                                    <textarea class="form-control" style="font-family:monospace;" rows="10" id="notes" name="notes"><?= $t->data[ 'params'][ 'notes' ] ?></textarea>
+                                    <?= Former::textarea( 'notes' )
+                                        ->id( 'notes' )
+                                        ->label( '' )
+                                        ->rows( 10 )
+                                    ?>
                                 </div>
                                 <div role="tabpanel" class="tab-pane" id="preview">
                                     <div class="bg-light p-4 well-preview">

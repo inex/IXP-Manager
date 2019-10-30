@@ -36,6 +36,7 @@ use IXP\Services\Grapher\Graph\{
     Infrastructure    as InfrastructureGraph,
     Vlan              as VlanGraph,
     Switcher          as SwitchGraph,
+    CoreBundle        as CoreBundleGraph,
     Trunk             as TrunkGraph,
     PhysicalInterface as PhysIntGraph,  // member physical port
     VirtualInterface  as VirtIntGraph,  // member LAG
@@ -132,6 +133,14 @@ class Grapher
                 $trunkname = TrunkGraph::processParameterTrunkname( (string)$request->input( 'id', '' ) );
                 $request->trunkname = $trunkname;
                 $graph = $grapher->trunk( $trunkname )->setParamsFromArray( $request->all() );
+                break;
+
+            case 'corebundle':
+                $corebundle = CoreBundleGraph::processParameterCoreBundle( (int)$request->input( 'id', 0 ) );
+                $side       = CoreBundleGraph::processParameterSide( $request->input( 'side', 'a' ) );
+                $request->corebundle = $corebundle->getId();
+                $request->side       = $side;
+                $graph = $grapher->coreBundle( $corebundle, $side )->setParamsFromArray( $request->all() );
                 break;
 
             case 'switch':

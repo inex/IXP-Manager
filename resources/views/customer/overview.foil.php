@@ -22,7 +22,7 @@
 
             <div class="dropdown-menu dropdown-menu-right">
 
-                <a class="dropdown-item" href="<?= route( 'interfaces/virtual/add-wizard/custid', [ 'id' => $c->getId() ] ) ?>">
+                <a class="dropdown-item" href="<?= route( 'interfaces/virtual/add-wizard/custid', [ 'custid' => $c->getId() ] ) ?>">
                     Provision new port...
                 </a>
 
@@ -49,7 +49,7 @@
             <div class="dropdown-menu dropdown-menu-right">
 
                 <a class="dropdown-item" href="<?= route( 'customer@edit' , [ 'id' => $c->getId() ] ) ?>">
-                    Edit Customer Details
+                    Edit <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Details
                 </a>
 
                 <a class="dropdown-item" href="<?= route( 'customer@billing-registration' , [ 'id' => $c->getId() ] ) ?>" >
@@ -79,7 +79,7 @@
 
                 <div class="dropdown-divider"></div>
 
-                <a class="dropdown-item" href="<?= route( 'customer@delete-recap', [ 'id' => $c->getId() ] ) ?>">Delete Customer...</a>
+                <a class="dropdown-item" href="<?= route( 'customer@delete-recap', [ 'id' => $c->getId() ] ) ?>">Delete <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?>...</a>
 
             </div>
 
@@ -138,10 +138,17 @@
                 </h3>
 
                 <p class="tw-mt-2">
-                    <a href="<?= $t->c->getCorpwww() ?>" target="_blank"><?= $t->nakedUrl( $t->c->getCorpwww() ?? '' ) ?></a>
+                    <?php if( $t->c->getCorpwww() ): ?>
+                        <a href="<?= $t->c->getCorpwww() ?>" target="_blank">
+                            <?= $t->nakedUrl( $t->c->getCorpwww() ) ?>
+                        </a>
+                        <span class="tw-text-gray-600">
+                            -
+                        </span>
+                    <?php endif; ?>
 
                     <span class="tw-text-gray-600">
-                        - joined <?= $c->getDatejoin()->format('Y') ?>
+                         joined <?= $c->getDatejoin()->format('Y') ?>
 
                         <?php if( $c->isResoldCustomer() ): ?>
                             - resold via <?= $c->getReseller()->getName() ?>
@@ -216,7 +223,7 @@
 
                     <li role="resold-customers" class="nav-item <?php if( $t->tab == 'resold-customers' ): ?>active<?php endif; ?>">
                         <a class="nav-link " data-toggle="tab" href="#resold-customers" data-toggle="tab">
-                            Resold Customers
+                            Resold <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
                         </a>
                     </li>
                 <?php endif; ?>
@@ -289,7 +296,7 @@
                     <?php if( $c->isRouteServerClient() ): ?>
 
                         <?php if( !config( 'ixp_fe.frontend.disabled.rs-prefixes' ) ): ?>
-                            <li class="nav-item" onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'id' =>  $c->getId() ] ) ?>'">
+                            <li class="nav-item" onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'cid' =>  $c->getId() ] ) ?>'">
                                 <a class="nav-link" data-toggle="tab"  href="">
                                     RS Prefixes
                                     <?php if( $t->rsRoutes[ 'adv_nacc' ][ 'total' ] > 0 ): ?>

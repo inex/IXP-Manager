@@ -15,9 +15,9 @@
         ?>
 
         <?= Former::select( 'custid' )
-            ->label( 'Customer' )
+            ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
             ->fromQuery( $t->data[ 'params'][ 'custs'], 'name' )
-            ->placeholder( 'Choose a customer' )
+            ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
             ->addClass( 'chzn-select' );
         ?>
 

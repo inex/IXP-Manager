@@ -130,48 +130,8 @@
 
 </div>
 
-
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
-        $('.table-responsive-ixp-with-header').show();
-
-        $('.table-responsive-ixp-with-header').DataTable( {
-            stateSave: true,
-            stateDuration : DATATABLE_STATE_DURATION,
-            responsive: true,
-            columnDefs: [
-                { responsivePriority: 1, targets: 0 },
-                { responsivePriority: 2, targets: -1 }
-            ],
-        } );
-
-        $( "a[id|='delete-router']" ).on( 'click', function( e ) {
-            e.preventDefault();
-            let rtid = ( this.id ).substring( 14 );
-            bootbox.confirm({
-                message: "Do you want to delete this router ?",
-                buttons: {
-                    confirm: {
-                        label: 'Confirm',
-                        className: 'btn-primary',
-                    },
-                    cancel: {
-                        label: 'Cancel',
-                        className: 'btn-secondary',
-                    }
-                },
-                callback: function ( result ) {
-                    if( result ){
-                        location.href = "<?= url('router/delete' )?>/" + rtid;
-                    } else {
-                        $( '.bootbox.modal' ).modal( 'hide' );
-                    }
-                }
-            });
-        });
-
-    </script>
+    <?= $t->insert( 'router/js/index' ); ?>
 <?php $this->append() ?>

@@ -23,6 +23,12 @@
 
 namespace Entities;
 
+use Entities\{
+    CoreBundle      as CoreBundleEntity,
+    CoreInterface   as CoreInterfaceEntity,
+    CoreLink        as CoreLinkEntity,
+};
+
 /**
  * CoreLink
  */
@@ -54,17 +60,17 @@ class CoreLink
     private $id;
 
     /**
-     * @var \Entities\CoreInterface
+     * @var CoreInterfaceEntity
      */
     private $coreInterfaceSideA;
 
     /**
-     * @var \Entities\CoreInterface
+     * @var CoreInterfaceEntity
      */
     private $coreInterfaceSideB;
 
     /**
-     * @var \Entities\CoreBundle
+     * @var CoreBundleEntity
      */
     private $coreBundle;
 
@@ -72,9 +78,9 @@ class CoreLink
     /**
      * Get id
      *
-     * @return integer
+     * @return int
      */
-    public function getId()
+    public function getId(): int
     {
         return $this->id;
     }
@@ -82,9 +88,9 @@ class CoreLink
     /**
      * Get bfd
      *
-     * @return boolean
+     * @return bool
      */
-    public function getBFD()
+    public function getBFD(): bool
     {
         return $this->bfd;
     }
@@ -92,9 +98,9 @@ class CoreLink
     /**
      * Get enabled
      *
-     * @return boolean
+     * @return bool
      */
-    public function getEnabled()
+    public function getEnabled(): bool
     {
         return $this->enabled;
     }
@@ -102,7 +108,7 @@ class CoreLink
     /**
      * Get IPv4 Subnet
      *
-     * @return boolean
+     * @return string
      */
     public function getIPv4Subnet()
     {
@@ -112,9 +118,9 @@ class CoreLink
     /**
      * Get IPv6 Subnet
      *
-     * @return boolean
+     * @return string
      */
-    public function getIPv46Subnet()
+    public function getIPv6Subnet()
     {
         return $this->ipv6_subnet;
     }
@@ -123,9 +129,9 @@ class CoreLink
     /**
      * Get CoreInterface side A
      *
-     * @return \Entities\CoreInterface
+     * @return CoreInterfaceEntity
      */
-    public function getCoreInterfaceSideA()
+    public function getCoreInterfaceSideA(): CoreInterfaceEntity
     {
         return $this->coreInterfaceSideA;
     }
@@ -133,9 +139,9 @@ class CoreLink
     /**
      * Get CoreInterface side B
      *
-     * @return \Entities\CoreInterface
+     * @return CoreInterfaceEntity
      */
-    public function getCoreInterfaceSideB()
+    public function getCoreInterfaceSideB(): CoreInterfaceEntity
     {
         return $this->coreInterfaceSideB;
     }
@@ -145,7 +151,7 @@ class CoreLink
      *
      * @return array
      */
-    public function getCoreInterfaces()
+    public function getCoreInterfaces(): array
     {
         return [ $this->getCoreInterfaceSideA(), $this->getCoreInterfaceSideB() ];
     }
@@ -153,7 +159,7 @@ class CoreLink
     /**
      * Get CoreBundle
      *
-     * @return \Entities\CoreBundle
+     * @return CoreBundleEntity
      */
     public function getCoreBundle()
     {
@@ -167,7 +173,7 @@ class CoreLink
      *
      * @param boolean $enabled
      *
-     * @return CoreBundle
+     * @return CoreLinkEntity
      */
     public function setEnabled( $enabled )
     {
@@ -180,7 +186,7 @@ class CoreLink
      *
      * @param boolean $bfd
      *
-     * @return CoreBundle
+     * @return CoreLinkEntity
      */
     public function setBFD( $bfd )
     {
@@ -193,7 +199,7 @@ class CoreLink
      *
      * @param string $ipv4_subnet
      *
-     * @return CoreBundle
+     * @return CoreLinkEntity
      */
     public function setIPv4Subnet( $ipv4_subnet )
     {
@@ -206,7 +212,7 @@ class CoreLink
      *
      * @param string $ipv6_subnet
      *
-     * @return CoreBundle
+     * @return CoreLinkEntity
      */
     public function setIPv6Subnet( $ipv6_subnet )
     {
@@ -218,11 +224,11 @@ class CoreLink
     /**
      * Set CoreInterface side A
      *
-     * @param \Entities\CoreInterface $coreInterfaceSideA
+     * @param CoreInterfaceEntity $coreInterfaceSideA
      *
      * @return CoreLink
      */
-    public function setCoreInterfaceSideA( CoreInterface $coreInterfaceSideA = null)
+    public function setCoreInterfaceSideA( CoreInterfaceEntity $coreInterfaceSideA = null)
     {
         $this->coreInterfaceSideA = $coreInterfaceSideA;
         return $this;
@@ -231,11 +237,11 @@ class CoreLink
     /**
      * Set CoreInterface side B
      *
-     * @param \Entities\CoreInterface $coreInterfaceSideB
+     * @param CoreInterfaceEntity $coreInterfaceSideB
      *
      * @return CoreLink
      */
-    public function setCoreInterfaceSideB( CoreInterface $coreInterfaceSideB = null )
+    public function setCoreInterfaceSideB( CoreInterfaceEntity $coreInterfaceSideB = null )
     {
         $this->coreInterfaceSideB = $coreInterfaceSideB;
         return $this;
@@ -244,11 +250,11 @@ class CoreLink
     /**
      * Set CoreBundle
      *
-     * @param \Entities\CoreBundle $coreBundle
+     * @param CoreBundleEntity $coreBundle
      *
      * @return CoreLink
      */
-    public function setCoreBundle( CoreBundle $coreBundle = null )
+    public function setCoreBundle( CoreBundleEntity $coreBundle = null )
     {
         $this->coreBundle = $coreBundle;
         return $this;

@@ -66,10 +66,10 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port' ], f
     Route::get( 'verify-loa/{id}/{code}',       'PatchPanelPortController@verifyLoa'    )->name( "patch-panel-port@verify-loa"  );
 });
 
-Route::get( 'verify-loa/{id}/{code}',       'PatchPanel\PatchPanelPortController@verifyLoa'    )->name( "patch-panel-port@verify-loa"  );
+Route::get( 'verify-loa/{id}/{code}',           'PatchPanel\PatchPanelPortController@verifyLoa'    )->name( "patch-panel-port@verify-loa"  );
 
 
-Route::get( 'weather-map/{id}',                    'WeatherMapController@index' )->name( 'weathermap');
+Route::get( 'weather-map/{id}',                  'WeatherMapController@index' )->name( 'weathermap');
 
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -108,6 +108,8 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
 
     Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'   );
     Route::get(  'latency/{vliid}/{protocol}',                  'StatisticsController@latency'           )->name( 'statistics@latency'            );
+
+    Route::get(  'core-bundle/{cbid}',                          'StatisticsController@coreBundle'        )->name( 'statistics@core-bundle'            );
 });
 
 

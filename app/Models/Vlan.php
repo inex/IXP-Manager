@@ -31,6 +31,8 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan wherePrivate($value)
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Router[] $routers
+ * @property-read int|null $routers_count
+ * @property-read int|null $vlan_interfaces_count
  */
 class Vlan extends Model
 {

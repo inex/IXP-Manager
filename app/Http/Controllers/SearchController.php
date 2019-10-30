@@ -44,8 +44,6 @@ use Illuminate\Http\{
     RedirectResponse, Request
 };
 
-
-
 /**
  * Search Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
@@ -54,7 +52,8 @@ use Illuminate\Http\{
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class SearchController extends Controller {
+class SearchController extends Controller
+{
 
     /**
      * Search different type of objects ( IP, User, Mac address)
@@ -62,7 +61,8 @@ class SearchController extends Controller {
      * @param   Request $request instance of the current HTTP request
      * @return  RedirectResponse|View
      */
-    public function do( Request $request ) {
+    public function do( Request $request )
+    {
         $type       = '';
         $results    = [];
         $interfaces = [];

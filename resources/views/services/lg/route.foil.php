@@ -82,14 +82,14 @@
                     </td>
                 </tr>
             <?php endif; ?>
-            <?php if (isset( $r->bgp->nect_hop )): ?>
+            <?php if (isset( $r->bgp->next_hop )): ?>
                 <tr>
                     <td>
                         <b>BGP :: Next Hop</b>
                     </td>
                     <td>
-                        <?= $r->bgp->next_hop ?><
-                        /td>
+                        <?= $r->bgp->next_hop ?>
+                    </td>
                 </tr>
             <?php endif; ?>
             <?php if (isset( $r->bgp->med )): ?>
@@ -153,8 +153,10 @@
                         <?php foreach( $r->bgp->large_communities as $c ): ?>
                             <tt><?= implode(':',$c) ?></tt>
 
-                            <?php if( $lcinfo = $t->bird()->translateBgpFilteringLargeCommunity( ':' . $c[1] . ':' . $c[2] ) ): ?>
-                                <span class="badge badge-<?= $lcinfo[1] ?>"><?= $lcinfo[0] ?></span>
+                            <?php if( $t->lg->router()->asn() == $c[0] ): ?>
+                                <?php if( $lcinfo = $t->bird()->translateBgpFilteringLargeCommunity( ':' . $c[1] . ':' . $c[2] ) ): ?>
+                                    <span class="badge badge-<?= $lcinfo[1] ?>"><?= $lcinfo[0] ?></span>
+                                <?php endif; ?>
                             <?php endif; ?>
 
                             <br>

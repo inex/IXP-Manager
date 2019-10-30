@@ -126,3 +126,9 @@ if( !function_exists( 'ixp_get_client_ip' ) ) {
     }
 }
 
+if( !function_exists( 'rrd_graph' ) ) {
+
+    function rrd_graph( $a, $b ) { return []; }
+
+}
+

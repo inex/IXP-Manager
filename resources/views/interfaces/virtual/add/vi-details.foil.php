@@ -6,7 +6,7 @@
             </div>
             <div class="col-sm-12">
                 The Virtual Interface belongs to a Core Bundle: ensure you match any changes to MTU, 802.1q framing, etc. to the other half which can be
-                <a href="<?= route('core-bundle/edit' , [ 'id' => $t->cb->getId() ]) ?>"> accessed by clicking here </a>
+                <a href="<?= route('core-bundle@edit' , [ 'id' => $t->cb->getId() ]) ?>"> accessed by clicking here </a>
             </div>
         </div>
     </div>
@@ -25,12 +25,12 @@
             <div class="row">
                 <div class="col-sm-6">
                     <?= Former::select( 'cust' )
-                        ->label( 'Customer' )
+                        ->label( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) )
                         ->fromQuery( $t->cust, 'name' )
-                        ->placeholder( 'Choose a Customer' )
+                        ->placeholder( 'Choose a ' . config( 'ixp_fe.lang.customer.one' ) )
                         ->addClass( 'chzn-select' )
                         ->disabled( $t->selectedCust ? true : false )
-                        ->blockHelp( 'The customer who owns this virtual interface.' );
+                        ->blockHelp( 'The ' . config( 'ixp_fe.lang.customer.one' ) . ' who owns this virtual interface.' );
                     ?>
 
                     <?= Former::checkbox( 'trunk' )
@@ -160,7 +160,7 @@
                 <?php if( $t->vi ): ?>
                     <?= Former::hidden( 'custid' )
                         ->id( "custid" )
-                        ->value( $t->vi->getcustomer()->getId() )
+                        ->value( $t->vi->getCustomer()->getId() )
                     ?>
                 <?php endif; ?>
 
@@ -173,9 +173,9 @@
 
                 <?php
                 if( $t->cb ) {
-                    $bbtn = '<a href="' . route( 'core-bundle/edit', [ 'id' => $t->cb->getId() ] ) . '" class="btn btn-btn-secondary mb-2 mb-md-2 mb-lg-0">Return to Core Bundle</a>';
+                    $bbtn = '<a href="' . route( 'core-bundle@edit', [ 'id' => $t->cb->getId() ] ) . '" class="btn btn-secondary mb-2 mb-md-2 mb-lg-0">Return to Core Bundle</a>';
                 } elseif( $t->vi ) {
-                    $bbtn  = '<a href="' . route( "customer@overview" , [ "id" => $t->vi->getCustomer()->getId(), "tab" => "ports" ] ) . '" class="btn btn-secondary mb-2 mb-md-2 mb-lg-0">Return to Customer Overview</a>';
+                    $bbtn  = '<a href="' . route( "customer@overview" , [ "id" => $t->vi->getCustomer()->getId(), "tab" => "ports" ] ) . '" class="btn btn-secondary mb-2 mb-md-2 mb-lg-0">Return to ' . ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Overview</a>';
                     $bbtn .= '<a class="collapse btn btn-danger mb-2 mb-md-2 mt-lg-2 ml-1" id="delete-vi-' . $t->vi->getId() . '" href="">Delete Interface</a>';
                 } else {
                     $bbtn = '<a href="' . action( 'Interfaces\VirtualInterfaceController@list' ) . '" class="btn btn-secondary mmb-2 mb-md-2 mb-lg-0" >Cancel</a>';

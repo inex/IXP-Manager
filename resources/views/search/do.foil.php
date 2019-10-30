@@ -40,7 +40,7 @@
                             switch( $t->type ) {
                                 case 'asn':       echo ' - AS Number'; break;
                                 case 'asmacro':   echo ' - AS Macro'; break;
-                                case 'cust_wild': echo ' - Wildcard Customer Search'; break;
+                                case 'cust_wild': echo ' - Wildcard ' . config( 'ixp_fe.lang.customer.one' ) . ' Search'; break;
                                 case 'email':     echo ' - Email Address'; break;
                                 case 'ipv4':      echo ' - IPv4 Addresses'; break;
                                 case 'ipv6':      echo ' - IPv6 Addresses'; break;
@@ -103,7 +103,7 @@
                                             <a class="btn btn-white" href="<?= route( "statistics@member-drilldown" , [ "typeid" => $cust->getId(), "type" => "agg" ] ) ?>">
                                                 Statistics
                                             </a>
-                                            <a class="btn btn-white" href="<?= route( 'statistics@p2p-get', [ "id" => $cust->getId() ] )?>">
+                                            <a class="btn btn-white" href="<?= route( 'statistics@p2p-get', [ "cid" => $cust->getId() ] )?>">
                                                 P2P
                                             </a>
                                             <a class="btn btn-white" href="<?= route( "customer@overview" , [ "id" => $cust->getId(), "tab" => "users" ] ) ?>">

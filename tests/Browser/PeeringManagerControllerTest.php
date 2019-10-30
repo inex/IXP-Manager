@@ -73,7 +73,7 @@ class PeeringManagerControllerTest extends DuskTestCase
     {
         $this->browse( function ( Browser $browser ) {
 
-            $browser->resize(1600, 1200 )
+            $browser->resize(1600, 1400 )
                 ->visit('/login' )
                 ->type('username', 'hecustadmin' )
                 ->type('password', 'travisci' )

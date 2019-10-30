@@ -36,7 +36,7 @@
             ->blockHelp( "Free text - may allow you to manage different makes / models / half/full / owned/shared etc." );
         ?>
 
-        <?= Former::text( 'height' )
+        <?= Former::number( 'height' )
             ->label( 'Height (U)' )
             ->blockHelp( "The height of the rack in standard rack U(nits)." );
         ?>
@@ -66,8 +66,12 @@
 
                     <div class="tab-content card-body">
                         <div role="tabpanel" class="tab-pane show active" id="body">
-
-                            <textarea class="form-control" style="font-family:monospace;" rows="20" id="notes" name="notes"><?= $t->data[ 'params'][ 'notes' ] ?></textarea>
+                            <?= Former::textarea( 'notes' )
+                                ->id( 'notes' )
+                                ->label( '' )
+                                ->rows( 20 )
+                                ->blockHelp( "" )
+                            ?>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="preview">
                             <div class="bg-light p-4 well-preview">
