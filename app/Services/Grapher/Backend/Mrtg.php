@@ -342,6 +342,12 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                 'periods'     => Graph::PERIODS,
                 'types'       => $rrd ? Graph::TYPES : $graphTypes,
             ],
+            'corebundle' => [
+                'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
+                'categories'  => Graph::CATEGORIES,
+                'periods'     => Graph::PERIODS,
+                'types'       => $rrd ? Graph::TYPES : $graphTypes,
+            ],
             'physicalinterface' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => Graph::CATEGORIES,
@@ -517,6 +523,14 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
             case 'Trunk':
                 /** @var Graph\Trunk $graph */
                 return sprintf( "%s/trunks/%s%s.%s", $config['logdir'], $graph->trunkname(),
+                    $loggyType ? '' : "-{$graph->period()}", $type );
+                break;
+
+            case 'CoreBundle':
+                /** @var Graph\CoreBundle $graph */
+                return sprintf( "%s/corebundles/%05d/%s-%s%s.%s", $config['logdir'],
+                    $graph->coreBundle()->getId(),
+                    $graph->identifier(), $graph->category(),
                     $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
 

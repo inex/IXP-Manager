@@ -58,7 +58,7 @@ class Upgrade extends GrapherCommand {
      * @var string
      */
     protected $signature = 'grapher:backend:mrtg:upgrade
-                                {operation : One of ln/rm-new/rm-old/mv/mkdir (or: all)}
+                                {operation : One of ln/rm-new/rm-old/mv/cp/mkdir (or: all)}
                                 {--L|logdir= : MRTG log/rrd directory}
                                 {--X|ixp : Show upgrade commands for the IXP}
                                 {--I|infrastructures : Show upgrade commands for infrastructures}
@@ -68,6 +68,7 @@ class Upgrade extends GrapherCommand {
                                 {--P|physints : Show upgrade commands for member physical interfaces}
                                 {--Q|memberlags : Show upgrade commands for member LAG interfaces}
                                 {--C|customeragg : Show upgrade commands for member aggregate graphs}
+                                {--B|corebundles : Show upgrade commands for core bundle graphs}
                                 {--agg-name= : Name of aggregate graphs for IXP and infrastructure migration}';
 
     /**
@@ -119,6 +120,8 @@ class Upgrade extends GrapherCommand {
             $this->memberlags();
         } else if( $this->option( 'customeragg' ) ) {
             $this->customeragg();
+        } else if( $this->option( 'corebundles' ) ) {
+            $this->coreBundles();
         }
 
         return 0;
@@ -143,6 +146,10 @@ class Upgrade extends GrapherCommand {
 
             case 'rm-new':
                 return sprintf( "rm %s\n", $new );
+                break;
+
+            case 'cp':
+                return sprintf( "cp %s    \t%s\n", $old, $new );
                 break;
 
             case 'mv':
@@ -238,6 +245,7 @@ class Upgrade extends GrapherCommand {
             config('grapher.backends.mrtg.workdir')
         );
     }
+
     /**
      * Generate commands for switch graphs
      */
@@ -404,6 +412,55 @@ class Upgrade extends GrapherCommand {
             }
         }
     }
+
+    /**
+     * Generate commands for core bundle graphs
+     */
+    private function coreBundles() {
+        if( !config( 'grapher_trunks', [] ) ) {
+            $this->error('No grapher trunks defined and so no migration required.');
+            return;
+        }
+
+        foreach( config( 'grapher_trunks' ) as $trunk ) {
+            /*
+             * Sample trunk:
+             * 'core-degkcp-tcydub1-lan1' => [
+             *     'ixpid' => 1,
+             *     'cbid' => 12, 'side' => 'b',
+             *     'name'  => 'core-degkcp-tcydub1-lan1',
+             *     'title' => 'Equinix DB2 (KCP) to Equinix DB1 (CWT) (LAN1 / Primary)'
+             * ],
+             */
+
+            if( !( $cb = d2r('CoreBundle')->find( $trunk['cbid'] ) ) ) {
+                $this->error( 'No core bundle entity for trunk ' . $trunk['name'] );
+                continue;
+            }
+
+            $graph = Grapher::coreBundle( $cb );
+
+            // dir:
+            echo "mkdir -p " . dirname( $this->mrtg->resolveFilePath( $graph, 'log' ) ) . "\n";
+
+            $graph->setCategory( Graph::CATEGORY_BITS );
+            echo $this->cmd(
+                "{$this->logdir}/trunks/{$trunk['name']}.log",
+                $this->mrtg->resolveFilePath( $graph, 'log' )
+            );
+
+            foreach( Graph::PERIODS as $p ) {
+                $graph->setPeriod( $p );
+                echo $this->cmd(
+                    "{$this->logdir}/trunks/{$trunk['name']}-{$p}.png",
+                    $this->mrtg->resolveFilePath( $graph, 'png' )
+                );
+            }
+
+        }
+
+    }
+
 
 
     /**

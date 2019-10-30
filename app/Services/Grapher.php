@@ -37,6 +37,7 @@ use IXP\Services\Grapher\Graph\{
     Vlan              as VlanGraph,
     Switcher          as SwitchGraph,
     Trunk             as TrunkGraph,
+    CoreBundle        as CoreBundleGraph,
     PhysicalInterface as PhysIntGraph,  // member physical port
     VirtualInterface  as VirtIntGraph,  // member LAG
     Customer          as CustomerGraph, // member agg over all physical ports
@@ -51,6 +52,7 @@ use Cache;
 use Config;
 
 use Entities\{
+    CoreBundle,
     IXP,
     Infrastructure,
     Vlan,
@@ -252,6 +254,15 @@ class Grapher {
     }
 
     /**
+     * Get an instance of a customer aggregate graph
+     * @param \Entities\Customer $c
+     * @return \IXP\Services\Grapher\Graph\Customer
+     */
+    public function customer( Customer $c ): CustomerGraph {
+        return new CustomerGraph( $this, $c );
+    }
+
+    /**
      * Get an instance of a physint graph
      * @param \Entities\PhysicalInterface $int
      * @return \IXP\Services\Grapher\Graph\PhysicalInterface
@@ -283,12 +294,12 @@ class Grapher {
     }
 
     /**
-     * Get an instance of a customer aggregate graph
-     * @param \Entities\Customer $c
-     * @return \IXP\Services\Grapher\Graph\Customer
+     * Get an instance of a CoreBundle aggregate graph
+     * @param \Entities\CoreBundle $cb
+     * @return \IXP\Services\Grapher\Graph\CoreBundle
      */
-    public function customer( Customer $c ): CustomerGraph {
-        return new CustomerGraph( $this, $c );
+    public function coreBundle( CoreBundle $cb ): CoreBundleGraph {
+        return new CoreBundleGraph( $this, $cb );
     }
 
     /**
