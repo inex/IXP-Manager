@@ -75,11 +75,19 @@
                             VLAN / Per-Protocol Graphs
                         </a>
                     <?php endif; ?>
-                    <?php if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) <= Auth::user()->getPrivs() ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'statistics/trunk' ) ?: 'active' ?>" href="<?= route('statistics/trunk') ?>">
-                            Inter-Switch / PoP Graphs
-                        </a>
+
+                    <?php if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) == Entities\User::AUTH_PUBLIC ): ?>
+                        <?php if( count( config( 'grapher.backends.mrtg.trunks' ) ?? [] ) ): ?>
+                            <a class="dropdown-item <?= !request()->is( 'statistics/trunk' ) ?: 'active' ?>" href="<?= route('statistics/trunk') ?>">
+                                Inter-Switch / PoP Graphs
+                            </a>
+                        <?php elseif( count( $cbs = d2r( 'CoreBundle' )->getActive() ) ): ?>
+                            <a class="dropdown-item <?= !request()->is( 'statistics/core-bundle' ) ?: 'active' ?>" href="<?= route('statistics@core-bundle', $cbs[0]->getId() ) ?>">
+                                Inter-Switch / PoP Graphs
+                            </a>
+                        <?php endif; ?>
                     <?php endif; ?>
+
                     <?php if( is_numeric( config( 'grapher.access.switch' ) ) && config( 'grapher.access.switch' ) <= Auth::user()->getPrivs() ): ?>
                         <a class="dropdown-item <?= !request()->is( 'statistics/switch' ) ?: 'active' ?>" href="<?= route('statistics/switch') ?>">
                             Switch Aggregate Graphs
