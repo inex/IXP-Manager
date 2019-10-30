@@ -546,7 +546,7 @@ class CustomerController extends Controller
                                                 ? D2EM::getRepository( RSPrefixEntity::class )->aggregateRouteSummariesForCustomer( $c->getId() ) : false,
 
             'crossConnects'             => D2EM::getRepository( PatchPanelPortEntity::class )->getForCustomer( $c->getId() ),
-            'crossConnectsHistory'      => D2EM::getRepository( PatchPanelPortHistoryEntity::class )->getForCustomer( $c->getId() ),
+            'crossConnectsHistory'      => D2EM::getRepository( PatchPanelPortHistoryEntity::class )->getForCustomer( $c ),
             'aggregateGraph'            => $c->isGraphable() ? $grapher->customer( $c ) : false,
             'grapher'                   => $grapher,
             'rsclient'                  => $c->isRouteServerClient(),
