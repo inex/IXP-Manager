@@ -438,7 +438,7 @@ class Upgrade extends GrapherCommand {
                 continue;
             }
 
-            $graph = Grapher::coreBundle( $cb );
+            $graph = Grapher::coreBundle( $cb, $trunk['side'] );
 
             // dir:
             echo "mkdir -p " . dirname( $this->mrtg->resolveFilePath( $graph, 'log' ) ) . "\n";
