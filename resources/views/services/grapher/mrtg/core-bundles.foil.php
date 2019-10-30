@@ -71,24 +71,24 @@
 
             endforeach;
 
-            // aggregates
-            foreach( [ 'sidea', 'sideb' ] as $side ):
-                echo $this->insert(
-                    "services/grapher/mrtg/target", [
-                        'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
-                        'mrtgPrefix'   => sprintf( "cb-aggregate-%05d-%s", $cb->getId(), $side ),
-                        'portIds'      => $t->data['cbbundles'][$cb->getId()][$side],
-                        'data'         => $t->data,
-                        'graphTitle'   => sprintf( "%s -- %s -- %%s / second",
-                            $t->data['cbs'][$cb->getId()]->getGraphTitle(),
-                            ( $side == 'sidea' ) ? 'Side A' : 'Side B'
-                        ),
-                        'directory'    => sprintf("corebundles/%05d", $cb->getId()),
-                        'maxbytes'     => $cbmaxbytes,
-                        ]
-                ) . "\n\n\n";
+        endforeach;
 
-            endforeach;
+        // aggregates
+        foreach( [ 'sidea', 'sideb' ] as $side ):
+            echo $this->insert(
+                "services/grapher/mrtg/target", [
+                    'trafficTypes' => \IXP\Utils\Grapher\Mrtg::TRAFFIC_TYPES,
+                    'mrtgPrefix'   => sprintf( "cb-aggregate-%05d-%s", $cb->getId(), $side ),
+                    'portIds'      => $t->data['cbbundles'][$cb->getId()][$side],
+                    'data'         => $t->data,
+                    'graphTitle'   => sprintf( "%s -- %s -- %%s / second",
+                        $t->data['cbs'][$cb->getId()]->getGraphTitle(),
+                        ( $side == 'sidea' ) ? 'Side A' : 'Side B'
+                    ),
+                    'directory'    => sprintf("corebundles/%05d", $cb->getId()),
+                    'maxbytes'     => $cbmaxbytes,
+                    ]
+            ) . "\n\n\n";
 
         endforeach;
 
