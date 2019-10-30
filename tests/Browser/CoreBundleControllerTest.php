@@ -258,7 +258,9 @@ class CoreBundleControllerTest extends DuskTestCase
                         ->select( 'switch-b',   $coreBundle[ 'switch-b' ] )
                         ->select( 'speed',      $coreBundle[ 'speed' ] );
 
-
+                $browser->waitUntil( "$( '#sp-a-1 option' ).length > 1" );
+                $browser->waitUntil( "$( '#sp-b-1 option' ).length > 1" );
+                
                 $browser->select( '#sp-a-1', $coreBundle[ 'switch-port-a-1' ] )
                     ->select( '#sp-b-1', $coreBundle[ 'switch-port-b-1' ] )
                     ->check( '#enabled-cl-1' );
