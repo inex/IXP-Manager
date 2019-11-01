@@ -176,7 +176,7 @@ class RouteServerFilter extends \Entities\RouteServerFilter implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function getPrefix(): string
+    public function getPrefix()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPrefix', []);
@@ -187,7 +187,7 @@ class RouteServerFilter extends \Entities\RouteServerFilter implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function setPrefix(string $prefix): \Entities\RouteServerFilter
+    public function setPrefix($prefix): \Entities\RouteServerFilter
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPrefix', [$prefix]);
