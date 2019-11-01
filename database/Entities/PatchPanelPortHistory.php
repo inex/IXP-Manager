@@ -23,8 +23,16 @@
 
 namespace Entities;
 
+use Doctrine\Common\Collections\Collection;
+use Entities\{
+    PatchPanelPort              as PatchPanelPortEntities,
+    PatchPanelPortHistory       as PatchPanelPortHistoryEntity,
+    PatchPanelPortHistoryFile   as PatchPanelPortHistoryFileEntity
+};
+
 use Doctrine\Common\Collections\ArrayCollection;
-use Parsedown;
+
+use DateTime, Parsedown;
 
 /**
  * PatchPanelPortHistory
@@ -72,22 +80,22 @@ class PatchPanelPortHistory
     private $notes;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $assigned_at;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $connected_at;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $cease_requested_at;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     private $ceased_at;
 
@@ -111,6 +119,11 @@ class PatchPanelPortHistory
     private $owned_by = '0';
 
     /**
+     * @var integer
+     */
+    private $cust_id;
+
+    /**
      * @var string
      */
     private $customer;
@@ -121,22 +134,22 @@ class PatchPanelPortHistory
     private $switchport;
 
     /**
-     * @var \Entities\PatchPanelPort
+     * @var PatchPanelPortEntities
      */
     private $patchPanelPort;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      */
     private $duplexSlavePorts;
 
     /**
-     * @var \Entities\PatchPanelPortHistory
+     * @var PatchPanelPortHistoryEntity
      */
     private $duplexMasterPort;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      */
     private $patchPanelPortHistoryFiles;
 
@@ -332,7 +345,7 @@ class PatchPanelPortHistory
     /**
      * Set assignedAt
      *
-     * @param \DateTime $assignedAt
+     * @param DateTime $assignedAt
      *
      * @return PatchPanelPortHistory
      */
@@ -345,7 +358,7 @@ class PatchPanelPortHistory
     /**
      * Get assignedAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getAssignedAt() {
         return $this->assigned_at;
@@ -363,7 +376,7 @@ class PatchPanelPortHistory
     /**
      * Set connectedAt
      *
-     * @param \DateTime $connectedAt
+     * @param DateTime $connectedAt
      *
      * @return PatchPanelPortHistory
      */
@@ -376,7 +389,7 @@ class PatchPanelPortHistory
     /**
      * Get connectedAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getConnectedAt() {
         return $this->connected_at;
@@ -394,7 +407,7 @@ class PatchPanelPortHistory
     /**
      * Set ceaseRequestedAt
      *
-     * @param \DateTime $ceaseRequestedAt
+     * @param DateTime $ceaseRequestedAt
      *
      * @return PatchPanelPortHistory
      */
@@ -407,7 +420,7 @@ class PatchPanelPortHistory
     /**
      * Get ceaseRequestedAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCeaseRequestedAt() {
         return $this->cease_requested_at;
@@ -425,7 +438,7 @@ class PatchPanelPortHistory
     /**
      * Set ceasedAt
      *
-     * @param \DateTime $ceasedAt
+     * @param DateTime $ceasedAt
      *
      * @return PatchPanelPortHistory
      */
@@ -438,7 +451,7 @@ class PatchPanelPortHistory
     /**
      * Get ceasedAt
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCeasedAt() {
         return $this->ceased_at;
@@ -561,6 +574,26 @@ class PatchPanelPortHistory
     }
 
     /**
+     * @return int
+     */
+    public function getCustId(): int
+    {
+        return $this->cust_id;
+    }
+
+    /**
+     * @param int $cust_id
+     *
+     * @return PatchPanelPortHistory
+     */
+    public function setCustId( int $cust_id )
+    {
+        $this->cust_id = $cust_id;
+
+        return $this;
+    }
+
+    /**
      * Set customer
      *
      * @param string $customer
@@ -625,11 +658,11 @@ class PatchPanelPortHistory
     /**
      * Set patchPanelPort
      *
-     * @param \Entities\PatchPanelPort $patchPanelPort
+     * @param PatchPanelPortEntities $patchPanelPort
      *
      * @return PatchPanelPortHistory
      */
-    public function setPatchPanelPort( PatchPanelPort $patchPanelPort = null ) {
+    public function setPatchPanelPort( PatchPanelPortEntities $patchPanelPort = null ) {
         $this->patchPanelPort = $patchPanelPort;
 
         return $this;
@@ -638,29 +671,20 @@ class PatchPanelPortHistory
     /**
      * Get patchPanelPort
      *
-     * @return \Entities\PatchPanelPort
+     * @return PatchPanelPortEntities
      */
     public function getPatchPanelPort() {
-        return $this->patchPanelPort;
-    }
-
-    /**
-     * Get patchPanelPort
-     *
-     * @return \Entities\PatchPanelPort
-     */
-    public function getPatchPanel() {
         return $this->patchPanelPort;
     }
     
     /**
      * Add duplexSlavePort
      *
-     * @param \Entities\PatchPanelPortHistory $duplexSlavePort
+     * @param PatchPanelPortHistoryEntity $duplexSlavePort
      *
      * @return PatchPanelPortHistory
      */
-    public function addDuplexSlavePort( PatchPanelPortHistory $duplexSlavePort ) {
+    public function addDuplexSlavePort( PatchPanelPortHistoryEntity $duplexSlavePort ) {
         $this->duplexSlavePorts[] = $duplexSlavePort;
 
         return $this;
@@ -669,16 +693,16 @@ class PatchPanelPortHistory
     /**
      * Remove duplexSlavePort
      *
-     * @param \Entities\PatchPanelPortHistory $duplexSlavePort
+     * @param PatchPanelPortHistoryEntity $duplexSlavePort
      */
-    public function removeDuplexSlavePort( PatchPanelPortHistory $duplexSlavePort ) {
+    public function removeDuplexSlavePort( PatchPanelPortHistoryEntity $duplexSlavePort ) {
         $this->duplexSlavePorts->removeElement( $duplexSlavePort );
     }
 
     /**
      * Get duplexSlavePorts
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getDuplexSlavePorts() {
         return $this->duplexSlavePorts;
@@ -687,11 +711,11 @@ class PatchPanelPortHistory
     /**
      * Set duplexMasterPort
      *
-     * @param \Entities\PatchPanelPortHistory $duplexMasterPort
+     * @param PatchPanelPortHistoryEntity $duplexMasterPort
      *
      * @return PatchPanelPortHistory
      */
-    public function setDuplexMasterPort( PatchPanelPortHistory $duplexMasterPort = null ) {
+    public function setDuplexMasterPort( PatchPanelPortHistoryEntity $duplexMasterPort = null ) {
         $this->duplexMasterPort = $duplexMasterPort;
 
         return $this;
@@ -700,7 +724,7 @@ class PatchPanelPortHistory
     /**
      * Get duplexMasterPort
      *
-     * @return \Entities\PatchPanelPortHistory
+     * @return PatchPanelPortHistoryEntity
      */
     public function getDuplexMasterPort() {
         return $this->duplexMasterPort;
@@ -753,11 +777,11 @@ class PatchPanelPortHistory
     /**
      * Add patchPanelPortHistoryFile
      *
-     * @param \Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFile
+     * @param PatchPanelPortHistoryFileEntity $patchPanelPortHistoryFile
      *
      * @return PatchPanelPortHistory
      */
-    public function addPatchPanelPortHistoryFile( PatchPanelPortHistoryFile $patchPanelPortHistoryFile ) {
+    public function addPatchPanelPortHistoryFile( PatchPanelPortHistoryFileEntity $patchPanelPortHistoryFile ) {
         $this->patchPanelPortHistoryFiles[] = $patchPanelPortHistoryFile;
         return $this;
     }
@@ -765,9 +789,9 @@ class PatchPanelPortHistory
     /**
      * Remove patchPanelPortHistoryFile
      *
-     * @param \Entities\PatchPanelPortHistoryFile $patchPanelPortHistoryFile
+     * @param PatchPanelPortHistoryFileEntity $patchPanelPortHistoryFile
      */
-    public function removePatchPanelPortHistoryFile( PatchPanelPortHistoryFile $patchPanelPortHistoryFile ) {
+    public function removePatchPanelPortHistoryFile( PatchPanelPortHistoryFileEntity $patchPanelPortHistoryFile ) {
         $this->patchPanelPortHistoryFiles->removeElement( $patchPanelPortHistoryFile );
     }
 
@@ -775,7 +799,7 @@ class PatchPanelPortHistory
     /**
      * Get patchPanelPortHistoryFiles
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getPatchPanelPortHistoryFile() {
         return $this->patchPanelPortHistoryFiles;
@@ -786,29 +810,32 @@ class PatchPanelPortHistory
      * Populate this history entity with details from a patch panel port.
      *
      * @param PatchPanelPort $ppp
+     *
      * @return PatchPanelPortHistory
+     *
+     * @throws
      */
     public function setFromPatchPanelPort( PatchPanelPort $ppp ): PatchPanelPortHistory {
 
         return $this->setPatchPanelPort( $ppp )
-            ->setDescription( $ppp->getDescription() )
-            ->setNumber( $ppp->getNumber() )
-            ->setState( $ppp->getState() )
-            ->setColoCircuitRef( $ppp->getColoCircuitRef() )
-            ->setColoBillingRef( $ppp->getColoBillingRef() )
-            ->setTicketRef( $ppp->getTicketRef() )
-            ->setNotes( $ppp->getNotes() )
-            ->setPrivateNotes( $ppp->getPrivateNotes() )
-            ->setAssignedAt( $ppp->getAssignedAt() )
-            ->setConnectedAt( $ppp->getConnectedAt() )
-            ->setCeaseRequestedAt( $ppp->getCeaseRequestedAt() )
-            ->setCeasedAt( $ppp->getCeasedAt() ? $ppp->getCeasedAt() : new \DateTime )
-            ->setInternalUse( $ppp->getInternalUse() )
-            ->setChargeable( $ppp->getChargeable() )
-            ->setOwnedBy( $ppp->getOwnedBy() )
-            ->setCustomer( $ppp->getCustomer() ? $ppp->getCustomer()->getName() : '' )
-            ->setSwitchport( $ppp->getSwitchPort() ? $ppp->getSwitchPort()->getSwitcher()->getName() . '::' . $ppp->getSwitchPort()->getName() : '' );
+                    ->setDescription( $ppp->getDescription() )
+                    ->setNumber( $ppp->getNumber() )
+                    ->setState( $ppp->getState() )
+                    ->setColoCircuitRef( $ppp->getColoCircuitRef() )
+                    ->setColoBillingRef( $ppp->getColoBillingRef() )
+                    ->setTicketRef( $ppp->getTicketRef() )
+                    ->setNotes( $ppp->getNotes() )
+                    ->setPrivateNotes( $ppp->getPrivateNotes() )
+                    ->setAssignedAt( $ppp->getAssignedAt() )
+                    ->setConnectedAt( $ppp->getConnectedAt() )
+                    ->setCeaseRequestedAt( $ppp->getCeaseRequestedAt() )
+                    ->setCeasedAt( $ppp->getCeasedAt() ? $ppp->getCeasedAt() : new DateTime )
+                    ->setInternalUse( $ppp->getInternalUse() )
+                    ->setChargeable( $ppp->getChargeable() )
+                    ->setOwnedBy( $ppp->getOwnedBy() )
+                    ->setCustId( $ppp->getCustomer() ? $ppp->getCustomer()->getId() : null )
+                    ->setCustomer( $ppp->getCustomer() ? $ppp->getCustomer()->getName() : '' )
+                    ->setSwitchport( $ppp->getSwitchPort() ? $ppp->getSwitchPort()->getSwitcher()->getName() . '::' . $ppp->getSwitchPort()->getName() : '' );
     }
-
 
 }

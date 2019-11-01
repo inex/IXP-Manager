@@ -257,17 +257,6 @@ class CoreBundle extends \Entities\CoreBundle implements \Doctrine\ORM\Proxy\Pro
     /**
      * {@inheritDoc}
      */
-    public function resolveType(): string
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveType', []);
-
-        return parent::resolveType();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getGraphTitle()
     {
 
