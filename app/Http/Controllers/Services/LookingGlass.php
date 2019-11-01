@@ -68,7 +68,7 @@ class LookingGlass extends Controller
 {
     /**
      * the LookingGlass
-     * @var \IXP\Contracts\LookingGlass
+     * @var LookingGlassContract
      */
     private $lg = null;
 
@@ -81,23 +81,29 @@ class LookingGlass extends Controller
 
     /**
      * Constructor
+     * @param Request $request
      */
-    public function __construct( Request $request ) {
+    public function __construct( Request $request )
+    {
         // NB: Construtcor happens before middleware...
         $this->request = $request;
     }
 
     /**
      * Looking glass accessor
-     * @return \IXP\Contracts\LookingGlass
+     *
+     * @return LookingGlassContract
+     *
+     * @throws
      */
-    private function lg(): LookingGlassContract {
-        if( $this->lg === null ){
-            $this->lg = $this->request()->attributes->get('lg');
+    private function lg(): LookingGlassContract
+    {
+        if( $this->lg === null ) {
+            $this->lg = $this->request()->attributes->get('lg' );
 
             // if there's no graph then the middleware went wrong... safety net:
-            if( $this->lg === null ){
-                throw new LookingGlassGeneralException('Middleware could not load looking glass but did not throw a 404');
+            if( $this->lg === null ) {
+                throw new LookingGlassGeneralException('Middleware could not load looking glass but did not throw a 404' );
             }
         }
         return $this->lg;
@@ -105,6 +111,7 @@ class LookingGlass extends Controller
 
     /**
      * Request accessor
+     *
      * @return Request
      */
     private function request(): Request {
@@ -113,22 +120,34 @@ class LookingGlass extends Controller
 
     /**
      * Add view parameters common for all requests.
+     *
      * @param View $view
+     *
+     * @return View
+     *
+     * @throws
      */
-    private function addCommonParams( View $view ): View {
+    private function addCommonParams( View $view ): View
+    {
         $view->with( 'status',  json_decode( $this->lg()->status() ) );
         $view->with( 'lg',      $this->lg() );
         $view->with( 'routers', D2EM::getRepository( RouterEntity::class )->makeRouterDropdown(
+            Auth::check() ? Auth::user()->getCustomer() : null, Auth::check() ? Auth::user() : null ) );
+        $view->with( 'tabRouters', D2EM::getRepository( RouterEntity::class )->makeRouterTab(
             Auth::check() ? Auth::user()->getCustomer() : null, Auth::check() ? Auth::user() : null ) );
         return $view;
     }
 
 
-    public function index(): View {
-        return app()->make('view')->make('services/lg/index')->with([
-            'lg'      => false,
-            'routers' => D2EM::getRepository( RouterEntity::class )->makeRouterDropdown(
+    public function index(): View
+    {
+        return app()->make('view' )->make('services/lg/index' )->with([
+            'lg'            => false,
+            'routers'       => D2EM::getRepository( RouterEntity::class )->makeRouterDropdown(
                 Auth::check() ? Auth::user()->getCustomer() : null, Auth::check() ? Auth::user() : null ),
+            'tabRouters'    => D2EM::getRepository( RouterEntity::class )->makeRouterTab(
+                Auth::check() ? Auth::user()->getCustomer() : null, Auth::check() ? Auth::user() : null )
+
         ]);
     }
 
@@ -136,38 +155,60 @@ class LookingGlass extends Controller
      * Returns the router's status as JSON
      *
      * @param string $handle
-     * @return \Illuminate\Http\Response JSON of status
+     *
+     * @return Response JSON of status
+     *
+     * @throws
      */
-    public function status( string $handle ): Response {
+    public function status( string $handle ): Response
+    {
         // get the router status
         return response()
             ->make( $this->lg()->status() )
-            ->header('Content-Type', 'application/json');
+            ->header('Content-Type', 'application/json' );
     }
 
     /**
      * Returns the router's "bgp summary" as JSON
      *
      * @param string $handle
-     * @return \Illuminate\Http\Response JSON of status
+     * @return Response JSON of status
+     *
+     * @throws
      */
-    public function bgpSummaryApi( string $handle ): Response {
+    public function bgpSummaryApi( string $handle ): Response
+    {
         // get the router status
         return response()
             ->make( $this->lg()->bgpSummary() )
             ->header('Content-Type', 'application/json');
     }
 
-    public function bgpSummary( string $handle ): View {
+    /**
+     * @param string $handle
+     *
+     * @return View
+     *
+     * @throws
+     */
+    public function bgpSummary(string $handle ): View
+    {
         // get bgp protocol summary
-        $view = app()->make('view')->make('services/lg/bgp-summary')->with([
+        $view = app()->make('view' )->make('services/lg/bgp-summary' )->with([
             'content' => json_decode( $this->lg()->bgpSummary() ),
         ]);
-        return $this->addCommonParams($view);
+
+        return $this->addCommonParams( $view );
     }
 
-    public function routesForTable( string $handle, string $table ) {
-
+    /**
+     * @param string $handle
+     * @param string $table
+     * @return \Illuminate\Http\RedirectResponse|\Illuminate\Routing\Redirector|View
+     * @throws
+     */
+    public function routesForTable( string $handle, string $table )
+    {
         $tooManyRoutesMsg = "The routing table <code>{$table}</code> has too many routes to display in the web interface. Please use "
             . "<a href=\"" . route( 'lg::route-search', [ 'handle' => $this->lg()->router()->handle() ] )
             . "\">the route search tool</a> to query this table.";
@@ -192,34 +233,76 @@ class LookingGlass extends Controller
         return $this->addCommonParams($view);
     }
 
-    public function routesForProtocol( string $handle, string $protocol ): View {
+    /**
+     * @param string $handle
+     * @param string $protocol
+     *
+     * @return View
+     *
+     * @throws
+     */
+    public function routesForProtocol( string $handle, string $protocol ): View
+    {
         // get bgp protocol summary
-        $view = app()->make('view')->make('services/lg/routes')->with([
+        $view = app()->make('view' )->make('services/lg/routes' )->with([
             'content' => json_decode( $this->lg()->routesForProtocol($protocol) ),
             'source' => 'protocol', 'name' => $protocol
         ]);
-        return $this->addCommonParams($view);
+        return $this->addCommonParams( $view );
     }
 
-    public function routesForExport( string $handle, string $protocol ): View {
+    /**
+     * @param string $handle
+     * @param string $protocol
+     *
+     * @return View
+     *
+     * @throws
+     */
+    public function routesForExport(string $handle, string $protocol ): View
+    {
         // get bgp protocol summary
-        $view = app()->make('view')->make('services/lg/routes')->with([
-            'content' => json_decode( $this->lg()->routesForExport($protocol) ),
+        $view = app()->make('view' )->make('services/lg/routes' )->with([
+            'content' => json_decode( $this->lg()->routesForExport( $protocol ) ),
             'source' => 'export to protocol', 'name' => $protocol
         ]);
-        return $this->addCommonParams($view);
+        return $this->addCommonParams( $view );
     }
 
-    public function routeProtocol( string $handle, string $network, string $mask, string $protocol ): View {
-        return app()->make('view')->make('services/lg/route')->with([
-            'content' => json_decode( $this->lg()->protocolRoute($protocol,$network,intval($mask)) ),
+
+    /**
+     * @param string $handle
+     * @param string $network
+     * @param string $mask
+     * @param string $protocol
+     *
+     * @return View
+     *
+     * @throws
+     */
+    public function routeProtocol(string $handle, string $network, string $mask, string $protocol ): View
+    {
+        return app()->make('view' )->make('services/lg/route' )->with([
+            'content' => json_decode( $this->lg()->protocolRoute( $protocol, $network, intval( $mask ) ) ),
             'source'  => 'protocol',
             'name'    => $protocol,
-            'net' => urldecode($network.'/'.$mask),
+            'lg'      => $this->lg(),
+            'net' => urldecode( $network.'/'.$mask ),
         ]);
     }
 
-    public function routeTable( string $handle, string $network, string $mask, string $table ): View {
+    /**
+     * @param string $handle
+     * @param string $network
+     * @param string $mask
+     * @param string $table
+     *
+     * @return View
+     *
+     * @throws
+     */
+    public function routeTable( string $handle, string $network, string $mask, string $table ): View
+    {
         return app()->make('view')->make('services/lg/route')->with([
             'content' => json_decode( $this->lg()->protocolTable($table,$network,intval($mask)) ),
             'source'  => 'table',
@@ -229,20 +312,42 @@ class LookingGlass extends Controller
         ]);
     }
 
-    public function routeExport( string $handle, string $network, string $mask, string $protocol ): View {
-        return app()->make('view')->make('services/lg/route')->with([
-            'content' => json_decode( $this->lg()->exportRoute($protocol,$network,(int)$mask) ),
+    /**
+     * @param string $handle
+     * @param string $network
+     * @param string $mask
+     * @param string $protocol
+     *
+     * @return View
+     *
+     * @throws
+     */
+    public function routeExport(string $handle, string $network, string $mask, string $protocol ): View
+    {
+        return app()->make('view' )->make('services/lg/route' )->with([
+            'content' => json_decode( $this->lg()->exportRoute( $protocol, $network, (int)$mask ) ),
             'source'  => 'export',
             'name'    => $protocol,
-            'net' => urldecode($network.'/'.$mask),
+            'lg'      => $this->lg(),
+            'net' => urldecode( $network.'/'.$mask ),
         ]);
     }
 
-    public function routeSearch( string $handle ): View {
-        $view = app()->make('view')->make('services/lg/route-search')->with( [
+
+    /**
+     * @param string $handle
+     *
+     * @return View
+     *
+     * @throws
+     */
+    public function routeSearch(string $handle ): View
+    {
+        $view = app()->make('view' )->make('services/lg/route-search' )->with( [
             'content' => json_decode( $this->lg()->symbols() ),
         ]);
-        return $this->addCommonParams($view);
+
+        return $this->addCommonParams( $view );
     }
 
 }

@@ -45,7 +45,9 @@ class SwitchController extends Controller {
     /**
      * Get all switch ports for a given switch
      *
-     * @param   Request $request Instance of the current HTTP request
+     * @param Request $request Instance of the current HTTP request
+     * @param int $id
+     *
      * @return  JsonResponse Ports
      */
     public function ports( Request $request, int $id ) {
@@ -56,22 +58,28 @@ class SwitchController extends Controller {
      * Get the switch port for a Switch for patch panel port
      *
      * @params  $request instance of the current HTTP request
+     * @param Request $request
+     * @param int $id
+     *
      * @return  JSON array of listPort
      */
     public function switchPortForPPP( Request $request, int $id) {
-        $listPorts = D2EM::getRepository(SwitcherEntity::class)->getAllPortsForPPP($id ,$request->input('custId'), $request->input('spId'));
-        return response()->json(['listPorts' => $listPorts]);
+        $listPorts = D2EM::getRepository(SwitcherEntity::class )->getAllPortsForPPP( $id ,$request->input('custId' ), $request->input('spId' ) );
+        return response()->json( [ 'listPorts' => $listPorts ] );
     }
 
     /**
      * Get the Prewired switch port for a Switch
      *
      * @params  $request instance of the current HTTP request
+     * @param Request $request
+     * @param int $id
+     *
      * @return  JSON array of listPort
      */
-    public function switchPortPrewired( Request $request, int $id) {
-        $listPorts = D2EM::getRepository(SwitcherEntity::class)->getAllPortsPrewired($id ,$request->input('spId'));
-        return response()->json(['listPorts' => $listPorts]);
+    public function switchPortPrewired( Request $request, int $id ) {
+        $listPorts = D2EM::getRepository(SwitcherEntity::class )->getAllPortsPrewired( $id ,$request->input('spId' ) );
+        return response()->json( [ 'listPorts' => $listPorts ] );
     }
 
     /**
@@ -81,9 +89,9 @@ class SwitchController extends Controller {
      * @param   int     $id      switch ID
      * @return  JsonResponse JSON array of listPort
      */
-    public function switchPort( Request $request, int $id) {
-        $listPorts = D2EM::getRepository(SwitcherEntity::class)->getAllPorts($id ,[SwitchPortEntity::TYPE_CORE,SwitchPortEntity::TYPE_UNSET], $request->input('spIdsexcluded'), true );
-        return response()->json(['listPorts' => $listPorts]);
+    public function switchPort( Request $request, int $id ) {
+        $listPorts = D2EM::getRepository(SwitcherEntity::class )->getAllPorts( $id ,[ SwitchPortEntity::TYPE_CORE,SwitchPortEntity::TYPE_UNSET ], $request->input('spIdsExcluded' ), true );
+        return response()->json( [ 'listPorts' => $listPorts ] );
     }
 
 

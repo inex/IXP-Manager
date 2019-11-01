@@ -219,4 +219,56 @@ class Router extends EntityRepository
         return $dd;
     }
 
+
+    /**
+     * Gather the data for looking glass tabs
+     *
+     * This is the tabs on the top of the IXP Manager looking glass interface.
+     *
+     * @param CustomerEntity $customer
+     * @param UserEntity $user
+     * @return array
+     */
+    public function makeRouterTab( $customer = null, $user = null ): array {
+
+        $tabs = $list =[];
+
+        foreach( $this->findAll() as $r ) {
+            $list[ $r->getVlan()->getInfrastructure()->getId() ][] = $r;
+        }
+
+        /** @var RouterEntity $r */
+        foreach( $list as $key => $routers ) {
+            foreach ( $routers as $r ){
+                if( !$r->hasApi() ) {
+                    continue;
+                }
+
+                if( !$r->authorise( $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC )  ) {
+                    continue;
+                }
+
+                if( $r->quarantine() ) {
+                    if( !$user ) {
+                        continue;
+                    }
+
+                    if( !$user->isSuperUser() && !$customer->hasInterfacesInQuarantine() ) {
+                        continue;
+                    }
+                }
+
+                $tabs[ $r->getVlan()->getInfrastructure()->getName() ][ $r->getProtocol() ][] = [ 'handle' => $r->getHandle() , 'name' => $r->getName(), 'last-updated' => $r->getLastUpdated() ];
+
+            }
+
+        }
+
+        foreach( $tabs as $infra => $protocol){
+            ksort($tabs[ $infra ] );
+        }
+
+        return $tabs;
+    }
+
 }
