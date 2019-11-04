@@ -64,10 +64,10 @@ class PatchPanelPortHistory extends EntityRepository
         return $this->getEntityManager()->createQuery(
             "SELECT ppph
                     FROM \\Entities\\PatchPanelPortHistory ppph
-                    WHERE ppph.customer = ?1
+                    WHERE ppph.cust_id = ?1
                         AND ppph.duplexMasterPort IS NULL"
         )
-            ->setParameter( 1, $c->getName() )
+            ->setParameter( 1, $c->getId() )
             ->getResult();
     }
 

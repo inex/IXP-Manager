@@ -42,10 +42,10 @@
                             <?= $t->ee( $ppph->getColoCircuitRef() ) ?>
                         </td>
                         <td>
-                            <?= $t->ee( $ppph->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?>
+                            <?= $t->ee( $ppph->getPatchPanelPort()->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?>
                         </td>
                         <td>
-                            <?= $t->ee( $ppph->getPatchPanel()->getCabinet()->getName() ) ?>
+                            <?= $t->ee( $ppph->getPatchPanelPort()->getPatchPanel()->getCabinet()->getName() ) ?>
                         </td>
                         <td>
                             <?= $ppph->getAssignedAtFormated() ?>
