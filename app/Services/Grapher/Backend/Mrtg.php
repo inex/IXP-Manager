@@ -217,8 +217,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
             }
         }
 
-        // include core switch ports.
-        // This is a slight hack as the template requires PhysicalInterfaces so we wrap core SwitchPorts in temporary PhyInts.
+        // core bundles
         foreach( $ixp->getInfrastructures() as $infra ) {
             foreach( $infra->getSwitchers() as $switch ) {
                 /** @var SwitcherEntity $switch */
@@ -261,24 +260,32 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                         }
                     }
                 }
+            }
+        }
 
+        // include core switch ports.
+        // This is a slight hack as the template requires PhysicalInterfaces so we wrap core SwitchPorts in temporary PhyInts.
+        foreach( $ixp->getInfrastructures() as $infra ) {
+            foreach( $infra->getSwitchers() as $switch ) {
+                /** @var SwitcherEntity $switch */
                 foreach( $switch->getPorts() as $sp ) {
                     /** @var SwitchPortEntity $sp */
                     if( $sp->isTypeCore() ) {
                         // this needs to be wrapped in a physical interface for the template
                         $pi = $this->wrapSwitchPortInPhysicalInterface( $sp, ++$maxPiID );
-                        $data['pis'][$pi->getId()] = $pi;
-                        $data['swports'][$switch->getId()][] = $pi->getId();
+                        $data[ 'pis' ][ $pi->getId() ] = $pi;
+                        $data[ 'swports' ][ $switch->getId() ][] = $pi->getId();
 
-                        if( !isset( $data['swports_maxbytes'][$switch->getId()] ) ) {
-                            $data['swports_maxbytes'][$switch->getId()] = 0;
+                        if( !isset( $data[ 'swports_maxbytes' ][ $switch->getId() ] ) ) {
+                            $data[ 'swports_maxbytes' ][ $switch->getId() ] = 0;
                         }
 
-                        $data['swports_maxbytes'][$switch->getId()] += ( ( $pi->resolveDetectedSpeed() > 0 ) ? $pi->resolveDetectedSpeed() : 1 ) * 1000000 / 8;
+                        $data[ 'swports_maxbytes' ][ $switch->getId() ] += ( ( $pi->resolveDetectedSpeed() > 0 ) ? $pi->resolveDetectedSpeed() : 1 ) * 1000000 / 8;
                     }
                 }
             }
         }
+
 
         return $data;
     }

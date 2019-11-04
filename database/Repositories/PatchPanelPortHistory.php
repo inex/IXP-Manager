@@ -55,24 +55,20 @@ class PatchPanelPortHistory extends EntityRepository
     /**
      * Return an array of the patch panel port history cross connected
      *
-     * @param $cid int The customer ID
+     * @param \Entities\Customer $c The customer
      *
      * @return array An array of all the  patch panel port entries
      */
-    public function getForCustomer( $cid )
+    public function getForCustomer( $c )
     {
-        $crossConnected = $this->getEntityManager()->createQuery(
+        return $this->getEntityManager()->createQuery(
             "SELECT ppph
                     FROM \\Entities\\PatchPanelPortHistory ppph
-                    LEFT JOIN ppph.patchPanelPort ppp
-                    WHERE ppp.customer = ?1
-                    AND ppp.duplexMasterPort IS NULL"
+                    WHERE ppph.customer = ?1
+                        AND ppph.duplexMasterPort IS NULL"
         )
-            ->setParameter( 1, $cid )
+            ->setParameter( 1, $c->getName() )
             ->getResult();
-
-
-        return $crossConnected;
     }
 
 }
