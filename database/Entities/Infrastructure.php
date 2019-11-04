@@ -335,7 +335,7 @@ class Infrastructure
     /**
      * @return string
      */
-    public function getCountry(): string
+    public function getCountry()
     {
         return $this->country;
     }

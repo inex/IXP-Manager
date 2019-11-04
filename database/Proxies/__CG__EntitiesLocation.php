@@ -488,7 +488,7 @@ class Location extends \Entities\Location implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function getCountry(): string
+    public function getCountry()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCountry', []);
@@ -499,7 +499,7 @@ class Location extends \Entities\Location implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setCountry(string $country): \Entities\Switcher
+    public function setCountry(string $country): \Entities\Location
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCountry', [$country]);
@@ -510,7 +510,7 @@ class Location extends \Entities\Location implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function getCity(): string
+    public function getCity()
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCity', []);
@@ -521,7 +521,7 @@ class Location extends \Entities\Location implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setCity(string $city): \Entities\Switcher
+    public function setCity(string $city): \Entities\Location
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCity', [$city]);

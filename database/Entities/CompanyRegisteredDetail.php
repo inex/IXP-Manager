@@ -278,20 +278,7 @@ class CompanyRegisteredDetail
      */
     public function getCountryName()
     {
-        $index = null;
-        foreach( Countries::getList() as $i => $value ){
-            if( $value[ 'iso_3166_2' ] == $this->getCountry() ){
-                $index = $i;
-
-            }
-        }
-
-        if( $index == null ){
-            return null;
-        } else{
-            return Countries::getList()[ $index ][ 'name' ];
-        }
-
+        return $this->country ? array_column( Countries::getList(), 'name', 'iso_3166_2')[ $this->getCountry() ] : null;
     }
 
     /**

@@ -19,6 +19,20 @@
             ->blockHelp( "A lowercase single word to represent the infrastructure." );
         ?>
 
+        <?= Former::select( 'country' )
+            ->label( 'Country' )
+            ->fromQuery( $t->data[ 'params'][ 'countries' ], 'name', 'iso_3166_2' )
+            ->placeholder( 'Choose a country' )
+            ->addClass( 'chzn-select' )
+            ->blockHelp( 'The country is shown in the <a
+                href="https://docs.ixpmanager.org/features/ixf-export/">IX-F Member
+                Export</a> for the IXP. For IXPs that span more than one country, this
+                should represent the head office / administrative location. Specific
+                city and country information can be added to the facility / location
+                entries which in turn will list the switch in the correct city / country
+                in the export.' );
+        ?>
+
         <?= Former::checkbox( 'primary' )
             ->label( '&nbsp;' )
             ->text( 'Primary Infrastructure' )
