@@ -198,6 +198,17 @@ class PatchPanelPortHistory extends \Entities\PatchPanelPortHistory implements \
     /**
      * {@inheritDoc}
      */
+    public function getPatchPanel(): \Entities\PatchPanel
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPatchPanel', []);
+
+        return parent::getPatchPanel();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setNumber($number)
     {
 
