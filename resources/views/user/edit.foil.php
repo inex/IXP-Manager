@@ -107,7 +107,7 @@ Users  / <?= $t->isAdd ? 'Add' : 'Edit' ?>
                                         <th>
                                             Action
 
-                                            <a class="btn btn-white btn-sm ml-2" href="<?= route( "customer-to-user@add" , [ "id" => $t->user->getEmail() ] ) ?>">
+                                            <a class="btn btn-white btn-sm ml-2" href="<?= route( "customer-to-user@add" , [ "email" => $t->user->getEmail() ] ) ?>">
                                                 <i class="fa fa-plus"></i>
                                             </a>
                                         </th>
