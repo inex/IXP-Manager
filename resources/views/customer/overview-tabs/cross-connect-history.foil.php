@@ -33,7 +33,7 @@
                     <tr>
                         <td>
                             <a href="<?= route( "patch-panel-port@view" , [ "id" => $ppph->getPatchPanelPort()->getId() ] ) ?>">
-                                <?= $t->ee($ppph->getPatchPanelPort()->getPatchPanel()->getName() ) ?>
+                                <?= $t->ee($ppph->getPatchPanelPort()->getPatchPanel()->getName() ) ?> ::
                                 <?= $t->ee( $ppph->getPatchPanelPort()->getName() ) ?>
                             </a>
                         </td>

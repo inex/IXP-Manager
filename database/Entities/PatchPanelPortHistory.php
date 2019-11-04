@@ -184,6 +184,17 @@ class PatchPanelPortHistory
         return $this->description ?? '';
     }
 
+
+    /**
+     * Get the patch panel
+     *
+     * @return PatchPanel
+     */
+    public function getPatchPanel(): PatchPanel
+    {
+        return $this->getPatchPanelPort()->getPatchPanel();
+    }
+
     /**
      * Set number
      *
