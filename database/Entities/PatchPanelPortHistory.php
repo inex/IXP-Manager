@@ -574,19 +574,19 @@ class PatchPanelPortHistory
     }
 
     /**
-     * @return int
+     * @return int|null
      */
-    public function getCustId(): int
+    public function getCustId(): ?int
     {
         return $this->cust_id;
     }
 
     /**
-     * @param int $cust_id
+     * @param int|null $cust_id
      *
      * @return PatchPanelPortHistory
      */
-    public function setCustId( int $cust_id )
+    public function setCustId( ?int $cust_id )
     {
         $this->cust_id = $cust_id;
 

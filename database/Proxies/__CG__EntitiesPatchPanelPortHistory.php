@@ -594,6 +594,28 @@ class PatchPanelPortHistory extends \Entities\PatchPanelPortHistory implements \
     /**
      * {@inheritDoc}
      */
+    public function getCustId(): ?int
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCustId', []);
+
+        return parent::getCustId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCustId(?int $cust_id)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCustId', [$cust_id]);
+
+        return parent::setCustId($cust_id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setCustomer($customer)
     {
 
@@ -681,17 +703,6 @@ class PatchPanelPortHistory extends \Entities\PatchPanelPortHistory implements \
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPatchPanelPort', []);
 
         return parent::getPatchPanelPort();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getPatchPanel()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPatchPanel', []);
-
-        return parent::getPatchPanel();
     }
 
     /**
