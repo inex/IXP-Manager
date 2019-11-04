@@ -33,7 +33,7 @@
                     <tr>
                         <td>
                             <a href="<?= route( "patch-panel-port@view" , [ "id" => $ppph->getPatchPanelPort()->getId() ] ) ?>">
-                                <?= $t->ee($ppph->getPatchPanelPort()->getPatchPanel()->getName() ) ?>
+                                <?= $t->ee($ppph->getPatchPanelPort()->getPatchPanel()->getName() ) ?> ::
                                 <?= $t->ee( $ppph->getPatchPanelPort()->getName() ) ?>
                             </a>
                         </td>
@@ -42,10 +42,10 @@
                             <?= $t->ee( $ppph->getColoCircuitRef() ) ?>
                         </td>
                         <td>
-                            <?= $t->ee( $ppph->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?>
+                            <?= $t->ee( $ppph->getPatchPanelPort()->getPatchPanel()->getCabinet()->getLocation()->getName() ) ?>
                         </td>
                         <td>
-                            <?= $t->ee( $ppph->getPatchPanel()->getCabinet()->getName() ) ?>
+                            <?= $t->ee( $ppph->getPatchPanelPort()->getPatchPanel()->getCabinet()->getName() ) ?>
                         </td>
                         <td>
                             <?= $ppph->getAssignedAtFormated() ?>
