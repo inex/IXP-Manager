@@ -90,6 +90,8 @@ class AdminController extends Controller
             $byLan           = [];
             $byIxp           = [];
             $custsByLocation = [];
+            $custsByInfra    = [];
+            $peeringCusts    = [];
 
             foreach( $vis as $vi ) {
 
@@ -122,6 +124,17 @@ class AdminController extends Controller
                     $custsByLocation[ $location ]++;
                 }
 
+                if( !isset( $custsByInfra[ $infrastructure ] ) ) {
+                    $custsByInfra[ $infrastructure ] = [];
+                }
+
+                if( !in_array( $vi['customerid'], $custsByInfra[ $infrastructure ] ) ) {
+                    $custsByInfra[ $infrastructure ][] = $vi[ 'customerid' ];
+                }
+
+                if( !in_array( $vi['customerid'], $peeringCusts ) ) {
+                    $peeringCusts[] = $vi[ 'customerid' ];
+                }
 
                 if( !isset( $byLocation[ $vi['locationname'] ][ $vi['speed'] ] ) ) {
                     $byLocation[ $location ][ $vi[ 'speed' ] ] = 1;
@@ -150,6 +163,8 @@ class AdminController extends Controller
             $cTypes['byLocation']       = $byLocation;
             $cTypes['byLan']            = $byLan;
             $cTypes['byIxp']            = $byIxp;
+            $cTypes['custsByInfra']     = $custsByInfra;
+            $cTypes['peeringCusts']     = $peeringCusts;
 
             $cTypes['rsUsage']          = D2EM::getRepository( VlanInterfaceEntity::class )->getRsClientUsagePerVlan();
             $cTypes['ipv6Usage']        = D2EM::getRepository( VlanInterfaceEntity::class )->getIPv6UsagePerVlan();
