@@ -852,6 +852,17 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function is2FARequired()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2FARequired', []);
+
+        return parent::is2FARequired();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getAuthIdentifier()
     {
 

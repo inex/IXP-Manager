@@ -141,17 +141,31 @@
             ?>
 
             <?php if( Auth::getUser()->getPasswordSecurity() && Auth::getUser()->getPasswordSecurity()->isGoogle2faEnable() ): ?>
-                <?= Former::actions(
-                    Former::primary_submit( 'Delete 2FA' )->id( "btn-delete2fa" ),
-                    Former::primary_submit( 'Get 2FA QRcode' )->id( "btn-enable-2fa" )
-                );
-                ?>
+
+                <?php if( Auth::getUser()->isSuperUser() && config( "google2fa.superuser_required" ) ): ?>
+
+                    <?= Former::actions(
+                        Former::primary_submit( 'Reset 2FA' )->id( "btn-reset2fa" ),
+                        Former::primary_submit( 'Get 2FA QRcode' )->id( "btn-enable-2fa" )
+                    );
+                    ?>
+
+                <?php else: ?>
+
+                    <?= Former::actions(
+                        Former::primary_submit( 'Delete 2FA' )->id( "btn-delete2fa" ),
+                        Former::primary_submit( 'Reset 2FA' )->id( "btn-reset2fa" ),
+                        Former::primary_submit( 'Get 2FA QRcode' )->id( "btn-enable-2fa" )
+                    );
+                    ?>
+
+                <?php endif; ?>
+
 
                 <?= Former::hidden( 'id' )
                     ->value( Auth::getUser()->getPasswordSecurity()->getId() )
                 ?>
             <?php else: ?>
-
                 <?= Former::actions(
                     Former::primary_submit( 'Enable 2FA' )->id( "btn-enable-2fa" )
                 );

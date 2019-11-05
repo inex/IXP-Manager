@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Hash, Redirect, Session;
+use D2EM, Hash, Redirect, Session, Str;
 
 use Entities\{
     PasswordSecurity    as PasswordSecurityEntity,
@@ -63,21 +63,42 @@ class SecurityPasswordController extends Controller
      * Display the 2FA validation form via the profil page
      *
      * @param Request $request
+     * @param bool $reset
      *
-     * @return View
+     * @return View|RedirectResponse
      */
-    public function show2faForm( Request $request )
+    public function show2faForm( Request $request, bool $reset = false )
     {
         /** @var UserEntity $user */
         $user = $request->user();
 
+        // If we need to reset the 2FA
+        if( $reset ){
+            if( !$user->getPasswordSecurity() || !$user->getPasswordSecurity()->isGoogle2faEnable() ) {
+                AlertContainer::push( 'Action Impossible', Alert::DANGER );
+                return Redirect::to( request()->headers->get( 'referer', "" ) );
+            }
+
+            // Delete the actual password security object
+            $this->delete2faObject( $user->getPasswordSecurity() );
+
+            // logout the user via 2FA authenticator
+            $this->login2FAAutenticator( $request, false );
+
+            D2EM::refresh( $user );
+        }
+
+        $request->session()->put( "ixp_2fa_valid_pass", Str::random( 30 ) );
+
+        // generate the qrcode
         $qrCodeImg = $this->generateQRcode( $user );
 
-        return view('google2fa/qr-code-form')->with([
+        return view( 'google2fa/qr-code-form' )->with( [
             'user'          => $user,
             'qrCodeImg'     => $qrCodeImg,
             'ps'            => $user->getPasswordSecurity(),
-        ]);
+            'ixp2faToken'   => $request->session()->get( "ixp_2fa_valid_pass" )
+        ] );
 
     }
 
@@ -88,25 +109,28 @@ class SecurityPasswordController extends Controller
      *
      * @return RedirectResponse|View
      */
-    public function superuserVerification( Request $request ) {
-
+    public function superuserVerification( Request $request )
+    {
+        /** @var UserEntity $user */
         $user = $request->user();
 
         if( $user->is2FARequired() ) {
-            Session::put( "2fa-". $request->user()->getId() , true );
+            $request->session()->put( "2fa-" . $request->user()->getId(), true );
+
+            $request->session()->put( "ixp_2fa_valid_pass", Str::random( 30 ) );
 
             $qrCodeImg = $this->generateQRcode( $user );
 
-            return view('google2fa/qr-code-form')->with([
+            return view( 'google2fa/qr-code-form' )->with( [
                 'user'          => $user,
                 'qrCodeImg'     => $qrCodeImg,
                 'ps'            => $user->getPasswordSecurity(),
-            ]);
+                'ixp2faToken'   => $request->session()->get( "ixp_2fa_valid_pass" )
+            ] );
         }
 
         return redirect( "" );
     }
-
 
     /**
      * Check if the user password is correct
@@ -117,15 +141,11 @@ class SecurityPasswordController extends Controller
      */
     public function checkPassword( Request $request )
     {
-        /** @var UserEntity $user */
-        $user = $request->user();
-
-        if( !Hash::check( $request->input( 'pass' ), $user->getPassword() ) ) {
-            AlertContainer::push( 'Incorrect password entered', Alert::DANGER );
+        if( !$this->isValidPassword( $request ) ){
             return Redirect::to( route( "profile@edit" ) );
         }
 
-        return $this->show2faForm( $request );
+        return $this->show2faForm( $request, false );
     }
 
     /**
@@ -137,9 +157,9 @@ class SecurityPasswordController extends Controller
      *
      * @throws
      */
-    public function generateQRcode( UserEntity $user ) : String
+    public function generateQRcode( UserEntity $user ): String
     {
-        $google2fa = app('pragmarx.google2fa');
+        $google2fa = app( 'pragmarx.google2fa' );
 
         // If user doesnot have any PasswordSecurity
         if( !$user->getPasswordSecurity() ) {
@@ -162,7 +182,7 @@ class SecurityPasswordController extends Controller
 
         // Generate the QR Code based on the user data
         $qrCodeImg = $google2fa->getQRCodeInline(
-            config('identity.titlename' ),
+            config( 'identity.titlename' ),
             $user->getEmail(),
             $user->getPasswordSecurity()->getGoogle2faSecret()
         );
@@ -184,19 +204,14 @@ class SecurityPasswordController extends Controller
         /** @var UserEntity $user */
         $user = $request->user();
 
-        $google2fa = app('pragmarx.google2fa');
-
-        // Replace white space if any
-        $code = str_replace(' ', '', $request->input('one_time_password' ) );
-
-        // If the one time password is not valid
-        if( !$google2fa->verifyKey( $user->getPasswordSecurity()->getGoogle2faSecret(), $code ) ) {
-            AlertContainer::push( "Invalid Verification Code, Please try again.", Alert::DANGER );
-
-            // Reset the input
-            $request->merge( ['one_time_password' => ''] );
-
+        if( !$this->testOneTimePassword( $request ) ){
             return $this->show2faForm( $request );
+        }
+
+
+        if( $request->input( "ixp-2fa-token" ) != $request->session() ->get( "ixp_2fa_valid_pass" ) ) {
+            AlertContainer::push( "Action not allowed.", Alert::DANGER );
+            return Redirect::to( route( "profile@edit" ) );
         }
 
         // Enable the 2FA
@@ -204,8 +219,7 @@ class SecurityPasswordController extends Controller
         D2EM::flush();
 
         // Authenticate the user via 2FA as the code is valid
-        $authenticator = app(Google2FAAuthenticator::class)->boot( $request );
-        $authenticator->login();
+        $this->login2FAAutenticator( $request, true );
 
         AlertContainer::push( "2FA is Enabled Successfully.", Alert::SUCCESS );
 
@@ -229,18 +243,17 @@ class SecurityPasswordController extends Controller
      */
     public function delete2fa( Request $request ): RedirectResponse
     {
+        if( !$this->isValidPassword( $request ) ){
+            return Redirect::to( request()->headers->get( 'referer', "" ) );
+        }
+
         /** @var UserEntity $user */
         $user = $request->user();
-
-        if( !( Hash::check( $request->get('pass'), $user->getPassword() ) ) ) {
-            AlertContainer::push( 'Incorrect password entered', Alert::DANGER );
-            return Redirect::to( request()->headers->get('referer', "" ) );
-        }
 
         /** @var PasswordSecurityEntity $ps */
         if( $user->isSuperUser() ) {
             if( !( $ps = D2EM::getRepository( PasswordSecurityEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404, 'Password Security not found');
+                abort( 404, 'Password Security not found' );
             }
         } else {
             // Get the PasswordSecurity object of the logged user
@@ -252,19 +265,127 @@ class SecurityPasswordController extends Controller
 
         // If the password security is not null and it password security is enable we can delete
         if( $ps && $ps->isGoogle2faEnable() ) {
-            D2EM::remove( $ps );
-            D2EM::flush();
+            $this->delete2faObject( $ps );
             AlertContainer::push( '2FA is now deleted', Alert::SUCCESS );
         }
 
         // If the logged user delete his own Password Security then logout the 2FAAuthenticator
         if( $user->getId() == $psUser->getId() ) {
             // Log out the user via 2fa
-            $authenticator = app(Google2FAAuthenticator::class)->boot( $request );
-            $authenticator->logout();
+            $this->login2FAAutenticator( $request, false );
         }
 
         // Redirect where the action have been triggered
-        return Redirect::to( request()->headers->get('referer', "" ) );
+        return Redirect::to( request()->headers->get( 'referer', "" ) );
+    }
+
+
+    /**
+     * Reset a password security object
+     *
+     * @param Request $request
+     *
+     * @return View|RedirectResponse
+     */
+    public function reset2fa( Request $request )
+    {
+        if( !$this->isValidPassword( $request ) ){
+            return Redirect::to( route( "profile@edit" ) );
+        }
+
+        return $this->show2faForm( $request, true );
+    }
+
+    /**
+     * Test if a one time code password is valid for the password security object
+     *
+     * @param Request $request
+     *
+     * @return RedirectResponse|View
+     */
+    public function testCode2fa( Request $request )
+    {
+        if( $this->testOneTimePassword( $request ) ){
+            AlertContainer::push( 'Your code is valid', Alert::SUCCESS );
+        }
+
+        return $this->show2faForm( $request );
+    }
+
+
+    /**
+     * Test if yhe one time password is valid
+     *
+     * @param Request $request
+     *
+     * @return bool
+     *
+     * @throws
+     */
+    private function testOneTimePassword( Request $request )
+    {
+        $google2fa = app( 'pragmarx.google2fa' );
+
+        // Replace white space if any
+        $code = str_replace( ' ', '', $request->input( 'one_time_password' ) );
+
+        // Reset the input
+        $request->merge( [ 'one_time_password' => '' ] );
+
+        // If the one time password is not valid
+        if( !$google2fa->verifyKey( $request->user()->getPasswordSecurity()->getGoogle2faSecret(), $code ) ) {
+            AlertContainer::push( "Invalid Verification Code, Please try again.", Alert::DANGER );
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * Check if the user password is valid
+     *
+     * @param Request $request
+     * @return Bool|RedirectResponse
+     */
+    private function isValidPassword( Request $request )
+    {
+        if( !Hash::check( $request->input( 'pass' ), $request->user()->getPassword() ) ) {
+            AlertContainer::push( 'Incorrect password entered', Alert::DANGER );
+            return false;
+        }
+
+        $request->session()->put( "ixp_2fa_valid_pass", Str::random( 30 ) );
+
+        return true;
+    }
+
+    /**
+     * Delete the password security object
+     *
+     * @param $ps
+     *
+     * @return bool
+     */
+    private function delete2faObject( $ps ){
+        D2EM::remove( $ps );
+        D2EM::flush();
+
+        return true;
+    }
+
+    /**
+     * Login or logout via the 2FA authenticator
+     *
+     * @param $request
+     * @param bool $login
+     *
+     * @return bool
+     */
+    private function login2FAAutenticator( $request, bool $login = true )
+    {
+        $authenticator = app( Google2FAAuthenticator::class )->boot( $request );
+        $login ? $authenticator->login() : $authenticator->logout();
+
+        return true;
     }
 }

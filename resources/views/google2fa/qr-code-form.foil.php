@@ -56,6 +56,10 @@ $this->layout( 'layouts/ixpv4' )
                                 ->label( 'Code' )
                             ?>
 
+                            <?= Former::hidden( 'ixp-2fa-token' )
+                                ->value( $t->ixp2faToken )
+                            ?>
+
                             <?= Former::actions(
                                 Former::primary_submit( 'Enable 2FA' )
                             );
@@ -65,6 +69,35 @@ $this->layout( 'layouts/ixpv4' )
                         </div>
 
                     <?php else: ?>
+
+                        <p>
+                            Test your code enter the 6-digit code you see in your authentificator app.
+                        </p>
+                        <br/>
+                        <div class="col-lg-6 mx-auto">
+                            <?= Former::open()
+                                ->method( 'post' )
+                                ->id( "password" )
+                                ->action( route ( "2fa@test-code" ) )
+                                ->customInputWidthClass( 'col-sm-6' )
+                                ->customLabelWidthClass( 'col-sm-3' )
+                                ->actionButtonsCustomClass( "grey-box")
+                                ->rules([
+                                    'verify-code'  => 'required|max:6',
+                                ])
+                            ?>
+
+                            <?= Former::text( 'one_time_password' )
+                                ->label( 'Code' )
+                            ?>
+
+                            <?= Former::actions(
+                                Former::primary_submit( 'Test my 2FA code' )
+                            );
+                            ?>
+
+                            <?= Former::close() ?>
+                        </div>
                         <div class="form-group col-sm-12">
                             <div class="bg-light p-4 mt-4 shadow-sm text-center col-lg-12">
                                 <a href="<?= route( "profile@edit" ) ?>" class="mb-2 mb-sm-0 btn-secondary btn">Go Back</a>

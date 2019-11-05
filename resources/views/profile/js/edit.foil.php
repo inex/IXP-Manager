@@ -13,8 +13,10 @@
         let btn_id = $(this).find("input[type=submit]:focus" ).attr( "id" );
         let url = "<?= route( "2fa@check-password" ) ?>";
 
-        if( btn_id == "btn-delete2fa") {
+        if( btn_id == "btn-delete2fa" ) {
             url = "<?= route( "2fa@delete" ) ?>";
+        } else if( btn_id == "btn-reset2fa" ){
+            url = "<?= route( "2fa@reset" ) ?>";
         }
 
         $(this).attr( 'action', url );
