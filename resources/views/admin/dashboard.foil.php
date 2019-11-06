@@ -50,7 +50,43 @@
                     </table>
                 </div>
 
+                <?php if( count( $t->stats[ "custsByInfra" ] ) > 1 ): ?>
 
+                    <div class="tw-my-12">
+                        <h4 class="tw-mb-6"><?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?> by Infrastructure</h4>
+
+                        <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">
+                            <thead>
+                            <tr>
+                                <th>
+                                    Infrastructure
+                                </th>
+                                <th class="tw-text-right">
+                                    <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+                                </th>
+                                <th class="tw-text-right">
+                                    Percentage
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody class="tw-text-sm">
+                            <?php foreach( $t->stats[ "custsByInfra" ] as $infra => $custids  ): ?>
+                                <tr>
+                                    <td>
+                                        <?= $infra ?>
+                                    </td>
+                                    <td class="tw-text-right">
+                                        <?= count( $custids ) ?>
+                                    </td>
+                                    <td class="tw-text-right">
+                                        <?= round( (100.0 * count( $custids ) ) / count( $t->stats[ 'peeringCusts' ] ) ) ?>%
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endif; ?>
 
                 <?php if( count( $t->stats[ "custsByLocation" ] ) ): ?>
 
