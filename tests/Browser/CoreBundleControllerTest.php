@@ -25,13 +25,13 @@ namespace Tests\Browser;
 
 use D2EM;
 
-use Entities\{
-    CoreBundle          as CoreBundleEntity,
-    CoreInterface       as CoreInterfaceEntity,
-    CoreLink            as CoreLinkEntity,
-    PhysicalInterface   as PhysicalInterfaceEntity,
-    VirtualInterface    as VirtualInterfaceEntity
-};
+use Entities\{CoreBundle as CoreBundleEntity,
+    CoreInterface as CoreInterfaceEntity,
+    CoreLink as CoreLinkEntity,
+    PhysicalInterface as PhysicalInterfaceEntity,
+    Switcher as SwitcherEntity,
+    SwitchPort as SwitchPortEntity,
+    VirtualInterface as VirtualInterfaceEntity};
 
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
@@ -40,6 +40,21 @@ use Laravel\Dusk\Browser;
 class CoreBundleControllerTest extends DuskTestCase
 {
 
+    public function tearDown(): void
+    {
+        foreach( [ 51, 55 ] as $spid ) {
+            $sp = D2EM::getRepository( SwitchPortEntity::class )->find( $spid );
+            D2EM::refresh($sp);
+
+            if( $sp ) {
+                $sp->setType( SwitchPortEntity::TYPE_CORE );
+                D2EM::flush();
+            }
+
+        }
+
+        parent::tearDown();
+    }
     /**
      * A Dusk test example.
      *
@@ -543,8 +558,8 @@ class CoreBundleControllerTest extends DuskTestCase
 
                 $this->assertEquals( null, D2EM::getRepository( CoreBundleEntity::class )->findOneBy( [ 'id' => $cbid ] ) );
 
-            }
 
+            }
         });
     }
 }
