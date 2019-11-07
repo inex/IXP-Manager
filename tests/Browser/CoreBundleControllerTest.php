@@ -234,7 +234,8 @@ class CoreBundleControllerTest extends DuskTestCase
                     ->select( 'type', $type )
                     ->check( 'enabled' )
                     ->check( 'framing' )
-                    ->type(  'mtu', $coreBundle[ 'mtu' ] );
+                    ->type(  'mtu', $coreBundle[ 'mtu' ] )
+                    ->assertChecked( 'enabled' );
 
                 if( $type == CoreBundleEntity::TYPE_ECMP ) {
 
