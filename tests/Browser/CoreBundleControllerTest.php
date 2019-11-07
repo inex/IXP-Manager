@@ -233,7 +233,6 @@ class CoreBundleControllerTest extends DuskTestCase
                     ->type(     'preference',   $coreBundle[ 'preference1' ] )
                     ->select( 'type', $type )
                     ->check( 'enabled' )
-                    ->check( 'enabled' )
                     ->check( 'framing' )
                     ->type(  'mtu', $coreBundle[ 'mtu' ] );
 
