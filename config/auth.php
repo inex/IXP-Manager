@@ -61,7 +61,10 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
+            'expire' => 10080, // optional token expiration time, in minutes (7 days is the default)
         ],
+
+
 
         'api' => [
             'driver' => 'token',

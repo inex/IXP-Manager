@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "content-hash": "a9c79c1eba581dfe6491451f37c483ff",
+    "content-hash": "0581527a50d51887f198fd3688288c97",
     "packages": [
         {
             "name": "anahkiasen/former",
@@ -6182,6 +6182,52 @@
                 "laravel"
             ],
             "time": "2018-05-16T06:37:24+00:00"
+        },
+        {
+            "name": "wolfcast/browser-detection",
+            "version": "2.9.3",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/Wolfcast/BrowserDetection.git",
+                "reference": "9350b2d69aa8dfd2d526000bc0fb52a0baf611d2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/Wolfcast/BrowserDetection/zipball/9350b2d69aa8dfd2d526000bc0fb52a0baf611d2",
+                "reference": "9350b2d69aa8dfd2d526000bc0fb52a0baf611d2",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3.0"
+            },
+            "type": "library",
+            "autoload": {
+                "classmap": [
+                    "lib/BrowserDetection.php"
+                ]
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "LGPL-3.0-or-later"
+            ],
+            "authors": [
+                {
+                    "name": "Alexandre Valiquette",
+                    "homepage": "https://wolfcast.com/",
+                    "role": "Lead developer"
+                }
+            ],
+            "description": "The Wolfcast BrowserDetection PHP class facilitates the identification of the user's environment such as Web browser, version, platform family, platform version or if it's a mobile device or not.",
+            "homepage": "https://github.com/Wolfcast/BrowserDetection",
+            "keywords": [
+                "browser",
+                "detection",
+                "environment",
+                "mobile",
+                "platform",
+                "version"
+            ],
+            "time": "2019-03-27T20:01:00+00:00"
         },
         {
             "name": "zendesk/zendesk_api_client_php",

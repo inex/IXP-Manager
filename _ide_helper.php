@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 6.0.4 on 2019-10-18 10:31:13.
+ * Generated for Laravel 6.0.4 on 2019-11-12 09:56:48.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -1828,128 +1828,21 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function user()
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->user();
-        }
-        
-        /**
-         * Get the ID for the currently authenticated user.
-         *
-         * @return int|null 
-         * @static 
-         */ 
-        public static function id()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->id();
-        }
-        
-        /**
-         * Log a user into the application without sessions or cookies.
-         *
-         * @param array $credentials
-         * @return bool 
-         * @static 
-         */ 
-        public static function once($credentials = array())
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->once($credentials);
-        }
-        
-        /**
-         * Log the given user ID into the application without sessions or cookies.
-         *
-         * @param mixed $id
-         * @return \Entities\User|false 
-         * @static 
-         */ 
-        public static function onceUsingId($id)
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->onceUsingId($id);
-        }
-        
-        /**
-         * Validate a user's credentials.
-         *
-         * @param array $credentials
-         * @return bool 
-         * @static 
-         */ 
-        public static function validate($credentials = array())
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->validate($credentials);
-        }
-        
-        /**
-         * Attempt to authenticate using HTTP Basic Auth.
-         *
-         * @param string $field
-         * @param array $extraConditions
-         * @return \Symfony\Component\HttpFoundation\Response|null 
-         * @static 
-         */ 
-        public static function basic($field = 'email', $extraConditions = array())
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->basic($field, $extraConditions);
-        }
-        
-        /**
-         * Perform a stateless HTTP Basic login attempt.
-         *
-         * @param string $field
-         * @param array $extraConditions
-         * @return \Symfony\Component\HttpFoundation\Response|null 
-         * @static 
-         */ 
-        public static function onceBasic($field = 'email', $extraConditions = array())
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->onceBasic($field, $extraConditions);
-        }
-        
-        /**
-         * Attempt to authenticate a user using the given credentials.
-         *
-         * @param array $credentials
-         * @param bool $remember
-         * @return bool 
-         * @static 
-         */ 
-        public static function attempt($credentials = array(), $remember = false)
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->attempt($credentials, $remember);
-        }
-        
-        /**
-         * Log the given user ID into the application.
-         *
-         * @param mixed $id
-         * @param bool $remember
-         * @return \Entities\User|false 
-         * @static 
-         */ 
-        public static function loginUsingId($id, $remember = false)
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        return $instance->loginUsingId($id, $remember);
         }
         
         /**
          * Log a user into the application.
          *
-         * @param \Illuminate\Contracts\Auth\Authenticatable $user
+         * @param \IXP\Services\Auth\AuthenticatableContract $user
          * @param bool $remember
          * @return void 
          * @static 
          */ 
         public static function login($user, $remember = false)
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         $instance->login($user, $remember);
         }
         
@@ -1961,20 +1854,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function logout()
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         $instance->logout();
-        }
-        
-        /**
-         * Log the user out of the application on their current device only.
-         *
-         * @return void 
-         * @static 
-         */ 
-        public static function logoutCurrentDevice()
-        {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
-                        $instance->logoutCurrentDevice();
         }
         
         /**
@@ -1989,8 +1870,136 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function logoutOtherDevices($password, $attribute = 'password')
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->logoutOtherDevices($password, $attribute);
+        }
+        
+        /**
+         * Get the ID for the currently authenticated user.
+         *
+         * @return int|null 
+         * @static 
+         */ 
+        public static function id()
+        {
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        return $instance->id();
+        }
+        
+        /**
+         * Log a user into the application without sessions or cookies.
+         *
+         * @param array $credentials
+         * @return bool 
+         * @static 
+         */ 
+        public static function once($credentials = array())
+        {
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        return $instance->once($credentials);
+        }
+        
+        /**
+         * Log the given user ID into the application without sessions or cookies.
+         *
+         * @param mixed $id
+         * @return \Entities\User|false 
+         * @static 
+         */ 
+        public static function onceUsingId($id)
+        {
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        return $instance->onceUsingId($id);
+        }
+        
+        /**
+         * Validate a user's credentials.
+         *
+         * @param array $credentials
+         * @return bool 
+         * @static 
+         */ 
+        public static function validate($credentials = array())
+        {
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        return $instance->validate($credentials);
+        }
+        
+        /**
+         * Attempt to authenticate using HTTP Basic Auth.
+         *
+         * @param string $field
+         * @param array $extraConditions
+         * @return \Symfony\Component\HttpFoundation\Response|null 
+         * @static 
+         */ 
+        public static function basic($field = 'email', $extraConditions = array())
+        {
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        return $instance->basic($field, $extraConditions);
+        }
+        
+        /**
+         * Perform a stateless HTTP Basic login attempt.
+         *
+         * @param string $field
+         * @param array $extraConditions
+         * @return \Symfony\Component\HttpFoundation\Response|null 
+         * @static 
+         */ 
+        public static function onceBasic($field = 'email', $extraConditions = array())
+        {
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        return $instance->onceBasic($field, $extraConditions);
+        }
+        
+        /**
+         * Attempt to authenticate a user using the given credentials.
+         *
+         * @param array $credentials
+         * @param bool $remember
+         * @return bool 
+         * @static 
+         */ 
+        public static function attempt($credentials = array(), $remember = false)
+        {
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        return $instance->attempt($credentials, $remember);
+        }
+        
+        /**
+         * Log the given user ID into the application.
+         *
+         * @param mixed $id
+         * @param bool $remember
+         * @return \Entities\User|false 
+         * @static 
+         */ 
+        public static function loginUsingId($id, $remember = false)
+        {
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        return $instance->loginUsingId($id, $remember);
+        }
+        
+        /**
+         * Log the user out of the application on their current device only.
+         *
+         * @return void 
+         * @static 
+         */ 
+        public static function logoutCurrentDevice()
+        {
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        $instance->logoutCurrentDevice();
         }
         
         /**
@@ -2002,7 +2011,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function attempting($callback)
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         $instance->attempting($callback);
         }
         
@@ -2014,7 +2024,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function getLastAttempted()
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->getLastAttempted();
         }
         
@@ -2026,7 +2037,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function getName()
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->getName();
         }
         
@@ -2038,7 +2050,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function getRecallerName()
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->getRecallerName();
         }
         
@@ -2050,7 +2063,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function viaRemember()
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->viaRemember();
         }
         
@@ -2063,7 +2077,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function getCookieJar()
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->getCookieJar();
         }
         
@@ -2076,7 +2091,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function setCookieJar($cookie)
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         $instance->setCookieJar($cookie);
         }
         
@@ -2088,7 +2104,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function getDispatcher()
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->getDispatcher();
         }
         
@@ -2101,7 +2118,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function setDispatcher($events)
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         $instance->setDispatcher($events);
         }
         
@@ -2113,7 +2131,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function getSession()
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->getSession();
         }
         
@@ -2125,7 +2144,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function getUser()
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->getUser();
         }
         
@@ -2133,12 +2153,13 @@ namespace Illuminate\Support\Facades {
          * Set the current user.
          *
          * @param \Illuminate\Contracts\Auth\Authenticatable $user
-         * @return \Illuminate\Auth\SessionGuard 
+         * @return \IXP\Services\Auth\SessionGuard 
          * @static 
          */ 
         public static function setUser($user)
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->setUser($user);
         }
         
@@ -2150,7 +2171,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function getRequest()
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->getRequest();
         }
         
@@ -2158,12 +2180,13 @@ namespace Illuminate\Support\Facades {
          * Set the current request instance.
          *
          * @param \Symfony\Component\HttpFoundation\Request $request
-         * @return \Illuminate\Auth\SessionGuard 
+         * @return \IXP\Services\Auth\SessionGuard 
          * @static 
          */ 
         public static function setRequest($request)
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->setRequest($request);
         }
         
@@ -2176,7 +2199,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function authenticate()
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->authenticate();
         }
         
@@ -2188,7 +2212,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function hasUser()
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->hasUser();
         }
         
@@ -2200,7 +2225,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function check()
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->check();
         }
         
@@ -2212,7 +2238,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function guest()
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->guest();
         }
         
@@ -2224,7 +2251,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function getProvider()
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->getProvider();
         }
         
@@ -2237,7 +2265,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function setProvider($provider)
         {
-                        /** @var \Illuminate\Auth\SessionGuard $instance */
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
                         $instance->setProvider($provider);
         }
         
@@ -2251,7 +2280,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function macro($name, $macro)
         {
-                        \Illuminate\Auth\SessionGuard::macro($name, $macro);
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        \IXP\Services\Auth\SessionGuard::macro($name, $macro);
         }
         
         /**
@@ -2265,7 +2295,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function mixin($mixin, $replace = true)
         {
-                        \Illuminate\Auth\SessionGuard::mixin($mixin, $replace);
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        \IXP\Services\Auth\SessionGuard::mixin($mixin, $replace);
         }
         
         /**
@@ -2277,7 +2308,8 @@ namespace Illuminate\Support\Facades {
          */ 
         public static function hasMacro($name)
         {
-                        return \Illuminate\Auth\SessionGuard::hasMacro($name);
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        return \IXP\Services\Auth\SessionGuard::hasMacro($name);
         }
          
     }
