@@ -23,7 +23,7 @@
 
 namespace IXP\Http\Controllers\Auth;
 
-use Auth, D2EM, Datetime, Socialite, Str;
+use Auth, D2EM, DateTime, Socialite, Str;
 
 use Entities\{
     Customer       as CustomerEntity ,
@@ -51,7 +51,6 @@ use IXP\Utils\View\Alert\{
 };
 
 use IXP\Support\Google2FAAuthenticator;
-
 use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends Controller
@@ -134,7 +133,7 @@ class LoginController extends Controller
      * @param Request $request
      * @param  UserEntity  $user
      *
-     * @return mixed
+     * @return void
      *
      * @throws
      */
@@ -152,6 +151,7 @@ class LoginController extends Controller
                 D2EM::flush();
                 $c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => $user , "customer" => $user->getCustomer() ] );
             }
+
 
             $c2u->setLastLoginAt(  new DateTime );
             $c2u->setLastLoginFrom( $this->getIP() );
@@ -173,8 +173,6 @@ class LoginController extends Controller
         }
 
         D2EM::flush();
-
-        return true;
     }
 
     /**
@@ -282,9 +280,7 @@ class LoginController extends Controller
      *  ]
      * }
      * @param Request $request
-     *
      * @return RedirectResponse|Redirector|Response
-     *
      * @throws
      */
     public function peeringdbHandleProviderCallback( Request $request )

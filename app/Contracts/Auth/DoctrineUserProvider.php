@@ -132,7 +132,6 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
         $this->em->remove( $rt );
         $this->em->flush();
 
-        return true;
     }
 
     /**
@@ -153,7 +152,7 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
             $sql .= " AND rt.expires < '" . $now->format( 'Y-m-d H:i:s' ) . "'";
         }
 
-        return $this->em->createQuery( $sql )->execute();
+        $this->em->createQuery( $sql )->execute();
     }
 
     /**
