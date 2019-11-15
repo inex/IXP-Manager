@@ -26,7 +26,8 @@ namespace IXP\Http\Controllers\Auth\RememberToken;
 use Auth, Cookie, D2EM, Route;
 
 use Entities\{
-    UserRememberTokens   as UserRememberTokensEntity,
+    UserRememberTokens      as UserRememberTokensEntity,
+    User                    as UserEntity
 };
 
 use IXP\Http\Controllers\Doctrine2Frontend;
@@ -49,7 +50,15 @@ class UserController extends Doctrine2Frontend
 
     protected static $route_prefix = "user-remember-token";
 
-
+    /**
+     * The minimum privileges required to access this controller.
+     *
+     * If you set this to less than the superuser, you need to manage privileges and access
+     * within your own implementation yourself.
+     *
+     * @var int
+     */
+    public static $minimum_privilege = UserEntity::AUTH_CUSTUSER;
     /**
      * Is this a read only controller?
      *
