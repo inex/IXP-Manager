@@ -208,7 +208,6 @@ class SecurityPasswordController extends Controller
             return $this->show2faForm( $request );
         }
 
-
         if( $request->input( "ixp-2fa-token" ) != $request->session() ->get( "ixp_2fa_valid_pass" ) ) {
             AlertContainer::push( "Action not allowed.", Alert::DANGER );
             return Redirect::to( route( "profile@edit" ) );
@@ -365,6 +364,8 @@ class SecurityPasswordController extends Controller
      * @param $ps
      *
      * @return bool
+     *
+     * @throws
      */
     private function delete2faObject( $ps ){
         D2EM::remove( $ps );

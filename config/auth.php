@@ -22,6 +22,8 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Entities\User as UserEntity;
+
 return [
 
     /*
@@ -61,7 +63,7 @@ return [
         'web' => [
             'driver' => 'session',
             'provider' => 'users',
-            'expire' => 10080, // optional token expiration time, in minutes (7 days is the default)
+            'expire' => env( 'AUTH_TOKEN_EXPIRE', 10080 ), // optional token expiration time, in minutes (7 days is the default)
         ],
 
 
@@ -141,11 +143,7 @@ return [
 
     'peeringdb' => [
         'enabled'   => env( 'AUTH_PEERINGDB_ENABLED', false ),
-        'privs'     => env( 'AUTH_PEERINGDB_PRIVS',   \Entities\User::AUTH_CUSTUSER ),
+        'privs'     => env( 'AUTH_PEERINGDB_PRIVS',   UserEntity::AUTH_CUSTUSER ),
     ],
-
-
-
-
 
 ];

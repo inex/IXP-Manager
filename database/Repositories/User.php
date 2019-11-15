@@ -23,7 +23,7 @@ namespace Repositories;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Hash, Log;
+use D2EM, DateTime, Hash, Log;
 
 use Illuminate\Support\Str;
 
@@ -620,5 +620,39 @@ class User extends EntityRepository
         D2EM::flush();
 
         return $result;
+    }
+
+    /**
+     * Return a user depending a token and id
+     *
+     * @param $identifier
+     * @param $token
+     *
+     * @return UserEntity|null
+     *
+     * @throws
+     */
+    public function retrieveByOtcToken( $identifier, $token )
+    {
+        $now = new DateTime();
+
+        $sql = "SELECT ort
+                FROM Entities\\OtpRememberTokens ort 
+                WHERE ort.User = ?1
+                AND ort.token = ?2
+                AND ort.expires > ?3";
+
+        $result = $this->getEntityManager()->createQuery( $sql )
+            ->setParameter( '1', $identifier )
+            ->setParameter( '2', $token )
+            ->setParameter( '3', $now->format( 'Y-m-d H:i:s' ) )
+            ->getOneOrNullResult();
+
+        if( $result ) {
+            return $result->getUser();
+        }
+
+        return null;
+
     }
 }

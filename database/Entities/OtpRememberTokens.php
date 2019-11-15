@@ -28,9 +28,9 @@ use Entities\{
 };
 
 /**
- * User RememberTokens
+ * OtpRememberTokens
  */
-class UserRememberTokens extends RememberTokensEntity
+class OtpRememberTokens extends RememberTokensEntity
 {
 
 }

@@ -24,23 +24,23 @@ namespace IXP\Contracts\Auth;
  */
 
 use DateTime;
+
+use Entities\{
+    User                as UserEntity,
+    UserRememberTokens  as UserRememberTokensEntity
+};
+
 use Doctrine\Common\Persistence\ObjectRepository;
 
 use IXP\Utils\IpAddress;
+
+use LaravelDoctrine\ORM\Auth\DoctrineUserProvider as DoctrineUserProviderBase;
+
 use Wolfcast\BrowserDetection;
 
-use LaravelDoctrine\ORM\Auth\DoctrineUserProvider as DoctrineUserProviderExtended;
 
-use IXP\Http\Controllers\Controller;
-
-use Entities\{
-    UserRememberTokens as UserRememberTokensEntity
-};
-
-class DoctrineUserProvider extends DoctrineUserProviderExtended
+class DoctrineUserProvider extends DoctrineUserProviderBase
 {
-
-
     /**
      * Retrieve a user by their unique identifier and "remember me" token.
      *
@@ -63,14 +63,16 @@ class DoctrineUserProvider extends DoctrineUserProviderExtended
     /**
      * Add a token value for the "remember me" session.
      *
-     * @param  string  $value
-     * @param  int $expire
+     * @param $identifier
+     * @param string $value
+     * @param int $expire
      * @return void
      *
      * @throws
      */
     public function addRememberToken( $identifier, $value, $expire )
     {
+        /** @var $user UserEntity */
         if (! $user = $this->getRepository()->findOneBy( [ $this->getEntity()->getAuthIdentifierName() => $identifier ]  ) ) {
             return null;
         }
@@ -79,8 +81,6 @@ class DoctrineUserProvider extends DoctrineUserProviderExtended
         $this->em->persist( $rememberToken );
 
         $browser = new BrowserDetection();
-
-        $ip = new Controller();
 
         $rememberToken->setUser( $user );
         $rememberToken->setToken( $value );
@@ -131,6 +131,8 @@ class DoctrineUserProvider extends DoctrineUserProviderExtended
         }
         $this->em->remove( $rt );
         $this->em->flush();
+
+        return true;
     }
 
     /**
@@ -151,7 +153,7 @@ class DoctrineUserProvider extends DoctrineUserProviderExtended
             $sql .= " AND rt.expires < '" . $now->format( 'Y-m-d H:i:s' ) . "'";
         }
 
-        $this->em->createQuery( $sql )->execute();
+        return $this->em->createQuery( $sql )->execute();
     }
 
     /**

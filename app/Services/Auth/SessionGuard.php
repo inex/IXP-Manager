@@ -25,10 +25,15 @@ namespace IXP\Services\Auth;
 
 
 use Str;
+
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Auth\UserProvider;
-use Symfony\Component\HttpFoundation\Cookie;
-use Symfony\Component\HttpFoundation\Request;
+
+use Symfony\Component\HttpFoundation\{
+    Cookie,
+    Request
+};
+
 use Illuminate\Auth\SessionGuard as BaseGuard;
 use Illuminate\Auth\Events\Logout as LogoutEvent;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;

@@ -30,6 +30,7 @@ use Entities\{
     Contact             as ContactEntity,
     Customer            as CustomerEntity,
     CustomerToUser      as CustomerToUserEntity,
+    OtpRememberTokens   as OtpRememberTokensEntity,
     PasswordSecurity    as PasswordSecurityEntity,
     UserRememberTokens  as UserRememberTokensEntity,
     User                as UserEntity,
@@ -213,9 +214,14 @@ class User implements Authenticatable, CanResetPasswordContract
     protected $PasswordSecurity;
 
     /**
-     * @var PasswordSecurityEntity
+     * @var UserRememberTokensEntity
      */
     protected $UserRememberTokens;
+
+    /**
+     * @var OtpRememberTokensEntity
+     */
+    protected $OtpRememberTokens;
 
     /**
      * Constructor
@@ -226,6 +232,7 @@ class User implements Authenticatable, CanResetPasswordContract
         $this->Customers            = new ArrayCollection();
         $this->ApiKeys              = new ArrayCollection();
         $this->UserRememberTokens   = new ArrayCollection();
+        $this->OtpRememberTokens    = new ArrayCollection();
     }
 
     /**
@@ -882,8 +889,28 @@ class User implements Authenticatable, CanResetPasswordContract
         return $this->PasswordSecurity;
     }
 
-    public function is2FARequired(){
+
+    /**
+     * Does the 2FA is required for this user
+     *
+     * @return bool
+     */
+    public function is2FARequired()
+    {
         if( $this->isSuperUser() && config( "google2fa.superuser_required" ) && ( !$this->getPasswordSecurity() || !$this->getPasswordSecurity()->isGoogle2faEnable() ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Does the 2FA is enabled for his user
+     *
+     * @return bool
+     */
+    public function is2FAenabled()
+    {
+        if( $this->getPasswordSecurity() && $this->getPasswordSecurity()->isGoogle2faEnable() ) {
             return true;
         }
         return false;
@@ -920,6 +947,39 @@ class User implements Authenticatable, CanResetPasswordContract
     public function RememberTokens()
     {
         return $this->UserRememberTokens;
+    }
+
+    /**
+     * Add otc Remember token
+     *
+     * @param OtpRememberTokensEntity $otcRememberTokens
+     * @return User
+     */
+    public function addOtcRememberTokens( OtpRememberTokensEntity $otcRememberTokens )
+    {
+        $this->OtpRememberTokens[] = $otcRememberTokens;
+
+        return $this;
+    }
+
+    /**
+     * Remove otc Remember token
+     *
+     * @param OtpRememberTokensEntity $otcRememberTokens
+     */
+    public function removeOtcRememberTokens( OtpRememberTokensEntity $otcRememberTokens )
+    {
+        $this->OtpRememberTokens->removeElement( $otcRememberTokens );
+    }
+
+    /**
+     * Get otc Remember tokens
+     *
+     * @return Collection
+     */
+    public function getOtcRememberTokens()
+    {
+        return $this->OtpRememberTokens;
     }
 
     /***************************************************************************

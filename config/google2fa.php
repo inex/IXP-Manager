@@ -1,6 +1,6 @@
 <?php
 
-use PragmaRX\Google2FA\Tests\Constants;
+use PragmaRX\Google2FALaravel\Support\Constants;
 
 return [
 
@@ -79,12 +79,17 @@ return [
      *
      * Supports imagemagick, svg and eps
      */
-    'qrcode_image_backend' => \PragmaRX\Google2FALaravel\Support\Constants::QRCODE_IMAGE_BACKEND_IMAGEMAGICK,
+    'qrcode_image_backend' => Constants::QRCODE_IMAGE_BACKEND_IMAGEMAGICK,
 
 
     /*
      * Require 2FA authentification for IXP superuser
      */
     'superuser_required' => env( '2FA_SUPERUSER_REQUIRED', false ),
+
+    /*
+     * Optional token expiration time in minutes, (30 days is the default)
+     */
+    'remember_me_expire' => env( '2FA_REMEMBER_ME_EXPIRE', 43200 ),
 
 ];

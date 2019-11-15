@@ -56,6 +56,14 @@ $this->layout( 'layouts/ixpv4' )
                                 ->label( 'Code' )
                             ?>
 
+                            <?= Former::checkbox( 'remember_me' )
+                                ->label('&nbsp;')
+                                ->text( 'Remember this device for ' . ( config( "google2fa.remember_me_expire" ) / 1440 ) . " days." )
+                                ->value( 1 )
+                                ->inline()
+                                ->blockHelp( '' );
+                            ?>
+
                             <?= Former::hidden( 'ixp-2fa-token' )
                                 ->value( $t->ixp2faToken )
                             ?>

@@ -30,21 +30,26 @@ interface UserProvider extends BaseProvider
     /**
      * Add a token value for the "remember me" session.
      *
-     * @param  string  $value
-     * @param  int $expire
+     * @param $identifier
+     * @param string $value
+     * @param int $expire
+     *
      * @return void
      */
-    public function addRememberToken($identifier, $value, $expire);
+    public function addRememberToken( $identifier, $value, $expire );
+
     /**
      * Replace "remember me" token with a new token.
      *
-     * @param  string $token
-     * @param  string $newToken
-     * @param  int $expire
+     * @param $identifier
+     * @param string $token
+     * @param string $newToken
+     * @param int $expire
      *
      * @return void
      */
-    public function replaceRememberToken($identifier, $token, $newToken, $expire);
+    public function replaceRememberToken( $identifier, $token, $newToken, $expire );
+
     /**
      * Delete the specified "remember me" token for the given user.
      *
@@ -52,7 +57,8 @@ interface UserProvider extends BaseProvider
      * @param  string $token
      * @return null
      */
-    public function deleteRememberToken($identifier, $token);
+    public function deleteRememberToken( $identifier, $token );
+
     /**
      * Purge old or expired "remember me" tokens.
      *
@@ -60,5 +66,5 @@ interface UserProvider extends BaseProvider
      * @param  bool $expired
      * @return null
      */
-    public function purgeRememberTokens($identifier, $expired = false);
+    public function purgeRememberTokens( $identifier, $expired = false );
 }

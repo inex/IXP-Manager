@@ -21,10 +21,9 @@ namespace IXP\Providers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Auth;
+use Auth, Gate;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use Illuminate\Support\Facades\Gate;
 
 use IXP\Contracts\Auth\DoctrineUserProvider;
 use IXP\Services\Auth\SessionGuard;
@@ -51,7 +50,7 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         // autoload model policies
-        Gate::guessPolicyNamesUsing(function ( $modelClass ) {
+        Gate::guessPolicyNamesUsing( function ( $modelClass ) {
             return 'IXP\\Policies\\' . class_basename( $modelClass ) . 'Policy';
         });
 
@@ -77,6 +76,7 @@ class AuthServiceProvider extends ServiceProvider
 
         Auth::provider('doctrine', function ( $app, array $config ) {
             $em = $app[ 'registry' ]->getManagerForClass( $config['model'] );
+            
             return new DoctrineUserProvider( $app['hash'], $em , $config['model'] );
         });
     }

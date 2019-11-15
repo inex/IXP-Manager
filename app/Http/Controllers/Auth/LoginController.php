@@ -23,7 +23,7 @@
 
 namespace IXP\Http\Controllers\Auth;
 
-use Auth, D2EM, Socialite, Str;
+use Auth, D2EM, Datetime, Socialite, Str;
 
 use Entities\{
     Customer       as CustomerEntity ,
@@ -34,8 +34,13 @@ use Entities\{
 };
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Http\Request;
 
+use Illuminate\Http\{
+    RedirectResponse,
+    Request
+};
+
+use Illuminate\Routing\Redirector;
 use Illuminate\View\View;
 
 use IXP\Http\Controllers\Controller;
@@ -44,6 +49,8 @@ use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
+
+use IXP\Support\Google2FAAuthenticator;
 
 use Symfony\Component\HttpFoundation\Response;
 
@@ -146,15 +153,14 @@ class LoginController extends Controller
                 $c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => $user , "customer" => $user->getCustomer() ] );
             }
 
-
-            $c2u->setLastLoginAt(  new \DateTime );
+            $c2u->setLastLoginAt(  new DateTime );
             $c2u->setLastLoginFrom( $this->getIP() );
 
             if( config( "ixp_fe.login_history.enabled" ) ) {
                 $log = new UserLoginHistoryEntity;
                 D2EM::persist( $log );
 
-                $log->setAt(    new \DateTime() );
+                $log->setAt(    new DateTime() );
                 $log->setIp(    $this->getIP() );
                 $log->setCustomerToUser(  $c2u  );
 
@@ -167,6 +173,8 @@ class LoginController extends Controller
         }
 
         D2EM::flush();
+
+        return true;
     }
 
     /**
@@ -194,6 +202,11 @@ class LoginController extends Controller
      */
     public function logout( Request $request, $customMessage = null ) : Response
     {
+        if( Auth::check() && $request->user()->is2FAenabled() ) {
+            $authenticator = app( Google2FAAuthenticator::class )->boot( $request );
+            $authenticator->logout();
+        }
+
         $this->guard()->logout();
 
         $request->session()->invalidate();
@@ -268,7 +281,11 @@ class LoginController extends Controller
      *    "given_name" => "Joe"
      *  ]
      * }
+     * @param Request $request
      *
+     * @return RedirectResponse|Redirector|Response
+     *
+     * @throws
      */
     public function peeringdbHandleProviderCallback( Request $request )
     {

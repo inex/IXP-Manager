@@ -108,10 +108,10 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'PasswordSecurity', 'UserRememberTokens', '_className', '_preferenceClassName'];
+            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'PasswordSecurity', 'UserRememberTokens', 'OtpRememberTokens', '_className', '_preferenceClassName'];
         }
 
-        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'PasswordSecurity', 'UserRememberTokens', '_className', '_preferenceClassName'];
+        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'PasswordSecurity', 'UserRememberTokens', 'OtpRememberTokens', '_className', '_preferenceClassName'];
     }
 
     /**
@@ -863,6 +863,17 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function is2FAenabled()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2FAenabled', []);
+
+        return parent::is2FAenabled();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addUserRememberTokens(\Entities\UserRememberTokens $userRememberTokens)
     {
 
@@ -891,6 +902,39 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'RememberTokens', []);
 
         return parent::RememberTokens();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addOtcRememberTokens(\Entities\OtpRememberTokens $otcRememberTokens)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addOtcRememberTokens', [$otcRememberTokens]);
+
+        return parent::addOtcRememberTokens($otcRememberTokens);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeOtcRememberTokens(\Entities\OtpRememberTokens $otcRememberTokens)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeOtcRememberTokens', [$otcRememberTokens]);
+
+        return parent::removeOtcRememberTokens($otcRememberTokens);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOtcRememberTokens()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOtcRememberTokens', []);
+
+        return parent::getOtcRememberTokens();
     }
 
     /**
