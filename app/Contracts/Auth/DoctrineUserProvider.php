@@ -52,7 +52,7 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
      */
     public function retrieveByToken( $identifier, $token )
     {
-        if (! $model = $this->getRememberPasswordRepository()->findOneBy( [ "User" => $identifier, "token" => $token ] ) ){
+        if (! $model = $this->getUserRememberPasswordRepository()->findOneBy( [ "User" => $identifier, "token" => $token ] ) ){
             return null;
         }
 
@@ -108,7 +108,7 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
      */
     public function replaceRememberToken($identifier, $token, $newToken, $expire)
     {
-        if (! $rt = $this->getRememberPasswordRepository()->findOneBy( [ "User" => $identifier, "token" => $token ]  ) ) {
+        if (! $rt = $this->getUserRememberPasswordRepository()->findOneBy( [ "User" => $identifier, "token" => $token ]  ) ) {
             return null;
         }
         $rt->setToken( $newToken );
@@ -126,7 +126,7 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
      */
     public function deleteRememberToken( $identifier, $token )
     {
-        if (! $rt = $this->getRememberPasswordRepository()->findOneBy( [ "User" => $identifier, "token" => $token ]  ) ) {
+        if (! $rt = $this->getUserRememberPasswordRepository()->findOneBy( [ "User" => $identifier, "token" => $token ]  ) ) {
             return null;
         }
         $this->em->remove( $rt );
@@ -159,7 +159,7 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
      * Returns repository for the remember token entity.
      * @return ObjectRepository
      */
-    protected function getRememberPasswordRepository()
+    protected function getUserRememberPasswordRepository()
     {
         return $this->em->getRepository( UserRememberTokensEntity::class );
     }

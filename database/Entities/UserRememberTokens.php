@@ -23,14 +23,153 @@ namespace Entities;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Datetime;
+
 use Entities\{
-    RememberTokens as RememberTokensEntity
+    User as UserEntity
 };
 
 /**
- * User RememberTokens
+ * UserRememberTokens
  */
-class UserRememberTokens extends RememberTokensEntity
+class UserRememberTokens
 {
+    /**
+     * @var string
+     */
+    private $token;
 
+    /**
+     * @var string
+     */
+    private $device;
+
+    /**
+     * @var string
+     */
+    private $ip;
+
+    /**
+     * @var \DateTime
+     */
+    private $created;
+
+    /**
+     * @var \DateTime
+     */
+    private $expires;
+
+    /**
+     * @var int
+     */
+    private $id;
+
+    /**
+     * @var UserEntity
+     */
+    private $User;
+
+    /**
+     * @return string
+     */
+    public function getToken(): string
+    {
+        return $this->token;
+    }
+
+    /**
+     * @param string $token
+     */
+    public function setToken( string $token ): void
+    {
+        $this->token = $token;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDevice(): string
+    {
+        return $this->device;
+    }
+
+    /**
+     * @param string $device
+     */
+    public function setDevice( string $device ): void
+    {
+        $this->device = $device;
+    }
+
+    /**
+     * @return string
+     */
+    public function getIp(): string
+    {
+        return $this->ip;
+    }
+
+    /**
+     * @param string $ip
+     */
+    public function setId( string $ip ): void
+    {
+        $this->ip = $ip;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getCreated(): DateTime
+    {
+        return $this->created;
+    }
+
+    /**
+     * @param DateTime $created
+     */
+    public function setCreated( DateTime $created ): void
+    {
+        $this->created = $created;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getExpires(): DateTime
+    {
+        return $this->expires;
+    }
+
+    /**
+     * @param DateTime $expires
+     */
+    public function setExpires( DateTime $expires ): void
+    {
+        $this->expires = $expires;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return UserEntity
+     */
+    public function getUser(): UserEntity
+    {
+        return $this->User;
+    }
+
+    /**
+     * @param UserEntity $User
+     */
+    public function setUser( UserEntity $User ): void
+    {
+        $this->User = $User;
+    }
 }

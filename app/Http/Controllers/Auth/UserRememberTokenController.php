@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Http\Controllers\Auth\RememberToken;
+namespace IXP\Http\Controllers\Auth;
 
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -40,7 +40,7 @@ use IXP\Http\Controllers\Doctrine2Frontend;
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class UserController extends Doctrine2Frontend
+class UserRememberTokenController extends Doctrine2Frontend
 {
     /**
      * The object being added / edited
@@ -84,7 +84,7 @@ class UserController extends Doctrine2Frontend
 
             'readonly'          => self::$read_only,
 
-            'viewFolderName'    => 'remember-token/user',
+            'viewFolderName'    => 'user-remember-token',
 
             'listColumns'    => [
 
@@ -121,7 +121,7 @@ class UserController extends Doctrine2Frontend
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
         Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::post(  'delete',      'Auth\RememberToken\UserController@delete'         )->name( $route_prefix."@delete" );
+            Route::post(  'delete',      'Auth\UserRememberTokenController@delete'         )->name( $route_prefix."@delete" );
         });
     }
 

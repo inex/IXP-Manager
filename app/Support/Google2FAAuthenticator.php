@@ -22,120 +22,16 @@ namespace IXP\Support;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Auth;
 
 use PragmaRX\Google2FALaravel\{
-    Events\EmptyOneTimePasswordReceived,
-    Events\LoginFailed,
-    Events\LoginSucceeded,
-    Exceptions\InvalidOneTimePassword,
     Exceptions\InvalidSecretKey,
-    Support\ErrorBag,
-    Support\Input,
-    Support\Response,
-    Support\Session
+    Support\Authenticator,
+    Support\Constants
 };
 
-use Illuminate\Http\Request as IlluminateRequest;
-
-class Google2FAAuthenticator extends Google2FA
+class Google2FAAuthenticator extends Authenticator
 {
-    use ErrorBag, Input, Response, Session;
-
-    /**
-     * The current password.
-     *
-     * @var
-     */
-    protected $password;
-
-    /**
-     * Authenticator constructor.
-     *
-     * @param IlluminateRequest $request
-     */
-    public function __construct(IlluminateRequest $request)
-    {
-        parent::__construct($request);
-    }
-
-    /**
-     * Authenticator boot.
-     *
-     * @param $request
-     *
-     * @return Google2FA
-     */
-    public function boot($request)
-    {
-        parent::boot($request);
-
-        return $this;
-    }
-
-    /**
-     * Authenticator boot for API usage.
-     *
-     * @param $request
-     *
-     * @return Google2FA
-     */
-    public function bootStateless($request)
-    {
-        $this->boot($request);
-
-        $this->setStateless();
-
-        return $this;
-    }
-
-    /**
-     * Fire login (success or failed).
-     *
-     * @param $succeeded
-     *
-     * @return bool
-     */
-    private function fireLoginEvent($succeeded)
-    {
-        event(
-            $succeeded
-                ? new LoginSucceeded($this->getUser())
-                : new LoginFailed($this->getUser())
-        );
-
-        return $succeeded;
-    }
-
-    /**
-     * Get the OTP from user input.
-     *
-     * @throws InvalidOneTimePassword
-     *
-     * @return mixed
-     */
-    protected function getOneTimePassword()
-    {
-        if (is_null($password = $this->getInputOneTimePassword()) || empty($password)) {
-            event(new EmptyOneTimePasswordReceived());
-
-            if ($this->config('throw_exceptions', true)) {
-                throw new InvalidOneTimePassword(config('google2fa.error_messages.cannot_be_empty'));
-            }
-        }
-
-        return $password;
-    }
-
-    /**
-     * Check if the current use is authenticated via OTP.
-     *
-     * @return bool
-     */
-    public function isAuthenticated()
-    {
-        return $this->canPassWithoutCheckingOTP() || $this->checkOTP();
-    }
-
     /**
      * Check if it is already logged in or passable without checking for an OTP.
      *
@@ -143,6 +39,15 @@ class Google2FAAuthenticator extends Google2FA
      */
     protected function canPassWithoutCheckingOTP()
     {
+
+        // Check if we have a remember me cookie token, stored in request because the remember me cookie
+        // is updated every time we login and placed in the cookie queue so not accessible yet with the middleware
+        // That why we added a value in the request in order to know if we allow the user to avoid the OTP security form
+        if( request()->request->has( "ixpm-remember-me-token" ) ){
+            $this->login();
+            return true;
+        }
+
         if( !( $this->getUser()->getPasswordSecurity() ) )
             return true;
         return
@@ -159,19 +64,31 @@ class Google2FAAuthenticator extends Google2FA
      */
     protected function checkOTP()
     {
-        if( $isValid = $this->verifyRememberMeCookie() ){
-            $this->login();
-        } else {
-            if (!$this->inputHasOneTimePassword()) {
-                return false;
-            }
-
-            if ($isValid = $this->verifyOneTimePassword()) {
-                $this->login();
-            }
+        if (!$this->inputHasOneTimePassword()) {
+            return false;
         }
 
-        return $this->fireLoginEvent($isValid);
+        if ($isValid = $this->verifyOneTimePassword()) {
+            $this->login();
+        }
+
+
+        return $isValid;
+    }
+
+    /**
+     * Set current auth as valid.
+     */
+    public function login()
+    {
+        $this->sessionPut(Constants::SESSION_AUTH_PASSED, true);
+
+        $this->updateCurrentAuthTime();
+
+        if( request()->input( "remember_me" ) ) {
+
+            Auth::guard()->RememberMeViaOTP( Auth::user(), true );
+        }
     }
 
     /**

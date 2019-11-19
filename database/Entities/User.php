@@ -30,7 +30,6 @@ use Entities\{
     Contact             as ContactEntity,
     Customer            as CustomerEntity,
     CustomerToUser      as CustomerToUserEntity,
-    OtpRememberTokens   as OtpRememberTokensEntity,
     PasswordSecurity    as PasswordSecurityEntity,
     UserRememberTokens  as UserRememberTokensEntity,
     User                as UserEntity,
@@ -49,6 +48,7 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
 
 use IXP\Utils\Doctrine2\WithPreferences as Doctrine2_WithPreferences;
+use Psy\Util\Json;
 
 
 /**
@@ -167,7 +167,7 @@ class User implements Authenticatable, CanResetPasswordContract
 
 
     /**
-     * @var \Json
+     * @var Json
      */
     private $extra_attributes = [];
 
@@ -219,11 +219,6 @@ class User implements Authenticatable, CanResetPasswordContract
     protected $UserRememberTokens;
 
     /**
-     * @var OtpRememberTokensEntity
-     */
-    protected $OtpRememberTokens;
-
-    /**
      * Constructor
      */
     public function __construct()
@@ -232,7 +227,6 @@ class User implements Authenticatable, CanResetPasswordContract
         $this->Customers            = new ArrayCollection();
         $this->ApiKeys              = new ArrayCollection();
         $this->UserRememberTokens   = new ArrayCollection();
-        $this->OtpRememberTokens    = new ArrayCollection();
     }
 
     /**
@@ -434,7 +428,7 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Set lastupdated
      *
-     * @param \DateTime $lastupdated
+     * @param DateTime $lastupdated
      * @return User
      */
     public function setLastupdated($lastupdated)
@@ -509,7 +503,7 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Get Extra attributes
      *
-     * @return \Json
+     * @return Json
      */
     public function getExtraAttributes()
     {
@@ -947,39 +941,6 @@ class User implements Authenticatable, CanResetPasswordContract
     public function RememberTokens()
     {
         return $this->UserRememberTokens;
-    }
-
-    /**
-     * Add otc Remember token
-     *
-     * @param OtpRememberTokensEntity $otcRememberTokens
-     * @return User
-     */
-    public function addOtcRememberTokens( OtpRememberTokensEntity $otcRememberTokens )
-    {
-        $this->OtpRememberTokens[] = $otcRememberTokens;
-
-        return $this;
-    }
-
-    /**
-     * Remove otc Remember token
-     *
-     * @param OtpRememberTokensEntity $otcRememberTokens
-     */
-    public function removeOtcRememberTokens( OtpRememberTokensEntity $otcRememberTokens )
-    {
-        $this->OtpRememberTokens->removeElement( $otcRememberTokens );
-    }
-
-    /**
-     * Get otc Remember tokens
-     *
-     * @return Collection
-     */
-    public function getOtcRememberTokens()
-    {
-        return $this->OtpRememberTokens;
     }
 
     /***************************************************************************

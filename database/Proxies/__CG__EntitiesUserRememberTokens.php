@@ -64,10 +64,10 @@ class UserRememberTokens extends \Entities\UserRememberTokens implements \Doctri
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'token', 'device', 'ip', 'created', 'expires', 'id', 'User'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'token', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'device', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'ip', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'created', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'expires', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'id', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'User'];
         }
 
-        return ['__isInitialized__', 'token', 'device', 'ip', 'created', 'expires', 'id', 'User'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'token', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'device', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'ip', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'created', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'expires', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'id', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'User'];
     }
 
     /**

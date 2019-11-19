@@ -114,6 +114,28 @@ class SessionGuard extends BaseGuard
         );
 
         $this->queueRecallerCookie($user, $newToken);
+
+        request()->request->add( [ "ixpm-remember-me-token" => true ] );
+    }
+
+    /**
+     * If the user check remember me in the OTP validation form
+     *
+     * @param  AuthenticatableContract  $user
+     * @param  bool  $remember
+     * @return void
+     */
+    public function RememberMeViaOTP(AuthenticatableContract $user, $remember = false)
+    {
+        // If the user should be permanently "remembered" by the application we will
+        // queue a permanent cookie that contains the encrypted copy of the user
+        // identifier. We will then decrypt this later to retrieve the users.
+        if ($remember) {
+            $token = $this->createRememberToken($user);
+
+            $this->queueRecallerCookie($user, $token);
+        }
+
     }
 
     /**

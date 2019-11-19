@@ -6,11 +6,6 @@
                     Remember Token
                 </a>
             </li>
-            <li role="otc-remember-token" class="nav-item" >
-                <a class="nav-link" href="<?= route( "otp-remember-token@list" ) ?>">
-                    OTC Remember Token
-                </a>
-            </li>
         </ul>
     </div>
 
