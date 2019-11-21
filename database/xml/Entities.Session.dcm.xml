@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<doctrine-mapping xmlns="http://doctrine-project.org/schemas/orm/doctrine-mapping" xsi="http://www.w3.org/2001/XMLSchema-instance" schemaLocation="http://doctrine-project.org/schemas/orm/doctrine-mapping.xsd">
+    <entity name="Entities\Session" table="sessions" tableName="sessions">
+        <id name="id" type="string" nullable="false" />
+        <field name="user_id" type="bigint" nullable="true"/>
+        <field name="ip_address" type="string" length="45" nullable="true"/>
+        <field name="user_agent" type="text" nullable="true"/>
+        <field name="payload" type="text" nullable="false"/>
+        <field name="last_activity" type="integer" nullable="false"/>
+        <unique-constraints>
+            <unique-constraint name="sessions_id_unique" columns="id"/>
+        </unique-constraints>
+    </entity>
+</doctrine-mapping>

@@ -26,7 +26,8 @@ namespace Entities;
 use Datetime;
 
 use Entities\{
-    User as UserEntity
+    User as UserEntity,
+    UserRememberTokens as UserRememberTokensEntity,
 };
 
 /**
@@ -68,6 +69,11 @@ class UserRememberTokens
      * @var UserEntity
      */
     private $User;
+
+    /**
+     * @var string
+     */
+    private $session_id;
 
     /**
      * @return string
@@ -171,5 +177,28 @@ class UserRememberTokens
     public function setUser( UserEntity $User ): void
     {
         $this->User = $User;
+    }
+
+    /**
+     * Set Password Security
+     *
+     * @param string|null $session_id
+     * @return UserRememberTokensEntity
+     */
+    public function setSessionId( $session_id )
+    {
+        $this->session_id = $session_id;
+
+        return $this;
+    }
+
+    /**
+     * Get Password Security
+     *
+     * @return string
+     */
+    public function getSessionId()
+    {
+        return $this->session_id;
     }
 }

@@ -64,10 +64,10 @@ class UserRememberTokens extends \Entities\UserRememberTokens implements \Doctri
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'token', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'device', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'ip', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'created', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'expires', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'id', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'User'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'token', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'device', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'ip', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'created', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'expires', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'id', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'User', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'session_id'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'token', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'device', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'ip', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'created', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'expires', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'id', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'User'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'token', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'device', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'ip', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'created', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'expires', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'id', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'User', '' . "\0" . 'Entities\\UserRememberTokens' . "\0" . 'session_id'];
     }
 
     /**
@@ -318,6 +318,28 @@ class UserRememberTokens extends \Entities\UserRememberTokens implements \Doctri
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', [$User]);
 
         parent::setUser($User);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setSessionId(string $session_id)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSessionId', [$session_id]);
+
+        return parent::setSessionId($session_id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getSessionId()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSessionId', []);
+
+        return parent::getSessionId();
     }
 
 }

@@ -23,14 +23,14 @@
 
 namespace IXP\Http\Controllers\Auth;
 
-use Auth, D2EM, DateTime, Socialite, Str;
+use Auth, D2EM, DateTime, Socialite, Session, Str;
 
 use Entities\{
-    Customer       as CustomerEntity ,
-    CustomerToUser as CustomerToUserEntity,
-    User as UserEntity,
-    User,
-    UserLoginHistory as UserLoginHistoryEntity
+    Customer            as CustomerEntity ,
+    CustomerToUser      as CustomerToUserEntity,
+    User                as UserEntity,
+    UserLoginHistory    as UserLoginHistoryEntity,
+    UserRememberTokens  as UserRememberTokensEntity
 };
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -170,6 +170,14 @@ class LoginController extends Controller
         } else {
             // No customer linked, logout
             $this->logout( $request, [ 'message' => "Your user account is not associated with any " . config( "ixp_fe.lang.customer.many" ) . " .", 'class' => Alert::DANGER ] );
+        }
+
+        // Check we added the in the request the UserRememberToken id
+        if( request()->request->has( "ixpm-user-remember-me-token-id" ) ){
+            // Updating the current UserRememberToken session id With the current session ID in order to link them
+            $urt = D2EM::getRepository( UserRememberTokensEntity::class )->find( request()->request->get( "ixpm-user-remember-me-token-id" ) );
+            $urt->setSessionId( Session::getId() );
+            D2EM::flush();
         }
 
         D2EM::flush();

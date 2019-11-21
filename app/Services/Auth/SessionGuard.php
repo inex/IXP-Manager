@@ -24,7 +24,9 @@ namespace IXP\Services\Auth;
  */
 
 
-use Str;
+use D2EM, Str;
+
+use Entities\UserRememberTokens as UserRememberTokensEntity;
 
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -68,6 +70,7 @@ class SessionGuard extends BaseGuard
         if ($this->loggedOut) {
             return;
         }
+
 
         // If we've already retrieved the user for the current request we can just
         // return it back immediately. We do not want to fetch the user data on
@@ -130,10 +133,17 @@ class SessionGuard extends BaseGuard
         // If the user should be permanently "remembered" by the application we will
         // queue a permanent cookie that contains the encrypted copy of the user
         // identifier. We will then decrypt this later to retrieve the users.
-        if ($remember) {
-            $token = $this->createRememberToken($user);
+        if ( $remember ) {
 
-            $this->queueRecallerCookie($user, $token);
+            // Check if there is already a UserRememerToken object existing with the session ID and the user ID,
+            // If an object exist this mean that the user checked the remember me checkbox on the login form, so we dont create new token
+            if( !D2EM::getRepository( UserRememberTokensEntity::class )->findOneBy( [ "User" => $user, "session_id" => $this->session->getId() ] ) ) {
+                $token = $this->createRememberToken($user);
+
+                $this->queueRecallerCookie($user, $token);
+            }
+
+
         }
 
     }

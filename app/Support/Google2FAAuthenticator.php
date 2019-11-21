@@ -86,7 +86,6 @@ class Google2FAAuthenticator extends Authenticator
         $this->updateCurrentAuthTime();
 
         if( request()->input( "remember_me" ) ) {
-
             Auth::guard()->RememberMeViaOTP( Auth::user(), true );
         }
     }

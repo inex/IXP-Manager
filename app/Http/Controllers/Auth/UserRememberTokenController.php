@@ -26,6 +26,7 @@ namespace IXP\Http\Controllers\Auth;
 use Auth, Cookie, D2EM, Route;
 
 use Entities\{
+    Session                 as SessionEntity,
     UserRememberTokens      as UserRememberTokensEntity,
     User                    as UserEntity
 };
@@ -138,6 +139,18 @@ class UserRememberTokenController extends Doctrine2Frontend
         return D2EM::getRepository( UserRememberTokensEntity::class)->getAllForFeList( $this->feParams, request()->user()->getId(), $id );
     }
 
+    /**
+     * @inheritdoc
+     */
+    protected function preDelete() : bool
+    {
+        if(  $session = D2EM::getRepository( SessionEntity::class )->findOneBy( [ "id" => $this->object->getSessionId() ] ) )  {
+            D2EM::remove( $session );
+            D2EM::flush();
+        }
+
+        return true;
+    }
     /**
      * @inheritdoc
      */

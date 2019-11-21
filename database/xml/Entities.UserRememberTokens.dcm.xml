@@ -9,6 +9,7 @@
         <field name="ip" type="string" length="16" nullable="false"/>
         <field name="created" type="datetime" nullable="false"/>
         <field name="expires" type="datetime" nullable="false" />
+        <field name="session_id" type="string" length="255" nullable="true" />
         <many-to-one field="User" target-entity="Entities\User" inversed-by="UserRememberTokens">
             <join-columns>
                 <join-column name="user_id" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>

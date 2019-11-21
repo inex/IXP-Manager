@@ -88,10 +88,14 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
         $rememberToken->setCreated( new DateTime() );
         $rememberToken->setDevice( $browser->getPlatform() . " " . $browser->getPlatformVersion(true) . " / " . $browser->getName() . " " . $browser->getVersion() );
         $rememberToken->setId( IpAddress::getIp() );
+        $rememberToken->setSessionId( null );
 
         $user->addUserRememberTokens( $rememberToken );
 
         $this->em->flush();
+
+        // Add the ID in session in order to update the UserRememberToken session_id later in the request, when the session ID will be available
+        request()->request->add( [ "ixpm-user-remember-me-token-id" => $rememberToken->getId() ] );
     }
 
     /**
