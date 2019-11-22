@@ -23,6 +23,8 @@
 
 namespace Repositories;
 
+use Illuminate\Support\Facades\Session as SessionFacade;
+
 use Doctrine\ORM\EntityRepository;
 
 
@@ -52,7 +54,8 @@ class UserRememberTokens extends EntityRepository
                         urt.device     AS device, 
                         urt.ip         AS ip, 
                         urt.created    AS created, 
-                        urt.expires    AS expires 
+                        urt.expires    AS expires, 
+                        urt.session_id AS session_id 
                 FROM Entities\\UserRememberTokens urt
                 WHERE urt.User = " . (int)$userid;
 
@@ -66,5 +69,26 @@ class UserRememberTokens extends EntityRepository
         }
 
         return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
+    }
+
+
+    /**
+     * Delete all the Remember token for the user
+     *
+     * @param int   $userid
+     * @param bool  $deleteCurrentToken Do we need to delete the current token
+     *
+     * @return void
+     */
+    public function deleteByUser( int $userid, bool $deleteCurrentToken = false )
+    {
+        $dql = "DELETE FROM Entities\\UserRememberTokens urt
+                WHERE urt.User = ?1";
+
+        if( !$deleteCurrentToken ){
+            $dql .= " AND urt.session_id != '" . SessionFacade::getId() . "'";
+        }
+
+        return $this->getEntityManager()->createQuery( $dql )->setParameter(1, $userid )->execute();
     }
 }

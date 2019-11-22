@@ -313,7 +313,7 @@ class SecurityPasswordController extends Controller
 
 
     /**
-     * Test if yhe one time password is valid
+     * Test if the one time password is valid
      *
      * @param Request $request
      *

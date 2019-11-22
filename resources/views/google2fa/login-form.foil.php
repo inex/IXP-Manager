@@ -55,8 +55,9 @@ $this->layout( 'layouts/ixpv4' )
 
                         <?= Former::checkbox( 'remember_me' )
                             ->label('&nbsp;')
-                            ->text( 'Remember this device for ' . ( config( "google2fa.remember_me_expire" ) / 1440 ) . " days." )
+                            ->text( 'Remember me' )
                             ->value( 1 )
+                            ->check( Session::pull( "remember" ) )
                             ->inline()
                             ->blockHelp( '' );
                         ?>

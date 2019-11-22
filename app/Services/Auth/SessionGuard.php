@@ -36,6 +36,8 @@ use Symfony\Component\HttpFoundation\{
     Request
 };
 
+use Illuminate\Support\Facades\Session as SessionFacade;
+
 use Illuminate\Auth\SessionGuard as BaseGuard;
 use Illuminate\Auth\Events\Logout as LogoutEvent;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
@@ -70,7 +72,6 @@ class SessionGuard extends BaseGuard
         if ($this->loggedOut) {
             return;
         }
-
 
         // If we've already retrieved the user for the current request we can just
         // return it back immediately. We do not want to fetch the user data on
@@ -163,6 +164,10 @@ class SessionGuard extends BaseGuard
         // queue a permanent cookie that contains the encrypted copy of the user
         // identifier. We will then decrypt this later to retrieve the users.
         if ($remember) {
+
+            // Set session to know if the user checked remember me checkbox on the login form
+            SessionFacade::put( [ "rememberme" => true ] );
+            
             $token = $this->createRememberToken($user);
 
             $this->queueRecallerCookie($user, $token);

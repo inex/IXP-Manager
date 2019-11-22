@@ -27,7 +27,13 @@ use D2EM, DateTime, Hash, Log;
 
 use Illuminate\Support\Str;
 
-use Entities\{CustomerToUser as CustomerToUserEntity, User as UserEntity, UserLoginHistory as UserLoginHistoryEntity};
+use Entities\{
+    CustomerToUser      as CustomerToUserEntity,
+    Session             as SessionEntity,
+    User                as UserEntity,
+    UserLoginHistory    as UserLoginHistoryEntity,
+    UserRememberTokens  as UserRememberTokensEntity
+};
 
 use Doctrine\ORM\EntityRepository;
 
@@ -653,6 +659,21 @@ class User extends EntityRepository
         }
 
         return null;
+
+    }
+
+    /**
+     * Delete all the active session and remember me token for the user
+     *
+     * @param int   $id
+     * @param bool  $deleteCurrentSession Do we need to delete the current session
+     *
+     * @return void
+     */
+    public function deleteActiveSession( int $id, $deleteCurrentSession = false ) {
+
+        D2EM::getRepository( UserRememberTokensEntity::class    )->deleteByUser( $id, $deleteCurrentSession );
+        D2EM::getRepository( SessionEntity::class               )->deleteByUser( $id, $deleteCurrentSession );
 
     }
 }

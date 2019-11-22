@@ -323,7 +323,7 @@ class UserRememberTokens extends \Entities\UserRememberTokens implements \Doctri
     /**
      * {@inheritDoc}
      */
-    public function setSessionId(string $session_id)
+    public function setSessionId($session_id)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSessionId', [$session_id]);
