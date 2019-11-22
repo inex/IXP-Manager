@@ -30,6 +30,7 @@ use Entities\{
     CoreInterface       as CoreInterfaceEntity,
     CoreLink            as CoreLinkEntity,
     PhysicalInterface   as PhysicalInterfaceEntity,
+    SwitchPort          as SwitchPortEntity,
     VirtualInterface    as VirtualInterfaceEntity
 };
 
@@ -39,6 +40,19 @@ use Laravel\Dusk\Browser;
 
 class CoreBundleControllerTest extends DuskTestCase
 {
+
+    public function tearDown(): void
+    {
+        foreach( [ 51, 55 ] as $spid ) {
+            $sp = D2EM::getRepository( SwitchPortEntity::class )->find( $spid );
+            D2EM::refresh($sp);
+            if( $sp ) {
+                $sp->setType( SwitchPortEntity::TYPE_CORE );
+                D2EM::flush();
+            }
+        }
+        parent::tearDown();
+    }
 
     /**
      * A Dusk test example.

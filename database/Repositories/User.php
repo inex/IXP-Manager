@@ -327,10 +327,13 @@ class User extends EntityRepository
                         u.lastupdated AS lastupdated,
                         COUNT( c2u ) as nbC2U,
                         MAX( c2u.privs ) as privileges,
-                        c2u.id as c2uid
+                        c2u.id as c2uid,
+                        ps.google2fa_enable as google2fa_enabled,
+                        ps.id as psid
                   FROM Entities\\User u
                   LEFT JOIN u.Customer as c 
                   LEFT JOIN u.Customers as c2u
+                  LEFT JOIN u.PasswordSecurity as ps
                   WHERE 1 = 1
                   AND c2u.customer = " . $user->getCustomer()->getId() . "
                   AND c2u.privs <= " . UserEntity::AUTH_CUSTADMIN;
