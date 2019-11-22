@@ -128,6 +128,8 @@ class SessionGuard extends BaseGuard
      * @param  AuthenticatableContract  $user
      * @param  bool  $remember
      * @return void
+     *
+     * @throws
      */
     public function RememberMeViaOTP(AuthenticatableContract $user, $remember = false)
     {
@@ -142,6 +144,17 @@ class SessionGuard extends BaseGuard
                 $token = $this->createRememberToken($user);
 
                 $this->queueRecallerCookie($user, $token);
+
+                if( request()->has( "ixpm-enable-2fa" ) ) {
+                    // Check we added the in the request the UserRememberToken id
+                    if( request()->request->has( "ixpm-user-remember-me-token-id" ) ){
+                        // Updating the current UserRememberToken session id With the current session ID in order to link them
+                        $urt = D2EM::getRepository( UserRememberTokensEntity::class )->find( request()->request->get( "ixpm-user-remember-me-token-id" ) );
+                        $urt->setSessionId( $this->session->getId() );
+                        D2EM::flush();
+                    }
+                }
+
             }
 
 
@@ -167,7 +180,7 @@ class SessionGuard extends BaseGuard
 
             // Set session to know if the user checked remember me checkbox on the login form
             SessionFacade::put( [ "rememberme" => true ] );
-            
+
             $token = $this->createRememberToken($user);
 
             $this->queueRecallerCookie($user, $token);

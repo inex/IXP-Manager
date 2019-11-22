@@ -217,6 +217,11 @@ class SecurityPasswordController extends Controller
         $user->getPasswordSecurity()->setGoogle2faEnable( true );
         D2EM::flush();
 
+        // Add a value in the request to know that we come from the profile@enable
+        // we will need this information when we will login the 2FA autehentificator
+        // to link the current session to the remember me token, if the remember me checkbox was checked
+        $request->request->add( [ "ixpm-enable-2fa" => true ] );
+
         // Authenticate the user via 2FA as the code is valid
         $this->login2FAAutenticator( $request, true );
 
