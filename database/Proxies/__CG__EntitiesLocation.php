@@ -64,10 +64,10 @@ class Location extends \Entities\Location implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'shortname', 'tag', 'address', 'nocphone', 'nocfax', 'nocemail', 'officephone', 'officefax', 'officeemail', 'id', 'Cabinets', 'notes', '' . "\0" . 'Entities\\Location' . "\0" . 'pdb_facility_id'];
+            return ['__isInitialized__', 'name', 'shortname', 'tag', 'address', 'country', 'city', 'nocphone', 'nocfax', 'nocemail', 'officephone', 'officefax', 'officeemail', 'id', 'Cabinets', 'notes', '' . "\0" . 'Entities\\Location' . "\0" . 'pdb_facility_id'];
         }
 
-        return ['__isInitialized__', 'name', 'shortname', 'tag', 'address', 'nocphone', 'nocfax', 'nocemail', 'officephone', 'officefax', 'officeemail', 'id', 'Cabinets', 'notes', '' . "\0" . 'Entities\\Location' . "\0" . 'pdb_facility_id'];
+        return ['__isInitialized__', 'name', 'shortname', 'tag', 'address', 'country', 'city', 'nocphone', 'nocfax', 'nocemail', 'officephone', 'officefax', 'officeemail', 'id', 'Cabinets', 'notes', '' . "\0" . 'Entities\\Location' . "\0" . 'pdb_facility_id'];
     }
 
     /**
@@ -483,6 +483,50 @@ class Location extends \Entities\Location implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPdbFacilityId', []);
 
         return parent::getPdbFacilityId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCountry()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCountry', []);
+
+        return parent::getCountry();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCountry(string $country): \Entities\Location
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCountry', [$country]);
+
+        return parent::setCountry($country);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCity()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCity', []);
+
+        return parent::getCity();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCity(string $city): \Entities\Location
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCity', [$city]);
+
+        return parent::setCity($city);
     }
 
 }

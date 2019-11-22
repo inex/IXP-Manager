@@ -34,6 +34,8 @@ use Illuminate\Http\Response;
 use IXP\Http\Controllers\Api\V4\Controller;
 
 use Entities\Switcher as SwitcherEntity;
+use Entities\IXP as IXPEntity;
+use Entities\CoreBundle as CoreBundleEntity;
 
 use IXP\Tasks\Yaml\SwitchConfigurationGenerator as SwitchConfigurationGenerator;
 
@@ -293,6 +295,81 @@ class YamlController extends Controller {
         $out['bgp']['out']['pg-ebgp-ipv4-ixp']['neighbors'] = $pgentry;
 
         return $this->structuredResponse( $out, $format );
+    }
+
+    /**
+     * Generate a list of switches
+     *
+     * @return View
+     */
+    public function listSwitch( string $format = null ) {
+
+        /** @var \Entities\Switcher $switch */
+        $ixp = D2EM::getRepository( IXPEntity::class )->getDefault();
+        foreach( $ixp->getInfrastructures() as $infra ) {
+            $entry = [];
+            foreach( $infra->getSwitchers() as $switch ) {
+                $entry['name']           = $switch->getName();
+                $entry['id']             = $switch->getId();
+                $entry['infrastructure'] = $infra->getId();
+                $entry['active']         = $switch->getActive();
+                $switches['switches'][]  = $entry;
+            }
+        }
+
+        return $this->structuredResponse( $switches, $format );
+    }
+
+    /**
+     * Generate a list of Core Bundles
+     *
+     * @return View
+     */
+    public function listCoreBundle( string $format = null ) {
+
+        /** @var \Entities\Switcher $switch */
+        $cbs = D2EM::getRepository( CoreBundleEntity::class )->findAll();
+
+        foreach( D2EM::getRepository( CoreBundleEntity::class )->findAll() as $cb ) {
+            $entry = [];
+
+            $entry['id']           	=  $cb->getId();
+            $entry['description']  	=  $cb->getDescription();
+            $entry['graphtitle']   	=  $cb->getGraphTitle();
+            $entry['cost'] 	   	=  $cb->getCost();
+            $entry['preference']   	=  $cb->getPreference();
+            $entry['enabled'] 	   	=  $cb->getEnabled();
+            $entry['type'] 	   	=  $cb->getType();
+            $entry['switchsidea']  	=  $cb->getSwitchSideX( true )->getName();
+            $entry['switchsideb']  	=  $cb->getSwitchSideX( false )->getName();
+
+            $speed = count( $cb->getCoreLinks() ) * $cb->getSpeedPi() * 1000000;
+
+            $entry['bandwidth']    	=  $speed;
+
+            $formats = [ "bits", "K", "M", "G", "T"];
+            for( $i = 0; $i < sizeof( $formats ); $i++ ) {
+                if( ( $speed / 1000.0 < 1.0 ) || ( sizeof( $formats ) == $i + 1 ) ) {
+                    $prettybandwidth =  round($speed) . $formats[$i];
+                    break;
+                } else {
+                    $speed /= 1000.0;
+                }
+            }
+
+            $entry['prettybandwidth']   =  $prettybandwidth;
+
+            $corelinkids = [];
+            foreach ($cb->getCoreLinks() as $cl) {
+                $corelinkids[] = $cl->getId();
+                $entry['infrastructure']   = $cl->getCoreInterfaceSideA()->getPhysicalInterface()->getSwitchPort()->getSwitcher()->getInfrastructure()->getId();
+            }
+            $entry['corelinks']   =  $corelinkids;
+
+            $corebundles['corebundles'][] = $entry;
+        }
+
+        return $this->structuredResponse( $corebundles, $format );
     }
 
     /**

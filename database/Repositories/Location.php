@@ -89,6 +89,8 @@ class Location extends EntityRepository
                         l.nocphone AS nocphone, 
                         l.nocemail AS nocemail, 
                         l.address AS address,
+                        l.city AS city,
+                        l.country AS country,
                         l.nocfax AS nocfax, 
                         l.officephone AS officephone, 
                         l.officefax AS officefax,

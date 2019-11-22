@@ -176,7 +176,7 @@ class CoreLink extends \Entities\CoreLink implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function getId()
+    public function getId(): int
     {
         if ($this->__isInitialized__ === false) {
             return (int)  parent::getId();
@@ -191,7 +191,7 @@ class CoreLink extends \Entities\CoreLink implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function getBFD()
+    public function getBFD(): bool
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getBFD', []);
@@ -202,7 +202,7 @@ class CoreLink extends \Entities\CoreLink implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function getEnabled()
+    public function getEnabled(): bool
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEnabled', []);
@@ -224,18 +224,18 @@ class CoreLink extends \Entities\CoreLink implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function getIPv46Subnet()
+    public function getIPv6Subnet()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIPv46Subnet', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIPv6Subnet', []);
 
-        return parent::getIPv46Subnet();
+        return parent::getIPv6Subnet();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getCoreInterfaceSideA()
+    public function getCoreInterfaceSideA(): \Entities\CoreInterface
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreInterfaceSideA', []);
@@ -246,7 +246,7 @@ class CoreLink extends \Entities\CoreLink implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function getCoreInterfaceSideB()
+    public function getCoreInterfaceSideB(): \Entities\CoreInterface
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreInterfaceSideB', []);
@@ -257,7 +257,7 @@ class CoreLink extends \Entities\CoreLink implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function getCoreInterfaces()
+    public function getCoreInterfaces(): array
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCoreInterfaces', []);

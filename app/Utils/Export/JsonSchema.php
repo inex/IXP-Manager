@@ -130,7 +130,7 @@ class JsonSchema
             /** @var Infrastructure $infra */
             $i['shortname'] = $infra->getName();
             $i['name'] = config('identity.legalname');
-            $i['country'] = config('identity.location.country');
+            $i['country'] = $infra->getCountry() ?? config('identity.location.country');
             $i['url'] = config('identity.corporate_url');
 
             if( $infra->getPeeringdbIxId() ) {
@@ -201,8 +201,8 @@ class JsonSchema
             $switchentry['id']      = $switch->getId();
             $switchentry['name']    = $switch->getName();
             $switchentry['colo']    = $switch->getCabinet()->getLocation()->getName();
-            $switchentry['city']    = config( 'identity.location.city'    );
-            $switchentry['country'] = config( 'identity.location.country' );
+            $switchentry['city']    = $switch->getCabinet()->getLocation()->getCity() ?? config( 'identity.location.city'    );
+            $switchentry['country'] = $switch->getCabinet()->getLocation()->getCountry() ?? config( 'identity.location.country' );
 
             if( $switch->getCabinet()->getLocation()->getPdbFacilityId() ) {
                 $switchentry['pdb_facility_id'] = intval($switch->getCabinet()->getLocation()->getPdbFacilityId());

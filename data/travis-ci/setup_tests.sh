@@ -34,7 +34,7 @@ composer install --no-interaction --prefer-dist --no-suggest
 echo php artisan dusk:chrome-driver
 php artisan dusk:chrome-driver
 
-bzcat data/travis-ci/travis_ci_test_db.sql.bz2  | mysql --default-character-set=utf8mb4 -h 127.0.0.1 -u travis myapp_test
+cat data/travis-ci/travis_ci_test_db.sql  | mysql --default-character-set=utf8mb4 -h 127.0.0.1 -u travis myapp_test
 
 
 echo google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost

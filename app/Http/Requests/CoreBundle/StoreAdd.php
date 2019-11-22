@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Http\Requests;
+namespace IXP\Http\Requests\CoreBundle;
 
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -25,16 +25,22 @@ namespace IXP\Http\Requests;
 
 
 
-use Auth;
+use Auth, D2EM;
 
 use Entities\{
-    CoreBundle as CoreBundleEntity
+    CoreBundle as CoreBundleEntity,
+    SwitchPort as SwitchPortEntity
 };
 
 use Illuminate\Foundation\Http\FormRequest;
 
+use Illuminate\Validation\Validator;
 
-class StoreCoreBundle extends FormRequest
+use IXP\Utils\View\Alert\Alert;
+use IXP\Utils\View\Alert\Container as AlertContainer;
+
+
+class StoreAdd extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -73,8 +79,37 @@ class StoreCoreBundle extends FormRequest
             'vi-channel-number-b'       => ( $this->input('type') == CoreBundleEntity::TYPE_L2_LAG || $this->input('type') == CoreBundleEntity::TYPE_L3_LAG) ? "required|integer|min:0" : "nullable"
         ];
 
-        $result = $this->input( 'cb' )  ? $arrayCb : array_merge( $arrayCb, $arrayVi) ;
 
-        return $result ;
+        $result = $this->input( 'cb' )  ? $arrayCb : array_merge( $arrayCb, $arrayVi );
+
+        return $result;
     }
+
+
+    public function withValidator( Validator $validator )
+    {
+        if( !$validator->fails() ) {
+            $validator->after( function( Validator $validator ) {
+
+                if( count( $this->input( 'cl-details' ) ) == 0 ){
+                    AlertContainer::push( 'You need at add least one Core link' , Alert::DANGER );
+                    $validator->errors()->add( "", "" );
+                    return false;
+                }
+
+                foreach( $this->input( 'cl-details' ) as $index => $detail ) {
+                    foreach( [ "a", "b" ] as $side ){
+                        if( !D2EM::getRepository( SwitchPortEntity::class )->find( $detail[ "hidden-sp-" . $side ] ) ) {
+                            AlertContainer::push( 'Please select the switch port side ' . ucfirst( $side ) . " for the core link number " . $index , Alert::DANGER );
+                            $validator->errors()->add( "switch-port", "" );
+                            return false;
+                        }
+                    }
+                }
+            });
+        }
+        return true;
+
+    }
+
 }

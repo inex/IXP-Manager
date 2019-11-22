@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 6.0.4 on 2019-11-12 09:56:48.
+ * Generated for Laravel 6.4.1 on 2019-11-04 16:00:59.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -1792,6 +1792,18 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Auth\AuthManager $instance */
                         return $instance->provider($name, $callback);
+        }
+        
+        /**
+         * Determines if any guards have already been resolved.
+         *
+         * @return bool 
+         * @static 
+         */ 
+        public static function hasResolvedGuards()
+        {
+                        /** @var \Illuminate\Auth\AuthManager $instance */
+                        return $instance->hasResolvedGuards();
         }
         
         /**
@@ -5203,6 +5215,19 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Determine if a file or directory is missing.
+         *
+         * @param string $path
+         * @return bool 
+         * @static 
+         */ 
+        public static function missing($path)
+        {
+                        /** @var \Illuminate\Filesystem\Filesystem $instance */
+                        return $instance->missing($path);
+        }
+        
+        /**
          * Get the contents of a file.
          *
          * @param string $path
@@ -6529,6 +6554,18 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * 
+         *
+         * @return array 
+         * @static 
+         */ 
+        public static function getChannels()
+        {
+                        /** @var \Illuminate\Log\LogManager $instance */
+                        return $instance->getChannels();
+        }
+        
+        /**
          * Get the default log driver name.
          *
          * @return string 
@@ -6565,6 +6602,19 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Log\LogManager $instance */
                         return $instance->extend($driver, $callback);
+        }
+        
+        /**
+         * Unset the given channel instance.
+         *
+         * @param string|null $name
+         * @return \Illuminate\Log\LogManager 
+         * @static 
+         */ 
+        public static function forgetChannel($driver = null)
+        {
+                        /** @var \Illuminate\Log\LogManager $instance */
+                        return $instance->forgetChannel($driver);
         }
         
         /**
@@ -7469,8 +7519,6 @@ namespace Illuminate\Support\Facades {
      *
      * @method static string sendResetLink(array $credentials)
      * @method static mixed reset(array $credentials, \Closure $callback)
-     * @method static void validator(\Closure $callback)
-     * @method static bool validateNewPassword(array $credentials)
      * @see \Illuminate\Auth\Passwords\PasswordBroker
      */ 
     class Password {
@@ -9725,7 +9773,6 @@ namespace Illuminate\Support\Facades {
          * Checks whether or not the method is safe.
          *
          * @see https://tools.ietf.org/html/rfc7231#section-4.2.1
-         * @param bool $andCacheable Adds the additional condition that the method should be cacheable. True by default.
          * @return bool 
          * @static 
          */ 
@@ -10226,6 +10273,19 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Http\Request $instance */
                         return $instance->anyFilled($keys);
+        }
+        
+        /**
+         * Determine if the request is missing a given input item key.
+         *
+         * @param string|array $key
+         * @return bool 
+         * @static 
+         */ 
+        public static function missing($key)
+        {
+                        /** @var \Illuminate\Http\Request $instance */
+                        return $instance->missing($key);
         }
         
         /**
@@ -11498,6 +11558,18 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Register the typical confirm password routes for an application.
+         *
+         * @return void 
+         * @static 
+         */ 
+        public static function confirmPassword()
+        {
+                        /** @var \Illuminate\Routing\Router $instance */
+                        $instance->confirmPassword();
+        }
+        
+        /**
          * Register the typical email verification routes for an application.
          *
          * @return void 
@@ -12762,6 +12834,19 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Determine if a file or directory is missing.
+         *
+         * @param string $path
+         * @return bool 
+         * @static 
+         */ 
+        public static function missing($path)
+        {
+                        /** @var \Illuminate\Filesystem\FilesystemAdapter $instance */
+                        return $instance->missing($path);
+        }
+        
+        /**
          * Get the full path for the file at the given "short" path.
          *
          * @param string $path
@@ -13321,6 +13406,7 @@ namespace Illuminate\Support\Facades {
          * @param \DateTimeInterface|\DateInterval|int|null $expiration
          * @param bool $absolute
          * @return string 
+         * @throws \InvalidArgumentException
          * @static 
          */ 
         public static function signedRoute($name, $parameters = array(), $expiration = null, $absolute = true)
@@ -13357,6 +13443,33 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Routing\UrlGenerator $instance */
                         return $instance->hasValidSignature($request, $absolute);
+        }
+        
+        /**
+         * Determine if the signature from the given request matches the URL.
+         *
+         * @param \Illuminate\Http\Request $request
+         * @param bool $absolute
+         * @return bool 
+         * @static 
+         */ 
+        public static function hasCorrectSignature($request, $absolute = true)
+        {
+                        /** @var \Illuminate\Routing\UrlGenerator $instance */
+                        return $instance->hasCorrectSignature($request, $absolute);
+        }
+        
+        /**
+         * Determine if the expires timestamp from the given request is not from the past.
+         *
+         * @param \Illuminate\Http\Request $request
+         * @return bool 
+         * @static 
+         */ 
+        public static function signatureHasNotExpired($request)
+        {
+                        /** @var \Illuminate\Routing\UrlGenerator $instance */
+                        return $instance->signatureHasNotExpired($request);
         }
         
         /**
@@ -16361,6 +16474,19 @@ namespace IXP\Support\Facades {
         }
         
         /**
+         * Get an instance of a customer aggregate graph
+         *
+         * @param \Entities\Customer $c
+         * @return \IXP\Services\Grapher\Graph\Customer 
+         * @static 
+         */ 
+        public static function customer($c)
+        {
+                        /** @var \IXP\Services\Grapher $instance */
+                        return $instance->customer($c);
+        }
+        
+        /**
          * Get an instance of a physint graph
          *
          * @param \Entities\PhysicalInterface $int
@@ -16400,16 +16526,17 @@ namespace IXP\Support\Facades {
         }
         
         /**
-         * Get an instance of a customer aggregate graph
+         * Get an instance of a CoreBundle aggregate graph
          *
-         * @param \Entities\Customer $c
-         * @return \IXP\Services\Grapher\Graph\Customer 
+         * @param \Entities\CoreBundle $cb
+         * @param string $side
+         * @return \IXP\Services\Grapher\Graph\CoreBundle 
          * @static 
          */ 
-        public static function customer($c)
+        public static function coreBundle($cb, $side = 'a')
         {
                         /** @var \IXP\Services\Grapher $instance */
-                        return $instance->customer($c);
+                        return $instance->coreBundle($cb, $side);
         }
         
         /**
@@ -17209,7 +17336,7 @@ namespace Webpatser\Countries {
          * Begin querying a model with eager loading.
          *
          * @param array|string $relations
-         * @return \Illuminate\Database\Eloquent\Builder|static 
+         * @return \Illuminate\Database\Eloquent\Builder 
          * @static 
          */ 
         public static function with($relations)
@@ -20576,7 +20703,7 @@ namespace  {
              * Create and return an un-saved model instance.
              *
              * @param array $attributes
-             * @return \Illuminate\Database\Eloquent\Model 
+             * @return \Illuminate\Database\Eloquent\Model|static 
              * @static 
              */ 
             public static function make($attributes = array())
@@ -23800,19 +23927,17 @@ if (! function_exists('retry')) {
     function retry($times, callable $callback, $sleep = 0, $when = null)
     {
         $attempts = 0;
-        $times--;
 
         beginning:
         $attempts++;
+        $times--;
 
         try {
             return $callback($attempts);
         } catch (Exception $e) {
-            if (! $times || ($when && ! $when($e))) {
+            if ($times < 1 || ($when && ! $when($e))) {
                 throw $e;
             }
-
-            $times--;
 
             if ($sleep) {
                 usleep($sleep * 1000);

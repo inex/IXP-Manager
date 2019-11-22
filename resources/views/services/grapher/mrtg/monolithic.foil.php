@@ -24,6 +24,8 @@
 
 <?= $this->insert('services/grapher/mrtg/member-ports'); ?>
 
+<?= $this->insert('services/grapher/mrtg/core-bundles'); ?>
+
 <?= $this->insert('services/grapher/mrtg/custom-footer'); ?>
 
 <?= $this->insert('services/grapher/mrtg/footer', [ 'gentime' => microtime(true) - $now ] ); ?>

@@ -137,15 +137,18 @@ Route::group( [  'namespace' => 'Interfaces', 'prefix' => 'interfaces' ], functi
     });
 
     Route::group( [  'prefix' => 'core-bundle' ], function() {
-        Route::get(     'list',                             'CoreBundleController@list'             )->name(    'core-bundle/list');
-        Route::get(     'add-wizard',                       'CoreBundleController@addWizard'        )->name(    'core-bundle/add');
-        Route::get(     'edit/{id}',                        'CoreBundleController@edit'             )->name(    'core-bundle/edit');
-        Route::post(    'add-core-link-frag',               'CoreBundleController@addCoreLinkFrag'  )->name(    'core-bundle/add-core-link-frag');
-        Route::post(    'store-wizard',                     'CoreBundleController@storeWizard'      )->name(    'core-bundle/store');
-        Route::post(    'add-core-link',                    'CoreBundleController@addCoreLink'      )->name(    'core-bundle/add-core-link');
-        Route::post(    '{id}/store-core-links',            'CoreBundleController@storeCoreLinks'   )->name(    'core-bundle/store-core-link');
-        Route::post(    'delete/{id}',                      'CoreBundleController@deleteCoreBundle' )->name(    'core-bundle/delete');
-        Route::post(    'core-link/delete/{id}',            'CoreBundleController@deleteCoreLink'   )->name(    'core-bundle/delete-core-link');
+        Route::get(     'list',                             'CoreBundleController@list'             )->name(    'core-bundle@list'          );
+        Route::get(     'add-wizard',                       'CoreBundleController@addWizard'        )->name(    'core-bundle@add-wizard'    );
+        Route::get(     'edit/{id}',                        'CoreBundleController@edit'             )->name(    'core-bundle@edit'          );
+        Route::post(    'add-store-wizard',                 'CoreBundleController@addStoreWizard'   )->name(    'core-bundle@add-store'     );
+        Route::post(    'edit-store-wizard',                'CoreBundleController@editStoreWizard'  )->name(    'core-bundle@edit-store'    );
+        Route::post(    'delete',                           'CoreBundleController@delete'           )->name(    'core-bundle@delete'        );
+    });
+
+    Route::group( [  'prefix' => 'core-link' ], function() {
+        Route::post(    'add',              'CoreLinkController@addStore'           )->name( 'core-link@add-store'      );
+        Route::post(    'store',            'CoreLinkController@editStore'          )->name( 'core-link@edit-store'     );
+        Route::post(    'delete',           'CoreLinkController@delete'             )->name( 'core-link@delete'         );
     });
 });
 

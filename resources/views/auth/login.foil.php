@@ -83,7 +83,7 @@
 
             <?php if( config( 'auth.peeringdb.enabled' ) ): ?>
 
-                <hr>
+                <hr class="tw-my-4">
 
                 <p class="tw-text-center tw-text-lg tw-italic tw-text-grey-dark">or login with</p>
 

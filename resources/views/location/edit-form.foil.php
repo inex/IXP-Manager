@@ -41,6 +41,23 @@
             ->blockHelp( '' );
         ?>
 
+        <?= Former::text( 'city' )
+            ->label( 'City' )
+            ->blockHelp( "The city is shown in the <a
+                href=\"https://docs.ixpmanager.org/features/ixf-export/\">IX-F Member
+                Export</a> for each switch that is attached to this facility." );
+        ?>
+
+        <?= Former::select( 'country' )
+            ->label( 'Country' )
+            ->fromQuery( $t->data[ 'params'][ 'countries' ], 'name', 'iso_3166_2' )
+            ->placeholder( 'Choose a country' )
+            ->addClass( 'chzn-select' )
+            ->blockHelp( 'The country is shown in the <a
+                href="https://docs.ixpmanager.org/features/ixf-export/">IX-F Member
+                Export</a> for each switch that is attached to this facility.' );
+        ?>
+
         <div class="row mt-4">
             <div class="col-lg-6 col-md-12">
                 <div class="card">

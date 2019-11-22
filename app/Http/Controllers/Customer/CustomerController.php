@@ -46,6 +46,8 @@ use Entities\{
     IRRDBConfig             as IRRDBConfigEntity,
     IXP                     as IXPEntity,
     NetworkInfo             as NetworkInfoEntity,
+    PatchPanelPort          as PatchPanelPortEntity,
+    PatchPanelPortHistory   as PatchPanelPortHistoryEntity,
     RSPrefix                as RSPrefixEntity,
     User                    as UserEntity,
     Vlan                    as VlanEntity
@@ -543,7 +545,8 @@ class CustomerController extends Controller
             'rsRoutes'                  => ( config( 'ixp_fe.frontend.disabled.rs-prefixes', false ) && $c->isRouteServerClient() )
                                                 ? D2EM::getRepository( RSPrefixEntity::class )->aggregateRouteSummariesForCustomer( $c->getId() ) : false,
 
-            'crossConnects'             => D2EM::getRepository( CustomerEntity::class )->getCrossConnects( $c->getId() ),
+            'crossConnects'             => D2EM::getRepository( PatchPanelPortEntity::class )->getForCustomer( $c->getId() ),
+            'crossConnectsHistory'      => D2EM::getRepository( PatchPanelPortHistoryEntity::class )->getForCustomer( $c ),
             'aggregateGraph'            => $c->isGraphable() ? $grapher->customer( $c ) : false,
             'grapher'                   => $grapher,
             'rsclient'                  => $c->isRouteServerClient(),

@@ -226,6 +226,14 @@ return [
 
     ],
 
-
+    /*
+    |--------------------------------------------------------------------------
+    | Vlan Interface
+    |--------------------------------------------------------------------------
+    |
+    */
+    'vlaninterfaces' => [
+        'hostname_required'  => env( 'IXP_FE_VLANINTERFACES_HOSTNAME_REQUIRED', true ),
+    ],
 
 ];

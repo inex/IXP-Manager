@@ -141,6 +141,7 @@ abstract class Doctrine2Frontend extends Controller {
         'INTEGER'           => 'integer',
         'LIMIT'             => 'limit',
         'TEXT'              => 'text',
+        'COUNTRY'           => 'country',
     ];
 
 
