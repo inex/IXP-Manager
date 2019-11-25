@@ -22,7 +22,7 @@
         } else if( btn_id == "reset" ){
             url = "<?= route( "2fa@reset" ) ?>";
         } else if( btn_id == "enable" ){
-
+            url = "<?= route( "2fa@check-password" ) ?>";
         }
 
         $( "#2fa-form" ).attr( 'action', url ).submit();
