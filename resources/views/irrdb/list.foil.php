@@ -6,8 +6,12 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <a href="<?= route( "customer@overview" , [ "id" => $t->customer->id ] ) ?>"><?= $t->customer->name ?></a>
-    /
+    <?php if(  Auth::user()->isSuperUser()  ): ?>
+        <a href="<?= route( "customer@overview" , [ "id" => $t->customer->id ] ) ?>">
+            <?= $t->customer->name ?>
+        </a>
+        /
+    <?php endif; ?>
     IRRDB <?= $t->type == "asn" ? 'ASNs' : 'Prefixes' ?> IPv<?= $t->protocol ?> Entries (<?= count($t->irrdbList) ?>)
 <?php $this->append() ?>
 
