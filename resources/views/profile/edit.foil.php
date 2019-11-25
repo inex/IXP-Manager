@@ -126,6 +126,19 @@
                 Two Factor Authentification
             </h3>
             <hr>
+
+            <p>
+                <b>IXP Manager</b> supports a Google Authenticator compatible HMAC-Based One-time Password (HOTP) algorithm specified in <a href="https://tools.ietf.org/html/rfc4226">RFC 4226</a>
+                and the Time-based One-time Password (TOTP) algorithm specified in <a href="https://tools.ietf.org/html/rfc6238">RFC 6238</a>.
+            </p>
+
+            <?php if( !Auth::getUser()->getPasswordSecurity() || !Auth::getUser()->getPasswordSecurity()->isGoogle2faEnable() ): ?>
+                <p>
+                    To enable it, begin by entering your password
+                    below and follow the instructions.
+                </p>
+            <?php endif ?>
+
             <?= Former::open()
                 ->method( 'post' )
                 ->id( "2fa" )
@@ -153,10 +166,10 @@
                 <?php else: ?>
 
                     <?= Former::actions(
-                        Former::primary_submit( 'Delete 2FA' )->id( "btn-delete2fa" ),
-                        Former::primary_submit( 'Reset 2FA' )->id( "btn-reset2fa" ),
-                        Former::primary_submit( 'Get 2FA QRcode' )->id( "btn-enable-2fa" )
-                    );
+                            Former::danger_submit( 'Disable 2FA' )->id( "btn-delete2fa" ),
+                            Former::secondary_submit( 'Reset 2FA' )->id( "btn-reset2fa" ),
+                            Former::secondary_submit( 'Get 2FA QRcode' )->id( "btn-enable-2fa" )
+                        );
                     ?>
 
                 <?php endif; ?>

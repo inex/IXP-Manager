@@ -8,9 +8,10 @@
     });
 
 
-    $( "#2fa" ).submit(function( event ) {
+    $( "#2fa" ).on( 'submit', function( event ) {
 
-        let btn_id = $(this).find("input[type=submit]:focus" ).attr( "id" );
+        console.log( $(this).find("input[type=submit]" ) );
+        let btn_id = $(this).find("input[type=submit][clicked=true]" ).attr( "id" );
         let url = "<?= route( "2fa@check-password" ) ?>";
 
         if( btn_id == "btn-delete2fa" ) {

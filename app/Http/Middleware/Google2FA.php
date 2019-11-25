@@ -29,10 +29,20 @@ use IXP\Support\Google2FAAuthenticator;
 
 use Closure, Session;
 
+/**
+ * Middleware: Manage Doctrine2Frontend filters, etc
+ *
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @category   IXP
+ * @package    IXP\Http\Middleware
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class Google2FA
 {
     /**
-     * @var array List of excepted routes
+     * @var array List of routes to exclude from 2fa
      */
     protected $except = [
         '2fa/superuser-verification',
@@ -50,22 +60,23 @@ class Google2FA
     {
         if( !$this->inExceptArray( $request ) ) {
 
-            Session::remove( "2fa-". $request->user()->getId() );
+            // Session used to hide the lateral menu
+            Session::remove( '2fa-' . $request->user()->getId() );
 
             // Force the superuser to enable 2FA
             if( $request->user()->is2FARequired() ) {
 
-                // If we come from the login back then redirect the the 2FA verification form. Otherwise logout
-                if( request()->headers->get('referer', '' ) == route( "login@login" ) ){
-                    return redirect( route( "2fa@superuser-verification" ) );
+                // If we come from the login page then redirect to the 2FA verification form. Otherwise logout:
+                if( request()->headers->get('referer', '' ) === route( 'login@login' ) ) {
+                    return redirect( route( '2fa@superuser-verification' ) );
                 }
 
-                return redirect( route( "login@logout" ) );
+                return redirect( route( 'login@logout' ) );
             }
 
             $authenticator = app(Google2FAAuthenticator::class)->boot( $request );
 
-            if ( $authenticator->isAuthenticated() ) {
+            if( $authenticator->isAuthenticated() ) {
                 return $next( $request );
             }
 
@@ -79,19 +90,19 @@ class Google2FA
     }
 
     /**
-     * Determine if the request has a URI that should pass through 2FA
+     * Determine if the request has a URI that should not pass through 2FA
      *
      * @param Request $request
      * @return bool
      */
-    protected function inExceptArray( $request )
+    protected function inExceptArray( $request ): bool
     {
-        foreach ($this->except as $except) {
-            if ($except !== '/') {
-                $except = trim($except, '/');
+        foreach( $this->except as $except ) {
+            if( $except !== '/' ) {
+                $except = trim( $except, '/' );
             }
 
-            if ($request->fullUrlIs($except) || $request->is($except)) {
+            if( $request->fullUrlIs( $except ) || $request->is( $except ) ) {
                 return true;
             }
         }

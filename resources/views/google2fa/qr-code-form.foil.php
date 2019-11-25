@@ -26,7 +26,9 @@ $this->layout( 'layouts/ixpv4' )
                     <p>
                         Two factor authentication (2FA) strengthens access security by requiring two methods (also referred to as factors) to verify your identity. Two factor authentication protects against phishing, social engineering and password brute force attacks and secures your logins from attackers exploiting weak or stolen credentials.
                     </p>
-                    <p>To Enable Two Factor Authentication on your Account, you need to do following steps</p>
+                    <p>
+                        To Enable Two Factor Authentication on your Account, you need to do following steps.
+                    </p>
                     <p>
                         <b>Step 1:</b> Set up your two factor authentication by scanning the barcode below. Alternatively, you can use the code: <b><?= $t->ps->getGoogle2faSecret() ?></b>
                     </p>
