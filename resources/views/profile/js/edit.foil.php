@@ -3,26 +3,30 @@
     /**
      * Disable submiting form via pressing 'enter' key
      */
-    $('#2fa input').on('keypress', function(e) {
+    $('#2fa-form input').on('keypress', function(e) {
         return e.which !== 13;
     });
 
 
-    $( "#2fa" ).on( 'submit', function( event ) {
+    /**
+     * Set the form action depending on the button clicked
+     */
+    $( "input[id^='btn-2fa']" ).on( 'click', function( event ) {
+        event.preventDefault();
 
-        console.log( $(this).find("input[type=submit]" ) );
-        let btn_id = $(this).find("input[type=submit][clicked=true]" ).attr( "id" );
-        let url = "<?= route( "2fa@check-password" ) ?>";
+        let btn_id = (this.id).substring( 8 );
+        let url = "";
 
-        if( btn_id == "btn-delete2fa" ) {
+        if( btn_id == "delete" ) {
             url = "<?= route( "2fa@delete" ) ?>";
-        } else if( btn_id == "btn-reset2fa" ){
+        } else if( btn_id == "reset" ){
             url = "<?= route( "2fa@reset" ) ?>";
+        } else if( btn_id == "enable" ){
+
         }
 
-        $(this).attr( 'action', url );
+        $( "#2fa-form" ).attr( 'action', url ).submit();
 
-        return true;
     });
 
 </script>

@@ -141,8 +141,8 @@
 
             <?= Former::open()
                 ->method( 'post' )
-                ->id( "2fa" )
-                ->action( Auth::getUser()->getPasswordSecurity() && Auth::getUser()->getPasswordSecurity()->isGoogle2faEnable() ? route ( "2fa@delete" ) : route ( "2fa@check-password" ) )
+                ->id( "2fa-form" )
+                ->action( Auth::getUser()->getPasswordSecurity() && Auth::getUser()->getPasswordSecurity()->isGoogle2faEnable() ? "#" : route ( "2fa@check-password" ) )
                 ->customInputWidthClass( 'col-xl-6 col-lg-8 col-sm-6' )
                 ->customLabelWidthClass( 'col-sm-4' )
                 ->actionButtonsCustomClass( "grey-box");
@@ -158,17 +158,17 @@
                 <?php if( Auth::getUser()->isSuperUser() && config( "google2fa.superuser_required" ) ): ?>
 
                     <?= Former::actions(
-                        Former::primary_submit( 'Reset 2FA' )->id( "btn-reset2fa" ),
-                        Former::primary_submit( 'Get 2FA QRcode' )->id( "btn-enable-2fa" )
+                        Former::primary_submit( 'Reset 2FA' )->id( "btn-2fa-reset" ),
+                        Former::primary_submit( 'Get 2FA QRcode' )->id( "btn-2fa-enable" )
                     );
                     ?>
 
                 <?php else: ?>
 
                     <?= Former::actions(
-                            Former::danger_submit( 'Disable 2FA' )->id( "btn-delete2fa" ),
-                            Former::secondary_submit( 'Reset 2FA' )->id( "btn-reset2fa" ),
-                            Former::secondary_submit( 'Get 2FA QRcode' )->id( "btn-enable-2fa" )
+                            Former::danger_submit( 'Disable 2FA' )->id( "btn-2fa-delete" ),
+                            Former::secondary_submit( 'Reset 2FA' )->id( "btn-2fa-reset" ),
+                            Former::secondary_submit( 'Get 2FA QRcode' )->id( "btn-2fa-enable" )
                         );
                     ?>
 
@@ -180,7 +180,7 @@
                 ?>
             <?php else: ?>
                 <?= Former::actions(
-                    Former::primary_submit( 'Enable 2FA' )->id( "btn-enable-2fa" )
+                    Former::primary_submit( 'Enable 2FA' )->id( "btn-2fa-enable" )
                 );
                 ?>
 
