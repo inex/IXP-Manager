@@ -208,7 +208,7 @@ class SecurityPasswordController extends Controller
             return $this->show2faForm( $request );
         }
 
-        if( $request->input( "ixp-2fa-token" ) != $request->session() ->get( "ixp_2fa_valid_pass" ) ) {
+        if( $request->input( "ixp-2fa-token" ) != $request->session()->get( "ixp_2fa_valid_pass" ) ) {
             AlertContainer::push( "Action not allowed.", Alert::DANGER );
             return Redirect::to( route( "profile@edit" ) );
         }
@@ -218,7 +218,7 @@ class SecurityPasswordController extends Controller
         D2EM::flush();
 
         // Add a value in the request to know that we come from the profile@enable
-        // we will need this information when we will login the 2FA autehentificator
+        // we will need this information when we will login the 2FA authentificator
         // to link the current session to the remember me token, if the remember me checkbox was checked
         $request->request->add( [ "ixpm-enable-2fa" => true ] );
 

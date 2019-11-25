@@ -65,9 +65,7 @@ $this->layout( 'layouts/ixpv4' )
                                 ->blockHelp( '' );
                             ?>
 
-                            <?= Former::hidden( 'ixp-2fa-token' )
-                                ->value( $t->ixp2faToken )
-                            ?>
+                            <input type="hidden" name="ixp-2fa-token" value="<?= $t->ixp2faToken ?>">
 
                             <?= Former::actions(
                                 Former::primary_submit( 'Enable 2FA' )
