@@ -26,14 +26,16 @@ namespace IXP\Http\Controllers;
 use App, Cache, D2EM;
 
 use Carbon\Carbon;
+
 use IXP\Services\Grapher\Graph as Graph;
 
 use Entities\{
     Customer            as CustomerEntity,
+    Infrastructure      as InfrastructureEntity,
     IXP                 as IXPEntity,
+    Location            as LocationEntity,
     VirtualInterface    as VirtualInterfaceEntity,
-    VlanInterface       as VlanInterfaceEntity
-};
+    VlanInterface       as VlanInterfaceEntity};
 
 
 use Illuminate\Http\Request;
@@ -73,6 +75,8 @@ class AdminController extends Controller
 
     /**
      * Get type counts statistics
+     *
+     * @param Request $request
      *
      * @return array array of statistics
      */
@@ -170,6 +174,9 @@ class AdminController extends Controller
             $cTypes['ipv6Usage']        = D2EM::getRepository( VlanInterfaceEntity::class )->getIPv6UsagePerVlan();
 
             $cTypes['cached_at']        = Carbon::now();
+
+            $cTypes['infras']           = D2EM::getRepository( InfrastructureEntity::class )->getAllAsArray();
+            $cTypes['locations']        = D2EM::getRepository( LocationEntity::class )->getNames();
 
             Cache::put( 'admin_ctypes', $cTypes, 300 );
         }

@@ -76,7 +76,10 @@
                                         <?= $infra ?>
                                     </td>
                                     <td class="tw-text-right">
-                                        <?= count( $custids ) ?>
+                                        <a href="<?= route( "switch@configuration", [ "infra" => array_search( $infra , $t->stats['infras'] ) ] ) ?>">
+                                            <?= count( $custids ) ?>
+                                        </a>
+
                                     </td>
                                     <td class="tw-text-right">
                                         <?= round( (100.0 * count( $custids ) ) / count( $t->stats[ 'peeringCusts' ] ) ) ?>%
@@ -111,7 +114,9 @@
                                         <?= $loc ?>
                                     </td>
                                     <td class="tw-text-right">
-                                        <?= $cnt ?>
+                                        <a href="<?= route( "switch@configuration", [ "location" => array_search( $loc , $t->stats['locations'] ) ] ) ?>">
+                                            <?= $cnt ?>
+                                        </a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
