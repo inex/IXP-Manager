@@ -232,9 +232,11 @@ class CoreBundleControllerTest extends DuskTestCase
                     ->assertInputValue( 'graph-title', $coreBundle[ 'graph-title1' ] )
                     ->type(     'preference',   $coreBundle[ 'preference1' ] )
                     ->select( 'type', $type )
+                    ->pause( 2000 )
                     ->check( 'enabled' )
-                    ->check( 'enabled' )
+                    ->pause( 2000 )
                     ->check( 'framing' )
+                    ->pause( 2000 )
                     ->type(  'mtu', $coreBundle[ 'mtu' ] );
 
                 if( $type == CoreBundleEntity::TYPE_ECMP ) {
