@@ -99,6 +99,7 @@
                                 ->label( '' )
                                 ->value( 1 )
                                 ->inline()
+                                ->class( "mx-auto" )
                                 ->check( $cl->getEnabled() ? true : false )
                             ?>
                         </td>
@@ -108,6 +109,7 @@
                                     ->label( '' )
                                     ->value( 1 )
                                     ->inline()
+                                    ->class( "mx-auto" )
                                     ->check( $cl->getBFD() ? true : false )
                                 ?>
 

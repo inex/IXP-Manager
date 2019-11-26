@@ -11,6 +11,14 @@
     Customers / <?= $t->cust ? "Edit" : "Add" ?>
 <?php $this->append() ?>
 
+<?php $this->section( 'page-header-postamble' ) ?>
+    <div class="btn-group btn-group-sm ml-auto" role="group">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/usage/customers">
+            Documentation
+        </a>
+    </div>
+<?php $this->append() ?>
+
 <?php $this->section('content') ?>
 
 <div class="container-fluid">

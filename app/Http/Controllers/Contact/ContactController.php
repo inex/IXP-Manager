@@ -130,7 +130,7 @@ class ContactController extends Doctrine2Frontend
                                 'type'          => self::$FE_COL_TYPES[ 'LABEL' ],
                                 'array'   => [
                                     'delimiter'         => ',',
-                                    'replace'           => '&nbsp;'
+                                    'replace'           => ''
                                 ]
                             ]
                         ]

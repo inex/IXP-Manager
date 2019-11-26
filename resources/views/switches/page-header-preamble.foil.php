@@ -3,6 +3,9 @@
     <div class="btn-group btn-group-sm" role="group">
 
         <div class="btn-group btn-group-sm">
+            <a class="btn btn-white"  target="_blank" href="https://docs.ixpmanager.org/usage/switches/">
+                Documentation
+            </a>
 
             <?php if( isset($t->data[ 'params'][ "activeOnly" ] ) && $t->data[ 'params'][ "activeOnly" ] ): ?>
 
@@ -30,11 +33,6 @@
 
                 <a class="dropdown-item <?= $t->data[ 'params']['vtype'] !== "L3 View" ?: "active" ?>" href="<?= route( "switch@list" , [ "vtype" => "L3 View" ] ) ?>">L3 View</a>
             </div>
-
-
-            <a class="btn btn-white"  target="_blank" href="https://docs.ixpmanager.org/usage/switches/">
-                Help
-            </a>
 
         </div>
 

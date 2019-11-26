@@ -76,6 +76,8 @@ class CustomerTagController extends Doctrine2Frontend {
 
             'extraDeleteMessage' => "<b>This tag will be removed from all customers tagged with it.</b>",
 
+            'documentation'     => 'https://docs.ixpmanager.org/usage/customer-tags/',
+
             'listColumns'    => [
 
                 'id'        => [ 'title' => 'DB ID', 'display' => false ],
