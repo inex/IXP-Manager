@@ -217,11 +217,11 @@ $this->layout( 'layouts/ixpv4' );
 
         
             <div class="row mt-4">
-                <div id='ipv6-area' class="col-md-12 col-lg-6 mt-4" style="<?= old( 'ipv6-enabled' ) || Former::checkbox( 'ipv6-enabled')->getValue() !== null ?: 'display: none' ?>">
+                <div id='ipv6-area' class="col-md-12 col-lg-6 mt-4" style="<?= old( 'ipv6-enabled' ) || Former::checkbox( 'ipv6-enabled')->getValue() ?: 'display: none' ?>">
                     <?= $t->insert( 'interfaces/common/vli/ipv6.foil.php' ) ?>
                 </div>
 
-                <div id='ipv4-area' class="col-md-12 col-lg-6 mt-4" style="<?= old( 'ipv4-enabled' ) || Former::checkbox( 'ipv4-enabled')->getValue() !== null ?: 'display: none' ?>">
+                <div id='ipv4-area' class="col-md-12 col-lg-6 mt-4" style="<?= old( 'ipv4-enabled' ) || Former::checkbox( 'ipv4-enabled')->getValue() ?: 'display: none' ?>">
                     <?= $t->insert( 'interfaces/common/vli/ipv4.foil.php' ) ?>
                 </div>
             </div>
