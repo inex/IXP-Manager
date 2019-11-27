@@ -29,6 +29,7 @@ use Entities\{
     Cabinet             as CabinetEntity,
     Infrastructure      as InfrastructureEntity,
     Location            as LocationEntity,
+    PhysicalInterface   as PhysicalInterfaceEntity,
     Switcher            as SwitcherEntity,
     SwitchPort          as SwitchPortEntity,
     User                as UserEntity,
@@ -689,6 +690,7 @@ class SwitchController extends Doctrine2Frontend
      */
     public function configuration( Request $r ) : View
     {
+        $speeds = D2EM::getRepository( PhysicalInterfaceEntity::class )->getAllSpeed();
 
         if( $r->input( 'switch' )  !== null ) {
             /** @var SwitcherEntity $s */
@@ -734,6 +736,20 @@ class SwitchController extends Doctrine2Frontend
             $location = false;
         }
 
+        if( $r->input( 'speed' )  !== null ) {
+            $speed = $r->input( 'speed' );
+            if(  in_array( $r->input( 'speed' ), $speeds) ) {
+                $r->session()->put( "switch-configuration-speed", $speed );
+            } else {
+                $r->session()->remove( "switch-configuration-speed" );
+                $speed = false;
+            }
+        } else if( $r->session()->exists( "switch-configuration-speed" ) ) {
+            $speed = $r->session()->get( "switch-configuration-speed" );
+        } else {
+            $speed = false;
+        }
+
 
         if( $s || $infra || $location ){
             $summary = ":: Connections details for ";
@@ -755,13 +771,15 @@ class SwitchController extends Doctrine2Frontend
 
         return view( 'switches/configuration' )->with([
             's'                         => $s,
+            'speed'                     => $speed,
             'infra'                     => $infra,
             'location'                  => $location,
             'summary'                   => $summary,
+            'speeds'                    => D2EM::getRepository( PhysicalInterfaceEntity::class )->getAllSpeed(),
             'infras'                    => $s ? [ $s->getInfrastructure()->getId()          => $s->getInfrastructure()->getName()           ] : D2EM::getRepository( InfrastructureEntity::class     )->getNames( true ),
             'locations'                 => $s ? [ $s->getCabinet()->getLocation()->getId()  => $s->getCabinet()->getLocation()->getName()   ] : D2EM::getRepository( LocationEntity::class           )->getNames(),
-            'switches'                  => D2EM::getRepository( SwitcherEntity::class           )->getByLocationAndInfrastructure( $infra, $location ),
-            'config'                    => D2EM::getRepository( SwitcherEntity::class           )->getConfiguration(  $s ? $s->getId() : null ,$infra ? $infra->getId() : null, $location ? $location->getId() : null  )
+            'switches'                  => D2EM::getRepository( SwitcherEntity::class           )->getByLocationAndInfrastructureAndSpeed( $infra, $location, $speed ),
+            'config'                    => D2EM::getRepository( SwitcherEntity::class           )->getConfiguration(  $s ? $s->getId() : null ,$infra ? $infra->getId() : null, $location ? $location->getId() : null, $speed )
         ]);
     }
 

@@ -162,7 +162,9 @@
                                         <?php foreach( $t->stats[ "speeds"] as $s => $c ): ?>
                                             <td class="tw-text-right">
                                                 <?php if( isset( $speed[ $s ] ) ): ?>
-                                                    <?= $speed[ $s ] ?>
+                                                    <a href="<?= route( "switch@configuration", [ "location" => array_search( $location , $t->stats['locations'] ), "speed" => $s ] ) ?>">
+                                                        <?= $speed[ $s ] ?>
+                                                    </a>
                                                     <?php $rowcount = $rowcount + $speed[ $s ] ?>
                                                 <?php else: ?>
                                                     0
