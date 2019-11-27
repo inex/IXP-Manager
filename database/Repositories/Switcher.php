@@ -205,14 +205,16 @@ class Switcher extends EntityRepository
     /**
      * Return an array of configurations
      *
-     * @param int   $switchid     Switcher id for filtering results
-     * @param int   $infra        Infrastructure id for filtering results
-     * @param int   $facility     Facility id for filtering results
-     * @param int   $speed        Speed filtering results
+     * @param int $switchid Switcher id for filtering results
+     * @param int $infra Infrastructure id for filtering results
+     * @param int $facility Facility id for filtering results
+     * @param int $speed Speed filtering results
+     * @param null $rsclient
+     * @param null $ipv6enabled
      *
      * @return array
      */
-    public function getConfiguration( $switchid = null, $infra = null, $facility = null, $speed = null )
+    public function getConfiguration( $switchid = null, $infra = null, $facility = null, $speed = null, $vlan = null, $rsclient = null, $ipv6enabled = null )
     {
         $q =
             "SELECT s.name AS switchname, 
@@ -260,6 +262,18 @@ class Switcher extends EntityRepository
 
         if( $speed ) {
             $q .= 'AND pi.speed = ' . intval( $speed ) . ' ';
+        }
+
+        if( $vlan ) {
+            $q .= 'AND vli.Vlan = ' . intval( $vlan ) . ' ';
+        }
+
+        if( $rsclient ) {
+            $q .= 'AND vli.rsclient = true ';
+        }
+
+        if( $ipv6enabled ) {
+            $q .= 'AND vli.ipv6enabled = true ';
         }
 
         $q .= " GROUP BY switchname, switchid, duplex, portstatus, customer, custid, asn, rsclient, ipv4enabled, ipv6enabled, vlan ";

@@ -330,7 +330,9 @@
                                         </td>
                                         <td class="tw-text-right">
                                             <?php $rsclients += $vlan->rsclient_count ?>
-                                            <?= $vlan->rsclient_count ?>
+                                            <a href="<?= route( "switch@configuration", [ "vlan" => array_search( $vlan->vlanname , $t->stats['vlans'] ) , "rs-client" => 1 ] ) ?>">
+                                                <?= $vlan->rsclient_count ?>
+                                            </a>
                                         </td>
                                         <td class="tw-text-right">
                                             <?php $total += $vlan->overall_count ?>
@@ -409,7 +411,9 @@
                                         </td>
                                         <td class="tw-text-right">
                                             <?php $ipv6 += $vlan->ipv6_count ?>
-                                            <?= $vlan->ipv6_count ?>
+                                            <a href="<?= route( "switch@configuration", [ "vlan" => array_search( $vlan->vlanname , $t->stats['vlans'] ) , "ipv6-enabled" => 1 ] ) ?>">
+                                                <?= $vlan->ipv6_count ?>
+                                            </a>
                                         </td>
                                         <td class="tw-text-right">
                                             <?php $total += $vlan->overall_count ?>

@@ -35,7 +35,9 @@ use Entities\{
     IXP                 as IXPEntity,
     Location            as LocationEntity,
     VirtualInterface    as VirtualInterfaceEntity,
-    VlanInterface       as VlanInterfaceEntity};
+    Vlan                as VlanEntity,
+    VlanInterface       as VlanInterfaceEntity
+};
 
 
 use Illuminate\Http\Request;
@@ -177,6 +179,7 @@ class AdminController extends Controller
 
             $cTypes['infras']           = D2EM::getRepository( InfrastructureEntity::class )->getAllAsArray();
             $cTypes['locations']        = D2EM::getRepository( LocationEntity::class )->getNames();
+            $cTypes['vlans']            = D2EM::getRepository( VlanEntity::class )->getNames();
 
             Cache::put( 'admin_ctypes', $cTypes, 300 );
         }

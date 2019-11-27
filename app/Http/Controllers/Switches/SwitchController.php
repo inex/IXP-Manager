@@ -33,7 +33,8 @@ use Entities\{
     Switcher            as SwitcherEntity,
     SwitchPort          as SwitchPortEntity,
     User                as UserEntity,
-    Vendor              as VendorEntity
+    Vendor              as VendorEntity,
+    Vlan                as VlanEntity
 };
 
 use Illuminate\Http\Request;
@@ -750,6 +751,15 @@ class SwitchController extends Doctrine2Frontend
             $speed = false;
         }
 
+        if( $r->input( 'vlan' )  !== null ) {
+            /** @var LocationEntity $facility */
+            $vlan = D2EM::getRepository( VlanEntity::class )->find( $r->input( 'vlan' ) );
+        } else {
+            $vlan = false;
+        }
+
+        $rsclient = $r->input( 'rs-client' ) ? true : false;
+        $ipv6enabled = $r->input( 'ipv6-enabled' ) ? true : false;
 
         if( $s || $infra || $location ){
             $summary = ":: Connections details for ";
@@ -779,7 +789,7 @@ class SwitchController extends Doctrine2Frontend
             'infras'                    => $s ? [ $s->getInfrastructure()->getId()          => $s->getInfrastructure()->getName()           ] : D2EM::getRepository( InfrastructureEntity::class     )->getNames( true ),
             'locations'                 => $s ? [ $s->getCabinet()->getLocation()->getId()  => $s->getCabinet()->getLocation()->getName()   ] : D2EM::getRepository( LocationEntity::class           )->getNames(),
             'switches'                  => D2EM::getRepository( SwitcherEntity::class           )->getByLocationAndInfrastructureAndSpeed( $infra, $location, $speed ),
-            'config'                    => D2EM::getRepository( SwitcherEntity::class           )->getConfiguration(  $s ? $s->getId() : null ,$infra ? $infra->getId() : null, $location ? $location->getId() : null, $speed )
+            'config'                    => D2EM::getRepository( SwitcherEntity::class           )->getConfiguration(  $s ? $s->getId() : null ,$infra ? $infra->getId() : null, $location ? $location->getId() : null, $speed, $vlan ? $vlan->getId() : null, $rsclient, $ipv6enabled )
         ]);
     }
 
