@@ -244,7 +244,9 @@
                                         <?php foreach( $t->stats[ "speeds"] as $speed => $count ): ?>
                                             <td class="tw-text-right">
                                                 <?php if( isset( $spds[ $speed ] ) ): ?>
-                                                    <?= $spds[ $speed ] ?>
+                                                    <a href="<?= route( "switch@configuration", [ "infra" => array_search( $inf , $t->stats['infras'] ), "speed" => $speed ] ) ?>">
+                                                        <?= $spds[ $speed ] ?>
+                                                    </a>
                                                     <?php $rowcount = $rowcount+$spds[ $speed ] ?>
                                                     <?php $rowcap = $rowcap + $spds[ $speed ] * $speed ?>
                                                 <?php else: ?>
