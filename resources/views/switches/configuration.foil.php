@@ -222,9 +222,11 @@
                         <?php endif; ?>
                     </td>
                     <td>
-                        <?php if( isset( Entities\PhysicalInterface::$STATES[ $conf[ "portstatus" ] ] ) ): ?>
-                            <?= Entities\PhysicalInterface::$STATES[ $conf[ "portstatus" ] ] ?>
-                        <?php endif; ?>
+                        <?php foreach( explode( "," , $conf[ "portstatus" ] ) as $portstatus ) {
+                                if( isset( Entities\PhysicalInterface::$STATES[ $portstatus ] ) ) {
+                                    echo Entities\PhysicalInterface::$STATES[ $portstatus ] . '<br>';
+                                }
+                            } ?>
                     </td>
                 </tr>
 

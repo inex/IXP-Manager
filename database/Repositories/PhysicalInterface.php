@@ -76,12 +76,11 @@ class PhysicalInterface extends EntityRepository
 
          $speeds = [];
 
-         foreach ( $arraySpeeds as $s ){
-
+         foreach( $arraySpeeds as $s ) {
              $speeds[] = $s[ 'speed' ];
          }
 
-        sort($speeds );
+        sort($speeds, SORT_NUMERIC );
         return $speeds;
     }
 

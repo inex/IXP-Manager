@@ -220,23 +220,27 @@ class Switcher extends EntityRepository
             "SELECT s.name AS switchname, 
                     s.id AS switchid,
                     
-                    GROUP_CONCAT(  sp.ifName ) AS ifName,
-                    GROUP_CONCAT( pi.speed ) AS speed, 
-                    pi.duplex AS duplex, 
-                    pi.status AS portstatus,
+                    GROUP_CONCAT( sp.ifName ) AS ifName,
+                    GROUP_CONCAT( pi.speed )  AS speed,
+       
+                    GROUP_CONCAT( pi.status ) AS portstatus,
+       
                     c.name AS customer, 
                     c.id AS custid, 
                     c.autsys AS asn,
-                    vli.rsclient AS rsclient,
-                    vli.ipv4enabled AS ipv4enabled, 
-                    vli.ipv6enabled AS ipv6enabled, 
+       
+                    MAX( vli.rsclient    ) AS rsclient,
+                    MAX( vli.ipv4enabled ) AS ipv4enabled, 
+                    MAX( vli.ipv6enabled ) AS ipv6enabled, 
+       
                     v.name AS vlan,
+       
                     GROUP_CONCAT( DISTINCT ipv4.address ) AS ipv4address, 
                     GROUP_CONCAT( DISTINCT ipv6.address ) AS ipv6address
 
             FROM Entities\\VlanInterface vli
-                JOIN vli.IPv4Address ipv4
-                JOIN vli.IPv6Address ipv6
+                LEFT JOIN vli.IPv4Address ipv4
+                LEFT JOIN vli.IPv6Address ipv6
                 LEFT JOIN vli.Vlan v
                 LEFT JOIN vli.VirtualInterface vi
                 LEFT JOIN vi.Customer c
@@ -249,23 +253,25 @@ class Switcher extends EntityRepository
             WHERE " . Customer::DQL_CUST_CURRENT . " ";
 
         if( $switchid !== null ) {
-            $q .= 'AND s.id = ' . intval( $switchid ) . ' ';
+            $q .= 'AND s.id = ' . (int)$switchid . ' ';
         }
 
         if( $infra !== null ) {
-            $q .= 'AND inf.id = ' . intval( $infra ) . ' ';
+            $q .= 'AND inf.id = ' . (int)$infra . ' ';
         }
 
         if( $facility !== null ) {
-            $q .= 'AND cab.Location = ' . intval( $facility ) . ' ';
+            $q .= 'AND cab.Location = ' . (int)$facility . ' ';
         }
 
         if( $speed ) {
-            $q .= 'AND pi.speed = ' . intval( $speed ) . ' ';
+            $q .= 'AND pi.speed = ' . (int)$speed . ' ';
         }
 
         if( $vlan ) {
-            $q .= 'AND vli.Vlan = ' . intval( $vlan ) . ' ';
+            $q .= 'AND vli.Vlan = ' . (int)$vlan . ' ';
+        } else {
+            $q .= 'AND v.private = 0 ';
         }
 
         if( $rsclient ) {
@@ -276,7 +282,7 @@ class Switcher extends EntityRepository
             $q .= 'AND vli.ipv6enabled = true ';
         }
 
-        $q .= " GROUP BY switchname, switchid, duplex, portstatus, customer, custid, asn, rsclient, ipv4enabled, ipv6enabled, vlan ";
+        $q .= " GROUP BY customer, custid, asn, switchname, switchid, vlan ";
 
         $q .= " ORDER BY customer ASC";
 
