@@ -775,7 +775,7 @@ class SwitchController extends Doctrine2Frontend
             $speed,
             $vlan ? $vlan->getId() : null,
             $r->input( 'rs-client' )    ? true : false,
-            $r->input( 'ipv6-enabled' ) ? true : false,
+            $r->input( 'ipv6-enabled' ) ? true : false
         );
 
         return view( 'switches/configuration' )->with([
