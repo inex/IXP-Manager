@@ -46,11 +46,13 @@ class CoreBundleControllerTest extends DuskTestCase
         foreach( [ 51, 55 ] as $spid ) {
             $sp = D2EM::getRepository( SwitchPortEntity::class )->find( $spid );
             D2EM::refresh($sp);
+
             if( $sp ) {
                 $sp->setType( SwitchPortEntity::TYPE_CORE );
                 D2EM::flush();
             }
         }
+
         parent::tearDown();
     }
 
@@ -231,9 +233,11 @@ class CoreBundleControllerTest extends DuskTestCase
                     ->assertInputValue( 'graph-title', $coreBundle[ 'graph-title1' ] )
                     ->type(     'preference',   $coreBundle[ 'preference1' ] )
                     ->select( 'type', $type )
+                    ->pause( 2000 )
                     ->check( 'enabled' )
-                    ->check( 'enabled' )
+                    ->pause( 2000 )
                     ->check( 'framing' )
+                    ->pause( 2000 )
                     ->type(  'mtu', $coreBundle[ 'mtu' ] );
 
                 if( $type == CoreBundleEntity::TYPE_ECMP ) {
@@ -557,8 +561,8 @@ class CoreBundleControllerTest extends DuskTestCase
 
                 $this->assertEquals( null, D2EM::getRepository( CoreBundleEntity::class )->findOneBy( [ 'id' => $cbid ] ) );
 
-            }
 
+            }
         });
     }
 }

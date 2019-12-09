@@ -86,8 +86,32 @@
             </div>
         </div>
 
+        <div class="btn-group btn-group-sm">
+            <button type="button" class="btn btn-white dropdown-toggle d-flex center-dd-caret" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <?= $t->speed ? $t->scaleBits( $t->speed * 1000000, 0 ) : "All speeds" ?>
+            </button>
 
-        <a class="btn btn-white" href="<?= route( "switch@configuration", [ "switch" => 0, "infra" => 0, "location" => 0 ] ) ?>">
+
+            <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
+
+                <a class="dropdown-item <?= !$t->speed ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "speed" => 0 ] ) ?>">All Speed</a>
+
+
+                <div class="dropdown-divider"></div>
+
+                <?php foreach( $t->speeds as $s ): ?>
+
+                    <a class="dropdown-item <?= $t->speed == $s ? "active" : "" ?>" href="<?= route( "switch@configuration", [ "speed" => $s ] ) ?>">
+                        <?= $t->scaleBits( $s * 1000000, 0 ) ?>
+                    </a>
+
+                <?php endforeach; ?>
+
+            </div>
+        </div>
+
+
+        <a class="btn btn-white" href="<?= route( "switch@configuration", [ "switch" => 0, "infra" => 0, "location" => 0, "speed" => 0 ] ) ?>">
             Clear
         </a>
 
@@ -198,9 +222,11 @@
                         <?php endif; ?>
                     </td>
                     <td>
-                        <?php if( isset( Entities\PhysicalInterface::$STATES[ $conf[ "portstatus" ] ] ) ): ?>
-                            <?= Entities\PhysicalInterface::$STATES[ $conf[ "portstatus" ] ] ?>
-                        <?php endif; ?>
+                        <?php foreach( explode( "," , $conf[ "portstatus" ] ) as $portstatus ) {
+                                if( isset( Entities\PhysicalInterface::$STATES[ $portstatus ] ) ) {
+                                    echo Entities\PhysicalInterface::$STATES[ $portstatus ] . '<br>';
+                                }
+                            } ?>
                     </td>
                 </tr>
 

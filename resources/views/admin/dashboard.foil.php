@@ -50,7 +50,46 @@
                     </table>
                 </div>
 
+                <?php if( count( $t->stats[ "custsByInfra" ] ) > 1 ): ?>
 
+                    <div class="tw-my-12">
+                        <h4 class="tw-mb-6"><?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?> by Infrastructure</h4>
+
+                        <table class="table table-sm table-hover table-striped tw-shadow-md tw-rounded-sm">
+                            <thead>
+                            <tr>
+                                <th>
+                                    Infrastructure
+                                </th>
+                                <th class="tw-text-right">
+                                    <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+                                </th>
+                                <th class="tw-text-right">
+                                    Percentage
+                                </th>
+                            </tr>
+                            </thead>
+                            <tbody class="tw-text-sm">
+                            <?php foreach( $t->stats[ "custsByInfra" ] as $infra => $custids  ): ?>
+                                <tr>
+                                    <td>
+                                        <?= $infra ?>
+                                    </td>
+                                    <td class="tw-text-right">
+                                        <a href="<?= route( "switch@configuration", [ "infra" => array_search( $infra , $t->stats['infras'] ) ] ) ?>">
+                                            <?= count( $custids ) ?>
+                                        </a>
+
+                                    </td>
+                                    <td class="tw-text-right">
+                                        <?= round( (100.0 * count( $custids ) ) / count( $t->stats[ 'peeringCusts' ] ) ) ?>%
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                <?php endif; ?>
 
                 <?php if( count( $t->stats[ "custsByLocation" ] ) ): ?>
 
@@ -75,7 +114,9 @@
                                         <?= $loc ?>
                                     </td>
                                     <td class="tw-text-right">
-                                        <?= $cnt ?>
+                                        <a href="<?= route( "switch@configuration", [ "location" => array_search( $loc , $t->stats['locations'] ) ] ) ?>">
+                                            <?= $cnt ?>
+                                        </a>
                                     </td>
                                 </tr>
                             <?php endforeach; ?>
@@ -121,7 +162,9 @@
                                         <?php foreach( $t->stats[ "speeds"] as $s => $c ): ?>
                                             <td class="tw-text-right">
                                                 <?php if( isset( $speed[ $s ] ) ): ?>
-                                                    <?= $speed[ $s ] ?>
+                                                    <a href="<?= route( "switch@configuration", [ "location" => array_search( $location , $t->stats['locations'] ), "speed" => $s ] ) ?>">
+                                                        <?= $speed[ $s ] ?>
+                                                    </a>
                                                     <?php $rowcount = $rowcount + $speed[ $s ] ?>
                                                 <?php else: ?>
                                                     0
@@ -201,7 +244,9 @@
                                         <?php foreach( $t->stats[ "speeds"] as $speed => $count ): ?>
                                             <td class="tw-text-right">
                                                 <?php if( isset( $spds[ $speed ] ) ): ?>
-                                                    <?= $spds[ $speed ] ?>
+                                                    <a href="<?= route( "switch@configuration", [ "infra" => array_search( $inf , $t->stats['infras'] ), "speed" => $speed ] ) ?>">
+                                                        <?= $spds[ $speed ] ?>
+                                                    </a>
                                                     <?php $rowcount = $rowcount+$spds[ $speed ] ?>
                                                     <?php $rowcap = $rowcap + $spds[ $speed ] * $speed ?>
                                                 <?php else: ?>
@@ -285,7 +330,9 @@
                                         </td>
                                         <td class="tw-text-right">
                                             <?php $rsclients += $vlan->rsclient_count ?>
-                                            <?= $vlan->rsclient_count ?>
+                                            <a href="<?= route( "switch@configuration", [ "vlan" => array_search( $vlan->vlanname , $t->stats['vlans'] ) , "rs-client" => 1 ] ) ?>">
+                                                <?= $vlan->rsclient_count ?>
+                                            </a>
                                         </td>
                                         <td class="tw-text-right">
                                             <?php $total += $vlan->overall_count ?>
@@ -364,7 +411,9 @@
                                         </td>
                                         <td class="tw-text-right">
                                             <?php $ipv6 += $vlan->ipv6_count ?>
-                                            <?= $vlan->ipv6_count ?>
+                                            <a href="<?= route( "switch@configuration", [ "vlan" => array_search( $vlan->vlanname , $t->stats['vlans'] ) , "ipv6-enabled" => 1 ] ) ?>">
+                                                <?= $vlan->ipv6_count ?>
+                                            </a>
                                         </td>
                                         <td class="tw-text-right">
                                             <?php $total += $vlan->overall_count ?>

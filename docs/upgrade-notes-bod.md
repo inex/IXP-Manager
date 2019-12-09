@@ -31,5 +31,10 @@ SET ppph.cust_id = (
 
  
  
- 
+```
+ ./artisan grapher:backend:mrtg:upgrade -B cp | grep log
+
+
+cat cb-aggregate-00001-sidea-bits.log| awk  '{ if( NF == 3 ) { print $1, $3, $2; } else { print $1, $3, $2, $5, $4; } }' | head
+```
  

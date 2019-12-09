@@ -64,7 +64,7 @@
 
             <?= Former::actions(
                 Former::primary_button( 'Generate' )->id( "generate-btn" ),
-                Former::success_button( 'Help' )->id( 'help-btn' )
+                Former::success_button( 'Help' )->class( 'help-btn' )
             )->class( "bg-light p-4 mt-4 shadow-sm text-center" );
             ?>
 
@@ -74,8 +74,8 @@
 
         <?= Former::actions(
             Former::primary_submit( $t->data[ 'params'][ 'isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' )->class( "mb-2 mb-sm-0"),
-            Former::secondary_link( 'Cancel' )->href( route( $t->feParams->route_prefix.'@list') )->class( "mb-2 mb-sm-0"),
-            Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0") )
+            Former::secondary_link( 'Cancel' )->href( route( $t->feParams->route_prefix.'@list') )->class( "mb-2 mb-sm-0")
+        )
             ->id( "submit-area" )->class(  $t->data[ 'params'][ 'isAdd'] ? "collapse" : '' )->class( "mb-2 mb-sm-0");
         ?>
 

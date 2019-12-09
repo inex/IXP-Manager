@@ -24,10 +24,9 @@ namespace IXP\Http\Middleware;
  */
 
 
-use Auth;
-use Closure;
+use Auth, Closure;
 
-use Illuminate\Contracts\Auth\Guard;
+use Illuminate\Http\Request;
 
 /**
  * Middleware: Assert an authentcated user is of a given privilege
@@ -46,14 +45,14 @@ class AssertUserPrivilege
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param  Request  $request
+     * @param  Closure  $next
      * @return mixed
      */
     public function handle($request, Closure $next, $privilege)
     {
         if( Auth::user()->getPrivs() != $privilege ) {
-            return response( 'Insufficent permissions', 403 );
+            return response( 'Insufficient permissions', 403 );
         }
 
         return $next($request);

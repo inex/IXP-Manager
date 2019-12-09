@@ -31,8 +31,11 @@ use IXP\Services\Grapher\Graph as Graph;
 
 use Entities\{
     Customer            as CustomerEntity,
+    Infrastructure      as InfrastructureEntity,
     IXP                 as IXPEntity,
+    Location            as LocationEntity,
     VirtualInterface    as VirtualInterfaceEntity,
+    Vlan                as VlanEntity,
     VlanInterface       as VlanInterfaceEntity
 };
 
@@ -91,6 +94,8 @@ class AdminController extends Controller
             $byLan           = [];
             $byIxp           = [];
             $custsByLocation = [];
+            $custsByInfra    = [];
+            $peeringCusts    = [];
 
             foreach( $vis as $vi ) {
 
@@ -123,6 +128,17 @@ class AdminController extends Controller
                     $custsByLocation[ $location ]++;
                 }
 
+                if( !isset( $custsByInfra[ $infrastructure ] ) ) {
+                    $custsByInfra[ $infrastructure ] = [];
+                }
+
+                if( !in_array( $vi['customerid'], $custsByInfra[ $infrastructure ] ) ) {
+                    $custsByInfra[ $infrastructure ][] = $vi[ 'customerid' ];
+                }
+
+                if( !in_array( $vi['customerid'], $peeringCusts ) ) {
+                    $peeringCusts[] = $vi[ 'customerid' ];
+                }
 
                 if( !isset( $byLocation[ $vi['locationname'] ][ $vi['speed'] ] ) ) {
                     $byLocation[ $location ][ $vi[ 'speed' ] ] = 1;
@@ -151,11 +167,17 @@ class AdminController extends Controller
             $cTypes['byLocation']       = $byLocation;
             $cTypes['byLan']            = $byLan;
             $cTypes['byIxp']            = $byIxp;
+            $cTypes['custsByInfra']     = $custsByInfra;
+            $cTypes['peeringCusts']     = $peeringCusts;
 
             $cTypes['rsUsage']          = D2EM::getRepository( VlanInterfaceEntity::class )->getRsClientUsagePerVlan();
             $cTypes['ipv6Usage']        = D2EM::getRepository( VlanInterfaceEntity::class )->getIPv6UsagePerVlan();
 
             $cTypes['cached_at']        = Carbon::now();
+
+            $cTypes['infras']           = D2EM::getRepository( InfrastructureEntity::class )->getAllAsArray();
+            $cTypes['locations']        = D2EM::getRepository( LocationEntity::class )->getNames();
+            $cTypes['vlans']            = D2EM::getRepository( VlanEntity::class )->getNames();
 
             Cache::put( 'admin_ctypes', $cTypes, 300 );
         }

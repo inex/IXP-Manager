@@ -91,6 +91,8 @@ class ContactGroupController extends Doctrine2Frontend
 
             'viewFolderName'    => 'contact-group',
 
+            'documentation'     => 'https://docs.ixpmanager.org/usage/contacts/#contact-groups',
+
             'listColumns'    => [
 
                 'type'       => [

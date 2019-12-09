@@ -57,6 +57,7 @@
                         ->label( 'Enabled' )
                         ->addClass( 'new-core-link-input' )
                         ->value( 1 )
+                        ->class( "ml-1" )
                         ->check( true )
                     ?>
 
@@ -66,6 +67,7 @@
                             ->id( "bfd-1" )
                             ->label( 'BFD' )
                             ->addClass( 'new-core-link-input' )
+                            ->class( "ml-1" )
                             ->value( 1 )
                         ?>
 

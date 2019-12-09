@@ -78,7 +78,7 @@
                                     Resend welcome email
                                 </button>
                             </form>
-                            <a class="dropdown-item" href="<?= route( "login-history@view", [ 'id' => $c2u->getId() ] ) ?>">
+                            <a class="dropdown-item" href="<?= route( "login-history@view", [ 'id' => $c2u->getUser()->getId() ] ) ?>">
                                 Login history
                             </a>
                             <?php if( Auth::getUser()->isSuperUser() ): ?>

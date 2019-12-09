@@ -24,7 +24,11 @@
 namespace Repositories;
 
 use Doctrine\ORM\EntityRepository;
-use Entities\CoreBundle;
+use Entities\{
+    CoreBundle      as CoreBundleEntity,
+    Infrastructure  as InfrastructureEntity,
+    Location        as LocationEntity
+};
 
 /**
  * Switcher
@@ -130,18 +134,27 @@ class Switcher extends EntityRepository
     /**
      * Return an array of all switch names where the array key is the switch id
      *
-     * @param \Entities\Infrastructure      $infra
-     * @param \Entities\Location            $location
+     * @param InfrastructureEntity      $infra
+     * @param LocationEntity            $location
 
      * @return array An array of all switch names with the switch id as the key.
      */
-    public function getByLocationAndInfrastructure( $infra = null, $location = null ){
+    public function getByLocationAndInfrastructureAndSpeed( $infra = null, $location = null, $speed = null ){
         $q = "SELECT s
 
             FROM \\Entities\\Switcher s";
 
-        if( $location !== null ){
+        if( $location ){
             $q .= " LEFT JOIN s.Cabinet cab";
+        }
+
+        if( $speed ){
+            $q .= " LEFT JOIN s.Ports sp
+                    LEFT JOIN sp.PhysicalInterface pi
+                    LEFT JOIN pi.VirtualInterface vi
+                    LEFT JOIN vi.VlanInterfaces vli
+                    JOIN vli.IPv4Address ipv4
+                    JOIN vli.IPv6Address ipv6";
         }
 
 
@@ -152,6 +165,9 @@ class Switcher extends EntityRepository
 
         if( $location )
             $q .= 'AND cab.Location = ' . $location->getId() . ' ';
+
+        if( $speed )
+            $q .= 'AND pi.speed = ' . $speed . ' ';
 
         $q .= 'AND s.active = 1 ';
 
@@ -189,35 +205,42 @@ class Switcher extends EntityRepository
     /**
      * Return an array of configurations
      *
-     * @param int   $switchid     Switcher id for filtering results
-     * @param int   $infra        Infrastructure id for filtering results
-     * @param int   $facility     Facility id for filtering results
+     * @param int $switchid Switcher id for filtering results
+     * @param int $infra Infrastructure id for filtering results
+     * @param int $facility Facility id for filtering results
+     * @param int $speed Speed filtering results
+     * @param null $rsclient
+     * @param null $ipv6enabled
      *
      * @return array
      */
-    public function getConfiguration( $switchid = null, $infra = null, $facility = null )
+    public function getConfiguration( $switchid = null, $infra = null, $facility = null, $speed = null, $vlan = null, $rsclient = null, $ipv6enabled = null )
     {
         $q =
             "SELECT s.name AS switchname, 
                     s.id AS switchid,
                     
-                    GROUP_CONCAT(  sp.ifName ) AS ifName,
-                    GROUP_CONCAT( pi.speed ) AS speed, 
-                    pi.duplex AS duplex, 
-                    pi.status AS portstatus,
+                    GROUP_CONCAT( sp.ifName ) AS ifName,
+                    GROUP_CONCAT( pi.speed )  AS speed,
+       
+                    GROUP_CONCAT( pi.status ) AS portstatus,
+       
                     c.name AS customer, 
                     c.id AS custid, 
                     c.autsys AS asn,
-                    vli.rsclient AS rsclient,
-                    vli.ipv4enabled AS ipv4enabled, 
-                    vli.ipv6enabled AS ipv6enabled, 
+       
+                    MAX( vli.rsclient    ) AS rsclient,
+                    MAX( vli.ipv4enabled ) AS ipv4enabled, 
+                    MAX( vli.ipv6enabled ) AS ipv6enabled, 
+       
                     v.name AS vlan,
+       
                     GROUP_CONCAT( DISTINCT ipv4.address ) AS ipv4address, 
                     GROUP_CONCAT( DISTINCT ipv6.address ) AS ipv6address
 
             FROM Entities\\VlanInterface vli
-                JOIN vli.IPv4Address ipv4
-                JOIN vli.IPv6Address ipv6
+                LEFT JOIN vli.IPv4Address ipv4
+                LEFT JOIN vli.IPv6Address ipv6
                 LEFT JOIN vli.Vlan v
                 LEFT JOIN vli.VirtualInterface vi
                 LEFT JOIN vi.Customer c
@@ -230,19 +253,36 @@ class Switcher extends EntityRepository
             WHERE " . Customer::DQL_CUST_CURRENT . " ";
 
         if( $switchid !== null ) {
-            $q .= 'AND s.id = ' . intval( $switchid ) . ' ';
+            $q .= 'AND s.id = ' . (int)$switchid . ' ';
         }
 
         if( $infra !== null ) {
-            $q .= 'AND inf.id = ' . intval( $infra ) . ' ';
+            $q .= 'AND inf.id = ' . (int)$infra . ' ';
         }
 
         if( $facility !== null ) {
-            $q .= 'AND cab.Location = ' . intval( $facility ) . ' ';
+            $q .= 'AND cab.Location = ' . (int)$facility . ' ';
         }
 
+        if( $speed ) {
+            $q .= 'AND pi.speed = ' . (int)$speed . ' ';
+        }
 
-        $q .= " GROUP BY switchname, switchid, duplex, portstatus, customer, custid, asn, rsclient, ipv4enabled, ipv6enabled, vlan ";
+        if( $vlan ) {
+            $q .= 'AND vli.Vlan = ' . (int)$vlan . ' ';
+        } else {
+            $q .= 'AND v.private = 0 ';
+        }
+
+        if( $rsclient ) {
+            $q .= 'AND vli.rsclient = true ';
+        }
+
+        if( $ipv6enabled ) {
+            $q .= 'AND vli.ipv6enabled = true ';
+        }
+
+        $q .= " GROUP BY customer, custid, asn, switchname, switchid, vlan ";
 
         $q .= " ORDER BY customer ASC";
 
@@ -626,7 +666,7 @@ class Switcher extends EntityRepository
 
                         LEFT JOIN sp$side.Switcher s$side
 
-                        WHERE cb.type IN ( ".CoreBundle::TYPE_ECMP.",".CoreBundle::TYPE_L3_LAG." )   
+                        WHERE cb.type IN ( ".CoreBundleEntity::TYPE_ECMP.",".CoreBundleEntity::TYPE_L3_LAG." )   
 
                         AND s$side.id = ?1";
 
@@ -638,7 +678,7 @@ class Switcher extends EntityRepository
             # XXX this need to be refactored as it no longer exports CoreLinkInterface information
             foreach( $listCoreInterface as $ci ){
                 $export = [];
-                $subnet = ( $ci[ 'type' ] == CoreBundle::TYPE_ECMP ) ? $ci['clSubnet'] : $ci['cbSubnet'];
+                $subnet = ( $ci[ 'type' ] == CoreBundleEntity::TYPE_ECMP ) ? $ci['clSubnet'] : $ci['cbSubnet'];
 
                 $export[ 'ipv4' ]         = $this->linkAddr( $subnet, $side, true );
                 $export[ 'description' ]  = $ci[ 'description' ];
@@ -749,7 +789,7 @@ class Switcher extends EntityRepository
                     LEFT JOIN spA.Switcher sA
                     LEFT JOIN spB.Switcher sB
                     WHERE ( sA.id = ?1 OR sB.id = ?1 )
-                    AND cb.type IN ( ".CoreBundle::TYPE_ECMP.",".CoreBundle::TYPE_L3_LAG." )";
+                    AND cb.type IN ( ".CoreBundleEntity::TYPE_ECMP.",".CoreBundleEntity::TYPE_L3_LAG." )";
 
 
             $query = $this->getEntityManager()->createQuery( $dql );
@@ -770,7 +810,7 @@ class Switcher extends EntityRepository
             $neighbors = [];
             foreach( $listbgp as $bgp ){
                 $side = ( $bgp[ 'sAid' ] == $id ) ? 'B' : 'A';
-                $subnet = ( $bgp[ 'type' ] == CoreBundle::TYPE_ECMP ) ? $bgp['clSubnet'] : $bgp['cbSubnet'];
+                $subnet = ( $bgp[ 'type' ] == CoreBundleEntity::TYPE_ECMP ) ? $bgp['clSubnet'] : $bgp['cbSubnet'];
                 $neighbors[] = [
                     'ip' => $this->linkAddr( $subnet , $side , false ),
                     'description' => $bgp[ 's' .$side. 'name'],
