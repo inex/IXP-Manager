@@ -48,7 +48,7 @@ class Customer extends EntityRepository
      *
      * @var string DQL for selecting customers that are current in terms of `datejoin` and `dateleave`
      */
-    const DQL_CUST_CURRENT = "c.datejoin <= CURRENT_DATE() AND ( c.dateleave IS NULL OR c.dateleave = '0000-00-00' OR c.dateleave >= CURRENT_DATE() )";
+    const DQL_CUST_CURRENT = "c.datejoin <= CURRENT_DATE() AND ( c.dateleave IS NULL OR c.dateleave >= CURRENT_DATE() )";
     
     /**
      * DQL for selecting customers that are active (i.e. not suspended)

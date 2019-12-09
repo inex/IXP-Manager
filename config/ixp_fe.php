@@ -157,7 +157,11 @@ return [
         // for all actions can be sent to a single address defined here:
         'notes' => [
             'only_send_to' => env( 'IXP_FE_CUSTOMER_NOTES_ONLYSENDTO', false ),
-        ]
+        ],
+
+
+        // public member list and details are shown by default:
+        'details_public' => env( 'IXP_FE_CUSTOMER_DETAILS_PUBLIC', true ),
     ],
 
 
