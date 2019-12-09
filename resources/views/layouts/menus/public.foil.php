@@ -26,24 +26,25 @@
                 </li>
             <?php endif; ?>
 
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle <?= !request()->is( 'lg', 'peering-matrix' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    Peering
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <?php if( !config('ixp_fe.frontend.disabled.lg' ) ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'lg' ) ?: 'active' ?>" href="<?= url('lg') ?>">
-                            Looking Glass
-                        </a>
-                    <?php endif; ?>
-                    <?php if( ixp_min_auth( config( 'ixp.peering-matrix.min-auth' ) ) && !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'peering-matrix' ) ?: 'active' ?>" href="<?= route('peering-matrix@index') ?>">
-                            Peering Matrix
-                        </a>
-                    <?php endif; ?>
-                </div>
-            </li>
-
+            <?php if( !config('ixp_fe.frontend.disabled.lg' ) && ixp_min_auth( config( 'ixp.peering-matrix.min-auth' ) ) && !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle <?= !request()->is( 'lg', 'peering-matrix' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        Peering
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <?php if( !config('ixp_fe.frontend.disabled.lg' ) ): ?>
+                            <a class="dropdown-item <?= !request()->is( 'lg' ) ?: 'active' ?>" href="<?= url('lg') ?>">
+                                Looking Glass
+                            </a>
+                        <?php endif; ?>
+                        <?php if( ixp_min_auth( config( 'ixp.peering-matrix.min-auth' ) ) && !config( 'ixp_fe.frontend.disabled.peering-matrix', false ) ): ?>
+                            <a class="dropdown-item <?= !request()->is( 'peering-matrix' ) ?: 'active' ?>" href="<?= route('peering-matrix@index') ?>">
+                                Peering Matrix
+                            </a>
+                        <?php endif; ?>
+                    </div>
+                </li>
+            <?php endif; ?>
 
             <li class="nav-item dropdown <?= !request()->is( 'statistics/*', 'weather-map/*' ) ?: 'active' ?>">
                 <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
