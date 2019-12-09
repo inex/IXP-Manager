@@ -8,19 +8,23 @@
 
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto mt-2 mt-lg-0">
-            <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle <?= !request()->is( 'customer/details', 'customer/associates' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                    <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Information
-                </a>
-                <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                    <a class="dropdown-item <?= !request()->is( 'customer/details' ) ?: 'active' ?>" href="<?= route('customer@details') ?>">
-                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Details
+
+
+            <?php if( config( 'ixp_fe.customer.details_public') ): ?>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle <?= !request()->is( 'customer/details', 'customer/associates' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Information
                     </a>
-                    <a class="dropdown-item <?= !request()->is( 'customer/associates' ) ?: 'active' ?>" href="<?= route( "customer@associates" ) ?>">
-                        Associate <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
-                    </a>
-                </div>
-            </li>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                        <a class="dropdown-item <?= !request()->is( 'customer/details' ) ?: 'active' ?>" href="<?= route('customer@details') ?>">
+                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Details
+                        </a>
+                        <a class="dropdown-item <?= !request()->is( 'customer/associates' ) ?: 'active' ?>" href="<?= route( "customer@associates" ) ?>">
+                            Associate <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
+                        </a>
+                    </div>
+                </li>
+            <?php endif; ?>
 
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle <?= !request()->is( 'lg', 'peering-matrix' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

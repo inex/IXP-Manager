@@ -10,6 +10,7 @@ very very very brave.
 
 ## v5.3.0
 
+UPDATE cust SET dateleave = NULL where CAST(`dateleave` AS CHAR(10)) = '0000-00-00'
 
 ###
 
