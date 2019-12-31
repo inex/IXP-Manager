@@ -42,15 +42,22 @@ apt-get update
 apt full-upgrade -y
 apt autoremove -y
 
-apt-get install -y apache2 php7.3 php7.3-intl php7.3-mysql php-rrd php7.3-cgi php7.3-cli php7.3-snmp php7.3-curl               \
-    php-memcached libapache2-mod-php7.3 mysql-server mysql-client php-mysql memcached snmp                                     \
-    php7.3-mbstring php7.3-xml php7.3-gd php-gettext bgpq3 php-memcache unzip php-zip git php-yaml php-ds php7.3-bcmath        \
-    libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl
+apt-get install -y \
+	apache2 autoconf automake build-essential libapache2-mod-php7.3		\
+	libconfig-general-perl libconfig-general-perl libnetaddr-ip-perl	\
+	libnetaddr-ip-perl librrds-perl memcached mrtg mysql-client		\
+	mysql-server php-ds php-gettext php-memcache php-memcached php-mysql	\
+	php-rrd php-yaml php-zip php7.3 php7.3-bcmath php7.3-cgi php7.3-cli	\
+	php7.3-curl php7.3-gd php7.3-intl php7.3-mbstring php7.3-mysql		\
+	php7.3-snmp php7.3-xml rrdtool snmp unzip
 
 if ! [ -L /var/www ]; then
   rm -rf /var/www
   ln -fs /vagrant/public /var/www
 fi
+
+cd /tmp && git clone https://github.com/bgp/bgpq4
+cd bgpq4 && ./bootstrap && ./configure && make && make install
 
 curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
 

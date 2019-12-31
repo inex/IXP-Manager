@@ -11,7 +11,7 @@
                 from which IXP Manager pulls a member's configured IRRDB entries.
             </p>
 
-            IXP Manager uses <a href="https://github.com/snar/bgpq3" target="_blank">bgpq3</a> to pull this detail. We have
+            IXP Manager uses <a href="https://github.com/bgp/bgpq4" target="_blank">bgpq4</a> to pull this detail. We have
             <a href="http://docs.ixpmanager.org/features/irrdb/" target="_blank">further official IXP Manager documentation here</a>.
         </div>
     </div>

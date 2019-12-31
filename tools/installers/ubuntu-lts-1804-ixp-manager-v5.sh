@@ -316,7 +316,7 @@ echo mrtg mrtg/conf_mods boolean true | debconf-set-selections
 
 log_break && apt-get install -qy apache2 php7.3 php7.3-intl php-rrd php7.3-cgi php7.3-cli php7.3-snmp php7.3-curl                \
     php-memcached libapache2-mod-php7.3 mysql-server mysql-client php7.3-mysql memcached snmp                                    \
-    php7.3-mbstring php7.3-xml php7.3-gd php7.3-bcmath php-gettext bgpq3 php-memcache unzip php7.3-zip git php-yaml php-ds       \
+    php7.3-mbstring php7.3-xml php7.3-gd php7.3-bcmath php-gettext bgpq4 php-memcache unzip php7.3-zip git php-yaml php-ds       \
     libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl curl          \
         &>> /tmp/ixp-manager-install.log
 echo '[done]'
@@ -503,7 +503,7 @@ DOCTRINE_CACHE=memcached
 DOCTRINE_CACHE_NAMESPACE=IXPMANAGERNAMESPACE
 
 
-IXP_IRRDB_BGPQ3_PATH="/usr/bin/bgpq3"
+IXP_IRRDB_BGPQ4_PATH="/usr/local/bin/bgpq4"
 
 END_ENV
 

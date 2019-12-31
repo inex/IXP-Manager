@@ -50,7 +50,7 @@ class Kernel extends ConsoleKernel {
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_UPDATE_IN_MANRS', false ); } );
 
         // IRRDB - https://docs.ixpmanager.org/features/irrdb/
-        if( config( 'ixp.irrdb.bgpq3.path' ) && is_executable( config( 'ixp.irrdb.bgpq3.path' ) ) ) {
+        if( config( 'ixp.irrdb.bgpq4.path' ) && is_executable( config( 'ixp.irrdb.bgpq4.path' ) ) ) {
             $schedule->command( 'irrdb:update-prefix-db' )->cron( '7 */6 * * *' )
                 ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_IRRDB_UPDATE_PREFIX_DB', false ); } );
 

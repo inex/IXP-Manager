@@ -314,10 +314,13 @@ echo -n "Installing PHP, Apache, MySQL, etc. Please be very patient..."
 # Prevent mrtg from prompting
 echo mrtg mrtg/conf_mods boolean true | debconf-set-selections
 
-log_break && apt-get install -qy apache2 php7.0 php7.0-intl php-rrd php7.0-cgi php7.0-cli php7.0-snmp php7.0-curl php7.0-mcrypt  \
-    php-memcached libapache2-mod-php7.0 mysql-server mysql-client php7.0-mysql memcached snmp nodejs nodejs-legacy npm           \
-    php7.0-mbstring php7.0-xml php7.0-gd php7.0-bcmath php-gettext bgpq3 php-memcache unzip php7.0-zip git php-yaml php-ds       \
-    libconfig-general-perl libnetaddr-ip-perl mrtg  libconfig-general-perl libnetaddr-ip-perl rrdtool librrds-perl curl          \
+log_break && apt-get install -qy \
+    apache2 autoconf automake build-essential curl git libapache2-mod-php7.0    \
+    libconfig-general-perl libnetaddr-ip-perl librrds-perl memcached mrtg       \
+    mysql-client mysql-server nodejs nodejs-legacy npm php-ds php-gettext       \
+    php-memcache php-memcached php-rrd php-yaml php7.0 php7.0-bcmath php7.0-cgi \
+    php7.0-cli php7.0-curl php7.0-gd php7.0-intl php7.0-mbstring php7.0-mcrypt  \
+    php7.0-mysql php7.0-snmp php7.0-xml php7.0-zip rrdtool snmp unzip           \
         &>> /tmp/ixp-manager-install.log
 echo '[done]'
 
@@ -503,7 +506,7 @@ DOCTRINE_CACHE=memcached
 DOCTRINE_CACHE_NAMESPACE=IXPMANAGERNAMESPACE
 
 
-IXP_IRRDB_BGPQ3_PATH="/usr/bin/bgpq3"
+IXP_IRRDB_BGPQ4_PATH="/usr/local/bin/bgpq4"
 
 END_ENV
 

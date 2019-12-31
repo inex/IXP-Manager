@@ -2201,7 +2201,7 @@ class Customer
      * Useful function to get the appropriate AS macro or ASN for a customer
      * for a given protocol.
      *
-     * One example usage is in IrrdbCli for bgpq3. bgpq3 requires ASNs to
+     * One example usage is in IrrdbCli for bgpq4. bgpq4 requires ASNs to
      * be formatted as `asxxxx` so we set `$asnPrefix = 'as'` in this case.
      *
      * By default, the function will return some format of the ASN if no macro is
