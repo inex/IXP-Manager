@@ -31,12 +31,18 @@ $this->layout( 'layouts/ixpv4' )
             <div class="card">
                 <div class="card-header">
                     <h3>
-                        Two Factor Authentification
+                        Two Factor Authentication (2FA)
                     </h3>
                 </div>
                 <div class="card-body">
-                    <p>Two factor authentication (2FA) strengthens access security by requiring two methods (also referred to as factors) to verify your identity. Two factor authentication protects against phishing, social engineering and password brute force attacks and secures your logins from attackers exploiting weak or stolen credentials.</p>
-                    <strong>Enter the pin from Google Authenticator Enable 2FA</strong><br/><br/>
+                    <p>
+                        Two factor authentication (2FA) strengthens access security by requiring two methods (also referred to as factors) to verify your identity.
+                        Two factor authentication protects against phishing, social engineering and password brute force attacks and secures your logins from
+                        attackers exploiting weak or stolen credentials.
+                    </p>
+
+                    <strong>Enter the one time code from Google Authenticator</strong><br/><br/>
+
                     <?= Former::open()
                         ->method( 'post' )
                         ->action( route ( "2fa@authenticate" ) )

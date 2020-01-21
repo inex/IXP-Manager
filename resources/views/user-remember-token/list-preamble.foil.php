@@ -3,7 +3,7 @@
         <ul class="nav nav-tabs card-header-tabs">
             <li role="user-remember-token" class="nav-item">
                 <a class="nav-link active" data-toggle="tab" href="#user-remember-token">
-                    Remember Token
+                    Active Sessions
                 </a>
             </li>
         </ul>

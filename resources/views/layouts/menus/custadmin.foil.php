@@ -179,7 +179,9 @@
                         API Keys
                     </a>
 
-                    <a class="dropdown-item <?= !request()->is( 'user-remember-token/list' ) ?: 'active' ?>" href="<?= route('user-remember-token@list' )?>">Active Session</a>
+                    <a class="dropdown-item <?= !request()->is( 'user-remember-token/list' ) ?: 'active' ?>" href="<?= route('user-remember-token@list' )?>">
+                        Active Sessions
+                    </a>
 
                     <?php if( count( Auth::getUser()->getCustomers() ) > 1 ): ?>
 

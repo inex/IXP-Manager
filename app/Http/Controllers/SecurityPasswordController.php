@@ -60,7 +60,7 @@ class SecurityPasswordController extends Controller
 {
 
     /**
-     * Display the 2FA validation form via the profil page
+     * Display the 2FA validation form via the profile page
      *
      * @param Request $request
      * @param bool $reset
@@ -73,10 +73,10 @@ class SecurityPasswordController extends Controller
         $user = $request->user();
 
         // If we need to reset the 2FA
-        if( $reset ){
+        if( $reset ) {
             if( !$user->getPasswordSecurity() || !$user->getPasswordSecurity()->isGoogle2faEnable() ) {
-                AlertContainer::push( 'Action Impossible', Alert::DANGER );
-                return Redirect::to( request()->headers->get( 'referer', "" ) );
+                AlertContainer::push( '2FA cannot be reset as it is not currently enabled.', Alert::DANGER );
+                return Redirect::back();
             }
 
             // Delete the actual password security object
@@ -99,7 +99,6 @@ class SecurityPasswordController extends Controller
             'ps'            => $user->getPasswordSecurity(),
             'ixp2faToken'   => $request->session()->get( "ixp_2fa_valid_pass" )
         ] );
-
     }
 
     /**

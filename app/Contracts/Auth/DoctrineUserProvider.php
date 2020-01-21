@@ -38,6 +38,8 @@ use LaravelDoctrine\ORM\Auth\DoctrineUserProvider as DoctrineUserProviderBase;
 
 use Wolfcast\BrowserDetection;
 
+use Carbon\Carbon;
+
 
 class DoctrineUserProvider extends DoctrineUserProviderBase
 {
@@ -52,12 +54,11 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
      */
     public function retrieveByToken( $identifier, $token )
     {
-        if (! $model = $this->getUserRememberPasswordRepository()->findOneBy( [ "User" => $identifier, "token" => $token ] ) ){
+        if( !( $urt = $this->getUserRememberPasswordRepository()->findOneBy( [ "User" => $identifier, "token" => $token ] ) ) ) {
             return null;
         }
 
-        $now = new DateTime();
-        return $model->getExpires()->format( 'Y-m-d H:i:s' ) > $now->format( 'Y-m-d H:i:s' ) ? $model->getUser() : null;
+        return $urt->getExpires() > now() ? $urt->getUser() : null;
     }
 
     /**
@@ -73,13 +74,11 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
     public function addRememberToken( $identifier, $value, $expire )
     {
         /** @var $user UserEntity */
-        if (! $user = $this->getRepository()->findOneBy( [ $this->getEntity()->getAuthIdentifierName() => $identifier ]  ) ) {
+        if( !( $user = $this->getRepository()->findOneBy( [ $this->getEntity()->getAuthIdentifierName() => $identifier ] ) ) ) {
             return null;
         }
 
         $rememberToken = new UserRememberTokensEntity;
-        $this->em->persist( $rememberToken );
-
         $browser = new BrowserDetection();
 
         $rememberToken->setUser( $user );
@@ -89,6 +88,8 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
         $rememberToken->setDevice( $browser->getPlatform() . " " . $browser->getPlatformVersion(true) . " / " . $browser->getName() . " " . $browser->getVersion() );
         $rememberToken->setId( IpAddress::getIp() );
         $rememberToken->setSessionId( null );
+
+        $this->em->persist( $rememberToken );
 
         $user->addUserRememberTokens( $rememberToken );
 
@@ -112,12 +113,12 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
      */
     public function replaceRememberToken($identifier, $token, $newToken, $expire)
     {
-        if (! $rt = $this->getUserRememberPasswordRepository()->findOneBy( [ "User" => $identifier, "token" => $token ]  ) ) {
+        if ( !( $rt = $this->getUserRememberPasswordRepository()->findOneBy( [ "User" => $identifier, "token" => $token ] ) ) ) {
             return null;
         }
-        $rt->setToken( $newToken );
-        $rt->setExpires( new DateTime( "+$expire minutes" ) );
 
+        $rt->setToken( $newToken );
+        $rt->setExpires( now()->addMinutes( $expire ) );
         $this->em->flush();
     }
 
@@ -130,12 +131,12 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
      */
     public function deleteRememberToken( $identifier, $token )
     {
-        if (! $rt = $this->getUserRememberPasswordRepository()->findOneBy( [ "User" => $identifier, "token" => $token ]  ) ) {
+        if( !( $rt = $this->getUserRememberPasswordRepository()->findOneBy( [ "User" => $identifier, "token" => $token ] ) ) ) {
             return null;
         }
+
         $this->em->remove( $rt );
         $this->em->flush();
-
     }
 
     /**
@@ -153,7 +154,7 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
 
         if ( $expired ) {
             $now = new DateTime();
-            $sql .= " AND rt.expires < '" . $now->format( 'Y-m-d H:i:s' ) . "'";
+            $sql .= " AND rt.expires < '" . now()->format( 'Y-m-d H:i:s' ) . "'";
         }
 
         $this->em->createQuery( $sql )->execute();

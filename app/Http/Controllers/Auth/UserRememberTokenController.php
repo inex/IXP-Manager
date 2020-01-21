@@ -75,10 +75,10 @@ class UserRememberTokenController extends Doctrine2Frontend
         $this->feParams         = (object)[
             'entity'            => UserRememberTokensEntity::class,
 
-            'pagetitle'         => 'User Remember Tokens',
+            'pagetitle'         => 'Your Active Login Sessions',
 
-            'titleSingular'     => 'User Remember token',
-            'nameSingular'      => 'user remember token',
+            'titleSingular'     => 'Active Login Session',
+            'nameSingular'      => 'active login session',
 
             'listOrderBy'       => 'created',
             'listOrderByDir'    => 'ASC',
@@ -158,7 +158,6 @@ class UserRememberTokenController extends Doctrine2Frontend
     {
         // Delete remember me token
         Cookie::queue( Cookie::forget( Auth::getRecallerName() ) );
-
         return false;
     }
 

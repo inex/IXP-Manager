@@ -19,7 +19,7 @@ $this->layout( 'layouts/ixpv4' )
             <div class="card">
                 <div class="card-header">
                     <h3>
-                        Two Factor Authentification
+                        Two Factor Authentication
                     </h3>
                 </div>
                 <div class="card-body">
@@ -27,7 +27,7 @@ $this->layout( 'layouts/ixpv4' )
                         Two factor authentication (2FA) strengthens access security by requiring two methods (also referred to as factors) to verify your identity. Two factor authentication protects against phishing, social engineering and password brute force attacks and secures your logins from attackers exploiting weak or stolen credentials.
                     </p>
                     <p>
-                        To Enable Two Factor Authentication on your Account, you need to do following steps.
+                        To enable two factor authentication on your Account, you need to do following steps.
                     </p>
                     <p>
                         <b>Step 1:</b> Set up your two factor authentication by scanning the barcode below. Alternatively, you can use the code: <b><?= $t->ps->getGoogle2faSecret() ?></b>
@@ -38,7 +38,7 @@ $this->layout( 'layouts/ixpv4' )
 
                     <?php if( !$t->ps->isGoogle2faEnable() ): ?>
                         <p>
-                            <b>Step 2:</b> Enter the 6-digit code you see in your authentificator app.
+                            <b>Step 2:</b> Enter the 6-digit code you see in your authenticator app.
                         </p>
                         <br/>
                         <div class="col-lg-6 mx-auto">
@@ -80,7 +80,7 @@ $this->layout( 'layouts/ixpv4' )
                     <?php else: ?>
 
                         <p>
-                            Test your code enter the 6-digit code you see in your authentificator app.
+                            <b>Step 2:</b> Test your code - enter the 6-digit code you see in your authenticator app.
                         </p>
                         <br/>
                         <div class="col-lg-6 mx-auto">

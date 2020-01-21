@@ -153,15 +153,15 @@ class LoginController extends Controller
             }
 
 
-            $c2u->setLastLoginAt(  new DateTime );
+            $c2u->setLastLoginAt( now() );
             $c2u->setLastLoginFrom( $this->getIP() );
 
             if( config( "ixp_fe.login_history.enabled" ) ) {
                 $log = new UserLoginHistoryEntity;
                 D2EM::persist( $log );
 
-                $log->setAt(    new DateTime() );
-                $log->setIp(    $this->getIP() );
+                $log->setAt( now() );
+                $log->setIp( $this->getIP() );
                 $log->setCustomerToUser(  $c2u  );
 
                 D2EM::flush();
@@ -172,12 +172,11 @@ class LoginController extends Controller
             $this->logout( $request, [ 'message' => "Your user account is not associated with any " . config( "ixp_fe.lang.customer.many" ) . " .", 'class' => Alert::DANGER ] );
         }
 
-        // Check we added the in the request the UserRememberToken id
+        // Check if we added a UserRememberToken id to the request
         if( request()->request->has( "ixpm-user-remember-me-token-id" ) ){
-            // Updating the current UserRememberToken session id With the current session ID in order to link them
+            // Updating the current UserRememberToken session id with the current session ID in order to link them
             $urt = D2EM::getRepository( UserRememberTokensEntity::class )->find( request()->request->get( "ixpm-user-remember-me-token-id" ) );
             $urt->setSessionId( Session::getId() );
-            D2EM::flush();
         }
 
         D2EM::flush();

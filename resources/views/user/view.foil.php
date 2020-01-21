@@ -98,6 +98,18 @@ Users / View User
                                 <?= $t->u['disabled'] ? "No" : "Yes" ?>
                             </td>
                         </tr>
+
+                        <tr>
+                            <td>
+                                <b>
+                                    2FA Enabled
+                                </b>
+                            </td>
+                            <td>
+                                <?= $t->u['google2fa_enabled'] ? "Yes" : "No" ?>
+                            </td>
+                        </tr>
+
                         <tr>
                             <td>
                                 <b>
