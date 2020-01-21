@@ -180,6 +180,11 @@ class LoginController extends Controller
         }
 
         D2EM::flush();
+
+        // if remember me is enabled, set a session variable so we can set the same on the 2fa form if enabled
+        if( $request->get('remember') ) {
+            $request->session()->put( 'ixpm-login-rememberme-set', true );
+        }
     }
 
     /**

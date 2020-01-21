@@ -63,7 +63,7 @@ $this->layout( 'layouts/ixpv4' )
                             ->label('&nbsp;')
                             ->text( 'Remember me' )
                             ->value( 1 )
-                            ->check( Session::pull( "remember" ) )
+                            ->check( Session::pull( "remember" ) || Session::get( 'ixpm-login-rememberme-set', false ) )
                             ->inline()
                             ->blockHelp( '' );
                         ?>
