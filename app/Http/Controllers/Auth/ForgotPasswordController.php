@@ -120,7 +120,7 @@ class ForgotPasswordController extends Controller
      */
     protected function sendResetLinkResponse(Request $request, $response)
     {
-        AlertContainer::push( 'The reset link have been sent to you email address.', Alert::SUCCESS );
+        AlertContainer::push( 'The reset link has been sent to your email address.', Alert::SUCCESS );
         return redirect( route( 'login@login' ) );
     }
 

@@ -212,7 +212,9 @@ return [
 
         Webpatser\Countries\CountriesServiceProvider::class,
 
-        Intervention\Image\ImageServiceProvider::class
+        Intervention\Image\ImageServiceProvider::class,
+
+        PragmaRX\Google2FALaravel\ServiceProvider::class,
 
     ],
 
@@ -278,6 +280,8 @@ return [
         'PDF'       => Barryvdh\DomPDF\Facade::class,
 
         'Countries' => Webpatser\Countries\CountriesFacade::class,
+
+        'Google2FA' => PragmaRX\Google2FALaravel\Facade::class,
     ],
 
 ];

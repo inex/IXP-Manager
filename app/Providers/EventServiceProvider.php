@@ -75,8 +75,6 @@ class EventServiceProvider extends ServiceProvider {
             'IXP\Listeners\Auth\PasswordReset'
         ],
 
-
-
         \SocialiteProviders\Manager\SocialiteWasCalled::class => [
             'SocialiteProviders\\PeeringDB\\PeeringDBExtendSocialite@handle',
         ],

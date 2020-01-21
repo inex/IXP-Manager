@@ -25,13 +25,14 @@ namespace Tests\Browser;
 
 use D2EM;
 
-use Entities\{CoreBundle as CoreBundleEntity,
-    CoreInterface as CoreInterfaceEntity,
-    CoreLink as CoreLinkEntity,
-    PhysicalInterface as PhysicalInterfaceEntity,
-    Switcher as SwitcherEntity,
-    SwitchPort as SwitchPortEntity,
-    VirtualInterface as VirtualInterfaceEntity};
+use Entities\{
+    CoreBundle          as CoreBundleEntity,
+    CoreInterface       as CoreInterfaceEntity,
+    CoreLink            as CoreLinkEntity,
+    PhysicalInterface   as PhysicalInterfaceEntity,
+    SwitchPort          as SwitchPortEntity,
+    VirtualInterface    as VirtualInterfaceEntity
+};
 
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
@@ -50,11 +51,11 @@ class CoreBundleControllerTest extends DuskTestCase
                 $sp->setType( SwitchPortEntity::TYPE_CORE );
                 D2EM::flush();
             }
-
         }
 
         parent::tearDown();
     }
+
     /**
      * A Dusk test example.
      *

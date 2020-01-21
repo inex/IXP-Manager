@@ -1,4 +1,5 @@
 <?php
+namespace IXP\Providers;
 
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -20,14 +21,12 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Auth, Gate;
 
-namespace IXP\Providers;
-
-use IXP\Services\Grapher\Graph;
-
-
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+
+use IXP\Contracts\Auth\DoctrineUserProvider;
+use IXP\Services\Auth\SessionGuard;
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -51,11 +50,34 @@ class AuthServiceProvider extends ServiceProvider
         $this->registerPolicies();
 
         // autoload model policies
-        Gate::guessPolicyNamesUsing(function ($modelClass) {
+        Gate::guessPolicyNamesUsing( function ( $modelClass ) {
             return 'IXP\\Policies\\' . class_basename( $modelClass ) . 'Policy';
         });
 
+        Auth::extend('session', function ( $app, $name, $config ) {
+            $provider = $app[ 'auth' ]->createUserProvider( $config['provider'] ?? null );
 
-        //
+            $guard = new SessionGuard( $name, $provider, $app[ 'session.store' ], request(), $config[ 'expire' ] ?? null );
+
+            if( method_exists( $guard, 'setCookieJar' ) ) {
+                $guard->setCookieJar( $app['cookie'] );
+            }
+
+            if ( method_exists( $guard, 'setDispatcher' ) ) {
+                $guard->setDispatcher( $app['events'] );
+            }
+
+            if (method_exists( $guard, 'setRequest' ) ) {
+                $guard->setRequest( $app->refresh( 'request', $guard, 'setRequest' ) );
+            }
+
+            return $guard;
+        });
+
+        Auth::provider('doctrine', function ( $app, array $config ) {
+            $em = $app[ 'registry' ]->getManagerForClass( $config['model'] );
+            
+            return new DoctrineUserProvider( $app['hash'], $em , $config['model'] );
+        });
     }
 }

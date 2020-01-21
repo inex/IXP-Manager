@@ -66,8 +66,10 @@
                                 <i class="fa fa-info-circle fa-2x"></i>
                             </div>
                             <div class="col-sm-12">
-                                <b>No <?= ucfirst( $t->feParams->pagetitle ) ?> exist.</b>
-                                <a class="btn btn-white ml-2" href="<?= route($t->feParams->route_prefix.'@add') ?>">Add one...</a>
+                                <b>No <?= $t->feParams->nameSingular ?> exists.</b>
+                                <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
+                                    <a class="btn btn-white ml-2" href="<?= route($t->feParams->route_prefix.'@add') ?>">Add one...</a>
+                                <?php endif;?>
                             </div>
                         </div>
                     </div>

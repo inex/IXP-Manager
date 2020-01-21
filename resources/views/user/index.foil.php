@@ -67,7 +67,9 @@
                             OAuth
                         </th>
                     <?php endif; ?>
-
+                    <th>
+                        2FA Enabled
+                    </th>
                     <th>
                         Action
                     </th>
@@ -120,7 +122,9 @@
                                     <?= $u['peeringdb_id'] ? 'Y' : 'N' ?>
                                 </td>
                             <?php endif; ?>
-
+                            <td>
+                                <?= $u['google2fa_enabled'] ? 'Yes' : 'No' ?>
+                            </td>
                             <td>
 
                                 <div class="btn-group btn-group-sm">
@@ -142,9 +146,6 @@
                                         </a>
                                     <?php endif; ?>
 
-
-
-
                                     <?php if( Auth::getUser()->isSuperUser() ): ?>
                                         <button id="d2f-more-options-<?= $u[ 'id' ] ?>" type="button" class="btn btn-white dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                                         </button>
@@ -164,6 +165,13 @@
                                             <a id="d2f-option-login-as-<?= $u[ 'id' ] ?>" class="dropdown-item <?= $u[ 'disabled' ] || Auth::getUser()->getId() == $u['id'] ? "disabled" : "" ?>" href="<?= route( "switch-user@switch", [ "id" => $u['id'] ] ) ?>">
                                                 Login as
                                             </a>
+
+                                            <?php if( $u['google2fa_enabled'] ): ?>
+                                                <a id="d2f-option-remove-2fa-<?= $u[ 'psid' ] ?>" class="dropdown-item remove-2fa" data-object-id="<?= $u[ 'psid' ] ?>" href="#">
+                                                    Remove 2FA
+                                                </a>
+                                            <?php endif; ?>
+
                                         </ul>
                                     <?php endif;?>
                                 </div>

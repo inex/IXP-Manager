@@ -23,18 +23,22 @@
 
 namespace Entities;
 
-use Auth, D2EM, Redirect;
+use D2EM, Datetime;
 
 use Entities\{
     ApiKey              as ApiKeyEntity,
+    Contact             as ContactEntity,
     Customer            as CustomerEntity,
     CustomerToUser      as CustomerToUserEntity,
+    PasswordSecurity    as PasswordSecurityEntity,
+    UserRememberTokens  as UserRememberTokensEntity,
     User                as UserEntity,
     UserLoginHistory    as UserLoginHistoryEntity,
     UserPreference      as UserPreferenceEntity
 };
 
-use Illuminate\Contracts\Auth\Authenticatable;
+use Doctrine\Common\Collections\Collection;
+use IXP\Contracts\Auth\Authenticatable;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -44,10 +48,8 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
 
 use IXP\Utils\Doctrine2\WithPreferences as Doctrine2_WithPreferences;
+use Psy\Util\Json;
 
-use Illuminate\Http\{
-    RedirectResponse
-};
 
 /**
  * Entities\User
@@ -133,7 +135,7 @@ class User implements Authenticatable, CanResetPasswordContract
     protected $disabled;
 
     /**
-     * @var \DateTime $lastupdated
+     * @var DateTime $lastupdated
      */
     protected $lastupdated;
 
@@ -148,14 +150,9 @@ class User implements Authenticatable, CanResetPasswordContract
     protected $creator;
 
     /**
-     * @var \DateTime $created
+     * @var DateTime $created
      */
     protected $created;
-
-    /**
-     * @var string $remember_token
-     */
-    protected $remember_token;
 
     /**
      * @var integer $id
@@ -170,18 +167,18 @@ class User implements Authenticatable, CanResetPasswordContract
 
 
     /**
-     * @var \Json
+     * @var Json
      */
     private $extra_attributes = [];
 
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      */
     protected $LastLogins;
 
     /**
-     * @var \Doctrine\Common\Collections\Collection
+     * @var Collection
      */
     private $ApiKeys;
 
@@ -200,6 +197,11 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     protected $Customers;
 
+    /**
+     * @var ContactEntity
+     */
+    protected $Contact;
+
 
     /**
      * @var UserEntity
@@ -207,13 +209,24 @@ class User implements Authenticatable, CanResetPasswordContract
     protected $Children;
 
     /**
+     * @var PasswordSecurityEntity
+     */
+    protected $PasswordSecurity;
+
+    /**
+     * @var UserRememberTokensEntity
+     */
+    protected $UserRememberTokens;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->Preferences = new ArrayCollection();
-        $this->Customers = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->ApiKeys = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->Preferences          = new ArrayCollection();
+        $this->Customers            = new ArrayCollection();
+        $this->ApiKeys              = new ArrayCollection();
+        $this->UserRememberTokens   = new ArrayCollection();
     }
 
     /**
@@ -415,7 +428,7 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Set lastupdated
      *
-     * @param \DateTime $lastupdated
+     * @param DateTime $lastupdated
      * @return User
      */
     public function setLastupdated($lastupdated)
@@ -490,7 +503,7 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Get Extra attributes
      *
-     * @return \Json
+     * @return Json
      */
     public function getExtraAttributes()
     {
@@ -562,7 +575,7 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Get created
      *
-     * @return \DateTime
+     * @return DateTime
      */
     public function getCreated()
     {
@@ -630,10 +643,10 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Add Customer
      *
-     * @param \Entities\Customer $customer
+     * @param CustomerEntity $customer
      * @return User
      */
-    public function addCustomer(\Entities\Customer $customer)
+    public function addCustomer(CustomerEntity $customer)
     {
         $this->Customers[] = $customer;
 
@@ -643,9 +656,9 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Remove Customer
      *
-     * @param Entities\CustomerToUser $customer
+     * @param CustomerToUserEntity $customer
      */
-    public function removeCustomer(\Entities\CustomerToUser $customer)
+    public function removeCustomer(CustomerToUserEntity $customer)
     {
         $this->Customers->removeElement($customer);
     }
@@ -653,7 +666,7 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Get Customers
      *
-     * @return \Doctrine\Common\Collections\Collection|Customer[]
+     * @return Collection|Customer[]
      */
     public function getCustomers(){
         $custs = [];
@@ -666,15 +679,11 @@ class User implements Authenticatable, CanResetPasswordContract
 
 
     /**
-     * @return \Doctrine\Common\Collections\Collection|CustomerToUser[]
+     * @return Collection|CustomerToUser[]
      */
     public function getCustomers2User() {
         return $this->Customers;
     }
-
-
-
-
 
 
     /**
@@ -693,7 +702,7 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Get Children
      *
-     * @return \Entities\User
+     * @return UserEntity
      */
     public function getChildren()
     {
@@ -761,7 +770,7 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Get LastLogins
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getLastLogins()
     {
@@ -795,7 +804,7 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Get ApiKeys
      *
-     * @return \Doctrine\Common\Collections\Collection
+     * @return Collection
      */
     public function getApiKeys()
     {
@@ -829,17 +838,12 @@ class User implements Authenticatable, CanResetPasswordContract
 
 
     /**
-     * @var \Entities\Contact
-     */
-    protected $Contact;
-
-    /**
      * Set Contact
      *
-     * @param \Entities\Contact $contact
+     * @param ContactEntity $contact
      * @return User
      */
-    public function setContact(Contact $contact)
+    public function setContact( ContactEntity $contact)
     {
         $this->Contact = $contact;
 
@@ -849,13 +853,95 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Get Contact
      *
-     * @return \Entities\Contact
+     * @return ContactEntity
      */
     public function getContact()
     {
         return $this->Contact;
     }
 
+    /**
+     * Set Password Security
+     *
+     * @param PasswordSecurityEntity $passwordSecurity
+     * @return User
+     */
+    public function setPasswordSecurity( PasswordSecurityEntity $passwordSecurity )
+    {
+        $this->PasswordSecurity = $passwordSecurity;
+
+        return $this;
+    }
+
+    /**
+     * Get Password Security
+     *
+     * @return PasswordSecurityEntity
+     */
+    public function getPasswordSecurity()
+    {
+        return $this->PasswordSecurity;
+    }
+
+
+    /**
+     * Does the 2FA is required for this user
+     *
+     * @return bool
+     */
+    public function is2FARequired()
+    {
+        if( $this->isSuperUser() && config( "google2fa.superuser_required" ) && ( !$this->getPasswordSecurity() || !$this->getPasswordSecurity()->isGoogle2faEnable() ) ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Does the 2FA is enabled for his user
+     *
+     * @return bool
+     */
+    public function is2FAenabled()
+    {
+        if( $this->getPasswordSecurity() && $this->getPasswordSecurity()->isGoogle2faEnable() ) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Add Remember token
+     *
+     * @param UserRememberTokensEntity $userRememberTokens
+     * @return User
+     */
+    public function addUserRememberTokens( UserRememberTokensEntity $userRememberTokens )
+    {
+        $this->UserRememberTokens[] = $userRememberTokens;
+
+        return $this;
+    }
+
+    /**
+     * Remove Remember token
+     *
+     * @param UserRememberTokensEntity $userRememberTokens
+     */
+    public function removeRememberTokens( UserRememberTokensEntity $userRememberTokens )
+    {
+        $this->UserRememberTokens->removeElement( $userRememberTokens );
+    }
+
+    /**
+     * Get Remember tokens
+     *
+     * @return Collection
+     */
+    public function RememberTokens()
+    {
+        return $this->UserRememberTokens;
+    }
 
     /***************************************************************************
      | LARAVEL 5 USER PROVIDER INTERFACE METHODS
@@ -898,26 +984,26 @@ class User implements Authenticatable, CanResetPasswordContract
         return $this->getPassword();
     }
 
-
     /**
-     * Get the token value for the "remember me" session.
+     * Get the "remember me" token value.
      *
      * @return string
      */
     public function getRememberToken()
     {
-        return $this->remember_token;
+        return $this->attributes[$this->getRememberTokenName()];
     }
 
     /**
-     * Set the token value for the "remember me" session.
+     * Set the "remember me" token value.
      *
      * @param  string  $value
      * @return void
      */
     public function setRememberToken($value)
     {
-        $this->remember_token = $value;
+
+        $this->attributes[$this->getRememberTokenName()] = $value;
     }
 
     /**
@@ -927,8 +1013,9 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function getRememberTokenName()
     {
-        return 'remember_token';
+        return 'token';
     }
+
 
     /**
      * Send the password reset notification.
