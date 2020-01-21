@@ -189,6 +189,8 @@ Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
 
 Route::get( 'search', 'SearchController@do' )->name( 'search' );
 
+Route::get( '2fa/superuser-verification', 'SecurityPasswordController@superuserVerification' )->name( '2fa@superuser-verification' );
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///

@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.27, for osx10.14 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.21, for osx10.13 (x86_64)
 --
--- Host: localhost    Database: myapp_test
+-- Host: localhost    Database: ixp_ci
 -- ------------------------------------------------------
--- Server version	5.7.27
+-- Server version	5.7.21
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -1372,6 +1372,35 @@ LOCK TABLES `password_resets` WRITE;
 UNLOCK TABLES;
 
 --
+-- Table structure for table `password_security`
+--
+
+DROP TABLE IF EXISTS `password_security`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `password_security` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `google2fa_enable` tinyint(1) NOT NULL DEFAULT '0',
+  `google2fa_secret` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_550C4701A76ED395` (`user_id`),
+  CONSTRAINT `FK_550C4701A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `password_security`
+--
+
+LOCK TABLES `password_security` WRITE;
+/*!40000 ALTER TABLE `password_security` DISABLE KEYS */;
+/*!40000 ALTER TABLE `password_security` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `patch_panel`
 --
 
@@ -1674,6 +1703,34 @@ INSERT INTO `physicalinterface` VALUES (1,3,NULL,1,1,1000,'full','',1),(2,4,NULL
 UNLOCK TABLES;
 
 --
+-- Table structure for table `remember_tokens`
+--
+
+DROP TABLE IF EXISTS `remember_tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `remember_tokens` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `token` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` int(11) NOT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  `expires_at` datetime NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `remember_tokens_token_user_id_unique` (`token`,`user_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `remember_tokens`
+--
+
+LOCK TABLES `remember_tokens` WRITE;
+/*!40000 ALTER TABLE `remember_tokens` DISABLE KEYS */;
+/*!40000 ALTER TABLE `remember_tokens` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `routers`
 --
 
@@ -1856,6 +1913,34 @@ LOCK TABLES `service_notifications` WRITE;
 /*!40000 ALTER TABLE `service_notifications` DISABLE KEYS */;
 INSERT INTO `service_notifications` VALUES (1,NULL,1,'Question nupower','test','[{\"type\": \"markdown_paragraph\", \"content\": \"mark 1\"}, {\"type\": \"required_action\", \"content\": \"req 2\"}, {\"type\": \"recommendation\", \"content\": \"reco 3\"}]','planned','','2019-08-09 20:00:00','2019-08-10 20:00:00','2019-09-08','new','2019-08-09 13:48:35','2019-08-09 14:06:57');
 /*!40000 ALTER TABLE `service_notifications` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `sessions`
+--
+
+DROP TABLE IF EXISTS `sessions`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sessions` (
+  `id` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `user_id` bigint(20) DEFAULT NULL,
+  `ip_address` varchar(45) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `user_agent` text COLLATE utf8mb4_unicode_ci,
+  `payload` text COLLATE utf8mb4_unicode_ci NOT NULL,
+  `last_activity` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `sessions_id_unique` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `sessions`
+--
+
+LOCK TABLES `sessions` WRITE;
+/*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
+/*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2197,7 +2282,6 @@ CREATE TABLE `user` (
   `creator` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `created` datetime DEFAULT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `remember_token` varchar(100) COLLATE utf8_unicode_ci DEFAULT NULL,
   `peeringdb_id` bigint(20) DEFAULT NULL,
   `extra_attributes` json DEFAULT NULL COMMENT '(DC2Type:json)',
   PRIMARY KEY (`id`),
@@ -2214,7 +2298,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,1,'travis','$2y$10$FNzPyTKm64oSKeUUCwm1buLQp7h80nBj2suqdjsWH2aajVS1xz/ce','joe@siep.com',NULL,NULL,3,0,'2014-01-06 13:54:22',1,'travis','2014-01-06 13:54:22',NULL,NULL,NULL,NULL),(2,5,'imcustadmin','$2y$10$VlJG/42TCK7VQz1Wwy7yreP73Eq/1VKn55B4vJfXy4U7fIGK/9YWC','imagine-custadmin@example.com',NULL,NULL,2,0,'2019-01-16 15:37:24',2,'travis','2018-05-15 15:36:12','Test Test',NULL,NULL,NULL),(3,5,'imcustuser','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','imagine-custuser@example.com',NULL,NULL,1,0,'2019-01-16 15:44:30',3,'travis','2018-05-15 15:36:54','Joe Bloggs',NULL,NULL,NULL),(4,2,'hecustuser','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','heanet-custuser@example.com',NULL,NULL,1,0,'2018-05-15 15:36:54',1,'travis','2018-05-15 15:36:54',NULL,NULL,NULL,NULL),(5,2,'hecustadmin','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','heanet-custadmin@example.com',NULL,NULL,1,0,'2018-05-15 15:36:54',1,'travis','2018-05-15 15:36:54',NULL,NULL,NULL,NULL);
+INSERT INTO `user` VALUES (1,1,'travis','$2y$10$FNzPyTKm64oSKeUUCwm1buLQp7h80nBj2suqdjsWH2aajVS1xz/ce','joe@siep.com',NULL,NULL,3,0,'2014-01-06 13:54:22',1,'travis','2014-01-06 13:54:22',NULL,NULL,NULL),(2,5,'imcustadmin','$2y$10$VlJG/42TCK7VQz1Wwy7yreP73Eq/1VKn55B4vJfXy4U7fIGK/9YWC','imagine-custadmin@example.com',NULL,NULL,2,0,'2019-01-16 15:37:24',2,'travis','2018-05-15 15:36:12','Test Test',NULL,NULL),(3,5,'imcustuser','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','imagine-custuser@example.com',NULL,NULL,1,0,'2019-01-16 15:44:30',3,'travis','2018-05-15 15:36:54','Joe Bloggs',NULL,NULL),(4,2,'hecustuser','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','heanet-custuser@example.com',NULL,NULL,1,0,'2018-05-15 15:36:54',1,'travis','2018-05-15 15:36:54',NULL,NULL,NULL),(5,2,'hecustadmin','$2y$10$sIUXAklQmQwalBF0nGgCLenCYYUMXWdqSESRjw6faXfiyymfmpk3y','heanet-custadmin@example.com',NULL,NULL,1,0,'2018-05-15 15:36:54',1,'travis','2018-05-15 15:36:54',NULL,NULL,NULL);
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2279,6 +2363,38 @@ LOCK TABLES `user_pref` WRITE;
 /*!40000 ALTER TABLE `user_pref` DISABLE KEYS */;
 INSERT INTO `user_pref` VALUES (1,1,'auth.last_login_from',0,'=','127.0.0.1',0),(2,1,'auth.last_login_at',0,'=','1529491122',0),(3,2,'auth.last_login_from',0,'=','127.0.0.1',0),(4,2,'auth.last_login_at',0,'=','1529490202',0),(5,3,'auth.last_login_from',0,'=','127.0.0.1',0),(6,3,'auth.last_login_at',0,'=','1529490238',0),(7,5,'auth.last_login_from',0,'=','127.0.0.1',0),(8,5,'auth.last_login_at',0,'=','1529490264',0);
 /*!40000 ALTER TABLE `user_pref` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `user_remember_tokens`
+--
+
+DROP TABLE IF EXISTS `user_remember_tokens`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_remember_tokens` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `device` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ip` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `created` datetime NOT NULL,
+  `expires` datetime NOT NULL,
+  `session_id` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `user_token` (`user_id`,`token`),
+  KEY `IDX_E253302EA76ED395` (`user_id`),
+  CONSTRAINT `FK_E253302EA76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_remember_tokens`
+--
+
+LOCK TABLES `user_remember_tokens` WRITE;
+/*!40000 ALTER TABLE `user_remember_tokens` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_remember_tokens` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -2607,4 +2723,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-04 16:24:43
+-- Dump completed on 2019-11-22 14:04:00

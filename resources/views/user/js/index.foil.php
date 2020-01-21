@@ -47,8 +47,11 @@
             "aaSorting": [1,'asc'],
 
         });
-    </script>
 
+
+
+    </script>
+    <?= $t->insert( 'user/js/delete-2fa' ); ?>
 <?php endif; ?>
 
 

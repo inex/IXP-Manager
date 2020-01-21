@@ -30,6 +30,7 @@
 */
 
 IXP\Http\Controllers\ApiKeyController::routes();
+IXP\Http\Controllers\Auth\UserRememberTokenController::routes();
 IXP\Http\Controllers\CabinetController::routes();
 IXP\Http\Controllers\ConsoleServer\ConsoleServerController::routes();
 IXP\Http\Controllers\ConsoleServer\ConsoleServerConnectionController::routes();

@@ -33,13 +33,16 @@ use Illuminate\Http\{
 use Illuminate\View\View;
 
 use Entities\{
-    User        as  UserEntity
+    User                as  UserEntity,
+    UserRememberTokens  as UserRememberTokensEntity,
+    Session             as SessionEntity
 };
 
 use IXP\Http\Requests\Profile\{
-    Password                   as PasswordRequest,
-    Profile                    as ProfileRequest,
-    Notification               as NotificationRequest
+    Notification    as NotificationRequest,
+    Password        as PasswordRequest,
+    Profile         as ProfileRequest
+
 };
 
 use IXP\Utils\View\Alert\{
@@ -119,6 +122,9 @@ class ProfileController extends Controller
         D2EM::flush();
 
         AlertContainer::push( 'Password updated successfully', Alert::SUCCESS );
+
+        // Logout all the active session except the current one
+        D2EM::getRepository( UserEntity::class )->deleteActiveSession( $user->getId(), false );
 
         return Redirect::to( route( "profile@edit"  ) );
     }
