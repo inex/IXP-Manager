@@ -13,10 +13,7 @@
         </p>
     </div>
 
-
-
 <?php endif; ?>
-
 
 <div class="card mt-4">
     <div class="card-header">

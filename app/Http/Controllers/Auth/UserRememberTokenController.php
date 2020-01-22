@@ -49,7 +49,7 @@ class UserRememberTokenController extends Doctrine2Frontend
      */
     protected $object = null;
 
-    protected static $route_prefix = "user-remember-token";
+    protected static $route_prefix = "active-sessions";
 
     /**
      * The minimum privileges required to access this controller.
