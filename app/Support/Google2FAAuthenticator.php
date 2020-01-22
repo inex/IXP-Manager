@@ -56,25 +56,7 @@ class Google2FAAuthenticator extends Authenticator
             $this->noUserIsAuthenticated() ||
             $this->twoFactorAuthStillValid();
     }
-
-    /**
-     * Check if the input OTP is valid.
-     *
-     * @return bool
-     */
-    protected function checkOTP()
-    {
-        if (!$this->inputHasOneTimePassword()) {
-            return false;
-        }
-
-        if ($isValid = $this->verifyOneTimePassword()) {
-            $this->login();
-        }
-
-
-        return $isValid;
-    }
+    
 
     /**
      * Set current auth as valid.

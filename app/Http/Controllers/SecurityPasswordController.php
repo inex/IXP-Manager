@@ -181,7 +181,7 @@ class SecurityPasswordController extends Controller
 
         // Generate the QR Code based on the user data
         $qrCodeImg = $google2fa->getQRCodeInline(
-            config( 'identity.titlename' ),
+            config( 'identity.sitename' ),
             $user->getEmail(),
             $user->getPasswordSecurity()->getGoogle2faSecret()
         );
