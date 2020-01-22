@@ -126,7 +126,8 @@ class User extends EntityRepository
                         u.email AS email, 
                         c.name AS cust_name, 
                         c.id AS cust_id, 
-                        c2u.id AS id
+                        c2u.id AS c2u_id,
+                        u.id AS id
                     FROM Entities\\CustomerToUser c2u
                         JOIN c2u.user u
                         JOIN c2u.customer c";
