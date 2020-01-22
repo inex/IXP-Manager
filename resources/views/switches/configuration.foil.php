@@ -176,17 +176,21 @@
                         <?= $conf[ "switchid" ] ?>
                     </td>
                     <td>
-                        <?php if( Auth::getUser()->isSuperUser() ): ?>
-                            <a href="<?= route( "customer@overview" , [ "id" => $conf[ "custid" ] ] ) ?>"><?= $conf[ "customer" ] ?></a>
-                        <?php else: ?>
-                            <a href="<?= route( "customer@detail"   , [ "id" => $conf[ "custid" ] ] ) ?>"><?= $conf[ "customer" ] ?></a>
+                        <?php if( $conf[ "custid" ] ): ?>
+                            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                <a href="<?= route( "customer@overview" , [ "id" => $conf[ "custid" ] ] ) ?>"><?= $conf[ "customer" ] ?></a>
+                            <?php else: ?>
+                                <a href="<?= route( "customer@detail"   , [ "id" => $conf[ "custid" ] ] ) ?>"><?= $conf[ "customer" ] ?></a>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </td>
                     <td>
-                        <?php if( Auth::getUser()->isSuperUser() ): ?>
-                            <a href="<?= route( "switch@port-report"    , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
-                        <?php else: ?>
-                            <a href="<?= route( "switch@configuration"  , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
+                        <?php if( $conf[ "switchid" ] ): ?>
+                            <?php if( Auth::getUser()->isSuperUser() ): ?>
+                                <a href="<?= route( "switch@port-report"    , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
+                            <?php else: ?>
+                                <a href="<?= route( "switch@configuration"  , [ "id" => $conf[ "switchid" ] ] ) ?>"><?= $conf[ "switchname" ] ?></a>
+                            <?php endif; ?>
                         <?php endif; ?>
                     </td>
                     <td>
