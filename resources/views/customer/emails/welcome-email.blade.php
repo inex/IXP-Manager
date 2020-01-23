@@ -186,7 +186,7 @@ Full details are at: https://www.example.com/
 PeeringDB
 =========
 
-PeeringDB ( http://www.peeringdb.com/ ) facilitates the exchange of information related to peering. Specifically,
+PeeringDB ( https://www.peeringdb.com/ ) facilitates the exchange of information related to peering. Specifically,
 what networks are peering, where they are peering, and if they are likely to peer with you.
 
 More and more organisations are using PeeringDB to make decisions on where they should open POPs, provision new links, etc.
