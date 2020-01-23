@@ -60,48 +60,6 @@ class SecurityPasswordController extends Controller
 {
 
     /**
-     * Display the 2FA validation form via the profile page
-     *
-     * @param Request $request
-     * @param bool $reset
-     *
-     * @return View|RedirectResponse
-     */
-    public function show2faForm( Request $request, bool $reset = false )
-    {
-        /** @var UserEntity $user */
-        $user = $request->user();
-
-        // If we need to reset the 2FA
-        if( $reset ) {
-            if( !$user->getPasswordSecurity() || !$user->getPasswordSecurity()->isGoogle2faEnable() ) {
-                AlertContainer::push( '2FA cannot be reset as it is not currently enabled.', Alert::DANGER );
-                return Redirect::back();
-            }
-
-            // Delete the actual password security object
-            $this->delete2faObject( $user->getPasswordSecurity() );
-
-            // logout the user via 2FA authenticator
-            $this->login2FAAutenticator( $request, false );
-
-            D2EM::refresh( $user );
-        }
-
-        $request->session()->put( "ixp_2fa_valid_pass", Str::random( 30 ) );
-
-        // generate the qrcode
-        $qrCodeImg = $this->generateQRcode( $user );
-
-        return view( 'google2fa/qr-code-form' )->with( [
-            'user'          => $user,
-            'qrCodeImg'     => $qrCodeImg,
-            'ps'            => $user->getPasswordSecurity(),
-            'ixp2faToken'   => $request->session()->get( "ixp_2fa_valid_pass" )
-        ] );
-    }
-
-    /**
      * Show the forced 2FA validation form for the superuser
      *
      * @param Request $request
@@ -129,6 +87,32 @@ class SecurityPasswordController extends Controller
         }
 
         return redirect( "" );
+    }
+
+    /**
+     * Display the 2FA validation form via the profile page
+     *
+     * @param Request $request
+     * @param bool $reset
+     *
+     * @return View|RedirectResponse
+     */
+    public function show2faForm( Request $request )
+    {
+        /** @var UserEntity $user */
+        $user = $request->user();
+
+        $request->session()->put( "ixp_2fa_valid_pass", Str::random( 30 ) );
+
+        // generate the qrcode
+        $qrCodeImg = $this->generateQRcode( $user );
+
+        return view( 'google2fa/qr-code-form' )->with( [
+            'user'          => $user,
+            'qrCodeImg'     => $qrCodeImg,
+            'ps'            => $user->getPasswordSecurity(),
+            'ixp2faToken'   => $request->session()->get( "ixp_2fa_valid_pass" )
+        ] );
     }
 
     /**
@@ -282,22 +266,6 @@ class SecurityPasswordController extends Controller
         return Redirect::to( request()->headers->get( 'referer', "" ) );
     }
 
-
-    /**
-     * Reset a password security object
-     *
-     * @param Request $request
-     *
-     * @return View|RedirectResponse
-     */
-    public function reset2fa( Request $request )
-    {
-        if( !$this->isValidPassword( $request ) ){
-            return Redirect::to( route( "profile@edit" ) );
-        }
-
-        return $this->show2faForm( $request, true );
-    }
 
     /**
      * Test if a one time code password is valid for the password security object

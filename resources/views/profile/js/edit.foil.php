@@ -19,8 +19,6 @@
 
         if( btn_id == "delete" ) {
             url = "<?= route( "2fa@delete" ) ?>";
-        } else if( btn_id == "reset" ){
-            url = "<?= route( "2fa@reset" ) ?>";
         } else if( btn_id == "enable" ){
             url = "<?= route( "2fa@check-password" ) ?>";
         }

@@ -161,7 +161,6 @@ Route::group( [ 'prefix' => '2fa' ], function() {
     Route::post(  'check-password', 'SecurityPasswordController@checkPassword'  )->name( "2fa@check-password"   );
     Route::post(  'enable',         'SecurityPasswordController@enable2fa'      )->name( "2fa@enable"           );
     Route::post(  'delete',         'SecurityPasswordController@delete2fa'      )->name( "2fa@delete"           );
-    Route::post(  'reset',          'SecurityPasswordController@reset2fa'       )->name( "2fa@reset"            );
     Route::post(  'test-code',      'SecurityPasswordController@testCode2fa'    )->name( "2fa@test-code"        );
 
     Route::post('/authenticate', function () {

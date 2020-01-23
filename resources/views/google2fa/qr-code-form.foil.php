@@ -26,16 +26,22 @@ $this->layout( 'layouts/ixpv4' )
                     <p>
                         Two factor authentication (2FA) strengthens access security by requiring two methods (also referred to as factors) to verify your identity. Two factor authentication protects against phishing, social engineering and password brute force attacks and secures your logins from attackers exploiting weak or stolen credentials.
                     </p>
-                    <p>
-                        To enable two factor authentication on your Account, you need to do following steps.
+                    <p class="tw-pb-8 tw-border-b-2">
+                        <b>IXP Manager</b> supports a Google Authenticator compatible HMAC-Based One-time Password (HOTP) algorithm as specified in <a href="https://tools.ietf.org/html/rfc4226">RFC 4226</a>
+                        and the Time-based One-time Password (TOTP) algorithm specified in <a href="https://tools.ietf.org/html/rfc6238">RFC 6238</a>.
+                    </p>
+                    <p class="tw-pt-4">
+                        To enable two factor authentication on your account, you need to do the following steps.
                     </p>
                     <p>
-                        <b>Step 1:</b> Set up your two factor authentication by scanning the barcode below. Alternatively, you can use the code: <b><?= $t->ps->getGoogle2faSecret() ?></b>
+                        <b>Step 1:</b> Set up your two factor authentication by scanning the barcode below.
                     </p>
                     <p>
-                        <img class="img-fluid mx-auto" src="<?= $t->qrCodeImg ?>">
+                        <img class="img-fluid mx-auto tw-w-1/4" src="<?= $t->qrCodeImg ?>">
                     </p>
-
+                    <p>
+                        Alternatively, you can enter this code manually into your authenticator application: <b class="tw-font-mono"><?= $t->ps->getGoogle2faSecret() ?></b>
+                    </p>
                     <?php if( !$t->ps->isGoogle2faEnable() ): ?>
                         <p>
                             <b>Step 2:</b> Enter the 6-digit code you see in your authenticator app.
@@ -56,15 +62,6 @@ $this->layout( 'layouts/ixpv4' )
 
                             <?= Former::text( 'one_time_password' )
                                 ->label( 'Code' )
-                            ?>
-
-                            <?= Former::checkbox( 'remember_me' )
-                                ->label('&nbsp;')
-                                ->text( 'Remember me' )
-                                ->value( 1 )
-                                ->check( Session::pull( "remember" ) )
-                                ->inline()
-                                ->blockHelp( '' );
                             ?>
 
                             <input type="hidden" name="ixp-2fa-token" value="<?= $t->ixp2faToken ?>">
