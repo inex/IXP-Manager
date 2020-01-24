@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Http\Controllers;
+namespace IXP\Http\Controllers\User;
 
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -44,6 +44,7 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
+use IXP\Http\Controllers\Controller;
 
 
 /**
@@ -56,7 +57,7 @@ use IXP\Utils\View\Alert\{
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class SecurityPasswordController extends Controller
+class User2FAController extends Controller
 {
 
     /**

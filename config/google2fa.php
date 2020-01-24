@@ -13,26 +13,24 @@ return [
     /*
      * Lifetime in minutes.
      * In case you need your users to be asked for a new one time passwords from time to time.
+     *
+     * For IXP Manager, we leave this as eternal and rely on the maximum session lifetime instead.
      */
-
     'lifetime' => 0, // 0 = eternal
 
     /*
      * Renew lifetime at every new request.
      */
-
     'keep_alive' => true,
 
     /*
      * Auth container binding
      */
-
     'auth' => 'auth',
 
     /*
      * 2FA verified session var
      */
-
     'session_var' => 'google2fa',
 
     /*
@@ -53,7 +51,7 @@ return [
     /*
      * User's table column for google2fa secret
      */
-    'otp_secret_column' => 'google2fa_secret',
+    'otp_secret_column' => 'secret',
 
     /*
      * One Time Password View
@@ -79,17 +77,12 @@ return [
      *
      * Supports imagemagick, svg and eps
      */
-    'qrcode_image_backend' => Constants::QRCODE_IMAGE_BACKEND_IMAGEMAGICK,
+    'qrcode_image_backend' => Constants::QRCODE_IMAGE_BACKEND_SVG,
 
 
     /*
      * Require 2FA authentification for IXP superuser
      */
-    'superuser_required' => env( '2FA_SUPERUSER_REQUIRED', false ),
-
-    /*
-     * Optional token expiration time in minutes, (30 days is the default)
-     */
-    'remember_me_expire' => env( '2FA_REMEMBER_ME_EXPIRE', 43200 ),
+    'ixpm_2fa_enforce_force_superuser' => env( '2FA_ENFORCE_FOR_SUPERUSER', false ),
 
 ];

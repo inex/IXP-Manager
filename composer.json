@@ -51,7 +51,7 @@
         "laravel/horizon": "^3.0",
         "socialiteproviders/manager": "^3.3",
         "pragmarx/google2fa-laravel": "^1.2",
-        "bacon/bacon-qr-code": "~1.0.3",
+        "bacon/bacon-qr-code": "~2.0",
         "wolfcast/browser-detection": "^2.9"
     },
     "require-dev": {

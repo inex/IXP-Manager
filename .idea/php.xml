@@ -212,6 +212,7 @@
       <path value="$PROJECT_DIR$/vendor/symfony/error-handler" />
       <path value="$PROJECT_DIR$/vendor/php-webdriver/webdriver" />
       <path value="$PROJECT_DIR$/vendor/symfony/error-renderer" />
+      <path value="$PROJECT_DIR$/vendor/dasprid/enum" />
     </include_path>
   </component>
   <component name="PhpProjectSharedConfiguration" php_language_level="7.2" />

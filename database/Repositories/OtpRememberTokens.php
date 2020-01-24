@@ -111,8 +111,6 @@ class OtpRememberTokens extends EntityRepository
      */
     public function createRememberToken( UserEntity $user, string $token )
     {
-        $expire = config( "google2fa.remember_me_expire" );
-
         $ort = new OtpRememberTokensEntity;
         D2EM::persist( $ort );
 
@@ -120,7 +118,7 @@ class OtpRememberTokens extends EntityRepository
 
         $ort->setUser( $user );
         $ort->setToken( $token );
-        $ort->setExpires( new DateTime( "+$expire minutes" ) );
+        $ort->setExpires( now()->addMinutes( config( "auth.guards.web.expire" ) ) );
         $ort->setCreated( new DateTime() );
         $ort->setDevice( $browser->getPlatform() . " " . $browser->getPlatformVersion(true) . " / " . $browser->getName() . " " . $browser->getVersion() );
         $ort->setId( IpAddress::getIp() );

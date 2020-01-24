@@ -36,9 +36,9 @@ $this->layout( 'layouts/ixpv4' )
                     <p>
                         <b>Step 1:</b> Set up your two factor authentication by scanning the barcode below.
                     </p>
-                    <p>
-                        <img class="img-fluid mx-auto tw-w-1/4" src="<?= $t->qrCodeImg ?>">
-                    </p>
+                    <div class="tw-mx-auto">
+                        <?= $t->qrCodeImg ?>
+                    </div>
                     <p>
                         Alternatively, you can enter this code manually into your authenticator application: <b class="tw-font-mono"><?= $t->ps->getSecret() ?></b>
                     </p>

@@ -156,12 +156,12 @@ Route::group( [ 'prefix' => 'irrdb' ], function() {
 });
 
 
-Route::group( [ 'prefix' => '2fa' ], function() {
+Route::group( [ 'namespace' => 'User', 'prefix' => '2fa' ], function() {
 
-    Route::post(  'check-password', 'SecurityPasswordController@checkPassword'  )->name( "2fa@check-password"   );
-    Route::post(  'enable',         'SecurityPasswordController@enable2fa'      )->name( "2fa@enable"           );
-    Route::post(  'delete',         'SecurityPasswordController@delete2fa'      )->name( "2fa@delete"           );
-    Route::post(  'test-code',      'SecurityPasswordController@testCode2fa'    )->name( "2fa@test-code"        );
+    Route::post(  'check-password', 'User2FAController@checkPassword'  )->name( "2fa@check-password"   );
+    Route::post(  'enable',         'User2FAController@enable2fa'      )->name( "2fa@enable"           );
+    Route::post(  'delete',         'User2FAController@delete2fa'      )->name( "2fa@delete"           );
+    Route::post(  'test-code',      'User2FAController@testCode2fa'    )->name( "2fa@test-code"        );
 
     Route::post('/authenticate', function () {
         if( Session::exists( "url.intended.2fa" ) ) {

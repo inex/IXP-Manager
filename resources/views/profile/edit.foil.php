@@ -155,7 +155,7 @@
 
             <?php if( Auth::getUser()->getUser2FA() && Auth::getUser()->getUser2FA()->enabled() ): ?>
 
-                <?php if( Auth::getUser()->isSuperUser() && config( "google2fa.superuser_required" ) ): ?>
+                <?php if( Auth::getUser()->isSuperUser() && config( "google2fa.ixpm_2fa_enforce_force_superuser" ) ): ?>
 
                     <?= Former::actions(
                         Former::primary_submit( 'Reset 2FA' )->id( "btn-2fa-reset" ),
