@@ -15,7 +15,7 @@ If you are unfamiliar with how IXPs work, take some time to read this email -- i
 ## Connection Details
 
 
-You have opted to connect to <?= config( 'identity.orgname' ) ?> using {{ count( $c->getVirtualInterfaces() ) }} ports. We have assigned the following IP addresses and switch ports for your connections:
+You have opted to connect to <?= config( 'identity.orgname' ) ?> using {{ count( $c->getVirtualInterfaces() ) }} port(s). We have assigned the following IP address(es) and switch port(s) for your connection(s):
 
 @foreach( $c->getVirtualInterfaces() as $vi )
 
