@@ -154,7 +154,7 @@ database, and are available only from the IXP Manager on the following URL:
 
 * {{ route('customer@details') }}
 
-The sensitive areas of the {{ config( 'identity.orgname' ) }} website is password protected and SSL secured.
+The sensitive areas of the {{ config( 'identity.orgname' ) }} website are password protected and SSL secured.
 Passwords are only provided to current {{ config( 'identity.orgname' ) }} members.  This information is
 considered private and will not be passed on to other third parties by {{ config( 'identity.orgname' ) }}.
 
