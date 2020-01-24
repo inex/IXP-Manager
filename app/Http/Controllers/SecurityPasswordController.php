@@ -26,7 +26,7 @@ namespace IXP\Http\Controllers;
 use D2EM, Hash, Redirect, Session, Str;
 
 use Entities\{
-    PasswordSecurity    as PasswordSecurityEntity,
+    User2FA             as User2FAEntity,
     User                as UserEntity,
 };
 
@@ -78,10 +78,10 @@ class SecurityPasswordController extends Controller
 
             $qrCodeImg = $this->generateQRcode( $user );
 
-            return view( 'google2fa/qr-code-form' )->with( [
+            return view( 'user/2fa/qr-code-form' )->with( [
                 'user'          => $user,
                 'qrCodeImg'     => $qrCodeImg,
-                'ps'            => $user->getPasswordSecurity(),
+                'ps'            => $user->getUser2FA(),
                 'ixp2faToken'   => $request->session()->get( "ixp_2fa_valid_pass" )
             ] );
         }
@@ -107,10 +107,10 @@ class SecurityPasswordController extends Controller
         // generate the qrcode
         $qrCodeImg = $this->generateQRcode( $user );
 
-        return view( 'google2fa/qr-code-form' )->with( [
+        return view( 'user/2fa/qr-code-form' )->with( [
             'user'          => $user,
             'qrCodeImg'     => $qrCodeImg,
-            'ps'            => $user->getPasswordSecurity(),
+            'ps'            => $user->getUser2FA(),
             'ixp2faToken'   => $request->session()->get( "ixp_2fa_valid_pass" )
         ] );
     }
@@ -144,16 +144,16 @@ class SecurityPasswordController extends Controller
     {
         $google2fa = app( 'pragmarx.google2fa' );
 
-        // If user doesnot have any PasswordSecurity
-        if( !$user->getPasswordSecurity() ) {
+        // If user doesnot have any 2fa
+        if( !$user->getUser2FA() ) {
 
-            // Create PasswordSecurity object
-            $ps = new PasswordSecurityEntity;
+            // Create User2FA object
+            $ps = new User2FAEntity;
             D2EM::persist( $ps );
 
             $ps->setUser( $user );
-            $ps->setGoogle2faSecret( $google2fa->generateSecretKey() );
-            $ps->setGoogle2faEnable( false );
+            $ps->setSecret( $google2fa->generateSecretKey() );
+            $ps->setEnabled( false );
             $ps->setCreatedAt( now() );
             $ps->setUpdatedAt( now() );
 
@@ -167,7 +167,7 @@ class SecurityPasswordController extends Controller
         $qrCodeImg = $google2fa->getQRCodeInline(
             config( 'identity.sitename' ),
             $user->getEmail(),
-            $user->getPasswordSecurity()->getGoogle2faSecret()
+            $user->getUser2FA()->getSecret()
         );
 
         return $qrCodeImg;
@@ -197,7 +197,7 @@ class SecurityPasswordController extends Controller
         }
 
         // Enable the 2FA
-        $user->getPasswordSecurity()->setGoogle2faEnable( true );
+        $user->getUser2FA()->setEnabled( true );
         D2EM::flush();
 
         // Add a value in the request to know that we come from the profile@enable
@@ -237,21 +237,21 @@ class SecurityPasswordController extends Controller
         /** @var UserEntity $user */
         $user = $request->user();
 
-        /** @var PasswordSecurityEntity $ps */
+        /** @var User2FAEntity $ps */
         if( $user->isSuperUser() ) {
-            if( !( $ps = D2EM::getRepository( PasswordSecurityEntity::class )->find( $request->input( 'id' ) ) ) ) {
+            if( !( $ps = D2EM::getRepository( User2FAEntity::class )->find( $request->input( 'id' ) ) ) ) {
                 abort( 404, 'Password Security not found' );
             }
         } else {
-            // Get the PasswordSecurity object of the logged user
-            $ps = $user->getPasswordSecurity();
+            // Get the User2FA object of the logged user
+            $ps = $user->getUser2FA();
         }
 
         // getting the Password Security user
         $psUser = $ps->getUser();
 
         // If the password security is not null and it password security is enable we can delete
-        if( $ps && $ps->isGoogle2faEnable() ) {
+        if( $ps && $ps->enabled() ) {
             $this->delete2faObject( $ps );
             AlertContainer::push( '2FA is now deleted', Alert::SUCCESS );
         }
@@ -304,7 +304,7 @@ class SecurityPasswordController extends Controller
         $request->merge( [ 'one_time_password' => '' ] );
 
         // If the one time password is not valid
-        if( !$google2fa->verifyKey( $request->user()->getPasswordSecurity()->getGoogle2faSecret(), $code ) ) {
+        if( !$google2fa->verifyKey( $request->user()->getUser2FA()->getSecret(), $code ) ) {
             AlertContainer::push( "Invalid Verification Code, Please try again.", Alert::DANGER );
             return false;
         }

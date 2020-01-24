@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -32,9 +32,9 @@ use Entities\{
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Entities\PatchPanel
+
  */
-class PasswordSecurity
+class User2FA
 {
 
     /**
@@ -45,12 +45,12 @@ class PasswordSecurity
     /**
      * @var boolean $active
      */
-    private $google2fa_enable = false;
+    private $enabled = false;
 
     /**
      * @var string
      */
-    private $google2fa_secret;
+    private $secret;
 
     /**
      * @var DateTime
@@ -77,9 +77,9 @@ class PasswordSecurity
 
     /**
      * @param int $id
-     * @return PasswordSecurity
+     * @return User2FA
      */
-    public function setId( int $id ): PasswordSecurity
+    public function setId( int $id ): User2FA
     {
         $this->id = $id;
         return $this;
@@ -88,36 +88,44 @@ class PasswordSecurity
     /**
      * @return bool
      */
-    public function isGoogle2faEnable(): bool
+    public function getEnabled(): bool
     {
-        return $this->google2fa_enable;
+        return $this->enabled;
     }
 
     /**
-     * @param bool $google2fa_enable
-     * @return PasswordSecurity
+     * @return bool
      */
-    public function setGoogle2faEnable( bool $google2fa_enable ): PasswordSecurity
+    public function enabled(): bool
     {
-        $this->google2fa_enable = $google2fa_enable;
+        return $this->getEnabled();
+    }
+
+    /**
+     * @param bool $enabled
+     * @return User2FA
+     */
+    public function setEnabled( bool $enabled ): User2FA
+    {
+        $this->enabled = $enabled;
         return $this;
     }
 
     /**
      * @return string
      */
-    public function getGoogle2faSecret(): string
+    public function getSecret(): string
     {
-        return $this->google2fa_secret;
+        return $this->secret;
     }
 
     /**
-     * @param string $google2fa_secret
-     * @return PasswordSecurity
+     * @param string $secret
+     * @return User2FA
      */
-    public function setGoogle2faSecret( string $google2fa_secret ): PasswordSecurity
+    public function setSecret( string $secret ): User2FA
     {
-        $this->google2fa_secret = $google2fa_secret;
+        $this->secret = $secret;
         return $this;
     }
 
@@ -131,9 +139,9 @@ class PasswordSecurity
 
     /**
      * @param DateTime $created_at
-     * @return PasswordSecurity
+     * @return User2FA
      */
-    public function setCreatedAt( DateTime $created_at ): PasswordSecurity
+    public function setCreatedAt( DateTime $created_at ): User2FA
     {
         $this->created_at = $created_at;
         return $this;
@@ -149,9 +157,9 @@ class PasswordSecurity
 
     /**
      * @param DateTime $updated_at
-     * @return PasswordSecurity
+     * @return User2FA
      */
-    public function setUpdatedAt( DateTime $updated_at ): PasswordSecurity
+    public function setUpdatedAt( DateTime $updated_at ): User2FA
     {
         $this->updated_at = $updated_at;
         return $this;
@@ -167,9 +175,9 @@ class PasswordSecurity
 
     /**
      * @param UserEntity $User
-     * @return PasswordSecurity
+     * @return User2FA
      */
-    public function setUser( UserEntity $User ): PasswordSecurity
+    public function setUser( UserEntity $User ): User2FA
     {
         $this->User = $User;
         return $this;

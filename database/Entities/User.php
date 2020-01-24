@@ -30,7 +30,7 @@ use Entities\{
     Contact             as ContactEntity,
     Customer            as CustomerEntity,
     CustomerToUser      as CustomerToUserEntity,
-    PasswordSecurity    as PasswordSecurityEntity,
+    User2FA             as User2FAEntity,
     UserRememberTokens  as UserRememberTokensEntity,
     User                as UserEntity,
     UserLoginHistory    as UserLoginHistoryEntity,
@@ -209,9 +209,9 @@ class User implements Authenticatable, CanResetPasswordContract
     protected $Children;
 
     /**
-     * @var PasswordSecurityEntity
+     * @var User2FAEntity
      */
-    protected $PasswordSecurity;
+    protected $User2FA;
 
     /**
      * @var UserRememberTokensEntity
@@ -863,12 +863,12 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Set Password Security
      *
-     * @param PasswordSecurityEntity $passwordSecurity
+     * @param User2FAEntity $user2fa
      * @return User
      */
-    public function setPasswordSecurity( PasswordSecurityEntity $passwordSecurity )
+    public function setUser2FA( User2FAEntity $user2fa )
     {
-        $this->PasswordSecurity = $passwordSecurity;
+        $this->User2FA = $user2fa;
 
         return $this;
     }
@@ -876,38 +876,32 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Get Password Security
      *
-     * @return PasswordSecurityEntity
+     * @return User2FAEntity
      */
-    public function getPasswordSecurity()
+    public function getUser2FA()
     {
-        return $this->PasswordSecurity;
+        return $this->User2FA;
     }
 
 
     /**
-     * Does the 2FA is required for this user
+     * Does 2fa need to be forced / enabled for this user?
      *
      * @return bool
      */
-    public function is2FARequired()
+    public function is2faRequired()
     {
-        if( $this->isSuperUser() && config( "google2fa.superuser_required" ) && ( !$this->getPasswordSecurity() || !$this->getPasswordSecurity()->isGoogle2faEnable() ) ) {
-            return true;
-        }
-        return false;
+        return $this->isSuperUser() && config( "google2fa.superuser_required" ) && ( !$this->getUser2FA() || !$this->getUser2FA()->enabled() );
     }
 
     /**
-     * Does the 2FA is enabled for his user
+     * Is 2FA enabled for this user
      *
      * @return bool
      */
-    public function is2FAenabled()
+    public function is2faEnabled()
     {
-        if( $this->getPasswordSecurity() && $this->getPasswordSecurity()->isGoogle2faEnable() ) {
-            return true;
-        }
-        return false;
+        return $this->getUser2FA() && $this->getUser2FA()->enabled();
     }
 
     /**

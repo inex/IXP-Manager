@@ -123,7 +123,7 @@
                                 </td>
                             <?php endif; ?>
                             <td>
-                                <?= $u['google2fa_enabled'] ? 'Yes' : 'No' ?>
+                                <?= $u['2fa_enabled'] ? 'Yes' : 'No' ?>
                             </td>
                             <td>
 
@@ -166,7 +166,7 @@
                                                 Login as
                                             </a>
 
-                                            <?php if( $u['google2fa_enabled'] ): ?>
+                                            <?php if( $u['2fa_enabled'] ): ?>
                                                 <a id="d2f-option-remove-2fa-<?= $u[ 'psid' ] ?>" class="dropdown-item remove-2fa" data-object-id="<?= $u[ 'psid' ] ?>" href="#">
                                                     Remove 2FA
                                                 </a>

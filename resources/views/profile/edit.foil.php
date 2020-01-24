@@ -133,7 +133,7 @@
                 engineering and password brute force attacks and secures your logins from attackers exploiting weak or stolen credentials.
             </p>
 
-            <?php if( !Auth::getUser()->getPasswordSecurity() || !Auth::getUser()->getPasswordSecurity()->isGoogle2faEnable() ): ?>
+            <?php if( !Auth::getUser()->getUser2FA() || !Auth::getUser()->getUser2FA()->enabled() ): ?>
                 <p>
                     To enable it, begin by entering your password below and follow the instructions.
                 </p>
@@ -142,7 +142,7 @@
             <?= Former::open()
                 ->method( 'post' )
                 ->id( "2fa-form" )
-                ->action( Auth::getUser()->getPasswordSecurity() && Auth::getUser()->getPasswordSecurity()->isGoogle2faEnable() ? "#" : route ( "2fa@check-password" ) )
+                ->action( Auth::getUser()->getUser2FA() && Auth::getUser()->getUser2FA()->enabled() ? "#" : route ( "2fa@check-password" ) )
                 ->customInputWidthClass( 'col-xl-6 col-lg-8 col-sm-6' )
                 ->customLabelWidthClass( 'col-sm-4' )
                 ->actionButtonsCustomClass( "grey-box");
@@ -153,7 +153,7 @@
                 ->required( true )
             ?>
 
-            <?php if( Auth::getUser()->getPasswordSecurity() && Auth::getUser()->getPasswordSecurity()->isGoogle2faEnable() ): ?>
+            <?php if( Auth::getUser()->getUser2FA() && Auth::getUser()->getUser2FA()->enabled() ): ?>
 
                 <?php if( Auth::getUser()->isSuperUser() && config( "google2fa.superuser_required" ) ): ?>
 
@@ -175,7 +175,7 @@
 
 
                 <?= Former::hidden( 'id' )
-                    ->value( Auth::getUser()->getPasswordSecurity()->getId() )
+                    ->value( Auth::getUser()->getUser2FA()->getId() )
                 ?>
             <?php else: ?>
                 <?= Former::actions(
@@ -286,7 +286,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <?php if( Auth::getUser()->getPasswordSecurity() && Auth::getUser()->getPasswordSecurity()->isGoogle2faEnable() ): ?>
+    <?php if( Auth::getUser()->getUser2FA() && Auth::getUser()->getUser2FA()->enabled() ): ?>
         <?= $t->insert( 'profile/js/edit' ); ?>
     <?php endif; ?>
 <?php $this->append() ?>

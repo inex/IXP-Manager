@@ -40,9 +40,9 @@ $this->layout( 'layouts/ixpv4' )
                         <img class="img-fluid mx-auto tw-w-1/4" src="<?= $t->qrCodeImg ?>">
                     </p>
                     <p>
-                        Alternatively, you can enter this code manually into your authenticator application: <b class="tw-font-mono"><?= $t->ps->getGoogle2faSecret() ?></b>
+                        Alternatively, you can enter this code manually into your authenticator application: <b class="tw-font-mono"><?= $t->ps->getSecret() ?></b>
                     </p>
-                    <?php if( !$t->ps->isGoogle2faEnable() ): ?>
+                    <?php if( !$t->ps->enabled() ): ?>
                         <p>
                             <b>Step 2:</b> Enter the 6-digit code you see in your authenticator app.
                         </p>

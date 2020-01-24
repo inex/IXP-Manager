@@ -22,6 +22,7 @@ namespace IXP\Support;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+
 use Auth;
 
 use PragmaRX\Google2FALaravel\{
@@ -48,10 +49,10 @@ class Google2FAAuthenticator extends Authenticator
             return true;
         }
 
-        if( !( $this->getUser()->getPasswordSecurity() ) )
+        if( !( $this->getUser()->getUser2FA() ) )
             return true;
         return
-            !$this->getUser()->getPasswordSecurity()->isGoogle2faEnable() ||
+            !$this->getUser()->getUser2FA()->enabled() ||
             !$this->isEnabled() ||
             $this->noUserIsAuthenticated() ||
             $this->twoFactorAuthStillValid();
@@ -93,7 +94,7 @@ class Google2FAAuthenticator extends Authenticator
      */
     protected function getGoogle2FASecretKey()
     {
-        $secret = $this->getUser()->getPasswordSecurity()->getGoogle2faSecret();
+        $secret = $this->getUser()->getUser2FA()->getSecret();
         if (is_null($secret) || empty($secret)) {
             throw new InvalidSecretKey('Secret key cannot be empty.');
         }

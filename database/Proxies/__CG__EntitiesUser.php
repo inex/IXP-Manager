@@ -114,10 +114,10 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'PasswordSecurity', 'UserRememberTokens', '_className', '_preferenceClassName'];
+            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'User2FA', 'UserRememberTokens', '_className', '_preferenceClassName'];
         }
 
-        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'PasswordSecurity', 'UserRememberTokens', '_className', '_preferenceClassName'];
+        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'User2FA', 'UserRememberTokens', '_className', '_preferenceClassName'];
     }
 
     /**
@@ -837,45 +837,45 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setPasswordSecurity(\Entities\PasswordSecurity $passwordSecurity)
+    public function setUser2FA(\Entities\User2FA $user2fa)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPasswordSecurity', [$passwordSecurity]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser2FA', [$user2fa]);
 
-        return parent::setPasswordSecurity($passwordSecurity);
+        return parent::setUser2FA($user2fa);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getPasswordSecurity()
+    public function getUser2FA()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPasswordSecurity', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser2FA', []);
 
-        return parent::getPasswordSecurity();
+        return parent::getUser2FA();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function is2FARequired()
+    public function is2faRequired()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2FARequired', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2faRequired', []);
 
-        return parent::is2FARequired();
+        return parent::is2faRequired();
     }
 
     /**
      * {@inheritDoc}
      */
-    public function is2FAenabled()
+    public function is2faEnabled()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2FAenabled', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2faEnabled', []);
 
-        return parent::is2FAenabled();
+        return parent::is2faEnabled();
     }
 
     /**
