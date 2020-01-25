@@ -891,7 +891,8 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function is2faRequired()
     {
-        return $this->isSuperUser() && config( "google2fa.ixpm_2fa_enforce_force_superuser" ) && ( !$this->getUser2FA() || !$this->getUser2FA()->enabled() );
+        return $this->getPrivs() >= config( "google2fa.ixpm_2fa_enforce_for_users" )
+            && ( !$this->getUser2FA() || !$this->getUser2FA()->enabled() );
     }
 
     /**

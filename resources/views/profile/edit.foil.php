@@ -158,10 +158,9 @@
 
                 <?php if( Auth::getUser()->getUser2FA() && Auth::getUser()->getUser2FA()->enabled() ): ?>
 
-                    <?php if( Auth::getUser()->isSuperUser() && config( "google2fa.ixpm_2fa_enforce_force_superuser" ) ): ?>
+                    <?php if( Auth::getUser()->getPrivs() >= config( "google2fa.ixpm_2fa_enforce_for_users" ) ): ?>
 
                         <?= Former::actions(
-                            Former::primary_submit( 'Reset 2FA' )->id( "btn-2fa-reset" ),
                             Former::primary_submit( 'Get 2FA QRcode' )->id( "btn-2fa-enable" )
                         );
                         ?>
