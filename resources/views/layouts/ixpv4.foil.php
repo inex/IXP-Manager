@@ -50,7 +50,10 @@
 
         <div class="container-fluid">
             <div class="row" >
-                <?php if( Auth::check() && Auth::user()->isSuperUser() && !Session::exists( "2fa-" . Auth::user()->getId() ) ): ?>
+                <?php if( Auth::check() && Auth::user()->isSuperUser()
+                        && !\Illuminate\Support\Str::endsWith( $t->path, 'resources/views/user/2fa/login-form.foil.php' )
+                    ):
+                ?>
                     <?= $t->insert( 'layouts/menu' ); ?>
                 <?php endif; ?>
                 <div id="slide-reveal-overlay" class="collapse"></div>

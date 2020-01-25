@@ -60,9 +60,6 @@ class Google2FA
     {
         if( !$this->inExceptArray( $request ) ) {
 
-            // Session used to hide the lateral menu
-            Session::remove( '2fa-' . $request->user()->getId() );
-
             // Force the superuser to enable 2FA
             if( $request->user()->is2FARequired() ) {
 
@@ -79,9 +76,6 @@ class Google2FA
             if( $authenticator->isAuthenticated() ) {
                 return $next( $request );
             }
-
-            // Session used to hide the lateral menu
-            Session::put( "2fa-". $request->user()->getId() , true );
 
             return $authenticator->makeRequestOneTimePasswordResponse();
         }

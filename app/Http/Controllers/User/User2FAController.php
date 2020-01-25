@@ -73,8 +73,6 @@ class User2FAController extends Controller
         $user = $request->user();
 
         if( $user->is2FARequired() ) {
-            $request->session()->put( "2fa-" . $request->user()->getId(), true );
-
             $request->session()->put( "ixp_2fa_valid_pass", Str::random( 30 ) );
 
             $qrCodeImg = $this->generateQRcode( $user );
