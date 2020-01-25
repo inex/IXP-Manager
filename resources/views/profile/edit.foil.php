@@ -19,6 +19,7 @@
     </div>
 
     <div class="row">
+
         <div class="col-lg-6 col-md-12 mb-4">
             <h3>
                 Change Your Password
@@ -121,73 +122,76 @@
 
     <div class="row mt-4">
 
-        <div class="col-lg-6 col-md-12">
-            <h3>
-                Two Factor Authentication
-            </h3>
-            <hr>
+        <?php if( config( 'google2fa.enabled' ) ): ?>
 
-            <p>
-                <b>IXP Manager</b> supports two factor authentication (2FA) which strengthens access security by requiring two methods
-                (also referred to as factors) to verify your identity. Two factor authentication protects against phishing, social
-                engineering and password brute force attacks and secures your logins from attackers exploiting weak or stolen credentials.
-            </p>
+            <div class="col-lg-6 col-md-12">
+                <h3>
+                    Two Factor Authentication
+                </h3>
+                <hr>
 
-            <?php if( !Auth::getUser()->getUser2FA() || !Auth::getUser()->getUser2FA()->enabled() ): ?>
                 <p>
-                    To enable it, begin by entering your password below and follow the instructions.
+                    <b>IXP Manager</b> supports two factor authentication (2FA) which strengthens access security by requiring two methods
+                    (also referred to as factors) to verify your identity. Two factor authentication protects against phishing, social
+                    engineering and password brute force attacks and secures your logins from attackers exploiting weak or stolen credentials.
                 </p>
-            <?php endif ?>
 
-            <?= Former::open()
-                ->method( 'post' )
-                ->id( "2fa-form" )
-                ->action( Auth::getUser()->getUser2FA() && Auth::getUser()->getUser2FA()->enabled() ? "#" : route ( "2fa@check-password" ) )
-                ->customInputWidthClass( 'col-xl-6 col-lg-8 col-sm-6' )
-                ->customLabelWidthClass( 'col-sm-4' )
-                ->actionButtonsCustomClass( "grey-box");
-            ?>
+                <?php if( !Auth::getUser()->getUser2FA() || !Auth::getUser()->getUser2FA()->enabled() ): ?>
+                    <p>
+                        To enable it, begin by entering your password below and follow the instructions.
+                    </p>
+                <?php endif ?>
 
-            <?= Former::password( 'pass' )
-                ->label( 'Password' )
-                ->required( true )
-            ?>
+                <?= Former::open()
+                    ->method( 'post' )
+                    ->id( "2fa-form" )
+                    ->action( Auth::getUser()->getUser2FA() && Auth::getUser()->getUser2FA()->enabled() ? "#" : route ( "2fa@check-password" ) )
+                    ->customInputWidthClass( 'col-xl-6 col-lg-8 col-sm-6' )
+                    ->customLabelWidthClass( 'col-sm-4' )
+                    ->actionButtonsCustomClass( "grey-box");
+                ?>
 
-            <?php if( Auth::getUser()->getUser2FA() && Auth::getUser()->getUser2FA()->enabled() ): ?>
+                <?= Former::password( 'pass' )
+                    ->label( 'Password' )
+                    ->required( true )
+                ?>
 
-                <?php if( Auth::getUser()->isSuperUser() && config( "google2fa.ixpm_2fa_enforce_force_superuser" ) ): ?>
+                <?php if( Auth::getUser()->getUser2FA() && Auth::getUser()->getUser2FA()->enabled() ): ?>
 
-                    <?= Former::actions(
-                        Former::primary_submit( 'Reset 2FA' )->id( "btn-2fa-reset" ),
-                        Former::primary_submit( 'Get 2FA QRcode' )->id( "btn-2fa-enable" )
-                    );
-                    ?>
+                    <?php if( Auth::getUser()->isSuperUser() && config( "google2fa.ixpm_2fa_enforce_force_superuser" ) ): ?>
 
-                <?php else: ?>
-
-                    <?= Former::actions(
-                            Former::danger_submit( 'Disable 2FA' )->id( "btn-2fa-delete" ),
-                            Former::secondary_submit( 'Get 2FA QRcode' )->id( "btn-2fa-enable" )
+                        <?= Former::actions(
+                            Former::primary_submit( 'Reset 2FA' )->id( "btn-2fa-reset" ),
+                            Former::primary_submit( 'Get 2FA QRcode' )->id( "btn-2fa-enable" )
                         );
+                        ?>
+
+                    <?php else: ?>
+
+                        <?= Former::actions(
+                                Former::danger_submit( 'Disable 2FA' )->id( "btn-2fa-delete" ),
+                                Former::secondary_submit( 'Get 2FA QRcode' )->id( "btn-2fa-enable" )
+                            );
+                        ?>
+
+                    <?php endif; ?>
+
+
+                    <?= Former::hidden( 'id' )
+                        ->value( Auth::getUser()->getUser2FA()->getId() )
+                    ?>
+                <?php else: ?>
+                    <?= Former::actions(
+                        Former::primary_submit( 'Enable 2FA' )->id( "btn-2fa-enable" )
+                    );
                     ?>
 
                 <?php endif; ?>
 
 
-                <?= Former::hidden( 'id' )
-                    ->value( Auth::getUser()->getUser2FA()->getId() )
-                ?>
-            <?php else: ?>
-                <?= Former::actions(
-                    Former::primary_submit( 'Enable 2FA' )->id( "btn-2fa-enable" )
-                );
-                ?>
-
-            <?php endif; ?>
-
-
-            <?= Former::close() ?>
-        </div>
+                <?= Former::close() ?>
+            </div>
+        <?php endif; ?>
 
         <?php if( Auth::getUser()->isSuperUser() ): ?>
 

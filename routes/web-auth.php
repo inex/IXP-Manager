@@ -156,20 +156,23 @@ Route::group( [ 'prefix' => 'irrdb' ], function() {
 });
 
 
-Route::group( [ 'namespace' => 'User', 'prefix' => '2fa' ], function() {
+if( config( 'google2fa.enabled' ) ) {
 
-    Route::post(  'check-password', 'User2FAController@checkPassword'  )->name( "2fa@check-password"   );
-    Route::post(  'enable',         'User2FAController@enable2fa'      )->name( "2fa@enable"           );
-    Route::post(  'delete',         'User2FAController@delete2fa'      )->name( "2fa@delete"           );
-    Route::post(  'test-code',      'User2FAController@testCode2fa'    )->name( "2fa@test-code"        );
+    Route::group( [ 'namespace' => 'User', 'prefix' => '2fa' ], function() {
 
-    Route::post('/authenticate', function () {
-        if( Session::exists( "url.intended.2fa" ) ) {
-            return redirect( Session::pull( "url.intended.2fa" ) );
-        }
-        return redirect( '' );
+        Route::post( 'check-password', 'User2FAController@checkPassword' )->name( "2fa@check-password" );
+        Route::post( 'enable', 'User2FAController@enable2fa' )->name( "2fa@enable" );
+        Route::post( 'delete', 'User2FAController@delete2fa' )->name( "2fa@delete" );
+        Route::post( 'test-code', 'User2FAController@testCode2fa' )->name( "2fa@test-code" );
 
-    })->name('2fa@authenticate' )->middleware( '2fa' );
+        Route::post( '/authenticate', function() {
+            if( Session::exists( "url.intended.2fa" ) ) {
+                return redirect( Session::pull( "url.intended.2fa" ) );
+            }
+            return redirect( '' );
 
-});
+        } )->name( '2fa@authenticate' )->middleware( '2fa' );
 
+    } );
+
+}

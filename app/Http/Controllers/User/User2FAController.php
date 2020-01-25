@@ -153,7 +153,7 @@ class User2FAController extends Controller
             D2EM::persist( $ps );
 
             $ps->setUser( $user );
-            $ps->setSecret( $google2fa->generateSecretKey() );
+            $ps->setSecret( $google2fa->generateSecretKey(32) );
             $ps->setEnabled( false );
             $ps->setCreatedAt( now() );
             $ps->setUpdatedAt( now() );

@@ -98,7 +98,7 @@ class RouteServiceProvider extends ServiceProvider {
     protected function mapWebDoctrine2FrontendRoutes()
     {
         Route::group([
-            'middleware' => ['d2frontend', '2fa'],
+            'middleware' => config( 'google2fa.enabled' ) ? ['d2frontend', '2fa'] : ['d2frontend'],
             'namespace' => $this->namespace,
         ], function ($router) {
             require base_path('routes/web-doctrine2frontend.php');
@@ -115,7 +115,7 @@ class RouteServiceProvider extends ServiceProvider {
     protected function mapWebAuthRoutes()
     {
         Route::group([
-            'middleware' => [ 'web', 'auth', '2fa'  ],
+            'middleware' => config( 'google2fa.enabled' ) ? [ 'web', 'auth', '2fa'  ] : [ 'web', 'auth' ],
             'namespace' => $this->namespace,
         ], function ($router) {
             require base_path('routes/web-auth.php');
@@ -132,7 +132,7 @@ class RouteServiceProvider extends ServiceProvider {
     protected function mapWebAuthSuperuserRoutes()
     {
         Route::group([
-                         'middleware' => [ 'web' , 'auth' , '2fa' , 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ],
+                         'middleware' => config( 'google2fa.enabled' ) ? [ 'web' , 'auth' , '2fa' , 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ] : [ 'web' , 'auth', 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ],
                          'namespace' => $this->namespace,
                      ], function ($router) {
             require base_path('routes/web-auth-superuser.php');

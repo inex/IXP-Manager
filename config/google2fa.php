@@ -8,7 +8,7 @@ return [
      * Auth container binding
      */
 
-    'enabled' => true,
+    'enabled' => env( '2FA_ENABLED', true ),
 
     /*
      * Lifetime in minutes.
