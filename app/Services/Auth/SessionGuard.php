@@ -3,7 +3,7 @@
 namespace IXP\Services\Auth;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -45,7 +45,7 @@ use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 class SessionGuard extends BaseGuard
 {
     /**
-     * Indicates the number of seconds a "remember me" token should be valid for.
+     * Indicates the number of minutes a "remember me" token should be valid for.
      *
      * @var int
      */
@@ -55,72 +55,70 @@ class SessionGuard extends BaseGuard
                                 UserProvider $provider,
                                 Session $session,
                                 Request $request = null,
-                                $expire = 10080)
+                                $expire = null)
     {
         parent::__construct($name, $provider, $session, $request);
 
-        $this->expire = $expire ?: 10080;
+        $this->expire = $expire ?? config( 'auth.guards.web.expire' );
     }
 
-    /**
-     * Get the currently authenticated user.
-     *
-     * @return AuthenticatableContract|null
-     */
-    public function user()
-    {
-        if ($this->loggedOut) {
-            return;
-        }
-
-        // If we've already retrieved the user for the current request we can just
-        // return it back immediately. We do not want to fetch the user data on
-        // every call to this method because that would be tremendously slow.
-        if (! is_null($this->user)) {
-            return $this->user;
-        }
-
-        $id = $this->session->get($this->getName());
-
-        // First we will try to load the user using the identifier in the session if
-        // one exists. Otherwise we will check for a "remember me" cookie in this
-        // request, and if one exists, attempt to retrieve the user using that.
-        if (! is_null($id)) {
-            if ($this->user = $this->provider->retrieveById($id)) {
-                $this->fireAuthenticatedEvent($this->user);
-            }
-        }
-
-        // If the user is null, but we decrypt a "recaller" cookie we can attempt to
-        // pull the user data on that cookie which serves as a remember cookie on
-        // the application. Once we have a user we can return it to the caller.
-        $recaller = $this->recaller();
-
-        if (is_null($this->user) && ! is_null($recaller)) {
-            $this->user = $this->userFromRecaller($recaller);
-
-            if ($this->user) {
-                $this->replaceRememberToken($this->user, $recaller->token());
-
-                $this->updateSession($this->user->getAuthIdentifier());
-
-                $this->fireLoginEvent($this->user, true);
-            }
-        }
-
-        return $this->user;
-    }
-
-    protected function replaceRememberToken(AuthenticatableContract $user, $token)
-    {
-        $this->provider->replaceRememberToken(
-            $user->getAuthIdentifier(), $token, $newToken = $this->getNewToken(), $this->expire
-        );
-
-        $this->queueRecallerCookie($user, $newToken);
-
-        request()->request->add( [ "ixpm-remember-me-token" => true ] );
-    }
+//    /**
+//     * Get the currently authenticated user.
+//     *
+//     * @return AuthenticatableContract|null
+//     */
+//    public function user()
+//    {
+//        if ($this->loggedOut) {
+//            return;
+//        }
+//
+//        // If we've already retrieved the user for the current request we can just
+//        // return it back immediately. We do not want to fetch the user data on
+//        // every call to this method because that would be tremendously slow.
+//        if (! is_null($this->user)) {
+//            return $this->user;
+//        }
+//
+//        $id = $this->session->get($this->getName());
+//
+//        // First we will try to load the user using the identifier in the session if
+//        // one exists. Otherwise we will check for a "remember me" cookie in this
+//        // request, and if one exists, attempt to retrieve the user using that.
+//        if (! is_null($id)) {
+//            if ($this->user = $this->provider->retrieveById($id)) {
+//                $this->fireAuthenticatedEvent($this->user);
+//            }
+//        }
+//
+//        // If the user is null, but we decrypt a "recaller" cookie we can attempt to
+//        // pull the user data on that cookie which serves as a remember cookie on
+//        // the application. Once we have a user we can return it to the caller.
+//        if (is_null($this->user) && ! is_null($recaller = $this->recaller())) {
+//            $this->user = $this->userFromRecaller($recaller);
+//
+//            if ($this->user) {
+//                $this->replaceRememberToken($this->user, $recaller->token());
+//
+//                $this->updateSession($this->user->getAuthIdentifier());
+//
+//                $this->fireLoginEvent($this->user, true);
+//            }
+//        }
+//
+//        return $this->user;
+//    }
+//
+//    protected function replaceRememberToken(AuthenticatableContract $user, $token)
+//    {
+//        $this->provider->replaceRememberToken(
+//            $user->getAuthIdentifier(), $token, $newToken = $this->getNewToken(), $this->expire
+//        );
+//
+//        $this->queueRecallerCookie($user, $newToken);
+//
+//        request()->request->add( [ "ixpm-remember-me-token" => true ] );
+//    }
 
     /**
      * If the user check remember me in the OTP validation form
