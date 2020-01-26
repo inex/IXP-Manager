@@ -37,7 +37,7 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use IXP\Support\Google2FAAuthenticator;
+use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -218,7 +218,7 @@ class User2FAController extends Controller
      */
     private function google2faLogin( $request, bool $login = true )
     {
-        $authenticator = app( Google2FAAuthenticator::class )->boot( $request );
+        $authenticator = new GoogleAuthenticator($request);
         $login ? $authenticator->login() : $authenticator->logout();
     }
 

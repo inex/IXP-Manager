@@ -25,7 +25,7 @@ use Foil\Contracts\ExtensionInterface;
 
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
-use IXP\Support\Google2FAAuthenticator;
+use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 
 use Illuminate\Support\Facades\Auth;
 
@@ -357,6 +357,6 @@ class IXP implements ExtensionInterface {
      * @return string
      */
     public function google2faAuthenticator() {
-        return app( Google2FAAuthenticator::class )->boot( request() );
+        return new GoogleAuthenticator(request());
     }
 }

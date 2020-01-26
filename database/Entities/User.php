@@ -1031,4 +1031,28 @@ class User implements Authenticatable, CanResetPasswordContract
      | END LARAVEL 5 USER PROVIDER INTERFACE METHODS
      ***************************************************************************/
 
+
+    /**
+     * Allow direct access to some properties.
+     *
+     * Because we use Laravel Doctrine, some Laravel packages will fail as they expect to
+     * be able to access object properties in the same mannor as Eloquent.
+     *
+     * We use this to work around those issues.
+     *
+     * @param string $name
+     * @return mixed
+     */
+    public function __get( string $name )
+    {
+        switch( $name ) {
+
+            // google2fa Laravel bridge looking for 2fa secret
+            case 'secret':
+                return $this->getUser2FA() ? $this->getUser2FA()->getSecret() : null;
+                break;
+        }
+
+        return null;
+    }
 }

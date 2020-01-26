@@ -25,7 +25,8 @@ namespace IXP\Http\Middleware;
 
 use Illuminate\Http\Request;
 
-use IXP\Support\Google2FAAuthenticator;
+use \Auth;
+use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 
 use Closure, Session;
 
@@ -65,9 +66,9 @@ class Google2FA
                 return redirect( route( '2fa@configure' ) );
             }
 
-            $authenticator = app(Google2FAAuthenticator::class)->boot( $request );
+            $authenticator = new GoogleAuthenticator($request);
 
-            if( $authenticator->isAuthenticated() ) {
+            if( !Auth::user()->getUser2FA() || $authenticator->isAuthenticated() ) {
                 return $next( $request );
             }
 
