@@ -50,12 +50,14 @@
 
         <div class="container-fluid">
             <div class="row" >
+
                 <?php if( Auth::check() && Auth::user()->isSuperUser()
-                        && !\Illuminate\Support\Str::endsWith( $t->path, 'resources/views/user/2fa/login-form.foil.php' )
+                        && !Auth::user()->is2faRequired() && $t->google2faAuthenticator()->isAuthenticated()
                     ):
                 ?>
                     <?= $t->insert( 'layouts/menu' ); ?>
                 <?php endif; ?>
+
                 <div id="slide-reveal-overlay" class="collapse"></div>
                 <?php if( Auth::check() && Auth::user()->isSuperUser() && !Session::exists( "2fa-" . Auth::user()->getId() ) ): ?>
                     <main role="main" id="main-div" class="col-md-9 ml-sm-auto col-lg-9 col-xl-10 mt-2 pb-4">

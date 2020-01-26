@@ -136,60 +136,20 @@
                     engineering and password brute force attacks and secures your logins from attackers exploiting weak or stolen credentials.
                 </p>
 
-                <?php if( !Auth::getUser()->getUser2FA() || !Auth::getUser()->getUser2FA()->enabled() ): ?>
-                    <p>
-                        To enable it, begin by entering your password below and follow the instructions.
-                    </p>
-                <?php endif ?>
-
-                <?= Former::open()
-                    ->method( 'post' )
-                    ->id( "2fa-form" )
-                    ->action( Auth::getUser()->getUser2FA() && Auth::getUser()->getUser2FA()->enabled() ? "#" : route ( "2fa@check-password" ) )
-                    ->customInputWidthClass( 'col-xl-6 col-lg-8 col-sm-6' )
-                    ->customLabelWidthClass( 'col-sm-4' )
-                    ->actionButtonsCustomClass( "grey-box");
-                ?>
-
-                <?= Former::password( 'pass' )
-                    ->label( 'Password' )
-                    ->required( true )
-                ?>
-
-                <?php if( Auth::getUser()->getUser2FA() && Auth::getUser()->getUser2FA()->enabled() ): ?>
-
-                    <?php if( Auth::getUser()->getPrivs() >= config( "google2fa.ixpm_2fa_enforce_for_users" ) ): ?>
-
-                        <?= Former::actions(
-                            Former::primary_submit( 'Get 2FA QRcode' )->id( "btn-2fa-enable" )
-                        );
-                        ?>
-
+                <p>
+                    <?php if( !Auth::getUser()->getUser2FA() || !Auth::getUser()->getUser2FA()->enabled() ): ?>
+                        You do not have 2fa enabled. To enable it, click here:
                     <?php else: ?>
+                        You have 2fa enabled. To manage it, click here:
+                    <?php endif ?>
+                </p>
 
-                        <?= Former::actions(
-                                Former::danger_submit( 'Disable 2FA' )->id( "btn-2fa-delete" ),
-                                Former::secondary_submit( 'Get 2FA QRcode' )->id( "btn-2fa-enable" )
-                            );
-                        ?>
+                <p class="tw-text-center">
+                    <a class="btn btn-primary" href="<?= route('2fa@configure')?>">Configure 2FA</a>
+                </p>
 
-                    <?php endif; ?>
-
-
-                    <?= Former::hidden( 'id' )
-                        ->value( Auth::getUser()->getUser2FA()->getId() )
-                    ?>
-                <?php else: ?>
-                    <?= Former::actions(
-                        Former::primary_submit( 'Enable 2FA' )->id( "btn-2fa-enable" )
-                    );
-                    ?>
-
-                <?php endif; ?>
-
-
-                <?= Former::close() ?>
             </div>
+
         <?php endif; ?>
 
         <?php if( Auth::getUser()->isSuperUser() ): ?>
@@ -289,7 +249,4 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <?php if( Auth::getUser()->getUser2FA() && Auth::getUser()->getUser2FA()->enabled() ): ?>
-        <?= $t->insert( 'profile/js/edit' ); ?>
-    <?php endif; ?>
 <?php $this->append() ?>

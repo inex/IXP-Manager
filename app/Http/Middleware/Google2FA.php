@@ -45,7 +45,7 @@ class Google2FA
      * @var array List of routes to exclude from 2fa
      */
     protected $except = [
-        '2fa/superuser-verification',
+        '2fa/configure',
         '2fa/enable',
     ];
 
@@ -62,13 +62,7 @@ class Google2FA
 
             // Force the superuser to enable 2FA
             if( $request->user()->is2FARequired() ) {
-
-                // If we come from the login page then redirect to the 2FA verification form. Otherwise logout:
-                if( request()->headers->get('referer', '' ) === route( 'login@login' ) ) {
-                    return redirect( route( '2fa@superuser-verification' ) );
-                }
-
-                return redirect( route( 'login@logout' ) );
+                return redirect( route( '2fa@configure' ) );
             }
 
             $authenticator = app(Google2FAAuthenticator::class)->boot( $request );

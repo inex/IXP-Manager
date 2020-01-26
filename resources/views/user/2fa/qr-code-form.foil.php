@@ -64,6 +64,11 @@ $this->layout( 'layouts/ixpv4' )
                                 ->label( 'Code' )
                             ?>
 
+                            <?= Former::password( 'pass' )
+                                ->label( 'Password' )
+                                ->required( true )
+                            ?>
+
                             <input type="hidden" name="ixp-2fa-token" value="<?= $t->ixp2faToken ?>">
 
                             <?= Former::actions(

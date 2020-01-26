@@ -41,7 +41,7 @@ $this->layout( 'layouts/ixpv4' )
                         attackers exploiting weak or stolen credentials.
                     </p>
 
-                    <strong>Enter the one time code from Google Authenticator</strong><br/><br/>
+                    <strong>Enter the one time code from your authenticator app:</strong><br/><br/>
 
                     <?= Former::open()
                         ->method( 'post' )
@@ -54,18 +54,9 @@ $this->layout( 'layouts/ixpv4' )
                         <?= Former::text( 'one_time_password' )
                             ->id( "one_time_password" )
                             ->required( true )
-                            ->label( 'One Time Password' )
+                            ->label( 'One Time Code' )
                             ->forceValue( '' )
                             ->autofocus( true )
-                        ?>
-
-                        <?= Former::checkbox( 'remember_me' )
-                            ->label('&nbsp;')
-                            ->text( 'Remember me' )
-                            ->value( 1 )
-                            ->check( Session::pull( "remember" ) || Session::get( 'ixpm-login-rememberme-set', false ) )
-                            ->inline()
-                            ->blockHelp( '' );
                         ?>
 
                         <?= Former::actions(

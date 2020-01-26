@@ -866,7 +866,7 @@ class User implements Authenticatable, CanResetPasswordContract
      * @param User2FAEntity $user2fa
      * @return User
      */
-    public function setUser2FA( User2FAEntity $user2fa )
+    public function setUser2FA( ?User2FAEntity $user2fa )
     {
         $this->User2FA = $user2fa;
 
