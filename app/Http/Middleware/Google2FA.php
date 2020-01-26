@@ -43,11 +43,11 @@ use Closure, Session;
 class Google2FA
 {
     /**
-     * @var array List of routes to exclude from 2fa
+     * @var array List of route names to exclude from 2fa
      */
-    protected $except = [
-        '2fa/configure',
-        '2fa/enable',
+    protected $excludes = [
+        '2fa@configure',
+        '2fa@enable',
     ];
 
     /**
@@ -59,44 +59,21 @@ class Google2FA
      */
     public function handle( $request, Closure $next )
     {
-        if( !$this->inExceptArray( $request ) ) {
-
-            // Force the superuser to enable 2FA
-            if( $request->user()->is2FARequired() ) {
-                return redirect( route( '2fa@configure' ) );
-            }
-
-            $authenticator = new GoogleAuthenticator($request);
-
-            if( !Auth::user()->getUser2FA() || $authenticator->isAuthenticated() ) {
-                return $next( $request );
-            }
-
-            return $authenticator->makeRequestOneTimePasswordResponse();
+        if( in_array( $request->route()->getName(), $this->excludes ) ) {
+            return $next( $request );
         }
 
-        return $next( $request );
-    }
-
-    /**
-     * Determine if the request has a URI that should not pass through 2FA
-     *
-     * @param Request $request
-     * @return bool
-     */
-    protected function inExceptArray( $request ): bool
-    {
-        foreach( $this->except as $except ) {
-            if( $except !== '/' ) {
-                $except = trim( $except, '/' );
-            }
-
-            if( $request->fullUrlIs( $except ) || $request->is( $except ) ) {
-                return true;
-            }
+        // Force the superuser to enable 2FA
+        if( $request->user()->is2FARequired() ) {
+            return redirect( route( '2fa@configure' ) );
         }
 
-        return false;
-    }
+        $authenticator = new GoogleAuthenticator($request);
 
+        if( !Auth::user()->getUser2FA() || $authenticator->isAuthenticated() ) {
+            return $next( $request );
+        }
+
+        return $authenticator->makeRequestOneTimePasswordResponse();
+    }
 }
