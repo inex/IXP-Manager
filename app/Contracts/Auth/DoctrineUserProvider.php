@@ -84,25 +84,23 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
             return null;
         }
 
-        $rememberToken = new UserRememberTokenEntity;
+        $urt = new UserRememberTokenEntity;
         $browser = new BrowserDetection();
 
-        $rememberToken->setUser( $user );
-        $rememberToken->setToken( $value );
-        $rememberToken->setExpires( new DateTime( "+$expire minutes" ) );
-        $rememberToken->setCreated( new DateTime() );
-        $rememberToken->setDevice( $browser->getPlatform() . " " . $browser->getPlatformVersion(true) . " / " . $browser->getName() . " " . $browser->getVersion() );
-        $rememberToken->setIp( IpAddress::getIp() );
-        $rememberToken->setSessionId( null );
+        $urt->setUser( $user )
+            ->setToken( $value )
+            ->setExpires( new DateTime( "+$expire minutes" ) )
+            ->setCreated( new DateTime() )
+            ->setDevice( $browser->getPlatform() . " " . $browser->getPlatformVersion(true) . " / " . $browser->getName() . " " . $browser->getVersion() )
+            ->setIp( IpAddress::getIp() )
+            ->setSessionId( null );
 
-        $this->em->persist( $rememberToken );
-
-        $user->addUserRememberToken( $rememberToken );
-
+        $this->em->persist( $urt );
+        $user->addUserRememberToken( $urt );
         $this->em->flush();
 
         // Add the ID in session in order to update the UserRememberToken session_id later in the request, when the session ID will be available
-        request()->request->add( [ "ixpm-user-remember-me-token-id" => $rememberToken->getId() ] );
+        request()->request->add( [ "ixpm-user-remember-me-token-id" => $urt->getId() ] );
     }
 
     /**

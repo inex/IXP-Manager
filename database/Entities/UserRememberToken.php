@@ -85,6 +85,7 @@ class UserRememberToken
 
     /**
      * @param string $token
+     * @return UserRememberToken
      */
     public function setToken( string $token ): UserRememberToken
     {
@@ -102,10 +103,12 @@ class UserRememberToken
 
     /**
      * @param string $device
+     * @return UserRememberToken
      */
-    public function setDevice( string $device ): void
+    public function setDevice( string $device ): UserRememberToken
     {
         $this->device = $device;
+        return $this;
     }
 
     /**
@@ -118,10 +121,12 @@ class UserRememberToken
 
     /**
      * @param string $ip
+     * @return UserRememberToken
      */
-    public function setIp( string $ip ): void
+    public function setIp( string $ip ): UserRememberToken
     {
         $this->ip = $ip;
+        return $this;
     }
 
     /**
@@ -134,10 +139,12 @@ class UserRememberToken
 
     /**
      * @param DateTime $created
+     * @return UserRememberToken
      */
-    public function setCreated( DateTime $created ): void
+    public function setCreated( DateTime $created ): UserRememberToken
     {
         $this->created = $created;
+        return $this;
     }
 
     /**
@@ -150,10 +157,12 @@ class UserRememberToken
 
     /**
      * @param DateTime $expires
+     * @return UserRememberToken
      */
-    public function setExpires( DateTime $expires ): void
+    public function setExpires( DateTime $expires ): UserRememberToken
     {
         $this->expires = $expires;
+        return $this;
     }
 
     /**
@@ -166,10 +175,12 @@ class UserRememberToken
 
     /**
      * @param int $id
+     * @return UserRememberToken
      */
-    public function setId( int $id ): void
+    public function setId( int $id ): UserRememberToken
     {
         $this->id = $id;
+        return $this;
     }
 
     /**
@@ -182,10 +193,12 @@ class UserRememberToken
 
     /**
      * @param UserEntity $User
+     * @return UserRememberToken
      */
-    public function setUser( UserEntity $User ): void
+    public function setUser( UserEntity $User ): UserRememberToken
     {
         $this->User = $User;
+        return $this;
     }
 
     /**
@@ -194,7 +207,7 @@ class UserRememberToken
      * @param string|null $session_id
      * @return UserRememberTokenEntity
      */
-    public function setSessionId( $session_id )
+    public function setSessionId( $session_id ): UserRememberToken
     {
         $this->session_id = $session_id;
 
