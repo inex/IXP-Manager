@@ -27,7 +27,7 @@ use DateTime;
 
 use Entities\{
     User                as UserEntity,
-    UserRememberTokens  as UserRememberTokensEntity
+    UserRememberToken  as UserRememberTokenEntity
 };
 
 use Doctrine\Common\Persistence\ObjectRepository;
@@ -84,7 +84,7 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
             return null;
         }
 
-        $rememberToken = new UserRememberTokensEntity;
+        $rememberToken = new UserRememberTokenEntity;
         $browser = new BrowserDetection();
 
         $rememberToken->setUser( $user );
@@ -97,7 +97,7 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
 
         $this->em->persist( $rememberToken );
 
-        $user->addUserRememberTokens( $rememberToken );
+        $user->addUserRememberToken( $rememberToken );
 
         $this->em->flush();
 
@@ -156,7 +156,7 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
      */
     public function purgeRememberTokens( $identifier, $expired = false )
     {
-        $sql = "DELETE FROM Entities\\UserRememberTokens rt WHERE rt.User = " . $identifier;
+        $sql = "DELETE FROM Entities\\UserRememberToken rt WHERE rt.User = " . $identifier;
 
         if ( $expired ) {
             $now = new DateTime();
@@ -172,6 +172,6 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
      */
     protected function getUserRememberPasswordRepository()
     {
-        return $this->em->getRepository( UserRememberTokensEntity::class );
+        return $this->em->getRepository( UserRememberTokenEntity::class );
     }
 }

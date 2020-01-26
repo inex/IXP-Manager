@@ -27,7 +27,7 @@ use Auth, Cookie, D2EM, Route;
 
 use Entities\{
     Session                 as SessionEntity,
-    UserRememberTokens      as UserRememberTokensEntity,
+    UserRememberToken      as UserRememberTokenEntity,
     User                    as UserEntity
 };
 
@@ -45,7 +45,7 @@ class UserRememberTokenController extends Doctrine2Frontend
 {
     /**
      * The object being added / edited
-     * @var UserRememberTokensEntity
+     * @var UserRememberTokenEntity
      */
     protected $object = null;
 
@@ -73,7 +73,7 @@ class UserRememberTokenController extends Doctrine2Frontend
     public function feInit()
     {
         $this->feParams         = (object)[
-            'entity'            => UserRememberTokensEntity::class,
+            'entity'            => UserRememberTokenEntity::class,
 
             'pagetitle'         => 'Your Active Login Sessions',
 
@@ -136,7 +136,7 @@ class UserRememberTokenController extends Doctrine2Frontend
      */
     protected function listGetData( $id = null )
     {
-        return D2EM::getRepository( UserRememberTokensEntity::class)->getAllForFeList( $this->feParams, request()->user()->getId(), $id );
+        return D2EM::getRepository( UserRememberTokenEntity::class)->getAllForFeList( $this->feParams, request()->user()->getId(), $id );
     }
 
     /**

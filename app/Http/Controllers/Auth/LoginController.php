@@ -30,7 +30,7 @@ use Entities\{
     CustomerToUser      as CustomerToUserEntity,
     User                as UserEntity,
     UserLoginHistory    as UserLoginHistoryEntity,
-    UserRememberTokens  as UserRememberTokensEntity
+    UserRememberToken  as UserRememberTokenEntity
 };
 
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
@@ -168,7 +168,7 @@ class LoginController extends Controller
         // Check if we added a UserRememberToken id to the request
         if( request()->request->has( "ixpm-user-remember-me-token-id" ) ) {
             // Updating the current UserRememberToken session id with the current session ID in order to link them
-            $urt = D2EM::getRepository( UserRememberTokensEntity::class )->find( request()->request->get( "ixpm-user-remember-me-token-id" ) );
+            $urt = D2EM::getRepository( UserRememberTokenEntity::class )->find( request()->request->get( "ixpm-user-remember-me-token-id" ) );
             $urt->setSessionId( Session::getId() );
         }
 

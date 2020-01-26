@@ -32,7 +32,7 @@ use Entities\{
     Session             as SessionEntity,
     User                as UserEntity,
     UserLoginHistory    as UserLoginHistoryEntity,
-    UserRememberTokens  as UserRememberTokensEntity
+    UserRememberToken  as UserRememberTokenEntity
 };
 
 use Doctrine\ORM\EntityRepository;
@@ -676,7 +676,7 @@ class User extends EntityRepository
      */
     public function deleteActiveSession( int $id, $deleteCurrentSession = false ) {
 
-        D2EM::getRepository( UserRememberTokensEntity::class    )->deleteByUser( $id, $deleteCurrentSession );
+        D2EM::getRepository( UserRememberTokenEntity::class    )->deleteByUser( $id, $deleteCurrentSession );
         D2EM::getRepository( SessionEntity::class               )->deleteByUser( $id, $deleteCurrentSession );
 
     }

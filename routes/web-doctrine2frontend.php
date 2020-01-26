@@ -51,4 +51,3 @@ IXP\Http\Controllers\Switches\SwitchPortController::routes();
 IXP\Http\Controllers\VendorController::routes();
 IXP\Http\Controllers\VlanController::routes();
 
-

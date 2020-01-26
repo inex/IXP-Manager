@@ -26,7 +26,7 @@ namespace IXP\Services\Auth;
 
 use D2EM, Str;
 
-use Entities\UserRememberTokens as UserRememberTokensEntity;
+use Entities\UserRememberToken as UserRememberTokenEntity;
 
 use Illuminate\Contracts\Session\Session;
 use Illuminate\Contracts\Auth\UserProvider;
@@ -138,7 +138,7 @@ class SessionGuard extends BaseGuard
 
             // Check if there is already a UserRememerToken object existing with the session ID and the user ID,
             // If an object exist this mean that the user checked the remember me checkbox on the login form, so we dont create new token
-            if( !D2EM::getRepository( UserRememberTokensEntity::class )->findOneBy( [ "User" => $user, "session_id" => $this->session->getId() ] ) ) {
+            if( !D2EM::getRepository( UserRememberTokenEntity::class )->findOneBy( [ "User" => $user, "session_id" => $this->session->getId() ] ) ) {
                 $token = $this->createRememberToken($user);
 
                 $this->queueRecallerCookie($user, $token);
@@ -147,7 +147,7 @@ class SessionGuard extends BaseGuard
                     // Check we added the in the request the UserRememberToken id
                     if( request()->request->has( "ixpm-user-remember-me-token-id" ) ){
                         // Updating the current UserRememberToken session id With the current session ID in order to link them
-                        $urt = D2EM::getRepository( UserRememberTokensEntity::class )->find( request()->request->get( "ixpm-user-remember-me-token-id" ) );
+                        $urt = D2EM::getRepository( UserRememberTokenEntity::class )->find( request()->request->get( "ixpm-user-remember-me-token-id" ) );
                         $urt->setSessionId( $this->session->getId() );
                         D2EM::flush();
                     }

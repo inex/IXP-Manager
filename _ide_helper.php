@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 6.12.0 on 2020-01-24 11:33:39.
+ * Generated for Laravel 6.12.0 on 2020-01-26 13:51:14.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -1834,18 +1834,6 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * Get the currently authenticated user.
-         *
-         * @return \IXP\Services\Auth\AuthenticatableContract|null 
-         * @static 
-         */ 
-        public static function user()
-        {
-                        /** @var \IXP\Services\Auth\SessionGuard $instance */
-                        return $instance->user();
-        }
-        
-        /**
          * If the user check remember me in the OTP validation form
          *
          * @param \IXP\Services\Auth\AuthenticatableContract $user
@@ -1900,6 +1888,19 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->logoutOtherDevices($password, $attribute);
+        }
+        
+        /**
+         * Get the currently authenticated user.
+         *
+         * @return \Entities\User|null 
+         * @static 
+         */ 
+        public static function user()
+        {
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        return $instance->user();
         }
         
         /**

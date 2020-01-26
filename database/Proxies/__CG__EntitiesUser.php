@@ -59,7 +59,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     }
 
     /**
-     * 
+     * {@inheritDoc}
      * @param string $name
      */
     public function __get($name)
@@ -70,7 +70,9 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
             return $this->$name;
         }
 
-        trigger_error(sprintf('Undefined property: %s::$%s', __CLASS__, $name), E_USER_NOTICE);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', [$name]);
+
+        return parent::__get($name);
     }
 
     /**
@@ -114,10 +116,10 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'User2FA', 'UserRememberTokens', '_className', '_preferenceClassName'];
+            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'User2FA', 'UserRememberToken', '_className', '_preferenceClassName'];
         }
 
-        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'User2FA', 'UserRememberTokens', '_className', '_preferenceClassName'];
+        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'User2FA', 'UserRememberToken', '_className', '_preferenceClassName'];
     }
 
     /**
@@ -837,7 +839,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function setUser2FA(\Entities\User2FA $user2fa)
+    public function setUser2FA(?\Entities\User2FA $user2fa)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser2FA', [$user2fa]);
@@ -881,23 +883,23 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function addUserRememberTokens(\Entities\UserRememberTokens $userRememberTokens)
+    public function addUserRememberToken(\Entities\UserRememberToken $UserRememberToken)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addUserRememberTokens', [$userRememberTokens]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addUserRememberToken', [$UserRememberToken]);
 
-        return parent::addUserRememberTokens($userRememberTokens);
+        return parent::addUserRememberToken($UserRememberToken);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function removeRememberTokens(\Entities\UserRememberTokens $userRememberTokens)
+    public function removeRememberTokens(\Entities\UserRememberToken $UserRememberToken)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeRememberTokens', [$userRememberTokens]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeRememberTokens', [$UserRememberToken]);
 
-        return parent::removeRememberTokens($userRememberTokens);
+        return parent::removeRememberTokens($UserRememberToken);
     }
 
     /**

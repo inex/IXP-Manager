@@ -27,13 +27,13 @@ use Datetime;
 
 use Entities\{
     User as UserEntity,
-    UserRememberTokens as UserRememberTokensEntity,
+    UserRememberToken as UserRememberTokenEntity,
 };
 
 /**
- * UserRememberTokens
+ * UserRememberToken
  */
-class UserRememberTokens
+class UserRememberToken
 {
     /**
      * @var string
@@ -86,7 +86,7 @@ class UserRememberTokens
     /**
      * @param string $token
      */
-    public function setToken( string $token ): UserRememberTokens
+    public function setToken( string $token ): UserRememberToken
     {
         $this->token = $token;
         return $this;
@@ -192,7 +192,7 @@ class UserRememberTokens
      * Set Password Security
      *
      * @param string|null $session_id
-     * @return UserRememberTokensEntity
+     * @return UserRememberTokenEntity
      */
     public function setSessionId( $session_id )
     {

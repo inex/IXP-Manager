@@ -27,6 +27,6 @@
     <one-to-many field="Preferences" target-entity="Entities\UserPreference" mapped-by="User"/>
     <one-to-many field="Customers" target-entity="Entities\CustomerToUser" mapped-by="user"/>
     <one-to-one  field="User2FA" target-entity="Entities\User2FA" mapped-by="User"/>
-    <one-to-many field="UserRememberTokens" target-entity="Entities\UserRememberTokens" mapped-by="User"/>
+    <one-to-many field="UserRememberToken" target-entity="Entities\UserRememberToken" mapped-by="User"/>
   </entity>
 </doctrine-mapping>

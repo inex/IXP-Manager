@@ -31,7 +31,7 @@ use Entities\{
     Customer            as CustomerEntity,
     CustomerToUser      as CustomerToUserEntity,
     User2FA             as User2FAEntity,
-    UserRememberTokens  as UserRememberTokensEntity,
+    UserRememberToken  as UserRememberTokenEntity,
     User                as UserEntity,
     UserLoginHistory    as UserLoginHistoryEntity,
     UserPreference      as UserPreferenceEntity
@@ -214,9 +214,9 @@ class User implements Authenticatable, CanResetPasswordContract
     protected $User2FA;
 
     /**
-     * @var UserRememberTokensEntity
+     * @var UserRememberTokenEntity
      */
-    protected $UserRememberTokens;
+    protected $UserRememberToken;
 
     /**
      * Constructor
@@ -226,7 +226,7 @@ class User implements Authenticatable, CanResetPasswordContract
         $this->Preferences          = new ArrayCollection();
         $this->Customers            = new ArrayCollection();
         $this->ApiKeys              = new ArrayCollection();
-        $this->UserRememberTokens   = new ArrayCollection();
+        $this->UserRememberToken   = new ArrayCollection();
     }
 
     /**
@@ -908,12 +908,12 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Add Remember token
      *
-     * @param UserRememberTokensEntity $userRememberTokens
+     * @param UserRememberTokenEntity $UserRememberToken
      * @return User
      */
-    public function addUserRememberTokens( UserRememberTokensEntity $userRememberTokens )
+    public function addUserRememberToken( UserRememberTokenEntity $UserRememberToken )
     {
-        $this->UserRememberTokens[] = $userRememberTokens;
+        $this->UserRememberToken[] = $UserRememberToken;
 
         return $this;
     }
@@ -921,11 +921,11 @@ class User implements Authenticatable, CanResetPasswordContract
     /**
      * Remove Remember token
      *
-     * @param UserRememberTokensEntity $userRememberTokens
+     * @param UserRememberTokenEntity $UserRememberToken
      */
-    public function removeRememberTokens( UserRememberTokensEntity $userRememberTokens )
+    public function removeRememberTokens( UserRememberTokenEntity $UserRememberToken )
     {
-        $this->UserRememberTokens->removeElement( $userRememberTokens );
+        $this->UserRememberToken->removeElement( $UserRememberToken );
     }
 
     /**
@@ -935,7 +935,7 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function RememberTokens()
     {
-        return $this->UserRememberTokens;
+        return $this->UserRememberToken;
     }
 
     /***************************************************************************
