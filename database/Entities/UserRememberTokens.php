@@ -86,9 +86,10 @@ class UserRememberTokens
     /**
      * @param string $token
      */
-    public function setToken( string $token ): void
+    public function setToken( string $token ): UserRememberTokens
     {
         $this->token = $token;
+        return $this;
     }
 
     /**

@@ -3,7 +3,7 @@
 namespace IXP\Contracts\Auth;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -41,6 +41,12 @@ use Wolfcast\BrowserDetection;
 use Carbon\Carbon;
 
 
+/**
+ * We have overridden DoctrineUserProviderBase to allow for multiple login sessions per user rather than Laravel's default of one.
+ *
+ * Class DoctrineUserProvider
+ * @package IXP\Contracts\Auth
+ */
 class DoctrineUserProvider extends DoctrineUserProviderBase
 {
     /**
@@ -86,7 +92,7 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
         $rememberToken->setExpires( new DateTime( "+$expire minutes" ) );
         $rememberToken->setCreated( new DateTime() );
         $rememberToken->setDevice( $browser->getPlatform() . " " . $browser->getPlatformVersion(true) . " / " . $browser->getName() . " " . $browser->getVersion() );
-        $rememberToken->setId( IpAddress::getIp() );
+        $rememberToken->setIp( IpAddress::getIp() );
         $rememberToken->setSessionId( null );
 
         $this->em->persist( $rememberToken );
