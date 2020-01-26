@@ -119,7 +119,7 @@ class UserRememberTokens
     /**
      * @param string $ip
      */
-    public function setId( string $ip ): void
+    public function setIp( string $ip ): void
     {
         $this->ip = $ip;
     }
@@ -162,6 +162,14 @@ class UserRememberTokens
     public function getId(): int
     {
         return $this->id;
+    }
+
+    /**
+     * @param int $id
+     */
+    public function setId( int $id ): void
+    {
+        $this->id = $id;
     }
 
     /**
