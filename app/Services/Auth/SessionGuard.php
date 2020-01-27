@@ -24,26 +24,28 @@ namespace IXP\Services\Auth;
  */
 
 
-use D2EM, Str;
+use D2EM;
 
 use Entities\UserRememberToken;
 
-use Illuminate\Contracts\Session\Session;
-use Illuminate\Contracts\Auth\UserProvider;
-
-use Symfony\Component\HttpFoundation\{
-    Cookie,
-    Request
-};
-
-use Illuminate\Support\Facades\Session as SessionFacade;
-
 use Illuminate\Auth\SessionGuard as BaseGuard;
-use Illuminate\Auth\Events\Logout as LogoutEvent;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
 use IXP\Exceptions\GeneralException;
 
+/**
+ * Class SessionGuard
+ *
+ * A small set of functions we need to override from Laravel's SessionGuard to allow for IXP Manager's
+ * user session management functionality.
+ *
+ * @see        https://docs.ixpmanager.org/dev/authentication/
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @package    IXP\Services\Auth
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class SessionGuard extends BaseGuard
 {
     /**
@@ -130,26 +132,4 @@ class SessionGuard extends BaseGuard
             }
         }
     }
-
-
-    /**
-     * Invalidate other sessions for the current user.
-     *
-     * The application must be using the AuthenticateSession middleware.
-     *
-     * @param  string  $password
-     * @param  string  $attribute
-     * @return bool|null
-     */
-    public function logoutOtherDevices($password, $attribute = 'password')
-    {
-        if (! $this->user()) {
-            return;
-        }
-
-        $this->provider->purgeRememberTokens($this->user());
-
-        return parent::logoutOtherDevices($password, $attribute);
-    }
-
 }
