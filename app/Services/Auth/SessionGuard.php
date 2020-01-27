@@ -78,8 +78,8 @@ class SessionGuard extends BaseGuard
     {
         if (!$this->userRememberToken) {
             // The addRememberToken() creates a new UserRememberToken for the user
-            $this->userRememberToken = $this->provider->addRememberToken( $user, config('auth.guards.web.expire') );
-            $this->provider->purgeRememberTokens( $user, true );
+            $this->userRememberToken = $this->provider->addRememberToken($user);
+            $this->provider->purgeExpiredRememberTokens( $user );
         }
     }
 

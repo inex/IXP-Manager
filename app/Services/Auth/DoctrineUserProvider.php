@@ -23,8 +23,6 @@ namespace IXP\Services\Auth;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use DateTime;
-
 use Illuminate\Support\Str;
 use Entities\{
     User                as UserEntity,
@@ -39,14 +37,19 @@ use LaravelDoctrine\ORM\Auth\DoctrineUserProvider as DoctrineUserProviderBase;
 
 use Wolfcast\BrowserDetection;
 
-use Carbon\Carbon;
-
 
 /**
- * We have overridden DoctrineUserProviderBase to allow for multiple login sessions per user rather than Laravel's default of one.
- *
  * Class DoctrineUserProvider
- * @package IXP\Contracts\Auth
+ *
+ * A small set of functions we need to override from LaravelDoctrine's provider to allow for IXP Manager's
+ * user session management functionality.
+ *
+ * @see        https://docs.ixpmanager.org/dev/authentication/
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @package    IXP\Services\Auth
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class DoctrineUserProvider extends DoctrineUserProviderBase
 {
@@ -61,7 +64,9 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
      */
     public function retrieveByToken( $identifier, $token )
     {
-        if( !( $urt = $this->getUserRememberPasswordRepository()->findOneBy( [ "User" => $identifier, "token" => $token ] ) ) ) {
+        $urt = $this->em->getRepository( UserRememberToken::class )->findOneBy( [ "User" => $identifier, "token" => $token ] );
+
+        if( !$urt  ) {
             return null;
         }
 
@@ -71,20 +76,19 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
     /**
      * Add a new user remember token for a "remember me" session.
      *
-     * @param UserEntity|Authenticatable|\Illuminate\Contracts\Auth\Authenticatable $user
-     * @param int $expire (in minutes)
+     * @param UserEntity|\Illuminate\Contracts\Auth\Authenticatable $user
      * @return UserRememberToken
      *
      * @throws
      */
-    public function addRememberToken( $user, $expire ): UserRememberToken
+    public function addRememberToken( $user ): UserRememberToken
     {
         $urt = new UserRememberToken;
         $browser = new BrowserDetection();
 
         $urt->setUser( $user )
             ->setToken(Str::random(60))
-            ->setExpires( now()->addMinutes($expire) )
+            ->setExpires( now()->addMinutes( config('auth.guards.web.expire', 60) ) )
             ->setCreated( now() )
             ->setDevice( $browser->getPlatform() . " " . $browser->getPlatformVersion(true) . " / " . $browser->getName() . " " . $browser->getVersion() )
             ->setIp( IpAddress::getIp() )
@@ -98,70 +102,17 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
     }
 
     /**
-     * Replace "remember me" token with new token.
-     *
-     * @param $identifier
-     * @param string $token
-     * @param string $newToken
-     * @param int $expire
-     *
-     * @return void
-     *
-     * @throws
-     */
-    public function replaceRememberToken($identifier, $token, $newToken, $expire)
-    {
-        if ( !( $rt = $this->getUserRememberPasswordRepository()->findOneBy( [ "User" => $identifier, "token" => $token ] ) ) ) {
-            return null;
-        }
-
-        $rt->setToken( $newToken );
-        $rt->setExpires( now()->addMinutes( $expire ) );
-        $this->em->flush();
-    }
-
-    /**
-     * Delete the specified "remember me" token for the given user.
-     *
-     * @param  mixed $identifier
-     * @param  string $token
-     * @return null
-     */
-    public function deleteRememberToken( $identifier, $token )
-    {
-        if( !( $rt = $this->getUserRememberPasswordRepository()->findOneBy( [ "User" => $identifier, "token" => $token ] ) ) ) {
-            return null;
-        }
-
-        $this->em->remove( $rt );
-        $this->em->flush();
-    }
-
-    /**
      * Purge old or expired "remember me" tokens.
      *
      * @param  UserEntity $user
-     * @param  bool $onlyExpired
      *
      * @throws
      */
-    public function purgeRememberTokens( $user, $onlyExpired = false )
+    public function purgeExpiredRememberTokens( $user )
     {
-        $sql = "DELETE FROM Entities\\UserRememberToken urt WHERE urt.User = " . $user->getId();
-
-        if ( $onlyExpired ) {
-            $sql .= " AND urt.expires <= '" . now()->format( 'Y-m-d H:i:s' ) . "'";
-        }
-
-        $this->em->createQuery( $sql )->execute();
-    }
-
-    /**
-     * Returns repository for the remember token entity.
-     * @return ObjectRepository
-     */
-    protected function getUserRememberPasswordRepository()
-    {
-        return $this->em->getRepository( UserRememberToken::class );
+        $this->em->createQuery(
+            "DELETE FROM Entities\\UserRememberToken urt WHERE urt.User = " . $user->getId()
+                . " AND urt.expires <= '" . now()->format( 'Y-m-d H:i:s' ) . "'"
+        )->execute();
     }
 }
