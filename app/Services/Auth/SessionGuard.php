@@ -131,24 +131,6 @@ class SessionGuard extends BaseGuard
         }
     }
 
-    /**
-     * Remove the user data from the session and cookies.
-     *
-     * @return void
-     */
-    protected function clearUserDataFromStorage()
-    {
-        $this->session->remove($this->getName());
-
-        $recaller = $this->recaller();
-
-        if (! is_null($recaller)) {
-            $this->getCookieJar()->queue($this->getCookieJar()
-                ->forget($this->getRecallerName()));
-
-            $this->provider->deleteRememberToken($recaller->id(), $recaller->token());
-        }
-    }
 
     /**
      * Invalidate other sessions for the current user.
