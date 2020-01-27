@@ -39,7 +39,7 @@ use Entities\{
 
 use Doctrine\Common\Collections\Collection;
 use Illuminate\Support\Str;
-use IXP\Contracts\Auth\Authenticatable;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
