@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Http\Controllers\Auth;
+namespace IXP\Http\Controllers\User;
 
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
