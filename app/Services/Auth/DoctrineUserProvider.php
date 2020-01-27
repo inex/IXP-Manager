@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Contracts\Auth;
+namespace IXP\Services\Auth;
 
 /*
  * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
