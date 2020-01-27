@@ -32,5 +32,5 @@ interface Authenticatable extends BaseAuthenticatable
      *
      * @return string
      */
-    public function rememberTokens();
+    public function getUserRememberTokens();
 }

@@ -108,29 +108,27 @@ class SessionGuard extends BaseGuard
 
 
     /**
-     * Log the user out of the application.
+     * Refresh the "remember me" token for the user.
      *
+     * We need to override this function and use it to delete the user's remember token
+     * as our system does not have a single token (where cycling the single token would
+     * be sufficient).
+     *
+     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
      * @return void
      */
-    public function logout()
+    protected function cycleRememberToken(AuthenticatableContract $user)
     {
-        $user = $this->user();
-
-        // If we have an event dispatcher instance, we can fire off the logout event
-        // so any further processing can be done. This allows the developer to be
-        // listening for anytime a user signs out of this application manually.
-        $this->clearUserDataFromStorage();
-
-        if (isset($this->events)) {
-            $this->events->dispatch(new LogoutEvent($this->name, $user));
+        if( $this->recaller() && $this->recaller()->token() ) {
+            foreach( $this->user()->getUserRememberTokens() as $urt ) {
+                if( $urt->getToken() === $this->recaller()->token() ) {
+                    $user->removeRememberTokens( $urt );
+                    D2EM::remove($urt);
+                    D2EM::flush();
+                    break;
+                }
+            }
         }
-
-        // Once we have fired the logout event we will clear the users out of memory
-        // so they are no longer available as the user is no longer considered as
-        // being signed into this application and should not be available here.
-        $this->user = null;
-
-        $this->loggedOut = true;
     }
 
     /**
