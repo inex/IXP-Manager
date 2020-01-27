@@ -25,6 +25,7 @@ namespace IXP\Contracts\Auth;
 
 use DateTime;
 
+use Illuminate\Support\Str;
 use Entities\{
     User                as UserEntity,
     UserRememberToken  as UserRememberTokenEntity
@@ -68,29 +69,23 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
     }
 
     /**
-     * Add a token value for the "remember me" session.
+     * Add a new user remember token for a "remember me" session.
      *
-     * @param $identifier
-     * @param string $value
+     * @param UserEntity|Authenticatable|\Illuminate\Contracts\Auth\Authenticatable $user
      * @param int $expire
      * @return void
      *
      * @throws
      */
-    public function addRememberToken( $identifier, $value, $expire )
+    public function addRememberToken( $user, $expire )
     {
-        /** @var $user UserEntity */
-        if( !( $user = $this->getRepository()->findOneBy( [ $this->getEntity()->getAuthIdentifierName() => $identifier ] ) ) ) {
-            return null;
-        }
-
         $urt = new UserRememberTokenEntity;
         $browser = new BrowserDetection();
 
         $urt->setUser( $user )
-            ->setToken( $value )
-            ->setExpires( new DateTime( "+$expire minutes" ) )
-            ->setCreated( new DateTime() )
+            ->setToken(Str::random(60))
+            ->setExpires( now()->addMinutes($expire) )
+            ->setCreated( now() )
             ->setDevice( $browser->getPlatform() . " " . $browser->getPlatformVersion(true) . " / " . $browser->getName() . " " . $browser->getVersion() )
             ->setIp( IpAddress::getIp() )
             ->setSessionId( null );
@@ -98,9 +93,6 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
         $this->em->persist( $urt );
         $user->addUserRememberToken( $urt );
         $this->em->flush();
-
-        // Add the ID in session in order to update the UserRememberToken session_id later in the request, when the session ID will be available
-        request()->request->add( [ "ixpm-user-remember-me-token-id" => $urt->getId() ] );
     }
 
     /**
@@ -146,19 +138,17 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
     /**
      * Purge old or expired "remember me" tokens.
      *
-     * @param  mixed $identifier
-     * @param  bool $expired
-     * @return null
+     * @param  UserEntity $user
+     * @param  bool $onlyExpired
      *
      * @throws
      */
-    public function purgeRememberTokens( $identifier, $expired = false )
+    public function purgeRememberTokens( $user, $onlyExpired = false )
     {
-        $sql = "DELETE FROM Entities\\UserRememberToken rt WHERE rt.User = " . $identifier;
+        $sql = "DELETE FROM Entities\\UserRememberToken urt WHERE urt.User = " . $user->getId();
 
-        if ( $expired ) {
-            $now = new DateTime();
-            $sql .= " AND rt.expires < '" . now()->format( 'Y-m-d H:i:s' ) . "'";
+        if ( $onlyExpired ) {
+            $sql .= " AND urt.expires <= '" . now()->format( 'Y-m-d H:i:s' ) . "'";
         }
 
         $this->em->createQuery( $sql )->execute();
