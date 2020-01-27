@@ -23,11 +23,12 @@ namespace IXP\Http\Controllers\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Hash, Redirect, Session, Str;
+use D2EM, Hash, Redirect;
 
+use Illuminate\Contracts\View\Factory;
 use Entities\{
     User2FA             as User2FAEntity,
-    User                as UserEntity,
+    User                as UserEntity
 };
 
 use Illuminate\Http\{
@@ -64,7 +65,7 @@ class User2FAController extends Controller
      * Configure 2FA
      *
      * @param Request $request
-     * @return \Illuminate\Contracts\View\Factory|View
+     * @return Factory|View
      */
     public function configure( Request $request )
     {
@@ -83,8 +84,7 @@ class User2FAController extends Controller
      *
      * @param Request $request
      * @return RedirectResponse|View
-     * @throws User2FAException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws
      */
     public function enable( Request $request )
     {
@@ -105,8 +105,7 @@ class User2FAController extends Controller
      *
      * @param Request $request
      * @return RedirectResponse|View
-     * @throws User2FAException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     * @throws
      */
     public function disable( Request $request )
     {

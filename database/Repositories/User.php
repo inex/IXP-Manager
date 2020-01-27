@@ -259,7 +259,7 @@ class User extends EntityRepository
                         u.lastupdated AS lastupdated,
                         COUNT( c2u ) as nbC2U,
                         MAX( c2u.privs ) as privileges,
-                        ps.enabled as 2fa_enabled,
+                        ps.enabled as u2fa_enabled,
                         ps.id as psid 
                   FROM Entities\\User u
                         LEFT JOIN u.Customer as c
@@ -273,8 +273,7 @@ class User extends EntityRepository
 
         $dql .= " GROUP BY id
                   ORDER BY username ASC";
-
-
+        
         return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
 
     }
@@ -329,7 +328,7 @@ class User extends EntityRepository
                         COUNT( c2u ) as nbC2U,
                         MAX( c2u.privs ) as privileges,
                         c2u.id as c2uid,
-                        ps.enabled as 2fa_enabled,
+                        ps.enabled as u2fa_enabled,
                         ps.id as psid
                   FROM Entities\\User u
                   LEFT JOIN u.Customer as c 
