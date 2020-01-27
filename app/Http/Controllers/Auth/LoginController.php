@@ -113,18 +113,6 @@ class LoginController extends Controller
         return view( 'auth/login' );
     }
 
-    /**
-     * Attempt to log the user into the application.
-     *
-     * @param Request $request
-     * @return bool
-     */
-    protected function attemptLogin(Request $request)
-    {
-        return $this->guard()->attempt(
-            $this->credentials($request), $request->input('remember') ? true : false
-        );
-    }
 
     /**
      * The user has been authenticated.
