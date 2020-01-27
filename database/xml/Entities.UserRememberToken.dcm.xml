@@ -8,7 +8,7 @@
         <field name="device" type="string" length="255" nullable="false"/>
         <field name="ip" type="string" length="16" nullable="false"/>
         <field name="created" type="datetime" nullable="false"/>
-        <field name="expires" type="datetime" nullable="false" />
+        <field name="expires" type="datetime" nullable="false"/>
         <field name="session_id" type="string" length="255" nullable="true" />
         <many-to-one field="User" target-entity="Entities\User" inversed-by="UserRememberToken">
             <join-columns>
