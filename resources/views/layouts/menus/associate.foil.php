@@ -128,6 +128,10 @@
                         Profile
                     </a>
 
+                    <a class="dropdown-item <?= !request()->is( 'active-sessions/list' ) ?: 'active' ?>" href="<?= route('active-sessions@list' )?>">
+                        Active Sessions
+                    </a>
+
                 </ul>
             </li>
 

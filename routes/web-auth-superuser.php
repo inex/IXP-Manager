@@ -189,6 +189,13 @@ Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
 
 Route::get( 'search', 'SearchController@do' )->name( 'search' );
 
+
+if( config( 'google2fa.enabled' ) ) {
+    Route::group( [ 'namespace' => 'User', 'prefix' => '2fa' ], function() {
+        Route::post('delete',   'User2FAController@delete'   )->name( "2fa@delete"    );
+    });
+}
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///

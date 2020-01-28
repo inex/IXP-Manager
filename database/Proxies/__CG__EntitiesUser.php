@@ -31,20 +31,26 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     public $__isInitialized__ = false;
 
     /**
-     * @var array properties to be lazy loaded, with keys being the property
-     *            names and values being their default values
+     * @var array<string, null> properties to be lazy loaded, indexed by property name
+     */
+    public static $lazyPropertiesNames = array (
+  'username' => NULL,
+  'email' => NULL,
+);
+
+    /**
+     * @var array<string, mixed> default values of properties to be lazy loaded, with keys being the property names
      *
      * @see \Doctrine\Common\Proxy\Proxy::__getLazyProperties
      */
-    public static $lazyPropertiesDefaults = ['username' => NULL, 'email' => NULL];
+    public static $lazyPropertiesDefaults = array (
+  'username' => NULL,
+  'email' => NULL,
+);
 
 
 
-    /**
-     * @param \Closure $initializer
-     * @param \Closure $cloner
-     */
-    public function __construct($initializer = null, $cloner = null)
+    public function __construct(?\Closure $initializer = null, ?\Closure $cloner = null)
     {
         unset($this->username, $this->email);
 
@@ -53,18 +59,20 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     }
 
     /**
-     * 
+     * {@inheritDoc}
      * @param string $name
      */
     public function __get($name)
     {
-        if (array_key_exists($name, $this->__getLazyProperties())) {
+        if (\array_key_exists($name, self::$lazyPropertiesNames)) {
             $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', [$name]);
 
             return $this->$name;
         }
 
-        trigger_error(sprintf('Undefined property: %s::$%s', __CLASS__, $name), E_USER_NOTICE);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', [$name]);
+
+        return parent::__get($name);
     }
 
     /**
@@ -74,7 +82,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
      */
     public function __set($name, $value)
     {
-        if (array_key_exists($name, $this->__getLazyProperties())) {
+        if (\array_key_exists($name, self::$lazyPropertiesNames)) {
             $this->__initializer__ && $this->__initializer__->__invoke($this, '__set', [$name, $value]);
 
             $this->$name = $value;
@@ -92,7 +100,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
      */
     public function __isset($name)
     {
-        if (array_key_exists($name, $this->__getLazyProperties())) {
+        if (\array_key_exists($name, self::$lazyPropertiesNames)) {
             $this->__initializer__ && $this->__initializer__->__invoke($this, '__isset', [$name]);
 
             return isset($this->$name);
@@ -108,10 +116,10 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', 'Contact', '_className', '_preferenceClassName'];
+            return ['__isInitialized__', 'name', 'username', 'password', 'email', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'User2FA', 'UserRememberToken', '_className', '_preferenceClassName'];
         }
 
-        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'remember_token', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Children', 'Contact', '_className', '_preferenceClassName'];
+        return ['__isInitialized__', 'name', 'password', 'authorisedMobile', 'uid', 'privs', 'disabled', 'lastupdated', 'lastupdatedby', 'creator', 'created', 'id', '' . "\0" . 'Entities\\User' . "\0" . 'peeringdb_id', '' . "\0" . 'Entities\\User' . "\0" . 'extra_attributes', 'LastLogins', '' . "\0" . 'Entities\\User' . "\0" . 'ApiKeys', 'Preferences', 'Customer', 'Customers', 'Contact', 'Children', 'User2FA', 'UserRememberToken', '_className', '_preferenceClassName'];
     }
 
     /**
@@ -126,7 +134,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
 
                 $existingProperties = get_object_vars($proxy);
 
-                foreach ($proxy->__getLazyProperties() as $property => $defaultValue) {
+                foreach ($proxy::$lazyPropertiesDefaults as $property => $defaultValue) {
                     if ( ! array_key_exists($property, $existingProperties)) {
                         $proxy->$property = $defaultValue;
                     }
@@ -210,6 +218,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      * @internal generated method: use only when explicitly handling proxy specific loading logic
+     * @deprecated no longer in use - generated code now relies on internal components rather than generated public API
      * @static
      */
     public function __getLazyProperties()
@@ -825,6 +834,83 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getContact', []);
 
         return parent::getContact();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setUser2FA(?\Entities\User2FA $user2fa)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser2FA', [$user2fa]);
+
+        return parent::setUser2FA($user2fa);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUser2FA()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUser2FA', []);
+
+        return parent::getUser2FA();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function is2faRequired()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2faRequired', []);
+
+        return parent::is2faRequired();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function is2faEnabled()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2faEnabled', []);
+
+        return parent::is2faEnabled();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addUserRememberToken(\Entities\UserRememberToken $UserRememberToken)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addUserRememberToken', [$UserRememberToken]);
+
+        return parent::addUserRememberToken($UserRememberToken);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeRememberTokens(\Entities\UserRememberToken $UserRememberToken)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeRememberTokens', [$UserRememberToken]);
+
+        return parent::removeRememberTokens($UserRememberToken);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getUserRememberTokens()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUserRememberTokens', []);
+
+        return parent::getUserRememberTokens();
     }
 
     /**

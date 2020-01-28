@@ -171,6 +171,10 @@
                         API Keys
                     </a>
 
+                    <a class="dropdown-item <?= !request()->is( 'active-sessions/list' ) ?: 'active' ?>" href="<?= route('active-sessions@list' )?>">
+                        Active Sessions
+                    </a>
+
                     <?php if( count( Auth::getUser()->getCustomers() ) > 1 ): ?>
 
                         <div class="dropdown-divider"></div>

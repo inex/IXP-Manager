@@ -163,8 +163,14 @@
 
                 <?php $inner = 0 ?>
 
-                <?php foreach( $t->custs as $y_as => $y ): ?>
+                <?php foreach( $t->custs as $y_as => $y ):
 
+                    if( !$y['activepeeringmatrix'] ) {
+                        continue;
+                    }
+
+                    ?>
+                
                     <td id="td-<?= $x_as ?>-<?= $y_as ?>" class="col-yasn-<?= $y_as ?> peering
 
                                     <?php if( $y[ 'autsys' ] != $x[ 'autsys' ] ): ?>

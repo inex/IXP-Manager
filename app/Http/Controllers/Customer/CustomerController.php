@@ -450,27 +450,35 @@ class CustomerController extends Controller
     /**
      * Display the list of all the Customers
      *
-     * @return  View
+     * @return RedirectResponse|View
      */
-    public function details(): View
+    public function details()
     {
-        return view( 'customer/details' )->with([
-            'custs'                 => D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, true, false ),
-            'associates'            => false,
-        ]);
+        if( config( 'ixp_fe.customer.details_public') ) {
+            return view( 'customer/details' )->with([
+                'custs'                 => D2EM::getRepository( CustomerEntity::class )->getCurrentActive( false, true, false ),
+                'associates'            => false,
+            ]);
+        }
+
+        return redirect()->back();
     }
 
     /**
      * Display the list of all asscociate customers
      *
-     * @return  View
+     * @return RedirectResponse|View
      */
-    public function associates(): View
+    public function associates()
     {
-        return view( 'customer/details' )->with([
-            'custs'                 => D2EM::getRepository( CustomerEntity::class )->getCurrentAssociate( false ),
-            'associates'            => true,
-        ]);
+        if( config( 'ixp_fe.customer.details_public') ) {
+            return view( 'customer/details' )->with([
+                'custs'                 => D2EM::getRepository( CustomerEntity::class )->getCurrentAssociate( false ),
+                'associates'            => true,
+            ]);
+        }
+
+        return redirect()->back();
     }
 
     /**
@@ -478,18 +486,22 @@ class CustomerController extends Controller
      *
      * @param int $id ID of the customer
      *
-     * @return  View
+     * @return RedirectResponse|View
      */
-    public function detail( int $id ): View
+    public function detail( int $id )
     {
-        if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
-            abort( 404);
+        if( config( 'ixp_fe.customer.details_public') ) {
+            if( !( $c = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ){
+                abort( 404);
+            }
+
+            return view( 'customer/detail' )->with([
+                'c'       => $c,
+                'netinfo' => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray()
+            ]);
         }
 
-        return view( 'customer/detail' )->with([
-            'c'       => $c,
-            'netinfo' => D2EM::getRepository( NetworkInfoEntity::class )->asVlanProtoArray()
-        ]);
+        return redirect()->back();
     }
 
 
