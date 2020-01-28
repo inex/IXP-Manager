@@ -164,7 +164,6 @@ if( config( 'google2fa.enabled' ) ) {
 
         Route::post('enable',   'User2FAController@enable'   )->name( "2fa@enable"    );
         Route::post('disable',  'User2FAController@disable'  )->name( "2fa@disable"   );
-        Route::post('delete',   'User2FAController@delete'   )->name( "2fa@delete"    );
 
         Route::post( '/authenticate', function() {
             if( Session::exists( "url.intended.2fa" ) ) {

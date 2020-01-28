@@ -79,6 +79,11 @@ class EventServiceProvider extends ServiceProvider {
             'SocialiteProviders\\PeeringDB\\PeeringDBExtendSocialite@handle',
         ],
 
+
+        \PragmaRX\Google2FALaravel\Events\LoginSucceeded::class => [
+            \IXP\Listeners\Auth\Google2FALoginSucceeded::class
+        ],
+
     ];
 
 

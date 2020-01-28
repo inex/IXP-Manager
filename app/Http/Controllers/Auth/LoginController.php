@@ -102,29 +102,24 @@ class LoginController extends Controller
     public function showLoginForm() : View
     {
         if( !session()->has('url.intended') ) {
-            if( Str::startsWith( url()->previous(), url('') ) && strpos( url()->previous(), route( "2fa@authenticate" ) ) != 0 ) {
-                // Store intended url to redirect after login
-                session( ['url.intended' => url()->previous() ] );
-                // Store intended url to redirect after 2FA
-                session( ['url.intended.2fa' => url()->previous() ] );
+            if( Str::startsWith( url()->previous(), url('') ) ) {
+                if( config('google2fa.enabled') ) {
+                    if( strpos( url()->previous(), route( "2fa@authenticate" ) ) !== false ) {
+                        // Store intended url to redirect after login
+                        session( [ 'url.intended' => url()->previous() ] );
+                        // Store intended url to redirect after 2FA
+                        session( [ 'url.intended.2fa' => url()->previous() ] );
+                    }
+                } else {
+                    // Store intended url to redirect after login
+                    session( [ 'url.intended' => url()->previous() ] );
+                }
             }
         }
 
         return view( 'auth/login' );
     }
 
-    /**
-     * Attempt to log the user into the application.
-     *
-     * @param Request $request
-     * @return bool
-     */
-    protected function attemptLogin(Request $request)
-    {
-        return $this->guard()->attempt(
-            $this->credentials($request), $request->input('remember') ? true : false
-        );
-    }
 
     /**
      * The user has been authenticated.

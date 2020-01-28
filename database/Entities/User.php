@@ -38,7 +38,8 @@ use Entities\{
 };
 
 use Doctrine\Common\Collections\Collection;
-use IXP\Contracts\Auth\Authenticatable;
+use Illuminate\Support\Str;
+use Illuminate\Contracts\Auth\Authenticatable;
 
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -87,6 +88,12 @@ class User implements Authenticatable, CanResetPasswordContract
         User::AUTH_CUSTUSER  => 'Cust User',
         User::AUTH_CUSTADMIN => 'Cust Admin',
         User::AUTH_SUPERUSER => 'Superuser',
+    );
+
+    public static $PRIVILEGES_TEXT_VSHORT = array(
+        User::AUTH_CUSTUSER  => 'CU',
+        User::AUTH_CUSTADMIN => 'CA',
+        User::AUTH_SUPERUSER => 'SU',
     );
 
     public static $PRIVILEGES_TEXT_NONSUPERUSER = array(
@@ -933,7 +940,7 @@ class User implements Authenticatable, CanResetPasswordContract
      *
      * @return Collection
      */
-    public function RememberTokens()
+    public function getUserRememberTokens()
     {
         return $this->UserRememberToken;
     }
@@ -986,7 +993,10 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function getRememberToken()
     {
-        return $this->attributes[$this->getRememberTokenName()];
+        // We have overridden Laravel's remember token fucntionality and do not rely on this.
+        // However, some Laravel functionality if triggered on this returning a non-false value
+        // to execute certain functionality. As such, we'll just return something random:
+        return Str::random(60);
     }
 
     /**
@@ -997,8 +1007,8 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function setRememberToken($value)
     {
-
-        $this->attributes[$this->getRememberTokenName()] = $value;
+        // We have overridden Laravel's remember token fucntionality and do not rely on this.
+        return;
     }
 
     /**

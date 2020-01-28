@@ -66,10 +66,10 @@ class UserRememberToken extends \Entities\UserRememberToken implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'token', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'device', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'ip', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'created', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'expires', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'id', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'User', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'session_id'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'token', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'device', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'ip', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'created', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'expires', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'id', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'User', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'is_2fa_complete'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'token', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'device', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'ip', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'created', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'expires', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'id', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'User', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'session_id'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'token', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'device', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'ip', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'created', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'expires', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'id', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'User', '' . "\0" . 'Entities\\UserRememberToken' . "\0" . 'is_2fa_complete'];
     }
 
     /**
@@ -212,12 +212,12 @@ class UserRememberToken extends \Entities\UserRememberToken implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function setDevice(string $device): void
+    public function setDevice(string $device): \Entities\UserRememberToken
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setDevice', [$device]);
 
-        parent::setDevice($device);
+        return parent::setDevice($device);
     }
 
     /**
@@ -234,12 +234,12 @@ class UserRememberToken extends \Entities\UserRememberToken implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function setIp(string $ip): void
+    public function setIp(string $ip): \Entities\UserRememberToken
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIp', [$ip]);
 
-        parent::setIp($ip);
+        return parent::setIp($ip);
     }
 
     /**
@@ -256,12 +256,12 @@ class UserRememberToken extends \Entities\UserRememberToken implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function setCreated(\Datetime $created): void
+    public function setCreated(\Datetime $created): \Entities\UserRememberToken
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCreated', [$created]);
 
-        parent::setCreated($created);
+        return parent::setCreated($created);
     }
 
     /**
@@ -278,12 +278,12 @@ class UserRememberToken extends \Entities\UserRememberToken implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function setExpires(\Datetime $expires): void
+    public function setExpires(\Datetime $expires): \Entities\UserRememberToken
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setExpires', [$expires]);
 
-        parent::setExpires($expires);
+        return parent::setExpires($expires);
     }
 
     /**
@@ -304,12 +304,12 @@ class UserRememberToken extends \Entities\UserRememberToken implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function setId(int $id): void
+    public function setId(int $id): \Entities\UserRememberToken
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setId', [$id]);
 
-        parent::setId($id);
+        return parent::setId($id);
     }
 
     /**
@@ -326,34 +326,45 @@ class UserRememberToken extends \Entities\UserRememberToken implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function setUser(\Entities\User $User): void
+    public function setUser(\Entities\User $User): \Entities\UserRememberToken
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setUser', [$User]);
 
-        parent::setUser($User);
+        return parent::setUser($User);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function setSessionId($session_id)
+    public function setIs2faComplete(bool $is_2fa_complete): \Entities\UserRememberToken
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setSessionId', [$session_id]);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIs2faComplete', [$is_2fa_complete]);
 
-        return parent::setSessionId($session_id);
+        return parent::setIs2faComplete($is_2fa_complete);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function getSessionId()
+    public function getIs2faComplete(): bool
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getSessionId', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIs2faComplete', []);
 
-        return parent::getSessionId();
+        return parent::getIs2faComplete();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isExpired(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isExpired', []);
+
+        return parent::isExpired();
     }
 
 }

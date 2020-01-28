@@ -101,6 +101,31 @@ class User2FAController extends Controller
     }
 
     /**
+     * Delete a user's 2fa configuration
+     *
+     * @param Request $request
+     * @return RedirectResponse|View
+     * @throws
+     */
+    public function delete( Request $request )
+    {
+        if( !( $user = d2r('User')->find( $request->input('id') ) ) ) {
+            abort( 404, 'Unknown user' );
+        }
+
+        if( !$request->user()->isSuperUser() ) {
+            abort( 403, 'You are not authorised to perform this action' );
+        }
+
+        D2EM::remove( $user->getUser2FA() );
+        $user->setUser2FA(null);
+        D2EM::flush();
+
+        AlertContainer::push( "2FA deleted for " . $user->getUsername() . ".", Alert::SUCCESS );
+        return Redirect::back();
+    }
+
+    /**
      * Enable 2FA for a user
      *
      * @param Request $request

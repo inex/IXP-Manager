@@ -24,289 +24,187 @@ namespace IXP\Services\Auth;
  */
 
 
-use D2EM, Str;
+use D2EM;
 
-use Entities\UserRememberToken as UserRememberTokenEntity;
-
-use Illuminate\Contracts\Session\Session;
-use Illuminate\Contracts\Auth\UserProvider;
-
-use Symfony\Component\HttpFoundation\{
-    Cookie,
-    Request
-};
-
-use Illuminate\Support\Facades\Session as SessionFacade;
+use Entities\UserRememberToken;
 
 use Illuminate\Auth\SessionGuard as BaseGuard;
-use Illuminate\Auth\Events\Logout as LogoutEvent;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
+use IXP\Exceptions\GeneralException;
+use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
+
+/**
+ * Class SessionGuard
+ *
+ * A small set of functions we need to override from Laravel's SessionGuard to allow for IXP Manager's
+ * user session management functionality.
+ *
+ * @see        https://docs.ixpmanager.org/dev/authentication/
+ * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin <yann@islandbridgenetworks.ie>
+ * @package    IXP\Services\Auth
+ * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
+ */
 class SessionGuard extends BaseGuard
 {
     /**
-     * Indicates the number of minutes a "remember me" token should be valid for.
-     *
-     * @var int
+     * @var UserRememberToken;
      */
-    protected $expire;
+    protected $userRememberToken;
 
-    public function __construct($name,
-                                UserProvider $provider,
-                                Session $session,
-                                Request $request = null,
-                                $expire = null)
-    {
-        parent::__construct($name, $provider, $session, $request);
-
-        $this->expire = $expire ?? config( 'auth.guards.web.expire' );
-    }
-
-//    /**
-//     * Get the currently authenticated user.
-//     *
-//     * @return AuthenticatableContract|null
-//     */
-//    public function user()
-//    {
-//        if ($this->loggedOut) {
-//            return;
-//        }
-//
-//        // If we've already retrieved the user for the current request we can just
-//        // return it back immediately. We do not want to fetch the user data on
-//        // every call to this method because that would be tremendously slow.
-//        if (! is_null($this->user)) {
-//            return $this->user;
-//        }
-//
-//        $id = $this->session->get($this->getName());
-//
-//        // First we will try to load the user using the identifier in the session if
-//        // one exists. Otherwise we will check for a "remember me" cookie in this
-//        // request, and if one exists, attempt to retrieve the user using that.
-//        if (! is_null($id)) {
-//            if ($this->user = $this->provider->retrieveById($id)) {
-//                $this->fireAuthenticatedEvent($this->user);
-//            }
-//        }
-//
-//        // If the user is null, but we decrypt a "recaller" cookie we can attempt to
-//        // pull the user data on that cookie which serves as a remember cookie on
-//        // the application. Once we have a user we can return it to the caller.
-//        if (is_null($this->user) && ! is_null($recaller = $this->recaller())) {
-//            $this->user = $this->userFromRecaller($recaller);
-//
-//            if ($this->user) {
-//                $this->replaceRememberToken($this->user, $recaller->token());
-//
-//                $this->updateSession($this->user->getAuthIdentifier());
-//
-//                $this->fireLoginEvent($this->user, true);
-//            }
-//        }
-//
-//        return $this->user;
-//    }
-//
-//    protected function replaceRememberToken(AuthenticatableContract $user, $token)
-//    {
-//        $this->provider->replaceRememberToken(
-//            $user->getAuthIdentifier(), $token, $newToken = $this->getNewToken(), $this->expire
-//        );
-//
-//        $this->queueRecallerCookie($user, $newToken);
-//
-//        request()->request->add( [ "ixpm-remember-me-token" => true ] );
-//    }
 
     /**
-     * If the user check remember me in the OTP validation form
+     * Get the currently authenticated user.
      *
-     * @param  AuthenticatableContract  $user
-     * @param  bool  $remember
-     * @return void
+     * Overrides Laravel's default version which is a single shared token so we
+     * can have a per-browser / device token.
      *
-     * @throws
+     * We need to override so we can /immediately/ log out users if the current user session
+     * was deleted (by the user) from another session.
+     *
+     * @return \Illuminate\Contracts\Auth\Authenticatable|null
      */
-    public function RememberMeViaOTP(AuthenticatableContract $user, $remember = false)
+    public function user()
     {
-        // If the user should be permanently "remembered" by the application we will
-        // queue a permanent cookie that contains the encrypted copy of the user
-        // identifier. We will then decrypt this later to retrieve the users.
-        if ( $remember ) {
-
-            // Check if there is already a UserRememerToken object existing with the session ID and the user ID,
-            // If an object exist this mean that the user checked the remember me checkbox on the login form, so we dont create new token
-            if( !D2EM::getRepository( UserRememberTokenEntity::class )->findOneBy( [ "User" => $user, "session_id" => $this->session->getId() ] ) ) {
-                $token = $this->createRememberToken($user);
-
-                $this->queueRecallerCookie($user, $token);
-
-                if( request()->has( "ixpm-enable-2fa" ) ) {
-                    // Check we added the in the request the UserRememberToken id
-                    if( request()->request->has( "ixpm-user-remember-me-token-id" ) ){
-                        // Updating the current UserRememberToken session id With the current session ID in order to link them
-                        $urt = D2EM::getRepository( UserRememberTokenEntity::class )->find( request()->request->get( "ixpm-user-remember-me-token-id" ) );
-                        $urt->setSessionId( $this->session->getId() );
-                        D2EM::flush();
-                    }
-                }
-
-            }
-
-
-        }
-
-    }
-
-    /**
-     * Log a user into the application.
-     *
-     * @param  AuthenticatableContract  $user
-     * @param  bool  $remember
-     * @return void
-     */
-    public function login(AuthenticatableContract $user, $remember = false)
-    {
-        $this->updateSession($user->getAuthIdentifier());
-
-        // If the user should be permanently "remembered" by the application we will
-        // queue a permanent cookie that contains the encrypted copy of the user
-        // identifier. We will then decrypt this later to retrieve the users.
-        if ($remember) {
-
-            // Set session to know if the user checked remember me checkbox on the login form
-            SessionFacade::put( [ "rememberme" => true ] );
-
-            $token = $this->createRememberToken($user);
-
-            $this->queueRecallerCookie($user, $token);
-        }
-
-        // If we have an event dispatcher instance set we will fire an event so that
-        // any listeners will hook into the authentication events and run actions
-        // based on the login and logout events fired from the guard instances.
-        $this->fireLoginEvent($user, $remember);
-
-        $this->setUser($user);
-    }
-
-    /**
-     * Create a new "remember me" token for the user.
-     *
-     * @param  AuthenticatableContract  $user
-     * @return string
-     */
-    protected function createRememberToken(AuthenticatableContract $user)
-    {
-        $this->provider->addRememberToken($user->getAuthIdentifier(), $token = $this->getNewToken(), $this->expire);
-
-        $this->provider->purgeRememberTokens($user->getAuthIdentifier(), true);
-
-        return $token;
-    }
-
-    /**
-     * Creates a new token for "remember me" sessions.
-     *
-     * @return string
-     */
-    protected function getNewToken()
-    {
-        return Str::random(60);
-    }
-
-    /**
-     * Log the user out of the application.
-     *
-     * @return void
-     */
-    public function logout()
-    {
-        $user = $this->user();
-
-        // If we have an event dispatcher instance, we can fire off the logout event
-        // so any further processing can be done. This allows the developer to be
-        // listening for anytime a user signs out of this application manually.
-        $this->clearUserDataFromStorage();
-
-        if (isset($this->events)) {
-            $this->events->dispatch(new LogoutEvent($this->name, $user));
-        }
-
-        // Once we have fired the logout event we will clear the users out of memory
-        // so they are no longer available as the user is no longer considered as
-        // being signed into this application and should not be available here.
-        $this->user = null;
-
-        $this->loggedOut = true;
-    }
-
-    /**
-     * Remove the user data from the session and cookies.
-     *
-     * @return void
-     */
-    protected function clearUserDataFromStorage()
-    {
-        $this->session->remove($this->getName());
-
-        $recaller = $this->recaller();
-
-        if (! is_null($recaller)) {
-            $this->getCookieJar()->queue($this->getCookieJar()
-                ->forget($this->getRecallerName()));
-
-            $this->provider->deleteRememberToken($recaller->id(), $recaller->token());
-        }
-    }
-
-    /**
-     * Invalidate other sessions for the current user.
-     *
-     * The application must be using the AuthenticateSession middleware.
-     *
-     * @param  string  $password
-     * @param  string  $attribute
-     * @return bool|null
-     */
-    public function logoutOtherDevices($password, $attribute = 'password')
-    {
-        if (! $this->user()) {
+        if ($this->loggedOut) {
             return;
         }
 
-        $this->provider->purgeRememberTokens($this->user()->getAuthIdentifier());
+        // If we've already retrieved the user for the current request we can just
+        // return it back immediately. We do not want to fetch the user data on
+        // every call to this method because that would be tremendously slow.
+        if (! is_null($this->user)) {
+            return $this->user;
+        }
 
-        return parent::logoutOtherDevices($password, $attribute);
+        $id = $this->session->get($this->getName());
+        $recaller = $this->recaller();
+
+        // First we will try to load the user using the identifier in the session if
+        // one exists. Otherwise we will check for a "remember me" cookie in this
+        // request, and if one exists, attempt to retrieve the user using that.
+        if (! is_null($id) && $this->user = $this->provider->retrieveById($id)) {
+
+            // User has local session - make sure it hasn't been invalidated if a remember me cookie exists.
+            // This is the bit we added to allow a user to invalidate other sessions via the UI.
+            if($recaller) {
+                $urt = d2r( 'UserRememberToken' )->findOneBy( [ 'token' => $recaller->token() ] );
+
+                if( !$urt || $urt->isExpired() ) {
+                    $this->logout();
+                    return null;
+                }
+            }
+
+            $this->fireAuthenticatedEvent($this->user);
+        }
+
+        // If the user is null, but we decrypt a "recaller" cookie we can attempt to
+        // pull the user data on that cookie which serves as a remember cookie on
+        // the application. Once we have a user we can return it to the caller.
+        if (is_null($this->user) && ! is_null($recaller)) {
+            $this->user = $this->userFromRecaller($recaller);
+
+            if ($this->user) {
+                $this->updateSession($this->user->getAuthIdentifier());
+
+                // Get the UserRememberToken and, if 2fa has been completed, don't redo it:
+                if( $this->user->getUser2FA() && $this->user->getUser2FA()->enabled() ) {
+                    $urt = d2r( 'UserRememberToken' )->findOneBy( [ 'token' => $recaller->token() ] );
+
+                    if( $urt && $urt->getIs2faComplete() ) {
+                        $authenticator = new GoogleAuthenticator( $this->request );
+                        $authenticator->login();
+                    }
+                }
+
+                $this->fireLoginEvent($this->user, true);
+            }
+        }
+
+        return $this->user;
     }
 
+
     /**
-     * Queue the recaller cookie into the cookie jar.
+     * Create a "remember me" token for the user.
      *
-     * @param  AuthenticatableContract  $user
+     * This function is called from the parent SessionGuard's login() method as follows:
+     *
+     * ```
+     * // If the user should be permanently "remembered" by the application we will
+     * // queue a permanent cookie that contains the encrypted copy of the user
+     * // identifier. We will then decrypt this later to retrieve the users.
+     * if ($remember) {
+     *     $this->ensureRememberTokenIsSet($user);
+     *     $this->queueRecallerCookie($user);
+     * }
+     * ```
+     *
+     * Overrides Laravel's default version which is a single shared token so we
+     * can have a per-browser / device token.
+     *
+     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
      * @return void
      */
-    protected function queueRecallerCookie(AuthenticatableContract $user, $token = null)
+    protected function ensureRememberTokenIsSet(AuthenticatableContract $user)
     {
-        if (is_null($token)) {
-            $token = $this->createRememberToken($user);
+        if (!$this->userRememberToken) {
+            // The addRememberToken() creates a new UserRememberToken for the user
+            $this->userRememberToken = $this->provider->addRememberToken($user);
+            $this->provider->purgeExpiredRememberTokens( $user );
+        }
+    }
+
+
+    /**
+     * Queue the recaller cookie into the cookie jar
+     *
+     * We need to override this function as the parent version calls `$user->getRememberToken()`
+     * which, in Laravel, is a single token. In our case we want a per-browser / session token.
+     *
+     * @param AuthenticatableContract $user
+     * @return void
+     * @throws GeneralException
+     */
+    protected function queueRecallerCookie(AuthenticatableContract $user)
+    {
+        // we shouldn't have called this function unless a UserRememberToken has been created
+        // (or so barryo's understanding as of 20200127). So we'll throw an exception if that happens
+        // and fix this then.
+        if( !$this->userRememberToken ) {
+            throw new  GeneralException( 'UserRememberToken not already created in queueRecallerCookie() ??' );
         }
 
         $this->getCookieJar()->queue($this->createRecaller(
-            $user->getAuthIdentifier().'|'.$token.'|'.$user->getAuthPassword()
+            $user->getAuthIdentifier().'|'.$this->userRememberToken->getToken().'|'.$user->getAuthPassword()
         ));
     }
 
+
     /**
-     * Create a "remember me" cookie for a given ID.
+     * Refresh the "remember me" token for the user.
      *
-     * @param  string  $value
-     * @return Cookie
+     * We need to override this function and use it to delete the user's remember token
+     * as our system does not have a single token (where cycling the single token would
+     * be sufficient).
+     *
+     * @param  \Illuminate\Contracts\Auth\Authenticatable  $user
+     * @return void
      */
-    protected function createRecaller($value)
+    protected function cycleRememberToken(AuthenticatableContract $user)
     {
-        return $this->getCookieJar()->make($this->getRecallerName(), $value, $this->expire);
+        if( $this->recaller() && $this->recaller()->token() ) {
+            foreach( $this->user()->getUserRememberTokens() as $urt ) {
+                if( $urt->getToken() === $this->recaller()->token() ) {
+                    $user->removeRememberTokens( $urt );
+                    D2EM::remove($urt);
+                    D2EM::flush();
+                    break;
+                }
+            }
+        }
     }
 }

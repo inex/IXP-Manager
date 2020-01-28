@@ -84,6 +84,14 @@ class ExpungeLogs extends IXPCommand
         ]);
         $this->isVerbosityVerbose() && $this->info(' [done]' );
 
+        // Deleting expired UserRememberTokens
+        $this->isVerbosityVerbose() && $this->output->write('Expunging expired user remember tokens...', false );
+        D2EM::createQuery( 'DELETE FROM Entities\\UserRememberToken urt WHERE urt.expires < ?1' )->execute( [
+            1 => now()->format( 'Y-m-d H:i:s' )
+        ]);
+        $this->isVerbosityVerbose() && $this->info(' [done]' );
+
+
         return 0;
     }
 }
