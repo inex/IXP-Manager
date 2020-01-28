@@ -70,5 +70,5 @@ class UserRememberToken extends EntityRepository
 
         return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
     }
-    
+
 }

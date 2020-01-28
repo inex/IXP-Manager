@@ -23,8 +23,9 @@ namespace IXP\Http\Controllers\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Hash, Redirect;
+use Auth, D2EM, Hash, Redirect;
 
+use Illuminate\Auth\Recaller;
 use Illuminate\Contracts\View\Factory;
 use Entities\{
     User2FA             as User2FAEntity,
@@ -93,6 +94,17 @@ class User2FAController extends Controller
         }
 
         $request->user()->getUser2FA()->setEnabled( true );
+
+        // We also need to mark the current session as 2fa complete:
+        if( $r = $request->cookies->get(Auth::getRecallerName()) ) {
+            $recaller = new Recaller($r);
+            $urt = d2r( 'UserRememberToken' )->findOneBy( [ 'token' => $recaller->token() ] );
+
+            if( $urt ) {
+                $urt->setIs2faComplete(true);
+            }
+        }
+
         D2EM::flush();
 
         $this->google2faLogin($request);
