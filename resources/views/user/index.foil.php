@@ -21,6 +21,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
+
     <div class="row">
 
         <div class="col-sm-12">
@@ -47,28 +48,13 @@
                         </th>
                     <?php endif; ?>
                     <th>
-                        Privileges
+                        Privs
                     </th>
                     <th>
-                        Enabled
+                        Flags
                     </th>
                     <th>
                         Created
-                    </th>
-
-                    <?php if( Auth::getUser()->isSuperUser() ): ?>
-                        <th>
-                            Updated
-                        </th>
-                    <?php endif; ?>
-
-                    <?php if( config( 'auth.peeringdb.enabled' ) ): ?>
-                        <th>
-                            OAuth
-                        </th>
-                    <?php endif; ?>
-                    <th>
-                        2FA Enabled
                     </th>
                     <th>
                         Action
@@ -83,6 +69,11 @@
                             </td>
                             <td>
                                 <?= $t->ee( $u[ "username" ] )?>
+                                <?php if( $u['disabled'] ): ?>
+                                    <span class="badge badge-danger">X</span>
+                                <?php endif; ?>
+
+
                             </td>
                             <td>
                                 <?= $t->ee( $u[ "email" ] ) ?>
@@ -101,30 +92,24 @@
                             <?php endif; ?>
 
                             <td>
-                                <?= \Entities\User::$PRIVILEGES_TEXT[ $u[ "privileges" ] ]  ?>
+                                <?= \Entities\User::$PRIVILEGES_TEXT_VSHORT[ $u[ "privileges" ] ]  ?>
                                 <?= ( $u['nbC2U'] > 1 ) ? "*": "" ?>
                             </td>
 
                             <td>
-                                <?= $u[ "disabled" ] ? "<span class='badge badge-danger'>No</span>" : "<span class='badge badge-success'>Yes</span>" ?>
+                                <?php if( $u['u2fa_enabled'] ): ?>
+                                    <span class="badge badge-success">2FA</span>
+                                <?php endif; ?>
+
+                                <?php if( config( 'auth.peeringdb.enabled' ) && $u['peeringdb_id'] ): ?>
+                                    <span class="badge badge-success">OAuth</span>
+                                <?php endif; ?>
                             </td>
+
                             <td>
                                 <?= $u[ "created" ] ? $u[ "created" ]->format( 'Y-m-d H:i:s' ) : '' ?>
                             </td>
-                            <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                <td>
-                                    <?= $u[ "lastupdated" ] ? $u[ "lastupdated" ]->format( 'Y-m-d H:i:s' ) : '' ?>
-                                </td>
-                            <?php endif;?>
 
-                            <?php if( config( 'auth.peeringdb.enabled' ) ): ?>
-                                <td>
-                                    <?= $u['peeringdb_id'] ? 'Y' : 'N' ?>
-                                </td>
-                            <?php endif; ?>
-                            <td>
-                                <?= $u['u2fa_enabled'] ? 'Yes' : 'No' ?>
-                            </td>
                             <td>
 
                                 <div class="btn-group btn-group-sm">
@@ -183,7 +168,14 @@
                 </tbody>
             </table>
         </div>
+    </div>
 
+    <div class="tw-mt-16 tw-border-2 tw-border-gray-600 tw-rounded-full">
+        <p class="tw-p-6 tw-m-0">
+            <b>Privileges:</b> CU - Cust User; CA - Cust Admin; SU - Super User.<br>
+            <b>Flags:</b> <span class="badge badge-success">2FA</span> - Two-factor authentication is enabled; <span class="badge badge-success">OAuth</span> - user created via PeeringDB OAuth.<br>
+            <b>Disabled Users:</b> - identified with <span class="badge badge-danger">X</span> badge beside username.
+        </p>
     </div>
 
 <?php $this->append() ?>
