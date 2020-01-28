@@ -68,19 +68,6 @@ class Doctrine2Frontend
             return redirect( '' );
         }
 
-//        if( Auth::check() ) {
-//            if( $r = request()->cookies->get( Auth::getRecallerName() ) ) {
-//                $recaller = new Recaller( $r );
-//                $urt = d2r( 'UserRememberToken' )->findOneBy( [ 'token' => $recaller->token() ] );
-//
-//                if( !$urt || $urt->isExpired() ) {
-//                    Auth::logout();
-//                    return route( 'login@logout' );
-//                }
-//            }
-//        }
-
-
         return $next($request);
     }
 }

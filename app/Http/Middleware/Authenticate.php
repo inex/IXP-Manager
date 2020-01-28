@@ -69,19 +69,6 @@ class Authenticate {
 			{
 				return redirect()->guest(route( "login@showForm" ) );
 			}
-		} else {
-
-//            // Is this request via a recaller cookie? If so, ensure it is still valid!
-//            if( $r = request()->cookies->get( Auth::getRecallerName() ) ) {
-//                $recaller = new Recaller( $r );
-//                $urt = d2r( 'UserRememberToken' )->findOneBy( [ 'token' => $recaller->token() ] );
-//
-//                if( !$urt || $urt->isExpired() ) {
-//                    Auth::logout();
-//                    return route( 'login@logout' );
-//                }
-//            }
-
 		}
 
 
