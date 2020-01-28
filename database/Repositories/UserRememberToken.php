@@ -55,8 +55,7 @@ class UserRememberToken extends EntityRepository
                         urt.device     AS device, 
                         urt.ip         AS ip, 
                         urt.created    AS created, 
-                        urt.expires    AS expires, 
-                        urt.session_id AS session_id 
+                        urt.expires    AS expires
                 FROM Entities\\UserRememberToken urt
                 WHERE urt.User = " . (int)$userid;
 
@@ -86,9 +85,6 @@ class UserRememberToken extends EntityRepository
         $dql = "DELETE FROM Entities\\UserRememberToken urt
                 WHERE urt.User = ?1";
 
-        if( !$deleteCurrentToken ){
-            $dql .= " AND urt.session_id != '" . SessionFacade::getId() . "'";
-        }
 
         return $this->getEntityManager()->createQuery( $dql )->setParameter(1, $userid )->execute();
     }
