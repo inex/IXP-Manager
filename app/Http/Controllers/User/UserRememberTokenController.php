@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\User;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -33,12 +33,14 @@ use Entities\{
 
 use IXP\Http\Controllers\Doctrine2Frontend;
 
+use Illuminate\Auth\Recaller;
+
 /**
- * CustKit Controller
+ * UserRememberTokenController Controller
+ *
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @category   VlanInterface
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class UserRememberTokenController extends Doctrine2Frontend
@@ -122,11 +124,31 @@ class UserRememberTokenController extends Doctrine2Frontend
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
         Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::post(  'delete',      'Auth\UserRememberTokenController@delete'         )->name( $route_prefix."@delete" );
+            Route::post(  'delete',      'User\UserRememberTokenController@delete'         )->name( $route_prefix."@delete" );
         });
     }
 
+    /**
+     * Function which can be over-ridden to perform any pre-list tasks
+     *
+     * E.g. adding elements to $this->view for the pre/post-amble templates.
+     *
+     * @return void
+     */
+    protected function preList() {
 
+        // We want to indicate which session is the user's //current// session so they can avoid logging themselves out.
+        // We identify it by matching the remember me cookie token with the database token:
+
+        $token = null;
+
+        if( $r = request()->cookies->get(Auth::getRecallerName()) ) {
+            $recaller = new Recaller($r);
+            $token = $recaller->token();
+        }
+
+        $this->data['session_token'] = $token;
+    }
 
     /**
      * Provide array of rows for the list and view
@@ -144,23 +166,28 @@ class UserRememberTokenController extends Doctrine2Frontend
      */
     protected function preDelete() : bool
     {
-        if(  $session = D2EM::getRepository( SessionEntity::class )->findOneBy( [ "id" => $this->object->getSessionId() ] ) )  {
-            D2EM::remove( $session );
-            D2EM::flush();
-        }
-
-        return true;
+        // ensure a user can only delete their own sessions:
+        return $this->object->getUser()->getId() === Auth::user()->getId();
     }
+
     /**
-     * @inheritdoc
+     * Allow D2F implementations to override where the post-delete redirect goes.
+     *
+     * To implement this, have it return a valid route url (e.g. `return route( "route-name" );`
+     *
+     * For UserRememberToken, we need to log the user out if they deleted the current sessions remember me token.
+     *
+     * @return null|string
      */
-    protected function postDeleteRedirect() : bool
-    {
-        // Delete remember me token
-        Cookie::queue( Cookie::forget( Auth::getRecallerName() ) );
-        return false;
+    protected function postDeleteRedirect() {
+
+        if( $r = request()->cookies->get(Auth::getRecallerName()) ) {
+            $recaller = new Recaller($r);
+            if( $this->object->getToken() === $recaller->token() ) {
+                return route('login@logout');
+            }
+        }
+        return null;
     }
-
-
 
 }
