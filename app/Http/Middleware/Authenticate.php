@@ -22,6 +22,7 @@
  */
 
 use Auth, Closure, D2EM;
+use Illuminate\Auth\Recaller;
 use Illuminate\Contracts\Auth\Guard;
 
 use Entities\{
@@ -68,7 +69,21 @@ class Authenticate {
 			{
 				return redirect()->guest(route( "login@showForm" ) );
 			}
+		} else {
+
+//            // Is this request via a recaller cookie? If so, ensure it is still valid!
+//            if( $r = request()->cookies->get( Auth::getRecallerName() ) ) {
+//                $recaller = new Recaller( $r );
+//                $urt = d2r( 'UserRememberToken' )->findOneBy( [ 'token' => $recaller->token() ] );
+//
+//                if( !$urt || $urt->isExpired() ) {
+//                    Auth::logout();
+//                    return route( 'login@logout' );
+//                }
+//            }
+
 		}
+
 
         if( !Auth::user()->getCustomer() || !D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => Auth::user() , "customer" => Auth::user()->getCustomer() ] ) ){
             Auth::logout();
