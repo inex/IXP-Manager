@@ -51,6 +51,7 @@ class UserRememberToken extends EntityRepository
     public function getAllForFeList( \stdClass $feParams, int $userid, int $id = null )
     {
         $dql = "SELECT  urt.id         AS id, 
+                        urt.token      AS token,
                         urt.device     AS device, 
                         urt.ip         AS ip, 
                         urt.created    AS created, 

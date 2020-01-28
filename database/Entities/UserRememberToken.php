@@ -223,4 +223,14 @@ class UserRememberToken
     {
         return $this->session_id;
     }
+
+
+    /**
+     * Has this token expired?
+     *
+     * @return bool
+     */
+    public function isExpired(): bool {
+        return $this->getExpires() > now();
+    }
 }
