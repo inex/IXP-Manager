@@ -167,7 +167,7 @@
                                             </a>
 
                                             <?php if( $u['u2fa_enabled'] ): ?>
-                                                <a id="d2f-option-remove-2fa-<?= $u[ 'psid' ] ?>" class="dropdown-item remove-2fa" data-object-id="<?= $u[ 'psid' ] ?>" href="#">
+                                                <a id="d2f-option-remove-2fa-<?= $u[ 'id' ] ?>" class="dropdown-item remove-2fa" data-object-id="<?= $u[ 'id' ] ?>" href="#">
                                                     Remove 2FA
                                                 </a>
                                             <?php endif; ?>
