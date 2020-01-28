@@ -71,9 +71,12 @@ class UserRememberToken
     private $User;
 
     /**
-     * @var string
+     * If the user has 2fa enabled, we need to ensure that they have originally completed
+     * that process before allowing them in.
+     *
+     * @var bool
      */
-    private $session_id;
+    private $is_2fa_complete = false;
 
     /**
      * @return string
@@ -202,26 +205,26 @@ class UserRememberToken
     }
 
     /**
-     * Set Password Security
+     * Set 2fa complete
      *
-     * @param string|null $session_id
+     * @param bool $is_2fa_complete
      * @return UserRememberTokenEntity
      */
-    public function setSessionId( $session_id ): UserRememberToken
+    public function setIs2faComplete( bool $is_2fa_complete ): UserRememberToken
     {
-        $this->session_id = $session_id;
+        $this->is_2fa_complete = $is_2fa_complete;
 
         return $this;
     }
 
     /**
-     * Get Password Security
+     * Get is_2fa_complete
      *
-     * @return string
+     * @return bool
      */
-    public function getSessionId()
+    public function getIs2faComplete(): bool
     {
-        return $this->session_id;
+        return $this->is_2fa_complete;
     }
 
 

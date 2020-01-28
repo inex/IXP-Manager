@@ -32,6 +32,7 @@ use Illuminate\Auth\SessionGuard as BaseGuard;
 use Illuminate\Contracts\Auth\Authenticatable as AuthenticatableContract;
 
 use IXP\Exceptions\GeneralException;
+use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 
 /**
  * Class SessionGuard
@@ -108,6 +109,16 @@ class SessionGuard extends BaseGuard
 
             if ($this->user) {
                 $this->updateSession($this->user->getAuthIdentifier());
+
+                // Get the UserRememberToken and, if 2fa has been completed, don't redo it:
+                if( $this->user->getUser2FA() && $this->user->getUser2FA()->enabled() ) {
+                    $urt = d2r( 'UserRememberToken' )->findOneBy( [ 'token' => $recaller->token() ] );
+
+                    if( $urt && $urt->getIs2faComplete() ) {
+                        $authenticator = new GoogleAuthenticator( $this->request );
+                        $authenticator->login();
+                    }
+                }
 
                 $this->fireLoginEvent($this->user, true);
             }

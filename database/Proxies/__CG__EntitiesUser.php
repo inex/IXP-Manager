@@ -905,12 +905,12 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function RememberTokens()
+    public function getUserRememberTokens()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'RememberTokens', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUserRememberTokens', []);
 
-        return parent::RememberTokens();
+        return parent::getUserRememberTokens();
     }
 
     /**

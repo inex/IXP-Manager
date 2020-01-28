@@ -91,8 +91,7 @@ class DoctrineUserProvider extends DoctrineUserProviderBase
             ->setExpires( now()->addMinutes( config('auth.guards.web.expire', 60) ) )
             ->setCreated( now() )
             ->setDevice( $browser->getPlatform() . " " . $browser->getPlatformVersion(true) . " / " . $browser->getName() . " " . $browser->getVersion() )
-            ->setIp( IpAddress::getIp() )
-            ->setSessionId( null );
+            ->setIp( IpAddress::getIp() );
 
         $this->em->persist( $urt );
         $user->addUserRememberToken( $urt );
