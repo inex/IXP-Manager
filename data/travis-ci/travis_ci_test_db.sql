@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.21, for osx10.13 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.28, for osx10.15 (x86_64)
 --
 -- Host: localhost    Database: ixp_ci
 -- ------------------------------------------------------
--- Server version	5.7.21
+-- Server version	5.7.28
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -793,7 +793,7 @@ CREATE TABLE `customer_to_users` (
 
 LOCK TABLES `customer_to_users` WRITE;
 /*!40000 ALTER TABLE `customer_to_users` DISABLE KEYS */;
-INSERT INTO `customer_to_users` VALUES (1,1,1,3,'2018-06-20 10:38:42','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}'),(2,5,2,2,'2018-06-20 10:23:22','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}'),(3,5,3,1,'2018-06-20 10:23:58','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}'),(4,2,4,1,'1970-01-01 00:00:00','','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}'),(5,2,5,1,'2018-06-20 10:24:24','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}');
+INSERT INTO `customer_to_users` VALUES (1,1,1,3,'2020-01-27 12:04:24','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}'),(2,5,2,2,'2018-06-20 10:23:22','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}'),(3,5,3,1,'2018-06-20 10:23:58','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}'),(4,2,4,1,'1970-01-01 00:00:00','','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}'),(5,2,5,1,'2018-06-20 10:24:24','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}');
 /*!40000 ALTER TABLE `customer_to_users` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1940,6 +1940,7 @@ CREATE TABLE `sessions` (
 
 LOCK TABLES `sessions` WRITE;
 /*!40000 ALTER TABLE `sessions` DISABLE KEYS */;
+INSERT INTO `sessions` VALUES ('j3MLjT008zdFSJhApwe7dwiY8BXvpdR7KFRGSzv7',1,'127.0.0.1','Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_2) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.130 Safari/537.36','ZXlKcGRpSTZJakZMVGlzelpGVXdkamhCYVhJNVkyaG9WM1oxVUhjOVBTSXNJblpoYkhWbElqb2lWVmhpZDBwSUswSjJSREZ6Y3paaFIwaHdSRFJUTVdseFkyNHJNSHBtUW1WTlpFUmhkVzUyU3poNlZWRmNMMnh6ZWtKQ05EZzBSMEpSVVhaQ1NtUk1aWGxVTWtOU1FuQkRVbGMzVmtsSVdrazJibXhPYW1wb09XZzNRM1ZaZUd0elJGUXlkbTUwVjFsbVdVSjVUekEyVVd0cWVGWnRkMWw2Ym1aSlJEWm5UblpOYlRVd1ZrZFFkVGhVZHpOTFRYRkNORmxpUjNSSmQyYzBiV2RDUkZoeFpWVkphVkJJUlRGcmJ6VlhZVnd2ZVV4UWFYQmxkelJzV2xGeVUzaEJhM05TYTJZck1rcENVR041VWx3dlhDOWhiM3BUUzBKV2JDdHFVVkI1ZFdGY0wyOVZVVE5yT1Zsd2JWZ3JSbTh6YjFwc1JVaHBRaXR5UVdvNFJuazBZV2xvWVZkSlJsZHhjWFJ6TlVoelMwMVVUVWs1Y1dGeFJsaHNiMnhwUjNsbVRXWlNLMlo1VkVGY0wxTm1kRXRHTUdGQ2NrdzNkMGxHTm5oQmVrbEpPRUY2ZFVWdE1WQk5WbTFMTVVaUFpqWjFTbTFLU0RSNVRra3hXVWxhVFZsWlNubFVlVmxqU0dSVFEzbzVORTk2WVZBd1R6VnpQU0lzSW0xaFl5STZJbUl5TXpNeE1URTFZemd5TlRJMk1HVTFPRFkxT0RaaE1EVTNORFU0WTJJNE5URmxOakkxTnpnMk1tUTFPVE00TlRobVpHVmhOVE5oWmpabU9HRmhOaklpZlE9PQ==',1580126664);
 /*!40000 ALTER TABLE `sessions` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2303,6 +2304,35 @@ INSERT INTO `user` VALUES (1,1,'travis','$2y$10$FNzPyTKm64oSKeUUCwm1buLQp7h80nBj
 UNLOCK TABLES;
 
 --
+-- Table structure for table `user_2fa`
+--
+
+DROP TABLE IF EXISTS `user_2fa`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `user_2fa` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `user_id` int(11) NOT NULL,
+  `enabled` tinyint(1) NOT NULL DEFAULT '0',
+  `secret` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `created_at` datetime DEFAULT NULL,
+  `updated_at` datetime DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `UNIQ_3AAA1488A76ED395` (`user_id`),
+  CONSTRAINT `FK_3AAA1488A76ED395` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `user_2fa`
+--
+
+LOCK TABLES `user_2fa` WRITE;
+/*!40000 ALTER TABLE `user_2fa` DISABLE KEYS */;
+/*!40000 ALTER TABLE `user_2fa` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `user_logins`
 --
 
@@ -2320,7 +2350,7 @@ CREATE TABLE `user_logins` (
   KEY `IDX_6341CC99D43FEAE2` (`customer_to_user_id`),
   KEY `at_idx` (`at`),
   CONSTRAINT `FK_6341CC99D43FEAE2` FOREIGN KEY (`customer_to_user_id`) REFERENCES `customer_to_users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=56 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2329,7 +2359,7 @@ CREATE TABLE `user_logins` (
 
 LOCK TABLES `user_logins` WRITE;
 /*!40000 ALTER TABLE `user_logins` DISABLE KEYS */;
-INSERT INTO `user_logins` VALUES (1,1,'10.37.129.2','2014-01-06 13:54:52',1),(2,1,'10.37.129.2','2014-01-13 10:38:11',1),(3,1,'::1','2016-11-07 19:30:35',1),(4,1,'127.0.0.1','2017-10-09 13:19:59',1),(5,1,'127.0.0.1','2018-05-15 15:34:35',1),(6,1,'127.0.0.1','2018-06-18 08:30:06',1),(7,1,'127.0.0.1','2018-06-18 08:30:08',1),(8,1,'127.0.0.1','2018-06-18 08:31:04',1),(9,1,'127.0.0.1','2018-06-18 08:31:06',1),(10,1,'127.0.0.1','2018-06-18 08:36:56',1),(11,1,'127.0.0.1','2018-06-18 08:36:58',1),(12,1,'127.0.0.1','2018-06-18 08:43:14',1),(13,1,'127.0.0.1','2018-06-18 08:43:16',1),(14,1,'127.0.0.1','2018-06-18 08:43:27',1),(15,1,'127.0.0.1','2018-06-18 08:43:29',1),(16,1,'127.0.0.1','2018-06-18 11:29:20',1),(17,1,'127.0.0.1','2018-06-18 11:29:22',1),(18,1,'127.0.0.1','2018-06-19 13:15:32',1),(19,1,'127.0.0.1','2018-06-19 14:16:24',1),(20,1,'127.0.0.1','2018-06-19 14:16:26',1),(21,1,'127.0.0.1','2018-06-19 14:17:07',1),(22,1,'127.0.0.1','2018-06-19 14:17:09',1),(23,1,'127.0.0.1','2018-06-19 14:19:14',1),(24,1,'127.0.0.1','2018-06-19 14:19:16',1),(25,1,'127.0.0.1','2018-06-19 14:22:14',1),(26,1,'127.0.0.1','2018-06-19 14:22:17',1),(27,2,'127.0.0.1','2018-06-20 10:23:22',2),(28,3,'127.0.0.1','2018-06-20 10:23:58',3),(29,5,'127.0.0.1','2018-06-20 10:24:14',5),(30,5,'127.0.0.1','2018-06-20 10:24:24',5),(31,1,'127.0.0.1','2018-06-20 10:25:55',1),(32,1,'127.0.0.1','2018-06-20 10:25:57',1),(33,1,'127.0.0.1','2018-06-20 10:26:49',1),(34,1,'127.0.0.1','2018-06-20 10:26:51',1),(35,1,'127.0.0.1','2018-06-20 10:27:05',1),(36,1,'127.0.0.1','2018-06-20 10:27:07',1),(37,1,'127.0.0.1','2018-06-20 10:27:22',1),(38,1,'127.0.0.1','2018-06-20 10:27:24',1),(39,1,'127.0.0.1','2018-06-20 10:28:25',1),(40,1,'127.0.0.1','2018-06-20 10:28:27',1),(41,1,'127.0.0.1','2018-06-20 10:28:57',1),(42,1,'127.0.0.1','2018-06-20 10:28:59',1),(43,1,'127.0.0.1','2018-06-20 10:32:11',1),(44,1,'127.0.0.1','2018-06-20 10:32:13',1),(45,1,'127.0.0.1','2018-06-20 10:36:34',1),(46,1,'127.0.0.1','2018-06-20 10:36:36',1),(47,1,'127.0.0.1','2018-06-20 10:37:19',1),(48,1,'127.0.0.1','2018-06-20 10:37:21',1),(49,1,'127.0.0.1','2018-06-20 10:37:44',1),(50,1,'127.0.0.1','2018-06-20 10:37:46',1),(51,1,'127.0.0.1','2018-06-20 10:38:41',1),(52,1,'127.0.0.1','2018-06-20 10:38:42',1),(53,2,'127.0.0.1','2019-01-16 15:37:08',2),(54,3,'127.0.0.1','2019-01-16 15:38:05',3),(55,1,'127.0.0.1','2019-03-09 15:38:09',1);
+INSERT INTO `user_logins` VALUES (1,1,'10.37.129.2','2014-01-06 13:54:52',1),(2,1,'10.37.129.2','2014-01-13 10:38:11',1),(3,1,'::1','2016-11-07 19:30:35',1),(4,1,'127.0.0.1','2017-10-09 13:19:59',1),(5,1,'127.0.0.1','2018-05-15 15:34:35',1),(6,1,'127.0.0.1','2018-06-18 08:30:06',1),(7,1,'127.0.0.1','2018-06-18 08:30:08',1),(8,1,'127.0.0.1','2018-06-18 08:31:04',1),(9,1,'127.0.0.1','2018-06-18 08:31:06',1),(10,1,'127.0.0.1','2018-06-18 08:36:56',1),(11,1,'127.0.0.1','2018-06-18 08:36:58',1),(12,1,'127.0.0.1','2018-06-18 08:43:14',1),(13,1,'127.0.0.1','2018-06-18 08:43:16',1),(14,1,'127.0.0.1','2018-06-18 08:43:27',1),(15,1,'127.0.0.1','2018-06-18 08:43:29',1),(16,1,'127.0.0.1','2018-06-18 11:29:20',1),(17,1,'127.0.0.1','2018-06-18 11:29:22',1),(18,1,'127.0.0.1','2018-06-19 13:15:32',1),(19,1,'127.0.0.1','2018-06-19 14:16:24',1),(20,1,'127.0.0.1','2018-06-19 14:16:26',1),(21,1,'127.0.0.1','2018-06-19 14:17:07',1),(22,1,'127.0.0.1','2018-06-19 14:17:09',1),(23,1,'127.0.0.1','2018-06-19 14:19:14',1),(24,1,'127.0.0.1','2018-06-19 14:19:16',1),(25,1,'127.0.0.1','2018-06-19 14:22:14',1),(26,1,'127.0.0.1','2018-06-19 14:22:17',1),(27,2,'127.0.0.1','2018-06-20 10:23:22',2),(28,3,'127.0.0.1','2018-06-20 10:23:58',3),(29,5,'127.0.0.1','2018-06-20 10:24:14',5),(30,5,'127.0.0.1','2018-06-20 10:24:24',5),(31,1,'127.0.0.1','2018-06-20 10:25:55',1),(32,1,'127.0.0.1','2018-06-20 10:25:57',1),(33,1,'127.0.0.1','2018-06-20 10:26:49',1),(34,1,'127.0.0.1','2018-06-20 10:26:51',1),(35,1,'127.0.0.1','2018-06-20 10:27:05',1),(36,1,'127.0.0.1','2018-06-20 10:27:07',1),(37,1,'127.0.0.1','2018-06-20 10:27:22',1),(38,1,'127.0.0.1','2018-06-20 10:27:24',1),(39,1,'127.0.0.1','2018-06-20 10:28:25',1),(40,1,'127.0.0.1','2018-06-20 10:28:27',1),(41,1,'127.0.0.1','2018-06-20 10:28:57',1),(42,1,'127.0.0.1','2018-06-20 10:28:59',1),(43,1,'127.0.0.1','2018-06-20 10:32:11',1),(44,1,'127.0.0.1','2018-06-20 10:32:13',1),(45,1,'127.0.0.1','2018-06-20 10:36:34',1),(46,1,'127.0.0.1','2018-06-20 10:36:36',1),(47,1,'127.0.0.1','2018-06-20 10:37:19',1),(48,1,'127.0.0.1','2018-06-20 10:37:21',1),(49,1,'127.0.0.1','2018-06-20 10:37:44',1),(50,1,'127.0.0.1','2018-06-20 10:37:46',1),(51,1,'127.0.0.1','2018-06-20 10:38:41',1),(52,1,'127.0.0.1','2018-06-20 10:38:42',1),(53,2,'127.0.0.1','2019-01-16 15:37:08',2),(54,3,'127.0.0.1','2019-01-16 15:38:05',3),(55,1,'127.0.0.1','2019-03-09 15:38:09',1),(56,NULL,'127.0.0.1','2020-01-27 12:04:24',1);
 /*!40000 ALTER TABLE `user_logins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2723,4 +2753,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2019-11-22 14:04:00
+-- Dump completed on 2020-01-27 12:05:32
