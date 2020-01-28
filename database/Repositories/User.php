@@ -631,52 +631,6 @@ class User extends EntityRepository
         return $result;
     }
 
-    /**
-     * Return a user depending a token and id
-     *
-     * @param $identifier
-     * @param $token
-     *
-     * @return UserEntity|null
-     *
-     * @throws
-     */
-    public function retrieveByOtcToken( $identifier, $token )
-    {
-        $now = new DateTime();
 
-        $sql = "SELECT ort
-                FROM Entities\\OtpRememberTokens ort 
-                WHERE ort.User = ?1
-                AND ort.token = ?2
-                AND ort.expires > ?3";
 
-        $result = $this->getEntityManager()->createQuery( $sql )
-            ->setParameter( '1', $identifier )
-            ->setParameter( '2', $token )
-            ->setParameter( '3', $now->format( 'Y-m-d H:i:s' ) )
-            ->getOneOrNullResult();
-
-        if( $result ) {
-            return $result->getUser();
-        }
-
-        return null;
-
-    }
-
-    /**
-     * Delete all the active session and remember me token for the user
-     *
-     * @param int   $id
-     * @param bool  $deleteCurrentSession Do we need to delete the current session
-     *
-     * @return void
-     */
-    public function deleteActiveSession( int $id, $deleteCurrentSession = false ) {
-
-        D2EM::getRepository( UserRememberTokenEntity::class    )->deleteByUser( $id, $deleteCurrentSession );
-        D2EM::getRepository( SessionEntity::class               )->deleteByUser( $id, $deleteCurrentSession );
-
-    }
 }

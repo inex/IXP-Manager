@@ -70,22 +70,5 @@ class UserRememberToken extends EntityRepository
 
         return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
     }
-
-
-    /**
-     * Delete all the Remember token for the user
-     *
-     * @param int   $userid
-     * @param bool  $deleteCurrentToken Do we need to delete the current token
-     *
-     * @return void
-     */
-    public function deleteByUser( int $userid, bool $deleteCurrentToken = false )
-    {
-        $dql = "DELETE FROM Entities\\UserRememberToken urt
-                WHERE urt.User = ?1";
-
-
-        return $this->getEntityManager()->createQuery( $dql )->setParameter(1, $userid )->execute();
-    }
+    
 }
