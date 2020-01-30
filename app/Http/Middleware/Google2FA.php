@@ -25,10 +25,10 @@ namespace IXP\Http\Middleware;
 
 use Illuminate\Http\Request;
 
-use \Auth;
+use Auth;
 use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
 
-use Closure, Session;
+use Closure;
 
 /**
  * Middleware: Google 2FA
@@ -70,7 +70,7 @@ class Google2FA
 
         $authenticator = new GoogleAuthenticator($request);
 
-        if( !Auth::user()->getUser2FA() || $authenticator->isAuthenticated() ) {
+        if( !Auth::user()->getUser2FA() || !Auth::user()->getUser2FA()->enabled() || $authenticator->isAuthenticated() ) {
             return $next( $request );
         }
 

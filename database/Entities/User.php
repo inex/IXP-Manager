@@ -49,6 +49,9 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
 
 use IXP\Utils\Doctrine2\WithPreferences as Doctrine2_WithPreferences;
+
+use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
+
 use Psy\Util\Json;
 
 
@@ -910,6 +913,32 @@ class User implements Authenticatable, CanResetPasswordContract
     public function is2faEnabled()
     {
         return $this->getUser2FA() && $this->getUser2FA()->enabled();
+    }
+
+    /**
+     * Check if the user is 2FA authenticated
+     *
+     * * return true if the user has a 2FA create but not enabled because
+     * * the GoogleAuthenticator->isAuthenticated => canPassWithoutCheckingOTP() => isActivated() just check that the 'secret' filed in DB is set and
+     * * does not check if the filed 'enabled' is true or false
+     *
+     * * if the user has a 2FA create and enabled then we check if GoogleAuthenticator is authenticated
+     *
+     * @return bool
+     */
+    public function is2faAuthenticated()
+    {
+        if( $this->getUser2FA() && !$this->getUser2FA()->enabled() ){
+            return true;
+        }
+
+        $authenticator = new GoogleAuthenticator( request() );
+
+        if( $authenticator->isAuthenticated() ) {
+            return true;
+        }
+
+        return false;
     }
 
     /**
