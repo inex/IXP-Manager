@@ -928,7 +928,7 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function is2faAuthRequiredForSession()
     {
-        if( !$this->getUser2FA() || !$this->getUser2FA()->enabled() ) {
+        if(  !$this->is2faRequired() && ( !$this->getUser2FA() || !$this->getUser2FA()->enabled() ) ) {
             return false;
         }
 
