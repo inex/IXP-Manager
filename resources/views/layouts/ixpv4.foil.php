@@ -52,14 +52,14 @@
             <div class="row" >
 
                 <?php if( Auth::check() && Auth::user()->isSuperUser()
-                        && !Auth::user()->is2faRequired() && Auth::user()->is2faAuthenticated()
+                        && !Auth::user()->is2faRequired() && !Auth::user()->is2faAuthRequiredForSession()
                     ):
                 ?>
                     <?= $t->insert( 'layouts/menu' ); ?>
                 <?php endif; ?>
 
                 <div id="slide-reveal-overlay" class="collapse"></div>
-                <?php if( Auth::check() && Auth::user()->isSuperUser() && !Session::exists( "2fa-" . Auth::user()->getId() ) && Auth::user()->is2faAuthenticated()): ?>
+                <?php if( Auth::check() && Auth::user()->isSuperUser() && !Session::exists( "2fa-" . Auth::user()->getId() ) && !Auth::user()->is2faAuthRequiredForSession()): ?>
                     <main role="main" id="main-div" class="col-md-9 ml-sm-auto col-lg-9 col-xl-10 mt-2 pb-4">
                  <?php else: ?>
                     <main role="main" id="main-div" class="col-md-10 mx-sm-auto mt-2 pb-4">

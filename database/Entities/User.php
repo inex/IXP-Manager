@@ -916,9 +916,9 @@ class User implements Authenticatable, CanResetPasswordContract
     }
 
     /**
-     * Check if the user is 2FA authenticated
+     * Check if the user is required to check 2FA for the session
      *
-     * * return true if the user has a 2FA create but not enabled because
+     * * return false if the user has a 2FA create but not enabled because
      * * the GoogleAuthenticator->isAuthenticated => canPassWithoutCheckingOTP() => isActivated() just check that the 'secret' filed in DB is set and
      * * does not check if the filed 'enabled' is true or false
      *
@@ -926,19 +926,19 @@ class User implements Authenticatable, CanResetPasswordContract
      *
      * @return bool
      */
-    public function is2faAuthenticated()
+    public function is2faAuthRequiredForSession()
     {
-        if( $this->getUser2FA() && !$this->getUser2FA()->enabled() ){
-            return true;
+        if( !$this->getUser2FA() || !$this->getUser2FA()->enabled() ) {
+            return false;
         }
 
         $authenticator = new GoogleAuthenticator( request() );
 
         if( $authenticator->isAuthenticated() ) {
-            return true;
+            return false;
         }
 
-        return false;
+        return true;
     }
 
     /**
