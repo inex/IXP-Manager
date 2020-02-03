@@ -895,11 +895,11 @@ class User implements Authenticatable, CanResetPasswordContract
 
 
     /**
-     * Does 2fa need to be forced / enabled for this user?
+     * Does 2fa need to be enforced for this user?
      *
      * @return bool
      */
-    public function is2faRequired()
+    public function is2faEnforced()
     {
         return $this->getPrivs() >= config( "google2fa.ixpm_2fa_enforce_for_users" )
             && ( !$this->getUser2FA() || !$this->getUser2FA()->enabled() );
@@ -916,19 +916,20 @@ class User implements Authenticatable, CanResetPasswordContract
     }
 
     /**
-     * Check if the user is required to check 2FA for the session
-     *
-     * * return false if the user has a 2FA create but not enabled because
-     * * the GoogleAuthenticator->isAuthenticated => canPassWithoutCheckingOTP() => isActivated() just check that the 'secret' filed in DB is set and
-     * * does not check if the filed 'enabled' is true or false
-     *
-     * * if the user has a 2FA create and enabled then we check if GoogleAuthenticator is authenticated
+     * Check if the user is required to authenticate with 2FA for the current session
      *
      * @return bool
      */
     public function is2faAuthRequiredForSession()
     {
-        if(  !$this->is2faRequired() && ( !$this->getUser2FA() || !$this->getUser2FA()->enabled() ) ) {
+
+        if( !$this->getUser2FA() || !$this->getUser2FA()->enabled() ) {
+
+            // If the user does not have 2fa configured or enabled but it is required, then return true:
+            if( $this->is2faEnforced() ) {
+                return true;
+            }
+
             return false;
         }
 
