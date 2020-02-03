@@ -326,7 +326,7 @@ class IXP implements ExtensionInterface {
     /**
      * Replaces an IP prefix with some JS magic to invoke a bootbox.
      *
-     * @param  int    $asn      The IP prefix
+     * @param $prefix
      * @return string
      */
     public function whoisPrefix( $prefix )
@@ -351,12 +351,11 @@ class IXP implements ExtensionInterface {
     }
 
     /**
-     * See scale above
-     * @param float $v
-     * @param int $decs
-     * @return string
+     * Get Google Authenticator
+     *
+     * @return GoogleAuthenticator
      */
     public function google2faAuthenticator() {
-        return new GoogleAuthenticator(request());
+        return new GoogleAuthenticator( request() );
     }
 }
