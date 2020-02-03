@@ -64,7 +64,7 @@ class Google2FA
         }
 
         // Force the superuser to enable 2FA
-        if( $request->user()->is2FARequired() ) {
+        if( $request->user()->is2faEnforced() ) {
             return redirect( route( '2fa@configure' ) );
         }
 
