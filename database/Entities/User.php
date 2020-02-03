@@ -49,6 +49,9 @@ use Illuminate\Auth\Passwords\CanResetPassword;
 use IXP\Events\Auth\ForgotPassword as ForgotPasswordEvent;
 
 use IXP\Utils\Doctrine2\WithPreferences as Doctrine2_WithPreferences;
+
+use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
+
 use Psy\Util\Json;
 
 
@@ -892,11 +895,11 @@ class User implements Authenticatable, CanResetPasswordContract
 
 
     /**
-     * Does 2fa need to be forced / enabled for this user?
+     * Does 2fa need to be enforced for this user?
      *
      * @return bool
      */
-    public function is2faRequired()
+    public function is2faEnforced()
     {
         return $this->getPrivs() >= config( "google2fa.ixpm_2fa_enforce_for_users" )
             && ( !$this->getUser2FA() || !$this->getUser2FA()->enabled() );
@@ -910,6 +913,33 @@ class User implements Authenticatable, CanResetPasswordContract
     public function is2faEnabled()
     {
         return $this->getUser2FA() && $this->getUser2FA()->enabled();
+    }
+
+    /**
+     * Check if the user is required to authenticate with 2FA for the current session
+     *
+     * @return bool
+     */
+    public function is2faAuthRequiredForSession()
+    {
+
+        if( !$this->getUser2FA() || !$this->getUser2FA()->enabled() ) {
+
+            // If the user does not have 2fa configured or enabled but it is required, then return true:
+            if( $this->is2faEnforced() ) {
+                return true;
+            }
+
+            return false;
+        }
+
+        $authenticator = new GoogleAuthenticator( request() );
+
+        if( $authenticator->isAuthenticated() ) {
+            return false;
+        }
+
+        return true;
     }
 
     /**

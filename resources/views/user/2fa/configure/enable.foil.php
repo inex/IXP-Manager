@@ -1,5 +1,5 @@
 
-<?php if( Auth::user()->is2faRequired() ): ?>
+<?php if( Auth::user()->is2faEnforced() ): ?>
     <div class="alert alert-warning tw-my-8" role="alert">
         You do not have two-factor authentication enabled but it is compulsory for your user account. Please configure and enable 2fa below to proceed.
     </div>

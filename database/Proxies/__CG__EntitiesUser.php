@@ -861,12 +861,12 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
-    public function is2faRequired()
+    public function is2faEnforced()
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2faRequired', []);
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2faEnforced', []);
 
-        return parent::is2faRequired();
+        return parent::is2faEnforced();
     }
 
     /**
@@ -878,6 +878,17 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2faEnabled', []);
 
         return parent::is2faEnabled();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function is2faAuthRequiredForSession()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'is2faAuthRequiredForSession', []);
+
+        return parent::is2faAuthRequiredForSession();
     }
 
     /**
