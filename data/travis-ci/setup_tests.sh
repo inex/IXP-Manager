@@ -38,7 +38,7 @@ cat data/travis-ci/travis_ci_test_db.sql  | mysql --default-character-set=utf8mb
 
 
 echo google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost
-google-chrome-stable --lang=en-GB --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
+google-chrome-stable --headless --disable-gpu --remote-debugging-port=9222 http://localhost &
 
 
 ./artisan serve  &>php-built-in.log &
