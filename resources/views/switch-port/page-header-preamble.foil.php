@@ -55,7 +55,7 @@
                         </a>
 
                         <?php if( $s->getMauSupported() ): ?>
-                            <a class="dropdown-item <?= !request()->is( 'switch-port/list-mau/*' ) ?: 'active' ?>" href="<?= route( "switch-port@list-mau", [ "switch" => $s->getId() ] ) ?>">
+                            <a class="dropdown-item <?= !request()->is( 'switch-port/list-mau/*' ) ?: 'active' ?>" href="<?= route( "switch-port@list-mau", [ "id" => $s->getId() ] ) ?>">
                                 Port MAU Detail
                             </a>
                         <?php endif; ?>
