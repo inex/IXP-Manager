@@ -46,6 +46,7 @@ abstract class DuskTestCase extends BaseTestCase
     public static function prepare()
     {
         static::startChromeDriver();
+        app()->setLocale( 'en' );
     }
 
     /**
@@ -58,7 +59,7 @@ abstract class DuskTestCase extends BaseTestCase
         $options = (new ChromeOptions)->addArguments([
             '--disable-gpu',
             '--headless',
-            "--lang=en-GB",
+            '--lang=en-GB',
             '--window-size=1600,1200',
         ]);
 
