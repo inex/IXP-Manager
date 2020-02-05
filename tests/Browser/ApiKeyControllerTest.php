@@ -35,6 +35,16 @@ use Laravel\Dusk\Browser;
 
 class ApiKeyControllerTest extends DuskTestCase
 {
+    public function tearDown(): void
+    {
+        if( $c = D2EM::getRepository( ApiKeyEntity::class )->findOneBy( [ 'id' => 5 ] ) ) {
+            D2EM::remove( $c );
+            D2EM::flush();
+        }
+
+        parent::tearDown();
+    }
+
     /**
      * A Dusk test example.
      *
@@ -43,7 +53,6 @@ class ApiKeyControllerTest extends DuskTestCase
      */
     public function test()
     {
-
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
                 ->visit('/login')
