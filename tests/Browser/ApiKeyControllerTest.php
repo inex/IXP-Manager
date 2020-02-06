@@ -53,8 +53,6 @@ class ApiKeyControllerTest extends DuskTestCase
      */
     public function test()
     {
-        app()->setLocale( 'en' );
-
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
                 ->visit('/login')
