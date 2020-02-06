@@ -19,7 +19,7 @@
 
             <div class="dropdown-menu dropdown-menu-right scrollable-dropdown">
                 <?php foreach( $t->switches as $id => $name ): ?>
-                    <a class="dropdown-item <?= $t->s->getId() == $id ? 'active' : '' ?>" href="<?= route( "switch@port-report", [ "port" => $id ] ) ?>"><?= $name ?></a>
+                    <a class="dropdown-item <?= $t->s->getId() == $id ? 'active' : '' ?>" href="<?= route( "switch@port-report", [ "id" => $id ] ) ?>"><?= $name ?></a>
                 <?php endforeach; ?>
             </div>
         </div>
