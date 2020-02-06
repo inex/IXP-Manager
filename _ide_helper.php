@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 6.12.0 on 2020-01-26 13:51:14.
+ * Generated for Laravel 6.14.0 on 2020-02-06 11:39:27.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -1834,71 +1834,19 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
-         * If the user check remember me in the OTP validation form
-         *
-         * @param \IXP\Services\Auth\AuthenticatableContract $user
-         * @param bool $remember
-         * @return void 
-         * @throws 
-         * @static 
-         */ 
-        public static function RememberMeViaOTP($user, $remember = false)
-        {
-                        /** @var \IXP\Services\Auth\SessionGuard $instance */
-                        $instance->RememberMeViaOTP($user, $remember);
-        }
-        
-        /**
-         * Log a user into the application.
-         *
-         * @param \IXP\Services\Auth\AuthenticatableContract $user
-         * @param bool $remember
-         * @return void 
-         * @static 
-         */ 
-        public static function login($user, $remember = false)
-        {
-                        /** @var \IXP\Services\Auth\SessionGuard $instance */
-                        $instance->login($user, $remember);
-        }
-        
-        /**
-         * Log the user out of the application.
-         *
-         * @return void 
-         * @static 
-         */ 
-        public static function logout()
-        {
-                        /** @var \IXP\Services\Auth\SessionGuard $instance */
-                        $instance->logout();
-        }
-        
-        /**
-         * Invalidate other sessions for the current user.
-         * 
-         * The application must be using the AuthenticateSession middleware.
-         *
-         * @param string $password
-         * @param string $attribute
-         * @return bool|null 
-         * @static 
-         */ 
-        public static function logoutOtherDevices($password, $attribute = 'password')
-        {
-                        /** @var \IXP\Services\Auth\SessionGuard $instance */
-                        return $instance->logoutOtherDevices($password, $attribute);
-        }
-        
-        /**
          * Get the currently authenticated user.
+         * 
+         * Overrides Laravel's default version which is a single shared token so we
+         * can have a per-browser / device token.
+         * 
+         * We need to override so we can /immediately/ log out users if the current user session
+         * was deleted (by the user) from another session.
          *
          * @return \Entities\User|null 
          * @static 
          */ 
         public static function user()
         {
-            //Method inherited from \Illuminate\Auth\SessionGuard            
                         /** @var \IXP\Services\Auth\SessionGuard $instance */
                         return $instance->user();
         }
@@ -2019,6 +1967,34 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Log a user into the application.
+         *
+         * @param \Illuminate\Contracts\Auth\Authenticatable $user
+         * @param bool $remember
+         * @return void 
+         * @static 
+         */ 
+        public static function login($user, $remember = false)
+        {
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        $instance->login($user, $remember);
+        }
+        
+        /**
+         * Log the user out of the application.
+         *
+         * @return void 
+         * @static 
+         */ 
+        public static function logout()
+        {
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        $instance->logout();
+        }
+        
+        /**
          * Log the user out of the application on their current device only.
          *
          * @return void 
@@ -2029,6 +2005,23 @@ namespace Illuminate\Support\Facades {
             //Method inherited from \Illuminate\Auth\SessionGuard            
                         /** @var \IXP\Services\Auth\SessionGuard $instance */
                         $instance->logoutCurrentDevice();
+        }
+        
+        /**
+         * Invalidate other sessions for the current user.
+         * 
+         * The application must be using the AuthenticateSession middleware.
+         *
+         * @param string $password
+         * @param string $attribute
+         * @return bool|null 
+         * @static 
+         */ 
+        public static function logoutOtherDevices($password, $attribute = 'password')
+        {
+            //Method inherited from \Illuminate\Auth\SessionGuard            
+                        /** @var \IXP\Services\Auth\SessionGuard $instance */
+                        return $instance->logoutOtherDevices($password, $attribute);
         }
         
         /**
@@ -2789,6 +2782,20 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Bus\Dispatcher $instance */
                         return $instance->dispatchToQueue($command);
+        }
+        
+        /**
+         * Dispatch a command to its appropriate handler after the current process.
+         *
+         * @param mixed $command
+         * @param mixed $handler
+         * @return void 
+         * @static 
+         */ 
+        public static function dispatchAfterResponse($command, $handler = null)
+        {
+                        /** @var \Illuminate\Bus\Dispatcher $instance */
+                        $instance->dispatchAfterResponse($command, $handler);
         }
         
         /**
@@ -3784,7 +3791,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $key
          * @param mixed $default
-         * @param string $path
+         * @param string|null $path
          * @return \Symfony\Component\HttpFoundation\Cookie 
          * @static 
          */ 
@@ -5198,6 +5205,45 @@ namespace Illuminate\Support\Facades {
         }
         
         /**
+         * Register a custom macro.
+         *
+         * @param string $name
+         * @param object|callable $macro
+         * @return void 
+         * @static 
+         */ 
+        public static function macro($name, $macro)
+        {
+                        \Illuminate\Events\Dispatcher::macro($name, $macro);
+        }
+        
+        /**
+         * Mix another object into the class.
+         *
+         * @param object $mixin
+         * @param bool $replace
+         * @return void 
+         * @throws \ReflectionException
+         * @static 
+         */ 
+        public static function mixin($mixin, $replace = true)
+        {
+                        \Illuminate\Events\Dispatcher::mixin($mixin, $replace);
+        }
+        
+        /**
+         * Checks if macro is registered.
+         *
+         * @param string $name
+         * @return bool 
+         * @static 
+         */ 
+        public static function hasMacro($name)
+        {
+                        return \Illuminate\Events\Dispatcher::hasMacro($name);
+        }
+        
+        /**
          * Assert if an event was dispatched based on a truth-test callback.
          *
          * @param string $event
@@ -5704,6 +5750,21 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Filesystem\Filesystem $instance */
                         return $instance->directories($directory);
+        }
+        
+        /**
+         * Ensure a directory exists.
+         *
+         * @param string $path
+         * @param int $mode
+         * @param bool $recursive
+         * @return void 
+         * @static 
+         */ 
+        public static function ensureDirectoryExists($path, $mode = 493, $recursive = true)
+        {
+                        /** @var \Illuminate\Filesystem\Filesystem $instance */
+                        $instance->ensureDirectoryExists($path, $mode, $recursive);
         }
         
         /**
@@ -6605,7 +6666,7 @@ namespace Illuminate\Support\Facades {
          * Get a log channel instance.
          *
          * @param string|null $channel
-         * @return mixed 
+         * @return \Psr\Log\LoggerInterface 
          * @static 
          */ 
         public static function channel($channel = null)
@@ -6618,7 +6679,7 @@ namespace Illuminate\Support\Facades {
          * Get a log driver instance.
          *
          * @param string|null $driver
-         * @return mixed 
+         * @return \Psr\Log\LoggerInterface 
          * @static 
          */ 
         public static function driver($driver = null)
@@ -7857,6 +7918,20 @@ namespace Illuminate\Support\Facades {
         {
                         /** @var \Illuminate\Support\Testing\Fakes\QueueFake $instance */
                         $instance->assertPushedWithChain($job, $expectedChain, $callback);
+        }
+        
+        /**
+         * Assert if a job was pushed with an empty chain based on a truth-test callback.
+         *
+         * @param string $job
+         * @param callable|null $callback
+         * @return void 
+         * @static 
+         */ 
+        public static function assertPushedWithoutChain($job, $callback = null)
+        {
+                        /** @var \Illuminate\Support\Testing\Fakes\QueueFake $instance */
+                        $instance->assertPushedWithoutChain($job, $callback);
         }
         
         /**
@@ -19080,8 +19155,8 @@ namespace Webpatser\Countries {
          * Define a one-to-one relationship.
          *
          * @param string $related
-         * @param string $foreignKey
-         * @param string $localKey
+         * @param string|null $foreignKey
+         * @param string|null $localKey
          * @return \Illuminate\Database\Eloquent\Relations\HasOne 
          * @static 
          */ 
@@ -19116,9 +19191,9 @@ namespace Webpatser\Countries {
          *
          * @param string $related
          * @param string $name
-         * @param string $type
-         * @param string $id
-         * @param string $localKey
+         * @param string|null $type
+         * @param string|null $id
+         * @param string|null $localKey
          * @return \Illuminate\Database\Eloquent\Relations\MorphOne 
          * @static 
          */ 
@@ -19133,9 +19208,9 @@ namespace Webpatser\Countries {
          * Define an inverse one-to-one or many relationship.
          *
          * @param string $related
-         * @param string $foreignKey
-         * @param string $ownerKey
-         * @param string $relation
+         * @param string|null $foreignKey
+         * @param string|null $ownerKey
+         * @param string|null $relation
          * @return \Illuminate\Database\Eloquent\Relations\BelongsTo 
          * @static 
          */ 
@@ -19149,10 +19224,10 @@ namespace Webpatser\Countries {
         /**
          * Define a polymorphic, inverse one-to-one or many relationship.
          *
-         * @param string $name
-         * @param string $type
-         * @param string $id
-         * @param string $ownerKey
+         * @param string|null $name
+         * @param string|null $type
+         * @param string|null $id
+         * @param string|null $ownerKey
          * @return \Illuminate\Database\Eloquent\Relations\MorphTo 
          * @static 
          */ 
@@ -19180,8 +19255,8 @@ namespace Webpatser\Countries {
          * Define a one-to-many relationship.
          *
          * @param string $related
-         * @param string $foreignKey
-         * @param string $localKey
+         * @param string|null $foreignKey
+         * @param string|null $localKey
          * @return \Illuminate\Database\Eloquent\Relations\HasMany 
          * @static 
          */ 
@@ -19216,9 +19291,9 @@ namespace Webpatser\Countries {
          *
          * @param string $related
          * @param string $name
-         * @param string $type
-         * @param string $id
-         * @param string $localKey
+         * @param string|null $type
+         * @param string|null $id
+         * @param string|null $localKey
          * @return \Illuminate\Database\Eloquent\Relations\MorphMany 
          * @static 
          */ 
@@ -19233,12 +19308,12 @@ namespace Webpatser\Countries {
          * Define a many-to-many relationship.
          *
          * @param string $related
-         * @param string $table
-         * @param string $foreignPivotKey
-         * @param string $relatedPivotKey
-         * @param string $parentKey
-         * @param string $relatedKey
-         * @param string $relation
+         * @param string|null $table
+         * @param string|null $foreignPivotKey
+         * @param string|null $relatedPivotKey
+         * @param string|null $parentKey
+         * @param string|null $relatedKey
+         * @param string|null $relation
          * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany 
          * @static 
          */ 
@@ -19254,11 +19329,11 @@ namespace Webpatser\Countries {
          *
          * @param string $related
          * @param string $name
-         * @param string $table
-         * @param string $foreignPivotKey
-         * @param string $relatedPivotKey
-         * @param string $parentKey
-         * @param string $relatedKey
+         * @param string|null $table
+         * @param string|null $foreignPivotKey
+         * @param string|null $relatedPivotKey
+         * @param string|null $parentKey
+         * @param string|null $relatedKey
          * @param bool $inverse
          * @return \Illuminate\Database\Eloquent\Relations\MorphToMany 
          * @static 
@@ -19275,11 +19350,11 @@ namespace Webpatser\Countries {
          *
          * @param string $related
          * @param string $name
-         * @param string $table
-         * @param string $foreignPivotKey
-         * @param string $relatedPivotKey
-         * @param string $parentKey
-         * @param string $relatedKey
+         * @param string|null $table
+         * @param string|null $foreignPivotKey
+         * @param string|null $relatedPivotKey
+         * @param string|null $parentKey
+         * @param string|null $relatedKey
          * @return \Illuminate\Database\Eloquent\Relations\MorphToMany 
          * @static 
          */ 
@@ -20826,8 +20901,8 @@ namespace Laravel\Socialite\Facades {
         /**
          * Get the default driver name.
          *
-         * @throws \InvalidArgumentException
          * @return string 
+         * @throws \InvalidArgumentException
          * @static 
          */ 
         public static function getDefaultDriver()
@@ -21310,7 +21385,7 @@ namespace  {
             /**
              * Paginate the given query.
              *
-             * @param int $perPage
+             * @param int|null $perPage
              * @param array $columns
              * @param string $pageName
              * @param int|null $page
@@ -21327,7 +21402,7 @@ namespace  {
             /**
              * Paginate the given query into a simple paginator.
              *
-             * @param int $perPage
+             * @param int|null $perPage
              * @param array $columns
              * @param string $pageName
              * @param int|null $page
@@ -21616,8 +21691,8 @@ namespace  {
              *
              * @param callable $callback
              * @param int $count
-             * @param string $column
-             * @param string $alias
+             * @param string|null $column
+             * @param string|null $alias
              * @return bool 
              * @static 
              */ 
