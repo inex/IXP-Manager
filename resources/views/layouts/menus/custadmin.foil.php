@@ -171,7 +171,7 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right" id="my-account-dd">
 
-                    <a class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
+                    <a id="profile" class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
                         Profile
                     </a>
 
@@ -179,7 +179,7 @@
                         API Keys
                     </a>
 
-                    <a class="dropdown-item <?= !request()->is( 'active-sessions/list' ) ?: 'active' ?>" href="<?= route('active-sessions@list' )?>">
+                    <a id="active-sessions" class="dropdown-item <?= !request()->is( 'active-sessions/list' ) ?: 'active' ?>" href="<?= route('active-sessions@list' )?>">
                         Active Sessions
                     </a>
 
@@ -203,7 +203,7 @@
 
                     <div class="dropdown-divider"></div>
 
-                    <a class="dropdown-item" href="<?= route( 'login@logout' ) ?>">
+                    <a id="logout" class="dropdown-item" href="<?= route( 'login@logout' ) ?>">
                         Logout
                     </a>
 
