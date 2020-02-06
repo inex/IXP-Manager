@@ -59,7 +59,6 @@ abstract class DuskTestCase extends BaseTestCase
             '--disable-gpu',
             '--headless',
             '--lang=en-GB',
-            '--lang=en',
             '--window-size=1600,1200',
         ]);
 
