@@ -145,7 +145,7 @@
                 </p>
 
                 <p class="tw-text-center">
-                    <a class="btn btn-primary" href="<?= route('2fa@configure')?>">Configure 2FA</a>
+                    <a id="configue-2fa" class="btn btn-primary" href="<?= route('2fa@configure')?>">Configure 2FA</a>
                 </p>
 
             </div>
