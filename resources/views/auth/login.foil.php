@@ -62,7 +62,7 @@
 
             <div class="tw-mb-6">
                 <label class="tw-block tw-text-grey-dark tw-font-bold">
-                    <input class="tw-mr-2 tw-leading-tight" type="checkbox" name="remember" value="1">
+                    <input class="tw-mr-2 tw-leading-tight" type="checkbox" name="remember" id="remember-me" value="1">
                     <span class="tw-text-sm">
                         Remember me
                     </span>
