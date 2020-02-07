@@ -19,6 +19,20 @@ $this->layout( 'layouts/ixpv4' );
 
 
         <?= $t->alerts() ?>
+
+
+        <div class="alert alert-info mb-16" role="alert">
+            <div class="d-flex align-items-center">
+                <div class="text-center"><i class="fa fa-info-circle fa-2x "></i></div>
+                <div class="col-sm-12">
+                    The new document store mentioned on the <i>INEX Members' Mailing List</i> containing minutes from the meetings of the INEX Board of Directors can be found through the <i>Member Information</i>
+                    menu above or by <a href="<?= route('docstore-dir@list' ) ?>">clicking here</a>.
+                </div>
+            </div>
+        </div>
+
+
+
         <?php if( !$t->c->isTypeAssociate() ): ?>
             <div class="card mt-4">
                 <div class="card-header">

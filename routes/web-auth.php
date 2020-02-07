@@ -155,3 +155,12 @@ Route::group( [ 'prefix' => 'irrdb' ], function() {
     Route::get(  'update/{customer}/{type}/{protocol}',     'IrrdbController@update'          )->name( "irrdb@update"          );
 });
 
+
+if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
+    Route::group( [ 'prefix' => 'docstore' ], function() {
+        Route::get( 'dir/list', 'DocstoreDirectoryController@list' )->name( 'docstore-dir@list' );
+        Route::get( 'dir/{dir}/files', 'DocstoreDirectoryController@listFiles' )->name( 'docstore-dir@list-files' );
+
+        Route::get( 'file/download/{file}', 'DocstoreFileController@download' )->name( 'docstore-file@download' );
+    } );
+}

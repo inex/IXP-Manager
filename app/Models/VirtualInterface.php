@@ -16,6 +16,9 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $channelgroup
  * @property int $lag_framing
  * @property int $fastlacp
+ * @property-read \IXP\Models\Customer|null $customer
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
+ * @property-read int|null $vlan_interfaces_count
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface query()
@@ -29,9 +32,6 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereTrunk($value)
  * @mixin \Eloquent
- * @property-read \IXP\Models\Customer $customer
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
- * @property-read int|null $vlan_interfaces_count
  */
 class VirtualInterface extends Model
 {

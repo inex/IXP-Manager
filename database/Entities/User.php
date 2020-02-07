@@ -857,6 +857,18 @@ class User implements Authenticatable, CanResetPasswordContract
     }
 
 
+    /**
+     * Is this a user of an associate member?
+     *
+     * @return bool
+     */
+    public function isAssociate(): bool
+    {
+        return $this->getCustomer()->isTypeAssociate();
+    }
+
+
+
     /***************************************************************************
      | LARAVEL 5 USER PROVIDER INTERFACE METHODS
      ***************************************************************************/

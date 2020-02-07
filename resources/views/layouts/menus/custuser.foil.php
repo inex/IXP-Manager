@@ -17,7 +17,7 @@
             </li>
 
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle <?= !request()->is( 'customer/*' , 'switch/configuration' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle <?= !request()->is( 'customer/*' , 'switch/configuration', 'docstore/*' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Information
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -30,7 +30,19 @@
                     <a class="dropdown-item <?= !request()->is( 'switch/configuration' ) ?: 'active' ?>" href="<?= route('switch@configuration') ?>">
                         Switch Configuration
                     </a>
+
+                    <?php if( !config( 'ixp_fe.frontend.disabled.docstore' ) ): ?>
+
+                        <div class="dropdown-divider"></div>
+
+                        <a class="dropdown-item <?= !request()->is( 'docstore/*' ) ?: 'active' ?>" href="<?= route('docstore-dir@list' ) ?>">
+                            Document Store
+                        </a>
+
+                    <?php endif; ?>
+
                 </div>
+
             </li>
 
             <li class="nav-item dropdown">
