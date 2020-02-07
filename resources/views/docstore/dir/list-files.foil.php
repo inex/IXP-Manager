@@ -38,10 +38,20 @@
             </div>
 
             <?php foreach( $t->files as $file ): ?>
+                <div class="row">
+                    <div class="col-md-1 col-1 tw-text-center">
+                        <i class="fa fa-2x fa-file"></i>&nbsp;&nbsp;&nbsp;&nbsp;
+                    </div>
+                    <div class="col-md-11 col-11">
+                        <p class="tw-pl-6 tw-mb-4">
+                            <a href="<?= route('docstore-file@download', ['file' => $file->id] ) ?>"><?= $t->ee( $file->name ) ?></a>
 
-                <div class="row tw-pl-6 tw-mb-4">
-                    <i class="fa fa-2x fa-file"></i>&nbsp;&nbsp;&nbsp;&nbsp;
-                    <a href="<?= route('docstore-file@download', ['file' => $file->id] ) ?>"><?= $t->ee( $file->name ) ?></a>
+                            <?php if( $file->sha256 ): ?>
+                                <br><span class="tw-text-xs tw-font-mono tw-text-gray-500">SHA256: <?= $file->sha256 ?></span>
+                            <?php endif; ?>
+
+                        </p>
+                    </div>
                 </div>
 
             <?php endforeach; ?>

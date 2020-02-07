@@ -16,6 +16,8 @@ class CreateDocstoreDirectories extends Migration
         Schema::create('docstore_directories', function (Blueprint $table) {
             $table->bigIncrements('id');
 
+            $table->bigInteger('parent_dir_id')->nullable()->unsigned()->index();
+
             $table->string('name',100)->nullable(false);
             $table->text('description')->nullable(false);
             $table->smallInteger('min_privs')->unsigned()->nullable(false);

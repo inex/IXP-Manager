@@ -26,6 +26,23 @@ use Illuminate\Database\Eloquent\Model;
  */
 class DocstoreDirectory extends Model
 {
+
+    /**
+     * Get the subdirectories for this directory
+     */
+    public function subDirectories()
+    {
+        return $this->hasMany('IXP\Models\DocstoreDirectory', 'parent_dir_id', 'id' );
+    }
+
+    /**
+     * Get the parent directory
+     */
+    public function parentDirectory()
+    {
+        return $this->belongsTo('IXP\Models\DocstoreDirectory', 'parent_dir_id', 'id' );
+    }
+
     /**
      * Get the files in this directory
      */

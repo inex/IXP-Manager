@@ -26,8 +26,9 @@ $this->layout( 'layouts/ixpv4' );
                 <div class="d-flex align-items-center">
                     <div class="text-center"><i class="fa fa-info-circle fa-2x "></i></div>
                     <div class="col-sm-12">
-                        The new document store mentioned on the <i>INEX Members' Mailing List</i> containing minutes from the meetings of the INEX Board of Directors can be found through the <i>Member Information</i>
-                        menu above or by <a href="<?= route('docstore-dir@list' ) ?>">clicking here</a>.
+                        A document store, to facilitate transparency and sharing of documents, with the members, by the INEX Board of directors, can be accessed via the
+                        <i>Member Information</i> menu item above or by <a href="<?= route('docstore-dir@list' ) ?>">clicking here</a>. This document store will be
+                        populated with future Board, AGM and EGM meeting minutes, on an ongoing basis.
                     </div>
                 </div>
             </div>

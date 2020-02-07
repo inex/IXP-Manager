@@ -20,7 +20,8 @@ class CreateDocstoreFiles extends Migration
             $table->string('name',100);
             $table->string('disk',100)->default('docstore');
             $table->string('path',255);
-            $table->text('description',100);
+            $table->string('sha256',64)->nullable();
+            $table->text('description',100)->nullable();
             $table->smallInteger('min_privs');
 
             // we're not using a FK constraint here as users can be deleted without deleting files.
