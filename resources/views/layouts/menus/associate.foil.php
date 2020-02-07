@@ -124,8 +124,12 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right">
 
-                    <a class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
+                    <a id="profile" class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
                         Profile
+                    </a>
+
+                    <a id="active-sessions" class="dropdown-item <?= !request()->is( 'active-sessions/list' ) ?: 'active' ?>" href="<?= route('active-sessions@list' )?>">
+                        Active Sessions
                     </a>
 
                 </ul>
@@ -137,7 +141,7 @@
                         Switch Back
                     </a>
                 <?php else: ?>
-                    <a class="nav-link" href="<?= route( 'login@logout' ) ?>">
+                    <a id="logout" class="nav-link" href="<?= route( 'login@logout' ) ?>">
                         Logout
                     </a>
                 <?php endif; ?>

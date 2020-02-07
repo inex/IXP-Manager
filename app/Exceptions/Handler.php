@@ -47,6 +47,10 @@ use Exception,Redirect;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 
+use IXP\Exceptions\Services\Grapher\GraphCannotBeProcessedException;
+
+use IXP\Utils\View\Alert\{Container as AlertContainer, Alert};
+
 
 class Handler extends ExceptionHandler
 {
@@ -85,18 +89,16 @@ class Handler extends ExceptionHandler
      *
      * @param  \Illuminate\Http\Request  $request
      * @param  \Exception  $exception
-     * @return \Illuminate\Http\Response
+     * @return \Symfony\Component\HttpFoundation\Response
      */
     public function render($request, Exception $exception)
     {
+        if( $exception instanceof GraphCannotBeProcessedException ) {
+            AlertContainer::push( 'No graphing backend configured to support the requested graph type.', Alert::DANGER );
+            return Redirect::to('');
+        }
+
         return parent::render($request, $exception);
-//        if( $this->isHttpException($exception) ) {
-//            return $this->renderHttpException($exception);
-//        } else if( $exception instanceof AuthorizationException && request()->route()->action['middleware'] != 'grapher' ) {
-//            return Redirect::to( '' );
-//        } else {
-//            return parent::render($request, $exception);
-//        }
     }
 
 }

@@ -130,10 +130,22 @@ class SwitchConfigurationGenerator
             /** @var \Entities\VlanInterface $vli */
             $v = [];
             $v[ 'number' ] = $vli->getVlan()->getNumber();
+
             $v[ 'macaddresses' ] = [];
             foreach( $vli->getLayer2Addresses() as $mac ) {
                 $v[ 'macaddresses' ][] = $mac->getMacFormattedWithColons();
             }
+
+            $v['ipaddresses'] = [];
+
+            if( $vli->getIpv4enabled() && $vli->getIPv4Address() ) {
+                $v['ipaddresses']['ipv4'] = $vli->getIPv4Address()->getAddress();
+            }
+
+            if( $vli->getIpv6enabled() && $vli->getIPv6Address() ) {
+                $v['ipaddresses']['ipv6'] = $vli->getIPv6Address()->getAddress();
+            }
+
             $p[ 'vlans' ][] = $v;
         }
 

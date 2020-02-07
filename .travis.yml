@@ -8,6 +8,7 @@ language: php
 
 php:
     - 7.3
+    - 7.4
 
 services:
     - memcached
@@ -24,6 +25,10 @@ before_install:
   - sudo apt-get update
   - "./data/travis-ci/setup_tests.sh"
 
+before_script:
+  - echo 'Europe/Dublin' | sudo tee /etc/timezone
+  - sudo dpkg-reconfigure --frontend noninteractive tzdata
+      
 after_failure:
     - "./data/travis-ci/after_failure.sh"
 

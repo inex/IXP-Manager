@@ -114,6 +114,7 @@ trait IPAddress {
      * @param VlanEntity $vlan
      * @param array $list
      * @return array
+     * @throws
      */
     public function getFreeAddressesFromList( VlanEntity $vlan, array $list ): array
     {

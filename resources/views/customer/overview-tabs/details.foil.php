@@ -59,7 +59,7 @@
     </div>
 
     <div class="col-md-6">
-        <?php if( !config('ixp.reseller.no_billing') || !$t->resellerMode() || !$t->c->isResoldCustomer() ): ?>
+        <?php if( !config('ixp.reseller.no_billing') && !$t->c->isResoldCustomer() ): ?>
         <div class="tw-rounded tw-p-4 tw-shadow-md tw-border tw-border-grey-light">
             <header class="tw-pb-2 tw-pl-2 tw-flex tw-border-b tw-border-grey-300">
                 <h3>

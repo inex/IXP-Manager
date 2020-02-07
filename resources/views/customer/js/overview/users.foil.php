@@ -42,3 +42,4 @@
 
     });
 </script>
+<?= $t->insert( 'user/js/delete-2fa' ); ?>

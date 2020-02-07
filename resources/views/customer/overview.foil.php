@@ -299,7 +299,7 @@
                             <li class="nav-item" onclick="window.location.href = '<?= route( "rs-prefixes@view", [ 'cid' =>  $c->getId() ] ) ?>'">
                                 <a class="nav-link" data-toggle="tab"  href="">
                                     RS Prefixes
-                                    <?php if( $t->rsRoutes[ 'adv_nacc' ][ 'total' ] > 0 ): ?>
+                                    <?php if( $t->rsRoutes && $t->rsRoutes[ 'adv_nacc' ][ 'total' ] > 0 ): ?>
                                         <span class="badge badge-danger"><?= $t->rsRoutes[ 'adv_nacc' ][ 'total' ] ?></span>
                                     <?php endif ?>
                                     &raquo;

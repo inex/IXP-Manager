@@ -134,11 +134,11 @@ class Kernel extends HttpKernel {
         'auth.basic'            => AuthenticateWithBasicAuth::class,
         'bindings'              => SubstituteBindings::class,
         'can'                   => Authorize::class,
-        'cache.headers' => \Illuminate\Http\Middleware\SetCacheHeaders::class,
+        'cache.headers'         => \Illuminate\Http\Middleware\SetCacheHeaders::class,
         'guest'                 => Middleware\RedirectIfAuthenticated::class,
-        'signed' => \Illuminate\Routing\Middleware\ValidateSignature::class,
+        'signed'                => \Illuminate\Routing\Middleware\ValidateSignature::class,
         'throttle'              => ThrottleRequests::class,
-        'verified' => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
+        'verified'              => \Illuminate\Auth\Middleware\EnsureEmailIsVerified::class,
         'apiauth'               => Middleware\ApiAuthenticate::class,
         'apimaybeauth'          => Middleware\ApiMaybeAuthenticate::class,
         'assert.privilege'      => Middleware\AssertUserPrivilege::class,
@@ -147,6 +147,7 @@ class Kernel extends HttpKernel {
         'grapher'               => Middleware\Services\Grapher::class,
         'patch-panel-port'      => Middleware\PatchPanelPort::class,
         'rs-prefixes'           => Middleware\RsPrefixes::class,
+        '2fa'                   => Middleware\Google2FA::class,
     ];
 
 

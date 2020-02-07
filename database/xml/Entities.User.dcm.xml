@@ -8,7 +8,6 @@
     <field name="username" type="string" unique="true" length="255" nullable="true"/>
     <field name="password" type="string" length="255" nullable="true"/>
     <field name="email" type="string" length="255" nullable="true"/>
-    <field name="remember_token" type="string" length="100" nullable="true"/>
     <field name="authorisedMobile" type="string" length="30" nullable="true" column="authorisedMobile"/>
     <field name="uid" type="integer" nullable="true"/>
     <field name="privs" type="integer" nullable="true"/>
@@ -27,5 +26,7 @@
     <one-to-many field="ApiKeys" target-entity="Entities\ApiKey" mapped-by="User"/>
     <one-to-many field="Preferences" target-entity="Entities\UserPreference" mapped-by="User"/>
     <one-to-many field="Customers" target-entity="Entities\CustomerToUser" mapped-by="user"/>
+    <one-to-one  field="User2FA" target-entity="Entities\User2FA" mapped-by="User"/>
+    <one-to-many field="UserRememberToken" target-entity="Entities\UserRememberToken" mapped-by="User"/>
   </entity>
 </doctrine-mapping>

@@ -694,7 +694,7 @@ class SwitchController extends Doctrine2Frontend
         $speeds = D2EM::getRepository( PhysicalInterfaceEntity::class )->getAllSpeed();
 
         $switch = false;
-        if( $r->input( 'switch' ) ) {
+        if( $r->input( 'switch', null ) !== null ) {
             /** @var SwitcherEntity $switch */
             if(  $switch = D2EM::getRepository( SwitcherEntity::class )->find( $r->input( 'switch' ) ) ) {
                 $r->session()->put( "switch-configuration-switch", $switch );
@@ -707,9 +707,9 @@ class SwitchController extends Doctrine2Frontend
         }
 
         $infra = false;
-        if( $r->input( 'infra' ) ) {
+        if( $r->input( 'infra', null ) !== null ) {
             /** @var InfrastructureEntity $infra */
-            if(  $infra = D2EM::getRepository( InfrastructureEntity::class )->find( $r->input( 'infra' ) ) ) {
+            if(  $r->input( 'infra' ) && $infra = D2EM::getRepository( InfrastructureEntity::class )->find( $r->input( 'infra' ) ) ) {
                 $r->session()->put( "switch-configuration-infra", $infra );
             } else {
                 $r->session()->remove( "switch-configuration-infra" );
@@ -720,9 +720,9 @@ class SwitchController extends Doctrine2Frontend
         }
 
         $location = false;
-        if( $r->input( 'location' ) ) {
+        if( $r->input( 'location', null ) !== null ) {
             /** @var LocationEntity $facility */
-            if(  $location = D2EM::getRepository( LocationEntity::class )->find( $r->input( 'location' ) ) ) {
+            if(  $r->input( 'location' ) && $location = D2EM::getRepository( LocationEntity::class )->find( $r->input( 'location' ) ) ) {
                 $r->session()->put( "switch-configuration-location", $location );
             } else {
                 $r->session()->remove( "switch-configuration-location" );
@@ -733,7 +733,7 @@ class SwitchController extends Doctrine2Frontend
         }
 
         $speed = false;
-        if( $r->input( 'speed' ) ) {
+        if( $r->input( 'speed', null ) !== null ) {
             $speed = $r->input( 'speed' );
             if( in_array( $r->input( 'speed' ), $speeds) ) {
                 $r->session()->put( "switch-configuration-speed", $speed );

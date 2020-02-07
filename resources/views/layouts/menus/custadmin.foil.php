@@ -182,12 +182,16 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right" id="my-account-dd">
 
-                    <a class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
+                    <a id="profile" class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
                         Profile
                     </a>
 
                     <a class="dropdown-item <?= !request()->is( 'api-key/list' ) ?: 'active' ?>" href="<?= route('api-key@list' )?>">
                         API Keys
+                    </a>
+
+                    <a id="active-sessions" class="dropdown-item <?= !request()->is( 'active-sessions/list' ) ?: 'active' ?>" href="<?= route('active-sessions@list' )?>">
+                        Active Sessions
                     </a>
 
                     <?php if( count( Auth::getUser()->getCustomers() ) > 1 ): ?>
@@ -210,7 +214,7 @@
 
                     <div class="dropdown-divider"></div>
 
-                    <a class="dropdown-item" href="<?= route( 'login@logout' ) ?>">
+                    <a id="logout" class="dropdown-item" href="<?= route( 'login@logout' ) ?>">
                         Logout
                     </a>
 
