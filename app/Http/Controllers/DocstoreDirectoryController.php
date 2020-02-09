@@ -2,8 +2,10 @@
 
 namespace IXP\Http\Controllers;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\Request;
 
+use Illuminate\Database\Eloquent\Collection;
 use IXP\Models\DocstoreDirectory;
 
 class DocstoreDirectoryController extends Controller
@@ -13,22 +15,22 @@ class DocstoreDirectoryController extends Controller
 
         if( $dir ) {
             $this->authorize( 'can-access', $dir );
+
+            $files = $dir->files()->where('min_privs', '<=', $request->user()->getPrivs() )->orderBy('name')
+                ->where('docstore_directory_id', $dir ? $dir->id : null )->orderBy('name')
+                ->withCount([ 'logs as downloads_count', 'logs as unique_downloads_count' => function( Builder $query ) {
+                    //$query->select([ 'docstore_file_id', 'downloaded_by'] )->distinct('downloaded_by');
+                }])->get();
+
+        } else {
+            $files = new Collection;
         }
 
         return view( 'docstore/dir/list', [
             'dir'  => $dir ?? false,
             'dirs' => DocstoreDirectory::where( 'min_privs', '<=', $request->user()->getPrivs() )
                         ->where('parent_dir_id', $dir ? $dir->id : null )->orderBy('name')->get(),
-            'files' => $dir ? $dir->files()->where('min_privs', '<=', $request->user()->getPrivs() )->orderBy('name')->get() : [],
+            'files' => $files,
         ] );
-    }
-
-    public function listFiles( Request $request, DocstoreDirectory $dir ) {
-        $this->authorize( 'can-access', $dir );
-
-        return view( 'docstore/dir/list-files', [
-            'dir'   => $dir,
-            'files' => $dir->files()->where('min_privs', '<=', $request->user()->getPrivs() )->orderBy('name')->get()
-        ]);
     }
 }

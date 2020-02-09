@@ -16,6 +16,15 @@
 
 <?php $this->section('content') ?>
 
+<?php if( $t->dir && $t->dir->description ): ?>
+
+    <div class="row tw-my-8 tw-p-4 tw-border-2 tw-border-gray-500 tw-rounded-lg tw-bg-gray-200">
+
+        <?= @parsedown( $t->ee( $t->dir->description ) ) ?>
+
+    </div>
+<?php endif; ?>
+
     <div class="row">
         <div class="col-md-12">
 
@@ -23,70 +32,53 @@
 
             <?php if( $t->dir ): ?>
 
-                <?php if( $t->dir && $t->dir->parentDirectory ): ?>
-                    <div class="row tw-mb-8">
-                        <i class="fa fa-caret-square-o-left fa-2x"></i> &nbsp;&nbsp;&nbsp;&nbsp; <a href="<?= route('docstore-dir@list', ['dir' => $t->dir->parentDirectory->id] ) ?>"><?= $t->ee( $t->dir->parentDirectory->name ) ?></a>
-                    </div>
-                <?php endif; ?>
-
                 <div class="row tw-mb-8">
+                    <?php if( $t->dir ): ?>
+                        <a class="tw-pr-4 tw-text-black" href="<?= route('docstore-dir@list', ['dir' => $t->dir->parentDirectory ? $t->dir->parentDirectory->id : null] ) ?>"><i class="fa fa-caret-square-o-left fa-2x"></i></a>
+                    <?php endif; ?>
                     <i class="fa fa-folder-open fa-2x"></i> &nbsp;&nbsp;&nbsp;&nbsp; <?= $t->ee( $t->dir->name ) ?>
                 </div>
 
             <?php endif; ?>
 
-            <?php foreach( $t->dirs as $dir ): ?>
+            <?php foreach( $t->dirs as $i => $dir ): ?>
 
-                <div class="row">
-                    <div class="col-md-1 col-1 tw-text-center">
-                        <i class="fa fa-2x fa-folder"></i>&nbsp;&nbsp;&nbsp;&nbsp;
-                    </div>
-                    <div class="col-md-11 col-11">
-                        <p class="tw-pl-6 tw-mb-4">
-                            <a href="<?= route('docstore-dir@list', ['dir' => $dir->id] ) ?>"><?= $t->ee( $dir->name ) ?></a>
-                        </p>
-                    </div>
+                <div class="row tw-py-4 tw-my-0 tw-mx-4 tw-border-b <?= $i === 0 && !$t->dirs->isEmpty() ? 'tw-border-t' : '' ?>">
+                    <p class="tw-align-middle tw-my-0 tw-mx-4 tw-p-0">
+                        <i class="fa fa-lg fa-folder tw-inline tw-mr-4"></i>
+                         <a href="<?= route('docstore-dir@list', ['dir' => $dir->id] ) ?>"><?= $t->ee( $dir->name ) ?></a>
+                    </p>
                 </div>
 
             <?php endforeach; ?>
 
 
 
-            <?php foreach( $t->files as $file ): ?>
+            <?php foreach( $t->files as $i => $file ): ?>
 
-                <div class="row">
-                    <div class="col-md-1 col-1 tw-text-center">
-                        <i class="fa fa-2x fa-file"></i>&nbsp;&nbsp;&nbsp;&nbsp;
-                    </div>
-                    <div class="col-md-11 col-11">
-                        <p class="tw-pl-6 tw-mb-4">
-                            <a href="<?= route('docstore-file@download', ['file' => $file->id] ) ?>"><?= $t->ee( $file->name ) ?></a>
+                <div class="row tw-py-4 tw-my-0 tw-mx-4 tw-border-b  <?= $i === 0 && $t->dirs->isEmpty() && !$t->dirs->isEmpty() ? 'tw-border-t' : '' ?>">
+                    <p class="tw-align-middle tw-my-0 tw-mx-4 tw-p-0">
+                        <i class="fa fa-lg fa-file tw-inline tw-mr-4"></i>
+                        <a href="<?= route('docstore-file@download', ['file' => $file->id] ) ?>"><?= $t->ee( $file->name ) ?></a>
+                    </p>
 
-                            <br><span class="tw-text-xs tw-font-mono tw-text-gray-500">
-                            <?php if( $file->sha256 ): ?>
-                                SHA256: <?= $file->sha256 ?>
-                            <?php else: ?>
-                                &nbsp;
-                            <?php endif; ?>
-                            </span>
-
+                    <?php if( Auth::user()->isSuperUser() ): ?>
+                        <p class="tw-align-middle tw-my-0 tw-mx-4 tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-sm">
+                            <?= $file->downloads_count ?> <?php /* (<?= $file->unique_downloads_count ?>) */ ?>
                         </p>
+                    <?php endif; ?>
+
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm tw-my-0 tw-py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            &middot;&middot;&middot;
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="#" onclick="bootbox.alert('<?= $file->sha256 ? "<code>" . $t->ee( $file->sha256 ) . "</code>" : "There is no sha256 checksum registered for this file." ?>'); return false;">Show SHA256</a>
+                        </div>
                     </div>
                 </div>
 
             <?php endforeach; ?>
-
-            <?php if( $t->files === [] || $t->files->isEmpty() ): ?>
-                <div class="row tw-pl-6">
-                    There are no files is this directory. Start by adding one...
-                </div>
-            <?php endif; ?>
-
-
-            <?php if( $t->dirs->isEmpty() ): ?>
-                There are no directories is this document store. Start by creating one...
-            <?php endif; ?>
-
 
         </div>
     </div>
