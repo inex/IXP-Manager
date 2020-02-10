@@ -28,10 +28,10 @@ class DocstoreFilePolicy
      * @param  \IXP\Models\DocstoreFile  $docstoreFile
      * @return mixed
      */
-    public function view(User $user, DocstoreFile $docstoreFile)
+    public function view(?User $user, DocstoreFile $docstoreFile)
     {
         //
-        return $user->getPrivs() >= $docstoreFile->min_privs;
+        return $docstoreFile->min_privs <= ( $user ? $user->getPrivs() : User::AUTH_PUBLIC );
     }
 
     /**

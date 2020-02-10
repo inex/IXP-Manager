@@ -13,7 +13,9 @@ class DocstoreFileController extends Controller
     public function download( Request $request, DocstoreFile $file ) {
         $this->authorize( 'view', $file );
 
-        $file->logs()->save( new DocstoreLog(['downloaded_by' => $request->user()->getId()]));
+        if( $request->user() ) {
+            $file->logs()->save( new DocstoreLog( [ 'downloaded_by' => $request->user()->getId() ] ) );
+        }
 
         return Storage::disk($file->disk)->download($file->path, $file->name);
     }

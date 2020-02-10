@@ -62,7 +62,7 @@
                         <a href="<?= route('docstore-file@download', ['file' => $file->id] ) ?>"><?= $t->ee( $file->name ) ?></a>
                     </p>
 
-                    <?php if( Auth::user()->isSuperUser() ): ?>
+                    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
                         <p class="tw-align-middle tw-my-0 tw-mx-4 tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-sm">
                             <?= $file->downloads_count ?> <?php /* (<?= $file->unique_downloads_count ?>) */ ?>
                         </p>
@@ -73,7 +73,8 @@
                             &middot;&middot;&middot;
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="#" onclick="bootbox.alert('<?= $file->sha256 ? "<code>" . $t->ee( $file->sha256 ) . "</code>" : "There is no sha256 checksum registered for this file." ?>'); return false;">Show SHA256</a>
+                            <a class="dropdown-item" href="#"
+                               onclick="bootbox.alert({ message: '<?= $file->sha256 ? "<code>" . $t->ee( $file->sha256 ) . "</code>" : "There is no sha256 checksum registered for this file." ?>', size: 'large' }); return false;">Show SHA256</a>
                         </div>
                     </div>
                 </div>
