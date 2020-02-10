@@ -171,7 +171,11 @@ Route::get('auth/login/peeringdb/callback', 'Auth\LoginController@peeringdbHandl
 if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
     Route::group( [ 'prefix' => 'docstore' ], function() {
         Route::get( '/{dir?}', 'DocstoreDirectoryController@list' )->name( 'docstore-dir@list' );
-        Route::get( 'file/download/{file}', 'DocstoreFileController@download' )->name( 'docstore-file@download' );
+
+        Route::get( '/dir/create', 'DocstoreDirectoryController@create' )->name( 'docstore-dir@create' );
+        Route::post( '/dir/store/{dir?}', 'DocstoreDirectoryController@store' )->name( 'docstore-dir@store' );
+
+        Route::get( '/file/download/{file}', 'DocstoreFileController@download' )->name( 'docstore-file@download' );
     } );
 }
 

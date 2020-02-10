@@ -10,6 +10,13 @@ class DocstoreDirectoryPolicy
 {
     use HandlesAuthorization;
 
+    public function before(?User $user, $ability)
+    {
+        if( optional( $user )->isSuperUser() ) {
+            return true;
+        }
+    }
+
     /**
      * Determine whether the user can view any docstore directories.
      *
@@ -30,7 +37,7 @@ class DocstoreDirectoryPolicy
      */
     public function view(?User $user, DocstoreDirectory $docstoreDirectory)
     {
-        return $docstoreDirectory->min_privs <= ( $user ? $user->getPrivs() : User::AUTH_PUBLIC );
+        //
     }
 
     /**
@@ -41,7 +48,7 @@ class DocstoreDirectoryPolicy
      */
     public function create(User $user)
     {
-        //
+        return $user->isSuperUser();
     }
 
     /**

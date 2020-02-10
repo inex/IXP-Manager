@@ -4,6 +4,8 @@ namespace IXP\Models;
 
 use Entities\User as UserEntity;
 
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
 
@@ -15,7 +17,6 @@ use Illuminate\Database\Eloquent\Model;
  * @property int $id
  * @property string $name
  * @property string $description
- * @property int $min_privs
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory newModelQuery()
@@ -24,13 +25,18 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereCreatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereMinPrivs($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 class DocstoreDirectory extends Model
 {
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = ['name','description'];
 
     /**
      * Get the subdirectories for this directory
@@ -67,9 +73,16 @@ class DocstoreDirectory extends Model
      */
     public static function getListing( ?DocstoreDirectory $dir, ?UserEntity $user ): EloquentCollection
     {
-        return self::where( 'min_privs', '<=', $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC )
-            ->where('parent_dir_id', $dir ? $dir->id : null )
-            ->orderBy('name')->get();
+        $list = self::where('parent_dir_id', $dir ? $dir->id : null );
+
+        if( !$user || !$user->isSuperUser() ) {
+            $list->whereHas( 'files', function( Builder $query ) use ( $user ) {
+                $query->where( 'min_privs', '<=', $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC );
+            } );
+        }
+
+        return $list->orderBy('name')->get();
     }
+
 
 }
