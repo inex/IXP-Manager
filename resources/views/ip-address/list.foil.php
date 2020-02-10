@@ -103,7 +103,7 @@
                     <tbody>
                         <?php foreach( $t->ips as $ip ):?>
                             <tr>
-                                <td>
+                                <td data-order="<?= $t->ee( $ip[ 'aton' ] ) ?>">
                                     <?= $t->ee( $ip[ 'address' ] ) ?>
                                 </td>
                                 <td>
