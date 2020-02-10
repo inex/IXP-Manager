@@ -2,6 +2,8 @@
 
 namespace IXP\Models;
 
+use Entities\User as UserEntity;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 
 /**
@@ -50,4 +52,24 @@ class DocstoreFile extends Model
     {
         return $this->hasMany('IXP\Models\DocstoreLog');
     }
+
+
+    /**
+     * Gets a directory listing of files for the given (or root) directory and as
+     * appropriate for the user (or public access)
+     *
+     * @param DocstoreDirectory|null $dir
+     * @param UserEntity|null $user
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public static function getListing( ?DocstoreDirectory $dir = null, ?UserEntity $user = null )
+    {
+        return DocstoreFile::where('min_privs', '<=', $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC )
+            ->where('docstore_directory_id', $dir ? $dir->id : null )
+            ->withCount([ 'logs as downloads_count', 'logs as unique_downloads_count' => function( Builder $query ) {
+                //$query->select([ 'docstore_file_id', 'downloaded_by'] )->distinct('downloaded_by');
+            }])
+            ->orderBy('name')->get();
+    }
+
 }

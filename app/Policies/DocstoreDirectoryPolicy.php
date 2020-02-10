@@ -22,27 +22,15 @@ class DocstoreDirectoryPolicy
     }
 
     /**
-     * Determine whether the user can access files in a docstore directory.
-     *
-     * @param  \Entities\User  $user
-     * @param  \IXP\Models\DocstoreDirectory  $docstoreDirectory
-     * @return mixed
-     */
-    public function canAccess(User $user, DocstoreDirectory $docstoreDirectory)
-    {
-        return $user->getPrivs() >= $docstoreDirectory->min_privs;
-    }
-
-    /**
      * Determine whether the user can view the docstore directory.
      *
      * @param  \Entities\User  $user
      * @param  \IXP\Models\DocstoreDirectory  $docstoreDirectory
      * @return mixed
      */
-    public function view(User $user, DocstoreDirectory $docstoreDirectory)
+    public function view(?User $user, DocstoreDirectory $docstoreDirectory)
     {
-        //
+        return $docstoreDirectory->min_privs <= ( $user ? $user->getPrivs() : User::AUTH_PUBLIC );
     }
 
     /**

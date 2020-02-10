@@ -176,10 +176,3 @@ if( config( 'google2fa.enabled' ) ) {
     } );
 
 }
-
-if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
-    Route::group( [ 'prefix' => 'docstore' ], function() {
-        Route::get( 'dir/list/{dir?}', 'DocstoreDirectoryController@list' )->name( 'docstore-dir@list' );
-        Route::get( 'file/download/{file}', 'DocstoreFileController@download' )->name( 'docstore-file@download' );
-    } );
-}

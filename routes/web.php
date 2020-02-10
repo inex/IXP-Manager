@@ -162,6 +162,20 @@ Route::get( 'participants.json', function() { return redirect(route('ixf-member-
 Route::get('auth/login/peeringdb',          'Auth\LoginController@peeringdbRedirectToProvider')->name('auth:login-peeringdb');
 Route::get('auth/login/peeringdb/callback', 'Auth\LoginController@peeringdbHandleProviderCallback');
 
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// DOCUMENT STORE
+///
+if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
+    Route::group( [ 'prefix' => 'docstore' ], function() {
+        Route::get( '/{dir?}', 'DocstoreDirectoryController@list' )->name( 'docstore-dir@list' );
+        Route::get( 'file/download/{file}', 'DocstoreFileController@download' )->name( 'docstore-file@download' );
+    } );
+}
+
+
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///

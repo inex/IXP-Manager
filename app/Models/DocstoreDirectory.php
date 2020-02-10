@@ -2,7 +2,12 @@
 
 namespace IXP\Models;
 
+use Entities\User as UserEntity;
+
+use Illuminate\Database\Eloquent\Collection as EloquentCollection;
 use Illuminate\Database\Eloquent\Model;
+
+
 
 /**
  * IXP\Models\DocstoreDirectory
@@ -30,25 +35,41 @@ class DocstoreDirectory extends Model
     /**
      * Get the subdirectories for this directory
      */
-    public function subDirectories()
+    public function subDirectories(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany('IXP\Models\DocstoreDirectory', 'parent_dir_id', 'id' );
+        return $this->hasMany(DocstoreDirectory::class, 'parent_dir_id', 'id' );
     }
 
     /**
      * Get the parent directory
      */
-    public function parentDirectory()
+    public function parentDirectory(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
-        return $this->belongsTo('IXP\Models\DocstoreDirectory', 'parent_dir_id', 'id' );
+        return $this->belongsTo(DocstoreDirectory::class, 'parent_dir_id', 'id' );
     }
 
     /**
      * Get the files in this directory
      */
-    public function files()
+    public function files(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-        return $this->hasMany('IXP\Models\DocstoreFile');
+        return $this->hasMany(DocstoreFile::class);
+    }
+
+
+    /**
+     * Gets a listing of directories for the given (or root) directory and as
+     * appropriate for the user (or public access)
+     *
+     * @param DocstoreDirectory|null $dir
+     * @param UserEntity|null $user
+     * @return EloquentCollection
+     */
+    public static function getListing( ?DocstoreDirectory $dir, ?UserEntity $user ): EloquentCollection
+    {
+        return self::where( 'min_privs', '<=', $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC )
+            ->where('parent_dir_id', $dir ? $dir->id : null )
+            ->orderBy('name')->get();
     }
 
 }
