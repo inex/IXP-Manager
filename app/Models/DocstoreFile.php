@@ -5,6 +5,7 @@ namespace IXP\Models;
 use Entities\User as UserEntity;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\DB;
 
 /**
  * IXP\Models\DocstoreFile
@@ -67,7 +68,7 @@ class DocstoreFile extends Model
         return self::where('min_privs', '<=', $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC )
             ->where('docstore_directory_id', $dir ? $dir->id : null )
             ->withCount([ 'logs as downloads_count', 'logs as unique_downloads_count' => function( Builder $query ) {
-                //$query->select([ 'docstore_file_id', 'downloaded_by'] )->distinct('downloaded_by');
+                $query->select( DB::raw('COUNT( DISTINCT downloaded_by )' ) );
             }])
             ->orderBy('name')->get();
     }
