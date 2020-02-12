@@ -87,8 +87,10 @@
                         <a href="<?= route('docstore-file@download', ['file' => $file->id] ) ?>"><?= $t->ee( $file->name ) ?></a>
                     </p>
 
-                    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-                        <p class="tw-align-middle tw-my-0 tw-mx-4 tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-sm">
+
+                    <?php if( Auth::check() && Auth::user()->isSuperUser() && $file->downloads_count ): ?>
+                        <p class="tw-align-middle tw-my-0 tw-mx-4 tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-sm"
+                                data-toggle="tooltip" data-placement="left" data-html="true" title="User Downloads:<br> <?= $file->downloads_count ?> Total (<?= $file->unique_downloads_count ?> Unique)">
                             <?= $file->downloads_count ?> (<?= $file->unique_downloads_count ?>)
                         </p>
                     <?php endif; ?>
@@ -113,5 +115,8 @@
 
 <?php $this->section( 'scripts' ) ?>
     <script>
+        $(function () {
+            $('[data-toggle="tooltip"]').tooltip()
+        })
     </script>
 <?php $this->append() ?>
