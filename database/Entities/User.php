@@ -87,6 +87,14 @@ class User implements Authenticatable, CanResetPasswordContract
         User::AUTH_SUPERUSER => 'Superuser',
     );
 
+    public static $PRIVILEGES_TEXT_ALL = array(
+        User::AUTH_PUBLIC    => 'Public / Non-User',
+        User::AUTH_CUSTUSER  => 'Customer User',
+        User::AUTH_CUSTADMIN => 'Customer Administrator',
+        User::AUTH_SUPERUSER => 'Superuser',
+    );
+
+
     public static $PRIVILEGES_TEXT_SHORT = array(
         User::AUTH_CUSTUSER  => 'Cust User',
         User::AUTH_CUSTADMIN => 'Cust Admin',

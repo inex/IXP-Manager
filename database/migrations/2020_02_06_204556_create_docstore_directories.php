@@ -20,7 +20,6 @@ class CreateDocstoreDirectories extends Migration
 
             $table->string('name',100)->nullable(false);
             $table->text('description')->nullable(false);
-            $table->smallInteger('min_privs')->unsigned()->nullable(false);
 
             $table->timestamps();
         });

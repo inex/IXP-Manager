@@ -20,7 +20,4 @@ class DocstoreFileController extends Controller
         return Storage::disk($file->disk)->download($file->path, $file->name);
     }
 
-
-
-
 }

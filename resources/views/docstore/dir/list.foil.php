@@ -9,9 +9,24 @@
     Document Store
 <?php $this->append() ?>
 
-
 <?php $this->section( 'page-header-postamble' ) ?>
+    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+        <div class="btn-group btn-group-sm ml-auto" role="group">
 
+            <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/document-store/">
+                Documentation
+            </a>
+
+            <a id="add-dir" class="btn btn-white" href="<?= route('docstore-dir@create', ['parent_dir' => $t->dir ? $t->dir->id : null ]) ?>">
+                <i class="fa fa-plus"></i> <i class="fa fa-folder"></i>
+            </a>
+
+            <a id="add-file" class="btn btn-white" href="<?= route('docstore-dir@create') ?>">
+                <i class="fa fa-plus"></i> <i class="fa fa-file"></i>
+            </a>
+
+        </div>
+    <?php endif; ?>
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -57,7 +72,7 @@
             <?php foreach( $t->files as $i => $file ): ?>
 
                 <div class="row tw-py-4 tw-my-0 tw-mx-4 tw-border-b  <?= $i === 0 && $t->dirs->isEmpty() && !$t->dirs->isEmpty() ? 'tw-border-t' : '' ?>">
-                    <p class="tw-align-middle tw-my-0 tw-mx-4 tw-p-0">
+                    <p class="tw-align-middle tw-my-0 tw-mx-4 tw-p-0 mr-auto">
                         <i class="fa fa-lg fa-file tw-inline tw-mr-4"></i>
                         <a href="<?= route('docstore-file@download', ['file' => $file->id] ) ?>"><?= $t->ee( $file->name ) ?></a>
                     </p>
