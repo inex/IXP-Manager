@@ -169,13 +169,15 @@ Route::get('auth/login/peeringdb/callback', 'Auth\LoginController@peeringdbHandl
 /// DOCUMENT STORE
 ///
 if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
-    Route::group( [ 'prefix' => 'docstore' ], function() {
-        Route::get( '/{dir?}', 'DocstoreDirectoryController@list' )->name( 'docstore-dir@list' );
+    Route::group( [ 'namespace' => 'Docstore', 'prefix' => 'docstore' ], function() {
+        Route::get( '/{dir?}',          'DirectoryController@list'      )->name( 'docstore-dir@list' );
 
-        Route::get( '/dir/create', 'DocstoreDirectoryController@create' )->name( 'docstore-dir@create' );
-        Route::post( '/dir/store/{dir?}', 'DocstoreDirectoryController@store' )->name( 'docstore-dir@store' );
+        Route::get( '/dir/create',          'DirectoryController@create'    )->name( 'docstore-dir@create'  );
+        Route::get( '/dir/{dir}/edit',      'DirectoryController@edit'      )->name( 'docstore-dir@edit'    );
+        Route::post( '/dir/store',          'DirectoryController@store'     )->name( 'docstore-dir@store'   );
+        Route::put( '/dir/update/{dir}',    'DirectoryController@update'    )->name( 'docstore-dir@update'  );
 
-        Route::get( '/file/download/{file}', 'DocstoreFileController@download' )->name( 'docstore-file@download' );
+        Route::get( '/file/download/{file}', 'FileController@download' )->name( 'docstore-file@download' );
     } );
 }
 

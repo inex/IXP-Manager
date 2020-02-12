@@ -2,7 +2,29 @@
 
 namespace IXP\Policies;
 
-use Entities\User;
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+use Entities\User as UserEntity;
+
 use IXP\Models\DocstoreDirectory;
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -10,7 +32,7 @@ class DocstoreDirectoryPolicy
 {
     use HandlesAuthorization;
 
-    public function before(?User $user, $ability)
+    public function before(?UserEntity $user, $ability)
     {
         if( optional( $user )->isSuperUser() ) {
             return true;
@@ -20,10 +42,10 @@ class DocstoreDirectoryPolicy
     /**
      * Determine whether the user can view any docstore directories.
      *
-     * @param  \Entities\User  $user
+     * @param  UserEntity  $user
      * @return mixed
      */
-    public function viewAny(User $user)
+    public function viewAny(UserEntity $user)
     {
         //
     }
@@ -31,11 +53,11 @@ class DocstoreDirectoryPolicy
     /**
      * Determine whether the user can view the docstore directory.
      *
-     * @param  \Entities\User  $user
-     * @param  \IXP\Models\DocstoreDirectory  $docstoreDirectory
+     * @param  UserEntity  $user
+     * @param DocstoreDirectory $docstoreDirectory
      * @return mixed
      */
-    public function view(?User $user, DocstoreDirectory $docstoreDirectory)
+    public function view(?UserEntity $user, DocstoreDirectory $docstoreDirectory)
     {
         //
     }
@@ -43,10 +65,10 @@ class DocstoreDirectoryPolicy
     /**
      * Determine whether the user can create docstore directories.
      *
-     * @param  \Entities\User  $user
+     * @param  UserEntity  $user
      * @return mixed
      */
-    public function create(User $user)
+    public function create(UserEntity $user)
     {
         return $user->isSuperUser();
     }
@@ -54,23 +76,24 @@ class DocstoreDirectoryPolicy
     /**
      * Determine whether the user can update the docstore directory.
      *
-     * @param  \Entities\User  $user
-     * @param  \IXP\Models\DocstoreDirectory  $docstoreDirectory
+     * @param  UserEntity  $user
+     * @param DocstoreDirectory $docstoreDirectory
+     *
      * @return mixed
      */
-    public function update(User $user, DocstoreDirectory $docstoreDirectory)
+    public function update( UserEntity $user, DocstoreDirectory $docstoreDirectory )
     {
-        //
+        return $user->isSuperUser() && $docstoreDirectory->exists;
     }
 
     /**
      * Determine whether the user can delete the docstore directory.
      *
-     * @param  \Entities\User  $user
-     * @param  \IXP\Models\DocstoreDirectory  $docstoreDirectory
+     * @param  UserEntity  $user
+     * @param DocstoreDirectory $docstoreDirectory
      * @return mixed
      */
-    public function delete(User $user, DocstoreDirectory $docstoreDirectory)
+    public function delete(UserEntity $user, DocstoreDirectory $docstoreDirectory)
     {
         //
     }
@@ -78,11 +101,11 @@ class DocstoreDirectoryPolicy
     /**
      * Determine whether the user can restore the docstore directory.
      *
-     * @param  \Entities\User  $user
-     * @param  \IXP\Models\DocstoreDirectory  $docstoreDirectory
+     * @param  UserEntity  $user
+     * @param DocstoreDirectory $docstoreDirectory
      * @return mixed
      */
-    public function restore(User $user, DocstoreDirectory $docstoreDirectory)
+    public function restore(UserEntity $user, DocstoreDirectory $docstoreDirectory)
     {
         //
     }
@@ -90,11 +113,11 @@ class DocstoreDirectoryPolicy
     /**
      * Determine whether the user can permanently delete the docstore directory.
      *
-     * @param  \Entities\User  $user
-     * @param  \IXP\Models\DocstoreDirectory  $docstoreDirectory
+     * @param  UserEntity  $user
+     * @param DocstoreDirectory $docstoreDirectory
      * @return mixed
      */
-    public function forceDelete(User $user, DocstoreDirectory $docstoreDirectory)
+    public function forceDelete(UserEntity $user, DocstoreDirectory $docstoreDirectory)
     {
         //
     }

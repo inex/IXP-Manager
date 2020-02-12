@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Models;
+namespace IXP\Http\Controllers\Docstore;
 
 /*
  * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -23,38 +23,36 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Eloquent;
+use Illuminate\Http\Request;
 
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Model
+use IXP\Http\Controllers\Controller;
+
+use IXP\Models\{
+    DocstoreFile, DocstoreLog
 };
 
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Storage;
 
-/**
- * IXP\Models\DocstoreLog
- *
- * @method static Builder|DocstoreLog newModelQuery()
- * @method static Builder|DocstoreLog newQuery()
- * @method static Builder|DocstoreLog query()
- * @mixin Eloquent
- */
-class DocstoreLog extends Model
+class FileController extends Controller
 {
     /**
-     * The attributes that aren't mass assignable.
+     * Download a docstore file
      *
-     * @var array
+     * @param Request $request
+     * @param DocstoreFile $file
+     *
+     * @return mixed
+     *
+     * @throws
      */
-    protected $guarded = [ 'id' ];
-
-    /**
-     * Get the file that owns this log.
-     */
-    public function file(): BelongsTo
+    public function download( Request $request, DocstoreFile $file )
     {
-        return $this->belongsTo('IXP\Models\DocstoreFile');
-    }
+        $this->authorize( 'view', $file );
 
+        if( $request->user() ) {
+            $file->logs()->save( new DocstoreLog( [ 'downloaded_by' => $request->user()->getId() ] ) );
+        }
+
+        return Storage::disk( $file->disk )->download( $file->path, $file->name );
+    }
 }

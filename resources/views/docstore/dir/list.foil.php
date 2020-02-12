@@ -59,10 +59,20 @@
             <?php foreach( $t->dirs as $i => $dir ): ?>
 
                 <div class="row tw-py-4 tw-my-0 tw-mx-4 tw-border-b <?= $i === 0 && !$t->dirs->isEmpty() ? 'tw-border-t' : '' ?>">
-                    <p class="tw-align-middle tw-my-0 tw-mx-4 tw-p-0">
+                    <p class="tw-align-middle tw-my-0 tw-mx-4 tw-p-0 mr-auto">
                         <i class="fa fa-lg fa-folder tw-inline tw-mr-4"></i>
                          <a href="<?= route('docstore-dir@list', ['dir' => $dir->id] ) ?>"><?= $t->ee( $dir->name ) ?></a>
                     </p>
+
+                    <div class="dropdown">
+                        <button class="btn btn-light btn-sm tw-my-0 tw-py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            &middot;&middot;&middot;
+                        </button>
+                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="<?= route( "docstore-dir@edit", [ "dir" => $dir->id ] ) ?>">Edit</a>
+                            <a class="dropdown-item" href="<?= route( "docstore-dir@edit", [ "dir" => $dir->id ] ) ?>">Delete</a>
+                        </div>
+                    </div>
                 </div>
 
             <?php endforeach; ?>
@@ -72,14 +82,14 @@
             <?php foreach( $t->files as $i => $file ): ?>
 
                 <div class="row tw-py-4 tw-my-0 tw-mx-4 tw-border-b  <?= $i === 0 && $t->dirs->isEmpty() && !$t->dirs->isEmpty() ? 'tw-border-t' : '' ?>">
-                    <p class="tw-align-middle tw-my-0 tw-mx-4 tw-p-0">
+                    <p class="tw-align-middle tw-my-0 tw-mx-4 tw-p-0 mr-auto">
                         <i class="fa fa-lg fa-file tw-inline tw-mr-4"></i>
                         <a href="<?= route('docstore-file@download', ['file' => $file->id] ) ?>"><?= $t->ee( $file->name ) ?></a>
                     </p>
 
                     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
                         <p class="tw-align-middle tw-my-0 tw-mx-4 tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-sm">
-                            <?= $file->downloads_count ?> <?php /* (<?= $file->unique_downloads_count ?>) */ ?>
+                            <?= $file->downloads_count ?> (<?= $file->unique_downloads_count ?>)
                         </p>
                     <?php endif; ?>
 

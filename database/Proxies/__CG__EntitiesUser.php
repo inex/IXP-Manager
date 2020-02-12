@@ -927,6 +927,17 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function isAssociate(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isAssociate', []);
+
+        return parent::isAssociate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getAuthIdentifier()
     {
 

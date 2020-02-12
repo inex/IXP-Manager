@@ -19,9 +19,9 @@
 
     <div class="card-body">
 
-        <?= Former::open()->method( 'post' )
+        <?= Former::open()->method( $t->dir ? 'put' : 'post' )
             ->id( 'form' )
-            ->action( route ( 'docstore-dir@store' ) )
+            ->action( $t->dir ? route ( 'docstore-dir@update', [ 'dir' => $t->dir->id ] ) : route ( 'docstore-dir@store' ) )
             ->actionButtonsCustomClass( "grey-box")
             ->class('col-8')
             ->rules([
@@ -34,7 +34,12 @@
             ->blockHelp( "The name of the directory (this is as it appears on listings in the web interface rather than on the filesystem)." );
         ?>
 
-
+        <?= Former::select( 'parent_dir' )
+            ->label( 'Root Directory' )
+            ->fromQuery( $t->dirs, 'name' )
+            ->placeholder( 'Choose a root directory' )
+            ->addClass( 'chzn-select' );
+        ?>
 
         <div class="form-group">
 
@@ -69,7 +74,6 @@
                 </div>
             </div>
         </div>
-
 
         <?= Former::actions(
                 Former::primary_submit( $t->dir ? 'Save' : 'Create' )->class( "mb-2 mb-sm-0" ),

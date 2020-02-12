@@ -2,45 +2,80 @@
 
 namespace IXP\Models;
 
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+use DB, Eloquent;
+
 use Entities\User as UserEntity;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
+
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Collection,
+    Model
+};
+
+use Illuminate\Database\Eloquent\Relations\{
+    BelongsTo,
+    HasMany
+};
+
+use Illuminate\Support\Carbon;
 
 /**
  * IXP\Models\DocstoreFile
  *
  * @property int $id
- * @property int $docstore_directory_id
+ * @property int $parent_dir_id
  * @property string $name
  * @property string $disk
  * @property string $path
  * @property string $description
  * @property int $min_privs
  * @property int|null $created_by
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereCreatedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereDisk($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereDocstoreDirectoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereMinPrivs($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile wherePath($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
+ * @method static Builder|DocstoreFile newModelQuery()
+ * @method static Builder|DocstoreFile newQuery()
+ * @method static Builder|DocstoreFile query()
+ * @method static Builder|DocstoreFile whereCreatedAt( $value )
+ * @method static Builder|DocstoreFile whereCreatedBy( $value )
+ * @method static Builder|DocstoreFile whereDescription( $value )
+ * @method static Builder|DocstoreFile whereDisk( $value )
+ * @method static Builder|DocstoreFile whereDocstoreDirectoryId( $value )
+ * @method static Builder|DocstoreFile whereId( $value )
+ * @method static Builder|DocstoreFile whereMinPrivs( $value )
+ * @method static Builder|DocstoreFile whereName( $value )
+ * @method static Builder|DocstoreFile wherePath( $value )
+ * @method static Builder|DocstoreFile whereUpdatedAt( $value )
+ * @mixin Eloquent
  */
+
 class DocstoreFile extends Model
 {
 
     /**
      * Get the directory that owns the file.
      */
-    public function directory()
+    public function directory(): BelongsTo
     {
         return $this->belongsTo('IXP\Models\DocstoreDirectory');
     }
@@ -48,11 +83,10 @@ class DocstoreFile extends Model
     /**
      * Get the access logs for this file
      */
-    public function logs()
+    public function logs(): HasMany
     {
         return $this->hasMany('IXP\Models\DocstoreLog');
     }
-
 
     /**
      * Gets a directory listing of files for the given (or root) directory and as
@@ -60,16 +94,16 @@ class DocstoreFile extends Model
      *
      * @param DocstoreDirectory|null $dir
      * @param UserEntity|null $user
-     * @return \Illuminate\Database\Eloquent\Collection
+     *
+     * @return Collection
      */
     public static function getListing( ?DocstoreDirectory $dir = null, ?UserEntity $user = null )
     {
         return self::where('min_privs', '<=', $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC )
             ->where('docstore_directory_id', $dir ? $dir->id : null )
             ->withCount([ 'logs as downloads_count', 'logs as unique_downloads_count' => function( Builder $query ) {
-                //$query->select([ 'docstore_file_id', 'downloaded_by'] )->distinct('downloaded_by');
+                $query->select( DB::raw('COUNT( DISTINCT downloaded_by )' ) );
             }])
             ->orderBy('name')->get();
     }
-
 }

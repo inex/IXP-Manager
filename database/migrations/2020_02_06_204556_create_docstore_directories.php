@@ -13,13 +13,13 @@ class CreateDocstoreDirectories extends Migration
      */
     public function up()
     {
-        Schema::create('docstore_directories', function (Blueprint $table) {
-            $table->bigIncrements('id');
+        Schema::create( 'docstore_directories', function ( Blueprint $table ) {
+            $table->bigIncrements( 'id' );
 
-            $table->bigInteger('parent_dir_id')->nullable()->unsigned()->index();
+            $table->bigInteger( 'parent_dir_id' )->nullable()->unsigned()->index();
 
-            $table->string('name',100)->nullable(false);
-            $table->text('description')->nullable(false);
+            $table->string( 'name',100 )->nullable( false );
+            $table->text( 'description' )->nullable( true );
 
             $table->timestamps();
         });
@@ -32,6 +32,6 @@ class CreateDocstoreDirectories extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('docstore_directories');
+        Schema::dropIfExists( 'docstore_directories' );
     }
 }
