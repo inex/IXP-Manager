@@ -72,7 +72,7 @@
             <?php foreach( $t->files as $i => $file ): ?>
 
                 <div class="row tw-py-4 tw-my-0 tw-mx-4 tw-border-b  <?= $i === 0 && $t->dirs->isEmpty() && !$t->dirs->isEmpty() ? 'tw-border-t' : '' ?>">
-                    <p class="tw-align-middle tw-my-0 tw-mx-4 tw-p-0">
+                    <p class="tw-align-middle tw-my-0 tw-mx-4 tw-p-0 mr-auto">
                         <i class="fa fa-lg fa-file tw-inline tw-mr-4"></i>
                         <a href="<?= route('docstore-file@download', ['file' => $file->id] ) ?>"><?= $t->ee( $file->name ) ?></a>
                     </p>
