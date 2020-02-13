@@ -165,7 +165,7 @@ class DocstoreDirectory extends Model
     private static function structureDirectories( $dirs, $dirExcluded, $depth )
     {
         $data[] = [
-            'id'        => null,
+            'id'        => '',
             'name'      => 'Root Directory'
         ];
 

@@ -112,7 +112,7 @@ class DirectoryController extends Controller
 
         Former::populate([
             'name'                  => $request->old( 'name',           $dir->name          ),
-            'parent_dir'            => $request->old( 'parent_dir',     $dir->parent_dir_id ),
+            'parent_dir'            => $request->old( 'parent_dir',     $dir->parent_dir_id ?? '' ),
             'description'           => $request->old( 'descripton',     $dir->description   ),
         ]);
 
