@@ -70,7 +70,10 @@
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item" href="<?= route( "docstore-dir@edit", [ "dir" => $dir->id ] ) ?>">Edit</a>
-                            <a class="dropdown-item" href="<?= route( "docstore-dir@edit", [ "dir" => $dir->id ] ) ?>">Delete</a>
+                            <?php if( !$dir->subDirectories()->exists() && !$dir->files()->exists() ): ?>
+                                <a class="dropdown-item list-delete-btn" href="#" data-url="<?= route('docstore-dir@delete', [ 'dir' => $dir->id ] ) ?>">Delete</a>
+                            <?php endif; ?>
+
                         </div>
                     </div>
                 </div>
@@ -114,9 +117,5 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>
-    <script>
-        $(function () {
-            $('[data-toggle="tooltip"]').tooltip()
-        })
-    </script>
+    <?= $t->insert( 'docstore/dir/js/list' ); ?>
 <?php $this->append() ?>

@@ -174,8 +174,10 @@ if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
 
         Route::get( '/dir/create',          'DirectoryController@create'    )->name( 'docstore-dir@create'  );
         Route::get( '/dir/{dir}/edit',      'DirectoryController@edit'      )->name( 'docstore-dir@edit'    );
-        Route::post( '/dir/store',          'DirectoryController@store'     )->name( 'docstore-dir@store'   );
-        Route::put( '/dir/update/{dir}',    'DirectoryController@update'    )->name( 'docstore-dir@update'  );
+
+        Route::post(    '/dir/store',       'DirectoryController@store'     )->name( 'docstore-dir@store'   );
+        Route::put(     '/dir/update/{dir}','DirectoryController@update'    )->name( 'docstore-dir@update'  );
+        Route::delete(  '/dir/{dir}',       'DirectoryController@delete'    )->name( 'docstore-dir@delete'  );
 
         Route::get( '/file/download/{file}', 'FileController@download' )->name( 'docstore-file@download' );
     } );

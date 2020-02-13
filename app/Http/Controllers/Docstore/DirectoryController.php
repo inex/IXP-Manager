@@ -123,7 +123,6 @@ class DirectoryController extends Controller
         ] );
     }
 
-
     /**
      * Store a directory
      *
@@ -137,6 +136,63 @@ class DirectoryController extends Controller
     {
         $this->authorize( 'create', DocstoreDirectory::class );
 
+        $this->checkForm( $request );
+
+        $dir = DocstoreDirectory::create( [ 'name' => $request->name, 'description' => $request->description, 'parent_dir_id' => $request->parent_dir_id ] );
+
+        AlertContainer::push( "New directory <em>{$request->name}</em> created.", Alert::SUCCESS );
+        return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->parent_dir_id ] ) );
+    }
+
+    /**
+     * Update a directory
+     *
+     * @param Request $request
+     *
+     * @param DocstoreDirectory $dir
+     * @return RedirectResponse
+     *
+     * @throws
+     */
+    public function update( Request $request , DocstoreDirectory $dir ): RedirectResponse
+    {
+        $this->authorize( 'update', $dir );
+
+        $this->checkForm( $request );
+
+        $dir->update( [ 'name' => $request->name, 'description' => $request->description, 'parent_dir_id' => $request->parent_dir ] );
+
+        AlertContainer::push( "Directory <em>{$request->name}</em> updated.", Alert::SUCCESS );
+        return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->parent_dir_id ] ) );
+    }
+
+    /**
+     * Delete a directory
+     *
+     * @param Request $request
+     *
+     * @param DocstoreDirectory $dir
+     * @return RedirectResponse
+     *
+     * @throws
+     */
+    public function delete( Request $request , DocstoreDirectory $dir ): RedirectResponse
+    {
+        $this->authorize( 'delete', $dir );
+
+        $dir->delete();
+
+        AlertContainer::push( "Directory <em>{$request->name}</em> deleted.", Alert::SUCCESS );
+        return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->parent_dir_id ] ) );
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param $request
+     */
+    private function checkForm( $request )
+    {
         $request->validate( [
             'name'          => 'required|max:100',
             'description'   => 'nullable',
@@ -148,43 +204,5 @@ class DirectoryController extends Controller
                 },
             ]
         ] );
-
-        $dir = DocstoreDirectory::create( [ 'name' => $request->name, 'description' => $request->description, 'parent_dir_id' => $request->parent_dir_id ] );
-
-        AlertContainer::push( "New directory <em>{$request->name}</em> created.", Alert::SUCCESS );
-        return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->parent_dir_id ] ) );
-    }
-
-    /**
-     * Store a directory
-     *
-     * @param Request $request
-     *
-     * @param DocstoreDirectory $dir
-     * @return RedirectResponse
-     *
-     * @throws
-     */
-    public function update( Request $request , DocstoreDirectory $dir ): RedirectResponse
-    {
-
-        $this->authorize( 'update', $dir );
-
-        $request->validate( [
-            'name'          => 'required|max:100',
-            'description'   => 'nullable',
-            'parent_dir' => [ 'nullable', 'integer',
-                function ($attribute, $value, $fail) {
-                    if( !DocstoreDirectory::where( 'parent_dir_id', $value )->exists() ) {
-                        return $fail( $attribute.' is invalid.' );
-                    }
-                },
-            ]
-        ] );
-
-        $dir->update( [ 'name' => $request->name, 'description' => $request->description, 'parent_dir_id' => $request->parent_dir ] );
-
-        AlertContainer::push( "Directory <em>{$request->name}</em> updated.", Alert::SUCCESS );
-        return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->parent_dir_id ] ) );
     }
 }

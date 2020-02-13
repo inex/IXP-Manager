@@ -32,13 +32,6 @@ class DocstoreDirectoryPolicy
 {
     use HandlesAuthorization;
 
-    public function before(?UserEntity $user, $ability)
-    {
-        if( optional( $user )->isSuperUser() ) {
-            return true;
-        }
-    }
-
     /**
      * Determine whether the user can view any docstore directories.
      *
@@ -90,12 +83,13 @@ class DocstoreDirectoryPolicy
      * Determine whether the user can delete the docstore directory.
      *
      * @param  UserEntity  $user
-     * @param DocstoreDirectory $docstoreDirectory
+     * @param DocstoreDirectory $dir
+     *
      * @return mixed
      */
-    public function delete(UserEntity $user, DocstoreDirectory $docstoreDirectory)
+    public function delete( UserEntity $user, DocstoreDirectory $dir )
     {
-        //
+        return $user->isSuperUser() && $dir->exists && !$dir->subDirectories()->exists() && !$dir->files()->exists();
     }
 
     /**
