@@ -121,12 +121,13 @@ class DocstoreDirectory extends Model
      *
      * @param DocstoreDirectory|null    $dir
      * @param UserEntity|null           $user
+     * @param int|null                  $excluded directory to exclude
      *
      * @return array
      */
-    public static function getStructuredListing( ?DocstoreDirectory $dir, ?UserEntity $user )
+    public static function getListingForDropdown( ?DocstoreDirectory $dir, ?UserEntity $user, ?int $excluded = null )
     {
-        return self::structureDirectories( self::getListing( $dir, $user ), 0 );
+        return self::structureDirectories( self::getListing( $dir, $user ), $excluded , 5 );
     }
 
     /**
@@ -161,17 +162,24 @@ class DocstoreDirectory extends Model
      *
      * @return array
      */
-    private static function structureDirectories( $dirs, $depth )
+    private static function structureDirectories( $dirs, $dirExcluded, $depth )
     {
-        $data = [];
+        $data[] = [
+            'id'        => null,
+            'name'      => 'Root Directory'
+        ];
 
         foreach( $dirs as $dir ) {
+            if( $dir->id === $dirExcluded ) {
+                continue;
+            }
+
             $data[] = [
                 'id'        => $dir->id,
-                'name'      => str_repeat( '&nbsp;', $depth ) . ( $depth > 0 ? '-&nbsp;' : '') . $dir->name
+                'name'      => str_repeat( '&nbsp;', $depth ) . '-&nbsp;' . $dir->name
             ];
 
-            foreach( self::structureDirectories( $dir->subDirectories, $depth + 5 ) as $sub ){
+            foreach( self::structureDirectories( $dir->subDirectories, $dirExcluded, $depth + 5 ) as $sub ){
                 $data[] = $sub;
             }
         }

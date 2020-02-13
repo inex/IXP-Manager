@@ -91,7 +91,7 @@ class DirectoryController extends Controller
 
         return view( 'docstore/dir/create', [
             'dir'           => false,
-            'dirs'          => DocstoreDirectory::getStructuredListing( null, $request->user() ),
+            'dirs'          => DocstoreDirectory::getListingForDropdown( null, $request->user() ),
             'parent_dir'    => $request->input( 'parent_dir', false )
         ] );
     }
@@ -118,7 +118,7 @@ class DirectoryController extends Controller
 
         return view( 'docstore/dir/create', [
             'dir'           => $dir,
-            'dirs'          => DocstoreDirectory::getStructuredListing( null, $request->user() ),
+            'dirs'          => DocstoreDirectory::getListingForDropdown( null, $request->user(), $dir->id ),
             'parent_dir'    => $dir->parent_dir_id
         ] );
     }
@@ -138,7 +138,7 @@ class DirectoryController extends Controller
 
         $this->checkForm( $request );
 
-        $dir = DocstoreDirectory::create( [ 'name' => $request->name, 'description' => $request->description, 'parent_dir_id' => $request->parent_dir_id ] );
+        $dir = DocstoreDirectory::create( [ 'name' => $request->name, 'description' => $request->description, 'parent_dir_id' => $request->parent_dir ] );
 
         AlertContainer::push( "New directory <em>{$request->name}</em> created.", Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->parent_dir_id ] ) );
