@@ -117,20 +117,6 @@ class DocstoreDirectory extends Model
 
 
     /**
-     * Gets a listing of directories and Sub folder
-     *
-     * @param DocstoreDirectory|null    $dir
-     * @param UserEntity|null           $user
-     * @param int|null                  $excluded directory to exclude
-     *
-     * @return array
-     */
-    public static function getListingForDropdown( ?DocstoreDirectory $dir, ?UserEntity $user, ?int $excluded = null )
-    {
-        return self::structureDirectories( self::getListing( $dir, $user ), $excluded , 5 );
-    }
-
-    /**
      * Create an array of directories keeping the hierarchy root/subfolder
      *
      *  [
@@ -162,7 +148,7 @@ class DocstoreDirectory extends Model
      *
      * @return array
      */
-    private static function structureDirectories( $dirs, $dirExcluded, $depth )
+    public static function getListingForDropdown( $dirs, $depth = 5 )
     {
         $data[] = [
             'id'        => '',
@@ -170,20 +156,19 @@ class DocstoreDirectory extends Model
         ];
 
         foreach( $dirs as $dir ) {
-            if( $dir->id === $dirExcluded ) {
-                continue;
-            }
 
             $data[] = [
                 'id'        => $dir->id,
                 'name'      => str_repeat( '&nbsp;', $depth ) . '-&nbsp;' . $dir->name
             ];
 
-            foreach( self::structureDirectories( $dir->subDirectories, $dirExcluded, $depth + 5 ) as $sub ){
+            foreach( self::getListingForDropdown( $dir->subDirectories, $depth + 5 ) as $sub ) {
                 $data[] = $sub;
             }
         }
 
         return $data;
+
     }
+
 }

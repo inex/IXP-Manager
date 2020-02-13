@@ -37,7 +37,6 @@
         <?= Former::select( 'parent_dir' )
             ->label( 'Root Directory' )
             ->fromQuery( $t->dirs, 'name' )
-            ->placeholder( 'Choose a root directory' )
             ->addClass( 'chzn-select' );
         ?>
 
@@ -90,5 +89,12 @@
 
 <?php $this->section( 'scripts' ) ?>
     <script>
+
+        <?php if( $t->dir ): ?>
+            $(document).ready(function() {
+                $("#parent_dir option[value=" + <?= $t->dir->id ?> +"]").attr('disabled','disabled');
+            });
+        <?php endif; ?>
+
     </script>
 <?php $this->append() ?>

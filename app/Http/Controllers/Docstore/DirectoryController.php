@@ -91,7 +91,7 @@ class DirectoryController extends Controller
 
         return view( 'docstore/dir/create', [
             'dir'           => false,
-            'dirs'          => DocstoreDirectory::getListingForDropdown( null, $request->user() ),
+            'dirs'          => DocstoreDirectory::getListingForDropdown( DocstoreDirectory::getListing( null, $request->user() )  ),
             'parent_dir'    => $request->input( 'parent_dir', false )
         ] );
     }
@@ -118,7 +118,7 @@ class DirectoryController extends Controller
 
         return view( 'docstore/dir/create', [
             'dir'           => $dir,
-            'dirs'          => DocstoreDirectory::getListingForDropdown( null, $request->user(), $dir->id ),
+            'dirs'          => DocstoreDirectory::getListingForDropdown( DocstoreDirectory::getListing( null, $request->user() ) ),
             'parent_dir'    => $dir->parent_dir_id
         ] );
     }
