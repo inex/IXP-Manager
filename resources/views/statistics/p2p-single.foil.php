@@ -36,14 +36,15 @@
 
             <a href="<?= route( 'statistics@member', [ 'id' => $t->c->getId() ] ) ?>" >
                 Traffic Exchanged with
-                <a href="<?= route( 'statistics@p2p', [ 'cid' => $dstVli->getVirtualInterface()->getCustomer()->getId() ] )
-                    . '?svli='     . $dstVli->getId()
-                    . '&dvli='     . $srcVli->getId()
-                    . '&category=' . $t->category
-                    . '&period='   . $t->period
-                    . '&protocol=' . $t->protocol
-                ?>">
-                    <?= $dstVli->getVirtualInterface()->getCustomer()->getFormattedName() ?>
+            </a>
+            <a href="<?= route( 'statistics@p2p', [ 'cid' => $dstVli->getVirtualInterface()->getCustomer()->getId() ] )
+                . '?svli='     . $dstVli->getId()
+                . '&dvli='     . $srcVli->getId()
+                . '&category=' . $t->category
+                . '&period='   . $t->period
+                . '&protocol=' . $t->protocol
+            ?>">
+                <?= $dstVli->getVirtualInterface()->getCustomer()->getFormattedName() ?>
             </a>
 
 
