@@ -66,7 +66,7 @@ class DocstoreFilePolicy
      */
     public function create( UserEntity $user )
     {
-        //
+        return $user->isSuperUser();
     }
 
     /**
@@ -79,7 +79,7 @@ class DocstoreFilePolicy
      */
     public function update( UserEntity $user, DocstoreFile $docstoreFile )
     {
-        //
+        return $user->isSuperUser() || $docstoreFile->exists;
     }
 
     /**
@@ -92,7 +92,7 @@ class DocstoreFilePolicy
      */
     public function delete( UserEntity $user, DocstoreFile $docstoreFile )
     {
-        //
+        return $user->isSuperUser();
     }
 
     /**

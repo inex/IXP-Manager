@@ -17,11 +17,11 @@
                 Documentation
             </a>
 
-            <a id="add-dir" class="btn btn-white" href="<?= route('docstore-dir@create', ['parent_dir' => $t->dir ? $t->dir->id : null ]) ?>">
+            <a id="add-dir" class="btn btn-white" href="<?= route('docstore-dir@create', ['parent_dir' => $t->dir ? $t->dir->id : null ] ) ?>">
                 <i class="fa fa-plus"></i> <i class="fa fa-folder"></i>
             </a>
 
-            <a id="add-file" class="btn btn-white" href="<?= route('docstore-dir@create') ?>">
+            <a id="add-file" class="btn btn-white" href="<?= route('docstore-file@create', ['docstore_directory_id' => $t->dir ? $t->dir->id : null ] ) ?>">
                 <i class="fa fa-plus"></i> <i class="fa fa-file"></i>
             </a>
 
@@ -71,7 +71,7 @@
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                             <a class="dropdown-item" href="<?= route( "docstore-dir@edit", [ "dir" => $dir->id ] ) ?>">Edit</a>
                             <?php if( !$dir->subDirectories()->exists() && !$dir->files()->exists() ): ?>
-                                <a class="dropdown-item list-delete-btn" href="#" data-url="<?= route('docstore-dir@delete', [ 'dir' => $dir->id ] ) ?>">Delete</a>
+                                <a class="dropdown-item list-delete-btn" data-object-type="dir" href="#" data-url="<?= route('docstore-dir@delete', [ 'dir' => $dir->id ] ) ?>">Delete</a>
                             <?php endif; ?>
 
                         </div>
@@ -103,8 +103,14 @@
                             &middot;&middot;&middot;
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                            <a class="dropdown-item" href="<?= route( "docstore-file@edit", [ "file" => $file ] ) ?>">Edit</a>
+
                             <a class="dropdown-item" href="#"
                                onclick="bootbox.alert({ message: '<?= $file->sha256 ? "<code>" . $t->ee( $file->sha256 ) . "</code>" : "There is no sha256 checksum registered for this file." ?>', size: 'large' }); return false;">Show SHA256</a>
+
+                            <a class="dropdown-item" href="<?= route( "docstore-file@download", [ "file" => $file ] ) ?>">Download</a>
+
+                            <a class="dropdown-item list-delete-btn" data-object-type="file" href="#" data-url="<?= route( "docstore-file@delete", [ "file" => $file ] ) ?>">Delete</a>
                         </div>
                     </div>
                 </div>

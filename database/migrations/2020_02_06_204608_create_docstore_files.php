@@ -2,6 +2,7 @@
 
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
+
 use Illuminate\Support\Facades\Schema;
 
 class CreateDocstoreFiles extends Migration
@@ -14,20 +15,20 @@ class CreateDocstoreFiles extends Migration
     public function up()
     {
         Schema::create('docstore_files', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->bigIncrements('id' );
 
-            $table->bigInteger('docstore_directory_id')->nullable(false)->unsigned();
+            $table->bigInteger('docstore_directory_id' )->nullable(true )->unsigned();
             $table->string('name',100);
-            $table->string('disk',100)->default('docstore');
-            $table->string('path',255);
-            $table->string('sha256',64)->nullable();
-            $table->text('description',100)->nullable();
-            $table->smallInteger('min_privs');
+            $table->string('disk',100 )->default('docstore');
+            $table->string('path',255 )->default('');
+            $table->string('sha256',64 )->nullable();
+            $table->text('description' )->nullable();
+            $table->smallInteger('min_privs' );
 
             // we're not using a FK constraint here as users can be deleted without deleting files.
             $table->integer('created_by')->nullable();
 
-            $table->foreign('docstore_directory_id')->references('id')->on('docstore_directories');
+            $table->foreign('docstore_directory_id' )->references('id' )->on('docstore_directories' );
 
             $table->timestamps();
         });

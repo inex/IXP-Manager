@@ -21,7 +21,7 @@ namespace IXP\Models;
  * along with IXP Manager.  If not, see:
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
- */
+*/
 
 use DB, Eloquent;
 
@@ -72,6 +72,13 @@ use Illuminate\Support\Carbon;
 
 class DocstoreFile extends Model
 {
+
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [ 'name', 'description', 'docstore_directory_id', 'path', 'min_privs',  ];
 
     /**
      * Get the directory that owns the file.

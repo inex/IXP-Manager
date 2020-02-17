@@ -8,15 +8,17 @@
 
             let url = $(this).attr( 'data-url');
 
+            let type = $(this).attr( 'data-object-type') === 'file' ? 'file' : 'directory';
+
             let html = `<form id="form-delete" method="POST" action="${url}">
-                                <div>Do you really want to delete this directory?</div>
+                                <div>Do you really want to delete this ${type}?</div>
                                 <input type="hidden" name="_method" value="delete" />
                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                             </form>`;
 
             bootbox.dialog({
                 message: html,
-                title: "Delete directory",
+                title: `Delete ${type}`,
                 buttons: {
                     cancel: {
                         label: 'Close',
