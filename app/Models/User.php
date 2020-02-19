@@ -89,31 +89,31 @@ class User extends Model
     const AUTH_CUSTADMIN = 2;
     const AUTH_SUPERUSER = 3;
 
-    public static $PRIVILEGES = array(
+    public static $PRIVILEGES = [
         User::AUTH_CUSTUSER  => 'CUSTUSER',
         User::AUTH_CUSTADMIN => 'CUSTADMIN',
         User::AUTH_SUPERUSER => 'SUPERUSER',
-    );
+    ];
 
-    public static $PRIVILEGES_ALL = array(
+    public static $PRIVILEGES_ALL = [
         User::AUTH_PUBLIC    => 'PUBLIC',
         User::AUTH_CUSTUSER  => 'CUSTUSER',
         User::AUTH_CUSTADMIN => 'CUSTADMIN',
         User::AUTH_SUPERUSER => 'SUPERUSER',
-    );
+    ];
 
-    public static $PRIVILEGES_TEXT = array(
+    public static $PRIVILEGES_TEXT = [
         User::AUTH_CUSTUSER  => 'Customer User',
         User::AUTH_CUSTADMIN => 'Customer Administrator',
         User::AUTH_SUPERUSER => 'Superuser',
-    );
+    ];
 
-    public static $PRIVILEGES_TEXT_ALL = array(
+    public static $PRIVILEGES_TEXT_ALL = [
         User::AUTH_PUBLIC    => 'Public / Non-User',
         User::AUTH_CUSTUSER  => 'Customer User',
         User::AUTH_CUSTADMIN => 'Customer Administrator',
         User::AUTH_SUPERUSER => 'Superuser',
-    );
+    ];
 
     /**
      * Get the customer

@@ -37,6 +37,7 @@ class DocstoreFilePolicy
      * Determine whether the user can view any docstore files.
      *
      * @param  UserEntity  $user
+     *
      * @return mixed
      */
     public function viewAny( UserEntity $user )
@@ -47,14 +48,14 @@ class DocstoreFilePolicy
     /**
      * Determine whether the user can view the docstore file.
      *
-     * @param   UserEntity  $user
-     * @param   DocstoreFile $docstoreFile
+     * @param   UserEntity      $user
+     * @param   DocstoreFile    $file
      *
      * @return mixed
      */
-    public function view( ?UserEntity $user, DocstoreFile $docstoreFile )
+    public function view( ?UserEntity $user, DocstoreFile $file )
     {
-        return $docstoreFile->min_privs <= ( $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC );
+        return $file->min_privs <= ( $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC );
     }
 
     /**
@@ -72,25 +73,25 @@ class DocstoreFilePolicy
     /**
      * Determine whether the user can update the docstore file.
      *
-     * @param   UserEntity  $user
-     * @param   DocstoreFile $docstoreFile
+     * @param   UserEntity      $user
+     * @param   DocstoreFile    $file
      *
      * @return mixed
      */
-    public function update( UserEntity $user, DocstoreFile $docstoreFile )
+    public function update( UserEntity $user, DocstoreFile $file )
     {
-        return $user->isSuperUser() || $docstoreFile->exists;
+        return $user->isSuperUser() || $file->exists;
     }
 
     /**
      * Determine whether the user can delete the docstore file.
      *
-     * @param   UserEntity  $user
-     * @param   DocstoreFile $docstoreFile
+     * @param   UserEntity      $user
+     * @param   DocstoreFile    $file
      *
      * @return mixed
      */
-    public function delete( UserEntity $user, DocstoreFile $docstoreFile )
+    public function delete( UserEntity $user, DocstoreFile $file )
     {
         return $user->isSuperUser();
     }
@@ -98,12 +99,12 @@ class DocstoreFilePolicy
     /**
      * Determine whether the user can restore the docstore file.
      *
-     * @param   UserEntity  $user
-     * @param   DocstoreFile $docstoreFile
+     * @param   UserEntity      $user
+     * @param   DocstoreFile    $file
      *
      * @return mixed
      */
-    public function restore( UserEntity $user, DocstoreFile $docstoreFile )
+    public function restore( UserEntity $user, DocstoreFile $file )
     {
         //
     }
@@ -111,12 +112,12 @@ class DocstoreFilePolicy
     /**
      * Determine whether the user can permanently delete the docstore file.
      *
-     * @param  UserEntity  $user
-     * @param  DocstoreFile $docstoreFile
+     * @param  UserEntity       $user
+     * @param  DocstoreFile     $file
      *
      * @return mixed
      */
-    public function forceDelete( UserEntity $user, DocstoreFile $docstoreFile )
+    public function forceDelete( UserEntity $user, DocstoreFile $file )
     {
         //
     }

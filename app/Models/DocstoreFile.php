@@ -39,6 +39,7 @@ use Illuminate\Database\Eloquent\Relations\{
 };
 
 use Illuminate\Support\Carbon;
+use Storage;
 
 
 /**
@@ -78,14 +79,21 @@ class DocstoreFile extends Model
      *
      * @var array
      */
-    protected $fillable = [ 'name', 'description', 'docstore_directory_id', 'path', 'min_privs',  ];
+    protected $fillable = [ 'name', 'description', 'docstore_directory_id', 'path', 'sha256', 'min_privs' ];
+
+    /**
+     * File extension allowed to be viewed
+     *
+     * @var array
+     */
+    public static $extensionViewable = [ 'txt', 'md' ];
 
     /**
      * Get the directory that owns the file.
      */
     public function directory(): BelongsTo
     {
-        return $this->belongsTo('IXP\Models\DocstoreDirectory');
+        return $this->belongsTo(DocstoreDirectory::class, 'docstore_directory_id' );
     }
 
     /**
@@ -94,6 +102,16 @@ class DocstoreFile extends Model
     public function logs(): HasMany
     {
         return $this->hasMany('IXP\Models\DocstoreLog');
+    }
+
+    /**
+     * Can we view that file?
+     *
+     * @return bool
+     */
+    public function isViewable(): bool
+    {
+        return in_array( pathinfo( Storage::disk( $this->disk )->url( $this->path ), PATHINFO_EXTENSION ), self::$extensionViewable );
     }
 
     /**

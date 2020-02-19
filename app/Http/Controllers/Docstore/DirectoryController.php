@@ -24,13 +24,11 @@ namespace IXP\Http\Controllers\Docstore;
  */
 
 use Former;
-use Illuminate\Validation\Rule;
+
 use Illuminate\Http\{
     RedirectResponse,
     Request
 };
-
-use IXP\Http\Requests\Docstore\StoreDirectory;
 
 use Illuminate\View\View;
 
@@ -45,8 +43,6 @@ use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
-
-
 
 /**
  * DirectoryController Controller
@@ -68,7 +64,6 @@ class DirectoryController extends Controller
      */
     public function list( Request $request, DocstoreDirectory $dir = null ) : View
     {
-
         return view( 'docstore/dir/list', [
             'dir'       => $dir ?? false,
             'dirs'      => DocstoreDirectory::getListing( $dir, $request->user() ),
@@ -111,9 +106,9 @@ class DirectoryController extends Controller
         $this->authorize( 'update', $dir );
 
         Former::populate([
-            'name'                  => $request->old( 'name',           $dir->name          ),
-            'parent_dir'            => $request->old( 'parent_dir',     $dir->parent_dir_id ?? '' ),
-            'description'           => $request->old( 'descripton',     $dir->description   ),
+            'name'                  => $request->old( 'name',               $dir->name          ),
+            'description'           => $request->old( 'descripton',         $dir->description   ),
+            'parent_dir'            => $request->old( 'parent_dir', $dir->parent_dir_id ?? '' ),
         ]);
 
         return view( 'docstore/dir/create', [
@@ -169,9 +164,9 @@ class DirectoryController extends Controller
     /**
      * Delete a directory
      *
-     * @param Request $request
-     *
+     * @param Request           $request
      * @param DocstoreDirectory $dir
+     *
      * @return RedirectResponse
      *
      * @throws

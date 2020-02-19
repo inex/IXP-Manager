@@ -27,6 +27,7 @@ use Eloquent;
 
 use Illuminate\Database\Eloquent\{
     Builder,
+    Collection,
     Model
 };
 
@@ -54,7 +55,26 @@ class DocstoreLog extends Model
      */
     public function file(): BelongsTo
     {
-        return $this->belongsTo('IXP\Models\DocstoreFile');
+        return $this->belongsTo('IXP\Models\DocstoreFile' , 'docstore_file_id' );
+    }
+
+    /**
+     * Gets a listing of logs for the given file
+     *
+     * @param DocstoreFile  $file   Display logs from file
+     * @param bool          $unique Display unique result
+     *
+     * @return Collection
+     */
+    public static function getListing( DocstoreFile $file, bool $unique = false )
+    {
+        $list = self::where('docstore_file_id', $file->id );
+
+        if( $unique ) {
+            $list->groupBy( 'downloaded_by' );
+        }
+
+        return $list->orderBy('downloaded_by')->get();
     }
 
 }

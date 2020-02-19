@@ -26,6 +26,7 @@ namespace IXP\Policies;
 use Entities\User as UserEntity;
 
 use IXP\Models\DocstoreDirectory;
+
 use Illuminate\Auth\Access\HandlesAuthorization;
 
 class DocstoreDirectoryPolicy
@@ -36,9 +37,10 @@ class DocstoreDirectoryPolicy
      * Determine whether the user can view any docstore directories.
      *
      * @param  UserEntity  $user
+     *
      * @return mixed
      */
-    public function viewAny(UserEntity $user)
+    public function viewAny( UserEntity $user)
     {
         //
     }
@@ -46,11 +48,12 @@ class DocstoreDirectoryPolicy
     /**
      * Determine whether the user can view the docstore directory.
      *
-     * @param  UserEntity  $user
-     * @param DocstoreDirectory $docstoreDirectory
+     * @param   UserEntity          $user
+     * @param   DocstoreDirectory   $dir
+     *
      * @return mixed
      */
-    public function view(?UserEntity $user, DocstoreDirectory $docstoreDirectory)
+    public function view( ?UserEntity $user, DocstoreDirectory $dir )
     {
         //
     }
@@ -59,9 +62,10 @@ class DocstoreDirectoryPolicy
      * Determine whether the user can create docstore directories.
      *
      * @param  UserEntity  $user
+     *
      * @return mixed
      */
-    public function create(UserEntity $user)
+    public function create( UserEntity $user)
     {
         return $user->isSuperUser();
     }
@@ -69,21 +73,21 @@ class DocstoreDirectoryPolicy
     /**
      * Determine whether the user can update the docstore directory.
      *
-     * @param  UserEntity  $user
-     * @param DocstoreDirectory $docstoreDirectory
+     * @param   UserEntity          $user
+     * @param   DocstoreDirectory   $dir
      *
      * @return mixed
      */
-    public function update( UserEntity $user, DocstoreDirectory $docstoreDirectory )
+    public function update( UserEntity $user, DocstoreDirectory $dir )
     {
-        return $user->isSuperUser() && $docstoreDirectory->exists;
+        return $user->isSuperUser() && $dir->exists;
     }
 
     /**
      * Determine whether the user can delete the docstore directory.
      *
-     * @param  UserEntity  $user
-     * @param DocstoreDirectory $dir
+     * @param   UserEntity          $user
+     * @param   DocstoreDirectory   $dir
      *
      * @return mixed
      */
@@ -95,11 +99,12 @@ class DocstoreDirectoryPolicy
     /**
      * Determine whether the user can restore the docstore directory.
      *
-     * @param  UserEntity  $user
-     * @param DocstoreDirectory $docstoreDirectory
+     * @param   UserEntity          $user
+     * @param   DocstoreDirectory   $dir
+     *
      * @return mixed
      */
-    public function restore(UserEntity $user, DocstoreDirectory $docstoreDirectory)
+    public function restore( UserEntity $user, DocstoreDirectory $dir )
     {
         //
     }
@@ -107,11 +112,12 @@ class DocstoreDirectoryPolicy
     /**
      * Determine whether the user can permanently delete the docstore directory.
      *
-     * @param  UserEntity  $user
-     * @param DocstoreDirectory $docstoreDirectory
+     * @param   UserEntity          $user
+     * @param   DocstoreDirectory   $dir
+     *
      * @return mixed
      */
-    public function forceDelete(UserEntity $user, DocstoreDirectory $docstoreDirectory)
+    public function forceDelete( UserEntity $user, DocstoreDirectory $dir )
     {
         //
     }

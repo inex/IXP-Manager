@@ -87,7 +87,8 @@
                 <div class="row tw-py-4 tw-my-0 tw-mx-4 tw-border-b  <?= $i === 0 && $t->dirs->isEmpty() && !$t->dirs->isEmpty() ? 'tw-border-t' : '' ?>">
                     <p class="tw-align-middle tw-my-0 tw-mx-4 tw-p-0 mr-auto">
                         <i class="fa fa-lg fa-file tw-inline tw-mr-4"></i>
-                        <a href="<?= route('docstore-file@download', ['file' => $file->id] ) ?>"><?= $t->ee( $file->name ) ?></a>
+                        <a href="<?= route($file->isViewable() ? 'docstore-file@view' : 'docstore-file@download', ['file' => $file->id] ) ?>"
+                        data-toggle="tooltip" data-placement="top" data-html="true" title="<?= $file->description ?>"><?= $t->ee( $file->name ) ?></a>
                     </p>
 
 
@@ -108,9 +109,10 @@
                             <a class="dropdown-item" href="#"
                                onclick="bootbox.alert({ message: '<?= $file->sha256 ? "<code>" . $t->ee( $file->sha256 ) . "</code>" : "There is no sha256 checksum registered for this file." ?>', size: 'large' }); return false;">Show SHA256</a>
 
-                            <a class="dropdown-item" href="<?= route( "docstore-file@download", [ "file" => $file ] ) ?>">Download</a>
-
                             <a class="dropdown-item list-delete-btn" data-object-type="file" href="#" data-url="<?= route( "docstore-file@delete", [ "file" => $file ] ) ?>">Delete</a>
+
+                            <a class="dropdown-item" href="<?= route( 'docstore-log@unique-list', [ 'file' => $file ] ) ?>">Unique Logs</a>
+                            <a class="dropdown-item" href="<?= route( 'docstore-log@list', [ 'file' => $file ] ) ?>">All Logs</a>
                         </div>
                     </div>
                 </div>

@@ -182,10 +182,14 @@ if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
         Route::get( '/file/create',         'FileController@create'         )->name( 'docstore-file@create'     );
         Route::get( '/file/{file}/edit',    'FileController@edit'           )->name( 'docstore-file@edit'       );
         Route::get( '/file/download/{file}','FileController@download'       )->name( 'docstore-file@download'   );
+        Route::get( '/file/view/{file}',    'FileController@view'           )->name( 'docstore-file@view'       );
 
         Route::post(    '/file/store',          'FileController@store'      )->name( 'docstore-file@store'      );
         Route::put(     '/file/update/{file}',  'FileController@update'     )->name( 'docstore-file@update'     );
         Route::delete(  '/file/{file}',         'FileController@delete'     )->name( 'docstore-file@delete'     );
+
+        Route::get( '/file/{file}/logs',        'LogController@list'       )->name( 'docstore-log@list'         );
+        Route::get( '/file/{file}/unique-logs', 'LogController@uniqueList' )->name( 'docstore-log@unique-list'  );
     } );
 }
 

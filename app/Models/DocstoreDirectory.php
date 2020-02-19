@@ -168,7 +168,5 @@ class DocstoreDirectory extends Model
         }
 
         return $data;
-
     }
-
 }

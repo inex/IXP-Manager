@@ -31,11 +31,17 @@ $this->layout( 'layouts/ixpv4' );
 
         <?= Former::text( 'name' )
             ->label( 'Name' )
-            ->blockHelp( "The name of the directory (this is as it appears on listings in the web interface rather than on the filesystem)." );
+            ->blockHelp( "The name of the file (this is as it appears on listings in the web interface rather than on the filesystem)." );
+        ?>
+
+        <?= Former::text( 'sha256' )
+            ->label( 'SHA256' )
+            ->blockHelp( "" )
+            ->disabled( $t->file );
         ?>
 
         <?= Former::select( 'docstore_directory_id' )
-            ->label( 'Root Directory' )
+            ->label( 'Directory' )
             ->fromQuery( $t->dirs, 'name' )
             ->addClass( 'chzn-select' );
         ?>
@@ -47,26 +53,14 @@ $this->layout( 'layouts/ixpv4' );
         ?>
 
         <?php if( !$t->file ): ?>
-            <div id="upload" class="form-group tw-h-48 tw-bg-gray-100 tw-border tw-rounded-sm">
-                <div id='drop' class="tw-mt-8 tw-px-10 tw-text-center tw-font-bold tw-text-gray-600">
-                    <a href="#" id="upload-drop-a" class="btn btn-success color-white">
-                        <i class="fa fa-upload"></i> Browse
-                    </a>
-                    <br/>
-                    <span class="tw-text-xs">
-                    (max size <?= $t->maxFileUploadSize() ?>
-                </span>
-                    <?= Former::files( 'uploadedFile' )
-                        ->id( 'uploadedFile' )
-                        ->class( 'tw-hidden' )
-                        ->label( false )
-                        ->multiple( false );
-                    ?>
-                </div>
-                <div id="upload-ul" class="tw-pl-0 tw-list-none tw-m-0"></div>
-            </div>
+            <?= Former::file( 'uploadedFile' )
+                ->id( 'uploadedFile' )
+                ->label( ' ' )
+                ->class( 'form-control' )
+                ->multiple( false )
+                ->blockHelp( "" );
+            ?>
         <?php endif; ?>
-
 
         <div class="form-group">
             <div class="col-lg-offset-2 col-sm-offset-2">
@@ -112,8 +106,4 @@ $this->layout( 'layouts/ixpv4' );
 
     </div>
 
-<?php $this->append() ?>
-
-<?php $this->section( 'scripts' ) ?>
-    <?= $t->insert( 'docstore/file/js/create' ); ?>
 <?php $this->append() ?>
