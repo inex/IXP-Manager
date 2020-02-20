@@ -80,7 +80,7 @@ class DocstoreFilePolicy
      */
     public function update( UserEntity $user, DocstoreFile $file )
     {
-        return $user->isSuperUser() || $file->exists;
+        return $user->isSuperUser();
     }
 
     /**

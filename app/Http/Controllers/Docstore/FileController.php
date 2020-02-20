@@ -65,7 +65,7 @@ class FileController extends Controller
         $this->authorize( 'create', DocstoreFile::class );
 
         Former::populate([
-            'min_privs'             => $request->old( 'min_privs',      User::AUTH_SUPERUSER   )
+            'min_privs' => $request->old( 'min_privs', User::AUTH_SUPERUSER )
         ]);
 
         return view( 'docstore/file/create', [
@@ -116,9 +116,7 @@ class FileController extends Controller
         $this->authorize( 'create', DocstoreFile::class );
 
         $this->checkForm( $request );
-
         $file = $request->file('uploadedFile');
-
         $path = $file->store( '', 'docstore' );
 
         $file = DocstoreFile::create( [
@@ -130,7 +128,7 @@ class FileController extends Controller
             'sha256'                => hash_file( 'sha256', $file )
         ] );
 
-        AlertContainer::push( "File <em>{$request->name}</em> created.", Alert::SUCCESS );
+        AlertContainer::push( "File <em>{$request->name}</em> uploaded.", Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $file->docstore_directory_id ] ) );
     }
 
@@ -174,6 +172,10 @@ class FileController extends Controller
     public function view( Request $request, DocstoreFile $file )
     {
         $this->authorize( 'view', $file );
+
+        if( !$file->isViewable() ) {
+            abort( 403 );
+        }
 
         if( $request->user() ) {
             $file->logs()->save( new DocstoreLog( [ 'downloaded_by' => $request->user()->getId() ] ) );
@@ -223,7 +225,6 @@ class FileController extends Controller
         $dir = $file->directory;
 
         Storage::disk( $file->disk )->delete( $file->path );
-
         $file->logs()->delete();
         $file->delete();
 
@@ -243,11 +244,11 @@ class FileController extends Controller
             'name'          => 'required|max:100',
             'description'   => 'nullable',
             'uploadedFile'  => Rule::requiredIf(function () use ( $request, $file ) {
-                return !$file ;
+                return !$file;
             }),
             'sha256'        => [ 'nullable', 'max:64',
                 function ($attribute, $value, $fail ) use( $request ) {
-                    if( $value && $request->file('uploadedFile') && $value != hash_file( 'sha256', $request->file('uploadedFile') ) ) {
+                    if( $value && $request->file('uploadedFile') && $value !== hash_file( 'sha256', $request->file('uploadedFile') ) ) {
                         return $fail( $attribute.' is invalid.' );
                     }
                 },

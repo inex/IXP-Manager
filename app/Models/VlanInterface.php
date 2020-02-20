@@ -31,11 +31,10 @@ use Illuminate\Database\Eloquent\Model;
  * @property int|null $busyhost
  * @property string|null $notes
  * @property int $rsmorespecifics
- * @property-read \IXP\Models\VirtualInterface $virtualInterface
- * @property-read \IXP\Models\Vlan $vlan
+ * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
+ * @property-read \IXP\Models\Vlan|null $vlan
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface public()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface query()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereAs112client($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereBgpmd5secret($value)

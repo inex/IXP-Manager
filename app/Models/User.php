@@ -31,42 +31,43 @@ use Illuminate\Support\Carbon;
 /**
  * IXP\Models\User
  *
- * @property int            $id
- * @property int            $custid
- * @property string|null    $username
- * @property string|null    $password
- * @property string|null    $email
- * @property string|null    $authorisedMobile
- * @property int|null       $uid
- * @property int|null       $privs
- * @property bool           $disabled
- * @property Carbon|null    $lastupdated
- * @property int|null       $lastupdatedby
- * @property string|null    $creator
- * @property Carbon|null    $created
- * @property string|null    $name
- * @property integer|null   $peeringdb_id
- * @property json|null      $extra_attributes
- * @method static Builder|User newModelQuery()
- * @method static Builder|User newQuery()
- * @method static Builder|User query()
- * @method static Builder|User whereId($value)
- * @method static Builder|User whereCustId($value)
- * @method static Builder|User whereUsername($value)
- * @method static Builder|User wherePassword($value)
- * @method static Builder|User whereEmail($value)
- * @method static Builder|User whereAuthorisedMobile($value)
- * @method static Builder|User whereUid($value)
- * @method static Builder|User wherePrivs($value)
- * @method static Builder|User whereDisabled($value)
- * @method static Builder|User whereLastUpdated($value)
- * @method static Builder|User whereLastUpdatedBy($value)
- * @method static Builder|User whereCreator($value)
- * @method static Builder|User whereCreated($value)
- * @method static Builder|User whereName($value)
- * @method static Builder|User wherePeeringdbId($value)
- * @method static Builder|User whereExtraAttributes($value)
- * @mixin Eloquent
+ * @property int $id
+ * @property int|null $custid
+ * @property string|null $username
+ * @property string|null $password
+ * @property string|null $email
+ * @property string|null $authorisedMobile
+ * @property int|null $uid
+ * @property int|null $privs
+ * @property int|null $disabled
+ * @property string|null $lastupdated
+ * @property int|null $lastupdatedby
+ * @property string|null $creator
+ * @property string|null $created
+ * @property string|null $name
+ * @property int|null $peeringdb_id
+ * @property mixed|null $extra_attributes
+ * @property-read \IXP\Models\Customer|null $customer
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereAuthorisedMobile($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereCreated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereCreator($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereCustid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereDisabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereEmail($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereExtraAttributes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereLastupdated($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereLastupdatedby($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User wherePassword($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User wherePeeringdbId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User wherePrivs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereUid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereUsername($value)
+ * @mixin \Eloquent
  */
 class User extends Model
 {

@@ -54,7 +54,7 @@
                 <label class="control-label" for="password">
                     Password
                 </label>
-                <input name="password" class="form-control" id="password" type="password" placeholder="******************">
+                <input name="password" class="form-control" id="password" type="password" placeholder="...">
                 <?php foreach( $t->errors->get( 'password' ) as $err ): ?>
                     <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
                 <?php endforeach; ?>

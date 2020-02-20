@@ -30,6 +30,7 @@ use IXP\Models\{
     DocstoreFile,
     DocstoreLog
 };
+use IXP\Policies\DocstoreLogPolicy;
 
 /**
  * LogController Controller
@@ -50,8 +51,15 @@ class LogController extends Controller
      */
     public function uniqueList( DocstoreFile $file ) : View
     {
-        return $this->list( $file, true );
+        $this->authorize( 'viewAny', DocstoreLog::class );
+
+        return view( 'docstore/log/list', [
+            'file'          => $file,
+            'unique'        => true,
+            'logs'          => DocstoreLog::getUniqueUserListing( $file )
+        ] );
     }
+
     /**
      * Display the list of all logs for a file
      *
@@ -60,12 +68,14 @@ class LogController extends Controller
      *
      * @return View
      */
-    public function list( DocstoreFile $file, bool $unique = false ) : View
+    public function list( DocstoreFile $file ) : View
     {
+        $this->authorize( 'viewAny', DocstoreLog::class );
+
         return view( 'docstore/log/list', [
             'file'          => $file,
-            'unique'        => $unique,
-            'logs'          => DocstoreLog::getListing( $file, $unique )
+            'unique'        => false,
+            'logs'          => DocstoreLog::getListing( $file )
         ] );
     }
 }
