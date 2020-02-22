@@ -2,7 +2,7 @@
 ########################################################################################
 ########################################################################################
 #
-# Communuty filtering definitions for use with looking glasses
+# Community filtering definitions for use with looking glasses
 #
 # Current implementation based on:
 #
