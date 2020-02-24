@@ -13,7 +13,7 @@
     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
         <div class="btn-group btn-group-sm ml-auto" role="group">
 
-            <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/document-store/">
+            <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/docstore/">
                 Documentation
             </a>
 
