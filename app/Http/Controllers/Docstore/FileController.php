@@ -96,6 +96,29 @@ class FileController extends Controller
     }
 
     /**
+     * Get information on a docstore file
+     *
+     * @param Request $request
+     * @param DocstoreFile $file
+     *
+     * @return mixed
+     *
+     * @throws
+     */
+    public function info( Request $request, DocstoreFile $file )
+    {
+        $this->authorize( 'info', $file );
+
+        return view( 'docstore/file/info', [
+            'file' => $file,
+            'size' => Storage::disk( $file->disk )->size( $file->path ),
+            'last_modified' => Storage::disk( $file->disk )->lastModified( $file->path ),
+            'dspath' => config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' ) . '/' . $file->path,
+        ]);
+    }
+
+
+    /**
      * Delete a file
      *
      * @param Request $request

@@ -72,6 +72,19 @@ class DocstoreFilePolicy
     }
 
     /**
+     * Determine whether the user can get info on the docstore file.
+     *
+     * @param   UserEntity      $user
+     * @param   DocstoreFile    $file
+     *
+     * @return mixed
+     */
+    public function info( UserEntity $user, DocstoreFile $file )
+    {
+        return $user->isSuperUser();
+    }
+
+    /**
      * Determine whether the user can update the docstore file.
      *
      * @param   UserEntity      $user

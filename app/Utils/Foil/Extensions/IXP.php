@@ -66,6 +66,7 @@ class IXP implements ExtensionInterface {
             'resellerMode'           => [ $this, 'resellerMode' ],
             'scaleBits'              => [ $this, 'scaleBits' ],
             'scaleBytes'             => [ $this, 'scaleBytes' ],
+            'scaleFilesize'          => [ $this, 'scaleFilesize' ],
             'softwrap'               => [ $this, 'softwrap' ],
             'whoisPrefix'            => [ $this, 'whoisPrefix' ],
         ];
@@ -187,6 +188,31 @@ class IXP implements ExtensionInterface {
     public function scaleBytes( float $v, int $decs = 3 ): string {
         return $this->scale( $v, 'bytes', $decs );
     }
+
+
+    /**
+     * Scale a size in bytes in human style filesize
+     *
+     * @param int  $bytes          The value to scale
+     * @return string            Scaled / formatted number / type.
+     */
+    public function scaleFilesize( int $bytes ): string {
+
+        if( $bytes >= 1073741824 ) {
+            return number_format( $bytes / 1073741824, 2 ) . ' GB';
+        }
+
+        if( $bytes >= 1048576 ) {
+            return number_format( $bytes / 1048576, 2 ) . ' MB';
+        }
+
+        if( $bytes >= 1024 ) {
+            return number_format( $bytes / 1024, 2 ) . ' KB';
+        }
+
+        return $bytes . ' bytes';
+    }
+
 
     /**
     * Soft wrap

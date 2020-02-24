@@ -39,5 +39,39 @@
             });
         });
 
-    })
+        $( '.list-info-btn' ).on( 'click', function( event ) {
+
+            event.preventDefault();
+
+            let url = $(this).attr( 'data-url');
+
+            let bb = bootbox.dialog({
+                message: '<div><p class="text-center"><i class="fa fa-spinner fa-spin text-5xl"></i></p></div>',
+                size: "extra-large",
+                title: "File Metadata",
+                onEscape: true,
+                buttons: {
+                    cancel: {
+                        label: 'Close',
+                        callback: function () {
+                            $('.bootbox.modal').modal('hide');
+                            return false;
+                        }
+                    }
+                }
+            });
+
+
+            $.ajax(url)
+                .done(function (data) {
+                    $('.bootbox-body').html( data ).scrollTop();
+                })
+                .fail(function () {
+                    alert(`Error running ajax query for ${url}`);
+                    throw `Error running ajax query for ${url}`;
+                })
+        });
+
+    });
+
 </script>

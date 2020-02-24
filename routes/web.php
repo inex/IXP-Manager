@@ -181,6 +181,7 @@ if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
 
         Route::get(    '/file/download/{file}',    'FileController@download'    )->name( 'docstore-file@download'    );
         Route::get(    '/file/view/{file}',        'FileController@view'        )->name( 'docstore-file@view'        );
+        Route::get(    '/file/info/{file}',        'FileController@info'        )->name( 'docstore-file@info'        );
         Route::delete( '/file/{file}',             'FileController@delete'      )->name( 'docstore-file@delete'      );
 
         Route::get(    '/file/{file}/logs',        'LogController@list'           )->name( 'docstore-log@list'         );
