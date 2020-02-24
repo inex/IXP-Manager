@@ -4,7 +4,7 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'page-header-preamble' ) ?>
     Document Store
-    / <a href="<?= route( 'docstore-dir@list', [ 'dir' => $t->file->directory ] ) ?>"><?= $t->file->directory ? $t->file->directory->name : 'Root Directory' ?></a>
+    / <a class="tw-font-normal" href="<?= route( 'docstore-dir@list', [ 'dir' => $t->file->directory ] ) ?>"><?= $t->file->directory ? $t->file->directory->name : 'Root Directory' ?></a>
     / <?= $t->unique ? 'Unique' : 'All' ?> Logs
 <?php $this->append() ?>
 

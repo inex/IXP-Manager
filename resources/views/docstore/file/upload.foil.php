@@ -21,7 +21,7 @@ $this->layout( 'layouts/ixpv4' );
     <div class="card-body">
 
         <?= Former::open_for_files()->method( $t->file ? 'put' : 'post' )
-            ->action( $t->file ? route ( 'docstore-file@update-upload', [ 'file' => $t->file ] ) : route ( 'docstore-file@store-upload' ) )
+            ->action( $t->file ? route ( 'docstore-file@update', [ 'file' => $t->file ] ) : route ( 'docstore-file@store' ) )
             ->actionButtonsCustomClass( "grey-box")
             ->class('col-8')
             ->rules([
@@ -32,7 +32,7 @@ $this->layout( 'layouts/ixpv4' );
         <?= Former::text( 'name' )
             ->label( 'Name' )
             ->blockHelp( "The name of the file (this is as it appears on listings in the web interface rather than on the filesystem). "
-                . "<b>This is also the name the downloaded file will have.</b>");
+                . "<b>This is also the name the downloaded file will have - so use the appropriate extension.</b>");
         ?>
 
         <?= Former::text( 'sha256' )

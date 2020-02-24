@@ -103,33 +103,6 @@ class UploadController extends Controller
     }
 
     /**
-     * Update a docstore file uploaded
-     *
-     * @param Request $request
-     * @param DocstoreFile $file
-     *
-     * @return RedirectResponse
-     *
-     * @throws
-     */
-    public function update( Request $request , DocstoreFile $file ): RedirectResponse
-    {
-        $this->authorize( 'update', $file );
-
-        $this->checkForm( $request, $file );
-
-        $file->update( [
-            'name'                  => $request->name,
-            'description'           => $request->description,
-            'docstore_directory_id' => $request->docstore_directory_id,
-            'min_privs'             => $request->min_privs
-        ] );
-
-        AlertContainer::push( "File <em>{$request->name}</em> updated.", Alert::SUCCESS );
-        return redirect( route( 'docstore-dir@list', [ 'dir' => $file->docstore_directory_id ] ) );
-    }
-
-    /**
      * Edit a docstore file uploaded
      *
      * @param Request           $request
@@ -157,6 +130,33 @@ class UploadController extends Controller
         ] );
     }
 
+    /**
+     * Update a docstore file uploaded
+     *
+     * @param Request $request
+     * @param DocstoreFile $file
+     *
+     * @return RedirectResponse
+     *
+     * @throws
+     */
+    public function update( Request $request , DocstoreFile $file ): RedirectResponse
+    {
+        $this->authorize( 'update', $file );
+
+        $this->checkForm( $request, $file );
+
+        $file->update( [
+            'name'                  => $request->name,
+            'description'           => $request->description,
+            'docstore_directory_id' => $request->docstore_directory_id,
+            'min_privs'             => $request->min_privs
+        ] );
+
+        AlertContainer::push( "File <em>{$request->name}</em> updated.", Alert::SUCCESS );
+        return redirect( route( 'docstore-dir@list', [ 'dir' => $file->docstore_directory_id ] ) );
+    }
+
 
     /**
      * Check if the form is valid
@@ -169,13 +169,13 @@ class UploadController extends Controller
     {
         $request->validate( [
             'name'          => 'required|max:100',
-            'uploadedFile'  => Rule::requiredIf( function () use ( $request, $file ) {
+            'uploadedFile'  => Rule::requiredIf( function() use ( $request, $file ) {
                 return !$file;
             }),
             'sha256'        => [ 'nullable', 'max:64',
                 function ($attribute, $value, $fail ) use( $request ) {
                     if( $value && $request->file('uploadedFile' ) && $value !== hash_file( 'sha256', $request->file( 'uploadedFile' ) ) ) {
-                        return $fail( $attribute.' is invalid.' );
+                        return $fail( 'The sha256 checksum calculated on the server does not match the one you provided.' );
                     }
                 },
             ],
@@ -183,7 +183,7 @@ class UploadController extends Controller
             'docstore_directory_id' => [ 'nullable', 'integer',
                 function ($attribute, $value, $fail) {
                     if( !DocstoreDirectory::where( 'id', $value )->exists() ) {
-                        return $fail( $attribute.' is invalid.' );
+                        return $fail( 'Directory does not exist.' );
                     }
                 },
             ]

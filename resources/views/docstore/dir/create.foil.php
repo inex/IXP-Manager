@@ -37,6 +37,7 @@
 
         <?= Former::text( 'name' )
             ->label( 'Name' )
+            ->autofocus()
             ->blockHelp( "The name of the directory (this is as it appears on listings in the web interface rather than on the filesystem)." );
         ?>
 

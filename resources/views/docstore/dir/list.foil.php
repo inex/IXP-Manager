@@ -22,10 +22,6 @@
             </a>
 
             <a id="add-file" class="btn btn-white" href="<?= route('docstore-file@upload', ['docstore_directory_id' => $t->dir ? $t->dir->id : null ] ) ?>">
-                <i class="fa fa-plus"></i> <i class="fa fa-upload"></i>
-            </a>
-
-            <a id="add-file" class="btn btn-white" href="<?= route('docstore-file@create', ['docstore_directory_id' => $t->dir ? $t->dir->id : null ] ) ?>">
                 <i class="fa fa-plus"></i> <i class="fa fa-file"></i>
             </a>
 
@@ -51,7 +47,7 @@
 
             <?php if( $t->dir ): ?>
 
-                <div class="row tw-mb-8">
+                <div class="row tw-py-4 tw-my-0 tw-mx-4 tw-border-b">
                     <?php if( $t->dir ): ?>
                         <a class="tw-pr-4 tw-text-black" href="<?= route('docstore-dir@list', ['dir' => $t->dir->parentDirectory ? $t->dir->parentDirectory->id : null] ) ?>"><i class="fa fa-caret-square-o-left fa-2x"></i></a>
                     <?php endif; ?>
@@ -99,7 +95,7 @@
                     </p>
 
 
-                    <?php if( Auth::check() && Auth::user()->isSuperUser() && $file->downloads_count ): ?>
+                    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
                         <p class="tw-my-0 tw-ml-4 tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-xs">
                             <?= \Entities\User::$PRIVILEGES_ALL[ $file->min_privs ] ?>
                         </p>
@@ -115,6 +111,9 @@
                             &middot;&middot;&middot;
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                            <?php if( $file->isViewable() ): ?>
+                                <a class="dropdown-item" href="<?= route( 'docstore-file@download', ['file' => $file->id] ) ?>">Download</a>
+                            <?php endif; ?>
                             <a class="dropdown-item" href="#"
                                onclick="bootbox.alert({ message: 'SHA checksums can be used to check the authenticity / integrity of files.<br><br><?= $file->sha256 ? "SHA256 checksum: [<code>" . $t->ee( $file->sha256 ) . "</code>]" : "there is no sha256 checksum registered for this file." ?>', size: 'large' }); return false;">Show SHA256</a>
 

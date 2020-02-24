@@ -136,7 +136,7 @@ class DirectoryController extends Controller
         $dir = DocstoreDirectory::create( [ 'name' => $request->name, 'description' => $request->description, 'parent_dir_id' => $request->parent_dir ] );
 
         AlertContainer::push( "New directory <em>{$request->name}</em> created.", Alert::SUCCESS );
-        return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->parent_dir_id ] ) );
+        return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->id ] ) );
     }
 
     /**

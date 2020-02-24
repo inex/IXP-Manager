@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Http\Controllers\Docstore\File;
+namespace IXP\Http\Controllers\Docstore;
 
 /*
  * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -27,6 +27,8 @@ use Illuminate\Http\{
     Request
 };
 
+use \League\Flysystem\Exception as FlySystemException;
+
 use IXP\Http\Controllers\Controller;
 
 use IXP\Models\{
@@ -41,7 +43,7 @@ use IXP\Utils\View\Alert\{
 
 use Storage;
 
-class CommonController extends Controller
+class FileController extends Controller
 {
     /**
      * View a docstore file apply to allowed mimetype ( DocstoreFile::$
@@ -85,7 +87,12 @@ class CommonController extends Controller
             $file->logs()->save( new DocstoreLog( [ 'downloaded_by' => $request->user()->getId() ] ) );
         }
 
-        return Storage::disk( $file->disk )->download( $file->path, $file->name );
+        try {
+            return Storage::disk( $file->disk )->download( $file->path, $file->name );
+        } catch( FlySystemException $e ) {
+            AlertContainer::push( "This file could not be found / downloaded. Please report this error to the support team.", Alert::DANGER );
+            return redirect( route( 'docstore-dir@list', [ 'dir' => $file->directory->id ] ) );
+        }
     }
 
     /**

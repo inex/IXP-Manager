@@ -7,18 +7,12 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'page-header-preamble' ) ?>
     Document Store
-    :: <a href="<?= route( 'docstore-dir@list', [ 'dir' => $t->file->directory ] ) ?>"><?= $t->file->directory ? $t->file->directory->name : 'Root Directory' ?></a>
-    :: <?= $t->file->name ?> :: View
+    :: <a class="tw-font-normal" href="<?= route( 'docstore-dir@list', [ 'dir' => $t->file->directory ] ) ?>"><?= $t->file->directory ? $t->file->directory->name : 'Root Directory' ?></a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm ml-auto" role="group">
 
-        <?php if( $t->file->isEditable() ): ?>
-            <a id="add-file" class="btn btn-white" href="<?= route('docstore-file@edit', ['file' => $t->file ] ) ?>">
-                Edit
-            </a>
-        <?php endif; ?>
         <a id="add-file" class="btn btn-white" href="<?= route('docstore-file@download', ['file' => $t->file ] ) ?>">
             Download
         </a>
@@ -26,15 +20,21 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
-    <div class="row">
-        <div class="col-md-12">
-<pre class="tw-border tw-p-2">
+
+<div class="row">
+<div class="col-md-12">
+
+<?= $t->alerts() ?>
+
+<h3>Viewing File: <?= $t->file->name ?></h3>
+
+<div class="tw-border tw-p-2">
 <?php if( $t->file->extension() == 'md' ): ?>
 <?= @parsedown( $t->content ) ?>
 <?php else: ?>
-<?= $t->ee( $t->content ) ?>
+    <pre><?= $t->ee( trim( $t->content ) ) ?></pre>
 <?php endif; ?>
-</pre>
-        </div>
-    </div>
+</div>
+</div>
+</div>
 <?php $this->append() ?>
