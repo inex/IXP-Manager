@@ -13,6 +13,12 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm ml-auto" role="group">
+
+        <?php if( $t->file->isEditable() ): ?>
+            <a id="add-file" class="btn btn-white" href="<?= route('docstore-file@edit', ['file' => $t->file ] ) ?>">
+                Edit
+            </a>
+        <?php endif; ?>
         <a id="add-file" class="btn btn-white" href="<?= route('docstore-file@download', ['file' => $t->file ] ) ?>">
             Download
         </a>
@@ -22,9 +28,13 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->section('content') ?>
     <div class="row">
         <div class="col-md-12">
-            <pre class="tw-border tw-p-2">
-                <?= @parsedown( $t->content ) ?>
-            </pre>
+<pre class="tw-border tw-p-2">
+<?php if( $t->file->extension() == 'md' ): ?>
+<?= @parsedown( $t->content ) ?>
+<?php else: ?>
+<?= $t->ee( $t->content ) ?>
+<?php endif; ?>
+</pre>
         </div>
     </div>
 <?php $this->append() ?>

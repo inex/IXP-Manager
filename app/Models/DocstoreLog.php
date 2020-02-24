@@ -58,6 +58,19 @@ class DocstoreLog extends Model
         return $this->belongsTo('IXP\Models\DocstoreFile' , 'docstore_file_id' );
     }
 
+
+    /**
+     * Get the user's username related to the log if the user still exist
+     *
+     * @return string
+     */
+    public function getDownloadedByUserAttribute()
+    {
+        $user = User::where( 'id', $this->downloaded_by );
+
+        return $user->exists() ? $user->first() : $this->downloaded_by;
+    }
+
     /**
      * Gets a listing of logs for the given file
      *

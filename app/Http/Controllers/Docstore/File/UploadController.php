@@ -1,6 +1,6 @@
 <?php
 
-namespace IXP\Http\Controllers\Docstore;
+namespace IXP\Http\Controllers\Docstore\File;
 
 /*
  * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -22,6 +22,7 @@ namespace IXP\Http\Controllers\Docstore;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
+
 use Former;
 
 use Illuminate\Http\{
@@ -38,7 +39,6 @@ use IXP\Http\Controllers\Controller;
 use IXP\Models\{
     DocstoreDirectory,
     DocstoreFile,
-    DocstoreLog,
     User
 };
 
@@ -47,12 +47,10 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-use Storage;
-
-class FileController extends Controller
+class UploadController extends Controller
 {
     /**
-     * Create a new docstore file
+     * Upload a new docstore file
      *
      * @param Request $request
      *
@@ -60,7 +58,7 @@ class FileController extends Controller
      *
      * @throws
      */
-    public function create( Request $request )
+    public function upload( Request $request )
     {
         $this->authorize( 'create', DocstoreFile::class );
 
@@ -68,42 +66,14 @@ class FileController extends Controller
             'min_privs'             => $request->old( 'min_privs',      User::AUTH_SUPERUSER   )
         ]);
 
-        return view( 'docstore/file/create', [
+        return view( 'docstore/file/upload', [
             'file'          => false,
             'dirs'          => DocstoreDirectory::getListingForDropdown( DocstoreDirectory::getListing( null, $request->user() )  ),
         ] );
     }
 
     /**
-     * Edit a docstore file
-     *
-     * @param Request           $request
-     * @param DocstoreFile      $file
-     *
-     * @return View
-     *
-     * @throws
-     */
-    public function edit( Request $request , DocstoreFile $file ): View
-    {
-        $this->authorize( 'update', $file );
-
-        Former::populate([
-            'name'                  => $request->old( 'name',           $file->name         ),
-            'description'           => $request->old( 'descripton',     $file->description  ),
-            'sha256'                => $request->old( 'sha256',         $file->sha256  ),
-            'min_privs'             => $request->old( 'min_privs',      $file->min_privs    ),
-            'docstore_directory_id' => $request->old( 'docstore_directory_id',$file->docstore_directory_id ?? '' ),
-        ]);
-
-        return view( 'docstore/file/create', [
-            'file'                      => $file,
-            'dirs'                      => DocstoreDirectory::getListingForDropdown( DocstoreDirectory::getListing( null, $request->user() ) )
-        ] );
-    }
-
-    /**
-     * Store a docstore file
+     * Store a docstore file uploaded
      *
      * @param Request $request
      *
@@ -135,7 +105,7 @@ class FileController extends Controller
     }
 
     /**
-     * Update a docstore file
+     * Update a docstore file uploaded
      *
      * @param Request $request
      * @param DocstoreFile $file
@@ -162,73 +132,31 @@ class FileController extends Controller
     }
 
     /**
-     * View a docstore file apply to mimetype .txt and .md
+     * Edit a docstore file uploaded
      *
-     * @param Request $request
-     * @param DocstoreFile $file
+     * @param Request           $request
+     * @param DocstoreFile      $file
      *
-     * @return mixed
+     * @return View
      *
      * @throws
      */
-    public function view( Request $request, DocstoreFile $file )
+    public function edit( Request $request , DocstoreFile $file ): View
     {
-        $this->authorize( 'view', $file );
+        $this->authorize( 'update', $file );
 
-        if( $request->user() ) {
-            $file->logs()->save( new DocstoreLog( [ 'downloaded_by' => $request->user()->getId() ] ) );
-        }
+        Former::populate([
+            'name'                  => $request->old( 'name',           $file->name         ),
+            'description'           => $request->old( 'descripton',     $file->description  ),
+            'sha256'                => $request->old( 'sha256',         $file->sha256       ),
+            'min_privs'             => $request->old( 'min_privs',      $file->min_privs    ),
+            'docstore_directory_id' => $request->old( 'docstore_directory_id',$file->docstore_directory_id ?? '' ),
+        ]);
 
-        return view( 'docstore/file/view', [
-            'file'      => $file,
-            'content'   => Storage::disk( $file->disk )->get( $file->path )
+        return view( 'docstore/file/upload', [
+            'file'                      => $file,
+            'dirs'                      => DocstoreDirectory::getListingForDropdown( DocstoreDirectory::getListing( null, $request->user() ) )
         ] );
-    }
-
-    /**
-     * Download a docstore file
-     *
-     * @param Request $request
-     * @param DocstoreFile $file
-     *
-     * @return mixed
-     *
-     * @throws
-     */
-    public function download( Request $request, DocstoreFile $file )
-    {
-        $this->authorize( 'view', $file );
-
-        if( $request->user() ) {
-            $file->logs()->save( new DocstoreLog( [ 'downloaded_by' => $request->user()->getId() ] ) );
-        }
-
-        return Storage::disk( $file->disk )->download( $file->path, $file->name );
-    }
-
-    /**
-     * Delete a file
-     *
-     * @param Request $request
-     *
-     * @param DocstoreFile $file
-     * @return RedirectResponse
-     *
-     * @throws
-     */
-    public function delete( Request $request , DocstoreFile $file ): RedirectResponse
-    {
-        $this->authorize( 'delete', $file );
-
-        $dir = $file->directory;
-
-        Storage::disk( $file->disk )->delete( $file->path );
-
-        $file->logs()->delete();
-        $file->delete();
-
-        AlertContainer::push( "File <em>{$request->name}</em> deleted.", Alert::SUCCESS );
-        return redirect( route( 'docstore-dir@list', [ 'dir' => $dir ] ) );
     }
 
     /**
@@ -236,18 +164,18 @@ class FileController extends Controller
      *
      * @param Request $request
      * @param DocstoreFile $file
+     *
      */
     private function checkForm( Request $request, ?DocstoreFile $file = null )
     {
         $request->validate( [
             'name'          => 'required|max:100',
-            'description'   => 'nullable',
-            'uploadedFile'  => Rule::requiredIf(function () use ( $request, $file ) {
+            'uploadedFile'  => Rule::requiredIf( function () use ( $request, $file ) {
                 return !$file ;
             }),
             'sha256'        => [ 'nullable', 'max:64',
                 function ($attribute, $value, $fail ) use( $request ) {
-                    if( $value && $request->file('uploadedFile') && $value != hash_file( 'sha256', $request->file('uploadedFile') ) ) {
+                    if( $value && $request->file('uploadedFile' ) && $value != hash_file( 'sha256', $request->file( 'uploadedFile' ) ) ) {
                         return $fail( $attribute.' is invalid.' );
                     }
                 },

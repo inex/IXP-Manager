@@ -34,15 +34,16 @@ class DocstoreFilePolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can view any docstore files.
+     * Determine whether the user can download a docstore file.
      *
-     * @param  UserEntity  $user
+     * @param   UserEntity      $user
+     * @param   DocstoreFile    $file
      *
      * @return mixed
      */
-    public function viewAny( UserEntity $user )
+    public function download( ?UserEntity $user, DocstoreFile $file )
     {
-        //
+        return $file->min_privs <= ( $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC );
     }
 
     /**
@@ -55,7 +56,7 @@ class DocstoreFilePolicy
      */
     public function view( ?UserEntity $user, DocstoreFile $file )
     {
-        return $file->min_privs <= ( $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC );
+        return $file->min_privs <= ( $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC ) && $file->isViewable();
     }
 
     /**
@@ -94,31 +95,5 @@ class DocstoreFilePolicy
     public function delete( UserEntity $user, DocstoreFile $file )
     {
         return $user->isSuperUser();
-    }
-
-    /**
-     * Determine whether the user can restore the docstore file.
-     *
-     * @param   UserEntity      $user
-     * @param   DocstoreFile    $file
-     *
-     * @return mixed
-     */
-    public function restore( UserEntity $user, DocstoreFile $file )
-    {
-        //
-    }
-
-    /**
-     * Determine whether the user can permanently delete the docstore file.
-     *
-     * @param  UserEntity       $user
-     * @param  DocstoreFile     $file
-     *
-     * @return mixed
-     */
-    public function forceDelete( UserEntity $user, DocstoreFile $file )
-    {
-        //
     }
 }

@@ -21,6 +21,10 @@
                 <i class="fa fa-plus"></i> <i class="fa fa-folder"></i>
             </a>
 
+            <a id="add-file" class="btn btn-white" href="<?= route('docstore-file@upload', ['docstore_directory_id' => $t->dir ? $t->dir->id : null ] ) ?>">
+                <i class="fa fa-plus"></i> <i class="fa fa-upload"></i>
+            </a>
+
             <a id="add-file" class="btn btn-white" href="<?= route('docstore-file@create', ['docstore_directory_id' => $t->dir ? $t->dir->id : null ] ) ?>">
                 <i class="fa fa-plus"></i> <i class="fa fa-file"></i>
             </a>
@@ -104,7 +108,7 @@
                             &middot;&middot;&middot;
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="<?= route( "docstore-file@edit", [ "file" => $file ] ) ?>">Edit</a>
+                            <a class="dropdown-item" href="<?= route( $file->isViewable() ? 'docstore-file@edit' : 'docstore-file@edit-upload', [ "file" => $file ] ) ?>">Edit</a>
 
                             <a class="dropdown-item" href="#"
                                onclick="bootbox.alert({ message: '<?= $file->sha256 ? "<code>" . $t->ee( $file->sha256 ) . "</code>" : "There is no sha256 checksum registered for this file." ?>', size: 'large' }); return false;">Show SHA256</a>

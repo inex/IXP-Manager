@@ -41,7 +41,14 @@ $this->layout( 'layouts/ixpv4' );
                     <?php foreach( $t->logs as $log ): ?>
                         <tr>
                             <td>
-                                <?= $log->downloaded_by ?>
+                                <?php if( $log->downloaded_by_user instanceof \IXP\Models\User ): ?>
+                                    <a href="<?= route( 'customer@overview', [ 'id' => $log->downloaded_by_user->id ] ) ?>">
+                                        <?= $log->downloaded_by_user->username ?>
+                                    </a>
+                                <?php else: ?>
+                                    <?= $log->downloaded_by ?>
+                                <?php endif; ?>
+
                             </td>
                             <td>
                                 <?= $log->created_at ?>

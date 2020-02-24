@@ -16,12 +16,12 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section('content') ?>
 
-<?= $t->alerts() ?>
+    <?= $t->alerts() ?>
 
     <div class="card-body">
 
         <?= Former::open_for_files()->method( $t->file ? 'put' : 'post' )
-            ->action( $t->file ? route ( 'docstore-file@update', [ 'file' => $t->file ] ) : route ( 'docstore-file@store' ) )
+            ->action( $t->file ? route ( 'docstore-file@update-upload', [ 'file' => $t->file ] ) : route ( 'docstore-file@store-upload' ) )
             ->actionButtonsCustomClass( "grey-box")
             ->class('col-8')
             ->rules([
@@ -32,6 +32,12 @@ $this->layout( 'layouts/ixpv4' );
         <?= Former::text( 'name' )
             ->label( 'Name' )
             ->blockHelp( "The name of the file (this is as it appears on listings in the web interface rather than on the filesystem)." );
+        ?>
+
+        <?= Former::text( 'sha256' )
+            ->label( 'SHA256' )
+            ->blockHelp( "" )
+            ->disabled( $t->file );
         ?>
 
         <?= Former::select( 'docstore_directory_id' )
@@ -45,6 +51,16 @@ $this->layout( 'layouts/ixpv4' );
             ->fromQuery( \IXP\Models\User::$PRIVILEGES_TEXT_ALL , 'name' )
             ->addClass( 'chzn-select' );
         ?>
+
+        <?php if( !$t->file ): ?>
+            <?= Former::file( 'uploadedFile' )
+                ->id( 'uploadedFile' )
+                ->label( ' ' )
+                ->class( 'form-control border-0 shadow-none' )
+                ->multiple( false )
+                ->blockHelp( "" );
+            ?>
+        <?php endif; ?>
 
         <div class="form-group">
             <div class="col-lg-offset-2 col-sm-offset-2">
@@ -78,48 +94,6 @@ $this->layout( 'layouts/ixpv4' );
                 </div>
             </div>
         </div>
-
-        <?php if( $t->file && $t->file->extension() == 'txt' ): ?>
-            <?= Former::textarea( 'fileContent' )
-                ->id( 'fileContent' )
-                ->label( 'Content' )
-                ->rows( 10 )
-                ->blockHelp( "" )
-            ?>
-        <?php else: ?>
-            <div class="form-group">
-                <div class="col-lg-offset-2 col-sm-offset-2">
-                    <div class="card mt-4">
-                        <div class="card-header">
-                            <ul class="nav nav-tabs card-header-tabs">
-                                <li role="presentation" class="nav-item">
-                                    <a class="tab-link-body-note nav-link active" href="#body2">Content</a>
-                                </li>
-                                <li role="presentation" class="nav-item">
-                                    <a class="tab-link-preview-note nav-link" href="#preview2">Preview</a>
-                                </li>
-                            </ul>
-                        </div>
-
-                        <div class="tab-content card-body">
-                            <div role="tabpanel" class="tab-pane show active" id="body2">
-                                <?= Former::textarea( 'fileContent' )
-                                    ->id( 'fileContent' )
-                                    ->label( '' )
-                                    ->rows( 10 )
-                                    ->blockHelp( "This field supports markdown" )
-                                ?>
-                            </div>
-                            <div role="tabpanel" class="tab-pane" id="preview2">
-                                <div class="bg-light p-4 well-preview">
-                                    Loading...
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <?php endif; ?>
 
         <?= Former::actions(
             Former::primary_submit( $t->file ? 'Save' : 'Create' )->class( "mb-2 mb-sm-0" ),

@@ -115,7 +115,6 @@ class DocstoreDirectory extends Model
         return $list->orderBy('name')->get();
     }
 
-
     /**
      * Create an array of directories keeping the hierarchy root/subfolder
      *

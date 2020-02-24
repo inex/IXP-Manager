@@ -86,7 +86,14 @@ class DocstoreFile extends Model
      *
      * @var array
      */
-    public static $extensionViewable = [ 'txt', 'md' ];
+    public static $extensionViewable = [ '.txt', '.md' ];
+
+    /**
+     * File extension allowed to be edited
+     *
+     * @var array
+     */
+    public static $extensionEditable = [ '.txt', '.md' ];
 
     /**
      * Get the directory that owns the file.
@@ -111,7 +118,27 @@ class DocstoreFile extends Model
      */
     public function isViewable(): bool
     {
-        return in_array( pathinfo( Storage::disk( $this->disk )->url( $this->path ), PATHINFO_EXTENSION ), self::$extensionViewable );
+        return in_array( '.' . pathinfo( Storage::disk( $this->disk )->url( $this->path ), PATHINFO_EXTENSION ), self::$extensionViewable );
+    }
+
+    /**
+     * Can we edit that file?
+     *
+     * @return bool
+     */
+    public function isEditable(): bool
+    {
+        return in_array( '.' . pathinfo( Storage::disk( $this->disk )->url( $this->path ), PATHINFO_EXTENSION ), self::$extensionEditable );
+    }
+
+    /**
+     * Get the extension of the file
+     *
+     * @return string
+     */
+    public function extension(): string
+    {
+        return pathinfo( Storage::disk( $this->disk )->url( $this->path ), PATHINFO_EXTENSION );
     }
 
     /**

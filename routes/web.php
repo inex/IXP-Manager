@@ -179,17 +179,25 @@ if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
         Route::put(     '/dir/update/{dir}','DirectoryController@update'    )->name( 'docstore-dir@update'  );
         Route::delete(  '/dir/{dir}',       'DirectoryController@delete'    )->name( 'docstore-dir@delete'  );
 
-        Route::get( '/file/create',         'FileController@create'         )->name( 'docstore-file@create'     );
-        Route::get( '/file/{file}/edit',    'FileController@edit'           )->name( 'docstore-file@edit'       );
-        Route::get( '/file/download/{file}','FileController@download'       )->name( 'docstore-file@download'   );
-        Route::get( '/file/view/{file}',    'FileController@view'           )->name( 'docstore-file@view'       );
+        Route::group( [ 'namespace' => 'File', 'prefix' => 'file' ], function() {
+            Route::get( '/create',              'CreateController@create'   )->name( 'docstore-file@create' );
+            Route::get( '/{file}/edit',         'CreateController@edit'     )->name( 'docstore-file@edit'   );
+            Route::post(    '/store',           'CreateController@store'    )->name( 'docstore-file@store'  );
+            Route::put(     '/update/{file}',   'CreateController@update'   )->name( 'docstore-file@update' );
 
-        Route::post(    '/file/store',          'FileController@store'      )->name( 'docstore-file@store'      );
-        Route::put(     '/file/update/{file}',  'FileController@update'     )->name( 'docstore-file@update'     );
-        Route::delete(  '/file/{file}',         'FileController@delete'     )->name( 'docstore-file@delete'     );
+            Route::get( '/upload',                  'UploadController@upload' )->name( 'docstore-file@upload'         );
+            Route::get( '/{file}/edit-upload',      'UploadController@edit'   )->name( 'docstore-file@edit-upload'    );
+            Route::post(    '/store-upload',        'UploadController@store'  )->name( 'docstore-file@store-upload'   );
+            Route::put(     '/update-upload/{file}','UploadController@update' )->name( 'docstore-file@update-upload'  );
 
-        Route::get( '/file/{file}/logs',        'LogController@list'       )->name( 'docstore-log@list'         );
-        Route::get( '/file/{file}/unique-logs', 'LogController@uniqueList' )->name( 'docstore-log@unique-list'  );
+            Route::get( '/download/{file}', 'CommonController@download'       )->name( 'docstore-file@download'   );
+            Route::get( '/view/{file}',     'CommonController@view'           )->name( 'docstore-file@view'       );
+            Route::delete(  '/{file}',      'CommonController@delete'         )->name( 'docstore-file@delete'     );
+        } );
+
+        Route::get( '/{file}/logs',        'LogController@list'           )->name( 'docstore-log@list'         );
+        Route::get( '/{file}/unique-logs', 'LogController@uniqueList'     )->name( 'docstore-log@unique-list'  );
+
     } );
 }
 
