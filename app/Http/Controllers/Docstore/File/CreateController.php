@@ -61,7 +61,7 @@ class CreateController extends Controller
         $this->authorize( 'create', DocstoreFile::class );
 
         Former::populate([
-            'min_privs'             => $request->old( 'min_privs',      User::AUTH_SUPERUSER   )
+            'min_privs' => $request->old( 'min_privs',      User::AUTH_SUPERUSER   )
         ]);
 
         return view( 'docstore/file/create', [
@@ -176,7 +176,6 @@ class CreateController extends Controller
         Storage::disk( 'docstore' )->delete( $temporaryFile->getFilename() );*/
 
         // FIXME end solution 3
-
 
         AlertContainer::push( "File <em>{$request->name}</em> created.", Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $file->docstore_directory_id ] ) );

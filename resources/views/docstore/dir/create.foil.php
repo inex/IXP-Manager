@@ -6,11 +6,17 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Document Store :: <?= $t->dir ? 'Edit' : 'Create' ?> Directory
+    Document Store / <?= $t->dir ? 'Edit' : 'Create' ?> Directory
 <?php $this->append() ?>
 
 
 <?php $this->section( 'page-header-postamble' ) ?>
+
+    <div class="btn-group btn-group-sm ml-auto" role="group">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/document-store/">
+            Documentation
+        </a>
+    </div>
 
 <?php $this->append() ?>
 
@@ -37,7 +43,8 @@
         <?= Former::select( 'parent_dir' )
             ->label( 'Root Directory' )
             ->fromQuery( $t->dirs, 'name' )
-            ->addClass( 'chzn-select' );
+            ->addClass( 'chzn-select' )
+            ->blockHelp( "Where to create the new directory." );
         ?>
 
         <div class="form-group">
@@ -61,7 +68,9 @@
                                 ->id( 'description' )
                                 ->label( '' )
                                 ->rows( 5 )
-                                ->blockHelp( "This field supports markdown" )
+                                ->blockHelp( "If you enter content here, it will appear at the top of the "
+                                    . "directory listing in a well element (bordered and emphasised). This is useful to explain the content of "
+                                    . "a directory.<br><br>This field supports markdown." )
                             ?>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="preview">

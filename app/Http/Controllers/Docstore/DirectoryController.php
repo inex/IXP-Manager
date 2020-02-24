@@ -101,7 +101,7 @@ class DirectoryController extends Controller
      *
      * @throws
      */
-    public function edit( Request $request , DocstoreDirectory $dir ): View
+    public function edit( Request $request, DocstoreDirectory $dir ): View
     {
         $this->authorize( 'update', $dir );
 
@@ -194,7 +194,7 @@ class DirectoryController extends Controller
             'parent_dir_id' => [ 'nullable', 'integer',
                 function ($attribute, $value, $fail) {
                     if( !DocstoreDirectory::where( $attribute, $value )->exists() ) {
-                        return $fail( $attribute.' is invalid.' );
+                        return $fail( 'Parent directory is invalid / does not exist.' );
                     }
                 },
             ]

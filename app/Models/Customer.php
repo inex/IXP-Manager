@@ -30,8 +30,8 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property string|null $peeringmacro
  * @property string|null $peeringpolicy
  * @property string|null $corpwww
- * @property string|null $datejoin
- * @property string|null $dateleave
+ * @property \Illuminate\Support\Carbon|null $datejoin
+ * @property \Illuminate\Support\Carbon|null $dateleave
  * @property int|null $status
  * @property int|null $activepeeringmatrix
  * @property \Illuminate\Support\Carbon|null $lastupdated
@@ -47,9 +47,14 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property int $isReseller
  * @property int $in_manrs
  * @property int $in_peeringdb
+ * @property int $peeringdb_oauth
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VirtualInterface[] $virtualInterfaces
+ * @property-read int|null $virtual_interfaces_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer current()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer trafficking()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereAbbreviatedName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereActivepeeringmatrix($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereAutsys($value)
@@ -76,6 +81,7 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNochours($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNocphone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNocwww($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringdbOauth($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringemail($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringmacro($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringmacrov6($value)
@@ -85,12 +91,6 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereType($value)
  * @mixin \Eloquent
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer trafficking()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer current()
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VirtualInterface[] $virtualInterfaces
- * @property int $peeringdb_oauth
- * @property-read int|null $virtual_interfaces_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringdbOauth($value)
  */
 class Customer extends Model
 {

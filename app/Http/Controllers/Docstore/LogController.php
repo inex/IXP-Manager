@@ -47,25 +47,37 @@ class LogController extends Controller
      * @param DocstoreFile $file
      *
      * @return View
+     *
+     * @throws
      */
     public function uniqueList( DocstoreFile $file ) : View
     {
-        return $this->list( $file, true );
+        $this->authorize( 'viewAny', DocstoreLog::class );
+
+        return view( 'docstore/log/list', [
+            'file'          => $file,
+            'unique'        => true,
+            'logs'          => DocstoreLog::getUniqueUserListing( $file )
+        ] );
     }
+
     /**
      * Display the list of all logs for a file
      *
      * @param DocstoreFile $file
-     * @param bool $unique
      *
      * @return View
+     *
+     * @throws
      */
-    public function list( DocstoreFile $file, bool $unique = false ) : View
+    public function list( DocstoreFile $file ) : View
     {
+        $this->authorize( 'viewAny', DocstoreLog::class );
+
         return view( 'docstore/log/list', [
             'file'          => $file,
-            'unique'        => $unique,
-            'logs'          => DocstoreLog::getListing( $file, $unique )
+            'unique'        => false,
+            'logs'          => DocstoreLog::getListing( $file )
         ] );
     }
 }

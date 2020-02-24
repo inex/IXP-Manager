@@ -4,8 +4,8 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'page-header-preamble' ) ?>
     Document Store
-    :: <a href="<?= route( 'docstore-dir@list', [ 'dir' => $t->file->directory ] ) ?>"><?= $t->file->directory ? $t->file->directory->name : 'Root Directory' ?></a>
-    :: <?= $t->file->name ?> :: <?= $t->unique ? 'Unique' : 'All' ?> Logs
+    / <a href="<?= route( 'docstore-dir@list', [ 'dir' => $t->file->directory ] ) ?>"><?= $t->file->directory ? $t->file->directory->name : 'Root Directory' ?></a>
+    / <?= $t->unique ? 'Unique' : 'All' ?> Logs
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -26,37 +26,61 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= $t->alerts() ?>
 
-            <table id="table-logs" class="table collapse table-striped">
-                <thead class="thead-dark">
-                    <tr>
-                        <th>
-                            Downloaded By
-                        </th>
-                        <th>
-                            Downloaded At
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach( $t->logs as $log ): ?>
-                        <tr>
-                            <td>
-                                <?php if( $log->downloaded_by_user instanceof \IXP\Models\User ): ?>
-                                    <a href="<?= route( 'customer@overview', [ 'id' => $log->downloaded_by_user->id ] ) ?>">
-                                        <?= $log->downloaded_by_user->username ?>
-                                    </a>
-                                <?php else: ?>
-                                    <?= $log->downloaded_by ?>
-                                <?php endif; ?>
+            <h3><?= $t->unique ? 'Unique' : '' ?> Downloads for: <?= $t->file->name ?></h3>
 
-                            </td>
-                            <td>
-                                <?= $log->created_at ?>
-                            </td>
+            <div class="tw-mt-8">
+                <table id="table-logs" class="table collapse table-striped">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th>
+                                Downloaded By
+                            </th>
+                            <?php if( $t->unique ): ?>
+                                <th>
+                                    Downloads
+                                </th>
+                                <th>
+                                    First Downloaded
+                                </th>
+                                <th>
+                                    Last Downloaded
+                                </th>
+                            <?php else: ?>
+                                <th>
+                                    Downloaded At
+                                </th>
+                            <?php endif; ?>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        <?php foreach( $t->logs as $log ): ?>
+                            <tr>
+                                <td>
+                                    <?= $log->name ?? '' ?>
+                                    <?php if( $log->username ): ?>
+                                        (<?= $log->username ?>)
+                                    <?php endif; ?>
+                                </td>
+                                <?php if( $t->unique ): ?>
+                                    <td>
+                                        <?= $log->downloads ?>
+                                    </td>
+                                    <td>
+                                        <?= $log->first_downloaded ?>
+                                    </td>
+                                    <td>
+                                        <?= $log->first_downloaded != $log->last_downloaded ? $log->last_downloaded : '' ?>
+                                    </td>
+                                <?php else: ?>
+                                    <td>
+                                        <?= $log->created_at ?>
+                                    </td>
+                                <?php endif; ?>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 
@@ -71,7 +95,7 @@ $this->layout( 'layouts/ixpv4' );
             $('#table-logs').DataTable( {
                 stateSave: true,
                 stateDuration : DATATABLE_STATE_DURATION,
-                responsive: true,
+                responsive: false,
                 columnDefs: [
                     { responsivePriority: 1, targets: 0 },
                     { responsivePriority: 2, targets: -1 }

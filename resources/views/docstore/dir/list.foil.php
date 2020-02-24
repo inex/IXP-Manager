@@ -68,18 +68,19 @@
                          <a href="<?= route('docstore-dir@list', ['dir' => $dir->id] ) ?>"><?= $t->ee( $dir->name ) ?></a>
                     </p>
 
-                    <div class="dropdown">
-                        <button class="btn btn-light btn-sm tw-my-0 tw-py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                            &middot;&middot;&middot;
-                        </button>
-                        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="<?= route( "docstore-dir@edit", [ "dir" => $dir->id ] ) ?>">Edit</a>
-                            <?php if( !$dir->subDirectories()->exists() && !$dir->files()->exists() ): ?>
-                                <a class="dropdown-item list-delete-btn" data-object-type="dir" href="#" data-url="<?= route('docstore-dir@delete', [ 'dir' => $dir->id ] ) ?>">Delete</a>
-                            <?php endif; ?>
-
+                    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                        <div class="dropdown">
+                            <button class="btn btn-light btn-sm tw-my-0 tw-py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                &middot;&middot;&middot;
+                            </button>
+                            <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
+                                <a class="dropdown-item" href="<?= route( "docstore-dir@edit", [ "dir" => $dir->id ] ) ?>">Edit</a>
+                                <?php if( !$dir->subDirectories()->exists() && !$dir->files()->exists() ): ?>
+                                    <a class="dropdown-item list-delete-btn" data-object-type="dir" href="#" data-url="<?= route('docstore-dir@delete', [ 'dir' => $dir->id ] ) ?>">Delete</a>
+                                <?php endif; ?>
+                            </div>
                         </div>
-                    </div>
+                    <?php endif; ?>
                 </div>
 
             <?php endforeach; ?>
@@ -92,11 +93,17 @@
                     <p class="tw-align-middle tw-my-0 tw-mx-4 tw-p-0 mr-auto">
                         <i class="fa fa-lg fa-file tw-inline tw-mr-4"></i>
                         <a href="<?= route($file->isViewable() ? 'docstore-file@view' : 'docstore-file@download', ['file' => $file->id] ) ?>"
-                        data-toggle="tooltip" data-placement="top" data-html="true" title="<?= $file->description ?>"><?= $t->ee( $file->name ) ?></a>
+                            <?php if( trim( $file->description ) ): ?>
+                                data-toggle="tooltip" data-placement="top" data-html="true" title="<?= parsedown( $file->description ) ?>"
+                            <?php endif; ?>><?= $t->ee( $file->name ) ?></a>
                     </p>
 
 
                     <?php if( Auth::check() && Auth::user()->isSuperUser() && $file->downloads_count ): ?>
+                        <p class="tw-my-0 tw-ml-4 tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-xs">
+                            <?= \Entities\User::$PRIVILEGES_ALL[ $file->min_privs ] ?>
+                        </p>
+
                         <p class="tw-align-middle tw-my-0 tw-mx-4 tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-sm"
                                 data-toggle="tooltip" data-placement="left" data-html="true" title="User Downloads:<br> <?= $file->downloads_count ?> Total (<?= $file->unique_downloads_count ?> Unique)">
                             <?= $file->downloads_count ?> (<?= $file->unique_downloads_count ?>)
@@ -108,15 +115,17 @@
                             &middot;&middot;&middot;
                         </button>
                         <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                            <a class="dropdown-item" href="<?= route( $file->isViewable() ? 'docstore-file@edit' : 'docstore-file@edit-upload', [ "file" => $file ] ) ?>">Edit</a>
-
                             <a class="dropdown-item" href="#"
-                               onclick="bootbox.alert({ message: '<?= $file->sha256 ? "<code>" . $t->ee( $file->sha256 ) . "</code>" : "There is no sha256 checksum registered for this file." ?>', size: 'large' }); return false;">Show SHA256</a>
+                               onclick="bootbox.alert({ message: 'SHA checksums can be used to check the authenticity / integrity of files.<br><br><?= $file->sha256 ? "SHA256 checksum: [<code>" . $t->ee( $file->sha256 ) . "</code>]" : "there is no sha256 checksum registered for this file." ?>', size: 'large' }); return false;">Show SHA256</a>
 
-                            <a class="dropdown-item list-delete-btn" data-object-type="file" href="#" data-url="<?= route( "docstore-file@delete", [ "file" => $file ] ) ?>">Delete</a>
-
-                            <a class="dropdown-item" href="<?= route( 'docstore-log@unique-list', [ 'file' => $file ] ) ?>">Unique Logs</a>
-                            <a class="dropdown-item" href="<?= route( 'docstore-log@list', [ 'file' => $file ] ) ?>">All Logs</a>
+                            <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="<?= route( 'docstore-log@unique-list', [ 'file' => $file ] ) ?>">Unique Downloads</a>
+                                <a class="dropdown-item" href="<?= route( 'docstore-log@list', [ 'file' => $file ] ) ?>">All Downloads</a>
+                                <div class="dropdown-divider"></div>
+                                <a class="dropdown-item" href="<?= route( "docstore-file@edit", [ "file" => $file ] ) ?>">Edit</a>
+                                <a class="dropdown-item list-delete-btn" data-object-type="file" href="#" data-url="<?= route( "docstore-file@delete", [ "file" => $file ] ) ?>">Delete</a>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>

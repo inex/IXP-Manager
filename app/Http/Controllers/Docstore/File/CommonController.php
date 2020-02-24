@@ -105,7 +105,6 @@ class CommonController extends Controller
         $dir = $file->directory;
 
         Storage::disk( $file->disk )->delete( $file->path );
-
         $file->logs()->delete();
         $file->delete();
 

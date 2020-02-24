@@ -55,7 +55,7 @@ class DocstoreDirectoryPolicy
      */
     public function update( UserEntity $user, DocstoreDirectory $dir )
     {
-        return $user->isSuperUser() && $dir->exists;
+        return $user->isSuperUser();
     }
 
     /**
@@ -68,6 +68,6 @@ class DocstoreDirectoryPolicy
      */
     public function delete( UserEntity $user, DocstoreDirectory $dir )
     {
-        return $user->isSuperUser() && $dir->exists && !$dir->subDirectories()->exists() && !$dir->files()->exists();
+        return $user->isSuperUser() && !$dir->subDirectories()->exists() && !$dir->files()->exists();
     }
 }

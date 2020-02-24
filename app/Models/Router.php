@@ -28,15 +28,20 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $skip_md5
  * @property string|null $last_updated
  * @property bool $rpki
+ * @property string|null $software_version
+ * @property string|null $operating_system
+ * @property string|null $operating_system_version
+ * @property int $rfc1997_passthru
  * @property-read \IXP\Models\Vlan $vlan
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router hasApi()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router iPv4()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router iPv6()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router isRouteServer()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router largeCommunities()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router notQuarantine()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router routeServer()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router rpki()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereApi($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereApiType($value)
@@ -48,28 +53,22 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereLgAccess($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereMgmtHost($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereOperatingSystem($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereOperatingSystemVersion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router wherePeeringIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereProtocol($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereQuarantine($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereRfc1997Passthru($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereRouterId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereRpki($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereShortname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereSkipMd5($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereSoftware($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereSoftwareVersion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereTemplate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereVlanId($value)
  * @mixin \Eloquent
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router notQuarantine()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router routeServer()
- * @property string|null $software_version
- * @property string|null $operating_system
- * @property string|null $operating_system_version
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereOperatingSystem($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereOperatingSystemVersion($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereSoftwareVersion($value)
- * @property int $rfc1997_passthru
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereRfc1997Passthru($value)
  */
 class Router extends Model
 {

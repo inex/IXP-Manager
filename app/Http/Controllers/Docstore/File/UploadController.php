@@ -63,7 +63,7 @@ class UploadController extends Controller
         $this->authorize( 'create', DocstoreFile::class );
 
         Former::populate([
-            'min_privs'             => $request->old( 'min_privs',      User::AUTH_SUPERUSER   )
+            'min_privs' => $request->old( 'min_privs', User::AUTH_SUPERUSER )
         ]);
 
         return view( 'docstore/file/upload', [
@@ -86,9 +86,7 @@ class UploadController extends Controller
         $this->authorize( 'create', DocstoreFile::class );
 
         $this->checkForm( $request );
-
         $file = $request->file('uploadedFile');
-
         $path = $file->store( '', 'docstore' );
 
         $file = DocstoreFile::create( [
@@ -100,7 +98,7 @@ class UploadController extends Controller
             'sha256'                => hash_file( 'sha256', $file )
         ] );
 
-        AlertContainer::push( "File <em>{$request->name}</em> created.", Alert::SUCCESS );
+        AlertContainer::push( "File <em>{$request->name}</em> uploaded.", Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $file->docstore_directory_id ] ) );
     }
 
@@ -159,6 +157,7 @@ class UploadController extends Controller
         ] );
     }
 
+
     /**
      * Check if the form is valid
      *
@@ -171,11 +170,11 @@ class UploadController extends Controller
         $request->validate( [
             'name'          => 'required|max:100',
             'uploadedFile'  => Rule::requiredIf( function () use ( $request, $file ) {
-                return !$file ;
+                return !$file;
             }),
             'sha256'        => [ 'nullable', 'max:64',
                 function ($attribute, $value, $fail ) use( $request ) {
-                    if( $value && $request->file('uploadedFile' ) && $value != hash_file( 'sha256', $request->file( 'uploadedFile' ) ) ) {
+                    if( $value && $request->file('uploadedFile' ) && $value !== hash_file( 'sha256', $request->file( 'uploadedFile' ) ) ) {
                         return $fail( $attribute.' is invalid.' );
                     }
                 },

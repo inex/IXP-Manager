@@ -6,11 +6,17 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Document Store :: <?= $t->file ? 'Edit' : 'Create' ?> File
+    Document Store / <?= $t->file ? 'Edit' : 'Upload' ?> File
 <?php $this->append() ?>
 
 
 <?php $this->section( 'page-header-postamble' ) ?>
+
+    <div class="btn-group btn-group-sm ml-auto" role="group">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/document-store/">
+            Documentation
+        </a>
+    </div>
 
 <?php $this->append() ?>
 
@@ -31,19 +37,22 @@ $this->layout( 'layouts/ixpv4' );
 
         <?= Former::text( 'name' )
             ->label( 'Name' )
-            ->blockHelp( "The name of the file (this is as it appears on listings in the web interface rather than on the filesystem)." );
+            ->blockHelp( "The name of the file (this is as it appears on listings in the web interface rather than on the filesystem). "
+                . "<b>This is also the name the downloaded file will have.</b>");
         ?>
 
         <?= Former::select( 'docstore_directory_id' )
             ->label( 'Directory' )
             ->fromQuery( $t->dirs, 'name' )
-            ->addClass( 'chzn-select' );
+            ->addClass( 'chzn-select' )
+            ->blockHelp( "The directory in which to store the file." );
         ?>
 
         <?= Former::select( 'min_privs' )
             ->label( 'Minimum privilege' )
             ->fromQuery( \IXP\Models\User::$PRIVILEGES_TEXT_ALL , 'name' )
-            ->addClass( 'chzn-select' );
+            ->addClass( 'chzn-select' )
+            ->blockHelp( "The minimum privilege a user is required to have to view and download the file." );
         ?>
 
         <div class="form-group">
@@ -65,8 +74,10 @@ $this->layout( 'layouts/ixpv4' );
                             <?= Former::textarea( 'description' )
                                 ->id( 'description' )
                                 ->label( '' )
-                                ->rows( 5 )
-                                ->blockHelp( "This field supports markdown" )
+                                ->rows( 2 )
+                                ->blockHelp( "If provided, this text will appear in a tooltip above the filename when the mouse is hovered over it. "
+                                    . "<b>For best user experience, we would recommend providing a descriptive filename and avoid using this field.</b> "
+                                    . "If you must use it, try and keep it short. This field supports markdown." )
                             ?>
                         </div>
                         <div role="tabpanel" class="tab-pane" id="preview">

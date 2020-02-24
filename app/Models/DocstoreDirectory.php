@@ -44,20 +44,28 @@ use Illuminate\Support\Carbon;
  * IXP\Models\DocstoreDirectory
  *
  * @property int $id
- * @property int $parent_dir_id
+ * @property int|null $parent_dir_id
  * @property string $name
  * @property string $description
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @method static Builder|DocstoreDirectory newModelQuery()
- * @method static Builder|DocstoreDirectory newQuery()
- * @method static Builder|DocstoreDirectory query()
- * @method static Builder|DocstoreDirectory whereCreatedAt( $value )
- * @method static Builder|DocstoreDirectory whereDescription( $value )
- * @method static Builder|DocstoreDirectory whereId( $value )
- * @method static Builder|DocstoreDirectory whereName( $value )
- * @method static Builder|DocstoreDirectory whereUpdatedAt( $value )
- * @mixin Eloquent
+ * @property int $min_privs
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreFile[] $files
+ * @property-read int|null $files_count
+ * @property-read \IXP\Models\DocstoreDirectory|null $parentDirectory
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreDirectory[] $subDirectories
+ * @property-read int|null $sub_directories_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereMinPrivs($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereParentDirId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 
 class DocstoreDirectory extends Model
@@ -102,7 +110,7 @@ class DocstoreDirectory extends Model
      *
      * @return EloquentCollection
      */
-    public static function getListing( ?DocstoreDirectory $dir, ?UserEntity $user )
+    public static function getListing( ?DocstoreDirectory $dir, ?UserEntity $user ): EloquentCollection
     {
         $list = self::where('parent_dir_id', $dir ? $dir->id : null );
 
@@ -119,47 +127,24 @@ class DocstoreDirectory extends Model
      * Create an array of directories keeping the hierarchy root/subfolder
      *
      *  [
-     *      [
-     *          "id" => 1
-     *          "name"  => Folder 1
-     *      ]
-     *
-     *      [
-     *          "id" => 2
-     *          "name"  => -&nbsp;Sub Folder 1
-     *      ]
-     *
-     *      [
-     *          "id" => 3
-     *          "name"  => -&nbsp;Sub Folder 2
-     *      ]
-     *
-     *      [
-     *          "id" => 4
-     *          "name"  => Folder 2
-     *      ]
-     *
-     *
+     *      [ "id" => 1, "name"  => "Folder 1" ],
+     *      [ "id" => 2, "name"  => " - Sub Folder 1" ],
+     *      [ "id" => 3, "name"  => " - Sub Folder 2" ],
+     *      [ "id" => 4, "name"  => "Folder 2" ],
      *  ]
      *
-     * @param $dirs
-     * @param $depth
+     * @param $dirs EloquentCollection
+     * @param $depth int
      *
      * @return array
      */
-    public static function getListingForDropdown( $dirs, $depth = 5 )
+    public static function getListingForDropdown( EloquentCollection $dirs, int $depth = 5 ): array
     {
-        $data[] = [
-            'id'        => '',
-            'name'      => 'Root Directory'
-        ];
+        $data[] = [ 'id' => '', 'name' => 'Root Directory' ];
 
         foreach( $dirs as $dir ) {
 
-            $data[] = [
-                'id'        => $dir->id,
-                'name'      => str_repeat( '&nbsp;', $depth ) . '-&nbsp;' . $dir->name
-            ];
+            $data[] = [ 'id' => $dir->id, 'name' => str_repeat( '&nbsp;', $depth ) . '-&nbsp;' . $dir->name ];
 
             foreach( self::getListingForDropdown( $dir->subDirectories, $depth + 5 ) as $sub ) {
                 $data[] = $sub;
