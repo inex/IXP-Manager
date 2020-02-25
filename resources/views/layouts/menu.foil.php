@@ -132,28 +132,16 @@
                 </a>
             </li>
 
-                <?php if( request()->is( 'console-server/*' ) || request()->is( 'console-server-connection/*' ) ): ?>
-                    <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection', false ) ): ?>
-                        <ul>
-                            <li class="nav-sub-menu-item <?= !request()->is( 'console-server-connection/*' ) ?: 'active' ?>" >
-                                <a href="<?= route('console-server-connection@list' ) ?>" class="nav-link">
-                                    Console Server Connections
-                                </a>
-                            </li>
-                        </ul>
-                    <?php endif; ?>
+            <?php if( request()->is( 'console-server/*' ) || request()->is( 'console-server-connection/*' ) ): ?>
+                <?php if( !config( 'ixp_fe.frontend.disabled.console-server-connection', false ) ): ?>
+                    <ul>
+                        <li class="nav-sub-menu-item <?= !request()->is( 'console-server-connection/*' ) ?: 'active' ?>" >
+                            <a href="<?= route('console-server-connection@list' ) ?>" class="nav-link">
+                                Console Server Connections
+                            </a>
+                        </li>
+                    </ul>
                 <?php endif; ?>
-
-
-
-            <?php if( !config( 'ixp_fe.frontend.disabled.docstore' ) ): ?>
-
-                <li class="<?= !request()->is( 'docstore/*' ) ?: 'active' ?>" >
-                    <a href="<?= route('docstore-dir@list' ) ?>" class="nav-link">
-                        Document Store
-                    </a>
-                </li>
-
             <?php endif; ?>
 
 
@@ -168,6 +156,16 @@
 
             <?php endif; ?>
 
+
+            <?php if( !config( 'ixp_fe.frontend.disabled.docstore' ) ): ?>
+
+                <li class="<?= !request()->is( 'docstore/*' ) ?: 'active' ?>" >
+                    <a href="<?= route('docstore-dir@list' ) ?>" class="nav-link">
+                        Document Store
+                    </a>
+                </li>
+
+            <?php endif; ?>
 
 
 

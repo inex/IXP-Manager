@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Docstore;
 
 use Auth, Former;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -137,6 +138,8 @@ class DirectoryController extends Controller
 
         $dir = DocstoreDirectory::create( [ 'name' => $request->name, 'description' => $request->description, 'parent_dir_id' => $request->parent_dir ] );
 
+        Log::info( sprintf( "DocStore: new directory [%d|%s] created by %s", $dir->id, $dir->name, $request->user()->getUsername() ) );
+
         AlertContainer::push( "New directory <em>{$request->name}</em> created.", Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->id ] ) );
     }
@@ -159,6 +162,8 @@ class DirectoryController extends Controller
 
         $dir->update( [ 'name' => $request->name, 'description' => $request->description, 'parent_dir_id' => $request->parent_dir ] );
 
+        Log::info( sprintf( "DocStore: directory [%d|%s] edited by %s", $dir->id, $dir->name, $request->user()->getUsername() ) );
+
         AlertContainer::push( "Directory <em>{$request->name}</em> updated.", Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->parent_dir_id ] ) );
     }
@@ -177,9 +182,11 @@ class DirectoryController extends Controller
     {
         $this->authorize( 'delete', $dir );
 
-        DocstoreDirectory::deleteAll( $dir );
+        Log::notice( sprintf( "DocStore: start recursive deletion of directory [%d|%s] by %s", $dir->id, $dir->name, $request->user()->getUsername() ) );
+        DocstoreDirectory::recursiveDelete( $dir );
+        Log::notice( sprintf( "DocStore: finish recursive deletion of directory [%d|%s] by %s", $dir->id, $dir->name, $request->user()->getUsername() ) );
 
-        AlertContainer::push( "Directory <em>{$request->name}</em> deleted.", Alert::SUCCESS );
+        AlertContainer::push( "Directory <em>{$dir->name}</em> deleted.", Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->parent_dir_id ] ) );
     }
 

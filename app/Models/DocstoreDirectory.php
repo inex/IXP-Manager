@@ -39,6 +39,7 @@ use Illuminate\Database\Eloquent\Relations\{
 };
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Log;
 use Storage;
 
 /**
@@ -141,6 +142,7 @@ class DocstoreDirectory extends Model
      */
     public static function getListingForDropdown( EloquentCollection $dirs, int $depth = 5 ): array
     {
+        $data = [];
         $data[] = [ 'id' => '', 'name' => 'Root Directory' ];
 
         foreach( $dirs as $dir ) {
@@ -245,17 +247,20 @@ class DocstoreDirectory extends Model
      *
      * @throws
      */
-    public static function deleteAll( DocstoreDirectory $dir ) {
-        $dir->subDirectories()->each( function ( $sub ) {
-            self::deleteAll( $sub );
+    public static function recursiveDelete( DocstoreDirectory $dir )
+    {
+        $dir->subDirectories->each( function( DocstoreDirectory $subdir ) {
+            self::recursiveDelete( $subdir );
         });
 
-        $dir->files()->each( function ( $file ) {
+        $dir->files->each( function( DocstoreFile $file ) {
             $file->logs()->delete();
             Storage::disk( $file->disk )->delete( $file->path );
             $file->delete();
+            Log::info( sprintf( "Docstore: file [%d|%s] deleted", $file->id, $file->name ) );
         });
 
+        Log::info( sprintf( "Docstore: directory [%d|%s] deleted", $dir->id, $dir->name ) );
         $dir->delete();
     }
 }

@@ -11,10 +11,16 @@
             let type = $(this).attr( 'data-object-type') === 'file' ? 'file' : 'directory';
 
             let html = `<form id="form-delete" method="POST" action="${url}">
-                                <div>Do you really want to delete this ${type}?</div>
-                                <input type="hidden" name="_method" value="delete" />
-                                <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                            </form>`;
+                                <div>Do you really want to delete this ${type}?`;
+
+            if( type === 'directory' ) {
+                html += ' <b>All subdirectories and all files within those directories will also be deleted!</b>';
+            }
+
+            html += `</div>
+                        <input type="hidden" name="_method" value="delete" />
+                        <input type="hidden" name="_token" value="<?= csrf_token() ?>">
+                    </form>`;
 
             bootbox.dialog({
                 message: html,
