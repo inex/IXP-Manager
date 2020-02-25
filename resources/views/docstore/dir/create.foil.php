@@ -42,7 +42,7 @@
         ?>
 
         <?= Former::select( 'parent_dir' )
-            ->label( 'Root Directory' )
+            ->label( 'Parent Directory' )
             ->fromQuery( $t->dirs, 'name' )
             ->addClass( 'chzn-select' )
             ->blockHelp( "Where to create the new directory." );

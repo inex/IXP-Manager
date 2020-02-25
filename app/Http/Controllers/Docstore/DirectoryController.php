@@ -65,7 +65,7 @@ class DirectoryController extends Controller
      */
     public function list( Request $request, DocstoreDirectory $dir = null ) : View
     {
-        DocstoreDirectory::getListing2( $request->user()->getPrivs(), $dir );
+        //DocstoreDirectory::getListing2( $request->user()->getPrivs(), $dir );
 
         return view( 'docstore/dir/list', [
             'dir'       => $dir ?? false,

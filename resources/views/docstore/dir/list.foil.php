@@ -17,11 +17,15 @@
                 Documentation
             </a>
 
-            <a id="add-dir" class="btn btn-white" href="<?= route('docstore-dir@create', ['parent_dir' => $t->dir ? $t->dir->id : null ] ) ?>">
+            <a id="add-dir" class="btn btn-white" href="<?= route('docstore-dir@create', ['parent_dir' => $t->dir ? $t->dir->id : null ] ) ?>"
+               data-toggle="tooltip" data-placement="bottom" title="Create Directory"
+            >
                 <i class="fa fa-plus"></i> <i class="fa fa-folder"></i>
             </a>
 
-            <a id="add-file" class="btn btn-white" href="<?= route('docstore-file@upload', ['docstore_directory_id' => $t->dir ? $t->dir->id : null ] ) ?>">
+            <a id="add-file" class="btn btn-white" href="<?= route('docstore-file@upload', ['docstore_directory_id' => $t->dir ? $t->dir->id : null ] ) ?>"
+               data-toggle="tooltip" data-placement="bottom" title="Upload File"
+            >
                 <i class="fa fa-plus"></i> <i class="fa fa-file"></i>
             </a>
 
