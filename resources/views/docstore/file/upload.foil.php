@@ -36,8 +36,9 @@ $this->layout( 'layouts/ixpv4' );
         ?>
 
         <?= Former::text( 'sha256' )
+            ->id('sha256')
             ->label( 'SHA256' )
-            ->disabled( $t->file )
+            ->disabled( $t->file ? 1 : false )
             ->blockHelp( "SHA checksums can be used to verify the authenticity / integrity of downloaded files. The primary use-case in development "
                 . "was for official documents - please see the documentation for more information. If you enter a SHA256 checksum, it will be "
                 . "verified on upload. If you leave it blank, the SHA256 checksum will be calculated by IXP Manager.");
@@ -59,10 +60,11 @@ $this->layout( 'layouts/ixpv4' );
 
         <?= Former::file( 'uploadedFile' )
             ->id( 'uploadedFile' )
-            ->label( ' ' )
+            ->label( ( $t->file ? 'Replace' : 'Upload' ) . ' File' )
             ->class( 'form-control border-0 shadow-none' )
             ->multiple( false )
-            ->blockHelp( "" );
+            ->blockHelp( $t->file ? "You only need to chose a file here if you wish to replace the existing one. Do not select a file to edit other details but leave the current file in place."
+                : "Select the file you wish to upload." );
         ?>
 
         <div class="form-group">
@@ -104,8 +106,8 @@ $this->layout( 'layouts/ixpv4' );
             <?= Former::checkbox( 'purgeLogs' )
                 ->id( 'purgeLogs' )
                 ->label( '&nbsp;' )
-                ->text( 'Purge logs' )
-                ->blockHelp( "" );
+                ->text( 'Purge all download logs and reset download statistics' )
+                ->blockHelp( "Check this to purge all download logs for this file and reset download statistics to '0 (0)'. This is not reversible." );
             ?>
         <?php endif; ?>
 
@@ -121,3 +123,23 @@ $this->layout( 'layouts/ixpv4' );
     </div>
 
 <?php $this->append() ?>
+
+
+<?php $this->section( 'scripts' ) ?>
+
+<script>
+<?php if( $t->file ): ?>
+
+    $( document ).ready( function() {
+
+        $('#uploadedFile').on( 'input', function( e ) {
+            $('#sha256').removeAttr('disabled').val('');
+        });
+
+    });
+
+<?php endif; ?>
+</script>
+
+<?php $this->append() ?>
+

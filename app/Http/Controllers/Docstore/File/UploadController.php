@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers\Docstore\File;
 
 use Former;
 
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -99,6 +100,8 @@ class UploadController extends Controller
             'sha256'                => hash_file( 'sha256', $file )
         ] );
 
+        Log::info( sprintf( "DocStore: file [%d|%s] uploaded by %s", $file->id, $file->name, $request->user()->getUsername() ) );
+
         AlertContainer::push( "File <em>{$request->name}</em> uploaded.", Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $file->docstore_directory_id ] ) );
     }
@@ -166,6 +169,7 @@ class UploadController extends Controller
 
         // Purge the logs of the file
         if( $request->purgeLogs ) {
+            Log::info( sprintf( "DocStore: all download logs for file [%d|%s] purged by %s", $file->id, $file->name, $request->user()->getUsername() ) );
             $file->logs()->delete();
         }
 
@@ -175,6 +179,8 @@ class UploadController extends Controller
             'docstore_directory_id' => $request->docstore_directory_id,
             'min_privs'             => $request->min_privs
         ] );
+
+        Log::info( sprintf( "DocStore: file [%d|%s] edited by %s", $file->id, $file->name, $request->user()->getUsername() ) );
 
         AlertContainer::push( "File <em>{$request->name}</em> updated.", Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $file->docstore_directory_id ] ) );

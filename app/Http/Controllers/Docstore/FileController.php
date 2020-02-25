@@ -22,6 +22,8 @@ namespace IXP\Http\Controllers\Docstore;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
+
+use Illuminate\Support\Facades\Log;
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -136,9 +138,12 @@ class FileController extends Controller
 
         Storage::disk( $file->disk )->delete( $file->path );
         $file->logs()->delete();
+
+        AlertContainer::push( "File <em>{$file->name}</em> deleted.", Alert::SUCCESS );
+        Log::info( sprintf( "DocStore: file [%d|%s] deleted by %s", $file->id, $file->name, $request->user()->getUsername() ) );
+
         $file->delete();
 
-        AlertContainer::push( "File <em>{$request->name}</em> deleted.", Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $dir ] ) );
     }
 }

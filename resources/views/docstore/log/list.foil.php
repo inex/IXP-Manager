@@ -26,7 +26,16 @@ $this->layout( 'layouts/ixpv4' );
 
             <?= $t->alerts() ?>
 
-            <h3><?= $t->unique ? 'Unique' : '' ?> Downloads for: <?= $t->file->name ?></h3>
+            <h3 class="tw-my-4">
+                <?= $t->unique ? 'Unique' : 'All' ?> Downloads for: <?= $t->file->name ?>
+                <small class="tw-ml-8 tw-text-sm">
+                    [Switch to <?php if( $t->unique ): ?>
+                        <a href="<?= route( 'docstore-log@list', [ 'file' => $t->file ] ) ?>">All Downloads</a>]
+                    <?php else: ?>
+                        <a href="<?= route( 'docstore-log@unique-list', [ 'file' => $t->file ] ) ?>">Unique Downloads</a>]
+                    <?php endif; ?>
+                </small>
+            </h3>
 
             <div class="tw-mt-8">
                 <table id="table-logs" class="table collapse table-striped">
