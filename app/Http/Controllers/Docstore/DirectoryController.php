@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers\Docstore;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Former;
+use Auth, Former;
 
 use Illuminate\Http\{
     RedirectResponse,
@@ -64,6 +64,8 @@ class DirectoryController extends Controller
      */
     public function list( Request $request, DocstoreDirectory $dir = null ) : View
     {
+        DocstoreDirectory::getListing2( $request->user()->getPrivs(), $dir );
+
         return view( 'docstore/dir/list', [
             'dir'       => $dir ?? false,
             'dirs'      => DocstoreDirectory::getListing( $dir, $request->user() ),

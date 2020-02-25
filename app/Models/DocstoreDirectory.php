@@ -156,6 +156,88 @@ class DocstoreDirectory extends Model
     }
 
 
+
+
+    public static function getListing2( int $privs = User::AUTH_SUPERUSER, $dir )
+    {
+        $list = self::where('parent_dir_id',$dir ?? null );
+
+
+        dd( self::getListingFor( $list->orderBy('name')->get(), $privs ) );
+
+        return $list->orderBy('name')->get();
+    }
+
+    public static function getListingFor( $dirs, $privs )
+    {
+
+        $data = [];
+        foreach( $dirs as $dir ) {
+
+            $files = self::where('id', $dir->id )
+                ->whereHas( 'files', function( Builder $query ) use ( $privs ) {
+                    $query->where( 'min_privs', '<=', $privs );
+                } )
+                ->get();
+
+
+            if( $files->isEmpty() && $dir->subDirectories->isEmpty() ) {
+                continue;
+            }
+
+            $data[ $dir->id ] = [
+                'id'        => $dir->id,
+                'name'      => $dir->name,
+                'file'      => $files->isNotEmpty(),
+            ];
+
+            foreach( self::getListingFor( $dir->subDirectories, $privs ) as $sub ) {
+                $data[ $dir->id ][ 'sub' ] = $sub;
+            }
+
+
+
+
+            /*if( $files->isNotEmpty() || $dir->subDirectories ){
+                $data[ $dir->id ] = [
+                    'id'        => $dir->id,
+                    'name'      => $dir->name,
+                    'file'      => $files->isNotEmpty()
+
+                ];
+                //$data[ $dir->id ][ 'sub' ] = self::getListingFor( $dir->subDirectories, $privs );
+            }
+
+            if( $dir->subDirectories ){
+                self::getListingFor( $dir->subDirectories, $privs );
+            }*/
+
+
+
+            /*
+
+
+            $data[ $dir->id ] = [
+                    'id'        => $dir->id,
+                    'name'      => $dir->name,
+                    'hasFile'    => $files->isNotEmpty() ? true : false
+             ];
+
+
+            foreach( self::getListingFor( $dir->subDirectories, $privs ) as $sub ) {
+                if( $sub[ 'hasFile' ] ) {
+                    $data[ $sub ][ 'sub' ] = $sub;
+                }
+
+            }*/
+
+
+
+        }
+
+        return $data;
+    }
+
     /**
      * Delete all the files and subdirectories for a given folder
      *
