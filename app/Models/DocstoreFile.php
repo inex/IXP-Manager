@@ -53,6 +53,7 @@ use Storage;
  * @property string|null $sha256
  * @property string|null $description
  * @property int $min_privs
+ * @property string $file_last_updated
  * @property int|null $created_by
  * @property \Illuminate\Support\Carbon|null $created_at
  * @property \Illuminate\Support\Carbon|null $updated_at
@@ -67,6 +68,7 @@ use Storage;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereDisk($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereDocstoreDirectoryId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereFileLastUpdated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereMinPrivs($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereName($value)
@@ -84,7 +86,25 @@ class DocstoreFile extends Model
      *
      * @var array
      */
-    protected $fillable = [ 'name', 'description', 'docstore_directory_id', 'path', 'sha256', 'min_privs' ];
+    protected $fillable = [ 'name',
+        'description',
+        'docstore_directory_id',
+        'path',
+        'sha256',
+        'min_privs',
+        'file_last_updated',
+        'created_by',
+    ];
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = [
+        'file_last_updated',
+    ];
+
 
     /**
      * File extension allowed to be viewed

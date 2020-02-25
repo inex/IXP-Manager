@@ -25,6 +25,8 @@ class CreateDocstoreFiles extends Migration
             $table->text('description' )->nullable();
             $table->smallInteger('min_privs' );
 
+            $table->dateTime( 'file_last_updated' );
+
             // we're not using a FK constraint here as users can be deleted without deleting files.
             $table->integer('created_by')->nullable();
 

@@ -96,17 +96,20 @@
                             <?php endif; ?>><?= $t->ee( $file->name ) ?></a>
                     </p>
 
-
                     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-                        <p class="tw-my-0 tw-ml-4 tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-xs">
+                        <p class="tw-my-0 tw-ml-4 tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-xs tw-text-gray-700">
                             <?= \Entities\User::$PRIVILEGES_ALL[ $file->min_privs ] ?>
                         </p>
 
-                        <p class="tw-align-middle tw-my-0 tw-mx-4 tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-sm"
+                        <p class="tw-align-middle tw-my-0 tw-mx-4 tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-sm tw-text-gray-700"
                                 data-toggle="tooltip" data-placement="left" data-html="true" title="User Downloads:<br> <?= $file->downloads_count ?> Total (<?= $file->unique_downloads_count ?> Unique)">
                             <?= $file->downloads_count ?> (<?= $file->unique_downloads_count ?>)
                         </p>
                     <?php endif; ?>
+
+                    <p class="tw-mr-6 tw-ml-4 tw-my-0 tw-text-gray-700 tw-text-sm tw-align-middle tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1">
+                        <?= $file->file_last_updated->toFormattedDateString() ?>
+                    </p>
 
                     <div class="dropdown">
                         <button class="btn btn-light btn-sm tw-my-0 tw-py-0" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

@@ -77,7 +77,11 @@ class DocstoreDirectory extends Model
      *
      * @var array
      */
-    protected $fillable = [ 'name','description', 'parent_dir_id' ];
+    protected $fillable = [
+        'name',
+        'description',
+        'parent_dir_id'
+    ];
 
     /**
      * Get the subdirectories for this directory

@@ -23,9 +23,12 @@ namespace IXP\Http\Controllers\Docstore;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
+use Entities\User as UserEntity;
 use Former\Facades\Former;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
+use D2EM;
+
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -125,6 +128,7 @@ class FileController extends Controller
             'size' => Storage::disk( $file->disk )->size( $file->path ),
             'last_modified' => Storage::disk( $file->disk )->lastModified( $file->path ),
             'dspath' => config( 'filesystems.disks.' . $file->disk . '.root', '*** UNKNOWN LOCATION ***' ) . '/' . $file->path,
+            'created_by' => D2EM::getRepository(UserEntity::class)->find($file->created_by),
         ]);
     }
 
@@ -175,7 +179,9 @@ class FileController extends Controller
             'docstore_directory_id' => $request->docstore_directory_id,
             'min_privs'             => $request->min_privs,
             'path'                  => $path,
-            'sha256'                => hash_file( 'sha256', $file )
+            'sha256'                => hash_file( 'sha256', $file ),
+            'created_by'            => $request->user()->getId(),
+            'file_last_updated'     => now(),
         ] );
 
         Log::info( sprintf( "DocStore: file [%d|%s] uploaded by %s", $file->id, $file->name, $request->user()->getUsername() ) );
@@ -236,10 +242,11 @@ class FileController extends Controller
             $uploadedFile = $request->file('uploadedFile');
             $path = $uploadedFile->store( '', 'docstore' );
 
-            $file->update( [
+            $file->update([
                 'path'                  => $path,
-                'sha256'                => hash_file( 'sha256', $uploadedFile )
-            ] );
+                'sha256'                => hash_file( 'sha256', $uploadedFile ),
+                'file_last_updated'     => now(),
+            ]);
 
             // Delete the old file
             Storage::disk( $file->disk )->delete( $oldPath );
