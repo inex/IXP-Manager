@@ -26,9 +26,9 @@ $this->layout( 'layouts/ixpv4' );
 
 <?= $t->alerts() ?>
 
-<h3>Viewing File: <?= $t->file->name ?></h3>
+<h3 class="tw-mt-4">Viewing File: <?= $t->file->name ?></h3>
 
-<div class="tw-border tw-p-2">
+<div class="tw-mt-8 tw-border tw-p-5 tw-rounded-lg tw-border-gray-200 tw-bg-gray-100 tw-text-black">
 <?php if( $t->file->extension() == 'md' ): ?>
 <?= @parsedown( $t->content ) ?>
 <?php else: ?>
