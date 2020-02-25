@@ -57,15 +57,13 @@ $this->layout( 'layouts/ixpv4' );
             ->blockHelp( "The minimum privilege a user is required to have to view and download the file." );
         ?>
 
-        <?php if( !$t->file ): ?>
-            <?= Former::file( 'uploadedFile' )
-                ->id( 'uploadedFile' )
-                ->label( ' ' )
-                ->class( 'form-control border-0 shadow-none' )
-                ->multiple( false )
-                ->blockHelp( "" );
-            ?>
-        <?php endif; ?>
+        <?= Former::file( 'uploadedFile' )
+            ->id( 'uploadedFile' )
+            ->label( ' ' )
+            ->class( 'form-control border-0 shadow-none' )
+            ->multiple( false )
+            ->blockHelp( "" );
+        ?>
 
         <div class="form-group">
             <div class="col-lg-offset-2 col-sm-offset-2">
@@ -101,6 +99,15 @@ $this->layout( 'layouts/ixpv4' );
                 </div>
             </div>
         </div>
+
+        <?php if( $t->file ): ?>
+            <?= Former::checkbox( 'purgeLogs' )
+                ->id( 'purgeLogs' )
+                ->label( '&nbsp;' )
+                ->text( 'Purge logs' )
+                ->blockHelp( "" );
+            ?>
+        <?php endif; ?>
 
         <?= Former::actions(
             Former::primary_submit( $t->file ? 'Save' : 'Upload' )->class( "mb-2 mb-sm-0" ),

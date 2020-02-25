@@ -46,6 +46,7 @@ use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
+use Storage;
 
 class UploadController extends Controller
 {
@@ -145,6 +146,28 @@ class UploadController extends Controller
         $this->authorize( 'update', $file );
 
         $this->checkForm( $request, $file );
+
+        // if a new file is updated
+        if( $request->uploadedFile ) {
+            // get path of the old file in order to delete it later
+            $oldPath = $file->path;
+
+            $uploadedFile = $request->file('uploadedFile');
+            $path = $uploadedFile->store( '', 'docstore' );
+
+            $file->update( [
+                'path'                  => $path,
+                'sha256'                => hash_file( 'sha256', $uploadedFile )
+            ] );
+
+            // Delete the old file
+            Storage::disk( $file->disk )->delete( $oldPath );
+        }
+
+        // Purge the logs of the file
+        if( $request->purgeLogs ) {
+            $file->logs()->delete();
+        }
 
         $file->update( [
             'name'                  => $request->name,

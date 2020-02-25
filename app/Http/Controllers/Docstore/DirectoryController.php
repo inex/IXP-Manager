@@ -175,7 +175,7 @@ class DirectoryController extends Controller
     {
         $this->authorize( 'delete', $dir );
 
-        $dir->delete();
+        DocstoreDirectory::deleteAll( $dir );
 
         AlertContainer::push( "Directory <em>{$request->name}</em> deleted.", Alert::SUCCESS );
         return redirect( route( 'docstore-dir@list', [ 'dir' => $dir->parent_dir_id ] ) );
