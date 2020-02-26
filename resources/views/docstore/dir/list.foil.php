@@ -108,7 +108,7 @@
                     <?php endif; ?>
 
                     <p class="tw-mr-6 tw-ml-4 tw-my-0 tw-text-gray-700 tw-text-sm tw-align-middle tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1">
-                        <?= $file->file_last_updated->toFormattedDateString() ?>
+                        <?= $file->updated_at->toFormattedDateString() ?>
                     </p>
 
                     <div class="dropdown">
