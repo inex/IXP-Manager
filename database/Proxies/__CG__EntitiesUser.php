@@ -575,6 +575,17 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getCurrentCustomerToUser(): ?\Entities\CustomerToUser
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCurrentCustomerToUser', []);
+
+        return parent::getCurrentCustomerToUser();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addPreference(\Entities\UserPreference $preferences)
     {
 

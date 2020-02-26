@@ -66,10 +66,10 @@ class CustomerToUser extends \Entities\CustomerToUser implements \Doctrine\ORM\P
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'privs', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'created_at', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'extra_attributes', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'last_login_date', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'last_login_from', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'customer', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'user', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'userLoginHistory'];
+            return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'privs', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'created_at', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'extra_attributes', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'last_login_date', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'last_login_from', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'last_login_via', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'customer', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'user', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'userLoginHistory'];
         }
 
-        return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'privs', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'created_at', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'extra_attributes', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'last_login_date', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'last_login_from', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'customer', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'user', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'userLoginHistory'];
+        return ['__isInitialized__', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'privs', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'created_at', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'extra_attributes', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'id', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'last_login_date', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'last_login_from', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'last_login_via', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'customer', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'user', '' . "\0" . 'Entities\\CustomerToUser' . "\0" . 'userLoginHistory'];
     }
 
     /**
@@ -271,6 +271,17 @@ class CustomerToUser extends \Entities\CustomerToUser implements \Doctrine\ORM\P
     /**
      * {@inheritDoc}
      */
+    public function getLastLoginVia()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getLastLoginVia', []);
+
+        return parent::getLastLoginVia();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getExtraAttributes()
     {
 
@@ -365,6 +376,17 @@ class CustomerToUser extends \Entities\CustomerToUser implements \Doctrine\ORM\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastLoginFrom', [$last_login_from]);
 
         return parent::setLastLoginFrom($last_login_from);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setLastLoginVia($last_login_via)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setLastLoginVia', [$last_login_via]);
+
+        return parent::setLastLoginVia($last_login_via);
     }
 
 }

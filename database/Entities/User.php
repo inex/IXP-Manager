@@ -610,6 +610,25 @@ class User implements Authenticatable, CanResetPasswordContract
         return $this->id;
     }
 
+
+    /**
+     * Get the current customer to user entity - if one exists.
+     *
+     * @return CustomerToUserEntity|null
+     */
+    public function getCurrentCustomerToUser(): ?CustomerToUserEntity
+    {
+        if( !$this->getCustomer() ) {
+            return null;
+        }
+
+        $c2u = D2EM::getRepository( CustomerToUserEntity::class )->findBy( [ 'customer' => $this->getCustomer(), 'user' => $this->getId() ] );
+        return isset( $c2u[0] ) ? $c2u[0] : null;
+    }
+
+
+
+
     /**
      * Add Preferences
      *

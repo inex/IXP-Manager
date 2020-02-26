@@ -66,10 +66,10 @@ class UserLoginHistory extends \Entities\UserLoginHistory implements \Doctrine\O
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'ip', 'at', 'id', 'user_id', 'customerToUser'];
+            return ['__isInitialized__', 'ip', 'at', '' . "\0" . 'Entities\\UserLoginHistory' . "\0" . 'via', 'id', 'user_id', 'customerToUser'];
         }
 
-        return ['__isInitialized__', 'ip', 'at', 'id', 'user_id', 'customerToUser'];
+        return ['__isInitialized__', 'ip', 'at', '' . "\0" . 'Entities\\UserLoginHistory' . "\0" . 'via', 'id', 'user_id', 'customerToUser'];
     }
 
     /**
@@ -196,6 +196,28 @@ class UserLoginHistory extends \Entities\UserLoginHistory implements \Doctrine\O
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getIp', []);
 
         return parent::getIp();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setVia($via)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVia', [$via]);
+
+        return parent::setVia($via);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getVia()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVia', []);
+
+        return parent::getVia();
     }
 
     /**
