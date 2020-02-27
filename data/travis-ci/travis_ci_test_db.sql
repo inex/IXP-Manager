@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.7.29, for osx10.15 (x86_64)
+-- MySQL dump 10.13  Distrib 5.7.28, for osx10.15 (x86_64)
 --
--- Host: localhost    Database: myapp_test
+-- Host: localhost    Database: ixp_ci
 -- ------------------------------------------------------
--- Server version	5.7.29
+-- Server version	5.7.28
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -747,6 +747,7 @@ CREATE TABLE `customer_to_users` (
   `last_login_from` tinytext COLLATE utf8mb4_unicode_ci,
   `created_at` datetime NOT NULL,
   `extra_attributes` json DEFAULT NULL COMMENT '(DC2Type:json)',
+  `last_login_via` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `customer_user` (`customer_id`,`user_id`),
   KEY `IDX_337AD7F69395C3F3` (`customer_id`),
@@ -762,8 +763,100 @@ CREATE TABLE `customer_to_users` (
 
 LOCK TABLES `customer_to_users` WRITE;
 /*!40000 ALTER TABLE `customer_to_users` DISABLE KEYS */;
-INSERT INTO `customer_to_users` VALUES (1,1,1,3,'2020-01-27 12:04:24','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}'),(2,5,2,2,'2018-06-20 10:23:22','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}'),(3,5,3,1,'2018-06-20 10:23:58','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}'),(4,2,4,1,'1970-01-01 00:00:00','','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}'),(5,2,5,1,'2018-06-20 10:24:24','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}');
+INSERT INTO `customer_to_users` VALUES (1,1,1,3,'2020-01-27 12:04:24','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL),(2,5,2,2,'2018-06-20 10:23:22','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL),(3,5,3,1,'2018-06-20 10:23:58','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL),(4,2,4,1,'1970-01-01 00:00:00','','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL),(5,2,5,1,'2018-06-20 10:24:24','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL);
 /*!40000 ALTER TABLE `customer_to_users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `docstore_directories`
+--
+
+DROP TABLE IF EXISTS `docstore_directories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `docstore_directories` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `parent_dir_id` bigint(20) unsigned DEFAULT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `docstore_directories_parent_dir_id_index` (`parent_dir_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `docstore_directories`
+--
+
+LOCK TABLES `docstore_directories` WRITE;
+/*!40000 ALTER TABLE `docstore_directories` DISABLE KEYS */;
+INSERT INTO `docstore_directories` VALUES (1,NULL,'Folder 1','I am the folder 1','2020-02-27 10:35:18','2020-02-27 10:35:18'),(2,1,'Sub Folder 1','I am the sub folder 1','2020-02-27 10:35:48','2020-02-27 10:35:48'),(3,NULL,'Folder 2','I am the folder 2','2020-02-27 10:36:11','2020-02-27 10:36:11');
+/*!40000 ALTER TABLE `docstore_directories` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `docstore_files`
+--
+
+DROP TABLE IF EXISTS `docstore_files`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `docstore_files` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `docstore_directory_id` bigint(20) unsigned DEFAULT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `disk` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'docstore',
+  `path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `sha256` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `min_privs` smallint(6) NOT NULL,
+  `file_last_updated` datetime NOT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `docstore_files_docstore_directory_id_foreign` (`docstore_directory_id`),
+  CONSTRAINT `docstore_files_docstore_directory_id_foreign` FOREIGN KEY (`docstore_directory_id`) REFERENCES `docstore_directories` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `docstore_files`
+--
+
+LOCK TABLES `docstore_files` WRITE;
+/*!40000 ALTER TABLE `docstore_files` DISABLE KEYS */;
+/*!40000 ALTER TABLE `docstore_files` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `docstore_logs`
+--
+
+DROP TABLE IF EXISTS `docstore_logs`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `docstore_logs` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `docstore_file_id` bigint(20) unsigned NOT NULL,
+  `downloaded_by` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `docstore_logs_docstore_file_id_foreign` (`docstore_file_id`),
+  CONSTRAINT `docstore_logs_docstore_file_id_foreign` FOREIGN KEY (`docstore_file_id`) REFERENCES `docstore_files` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `docstore_logs`
+--
+
+LOCK TABLES `docstore_logs` WRITE;
+/*!40000 ALTER TABLE `docstore_logs` DISABLE KEYS */;
+/*!40000 ALTER TABLE `docstore_logs` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1142,7 +1235,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1151,7 +1244,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1825,7 +1918,7 @@ CREATE TABLE `telescope_entries` (
   KEY `telescope_entries_batch_id_index` (`batch_id`),
   KEY `telescope_entries_type_should_display_on_index_index` (`type`,`should_display_on_index`),
   KEY `telescope_entries_family_hash_index` (`family_hash`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1834,6 +1927,7 @@ CREATE TABLE `telescope_entries` (
 
 LOCK TABLES `telescope_entries` WRITE;
 /*!40000 ALTER TABLE `telescope_entries` DISABLE KEYS */;
+INSERT INTO `telescope_entries` VALUES (1,'8ff2744d-3f5e-4d3f-8136-6d1b43cb27ea','8ff2744d-b7d2-45ba-a780-89265a29a336','7fbfaf0b63e202da3dffb66c93082246',1,'exception','{\"class\":\"Illuminate\\\\Database\\\\QueryException\",\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Database\\/Connection.php\",\"line\":669,\"message\":\"SQLSTATE[42S02]: Base table or view not found: 1146 Table \'ixp_ci.docstore_directories\' doesn\'t exist (SQL: select * from `docstore_directories` where `parent_dir_id` is null order by `name` asc)\",\"trace\":[{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Database\\/Connection.php\",\"line\":629},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Database\\/Connection.php\",\"line\":338},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Database\\/Query\\/Builder.php\",\"line\":2132},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Database\\/Query\\/Builder.php\",\"line\":2120},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Database\\/Query\\/Builder.php\",\"line\":2592},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Database\\/Query\\/Builder.php\",\"line\":2121},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Database\\/Eloquent\\/Builder.php\",\"line\":537},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Database\\/Eloquent\\/Builder.php\",\"line\":521},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/app\\/Models\\/DocstoreDirectory.php\",\"line\":129},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/app\\/Http\\/Controllers\\/Docstore\\/DirectoryController.php\",\"line\":72},[],{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Routing\\/Controller.php\",\"line\":54},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Routing\\/ControllerDispatcher.php\",\"line\":45},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Routing\\/Route.php\",\"line\":219},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Routing\\/Route.php\",\"line\":176},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Routing\\/Router.php\",\"line\":681},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Pipeline\\/Pipeline.php\",\"line\":130},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/app\\/Http\\/Middleware\\/ControllerEnabled.php\",\"line\":96},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Pipeline\\/Pipeline.php\",\"line\":171},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Routing\\/Middleware\\/SubstituteBindings.php\",\"line\":41},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Pipeline\\/Pipeline.php\",\"line\":171},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Foundation\\/Http\\/Middleware\\/VerifyCsrfToken.php\",\"line\":76},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Pipeline\\/Pipeline.php\",\"line\":171},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/View\\/Middleware\\/ShareErrorsFromSession.php\",\"line\":49},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Pipeline\\/Pipeline.php\",\"line\":171},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Session\\/Middleware\\/StartSession.php\",\"line\":56},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Pipeline\\/Pipeline.php\",\"line\":171},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Cookie\\/Middleware\\/AddQueuedCookiesToResponse.php\",\"line\":37},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Pipeline\\/Pipeline.php\",\"line\":171},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Cookie\\/Middleware\\/EncryptCookies.php\",\"line\":66},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Pipeline\\/Pipeline.php\",\"line\":171},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Pipeline\\/Pipeline.php\",\"line\":105},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Routing\\/Router.php\",\"line\":683},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Routing\\/Router.php\",\"line\":658},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Routing\\/Router.php\",\"line\":624},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Routing\\/Router.php\",\"line\":613},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Foundation\\/Http\\/Kernel.php\",\"line\":170},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Pipeline\\/Pipeline.php\",\"line\":130},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/fideloper\\/proxy\\/src\\/TrustProxies.php\",\"line\":57},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Pipeline\\/Pipeline.php\",\"line\":171},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Foundation\\/Http\\/Middleware\\/TransformsRequest.php\",\"line\":21},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Pipeline\\/Pipeline.php\",\"line\":171},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Foundation\\/Http\\/Middleware\\/TransformsRequest.php\",\"line\":21},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Pipeline\\/Pipeline.php\",\"line\":171},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Foundation\\/Http\\/Middleware\\/ValidatePostSize.php\",\"line\":27},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Pipeline\\/Pipeline.php\",\"line\":171},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Foundation\\/Http\\/Middleware\\/CheckForMaintenanceMode.php\",\"line\":63},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Pipeline\\/Pipeline.php\",\"line\":171},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Pipeline\\/Pipeline.php\",\"line\":105},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Foundation\\/Http\\/Kernel.php\",\"line\":145},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/vendor\\/laravel\\/framework\\/src\\/Illuminate\\/Foundation\\/Http\\/Kernel.php\",\"line\":110},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/public\\/index.php\",\"line\":85},{\"file\":\"\\/Users\\/yannrobin\\/Documents\\/development\\/ixp\\/IXP-Manager\\/server.php\",\"line\":21}],\"line_preview\":{\"660\":\"        \\/\\/ took to execute and log the query SQL, bindings and time in our memory.\",\"661\":\"        try {\",\"662\":\"            $result = $callback($query, $bindings);\",\"663\":\"        }\",\"664\":\"\",\"665\":\"        \\/\\/ If an exception occurs when attempting to run a query, we\'ll format the error\",\"666\":\"        \\/\\/ message to include the bindings with SQL, which will make this exception a\",\"667\":\"        \\/\\/ lot more helpful to the developer instead of just the database\'s errors.\",\"668\":\"        catch (Exception $e) {\",\"669\":\"            throw new QueryException(\",\"670\":\"                $query, $this->prepareBindings($bindings), $e\",\"671\":\"            );\",\"672\":\"        }\",\"673\":\"\",\"674\":\"        return $result;\",\"675\":\"    }\",\"676\":\"\",\"677\":\"    \\/**\",\"678\":\"     * Log a query in the connection\'s query log.\",\"679\":\"     *\"},\"hostname\":\"Yanns-MacBook-Pro.local\",\"user\":{\"id\":1,\"name\":null,\"email\":\"joe@siep.com\"},\"occurrences\":1}','2020-02-26 11:02:40');
 /*!40000 ALTER TABLE `telescope_entries` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1859,6 +1953,7 @@ CREATE TABLE `telescope_entries_tags` (
 
 LOCK TABLES `telescope_entries_tags` WRITE;
 /*!40000 ALTER TABLE `telescope_entries_tags` DISABLE KEYS */;
+INSERT INTO `telescope_entries_tags` VALUES ('8ff2744d-3f5e-4d3f-8136-6d1b43cb27ea','Auth:1');
 /*!40000 ALTER TABLE `telescope_entries_tags` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2076,6 +2171,7 @@ CREATE TABLE `user_logins` (
   `ip` varchar(39) COLLATE utf8_unicode_ci NOT NULL,
   `at` datetime NOT NULL,
   `customer_to_user_id` int(11) DEFAULT NULL,
+  `via` varchar(50) COLLATE utf8_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id_idx` (`user_id`),
   KEY `IDX_6341CC99D43FEAE2` (`customer_to_user_id`),
@@ -2090,7 +2186,7 @@ CREATE TABLE `user_logins` (
 
 LOCK TABLES `user_logins` WRITE;
 /*!40000 ALTER TABLE `user_logins` DISABLE KEYS */;
-INSERT INTO `user_logins` VALUES (1,1,'10.37.129.2','2014-01-06 13:54:52',1),(2,1,'10.37.129.2','2014-01-13 10:38:11',1),(3,1,'::1','2016-11-07 19:30:35',1),(4,1,'127.0.0.1','2017-10-09 13:19:59',1),(5,1,'127.0.0.1','2018-05-15 15:34:35',1),(6,1,'127.0.0.1','2018-06-18 08:30:06',1),(7,1,'127.0.0.1','2018-06-18 08:30:08',1),(8,1,'127.0.0.1','2018-06-18 08:31:04',1),(9,1,'127.0.0.1','2018-06-18 08:31:06',1),(10,1,'127.0.0.1','2018-06-18 08:36:56',1),(11,1,'127.0.0.1','2018-06-18 08:36:58',1),(12,1,'127.0.0.1','2018-06-18 08:43:14',1),(13,1,'127.0.0.1','2018-06-18 08:43:16',1),(14,1,'127.0.0.1','2018-06-18 08:43:27',1),(15,1,'127.0.0.1','2018-06-18 08:43:29',1),(16,1,'127.0.0.1','2018-06-18 11:29:20',1),(17,1,'127.0.0.1','2018-06-18 11:29:22',1),(18,1,'127.0.0.1','2018-06-19 13:15:32',1),(19,1,'127.0.0.1','2018-06-19 14:16:24',1),(20,1,'127.0.0.1','2018-06-19 14:16:26',1),(21,1,'127.0.0.1','2018-06-19 14:17:07',1),(22,1,'127.0.0.1','2018-06-19 14:17:09',1),(23,1,'127.0.0.1','2018-06-19 14:19:14',1),(24,1,'127.0.0.1','2018-06-19 14:19:16',1),(25,1,'127.0.0.1','2018-06-19 14:22:14',1),(26,1,'127.0.0.1','2018-06-19 14:22:17',1),(27,2,'127.0.0.1','2018-06-20 10:23:22',2),(28,3,'127.0.0.1','2018-06-20 10:23:58',3),(29,5,'127.0.0.1','2018-06-20 10:24:14',5),(30,5,'127.0.0.1','2018-06-20 10:24:24',5),(31,1,'127.0.0.1','2018-06-20 10:25:55',1),(32,1,'127.0.0.1','2018-06-20 10:25:57',1),(33,1,'127.0.0.1','2018-06-20 10:26:49',1),(34,1,'127.0.0.1','2018-06-20 10:26:51',1),(35,1,'127.0.0.1','2018-06-20 10:27:05',1),(36,1,'127.0.0.1','2018-06-20 10:27:07',1),(37,1,'127.0.0.1','2018-06-20 10:27:22',1),(38,1,'127.0.0.1','2018-06-20 10:27:24',1),(39,1,'127.0.0.1','2018-06-20 10:28:25',1),(40,1,'127.0.0.1','2018-06-20 10:28:27',1),(41,1,'127.0.0.1','2018-06-20 10:28:57',1),(42,1,'127.0.0.1','2018-06-20 10:28:59',1),(43,1,'127.0.0.1','2018-06-20 10:32:11',1),(44,1,'127.0.0.1','2018-06-20 10:32:13',1),(45,1,'127.0.0.1','2018-06-20 10:36:34',1),(46,1,'127.0.0.1','2018-06-20 10:36:36',1),(47,1,'127.0.0.1','2018-06-20 10:37:19',1),(48,1,'127.0.0.1','2018-06-20 10:37:21',1),(49,1,'127.0.0.1','2018-06-20 10:37:44',1),(50,1,'127.0.0.1','2018-06-20 10:37:46',1),(51,1,'127.0.0.1','2018-06-20 10:38:41',1),(52,1,'127.0.0.1','2018-06-20 10:38:42',1),(53,2,'127.0.0.1','2019-01-16 15:37:08',2),(54,3,'127.0.0.1','2019-01-16 15:38:05',3),(55,1,'127.0.0.1','2019-03-09 15:38:09',1),(56,NULL,'127.0.0.1','2020-01-27 12:04:24',1);
+INSERT INTO `user_logins` VALUES (1,1,'10.37.129.2','2014-01-06 13:54:52',1,NULL),(2,1,'10.37.129.2','2014-01-13 10:38:11',1,NULL),(3,1,'::1','2016-11-07 19:30:35',1,NULL),(4,1,'127.0.0.1','2017-10-09 13:19:59',1,NULL),(5,1,'127.0.0.1','2018-05-15 15:34:35',1,NULL),(6,1,'127.0.0.1','2018-06-18 08:30:06',1,NULL),(7,1,'127.0.0.1','2018-06-18 08:30:08',1,NULL),(8,1,'127.0.0.1','2018-06-18 08:31:04',1,NULL),(9,1,'127.0.0.1','2018-06-18 08:31:06',1,NULL),(10,1,'127.0.0.1','2018-06-18 08:36:56',1,NULL),(11,1,'127.0.0.1','2018-06-18 08:36:58',1,NULL),(12,1,'127.0.0.1','2018-06-18 08:43:14',1,NULL),(13,1,'127.0.0.1','2018-06-18 08:43:16',1,NULL),(14,1,'127.0.0.1','2018-06-18 08:43:27',1,NULL),(15,1,'127.0.0.1','2018-06-18 08:43:29',1,NULL),(16,1,'127.0.0.1','2018-06-18 11:29:20',1,NULL),(17,1,'127.0.0.1','2018-06-18 11:29:22',1,NULL),(18,1,'127.0.0.1','2018-06-19 13:15:32',1,NULL),(19,1,'127.0.0.1','2018-06-19 14:16:24',1,NULL),(20,1,'127.0.0.1','2018-06-19 14:16:26',1,NULL),(21,1,'127.0.0.1','2018-06-19 14:17:07',1,NULL),(22,1,'127.0.0.1','2018-06-19 14:17:09',1,NULL),(23,1,'127.0.0.1','2018-06-19 14:19:14',1,NULL),(24,1,'127.0.0.1','2018-06-19 14:19:16',1,NULL),(25,1,'127.0.0.1','2018-06-19 14:22:14',1,NULL),(26,1,'127.0.0.1','2018-06-19 14:22:17',1,NULL),(27,2,'127.0.0.1','2018-06-20 10:23:22',2,NULL),(28,3,'127.0.0.1','2018-06-20 10:23:58',3,NULL),(29,5,'127.0.0.1','2018-06-20 10:24:14',5,NULL),(30,5,'127.0.0.1','2018-06-20 10:24:24',5,NULL),(31,1,'127.0.0.1','2018-06-20 10:25:55',1,NULL),(32,1,'127.0.0.1','2018-06-20 10:25:57',1,NULL),(33,1,'127.0.0.1','2018-06-20 10:26:49',1,NULL),(34,1,'127.0.0.1','2018-06-20 10:26:51',1,NULL),(35,1,'127.0.0.1','2018-06-20 10:27:05',1,NULL),(36,1,'127.0.0.1','2018-06-20 10:27:07',1,NULL),(37,1,'127.0.0.1','2018-06-20 10:27:22',1,NULL),(38,1,'127.0.0.1','2018-06-20 10:27:24',1,NULL),(39,1,'127.0.0.1','2018-06-20 10:28:25',1,NULL),(40,1,'127.0.0.1','2018-06-20 10:28:27',1,NULL),(41,1,'127.0.0.1','2018-06-20 10:28:57',1,NULL),(42,1,'127.0.0.1','2018-06-20 10:28:59',1,NULL),(43,1,'127.0.0.1','2018-06-20 10:32:11',1,NULL),(44,1,'127.0.0.1','2018-06-20 10:32:13',1,NULL),(45,1,'127.0.0.1','2018-06-20 10:36:34',1,NULL),(46,1,'127.0.0.1','2018-06-20 10:36:36',1,NULL),(47,1,'127.0.0.1','2018-06-20 10:37:19',1,NULL),(48,1,'127.0.0.1','2018-06-20 10:37:21',1,NULL),(49,1,'127.0.0.1','2018-06-20 10:37:44',1,NULL),(50,1,'127.0.0.1','2018-06-20 10:37:46',1,NULL),(51,1,'127.0.0.1','2018-06-20 10:38:41',1,NULL),(52,1,'127.0.0.1','2018-06-20 10:38:42',1,NULL),(53,2,'127.0.0.1','2019-01-16 15:37:08',2,NULL),(54,3,'127.0.0.1','2019-01-16 15:38:05',3,NULL),(55,1,'127.0.0.1','2019-03-09 15:38:09',1,NULL),(56,NULL,'127.0.0.1','2020-01-27 12:04:24',1,NULL);
 /*!40000 ALTER TABLE `user_logins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2138,7 +2234,7 @@ CREATE TABLE `user_remember_tokens` (
   `user_id` int(11) NOT NULL,
   `token` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `device` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `ip` varchar(16) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ip` varchar(39) COLLATE utf8mb4_unicode_ci NOT NULL,
   `created` datetime NOT NULL,
   `expires` datetime NOT NULL,
   `is_2fa_complete` tinyint(1) NOT NULL DEFAULT '0',
@@ -2485,4 +2581,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-01-28 12:40:47
+-- Dump completed on 2020-02-27 10:36:29

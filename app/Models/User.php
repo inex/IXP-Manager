@@ -24,7 +24,6 @@ namespace IXP\Models;
  */
 
 use Eloquent;
-
 use Illuminate\Database\Eloquent\{
     Builder,
     Model
