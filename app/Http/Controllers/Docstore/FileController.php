@@ -73,6 +73,10 @@ class FileController extends Controller
     {
         $this->authorize( 'view', $file );
 
+        if( !$file->isViewable() ) {
+            return redirect( route( 'docstore-file@download', [ 'file' => $file->id ] ) );
+        }
+
         if( $request->user() ) {
             $file->logs()->save( new DocstoreLog( [ 'downloaded_by' => $request->user()->getId() ] ) );
         }

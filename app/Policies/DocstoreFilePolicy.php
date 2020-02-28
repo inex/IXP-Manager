@@ -56,7 +56,7 @@ class DocstoreFilePolicy
      */
     public function view( ?UserEntity $user, DocstoreFile $file )
     {
-        return $file->min_privs <= ( $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC ) && $file->isViewable();
+        return $file->min_privs <= ( $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC );
     }
 
     /**
