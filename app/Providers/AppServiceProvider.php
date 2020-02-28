@@ -25,6 +25,8 @@ namespace IXP\Providers;
 
 use Auth, Former, Horizon;
 use Illuminate\Support\ServiceProvider;
+use IXP\Models\DocstoreDirectory;
+use IXP\Observers\DocstoreDirectoryObserver;
 use IXP\Utils\Former\Framework\TwitterBootstrap4;
 
 class AppServiceProvider extends ServiceProvider {
@@ -48,6 +50,8 @@ class AppServiceProvider extends ServiceProvider {
 
         Former::framework( TwitterBootstrap4::class );
 
+        // observer for docstore directory
+        DocstoreDirectory::observe( DocstoreDirectoryObserver::class );
     }
 
     /**

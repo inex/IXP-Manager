@@ -31,14 +31,11 @@
                         Switch Configuration
                     </a>
 
-                    <?php if( !config( 'ixp_fe.frontend.disabled.docstore' ) ): ?>
-
+                    <?php if( !config( 'ixp_fe.frontend.disabled.docstore' ) && \IXP\Models\DocstoreDirectory::getHierarchyForUserClass( \IXP\Models\User::AUTH_CUSTUSER ) ): ?>
                         <div class="dropdown-divider"></div>
-
-                        <a class="dropdown-item <?= !request()->is( 'docstore/*' ) ?: 'active' ?>" href="<?= route('docstore-dir@list' ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'docstore*' ) ?: 'active' ?>" href="<?= route('docstore-dir@list' ) ?>">
                             Document Store
                         </a>
-
                     <?php endif; ?>
 
                 </div>

@@ -62,10 +62,10 @@
 
             <?php foreach( $t->dirs as $i => $dir ): ?>
 
-                <div class="row tw-py-4 tw-my-0 tw-mx-4 tw-border-b <?= $i === 0 && !$t->dirs->isEmpty() ? 'tw-border-t' : '' ?>">
+                <div class="row tw-py-4 tw-my-0 tw-mx-4 tw-border-b <?= $i === 0 && count( $t->dirs ) ? 'tw-border-t' : '' ?>">
                     <p class="tw-align-middle tw-my-0 tw-mx-4 tw-p-0 mr-auto">
                         <i class="fa fa-lg fa-folder tw-inline tw-mr-4"></i>
-                         <a href="<?= route('docstore-dir@list', ['dir' => $dir->id] ) ?>"><?= $t->ee( $dir->name ) ?></a>
+                         <a href="<?= route('docstore-dir@list', ['dir' => $dir['id']] ) ?>"><?= $t->ee( $dir['name'] ) ?></a>
                     </p>
 
                     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
@@ -74,8 +74,8 @@
                                 &middot;&middot;&middot;
                             </button>
                             <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
-                                <a class="dropdown-item" href="<?= route( "docstore-dir@edit", [ "dir" => $dir->id ] ) ?>">Edit</a>
-                                <a class="dropdown-item list-delete-btn" data-object-type="dir" href="#" data-url="<?= route('docstore-dir@delete', [ 'dir' => $dir->id ] ) ?>">Delete</a>
+                                <a class="dropdown-item" href="<?= route( "docstore-dir@edit", [ "dir" => $dir['id'] ] ) ?>">Edit</a>
+                                <a class="dropdown-item list-delete-btn" data-object-type="dir" href="#" data-url="<?= route('docstore-dir@delete', [ 'dir' => $dir['id'] ] ) ?>">Delete</a>
                             </div>
                         </div>
                     <?php endif; ?>
@@ -87,7 +87,7 @@
 
             <?php foreach( $t->files as $i => $file ): ?>
 
-                <div class="row tw-py-4 tw-my-0 tw-mx-4 tw-border-b  <?= $i === 0 && $t->dirs->isEmpty() && !$t->dirs->isEmpty() ? 'tw-border-t' : '' ?>">
+                <div class="row tw-py-4 tw-my-0 tw-mx-4 tw-border-b  <?= $i === 0 && !count( $t->dirs ) ? 'tw-border-t' : '' ?>">
                     <p class="tw-align-middle tw-my-0 tw-mx-4 tw-p-0 mr-auto">
                         <i class="fa fa-lg fa-file tw-inline tw-mr-4"></i>
                         <a href="<?= route($file->isViewable() ? 'docstore-file@view' : 'docstore-file@download', ['file' => $file->id] ) ?>"

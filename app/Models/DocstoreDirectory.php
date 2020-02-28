@@ -39,6 +39,7 @@ use Illuminate\Database\Eloquent\Relations\{
 };
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Log;
 use Storage;
 
@@ -88,7 +89,7 @@ class DocstoreDirectory extends Model
      */
     public function subDirectories(): HasMany
     {
-        return $this->hasMany(DocstoreDirectory::class, 'parent_dir_id', 'id' );
+        return $this->hasMany(DocstoreDirectory::class, 'parent_dir_id', 'id' )->orderBy('name');
     }
 
     /**
@@ -162,86 +163,91 @@ class DocstoreDirectory extends Model
     }
 
 
+    /**
+     * Static property used by getHierarchyForUserClass() and recurseForHierarchyForUserClass()
+     * to build the hierarchy.
+     *
+     * Yields an array of the following form (i.e. an array of subdirs in each dir):
+     *
+     * ```
+     * [
+     *     directory_id => [ [ 'id' => subdir_id, 'name' => subdir_name ], [ ... ], ... ],
+     *     ...
+     *  ]
+     * ```
+     *
+     * @var array
+     */
+    public static $dirs = [];
 
+    /**
+     * The cache key used in getHierarchyForUserClass()
+     * @var string
+     */
+    public const CACHE_KEY_FOR_USER_CLASS_HIERARCHY = 'docstore_directory_hierarchy_for_user_class_';
 
-    public static function getListing2( int $privs = User::AUTH_SUPERUSER, $dir )
+    /**
+     * Build a hierarchy of all subdirs that this user class should be able to see.
+     *
+     * This also caches the results as it can be query intensive for large structures and,
+     * for choosing to display the menu options, would be ran per page hit.
+     *
+     * @param int $priv
+     * @return mixed
+     */
+    public static function getHierarchyForUserClass( int $priv = User::AUTH_SUPERUSER )
     {
-        $list = self::where('parent_dir_id',$dir ?? null );
+        return Cache::remember( self::CACHE_KEY_FOR_USER_CLASS_HIERARCHY . $priv, 86400, function() use ( $priv ) {
+            self::where('parent_dir_id', null )->orderBy('name')->get()->each( function( $sd ) use ($priv) {
+                if( self::recurseForHierarchyForUserClass( $sd, $priv ) ) {
+                    self::$dirs[$sd->parent_dir_id][] = [ 'id' => $sd->id, 'name' => $sd->name ];
+                }
+            });
 
+            if( self::$dirs === [] ) {
+                // nothing for this user class in subdirectories. Should they see the document store at all?
+                // Yes, they should, if it itself contains files they should be able to see:
+                $rootDirVisible = self::where('parent_dir_id', null )
+                    ->whereHas( 'files', function( Builder $query ) use ( $priv ) {
+                        $query->where( 'min_privs', '<=', $priv );
+                    } )->get()->isNotEmpty();
 
-        dd( self::getListingFor( $list->orderBy('name')->get(), $privs ) );
+                if( $rootDirVisible ) {
+                    self::$dirs[null]  = [ 'id' => null, 'name' => 'Root Directory' ];
+                }
+            }
 
-        return $list->orderBy('name')->get();
+            return self::$dirs;
+        } );
     }
 
-    public static function getListingFor( $dirs, $privs )
-    {
+    /**
+     * Companion recursive function for getHierarchyForUserClass() to recurse to the leaf node
+     * of a directory hierarchy and return uo through the parent nodes whether it should be
+     * included or not.
+     *
+     * @param DocstoreDirectory $subdir
+     * @param int $priv User class to test for
+     * @return bool
+     */
+    private static function recurseForHierarchyForUserClass( DocstoreDirectory $subdir, $priv ) {
 
-        $data = [];
-        foreach( $dirs as $dir ) {
-
-            $files = self::where('id', $dir->id )
-                ->whereHas( 'files', function( Builder $query ) use ( $privs ) {
-                    $query->where( 'min_privs', '<=', $privs );
-                } )
-                ->get();
-
-
-            if( $files->isEmpty() && $dir->subDirectories->isEmpty() ) {
-                continue;
+        foreach( $subdir->subDirectories as $sd ) {
+            if( $shouldInclude = self::recurseForHierarchyForUserClass( $sd, $priv ) ) {
+                self::$dirs[$sd->parent_dir_id][] = [ 'id' => $sd->id, 'name' => $sd->name ];
+                return true;
             }
-
-            $data[ $dir->id ] = [
-                'id'        => $dir->id,
-                'name'      => $dir->name,
-                'file'      => $files->isNotEmpty(),
-            ];
-
-            foreach( self::getListingFor( $dir->subDirectories, $privs ) as $sub ) {
-                $data[ $dir->id ][ 'sub' ] = $sub;
-            }
-
-
-
-
-            /*if( $files->isNotEmpty() || $dir->subDirectories ){
-                $data[ $dir->id ] = [
-                    'id'        => $dir->id,
-                    'name'      => $dir->name,
-                    'file'      => $files->isNotEmpty()
-
-                ];
-                //$data[ $dir->id ][ 'sub' ] = self::getListingFor( $dir->subDirectories, $privs );
-            }
-
-            if( $dir->subDirectories ){
-                self::getListingFor( $dir->subDirectories, $privs );
-            }*/
-
-
-
-            /*
-
-
-            $data[ $dir->id ] = [
-                    'id'        => $dir->id,
-                    'name'      => $dir->name,
-                    'hasFile'    => $files->isNotEmpty() ? true : false
-             ];
-
-
-            foreach( self::getListingFor( $dir->subDirectories, $privs ) as $sub ) {
-                if( $sub[ 'hasFile' ] ) {
-                    $data[ $sub ][ 'sub' ] = $sub;
-                }
-
-            }*/
-
-
-
         }
 
-        return $data;
+        if( $priv === User::AUTH_SUPERUSER ) {
+            return true;
+        }
+
+        return self::where( 'id', $subdir->id )
+            ->whereHas( 'files', function( Builder $query ) use ( $priv ) {
+                $query->where( 'min_privs', '<=', $priv );
+            } )
+            ->get()->isNotEmpty();
     }
 
     /**

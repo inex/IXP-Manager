@@ -65,11 +65,9 @@ class DirectoryController extends Controller
      */
     public function list( Request $request, DocstoreDirectory $dir = null ) : View
     {
-        //DocstoreDirectory::getListing2( $request->user()->getPrivs(), $dir );
-
         return view( 'docstore/dir/list', [
             'dir'       => $dir ?? false,
-            'dirs'      => DocstoreDirectory::getListing( $dir, $request->user() ),
+            'dirs'      => DocstoreDirectory::getHierarchyForUserClass( optional( $request->user() )->getPrivs() ?? 0 )[ $dir ? $dir->id : '' ] ?? [],
             'files'     => DocstoreFile::getListing( $dir, $request->user() ),
         ] );
     }
