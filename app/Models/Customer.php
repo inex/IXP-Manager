@@ -2,11 +2,38 @@
 
 namespace IXP\Models;
 
-use Illuminate\Database\Eloquent\Model;
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
 
-use D2EM;
+use D2EM, Eloquent;
 
 use Entities\Customer as CustomerEntity;
+
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Collection,
+    Model
+};
+
+use Illuminate\Support\Carbon;
 
 use IXP\Exceptions\GeneralException as IXP_Exception;
 
@@ -30,14 +57,14 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property string|null $peeringmacro
  * @property string|null $peeringpolicy
  * @property string|null $corpwww
- * @property \Illuminate\Support\Carbon|null $datejoin
- * @property \Illuminate\Support\Carbon|null $dateleave
+ * @property Carbon|null $datejoin
+ * @property Carbon|null $dateleave
  * @property int|null $status
  * @property int|null $activepeeringmatrix
- * @property \Illuminate\Support\Carbon|null $lastupdated
+ * @property Carbon|null $lastupdated
  * @property int|null $lastupdatedby
  * @property string|null $creator
- * @property \Illuminate\Support\Carbon|null $created
+ * @property Carbon|null $created
  * @property int|null $company_registered_detail_id
  * @property int|null $company_billing_details_id
  * @property string|null $peeringmacrov6
@@ -48,49 +75,49 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property int $in_manrs
  * @property int $in_peeringdb
  * @property int $peeringdb_oauth
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VirtualInterface[] $virtualInterfaces
+ * @property-read Collection|VirtualInterface[] $virtualInterfaces
  * @property-read int|null $virtual_interfaces_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer current()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer trafficking()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereAbbreviatedName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereActivepeeringmatrix($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereAutsys($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCompanyBillingDetailsId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCompanyRegisteredDetailId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCorpwww($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCreated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCreator($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereDatejoin($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereDateleave($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereInManrs($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereInPeeringdb($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereIrrdb($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereIsReseller($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereLastupdated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereLastupdatedby($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereMD5Support($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereMaxprefixes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNoc24hphone($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNocemail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNocfax($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNochours($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNocphone($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNocwww($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringdbOauth($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringemail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringmacro($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringmacrov6($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringpolicy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereReseller($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereShortname($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereType($value)
- * @mixin \Eloquent
+ * @method static Builder|Customer current()
+ * @method static Builder|Customer newModelQuery()
+ * @method static Builder|Customer newQuery()
+ * @method static Builder|Customer query()
+ * @method static Builder|Customer trafficking()
+ * @method static Builder|Customer whereAbbreviatedName($value)
+ * @method static Builder|Customer whereActivepeeringmatrix($value)
+ * @method static Builder|Customer whereAutsys($value)
+ * @method static Builder|Customer whereCompanyBillingDetailsId($value)
+ * @method static Builder|Customer whereCompanyRegisteredDetailId($value)
+ * @method static Builder|Customer whereCorpwww($value)
+ * @method static Builder|Customer whereCreated($value)
+ * @method static Builder|Customer whereCreator($value)
+ * @method static Builder|Customer whereDatejoin($value)
+ * @method static Builder|Customer whereDateleave($value)
+ * @method static Builder|Customer whereId($value)
+ * @method static Builder|Customer whereInManrs($value)
+ * @method static Builder|Customer whereInPeeringdb($value)
+ * @method static Builder|Customer whereIrrdb($value)
+ * @method static Builder|Customer whereIsReseller($value)
+ * @method static Builder|Customer whereLastupdated($value)
+ * @method static Builder|Customer whereLastupdatedby($value)
+ * @method static Builder|Customer whereMD5Support($value)
+ * @method static Builder|Customer whereMaxprefixes($value)
+ * @method static Builder|Customer whereName($value)
+ * @method static Builder|Customer whereNoc24hphone($value)
+ * @method static Builder|Customer whereNocemail($value)
+ * @method static Builder|Customer whereNocfax($value)
+ * @method static Builder|Customer whereNochours($value)
+ * @method static Builder|Customer whereNocphone($value)
+ * @method static Builder|Customer whereNocwww($value)
+ * @method static Builder|Customer wherePeeringdbOauth($value)
+ * @method static Builder|Customer wherePeeringemail($value)
+ * @method static Builder|Customer wherePeeringmacro($value)
+ * @method static Builder|Customer wherePeeringmacrov6($value)
+ * @method static Builder|Customer wherePeeringpolicy($value)
+ * @method static Builder|Customer whereReseller($value)
+ * @method static Builder|Customer whereShortname($value)
+ * @method static Builder|Customer whereStatus($value)
+ * @method static Builder|Customer whereType($value)
+ * @mixin Eloquent
  */
 class Customer extends Model
 {
@@ -160,8 +187,8 @@ class Customer extends Model
      *
      * Not that the IXP's own internal customers are included in this.
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeTrafficking($query)
     {
@@ -171,13 +198,13 @@ class Customer extends Model
     /**
      * Scope a query to only include current members
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeCurrent($query)
     {
         return $query->where('datejoin', '<=', today() )
-            ->where( function (\Illuminate\Database\Eloquent\Builder $query) {
+            ->where( function ( Builder $query) {
                 $query->whereNull( 'dateleave' )
                     ->orWhere( 'dateleave', '=', '0000-00-00' )
                     ->orWhere( 'dateleave', '>=', today() );
