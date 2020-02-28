@@ -58,36 +58,36 @@ use Illuminate\Database\Eloquent\{
  * @property int|null $busyhost
  * @property string|null $notes
  * @property int $rsmorespecifics
- * @property-read VirtualInterface|null $virtualInterface
- * @property-read Vlan|null $vlan
- * @method static Builder|VlanInterface newModelQuery()
- * @method static Builder|VlanInterface newQuery()
- * @method static Builder|VlanInterface query()
- * @method static Builder|VlanInterface whereAs112client($value)
- * @method static Builder|VlanInterface whereBgpmd5secret($value)
- * @method static Builder|VlanInterface whereBusyhost($value)
- * @method static Builder|VlanInterface whereId($value)
- * @method static Builder|VlanInterface whereIpv4addressid($value)
- * @method static Builder|VlanInterface whereIpv4bgpmd5secret($value)
- * @method static Builder|VlanInterface whereIpv4canping($value)
- * @method static Builder|VlanInterface whereIpv4enabled($value)
- * @method static Builder|VlanInterface whereIpv4hostname($value)
- * @method static Builder|VlanInterface whereIpv4monitorrcbgp($value)
- * @method static Builder|VlanInterface whereIpv6addressid($value)
- * @method static Builder|VlanInterface whereIpv6bgpmd5secret($value)
- * @method static Builder|VlanInterface whereIpv6canping($value)
- * @method static Builder|VlanInterface whereIpv6enabled($value)
- * @method static Builder|VlanInterface whereIpv6hostname($value)
- * @method static Builder|VlanInterface whereIpv6monitorrcbgp($value)
- * @method static Builder|VlanInterface whereIrrdbfilter($value)
- * @method static Builder|VlanInterface whereMaxbgpprefix($value)
- * @method static Builder|VlanInterface whereMcastenabled($value)
- * @method static Builder|VlanInterface whereNotes($value)
- * @method static Builder|VlanInterface whereRsclient($value)
- * @method static Builder|VlanInterface whereRsmorespecifics($value)
- * @method static Builder|VlanInterface whereVirtualinterfaceid($value)
- * @method static Builder|VlanInterface whereVlanid($value)
- * @mixin Eloquent
+ * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
+ * @property-read \IXP\Models\Vlan|null $vlan
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereAs112client($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereBgpmd5secret($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereBusyhost($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereIpv4addressid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereIpv4bgpmd5secret($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereIpv4canping($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereIpv4enabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereIpv4hostname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereIpv4monitorrcbgp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereIpv6addressid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereIpv6bgpmd5secret($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereIpv6canping($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereIpv6enabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereIpv6hostname($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereIpv6monitorrcbgp($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereIrrdbfilter($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereMaxbgpprefix($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereMcastenabled($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereRsclient($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereRsmorespecifics($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereVirtualinterfaceid($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereVlanid($value)
+ * @mixin \Eloquent
  */
 class VlanInterface extends Model
 {

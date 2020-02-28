@@ -49,26 +49,24 @@ use Storage;
  * @property int $id
  * @property int|null $parent_dir_id
  * @property string $name
- * @property string $description
- * @property int $min_privs
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read EloquentCollection|DocstoreFile[] $files
+ * @property string|null $description
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreFile[] $files
  * @property-read int|null $files_count
- * @property-read DocstoreDirectory|null $parentDirectory
- * @property-read EloquentCollection|DocstoreDirectory[] $subDirectories
+ * @property-read \IXP\Models\DocstoreDirectory|null $parentDirectory
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreDirectory[] $subDirectories
  * @property-read int|null $sub_directories_count
- * @method static Builder|DocstoreDirectory newModelQuery()
- * @method static Builder|DocstoreDirectory newQuery()
- * @method static Builder|DocstoreDirectory query()
- * @method static Builder|DocstoreDirectory whereCreatedAt($value)
- * @method static Builder|DocstoreDirectory whereDescription($value)
- * @method static Builder|DocstoreDirectory whereId($value)
- * @method static Builder|DocstoreDirectory whereMinPrivs($value)
- * @method static Builder|DocstoreDirectory whereName($value)
- * @method static Builder|DocstoreDirectory whereParentDirId($value)
- * @method static Builder|DocstoreDirectory whereUpdatedAt($value)
- * @mixin Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereParentDirId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreDirectory whereUpdatedAt($value)
+ * @mixin \Eloquent
  */
 
 class DocstoreDirectory extends Model
