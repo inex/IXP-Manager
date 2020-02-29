@@ -114,7 +114,7 @@ class ContentController extends Controller {
             abort( 404, 'Requested page not found' );
         }
 
-        $r = response()->view( $page, [ 'customers' =>D2EM::getRepository( CustomerEntity::class )->getCurrentActive() ], 200 );
+        $r = response()->view( $page, [ 'customers' => D2EM::getRepository( CustomerEntity::class )->getCurrentActive() ], 200 );
 
         if( $format == 'json' ) {
             $r->header( 'Content-Type', 'application/json' );

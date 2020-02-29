@@ -127,7 +127,7 @@
         <form id="div-header-select-customer" class="form-inline my-2 my-lg-0">
             <select id="menu-select-customer" type="select" name="id" class="chzn-select col-xl-7 col-lg-6">
                 <option></option>
-                <?php foreach( $t->customers as $k => $i ): ?>
+                <?php foreach( $t->dd_customer_id_name as $k => $i ): ?>
                     <option value="<?= $k ?>"><?= $i ?></option>
                 <?php endforeach; ?>
             </select>
