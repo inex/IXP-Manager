@@ -34,6 +34,9 @@
                     IP
                 </th>
                 <th>
+                    Via
+                </th>
+                <th>
                     At
                 </th>
             </tr>
@@ -46,6 +49,9 @@
                     </td>
                     <td>
                         <?= $t->ee( $history[ "ip" ] ) ?>
+                    </td>
+                    <td>
+                        <?= $t->ee( $history[ "via" ] ) ?>
                     </td>
                     <td>
                         <?= $history[ "at" ]->format( "Y-m-d H:i:s" ) ?>

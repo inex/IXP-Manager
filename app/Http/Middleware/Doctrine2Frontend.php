@@ -26,6 +26,7 @@ namespace IXP\Http\Middleware;
 
 use Auth, Closure, Log, Route;
 
+use Illuminate\Auth\Recaller;
 use Entities\{
     User as UserEntity
 };
@@ -55,7 +56,7 @@ class Doctrine2Frontend
     public function handle( $request, Closure $next )
     {
         // get the class and method that has been called:
-        list( $controller, $method ) = explode('@', Route::currentRouteAction() );
+        [ $controller, $method ] = explode('@', Route::currentRouteAction() );
 
         // what's the user's privilege?
         $user_priv = Auth::check() ? Auth::user()->getPrivs() : UserEntity::AUTH_PUBLIC;
@@ -66,7 +67,6 @@ class Doctrine2Frontend
             Log::info( ( Auth::check() ? Auth::user()->getUsername() : 'Anonymous user' ) . " tried to access {$controller}@{$method} but does not have the required privileges" );
             return redirect( '' );
         }
-
 
         return $next($request);
     }

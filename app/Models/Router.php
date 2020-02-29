@@ -2,7 +2,33 @@
 
 namespace IXP\Models;
 
-use Illuminate\Database\Eloquent\Model;
+/*
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * All Rights Reserved.
+ *
+ * This file is part of IXP Manager.
+ *
+ * IXP Manager is free software: you can redistribute it and/or modify it
+ * under the terms of the GNU General Public License as published by the Free
+ * Software Foundation, version v2.0 of the License.
+ *
+ * IXP Manager is distributed in the hope that it will be useful, but WITHOUT
+ * ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for
+ * more details.
+ *
+ * You should have received a copy of the GNU General Public License v2.0
+ * along with IXP Manager.  If not, see:
+ *
+ * http://www.gnu.org/licenses/gpl-2.0.html
+ */
+
+use Eloquent;
+
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model
+};
 
 /**
  * IXP\Models\Router
@@ -28,15 +54,20 @@ use Illuminate\Database\Eloquent\Model;
  * @property bool $skip_md5
  * @property string|null $last_updated
  * @property bool $rpki
+ * @property string|null $software_version
+ * @property string|null $operating_system
+ * @property string|null $operating_system_version
+ * @property int $rfc1997_passthru
  * @property-read \IXP\Models\Vlan $vlan
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router hasApi()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router iPv4()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router iPv6()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router isRouteServer()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router largeCommunities()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router notQuarantine()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router routeServer()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router rpki()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereApi($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereApiType($value)
@@ -48,28 +79,22 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereLgAccess($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereMgmtHost($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereOperatingSystem($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereOperatingSystemVersion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router wherePeeringIp($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereProtocol($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereQuarantine($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereRfc1997Passthru($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereRouterId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereRpki($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereShortname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereSkipMd5($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereSoftware($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereSoftwareVersion($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereTemplate($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereVlanId($value)
  * @mixin \Eloquent
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router notQuarantine()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router routeServer()
- * @property string|null $software_version
- * @property string|null $operating_system
- * @property string|null $operating_system_version
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereOperatingSystem($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereOperatingSystemVersion($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereSoftwareVersion($value)
- * @property int $rfc1997_passthru
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Router whereRfc1997Passthru($value)
  */
 class Router extends Model
 {
@@ -220,8 +245,8 @@ class Router extends Model
     /**
      * Scope a query to only include servers with an API
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeHasApi($query)
     {
@@ -231,8 +256,8 @@ class Router extends Model
     /**
      * Scope a query to only include route servers
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeRouteServer($query)
     {
@@ -242,8 +267,8 @@ class Router extends Model
     /**
      * Scope a query to match IPv4 routers only
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeIPv4($query)
     {
@@ -253,8 +278,8 @@ class Router extends Model
     /**
      * Scope a query to match IPv6 routers only
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeIPv6($query)
     {
@@ -264,8 +289,8 @@ class Router extends Model
     /**
      * Scope a query to match BGP Large Communities enabled
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeLargeCommunities($query)
     {
@@ -275,8 +300,8 @@ class Router extends Model
     /**
      * Scope a query to match against quarantine routers
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeNotQuarantine($query)
     {
@@ -286,8 +311,8 @@ class Router extends Model
     /**
      * Scope a query to match RPKI enabled
      *
-     * @param \Illuminate\Database\Eloquent\Builder $query
-     * @return \Illuminate\Database\Eloquent\Builder
+     * @param Builder $query
+     * @return Builder
      */
     public function scopeRpki($query)
     {

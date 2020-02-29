@@ -89,6 +89,7 @@ return [
         'disabled' => [
             'console-server-connection' => env( 'IXP_FE_FRONTEND_DISABLED_CONSOLE',           false ),
             'cust-kit'                  => env( 'IXP_FE_FRONTEND_DISABLED_CUSTKIT',           false ),
+            'docstore'                  => env( 'IXP_FE_FRONTEND_DISABLED_DOCSTORE',          false ),
             'logo'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGO',              true  ),
             'lg'                        => env( 'IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS',     true  ),
             'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',           true ),

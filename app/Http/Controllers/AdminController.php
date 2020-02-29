@@ -39,7 +39,6 @@ use Entities\{
     VlanInterface       as VlanInterfaceEntity
 };
 
-
 use Illuminate\Http\Request;
 use Illuminate\View\View;
 
@@ -56,7 +55,6 @@ use Illuminate\View\View;
  */
 class AdminController extends Controller
 {
-
     /**
      * Display the home page
      *
@@ -190,6 +188,7 @@ class AdminController extends Controller
     /**
      * Get public peering graphs
      *
+     * @param Request $request
      * @return array array of graphs
      *
      * @throws

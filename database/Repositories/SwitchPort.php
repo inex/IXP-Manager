@@ -99,8 +99,8 @@ class SwitchPort extends EntityRepository
         }
 
 
-        if( isset( $params[ "params" ][ "switch" ] ) && $params[ "params" ][ "switch" ] ){
-            $dql .= " AND s.id = ". $params[ "params" ][ "switch" ];
+        if( isset( $params[ "params" ][ "switchid" ] ) && $params[ "params" ][ "switchid" ] ){
+            $dql .= " AND s.id = ". $params[ "params" ][ "switchid" ];
         }
 
         if( isset( $feParams->listOrderBy ) ) {

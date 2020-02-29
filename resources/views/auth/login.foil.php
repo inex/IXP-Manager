@@ -54,7 +54,7 @@
                 <label class="control-label" for="password">
                     Password
                 </label>
-                <input name="password" class="form-control" id="password" type="password" placeholder="******************">
+                <input name="password" class="form-control" id="password" type="password" placeholder="...">
                 <?php foreach( $t->errors->get( 'password' ) as $err ): ?>
                     <p class="tw-text-red-500 tw-text-xs tw-italic tw-mt-2"><?= $err ?></p>
                 <?php endforeach; ?>
@@ -62,7 +62,7 @@
 
             <div class="tw-mb-6">
                 <label class="tw-block tw-text-grey-dark tw-font-bold">
-                    <input class="tw-mr-2 tw-leading-tight" type="checkbox" name="remember" value="1">
+                    <input class="tw-mr-2 tw-leading-tight" type="checkbox" name="remember" id="remember-me" value="1">
                     <span class="tw-text-sm">
                         Remember me
                     </span>

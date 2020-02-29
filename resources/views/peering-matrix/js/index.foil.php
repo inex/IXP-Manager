@@ -84,28 +84,23 @@
          */
         $( '[id|="th-as"]' ).on( "click", function( e ){
 
-            let yasn, sdisplay = false;
+            let sdisplay = false;
+            let yasn = (this.id).substring( 6 );
 
             if( columnClicked ) {
-
                 columnClicked = false;
                 $( '[id|="th-as"]' ).show();
-                yasn = (this.id).substring( 6 );
                 sdisplay = true;
-
             }
             else {
-
                 columnClicked = true;
-                yasn = (this.id).substring( 6 );
-
             }
 
             $( '[id|="th-as"]' ).each( function( index, element ) {
                 let asn = (this.id).substring( 6 );
 
                 if( columnClicked ) {
-                    if( asn == yasn ){
+                    if( asn == yasn ) {
                         return;
                     }
                 }

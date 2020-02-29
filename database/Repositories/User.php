@@ -23,11 +23,17 @@ namespace Repositories;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Hash, Log;
+use D2EM, DateTime, Hash, Log;
 
 use Illuminate\Support\Str;
 
-use Entities\{CustomerToUser as CustomerToUserEntity, User as UserEntity, UserLoginHistory as UserLoginHistoryEntity};
+use Entities\{
+    CustomerToUser      as CustomerToUserEntity,
+    Session             as SessionEntity,
+    User                as UserEntity,
+    UserLoginHistory    as UserLoginHistoryEntity,
+    UserRememberToken  as UserRememberTokenEntity
+};
 
 use Doctrine\ORM\EntityRepository;
 
@@ -115,12 +121,14 @@ class User extends EntityRepository
      */
     public function getLastLoginsForFeList( $feParams )
     {
-        $dql = "SELECT  c2u.last_login_date AS last_login_date, 
+        $dql = "SELECT  c2u.last_login_date AS last_login_date,
+                        c2u.last_login_via AS last_login_via, 
                         u.username AS username,
                         u.email AS email, 
                         c.name AS cust_name, 
                         c.id AS cust_id, 
-                        c2u.id AS id
+                        c2u.id AS c2u_id,
+                        u.id AS id
                     FROM Entities\\CustomerToUser c2u
                         JOIN c2u.user u
                         JOIN c2u.customer c";
@@ -251,10 +259,13 @@ class User extends EntityRepository
                         c.name as customer,
                         u.lastupdated AS lastupdated,
                         COUNT( c2u ) as nbC2U,
-                        MAX( c2u.privs ) as privileges
+                        MAX( c2u.privs ) as privileges,
+                        ps.enabled as u2fa_enabled,
+                        ps.id as psid 
                   FROM Entities\\User u
-                      LEFT JOIN u.Customer as c
-                      LEFT JOIN u.Customers as c2u
+                        LEFT JOIN u.Customer as c
+                        LEFT JOIN u.Customers as c2u
+                        LEFT JOIN u.User2FA as ps
                   WHERE 1 = 1";
 
         if( $id ) {
@@ -263,8 +274,7 @@ class User extends EntityRepository
 
         $dql .= " GROUP BY id
                   ORDER BY username ASC";
-
-
+        
         return $this->getEntityManager()->createQuery( $dql )->getArrayResult();
 
     }
@@ -318,10 +328,13 @@ class User extends EntityRepository
                         u.lastupdated AS lastupdated,
                         COUNT( c2u ) as nbC2U,
                         MAX( c2u.privs ) as privileges,
-                        c2u.id as c2uid
+                        c2u.id as c2uid,
+                        ps.enabled as u2fa_enabled,
+                        ps.id as psid
                   FROM Entities\\User u
                   LEFT JOIN u.Customer as c 
                   LEFT JOIN u.Customers as c2u
+                  LEFT JOIN u.User2FA as ps
                   WHERE 1 = 1
                   AND c2u.customer = " . $user->getCustomer()->getId() . "
                   AND c2u.privs <= " . UserEntity::AUTH_CUSTADMIN;
@@ -618,4 +631,7 @@ class User extends EntityRepository
 
         return $result;
     }
+
+
+
 }

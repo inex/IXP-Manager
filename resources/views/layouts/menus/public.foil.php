@@ -22,6 +22,14 @@
                         <a class="dropdown-item <?= !request()->is( 'customer/associates' ) ?: 'active' ?>" href="<?= route( "customer@associates" ) ?>">
                             Associate <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
                         </a>
+
+                        <?php if( !config( 'ixp_fe.frontend.disabled.docstore' ) && \IXP\Models\DocstoreDirectory::getHierarchyForUserClass( \IXP\Models\User::AUTH_PUBLIC ) ): ?>
+                            <div class="dropdown-divider"></div>
+                            <a class="dropdown-item <?= !request()->is( 'docstore*' ) ?: 'active' ?>" href="<?= route('docstore-dir@list' ) ?>">
+                                Document Store
+                            </a>
+                        <?php endif; ?>
+
                     </div>
                 </li>
             <?php endif; ?>
@@ -113,9 +121,16 @@
         </ul>
         <ul class="navbar-nav mt-lg-0">
             <li class="nav-item">
-                <a class="nav-link <?= !request()->is( 'login' ) ?: 'active' ?>" href="<?= route( 'login@showForm' ) ?>">
-                    Login
-                </a>
+                <?php if( Auth::check() ): ?>
+                    <a class="nav-link" href="<?= route( 'login@logout' ) ?>">
+                        Logout
+                    </a>
+                <?php else: ?>
+                    <a class="nav-link <?= !request()->is( 'login' ) ?: 'active' ?>" href="<?= route( 'login@showForm' ) ?>">
+                        Login
+                    </a>
+                <?php endif; ?>
+
             </li>
         </ul>
 

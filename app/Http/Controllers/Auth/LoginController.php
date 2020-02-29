@@ -23,29 +23,37 @@
 
 namespace IXP\Http\Controllers\Auth;
 
-use Auth, D2EM, Socialite;
+use Auth, D2EM, Socialite, Session, Str;
 
-use Illuminate\Http\Request;
-use IXP\Http\Controllers\Controller;
+use Entities\{
+    Customer            as CustomerEntity ,
+    CustomerToUser      as CustomerToUserEntity,
+    User                as UserEntity,
+    UserLoginHistory    as UserLoginHistoryEntity,
+    UserRememberToken  as UserRememberTokenEntity
+};
+
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 
-use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Log;
+use Illuminate\Http\{
+    RedirectResponse,
+    Request
+};
+
+use Illuminate\Routing\Redirector;
+use Illuminate\View\View;
+
+use IXP\Http\Controllers\Controller;
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
 
-use Entities\{Customer,
-    CustomerToUser as CustomerToUserEntity,
-    User as UserEntity,
-    User,
-    UserLoginHistory as UserLoginHistoryEntity};
+use Symfony\Component\HttpFoundation\Response;
 
 class LoginController extends Controller
 {
-
     /*
      |--------------------------------------------------------------------------
      | Login Controller
@@ -58,7 +66,6 @@ class LoginController extends Controller
      */
     use AuthenticatesUsers;
 
-
     /**
      * Where to redirect users after login.
      *
@@ -66,7 +73,6 @@ class LoginController extends Controller
      * @var string
      */
     protected $redirectTo = '';
-
 
     /**
      * Get the login username to be used by the controller.
@@ -78,7 +84,6 @@ class LoginController extends Controller
         return 'username';
     }
 
-
     /**
      * Create a new controller instance.
      *
@@ -89,12 +94,26 @@ class LoginController extends Controller
         $this->middleware( 'guest' )->except( 'logout' );
     }
 
-
-    public function showLoginForm()
+    /**
+     * Show the login form
+     *
+     * @return View
+     */
+    public function showLoginForm() : View
     {
         if( !session()->has('url.intended') ) {
             if( Str::startsWith( url()->previous(), url('') ) ) {
-                session(['url.intended' => url()->previous()]);
+                if( config('google2fa.enabled') ) {
+                    if( strpos( url()->previous(), route( "2fa@authenticate" ) ) !== false ) {
+                        // Store intended url to redirect after login
+                        session( [ 'url.intended' => url()->previous() ] );
+                        // Store intended url to redirect after 2FA
+                        session( [ 'url.intended.2fa' => url()->previous() ] );
+                    }
+                } else {
+                    // Store intended url to redirect after login
+                    session( [ 'url.intended' => url()->previous() ] );
+                }
             }
         }
 
@@ -103,62 +122,30 @@ class LoginController extends Controller
 
 
     /**
-     * Attempt to log the user into the application.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return bool
-     */
-    protected function attemptLogin(Request $request)
-    {
-        return $this->guard()->attempt(
-            $this->credentials($request), $request->input('remember') ? true : false
-        );
-    }
-
-
-    /**
      * The user has been authenticated.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  UserEntity  $user
-     * @return mixed
+     *
+     * @return Response
      *
      * @throws
      */
-    protected function authenticated(Request $request, $user)
+    protected function authenticated( Request $request, $user, $viaPeeringDB = false )
     {
         // Check if the user has Customer(s) linked
-        if( count( $user->getCustomers() ) > 0 ) {
+        if( !count( $user->getCustomers() ) ) {
+            return $this->logout( $request, [ 'message' => "Your user account is not associated with any " . config( "ixp_fe.lang.customer.many" ) . ".", 'class' => Alert::DANGER ] );
+        }
 
-            /** @var CustomerToUserEntity $c2u */
+        /** @var CustomerToUserEntity $c2u */
+        $c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => $user , "customer" => $user->getCustomer() ] );
+
+        // Check if the user has a default customer OR if the default customer is no longer in the C2U, then assign one
+        if( !$user->getCustomer() || !$c2u ){
+            $user->setCustomer( $user->getCustomers()[0] );
+            D2EM::flush();
             $c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => $user , "customer" => $user->getCustomer() ] );
-
-            // Check if the user has a default customer OR if the default customer is no longer in the C2U, then assign one
-            if( !$user->getCustomer() || !$c2u ){
-                $user->setCustomer( $user->getCustomers()[0] );
-                D2EM::flush();
-                $c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => $user , "customer" => $user->getCustomer() ] );
-            }
-
-
-            $c2u->setLastLoginAt(  new \DateTime );
-            $c2u->setLastLoginFrom( $this->getIP() );
-
-            if( config( "ixp_fe.login_history.enabled" ) ) {
-
-                $log = new UserLoginHistoryEntity;
-                D2EM::persist( $log );
-
-                $log->setAt(    new \DateTime() );
-                $log->setIp(    $this->getIP() );
-                $log->setCustomerToUser(  $c2u  );
-
-                D2EM::flush();
-            }
-
-        } else {
-            // No customer linked, logout
-            $this->logout( $request, [ 'message' => "Your user account is not associated with any customers.", 'class' => Alert::DANGER ] );
         }
 
         D2EM::flush();
@@ -167,43 +154,39 @@ class LoginController extends Controller
     /**
      * Get the failed login response instance.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @param Request $request
+     * @param string|null $msg
      *
+     * @return Response
      */
-    protected function sendFailedLoginResponse( Request $request, $msg = null ) {
+    protected function sendFailedLoginResponse( Request $request, $msg = null ) : Response
+    {
         AlertContainer::push( $msg ?? "Invalid username or password. Please try again." , Alert::DANGER );
+
         return redirect()->back()->withInput( $request->only('username') );
     }
-
 
     /**
      * Log the user out of the application.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param Request $request
      * @param  array|null  $customMessage Custom message to display
      *
-     * @return \Illuminate\Http\Response
+     * @return Response
      */
-    public function logout(Request $request, $customMessage = null)
+    public function logout( Request $request, $customMessage = null ) : Response
     {
         $this->guard()->logout();
-
         $request->session()->invalidate();
 
         AlertContainer::push( $customMessage ? $customMessage[ "message" ] : "You have been logged out." , $customMessage ? $customMessage[ "class" ] : Alert::SUCCESS );
-
         return redirect('');
     }
-
-
-
-
 
     /**
      * Redirect the user to the PeeringDB authentication page.
      *
-     * @return \Illuminate\Http\Response
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     public function peeringdbRedirectToProvider()
     {
@@ -265,7 +248,9 @@ class LoginController extends Controller
      *    "given_name" => "Joe"
      *  ]
      * }
-     *
+     * @param Request $request
+     * @return RedirectResponse|Redirector|Response
+     * @throws
      */
     public function peeringdbHandleProviderCallback( Request $request )
     {
@@ -295,22 +280,22 @@ class LoginController extends Controller
         $result = D2EM::getRepository( UserEntity::class )->findOrCreateFromPeeringDb( $suser->user );
 
         if( $result['user'] === null || !( $result['user'] instanceof UserEntity ) ) {
-            return $this->sendFailedLoginResponse($request, 'Login with PeeringDB failed. Most likely there are no customers at this IXP that match your PeeringDB affiliation(s). '
+            return $this->sendFailedLoginResponse($request, 'Login with PeeringDB failed. Most likely there are no ' . config( "ixp_fe.lang.customer.many" ) . ' at this IXP that match your PeeringDB affiliation(s). '
                 . 'If you believe this to be an error or would like to get access to your account, please contact our support team.' );
         }
 
-        /** @var Customer $c */
+        /** @var CustomerEntity $c */
         foreach( $result['added_to'] as $c ) {
             AlertContainer::push( "Your PeeringDB affiliation with {$c->getFormattedName()} has been added to IXP Manager.", Alert::SUCCESS );
         }
 
-        /** @var Customer $c */
+        /** @var CustomerEntity $c */
         foreach( $result['removed_from'] as $c ) {
             AlertContainer::push( "Your PeeringDB affiliation with {$c->getFormattedName()} has been removed from IXP Manager as you are no longer affiliated with this network on PeeringDB.", Alert::WARNING );
         }
 
         Auth::login( $result['user'] );
-        $this->authenticated( $request, $result['user'] );
+        $this->authenticated( $request, $result['user'], true );
         return redirect('');
     }
 

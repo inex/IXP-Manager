@@ -132,9 +132,11 @@
                                     <?php endif; ?>
                                 </td>
                                 <td>
-                                    <a href="<?= route( "customer@overview" , [ "id" => $ppp->getCustomerId() ] ) ?>">
-                                        <?= $t->ee( $ppp->getCustomerName() ) ?>
-                                    </a>
+                                    <?php if( $ppp->getCustomer() ): ?>
+                                        <a href="<?= route( "customer@overview" , [ "id" => $ppp->getCustomerId() ] ) ?>">
+                                            <?= $t->ee( $ppp->getCustomerName() ) ?>
+                                        </a>
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <?= $t->ee( $ppp->getColoCircuitRef() ) ?>
