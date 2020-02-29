@@ -41,6 +41,16 @@
 
 <?php $this->section('content') ?>
 
+<?= $t->alerts() ?>
+
+<?php if( Auth::check() && Auth::user()->isSuperUser() && !$t->dir && !count( $t->dirs ) && !count( $t->files ) ): ?>
+
+    <?= $t->insert( 'docstore/welcome.foil.php' ) ?>
+
+<?php endif; ?>
+
+
+
 <?php if( $t->dir && $t->dir->description ): ?>
 
     <div class="row tw-my-8 tw-p-4 tw-border-2 tw-border-gray-500 tw-rounded-lg tw-bg-gray-200">
@@ -49,13 +59,6 @@
 
     </div>
 <?php endif; ?>
-
-    <tr class="row">
-        <tr class="col-md-12">
-
-            <?= $t->alerts() ?>
-
-
 
 
 <div class="docstore">
@@ -119,7 +122,8 @@
 
 
 
-    <?php foreach( $t->files as $file ): ?>
+    <?php $sixmonthsago = now()->startOfDay();
+        foreach( $t->files as $file ): ?>
 
         <tr class="">
             <td class="<?= $i ? '' : 'tw-border-t-2' ?> icon"></td>
@@ -143,10 +147,17 @@
 
             <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta tw-text-right" style="font-variant-numeric: tabular-nums;">
                 <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-                    <span class="tw-align-middle tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-sm tw-text-gray-700"
-                            data-toggle="tooltip" data-placement="left" data-html="true" title="User Downloads:<br> <?= $file->downloads_count ?> Total (<?= $file->unique_downloads_count ?> Unique)">
-                        <?= $file->downloads_count ?> (<?= $file->unique_downloads_count ?>)
-                    </span>
+                    <?php if( $file->created_at < $sixmonthsago ): ?>
+                        <span class="tw-align-middle tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-sm tw-text-gray-700"
+                              data-toggle="tooltip" data-placement="left" data-html="true" title="Unique User Downloads: <?= $file->unique_downloads_count ?>">
+                            <?= $file->unique_downloads_count ?>
+                        </span>
+                    <?php else: ?>
+                        <span class="tw-align-middle tw-border-gray-200 tw-border tw-rounded tw-bg-gray-200 tw-px-1 tw-text-sm tw-text-gray-700"
+                                data-toggle="tooltip" data-placement="left" data-html="true" title="Unique User Downloads:<br> <?= $file->downloads_count ?> Total (<?= $file->unique_downloads_count ?> Unique)">
+                            <?= $file->downloads_count ?> (<?= $file->unique_downloads_count ?>)
+                        </span>
+                    <?php endif; ?>
                 <?php endif; ?>
             </td>
 
@@ -194,11 +205,6 @@
 </table>
 </div>
 
-
-
-
-        </div>
-    </div>
 
 <?php $this->append() ?>
 
