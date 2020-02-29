@@ -3,6 +3,8 @@
     /** @var $t->active */
 
     $this->layout( 'layouts/ixpv4' );
+
+    $sixmonthsago = now()->subMonths(6)->startOfDay();
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -122,8 +124,7 @@
 
 
 
-    <?php $sixmonthsago = now()->startOfDay();
-        foreach( $t->files as $file ): ?>
+    <?php foreach( $t->files as $file ): ?>
 
         <tr class="">
             <td class="<?= $i ? '' : 'tw-border-t-2' ?> icon"></td>

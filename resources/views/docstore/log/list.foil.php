@@ -1,5 +1,7 @@
 <?php
 $this->layout( 'layouts/ixpv4' );
+
+$sixmonthsago = now()->subMonths(6)->startOfDay();
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
@@ -37,6 +39,15 @@ $this->layout( 'layouts/ixpv4' );
                 </small>
             </h3>
 
+            <?php if( $t->file->created_at < $sixmonthsago ): ?>
+
+                <p>
+                    <b>Note:</b> This file is more than six months old. As such, all download logs older than six months
+                    (except the first / original download) has been expunged.
+                </p>
+
+            <?php endif; ?>
+
             <div class="tw-mt-8">
                 <table id="table-logs" class="table collapse table-striped">
                     <thead class="thead-dark">
@@ -51,9 +62,11 @@ $this->layout( 'layouts/ixpv4' );
                                 <th>
                                     First Downloaded
                                 </th>
-                                <th>
-                                    Last Downloaded
-                                </th>
+                                <?php if( $t->file->created_at > $sixmonthsago ): ?>
+                                    <th>
+                                        Last Downloaded
+                                    </th>
+                                <?php endif; ?>
                             <?php else: ?>
                                 <th>
                                     Downloaded At
@@ -77,9 +90,11 @@ $this->layout( 'layouts/ixpv4' );
                                     <td>
                                         <?= $log->first_downloaded ?>
                                     </td>
-                                    <td>
-                                        <?= $log->first_downloaded != $log->last_downloaded ? $log->last_downloaded : '' ?>
-                                    </td>
+                                    <?php if( $t->file->created_at > $sixmonthsago ): ?>
+                                        <td>
+                                            <?= $log->first_downloaded != $log->last_downloaded ? $log->last_downloaded : '' ?>
+                                        </td>
+                                    <?php endif?>
                                 <?php else: ?>
                                     <td>
                                         <?= $log->created_at ?>

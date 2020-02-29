@@ -26,6 +26,7 @@ namespace IXP\Console\Commands\Utils;
 
 use D2EM;
 
+use Illuminate\Support\Facades\DB;
 use Repositories\UserLoginHistory as UserLoginHistoryRepo;
 
 use IXP\Console\Commands\Command as IXPCommand;
@@ -91,6 +92,15 @@ class ExpungeLogs extends IXPCommand
         ]);
         $this->isVerbosityVerbose() && $this->info(' [done]' );
 
+
+        // we want to delete docstore file download logs > 6 months (but not the first / earliest entry).
+        $this->isVerbosityVerbose() && $this->output->write('Expunging non-unique document store download logs...', false );
+        DB::raw( 'DELETE dsl1 FROM docstore_logs dsl1, docstore_logs dsl2 
+                    WHERE dsl1.created_at > dsl2.created_at AND dsl1.downloaded_by = dsl2.downloaded_by 
+                        AND dsl1.docstore_file_id = dsl2.docstore_file_id
+                        AND dsl1.created_at < "' . $sixmonthsago . '"'
+        );
+        $this->isVerbosityVerbose() && $this->info(' [done]' );
 
         return 0;
     }
