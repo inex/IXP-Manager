@@ -72,6 +72,7 @@ class IPv4Address extends EntityRepository
 
         $dql = "SELECT  ip.id as id, 
                         ip.address as address,
+                        inet_aton(ip.address) as aton,
                         v.name AS vlan, 
                         v.id as vlanid,
                         vli.id AS vliid,
