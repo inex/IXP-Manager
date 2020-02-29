@@ -26,6 +26,12 @@
                     <a class="dropdown-item <?= !request()->is( 'switch/configuration' ) ?: 'active' ?>" href="<?= route('switch@configuration') ?>">
                         Switch Configuration
                     </a>
+                    <?php if( !config( 'ixp_fe.frontend.disabled.docstore' ) && \IXP\Models\DocstoreDirectory::getHierarchyForUserClass( \IXP\Models\User::AUTH_SUPERUSER ) ): ?>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item <?= !request()->is( 'docstore*' ) ?: 'active' ?>" href="<?= route('docstore-dir@list' ) ?>">
+                            Document Store
+                        </a>
+                    <?php endif; ?>
                 </div>
             </li>
 
@@ -121,7 +127,7 @@
         <form id="div-header-select-customer" class="form-inline my-2 my-lg-0">
             <select id="menu-select-customer" type="select" name="id" class="chzn-select col-xl-7 col-lg-6">
                 <option></option>
-                <?php foreach( $t->customers as $k => $i ): ?>
+                <?php foreach( $t->dd_customer_id_name as $k => $i ): ?>
                     <option value="<?= $k ?>"><?= $i ?></option>
                 <?php endforeach; ?>
             </select>

@@ -131,7 +131,7 @@ class LoginController extends Controller
      *
      * @throws
      */
-    protected function authenticated( Request $request, $user )
+    protected function authenticated( Request $request, $user, $viaPeeringDB = false )
     {
         // Check if the user has Customer(s) linked
         if( !count( $user->getCustomers() ) ) {
@@ -148,31 +148,7 @@ class LoginController extends Controller
             $c2u = D2EM::getRepository( CustomerToUserEntity::class)->findOneBy( [ "user" => $user , "customer" => $user->getCustomer() ] );
         }
 
-        $c2u->setLastLoginAt( now() );
-        $c2u->setLastLoginFrom( $this->getIP() );
-
-        if( config( "ixp_fe.login_history.enabled" ) ) {
-            $log = new UserLoginHistoryEntity;
-            D2EM::persist( $log );
-
-            $log->setAt( now() );
-            $log->setIp( $this->getIP() );
-            $log->setCustomerToUser(  $c2u  );
-        }
-
-        // Check if we added a UserRememberToken id to the request
-        if( request()->request->has( "ixpm-user-remember-me-token-id" ) ) {
-            // Updating the current UserRememberToken session id with the current session ID in order to link them
-            $urt = D2EM::getRepository( UserRememberTokenEntity::class )->find( request()->request->get( "ixpm-user-remember-me-token-id" ) );
-            $urt->setSessionId( Session::getId() );
-        }
-
         D2EM::flush();
-
-        // if remember me is enabled, set a session variable so we can set the same on the 2fa form if enabled
-        if( $request->get('remember') ) {
-            $request->session()->put( 'ixpm-login-rememberme-set', true );
-        }
     }
 
     /**
@@ -319,7 +295,7 @@ class LoginController extends Controller
         }
 
         Auth::login( $result['user'] );
-        $this->authenticated( $request, $result['user'] );
+        $this->authenticated( $request, $result['user'], true );
         return redirect('');
     }
 

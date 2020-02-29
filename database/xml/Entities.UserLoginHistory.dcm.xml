@@ -7,6 +7,7 @@
     <field name="user_id" type="integer" nullable="true"/>
     <field name="ip" type="string" length="39" nullable="false"/>
     <field name="at" type="datetime" nullable="false"/>
+    <field name="via" type="string" length="50" nullable="true"/>
     <indexes>
       <index name="at_idx" columns="at"/>
       <index name="user_id_idx" columns="user_id"/>

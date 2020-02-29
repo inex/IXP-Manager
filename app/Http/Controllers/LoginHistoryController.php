@@ -86,6 +86,8 @@ class LoginHistoryController extends Doctrine2Frontend
                     'idField'    => 'cust_id'
                 ],
 
+                'last_login_via'    => [ 'title' => 'Via' ],
+
                 'last_login_date'         => [
                     'title'     => 'Last Login',
                     'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]

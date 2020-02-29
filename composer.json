@@ -114,7 +114,7 @@
             "@php artisan clear-compiled",
             "@php artisan ide-helper:generate",
             "@php artisan ide-helper:meta --filename=.phpstorm.meta.php/laravel.meta.php",
-            "@php artisan ide-helper:models -W",
+            "@php artisan ide-helper:models -Wr",
             "@php artisan telescope:publish",
             "@php artisan horizon:assets"
         ]

@@ -41,6 +41,11 @@ class CustomerToUser
     private $last_login_from;
 
     /**
+     * @var string
+     */
+    private $last_login_via;
+
+    /**
      * @var \Entities\Customer
      */
     private $customer;
@@ -136,6 +141,16 @@ class CustomerToUser
     public function getLastLoginFrom()
     {
         return $this->last_login_from;
+    }
+
+    /**
+     * Get last login via
+     *
+     * @return string
+     */
+    public function getLastLoginVia()
+    {
+        return $this->last_login_via;
     }
 
     /**
@@ -251,5 +266,19 @@ class CustomerToUser
 
         return $this;
     }
+
+    /**
+     * Set last login via
+     *
+     * @param string $last_login_via
+     * @return CustomerToUser
+     */
+    public function setLastLoginVia( $last_login_via )
+    {
+        $this->last_login_via = $last_login_via;
+
+        return $this;
+    }
+
 
 }

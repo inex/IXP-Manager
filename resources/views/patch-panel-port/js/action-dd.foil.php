@@ -220,15 +220,22 @@
     function uploadPopup( pppid ){
 
 
-        let html = `<form id="upload" method="post" action='<?= url("patch-panel-port/upload-file" )?>/${pppid}' enctype='multipart/form-data'>
-            <div id='drop'>Drop Files Here &nbsp;
-                <a href="#" id="upload-drop-a" class="btn btn-success color-white">
-                    <i class="fa fa-upload"></i> Browse</a> <br/>
-                    <span class="info"> (max size <?= $t->maxFileUploadSize() ?> </span>
-                    <input type="file" name="upl" multiple />
-            </div>
-            <ul id="upload-ul"></ul>
-            </form>`;
+        let html = `<form id="upload" class="col-lg-12 tw-bg-gray-100 tw-border tw-rounded-sm" method="post" action='<?= url("patch-panel-port/upload-file" )?>/${pppid}' enctype='multipart/form-data'>
+                        <div id='drop' class="tw-py-20 tw-px-10 tw-text-center tw-font-bold tw-text-gray-600">
+                            Drop Files Here &nbsp;
+                            <a href="#" id="upload-drop-a" class="btn btn-success color-white">
+                                <i class="fa fa-upload"></i>
+                                Browse
+                            </a>
+                            <br/>
+                            <span class="tw-text-xs">
+                                (max size <?= $t->maxFileUploadSize() ?>
+                            </span>
+                            <input type="file" class="tw-hidden" name="upl" multiple />
+                        </div>
+                        <ul id="upload-ul" class="row tw-pl-0 tw-list-none tw-mb-0">
+                        </ul>
+                    </form>`;
 
 
         let dialog = bootbox.dialog({
@@ -271,36 +278,42 @@
                 // either via the browse button, or via drag/drop:
                 add: function (e, data) {
 
-                    let tpl = $('<li><input type="text" value="0" data-width="48" data-height="48"'+
-                        ' data-fgColor="#0788a5" data-readOnly="1" data-bgColor="#3e4043" /><p></p><span></span></li>');
+                    let tpl = $(`<li class="col-md-12 tw-border-t tw-relative tw-h-24 tw-p-2 tw-pl-4">
+                                    <div class="row info-area">
+                                        <p class="info-text tw-font-bold col-md-8 mr-auto">
+                                            ${data.files[0].name}
+                                            <span class="tw-block tw-font-normal tw-text-gray-500">
+                                                ${ixpFormatFileSize(data.files[0].size)}
+                                            </span>
+                                        </p>
+                                    </div>
 
-                    // Append the file name and file size
-                    tpl.find('p').text(data.files[0].name)
-                        .append('<i>' + ixpFormatFileSize(data.files[0].size) + '</i>');
+                                </li>`);
 
                     // Add the HTML to the UL element
                     data.context = tpl.appendTo(ul);
-
-                    // Initialize the knob plugin
-                    tpl.find('input').knob();
 
                     // Automatically upload the file once it is added to the queue
                     data.submit()
                         .done(function (result, textStatus, jqXHR){
                             if(result.success){
-                                tpl.addClass( 'success' );
                                 tpl.attr( 'id','uploaded-file-' + result.id );
-                                tpl.find( 'span' ).addClass( 'success' );
-                                tpl.append( `<span id="uploaded-file-toggle-private-${result.id}" class="private fa fa-unlock fa-lg"></span>` );
-                                tpl.append( `<span id="uploaded-file-delete-${result.id}" class="delete fa fa-trash"></span>` );
-                                tpl.find('p').append( `<i id="message-${result.id}" class="success">${result.message}</i>` );
+                                tpl.find('.info-area').append( `<p class="col-md-2 tw-self-center">
+                                            <i class="fa fa-check tw-text-green-600"></i>
+                                            <i id="uploaded-file-toggle-private-${result.id}" class="tw-cursor-pointer fa fa-unlock fa-lg"></i>
+                                            <i id="uploaded-file-delete-${result.id}" class="tw-cursor-pointer fa fa-trash"></i>
+                                            </p>
+                                `);
+                                tpl.find('.info-text').addClass( 'tw-text-green-600' ).append( `<span id="message-${result.id}" class="tw-text-green-600">${result.message}</span>` );
 
                                 $('#uploaded-file-toggle-private-' + result.id).on( 'click', toggleFilePrivacy );
                                 $('#uploaded-file-delete-'         + result.id).on( 'click', deleteFile        );
                             } else {
-                                tpl.addClass('error');
-                                tpl.find('span').addClass('error');
-                                tpl.find('p').append('<i id="message-' + result.id + '" class="error"> Upload Error: ' + result.message + '</i>' );
+                                tpl.find('.info-area').append( `<p class="col-md-2 tw-self-center">
+                                            <i class="fa fa-times tw-text-red-600"></i>
+                                            </p>
+                                `);
+                                tpl.find('.info-text').addClass( 'tw-text-red-600' ).append('<i id="message-' + result.id + '" class="tw-text-red-600 "> Upload Error: ' + result.message + '</i>' );
                             }
                         });
                 },

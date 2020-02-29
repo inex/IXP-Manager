@@ -121,7 +121,8 @@ class User extends EntityRepository
      */
     public function getLastLoginsForFeList( $feParams )
     {
-        $dql = "SELECT  c2u.last_login_date AS last_login_date, 
+        $dql = "SELECT  c2u.last_login_date AS last_login_date,
+                        c2u.last_login_via AS last_login_via, 
                         u.username AS username,
                         u.email AS email, 
                         c.name AS cust_name, 

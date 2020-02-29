@@ -575,6 +575,17 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * {@inheritDoc}
      */
+    public function getCurrentCustomerToUser(): ?\Entities\CustomerToUser
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCurrentCustomerToUser', []);
+
+        return parent::getCurrentCustomerToUser();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function addPreference(\Entities\UserPreference $preferences)
     {
 
@@ -922,6 +933,17 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getUserRememberTokens', []);
 
         return parent::getUserRememberTokens();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isAssociate(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isAssociate', []);
+
+        return parent::isAssociate();
     }
 
     /**

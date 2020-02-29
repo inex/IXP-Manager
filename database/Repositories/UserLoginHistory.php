@@ -47,6 +47,7 @@ class UserLoginHistory extends EntityRepository
         $dql = "SELECT  lh.id  AS id, 
                         lh.at  AS at, 
                         lh.ip  AS ip, 
+                        lh.via AS via,
                         u.id   AS user_id,
                         c.name AS cust_name
                 FROM Entities\\UserLoginHistory lh
