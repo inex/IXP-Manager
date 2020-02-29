@@ -20,7 +20,6 @@ $this->layout( 'layouts/ixpv4' );
 
         <?= $t->alerts() ?>
 
-        <?php if( false ): ?>
             <div class="alert alert-info mb-16" role="alert">
                 <div class="d-flex align-items-center">
                     <div class="text-center"><i class="fa fa-info-circle fa-2x "></i></div>
@@ -31,7 +30,6 @@ $this->layout( 'layouts/ixpv4' );
                     </div>
                 </div>
             </div>
-        <?php endif; ?>
 
         <?php if( !$t->c->isTypeAssociate() ): ?>
             <div class="card mt-4">
