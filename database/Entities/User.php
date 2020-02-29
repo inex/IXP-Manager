@@ -87,6 +87,14 @@ class User implements Authenticatable, CanResetPasswordContract
         User::AUTH_SUPERUSER => 'Superuser',
     );
 
+    public static $PRIVILEGES_TEXT_ALL = array(
+        User::AUTH_PUBLIC    => 'Public / Non-User',
+        User::AUTH_CUSTUSER  => 'Customer User',
+        User::AUTH_CUSTADMIN => 'Customer Administrator',
+        User::AUTH_SUPERUSER => 'Superuser',
+    );
+
+
     public static $PRIVILEGES_TEXT_SHORT = array(
         User::AUTH_CUSTUSER  => 'Cust User',
         User::AUTH_CUSTADMIN => 'Cust Admin',
@@ -602,6 +610,25 @@ class User implements Authenticatable, CanResetPasswordContract
         return $this->id;
     }
 
+
+    /**
+     * Get the current customer to user entity - if one exists.
+     *
+     * @return CustomerToUserEntity|null
+     */
+    public function getCurrentCustomerToUser(): ?CustomerToUserEntity
+    {
+        if( !$this->getCustomer() ) {
+            return null;
+        }
+
+        $c2u = D2EM::getRepository( CustomerToUserEntity::class )->findBy( [ 'customer' => $this->getCustomer(), 'user' => $this->getId() ] );
+        return isset( $c2u[0] ) ? $c2u[0] : null;
+    }
+
+
+
+
     /**
      * Add Preferences
      *
@@ -974,6 +1001,18 @@ class User implements Authenticatable, CanResetPasswordContract
     {
         return $this->UserRememberToken;
     }
+
+    /**
+     * Is this a user of an associate member?
+     *
+     * @return bool
+     */
+    public function isAssociate(): bool
+    {
+        return $this->getCustomer()->isTypeAssociate();
+    }
+
+
 
     /***************************************************************************
      | LARAVEL 5 USER PROVIDER INTERFACE METHODS

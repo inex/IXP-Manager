@@ -41,6 +41,11 @@ class UserLoginHistory
     protected $at;
 
     /**
+     * @var string
+     */
+    private $via;
+
+    /**
      * @var integer
      */
     protected $id;
@@ -78,6 +83,30 @@ class UserLoginHistory
     {
         return $this->ip;
     }
+
+    /**
+     * Set via
+     *
+     * @param string $via
+     * @return UserLoginHistory
+     */
+    public function setVia($via)
+    {
+        $this->via = $via;
+
+        return $this;
+    }
+
+    /**
+     * Get via
+     *
+     * @return string
+     */
+    public function getVia()
+    {
+        return $this->via;
+    }
+
 
     /**
      * Set at

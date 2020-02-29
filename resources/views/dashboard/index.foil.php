@@ -19,6 +19,8 @@ $this->layout( 'layouts/ixpv4' );
 
 
         <?= $t->alerts() ?>
+
+
         <?php if( !$t->c->isTypeAssociate() ): ?>
             <div class="card mt-4">
                 <div class="card-header">
