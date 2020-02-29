@@ -25,6 +25,6 @@
 # Basic version information
 #
 
-define( 'APPLICATION_VERSION', '5.3.0' );
-define( 'APPLICATION_VERDATE', '2020020600' );
+define( 'APPLICATION_VERSION', '5.4.0' );
+define( 'APPLICATION_VERDATE', '2020022900' );
 
