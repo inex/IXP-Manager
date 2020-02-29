@@ -24,6 +24,9 @@ class CreateDocstoreLogs extends Migration
             $table->foreign('docstore_file_id')->references('id')->on('docstore_files');
 
             $table->timestamps();
+
+            // this should be indexed for the log expunging query (see artisan utils:expunge-logs).
+            $table->index('created_at');
         });
     }
 
