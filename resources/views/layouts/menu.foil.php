@@ -159,7 +159,7 @@
 
             <?php if( !config( 'ixp_fe.frontend.disabled.docstore' ) ): ?>
 
-                <li class="<?= !request()->is( 'docstore/*' ) ?: 'active' ?>" >
+                <li class="<?= !request()->is( 'docstore*' ) ?: 'active' ?>" >
                     <a href="<?= route('docstore-dir@list' ) ?>" class="nav-link">
                         Document Store
                     </a>
