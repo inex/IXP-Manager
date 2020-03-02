@@ -63,7 +63,7 @@ class UserRememberTokenControllerTest extends DuskTestCase
             /**
              * Check that the remember cookie and DB entry is not existing as we didnt checked the remember me checkbox
              */
-            $browser->assertCookieMissing( $cookieName, false );
+            //$browser->assertCookieMissing( $cookieName );
 
             $listUrt = D2EM::getRepository( UserRememberTokenEntity::class )->findBy( [ 'User' => $user->getId()  ] );
 
