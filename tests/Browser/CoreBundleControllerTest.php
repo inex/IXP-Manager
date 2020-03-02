@@ -76,12 +76,12 @@ class CoreBundleControllerTest extends DuskTestCase
 
             $coreBundlesList = [
                 CoreBundleEntity::TYPE_ECMP => [
-                    "cust1" => 4,
+                    "cust1" => 1,
                     "cost1" => 10,
                     "description1" => "Test description",
                     "graph-title1" => "Test description",
                     "preference1" => 11,
-                    "cust2" => 2,
+                    "cust2" => 1,
                     "cost2" => 12,
                     "description2" => "Test description 2",
                     "graph-title2" => "Test description 2",
@@ -119,12 +119,12 @@ class CoreBundleControllerTest extends DuskTestCase
                 ],
 
                 CoreBundleEntity::TYPE_L2_LAG => [
-                    "cust1" => 4,
+                    "cust1" => 1,
                     "cost1" => 10,
                     "description1" => "Test description",
                     "graph-title1" => "Test description",
                     "preference1" => 11,
-                    "cust2" => 2,
+                    "cust2" => 1,
                     "cost2" => 12,
                     "description2" => "Test description 2",
                     "graph-title2" => "Test description 2",
@@ -167,12 +167,12 @@ class CoreBundleControllerTest extends DuskTestCase
                 ],
 
                 CoreBundleEntity::TYPE_L3_LAG => [
-                    "cust1" => 4,
+                    "cust1" => 1,
                     "cost1" => 10,
                     "description1" => "Test description",
                     "graph-title1" => "Test description",
                     "preference1" => 11,
-                    "cust2" => 2,
+                    "cust2" => 1,
                     "cost2" => 12,
                     "description2" => "Test description 2",
                     "graph-title2" => "Test description 2",
