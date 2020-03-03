@@ -515,7 +515,8 @@ class SwitchPortController extends Doctrine2Frontend
         $this->feParams->pagetitlepostamble             = 'MAU Interface Detail for ' . $s->getName() ;
 
         $this->data[ 'params' ][ 'switches' ]           = $switches;
-        $this->data[ 'params' ][ 'switch' ]             = $s->getId();
+        $this->data[ 'params' ][ 'switch' ]             = $s;
+        $this->data[ 'params' ][ 'switchid' ]           = $s->getId();
 
         $this->setUpViews();
         $this->data[ 'view' ][ 'pageBreadcrumbs']       = $this->resolveTemplate( 'page-bread-crumbs',          false );
@@ -617,7 +618,8 @@ class SwitchPortController extends Doctrine2Frontend
         $this->setUpOpStatus();
 
         $this->data[ 'params' ][ 'portStates' ]     = Iface::$IF_OPER_STATES;
-        $this->data[ 'params' ][ 'switch' ]         = $s->getId();
+        $this->data[ 'params' ][ 'switch' ]         = $s;
+        $this->data[ 'params' ][ 'switchid' ]       = $s->getId();
         $this->data[ 'params' ][ 'switches']        = D2EM::getRepository( SwitcherEntity::class  )->getNames();
 
         $this->data[ 'rows' ] =  $this->listGetData();
