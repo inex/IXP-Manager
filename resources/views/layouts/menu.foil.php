@@ -386,7 +386,7 @@
                 </li>
             <?php endif; ?>
 
-            <?php if( Gate::allows( 'viewTelescope' ) ): ?>
+            <?php if( Gate::allows( 'viewTelescope' ) && config( 'telescope.enabled' ) ): ?>
                 <li class="" >
                     <a href="<?= route( 'telescope' ) ?>" class="nav-link" target="_ixpm_telescope">
                         Laravel Telescope

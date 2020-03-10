@@ -33,7 +33,7 @@ use Illuminate\Database\Eloquent\{
     Model
 };
 
-use Illuminate\Support\Carbon;
+use Illuminate\Support\Carbon as Carbon;
 
 use IXP\Exceptions\GeneralException as IXP_Exception;
 
@@ -57,14 +57,14 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property string|null $peeringmacro
  * @property string|null $peeringpolicy
  * @property string|null $corpwww
- * @property \Illuminate\Support\Carbon|null $datejoin
- * @property \Illuminate\Support\Carbon|null $dateleave
+ * @property Carbon|null $datejoin
+ * @property Carbon|null $dateleave
  * @property int|null $status
  * @property int|null $activepeeringmatrix
- * @property \Illuminate\Support\Carbon|null $lastupdated
+ * @property Carbon|null $lastupdated
  * @property int|null $lastupdatedby
  * @property string|null $creator
- * @property \Illuminate\Support\Carbon|null $created
+ * @property Carbon|null $created
  * @property int|null $company_registered_detail_id
  * @property int|null $company_billing_details_id
  * @property string|null $peeringmacrov6
@@ -75,48 +75,50 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property int $in_manrs
  * @property int $in_peeringdb
  * @property int $peeringdb_oauth
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VirtualInterface[] $virtualInterfaces
+ * @property-read Collection|VirtualInterface[] $virtualInterfaces
+ * @property-read Collection|DocstoreCustomerDirectory[] $docstoreCustomerDirectories
+ * @property-read Collection|DocstoreCustomerFile[] $docstoreCustomerFiles
  * @property-read int|null $virtual_interfaces_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer current()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer trafficking()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereAbbreviatedName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereActivepeeringmatrix($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereAutsys($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCompanyBillingDetailsId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCompanyRegisteredDetailId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCorpwww($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCreated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereCreator($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereDatejoin($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereDateleave($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereInManrs($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereInPeeringdb($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereIrrdb($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereIsReseller($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereLastupdated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereLastupdatedby($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereMD5Support($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereMaxprefixes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNoc24hphone($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNocemail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNocfax($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNochours($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNocphone($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereNocwww($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringdbOauth($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringemail($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringmacro($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringmacrov6($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer wherePeeringpolicy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereReseller($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereShortname($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereStatus($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereType($value)
+ * @method static Builder|Customer current()
+ * @method static Builder|Customer newModelQuery()
+ * @method static Builder|Customer newQuery()
+ * @method static Builder|Customer query()
+ * @method static Builder|Customer trafficking()
+ * @method static Builder|Customer whereAbbreviatedName($value)
+ * @method static Builder|Customer whereActivepeeringmatrix($value)
+ * @method static Builder|Customer whereAutsys($value)
+ * @method static Builder|Customer whereCompanyBillingDetailsId($value)
+ * @method static Builder|Customer whereCompanyRegisteredDetailId($value)
+ * @method static Builder|Customer whereCorpwww($value)
+ * @method static Builder|Customer whereCreated($value)
+ * @method static Builder|Customer whereCreator($value)
+ * @method static Builder|Customer whereDatejoin($value)
+ * @method static Builder|Customer whereDateleave($value)
+ * @method static Builder|Customer whereId($value)
+ * @method static Builder|Customer whereInManrs($value)
+ * @method static Builder|Customer whereInPeeringdb($value)
+ * @method static Builder|Customer whereIrrdb($value)
+ * @method static Builder|Customer whereIsReseller($value)
+ * @method static Builder|Customer whereLastupdated($value)
+ * @method static Builder|Customer whereLastupdatedby($value)
+ * @method static Builder|Customer whereMD5Support($value)
+ * @method static Builder|Customer whereMaxprefixes($value)
+ * @method static Builder|Customer whereName($value)
+ * @method static Builder|Customer whereNoc24hphone($value)
+ * @method static Builder|Customer whereNocemail($value)
+ * @method static Builder|Customer whereNocfax($value)
+ * @method static Builder|Customer whereNochours($value)
+ * @method static Builder|Customer whereNocphone($value)
+ * @method static Builder|Customer whereNocwww($value)
+ * @method static Builder|Customer wherePeeringdbOauth($value)
+ * @method static Builder|Customer wherePeeringemail($value)
+ * @method static Builder|Customer wherePeeringmacro($value)
+ * @method static Builder|Customer wherePeeringmacrov6($value)
+ * @method static Builder|Customer wherePeeringpolicy($value)
+ * @method static Builder|Customer whereReseller($value)
+ * @method static Builder|Customer whereShortname($value)
+ * @method static Builder|Customer whereStatus($value)
+ * @method static Builder|Customer whereType($value)
  * @mixin \Eloquent
  */
 class Customer extends Model
@@ -179,6 +181,22 @@ class Customer extends Model
     public function virtualInterfaces()
     {
         return $this->hasMany('IXP\Models\VirtualInterface', 'custid');
+    }
+
+    /**
+     * Get the docstore customer directories for the customer
+     */
+    public function docstoreCustomerDirectories()
+    {
+        return $this->hasMany(DocstoreCustomerDirectory::class, 'cust_id');
+    }
+
+    /**
+     * Get the docstore customer files for the customer
+     */
+    public function docstoreCustomerFiles()
+    {
+        return $this->hasMany(DocstoreCustomerFile::class, 'cust_id');
     }
 
 

@@ -60,6 +60,13 @@
                     <?php endif; ?>
                 </a>
 
+                <?php if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ): ?>
+                    <div class="dropdown-divider"></div>
+
+                    <a class="dropdown-item" href="<?= route( 'docstore-c-dir@list', [ 'cust' => $c->getId() ] ) ?>">
+                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Documents...
+                    </a>
+                <?php endif; ?>
 
                 <div class="dropdown-divider"></div>
 

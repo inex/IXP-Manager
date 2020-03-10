@@ -23,7 +23,7 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Eloquent, Storage;
+use Eloquent;
 
 use Entities\User as UserEntity;
 
@@ -39,39 +39,39 @@ use Illuminate\Database\Eloquent\Relations\{
 };
 
 use Illuminate\Support\Carbon;
-
-use Illuminate\Support\Facades\{
-    Cache,
-    Log
-};
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Log;
+use Storage;
 
 /**
- * IXP\Models\DocstoreDirectory
+ * IXP\Models\DocstoreCustomerDirectory
  *
  * @property int $id
+ * @property int $cust_id
  * @property int|null $parent_dir_id
  * @property string $name
  * @property string|null $description
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
- * @property-read EloquentCollection|DocstoreFile[] $files
+ * @property-read EloquentCollection|DocstoreCustomerFile[] $files
  * @property-read int|null $files_count
  * @property-read DocstoreDirectory|null $parentDirectory
  * @property-read EloquentCollection|DocstoreDirectory[] $subDirectories
  * @property-read int|null $sub_directories_count
- * @method static Builder|DocstoreDirectory newModelQuery()
- * @method static Builder|DocstoreDirectory newQuery()
- * @method static Builder|DocstoreDirectory query()
- * @method static Builder|DocstoreDirectory whereCreatedAt($value)
- * @method static Builder|DocstoreDirectory whereDescription($value)
- * @method static Builder|DocstoreDirectory whereId($value)
- * @method static Builder|DocstoreDirectory whereName($value)
- * @method static Builder|DocstoreDirectory whereParentDirId($value)
- * @method static Builder|DocstoreDirectory whereUpdatedAt($value)
+ * @method static Builder|DocstoreCustomerDirectory newModelQuery()
+ * @method static Builder|DocstoreCustomerDirectory newQuery()
+ * @method static Builder|DocstoreCustomerDirectory query()
+ * @method static Builder|DocstoreCustomerDirectory whereCreatedAt($value)
+ * @method static Builder|DocstoreCustomerDirectory whereDescription($value)
+ * @method static Builder|DocstoreCustomerDirectory whereId($value)
+ * @method static Builder|DocstoreCustomerDirectory whereName($value)
+ * @method static Builder|DocstoreCustomerDirectory whereParentDirId($value)
+ * @method static Builder|DocstoreCustomerDirectory whereCustId($value)
+ * @method static Builder|DocstoreCustomerDirectory whereUpdatedAt($value)
  * @mixin Eloquent
  */
 
-class DocstoreDirectory extends Model
+class DocstoreCustomerDirectory extends Model
 {
     /**
      * The attributes that aren't mass assignable.
@@ -81,8 +81,40 @@ class DocstoreDirectory extends Model
     protected $fillable = [
         'name',
         'description',
-        'parent_dir_id'
+        'parent_dir_id',
+        'cust_id'
     ];
+
+    /**
+     * Static property used by getHierarchyForUserClass() and recurseForHierarchyForUserClass()
+     * to build the hierarchy.
+     *
+     * Yields an array of the following form (i.e. an array of subdirs in each dir):
+     *
+     * ```
+     * [
+     *     directory_id => [ [ 'id' => subdir_id, 'name' => subdir_name ], [ ... ], ... ],
+     *     ...
+     *  ]
+     * ```
+     *
+     * @var array
+     */
+    public static $dirs = [];
+
+    /**
+     * The cache key used in getHierarchyForUserClass()
+     * @var string
+     */
+    public const CACHE_KEY_FOR_CUSTOMER_USER_CLASS_HIERARCHY = 'docstore_customer_directory_hierarchy_for_user_class_';
+
+    /**
+     * Get the customer
+     */
+    public function customer(): BelongsTo
+    {
+        return $this->belongsTo(Customer::class, 'cust_id', 'id' );
+    }
 
     /**
      * Get the subdirectories for this directory
@@ -105,21 +137,22 @@ class DocstoreDirectory extends Model
      */
     public function files(): HasMany
     {
-        return $this->hasMany(DocstoreFile::class);
+        return $this->hasMany(DocstoreCustomerFile::class);
     }
 
     /**
      * Gets a listing of directories for the given (or root) directory and as
      * appropriate for the user (or public access)
      *
+     * @param Customer                  $cust
      * @param DocstoreDirectory|null    $dir
      * @param UserEntity|null           $user
      *
      * @return EloquentCollection
      */
-    public static function getListing( ?DocstoreDirectory $dir, ?UserEntity $user ): EloquentCollection
+    public static function getListing( Customer $cust, ?DocstoreDirectory $dir, ?UserEntity $user ): EloquentCollection
     {
-        $list = self::where('parent_dir_id', $dir ? $dir->id : null );
+        $list = self::where( 'cust_id', $cust->id )->where('parent_dir_id', $dir ? $dir->id : null );
 
         if( !$user || !$user->isSuperUser() ) {
             $list->whereHas( 'files', function( Builder $query ) use ( $user ) {
@@ -162,45 +195,23 @@ class DocstoreDirectory extends Model
         return $data;
     }
 
-
-    /**
-     * Static property used by getHierarchyForUserClass() and recurseForHierarchyForUserClass()
-     * to build the hierarchy.
-     *
-     * Yields an array of the following form (i.e. an array of subdirs in each dir):
-     *
-     * ```
-     * [
-     *     directory_id => [ [ 'id' => subdir_id, 'name' => subdir_name ], [ ... ], ... ],
-     *     ...
-     *  ]
-     * ```
-     *
-     * @var array
-     */
-    public static $dirs = [];
-
-    /**
-     * The cache key used in getHierarchyForUserClass()
-     * @var string
-     */
-    public const CACHE_KEY_FOR_USER_CLASS_HIERARCHY = 'docstore_directory_hierarchy_for_user_class_';
-
     /**
      * Build a hierarchy of all subdirs that this user class should be able to see.
      *
      * This also caches the results as it can be query intensive for large structures and,
      * for choosing to display the menu options, would be ran per page hit.
      *
+     * @param Customer $cust
      * @param int $priv
+     *
      * @return mixed
      */
-    public static function getHierarchyForUserClass( int $priv = User::AUTH_SUPERUSER )
+    public static function getHierarchyForCustomerAndUserClass( Customer $cust = null, int $priv = User::AUTH_SUPERUSER )
     {
-        return Cache::remember( self::CACHE_KEY_FOR_USER_CLASS_HIERARCHY . $priv, 86400, function() use ( $priv ) {
-            self::where('parent_dir_id', null )->orderBy('name')->get()->each( function( $sd ) use ($priv) {
-                if( self::recurseForHierarchyForUserClass( $sd, $priv ) ) {
-                    self::$dirs[$sd->parent_dir_id][] = [ 'id' => $sd->id, 'name' => $sd->name ];
+        return Cache::remember( self::CACHE_KEY_FOR_CUSTOMER_USER_CLASS_HIERARCHY . $cust->id . '_' . $priv, 86400, function() use ( $cust, $priv ) {
+            self::where( 'cust_id', $cust->id )->where('parent_dir_id', null )->orderBy('name')->get()->each( function( $sd ) use ( $priv ) {
+                if( self::recurseForHierarchyForCustomerAndUserClass( $sd, $priv ) ) {
+                    self::$dirs[ $sd->parent_dir_id ][] = [ 'id' => $sd->id, 'name' => $sd->name ];
                 }
             });
 
@@ -226,14 +237,15 @@ class DocstoreDirectory extends Model
      * of a directory hierarchy and return uo through the parent nodes whether it should be
      * included or not.
      *
-     * @param DocstoreDirectory $subdir
+     * @param DocstoreCustomerDirectory $subdir
      * @param int $priv User class to test for
+     *
      * @return bool
      */
-    private static function recurseForHierarchyForUserClass( DocstoreDirectory $subdir, $priv ) {
+    private static function recurseForHierarchyForCustomerAndUserClass( DocstoreCustomerDirectory $subdir, $priv ) {
 
         foreach( $subdir->subDirectories as $sd ) {
-            if( $shouldInclude = self::recurseForHierarchyForUserClass( $sd, $priv ) ) {
+            if( $shouldInclude = self::recurseForHierarchyForCustomerAndUserClass( $sd, $priv ) ) {
                 self::$dirs[$sd->parent_dir_id][] = [ 'id' => $sd->id, 'name' => $sd->name ];
                 return true;
             }
@@ -251,26 +263,25 @@ class DocstoreDirectory extends Model
     }
 
     /**
-     * Delete all the files and subdirectories for a given folder
+     * Delete all the files and subdirectories for a given customer folder
      *
-     * @param DocstoreDirectory $dir
+     * @param DocstoreCustomerDirectory $dir
      *
      * @throws
      */
-    public static function recursiveDelete( DocstoreDirectory $dir )
+    public static function recursiveDelete( DocstoreCustomerDirectory $dir )
     {
-        $dir->subDirectories->each( function( DocstoreDirectory $subdir ) {
+        $dir->subDirectories->each( function( DocstoreCustomerDirectory $subdir ) {
             self::recursiveDelete( $subdir );
         });
 
-        $dir->files->each( function( DocstoreFile $file ) {
-            $file->logs()->delete();
+        $dir->files->each( function( DocstoreCustomerFile $file ) use ( $dir ) {
             Storage::disk( $file->disk )->delete( $file->path );
             $file->delete();
-            Log::info( sprintf( "Docstore: file [%d|%s] deleted", $file->id, $file->name ) );
+            Log::info( sprintf( "Docstore: file [%d|%s] for the customer [%d|%s] deleted", $file->id, $file->name, $dir->customer->id, $dir->customer->name ) );
         });
 
-        Log::info( sprintf( "Docstore: directory [%d|%s] deleted", $dir->id, $dir->name ) );
+        Log::info( sprintf( "Docstore: directory [%d|%s] for the customer [%d|%s] deleted", $dir->id, $dir->name, $dir->customer->id, $dir->customer->name ) );
         $dir->delete();
     }
 }

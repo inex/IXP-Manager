@@ -53,6 +53,10 @@ return [
             'root'   => storage_path('docstore'),
         ],
 
+        'docstore_customers' => [
+            'driver' => 'local',
+            'root'   => storage_path('docstore_customers'),
+        ],
 
         's3' => [
 			'driver' => 's3',

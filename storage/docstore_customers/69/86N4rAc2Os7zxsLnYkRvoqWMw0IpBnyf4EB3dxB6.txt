@@ -1,0 +1,493 @@
+DOCTRINE
+
+./artisan doctrine:generate:entities database/
+
+./artisan doctrine:generate:proxies
+
+./artisan doctrine:schema:validate
+
+./artisan doctrine:schema:update
+
+./artisan doctrine:schema:update --sql
+
+./artisan doctrine:schema:update --force
+
+delete table
+./artisan doctrine:schema:update --clean --sql
+
+
+===========================
+
+git fetch
+git checkout test
+
+git push origin nf-interfaces
+
+Commit islandbridgenetworks/IXP-Manager#xx
+
+
+===========================
+
+[REVIEW] -
+[BF] - bug fix
+[HK] - house keeping
+[DB] - schema / database changes
+[IM] - improvement
+[N+] / [B+] / [I+] - continuing work on a new feature / bug fix / improvement
+
+
+// close tickets
+[N+] - New Patch panel Port state - closes #23
+[N+] - New Patch panel Port state - fixes #23
+
+
+============================
+
+brew services list
+
+brew services restart php71
+brew services restart mysql
+brew services restart dnsmasq
+brew services restart nginx
+
+=========================
+
+https://aregsar.com/blog/2019/installing-laravel-valet-on-macOS/
+https://gist.github.com/operatino/392614486ce4421063b9dece4dfe6c21
+https://gist.github.com/vitorbritto/0555879fe4414d18569d
+
+
+apachectl -k restart
+sudo /usr/sbin/apachectl restart
+
+mysql.server start
+mysql.server stop
+mysql.server restart
+
+brew services restart --all
+
+=============================
+
+Its start :
+
+apachectl stop
+
+valet restart
+
+valet domain dev
+
+sudo brew services start --all
+
+
+
+launchctl unload -w ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
+launchctl load -w ~/Library/LaunchAgents/homebrew.mxcl.mysql.plist
+
+
+==================================
+DOCKER
+
+
+docker exec -ti ixpm_www_1 bash
+
+==================================
+
+DUSK
+
+https://docs.ixpmanager.org/dev/ci/#setting-up-phpunit-tests
+
+-- 
+mysql -u root ixp_ci < data/travis-ci/travis_ci_test_db.sql
+
+bzcat data/travis-ci/travis_ci_test_db.sql.bz2| mysql -u root ixp_ci
+--
+
+php artisan dusk --filter testAddWizard tests/Browser/VirtualInterfaceControllerTest.php
+
+--
+mysqldump -u root myapp_test | bzip2 -9 >data/travis-ci/travis_ci_test_db.sql.bz2
+
+mysqldump -u root ixp_ci > data/travis-ci/travis_ci_test_db.sql
+--
+
+./vendor/bin/phpunit
+
+
+.env :
+
+# the follow are for accessing the test database via the IXP Manager UI on
+# barryo's development platform:
+APP_KEY="base64:8QNjg1qPkdRSRntnjpKbfBpfUtENOu40WQtxHJWdTXs="
+APP_URL="http://127.0.0.1:8000"
+
+APP_ENV="development"
+APP_DEBUG=true
+APP_TIMEZONE="UTC"
+APP_LOG="single"
+
+
+DB_HOST=localhost
+DB_DATABASE=ixp_ci
+DB_USERNAME=ixp_ci
+DB_PASSWORD=somepassword
+
+MAIL_DRIVER=smtp
+
+MAIL_HOST=smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=451d9f8b69cf5a
+MAIL_PASSWORD=bdb86935fbc303
+MAIL_ENCRYPTION=tls
+
+#######################################################################################
+### Graphing - see https://ixp-manager.readthedocs.org/en/latest/features/grapher.html
+### Needed for the MRTG config generation test.
+GRAPHER_BACKENDS="mrtg|smokeping"
+GRAPHER_BACKEND_MRTG_WORKDIR="/tmp"
+GRAPHER_BACKEND_MRTG_LOGDIR="/tmp"
+### end graphing
+
+#GRAPHER_ACCESS_IXP=1
+
+
+IXP_API_JSONEXPORTSCHEMA_PUBLIC=true
+
+IXP_FE_BETA_CORE_BUNDLES=true
+
+IXP_FE_FRONTEND_DISABLED_FILTERED_PREFIXES=false
+
+IXP_IRRDB_BGPQ3_PATH=/usr/local/bin/bgpq3
+
+IXP_FE_FRONTEND_CUSTOMER_ONE=customer
+IXP_FE_FRONTEND_CUSTOMER_MANY=customers
+IXP_FE_FRONTEND_CUSTOMER_OWNER="customer's"
+IXP_FE_FRONTEND_CUSTOMER_OWNERS="customers'"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+APP_KEY="base64:8QNjg1qPkdRSRntnjpKbfBpfUtENOu40WQtxHJWdTXs="
+APP_URL="http://127.0.0.1:8000"
+
+APP_ENV="development"
+APP_DEBUG=true
+APP_TIMEZONE="UTC"
+APP_LOG="single"
+
+
+DB_HOST=localhost
+DB_DATABASE=ixp_ci
+DB_USERNAME=ixp_ci
+DB_PASSWORD=somepassword
+
+#######################################################################################
+### Graphing - see https://ixp-manager.readthedocs.org/en/latest/features/grapher.html
+### Needed for the MRTG config generation test.
+GRAPHER_BACKENDS="mrtg|smokeping|sflow|dummy"
+GRAPHER_BACKEND_MRTG_WORKDIR="/tmp"
+GRAPHER_BACKEND_MRTG_LOGDIR="/tmp"
+GRAPHER_BACKEND_SFLOW_ENABLED=true
+### end graphing
+
+#GRAPHER_ACCESS_IXP=1
+
+
+IXP_API_JSONEXPORTSCHEMA_PUBLIC=true
+
+MAIL_DRIVER=log
+
+IXP_FE_BETA_CORE_BUNDLES=true
+
+
+# IP address and port of the first RPKI local cache:
+IXP_RPKI_RTR1_HOST=10.39.5.123
+IXP_RPKI_RTR1_PORT=3323
+
+# While not required, we recommend you also install a second validator:
+IXP_RPKI_RTR2_HOST=10.39.5.124
+IXP_RPKI_RTR2_PORT=3323
+
+IXP_FE_FRONTEND_CUSTOMER_ONE=customer
+IXP_FE_FRONTEND_CUSTOMER_MANY=customers
+IXP_FE_FRONTEND_CUSTOMER_OWNER="customer's"
+IXP_FE_FRONTEND_CUSTOMER_OWNERS="customers'"
+
+
+
+
+
+
+
+
+==================================
+
+
+Laravel widget https://github.com/arrilot/laravel-widgets
+
+Features : Asynchronous widgets, reloadable widgets, console generator, caching
+
+Use : insert in a view an other view (fragment) with a dedicated controller (widget class)
+
+
+Pro : 	- easy to implement ! view, 1 controller (widget class) , @widget('recentNews')      	- possibility to add parameter @widget('recentNews', ['count' => 10])
+	- default or custom namespace
+	- Asynchronous widgets : load widget content with ajax using @asyncWidget, Widget params are encrypted
+	- Reloadable widget : automatically reload widget every N seconds :  public $reloadTimeout = 10;
+	- Container : Async and Reloadable widgets both require some DOM interaction, they wrap all widget output in a html container.  AbstractWidget::container()
+	- Caching, public $cacheTime = 60;
+	- Widget group : pWidget::group('sidebar')->position(5)->addWidget('widgetName1', $config1);
+Widget::group('sidebar')->position(4)->addAsyncWidget('widgetName2', $config2);
+{{ Widget::group('sidebar')->display() }}
+
+User feedback : https://laracasts.com/discuss/channels/tips/widgets-for-laravel
+
+
+
+
+when all of that is done, remind me to talk to you about whois -h whois.bgpmon.net 1.1.1.1
+
+
+
+
+panic(cpu 2 caller 0xffffff7f8a640a8d): watchdog timeout: no checkins from watchdogd in 92 seconds (29137 total checkins since monitoring last enabled)
+Backtrace (CPU 2), Frame : Return Address
+0xffffff81e860bc40 : 0xffffff800953bb2b 
+0xffffff81e860bc90 : 0xffffff80096734d5 
+0xffffff81e860bcd0 : 0xffffff8009664f4e 
+0xffffff81e860bd20 : 0xffffff80094e2a40 
+0xffffff81e860bd40 : 0xffffff800953b217 
+0xffffff81e860be40 : 0xffffff800953b5fb 
+0xffffff81e860be90 : 0xffffff8009cd2b25 
+0xffffff81e860bf00 : 0xffffff7f8a640a8d 
+0xffffff81e860bf10 : 0xffffff7f8a640467 
+0xffffff81e860bf50 : 0xffffff7f8a655e76 
+0xffffff81e860bfa0 : 0xffffff80094e213e 
+      Kernel Extensions in backtrace:
+         com.apple.driver.watchdog(1.0)[053A5D15-51D4-3E61-978B-EB435FA4BD0A]@0xffffff7f8a63f000->0xffffff7f8a647fff
+         com.apple.driver.AppleSMC(3.1.9)[8D698096-1F90-3679-8151-22A7665ED287]@0xffffff7f8a648000->0xffffff7f8a666fff
+            dependency: com.apple.iokit.IOACPIFamily(1.4)[3D78401B-5D2D-33BC-9E41-DD2164EA874D]@0xffffff7f8a636000
+            dependency: com.apple.driver.watchdog(1)[053A5D15-51D4-3E61-978B-EB435FA4BD0A]@0xffffff7f8a63f000
+            dependency: com.apple.iokit.IOPCIFamily(2.9)[ADD485B5-3EF8-37C4-B3C5-F86326E497A4]@0xffffff7f89f2f000
+
+BSD process name corresponding to current thread: kernel_task
+
+Mac OS version:
+19D76
+
+Kernel version:
+Darwin Kernel Version 19.3.0: Thu Jan  9 20:58:23 PST 2020; root:xnu-6153.81.5~1/RELEASE_X86_64
+Kernel UUID: A8DDE75C-CD97-3C37-B35D-1070CC50D2CE
+Kernel slide:     0x0000000009200000
+Kernel text base: 0xffffff8009400000
+__HIB  text base: 0xffffff8009300000
+System model name: MacBookPro13,2 (Mac-66E35819EE2D0D05)
+System shutdown begun: NO
+Panic diags file available: YES (0x0)
+
+System uptime in nanoseconds: 425436616987006
+last loaded kext at 422959462564946: >!AXsanScheme	3 (addr 0xffffff7f8d284000, size 32768)
+last unloaded kext at 425423134875439: >!UAudio	320.49 (addr 0xffffff7f8d20f000, size 434176)
+loaded kexts:
+org.virtualbox.kext.VBoxNetAdp	6.0.18
+org.virtualbox.kext.VBoxNetFlt	6.0.18
+org.virtualbox.kext.VBoxUSB	6.0.18
+org.virtualbox.kext.VBoxDrv	6.0.18
+com.bluestacks.kext.Hypervisor	5.2.20
+@filesystems.afpfs	11.2
+@nke.asp-tcp	8.1
+@fileutil	20.036.15
+>AudioAUUC	1.70
+>!AHIDALSService	1
+>!APlatformEnabler	2.7.0d0
+>AGPM	111.4.2
+>X86PlatformShim	1.0.0
+@filesystems.autofs	3.0
+>!AUpstreamUserClient	3.6.8
+>!AHDA	283.15
+>!A!ISKLGraphics	14.0.4
+>!AGraphicsDevicePolicy	4.7.2
+>!ABacklight	180.1
+>!AMCCSControl	1.13
+@AGDCPluginDisplayMetrics	4.7.2
+>!A!IPCHPMC	2.0.1
+>!AHV	1
+|IOUserEthernet	1.0.1
+|IO!BSerialManager	7.0.3f5
+>pmtelemetry	1
+@Dont_Steal_Mac_OS_X	7.0.0
+>!A!ISlowAdaptiveClocking	4.0.0
+>!AEmbeddedOSSupportHost	1
+>eficheck	1
+>!AThunderboltIP	3.1.3
+>!A!ISKLGraphicsFramebuffer	14.0.4
+@filesystems.apfs	1412.81.1
+>!AVirtIO	1.0
+@filesystems.hfs.kext	522.0.9
+@!AFSCompression.!AFSCompressionTypeDataless	1.0.0d1
+@BootCache	40
+@!AFSCompression.!AFSCompressionTypeZlib	1.0.0
+>!ATopCaseHIDEventDriver	3430.1
+>AirPort.BrcmNIC	1400.1.1
+@private.KextAudit	1.0
+>!ASmartBatteryManager	161.0.0
+>!AACPIButtons	6.1
+>!ARTC	2.0
+>!ASMBIOS	2.1
+>!AACPIEC	6.1
+>!AAPIC	1.7
+$!AImage4	1
+@nke.applicationfirewall	303
+$TMSafetyNet	8
+@!ASystemPolicy	2.0.0
+|EndpointSecurity	1
+>usb.!UEHCIPCI	1.2
+>usb.!UEHCI	1.2
+>usb.!UHub	1.2
+$SecureRemotePassword	1.0
+|IOUSBUserClient	900.4.2
+@kext.triggers	1.0
+>DspFuncLib	283.15
+@kext.OSvKernDSPLib	529
+|IO!BHost!CUARTTransport	7.0.3f5
+|IO!BHost!CTransport	7.0.3f5
+>X86PlatformPlugin	1.0.0
+>!AGraphicsControl	4.7.2
+>!ABacklightExpert	1.1.0
+|IONDRVSupport	569.4
+>!ASMBus!C	1.0.18d1
+>IOPlatformPlugin!F	6.0.0d8
+|IOAVB!F	800.17
+>!ASSE	1.0
+@!AGPUWrangler	4.7.2
+|IOSlowAdaptiveClocking!F	1.0.0
+>!AHDA!C	283.15
+|IOHDA!F	283.15
+>!A!ILpssUARTv1	3.0.60
+>!A!ILpssUARTCommon	3.0.60
+>!AOnboardSerial	1.0
+@!AGraphicsDeviceControl	4.7.2
+|IOAccelerator!F2	438.3.1
+|IOGraphics!F	569.4
+@plugin.IOgPTPPlugin	810.1
+|IOEthernetAVB!C	1.1.0
+>usb.cdc.ncm	5.0.0
+>usb.!UiBridge	1.0
+>usb.cdc	5.0.0
+>usb.networking	5.0.0
+>usb.!UHostCompositeDevice	1.2
+|IOAudio!F	300.2
+@vecLib.kext	1.2.0
+|IOSerial!F	11
+|IOSurface	269.6
+@filesystems.hfs.encodings.kext	1
+>!AActuatorDriver	3430.1
+>!AHIDKeyboard	209
+>!AHS!BDriver	3430.1
+>IO!BHIDDriver	7.0.3f5
+|IO!B!F	7.0.3f5
+|IO!BPacketLogger	7.0.3f5
+>!AMultitouchDriver	3430.1
+>!AInputDeviceSupport	3430.1
+>!AHSSPIHIDDriver	59
+>!AThunderboltDPInAdapter	6.2.5
+>!AThunderboltDPAdapter!F	6.2.5
+>!AThunderboltPCIDownAdapter	2.5.4
+>!AHPM	3.4.4
+>!A!ILpssI2C!C	3.0.60
+>!AHSSPISupport	59
+>!AThunderboltNHI	5.8.6
+|IOThunderbolt!F	7.6.0
+>!A!ILpssSpi!C	3.0.60
+>!A!ILpssDmac	3.0.60
+|IO80211!F	1200.12.2b1
+>mDNSOffloadUserClient	1.0.1b8
+>corecapture	1.0.4
+|IOSkywalk!F	1
+|IONVMe!F	2.1.0
+>!A!ILpssGspi	3.0.60
+>!A!ILpssI2C	3.0.60
+>usb.!UXHCIPCI	1.2
+>usb.!UXHCI	1.2
+|IOUSB!F	900.4.2
+>!AEFINVRAM	2.1
+>!AEFIRuntime	2.1
+|IOSMBus!F	1.1
+|IOHID!F	2.0.0
+$quarantine	4
+$sandbox	300.0
+@kext.!AMatch	1.0.0d1
+>DiskImages	493.0.0
+>!AFDEKeyStore	28.30
+>!AEffaceable!S	1.0
+>!AKeyStore	2
+>!UTDM	489.80.2
+|IOSCSIBlockCommandsDevice	422.0.2
+>!ACredentialManager	1.0
+>KernelRelayHost	1
+>!ASEPManager	1.0.1
+>IOSlaveProcessor	1
+|IOUSBMass!SDriver	157.40.7
+|IOSCSIArchitectureModel!F	422.0.2
+|IO!S!F	2.1
+|IOUSBHost!F	1.2
+>!UHostMergeProperties	1.2
+>usb.!UCommon	1.0
+>!ABusPower!C	1.0
+|CoreAnalytics!F	1
+>!AMobileFileIntegrity	1.0.5
+@kext.CoreTrust	1
+|IOTimeSync!F	810.1
+|IONetworking!F	3.4
+|IOReport!F	47
+>!AACPIPlatform	6.1
+>!ASMC	3.1.9
+>watchdog	1
+|IOPCI!F	2.9
+|IOACPI!F	1.4
+@kec.pthread	1
+@kec.corecrypto	1.0
+@kec.Libm	1
+
+
+
+
