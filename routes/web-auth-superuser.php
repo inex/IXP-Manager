@@ -220,8 +220,8 @@ if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ) {
 
 
 
-        Route::get(    '/file/download/{file}',    'FileController@download'    )->name( 'docstore-c-file@download'    );
-        Route::get(    '/file/view/{file}',        'FileController@view'        )->name( 'docstore-c-file@view'        );
+        Route::get(    '{cust}/file/download/{file}',    'FileController@download'    )->name( 'docstore-c-file@download'    );
+        Route::get(    '{cust}/file/view/{file}',        'FileController@view'        )->name( 'docstore-c-file@view'        );
         Route::get(    '/file/info/{file}',        'FileController@info'        )->name( 'docstore-c-file@info'        );
 
     } );

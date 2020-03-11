@@ -127,7 +127,7 @@ $this->layout( 'layouts/ixpv4' );
                             <i class="fa fa-lg fa-file-o tw-inline-block tw-w-full"></i>
                         </td>
                         <td class="<?= $i ? '' : 'tw-border-t-2' ?> tw-px-4 tw-w-auto">
-                            <a href="<?= route($file->isViewable() ? 'docstore-c-file@view' : 'docstore-c-file@download', [ 'file' => $file->id ] ) ?>"
+                            <a href="<?= route($file->isViewable() ? 'docstore-c-file@view' : 'docstore-c-file@download', [ 'cust' => $t->cust, 'file' => $file->id ] ) ?>"
                                 <?php if( trim( $file->description ) ): ?>
                                     data-toggle="tooltip" data-placement="top" data-html="true" title="<?= parsedown( $file->description ) ?>"
                                 <?php endif; ?>><?= $t->ee( $file->name ) ?>
@@ -155,7 +155,7 @@ $this->layout( 'layouts/ixpv4' );
                                 </button>
                                 <div class="dropdown-menu dropdown-menu-right" aria-labelledby="dropdownMenuButton">
                                     <?php if( $file->isViewable() ): ?>
-                                        <a class="dropdown-item" href="<?= route( 'docstore-c-file@download', ['file' => $file->id] ) ?>">Download</a>
+                                        <a class="dropdown-item" href="<?= route( 'docstore-c-file@download', [ 'cust' => $t->cust, 'file' => $file->id] ) ?>">Download</a>
                                     <?php endif; ?>
                                     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
                                         <a class="dropdown-item list-info-btn" data-object-type="file" href="#" data-url="<?= route( "docstore-c-file@info", [ "file" => $file ] ) ?>">Metadata</a>

@@ -29,10 +29,7 @@ use Entities\User as UserEntity;
 
 use Former\Facades\Former;
 
-use Illuminate\Http\{
-    RedirectResponse,
-    Request
-};
+use Illuminate\Http\{RedirectResponse, Request, UploadedFile};
 
 use Illuminate\Support\Facades\{
     Log,
@@ -95,13 +92,14 @@ class FileController extends Controller
      * Download a docstore customer file
      *
      * @param Request               $request
+     * @param Customer              $cust
      * @param DocstoreCustomerFile  $file
      *
      * @return mixed
      *
      * @throws
      */
-    public function download( Request $request, DocstoreCustomerFile $file )
+    public function download( Request $request, Customer $cust, DocstoreCustomerFile $file )
     {
         $this->authorize( 'download', $file );
 
@@ -127,7 +125,7 @@ class FileController extends Controller
     {
         $this->authorize( 'info', $file );
 
-        return view( 'docstore/file/info', [
+        return view( 'docstore-customer/file/info', [
             'file'          => $file,
             'size'          => Storage::disk( $file->disk )->size( $file->path ),
             'last_modified' => Storage::disk( $file->disk )->lastModified( $file->path ),
@@ -175,8 +173,9 @@ class FileController extends Controller
         $this->authorize( 'create', DocstoreCustomerFile::class );
 
         $this->checkForm( $request );
-        $file = $request->file('uploadedFile');
-        $path = $file->store( $cust->id, 'docstore_customers' );
+
+        $uploadedFile = UploadedFile::createFromBase( $request->file('uploadedFile' ) );
+        $path = $uploadedFile->store( $cust->id, 'docstore_customers' );
 
         $file = DocstoreCustomerFile::create( [
             'name'                  => $request->name,
@@ -185,7 +184,7 @@ class FileController extends Controller
             'docstore_directory_id' => $request->docstore_customer_directory_id,
             'min_privs'             => $request->min_privs,
             'path'                  => $path,
-            'sha256'                => hash_file( 'sha256', $file ),
+            'sha256'                => hash_file( 'sha256', $uploadedFile ),
             'created_by'            => $request->user()->getId(),
             'file_last_updated'     => now(),
         ] );
@@ -200,13 +199,14 @@ class FileController extends Controller
      * Edit a docstore customer file uploaded
      *
      * @param Request               $request
+     * @param Customer              $cust
      * @param DocstoreCustomerFile  $file
      *
      * @return View
      *
      * @throws
      */
-    public function edit( Request $request , DocstoreCustomerFile $file ): View
+    public function edit( Request $request, Customer $cust, DocstoreCustomerFile $file ): View
     {
         $this->authorize( 'update', $file );
 
@@ -215,12 +215,13 @@ class FileController extends Controller
             'description'           => $request->old( 'descripton',     $file->description  ),
             'sha256'                => $request->old( 'sha256',         $file->sha256       ),
             'min_privs'             => $request->old( 'min_privs',      $file->min_privs    ),
-            'docstore_directory_id' => $request->old( 'docstore_customer_directory_id',$file->docstore_directory_id ?? '' ),
+            'docstore_customer_directory_id' => $request->old( 'docstore_customer_directory_id',$file->docstore_customer_directory_id ?? '' ),
         ]);
 
-        return view( 'docstore/file/upload', [
+        return view( 'docstore-customer/file/upload', [
             'file'                      => $file,
-            'dirs'                      => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $file->directory->customer, null, $request->user() ) )
+            'cust'                      => $cust,
+            'dirs'                      => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $file->customer, null, $request->user() ) )
         ] );
     }
 
@@ -228,13 +229,14 @@ class FileController extends Controller
      * Update a docstore customer file uploaded
      *
      * @param Request               $request
+     * @param Customer              $cust
      * @param DocstoreCustomerFile  $file
      *
      * @return RedirectResponse
      *
      * @throws
      */
-    public function update( Request $request , DocstoreCustomerFile $file ): RedirectResponse
+    public function update( Request $request, Customer $cust, DocstoreCustomerFile $file ): RedirectResponse
     {
         $this->authorize( 'update', $file );
 
@@ -246,7 +248,7 @@ class FileController extends Controller
             $oldPath = $file->path;
 
             $uploadedFile = $request->file('uploadedFile');
-            $path = $uploadedFile->store( '', 'docstore_customers' );
+            $path = $uploadedFile->store( $file->customer->id, 'docstore_customers' );
 
             $file->update([
                 'path'                  => $path,
@@ -265,7 +267,7 @@ class FileController extends Controller
             'min_privs'                         => $request->min_privs
         ] );
 
-        $cust = $file->directory->customer;
+
 
         Log::info( sprintf( "DocStore: customer file [%d|%s] edited by %s for the customer [%d|%s]", $file->id, $file->name, $request->user()->getUsername(), $cust->id, $cust->name ) );
 
@@ -288,7 +290,7 @@ class FileController extends Controller
         $this->authorize( 'delete', $file );
 
         $dir    = $file->directory;
-        $cust   = $file->directory->customer;
+        $cust   = $file->customer;
 
         Storage::disk( $file->disk )->delete( $file->path );
 
@@ -315,7 +317,7 @@ class FileController extends Controller
                 return !$file;
             }),
             'sha256'        => [ 'nullable', 'max:64',
-                function ($attribute, $value, $fail ) use( $request ) {
+                function ( $attribute, $value, $fail ) use( $request ) {
                     if( $value && $request->file('uploadedFile' ) && $value !== hash_file( 'sha256', $request->file( 'uploadedFile' ) ) ) {
                         return $fail( 'The sha256 checksum calculated on the server does not match the one you provided.' );
                     }
@@ -323,7 +325,7 @@ class FileController extends Controller
             ],
             'min_privs'     => 'required|integer|in:' . implode( ',', array_keys( User::$PRIVILEGES ) ),
             'docstore_customer_directory_id' => [ 'nullable', 'integer',
-                function ( $value, $fail ) {
+                function ( $attribute, $value, $fail ) {
                     if( !DocstoreCustomerDirectory::whereId( $value )->exists() ) {
                         return $fail( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' directory does not exist.' );
                     }
