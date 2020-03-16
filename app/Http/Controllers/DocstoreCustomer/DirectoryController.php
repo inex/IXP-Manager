@@ -57,20 +57,42 @@ use IXP\Utils\View\Alert\{
 class DirectoryController extends Controller
 {
     /**
-     * Display the list of customer directories
+     * Display the list of all Customer with docstore
+     *
+     * @param Request                           $request
+     *
+     * @return View
+     *
+     * @throws
+     */
+    public function listCustomers( Request $request ) : View
+    {
+        $this->authorize( 'listCustomer', [ DocstoreCustomerDirectory::class ] );
+
+        return view( 'docstore-customer/dir/customers', [
+            'files'      => DocstoreCustomerFile::groupBy( 'cust_id' )->get()
+        ] );
+    }
+
+    /**
+     * Display the list of directories for a customer
      *
      * @param Request                           $request
      * @param Customer|null                     $cust
      * @param DocstoreCustomerDirectory|null    $dir
      *
      * @return View
+     *
+     * @throws
      */
     public function list( Request $request, Customer $cust = null, DocstoreCustomerDirectory $dir = null ) : View
     {
+        $this->authorize( 'list', [ DocstoreCustomerDirectory::class, $cust ]);
+
         return view( 'docstore-customer/dir/list', [
             'dir'       => $dir ?? false,
             'cust'      => $cust ?? false,
-            'dirs'      => DocstoreCustomerDirectory::getHierarchyForCustomerAndUserClass( $cust, optional( $request->user() )->getPrivs() ?? 0 )[ $dir ? $dir->id : '' ] ?? [],
+            'dirs'      => DocstoreCustomerDirectory::getHierarchyForCustomerAndUserClass( $cust, optional( $request->user() )->getPrivs() ?? 0 , false )[ $dir ? $dir->id : '' ] ?? [],
             'files'     => DocstoreCustomerFile::getListing( $cust, $dir, $request->user() ),
         ] );
     }
@@ -87,7 +109,7 @@ class DirectoryController extends Controller
      */
     public function create( Request $request, Customer $cust )
     {
-        $this->authorize( 'create', $cust );
+        $this->authorize( 'create', [ DocstoreCustomerDirectory::class, $cust ] );
 
         return view( 'docstore-customer/dir/create', [
             'dir'           => false,
@@ -110,7 +132,7 @@ class DirectoryController extends Controller
      */
     public function edit( Request $request, Customer $cust, DocstoreCustomerDirectory $dir ): View
     {
-        $this->authorize( 'update', $cust, $dir );
+        $this->authorize( 'update', [ DocstoreCustomerDirectory::class, $cust, $dir ] );
 
         Former::populate([
             'name'                  => $request->old( 'name',               $dir->name          ),
@@ -138,7 +160,7 @@ class DirectoryController extends Controller
      */
     public function store( Request $request, Customer $cust ): RedirectResponse
     {
-        $this->authorize( 'create', $cust );
+        $this->authorize( 'create', [ DocstoreCustomerDirectory::class, $cust ] );
 
         $this->checkForm( $request );
 
@@ -167,7 +189,7 @@ class DirectoryController extends Controller
      */
     public function update( Request $request , Customer $cust, DocstoreCustomerDirectory $dir ): RedirectResponse
     {
-        $this->authorize( 'update', $cust, $dir );
+        $this->authorize( 'update', [ DocstoreCustomerDirectory::class, $cust, $dir ] );
 
         $this->checkForm( $request );
 
@@ -202,6 +224,28 @@ class DirectoryController extends Controller
     }
 
     /**
+     * Delete a directory
+     *
+     * @param Request                   $request
+     * @param Customer                  $cust
+     *
+     * @return RedirectResponse
+     *
+     * @throws
+     */
+    public function deleteForCustomer( Request $request , Customer $cust ): RedirectResponse
+    {
+        $this->authorize( 'deleteForCustomer', [ DocstoreCustomerDirectory::class, $cust ] );
+
+        Log::notice( sprintf( "DocStore: start purge for the customer [%d|%s]", $cust->id, $cust->name ) );
+        DocstoreCustomerDirectory::deleteAllForCustomer( $cust );
+        Log::notice( sprintf( "DocStore: finish purge for the customer [%d|%s]", $cust->id, $cust->name ) );
+
+        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) .  " <em>{$cust->name}</em> purged.", Alert::SUCCESS );
+        return redirect( route( 'docstore-c-dir@customers' ) );
+    }
+
+    /**
      * Check if the form is valid
      *
      * @param $request
@@ -211,7 +255,7 @@ class DirectoryController extends Controller
         $request->validate( [
             'name'          => 'required|max:100',
             'cust_id'          => [ 'required', 'integer',
-                function ( $value, $fail ) {
+                function( $attribute, $value, $fail ) {
                     if( !Customer::whereId( $value )->exists() ) {
                         AlertContainer::push('Customer is invalid / does not exist.', Alert::DANGER );
                         return $fail( 'Customer is invalid / does not exist.' );
@@ -220,7 +264,7 @@ class DirectoryController extends Controller
             ],
             'description'   => 'nullable',
             'parent_dir_id' => [ 'nullable', 'integer',
-                function ($attribute, $value, $fail) {
+                function( $attribute, $value, $fail ) {
                     if( !DocstoreCustomerDirectory::where( $attribute, $value )->exists() ) {
                         return $fail( 'Parent directory is invalid / does not exist.' );
                     }

@@ -230,13 +230,19 @@ class DocstoreDirectory extends Model
      * @param int $priv User class to test for
      * @return bool
      */
-    private static function recurseForHierarchyForUserClass( DocstoreDirectory $subdir, $priv ) {
-
+    private static function recurseForHierarchyForUserClass( DocstoreDirectory $subdir, $priv )
+    {
+        $includeSubdir = false;
         foreach( $subdir->subDirectories as $sd ) {
             if( $shouldInclude = self::recurseForHierarchyForUserClass( $sd, $priv ) ) {
                 self::$dirs[$sd->parent_dir_id][] = [ 'id' => $sd->id, 'name' => $sd->name ];
-                return true;
+                $includeSubdir = true;
             }
+        }
+
+        // we have recursed all the subdirectories above. Have we decided to include this one?
+        if( $includeSubdir ) {
+            return true;
         }
 
         if( $priv === User::AUTH_SUPERUSER ) {

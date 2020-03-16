@@ -6,8 +6,11 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <a href="<?= route('customer@overview', [ 'id' => $t->cust->id ] ) ?>"><?= $t->cust->name ?></a>
-    :: Document Store
+    <?php if( Auth::user()->isSuperUser() ): ?>
+        <a href="<?= route('customer@overview', [ 'id' => $t->cust->id ] ) ?>"><?= $t->cust->name ?></a> ::
+    <?php endif; ?>
+
+    Document Store
     :: <a class="tw-font-normal" href="<?= route( 'docstore-c-dir@list', [ 'cust' => $t->cust, 'dir' => $t->file->directory ] ) ?>"><?= $t->file->directory ? $t->file->directory->name : 'Root Directory' ?></a>
 <?php $this->append() ?>
 

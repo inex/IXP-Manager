@@ -25,6 +25,7 @@ namespace IXP\Policies;
 
 use Entities\User as UserEntity;
 
+use IXP\Models\Customer;
 use IXP\Models\DocstoreCustomerFile;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
@@ -43,20 +44,22 @@ class DocstoreCustomerFilePolicy
      */
     public function download( ?UserEntity $user, DocstoreCustomerFile $file )
     {
-        return $file->min_privs <= ( $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC );
+        return ( $user->isSuperUser() || ( $file->min_privs <= ( $user ? $user->getPrivs() : UserEntity::AUTH_CUSTUSER ) && request()->user()->getCustomer()->getId() === $file->customer->id ) );
     }
 
     /**
      * Determine whether the user can view the docstore customer file.
      *
-     * @param   UserEntity              $user
-     * @param   DocstoreCustomerFile    $file
+     * @param UserEntity            $user
+     * @param Customer              $cust
+     * @param DocstoreCustomerFile  $file
      *
      * @return mixed
      */
-    public function view( ?UserEntity $user, DocstoreCustomerFile $file )
+    public function view( ?UserEntity $user, Customer $cust, DocstoreCustomerFile $file )
     {
-        return $file->min_privs <= ( $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC );
+        return ( $user->isSuperUser() || ( $file->min_privs <= ( $user ? $user->getPrivs() : UserEntity::AUTH_CUSTUSER ) && request()->user()->getCustomer()->getId() === $file->customer->id ) )
+            && $cust->id == $file->customer->id;
     }
 
     /**
@@ -107,6 +110,6 @@ class DocstoreCustomerFilePolicy
      */
     public function delete( UserEntity $user, DocstoreCustomerFile $file )
     {
-        return $user->isSuperUser();
+        return $user->isSuperUser() && $file->exists;
     }
 }

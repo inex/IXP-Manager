@@ -156,10 +156,9 @@
 
             <?php endif; ?>
 
-
             <?php if( !config( 'ixp_fe.frontend.disabled.docstore' ) ): ?>
 
-                <li class="<?= !request()->is( 'docstore*' ) ?: 'active' ?>" >
+                <li class="<?= request()->is( 'docstore*' ) && !request()->is( 'docstore-*' ) ? 'active' : '' ?>" >
                     <a href="<?= route('docstore-dir@list' ) ?>" class="nav-link">
                         Document Store
                     </a>
@@ -167,7 +166,15 @@
 
             <?php endif; ?>
 
+            <?php if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ): ?>
 
+                <li class="<?= !request()->is( 'docstore-c' ) ?: 'active' ?>" >
+                    <a href="<?= route('docstore-c-dir@customers' ) ?>" class="nav-link">
+                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Document Store
+                    </a>
+                </li>
+
+            <?php endif; ?>
 
             <li class="<?= !request()->is( 'facility/*' ) ?: 'active' ?>">
                 <a class="nav-link" href="<?= route( 'facility@list' ) ?>">

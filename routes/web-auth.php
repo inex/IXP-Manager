@@ -176,3 +176,17 @@ if( config( 'google2fa.enabled' ) ) {
     } );
 
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// CUSTOMER DOCUMENT STORE
+///
+if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ) {
+    Route::group( [ 'namespace' => 'DocstoreCustomer', 'prefix' => 'docstorec' ], function() {
+        Route::get( '{cust}/{dir?}',                'DirectoryController@list'      )->name( 'docstore-c-dir@list' );
+
+        Route::get(    '{cust}/file/download/{file}',   'FileController@download'    )->name( 'docstore-c-file@download'    );
+        Route::get(    '{cust}/file/view/{file}',       'FileController@view'        )->name( 'docstore-c-file@view'        );
+    } );
+}

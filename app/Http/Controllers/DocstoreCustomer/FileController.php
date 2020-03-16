@@ -23,17 +23,15 @@ namespace IXP\Http\Controllers\DocstoreCustomer;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-use D2EM;
+use D2EM, Log, Storage;
 
 use Entities\User as UserEntity;
 
 use Former\Facades\Former;
 
-use Illuminate\Http\{RedirectResponse, Request, UploadedFile};
-
-use Illuminate\Support\Facades\{
-    Log,
-    Storage
+use Illuminate\Http\{
+    RedirectResponse,
+    Request
 };
 
 use Illuminate\Validation\Rule;
@@ -42,7 +40,12 @@ use Illuminate\View\View;
 
 use IXP\Http\Controllers\Controller;
 
-use IXP\Models\{Customer, DocstoreCustomerDirectory, DocstoreCustomerFile, User};
+use IXP\Models\{
+    Customer,
+    DocstoreCustomerDirectory,
+    DocstoreCustomerFile,
+    User
+};
 
 use IXP\Utils\View\Alert\{
     Alert,
@@ -75,10 +78,10 @@ class FileController extends Controller
      */
     public function view( Request $request, Customer $cust, DocstoreCustomerFile $file )
     {
-        $this->authorize( 'view', $file );
+        $this->authorize( 'view', [ DocstoreCustomerFile::class, $cust, $file ] );
 
         if( !$file->isViewable() ) {
-            return redirect( route( 'docstore-c-file@download', [ 'file' => $file->id ] ) );
+            return redirect( route( 'docstore-c-file@download', [ 'cust' => $cust, 'file' => $file->id ] ) );
         }
 
         return view( 'docstore-customer/file/view', [
@@ -174,25 +177,26 @@ class FileController extends Controller
 
         $this->checkForm( $request );
 
-        $uploadedFile = UploadedFile::createFromBase( $request->file('uploadedFile' ) );
+        $uploadedFile = $request->file('uploadedFile' );
+
         $path = $uploadedFile->store( $cust->id, 'docstore_customers' );
 
         $file = DocstoreCustomerFile::create( [
-            'name'                  => $request->name,
-            'description'           => $request->description,
-            'cust_id'               => $cust->id,
-            'docstore_directory_id' => $request->docstore_customer_directory_id,
-            'min_privs'             => $request->min_privs,
-            'path'                  => $path,
-            'sha256'                => hash_file( 'sha256', $uploadedFile ),
-            'created_by'            => $request->user()->getId(),
-            'file_last_updated'     => now(),
+            'name'                              => $request->name,
+            'description'                       => $request->description,
+            'cust_id'                           => $cust->id,
+            'min_privs'                         => $request->min_privs,
+            'path'                              => $path,
+            'sha256'                            => hash_file( 'sha256', $uploadedFile ),
+            'created_by'                        => $request->user()->getId(),
+            'file_last_updated'                 => now(),
+            'docstore_customer_directory_id'    => $request->docstore_customer_directory_id,
         ] );
 
         Log::info( sprintf( "DocStore: file [%d|%s] uploaded by %s for the customer [%d|%s]", $file->id, $file->name, $request->user()->getUsername(), $cust->id, $cust->name ) );
 
         AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . " File <em>{$request->name}</em> uploaded.", Alert::SUCCESS );
-        return redirect( route( 'docstore-c-dir@list', [ 'cust' => $cust , 'dir' => $file->docstore_directory_id ] ) );
+        return redirect( route( 'docstore-c-dir@list', [ 'cust' => $cust , 'dir' => $file->docstore_customer_directory_id ] ) );
     }
 
     /**

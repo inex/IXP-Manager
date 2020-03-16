@@ -23,7 +23,7 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-use DB, Eloquent;
+use Auth, Eloquent;
 
 use Entities\User as UserEntity;
 
@@ -34,12 +34,10 @@ use Illuminate\Database\Eloquent\{
 };
 
 use Illuminate\Database\Eloquent\Relations\{
-    BelongsTo,
-    HasMany
+    BelongsTo
 };
 
 use Illuminate\Support\Carbon;
-use Storage;
 
 
 /**
@@ -122,6 +120,26 @@ class DocstoreCustomerFile extends Model
     public static $extensionEditable = [ '.txt', '.md' ];
 
     /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('privs', function ( Builder $builder ) {
+            if( !Auth::check() ) {
+                // if public user make sure that no records is returned
+                $builder->where('id', null );
+            } elseif( !Auth::user()->isSuperUser() ) {
+                // If not super user make sure only allowed files are returned
+                $builder->where('min_privs', '<=', Auth::user()->getPrivs() );
+            }
+        });
+    }
+
+    /**
      * Get the directory that owns the file.
      */
     public function directory(): BelongsTo
@@ -144,7 +162,7 @@ class DocstoreCustomerFile extends Model
      */
     public function isViewable(): bool
     {
-        return in_array( '.' . pathinfo( Storage::disk( $this->disk )->url( $this->path ), PATHINFO_EXTENSION ), self::$extensionViewable );
+        return in_array( '.' . pathinfo( $this->name, PATHINFO_EXTENSION ), self::$extensionViewable );
     }
 
     /**
@@ -154,7 +172,7 @@ class DocstoreCustomerFile extends Model
      */
     public function isEditable(): bool
     {
-        return in_array( '.' . pathinfo( Storage::disk( $this->disk )->url( $this->path ), PATHINFO_EXTENSION ), self::$extensionEditable );
+        return in_array( '.' . pathinfo( $this->name, PATHINFO_EXTENSION ), self::$extensionEditable );
     }
 
     /**
@@ -164,7 +182,7 @@ class DocstoreCustomerFile extends Model
      */
     public function extension(): string
     {
-        return pathinfo( Storage::disk( $this->disk )->url( $this->path ), PATHINFO_EXTENSION );
+        return pathinfo( $this->name, PATHINFO_EXTENSION );
     }
 
     /**
@@ -183,5 +201,31 @@ class DocstoreCustomerFile extends Model
             ->where('cust_id', $cust->id )
             ->where('docstore_customer_directory_id', $dir ? $dir->id : null )
             ->orderBy('name')->get();
+    }
+
+    /**
+     * Gets listing of files for the given Customer and all the directories and as
+     * appropriate for the user
+     *
+     * @param int   $cust_id
+     * @param int   $privs
+     *
+     * @return Collection
+     */
+    public static function getListingForAllDirectories( int $cust_id, int $privs )
+    {
+        return self::where('min_privs', '<=', $privs )
+            ->where('cust_id', $cust_id )
+            ->orderBy('name')->get();
+    }
+
+    /**
+     * Gets listing of customers with at least a documents
+     *
+     * @return \Illuminate\Support\Collection
+     */
+    public static function getCustomers( )
+    {
+        return self::groupBy('cust_id' )->get();
     }
 }

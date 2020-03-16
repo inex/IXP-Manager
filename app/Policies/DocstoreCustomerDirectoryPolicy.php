@@ -27,7 +27,6 @@ use Entities\User as UserEntity;
 
 use IXP\Models\Customer;
 use IXP\Models\DocstoreCustomerDirectory;
-use IXP\Models\DocstoreDirectory;
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -39,12 +38,37 @@ class DocstoreCustomerDirectoryPolicy
      * Determine whether the user can create docstore directories.
      *
      * @param UserEntity    $user
+     *
+     * @return mixed
+     */
+    public function listCustomer( UserEntity $user )
+    {
+        return $user->isSuperUser();
+    }
+
+    /**
+     * Determine whether the user can create docstore directories.
+     *
+     * @param UserEntity    $user
+     * @param Customer      $cust
+     *
+     * @return mixed
+     */
+    public function list( UserEntity $user, Customer $cust  )
+    {
+        return $user->isSuperUser() || ( request()->user()->getPrivs() >= UserEntity::AUTH_CUSTUSER && request()->user()->getCustomer()->getId() === $cust->id ) ;
+    }
+
+    /**
+     * Determine whether the user can create docstore directories.
+     *
+     * @param UserEntity    $user
      * @param Customer      $cust
      * @return mixed
      */
     public function create( UserEntity $user, Customer $cust )
     {
-        return $user->isSuperUser() && $cust;
+        return $user->isSuperUser() && $cust->exists;
     }
 
     /**
@@ -58,7 +82,7 @@ class DocstoreCustomerDirectoryPolicy
      */
     public function update( UserEntity $user, Customer $cust, DocstoreCustomerDirectory $dir )
     {
-        return $user->isSuperUser() && $cust;
+        return $user->isSuperUser() && $cust->id === $dir->customer->id;
     }
 
     /**
@@ -72,5 +96,18 @@ class DocstoreCustomerDirectoryPolicy
     public function delete( UserEntity $user, DocstoreCustomerDirectory $dir )
     {
         return $user->isSuperUser();
+    }
+
+    /**
+     * Determine whether the user can delete the docstore directory.
+     *
+     * @param   UserEntity  $user
+     * @param   Customer    $cust
+     *
+     * @return mixed
+     */
+    public function deleteForCustomer( UserEntity $user, Customer $cust )
+    {
+        return $user->isSuperUser() && $cust->docstoreCustomerFiles()->get()->isNotEmpty();
     }
 }

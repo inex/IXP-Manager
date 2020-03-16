@@ -22,8 +22,7 @@ namespace IXP\Models;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use Eloquent;
+use Auth, Eloquent, Storage;
 
 use Entities\User as UserEntity;
 
@@ -39,9 +38,11 @@ use Illuminate\Database\Eloquent\Relations\{
 };
 
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use Storage;
+
+use Illuminate\Support\Facades\{
+    Cache,
+    Log
+};
 
 /**
  * IXP\Models\DocstoreCustomerDirectory
@@ -107,6 +108,26 @@ class DocstoreCustomerDirectory extends Model
      * @var string
      */
     public const CACHE_KEY_FOR_CUSTOMER_USER_CLASS_HIERARCHY = 'docstore_customer_directory_hierarchy_for_user_class_';
+
+    /**
+     * The "booting" method of the model.
+     *
+     * @return void
+     */
+    protected static function boot()
+    {
+        parent::boot();
+
+        static::addGlobalScope('privs', function ( Builder $builder ) {
+            if( !Auth::check() ) {
+                // if public user make sure that no records is returned
+                $builder->where('id', null );
+            } elseif( !Auth::user()->isSuperUser() ) {
+                // if not super user make sure only records from the same customer are returned
+                $builder->where('cust_id', Auth::user()->getCustomer()->getId() );
+            }
+        });
+    }
 
     /**
      * Get the customer
@@ -201,14 +222,15 @@ class DocstoreCustomerDirectory extends Model
      * This also caches the results as it can be query intensive for large structures and,
      * for choosing to display the menu options, would be ran per page hit.
      *
-     * @param Customer $cust
-     * @param int $priv
+     * @param Customer  $cust
+     * @param int       $priv
+     * @param bool      $showRoot Should we show the Root directory ('Root Directory')
      *
      * @return mixed
      */
-    public static function getHierarchyForCustomerAndUserClass( Customer $cust = null, int $priv = User::AUTH_SUPERUSER )
+    public static function getHierarchyForCustomerAndUserClass( Customer $cust = null, int $priv = User::AUTH_SUPERUSER, bool $showRoot = true )
     {
-        return Cache::remember( self::CACHE_KEY_FOR_CUSTOMER_USER_CLASS_HIERARCHY . $cust->id . '_' . $priv, 86400, function() use ( $cust, $priv ) {
+        return Cache::remember( self::CACHE_KEY_FOR_CUSTOMER_USER_CLASS_HIERARCHY . $cust->id . '_' . $priv, 86400, function() use ( $cust, $priv, $showRoot ) {
             self::where( 'cust_id', $cust->id )->where('parent_dir_id', null )->orderBy('name')->get()->each( function( $sd ) use ( $priv ) {
                 if( self::recurseForHierarchyForCustomerAndUserClass( $sd, $priv ) ) {
                     self::$dirs[ $sd->parent_dir_id ][] = [ 'id' => $sd->id, 'name' => $sd->name ];
@@ -223,7 +245,7 @@ class DocstoreCustomerDirectory extends Model
                         $query->where( 'min_privs', '<=', $priv );
                     } )->get()->isNotEmpty();
 
-                if( $rootDirVisible ) {
+                if( $rootDirVisible && $showRoot ) {
                     self::$dirs[null]  = [ 'id' => null, 'name' => 'Root Directory' ];
                 }
             }
@@ -242,13 +264,19 @@ class DocstoreCustomerDirectory extends Model
      *
      * @return bool
      */
-    private static function recurseForHierarchyForCustomerAndUserClass( DocstoreCustomerDirectory $subdir, $priv ) {
-
+    private static function recurseForHierarchyForCustomerAndUserClass( DocstoreCustomerDirectory $subdir, $priv )
+    {
+        $includeSubdir = false;
         foreach( $subdir->subDirectories as $sd ) {
             if( $shouldInclude = self::recurseForHierarchyForCustomerAndUserClass( $sd, $priv ) ) {
                 self::$dirs[$sd->parent_dir_id][] = [ 'id' => $sd->id, 'name' => $sd->name ];
-                return true;
+                $includeSubdir = true;
             }
+        }
+
+        // we have recursed all the subdirectories above. Have we decided to include this one?
+        if( $includeSubdir ) {
+            return true;
         }
 
         if( $priv === User::AUTH_SUPERUSER ) {
@@ -283,5 +311,29 @@ class DocstoreCustomerDirectory extends Model
 
         Log::info( sprintf( "Docstore: directory [%d|%s] for the customer [%d|%s] deleted", $dir->id, $dir->name, $dir->customer->id, $dir->customer->name ) );
         $dir->delete();
+    }
+
+    /**
+     * Delete all the files and directories for a given customer
+     *
+     * @param Customer $cust
+     *
+     * @throws
+     */
+    public static function deleteAllForCustomer( Customer $cust )
+    {
+        // Getting all the root directories for the customer
+        $rootDirs = self::where( 'cust_id', $cust->id )->where( 'parent_dir_id', null )->get();
+
+        $rootDirs->each( function( DocstoreCustomerDirectory $dir ) {
+            self::recursiveDelete( $dir );
+        });
+
+        // Do we have files at the root that was not belonging to a directory ?
+        $cust->docstoreCustomerFiles()->each( function( DocstoreCustomerFile $file ) use( $cust ) {
+            Storage::disk( $file->disk )->delete( $file->path );
+            $file->delete();
+            Log::info( sprintf( "Docstore: file [%d|%s] for the customer [%d|%s] deleted", $file->id, $file->name, $cust->id, $cust->name ) );
+        });
     }
 }
