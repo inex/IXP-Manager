@@ -248,6 +248,7 @@ class Grapher {
      * Get an instance of a trunk graph
      * @param string $trunkname
      * @return \IXP\Services\Grapher\Graph\Trunk
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
     public function trunk( string $trunkname ): TrunkGraph {
         return new TrunkGraph( $this, $trunkname );
@@ -318,6 +319,7 @@ class Grapher {
      * Get an instance of a latency graph
      * @param VlanInterface $vli
      * @return LatencyGraph
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
     public function latency( VlanInterface $vli ): LatencyGraph {
         return new LatencyGraph( $this, $vli );
@@ -345,6 +347,14 @@ class Grapher {
     public function cacheEnabled(): bool {
         return (bool)$this->cacheEnabled;
     }
+
+    /**
+     * Manually disable the cache
+     */
+    public function disableCache(): void {
+        $this->cacheEnabled = false;
+    }
+
 
     /**
      * How long do we cache entries for?

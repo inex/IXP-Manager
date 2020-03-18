@@ -24,14 +24,22 @@
             </h6>
 
 
-            <li class="<?= !request()->is( 'customer/*' ) ?: 'active' ?>">
+            <li class="<?= request()->is( 'customer/*' ) ? 'active' : '' ?>">
                 <a class="nav-link" href="<?= route( 'customer@list' ) ?>">
                     <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
                 </a>
             </li>
 
-            <?php if( request()->is( 'customer/*' ) || request()->is( 'customer-tag/*' ) ): ?>
+            <?php if( request()->is( 'customer/*' ) || request()->is( 'customer-tag/*' ) || request()->is( 'customer-logo*' ) ): ?>
                 <ul>
+                    <?php if( !config( 'ixp_fe.frontend.disabled.logo', true ) ): ?>
+                        <li class="nav-sub-menu-item <?= !request()->is( 'customer-logo/logos' ) ?: 'active' ?>">
+                            <a href="<?= route('logo@logos' ) ?>" class="nav-link">
+                                <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Logos
+                            </a>
+                        </li>
+                    <?php endif; ?>
+
                     <li class="nav-sub-menu-item <?= !request()->is( 'customer-tag/*' ) ?: 'active' ?>">
                         <a class="nav-link" href="<?= route('customer-tag@list' ) ?>">
                             Tags
@@ -355,13 +363,11 @@
                 </a>
             </li>
 
-            <?php if( !config( 'ixp_fe.frontend.disabled.logo', true ) ): ?>
-                <li class="<?= !request()->is( 'customer-logo/logos' ) ?: 'active' ?>">
-                    <a href="<?= route('logo@logos' ) ?>" class="nav-link">
-                        <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Logos
-                    </a>
-                </li>
-            <?php endif; ?>
+            <li class="<?= !request()->is( 'statistics/utilization' ) ?: 'active' ?>">
+                <a href="<?= route( 'statistics/utilization' ) ?>" class="nav-link">
+                    Port Utilization
+                </a>
+            </li>
 
             <li class="<?= !request()->is( 'statistics/league-table' ) ?: 'active' ?>">
                 <a href="<?= route( 'statistics/league-table' ) ?>" class="nav-link">
