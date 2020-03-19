@@ -142,7 +142,7 @@ class DocstoreCustomerDirectory extends Model
      */
     public function subDirectories(): HasMany
     {
-        return $this->hasMany(DocstoreDirectory::class, 'parent_dir_id', 'id' )->orderBy('name');
+        return $this->hasMany(DocstoreCustomerDirectory::class, 'parent_dir_id', 'id' )->orderBy('name');
     }
 
     /**
@@ -150,7 +150,7 @@ class DocstoreCustomerDirectory extends Model
      */
     public function parentDirectory(): BelongsTo
     {
-        return $this->belongsTo(DocstoreDirectory::class, 'parent_dir_id', 'id' );
+        return $this->belongsTo(DocstoreCustomerDirectory::class, 'parent_dir_id', 'id' );
     }
 
     /**

@@ -763,8 +763,79 @@ CREATE TABLE `customer_to_users` (
 
 LOCK TABLES `customer_to_users` WRITE;
 /*!40000 ALTER TABLE `customer_to_users` DISABLE KEYS */;
-INSERT INTO `customer_to_users` VALUES (1,1,1,3,'2020-01-27 12:04:24','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL),(2,5,2,2,'2018-06-20 10:23:22','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL),(3,5,3,1,'2018-06-20 10:23:58','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL),(4,2,4,1,'1970-01-01 00:00:00','','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL),(5,2,5,2,'2018-06-20 10:24:24','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL);
+INSERT INTO `customer_to_users` VALUES (1,1,1,3,'2020-03-19 10:19:53','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}','Login'),(2,5,2,2,'2018-06-20 10:23:22','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL),(3,5,3,1,'2018-06-20 10:23:58','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL),(4,2,4,1,'1970-01-01 00:00:00','','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL),(5,2,5,2,'2018-06-20 10:24:24','127.0.0.1','2019-05-10 13:40:45','{\"created_by\": {\"type\": \"migration-script\"}}',NULL);
 /*!40000 ALTER TABLE `customer_to_users` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `docstore_customer_directories`
+--
+
+DROP TABLE IF EXISTS `docstore_customer_directories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `docstore_customer_directories` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `cust_id` int(11) NOT NULL,
+  `parent_dir_id` bigint(20) unsigned DEFAULT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `docstore_customer_directories_cust_id_foreign` (`cust_id`),
+  KEY `docstore_customer_directories_parent_dir_id_index` (`parent_dir_id`),
+  CONSTRAINT `docstore_customer_directories_cust_id_foreign` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `docstore_customer_directories`
+--
+
+LOCK TABLES `docstore_customer_directories` WRITE;
+/*!40000 ALTER TABLE `docstore_customer_directories` DISABLE KEYS */;
+INSERT INTO `docstore_customer_directories` VALUES (1,5,NULL,'Folder 1','I am the folder 1','2020-03-18 10:35:18',NULL),(5,2,NULL,'Folder 2','Folder 2','2020-03-19 10:21:59','2020-03-19 10:21:59'),(6,4,NULL,'Folder 3',NULL,'2020-03-19 10:36:37','2020-03-19 10:36:37');
+/*!40000 ALTER TABLE `docstore_customer_directories` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `docstore_customer_files`
+--
+
+DROP TABLE IF EXISTS `docstore_customer_files`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `docstore_customer_files` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `cust_id` int(11) NOT NULL,
+  `docstore_customer_directory_id` bigint(20) unsigned DEFAULT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `disk` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'docstore_customers',
+  `path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `sha256` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `min_privs` smallint(6) NOT NULL,
+  `file_last_updated` datetime NOT NULL,
+  `created_by` int(11) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `docstore_customer_files_cust_id_foreign` (`cust_id`),
+  KEY `docstore_customer_files_docstore_customer_directory_id_foreign` (`docstore_customer_directory_id`),
+  CONSTRAINT `docstore_customer_files_cust_id_foreign` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`),
+  CONSTRAINT `docstore_customer_files_docstore_customer_directory_id_foreign` FOREIGN KEY (`docstore_customer_directory_id`) REFERENCES `docstore_customer_directories` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `docstore_customer_files`
+--
+
+LOCK TABLES `docstore_customer_files` WRITE;
+/*!40000 ALTER TABLE `docstore_customer_files` DISABLE KEYS */;
+INSERT INTO `docstore_customer_files` VALUES (1,2,5,'File2.txt','docstore_customers','2/JnyLOD5XNl2Fgzls5C3bYVoqF8wUutm6z6EAppTh.txt','9fee089b7a4646ba952629f394e2fb3c83b1903d90a0c3f916978908387ef8f0','file2.txt',3,'2020-03-19 10:22:50',1,'2020-03-19 10:22:50','2020-03-19 10:22:50'),(2,5,1,'File1.txt','docstore_customers','5/xi9LVqAIiYt2NJEMNz4xWuMS2Xsq8QIIeWoxcMFQ.txt','9fee089b7a4646ba952629f394e2fb3c83b1903d90a0c3f916978908387ef8f0',NULL,3,'2020-03-19 10:32:36',1,'2020-03-19 10:32:36','2020-03-19 10:32:36'),(3,4,6,'File3.md','docstore_customers','4/KvKA18HzuzJFUw84YtDE20ZdJB8HRNpHfBvf3yhC.txt','7064e4baa5d2ede242772e4d53cfa7897b236430fea689eb747808a1ff527f77',NULL,3,'2020-03-19 10:36:58',1,'2020-03-19 10:36:58','2020-03-19 10:38:46');
+/*!40000 ALTER TABLE `docstore_customer_files` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -1235,7 +1306,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1244,7 +1315,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2177,7 +2248,7 @@ CREATE TABLE `user_logins` (
   KEY `IDX_6341CC99D43FEAE2` (`customer_to_user_id`),
   KEY `at_idx` (`at`),
   CONSTRAINT `FK_6341CC99D43FEAE2` FOREIGN KEY (`customer_to_user_id`) REFERENCES `customer_to_users` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=57 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=58 DEFAULT CHARSET=utf8 COLLATE=utf8_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -2186,7 +2257,7 @@ CREATE TABLE `user_logins` (
 
 LOCK TABLES `user_logins` WRITE;
 /*!40000 ALTER TABLE `user_logins` DISABLE KEYS */;
-INSERT INTO `user_logins` VALUES (1,1,'10.37.129.2','2014-01-06 13:54:52',1,NULL),(2,1,'10.37.129.2','2014-01-13 10:38:11',1,NULL),(3,1,'::1','2016-11-07 19:30:35',1,NULL),(4,1,'127.0.0.1','2017-10-09 13:19:59',1,NULL),(5,1,'127.0.0.1','2018-05-15 15:34:35',1,NULL),(6,1,'127.0.0.1','2018-06-18 08:30:06',1,NULL),(7,1,'127.0.0.1','2018-06-18 08:30:08',1,NULL),(8,1,'127.0.0.1','2018-06-18 08:31:04',1,NULL),(9,1,'127.0.0.1','2018-06-18 08:31:06',1,NULL),(10,1,'127.0.0.1','2018-06-18 08:36:56',1,NULL),(11,1,'127.0.0.1','2018-06-18 08:36:58',1,NULL),(12,1,'127.0.0.1','2018-06-18 08:43:14',1,NULL),(13,1,'127.0.0.1','2018-06-18 08:43:16',1,NULL),(14,1,'127.0.0.1','2018-06-18 08:43:27',1,NULL),(15,1,'127.0.0.1','2018-06-18 08:43:29',1,NULL),(16,1,'127.0.0.1','2018-06-18 11:29:20',1,NULL),(17,1,'127.0.0.1','2018-06-18 11:29:22',1,NULL),(18,1,'127.0.0.1','2018-06-19 13:15:32',1,NULL),(19,1,'127.0.0.1','2018-06-19 14:16:24',1,NULL),(20,1,'127.0.0.1','2018-06-19 14:16:26',1,NULL),(21,1,'127.0.0.1','2018-06-19 14:17:07',1,NULL),(22,1,'127.0.0.1','2018-06-19 14:17:09',1,NULL),(23,1,'127.0.0.1','2018-06-19 14:19:14',1,NULL),(24,1,'127.0.0.1','2018-06-19 14:19:16',1,NULL),(25,1,'127.0.0.1','2018-06-19 14:22:14',1,NULL),(26,1,'127.0.0.1','2018-06-19 14:22:17',1,NULL),(27,2,'127.0.0.1','2018-06-20 10:23:22',2,NULL),(28,3,'127.0.0.1','2018-06-20 10:23:58',3,NULL),(29,5,'127.0.0.1','2018-06-20 10:24:14',5,NULL),(30,5,'127.0.0.1','2018-06-20 10:24:24',5,NULL),(31,1,'127.0.0.1','2018-06-20 10:25:55',1,NULL),(32,1,'127.0.0.1','2018-06-20 10:25:57',1,NULL),(33,1,'127.0.0.1','2018-06-20 10:26:49',1,NULL),(34,1,'127.0.0.1','2018-06-20 10:26:51',1,NULL),(35,1,'127.0.0.1','2018-06-20 10:27:05',1,NULL),(36,1,'127.0.0.1','2018-06-20 10:27:07',1,NULL),(37,1,'127.0.0.1','2018-06-20 10:27:22',1,NULL),(38,1,'127.0.0.1','2018-06-20 10:27:24',1,NULL),(39,1,'127.0.0.1','2018-06-20 10:28:25',1,NULL),(40,1,'127.0.0.1','2018-06-20 10:28:27',1,NULL),(41,1,'127.0.0.1','2018-06-20 10:28:57',1,NULL),(42,1,'127.0.0.1','2018-06-20 10:28:59',1,NULL),(43,1,'127.0.0.1','2018-06-20 10:32:11',1,NULL),(44,1,'127.0.0.1','2018-06-20 10:32:13',1,NULL),(45,1,'127.0.0.1','2018-06-20 10:36:34',1,NULL),(46,1,'127.0.0.1','2018-06-20 10:36:36',1,NULL),(47,1,'127.0.0.1','2018-06-20 10:37:19',1,NULL),(48,1,'127.0.0.1','2018-06-20 10:37:21',1,NULL),(49,1,'127.0.0.1','2018-06-20 10:37:44',1,NULL),(50,1,'127.0.0.1','2018-06-20 10:37:46',1,NULL),(51,1,'127.0.0.1','2018-06-20 10:38:41',1,NULL),(52,1,'127.0.0.1','2018-06-20 10:38:42',1,NULL),(53,2,'127.0.0.1','2019-01-16 15:37:08',2,NULL),(54,3,'127.0.0.1','2019-01-16 15:38:05',3,NULL),(55,1,'127.0.0.1','2019-03-09 15:38:09',1,NULL),(56,NULL,'127.0.0.1','2020-01-27 12:04:24',1,NULL);
+INSERT INTO `user_logins` VALUES (1,1,'10.37.129.2','2014-01-06 13:54:52',1,NULL),(2,1,'10.37.129.2','2014-01-13 10:38:11',1,NULL),(3,1,'::1','2016-11-07 19:30:35',1,NULL),(4,1,'127.0.0.1','2017-10-09 13:19:59',1,NULL),(5,1,'127.0.0.1','2018-05-15 15:34:35',1,NULL),(6,1,'127.0.0.1','2018-06-18 08:30:06',1,NULL),(7,1,'127.0.0.1','2018-06-18 08:30:08',1,NULL),(8,1,'127.0.0.1','2018-06-18 08:31:04',1,NULL),(9,1,'127.0.0.1','2018-06-18 08:31:06',1,NULL),(10,1,'127.0.0.1','2018-06-18 08:36:56',1,NULL),(11,1,'127.0.0.1','2018-06-18 08:36:58',1,NULL),(12,1,'127.0.0.1','2018-06-18 08:43:14',1,NULL),(13,1,'127.0.0.1','2018-06-18 08:43:16',1,NULL),(14,1,'127.0.0.1','2018-06-18 08:43:27',1,NULL),(15,1,'127.0.0.1','2018-06-18 08:43:29',1,NULL),(16,1,'127.0.0.1','2018-06-18 11:29:20',1,NULL),(17,1,'127.0.0.1','2018-06-18 11:29:22',1,NULL),(18,1,'127.0.0.1','2018-06-19 13:15:32',1,NULL),(19,1,'127.0.0.1','2018-06-19 14:16:24',1,NULL),(20,1,'127.0.0.1','2018-06-19 14:16:26',1,NULL),(21,1,'127.0.0.1','2018-06-19 14:17:07',1,NULL),(22,1,'127.0.0.1','2018-06-19 14:17:09',1,NULL),(23,1,'127.0.0.1','2018-06-19 14:19:14',1,NULL),(24,1,'127.0.0.1','2018-06-19 14:19:16',1,NULL),(25,1,'127.0.0.1','2018-06-19 14:22:14',1,NULL),(26,1,'127.0.0.1','2018-06-19 14:22:17',1,NULL),(27,2,'127.0.0.1','2018-06-20 10:23:22',2,NULL),(28,3,'127.0.0.1','2018-06-20 10:23:58',3,NULL),(29,5,'127.0.0.1','2018-06-20 10:24:14',5,NULL),(30,5,'127.0.0.1','2018-06-20 10:24:24',5,NULL),(31,1,'127.0.0.1','2018-06-20 10:25:55',1,NULL),(32,1,'127.0.0.1','2018-06-20 10:25:57',1,NULL),(33,1,'127.0.0.1','2018-06-20 10:26:49',1,NULL),(34,1,'127.0.0.1','2018-06-20 10:26:51',1,NULL),(35,1,'127.0.0.1','2018-06-20 10:27:05',1,NULL),(36,1,'127.0.0.1','2018-06-20 10:27:07',1,NULL),(37,1,'127.0.0.1','2018-06-20 10:27:22',1,NULL),(38,1,'127.0.0.1','2018-06-20 10:27:24',1,NULL),(39,1,'127.0.0.1','2018-06-20 10:28:25',1,NULL),(40,1,'127.0.0.1','2018-06-20 10:28:27',1,NULL),(41,1,'127.0.0.1','2018-06-20 10:28:57',1,NULL),(42,1,'127.0.0.1','2018-06-20 10:28:59',1,NULL),(43,1,'127.0.0.1','2018-06-20 10:32:11',1,NULL),(44,1,'127.0.0.1','2018-06-20 10:32:13',1,NULL),(45,1,'127.0.0.1','2018-06-20 10:36:34',1,NULL),(46,1,'127.0.0.1','2018-06-20 10:36:36',1,NULL),(47,1,'127.0.0.1','2018-06-20 10:37:19',1,NULL),(48,1,'127.0.0.1','2018-06-20 10:37:21',1,NULL),(49,1,'127.0.0.1','2018-06-20 10:37:44',1,NULL),(50,1,'127.0.0.1','2018-06-20 10:37:46',1,NULL),(51,1,'127.0.0.1','2018-06-20 10:38:41',1,NULL),(52,1,'127.0.0.1','2018-06-20 10:38:42',1,NULL),(53,2,'127.0.0.1','2019-01-16 15:37:08',2,NULL),(54,3,'127.0.0.1','2019-01-16 15:38:05',3,NULL),(55,1,'127.0.0.1','2019-03-09 15:38:09',1,NULL),(56,NULL,'127.0.0.1','2020-01-27 12:04:24',1,NULL),(57,NULL,'127.0.0.1','2020-03-19 10:19:53',1,'Login');
 /*!40000 ALTER TABLE `user_logins` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2581,4 +2652,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-02-28 12:17:39
+-- Dump completed on 2020-03-19 10:38:56

@@ -189,6 +189,7 @@ class DirectoryController extends Controller
      */
     public function update( Request $request , Customer $cust, DocstoreCustomerDirectory $dir ): RedirectResponse
     {
+
         $this->authorize( 'update', [ DocstoreCustomerDirectory::class, $cust, $dir ] );
 
         $this->checkForm( $request );
@@ -257,6 +258,7 @@ class DirectoryController extends Controller
             'cust_id'          => [ 'required', 'integer',
                 function( $attribute, $value, $fail ) {
                     if( !Customer::whereId( $value )->exists() ) {
+                        Log::notice( 'fff' );
                         AlertContainer::push('Customer is invalid / does not exist.', Alert::DANGER );
                         return $fail( 'Customer is invalid / does not exist.' );
                     }
@@ -265,7 +267,7 @@ class DirectoryController extends Controller
             'description'   => 'nullable',
             'parent_dir_id' => [ 'nullable', 'integer',
                 function( $attribute, $value, $fail ) {
-                    if( !DocstoreCustomerDirectory::where( $attribute, $value )->exists() ) {
+                    if( !DocstoreCustomerDirectory::whereId( $value )->exists() ) {
                         return $fail( 'Parent directory is invalid / does not exist.' );
                     }
                 },
