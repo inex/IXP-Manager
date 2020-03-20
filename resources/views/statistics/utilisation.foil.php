@@ -30,7 +30,7 @@
                 <div class="collapse navbar-collapse" id="navbarNavDropdown">
                     <ul class="navbar-nav">
 
-                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex" action="<?= route('statistics/utilization:post' ) ?>" method="post">
+                        <form class="navbar-form navbar-left form-inline d-block d-lg-flex" action="<?= route('statistics/utilisation:post' ) ?>" method="post">
 
                             <li class="nav-item">
                                 <div class="nav-link d-flex ">
@@ -173,5 +173,5 @@
 
 
 <?php $this->section( 'scripts' ) ?>
-<?= $t->insert( 'statistics/js/utilization' ); ?>
+<?= $t->insert( 'statistics/js/utilisation' ); ?>
 <?php $this->append() ?>

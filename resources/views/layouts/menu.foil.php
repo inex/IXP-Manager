@@ -363,9 +363,9 @@
                 </a>
             </li>
 
-            <li class="<?= !request()->is( 'statistics/utilization' ) ?: 'active' ?>">
-                <a href="<?= route( 'statistics/utilization' ) ?>" class="nav-link">
-                    Port Utilization
+            <li class="<?= !request()->is( 'statistics/utilisation' ) ?: 'active' ?>">
+                <a href="<?= route( 'statistics/utilisation' ) ?>" class="nav-link">
+                    Port Utilisation
                 </a>
             </li>
 

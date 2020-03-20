@@ -756,7 +756,7 @@ class StatisticsController extends Controller
      *
      * @throws
      */
-    public function utilization( StatisticsRequest $r )
+    public function utilisation( StatisticsRequest $r )
     {
         $metrics = [
             'Max'     => 'max',
@@ -787,7 +787,7 @@ class StatisticsController extends Controller
         $category = Graph::processParameterCategory( $r->input( 'category' ) );
         $period   = Graph::processParameterPeriod( $r->input( 'period' ), Graph::PERIOD_MONTH );
 
-        return view( 'statistics/utilization' )->with([
+        return view( 'statistics/utilisation' )->with([
             'metric'       => $metric,
             'metrics'      => $metrics,
             'day'          => $day,
