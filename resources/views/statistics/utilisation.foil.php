@@ -153,8 +153,8 @@
                             <i class="fa fa-info-circle fa-2x"></i>
                         </div>
                         <div class="col-sm-12">
-                            No records for found for <?= $t->day ?>. This may be expected (date in future / date before records were kept / etc.).
-                            However, if you have Grapher with the Mrtg backend working, then please ensure you are
+                            No records for found.
+                            If you have Grapher with the Mrtg backend working, then please ensure you are
                             <a href="https://docs.ixpmanager.org/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails" target="_blank">inserting
                                 traffic data into the database</a>.
                         </div>
