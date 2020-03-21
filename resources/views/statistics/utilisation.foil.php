@@ -4,8 +4,17 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-        Statistics / Utilization  (<?php foreach( IXP\Services\Grapher\Graph::CATEGORIES as $cname => $cvalue ) { if( $t->category == $cvalue ) { echo $cname; } } ?>)
+        Statistics / Utilisation  (<?php foreach( IXP\Services\Grapher\Graph::CATEGORIES as $cname => $cvalue ) { if( $t->category == $cvalue ) { echo $cname; } } ?>)
 <?php $this->append() ?>
+
+<?php $this->section( 'page-header-postamble' ) ?>
+    <div class="btn-group btn-group-sm ml-auto" role="group">
+        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/grapher/mrtg/#port-utilisation">
+            Documentation
+        </a>
+    </div>
+<?php $this->append() ?>
+
 
 
 <?php $this->section( 'content' ) ?>
@@ -153,10 +162,10 @@
                             <i class="fa fa-info-circle fa-2x"></i>
                         </div>
                         <div class="col-sm-12">
-                            No records for found.
+                            No records for port utilisation have been found.
                             If you have Grapher with the Mrtg backend working, then please ensure you are
                             <a href="https://docs.ixpmanager.org/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails" target="_blank">inserting
-                                traffic data into the database</a>.
+                                traffic data into the database</a> and check the documentation via the link on the top right.
                         </div>
                     </div>
                 </div>
