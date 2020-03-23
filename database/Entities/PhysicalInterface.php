@@ -124,6 +124,12 @@ class PhysicalInterface
     protected $coreInterface;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $TrafficDailiesPhysInt;
+
+
+    /**
      * Set status
      *
      * @param integer $status
@@ -520,5 +526,43 @@ class PhysicalInterface
     public function resolveAPIStatus(): string {
         return self::$APISTATES[ $this->getStatus() ] ?? 'unknown';
     }
+
+
+
+
+    /**
+     * Add TrafficDailies
+     *
+     * @param TrafficDailyPhysInt $trafficDailyPhysInt
+     * @return PhysicalInterface
+     */
+    public function addTrafficDailyPhysInt(TrafficDailiesPhysInt $trafficDailyPhysInt)
+    {
+        $this->TrafficDailiesPhysInt[] = $trafficDailyPhysInt;
+
+        return $this;
+    }
+
+    /**
+     * Remove TrafficDailies
+     *
+     * @param TrafficDailyPhysInt $trafficDailyPhysInt
+     */
+    public function removeTrafficDaily(TrafficDailyPhysInt $trafficDailyPhysInt)
+    {
+        $this->TrafficDailiesPhysInt->removeElement($trafficDailyPhysInt);
+    }
+
+    /**
+     * Get TrafficDailies
+     *
+     * @return Doctrine\Common\Collections\Collection
+     */
+    public function getTrafficDailiesPhysInt()
+    {
+        return $this->TrafficDailiesPhysInt;
+    }
+
+
 
 }

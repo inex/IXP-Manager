@@ -152,6 +152,8 @@ return [
     */
     'custom_string_functions'   => [
         'ANY_VALUE'      => DoctrineExtensions\Query\Mysql\AnyValue::class,
+        'CAST'           => DoctrineExtensions\Query\Mysql\Cast::class,
+        'GREATEST'       => DoctrineExtensions\Query\Mysql\Greatest::class,
         'GROUP_CONCAT'   => DoctrineExtensions\Query\Mysql\GroupConcat::class,
         'HEX'            => DoctrineExtensions\Query\Mysql\Hex::class,
         'INET_ATON'      => DoctrineExtensions\Query\Mysql\InetAton::class,

@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 6.17.1 on 2020-02-29 14:08:51.
+ * Generated for Laravel 6.18.2 on 2020-03-21 09:15:58.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -506,8 +506,6 @@ namespace Illuminate\Support\Facades {
         
         /**
          * Resolve the given type from the container.
-         * 
-         * (Overriding Container::make)
          *
          * @param string $abstract
          * @param array $parameters
@@ -522,8 +520,6 @@ namespace Illuminate\Support\Facades {
         
         /**
          * Determine if the given abstract type has been bound.
-         * 
-         * (Overriding Container::bound)
          *
          * @param string $abstract
          * @return bool 
@@ -2775,7 +2771,6 @@ namespace Illuminate\Support\Facades {
          *
          * @param mixed $command
          * @return mixed 
-         * @throws \RuntimeException
          * @static 
          */ 
         public static function dispatchToQueue($command)
@@ -8524,6 +8519,8 @@ namespace Illuminate\Support\Facades {
     /**
      * 
      *
+     * @method static \Illuminate\Redis\Limiters\ConcurrencyLimiterBuilder funnel(string $name)
+     * @method static \Illuminate\Redis\Limiters\DurationLimiterBuilder throttle(string $name)
      * @see \Illuminate\Redis\RedisManager
      * @see \Illuminate\Contracts\Redis\Factory
      */ 
@@ -16752,6 +16749,7 @@ namespace IXP\Support\Facades {
          *
          * @param string $trunkname
          * @return \IXP\Services\Grapher\Graph\Trunk 
+         * @throws \IXP\Exceptions\Services\Grapher\ParameterException
          * @static 
          */ 
         public static function trunk($trunkname)
@@ -16845,6 +16843,7 @@ namespace IXP\Support\Facades {
          *
          * @param \IXP\Services\VlanInterface $vli
          * @return \IXP\Services\LatencyGraph 
+         * @throws \IXP\Exceptions\Services\Grapher\ParameterException
          * @static 
          */ 
         public static function latency($vli)
@@ -16863,6 +16862,17 @@ namespace IXP\Support\Facades {
         {
                         /** @var \IXP\Services\Grapher $instance */
                         return $instance->cacheEnabled();
+        }
+        
+        /**
+         * Manually disable the cache
+         *
+         * @static 
+         */ 
+        public static function disableCache()
+        {
+                        /** @var \IXP\Services\Grapher $instance */
+                        return $instance->disableCache();
         }
         
         /**

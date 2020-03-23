@@ -58,7 +58,6 @@ return [
 
     'corporate_url' => env( 'IDENTITY_CORPORATE_URL', '*** CONFIG IDENTITY IN .env ***' ),
     'url'           => env( 'APP_URL', '*** CONFIG APP_URL IN .env ***' ),
-    'logo'          => env( 'IDENTITY_LOGO', '*** CONFIG IDENTITY IN .env ***' ),
     'biglogo'       => env( 'IDENTITY_BIGLOGO', '*** CONFIG IDENTITY IN .env ***' ),
 
     'vlans'       => [

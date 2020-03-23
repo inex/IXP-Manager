@@ -30,5 +30,6 @@
     </one-to-one>
     <one-to-one field="PeeringPhysicalInterface" target-entity="Entities\PhysicalInterface" mapped-by="FanoutPhysicalInterface"/>
     <one-to-one field="coreInterface" target-entity="Entities\CoreInterface" mapped-by="physicalInterface"/>
+    <one-to-many field="TrafficDailiesPhysInt" target-entity="Entities\TrafficDailyPhysInt" mapped-by="PhysicalInterface"/>
   </entity>
 </doctrine-mapping>

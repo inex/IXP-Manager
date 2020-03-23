@@ -843,11 +843,12 @@ abstract class Graph {
      * If you want to force an exception in such cases, use setPeriod()
      *
      * @param string $v The user input value
+     * @param string $d The preferred default value
      * @return string The verified / sanitised / default value
      */
-    public static function processParameterPeriod( $v = null ): string {
+    public static function processParameterPeriod( $v = null, $d = null ): string {
         if( !isset( self::PERIODS[ $v ] ) ) {
-            $v = self::PERIOD_DEFAULT;
+            $v = $d ?? self::PERIOD_DEFAULT;
         }
         return $v;
     }

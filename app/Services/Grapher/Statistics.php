@@ -21,6 +21,8 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Carbon\Carbon;
+
 /**
  * Grapher -> Statistics of the given graph
  *
@@ -75,10 +77,23 @@ class Statistics {
     private $maxIn;
 
     /**
+     * When max packets/bits in occured
+     * @var Carbon
+     */
+    private $maxInAt;
+
+    /**
      * Max packets/bits out
      * @var int
      */
     private $maxOut;
+
+    /**
+     * When max packets/bits out occured
+     * @var Carbon
+     */
+    private $maxOutAt;
+
 
     /**
      * Graph under consideration
@@ -119,6 +134,8 @@ class Statistics {
     function process() {
         $maxIn = 0;
         $maxOut = 0;
+        $maxInAt = 0;
+        $maxOutAt = 0;
         $totalIn = 0;
         $totalOut = 0;
         $intLastTime = 0;
@@ -136,9 +153,11 @@ class Statistics {
 
                 if( $peakratein > $maxIn ) {
                     $maxIn = $peakratein;
+                    $maxInAt = $intTime;
                 }
                 if( $peakrateout > $maxOut ) {
                     $maxOut = $peakrateout;
+                    $maxOutAt = $intTime;
                 }
 
                 if( $intLastTime == 0 ) {
@@ -166,6 +185,8 @@ class Statistics {
             ->setCurrentOut(  (float)$curOut                    )
             ->setMaxIn(       (float)$maxIn                     )
             ->setMaxOut(      (float)$maxOut                    )
+            ->setMaxInAt(     (int)$maxInAt                     )
+            ->setMaxOutAt(    (int)$maxOutAt                    )
             ->setAverageIn(   (float)( $totalIn  / $totalTime ) )
             ->setAverageOut(  (float)( $totalOut / $totalTime ) );
     }
@@ -243,11 +264,33 @@ class Statistics {
 
     /**
      * Set statistics value
+     * @param int $v
+     * @return Statistics (for fluid interface)
+     * @throws \Exception
+     */
+    public function setMaxInAt( int $v ): Statistics {
+        $this->maxInAt = $v ? new Carbon( $v ) : null;
+        return $this;
+    }
+
+    /**
+     * Set statistics value
      * @param float $v
      * @return Statistics (for fluid interface)
      */
     public function setMaxOut( float $v ): Statistics {
         $this->maxOut = $v;
+        return $this;
+    }
+
+    /**
+     * Set statistics value
+     * @param int $v
+     * @return Statistics (for fluid interface)
+     * @throws \Exception
+     */
+    public function setMaxOutAt( int $v ): Statistics {
+        $this->maxOutAt = $v ? new Carbon( $v ) : null;
         return $this;
     }
 
@@ -316,6 +359,22 @@ class Statistics {
     }
 
     /**
+     * Get statistics value
+     * @return float
+     */
+    public function maxInAt(): ?Carbon {
+        return $this->maxInAt;
+    }
+
+    /**
+     * Get statistics value
+     * @return float
+     */
+    public function maxOutAt(): ?Carbon {
+        return $this->maxOutAt;
+    }
+
+    /**
      * Get all defined stats as an associative array
      * @return array
      */
@@ -329,6 +388,8 @@ class Statistics {
             'averageout'  => $this->averageOut(),
             'maxin'       => $this->maxIn(),
             'maxout'      => $this->maxOut(),
+            'maxinat'     => $this->maxInAt(),
+            'maxoutat'    => $this->maxOutAt(),
         ];
     }
 

@@ -110,6 +110,10 @@
             "@php artisan package:discover"
         ],
 
+        "post-install-cmd": [
+            "@php artisan clear-compiled"
+        ],
+
         "post-update-cmd": [
             "@php artisan clear-compiled",
             "@php artisan ide-helper:generate",
@@ -124,6 +128,9 @@
             "preferred-install": "dist",
             "sort-packages": true,
             "optimize-autoloader": true
+        },
+        "platform": {
+            "php": "7.3.0"
         }
    },
    "minimum-stability": "stable"
