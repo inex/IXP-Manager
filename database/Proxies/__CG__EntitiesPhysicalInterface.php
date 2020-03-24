@@ -66,10 +66,10 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface'];
+            return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface', 'TrafficDailiesPhysInt'];
         }
 
-        return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface'];
+        return ['__isInitialized__', 'status', 'speed', 'duplex', 'autoneg', 'notes', 'id', 'SwitchPort', 'VirtualInterface', 'FanoutPhysicalInterface', 'PeeringPhysicalInterface', 'coreInterface', 'TrafficDailiesPhysInt'];
     }
 
     /**
@@ -563,6 +563,39 @@ class PhysicalInterface extends \Entities\PhysicalInterface implements \Doctrine
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'resolveAPIStatus', []);
 
         return parent::resolveAPIStatus();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addTrafficDailyPhysInt(\Entities\TrafficDailyPhysInt $trafficDailyPhysInt)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addTrafficDailyPhysInt', [$trafficDailyPhysInt]);
+
+        return parent::addTrafficDailyPhysInt($trafficDailyPhysInt);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeTrafficDaily(\Entities\TrafficDailyPhysInt $trafficDailyPhysInt)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeTrafficDaily', [$trafficDailyPhysInt]);
+
+        return parent::removeTrafficDaily($trafficDailyPhysInt);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTrafficDailiesPhysInt()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTrafficDailiesPhysInt', []);
+
+        return parent::getTrafficDailiesPhysInt();
     }
 
 }
