@@ -25,15 +25,19 @@ namespace IXP\Models;
 
 use D2EM, Eloquent;
 
+use DB;
 use Entities\Customer as CustomerEntity;
 
 use Illuminate\Database\Eloquent\{
     Builder,
-    Collection,
     Model
 };
 
-use Illuminate\Support\Carbon as Carbon;
+use Illuminate\Support\{
+    Collection,
+    Carbon as Carbon
+};
+
 
 use IXP\Exceptions\GeneralException as IXP_Exception;
 
@@ -333,6 +337,43 @@ class Customer extends Model
      */
     public function getDoctrineObject(): CustomerEntity {
         return D2EM::getRepository( CustomerEntity::class )->find( $this->id );
+    }
+
+    /**
+     * Gets a listing of patch panel port files for a customer
+     *
+     * @param Customer $cust
+     *
+     * @return Collection
+     */
+    public static function getPatchPanelPortFiles( Customer $cust ): Collection
+    {
+        return self::select( [
+            'pppf.*'
+        ] )
+            ->join(     'patch_panel_port as ppp' ,          'cust.id',        'ppp.customer_id' )
+            ->join(     'patch_panel_port_file as pppf' ,     'ppp.id',        'pppf.patch_panel_port_id' )
+            ->where('ppp.customer_id', $cust->id )
+            ->get();
+    }
+
+    /**
+     * Gets a listing of patch panel port files history for a customer
+     *
+     * @param Customer $cust
+     *
+     * @return Collection
+     */
+    public static function getPatchPanelPortHistoryFiles( Customer $cust ): Collection
+    {
+        return DB::table( 'patch_panel_port_history as ppph' )
+            ->select( [
+                'ppph.patch_panel_port_id',
+                'ppphf.*'
+            ] )
+            ->join(     'patch_panel_port_history_file as ppphf' ,     'ppph.id',        'ppphf.patch_panel_port_history_id' )
+            ->where('ppph.cust_id', $cust->id )
+            ->get();
     }
 
 }

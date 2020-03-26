@@ -35,7 +35,7 @@ class DocstoreCustomerDirectoryPolicy
     use HandlesAuthorization;
 
     /**
-     * Determine whether the user can create docstore directories.
+     * Determine whether the user can access the list
      *
      * @param UserEntity    $user
      *
@@ -44,6 +44,32 @@ class DocstoreCustomerDirectoryPolicy
     public function listCustomer( UserEntity $user )
     {
         return $user->isSuperUser();
+    }
+
+    /**
+     * Determine whether the user can access the list
+     *
+     * @param UserEntity    $user
+     * @param Customer      $cust
+     *
+     * @return mixed
+     */
+    public function listPatchPanelPortFiles( UserEntity $user, Customer $cust )
+    {
+        return Customer::getPatchPanelPortFiles( $cust )->isNotEmpty();
+    }
+
+    /**
+     * Determine whether the user can access the list
+     *
+     * @param UserEntity    $user
+     * @param Customer      $cust
+     *
+     * @return mixed
+     */
+    public function listPatchPanelPortFilesHistory( UserEntity $user, Customer $cust )
+    {
+        return Customer::getPatchPanelPortHistoryFiles( $cust )->isNotEmpty();
     }
 
     /**

@@ -90,13 +90,54 @@ class DirectoryController extends Controller
         $this->authorize( 'list', [ DocstoreCustomerDirectory::class, $cust ]);
 
         return view( 'docstore-customer/dir/list', [
-            'dir'       => $dir ?? false,
-            'cust'      => $cust ?? false,
-            'dirs'      => DocstoreCustomerDirectory::getHierarchyForCustomerAndUserClass( $cust, optional( $request->user() )->getPrivs() ?? 0 , false )[ $dir ? $dir->id : '' ] ?? [],
-            'files'     => DocstoreCustomerFile::getListing( $cust, $dir, $request->user() ),
+            'dir'           => $dir ?? false,
+            'cust'          => $cust ?? false,
+            'dirs'          => DocstoreCustomerDirectory::getHierarchyForCustomerAndUserClass( $cust, optional( $request->user() )->getPrivs() ?? 0 , false )[ $dir ? $dir->id : '' ] ?? [],
+            'files'         => DocstoreCustomerFile::getListing( $cust, $dir, $request->user() ),
+            'ppp_files'     => Customer::getPatchPanelPortFiles( $cust )->isNotEmpty(),
+            'ppph_files'    => Customer::getPatchPanelPortHistoryFiles( $cust )->isNotEmpty(),
         ] );
     }
 
+    /**
+     * Display the list of patch panel file for a customer
+     *
+     * @param Request                           $request
+     * @param Customer|null                     $cust
+     *
+     * @return View
+     *
+     * @throws
+     */
+    public function listPatchPanelPortFiles( Request $request,  Customer $cust = null ) : View
+    {
+        $this->authorize( 'listPatchPanelPortFiles', [ DocstoreCustomerDirectory::class, $cust ]);
+
+        return view( 'docstore-customer/dir/patch-panel-port-files', [
+            'cust'          => $cust,
+            'ppp_files'     => Customer::getPatchPanelPortFiles( $cust ),
+        ] );
+    }
+
+    /**
+     * Display the list of patch panel file history for a customer
+     *
+     * @param Request                           $request
+     * @param Customer|null                     $cust
+     *
+     * @return View
+     *
+     * @throws
+     */
+    public function listPatchPanelPortHistoryFiles( Request $request,  Customer $cust = null ) : View
+    {
+        $this->authorize( 'listPatchPanelPortFilesHistory', [ DocstoreCustomerDirectory::class, $cust ]);
+
+        return view( 'docstore-customer/dir/patch-panel-port-history-files', [
+            'cust'          => $cust,
+            'ppph_files'    => Customer::getPatchPanelPortHistoryFiles( $cust ),
+        ] );
+    }
     /**
      * Create a new customer directory
      *

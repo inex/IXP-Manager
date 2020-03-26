@@ -85,6 +85,42 @@ $this->layout( 'layouts/ixpv4' );
                         <td class="top meta">&nbsp;</td>
                     </tr>
 
+                <?php else: ?>
+                    <?php if( $t->ppp_files ): ?>
+                        <tr>
+                            <td class="<?= 'top' ?> icon"></td>
+                            <td class="<?= 'top' ?> icon">
+                                <i class="fa fa-lg fa-folder tw-inline-block tw-w-full"></i>
+                            </td>
+                            <td class="<?= 'top' ?> tw-px-4 tw-py-2 tw-w-auto">
+                                <a href="<?= route('docstore-c-dir@list-patch-panel-port-file', [ 'cust' => $t->cust  ] ) ?>">
+                                    Patch Panel Port Files
+                                </a>
+                            </td>
+                            <td class="<?= 'top' ?> meta"></td>
+                            <td class="<?= 'top' ?> meta"></td>
+                            <td class="<?= 'top' ?> meta">
+                            </td>
+                        </tr>
+                    <?php endif; ?>
+
+                    <?php if( Auth::user()->isSuperUser() && $t->ppph_files ): ?>
+                        <tr>
+                            <td class="<?= 'top' ?> icon"></td>
+                            <td class="<?= 'top' ?> icon">
+                                <i class="fa fa-lg fa-folder tw-inline-block tw-w-full"></i>
+                            </td>
+                            <td class="<?= 'top' ?> tw-px-4 tw-py-2 tw-w-auto">
+                                <a href="<?= route('docstore-c-dir@list-patch-panel-port-history-file', [ 'cust' => $t->cust  ] ) ?>">
+                                    Patch Panel Port Files History
+                                </a>
+                            </td>
+                            <td class="<?= 'top' ?> meta"></td>
+                            <td class="<?= 'top' ?> meta"></td>
+                            <td class="<?= 'top' ?> meta">
+                            </td>
+                        </tr>
+                    <?php endif; ?>
                 <?php endif; ?>
 
                 <?php $i = 0;
