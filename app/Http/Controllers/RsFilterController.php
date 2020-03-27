@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,11 +23,9 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Log, Redirect;
+use Auth, D2EM, Former, Log, Redirect;
 
-use Former;
 use Illuminate\View\View;
-
 
 use Entities\{
     Customer            as CustomerEntity,
@@ -35,7 +33,6 @@ use Entities\{
     RouteServerFilter   as RouteServerFilterEntity,
     Vlan                as VlanEntity
 };
-
 
 use Illuminate\Http\{
     RedirectResponse,
@@ -56,12 +53,11 @@ use IXP\Utils\View\Alert\{
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class RsFilterController extends Controller
 {
-
     /**
      * Display the list of Route Server Filter
      *
@@ -108,8 +104,8 @@ class RsFilterController extends Controller
         $protocol   = $request->old( 'protocol',        4      );
 
         Former::populate( [
-            'vlan_id'               => $vlanid ?? "Null",
-            'protocol'              => $protocol ?? "Null",
+            'vlan_id'               => $vlanid      ?? "Null",
+            'protocol'              => $protocol    ?? "Null",
             'action_advertise'      => $request->old( 'action_advertise',   "Null"  ),
             'action_receive'        => $request->old( 'action_receive',     "Null"  ),
             'prefix'                => $request->old( 'action_receive',     "*"     ),
@@ -141,8 +137,8 @@ class RsFilterController extends Controller
             'protocol'              => $protocol    ?? "null",
             'peer_id'               => $request->old( 'peer_id',            $request->rsf->getPeer()->getId() ),
             'prefix'                => $request->old( 'prefix',             $request->rsf->getPrefix() ),
-            'action_advertise'      => $request->old( 'action_advertise',   $request->rsf->getActionReceive() ),
-            'action_receive'        => $request->old( 'action_receive',     $request->rsf->getActionAdvertise() ),
+            'action_advertise'      => $request->old( 'action_advertise',   $request->rsf->getActionAdvertise() ?? 'Null' ),
+            'action_receive'        => $request->old( 'action_receive',     $request->rsf->getActionReceive() ?? 'Null' ),
         ] );
 
         return view( 'rs-filter/edit' )->with( [
@@ -226,9 +222,7 @@ class RsFilterController extends Controller
 
         Log::notice( Auth::user()->getUsername() . ' ' . $status . ' a router server filter with ID ' . $request->rsf->getId() );
 
-        AlertContainer::push( 'The route server filter has been '.$status, Alert::SUCCESS );
-
-
+        AlertContainer::push( 'The route server filter has been ' . $status, Alert::SUCCESS );
         return redirect( route( "rs-filter@list", [ "custid" => $request->rsf->getCustomer()->getId() ] ) );
     }
 

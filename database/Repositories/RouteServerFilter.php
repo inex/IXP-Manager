@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -34,7 +34,6 @@ use Doctrine\ORM\EntityRepository;
  */
 class RouteServerFilter extends EntityRepository
 {
-
     /**
      * Get the next last order by for a customer
      *
@@ -51,7 +50,6 @@ class RouteServerFilter extends EntityRepository
         $dql = "SELECT max( rsf.order_by)
                     FROM Entities\\RouteServerFilter rsf
                     WHERE rsf.customer = {$custid}";
-
 
         $lastOrderBy = (int)$this->getEntityManager()->createQuery( $dql )->getSingleScalarResult();
 

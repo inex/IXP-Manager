@@ -70,12 +70,11 @@ class Store extends FormRequest
      */
     public function rules()
     {
-
         $prefixRequired = $this->input( "protocol" ) ? "required" : "nullable";
 
         if( $this->input( "prefix" ) != '*'){
-            $ipvCheck = $this->input( "protocol" ) == 4 ? new IPv4Cidr() : new IPv6Cidr();
-            $subnetCheck = $this->input( "protocol" ) == 4 ? new Ipv4SubnetSize() : new Ipv6SubnetSize();
+            $ipvCheck       = $this->input( "protocol" ) == 4 ? new IPv4Cidr()          : new IPv6Cidr();
+            $subnetCheck    = $this->input( "protocol" ) == 4 ? new Ipv4SubnetSize()    : new Ipv6SubnetSize();
         } else {
             $ipvCheck = "string";
             $subnetCheck = "";

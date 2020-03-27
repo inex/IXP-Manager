@@ -21,9 +21,7 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section('content') ?>
     <div class="row">
-
         <div class="col-md-12">
-
             <?= $t->alerts() ?>
 
             <?php if( Auth::getUser()->isCustUser() ): ?>

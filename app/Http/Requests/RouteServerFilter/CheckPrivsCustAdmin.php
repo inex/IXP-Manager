@@ -3,7 +3,7 @@
 namespace IXP\Http\Requests\RouteServerFilter;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -37,7 +37,6 @@ use IXP\Utils\View\Alert\{
     Container as AlertContainer
 };
 
-
 class CheckPrivsCustAdmin extends FormRequest
 {
     /**
@@ -47,7 +46,8 @@ class CheckPrivsCustAdmin extends FormRequest
      */
     protected $redirectRoute;
 
-    public function __construct(){
+    public function __construct()
+    {
         $this->redirect = '/';
     }
 
@@ -58,7 +58,6 @@ class CheckPrivsCustAdmin extends FormRequest
      */
     public function authorize()
     {
-
         $minAuth = UserEntity::AUTH_CUSTADMIN;
 
         $action =  explode('@', Route::getCurrentRoute()->getActionName() )[1];
@@ -72,7 +71,6 @@ class CheckPrivsCustAdmin extends FormRequest
         } else {
             return true;
         }
-
     }
 
     /**
@@ -120,7 +118,6 @@ class CheckPrivsCustAdmin extends FormRequest
                 $validator->errors()->add( '',  " " );
                 return false;
             }
-
         } );
     }
 }
