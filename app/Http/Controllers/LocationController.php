@@ -23,7 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Redirect, Validator;
+use D2EM, Countries, Former, Redirect, Validator;
 
 use Entities\{
     Location   as LocationEntity
@@ -95,6 +95,8 @@ class LocationController extends Doctrine2Frontend
         $this->feParams->viewColumns = array_merge(
             $this->feParams->listColumns, [
                 'address'     => 'Address',
+                'city'        => 'City',
+                'country'     => [ 'title' => 'Country', 'type' => self::$FE_COL_TYPES[ 'COUNTRY' ] ],
                 'nocfax'      => 'NOC Fax',
                 'officephone' => 'Office Phone',
                 'officefax'   => 'Office Fax',
@@ -141,6 +143,8 @@ class LocationController extends Doctrine2Frontend
                 'shortname'             => request()->old( 'shortname',   $this->object->getShortname() ),
                 'tag'                   => request()->old( 'tag',         $this->object->getTag() ),
                 'address'               => request()->old( 'address',     $this->object->getAddress() ),
+                'city'                  => request()->old( 'city',        $this->object->getCity() ),
+                'country'               => request()->old( 'country', in_array( $this->object->getCountry(),  array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ) ? $this->object->getCountry() : null ),
                 'nocphone'              => request()->old( 'nocphone',    $this->object->getNocphone() ),
                 'nocfax'                => request()->old( 'nocfax',      $this->object->getNocfax() ),
                 'nocemail'              => request()->old( 'nocemail',    $this->object->getNocemail() ),
@@ -152,7 +156,8 @@ class LocationController extends Doctrine2Frontend
         }
 
         return [
-            'object'       => $this->object
+            'object'            => $this->object,
+            'countries'         => Countries::getList('name' )
         ];
     }
 
@@ -170,6 +175,8 @@ class LocationController extends Doctrine2Frontend
         $validator = Validator::make( $request->all(), [
             'name'              => 'required|string|max:255',
             'shortname'         => 'required|string|max:255|unique:Entities\Location,shortname' . ( $request->input('id') ? ','. $request->input('id') : '' ),
+            'city'              => 'required|string|max:50',
+            'country'           => 'required|string|max:2|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
             'tag'               => 'required|string|max:255',
             'nocemail'          => 'nullable|email',
             'officeemail'       => 'nullable|email',
@@ -193,6 +200,8 @@ class LocationController extends Doctrine2Frontend
         $this->object->setTag(             $request->input( 'tag'              ) );
         $this->object->setTag(             $request->input( 'tag'              ) );
         $this->object->setAddress(         $request->input( 'address'          ) );
+        $this->object->setCity(            $request->input( 'city'             ) );
+        $this->object->setCountry(         $request->input( 'country'          ) );
         $this->object->setNocphone(        $request->input( 'nocphone'         ) );
         $this->object->setNocfax(          $request->input( 'nocfax'           ) );
         $this->object->setNocemail(        $request->input( 'nocemail'         ) );

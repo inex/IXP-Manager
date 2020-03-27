@@ -39,6 +39,13 @@ abstract class TestCase extends BaseTestCase
     const API_KEY_SUPERUSER = 'Syy4R8uXTquJNkSav4mmbk5eZWOgoc6FKUJPqOoGHhBjhsC9';
 
 
+    public function __construct( $name = null, array $data = [], $dataName = '' )
+    {
+        date_default_timezone_set('Europe/Dublin');
+        parent::__construct( $name, $data, $dataName );
+    }
+
+
     /**
      * Utility function to get a customer user
      * @param string $username

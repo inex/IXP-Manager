@@ -25,6 +25,8 @@ use Foil\Contracts\ExtensionInterface;
 
 use IXP\Utils\View\Alert\Container as AlertContainer;
 
+use PragmaRX\Google2FALaravel\Support\Authenticator as GoogleAuthenticator;
+
 use Illuminate\Support\Facades\Auth;
 
 /**
@@ -52,19 +54,21 @@ class IXP implements ExtensionInterface {
 
     public function provideFunctions(): array {
         return [
-            'alerts'                => [ AlertContainer::class, 'html' ],
-            'as112UiActive'         => [ $this, 'as112UiActive' ],
-            'asNumber'              => [ $this, 'asNumber' ],
-            'logoManagementEnabled' => [ $this, 'logoManagementEnabled' ],
-            'maxFileUploadSize'     => [ $this, 'maxFileUploadSize' ],
-            'multiIXP'              => [ $this, 'multiIXP' ],
-            'nagiosHostname'        => [ $this, 'nagiosHostname' ],
-            'nakedUrl'              => [ $this, 'nakedUrl' ],
-            'resellerMode'          => [ $this, 'resellerMode' ],
-            'scaleBits'             => [ $this, 'scaleBits' ],
-            'scaleBytes'            => [ $this, 'scaleBytes' ],
-            'softwrap'              => [ $this, 'softwrap' ],
-            'whoisPrefix'           => [ $this, 'whoisPrefix' ],
+            'alerts'                 => [ AlertContainer::class, 'html' ],
+            'as112UiActive'          => [ $this, 'as112UiActive' ],
+            'asNumber'               => [ $this, 'asNumber' ],
+            'google2faAuthenticator' => [ $this, 'google2faAuthenticator' ],
+            'logoManagementEnabled'  => [ $this, 'logoManagementEnabled' ],
+            'maxFileUploadSize'      => [ $this, 'maxFileUploadSize' ],
+            'multiIXP'               => [ $this, 'multiIXP' ],
+            'nagiosHostname'         => [ $this, 'nagiosHostname' ],
+            'nakedUrl'               => [ $this, 'nakedUrl' ],
+            'resellerMode'           => [ $this, 'resellerMode' ],
+            'scaleBits'              => [ $this, 'scaleBits' ],
+            'scaleBytes'             => [ $this, 'scaleBytes' ],
+            'scaleFilesize'          => [ $this, 'scaleFilesize' ],
+            'softwrap'               => [ $this, 'softwrap' ],
+            'whoisPrefix'            => [ $this, 'whoisPrefix' ],
         ];
     }
 
@@ -184,6 +188,31 @@ class IXP implements ExtensionInterface {
     public function scaleBytes( float $v, int $decs = 3 ): string {
         return $this->scale( $v, 'bytes', $decs );
     }
+
+
+    /**
+     * Scale a size in bytes in human style filesize
+     *
+     * @param int  $bytes          The value to scale
+     * @return string            Scaled / formatted number / type.
+     */
+    public function scaleFilesize( int $bytes ): string {
+
+        if( $bytes >= 1073741824 ) {
+            return number_format( $bytes / 1073741824, 2 ) . ' GB';
+        }
+
+        if( $bytes >= 1048576 ) {
+            return number_format( $bytes / 1048576, 2 ) . ' MB';
+        }
+
+        if( $bytes >= 1024 ) {
+            return number_format( $bytes / 1024, 2 ) . ' KB';
+        }
+
+        return $bytes . ' bytes';
+    }
+
 
     /**
     * Soft wrap
@@ -323,7 +352,7 @@ class IXP implements ExtensionInterface {
     /**
      * Replaces an IP prefix with some JS magic to invoke a bootbox.
      *
-     * @param  int    $asn      The IP prefix
+     * @param $prefix
      * @return string
      */
     public function whoisPrefix( $prefix )
@@ -345,5 +374,14 @@ class IXP implements ExtensionInterface {
     {
         $url = preg_replace( '/^http[s]?:\/\//', '', $url );
         return preg_replace( '/\/$/', '', $url );
+    }
+
+    /**
+     * Get Google Authenticator
+     *
+     * @return GoogleAuthenticator
+     */
+    public function google2faAuthenticator() {
+        return new GoogleAuthenticator( request() );
     }
 }

@@ -34,7 +34,7 @@
             // Despite the drawbacks of replication, it's easier - by a distance - to mainatin standalone
             // menu templates per user type:
 
-            if( !Auth::check() ) {
+            if( !Auth::check() || Session::exists( "2fa-" . Auth::user()->getId() ) ) {
                 echo $t->insert("layouts/menus/public");
             } elseif( Auth::user()->isCustUser() && Auth::user()->getCustomer()->isTypeAssociate() ) {
                 echo $t->insert("layouts/menus/associate");
@@ -50,11 +50,13 @@
 
         <div class="container-fluid">
             <div class="row" >
-                <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+
+                <?php if( Auth::check() && Auth::user()->isSuperUser() && !Auth::user()->is2faAuthRequiredForSession() ): ?>
                     <?= $t->insert( 'layouts/menu' ); ?>
                 <?php endif; ?>
+
                 <div id="slide-reveal-overlay" class="collapse"></div>
-                <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+                <?php if( Auth::check() && Auth::user()->isSuperUser() && !Auth::user()->is2faAuthRequiredForSession() ): ?>
                     <main role="main" id="main-div" class="col-md-9 ml-sm-auto col-lg-9 col-xl-10 mt-2 pb-4">
                  <?php else: ?>
                     <main role="main" id="main-div" class="col-md-10 mx-sm-auto mt-2 pb-4">

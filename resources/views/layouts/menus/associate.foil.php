@@ -26,6 +26,14 @@
                     <a class="dropdown-item <?= !request()->is( 'customer/associates' ) ?: 'active' ?>" href="<?= route( "customer@associates" ) ?>">
                         Associate <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?>
                     </a>
+
+                    <?php if( !config( 'ixp_fe.frontend.disabled.docstore' ) && \IXP\Models\DocstoreDirectory::getHierarchyForUserClass( \IXP\Models\User::AUTH_CUSTUSER ) ): ?>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item <?= !request()->is( 'docstore*' ) ?: 'active' ?>" href="<?= route('docstore-dir@list' ) ?>">
+                            Document Store
+                        </a>
+                    <?php endif; ?>
+
                 </div>
             </li>
 
@@ -75,11 +83,19 @@
                             VLAN / Per-Protocol Graphs
                         </a>
                     <?php endif; ?>
-                    <?php if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) <= Auth::user()->getPrivs() ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'statistics/trunk' ) ?: 'active' ?>" href="<?= route('statistics/trunk') ?>">
-                            Inter-Switch / PoP Graphs
-                        </a>
+
+                    <?php if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) == Entities\User::AUTH_PUBLIC ): ?>
+                        <?php if( count( config( 'grapher.backends.mrtg.trunks' ) ?? [] ) ): ?>
+                            <a class="dropdown-item <?= !request()->is( 'statistics/trunk' ) ?: 'active' ?>" href="<?= route('statistics/trunk') ?>">
+                                Inter-Switch / PoP Graphs
+                            </a>
+                        <?php elseif( count( $cbs = d2r( 'CoreBundle' )->getActive() ) ): ?>
+                            <a class="dropdown-item <?= !request()->is( 'statistics/core-bundle' ) ?: 'active' ?>" href="<?= route('statistics@core-bundle', $cbs[0]->getId() ) ?>">
+                                Inter-Switch / PoP Graphs
+                            </a>
+                        <?php endif; ?>
                     <?php endif; ?>
+
                     <?php if( is_numeric( config( 'grapher.access.switch' ) ) && config( 'grapher.access.switch' ) <= Auth::user()->getPrivs() ): ?>
                         <a class="dropdown-item <?= !request()->is( 'statistics/switch' ) ?: 'active' ?>" href="<?= route('statistics/switch') ?>">
                             Switch Aggregate Graphs
@@ -116,8 +132,12 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right">
 
-                    <a class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
+                    <a id="profile" class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
                         Profile
+                    </a>
+
+                    <a id="active-sessions" class="dropdown-item <?= !request()->is( 'active-sessions/list' ) ?: 'active' ?>" href="<?= route('active-sessions@list' )?>">
+                        Active Sessions
                     </a>
 
                 </ul>
@@ -129,7 +149,7 @@
                         Switch Back
                     </a>
                 <?php else: ?>
-                    <a class="nav-link" href="<?= route( 'login@logout' ) ?>">
+                    <a id="logout" class="nav-link" href="<?= route( 'login@logout' ) ?>">
                         Logout
                     </a>
                 <?php endif; ?>

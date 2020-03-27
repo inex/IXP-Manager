@@ -141,6 +141,7 @@ abstract class Doctrine2Frontend extends Controller {
         'INTEGER'           => 'integer',
         'LIMIT'             => 'limit',
         'TEXT'              => 'text',
+        'COUNTRY'           => 'country',
     ];
 
 
@@ -232,7 +233,7 @@ abstract class Doctrine2Frontend extends Controller {
     /**
      * Function which can be over-ridden to perform any pre-list tasks
      *
-     * E.g. adding elements to $this->view for the pre/post-amble templates.
+     * E.g. adding elements to $this->data for the pre/post-amble templates.
      *
      * @return void
      */
@@ -491,9 +492,9 @@ abstract class Doctrine2Frontend extends Controller {
             $this->postFlush( 'delete' );
             AlertContainer::push( $this->feParams->titleSingular . " deleted.", Alert::SUCCESS );
         }
-        if( $url = $this->postDeleteRedirect() ){
+        if( $url = $this->postDeleteRedirect() ) {
             return redirect()->to( $url );
-        } else{
+        } else {
             return redirect()->route( self::route_prefix() . '@' . 'list' );
         }
     }

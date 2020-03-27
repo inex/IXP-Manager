@@ -63,6 +63,19 @@ class CoreBundle extends EntityRepository
             ->getResult();
     }
 
+    /**
+     * Return all active core bundles
+     *
+     * @return array
+     */
+    public function getActive() {
+        return $this->getEntityManager()->createQuery(
+            "SELECT cb
+                    FROM Entities\\CoreBundle cb
+                    WHERE cb.enabled = 1
+                    ORDER BY cb.description ASC" )
+            ->getResult();
+    }
 
     /**
      * Delete the Core Bundle ans everything related.

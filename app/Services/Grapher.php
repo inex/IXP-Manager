@@ -37,6 +37,7 @@ use IXP\Services\Grapher\Graph\{
     Vlan              as VlanGraph,
     Switcher          as SwitchGraph,
     Trunk             as TrunkGraph,
+    CoreBundle        as CoreBundleGraph,
     PhysicalInterface as PhysIntGraph,  // member physical port
     VirtualInterface  as VirtIntGraph,  // member LAG
     Customer          as CustomerGraph, // member agg over all physical ports
@@ -51,6 +52,7 @@ use Cache;
 use Config;
 
 use Entities\{
+    CoreBundle,
     IXP,
     Infrastructure,
     Vlan,
@@ -246,9 +248,19 @@ class Grapher {
      * Get an instance of a trunk graph
      * @param string $trunkname
      * @return \IXP\Services\Grapher\Graph\Trunk
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
     public function trunk( string $trunkname ): TrunkGraph {
         return new TrunkGraph( $this, $trunkname );
+    }
+
+    /**
+     * Get an instance of a customer aggregate graph
+     * @param \Entities\Customer $c
+     * @return \IXP\Services\Grapher\Graph\Customer
+     */
+    public function customer( Customer $c ): CustomerGraph {
+        return new CustomerGraph( $this, $c );
     }
 
     /**
@@ -283,12 +295,13 @@ class Grapher {
     }
 
     /**
-     * Get an instance of a customer aggregate graph
-     * @param \Entities\Customer $c
-     * @return \IXP\Services\Grapher\Graph\Customer
+     * Get an instance of a CoreBundle aggregate graph
+     * @param \Entities\CoreBundle $cb
+     * @param string $side
+     * @return \IXP\Services\Grapher\Graph\CoreBundle
      */
-    public function customer( Customer $c ): CustomerGraph {
-        return new CustomerGraph( $this, $c );
+    public function coreBundle( CoreBundle $cb, string $side = 'a' ): CoreBundleGraph {
+        return new CoreBundleGraph( $this, $cb, $side );
     }
 
     /**
@@ -306,6 +319,7 @@ class Grapher {
      * Get an instance of a latency graph
      * @param VlanInterface $vli
      * @return LatencyGraph
+     * @throws \IXP\Exceptions\Services\Grapher\ParameterException
      */
     public function latency( VlanInterface $vli ): LatencyGraph {
         return new LatencyGraph( $this, $vli );
@@ -333,6 +347,14 @@ class Grapher {
     public function cacheEnabled(): bool {
         return (bool)$this->cacheEnabled;
     }
+
+    /**
+     * Manually disable the cache
+     */
+    public function disableCache(): void {
+        $this->cacheEnabled = false;
+    }
+
 
     /**
      * How long do we cache entries for?

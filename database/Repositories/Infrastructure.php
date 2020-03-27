@@ -152,6 +152,7 @@ class Infrastructure extends EntityRepository
     {
         $dql = "SELECT i.id AS id, 
                   i.name AS name, 
+                  i.country as country,
                   i.isPrimary AS isPrimary,
                   i.shortname AS shortname,
                   i.ixf_ix_id AS ixf_ix_id, 

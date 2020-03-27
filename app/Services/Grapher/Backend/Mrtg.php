@@ -151,6 +151,9 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
         $data['sws']                 = [];
         $data['swports']             = [];
         $data['swports_maxbytes']    = [];
+        $data['cbs']                 = [];
+        $data['cbports']             = [];
+        $data['cbbundles']           = [];
 
 
         // we need to wrap switch ports in physical interfaces for switch aggregates and, as such, we need to use unused physical interface IDs
@@ -214,8 +217,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
             }
         }
 
-        // include core switch ports.
-        // This is a slight hack as the template requires PhysicalInterfaces so we wrap core SwitchPorts in temporary PhyInts.
+        // core bundles
         foreach( $ixp->getInfrastructures() as $infra ) {
             foreach( $infra->getSwitchers() as $switch ) {
                 /** @var SwitcherEntity $switch */
@@ -228,23 +230,62 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
                     $data['sws'][$switch->getId() ] = $switch;
                 }
 
+                // Handle Core Bundles
+                foreach( $switch->getCoreBundles() as $cb ) {
+                    // because we iterate through each switch, we see each $cb twice
+                    if( isset( $data['cbs'][ $cb->getId() ] ) ) {
+                        continue;
+                    }
+
+                    $data['cbs'][ $cb->getId() ] = $cb;
+
+                    foreach( $cb->getCoreLinks() as $cl ) {
+                        foreach( [ 'sidea', 'sideb' ] as $side ) {
+
+                            $pi = ( $side === 'sidea' ) ?
+                                $cl->getCoreInterfaceSideA()->getPhysicalInterface()
+                                : $cl->getCoreInterfaceSideB()->getPhysicalInterface();
+
+                            $data['cbports'][$cb->getId()][$cl->getId()][$side] = $pi->getId();
+
+                            if( !isset( $data['pis'][$pi->getId()] ) ) {
+                                $data['pis'][$pi->getId()] = $pi;
+                            }
+
+                            if( $pi->getId() > $maxPiID ) {
+                                $maxPiID = $pi->getId();
+                            }
+
+                            $data['cbbundles'][$cb->getId()][$side][] = $pi->getId();
+                        }
+                    }
+                }
+            }
+        }
+
+        // include core switch ports.
+        // This is a slight hack as the template requires PhysicalInterfaces so we wrap core SwitchPorts in temporary PhyInts.
+        foreach( $ixp->getInfrastructures() as $infra ) {
+            foreach( $infra->getSwitchers() as $switch ) {
+                /** @var SwitcherEntity $switch */
                 foreach( $switch->getPorts() as $sp ) {
                     /** @var SwitchPortEntity $sp */
                     if( $sp->isTypeCore() ) {
                         // this needs to be wrapped in a physical interface for the template
                         $pi = $this->wrapSwitchPortInPhysicalInterface( $sp, ++$maxPiID );
-                        $data['pis'][$pi->getId()] = $pi;
-                        $data['swports'][$switch->getId()][] = $pi->getId();
+                        $data[ 'pis' ][ $pi->getId() ] = $pi;
+                        $data[ 'swports' ][ $switch->getId() ][] = $pi->getId();
 
-                        if( !isset( $data['swports_maxbytes'][$switch->getId()] ) ) {
-                            $data['swports_maxbytes'][$switch->getId()] = 0;
+                        if( !isset( $data[ 'swports_maxbytes' ][ $switch->getId() ] ) ) {
+                            $data[ 'swports_maxbytes' ][ $switch->getId() ] = 0;
                         }
 
-                        $data['swports_maxbytes'][$switch->getId()] += ( ( $pi->resolveDetectedSpeed() > 0 ) ? $pi->resolveDetectedSpeed() : 1 ) * 1000000 / 8;
+                        $data[ 'swports_maxbytes' ][ $switch->getId() ] += ( ( $pi->resolveDetectedSpeed() > 0 ) ? $pi->resolveDetectedSpeed() : 1 ) * 1000000 / 8;
                     }
                 }
             }
         }
+
 
         return $data;
     }
@@ -305,6 +346,12 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
             'trunk' => [
                 'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
                 'categories'  => [ Graph::CATEGORY_BITS => Graph::CATEGORY_BITS ],
+                'periods'     => Graph::PERIODS,
+                'types'       => $rrd ? Graph::TYPES : $graphTypes,
+            ],
+            'corebundle' => [
+                'protocols'   => [ Graph::PROTOCOL_ALL => Graph::PROTOCOL_ALL ],
+                'categories'  => Graph::CATEGORIES,
                 'periods'     => Graph::PERIODS,
                 'types'       => $rrd ? Graph::TYPES : $graphTypes,
             ],
@@ -483,6 +530,14 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
             case 'Trunk':
                 /** @var Graph\Trunk $graph */
                 return sprintf( "%s/trunks/%s%s.%s", $config['logdir'], $graph->trunkname(),
+                    $loggyType ? '' : "-{$graph->period()}", $type );
+                break;
+
+            case 'CoreBundle':
+                /** @var Graph\CoreBundle $graph */
+                return sprintf( "%s/corebundles/%05d/%s-%s%s.%s", $config['logdir'],
+                    $graph->coreBundle()->getId(),
+                    $graph->identifier(), $graph->category(),
                     $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
 

@@ -90,14 +90,15 @@ class PhysicalInterfaceController extends Common
     /**
      * Display the form to edit a physical interface from the core bundle from
      *
+     * @param Request $request
      * @param   integer $id ID of the physical interface
      * @param   integer $cb ID of core bundle
      *
      * @return View
      */
-    public function editFromCb( int $id , int $cb )
+    public function editFromCb( Request $request, int $id , int $cb )
     {
-        return $this->edit( $id , null, $cb );
+        return $this->edit( $request, $id , null, $cb );
     }
 
     /**

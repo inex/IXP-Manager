@@ -170,6 +170,7 @@
       <field name="ixp_id" type="integer" required="true" uuid="6d316694-a9c3-4547-9265-daf01edf6a88"/>
       <field name="peeringdb_ix_id" type="bigint" uuid="bb30b856-4862-49b3-b240-6ac0098ac233"/>
       <field name="ixf_ix_id" type="bigint" uuid="e9080278-6bc7-4eae-b50c-04483c064ac5"/>
+      <field name="country" type="string" size="2" uuid="2692e1ca-afc8-4726-bd0e-f0e77488ed55"/>
       <index name="IXPSN" unique="true" uuid="3514af3f-4b6d-49ba-9f02-12a1f2724bfe">
         <index-field name="shortname" uuid="6199a691-ee98-4801-a1c6-b3e1cd77b7f2"/>
         <index-field name="ixp_id" uuid="7ccca2db-ad05-416f-beac-17557cfafb94"/>
@@ -376,6 +377,8 @@
       <field name="shortname" type="string" size="255" unique="true" uuid="448524b7-b818-46b1-9635-cb1088cfacdd"/>
       <field name="tag" type="string" size="255" uuid="cdd75bf6-1d5a-4570-8190-ebd6adf2b59e"/>
       <field name="address" type="string" size="255" uuid="abafbf08-7aac-4492-8a10-e5fa396c9eba"/>
+      <field name="city" type="string" size="50" uuid="d6816b48-6189-4942-b917-4991683fd38d"/>
+      <field name="country" type="string" size="2" uuid="08969832-3904-4415-9394-80dd64b815d9"/>
       <field name="nocphone" type="string" size="255" uuid="cb01144f-1a94-46d3-85a7-3a8d339b7bf4"/>
       <field name="nocfax" type="string" size="255" uuid="9a62d766-6422-4e6d-939f-8d946b1ff55d"/>
       <field name="nocemail" type="string" size="255" uuid="cd1e2848-4e67-44c7-a0d4-f09b938a6709"/>
@@ -1705,11 +1708,11 @@
     <entity uuid="cf9b11f0-cdcf-4ccf-b442-ca7ac41de502" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="554" position-y="103" size-x="0" size-x2="133" size-y="0" size-y2="73"/>
     <entity uuid="d776f08f-235f-4431-b5c8-60a6e13295f8" bg-color="4294967295" hdr-color="4292006610" position-x="611" position-y="208" size-x="0" size-x2="125" size-y="0" size-y2="87"/>
     <entity uuid="e2c63309-9c7b-44ea-a0be-cf770fe358fb" bg-color="4294967295" hdr-color="4292006610" position-x="11" position-y="881" size-x="0" size-x2="114" size-y="0" size-y2="115"/>
-    <entity uuid="e64bc27c-d058-422a-987d-95e987418035" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1611" position-y="-334" size-x="0" size-x2="135" size-y="0" size-y2="143"/>
+    <entity uuid="e64bc27c-d058-422a-987d-95e987418035" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1612" position-y="-431" size-x="0" size-x2="135" size-y="0" size-y2="199"/>
     <entity uuid="e8b4e227-f83c-413d-9e34-56dd493985fe" bg-color="4294967295" hdr-color="4292006610" position-x="876" position-y="444" size-x="0" size-x2="129" size-y="0" size-y2="157"/>
     <entity uuid="e8daf53a-44b8-4798-b6a3-808bff907953" bg-color="4294967295" hdr-color="4292006610" position-x="1639" position-y="321" size-x="0" size-x2="123" size-y="0" size-y2="409"/>
     <entity uuid="e980f96e-6b58-43c4-8822-a507f25a8885" bg-color="4294967295" hdr-color="4292006610" position-x="272" position-y="321" size-x="0" size-x2="98" size-y="0" size-y2="87"/>
-    <entity uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1519" position-y="-122" size-x="0" size-x2="171" size-y="0" size-y2="129"/>
+    <entity uuid="f1650d98-cda9-4cce-b857-2d51f071dc9b" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1574" position-y="-145" size-x="0" size-x2="118" size-y="0" size-y2="115"/>
     <entity uuid="fca9fea1-9ab0-4544-a31d-e5ac3b8d424b" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="727" position-y="926" size-x="0" size-x2="164" size-y="0" size-y2="227"/>
     <entity uuid="fe102ac1-eef6-41b0-ae2b-87fc4fc10ba1" bg-color="#FFFFFF" hdr-color="#D2D2D2" position-x="1320" position-y="-508" size-x="0" size-x2="141" size-y="0" size-y2="115"/>
     <many-to-many-association uuid="0f04bf1e-28ce-4bff-979e-ce0fc931bee9" color="#969696"/>

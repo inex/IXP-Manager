@@ -141,16 +141,16 @@ class SwitchPortController extends Doctrine2Frontend
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
 
         Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get(  'unused-optics',   'Switches\SwitchPortController@unusedOptics'   )->name( "switch-port@unused-optics"   );
-            Route::get(  'optic-inventory', 'Switches\SwitchPortController@opticInventory' )->name( "switch-port@optic-inventory" );
-            Route::get(  'optic-list',      'Switches\SwitchPortController@opticList'      )->name( "switch-port@optic-list" );
-            Route::get(  'list-mau/{id}',   'Switches\SwitchPortController@listMau'        )->name( "switch-port@list-mau"        );
-            Route::get(  'op-status/{id}',  'Switches\SwitchPortController@listOpStatus'   )->name( "switch-port@list-op-status"  );
-            Route::get(  'snmp-poll/{id}',  'Switches\SwitchPortController@snmpPoll'       )->name( "switch-port@snmp-poll"       );
+            Route::get(  'unused-optics',       'Switches\SwitchPortController@unusedOptics'   )->name( "switch-port@unused-optics"     );
+            Route::get(  'optic-inventory',     'Switches\SwitchPortController@opticInventory' )->name( "switch-port@optic-inventory"   );
+            Route::get(  'optic-list',          'Switches\SwitchPortController@opticList'      )->name( "switch-port@optic-list"        );
+            Route::get(  'list-mau/{switchid}', 'Switches\SwitchPortController@listMau'        )->name( "switch-port@list-mau"          );
+            Route::get(  'op-status/{switchid}','Switches\SwitchPortController@listOpStatus'   )->name( "switch-port@list-op-status"    );
+            Route::get(  'snmp-poll/{switchid}','Switches\SwitchPortController@snmpPoll'       )->name( "switch-port@snmp-poll"         );
 
-            Route::post( 'set-type',        'Switches\SwitchPortController@setType'        )->name( "switch-port@set-type"        );
-            Route::post( 'delete-snmp-poll','Switches\SwitchPortController@deleteSnmpPoll' )->name( "switch-port@delete-snmp-poll");
-            Route::post( 'change-status',   'Switches\SwitchPortController@changeStatus'   )->name( "switch-port@change-status"   );
+            Route::post( 'set-type',        'Switches\SwitchPortController@setType'        )->name( "switch-port@set-type"          );
+            Route::post( 'delete-snmp-poll','Switches\SwitchPortController@deleteSnmpPoll' )->name( "switch-port@delete-snmp-poll"  );
+            Route::post( 'change-status',   'Switches\SwitchPortController@changeStatus'   )->name( "switch-port@change-status"     );
         });
     }
 
@@ -170,9 +170,11 @@ class SwitchPortController extends Doctrine2Frontend
 
     public function list( Request $r ) : View
     {
-        if( $r && $r->input( 'switch' )  !== null ) {
+        $s = false;
+
+        if( $r && $r->input( 'switchid' )  !== null ) {
             /** @var SwitcherEntity $s */
-            if(  $s = D2EM::getRepository( SwitcherEntity::class )->find( $r->input( 'switch' ) ) ) {
+            if(  $s = D2EM::getRepository( SwitcherEntity::class )->find( $r->input( 'switchid' ) ) ) {
                 $sid = $s->getId();
                 $r->session()->put( "switch-port-list", $sid );
             } else {
@@ -181,11 +183,15 @@ class SwitchPortController extends Doctrine2Frontend
             }
         } else if( $r && $r->session()->exists( "switch-port-list" ) ) {
             $sid = $r->session()->get( "switch-port-list" );
+            if( !( $s = D2EM::getRepository( SwitcherEntity::class )->find( $r->session()->get( "switch-port-list" ) ) ) ) {
+                $sid = false;
+            }
         } else {
             $sid = false;
         }
 
-        $this->data[ 'params' ][ 'switch' ]         = $sid;
+        $this->data[ 'params' ][ 'switchid' ]       = $sid;
+        $this->data[ 'params' ][ 'switch' ]         = $s;
         $this->data[ 'params' ][ 'switches' ]       = D2EM::getRepository( SwitcherEntity::class )->getNames();
 
         $this->data[ 'rows' ] = $this->listGetData();
@@ -509,7 +515,8 @@ class SwitchPortController extends Doctrine2Frontend
         $this->feParams->pagetitlepostamble             = 'MAU Interface Detail for ' . $s->getName() ;
 
         $this->data[ 'params' ][ 'switches' ]           = $switches;
-        $this->data[ 'params' ][ 'switch' ]             = $s->getId();
+        $this->data[ 'params' ][ 'switch' ]             = $s;
+        $this->data[ 'params' ][ 'switchid' ]           = $s->getId();
 
         $this->setUpViews();
         $this->data[ 'view' ][ 'pageBreadcrumbs']       = $this->resolveTemplate( 'page-bread-crumbs',          false );
@@ -611,7 +618,8 @@ class SwitchPortController extends Doctrine2Frontend
         $this->setUpOpStatus();
 
         $this->data[ 'params' ][ 'portStates' ]     = Iface::$IF_OPER_STATES;
-        $this->data[ 'params' ][ 'switch' ]         = $s->getId();
+        $this->data[ 'params' ][ 'switch' ]         = $s;
+        $this->data[ 'params' ][ 'switchid' ]       = $s->getId();
         $this->data[ 'params' ][ 'switches']        = D2EM::getRepository( SwitcherEntity::class  )->getNames();
 
         $this->data[ 'rows' ] =  $this->listGetData();

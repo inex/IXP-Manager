@@ -26,6 +26,12 @@
                     <a class="dropdown-item <?= !request()->is( 'switch/configuration' ) ?: 'active' ?>" href="<?= route('switch@configuration') ?>">
                         Switch Configuration
                     </a>
+                    <?php if( !config( 'ixp_fe.frontend.disabled.docstore' ) && \IXP\Models\DocstoreDirectory::getHierarchyForUserClass( \IXP\Models\User::AUTH_SUPERUSER ) ): ?>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item <?= !request()->is( 'docstore*' ) ?: 'active' ?>" href="<?= route('docstore-dir@list' ) ?>">
+                            Document Store
+                        </a>
+                    <?php endif; ?>
                 </div>
             </li>
 
@@ -73,9 +79,17 @@
                         </a>
                     <?php endif; ?>
 
-                    <a class="dropdown-item <?= !request()->is( 'statistics/trunk') ?: 'active' ?>" href="<?= route('statistics/trunk') ?>">
-                        Inter-Switch / PoP Graphs
-                    </a>
+                    <?php if( count( config( 'grapher.backends.mrtg.trunks' ) ?? [] ) ): ?>
+                        <a class="dropdown-item <?= !request()->is( 'statistics/trunk' ) ?: 'active' ?>" href="<?= route('statistics/trunk') ?>">
+                            Inter-Switch / PoP Graphs
+                        </a>
+                    <?php elseif( count( $cbs = d2r( 'CoreBundle' )->getActive() ) ): ?>
+                        <a class="dropdown-item <?= !request()->is( 'statistics/core-bundle' ) ?: 'active' ?>" href="<?= route('statistics@core-bundle', $cbs[0]->getId() ) ?>">
+                            Inter-Switch / PoP Graphs
+                        </a>
+                    <?php endif; ?>
+
+
                     <a class="dropdown-item <?= !request()->is( 'statistics/switch') ?: 'active' ?>" href="<?= route('statistics/switch') ?>">
                         Switch Aggregate Graphs
                     </a>
@@ -113,7 +127,7 @@
         <form id="div-header-select-customer" class="form-inline my-2 my-lg-0">
             <select id="menu-select-customer" type="select" name="id" class="chzn-select col-xl-7 col-lg-6">
                 <option></option>
-                <?php foreach( $t->customers as $k => $i ): ?>
+                <?php foreach( $t->dd_customer_id_name as $k => $i ): ?>
                     <option value="<?= $k ?>"><?= $i ?></option>
                 <?php endforeach; ?>
             </select>
@@ -126,9 +140,13 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right" id="my-account-dd">
 
-                    <a class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">Profile</a>
+                    <a id="profile" class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">Profile</a>
 
                     <a class="dropdown-item <?= !request()->is( 'api-key/list' ) ?: 'active' ?>" href="<?= route('api-key@list' )?>">API Keys</a>
+
+                    <a id="active-sessions" class="dropdown-item <?= !request()->is( 'active-sessions/list' ) ?: 'active' ?>" href="<?= route('active-sessions@list' )?>">
+                        Active Sessions
+                    </a>
 
                     <div class="dropdown-divider"></div>
 
@@ -162,7 +180,7 @@
                     <?php if( session()->exists( "switched_user_from" ) ): ?>
                         <a class="dropdown-item" href="<?= route( 'switch-user@switchBack' ) ?>">Switch Back</a>
                     <?php else: ?>
-                        <a class="dropdown-item" href="<?= route( 'login@logout' ) ?>">Logout</a>
+                        <a id="logout" class="dropdown-item" href="<?= route( 'login@logout' ) ?>">Logout</a>
                     <?php endif; ?>
 
                 </ul>

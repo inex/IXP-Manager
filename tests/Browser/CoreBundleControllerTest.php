@@ -30,6 +30,7 @@ use Entities\{
     CoreInterface       as CoreInterfaceEntity,
     CoreLink            as CoreLinkEntity,
     PhysicalInterface   as PhysicalInterfaceEntity,
+    SwitchPort          as SwitchPortEntity,
     VirtualInterface    as VirtualInterfaceEntity
 };
 
@@ -39,6 +40,21 @@ use Laravel\Dusk\Browser;
 
 class CoreBundleControllerTest extends DuskTestCase
 {
+
+    public function tearDown(): void
+    {
+        foreach( [ 51, 55 ] as $spid ) {
+            $sp = D2EM::getRepository( SwitchPortEntity::class )->find( $spid );
+            D2EM::refresh($sp);
+
+            if( $sp ) {
+                $sp->setType( SwitchPortEntity::TYPE_CORE );
+                D2EM::flush();
+            }
+        }
+
+        parent::tearDown();
+    }
 
     /**
      * A Dusk test example.
@@ -53,19 +69,19 @@ class CoreBundleControllerTest extends DuskTestCase
 
         $this->browse(function (Browser $browser) {
             $browser->visit('/login')
-                    ->type( 'username', 'travis' )
-                    ->type( 'password', 'travisci' )
-                    ->press( '#login-btn' )
-                    ->assertPathIs( '/admin' );
+                ->type( 'username', 'travis' )
+                ->type( 'password', 'travisci' )
+                ->press( '#login-btn' )
+                ->assertPathIs( '/admin' );
 
             $coreBundlesList = [
                 CoreBundleEntity::TYPE_ECMP => [
-                    "cust1" => 4,
+                    "cust1" => 1,
                     "cost1" => 10,
                     "description1" => "Test description",
                     "graph-title1" => "Test description",
                     "preference1" => 11,
-                    "cust2" => 2,
+                    "cust2" => 1,
                     "cost2" => 12,
                     "description2" => "Test description 2",
                     "graph-title2" => "Test description 2",
@@ -95,7 +111,7 @@ class CoreBundleControllerTest extends DuskTestCase
                     "switch-port-a-3" => 51,
                     "switch-port-a-3-name" => 'GigabitEthernet27',
                     "switch-port-b-3" => 55,
-                    "switch-port-b-3-name" => 'GigabitEthernet27',
+                    "switch-port-b-3-name" => 'GigabitEthernet31',
                     "bfd-cl-3" => 1,
                     "subnet-cl-3" => '192.168.3.0/24',
                     "subnet-cl-4" => '192.168.3.0/24',
@@ -103,12 +119,12 @@ class CoreBundleControllerTest extends DuskTestCase
                 ],
 
                 CoreBundleEntity::TYPE_L2_LAG => [
-                    "cust1" => 4,
+                    "cust1" => 1,
                     "cost1" => 10,
                     "description1" => "Test description",
                     "graph-title1" => "Test description",
                     "preference1" => 11,
-                    "cust2" => 2,
+                    "cust2" => 1,
                     "cost2" => 12,
                     "description2" => "Test description 2",
                     "graph-title2" => "Test description 2",
@@ -143,7 +159,7 @@ class CoreBundleControllerTest extends DuskTestCase
                     "switch-port-a-3" => 51,
                     "switch-port-a-3-name" => 'GigabitEthernet27',
                     "switch-port-b-3" => 55,
-                    "switch-port-b-3-name" => 'GigabitEthernet27',
+                    "switch-port-b-3-name" => 'GigabitEthernet31',
                     "bfd-cl-3" => 0,
                     "subnet-cl-3" => null,
                     "subnet-cl-4" => null,
@@ -151,12 +167,12 @@ class CoreBundleControllerTest extends DuskTestCase
                 ],
 
                 CoreBundleEntity::TYPE_L3_LAG => [
-                    "cust1" => 4,
+                    "cust1" => 1,
                     "cost1" => 10,
                     "description1" => "Test description",
                     "graph-title1" => "Test description",
                     "preference1" => 11,
-                    "cust2" => 2,
+                    "cust2" => 1,
                     "cost2" => 12,
                     "description2" => "Test description 2",
                     "graph-title2" => "Test description 2",
@@ -192,7 +208,7 @@ class CoreBundleControllerTest extends DuskTestCase
                     "switch-port-a-3" => 51,
                     "switch-port-a-3-name" => 'GigabitEthernet27',
                     "switch-port-b-3" => 55,
-                    "switch-port-b-3-name" => 'GigabitEthernet27',
+                    "switch-port-b-3-name" => 'GigabitEthernet31',
                     "bfd-cl-3" => 0,
                     "subnet-cl-3" => null,
                     "subnet-cl-4" => null,
@@ -212,36 +228,38 @@ class CoreBundleControllerTest extends DuskTestCase
 
                 // filling forms
                 $browser->select(   'customer',     $coreBundle[ 'cust1' ] )
-                        ->type(     'description',  $coreBundle[ 'description1' ] )
-                        ->type(     'cost',         $coreBundle[ 'cost1' ] )
-                        ->assertInputValue( 'graph-title', $coreBundle[ 'graph-title1' ] )
-                        ->type(     'preference',   $coreBundle[ 'preference1' ] )
-                        ->select( 'type', $type )
-                        ->check( 'enabled' )
-                        ->check( 'enabled' )
-                        ->check( 'framing' )
-                        ->type(  'mtu', $coreBundle[ 'mtu' ] );
+                    ->type(     'description',  $coreBundle[ 'description1' ] )
+                    ->type(     'cost',         $coreBundle[ 'cost1' ] )
+                    ->assertInputValue( 'graph-title', $coreBundle[ 'graph-title1' ] )
+                    ->type(     'preference',   $coreBundle[ 'preference1' ] )
+                    ->select( 'type', $type )
+                    ->pause( 2000 )
+                    ->check( 'enabled' )
+                    ->pause( 2000 )
+                    ->check( 'framing' )
+                    ->pause( 2000 )
+                    ->type(  'mtu', $coreBundle[ 'mtu' ] );
 
                 if( $type == CoreBundleEntity::TYPE_ECMP ) {
 
                     $browser->assertMissing( 'fast-lacp' )
-                            ->assertMissing( 'stp' )
-                            ->assertMissing( 'bfd' )
-                            ->assertMissing( 'vi-name-a' )
-                            ->assertMissing( 'vi-name-b' )
-                            ->assertMissing( 'vi-channel-number-a' )
-                            ->assertMissing( 'vi-channel-number-b' )
-                            ->assertMissing( 'subnet' );
+                        ->assertMissing( 'stp' )
+                        ->assertMissing( 'bfd' )
+                        ->assertMissing( 'vi-name-a' )
+                        ->assertMissing( 'vi-name-b' )
+                        ->assertMissing( 'vi-channel-number-a' )
+                        ->assertMissing( 'vi-channel-number-b' )
+                        ->assertMissing( 'subnet' );
                 } elseif( $type == CoreBundleEntity::TYPE_L2_LAG ) {
                     $browser->assertMissing( 'bfd' )
-                            ->assertMissing( 'subnet' );
+                        ->assertMissing( 'subnet' );
 
                     $browser->check( 'stp' )
-                            ->check( 'fast-lacp' )
-                            ->type( 'vi-name-a', $coreBundle[ 'vi-name-a' ] )
-                            ->type( 'vi-channel-number-a', $coreBundle[ 'vi-channel-group-a' ] )
-                            ->type( 'vi-name-b', $coreBundle[ 'vi-name-b' ] )
-                            ->type(  'vi-channel-number-b', $coreBundle[ 'vi-channel-group-b' ] );
+                        ->check( 'fast-lacp' )
+                        ->type( 'vi-name-a', $coreBundle[ 'vi-name-a' ] )
+                        ->type( 'vi-channel-number-a', $coreBundle[ 'vi-channel-group-a' ] )
+                        ->type( 'vi-name-b', $coreBundle[ 'vi-name-b' ] )
+                        ->type(  'vi-channel-number-b', $coreBundle[ 'vi-channel-group-b' ] );
                 } else {
                     $browser->assertMissing( 'stp' );
 
@@ -255,19 +273,19 @@ class CoreBundleControllerTest extends DuskTestCase
                 }
 
                 $browser->select( 'switch-a',   $coreBundle[ 'switch-a' ] )
-                        ->assertSelectMissingOption( 'switch-b', $coreBundle[ 'switch-a' ] )
-                        ->select( 'switch-b',   $coreBundle[ 'switch-b' ] )
-                        ->select( 'speed',      $coreBundle[ 'speed' ] );
+                    ->assertSelectMissingOption( 'switch-b', $coreBundle[ 'switch-a' ] )
+                    ->select( 'switch-b',   $coreBundle[ 'switch-b' ] )
+                    ->select( 'speed',      $coreBundle[ 'speed' ] );
 
                 $browser->waitUntil( "$( '#sp-a-1 option' ).length > 1" );
                 $browser->waitUntil( "$( '#sp-b-1 option' ).length > 1" );
 
                 $browser->assertSelectHasOption( '#sp-a-1' , $coreBundle[ 'switch-port-a-1' ] )
-                        ->assertSelectHasOption( '#sp-b-1' , $coreBundle[ 'switch-port-b-1' ] );
+                    ->assertSelectHasOption( '#sp-b-1' , $coreBundle[ 'switch-port-b-1' ] );
 
                 $browser->select( '#sp-a-1', $coreBundle[ 'switch-port-a-1' ] )
-                        ->select( '#sp-b-1', $coreBundle[ 'switch-port-b-1' ] )
-                        ->check( '#enabled-cl-1' );
+                    ->select( '#sp-b-1', $coreBundle[ 'switch-port-b-1' ] )
+                    ->check( '#enabled-cl-1' );
 
                 if( $type == CoreBundleEntity::TYPE_ECMP ) {
                     $browser->type( '#subnet-1', $coreBundle[ 'subnet-cl-1' ] )
@@ -285,15 +303,15 @@ class CoreBundleControllerTest extends DuskTestCase
 
                 if( $type == CoreBundleEntity::TYPE_ECMP ) {
                     $browser->assertChecked(    '#bfd-2' )
-                            ->assertInputValue( '#subnet-2', $coreBundle[ 'subnet-cl-2' ] );
+                        ->assertInputValue( '#subnet-2', $coreBundle[ 'subnet-cl-2' ] );
                 }
 
 
                 $browser->click(         '#add-new-core-link' )
-                        ->assertSee(        'Link 3' )
-                        ->pause( 5000)
-                        ->assertSelected( '#sp-a-3', $coreBundle[ 'switch-port-a-3' ] )
-                        ->assertSelected( '#sp-b-3', $coreBundle[ 'switch-port-b-3' ] );
+                    ->assertSee(        'Link 3' )
+                    ->pause( 5000)
+                    ->assertSelected( '#sp-a-3', $coreBundle[ 'switch-port-a-3' ] )
+                    ->assertSelected( '#sp-b-3', $coreBundle[ 'switch-port-b-3' ] );
 
                 if( $type == CoreBundleEntity::TYPE_ECMP ) {
                     $browser->assertChecked(  '#bfd-3' )
@@ -301,11 +319,11 @@ class CoreBundleControllerTest extends DuskTestCase
                 }
 
                 $browser->assertChecked(  '#enabled-cl-3' )
-                        ->click( '#delete-cl-3' )
-                        ->assertDontSee( 'Link 3' )
-                        ->click( '#core-bundle-submit-btn' )
-                        ->assertPathIs('/interfaces/core-bundle/list' )
-                        ->assertSee( 'Core bundle created' );
+                    ->click( '#delete-cl-3' )
+                    ->assertDontSee( 'Link 3' )
+                    ->click( '#core-bundle-submit-btn' )
+                    ->assertPathIs('/interfaces/core-bundle/list' )
+                    ->assertSee( 'Core bundle created' );
 
                 // Checking values inserted in DB
                 /** @var CoreBundleEntity $cb */
@@ -391,19 +409,19 @@ class CoreBundleControllerTest extends DuskTestCase
                     ->click( '#edit-cb-' . $cb->getId() );
 
                 $browser->assertSelected(   'customer',         $coreBundle[ 'cust1' ] )
-                        ->assertInputValue( 'description',      $coreBundle[ 'description1' ] )
-                        ->assertInputValue( 'cost',             $coreBundle[ 'cost1' ])
-                        ->assertInputValue( 'graph-title',      $coreBundle[ 'graph-title1' ] )
-                        ->assertInputValue( 'preference',       $coreBundle[ 'preference1' ])
-                        ->assertSelected(   'type',             $type )
-                        ->assertChecked(    'enabled' );
+                    ->assertInputValue( 'description',      $coreBundle[ 'description1' ] )
+                    ->assertInputValue( 'cost',             $coreBundle[ 'cost1' ])
+                    ->assertInputValue( 'graph-title',      $coreBundle[ 'graph-title1' ] )
+                    ->assertInputValue( 'preference',       $coreBundle[ 'preference1' ])
+                    ->assertSelected(   'type',             $type )
+                    ->assertChecked(    'enabled' );
 
                 $browser->select(   'customer',     $coreBundle[ 'cust2' ] )
-                        ->type(     'description',  $coreBundle[ 'description2' ] )
-                        ->type(     'graph-title',  $coreBundle[ 'graph-title2' ] )
-                        ->type(     'cost',         $coreBundle[ 'cost2' ] )
-                        ->type(     'preference',   $coreBundle[ 'preference2' ] )
-                        ->uncheck(  'enabled' );
+                    ->type(     'description',  $coreBundle[ 'description2' ] )
+                    ->type(     'graph-title',  $coreBundle[ 'graph-title2' ] )
+                    ->type(     'cost',         $coreBundle[ 'cost2' ] )
+                    ->type(     'preference',   $coreBundle[ 'preference2' ] )
+                    ->uncheck(  'enabled' );
 
                 if( $type == CoreBundleEntity::TYPE_L2_LAG ) {
                     $browser->uncheck(   'stp' );
@@ -469,13 +487,13 @@ class CoreBundleControllerTest extends DuskTestCase
 
 
                     $browser->uncheck(  'enabled-' . $cl->getId() )
-                            ->uncheck(  'enabled-' . $cl->getId() );
+                        ->uncheck(  'enabled-' . $cl->getId() );
 
                 }
 
                 $browser->click( '#core-links-submit-btn' )
-                        ->click( '#core-links-submit-btn' )
-                        ->assertSee( 'Core links updated.' );
+                    ->click( '#core-links-submit-btn' )
+                    ->assertSee( 'Core links updated.' );
 
                 D2EM::refresh( $cb );
 
@@ -484,7 +502,7 @@ class CoreBundleControllerTest extends DuskTestCase
                     $this->assertEquals( 0, $cl->getEnabled() );
                     $this->assertEquals( 0, $cl->getBFD() );
                     $this->assertEquals( $coreBundle[ 'subnet-cl-4' ] , $cl->getIPv4Subnet() );
-                    
+
                 }
 
 
@@ -543,8 +561,8 @@ class CoreBundleControllerTest extends DuskTestCase
 
                 $this->assertEquals( null, D2EM::getRepository( CoreBundleEntity::class )->findOneBy( [ 'id' => $cbid ] ) );
 
-            }
 
+            }
         });
     }
 }

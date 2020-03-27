@@ -108,6 +108,8 @@ Route::group( [ 'prefix' => 'statistics' ], function() {
 
     Route::get(  'member-drilldown/{type}/{typeid}',            'StatisticsController@memberDrilldown'   )->name( 'statistics@member-drilldown'   );
     Route::get(  'latency/{vliid}/{protocol}',                  'StatisticsController@latency'           )->name( 'statistics@latency'            );
+
+    Route::get(  'core-bundle/{cbid}',                          'StatisticsController@coreBundle'        )->name( 'statistics@core-bundle'            );
 });
 
 
@@ -159,6 +161,40 @@ Route::get( 'participants.json', function() { return redirect(route('ixf-member-
 
 Route::get('auth/login/peeringdb',          'Auth\LoginController@peeringdbRedirectToProvider')->name('auth:login-peeringdb');
 Route::get('auth/login/peeringdb/callback', 'Auth\LoginController@peeringdbHandleProviderCallback');
+
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// DOCUMENT STORE
+///
+if( !config( 'ixp_fe.frontend.disabled.docstore' ) ) {
+    Route::group( [ 'namespace' => 'Docstore', 'prefix' => 'docstore' ], function() {
+        Route::get( '/{dir?}',          'DirectoryController@list'      )->name( 'docstore-dir@list' );
+
+        Route::get( '/dir/create',          'DirectoryController@create'    )->name( 'docstore-dir@create'  );
+        Route::get( '/dir/{dir}/edit',      'DirectoryController@edit'      )->name( 'docstore-dir@edit'    );
+
+        Route::post(    '/dir/store',       'DirectoryController@store'     )->name( 'docstore-dir@store'   );
+        Route::put(     '/dir/update/{dir}','DirectoryController@update'    )->name( 'docstore-dir@update'  );
+        Route::delete(  '/dir/{dir}',       'DirectoryController@delete'    )->name( 'docstore-dir@delete'  );
+
+        Route::get(    '/file/download/{file}',    'FileController@download'    )->name( 'docstore-file@download'    );
+        Route::get(    '/file/view/{file}',        'FileController@view'        )->name( 'docstore-file@view'        );
+        Route::get(    '/file/info/{file}',        'FileController@info'        )->name( 'docstore-file@info'        );
+        Route::delete( '/file/{file}',             'FileController@delete'      )->name( 'docstore-file@delete'      );
+
+        Route::get(  '/file/upload',       'FileController@upload' )->name( 'docstore-file@upload'  );
+        Route::get(  '/file/{file}/edit',  'FileController@edit'   )->name( 'docstore-file@edit'    );
+        Route::post( '/file/store',        'FileController@store'  )->name( 'docstore-file@store'   );
+        Route::put(  '/file/update/{file}','FileController@update' )->name( 'docstore-file@update'  );
+
+        Route::get(    '/file/{file}/logs',        'LogController@list'           )->name( 'docstore-log@list'         );
+        Route::get(    '/file/{file}/unique-logs', 'LogController@uniqueList'     )->name( 'docstore-log@unique-list'  );
+
+    } );
+}
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////

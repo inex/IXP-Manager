@@ -89,6 +89,7 @@ return [
         'disabled' => [
             'console-server-connection' => env( 'IXP_FE_FRONTEND_DISABLED_CONSOLE',           false ),
             'cust-kit'                  => env( 'IXP_FE_FRONTEND_DISABLED_CUSTKIT',           false ),
+            'docstore'                  => env( 'IXP_FE_FRONTEND_DISABLED_DOCSTORE',          false ),
             'logo'                      => env( 'IXP_FE_FRONTEND_DISABLED_LOGO',              true  ),
             'lg'                        => env( 'IXP_FE_FRONTEND_DISABLED_LOOKING_GLASS',     true  ),
             'net-info'                  => env( 'IXP_FE_FRONTEND_DISABLED_NETINFO',           true ),
@@ -157,7 +158,11 @@ return [
         // for all actions can be sent to a single address defined here:
         'notes' => [
             'only_send_to' => env( 'IXP_FE_CUSTOMER_NOTES_ONLYSENDTO', false ),
-        ]
+        ],
+
+
+        // public member list and details are shown by default:
+        'details_public' => env( 'IXP_FE_CUSTOMER_DETAILS_PUBLIC', true ),
     ],
 
 
@@ -226,6 +231,14 @@ return [
 
     ],
 
-
+    /*
+    |--------------------------------------------------------------------------
+    | Vlan Interface
+    |--------------------------------------------------------------------------
+    |
+    */
+    'vlaninterfaces' => [
+        'hostname_required'  => env( 'IXP_FE_VLANINTERFACES_HOSTNAME_REQUIRED', true ),
+    ],
 
 ];

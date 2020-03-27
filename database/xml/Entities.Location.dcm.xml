@@ -9,6 +9,8 @@
     <field name="shortname" type="string" unique="true" length="255" nullable="true"/>
     <field name="tag" type="string" length="255" nullable="true"/>
     <field name="address" type="string" length="255" nullable="true"/>
+    <field name="city" type="string" length="50" nullable="true"/>
+    <field name="country" type="string" length="2" nullable="true"/>
     <field name="nocphone" type="string" length="255" nullable="true"/>
     <field name="nocfax" type="string" length="255" nullable="true"/>
     <field name="nocemail" type="string" length="255" nullable="true"/>

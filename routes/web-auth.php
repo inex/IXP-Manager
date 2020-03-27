@@ -155,6 +155,26 @@ Route::group( [ 'prefix' => 'irrdb' ], function() {
     Route::get(  'update/{customer}/{type}/{protocol}',     'IrrdbController@update'          )->name( "irrdb@update"          );
 });
 
+if( config( 'google2fa.enabled' ) ) {
+
+    Route::group( [ 'namespace' => 'User', 'prefix' => '2fa' ], function() {
+
+        Route::get('configure','User2FAController@configure')->name('2fa@configure');
+
+        Route::post('enable',   'User2FAController@enable'   )->name( "2fa@enable"    );
+        Route::post('disable',  'User2FAController@disable'  )->name( "2fa@disable"   );
+
+        Route::post( '/authenticate', function() {
+            if( Session::exists( "url.intended.2fa" ) ) {
+                return redirect( Session::pull( "url.intended.2fa" ) );
+            }
+            return redirect( '' );
+
+        } )->name( '2fa@authenticate' )->middleware( '2fa' );
+
+    } );
+}
+
 
 Route::get( 'rs-filtering/{custid}', 'RsFilterController@list' )->name( 'rs-filter@list' );
 

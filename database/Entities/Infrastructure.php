@@ -42,6 +42,13 @@ class Infrastructure
     protected $shortname;
 
     /**
+     * @var string
+     */
+    protected $country;
+
+
+
+    /**
      * @var integer
      */
     protected $id;
@@ -321,6 +328,25 @@ class Infrastructure
      */
     public function setIxfIxId( $id ): Infrastructure {
         $this->ixf_ix_id = $id;
+        return $this;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * @param string $country
+     * @return Infrastructure
+     */
+    public function setCountry( string $country ): Infrastructure
+    {
+        $this->country = $country;
         return $this;
     }
 

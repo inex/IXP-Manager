@@ -40,6 +40,8 @@ class Kernel extends ConsoleKernel {
         // Grapher - https://docs.ixpmanager.org/grapher/mrtg/#inserting-traffic-data-into-the-database-reporting-emails
         $schedule->command( 'grapher:upload-stats-to-db' )->dailyAt( '2:00' )
             ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_GRAPHER_UPLOAD_STATS_TO_DB', false ); } );
+        $schedule->command( 'grapher:upload-pi-stats-to-db' )->dailyAt( '2:10' )
+            ->skip( function() { return env( 'TASK_SCHEDULER_SKIP_GRAPHER_UPLOAD_STATS_TO_DB', false ); } );
 
         // https://docs.ixpmanager.org/features/peeringdb/#existence-of-peeringdb-records
         $schedule->command('ixp-manager:update-in-peeringdb')->daily()

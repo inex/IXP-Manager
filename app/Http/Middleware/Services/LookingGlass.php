@@ -100,7 +100,7 @@ class LookingGlass
             return true;
         }
 
-        abort( 401, "Insufficent permissions to access this looking glass" );
+        abort( 401, "Insufficient permissions to access this looking glass" );
     }
 
 

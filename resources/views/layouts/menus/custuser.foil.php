@@ -17,7 +17,7 @@
             </li>
 
             <li class="nav-item dropdown">
-                <a class="nav-link dropdown-toggle <?= !request()->is( 'customer/*' , 'switch/configuration' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                <a class="nav-link dropdown-toggle <?= !request()->is( 'customer/*' , 'switch/configuration', 'docstore/*' ) ?: 'active' ?>" href="#" id="navbarDropdown" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                     <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Information
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
@@ -30,7 +30,16 @@
                     <a class="dropdown-item <?= !request()->is( 'switch/configuration' ) ?: 'active' ?>" href="<?= route('switch@configuration') ?>">
                         Switch Configuration
                     </a>
+
+                    <?php if( !config( 'ixp_fe.frontend.disabled.docstore' ) && \IXP\Models\DocstoreDirectory::getHierarchyForUserClass( \IXP\Models\User::AUTH_CUSTUSER ) ): ?>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item <?= !request()->is( 'docstore*' ) ?: 'active' ?>" href="<?= route('docstore-dir@list' ) ?>">
+                            Document Store
+                        </a>
+                    <?php endif; ?>
+
                 </div>
+
             </li>
 
             <li class="nav-item dropdown">
@@ -103,11 +112,21 @@
                             VLAN / Per-Protocol Graphs
                         </a>
                     <?php endif; ?>
+
+
                     <?php if( is_numeric( config( 'grapher.access.trunk' ) ) && config( 'grapher.access.trunk' ) <= Auth::user()->getPrivs() ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'statistics/trunk' ) ?: 'active' ?>" href="<?= route('statistics/trunk') ?>">
-                            Inter-Switch / PoP Graphs
-                        </a>
+                        <?php if( count( config( 'grapher.backends.mrtg.trunks' ) ?? [] ) ): ?>
+                            <a class="dropdown-item <?= !request()->is( 'statistics/trunk' ) ?: 'active' ?>" href="<?= route('statistics/trunk') ?>">
+                                Inter-Switch / PoP Graphs
+                            </a>
+                        <?php elseif( count( $cbs = d2r( 'CoreBundle' )->getActive() ) ): ?>
+                            <a class="dropdown-item <?= !request()->is( 'statistics/core-bundle' ) ?: 'active' ?>" href="<?= route('statistics@core-bundle', $cbs[0]->getId() ) ?>">
+                                Inter-Switch / PoP Graphs
+                            </a>
+                        <?php endif; ?>
                     <?php endif; ?>
+
+
                     <?php if( is_numeric( config( 'grapher.access.switch' ) ) && config( 'grapher.access.switch' ) <= Auth::user()->getPrivs() ): ?>
                         <a class="dropdown-item <?= !request()->is( 'statistics/switch' ) ?: 'active' ?>" href="<?= route('statistics/switch') ?>">
                             Switch Aggregate Graphs
@@ -153,12 +172,16 @@
                 </a>
                 <ul class="dropdown-menu dropdown-menu-right" id="my-account-dd">
 
-                    <a class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
+                    <a id="profile" class="dropdown-item <?= !request()->is( 'profile' ) ?: 'active' ?>" href="<?= route( 'profile@edit' ) ?>">
                         Profile
                     </a>
 
                     <a class="dropdown-item <?= !request()->is( 'api-key/list' ) ?: 'active' ?>" href="<?= route('api-key@list' )?>">
                         API Keys
+                    </a>
+
+                    <a id="active-sessions" class="dropdown-item <?= !request()->is( 'active-sessions/list' ) ?: 'active' ?>" href="<?= route('active-sessions@list' )?>">
+                        Active Sessions
                     </a>
 
                     <?php if( count( Auth::getUser()->getCustomers() ) > 1 ): ?>
@@ -181,7 +204,7 @@
 
                     <div class="dropdown-divider"></div>
 
-                    <a class="dropdown-item" href="<?= route( 'login@logout' ) ?>">
+                    <a id="logout" class="dropdown-item" href="<?= route( 'login@logout' ) ?>">
                         Logout
                     </a>
 

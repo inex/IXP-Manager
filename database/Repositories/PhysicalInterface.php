@@ -62,4 +62,26 @@ class PhysicalInterface extends EntityRepository
             )->getArrayResult();
     }
 
+    /**
+     * Provide array of all the speeds
+     *
+     * @return array
+     */
+    public function getAllSpeed(): array
+    {
+         $arraySpeeds = $this->getEntityManager()->createQuery(
+            "SELECT DISTINCT pi.speed as speed
+                    FROM \\Entities\\PhysicalInterface pi"
+        )->getScalarResult();
+
+         $speeds = [];
+
+         foreach( $arraySpeeds as $s ) {
+             $speeds[] = $s[ 'speed' ];
+         }
+
+        sort($speeds, SORT_NUMERIC );
+        return $speeds;
+    }
+
 }

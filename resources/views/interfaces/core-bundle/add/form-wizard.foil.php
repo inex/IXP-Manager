@@ -105,6 +105,7 @@ $this->layout( 'layouts/ixpv4' );
                                 ->id( 'enabled' )
                                 ->label( 'Enabled' )
                                 ->value( 1 )
+                                ->class( "mx-1" )
                                 ->blockHelp( "" );
                             ?>
                         </div>

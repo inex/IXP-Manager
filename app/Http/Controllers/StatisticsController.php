@@ -24,16 +24,20 @@ namespace IXP\Http\Controllers;
 
 use App, Auth, D2EM;
 
+use Carbon\Carbon;
 use Entities\{
+    CoreBundle          as CoreBundleEntity,
     Customer            as CustomerEntity,
     Infrastructure      as InfrastructureEntity,
     IXP                 as IXPEntity,
     PhysicalInterface   as PhysicalInterfaceEntity,
     Switcher            as SwitchEntity,
     TrafficDaily        as TrafficDailyEntity,
+    TrafficDailyPhysInt as TrafficDailyPhysIntEntity,
     VirtualInterface    as VirtualInterfaceEntity,
     Vlan                as VlanEntity,
-    VlanInterface       as VlanInterfaceEntity
+    VlanInterface       as VlanInterfaceEntity,
+
 };
 
 use Repositories\Vlan as VlanRepository;
@@ -702,5 +706,98 @@ class StatisticsController extends Controller
         ]);
     }
 
+
+
+
+    /**
+     * Display graphs for a core bundle
+     *
+     * @param StatisticsRequest   $r
+     * @param int                 $cbid ID of the core bundle
+     *
+     * @return RedirectResponse|View
+     *
+     * @throws
+     */
+    public function coreBundle( StatisticsRequest $r, int $cbid = null )
+    {
+        /** @var CoreBundleEntity $cb */
+        if( !$cbid || !( $cb = D2EM::getRepository( CoreBundleEntity::class )->find( $cbid ) ) ) {
+            abort( 404, 'Core bundle not found' );
+        }
+
+        $grapher  = App::make('IXP\Services\Grapher');
+        $category = Graph::processParameterCategory( $r->input( 'category' ) );
+        $graph    = $grapher->coreBundle( $cb )->setCategory( $category )->setSide( $r->input( 'side', 'a' ) );
+
+        // if the customer is authorised, then so too are all of their virtual and physical interfaces:
+        try {
+            $graph->authorise();
+        } catch( AuthorizationException $e ) {
+            abort( 403, "You are not authorised to view this graph." );
+        }
+
+        return view( 'statistics/core-bundle' )->with([
+            "cb"                    => $cb,
+            "grapher"               => $grapher,
+            "graph"                 => $graph,
+            "category"              => $category,
+            "categories"            => Auth::check() && Auth::user()->isSuperUser() ? Graph::CATEGORY_DESCS : Graph::CATEGORIES_BITS_PKTS_DESCS,
+        ]);
+    }
+
+
+    /**
+     * Show utilisation of member ports
+     *
+     * @param Request $r
+     *
+     * @return View
+     *
+     * @throws
+     */
+    public function utilisation( StatisticsRequest $r )
+    {
+        $metrics = [
+            'Max'     => 'max',
+            'Total'   => 'data',
+            'Average' => 'average'
+        ];
+
+        $metric = $r->input( 'metric', $metrics['Max'] );
+        if( !in_array( $metric, $metrics ) ) {
+            $metric = $metrics[ 'Max' ];
+        }
+
+        $days = D2EM::getRepository( TrafficDailyPhysIntEntity::class )->availableForDays();
+        if( count( $days ) ) {
+            $day = $r->input( 'day' );
+            if( !in_array( $day, $days ) ) {
+                $day = $days[0];
+            }
+        } else {
+            $day = null;
+        }
+
+        $vid = false;
+        if( $r->input( 'vlan' ) && ( $vlan = D2EM::getRepository( VlanEntity::class )->find( $r->input( 'vlan' ) ) ) ) {
+            $vid = $vlan->getId();
+        }
+
+        $category = Graph::processParameterCategory( $r->input( 'category' ) );
+        $period   = Graph::processParameterPeriod( $r->input( 'period' ), Graph::PERIOD_MONTH );
+
+        return view( 'statistics/utilisation' )->with([
+            'metric'       => $metric,
+            'metrics'      => $metrics,
+            'day'          => $day,
+            'days'         => $days,
+            'category'     => $category,
+            'period'       => $period,
+            'tdpis'        => ( $day ? D2EM::getRepository( TrafficDailyPhysIntEntity::class )->load( $day, $category, $period, $vid ) : [] ),
+            'vlans'        => D2EM::getRepository( VlanEntity::class )->getNames(),
+            'vlan'         => $vid,
+        ]);
+    }
 
 }

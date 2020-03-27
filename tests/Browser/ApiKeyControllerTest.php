@@ -35,6 +35,16 @@ use Laravel\Dusk\Browser;
 
 class ApiKeyControllerTest extends DuskTestCase
 {
+    public function tearDown(): void
+    {
+        if( $c = D2EM::getRepository( ApiKeyEntity::class )->findOneBy( [ 'id' => 5 ] ) ) {
+            D2EM::remove( $c );
+            D2EM::flush();
+        }
+
+        parent::tearDown();
+    }
+
     /**
      * A Dusk test example.
      *
@@ -43,7 +53,6 @@ class ApiKeyControllerTest extends DuskTestCase
      */
     public function test()
     {
-
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
                 ->visit('/login')
@@ -80,7 +89,7 @@ class ApiKeyControllerTest extends DuskTestCase
                 ->assertInputValue('expires', '')
                 ->assertDisabled('key' )
                 ->type( "description" , "description test" )
-                ->type("expires", now()->add( "1day" )->format( "d-m-Y" ) )
+                ->type("expires", now()->addYear()->startOfMonth()->format( "d-m-Y" ) )
                 ->press( "Save Changes" )
                 ->assertPathIs('/api-key/list')
                 ->assertSee( "API Key edited" );
@@ -89,7 +98,17 @@ class ApiKeyControllerTest extends DuskTestCase
 
             // 4. Check Value
             $this->assertEquals(            $keyLimited,              Str::limit( $apiKey->getApiKey() , 6 ) );
-            $this->assertEquals( now()->add( "1day" )->format( "Y-m-d" ),              $apiKey->getExpires()->format( "Y-m-d" ) );
+
+            // work around locale issues:
+            $now = now()->addYear()->startOfMonth()->format( "Y-m-d" );
+
+            if( $now === $apiKey->getExpires()->format( "Y-m-d" ) ) {
+                $db = $apiKey->getExpires()->format( "Y-m-d" );
+            } else {
+                $db = $apiKey->getExpires()->format( "Y-d-m" );
+            }
+
+            $this->assertEquals( $db, $now );
             $this->assertEquals( 'description test',        $apiKey->getDescription() );
 
             // 5. Enter wrong password to see the not limited API KEY

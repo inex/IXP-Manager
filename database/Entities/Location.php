@@ -49,6 +49,19 @@ class Location
      */
     protected $address;
 
+
+    /**
+     * @var string
+     */
+    protected $country;
+
+
+    /**
+     * @var string
+     */
+    protected $city;
+
+
     /**
      * @var string $nocphone
      */
@@ -425,4 +438,43 @@ class Location
     {
         return $this->pdb_facility_id;
     }
+
+
+
+    /**
+     * @return string
+     */
+    public function getCountry()
+    {
+        return $this->country;
+    }
+
+    /**
+     * @param string $country
+     * @return Location
+     */
+    public function setCountry( string $country ): Location
+    {
+        $this->country = $country;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCity()
+    {
+        return $this->city;
+    }
+
+    /**
+     * @param string $city
+     * @return Location
+     */
+    public function setCity( string $city ): Location
+    {
+        $this->city = $city;
+        return $this;
+    }
+
 }

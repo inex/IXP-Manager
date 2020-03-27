@@ -147,7 +147,7 @@
                             </td>
                             <td>
                                 <div style="float: left;">
-                                    <select id="port-type-<?= $port[ "port"]->getId() ?>" style="width: 100px!important">
+                                    <select id="port-type-<?= $port[ "port"]->getId() ?>" class="form-control">
                                         <?php foreach( Entities\SwitchPort::$TYPES as $idx => $name ): ?>
                                             <option value="<?= $idx ?>" label="<?= $name ?>" <?= $port[ "port"]->getType() == $idx ? "selected='selected'" : "" ?>>
                                                 <?= $name ?>

@@ -86,6 +86,9 @@ Route::group( [ 'prefix' => 'router' ], function() {
 Route::group( [ 'prefix' => 'statistics' ], function() {
     Route::get(  'league-table', 'StatisticsController@leagueTable' );
     Route::post( 'league-table', 'StatisticsController@leagueTable' )->name( 'statistics/league-table' );
+
+    Route::get(  'utilisation', 'StatisticsController@utilisation' )->name( 'statistics/utilisation' );
+    Route::post( 'utilisation', 'StatisticsController@utilisation' )->name( 'statistics/utilisation:post' );
 });
 
 
@@ -188,6 +191,13 @@ Route::group( [ 'namespace' => 'User', 'prefix' => 'customer-to-user' ], functio
 Route::get( 'admin', 'AdminController@dashboard' )->name( 'admin@dashboard' );
 
 Route::get( 'search', 'SearchController@do' )->name( 'search' );
+
+
+if( config( 'google2fa.enabled' ) ) {
+    Route::group( [ 'namespace' => 'User', 'prefix' => '2fa' ], function() {
+        Route::post('delete',   'User2FAController@delete'   )->name( "2fa@delete"    );
+    });
+}
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////

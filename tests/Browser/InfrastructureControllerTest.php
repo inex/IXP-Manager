@@ -85,6 +85,7 @@ class InfrastructureControllerTest extends DuskTestCase
             // 1. test add
             $browser->type( 'name',         'Infrastructure #1')
                     ->type( 'shortname',    'phpunit' )
+                    ->select( 'country',  'IE' )
                     ->check('primary')
                     ->select( 'ixf_ix_id',  1 )
                     ->select( 'pdb_ixp',    1 )
@@ -108,6 +109,7 @@ class InfrastructureControllerTest extends DuskTestCase
             $this->assertInstanceOf( InfrastructureEntity::class, $infra );
             $this->assertEquals( 'Infrastructure PHPUnit',   $infra->getName() );
             $this->assertEquals( 'phpunit',                  $infra->getShortname() );
+            $this->assertEquals( 'IE',                       $infra->getCountry() );
             $this->assertEquals( true,                       $infra->getIsPrimary() );
             $this->assertEquals( '1',                        $infra->getIxfIxId() );
             $this->assertEquals( '1',                        $infra->getPeeringdbIxId() );
@@ -119,6 +121,7 @@ class InfrastructureControllerTest extends DuskTestCase
             // 4. test that form contains settings as above using assertChecked(), assertNotChecked(), assertSelected(), assertInputValue, ...
             $browser->assertInputValue('name',      'Infrastructure PHPUnit')
                     ->assertInputValue('shortname', 'phpunit')
+                    ->assertSelected('country', 'IE')
                     ->assertChecked( 'primary' )
                     ->waitForText( "LINX LON1" )
                     ->pause(5000)
@@ -130,6 +133,7 @@ class InfrastructureControllerTest extends DuskTestCase
             // 5. uncheck checkboxes, change selects and values, ->press('Save Changes'), assertPathIs(....)  (repeat 1)
             $browser->select( 'ixf_ix_id', '2' )
                     ->select( 'pdb_ixp',   '2' )
+                    ->select( 'country',   'FR' )
                     ->uncheck('primary')
                     ->press('Save Changes')
                     ->assertPathIs('/infrastructure/list')
@@ -142,6 +146,7 @@ class InfrastructureControllerTest extends DuskTestCase
             $this->assertInstanceOf( InfrastructureEntity::class, $infra );
             $this->assertEquals( 'Infrastructure PHPUnit',   $infra->getName() );
             $this->assertEquals( 'phpunit',                  $infra->getShortname() );
+            $this->assertEquals( 'FR',                       $infra->getCountry() );
             $this->assertEquals( false,                      $infra->getIsPrimary() );
             $this->assertEquals( '2',                        $infra->getIxfIxId() );
             $this->assertEquals( '2',                        $infra->getPeeringdbIxId() );
@@ -158,6 +163,7 @@ class InfrastructureControllerTest extends DuskTestCase
                 ->assertInputValue('shortname', 'phpunit')
                 ->assertNotChecked( 'primary' )
                 ->assertSelected('ixf_ix_id', '2')
+                ->assertSelected('country', 'FR')
                 ->assertSelected('pdb_ixp', '2');
 
 
@@ -169,11 +175,12 @@ class InfrastructureControllerTest extends DuskTestCase
             D2EM::refresh( $infra );
 
             $this->assertInstanceOf( InfrastructureEntity::class, $infra );
-            $this->assertEquals( 'Infrastructure PHPUnit',   $infra->getName() );
-            $this->assertEquals( 'phpunit',        $infra->getShortname() );
-            $this->assertEquals( false,          $infra->getIsPrimary() );
-            $this->assertEquals( '2',           $infra->getIxfIxId() );
-            $this->assertEquals( '2',           $infra->getPeeringdbIxId() );
+            $this->assertEquals( 'Infrastructure PHPUnit',      $infra->getName() );
+            $this->assertEquals( 'phpunit',                     $infra->getShortname() );
+            $this->assertEquals( 'FR',                          $infra->getCountry() );
+            $this->assertEquals( false,                         $infra->getIsPrimary() );
+            $this->assertEquals( '2',                           $infra->getIxfIxId() );
+            $this->assertEquals( '2',                           $infra->getPeeringdbIxId() );
 
 
             // 9. edit again and check all checkboxes and submit

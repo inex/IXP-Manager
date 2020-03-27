@@ -297,6 +297,31 @@ class UserControllerTest extends DuskTestCase
             $this->assertFalse(     $u->getDisabled()       );
 
 
+
+            /**
+             *
+             * Add customer to a user
+             *
+             */
+            $browser->click( "#d2f-list-edit-" . $u->getId() )
+                    ->click( "#add-c2u-btn")
+                    ->click( "#user-" . $u->getId() )
+                    ->select(   "#privs",   UserEntity::AUTH_CUSTADMIN )
+                    ->select(   "#cust",    3 )
+                    ->click( ".btn-primary" );
+
+
+            /** @var CustomerToUserEntity $c2u3 */
+            $c2u3 = D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ 'user' => $u , "customer" => 3 ] );
+
+            // test the values:
+            $this->assertInstanceOf(CustomerToUserEntity::class   , $c2u3 );
+            $this->assertEquals(    3                             , $c2u3->getCustomer()->getId() );
+            $this->assertEquals(             $u->getId()                   , $c2u3->getUser()->getId() );
+            $this->assertEquals(    UserEntity::AUTH_CUSTADMIN    , $c2u3->getPrivs() );
+            $this->assertNotNull(           $c2u3->getCreatedAt() );
+
+
             /**
              *
              * Delete customer/user link
@@ -329,7 +354,7 @@ class UserControllerTest extends DuskTestCase
 
 
             $this->assertEquals( null   , D2EM::getRepository( CustomerToUserEntity::class )->findOneBy( [ 'user' => $u , "customer" => 2 ] ) );
-            $this->assertEquals( 1      , count( $u->getCustomers2User() ) );
+            $this->assertEquals( 2      , count( $u->getCustomers2User() ) );
 
 
             /**
@@ -340,7 +365,7 @@ class UserControllerTest extends DuskTestCase
 
             $browser->click(    "#d2f-list-delete-" . $u->getId() )
                     ->waitForText( "Delete User" )
-                    ->assertSee(   "Are you sure you want to delete this user and its 1 " . config( 'ixp_fe.lang.customer.one' ) . " links" )
+                    ->assertSee(   "Are you sure you want to delete this user and its 2 " . config( 'ixp_fe.lang.customer.one' ) . " links" )
                     ->press(     'Delete' );
 
             $browser->assertPathIs("/user/list" )

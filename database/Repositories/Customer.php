@@ -49,7 +49,7 @@ class Customer extends EntityRepository
      *
      * @var string DQL for selecting customers that are current in terms of `datejoin` and `dateleave`
      */
-    const DQL_CUST_CURRENT = "c.datejoin <= CURRENT_DATE() AND ( c.dateleave IS NULL OR c.dateleave = '0000-00-00' OR c.dateleave >= CURRENT_DATE() )";
+    const DQL_CUST_CURRENT = "c.datejoin <= CURRENT_DATE() AND ( c.dateleave IS NULL OR c.dateleave >= CURRENT_DATE() )";
     
     /**
      * DQL for selecting customers that are active (i.e. not suspended)
@@ -702,26 +702,6 @@ class Customer extends EntityRepository
             ->getResult();
     }
 
-
-    /**
-     * Return an array of the patch panel port cross connected
-     *
-     * @param $cid int The customer ID
-     * @return array An array of all the  patch panel port entries
-     */
-    public function getCrossConnects( $cid )
-    {
-        $crossConnected = $this->getEntityManager()->createQuery(
-            "SELECT ppp
-             FROM \\Entities\\PatchPanelPort ppp
-             WHERE ppp.customer = ?1
-             AND ppp.duplexMasterPort IS NULL"
-        )
-            ->setParameter( 1, $cid )
-            ->getResult();
-
-        return $crossConnected;
-    }
 
     /**
      * Return an array of one or all customer names where the array key is the customer id.
