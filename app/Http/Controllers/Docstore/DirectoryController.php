@@ -65,10 +65,18 @@ class DirectoryController extends Controller
      */
     public function list( Request $request, DocstoreDirectory $dir = null ) : View
     {
+        $dirs  = DocstoreDirectory::getHierarchyForUserClass( optional( $request->user() )->getPrivs() ?? 0 )[ $dir ? $dir->id : '' ] ?? [];
+        $files = DocstoreFile::getListing( $dir, $request->user() );
+
+        // Only show a folder if there's a file (or folder) there for the user to see:
+        if( !count( $dirs ) && !count( $files ) ) {
+            abort( 403, 'Nothing for you here. You either need to log in or you do not have sufficient privileges.' );
+        }
+
         return view( 'docstore/dir/list', [
             'dir'       => $dir ?? false,
-            'dirs'      => DocstoreDirectory::getHierarchyForUserClass( optional( $request->user() )->getPrivs() ?? 0 )[ $dir ? $dir->id : '' ] ?? [],
-            'files'     => DocstoreFile::getListing( $dir, $request->user() ),
+            'dirs'      => $dirs,
+            'files'     => $files,
         ] );
     }
 
