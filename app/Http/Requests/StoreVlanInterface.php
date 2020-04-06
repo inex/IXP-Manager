@@ -54,6 +54,7 @@ class StoreVlanInterface extends FormRequest
             'maxbgpprefix'          => 'integer|nullable',
             'mcastenabled'          => 'boolean',
             'busyhost'              => 'boolean',
+            'customvlantag'         => 'integer',
             'rsclient'              => 'boolean',
             'irrdbfilter'           => 'boolean',
             'rsmorespecifics'       => 'boolean',

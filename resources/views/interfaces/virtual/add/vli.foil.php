@@ -36,6 +36,9 @@
                             VLAN Tag
                         </th>
                         <th>
+                            Custom VLAN Tag
+                        </th>
+                        <th>
                             Configured MAC Address(es)
                         </th>
                         <th>
@@ -62,6 +65,10 @@
 
                             <td>
                                 <?= $t->ee( $vli->getVlan()->getNumber() )?>
+                            </td>
+                            
+                            <td>
+                                <?= $t->ee( ($vli->getCustomvlantag() == 0) ? '(Untagged)' : "{$vli->getCustomvlantag()}" ) ?>
                             </td>
 
                             <td>

@@ -83,6 +83,11 @@ $this->layout( 'layouts/ixpv4' );
                         ->inline()
                     ?>
 
+                    <?= Former::number( 'customvlantag' )
+                                ->label( 'Custom VLAN Tag' )
+                                ->blockHelp( 'The VLAN to translate to, if required. 0 signifies untagged ');
+                    ?>
+
                     <?= Former::checkbox( 'ipv6-enabled' )
                         ->label('&nbsp;')
                         ->text( 'IPv6 Enabled' )

@@ -42,6 +42,7 @@
     <field name="ipv6monitorrcbgp" type="boolean" nullable="true"/>
     <field name="as112client" type="boolean" nullable="true"/>
     <field name="busyhost" type="boolean" nullable="true"/>
+    <field name="customvlantag" type="integer" nullable="false"/>
     <field name="notes" type="text" nullable="true"/>
     <many-to-one field="VirtualInterface" target-entity="Entities\VirtualInterface" inversed-by="VlanInterfaces">
       <join-columns>

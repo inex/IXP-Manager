@@ -144,6 +144,7 @@ class VlanInterfaceController extends Common
                 'rsmorespecifics'           => $request->old( 'rsmorespecifics',         ( $vli->getRsMoreSpecifics()  ? 1 : 0 ) ),
                 'as112client'               => $request->old( 'as112client',             ( $vli->getAs112client()      ? 1 : 0 ) ),
                 'busyhost'                  => $request->old( 'busyhost',                ( $vli->getBusyhost()         ? 1 : 0 ) ),
+                'customvlantag'             => $request->old( 'customvlantag',           ( $vli->getCustomVlanTag()    ? 1 : 0 ) ),
 
                 'ipv6-enabled'              => $request->old( 'ipv6-enabled',            ( $vli->getIpv6enabled()      ? 1 : 0 ) ),
                 'ipv6-address'              => $request->old( 'ipv6-address',            ( $vli->getIPv6Address()      ? $vli->getIPv6Address()->getId() : null ) ),
@@ -215,6 +216,7 @@ class VlanInterfaceController extends Common
         $vli->setRsclient(          $request->input( 'rsclient',        false ) );
         $vli->setAs112client(       $request->input( 'as112client',     false ) );
         $vli->setBusyhost(          $request->input( 'busyhost',        false ) );
+        $vli->setCustomvlantag(     $request->input( 'customvlantag',   false ) );
         D2EM::flush();
 
         // add a warning if we're filtering on irrdb but have not configured one for the customer
