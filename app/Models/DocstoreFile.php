@@ -111,7 +111,7 @@ class DocstoreFile extends Model
      *
      * @var array
      */
-    public static $extensionViewable = [ '.txt', '.md', '.mp4' ];
+    public static $extensionViewable = [ '.txt', '.md' ];
 
     /**
      * File extension allowed to be edited
