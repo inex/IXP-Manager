@@ -28,13 +28,25 @@ $this->layout( 'layouts/ixpv4' );
 
 <h3 class="tw-mt-4">Viewing File: <?= $t->file->name ?></h3>
 
-<div class="tw-mt-8 tw-border tw-p-5 tw-rounded-lg tw-border-gray-200 tw-bg-gray-100 tw-text-black">
 <?php if( $t->file->extension() == 'md' ): ?>
+
+<div class="tw-mt-8 tw-border tw-p-5 tw-rounded-lg tw-border-gray-200 tw-bg-gray-100 tw-text-black">
 <?= @parsedown( $t->content ) ?>
-<?php else: ?>
-    <pre><?= $t->ee( trim( $t->content ) ) ?></pre>
-<?php endif; ?>
 </div>
+
+<?php elseif( $t->file->extension() == 'mp4' ): ?>
+
+<video  controls>
+    <source src="<?= route('docstore-file@download', ['file' => $t->file ] ) ?>" type="video/mp4">
+</video>
+
+<?php else: ?>
+
+<div class="tw-mt-8 tw-border tw-p-5 tw-rounded-lg tw-border-gray-200 tw-bg-gray-100 tw-text-black">
+<pre><?= $t->ee( trim( $t->content ) ) ?></pre>
+</div>
+
+<?php endif; ?>
 </div>
 </div>
 <?php $this->append() ?>

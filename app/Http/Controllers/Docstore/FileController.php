@@ -83,7 +83,7 @@ class FileController extends Controller
 
         return view( 'docstore/file/view', [
             'file'      => $file,
-            'content'   => Storage::disk( $file->disk )->get( $file->path )
+            'content'   => $file->extension() != 'mp4' ? Storage::disk( $file->disk )->get( $file->path ) : ''
         ] );
     }
 
