@@ -81,7 +81,7 @@ of all other members, a Peering Manager tool, documentation, support information
 management and much more.
 
 @if( count($admins) )
-Customer users with *admin* previleges can create and manage other user accounts.
+Customer users with *admin* privileges can create and manage other user accounts.
 
 We have created your administration account(s) with the following username(s) and email address(es):
 
