@@ -6,8 +6,12 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <a href="<?= route( 'customer@overview', [ 'id' => $t->cust->id ] ) ?>" ><?= $t->cust->name ?></a> ::
-    <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Document Store
+    <?php if( Auth::user()->isSuperUser() ): ?>
+        <a href="<?= route( 'customer@overview', [ 'id' => $t->cust->id ] ) ?>" ><?= $t->cust->name ?></a> :: Document Store
+    <?php else: ?>
+        <a href="<?= route( 'dashboard@index' ) ?>" ><?= $t->cust->name ?></a> :: Document Store
+    <?php endif; ?>
+
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -44,9 +48,9 @@ $this->layout( 'layouts/ixpv4' );
 
     <?= $t->alerts() ?>
 
-    <?php if( Auth::check() && Auth::user()->isSuperUser() && !$t->dir && !count( $t->dirs ) && !count( $t->files ) ): ?>
+    <?php if( !$t->dir && !count( $t->dirs ) && !count( $t->files ) ): ?>
 
-        <?= $t->insert( 'docstore-customer/welcome.foil.php' ) ?>
+        <?= $t->insert( 'docstore-customer/welcome-customer.foil.php' ) ?>
 
     <?php endif; ?>
 
@@ -200,7 +204,6 @@ $this->layout( 'layouts/ixpv4' );
                                        onclick="bootbox.alert({ message: 'SHA checksums can be used to check the authenticity / integrity of files.<br><br><?= $file->sha256 ? "SHA256 checksum: [<code>" . $t->ee( $file->sha256 ) . "</code>]" : "there is no sha256 checksum registered for this file." ?>', size: 'large' }); return false;">Show SHA256</a>
 
                                     <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-                                        <div class="dropdown-divider"></div>
                                         <div class="dropdown-divider"></div>
                                         <a class="dropdown-item" href="<?= route( "docstore-c-file@edit", [ 'cust' => $t->cust , "file" => $file ] ) ?>">Edit</a>
                                         <a class="dropdown-item list-delete-btn" data-object-type="file" href="#" data-url="<?= route( "docstore-c-file@delete", [ "file" => $file ] ) ?>">Delete</a>

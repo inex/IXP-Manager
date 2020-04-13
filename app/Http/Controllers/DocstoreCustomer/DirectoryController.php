@@ -33,6 +33,8 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
+use Illuminate\Support\Str;
+
 use IXP\Http\Controllers\Controller;
 
 use IXP\Models\{
@@ -67,7 +69,7 @@ class DirectoryController extends Controller
      */
     public function listCustomers( Request $request ) : View
     {
-        $this->authorize( 'listCustomer', [ DocstoreCustomerDirectory::class ] );
+        $this->authorize( 'listCustomers', [ DocstoreCustomerDirectory::class ] );
 
         return view( 'docstore-customer/dir/customers', [
             'files'      => DocstoreCustomerFile::groupBy( 'cust_id' )->get()
@@ -85,17 +87,17 @@ class DirectoryController extends Controller
      *
      * @throws
      */
-    public function list( Request $request, Customer $cust = null, DocstoreCustomerDirectory $dir = null ) : View
+    public function list( Request $request, Customer $cust, DocstoreCustomerDirectory $dir = null ) : View
     {
         $this->authorize( 'list', [ DocstoreCustomerDirectory::class, $cust ]);
 
         return view( 'docstore-customer/dir/list', [
             'dir'           => $dir ?? false,
-            'cust'          => $cust ?? false,
-            'dirs'          => DocstoreCustomerDirectory::getHierarchyForCustomerAndUserClass( $cust, optional( $request->user() )->getPrivs() ?? 0 , false )[ $dir ? $dir->id : '' ] ?? [],
-            'files'         => DocstoreCustomerFile::getListing( $cust, $dir, $request->user() ),
-            'ppp_files'     => Customer::getPatchPanelPortFiles( $cust )->isNotEmpty(),
-            'ppph_files'    => Customer::getPatchPanelPortHistoryFiles( $cust )->isNotEmpty(),
+            'cust'          => $cust,
+            'dirs'          => DocstoreCustomerDirectory::getHierarchyForCustomerAndUserClass( $cust, $request->user()->getPrivs(), false )[ $dir ? $dir->id : '' ] ?? [],
+            'files'         => DocstoreCustomerFile::getListing( $cust, $request->user(), $dir ),
+            'ppp_files'     => Customer::getPatchPanelPortFiles( $cust, $request->user() )->isNotEmpty(),
+            'ppph_files'    => Customer::getPatchPanelPortHistoryFiles( $cust, $request->user() )->isNotEmpty(),
         ] );
     }
 
@@ -109,13 +111,13 @@ class DirectoryController extends Controller
      *
      * @throws
      */
-    public function listPatchPanelPortFiles( Request $request,  Customer $cust = null ) : View
+    public function listPatchPanelPortFiles( Request $request,  Customer $cust ) : View
     {
-        $this->authorize( 'listPatchPanelPortFiles', [ DocstoreCustomerDirectory::class, $cust ]);
+        $this->authorize( 'listPatchPanelPortFiles', [ DocstoreCustomerDirectory::class, $cust ] );
 
         return view( 'docstore-customer/dir/patch-panel-port-files', [
             'cust'          => $cust,
-            'ppp_files'     => Customer::getPatchPanelPortFiles( $cust ),
+            'ppp_files'     => Customer::getPatchPanelPortFiles( $cust, $request->user() ),
         ] );
     }
 
@@ -129,13 +131,13 @@ class DirectoryController extends Controller
      *
      * @throws
      */
-    public function listPatchPanelPortHistoryFiles( Request $request,  Customer $cust = null ) : View
+    public function listPatchPanelPortHistoryFiles( Request $request,  Customer $cust ) : View
     {
         $this->authorize( 'listPatchPanelPortFilesHistory', [ DocstoreCustomerDirectory::class, $cust ]);
 
         return view( 'docstore-customer/dir/patch-panel-port-history-files', [
             'cust'          => $cust,
-            'ppph_files'    => Customer::getPatchPanelPortHistoryFiles( $cust ),
+            'ppph_files'    => Customer::getPatchPanelPortHistoryFiles( $cust, $request->user() ),
         ] );
     }
     /**
@@ -155,7 +157,7 @@ class DirectoryController extends Controller
         return view( 'docstore-customer/dir/create', [
             'dir'           => false,
             'cust'          => $cust,
-            'dirs'          => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $cust,null, $request->user() )  ),
+            'dirs'          => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $cust, $request->user() )  ),
             'parent_dir'    => $request->input( 'parent_dir', false )
         ] );
     }
@@ -173,7 +175,7 @@ class DirectoryController extends Controller
      */
     public function edit( Request $request, Customer $cust, DocstoreCustomerDirectory $dir ): View
     {
-        $this->authorize( 'update', [ DocstoreCustomerDirectory::class, $cust, $dir ] );
+        $this->authorize( 'update', [ DocstoreCustomerDirectory::class, $dir ] );
 
         Former::populate([
             'name'                  => $request->old( 'name',               $dir->name          ),
@@ -184,7 +186,7 @@ class DirectoryController extends Controller
         return view( 'docstore-customer/dir/create', [
             'dir'           => $dir,
             'cust'          => $cust,
-            'dirs'          => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $cust, null, $request->user() ) ),
+            'dirs'          => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $cust, $request->user() ) ),
             'parent_dir'    => $dir->parent_dir_id
         ] );
     }
@@ -213,7 +215,7 @@ class DirectoryController extends Controller
 
         Log::info( sprintf( "DocStore: new directory [%d|%s] created by %s for the customer [%d|%s]", $dir->id, $dir->name, $request->user()->getUsername(), $cust->id, $cust->name ) );
 
-        AlertContainer::push( "New " . config( 'ixp_fe.lang.customer.one' ) . " directory <em>{$request->name}</em> created.", Alert::SUCCESS );
+        AlertContainer::push( "New per-" . config( 'ixp_fe.lang.customer.one' ) . " directory <em>{$request->name}</em> created.", Alert::SUCCESS );
         return redirect( route( 'docstore-c-dir@list', [ 'cust' => $cust,'dir' => $dir->id ] ) );
     }
 
@@ -231,7 +233,7 @@ class DirectoryController extends Controller
     public function update( Request $request , Customer $cust, DocstoreCustomerDirectory $dir ): RedirectResponse
     {
 
-        $this->authorize( 'update', [ DocstoreCustomerDirectory::class, $cust, $dir ] );
+        $this->authorize( 'update', [ DocstoreCustomerDirectory::class, $dir ] );
 
         $this->checkForm( $request );
 
@@ -239,7 +241,7 @@ class DirectoryController extends Controller
 
         Log::info( sprintf( "DocStore: customer directory [%d|%s] edited by %s", $dir->id, $dir->name, $request->user()->getUsername() ) );
 
-        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . " Directory  <em>{$request->name}</em> updated.", Alert::SUCCESS );
+        AlertContainer::push( "Per-" . config( 'ixp_fe.lang.customer.one' ) . " directory  <em>{$request->name}</em> updated.", Alert::SUCCESS );
         return redirect( route( 'docstore-c-dir@list', [ 'cust' => $cust, 'dir' => $dir->parent_dir_id ] ) );
     }
 
@@ -257,7 +259,7 @@ class DirectoryController extends Controller
     {
         $this->authorize( 'delete', $dir );
 
-        Log::notice( sprintf( "DocStore: start recursive deletion directory [%d|%s] by %s for the customer [%d|%s]", $dir->id, $dir->name, $request->user()->getUsername(), $dir->customer->id, $dir->customer->name ) );
+        Log::notice( sprintf( "DocStore: start recursive deletion of directory [%d|%s] by %s for the customer [%d|%s]", $dir->id, $dir->name, $request->user()->getUsername(), $dir->customer->id, $dir->customer->name ) );
         DocstoreCustomerDirectory::recursiveDelete( $dir );
         Log::notice( sprintf( "DocStore: finish recursive deletion of directory [%d|%s] by %s for the customer [%d|%s]", $dir->id, $dir->name, $request->user()->getUsername(), $dir->customer->id, $dir->customer->name ) );
 
@@ -292,18 +294,24 @@ class DirectoryController extends Controller
      *
      * @param $request
      */
-    private function checkForm( $request )
+    private function checkForm( Request $request )
     {
         $request->validate( [
-            'name'          => 'required|max:100',
-            'cust_id'          => [ 'required', 'integer',
+            'name' => [ 'required', 'max:100',
                 function( $attribute, $value, $fail ) {
-                    if( !Customer::whereId( $value )->exists() ) {
-                        Log::notice( 'fff' );
-                        AlertContainer::push('Customer is invalid / does not exist.', Alert::DANGER );
-                        return $fail( 'Customer is invalid / does not exist.' );
+                    if( Str::startsWith(strtolower( $value ), 'patch panel port' ) ) {
+                        return $fail( '"Patch Panel Port..." is a reserved name.' );
                     }
-                },
+                }
+            ],
+            'cust_id'          => [ 'required', 'integer',
+                function( $attribute, $value, $fail ) use ($request) {
+                    if( !Customer::whereId( $value )->exists() ) {
+                        Log::notice( "Attempt to create/edit a directory where the customer ID [{$value}] is invalid / does not exist by user ID {$request->user()->getId()}." );
+                        AlertContainer::push( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' is invalid / does not exist.', Alert::DANGER );
+                        return $fail( ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' is invalid / does not exist.' );
+                    }
+                }
             ],
             'description'   => 'nullable',
             'parent_dir_id' => [ 'nullable', 'integer',
@@ -311,7 +319,7 @@ class DirectoryController extends Controller
                     if( !DocstoreCustomerDirectory::whereId( $value )->exists() ) {
                         return $fail( 'Parent directory is invalid / does not exist.' );
                     }
-                },
+                }
             ]
         ] );
     }

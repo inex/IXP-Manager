@@ -296,6 +296,16 @@
                     </li>
                 <?php endif ?>
 
+
+                <?php if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ): ?>
+                    <li class="nav-item" onclick="window.location.href = '<?= route( 'docstore-c-dir@list', [ 'cust' => $c->getId() ] ) ?>'">
+                        <a class="nav-link" data-toggle="tab" href="">
+                            Documents &raquo;
+                        </a>
+                    </li>
+                <?php endif; ?>
+
+
                 <?php if( $c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $c->hasLeft() ) ): ?>
 
 

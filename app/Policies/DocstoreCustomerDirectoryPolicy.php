@@ -41,7 +41,7 @@ class DocstoreCustomerDirectoryPolicy
      *
      * @return mixed
      */
-    public function listCustomer( UserEntity $user )
+    public function listCustomers( UserEntity $user )
     {
         return $user->isSuperUser();
     }
@@ -56,7 +56,8 @@ class DocstoreCustomerDirectoryPolicy
      */
     public function listPatchPanelPortFiles( UserEntity $user, Customer $cust )
     {
-        return Customer::getPatchPanelPortFiles( $cust )->isNotEmpty();
+        return ( $user->isSuperUser() || $user->getCustomer()->getId() == $cust->id )
+            && Customer::getPatchPanelPortFiles( $cust, $user )->isNotEmpty();
     }
 
     /**
@@ -69,7 +70,8 @@ class DocstoreCustomerDirectoryPolicy
      */
     public function listPatchPanelPortFilesHistory( UserEntity $user, Customer $cust )
     {
-        return Customer::getPatchPanelPortHistoryFiles( $cust )->isNotEmpty();
+        return ( $user->isSuperUser() || $user->getCustomer()->getId() == $cust->id )
+            && Customer::getPatchPanelPortHistoryFiles( $cust, $user )->isNotEmpty();
     }
 
     /**
@@ -82,7 +84,7 @@ class DocstoreCustomerDirectoryPolicy
      */
     public function list( UserEntity $user, Customer $cust  )
     {
-        return $user->isSuperUser() || ( request()->user()->getPrivs() >= UserEntity::AUTH_CUSTUSER && request()->user()->getCustomer()->getId() === $cust->id ) ;
+        return $user->isSuperUser() || ( $user->getPrivs() >= UserEntity::AUTH_CUSTUSER && $user->getCustomer()->getId() === $cust->id ) ;
     }
 
     /**
@@ -106,9 +108,9 @@ class DocstoreCustomerDirectoryPolicy
      *
      * @return mixed
      */
-    public function update( UserEntity $user, Customer $cust, DocstoreCustomerDirectory $dir )
+    public function update( UserEntity $user, DocstoreCustomerDirectory $dir )
     {
-        return $user->isSuperUser() && $cust->id === $dir->customer->id;
+        return $user->isSuperUser();
     }
 
     /**

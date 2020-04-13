@@ -6,7 +6,7 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?> Document Store
+    Per-<?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Document Store
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -18,6 +18,12 @@ $this->layout( 'layouts/ixpv4' );
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
+
+    <?php if( Auth::check() && Auth::user()->isSuperUser() && !count( $t->files ) ): ?>
+
+        <?= $t->insert( 'docstore-customer/welcome.foil.php' ) ?>
+
+    <?php endif; ?>
 
     <?= $t->alerts() ?>
 

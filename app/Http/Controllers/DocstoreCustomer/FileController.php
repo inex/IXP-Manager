@@ -78,7 +78,7 @@ class FileController extends Controller
      */
     public function view( Request $request, Customer $cust, DocstoreCustomerFile $file )
     {
-        $this->authorize( 'view', [ DocstoreCustomerFile::class, $cust, $file ] );
+        $this->authorize( 'view', $file );
 
         if( !$file->isViewable() ) {
             return redirect( route( 'docstore-c-file@download', [ 'cust' => $cust, 'file' => $file->id ] ) );
@@ -157,7 +157,7 @@ class FileController extends Controller
         return view( 'docstore-customer/file/upload', [
             'file'          => false,
             'cust'          => $cust,
-            'dirs'          => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $cust, null, $request->user() )  ),
+            'dirs'          => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $cust, $request->user() )  ),
         ] );
     }
 
@@ -225,7 +225,7 @@ class FileController extends Controller
         return view( 'docstore-customer/file/upload', [
             'file'                      => $file,
             'cust'                      => $cust,
-            'dirs'                      => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $file->customer, null, $request->user() ) )
+            'dirs'                      => DocstoreCustomerDirectory::getListingForDropdown( DocstoreCustomerDirectory::getListing( $file->customer, $request->user() ) )
         ] );
     }
 

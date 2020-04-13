@@ -47,29 +47,16 @@ use Illuminate\Support\Facades\{
 /**
  * IXP\Models\DocstoreCustomerDirectory
  *
- * @property int $id
- * @property int $cust_id
- * @property int|null $parent_dir_id
- * @property string $name
- * @property string|null $description
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read EloquentCollection|DocstoreCustomerFile[] $files
+ * @property-read \IXP\Models\Customer $customer
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerFile[] $files
  * @property-read int|null $files_count
- * @property-read DocstoreDirectory|null $parentDirectory
- * @property-read EloquentCollection|DocstoreDirectory[] $subDirectories
+ * @property-read \IXP\Models\DocstoreCustomerDirectory $parentDirectory
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerDirectory[] $subDirectories
  * @property-read int|null $sub_directories_count
- * @method static Builder|DocstoreCustomerDirectory newModelQuery()
- * @method static Builder|DocstoreCustomerDirectory newQuery()
- * @method static Builder|DocstoreCustomerDirectory query()
- * @method static Builder|DocstoreCustomerDirectory whereCreatedAt($value)
- * @method static Builder|DocstoreCustomerDirectory whereDescription($value)
- * @method static Builder|DocstoreCustomerDirectory whereId($value)
- * @method static Builder|DocstoreCustomerDirectory whereName($value)
- * @method static Builder|DocstoreCustomerDirectory whereParentDirId($value)
- * @method static Builder|DocstoreCustomerDirectory whereCustId($value)
- * @method static Builder|DocstoreCustomerDirectory whereUpdatedAt($value)
- * @mixin Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory query()
+ * @mixin \Eloquent
  */
 
 class DocstoreCustomerDirectory extends Model
@@ -171,13 +158,13 @@ class DocstoreCustomerDirectory extends Model
      *
      * @return EloquentCollection
      */
-    public static function getListing( Customer $cust, ?DocstoreDirectory $dir, ?UserEntity $user ): EloquentCollection
+    public static function getListing( Customer $cust, UserEntity $user, ?DocstoreDirectory $dir = null ): EloquentCollection
     {
         $list = self::where( 'cust_id', $cust->id )->where('parent_dir_id', $dir ? $dir->id : null );
 
-        if( !$user || !$user->isSuperUser() ) {
+        if( !$user->isSuperUser() ) {
             $list->whereHas( 'files', function( Builder $query ) use ( $user ) {
-                $query->where( 'min_privs', '<=', $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC );
+                $query->where( 'min_privs', '<=', $user->getPrivs() );
             } );
         }
 
@@ -228,7 +215,7 @@ class DocstoreCustomerDirectory extends Model
      *
      * @return mixed
      */
-    public static function getHierarchyForCustomerAndUserClass( Customer $cust = null, int $priv = User::AUTH_SUPERUSER, bool $showRoot = true )
+    public static function getHierarchyForCustomerAndUserClass( Customer $cust, int $priv = User::AUTH_SUPERUSER, bool $showRoot = true )
     {
         return Cache::remember( self::CACHE_KEY_FOR_CUSTOMER_USER_CLASS_HIERARCHY . $cust->id . '_' . $priv, 86400, function() use ( $cust, $priv, $showRoot ) {
             self::where( 'cust_id', $cust->id )->where('parent_dir_id', null )->orderBy('name')->get()->each( function( $sd ) use ( $priv ) {

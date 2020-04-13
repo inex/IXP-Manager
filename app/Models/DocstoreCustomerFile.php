@@ -43,37 +43,12 @@ use Illuminate\Support\Carbon;
 /**
  * IXP\Models\DocstoreCustomerFile
  *
- * @property int $id
- * @property int|null $cust_id
- * @property int|null $docstore_customer_directory_id
- * @property string $name
- * @property string $disk
- * @property string $path
- * @property string|null $sha256
- * @property string|null $description
- * @property int $min_privs
- * @property Carbon $file_last_updated
- * @property int|null $created_by
- * @property Carbon|null $created_at
- * @property Carbon|null $updated_at
- * @property-read DocstoreCustomerDirectory|null $directory
- * @method static Builder|DocstoreCustomerFile newModelQuery()
- * @method static Builder|DocstoreCustomerFile newQuery()
- * @method static Builder|DocstoreCustomerFile query()
- * @method static Builder|DocstoreCustomerFile whereCreatedAt($value)
- * @method static Builder|DocstoreCustomerFile whereCreatedBy($value)
- * @method static Builder|DocstoreCustomerFile whereDescription($value)
- * @method static Builder|DocstoreCustomerFile whereDisk($value)
- * @method static Builder|DocstoreCustomerFile whereCustId($value)
- * @method static Builder|DocstoreCustomerFile whereDocstoreCustomerDirectoryId($value)
- * @method static Builder|DocstoreCustomerFile whereFileLastUpdated($value)
- * @method static Builder|DocstoreCustomerFile whereId($value)
- * @method static Builder|DocstoreCustomerFile whereMinPrivs($value)
- * @method static Builder|DocstoreCustomerFile whereName($value)
- * @method static Builder|DocstoreCustomerFile wherePath($value)
- * @method static Builder|DocstoreCustomerFile whereSha256($value)
- * @method static Builder|DocstoreCustomerFile whereUpdatedAt($value)
- * @mixin Eloquent
+ * @property-read \IXP\Models\Customer $customer
+ * @property-read \IXP\Models\DocstoreCustomerDirectory $directory
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerFile query()
+ * @mixin \Eloquent
  */
 
 class DocstoreCustomerFile extends Model
@@ -195,9 +170,9 @@ class DocstoreCustomerFile extends Model
      *
      * @return Collection
      */
-    public static function getListing( Customer $cust, ?DocstoreCustomerDirectory $dir = null, ?UserEntity $user = null )
+    public static function getListing( Customer $cust, UserEntity $user, ?DocstoreCustomerDirectory $dir = null )
     {
-        return self::where('min_privs', '<=', $user ? $user->getPrivs() : UserEntity::AUTH_PUBLIC )
+        return self::where('min_privs', '<=', $user->getPrivs() )
             ->where('cust_id', $cust->id )
             ->where('docstore_customer_directory_id', $dir ? $dir->id : null )
             ->orderBy('name')->get();

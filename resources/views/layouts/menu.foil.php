@@ -164,25 +164,42 @@
 
             <?php endif; ?>
 
+
+            <?php /**************************************** DOCSTORE ****************************************/ ?>
+
+
             <?php if( !config( 'ixp_fe.frontend.disabled.docstore' ) ): ?>
 
-                <li class="<?= request()->is( 'docstore*' ) && !request()->is( 'docstore-*' ) ? 'active' : '' ?>" >
+                <li class="<?= !request()->is( 'docstorec*' ) && request()->is( 'docstore*' ) && !request()->is( 'docstore-*' ) ? 'active' : '' ?>" >
                     <a href="<?= route('docstore-dir@list' ) ?>" class="nav-link">
                         Document Store
                     </a>
                 </li>
 
-            <?php endif; ?>
+                <?php if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) && request()->is( 'docstore*' ) ): ?>
 
-            <?php if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ): ?>
+                    <li class="nav-sub-menu-item <?= request()->is( 'docstorec*' ) ? 'active' : '' ?>" >
+                        <a href="<?= route('docstore-c-dir@customers' ) ?>" class="nav-link">
+                            <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Documents
+                        </a>
+                    </li>
 
-                <li class="<?= !request()->is( 'docstore-c' ) ?: 'active' ?>" >
+                <?php endif; ?>
+
+            <?php elseif( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ): ?>
+
+                <li class="<?= request()->is( 'docstorec*' ) ? 'active' : '' ?>" >
                     <a href="<?= route('docstore-c-dir@customers' ) ?>" class="nav-link">
                         <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Document Store
                     </a>
                 </li>
 
             <?php endif; ?>
+
+
+            <?php /**************************************** DOCSTORE ****************************************/ ?>
+
+
 
             <li class="<?= !request()->is( 'facility/*' ) ?: 'active' ?>">
                 <a class="nav-link" href="<?= route( 'facility@list' ) ?>">
