@@ -1,6 +1,6 @@
 <div>
 
-    <h4>Metadata for <?= $t->file->name ?></h4>
+    <h4>Metadata for <?= $t->ee( $t->file->name ) ?></h4>
 
     <table class="tw-mt-8">
         <tr class="tw-border-t tw-border-blue-500">
@@ -9,7 +9,7 @@
             </td>
             <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
                 <?php if( $t->created_by ): ?>
-                    <?= $t->created_by->getUsername() ?> (<?= $t->created_by->getName() ?>)
+                    <?= $t->ee( $t->created_by->getUsername() ) ?> (<?= $t->ee( $t->created_by->getName() ) ?>)
                 <?php else: ?>
                     <em>User no longer exists in database.</em>
                 <?php endif; ?>

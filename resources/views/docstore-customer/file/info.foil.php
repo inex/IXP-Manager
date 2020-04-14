@@ -9,7 +9,7 @@
             </td>
             <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
                 <?php if( $t->created_by ): ?>
-                    <?= $t->created_by->getUsername() ?> (<?= $t->created_by->getName() ?>)
+                    <?= $t->ee( $t->created_by->getUsername() ) ?> (<?= $t->ee( $t->created_by->getName() ) ?>)
                 <?php else: ?>
                     <em>User no longer exists in database.</em>
                 <?php endif; ?>
@@ -20,7 +20,7 @@
                 Customer
             </td>
             <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
-                <?= $t->file->customer->name ?>
+                <?= $t->ee( $t->file->customer->name ) ?>
             </td>
         </tr>
         <tr class="tw-border-t tw-border-blue-500">
@@ -48,5 +48,4 @@
             </td>
         </tr>
     </table>
-
 </div>

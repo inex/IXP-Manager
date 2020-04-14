@@ -1,4 +1,3 @@
-
 <div class="tw-max-w-lg">
 
     <?php if( Auth::user()->isSuperUser() ): ?>
@@ -37,6 +36,4 @@
         </p>
 
     <?php endif; ?>
-
-
 </div>

@@ -23,16 +23,25 @@ namespace IXP\Http\Controllers\Docstore;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-use Entities\User as UserEntity;
-use Former\Facades\Former;
-use Illuminate\Support\Facades\Log;
-use Illuminate\Support\Facades\Storage;
 use D2EM;
+
+use Entities\User as UserEntity;
+
+use Former\Facades\Former;
 
 use Illuminate\Http\{
     RedirectResponse,
     Request
 };
+
+use Illuminate\Support\Facades\{
+    Log,
+    Storage
+};
+
+use Illuminate\Validation\Rule;
+
+use Illuminate\View\View;
 
 use \League\Flysystem\Exception as FlySystemException;
 
@@ -49,13 +58,6 @@ use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
-
-
-use Illuminate\Validation\Rule;
-
-use Illuminate\View\View;
-
-
 
 class FileController extends Controller
 {

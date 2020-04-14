@@ -7,25 +7,30 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'page-header-preamble' ) ?>
     <a href="<?= route( 'customer@overview', [ 'id' => $t->cust->id ] ) ?>" ><?= $t->cust->name ?></a> ::
-    Patch Panel Port Files
+
+    <?php if( $t->history ): ?>
+        Patch Panel Port History Files
+    <?php else: ?>
+        Patch Panel Port Files
+    <?php endif; ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-<?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-    <div class="btn-group btn-group-sm ml-auto" role="group">
+    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+        <div class="btn-group btn-group-sm ml-auto" role="group">
 
-        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/docstore/">
-            Documentation
-        </a>
+            <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/docstore/">
+                Documentation
+            </a>
 
-        <a id="add-dir" class="btn btn-white" href="<?= route('docstore-c-dir@list', [ 'cust' => $t->cust ] ) ?>"
-           data-toggle="tooltip" data-placement="bottom" title="Root Directory"
-        >
-            <i class="fa fa-home"></i>
-        </a>
+            <a id="add-dir" class="btn btn-white" href="<?= route('docstore-c-dir@list', [ 'cust' => $t->cust ] ) ?>"
+               data-toggle="tooltip" data-placement="bottom" title="Root Directory"
+            >
+                <i class="fa fa-home"></i>
+            </a>
 
-    </div>
-<?php endif; ?>
+        </div>
+    <?php endif; ?>
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -36,7 +41,7 @@ $this->layout( 'layouts/ixpv4' );
             <tbody>
 
             <?php $i = 0;
-            foreach( $t->ppp_files as $file ): ?>
+            foreach( $t->files as $file ): ?>
 
                 <tr class="">
                     <td class="<?= $i ? '' : 'tw-border-t-2' ?> icon"></td>
@@ -44,9 +49,16 @@ $this->layout( 'layouts/ixpv4' );
                         <i class="fa fa-lg fa-file-o tw-inline-block tw-w-full"></i>
                     </td>
                     <td class="<?= $i ? '' : 'tw-border-t-2' ?> tw-px-4 tw-w-auto">
-                        <a href="<?= route('patch-panel-port@view', [ 'id' => $file->patch_panel_port_id ] ) ?>">
-                            <?= $t->ee( $file->name ) ?>
-                        </a>
+                <?php if( $t->history ): ?>
+                    <a href="<?= route('patch-panel-port@view', [ 'id' => $file->patch_panel_port_id ] ) . '#ppp-' . $file->patch_panel_port_history_id  ?>">
+                        <?= $t->ee( $file->name ) ?>
+                    </a>
+                <?php else: ?>
+                    <a href="<?= route('patch-panel-port@view', [ 'id' => $file->patch_panel_port_id ] ) ?>">
+                        <?= $t->ee( $file->name ) ?>
+                    </a>
+                <?php endif; ?>
+
                     </td>
 
                     <td class="<?= $i ? '' : 'tw-border-t-2' ?> meta">

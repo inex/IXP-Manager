@@ -26,6 +26,7 @@ $this->layout( 'layouts/ixpv4' );
         ?>
 
         <?= Former::text( 'name' )
+            ->id('name')
             ->label( 'Name' )
             ->blockHelp( "The name of the file (this is as it appears on listings in the web interface rather than on the filesystem). "
                 . "<b>This is also the name the downloaded file will have - so use the appropriate extension.</b>");
@@ -124,6 +125,15 @@ $this->layout( 'layouts/ixpv4' );
             });
 
         <?php endif; ?>
+
+        $( document ).ready( function() {
+            $("#uploadedFile").on('input', function() {
+                if( $( "#name" ).val() == '' ) {
+                    $( "#name" ).val( this.files[0].name );
+                }
+            });
+        });
+
     </script>
 
 <?php $this->append() ?>

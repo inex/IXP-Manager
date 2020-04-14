@@ -1,4 +1,3 @@
-
 <div class="tw-max-w-lg">
     <h3 class="tw-mb-8">Welcome to the <?= ucfirst( config( 'ixp_fe.lang.customer.one') ) ?> Document Store!</h3>
 
@@ -31,7 +30,4 @@
     <p>
         <b>For more information, <a target="_blank" href="https://docs.ixpmanager.org/features/docstore/">see the official documentation here</a>.</b>
     </p>
-
-
-
 </div>

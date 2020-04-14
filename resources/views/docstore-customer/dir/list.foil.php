@@ -7,7 +7,7 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'page-header-preamble' ) ?>
     <?php if( Auth::user()->isSuperUser() ): ?>
-        <a href="<?= route( 'customer@overview', [ 'id' => $t->cust->id ] ) ?>" ><?= $t->cust->name ?></a> :: Document Store
+        <a href="<?= route( 'customer@overview', [ 'id' => $t->cust->id ] ) ?>" ><?= $t->ee( $t->cust->name ) ?></a> :: Document Store
     <?php else: ?>
         <a href="<?= route( 'dashboard@index' ) ?>" ><?= $t->cust->name ?></a> :: Document Store
     <?php endif; ?>
@@ -49,17 +49,12 @@ $this->layout( 'layouts/ixpv4' );
     <?= $t->alerts() ?>
 
     <?php if( !$t->dir && !count( $t->dirs ) && !count( $t->files ) ): ?>
-
         <?= $t->insert( 'docstore-customer/welcome-customer.foil.php' ) ?>
-
     <?php endif; ?>
 
     <?php if( $t->dir && $t->dir->description ): ?>
-
         <div class="row tw-my-8 tw-p-4 tw-border-2 tw-border-gray-500 tw-rounded-lg tw-bg-gray-200">
-
             <?= @parsedown( $t->ee( $t->dir->description ) ) ?>
-
         </div>
     <?php endif; ?>
 
@@ -68,7 +63,6 @@ $this->layout( 'layouts/ixpv4' );
         <table class="tw-mt-8">
             <tbody>
                 <?php if( $t->dir ): ?>
-
                     <tr>
                         <td class="top icon">
                             <?php if( $t->dir ): ?>
@@ -160,7 +154,6 @@ $this->layout( 'layouts/ixpv4' );
 
 
                 <?php foreach( $t->files as $file ): ?>
-
                     <tr class="">
                         <td class="<?= $i ? '' : 'tw-border-t-2' ?> icon"></td>
                         <td class="<?= $i ? '' : 'tw-border-t-2' ?> icon">
@@ -221,8 +214,6 @@ $this->layout( 'layouts/ixpv4' );
             </tbody>
         </table>
     </div>
-
-
 <?php $this->append() ?>
 
 <?php $this->section( 'scripts' ) ?>

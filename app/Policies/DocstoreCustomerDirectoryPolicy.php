@@ -25,8 +25,12 @@ namespace IXP\Policies;
 
 use Entities\User as UserEntity;
 
-use IXP\Models\Customer;
-use IXP\Models\DocstoreCustomerDirectory;
+use IXP\Models\{
+    Customer,
+    DocstoreCustomerDirectory,
+    PatchPanelPortFile,
+    PatchPanelPortHistoryFile
+};
 
 use Illuminate\Auth\Access\HandlesAuthorization;
 
@@ -57,7 +61,7 @@ class DocstoreCustomerDirectoryPolicy
     public function listPatchPanelPortFiles( UserEntity $user, Customer $cust )
     {
         return ( $user->isSuperUser() || $user->getCustomer()->getId() == $cust->id )
-            && Customer::getPatchPanelPortFiles( $cust, $user )->isNotEmpty();
+            && PatchPanelPortFile::getForCustomer( $cust, $user )->isNotEmpty();
     }
 
     /**
@@ -71,7 +75,7 @@ class DocstoreCustomerDirectoryPolicy
     public function listPatchPanelPortFilesHistory( UserEntity $user, Customer $cust )
     {
         return ( $user->isSuperUser() || $user->getCustomer()->getId() == $cust->id )
-            && Customer::getPatchPanelPortHistoryFiles( $cust, $user )->isNotEmpty();
+            && PatchPanelPortHistoryFile::getForCustomer( $cust, $user )->isNotEmpty();
     }
 
     /**

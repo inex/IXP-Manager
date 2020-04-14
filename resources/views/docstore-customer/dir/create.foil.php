@@ -22,7 +22,6 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section('content') ?>
 
-
     <div class="card-body">
 
         <?= Former::open()->method( $t->dir ? 'put' : 'post' )
@@ -105,9 +104,9 @@ $this->layout( 'layouts/ixpv4' );
     <script>
 
         <?php if( $t->dir ): ?>
-        $(document).ready(function() {
-            $("#parent_dir option[value=" + <?= $t->dir->id ?> +"]").attr('disabled','disabled');
-        });
+            $( document ).ready(function() {
+                $( "#parent_dir option[value=" + <?= $t->dir->id ?> +"]" ).attr( 'disabled','disabled' );
+            });
         <?php endif; ?>
 
     </script>

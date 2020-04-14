@@ -40,7 +40,9 @@ use IXP\Http\Controllers\Controller;
 use IXP\Models\{
     Customer,
     DocstoreCustomerDirectory,
-    DocstoreCustomerFile
+    DocstoreCustomerFile,
+    PatchPanelPortFile,
+    PatchPanelPortHistoryFile
 };
 
 use IXP\Utils\View\Alert\{
@@ -89,15 +91,15 @@ class DirectoryController extends Controller
      */
     public function list( Request $request, Customer $cust, DocstoreCustomerDirectory $dir = null ) : View
     {
-        $this->authorize( 'list', [ DocstoreCustomerDirectory::class, $cust ]);
+        $this->authorize( 'list', [ DocstoreCustomerDirectory::class, $cust ] );
 
         return view( 'docstore-customer/dir/list', [
             'dir'           => $dir ?? false,
             'cust'          => $cust,
             'dirs'          => DocstoreCustomerDirectory::getHierarchyForCustomerAndUserClass( $cust, $request->user()->getPrivs(), false )[ $dir ? $dir->id : '' ] ?? [],
             'files'         => DocstoreCustomerFile::getListing( $cust, $request->user(), $dir ),
-            'ppp_files'     => Customer::getPatchPanelPortFiles( $cust, $request->user() )->isNotEmpty(),
-            'ppph_files'    => Customer::getPatchPanelPortHistoryFiles( $cust, $request->user() )->isNotEmpty(),
+            'ppp_files'     => PatchPanelPortFile::getForCustomer( $cust, $request->user() )->isNotEmpty(),
+            'ppph_files'    => PatchPanelPortHistoryFile::getForCustomer( $cust, $request->user() )->isNotEmpty(),
         ] );
     }
 
@@ -115,9 +117,10 @@ class DirectoryController extends Controller
     {
         $this->authorize( 'listPatchPanelPortFiles', [ DocstoreCustomerDirectory::class, $cust ] );
 
-        return view( 'docstore-customer/dir/patch-panel-port-files', [
+        return view( 'docstore-customer/dir/list-ppp-files', [
             'cust'          => $cust,
-            'ppp_files'     => Customer::getPatchPanelPortFiles( $cust, $request->user() ),
+            'history'       => false,
+            'files'         => PatchPanelPortFile::getForCustomer( $cust, $request->user() ),
         ] );
     }
 
@@ -135,9 +138,10 @@ class DirectoryController extends Controller
     {
         $this->authorize( 'listPatchPanelPortFilesHistory', [ DocstoreCustomerDirectory::class, $cust ]);
 
-        return view( 'docstore-customer/dir/patch-panel-port-history-files', [
+        return view( 'docstore-customer/dir/list-ppp-files', [
             'cust'          => $cust,
-            'ppph_files'    => Customer::getPatchPanelPortHistoryFiles( $cust, $request->user() ),
+            'history'       => true,
+            'files'         => PatchPanelPortHistoryFile::getForCustomer( $cust, $request->user() ),
         ] );
     }
     /**
