@@ -23,7 +23,7 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
 */
 
-use DB, Eloquent;
+use Eloquent;
 
 use Illuminate\Database\Eloquent\{
     Builder,
@@ -35,11 +35,9 @@ use Entities\User as UserEntity;
 
 use Illuminate\Database\Eloquent\Relations\{
     BelongsTo,
-    HasMany
 };
 
 use Illuminate\Support\Carbon;
-use Storage;
 
 
 /**
@@ -77,6 +75,14 @@ class PatchPanelPortHistoryFile extends Model
      * @var string
      */
     protected $table = 'patch_panel_port_history_file';
+
+    /**
+     * Get the Patch Panel Port history that owns this patch panel port history file
+     */
+    public function patchPanelPortHistory(): BelongsTo
+    {
+        return $this->belongsTo( PatchPanelPortHistory::class , 'patch_panel_port_history_id' );
+    }
 
     /**
      * Gets a listing of patch panel port files history for a customer

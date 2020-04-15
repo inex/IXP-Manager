@@ -32,8 +32,7 @@ use Illuminate\Database\Eloquent\{
 };
 
 use Illuminate\Database\Eloquent\Relations\{
-    BelongsTo,
-    HasMany
+    BelongsTo
 };
 
 use Entities\User as UserEntity;
@@ -76,6 +75,14 @@ class PatchPanelPortFile extends Model
      * @var string
      */
     protected $table = 'patch_panel_port_file';
+
+    /**
+     * Get the Patch Panel Port that owns this patch panel port file
+     */
+    public function patchPanelPort(): BelongsTo
+    {
+        return $this->belongsTo( PatchPanelPort::class , 'patch_panel_port_id' );
+    }
 
     /**
      * Gets a listing of patch panel port files for a customer
