@@ -410,7 +410,7 @@ class PatchPanelPort
             elseif($this->isStateAwaitingXConnect()):
                 $class = 'danger';
             else:
-                $class = 'default';
+                $class = 'info';
             endif;
         }
 
