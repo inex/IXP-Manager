@@ -53,10 +53,12 @@ $this->layout( 'layouts/ixpv4' );
                     <a href="<?= route('patch-panel-port@view', [ 'id' => $file->patch_panel_port_id ] ) . '#ppp-' . $file->patch_panel_port_history_id  ?>">
                         <?= $t->ee( $file->name ) ?>
                     </a>
+                    <em>(<?= $t->ee( $file->patchPanelPortHistory->patchPanelPort->patchPanel->name ) ?>)</em>
                 <?php else: ?>
                     <a href="<?= route('patch-panel-port@view', [ 'id' => $file->patch_panel_port_id ] ) ?>">
                         <?= $t->ee( $file->name ) ?>
                     </a>
+                    <em>(<?= $t->ee( $file->patchPanelPort->patchPanel->name ) ?>)</em>
                 <?php endif; ?>
 
                     </td>

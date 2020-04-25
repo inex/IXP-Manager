@@ -30,9 +30,7 @@ use Illuminate\Database\Eloquent\{
     Model
 };
 
-use Illuminate\Database\Eloquent\Relations\{
-    HasMany
-};
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
 
 use Illuminate\Support\Carbon;
 
@@ -99,6 +97,15 @@ class PatchPanelPort extends Model
      * @var string
      */
     protected $table = 'patch_panel_port';
+
+    /**
+     * Get the Patch Panel that owns this patch panel port
+     */
+    public function patchPanel(): BelongsTo
+    {
+        return $this->belongsTo( PatchPanel::class , 'patch_panel_id' );
+    }
+
 
     /**
      * Get the patch panel port files for this patch panel port

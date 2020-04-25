@@ -100,6 +100,14 @@ class PatchPanelPortHistory extends Model
     protected $table = 'patch_panel_port_history';
 
     /**
+     * Get the Patch Panel that owns this patch panel port
+     */
+    public function patchPanelPort(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne( PatchPanelPort::class , 'id' );
+    }
+
+    /**
      * Get the patch panel port history files for this patch panel port history
      */
     public function patchPanelPortHistoryFiles(): HasMany

@@ -69,7 +69,7 @@ class DirectoryController extends Controller
         $files = DocstoreFile::getListing( $dir, $request->user() );
 
         // Only show a folder if there's a file (or folder) there for the user to see:
-        if( $dir !== null && !isset( $dirs[ $dir ] ) ) {
+        if( $dir !== null && is_array( $dir ) && !isset( $dirs[ $dir ] ) ) {
             abort( 403, 'Nothing for you here. You either need to log in or you do not have sufficient privileges.' );
         }
 
