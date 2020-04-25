@@ -2,8 +2,8 @@
 // @formatter:off
 
 /**
- * A helper file for Laravel 5, to provide autocomplete information to your IDE
- * Generated for Laravel 6.18.2 on 2020-03-21 09:15:58.
+ * A helper file for Laravel, to provide autocomplete information to your IDE
+ * Generated for Laravel 6.18.10 on 2020-04-25 11:08:55.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -10104,7 +10104,9 @@ namespace Illuminate\Support\Facades {
          * Gets the preferred format for the response by inspecting, in the following order:
          *   * the request format set using setRequestFormat
          *   * the values of the Accept HTTP header
-         *   * the content type of the body of the request.
+         * 
+         * Note that if you use this method, you should send the "Vary: Accept" header
+         * in the response to prevent any issues with intermediary HTTP caches.
          *
          * @static 
          */ 
@@ -13270,7 +13272,8 @@ namespace Illuminate\Support\Facades {
          * @return bool 
          * @static 
          */ 
-        public static function prepend($path, $data, $separator = '')
+        public static function prepend($path, $data, $separator = '
+')
         {
                         /** @var \Illuminate\Filesystem\FilesystemAdapter $instance */
                         return $instance->prepend($path, $data, $separator);
@@ -13285,7 +13288,8 @@ namespace Illuminate\Support\Facades {
          * @return bool 
          * @static 
          */ 
-        public static function append($path, $data, $separator = '')
+        public static function append($path, $data, $separator = '
+')
         {
                         /** @var \Illuminate\Filesystem\FilesystemAdapter $instance */
                         return $instance->append($path, $data, $separator);
@@ -20256,8 +20260,9 @@ namespace PragmaRX\Google2FALaravel {
          *
          * @param int $length
          * @param string $prefix
-         * @throws Exceptions\InvalidCharactersException
-         * @throws Exceptions\IncompatibleWithGoogleAuthenticatorException
+         * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
+         * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+         * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
          * @return string 
          * @static 
          */ 
@@ -20370,8 +20375,8 @@ namespace PragmaRX\Google2FALaravel {
          * Takes the secret key and the timestamp and returns the one time
          * password.
          *
-         * @param string $secret - Secret key in binary form.
-         * @param int $counter - Timestamp as returned by getTimestamp.
+         * @param string $secret Secret key in binary form.
+         * @param int $counter Timestamp as returned by getTimestamp.
          * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
          * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
          * @throws Exceptions\IncompatibleWithGoogleAuthenticatorException
@@ -20431,6 +20436,7 @@ namespace PragmaRX\Google2FALaravel {
          * Set the HMAC hashing algorithm.
          *
          * @param mixed $algorithm
+         * @throws \PragmaRX\Google2FA\Exceptions\InvalidAlgorithmException
          * @return \PragmaRX\Google2FA\Google2FA 
          * @static 
          */ 
@@ -20497,7 +20503,7 @@ namespace PragmaRX\Google2FALaravel {
          * Verifies a user inputted key against the current timestamp. Checks $window
          * keys either side of the timestamp.
          *
-         * @param string $key - User specified key
+         * @param string $key User specified key
          * @param string $secret
          * @param null|int $window
          * @param null|int $timestamp
@@ -20520,7 +20526,7 @@ namespace PragmaRX\Google2FALaravel {
          * keys either side of the timestamp.
          *
          * @param string $secret
-         * @param string $key - User specified key
+         * @param string $key User specified key
          * @param int|null $window
          * @param null|int $timestamp
          * @param null|int $oldTimestamp
@@ -20544,14 +20550,14 @@ namespace PragmaRX\Google2FALaravel {
          * be used twice.
          *
          * @param string $secret
-         * @param string $key - User specified key
-         * @param int $oldTimestamp - The timestamp from the last verified key
+         * @param string $key User specified key
+         * @param int|null $oldTimestamp The timestamp from the last verified key
          * @param int|null $window
          * @param int|null $timestamp
          * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
          * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
          * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
-         * @return bool|int - false (not verified) or the timestamp of the verified key
+         * @return bool|int 
          * @static 
          */ 
         public static function verifyKeyNewer($secret, $key, $oldTimestamp, $window = null, $timestamp = null)
@@ -20582,8 +20588,10 @@ namespace PragmaRX\Google2FALaravel {
          *
          * @param int $length
          * @param string $prefix
-         * @throws IncompatibleWithGoogleAuthenticatorException
-         * @throws InvalidCharactersException
+         * @throws \Exception
+         * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+         * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
+         * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
          * @return string 
          * @static 
          */ 
@@ -20598,8 +20606,9 @@ namespace PragmaRX\Google2FALaravel {
          * Decodes a base32 string into a binary string.
          *
          * @param string $b32
-         * @throws InvalidCharactersException
-         * @throws IncompatibleWithGoogleAuthenticatorException
+         * @throws \PragmaRX\Google2FA\Exceptions\InvalidCharactersException
+         * @throws \PragmaRX\Google2FA\Exceptions\SecretKeyTooShortException
+         * @throws \PragmaRX\Google2FA\Exceptions\IncompatibleWithGoogleAuthenticatorException
          * @return string 
          * @static 
          */ 
@@ -20622,6 +20631,20 @@ namespace PragmaRX\Google2FALaravel {
             //Method inherited from \PragmaRX\Google2FA\Google2FA            
                         /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
                         return $instance->toBase32($string);
+        }
+        
+        /**
+         * Get a config value.
+         *
+         * @param $string
+         * @throws \Exception
+         * @return mixed 
+         * @static 
+         */ 
+        public static function config($string, $default = null)
+        {
+                        /** @var \PragmaRX\Google2FALaravel\Google2FA $instance */
+                        return $instance->config($string, $default);
         }
         
         /**
@@ -23221,7 +23244,7 @@ namespace  {
             /**
              * Add an "order by" clause to the query.
              *
-             * @param \Closure|\Illuminate\Database\Query\Builder|string $column
+             * @param \Closure|\Illuminate\Database\Query\Builder|\Illuminate\Database\Query\Expression|string $column
              * @param string $direction
              * @return \Illuminate\Database\Query\Builder 
              * @throws \InvalidArgumentException

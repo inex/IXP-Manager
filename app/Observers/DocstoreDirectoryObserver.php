@@ -22,9 +22,12 @@ namespace IXP\Observers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-
-use IXP\Models\{DocstoreDirectory, User};
 use Illuminate\Support\Facades\Cache;
+
+use IXP\Models\{
+    DocstoreDirectory,
+    User
+};
 
 class DocstoreDirectoryObserver
 {

@@ -64,6 +64,14 @@ $this->layout( 'layouts/ixpv4' );
                             </a>
                         </li>
 
+                        <?php if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ): ?>
+                            <li class="nav-item" onclick="window.location.href = '<?= route( 'docstore-c-dir@list', [ 'cust' => $t->c->getId() ] ) ?>'">
+                                <a class="nav-link" data-toggle="tab" href="">
+                                    Documents &raquo;
+                                </a>
+                            </li>
+                        <?php endif; ?>
+
 
                         <?php if( $t->c->getType() != \Entities\Customer::TYPE_ASSOCIATE && ( ! $t->c->hasLeft() ) ): ?>
 

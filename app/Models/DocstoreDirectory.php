@@ -23,7 +23,7 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Eloquent;
+use Eloquent, Storage;
 
 use Entities\User as UserEntity;
 
@@ -39,9 +39,11 @@ use Illuminate\Database\Eloquent\Relations\{
 };
 
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Log;
-use Storage;
+
+use Illuminate\Support\Facades\{
+    Cache,
+    Log
+};
 
 /**
  * IXP\Models\DocstoreDirectory
@@ -228,7 +230,8 @@ class DocstoreDirectory extends Model
      * @param int $priv User class to test for
      * @return bool
      */
-    private static function recurseForHierarchyForUserClass( DocstoreDirectory $subdir, $priv ) {
+    private static function recurseForHierarchyForUserClass( DocstoreDirectory $subdir, $priv )
+    {
         $includeSubdir = false;
         foreach( $subdir->subDirectories as $sd ) {
             if( $shouldInclude = self::recurseForHierarchyForUserClass( $sd, $priv ) ) {
