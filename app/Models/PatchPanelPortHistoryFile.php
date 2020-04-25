@@ -25,11 +25,8 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Collection,
-    Model
-};
+use Illuminate\Database\Eloquent\Model;
+
 
 use Entities\User as UserEntity;
 
@@ -38,6 +35,7 @@ use Illuminate\Database\Eloquent\Relations\{
 };
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 
 /**
@@ -87,18 +85,13 @@ class PatchPanelPortHistoryFile extends Model
 
     /**
      * Gets a listing of patch panel port files history for a customer
-     *
-     * @param Customer      $cust
-     * @param UserEntity    $user
-     *
-     * @return Collection
      */
-    public static function getForCustomer( Customer $cust, UserEntity $user ): Collection
+    public static function getForCustomer( Customer $cust, bool $includePrivate = true ): Collection
     {
         $q = self::join(     'patch_panel_port_history as ppph' ,     'patch_panel_port_history_file.patch_panel_port_history_id' , 'ppph.id'  )
             ->where('ppph.cust_id', $cust->id );
 
-        if( !$user->isSuperUser() ) {
+        if( !$includePrivate ) {
             $q->where( 'ppphf.is_private', '0' );
         }
 

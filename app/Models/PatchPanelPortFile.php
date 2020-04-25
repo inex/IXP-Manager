@@ -25,11 +25,7 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Collection,
-    Model
-};
+use Illuminate\Database\Eloquent\Model;
 
 use Illuminate\Database\Eloquent\Relations\{
     BelongsTo
@@ -38,6 +34,7 @@ use Illuminate\Database\Eloquent\Relations\{
 use Entities\User as UserEntity;
 
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 
 
 /**
@@ -87,18 +84,13 @@ class PatchPanelPortFile extends Model
 
     /**
      * Gets a listing of patch panel port files for a customer
-     *
-     * @param Customer      $cust
-     * @param UserEntity    $user
-     *
-     * @return Collection
      */
-    public static function getForCustomer( Customer $cust, UserEntity $user ): Collection
+    public static function getForCustomer( Customer $c, bool $includePrivate = true ): Collection
     {
         $q = self::join(     'patch_panel_port as ppp' ,          'patch_panel_port_file.patch_panel_port_id',        'ppp.id' )
-            ->where('ppp.customer_id', $cust->id );
+            ->where('ppp.customer_id', $c->id );
 
-        if( !$user->isSuperUser() ) {
+        if( !$includePrivate ) {
             $q->where( 'patch_panel_port_file.is_private', '0' );
         }
 
