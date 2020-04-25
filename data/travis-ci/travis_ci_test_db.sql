@@ -766,6 +766,75 @@ INSERT INTO `customer_to_users` VALUES (1,1,1,3,'2020-01-27 12:04:24','127.0.0.1
 UNLOCK TABLES;
 
 --
+-- Table structure for table `docstore_customer_directories`
+--
+
+DROP TABLE IF EXISTS `docstore_customer_directories`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `docstore_customer_directories` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `cust_id` int NOT NULL,
+  `parent_dir_id` bigint unsigned DEFAULT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `docstore_customer_directories_cust_id_foreign` (`cust_id`),
+  KEY `docstore_customer_directories_parent_dir_id_index` (`parent_dir_id`),
+  CONSTRAINT `docstore_customer_directories_cust_id_foreign` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `docstore_customer_directories`
+--
+
+LOCK TABLES `docstore_customer_directories` WRITE;
+/*!40000 ALTER TABLE `docstore_customer_directories` DISABLE KEYS */;
+/*!40000 ALTER TABLE `docstore_customer_directories` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `docstore_customer_files`
+--
+
+DROP TABLE IF EXISTS `docstore_customer_files`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `docstore_customer_files` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `cust_id` int NOT NULL,
+  `docstore_customer_directory_id` bigint unsigned DEFAULT NULL,
+  `name` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `disk` varchar(100) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'docstore_customers',
+  `path` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '',
+  `sha256` varchar(64) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `description` text COLLATE utf8mb4_unicode_ci,
+  `min_privs` smallint NOT NULL,
+  `file_last_updated` datetime NOT NULL,
+  `created_by` int DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `docstore_customer_files_cust_id_foreign` (`cust_id`),
+  KEY `docstore_customer_files_docstore_customer_directory_id_foreign` (`docstore_customer_directory_id`),
+  CONSTRAINT `docstore_customer_files_cust_id_foreign` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`),
+  CONSTRAINT `docstore_customer_files_docstore_customer_directory_id_foreign` FOREIGN KEY (`docstore_customer_directory_id`) REFERENCES `docstore_customer_directories` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `docstore_customer_files`
+--
+
+LOCK TABLES `docstore_customer_files` WRITE;
+/*!40000 ALTER TABLE `docstore_customer_files` DISABLE KEYS */;
+/*!40000 ALTER TABLE `docstore_customer_files` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
 -- Table structure for table `docstore_directories`
 --
 
@@ -1233,7 +1302,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1242,7 +1311,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -2096,7 +2165,7 @@ CREATE TABLE `traffic_daily_phys_ints` (
   `id` bigint NOT NULL AUTO_INCREMENT,
   `physicalinterface_id` int NOT NULL,
   `day` date DEFAULT NULL,
-  `category` varchar(10) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `category` varchar(10) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `day_avg_in` bigint DEFAULT NULL,
   `day_avg_out` bigint DEFAULT NULL,
   `day_max_in` bigint DEFAULT NULL,
@@ -2638,4 +2707,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2020-04-13 10:46:30
+-- Dump completed on 2020-04-25 16:46:20
