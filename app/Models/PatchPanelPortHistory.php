@@ -61,6 +61,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $description
  * @property string|null $colo_billing_ref
  * @property int|null $cust_id
+ * @property-read \IXP\Models\PatchPanelPort|null $patchPanelPort
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortHistoryFile[] $patchPanelPortHistoryFiles
  * @property-read int|null $patch_panel_port_history_files_count
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory newModelQuery()
@@ -98,6 +99,14 @@ class PatchPanelPortHistory extends Model
      * @var string
      */
     protected $table = 'patch_panel_port_history';
+
+    /**
+     * Get the Patch Panel that owns this patch panel port
+     */
+    public function patchPanelPort(): \Illuminate\Database\Eloquent\Relations\HasOne
+    {
+        return $this->hasOne( PatchPanelPort::class , 'id' );
+    }
 
     /**
      * Get the patch panel port history files for this patch panel port history

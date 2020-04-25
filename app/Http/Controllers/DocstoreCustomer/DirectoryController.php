@@ -99,7 +99,7 @@ class DirectoryController extends Controller
             'dirs'          => DocstoreCustomerDirectory::getHierarchyForCustomerAndUserClass( $cust, $request->user()->getPrivs(), false )[ $dir ? $dir->id : '' ] ?? [],
             'files'         => DocstoreCustomerFile::getListing( $cust, $request->user(), $dir ),
             'ppp_files'     => PatchPanelPortFile::getForCustomer( $cust, $request->user()->isSuperUser() )->isNotEmpty(),
-            'ppph_files'    => PatchPanelPortHistoryFile::getForCustomer( $cust, $request->user()->isSuperUser() )->isNotEmpty(),
+            'ppph_files'    => $request->user()->isSuperUser() ? PatchPanelPortHistoryFile::getForCustomer( $cust )->isNotEmpty() : false,
         ] );
     }
 
@@ -141,7 +141,7 @@ class DirectoryController extends Controller
         return view( 'docstore-customer/dir/list-ppp-files', [
             'cust'          => $cust,
             'history'       => true,
-            'files'         => PatchPanelPortHistoryFile::getForCustomer( $cust, $request->user()->isSuperUser() ),
+            'files'         => $request->user()->isSuperUser() ? PatchPanelPortHistoryFile::getForCustomer( $cust ) : [],
         ] );
     }
     /**

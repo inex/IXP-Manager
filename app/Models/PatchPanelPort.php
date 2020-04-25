@@ -30,9 +30,7 @@ use Illuminate\Database\Eloquent\{
     Model
 };
 
-use Illuminate\Database\Eloquent\Relations\{
-    HasMany
-};
+use Illuminate\Database\Eloquent\Relations\{BelongsTo, HasMany};
 
 use Illuminate\Support\Carbon;
 
@@ -61,6 +59,7 @@ use Illuminate\Support\Carbon;
  * @property string|null $loa_code
  * @property string|null $description
  * @property string|null $colo_billing_ref
+ * @property-read \IXP\Models\PatchPanel|null $patchPanel
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortFile[] $patchPanelPortFiles
  * @property-read int|null $patch_panel_port_files_count
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort newModelQuery()
@@ -99,6 +98,15 @@ class PatchPanelPort extends Model
      * @var string
      */
     protected $table = 'patch_panel_port';
+
+    /**
+     * Get the Patch Panel that owns this patch panel port
+     */
+    public function patchPanel(): BelongsTo
+    {
+        return $this->belongsTo( PatchPanel::class , 'patch_panel_id' );
+    }
+
 
     /**
      * Get the patch panel port files for this patch panel port
