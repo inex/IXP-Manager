@@ -928,6 +928,10 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function is2faEnforced()
     {
+        if( !config('google2fa.enabled') ) {
+            return false;
+        }
+
         return $this->getPrivs() >= config( "google2fa.ixpm_2fa_enforce_for_users" )
             && ( !$this->getUser2FA() || !$this->getUser2FA()->enabled() );
     }
@@ -939,6 +943,10 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function is2faEnabled()
     {
+        if( !config('google2fa.enabled') ) {
+            return false;
+        }
+
         return $this->getUser2FA() && $this->getUser2FA()->enabled();
     }
 
@@ -949,6 +957,9 @@ class User implements Authenticatable, CanResetPasswordContract
      */
     public function is2faAuthRequiredForSession()
     {
+        if( !config('google2fa.enabled') ) {
+            return false;
+        }
 
         if( !$this->getUser2FA() || !$this->getUser2FA()->enabled() ) {
 
