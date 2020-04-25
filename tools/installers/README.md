@@ -1,17 +1,21 @@
 # IXP Manager Install Scripts
 
-This directory contains officially supported install scripts for IXP Manager. The file names will denote the target platform on the IXP Manager branch.
+This directory contains officially supported install scripts for IXP Manager. The file names will denote the target platform and the IXP Manager branch.
 
 These install scripts are **opinionated**! They are intended to run exactly as specified and only on the operating system they are targeted at.
 
-## IXP Manager v5 on Ubuntu LTS 18.04
+## Video Tutorials
 
-The recommended platform for the v5 branch of IXP Manager is Ubuntu LTS 18.04.
+We created a *rough and ready* video tutorial demonstrating the installation process using the automated script for IXP Manager v5.5.0 (April 2020) on Ubuntu LTS 18.04. *This is Barry's first attempt at video tutorials so please forgive the lighting and sound quality.* You can find the [video here](https://www.youtube.com/watch?v=4xI1KlEW8s4) in our [YouTube channel](https://www.youtube.com/channel/UCeW2fmMTBtE4fnlmg-2-evA).
+
+## IXP Manager v5 on Ubuntu LTS 20.04
+
+From April 23rd 2020, the recommended platform for the v5 branch of IXP Manager is Ubuntu LTS 20.04. Before then it was the v5 branch on Ubuntu LTS 18.04.
 
 To install on this platform, please proceed as follows:
 
-1. Prepare a physical / virtual machine with (minimum) 8GB of disk space and 2GB of RAM. We recommend LVM so so partitions can be grown on the fly.
-2. Attach / insert the latest [Ubuntu 18.04 LTS](http://releases.ubuntu.com/18.04/) 64-bit PC (AMD64) server install image and boot.
+1. Prepare a physical / virtual machine with (minimum) 8GB of disk space (40GB recommended) and 2GB of RAM (4GB recommended). We recommend using LVM to partition your hard drive so space can be increased on the fly. We also recommend created a dedicated `/srv` partition of >= 30GB in which to install IXP Manager.
+2. Attach / insert the latest [Ubuntu 20.04 LTS](http://releases.ubuntu.com/20.04/) 64-bit PC (AMD64) server install image and boot.
 3. At the initial menu where you choose *Install Ubuntu Server*, first:
    * Press F4
    * If installing on a physical server, select *Install a minimum system*
@@ -25,7 +29,7 @@ To install on this platform, please proceed as follows:
 sudo su -
 
 # download the installation script
-wget https://github.com/inex/IXP-Manager/raw/master/tools/installers/ubuntu-lts-1804-ixp-manager-v5.sh
+wget https://github.com/inex/IXP-Manager/raw/master/tools/installers/ubuntu-lts-2004-ixp-manager-v5.sh
 
 # and execute it:
 bash ./ubuntu-lts-1804-ixp-manager-v5.sh
@@ -35,7 +39,7 @@ bash ./ubuntu-lts-1804-ixp-manager-v5.sh
 
 ## IXP Manager v4 on Ubuntu LTS 16.04 (deprecated)
 
-**We recommend installing IXP Manager v5 on Ubuntu 18.04 as above - v4 with 16.04 is an older deprecated version.**
+**We recommend installing IXP Manager v5 on Ubuntu 20.04 as above - v4 with 16.04 is an older deprecated version.**
 
 The recommended platform for the v4 branch of IXP Manager is Ubuntu LTS 16.04.
 
@@ -60,7 +64,7 @@ wget https://github.com/inex/IXP-Manager/raw/master/tools/installers/ubuntu-lts-
 bash ./ubuntu-lts-1604-ixp-manager-v4.sh
 ```
 
-### Testing
+## Testing
 
 The install script can be tested using Vagrant. Assuming you have Vagrant installed and have cloned the IXP Manager GitHub repository to `$IXPMDIR`:
 
@@ -78,8 +82,8 @@ However, for an as yet unknown reason, the bootstrapping fails. Instead, you can
 
 
 
-### Getting Help
+## Getting Help
 
-If you need assistance with this, please post the contents of `/tmp/ixp-manager-install.log` to an online pastebin and then send an email to the [IXP Manager mailing list](https://www.inex.ie/mailman/listinfo/ixpmanager).
+If you need assistance with this, **please watch the video tutorial referenced above first**. Then, if further help is required, please post the contents of `/tmp/ixp-manager-install.log` to [an online pastebin](https://pastebin.ibn.ie/) and then send an email to the [IXP Manager mailing list](https://www.inex.ie/mailman/listinfo/ixpmanager).
     
    
