@@ -41,53 +41,53 @@ use Illuminate\Support\Carbon;
  * IXP\Models\PatchPanelPortHistory
  *
  * @property int $id
- * @property int|null $patch_panel_id
+ * @property int|null $patch_panel_port_id
  * @property int $state
- * @property string $notes
- * @property Carbon $assigned_at
- * @property Carbon $connected_at
- * @property Carbon $cease_requested_at
- * @property Carbon $ceased_at
- * @property Carbon $last_state_change
- * @property boolean $internal_use
+ * @property string|null $notes
+ * @property string|null $assigned_at
+ * @property string|null $connected_at
+ * @property string|null $cease_requested_at
+ * @property string|null $ceased_at
+ * @property int $internal_use
  * @property int $chargeable
- * @property string $customer
- * @property string $switchport
- * @property int $duplex_master_id
- * @property boolean $number
- * @property string $colo_circuit_ref
- * @property string $ticket_ref
- * @property string $private_notes
+ * @property string|null $customer
+ * @property string|null $switchport
+ * @property int|null $duplex_master_id
+ * @property int $number
+ * @property string|null $colo_circuit_ref
+ * @property string|null $ticket_ref
+ * @property string|null $private_notes
  * @property int $owned_by
- * @property string $description
- * @property string $colo_billing_ref
- * @property int $cust_id
- * @method static Builder|PatchPanelPort newModelQuery()
- * @method static Builder|PatchPanelPort newQuery()
- * @method static Builder|PatchPanelPort query()
- * @method static Builder|PatchPanelPort whereId($value)
- * @method static Builder|PatchPanelPort wherePatchPanelId($value)
- * @method static Builder|PatchPanelPort whereState($value)
- * @method static Builder|PatchPanelPort whereNotes($value)
- * @method static Builder|PatchPanelPort whereAssignedAt($value)
- * @method static Builder|PatchPanelPort whereConnectAt($value)
- * @method static Builder|PatchPanelPort whereCeaseRequestedAt($value)
- * @method static Builder|PatchPanelPort whereCeaseAt($value)
- * @method static Builder|PatchPanelPort whereLastStateChange($value)
- * @method static Builder|PatchPanelPort whereInternalUse($value)
- * @method static Builder|PatchPanelPort whereChargeable($value)
- * @method static Builder|PatchPanelPort whereCustomer($value)
- * @method static Builder|PatchPanelPort whereSwitchPort($value)
- * @method static Builder|PatchPanelPort whereDuplexMasterId($value)
- * @method static Builder|PatchPanelPort whereNumber($value)
- * @method static Builder|PatchPanelPort whereColoCircuitRef($value)
- * @method static Builder|PatchPanelPort whereTicketRef($value)
- * @method static Builder|PatchPanelPort wherePrivateNotes($value)
- * @method static Builder|PatchPanelPort whereOwnedBy($value)
- * @method static Builder|PatchPanelPort whereDescription($value)
- * @method static Builder|PatchPanelPort whereColoBillingRef($value)
- * @method static Builder|PatchPanelPort whereCustId($value)
- * @mixin Eloquent
+ * @property string|null $description
+ * @property string|null $colo_billing_ref
+ * @property int|null $cust_id
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortHistoryFile[] $patchPanelPortHistoryFiles
+ * @property-read int|null $patch_panel_port_history_files_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereAssignedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereCeaseRequestedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereCeasedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereChargeable($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereColoBillingRef($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereColoCircuitRef($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereConnectedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereCustId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereCustomer($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereDuplexMasterId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereInternalUse($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereNumber($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereOwnedBy($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory wherePatchPanelPortId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory wherePrivateNotes($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereState($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereSwitchport($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortHistory whereTicketRef($value)
+ * @mixin \Eloquent
  */
 
 class PatchPanelPortHistory extends Model

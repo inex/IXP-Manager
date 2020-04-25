@@ -47,15 +47,29 @@ use Illuminate\Support\Facades\{
 /**
  * IXP\Models\DocstoreCustomerDirectory
  *
+ * @property int $id
+ * @property int $cust_id
+ * @property int|null $parent_dir_id
+ * @property string $name
+ * @property string|null $description
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
  * @property-read \IXP\Models\Customer $customer
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerFile[] $files
  * @property-read int|null $files_count
- * @property-read \IXP\Models\DocstoreCustomerDirectory $parentDirectory
+ * @property-read \IXP\Models\DocstoreCustomerDirectory|null $parentDirectory
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerDirectory[] $subDirectories
  * @property-read int|null $sub_directories_count
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory whereCreatedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory whereCustId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory whereDescription($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory whereParentDirId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreCustomerDirectory whereUpdatedAt($value)
  * @mixin \Eloquent
  */
 
