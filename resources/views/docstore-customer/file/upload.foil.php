@@ -6,12 +6,8 @@ $this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Document Store :: <?= $t->file ? 'Edit' : 'Upload' ?> File
-<?php $this->append() ?>
-
-
-<?php $this->section( 'page-header-postamble' ) ?>
-
+    <a href="<?= route( 'customer@overview', [ 'id' => $t->cust->id ] ) ?>"><?= $t->cust->name ?></a> ::
+    Document Store :: <?= $t->file ? 'Edit' : 'Upload' ?> <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> File
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -21,7 +17,7 @@ $this->layout( 'layouts/ixpv4' );
     <div class="card-body">
 
         <?= Former::open_for_files()->method( $t->file ? 'put' : 'post' )
-            ->action( $t->file ? route ( 'docstore-file@update', [ 'file' => $t->file ] ) : route ( 'docstore-file@store' ) )
+            ->action( $t->file ? route ( 'docstore-c-file@update', [ 'cust' => $t->cust, 'file' => $t->file ] ) : route ( 'docstore-c-file@store', [ 'cust' => $t->cust ] ) )
             ->actionButtonsCustomClass( "grey-box")
             ->class('col-8')
             ->rules([
@@ -30,7 +26,7 @@ $this->layout( 'layouts/ixpv4' );
         ?>
 
         <?= Former::text( 'name' )
-            ->id( 'name' )
+            ->id('name')
             ->label( 'Name' )
             ->blockHelp( "The name of the file (this is as it appears on listings in the web interface rather than on the filesystem). "
                 . "<b>This is also the name the downloaded file will have - so use the appropriate extension.</b>");
@@ -45,7 +41,7 @@ $this->layout( 'layouts/ixpv4' );
                 . "verified on upload. If you leave it blank, the SHA256 checksum will be calculated by IXP Manager.");
         ?>
 
-        <?= Former::select( 'docstore_directory_id' )
+        <?= Former::select( 'docstore_customer_directory_id' )
             ->label( 'Directory' )
             ->fromQuery( $t->dirs, 'name' )
             ->addClass( 'chzn-select' )
@@ -54,7 +50,7 @@ $this->layout( 'layouts/ixpv4' );
 
         <?= Former::select( 'min_privs' )
             ->label( 'Minimum privilege' )
-            ->fromQuery( \IXP\Models\User::$PRIVILEGES_TEXT_ALL , 'name' )
+            ->fromQuery( \IXP\Models\User::$PRIVILEGES_TEXT , 'name' )
             ->addClass( 'chzn-select' )
             ->blockHelp( "The minimum privilege a user is required to have to view and download the file." );
         ?>
@@ -103,15 +99,6 @@ $this->layout( 'layouts/ixpv4' );
             </div>
         </div>
 
-        <?php if( $t->file ): ?>
-            <?= Former::checkbox( 'purgeLogs' )
-                ->id( 'purgeLogs' )
-                ->label( '&nbsp;' )
-                ->text( 'Purge all download logs and reset download statistics' )
-                ->blockHelp( "Check this to purge all download logs for this file and reset download statistics to '0 (0)'. This is not reversible." );
-            ?>
-        <?php endif; ?>
-
         <?= Former::actions(
             Former::primary_submit( $t->file ? 'Save' : 'Upload' )->class( "mb-2 mb-sm-0" ),
             Former::secondary_link( 'Cancel' )->href( redirect()->back()->getTargetUrl() )->class( "mb-2 mb-sm-0" ),
@@ -128,27 +115,26 @@ $this->layout( 'layouts/ixpv4' );
 
 <?php $this->section( 'scripts' ) ?>
 
-<script>
-    <?php if( $t->file ): ?>
+    <script>
+        <?php if( $t->file ): ?>
 
-        $( document ).ready( function() {
-
-            $('#uploadedFile').on( 'input', function( e ) {
-                $('#sha256').removeAttr('disabled').val('');
+            $( document ).ready( function() {
+                $('#uploadedFile').on( 'input', function( e ) {
+                    $('#sha256').removeAttr('disabled').val('');
+                });
             });
 
+        <?php endif; ?>
+
+        $( document ).ready( function() {
+            $("#uploadedFile").on('input', function() {
+                if( $( "#name" ).val() == '' ) {
+                    $( "#name" ).val( this.files[0].name );
+                }
+            });
         });
 
-    <?php endif; ?>
-
-    $( document ).ready( function() {
-        $("#uploadedFile").on('input', function() {
-            if( $( "#name" ).val() == '' ) {
-                $( "#name" ).val( this.files[0].name );
-            }
-        });
-    });
-</script>
+    </script>
 
 <?php $this->append() ?>
 

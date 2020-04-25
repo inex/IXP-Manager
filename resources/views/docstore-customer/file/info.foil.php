@@ -1,6 +1,6 @@
 <div>
 
-    <h4>Metadata for <?= $t->ee( $t->file->name ) ?></h4>
+    <h4>Metadata for <?= $t->file->name ?></h4>
 
     <table class="tw-mt-8">
         <tr class="tw-border-t tw-border-blue-500">
@@ -13,6 +13,14 @@
                 <?php else: ?>
                     <em>User no longer exists in database.</em>
                 <?php endif; ?>
+            </td>
+        </tr>
+        <tr class="tw-border-t tw-border-blue-500">
+            <td class="tw-text-right tw-font-bold tw-p-2">
+                Customer
+            </td>
+            <td class="tw-pl-4 tw-font-mono tw-text-sm tw-p-2">
+                <?= $t->ee( $t->file->customer->name ) ?>
             </td>
         </tr>
         <tr class="tw-border-t tw-border-blue-500">
@@ -40,5 +48,4 @@
             </td>
         </tr>
     </table>
-
 </div>

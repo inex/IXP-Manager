@@ -33,8 +33,15 @@
 
                     <?php if( !config( 'ixp_fe.frontend.disabled.docstore' ) && \IXP\Models\DocstoreDirectory::getHierarchyForUserClass( \IXP\Models\User::AUTH_CUSTUSER ) ): ?>
                         <div class="dropdown-divider"></div>
-                        <a class="dropdown-item <?= !request()->is( 'docstore*' ) ?: 'active' ?>" href="<?= route('docstore-dir@list' ) ?>">
+                        <a class="dropdown-item <?= request()->is( 'docstore*' ) && !request()->is( 'docstorec*' ) ? 'active' : '' ?>" href="<?= route('docstore-dir@list' ) ?>">
                             Document Store
+                        </a>
+                    <?php endif; ?>
+
+                    <?php if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) && \IXP\Models\DocstoreCustomerFile::getListingForAllDirectories( Auth::user()->getCustomer()->getId(),\IXP\Models\User::AUTH_CUSTUSER )  ): ?>
+                        <div class="dropdown-divider"></div>
+                        <a class="dropdown-item <?= !request()->is( 'docstore-c*' ) ?: 'active' ?>" href="<?= route('docstore-c-dir@list', [ 'cust' => Auth::user()->getCustomer()->getId() ] ) ?>">
+                            My Documents
                         </a>
                     <?php endif; ?>
 

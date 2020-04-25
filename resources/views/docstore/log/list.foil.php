@@ -6,20 +6,20 @@ $sixmonthsago = now()->subMonths(6)->startOfDay();
 
 <?php $this->section( 'page-header-preamble' ) ?>
     Document Store
-    / <a class="tw-font-normal" href="<?= route( 'docstore-dir@list', [ 'dir' => $t->file->directory ] ) ?>"><?= $t->file->directory ? $t->file->directory->name : 'Root Directory' ?></a>
+    / <a class="tw-font-normal" href="<?= route( 'docstore-dir@list', [ 'dir' => $t->file->directory ] ) ?>"><?= $t->file->directory ? $t->ee( $t->file->directory->name ) : 'Root Directory' ?></a>
     / <?= $t->unique ? 'Unique' : 'All' ?> Logs
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-<?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-    <div class="btn-group btn-group-sm ml-auto" role="group">
+    <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
+        <div class="btn-group btn-group-sm ml-auto" role="group">
 
-        <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/docstore/">
-            Documentation
-        </a>
+            <a target="_blank" class="btn btn-white" href="https://docs.ixpmanager.org/features/docstore/">
+                Documentation
+            </a>
 
-    </div>
-<?php endif; ?>
+        </div>
+    <?php endif; ?>
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -80,7 +80,7 @@ $sixmonthsago = now()->subMonths(6)->startOfDay();
                                 <td>
                                     <?= $log->name ?? '' ?>
                                     <?php if( $log->username ): ?>
-                                        (<?= $log->username ?>)
+                                        (<?= $t->ee( $log->username ) ?>)
                                     <?php endif; ?>
                                 </td>
                                 <?php if( $t->unique ): ?>

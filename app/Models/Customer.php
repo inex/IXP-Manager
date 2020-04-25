@@ -25,15 +25,20 @@ namespace IXP\Models;
 
 use D2EM, Eloquent;
 
+use DB;
 use Entities\Customer as CustomerEntity;
+use Entities\User as UserEntity;
 
 use Illuminate\Database\Eloquent\{
     Builder,
-    Collection,
     Model
 };
 
-use Illuminate\Support\Carbon;
+use Illuminate\Support\{
+    Collection,
+    Carbon as Carbon
+};
+
 
 use IXP\Exceptions\GeneralException as IXP_Exception;
 
@@ -75,6 +80,10 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property int $in_manrs
  * @property int $in_peeringdb
  * @property int $peeringdb_oauth
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerDirectory[] $docstoreCustomerDirectories
+ * @property-read int|null $docstore_customer_directories_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerFile[] $docstoreCustomerFiles
+ * @property-read int|null $docstore_customer_files_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VirtualInterface[] $virtualInterfaces
  * @property-read int|null $virtual_interfaces_count
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer current()
@@ -179,6 +188,22 @@ class Customer extends Model
     public function virtualInterfaces()
     {
         return $this->hasMany('IXP\Models\VirtualInterface', 'custid');
+    }
+
+    /**
+     * Get the docstore customer directories for the customer
+     */
+    public function docstoreCustomerDirectories()
+    {
+        return $this->hasMany(DocstoreCustomerDirectory::class, 'cust_id');
+    }
+
+    /**
+     * Get the docstore customer files for the customer
+     */
+    public function docstoreCustomerFiles()
+    {
+        return $this->hasMany(DocstoreCustomerFile::class, 'cust_id');
     }
 
 

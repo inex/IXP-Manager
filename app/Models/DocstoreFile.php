@@ -143,7 +143,7 @@ class DocstoreFile extends Model
      */
     public function isViewable(): bool
     {
-        return in_array( '.' . pathinfo( Storage::disk( $this->disk )->url( $this->path ), PATHINFO_EXTENSION ), self::$extensionViewable );
+        return in_array( '.' . pathinfo( $this->name, PATHINFO_EXTENSION ), self::$extensionViewable );
     }
 
     /**
@@ -153,7 +153,7 @@ class DocstoreFile extends Model
      */
     public function isEditable(): bool
     {
-        return in_array( '.' . pathinfo( Storage::disk( $this->disk )->url( $this->path ), PATHINFO_EXTENSION ), self::$extensionEditable );
+        return in_array( '.' . pathinfo( $this->name, PATHINFO_EXTENSION ), self::$extensionEditable );
     }
 
     /**
@@ -163,7 +163,7 @@ class DocstoreFile extends Model
      */
     public function extension(): string
     {
-        return pathinfo( Storage::disk( $this->disk )->url( $this->path ), PATHINFO_EXTENSION );
+        return pathinfo( $this->name, PATHINFO_EXTENSION );
     }
 
     /**

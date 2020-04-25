@@ -23,6 +23,8 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use App, Auth, Countries, D2EM, DateTime, Redirect;
+
 use Entities\{
     Customer                    as CustomerEntity,
     CustomerNote                as CustomerNoteEntity,
@@ -36,21 +38,24 @@ use Illuminate\Http\{
     Request
 };
 
-use IXP\Events\Customer\BillingDetailsChanged as CustomerBillingDetailsChangedEvent;
-
 use Illuminate\View\View;
+
+use IXP\Events\Customer\BillingDetailsChanged as CustomerBillingDetailsChangedEvent;
 
 use IXP\Http\Requests\Dashboard\{
     NocDetailsRequest,
     BillingDetailsRequest
 };
 
+use IXP\Models\{
+    Customer,
+    DocstoreCustomerFile
+};
+
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
-
-use App, Auth, Countries, D2EM, DateTime, Redirect;
 
 /**
  * DashboardController Controller
@@ -135,7 +140,7 @@ class DashboardController extends Controller
             'dataBillingDetail'             => $dataBillingDetail,
             'dataNocDetail'                 => $dataNocDetail,
             'countries'                     => Countries::getList('name' ),
-            'tab'                           => strtolower( $tab )
+            'tab'                           => strtolower( $tab ),
         ]);
     }
 
