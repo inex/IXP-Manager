@@ -462,7 +462,7 @@ class DirectoryControllerTest extends TestCase
         $response = $this->delete( route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $cust ] ) );
         $response->assertStatus(302 )
             ->assertRedirect( route('login@showForm' ) );
-        $this->assertDatabaseHas( 'docstore_customer_directories', [ 'name' => $dir->name,    'description' => $dir->description, 'parent_dir_id' => $dir->parent_dir ] );
+        $this->assertDatabaseHas( 'docstore_customer_directories', [ 'name' => $dir->name,    'description' => $dir->description ] );
     }
 
     /**
@@ -480,7 +480,7 @@ class DirectoryControllerTest extends TestCase
         $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'custuser' ] ] );
         $response = $this->actingAs( $user )->delete( route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $cust ] ) );
         $response->assertStatus(403 );
-        $this->assertDatabaseHas( 'docstore_customer_directories', [ 'name' => $dir->name,    'description' => $dir->description, 'parent_dir_id' => $dir->parent_dir ] );
+        $this->assertDatabaseHas( 'docstore_customer_directories', [ 'name' => $dir->name,    'description' => $dir->description ] );
     }
 
     /**
