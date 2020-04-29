@@ -23,7 +23,6 @@
 
 namespace Repositories;
 
-use Cache;
 use Doctrine\ORM\EntityRepository;
 use Entities\{
     Customer as CustomerEntity,
@@ -183,11 +182,6 @@ class Router extends EntityRepository
      * @return array
      */
     public function makeRouterDropdown( $customer = null, $user = null ): array {
-        $cacheKey = 'lg_dd_' . ( $customer ? $customer->getId() : 'public' );
-        if( Cache::has( $cacheKey ) ) {
-            return Cache::get($cacheKey);
-        }
-
         $dd = [];
         $routers = $this->findAllByHandle();
         ksort( $routers );
@@ -215,7 +209,6 @@ class Router extends EntityRepository
             $dd[$r->resolveType()][$key] = $r->getName();
         }
 
-        Cache::put( $cacheKey, $dd, 900 );
         return $dd;
     }
 

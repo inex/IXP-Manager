@@ -309,7 +309,6 @@ class Customer extends EntityRepository
                      AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED . "
                 ORDER BY c.datejoin DESC"
             )
-            ->useResultCache( true, 3600 )
             ->getResult();
     }
     

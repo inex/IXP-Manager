@@ -99,12 +99,14 @@ class SwitchController extends Doctrine2Frontend
             'pagetitle'         => 'Switches',
 
             'titleSingular'     => 'Switch',
-            'nameSingular'      => 'a switch',
+            'nameSingular'      => 'switch',
 
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
 
             'viewFolderName'    => 'switches',
+
+            'addRoute'          => route( static::route_prefix() . '@add-by-snmp' ),
 
             'documentation'     => 'https://docs.ixpmanager.org/usage/switches/',
 
@@ -585,22 +587,6 @@ class SwitchController extends Doctrine2Frontend
         return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
 
     }
-
-
-    /**
-     * Overriding optional method to clear cached entries:
-     *
-     * @param string $action Either 'add', 'edit', 'delete'
-     * @return bool
-     */
-    protected function postFlush( string $action ): bool
-    {
-        // wipe cached entries
-        // this is created in Repositories\Switcher::getAndCache()
-        D2EM::getRepository( SwitcherEntity::class )->clearCacheAll();
-        return true;
-    }
-
 
 
     /**

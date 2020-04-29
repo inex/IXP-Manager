@@ -68,7 +68,7 @@ class CabinetController extends Doctrine2Frontend
             'pagetitle'         => 'Racks',
 
             'titleSingular'     => 'Rack',
-            'nameSingular'      => 'a rack',
+            'nameSingular'      => 'rack',
 
             'defaultAction'     => 'list',
             'defaultController' => 'CabinetController',

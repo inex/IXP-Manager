@@ -167,7 +167,7 @@ class StatisticsController extends Controller
 
 
         /** @var VlanEntity[] $eVlans */
-        $eVlans   = D2EM::getRepository( VlanEntity::class )->getAndCache( VlanRepository::TYPE_NORMAL, 'name', false );
+        $eVlans   = D2EM::getRepository( VlanEntity::class )->getFiltered( VlanRepository::TYPE_NORMAL, 'name' );
         $grapher  = App::make('IXP\Services\Grapher');
         $protocol = Graph::processParameterRealProtocol( $protocol );
         $category = Graph::processParameterCategory( $category, true );
@@ -221,7 +221,7 @@ class StatisticsController extends Controller
     public function switch( int $switchid = 0, string $category = Graph::CATEGORY_BITS ) : View
     {
         /** @var SwitchEntity[] $eSwitches */
-        $eSwitches = D2EM::getRepository( SwitchEntity::class )->getAndCache( true );
+        $eSwitches = D2EM::getRepository( SwitchEntity::class )->getFiltered( true );
         $grapher = App::make('IXP\Services\Grapher');
         $category = Graph::processParameterCategory( $category, true );
 
@@ -329,7 +329,7 @@ class StatisticsController extends Controller
             if( !in_array( $r->protocol, Graph::PROTOCOLS_REAL ) ) {
                 $r->protocol = Graph::PROTOCOL_IPV4;
             }
-            $targets = D2EM::getRepository( VlanInterfaceEntity::class )->getObjectsForVlan( $vlan, false, $r->protocol );
+            $targets = D2EM::getRepository( VlanInterfaceEntity::class )->getObjectsForVlan( $vlan, $r->protocol );
         } else {
             $targets = [];
         }
@@ -588,7 +588,7 @@ class StatisticsController extends Controller
 
         // Now find the possible other VLAN interfaces that this customer could exchange traffic with
         // (as well as removing the source vli)
-        $dstVlis = D2EM::getRepository( VlanInterfaceEntity::class )->getObjectsForVlan( $srcVli->getVlan(), false );
+        $dstVlis = D2EM::getRepository( VlanInterfaceEntity::class )->getObjectsForVlan( $srcVli->getVlan() );
         unset( $dstVlis[ $srcVli->getId() ] );
 
         if( !count( $dstVlis ) ) {

@@ -14,9 +14,11 @@
 <?php $this->section( 'page-header-postamble' ) ?>
 
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-white" href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol ]) ?>">
-            <span class="fa fa-plus"></span>
-        </a>
+        <?php if( count( $t->vlans ) ): ?>
+            <a class="btn btn-white" href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol ]) ?>">
+                <span class="fa fa-plus"></span>
+            </a>
+        <?php endif; ?>
     </div>
 
 <?php $this->append() ?>
@@ -29,48 +31,67 @@
 
             <?= $t->alerts() ?>
 
-            <div class="card mb-4 bg-light">
-                <div class="card-body">
+            <?php if( !count( $t->vlans ) ): ?>
 
-                    <div class="form-inline">
+                <div class="alert alert-info" role="alert">
+                    <div class="d-flex align-items-center">
+                        <div class="text-center">
+                            <i class="fa fa-info-circle fa-2x"></i>
+                        </div>
+                        <div class="col-sm-12">
+                            <b>No VLAN exists and so you cannot add IP addresses yet.</b>
+                            Start by <a href="<?= route('vlan@list') ?>">adding a VLAN</a>.
+                        </div>
+                    </div>
+                </div>
 
-                        <div class="form-group row">
-                            <label for="vlan" class="col-sm-2 col-form-label">
-                                VLAN
-                            </label>
-                            <div class="col-sm-10">
-                                <select id="vlan" name="vlan" class="form-control">
-                                    <option></option>
-                                    <?php foreach( $t->vlans as $vid => $vname ): ?>
-                                        <option value="<?= $vid ?>" <?= $t->vlan && $vid == $t->vlan->getId() ? 'selected' : '' ?>><?= $vname ?></option>
-                                    <?php endforeach; ?>
-                                </select>
+
+            <?php else: ?>
+
+                <div class="card mb-4 bg-light">
+                    <div class="card-body">
+
+                        <div class="form-inline">
+
+                            <div class="form-group row tw-pl-16">
+                                <label for="vlan" class="col-sm-2 col-form-label">
+                                    VLAN
+                                </label>
+                                <div class="col-sm-10">
+                                    <select id="vlan" name="vlan" class="form-control tw-min-w-full">
+                                        <option></option>
+                                        <?php foreach( $t->vlans as $vid => $vname ): ?>
+                                            <option value="<?= $vid ?>" <?= $t->vlan && $vid == $t->vlan->getId() ? 'selected' : '' ?>><?= $vname ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
                             </div>
+
+                            <?php if( $t->vlan ): ?>
+
+                                <div class="btn-group btn-group-sm">
+
+                                    <a class="btn btn-white" href="<?= route( 'ip-address@list', [ 'vlanid' => $t->vlan->getId(), 'protocol' => ( $t->protocol == 4 ? 6 : 4 ) ] ) ?>">
+                                        Switch to IPv<?= $t->protocol == 4 ? 6 : 4 ?>
+                                    </a>
+
+                                    <a class="btn btn-white" href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol ]) ?>?vlan=<?= $t->vlan->getId() ?>">
+                                        <span class="fa fa-plus"></span>
+                                    </a>
+
+                                    <a class="btn btn-danger" href="<?= route ('ip-address@delete-by-network', [ 'vlanid' => $t->vlan->getId() ]) ?>">
+                                        <span class="fa fa-trash"></span>
+                                    </a>
+
+                                </div>
+                            <?php endif; ?>
+
                         </div>
 
-                        <?php if( $t->vlan ): ?>
-
-                            <div class="btn-group btn-group-sm">
-
-                                <a class="btn btn-white" href="<?= route( 'ip-address@list', [ 'vlanid' => $t->vlan->getId(), 'protocol' => ( $t->protocol == 4 ? 6 : 4 ) ] ) ?>">
-                                    Switch to IPv<?= $t->protocol == 4 ? 6 : 4 ?>
-                                </a>
-
-                                <a class="btn btn-white" href="<?= route ('ip-address@add', [ 'protocol' => $t->protocol ]) ?>?vlan=<?= $t->vlan->getId() ?>">
-                                    <span class="fa fa-plus"></span>
-                                </a>
-
-                                <a class="btn btn-danger" href="<?= route ('ip-address@delete-by-network', [ 'vlanid' => $t->vlan->getId() ]) ?>">
-                                    <span class="fa fa-trash"></span>
-                                </a>
-
-                            </div>
-                        <?php endif; ?>
-
                     </div>
-
                 </div>
-            </div>
+
+            <?php endif; /* count( $t->vlans ) */ ?>
 
             <?php if( !count( $t->ips ) ): ?>
 

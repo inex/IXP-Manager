@@ -34,6 +34,8 @@ use Entities\{
     VlanInterface as VlanInterfaceEntity
 };
 
+use IXP\Exceptions\GeneralException as IXP_Exception;
+
 /**
  * VlanInterface
  *
@@ -85,15 +87,14 @@ class VlanInterface extends EntityRepository
      *
      * @param \Entities\Vlan $vlan The VLAN
      * @param int $proto Either 4 or 6
-     * @param bool $useResultCache If true, use Doctrine's result cache (ttl set to one hour)
      * @param int $pistatus The status of the physical interface
      * @return array As defined above.
-     * @throws \IXP_Exception On bad / no protocol
+     * @throws IXP_Exception On bad / no protocol
      */
-    public function getForProto( $vlan, $proto, $useResultCache = true, $pistatus = \Entities\PhysicalInterface::STATUS_CONNECTED )
+    public function getForProto( $vlan, $proto, $pistatus = \Entities\PhysicalInterface::STATUS_CONNECTED )
     {
         if( !in_array( $proto, [ 4, 6 ] ) )
-            throw new \IXP_Exception( 'Invalid protocol specified' );
+            throw new IXP_Exception( 'Invalid protocol specified' );
 
 
         $qstr = "SELECT c.id              AS cid, 
@@ -137,7 +138,7 @@ class VlanInterface extends EntityRepository
                         l.shortname AS location_shortname, 
                         l.tag       AS location_tag
                        
-                    FROM Entities\\VlanInterface vli
+                    FROM Entities\VlanInterface vli
                         LEFT JOIN vli.VirtualInterface vi
                         LEFT JOIN vli.IPv{$proto}Address addr
                         LEFT JOIN vi.Customer c
@@ -170,245 +171,24 @@ class VlanInterface extends EntityRepository
         $q = $this->getEntityManager()->createQuery( $qstr );
         $q->setParameter( 'vlan', $vlan );
         $q->setParameter( 'pistatus', $pistatus );
-        $q->useResultCache( $useResultCache, 3600 );
         return $q->getArrayResult();
     }
 
-
-    /**
-     * Utility function to provide an array of all VLAN interfaces on a given IXP.
-     *
-     * Returns an array of elements such as:
-     *
-     *     [
-     *         [cid] => 999
-     *         [cname] => Customer Name
-     *         [cshortname] => shortname
-     *         [autsys] => 65500
-     *         [vliid] => 159
-     *
-     *         [ipv4enabled]                   // VLAN interface enabled
-     *         [ipv4canping]                   // Can ping for moniroting
-     *         [ipv4hostname]                  // hostname
-     *         [ipv4monitorrcbgp]              // Can monitor RC BGP session
-     *         [ipv4address] => 192.0.2.123    // assigned address
-     *         [ipv4bgpmd5secret] => qwertyui  // MD5
-     *
-     *         [ipv6enabled]                   // VLAN interface enabled
-     *         [ipv6canping]                   // Can ping for moniroting
-     *         [ipv6hostname]                  // hostname
-     *         [ipv6monitorrcbgp]              // Can monitor RC BGP session
-     *         [ipv6address] => 192.0.2.123    // assigned address
-     *         [ipv6bgpmd5secret] => qwertyui  // MD5
-     *
-     *         [maxbgpprefix] => 20        // VLAN interface max prefixes
-     *         [as112client] => 1          // if the member is an as112 client or not
-     *         [rsclient] => 1             // if the member is a route server client or not
-     *     ]
-     *
-     * @param \Entities\Vlan $vlan The VLAN
-     * @param int $proto Either 4 or 6
-     * @param bool $useResultCache If true, use Doctrine's result cache (ttl set to one hour)
-     * @return array As defined above.
-     * @throws \IXP_Exception On bad / no protocol
-     */
-    public function getForIXP( $ixp, $useResultCache = true )
-    {
-        $qstr = "SELECT c.id AS cid, c.name AS cname, c.shortname AS cshortname, c.autsys AS autsys,
-
-                    vli.id AS vliid,
-
-                    vli.ipv4enabled      AS ipv4enabled,
-                    vli.ipv4hostname     AS ipv4hostname,
-                    vli.ipv4canping      AS ipv4canping,
-                    vli.ipv4monitorrcbgp AS ipv4monitorrcbgp,
-                    vli.ipv4bgpmd5secret AS ipv4bgpmd5secret,
-                    v4addr.address       AS ipv4address,
-
-                    vli.ipv6enabled      AS ipv6enabled,
-                    vli.ipv6hostname     AS ipv6hostname,
-                    vli.ipv6canping      AS ipv6canping,
-                    vli.ipv6monitorrcbgp AS ipv6monitorrcbgp,
-                    vli.ipv6bgpmd5secret AS ipv6bgpmd5secret,
-                    v6addr.address       AS ipv6address,
-
-                    vli.maxbgpprefix AS maxbgpprefix,
-                    vli.as112client AS as112client,
-                    vli.rsclient AS rsclient,
-
-                    s.name AS switchname,
-                    sp.name AS switchport,
-
-                    v.number AS vlannumber,
-
-                    ixp.shortname AS ixpname
-
-        FROM Entities\\VlanInterface vli
-            JOIN vli.VirtualInterface vi
-            JOIN vli.IPv4Address v4addr
-            JOIN vli.IPv6Address v6addr
-            JOIN vi.Customer c
-            JOIN vi.PhysicalInterfaces pi
-            JOIN pi.SwitchPort sp
-            JOIN sp.Switcher s
-            JOIN vli.Vlan v
-            JOIN v.Infrastructure inf
-            JOIN inf.IXP ixp
-
-        WHERE
-            ixp = :ixp
-            AND " . Customer::DQL_CUST_ACTIVE     . "
-            AND " . Customer::DQL_CUST_CURRENT    . "
-            AND " . Customer::DQL_CUST_TRAFFICING . "
-            AND pi.status = " . \Entities\PhysicalInterface::STATUS_CONNECTED;
-
-        $qstr .= " ORDER BY c.shortname ASC, vli.id ASC";
-
-        $q = $this->getEntityManager()->createQuery( $qstr );
-
-        $q->setParameter( 'ixp', $ixp );
-        $q->useResultCache( $useResultCache, 3600 );
-        return $q->getArrayResult();
-    }
-
-    /**
-     * Utility function to provide an array of all VLAN interfaces on a given VLAN.
-     *
-     * Returns an array where each element has the following format:
-     *
-     *      [
-     *        "cid" => 69,
-     *        "cname" => "ABC Ltd",
-     *        "caname" => "ABC Ltd",
-     *        "csname" => "abc",
-     *        "cautsys" => 65501,
-     *        "vid" => 2,
-     *        "vtag" => 10,
-     *        "viid" => 33,
-     *        "vliid" => 100,
-     *        "ipv4enabled" => true,
-     *        "ipv4hostname" => "abc.inex.ie",
-     *        "ipv4canping" => true,
-     *        "ipv4monitorrcbgp" => true,
-     *        "ipv4bgpmd5secret" => "secret,
-     *        "ipv4address" => "192.0.2.58",
-     *        "ipv6enabled" => false,
-     *        "ipv6hostname" => "",
-     *        "ipv6canping" => false,
-     *        "ipv6monitorrcbgp" => true,
-     *        "ipv6bgpmd5secret" => "",
-     *        "ipv6address" => null,
-     *        "busyhost" => false,
-     *        "as112client" => true,
-     *        "rsclient" => true,
-     *        "sid" => 54,
-     *        "sname" => "swi1-cwt1-1",
-     *        "cabid" => 4,
-     *        "cabname" => "INEX-CWT1-1",
-     *        "locid" => 2,
-     *        "locname" => "Equinix DB1 (Citywest)",
-     *        "locsname" => "EQX-DB1",
-     *      ]
-     *
-     * $param int  $vlan            VLAN ID
-     * @param bool $externalOnly    If true then only external (non-internal) interfaces will be returned
-     * @param int  $pistatus        The status that at least one associated physical interface must match.
-     *                              The default value will only pull VLAN interfaces that have a connected interface.
-     *                              This is probably what you want.
-     * @param bool $useResultCache  If true, use Doctrine's result cache to prevent needless database overhead.
-     * @return array As defined above.
-     */
-    public function getForVlan( int $vlan, bool $externalOnly = false, int $pistatus = \Entities\PhysicalInterface::STATUS_CONNECTED, bool $useResultCache = true ): array
-    {
-        $qstr = "SELECT DISTINCT vli.id      AS vliid,
-
-                        c.id                 AS cid, 
-                        c.name               AS cname,
-                        c.abbreviatedName    AS caname,
-                        c.shortname          AS csname,
-                        c.autsys             AS cautsys,
-                        
-                        v.id                 AS vid,
-                        v.number             AS vtag,
-                        v.name               AS vname,
-
-                        vi.id                AS viid, 
-                        
-                        vli.ipv4enabled      AS ipv4enabled,
-                        vli.ipv4hostname     AS ipv4hostname,
-                        vli.ipv4canping      AS ipv4canping,
-                        vli.ipv4monitorrcbgp AS ipv4monitorrcbgp,
-                        vli.ipv4bgpmd5secret AS ipv4bgpmd5secret,
-                        v4addr.address       AS ipv4address,
-
-                        vli.ipv6enabled      AS ipv6enabled,
-                        vli.ipv6hostname     AS ipv6hostname,
-                        vli.ipv6canping      AS ipv6canping,
-                        vli.ipv6monitorrcbgp AS ipv6monitorrcbgp,
-                        vli.ipv6bgpmd5secret AS ipv6bgpmd5secret,
-                        v6addr.address       AS ipv6address,
-
-                        vli.busyhost         AS busyhost,
-                        vli.as112client      AS as112client,
-                        vli.rsclient         AS rsclient,
-
-                        s.id                 AS sid,
-                        s.name               AS sname,
-                        
-                        cab.id               AS cabid,
-                        cab.name             AS cabname,
-                        
-                        loc.id               AS locid,
-                        loc.name             AS locname,
-                        loc.shortname        AS locsname
-
-                    FROM Entities\\VlanInterface vli
-                        LEFT JOIN vli.Vlan v
-                        LEFT JOIN vli.IPv4Address v4addr
-                        LEFT JOIN vli.IPv6Address v6addr
-                        LEFT JOIN vli.VirtualInterface vi
-                        LEFT JOIN vi.Customer c
-                        LEFT JOIN vi.PhysicalInterfaces pi
-                        LEFT JOIN pi.SwitchPort sp
-                        LEFT JOIN sp.Switcher s
-                        LEFT JOIN s.Cabinet cab
-                        LEFT JOIN cab.Location loc
-                        
-                    WHERE
-                        v = :vlan
-                        AND " . Customer::DQL_CUST_ACTIVE     . "
-                        AND " . Customer::DQL_CUST_CURRENT    . "
-                        AND " . Customer::DQL_CUST_TRAFFICING . "
-                        AND pi.status = :pistatus ";
-
-        if( $externalOnly ) {
-            $qstr .= "AND " . Customer::DQL_CUST_EXTERNAL;
-        }
-
-        $qstr .= " ORDER BY c.name ASC";
-
-        return $this->getEntityManager()->createQuery( $qstr )
-                ->setParameter( 'vlan', $vlan )
-                ->setParameter( 'pistatus', $pistatus )
-                ->useResultCache( $useResultCache, 3600 )
-                ->getScalarResult();
-    }
 
     /**
      * Utility function to provide an array of VLAN interface objects on a given VLAN.
      *
      * @param \Entities\Vlan $vlan The VLAN to gather VlanInterfaces for
-     * @param bool $useResultCache If true, use Doctrine's result cache.
      * @return \Entities\VlanInterface[] Indexed by VlanInterface ID
      */
-    public function getObjectsForVlan( $vlan, $useResultCache = true, $protocol = null )
+    public function getObjectsForVlan( $vlan, $protocol = null )
     {
         if( in_array( $protocol, [ 4, 6 ] ) ) {
             $pq = " AND vli.ipv{$protocol}enabled = 1";
         } else
 
         $qstr = "SELECT vli
-                    FROM Entities\\VlanInterface vli
+                    FROM Entities\VlanInterface vli
                         JOIN vli.Vlan v
                         JOIN vli.VirtualInterface vi
                         JOIN vi.PhysicalInterfaces pi
@@ -426,7 +206,6 @@ class VlanInterface extends EntityRepository
 
         $q = $this->getEntityManager()->createQuery( $qstr );
         $q->setParameter( 'vlan', $vlan );
-        $q->useResultCache( $useResultCache, 3600 );
 
         $vlis = [];
         foreach( $q->getResult() as $vli )
@@ -498,7 +277,7 @@ class VlanInterface extends EntityRepository
      */
     public function sanitiseVlanInterfaces( VlanEntity $vlan, int $protocol = 4, int $target = RouterEntity::TYPE_ROUTE_SERVER, bool $quarantine = false ): array {
 
-        $ints = $this->getForProto( $vlan, $protocol, false,
+        $ints = $this->getForProto( $vlan, $protocol,
             $quarantine  ? \Entities\PhysicalInterface::STATUS_QUARANTINE : \Entities\PhysicalInterface::STATUS_CONNECTED
         );
 
