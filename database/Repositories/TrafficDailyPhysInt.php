@@ -72,12 +72,14 @@ class TrafficDailyPhysInt extends EntityRepository
     {
         $period = Graph::processParameterPeriod( $period );
 
+        $vlanjoin = "";
         $vlansql = "";
         if( $vlan ) {
+            $vlanjoin = "LEFT JOIN vi.VlanInterfaces vli LEFT JOIN vli.Vlan v";
             $vlansql = " AND v.id = :vlan";
         }
 
-        $dql = "SELECT c.id AS cid, c.abbreviatedName AS cname, ANY_VALUE( v.name) as vname, ANY_VALUE( s.name ) as switch,
+        $dql = "SELECT c.id AS cid, c.abbreviatedName AS cname, ANY_VALUE( s.name ) as switch,
                         vi.id AS viid,
                         SUM( tdpi.{$period}_max_in ) AS in,
                         SUM( tdpi.{$period}_max_out ) AS out,
@@ -89,12 +91,12 @@ class TrafficDailyPhysInt extends EntityRepository
                         LEFT JOIN tdpi.PhysicalInterface pi 
                         LEFT JOIN pi.VirtualInterface vi 
                         LEFT JOIN vi.Customer c 
-                        LEFT JOIN vi.VlanInterfaces vli
-                        LEFT JOIN vli.Vlan v
                         LEFT JOIN pi.SwitchPort sp
                         LEFT JOIN sp.Switcher s
-
-                    WHERE tdpi.day = :day AND tdpi.category = :cat {$vlansql}
+                        {$vlanjoin}
+                        
+                    WHERE tdpi.day = :day AND tdpi.category = :cat {$vlansql} 
+                            
                     
                     GROUP BY vi.id
                     
