@@ -49,6 +49,10 @@ class EventServiceProvider extends ServiceProvider {
             \IXP\Listeners\Auth\LoginSuccessful::class
         ],
 
+        \Illuminate\Auth\Events\Failed::class => [
+            \IXP\Listeners\Auth\LoginFailed::class
+        ],
+
         'IXP\Events\Customer\BillingDetailsChanged' => [
             'IXP\Listeners\Customer\BillingDetailsChanged'
         ],
