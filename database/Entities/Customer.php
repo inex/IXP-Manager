@@ -1463,6 +1463,15 @@ class Customer
         return $this->getType() == self::TYPE_PROBONO;
     }
 
+    /**
+     * Check if this customer is of the named type
+     * @return boolean
+     */
+    public function isTypeRouteServer()
+    {
+        return $this->getType() == self::TYPE_ROUTESERVER;
+    }
+
 
     /**
      * Turn the database integer representation of the type into text as

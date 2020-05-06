@@ -2,6 +2,8 @@
     <span class="badge badge-warning">ASSOCIATE MEMBER</span>
 <?php elseif( $t->cust->isTypeProBono() ): ?>
     <span class="badge badge-info">PROBONO MEMBER</span>
+<?php elseif( $t->cust->isTypeRouteServer() ): ?>
+    <span class="badge badge-primary">ROUTE SERVER</span>
 <?php elseif( $t->cust->isTypeInternal() ): ?>
     <span class="badge badge-primary">INTERNAL INFRASTRUCTURE</span>
 <?php elseif( $t->cust->isTypeFull() ): ?>
