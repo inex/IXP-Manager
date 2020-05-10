@@ -267,8 +267,18 @@
                                 <tr>
                                     <td>
                                         <b>
-                                            IPv4 Address:
+                                            IPv6 Address:
                                         </b>
+                                    </td>
+                                    <td>
+                                        <?php if( $vli->getIpv6enabled() && $vli->getIpv6address() ): ?>
+                                            <?= $t->ee( $vli->getIPv6Address()->getAddress() ) ?><?php if( isset( $t->netInfo[ $vlanid ][ 6 ][ 'masklen' ] ) ) : ?>/<?= $t->netInfo[ $vlanid ][ 6 ][ "masklen" ] ?> <?php endif;?>
+                                        <?php else: ?>
+                                            IPv6 not enabled.
+                                        <?php endif; ?>
+                                    </td>
+                                    <td>
+                                        <b>IPv4 Address:</b>
                                     </td>
                                     <td>
                                         <?php if( $vli->getIpv4enabled() && $vli->getIpv4address() ): ?>
@@ -277,76 +287,7 @@
                                             IPv4 not enabled.
                                         <?php endif; ?>
                                     </td>
-                                    <td>
-                                        <b>IPv6 Address:</b>
-                                    </td>
-                                    <td>
-                                        <?php if( $vli->getIpv6enabled() && $vli->getIpv6address() ): ?>
-                                            <?= $t->ee( $vli->getIPv6Address()->getAddress() ) ?><?php if( isset( $t->netInfo[ $vlanid ][ 6 ][ 'masklen' ] ) ) : ?>/<?= $t->netInfo[ $vlanid ][ 6 ][ "masklen" ] ?> <?php endif;?>
-                                        <?php else: ?>
-                                            IPv4 not enabled.
-                                        <?php endif; ?>
-                                    </td>
                                 </tr>
-                                <tr>
-                                    <td>
-                                        <b>
-                                            IPv4 Reverse-DNS:
-                                        </b>
-                                    </td>
-                                    <td>
-					<?= $vli->getIPv4HostName() ?>
-                                    </td>
-                                    <td>
-                                        <b>
-                                            IPv6 Reverse-DNS: 
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <?= $vli->getIPv6HostName() ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <b>
-                                            IPv4 Route Server Client:
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <?= $vli->getRsclient() ? "Yes" : "No" ?>
-                                    </td>
-                                    <td>
-                                        <b>
-                                            IPv6 Route Server Client:
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <?= $vli->getRsclient() ? "Yes" : "No" ?>
-                                    </td>
-                                </tr>
-				<?php if( $vli->getRsclient() ): ?>
-                                <tr>
-                                    <td>
-                                        <b>
-                                            IPv4 Route Server MD5:
-                                        </b>
-                                    </td>
-                                    <td>
-					<?= $vli->getIpv4bgpmd5secret() ? $vli->getIpv4bgpmd5secret() : "none" ?>
-                                    </td>
-                                    <td>
-                                        <b>
-                                            IPv6 Route Server MD5:
-                                        </b>
-                                    </td>
-                                    <td>
-					<?= $vli->getIpv6bgpmd5secret() ? $vli->getIpv6bgpmd5secret() : "none" ?>
-                                    </td>
-                                </tr>
-				<?php endif; ?>
-
-    				<tr style="background:#fff; border-bottom:1px solid black;"></tr>
-
                                 <tr>
                                     <td>
                                         <b>
@@ -365,9 +306,19 @@
                                         <?php foreach( $vli->getLayer2AddressesAsArray() as $l2a ): ?>
                                             <?= $l2a ?><br />
                                         <?php endforeach; ?>
-                                        <?php if( count( $vli->getLayer2AddressesAsArray() ) > 0 && config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ): ?>
+                                        <?php if( config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ): ?>
                                             <a href="<?= route( "layer2-address@forVlanInterface", [ "vliid" => $vli->getId() ] ) ?>">Edit</a>
                                         <?php endif; ?>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td>
+                                        <b>
+                                            Route Server Client:
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <?= $vli->getRsclient() ? "Yes" : "No" ?>
                                     </td>
                                 </tr>
                                 <?php if( $t->as112UiActive() ): ?>
