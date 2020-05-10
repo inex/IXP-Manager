@@ -264,53 +264,57 @@
                         <div class="col-lg-12">
 
                             <table class="table table-sm table-borderless table-striped">
-                                <tr>
-                                    <td>
-                                        <b>
-                                            IPv6 Address:
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <?php if( $vli->getIpv6enabled() && $vli->getIpv6address() ): ?>
-                                            <?= $t->ee( $vli->getIPv6Address()->getAddress() ) ?><?php if( isset( $t->netInfo[ $vlanid ][ 6 ][ 'masklen' ] ) ) : ?>/<?= $t->netInfo[ $vlanid ][ 6 ][ "masklen" ] ?> <?php endif;?>
-                                        <?php else: ?>
-                                            IPv6 not enabled.
-                                        <?php endif; ?>
-                                    </td>
-                                    <td>
-                                        <b>IPv4 Address:</b>
-                                    </td>
-                                    <td>
-                                        <?php if( $vli->getIpv4enabled() && $vli->getIpv4address() ): ?>
-                                            <?= $t->ee( $vli->getIPv4Address()->getAddress() ) ?><?php if( isset( $t->netInfo[ $vlanid ][ 4 ][ 'masklen' ] ) ) : ?>/<?= $t->netInfo[ $vlanid ][ 4 ][ "masklen" ] ?> <?php endif;?>
-                                        <?php else: ?>
-                                            IPv4 not enabled.
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td>
-                                        <b>
-                                            Multicast Enabled:
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <?= $vli->getMcastenabled() ? "Yes" : "No" ?>
-                                    </td>
-                                    <td>
-                                        <b>
-                                            Mac Address:
-                                        </b>
-                                    </td>
-                                    <td>
-                                        <?php foreach( $vli->getLayer2AddressesAsArray() as $l2a ): ?>
-                                            <?= $l2a ?><br />
-                                        <?php endforeach; ?>
-                                        <?php if( config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ): ?>
-                                            <a href="<?= route( "layer2-address@forVlanInterface", [ "vliid" => $vli->getId() ] ) ?>">Edit</a>
-                                        <?php endif; ?>
-                                    </td>
-                                </tr>
+
+                                <?php if( $vli->getIpv6enabled() && $vli->getIpv6address() ): ?>
+
+                                    <tr>
+                                        <td>
+                                            <b>
+                                                IPv6 Address:
+                                            </b>
+                                        </td>
+                                        <td>
+                                            <span class="tw-font-mono"><?= $t->ee( $vli->getIPv6Address()->getAddress() ) ?><?php if( isset( $t->netInfo[ $vlanid ][ 6 ][ 'masklen' ] ) ) : ?>/<?= $t->netInfo[ $vlanid ][ 6 ][ "masklen" ] ?> <?php endif;?></span>
+                                        </td>
+                                        <td>
+                                            <b>IPv6 RS/RC MD5:</b>
+                                        </td>
+                                        <td>
+                                            <?php if( $vli->getIpv6bgpmd5secret() ): ?>
+                                                <span class="tw-font-mono"><?= $t->ee( $vli->getIpv6bgpmd5secret() ) ?></span>
+                                            <?php else: ?>
+                                                <em>(not configured)</em>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+
+                                <?php endif; ?>
+
+                                <?php if( $vli->getIpv4enabled() && $vli->getIpv4address() ): ?>
+
+                                    <tr>
+                                        <td>
+                                            <b>
+                                                IPv4 Address:
+                                            </b>
+                                        </td>
+                                        <td>
+                                            <span class="tw-font-mono"><?= $t->ee( $vli->getIPv4Address()->getAddress() ) ?><?php if( isset( $t->netInfo[ $vlanid ][ 4 ][ 'masklen' ] ) ) : ?>/<?= $t->netInfo[ $vlanid ][ 4 ][ "masklen" ] ?> <?php endif;?></span>
+                                        </td>
+                                        <td>
+                                            <b>IPv4 RS/RC MD5:</b>
+                                        </td>
+                                        <td>
+                                            <?php if( $vli->getIpv4bgpmd5secret() ): ?>
+                                                <span class="tw-font-mono"><?= $t->ee( $vli->getIpv4bgpmd5secret() ) ?></span>
+                                            <?php else: ?>
+                                                <em>(not configured)</em>
+                                            <?php endif; ?>
+                                        </td>
+                                    </tr>
+
+                                <?php endif; ?>
+
                                 <tr>
                                     <td>
                                         <b>
@@ -319,6 +323,19 @@
                                     </td>
                                     <td>
                                         <?= $vli->getRsclient() ? "Yes" : "No" ?>
+                                    </td>
+                                    <td>
+                                        <b>
+                                            MAC Address:
+                                        </b>
+                                    </td>
+                                    <td>
+                                        <?php foreach( $vli->getLayer2AddressesAsArray() as $l2a ): ?>
+                                            <span class="tw-font-mono"><?= $l2a ?></span><br />
+                                        <?php endforeach; ?>
+                                        <?php if( config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ): ?>
+                                            <a href="<?= route( "layer2-address@forVlanInterface", [ "vliid" => $vli->getId() ] ) ?>">Edit</a>
+                                        <?php endif; ?>
                                     </td>
                                 </tr>
                                 <?php if( $t->as112UiActive() ): ?>
