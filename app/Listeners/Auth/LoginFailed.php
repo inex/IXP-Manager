@@ -38,6 +38,6 @@ class LoginFailed {
     public function handle( FailedEvent $e )
     {
         // TODO: Maybe we should persist failed logs into the DB instead and create a view in the backend
-        Log::warning( 'Login failed for user "' . $e->credentials['username'] . '" from IP ' . ixp_get_client_ip() . '.' );
+        Log::warning( 'Login failed for user [' . $e->credentials['username'] . '] from IP [' . ixp_get_client_ip() . ']' );
     }
 }
