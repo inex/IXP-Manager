@@ -489,9 +489,6 @@ class JsonSchema
             case Customer::TYPE_PROBONO:
                 return 'peering';
 
-            case Customer::TYPE_ROUTESERVER:
-                return 'ixp';
-
             default:
                 return 'other';
         }

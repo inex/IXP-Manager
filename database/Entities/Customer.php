@@ -37,14 +37,12 @@ class Customer
     const TYPE_INTERNAL    = 3;
     const TYPE_IXP         = 3;
     const TYPE_PROBONO     = 4;
-    const TYPE_ROUTESERVER = 5;
 
     public static $CUST_TYPES_TEXT = [
         self::TYPE_FULL          => 'Full',
         self::TYPE_ASSOCIATE     => 'Associate',
         self::TYPE_INTERNAL      => 'Internal',
         self::TYPE_PROBONO       => 'Pro-bono',
-        self::TYPE_ROUTESERVER   => 'Routeserver'
     ];
 
 
