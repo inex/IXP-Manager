@@ -732,22 +732,35 @@ class SwitchController extends Doctrine2Frontend
         }
 
         $vlan = false;
-        if( $r->input( 'vlan' ) !== null ) {
-            /** @var LocationEntity $facility */
-            $vlan = D2EM::getRepository( VlanEntity::class )->find( $r->input( 'vlan' ) );
+        if( $r->input( 'vlan', null ) !== null ) {
+            if( $vlan = D2EM::getRepository( VlanEntity::class )->find( $r->input( 'vlan' ) ) ) {
+                $r->session()->put( "switch-configuration-vlan", $vlan );
+            } else {
+                $r->session()->remove( "switch-configuration-vlan" );
+                $vlan = false;
+            }
+        } else if( $r->session()->exists( "switch-configuration-vlan" ) ) {
+            $vlan = $r->session()->get( "switch-configuration-vlan" );
         }
 
-        if( $switch || $infra || $location ) {
-            $summary = ":: Connections details for ";
+        if( $switch || $infra || $location || $vlan ) {
+            $summary = "Connections details for: ";
 
             if( $switch ) {
                 $summary .= $switch->getName() . " (on " . $switch->getInfrastructure()->getName() . " at " . $switch->getCabinet()->getLocation()->getName() . ")";
-            } elseif( $infra && $location ){
-                $summary .= $infra->getName() . " at " . $location->getName();
-            } elseif( $infra ){
-                $summary .= $infra->getName();
-            } elseif( $location ){
-                $summary .= $location->getName();
+            } else {
+                if( $infra ){
+                    $summary .= $infra->getName() . ' (infrastructure); ';
+                }
+                if( $location ){
+                    $summary .= $location->getName() . ' (facility); ';
+                }
+                if( $vlan ) {
+                    $summary .= $vlan->getName() . ' (VLAN); ';
+                }
+                if( $speed ) {
+                    $summary .= PhysicalInterfaceEntity::$SPEED[$speed] . '; ';
+                }
             }
 
         } else{
@@ -768,10 +781,12 @@ class SwitchController extends Doctrine2Frontend
             's'                         => $switch,
             'speed'                     => $speed,
             'infra'                     => $infra,
+            'vlan'                      => $vlan,
             'location'                  => $location,
             'summary'                   => $summary,
             'speeds'                    => $speeds,
             'infras'                    => $switch ? [ $switch->getInfrastructure()->getId()          => $switch->getInfrastructure()->getName()           ] : D2EM::getRepository( InfrastructureEntity::class     )->getNames( true ),
+            'vlans'                     => D2EM::getRepository( VlanEntity::class )->getNames(),
             'locations'                 => $switch ? [ $switch->getCabinet()->getLocation()->getId()  => $switch->getCabinet()->getLocation()->getName()   ] : D2EM::getRepository( LocationEntity::class           )->getNames(),
             'switches'                  => D2EM::getRepository( SwitcherEntity::class           )->getByLocationAndInfrastructureAndSpeed( $infra, $location, $speed ),
             'config'                    => $config,

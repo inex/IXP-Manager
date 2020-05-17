@@ -85,8 +85,11 @@ class AdminController extends Controller
         // only do this once every 60 minutes
         if( $request->query( 'refresh_cache', 0 ) || !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
 
+            // Full / Associate / Probono / Internal
             $cTypes['types'] = D2EM::getRepository( CustomerEntity::class )->getTypeCounts();
 
+            // Searches for VirtualInterfaces where custtype us not internal.
+            // Because it's Virtual Interfaces, it should only be current or unremoved customers, etc.
             $vis = D2EM::getRepository( VirtualInterfaceEntity::class )->getByLocation();
 
             $speeds          = [];
@@ -102,21 +105,15 @@ class AdminController extends Controller
                 $location       = $vi['locationname'];
                 $infrastructure = $vi['infrastructure'];
 
+                // ----
+
                 if( !isset( $custsByLocation[ $location ] ) ) {
                     $custsByLocation[ $location ] = 0;
+                } else {
+                    $custsByLocation[ $location ]++;
                 }
 
-                if( !isset( $byLocation[ $location ] ) ) {
-                    $byLocation[ $location ] = [];
-                }
-
-                if( !isset( $byLan[ $infrastructure ] ) ) {
-                    $byLan[ $infrastructure ] = [];
-                }
-
-                if( !isset( $byIxp[ $vi['ixp'] ] ) ) {
-                    $byIxp[ $vi[ 'ixp' ] ] = [];
-                }
+                // ----
 
                 if( !isset( $speeds[ $vi['speed'] ] ) ) {
                     $speeds[ $vi[ 'speed' ] ] = 1;
@@ -124,14 +121,11 @@ class AdminController extends Controller
                     $speeds[ $vi[ 'speed' ] ]++;
                 }
 
-                if( !isset( $custsByLocation[ $location ][ $vi['customerid'] ] ) ) {
-                    $custsByLocation[ $location ]++;
-                }
+                // ----
 
                 if( !isset( $custsByInfra[ $infrastructure ] ) ) {
                     $custsByInfra[ $infrastructure ] = [];
                 }
-
                 if( !in_array( $vi['customerid'], $custsByInfra[ $infrastructure ] ) ) {
                     $custsByInfra[ $infrastructure ][] = $vi[ 'customerid' ];
                 }
@@ -140,16 +134,21 @@ class AdminController extends Controller
                     $peeringCusts[] = $vi[ 'customerid' ];
                 }
 
+                // ----
+
+                if( !isset( $byLocation[ $location ] ) ) {
+                    $byLocation[ $location ] = [];
+                }
                 if( !isset( $byLocation[ $vi['locationname'] ][ $vi['speed'] ] ) ) {
                     $byLocation[ $location ][ $vi[ 'speed' ] ] = 1;
                 } else {
                     $byLocation[ $location ][ $vi[ 'speed' ] ]++;
                 }
 
-                if( !isset( $byixp[ $vi['ixp'] ][ $vi['speed'] ] ) ) {
-                    $byIxp[ $vi[ 'ixp' ] ][ $vi[ 'speed' ] ] = 1;
-                } else {
-                    $byIxp[ $vi[ 'ixp' ] ][ $vi[ 'speed' ] ]++;
+                // ----
+
+                if( !isset( $byLan[ $infrastructure ] ) ) {
+                    $byLan[ $infrastructure ] = [];
                 }
 
                 if( !isset( $byLan[ $infrastructure ][ $vi['speed'] ] ) ) {
@@ -170,8 +169,14 @@ class AdminController extends Controller
             $cTypes['custsByInfra']     = $custsByInfra;
             $cTypes['peeringCusts']     = $peeringCusts;
 
+            // FROM of query is vlaninterface so should be current:
             $cTypes['rsUsage']          = D2EM::getRepository( VlanInterfaceEntity::class )->getRsClientUsagePerVlan();
+
+            // FROM of query is vlaninterface so should be current:
             $cTypes['ipv6Usage']        = D2EM::getRepository( VlanInterfaceEntity::class )->getIPv6UsagePerVlan();
+
+            // full/probono customers with connected interface by vlan
+            $cTypes['percentByVlan']    = D2EM::getRepository( VirtualInterfaceEntity::class )->getPercentageCustomersByVlan();
 
             $cTypes['cached_at']        = Carbon::now();
 

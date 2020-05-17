@@ -30,7 +30,10 @@ use Entities\{
     PhysicalInterface as PIEntity,
     VirtualInterface as VIEntity
 };
+
 use IXP\Exceptions\GeneralException;
+
+use Illuminate\Support\Facades\DB;
 
 /**
  * VirtualInterface
@@ -49,15 +52,14 @@ class VirtualInterface extends EntityRepository
      */
     public function getByLocation()
     {
-        return $ints = $this->getEntityManager()->createQuery(
-            "SELECT c.id AS customerid, vi.id AS id, pi.speed AS speed, i.name AS infrastructure, l.name AS locationname, sixp.name as ixp, sixp.shortname as locixp
-                FROM Entities\\VirtualInterface vi
+        return $this->getEntityManager()->createQuery(
+            "SELECT c.id AS customerid, vi.id AS id, pi.speed AS speed, i.name AS infrastructure, l.name AS locationname
+                FROM Entities\VirtualInterface vi
                     JOIN vi.Customer c
                     JOIN vi.PhysicalInterfaces pi
                     JOIN pi.SwitchPort sp
                     JOIN sp.Switcher sw
                     JOIN sw.Infrastructure i
-                    JOIN i.IXP sixp
                     JOIN sw.Cabinet ca
                     JOIN ca.Location l
                 WHERE
@@ -249,4 +251,48 @@ class VirtualInterface extends EntityRepository
         return false;
     }
 
+
+
+
+    /**
+     * Get statistics/percentage of connected customer by VLAN
+     *
+     * - customer type full or probono
+     * - at least one pi connected
+     *
+     * Returns an array of objects such as:
+     *
+     * [
+     *      {#4344
+     *          "vlanname": "INEX LAN1",
+     *          "count": 105,
+     *          "percent": "96.3303",
+     *      },
+     * ]
+     *
+     * @return array
+     */
+    public function getPercentageCustomersByVlan(): array
+    {
+        return DB::select('
+            SELECT v.name AS vlanname, COUNT( DISTINCT vi.custid ) AS count, COUNT( DISTINCT vi.custid ) / ( SELECT COUNT( DISTINCT vi.custid )
+
+                        FROM virtualinterface AS vi
+                        JOIN vlaninterface as vli ON vli.virtualinterfaceid = vi.id
+                        JOIN vlan AS v ON v.id = vli.vlanid
+                        JOIN cust AS c ON c.id = vi.custid
+                        LEFT JOIN physicalinterface AS pi ON pi.virtualinterfaceid = vi.id
+                        WHERE v.private = 0 AND pi.status = 1 AND c.`type`IN (1,4) ) * 100 AS percent 
+
+            FROM virtualinterface AS vi
+            JOIN vlaninterface AS vli on vli.virtualinterfaceid = vi.id
+            JOIN vlan AS v ON v.id = vli.vlanid
+            LEFT JOIN physicalinterface AS pi ON pi.virtualinterfaceid = vi.id
+            JOIN cust AS c ON c.id = vi.custid
+            
+            WHERE v.private = 0 AND pi.status = 1 AND c.`type`in (1,4)
+            
+            GROUP BY v.name ORDER BY `count` DESC'
+        );
+    }
 }
