@@ -103,7 +103,8 @@
                                 "address": "10.1.0.36",
                                 "as_macro": "AS-PCH",
                                 "routeserver": true,
-                                "mac_addresses": []
+                                "mac_addresses": [],
+                                "max_prefix": 2000
                             }
                         }
                     ]
@@ -138,7 +139,8 @@
                             "ipv4": {
                                 "address": "10.1.0.6",
                                 "routeserver": true,
-                                "mac_addresses": []
+                                "mac_addresses": [],
+                                "max_prefix": 20
                             }
                         }
                     ]
@@ -158,7 +160,8 @@
                             "ipv4": {
                                 "address": "10.2.0.6",
                                 "routeserver": true,
-                                "mac_addresses": []
+                                "mac_addresses": [],
+                                "max_prefix": 20
                             }
                         }
                     ]
@@ -196,13 +199,15 @@
                                 "address": "10.1.0.10",
                                 "as_macro": "AS-HEANET",
                                 "routeserver": true,
-                                "mac_addresses": []
+                                "mac_addresses": [],
+                                "max_prefix": 1000
                             },
                             "ipv6": {
                                 "address": "2001:db8:1::10",
                                 "as_macro": "AS-HEANET",
                                 "routeserver": true,
-                                "mac_addresses": []
+                                "mac_addresses": [],
+                                "max_prefix": 1000
                             }
                         }
                     ]
@@ -223,13 +228,15 @@
                                 "address": "10.2.0.11",
                                 "as_macro": "AS-HEANET",
                                 "routeserver": true,
-                                "mac_addresses": []
+                                "mac_addresses": [],
+                                "max_prefix": 1000
                             },
                             "ipv6": {
                                 "address": "2001:db8:2::11",
                                 "as_macro": "AS-HEANET",
                                 "routeserver": true,
-                                "mac_addresses": []
+                                "mac_addresses": [],
+                                "max_prefix": 1000
                             }
                         }
                     ]
@@ -277,7 +284,8 @@
                                 "address": "2001:db8:1::8",
                                 "as_macro": "AS-IBIS",
                                 "routeserver": true,
-                                "mac_addresses": []
+                                "mac_addresses": [],
+                                "max_prefix": 1000
                             }
                         }
                     ]
@@ -298,13 +306,15 @@
                                 "address": "10.2.0.46",
                                 "as_macro": "AS-IBIS",
                                 "routeserver": false,
-                                "mac_addresses": []
+                                "mac_addresses": [],
+                                "max_prefix": 1000
                             },
                             "ipv6": {
                                 "address": "2001:db8:2::46",
                                 "as_macro": "AS-IBIS",
                                 "routeserver": false,
-                                "mac_addresses": []
+                                "mac_addresses": [],
+                                "max_prefix": 1000
                             }
                         }
                     ]
