@@ -37,7 +37,7 @@ use Tests\TestCase;
  */
 class IxfMemberExportTest extends TestCase
 {
-    public $versions     = [ '0.7', '0.6' ];
+    public $versions     = [ '1.0', '0.7', '0.6' ];
 
     public function testIxfMemberExportGeneration()
     {
