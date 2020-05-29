@@ -60,7 +60,7 @@
                 <tr>
                     <td width="10%"></td>
                     <td><b>Rack:</b></td>
-                    <td><?= $t->ee( $t->ppp->getPatchPanel()->getCabinet()->getColocation() ) ?></td>
+                    <td><?= $t->ee( $t->ppp->getPatchPanel()->getCabinet()->getCololocation() ) ?></td>
                 </tr>
                 <tr>
                     <td></td>
