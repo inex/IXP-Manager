@@ -32,6 +32,8 @@ use Entities\{
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 
+use IXP\Models\Infrastructure;
+
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
@@ -42,6 +44,9 @@ use Repositories\{
 };
 
 
+use IXP\Utils\Http\Controllers\Frontend\EloquentController as Eloquent2Frontend;
+
+
 /**
  * Infrastructure Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
@@ -50,7 +55,7 @@ use Repositories\{
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class InfrastructureController extends Doctrine2Frontend
+class InfrastructureController extends Eloquent2Frontend
 {
 
     /**
@@ -67,7 +72,7 @@ class InfrastructureController extends Doctrine2Frontend
 
         $this->feParams         = (object)[
 
-            'entity'            => InfrastructureEntity::class,
+            'entity'            =>  Infrastructure::class,
             'pagetitle'         => 'Infrastructures',
 
             'titleSingular'     => 'Infrastructure',
@@ -117,10 +122,10 @@ class InfrastructureController extends Doctrine2Frontend
      */
     protected function listGetData( $id = null )
     {
-        return D2EM::getRepository( InfrastructureEntity::class )->getAllForFeList( $this->feParams, $id );
+        return Infrastructure::when( $id, function ( $q ) use ( $id ) {
+            return $q->where( 'id' , $id);
+        })->orderBy( $this->feParams->listOrderBy, $this->feParams->listOrderByDir )->get()->toArray();
     }
-
-
 
     /**
      * Display the form to add/edit an object
@@ -129,17 +134,18 @@ class InfrastructureController extends Doctrine2Frontend
      *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array {
+    protected function addEditPrepareForm( $id = null ): array
+    {
         if( $id ) {
-            if( !( $this->object = D2EM::getRepository( InfrastructureEntity::class )->find( $id) ) ) {
+            if( !( $this->object = Infrastructure::find( $id ) ) ) {
                 abort(404);
             }
 
             Former::populate([
-                'name'             => request()->old( 'name',      $this->object->getName() ),
-                'shortname'        => request()->old( 'shortname', $this->object->getShortname() ),
-                'primary'          => request()->old( 'primary', ( $this->object->getIsPrimary() ? 1 : 0 ) ),
-                'country'          => request()->old( 'country', in_array( $this->object->getCountry(),  array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ) ? $this->object->getCountry() : null ),
+                'name'             => request()->old( 'name',      $this->object->name ),
+                'shortname'        => request()->old( 'shortname', $this->object->shortname ),
+                'primary'          => request()->old( 'primary', ( $this->object->isPrimary ? 1 : 0 ) ),
+                'country'          => request()->old( 'country', in_array( $this->object->country,  array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ) ? $this->object->country : null ),
             ]);
         }
 
@@ -162,43 +168,40 @@ class InfrastructureController extends Doctrine2Frontend
     public function doStore( Request $request )
     {
         $validator = Validator::make( $request->all(), [
-            'name'                  => 'required|string|max:255|unique:Entities\Infrastructure,name'. ( $request->input('id') ? ','. $request->input('id') : '' ),
+            'name'                  => 'required|string|max:255|unique:Entities\Infrastructure,name'. ( $request->id ? ','. $request->id : '' ),
             'shortname'             => 'required|string|max:255',
             'country'               => 'required|string|max:2|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
         ]);
 
         if( $validator->fails() ) {
-            return Redirect::back()->withErrors($validator)->withInput();
+            return Redirect::back()->withErrors( $validator )->withInput();
         }
 
-        if( $request->input( 'id', false ) ) {
-            if( !( $this->object = D2EM::getRepository( InfrastructureEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404);
-            }
+        if( $request->id ) {
+            $this->object = Infrastructure::findOrFail( $request->id );
         } else {
-            $this->object = new InfrastructureEntity;
-            D2EM::persist( $this->object );
+            $this->object = new Infrastructure;
         }
 
-        $this->object->setName(                 $request->input( 'name'         ) );
-        $this->object->setShortname(            $request->input( 'shortname'    ) );
-        $this->object->setCountry(              $request->input( 'country'      ) );
-        $this->object->setIxfIxId(          $request->input( 'ixf_ix_id'    ) ? $request->input( 'ixf_ix_id'    ) : null );
-        $this->object->setPeeringdbIxId(    $request->input( 'pdb_ixp'      ) ? $request->input( 'pdb_ixp'      ) : null );
-        $this->object->setIsPrimary(   $request->input( 'primary'      ) ?? 0 );
-        $this->object->setIXP(                  D2EM::getRepository( IXPEntity::class )->getDefault() );
+        $this->object->name =               $request->name;
+        $this->object->shortname =          $request->shortname;
+        $this->object->country =            $request->country;
+        $this->object->ixf_ix_id =          $request->ixf_ix_id ? $request->ixf_ix_id : null ;
+        $this->object->peeringdb_ix_id =    $request->pdb_ixp ? $request->pdb_ixp : null ;
+        $this->object->isPrimary =          $request->primary ?? 0 ;
+        $this->object->ixp_id =             D2EM::getRepository( IXPEntity::class )->getDefault();
 
-        D2EM::flush();
+        $this->object->save();
 
-        if( $this->object->getIsPrimary() ) {
+        if( $this->object->isPrimary ) {
             // reset the rest:
-            /** @var InfrastructureEntity $i */
-            foreach( D2EM::getRepository( InfrastructureEntity::class )->findAll() as $i ) {
+            Infrastructure::all( function ( $i ) use ( $this->object ) {
                 if( $i->getId() == $this->object->getId() || !$i->getIsPrimary() ) {
                     continue;
                 }
                 $i->setIsPrimary( false );
-            }
+            });
+
             D2EM::flush();
         }
 

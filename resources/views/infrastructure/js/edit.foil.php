@@ -26,8 +26,8 @@
                 let selectedixp, selectNow;
                 let options = `<option value=''>Choose the matching IX-F IXP...</option>\n`;
 
-                <?php if( $t->data[ 'params'][ 'object' ] && $t->data[ 'params'][ 'object' ]->getIxfIxId() ): ?>
-                    selectedixp = <?= $t->data[ 'params'][ 'object' ]->getIxfIxId() ?>;
+                <?php if( $t->data[ 'params'][ 'object' ] && $t->data[ 'params'][ 'object' ]->ixf_ix_id ): ?>
+                    selectedixp = <?= $t->data[ 'params'][ 'object' ]->ixf_ix_id ?>;
                 <?php elseif( Request::old('ixf_ix_id' ) ): ?>
                     selectedixp = <?= Request::old('ixf_ix_id' ) ?>;
                 <?php else: ?>
@@ -46,8 +46,8 @@
             })
             .fail( function() {
                 dd_ixp.prop( 'disabled', true );
-                <?php if( !$t->data[ 'params' ][ 'isAdd' ] && $t->data[ 'params'][ 'object']->getIxfIxId() ): ?>
-                    errorOption = `<option value="<?= $t->data[ 'params'][ 'object']->getIxfIxId() ?>"> IX-F IXP ID: <?= $t->data[ 'params'][ 'object']->getIxfIxId() ?></option>` ;
+                <?php if( !$t->data[ 'params' ][ 'isAdd' ] && $t->data[ 'params'][ 'object']->ixf_ix_id ): ?>
+                    errorOption = `<option value="<?= $t->data[ 'params'][ 'object']->ixf_ix_id ?>"> IX-F IXP ID: <?= $t->data[ 'params'][ 'object']->ixf_ix_id ?></option>` ;
                     dd_ixp.prop( 'disabled', false );
                 <?php endif; ?>
                 dd_ixp.html( errorOption );
@@ -72,8 +72,8 @@
                 let selectedpdb, selectNow;
                 let options = `<option value=''>Choose the matching PeeringDB IXP...</option>\n`;
 
-                <?php if( $t->data[ 'params'][ 'object' ] && $t->data[ 'params'][ 'object' ]->getPeeringdbIxId() ): ?>
-                    selectedpdb = <?= $t->data[ 'params'][ 'object' ]->getPeeringdbIxId() ?>;
+                <?php if( $t->data[ 'params'][ 'object' ] && $t->data[ 'params'][ 'object' ]->peeringdb_ix_id ): ?>
+                    selectedpdb = <?= $t->data[ 'params'][ 'object' ]->peeringdb_ix_id ?>;
                 <?php elseif( Request::old('pdb_ixp' ) ): ?>
                     selectedpdb = <?= Request::old('pdb_ixp' ) ?>;
                 <?php else: ?>
@@ -91,8 +91,8 @@
             })
             .fail( function() {
                 dd_pdb.prop( 'disabled', true );
-                <?php if( !$t->data[ 'params' ][ 'isAdd' ] && $t->data[ 'params'][ 'object']->getPeeringdbIxId() ): ?>
-                    errorOption = `<option value="<?= $t->data[ 'params'][ 'object']->getPeeringdbIxId() ?>"> PeeringDB IXP ID: <?= $t->data[ 'params'][ 'object']->getPeeringdbIxId() ?></option>` ;
+                <?php if( !$t->data[ 'params' ][ 'isAdd' ] && $t->data[ 'params'][ 'object']->peeringdb_ix_id ): ?>
+                    errorOption = `<option value="<?= $t->data[ 'params'][ 'object']->peeringdb_ix_id ?>"> PeeringDB IXP ID: <?= $t->data[ 'params'][ 'object']->peeringdb_ix_id ?></option>` ;
                     dd_pdb.prop( 'disabled', false );
                 <?php endif; ?>
                 dd_pdb.html( errorOption );
