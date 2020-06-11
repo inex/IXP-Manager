@@ -67,11 +67,11 @@ class SwitchUserController extends Controller
             AlertContainer::push( "This user doesnt have customer associated.", Alert::DANGER );
             return redirect()->to( "/" );
         }
-
-        Auth::login( $nuser );
-
+        
         session()->put( "switched_user_from", $user->getId() );
         session()->put( "redirect_after_switch_back", request()->headers->get('referer', "" ) );
+
+        Auth::login( $nuser );
 
         AlertContainer::push( "You are now logged in as {$nuser->getUsername()} ". "(" . Auth::getUser()->getName() . ")", Alert::SUCCESS );
 
