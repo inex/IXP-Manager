@@ -51,7 +51,7 @@ Authors:
 * [Barry O'Donovan](https://www.barryodonovan.com/contact) / [@barryo79](https://twitter.com/#!/barryo79)
 * Nick Hilliard
 
-Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
 All Rights Reserved.
 
 
