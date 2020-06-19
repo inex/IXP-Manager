@@ -29,7 +29,6 @@ class ExportException extends Exception {
 
     final public function render()
     {
-        AlertContainer::push( $this->getMessage(), Alert::DANGER );
-        return redirect()->to('');
+        abort( 500, $this->getMessage() );
     }
 }
