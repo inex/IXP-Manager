@@ -80,7 +80,10 @@ class JsonSchema
             $version = $this->sanitiseVersion($version);
         }
 
-        $output = [ 'version' => $version ];
+        $output = [
+            'version' => $version,
+            'generator' => 'IXP Manager v' . APPLICATION_VERSION,
+        ];
 
         // normalise times to UTC for exports
         date_default_timezone_set('UTC');
