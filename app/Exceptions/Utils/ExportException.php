@@ -22,15 +22,5 @@
  */
 
 use Exception;
-//use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
-use IXP\Utils\View\Alert\Alert;
-use IXP\Utils\View\Alert\Container as AlertContainer;
 
-class ExportException extends Exception {
-
-    final public function render()
-    {
-        AlertContainer::push( $this->getMessage(), Alert::DANGER );
-        return redirect()->to('');
-    }
-}
+class ExportException extends Exception {}
