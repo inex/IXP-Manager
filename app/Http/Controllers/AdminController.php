@@ -108,7 +108,7 @@ class AdminController extends Controller
                 // ----
 
                 if( !isset( $custsByLocation[ $location ] ) ) {
-                    $custsByLocation[ $location ] = 0;
+                    $custsByLocation[ $location ] = 1;
                 } else {
                     $custsByLocation[ $location ]++;
                 }
