@@ -5,7 +5,7 @@ namespace PHPSTORM_META {
 
    /**
     * PhpStorm Meta file, to provide autocomplete information for PhpStorm
-    * Generated on 2020-04-25 14:39:50.
+    * Generated on 2020-06-19 14:57:41.
     *
     * @author Barry vd. Heuvel <barryvdh@gmail.com>
     * @see https://github.com/barryvdh/laravel-ide-helper
@@ -23,6 +23,7 @@ namespace PHPSTORM_META {
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
         'IXP\Services\PeeringDb' => \IXP\Services\PeeringDb::class,
+        'Illuminate\Auth\Middleware\RequirePassword' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'Illuminate\Broadcasting\BroadcastManager' => \Illuminate\Broadcasting\BroadcastManager::class,
         'Illuminate\Bus\Dispatcher' => \Illuminate\Bus\Dispatcher::class,
         'Illuminate\Console\Scheduling\Schedule' => \Illuminate\Console\Scheduling\Schedule::class,
@@ -218,6 +219,7 @@ namespace PHPSTORM_META {
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
         'IXP\Services\PeeringDb' => \IXP\Services\PeeringDb::class,
+        'Illuminate\Auth\Middleware\RequirePassword' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'Illuminate\Broadcasting\BroadcastManager' => \Illuminate\Broadcasting\BroadcastManager::class,
         'Illuminate\Bus\Dispatcher' => \Illuminate\Bus\Dispatcher::class,
         'Illuminate\Console\Scheduling\Schedule' => \Illuminate\Console\Scheduling\Schedule::class,
@@ -413,6 +415,7 @@ namespace PHPSTORM_META {
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
         'IXP\Services\PeeringDb' => \IXP\Services\PeeringDb::class,
+        'Illuminate\Auth\Middleware\RequirePassword' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'Illuminate\Broadcasting\BroadcastManager' => \Illuminate\Broadcasting\BroadcastManager::class,
         'Illuminate\Bus\Dispatcher' => \Illuminate\Bus\Dispatcher::class,
         'Illuminate\Console\Scheduling\Schedule' => \Illuminate\Console\Scheduling\Schedule::class,
@@ -608,6 +611,7 @@ namespace PHPSTORM_META {
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
         'IXP\Services\PeeringDb' => \IXP\Services\PeeringDb::class,
+        'Illuminate\Auth\Middleware\RequirePassword' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'Illuminate\Broadcasting\BroadcastManager' => \Illuminate\Broadcasting\BroadcastManager::class,
         'Illuminate\Bus\Dispatcher' => \Illuminate\Bus\Dispatcher::class,
         'Illuminate\Console\Scheduling\Schedule' => \Illuminate\Console\Scheduling\Schedule::class,
@@ -803,6 +807,7 @@ namespace PHPSTORM_META {
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
         'IXP\Services\PeeringDb' => \IXP\Services\PeeringDb::class,
+        'Illuminate\Auth\Middleware\RequirePassword' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'Illuminate\Broadcasting\BroadcastManager' => \Illuminate\Broadcasting\BroadcastManager::class,
         'Illuminate\Bus\Dispatcher' => \Illuminate\Bus\Dispatcher::class,
         'Illuminate\Console\Scheduling\Schedule' => \Illuminate\Console\Scheduling\Schedule::class,
@@ -998,6 +1003,7 @@ namespace PHPSTORM_META {
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
         'IXP\Services\PeeringDb' => \IXP\Services\PeeringDb::class,
+        'Illuminate\Auth\Middleware\RequirePassword' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'Illuminate\Broadcasting\BroadcastManager' => \Illuminate\Broadcasting\BroadcastManager::class,
         'Illuminate\Bus\Dispatcher' => \Illuminate\Bus\Dispatcher::class,
         'Illuminate\Console\Scheduling\Schedule' => \Illuminate\Console\Scheduling\Schedule::class,
@@ -1193,6 +1199,7 @@ namespace PHPSTORM_META {
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
         'IXP\Services\PeeringDb' => \IXP\Services\PeeringDb::class,
+        'Illuminate\Auth\Middleware\RequirePassword' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'Illuminate\Broadcasting\BroadcastManager' => \Illuminate\Broadcasting\BroadcastManager::class,
         'Illuminate\Bus\Dispatcher' => \Illuminate\Bus\Dispatcher::class,
         'Illuminate\Console\Scheduling\Schedule' => \Illuminate\Console\Scheduling\Schedule::class,
@@ -1388,6 +1395,7 @@ namespace PHPSTORM_META {
         'IXP\Services\Grapher' => \IXP\Services\Grapher::class,
         'IXP\Services\LookingGlass' => \IXP\Services\LookingGlass::class,
         'IXP\Services\PeeringDb' => \IXP\Services\PeeringDb::class,
+        'Illuminate\Auth\Middleware\RequirePassword' => \Illuminate\Auth\Middleware\RequirePassword::class,
         'Illuminate\Broadcasting\BroadcastManager' => \Illuminate\Broadcasting\BroadcastManager::class,
         'Illuminate\Bus\Dispatcher' => \Illuminate\Bus\Dispatcher::class,
         'Illuminate\Console\Scheduling\Schedule' => \Illuminate\Console\Scheduling\Schedule::class,
