@@ -163,7 +163,6 @@ class JsonSchema
                 else {
                     throw new ExportException( "The IX-F ID is a required parameter for IX-F Export Schema >=v0.7. Set this in IXP Manager in the 'Infrastructures' management page." );
                 }
-                throw new ExportException( "IX-F ID is required for IX-F Export Schema >=v0.7. Set this under Infrastructures." );
             }
 
             $i['ixp_id'] = $infra->getId();    // referenced in member's connections section
