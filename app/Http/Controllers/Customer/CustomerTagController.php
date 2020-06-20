@@ -61,10 +61,10 @@ class CustomerTagController extends Doctrine2Frontend {
         $this->feParams         = ( object )[
 
             'entity'            => CustomerTagEntity::class,
-            'pagetitle'         => 'Customer Tags',
+            'pagetitle'         => ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Tags',
 
-            'titleSingular'     => 'Customer Tag',
-            'nameSingular'      => 'customer tag',
+            'titleSingular'     => ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Tag',
+            'nameSingular'      => config( 'ixp_fe.lang.customer.one' ) . ' tag',
 
             'defaultAction'     => 'list',
             'defaultController' => 'CustomerTagController',
@@ -74,7 +74,7 @@ class CustomerTagController extends Doctrine2Frontend {
 
             'viewFolderName'    => 'customer/tag',
 
-            'extraDeleteMessage' => "<b>This tag will be removed from all customers tagged with it.</b>",
+            'extraDeleteMessage' => "<b>This tag will be removed from all " . config( 'ixp_fe.lang.customer.many' ) . " tagged with it.</b>",
 
             'documentation'     => 'https://docs.ixpmanager.org/usage/customer-tags/',
 
