@@ -4,11 +4,11 @@
 ?>
 
 <?php $this->section( 'title' ) ?>
-    <a href="<?= route( 'customer@list' )?>">Customers</a>
+    <a href="<?= route( 'customer@list' )?>"><?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?></a>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Customers / <?= $t->cust ? "Edit" : "Add" ?>
+    <?= ucfirst( config( 'ixp_fe.lang.customer.many' ) ) ?> / <?= $t->cust ? "Edit" : "Add" ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
@@ -38,7 +38,7 @@
 
 
             <div id="instructions-alert" class="alert alert-info" style="display: none;">
-                Official <b>IXP Manager</b> documentation for adding / editing customers can be found at <a href="http://docs.ixpmanager.org/usage/customers/">http://docs.ixpmanager.org/</a>.
+                Official <b>IXP Manager</b> documentation for adding / editing <?= config( 'ixp_fe.lang.customer.many' ) ?> can be found at <a href="http://docs.ixpmanager.org/usage/customers/">http://docs.ixpmanager.org/</a>.
             </div>
 
             <div class="bg-light shadow-sm p-4">
@@ -64,7 +64,7 @@
 
                 <div class="col-lg-6 col-md-12 mb-4 mb-sm-0">
 
-                    <h3>Customer Details</h3>
+                    <h3><?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Details</h3>
                     <hr class="tw-mb-6">
 
                     <?= Former::text( 'name' )
