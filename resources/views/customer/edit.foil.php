@@ -65,7 +65,7 @@
                 <div class="col-lg-6 col-md-12 mb-4 mb-sm-0">
 
                     <h3>Customer Details</h3>
-                    <hr>
+                    <hr class="tw-mb-6">
 
                     <?= Former::text( 'name' )
                         ->label( 'Name' )
@@ -159,7 +159,7 @@
                 ?>">
 
                     <h3>Peering Details</h3>
-                    <hr>
+                    <hr class="tw-mb-6">
 
                     <?= Former::number( 'autsys' )
                         ->label( 'AS Number' )
@@ -239,7 +239,8 @@
 
                 <div class="col-lg-6 col-md-12">
                     <h3>NOC Details</h3>
-                    <hr>
+                    <hr class="tw-mb-6">
+
                     <?= Former::phone( 'nocphone' )
                         ->label( 'Phone' )
                         ->placeholder( config( 'ixp_fe.customer.form.placeholders.phone' ) )
@@ -285,7 +286,8 @@
 
                     <div class="col-lg-6 col-md-12">
                         <h3>Reseller Details</h3>
-                        <hr>
+                        <hr class="tw-mb-6">
+
                         <?= Former::checkbox( 'isReseller' )
                             ->label( '&nbsp;' )
                             ->text( 'Is a Reseller' )
