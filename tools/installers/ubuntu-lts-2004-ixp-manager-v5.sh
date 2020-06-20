@@ -417,13 +417,22 @@ DB_PASSWORD="${MYSQL_IXPM_PW}"
 # Identity. Used throughout IXP Manager in various ways.
 # This has grown organically and we intend to clean this up in a coming release and
 # documenting where and how each one is spceifically used.
+
+# Used in various emails, etc.
+IDENTITY_SITENAME="${IXPSNAME} IXP Manager"
+
 IDENTITY_LEGALNAME="${IXPNAME}"
 IDENTITY_CITY="${IXPCITY}"
 IDENTITY_COUNTRY="${IXPCOUNTRY}"
 IDENTITY_ORGNAME="\${IDENTITY_LEGALNAME}"
+
+# As well as uses in other places, emails are sent from the following name/email:
 IDENTITY_NAME="\${IDENTITY_LEGALNAME}"
 IDENTITY_EMAIL="${IXPNOCEMAIL}"
+
 IDENTITY_TESTEMAIL="\${IDENTITY_EMAIL}"
+
+# Used on some traffic graphs:
 IDENTITY_WATERMARK="${IXPNAME}"
 IDENTITY_SUPPORT_EMAIL="\${IDENTITY_EMAIL}"
 IDENTITY_SUPPORT_PHONE="${IXPNOCPHONE}"
@@ -431,61 +440,217 @@ IDENTITY_SUPPORT_HOURS="24x7"
 IDENTITY_BILLING_EMAIL="\${IDENTITY_EMAIL}"
 IDENTITY_BILLING_PHONE="${IXPNOCEMAIL}"
 IDENTITY_BILLING_HOURS="24x7"
-IDENTITY_SITENAME="${IXPSNAME} IXP Manager"
+
+# Web address of your IXP's website. Used in IX-F Export schema, etc.
 IDENTITY_CORPORATE_URL="${IXPWWW}"
-IDENTITY_LOGO="/srv/ixpmanager/public/images/ixp-manager.png"
+
+# The logo to show on the login page. Should be a URL.
+# (the example here works - the leading '//' means the browser should match http/https based on the web page)
 IDENTITY_BIGLOGO="http://www.ixpmanager.org/images/logos/ixp-manager.png"
-IDENTITY_BIGLOGO_OFFSET="offset4"
+
 IDENTITY_DEFAULT_VLAN=1
 
+#########################################################################################
+### Member vs. Customer
+###
+### IXP Manager is an open source project and typically used in member-owned IXPs.
+### As such, the language used mostly is 'member'. To change this to 'customer' just
+### uncomment the following lines:
+#
+# IXP_FE_FRONTEND_CUSTOMER_ONE=customer
+# IXP_FE_FRONTEND_CUSTOMER_MANY=customers
+# IXP_FE_FRONTEND_CUSTOMER_OWNER="customer's"
+# IXP_FE_FRONTEND_CUSTOMER_OWNERS="customers'"
+
+
 #######################################################################################
-# See: https://github.com/inex/IXP-Manager/wiki/Euro-IX-Member-Data-Export
-# Think carefully before making this private. IXPs should be open.
+### Features
+#
+
+# See: http://docs.ixpmanager.org/features/reseller/
+IXP_RESELLER_ENABLED=false
+
+# See: http://docs.ixpmanager.org/features/as112/
+IXP_AS112_UI_ACTIVE=false
+
+
+#######################################################################################
+### Frontend controllers and controller configuration
+#
+# Some frontend controllers are disabled by default. This is for a variety of reasons
+# including: additional configuration may be required, maintain backwards
+# compatibility, etc.
+
+# Allow customers / admins to upload logos for members. Set to false to enabled.
+# See: http://docs.ixpmanager.org/usage/customers/#customer-logos
+IXP_FE_FRONTEND_DISABLED_LOGO=false
+
+
+# Send email notifications when a customer's billing details are updated.
+# See: http://docs.ixpmanager.org/usage/customers/#notification-of-billing-details-changed
+# IXP_FE_CUSTOMER_BILLING_UPDATES_NOTIFY="mail@example.com"
+
+
+# Disable links to the peering matrix if you have not set it up (with sflow):
+# IXP_FE_FRONTEND_DISABLED_PEERING_MATRIX=true
+
+
+#######################################################################################
+### Email Settings.
+#
+# We use Laravel's mail system which in turn uses SwiftMailer.
+#
+# See config/mail.php abd https://laravel.com/docs/5.5/mail
+#
+# The default setting is 'sendmail' which tries to use your local systems mail client.
+#
+# MAIL_DRIVER="sendmail"
+# MAIL_HOST="localhost"
+# MAIL_PORT=25
+# MAIL_ENCRYPTION="tls"
+
+
+#######################################################################################
+### Graphing - see https://ixp-manager.readthedocs.org/en/latest/features/grapher.html
+
+# Enable the backends you have configured. E.g.:
+# GRAPHER_BACKENDS="mrtg|sflow|smokeping"
+
+# On a new installation, we just use placeholders from the dummy backend:
+GRAPHER_BACKENDS="dummy"
+
+# With the cache enabled, IXP Manager does not have to regenerate / reload / reprocess
+# log / rrd / image files if we have cached them and they are less than 5mins old. This
+# is enabled by default which is the recommended setting.
+GRAPHER_CACHE_ENABLED=true
+
+#################################################################################
+## Grapher - Mrtg - see: https://docs.ixpmanager.org/grapher/mrtg/
+##
+
+# For backwards compatibility, the default is 'log' but 'rrd' is more modern:
+GRAPHER_BACKEND_MRTG_DBTYPE="rrd"
+
+# The defaults for these are '/tmp' to require you to change them to something
+# more sensible such as:
+# GRAPHER_BACKEND_MRTG_WORKDIR="/srv/mrtg"
+# GRAPHER_BACKEND_MRTG_LOGDIR="/srv/mrtg"
+
+#################################################################################
+## Grapher - sflow - see: https://docs.ixpmanager.org/grapher/sflow/
+##
+
+# GRAPHER_BACKEND_SFLOW_ENABLED=false
+# GRAPHER_BACKEND_SFLOW_ROOT="http://sflow-server.example.com/grapher-sflow"
+
+
+#################################################################################
+## Grapher - smokeping - see: https://docs.ixpmanager.org/grapher/smokeping/
+##
+
+# Mark it as enabled (this just affects whether certain UI elements are shown):
+# GRAPHER_BACKEND_SMOKEPING_ENABLED=true
+
+# And set the default location to fetch the Smokeping graphs from:
+# GRAPHER_BACKEND_SMOKEPING_URL="http://www.example.com/smokeping"
+
+
+
+
+
+#################################################################################
+## IX-F Member Export - see: https://docs.ixpmanager.org/features/ixf-export/
+
 IXP_API_JSONEXPORTSCHEMA_PUBLIC=true
 
 
 #######################################################################################
-# See config/ixp.php
-IXP_MULTIIXP_ENABLED=false
-IXP_RESELLER_ENABLED=false
-IXP_AS112_UI_ACTIVE=true
-
-#######################################################################################
-# See config/mail.php
-MAIL_HOST=localhost
-MAIL_PORT=25
-MAIL_PRETEND=false
-
-#######################################################################################
-### Graphing - see https://ixp-manager.readthedocs.org/en/latest/features/grapher.html
-GRAPHER_BACKENDS="dummy"
-
-#GRAPHER_BACKEND_MRTG_WORKDIR="/tmp"
-#GRAPHER_BACKEND_MRTG_LOGDIR="http://stats.example.com/mrtg"
-#GRAPHER_BACKEND_SFLOW_ROOT="http://sflow.example.com/sflow"
-#GRAPHER_CACHE_ENABLED=true
-
-
-#######################################################################################
-### Skinning: see https://ixp-manager.readthedocs.org/en/latest/features/skinning.html
+### Skinning
+#
+# See https://ixp-manager.readthedocs.io/en/latest/features/skinning.html
+#
 # VIEW_SKIN="myskin"
+
+
 
 #######################################################################################
 # See config/cache.php
 CACHE_DRIVER=memcached
 
 #######################################################################################
-# See config/session.php
-SESSION_DRIVER=file
+# Session Lifetimes - standard and remember me.
+#
+# See https://docs.ixpmanager.org/usage/authentication/
+#
+# SESSION_LIFETIME=120
+# AUTH_TOKEN_EXPIRE=43200
 
 #######################################################################################
 # see config/doctrine.php
-DOCTRINE_PROXY_AUTOGENERATE=true
+DOCTRINE_PROXY_AUTOGENERATE=false
 DOCTRINE_CACHE=memcached
 DOCTRINE_CACHE_NAMESPACE=IXPMANAGERNAMESPACE
 
+#######################################################################################
+# PeeringDB Authentication
+#
+# PeeringDb's API is used, for example, to pre-populate new customer details. If you
+# provide a working PeeringDb username/password then these will be used to get more
+# complete information.
+#
+# IXP_API_PEERING_DB_USERNAME=username
+# IXP_API_PEERING_DB_PASSWORD=password
 
-IXP_IRRDB_BGPQ3_PATH="/usr/bin/bgpq3"
+
+
+#######################################################################################
+# Options for updating RIR Objects - see https://docs.ixpmanager.org/features/rir-objects/
+
+# Your RIR password to allow the updating of a RIR object by email:
+# IXP_API_RIR_PASSWORD=soopersecret
+
+# Rather than specifiying the destination address on the command line, you can set it here
+# (useful for cronjobs and required for use with artisan schedule:run in >=v5.0)
+# IXP_API_RIR_EMAIL_TO=test-dbm@ripe.net
+
+# Rather than specifiying the from address on the command line, you can set it here
+# (useful for cronjobs and required for use with artisan schedule:run in >=v5.0)
+# IXP_API_RIR_EMAIL_FROM=ixp@example.com
+
+
+#######################################################################################
+# Utility paths
+
+# See: https://docs.ixpmanager.org/features/irrdb/
+IXP_IRRDB_BGPQ3_PATH=/usr/bin/bgpq3
+
+# See: https://docs.ixpmanager.org/features/rpki/
+# IXP_RPKI_RTR1_HOST=192.0.2.11
+# IXP_RPKI_RTR1_PORT=3323
+# IXP_RPKI_RTR2_HOST=192.0.2.12
+# IXP_RPKI_RTR2_PORT=3323
+
+#########################################################################################
+### Development Helpers
+###
+
+# Disable HTML5 validation to test PHP code based request validators
+# FORMER_LIVE_VALIDATION=false
+
+
+#########################################################################################
+### PeeringDB OAuth
+###
+### https://docs.ixpmanager.org/features/peeringdb-oauth/
+###
+
+# AUTH_PEERINGDB_ENABLED=true
+
+# PEERINGDB_OAUTH_CLIENT_ID="xxx"
+# PEERINGDB_OAUTH_CLIENT_SECRET="xxx"
+# PEERINGDB_OAUTH_REDIRECT="https://www.example.com/auth/login/peeringdb/callback"
+
+
 
 END_ENV
 
@@ -674,7 +839,7 @@ root password to: $MYSQL_ROOT_PW
 
 If you plan to use this in production, you should:
 
- - edit the $IXPROOT/.env file 
+ - edit the $IXPROOT/.env file
  - secure your server with an iptables firewall
  - install an SSL certificate and redirect HTTP access to HTTPS
  - complete the installation of the many features of IXP Manager such
