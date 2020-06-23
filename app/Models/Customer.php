@@ -29,10 +29,7 @@ use DB;
 use Entities\Customer as CustomerEntity;
 use Entities\User as UserEntity;
 
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Model
-};
+use Illuminate\Database\Eloquent\{Builder, Model, Relations\HasMany};
 
 use Illuminate\Support\{
     Collection,
@@ -185,7 +182,7 @@ class Customer extends Model
     /**
      * Get the virtual interfaces for the customer
      */
-    public function virtualInterfaces()
+    public function virtualInterfaces(): HasMany
     {
         return $this->hasMany('IXP\Models\VirtualInterface', 'custid');
     }
@@ -193,7 +190,7 @@ class Customer extends Model
     /**
      * Get the docstore customer directories for the customer
      */
-    public function docstoreCustomerDirectories()
+    public function docstoreCustomerDirectories(): HasMany
     {
         return $this->hasMany(DocstoreCustomerDirectory::class, 'cust_id');
     }
@@ -201,9 +198,17 @@ class Customer extends Model
     /**
      * Get the docstore customer files for the customer
      */
-    public function docstoreCustomerFiles()
+    public function docstoreCustomerFiles(): HasMany
     {
         return $this->hasMany(DocstoreCustomerFile::class, 'cust_id');
+    }
+
+    /**
+     * Get the contacts for the customer
+     */
+    public function contacts(): HasMany
+    {
+        return $this->hasMany(Contact::class, 'custid' );
     }
 
 
@@ -215,7 +220,7 @@ class Customer extends Model
      * @param Builder $query
      * @return Builder
      */
-    public function scopeTrafficking($query)
+    public function scopeTrafficking($query): Builder
     {
         return $query->where('type', '!=', Customer::TYPE_ASSOCIATE );
     }
@@ -226,7 +231,7 @@ class Customer extends Model
      * @param Builder $query
      * @return Builder
      */
-    public function scopeCurrent($query)
+    public function scopeCurrent($query): Builder
     {
         return $query->where('datejoin', '<=', today() )
             ->where( function ( Builder $query) {
@@ -340,6 +345,23 @@ class Customer extends Model
      */
     public function getDoctrineObject(): CustomerEntity {
         return D2EM::getRepository( CustomerEntity::class )->find( $this->id );
+    }
+
+    /**
+     * Gets a listing of Customers from dropdown
+     *
+     * @param int|null $id
+     * @param array $types
+     *
+     * @return array
+     */
+    public static function getListAsArray( int $id = null, array $types = [] ): array
+    {
+        return self::when( $id , function( Builder $q, $id ) {
+            return $q->where('id', $id );
+        } )->when( count( $types ) > 0 , function( Builder $q, $types ) {
+            return $q->whereIn( 'type', $types );
+        })->orderBy( 'name', 'asc')->get()->toArray();
     }
 
 }

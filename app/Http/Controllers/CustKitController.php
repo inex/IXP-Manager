@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,30 +23,34 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Redirect, Validator;
+use Former;
 
-use Entities\{
-    CustomerEquipment   as CustomerEquipmentEntity,
-    Cabinet             as CabinetEntity,
-    Customer            as CustomerEntity
+use IXP\Models\{
+    Cabinet,
+    Customer,
+    CustomerEquipment
 };
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 
+use Illuminate\Http\{
+    Request,
+    RedirectResponse
+};
+
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 /**
  * CustKit Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   VlanInterface
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class CustKitController extends Doctrine2Frontend
+class CustKitController extends EloquentController
 {
     /**
      * The object being added / edited
-     * @var CustomerEquipmentEntity
+     * @var CustomerEquipment
      */
     protected $object = null;
 
@@ -56,24 +60,17 @@ class CustKitController extends Doctrine2Frontend
     public function feInit()
     {
         $this->feParams         = (object)[
-            'entity'            => CustomerEquipmentEntity::class,
-
+            'entity'            => CustomerEquipment::class,
             'pagetitle'         => 'Colocated Equipment',
-
             'titleSingular'     => 'Colocated Equipment',
             'nameSingular'      => 'colocated equipment',
-
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
-
             'viewFolderName'    => 'cust-kit',
 
             'listColumns'    => [
-
                 'id'        => [ 'title' => 'DB ID', 'display' => true ],
-
                 'name'      => 'Name',
-
                 'customer'  => [
                     'title'         => 'Customer',
                     'type'          => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -81,7 +78,6 @@ class CustKitController extends Doctrine2Frontend
                     'action'        => 'overview',
                     'idField'       => 'custid'
                 ],
-
                 'cabinet'  => [
                     'title'      => 'Rack',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -89,7 +85,6 @@ class CustKitController extends Doctrine2Frontend
                     'action'     => 'view',
                     'idField'    => 'cabinetid'
                 ],
-
             ]
         ];
 
@@ -102,48 +97,71 @@ class CustKitController extends Doctrine2Frontend
 
     }
 
-
-
     /**
      * Provide array of rows for the list and view
      *
      * @param int $id The `id` of the row to load for `view`. `null` if `list`
+     *
      * @return array
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( $id = null ): array
     {
-        return D2EM::getRepository( CustomerEquipmentEntity::class)->getAllForFeList( $this->feParams, $id );
+        return CustomerEquipment::getFeList( $this->feParams, $id  )->toArray();
     }
 
-
     /**
-     * Display the form to add/edit an object
-     * @param   int $id ID of the row to edit
+     * Display the form to create an object
+     *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array
+    protected function createPrepareForm(): array
     {
-        if( $id ) {
-
-            if( !( $this->object = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $id ) ) ) {
-                abort(404);
-            }
-
-            Former::populate([
-                'name'          => request()->old( 'name',        $this->object->getName() ),
-                'custid'        => request()->old( 'custid',      $this->object->getCustomer()->getId() ),
-                'cabinetid'     => request()->old( 'cabinetid',   $this->object->getCabinet()->getId() ),
-                'descr'         => request()->old( 'descr',       $this->object->getDescr() ),
-            ]);
-        }
-
         return [
             'object'        => $this->object ,
-            'cabinets'      => D2EM::getRepository( CabinetEntity::class    )->getAsArray(),
-            'custs'         => D2EM::getRepository( CustomerEntity::class   )->getAsArray(),
+            'cabinets'      => Cabinet::get()->toArray(),
+            'custs'         => Customer::getListAsArray(),
         ];
     }
 
+    /**
+     * Display the form to add/edit an object
+     *
+     * @param   int $id ID of the row to edit
+     *
+     * @return array
+     */
+    protected function editPrepareForm( $id = null ): array
+    {
+        $this->object = CustomerEquipment::findOrFail( $id );
+
+        Former::populate([
+            'name'          => request()->old( 'name',        $this->object->name ),
+            'custid'        => request()->old( 'custid',      $this->object->custid ),
+            'cabinetid'     => request()->old( 'cabinetid',   $this->object->cabinetid ),
+            'descr'         => request()->old( 'descr',       $this->object->descr ),
+        ]);
+
+        return [
+            'object'        => $this->object ,
+            'cabinets'      => Cabinet::getListForDropdown()->toArray(),
+            'custs'         => Customer::getListAsArray(),
+        ];
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param $request
+     */
+    public function checkForm( Request $request )
+    {
+        $request->validate( [
+            'name'                  => 'required|string|max:255',
+            'custid'                => 'required|integer|exists:Entities\Customer,id',
+            'cabinetid'             => 'required|integer|exists:Entities\Cabinet,id',
+            'descr'                 => 'nullable|string|max:255',
+        ] );
+    }
 
     /**
      * Function to do the actual validation and storing of the submitted object.
@@ -156,34 +174,27 @@ class CustKitController extends Doctrine2Frontend
      */
     public function doStore( Request $request )
     {
+        $this->checkForm( $request );
+        $this->object = CustomerEquipment::create( $request->all() );
 
-        $validator = Validator::make( $request->all(), [
-            'name'                  => 'required|string|max:255',
-            'custid'                => 'required|integer|exists:Entities\Customer,id',
-            'cabinetid'             => 'required|integer|exists:Entities\Cabinet,id',
-            'descr'                 => 'nullable|string|max:255',
-        ]);
+        return true;
+    }
 
-        if( $validator->fails() ) {
-            return Redirect::back()->withErrors($validator)->withInput();
-        }
-
-        if( $request->input( 'id', false ) ) {
-            if( !( $this->object = D2EM::getRepository( CustomerEquipmentEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404);
-            }
-        } else {
-            $this->object = new CustomerEquipmentEntity;
-            D2EM::persist( $this->object );
-        }
-
-        $this->object->setName(     $request->input( 'name' ) );
-        $this->object->setCabinet(  D2EM::getRepository( CabinetEntity::class  )->find( $request->input( 'cabinetid'    ) ) );
-        $this->object->setCustomer( D2EM::getRepository( CustomerEntity::class )->find( $request->input( 'custid'       ) ) );
-        $this->object->setDescr(    $request->input( 'descr' ) );
-
-        D2EM::flush();
-
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request $request
+     * @param int $id
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doUpdate( Request $request, int $id )
+    {
+        $this->object = CustomerEquipment::findOrFail( $request->id );
+        $this->checkForm( $request );
+        $this->object->update( $request->all() );
         return true;
     }
 }

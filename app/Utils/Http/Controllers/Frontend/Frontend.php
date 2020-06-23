@@ -124,6 +124,13 @@ abstract class Frontend extends Controller {
     public static $disable_edit = false;
 
     /**
+     * Where are the base views (list/edit/view).
+     *
+     * @var string
+     */
+    protected static $baseViews = 'frontend';
+
+    /**
      * Sometimes we need to pass a custom request object for validation / authorisation.
      *
      * Set the name of the function here and the route for store will be pointed to it instead of doStore()
@@ -198,10 +205,11 @@ abstract class Frontend extends Controller {
             Route::get( 'view/{id}', $class . '@view' )->name( $route_prefix . '@view' );
 
             if( !static::$read_only ) {
-                Route::get(  'add',         $class . '@add'           )->name( $route_prefix . '@add'     );
-                Route::post( 'delete',      $class . '@delete'        )->name( $route_prefix . '@delete'  );
+                Route::get(  'create',      $class . '@create'           )->name( $route_prefix . '@create'     );
+                Route::delete( 'delete',      $class . '@delete'        )->name( $route_prefix . '@delete'  );
                 if( !static::$disable_edit ) {
-                    Route::get( 'edit/{id}', $class . '@edit' )->name( $route_prefix . '@edit' );
+                    Route::get( 'edit/{id}',    $class . '@edit' )->name( $route_prefix . '@edit' );
+                    Route::put( 'update/{id}',  $class . '@update'  )->name( $route_prefix . '@update' );
                 }
                 Route::post( 'store', $class . '@' . static::$storeFn )->name( $route_prefix . '@store' );
             }
@@ -315,7 +323,6 @@ abstract class Frontend extends Controller {
      */
     public function list( Request $param )
     {
-
         if( ( $r = $this->canList() ) !== null ) {
             return $r;
         }
@@ -323,7 +330,6 @@ abstract class Frontend extends Controller {
         $this->data[ 'rows' ] = $this->listGetData();
 
         $this->listIncludeTemplates();
-
         $this->preList();
 
         return $this->display( 'list' );
@@ -380,12 +386,27 @@ abstract class Frontend extends Controller {
     }
 
     /**
-     * Prepares data for the add / edit form
-     * @param int|null $id
+     * Prepares data for the create form
+     *
      * @return array
+     *
      * @throws GeneralException
      */
-    protected function addEditPrepareForm( Model $id = null ): array
+    protected function createPrepareForm(): array
+    {
+        throw new GeneralException( 'For non-read-only Doctrine2Frontend controllers, you must override this method.' );
+    }
+
+    /**
+     * Prepares data for the edit form
+     *
+     * @param int $id
+     *
+     * @return array
+     *
+     * @throws GeneralException
+     */
+    protected function editPrepareForm( int $id ): array
     {
         throw new GeneralException( 'For non-read-only Doctrine2Frontend controllers, you must override this method.' );
     }
@@ -396,18 +417,20 @@ abstract class Frontend extends Controller {
     protected function addEditSetup()
     {
         $this->data[ 'view' ][ 'editForm']               = $this->resolveTemplate( 'edit-form' );
-        $this->data[ 'view' ][ 'editPreamble']           = $this->resolveTemplate( 'edit-preamble',      false );
-        $this->data[ 'view' ][ 'editPostamble']          = $this->resolveTemplate( 'edit-postamble',     false );
-        $this->data[ 'view' ][ 'editHeaderPreamble']     = $this->resolveTemplate( 'edit-header-preamble',      false );
-        $this->data[ 'view' ][ 'editScript' ]            = $this->resolveTemplate( 'js/edit',            false );
+        $this->data[ 'view' ][ 'editPreamble']           = $this->resolveTemplate( 'edit-preamble',         false );
+        $this->data[ 'view' ][ 'editPostamble']          = $this->resolveTemplate( 'edit-postamble',        false );
+        $this->data[ 'view' ][ 'editHeaderPreamble']     = $this->resolveTemplate( 'edit-header-preamble',  false );
+        $this->data[ 'view' ][ 'editScript' ]            = $this->resolveTemplate( 'js/edit',               false );
     }
 
     /**
      * Add an object
+     *
+     * @throws GeneralException
      */
-    public function add()
+    public function create(): View
     {
-        $this->data[ 'params' ] = $this->addEditPrepareForm();
+        $this->data[ 'params' ] = $this->createPrepareForm();
         $this->data[ 'params' ]['isAdd'] = true;
         $this->addEditSetup();
 
@@ -423,14 +446,26 @@ abstract class Frontend extends Controller {
      *
      * @throws
      */
-    public function edit( $id )
+    public function edit( $id ): View
     {
-        $this->data[ 'params' ] = $this->addEditPrepareForm( $id );
+        $this->data[ 'params' ] = $this->editPrepareForm( $id );
         $this->data[ 'params' ]['isAdd'] = false;
 
         $this->addEditSetup();
 
         return $this->display('edit' );
+    }
+
+    /**
+     * Function to do the actual validation of the create/edit form..
+     *
+     * @param Request $request
+     *
+     * @throws GeneralException
+     */
+    public function checkForm( Request $request )
+    {
+        throw new GeneralException( 'For non-read-only Doctrine2Frontend controllers, you must override this method.' );
     }
 
     /**
@@ -446,7 +481,20 @@ abstract class Frontend extends Controller {
     }
 
     /**
-     * Action for storing a new/updated object
+     * Function to do the actual update of the submitted object.
+     *
+     * @param Request $request
+     * @param int $id
+     *
+     * @throws GeneralException
+     */
+    public function doUpdate( Request $request, int $id )
+    {
+        throw new GeneralException( 'For non-read-only Doctrine2Frontend controllers, you must override this method.' );
+    }
+
+    /**
+     * Action for storing a new object
      *
      * @param Request $request
      *
@@ -462,18 +510,43 @@ abstract class Frontend extends Controller {
             return $storeResult;
         }
 
-        $action = $request->input( 'id', '' )  ? "edited" : "added";
-        $this->postFlush( $action );
+        $this->postFlush( 'create' );
 
-        Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action
+        Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' created'
             . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->getObjectId() );
 
-
-        AlertContainer::push( $this->store_alert_success_message ?? $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
+        AlertContainer::push( $this->store_alert_success_message ?? $this->feParams->titleSingular . " created.", Alert::SUCCESS );
 
         return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
     }
 
+    /**
+     * Action for updating an object
+     *
+     * @param Request $request
+     * @param int $id
+     *
+     * @return RedirectResponse
+     *
+     * @throws GeneralException
+     */
+    public function update( Request $request, int $id )
+    {
+        $updateResult = $this->doUpdate( $request, $id );
+
+        if( $updateResult !== true ) {
+            return $updateResult;
+        }
+
+        $this->postFlush( 'update' );
+
+        Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' updated'
+            . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->getObjectId() );
+
+        AlertContainer::push( $this->update_alert_success_message ?? $this->feParams->titleSingular . " updated.", Alert::SUCCESS );
+
+        return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
+    }
 
     /**
      * Allow D2F implementations to override where the post-store redirect goes.
@@ -591,8 +664,8 @@ abstract class Frontend extends Controller {
     {
         if( view()->exists( $this->feParams->viewFolderName . "/{$tpl}" ) ) {
             return $this->feParams->viewFolderName . "/{$tpl}";
-        } else if( view()->exists( "frontend/{$tpl}"  ) ) {
-            return "frontend/{$tpl}";
+        } else if( view()->exists( static::$baseViews . "/{$tpl}"  ) ) {
+            return static::$baseViews . "/{$tpl}";
         } else if( view()->exists( $tpl  ) ) {
             return $tpl;
         }

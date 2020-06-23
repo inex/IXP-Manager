@@ -241,6 +241,8 @@ class Contact extends EntityRepository
             $ids[] = $row['id'];
         }
 
+
+
         $roles = D2EM::getRepository( ContactEntity::class )->getRolesByIds( $ids );
 
         if( $id ){

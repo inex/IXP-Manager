@@ -1,13 +1,21 @@
 <div class="card">
     <div class="card-body">
-
-        <?= Former::open()->method( 'POST' )
+        <?= Former::open()->method(  $t->data['params']['isAdd'] ? 'POST' : 'PUT'  )
             ->id( 'form' )
-            ->action( route( $t->feParams->route_prefix . '@store' ) )
+            ->action( $t->data['params']['isAdd'] ? route( $t->feParams->route_prefix . '@store' ) : route($t->feParams->route_prefix . '@update', [ 'id' => $t->data[ 'params'][ 'object']->id ] ) )
             ->customInputWidthClass( 'col-sm-6 col-md-6 col-lg-8 col-xl-6' )
             ->customLabelWidthClass( 'col-sm-2 col-md-2 col-lg-3 text-xs-center' )
             ->actionButtonsCustomClass( "grey-box")
         ?>
+        <?php
+            $checkedRoles = [];
+            if( old( 'roles' ) !== null ) {
+                $checkedRoles = array_values( old( 'roles' ) );
+            } else {
+                $checkedRoles = array_keys( $t->data[ 'params' ][ 'groupsForContact' ] );
+            }
+        ?>
+
         <div class="row">
             <div class="col-lg-6">
                 <?= Former::text( 'name' )
@@ -53,36 +61,30 @@
             </div>
 
             <div class="col-lg-6">
-
                 <div class="form-group row" >
-
                     <?php if( $t->data[ 'params'][ "allGroups" ] && isset( $t->data[ 'params'][ "allGroups" ][ 'ROLE' ] ) ): ?>
-
                         <div class="" style="display: contents">
                             <label class="control-label col-lg-3 col-sm-3">&nbsp;Role&nbsp;</label>
                         </div>
-
                         <div>
                             <?php foreach( $t->data[ 'params'][ "allGroups" ][ 'ROLE' ] as $role ): ?>
-
-                                <?= Former::checkbox( "ROLE_" . $role[ 'id' ] )
-                                    ->label( '&nbsp;')
-                                    ->text( $role[ 'name' ] )
-                                    ->value( 1 )
-                                    ->blockHelp( '' )
-                                    ->inline()
-
-                                ?>
+                                <div class="form-group row">
+                                    <div class="col-sm-6 col-md-6 col-lg-8 col-xl-6">
+                                        <div class="form-check form-check-inline">
+                                            <input id='role_<?= $role[ 'id' ] ?>' type='checkbox' name='roles[]' <?= in_array( $role[ 'id' ], $checkedRoles, false ) ? 'checked' : '' ?> value='<?= $role[ 'id' ] ?>'>
+                                            <label for="role_<?= $role[ 'id' ] ?>" class="form-check-label">
+                                                <?= $role[ 'name' ] ?>
+                                            </label>
+                                        </div>
+                                    </div>
+                                </div>
                             <?php endforeach; ?>
                         </div>
                     <?php endif; ?>
-
                 </div>
-
 
                 <?php if( !Auth::getUser()->isCustAdmin() ): ?>
                     <div class="form-group col-sm-12">
-
                         <div class="card mt-4">
                             <div class="card-header">
                                 <ul class="nav nav-tabs card-header-tabs">
@@ -110,22 +112,15 @@
                                 </div>
                             </div>
                         </div>
-
                     </div>
                 <?php endif; ?>
 
                 <?php if( Auth::getUser()->isSuperUser() ): ?>
-
-                    <?php if( $t->data[ 'params'][ "allGroups" ] && count( $t->data[ 'params'][ "allGroups" ] ) > 1 || ( count( $t->data[ 'params'][ "allGroups" ] ) == 1 && !isset( $t->data[ 'params'][ "allGroups" ]['ROLE'] ) )): ?>
-
+                    <?php if( ( $t->data[ 'params' ][ "allGroups" ] && count( $t->data[ 'params' ][ "allGroups" ] ) > 1 ) || ( count( $t->data[ 'params'][ "allGroups" ] ) == 1 && !isset( $t->data[ 'params'][ "allGroups" ]['ROLE'] ) ) ): ?>
                         <div class="form-group">
-
                             <label for="mayauthorize" class="control-label col-lg-2 col-sm-4">&nbsp;Groups&nbsp;</label>
-
                             <table class="table table-no-border">
-
                                 <?php foreach( $t->data[ 'params'][ "allGroups" ] as $gname => $gvalue ): ?>
-
                                     <?php if( $gname != "ROLE" && config('contact_group.types.' . $gname ) ): ?>
                                         <tr>
                                             <td>
@@ -133,27 +128,23 @@
                                             </td>
 
                                             <?php foreach( $gvalue as $ggroup ): ?>
-
                                                 <td>
-
-                                                    <?= Former::checkbox( $gname . "_" . $ggroup[ 'id' ] )
-                                                        ->label('&nbsp;')
-                                                        ->text( $ggroup[ 'name' ] )
-                                                        ->value( 1 )
-                                                        ->blockHelp( '' )
-                                                        ->inline()
-
-                                                    ?>
-
+                                                    <div class="form-group row">
+                                                        <div class="col-sm-6 col-md-6 col-lg-8 col-xl-6">
+                                                            <div class="form-check form-check-inline">
+                                                                <input id='role_<?= $ggroup[ 'id' ] ?>' type='checkbox' <?= in_array( $ggroup[ 'id' ], $checkedRoles, false ) ? 'checked' : '' ?> name='roles[]' value='<?= $ggroup[ 'id' ] ?>'>
+                                                                <label for="role_<?= $ggroup[ 'id' ] ?>" class="form-check-label">
+                                                                    <?= $ggroup[ 'name' ] ?>
+                                                                </label>
+                                                            </div>
+                                                        </div>
+                                                    </div>
                                                 </td>
-
                                             <?php endforeach; ?>
 
                                         </tr>
                                     <?php endif; ?>
-
                                 <?php endforeach; ?>
-
                             </table>
                         </div>
                     <?php endif; ?>
@@ -163,37 +154,37 @@
             </div>
         </div>
 
-        <?php
-            // need to figure out where the cancel button foes. shouldn't be this hard :-(
-            if( session()->get( 'contact_post_store_redirect' ) === 'contact@list' || session()->get( 'contact_post_store_redirect' ) === 'contact@add' ) {
-                    $cancel_url = route('contact@list' );
-            } else {
-                $custid = null;
-                if( isset( $t->data[ 'params'][ 'object'] ) && $t->data[ 'params'][ 'object'] instanceof \Entities\Contact ) {
-                    $custid = $t->data[ 'params'][ 'object']->getCustomer()->getId();
-                } else if( session()->get( 'contact_post_store_redirect_cid', null ) !== null ) {
-                    $custid = session()->get( 'contact_post_store_redirect_cid' );
-                }
-
-                if( $custid !== null ) {
-                    $cancel_url = route( 'customer@overview', [ "id" => $custid,  "tab" => "contacts" ] );
+            <?php
+                // need to figure out where the cancel button foes. shouldn't be this hard :-(
+                if( session()->get( 'contact_post_store_redirect' ) === 'contact@list' || session()->get( 'contact_post_store_redirect' ) === 'contact@add' ) {
+                        $cancel_url = route('contact@list' );
                 } else {
-                    $cancel_url = route( 'contact@list' );
+                    $custid = null;
+                    if( isset( $t->data[ 'params'][ 'object'] ) && $t->data[ 'params'][ 'object'] instanceof \IXP\Models\ContactGroup ) {
+                        $custid = $t->data[ 'params'][ 'object']->customer()->id;
+                    } else if( session()->get( 'contact_post_store_redirect_cid', null ) !== null ) {
+                        $custid = session()->get( 'contact_post_store_redirect_cid' );
+                    }
+
+                    if( $custid !== null ) {
+                        $cancel_url = route( 'customer@overview', [ "id" => $custid,  "tab" => "contacts" ] );
+                    } else {
+                        $cancel_url = route( 'contact@list' );
+                    }
                 }
-            }
 
-        ?>
+            ?>
 
-        <?= Former::actions(
-            Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->class( "mb-2 mb-sm-0" ),
-            Former::secondary_link( 'Cancel' )->href( $cancel_url )->class( "mb-2 mb-sm-0" ),
-            Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
-        );
-        ?>
+            <?= Former::actions(
+                Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->class( "mb-2 mb-sm-0" ),
+                Former::secondary_link( 'Cancel' )->href( $cancel_url )->class( "mb-2 mb-sm-0" ),
+                Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0" )
+            );
+            ?>
 
-        <?= Former::hidden( 'id' )
-            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
-        ?>
+            <?= Former::hidden( 'id' )
+                ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->id : '' )
+            ?>
 
         <?= Former::close() ?>
 

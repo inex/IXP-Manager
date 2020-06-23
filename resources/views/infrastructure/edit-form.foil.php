@@ -1,9 +1,9 @@
 <div class="card col-sm-12">
     <div class="card-body">
 
-        <?= Former::open()->method( 'POST' )
+        <?= Former::open()->method( $t->data['params']['isAdd'] ? 'POST' : 'PUT' )
             ->id( 'form' )
-            ->action( route( $t->feParams->route_prefix . '@store' ) )
+            ->action( $t->data['params']['isAdd'] ? route( $t->feParams->route_prefix . '@store' ) : route($t->feParams->route_prefix . '@update', [ 'id' => $t->data[ 'params'][ 'object']->id ] ) )
             ->customInputWidthClass( 'col-lg-4 col-md-5 col-sm-5' )
             ->customLabelWidthClass( 'col-lg-2 col-sm-3' )
             ->actionButtonsCustomClass( "grey-box")
@@ -33,7 +33,7 @@
                 in the export.' );
         ?>
 
-        <?= Former::checkbox( 'primary' )
+        <?= Former::checkbox( 'isPrimary' )
             ->label( '&nbsp;' )
             ->text( 'Primary Infrastructure' )
             ->value( 1 )
@@ -51,8 +51,8 @@
                 . "cached for two hours. Use 'artisan cache:clear' to reset it.");
         ?>
 
-        <?= Former::select( 'pdb_ixp' )
-            ->id( 'pdb_ixp' )
+        <?= Former::select( 'peeringdb_ix_id' )
+            ->id( 'peeringdb_ix_id' )
             ->label( 'Peering DB IX ID' )
             ->placeholder( 'Please wait, loading...' )
             ->blockHelp( "Identify your IXP from <a href=\"https://www.peeringdb.com/\">PeeringDB</a>. If it does not exist there, "

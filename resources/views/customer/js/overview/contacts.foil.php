@@ -1,17 +1,14 @@
 <script>
     $(document).ready( function() {
-
-
-        $( '.table' ).on( 'click', '.cont-list-delete', function( e ){
-
+        $( '.btn-2f-list-delete' ).on( 'click', function( event ) {
             event.preventDefault();
 
-            let objectId = $( "#" + this.id ).attr( "data-object-id" );
+            let url = $( this ).attr( 'data-url');
 
-            let html = `<form id="d2f-form-delete" method="POST" action="<?= route('contact@delete' ) ?>">
+            let html = `<form id="d2f-form-delete" method="POST" action="${url}">
                                 <div>Do you really want to delete this contact?</div>
                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                                <input type="hidden" name="id" value="${objectId}">
+                                <input type="hidden" name="_method" value="delete" />
                             </form>`;
 
             bootbox.dialog({

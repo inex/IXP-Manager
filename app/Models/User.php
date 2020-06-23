@@ -24,10 +24,7 @@ namespace IXP\Models;
  */
 
 use Eloquent;
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Model
-};
+use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations\HasMany};
 
 /**
  * IXP\Models\User
@@ -69,6 +66,8 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereUid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereUsername($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ApiKey[] $apiKeys
+ * @property-read int|null $api_keys_count
  */
 class User extends Model
 {
@@ -120,9 +119,17 @@ class User extends Model
     /**
      * Get the customer
      */
-    public function customer()
+    public function customer(): BelongsTo
     {
-        return $this->belongsTo('IXP\Models\Customer', 'custid');
+        return $this->belongsTo(Customer::class, 'custid');
+    }
+
+    /**
+     * Get the api keys for the user
+     */
+    public function apiKeys(): HasMany
+    {
+        return $this->hasMany(ApiKey::class, 'user_id' );
     }
 
 }

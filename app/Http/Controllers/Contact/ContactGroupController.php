@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Contact;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,37 +23,38 @@ namespace IXP\Http\Controllers\Contact;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Redirect, Validator;
+use Former;
 
-use Entities\{
-    ContactGroup        as ContactGroupEntity,
-    User                as UserEntity
+use Illuminate\Http\{
+    Request,
+    RedirectResponse
 };
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
 
-use IXP\Http\Controllers\Doctrine2Frontend;
+use IXP\Models\{
+    User,
+    ContactGroup
+};
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
 
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 /**
  * Contact Group Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class ContactGroupController extends Doctrine2Frontend
+class ContactGroupController extends EloquentController
 {
-
     /**
      * The object being added / edited
-     * @var ContactGroupEntity
+     * @var ContactGroup
      */
     protected $object = null;
 
@@ -67,62 +68,47 @@ class ContactGroupController extends Doctrine2Frontend
      *
      * @var int
      */
-    public static $minimum_privilege = UserEntity::AUTH_CUSTUSER;
+    public static $minimum_privilege = User::AUTH_CUSTUSER;
 
     /**
      * This function sets up the frontend controller
      */
     public function feInit()
     {
-
         $this->feParams         = ( object )[
-
-            'entity'            => ContactGroupEntity::class,
+            'entity'            => ContactGroup::class,
             'pagetitle'         => 'Contact Groups',
-
             'titleSingular'     => 'Contact Group',
             'nameSingular'      => 'contact group',
-
             'defaultAction'     => 'list',
             'defaultController' => 'ContactGroupController',
-
             'listOrderBy'       => 'type',
             'listOrderByDir'    => 'ASC',
-
             'viewFolderName'    => 'contact-group',
-
             'documentation'     => 'https://docs.ixpmanager.org/usage/contacts/#contact-groups',
-
             'listColumns'    => [
-
                 'type'       => [
                     'title'             => 'Group Name',
                     'type'              => self::$FE_COL_TYPES[ 'ARRAY' ],
                     'source'            => config( "contact_group.types" )
                 ],
-
                 'name'         => 'Option',
-
                 'active'      => [
                     'title' => 'Active',
                     'type' => self::$FE_COL_TYPES[ 'YES_NO' ]
                 ],
-
                 'created'       => [
                     'title'     => 'Created',
                     'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ]
             ]
-
         ];
-
 
         // display the same information in the view as the list
         $this->feParams->viewColumns = array_merge(
             $this->feParams->listColumns,
             [
-                'limit_to'    => [
-
+                'limited_to'    => [
                     'title' => 'Limit',
                     'type' => self::$FE_COL_TYPES[ 'INTEGER' ]
 
@@ -130,22 +116,21 @@ class ContactGroupController extends Doctrine2Frontend
                 'description' => 'Description'
             ]
         );
-
     }
 
     /**
      * Provide array of rows for the list action and view action
      *
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+
      * @return array
      *
      * @throws
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( $id = null ): array
     {
-        return D2EM::getRepository( ContactGroupEntity::class )->getAllForFeList( $this->feParams, $id );
+        return ContactGroup::getFeList( $this->feParams, $id )->toArray();
     }
-
 
     /**
      * @return RedirectResponse|null
@@ -162,7 +147,22 @@ class ContactGroupController extends Doctrine2Frontend
     }
 
     /**
-     * Display the form to add/edit an object
+     * Display the form to create an object
+     *
+     * @return array
+     *
+     * @throws
+     */
+    protected function createPrepareForm(): array
+    {
+        return [
+            'object'                => $this->object,
+            'types'                 => config( "contact_group.types" )
+        ];
+    }
+
+    /**
+     * Display the form to edit an object
      *
      * @param   int $id ID of the row to edit
      *
@@ -170,22 +170,17 @@ class ContactGroupController extends Doctrine2Frontend
      *
      * @throws
      */
-    protected function addEditPrepareForm( $id = null ): array
+    protected function editPrepareForm( $id = null ): array
     {
-        if( $id ) {
+        $this->object = ContactGroup::findOrFail( $id );
 
-            if( !( $this->object = D2EM::getRepository( ContactGroupEntity::class )->find( $id ) ) ) {
-                abort(404);
-            }
-
-            Former::populate( [
-                'name'                      => request()->old( 'name',              $this->object->getName() ),
-                'description'               => request()->old( 'description',       $this->object->getDescription() ),
-                'type'                      => request()->old( 'type',              $this->object->getType() ),
-                'active'                    => request()->old( 'active',            ( $this->object->getActive()      ? 1 : 0 ) ),
-                'limit'                     => request()->old( 'limit',             $this->object->getLimitedTo() ),
-            ] );
-        }
+        Former::populate( [
+            'name'                      => request()->old( 'name',              $this->object->name ),
+            'description'               => request()->old( 'description',       $this->object->description ),
+            'type'                      => request()->old( 'type',              $this->object->type ),
+            'active'                    => request()->old( 'active',            ( $this->object->active      ? 1 : 0 ) ),
+            'limited_to'                => request()->old( 'limit',             $this->object->limited_to ),
+        ] );
 
         return [
             'object'                => $this->object,
@@ -193,6 +188,20 @@ class ContactGroupController extends Doctrine2Frontend
         ];
     }
 
+    /**
+     * Check if the form is valid
+     *
+     * @param $request
+     */
+    public function checkForm( Request $request )
+    {
+        $request->validate( [
+            'name'                  => 'required|string|max:255|unique:Entities\ContactGroup,name' . ( $request->input( 'id' ) ? ','. $request->input( 'id' ) : '' ),
+            'description'           => 'required|string|max:255',
+            'type'                  => 'required|string|in:' . implode( ',', array_keys( config( "contact_group.types" ) ) ),
+            'limited_to'            => 'required|integer|min:0',
+        ] );
+    }
 
     /**
      * Function to do the actual validation and storing of the submitted object.
@@ -205,37 +214,29 @@ class ContactGroupController extends Doctrine2Frontend
      */
     public function doStore( Request $request )
     {
-        $validator = Validator::make( $request->all(), [
-            'name'                  => 'required|string|max:255|unique:Entities\ContactGroup,name' . ( $request->input( 'id' ) ? ','. $request->input( 'id' ) : '' ),
-            'description'           => 'required|string|max:255',
-            'type'                  => 'required|string|in:' . implode( ',', array_keys( config( "contact_group.types" ) ) ),
-            'limit'                 => 'required|integer|min:0',
-        ]);
-
-
-        if( $validator->fails() ) {
-            return Redirect::back()->withErrors($validator)->withInput();
-        }
-
-        if( $request->input( 'id', false ) ) {
-            if( !( $this->object = D2EM::getRepository( ContactGroupEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404);
-            }
-        } else {
-            $this->object = new ContactGroupEntity;
-            D2EM::persist( $this->object );
-            $this->object->setCreated(  new \DateTime  );
-        }
-
-        $this->object->setName(           $request->input( 'name'           ) );
-        $this->object->setDescription(    $request->input( 'description'    ) );
-        $this->object->setType(           $request->input( 'type'           ) );
-        $this->object->setActive(         $request->input( 'active'         ) ? 1 : 0 );
-        $this->object->setLimitedTo(      $request->input( 'limit'          ) );
-
-        D2EM::flush();
-
+        $this->checkForm( $request );
+        $this->object = ContactGroup::create( array_merge( $request->all(), [
+            'created' => now()
+        ] ) );
         return true;
     }
 
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request $request
+     * @param int $id
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doUpdate( Request $request, int $id )
+    {
+        $this->object = ContactGroup::findOrFail( $id );
+        $this->checkForm( $request );
+        $this->object->update( $request->all() );
+
+        return true;
+    }
 }

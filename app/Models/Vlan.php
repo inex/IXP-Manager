@@ -25,11 +25,7 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Collection,
-    Model
-};
+use Illuminate\Database\Eloquent\{Builder, Collection, Model, Relations\BelongsTo, Relations\HasMany};
 
 /**
  * IXP\Models\Vlan
@@ -60,6 +56,7 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan wherePeeringMatrix($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan wherePrivate($value)
  * @mixin \Eloquent
+ * @property-read \IXP\Models\Infrastructure $infrastructure
  */
 class Vlan extends Model
 {
@@ -73,17 +70,27 @@ class Vlan extends Model
     /**
      * Get the vlan interfaces that are in this vlan
      */
-    public function vlanInterfaces()
+    public function vlanInterfaces(): HasMany
     {
-        return $this->hasMany('IXP\Models\VlanInterface', 'vlanid');
+        return $this->hasMany(VlanInterface::class, 'vlanid');
     }
 
     /**
      * Get the vlan interfaces that are in this vlan
      */
-    public function routers()
+    public function routers(): HasMany
     {
-        return $this->hasMany('IXP\Models\Router' );
+        return $this->hasMany(Router::class );
     }
+
+    /**
+     * Get the infrastructure that own the vlan
+     */
+    public function infrastructure(): BelongsTo
+    {
+        return $this->belongsTo(Infrastructure::class );
+    }
+
+
 
 }

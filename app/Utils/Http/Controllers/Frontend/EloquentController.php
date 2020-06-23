@@ -40,6 +40,13 @@ namespace IXP\Utils\Http\Controllers\Frontend;
 abstract class EloquentController extends Frontend {
 
     /**
+     * Where are the base views (list/edit/view).
+     *
+     * @var string
+     */
+    protected static $baseViews = 'eloquent-frontend';
+
+    /**
      * Provide the Id of the object
      *
      * @return int

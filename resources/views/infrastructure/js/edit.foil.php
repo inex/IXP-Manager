@@ -1,7 +1,7 @@
 
 <script>
     let dd_ixp = $( '#ixf_ix_id' );
-    let dd_pdb = $( '#pdb_ixp' );
+    let dd_pdb = $( '#peeringdb_ix_id' );
 
     let ixp_req_finish = false;
     let pdb_req_finish = false;
@@ -74,8 +74,8 @@
 
                 <?php if( $t->data[ 'params'][ 'object' ] && $t->data[ 'params'][ 'object' ]->peeringdb_ix_id ): ?>
                     selectedpdb = <?= $t->data[ 'params'][ 'object' ]->peeringdb_ix_id ?>;
-                <?php elseif( Request::old('pdb_ixp' ) ): ?>
-                    selectedpdb = <?= Request::old('pdb_ixp' ) ?>;
+                <?php elseif( Request::old('peeringdb_ix_id' ) ): ?>
+                    selectedpdb = <?= Request::old('peeringdb_ix_id' ) ?>;
                 <?php else: ?>
                     selectedpdb = false;
                 <?php endif; ?>

@@ -25,10 +25,8 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Model
-};
+use Illuminate\Database\Eloquent\{Builder, Collection, Model, Relations\HasMany};
+use stdClass;
 
 /**
  * IXP\Models\Infrastructure
@@ -53,6 +51,12 @@ use Illuminate\Database\Eloquent\{
  * @method static Builder|Infrastructure wherePeeringdbIxId($value)
  * @method static Builder|Infrastructure whereShortname($value)
  * @mixin Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Vlan[] $Vlans
+ * @property-read int|null $vlans_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Switcher[] $Switchers
+ * @property-read int|null $switchers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Switcher[] $switchers
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Vlan[] $vlans
  */
 class Infrastructure extends Model
 {
@@ -62,4 +66,68 @@ class Infrastructure extends Model
      * @var string
      */
     protected $table = 'infrastructure';
+
+    public $timestamps = false;
+
+    /**
+     * The attributes that aren't mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'ixp_id',
+        'name',
+        'shortname',
+        'isPrimary',
+        'peeringdb_ix_id',
+        'ixf_ix_id',
+        'country'
+    ];
+
+    /**
+     * The cache key for the primary infrastructure
+     * @var string The cache key for the primary infrastructure
+     */
+    const CACHE_KEY_PRIMARY = 'infrastructure_primary';
+
+    /**
+     * The cache key for the all infrastructures
+     * @var string The cache key for all infrastructures
+     */
+    const CACHE_KEY_ALL = 'infrastructure_all';
+
+    /**
+     * Get the vlans for the infrastructure
+     */
+    public function vlans(): HasMany
+    {
+        return $this->hasMany(Vlan::class, 'infrastructureid' );
+    }
+
+    /**
+     * Get the switchers for the infrastructure
+     */
+    public function switchers(): HasMany
+    {
+        return $this->hasMany(Switcher::class, 'infrastructure' );
+    }
+
+    /**
+     * Gets a listing of mailing list or a single one if an ID is provided
+     *
+     * @param stdClass $feParams
+     * @param int|null $id
+     *
+     * @return Collection
+     */
+    public static function getFeList( stdClass $feParams, int $id = null ): Collection
+    {
+        $query = self::when( $id , function( Builder $q, $id ) {
+            return $q->where('id', $id );
+        } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+        });
+
+        return $query->get();
+    }
 }
