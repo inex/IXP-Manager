@@ -25,10 +25,7 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Model
-};
+use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations\HasMany};
 
 
 /**
@@ -88,6 +85,8 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereVirtualinterfaceid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereVlanid($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Layer2Address[] $layer2addresses
+ * @property-read int|null $layer2addresses_count
  */
 class VlanInterface extends Model
 {
@@ -101,17 +100,25 @@ class VlanInterface extends Model
     /**
      * Get the customer that owns the virtual interfaces.
      */
-    public function virtualInterface()
+    public function virtualInterface(): BelongsTo
     {
-        return $this->belongsTo('IXP\Models\VirtualInterface', 'virtualinterfaceid');
+        return $this->belongsTo(VirtualInterface::class, 'virtualinterfaceid');
     }
 
     /**
      * Get the vlan that holds the vlan interface.
      */
-    public function vlan()
+    public function vlan(): BelongsTo
     {
-        return $this->belongsTo('IXP\Models\Vlan', 'vlanid');
+        return $this->belongsTo(Vlan::class, 'vlanid');
+    }
+
+    /**
+     * Get the layer2addresses for the vlan interface
+     */
+    public function layer2addresses(): HasMany
+    {
+        return $this->hasMany(Layer2Address::class, 'vlan_interface_id' );
     }
 
 

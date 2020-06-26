@@ -48,6 +48,11 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Contact wherePosition($value)
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ContactGroup[] $contactGroups
  * @property-read int|null $contact_groups_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ContactGroup[] $contactGroupsAll
+ * @property-read int|null $contact_groups_all_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ContactGroup[] $contactRoles
+ * @property-read int|null $contact_roles_count
+ * @property-read \IXP\Models\Customer|null $customer
  */
 class Contact extends Model
 {
@@ -58,10 +63,15 @@ class Contact extends Model
      */
     protected $table = 'contact';
 
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
     public $timestamps = false;
 
     /**
-     * The attributes that aren't mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
@@ -131,7 +141,6 @@ class Contact extends Model
      */
     public static function getFeList( stdClass $feParams, int $id = null, int $role = null, int $cgid = null ): array
     {
-
         $query = self::select( [ 'contact.*', 'cust.name AS customer', 'cust.id AS custid' ])
             ->leftJoin( 'cust', 'cust.id', '=' , 'contact.custid'  )
             ->when( $id , function ( Builder $query, $id ) {

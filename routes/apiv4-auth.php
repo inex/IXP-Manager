@@ -32,10 +32,10 @@ use Illuminate\Http\Request;
 | is assigned the "api/v4" middleware group. Enjoy building your API!
 |
 */
-
-
-Route::post( 'l2-address/add',                                  'Layer2AddressController@add' );
-Route::post( 'l2-address/delete/{id}',                          'Layer2AddressController@delete' );
+Route::group( [ 'prefix' => 'ixps' ], function() {
+    Route::post( 'store/{showFeMessage?}',      'Layer2AddressController@store' )->name( 'l2-address@create' );
+    Route::delete( '{l2a}//{showFeMessage?}',   'Layer2AddressController@delete' )->name( 'l2-address@delete' );
+});
 
 Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer\Note'], function() {
     Route::get(    'ping/{id?}',            'CustomerNotesController@ping'      )->name( 'customer-notes@ping');

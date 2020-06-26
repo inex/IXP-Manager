@@ -67,10 +67,15 @@ class Infrastructure extends Model
      */
     protected $table = 'infrastructure';
 
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
     public $timestamps = false;
 
     /**
-     * The attributes that aren't mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
@@ -118,16 +123,24 @@ class Infrastructure extends Model
      * @param stdClass $feParams
      * @param int|null $id
      *
-     * @return Collection
+     * @return array
      */
-    public static function getFeList( stdClass $feParams, int $id = null ): Collection
+    public static function getFeList( stdClass $feParams, int $id = null ): array
     {
-        $query = self::when( $id , function( Builder $q, $id ) {
+        return self::when( $id , function( Builder $q, $id ) {
             return $q->where('id', $id );
         } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
             return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-        });
+        })->get()->toArray();
+    }
 
-        return $query->get();
+    /**
+     * Gets a listing of infrastructures as array
+     *
+     * @return array
+     */
+    public static function getListAsArray(): array
+    {
+        return self::orderBy( 'name', 'asc' )->get()->toArray();
     }
 }

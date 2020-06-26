@@ -23,10 +23,13 @@ namespace IXP\Events\Layer2Address;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use IXP\Models\{
+    Layer2Address,
+    VlanInterface
+};
+
 use Entities\{
-    Layer2Address   as Layer2AddressEntity,
     User            as UserEntity,
-    VlanInterface   as VlanInterfaceEntity
 };
 
 use Illuminate\Queue\SerializesModels;
@@ -57,22 +60,22 @@ class Added
     public $customer;
 
     /**
-     * @var VlanInterfaceEntity
+     * @var VlanInterface
      */
     public $vli;
 
     /**
      * Create a new event instance.
      *
-     * @param Layer2AddressEntity     $l2a
+     * @param Layer2Address       $l2a
      * @param UserEntity          $u
      */
-    public function __construct( Layer2AddressEntity $l2a, UserEntity $u )
+    public function __construct( Layer2Address $l2a, UserEntity $u )
     {
         $this->action   = "add";
-        $this->mac      = $l2a->getMac();
+        $this->mac      = $l2a->mac;
         $this->user     = $u;
         $this->customer = $u->getCustomer()->getFormattedName();
-        $this->vli      = $l2a->getVlanInterface();
+        $this->vli      = $l2a->vlanInterface;
     }
 }

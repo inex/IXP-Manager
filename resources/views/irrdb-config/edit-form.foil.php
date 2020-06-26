@@ -3,9 +3,9 @@
 
         <div class="card-body">
 
-            <?= Former::open()->method( 'POST' )
+            <?= Former::open()->method( $t->data['params']['isAdd'] ? 'POST' : 'PUT' )
                 ->id( 'form' )
-                ->action( route( $t->feParams->route_prefix . '@store' ) )
+                ->action( $t->data['params']['isAdd'] ? route( $t->feParams->route_prefix . '@store' ) : route($t->feParams->route_prefix . '@update', [ 'id' => $t->data[ 'params'][ 'object']->id ] ) )
                 ->customInputWidthClass( 'col-lg-3 col-md-4 col-sm-6' )
                 ->customLabelWidthClass( 'col-lg-2 col-sm-3' )
                 ->actionButtonsCustomClass( "grey-box")
@@ -34,7 +34,6 @@
             ?>
 
             <div class="form-group col-sm-8">
-
                 <div class="col-lg-offset-2 col-sm-offset-2">
                     <div class="card mt-4">
                         <div class="card-header">
@@ -64,7 +63,6 @@
                             </div>
                         </div>
                     </div>
-
                 </div>
             </div>
 
@@ -76,12 +74,9 @@
             ?>
 
             <?= Former::hidden( 'id' )
-                ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
+                ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->id : '' )
             ?>
 
             <?= Former::close() ?>
-
         </div>
-
-
     </div>

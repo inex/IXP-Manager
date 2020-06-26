@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,47 +23,40 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Former, Log, Route;
+use Former;
 
-use Entities\{
-    IRRDBConfig      as IRRDBConfigEntity
+use Illuminate\Http\{
+    Request,
+    RedirectResponse
 };
-use IXP\Http\Requests\StoreIrrdbConfig as StoreIrrdbConfigRequest;
-
-use Illuminate\Http\RedirectResponse;
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
 
+use IXP\Models\IrrdbConfig;
 
+use IXP\Rules\IdnValidate;
+
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 /**
  * Irrdb Config Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class IrrdbConfigController extends Doctrine2Frontend
+class IrrdbConfigController extends EloquentController
 {
 
     /**
      * The object being added / edited
-     * @var IRRDBConfigEntity
+     * @var IrrdbConfig
      */
     protected $object = null;
-
-    /**
-     * Sometimes we need to pass a custom request object for validation / authorisation.
-     *
-     * Set the name of the function here and the route for store will be pointed to it instead of doStore()
-     *
-     * @var string
-     */
-    protected static $storeFn = 'customStore';
 
     /**
      * This function sets up the frontend controller
@@ -71,22 +64,20 @@ class IrrdbConfigController extends Doctrine2Frontend
     public function feInit()
     {
         $this->feParams         = (object)[
-
-            'entity'            => IRRDBConfigEntity::class,
+            'entity'            => IrrdbConfig::class,
             'pagetitle'         => 'IRRDB Sources',
-
             'titleSingular'     => 'IRRDB Source',
             'nameSingular'      => 'an IRRDB Sources',
-
             'listOrderBy'       => 'host',
             'listOrderByDir'    => 'ASC',
-
             'viewFolderName'    => 'irrdb-config',
-
             'documentation'     => 'https://docs.ixpmanager.org/features/irrdb/',
 
             'listColumns'       => [
-                'id'        => [ 'title' => 'DB ID', 'display' => false ],
+                'id'        => [
+                    'title' => 'DB ID',
+                    'display' => false
+                ],
                 'host'      => 'Host',
                 'protocol'  => 'Protocol',
                 'source'    => 'Source'
@@ -98,92 +89,108 @@ class IrrdbConfigController extends Doctrine2Frontend
             $this->feParams->listColumns,
             [
                 'notes' => [
-                'title'         => 'Notes',
-                'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
+                    'title'         => 'Notes',
+                    'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
                 ]
             ]
         );
-
-
     }
 
     /**
      * Provide array of rows for the list action and view action
      *
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     *
      * @return array
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( $id = null ): array
     {
-        return D2EM::getRepository( IRRDBConfigEntity::class )->getAllForFeList( $this->feParams, $id );
+        return IrrdbConfig::getFeList( $this->feParams, $id );
     }
 
-
-
     /**
-     * Display the form to add/edit an object
-     * @param   int $id ID of the row to edit
+     * Display the form to create an object
+     *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array
+    protected function createPrepareForm(): array
     {
-        if( $id ) {
-            if( !( $this->object = D2EM::getRepository( IRRDBConfigEntity::class )->find( $id) ) ) {
-                abort(404);
-            }
+        return [
+            'object'                => $this->object
+        ];
+    }
 
-            Former::populate([
-                'host'              => request()->old( 'host',         $this->object->getHost() ),
-                'protocol'          => request()->old( 'protocol',     $this->object->getProtocol() ),
-                'source'            => request()->old( 'source',       $this->object->getSource() ),
-                'notes'             => request()->old( 'notes',       $this->object->getNotes() ),
-            ]);
-        }
+    /**
+     * Display the form to update an object
+     *
+     * @param null $id
+     *
+     * @return array
+     */
+    protected function editPrepareForm( $id = null ): array
+    {
+        $this->object = IrrdbConfig::findOrFail( $id );
+
+        Former::populate([
+            'host'              => request()->old( 'host',         $this->object->host ),
+            'protocol'          => request()->old( 'protocol',     $this->object->protocol ),
+            'source'            => request()->old( 'source',       $this->object->source ),
+            'notes'             => request()->old( 'notes',       $this->object->notes ),
+        ]);
 
         return [
             'object'                => $this->object
         ];
     }
 
+    /**
+     * Check if the form is valid
+     *
+     * @param $request
+     */
+    public function checkForm( Request $request )
+    {
+        $request->validate( [
+            'host'                  => [ 'required', 'max:255', 'string', new IdnValidate() ],
+            'protocol'              => 'required|string|max:255',
+            'source'                => 'required|string|max:255',
+        ] );
+    }
 
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
-     * @param StoreIrrdbConfigRequest $request
+     * @param Request $request
      *
      * @return bool|RedirectResponse
      *
      * @throws
      */
-    public function customStore( StoreIrrdbConfigRequest $request )
+    public function doStore( Request $request )
     {
+        $this->checkForm( $request );
+        $this->object = IrrdbConfig::create( $request->all() );
 
-        if( $request->input( 'id', false ) ) {
-            if( !( $this->object = D2EM::getRepository( IRRDBConfigEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404);
-            }
-        } else {
-            $this->object = new IRRDBConfigEntity;
-            D2EM::persist( $this->object );
-        }
+        return true;
+    }
 
-        $this->object->setHost(         $request->input( 'host'     ) );
-        $this->object->setProtocol(     $request->input( 'protocol' ) );
-        $this->object->setSource(       $request->input( 'source'   ) );
-        $this->object->setNotes(        $request->input( 'notes'    ) );
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request $request
+     * @param int $id
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doUpdate( Request $request, int $id )
+    {
+        $this->object = IrrdbConfig::findOrFail( $id );
+        $this->checkForm( $request );
+        $this->object->update( $request->all() );
 
-
-        D2EM::flush();
-
-
-        $action = $request->input( 'id', '' )  ? "edited" : "added";
-
-        Log::notice( ( Auth::check() ? Auth::user()->getUsername() : 'A public user' ) . ' ' . $action . ' ' . $this->feParams->nameSingular . ' with ID ' . $this->object->getId() );
-
-        AlertContainer::push( $this->store_alert_success_message ?? $this->feParams->titleSingular . " " . $action, Alert::SUCCESS );
-
-        return redirect()->to( $this->postStoreRedirect() ?? route( self::route_prefix() . '@' . 'list' ) );
-
+        return true;
     }
 
     /**
@@ -192,12 +199,11 @@ class IrrdbConfigController extends Doctrine2Frontend
     protected function preDelete() : bool
     {
         $okay = true;
-        if( ( $cnt = count( $this->object->getCustomers() ) ) ) {
+        if( ( $cnt = $this->object->customers()->count() ) ) {
             AlertContainer::push( "You cannot delete this IRRDB Source there are {$cnt} customer(s) associated with it. ", Alert::DANGER );
             $okay = false;
         }
 
         return $okay;
     }
-
 }

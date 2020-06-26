@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,61 +23,54 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, D2EM, Route;
-
-use Entities\{
-    CustomerToUser      as CustomerToUserEntity,
-    User                as UserEntity,
-    UserLoginHistory    as UserLoginHistoryEntity,
-};
+use Auth, Route;
 
 use Illuminate\Http\Request;
 
 use Illuminate\View\View;
 
+use IXP\Models\{
+    CustomerToUser,
+    User,
+    UserLoginHistory
+};
+
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 /**
  * Login History Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   VlanInterface
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class LoginHistoryController extends Doctrine2Frontend
+class LoginHistoryController extends EloquentController
 {
     /**
      * The object being added / edited
-     * @var UserLoginHistoryEntity
+     * @var UserLoginHistory
      */
     protected $object = null;
 
     /**
      * This function sets up the frontend controller
      */
-    public function feInit(){
-
+    public function feInit()
+    {
         $this->feParams         = (object)[
-            'entity'            => UserLoginHistoryEntity::class,
-
+            'entity'            => UserLoginHistory::class,
             'pagetitle'         => 'Login History',
-
             'titleSingular'     => 'Login History',
             'nameSingular'      => 'a Login History',
-
             'listOrderBy'       => 'last_login_date',
             'listOrderByDir'    => 'DESC',
-
             'readonly'       => 'true',
-
             'viewFolderName'    => 'login-history',
 
             'listColumns'    => [
-
-                'username'          => [ 'title' => 'Username' ],
-
-                'email'             => [ 'title' => 'Email' ],
-
+                'username'          =>  'Username',
+                'email'             =>  'Email',
                 'cust_name'  => [
                     'title'      => 'Customer',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -85,9 +78,7 @@ class LoginHistoryController extends Doctrine2Frontend
                     'action'     => 'overview',
                     'idField'    => 'cust_id'
                 ],
-
-                'last_login_via'    => [ 'title' => 'Via' ],
-
+                'last_login_via'    => 'Via',
                 'last_login_date'         => [
                     'title'     => 'Last Login',
                     'type'      => self::$FE_COL_TYPES[ 'DATETIME' ]
@@ -100,10 +91,9 @@ class LoginHistoryController extends Doctrine2Frontend
 
         // phpunit / artisan trips up here without the cli test:
         if( php_sapi_name() !== 'cli' ) {
-
             // custom access controls:
-            switch( Auth::check() ? Auth::user()->getPrivs() : UserEntity::AUTH_PUBLIC ) {
-                case UserEntity::AUTH_SUPERUSER:
+            switch( Auth::check() ? Auth::user()->getPrivs() : User::AUTH_PUBLIC ) {
+                case User::AUTH_SUPERUSER:
                     break;
 
                 default:
@@ -123,7 +113,6 @@ class LoginHistoryController extends Doctrine2Frontend
         });
     }
 
-
     /**
      * Provide array of rows for the list and view
      *
@@ -132,25 +121,23 @@ class LoginHistoryController extends Doctrine2Frontend
      */
     protected function listGetData( $id = null )
     {
-        return D2EM::getRepository( UserEntity::class)->getLastLoginsForFeList( $this->feParams );
+        return CustomerToUser::getLastLoginsForFeList( $this->feParams );
     }
-
 
     /**
      * Display the login history list for a user/customer
      *
-     * @inheritdoc
+     * @param Request   $r
+     * @param int       $id
+     *
+     * @return View
      */
-    public function view( Request $r, $id ): View
+    public function view( Request $r, int $id ): View
     {
-        /** @var $u UserEntity */
-        if( !( $u = D2EM::getRepository( UserEntity::class )->find( $id ) ) ) {
-            abort(404 );
-        }
-
-        return view( 'login-history/view' )->with([
-            'histories'                 => D2EM::getRepository( UserLoginHistoryEntity::class)->getAllForFeList( $u->getId(), $r->input( 'limit', 0 ) ),
-            'user'                      => $u,
-        ]);
+        $u = User::findOrFail( $id );
+        return view( 'login-history/view' )->with( [
+            'histories'     => UserLoginHistory::getFeList( $u->id, $r->limit ?? 0 ),
+            'user'          => $u,
+        ] );
     }
 }

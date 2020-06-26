@@ -25,8 +25,6 @@ namespace IXP\Listeners\Layer2Address;
 
 use Mail;
 
-
-// use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 use IXP\Events\Layer2Address\{

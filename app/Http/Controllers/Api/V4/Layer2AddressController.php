@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Api\V4;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -25,126 +25,129 @@ namespace IXP\Http\Controllers\Api\V4;
 
 use Auth, D2EM;
 
-use Entities\{
-    Layer2Address as Layer2AddressEntity,
-    VlanInterface as VlanInterfaceEntity
+use IXP\Utils\View\Alert\Alert;
+use IXP\Utils\View\Alert\Container as AlertContainer;
+use IXP\Models\{
+    Layer2Address,
+    VlanInterface
 };
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Entities\{
+    Layer2Address as Layer2AddressEntity,
+};
 
-use IXP\Events\Layer2Address\Added as Layer2AddressAddedEvent;
-use IXP\Events\Layer2Address\Deleted as Layer2AddressDeletedEvent;
+use Illuminate\Http\{
+    JsonResponse,
+    Request
+};
+
+use IXP\Events\Layer2Address\{
+    Added       as Layer2AddressAddedEvent,
+    Deleted     as Layer2AddressDeletedEvent
+};
 
 /**
  * Layer2Address API Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Layer2AddressController extends Controller {
-
+class Layer2AddressController extends Controller
+{
     /**
-     * Add a mac address to a VLAN Interface
+     * Create a mac address to a VLAN Interface
      *
-     * @param   Request $request instance of the current HTTP request
+     * @param Request   $request            instance of the current HTTP request
+     * @param bool      $showFeMessage      Should we show the frontend message ?
+     *
      * @return  JsonResponse
-     * @throws \LaravelDoctrine\ORM\Facades\ORMInvalidArgumentException
-     * @throws \Doctrine\ORM\OptimisticLockException
+     *
      */
-    public function add( Request $request ): JsonResponse {
-        /** @var VlanInterfaceEntity $vli */
-        if( !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $request->input( 'vliid' ) ) ) ) {
-            return abort( 404, 'VLAN interface not found' );
-        }
+    public function store( Request $request, bool $showFeMessage = false ): JsonResponse
+    {
+        $vli = VlanInterface::findOrFail( $request->vlan_interface_id );
 
         if( !Auth::user()->isSuperUser() ) {
             if( !config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ) {
                 abort( 404 );
             }
 
-            if( Auth::user()->getCustomer()->getId() != $vli->getVirtualInterface()->getCustomer()->getId() ) {
+            if( Auth::user()->getCustomer()->getId() !== $vli->virtualInterface->customer->id ) {
                 abort( 403, 'VLI / Customer mismatch' );
             }
 
-            if( count( $vli->getLayer2Addresses() ) >= config( 'ixp_fe.layer2-addresses.customer_params.max_addresses' ) ) {
+            if( $vli->layer2addresses()->count() >= config( 'ixp_fe.layer2-addresses.customer_params.max_addresses' ) ) {
+                !$showFeMessage ?: AlertContainer::push( 'The maximum possible MAC addresses have been configured. Please delete a MAC before adding.' , Alert::DANGER );
                 return response()->json( [ 'danger' => false, 'message' => 'The maximum possible MAC addresses have been configured. Please delete a MAC before adding.' ] );
             }
         }
 
-        $mac = preg_replace( "/[^a-f0-9]/i", '' , strtolower( $request->input( 'mac', '' ) ) );
+        $mac = preg_replace( "/[^a-f0-9]/i", '' , strtolower( $request->mac ) );
+
         if( strlen( $mac ) !== 12 ) {
+            !$showFeMessage ?: AlertContainer::push( 'Invalid or missing MAC addresses.' , Alert::DANGER );
             return response()->json( [ 'danger' => false, 'message' => 'Invalid or missing MAC addresses' ] );
         }
 
-        if( D2EM::getRepository( Layer2AddressEntity::class )->existsInVlan( $mac, $vli->getVlan()->getId() ) ) {
+        if( Layer2Address::getForVlan( $mac, $vli->vlanid )->count() ) {
+            !$showFeMessage ?: AlertContainer::push( 'The MAC address already exists within this IXP VLAN.' , Alert::DANGER );
             return response()->json( [ 'danger' => false, 'message' => 'The MAC address already exists within this IXP VLAN' ] );
         }
 
-        $l2a = new Layer2AddressEntity();
-        $l2a->setMac( $mac )
-            ->setVlanInterface( $vli )
-            ->setCreatedAt( new \DateTime );
-
-        D2EM::persist( $l2a );
-        D2EM::flush();
+        $l2a = Layer2Address::create( [
+            'mac' => $mac,
+            'vlan_interface_id' => $request->vlan_interface_id
+        ] );
 
         event( new Layer2AddressAddedEvent( $l2a, Auth::getUser() ) );
-
+        !$showFeMessage ?: AlertContainer::push( 'The MAC address has been added successfully.' , Alert::SUCCESS );
         return response()->json( [ 'success' => true, 'message' => 'The MAC address has been added successfully.' ] );
     }
 
-    /**
-     * Get the layer2Interface detail
-     *
-     * @param   int $id ID of the Layer2Interface
-     * @return  JsonResponse
-     */
-    public function detail( int $id ): JsonResponse{
-        if( !( $l2a = D2EM::getRepository(Layer2AddressEntity::class)->find( $id ) ) ) {
-            return abort( '404' );
-        }
-        /** @var Layer2AddressEntity $l2a */
-        return response()->json( $l2a->jsonArray() );
-    }
+//    /**
+//     * Get the layer2Interface detail
+//     *
+//     * @param   Layer2Address $l2a
+//     *
+//     * @return  JsonResponse
+//     */
+//    public function detail( Layer2Address $l2a ): JsonResponse
+//    {
+//        return response()->json( $l2a->jsonArray() );
+//    }
 
     /**
      * Delete a mac address from a Vlan Interface
      *
-     * @param   int $id ID of the Layer2Address
+     * @param Layer2Address     $l2a
+     * @param bool              $showFeMessage Should we show the frontend message ?
+     *
      * @return  JsonResponse
-     * @throws
+     *
+     * @throws \Exception
      */
-    public function delete( int $id ): JsonResponse{
-        /** @var Layer2AddressEntity $l2a */
-        if( !( $l2a = D2EM::getRepository( Layer2AddressEntity::class )->find( $id ) ) ) {
-            return abort( '404' );
-        }
-
+    public function delete( Layer2Address $l2a, bool $showFeMessage = false  ): JsonResponse
+    {
         if( !Auth::user()->isSuperUser() ) {
             if( !config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ) {
                 abort( 404 );
             }
 
-            if( Auth::user()->getCustomer()->getId() != $l2a->getVlanInterface()->getVirtualInterface()->getCustomer()->getId() ) {
+            if( Auth::user()->getCustomer()->getId() !== $l2a->vlanInterface->virtualInterface->custid ) {
                 abort( 403, 'MAC address / Customer mismatch' );
             }
 
-            if( count( $l2a->getVlanInterface()->getLayer2Addresses() ) <= config( 'ixp_fe.layer2-addresses.customer_params.min_addresses' ) ) {
+            if( $l2a->vlanInterface->layer2addresses->count() <= config( 'ixp_fe.layer2-addresses.customer_params.min_addresses' ) ) {
+                !$showFeMessage ?: AlertContainer::push( 'The minimum possible MAC addresses have been configured. Please add a MAC before deleting.' , Alert::DANGER );
                 return response()->json( [ 'danger' => false, 'message' => 'The minimum possible MAC addresses have been configured. Please add a MAC before deleting.' ] );
             }
         }
 
-        $l2a->getVlanInterface()->removeLayer2Address( $l2a );
-        $macaddress = $l2a->getMacFormattedWithColons();
-        $vli        = $l2a->getVlanInterface();
+        $l2a->delete();
 
-        D2EM::remove( $l2a );
-        D2EM::flush();
-
-        event( new Layer2AddressDeletedEvent( $macaddress, $vli, Auth::user() ) );
-
+        event( new Layer2AddressDeletedEvent( $l2a->getMacFormattedWithColons(), $l2a->vlanInterface, Auth::user() ) );
+        !$showFeMessage ?: AlertContainer::push( 'The MAC address has been deleted.' , Alert::SUCCESS );
         return response()->json( [ 'success' => true, 'message' => 'The MAC address has been deleted.' ] );
     }
 

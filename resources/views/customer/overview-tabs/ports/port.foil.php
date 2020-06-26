@@ -307,7 +307,7 @@
                                             <?= $l2a ?><br />
                                         <?php endforeach; ?>
                                         <?php if( count( $vli->getLayer2AddressesAsArray() ) > 0 && config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ): ?>
-                                            <a href="<?= route( "layer2-address@forVlanInterface", [ "vliid" => $vli->getId() ] ) ?>">Edit</a>
+                                            <a href="<?= route( "layer2-address@forVlanInterface", [ "vli" => $vli->getId() ] ) ?>">Edit</a>
                                         <?php endif; ?>
                                     </td>
                                 </tr>

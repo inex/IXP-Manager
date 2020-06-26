@@ -4,6 +4,7 @@ namespace IXP\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
 /**
  * IXP\Models\Switcher
@@ -63,6 +64,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereVendorid($value)
  * @mixin \Eloquent
  * @property-read \IXP\Models\Cabinet $cabinet
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\SwitchPort[] $switchPorts
+ * @property-read int|null $switch_ports_count
  */
 class Switcher extends Model
 {
@@ -86,6 +89,14 @@ class Switcher extends Model
      */
     public function cabinet(): BelongsTo
     {
-        return $this->belongsTo(Cabinet::class );
+        return $this->belongsTo(Cabinet::class, 'cabinetid' );
+    }
+
+    /**
+     * Get the switch ports for the switcher
+     */
+    public function switchPorts(): HasMany
+    {
+        return $this->hasMany(SwitchPort::class, 'switchid');
     }
 }

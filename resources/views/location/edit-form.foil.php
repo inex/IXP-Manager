@@ -1,9 +1,8 @@
 <div class="card col-sm-12">
     <div class="card-body">
-
-        <?= Former::open()->method( 'POST' )
+        <?= Former::open()->method( $t->data['params']['isAdd'] ? 'POST' : 'PUT' )
             ->id( 'form' )
-            ->action( route( $t->feParams->route_prefix . '@store' ) )
+            ->action( $t->data['params']['isAdd'] ? route( $t->feParams->route_prefix . '@store' ) : route($t->feParams->route_prefix . '@update', [ 'id' => $t->data[ 'params'][ 'object']->id ] ) )
             ->customInputWidthClass( 'col-lg-4 col-md-5 col-sm-5' )
             ->customLabelWidthClass( 'col-lg-2 col-sm-3' )
             ->actionButtonsCustomClass( "grey-box")
@@ -32,7 +31,6 @@
                 . "then please contact PeeringDB directly. Note also that IXP Manager caches this data for a number of hours - so an "
                 . "<code>artisan cache:clear</code> is required if you get your facility listed and IXP Manager still does not have it." );
         ?>
-
 
         <?= Former::textarea( 'address' )
             ->label( 'Address' )
@@ -146,8 +144,6 @@
             </div>
         </div>
 
-
-
         <?= Former::actions(
             Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->id( 'btn-submit' )->disabled( true )->class( "mb-2 mb-sm-0" ),
             Former::secondary_link( 'Cancel' )->href( route( $t->feParams->route_prefix . '@list') )->class( "mb-2 mb-sm-0" ),
@@ -156,7 +152,7 @@
         ?>
 
         <?= Former::hidden( 'id' )
-            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
+            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->id : '' )
         ?>
 
         <?= Former::close() ?>

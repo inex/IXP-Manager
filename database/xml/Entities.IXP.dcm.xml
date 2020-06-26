@@ -11,7 +11,6 @@
     <field name="address3" type="string" nullable="true"/>
     <field name="address4" type="string" nullable="true"/>
     <field name="country" type="string" nullable="true"/>
-    <one-to-many field="Infrastructures" target-entity="Entities\Infrastructure" mapped-by="IXP"/>
     <one-to-many field="TrafficDaily" target-entity="Entities\TrafficDaily" mapped-by="IXP"/>
     <many-to-many field="Customers" target-entity="Entities\Customer" mapped-by="IXPs"/>
   </entity>

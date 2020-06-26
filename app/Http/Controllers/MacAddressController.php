@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,28 +23,21 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM;
-
-use Entities\{
-    MACAddress      as MACAddressEntity
-};
-
-
+use IXP\Models\MacAddress;
 
 /**
  * Mac address Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class MacAddressController extends Doctrine2Frontend
 {
-
     /**
      * The object being added / edited
-     * @var MACAddressEntity
+     * @var MacAddress
      */
     protected $object = null;
 
@@ -61,25 +54,21 @@ class MacAddressController extends Doctrine2Frontend
     public function feInit()
     {
         $this->feParams         = (object)[
-
-            'entity'            => MACAddressEntity::class,
+            'entity'            => MacAddress::class,
             'pagetitle'         => 'Discovered MAC Addresses',
-
             'titleSingular'     => 'MAC Address',
             'nameSingular'      => 'a MAC address',
-
-            'listOrderBy'       => 'customer',
+            'listOrderBy'       => 'abbreviatedName',
             'listOrderByDir'    => 'ASC',
-
             'viewFolderName'    => 'mac-address',
-
             'readonly'          => self::$read_only,
-
             'documentation'     => 'https://docs.ixpmanager.org/features/layer2-addresses/',
 
             'listColumns'       => [
-
-                'id'             => [ 'title' => 'DB ID', 'display' => false ],
+                'id'             => [
+                    'title' => 'DB ID',
+                    'display' => false
+                ],
                 'customer'       => 'Customer',
                 'switchport'     => 'Interface(s)',
                 'ip4'            => 'IPv4',
@@ -93,15 +82,15 @@ class MacAddressController extends Doctrine2Frontend
         $this->feParams->viewColumns = $this->feParams->listColumns;
     }
 
-
     /**
      * Provide array of rows for the list action and view action
      *
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+
      * @return array
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( $id = null ): array
     {
-        return D2EM::getRepository( MACAddressEntity::class )->getAllForFeList( $this->feParams, $id );
+        return MacAddress::getFeList( $this->feParams, $id );
     }
 }

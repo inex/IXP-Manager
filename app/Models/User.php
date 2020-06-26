@@ -24,7 +24,8 @@ namespace IXP\Models;
  */
 
 use Eloquent;
-use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations\HasMany};
+use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations\BelongsToMany, Relations\HasMany};
+use stdClass;
 
 /**
  * IXP\Models\User
@@ -68,6 +69,8 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ApiKey[] $apiKeys
  * @property-read int|null $api_keys_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Customer[] $customers
+ * @property-read int|null $customers_count
  */
 class User extends Model
 {
@@ -130,6 +133,15 @@ class User extends Model
     public function apiKeys(): HasMany
     {
         return $this->hasMany(ApiKey::class, 'user_id' );
+    }
+
+    /**
+     * Get all the customers for the user
+     */
+    public function customers(): BelongsToMany
+    {
+        return $this->belongsToMany(Customer::class, 'customer_to_users', 'user_id' )
+            ->orderBy( 'id', 'asc' );
     }
 
 }

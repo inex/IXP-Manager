@@ -370,7 +370,7 @@ abstract class Frontend extends Controller {
      *
      * @return View
      */
-    public function view( Request $request, $id ): View
+    public function view( Request $request, int $id ): View
     {
         $this->data[ 'item' ]               = $this->viewGetData( $id ) ;
 

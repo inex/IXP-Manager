@@ -26,6 +26,7 @@ namespace IXP\Models;
 use Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 /**
  * IXP\Models\PhysicalInterface
@@ -53,6 +54,7 @@ use Illuminate\Database\Eloquent\Model;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereSwitchportid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereVirtualinterfaceid($value)
  * @mixin \Eloquent
+ * @property-read \IXP\Models\SwitchPort|null $switchPort
  */
 class PhysicalInterface extends Model
 {
@@ -66,9 +68,17 @@ class PhysicalInterface extends Model
     /**
      * Get the customer that owns the virtual interfaces.
      */
-    public function virtualInterface()
+    public function virtualInterface(): BelongsTo
     {
-        return $this->belongsTo('IXP\Models\VirtualInterface', 'virtualinterfaceid');
+        return $this->belongsTo(VirtualInterface::class, 'virtualinterfaceid');
+    }
+
+    /**
+     * Get the switch port that owns the physical interfaces.
+     */
+    public function switchPort(): BelongsTo
+    {
+        return $this->belongsTo(SwitchPort::class, 'switchportid');
     }
     
 }

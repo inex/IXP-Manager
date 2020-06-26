@@ -129,7 +129,7 @@ class ContactGroupController extends EloquentController
      */
     protected function listGetData( $id = null ): array
     {
-        return ContactGroup::getFeList( $this->feParams, $id )->toArray();
+        return ContactGroup::getFeList( $this->feParams, $id );
     }
 
     /**

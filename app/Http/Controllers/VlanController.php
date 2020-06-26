@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,12 +23,7 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Cache, D2EM, Former, Redirect, Route, Validator;
-
-use Entities\{
-    Vlan                as VlanEntity,
-    Infrastructure      as InfrastructureEntity
-};
+use Cache, Former, Route;
 
 use Illuminate\Http\{
     RedirectResponse,
@@ -37,61 +32,60 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
+use IXP\Models\{
+    Infrastructure,
+    Vlan
+};
+
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
+
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
 
-use Repositories\Vlan as VlanRepository;
-
-
 /**
- * CustKit Controller
+ * Vlan Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class VlanController extends Doctrine2Frontend
+class VlanController extends EloquentController
 {
-
     /**
      * The object being added / edited
-     * @var VlanEntity
+     * @var Vlan
      */
     protected $object = null;
 
     /**
      * This function sets up the frontend controller
      */
-    public function feInit() {
-
+    public function feInit()
+    {
         $this->feParams         = (object)[
-            'entity'            => VlanEntity::class,
-
+            'entity'            => Vlan::class,
             'pagetitle'         => 'VLANs',
-
             'titleSingular'     => 'VLAN',
             'nameSingular'      => 'VLAN',
-
             'listOrderBy'       => 'number',
             'listOrderByDir'    => 'ASC',
-
             'viewFolderName'    => 'vlan',
 
             'listColumns'    => [
-                'id'          => [ 'title' => 'DB ID' ],
-                'name'        => 'Description',
-                'config_name' => 'Config Name',
-                'number'      => '802.1q Tag',
-                'ixp'         => 'IXP',
+                'id'          => [
+                    'title' => 'DB ID'
+                ],
+                'name'              => 'Description',
+                'config_name'       => 'Config Name',
+                'number'            => '802.1q Tag',
                 'infrastructure'    => 'Infrastructure',
-
                 'private'        => [
                     'title'          => 'Private',
                     'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
-                    'xlator'         => VlanEntity::$PRIVATE_YES_NO
+                    'xlator'         => Vlan::$PRIVATE_YES_NO
                 ],
             ]
         ];
@@ -103,80 +97,125 @@ class VlanController extends Doctrine2Frontend
                 'peering_matrix' => [
                     'title'          => 'Peering Matrix',
                     'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
-                    'xlator'         => VlanEntity::$PRIVATE_YES_NO
+                    'xlator'         => Vlan::$PRIVATE_YES_NO
                 ],
-
                 'peering_manager' => [
                     'title'          => 'Peering Manager',
                     'type'           => self::$FE_COL_TYPES[ 'XLATE' ],
-                    'xlator'         => VlanEntity::$PRIVATE_YES_NO
+                    'xlator'         => Vlan::$PRIVATE_YES_NO
                 ],
-
                 'notes' => [
                     'title'         => 'Notes',
                     'type'          => self::$FE_COL_TYPES[ 'PARSDOWN' ]
                 ]
             ]
         );
-
     }
-
 
     protected static function additionalRoutes( string $route_prefix )
     {
         Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::get(     'private',                          'VlanController@listPrivate'    )->name( $route_prefix . '@private'        );
-            Route::get(     'private/infra/{id}',               'VlanController@listPrivate'    )->name( $route_prefix . '@privateInfra'   );
-            Route::get(     'list/infra/{id}',                  'VlanController@listInfra'      )->name( $route_prefix . '@infra'          );
-            Route::get(     'list/infra/{id}/public/{public}',  'VlanController@listInfra'      )->name( $route_prefix . '@infraPublic'    );
-
+            Route::get(     'private',                              'VlanController@listPrivate'    )->name( $route_prefix . '@private'        );
+            Route::get(     'private/infra/{infra}',                'VlanController@listPrivate'    )->name( $route_prefix . '@privateInfra'   );
+            Route::get(     'list/infra/{infra}',                  'VlanController@listInfra'      )->name( $route_prefix . '@infra'          );
+            Route::get(     'list/infra/{infra}/public/{public}',  'VlanController@listInfra'      )->name( $route_prefix . '@infraPublic'    );
         });
     }
+
     /**
      * Provide array of rows for the list and view
      *
      * @param int $id The `id` of the row to load for `view`. `null` if `list`
+     *
      * @return array
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( $id = null ): array
     {
-        return D2EM::getRepository( VlanEntity::class )->getAllForFeList( $this->feParams, $id );
+        return Vlan::getFeList( $this->feParams, $id );
     }
 
+    /**
+     * Display the form to create an object
+     *
+     * @return array
+     */
+    protected function createPrepareForm(): array
+    {
+        return [
+            'object'            => $this->object,
+            'infrastructure'    => Infrastructure::getListAsArray(),
+        ];
+    }
 
     /**
-     * Display the form to add/edit an object
+     * Display the form to edit an object
      *
      * @param   int $id ID of the row to edit
      *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array
+    protected function editPrepareForm( $id = null ): array
     {
-        if( $id ) {
+        $this->object = Vlan::findOrFail( $id );
 
-            if( !( $this->object = D2EM::getRepository( VlanEntity::class )->find( $id ) ) ) {
-                abort(404);
-            }
-
-            Former::populate([
-                'name'                      =>  request()->old( 'name',               $this->object->getName() ),
-                'number'                    =>  request()->old( 'number',             $this->object->getNumber() ),
-                'infrastructureid'          =>  request()->old( 'infrastructureid',   $this->object->getInfrastructure()->getId() ),
-                'config_name'               =>  request()->old( 'config_name',        $this->object->getConfigName() ),
-                'private'                   =>  request()->old( 'private',            ( $this->object->getPrivate()          ? 1 : 0 ) ),
-                'peering_matrix'            =>  request()->old( 'peering_matrix',     ($this->object->getPeeringMatrix()     ? 1 : 0 ) ),
-                'peering_manager'           =>  request()->old( 'peering_manager',    ( $this->object->getPeeringManager()   ? 1 : 0 ) ),
-                'notes'                     =>  request()->old( 'notes',              $this->object->getNotes() ),
-            ]);
-        }
+        Former::populate([
+            'name'                      =>  request()->old( 'name',               $this->object->name ),
+            'number'                    =>  request()->old( 'number',             $this->object->number ),
+            'infrastructureid'          =>  request()->old( 'infrastructureid',   $this->object->infrastructureid ),
+            'config_name'               =>  request()->old( 'config_name',        $this->object->config_name ),
+            'private'                   =>  request()->old( 'private',            ( $this->object->private              ? 1 : 0 ) ),
+            'peering_matrix'            =>  request()->old( 'peering_matrix',     ($this->object->peering_matrix        ? 1 : 0 ) ),
+            'peering_manager'           =>  request()->old( 'peering_manager',    ( $this->object->peering_manager      ? 1 : 0 ) ),
+            'notes'                     =>  request()->old( 'notes',              $this->object->notes ),
+        ]);
 
         return [
             'object'            => $this->object,
-            'infrastructure'    => D2EM::getRepository( InfrastructureEntity::class )->getNames( ),
+            'infrastructure'    => Infrastructure::getListAsArray(),
         ];
     }
 
+    /**
+     * Check if the form is valid
+     *
+     * @param $request
+     */
+    public function checkForm( Request $request )
+    {
+        $request->validate( [
+            'name'              => 'required|string|max:255',
+            'number'            => 'required|integer|min:1|max:4096',
+            'config_name'       => 'required|string|max:32|alpha_dash',
+            'infrastructureid' => [
+                'required', 'integer',
+                function ($attribute, $value, $fail) {
+                    if( !Infrastructure::whereId( $value )->exists() ) {
+                        return $fail( 'The infrastructure does not exist.' );
+                    }
+                },
+            ],
+        ] );
+    }
+
+    /**
+     * Check if there is a duplicate networkinfo object with those values
+     *
+     * @param int|null       $objectid
+     * @param Request   $request
+     *
+     * @return bool
+     */
+    private function checkIsDuplicate( int $objectid = null, Request $request ): bool
+    {
+        if( $vlanFound = Vlan::where( 'infrastructureid', $request->infrastructureid )->where( 'config_name', $request->input( 'config_name' ) )->get()->first() ){
+            if( $objectid !== $vlanFound->id ) {
+                AlertContainer::push( "The couple Infrastructure and config name already exist.", Alert::DANGER );
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     /**
      * Function to do the actual validation and storing of the submitted object.
@@ -189,43 +228,29 @@ class VlanController extends Doctrine2Frontend
      */
     public function doStore( Request $request )
     {
-        $validator = Validator::make( $request->all(), [
-            'name'              => 'required|string|max:255',
-            'number'            => 'required|integer|min:1|max:4096',
-            'infrastructureid'  => 'required|integer|exists:Entities\Infrastructure,id',
-            'config_name'       => 'required|string|max:32|alpha_dash'
+        $this->checkForm( $request );
+        $this->checkIsDuplicate( null, $request );
+        $this->object = Vlan::create( $request->all() );
 
-        ]);
+        return true;
+    }
 
-        if( $validator->fails() ) {
-            return Redirect::back()->withErrors( $validator )->withInput();
-        }
-
-        if( $request->input( 'id', false ) ) {
-            if( !( $this->object = D2EM::getRepository( VlanEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404);
-            }
-        } else {
-            $this->object = new VlanEntity;
-            D2EM::persist( $this->object );
-        }
-
-        if( $vlanFound = D2EM::getRepository( VlanEntity::class )->getInfraConfigNameCouple( $request->input( 'infrastructureid' ), $request->input( 'config_name' ) ) ){
-            if( $this->object->getId() != $vlanFound->getId() ){
-                AlertContainer::push( "The couple Infrastructure and config name already exist.", Alert::DANGER );
-                return Redirect::back()->withErrors( $validator )->withInput();
-            }
-        }
-
-        $this->object->setName(             $request->input( 'name'                 ) );
-        $this->object->setNumber(           $request->input( 'number'               ) );
-        $this->object->setConfigName(       $request->input( 'config_name'          ) );
-        $this->object->setNotes(            $request->input( 'notes'                ) );
-        $this->object->setPrivate(              $request->input( 'private'              ) ?? 0 );
-        $this->object->setPeeringManager($request->input( 'peering_manager'      ) ?? 0 );
-        $this->object->setPeeringMatrix(   $request->input( 'peering_matrix'       ) ?? 0 );
-        $this->object->setInfrastructure(   D2EM::getRepository( InfrastructureEntity::class )->find( $request->input( 'infrastructureid' ) ) );
-        D2EM::flush();
+    /**
+     * Function to do the actual validation and updating of the submitted object.
+     *
+     * @param Request $request
+     * @param int $id
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doUpdate( Request $request, int $id )
+    {
+        $this->object = Vlan::findOrFail( $id );
+        $this->checkForm( $request );
+        $this->checkIsDuplicate( $this->object->id, $request );
+        $this->object->update( $request->all() );
 
         return true;
     }
@@ -238,8 +263,8 @@ class VlanController extends Doctrine2Frontend
      */
     protected function postFlush( string $action ): bool
     {
-        // this is created in Repositories\Vlan::getNames()
-        Cache::forget( VlanRepository::ALL_CACHE_KEY );
+        // Remove the cached Vlan list
+        Cache::forget( Vlan::ALL_CACHE_KEY );
         return true;
     }
 
@@ -249,23 +274,22 @@ class VlanController extends Doctrine2Frontend
     protected function preDelete(): bool
     {
         $okay = true;
-
-        if( ( $cnt = count( $this->object->getRouters() ) ) ) {
+        if( ( $cnt = $this->object->routers()->count() ) ) {
             AlertContainer::push( "Could not delete this Vlan as {$cnt} router(s) are assigned to it", Alert::DANGER );
             $okay = false;
         }
 
-        if( ( $cnt = count( $this->object->getIPv4Addresses() ) ) ) {
+        if( ( $cnt = $this->object->ipv4addresses()->count() ) ) {
             AlertContainer::push( "Could not delete this Vlan as {$cnt} IPv4 address(es) are assigned to it", Alert::DANGER );
             $okay = false;
         }
 
-        if( ( $cnt = count( $this->object->getIPv6Addresses() ) ) ) {
+        if( ( $cnt = $this->object->ipv6addresses()->count() ) ) {
             AlertContainer::push( "Could not delete this Vlan as {$cnt} IPv6 address(es) are assigned to it", Alert::DANGER );
             $okay = false;
         }
 
-        if( ( $cnt = count( $this->object->getVlanInterfaces() ) ) ) {
+        if( ( $cnt = $this->object->vlanInterfaces()->count() ) ) {
             AlertContainer::push( "Could not delete this Vlan as {$cnt} Vlan Interfaces are assigned to it", Alert::DANGER );
             $okay = false;
         }
@@ -276,17 +300,13 @@ class VlanController extends Doctrine2Frontend
     /**
      * Display the private Vlan
      *
-     * @param int $id ID of the vlan to display
+     * @param Infrastructure $infra ID of the vlan to display
+     *
      * @return View
      */
-    public function listPrivate( int $id = null )
+    public function listPrivate( Infrastructure $infra = null ): View
     {
-        $infra = null;
-        if( $id && !( $infra = D2EM::getRepository( InfrastructureEntity::class )->find( $id ) ) ) {
-            abort(404);
-        }
-
-        $this->data[ 'rows' ]           = D2EM::getRepository( VlanEntity::class )->getPrivateVlanDetails( $infra );
+        $this->data[ 'rows' ]           = Vlan::getPrivateVlanDetails( $infra );
         $this->data[ 'params' ]         = [ 'infra' => $infra ];
 
         return $this->display( 'private' );
@@ -295,17 +315,13 @@ class VlanController extends Doctrine2Frontend
     /**
      * Display the Vlan for an Infrastructure
      *
-     * @param int $id ID of the Infrastructure
+     * @param Infrastructure $infra
      * @param bool $public only the public vlan ?
      *
      * @return View
      */
-    public function listInfra( int $id, $public = null )
+    public function listInfra( Infrastructure $infra, $public = null ): View
     {
-        if( !( $infra = D2EM::getRepository( InfrastructureEntity::class )->find( $id ) ) ) {
-            abort(404);
-        }
-
         if( $public ) {
             $this->feParams->publicOnly = true;
         }
@@ -314,5 +330,4 @@ class VlanController extends Doctrine2Frontend
 
         return $this->list( request() );
     }
-
 }

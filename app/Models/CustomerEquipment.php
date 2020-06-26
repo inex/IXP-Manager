@@ -36,10 +36,15 @@ class CustomerEquipment extends Model
      */
     protected $table = 'custkit';
 
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
     public $timestamps = false;
 
     /**
-     * The attributes that aren't mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
@@ -64,19 +69,17 @@ class CustomerEquipment extends Model
      * @param stdClass $feParams
      * @param int|null $id
      *
-     * @return Collection
+     * @return array
      */
-    public static function getFeList( stdClass $feParams, int $id = null ): Collection
+    public static function getFeList( stdClass $feParams, int $id = null ): array
     {
-        $query = self::select( [ 'custkit.*', 'cabinet.name AS cabinet', 'cust.name as customer' ] )
+         return self::select( [ 'custkit.*', 'cabinet.name AS cabinet', 'cust.name as customer' ] )
                 ->leftJoin( 'cabinet', 'cabinet.id', '=', 'custkit.cabinetid' )
                 ->leftJoin( 'cust', 'cust.id', '=', 'custkit.custid' )
                 ->when( $id , function( Builder $q, $id ) {
                 return $q->where('id', $id );
                 } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
                     return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-                });
-
-        return $query->get();
+                })->get()->toArray();
     }
 }

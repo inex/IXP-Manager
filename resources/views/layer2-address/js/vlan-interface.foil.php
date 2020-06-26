@@ -1,148 +1,81 @@
 <script>
-    const addl2a           = $('#add-l2a' );
-    const spanCustAddBtn   = $('#span-cust-add-btn');
-
-
-    let table; // datatable handle
-
     $( document ).ready( function() {
-        loadDataTable();
         $( "#list-area").show();
-
     });
 
     /**
      * on click even allow to add a mac address using prompt popup
      */
-    addl2a.on( 'click', function( e ) {
+    $('#add-l2a' ).on( 'click', function( e ) {
         e.preventDefault();
 
-        bootbox.prompt({
-
+        bootbox.prompt( {
             title: "Enter a MAC Address.",
             inputType: 'text',
             buttons: {
                 cancel: {
-                    className: "btn-secondary"
+                    label: '<i class="fa fa-times"></i> Cancel',
+                    className: 'btn-secondary'
                 },
                 confirm: {
-                    label: "Add"
+                    label: '<i class="fa fa-check"></i> Create'
                 }
             },
             callback: function ( result ) {
-
                 if( result != null ) {
-                    $.ajax( "<?= action ( 'Api\V4\Layer2AddressController@add' ) ?>", {
+                    $.ajax( "<?= route ( 'l2-address@create', [ 'showFeMessage' => true ] ) ?>", {
                         type: 'POST',
                         data: {
-                            vliid : <?= $t->vli->getId() ?>,
+                            vlan_interface_id : <?= $t->vli->id ?>,
                             mac : result,
                             _token : "<?= csrf_token() ?>"
                         }
                     })
-                        .done( function( data ) {
-                            $('.bootbox.modal').modal( 'hide' );
-                            result = ( data.success ) ? 'success': 'danger';
-                            if( result ) {
-                                refreshDataTable();
-                            }
-
-                            $( "#message" ).html( "<div class='alert alert-"+result+"' role='alert'>"+ data.message +"</div>" );
-                        })
-                        .fail( function() {
-                            $('.bootbox.modal').modal( 'hide' );
-                            $( "#message" ).html( "<div class='alert alert-danger' role='alert'>" +
-                                "Could not add MAC address. API / AJAX / network error</div>"
-                            );
-                        });
+                    .done( function() {
+                        location.reload();
+                    })
+                    .fail( function() {
+                        alert( `Couldn't add MAC address. API / AJAX / network error` );
+                        throw new Error("Error running ajax query for <?= route ( 'l2-address@create' ) ?>");
+                    });
                 }
             }
         });
     });
-
-    /**
-     * on click even allow to delete a mac address
-     */
-    $(document).on('click', "button[id|='delete-l2a']" ,function(e){
-        e.preventDefault();
-        deleteL2a( (this.id).substring(11), this );
-    });
-
-    /**
-     * allow to refresh the table without reloading the page
-     * reloading only a part of the DOM
-     */
-    function refreshDataTable() {
-
-        $( "#list-area").load( "<?= route( "layer2-address@forVlanInterface" , [ 'vliid' => $t->vli->getId() ] ) ?> #layer-2-interface-list " ,function( ) {
-            table.destroy();
-            loadDataTable();
-
-            if( spanCustAddBtn.length ) {
-                if( table.rows().count() >= <?= config( 'ixp_fe.layer2-addresses.customer_params.max_addresses' ) ?> ) {
-                    spanCustAddBtn.hide();
-                } else {
-                    spanCustAddBtn.show();
-                }
-            }
-        });
-    }
 
     /**
      * function to delete a mac address using a confirm popup
      */
-    function deleteL2a( l2aId, deleteBtn ){
+    $( '.btn-2f-list-delete' ).on( 'click', function( event ) {
+        event.preventDefault();
+
+        let url = $( this ).attr( 'data-url');
         bootbox.confirm({
             message: "Do you really want to delete this MAC Address?",
             buttons: {
                 confirm: {
-                    label: 'Delete',
+                    label: '<i class="fa fa-check"></i> Delete',
                     className: 'btn-danger'
                 },
                 cancel: {
-                    label: 'Cancel',
-                    className: 'btn-primary'
+                    label: '<i class="fa fa-times"></i> Cancel',
+                    className: 'btn-secondary'
                 }
             },
             callback: function (result) {
                 if( result) {
-                    $.ajax( "<?= url( 'api/v4/l2-address/delete' ) ?>/"+l2aId , {
-                        type : 'POST'
+                    $.ajax( url , {
+                        type : 'DELETE'
                     } )
-                        .done( function( data ) {
-                            $('.bootbox.modal').modal( 'hide' );
-                            result = ( data.success ) ? 'success': 'danger';
-
-                            if( result ){
-                                refreshDataTable();
-                                $( "#message" ).html( "<div class='alert alert-"+result+"' role='alert'>"+ data.message +"</div>" );
-                            }
-
-                        })
-                        .fail( function(){
-                            alert( `Couldn't add MAC address. API / AJAX / network error` );
-                            throw new Error("Error running ajax query for api/v4/l2-address/{id}/delete");
-                        })
+                    .done( function() {
+                        location.reload();
+                    })
+                    .fail( function(){
+                        alert( `Couldn't add MAC address. API / AJAX / network error` );
+                        throw new Error("Error running ajax query for api/v4/l2-address/{id}/delete");
+                    })
                 }
             }
         });
-    }
-
-    /**
-     * initialise the datatable table
-     */
-    function loadDataTable(){
-        table = $( '#layer-2-interface-list' ).DataTable( {
-            stateSave: true,
-            stateDuration : DATATABLE_STATE_DURATION,
-            responsive : true,
-            columnDefs: [
-                { responsivePriority: 1, targets: 0 },
-                { responsivePriority: 2, targets: -1 },
-                { "targets": [ 0 ], "visible": false, "searchable": false, }
-            ],
-            "order": [[ 0, "asc" ]]
-        });
-    }
-
+    });
 </script>

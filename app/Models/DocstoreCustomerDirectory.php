@@ -76,7 +76,7 @@ use Illuminate\Support\Facades\{
 class DocstoreCustomerDirectory extends Model
 {
     /**
-     * The attributes that aren't mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array
      */

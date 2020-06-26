@@ -37,10 +37,15 @@ use stdClass;
  */
 class ApiKey extends Model
 {
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
     public $timestamps = false;
 
     /**
-     * The attributes that aren't mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
@@ -70,17 +75,15 @@ class ApiKey extends Model
      * @param int $userid
      * @param int|null $id
      *
-     * @return Collection
+     * @return array
      */
-    public static function getFeList( stdClass $feParams, int $userid, int $id = null ): Collection
+    public static function getFeList( stdClass $feParams, int $userid, int $id = null ): array
     {
-        $query = self::where( 'user_id', $userid )
+        return self::where( 'user_id', $userid )
             ->when( $id , function( Builder $q, $id ) {
                 return $q->where('id', $id );
             } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
                 return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-            });
-        
-        return $query->get();
+            })->get()->toArray();
     }
 }

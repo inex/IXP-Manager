@@ -63,11 +63,16 @@ class Cabinet extends Model
      */
     protected $table = 'cabinet';
 
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
     public $timestamps = false;
 
 
     /**
-     * The attributes that aren't mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
@@ -102,7 +107,7 @@ class Cabinet extends Model
      */
     public function location(): BelongsTo
     {
-        return $this->belongsTo(Location::class );
+        return $this->belongsTo(Location::class, 'locationid' );
     }
 
     /**
@@ -111,28 +116,26 @@ class Cabinet extends Model
      * @param stdClass $feParams
      * @param int|null $id
      *
-     * @return Collection
+     * @return array
      */
-    public static function getFeList( stdClass $feParams, int $id = null ): Collection
+    public static function getFeList( stdClass $feParams, int $id = null ): array
     {
-        $query = self::when( $id , function( Builder $q, $id ) {
+        return self::when( $id , function( Builder $q, $id ) {
             return $q->where('id', $id );
         } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
             return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
-        });
-
-        return $query->get();
+        })->get()->toArray();
     }
 
     /**
      * Gets a listing of cabinets from dropdown
      *
-     * @return Collection
+     * @return array
      */
-    public static function getListForDropdown(): Collection
+    public static function getListAsArray(): array
     {
         return self::selectRaw( "id, concat( name, ' [', colocation, ']') AS name" )
             ->orderBy( 'name', 'asc' )
-            ->get();
+            ->get()->toArray();
     }
 }

@@ -4,6 +4,12 @@
      */
     let clipboard = new ClipboardJS( '.btn-copy' );
 
+    //////////////////////////////////////////////////////////////////////////////////////
+    // we'll need these handles to html elements in a few places:
+
+    const mac_input       = $( ".mac-input" );
+    const case_btn        = $( "#notes-modal-btn-case" );
+
     /**
      * initialisation of tooltip
      */
@@ -37,7 +43,6 @@
         hideTooltip( e.trigger );
     });
 
-
     /**
      * function formatting the mac address with a delimiter and the number of characters after which each delimiter will appear
      */
@@ -48,28 +53,29 @@
     /**
      * on click, show a popup of the mac address with different formats
      */
-    $(document).on( 'click', "a[id|='view-l2a']", function(e) {
+    $( '.btn-view-l2a' ).on( 'click', function( e ) {
         e.preventDefault();
-        var mac = this.name;
+        let mac = $( this ).attr( 'data-object-mac');
+
         $( "#mac"      ).val( mac );
         $( "#macComma" ).val( formatMac( mac, ':', 2 ) );
         $( "#macDot"   ).val( formatMac( mac, '.', 4 ) );
         $( "#macDash"  ).val( formatMac( mac, '-', 2 ) );
-
         $( '#notes-modal' ).modal( 'show' );
     });
 
     /**
      * on click, change the case of the mac addresses (uppercase/lowercase)
      */
-    $( document ).on( 'click', "#notes-modal-btn-case" ,function( e ){
+    $( '#notes-modal-btn-case' ).on( 'click' ,function( e )
+    {
         e.preventDefault();
-        if($( ".mac-input" ).hasClass( 'upperCase' ) ){
-            $( ".mac-input" ).removeClass( 'upperCase' ).addClass( 'lowerCase' );
-            $( "#notes-modal-btn-case" ).html( '<i class="fa fa-text-height"></i> Uppercase' );
+        if( mac_input.hasClass( 'upperCase' ) ) {
+            mac_input.removeClass( 'upperCase' ).addClass( 'lowerCase' );
+            case_btn.html( '<i class="fa fa-text-height"></i> Uppercase' );
         }  else {
-            $( ".mac-input" ).removeClass( 'lowerCase' ).addClass( 'upperCase' );
-            $( "#notes-modal-btn-case" ).html( '<i class="fa fa-text-height"></i> Lowercase' );
+            mac_input.removeClass( 'lowerCase' ).addClass( 'upperCase' );
+            case_btn.html( '<i class="fa fa-text-height"></i> Lowercase' );
         }
-    });
+    })
 </script>

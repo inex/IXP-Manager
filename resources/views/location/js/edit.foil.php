@@ -16,8 +16,8 @@
                 let selectedpdb, selectNow;
                 let options = `<option value=''>Choose the matching PeeringDB Facility...</option>\n`;
 
-                <?php if( $t->data[ 'params'][ 'object' ] && $t->data[ 'params'][ 'object' ]->getPdbFacilityId() ): ?>
-                    selectedpdb = <?= $t->data[ 'params'][ 'object' ]->getPdbFacilityId() ?>;
+                <?php if( $t->data[ 'params'][ 'object' ] && $t->data[ 'params'][ 'object' ]->pdb_facility_id ): ?>
+                    selectedpdb = <?= $t->data[ 'params'][ 'object' ]->pdb_facility_id ?>;
                 <?php elseif( Request::old('pdb_facility_id' ) ): ?>
                     selectedpdb = <?= Request::old('pdb_facility_id' ) ?>;
                 <?php else: ?>
@@ -35,9 +35,9 @@
             })
             .fail( function() {
                 dd_pdb.prop( 'disabled', true );
-                <?php if( !$t->data[ 'params' ][ 'isAdd' ] && $t->data[ 'params'][ 'object']->getPdbFacilityId() ): ?>
+                <?php if( !$t->data[ 'params' ][ 'isAdd' ] && $t->data[ 'params'][ 'object']->pdb_facility_id ): ?>
                     errorOption = `<option value=''>Choose the matching PeeringDB facility...</option>\n`;
-                    errorOption += `<option selected="selected" value="<?= $t->data[ 'params'][ 'object']->getPdbFacilityId() ?>">PeeringDB ID: <?= $t->data[ 'params'][ 'object']->getPdbFacilityId() ?></option>` ;
+                    errorOption += `<option selected="selected" value="<?= $t->data[ 'params'][ 'object']->pdb_facility_id ?>">PeeringDB ID: <?= $t->data[ 'params'][ 'object']->pdb_facility_id ?></option>` ;
                     dd_pdb.prop( 'disabled', false );
                 <?php endif; ?>
                 dd_pdb.html( errorOption );

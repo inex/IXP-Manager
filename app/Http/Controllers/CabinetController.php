@@ -117,7 +117,7 @@ class CabinetController extends EloquentController
      */
     protected function listGetData( $id = null ): array
     {
-        return Cabinet::getFeList( $this->feParams, $id )->toArray();
+        return Cabinet::getFeList( $this->feParams, $id );
     }
 
     /**
@@ -129,7 +129,7 @@ class CabinetController extends EloquentController
     {
         return [
             'object'                => $this->object,
-            'locations'             => Location::getListForDropdown()->toArray(),
+            'locations'             => Location::getListAsArray(),
         ];
     }
 
@@ -156,7 +156,7 @@ class CabinetController extends EloquentController
 
         return [
             'object'                => $this->object,
-            'locations'             => Location::getListForDropdown()->toArray(),
+            'locations'             => Location::getListAsArray(),
         ];
     }
 
@@ -217,7 +217,6 @@ class CabinetController extends EloquentController
 
         return true;
     }
-
 
     /**
      * @inheritdoc

@@ -106,7 +106,7 @@ class CustKitController extends EloquentController
      */
     protected function listGetData( $id = null ): array
     {
-        return CustomerEquipment::getFeList( $this->feParams, $id  )->toArray();
+        return CustomerEquipment::getFeList( $this->feParams, $id  );
     }
 
     /**
@@ -118,7 +118,7 @@ class CustKitController extends EloquentController
     {
         return [
             'object'        => $this->object ,
-            'cabinets'      => Cabinet::get()->toArray(),
+            'cabinets'      => Cabinet::getListAsArray(),
             'custs'         => Customer::getListAsArray(),
         ];
     }
@@ -143,7 +143,7 @@ class CustKitController extends EloquentController
 
         return [
             'object'        => $this->object ,
-            'cabinets'      => Cabinet::getListForDropdown()->toArray(),
+            'cabinets'      => Cabinet::getListAsArray(),
             'custs'         => Customer::getListAsArray(),
         ];
     }

@@ -25,11 +25,7 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Collection,
-    Model
-};
+use Illuminate\Database\Eloquent\{Builder, Collection, Model, Relations\BelongsTo, Relations\HasMany};
 
 /**
  * IXP\Models\VirtualInterface
@@ -59,6 +55,8 @@ use Illuminate\Database\Eloquent\{
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereTrunk($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PhysicalInterface[] $physicalInterfaces
+ * @property-read int|null $physical_interfaces_count
  */
 class VirtualInterface extends Model
 {
@@ -72,17 +70,25 @@ class VirtualInterface extends Model
     /**
      * Get the customer that owns the virtual interfaces.
      */
-    public function customer()
+    public function customer(): BelongsTo
     {
-        return $this->belongsTo('IXP\Models\Customer', 'custid');
+        return $this->belongsTo(Customer::class, 'custid');
     }
 
     /**
      * Get the VLAN interfaces for the virtual interface
      */
-    public function vlanInterfaces()
+    public function vlanInterfaces(): HasMany
     {
-        return $this->hasMany('IXP\Models\VlanInterface', 'virtualinterfaceid');
+        return $this->hasMany(VlanInterface::class, 'virtualinterfaceid');
+    }
+
+    /**
+     * Get the physical interfaces for the virtual interface
+     */
+    public function physicalInterfaces(): HasMany
+    {
+        return $this->hasMany(PhysicalInterface::class, 'virtualinterfaceid');
     }
 
 

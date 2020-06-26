@@ -15,13 +15,9 @@
     <field name="ixf_ix_id" type="bigint" nullable="true"/>
     <field name="country" type="string" length="2" nullable="true"/>
     <unique-constraints>
-      <unique-constraint name="IXPSN" columns="shortname,ixp_id"/>
+      <unique-constraint name="unique_shortname" columns="shortname"/>
     </unique-constraints>
-    <many-to-one field="IXP" target-entity="Entities\IXP" inversed-by="Infrastructures">
-      <join-columns>
-        <join-column name="ixp_id" referenced-column-name="id" nullable="false"/>
-      </join-columns>
-    </many-to-one>
+
     <one-to-many field="Switchers" target-entity="Entities\Switcher" mapped-by="Infrastructure"/>
     <one-to-many field="Vlans" target-entity="Entities\Vlan" mapped-by="Infrastructure"/>
   </entity>

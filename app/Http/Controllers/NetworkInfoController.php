@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,38 +23,45 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Redirect, Validator;
+use D2EM, Former, Redirect;
+
+use IXP\Models\{
+    NetworkInfo,
+    Router,
+    Vlan
+};
+
+
 
 use Entities\{
-    NetworkInfo     as NetworkInfoEntity,
-    Router          as RouterEntity,
     Vlan            as VlanEntity
 };
 
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\{
+    Request,
+    RedirectResponse
+};
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
 
-
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 /**
- * Network Infor Controller
+ * Network Information Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class NetworkInfoController extends Doctrine2Frontend
+class NetworkInfoController extends EloquentController
 {
-
     /**
      * The object being added / edited
-     * @var NetworkInfoEntity
+     * @var NetworkInfo
      */
     protected $object = null;
 
@@ -64,16 +71,12 @@ class NetworkInfoController extends Doctrine2Frontend
     public function feInit()
     {
         $this->feParams         = (object)[
-
-            'entity'            => NetworkInfoEntity::class,
+            'entity'            => NetworkInfo::class,
             'pagetitle'         => 'Network Information',
-
             'titleSingular'     => 'Network Information',
             'nameSingular'      => 'Network Information',
-
-            'listOrderBy'       => 'vlanid',
+            'listOrderBy'       => 'vlan_id',
             'listOrderByDir'    => 'ASC',
-
             'viewFolderName'    => 'network-info',
 
             'listColumns'       => [
@@ -82,24 +85,21 @@ class NetworkInfoController extends Doctrine2Frontend
                     'type'          => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                     'controller'    => 'vlan',
                     'action'        => 'view',
-                    'idField'       => 'vlanid'
+                    'idField'       => 'vlan_id'
                 ],
-
                 'protocol'      => [
                     'title' => 'Protocol',
                     'type'      =>   self::$FE_COL_TYPES[ 'CONST' ],
-                    'const'     =>   RouterEntity::$PROTOCOLS,
+                    'const'     =>   Router::$PROTOCOLS,
                 ],
                 'network'       => 'Network',
                 'masklen'       => 'Masklen',
-
             ],
         ];
 
         // display the same information in the view as the list
         $this->feParams->viewColumns = $this->feParams->listColumns;
     }
-
 
     /**
      * Provide array of rows for the list action and view action
@@ -110,41 +110,90 @@ class NetworkInfoController extends Doctrine2Frontend
      *
      * @throws
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( $id = null ): array
     {
-        return D2EM::getRepository( NetworkInfoEntity::class )->getAllForFeList( $this->feParams, $id );
+        return NetworkInfo::getFeList( $this->feParams, $id );
     }
 
-
-
     /**
-     * Display the form to add/edit an object
-     * @param   int $id ID of the row to edit
+     * Display the form to create an object
+     *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array
+    protected function createPrepareForm(): array
     {
-        if( $id ) {
-
-            if( !( $this->object = D2EM::getRepository( NetworkInfoEntity::class )->find( $id) ) ) {
-                abort(404);
-            }
-
-            Former::populate([
-                'vlanid'                => request()->old( 'vlan',        $this->object->getVlan()->getId() ),
-                'protocol'              => request()->old( 'protocol',    $this->object->getProtocol() ),
-                'network'               => request()->old( 'network',     $this->object->getNetwork() ),
-                'masklen'               => request()->old( 'masklen',     $this->object->getMasklen() ),
-            ]);
-        }
-
         return [
             'object'                => $this->object,
-            'vlans'                 => D2EM::getRepository( VlanEntity::class )->getNames( ),
+            'vlans'                 => Vlan::getListAsArray(),
         ];
     }
 
+    /**
+     * Display the form to edit an object
+     *
+     * @param   int $id ID of the row to edit
+     *
+     * @return array
+     */
+    protected function editPrepareForm( $id = null ): array
+    {
+        $this->object = NetworkInfo::findOrFail( $id );
 
+        Former::populate([
+            'vlanid'                => request()->old( 'vlan',        $this->object->vlanid ),
+            'protocol'              => request()->old( 'protocol',    $this->object->protocol ),
+            'network'               => request()->old( 'network',     $this->object->network ),
+            'masklen'               => request()->old( 'masklen',     $this->object->masklen ),
+        ]);
+
+        return [
+            'object'                => $this->object,
+            'vlans'                 => Vlan::getListAsArray(),
+        ];
+    }
+
+    /**
+     * Check if the form is valid
+     *
+     * @param $request
+     */
+    public function checkForm( Request $request )
+    {
+        $rangeMasklen = $request->protocol == '4' ? 'min:16|max:29' : 'min:32|max:64';
+
+        $request->validate( [
+            'vlanid'                => [ 'required', 'integer',
+                function ($attribute, $value, $fail) {
+                    if( !Vlan::whereId( $value )->exists() ) {
+                        return $fail( 'Vlan does not exist.' );
+                    }
+                } ],
+            'protocol'              => 'required|integer|in:' . implode( ',', array_keys( Router::$PROTOCOLS ) ),
+            'network'               => 'required|max:255|ipv' . $request->protocol ,
+            'masklen'               => 'required|integer|' . $rangeMasklen ,
+        ] );
+    }
+
+    /**
+     * Check if there is a duplicate networkinfo object with those values
+     *
+     * @param int|null       $objectid
+     * @param Request   $request
+     *
+     * @return bool
+     */
+    private function checkIsDuplicate( int $objectid = null, Request $request ): bool
+    {
+        $vlan = Vlan::find( $request->vlanid );
+
+        if( $ni = NetworkInfo::where( "vlanid" , $vlan->id  )->where( 'protocol' , $request->protocol )->get()->first() ) {
+            if( $objectid !== $ni->id ) {
+                AlertContainer::push( "Network information for this vlan (" . $vlan->name . ") and and protocol (ipv" . $request->protocol . ") already exists. Please edit that instead."   , Alert::DANGER );
+                return true;
+            }
+        }
+        return false;
+    }
     /**
      * Function to do the actual validation and storing of the submitted object.
      *
@@ -156,48 +205,36 @@ class NetworkInfoController extends Doctrine2Frontend
      */
     public function doStore( Request $request )
     {
-        $rangeMasklen = $request->input( 'protocol' ) == '4' ? 'min:16|max:29' : 'min:32|max:64';
+        $this->checkForm( $request );
 
-        $validator = Validator::make( $request->all(), [
-            'vlanid'                => 'required|integer|exists:Entities\Vlan,id',
-            'protocol'              => 'required|integer|in:' . implode( ',', array_keys( RouterEntity::$PROTOCOLS ) ),
-            'network'               => 'required|max:255|ipv' . $request->input( 'protocol' ) ,
-            'masklen'               => 'required|integer|' . $rangeMasklen ,
-        ]);
-
-        if( $validator->fails() ) {
-            return Redirect::back()->withErrors($validator)->withInput();
+        if( $this->checkIsDuplicate( null, $request ) ) {
+            return Redirect::back()->withInput();
         }
 
-        if( $request->input( 'id', false ) ) {
-            if( !( $this->object = D2EM::getRepository( NetworkInfoEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404);
-            }
-        } else {
-            $this->object = new NetworkInfoEntity;
-            D2EM::persist( $this->object );
-        }
-
-        $vlan = D2EM::getRepository( VlanEntity::class )->find( $request->input( 'vlanid' ) );
-
-        if( $ni = D2EM::getRepository( NetworkInfoEntity::class )->findOneBy( [ "Vlan" => $vlan->getId() , "protocol" => $request->input( 'protocol' ) ] ) ) {
-            if( $this->object->getId() != $ni->getId() ) {
-                AlertContainer::push( "Network information for this vlan (" . $vlan->getName() . ") and and protocol (ipv" . $request->input( 'protocol' ) . ") already exists. Please edit that instead."   , Alert::DANGER );
-                return Redirect::back()->withErrors( $validator )->withInput();
-            }
-        }
-
-        $this->object->setVlan(         $vlan );
-        $this->object->setProtocol(     $request->input( 'protocol' ) );
-        $this->object->setNetwork(      $request->input( 'network'  ) );
-        $this->object->setMasklen(      $request->input( 'masklen'  ) );
-        $this->object->setRs1address(       null );
-        $this->object->setRs2address(       null );
-        $this->object->setDnsfile(             null );
-
-        D2EM::flush();
-
+        $this->object = NetworkInfo::create( $request->all() );
         return true;
     }
 
+    /**
+     * Function to do the actual validation and updating of the submitted object.
+     *
+     * @param Request $request
+     *
+     * @param int $id
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doUpdate( Request $request, int $id )
+    {
+        $this->object = NetworkInfo::findOrFail( $id );
+        $this->checkForm( $request );
+
+        if( $this->checkIsDuplicate( $this->object->id, $request ) ) {
+            return Redirect::back()->withInput();
+        }
+
+        $this->object->update( $request->all() );
+        return true;
+    }
 }

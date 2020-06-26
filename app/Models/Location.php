@@ -2,9 +2,11 @@
 
 namespace IXP\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use stdClass;
 
 /**
  * IXP\Models\Location
@@ -56,6 +58,35 @@ class Location extends Model
     protected $table = 'location';
 
     /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
+    public $timestamps = false;
+
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'name',
+        'shortname',
+        'tag',
+        'address',
+        'nocphone',
+        'nocfax',
+        'nocemail',
+        'officephone',
+        'officefax',
+        'officeemail',
+        'notes',
+        'pdb_facility_id',
+        'city',
+        'country',
+    ];
+
+    /**
      * Get the switchers for the cabinet
      */
     public function cabinets(): HasMany
@@ -64,13 +95,30 @@ class Location extends Model
     }
 
     /**
-     * Gets a listing of location for dropdown
+     * Gets a listing of location as array
      *
-     * @return Collection
+     * @return array
      */
-    public static function getListForDropdown(): Collection
+    public static function getListAsArray(): array
     {
-        return self::orderBy( 'name', 'asc' )->get();
+        return self::orderBy( 'name', 'asc' )->get()->toArray();
+    }
+
+    /**
+     * Gets a listing of locations or a single one if an ID is provided
+     *
+     * @param stdClass $feParams
+     * @param int|null $id
+     *
+     * @return array
+     */
+    public static function getFeList( stdClass $feParams, int $id = null ): array
+    {
+        return self::when( $id , function( Builder $q, $id ) {
+            return $q->where('id', $id );
+        } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
+            return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+        })->get()->toArray();
     }
 
 }

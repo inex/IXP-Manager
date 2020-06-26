@@ -150,7 +150,7 @@ class ApiKeyController extends EloquentController
      */
     protected function listGetData( $id = null ): array
     {
-        return ApiKey::getFeList( $this->feParams, Auth::user()->getId(), $id  )->toArray();
+        return ApiKey::getFeList( $this->feParams, Auth::user()->getId(), $id  );
     }
 
     /**

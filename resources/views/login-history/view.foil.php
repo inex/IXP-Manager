@@ -4,7 +4,7 @@
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Login History / <?= $t->ee( $t->user->getUsername() ) ?>
+    Login History / <?= $t->ee( $t->user->username ) ?>
 
 <?php $this->append() ?>
 
@@ -17,12 +17,10 @@
                 <i class="fa fa-question-circle fa-2x"></i>
             </div>
             <div class="col-sm-12">
-                Login history for <b><?= $t->ee( $t->user->getUsername() ) ?></b>. <em>Typically logs older than six months are expunged.</em>
+                Login history for <b><?= $t->ee( $t->user->username ) ?></b>. <em>Typically logs older than six months are expunged.</em>
             </div>
         </div>
     </div>
-
-
 
     <table id="table-list" class="table collapse table-striped table-responsive-ixp-with-header" width="100%">
         <thead class="thead-dark">
@@ -54,20 +52,16 @@
                         <?= $t->ee( $history[ "via" ] ) ?>
                     </td>
                     <td>
-                        <?= $history[ "at" ]->format( "Y-m-d H:i:s" ) ?>
+                        <?= $history[ "at" ] ?>
                     </td>
                 </tr>
             <?php endforeach; ?>
         </tbody>
     </table>
-
-
 <?php $this->append() ?>
-
 
 <?php $this->section( 'scripts' ) ?>
     <script>
-
         $(document).ready( function() {
 
             $( '.table-responsive-ixp-with-header' ).show();

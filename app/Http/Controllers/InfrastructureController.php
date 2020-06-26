@@ -111,7 +111,7 @@ class InfrastructureController extends Eloquent2Frontend
      */
     protected function listGetData( $id = null ): array
     {
-        return Infrastructure::getFeList( $this->feParams, $id )->toArray();
+        return Infrastructure::getFeList( $this->feParams, $id );
     }
 
     /**
@@ -159,7 +159,15 @@ class InfrastructureController extends Eloquent2Frontend
     public function checkForm( Request $request )
     {
         $request->validate( [
-            'name'                  => 'required|string|max:255|unique:Entities\Infrastructure,name'. ( $request->id ? ','. $request->id : '' ),
+            'name' => [
+                'required', 'string', 'max:255',
+                function ($attribute, $value, $fail) use( $request ) {
+                    $infra = Infrastructure::whereName( $value )->get()->first();
+                    if( $infra && $infra->exists() && $infra->id !== (int)$request->id ) {
+                        return $fail( 'The name must be unique.' );
+                    }
+                },
+            ],
             'shortname'             => 'required|string|max:255',
             'country'               => 'required|string|max:2|in:' . implode( ',', array_values( Countries::getListForSelect( 'iso_3166_2' ) ) ),
         ] );
@@ -177,9 +185,7 @@ class InfrastructureController extends Eloquent2Frontend
     public function doStore( Request $request )
     {
         $this->checkForm( $request );
-        $this->object = Infrastructure::create( array_merge( $request->except( [ 'ixp_id' ] ) ,
-            [ 'ixp_id' => Ixp::default()->id ]
-        ) );
+        $this->object = Infrastructure::create( $request->all() );
 
         $this->resetInfrastructures();
 
@@ -201,9 +207,7 @@ class InfrastructureController extends Eloquent2Frontend
         $this->object = Infrastructure::findOrFail( $request->id );
         $this->checkForm( $request );
 
-        $this->object->update( array_merge( $request->except( [ 'ixp_id' ] ) ,
-            [ 'ixp_id' =>  Ixp::default()->id ]
-        ) );
+        $this->object->update( $request->all() );
 
         $this->resetInfrastructures();
 

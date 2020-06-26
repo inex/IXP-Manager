@@ -46,7 +46,6 @@ use Illuminate\Http\Request;
 //
 Route::group( [  'prefix' => 'customer' ], function() {
     Route::get( 'query-peeringdb/asn/{asn}',   'CustomerController@queryPeeringDbWithAsn' );
-
     Route::post( '{id}/switches',               'CustomerController@switches' );
 });
 
@@ -102,27 +101,21 @@ Route::group( [  'prefix' => 'switch' ], function() {
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 // Layer 2 Address
 //
-Route::get(  'l2-address/detail/{id}',                          'Layer2AddressController@detail' );
+//Route::get(  'l2-address/detail/{l2a}', 'Layer2AddressController@detail' );
 
 
 
 
 Route::group( [  'prefix' => 'vlan' ], function() {
     Route::get( '{id}/ip-addresses',                    'VlanController@getIPAddresses' );
-
     Route::post( 'ip-address/used-across-vlans',        'VlanController@UsedAcrossVlans' );
 });
 
-
-
-
 Route::group( [ 'namespace' => 'Customer\Note', 'prefix' => 'customer-note' ], function() {
-
     Route::get(    'notify-toggle/customer/{id}', 'CustomerNotesController@notifyToggleCustomer' )->name( 'customer-notes@notify-toggle-customer');
     Route::get(    'notify-toggle/note/{id}',     'CustomerNotesController@notifyToggleNote'     )->name( 'customer-notes@notify-toggle-note');
 
     Route::post(    'add',                             'CustomerNotesController@add'                    )->name( 'customer-notes@add');
     Route::post(    'delete/{id}',                     'CustomerNotesController@delete'                 )->name( 'customer-notes@delete');
-
 });
 

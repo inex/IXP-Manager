@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Customer;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -28,14 +28,15 @@ use D2EM, Former, Redirect, Validator;
 use Entities\{
     CustomerTag         as CustomerTagEntity
 };
+use Illuminate\Support\Facades\Session;
+use IXP\Models\CustomerTag;
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 use Illuminate\Http\{
     Request,
     RedirectResponse
 };
 
 use IXP\Http\Controllers\Doctrine2Frontend;
-
-
 
 /**
  * Customer Tag Controller
@@ -45,48 +46,42 @@ use IXP\Http\Controllers\Doctrine2Frontend;
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class CustomerTagController extends Doctrine2Frontend {
-
+class CustomerTagController extends EloquentController
+{
     /**
      * The object being added / edited
-     * @var CustomerTagEntity
+     * @var CustomerTag
      */
     protected $object = null;
 
     /**
      * This function sets up the frontend controller
      */
-    public function feInit(){
-
+    public function feInit()
+    {
         $this->feParams         = ( object )[
-
-            'entity'            => CustomerTagEntity::class,
+            'entity'            => CustomerTag::class,
             'pagetitle'         => 'Customer Tags',
-
             'titleSingular'     => 'Customer Tag',
             'nameSingular'      => 'customer tag',
-
             'defaultAction'     => 'list',
             'defaultController' => 'CustomerTagController',
-
             'listOrderBy'       => 'tag',
             'listOrderByDir'    => 'ASC',
-
             'viewFolderName'    => 'customer/tag',
-
             'extraDeleteMessage' => "<b>This tag will be removed from all customers tagged with it.</b>",
-
             'documentation'     => 'https://docs.ixpmanager.org/usage/customer-tags/',
 
             'listColumns'    => [
-
-                'id'        => [ 'title' => 'DB ID', 'display' => false ],
-
+                'id'        => [
+                    'title' => 'DB ID',
+                    'display' => false
+                ],
                 'tag'               => 'Tag',
                 'display_as'        => 'Display As',
                 'internal_only'     => [
-                                'title' => 'Internal Only',
-                                'type' => self::$FE_COL_TYPES[ 'YES_NO' ]
+                    'title' => 'Internal Only',
+                    'type' => self::$FE_COL_TYPES[ 'YES_NO' ]
                 ],
             ]
         ];
@@ -96,18 +91,18 @@ class CustomerTagController extends Doctrine2Frontend {
             $this->feParams->listColumns,
             [
                 'description'          => 'Description',
-                'created'              => [
+                'created'              =>
+                    [
                         'title'        => 'Created',
                         'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
                     ],
-                'updated'              => [
+                'updated'              =>
+                    [
                         'title'        => 'Updated',
                         'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
                     ],
             ]
         );
-
-
     }
 
 
@@ -115,41 +110,70 @@ class CustomerTagController extends Doctrine2Frontend {
      * Provide array of rows for the list action and view action
      *
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     *
      * @return array
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( $id = null ): array
     {
-        return D2EM::getRepository( CustomerTagEntity::class )->getAllForFeList( $this->feParams, $id );
+        return CustomerTag::getFeList( $this->feParams, $id );
     }
 
-
-
     /**
-     * Display the form to add/edit an object
-     * @param   int $id ID of the row to edit
+     * Display the form to create an object
+     *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array
+    protected function createPrepareForm(): array
     {
-        if( $id ) {
+        return [
+            'object'                => $this->object
+        ];
+    }
 
-            if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( $id ) ) ) {
-                abort(404);
-            }
+    /**
+     * Display the form to edit an object
+     *
+     * @param   int $id ID of the row to edit
+     *
+     * @return array
+     */
+    protected function editPrepareForm( $id = null ): array
+    {
+        $this->object = CustomerTag::findOrFail( $id );
 
-            Former::populate([
-                'tag'                   => request()->old( 'tag',               $this->object->getTag() ),
-                'description'           => request()->old( 'description',       $this->object->getDescription() ),
-                'display_as'            => request()->old( 'display_as',        $this->object->getDisplayAs() ),
-                'internal_only'         => request()->old( 'internal_only',     ( $this->object->isInternalOnly() ? 1 : 0 ) ),
-            ]);
-        }
+        Former::populate([
+            'tag'                   => request()->old( 'tag',               $this->object->tag ),
+            'description'           => request()->old( 'description',       $this->object->description ),
+            'display_as'            => request()->old( 'display_as',        $this->object->display_as ),
+            'internal_only'         => request()->old( 'internal_only',     ( $this->object->internal_only ? 1 : 0 ) ),
+        ]);
 
         return [
             'object'                => $this->object
         ];
     }
 
+    /**
+     * Check if the form is valid
+     *
+     * @param $request
+     */
+    public function checkForm( Request $request )
+    {
+        $request->validate( [
+            'tag' => [
+                'required', 'string', 'max:255',
+                function ($attribute, $value, $fail) use( $request ) {
+                    $tag = CustomerTag::whereTag( $value )->get()->first();
+                    if( $tag && $tag->exists() && $tag->id !== (int)$request->id ) {
+                        return $fail( 'The tag must be unique.' );
+                    }
+                },
+            ],
+            'description'           => 'nullable|string|max:255',
+            'display_as'            => 'required|string|max:255',
+        ] );
+    }
 
     /**
      * Function to do the actual validation and storing of the submitted object.
@@ -162,45 +186,46 @@ class CustomerTagController extends Doctrine2Frontend {
      */
     public function doStore( Request $request )
     {
-        $validator = Validator::make( $request->all(), [
-            'tag'                   => 'required|string|max:255|unique:Entities\CustomerTag,tag'. ( $request->input('id') ? ','. $request->input('id') : '' ),
-            'description'           => 'nullable|string|max:255',
-            'display_as'            => 'required|string|max:255',
-        ]);
+        $this->checkForm( $request );
 
-        if( $validator->fails() ) {
-            return Redirect::back()->withErrors($validator)->withInput();
-        }
-
-        if( $request->input( 'id', false ) ) {
-            if( !( $this->object = D2EM::getRepository( $this->feParams->entity )->find( $request->input( 'id' ) ) ) ) {
-                abort(404, "Unknown" . $this->feParams->titleSingular );
-            }
-            $this->object->setUpdated( new \DateTime );
-        } else {
-            $this->object = new $this->feParams->entity;
-            D2EM::persist( $this->object );
-            $this->object->setCreated( new \DateTime );
-            $this->object->setUpdated( new \DateTime );
-        }
-
-        $this->object->setTag(                      preg_replace( "/[^a-z0-9\-]/" , "", strtolower( $request->input( 'tag' ) ) ) );
-        $this->object->setDescription(              $request->input( 'description'  ) );
-        $this->object->setDisplayAs(                $request->input( 'display_as'   ) );
-        $this->object->setInternalOnly( $request->input( 'internal_only' ) ? 1 : 0 );
-
-        D2EM::flush();
+        $this->object = CustomerTag::create( array_merge( $request->except( 'tag' ),
+            [
+                'tag'   => preg_replace( "/[^a-z0-9\-]/" , "", strtolower( $request->tag ) )
+            ]
+        ));
 
         return true;
     }
 
+    /**
+     * Function to do the actual validation and updating of the submitted object.
+     *
+     * @param Request $request
+     * @param int $id
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doUpdate( Request $request, int $id )
+    {
+        $this->object = CustomerTag::findOrFail( $request->id );
+        $this->checkForm( $request );
+        $this->object->update( array_merge( $request->except( 'tag' ),
+            [
+                'tag'   => preg_replace( "/[^a-z0-9\-]/" , "", strtolower( $request->tag ) )
+            ]
+        ));
+
+        return true;
+    }
 
     /**
      * @inheritdoc
      */
     protected function preDelete(): bool
     {
-        request()->session()->remove( "cust-list-tag" );
+        Session::remove( "cust-list-tag" );
         return true;
     }
 

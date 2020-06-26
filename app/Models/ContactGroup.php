@@ -47,10 +47,15 @@ class ContactGroup extends Model
      */
     protected $table = 'contact_group';
 
+    /**
+     * Indicates if the model should be timestamped.
+     *
+     * @var bool
+     */
     public $timestamps = false;
 
     /**
-     * The attributes that aren't mass assignable.
+     * The attributes that are mass assignable.
      *
      * @var array
      */
@@ -74,9 +79,9 @@ class ContactGroup extends Model
      * @param stdClass $feParams
      * @param int|null $id
      *
-     * @return Collection
+     * @return array
      */
-    public static function getFeList( stdClass $feParams, int $id = null ): Collection
+    public static function getFeList( stdClass $feParams, int $id = null ): array
     {
         return self::when( $id , function( Builder $q, $id ) {
             return $q->where('id', $id );
@@ -84,7 +89,7 @@ class ContactGroup extends Model
             return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
         })->when( $types = config( "contact_group.types" ) , function( Builder $q, $types ) {
             return $q->whereIn('type', array_keys( $types ) );
-        } )->get();
+        } )->get()->toArray();
     }
 
     /**

@@ -29,7 +29,7 @@ use DB;
 use Entities\Customer as CustomerEntity;
 use Entities\User as UserEntity;
 
-use Illuminate\Database\Eloquent\{Builder, Model, Relations\HasMany};
+use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations\BelongsToMany, Relations\HasMany};
 
 use Illuminate\Support\{
     Collection,
@@ -124,6 +124,11 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereType($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Contact[] $contacts
+ * @property-read int|null $contacts_count
+ * @property-read \IXP\Models\IrrdbConfig $irrdbConfig
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\User[] $users
+ * @property-read int|null $users_count
  */
 class Customer extends Model
 {
@@ -209,6 +214,22 @@ class Customer extends Model
     public function contacts(): HasMany
     {
         return $this->hasMany(Contact::class, 'custid' );
+    }
+
+    /**
+     * Get the irrdbconfig that own the customer
+     */
+    public function irrdbConfig(): BelongsTo
+    {
+        return $this->belongsTo(IrrdbConfig::class );
+    }
+
+    /**
+     * Get all the users for the customer
+     */
+    public function users(): BelongsToMany
+    {
+        return $this->belongsToMany(User::class )->withPivot( 'customer_to_users', 'customer_id' );
     }
 
 
