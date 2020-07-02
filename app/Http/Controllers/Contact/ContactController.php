@@ -403,7 +403,7 @@ class ContactController extends EloquentController
     /**
      * Add contact group to the contact object
      *
-     * @param Request $request
+     * @param array $groups
      *
      * @return bool
      */

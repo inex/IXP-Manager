@@ -51,7 +51,6 @@ class StoreBySmtp extends FormRequest
         return [
             'snmppasswd' => 'required|string|max:255',
             'hostname'   => [ 'required', 'string', 'max:255', 'unique:Entities\Switcher,hostname' . ( $this->input('id') ? ','. $this->input('id') : '' ), new IdnValidate() ],
-
         ];
     }
 

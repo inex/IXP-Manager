@@ -80,5 +80,18 @@ class PhysicalInterface extends Model
     {
         return $this->belongsTo(SwitchPort::class, 'switchportid');
     }
+
+
+    /**
+     * Provide array of all the speeds
+     *
+     * @return array
+     */
+    public static function getAllSpeed()
+    {
+        return self::selectRaw( 'DISTINCT physicalinterface.speed AS speed' )
+            ->orderBy( 'speed', 'ASC' )
+            ->get()->toArray();
+    }
     
 }

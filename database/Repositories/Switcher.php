@@ -288,6 +288,8 @@ class Switcher extends EntityRepository
 
         $query = $this->getEntityManager()->createQuery( $q );
 
+        //dd($query);
+
         return $query->getArrayResult();
     }
 

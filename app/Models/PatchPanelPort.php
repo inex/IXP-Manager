@@ -88,6 +88,7 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereSwitchPortId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereTicketRef($value)
  * @mixin \Eloquent
+ * @property-read \IXP\Models\SwitchPort|null $switchPort
  */
 
 class PatchPanelPort extends Model
@@ -107,6 +108,13 @@ class PatchPanelPort extends Model
         return $this->belongsTo( PatchPanel::class , 'patch_panel_id' );
     }
 
+    /**
+     * Get the switch port that owns this patch panel port
+     */
+    public function switchPort(): BelongsTo
+    {
+        return $this->belongsTo( SwitchPort::class , 'switch_port_id' );
+    }
 
     /**
      * Get the patch panel port files for this patch panel port

@@ -28,19 +28,15 @@
 |
 |
 */
-
-IXP\Http\Controllers\ConsoleServer\ConsoleServerController::routes();
-IXP\Http\Controllers\ConsoleServer\ConsoleServerConnectionController::routes();
-IXP\Http\Controllers\IxpController::routes();
 IXP\Http\Controllers\Switches\SwitchController::routes();
 IXP\Http\Controllers\Switches\SwitchPortController::routes();
 IXP\Http\Controllers\User\UserRememberTokenController::routes();
 
 
-
-
 IXP\Http\Controllers\ApiKeyController::routes();
 IXP\Http\Controllers\CabinetController::routes();
+IXP\Http\Controllers\ConsoleServer\ConsoleServerController::routes();
+IXP\Http\Controllers\ConsoleServer\ConsoleServerConnectionController::routes();
 IXP\Http\Controllers\Contact\ContactController::routes();
 IXP\Http\Controllers\Contact\ContactGroupController::routes();
 IXP\Http\Controllers\CustKitController::routes();

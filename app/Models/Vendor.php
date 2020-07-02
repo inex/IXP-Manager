@@ -4,6 +4,7 @@ namespace IXP\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use stdClass;
 
 /**
@@ -23,6 +24,8 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor whereShortname($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServer[] $consoleServers
+ * @property-read int|null $console_servers_count
  */
 class Vendor extends Model
 {
@@ -52,6 +55,14 @@ class Vendor extends Model
     ];
 
     /**
+     * Get the console servers for the vendor
+     */
+    public function consoleServers(): HasMany
+    {
+        return $this->hasMany(ConsoleServer::class, 'vendor_id' );
+    }
+
+    /**
      * Gets a listing of vendors or a single one if an ID is provided
      *
      * @param stdClass $feParams
@@ -66,5 +77,16 @@ class Vendor extends Model
         } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
             return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
         })->get()->toArray();
+    }
+
+    /**
+     * Gets a listing of vendors as array
+     *
+     * @return array
+     */
+    public static function getListAsArray(): array
+    {
+        return self::orderBy( 'name', 'asc' )
+            ->get()->toArray();
     }
 }

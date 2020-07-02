@@ -129,6 +129,8 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property-read \IXP\Models\IrrdbConfig $irrdbConfig
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\User[] $users
  * @property-read int|null $users_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
+ * @property-read int|null $console_server_connections_count
  */
 class Customer extends Model
 {
@@ -145,6 +147,14 @@ class Customer extends Model
      * @var string
      */
     protected $dateFormat = 'Y-m-d';
+
+    /**
+     * DQL for selecting customers that are current in terms of `datejoin` and `dateleave`
+     *
+     * @var string DQL for selecting customers that are current in terms of `datejoin` and `dateleave`
+     */
+    public const SQL_CUST_CURRENT = "c.datejoin <= CURRENT_DATE() AND ( c.dateleave IS NULL OR c.dateleave >= CURRENT_DATE() )";
+
 
     const CREATED_AT = 'created';
     const UPDATED_AT = 'lastupdated';
@@ -189,7 +199,7 @@ class Customer extends Model
      */
     public function virtualInterfaces(): HasMany
     {
-        return $this->hasMany('IXP\Models\VirtualInterface', 'custid');
+        return $this->hasMany(VirtualInterface::class, 'custid');
     }
 
     /**
@@ -214,6 +224,14 @@ class Customer extends Model
     public function contacts(): HasMany
     {
         return $this->hasMany(Contact::class, 'custid' );
+    }
+
+    /**
+     * Get the console server connections for the customer
+     */
+    public function consoleServerConnections(): HasMany
+    {
+        return $this->hasMany(ConsoleServerConnection::class, 'custid');
     }
 
     /**

@@ -39,6 +39,8 @@ use stdClass;
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerEquipment[] $customerEquipment
  * @property-read int|null $customer_equipment_count
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereColocation($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServer[] $consoleServers
+ * @property-read int|null $console_servers_count
  */
 class Cabinet extends Model
 {
@@ -100,6 +102,14 @@ class Cabinet extends Model
     public function customerEquipment(): HasMany
     {
         return $this->hasMany(CustomerEquipment::class, 'cabinetid' );
+    }
+
+    /**
+     * Get the console servers for the cabinet
+     */
+    public function consoleServers(): HasMany
+    {
+        return $this->hasMany(ConsoleServer::class, 'cabinet_id' );
     }
 
     /**

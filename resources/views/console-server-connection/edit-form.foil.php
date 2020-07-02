@@ -1,9 +1,8 @@
 <div class="card">
     <div class="card-body">
-
-        <?= Former::open()->method( 'POST' )
+        <?= Former::open()->method(  $t->data['params']['isAdd'] ? 'POST' : 'PUT'  )
             ->id( 'form' )
-            ->action( route( $t->feParams->route_prefix . '@store' ) )
+            ->action( $t->data['params']['isAdd'] ? route( $t->feParams->route_prefix . '@store' ) : route($t->feParams->route_prefix . '@update', [ 'id' => $t->data[ 'params'][ 'object']->id ] ) )
             ->customInputWidthClass( 'col-lg-4 col-sm-6' )
             ->customLabelWidthClass( 'col-lg-2 col-sm-3' )
             ->actionButtonsCustomClass( "grey-box")
@@ -14,7 +13,7 @@
             ->blockHelp( "Description of the device that this console port connects to. Usually a switch hostname." );
         ?>
 
-        <?= Former::select( 'serverid' )
+        <?= Former::select( 'console_server_id' )
             ->id( 'Server' )
             ->label( 'Console Server' )
             ->placeholder( 'Select a console server' )
@@ -37,12 +36,12 @@
             ->blockHelp( "Enter the port number." );
         ?>
 
-        <div id="autobaud-section" style="<?= $t->data['params']['object'] && $t->data['params']['object']->getAutobaud() ? 'display: none;' : '' ?>">
+        <div id="autobaud-section" style="<?= $t->data['params']['object'] && $t->data['params']['object']->autobaud ? 'display: none;' : '' ?>">
 
             <?= Former::select( 'speed' )
                 ->label( 'Speed' )
                 ->placeholder( "Choose speed")
-                ->options(   Entities\ConsoleServerConnection::$SPEED )
+                ->options(   \IXP\Models\ConsoleServerConnection::$SPEED )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( 'Enter the baud speed - used for your own informational purposes but could also be used for automated console server provisioning.' );
             ?>
@@ -50,25 +49,23 @@
             <?= Former::select( 'parity' )
                 ->label( 'Parity' )
                 ->placeholder( "Choose parity")
-                ->options(   Entities\ConsoleServerConnection::$PARITY )
+                ->options(   \IXP\Models\ConsoleServerConnection::$PARITY )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( 'Enter the parity - used for your own informational purposes but could also be used for automated console server provisioning.' );
             ?>
 
-
             <?= Former::select( 'stopbits' )
                 ->label( 'Stopbits' )
                 ->placeholder( "Choose stop bits")
-                ->options(   Entities\ConsoleServerConnection::$STOP_BITS )
+                ->options(   \IXP\Models\ConsoleServerConnection::$STOP_BITS )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( 'Enter the number of stop bits - used for your own informational purposes but could also be used for automated console server provisioning.' );
             ?>
 
-
             <?= Former::select( 'flowcontrol' )
                 ->label( 'Flow Control' )
                 ->placeholder( "Choose flow control")
-                ->options(   Entities\ConsoleServerConnection::$FLOW_CONTROL )
+                ->options(   \IXP\Models\ConsoleServerConnection::$FLOW_CONTROL )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( 'Enter the flowcontrol status - used for your own informational purposes but could also be used for automated console server provisioning.' );
             ?>
@@ -114,21 +111,18 @@
                         </div>
                     </div>
                 </div>
-
             </div>
-
         </div>
-
 
         <?= Former::actions(
             Former::primary_submit( $t->data['params']['isAdd'] ? 'Add' : 'Save Changes' )->class( "mb-2 mb-sm-0"),
-            Former::secondary_link( 'Cancel' )->href( isset( $t->data[ 'params'][ "cs" ] ) ? route ($t->feParams->route_prefix . '@listPort' , [ "port" => $t->data[ 'params'][ "cs" ] ] )  : route ($t->feParams->route_prefix . '@list') )->class( "mb-2 mb-sm-0"),
+            Former::secondary_link( 'Cancel' )->href( isset( $t->data[ 'params'][ "cs" ] ) ? route ($t->feParams->route_prefix . '@listPort' , [ "cs" => $t->data[ 'params'][ "cs" ] ] )  : route ($t->feParams->route_prefix . '@list') )->class( "mb-2 mb-sm-0"),
             Former::success_button( 'Help' )->id( 'help-btn' )->class( "mb-2 mb-sm-0")
         );
         ?>
 
         <?= Former::hidden( 'id' )
-            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
+            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->id : '' )
         ?>
 
         <?= Former::hidden( 'cs' )
@@ -136,6 +130,5 @@
         ?>
 
         <?= Former::close() ?>
-
     </div>
 </div>
