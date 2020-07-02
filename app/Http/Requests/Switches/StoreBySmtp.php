@@ -26,6 +26,7 @@ namespace IXP\Http\Requests\Switches;
 use Auth;
 
 use Illuminate\Foundation\Http\FormRequest;
+use IXP\Models\Switcher;
 use IXP\Rules\IdnValidate;
 
 class StoreBySmtp extends FormRequest
@@ -50,7 +51,15 @@ class StoreBySmtp extends FormRequest
     {
         return [
             'snmppasswd' => 'required|string|max:255',
-            'hostname'   => [ 'required', 'string', 'max:255', 'unique:Entities\Switcher,hostname' . ( $this->input('id') ? ','. $this->input('id') : '' ), new IdnValidate() ],
+            'hostname' => [
+                'required', 'string', 'max:255', new IdnValidate(),
+                function ($attribute, $value, $fail) {
+                    $switcher = Switcher::whereHostname( $value )->get()->first();
+                    if( $switcher && $switcher->exists() ) {
+                        return $fail( 'The hostname must be unique.' );
+                    }
+                },
+            ],
         ];
     }
 
