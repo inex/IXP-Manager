@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers\Switches;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,12 +23,7 @@ namespace IXP\Http\Controllers\Switches;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Log, Redirect, Route, Validator;
-
-use Entities\{
-    Switcher            as SwitcherEntity,
-    SwitchPort          as SwitchPortEntity
-};
+use Former, Log, Redirect, Route;
 
 use Illuminate\Http\{
     RedirectResponse,
@@ -36,14 +31,19 @@ use Illuminate\Http\{
     Request
 };
 
-use IXP\Http\Controllers\Doctrine2Frontend;
+use Illuminate\View\View;
+
+use IXP\Models\{
+    Switcher,
+    SwitchPort
+};
+
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 use IXP\Utils\View\Alert\{
     Alert,
     Container as AlertContainer
 };
-
-use Illuminate\View\View;
 
 use OSS_SNMP\{
     Exception,
@@ -52,24 +52,21 @@ use OSS_SNMP\{
 
 use OSS_SNMP\MIBS\Iface;
 
-
 /**
  * Switch Port Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class SwitchPortController extends Doctrine2Frontend
+class SwitchPortController extends EloquentController
 {
-
     /**
-     * The object being added / edited
-     * @var SwitchPortEntity
+     * The object being created / edited
+     * @var SwitchPort
      */
     protected $object = null;
-
 
     /**
      * This function sets up the frontend controller
@@ -77,35 +74,29 @@ class SwitchPortController extends Doctrine2Frontend
     public function feInit()
     {
         $this->feParams         = (object)[
-
-            'entity'            => SwitchPortEntity::class,
+            'entity'            => SwitchPort::class,
             'pagetitle'         => 'Switch Ports',
-
             'titleSingular'     => 'Switch Port',
             'nameSingular'      => 'a switch port',
-
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
-
             'viewFolderName'    => 'switch-port',
             'route_action'      => 'list',
-
             'route_prefix_page_title'   => 'switch',
-
             'pagetitlepostamble'         => 'Switch Port',
 
             'listColumns'       => [
-
-                'id'        => [ 'title' => 'UID', 'display' => false ],
-
-                'switch'  => [
+                'id'        => [
+                    'title' => 'UID',
+                    'display' => false
+                ],
+                'switchname'  => [
                     'title'      => 'Switch',
                     'type'       => self::$FE_COL_TYPES[ 'HAS_ONE' ],
                     'controller' => 'switch',
                     'action'     => 'view',
                     'idField'    => 'switchid'
                 ],
-
                 'name'           => 'Description',
                 'ifName'         => 'Name',
                 'ifAlias'        => 'Alias',
@@ -113,47 +104,41 @@ class SwitchPortController extends Doctrine2Frontend
                     'title'    => 'Active',
                     'type'     => self::$FE_COL_TYPES[ 'YES_NO' ],
                 ],
-
                 'type'  => [
                     'title'    => 'Type',
                     'type'     => self::$FE_COL_TYPES[ 'XLATE' ],
-                    'xlator'   => SwitchPortEntity::$TYPES
+                    'xlator'   => SwitchPort::$TYPES
                 ]
-
             ]
         ];
 
         // display the same information in the view as the list
         $this->feParams->viewColumns = $this->feParams->listColumns;
-
     }
-
 
     /**
      * Additional routes
      *
-     *
      * @param string $route_prefix
+     *
      * @return void
      */
-    protected static function additionalRoutes( string $route_prefix )
+    protected static function additionalRoutes( string $route_prefix ): void
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
-
-        Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
+        Route::group( [  'prefix' => $route_prefix ], function() {
             Route::get(  'unused-optics',       'Switches\SwitchPortController@unusedOptics'   )->name( "switch-port@unused-optics"     );
             Route::get(  'optic-inventory',     'Switches\SwitchPortController@opticInventory' )->name( "switch-port@optic-inventory"   );
             Route::get(  'optic-list',          'Switches\SwitchPortController@opticList'      )->name( "switch-port@optic-list"        );
-            Route::get(  'list-mau/{switchid}', 'Switches\SwitchPortController@listMau'        )->name( "switch-port@list-mau"          );
-            Route::get(  'op-status/{switchid}','Switches\SwitchPortController@listOpStatus'   )->name( "switch-port@list-op-status"    );
-            Route::get(  'snmp-poll/{switchid}','Switches\SwitchPortController@snmpPoll'       )->name( "switch-port@snmp-poll"         );
+            Route::get(  'list-mau/{switch}',   'Switches\SwitchPortController@listMau'        )->name( "switch-port@list-mau"          );
+            Route::get(  'op-status/{switch}',  'Switches\SwitchPortController@listOpStatus'   )->name( "switch-port@list-op-status"    );
+            Route::get(  'snmp-poll/{switch}',  'Switches\SwitchPortController@snmpPoll'       )->name( "switch-port@snmp-poll"         );
 
-            Route::post( 'set-type',        'Switches\SwitchPortController@setType'        )->name( "switch-port@set-type"          );
-            Route::post( 'delete-snmp-poll','Switches\SwitchPortController@deleteSnmpPoll' )->name( "switch-port@delete-snmp-poll"  );
-            Route::post( 'change-status',   'Switches\SwitchPortController@changeStatus'   )->name( "switch-port@change-status"     );
+            Route::post( 'set-type',            'Switches\SwitchPortController@setType'        )->name( "switch-port@set-type"          );
+            Route::post( 'delete-snmp-poll',    'Switches\SwitchPortController@deleteSnmpPoll' )->name( "switch-port@delete-snmp-poll"  );
+            Route::post( 'change-status',       'Switches\SwitchPortController@changeStatus'   )->name( "switch-port@change-status"     );
         });
     }
-
 
     /**
      * Provide array of rows for the list action and view action
@@ -162,29 +147,26 @@ class SwitchPortController extends Doctrine2Frontend
      *
      * @return array
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( $id = null ): array
     {
-        return D2EM::getRepository( SwitchPortEntity::class )->getAllForFeList( $this->feParams, $id, $this->data );
+        return SwitchPort::getFeList( $this->feParams, $id, $this->data );
     }
-
 
     public function list( Request $r ) : View
     {
         $s = false;
 
-        if( $r && $r->input( 'switchid' )  !== null ) {
-            /** @var SwitcherEntity $s */
-            if(  $s = D2EM::getRepository( SwitcherEntity::class )->find( $r->input( 'switchid' ) ) ) {
-                $sid = $s->getId();
+        if( $r->switchid  !== null ) {
+            if(  $s = Switcher::find( $r->switchid ) ) {
+                $sid = $s->id;
                 $r->session()->put( "switch-port-list", $sid );
             } else {
                 $r->session()->remove( "switch-port-list" );
                 $sid = false;
             }
-        } else if( $r && $r->session()->exists( "switch-port-list" ) ) {
-            $sid = $r->session()->get( "switch-port-list" );
-            if( !( $s = D2EM::getRepository( SwitcherEntity::class )->find( $r->session()->get( "switch-port-list" ) ) ) ) {
-                $sid = false;
+        } else if( $r->session()->exists( "switch-port-list" ) ) {
+            if( $s = Switcher::find( $r->session()->get( "switch-port-list" ) ) ) {
+                $sid = $s->id;
             }
         } else {
             $sid = false;
@@ -192,12 +174,11 @@ class SwitchPortController extends Doctrine2Frontend
 
         $this->data[ 'params' ][ 'switchid' ]       = $sid;
         $this->data[ 'params' ][ 'switch' ]         = $s;
-        $this->data[ 'params' ][ 'switches' ]       = D2EM::getRepository( SwitcherEntity::class )->getNames();
+        $this->data[ 'params' ][ 'switches' ]       = Switcher::getListAsArray();
 
         $this->data[ 'rows' ] = $this->listGetData();
 
-        $this->setUpViews();
-
+        $this->listIncludeTemplates();
         $this->preList();
 
         return $this->display( 'list' );
@@ -205,50 +186,52 @@ class SwitchPortController extends Doctrine2Frontend
 
     /**
      * Display the form to add/edit an object
-     *
-
      */
     protected function addForm()
     {
         $this->addEditSetup();
         $this->data[ 'params' ]['isAdd']        = true;
-        $this->data[ 'params' ]['switches']     = D2EM::getRepository( SwitcherEntity::class  )->getNames();
+        $this->data[ 'params' ]['switches']     = Switcher::getListAsArray();
 
         return $this->display( 'add-form' );
     }
 
+    /**
+     * Display the form to create an object
+     *
+     * @return array
+     */
+    protected function createPrepareForm(): array
+    {
+        return [
+            'object'            => $this->object,
+            'switches'          => Switcher::getListAsArray()
+        ];
+    }
 
     /**
-     * Display the form to add/edit an object
+     * Display the form to edit an object
      *
      * @param   int $id ID of the row to edit
      *
      * @return array
      */
-    protected function addEditPrepareForm( $id = null ): array
+    protected function editPrepareForm( $id = null ): array
     {
-        if( $id ) {
+        $this->object = SwitchPort::findOrFail( $id );
 
-            if( !( $this->object = D2EM::getRepository( SwitchPortEntity::class )->find( $id) ) ) {
-                abort(404, "Unknown Switch port");
-            }
-
-            Former::populate([
-                'switchid'          => request()->old( 'switchid',    $this->object->getSwitcher()->getId() ),
-                'name'              => request()->old( 'name',        $this->object->getName() ),
-                'type'              => request()->old( 'type',        $this->object->getType() ),
-                'active'            => request()->old( 'active',      ( $this->object->getActive() ? 1 : 0 ) ) ,
-            ]);
-        }
+        Former::populate([
+            'switchid'          => request()->old( 'switchid',    $this->object->switchid ),
+            'name'              => request()->old( 'name',        $this->object->name ),
+            'type'              => request()->old( 'type',        $this->object->type ),
+            'active'            => request()->old( 'active',      ( $this->object->active ? 1 : 0 ) ) ,
+        ]);
 
         return [
             'object'            => $this->object,
-            'switches'          => D2EM::getRepository( SwitcherEntity::class  )->getNames(),
+            'switches'          => Switcher::getListAsArray()
         ];
     }
-
-
-
 
     /**
      * Function to do the actual validation and storing of the submitted object.
@@ -260,64 +243,67 @@ class SwitchPortController extends Doctrine2Frontend
      */
     public function doStore( Request $request )
     {
+        $rules = [
+            'switchid' => [
+                'required', 'integer',
+                function( $attribute, $value, $fail ) {
+                    if( !Switcher::whereId( $value )->exists() ) {
+                        return $fail( 'Switch is invalid / does not exist.' );
+                    }
+                }
+            ],
+            'numfirst'                  => 'required|integer|min:0',
+            'numports'                  => 'required|integer|min:1|max:48',
+            'type'                      => 'required|integer|in:' . implode( ',', array_keys( SwitchPort::$TYPES ) ),
+        ];
 
-        if( $request->input( "isAdd" ) ){
-
-            $inputsArray = [
-                'switchid'                  => 'required|integer|exists:Entities\Switcher,id',
-                'numfirst'                  => 'required|integer|min:0',
-                'numports'                  => 'required|integer|min:1|max:48',
-                'type'                      => 'required|integer|in:' . implode( ',', array_keys( SwitchPortEntity::$TYPES ) ),
-            ];
-
-            for( $i = 0; $i < $request->input( 'numports' ); $i++ ) {
-                $inputsArray[ 'portName'.$i ] = 'required|string|max:255';
-                $inputsArray[ 'portType'.$i ] = 'required|integer|in:' . implode( ',', array_keys( SwitchPortEntity::$TYPES ) );
-            }
-
-            $validator = Validator::make( $request->all(), $inputsArray );
-
-
-            if( $validator->fails() ) {
-                return Redirect::back()->withErrors( $validator )->withInput();
-            }
-
-            for( $i = 0; $i < $request->input( 'numports' ); $i++ ) {
-                $this->object = new SwitchPortEntity;
-                D2EM::persist( $this->object );
-
-                $this->object->setSwitcher( D2EM::getRepository( SwitcherEntity::class )->find( $request->input( "switchid" ) ) );
-                $this->object->setType( $request->input('portType' . $i ) );
-                $this->object->setName( $request->input('portName' . $i ) );
-                $this->object->setActive( true );
-
-            }
-
-        } else {
-
-            $validator = Validator::make( $request->all(), [
-                    'switchid'                  => 'required|integer|exists:Entities\Switcher,id',
-                    'name'                      => 'required|string|max:255',
-                    'type'                      => 'required|integer|in:' . implode( ',', array_keys( SwitchPortEntity::$TYPES ) ),
-                ]
-            );
-
-            if( $validator->fails() ) {
-                return Redirect::back()->withErrors( $validator )->withInput();
-            }
-
-            if( !( $this->object = D2EM::getRepository( SwitchPortEntity::class )->find( $request->input( 'id' ) ) ) ) {
-                abort(404, "Unknown Switch Port");
-            }
-
-            $this->object->setName(         $request->input( "name" ) );
-            $this->object->setType(         $request->input( "type" ) );
-            $this->object->setSwitcher(     D2EM::getRepository( SwitcherEntity::class )->find( $request->input( "switchid" ) ) );
-            $this->object->setActive($request->input( "active" ) ?? 0 );
+        for( $i = 0; $i < $request->numports; $i++ ) {
+            $rules[ 'portName'.$i ] = 'required|string|max:255';
+            $rules[ 'portType'.$i ] = 'required|integer|in:' . implode( ',', array_keys( SwitchPort::$TYPES ) );
         }
 
-        D2EM::flush();
+        $request->validate( $rules );
 
+        for( $i = 0; $i < $request->numports; $i++ ) {
+            $this->object = Switcher::create( [
+                    'switchid' => $request->switchid,
+                    'type' => $request->input('portType' . $i ),
+                    'name' => $request->input('portName' . $i ),
+                    'active' => $request->active,
+                ] );
+        }
+
+        return true;
+    }
+
+    /**
+     * Function to do the actual validation and storing of the submitted object.
+     *
+     * @param Request $request
+     * @param int $id
+     *
+     * @return bool|RedirectResponse
+     *
+     * @throws
+     */
+    public function doUpdate( Request $request, int $id )
+    {
+        $this->object = SwitchPort::findOrFail( $id );
+
+        $request->validate( [
+            'switchid' => [
+                'required', 'integer',
+                function( $attribute, $value, $fail ) {
+                    if( !Switcher::whereId( $value )->exists() ) {
+                        return $fail( 'Switch is invalid / does not exist.' );
+                    }
+                }
+            ],
+            'name'                      => 'required|string|max:255',
+            'type'                      => 'required|integer|in:' . implode( ',', array_keys( SwitchPort::$TYPES ) ),
+        ] );
+
+        $this->object->update( $request->all() );
 
         return true;
     }
@@ -330,64 +316,56 @@ class SwitchPortController extends Doctrine2Frontend
      *
      * @return string|null
      */
-    protected function postStoreRedirect()
+    protected function postStoreRedirect(): ?string
     {
-        if( request()->input( "isAdd" ) ) {
-            return route( "switch-port@list", [ "switch" => request()->input( "switchid" ) ] );
+        if( request()->isAdd ) {
+            return route( "switch-port@list", [ "switch" => request()->switchid ] );
         }
-
         return null;
     }
-
 
     /**
      * @inheritdoc
      */
-    protected function preDelete() : bool
+    protected function preDelete(): bool
     {
-
-        if( ( $this->object->getPhysicalInterface() ) ) {
-
-            $c = $this->object->getPhysicalInterface()->getVirtualInterface()->getCustomer();
-
-            AlertContainer::push( "You cannot delete the switch port {$this->object->getName()} as it is assigned to a physical interface for "
-                . "<a href=\"" . route('customer@overview', [ "id" => $c->getId(), "tab" => "ports" ]) . "\">{$c->getName()}</a>.", Alert::DANGER );
+        if( ( $this->object->physicalInterface() ) ) {
+            $c = $this->object->physicalInterface->virtualInterface->customer();
+            AlertContainer::push( "You cannot delete the switch port {$this->object->name} as it is assigned to a physical interface for "
+                . "<a href=\"" . route('customer@overview', [ "id" => $c->id, "tab" => "ports" ]) . "\">{$c->name}</a>.", Alert::DANGER );
             return false;
         }
 
-
-        if( ( $this->object->getPatchPanelPort() ) ) {
-
-            $ppp = $this->object->getPatchPanelPort();
-
-            AlertContainer::push( "You cannot delete the switch port {$this->object->getName()} as it is assigned to a patch panel port for "
-                . "<a href=\"" . route('patch-panel-port/list/patch-panel', [ "ppid" => $ppp->getPatchPanel()->getId() ] ) . "\">{$ppp->getName()}</a>.", Alert::DANGER );
+        if(  $this->object->patchPanelPort() ) {
+            $ppp = $this->object->patchPanelPort;
+            AlertContainer::push( "You cannot delete the switch port {$this->object->name} as it is assigned to a patch panel port for "
+                . "<a href=\"" . route('patch-panel-port/list/patch-panel', [ "ppid" => $ppp->patchPanel->id ] ) . "\">{$ppp->name}</a>.", Alert::DANGER );
             return false;
         }
 
         return true;
-
     }
 
     /**
      * Set up all the information to display the Unused optics list
      *
-     *
      * @bool
      */
-    public function setUpUnusedOptics()
+    public function setUpUnusedOptics(): bool
     {
-        $this->feParams->listOrderBy                = 'switch';
+        $this->feParams->listOrderBy                = 'switchname';
         $this->feParams->pagetitle                  = 'Switches';
         $this->feParams->pagetitlepostamble         = 'Unused Optics';
         $this->feParams->route_prefix_page_title    = 'switch';
-
         $this->feParams->readonly                   = true;
         $this->feParams->hideactioncolumn           = true;
 
         $this->feParams->listColumns = [
-            'ifIndex'       => [ 'title' => 'UID', 'display' => false ],
-            'switch'        => 'Switch',
+            'ifIndex'       => [
+                'title' => 'UID',
+                'display' => false
+            ],
+            'switchname'    => 'Switch',
             'ifName'        => 'Port',
             'type'          => 'Type',
             'mauType'       => 'MAU Type',
@@ -409,12 +387,10 @@ class SwitchPortController extends Doctrine2Frontend
     {
         $this->setUpUnusedOptics();
 
-        $this->data[ 'rows' ] =  D2EM::getRepository( SwitchPortEntity::class )->getUnusedOpticsForFeList( $this->feParams );
+        $this->data[ 'rows' ] =  SwitchPort::getUnusedOpticsForFeList( $this->feParams );
 
-        $this->setUpViews();
-
-        $this->data[ 'view' ][ 'pageBreadcrumbs']       = $this->resolveTemplate( 'page-bread-crumbs',          false );
-
+        $this->listIncludeTemplates();
+        $this->data[ 'view' ][ 'pageBreadcrumbs'] = $this->resolveTemplate( 'page-bread-crumbs',false );
         $this->preList();
 
         AlertContainer::push( "A list of ports from <b>switches that support the IANA MAU MIB</b> where the operational status
@@ -433,23 +409,23 @@ class SwitchPortController extends Doctrine2Frontend
     public function setUpListMau()
     {
         $this->feParams->pagetitle                  = 'Switches';
-
         $this->feParams->route_prefix_page_title    = 'switch';
         $this->feParams->route_action               = 'list-mau';
         $this->feParams->listOrderBy                = 'id';
-
         $this->feParams->readonly                   = true;
         $this->feParams->hideactioncolumn           = true;
 
         $this->feParams->listColumns = [
-            'id'                    => [ 'title' => 'UID', 'display' => true ],
+            'id'                    =>
+                [ 'title' => 'UID',
+                  'display' => true
+                ],
             'ifName'                => 'Name',
             'type'                  => [
                 'title'     =>  'Type',
                 'type'      =>   self::$FE_COL_TYPES[ 'CONST' ],
-                'const'     =>   SwitchPortEntity::$TYPES,
+                'const'     =>   SwitchPort::$TYPES,
             ],
-
             'state'                 => [
                 'title'     =>  'State (Admin/Op)',
                 'type'      =>   self::$FE_COL_TYPES[ 'SCRIPT' ],
@@ -459,19 +435,17 @@ class SwitchPortController extends Doctrine2Frontend
                                 "operState"     => "ifOperStatus",
                 ],
             ],
-
             'mauType'               => 'MAU Type',
             'mauState'              => 'MAU State',
             'mauAvailability'       => 'MAU Availability',
             'mauJacktype'           => 'Jack Type',
-
             'mauAutoNegAdminState'  => [
                 'title'     =>  'Auto Neg',
                 'type'      =>   self::$FE_COL_TYPES[ 'SCRIPT' ],
                 'script'    =>   'switch-port/port-auto-neg',
                 'params'    =>   [
-                                "mauAutoNegAdminState"    => "mauAutoNegAdminState",
-                            ],
+                    "mauAutoNegAdminState"    => "mauAutoNegAdminState",
+                ],
             ]
         ];
 
@@ -482,51 +456,35 @@ class SwitchPortController extends Doctrine2Frontend
     /**
      * Display the unused optics
      *
-     * @param int $switchid
+     * @param Switcher $switch
      *
      * @return RedirectResponse|View
      *
      * @throws
      */
-    public function listMau( int $switchid = null )
+    public function listMau( Switcher $switch  )
     {
-
-        /** @var $s SwitcherEntity */
-        if( !( $s = D2EM::getRepository( SwitcherEntity::class )->find( $switchid ) ) ){
-            abort( "404", "Unknown Switch" );
-        }
-
-        $switches = [];
-        $switchesList = D2EM::getRepository( SwitcherEntity::class )->findBy( [ 'mauSupported' => true ] );
-
-        foreach( $switchesList as $switch ){
-            /** @var $switch  SwitcherEntity */
-            $switches[ $switch->getId() ] = $switch->getName();
-        }
-
-        if( !$s->getMauSupported() ) {
+        if( !$switch->mauSupported ) {
             return redirect::to( route( "switch@list" ) );
         }
 
         $this->setUpListMau();
+        $this->data[ 'rows' ] =  SwitchPort::getListMau( $this->feParams, $switch->id );
 
-        $this->data[ 'rows' ] =  D2EM::getRepository( SwitchPortEntity::class )->getListMau( $this->feParams, $s->getId() );
+        $this->feParams->pagetitlepostamble             = 'MAU Interface Detail for ' . $switch->name ;
 
-        $this->feParams->pagetitlepostamble             = 'MAU Interface Detail for ' . $s->getName() ;
+        $this->data[ 'params' ][ 'switches' ]           = Switcher::where( 'mauSupported', true )->get()->keyBy( 'id' )->toArray();
+        $this->data[ 'params' ][ 'switch' ]             = $switch;
+        $this->data[ 'params' ][ 'switchid' ]           = $switch->id;
 
-        $this->data[ 'params' ][ 'switches' ]           = $switches;
-        $this->data[ 'params' ][ 'switch' ]             = $s;
-        $this->data[ 'params' ][ 'switchid' ]           = $s->getId();
-
-        $this->setUpViews();
+        $this->listIncludeTemplates();
         $this->data[ 'view' ][ 'pageBreadcrumbs']       = $this->resolveTemplate( 'page-bread-crumbs',          false );
 
         $this->preList();
 
-        AlertContainer::push( "Data valid at time of last SNMP poll: " . $s->getLastPolled()->format( 'Y-m-d H:i:s' ), Alert::INFO );
+        AlertContainer::push( "Data valid at time of last SNMP poll: " . $switch->lastpolled, Alert::INFO );
 
         return $this->display( 'list' );
-
     }
 
 
@@ -537,10 +495,8 @@ class SwitchPortController extends Doctrine2Frontend
      */
     public function setUpOpStatus( )
     {
-
         $this->feParams->listOrderBy                = 'ifIndex';
         $this->feParams->pagetitle                  = 'Switches';
-
         $this->feParams->route_prefix_page_title    = 'switch';
         $this->feParams->route_action               = 'list-op-status';
 
@@ -552,29 +508,29 @@ class SwitchPortController extends Doctrine2Frontend
             'lagIfIndex'    => 'LAG',
             'ifHighSpeed'   => 'Speed',
             'ifMtu'         => 'MTU',
-            // 'ifPhysAddress' => 'Physical Address',
-
             'ifAdminStatus' => [
                 'title'    => 'Admin State',
                 'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
                 'script'   => 'switch-port/port-status',
-                'params'    => [
-                                "state"    => "ifAdminStatus",
-                            ]
+                'params'    =>
+                    [
+                        "state"    => "ifAdminStatus",
+                    ]
             ],
-
             'ifOperStatus' => [
                 'title'    => 'Operational State',
                 'type'     => self::$FE_COL_TYPES[ 'SCRIPT' ],
                 'script'   => 'switch-port/port-status',
-                'params'  => [
-                                "state"    => "ifOperStatus",
-                            ]
-            ],
-            'active'       => [
-                    'title'    => 'Active',
-                    'type'     => self::$FE_COL_TYPES[ 'YES_NO' ],
-            ],
+                'params'  =>
+                    [
+                        "state"    => "ifOperStatus",
+
+                    ],
+                    'active'       => [
+                            'title'    => 'Active',
+                            'type'     => self::$FE_COL_TYPES[ 'YES_NO' ],
+                    ],
+            ]
         ];
 
         return true;
@@ -583,50 +539,43 @@ class SwitchPortController extends Doctrine2Frontend
     /**
      * Display the switch ports operation status for a switch
      *
-     * @param int $id
+     * @param Switcher $switch
      *
      * @return view
      *
      * @throws
      */
-    public function listOpStatus( int $id = null )
+    public function listOpStatus( Switcher $switch  ): view
     {
+        // to refresh switch and switch port details via SNMP
+        try
+        {
+            $host = new SNMP( $switch->hostname, $switch->snmppasswd );
 
-        /** @var $s SwitcherEntity */
-        if( $id && ( $s = D2EM::getRepository( SwitcherEntity::class )->find( $id ) ) ) {
-            try // to refresh switch and switch port details via SNMP
-            {
+            $switch->snmpPoll( $host, true );
+            $switch->snmpPollSwitchPorts( $host, true );
+            $switch->save();
 
-                $host = new SNMP( $s->getHostname(), $s->getSnmppasswd() );
+            AlertContainer::push( "The below is <b>live information</b> gathered via SNMP", Alert::INFO );
+        } catch( Exception $e ) {
+            $lastpolled = is_null( $switch->lastPolled) ? "never" : $switch->lastPolled;
 
-                $s->snmpPoll( $host, true );
-
-                $s->snmpPollSwitchPorts( $host, true );
-
-                D2EM::flush();
-
-                AlertContainer::push( "The below is <b>live information</b> gathered via SNMP", Alert::INFO );
-
-            } catch( Exception $e ) {
-                $lastpolled = is_null( $s->getLastPolled()) ? "never" : $s->getLastPolled()->format( 'Y-m-d H:i:s' );
-
-                AlertContainer::push( "<b>Could not update switch and switch port details via SNMP poll.</b> " .
-                    "Last successful poll: " . $lastpolled . "</b>.", Alert::DANGER );
-            }
+            AlertContainer::push( "<b>Could not update switch and switch port details via SNMP poll.</b> " .
+                "Last successful poll: " . $lastpolled . "</b>.", Alert::DANGER );
         }
 
         $this->setUpOpStatus();
 
         $this->data[ 'params' ][ 'portStates' ]     = Iface::$IF_OPER_STATES;
-        $this->data[ 'params' ][ 'switch' ]         = $s;
-        $this->data[ 'params' ][ 'switchid' ]       = $s->getId();
-        $this->data[ 'params' ][ 'switches']        = D2EM::getRepository( SwitcherEntity::class  )->getNames();
+        $this->data[ 'params' ][ 'switch' ]         = $switch;
+        $this->data[ 'params' ][ 'switchid' ]       = $switch->id;
+        $this->data[ 'params' ][ 'switches']        = Switcher::getListAsArray();
 
         $this->data[ 'rows' ] =  $this->listGetData();
 
-        $this->feParams->pagetitlepostamble             = 'List Live Port State for ' . $s->getName() ;
+        $this->feParams->pagetitlepostamble             = 'List Live Port State for ' . $switch->name ;
 
-        $this->setUpViews();
+        $this->listIncludeTemplates();
 
         return $this->display( 'list' );
     }
@@ -643,48 +592,37 @@ class SwitchPortController extends Doctrine2Frontend
      *
      *  Should this be in the SwitchController? Possibly...
      *
-     * @param int $id Switch Id
+     * @param Switcher $switch Switch
      *
      * @return view
      * @throws
      */
-    public function snmpPoll( int $id )
+    public function snmpPoll( Switcher $switch ): view
     {
-
-        /** @var $s SwitcherEntity */
-        if( $id && !( $s = D2EM::getRepository( SwitcherEntity::class )->find( $id ) ) ) {
-            abort(404, "Unknown switch.");
-        }
-
-        if( !$s->getActive() ) {
+        if( !$switch->active ) {
             AlertContainer::push( "SNMP Polling of ports is only valid for switches that are active", Alert::DANGER );
             redirect::to( route( "switch@list" ) );
         }
 
-
         $results = [];
-
         try {
-            $host = new SNMP( $s->getHostname(), $s->getSnmppasswd() );
-            $s->snmpPoll( $host, true );
-            $s->snmpPollSwitchPorts( $host, true, $results );
-            D2EM::flush();
+            $host = new SNMP( $switch->hostname, $switch->snmppasswd );
+            $switch->snmpPoll( $host, true );
+            $switch->snmpPollSwitchPorts( $host, true, $results );
+            $switch->save();
 
         } catch( Exception $e ) {
             AlertContainer::push( "Error polling switch via SNMP.", Alert::DANGER );
             redirect::to( route( "switch@list" ) );
         }
 
-
         return view( 'switch-port/snmp-poll' )->with([
-            'switches'                  => D2EM::getRepository( SwitcherEntity::class )->getNames(),
-            's'                         => $s,
+            'switches'                  => Switcher::getListAsArray(),
+            's'                         => $switch,
             'ports'                     => $results,
 
         ]);
-
     }
-
 
     /**
      * Sets port type for port loaded
@@ -697,27 +635,22 @@ class SwitchPortController extends Doctrine2Frontend
      */
     public function setType( Request $r ): JsonResponse
     {
-
-        if( !$r->input( "spid") ) {
+        if( !$r->spid ) {
             return response()->json( [ 'success' => false ] );
         }
 
-        foreach( $r->input( "spid") as $id ) {
-            /** @var $sp SwitchPortEntity */
-            if( $id && !( $sp = D2EM::getRepository( SwitchPortEntity::class )->find( $id ) ) ) {
-                abort(404, "Unknown switch port.");
-            }
+        foreach( $r->spid as $id ) {
+            $sp = SwitchPort::findOrFail( $id );
 
-            if( !array_key_exists( $r->input( "type"), SwitchPortEntity::$TYPES ) ){
+            if( !array_key_exists( $r->type, SwitchPort::$TYPES ) ){
                 return response()->json( [ 'success' => false ] );
             }
 
-            $sp->setType( $r->input( "type") );
+            $sp->type = $r->type;
+            $sp->save();
         }
 
-        D2EM::flush();
-
-        if( $r->input( "returnMessage", false ) ) {
+        if( $r->returnMessage ) {
             AlertContainer::push( "The selected switch ports have been updated", Alert::SUCCESS );
         }
 
@@ -737,50 +670,42 @@ class SwitchPortController extends Doctrine2Frontend
     public function deleteSnmpPoll( Request $r ): JsonResponse
     {
 
-        if( !$r->input( "spid") ) {
+        if( !$r->spid) {
             return response()->json( [ 'success' => false ] );
         }
 
-        foreach( $r->input( "spid" ) as $id ) {
+        foreach( $r->spid as $id ) {
             $error = false;
-
             Log::debug( 'Html\Controllers\Switches\SwitchPort::deleteSnmpPoll() - Processing switch port ID: ' . $id );
 
-            /** @var $sp SwitchPortEntity */
-            if( !$id || !( $sp = D2EM::getRepository( SwitchPortEntity::class )->find( $id ) ) ) {
-                abort(404, "Unknown switch port.");
-            }
+            $sp = SwitchPort::findOrFail( $id );
 
-            if( $sp->getPhysicalInterface() ) {
-                $cust = $sp->getPhysicalInterface()->getVirtualInterface()->getCustomer();
-                AlertContainer::push( "Could not delete switch port {$sp->getName()} as it is assigned to a physical interface for "
+            if( $sp->physicalInterface() ) {
+                $cust = $sp->physicalInterface->virtualInterface->customer;
+                AlertContainer::push( "Could not delete switch port {$sp->name} as it is assigned to a physical interface for "
                     . "<a href=\""
-                    . route( "customer@overview" , [ 'id' => $cust->getId(), 'tab' => 'ports' ]  )
-                    . "\">{$cust->getName()}</a>.", Alert::DANGER
+                    . route( "customer@overview" , [ 'id' => $cust->id, 'tab' => 'ports' ]  )
+                    . "\">{$cust->name}</a>.", Alert::DANGER
                 );
 
                 $error = true;
             }
 
-            if( $sp->getPatchPanelPort() ) {
-                $ppp = $sp->getPatchPanelPort();
-                AlertContainer::push( "Could not delete switch port {$sp->getName()} as it is assigned to a patch panel port for "
+            if( $sp->patchPanelPort ) {
+                $ppp = $sp->patchPanelPort;
+                AlertContainer::push( "Could not delete switch port {$sp->name} as it is assigned to a patch panel port for "
                     . "<a href=\""
-                    . route( "patch-panel-port/list/patch-panel" , [ 'ppid' => $ppp->getId() ]  )
-                    . "\">{$ppp->getName()}</a>.", Alert::DANGER
+                    . route( "patch-panel-port/list/patch-panel" , [ 'ppid' => $ppp->id ]  )
+                    . "\">{$ppp->name}</a>.", Alert::DANGER
                 );
 
                 $error = true;
             }
-
 
             if( !$error ) {
-                D2EM::remove( $sp );
+                $sp->delete();
             }
-
         }
-
-        D2EM::flush();
 
         AlertContainer::push(
             "<b>Please Note:</b> It is not possible to delete real physical Ethernet switch ports as "
@@ -806,42 +731,17 @@ class SwitchPortController extends Doctrine2Frontend
      */
     public function changeStatus( Request $r ): JsonResponse
     {
-
-        if( $r->input( "spid") ){
-            foreach( $r->input( "spid") as $id ){
-                /** @var $sp SwitchPortEntity */
-                if( $id && !( $sp = D2EM::getRepository( SwitchPortEntity::class )->find( $id ) ) ) {
-                    abort(404, "Unknown switch port.");
-                }
-
-                $sp->setActive( $r->input( "active") ? 1 : 0 );
+        if( $r->spid ) {
+            foreach( $r->spid as $id ) {
+                $sp = SwitchPort::findOrFail( $id );
+                $sp->active = $r->active ? 1 : 0;
+                $sp->save();
             }
 
-            D2EM::flush();
-
             AlertContainer::push(  "The selected switch ports have been updated.", Alert::SUCCESS );
-
             return response()->json( [ 'success' => true ] );
-
         }
-
         return response()->json( [ 'success' => false ] );
-    }
-
-
-    /**
-     * Setup all the necessary view
-     */
-    private function setUpViews()
-    {
-        $this->data[ 'view' ][ 'listEmptyMessage']      = $this->resolveTemplate( 'list-empty-message',         false );
-        $this->data[ 'view' ][ 'listHeadOverride']      = $this->resolveTemplate( 'list-head-override',         false );
-        $this->data[ 'view' ][ 'listRowOverride']       = $this->resolveTemplate( 'list-row-override',          false );
-        $this->data[ 'view' ][ 'listPreamble']          = $this->resolveTemplate( 'list-preamble',              false );
-        $this->data[ 'view' ][ 'listPostamble']         = $this->resolveTemplate( 'list-postamble',             false );
-        $this->data[ 'view' ][ 'listRowMenu']           = $this->resolveTemplate( 'list-row-menu',              false );
-        $this->data[ 'view' ][ 'pageHeaderPreamble']    = $this->resolveTemplate( 'page-header-preamble',       false );
-        $this->data[ 'view' ][ 'listScript' ]           = $this->resolveTemplate( 'js/list' );
     }
 
     /**
@@ -849,14 +749,11 @@ class SwitchPortController extends Doctrine2Frontend
      *
      * @bool
      */
-    public function setUpOpticInventory( )
+    public function setUpOpticInventory(): bool
     {
-
         $this->feParams->listOrderBy                = 'cnt';
         $this->feParams->pagetitle                  = 'Switches';
-
-        $this->feParams->pagetitlepostamble             = 'Optic Inventory';
-
+        $this->feParams->pagetitlepostamble         = 'Optic Inventory';
         $this->feParams->route_prefix_page_title    = 'switch';
         $this->feParams->route_action               = 'optic-inventory';
         $this->feParams->hideactioncolumn           = true;
@@ -884,15 +781,11 @@ class SwitchPortController extends Doctrine2Frontend
      *
      * @throws
      */
-    public function opticInventory()
+    public function opticInventory(): view
     {
-
         $this->setUpOpticInventory();
-
-        $this->data[ 'rows' ] =  D2EM::getRepository( SwitchPortEntity::class )->getOpticInventory( $this->feParams );
-
-        $this->setUpViews();
-
+        $this->data[ 'rows' ] =  SwitchPort::getOpticInventory( $this->feParams );
+        $this->listIncludeTemplates();
         return $this->display( 'list' );
     }
 
@@ -903,26 +796,22 @@ class SwitchPortController extends Doctrine2Frontend
      *
      * @bool
      */
-    public function setUpOpticList( )
+    public function setUpOpticList(): bool
     {
-
         $this->feParams->pagetitle                  = 'Switches';
-
         $this->feParams->pagetitlepostamble         = 'Optic List';
-
         $this->feParams->route_prefix_page_title    = 'switch';
-
         $this->feParams->listOrderBy                = 'ifName';
-
         $this->feParams->readonly                   = true;
         $this->feParams->hideactioncolumn           = true;
 
         $this->feParams->listColumns = [
-            'id'                    => [ 'title' => 'UID', 'display' => false ],
+            'id'                    =>
+                [ 'title' => 'UID',
+                  'display' => false
+                ],
             'ifName'                => 'Name',
             'switch'                => 'Switch',
-            'custname'              => 'Customer',
-
             'custname'  => [
                 'title'                 => 'Customer',
                 'type'                  => self::$FE_COL_TYPES[ 'HAS_ONE' ],
@@ -930,11 +819,10 @@ class SwitchPortController extends Doctrine2Frontend
                 'action'                => 'overview',
                 'idField'               => 'custid'
             ],
-
             'type'                  => [
                 'title'     =>  'Type',
                 'type'      =>   self::$FE_COL_TYPES[ 'CONST' ],
-                'const'     =>   SwitchPortEntity::$TYPES,
+                'const'     =>   SwitchPort::$TYPES,
             ],
 
             'state'                 => [
@@ -946,10 +834,8 @@ class SwitchPortController extends Doctrine2Frontend
                     "operState"     => "ifOperStatus",
                 ],
             ],
-
             'mauType'               => 'MAU Type',
             'mauState'              => 'MAU State',
-
         ];
 
         return true;
@@ -962,20 +848,12 @@ class SwitchPortController extends Doctrine2Frontend
      *
      * @throws
      */
-    public function opticList()
+    public function opticList(): view
     {
-
         $this->setUpOpticList();
-
-        $this->data[ 'rows' ] =  D2EM::getRepository( SwitchPortEntity::class )->getListMauForType( $this->feParams, request()->input( "mau-type" ) );
-
-        $this->setUpViews();
-
+        $this->data[ 'rows' ] =  SwitchPort::getListMauForType( $this->feParams, request()->input( "mau-type" ) );
+        $this->listIncludeTemplates();
         $this->preList();
-
         return $this->display( 'list' );
     }
-
-
-
 }

@@ -3,13 +3,18 @@
 namespace IXP\Models;
 
 use Cache;
+use DateTime;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Support\Collection;
+use Log;
+use OSS_SNMP\SNMP;
 use Session;
 use stdClass;
+
+use \OSS_SNMP\MIBS\Iface as SNMPIface;
 
 /**
  * IXP\Models\Switcher
@@ -144,6 +149,22 @@ class Switcher extends Model
         self::VIEW_MODE_DEFAULT     => 'Default',
         self::VIEW_MODE_OS          => 'OS View',
         self::VIEW_MODE_L3          => 'L3 View',
+    ];
+
+    /**
+     * Elements for SNMP polling via the OSS_SNMP library
+     *
+     * These are used to build function names
+     *
+     * @see snmpPoll() below
+     * @var array Elements for SNMP polling via the OSS_SNMP library
+     */
+    public static $SNMP_SWITCH_ELEMENTS = [
+        'Model',
+        'Os',
+        'OsDate',
+        'OsVersion',
+        'SerialNumber'
     ];
 
     /**
@@ -393,4 +414,166 @@ class Switcher extends Model
             ->get()->toArray();
     }
 
+
+    /**
+     * Update switch's details using SNMP polling
+     *
+     * @see self::$SNMP_SWITCH_ELEMENTS
+     *
+     * @param SNMP  $host       An instance of \OSS_SNMP\SNMP for this switch
+     * @param bool  $logger     An instance of the logger or false
+     *
+     * @return Switcher For fluent interfaces
+     */
+    public function snmpPoll( $host, bool $logger = false ): Switcher
+    {
+        // utility to format dates
+        $formatDate = function( $d ) {
+            return $d instanceof DateTime ? $d->format( 'Y-m-d H:i:s' ) : 'Unknown';
+        };
+
+        foreach( self::$SNMP_SWITCH_ELEMENTS as $p ) {
+            $fn = "get{$p}";
+            $n = $host->getPlatform()->$fn();
+
+            if( $logger ) {
+                switch( $p ) {
+                    case 'OsDate':
+                        if( $formatDate( $this->$fn() ) != $formatDate( $n ) )
+                            Log::info( " [{$this->name}] Platform: Updating {$p} from " . $formatDate( $this->$fn() ) . " to " . $formatDate( $n ) );
+                        else
+                            Log::info( " [{$this->name}] Platform: Found {$p}: " . $formatDate( $n ) );
+                        break;
+
+                    default:
+                        if( $logger && $this->$fn() != $n )
+                            Log::info( " [{$this->name}] Platform: Updating {$p} from {$this->$fn()} to {$n}" );
+                        else
+                            Log::info( " [{$this->name}] Platform: Found {$p}: {$n}" );
+                        break;
+                }
+            }
+
+            $fn = $p;
+            $this->$fn = $n;
+        }
+
+        // does this switch support the IANA MAU MIB?
+        try {
+            $host->useMAU()->types();
+            $this->mauSupported = true;
+        } catch( \OSS_SNMP\Exception $e ) {
+            $this->mauSupported = false;
+        }
+
+        // uptime data
+        try {
+            $this->snmp_system_uptime = $host->useSystem()->uptime();
+        } catch( \OSS_SNMP\Exception $e ) {
+            //
+        }
+
+        try {
+            $this->snmp_engine_time = $host->useSNMP_Engine()->time();
+            $this->snmp_engine_boots = $host->useSNMP_Engine()->boots();
+        } catch( \OSS_SNMP\Exception $e ) {
+            //
+        }
+
+        $this->lastPolled = now();
+        return $this;
+    }
+
+    /**
+     * Update a switches ports using SNMP polling
+     *
+     * There is an optional ``$results`` array which can be passed by reference. If
+     * so, it will be indexed by the SNMP port index (or a decresing nagative index
+     * beginning -1 if the port only exists in the database). The contents of this
+     * associative array is:
+     *
+     *     "port"   => \Entities\SwitchPort object
+     *     "bullet" =>
+     *         - false for existing ports
+     *         - "new" for newly found ports
+     *         - "db" for ports that exist in the database only
+     *
+     * **Note:** It is assumed that the Doctrine2 Entity Manager is available in the
+     * Zend registry as ``d2em`` in this function.
+     *
+     * @param SNMP $host An instance of \OSS_SNMP\SNMP for this switch
+     * @param bool $logger An instance of the logger or false
+     * @param bool $result
+     *
+     * @return Switcher For fluent interfaces
+     *
+     * @throws
+     */
+    public function snmpPollSwitchPorts( $host, $logger = false, &$result = false ): Switcher
+    {
+        // clone the ports currently known to this switch as we'll be playing with this array
+        $existingPorts = clone $this->switchPorts();
+
+        // iterate over all the ports discovered on the switch:
+        foreach( $host->useIface()->indexes() as $index ) {
+            // we're only interested in Ethernet ports here (right?)
+            if( $host->useIface()->types()[ $index ] !== SNMPIface::IF_TYPE_ETHERNETCSMACD && $host->useIface()->types()[ $index ] != SNMPIface::IF_TYPE_L3IPVLAN ) {
+                continue;
+            }
+
+            // find the matching switch port that may already be in the database (or create a new one)
+            $sp = false;
+            foreach( $existingPorts as $ix => $ep ) {
+                if( $ep->ifIndex === $index ) {
+                    $sp = $ep;
+                    if( is_array( $result ) ){
+                        $result[ $index ] = [ "port" => $sp, 'bullet' => false ];
+                    }
+
+                    if( $logger ) {
+                        Log::info( " - {$this->name} - found pre-existing port for ifIndex {$index}" );
+                    }
+
+                    // remove this from the array so later we'll know what ports exist only in the database
+                    unset( $existingPorts[ $ix ] );
+                    break;
+                }
+            }
+
+            if( !$sp ) {
+                // none existing port in database so we have found a new port
+                $sp = SwitchPort::create([
+                    'switchid'  => $this->id,
+                    'ifIndex'   => $index,
+                    'active'    => true,
+                    'type'      => SwitchPort::TYPE_UNSET,
+                ]);
+
+                if( is_array( $result ) ) {
+                    $result[ $index ] = [ "port" => $sp, 'bullet' => "new" ];
+                }
+
+                if( $logger ) {
+                    Log::info( "Found new port for {$this->name} with index $index" );
+                }
+            }
+
+            // update / set port details from SNMP
+            $sp->snmpUpdate( $host, $logger );
+        }
+
+        if( $existingPorts->count() ) {
+            $i = -1;
+            foreach( $existingPorts as $ep ) {
+                if( is_array( $result ) ) {
+                    $result[ $i-- ] = [ "port" => $ep, 'bullet' => "db" ];
+                }
+                if( $logger ) {
+                    Log::warning( "{$this->name} - port found in database with no matching port on the switch:  [{$ep->id}] {$ep->name}" );
+                }
+            }
+        }
+
+        return $this;
+    }
 }
