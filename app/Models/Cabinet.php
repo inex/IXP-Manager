@@ -113,7 +113,7 @@ class Cabinet extends Model
     }
 
     /**
-     * Get the infrastructure that own the switcher
+     * Get the location for the cabinet
      */
     public function location(): BelongsTo
     {

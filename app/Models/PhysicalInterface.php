@@ -27,6 +27,7 @@ use Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * IXP\Models\PhysicalInterface
@@ -66,19 +67,19 @@ class PhysicalInterface extends Model
     protected $table = 'physicalinterface';
 
     /**
-     * Get the customer that owns the virtual interfaces.
+     * Get the virtual interface that owns the physical interface.
      */
     public function virtualInterface(): BelongsTo
     {
-        return $this->belongsTo(VirtualInterface::class, 'virtualinterfaceid');
+        return $this->belongsTo(VirtualInterface::class, 'virtualinterfaceid' );
     }
 
     /**
-     * Get the switch port that owns the physical interfaces.
+     * Get the switch port that owns the physical interface.
      */
-    public function switchPort(): BelongsTo
+    public function switchPort(): HasOne
     {
-        return $this->belongsTo(SwitchPort::class, 'switchportid');
+        return $this->hasOne(SwitchPort::class, 'switchportid');
     }
 
 

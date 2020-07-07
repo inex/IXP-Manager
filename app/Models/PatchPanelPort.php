@@ -123,4 +123,30 @@ class PatchPanelPort extends Model
     {
         return $this->hasMany(PatchPanelPortFile::class, 'patch_panel_port_id' );
     }
+
+    /**
+     * Get the slave port for this patch panel port
+     */
+    public function slavePort(): HasMany
+    {
+        return $this->hasMany(PatchPanelPort::class, 'du' );
+    }
+
+    /**
+     * Get name
+     *
+     * @return integer
+     */
+    public function getName()
+    {
+        $name = $this->patchPanel->port_prefix . $this->number;
+
+
+        // finish me
+//        if( $this->hasSlavePort() ) {
+//            $name .= '/' . $this->getDuplexSlavePortName() . ' ';
+//            $name .= '(' . ( $this->getNumber() % 2 ? ( floor( $this->getNumber() / 2 ) ) + 1 : $this->getNumber() / 2 ) . ')';
+//        }
+        return $name;
+    }
 }

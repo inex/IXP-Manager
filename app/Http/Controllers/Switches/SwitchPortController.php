@@ -33,10 +33,7 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use IXP\Models\{
-    Switcher,
-    SwitchPort
-};
+use IXP\Models\{PhysicalInterface, Switcher, SwitchPort, VirtualInterface};
 
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
@@ -71,19 +68,19 @@ class SwitchPortController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
-        $this->feParams         = (object)[
-            'entity'            => SwitchPort::class,
-            'pagetitle'         => 'Switch Ports',
-            'titleSingular'     => 'Switch Port',
-            'nameSingular'      => 'a switch port',
-            'listOrderBy'       => 'name',
-            'listOrderByDir'    => 'ASC',
-            'viewFolderName'    => 'switch-port',
-            'route_action'      => 'list',
+        $this->feParams         = ( object )[
+            'entity'                    => SwitchPort::class,
+            'pagetitle'                 => 'Switch Ports',
+            'titleSingular'             => 'Switch Port',
+            'nameSingular'              => 'a switch port',
+            'listOrderBy'               => 'name',
+            'listOrderByDir'            => 'ASC',
+            'viewFolderName'            => 'switch-port',
+            'route_action'              => 'list',
             'route_prefix_page_title'   => 'switch',
-            'pagetitlepostamble'         => 'Switch Port',
+            'pagetitlepostamble'        => 'Switch Port',
 
             'listColumns'       => [
                 'id'        => [
@@ -126,17 +123,17 @@ class SwitchPortController extends EloquentController
     protected static function additionalRoutes( string $route_prefix ): void
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
-        Route::group( [  'prefix' => $route_prefix ], function() {
-            Route::get(  'unused-optics',       'Switches\SwitchPortController@unusedOptics'   )->name( "switch-port@unused-optics"     );
-            Route::get(  'optic-inventory',     'Switches\SwitchPortController@opticInventory' )->name( "switch-port@optic-inventory"   );
-            Route::get(  'optic-list',          'Switches\SwitchPortController@opticList'      )->name( "switch-port@optic-list"        );
-            Route::get(  'list-mau/{switch}',   'Switches\SwitchPortController@listMau'        )->name( "switch-port@list-mau"          );
-            Route::get(  'op-status/{switch}',  'Switches\SwitchPortController@listOpStatus'   )->name( "switch-port@list-op-status"    );
-            Route::get(  'snmp-poll/{switch}',  'Switches\SwitchPortController@snmpPoll'       )->name( "switch-port@snmp-poll"         );
+        Route::group( [  'prefix' => $route_prefix ], static function() {
+            Route::get(  'unused-optics',       'Switches\SwitchPortController@unusedOptics'   )->name( 'switch-port@unused-optics'     );
+            Route::get(  'optic-inventory',     'Switches\SwitchPortController@opticInventory' )->name( 'switch-port@optic-inventory'   );
+            Route::get(  'optic-list',          'Switches\SwitchPortController@opticList'      )->name( 'switch-port@optic-list'        );
+            Route::get(  'list-mau/{switch}',   'Switches\SwitchPortController@listMau'        )->name( 'switch-port@list-mau'          );
+            Route::get(  'op-status/{switch}',  'Switches\SwitchPortController@listOpStatus'   )->name( 'switch-port@list-op-status'    );
+            Route::get(  'snmp-poll/{switch}',  'Switches\SwitchPortController@snmpPoll'      )->name( 'switch-port@snmp-poll'         );
 
-            Route::post( 'set-type',            'Switches\SwitchPortController@setType'        )->name( "switch-port@set-type"          );
-            Route::post( 'delete-snmp-poll',    'Switches\SwitchPortController@deleteSnmpPoll' )->name( "switch-port@delete-snmp-poll"  );
-            Route::post( 'change-status',       'Switches\SwitchPortController@changeStatus'   )->name( "switch-port@change-status"     );
+            Route::post( 'set-type',            'Switches\SwitchPortController@setType'        )->name( 'switch-port@set-type'          );
+            Route::post( 'delete-snmp-poll',    'Switches\SwitchPortController@deleteSnmpPoll' )->name( 'switch-port@delete-snmp-poll'  );
+            Route::post( 'change-status',       'Switches\SwitchPortController@changeStatus'   )->name( 'switch-port@change-status'     );
         });
     }
 
@@ -152,48 +149,35 @@ class SwitchPortController extends EloquentController
         return SwitchPort::getFeList( $this->feParams, $id, $this->data );
     }
 
-    public function list( Request $r ) : View
+    /**
+     * List the contents of a database table.
+     *
+     * @param Request $request
+     *
+     * @return View|RedirectResponse
+     */
+    public function list( Request $request ) : View
     {
         $s = false;
 
-        if( $r->switchid  !== null ) {
-            if(  $s = Switcher::find( $r->switchid ) ) {
-                $sid = $s->id;
-                $r->session()->put( "switch-port-list", $sid );
+        if( $request->switch  !== null ) {
+            if(  $s = Switcher::find( $request->switch ) ) {
+                $request->session()->put( "switch-port-list", $s->id );
             } else {
-                $r->session()->remove( "switch-port-list" );
-                $sid = false;
+                $request->session()->remove( "switch-port-list" );
             }
-        } else if( $r->session()->exists( "switch-port-list" ) ) {
-            if( $s = Switcher::find( $r->session()->get( "switch-port-list" ) ) ) {
-                $sid = $s->id;
-            }
-        } else {
-            $sid = false;
+        } else if( $request->session()->exists( "switch-port-list" ) ) {
+            $s = Switcher::find( $request->session()->get( "switch-port-list" ) );
         }
 
-        $this->data[ 'params' ][ 'switchid' ]       = $sid;
         $this->data[ 'params' ][ 'switch' ]         = $s;
         $this->data[ 'params' ][ 'switches' ]       = Switcher::getListAsArray();
 
         $this->data[ 'rows' ] = $this->listGetData();
 
         $this->listIncludeTemplates();
-        $this->preList();
 
         return $this->display( 'list' );
-    }
-
-    /**
-     * Display the form to add/edit an object
-     */
-    protected function addForm()
-    {
-        $this->addEditSetup();
-        $this->data[ 'params' ]['isAdd']        = true;
-        $this->data[ 'params' ]['switches']     = Switcher::getListAsArray();
-
-        return $this->display( 'add-form' );
     }
 
     /**
@@ -265,14 +249,13 @@ class SwitchPortController extends EloquentController
         $request->validate( $rules );
 
         for( $i = 0; $i < $request->numports; $i++ ) {
-            $this->object = Switcher::create( [
-                    'switchid' => $request->switchid,
-                    'type' => $request->input('portType' . $i ),
-                    'name' => $request->input('portName' . $i ),
-                    'active' => $request->active,
-                ] );
+            $this->object = SwitchPort::create( [
+                'switchid'  => $request->switchid,
+                'type'      => $request->input('portType' . $i ),
+                'name'      => $request->input('portName' . $i ),
+                'active'    => true,
+            ] );
         }
-
         return true;
     }
 
@@ -308,7 +291,6 @@ class SwitchPortController extends EloquentController
         return true;
     }
 
-
     /**
      * Allow D2F implementations to override where the post-store redirect goes.
      *
@@ -329,17 +311,17 @@ class SwitchPortController extends EloquentController
      */
     protected function preDelete(): bool
     {
-        if( ( $this->object->physicalInterface() ) ) {
-            $c = $this->object->physicalInterface->virtualInterface->customer();
+        if( ( $this->object->physicalInterface()->exists() ) ) {
+            $c = $this->object->physicalInterface->virtualInterface->customer;
             AlertContainer::push( "You cannot delete the switch port {$this->object->name} as it is assigned to a physical interface for "
                 . "<a href=\"" . route('customer@overview', [ "id" => $c->id, "tab" => "ports" ]) . "\">{$c->name}</a>.", Alert::DANGER );
             return false;
         }
 
-        if(  $this->object->patchPanelPort() ) {
+        if(  $this->object->patchPanelPort()->exists() ) {
             $ppp = $this->object->patchPanelPort;
             AlertContainer::push( "You cannot delete the switch port {$this->object->name} as it is assigned to a patch panel port for "
-                . "<a href=\"" . route('patch-panel-port/list/patch-panel', [ "ppid" => $ppp->patchPanel->id ] ) . "\">{$ppp->name}</a>.", Alert::DANGER );
+                . "<a href=\"" . route('patch-panel-port/list/patch-panel', [ "ppid" => $ppp->patchPanel->id ] ) . "\">{$ppp->getName()}</a>.", Alert::DANGER );
             return false;
         }
 
@@ -386,12 +368,8 @@ class SwitchPortController extends EloquentController
     public function unusedOptics() : View
     {
         $this->setUpUnusedOptics();
-
         $this->data[ 'rows' ] =  SwitchPort::getUnusedOpticsForFeList( $this->feParams );
-
         $this->listIncludeTemplates();
-        $this->data[ 'view' ][ 'pageBreadcrumbs'] = $this->resolveTemplate( 'page-bread-crumbs',false );
-        $this->preList();
 
         AlertContainer::push( "A list of ports from <b>switches that support the IANA MAU MIB</b> where the operational status
         is down, the port is populated with an optic / SFP and the port type is not management.
@@ -401,12 +379,11 @@ class SwitchPortController extends EloquentController
     }
 
     /**
-     * Set up all the information to display the Unused optics list
-     *
+     * Set up all the information to display the list MAU
      *
      * @bool
      */
-    public function setUpListMau()
+    public function setUpListMau(): bool
     {
         $this->feParams->pagetitle                  = 'Switches';
         $this->feParams->route_prefix_page_title    = 'switch';
@@ -452,9 +429,8 @@ class SwitchPortController extends EloquentController
         return true;
     }
 
-
     /**
-     * Display the unused optics
+     * Display the List MAU
      *
      * @param Switcher $switch
      *
@@ -469,31 +445,24 @@ class SwitchPortController extends EloquentController
         }
 
         $this->setUpListMau();
-        $this->data[ 'rows' ] =  SwitchPort::getListMau( $this->feParams, $switch->id );
-
         $this->feParams->pagetitlepostamble             = 'MAU Interface Detail for ' . $switch->name ;
-
         $this->data[ 'params' ][ 'switches' ]           = Switcher::where( 'mauSupported', true )->get()->keyBy( 'id' )->toArray();
         $this->data[ 'params' ][ 'switch' ]             = $switch;
-        $this->data[ 'params' ][ 'switchid' ]           = $switch->id;
-
+        $this->data[ 'rows' ] =  SwitchPort::getListMau( $this->feParams, $switch->id );
         $this->listIncludeTemplates();
-        $this->data[ 'view' ][ 'pageBreadcrumbs']       = $this->resolveTemplate( 'page-bread-crumbs',          false );
 
-        $this->preList();
-
-        AlertContainer::push( "Data valid at time of last SNMP poll: " . $switch->lastpolled, Alert::INFO );
+        AlertContainer::push( "Data valid at time of last SNMP poll: " . $switch->lastPolled, Alert::INFO );
 
         return $this->display( 'list' );
     }
 
 
     /**
-     * Set up all the information to display the Unused optics list
+     * Set up all the information to display the operation Status
      *
      * @bool
      */
-    public function setUpOpStatus( )
+    public function setUpOpStatus(): bool
     {
         $this->feParams->listOrderBy                = 'ifIndex';
         $this->feParams->pagetitle                  = 'Switches';
@@ -524,7 +493,6 @@ class SwitchPortController extends EloquentController
                 'params'  =>
                     [
                         "state"    => "ifOperStatus",
-
                     ],
                     'active'       => [
                             'title'    => 'Active',

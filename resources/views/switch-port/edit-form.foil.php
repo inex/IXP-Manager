@@ -1,10 +1,8 @@
-
 <div class="card">
     <div class="card-body">
-
-        <?= Former::open()->method( 'POST' )
+        <?= Former::open()->method( $t->data['params']['isAdd'] ? 'POST' : 'PUT' )
             ->id( 'form' )
-            ->action( route( $t->feParams->route_prefix.'@store' ) )
+            ->action( $t->data['params']['isAdd'] ? route( $t->feParams->route_prefix . '@store' ) : route($t->feParams->route_prefix . '@update', [ 'id' => $t->data[ 'params'][ 'object']->id ] ) )
             ->customInputWidthClass( 'col-lg-4 col-sm-6' )
             ->customLabelWidthClass( 'col-lg-2 col-sm-3' )
             ->actionButtonsCustomClass( "grey-box")
@@ -27,7 +25,7 @@
 
             <?= Former::select( 'type' )
                 ->label( 'Type' )
-                ->fromQuery( \Entities\SwitchPort::$TYPES )
+                ->fromQuery( \IXP\Models\SwitchPort::$TYPES )
                 ->placeholder( 'Choose a Type' )
                 ->addClass( 'chzn-select' )
                 ->blockHelp( "The port type." );
@@ -46,7 +44,6 @@
 
 
         <?php if( $t->data[ 'params'][ 'isAdd'] ): ?>
-
             <?= Former::number( 'numfirst' )
                 ->label( 'Number of First Port' )
                 ->blockHelp( "The number of the first port to add. This will be incremented by 1 for <em>Number of Ports</em> below." );
@@ -79,10 +76,8 @@
             ->id( "submit-area" )->class(  $t->data[ 'params'][ 'isAdd'] ? "collapse" : '' )->class( "mb-2 mb-sm-0");
         ?>
 
-
-
         <?= Former::hidden( 'id' )
-            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->getId() : '' )
+            ->value( $t->data[ 'params'][ 'object'] ? $t->data[ 'params'][ 'object']->id : '' )
         ?>
 
         <?= Former::hidden( 'isAdd' )
@@ -90,7 +85,5 @@
         ?>
 
         <?= Former::close() ?>
-
     </div>
 </div>
-

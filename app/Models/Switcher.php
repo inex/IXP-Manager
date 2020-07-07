@@ -284,7 +284,7 @@ class Switcher extends Model
         return Cache::remember( self::genCacheKey( $active ) , 3600, function () use( $active )  {
             return self::when( $active , function( Builder $q ) {
                 return $q->where( 'active', 1 );
-            })->orderBy( 'name', 'ASC' )->get();
+            })->orderBy( 'name', 'ASC' )->get()->keyBy( 'id' );
         });
     }
 
@@ -292,11 +292,13 @@ class Switcher extends Model
      * Clear the cache of all result sets
      *
      * @return void
+     *
+     * @throws
      */
     public static function clearCacheAll(): void
     {
         foreach( [ true, false ] as $active ) {
-            Session::remove( self::genCacheKey( $active ) );
+            Cache::delete( self::genCacheKey( $active ) );
         }
     }
 

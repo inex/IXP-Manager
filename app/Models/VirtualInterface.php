@@ -72,7 +72,7 @@ class VirtualInterface extends Model
      */
     public function customer(): BelongsTo
     {
-        return $this->belongsTo(Customer::class, 'custid');
+        return $this->belongsTo(Customer::class, 'custid' );
     }
 
     /**
@@ -90,7 +90,4 @@ class VirtualInterface extends Model
     {
         return $this->hasMany(PhysicalInterface::class, 'virtualinterfaceid');
     }
-
-
-
 }

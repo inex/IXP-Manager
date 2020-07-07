@@ -60,8 +60,8 @@ use IXP\Utils\View\Alert\{
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-abstract class Frontend extends Controller {
-
+abstract class Frontend extends Controller
+{
     /**
      * Parameters used by the frontend controller
      * @var object Parameters used by the frontend controller
@@ -299,8 +299,10 @@ abstract class Frontend extends Controller {
 
     /**
      *  Include the necessary templates to the list function
+     *
+     * @return void
      */
-    protected function listIncludeTemplates()
+    protected function listIncludeTemplates(): void
     {
         $this->data[ 'view' ][ 'listEmptyMessage']      = $this->resolveTemplate( 'list-empty-message',     false );
         $this->data[ 'view' ][ 'listScriptExtra']       = $this->resolveTemplate( 'js/list-extra',          false );

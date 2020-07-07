@@ -1,7 +1,5 @@
 <script>
-
     $( document ).ready(function() {
-
         /**
          * Change the color of the row when selected
         */
@@ -28,7 +26,6 @@
                 $( "#poll-tr-" + $( this ).attr( 'id' ).substr( $( this ).attr( 'id' ).lastIndexOf( '-' ) + 1 ) ).css( "background", $( this ).is(":checked") ? "#F0F0F0" : "" );
             });
         });
-
 
         /**
          * Change the type of the selected switch ports via the shared dropdown
@@ -68,7 +65,8 @@
          *
          *  @return    spids          array of switch port ID
          */
-        function getSelectedSwitchPorts() {
+        function getSelectedSwitchPorts()
+        {
             let spids = $('.sp-checkbox:checkbox:checked').map( function() {
                 return this.id.substr( this.id.lastIndexOf( '-' ) + 1 );
             }).get();
@@ -88,8 +86,8 @@
          *  @var    id          array of switch port IDs
          *  @var    element     from where the functions has been triggered (individual dropdown, shared dropdown)
          */
-        function setType( id, element ) {
-
+        function setType( id, element )
+        {
             let sharedType = $( "#shared-type" );
             let portType;
             let returnMessage = 1;
@@ -118,27 +116,27 @@
                 },
                 type: 'POST'
             })
-                .done( function( data ) {
-                    if( element === "port-type" ){
-                        if( data.success ) {
-                            portType.html( '<i style="color:#3c763d" class="fa fa-check"></i>' );
-                        } else {
-                            portType.html( '<i style="color:#a94442" class="fa fa-times"></i>' );
-                        }
+            .done( function( data ) {
+                if( element === "port-type" ){
+                    if( data.success ) {
+                        portType.html( '<i style="color:#3c763d" class="fa fa-check"></i>' );
                     } else {
-                        window.location.reload();
+                        portType.html( '<i style="color:#a94442" class="fa fa-times"></i>' );
                     }
+                } else {
+                    window.location.reload();
+                }
 
-                })
-                .fail( function(){
-                    alert( 'Could not update port type(s). API / AJAX / network error' );
-                    throw new Error("Error running ajax query for " + urlAction);
-                })
-                .always( function() {
-                    if( portType ) {
-                        portType.removeClass("spinner-border");
-                    }
-                });
+            })
+            .fail( function(){
+                alert( 'Could not update port type(s). API / AJAX / network error' );
+                throw new Error("Error running ajax query for " + urlAction);
+            })
+            .always( function() {
+                if( portType ) {
+                    portType.removeClass("spinner-border");
+                }
+            });
         }
 
         /**
@@ -150,7 +148,6 @@
             $( ".port-type"         ).prop('disabled', 'disabled');
             $( '#loading'           ).addClass( "loader" );
         }
-
 
         /**
          * Delete the selected switch ports
@@ -176,12 +173,8 @@
                     alert( 'Could not delete switch ports' );
                     throw new Error("Error running ajax query for " + urlAction);
                 });
-
             }
-
         });
-
-
 
         /**
          * Change the status of selected switch ports (active or inactive)
@@ -210,6 +203,4 @@
             }
         }
     });
-
-
 </script>

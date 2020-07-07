@@ -84,6 +84,35 @@ class SwitchPort extends Model
      */
     public $timestamps = false;
 
+    /**
+     * The attributes that are mass assignable.
+     *
+     * @var array
+     */
+    protected $fillable = [
+        'switchid',
+        'type',
+        'name',
+        'ifName',
+        'ifAlias',
+        'ifHighSpeed',
+        'ifMtu',
+        'ifPhysAddress',
+        'ifAdminStatus',
+        'ifOperStatus',
+        'ifLastChange',
+        'lastSnmpPoll',
+        'ifIndex',
+        'active',
+        'lagIfIndex',
+        'mauType',
+        'mauState',
+        'mauAvailability',
+        'mauJacktype',
+        'mauAutoNegSupported',
+        'mauAutoNegAdminState',
+    ];
+
     const TYPE_UNSET          = 0;
     const TYPE_PEERING        = 1;
     const TYPE_MONITOR        = 2;
@@ -176,6 +205,17 @@ class SwitchPort extends Model
     }
 
     /**
+     * Turn the database integer representation of the type into text as
+     * defined in the self::$TYPES array (or 'Unknown')
+     *
+     * @return string
+     */
+    public function resolveType(): string
+    {
+        return self::$TYPES[ $this->type ];
+    }
+
+    /**
      * Gets a listing of switche ports or a single one if an ID is provided
      *
      * @param stdClass $feParams
@@ -193,9 +233,13 @@ class SwitchPort extends Model
             ->from( 'switchport AS sp' )
             ->leftJoin( 'switch AS s', 's.id', 'sp.switchid')
             ->when( $id , function( Builder $q, $id ) {
-                return $q->where('sp.id', $id );
-            } )->when( isset( $params[ 'params' ][ 'switchid' ] ) && $params[ 'params' ][ 'switchid' ] , function( Builder $q ) use ( $params ) {
-                return $q->where('s.id', isset( $params[ 'params' ][ 'switchid' ] ) );
+                return $q->selectRaw( 'c.id AS cid, c.name AS cname' )
+                    ->leftJoin( 'physicalinterface AS pi', 'pi.switchportid', 'sp.id' )
+                    ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'pi.virtualinterfaceid' )
+                    ->leftJoin( 'cust AS c', 'c.id', 'vi.custid' )
+                ->where('sp.id', $id );
+            } )->when( isset( $params[ 'params' ][ 'switch' ] ) && $params[ 'params' ][ 'switch' ] , function( Builder $q ) use ( $params ) {
+                return $q->where('s.id', $params[ 'params' ][ 'switch' ]->id );
             } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
                 return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
             })->get()->toArray();
