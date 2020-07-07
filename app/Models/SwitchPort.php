@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Log;
 use OSS_SNMP\SNMP;
 use OSS_SNMP\MIBS\MAU as MauMib;
 use stdClass;
@@ -438,7 +439,6 @@ class SwitchPort extends Model
                     break;
             }
 
-            $fn = $entity;
             $this->$fn = $n;
         }
 

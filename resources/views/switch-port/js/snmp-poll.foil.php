@@ -1,4 +1,9 @@
 <script>
+    //////////////////////////////////////////////////////////////////////////////////////
+    // we'll need these handles to html elements in a few places:
+    const btn_select_all = $( "#select-all"  );
+    const dd_shared_type = $( "#shared-type" );
+
     $( document ).ready(function() {
         /**
          * Change the color of the row when selected
@@ -13,8 +18,8 @@
          * Check or uncheck all the checkboxes
          */
         $( "#select-all"  ).on( 'change', function() {
-            $( ".sp-checkbox"   ).prop('checked',       $( "#select-all"  ).is( ":checked" ) );
-            $( ".poll-tr"       ).css( "background",    $( "#select-all"  ).is( ":checked" ) ? "#F0F0F0" : "" );
+            $( ".sp-checkbox"   ).prop('checked',       btn_select_all.is( ":checked" ) );
+            $( ".poll-tr"       ).css( "background",    btn_select_all.is( ":checked" ) ? "#F0F0F0" : "" );
         });
 
         /**
@@ -30,7 +35,7 @@
         /**
          * Change the type of the selected switch ports via the shared dropdown
         */
-        $( "#shared-type" ).on( 'change', function() {
+        dd_shared_type.on( 'change', function() {
             if( $( this ).val() ) {
                 setType( getSelectedSwitchPorts(), "shared-type" );
             }
@@ -88,7 +93,7 @@
          */
         function setType( id, element )
         {
-            let sharedType = $( "#shared-type" );
+            let sharedType = dd_shared_type;
             let portType;
             let returnMessage = 1;
             let urlAction     = '<?= route( "switch-port@set-type" ) ?>';
@@ -144,7 +149,7 @@
          */
         function disableInputsAction(){
             $( ".input-sp-action"   ).addClass( 'disabled' );
-            $( "#shared-type"       ).prop('disabled', 'disabled');
+            dd_shared_type.prop('disabled', 'disabled');
             $( ".port-type"         ).prop('disabled', 'disabled');
             $( '#loading'           ).addClass( "loader" );
         }
@@ -164,7 +169,7 @@
                     data: {
                         spid    : id,
                     },
-                    type: 'POST'
+                    type: 'DELETE'
                 })
                 .done( function() {
                     window.location.reload();

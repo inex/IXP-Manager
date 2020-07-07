@@ -160,11 +160,11 @@ class Switcher extends Model
      * @var array Elements for SNMP polling via the OSS_SNMP library
      */
     public static $SNMP_SWITCH_ELEMENTS = [
-        'Model',
-        'Os',
-        'OsDate',
-        'OsVersion',
-        'SerialNumber'
+        'Model'         => [ 'fn' => 'model' ],
+        'Os'            => [ 'fn' => 'os' ],
+        'OsDate'        => [ 'fn' => 'osDate' ],
+        'OsVersion'     => [ 'fn' => 'osVersion' ],
+        'SerialNumber'  => [ 'fn' => 'serialNumber' ],
     ];
 
     /**
@@ -434,30 +434,31 @@ class Switcher extends Model
             return $d instanceof DateTime ? $d->format( 'Y-m-d H:i:s' ) : 'Unknown';
         };
 
-        foreach( self::$SNMP_SWITCH_ELEMENTS as $p ) {
-            $fn = "get{$p}";
+        foreach( self::$SNMP_SWITCH_ELEMENTS as $index => $p ) {
+            $objfn = $p[ 'fn' ];
+            $fn = "get{$index}";
             $n = $host->getPlatform()->$fn();
 
             if( $logger ) {
-                switch( $p ) {
+                switch( $index ) {
                     case 'OsDate':
-                        if( $formatDate( $this->$fn() ) != $formatDate( $n ) )
-                            Log::info( " [{$this->name}] Platform: Updating {$p} from " . $formatDate( $this->$fn() ) . " to " . $formatDate( $n ) );
+                        if( $this->$objfn != $formatDate( $n ) )
+                            Log::info( " [{$this->name}] Platform: Updating {$index} from " . $this->$objfn . " to " . $formatDate( $n ) );
                         else
-                            Log::info( " [{$this->name}] Platform: Found {$p}: " . $formatDate( $n ) );
+                            Log::info( " [{$this->name}] Platform: Found {$index}: " . $formatDate( $n ) );
                         break;
 
                     default:
-                        if( $logger && $this->$fn() != $n )
-                            Log::info( " [{$this->name}] Platform: Updating {$p} from {$this->$fn()} to {$n}" );
-                        else
-                            Log::info( " [{$this->name}] Platform: Found {$p}: {$n}" );
+                        if( $logger && $this->$objfn != $n ){
+                            Log::info( " [{$this->name}] Platform: Updating {$index} from {$this->$objfn} to {$n}" );
+                        } else{
+                            Log::info( " [{$this->name}] Platform: Found {$index}: {$n}" );
+                        }
                         break;
                 }
             }
 
-            $fn = $p;
-            $this->$fn = $n;
+            $this->$objfn = $n;
         }
 
         // does this switch support the IANA MAU MIB?
@@ -544,7 +545,7 @@ class Switcher extends Model
 
             if( !$sp ) {
                 // none existing port in database so we have found a new port
-                $sp = SwitchPort::create([
+                $sp = SwitchPort::create( [
                     'switchid'  => $this->id,
                     'ifIndex'   => $index,
                     'active'    => true,

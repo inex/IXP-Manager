@@ -7,7 +7,7 @@
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <?= $t->insert( "switch-port/page-header-preamble", [ "data" => [ "params" => [ "switch" => $t->s->id, "switches" => $t->switches ] ] , "feParams" => (object)[ "route_prefix" => "switch-port", "route_action" => "snmp-poll" ] ] ) ?>
+    <?= $t->insert( "switch-port/page-header-preamble", [ "data" => [ "params" => [ "switch" => $t->s, "switches" => $t->switches ] ] , "feParams" => (object)[ "route_prefix" => "switch-port", "route_action" => "snmp-poll" ] ] ) ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -105,7 +105,7 @@
                 <tbody>
                     <?php if( count( $t->ports ) ): ?>
                         <?php foreach( $t->ports as $port ): ?>
-                            <tr id="poll-tr-<?= $port[ "port" ]->getId() ?>" class="poll-tr">
+                            <tr id="poll-tr-<?= $port[ "port" ]->id ?>" class="poll-tr">
                                 <td>
                                     <input type="checkbox" class="sp-checkbox" name="switch-port[<?= $port[ "port"]->id ?>]" id="switch-port-<?= $port[ "port"]->id ?>" value="<?= $port[ "port"]->id ?>" />
                                 </td>
@@ -133,6 +133,7 @@
                                     <div style="float: left;">
                                         <select id="port-type-<?= $port[ "port"]->id ?>" class="form-control">
                                             <?php foreach( \IXP\Models\SwitchPort::$TYPES as $idx => $name ): ?>
+
                                                 <option value="<?= $idx ?>" label="<?= $name ?>" <?= $port[ "port"]->type === $idx ? "selected='selected'" : "" ?>>
                                                     <?= $name ?>
                                                 </option>

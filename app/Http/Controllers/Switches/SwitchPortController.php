@@ -33,7 +33,10 @@ use Illuminate\Http\{
 
 use Illuminate\View\View;
 
-use IXP\Models\{PhysicalInterface, Switcher, SwitchPort, VirtualInterface};
+use IXP\Models\{
+    Switcher,
+    SwitchPort,
+};
 
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
@@ -132,8 +135,8 @@ class SwitchPortController extends EloquentController
             Route::get(  'snmp-poll/{switch}',  'Switches\SwitchPortController@snmpPoll'      )->name( 'switch-port@snmp-poll'         );
 
             Route::post( 'set-type',            'Switches\SwitchPortController@setType'        )->name( 'switch-port@set-type'          );
-            Route::post( 'delete-snmp-poll',    'Switches\SwitchPortController@deleteSnmpPoll' )->name( 'switch-port@delete-snmp-poll'  );
             Route::post( 'change-status',       'Switches\SwitchPortController@changeStatus'   )->name( 'switch-port@change-status'     );
+            Route::delete( 'delete-snmp-poll',  'Switches\SwitchPortController@deleteSnmpPoll' )->name( 'switch-port@delete-snmp-poll'  );
         });
     }
 
@@ -627,7 +630,7 @@ class SwitchPortController extends EloquentController
 
 
     /**
-     * Sets port type for port loaded
+     * Delete port
      *
      * @param   Request     $r          HTTP instance
      *
@@ -637,7 +640,6 @@ class SwitchPortController extends EloquentController
      */
     public function deleteSnmpPoll( Request $r ): JsonResponse
     {
-
         if( !$r->spid) {
             return response()->json( [ 'success' => false ] );
         }
@@ -648,7 +650,7 @@ class SwitchPortController extends EloquentController
 
             $sp = SwitchPort::findOrFail( $id );
 
-            if( $sp->physicalInterface() ) {
+            if( $sp->physicalInterface()->exists() ) {
                 $cust = $sp->physicalInterface->virtualInterface->customer;
                 AlertContainer::push( "Could not delete switch port {$sp->name} as it is assigned to a physical interface for "
                     . "<a href=\""
@@ -659,12 +661,12 @@ class SwitchPortController extends EloquentController
                 $error = true;
             }
 
-            if( $sp->patchPanelPort ) {
+            if( $sp->patchPanelPort()->exists() ) {
                 $ppp = $sp->patchPanelPort;
                 AlertContainer::push( "Could not delete switch port {$sp->name} as it is assigned to a patch panel port for "
                     . "<a href=\""
                     . route( "patch-panel-port/list/patch-panel" , [ 'ppid' => $ppp->id ]  )
-                    . "\">{$ppp->name}</a>.", Alert::DANGER
+                    . "\">{$ppp->getName()}</a>.", Alert::DANGER
                 );
 
                 $error = true;

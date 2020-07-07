@@ -82,7 +82,7 @@ class SwitchController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = (object)[
             'entity'            => Switcher::class,
@@ -185,7 +185,7 @@ class SwitchController extends EloquentController
      *
      * @return void
      */
-    protected static function additionalRoutes( string $route_prefix )
+    protected static function additionalRoutes( string $route_prefix ): void
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
         Route::group( [  'prefix' => $route_prefix ], function() {
@@ -250,7 +250,7 @@ class SwitchController extends EloquentController
      *
      * @return bool
      */
-    private function setUpOsView( )
+    private function setUpOsView(): bool
     {
         $this->feParams->listColumns = [
             'id'        =>
@@ -290,7 +290,7 @@ class SwitchController extends EloquentController
      *
      * @return bool
      */
-    private function setUpL3View( )
+    private function setUpL3View(): bool
     {
         $this->feParams->listColumns = [
             'id'                => [
@@ -354,12 +354,12 @@ class SwitchController extends EloquentController
         Former::populate([
             'name'              => request()->old( 'name',                  $this->object->name ),
             'hostname'          => request()->old( 'hostname',              $this->object->hostname ),
-            'cabinetid'         => request()->old( 'cabinetid',     $this->object->cabinetid ),
-            'infrastructure'    => request()->old( 'infrastructure',$this->object->infrastructure ),
+            'cabinetid'         => request()->old( 'cabinetid',             $this->object->cabinetid ),
+            'infrastructure'    => request()->old( 'infrastructure',        $this->object->infrastructure ),
             'ipv4addr'          => request()->old( 'ipv4addr',              $this->object->ipv4addr ),
             'ipv6addr'          => request()->old( 'ipv6addr',              $this->object->ipv6addr ),
             'snmppasswd'        => request()->old( 'snmppasswd',            $this->object->snmppasswd ),
-            'vendorid'          => request()->old( 'vendorid',      $this->object->vendorid ),
+            'vendorid'          => request()->old( 'vendorid',              $this->object->vendorid ),
             'model'             => request()->old( 'model',                 $this->object->model ),
             'active'            => request()->old( 'active',                ( $this->object->active ? 1 : 0 ) ),
             'asn'               => request()->old( 'asn',                   $this->object->asn ),
@@ -452,7 +452,7 @@ class SwitchController extends EloquentController
      *
      * @param $request
      */
-    public function checkForm( Request $request )
+    public function checkForm( Request $request ): void
     {
         $request->validate( [
             'name' => [
