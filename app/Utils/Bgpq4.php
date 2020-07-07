@@ -27,17 +27,17 @@ use IXP\Exceptions\GeneralException as Exception;
 use IXP\Exceptions\ConfigurationException;
 
 /**
- * Interface for the BQPQ3 command line utility
+ * Interface for the BGPQ4 command line utility
  *
- * @see http://snar.spb.ru/prog/bgpq3/
+ * @see https://github.com/bgp/bgpq4/
  *
  * @author Barry O'Donovan <barry@opensolutions.ie>
  */
-class Bgpq3
+class Bgpq4
 {
     /**
-     * Full executable path of the BGPQ3 utility
-     * @var string Full executable path of the BGPQ3 utility
+     * Full executable path of the BGPQ4 utility
+     * @var string Full executable path of the BGPQ4 utility
      */
     private $path = null;
 
@@ -57,7 +57,7 @@ class Bgpq3
     /**
      * Constructor
      *
-     * @param string $path The full executable path of the BGPQ3 utility
+     * @param string $path The full executable path of the BGPQ4 utility
      * @param string $whois Whois server - defaults to BGPQ's own default
      * @param string $sources Whois server sources - defaults to BGPQ's own default
      * @throws ConfigurationException
@@ -65,7 +65,7 @@ class Bgpq3
     public function __construct( $path, $whois = null, $sources = null )
     {
         if( !$path || !is_file( $path ) || !is_executable( $path ) ) {
-            throw new ConfigurationException('You must set the configuration option IXP_IRRDB_BGPQ3_PATH and it must be the absolute path to the executable bgpq3 utility.');
+            throw new ConfigurationException('You must set the configuration option IXP_IRRDB_BGPQ4_PATH and it must be the absolute path to the executable bgpq4 utility.');
         }
 
 
@@ -124,7 +124,7 @@ class Bgpq3
      */
     public function getAsnList( $asmacro, $proto = 4 )
     {
-        $json = $this->execute( '-3j -l pl -f 999 ' . escapeshellarg( $asmacro ), false );
+        $json = $this->execute( '-j -l pl -f 999 ' . escapeshellarg( $asmacro ), false );
         $array = json_decode( $json, true );
 
         if( $array === null )
@@ -147,7 +147,7 @@ class Bgpq3
      *
      * @param string $cmd The query part ot the BGPQ command. I.e. other switches besides -6, -h, -S.
      * @param int $proto The protocol. If 6, adds the -6 switch
-     * @throws Exception If return code from BGPQ3 is != 0
+     * @throws Exception If return code from BGPQ4 is != 0
      * @return string The output from the shell command.
      */
     private function execute( $cmd, $proto = 4 )
@@ -169,7 +169,7 @@ class Bgpq3
         exec( $cmd, $output, $return_var );
 
         if( $return_var != 0 )
-            throw new Exception( 'Error executing BGPQ3 with: ' . $cmd );
+            throw new Exception( 'Error executing BGPQ4 with: ' . $cmd );
 
         return implode( "\n", $output );
     }
@@ -179,7 +179,7 @@ class Bgpq3
      * The whois server to query
      *
      * @param string $whois The whois server to query
-     * @return Bgpq3 For fluent interfaces
+     * @return Bgpq4 For fluent interfaces
      */
     public function setWhois( $whois )
     {
@@ -191,7 +191,7 @@ class Bgpq3
      * The whois server sources
      *
      * @param string $sources The whois server sources
-     * @return Bgpq3 For fluent interfaces
+     * @return Bgpq4 For fluent interfaces
      */
     public function setSources( $sources )
     {
@@ -203,7 +203,7 @@ class Bgpq3
      * The executable path to the BGPQ executable
      *
      * @param string $path The executable path to the BGPQ executable
-     * @return Bgpq3 For fluent interfaces
+     * @return Bgpq4 For fluent interfaces
      */
     public function setPath( $path )
     {

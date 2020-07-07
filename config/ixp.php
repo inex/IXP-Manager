@@ -105,15 +105,15 @@ return [
        ;; */
 
     'irrdb' => [
-        'bgpq3' => [
-            'path' => env( 'IXP_IRRDB_BGPQ3_PATH', false ),
+        'bgpq4' => [
+            'path' => env( 'IXP_IRRDB_BGPQ4_PATH', false ),
         ],
 
         // ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
         // Minimum subnet sizes
         //
         // Used by the route server/collector/as112 templates and
-        // the bgpq3 command line.
+        // the bgpq4 command line.
         // Templates:
         //   - resources/views/api/v4/router/as112/bird/header.foil.php
         //   - resources/views/api/v4/router/collector/bird/header.foil.php

@@ -47,11 +47,11 @@ class UpdateAsnDb extends UpdateDb
     public function update(): array
     {
         if( $this->customer()->isRouteServerClient() && $this->customer()->isIrrdbFiltered() ) {
-            $this->bgpq3()->setSources( $this->customer()->getIRRDB()->getSource() );
+            $this->bgpq4()->setSources( $this->customer()->getIRRDB()->getSource() );
 
             foreach( $this->protocols() as $protocol ) {
                 $this->startTimer();
-                $asns = $this->bgpq3()->getAsnList( $this->customer()->resolveAsMacro( $protocol, 'as' ), $protocol );
+                $asns = $this->bgpq4()->getAsnList( $this->customer()->resolveAsMacro( $protocol, 'as' ), $protocol );
                 $this->result[ 'netTime' ] += $this->timeElapsed();
 
                 $this->result[ 'v' . $protocol ][ 'count' ] = count( $asns );

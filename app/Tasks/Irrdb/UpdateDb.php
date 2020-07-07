@@ -29,7 +29,7 @@ use Entities\Customer;
 use Exception;
 use IXP\Exceptions\ConfigurationException;
 use IXP\Exceptions\GeneralException;
-use IXP\Utils\Bgpq3;
+use IXP\Utils\Bgpq4;
 use Log;
 
 /**
@@ -44,11 +44,11 @@ use Log;
 abstract class UpdateDb
 {
     /**
-     * BGPQ3 Utility Interface details object.
+     * BGPQ4 Utility Interface details object.
      *
-     * @var Bgpq3
+     * @var Bgpq4
      */
-    private $bgpq3 = null;
+    private $bgpq4 = null;
 
     /**
      * Customer to update prefixes of
@@ -111,7 +111,7 @@ abstract class UpdateDb
             $this->protocols = $protocols;
         }
 
-        $this->setBgpq3( new Bgpq3( config( 'ixp.irrdb.bgpq3.path' ) ) );
+        $this->setBgpq4( new Bgpq4( config( 'ixp.irrdb.bgpq4.path' ) ) );
     }
 
     /**
@@ -146,24 +146,24 @@ abstract class UpdateDb
 
 
     /**
-     * Set the Bgpq3 utility
+     * Set the Bgpq4 utility
      *
-     * @param Bgpq3 $bgpq3
+     * @param Bgpq4 $bgpq4
      * @return UpdateDb
      * @throws ConfigurationException
      */
-    public function setBgpq3( Bgpq3 $bgpq3 ): UpdateDb {
-        $this->bgpq3 = $bgpq3;
+    public function setBgpq4( Bgpq4 $bgpq4 ): UpdateDb {
+        $this->bgpq4 = $bgpq4;
         return $this;
     }
 
     /**
-     * Get the Bgpq3 utility
+     * Get the Bgpq4 utility
      *
-     * @return Bgpq3
+     * @return Bgpq4
      */
-    public function bgpq3(): Bgpq3 {
-        return $this->bgpq3;
+    public function bgpq4(): Bgpq4 {
+        return $this->bgpq4;
     }
 
     /**
@@ -218,7 +218,7 @@ abstract class UpdateDb
         $fromDb = D2EM::getRepository( $entity )->getForCustomerAndProtocol( $this->customer(), $protocol );
         $this->result['dbTime'] += $this->timeElapsed();
 
-        // The calling function and the Bgpq3 class does a lot of validation and error
+        // The calling function and the Bgpq4 class does a lot of validation and error
         // checking. But the last thing we need to do is start filtering all prefixes/ASNs if
         // something falls through to here. So, as a basic check, make sure we do not accept
         // an empty array of prefixes/ASNs for a customer that has a lot.
@@ -227,7 +227,7 @@ abstract class UpdateDb
             // make sure the customer doesn't have a non-empty prefix/ASN set that we're about to delete
             if( count( $fromDb ) != 0 ) {
                 $msg = "IRRDB {$type}: {$this->customer()->getName()} has a non-zero {$type} count for IPv{$protocol} in the database but "
-                    . "BGPQ3 returned none. Please examine manually. No databases changes made for this customer.";
+                    . "BGPQ4 returned none. Please examine manually. No databases changes made for this customer.";
                 Log::alert( $msg );
                 $result['msg'] = $msg;
             }
