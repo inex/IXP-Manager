@@ -53,7 +53,7 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 class ContactGroupController extends EloquentController
 {
     /**
-     * The object being added / edited
+     * The object being created / edited
      * @var ContactGroup
      */
     protected $object = null;
@@ -73,7 +73,7 @@ class ContactGroupController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = ( object )[
             'entity'            => ContactGroup::class,
@@ -193,7 +193,7 @@ class ContactGroupController extends EloquentController
      *
      * @param $request
      */
-    public function checkForm( Request $request )
+    public function checkForm( Request $request ): void
     {
         $request->validate( [
             'name'                  => 'required|string|max:255|unique:Entities\ContactGroup,name' . ( $request->input( 'id' ) ? ','. $request->input( 'id' ) : '' ),

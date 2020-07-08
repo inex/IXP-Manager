@@ -30,8 +30,7 @@ use Illuminate\Http\{
 };
 
 use IXP\Models\{
-    Infrastructure,
-    Ixp
+    Infrastructure
 };
 
 use IXP\Utils\View\Alert\{
@@ -52,7 +51,7 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController as Eloquent2Frontend;
 class InfrastructureController extends Eloquent2Frontend
 {
     /**
-     * The object being added / edited
+     * The object being created / edited
      * @var Infrastructure
      */
     protected $object = null;
@@ -60,7 +59,7 @@ class InfrastructureController extends Eloquent2Frontend
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = (object)[
             'entity'            =>  Infrastructure::class,
@@ -156,7 +155,7 @@ class InfrastructureController extends Eloquent2Frontend
      *
      * @param $request
      */
-    public function checkForm( Request $request )
+    public function checkForm( Request $request ): void
     {
         $request->validate( [
             'name' => [

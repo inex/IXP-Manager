@@ -71,8 +71,8 @@ class CustomerToUser extends Model
             'cust.id AS cust_id',
             'cust.name AS cust_name'
         ] )
-        ->join( 'user', 'user.id', '=', 'customer_to_users.user_id' )
-        ->join( 'cust', 'cust.id', '=', 'customer_to_users.customer_id' )
+        ->join( 'user', 'user.id', 'customer_to_users.user_id' )
+        ->join( 'cust', 'cust.id', 'customer_to_users.customer_id' )
         ->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
             return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
         })->get()->toArray();

@@ -25,6 +25,8 @@ namespace IXP\Http\Controllers;
 
 use IXP\Models\MacAddress;
 
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
+
 /**
  * Mac address Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
@@ -33,7 +35,7 @@ use IXP\Models\MacAddress;
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class MacAddressController extends Doctrine2Frontend
+class MacAddressController extends EloquentController
 {
     /**
      * The object being added / edited
@@ -51,7 +53,7 @@ class MacAddressController extends Doctrine2Frontend
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = (object)[
             'entity'            => MacAddress::class,

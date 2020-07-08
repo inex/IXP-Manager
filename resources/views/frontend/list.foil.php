@@ -1,46 +1,45 @@
 <?php
-    /** @var Foil\Template\Template $t */
-    $this->layout( 'layouts/ixpv4' );
+/** @var Foil\Template\Template $t */
+$this->layout( 'layouts/ixpv4' );
 ?>
-
 
 <?php $this->section( 'page-header-preamble' ) ?>
 
-    <?php if( isset( $t->feParams->pagetitle )  ): ?>
-        <?=  $t->feParams->pagetitle  ?>
-    <?php endif; ?>
+<?php if( isset( $t->feParams->pagetitle )  ): ?>
+    <?=  $t->feParams->pagetitle  ?>
+<?php endif; ?>
 
-    <?php if( isset( $t->feParams->pagetitlepostamble )  ): ?>
-            <?= $t->feParams->pagetitlepostamble ?>
-    <?php endif; ?>
+<?php if( isset( $t->feParams->pagetitlepostamble )  ): ?>
+    <?= $t->feParams->pagetitlepostamble ?>
+<?php endif; ?>
 
 <?php $this->append() ?>
 
 
 <?php $this->section( 'page-header-postamble' ) ?>
-    <?php if( $t->data[ 'view' ]['pageHeaderPreamble'] ): ?>
+<?php if( $t->data[ 'view' ]['pageHeaderPreamble'] ): ?>
 
-        <?= $t->insert( $t->data[ 'view' ]['pageHeaderPreamble'] ) ?>
+    <?= $t->insert( $t->data[ 'view' ]['pageHeaderPreamble'] ) ?>
 
-    <?php else: ?>
+<?php else: ?>
 
-        <div class="btn-group btn-group-sm ml-auto" role="group">
+    <div class="btn-group btn-group-sm ml-auto" role="group">
 
-            <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
-                <a target="_blank" class="btn btn-white" href="<?= $t->feParams->documentation ?>">
-                    Documentation
-                </a>
-            <?php endif; ?>
+        <?php if( isset( $t->feParams->documentation ) && $t->feParams->documentation ): ?>
+            <a target="_blank" class="btn btn-white" href="<?= $t->feParams->documentation ?>">
+                Documentation
+            </a>
+        <?php endif; ?>
 
-            <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-                <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@add') ?>">
-                    <i class="fa fa-plus"></i>
-                </a>
-            <?php endif;?>
+        <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
+            <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@create') ?>">
+                <i class="fa fa-plus"></i>
+            </a>
+        <?php endif;?>
 
-        </div>
+    </div>
 
-    <?php endif;?>
+<?php endif;?>
 <?php $this->append() ?>
 
 <?php $this->section('content') ?>
@@ -68,7 +67,7 @@
                             <div class="col-sm-12">
                                 <b>No <?= $t->feParams->nameSingular ?> exists.</b>
                                 <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>
-                                    <a class="btn btn-white ml-2" href="<?= route($t->feParams->route_prefix.'@add') ?>">Add one...</a>
+                                    <a class="btn btn-white ml-2" href="<?= route($t->feParams->route_prefix.'@create') ?>">Create one...</a>
                                 <?php endif;?>
                             </div>
                         </div>
@@ -88,26 +87,26 @@
 
                         <thead class="thead-dark">
 
-                            <tr>
-                                <?php foreach( $t->feParams->listColumns as $col => $cconf ):?>
+                        <tr>
+                            <?php foreach( $t->feParams->listColumns as $col => $cconf ):?>
 
-                                    <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display'] ) ||  $cconf[ 'display']   ):?>
-                                        <th>
-                                            <?php if( is_array( $cconf ) ) :?>
-                                                <?= $cconf[ 'title' ] ?>
-                                            <?php else: ?>
-                                                <?= $cconf ?>
-                                            <?php endif;?>
-                                        </th>
-                                    <?php endif;?>
-
-                                <?php endforeach;?>
-                                <?php if( !isset( $t->feParams->hideactioncolumn ) || !$t->feParams->hideactioncolumn ): ?>
+                                <?php if( !is_array( $cconf ) || !isset( $cconf[ 'display'] ) ||  $cconf[ 'display']   ):?>
                                     <th>
-                                        Actions
-                                    </th> <!-- actions column -->
-                                <?php endif; ?>
-                            </tr>
+                                        <?php if( is_array( $cconf ) ) :?>
+                                            <?= $cconf[ 'title' ] ?>
+                                        <?php else: ?>
+                                            <?= $cconf ?>
+                                        <?php endif;?>
+                                    </th>
+                                <?php endif;?>
+
+                            <?php endforeach;?>
+                            <?php if( !isset( $t->feParams->hideactioncolumn ) || !$t->feParams->hideactioncolumn ): ?>
+                                <th>
+                                    Actions
+                                </th> <!-- actions column -->
+                            <?php endif; ?>
+                        </tr>
 
                         </thead>
 
@@ -187,7 +186,7 @@
                                                 <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
 
                                                     <?php if( $row[ $col ] != null): ?>
-                                                        <?= $row[ $col ]->format( 'Y-m-d H:i:s' )  ?>
+                                                        <?= $row[ $col ] ?>
                                                     <?php endif; ?>
 
                                                 <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'UNIX_TIMESTAMP'] ): ?>
@@ -252,8 +251,12 @@
                                                     <?php elseif( isset( $cconf[ 'array'] )  ): ?>
 
                                                         <?php foreach( $row[ $col ] as $item ): ?>
+                                                            <?php if( isset( $cconf[ 'array' ][ 'index' ] ) ): ?>
+                                                                <span class="badge badge-success"><?= $t->ee( $item[ $cconf[ 'array' ][ 'index' ] ] ) ?> </span><?= $cconf[ 'array' ][ 'replace' ] ?>
+                                                            <?php else: ?>
+                                                                <span class="badge badge-success"><?= $t->ee( $item ) ?> </span><?= $cconf[ 'array' ][ 'replace' ] ?>
+                                                            <?php endif; ?>
 
-                                                            <span class="badge badge-success"><?= $t->ee( $item ) ?> </span><?= $cconf[ 'array' ][ 'replace' ] ?>
 
                                                         <?php endforeach; ?>
 
@@ -317,7 +320,7 @@
                                                     <a class="btn btn-white" id="d2f-list-edit-<?= $row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $row[ 'id' ] ] ) ?> " title="Edit">
                                                         <i class="fa fa-pencil"></i>
                                                     </a>
-                                                    <a class="btn btn-white d2f-list-delete" id='d2f-list-delete-<?= $row[ 'id' ] ?>' href="#" data-object-id="<?= $row[ 'id' ] ?>" title="Delete">
+                                                    <a class="btn btn-white btn-2f-list-delete" id='d2f-list-delete-<?= $row[ 'id' ] ?>' href="#" data-object-id="<?= $row[ 'id' ] ?>" data-url="<?= route( $t->feParams->route_prefix.'@delete' , [ 'id' => $row[ 'id' ] ]  )  ?>"  title="Delete">
                                                         <i class="fa fa-trash"></i>
                                                     </a>
                                                 <?php endif;?>
@@ -349,8 +352,8 @@
 
 <?php $this->section( 'scripts' ) ?>
 
-    <?php if( isset( $t->data[ 'view' ][ 'listScript' ] ) ): ?>
-        <?= $t->insert( $t->data[ 'view' ][ 'listScript' ] ); ?>
-    <?php endif; ?>
+<?php if( isset( $t->data[ 'view' ][ 'listScript' ] ) ): ?>
+    <?= $t->insert( $t->data[ 'view' ][ 'listScript' ] ); ?>
+<?php endif; ?>
 
 <?php $this->append() ?>

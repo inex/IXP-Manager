@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,16 +23,11 @@
 
 /*
 |--------------------------------------------------------------------------
-| Web Routes using Doctrine2Frontend
+| Web Routes using Eloquent2Frontend
 |--------------------------------------------------------------------------
 |
 |
 */
-
-IXP\Http\Controllers\Switches\SwitchPortController::routes();
-IXP\Http\Controllers\User\UserRememberTokenController::routes();
-
-
 IXP\Http\Controllers\ApiKeyController::routes();
 IXP\Http\Controllers\CabinetController::routes();
 IXP\Http\Controllers\ConsoleServer\ConsoleServerController::routes();
@@ -49,5 +44,7 @@ IXP\Http\Controllers\LoginHistoryController::routes();
 IXP\Http\Controllers\MacAddressController::routes();
 IXP\Http\Controllers\NetworkInfoController::routes();
 IXP\Http\Controllers\Switches\SwitchController::routes();
+IXP\Http\Controllers\Switches\SwitchPortController::routes();
+IXP\Http\Controllers\User\UserRememberTokenController::routes();
 IXP\Http\Controllers\VendorController::routes();
 IXP\Http\Controllers\VlanController::routes();

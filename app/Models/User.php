@@ -71,6 +71,8 @@ use stdClass;
  * @property-read int|null $api_keys_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Customer[] $customers
  * @property-read int|null $customers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\UserRememberToken[] $userRememberTokens
+ * @property-read int|null $user_remember_tokens_count
  */
 class User extends Model
 {
@@ -118,6 +120,14 @@ class User extends Model
         User::AUTH_CUSTADMIN => 'Customer Administrator',
         User::AUTH_SUPERUSER => 'Superuser',
     ];
+
+    /**
+     * Get the remember tokens for the user
+     */
+    public function userRememberTokens(): HasMany
+    {
+        return $this->hasMany(UserRememberToken::class, 'user_id' );
+    }
 
     /**
      * Get the customer

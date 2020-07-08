@@ -121,11 +121,15 @@ class VlanInterface extends Model
         return $this->hasMany(Layer2Address::class, 'vlan_interface_id' );
     }
 
-
     /**
      * See if a given protocol is enabled
+     *
+     * @param int $p
+     *
+     * @return bool
      */
-    public function protocolEnabled( int $p ): bool {
+    public function protocolEnabled( int $p ): bool
+    {
         return $p === 4 ? $this->ipv4enabled : $this->ipv6enabled;
     }
 

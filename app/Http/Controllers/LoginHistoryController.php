@@ -56,7 +56,7 @@ class LoginHistoryController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = (object)[
             'entity'            => UserLoginHistory::class,
@@ -105,7 +105,7 @@ class LoginHistoryController extends EloquentController
     /**
      * @inheritdoc
      */
-    public static function routes()
+    public static function routes(): void
     {
         Route::group( [ 'prefix' => 'login-history' ], function() {
             Route::get(  'list',                'LoginHistoryController@list'   )->name( 'login-history@list'   );
@@ -119,7 +119,7 @@ class LoginHistoryController extends EloquentController
      * @param int $id The `id` of the row to load for `view`. `null` if `list`
      * @return array
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( $id = null ): array
     {
         return CustomerToUser::getLastLoginsForFeList( $this->feParams );
     }

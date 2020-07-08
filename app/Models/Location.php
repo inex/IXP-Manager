@@ -120,5 +120,4 @@ class Location extends Model
             return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
         })->get()->toArray();
     }
-
 }

@@ -45,7 +45,7 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 class VendorController extends EloquentController
 {
     /**
-     * The object being added / edited
+     * The object being created / edited
      * @var Vendor
      */
     protected $object = null;
@@ -53,7 +53,7 @@ class VendorController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = (object)[
             'entity'            => Vendor::class,
@@ -130,7 +130,7 @@ class VendorController extends EloquentController
      *
      * @param $request
      */
-    public function checkForm( Request $request )
+    public function checkForm( Request $request ): void
     {
         $request->validate( [
             'name'              => 'required|string|max:255',

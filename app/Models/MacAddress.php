@@ -61,14 +61,14 @@ class MacAddress extends Model
             COALESCE( o.organisation, 'Unknown' ) AS organisation"
         )
         ->from( 'macaddress AS m' )
-        ->join( 'virtualinterface AS vi', 'vi.id', '=', 'm.virtualinterfaceid' )
-        ->join( 'vlaninterface AS vli', 'vli.virtualinterfaceid', '=', 'vi.id' )
-        ->leftjoin( 'ipv4address AS ipv4', 'ipv4.id', '=', 'vli.ipv4addressid' )
-        ->leftjoin( 'ipv6address AS ipv6', 'ipv4.id', '=', 'vli.ipv6addressid' )
-        ->join( 'cust AS c', 'c.id', '=', 'vi.custid' )
-        ->leftjoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', '=', 'vi.id' )
-        ->leftjoin( 'switchport AS sp', 'sp.id', '=', 'pi.switchportid' )
-        ->leftjoin( 'switch AS s', 's.id', '=', 'sp.switchid' )
+        ->join( 'virtualinterface AS vi', 'vi.id', 'm.virtualinterfaceid' )
+        ->join( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
+        ->leftjoin( 'ipv4address AS ipv4', 'ipv4.id', 'vli.ipv4addressid' )
+        ->leftjoin( 'ipv6address AS ipv6', 'ipv4.id', 'vli.ipv6addressid' )
+        ->join( 'cust AS c', 'c.id', 'vi.custid' )
+        ->leftjoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
+        ->leftjoin( 'switchport AS sp', 'sp.id', 'pi.switchportid' )
+        ->leftjoin( 'switch AS s', 's.id', 'sp.switchid' )
         ->leftjoin( 'oui AS o', 'o.oui', '=', DB::raw("SUBSTRING( m.mac, 1, 6 )") )
         ->when( $id , function( Builder $q, $id ) {
             return $q->where('id', $id );

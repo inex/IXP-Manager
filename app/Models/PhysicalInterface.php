@@ -88,11 +88,10 @@ class PhysicalInterface extends Model
      *
      * @return array
      */
-    public static function getAllSpeed()
+    public static function getAllSpeed(): array
     {
         return self::selectRaw( 'DISTINCT physicalinterface.speed AS speed' )
             ->orderBy( 'speed', 'ASC' )
             ->get()->toArray();
     }
-    
 }

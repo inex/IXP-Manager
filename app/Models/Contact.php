@@ -97,7 +97,7 @@ class Contact extends Model
     public function contactRoles(): BelongsToMany
     {
         return $this->belongsToMany(ContactGroup::class, 'contact_to_group', 'contact_id' )
-            ->where( 'type', '=', ContactGroup::TYPE_ROLE )
+            ->where( 'type', ContactGroup::TYPE_ROLE )
             ->orderBy( 'name', 'asc' );
     }
 
@@ -142,7 +142,7 @@ class Contact extends Model
     public static function getFeList( stdClass $feParams, int $id = null, int $role = null, int $cgid = null ): array
     {
         $query = self::select( [ 'contact.*', 'cust.name AS customer', 'cust.id AS custid' ])
-            ->leftJoin( 'cust', 'cust.id', '=' , 'contact.custid'  )
+            ->leftJoin( 'cust', 'cust.id', 'contact.custid'  )
             ->when( $id , function ( Builder $query, $id ) {
                 return $query->where('contact.id', $id );
             })
@@ -157,8 +157,8 @@ class Contact extends Model
             $groupid = $role ? $role : ( $cgid ?: null);
             $query->when( $groupid , function ( Builder $query, $groupid ) {
                 return $query->leftJoin( 'contact_to_group', function( $join ) {
-                    $join->on( 'contact.id', '=', 'contact_to_group.contact_id');
-                })->where('contact_to_group.contact_group_id','=', $groupid );
+                    $join->on( 'contact.id', 'contact_to_group.contact_id');
+                })->where('contact_to_group.contact_group_id', $groupid );
             });
 
             if( Auth::getUser()->isSuperUser() ) {
@@ -181,8 +181,8 @@ class Contact extends Model
     {
         return self::when( $groupid , function ( Builder $query, $groupid ) {
             return $query->leftJoin( 'contact_to_group', function( $join ) {
-                $join->on( 'contact.id', '=', 'contact_to_group.contact_id');
-            })->where('contact_to_group.contact_group_id','=', $groupid );
+                $join->on( 'contact.id', 'contact_to_group.contact_id');
+            })->where('contact_to_group.contact_group_id', $groupid );
         })
             ->where( 'custid', $custid  )
             ->get();

@@ -65,7 +65,7 @@ class ConsoleServerConnectionController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = (object)[
             'entity'            => ConsoleServerConnection::class,
@@ -129,9 +129,9 @@ class ConsoleServerConnectionController extends EloquentController
         );
     }
 
-    protected static function additionalRoutes( string $route_prefix )
+    protected static function additionalRoutes( string $route_prefix ): void
     {
-        Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
+        Route::group( [ 'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
             Route::get(     'list/port/{cs}',               'ConsoleServer\ConsoleServerConnectionController@listPort'    )->name( $route_prefix . '@listPort'   );
         });
     }
@@ -143,12 +143,12 @@ class ConsoleServerConnectionController extends EloquentController
      *
      * @return array
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( $id = null ): array
     {
         return ConsoleServerConnection::getFeList( $this->feParams, $id );
     }
 
-    protected function preList()
+    protected function preList(): void
     {
         $this->data[ 'params' ]     = [ 'css' =>  ConsoleServer::getListAsArray() ];
     }
@@ -205,7 +205,7 @@ class ConsoleServerConnectionController extends EloquentController
      *
      * @param $request
      */
-    public function checkForm( Request $request )
+    public function checkForm( Request $request ): void
     {
         $request->validate( [
             'description'           => 'required|string|max:255',
@@ -267,8 +267,8 @@ class ConsoleServerConnectionController extends EloquentController
         if( $this->checkIsDuplicate( null, $request ) ) {
             return Redirect::back()->withInput();
         }
-        $this->object = ConsoleServerConnection::create( $request->all() );
 
+        $this->object = ConsoleServerConnection::create( $request->all() );
         return true;
     }
 
@@ -290,7 +290,6 @@ class ConsoleServerConnectionController extends EloquentController
         }
 
         $this->object->update( $request->all() );
-
         return true;
     }
 
@@ -315,13 +314,13 @@ class ConsoleServerConnectionController extends EloquentController
     /**
      * @inheritdoc
      */
-    protected function postStoreRedirect()
+    protected function postStoreRedirect(): ?string
     {
         if( $cs = ConsoleServer::find( request()->console_server_id ) ) {
             return route( 'console-server-connection@listPort' , [ "cs" => $cs->id ] ) ;
-        } else {
-            return route( 'console-server-connection@list' );
         }
+
+        return route( 'console-server-connection@list' );
     }
 
     /**
@@ -329,7 +328,7 @@ class ConsoleServerConnectionController extends EloquentController
      *
      * @return null|string
      */
-    protected function postDeleteRedirect()
+    protected function postDeleteRedirect(): ?string
     {
         return route('console-server-connection@listPort' , [ 'cs' => $this->object->console_server_id ] );
     }

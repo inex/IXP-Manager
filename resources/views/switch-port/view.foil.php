@@ -11,7 +11,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a id="d2f-list-a" class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@list') ?>">
+        <a id="e2f-list-a" class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@list') ?>">
             <span class="fa fa-th-list"></span>
         </a>
         <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly ): ?>

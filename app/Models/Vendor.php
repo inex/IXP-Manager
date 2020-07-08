@@ -86,7 +86,6 @@ class Vendor extends Model
      */
     public static function getListAsArray(): array
     {
-        return self::orderBy( 'name', 'asc' )
-            ->get()->toArray();
+        return self::orderBy( 'name', 'asc' )->get()->toArray();
     }
 }

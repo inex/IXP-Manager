@@ -2,17 +2,21 @@
 
 namespace IXP\Models;
 
-use Cache;
-use DateTime;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\HasMany;
+use Cache, DateTime, Log, stdClass;
+
+use Illuminate\Database\Eloquent\{
+    Builder,
+    Model,
+};
+
+use Illuminate\Database\Eloquent\Relations\{
+    BelongsTo,
+    HasMany,
+};
+
 use Illuminate\Support\Collection;
-use Log;
+
 use OSS_SNMP\SNMP;
-use Session;
-use stdClass;
 
 use \OSS_SNMP\MIBS\Iface as SNMPIface;
 

@@ -56,11 +56,11 @@ class CustomerEquipment extends Model
     ];
 
     /**
-     * Get the cabinet that own the customerequipment
+     * Get the cabinet that own the customer equipment
      */
     public function cabinet(): BelongsTo
     {
-        return $this->belongsTo(Cabinet::class );
+        return $this->belongsTo(Cabinet::class, 'cabinetid' );
     }
 
     /**
@@ -74,8 +74,8 @@ class CustomerEquipment extends Model
     public static function getFeList( stdClass $feParams, int $id = null ): array
     {
          return self::select( [ 'custkit.*', 'cabinet.name AS cabinet', 'cust.name as customer' ] )
-                ->leftJoin( 'cabinet', 'cabinet.id', '=', 'custkit.cabinetid' )
-                ->leftJoin( 'cust', 'cust.id', '=', 'custkit.custid' )
+                ->leftJoin( 'cabinet', 'cabinet.id', 'custkit.cabinetid' )
+                ->leftJoin( 'cust', 'cust.id', 'custkit.custid' )
                 ->when( $id , function( Builder $q, $id ) {
                 return $q->where('id', $id );
                 } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {

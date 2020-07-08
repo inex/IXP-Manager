@@ -239,7 +239,7 @@ class Customer extends Model
      */
     public function irrdbConfig(): BelongsTo
     {
-        return $this->belongsTo(IrrdbConfig::class );
+        return $this->belongsTo(IrrdbConfig::class, 'irrdb' );
     }
 
     /**
@@ -402,5 +402,4 @@ class Customer extends Model
             return $q->whereIn( 'type', $types );
         })->orderBy( 'name', 'asc')->get()->toArray();
     }
-
 }

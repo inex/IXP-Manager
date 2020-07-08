@@ -56,7 +56,7 @@ class IrrdbConfig extends Model
     ];
 
     /**
-     * Get the customers for the IrrdbConfig
+     * Get the customers for the Irrdb Config
      */
     public function customers(): HasMany
     {

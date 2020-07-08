@@ -23,18 +23,12 @@ namespace IXP\Http\Controllers;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Redirect;
+use Former, Redirect;
 
 use IXP\Models\{
     NetworkInfo,
     Router,
     Vlan
-};
-
-
-
-use Entities\{
-    Vlan            as VlanEntity
 };
 
 use Illuminate\Http\{
@@ -60,7 +54,7 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 class NetworkInfoController extends EloquentController
 {
     /**
-     * The object being added / edited
+     * The object being created / edited
      * @var NetworkInfo
      */
     protected $object = null;
@@ -68,7 +62,7 @@ class NetworkInfoController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = (object)[
             'entity'            => NetworkInfo::class,
@@ -157,7 +151,7 @@ class NetworkInfoController extends EloquentController
      *
      * @param $request
      */
-    public function checkForm( Request $request )
+    public function checkForm( Request $request ): void
     {
         $rangeMasklen = $request->protocol == '4' ? 'min:16|max:29' : 'min:32|max:64';
 
@@ -175,7 +169,7 @@ class NetworkInfoController extends EloquentController
     }
 
     /**
-     * Check if there is a duplicate networkinfo object with those values
+     * Check if there is a duplicate network info object with those values
      *
      * @param int|null       $objectid
      * @param Request   $request

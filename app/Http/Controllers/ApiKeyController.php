@@ -73,7 +73,7 @@ class ApiKeyController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = (object)[
             'entity'            => ApiKey::class,
@@ -112,7 +112,7 @@ class ApiKeyController extends EloquentController
         $this->feParams->viewColumns = $this->feParams->listColumns;
 
         // phpunit / artisan trips up here without the cli test:
-        if( php_sapi_name() !== 'cli' ) {
+        if( PHP_SAPI !== 'cli' ) {
             // custom access controls:
             switch( Auth::check() ? Auth::user()->getPrivs() : User::AUTH_PUBLIC ) {
                 case User::AUTH_SUPERUSER:
@@ -133,7 +133,7 @@ class ApiKeyController extends EloquentController
      *
      * @return void
      */
-    protected static function additionalRoutes( string $route_prefix )
+    protected static function additionalRoutes( string $route_prefix ): void
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
         Route::group( [  'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
@@ -191,8 +191,10 @@ class ApiKeyController extends EloquentController
      * Check if the form is valid
      *
      * @param $request
+     *
+     * @return void
      */
-    public function checkForm( Request $request )
+    public function checkForm( Request $request ): void
     {
         $request->validate( [
             'description'        => 'nullable|string|max:255',

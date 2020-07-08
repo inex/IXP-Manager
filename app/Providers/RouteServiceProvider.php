@@ -57,7 +57,7 @@ class RouteServiceProvider extends ServiceProvider {
     public function map()
     {
         $this->mapWebRoutes();
-        $this->mapWebDoctrine2FrontendRoutes();
+        $this->mapWebEloquent2FrontendRoutes();
         $this->mapWebAuthRoutes();
         $this->mapWebAuthSuperuserRoutes();
         $this->mapApiExternalAuthSuperuserRoutes();
@@ -88,19 +88,19 @@ class RouteServiceProvider extends ServiceProvider {
     }
 
     /**
-     * Define the "web" routes using Doctrine2Frontend for the application.
+     * Define the "web" routes using Eloquent2Frontend for the application.
      *
      * These routes all receive session state, CSRF protection, etc.
      *
      * @return void
      */
-    protected function mapWebDoctrine2FrontendRoutes()
+    protected function mapWebEloquent2FrontendRoutes()
     {
         Route::group([
-            'middleware' => config( 'google2fa.enabled' ) ? ['d2frontend', '2fa'] : ['d2frontend'],
+            'middleware' => config( 'google2fa.enabled' ) ? ['e2frontend', '2fa'] : ['e2frontend'],
             'namespace' => $this->namespace,
         ], function ($router) {
-            require base_path('routes/web-doctrine2frontend.php');
+            require base_path('routes/web-eloquent2frontend.php');
         });
     }
 
@@ -131,9 +131,9 @@ class RouteServiceProvider extends ServiceProvider {
     protected function mapWebAuthSuperuserRoutes()
     {
         Route::group([
-                         'middleware' => config( 'google2fa.enabled' ) ? [ 'web' , 'auth' , '2fa' , 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ] : [ 'web' , 'auth', 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ],
-                         'namespace' => $this->namespace,
-                     ], function ($router) {
+            'middleware' => config( 'google2fa.enabled' ) ? [ 'web' , 'auth' , '2fa' , 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ] : [ 'web' , 'auth', 'assert.privilege:' . UserEntity::AUTH_SUPERUSER ],
+            'namespace' => $this->namespace,
+        ], function ($router) {
             require base_path('routes/web-auth-superuser.php');
         });
     }

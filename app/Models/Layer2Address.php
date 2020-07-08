@@ -108,15 +108,15 @@ class Layer2Address extends Model
             COALESCE( o.organisation, 'Unknown' ) AS organisation"
         )
             ->from( 'l2address AS l' )
-            ->join( 'vlaninterface AS vli', 'vli.id', '=', 'l.vlan_interface_id' )
-            ->join( 'vlan AS vl', 'vl.id', '=', 'vli.vlanid' )
-            ->leftjoin( 'ipv4address AS ipv4', 'ipv4.id', '=', 'vli.ipv4addressid' )
-            ->leftjoin( 'ipv6address AS ipv6', 'ipv6.id', '=', 'vli.ipv6addressid' )
-            ->join( 'virtualinterface AS vi', 'vi.id', '=', 'vli.virtualinterfaceid' )
-            ->join( 'cust AS c', 'c.id', '=', 'vi.custid' )
-            ->leftjoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', '=', 'vi.id' )
-            ->leftjoin( 'switchport AS sp', 'sp.id', '=', 'pi.switchportid' )
-            ->leftjoin( 'switch AS s', 's.id', '=', 'sp.switchid' )
+            ->join( 'vlaninterface AS vli', 'vli.id', 'l.vlan_interface_id' )
+            ->join( 'vlan AS vl', 'vl.id', 'vli.vlanid' )
+            ->leftjoin( 'ipv4address AS ipv4', 'ipv4.id', 'vli.ipv4addressid' )
+            ->leftjoin( 'ipv6address AS ipv6', 'ipv6.id', 'vli.ipv6addressid' )
+            ->join( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
+            ->join( 'cust AS c', 'c.id', 'vi.custid' )
+            ->leftjoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
+            ->leftjoin( 'switchport AS sp', 'sp.id', 'pi.switchportid' )
+            ->leftjoin( 'switch AS s', 's.id', 'sp.switchid' )
             ->leftjoin( 'oui AS o', 'o.oui', '=', DB::raw("SUBSTRING( l.mac, 1, 6 )") )
             ->when( $id , function( Builder $q, $id ) {
                 return $q->where('l.id', $id );
@@ -140,8 +140,8 @@ class Layer2Address extends Model
     public static function getForVlan( string $mac, int $vlanid ): Collection
     {
         return self::from( 'l2address AS l' )
-            ->join( 'vlaninterface AS vli', 'vli.id', '=', 'l.vlan_interface_id' )
-            ->join( 'vlan AS v', 'v.id', '=', 'vli.vlanid' )
+            ->join( 'vlaninterface AS vli', 'vli.id',  'l.vlan_interface_id' )
+            ->join( 'vlan AS v', 'v.id', 'vli.vlanid' )
             ->where( 'mac' , $mac )
             ->where( 'v.id', $vlanid )
             ->get();

@@ -25,10 +25,7 @@ namespace IXP\Models;
 
 use Eloquent;
 
-use Illuminate\Database\Eloquent\{
-    Builder,
-    Model
-};
+use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo};
 
 /**
  * IXP\Models\Router
@@ -215,11 +212,11 @@ class Router extends Model
 
 
     /**
-     * Get the vlan that holds the router
+     * Get the vlan that own the router
      */
-    public function vlan()
+    public function vlan(): BelongsTo
     {
-        return $this->belongsTo('IXP\Models\Vlan' );
+        return $this->belongsTo(Vlan::class, 'vlan_id' );
     }
 
     /**

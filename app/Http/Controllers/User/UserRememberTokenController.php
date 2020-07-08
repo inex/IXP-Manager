@@ -23,17 +23,16 @@ namespace IXP\Http\Controllers\User;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Auth, Cookie, D2EM, Route;
-
-use Entities\{
-    Session                 as SessionEntity,
-    UserRememberToken      as UserRememberTokenEntity,
-    User                    as UserEntity
-};
-
-use IXP\Http\Controllers\Doctrine2Frontend;
+use Auth, Route;
 
 use Illuminate\Auth\Recaller;
+
+use IXP\Models\{
+    User,
+    UserRememberToken
+};
+
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 /**
  * UserRememberTokenController Controller
@@ -43,11 +42,11 @@ use Illuminate\Auth\Recaller;
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class UserRememberTokenController extends Doctrine2Frontend
+class UserRememberTokenController extends EloquentController
 {
     /**
-     * The object being added / edited
-     * @var UserRememberTokenEntity
+     * The object being created / edited
+     * @var UserRememberToken
      */
     protected $object = null;
 
@@ -61,7 +60,7 @@ class UserRememberTokenController extends Doctrine2Frontend
      *
      * @var int
      */
-    public static $minimum_privilege = UserEntity::AUTH_CUSTUSER;
+    public static $minimum_privilege = User::AUTH_CUSTUSER;
     /**
      * Is this a read only controller?
      *
@@ -69,62 +68,53 @@ class UserRememberTokenController extends Doctrine2Frontend
      */
     public static $read_only = true;
 
+    public static $allow_delete_for_read_only = true;
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = (object)[
-            'entity'            => UserRememberTokenEntity::class,
-
-            'pagetitle'         => 'Your Active Login Sessions',
-
-            'titleSingular'     => 'Active Login Session',
-            'nameSingular'      => 'active login session',
-
-            'listOrderBy'       => 'created',
-            'listOrderByDir'    => 'ASC',
-
-            'readonly'          => self::$read_only,
-
-            'viewFolderName'    => 'user-remember-token',
+            'entity'                    => UserRememberToken::class,
+            'pagetitle'                 => 'Your Active Login Sessions',
+            'titleSingular'             => 'Active Login Session',
+            'nameSingular'              => 'active login session',
+            'listOrderBy'               => 'created',
+            'listOrderByDir'            => 'ASC',
+            'readonly'                  => self::$read_only,
+            'allowDeleteForReadOnly'    => self::$allow_delete_for_read_only,
+            'viewFolderName'            => 'user-remember-token',
 
             'listColumns'    => [
-
                 'device'      => 'Device',
-
                 'ip'          => 'IP',
-
                 'created'      => [
                     'title'        => 'Created',
                     'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ],
-
                 'expires'      => [
                     'title'        => 'Expires',
                     'type'         => self::$FE_COL_TYPES[ 'DATETIME' ]
                 ],
-
             ]
         ];
 
         // display the same information in the view as the list
         $this->feParams->viewColumns = $this->feParams->listColumns;
-
     }
 
     /**
      * Additional routes
      *
-     *
      * @param string $route_prefix
+     *
      * @return void
      */
-    protected static function additionalRoutes( string $route_prefix )
+    protected static function additionalRoutes( string $route_prefix ): void
     {
         // NB: this route is marked as 'read-only' to disable normal CRUD operations. It's not really read-only.
-        Route::group( [  'prefix' => $route_prefix ], function() use ( $route_prefix ) {
-            Route::post(  'delete',      'User\UserRememberTokenController@delete'         )->name( $route_prefix."@delete" );
+        Route::group( [  'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
+            Route::delete(  'delete',      'User\UserRememberTokenController@delete'         )->name( $route_prefix."@delete" );
         });
     }
 
@@ -135,15 +125,14 @@ class UserRememberTokenController extends Doctrine2Frontend
      *
      * @return void
      */
-    protected function preList() {
-
+    protected function preList(): void
+    {
         // We want to indicate which session is the user's //current// session so they can avoid logging themselves out.
         // We identify it by matching the remember me cookie token with the database token:
-
         $token = null;
 
-        if( $r = request()->cookies->get(Auth::getRecallerName()) ) {
-            $recaller = new Recaller($r);
+        if( $r = request()->cookies->get( Auth::getRecallerName() ) ) {
+            $recaller = new Recaller( $r );
             $token = $recaller->token();
         }
 
@@ -154,20 +143,21 @@ class UserRememberTokenController extends Doctrine2Frontend
      * Provide array of rows for the list and view
      *
      * @param int $id The `id` of the row to load for `view`. `null` if `list`
+     *
      * @return array
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( $id = null ): array
     {
-        return D2EM::getRepository( UserRememberTokenEntity::class)->getAllForFeList( $this->feParams, request()->user()->getId(), $id );
+        return UserRememberToken::getFeList( $this->feParams, request()->user()->getId(), $id );
     }
 
     /**
      * @inheritdoc
      */
-    protected function preDelete() : bool
+    protected function preDelete(): bool
     {
         // ensure a user can only delete their own sessions:
-        return $this->object->getUser()->getId() === Auth::user()->getId();
+        return $this->object->user->id === Auth::user()->getId();
     }
 
     /**
@@ -179,15 +169,14 @@ class UserRememberTokenController extends Doctrine2Frontend
      *
      * @return null|string
      */
-    protected function postDeleteRedirect() {
-
-        if( $r = request()->cookies->get(Auth::getRecallerName()) ) {
-            $recaller = new Recaller($r);
-            if( $this->object->getToken() === $recaller->token() ) {
+    protected function postDeleteRedirect(): ?string
+    {
+        if( $r = request()->cookies->get( Auth::getRecallerName() ) ) {
+            $recaller = new Recaller( $r );
+            if( $this->object->token === $recaller->token() ) {
                 return route('login@logout');
             }
         }
         return null;
     }
-
 }

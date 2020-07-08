@@ -23,20 +23,17 @@ namespace IXP\Http\Controllers\Customer;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, Former, Redirect, Validator;
+use Former;
 
-use Entities\{
-    CustomerTag         as CustomerTagEntity
-};
-use Illuminate\Support\Facades\Session;
-use IXP\Models\CustomerTag;
-use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 use Illuminate\Http\{
     Request,
     RedirectResponse
 };
 
-use IXP\Http\Controllers\Doctrine2Frontend;
+use IXP\Models\CustomerTag;
+
+use IXP\Utils\Http\Controllers\Frontend\EloquentController;
+use Session;
 
 /**
  * Customer Tag Controller
@@ -49,7 +46,7 @@ use IXP\Http\Controllers\Doctrine2Frontend;
 class CustomerTagController extends EloquentController
 {
     /**
-     * The object being added / edited
+     * The object being created / edited
      * @var CustomerTag
      */
     protected $object = null;
@@ -57,7 +54,7 @@ class CustomerTagController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = ( object )[
             'entity'            => CustomerTag::class,
@@ -158,7 +155,7 @@ class CustomerTagController extends EloquentController
      *
      * @param $request
      */
-    public function checkForm( Request $request )
+    public function checkForm( Request $request ): void
     {
         $request->validate( [
             'tag' => [
@@ -228,5 +225,4 @@ class CustomerTagController extends EloquentController
         Session::remove( "cust-list-tag" );
         return true;
     }
-
 }

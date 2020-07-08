@@ -49,7 +49,7 @@ use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 class CustKitController extends EloquentController
 {
     /**
-     * The object being added / edited
+     * The object being created / edited
      * @var CustomerEquipment
      */
     protected $object = null;
@@ -57,7 +57,7 @@ class CustKitController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = (object)[
             'entity'            => CustomerEquipment::class,
@@ -153,7 +153,7 @@ class CustKitController extends EloquentController
      *
      * @param $request
      */
-    public function checkForm( Request $request )
+    public function checkForm( Request $request ): void
     {
         $request->validate( [
             'name'                  => 'required|string|max:255',

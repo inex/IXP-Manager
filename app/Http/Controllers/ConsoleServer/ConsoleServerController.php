@@ -59,7 +59,7 @@ class ConsoleServerController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = (object)[
             'entity'            => ConsoleServer::class,
@@ -186,7 +186,7 @@ class ConsoleServerController extends EloquentController
      *
      * @param $request
      */
-    public function checkForm( Request $request )
+    public function checkForm( Request $request ): void
     {
         $request->validate( [
             'name' => [

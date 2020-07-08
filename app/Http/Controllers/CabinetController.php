@@ -43,7 +43,7 @@ use IXP\Utils\View\Alert\{
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
 
 /**
- * Infrastructure Controller
+ * Cabinet Controller
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Controller
@@ -63,7 +63,7 @@ class CabinetController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = ( object )[
             'entity'            => Cabinet::class,
@@ -165,7 +165,7 @@ class CabinetController extends EloquentController
      *
      * @param $request
      */
-    public function checkForm( Request $request )
+    public function checkForm( Request $request ): void
     {
         $request->validate( [
             'name'                  => 'required|string|max:255',
@@ -201,7 +201,7 @@ class CabinetController extends EloquentController
     }
 
     /**
-     * Function to do the actual validation and storing of the submitted object.
+     * Function to do the actual validation and updating of the submitted object.
      *
      * @param Request $request
      * @param int $id

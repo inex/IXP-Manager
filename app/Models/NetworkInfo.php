@@ -69,7 +69,7 @@ class NetworkInfo extends Model
     public static function getFeList( stdClass $feParams, int $id = null ): array
     {
         return self::select( [ 'networkinfo.*', 'vlan.id AS vlan_id', 'vlan.name AS vlanname' ] )
-            ->leftJoin( 'vlan', 'vlan.id', '=', 'networkinfo.vlanid' )
+            ->leftJoin( 'vlan', 'vlan.id','networkinfo.vlanid' )
             ->when( $id , function( Builder $q, $id ) {
                 return $q->where( 'networkinfo.id', $id );
             })

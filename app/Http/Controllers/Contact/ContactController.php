@@ -78,7 +78,7 @@ class ContactController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = ( object )[
             'entity'            => Contact::class,
@@ -178,7 +178,7 @@ class ContactController extends EloquentController
     /**
      * @inheritdoc
      */
-    protected function preView()
+    protected function preView(): void
     {
         if( !Auth::getUser()->isSuperUser() && Auth::getUser()->getCustomer()->getId() != $this->data[ 'item' ][ 'custid' ] ) {
             $this->unauthorized();
@@ -208,11 +208,12 @@ class ContactController extends EloquentController
      * Provide array of rows for the list action and view action
      *
      * @param int $id The `id` of the row to load for `view` action`. `null` if `listAction`
+     *
      * @return array
      *
      * @throws
      */
-    protected function listGetData( $id = null )
+    protected function listGetData( $id = null ): array
     {
         $role = $cg = null;
         $cgs = [];
@@ -373,10 +374,11 @@ class ContactController extends EloquentController
      * Check if the form is valid
      *
      * @param $request
+     *
+     * @return void
      */
-    public function checkForm( Request $request )
+    public function checkForm( Request $request ): void
     {
-
         $rules = [
             'name'                  => 'required|string|max:255',
             'position'              => 'nullable|string|max:255',
@@ -514,7 +516,7 @@ class ContactController extends EloquentController
     /**
      * @inheritdoc
      */
-    protected function postStoreRedirect()
+    protected function postStoreRedirect(): ?string
     {
         if( !Auth::getUser()->isSuperUser() ) {
             return route( 'contact@list' );
@@ -566,7 +568,7 @@ class ContactController extends EloquentController
      *
      * @return null|string
      */
-    protected function postDeleteRedirect()
+    protected function postDeleteRedirect(): ?string
     {
         // retrieve the customer ID
         if( strpos( request()->headers->get('referer', "" ), "customer/overview" ) ) {

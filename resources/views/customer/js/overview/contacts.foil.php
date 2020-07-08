@@ -5,7 +5,7 @@
 
             let url = $( this ).attr( 'data-url');
 
-            let html = `<form id="d2f-form-delete" method="POST" action="${url}">
+            let html = `<form id="e2f-form-delete" method="POST" action="${url}">
                                 <div>Do you really want to delete this contact?</div>
                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
                                 <input type="hidden" name="_method" value="delete" />
@@ -27,7 +27,7 @@
                         label: 'Delete',
                         className: 'btn-danger',
                         callback: function () {
-                            $('#d2f-form-delete').submit();
+                            $('#e2f-form-delete').submit();
                         }
                     },
                 }

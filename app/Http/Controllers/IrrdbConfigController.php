@@ -30,16 +30,16 @@ use Illuminate\Http\{
     RedirectResponse
 };
 
-use IXP\Utils\View\Alert\{
-    Alert,
-    Container as AlertContainer
-};
-
 use IXP\Models\IrrdbConfig;
 
 use IXP\Rules\IdnValidate;
 
 use IXP\Utils\Http\Controllers\Frontend\EloquentController;
+
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
 
 /**
  * Irrdb Config Controller
@@ -53,7 +53,7 @@ class IrrdbConfigController extends EloquentController
 {
 
     /**
-     * The object being added / edited
+     * The object being created / edited
      * @var IrrdbConfig
      */
     protected $object = null;
@@ -61,7 +61,7 @@ class IrrdbConfigController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = (object)[
             'entity'            => IrrdbConfig::class,
@@ -148,7 +148,7 @@ class IrrdbConfigController extends EloquentController
      *
      * @param $request
      */
-    public function checkForm( Request $request )
+    public function checkForm( Request $request ): void
     {
         $request->validate( [
             'host'                  => [ 'required', 'max:255', 'string', new IdnValidate() ],

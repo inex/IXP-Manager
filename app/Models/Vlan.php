@@ -232,7 +232,7 @@ class Vlan extends Model
     public static function getFeList( stdClass $feParams, int $id = null ): array
     {
         $query = self::select( [ 'vlan.*', 'i.shortname AS infrastructure' ] )
-            ->leftJoin( 'infrastructure AS i', 'i.id', '=', 'vlan.infrastructureid' )
+            ->leftJoin( 'infrastructure AS i', 'i.id', 'vlan.infrastructureid' )
             ->when( $id , function( Builder $q, $id ) {
                 return $q->where('vlan.id', $id );
             } );

@@ -55,7 +55,7 @@ use IXP\Utils\View\Alert\{
 class VlanController extends EloquentController
 {
     /**
-     * The object being added / edited
+     * The object being created / edited
      * @var Vlan
      */
     protected $object = null;
@@ -63,7 +63,7 @@ class VlanController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams         = (object)[
             'entity'            => Vlan::class,
@@ -112,9 +112,9 @@ class VlanController extends EloquentController
         );
     }
 
-    protected static function additionalRoutes( string $route_prefix )
+    protected static function additionalRoutes( string $route_prefix ): void
     {
-        Route::group( [ 'prefix' => $route_prefix ], function() use ( $route_prefix ) {
+        Route::group( [ 'prefix' => $route_prefix ], static function() use ( $route_prefix ) {
             Route::get(     'private',                              'VlanController@listPrivate'    )->name( $route_prefix . '@private'        );
             Route::get(     'private/infra/{infra}',                'VlanController@listPrivate'    )->name( $route_prefix . '@privateInfra'   );
             Route::get(     'list/infra/{infra}',                  'VlanController@listInfra'      )->name( $route_prefix . '@infra'          );
@@ -180,13 +180,13 @@ class VlanController extends EloquentController
      *
      * @param $request
      */
-    public function checkForm( Request $request )
+    public function checkForm( Request $request ): void
     {
         $request->validate( [
             'name'              => 'required|string|max:255',
             'number'            => 'required|integer|min:1|max:4096',
             'config_name'       => 'required|string|max:32|alpha_dash',
-            'infrastructureid' => [
+            'infrastructureid'  => [
                 'required', 'integer',
                 function ($attribute, $value, $fail) {
                     if( !Infrastructure::whereId( $value )->exists() ) {
@@ -198,10 +198,10 @@ class VlanController extends EloquentController
     }
 
     /**
-     * Check if there is a duplicate networkinfo object with those values
+     * Check if there is a duplicate vlan object with those values
      *
-     * @param int|null       $objectid
-     * @param Request   $request
+     * @param int|null      $objectid
+     * @param Request       $request
      *
      * @return bool
      */

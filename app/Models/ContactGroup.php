@@ -118,8 +118,8 @@ class ContactGroup extends Model
     {
         $result = self::when( $cid , function( Builder $q, $cid ) {
             return $q->leftJoin( 'contact_to_group', function( $join ) use( $cid ) {
-                $join->on( 'contact_group.id', '=', 'contact_to_group.contact_group_id')
-                    ->where('contact_to_group.contact_id','=', $cid );
+                $join->on( 'contact_group.id', 'contact_to_group.contact_group_id')
+                    ->where('contact_to_group.contact_id', $cid );
             });
         })->when( $type , function( Builder $q, $type ) {
             return $q->where( 'type', $type );

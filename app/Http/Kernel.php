@@ -104,7 +104,7 @@ class Kernel extends HttpKernel {
             'apiauth',
         ],
 
-        'd2frontend' => [
+        'e2frontend' => [
             'web',
             'doctrine2frontend',
         ],

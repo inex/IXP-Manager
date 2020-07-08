@@ -53,9 +53,9 @@ class UserLoginHistory extends Model
     public static function getFeList( int $userid = null , int $limit = 0 ): array
     {
         return self::select( [ 'user_logins.*', 'user.id AS user_id', 'cust.name AS cust_name' ] )
-        ->leftJoin( 'customer_to_users', 'customer_to_users.id', '=', 'user_logins.customer_to_user_id' )
-        ->leftJoin( 'cust', 'cust.id', '=', 'customer_to_users.customer_id' )
-        ->leftJoin( 'user', 'user.id', '=', 'customer_to_users.user_id' )
+        ->leftJoin( 'customer_to_users', 'customer_to_users.id', 'user_logins.customer_to_user_id' )
+        ->leftJoin( 'cust', 'cust.id', 'customer_to_users.customer_id' )
+        ->leftJoin( 'user', 'user.id', 'customer_to_users.user_id' )
         ->when( $userid , function( Builder $q, $userid ) {
             return $q->where( 'user.id', $userid );
         })

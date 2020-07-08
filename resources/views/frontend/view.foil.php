@@ -1,10 +1,10 @@
 <?php
-    /** @var Foil\Template\Template $t */
-    $this->layout( 'layouts/ixpv4' );
+/** @var Foil\Template\Template $t */
+$this->layout( 'layouts/ixpv4' );
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    <?=  $t->feParams->pagetitle  ?>
+<?=  $t->feParams->pagetitle  ?>
     /
     View <?=  $t->feParams->titleSingular  ?>
 <?php $this->append() ?>
@@ -28,7 +28,7 @@
             <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $t->data[ 'item' ][ 'id' ] ]) ?>">
                 <span class="fa fa-pencil"></span>
             </a>
-            <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@add') ?>">
+            <a class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@create') ?>">
                 <span class="fa fa-plus"></span>
             </a>
         <?php endif; ?>
@@ -107,10 +107,10 @@
 
                                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATETIME'] ): ?>
 
-                                                        <?php if(  $t->data[ 'item' ][ $col ] ): ?>
-                                                            <?= $t->data[ 'item' ][ $col ]->format( 'Y-m-d H:i:s' )  ?>
+                                                            <?php if(  $t->data[ 'item' ][ $col ] ): ?>
+                                                                <?= $t->data[ 'item' ][ $col ]  ?>
 
-                                                        <?php endif; ?>
+                                                            <?php endif; ?>
 
 
                                                         <?php elseif( $cconf[ 'type'] == $t->data[ 'col_types' ][ 'DATE'] ): ?>
@@ -190,7 +190,18 @@
 
                                                                     <?php foreach( $t->data[ 'item' ][ $col ] as $item ): ?>
 
-                                                                        <span class="badge badge-success"><?= $t->ee( $item ) ?> </span><?= $cconf[ 'array' ][ 'replace' ] ?>
+                                                                        <?php if( isset( $cconf[ 'array' ][ 'index' ] ) ): ?>
+                                                                            <span class="badge badge-success"><?= $t->ee( $item[ $cconf[ 'array' ][ 'index' ] ] ) ?> </span><?= $cconf[ 'array' ][ 'replace' ] ?>
+
+                                                                        <?php elseif( isset( $cconf[ 'array' ][ 'array_index' ] ) ): ?>
+                                                                            <span class="badge badge-success">
+                                                                                <?php foreach( $cconf[ 'array' ][ 'array_index' ] as $index ): ?>
+                                                                                    <?= $t->ee( $item[ $index ] ) ?>
+                                                                                <?php endforeach; ?>
+                                                                            </span><?= $cconf[ 'array' ][ 'replace' ] ?>
+                                                                        <?php else: ?>
+                                                                            <span class="badge badge-success"><?= $t->ee( $item ) ?> </span><?= $cconf[ 'array' ][ 'replace' ] ?>
+                                                                        <?php endif;?>
 
                                                                     <?php endforeach; ?>
 
@@ -265,9 +276,6 @@
 
 <?php $this->section( 'scripts' ) ?>
 
-    <?= $t->data[ 'view' ][ 'viewScript' ] ? $t->insert( $t->data[ 'view' ][ 'viewScript' ] ) : '' ?>
+<?= $t->data[ 'view' ][ 'viewScript' ] ? $t->insert( $t->data[ 'view' ][ 'viewScript' ] ) : '' ?>
 
 <?php $this->append() ?>
-
-
-

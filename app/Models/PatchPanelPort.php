@@ -89,6 +89,8 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereTicketRef($value)
  * @mixin \Eloquent
  * @property-read \IXP\Models\SwitchPort|null $switchPort
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPort[] $slavePort
+ * @property-read int|null $slave_port_count
  */
 
 class PatchPanelPort extends Model

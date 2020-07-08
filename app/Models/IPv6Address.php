@@ -41,6 +41,6 @@ class IPv6Address extends Model
      */
     public function vlan(): BelongsTo
     {
-        return $this->belongsTo(Vlan::class );
+        return $this->belongsTo(Vlan::class, 'vlanid' );
     }
 }

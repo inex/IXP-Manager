@@ -50,7 +50,7 @@ use IXP\Utils\View\Alert\{
 class LocationController extends EloquentController
 {
     /**
-     * The object being added / edited
+     * The object being created / edited
      * @var Location
      */
     protected $object = null;
@@ -59,7 +59,7 @@ class LocationController extends EloquentController
     /**
      * This function sets up the frontend controller
      */
-    public function feInit()
+    public function feInit(): void
     {
         $this->feParams = (object)[
             'entity'            => Location::class,
@@ -172,7 +172,7 @@ class LocationController extends EloquentController
      *
      * @param $request
      */
-    public function checkForm( Request $request )
+    public function checkForm( Request $request ): void
     {
         $request->validate( [
             'name'              => 'required|string|max:255',
@@ -234,12 +234,11 @@ class LocationController extends EloquentController
      */
     protected function preDelete(): bool
     {
-        if( ( $cnt = $this->object->cabinets()->count() ) ) {
+        if( $this->object->cabinets()->exists() ) {
             AlertContainer::push( "Could not delete the Facility ({$this->object->name}) as at least one rack is located here. Reassign or delete the rack first.", Alert::DANGER );
             return false;
         }
 
         return true;
     }
-
 }
