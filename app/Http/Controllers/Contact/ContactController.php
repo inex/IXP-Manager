@@ -457,7 +457,7 @@ class ContactController extends EloquentController
             ] )
         );
 
-        if( !$this->addGroupsToObject( $request->roles ) ) {
+        if( !$this->addGroupsToObject( $request->roles ?? [] ) ) {
             return Redirect::back()->withInput( $request->all() );
         }
 

@@ -52,7 +52,7 @@
                         <a class="btn btn-white" id="cont-list-edit-<?= $co->getId() ?>"href="<?= route( "contact@edit", [ "id" => $co->getId() ] ) ?>">
                             <i class="fa fa-pencil"></i>
                         </a>
-                        <a class="btn btn-white btn-2f-list-delete" id='d2f-list-delete-<?= $co->getId() ?>' href="#" data-object-id="<?= $co->getId() ?>" data-url="<?= route( 'contact@delete' , [ 'id' => $co->getId() ]  )  ?>"  title="Delete">
+                        <a class="btn btn-white btn-2f-list-delete" id='e2f-list-delete-<?= $co->getId() ?>' href="#" data-object-id="<?= $co->getId() ?>" data-url="<?= route( 'contact@delete' , [ 'id' => $co->getId() ]  )  ?>"  title="Delete">
                             <i class="fa fa-trash"></i>
                         </a>
                     </div>

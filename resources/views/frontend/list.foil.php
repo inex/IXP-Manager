@@ -320,7 +320,7 @@ $this->layout( 'layouts/ixpv4' );
                                                     <a class="btn btn-white" id="d2f-list-edit-<?= $row[ 'id' ] ?>" href="<?= route($t->feParams->route_prefix.'@edit' , [ 'id' => $row[ 'id' ] ] ) ?> " title="Edit">
                                                         <i class="fa fa-pencil"></i>
                                                     </a>
-                                                    <a class="btn btn-white btn-2f-list-delete" id='d2f-list-delete-<?= $row[ 'id' ] ?>' href="#" data-object-id="<?= $row[ 'id' ] ?>" data-url="<?= route( $t->feParams->route_prefix.'@delete' , [ 'id' => $row[ 'id' ] ]  )  ?>"  title="Delete">
+                                                    <a class="btn btn-white btn-2f-list-delete" id='e2f-list-delete-<?= $row[ 'id' ] ?>' href="#" data-object-id="<?= $row[ 'id' ] ?>" data-url="<?= route( $t->feParams->route_prefix.'@delete' , [ 'id' => $row[ 'id' ] ]  )  ?>"  title="Delete">
                                                         <i class="fa fa-trash"></i>
                                                     </a>
                                                 <?php endif;?>
