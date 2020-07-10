@@ -25,6 +25,7 @@ namespace Tests\Browser;
 
 use D2EM;
 
+use IXP\Models\Location;
 use Entities\{
     Location as LocationEntity
 };
@@ -35,16 +36,15 @@ use Laravel\Dusk\Browser;
 class LocationControllerTest extends DuskTestCase
 {
 
+    /**
+     * @throws
+     */
     public function tearDown(): void
     {
-        if( $location = D2EM::getRepository( LocationEntity::class )->findOneBy( [ 'name' => 'Infrastructure Test' ] ) ) {
-            D2EM::remove( $location );
-            D2EM::flush();
-        }
-
-        if( $location = D2EM::getRepository( LocationEntity::class )->findOneBy( [ 'name' => 'Infrastructure Test2' ] ) ) {
-            D2EM::remove( $location );
-            D2EM::flush();
+        foreach( [ 'Infrastructure Test', 'Infrastructure Test2' ] as $name ) {
+            if( $c = Location::whereName( $name )->get()->first() ) {
+                $c->delete();
+            }
         }
 
         parent::tearDown();
@@ -54,9 +54,10 @@ class LocationControllerTest extends DuskTestCase
      * A Dusk test example.
      *
      * @return void
-     * @throws \Throwable
+     *
+     * @throws
      */
-    public function testAdd()
+    public function testAdd(): void
     {
 
         $this->browse(function (Browser $browser) {
@@ -71,13 +72,13 @@ class LocationControllerTest extends DuskTestCase
                 ->assertSee( 'Facilities' )
                 ->assertSee( 'Location 1' );
 
-            $browser->visit( '/facility/add' )
-                ->assertSee( 'Add Facility' )
+            $browser->visit( '/facility/create' )
+                ->assertSee( 'Create Facility' )
                 ->waitForText( "Choose the matching PeeringDB facility..." );
 
             // 1. test add empty inputs
-            $browser->press('Add')
-                ->assertPathIs('/facility/add')
+            $browser->press('Create')
+                ->assertPathIs('/facility/create')
                 ->waitForText( "Choose the matching PeeringDB facility..." )
                 ->assertSee( "The name field is required." )
                 ->assertSee( "The shortname field is required." )
@@ -98,47 +99,44 @@ class LocationControllerTest extends DuskTestCase
                 ->type( 'officefax',        '0209101234' )
                 ->type( 'officeemail',      'bad-office-email' )
                 ->type( 'notes',            'test notes' )
-                ->press('Add')
-                ->assertPathIs('/facility/add')
-                ->waitForText('Equinix Dallas (DA1)' )
+                ->press('Create')
+                ->assertPathIs('/facility/create')
+                ->waitForText('Equinix DA1 - Dallas' )
                 ->assertSee( "The shortname has already been taken" )
                 ->assertSee( "The nocemail must be a valid email address" )
                 ->assertSee( "The officeemail must be a valid email address" )
                 ->type( 'shortname', 'test')
                 ->type( 'nocemail', 'nocemail@example.com' )
                 ->type( 'officeemail', 'officeemail@example.com' )
-                ->press('Add')
+                ->press('Create')
                 ->assertPathIs('/facility/list')
-                ->assertSee( "Facility added" );
+                ->assertSee( "Facility created" );
 
-            /** @var LocationEntity $location */
-            $location = D2EM::getRepository( LocationEntity::class )->findOneBy( [ 'name' => 'Infrastructure Test' ] );
-
-            //
+            $location = Location::whereName( 'Infrastructure Test' )->get()->first();
 
             // 2. test added data in database against expected values
-            $this->assertInstanceOf( LocationEntity::class, $location );
+            $this->assertInstanceOf( Location::class, $location );
             
-            $this->assertEquals( 'Infrastructure Test',        $location->getName() );
-            $this->assertEquals( 'test',                       $location->getShortname() );
-            $this->assertEquals( 'test tag',                   $location->getTag() );
-            $this->assertEquals( '4',                          $location->getPdbFacilityId() );
-            $this->assertEquals( 'test address',               $location->getAddress() );
-            $this->assertEquals( 'Dublin',                     $location->getCity() );
-            $this->assertEquals( 'IE',                         $location->getCountry() );
-            $this->assertEquals( '0209101231',                 $location->getNocphone() );
-            $this->assertEquals( '0209101232',                 $location->getNocfax() );
-            $this->assertEquals( 'nocemail@example.com',       $location->getNocemail() );
-            $this->assertEquals( '0209101233',                 $location->getOfficephone() );
-            $this->assertEquals( '0209101234',                 $location->getOfficefax() );
-            $this->assertEquals( 'officeemail@example.com',    $location->getOfficeemail() );
-            $this->assertEquals( 'test notes',                 $location->getNotes() );
+            $this->assertEquals( 'Infrastructure Test',        $location->name );
+            $this->assertEquals( 'test',                       $location->shortname );
+            $this->assertEquals( 'test tag',                   $location->tag );
+            $this->assertEquals( '4',                          $location->pdb_facility_id );
+            $this->assertEquals( 'test address',               $location->address );
+            $this->assertEquals( 'Dublin',                     $location->city );
+            $this->assertEquals( 'IE',                         $location->country );
+            $this->assertEquals( '0209101231',                 $location->nocphone );
+            $this->assertEquals( '0209101232',                 $location->nocfax );
+            $this->assertEquals( 'nocemail@example.com',       $location->nocemail );
+            $this->assertEquals( '0209101233',                 $location->officephone );
+            $this->assertEquals( '0209101234',                 $location->officefax );
+            $this->assertEquals( 'officeemail@example.com',    $location->officeemail );
+            $this->assertEquals( 'test notes',                 $location->notes );
 
             // 3. browse to edit infrastructure object:
-            $browser->click( '#d2f-list-edit-' .  $location->getId() );
+            $browser->click( '#e2f-list-edit-' .  $location->id );
 
             // 4. test that form contains settings as above using assertChecked(), assertNotChecked(), assertSelected(), assertInputValue, ...
-            $browser->waitForText('Equinix Dallas (DA1)' )
+            $browser->waitForText('Equinix DA1 - Dallas' )
                     ->assertInputValue('name',                  'Infrastructure Test')
                     ->assertInputValue( 'shortname',            'test' )
                     ->assertInputValue( 'tag',                  'test tag' )
@@ -158,30 +156,30 @@ class LocationControllerTest extends DuskTestCase
             $browser->select( 'pdb_facility_id',     '10' )
                     ->press('Save Changes')
                     ->assertPathIs('/facility/list')
-                    ->assertSee( "Facility edited" );
+                    ->assertSee( "Facility updated" );
 
 
             // 6. repeat database load and database object check for new values (repeat 2)
-            D2EM::refresh( $location );
+            $location->refresh();
 
-            $this->assertEquals( 'Infrastructure Test',     $location->getName() );
-            $this->assertEquals( 'test',                    $location->getShortname() );
-            $this->assertEquals( 'test tag',                $location->getTag() );
-            $this->assertEquals( '10',                      $location->getPdbFacilityId() );
-            $this->assertEquals( 'test address',            $location->getAddress() );
-            $this->assertEquals( 'Dublin',                  $location->getCity() );
-            $this->assertEquals( 'IE',                      $location->getCountry() );
-            $this->assertEquals( '0209101231',              $location->getNocphone() );
-            $this->assertEquals( '0209101232',              $location->getNocfax() );
-            $this->assertEquals( 'nocemail@example.com',       $location->getNocemail() );
-            $this->assertEquals( '0209101233',              $location->getOfficephone() );
-            $this->assertEquals( '0209101234',              $location->getOfficefax() );
-            $this->assertEquals( 'officeemail@example.com',    $location->getOfficeemail() );
-            $this->assertEquals( 'test notes',              $location->getNotes() );
+            $this->assertEquals( 'Infrastructure Test',     $location->name );
+            $this->assertEquals( 'test',                    $location->shortname );
+            $this->assertEquals( 'test tag',                $location->tag );
+            $this->assertEquals( '10',                      $location->pdb_facility_id );
+            $this->assertEquals( 'test address',            $location->address );
+            $this->assertEquals( 'Dublin',                  $location->city );
+            $this->assertEquals( 'IE',                      $location->country );
+            $this->assertEquals( '0209101231',              $location->nocphone );
+            $this->assertEquals( '0209101232',              $location->nocfax );
+            $this->assertEquals( 'nocemail@example.com',    $location->nocemail );
+            $this->assertEquals( '0209101233',              $location->officephone );
+            $this->assertEquals( '0209101234',              $location->officefax );
+            $this->assertEquals( 'officeemail@example.com', $location->officeemail );
+            $this->assertEquals( 'test notes',              $location->notes );
 
 
             // 7. edit again and assert that all checkboxes are unchecked and assert select values are as expected
-            $browser->visit( '/facility/edit/' .  $location->getId() )
+            $browser->visit( '/facility/edit/' .  $location->id )
                 ->assertSee( 'Edit Facility' )
                 ->waitForText('Digital Realty NYC (60 Hudson)' );
 
@@ -205,25 +203,25 @@ class LocationControllerTest extends DuskTestCase
 
 
             // 6. repeat database load and database object check for new values (repeat 2)
-            D2EM::refresh( $location );
+            $location->refresh();
 
-            $this->assertEquals( 'Infrastructure Test',     $location->getName() );
-            $this->assertEquals( 'test',                    $location->getShortname() );
-            $this->assertEquals( 'test tag',                $location->getTag() );
-            $this->assertEquals( '10',                      $location->getPdbFacilityId() );
-            $this->assertEquals( 'test address',            $location->getAddress() );
-            $this->assertEquals( 'Dublin',                  $location->getCity() );
-            $this->assertEquals( 'IE',                      $location->getCountry() );
-            $this->assertEquals( '0209101231',              $location->getNocphone() );
-            $this->assertEquals( '0209101232',              $location->getNocfax() );
-            $this->assertEquals( 'nocemail@example.com',       $location->getNocemail() );
-            $this->assertEquals( '0209101233',              $location->getOfficephone() );
-            $this->assertEquals( '0209101234',              $location->getOfficefax() );
-            $this->assertEquals( 'officeemail@example.com',    $location->getOfficeemail() );
-            $this->assertEquals( 'test notes',              $location->getNotes() );
+            $this->assertEquals( 'Infrastructure Test',     $location->name );
+            $this->assertEquals( 'test',                    $location->shortname );
+            $this->assertEquals( 'test tag',                $location->tag );
+            $this->assertEquals( '10',                      $location->pdb_facility_id );
+            $this->assertEquals( 'test address',            $location->address );
+            $this->assertEquals( 'Dublin',                  $location->city );
+            $this->assertEquals( 'IE',                      $location->country );
+            $this->assertEquals( '0209101231',              $location->nocphone );
+            $this->assertEquals( '0209101232',              $location->nocfax );
+            $this->assertEquals( 'nocemail@example.com',    $location->nocemail );
+            $this->assertEquals( '0209101233',              $location->officephone );
+            $this->assertEquals( '0209101234',              $location->officefax );
+            $this->assertEquals( 'officeemail@example.com', $location->officeemail );
+            $this->assertEquals( 'test notes',              $location->notes );
 
             // 9. edit object
-            $browser->visit( '/facility/edit/' .  $location->getId() )
+            $browser->visit( '/facility/edit/' .  $location->id )
                 ->assertSee( 'Edit Facility' )
                 ->waitForText('Digital Realty NYC (60 Hudson)' );
 
@@ -246,33 +244,33 @@ class LocationControllerTest extends DuskTestCase
 
 
             // 10. verify object values
-            D2EM::refresh( $location );
+            $location->refresh();
 
-            $this->assertEquals( 'Infrastructure Test2',        $location->getName() );
-            $this->assertEquals( 'test2',                       $location->getShortname() );
-            $this->assertEquals( 'test tag2',                   $location->getTag() );
-            $this->assertEquals( '11',                          $location->getPdbFacilityId() );
-            $this->assertEquals( 'test address2',               $location->getAddress() );
-            $this->assertEquals( 'Paris',                       $location->getCity() );
-            $this->assertEquals( 'FR',                          $location->getCountry() );
-            $this->assertEquals( '0209101235',                  $location->getNocphone() );
-            $this->assertEquals( '0209101236',                  $location->getNocfax() );
-            $this->assertEquals( 'nocemail2@example.com',          $location->getNocemail() );
-            $this->assertEquals( '0209101237',                  $location->getOfficephone() );
-            $this->assertEquals( '0209101238',                  $location->getOfficefax() );
-            $this->assertEquals( 'officeemail2@example.com',       $location->getOfficeemail() );
-            $this->assertEquals( 'test notes2',                 $location->getNotes() );
+            $this->assertEquals( 'Infrastructure Test2',        $location->name );
+            $this->assertEquals( 'test2',                       $location->shortname );
+            $this->assertEquals( 'test tag2',                   $location->tag );
+            $this->assertEquals( '11',                          $location->pdb_facility_id );
+            $this->assertEquals( 'test address2',               $location->address );
+            $this->assertEquals( 'Paris',                       $location->city );
+            $this->assertEquals( 'FR',                          $location->country );
+            $this->assertEquals( '0209101235',                  $location->nocphone );
+            $this->assertEquals( '0209101236',                  $location->nocfax );
+            $this->assertEquals( 'nocemail2@example.com',       $location->nocemail );
+            $this->assertEquals( '0209101237',                  $location->officephone );
+            $this->assertEquals( '0209101238',                  $location->officefax );
+            $this->assertEquals( 'officeemail2@example.com',    $location->officeemail );
+            $this->assertEquals( 'test notes2',                 $location->notes );
 
             // 11. delete the router in the UI and verify via success message text and location
             $browser->visit( '/facility/list/' )
-                ->click('#d2f-list-delete-' . $location->getId() )
+                ->click('#e2f-list-delete-' . $location->id )
                 ->waitForText( 'Do you really want to delete this facility' )
                 ->press('Delete' );
 
             $browser->assertSee( 'Facility deleted.' );
 
             // 12. do a D2EM findOneBy and verify false/null
-            $this->assertEquals( null, D2EM::getRepository( LocationEntity::class )->findOneBy( [ 'name' => 'Infrastructure Test2' ] ) );
+            $this->assertTrue( Location::whereName( 'Infrastructure Test2' )->doesntExist() );
         });
 
     }
