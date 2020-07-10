@@ -23,10 +23,6 @@
 
 namespace Tests\Browser;
 
-use D2EM;
-
-use Entities\Switcher as SwitcherEntity;
-
 use IXP\Models\Switcher;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;

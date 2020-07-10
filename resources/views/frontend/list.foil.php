@@ -312,7 +312,7 @@ $this->layout( 'layouts/ixpv4' );
 
                                             <div class="btn-group btn-group-sm">
 
-                                                <a id="d2f-list-view-<?= $row[ 'id' ] ?>" class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@view' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Preview">
+                                                <a id="e2f-list-view-<?= $row[ 'id' ] ?>" class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@view' , [ 'id' => $row[ 'id' ] ] ) ?>" title="Preview">
                                                     <i class="fa fa-eye"></i>
                                                 </a>
 

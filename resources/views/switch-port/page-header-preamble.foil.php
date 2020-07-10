@@ -54,7 +54,7 @@
                 <?php endforeach; ?>
             </div>
         </div>
-        <a id="add-switch-port"  class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@create' ) ?>">
+        <a id="create-switch-port"  class="btn btn-white" href="<?= route($t->feParams->route_prefix.'@create' ) ?>">
             <span class="fa fa-plus"></span>
         </a>
     <?php endif; ?>
