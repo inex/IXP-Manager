@@ -10,19 +10,20 @@
             <i class="fa fa-trash"></i>
         </a>
     <?php endif;?>
-        <button class="btn btn-white dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
-        <ul class="dropdown-menu dropdown-menu-right">
-            <a class="dropdown-item" href="<?= route( 'switch@list' ) . "?infra=" . $t->row['id']?>">
-                View Switches
-            </a>
-            <a class="dropdown-item" href="<?= route( 'vlan@infra' ,          [ 'infra' => $t->row['id'] ]   )?>">
-                View All VLANs
-            </a>
-            <a class="dropdown-item" href="<?= route( "vlan@infraPublic",     [ 'infra' => $t->row['id'], 'public' => 1 ]   )?>">
-                View Public VLANs
-            </a>
-            <a class="dropdown-item" href="<?= route( "vlan@privateInfra",    [ 'infra' => $t->row['id'] ]   )?>">
-                View Private VLANs
-            </a>
-        </ul>
+
+    <button class="btn btn-white dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false"></button>
+    <ul class="dropdown-menu dropdown-menu-right">
+        <a class="dropdown-item" href="<?= route( 'switch@list' ) . "?infra=" . $t->row['id']?>">
+            View Switches
+        </a>
+        <a class="dropdown-item" href="<?= route( 'vlan@infra' ,          [ 'infra' => $t->row['id'] ]   )?>">
+            View All VLANs
+        </a>
+        <a class="dropdown-item" href="<?= route( "vlan@infraPublic",     [ 'infra' => $t->row['id'], 'public' => 1 ]   )?>">
+            View Public VLANs
+        </a>
+        <a class="dropdown-item" href="<?= route( "vlan@privateInfra",    [ 'infra' => $t->row['id'] ]   )?>">
+            View Private VLANs
+        </a>
+    </ul>
 </div>

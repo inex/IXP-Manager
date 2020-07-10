@@ -28,10 +28,6 @@
                     <a href="https://db.ix-f.net/api/ixp/646">Cork</a>
                 ) for each infrastructure.
             </p>
-
-            <hr>
-            There is a database object representing your IXP. You can edit it
-            <a href="<?= route( 'ixp@edit', [ 'id' => 1 ] ) ?>">by clicking here</a>.
         </div>
     </div>
 </div>
