@@ -241,8 +241,8 @@ class SwitchPort extends Model
                 ->where('sp.id', $id );
             } )->when( isset( $params[ 'params' ][ 'switch' ] ) && $params[ 'params' ][ 'switch' ] , function( Builder $q ) use ( $params ) {
                 return $q->where('s.id', $params[ 'params' ][ 'switch' ]->id );
-            } )->when( $feParams->listOrderBy , function( Builder $q, $orderby ) use ( $feParams )  {
-                return $q->orderBy( $orderby, $feParams->listOrderByDir ?? 'ASC');
+            } )->when( isset( $feParams->listOrderBy ) , function( Builder $q ) use ( $feParams )  {
+                return $q->orderBy( $feParams->listOrderBy, $feParams->listOrderByDir ?? 'ASC');
             })->get()->toArray();
     }
 
