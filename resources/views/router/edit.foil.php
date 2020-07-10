@@ -212,7 +212,7 @@
 
                     <?= Former::checkbox( 'rfc1997_passthru' )
                         ->label('RFC1997 Passthru')
-                        ->text( 'Pass through RFC1997 well-known communities (recommended)' )
+                        ->text( 'Pass through RFC1997 well-known communities' )
                         ->value( 1 )
                         ->inline()
                         ->blockHelp( 'Pass through RFC1997 well-known communities on route servers. It is recommended that this be

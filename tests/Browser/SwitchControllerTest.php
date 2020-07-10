@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -27,20 +27,20 @@ use D2EM;
 
 use Entities\Switcher as SwitcherEntity;
 
+use IXP\Models\Switcher;
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 
 class SwitchControllerTest extends DuskTestCase
 {
+    /**
+     * @throws
+     */
     public function tearDown(): void
     {
         foreach( [ 'phpunit', 'phpunit2' ] as $name ) {
-            $switch = D2EM::getRepository( SwitcherEntity::class )->findOneBy( [ 'name' => $name ] );
-
-            if( $switch ) {
-                D2EM::remove( $switch );
-                D2EM::flush();
+            if( $infra = Switcher::whereName( $name )->get()->first() ) {
+                $infra->delete();
             }
         }
 
@@ -51,9 +51,10 @@ class SwitchControllerTest extends DuskTestCase
      * A Dusk test example.
      *
      * @return void
-     * @throws \Throwable
+     *
+     * @throws
      */
-    public function testAdd()
+    public function testAdd(): void
     {
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
@@ -82,7 +83,7 @@ class SwitchControllerTest extends DuskTestCase
                 ->assertInputValue( 'hostname',   'phpunit.test.example.com' )
                 ->assertInputValue( 'snmppasswd', 'mXPOSpC52cSFg1qN' )
                 ->assertInputValue( 'model',      'FESX648' )
-                ->assertSelected(   'vendorid',   '12')
+                ->assertSelected(   'vendorid',   '6')
                 ->assertChecked( 'active' );
 
             // 2. test add step 2
@@ -95,64 +96,63 @@ class SwitchControllerTest extends DuskTestCase
                 ->type( 'loopback_ip', '127.0.0.1' )
                 ->type( 'loopback_name', 'lo0' )
                 ->type( 'notes', 'Test note' )
-                ->press( 'Add' )
+                ->press( 'Create' )
                 ->assertPathIs('/switch/list' )
                 ->assertSee( 'phpunit' )
                 ->assertSee( 'FESX648' );
 
             // get the switch:
-            /** @var SwitcherEntity $switch */
-            $switch = D2EM::getRepository( SwitcherEntity::class )->findOneBy( [ 'name' => 'phpunit' ] );
+            $switch = Switcher::whereName( 'phpunit' )->get()->first();
 
             // test the values:
-            $this->assertEquals( 'phpunit',                  $switch->getName() );
-            $this->assertEquals( 'phpunit.test.example.com', $switch->getHostname() );
-            $this->assertEquals( 'mXPOSpC52cSFg1qN',         $switch->getSnmppasswd() );
-            $this->assertEquals( 1,                          $switch->getCabinet()->getId() );
-            $this->assertEquals( 1,                          $switch->getInfrastructure()->getId() );
-            $this->assertEquals( 12,                         $switch->getVendor()->getId() );
-            $this->assertEquals( 'FESX648',                  $switch->getModel() );
-            $this->assertEquals( true,                       $switch->getActive() );
-            $this->assertEquals( '192.0.2.1',                $switch->getIpv4addr() );
-            $this->assertEquals( '2001:db8::999',            $switch->getIpv6addr() );
-            $this->assertEquals( 'aa0011bb2287',             $switch->getMgmtMacAddress() );
-            $this->assertEquals( 65512,                      $switch->getAsn() );
-            $this->assertEquals( '127.0.0.1',                $switch->getLoopbackIP() );
-            $this->assertEquals( 'lo0',                      $switch->getLoopbackName() );
-            $this->assertEquals( 'Test note',                $switch->getNotes() );
+            $this->assertEquals( 'phpunit',                  $switch->name );
+            $this->assertEquals( 'phpunit.test.example.com', $switch->hostname );
+            $this->assertEquals( 'mXPOSpC52cSFg1qN',         $switch->snmppasswd );
+            $this->assertEquals( 1,                          $switch->cabinetid );
+            $this->assertEquals( 1,                          $switch->infrastructure );
+            $this->assertEquals( 6,                         $switch->vendorid );
+            $this->assertEquals( 'FESX648',                  $switch->model );
+            $this->assertEquals( true,                       $switch->active );
+            $this->assertEquals( '192.0.2.1',                $switch->ipv4addr );
+            $this->assertEquals( '2001:db8::999',            $switch->ipv6addr );
+            $this->assertEquals( 'aa0011bb2287',             $switch->mgmt_mac_address );
+            $this->assertEquals( 65512,                      $switch->asn );
+            $this->assertEquals( '127.0.0.1',                $switch->loopback_ip );
+            $this->assertEquals( 'lo0',                      $switch->loopback_name );
+            $this->assertEquals( 'Test note',                $switch->notes );
 
             // test that editing while not making any changes and saving changes nothing
 
-            $browser->visit( '/switch/edit/' . $switch->getId() )
-                ->assertPathIs('/switch/edit/' . $switch->getId() )
+            $browser->visit( '/switch/edit/' . $switch->id )
+                ->assertPathIs('/switch/edit/' . $switch->id )
                 ->press( 'Save Changes' )
                 ->assertPathIs('/switch/list' )
                 ->assertSee( 'phpunit' )
                 ->assertSee( 'FESX648' );
 
             // test the values:
-            D2EM::refresh($switch);
-            $this->assertEquals( 'phpunit',                  $switch->getName() );
-            $this->assertEquals( 'phpunit.test.example.com', $switch->getHostname() );
-            $this->assertEquals( 'mXPOSpC52cSFg1qN',         $switch->getSnmppasswd() );
-            $this->assertEquals( 1,                          $switch->getCabinet()->getId() );
-            $this->assertEquals( 1,                          $switch->getInfrastructure()->getId() );
-            $this->assertEquals( 12,                         $switch->getVendor()->getId() );
-            $this->assertEquals( 'FESX648',                  $switch->getModel() );
-            $this->assertEquals( true,                       $switch->getActive() );
-            $this->assertEquals( '192.0.2.1',                $switch->getIpv4addr() );
-            $this->assertEquals( '2001:db8::999',            $switch->getIpv6addr() );
-            $this->assertEquals( 'aa0011bb2287',             $switch->getMgmtMacAddress() );
-            $this->assertEquals( 65512,                      $switch->getAsn() );
-            $this->assertEquals( '127.0.0.1',                $switch->getLoopbackIP() );
-            $this->assertEquals( 'lo0',                      $switch->getLoopbackName() );
-            $this->assertEquals( 'Test note',                $switch->getNotes() );
+            $switch->refresh();
+            $this->assertEquals( 'phpunit',                  $switch->name );
+            $this->assertEquals( 'phpunit.test.example.com', $switch->hostname );
+            $this->assertEquals( 'mXPOSpC52cSFg1qN',         $switch->snmppasswd );
+            $this->assertEquals( 1,                          $switch->cabinetid );
+            $this->assertEquals( 1,                          $switch->infrastructure );
+            $this->assertEquals( 6,                         $switch->vendorid );
+            $this->assertEquals( 'FESX648',                  $switch->model );
+            $this->assertEquals( true,                       $switch->active );
+            $this->assertEquals( '192.0.2.1',                $switch->ipv4addr );
+            $this->assertEquals( '2001:db8::999',            $switch->ipv6addr );
+            $this->assertEquals( 'aa0011bb2287',             $switch->mgmt_mac_address );
+            $this->assertEquals( 65512,                      $switch->asn );
+            $this->assertEquals( '127.0.0.1',                $switch->loopback_ip );
+            $this->assertEquals( 'lo0',                      $switch->loopback_name );
+            $this->assertEquals( 'Test note',                $switch->notes );
 
 
             // now test that editing while making changes works
 
-            $browser->visit( '/switch/edit/' . $switch->getId() )
-                ->assertPathIs('/switch/edit/' . $switch->getId() )
+            $browser->visit( '/switch/edit/' . $switch->id )
+                ->assertPathIs('/switch/edit/' . $switch->id )
                 ->type( 'name', 'phpunit2' )
                 ->type( 'hostname', 'phpunit2.test.example.com' )
                 ->type( 'snmppasswd', 'newpassword' )
@@ -172,54 +172,54 @@ class SwitchControllerTest extends DuskTestCase
                 ->assertSee( 'phpunit2' )
                 ->assertSee( 'TI24X' );
 
-            D2EM::refresh($switch);
+            $switch->refresh();
 
             // test the values:
-            $this->assertEquals( 'phpunit2',                  $switch->getName() );
-            $this->assertEquals( 'phpunit2.test.example.com', $switch->getHostname() );
-            $this->assertEquals( 'newpassword',               $switch->getSnmppasswd() );
-            $this->assertEquals( 1,                           $switch->getCabinet()->getId() );
-            $this->assertEquals( 2,                           $switch->getInfrastructure()->getId() );
-            $this->assertEquals( 11,                          $switch->getVendor()->getId() );
-            $this->assertEquals( 'TI24X',                     $switch->getModel() );
-            $this->assertEquals( false,                       $switch->getActive() );
-            $this->assertEquals( '192.0.2.2',                 $switch->getIpv4addr() );
-            $this->assertEquals( '2001:db8::9999',            $switch->getIpv6addr() );
-            $this->assertEquals( 'aa0011bb2288',              $switch->getMgmtMacAddress() );
-            $this->assertEquals( 65513,                       $switch->getAsn() );
-            $this->assertEquals( '127.0.0.2',                 $switch->getLoopbackIP() );
-            $this->assertEquals( 'lo1',                       $switch->getLoopbackName() );
-            $this->assertEquals( 'Test note 2',               $switch->getNotes() );
+            $this->assertEquals( 'phpunit2',                  $switch->name );
+            $this->assertEquals( 'phpunit2.test.example.com', $switch->hostname );
+            $this->assertEquals( 'newpassword',               $switch->snmppasswd );
+            $this->assertEquals( 1,                           $switch->cabinetid );
+            $this->assertEquals( 2,                           $switch->infrastructure );
+            $this->assertEquals( 11,                          $switch->vendorid );
+            $this->assertEquals( 'TI24X',                     $switch->model );
+            $this->assertEquals( false,                       $switch->active );
+            $this->assertEquals( '192.0.2.2',                 $switch->ipv4addr );
+            $this->assertEquals( '2001:db8::9999',            $switch->ipv6addr );
+            $this->assertEquals( 'aa0011bb2288',              $switch->mgmt_mac_address );
+            $this->assertEquals( 65513,                       $switch->asn );
+            $this->assertEquals( '127.0.0.2',                 $switch->loopback_ip );
+            $this->assertEquals( 'lo1',                       $switch->loopback_name );
+            $this->assertEquals( 'Test note 2',               $switch->notes );
 
             // test that editing while not making any changes and saving changes nothing
             // (this is a retest for, e.g. unchecked checkboxes)
 
-            $browser->visit( '/switch/edit/' . $switch->getId() )
-                ->assertPathIs('/switch/edit/' . $switch->getId() )
+            $browser->visit( '/switch/edit/' . $switch->id )
+                ->assertPathIs('/switch/edit/' . $switch->id )
                 ->press( 'Save Changes' )
                 ->assertPathIs('/switch/list' )
                 ->assertSee( 'phpunit2' )
                 ->assertSee( 'TI24X' );
 
             // test the values:
-            $this->assertEquals( 'phpunit2',                  $switch->getName() );
-            $this->assertEquals( 'phpunit2.test.example.com', $switch->getHostname() );
-            $this->assertEquals( 'newpassword',               $switch->getSnmppasswd() );
-            $this->assertEquals( 1,                           $switch->getCabinet()->getId() );
-            $this->assertEquals( 2,                           $switch->getInfrastructure()->getId() );
-            $this->assertEquals( 11,                          $switch->getVendor()->getId() );
-            $this->assertEquals( 'TI24X',                     $switch->getModel() );
-            $this->assertEquals( false,                       $switch->getActive() );
-            $this->assertEquals( '192.0.2.2',                 $switch->getIpv4addr() );
-            $this->assertEquals( '2001:db8::9999',            $switch->getIpv6addr() );
-            $this->assertEquals( 'aa0011bb2288',              $switch->getMgmtMacAddress() );
-            $this->assertEquals( 65513,                       $switch->getAsn() );
-            $this->assertEquals( '127.0.0.2',                 $switch->getLoopbackIP() );
-            $this->assertEquals( 'lo1',                       $switch->getLoopbackName() );
-            $this->assertEquals( 'Test note 2',               $switch->getNotes() );
+            $this->assertEquals( 'phpunit2',                  $switch->name );
+            $this->assertEquals( 'phpunit2.test.example.com', $switch->hostname );
+            $this->assertEquals( 'newpassword',               $switch->snmppasswd );
+            $this->assertEquals( 1,                           $switch->cabinetid );
+            $this->assertEquals( 2,                           $switch->infrastructure );
+            $this->assertEquals( 11,                          $switch->vendorid );
+            $this->assertEquals( 'TI24X',                     $switch->model );
+            $this->assertEquals( false,                       $switch->active );
+            $this->assertEquals( '192.0.2.2',                 $switch->ipv4addr );
+            $this->assertEquals( '2001:db8::9999',            $switch->ipv6addr );
+            $this->assertEquals( 'aa0011bb2288',              $switch->mgmt_mac_address );
+            $this->assertEquals( 65513,                       $switch->asn );
+            $this->assertEquals( '127.0.0.2',                 $switch->loopback_ip );
+            $this->assertEquals( 'lo1',                       $switch->loopback_name );
+            $this->assertEquals( 'Test note 2',               $switch->notes );
 
             // delete this switch
-            $browser->press( '#d2f-list-delete-' . $switch->getId() )
+            $browser->press( '#d2f-list-delete-' . $switch->id )
                 ->waitForText( 'Do you really want to delete this' )
                 ->press( 'Delete' )
                 ->assertPathIs('/switch/list' )
