@@ -2375,7 +2375,6 @@ CREATE TABLE `user_remember_tokens` (
 
 LOCK TABLES `user_remember_tokens` WRITE;
 /*!40000 ALTER TABLE `user_remember_tokens` DISABLE KEYS */;
-INSERT INTO `user_remember_tokens` VALUES (1,1,'zal74ezhUiNSN2d55WPxFTAOvYUxMcD3Cdi7z8D1tJHDNQaVsC50f0WDZEwU','Macintosh 10.15.5 / Chrome 83.0.4103.116','127.0.0.1','2020-07-10 07:54:18','2020-08-09 07:54:18',0);
 /*!40000 ALTER TABLE `user_remember_tokens` ENABLE KEYS */;
 UNLOCK TABLES;
 

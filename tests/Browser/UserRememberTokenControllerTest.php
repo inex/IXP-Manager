@@ -23,11 +23,11 @@
 
 namespace Tests\Browser;
 
-use Auth, D2EM;
+use Auth ;
 
-use Entities\{
-    User                as UserEntity,
-    UserRememberToken   as UserRememberTokenEntity,
+use IXP\Models\{
+    User,
+    UserRememberToken
 };
 
 use Tests\DuskTestCase;
@@ -40,22 +40,22 @@ class UserRememberTokenControllerTest extends DuskTestCase
      * A Dusk test example.
      *
      * @return void
+     *
      * @throws
      */
-    public function testAdd()
+    public function testAdd(): void
     {
 
-        $this->browse(function ( Browser $browser, Browser $browser2 ) {
+        $this->browse( function ( Browser $browser, Browser $browser2 ) {
 
-            /** @var UserEntity $user */
-            $user = D2EM::getRepository( UserEntity::class )->findOneBy( [ 'username' => 'travis'  ] );
+            $user = User::whereUsername('travis' )->get()->first();
 
             $cookieName = Auth::getRecallerName();
 
             $browser->resize( 1600,1200 )
                     ->visit('/logout')
                     ->visit('/login')
-                    ->type('username', $user->getUsername() )
+                    ->type('username', $user->username )
                     ->type('password', 'travisci' )
                     ->press('#login-btn' )
                     ->assertPathIs( '/admin' );
@@ -63,11 +63,9 @@ class UserRememberTokenControllerTest extends DuskTestCase
             /**
              * Check that the remember cookie and DB entry is not existing as we didnt checked the remember me checkbox
              */
-            //$browser->assertCookieMissing( $cookieName );
+            $listUrt = UserRememberToken::whereUserId( $user->id )->get();
 
-            $listUrt = D2EM::getRepository( UserRememberTokenEntity::class )->findBy( [ 'User' => $user->getId()  ] );
-
-            $this->assertEquals( 0, count( $listUrt ) );
+            $this->assertEquals( 0, $listUrt->count() );
 
             /**
              * Login checking the checkbox remember me
@@ -86,11 +84,8 @@ class UserRememberTokenControllerTest extends DuskTestCase
              */
             $browser->assertHasCookie( $cookieName );
 
-            $listUrt = D2EM::getRepository( UserRememberTokenEntity::class )->findBy( [ 'User' => $user->getId()  ] );
-
-            $this->assertEquals( 1, count( $listUrt ) );
-
-
+            $listUrt = UserRememberToken::whereUserId( $user->id )->get();
+            $this->assertEquals( 1, $listUrt->count() );
 
             /**
              * Open a new browser and login
@@ -112,9 +107,8 @@ class UserRememberTokenControllerTest extends DuskTestCase
             /**
              * Check that the user has 2 active sessions
              */
-            $listUrt = D2EM::getRepository( UserRememberTokenEntity::class )->findBy( [ 'User' => $user->getId()  ] );
-
-            $this->assertEquals( 2, count( $listUrt ) );
+            $listUrt = UserRememberToken::whereUserId( $user->id )->get();
+            $this->assertEquals( 2, $listUrt->count() );
 
             /**
              * Delete an active session
@@ -124,20 +118,16 @@ class UserRememberTokenControllerTest extends DuskTestCase
                     ->assertPathIs('/active-sessions/list');
 
             // Get the last user remember token for the user
-            $lastUrt = D2EM::getRepository( UserRememberTokenEntity::class )->findOneBy( [ 'User' => $user->getId() ], [ 'id' => 'DESC' ] );
+            $lastUrt = UserRememberToken::whereUserId( $user->id )->orderBy( 'id', 'DESC' )->get()->first();
 
-            $browser->press("#d2f-list-delete-" . $lastUrt->getId() )
+            $browser->press("#d2f-list-delete-" . $lastUrt->id)
                 ->waitForText( 'Do you really want to delete this active login session?' )
                 ->press('Delete')
                 ->assertPathIs('/active-sessions/list' )
                 ->assertSee( 'Active Login Session deleted.' );
 
-
-            D2EM::refresh( $lastUrt );
-
-            $listUrt = D2EM::getRepository( UserRememberTokenEntity::class )->findBy( [ 'User' => $user->getId()  ] );
-
-            $this->assertEquals( 1, count( $listUrt ) );
+            $listUrt = UserRememberToken::whereUserId( $user->id )->get();
+            $this->assertEquals( 1, $listUrt->count() );
 
             /**
              * Refresh the second browser and check that we have been logged out
@@ -156,16 +146,13 @@ class UserRememberTokenControllerTest extends DuskTestCase
              * Delete the user remember token left for the user and check that the user is loggued out
              */
             // Get the user remember token left for the user
-            $urt = D2EM::getRepository( UserRememberTokenEntity::class )->findOneBy( [ 'User' => $user->getId() ] );
+            $urt = UserRememberToken::whereUserId( $user->id )->get()->first();
 
-            $browser->press("#d2f-list-delete-" . $urt->getId() )
+            $browser->press("#d2f-list-delete-" . $urt->id )
                 ->waitForText( 'Do you really want to delete this active login session?' )
                 ->press('Delete')
                 ->assertPathIs('/login' )
                 ->assertSee( 'You have been logged out.' );
         });
-
-
     }
-
 }
