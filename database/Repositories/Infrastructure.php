@@ -55,9 +55,6 @@ class Infrastructure extends EntityRepository
     {
         $dql = "SELECT i.id AS id, i.name AS name FROM Entities\\Infrastructure i";
 
-        if( $ixp )
-            $dql .= " WHERE i.IXP = ?1";
-
         $dql .= " ORDER BY name ASC";
         
         $query = $this->getEntityManager()->createQuery( $dql );
@@ -84,17 +81,12 @@ class Infrastructure extends EntityRepository
      */
     public function getPrimary( $ixp = null, $throw = true )
     {
-        if( $ixp == null )
-            $ixp = $this->getEntityManager()->getRepository( '\\Entities\\IXP' )->getDefault();
-        
+
         $infra = $this->getEntityManager()->createQuery(
                 "SELECT i
                     FROM Entities\\Infrastructure i
-                    JOIN i.IXP ixp
-                    WHERE i.isPrimary = 1
-                        AND ixp = :ixp"
+                    WHERE i.isPrimary = 1"
             )
-            ->setParameter( 'ixp', $ixp )
             ->useResultCache( true, 7200, self::CACHE_KEY_PRIMARY )
             ->getResult();
         
@@ -121,17 +113,11 @@ class Infrastructure extends EntityRepository
      */
     public function getAll( $ixp = null )
     {
-        if( $ixp == null )
-            $ixp = $this->getEntityManager()->getRepository( '\\Entities\\IXP' )->getDefault();
-
         $infras = $this->getEntityManager()->createQuery(
                 "SELECT i
                     FROM Entities\\Infrastructure i
-                    JOIN i.IXP ixp
-                    WHERE ixp = :ixp
                     ORDER BY i.name ASC"
             )
-            ->setParameter( 'ixp', $ixp )
             ->useResultCache( true, 7200, self::CACHE_KEY_ALL )
             ->getResult();
 
