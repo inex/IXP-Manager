@@ -276,8 +276,6 @@ class SwitchPortControllerTest extends DuskTestCase
             /**
              * Test delete Switch port
              */
-
-            // delete the switch
             $browser->press( "#e2f-list-delete-" . $newSp->id )
                 ->waitForText( "Delete Switch Port" )
                 ->press( "Delete" )

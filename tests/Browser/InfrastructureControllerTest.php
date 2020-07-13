@@ -29,6 +29,9 @@ use Laravel\Dusk\Browser;
 
 class InfrastructureControllerTest extends DuskTestCase
 {
+    /**
+     * @throws
+     */
     public function tearDown(): void
     {
         if( $infra = Infrastructure::whereName( 'Infrastructure PHPUnit' )->get()->first() ) {

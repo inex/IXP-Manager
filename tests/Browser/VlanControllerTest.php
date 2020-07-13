@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -23,11 +23,7 @@
 
 namespace Tests\Browser;
 
-use D2EM;
-
-use Entities\{
-    Vlan as VlanEntity
-};
+use IXP\Models\Vlan;
 
 use Tests\DuskTestCase;
 use Laravel\Dusk\Browser;
@@ -35,14 +31,16 @@ use Laravel\Dusk\Browser;
 class VlanControllerTest extends DuskTestCase
 {
 
+    /**
+     * @throws
+     */
     public function tearDown(): void
     {
-        $vlan = D2EM::getRepository( VlanEntity::class )->findOneBy( [ 'name' => 'Vlan test2' ] );
-        if( $vlan ) {
-            D2EM::remove( $vlan );
-            D2EM::flush();
+        foreach( [ 'Vlan test', 'Vlan test2' ] as $name ) {
+            if( $vlan = Vlan::whereName( $name )->get()->first() ) {
+                $vlan->delete();
+            }
         }
-
         parent::tearDown();
     }
 
@@ -50,11 +48,11 @@ class VlanControllerTest extends DuskTestCase
      * A Dusk test example.
      *
      * @return void
-     * @throws \Throwable
+     *
+     * @throws
      */
-    public function testAdd()
+    public function testAdd(): void
     {
-
         $this->browse(function (Browser $browser) {
             $browser->resize( 1600,1200 )
                 ->visit('/login')
@@ -66,12 +64,12 @@ class VlanControllerTest extends DuskTestCase
             $browser->visit( '/vlan/list' )
                 ->assertSee( 'VLANs' );
 
-            $browser->visit( '/vlan/add' )
-                ->assertSee( 'Add VLAN' );
+            $browser->visit( '/vlan/create' )
+                ->assertSee( 'Create VLAN' );
 
             // 1. test add empty inputs
-            $browser->press('Add')
-                ->assertPathIs('/vlan/add')
+            $browser->press('Create')
+                ->assertPathIs('/vlan/create')
                 ->assertSee( "The name field is required." )
                 ->assertSee( "The number field is required." )
                 ->assertSee( "The infrastructureid field is required." )
@@ -86,26 +84,25 @@ class VlanControllerTest extends DuskTestCase
                     ->check(    'peering_matrix')
                     ->check(    'peering_manager')
                     ->type(     'notes',    'test notes' )
-                    ->press('Add')
+                    ->press('Create')
                     ->assertPathIs('/vlan/list')
-                    ->assertSee( "VLAN added" );
+                    ->assertSee( "VLAN created" );
 
-            /** @var VlanEntity $vlan */
-            $vlan = D2EM::getRepository( VlanEntity::class )->findOneBy( [ 'name' => 'Vlan test' ] );
+            $vlan = Vlan::whereName( 'Vlan test' )->get()->first();
 
             // 2. test added data in database against expected values
-            $this->assertInstanceOf( VlanEntity::class, $vlan );
-            $this->assertEquals( 'Vlan test',   $vlan->getName() );
-            $this->assertEquals( '10',          $vlan->getNumber()  );
-            $this->assertEquals( 1,             $vlan->getInfrastructure()->getId() );
-            $this->assertEquals( 'vlan-test',   $vlan->getConfigName() );
-            $this->assertEquals( true,          $vlan->getPrivate() );
-            $this->assertEquals( true,          $vlan->getPeeringMatrix() );
-            $this->assertEquals( true,          $vlan->getPeeringManager() );
-            $this->assertEquals( 'test notes',  $vlan->getNotes() );
+            $this->assertInstanceOf( Vlan::class,   $vlan );
+            $this->assertEquals( 'Vlan test',       $vlan->name );
+            $this->assertEquals( '10',              $vlan->number  );
+            $this->assertEquals( 1,                 $vlan->infrastructureid );
+            $this->assertEquals( 'vlan-test',       $vlan->config_name );
+            $this->assertEquals( true,              $vlan->private );
+            $this->assertEquals( true,              $vlan->peering_matrix );
+            $this->assertEquals( true,              $vlan->peering_manager );
+            $this->assertEquals( 'test notes',      $vlan->notes );
 
-            // 3. browse to edit infrastructure object:
-            $browser->click( '#d2f-list-edit-' .  $vlan->getId() );
+            // 3. browse to edit vlan object:
+            $browser->click( '#e2f-list-edit-' .  $vlan->id );
 
             // 4. test that form contains settings as above using assertChecked(), assertNotChecked(), assertSelected(), assertInputValue, ...
             $browser->assertInputValue( 'name',      'Vlan test')
@@ -117,9 +114,6 @@ class VlanControllerTest extends DuskTestCase
                     ->assertChecked(    'peering_manager')
                     ->assertInputValue( 'notes',    'test notes' );
 
-
-
-
             // 5. uncheck checkboxes, change selects and values, ->press('Save Changes'), assertPathIs(....)  (repeat 1)
             $browser->select( 'infrastructureid',     '2' )
                     ->uncheck('private')
@@ -127,25 +121,25 @@ class VlanControllerTest extends DuskTestCase
                     ->uncheck('peering_manager')
                     ->press('Save Changes')
                     ->assertPathIs('/vlan/list')
-                    ->assertSee( "VLAN edited" );
+                    ->assertSee( "VLAN updated" );
 
 
             // 6. repeat database load and database object check for new values (repeat 2)
-            D2EM::refresh( $vlan );
+            $vlan->refresh();
 
-            $this->assertInstanceOf( VlanEntity::class, $vlan );
-            $this->assertEquals( 'Vlan test',   $vlan->getName() );
-            $this->assertEquals( '10',          $vlan->getNumber()  );
-            $this->assertEquals( 2,             $vlan->getInfrastructure()->getId() );
-            $this->assertEquals( 'vlan-test',   $vlan->getConfigName() );
-            $this->assertEquals( false,         $vlan->getPrivate() );
-            $this->assertEquals( false,         $vlan->getPeeringMatrix() );
-            $this->assertEquals( false,         $vlan->getPeeringManager() );
-            $this->assertEquals( 'test notes',  $vlan->getNotes() );
+            $this->assertInstanceOf( Vlan::class, $vlan );
+            $this->assertEquals( 'Vlan test',   $vlan->name );
+            $this->assertEquals( '10',          $vlan->number  );
+            $this->assertEquals( 2,             $vlan->infrastructureid );
+            $this->assertEquals( 'vlan-test',   $vlan->config_name );
+            $this->assertEquals( false,         $vlan->private );
+            $this->assertEquals( false,         $vlan->peering_matrix );
+            $this->assertEquals( false,         $vlan->peering_manager );
+            $this->assertEquals( 'test notes',  $vlan->notes );
 
 
             // 7. edit again and assert that all checkboxes are unchecked and assert select values are as expected
-            $browser->visit( '/vlan/edit/' .  $vlan->getId() )
+            $browser->visit( '/vlan/edit/' .  $vlan->id )
                 ->assertSee( 'Edit VLAN' );
 
             $browser->assertInputValue( 'name',      'Vlan test')
@@ -164,20 +158,20 @@ class VlanControllerTest extends DuskTestCase
 
 
             // 9. repeat database load and database object check for new values (repeat 2)
-            D2EM::refresh( $vlan );
+            $vlan->refresh();
 
-            $this->assertInstanceOf( VlanEntity::class, $vlan );
-            $this->assertEquals( 'Vlan test',   $vlan->getName() );
-            $this->assertEquals( '10',          $vlan->getNumber()  );
-            $this->assertEquals( 2,             $vlan->getInfrastructure()->getId() );
-            $this->assertEquals( 'vlan-test',   $vlan->getConfigName() );
-            $this->assertEquals( false,         $vlan->getPrivate() );
-            $this->assertEquals( false,         $vlan->getPeeringMatrix() );
-            $this->assertEquals( false,         $vlan->getPeeringManager() );
-            $this->assertEquals( 'test notes',  $vlan->getNotes() );
+            $this->assertInstanceOf( Vlan::class, $vlan );
+            $this->assertEquals( 'Vlan test',   $vlan->name );
+            $this->assertEquals( '10',          $vlan->number  );
+            $this->assertEquals( 2,             $vlan->infrastructureid );
+            $this->assertEquals( 'vlan-test',   $vlan->config_name );
+            $this->assertEquals( false,         $vlan->private );
+            $this->assertEquals( false,         $vlan->peering_matrix );
+            $this->assertEquals( false,         $vlan->peering_manager );
+            $this->assertEquals( 'test notes',  $vlan->notes );
 
             // 10. edit again and check all checkboxes and submit
-            $browser->visit( '/vlan/edit/' .  $vlan->getId() )
+            $browser->visit( '/vlan/edit/' .  $vlan->id )
                 ->assertSee( 'Edit VLAN' );
 
             $browser->check('private')
@@ -188,21 +182,21 @@ class VlanControllerTest extends DuskTestCase
 
 
             // 11. verify checkbox bool elements in database are all true
-            D2EM::refresh( $vlan );
+            $vlan->refresh();
 
-            $this->assertInstanceOf( VlanEntity::class, $vlan );
-            $this->assertEquals( 'Vlan test',   $vlan->getName() );
-            $this->assertEquals( '10',          $vlan->getNumber()  );
-            $this->assertEquals( 2,             $vlan->getInfrastructure()->getId() );
-            $this->assertEquals( 'vlan-test',   $vlan->getConfigName() );
-            $this->assertEquals( true,          $vlan->getPrivate() );
-            $this->assertEquals( true,          $vlan->getPeeringMatrix() );
-            $this->assertEquals( true,          $vlan->getPeeringManager() );
-            $this->assertEquals( 'test notes',  $vlan->getNotes() );
+            $this->assertInstanceOf( Vlan::class, $vlan );
+            $this->assertEquals( 'Vlan test',   $vlan->name );
+            $this->assertEquals( '10',          $vlan->number  );
+            $this->assertEquals( 2,             $vlan->infrastructureid );
+            $this->assertEquals( 'vlan-test',   $vlan->config_name );
+            $this->assertEquals( true,          $vlan->private );
+            $this->assertEquals( true,          $vlan->peering_matrix );
+            $this->assertEquals( true,          $vlan->peering_manager );
+            $this->assertEquals( 'test notes',  $vlan->notes );
 
 
             // 12. edit all inputs
-            $browser->visit( '/vlan/edit/' .  $vlan->getId() )
+            $browser->visit( '/vlan/edit/' .  $vlan->id )
                 ->assertSee( 'Edit VLAN' );
 
             $browser->type(     'name',         'Vlan test2')
@@ -216,22 +210,22 @@ class VlanControllerTest extends DuskTestCase
                     ->press('Save Changes')
                     ->assertPathIs('/vlan/list');
 
-            D2EM::refresh( $vlan );
+            $vlan->refresh();
 
-            $this->assertInstanceOf( VlanEntity::class, $vlan );
-            $this->assertEquals( 'Vlan test2',   $vlan->getName() );
-            $this->assertEquals( '11',          $vlan->getNumber()  );
-            $this->assertEquals( 1,             $vlan->getInfrastructure()->getId() );
-            $this->assertEquals( 'vlan-test2',   $vlan->getConfigName() );
-            $this->assertEquals( true,          $vlan->getPrivate() );
-            $this->assertEquals( true,          $vlan->getPeeringMatrix() );
-            $this->assertEquals( true,          $vlan->getPeeringManager() );
-            $this->assertEquals( 'test notes2',  $vlan->getNotes() );
+            $this->assertInstanceOf( Vlan::class, $vlan );
+            $this->assertEquals( 'Vlan test2',   $vlan->name );
+            $this->assertEquals( '11',          $vlan->number  );
+            $this->assertEquals( 1,             $vlan->infrastructureid );
+            $this->assertEquals( 'vlan-test2',   $vlan->config_name );
+            $this->assertEquals( true,          $vlan->private );
+            $this->assertEquals( true,          $vlan->peering_matrix );
+            $this->assertEquals( true,          $vlan->peering_manager );
+            $this->assertEquals( 'test notes2',  $vlan->notes );
 
 
             // 13. Add duplicate vlan
-            $browser->visit( '/vlan/add' )
-                    ->assertSee( 'Add VLAN' )
+            $browser->visit( '/vlan/create' )
+                    ->assertSee( 'Create VLAN' )
                     ->type(     'name',         'Vlan test2')
                     ->type(     'number',    '11' )
                     ->select(   'infrastructureid',  1 )
@@ -240,22 +234,22 @@ class VlanControllerTest extends DuskTestCase
                     ->check(    'peering_matrix')
                     ->check(    'peering_manager')
                     ->type(     'notes',    'test notes2' )
-                    ->press('Add')
-                    ->assertPathIs('/vlan/add')
+                    ->press('Create')
+                    ->assertPathIs('/vlan/create')
                     ->assertSee( "The couple Infrastructure and config name already exist" )
                     ->visit( '/vlan/list' );
 
             // 14. delete the router in the UI and verify via success message text and location
             $browser->visit( '/vlan/list/' )
-                ->press('#d2f-list-delete-dd-' . $vlan->getId() )
-                ->press('#d2f-list-delete-' . $vlan->getId() )
+                ->press('#e2f-list-delete-dd-' . $vlan->id )
+                ->press('#e2f-list-delete-' . $vlan->id )
                 ->waitForText( 'Do you really want to delete this VLAN' )
                 ->press('Delete' );
 
             $browser->assertSee( 'VLAN deleted.' );
 
             // 12. do a D2EM findOneBy and verify false/null
-            $this->assertEquals( null, D2EM::getRepository( VlanEntity::class )->findOneBy( [ 'name' => 'Vlan test' ] ) );
+            $this->assertTrue( Vlan::whereName( 'Vlan test' )->doesntExist() );
         });
 
     }

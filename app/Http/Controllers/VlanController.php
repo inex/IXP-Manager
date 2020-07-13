@@ -25,6 +25,7 @@ namespace IXP\Http\Controllers;
 
 use Cache, Former, Route;
 
+use Redirect;
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -229,7 +230,9 @@ class VlanController extends EloquentController
     public function doStore( Request $request )
     {
         $this->checkForm( $request );
-        $this->checkIsDuplicate( null, $request );
+        if( $this->checkIsDuplicate( null, $request ) ) {
+            return Redirect::back()->withInput();
+        }
         $this->object = Vlan::create( $request->all() );
 
         return true;
@@ -249,7 +252,9 @@ class VlanController extends EloquentController
     {
         $this->object = Vlan::findOrFail( $id );
         $this->checkForm( $request );
-        $this->checkIsDuplicate( $this->object->id, $request );
+        if( $this->checkIsDuplicate( $this->object->id, $request ) ){
+            return Redirect::back()->withInput();
+        }
         $this->object->update( $request->all() );
 
         return true;
