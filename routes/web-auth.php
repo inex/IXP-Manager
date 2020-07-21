@@ -27,14 +27,11 @@
 |--------------------------------------------------------------------------
 */
 
-
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
 /// Customer
 ///
-
-
 if( !config('ixp_fe.frontend.disabled.logo' ) ) {
     Route::group( [ 'prefix' => 'customer-logo', 'namespace' => 'Customer' ], function() {
         Route::get(     'manage/{id?}',     'LogoController@manage'     )->name( "logo@manage"  );
@@ -48,7 +45,6 @@ if( !config('ixp_fe.frontend.disabled.logo' ) ) {
 ///
 /// Patch Panels
 ///
-
 Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'middleware' => 'patch-panel-port'], function() {
     Route::get( 'download-loa/{id}',                'PatchPanelPortController@downloadLoA'      )->name( 'patch-panel-port@download-loa'     );
     Route::get( 'view-loa/{id}',                    'PatchPanelPortController@viewLoA'          )->name( 'patch-panel-port@view-loa'         );
@@ -63,7 +59,6 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
 ///
 /// Route Server Prefixes
 ///
-
 Route::group( [ 'prefix' => 'rs-prefixes', 'middleware' => [ 'rs-prefixes' ] ], function() {
     Route::get(     'list',         'RsPrefixesController@list' )->name( 'rs-prefixes@list'  );
     Route::get(     'view/{cid}',   'RsPrefixesController@view' )->name( 'rs-prefixes@view'  );
@@ -76,16 +71,14 @@ Route::get('filtered-prefixes/{customer}', 'FilteredPrefixesController@list' )->
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
-
+/// Profile
+///
 Route::group( [ 'prefix' => 'profile' ], function() {
-
     Route::get( '', 'ProfileController@edit' )->name( 'profile@edit' );
-
     Route::post( 'update-password',                'ProfileController@updatePassword'               )->name( 'profile@update-password'                  );
     Route::post( 'update-profile',                 'ProfileController@updateProfile'                )->name( 'profile@update-profile'                   );
     Route::post( 'update-notification-preference', 'ProfileController@updateNotificationPreference' )->name( 'profile@update-notification-preference'   );
     Route::post( 'update-mailing-lists',           'ProfileController@updateMailingLists'           )->name( 'profile@update-mailing-lists'             );
-
 });
 
 
@@ -95,7 +88,11 @@ Route::group( [ 'prefix' => 'profile' ], function() {
 
 Route::get(  'switch/configuration',       'Switches\SwitchController@configuration'       )->name( "switch@configuration" );
 
-// Authentication routes...
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Authentication
+///
 Route::group( [ 'namespace' => 'Auth' ], function() {
     Route::get('switch-user/{id}',         'SwitchUserController@switch'                            )->name( "switch-user@switch"            );
     Route::get('switch-user-back',         'SwitchUserController@switchBack'                        )->name( "switch-user@switchBack"        );
@@ -106,7 +103,8 @@ Route::group( [ 'namespace' => 'Auth' ], function() {
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
-
+/// Authentication
+///
 Route::group( [ 'prefix' => 'dashboard' ], function() {
     Route::get(  '{tab?}',                          'DashboardController@index'                 )->name( "dashboard@index"                  );
     Route::post(  'store-noc-details',              'DashboardController@storeNocDetails'       )->name( "dashboard@store-noc-details"      );
@@ -117,13 +115,19 @@ Route::group( [ 'prefix' => 'dashboard' ], function() {
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
-
+/// Cust to User
+///
 Route::group( [ 'namespace' => 'User', 'prefix' => 'customer-to-user' ], function() {
     Route::get( 'add/{email?}', 'CustomerToUserController@add'                          )->name( "customer-to-user@add"    );
     Route::post('store',        'CustomerToUserController@store'                        )->name( "customer-to-user@store"  );
     Route::post('delete',       'CustomerToUserController@delete'                       )->name( "customer-to-user@delete" );
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// User
+///
 Route::group( [ 'namespace' => 'User', 'prefix' => 'user' ], function() {
     Route::get(     'list',                     'UserController@index'                 )->name("user@list"              );
     Route::get(     'view/{id}',                'UserController@view'                  )->name("user@view"              );
@@ -137,34 +141,39 @@ Route::group( [ 'namespace' => 'User', 'prefix' => 'user' ], function() {
     Route::post(     'add/check-email',         'UserController@addCheckEmail'         )->name('user@add-check-email'   );
 });
 
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Peering manager
+///
+Route::group( [ 'prefix' => 'peering-manager' ], function() {
+    Route::get(  '',                            'PeeringManagerController@index'            )->name( "peering-manager@index"            );
+    Route::get(  '{id}/mark-peering/{status}',  'PeeringManagerController@markPeering'      )->name( 'peering-manager@mark-peering'     );
+    Route::post( 'form',                        'PeeringManagerController@formEmailFrag'    )->name( 'peering-manager@form-email-frag'  );
+    Route::post( 'send-peering-email',          'PeeringManagerController@sendPeeringEmail' )->name( "peering-manager@send-peering-email" );
+    Route::post( 'notes',                       'PeeringManagerController@peeringNotes'     )->name( "peering-manager@notes" );
+});
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
 ///
-
-
-Route::get(  'peering-manager',                             'PeeringManagerController@index'            )->name( "peering-manager@index"            );
-Route::get(  'peering-manager/{id}/mark-peering/{status}',  'PeeringManagerController@markPeering'      )->name( 'peering-manager@mark-peering'     );
-Route::post( 'peering-manager/form',                        'PeeringManagerController@formEmailFrag'    )->name( 'peering-manager@form-email-frag'  );
-Route::post( 'peering-manager/send-peering-email',          'PeeringManagerController@sendPeeringEmail' )->name( "peering-manager@send-peering-email" );
-Route::post( 'peering-manager/notes',                       'PeeringManagerController@peeringNotes'     )->name( "peering-manager@notes" );
-
-
+/// IRRDB
+///
 Route::group( [ 'prefix' => 'irrdb' ], function() {
     Route::get(  'customer/{customer}/{type}/{protocol}',   'IrrdbController@list'            )->name( "irrdb@list"            );
     Route::get(  'update/{customer}/{type}/{protocol}',     'IrrdbController@update'          )->name( "irrdb@update"          );
 });
 
-
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// 2FA
+///
 if( config( 'google2fa.enabled' ) ) {
-
     Route::group( [ 'namespace' => 'User', 'prefix' => '2fa' ], function() {
-
         Route::get('configure','User2FAController@configure')->name('2fa@configure');
-
         Route::post('enable',   'User2FAController@enable'   )->name( "2fa@enable"    );
         Route::post('disable',  'User2FAController@disable'  )->name( "2fa@disable"   );
-
         Route::post( '/authenticate', function() {
             if( Session::exists( "url.intended.2fa" ) ) {
                 return redirect( Session::pull( "url.intended.2fa" ) );
@@ -172,10 +181,9 @@ if( config( 'google2fa.enabled' ) ) {
             return redirect( '' );
 
         } )->name( '2fa@authenticate' )->middleware( '2fa' );
-
     } );
-
 }
+
 
 /////////////////////////////////////////////////////////////////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////////////////////////
@@ -193,3 +201,22 @@ if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ) {
         Route::get(    '{cust}/file/view/{file}',       'FileController@view'        )->name( 'docstore-c-file@view'        );
     } );
 }
+
+/////////////////////////////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////////////////////////
+///
+/// Rs Filtering
+///
+Route::get( 'rs-filtering/{custid}', 'RsFilterController@list' )->name( 'rs-filter@list' );
+
+Route::group( [ 'prefix' => 'rs-filter' ], function() {
+    Route::get('add/{custid}',                  'RsFilterController@add'            )->name("rs-filter@add"             );
+    Route::get('edit/{id}',                     'RsFilterController@edit'           )->name("rs-filter@edit"            );
+    Route::get('view/{id}',                     'RsFilterController@view'           )->name("rs-filter@view"            );
+    Route::get('toogle-enable/{id}/{enable}',   'RsFilterController@toggleEnable'   )->name("rs-filter@toggle-enable"   );
+    Route::get('change-order/{id}/{up}',        'RsFilterController@changeOrderBy'  )->name("rs-filter@change-order"    );
+    Route::post('store',                        'RsFilterController@store'          )->name("rs-filter@store"           );
+    Route::post('delete',                       'RsFilterController@delete'         )->name("rs-filter@delete"          );
+
+    Route::view( 'rs-filter/grant-cust-user',     'rs-filter/grant-cust-user'        )->name( 'rs-filter@grant-cust-user' );
+});

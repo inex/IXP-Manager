@@ -26,12 +26,16 @@ namespace IXP\Http\Controllers\Api\V4;
 use App, D2EM;
 
 use Entities\{
-    Customer,
-    PatchPanel
+    Customer    as CustomerEntity,
+    PatchPanel  as PatchPanelEntity,
+    Vlan        as VlanEntity
 };
 
-use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
+use Illuminate\Http\{
+    JsonResponse,
+    Request
+};
+
 
 
 /**
@@ -54,39 +58,67 @@ class CustomerController extends Controller
      * @param   string  $asn
      * @return  JsonResponse
      */
-    public function queryPeeringDbWithAsn( string $asn ): JsonResponse {
+    public function queryPeeringDbWithAsn( string $asn ): JsonResponse
+    {
         return response()->json( App::make( "IXP\Services\PeeringDb" )->getNetworkByAsn( $asn ) );
     }
-
 
 
     /**
      * Get the switches for a customer
      *
-     * @author  Yann Robin <yann@islandbridgenetworks.ie>
+     * @param Request $request instance of the current HTTP request
+     * @param int $id
      *
-     * @params  $request instance of the current HTTP request
-     * @return  array switches [id => name]
+     * @return  JsonResponse
      */
-    public function switches(Request $request, int $id): JsonResponse{
-        if( !($customer = D2EM::getRepository( Customer::class )->find( $id ) ) ){
+    public function switches( Request $request, int $id ): JsonResponse
+    {
+        if( !($customer = D2EM::getRepository( CustomerEntity::class )->find( $id ) ) ) {
             abort( 404, 'No such customer' );
         }
 
-        if( !($patchPanel = D2EM::getRepository( PatchPanel::class )->find( $request->input('patch_panel_id') ) ) ){
+        if( !($patchPanel = D2EM::getRepository( PatchPanelEntity::class )->find( $request->input('patch_panel_id') ) ) ) {
             abort( 404, 'No such patch panel' );
         }
 
         $switches = [];
-        foreach($customer->getVirtualInterfaces() as $vi){
-            foreach($vi->getPhysicalInterfaces() as $pi){
+        foreach ($customer->getVirtualInterfaces() as $vi ){
+            foreach( $vi->getPhysicalInterfaces() as $pi ){
                 $switch = $pi->getSwitchPort()->getSwitcher();
-                if($switch->getCabinet()->getLocation()->getId() == $patchPanel->getCabinet()->getLocation()->getId()){
-                    $switches[$switch->getId()] = $switch->getName();
+                if( $switch->getCabinet()->getLocation()->getId() == $patchPanel->getCabinet()->getLocation()->getId() ) {
+                    $switches[ $switch->getId() ] = $switch->getName();
                 }
             }
         }
-        return response()->json(['switchesFound' => boolval(count($switches)), 'switches' => $switches]);
+        return response()->json( [ 'switchesFound' => boolval( count( $switches ) ), 'switches' => $switches ] );
+    }
+
+    /**
+     * Get Customer depending on the Vlan and Protocol
+     *
+     *
+     * @param   Request $request instance of the current HTTP request
+     *
+     * @return  JsonResponse
+     */
+    public function byVlanAndProtocol( Request $request ): JsonResponse
+    {
+        $vlanid = null;
+
+        if( $request->input( "vlan_id" ) ) {
+            if( !( $vlan = D2EM::getRepository( VlanEntity::class )->find( $request->input( "vlan_id" ) ) ) ){
+                abort( 404, 'No such Vlan' );
+            }
+            $vlanid = $vlan->getId();
+
+        }
+
+        if( !in_array( $protocol = $request->input( 'protocol' ), [ null, 4, 6 ] ) ) {
+            abort( 404 );
+        }
+
+        return response()->json( [ 'listCustomers' => D2EM::getRepository( CustomerEntity::class )->getByVlanAndProtocol( $vlanid, $protocol ) ] );
     }
 
 }

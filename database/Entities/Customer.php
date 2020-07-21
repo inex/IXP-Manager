@@ -267,6 +267,16 @@ class Customer
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
      */
+    protected $peerRouteServerFilters;
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $routeServerFilters;
+
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
     protected $Traffic95ths;
 
     /**
