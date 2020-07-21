@@ -12,7 +12,6 @@ use stdClass;
  *
  * @property int $id
  * @property int|null $custid
- * @property int|null $switchid
  * @property string|null $description
  * @property string|null $port
  * @property int|null $speed
@@ -22,6 +21,9 @@ use stdClass;
  * @property int|null $autobaud
  * @property string|null $notes
  * @property int|null $console_server_id
+ * @property-read \IXP\Models\ConsoleServer|null $consoleServer
+ * @property-read \IXP\Models\CustomerTag|null $customer
+ * @property-read \IXP\Models\Switcher $switcher
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection query()
@@ -36,11 +38,7 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection wherePort($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereSpeed($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereStopbits($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServerConnection whereSwitchid($value)
  * @mixin \Eloquent
- * @property-read \IXP\Models\ConsoleServer|null $consoleServer
- * @property-read \IXP\Models\CustomerTag|null $customer
- * @property-read \IXP\Models\Switcher|null $switcher
  */
 class ConsoleServerConnection extends Model
 {

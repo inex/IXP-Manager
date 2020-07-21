@@ -41,6 +41,7 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @property string|null $notes
  * @property int|null $fanout_physical_interface_id
  * @property int $autoneg
+ * @property-read \IXP\Models\SwitchPort|null $switchPort
  * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface newQuery()
@@ -55,7 +56,6 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereSwitchportid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PhysicalInterface whereVirtualinterfaceid($value)
  * @mixin \Eloquent
- * @property-read \IXP\Models\SwitchPort|null $switchPort
  */
 class PhysicalInterface extends Model
 {

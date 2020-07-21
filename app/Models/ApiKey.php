@@ -20,6 +20,7 @@ use stdClass;
  * @property string|null $lastseenAt
  * @property string|null $lastseenFrom
  * @property string|null $description
+ * @property-read \IXP\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey query()
@@ -33,7 +34,6 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey whereLastseenFrom($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ApiKey whereUserId($value)
  * @mixin \Eloquent
- * @property-read \IXP\Models\User $user
  */
 class ApiKey extends Model
 {

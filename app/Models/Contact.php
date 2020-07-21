@@ -14,10 +14,6 @@ use Illuminate\Support\Collection;
 /**
  * IXP\Models\Contact
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Contact newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Contact newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Contact query()
- * @mixin \Eloquent
  * @property int $id
  * @property int|null $custid
  * @property string $name
@@ -32,6 +28,16 @@ use Illuminate\Support\Collection;
  * @property string|null $created
  * @property string|null $position
  * @property string|null $notes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ContactGroup[] $contactGroups
+ * @property-read int|null $contact_groups_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ContactGroup[] $contactGroupsAll
+ * @property-read int|null $contact_groups_all_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ContactGroup[] $contactRoles
+ * @property-read int|null $contact_roles_count
+ * @property-read \IXP\Models\Customer|null $customer
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Contact newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Contact newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Contact query()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Contact whereCreated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Contact whereCreator($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Contact whereCustid($value)
@@ -46,13 +52,7 @@ use Illuminate\Support\Collection;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Contact whereNotes($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Contact wherePhone($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Contact wherePosition($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ContactGroup[] $contactGroups
- * @property-read int|null $contact_groups_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ContactGroup[] $contactGroupsAll
- * @property-read int|null $contact_groups_all_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ContactGroup[] $contactRoles
- * @property-read int|null $contact_roles_count
- * @property-read \IXP\Models\Customer|null $customer
+ * @mixin \Eloquent
  */
 class Contact extends Model
 {

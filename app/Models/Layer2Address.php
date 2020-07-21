@@ -19,6 +19,7 @@ use stdClass;
  * @property string|null $firstseen
  * @property string|null $lastseen
  * @property string|null $created
+ * @property-read \IXP\Models\VlanInterface $vlanInterface
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Layer2Address newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Layer2Address newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Layer2Address query()
@@ -29,7 +30,6 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Layer2Address whereMac($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Layer2Address whereVlanInterfaceId($value)
  * @mixin \Eloquent
- * @property-read \IXP\Models\VlanInterface $vlanInterface
  */
 class Layer2Address extends Model
 {

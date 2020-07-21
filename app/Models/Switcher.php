@@ -30,7 +30,7 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  * @property string|null $ipv4addr
  * @property string|null $ipv6addr
  * @property string|null $snmppasswd
- * @property int|null $infrastructure
+ * @property \IXP\Models\Infrastructure|null $infrastructure
  * @property string|null $model
  * @property int|null $active
  * @property string|null $notes
@@ -48,6 +48,11 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  * @property int|null $snmp_engine_time
  * @property int|null $snmp_system_uptime
  * @property int|null $snmp_engine_boots
+ * @property-read \IXP\Models\Cabinet|null $cabinet
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
+ * @property-read int|null $console_server_connections_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\SwitchPort[] $switchPorts
+ * @property-read int|null $switch_ports_count
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher query()
@@ -77,11 +82,6 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereSnmppasswd($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereVendorid($value)
  * @mixin \Eloquent
- * @property-read \IXP\Models\Cabinet $cabinet
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\SwitchPort[] $switchPorts
- * @property-read int|null $switch_ports_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
- * @property-read int|null $console_server_connections_count
  */
 class Switcher extends Model
 {

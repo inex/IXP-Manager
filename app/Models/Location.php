@@ -11,10 +11,6 @@ use stdClass;
 /**
  * IXP\Models\Location
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Location newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Location newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Location query()
- * @mixin \Eloquent
  * @property int $id
  * @property string|null $name
  * @property string|null $shortname
@@ -30,6 +26,11 @@ use stdClass;
  * @property int|null $pdb_facility_id
  * @property string|null $city
  * @property string|null $country
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Cabinet[] $cabinets
+ * @property-read int|null $cabinets_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Location newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Location newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Location query()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Location whereAddress($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Location whereCity($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Location whereCountry($value)
@@ -45,8 +46,7 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Location wherePdbFacilityId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Location whereShortname($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Location whereTag($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Cabinet[] $cabinets
- * @property-read int|null $cabinets_count
+ * @mixin \Eloquent
  */
 class Location extends Model
 {

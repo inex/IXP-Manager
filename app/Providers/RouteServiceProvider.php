@@ -176,7 +176,7 @@ class RouteServiceProvider extends ServiceProvider {
             'prefix' => 'api/v4',
         ], function ($router) {
             if( class_exists( "\Debugbar" ) ) {
-                \Debugbar::disable();
+                //\Debugbar::disable();
             }
 
             require base_path('routes/apiv4-auth.php');

@@ -55,6 +55,8 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations
  * @property int|null $busyhost
  * @property string|null $notes
  * @property int $rsmorespecifics
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Layer2Address[] $layer2addresses
+ * @property-read int|null $layer2addresses_count
  * @property-read \IXP\Models\VirtualInterface|null $virtualInterface
  * @property-read \IXP\Models\Vlan|null $vlan
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface newModelQuery()
@@ -85,8 +87,6 @@ use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereVirtualinterfaceid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VlanInterface whereVlanid($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Layer2Address[] $layer2addresses
- * @property-read int|null $layer2addresses_count
  */
 class VlanInterface extends Model
 {

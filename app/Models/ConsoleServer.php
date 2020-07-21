@@ -11,10 +11,6 @@ use stdClass;
 /**
  * IXP\Models\ConsoleServer
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer query()
- * @mixin \Eloquent
  * @property int $id
  * @property int|null $vendor_id
  * @property int|null $cabinet_id
@@ -24,6 +20,13 @@ use stdClass;
  * @property string|null $serialNumber
  * @property int|null $active
  * @property string|null $notes
+ * @property-read \IXP\Models\Cabinet|null $cabinet
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
+ * @property-read int|null $console_server_connections_count
+ * @property-read \IXP\Models\Vendor|null $vendor
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer query()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereCabinetId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereHostname($value)
@@ -33,10 +36,7 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereNotes($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereSerialNumber($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ConsoleServer whereVendorId($value)
- * @property-read \IXP\Models\Cabinet|null $cabinet
- * @property-read \IXP\Models\Vendor|null $vendor
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
- * @property-read int|null $console_server_connections_count
+ * @mixin \Eloquent
  */
 class ConsoleServer extends Model
 {

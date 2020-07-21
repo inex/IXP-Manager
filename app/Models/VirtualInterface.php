@@ -40,6 +40,8 @@ use Illuminate\Database\Eloquent\{Builder, Collection, Model, Relations\BelongsT
  * @property int $lag_framing
  * @property int $fastlacp
  * @property-read \IXP\Models\Customer|null $customer
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PhysicalInterface[] $physicalInterfaces
+ * @property-read int|null $physical_interfaces_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface newModelQuery()
@@ -55,8 +57,6 @@ use Illuminate\Database\Eloquent\{Builder, Collection, Model, Relations\BelongsT
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\VirtualInterface whereTrunk($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PhysicalInterface[] $physicalInterfaces
- * @property-read int|null $physical_interfaces_count
  */
 class VirtualInterface extends Model
 {

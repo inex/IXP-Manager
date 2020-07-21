@@ -2,7 +2,7 @@
 
     $(document).ready(function() {
 
-        <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly || $t->feParams->allowDeleteForReadOnly ): ?>
+        <?php if( !isset( $t->feParams->readonly ) || !$t->feParams->readonly || isset( $t->feParams->readonly ) || $t->feParams->allowDeleteForReadOnly ): ?>
 
         $( '.btn-2f-list-delete' ).on( 'click', function( event ) {
             event.preventDefault();

@@ -63,7 +63,8 @@
         "barryvdh/laravel-ide-helper": "^2.3",
         "laravel/dusk": "^5.0",
         "nunomaduro/collision": "^3.0",
-        "staudenmeir/dusk-updater": "^1.0"
+        "staudenmeir/dusk-updater": "^1.0",
+        "barryvdh/laravel-debugbar": "^3.3"
      },
     "support": {
         "issues": "https://www.ixpmanager.org/support.php",

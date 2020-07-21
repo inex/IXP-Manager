@@ -15,6 +15,8 @@ use stdClass;
  * @property string|null $shortname
  * @property string|null $nagios_name
  * @property string|null $bundle_name
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServer[] $consoleServers
+ * @property-read int|null $console_servers_count
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor query()
@@ -24,8 +26,6 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vendor whereShortname($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServer[] $consoleServers
- * @property-read int|null $console_servers_count
  */
 class Vendor extends Model
 {

@@ -19,6 +19,7 @@ use stdClass;
  * @property string $created
  * @property string $expires
  * @property int $is_2fa_complete
+ * @property-read \IXP\Models\User $user
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken query()
@@ -31,7 +32,6 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken whereToken($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\UserRememberToken whereUserId($value)
  * @mixin \Eloquent
- * @property-read \IXP\Models\User $user
  */
 class UserRememberToken extends Model
 {

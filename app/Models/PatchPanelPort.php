@@ -62,6 +62,9 @@ use Illuminate\Support\Carbon;
  * @property-read \IXP\Models\PatchPanel|null $patchPanel
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPortFile[] $patchPanelPortFiles
  * @property-read int|null $patch_panel_port_files_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPort[] $slavePort
+ * @property-read int|null $slave_port_count
+ * @property-read \IXP\Models\SwitchPort|null $switchPort
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort query()
@@ -88,9 +91,6 @@ use Illuminate\Support\Carbon;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereSwitchPortId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPort whereTicketRef($value)
  * @mixin \Eloquent
- * @property-read \IXP\Models\SwitchPort|null $switchPort
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPort[] $slavePort
- * @property-read int|null $slave_port_count
  */
 
 class PatchPanelPort extends Model

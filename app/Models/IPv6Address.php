@@ -11,6 +11,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @property int $id
  * @property int|null $vlanid
  * @property string|null $address
+ * @property-read \IXP\Models\Vlan|null $vlan
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv6Address newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv6Address newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv6Address query()
@@ -18,7 +19,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv6Address whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv6Address whereVlanid($value)
  * @mixin \Eloquent
- * @property-read \IXP\Models\Vlan $vlan
  */
 class IPv6Address extends Model
 {

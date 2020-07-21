@@ -9,17 +9,16 @@ use stdClass;
 /**
  * IXP\Models\CustomerTag
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag query()
- * @mixin \Eloquent
  * @property int $id
  * @property string $tag
  * @property string $display_as
  * @property string|null $description
  * @property int $internal_only
- * @property string $created
- * @property string $updated
+ * @property \Illuminate\Support\Carbon $created
+ * @property \Illuminate\Support\Carbon $updated
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag query()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereCreated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereDescription($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereDisplayAs($value)
@@ -27,6 +26,7 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereInternalOnly($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereTag($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerTag whereUpdated($value)
+ * @mixin \Eloquent
  */
 class CustomerTag extends Model
 {

@@ -41,6 +41,11 @@ use stdClass;
  * @property int $peering_matrix
  * @property int $peering_manager
  * @property string|null $config_name
+ * @property-read \IXP\Models\Infrastructure $infrastructure
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv4Address[] $ipv4addresses
+ * @property-read int|null $ipv4addresses_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv6Address[] $ipv6addresses
+ * @property-read int|null $ipv6addresses_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Router[] $routers
  * @property-read int|null $routers_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
@@ -58,11 +63,6 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan wherePeeringMatrix($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan wherePrivate($value)
  * @mixin \Eloquent
- * @property-read \IXP\Models\Infrastructure $infrastructure
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv4Address[] $ipv4addresses
- * @property-read int|null $ipv4addresses_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IPv6Address[] $ipv6addresses
- * @property-read int|null $ipv6addresses_count
  */
 class Vlan extends Model
 {

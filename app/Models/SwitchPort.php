@@ -34,9 +34,12 @@ use stdClass;
  * @property string|null $mauType
  * @property string|null $mauState
  * @property string|null $mauAvailability
- * @property string|null $mauJacktype
  * @property int|null $mauAutoNegSupported
+ * @property string|null $mauJacktype
  * @property int|null $mauAutoNegAdminState
+ * @property-read \IXP\Models\PatchPanelPort|null $patchPanelPort
+ * @property-read \IXP\Models\PhysicalInterface|null $physicalInterface
+ * @property-read \IXP\Models\Switcher|null $switcher
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\SwitchPort newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\SwitchPort newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\SwitchPort query()
@@ -63,11 +66,6 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\SwitchPort whereSwitchid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\SwitchPort whereType($value)
  * @mixin \Eloquent
- * @property-read \IXP\Models\Switcher|null $switcher
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\PatchPanelPort[] $patchPanelPorts
- * @property-read int|null $patch_panel_ports_count
- * @property-read \IXP\Models\PatchPanelPort|null $patchPanelPort
- * @property-read \IXP\Models\PhysicalInterface|null $physicalInterface
  */
 class SwitchPort extends Model
 {

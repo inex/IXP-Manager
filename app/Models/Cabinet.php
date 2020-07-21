@@ -12,19 +12,25 @@ use stdClass;
 /**
  * IXP\Models\Cabinet
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet query()
- * @mixin \Eloquent
  * @property int $id
  * @property int|null $locationid
  * @property string|null $name
- * @property string|null $cololocation
+ * @property string|null $colocation
  * @property int|null $height
  * @property string|null $type
  * @property string|null $notes
  * @property int|null $u_counts_from
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereCololocation($value)
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServer[] $consoleServers
+ * @property-read int|null $console_servers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerEquipment[] $customerEquipment
+ * @property-read int|null $customer_equipment_count
+ * @property-read \IXP\Models\Location|null $location
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Switcher[] $switchers
+ * @property-read int|null $switchers_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet query()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereColocation($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereHeight($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereLocationid($value)
@@ -32,15 +38,7 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereNotes($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereType($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereUCountsFrom($value)
- * @property-read \IXP\Models\Location $location
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Switcher[] $switchers
- * @property-read int|null $switchers_count
- * @property string|null $colocation
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\CustomerEquipment[] $customerEquipment
- * @property-read int|null $customer_equipment_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Cabinet whereColocation($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServer[] $consoleServers
- * @property-read int|null $console_servers_count
+ * @mixin \Eloquent
  */
 class Cabinet extends Model
 {

@@ -16,6 +16,7 @@ use stdClass;
  * @property int|null $cabinetid
  * @property string|null $name
  * @property string|null $descr
+ * @property-read \IXP\Models\Cabinet|null $cabinet
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment query()
@@ -25,7 +26,6 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\CustomerEquipment whereName($value)
  * @mixin \Eloquent
- * @property-read \IXP\Models\Cabinet $cabinet
  */
 class CustomerEquipment extends Model
 {

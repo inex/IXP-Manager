@@ -11,10 +11,6 @@ use stdClass;
 /**
  * IXP\Models\ContactGroup
  *
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup query()
- * @mixin \Eloquent
  * @property int $id
  * @property string $name
  * @property string $description
@@ -22,6 +18,11 @@ use stdClass;
  * @property int $active
  * @property int $limited_to
  * @property string $created
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Contact[] $contacts
+ * @property-read int|null $contacts_count
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup query()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereActive($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereCreated($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereDescription($value)
@@ -29,8 +30,7 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereLimitedTo($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereName($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\ContactGroup whereType($value)
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Contact[] $contacts
- * @property-read int|null $contacts_count
+ * @mixin \Eloquent
  */
 class ContactGroup extends Model
 {

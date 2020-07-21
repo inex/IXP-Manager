@@ -46,7 +46,13 @@ use stdClass;
  * @property string|null $name
  * @property int|null $peeringdb_id
  * @property mixed|null $extra_attributes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ApiKey[] $apiKeys
+ * @property-read int|null $api_keys_count
  * @property-read \IXP\Models\Customer|null $customer
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Customer[] $customers
+ * @property-read int|null $customers_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\UserRememberToken[] $userRememberTokens
+ * @property-read int|null $user_remember_tokens_count
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User query()
@@ -67,12 +73,6 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereUid($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\User whereUsername($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ApiKey[] $apiKeys
- * @property-read int|null $api_keys_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Customer[] $customers
- * @property-read int|null $customers_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\UserRememberToken[] $userRememberTokens
- * @property-read int|null $user_remember_tokens_count
  */
 class User extends Model
 {

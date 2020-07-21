@@ -15,6 +15,8 @@ use stdClass;
  * @property string|null $protocol
  * @property string|null $source
  * @property string|null $notes
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Customer[] $customers
+ * @property-read int|null $customers_count
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbConfig newModelQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbConfig newQuery()
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbConfig query()
@@ -24,8 +26,6 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbConfig whereProtocol($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbConfig whereSource($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Customer[] $customers
- * @property-read int|null $customers_count
  */
 class IrrdbConfig extends Model
 {

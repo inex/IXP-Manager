@@ -77,10 +77,17 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property int $in_manrs
  * @property int $in_peeringdb
  * @property int $peeringdb_oauth
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
+ * @property-read int|null $console_server_connections_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Contact[] $contacts
+ * @property-read int|null $contacts_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerDirectory[] $docstoreCustomerDirectories
  * @property-read int|null $docstore_customer_directories_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreCustomerFile[] $docstoreCustomerFiles
  * @property-read int|null $docstore_customer_files_count
+ * @property-read \IXP\Models\IrrdbConfig|null $irrdbConfig
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\User[] $users
+ * @property-read int|null $users_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VirtualInterface[] $virtualInterfaces
  * @property-read int|null $virtual_interfaces_count
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer current()
@@ -124,13 +131,6 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereType($value)
  * @mixin \Eloquent
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\Contact[] $contacts
- * @property-read int|null $contacts_count
- * @property-read \IXP\Models\IrrdbConfig $irrdbConfig
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\User[] $users
- * @property-read int|null $users_count
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\ConsoleServerConnection[] $consoleServerConnections
- * @property-read int|null $console_server_connections_count
  */
 class Customer extends Model
 {
