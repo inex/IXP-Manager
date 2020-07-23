@@ -11,7 +11,7 @@
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-white" href="<?= route ('rs-filter@list', [ "cust" => $t->rsf->customer->id ] ) ?>" title="list">
+        <a class="btn btn-white" href="<?= route ('rs-filter@list', [ "cust" => $t->c->id ] ) ?>" title="list">
             <span class="fa fa-list"></span>
         </a>
         <?php if( $t->rsf ): ?>
