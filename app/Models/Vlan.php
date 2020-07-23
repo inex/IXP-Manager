@@ -166,6 +166,14 @@ class Vlan extends Model
     }
 
     /**
+     * Get the route server filters for the cabinet
+     */
+    public function routeserverfilters(): HasMany
+    {
+        return $this->hasMany(RouteServerFilter::class, 'vlan_id' );
+    }
+
+    /**
      * Get the infrastructure that own the vlan
      */
     public function infrastructure(): BelongsTo
@@ -299,5 +307,24 @@ class Vlan extends Model
             $result[ $v->id ][ 'switches' ]     = $switches;
         }
         return $result;
+    }
+
+    /**
+     * Return an array of all public peering manager vlans names where the array key is the vlan id.
+     *
+     * @param int $custid
+     *
+     * @return array
+     */
+    public static function getPublicPeeringManager( int $custid ): array
+    {
+        return self::select( [ 'vlan.id AS id', 'vlan.name' ] )
+            ->leftJoin( 'vlaninterface AS vli', 'vli.vlanid', 'vlan.id' )
+            ->leftJoin( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
+            ->where( 'vi.custid',  $custid )
+            ->where( 'vlan.private',  false )
+            ->where( 'vlan.peering_manager',  true )
+            ->where( 'vli.rsclient',  true )
+            ->orderBy( 'vlan.name' )->get()->keyBy( 'id' )->toArray();
     }
 }

@@ -235,6 +235,21 @@ class Customer extends Model
     }
 
     /**
+     * Get the route server filters for the cabinet
+     */
+    public function routeserverfilters(): HasMany
+    {
+        return $this->hasMany(RouteServerFilter::class, 'customer_id' );
+    }
+
+    /**
+     * Get the peer route server filters for the cabinet
+     */
+    public function peerrouteserverfilters(): HasMany
+    {
+        return $this->hasMany(RouteServerFilter::class, 'peer_id' );
+    }
+    /**
      * Get the irrdbconfig that own the customer
      */
     public function irrdbConfig(): BelongsTo
@@ -401,5 +416,38 @@ class Customer extends Model
         } )->when( count( $types ) > 0 , function( Builder $q, $types ) {
             return $q->whereIn( 'type', $types );
         })->orderBy( 'name', 'asc')->get()->toArray();
+    }
+
+    /**
+     * Get All customer by vlan and protocol
+     *
+     * @param int|null $vlanid
+     * @param int|null $protocol
+     *
+     * @return array
+     */
+    public static function getByVlanAndProtocol( int $vlanid = null, int $protocol = null ): array
+    {
+        return self::select( [ 'c.id', 'c.name' ] )
+            ->from( 'cust AS c' )
+            ->leftJoin( 'virtualinterface AS vi', 'vi.custid', 'c.id' )
+            ->leftJoin( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
+            ->leftJoin( 'vlan AS v', 'v.id', 'vli.vlanid' )
+            ->leftJoin( 'routers AS r', 'r.vlan_id', 'v.id' )
+            ->where( 'vli.rsclient', true )
+        ->when( $protocol , function( Builder $q, $protocol ) {
+            return $q->where('r.protocol', $protocol )
+                ->where( "vli.ipv{$protocol}enabled", true  );
+        }, function ($query) {
+            return $query->where( function( $q ) {
+                $q->where( 'r.protocol', 4 )
+                    ->orWhere( 'r.protocol', 6 );
+            })->where( function( $q ) {
+                $q->where( 'vli.ipv4enabled', true )
+                    ->orWhere( 'vli.ipv6enabled', true );
+            });
+        } )->when( $vlanid , function( Builder $q, $vlanid ) {
+            return $q->where( 'v.id', $vlanid );
+        })->distinct( 'c.id' )->orderBy( 'c.name', 'asc')->get()->toArray();
     }
 }

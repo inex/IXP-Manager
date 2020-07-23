@@ -4,7 +4,6 @@
     <id name="id" type="integer">
       <generator strategy="AUTO"/>
     </id>
-    <field name="switchid" type="integer" nullable="true"/>
     <field name="description" type="string" length="255" nullable="true"/>
     <field name="port" type="string" length="255" nullable="true"/>
     <field name="speed" type="integer" nullable="true"/>

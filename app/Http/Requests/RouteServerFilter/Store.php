@@ -22,16 +22,16 @@ namespace IXP\Http\Requests\RouteServerFilter;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use D2EM;
-
-use Entities\{
-    Customer            as CustomerEntity,
-    Router              as RouterEntity,
-    RouteServerFilter   as RouteServerFilterEntity,
-    User                as UserEntity,
-};
 
 use Illuminate\Foundation\Http\FormRequest;
+
+use IXP\Models\{
+    Customer,
+    Router,
+    RouteServerFilter,
+    User,
+    Vlan
+};
 
 use IXP\Rules\{
     IPv4Cidr,
@@ -40,96 +40,58 @@ use IXP\Rules\{
     Ipv6SubnetSize
 };
 
-use IXP\Utils\View\Alert\{
-    Alert,
-    Container as AlertContainer
-};
-
-
 class Store extends FormRequest
 {
     /**
-     * Determine if the user is authorized to make this request.
+     * Prepare the data for validation.
      *
-     * @return bool
+     * @return void
      */
-    public function authorize()
+    protected function prepareForValidation()
     {
-        if( !ixp_min_auth( UserEntity::AUTH_CUSTADMIN ) ) {
-            return false;
-        } else {
-            return true;
+        // If all vlans are select (value 0) override the value to null, to avoid conflict in DB
+        if( $this->vlan_id === '0' ) {
+            $this->merge([
+                'vlan_id' => null,
+            ]);
         }
-
     }
-
     /**
      * Get the validation rules that apply to the request.
      *
      * @return array
      */
-    public function rules()
+    public function rules(): array
     {
-        $prefixRequired = $this->input( "protocol" ) ? "required" : "nullable";
+        $prefixRequired = $this->protocol ? "required" : "nullable";
 
-        if( $this->input( "prefix" ) != '*'){
-            $ipvCheck       = $this->input( "protocol" ) == 4 ? new IPv4Cidr()          : new IPv6Cidr();
-            $subnetCheck    = $this->input( "protocol" ) == 4 ? new Ipv4SubnetSize()    : new Ipv6SubnetSize();
+        if( $this->prefix !== '*'){
+            $ipvCheck       = $this->protocol === 4 ? new IPv4Cidr()          : new IPv6Cidr();
+            $subnetCheck    = $this->protocol === 4 ? new Ipv4SubnetSize()    : new Ipv6SubnetSize();
         } else {
             $ipvCheck = "string";
             $subnetCheck = "";
         }
 
         return [
-            'peer_id'               => 'required|integer|exists:Entities\Customer,id',
-            'vlan_id'               => 'nullable|integer|exists:Entities\Vlan,id',
+            'peer_id'               => [ 'required', 'integer',
+                function( $attribute, $value, $fail ) {
+                    if( !Customer::whereId( $value )->exists() ) {
+                        return $fail( 'Customer is invalid / does not exist.' );
+                    }
+                }
+            ],
+            'vlan_id'               => [ 'nullable', 'integer',
+                function( $attribute, $value, $fail ) {
+                    if( !Vlan::whereId( $value )->exists() ) {
+                        return $fail( 'Vlan is invalid / does not exist.' );
+                    }
+                }
+            ],
             'prefix'                => [ $prefixRequired , 'max:43', $ipvCheck, $subnetCheck ],
-            'protocol'              => 'nullable|integer|in:' . implode( ',', array_keys( RouterEntity::$PROTOCOLS ) ),
-            'action_advertise'      => 'nullable|string|max:250|in:' . implode( ',', array_keys( RouteServerFilterEntity::$ADVERTISE_ACTION_TEXT ) ),
-            'action_receive'        => 'nullable|string|max:250|in:' . implode( ',', array_keys( RouteServerFilterEntity::$RECEIVE_ACTION_TEXT ) ),
+            'protocol'              => 'nullable|integer|in:' . implode( ',', array_keys( Router::$PROTOCOLS ) ),
+            'action_advertise'      => 'nullable|string|max:250|in:' . implode( ',', array_keys( RouteServerFilter::$ADVERTISE_ACTION_TEXT ) ),
+            'action_receive'        => 'nullable|string|max:250|in:' . implode( ',', array_keys( RouteServerFilter::$RECEIVE_ACTION_TEXT ) ),
         ];
     }
-
-    /**
-     * Configure the validator instance.
-     *
-     * @param $validator
-     *
-     * @return void
-     */
-    public function withValidator( $validator )
-    {
-        $validator->after( function ( $validator ) {
-            /** @var RouteServerFilterEntity $rsf */
-            if( $this->input( 'id' ) && $this->rsf = D2EM::getRepository( RouteServerFilterEntity::class )->find( $this->input( 'id' ) ) ) {
-                if( !$this->rsf ) {
-                    abort(404, 'Router Server Filter not found' );
-                }
-
-                $this->c = $this->rsf->getCustomer();
-
-            } else {
-                $this->rsf = new RouteServerFilterEntity;
-                D2EM::persist( $this->rsf );
-
-                if( !( $this->c = D2EM::getRepository( CustomerEntity::class )->find( request( "custid" ) ) ) ) {
-                    abort( 404, "Unknown customer" );
-                }
-            }
-
-            if( !$this->user()->isSuperUser() ) {
-                if( $this->c->getId() != $this->user()->getCustomer()->getId() ){
-                    abort( 403, "Access forbidden" );
-                }
-            }
-
-            if( !$this->c->isRouteServerClient() ){
-                AlertContainer::push( "Only router server client customers can access this action.", Alert::DANGER );
-                $validator->errors()->add( '',  " " );
-                return false;
-            }
-        } );
-
-    }
-
 }

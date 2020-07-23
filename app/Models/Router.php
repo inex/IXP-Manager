@@ -128,8 +128,8 @@ class Router extends Model
     /**
      * CONST PROTOCOL
      */
-    const PROTOCOL_IPV4                 = 4;
-    const PROTOCOL_IPV6                 = 6;
+    const PROTOCOL_IPV4                 = '4';
+    const PROTOCOL_IPV6                 = '6';
 
     /**
      * @var array Email ids to classes

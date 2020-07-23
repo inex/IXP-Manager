@@ -1,13 +1,13 @@
 <script>
 
-    $( "a[id|='delete-rsf']" ).on( 'click', function( e ) {
+    $( ".delete-rsf" ).on( 'click', function( e ) {
         e.preventDefault();
-        let rsfid = ( this.id ).substring( 11 );
+        let url = $( this ).attr( 'data-url');
 
-        let html = `<form id="form-delete" method="POST" action="<?= route('rs-filter@delete' ) ?>">
+        let html = `<form id="form-delete" method="POST" action="${url}">
                         <div>Do you want to delete this route server filter ?</div>
                         <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                        <input type="hidden" name="id" value="${rsfid}">
+                        <input type="hidden" name="_method" value="delete" />
                     </form>`;
 
         bootbox.dialog({

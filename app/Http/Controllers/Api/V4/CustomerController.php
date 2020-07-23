@@ -31,6 +31,8 @@ use Entities\{
     Vlan        as VlanEntity
 };
 
+use IXP\Models\Customer;
+use IXP\Models\Vlan;
 use Illuminate\Http\{
     JsonResponse,
     Request
@@ -106,19 +108,16 @@ class CustomerController extends Controller
     {
         $vlanid = null;
 
-        if( $request->input( "vlan_id" ) ) {
-            if( !( $vlan = D2EM::getRepository( VlanEntity::class )->find( $request->input( "vlan_id" ) ) ) ){
-                abort( 404, 'No such Vlan' );
-            }
-            $vlanid = $vlan->getId();
-
+        if( $request->vlanid ) {
+            $vlan = Vlan::findOrFail( $request->vlanid );
+            $vlanid = $vlan->id;
         }
 
-        if( !in_array( $protocol = $request->input( 'protocol' ), [ null, 4, 6 ] ) ) {
+        if( !in_array( $protocol = $request->protocol, [ null, 4, 6 ], false ) ) {
             abort( 404 );
         }
 
-        return response()->json( [ 'listCustomers' => D2EM::getRepository( CustomerEntity::class )->getByVlanAndProtocol( $vlanid, $protocol ) ] );
+        return response()->json( [ 'listCustomers' => Customer::getByVlanAndProtocol( $vlanid, $protocol ) ] );
     }
 
 }

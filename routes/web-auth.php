@@ -207,16 +207,18 @@ if( !config( 'ixp_fe.frontend.disabled.docstore_customer' ) ) {
 ///
 /// Rs Filtering
 ///
-Route::get( 'rs-filtering/{custid}', 'RsFilterController@list' )->name( 'rs-filter@list' );
+Route::get( 'rs-filtering/{cust}', 'RsFilterController@list' )->name( 'rs-filter@list' );
 
 Route::group( [ 'prefix' => 'rs-filter' ], function() {
-    Route::get('add/{custid}',                  'RsFilterController@add'            )->name("rs-filter@add"             );
-    Route::get('edit/{id}',                     'RsFilterController@edit'           )->name("rs-filter@edit"            );
-    Route::get('view/{id}',                     'RsFilterController@view'           )->name("rs-filter@view"            );
-    Route::get('toogle-enable/{id}/{enable}',   'RsFilterController@toggleEnable'   )->name("rs-filter@toggle-enable"   );
-    Route::get('change-order/{id}/{up}',        'RsFilterController@changeOrderBy'  )->name("rs-filter@change-order"    );
-    Route::post('store',                        'RsFilterController@store'          )->name("rs-filter@store"           );
-    Route::post('delete',                       'RsFilterController@delete'         )->name("rs-filter@delete"          );
+    Route::get('create/{cust}',                  'RsFilterController@create'            )->name("rs-filter@create"             );
+    Route::get('edit/{rsf}',                     'RsFilterController@edit'           )->name("rs-filter@edit"            );
+    Route::get('view/{rsf}',                     'RsFilterController@view'           )->name("rs-filter@view"            );
+    Route::get('toogle-enable/{rsf}/{enable}',   'RsFilterController@toggleEnable'   )->name("rs-filter@toggle-enable"   );
+    Route::get('change-order/{rsf}/{up}',        'RsFilterController@changeOrderBy'  )->name("rs-filter@change-order"    );
 
-    Route::view( 'rs-filter/grant-cust-user',     'rs-filter/grant-cust-user'        )->name( 'rs-filter@grant-cust-user' );
+    Route::post('store',                        'RsFilterController@store'          )->name("rs-filter@store"           );
+    Route::put('update/{rsf}',                  'RsFilterController@update'         )->name("rs-filter@update"          );
+    Route::delete('delete/{rsf}',               'RsFilterController@delete'       )->name("rs-filter@delete"          );
+
+    Route::view( 'grant-cust-user',              'rs-filter/grant-cust-user'        )->name( 'rs-filter@grant-cust-user' );
 });

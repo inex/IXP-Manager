@@ -6,14 +6,10 @@
     const dd_protocol     = $( "#protocol" );
     const input_prefix    = $( "#prefix" );
 
-
     //////////////////////////////////////////////////////////////////////////////////////
     // action bindings:
-
-    dd_vlan.change(     () => { setCustomer();    } );
-    dd_protocol.change( () => { setCustomer();    } );
-
-
+    dd_vlan.change(     () => { setCustomer(); } );
+    dd_protocol.change( () => { setCustomer(); } );
 
 
     $( document ).ready(function() {
@@ -24,34 +20,28 @@
      * set data to the switch port dropdown when we select a switch
      */
     function setCustomer(){
-        let url;
-
-        url = "<?= route( 'customer@byVlanAndProtocol' )?>";
-
+        let url = "<?= route( 'customer@byVlanAndProtocol' )?>";
         dd_peer.html( `<option value=''>Loading please wait</option>` ).trigger('change.select2');
 
         $.ajax( url , {
             data: {
-                vlan_id:     dd_vlan.val(),
+                vlanid:     dd_vlan.val(),
                 protocol:   dd_protocol.val()
             },
             type: 'POST'
         })
         .done( function( data ) {
-
-            options = "<option value=\"\">Choose a Peer</option>\n";
-
-            $.each( data.listCustomers, function( key, value ){
-                options += `<option value="${key}">${value}</option>\n`;
+            options = `<option value=''>Choose a Peer</option>`;
+            $.each( data.listCustomers, function( index, value ) {
+                options += `<option value="${value['id']}">${value['name']}</option>\n`;
             });
-
             dd_peer.html( options );
         })
         .fail( function() {
             options = "<option value=\"\">ERROR</option>\n";
             dd_peer.html( options );
-            throw new Error( "Error running ajax query for " + url );
             alert( "Error running ajax query for " + url );
+            throw new Error( "Error running ajax query for " + url );
         })
         .always( function() {
             dd_peer.trigger('change.select2');
@@ -67,16 +57,14 @@
      *
      * @param value
      */
-    function disablePrefixInput( value ){
-        if( value == '' ){
-            input_prefix.val( "" );
-            input_prefix.attr( "disabled" , "disabled" );
+    function disablePrefixInput( value ) {
+        if( value === '' ){
+            input_prefix.val( "" ).attr( "disabled" , "disabled" );
         } else {
             input_prefix.removeAttr( "disabled" );
-            if( input_prefix.val() == "" ){
+            if( input_prefix.val() === "" ){
                 input_prefix.val( "*" );
             }
-
         }
     }
 </script>

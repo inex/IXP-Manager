@@ -5,20 +5,20 @@ $this->layout( 'layouts/ixpv4' )
 ?>
 
 <?php $this->section( 'page-header-preamble' ) ?>
-    Route Server Filter / <?= $t->ee( $t->rsf->getId() ) ?>
+    Route Server Filter / <?= $t->ee( $t->rsf->id ) ?>
 <?php $this->append() ?>
 
 <?php $this->section( 'page-header-postamble' ) ?>
     <div class="btn-group btn-group-sm" role="group">
-        <a class="btn btn-white" href="<?= route ('rs-filter@list', [ "custid" => $t->rsf->getCustomer()->getId() ] ) ?>" title="list">
+        <a class="btn btn-white" href="<?= route ('rs-filter@list', [ "cust" => $t->rsf->customer->id ] ) ?>" title="list">
             <span class="fa fa-list"></span>
         </a>
 
         <?php if( !Auth::getUser()->isCustUser() ): ?>
-            <a class="btn btn-white" href="<?= route ('rs-filter@add', [ "custid" => $t->rsf->getCustomer()->getId() ] ) ?>" title="add">
+            <a class="btn btn-white" href="<?= route ('rs-filter@create', [ "cust" => $t->rsf->customer->id ] ) ?>" title="create">
                 <span class="fa fa-plus"></span>
             </a>
-            <a class="btn btn-white" href="<?= route ('rs-filter@edit' , [ 'id' => $t->rsf->getId() ] ) ?>" title="edit">
+            <a class="btn btn-white" href="<?= route ('rs-filter@edit' , [ 'rsf' => $t->rsf->id ] ) ?>" title="edit">
                 <span class="fa fa-pencil"></span>
             </a>
         <?php endif; ?>
@@ -26,11 +26,8 @@ $this->layout( 'layouts/ixpv4' )
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
-
     <div class="row">
-
         <div class="col-sm-12">
-
             <div class="card">
                 <div class="card-header">
                     Details for Route Server Filter
@@ -46,11 +43,11 @@ $this->layout( 'layouts/ixpv4' )
                                 </td>
                                 <td>
                                     <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                        <a href="<?= route( "customer@overview" , [ "id" => $t->rsf->getPeer()->getId() ] )?> ">
-                                            <?= $t->ee( $t->rsf->getPeer()->getName() )?>
+                                        <a href="<?= route( "customer@overview" , [ "id" => $t->rsf->peer->id ] )?> ">
+                                            <?= $t->ee( $t->rsf->peer->name )?>
                                         </a>
                                     <?php else: ?>
-                                        <?= $t->ee( $t->rsf->getPeer()->getName() )?>
+                                        <?= $t->ee( $t->rsf->peer->name )?>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -62,11 +59,11 @@ $this->layout( 'layouts/ixpv4' )
                                 </td>
                                 <td>
                                     <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                        <a href="<?= route( "customer@overview" , [ "id" => $t->rsf->getCustomer()->getId() ] )?> ">
-                                            <?= $t->ee( $t->rsf->getCustomer()->getName() )?>
+                                        <a href="<?= route( "customer@overview" , [ "id" => $t->rsf->customer->id ] )?> ">
+                                            <?= $t->ee( $t->rsf->customer->name )?>
                                         </a>
                                     <?php else: ?>
-                                        <?= $t->ee( $t->rsf->getCustomer()->getName() )?>
+                                        <?= $t->ee( $t->rsf->customer->name )?>
                                     <?php endif; ?>
                                 </td>
                             </tr>
@@ -77,13 +74,13 @@ $this->layout( 'layouts/ixpv4' )
                                     </b>
                                 </td>
                                 <td>
-                                    <?php if( $t->rsf->getVlan() ): ?>
+                                    <?php if( $t->rsf->vlan ): ?>
                                         <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                            <a href="<?= route( "vlan@view" , [ "id" => $t->rsf->getCustomer()->getId() ] )?> ">
-                                                <?= $t->rsf->getVlan()->getName() ?>
+                                            <a href="<?= route( "vlan@view" , [ "id" => $t->rsf->vlan->id ] )?> ">
+                                                <?= $t->rsf->vlan->name ?>
                                             </a>
                                         <?php else: ?>
-                                            <?= $t->rsf->getVlan()->getName() ?>
+                                            <?= $t->rsf->vlan->name ?>
                                         <?php endif; ?>
                                     <?php else: ?>
                                         All LAN's
@@ -107,15 +104,13 @@ $this->layout( 'layouts/ixpv4' )
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $t->ee( $t->rsf->getPrefix() ) ?>
+                                    <?= $t->ee( $t->rsf->prefix ) ?>
                                 </td>
                             </tr>
                         </table>
                     </div>
-
                     <div class="col-lg-6 col-md-12">
                         <table class="table_view_info">
-
                             <tr>
                                 <td>
                                     <b>
@@ -143,7 +138,7 @@ $this->layout( 'layouts/ixpv4' )
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $t->rsf->isEnabled() ? "Yes" : "No" ?>
+                                    <?= $t->rsf->enabled ? "Yes" : "No" ?>
                                 </td>
                             </tr>
                             <tr>
@@ -153,7 +148,7 @@ $this->layout( 'layouts/ixpv4' )
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $t->rsf->getOrderBy() ?>
+                                    <?= $t->rsf->order_by ?>
                                 </td>
                             </tr>
                             <tr>
@@ -163,16 +158,13 @@ $this->layout( 'layouts/ixpv4' )
                                     </b>
                                 </td>
                                 <td>
-                                    <?= $t->rsf->getLive() ?>
+                                    <?= $t->rsf->live ?>
                                 </td>
                             </tr>
                         </table>
                     </div>
                 </div>
             </div>
-
         </div>
-
     </div>
-
 <?php $this->append() ?>

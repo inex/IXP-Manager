@@ -37,6 +37,6 @@
     <one-to-many field="IPv6Addresses" target-entity="Entities\IPv6Address" mapped-by="Vlan"/>
     <one-to-many field="NetworkInfo" target-entity="Entities\NetworkInfo" mapped-by="Vlan"/>
     <one-to-many field="routers" target-entity="Entities\Router" mapped-by="vlan"/>
-    <one-to-many field="routeServerFilters" target-entity="Entities\RouteServerFilter" mapped-by="vlan"/>
+<!--    <one-to-many field="routeServerFilters" target-entity="Entities\RouteServerFilter" mapped-by="vlan"/>-->
   </entity>
 </doctrine-mapping>
