@@ -105,7 +105,7 @@ class RsFilterController extends Controller
             'c'         => $cust,
             'vlans'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], Vlan::getPublicPeeringManager( $cust->id ) ),
             'protocols' => Router::$PROTOCOLS,
-            'peers'     => Customer::getByVlanAndProtocol( $vlanid , $protocol ),
+            'peers'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], Customer::getByVlanAndProtocol( $vlanid , $protocol ) ),
         ] );
     }
 
@@ -122,13 +122,14 @@ class RsFilterController extends Controller
     {
         $this->authorize( 'checkRsfObject',  [ RouteServerFilter::class, $rsf ] );
 
-        $vlanid     = request()->old( 'vlan_id',     $rsf->vlan_id ?? null );
+        $vlanid     = request()->old( 'vlan_id',     $rsf->vlan_id  ?? null );
         $protocol   = request()->old( 'protocol',    $rsf->protocol ?? null );
+        $peerid     = request()->old( 'peer_id',    $rsf->peer_id   ?? null );
 
         Former::populate( [
             'vlan_id'               => $vlanid      ?? "null",
             'protocol'              => $protocol    ?? "null",
-            'peer_id'               => request()->old( 'peer_id',            $rsf->peer_id ),
+            'peer_id'               => $peerid      ?? 'null',
             'prefix'                => request()->old( 'prefix',             $rsf->prefix ),
             'action_advertise'      => request()->old( 'action_advertise',   $rsf->action_advertise ?? 'Null' ),
             'action_receive'        => request()->old( 'action_receive',     $rsf->action_receive ?? 'Null' ),
@@ -137,9 +138,9 @@ class RsFilterController extends Controller
         return view( 'rs-filter/edit' )->with( [
             'rsf'       => $rsf,
             'c'         => $rsf->customer,
-            'vlans'     => Vlan::getPublicPeeringManager( $rsf->customer_id ),
+            'vlans'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], Vlan::getPublicPeeringManager( $rsf->customer_id ) ),
             'protocols' => Router::$PROTOCOLS,
-            'peers'     => Customer::getByVlanAndProtocol( $vlanid , $protocol ),
+            'peers'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], Customer::getByVlanAndProtocol( $vlanid , $protocol ) ),
         ] );
     }
 

@@ -52,7 +52,7 @@
 
                     <?= Former::select( 'protocol' )
                         ->label( 'Protocol' )
-                        ->fromQuery( [ null => 'Both' ] + $t->protocols )
+                        ->fromQuery( [ null => 'All' ] + $t->protocols )
                         ->placeholder( 'Choose the protocol' )
                         ->addClass( 'chzn-select' );
                     ?>

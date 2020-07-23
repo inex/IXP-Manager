@@ -77,11 +77,19 @@ $this->layout( 'layouts/ixpv4' );
                             <tr>
                                 <td>
                                     <?php if( Auth::getUser()->isSuperUser() ): ?>
-                                        <a href="<?= route( 'customer@overview', [ 'id' => $rsf->peer->id ] ) ?>">
-                                            <?= $t->ee( $rsf->peer->name ) ?>
-                                        </a>
+                                        <?php if( $rsf->peer ): ?>
+                                            <a href="<?= route( 'customer@overview', [ 'id' => $rsf->peer->id ] ) ?>">
+                                                <?= $t->ee( $rsf->peer->name ) ?>
+                                            </a>
+                                        <?php else: ?>
+                                            All Peers
+                                        <?php endif; ?>
                                     <?php else: ?>
-                                        <?= $t->ee( $rsf->peer->name ) ?>
+                                        <?php if( $rsf->peer ): ?>
+                                            <?= $t->ee( $rsf->peer->name ) ?>
+                                        <?php else: ?>
+                                            All Peers
+                                        <?php endif; ?>
                                     <?php endif; ?>
                                 </td>
                                 <td>

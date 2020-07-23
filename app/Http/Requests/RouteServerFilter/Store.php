@@ -49,12 +49,10 @@ class Store extends FormRequest
      */
     protected function prepareForValidation()
     {
-        // If all vlans are select (value 0) override the value to null, to avoid conflict in DB
-        if( $this->vlan_id === '0' ) {
-            $this->merge([
-                'vlan_id' => null,
-            ]);
-        }
+        // If all vlans/peers are select (value 0) override the value to null, to avoid conflict in DB
+        $vlanid =  $this->vlan_id === '0' ? null : $this->vlan_id;
+        $peerid =  $this->peer_id === '0' ? null : $this->peer_id;
+        $this->merge([ 'vlan_id' => $vlanid, 'peer_id' => $peerid ]);
     }
     /**
      * Get the validation rules that apply to the request.
@@ -74,7 +72,7 @@ class Store extends FormRequest
         }
 
         return [
-            'peer_id'               => [ 'required', 'integer',
+            'peer_id'               => [ 'nullable', 'integer',
                 function( $attribute, $value, $fail ) {
                     if( !Customer::whereId( $value )->exists() ) {
                         return $fail( 'Customer is invalid / does not exist.' );

@@ -19,7 +19,9 @@
     /**
      * set data to the switch port dropdown when we select a switch
      */
-    function setCustomer(){
+    function setCustomer() {
+        let selectedPeer = dd_peer.val();
+
         let url = "<?= route( 'customer@byVlanAndProtocol' )?>";
         dd_peer.html( `<option value=''>Loading please wait</option>` ).trigger('change.select2');
 
@@ -31,7 +33,8 @@
             type: 'POST'
         })
         .done( function( data ) {
-            options = `<option value=''>Choose a Peer</option>`;
+            options = `<option value=''>Choose a Peer</option>
+                        <option value='0'>All Peers</option>`;
             $.each( data.listCustomers, function( index, value ) {
                 options += `<option value="${value['id']}">${value['name']}</option>\n`;
             });
@@ -45,6 +48,9 @@
         })
         .always( function() {
             dd_peer.trigger('change.select2');
+            if( $(`#peer_id option[value='${selectedPeer}']`).length > 0 ){
+                dd_peer.val( selectedPeer ).trigger( 'change.select2' );
+            }
         });
     }
 
