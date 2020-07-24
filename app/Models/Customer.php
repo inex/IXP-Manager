@@ -131,6 +131,10 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereStatus($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Customer whereType($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $peerrouteserverfilters
+ * @property-read int|null $peerrouteserverfilters_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeserverfilters
+ * @property-read int|null $routeserverfilters_count
  */
 class Customer extends Model
 {
@@ -235,7 +239,7 @@ class Customer extends Model
     }
 
     /**
-     * Get the route server filters for the cabinet
+     * Get the route server filters for the customer
      */
     public function routeserverfilters(): HasMany
     {
@@ -243,12 +247,21 @@ class Customer extends Model
     }
 
     /**
-     * Get the peer route server filters for the cabinet
+     * Get the peer route server filters for the customer
      */
     public function peerrouteserverfilters(): HasMany
     {
         return $this->hasMany(RouteServerFilter::class, 'peer_id' );
     }
+
+    /**
+     * Get the irrdb Prefixes for the customer
+     */
+    public function irrdbPrefixes(): HasMany
+    {
+        return $this->hasMany(IrrdbPrefix::class, 'customer_id' );
+    }
+
     /**
      * Get the irrdbconfig that own the customer
      */

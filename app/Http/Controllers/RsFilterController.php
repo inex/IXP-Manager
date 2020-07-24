@@ -25,12 +25,7 @@ namespace IXP\Http\Controllers;
 
 use Auth, Former, Log, Redirect;
 
-use IXP\Models\{
-    Customer,
-    Router,
-    RouteServerFilter,
-    Vlan
-};
+use IXP\Models\{Customer, IrrdbPrefix, Router, RouteServerFilter, Vlan};
 
 use Illuminate\View\View;
 
@@ -97,15 +92,22 @@ class RsFilterController extends Controller
             'protocol'              => $protocol    ?? "Null",
             'action_advertise'      => request()->old( 'action_advertise',   "Null"  ),
             'action_receive'        => request()->old( 'action_receive',     "Null"  ),
-            'prefix'                => request()->old( 'action_receive',     "*"     ),
+            'received_prefix'       => request()->old( 'received_prefix',     "*"     ),
+            'advertised_prefix'     => request()->old( 'advertised_prefix',     "*"     ),
         ] );
 
+        $advertisedPrefixes = [];
+        if( $cust->maxprefixes < 2000 ) {
+            $advertisedPrefixes = IrrdbPrefix::where( 'customer_id', $cust->id )->where( 'protocol', $protocol )->get()->toArray();
+        }
+
         return view( 'rs-filter/edit' )->with( [
-            'rsf'       => false,
-            'c'         => $cust,
-            'vlans'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], Vlan::getPublicPeeringManager( $cust->id ) ),
-            'protocols' => Router::$PROTOCOLS,
-            'peers'     => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], Customer::getByVlanAndProtocol( $vlanid , $protocol ) ),
+            'rsf'                   => false,
+            'c'                     => $cust,
+            'vlans'                 => array_merge( [ '0' => [ 'id' => '0', 'name' => "All LANs" ] ], Vlan::getPublicPeeringManager( $cust->id ) ),
+            'protocols'             => Router::$PROTOCOLS,
+            'peers'                 => array_merge( [ '0' => [ 'id' => '0', 'name' => "All Peers" ] ], Customer::getByVlanAndProtocol( $vlanid , $protocol ) ),
+            'advertisedPrefixes'    => $advertisedPrefixes
         ] );
     }
 
@@ -130,7 +132,8 @@ class RsFilterController extends Controller
             'vlan_id'               => $vlanid      ?? "null",
             'protocol'              => $protocol    ?? "null",
             'peer_id'               => $peerid      ?? 'null',
-            'prefix'                => request()->old( 'prefix',             $rsf->prefix ),
+            'received_prefix'       => request()->old( 'received_prefix',           $rsf->received_prefix ),
+            'advertised_prefix'     => request()->old( 'advertised_prefix',         $rsf->advertised_prefix ),
             'action_advertise'      => request()->old( 'action_advertise',   $rsf->action_advertise ?? 'Null' ),
             'action_receive'        => request()->old( 'action_receive',     $rsf->action_receive ?? 'Null' ),
         ] );

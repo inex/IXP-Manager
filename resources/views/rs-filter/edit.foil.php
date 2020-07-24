@@ -57,10 +57,17 @@
                         ->addClass( 'chzn-select' );
                     ?>
 
-                    <?= Former::text( 'prefix' )
-                        ->label( 'Prefix' )
-                        ->blockHelp( "" );
-                    ?>
+                    <div class="form-group row">
+                        <label for="received_prefix" class="control-label col-sm-4 col-md-4 col-lg-3">Received Prefix</label>
+                        <div class="col-lg-4 col-md-6 col-sm-6" id="area_received_prefix">
+                        </div>
+                    </div>
+
+                    <div class="form-group row">
+                        <label for="advertised_prefix" class="control-label col-sm-4 col-md-4 col-lg-3">Advertise Prefix</label>
+                        <div class="col-lg-4 col-md-6 col-sm-6" id="area_advertised_prefix">
+                        </div>
+                    </div>
 
                     <?= Former::select( 'action_advertise' )
                         ->label( 'Action Advertise' )
@@ -81,6 +88,7 @@
                     ?>
 
                     <?= Former::hidden( 'custid' )
+                        ->id( 'custid' )
                         ->value( $t->rsf ? $t->rsf->customer->id : $t->c->id )
                     ?>
 

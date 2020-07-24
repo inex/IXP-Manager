@@ -45,6 +45,7 @@ Route::group( [ 'prefix' => 'customer-note', 'namespace' => 'Customer\Note'], fu
 Route::post( 'utils/markdown',                                  'UtilsController@markdown' )->name( "utils@markdown" );
 
 Route::post( 'customer/by-vlan-and-protocol', 'CustomerController@byVlanAndProtocol' )->name("customer@byVlanAndProtocol" );
+Route::post( 'irrdb-prefix/by-customer-and-protocol', 'IrrdbPrefixController@byCustomerAndProtocol' )->name("irrdb-prefix@by-customer-and-protocol" );
 
 
 

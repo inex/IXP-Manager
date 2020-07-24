@@ -63,14 +63,22 @@ class Store extends FormRequest
     {
         $prefixRequired = $this->protocol ? "required" : "nullable";
 
-        if( $this->prefix !== '*'){
-            $ipvCheck       = $this->protocol === 4 ? new IPv4Cidr()          : new IPv6Cidr();
-            $subnetCheck    = $this->protocol === 4 ? new Ipv4SubnetSize()    : new Ipv6SubnetSize();
+        if( $this->received_prefix !== '*'){
+            $ipvCheckRec       = $this->protocol === '4' ? new IPv4Cidr()          : new IPv6Cidr();
+            $subnetCheckRec    = $this->protocol === '4' ? new Ipv4SubnetSize()    : new Ipv6SubnetSize();
         } else {
-            $ipvCheck = "string";
-            $subnetCheck = "";
+            $ipvCheckRec        = "string";
+            $subnetCheckRec     = "";
         }
 
+        if( $this->advertised_prefix !== '*'){
+            $ipvCheckAdv       = $this->protocol === '4' ? new IPv4Cidr()          : new IPv6Cidr();
+            $subnetCheckAdv    = $this->protocol === '4' ? new Ipv4SubnetSize()    : new Ipv6SubnetSize();
+        } else {
+            $ipvCheckAdv = "string";
+            $subnetCheckAdv = "";
+        }
+        
         return [
             'peer_id'               => [ 'nullable', 'integer',
                 function( $attribute, $value, $fail ) {
@@ -86,7 +94,8 @@ class Store extends FormRequest
                     }
                 }
             ],
-            'prefix'                => [ $prefixRequired , 'max:43', $ipvCheck, $subnetCheck ],
+            'received_prefix'       => [ $prefixRequired , 'max:43', $ipvCheckRec, $subnetCheckRec ],
+            'advertised_prefix'     => [ $prefixRequired , 'max:43', $ipvCheckAdv, $subnetCheckAdv ],
             'protocol'              => 'nullable|integer|in:' . implode( ',', array_keys( Router::$PROTOCOLS ) ),
             'action_advertise'      => 'nullable|string|max:250|in:' . implode( ',', array_keys( RouteServerFilter::$ADVERTISE_ACTION_TEXT ) ),
             'action_receive'        => 'nullable|string|max:250|in:' . implode( ',', array_keys( RouteServerFilter::$RECEIVE_ACTION_TEXT ) ),
