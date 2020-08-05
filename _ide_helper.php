@@ -3,7 +3,7 @@
 
 /**
  * A helper file for Laravel, to provide autocomplete information to your IDE
- * Generated for Laravel 6.18.20 on 2020-06-19 14:57:41.
+ * Generated for Laravel 6.18.32 on 2020-08-05 23:36:11.
  *
  * This file should not be included in your code, only analyzed by your IDE!
  *
@@ -6819,7 +6819,7 @@ namespace Illuminate\Support\Facades {
         /**
          * Unset the given channel instance.
          *
-         * @param string|null $name
+         * @param string|null $driver
          * @return \Illuminate\Log\LogManager 
          * @static 
          */ 
@@ -8519,10 +8519,6 @@ namespace Illuminate\Support\Facades {
     /**
      * 
      *
-     * @method static \Illuminate\Redis\Limiters\ConcurrencyLimiterBuilder funnel(string $name)
-     * @method static \Illuminate\Redis\Limiters\DurationLimiterBuilder throttle(string $name)
-     * @see \Illuminate\Redis\RedisManager
-     * @see \Illuminate\Contracts\Redis\Factory
      */ 
     class Redis {
         
@@ -13210,7 +13206,7 @@ namespace Illuminate\Support\Facades {
          *
          * @param string $path
          * @param \Illuminate\Http\File|\Illuminate\Http\UploadedFile|string $file
-         * @param array $options
+         * @param mixed $options
          * @return string|false 
          * @static 
          */ 
@@ -13226,7 +13222,7 @@ namespace Illuminate\Support\Facades {
          * @param string $path
          * @param \Illuminate\Http\File|\Illuminate\Http\UploadedFile|string $file
          * @param string $name
-         * @param array $options
+         * @param mixed $options
          * @return string|false 
          * @static 
          */ 
@@ -15125,7 +15121,7 @@ namespace LaravelDoctrine\ORM\Facades {
     /**
      * 
      *
-     * @method statuc \Doctrine\ORM\Utility\IdentifierFlattener getIdentifierFlattener()
+     * @method static \Doctrine\ORM\Utility\IdentifierFlattener getIdentifierFlattener()
      */ 
     class EntityManager {
         
@@ -16058,7 +16054,7 @@ namespace LaravelDoctrine\ORM\Facades {
     /**
      * 
      *
-     * @method statuc \Doctrine\ORM\Utility\IdentifierFlattener getIdentifierFlattener()
+     * @method static \Doctrine\ORM\Utility\IdentifierFlattener getIdentifierFlattener()
      */ 
     class EntityManager {
         
