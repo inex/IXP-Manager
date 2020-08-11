@@ -33,7 +33,21 @@
                         ->blockHelp( 'The ' . config( 'ixp_fe.lang.customer.one' ) . ' who owns this virtual interface.' );
                     ?>
 
-                    <?= Former::checkbox( 'trunk' )
+                    <?php if( $t->vi && count( $t->vi->getVlanInterfaces() ) > 1 && !$t->vi->getTrunk() ): ?>
+                      <div class="alert alert-warning mt-4" role="alert">
+                        <div class="d-flex align-items-center">
+                          <div class="text-center">
+                            <i class="fa fa-exclamation-circle fa-2x"></i>
+                          </div>
+                          <div class="col-sm-12">
+                            <b class="label label-warning">WARNING</b>
+                            802.1q framing is not set but there are >1 VLAN interfaces:
+                          </div>
+                        </div>
+                      </div>
+                    <?php endif; ?>
+
+                  <?= Former::checkbox( 'trunk' )
                         ->label( '&nbsp;' )
                         ->text( 'Use 802.1q framing' )
                         ->inline()
