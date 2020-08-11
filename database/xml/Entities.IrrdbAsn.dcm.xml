@@ -4,7 +4,11 @@
     <id name="id" type="bigint">
       <generator strategy="AUTO"/>
     </id>
-    <field name="asn" type="integer" nullable="false"/>
+    <field name="asn" type="integer" nullable="false">
+      <options>
+        <option name="unsigned">true</option>
+      </options>
+    </field>
     <field name="protocol" type="integer" nullable="false"/>
     <field name="first_seen" type="datetime" nullable="true"/>
     <field name="last_seen" type="datetime" nullable="true"/>

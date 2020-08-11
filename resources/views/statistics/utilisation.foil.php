@@ -97,7 +97,6 @@
                 <thead class="thead-dark">
                 <tr>
                     <th><?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?></th>
-                    <th>VLAN</th>
                     <th>Switch</th>
                     <th class="tw-text-center">Ports</th>
                     <th class="tw-text-center">Capacity</th>
@@ -118,7 +117,6 @@
                                 <?= $td['cname'] ?>
                             </a>
                         </td>
-                        <td><?= $td['vname'] ?></td>
                         <td><?= $td['switch'] ?></td>
                         <td class="tw-text-center"><?= $td['num_ports_in_lag'] ?></td>
                         <td class="tw-text-center"><?= $td['vi_speed'] * 1000000 ?></td>

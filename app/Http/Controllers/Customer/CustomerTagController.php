@@ -58,15 +58,19 @@ class CustomerTagController extends EloquentController
     {
         $this->feParams         = ( object )[
             'entity'            => CustomerTag::class,
-            'pagetitle'         => 'Customer Tags',
-            'titleSingular'     => 'Customer Tag',
-            'nameSingular'      => 'customer tag',
+            'pagetitle'         => ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Tags',
+
+            'titleSingular'     => ucfirst( config( 'ixp_fe.lang.customer.one' ) ) . ' Tag',
+            'nameSingular'      => config( 'ixp_fe.lang.customer.one' ) . ' tag',
+
             'defaultAction'     => 'list',
             'defaultController' => 'CustomerTagController',
             'listOrderBy'       => 'tag',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'customer/tag',
-            'extraDeleteMessage' => "<b>This tag will be removed from all customers tagged with it.</b>",
+
+            'extraDeleteMessage' => "<b>This tag will be removed from all " . config( 'ixp_fe.lang.customer.many' ) . " tagged with it.</b>",
+
             'documentation'     => 'https://docs.ixpmanager.org/usage/customer-tags/',
 
             'listColumns'    => [

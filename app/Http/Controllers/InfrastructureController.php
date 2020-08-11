@@ -22,7 +22,7 @@ namespace IXP\Http\Controllers;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Cache, Countries, Former;
+use Countries, Former;
 
 use Illuminate\Http\{
     Request,
@@ -228,20 +228,6 @@ class InfrastructureController extends Eloquent2Frontend
                 $infra->save();
             }
         }
-    }
-    /**
-     * Overriding optional method to clear cached entries:
-     *
-     * @param string $action Either 'add', 'edit', 'delete'
-     *
-     * @return bool
-     */
-    protected function postFlush( string $action ): bool
-    {
-        // wipe cached entries
-        Cache::forget( Infrastructure::CACHE_KEY_PRIMARY );
-        Cache::forget( Infrastructure::CACHE_KEY_ALL     );
-        return true;
     }
 
     /**

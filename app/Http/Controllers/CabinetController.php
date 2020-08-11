@@ -69,7 +69,7 @@ class CabinetController extends EloquentController
             'entity'            => Cabinet::class,
             'pagetitle'         => 'Racks',
             'titleSingular'     => 'Rack',
-            'nameSingular'      => 'a rack',
+            'nameSingular'      => 'rack',
             'defaultAction'     => 'list',
             'defaultController' => 'CabinetController',
             'listOrderBy'       => 'name',

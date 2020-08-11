@@ -22,5 +22,13 @@
  */
 
 use Exception;
+use IXP\Utils\View\Alert\Alert;
+use IXP\Utils\View\Alert\Container as AlertContainer;
 
-class ExportException extends Exception {}
+class ExportException extends Exception {
+
+    final public function render()
+    {
+        abort( 500, $this->getMessage() );
+    }
+}

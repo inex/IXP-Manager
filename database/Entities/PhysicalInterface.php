@@ -25,7 +25,6 @@ namespace Entities;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Entities\TrafficDailyPhysInt as TrafficDailyPhysIntEntity;
-
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -54,6 +53,7 @@ class PhysicalInterface
         self::STATUS_XCONNECT     => 'awaitingxconnect',
         self::STATUS_QUARANTINE   => 'quarantine'
     );
+
 
     public static $SPEED = [
         10    => '10 Mbps',

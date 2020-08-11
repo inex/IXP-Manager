@@ -162,7 +162,7 @@ CREATE TABLE `cabinet` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `locationid` int(11) DEFAULT NULL,
   `name` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
-  `colocation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
+  `cololocation` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `height` int(11) DEFAULT NULL,
   `type` varchar(255) COLLATE utf8_unicode_ci DEFAULT NULL,
   `notes` longtext COLLATE utf8_unicode_ci,
@@ -823,7 +823,7 @@ CREATE TABLE `docstore_customer_files` (
   KEY `docstore_customer_files_docstore_customer_directory_id_foreign` (`docstore_customer_directory_id`),
   CONSTRAINT `docstore_customer_files_cust_id_foreign` FOREIGN KEY (`cust_id`) REFERENCES `cust` (`id`),
   CONSTRAINT `docstore_customer_files_docstore_customer_directory_id_foreign` FOREIGN KEY (`docstore_customer_directory_id`) REFERENCES `docstore_customer_directories` (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -832,6 +832,7 @@ CREATE TABLE `docstore_customer_files` (
 
 LOCK TABLES `docstore_customer_files` WRITE;
 /*!40000 ALTER TABLE `docstore_customer_files` DISABLE KEYS */;
+INSERT INTO `docstore_customer_files` VALUES (1,5,1,'File.pdf','docstore_customers','5/7s5yYBsebKN64SHtFkM16pY2OBvkdURPXzW7abmb.pdf','76ca2a6f2acda3c8ff39df2695885a2dbf05565dedaed6912a2b4cf439a19228',NULL,3,'2020-04-28 09:04:46',1,'2020-04-28 08:04:46','2020-04-28 08:04:46');
 /*!40000 ALTER TABLE `docstore_customer_files` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -1300,7 +1301,7 @@ CREATE TABLE `migrations` (
   `migration` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `batch` int(11) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1309,7 +1310,7 @@ CREATE TABLE `migrations` (
 
 LOCK TABLES `migrations` WRITE;
 /*!40000 ALTER TABLE `migrations` DISABLE KEYS */;
-INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2);
+INSERT INTO `migrations` VALUES (1,'2014_10_12_100000_create_password_resets_table',1),(2,'2018_08_08_100000_create_telescope_entries_table',1),(3,'2019_03_25_211956_create_failed_jobs_table',1),(4,'2020_02_06_204556_create_docstore_directories',2),(5,'2020_02_06_204608_create_docstore_files',2),(6,'2020_02_06_204911_create_docstore_logs',2),(7,'2020_03_09_110945_create_docstore_customer_directories',3),(8,'2020_03_09_111505_create_docstore_customer_files',3);
 /*!40000 ALTER TABLE `migrations` ENABLE KEYS */;
 UNLOCK TABLES;
 

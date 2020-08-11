@@ -53,6 +53,8 @@ class GenerateConfigurationBird1ServerTest extends TestCase
             // clean the configs to remove the comment lines which are irrelevent
             $conf          = preg_replace( "/^#.*$/m", "", $conf          );
             $knownGoodConf = preg_replace( "/^#.*$/m", "", $knownGoodConf );
+            $conf          = preg_replace( "/^\s+$/m", "", $conf          );
+            $knownGoodConf = preg_replace( "/^\s+$/m", "", $knownGoodConf );
 
             $this->assertEquals( $knownGoodConf, $conf, "Known good and generated RS configuration for {$handle} do not match" );
         }

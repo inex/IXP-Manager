@@ -23,7 +23,6 @@ namespace IXP\Models;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use Cache;
 use DB;
 use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\{Builder, Model, Relations\BelongsTo, Relations\HasMany, Relations\HasManyThrough};
@@ -73,13 +72,6 @@ class Vlan extends Model
         self::PRIVATE_NO  => 'No',
         self::PRIVATE_YES => 'Yes'
     );
-
-    /**
-     * The cache key for all VLAN objects
-     *
-     * @var string The cache key for all VLAN objects
-     */
-    const ALL_CACHE_KEY = 'inex_vlans';
 
     /**
      * Constant to represent normal and private VLANs
@@ -206,15 +198,11 @@ class Vlan extends Model
     {
         $type = $type !== self::TYPE_ALL && $type !== self::TYPE_PRIVATE ? self::TYPE_NORMAL : $type ;
 
-        return Cache::remember(self::ALL_CACHE_KEY . "_{$type}_{$orderBy}", 3600, function () use( $type, $orderBy )  {
-            return self::when( $type === self::TYPE_PRIVATE , function( Builder $q ) {
-                return $q->where( 'private', 1 );
-            })
-            ->when( $type === self::TYPE_NORMAL , function( Builder $q ) {
-                return $q->where( 'private', 0 );
-            })
-            ->orderBy( $orderBy, 'ASC' )->get();
-        });
+        return self::when( $type === self::TYPE_PRIVATE , function( Builder $q ) {
+            return $q->where( 'private', 1 );
+        })->when( $type === self::TYPE_NORMAL , function( Builder $q ) {
+            return $q->where( 'private', 0 );
+        })->orderBy( $orderBy, 'ASC' )->get();
     }
 
     /**

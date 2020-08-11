@@ -213,7 +213,7 @@ class Generator
     private function generateRouteServerClientDetails( $customers ) {
 
         // get the public peering VLANs
-        $vlans = D2EM::getRepository( VlanEntity::class )->getAndCache( VlanRepository::TYPE_NORMAL );
+        $vlans = D2EM::getRepository( VlanEntity::class )->getFiltered( VlanRepository::TYPE_NORMAL );
 
         $rsclients = [];
 

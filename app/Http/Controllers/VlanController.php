@@ -261,19 +261,6 @@ class VlanController extends EloquentController
     }
 
     /**
-     * Overriding optional method to clear cached entries:
-     *
-     * @param string $action Either 'add', 'edit', 'delete'
-     * @return bool
-     */
-    protected function postFlush( string $action ): bool
-    {
-        // Remove the cached Vlan list
-        Cache::forget( Vlan::ALL_CACHE_KEY );
-        return true;
-    }
-
-    /**
      * @inheritdoc
      */
     protected function preDelete(): bool

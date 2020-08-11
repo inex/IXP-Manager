@@ -28,6 +28,10 @@ VLANIDS="1 2 3"
 PROTOCOLS="4 6"
 SOAPATH="/usr/local/etc/namedb/zones/includes"
 SOAFILES="soa-0-2-192.in-addr.arpa.inc"
+CHECKZONE="/usr/local/sbin/named-checkzone"
+ZONEFILES=("/usr/local/etc/namedb/zones/0.2.192.in-addr.arpa" "/usr/local/etc/namedb/zones/0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa")
+ZONES=("0.2.192.in-addr.arpa" "0.0.0.0.8.b.d.0.1.0.0.2.ip6.arpa")
+ETCBIND="/usr/local/etc/namedb/"
 SERIAL_REGEX="([0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9][0-9])[[:space:]]+;[[:space:]]+Serial"
 SERIAL=""
 
@@ -98,4 +102,16 @@ for f in $SOAFILES; do
     sed -E -i '.bup' "s/[0-9]{10}[[:space:]]+;[[:space:]]+Serial/${SERIAL}      ; Serial/" $SOAPATH/$f
 done
 
-/usr/local/sbin/rndc reload >/dev/null
+checkzone=0
+for i in ${!ZONES[@]}; do
+    output=$(${CHECKZONE} -w $ETCBIND ${ZONES[$i]} ${ZONEFILES[$i]})
+    if [[ $? -ne 0 ]]; then
+	checkzone=1
+        echo "Error in Zone: ${ZONES[$i]}"
+        echo $output
+    fi
+done
+
+if [[ $checkzone -eq 0 ]]; then
+    /usr/local/sbin/rndc reload >/dev/null
+fi

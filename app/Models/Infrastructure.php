@@ -86,18 +86,6 @@ class Infrastructure extends Model
     ];
 
     /**
-     * The cache key for the primary infrastructure
-     * @var string The cache key for the primary infrastructure
-     */
-    const CACHE_KEY_PRIMARY = 'infrastructure_primary';
-
-    /**
-     * The cache key for the all infrastructures
-     * @var string The cache key for all infrastructures
-     */
-    const CACHE_KEY_ALL = 'infrastructure_all';
-
-    /**
      * Get the vlans for the infrastructure
      */
     public function vlans(): HasMany

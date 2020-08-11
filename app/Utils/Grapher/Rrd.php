@@ -327,7 +327,7 @@ class Rrd
                     continue;
                 }
 
-                $values[$i] = [ (int)$ts, (int)$v, (int)$rrd['data'][$indexOut][$ts], (int)$v, (int)$rrd['data'][$indexIn][$ts] ];
+                $values[$i] = [ (int)$ts, (int)$v, (int)$rrd['data'][$indexOut][$ts], (int)$v, (int)$rrd['data'][$indexOut][$ts] ];
 
                 if( $isBits ) {
                     $values[$i][1] *= 8;

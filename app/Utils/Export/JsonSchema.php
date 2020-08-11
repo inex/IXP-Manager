@@ -80,7 +80,10 @@ class JsonSchema
             $version = $this->sanitiseVersion($version);
         }
 
-        $output = [ 'version' => $version ];
+        $output = [
+            'version' => $version,
+            'generator' => 'IXP Manager v' . APPLICATION_VERSION,
+        ];
 
         // normalise times to UTC for exports
         date_default_timezone_set('UTC');
@@ -140,7 +143,29 @@ class JsonSchema
             if( $infra->getIxfIxId() ) {
                 $i[ 'ixf_id' ] = intval( $infra->getIxfIxId() );
             } else if( $version >= self::EUROIX_JSON_VERSION_0_7 ) {
-                throw new ExportException( "IX-F ID is required for IX-F Export Schema >=v0.7. Set this under Infrastructures." );
+
+                // The IX-F ID is officially required for >= v0.7 of the schema.
+                // This shouldn't prevent the IX_F exporter from working though if someone wishes to pull the
+                // information regardless of that being set.
+                //
+                // Two options for this:
+
+                // first pass an ixfid for **every** infrastructure that does not have one
+                // e.g. http://ixp-inex.ldev/api/v4/member-export/ixf/1.0?ixfid_1=30&ixfid_2=31&ixfid_3=30
+                if( request('ixfid_' . $infra->getId(), false ) ) {
+                    $i[ 'ixf_id' ] = intval( request( 'ixfid_' . $infra->getId() ) );
+                }
+
+                // second, just ignore it and set it to zero:
+                // http://ixp-inex.ldev/api/v4/member-export/ixf/1.0?ignore_missing_ixfid=1
+                else if( request('ignore_missing_ixfid', false ) ) {
+                    $i[ 'ixf_id' ] = 0;
+                }
+
+                // by default, we will throw an exception:
+                else {
+                    throw new ExportException( "The IX-F ID is a required parameter for IX-F Export Schema >=v0.7. Set this in IXP Manager in the 'Infrastructures' management page." );
+                }
             }
 
             $i['ixp_id'] = $infra->getId();    // referenced in member's connections section
@@ -302,7 +327,7 @@ class JsonSchema
                         }
                         $vlanentry['ipv4']['routeserver'] = $vli->getRsclient();
                         $vlanentry['ipv4']['mac_addresses'] = $vli->getLayer2AddressesAsArray();
-                        if( $detailed && !is_null ($vi->getCustomer()->getMaxprefixes()) ) {
+                        if( !is_null ($vi->getCustomer()->getMaxprefixes()) ) {
                             $vlanentry['ipv4']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
                         }
 
@@ -361,7 +386,7 @@ class JsonSchema
                         }
                         $vlanentry['ipv6']['routeserver'] = $vli->getRsclient();
                         $vlanentry['ipv6']['mac_addresses'] = $vli->getLayer2AddressesAsArray();
-                        if( $detailed && !is_null ($vi->getCustomer()->getMaxprefixes()) ) {
+                        if( !is_null ($vi->getCustomer()->getMaxprefixes()) ) {
                             $vlanentry['ipv6']['max_prefix'] = $vi->getCustomer()->getMaxprefixes();
                         }
 
@@ -488,9 +513,6 @@ class JsonSchema
 
             case Customer::TYPE_PROBONO:
                 return 'peering';
-
-            case Customer::TYPE_ROUTESERVER:
-                return 'ixp';
 
             default:
                 return 'other';

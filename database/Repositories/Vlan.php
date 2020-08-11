@@ -33,8 +33,6 @@ use Entities\{
 };
 
 
-use Cache;
-
 /**
  * Vlan
  *
@@ -43,13 +41,6 @@ use Cache;
  */
 class Vlan extends EntityRepository
 {
-    /**
-     * The cache key for all VLAN objects
-     * @var string The cache key for all VLAN objects
-     */
-    const ALL_CACHE_KEY = 'inex_vlans';
-
-
     /**
      * Constant to represent normal and private VLANs
      * @var int Constant to represent normal and private VLANs
@@ -70,16 +61,15 @@ class Vlan extends EntityRepository
 
 
     /**
-     * Return an array of all VLAN objects from the database with caching
+     * Return an array of all VLAN objects from the database.
      * (and with the option to specify types - returns normal (non-private)
      * VLANs by default.
      *
      * @param $type int The VLAN types to return (see TYPE_ constants).
      * @param $orderBy string Typical values: number, name
-     * @param $cache bool Whether to use the cache or not
      * @return \Entities\Vlan[] An array of all VLAN objects
      */
-    public function getAndCache( int $type = self::TYPE_NORMAL, string $orderBy = "number", bool $cache = true )
+    public function getFiltered( int $type = self::TYPE_NORMAL, string $orderBy = "number" )
     {
         switch( $type )
         {
@@ -100,7 +90,6 @@ class Vlan extends EntityRepository
         return $this->getEntityManager()->createQuery(
                 "SELECT v FROM Entities\\Vlan v {$where} ORDER BY v.{$orderBy} ASC"
             )
-            ->useResultCache( $cache, 3600, self::ALL_CACHE_KEY . "_{$type}_{$orderBy}" )
             ->getResult();
     }
 
@@ -114,7 +103,7 @@ class Vlan extends EntityRepository
     public function getNames( $type = self::TYPE_NORMAL, $ixp = false )
     {
         $vlans = [];
-        foreach( $this->getAndCache( $type ) as $a )
+        foreach( $this->getFiltered( $type ) as $a )
         {
             if( ( $ixp && $a->getInfrastructure()->getIXP() == $ixp ) || !$ixp )
                 $vlans[ $a->getId() ] = $a->getName();
@@ -124,7 +113,7 @@ class Vlan extends EntityRepository
     }
 
     /**
-     * Return all active, trafficing and external VLAN interfaces on a given VLAN for a given protocol
+     * Return all active, trafficking and external VLAN interfaces on a given VLAN for a given protocol
      * (including customer details)
      *
      * Here's an example of the return:
@@ -158,16 +147,17 @@ class Vlan extends EntityRepository
      *
      * @param int $vid The VLAN ID to find interfaces on
      * @param int $protocol The protocol to find interfaces on ( `4` or `6`)
-     * @param bool $forceDb Set to true to ignore the cache and force the query to the database
+     * @param bool $forceDb (Ignored from IXP Manager v5.6.0)
      * @return array as described above
      * @throws \IXP_Exception Thrown if an invalid protocol is specified
      */
-    public function getInterfaces( $vid, $protocol, $forceDb = false )
+    public function getInterfaces( $vid, $protocol, $forceDb = true )
     {
-        if( !in_array( $protocol, [ 4, 6 ] ) )
+        if( !in_array( $protocol, [ 4, 6 ] ) ) {
             throw new \IXP_Exception( 'Invalid protocol' );
+        }
 
-        $interfaces = $this->getEntityManager()->createQuery(
+        return $this->getEntityManager()->createQuery(
                 "SELECT vli, v, vi, c
 
                 FROM \\Entities\\VlanInterface vli
@@ -185,13 +175,8 @@ class Vlan extends EntityRepository
 
                 ORDER BY c.autsys ASC"
             )
-            ->setParameter( 1, $vid );
-
-        if( !$forceDb ) {
-            $interfaces->useResultCache( true, 3600 );
-        }
-
-        return $interfaces->getArrayResult();
+            ->setParameter( 1, $vid )
+            ->getArrayResult();
     }
 
     /**
@@ -219,18 +204,13 @@ class Vlan extends EntityRepository
      * @see getInterfaces()
      * @param int $vid The VLAN ID to find interfaces on
      * @param int $protocol The protocol to find interfaces on ( `4` or `6`)
-     * @param bool $forceDb Set to true to ignore the cache and force the query to the database
+     * @param bool $forceDb (Ignored from IXP Manager v5.6.0)
      * @return An array as described above
      * @throws \IXP_Exception Thrown if an invalid protocol is specified
      */
-    public function getCustomers( $vid, $protocol, $forceDb = false )
+    public function getCustomers( $vid, $protocol, $forceDb = true )
     {
-        $key = "vlan_customers_{$vid}_{$protocol}";
-
-        if( !$forceDb && ( $custs = Cache::get( $key ) ) )
-            return $custs;
-
-        $acusts = $this->getInterfaces( $vid, $protocol, $forceDb );
+        $acusts = $this->getInterfaces( $vid, $protocol );
 
         $custs = [];
 
@@ -244,8 +224,6 @@ class Vlan extends EntityRepository
             $custs[ $c['VirtualInterface']['Customer']['autsys'] ]['activepeeringmatrix'] = $c['VirtualInterface']['Customer']['activepeeringmatrix'];
             $custs[ $c['VirtualInterface']['Customer']['autsys'] ]['custid']              = $c['VirtualInterface']['Customer']['id'];
         }
-
-        Cache::put( $key, $custs, 86400 );
 
         return $custs;
     }
@@ -391,11 +369,10 @@ class Vlan extends EntityRepository
      *
      * @param \Entities\Vlan $vlan The VLAN
      * @param int $proto Either 4 or 6
-     * @param bool $useResultCache If true, use Doctrine's result cache (ttl set to one hour)
      * @return array As defined above.
      * @throws \IXP_Exception On bad / no protocol
      */
-    public function getArpaDetails( $vlan, $proto, $useResultCache = true )
+    public function getArpaDetails( $vlan, $proto )
     {
         if( !in_array( $proto, [ 4, 6 ] ) ) {
             throw new \IXP_Exception( 'Invalid protocol specified' );
@@ -418,7 +395,6 @@ class Vlan extends EntityRepository
 
         $q = $this->getEntityManager()->createQuery( $qstr );
         $q->setParameter( 'vlan', $vlan );
-        $q->useResultCache( $useResultCache, 3600 );
         return $q->getArrayResult();
     }
 

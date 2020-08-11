@@ -6,22 +6,19 @@ These install scripts are **opinionated**! They are intended to run exactly as s
 
 ## Video Tutorials
 
-We created a *rough and ready* video tutorial demonstrating the installation process using the automated script for IXP Manager v5.5.0 (April 2020) on Ubuntu LTS 18.04. *This is Barry's first attempt at video tutorials so please forgive the lighting and sound quality.* You can find the [video here](https://www.youtube.com/watch?v=4xI1KlEW8s4) in our [YouTube channel](https://www.youtube.com/channel/UCeW2fmMTBtE4fnlmg-2-evA).
+We created a *rough and ready* video tutorial demonstrating the installation process using the automated script for IXP Manager v5.5.0 (May 2020) on Ubuntu LTS 20.04. *This is Barry's first attempt at video tutorials so please forgive the lighting and sound quality.* You can find the [video here](https://www.youtube.com/watch?v=U123-E8D-AI) in our [YouTube channel](https://www.youtube.com/channel/UCeW2fmMTBtE4fnlmg-2-evA).
 
 ## IXP Manager v5 on Ubuntu LTS 20.04
 
-From April 23rd 2020, the recommended platform for the v5 branch of IXP Manager is Ubuntu LTS 20.04. Before then it was the v5 branch on Ubuntu LTS 18.04.
+From April 2020, the recommended platform for the v5 branch of IXP Manager is Ubuntu LTS 20.04. Before then it was the v5 branch on Ubuntu LTS 18.04.
 
 To install on this platform, please proceed as follows:
 
 1. Prepare a physical / virtual machine with (minimum) 8GB of disk space (40GB recommended) and 2GB of RAM (4GB recommended). We recommend using LVM to partition your hard drive so space can be increased on the fly. We also recommend created a dedicated `/srv` partition of >= 30GB in which to install IXP Manager.
 2. Attach / insert the latest [Ubuntu 20.04 LTS](http://releases.ubuntu.com/20.04/) 64-bit PC (AMD64) server install image and boot.
-3. At the initial menu where you choose *Install Ubuntu Server*, first:
-   * Press F4
-   * If installing on a physical server, select *Install a minimum system*
-   * If installing on a virtual server, select *Install a minimal virtual machine*
-4. Now select *Install Ubuntu Server* and step through the various options and configure as you like until:
-5. When you reach the *Software selection* screen, select **only** `OpenSSH Server` and then complete the installation and reboot.
+3. Follow the Ubuntu installers process (see our video of this referenced above for help).
+4. When you reach the *SSH Setup* screen, check the *Install OpenSSH server* so you can ssh in to complete the process later.
+5. Complete the installation and reboot.
 6. When your new server has rebooted, log in and: 
 
 ```bash
@@ -32,7 +29,7 @@ sudo su -
 wget https://github.com/inex/IXP-Manager/raw/master/tools/installers/ubuntu-lts-2004-ixp-manager-v5.sh
 
 # and execute it:
-bash ./ubuntu-lts-1804-ixp-manager-v5.sh
+bash ./ubuntu-lts-2004-ixp-manager-v5.sh
 ```
 
 

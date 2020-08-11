@@ -34,7 +34,7 @@
 #     notification_period     24x7
 #     notification_options    w,u,c,r
 #     register                0
-#     check_command           check_birdseye_bgp_session!$_SERVICEAPIURL!$_SERVICEPROTOCOL
+#     check_command           check_birdseye_bgp_session!$_SERVICEAPI_URL!$_SERVICEPROTOCOL
 # }
 #
 # You will also need a check command:

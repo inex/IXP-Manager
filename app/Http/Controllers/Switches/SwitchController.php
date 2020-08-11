@@ -88,10 +88,13 @@ class SwitchController extends EloquentController
             'entity'            => Switcher::class,
             'pagetitle'         => 'Switches',
             'titleSingular'     => 'Switch',
-            'nameSingular'      => 'a switch',
+            'nameSingular'      => 'switch',
             'listOrderBy'       => 'name',
             'listOrderByDir'    => 'ASC',
             'viewFolderName'    => 'switches',
+
+            'addRoute'          => route( static::route_prefix() . '@add-by-snmp' ),
+
             'documentation'     => 'https://docs.ixpmanager.org/usage/switches/',
 
             'listColumns'       => [
@@ -608,19 +611,6 @@ class SwitchController extends EloquentController
 
 
     /**
-     * Overriding optional method to clear cached entries:
-     *
-     * @param string $action Either 'add', 'edit', 'delete'
-     * @return bool
-     */
-    protected function postFlush( string $action ): bool
-    {
-        // wipe cached entries, this is created in Switcher::getAndCache()
-        Switcher::clearCacheAll();
-        return true;
-    }
-
-    /**
      * @inheritdoc
      */
     protected function preDelete() : bool
@@ -730,21 +720,36 @@ class SwitchController extends EloquentController
             $speed = $r->session()->get( "switch-configuration-speed" );
         }
 
-        if( $r->vlan !== null ) {
-            $vlan = Vlan::find( $r->vlan );
+        $vlan = false;
+        if( $r->input( 'vlan', null ) !== null ) {
+            if( $vlan = Vlan::find( $r->vlan ) ) {
+                $r->session()->put( "switch-configuration-vlan", $vlan );
+            } else {
+                $r->session()->remove( "switch-configuration-vlan" );
+                $vlan = false;
+            }
+        } else if( $r->session()->exists( "switch-configuration-vlan" ) ) {
+            $vlan = $r->session()->get( "switch-configuration-vlan" );
         }
 
-        if( $switch || $infra || $location ) {
-            $summary = ":: Connections details for ";
+        if( $switch || $infra || $location || $vlan ) {
+            $summary = "Connections details for: ";
 
             if( $switch ) {
-                $summary .= $switch->name . " (on " . $switch->infrastructure->name . " at " . $switch->cabinet->location->name . ")";
-            } elseif( $infra && $location ){
-                $summary .= $infra->name . " at " . $location->name;
-            } elseif( $infra ){
-                $summary .= $infra->name;
-            } elseif( $location ){
-                $summary .= $location->name;
+                $summary .= $switch->name . " (on " . $switch->infrastructure->name. " at " . $switch->cabinet->location->name . ")";
+            } else {
+                if( $infra ){
+                    $summary .= $infra->name . ' (infrastructure); ';
+                }
+                if( $location ){
+                    $summary .= $location->name . ' (facility); ';
+                }
+                if( $vlan ) {
+                    $summary .= $vlan->name . ' (VLAN); ';
+                }
+                if( $speed ) {
+                    $summary .= PhysicalInterface::$SPEED[$speed] . '; ';
+                }
             }
         } else{
             $summary = false;
@@ -764,11 +769,13 @@ class SwitchController extends EloquentController
             's'                         => $switch,
             'speed'                     => $speed,
             'infra'                     => $infra,
+            'vlan'                      => $vlan,
             'location'                  => $location,
             'summary'                   => $summary,
             'speeds'                    => $speeds,
-            'infras'                    => $switch ? [ $switch->infrastructure->id     => $switch->infrastructure->name     ] : Infrastructure::getListAsArray(),
-            'locations'                 => $switch ? [ $switch->cabinet->location->id  => $switch->cabinet->location->name  ] : Location::getListAsArray(),
+            'infras'                    => $switch ? [ $switch->infrastructure->id => $switch->infrastructure->name ] : Infrastructure::getListAsArray(),
+            'vlans'                     => Vlan::getListForDropdown(),
+            'locations'                 => $switch ? [ $switch->cabinet->location->id  => $switch->cabinet->location->name ] : Location::getListAsArray(),
             'switches'                  => Switcher::getByLocationInfrastructureSpeed( $infra, $location, $speed ),
             'config'                    => $config,
         ]);

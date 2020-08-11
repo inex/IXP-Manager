@@ -58,7 +58,8 @@
                     <div class="col-lg-6 col-md-12">
 
                         <h3>Registration Details</h3>
-                        <hr>
+                        <hr class="tw-mb-6">
+
 
                         <?= Former::text( 'registeredName' )
                             ->label( 'Registered Name' )
@@ -124,7 +125,8 @@
                         <div class="col-lg-6 col-md-12 full-member-details">
 
                             <h3>Billing Details</h3>
-                            <hr>
+                            <hr class="tw-mb-6">
+
 
                             <?= Former::text( 'billingContactName' )
                                 ->label( 'Contact' )

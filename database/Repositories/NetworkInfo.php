@@ -86,7 +86,7 @@ class NetworkInfo extends EntityRepository
                 "SELECT n, v
                 FROM \\Entities\\NetworkInfo n
                 LEFT JOIN n.Vlan v"
-            )->useResultCache( true, 3600 )
+            )
             ->getArrayResult();
 
         $data = array();
@@ -106,7 +106,7 @@ class NetworkInfo extends EntityRepository
                 LEFT JOIN n.Vlan v
                 LEFT JOIN v.Infrastructure i
                 WHERE i.id = " . $infra->getId()
-            )->useResultCache( true, 3600 )
+            )
             ->getArrayResult();
 
         $vlanentry = array();

@@ -43,22 +43,37 @@ class FileControllerTest extends TestCase
         'custadmin'             => 'hecustadmin',
         'custadminImagine'      => 'imcustadmin',
         'superuser'             => 'travis',
+        'folderName'            => 'Folder 3',
+        'folderDescription'     => 'This is the folder 3',
         'disk'                  => 'docstore_customers',
         'customerId'            => 5,
-        'fileName'              => 'File4.pdf',
-        'fileDescription'       => 'This is file4.pdf',
+        'fileName'              => 'File2.pdf',
+        'fileDescription'       => 'This is file2.pdf',
         'filePrivs'             => UserEntity::AUTH_SUPERUSER,
         'parentDirId'           => null,
-        'fileName2'             => 'File5.pdf',
-        'fileDescription2'      => 'This is file5.pdf',
+        'fileName2'             => 'File3.pdf',
+        'fileDescription2'      => 'This is file3.pdf',
         'filePrivs2'            => UserEntity::AUTH_CUSTADMIN,
-        'parentDirId2'          => 1,
-        'fileName3'             => 'File6.txt',
-        'fileDescription3'      => 'This is file6.txt',
-        'textFile'              => 'I am the file6.txt',
+        'parentDirId2'          => 5,
+        'fileName3'             => 'File4.txt',
+        'fileDescription3'      => 'This is file4.txt',
+        'textFile'              => 'I am the file4.txt',
         'filePrivs3'            => UserEntity::AUTH_CUSTADMIN,
-        'parentDirId3'          => 1,
+        'parentDirId3'          => 5,
     ];
+
+    /**
+     * Test store an object for a superuser
+     *
+     * @return void
+     */
+    public function testStoreSuperUser2()
+    {
+        // test Superuser
+        $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'superuser' ] ] );
+        $this->actingAs( $user )->post( route( 'docstore-c-dir@store', [ 'cust' => self::testInfo[ 'customerId' ] ] ), [  'cust_id' => self::testInfo[ 'customerId' ], 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir' => self::testInfo[ 'parentDirId' ] ] );
+        $this->assertDatabaseHas( 'docstore_customer_directories', [ 'cust_id' => self::testInfo[ 'customerId' ], 'name' =>  self::testInfo[ 'folderName' ], 'description' => self::testInfo[ 'folderDescription' ], 'parent_dir_id' => self::testInfo[ 'parentDirId' ] ] );
+    }
 
     /**
      * Test the access to the upload form for a public user
@@ -421,15 +436,15 @@ class FileControllerTest extends TestCase
      */
     public function testUpdateSuperUser()
     {
-        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName' ] ] )->first();
+        $file = DocstoreCustomerFile::withoutGlobalScope( 'privs' )->where( [ 'name' => self::testInfo[ 'fileName' ] ] )->get()->last();
 
         $uploadedFile = UploadedFile::fake()->create( self::testInfo[ 'fileName' ], '2000' );
 
         $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'superuser' ] ] );
 
-        $this->actingAs( $user )->put(route( 'docstore-c-file@update', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ), [
+        $this->actingAs( $user )->put( route( 'docstore-c-file@update', [ 'cust' => self::testInfo[ 'customerId' ], 'file' => $file ] ), [
             'name' =>  self::testInfo[ 'fileName2' ], 'description' => self::testInfo[ 'fileDescription2' ], 'docstore_customer_directory_id' => self::testInfo[ 'parentDirId2' ],
-            'min_privs' => self::testInfo[ 'filePrivs2' ],'uploadedFile'  => $uploadedFile
+            'min_privs' => self::testInfo[ 'filePrivs2' ], 'uploadedFile'  => $uploadedFile
         ] );
 
         $this->assertDatabaseHas( 'docstore_customer_files', [

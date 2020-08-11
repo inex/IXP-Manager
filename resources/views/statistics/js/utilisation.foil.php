@@ -112,10 +112,10 @@
 
         "bAutoWidth": false,
 
-        "aaSorting": [[7, 'desc']],
+        "aaSorting": [[6, 'desc']],
         "iDisplayLength": 100,
         "aoColumnDefs": [
-            {"render": scalefn, "aTargets": [4, 5, 6]}
+            {"render": scalefn, "aTargets": [3, 4, 5]}
         ]
     });
 

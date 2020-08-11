@@ -29,25 +29,26 @@ use Entities\User as UserEntity;
 
 use Illuminate\Foundation\Testing\WithoutMiddleware;
 
-use IXP\Models\Customer;
-use IXP\Models\DocstoreCustomerDirectory;
+use IXP\Models\{
+    Customer,
+    DocstoreCustomerDirectory
+};
 
 use Tests\TestCase;
 
 class DirectoryControllerTest extends TestCase
 {
-
     const testInfo = [
         'custuser'              => 'hecustuser',
         'custadmin'             => 'hecustadmin',
         'superuser'             => 'travis',
         'customerId'            => 5,
 
-        'folderName'            => 'Folder 4',
-        'folderDescription'     => 'This is the folder 4',
+        'folderName'            => 'Folder 3',
+        'folderDescription'     => 'This is the folder 3',
         'parentDirId'           => null,
-        'folderName2'           => 'Folder 4-1',
-        'folderDescription2'    => 'This is the folder 4-1',
+        'folderName2'           => 'Folder 3-1',
+        'folderDescription2'    => 'This is the folder 3-1',
         'parentDirId2'          => 1,
     ];
 
@@ -64,7 +65,7 @@ class DirectoryControllerTest extends TestCase
     }
 
     /**
-     * Test the access to the list forcust user
+     * Test the access to the list for cust user
      *
      * @return void
      */
@@ -76,7 +77,7 @@ class DirectoryControllerTest extends TestCase
     }
 
     /**
-     * Test the access to the list forcust user
+     * Test the access to the list for cust admin
      *
      * @return void
      */
@@ -88,7 +89,7 @@ class DirectoryControllerTest extends TestCase
     }
 
     /**
-     * Test the access to the list forcust user
+     * Test the access to the list for super user
      *
      * @return void
      */
@@ -129,7 +130,7 @@ class DirectoryControllerTest extends TestCase
     }
 
     /**
-     * Test the access to the create form for a custuser
+     * Test the access to the create form for a cust user
      *
      * @return void
      */
@@ -142,7 +143,7 @@ class DirectoryControllerTest extends TestCase
     }
 
     /**
-     * Test the access to the create form for a custadmin
+     * Test the access to the create form for a cust admin
      *
      * @return void
      */
@@ -457,12 +458,12 @@ class DirectoryControllerTest extends TestCase
     {
         $cust = Customer::whereId( self::testInfo[ 'customerId' ] )->first();
 
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'cust_id', $cust->id )->get()->first();
+        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'cust_id', $cust->id )->get()->last();
         // public user
         $response = $this->delete( route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $cust ] ) );
         $response->assertStatus(302 )
             ->assertRedirect( route('login@showForm' ) );
-        $this->assertDatabaseHas( 'docstore_customer_directories', [ 'name' => $dir->name,    'description' => $dir->description, 'parent_dir_id' => $dir->parent_dir ] );
+        $this->assertDatabaseHas( 'docstore_customer_directories', [ 'name' => $dir->name,    'description' => $dir->description ] );
     }
 
     /**
@@ -474,13 +475,13 @@ class DirectoryControllerTest extends TestCase
     {
         $cust = Customer::whereId( self::testInfo[ 'customerId' ] )->first();
 
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'cust_id', $cust->id )->get()->first();
+        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'cust_id', $cust->id )->get()->last();
 
         // cust user
         $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'custuser' ] ] );
         $response = $this->actingAs( $user )->delete( route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $cust ] ) );
         $response->assertStatus(403 );
-        $this->assertDatabaseHas( 'docstore_customer_directories', [ 'name' => $dir->name,    'description' => $dir->description, 'parent_dir_id' => $dir->parent_dir ] );
+        $this->assertDatabaseHas( 'docstore_customer_directories', [ 'name' => $dir->name,    'description' => $dir->description ] );
     }
 
     /**
@@ -492,12 +493,12 @@ class DirectoryControllerTest extends TestCase
     {
         $cust = Customer::whereId( self::testInfo[ 'customerId' ] )->first();
 
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'cust_id', $cust->id )->get()->first();
+        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'cust_id', $cust->id )->get()->last();
         // cust user
         $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'custadmin' ] ] );
         $response = $this->actingAs( $user )->delete( route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $cust ] ) );
         $response->assertStatus(403 );
-        $this->assertDatabaseHas( 'docstore_customer_directories', [ 'name' => $dir->name,    'description' => $dir->description, 'parent_dir_id' => $dir->parent_dir ] );
+        $this->assertDatabaseHas( 'docstore_customer_directories', [ 'name' => $dir->name,    'description' => $dir->description ] );
     }
 
     /**
@@ -509,7 +510,7 @@ class DirectoryControllerTest extends TestCase
     {
         $cust = Customer::whereId( self::testInfo[ 'customerId' ] )->first();
 
-        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'cust_id', $cust->id )->get()->first();
+        $dir = DocstoreCustomerDirectory::withoutGlobalScope( 'privs' )->where( 'cust_id', $cust->id )->get()->last();
         // superuser
         $user = D2EM::getRepository( UserEntity::class )->findOneBy( [  'username' => self::testInfo[ 'superuser' ] ] );
         $this->actingAs( $user )->delete( route( 'docstore-c-dir@delete-for-customer', [ 'cust' => $cust ] ) );

@@ -5,7 +5,7 @@ MAILTO=ops-auto@example.com
 # servers will no be taken out at the same time.
 
 47 11,15,19	* * *	root	/usr/local/sbin/api-reconfigure-rs2.sh -h rs1-lan1-ipv4 -q
-47 12,16,20	* * *	root	/usr/local/sbin/api-reconfigure-rs2.sh -h rs1-lan1-ipv6 q
+47 12,16,20	* * *	root	/usr/local/sbin/api-reconfigure-rs2.sh -h rs1-lan1-ipv6 -q
 47 13,17,21	* * *	root	/usr/local/sbin/api-reconfigure-rs2.sh -h rs1-lan2-ipv4 -q
 47 14,18,22	* * *	root	/usr/local/sbin/api-reconfigure-rs2.sh -h rs1-lan2-ipv6 -q
 

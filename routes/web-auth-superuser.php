@@ -55,7 +55,6 @@ Route::group( [ 'namespace' => 'PatchPanel', 'prefix' => 'patch-panel-port', 'mi
     Route::get(     'edit-to-prewired/{id}',            'PatchPanelPortController@editToPrewired'       )->name('patch-panel-port@edit-prewired'        );
     Route::get(     'change-status/{id}/{status}',      'PatchPanelPortController@changeStatus'         )->name('patch-panel-port@change-status'        );
     Route::get(     'email/{id}/{type}',                'PatchPanelPortController@email'                )->name('patch-panel-port@email'                );
-    Route::get(     'download-file/{pppfid}',           'PatchPanelPortController@downloadFile'         )->name('patch-panel-port@download-file'        );
     Route::get(     'move-form/{id}',                   'PatchPanelPortController@moveForm'             )->name('patch-panel-port@move-form'            );
     Route::post(    'move',                             'PatchPanelPortController@move'                 )->name('patch-panel-port@move'                 );
     Route::post(    'store',                            'PatchPanelPortController@store'                )->name('patch-panel-port@store'                );

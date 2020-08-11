@@ -2,7 +2,7 @@
 
 namespace IXP\Models;
 
-use Cache, DateTime, Log, stdClass;
+use DateTime, Log, stdClass;
 
 use Illuminate\Database\Eloquent\{
     Builder,
@@ -133,13 +133,6 @@ class Switcher extends Model
     ];
 
     /**
-     * The cache key for all switch objects
-     *
-     * @var string The cache key for all switch objects
-     */
-    const ALL_CACHE_KEY = 'ixp_switches';
-
-    /**
      * Constants for the list mode dropdown in the swtiches list
      */
     const VIEW_MODE_DEFAULT     = 'view_mode_default';
@@ -264,19 +257,6 @@ class Switcher extends Model
     }
 
     /**
-     * Generate a deterministic caching key for given parameters
-     *
-     * @param bool $active If `true`, return only active switches
-     *
-     * @return string The generate caching key
-     */
-    public static function genCacheKey( $active ): string
-    {
-        $key = $active ? '-active' : '-all';
-        return self::ALL_CACHE_KEY . $key;
-    }
-
-    /**
      * Return an array of all switch objects from the database with caching
      *
      * @param bool $active If `true`, return only active switches
@@ -285,26 +265,11 @@ class Switcher extends Model
      */
     public static function getAndCache( bool $active = false ): Collection
     {
-        return Cache::remember( self::genCacheKey( $active ) , 3600, function () use( $active )  {
-            return self::when( $active , function( Builder $q ) {
-                return $q->where( 'active', 1 );
-            })->orderBy( 'name', 'ASC' )->get()->keyBy( 'id' );
-        });
+        return self::when( $active , function( Builder $q ) {
+            return $q->where( 'active', 1 );
+        })->orderBy( 'name', 'ASC' )->get()->keyBy( 'id' );
     }
 
-    /**
-     * Clear the cache of all result sets
-     *
-     * @return void
-     *
-     * @throws
-     */
-    public static function clearCacheAll(): void
-    {
-        foreach( [ true, false ] as $active ) {
-            Cache::delete( self::genCacheKey( $active ) );
-        }
-    }
 
     /**
      * Gets a listing of switcher as array

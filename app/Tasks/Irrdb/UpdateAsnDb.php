@@ -46,10 +46,11 @@ class UpdateAsnDb extends UpdateDb
      */
     public function update(): array
     {
-        if( $this->customer()->isRouteServerClient() && $this->customer()->isIrrdbFiltered() ) {
-            $this->bgpq3()->setSources( $this->customer()->getIRRDB()->getSource() );
+        foreach( $this->protocols() as $protocol ) {
 
-            foreach( $this->protocols() as $protocol ) {
+            if( $this->customer()->isRouteServerClient($protocol) && $this->customer()->isIrrdbFiltered() ) {
+                $this->bgpq3()->setSources( $this->customer()->getIRRDB()->getSource() );
+
                 $this->startTimer();
                 $asns = $this->bgpq3()->getAsnList( $this->customer()->resolveAsMacro( $protocol, 'as' ), $protocol );
                 $this->result[ 'netTime' ] += $this->timeElapsed();
@@ -59,18 +60,17 @@ class UpdateAsnDb extends UpdateDb
                 if( $this->updateDb( $asns, $protocol, 'asn' ) ) {
                     $this->result[ 'v' . $protocol ][ 'dbUpdated' ] = true;
                 }
+            } else {
+                // This customer is not appropriate for IRRDB filtering.
+                // Delete any pre-existing entries just in case this has changed recently:
+                $this->startTimer();
+                D2EM::getConnection()->executeUpdate(
+                    "DELETE FROM `irrdb_asn` WHERE customer_id = ? AND protocol = ?", [ $this->customer()->getId(), $protocol ]
+                );
+                $this->result[ 'dbTime' ] += $this->timeElapsed();
+                $this->result[ 'v' . $protocol ][ 'dbUpdated' ] = true;
+                $this->result[ 'msg' ] = "Customer not a RS client or IRRDB filtered for IPv{$protocol}. IPv{$protocol} ASNs, if any, wiped from database.";
             }
-        } else {
-            // This customer is not appropriate for IRRDB filtering.
-            // Delete any pre-existing entries just in case this has changed recently:
-            $this->startTimer();
-            D2EM::getConnection()->executeUpdate(
-                "DELETE FROM `irrdb_asn` WHERE customer_id = ?", [ $this->customer()->getId() ]
-            );
-            $this->result[ 'dbTime' ] += $this->timeElapsed();
-            $this->result[ 'v4' ][ 'dbUpdated' ] = true;
-            $this->result[ 'v6' ][ 'dbUpdated' ] = true;
-            $this->result[ 'msg' ] = "Customer not a RS client or IRRDB filtered. ASNs, if any, wiped from database.";
         }
 
         return $this->result;
