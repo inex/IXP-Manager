@@ -29,7 +29,7 @@ sudo su -
 wget https://github.com/inex/IXP-Manager/raw/master/tools/installers/ubuntu-lts-2004-ixp-manager-v5.sh
 
 # and execute it:
-bash ./ubuntu-lts-1804-ixp-manager-v5.sh
+bash ./ubuntu-lts-2004-ixp-manager-v5.sh
 ```
 
 

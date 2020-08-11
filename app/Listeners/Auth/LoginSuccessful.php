@@ -38,7 +38,7 @@ class LoginSuccessful {
      */
     public function handle( LoginEvent $e )
     {
-        if( $e->user->getCurrentCustomerToUser() ) {
+        if( !session()->exists( "switched_user_from" ) && $e->user->getCurrentCustomerToUser() ) {
             if( Auth::viaRemember() ) {
                 $e->user->getCurrentCustomerToUser()->setLastLoginVia( 'RememberMe' );
             } else {

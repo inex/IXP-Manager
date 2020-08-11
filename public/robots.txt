@@ -1,2 +1,6 @@
+# Crawlers should not search the looking glasses
 User-agent: *
-Disallow:
+Disallow: /lg/
+
+User-agent: *
+Allow: /
