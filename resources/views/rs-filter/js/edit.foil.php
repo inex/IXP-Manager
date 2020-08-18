@@ -8,18 +8,17 @@
     //////////////////////////////////////////////////////////////////////////////////////
     // action bindings:
     dd_vlan.change(     () => { setCustomer(); } );
-    dd_peer.change( () => { setReceivedPrefixes(); } );
+    dd_peer.change( () => { setReceivedPrefixes(); setAdvertisePrefixes(); } );
 
     dd_protocol.change(function() {
         setAdvertisePrefixes();
         setCustomer();
-        disablePrefixInput( $(this).val() );
+        disablePrefixesInput( $(this).val() );
     });
 
     $( document ).ready(function() {
         setAdvertisePrefixes()
         setReceivedPrefixes();
-        disablePrefixInput( dd_protocol.val() );
     });
 
     /**
@@ -72,10 +71,9 @@
         if( dd_protocol.val() !== '' && dd_peer.val() !== null && dd_peer.val() !== '0' && dd_peer.val() !== ''  ) {
             let old = '<?= old( 'received_prefix' ) ?>';
             getPrefixes( dd_peer.val(), 'received', old );
-
         } else {
             // otherwise create the prefix as input text and disable it
-            $( '#area_received_prefix' ).html( `<input class="form-control" id="received_prefix" type="text" name="received_prefix" value="*">` )
+            $( '#area_received_prefix' ).html( `<input class="form-control action_prefixes" id="received_prefix" type="text" name="received_prefix" value="*">` )
             if( dd_peer.val() === '0' || dd_protocol.val() === '' ){
                 $( '#received_prefix' ).attr( "disabled" , "disabled" )
             }
@@ -89,11 +87,11 @@
         // if protocol is not 'all', get the prefixes
         if( dd_protocol.val() !== '' ) {
             let old = '<?= old( 'advertised_prefix' ) ?>';
-            getPrefixes( $( '#custid' ).val(), 'advertised', old );
+            getPrefixes( dd_peer.val(), 'advertised', old );
 
         } else {
             // if protocol is 'all', create the prefix as input text and disable it
-            $( '#area_advertised_prefix' ).html( `<input class="form-control" id="advertised_prefix" type="text" name="advertised_prefix" value="*">` )
+            $( '#area_advertised_prefix' ).html( `<input class="form-control action_prefixes" id="advertised_prefix" type="text" name="advertised_prefix" value="*">` )
             if( dd_protocol.val() === '' ){
                 $( '#advertised_prefix' ).attr( "disabled" , "disabled" )
             }
@@ -127,7 +125,8 @@
             } else {
                 // create and populate the dedicated prefix dropdown
                 let select = `<select class="chzn-select form-control" id="${input_select}_prefix" name="${input_select}_prefix">
-                          <option value="" disabled="disabled">Choose ${input_select} prefix</option>`;
+                          <option value="" disabled="disabled">Choose ${input_select} prefix</option>
+                          <option value="*" selected>*</option>`;
 
                 $.each( data.prefixes, function( index, value ) {
                     select += `<option value="${value['prefix']}">${value['prefix']}</option>\n`;
@@ -142,7 +141,6 @@
                 if( old !== '' ) {
                     $( `#${input_select}_prefix` ).val( old ).trigger( 'change.select2' );
                 }
-
             }
         })
         .fail( function() {
@@ -152,17 +150,17 @@
     }
 
     /**
-     * Disable the prefix input if the user select the value "both" as protocol
+     * Disable the prefixes inputs if the user select the value "both" as protocol
      *
      * @param value
      */
-    function disablePrefixInput( value ) {
+    function disablePrefixesInput( value ) {
         if( value === '' ) {
-            $( '#received_prefix' ).val( "" ).attr( "disabled" , "disabled" );
+            $( '.action_prefixes' ).val( "" ).attr( "disabled" , "disabled" ).val( "*" );
         } else {
-            $( '#received_prefix' ).removeAttr( "disabled" );
-            if( $( '#received_prefix' ).val() === "" ){
-                $( '#received_prefix' ).val( "*" );
+            $( '.action_prefixes' ).removeAttr( "disabled" );
+            if( $( '.action_prefixes' ).val() === "" ){
+                $( '.action_prefixes' ).val( "*" );
             }
         }
     }

@@ -85,9 +85,11 @@ class RsFilterController extends Controller
         $this->authorize( 'checkCustObject',  [ RouteServerFilter::class, $cust ]  );
 
         $vlanid     = request()->old( 'vlan_id',         null );
-        $protocol   = request()->old( 'protocol',        4    );
+        $protocol   = request()->old( 'protocol',        null );
+        $peer       = request()->old( 'peer_id',        null  );
 
         Former::populate( [
+            'peer_id'               => $peer        ?? "Null",
             'vlan_id'               => $vlanid      ?? "Null",
             'protocol'              => $protocol    ?? "Null",
             'action_advertise'      => request()->old( 'action_advertise',   "Null"  ),

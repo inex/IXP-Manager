@@ -61,7 +61,9 @@ class Store extends FormRequest
      */
     public function rules(): array
     {
-        $prefixRequired = $this->protocol ? "required" : "nullable";
+
+        $advertisePrefixRequired    = $this->protocol ? "required" : "nullable";
+        $receivedPrefixRequired     = $this->peer_id ? "required" : "nullable";
 
         if( $this->received_prefix !== '*'){
             $ipvCheckRec       = $this->protocol === '4' ? new IPv4Cidr()          : new IPv6Cidr();
@@ -94,11 +96,12 @@ class Store extends FormRequest
                     }
                 }
             ],
-            'received_prefix'       => [ $prefixRequired , 'max:43', $ipvCheckRec, $subnetCheckRec ],
-            'advertised_prefix'     => [ $prefixRequired , 'max:43', $ipvCheckAdv, $subnetCheckAdv ],
+            'advertised_prefix'     => [ $advertisePrefixRequired , 'max:43', $ipvCheckAdv, $subnetCheckAdv ],
+            'received_prefix'       => [ $receivedPrefixRequired , 'max:43', $ipvCheckRec, $subnetCheckRec ],
             'protocol'              => 'nullable|integer|in:' . implode( ',', array_keys( Router::$PROTOCOLS ) ),
             'action_advertise'      => 'nullable|string|max:250|in:' . implode( ',', array_keys( RouteServerFilter::$ADVERTISE_ACTION_TEXT ) ),
             'action_receive'        => 'nullable|string|max:250|in:' . implode( ',', array_keys( RouteServerFilter::$RECEIVE_ACTION_TEXT ) ),
         ];
+
     }
 }
