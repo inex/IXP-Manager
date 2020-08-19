@@ -26,7 +26,7 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
     /**
      * @var boolean flag indicating if this object was already initialized
      *
-     * @see \Doctrine\Persistence\Proxy::__isInitialized
+     * @see \Doctrine\Common\Persistence\Proxy::__isInitialized
      */
     public $__isInitialized__ = false;
 
@@ -62,14 +62,16 @@ class User extends \Entities\User implements \Doctrine\ORM\Proxy\Proxy
      * {@inheritDoc}
      * @param string $name
      */
-    public function __get(string $name)
+    public function __get($name)
     {
         if (\array_key_exists($name, self::$lazyPropertiesNames)) {
             $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', [$name]);
+
             return $this->$name;
         }
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, '__get', [$name]);
+
         return parent::__get($name);
     }
 
