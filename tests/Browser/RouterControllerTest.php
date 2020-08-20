@@ -87,7 +87,7 @@ class RouterControllerTest extends DuskTestCase
                 ->check('quarantine')
                 ->check('bgp_lc')
                 ->check('rpki')
-                ->check('rfc1997_passthru')
+                //->check('rfc1997_passthru')
                 ->check('skip_md5')
                 ->type( 'template', 'api/v4/router/server/bird/standard' )
                 ->press('Add Router')
@@ -118,7 +118,7 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( '2', $router->getLgAccess() );
             $this->assertEquals( true, $router->getQuarantine() );
             $this->assertEquals( true, $router->getBgpLc() );
-            $this->assertEquals( true, $router->getRFC1997Passthru() );
+            //$this->assertEquals( true, $router->getRFC1997Passthru() );
             $this->assertEquals( true, $router->getRPKI() );
             $this->assertEquals( true, $router->getSkipMd5() );
             $this->assertEquals( 'api/v4/router/server/bird/standard', $router->getTemplate() );
@@ -146,7 +146,7 @@ class RouterControllerTest extends DuskTestCase
                 ->assertSelected( 'lg_access', '2' )
                 ->assertChecked( 'quarantine' )
                 ->assertChecked( 'bgp_lc' )
-                ->assertChecked( 'rfc1997_passthru' )
+                //->assertChecked( 'rfc1997_passthru' )
                 ->assertChecked( 'rpki' )
                 ->assertChecked( 'skip_md5' )
                 ->assertInputValue( 'template', 'api/v4/router/server/bird/standard' );
@@ -174,7 +174,7 @@ class RouterControllerTest extends DuskTestCase
                 ->uncheck('quarantine')
                 ->uncheck('bgp_lc')
                 ->uncheck('rpki')
-                ->uncheck('rfc1997_passthru')
+                //->uncheck('rfc1997_passthru')
                 ->uncheck('skip_md5')
                 ->type( 'template', 'api/v4/router/as112/bird/standard' )
                 ->press('Save Changes')
@@ -205,7 +205,7 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( false, $router->getQuarantine() );
             $this->assertEquals( false, $router->getBgpLc() );
             $this->assertEquals( false, $router->getRPKI() );
-            $this->assertEquals( false, $router->getRFC1997Passthru() );
+            //$this->assertEquals( false, $router->getRFC1997Passthru() );
             $this->assertEquals( false, $router->getSkipMd5() );
             $this->assertEquals( 'api/v4/router/as112/bird/standard', $router->getTemplate() );
 
@@ -223,7 +223,7 @@ class RouterControllerTest extends DuskTestCase
                 ->assertNotChecked( 'quarantine' )
                 ->assertNotChecked( 'bgp_lc' )
                 ->assertNotChecked( 'rpki' )
-                ->assertNotChecked( 'rfc1997_passthru' )
+                //->assertNotChecked( 'rfc1997_passthru' )
                 ->assertNotChecked( 'skip_md5' );
 
 
@@ -256,7 +256,7 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( false, $router->getQuarantine() );
             $this->assertEquals( false, $router->getBgpLc() );
             $this->assertEquals( false, $router->getRPKI() );
-            $this->assertEquals( false, $router->getRFC1997Passthru() );
+            //$this->assertEquals( false, $router->getRFC1997Passthru() );
             $this->assertEquals( false, $router->getSkipMd5() );
             $this->assertEquals( 'api/v4/router/as112/bird/standard', $router->getTemplate() );
 
@@ -267,7 +267,7 @@ class RouterControllerTest extends DuskTestCase
             $browser->check('quarantine')
                 ->check('bgp_lc')
                 ->check('rpki')
-                ->check('rfc1997_passthru')
+                //->check('rfc1997_passthru')
                 ->check('skip_md5')
                 ->press('Save Changes')
                 ->assertPathIs('/router/list');
@@ -279,7 +279,7 @@ class RouterControllerTest extends DuskTestCase
             $this->assertEquals( true, $router->getQuarantine() );
             $this->assertEquals( true, $router->getBgpLc() );
             $this->assertEquals( true, $router->getRPKI() );
-            $this->assertEquals( true, $router->getRFC1997Passthru() );
+            //$this->assertEquals( true, $router->getRFC1997Passthru() );
             $this->assertEquals( true, $router->getSkipMd5() );
 
             // 11. delete the router in the UI and verify via success message text and location
