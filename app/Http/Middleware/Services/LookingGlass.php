@@ -24,11 +24,12 @@ namespace IXP\Http\Middleware\Services;
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use App;
-use Auth;
-use Closure;
-use D2EM;
-use Route;
+use App, Auth, Closure, D2EM, Route, Validator;
+
+use IXP\Utils\View\Alert\{
+    Alert,
+    Container as AlertContainer
+};
 
 use Illuminate\Http\Request;
 
@@ -36,7 +37,7 @@ use Entities\{
     Router as RouterEntity,
     User as UserEntity
 };
-use IXP\Services\Grapher as LookingGlassService;
+
 use IXP\Exceptions\Utils\RouterException;
 
 // use IXP\Exceptions\Services\Grapher\{BadBackendException,CannotHandleRequestException};
@@ -52,25 +53,68 @@ use IXP\Exceptions\Utils\RouterException;
  */
 class LookingGlass
 {
+
+    /**
+     * Check if the symbols is valid
+     *
+     * @param string $symbol
+     */
+    private function validateSymbol( string $symbol ): void
+    {
+        if( strlen( $symbol ) < 1 || preg_match( '/^[a-zA-Z_]?[a-zA-Z0-9_]*$/', $symbol ) < 1 ) {
+            abort( 404);
+        }
+    }
+
+    /**
+     * Check if the network is valid
+     *
+     * @param Request $request
+     */
+    private function validateNetworkRoute( $request ): void
+    {
+        $validator = Validator::make(
+            [
+                'net'   => $request->net,
+                'mask'  => $request->mask
+            ],
+            [
+                'net' => 'required|ip',
+                'mask' => 'numeric|min:1|max:128',
+            ]
+        );
+
+        if ( $validator->fails() ) {
+            abort(404);
+        }
+    }
+
     /**
      * Handle an incoming request.
      *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \Closure  $next
+     * @param Request $request
+     * @param Closure $next
+     *
      * @return mixed
      */
     public function handle($request, Closure $next )
     {
-        if( Route::currentRouteName() == 'lg::index' ) {
+        if( Route::currentRouteName() === 'lg::index' ) {
             return $next($request);
         }
+
+        if( $request->table ) { $this->validateSymbol( $request->table ); }
+        if( $request->protocol ) { $this->validateSymbol( $request->protocol ); }
+        if( $request->net ) { $this->validateNetworkRoute( $request ); }
 
         // get the router object
         try {
             /** @var RouterEntity $router */
             $router = D2EM::getRepository( RouterEntity::class )->findOneBy( [ 'handle' => $request->handle ] );
-            if( !$router->hasApi() ) {
-                throw new RouterException('No API available');
+
+            if( !$router || !$router->hasApi() ) {
+                AlertContainer::push( "Handle not found", Alert::DANGER );
+                return redirect( 'lg');
             }
         } catch( RouterException $e ) {
             abort( 404, $e->getMessage() );
