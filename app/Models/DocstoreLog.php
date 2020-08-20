@@ -45,18 +45,18 @@ use Illuminate\Support\Facades\DB;
  * @property int $id
  * @property int $docstore_file_id
  * @property int|null $downloaded_by
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read \IXP\Models\DocstoreFile $file
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreLog newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreLog newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreLog query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreLog whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreLog whereDocstoreFileId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreLog whereDownloadedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreLog whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreLog whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @method static Builder|DocstoreLog newModelQuery()
+ * @method static Builder|DocstoreLog newQuery()
+ * @method static Builder|DocstoreLog query()
+ * @method static Builder|DocstoreLog whereCreatedAt($value)
+ * @method static Builder|DocstoreLog whereDocstoreFileId($value)
+ * @method static Builder|DocstoreLog whereDownloadedBy($value)
+ * @method static Builder|DocstoreLog whereId($value)
+ * @method static Builder|DocstoreLog whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 class DocstoreLog extends Model
 {

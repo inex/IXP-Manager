@@ -50,19 +50,19 @@ use Illuminate\Support\Collection;
  * @property int $is_private
  * @property string $storage_location
  * @property-read \IXP\Models\PatchPanelPort|null $patchPanelPort
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortFile newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortFile newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortFile query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortFile whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortFile whereIsPrivate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortFile whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortFile wherePatchPanelPortId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortFile whereSize($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortFile whereStorageLocation($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortFile whereType($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortFile whereUploadedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\PatchPanelPortFile whereUploadedBy($value)
- * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile newModelQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile newQuery()
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile query()
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereIsPrivate($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereName($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile wherePatchPanelPortId($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereSize($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereStorageLocation($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereType($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereUploadedAt($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|PatchPanelPortFile whereUploadedBy($value)
+ * @mixin Eloquent
  */
 
 class PatchPanelPortFile extends Model

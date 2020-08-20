@@ -53,29 +53,29 @@ use Storage;
  * @property string|null $sha256
  * @property string|null $description
  * @property int $min_privs
- * @property \Illuminate\Support\Carbon $file_last_updated
+ * @property Carbon $file_last_updated
  * @property int|null $created_by
- * @property \Illuminate\Support\Carbon|null $created_at
- * @property \Illuminate\Support\Carbon|null $updated_at
+ * @property Carbon|null $created_at
+ * @property Carbon|null $updated_at
  * @property-read \IXP\Models\DocstoreDirectory|null $directory
- * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\DocstoreLog[] $logs
+ * @property-read Collection|\IXP\Models\DocstoreLog[] $logs
  * @property-read int|null $logs_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereCreatedAt($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereCreatedBy($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereDescription($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereDisk($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereDocstoreDirectoryId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereFileLastUpdated($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereMinPrivs($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile wherePath($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereSha256($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\DocstoreFile whereUpdatedAt($value)
- * @mixin \Eloquent
+ * @method static Builder|DocstoreFile newModelQuery()
+ * @method static Builder|DocstoreFile newQuery()
+ * @method static Builder|DocstoreFile query()
+ * @method static Builder|DocstoreFile whereCreatedAt($value)
+ * @method static Builder|DocstoreFile whereCreatedBy($value)
+ * @method static Builder|DocstoreFile whereDescription($value)
+ * @method static Builder|DocstoreFile whereDisk($value)
+ * @method static Builder|DocstoreFile whereDocstoreDirectoryId($value)
+ * @method static Builder|DocstoreFile whereFileLastUpdated($value)
+ * @method static Builder|DocstoreFile whereId($value)
+ * @method static Builder|DocstoreFile whereMinPrivs($value)
+ * @method static Builder|DocstoreFile whereName($value)
+ * @method static Builder|DocstoreFile wherePath($value)
+ * @method static Builder|DocstoreFile whereSha256($value)
+ * @method static Builder|DocstoreFile whereUpdatedAt($value)
+ * @mixin Eloquent
  */
 
 class DocstoreFile extends Model

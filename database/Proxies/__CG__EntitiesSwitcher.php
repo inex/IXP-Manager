@@ -26,7 +26,7 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     /**
      * @var boolean flag indicating if this object was already initialized
      *
-     * @see \Doctrine\Common\Persistence\Proxy::__isInitialized
+     * @see \Doctrine\Persistence\Proxy::__isInitialized
      */
     public $__isInitialized__ = false;
 
@@ -66,10 +66,10 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'model', 'hostname', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'os', 'active', 'osDate', 'osVersion', 'lastPolled', 'snmp_engine_boots', 'snmp_engine_time', 'snmp_system_uptime', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor'];
+            return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'model', 'hostname', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'os', 'active', 'poll', 'osDate', 'osVersion', 'lastPolled', 'snmp_engine_boots', 'snmp_engine_time', 'snmp_system_uptime', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor'];
         }
 
-        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'model', 'hostname', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'os', 'active', 'osDate', 'osVersion', 'lastPolled', 'snmp_engine_boots', 'snmp_engine_time', 'snmp_system_uptime', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor'];
+        return ['__isInitialized__', 'name', 'ipv4addr', 'ipv6addr', 'snmppasswd', 'Infrastructure', 'model', 'hostname', 'notes', 'asn', 'loopback_ip', 'loopback_name', 'mgmt_mac_address', 'id', '' . "\0" . 'Entities\\Switcher' . "\0" . 'mauSupported', '' . "\0" . 'Entities\\Switcher' . "\0" . 'serialNumber', 'os', 'active', 'poll', 'osDate', 'osVersion', 'lastPolled', 'snmp_engine_boots', 'snmp_engine_time', 'snmp_system_uptime', 'Ports', 'ConsoleServerConnections', 'Cabinet', 'Vendor'];
     }
 
     /**
@@ -475,6 +475,28 @@ class Switcher extends \Entities\Switcher implements \Doctrine\ORM\Proxy\Proxy
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getActive', []);
 
         return parent::getActive();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPoll(bool $poll)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPoll', [$poll]);
+
+        return parent::setPoll($poll);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPoll(): bool
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPoll', []);
+
+        return parent::getPoll();
     }
 
     /**
