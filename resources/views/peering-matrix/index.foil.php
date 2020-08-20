@@ -244,7 +244,7 @@
                     </li>
                     <li>
                         Where a <?= config( "identity.orgname" ) ?> member is not listed on this peering matrix, it is because they are
-                        currently not actively peering at <?= config( "identity.orgname" ) ?> , or because they have opted out of presenting
+                        currently not actively peering at <?= config( "identity.orgname" ) ?>, or because they have opted out of presenting
                         their peering information in this database.
                     </li>
                     <li>
