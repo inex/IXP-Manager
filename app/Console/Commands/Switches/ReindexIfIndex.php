@@ -75,7 +75,7 @@ class ReindexIfIndex extends Command
 
         /** @var $s SwitcherEntity */
 
-        if( ! ( $s = D2EM::getRepository( SwitcherEntity::class )->findBy( [ "name" => $this->argument('switch') ] ) ) ) {
+        if( ! ( $s = D2EM::getRepository( SwitcherEntity::class )->findOneBy( [ "name" => $this->argument('switch') ] ) ) ) {
             $this->error( "ERR: No switch found with name: " . $this->argument('switch' ) );
             return -1;
         }
@@ -93,9 +93,9 @@ class ReindexIfIndex extends Command
                     }
 
                     if( $sp->getIfIndex() == $ifIndex ) {
-                        $this->comment( "{$sp->getIfName()} unchanged, ifIndex remains the same");
+                        $this->comment( " - {$sp->getIfName()} unchanged, ifIndex remains the same");
                     } else {
-                        $this->info("{$sp->getIfName()} ifIndex changed from {$sp->getIfIndex()} to {$ifIndex}");
+                        $this->info(" - {$sp->getIfName()} ifIndex changed from {$sp->getIfIndex()} to {$ifIndex}");
                         $sp->setIfIndex( $ifIndex );
                     }
 
@@ -105,7 +105,7 @@ class ReindexIfIndex extends Command
             }
 
             if( $this->option( 'noflush', false ) ){
-                $this->warn( '    *** --noflush parameter set - NO CHANGES MADE TO DATABASE' );
+                $this->error( "\n*** --noflush parameter set - NO CHANGES MADE TO DATABASE" );
             } else{
                 D2EM::flush();
             }
