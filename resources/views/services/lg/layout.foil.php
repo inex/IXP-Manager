@@ -8,7 +8,6 @@
 <?php $this->append() ?>
 
 <?php $this->section('page-header-postamble') ?>
-
     <div class="btn-group btn-group-sm" role="group">
         <div class="btn-group btn-group-sm" role="group">
             <a class="btn btn-white" href="<?= url('lg') ?>">
@@ -63,7 +62,7 @@
 
 
 <?php $this->section('content') ?>
-
+<?= $t->alerts() ?>
 <?php if( !Auth::check() ): ?>
     <div class="alert alert-light" role="alert">
         <em>This is the public looking glass. Uncached results and additional routers available when logged in.&nbsp;&nbsp;&nbsp;&nbsp;</em>
