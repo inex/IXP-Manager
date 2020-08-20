@@ -146,6 +146,12 @@ class Switcher
     protected $active;
 
     /**
+     * @var boolean poll
+     */
+    protected $poll;
+
+
+    /**
      * @var \DateTime
      */
     protected $osDate;
@@ -511,6 +517,33 @@ class Switcher
     public function getActive()
     {
         return $this->active;
+    }
+
+
+
+    /**
+     * Set poll
+     *
+     * If true, the switch can be polled via SNMP/etc to update ports
+     *
+     * @param boolean $poll
+     * @return Switcher
+     */
+    public function setPoll(bool $poll)
+    {
+        $this->poll = $poll;
+
+        return $this;
+    }
+
+    /**
+     * Get poll
+     *
+     * @return boolean Should the switch be polled via SNMP/etc
+     */
+    public function getPoll(): bool
+    {
+        return $this->poll;
     }
 
 

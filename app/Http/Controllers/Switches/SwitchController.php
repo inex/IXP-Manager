@@ -131,8 +131,14 @@ class SwitchController extends Doctrine2Frontend
                 ],
 
                 'infrastructure' => 'Infrastructure',
+
                 'active'       => [
                     'title'    => 'Active',
+                    'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
+                ],
+
+                'poll'       => [
+                    'title'    => 'Poll',
                     'type'     => self::$FE_COL_TYPES[ 'YES_NO' ]
                 ],
 
@@ -405,6 +411,7 @@ class SwitchController extends Doctrine2Frontend
                 'vendorid'          => request()->old( 'vendorid',      $this->object->getVendor() ? $this->object->getVendor()->getId() : null ),
                 'model'             => request()->old( 'model',                 $this->object->getModel() ),
                 'active'            => request()->old( 'active',                ( $this->object->getActive() ? 1 : 0 ) ),
+                'poll'              => request()->old( 'poll',                  ( $this->object->getPoll() ? 1 : 0 ) ),
                 'asn'               => request()->old( 'asn',                   $this->object->getAsn() ),
                 'loopback_ip'       => request()->old( 'loopback_ip',           $this->object->getLoopbackIP() ),
                 'loopback_name'     => request()->old( 'loopback_name',         $this->object->getLoopbackName() ),
@@ -545,6 +552,7 @@ class SwitchController extends Doctrine2Frontend
         $this->object->setMgmtMacAddress( preg_replace( "/[^a-f0-9]/i", '', strtolower( $request->input( 'mgmt_mac_address', '' ) ) ) );
 
         $this->object->setActive(  $request->input( 'active'             ) ?? false );
+        $this->object->setPoll(    $request->input( 'poll'               ) ?? false );
 
         $this->object->setCabinet(        D2EM::getRepository( CabinetEntity::class         )->find( $request->input( 'cabinetid'       ) ) );
         $this->object->setInfrastructure( D2EM::getRepository( InfrastructureEntity::class  )->find( $request->input( 'infrastructure'  ) ) );

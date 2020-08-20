@@ -85,6 +85,17 @@
                     ->check()
                     ->blockHelp( "Inactive switches are removed from polling, monitoring, etc." );
                 ?>
+
+                <?= Former::checkbox( 'poll' )
+                    ->label( '&nbsp;' )
+                    ->text( 'Poll' )
+                    ->value( 1 )
+                    ->inline()
+                    ->check()
+                    ->blockHelp( "Should this switch be polled automatically? Disabling this does not prevent you from manually polling the switch "
+                        . "via the UI or via Artisan on the command line by explicity specifying it. It will just not be polled via the all switches "
+                        . "Artisan <code>switch:snmp-poll</code> command." );
+                ?>
             </div>
         </div>
 
