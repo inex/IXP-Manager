@@ -53,10 +53,13 @@ $this->layout( 'layouts/ixpv4' );
                                 Protocol
                             </th>
                             <th>
-                                Prefix
+                                Advertised Prefix
                             </th>
                             <th>
                                 Advertise Action
+                            </th>
+                            <th>
+                                Received Prefix
                             </th>
                             <th>
                                 Receive Action
@@ -103,10 +106,21 @@ $this->layout( 'layouts/ixpv4' );
                                     <?= $rsf->resolveProtocol() ?>
                                 </td>
                                 <td>
-                                    <?= $t->ee( $rsf->prefix ) ?>
+                                    <?php if( $t->ee( $rsf->advertised_prefix ) ): ?>
+                                        <?= $t->ee( $rsf->advertised_prefix ) ?>
+                                    <?php else: ?>
+                                        *
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <?= $t->ee( $rsf->resolveActionAdvertise() ) ?>
+                                </td>
+                                <td>
+                                    <?php if( $t->ee( $rsf->received_prefix ) ): ?>
+                                        <?= $t->ee( $rsf->received_prefix ) ?>
+                                    <?php else: ?>
+                                        *
+                                    <?php endif; ?>
                                 </td>
                                 <td>
                                     <?= $t->ee( $rsf->resolveActionReceive() ) ?>

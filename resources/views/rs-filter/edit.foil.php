@@ -43,7 +43,7 @@
                     ?>
 
                     <?= Former::select( 'vlan_id' )
-                        ->label( 'Lan' )
+                        ->label( 'LAN' )
                         ->option( 'all' )
                         ->fromQuery( $t->vlans, 'name' )
                         ->placeholder( 'Choose a Lan' )
@@ -57,10 +57,15 @@
                         ->addClass( 'chzn-select' );
                     ?>
 
-                    <?= Former::text( 'prefix' )
-                        ->label( 'Prefix' )
-                        ->blockHelp( "" );
-                    ?>
+                    <div class="form-group row">
+                        <label for="advertised_prefix" class="control-label col-sm-4 col-md-4 col-lg-3">Advertise Prefix</label>
+                        <div class="col-lg-4 col-md-6 col-sm-6">
+                            <div id="area_advertised_prefix"></div>
+                            <?php if(  $t->errors->has('advertised_prefix') ): ?>
+                                <div class="invalid-feedback d-block"><?= $t->errors->first('advertised_prefix') ?></div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
 
                     <?= Former::select( 'action_advertise' )
                         ->label( 'Action Advertise' )
@@ -68,6 +73,16 @@
                         ->placeholder( 'Choose advertise action' )
                         ->addClass( 'chzn-select' );
                     ?>
+
+                    <div class="form-group row">
+                        <label for="received_prefix" class="control-label col-sm-4 col-md-4 col-lg-3">Received Prefix</label>
+                        <div class="col-lg-4 col-md-6 col-sm-6" >
+                            <div id="area_received_prefix"></div>
+                            <?php if(  $t->errors->has('received_prefix') ): ?>
+                                <div class="invalid-feedback d-block"><?= $t->errors->first('received_prefix') ?></div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
 
                     <?= Former::select( 'action_receive' )
                         ->label( 'Action Receive' )
@@ -81,6 +96,7 @@
                     ?>
 
                     <?= Former::hidden( 'custid' )
+                        ->id( 'custid' )
                         ->value( $t->rsf ? $t->rsf->customer->id : $t->c->id )
                     ?>
 

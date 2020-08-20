@@ -18,7 +18,8 @@ class CreateRouteServerFilters extends Migration
             $table->integer( 'customer_id' )->nullable();
             $table->integer( 'peer_id' )->nullable();
             $table->integer( 'vlan_id' )->nullable();
-            $table->string( 'prefix',43 )->nullable( true );
+            $table->string( 'received_prefix',43 )->nullable( true );
+            $table->string( 'advertised_prefix',43 )->nullable( true );
             $table->smallInteger('protocol' )->nullable( true );
             $table->string( 'action_advertise',255 )->nullable( true );
             $table->string( 'action_receive',255 )->nullable( true );

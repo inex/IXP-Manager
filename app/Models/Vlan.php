@@ -62,6 +62,8 @@ use stdClass;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan wherePeeringMatrix($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan wherePrivate($value)
  * @mixin \Eloquent
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeserverfilters
+ * @property-read int|null $routeserverfilters_count
  */
 class Vlan extends Model
 {

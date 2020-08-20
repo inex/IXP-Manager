@@ -61,6 +61,7 @@ class IPv4Cidr implements Rule
             return false;
         }
 
+
         if( filter_var( $parts[0], FILTER_VALIDATE_IP, FILTER_FLAG_IPV4 ) === false ) {
             return false;
         }

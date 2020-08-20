@@ -60,6 +60,13 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereUpdatedAt($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereVlanId($value)
  * @mixin \Eloquent
+ * @property string|null $received_prefix
+ * @property string|null $advertised_prefix
+ * @property-read \IXP\Models\Customer|null $customer
+ * @property-read \IXP\Models\Customer|null $peer
+ * @property-read \IXP\Models\Vlan|null $vlan
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereAdvertisedPrefix($value)
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\RouteServerFilter whereReceivedPrefix($value)
  */
 class RouteServerFilter extends Model
 {
@@ -79,7 +86,8 @@ class RouteServerFilter extends Model
         'customer_id',
         'peer_id',
         'vlan_id',
-        'prefix',
+        'received_prefix',
+        'advertised_prefix',
         'protocol',
         'action_advertise',
         'action_receive',
