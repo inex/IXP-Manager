@@ -104,7 +104,7 @@ class LookingGlass
             $router = D2EM::getRepository( RouterEntity::class )->findOneBy( [ 'handle' => $request->handle ] );
 
             if( !$router || !$router->hasApi() ) {
-                AlertContainer::push( "Handle not found", Alert::DANGER );
+                AlertContainer::push( "No router with the provided handle was found", Alert::DANGER );
                 return redirect( route( 'lg::index' ) );
             }
         } catch( RouterException $e ) {
@@ -118,8 +118,7 @@ class LookingGlass
         }
 
         if( ( $request->net || $request->mask ) && !$this->validateNetworkRoute( $request ) ) {
-            AlertContainer::push( "Invalid network prefix", Alert::DANGER );
-            return redirect( route( 'lg::bgp-sum', [ 'handle' => $request->handle ] ) );
+            abort(404);
         }
 
         // let's authorise for access (this throws an exception)
