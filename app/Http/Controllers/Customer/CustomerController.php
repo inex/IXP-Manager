@@ -29,6 +29,7 @@ use IXP\Events\Customer\BillingDetailsChanged as CustomerBillingDetailsChangedEv
 
 use IXP\Http\Controllers\Controller;
 
+use IXP\Models\Customer;
 use Illuminate\Http\{
     RedirectResponse,
     Request
@@ -559,7 +560,7 @@ class CustomerController extends Controller
 
             'crossConnects'             => D2EM::getRepository( PatchPanelPortEntity::class )->getForCustomer( $c->getId() ),
             'crossConnectsHistory'      => D2EM::getRepository( PatchPanelPortHistoryEntity::class )->getForCustomer( $c ),
-            'aggregateGraph'            => $c->isGraphable() ? $grapher->customer( $c ) : false,
+            'aggregateGraph'            => $c->isGraphable() ? $grapher->customer( Customer::find( $c->getId()) ) : false,
             'grapher'                   => $grapher,
             'rsclient'                  => $c->isRouteServerClient(),
             'as112client'               => $c->isAS112Client(),

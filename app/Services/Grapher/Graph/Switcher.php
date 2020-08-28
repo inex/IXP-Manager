@@ -1,7 +1,9 @@
-<?php namespace IXP\Services\Grapher\Graph;
+<?php
+
+namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,58 +22,67 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Auth;
+
+use \IXP\Models\{
+    Switcher as SwitcherModel,
+    User
+};
 
 use IXP\Services\Grapher;
 use IXP\Services\Grapher\{Graph};
 
-use Entities\Switcher as SwitchEntity;
-use Entities\User as UserEntity;
-
-use Auth;
-
 /**
  * Grapher -> Switch Graph
  *
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Switcher extends Graph {
-
+class Switcher extends Graph
+{
     /**
-     * Vlan to graph
-     * @var \Entities\Vlan
+     * Switcher to graph
+     *
+     * @var SwitcherModel
      */
     private $switch = null;
 
-
     /**
      * Constructor
-     * @param Grapher $grapher
-     * @param SwitchEntity $s
+     *
+     * @param Grapher       $grapher
+     * @param SwitcherModel $s
      */
-    public function __construct( Grapher $grapher, SwitchEntity $s ) {
+    public function __construct( Grapher $grapher, SwitcherModel $s )
+    {
         parent::__construct( $grapher );
         $this->switch = $s;
     }
 
     /**
      * Get the switch we're set to use
-     * @return \Entities\Switcher
+     *
+     * @return SwitcherModel
      */
-    public function switch(): SwitchEntity {
+    public function switch(): SwitcherModel
+    {
         return $this->switch;
     }
 
     /**
      * Set the switch we should use
-     * @param SwitchEntity $switch
+     *
+     * @param SwitcherModel $switch
+     *
      * @return Switcher Fluid interface
      */
-    public function setSwitch( SwitchEntity $switch ): Switcher {
-        if( $this->switch() && $this->switch()->getId() != $switch->getId() ) {
+    public function setSwitch( SwitcherModel $switch ): Switcher
+    {
+        if( $this->switch() && $this->switch()->id !== $switch->id ) {
             $this->wipe();
         }
 
@@ -83,8 +94,9 @@ class Switcher extends Graph {
      * The name of a graph (e.g. member name, IXP name, etc)
      * @return string
      */
-    public function name(): string {
-        return $this->switch()->getName();
+    public function name(): string
+    {
+        return $this->switch()->name;
     }
 
     /**
@@ -93,8 +105,9 @@ class Switcher extends Graph {
      * E.g. for an IXP, it might be ixpxxx where xxx is the database id
      * @return string
      */
-    public function identifier(): string {
-        return sprintf( "switch%05d", $this->switch()->getId() );
+    public function identifier(): string
+    {
+        return sprintf( "switch%05d", $this->switch()->id );
     }
 
     /**
@@ -106,12 +119,13 @@ class Switcher extends Graph {
      *
      * @return bool
      */
-    public function authorise(): bool {
+    public function authorise(): bool
+    {
         if( Auth::check() && Auth::user()->isSuperUser() ) {
             return $this->allow();
         }
 
-        if( is_numeric( config( 'grapher.access.switch' ) ) && config( 'grapher.access.switch' ) == UserEntity::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.switch' ) ) && config( 'grapher.access.switch' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 
@@ -127,11 +141,13 @@ class Switcher extends Graph {
      * Generate a URL to get this graphs 'file' of a given type
      *
      * @param array $overrides Allow standard parameters to be overridden (e.g. category)
+     *
      * @return string
      */
-    public function url( array $overrides = [] ): string {
+    public function url( array $overrides = [] ): string
+    {
         return parent::url( $overrides ) . sprintf("&id=%d",
-            isset( $overrides['id']   ) ? $overrides['id']   : $this->switch()->getId()
+                $overrides[ 'id' ] ?? $this->switch()->id
         );
     }
 
@@ -142,12 +158,12 @@ class Switcher extends Graph {
      *
      * @return array $params
      */
-    public function getParamsAsArray(): array {
+    public function getParamsAsArray(): array
+    {
         $p = parent::getParamsAsArray();
-        $p['id'] = $this->switch()->getId();
+        $p['id'] = $this->switch()->id;
         return $p;
     }
-
 
     /**
      * Process user input for the parameter: switch
@@ -155,15 +171,11 @@ class Switcher extends Graph {
      * Does a abort(404) if invalid
      *
      * @param int $s The user input value
-     * @return SwitchEntity The verified / sanitised / default value
+     *
+     * @return SwitcherModel The verified / sanitised / default value
      */
-    public static function processParameterSwitch( int $s ): SwitchEntity {
-        $switch = null;
-        if( !$s || !( $switch = d2r( 'Switcher' )->find( $s ) ) ) {
-            abort(404);
-        }
-        return $switch;
+    public static function processParameterSwitch( int $s ): SwitcherModel
+    {
+        return SwitcherModel::findOrFail( $s );
     }
-
-
 }

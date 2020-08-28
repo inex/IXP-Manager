@@ -27,6 +27,7 @@ use App, Cache, D2EM;
 
 use Carbon\Carbon;
 
+use IXP\Models\Infrastructure;
 use IXP\Services\Grapher\Graph as Graph;
 
 use Entities\{
@@ -41,6 +42,7 @@ use Entities\{
 
 use Illuminate\Http\Request;
 use Illuminate\View\View;
+use IXP\Services\Grapher;
 
 
 /**
@@ -80,7 +82,7 @@ class AdminController extends Controller
      *
      * @return array array of statistics
      */
-    private function dashboardStats( Request $request )
+    private function dashboardStats( Request $request ): array
     {
         // only do this once every 60 minutes
         if( $request->query( 'refresh_cache', 0 ) || !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
@@ -200,21 +202,21 @@ class AdminController extends Controller
      */
     private function publicPeeringGraphs( Request $request )
     {
-        $grapher = App::make('IXP\Services\Grapher');
+        $grapher = App::make( Grapher::class );
 
         $period   = Graph::processParameterPeriod( $request->query( 'graph_period', config( 'ixp_fe.admin_dashboard.default_graph_period' ) ) );
 
         if( $request->query( 'refresh_cache', 0 ) || !( $graphs = Cache::get( 'admin_stats_'.$period ) ) ) {
             $graphs = [];
 
-            $graphs['ixp'] = $grapher->ixp( D2EM::getRepository(IXPEntity::class )->getDefault() )
+            $graphs['ixp'] = $grapher->ixp()
                 ->setType(     Graph::TYPE_PNG )
                 ->setProtocol( Graph::PROTOCOL_ALL )
                 ->setPeriod(   $period )
                 ->setCategory( Graph::CATEGORY_BITS );
 
-            foreach( D2EM::getRepository(IXPEntity::class )->getDefault()->getInfrastructures() as $inf ) {
-                $graphs[ $inf->getId()] = $grapher->infrastructure( $inf )
+            foreach( Infrastructure::all() as $inf ) {
+                $graphs[ $inf->id ] = $grapher->infrastructure( $inf )
                     ->setType(     Graph::TYPE_PNG )
                     ->setProtocol( Graph::PROTOCOL_ALL )
                     ->setPeriod(   $period )

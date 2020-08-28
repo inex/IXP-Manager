@@ -90,4 +90,56 @@ class VirtualInterface extends Model
     {
         return $this->hasMany(PhysicalInterface::class, 'virtualinterfaceid');
     }
+
+    /**
+     * Utility function to provide an array of all virtual interface objects on a given
+     * infrastructure
+     *
+     * @param Infrastructure    $infra The infrastructure to gather VirtualInterfaces for
+     * @param int|bool          $proto Either 4 or 6 to limit the results to interface with IPv4 / IPv6
+     * @param bool              $externalOnly If true (default) then only external (non-internal) interfaces will be returned
+     *
+     * @return \Illuminate\Support\Collection
+     *
+     * @throws
+     */
+    public static function getForInfrastructure( Infrastructure $infra, $proto = false, $externalOnly = true ): \Illuminate\Support\Collection
+    {
+        return self::select( [ 'vi.*' ] )
+            ->from( 'virtualinterface AS vi' )
+            ->Join( 'cust AS c', 'c.id', 'vi.custid' )
+            ->Join( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
+            ->Join( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
+            ->Join( 'switchport AS sp', 'sp.id', 'pi.switchportid' )
+            ->Join( 'switch AS s', 's.id', 'sp.switchid' )
+            ->Join( 'infrastructure AS i', 'i.id', 's.infrastructure' )
+            ->where( 'i.id', $infra->id )
+            ->whereRaw( Customer::SQL_CUST_ACTIVE )
+            ->whereRaw( Customer::SQL_CUST_CURRENT )
+            ->whereRaw( Customer::SQL_CUST_TRAFFICING )
+            ->where( 'pi.status', PhysicalInterface::STATUS_CONNECTED )
+            ->when( $proto , function( Builder $q, $proto ) {
+                $p = in_array( $proto, [ 4, 6 ], true ) ? $proto : 4;
+                return $q->whereRaw( "vli.ipv{$p}enabled = 1" );
+            })
+            ->when( $externalOnly , function( Builder $q ) {
+                return $q->whereRaw( Customer::SQL_CUST_EXTERNAL );
+            })->orderBy( 'c.name' )->get()->keyBy( 'id' );
+    }
+
+    /**
+     * Is this LAG graphable?
+     *
+     * @return bool
+     */
+    public function isGraphable(): bool
+    {
+        foreach( $this->physicalInterfaces as $pi ) {
+            if( $pi->isGraphable() ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 }

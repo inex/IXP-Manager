@@ -4,6 +4,7 @@ namespace IXP\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * IXP\Models\IPv4Address
@@ -19,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv4Address whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv4Address whereVlanid($value)
  * @mixin \Eloquent
+ * @property-read \IXP\Models\VlanInterface|null $vlaninterface
  */
 class IPv4Address extends Model
 {
@@ -42,5 +44,13 @@ class IPv4Address extends Model
     public function vlan(): BelongsTo
     {
         return $this->belongsTo(Vlan::class, 'vlanid' );
+    }
+
+    /**
+     * Get the vlan interface associated with the ipv4.
+     */
+    public function vlaninterface(): HasOne
+    {
+        return $this->hasOne(VlanInterface::class, 'ipv4addressid' );
     }
 }

@@ -1,7 +1,9 @@
-<?php namespace IXP\Services\Grapher\Graph;
+<?php
+
+namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,59 +23,68 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use IXP\Services\Grapher;
-use IXP\Services\Grapher\{Graph};
+use Auth;
 
-use Entities\{
-    User as UserEntity,
-    Vlan as VlanEntity
+use IXP\Models\{
+    User,
+    Vlan as VlanModel
 };
 
-use Auth;
+use IXP\Services\Grapher;
+use IXP\Services\Grapher\{Graph};
 
 /**
  * Grapher -> Vlan Graph
  *
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Vlan extends Graph {
-
+class Vlan extends Graph
+{
     /**
      * Vlan to graph
-     * @var \Entities\Vlan
+     *
+     * @var VlanModel
      */
     private $vlan = null;
 
-
     /**
      * Constructor
+     *
      * @param Grapher $grapher
-     * @param VlanEntity $v
+     * @param VlanModel $v
+     *
      */
-    public function __construct( Grapher $grapher, VlanEntity $v ) {
+    public function __construct( Grapher $grapher, VlanModel $v )
+    {
         parent::__construct( $grapher );
         $this->vlan = $v;
     }
 
     /**
      * Get the vlan we're set to use
-     * @return \Entities\Vlan
+     *
+     * @return VlanModel
      */
-    public function vlan(): VlanEntity {
+    public function vlan(): VlanModel
+    {
         return $this->vlan;
     }
 
     /**
      * Set the vlan we should use
-     * @param VlanEntity $vlan
+     *
+     * @param VlanModel $vlan
+     *
      * @return Vlan Fluid interface
      */
-    public function setVlan( VlanEntity $vlan ): Vlan {
-        if( $this->vlan() && $this->vlan()->getId() != $vlan->getId() ) {
+    public function setVlan( VlanModel $vlan ): Vlan
+    {
+        if( $this->vlan() && $this->vlan()->id !== $vlan->id ) {
             $this->wipe();
         }
 
@@ -83,20 +94,24 @@ class Vlan extends Graph {
 
     /**
      * The name of a graph (e.g. member name, IXP name, etc)
+     *
      * @return string
      */
-    public function name(): string {
-        return $this->vlan()->getName();
+    public function name(): string
+    {
+        return $this->vlan()->name;
     }
 
     /**
      * A unique identifier for this 'graph type'
      *
      * E.g. for an IXP, it might be ixpxxx where xxx is the database id
+     *
      * @return string
      */
-    public function identifier(): string {
-        return sprintf( "vlan%05d", $this->vlan()->getNumber() );
+    public function identifier(): string
+    {
+        return sprintf( "vlan%05d", $this->vlan()->number );
     }
 
     /**
@@ -108,18 +123,19 @@ class Vlan extends Graph {
      *
      * @return bool
      */
-    public function authorise(): bool {
+    public function authorise(): bool
+    {
         if( Auth::check() && Auth::user()->isSuperUser() ) {
             return $this->allow();
         }
 
-        if( $this->vlan()->getPrivate() ) {
+        if( $this->vlan()->private ) {
             // FIXME
             $this->deny();
             return false;
         }
 
-        if( is_numeric( config( 'grapher.access.vlan' ) ) && config( 'grapher.access.vlan' ) == UserEntity::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.vlan' ) ) && config( 'grapher.access.vlan' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 
@@ -137,9 +153,10 @@ class Vlan extends Graph {
      * @param array $overrides Allow standard parameters to be overridden (e.g. category)
      * @return string
      */
-    public function url( array $overrides = [] ): string {
+    public function url( array $overrides = [] ): string
+    {
         return parent::url( $overrides ) . sprintf("&id=%d",
-            isset( $overrides['id']   ) ? $overrides['id']   : $this->vlan()->getId()
+                $overrides[ 'id' ] ?? $this->vlan()->id
         );
     }
 
@@ -150,12 +167,12 @@ class Vlan extends Graph {
      *
      * @return array $params
      */
-    public function getParamsAsArray(): array {
+    public function getParamsAsArray(): array
+    {
         $p = parent::getParamsAsArray();
-        $p['id'] = $this->vlan()->getId();
+        $p['id'] = $this->vlan()->id;
         return $p;
     }
-
 
     /**
      * Process user input for the parameter: vlan
@@ -163,15 +180,11 @@ class Vlan extends Graph {
      * Does a abort(404) if invalid
      *
      * @param int $v The user input value
-     * @return VlanEntity The verified / sanitised / default value
+     *
+     * @return VlanModel The verified / sanitised / default value
      */
-    public static function processParameterVlan( int $v ): VlanEntity {
-        $vlan = null;
-        if( !$v || !( $vlan = d2r( 'Vlan' )->find( $v ) ) ) {
-            abort(404);
-        }
-        return $vlan;
+    public static function processParameterVlan( int $v ): VlanModel
+    {
+        return VlanModel::findOrFail( $v );
     }
-
-
 }

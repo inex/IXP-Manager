@@ -1,7 +1,9 @@
-<?php namespace IXP\Services\Grapher\Backend;
+<?php
+
+namespace IXP\Services\Grapher\Backend;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,21 +23,20 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
-use D2EM, View;
+use View;
 
-use Entities\{
-    Vlan          as VlanEntity,
-    VlanInterface as VlanInterfaceEntity
-};
+use IXP\Models\Vlan;
+use IXP\Models\VlanInterface;
 
 use Illuminate\Support\Facades\View as FacadeView;
 
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
-use IXP\Services\Grapher\Backend as GrapherBackend;
 
-use IXP\Services\Grapher\Graph\Latency as LatencyGraph;
-
-use IXP\Services\Grapher\Graph;
+use IXP\Services\Grapher\{
+    Graph,
+    Backend as GrapherBackend,
+    Graph\Latency as LatencyGraph,
+};
 
 use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
 
@@ -45,17 +46,18 @@ use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Smokeping extends GrapherBackend implements GrapherBackendContract {
-
+class Smokeping extends GrapherBackend implements GrapherBackendContract
+{
     /**
      * {@inheritDoc}
      *
      * @return string
      */
-    public function name(): string {
+    public function name(): string
+    {
         return 'smokeping';
     }
 
@@ -66,7 +68,8 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      *
      * @return bool
      */
-    public function isConfigurationRequired(): bool {
+    public function isConfigurationRequired(): bool
+    {
         return true;
     }
 
@@ -74,9 +77,11 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      * This function indicates whether this graphing engine supports single monolithic text
      *
      * @see \IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     *
      * @return bool
      */
-    public function isMonolithicConfigurationSupported(): bool {
+    public function isMonolithicConfigurationSupported(): bool
+    {
         return true;
     }
 
@@ -84,9 +89,11 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      * This function indicates whether this graphing engine supports multiple files to a directory
      *
      * @see \IXP\Contracts\Grapher::isMonolithicConfigurationSupported() for an explanation
+     *
      * @return bool
      */
-    public function isMultiFileConfigurationSupported(): bool {
+    public function isMultiFileConfigurationSupported(): bool
+    {
         return false;
     }
 
@@ -97,18 +104,16 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      *
      * @param int   $type     The type of configuration to generate
      * @param array $options
+     *
      * @return array
      */
     public function generateConfiguration( int $type = self::GENERATED_CONFIG_TYPE_MONOLITHIC, array $options = [] ): array
     {
 
-        /** @var VlanEntity $v */
-        if( !isset( $options['vlanid'] ) || !( $v = D2EM::getRepository( VlanEntity::class )->find( $options['vlanid'] ) ) ){
-            return abort( 404, 'No "vlanid" paramater provided or unknown VLAN' );
-        }
+        $v = Vlan::findOrFail( $options[ 'vlanid' ] ?? null );
 
-        if( !isset( $options['protocol'] ) || !in_array( $options['protocol'], Graph::PROTOCOLS_REAL ) ) {
-            return abort( 404, 'No "protocol" parameter provided or unknown protocol' );
+        if( !in_array( $options[ 'protocol' ] ?? null , Graph::PROTOCOLS_REAL, false ) ) {
+            abort( 404, 'No "protocol" parameter provided or unknown protocol' );
         }
 
         if( !isset( $options['template'] ) ) {
@@ -124,11 +129,12 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
         if( isset( $options['probe'] ) ) {
             $probe = $options['probe'];
         } else {
-            $probe = 'FPing' . ( $options['protocol'] == Graph::PROTOCOL_IPV4 ? '' : '6' );
+            $probe = 'FPing' . ( $options['protocol'] === Graph::PROTOCOL_IPV4 ? '' : '6' );
         }
 
         // try and reorder the VLIs into alphabetical order of customer names
-        $vlis = D2EM::getRepository( VlanInterfaceEntity::class )->getForProto( $v, $options['protocol'] == Graph::PROTOCOL_IPV4 ? 4 : 6 );
+        $vlis = VlanInterface::getForProto( $v, $options['protocol'] === Graph::PROTOCOL_IPV4 ? 4 : 6 );
+
         $orderedVlis = [];
         foreach( $vlis as $vli ) {
             $orderedVlis[ $vli['cname'] . '::' . $vli['vliid'] ] = $vli;
@@ -140,12 +146,11 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
                 'vlan'     => $v,
                 'vlis'     => $orderedVlis,
                 'probe'    => $probe,
-                'level'    => isset( $options['level'] ) ? $options['level'] : '+++',
-                'protocol' => $options['protocol'] == Graph::PROTOCOL_IPV4 ? 4 : 6,
+                'level'    => $options[ 'level' ] ?? '+++',
+                'protocol' => $options['protocol'] === Graph::PROTOCOL_IPV4 ? 4 : 6,
             ] )->render()
         ];
     }
-
 
     /**
      * Get a complete list of functionality that this backend supports.
@@ -154,8 +159,8 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      *
      * @return array
      */
-    public static function supports(): array {
-
+    public static function supports(): array
+    {
         return [
             'latency' => [
                 'protocols'   => Graph::PROTOCOLS_REAL,
@@ -164,19 +169,18 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
                 'types'       => [ Graph::TYPE_PNG => Graph::TYPE_PNG ],
             ],
         ];
-
     }
-
 
     /**
      * Get the data points for a given graph
      *
      * {inheritDoc}
      *
-     * @param \IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      * @return array
      */
-    public function data( Graph $graph ): array {
+    public function data( Graph $graph ): array
+    {
         return [];
     }
 
@@ -191,7 +195,8 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      *
      * @throws
      */
-    public function png( Graph $graph ): string {
+    public function png( Graph $graph ): string
+    {
         return @file_get_contents( $this->resolveFilePath( $graph ) );
     }
 
@@ -201,10 +206,13 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      * {inheritDoc}
      *
      * @param Graph $graph
+     *
      * @return string Path or empty string
-     * @throws CannotHandleRequestException
+     *
+     * @throws
      */
-    public function dataPath( Graph $graph ): string {
+    public function dataPath( Graph $graph ): string
+    {
         return $this->resolveFilePath( $graph );
     }
 
@@ -217,10 +225,10 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      *
      * @return string
      */
-    public function rrd( Graph $graph ): string {
+    public function rrd( Graph $graph ): string
+    {
         return '';
     }
-
 
     /**
      * Function to decide what URL Smokeping should be reached via.
@@ -233,14 +241,16 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      * @see https://docs.ixpmanager.org/grapher/smokeping/
      *
      * @param LatencyGraph $graph
+     *
      * @return string
      */
-    private function resolveGraphURL( LatencyGraph $graph ): string {
+    private function resolveGraphURL( LatencyGraph $graph ): string
+    {
         // does an override exist?
         $urls = config( 'grapher.backends.smokeping.overrides.per_vlan_urls', [] );
 
-        if( isset( $urls[ $graph->vli()->getVlan()->getId() ] ) ) {
-            return $urls[ $graph->vli()->getVlan()->getId() ];
+        if( isset( $urls[ $graph->vli()->vlan->id ] ) ) {
+            return $urls[ $graph->vli()->vlan->id ];
         }
 
         return config('grapher.backends.smokeping.url');
@@ -256,22 +266,17 @@ class Smokeping extends GrapherBackend implements GrapherBackendContract {
      *
      * @throws
      */
-    private function resolveFilePath( Graph $graph ): string {
-
+    private function resolveFilePath( Graph $graph ): string
+    {
         switch( $graph->classType() ) {
-
             case 'Latency':
                 /** @var LatencyGraph $graph  */
                 return sprintf( "%s/?displaymode=a;start=now-%s;end=now;target=infra_%s.vlan_%s.vlanint_%s_%s", $this->resolveGraphURL( $graph ),
-                    $graph->period(), $graph->vli()->getVirtualInterface()->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getInfrastructure()->getId(),
-                    $graph->vli()->getVlan()->getId(),  $graph->vli()->getId(), $graph->protocol()  );
+                    $graph->period(), $graph->vli()->virtualInterface->physicalInterfaces()->first()->switchPort->switcher->infrastructure,
+                    $graph->vli()->vlan->id,  $graph->vli()->id, $graph->protocol()  );
                 break;
-
             default:
                 throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$graph->type()}" );
         }
     }
-
-
-
 }

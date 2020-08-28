@@ -1,7 +1,9 @@
-<?php namespace IXP\Services\Grapher\Graph;
+<?php
+
+namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,11 +22,10 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Auth, D2EM, Log;
 
 use IXP\Services\Grapher;
-use IXP\Services\Grapher\{
-    Graph
-};
+use IXP\Services\Grapher\Graph;
 
 use IXP\Exceptions\Services\Grapher\{
     ParameterException
@@ -35,7 +36,10 @@ use Entities\{
     VlanInterface as VlanInterfaceEntity
 };
 
-use Auth, D2EM, Log;
+use IXP\Models\{
+    VlanInterface as VlanInterfaceModel,
+    User
+};
 
 use Illuminate\Auth\Access\AuthorizationException;
 
@@ -47,48 +51,47 @@ use Illuminate\Auth\Access\AuthorizationException;
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Latency extends Graph {
-
-
+class Latency extends Graph
+{
     /**
      * VLAN interface to graph
-     * @var VlanInterfaceEntity
+     *
+     * @var VlanInterfaceModel
      */
     private $vli = null;
-
 
     /**
      * Period of three hours for graphs
      */
-    const PERIOD_3HOURS   = '3hours';
+    public const PERIOD_3HOURS   = '3hours';
 
     /**
      * Period of thirty hours for graphs
      */
-    const PERIOD_30HOURS  = '30hours';
+    public const PERIOD_30HOURS  = '30hours';
 
     /**
      * Period of ten days for graphs
      */
-    const PERIOD_10DAYS = '10days';
+    public const PERIOD_10DAYS = '10days';
 
     /**
      * Period of one year for graphs
      */
-    const PERIOD_1YEAR  = '1year';
+    public const PERIOD_1YEAR  = '1year';
 
     /**
      * Default period
      */
-    const PERIOD_DEFAULT  = self::PERIOD_3HOURS;
+    public const PERIOD_DEFAULT  = self::PERIOD_3HOURS;
 
     /**
      * Array of valid periods for drill down graphs
      */
-    const PERIODS = [
+    public const PERIODS = [
         self::PERIOD_3HOURS     => "3hours",
         self::PERIOD_30HOURS    => "30hours",
         self::PERIOD_10DAYS     => "10days",
@@ -98,7 +101,7 @@ class Latency extends Graph {
     /**
      * Array of valid periods for drill down graphs - descriptions
      */
-    const PERIODS_DESC = [
+    public const PERIODS_DESC = [
         self::PERIOD_3HOURS     => "3 hours",
         self::PERIOD_30HOURS    => "30 hours",
         self::PERIOD_10DAYS     => "10 days",
@@ -108,16 +111,18 @@ class Latency extends Graph {
     /**
      * Default protocol for graphs
      */
-    const PROTOCOL_DEFAULT = self::PROTOCOL_IPV4;
-
+    public const PROTOCOL_DEFAULT = self::PROTOCOL_IPV4;
 
     /**
      * Constructor
-     * @param  Grapher $grapher
-     * @param VlanInterfaceEntity $vli
+     *
+     * @param   Grapher             $grapher
+     * @param   VlanInterfaceModel  $vli
+     *
      * @throws ParameterException
      */
-    public function __construct( Grapher $grapher, VlanInterfaceEntity $vli ) {
+    public function __construct( Grapher $grapher, VlanInterfaceModel $vli )
+    {
         parent::__construct( $grapher );
         $this->vli = $vli;
         $this->setPeriod( self::PERIOD_3HOURS );
@@ -126,12 +131,15 @@ class Latency extends Graph {
 
     /**
      * Set the period we should use
+     *
      * @param string $v
+     *
      * @return Graph Fluid interface
+     *
      * @throws ParameterException
      */
-    public function setPeriod( string $v ): Graph {
-
+    public function setPeriod( string $v ): Graph
+    {
         if( !isset( self::PERIODS[ $v ] ) ) {
             throw new ParameterException('Invalid period ' . $v );
         }
@@ -147,30 +155,37 @@ class Latency extends Graph {
 
     /**
      * Get the period description for a given period identifier
+     *
      * @param string $period
+     *
      * @return string
      */
-    public static function resolvePeriod( $period = null ): string {
+    public static function resolvePeriod( $period = null ): string
+    {
         return self::PERIODS[ $period ] ?? 'Unknown';
     }
 
     /**
      * Get the vlan interface we're meant to graph for latency
-     * @return VlanInterfaceEntity
+     *
+     * @return VlanInterfaceModel
      */
-    public function vli(): VlanInterfaceEntity {
+    public function vli(): VlanInterfaceModel
+    {
         return $this->vli;
     }
 
     /**
-     * The name of a graph (e.g. member name, IXP name, etc)
+     * The name of a graph (e.g. member name, IXP name, etc
+     *
      * @return string
      */
-    public function name(): string {
+    public function name(): string
+    {
         return sprintf( "Latency Graph :: %s :: %s :: %s",
-            $this->vli()->getVlan()->getName(),
-            $this->vli()->getVirtualInterface()->getCustomer()->getAbbreviatedName(),
-            $this->protocol() == self::PROTOCOL_IPV4 ? $this->vli()->getIPv4Address()->getAddress() : $this->vli()->getIPv6Address()->getAddress()
+            $this->vli()->vlan->name,
+            $this->vli()->virtualInterface->customer->abbreviatedName,
+            $this->protocol() === self::PROTOCOL_IPV4 ? $this->vli()->ipv4address->address : $this->vli()->ipv6address->address
         );
     }
 
@@ -178,31 +193,31 @@ class Latency extends Graph {
      * A unique identifier for this 'graph type'
      *
      * E.g. for an IXP, it might be ixpxxx where xxx is the database id
+     *
      * @return string
      */
-    public function identifier(): string {
-        return sprintf( "latency-vli%d-%s", $this->vli()->getId(), $this->protocol() );
+    public function identifier(): string
+    {
+        return sprintf( "latency-vli%d-%s", $this->vli()->id, $this->protocol() );
     }
-
 
     /**
      * Utility function to determine if the currently logged in user can access 'all customer's latency' graphs
      *
      * @return bool
      */
-    public static function authorisedForAllCustomers(): bool {
+    public static function authorisedForAllCustomers(): bool
+    {
         if( Auth::check() && Auth::user()->isSuperUser() ) {
             return true;
         }
 
-        if( !Auth::check() && is_numeric( config( 'grapher.access.latency' ) ) && config( 'grapher.access.latency' ) == UserEntity::AUTH_PUBLIC ) {
+        if( !Auth::check() && is_numeric( config( 'grapher.access.latency' ) ) && config( 'grapher.access.latency' ) === User::AUTH_PUBLIC ) {
             return true;
         }
 
         return Auth::check() && is_numeric( config( 'grapher.access.latency' ) ) && Auth::user()->getPrivs() >= config( 'grapher.access.latency' );
     }
-
-
 
     /**
      * This function controls access to the graph.
@@ -212,11 +227,11 @@ class Latency extends Graph {
      * For (public) vlan aggregate graphs we pretty much allow complete access.
      * @throws AuthorizationException
      */
-    public function authorise(): bool {
-
+    public function authorise(): bool
+    {
         // NB: see above authorisedForAllCustomers()
 
-        if( is_numeric( config( 'grapher.access.latency' ) ) && config( 'grapher.access.latency' ) == UserEntity::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.latency' ) ) && config( 'grapher.access.latency' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 
@@ -229,11 +244,11 @@ class Latency extends Graph {
             return $this->allow();
         }
 
-        if( Auth::user()->getCustomer()->getId() == $this->vli()->getVirtualInterface()->getCustomer()->getId() ) {
+        if( Auth::user()->getCustomer()->getId() === $this->vli()->virtualInterface->customer->id ) {
             return $this->allow();
         }
 
-        if( config( 'grapher.access.latency' ) != 'own_graphs_only'
+        if( config( 'grapher.access.latency' ) !== 'own_graphs_only'
             && is_numeric( config( 'grapher.access.latency' ) )
             && Auth::user()->getPrivs() >= config( 'grapher.access.latency' )
         ) {
@@ -241,7 +256,7 @@ class Latency extends Graph {
         }
 
         Log::notice( sprintf( "[Grapher] [Latency]: user %d::%s tried to access a latency graph for vli "
-                . "{$this->vli()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
+                . "{$this->vli()->id} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
         );
 
         $this->deny();
@@ -252,11 +267,13 @@ class Latency extends Graph {
      * Generate a URL to get this graphs 'file' of a given type
      *
      * @param array $overrides Allow standard parameters to be overridden (e.g. category)
+     *
      * @return string
      */
-    public function url( array $overrides = [] ): string {
+    public function url( array $overrides = [] ): string
+    {
         return parent::url( $overrides ) . sprintf("&id=%d",
-                isset( $overrides['id']   ) ? $overrides['id']   : $this->vli()->getId()
+                $overrides[ 'id' ] ?? $this->vli()->id
             );
     }
 
@@ -267,12 +284,12 @@ class Latency extends Graph {
      *
      * @return array $params
      */
-    public function getParamsAsArray(): array {
+    public function getParamsAsArray(): array
+    {
         $p = parent::getParamsAsArray();
-        $p['id'] = $this->vli()->getId();
+        $p['id'] = $this->vli()->id;
         return $p;
     }
-
 
     /**
      * Process user input for the parameter: vlanint
@@ -281,14 +298,10 @@ class Latency extends Graph {
      *
      * @param   int     $vliid  The user input value
      *
-     * @return  VlanInterfaceEntity
+     * @return  VlanInterfaceModel
      */
-    public static function processParameterVlanInterface( int $vliid ): VlanInterfaceEntity {
-        /** @var VlanInterfaceEntity $vli */
-        if( !$vliid || !( $vli = D2EM::getRepository( VlanInterfaceEntity::class )->find( $vliid ) ) ) {
-            abort(404);
-        }
-
-        return $vli;
+    public static function processParameterVlanInterface( int $vliid ): VlanInterfaceModel
+    {
+        return VlanInterfaceModel::findOrFail( $vliid );
     }
 }

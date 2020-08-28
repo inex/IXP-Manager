@@ -35,10 +35,5 @@
         <join-column name="cust_id" referenced-column-name="id" nullable="false" on-delete="CASCADE"/>
       </join-columns>
     </many-to-one>
-    <many-to-one field="IXP" target-entity="Entities\IXP" inversed-by="TrafficDaily">
-      <join-columns>
-        <join-column name="ixp_id" referenced-column-name="id" nullable="false"/>
-      </join-columns>
-    </many-to-one>
   </entity>
 </doctrine-mapping>

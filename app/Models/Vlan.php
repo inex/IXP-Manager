@@ -49,26 +49,27 @@ use stdClass;
  * @property-read int|null $routers_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\VlanInterface[] $vlanInterfaces
  * @property-read int|null $vlan_interfaces_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereConfigName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereInfrastructureid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan whereNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan wherePeeringManager($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan wherePeeringMatrix($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Vlan wherePrivate($value)
+ * @method static Builder|\IXP\Models\Vlan newModelQuery()
+ * @method static Builder|\IXP\Models\Vlan newQuery()
+ * @method static Builder|\IXP\Models\Vlan query()
+ * @method static Builder|\IXP\Models\Vlan whereConfigName($value)
+ * @method static Builder|\IXP\Models\Vlan whereId($value)
+ * @method static Builder|\IXP\Models\Vlan whereInfrastructureid($value)
+ * @method static Builder|\IXP\Models\Vlan whereName($value)
+ * @method static Builder|\IXP\Models\Vlan whereNotes($value)
+ * @method static Builder|\IXP\Models\Vlan whereNumber($value)
+ * @method static Builder|\IXP\Models\Vlan wherePeeringManager($value)
+ * @method static Builder|\IXP\Models\Vlan wherePeeringMatrix($value)
+ * @method static Builder|\IXP\Models\Vlan wherePrivate($value)
  * @mixin \Eloquent
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeserverfilters
  * @property-read int|null $routeserverfilters_count
+ * @method static Builder|\IXP\Models\Vlan filtered($type)
  */
 class Vlan extends Model
 {
-    const PRIVATE_NO  = 0;
-    const PRIVATE_YES = 1;
+    public const PRIVATE_NO  = 0;
+    public const PRIVATE_YES = 1;
 
     public static $PRIVATE_YES_NO = array(
         self::PRIVATE_NO  => 'No',
@@ -80,21 +81,21 @@ class Vlan extends Model
      *
      * @var int Constant to represent normal and private VLANs
      */
-    const TYPE_ALL     = 0;
+    public const TYPE_ALL     = 0;
 
     /**
      * Constant to represent normal VLANs only
      *
      * @var int Constant to represent normal VLANs ony
      */
-    const TYPE_NORMAL  = 1;
+    public const TYPE_NORMAL  = 1;
 
     /**
      * Constant to represent private VLANs only
      *
      * @var int Constant to represent private VLANs ony
      */
-    const TYPE_PRIVATE = 2;
+    public const TYPE_PRIVATE = 2;
 
 
     /**
@@ -146,7 +147,7 @@ class Vlan extends Model
     /**
      * Get the ipv4addresses for the vlan
      */
-    public function ipv4addresses(): HasMany
+    public function ipv4Addresses(): HasMany
     {
         return $this->hasMany(IPv4Address::class, 'vlanid' );
     }
@@ -154,7 +155,7 @@ class Vlan extends Model
     /**
      * Get the ipv6addresses for the vlan
      */
-    public function ipv6addresses(): HasMany
+    public function ipv6Addresses(): HasMany
     {
         return $this->hasMany(IPv6Address::class, 'vlanid' );
     }
@@ -162,7 +163,7 @@ class Vlan extends Model
     /**
      * Get the route server filters for the cabinet
      */
-    public function routeserverfilters(): HasMany
+    public function routeServerFilters(): HasMany
     {
         return $this->hasMany(RouteServerFilter::class, 'vlan_id' );
     }
@@ -180,7 +181,7 @@ class Vlan extends Model
      *
      * @return Collection
      */
-    public static function getListForDropdown(): Collection
+    public static function getAsArray(): Collection
     {
         return self::orderBy( 'name', 'asc' )->get();
     }
@@ -316,5 +317,24 @@ class Vlan extends Model
             ->where( 'vlan.peering_manager',  true )
             ->where( 'vli.rsclient',  true )
             ->orderBy( 'vlan.name' )->get()->keyBy( 'id' )->toArray();
+    }
+
+    /**
+     * Scope a query to only include filtered vlan.
+     *
+     * @param Builder $query
+     * @param  int $type
+     *
+     * @return Builder
+     */
+    public function scopeFiltered($query, int $type ): Builder
+    {
+        if( $type === self::TYPE_PRIVATE ) {
+            $query->where('private', 1 );
+        } elseif( $type === self::TYPE_NORMAL ) {
+            $query->where('private', 0 );
+        }
+
+        return $query->orderBy( 'name' );
     }
 }

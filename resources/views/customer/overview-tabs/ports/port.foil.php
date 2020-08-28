@@ -334,7 +334,7 @@
                                             <span class="tw-font-mono"><?= $l2a ?></span><br />
                                         <?php endforeach; ?>
                                         <?php if( config( 'ixp_fe.layer2-addresses.customer_can_edit' ) ): ?>
-                                            <a href="<?= route( "layer2-address@forVlanInterface", [ "vliid" => $vli->getId() ] ) ?>">Edit</a>
+                                            <a href="<?= route( "layer2-address@forVlanInterface", [ "vli" => $vli->getId() ] ) ?>">Edit</a>
                                         <?php endif; ?>
                                     </td>
                                 </tr>
@@ -417,7 +417,7 @@
 
                 </div>
                 <div class="card-body">
-                    <?= $t->grapher->physint( $pi )->renderer()->boxLegacy() ?>
+                    <?= $t->grapher->physint( \IXP\Models\PhysicalInterface::find( $pi->getId() ) )->renderer()->boxLegacy() ?>
                 </div>
             </div>
         <?php endforeach; ?>

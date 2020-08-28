@@ -66,21 +66,21 @@
                 </a>
                 <div class="dropdown-menu" aria-labelledby="navbarDropdown">
 
-                    <a class="dropdown-item <?= !request()->is( 'statistics/ixp') ?: 'active' ?>" href="<?= route( 'statistics/ixp' ) ?>">
+                    <a class="dropdown-item <?= !request()->is( 'statistics/ixp') ?: 'active' ?>" href="<?= route( 'statistics@ixp' ) ?>">
                         Overall Peering Graphs
                     </a>
-                    <a class="dropdown-item <?= !request()->is( 'statistics/infrastructure') ?: 'active' ?>" href="<?= route( 'statistics/infrastructure' ) ?>">
+                    <a class="dropdown-item <?= !request()->is( 'statistics/infrastructure') ?: 'active' ?>" href="<?= route( 'statistics@infrastructure' ) ?>">
                         Infrastructure Graphs
                     </a>
 
                     <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'statistics/vlan') ?: 'active' ?>" href="<?= route( 'statistics/vlan' ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/vlan') ?: 'active' ?>" href="<?= route( 'statistics@vlan' ) ?>">
                             VLAN / Per-Protocol Graphs
                         </a>
                     <?php endif; ?>
 
                     <?php if( count( config( 'grapher.backends.mrtg.trunks' ) ?? [] ) ): ?>
-                        <a class="dropdown-item <?= !request()->is( 'statistics/trunk' ) ?: 'active' ?>" href="<?= route('statistics/trunk') ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/trunk' ) ?: 'active' ?>" href="<?= route('statistics@trunk') ?>">
                             Inter-Switch / PoP Graphs
                         </a>
                     <?php elseif( count( $cbs = d2r( 'CoreBundle' )->getActive() ) ): ?>
@@ -90,7 +90,7 @@
                     <?php endif; ?>
 
 
-                    <a class="dropdown-item <?= !request()->is( 'statistics/switch') ?: 'active' ?>" href="<?= route('statistics/switch') ?>">
+                    <a class="dropdown-item <?= !request()->is( 'statistics/switch') ?: 'active' ?>" href="<?= route('statistics@switch') ?>">
                         Switch Aggregate Graphs
                     </a>
 

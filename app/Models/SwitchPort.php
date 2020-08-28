@@ -215,6 +215,52 @@ class SwitchPort extends Model
     }
 
     /**
+     * Is this an unset port?
+     * @return boolean
+     */
+    public function isTypeUnset():bool
+    {
+        return $this->type === self::TYPE_UNSET;
+    }
+
+    /**
+     * Is this a peering port?
+     * @return boolean
+     */
+    public function isTypePeering(): bool
+    {
+        return $this->type === self::TYPE_PEERING;
+    }
+
+    /**
+     * Is this a reseller port?
+     * @return boolean
+     */
+    public function isTypeReseller(): bool
+    {
+        return $this->type === self::TYPE_RESELLER;
+    }
+
+    /**
+     * Is this a core port?
+     * @return boolean
+     */
+    public function isTypeCore(): bool
+    {
+        return $this->type === self::TYPE_CORE;
+    }
+
+    /**
+     * Is this a fanout port?
+     *
+     * @return boolean
+     */
+    public function isTypeFanout(): bool
+    {
+        return $this->getType() === self::TYPE_FANOUT;
+    }
+
+    /**
      * Gets a listing of switche ports or a single one if an ID is provided
      *
      * @param stdClass $feParams

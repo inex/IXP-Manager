@@ -4,6 +4,7 @@ namespace IXP\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 
 /**
  * IXP\Models\IPv6Address
@@ -19,6 +20,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv6Address whereId($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IPv6Address whereVlanid($value)
  * @mixin \Eloquent
+ * @property-read \IXP\Models\VlanInterface|null $vlaninterface
  */
 class IPv6Address extends Model
 {
@@ -42,5 +44,13 @@ class IPv6Address extends Model
     public function vlan(): BelongsTo
     {
         return $this->belongsTo(Vlan::class, 'vlanid' );
+    }
+
+    /**
+     * Get the vlan interface associated with the ipv6.
+     */
+    public function vlaninterface(): HasOne
+    {
+        return $this->hasOne(VlanInterface::class, 'ipv6addressid' );
     }
 }

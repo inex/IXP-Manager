@@ -20,28 +20,29 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Log, View;
 
 use IXP\Contracts\Grapher\Backend as GrapherBackendContract;
+
+use IXP\Models\{
+    Customer,
+    Infrastructure,
+    PhysicalInterface,
+    SwitchPort
+};
+
 use IXP\Services\Grapher\Backend as GrapherBackend;
 use IXP\Services\Grapher\Graph;
 
 use IXP\Exceptions\Services\Grapher\CannotHandleRequestException;
 use IXP\Exceptions\Utils\Grapher\FileError as FileErrorException;
 
-use Entities\{
-    IXP                     as IXPEntity,
-    PhysicalInterface       as PhysicalInterfaceEntity,
-    SwitchPort              as SwitchPortEntity,
-    Switcher                as SwitcherEntity,
-    VirtualInterface        as VirtualInterfaceEntity
-};
-
 use IXP\Utils\Grapher\{
     Mrtg as MrtgFile,
     Rrd  as RrdUtil
 };
 
-use D2EM, View,Log;
+
 
 /**
  * Grapher Backend -> Mrtg
@@ -108,8 +109,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
     {
         return [
             View::make( 'services.grapher.mrtg.monolithic', [
-                    'ixp'        => D2EM::getRepository( IXPEntity::class )->getDefault(),
-                    'data'       => $this->getPeeringPorts( D2EM::getRepository( IXPEntity::class )->getDefault() ),
+                    'data'       => $this->getPeeringPorts(),
                     'snmppasswd' => config('grapher.backends.mrtg.snmppasswd'),
                 ]
             )->render(),
@@ -134,11 +134,9 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * * array `['infraports']` indexed by Infrastructure ID conataining the PhysicalInterfaceEntity IDs of peering ports
      * * array `['ixpports']` conataining the PhysicalInterfaceEntity IDs of peering ports
      *
-     *
-     * @param IXPEntity $ixp The IXP to generate the config for (multi-IXP mode)
      * @return array
      */
-    public function getPeeringPorts( IXPEntity $ixp ): array {
+    public function getPeeringPorts(): array {
         $data = [];
         $data['ixpports']            = [];
         $data['ixpports_maxbytes']   = 0;
@@ -159,104 +157,96 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
         // we need to wrap switch ports in physical interfaces for switch aggregates and, as such, we need to use unused physical interface IDs
         $maxPiID = 0;
 
-        foreach( $ixp->getCustomers() as $c ) {
-
-            foreach( $c->getVirtualInterfaces() as $vi ) {
-                /** @var VirtualInterfaceEntity $vi*/
+        foreach( Customer::all() as $c ) {
+            foreach( $c->virtualInterfaces as $vi ) {
                 // we do not include core bundle interfaces here
                 if( $vi->getCoreBundle() !== false ) {
                     continue;
                 }
 
-                foreach( $vi->getPhysicalInterfaces() as $pi ) {
-
-                    if( $pi->getId() > $maxPiID ) {
-                        $maxPiID = $pi->getId();
+                foreach( $vi->physicalInterfaces as $pi ) {
+                    if( $pi->id > $maxPiID ) {
+                        $maxPiID = $pi->id;
                     }
 
-                    // we're not multi-ixp in v4 but we'll catch non-relavent ports here
-                    if( $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getIXP()->getId() != $ixp->getId() ) {
-                        break 2;
-                    }
-
-                    if( !$pi->statusIsConnectedOrQuarantine() || !$pi->getSwitchPort()->getSwitcher()->getActive() ) {
+                    if( !$pi->statusIsConnectedOrQuarantine() || !$pi->switchPort->switcher->active ) {
                         continue;
                     }
 
-                    $data['pis'][$pi->getId()] = $pi;
+                    $data[ 'pis' ][ $pi->id ] = $pi;
 
-                    if( !isset( $data['custs'][ $c->getId() ] ) ) {
-                            $data['custs'][ $c->getId() ] = $c;
+                    if( !isset( $data[ 'custs' ][ $c->id ] ) ) {
+                            $data[ 'custs' ][ $c->id ] = $c;
                     }
 
-                    if( !isset( $data['sws'][ $pi->getSwitchPort()->getSwitcher()->getId() ] ) ) {
-                        $data['sws'][$pi->getSwitchPort()->getSwitcher()->getId() ] = $pi->getSwitchPort()->getSwitcher();
-                        $data['swports_maxbytes'][ $pi->getSwitchPort()->getSwitcher()->getId() ] = 0;
+                    if( !isset( $data['sws'][ $pi->switchPort->switcher->id ] ) ) {
+                        $s = $pi->switchPort->switcher;
+                        $data['sws'][ $s->id ] = $s;
+                        $data['swports_maxbytes'][ $s->id ] = 0;
                     }
 
-                    if( !isset( $data['infras'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ] ) ) {
-                        $data['infras'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ] = $pi->getSwitchPort()->getSwitcher()->getInfrastructure();
-                        $data['infraports_maxbytes'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ] = 0;
+                    if( !isset( $data['infras'][ $pi->switchPort->switcher->infrastructure->id ] ) ) {
+                        $i = $pi->switchPort->switcher->infrastructure;
+                        $data['infras'][ $i->id ] = $i;
+                        $data['infraports_maxbytes'][ $i->id ] = 0;
                     }
 
-                    $data['custports'][$c->getId()][] = $pi->getId();
+                    $data[ 'custports' ][ $c->id ][] = $pi->id;
 
-                    if( count( $vi->getPhysicalInterfaces() ) > 1 ) {
-                        $data['custlags'][$c->getId()][$vi->getId()][] = $pi->getId();
+                    if( $vi->physicalInterfaces->count() ) {
+                        $data[ 'custlags' ][ $c->id ][ $vi->id ][] = $pi->id;
                     }
 
-                    $data['swports'][ $pi->getSwitchPort()->getSwitcher()->getId() ][] = $pi->getId();
-                    $data['infraports'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ][] = $pi->getId();
-                    $data['ixpports'][] = $pi->getId();
+                    $data['swports'][ $pi->switchPort->switcher->id ][] = $pi->id;
+                    $data['infraports'][ $pi->switchPort->switcher->infrastructure->id ][] = $pi->id;
+                    $data['ixpports'][] = $pi->id;
 
                     $maxbytes = $pi->resolveDetectedSpeed() * 1000000 / 8; // Mbps * bps / to bytes
-                    $data['swports_maxbytes'   ][ $pi->getSwitchPort()->getSwitcher()->getId() ] += $maxbytes;
-                    $data['infraports_maxbytes'][ $pi->getSwitchPort()->getSwitcher()->getInfrastructure()->getId() ] += $maxbytes;
+                    $switcher = $pi->switchPort->switcher;
+                    $data['swports_maxbytes'   ][ $switcher->id ] += $maxbytes;
+                    $data['infraports_maxbytes'][ $switcher->infrastructure->id ] += $maxbytes;
                     $data['ixpports_maxbytes'] += $maxbytes;
                 }
             }
         }
 
         // core bundles
-        foreach( $ixp->getInfrastructures() as $infra ) {
-            foreach( $infra->getSwitchers() as $switch ) {
-                /** @var SwitcherEntity $switch */
-
-                if( !$switch->getActive() ) {
+        foreach( Infrastructure::all() as $infra ) {
+            foreach( $infra->switchers as $switch ) {
+                if( !$switch->active ) {
                     continue;
                 }
 
-                if( !isset( $data['sws'][ $switch->getId() ] ) ) {
-                    $data['sws'][$switch->getId() ] = $switch;
+                if( !isset( $data['sws'][ $switch->id ] ) ) {
+                    $data['sws'][$switch->id ] = $switch;
                 }
 
                 // Handle Core Bundles
                 foreach( $switch->getCoreBundles() as $cb ) {
                     // because we iterate through each switch, we see each $cb twice
-                    if( isset( $data['cbs'][ $cb->getId() ] ) ) {
+                    if( isset( $data['cbs'][ $cb->id ] ) ) {
                         continue;
                     }
 
-                    $data['cbs'][ $cb->getId() ] = $cb;
+                    $data['cbs'][ $cb->id ] = $cb;
 
-                    foreach( $cb->getCoreLinks() as $cl ) {
+                    foreach( $cb->corelinks as $cl ) {
                         foreach( [ 'sidea', 'sideb' ] as $side ) {
-
                             $pi = ( $side === 'sidea' ) ?
-                                $cl->getCoreInterfaceSideA()->getPhysicalInterface()
-                                : $cl->getCoreInterfaceSideB()->getPhysicalInterface();
+                                $cl->coreinterfacesidea->physicalinterface
+                                : $cl->coreinterfacesideb->physicalinterface;
 
-                            $data['cbports'][$cb->getId()][$cl->getId()][$side] = $pi->getId();
+                            $data[ 'cbports' ][ $cb->id ][ $cl->id ][ $side ] = $pi->id;
 
-                            if( !isset( $data['pis'][$pi->getId()] ) ) {
-                                $data['pis'][$pi->getId()] = $pi;
+                            if( !isset( $data[ 'pis' ][ $pi->id ] ) ) {
+                                $data[ 'pis' ][ $pi->id ] = $pi;
                             }
 
-                            if( $pi->getId() > $maxPiID ) {
-                                $maxPiID = $pi->getId();
+                            if( $pi->id > $maxPiID ) {
+                                $maxPiID = $pi->id;
                             }
 
-                            $data['cbbundles'][$cb->getId()][$side][] = $pi->getId();
+                            $data[ 'cbbundles' ][ $cb->id ][ $side ][] = $pi->id;
                         }
                     }
                 }
@@ -265,22 +255,20 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
 
         // include core switch ports.
         // This is a slight hack as the template requires PhysicalInterfaces so we wrap core SwitchPorts in temporary PhyInts.
-        foreach( $ixp->getInfrastructures() as $infra ) {
-            foreach( $infra->getSwitchers() as $switch ) {
-                /** @var SwitcherEntity $switch */
-                foreach( $switch->getPorts() as $sp ) {
-                    /** @var SwitchPortEntity $sp */
+        foreach( Infrastructure::all() as $infra ) {
+            foreach( $infra->switchers as $switch ) {
+                foreach( $switch->switchPorts as $sp ) {
                     if( $sp->isTypeCore() ) {
                         // this needs to be wrapped in a physical interface for the template
                         $pi = $this->wrapSwitchPortInPhysicalInterface( $sp, ++$maxPiID );
-                        $data[ 'pis' ][ $pi->getId() ] = $pi;
-                        $data[ 'swports' ][ $switch->getId() ][] = $pi->getId();
+                        $data[ 'pis' ][ $pi->id ] = $pi;
+                        $data[ 'swports' ][ $switch->id ][] = $pi->id;
 
-                        if( !isset( $data[ 'swports_maxbytes' ][ $switch->getId() ] ) ) {
-                            $data[ 'swports_maxbytes' ][ $switch->getId() ] = 0;
+                        if( !isset( $data[ 'swports_maxbytes' ][ $switch->id ] ) ) {
+                            $data[ 'swports_maxbytes' ][ $switch->id ] = 0;
                         }
 
-                        $data[ 'swports_maxbytes' ][ $switch->getId() ] += ( ( $pi->resolveDetectedSpeed() > 0 ) ? $pi->resolveDetectedSpeed() : 1 ) * 1000000 / 8;
+                        $data[ 'swports_maxbytes' ][ $switch->id ] += ( ( $pi->resolveDetectedSpeed() > 0 ) ? $pi->resolveDetectedSpeed() : 1 ) * 1000000 / 8;
                     }
                 }
             }
@@ -291,20 +279,22 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
     }
 
     /**
-     * Wrap a switchport in a temporary PhysicalInterface.
+     * Wrap a switch port in a temporary PhysicalInterface.
      *
      * @see getPeeringPorts() for usage
      *
-     * @param SwitchPortEntity $sp
-     * @param int $id The ID to set in the physical interface
+     * @param SwitchPort    $sp
+     * @param int           $id The ID to set in the physical interface
      *
-     * @return PhysicalInterfaceEntity
+     * @return PhysicalInterface
      */
-    public function wrapSwitchPortInPhysicalInterface( SwitchPortEntity $sp, int $id ): PhysicalInterfaceEntity {
-        $pi = new PhysicalInterfaceEntity;
-        $pi->setId( $id );
-        $pi->setSwitchPort($sp);
-        $pi->setSpeed( $sp->getIfHighSpeed() );
+    public function wrapSwitchPortInPhysicalInterface( SwitchPort $sp, int $id ): PhysicalInterface
+    {
+        $pi = new PhysicalInterface;
+        $pi->id = $id;
+        $pi->switchportid = $sp->id;
+        $pi->speed = $sp->ifHighSpeed;
+        $pi->save();
         return $pi;
     }
 
@@ -316,7 +306,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * @return array
      */
     public static function supports(): array {
-        $rrd = config('grapher.backends.mrtg.dbtype') == 'rrd';
+        $rrd = config('grapher.backends.mrtg.dbtype') === 'rrd';
 
         $graphTypes = Graph::TYPES;
         unset( $graphTypes[ Graph::TYPE_RRD ] );
@@ -387,15 +377,16 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * @throws
      */
-    public function data( Graph $graph ): array {
+    public function data( Graph $graph ): array
+    {
         try {
-            if( config('grapher.backends.mrtg.dbtype') == 'log' ) {
+            if( config('grapher.backends.mrtg.dbtype') === 'log' ) {
                 $mrtg = new MrtgFile( $this->resolveFilePath( $graph, 'log' ) );
                 return $mrtg->data( $graph );
-            } else {
-                $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
-                return $rrd->data();
             }
+
+            $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
+            return $rrd->data();
         } catch( FileErrorException $e ) {
             Log::notice("[Grapher] {$this->name()} data(): could not load file {$this->resolveFilePath( $graph, config('grapher.backends.mrtg.dbtype') )}");
             return [];
@@ -413,20 +404,20 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * @throws
      */
-    public function png( Graph $graph ): string {
-
+    public function png( Graph $graph ): string
+    {
         try {
-            if( config('grapher.backends.mrtg.dbtype') == 'log' ) {
+            if( config('grapher.backends.mrtg.dbtype') === 'log' ) {
                 if( ( $img = @file_get_contents( $this->resolveFilePath( $graph, 'png' ) ) ) === false ) {
                     // couldn't load the image so return a placeholder
                     Log::notice( "[Grapher] {$this->name()} png(): could not load file {$this->resolveFilePath( $graph, 'png' )}" );
                     return @file_get_contents( public_path() . "/images/image-missing.png" );
                 }
                 return $img;
-            } else {
-                $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
-                return @file_get_contents( $rrd->png() );
             }
+
+            $rrd = new RrdUtil( $this->resolveFilePath( $graph, 'rrd' ), $graph );
+            return @file_get_contents( $rrd->png() );
         } catch( FileErrorException $e ) {
             Log::notice("[Grapher] {$this->name()} png(): could not load rrd file " . ( isset( $rrd ) ? $rrd->file() : '???' ) );
             return false; // FIXME check handling of this
@@ -444,13 +435,14 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * @throws
      */
-    public function rrd( Graph $graph ): string {
+    public function rrd( Graph $graph ): string
+    {
         try {
-            if( config('grapher.backends.mrtg.dbtype') == 'log' ) {
+            if( config('grapher.backends.mrtg.dbtype') === 'log' ) {
                 return '';
-            } else {
-                return file_get_contents( $this->resolveFilePath( $graph, 'rrd' ) );
             }
+
+            return file_get_contents( $this->resolveFilePath( $graph, 'rrd' ) );
         } catch( FileErrorException $e ) {
             Log::notice("[Grapher] {$this->name()} rrd(): could not load file {$this->resolveFilePath( $graph, 'rrd' )}");
             return '';
@@ -463,16 +455,19 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      * {inheritDoc}
      *
      * @param Graph $graph
+     *
      * @return string Path or empty string
-     * @throws CannotHandleRequestException
+     *
+     * @throws
      */
-    public function dataPath( Graph $graph ): string {
+    public function dataPath( Graph $graph ): string
+    {
         try {
-            if( config( 'grapher.backends.mrtg.dbtype' ) == 'log' ) {
+            if( config( 'grapher.backends.mrtg.dbtype' ) === 'log' ) {
                 return $this->resolveFilePath( $graph, 'log' );
-            } else {
-                return $this->resolveFilePath( $graph, 'rrd' );
             }
+
+            return $this->resolveFilePath( $graph, 'rrd' );
         } catch( CannotHandleRequestException $e ) {
             return '';
         }
@@ -486,7 +481,8 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * @return string shared path -> e.g. 18 -> 18 % 16 = 2 / 00016 -> 2/00016
      */
-    private function shardMemberDir( int $id ): string {
+    private function shardMemberDir( int $id ): string
+    {
         return sprintf( "%x/%05d", $id % 16, $id );
     }
 
@@ -501,29 +497,30 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
      *
      * @throws
      */
-    public function resolveFilePath( Graph $graph, string $type ): string {
+    public function resolveFilePath( Graph $graph, string $type ): string
+    {
         $config = config('grapher.backends.mrtg');
 
-        $loggyType = $type == 'rrd' || $type == 'log';
+        $loggyType = $type === 'rrd' || $type === 'log';
 
         switch( $graph->classType() ) {
             case 'IXP':
                 /** @var Graph\IXP $graph */
-                return sprintf( "%s/ixp/ixp%03d-%s%s.%s", $config['logdir'], $graph->ixp()->getId(),
+                return sprintf( "%s/ixp/ixp%03d-%s%s.%s", $config[ 'logdir' ], 1,
                     $graph->category(), $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'Infrastructure':
                 /** @var Graph\Infrastructure $graph */
                 return sprintf( "%s/infras/%03d/ixp%03d-infra%03d-%s%s.%s", $config['logdir'],
-                    $graph->infrastructure()->getId(), $graph->infrastructure()->getIXP()->getId(),
-                    $graph->infrastructure()->getId(), $graph->category(), $loggyType ? '' : "-{$graph->period()}", $type );
+                    $graph->infrastructure()->id, 1,
+                    $graph->infrastructure()->id, $graph->category(), $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
 
             case 'Switcher':
                 /** @var Graph\Switcher $graph */
                 return sprintf( "%s/switches/%03d/switch-aggregate-%05d-%s%s.%s", $config['logdir'],
-                    $graph->switch()->getId(), $graph->switch()->getId(),
+                    $graph->switch()->id, $graph->switch()->id,
                     $graph->category(), $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
 
@@ -536,7 +533,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
             case 'CoreBundle':
                 /** @var Graph\CoreBundle $graph */
                 return sprintf( "%s/corebundles/%05d/%s-%s%s.%s", $config['logdir'],
-                    $graph->coreBundle()->getId(),
+                    $graph->coreBundle()->id,
                     $graph->identifier(), $graph->category(),
                     $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
@@ -544,7 +541,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
             case 'PhysicalInterface':
                 /** @var Graph\PhysicalInterface $graph */
                 return sprintf( "%s/members/%s/ints/%s-%s%s.%s", $config['logdir'],
-                    $this->shardMemberDir( $graph->physicalInterface()->getVirtualInterface()->getCustomer()->getId() ),
+                    $this->shardMemberDir( $graph->physicalInterface()->virtualInterface->customer->id ),
                     $graph->identifier(), $graph->category(),
                     $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
@@ -552,7 +549,7 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
             case 'VirtualInterface':
                 /** @var Graph\VirtualInterface $graph */
                 return sprintf( "%s/members/%s/lags/%s-%s%s.%s", $config['logdir'],
-                    $this->shardMemberDir( $graph->virtualInterface()->getCustomer()->getId() ),
+                    $this->shardMemberDir( $graph->virtualInterface()->customer->id ),
                     $graph->identifier(), $graph->category(),
                     $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
@@ -560,12 +557,10 @@ class Mrtg extends GrapherBackend implements GrapherBackendContract {
             case 'Customer':
                 /** @var Graph\Customer $graph */
                 return sprintf( "%s/members/%s/%s-%s%s.%s", $config['logdir'],
-                    $this->shardMemberDir( $graph->customer()->getId() ),
+                    $this->shardMemberDir( $graph->customer()->id ),
                     $graph->identifier(), $graph->category(),
                     $loggyType ? '' : "-{$graph->period()}", $type );
                 break;
-
-
             default:
                 throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$graph->type()}" );
         }

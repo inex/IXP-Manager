@@ -30,7 +30,7 @@
     //Define a custom format function for scale and type
     let myScale = function( data, type, full ) {
 
-        if( type == 'sort' || type == 'type' ) {
+        if( type === 'sort' || type === 'type' ) {
             return data;
         }
 
@@ -70,7 +70,7 @@
 
     let myScaleTotal = function( data, type, full ) {
 
-        if( type == 'sort' || type == 'type' ) {
+        if( type === 'sort' || type === 'type' ) {
             return data;
         }
 
@@ -103,7 +103,7 @@
         return retString;
     };
 
-    let scalefn  = <?= $t->metric == 'data' ? 'myScaleTotal' : 'myScale' ?>;
+    let scalefn  = <?= $t->metric === 'data' ? 'myScaleTotal' : 'myScale' ?>;
     let tableList = $( '#ixpDataTable' );
 
     tableList.dataTable({

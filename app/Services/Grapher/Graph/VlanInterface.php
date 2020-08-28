@@ -1,7 +1,9 @@
-<?php namespace IXP\Services\Grapher\Graph;
+<?php
+
+namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -21,6 +23,8 @@
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
 
+use Auth, Log;
+
 use IXP\Services\Grapher;
 use IXP\Services\Grapher\{Graph};
 
@@ -28,7 +32,10 @@ use Entities\Customer as CustomerEntity;
 use Entities\User as UserEntity;
 use Entities\VlanInterface as VlanInterfaceEntity;
 
-use Auth, Log;
+use IXP\Models\{
+    Customer,
+    VlanInterface as VlanInterfaceModel
+};
 
 /**
  * Grapher -> VlanInterface Graph (l3)
@@ -36,14 +43,16 @@ use Auth, Log;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class VlanInterface extends Graph {
+class VlanInterface extends Graph
+{
 
     /**
      * VlanInterface to graph
-     * @var \Entities\VlanInterface
+     *
+     * @var VlanInterfaceModel
      */
     private $vlanint = null;
 
@@ -51,59 +60,68 @@ class VlanInterface extends Graph {
     /**
      * Constructor
      * @param Grapher $grapher
-     * @param VlanInterfaceEntity $i
+     * @param VlanInterfaceModel $vli
      */
-    public function __construct( Grapher $grapher, VlanInterfaceEntity $i ) {
+    public function __construct( Grapher $grapher, VlanInterfaceModel $vli )
+    {
         parent::__construct( $grapher );
-        $this->vlanint = $i;
+        $this->vlanint = $vli;
     }
 
     /**
      * Get the vlan we're set to use
-     * @return VlanInterfaceEntity
+     *
+     * @return VlanInterfaceModel
      */
-    public function vlanInterface(): VlanInterfaceEntity {
+    public function vlanInterface(): VlanInterfaceModel
+    {
         return $this->vlanint;
     }
 
     /**
      * Set the interface we should use
-     * @param VlanInterfaceEntity $i
+     *
+     * @param VlanInterfaceModel $vli
+     *
      * @return VlanInterface Fluid interface
      */
-    public function setVlanInterface( VlanInterfaceEntity $i ): VlanInterface {
-        if( $this->vlanInterface() && $this->vlanInterface()->getId() != $i->getId() ) {
+    public function setVlanInterface( VlanInterfaceModel $vli ): VlanInterface
+    {
+        if( $this->vlanInterface() && $this->vlanInterface()->id !== $vli->id ) {
             $this->wipe();
         }
 
-        $this->vlanint = $i;
+        $this->vlanint = $vli;
         return $this;
     }
 
     /**
      * Get the customer owning this virtual interface
-     * @return CustomerEntity
+     *
+     * @return Customer
      */
-    public function customer(): CustomerEntity {
-        return $this->vlanint->getVirtualInterface()->getCustomer();
+    public function customer(): Customer
+    {
+        return $this->vlanint->virtualInterface->customer;
     }
 
     /**
      * The name of a graph (e.g. member name, IXP name, etc)
      * @return string
      */
-    public function name(): string {
+    public function name(): string
+    {
         $n = "Vlan Interface Traffic";
 
-        if( $this->vlanInterface()->getIpv4Enabled() || $this->vlanInterface()->getIpv4Enabled() ) {
+        if( $this->vlanInterface()->ipv4enabled || $this->vlanInterface()->ipv6enabled ) {
             $n .= ' :: ';
 
-            if( $this->vlanInterface()->getIpv4Enabled() ) {
-                $n .= $this->vlanInterface()->getIpv4Address()->getAddress() . ' ';
+            if( $this->vlanInterface()->ipv4enabled ) {
+                $n .= $this->vlanInterface()->ipv4address->address . ' ';
             }
 
-            if( $this->vlanInterface()->getIpv6Enabled() ) {
-                $n .= $this->vlanInterface()->getIpv6Address()->getAddress();
+            if( $this->vlanInterface()->ipv6enabled ) {
+                $n .= $this->vlanInterface()->ipv6address->address;
             }
         }
         return $n;
@@ -115,8 +133,9 @@ class VlanInterface extends Graph {
      * E.g. for an IXP, it might be ixpxxx where xxx is the database id
      * @return string
      */
-    public function identifier(): string {
-        return sprintf( "vli%05d", $this->vlanInterface()->getId() );
+    public function identifier(): string
+    {
+        return sprintf( "vli%05d", $this->vlanInterface()->id );
     }
 
     /**
@@ -128,7 +147,8 @@ class VlanInterface extends Graph {
      *
      * @return bool
      */
-    public function authorise(): bool {
+    public function authorise(): bool
+    {
         if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) == UserEntity::AUTH_PUBLIC ) {
             return $this->allow();
         }
@@ -142,11 +162,11 @@ class VlanInterface extends Graph {
             return $this->allow();
         }
 
-        if( Auth::user()->getCustomer()->getId() == $this->vlanInterface()->getVirtualInterface()->getCustomer()->getId() ) {
+        if( Auth::user()->getCustomer()->getId() === $this->vlanInterface()->virtualInterface->customer->id ) {
             return $this->allow();
         }
 
-        if( config( 'grapher.access.customer' ) != 'own_graphs_only'
+        if( config( 'grapher.access.customer' ) !== 'own_graphs_only'
             && is_numeric( config( 'grapher.access.customer' ) )
             && Auth::user()->getPrivs() >= config( 'grapher.access.customer' )
         ) {
@@ -154,7 +174,7 @@ class VlanInterface extends Graph {
         }
 
         Log::notice( sprintf( "[Grapher] [VlanInterface]: user %d::%s tried to access a vlan interface graph "
-            . "{$this->vlanInterface()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
+            . "{$this->vlanInterface()->id} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
         );
 
         $this->deny();
@@ -167,9 +187,10 @@ class VlanInterface extends Graph {
      * @param array $overrides Allow standard parameters to be overridden (e.g. category)
      * @return string
      */
-    public function url( array $overrides = [] ): string {
+    public function url( array $overrides = [] ): string
+    {
         return parent::url( $overrides ) . sprintf("&id=%d",
-            isset( $overrides['id']   ) ? $overrides['id']   : $this->vlanInterface()->getId()
+                $overrides[ 'id' ] ?? $this->vlanInterface()->id
         );
     }
 
@@ -180,27 +201,24 @@ class VlanInterface extends Graph {
      *
      * @return array $params
      */
-    public function getParamsAsArray(): array {
+    public function getParamsAsArray(): array
+    {
         $p = parent::getParamsAsArray();
-        $p['id'] = $this->vlanInterface()->getId();
+        $p['id'] = $this->vlanInterface()->id;
         return $p;
     }
-
 
     /**
      * Process user input for the parameter: vlanint
      *
      * Does a abort(404) if invalid
      *
-     * @param int $i The user input value
-     * @return VlanInterfaceEntity The verified / sanitised / default value
+     * @param int $vli The user input value
+     *
+     * @return VlanInterfaceModel The verified / sanitised / default value
      */
-    public static function processParameterVlanInterface( int $i ): VlanInterfaceEntity {
-        $vlanint = null;
-        if( !$i || !( $vlanint = d2r( 'VlanInterface' )->find( $i ) ) ) {
-            abort(404);
-        }
-        return $vlanint;
+    public static function processParameterVlanInterface( int $vli ): VlanInterfaceModel
+    {
+        return VlanInterfaceModel::findOrFail( $vli );
     }
-
 }

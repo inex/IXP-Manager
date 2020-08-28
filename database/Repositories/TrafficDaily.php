@@ -79,19 +79,19 @@ class TrafficDaily extends EntityRepository
      */
     public function load( $day, $category, $ixp = false )
     {
-        $dql = "SELECT td, c, i
+        $dql = "SELECT td, c
                     FROM Entities\\TrafficDaily td
                     LEFT JOIN td.Customer c
-                    LEFT JOIN td.IXP i
+    
                     WHERE td.day = :day AND td.category = :cat";
         
-        if( $ixp ) $dql .= " AND i = :ixp";
+
         
         $q = $this->getEntityManager()->createQuery( $dql )
             ->setParameter( 'day', $day )
             ->setParameter( 'cat', $category );
         
-        if( $ixp ) $q->setParameter( 'ixp', $ixp );
+
         
         return $q->getArrayResult();
     }

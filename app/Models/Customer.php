@@ -135,6 +135,10 @@ use IXP\Exceptions\GeneralException as IXP_Exception;
  * @property-read int|null $peerrouteserverfilters_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\RouteServerFilter[] $routeserverfilters
  * @property-read int|null $routeserverfilters_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\IrrdbPrefix[] $irrdbPrefixes
+ * @property-read int|null $irrdb_prefixes_count
+ * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\TrafficDaily[] $trafficDailies
+ * @property-read int|null $traffic_dailies_count
  */
 class Customer extends Model
 {
@@ -159,6 +163,33 @@ class Customer extends Model
      */
     public const SQL_CUST_CURRENT = "c.datejoin <= CURRENT_DATE() AND ( c.dateleave IS NULL OR c.dateleave >= CURRENT_DATE() )";
 
+    /**
+     * DQL for selecting customers that are active (i.e. not suspended)
+     *
+     * @var string DQL for selecting customers that are active (i.e. not suspended)
+     */
+    const SQL_CUST_ACTIVE = "c.status IN ( 1, 2 )";
+
+    /**
+     * DQL for selecting all trafficing customers
+     *
+     * @var string DQL for selecting all trafficing customers
+     */
+    const SQL_CUST_TRAFFICING = "c.type != 2";
+
+    /**
+     * DQL for selecting all customers except for internal / dummy customers
+     *
+     * @var string DQL for selecting all customers except for internal / dummy customers
+     */
+    const SQL_CUST_EXTERNAL = "c.type != 3";
+
+    /**
+     * DQL for selecting all "connected" customers
+     *
+     * @var string DQL for selecting all "connected" customers
+     */
+    const SQL_CUST_CONNECTED = "c.status = 1";
 
     const CREATED_AT = 'created';
     const UPDATED_AT = 'lastupdated';
@@ -260,6 +291,14 @@ class Customer extends Model
     public function irrdbPrefixes(): HasMany
     {
         return $this->hasMany(IrrdbPrefix::class, 'customer_id' );
+    }
+
+    /**
+     * Get the traffic dailies for the customer
+     */
+    public function trafficDailies(): HasMany
+    {
+        return $this->hasMany(TrafficDaily::class, 'cust_id' );
     }
 
     /**
@@ -462,5 +501,62 @@ class Customer extends Model
         } )->when( $vlanid , function( Builder $q, $vlanid ) {
             return $q->where( 'v.id', $vlanid );
         })->distinct( 'c.id' )->orderBy( 'c.name', 'asc')->get()->toArray();
+    }
+
+    /**
+     * Utility function to provide a array of all active and current customers.
+     *
+     * @param bool $trafficing If `true`, only include trafficing customers (i.e. no associates)
+     * @param bool $externalOnly If `true`, only include external customers (i.e. no internal types)
+     *
+     * @return Collection
+     */
+    public static function getCurrentActive( $trafficing = false, $externalOnly = false )
+    {
+        return self::from( 'cust AS c' )
+            ->whereRaw( self::SQL_CUST_CURRENT )
+            ->whereRaw( self::SQL_CUST_ACTIVE )
+            ->when( $trafficing , function( Builder $q ) {
+            return $q->whereRaw(self::SQL_CUST_TRAFFICING )
+                ->whereRaw( self::SQL_CUST_CONNECTED );
+            } )->when( $externalOnly , function( Builder $q ) {
+            return $q->whereRaw( self::SQL_CUST_EXTERNAL );
+            })->orderBy( 'name' )->get();
+    }
+
+    /**
+     * Is this customer graphable?
+     *
+     * @return bool
+     */
+    public function isGraphable(): bool
+    {
+        foreach( $this->virtualInterfaces as $vi ) {
+            if( $vi->isGraphable() ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Does the customer have any interfaces in quarantine/connected?
+     *
+     * I.e. does the customer have graphable interfaces?
+     *
+     * @return bool
+     */
+    public function hasInterfacesConnectedOrInQuarantine(): bool
+    {
+        foreach( $this->virtualInterfaces as $vi ) {
+            foreach( $vi->physicalInterfaces as $pi ) {
+                if( $pi->statusIsConnectedOrQuarantine() ) {
+                    return true;
+                }
+            }
+        }
+
+        return false;
     }
 }

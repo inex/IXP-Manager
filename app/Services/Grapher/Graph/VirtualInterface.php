@@ -1,7 +1,9 @@
-<?php namespace IXP\Services\Grapher\Graph;
+<?php
+
+namespace IXP\Services\Grapher\Graph;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -20,15 +22,18 @@
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
+use Auth, Log;
 
 use IXP\Services\Grapher;
 use IXP\Services\Grapher\{Graph};
 
-use Entities\Customer as CustomerEntity;
-use Entities\User as UserEntity;
-use Entities\VirtualInterface as VirtualInterfaceEntity;
+use IXP\Models\{
+    Customer,
+    User,
+    VirtualInterface as VirtualInterfaceModel
+};
 
-use Auth, Log;
+
 
 /**
  * Grapher -> VirtualInterface Graph (LAGs)
@@ -36,55 +41,63 @@ use Auth, Log;
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class VirtualInterface extends Graph {
 
     /**
      * VirtualInterface to graph
-     * @var \Entities\VirtualInterface
+     *
+     * @var VirtualInterfaceModel
      */
     private $virtint = null;
-
 
     /**
      * Constructor
      * @param Grapher $grapher
-     * @param VirtualInterfaceEntity $i
+     * @param VirtualInterfaceModel $vi
      */
-    public function __construct( Grapher $grapher, VirtualInterfaceEntity $i ) {
+    public function __construct( Grapher $grapher, VirtualInterfaceModel $vi )
+    {
         parent::__construct( $grapher );
-        $this->virtint = $i;
+        $this->virtint = $vi;
     }
 
     /**
      * Get the vlan we're set to use
-     * @return VirtualInterfaceEntity
+     *
+     * @return VirtualInterfaceModel
      */
-    public function virtualInterface(): VirtualInterfaceEntity {
+    public function virtualInterface(): VirtualInterfaceModel
+    {
         return $this->virtint;
     }
 
     /**
      * Get the customer owning this virtual interface
-     * @return CustomerEntity
+     *
+     * @return Customer
      */
-    public function customer(): CustomerEntity {
-        return $this->virtint->getCustomer();
+    public function customer(): Customer
+    {
+        return $this->virtint->customer;
     }
 
     /**
      * Set the interface we should use
-     * @param VirtualInterfaceEntity $i
+     *
+     * @param VirtualInterfaceModel $vi
+     *
      * @return VirtualInterface Fluid interface
      */
-    public function setVirtualInterface( VirtualInterfaceEntity $i ): VirtualInterface {
-        if( $this->virtualInterface() && $this->virtualInterface()->getId() != $i->getId() ) {
+    public function setVirtualInterface( VirtualInterfaceModel $vi ): VirtualInterface
+    {
+        if( $this->virtualInterface() && $this->virtualInterface()->id !== $vi->id ) {
             $this->wipe();
         }
 
-        $this->virtint = $i;
+        $this->virtint = $vi;
         return $this;
     }
 
@@ -92,8 +105,10 @@ class VirtualInterface extends Graph {
      * The name of a graph (e.g. member name, IXP name, etc)
      * @return string
      */
-    public function name(): string {
-        return "LAG over ports on " . $this->virtualInterface()->getPhysicalInterfaces()[0]->getSwitchPort()->getSwitcher()->getName();
+    public function name(): string
+    {
+        $pi = $this->virtualInterface()->physicalInterfaces->first;
+        return "LAG over ports on " . $pi->getSwitchPort()->getSwitcher()->getName();
     }
 
     /**
@@ -103,7 +118,7 @@ class VirtualInterface extends Graph {
      * @return string
      */
     public function identifier(): string {
-        return sprintf( "vi%05d", $this->virtualInterface()->getId() );
+        return sprintf( "vi%05d", $this->virtualInterface()->id );
     }
 
     /**
@@ -116,7 +131,7 @@ class VirtualInterface extends Graph {
      * @return bool
      */
     public function authorise(): bool {
-        if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) == UserEntity::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 
@@ -129,11 +144,11 @@ class VirtualInterface extends Graph {
             return $this->allow();
         }
 
-        if( Auth::user()->getCustomer()->getId() == $this->virtualInterface()->getCustomer()->getId() ) {
+        if( Auth::user()->getCustomer()->getId() === $this->virtualInterface()->customer->id ) {
             return $this->allow();
         }
 
-        if( config( 'grapher.access.customer' ) != 'own_graphs_only'
+        if( config( 'grapher.access.customer' ) !== 'own_graphs_only'
             && is_numeric( config( 'grapher.access.customer' ) )
             && Auth::user()->getPrivs() >= config( 'grapher.access.customer' )
         ) {
@@ -154,9 +169,10 @@ class VirtualInterface extends Graph {
      * @param array $overrides Allow standard parameters to be overridden (e.g. category)
      * @return string
      */
-    public function url( array $overrides = [] ): string {
+    public function url( array $overrides = [] ): string
+    {
         return parent::url( $overrides ) . sprintf("&id=%d",
-            isset( $overrides['id']   ) ? $overrides['id']   : $this->virtualInterface()->getId()
+                $overrides[ 'id' ] ?? $this->virtualInterface()->id
         );
     }
 
@@ -167,27 +183,24 @@ class VirtualInterface extends Graph {
      *
      * @return array $params
      */
-    public function getParamsAsArray(): array {
+    public function getParamsAsArray(): array
+    {
         $p = parent::getParamsAsArray();
-        $p['id'] = $this->virtualInterface()->getId();
+        $p['id'] = $this->virtualInterface()->id;
         return $p;
     }
-
 
     /**
      * Process user input for the parameter: virtint
      *
      * Does a abort(404) if invalid
      *
-     * @param int $i The user input value
-     * @return VirtualInterfaceEntity The verified / sanitised / default value
+     * @param int $vi The user input value
+     *
+     * @return VirtualInterfaceModel The verified / sanitised / default value
      */
-    public static function processParameterVirtualInterface( int $i ): VirtualInterfaceEntity {
-        $virtint = null;
-        if( !$i || !( $virtint = d2r( 'VirtualInterface' )->find( $i ) ) ) {
-            abort(404);
-        }
-        return $virtint;
+    public static function processParameterVirtualInterface( int $vi ): VirtualInterfaceModel
+    {
+        return VirtualInterfaceModel::findOrFail( $vi );
     }
-
 }

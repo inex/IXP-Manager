@@ -45,6 +45,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbPrefix wherePrefix($value)
  * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\IrrdbPrefix whereProtocol($value)
  * @mixin \Eloquent
+ * @property-read \IXP\Models\Customer $customer
  */
 class IrrdbPrefix extends Model
 {

@@ -53,35 +53,37 @@ use \OSS_SNMP\MIBS\Iface as SNMPIface;
  * @property-read int|null $console_server_connections_count
  * @property-read \Illuminate\Database\Eloquent\Collection|\IXP\Models\SwitchPort[] $switchPorts
  * @property-read int|null $switch_ports_count
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher newModelQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher newQuery()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher query()
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereActive($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereAsn($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereCabinetid($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereHostname($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereId($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereInfrastructure($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereIpv4addr($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereIpv6addr($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereLastPolled($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereLoopbackIp($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereLoopbackName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereMauSupported($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereMgmtMacAddress($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereModel($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereName($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereNotes($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereOs($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereOsDate($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereOsVersion($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereSerialNumber($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereSnmpEngineBoots($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereSnmpEngineTime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereSnmpSystemUptime($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereSnmppasswd($value)
- * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher whereVendorid($value)
+ * @method static Builder|\IXP\Models\Switcher newModelQuery()
+ * @method static Builder|\IXP\Models\Switcher newQuery()
+ * @method static Builder|\IXP\Models\Switcher query()
+ * @method static Builder|\IXP\Models\Switcher whereActive($value)
+ * @method static Builder|\IXP\Models\Switcher whereAsn($value)
+ * @method static Builder|\IXP\Models\Switcher whereCabinetid($value)
+ * @method static Builder|\IXP\Models\Switcher whereHostname($value)
+ * @method static Builder|\IXP\Models\Switcher whereId($value)
+ * @method static Builder|\IXP\Models\Switcher whereInfrastructure($value)
+ * @method static Builder|\IXP\Models\Switcher whereIpv4addr($value)
+ * @method static Builder|\IXP\Models\Switcher whereIpv6addr($value)
+ * @method static Builder|\IXP\Models\Switcher whereLastPolled($value)
+ * @method static Builder|\IXP\Models\Switcher whereLoopbackIp($value)
+ * @method static Builder|\IXP\Models\Switcher whereLoopbackName($value)
+ * @method static Builder|\IXP\Models\Switcher whereMauSupported($value)
+ * @method static Builder|\IXP\Models\Switcher whereMgmtMacAddress($value)
+ * @method static Builder|\IXP\Models\Switcher whereModel($value)
+ * @method static Builder|\IXP\Models\Switcher whereName($value)
+ * @method static Builder|\IXP\Models\Switcher whereNotes($value)
+ * @method static Builder|\IXP\Models\Switcher whereOs($value)
+ * @method static Builder|\IXP\Models\Switcher whereOsDate($value)
+ * @method static Builder|\IXP\Models\Switcher whereOsVersion($value)
+ * @method static Builder|\IXP\Models\Switcher whereSerialNumber($value)
+ * @method static Builder|\IXP\Models\Switcher whereSnmpEngineBoots($value)
+ * @method static Builder|\IXP\Models\Switcher whereSnmpEngineTime($value)
+ * @method static Builder|\IXP\Models\Switcher whereSnmpSystemUptime($value)
+ * @method static Builder|\IXP\Models\Switcher whereSnmppasswd($value)
+ * @method static Builder|\IXP\Models\Switcher whereVendorid($value)
  * @mixin \Eloquent
+ * @method static \Illuminate\Database\Eloquent\Builder|\IXP\Models\Switcher filtered($active)
+ * @property-read \IXP\Models\Infrastructure|null $infrastructureModel
  */
 class Switcher extends Model
 {
@@ -167,7 +169,7 @@ class Switcher extends Model
     /**
      * Get the infrastructure that own the switcher
      */
-    public function infrastructure(): BelongsTo
+    public function infrastructureModel(): BelongsTo
     {
         return $this->belongsTo(Infrastructure::class, 'infrastructure' );
     }
@@ -321,14 +323,14 @@ class Switcher extends Model
      * @param int   $switchid       Switcher id for filtering results
      * @param int   $infraid        Infrastructure id for filtering results
      * @param int   $facilityid     Facility id for filtering results
-     * @param  $speed          Speed filtering results
+     * @param int   $speed          Speed filtering results
      * @param int   $vlanid         Vlan id for filtering results
      * @param bool  $rsclient
      * @param bool  $ipv6enabled
      *
      * @return array
      */
-    public static function getConfiguration( int $switchid = null, int $infraid = null, int $facilityid = null, $speed = null, int $vlanid = null, bool $rsclient = false, bool $ipv6enabled = false ): array
+    public static function getConfiguration( int $switchid = null, int $infraid = null, int $facilityid = null, int $speed = null, int $vlanid = null, bool $rsclient = false, bool $ipv6enabled = false ): array
     {
         return self::selectRaw(
     's.name AS switchname, 
@@ -547,5 +549,51 @@ class Switcher extends Model
         }
 
         return $this;
+    }
+
+    /**
+     * Return an array of core bundles
+     * @return CoreBundle[]
+     */
+    public function getCoreBundles(): array
+    {
+        $cbs = $cbids = [];
+
+        foreach( $this->switchPorts as $sp ) {
+            if( $sp->physicalInterface && $sp->physicalInterface->coreinterface ) {
+                if( $sp->physicalInterface->coreinterface->corelinksidea ) {
+                    if( !in_array( $sp->physicalInterface->coreinterface->corelinksidea->corebundle->id, $cbids, true ) ) {
+                        $sideA = $sp->physicalInterface->coreinterface->corelinksidea;
+                        $cbids[] = $sideA->corebundle->id;
+                        $cbs[]   = $sideA->corebundle;
+                    }
+                } elseif( $sp->physicalInterface->coreinterface->corelinksideb ) {
+                    if( !in_array( $sp->physicalInterface->coreinterface->corelinksideb->corebundle->id, $cbids, true ) ) {
+                        $sideB = $sp->physicalInterface->coreinterface->corelinksideb;
+                        $cbids[] = $sideB->corebundle->id;
+                        $cbs[]   = $sideB->corebundle;
+                    }
+                }
+            }
+        }
+
+        return $cbs;
+    }
+
+    /**
+     * Scope a query to only include filtered switcher.
+     *
+     * @param Builder $query
+     * @param  int $active
+     *
+     * @return Builder
+     */
+    public function scopeFiltered($query, int $active ): Builder
+    {
+        if( $active ) {
+            $query->where( 'active', true );
+        }
+
+        return $query->orderBy( 'name' );
     }
 }

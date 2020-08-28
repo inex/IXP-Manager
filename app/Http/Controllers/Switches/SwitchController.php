@@ -774,7 +774,7 @@ class SwitchController extends EloquentController
             'summary'                   => $summary,
             'speeds'                    => $speeds,
             'infras'                    => $switch ? [ $switch->infrastructure->id => $switch->infrastructure->name ] : Infrastructure::getListAsArray(),
-            'vlans'                     => Vlan::getListForDropdown(),
+            'vlans'                     => Vlan::getAsArray(),
             'locations'                 => $switch ? [ $switch->cabinet->location->id  => $switch->cabinet->location->name ] : Location::getListAsArray(),
             'switches'                  => Switcher::getByLocationInfrastructureSpeed( $infra, $location, $speed ),
             'config'                    => $config,
