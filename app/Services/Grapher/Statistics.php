@@ -1,4 +1,6 @@
-<?php namespace IXP\Services\Grapher;
+<?php
+
+namespace IXP\Services\Grapher;
 
 /*
  * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
@@ -32,71 +34,81 @@ use Carbon\Carbon;
  * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class Statistics {
-
+class Statistics
+{
     /**
      * Total packets/bits in
+     *
      * @var int
      */
     private $totalIn;
 
     /**
      * Total packets/bits out
+     *
      * @var int
      */
     private $totalOut;
 
     /**
      * Current packets/bits in
+     *
      * @var int
      */
     private $curIn;
 
     /**
      * Current packets/bits out
+     *
      * @var int
      */
     private $curOut;
 
     /**
      * Average packets/bits in
+     *
      * @var int
      */
     private $averageIn;
 
     /**
      * Average packets/bits out
+     *
      * @var int
      */
     private $averageOut;
 
     /**
      * Max packets/bits in
+     *
      * @var int
      */
     private $maxIn;
 
     /**
      * When max packets/bits in occured
+     *
      * @var Carbon
      */
     private $maxInAt;
 
     /**
      * Max packets/bits out
+     *
      * @var int
      */
     private $maxOut;
 
     /**
      * When max packets/bits out occured
+     *
      * @var Carbon
      */
     private $maxOutAt;
 
-
     /**
      * Graph under consideration
+     *
      * @var Graph
      */
     private $graph;
@@ -104,18 +116,22 @@ class Statistics {
 
     /**
      * Constructor
+     *
      * @param Graph $g
      */
-    public function __construct( Graph $g ) {
+    public function __construct( Graph $g )
+    {
         $this->graph = $g;
         $this->process();
     }
 
     /**
      * Access for the graph object under consideration
+     *
      * @return Graph
      */
-    public function graph(): Graph {
+    public function graph(): Graph
+    {
         return $this->graph;
     }
 
@@ -127,11 +143,13 @@ class Statistics {
      *
      * @return array
      */
-    private function data(): array {
+    private function data(): array
+    {
         return $this->graph()->data();
     }
 
-    function process() {
+    function process()
+    {
         $maxIn = 0;
         $maxOut = 0;
         $maxInAt = 0;
@@ -149,7 +167,7 @@ class Statistics {
             foreach( $data as $i => $v ) {
                 $curenddate = $v[ 0 ];
 
-                list( $intTime, $avgratein, $avgrateout, $peakratein, $peakrateout ) = $v;
+                [ $intTime, $avgratein, $avgrateout, $peakratein, $peakrateout ] = $v;
 
                 if( $peakratein > $maxIn ) {
                     $maxIn = $peakratein;
@@ -191,194 +209,247 @@ class Statistics {
             ->setAverageOut(  (float)( $totalOut / $totalTime ) );
     }
 
-
     /**
      * Set statistics value
+     *
      * @param float $v
+     *
      * @return Statistics (for fluid interface)
      */
-    public function setTotalIn( float $v ): Statistics {
+    public function setTotalIn( float $v ): Statistics
+    {
         $this->totalIn = $v;
         return $this;
     }
 
     /**
      * Set statistics value
+     *
      * @param float $v
+     *
      * @return Statistics (for fluid interface)
      */
-    public function setTotalOut( float $v ): Statistics {
+    public function setTotalOut( float $v ): Statistics
+    {
         $this->totalOut = $v;
         return $this;
     }
 
     /**
      * Set statistics value
+     *
      * @param float $v
+     *
      * @return Statistics (for fluid interface)
      */
-    public function setCurrentIn( float $v ): Statistics {
+    public function setCurrentIn( float $v ): Statistics
+    {
         $this->curIn = $v;
         return $this;
     }
 
     /**
      * Set statistics value
+     *
      * @param float $v
+     *
      * @return Statistics (for fluid interface)
      */
-    public function setCurrentOut( float $v ): Statistics {
+    public function setCurrentOut( float $v ): Statistics
+    {
         $this->curOut = $v;
         return $this;
     }
 
     /**
      * Set statistics value
+     *
      * @param float $v
+     *
      * @return Statistics (for fluid interface)
      */
-    public function setAverageIn( float $v ): Statistics {
+    public function setAverageIn( float $v ): Statistics
+    {
         $this->averageIn = $v;
         return $this;
     }
 
     /**
      * Set statistics value
+     *
      * @param float $v
+     *
      * @return Statistics (for fluid interface)
      */
-    public function setAverageOut( float $v ): Statistics {
+    public function setAverageOut( float $v ): Statistics
+    {
         $this->averageOut = $v;
         return $this;
     }
 
     /**
      * Set statistics value
+     *
      * @param float $v
+     *
      * @return Statistics (for fluid interface)
      */
-    public function setMaxIn( float $v ): Statistics {
+    public function setMaxIn( float $v ): Statistics
+    {
         $this->maxIn = $v;
         return $this;
     }
 
     /**
      * Set statistics value
+     *
      * @param int $v
+     *
      * @return Statistics (for fluid interface)
+     *
      * @throws \Exception
      */
-    public function setMaxInAt( int $v ): Statistics {
+    public function setMaxInAt( int $v ): Statistics
+    {
         $this->maxInAt = $v ? new Carbon( $v ) : null;
         return $this;
     }
 
     /**
      * Set statistics value
+     *
      * @param float $v
+     *
      * @return Statistics (for fluid interface)
      */
-    public function setMaxOut( float $v ): Statistics {
+    public function setMaxOut( float $v ): Statistics
+    {
         $this->maxOut = $v;
         return $this;
     }
 
     /**
      * Set statistics value
+     *
      * @param int $v
+     *
      * @return Statistics (for fluid interface)
+     *
      * @throws \Exception
      */
-    public function setMaxOutAt( int $v ): Statistics {
+    public function setMaxOutAt( int $v ): Statistics
+    {
         $this->maxOutAt = $v ? new Carbon( $v ) : null;
         return $this;
     }
 
     /**
      * Get statistics value
+     *
      * @return float
      */
-    public function totalIn(): float {
+    public function totalIn(): float
+    {
         return $this->totalIn;
     }
 
     /**
      * Get statistics value
+     *
      * @return float
      */
-    public function totalOut(): float {
+    public function totalOut(): float
+    {
         return $this->totalOut;
     }
 
     /**
      * Get statistics value
+     *
      * @return float
      */
-    public function curIn(): float {
+    public function curIn(): float
+    {
         return $this->curIn;
     }
 
     /**
      * Get statistics value
+     *
      * @return float
      */
-    public function curOut(): float {
+    public function curOut(): float
+    {
         return $this->curOut;
     }
 
     /**
      * Get statistics value
+     *
      * @return float
      */
-    public function averageIn(): float {
+    public function averageIn(): float
+    {
         return $this->averageIn;
     }
 
     /**
      * Get statistics value
+     *
      * @return float
      */
-    public function averageOut(): float {
+    public function averageOut(): float
+    {
         return $this->averageOut;
     }
 
     /**
      * Get statistics value
+     *
      * @return float
      */
-    public function maxIn(): float {
+    public function maxIn(): float
+    {
         return $this->maxIn;
     }
 
     /**
      * Get statistics value
+     *
      * @return float
      */
-    public function maxOut(): float {
+    public function maxOut(): float
+    {
         return $this->maxOut;
     }
 
     /**
      * Get statistics value
-     * @return float
+     *
+     * @return Carbon|null
      */
-    public function maxInAt(): ?Carbon {
+    public function maxInAt(): ?Carbon
+    {
         return $this->maxInAt;
     }
 
     /**
      * Get statistics value
-     * @return float
+     *
+     * @return Carbon|null
      */
-    public function maxOutAt(): ?Carbon {
+    public function maxOutAt(): ?Carbon
+    {
         return $this->maxOutAt;
     }
 
     /**
      * Get all defined stats as an associative array
+     *
      * @return array
      */
-    public function all(): array {
+    public function all(): array
+    {
         return [
             'totalin'     => $this->totalIn(),
             'totalout'    => $this->totalOut(),
@@ -392,5 +463,4 @@ class Statistics {
             'maxoutat'    => $this->maxOutAt(),
         ];
     }
-
 }

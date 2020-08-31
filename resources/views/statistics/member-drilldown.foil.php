@@ -47,7 +47,7 @@
                     </ul>
                 </div>
                 <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-                    <button type="button" class="btn btn-outline-dark pull-right tw-text-gray-600" data-toggle="modal" data-target="#grapher-backend-info-modal">
+                    <button type="button" class="btn btn-white pull-right tw-text-gray-600" data-toggle="modal" data-target="#grapher-backend-info-modal">
                         Backend Info
                     </button>
                 <?php endif; ?>
@@ -87,11 +87,8 @@
 
                         break;
 
-                endswitch;
-                ?>
-
+                endswitch; ?>
             </h3>
-
             <div class="row">
                 <?php foreach( IXP\Services\Grapher\Graph::PERIOD_DESCS as $pvalue => $pname ): ?>
                     <div class="col-sm-12 col-lg-6 mt-4">

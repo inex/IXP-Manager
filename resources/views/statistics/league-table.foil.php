@@ -13,7 +13,7 @@
         <div class="col-sm-12">
             <?= $t->alerts() ?>
             <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
-                <a class="navbar-brand" href="<?= route('statistics/members') ?>">
+                <a class="navbar-brand" href="<?= route('statistics@members') ?>">
                     League Table:
                 </a>
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">

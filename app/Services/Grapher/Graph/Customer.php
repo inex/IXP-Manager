@@ -27,11 +27,6 @@ use Auth, Log;
 use IXP\Services\Grapher;
 use IXP\Services\Grapher\{Graph};
 
-use Entities\{
-    Customer as CustomerEntity,
-    User     as UserEntity
-};
-
 use IXP\Models\{
     Customer as CustomerModel,
     User
@@ -40,7 +35,8 @@ use IXP\Models\{
 /**
  * Grapher -> Customer Graph (LAGs)
  *
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -48,14 +44,12 @@ use IXP\Models\{
  */
 class Customer extends Graph
 {
-
     /**
      * Customer to graph
      *
      * @var CustomerModel
      */
     private $cust = null;
-
 
     /**
      * Constructor
@@ -150,7 +144,7 @@ class Customer extends Graph
     {
         // NB: see above authorisedForAllCustomers()
 
-        if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) == UserEntity::AUTH_PUBLIC ) {
+        if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }
 
@@ -189,7 +183,8 @@ class Customer extends Graph
      *
      * @return string
      */
-    public function url( array $overrides = [] ): string {
+    public function url( array $overrides = [] ): string
+    {
         return parent::url( $overrides ) . sprintf("&id=%d",
                 $overrides[ 'id' ] ?? $this->customer()->id
         );
@@ -209,7 +204,6 @@ class Customer extends Graph
         return $p;
     }
 
-
     /**
      * Process user input for the parameter: cust
      *
@@ -223,10 +217,9 @@ class Customer extends Graph
     {
         // if we're not an admin, default to the currently logged in customer
         if( !$i && Auth::check() && !Auth::user()->isSuperUser() && !Auth::user()->getCustomer()->isTypeAssociate() ) {
-            return Auth::user()->getCustomer();
+            return CustomerModel::find( Auth::user()->getCustomer()->getId() );
         }
 
         return CustomerModel::findOrFail( $i );
     }
-
 }

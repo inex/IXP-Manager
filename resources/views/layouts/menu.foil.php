@@ -382,7 +382,7 @@
             </h6>
 
             <li class="<?= !request()->is( 'statistics/members' ) ?: 'active' ?>" >
-                <a href="<?= route( 'statistics/members' ) ?>" class="nav-link">
+                <a href="<?= route( 'statistics@members' ) ?>" class="nav-link">
                     <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Statistics
                 </a>
             </li>

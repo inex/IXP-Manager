@@ -73,7 +73,6 @@ use IXP\Services\Grapher\Graph\{
  */
 class Grapher
 {
-
     /**
      * Is the cache enabled?
      *
@@ -105,7 +104,7 @@ class Grapher
      * 1. As specified in the `$backend` parameter if not null
      * 2. First backend in `configs/grapher.php` `backend` element.
      *
-     * @param string $backend |null
+     * @param string|null $backend |null
      *
      * @return string
      *
@@ -286,7 +285,9 @@ class Grapher
 
     /**
      * Get an instance of a customer aggregate graph
+     *
      * @param Customer $c
+     *
      * @return CustomerGraph
      */
     public function customer( Customer $c ): CustomerGraph
@@ -308,6 +309,7 @@ class Grapher
 
     /**
      * Get an instance of a virtint graph
+     *
      * @param VirtualInterface $int
      *
      * @return Graph

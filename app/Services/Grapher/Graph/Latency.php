@@ -22,18 +22,13 @@ namespace IXP\Services\Grapher\Graph;
  *
  * http://www.gnu.org/licenses/gpl-2.0.html
  */
-use Auth, D2EM, Log;
+use Auth, Log;
 
 use IXP\Services\Grapher;
 use IXP\Services\Grapher\Graph;
 
 use IXP\Exceptions\Services\Grapher\{
     ParameterException
-};
-
-use Entities\{
-    User as UserEntity,
-    VlanInterface as VlanInterfaceEntity
 };
 
 use IXP\Models\{
@@ -156,7 +151,7 @@ class Latency extends Graph
     /**
      * Get the period description for a given period identifier
      *
-     * @param string $period
+     * @param string|null $period
      *
      * @return string
      */
@@ -225,6 +220,7 @@ class Latency extends Graph
      * {@inheritDoc}
      *
      * For (public) vlan aggregate graphs we pretty much allow complete access.
+     *
      * @throws AuthorizationException
      */
     public function authorise(): bool

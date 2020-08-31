@@ -36,7 +36,8 @@ use IXP\Models\{
 /**
  * Grapher -> PhysicalInterface Graph
  *
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
@@ -44,7 +45,6 @@ use IXP\Models\{
  */
 class PhysicalInterface extends Graph
 {
-
     /**
      * PhysicalInterface to graph
      *
@@ -160,7 +160,7 @@ class PhysicalInterface extends Graph
         }
 
         Log::notice( sprintf( "[Grapher] [PhysicalInterface]: user %d::%s tried to access a physical interface graph "
-                . "{$this->physicalInterface()->getId()} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
+                . "{$this->physicalInterface()->id} which is not theirs", Auth::user()->getId(), Auth::user()->getUsername() )
         );
 
         $this->deny();

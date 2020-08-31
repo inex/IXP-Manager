@@ -21,7 +21,7 @@
             <?= $t->alerts() ?>
 
             <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
-                <a class="navbar-brand" href="<?= route('statistics/members') ?>">
+                <a class="navbar-brand" href="<?= route('statistics@members') ?>">
                     Utilization:
                 </a>
 

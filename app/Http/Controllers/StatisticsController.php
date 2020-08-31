@@ -282,7 +282,7 @@ class StatisticsController extends Controller
             abort( 403, "You are not authorised to view this member's graphs." );
         }
 
-        $grapher = App::make('IXP\Services\Grapher');
+        $grapher = App::make( Grapher::class );
         $this->processGraphParams($r);
 
         // do we have an infrastructure or vlan?
@@ -307,7 +307,6 @@ class StatisticsController extends Controller
 
         $graphs = [];
         foreach( $targets as $t ) {
-
             if( !$t->isGraphable() ) {
                 continue;
             }
@@ -337,7 +336,7 @@ class StatisticsController extends Controller
             'infras'        => Infrastructure::getListAsArray(),
             'infra'         => $infra ?? false,
             'vlans'         => Vlan::getListAsArray(),
-            'vlan'          => $vlan,
+            'vlan'          => $vlan ?? false,
         ]);
     }
 
@@ -345,12 +344,11 @@ class StatisticsController extends Controller
     /**
      * Display all graphs for a member
      *
-     * @param StatisticsRequest   $r
-     * @param integer             $id ID of the member
+     * @param StatisticsRequest $r
+     * @param int|null          $id ID of the member
      *
      * @return RedirectResponse|View
      *
-     * @throws
      */
     public function member( StatisticsRequest $r, int $id = null )
     {
@@ -483,13 +481,6 @@ class StatisticsController extends Controller
             $cid = Auth::user()->getCustomer()->getId();
         }
 
-        $c = Customer::findOrFail( $cid );
-        $grapher = App::make( Grapher::class );
-
-        $r->category = Graph::processParameterCategory(     $r->category, true );
-        $r->period   = Graph::processParameterPeriod(       $r->period );
-        $r->protocol = Graph::processParameterRealProtocol( $r->protocol );
-
         // for larger IXPs, it's quite intensive to display all the graphs - decide if we need to do this or not
         if( config('grapher.backends.sflow.show_graphs_on_index_page') !== null ) {
             $showGraphsOption = true;
@@ -510,6 +501,12 @@ class StatisticsController extends Controller
                 $showGraphs = $r->session()->get( 'controller.statistics.p2p.show_graphs', config('grapher.backends.sflow.show_graphs_on_index_page') );
             }
         }
+
+        $r->category = Graph::processParameterCategory(     $r->category, true );
+        $r->period   = Graph::processParameterPeriod(       $r->period );
+        $r->protocol = Graph::processParameterRealProtocol( $r->protocol );
+
+        $c = Customer::findOrFail( $cid );
 
         // Find the possible VLAN interfaces that this customer has for the given IXP
         if( !count( $srcVlis = VlanInterface::getForCustomer( $c ) ) ) {
@@ -583,7 +580,8 @@ class StatisticsController extends Controller
         }
 
         // authenticate on one of the graphs
-        $graph = $grapher->p2p( $srcVli, $dstVli ? $dstVli : $dstVlis[ $dstVlis->first()->id ] )
+        $graph = App::make( Grapher::class )
+            ->p2p( $srcVli, $dstVli ? $dstVli : $dstVlis[ $dstVlis->first()->id ] )
             ->setProtocol( $r->protocol )
             ->setCategory( $r->category )
             ->setPeriod( $r->period );

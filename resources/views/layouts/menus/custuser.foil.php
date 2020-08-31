@@ -144,7 +144,7 @@
 
                         <div class="dropdown-divider"></div>
 
-                        <a class="dropdown-item <?= !request()->is( 'statistics/members' ) ?: 'active' ?>" href="<?= route( 'statistics/members' ) ?>">
+                        <a class="dropdown-item <?= !request()->is( 'statistics/members' ) ?: 'active' ?>" href="<?= route( 'statistics@members' ) ?>">
                             <?= ucfirst( config( 'ixp_fe.lang.customer.one' ) ) ?> Graphs
                         </a>
 

@@ -20,21 +20,20 @@
     <?php endif; ?>
 <?php $this->append() ?>
 
-
 <?php if( Auth::check() && !Auth::user()->isSuperUser() ): ?>
     <?php $this->section( 'page-header-postamble' ) ?>
         <a class="btn btn-white" href="<?= route( 'statistics@member', [ 'id' => $t->c->id ] ) ?>">All Ports</a>
     <?php $this->append() ?>
 <?php endif; ?>
 
-
-
 <?php $this->section('content') ?>
     <div class="row">
         <?= $t->alerts() ?>
         <div class="col-md-12">
             <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
-                <a class="navbar-brand">Latency Graphs for <?= $t->vli->vlan->name ?> on <?= $t->ip ?></a>
+                <a class="navbar-brand">
+                  Latency Graphs for <?= $t->vli->vlan->name ?> on <?= $t->ip ?>
+                </a>
 
                 <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
@@ -51,7 +50,7 @@
                                             <?php foreach( IXP\Services\Grapher\Graph::PROTOCOLS_REAL as $pvalue => $pname ): ?>
                                                 <?php if( $t->vli->canGraphForLatency( $pvalue ) ): ?>
                                                     <option value="<?= $pvalue ?>" <?php if( $t->protocol === $pvalue ): ?> selected <?php endif; ?>  >
-                                                        <?= IXP\Services\Grapher\Graph::PROTOCOL_DESCS[ $pvalue ] ?> :: <?= $t->vli->getIPAddress( $pvalue )->getAddress() ?>
+                                                        <?= IXP\Services\Grapher\Graph::PROTOCOL_DESCS[ $pvalue ] ?> :: <?= $t->vli->getIPAddress( $pvalue )->address ?>
                                                     </option>
                                                 <?php endif; ?>
                                             <?php endforeach; ?>
@@ -64,7 +63,7 @@
                 </div>
 
                 <?php if( Auth::check() && Auth::user()->isSuperUser() ): ?>
-                    <button type="button" class="btn btn-outline-dark pull-right tw-text-gray-600" data-toggle="modal" data-target="#grapher-backend-info-modal">
+                    <button type="button" class="btn btn-white pull-right tw-text-gray-600" data-toggle="modal" data-target="#grapher-backend-info-modal">
                         Backend Info
                     </button>
                 <?php endif; ?>

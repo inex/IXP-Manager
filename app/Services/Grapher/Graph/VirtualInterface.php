@@ -33,19 +33,18 @@ use IXP\Models\{
     VirtualInterface as VirtualInterfaceModel
 };
 
-
-
 /**
  * Grapher -> VirtualInterface Graph (LAGs)
  *
- * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
+ * @author     Barry O'Donovan  <barry@islandbridgenetworks.ie>
+ * @author     Yann Robin       <yann@islandbridgenetworks.ie>
  * @category   Grapher
  * @package    IXP\Services\Grapher
  * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
-class VirtualInterface extends Graph {
-
+class VirtualInterface extends Graph
+{
     /**
      * VirtualInterface to graph
      *
@@ -55,6 +54,7 @@ class VirtualInterface extends Graph {
 
     /**
      * Constructor
+     *
      * @param Grapher $grapher
      * @param VirtualInterfaceModel $vi
      */
@@ -107,8 +107,8 @@ class VirtualInterface extends Graph {
      */
     public function name(): string
     {
-        $pi = $this->virtualInterface()->physicalInterfaces->first;
-        return "LAG over ports on " . $pi->getSwitchPort()->getSwitcher()->getName();
+        $pi = $this->virtualInterface()->physicalInterfaces()->first();
+        return "LAG over ports on " . $pi->switchPort->switcher->name;
     }
 
     /**
@@ -117,7 +117,8 @@ class VirtualInterface extends Graph {
      * E.g. for an IXP, it might be ixpxxx where xxx is the database id
      * @return string
      */
-    public function identifier(): string {
+    public function identifier(): string
+    {
         return sprintf( "vi%05d", $this->virtualInterface()->id );
     }
 
@@ -130,7 +131,8 @@ class VirtualInterface extends Graph {
      *
      * @return bool
      */
-    public function authorise(): bool {
+    public function authorise(): bool
+    {
         if( is_numeric( config( 'grapher.access.customer' ) ) && config( 'grapher.access.customer' ) === User::AUTH_PUBLIC ) {
             return $this->allow();
         }

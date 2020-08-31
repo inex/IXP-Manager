@@ -42,8 +42,6 @@ use IXP\Utils\Grapher\{
     Rrd  as RrdUtil
 };
 
-
-
 /**
  * Grapher Backend -> Mrtg
  *

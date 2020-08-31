@@ -57,9 +57,8 @@
                                 </div>
                             </li>
 
-                            <li class="nav-item float-right">
+                            <li class="nav-item float-right ml-3">
                                 <input type="submit" class="btn btn-white" value="Show Graphs">
-
                                 <?php if( config('grapher.backends.sflow.enabled') && $t->grapher()->canAccessAllCustomerP2pGraphs() ): ?>
                                     <a class="btn btn-white ml-2" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->id ] ) ?>">
                                         <i class="fa fa-random"></i>&nbsp;&nbsp;P2P Graphs
@@ -99,14 +98,10 @@
                 </div>
             </div>
 
-            <?php
-                foreach( $t->c->virtualinterfaces as $vi ): ?>
-
+            <?php foreach( $t->c->virtualinterfaces as $vi ): ?>
                 <div class="card col-sm-12 mt-4 bg-light">
                     <div class="card-body row" >
-
-                        <?php
-                            if( !$vi->physicalInterfaces()->exists() ) {
+                        <?php if( !$vi->physicalInterfaces()->exists() ) {
                                 continue;
                             }
 
@@ -125,6 +120,7 @@
                                         <?php if( $vi->isGraphable() ): ?>
                                             <div class="btn-group btn-group-sm my-auto">
                                                 <?= $t->insert( 'statistics/snippets/latency-dropup', [ 'vi' => $vi ] ) ?>
+
                                                 <?php if( config( 'grapher.backends.sflow.enabled' ) ): ?>
                                                     <a class="btn btn-white" href="<?= route( 'statistics@p2p', [ 'cid' => $t->c->id ] )
                                                         . ( $vi->vlanInterfaces()->exists() ? '?svli=' . $vi->vlanInterfaces()->first()->id : '' )
@@ -146,10 +142,8 @@
                                     </div>
                                 </div>
                             </div>
-
                         <?php endif; ?>
 
-                        <div></div>
                         <?php foreach( $vi->physicalInterfaces as $idx => $pi ): ?>
                             <div class="col-sm-12 col-lg-6 mb-4 <?php if( $isLAG && $idx > 0 ): ?>offset-lg-6 <?php endif; ?>">
                                 <div class="card">
@@ -165,7 +159,6 @@
                                                         / <?= $pi->switchPort->switcher->name ?> (<?=$pi->resolveSpeed() ?>)
                                                     <?php endif; ?>
                                                 </h5>
-
                                             </div>
                                             <?php if( $pi->statusIsConnectedOrQuarantine() ): ?>
                                                 <div class="btn-group btn-group-sm my-auto">

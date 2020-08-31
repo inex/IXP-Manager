@@ -36,8 +36,6 @@ use IXP\Utils\Grapher\{
     Rrd  as RrdUtil
 };
 
-
-
 /**
  * Grapher Backend -> Sflow
  *
@@ -49,7 +47,6 @@ use IXP\Utils\Grapher\{
  */
 class Sflow extends GrapherBackend implements GrapherBackendContract
 {
-
     /**
      * {@inheritDoc}
      *
@@ -153,7 +150,7 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      *
      * {inheritDoc}
      *
-     * @param \IXP\Services\Grapher\Graph $graph
+     * @param Graph $graph
      *
      * @return array
      *
@@ -296,7 +293,8 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
      *
      * @throws
      */
-    private function resolveFilePath( Graph $graph, $type ): string {
+    private function resolveFilePath( Graph $graph, $type ): string
+    {
         $config = config('grapher.backends.sflow');
 
         switch( $graph->classType() ) {
@@ -318,14 +316,11 @@ class Sflow extends GrapherBackend implements GrapherBackendContract
                 /** @var Graph\P2p $graph */
                 return sprintf( "%s/%s/%s/p2p/src-%05d/%s", $config['root'],
                     $graph->protocol(), $this->translateCategory( $graph->category() ),
-                    $graph->svli()->getId(), $this->resolveFileName( $graph, $type ) );
+                    $graph->svli()->id, $this->resolveFileName( $graph, $type ) );
                 break;
 
             default:
                 throw new CannotHandleRequestException("Backend asserted it could process but cannot handle graph of type: {$graph->type()}" );
         }
     }
-
-
-
 }

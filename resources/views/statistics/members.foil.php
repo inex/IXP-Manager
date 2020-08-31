@@ -27,9 +27,7 @@
         <?php if( !(Auth::check() && Auth::user()->isSuperUser() ) ): ?>
             </small>
         <?php endif; ?>
-
     <?php endif; ?>
-
 <?php $this->append() ?>
 
 <?php $this->section( 'content' ) ?>
@@ -37,7 +35,7 @@
         <div class="col-sm-12">
             <?php if( in_array( 'mrtg', config( 'grapher.backend' ), true ) ): ?>
                 <nav id="filter-row" class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
-                    <a class="navbar-brand" href="<?= route('statistics/members') ?>">
+                    <a class="navbar-brand" href="<?= route('statistics@members') ?>">
                         MRTG:
                     </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
@@ -46,7 +44,7 @@
 
                     <div class="collapse navbar-collapse" id="navbarNavDropdown">
                         <ul class="navbar-nav">
-                            <form class="navbar-form navbar-left form-inline d-block d-lg-flex" method="post" action="<?= route('statistics/members' ) ?>">
+                            <form class="navbar-form navbar-left form-inline d-block d-lg-flex" method="post" action="<?= route('statistics@members' ) ?>">
                                 <li class="nav-item">
                                     <div class="nav-link d-flex ">
                                         <label for="selectInfra" class="col-sm-4 col-lg-6">Infrastructure:</label>
@@ -81,7 +79,7 @@
                                     </div>
                                 </li>
                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                                <li class="nav-item">
+                                <li class="nav-item ml-3">
                                     <input class="btn btn-white float-right" type="submit" name="submit" value="Show Graphs" />
                                 </li>
                             </form>
@@ -92,7 +90,7 @@
 
             <?php if( in_array( 'sflow', config( 'grapher.backend' ), true ) ): ?>
                 <nav class="navbar navbar-expand-lg navbar-light bg-light mb-4 shadow-sm">
-                    <a class="navbar-brand" href="<?= route('statistics/members') ?>">
+                    <a class="navbar-brand" href="<?= route('statistics@members') ?>">
                         SFlow:
                     </a>
                     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavDropdown2" aria-controls="navbarTogglerDemo01" aria-expanded="false" aria-label="Toggle navigation">
@@ -100,7 +98,7 @@
                     </button>
                     <div class="collapse navbar-collapse" id="navbarNavDropdown2">
                         <ul class="navbar-nav">
-                            <form class="navbar-form navbar-left form-inline d-block d-lg-flex"  action="<?= route('statistics/members' ) ?>" method="post">
+                            <form class="navbar-form navbar-left form-inline d-block d-lg-flex"  action="<?= route('statistics@members' ) ?>" method="post">
                                 <li class="nav-item">
                                     <div class="nav-link d-flex ">
                                         <label for="selectVlan" class="col-sm-4 col-lg-3">VLAN:</label>
@@ -146,7 +144,9 @@
                                     </div>
                                 </li>
                                 <input type="hidden" name="_token" value="<?= csrf_token() ?>">
-                                <input class="btn btn-white float-right" type="submit" name="submit" value="Show Graphs" />
+                                <li class="nav-item ml-3">
+                                  <input class="btn btn-white float-right" type="submit" name="submit" value="Show Graphs" />
+                                </li>
                             </form>
                         </ul>
                     </div>
@@ -169,11 +169,9 @@
                     </div>
                 </div>
             <?php else: ?>
-                <hr>
                 <div class="row">
                     <?php foreach( $t->graphs as $graph ): ?>
                         <div id="graph-row" class="col-sm-12 col-md-6 mb-4">
-
                             <div class="card">
                                 <div class="card-header d-flex">
                                     <div class="mr-auto">
@@ -194,12 +192,9 @@
                                         <?php endif; ?>
                                     </div>
                                 </div>
-                                <div class="card-bosy">
-                                    <p>
-                                        <br />
-                                        <?php $graph->authorise() ?>
-                                        <?= $graph->renderer()->boxLegacy() ?>
-                                    </p>
+                                <div class="card-body">
+                                    <?php $graph->authorise() ?>
+                                    <?= $graph->renderer()->boxLegacy() ?>
                                 </div>
                             </div>
                         </div>

@@ -31,11 +31,9 @@
 
 <?php if( Auth::check() && !Auth::user()->isSuperUser() ): ?>
     <?php $this->section( 'page-header-postamble' ) ?>
-
         <?php if( $t->grapher()->canAccessAllCustomerGraphs() ): ?>
                 <a class="btn btn-white" href="<?= route( 'statistics@member', [ 'id' => $t->c->id ] ) ?>">All Ports</a>
         <?php endif; ?>
-
     <?php $this->append() ?>
 <?php endif; ?>
 
