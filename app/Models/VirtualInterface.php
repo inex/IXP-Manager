@@ -112,6 +112,40 @@ class VirtualInterface extends Model
     }
 
     /**
+     * Is this LAG graphable?
+     *
+     * @return bool
+     */
+    public function isGraphable(): bool
+    {
+        foreach( $this->physicalInterfaces as $pi ) {
+            if( $pi->isGraphable() ) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * Return the core bundle associated to the virtual interface or false
+     *
+     * @return CoreBundle|bool
+     */
+    public function getCoreBundle()
+    {
+        foreach( $this->physicalInterfaces as $pi ) {
+            if( $pi->coreinterface()->exists() ) {
+                $ci = $pi->coreinterface;
+                /** @var $ci CoreInterface */
+                return $ci->getCoreLink()->coreBundle;
+            }
+        }
+        return false;
+    }
+
+
+    /**
      * Utility function to provide an array of all virtual interface objects on a given
      * infrastructure
      *
@@ -147,36 +181,78 @@ class VirtualInterface extends Model
             })->orderBy( 'c.name' )->get()->keyBy( 'id' );
     }
 
-    /**
-     * Is this LAG graphable?
-     *
-     * @return bool
-     */
-    public function isGraphable(): bool
-    {
-        foreach( $this->physicalInterfaces as $pi ) {
-            if( $pi->isGraphable() ) {
-                return true;
-            }
-        }
-
-        return false;
-    }
 
     /**
-     * Return the core bundle associated to the virtual interface or false
+     * Utility function to provide an array of all virtual interface objects on a given
+     * infrastructure
      *
-     * @return CoreBundle|bool
+     * @return array
+     *
+     * @throws
      */
-    public function getCoreBundle()
+    public static function getByLocation(): array
     {
-        foreach( $this->physicalInterfaces as $pi ) {
-            if( $pi->coreinterface()->exists() ) {
-                $ci = $pi->coreinterface;
-                /** @var $ci CoreInterface */
-                return $ci->getCoreLink()->coreBundle;
-            }
-        }
-        return false;
+        return self::select( [
+            'c.id AS customerid',
+            'vi.id AS id',
+            'pi.speed AS speed',
+            'i.name AS infrastructure',
+            'l.name AS locationname'
+        ] )
+        ->from( 'virtualinterface AS vi' )
+        ->Join( 'cust AS c', 'c.id', 'vi.custid' )
+        ->Join( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
+        ->Join( 'switchport AS sp', 'sp.id', 'pi.switchportid' )
+        ->Join( 'switch AS s', 's.id', 'sp.switchid' )
+        ->Join( 'infrastructure AS i', 'i.id', 's.infrastructure' )
+        ->Join( 'cabinet AS ca', 'ca.id', 's.cabinetid' )
+        ->Join( 'location AS l', 'l.id', 'ca.locationid' )
+        ->whereRaw( Customer::SQL_CUST_EXTERNAL )
+       ->orderBy( 'c.name' )->get()->toArray();
     }
+
+
+    /**
+     * Get statistics/percentage of connected customer by VLAN
+     *
+     * - customer type full or probono
+     * - at least one pi connected
+     *
+     * Returns an array of objects such as:
+     *
+     * [
+     *      {#4344
+     *          "vlanname": "INEX LAN1",
+     *          "count": 105,
+     *          "percent": "96.3303",
+     *      },
+     * ]
+     *
+     * @return array
+     */
+    public static function getPercentageCustomersByVlan(): array
+    {
+        return self::selectRaw(
+            "v.name AS vlanname, 
+            COUNT( DISTINCT vi.custid ) AS count, 
+            COUNT( DISTINCT vi.custid ) / ( 
+            SELECT COUNT( DISTINCT vi.custid ) FROM virtualinterface AS vi
+                        JOIN vlaninterface as vli ON vli.virtualinterfaceid = vi.id
+                        JOIN vlan AS v ON v.id = vli.vlanid
+                        JOIN cust AS c ON c.id = vi.custid
+                        LEFT JOIN physicalinterface AS pi ON pi.virtualinterfaceid = vi.id
+                        WHERE v.private = 0 AND pi.status = 1 AND c.`type`IN (1,4) ) * 100 AS percent"
+        )
+            ->from( 'virtualinterface AS vi' )
+            ->join( 'vlaninterface AS vli', 'vli.virtualinterfaceid', 'vi.id' )
+            ->join( 'vlan AS v', 'v.id', 'vli.vlanid' )
+            ->leftJoin( 'physicalinterface AS pi', 'pi.virtualinterfaceid', 'vi.id' )
+            ->join( 'cust AS c', 'c.id', 'vi.custid' )
+            ->where( 'v.private', false )
+            ->where( 'pi.status', PhysicalInterface::STATUS_CONNECTED )
+            ->whereIn( 'c.type', [1,4] )
+            ->groupBy( 'v.name' )
+            ->orderByDesc( 'count' )->get()->toArray();
+    }
+
 }

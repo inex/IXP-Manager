@@ -396,4 +396,62 @@ class VlanInterface extends Model
             ->where( 'c.id', $c->id )
             ->orderBy( 'v.number' )->get()->keyBy( 'id' );
     }
+
+    /**
+     * Get statistics of RS clients / total on a per VLAN basis
+     *
+     * Returns an array of objects such as:
+     *
+     *     [
+     *         {
+     *             +"vlanname": "Peering VLAN #1",
+     *             ++"overall_count": 60,
+     *             ++"rsclient_count": "54",
+     *         }
+     *     ]
+     *
+     * @return array
+     */
+    public static function getRsClientUsagePerVlan(): array
+    {
+        return self::selectRaw( 'v.name AS vlanname,
+         COUNT(vli.id) AS overall_count, 
+         SUM(vli.rsclient = 1) AS rsclient_count' )
+            ->from( 'vlaninterface AS vli' )
+            ->Join( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
+            ->Join( 'cust AS c', 'c.id', 'vi.custid' )
+            ->Join( 'vlan AS v', 'v.id', 'vli.vlanid' )
+            ->where( 'v.private', false )
+            ->whereIn( 'c.type', [1,4] )
+            ->groupBy( 'vlanname' )->get()->toArray();
+    }
+
+    /**
+     * Get statistics of ipv6 enabled / total on a per VLAN basis
+     *
+     * Returns an array of objects such as:
+     *
+     *     [
+     *         {
+     *             +"vlanname": "Peering VLAN #1",
+     *             ++"overall_count": 60,
+     *             ++"ipv6_count": "54",
+     *         }
+     *     ]
+     *
+     * @return array
+     */
+    public static function getIPv6UsagePerVlan(): array
+    {
+        return self::selectRaw( 'v.name AS vlanname, 
+        COUNT(vli.id) AS overall_count, 
+        SUM(vli.ipv6enabled = 1) AS ipv6_count' )
+            ->from( 'vlaninterface AS vli' )
+            ->Join( 'virtualinterface AS vi', 'vi.id', 'vli.virtualinterfaceid' )
+            ->Join( 'cust AS c', 'c.id', 'vi.custid' )
+            ->Join( 'vlan AS v', 'v.id', 'vli.vlanid' )
+            ->where( 'v.private', false )
+            ->whereIn( 'c.type', [1,4] )
+            ->groupBy( 'vlanname' )->get()->toArray();
+    }
 }

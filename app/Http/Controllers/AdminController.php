@@ -3,7 +3,7 @@
 namespace IXP\Http\Controllers;
 
 /*
- * Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee.
+ * Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee.
  * All Rights Reserved.
  *
  * This file is part of IXP Manager.
@@ -27,7 +27,12 @@ use App, Cache, D2EM;
 
 use Carbon\Carbon;
 
+use IXP\Models\Customer;
 use IXP\Models\Infrastructure;
+use IXP\Models\Location;
+use IXP\Models\VirtualInterface;
+use IXP\Models\Vlan;
+use IXP\Models\VlanInterface;
 use IXP\Services\Grapher\Graph as Graph;
 
 use Entities\{
@@ -50,9 +55,8 @@ use IXP\Services\Grapher;
  *
  * @author     Yann Robin <yann@islandbridgenetworks.ie>
  * @author     Barry O'Donovan <barry@islandbridgenetworks.ie>
- *
  * @category   Admin
- * @copyright  Copyright (C) 2009 - 2019 Internet Neutral Exchange Association Company Limited By Guarantee
+ * @copyright  Copyright (C) 2009 - 2020 Internet Neutral Exchange Association Company Limited By Guarantee
  * @license    http://www.gnu.org/licenses/gpl-2.0.html GNU GPL V2.0
  */
 class AdminController extends Controller
@@ -74,7 +78,6 @@ class AdminController extends Controller
         ]);
     }
 
-
     /**
      * Get type counts statistics
      *
@@ -88,11 +91,11 @@ class AdminController extends Controller
         if( $request->query( 'refresh_cache', 0 ) || !( $cTypes = Cache::get( 'admin_ctypes' ) ) ) {
 
             // Full / Associate / Probono / Internal
-            $cTypes['types'] = D2EM::getRepository( CustomerEntity::class )->getTypeCounts();
+            $cTypes['types'] = Customer::getTypeCounts();
 
             // Searches for VirtualInterfaces where custtype us not internal.
             // Because it's Virtual Interfaces, it should only be current or unremoved customers, etc.
-            $vis = D2EM::getRepository( VirtualInterfaceEntity::class )->getByLocation();
+            $vis = VirtualInterface::getByLocation();
 
             $speeds          = [];
             $byLocation      = [];
@@ -103,10 +106,8 @@ class AdminController extends Controller
             $peeringCusts    = [];
 
             foreach( $vis as $vi ) {
-
                 $location       = $vi['locationname'];
                 $infrastructure = $vi['infrastructure'];
-
                 // ----
 
                 if( !isset( $custsByLocation[ $location ] ) ) {
@@ -128,11 +129,11 @@ class AdminController extends Controller
                 if( !isset( $custsByInfra[ $infrastructure ] ) ) {
                     $custsByInfra[ $infrastructure ] = [];
                 }
-                if( !in_array( $vi['customerid'], $custsByInfra[ $infrastructure ] ) ) {
+                if( !in_array( $vi['customerid'], $custsByInfra[ $infrastructure ], true ) ) {
                     $custsByInfra[ $infrastructure ][] = $vi[ 'customerid' ];
                 }
 
-                if( !in_array( $vi['customerid'], $peeringCusts ) ) {
+                if( !in_array( $vi['customerid'], $peeringCusts, true ) ) {
                     $peeringCusts[] = $vi[ 'customerid' ];
                 }
 
@@ -172,19 +173,19 @@ class AdminController extends Controller
             $cTypes['peeringCusts']     = $peeringCusts;
 
             // FROM of query is vlaninterface so should be current:
-            $cTypes['rsUsage']          = D2EM::getRepository( VlanInterfaceEntity::class )->getRsClientUsagePerVlan();
+            $cTypes['rsUsage']          = VlanInterface::getRsClientUsagePerVlan();
 
             // FROM of query is vlaninterface so should be current:
-            $cTypes['ipv6Usage']        = D2EM::getRepository( VlanInterfaceEntity::class )->getIPv6UsagePerVlan();
+            $cTypes['ipv6Usage']        = VlanInterface::getIPv6UsagePerVlan();
 
             // full/probono customers with connected interface by vlan
-            $cTypes['percentByVlan']    = D2EM::getRepository( VirtualInterfaceEntity::class )->getPercentageCustomersByVlan();
+            $cTypes['percentByVlan']    = VirtualInterface::getPercentageCustomersByVlan();
 
             $cTypes['cached_at']        = Carbon::now();
 
-            $cTypes['infras']           = D2EM::getRepository( InfrastructureEntity::class )->getAllAsArray();
-            $cTypes['locations']        = D2EM::getRepository( LocationEntity::class )->getNames();
-            $cTypes['vlans']            = D2EM::getRepository( VlanEntity::class )->getNames();
+            $cTypes['infras']           = Infrastructure::getListAsArray();
+            $cTypes['locations']        = Location::getListAsArray();
+            $cTypes['vlans']            = Vlan::getListAsArray();
 
             Cache::put( 'admin_ctypes', $cTypes, 300 );
         }
@@ -196,11 +197,12 @@ class AdminController extends Controller
      * Get public peering graphs
      *
      * @param Request $request
+     *
      * @return array array of graphs
      *
      * @throws
      */
-    private function publicPeeringGraphs( Request $request )
+    private function publicPeeringGraphs( Request $request ): array
     {
         $grapher = App::make( Grapher::class );
 
@@ -225,8 +227,6 @@ class AdminController extends Controller
 
             Cache::put( 'admin_stats_'.$period, $graphs, 300 );
         }
-
         return $graphs;
     }
-
 }

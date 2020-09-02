@@ -444,6 +444,11 @@ class Customer extends Model
         return false;
     }
 
+    public static function resolveGivenType( int $t ): string
+    {
+        return self::$CUST_TYPES_TEXT[ $t ] ?? 'Unknwon';
+    }
+
     /**
      * Is this customer graphable?
      *
@@ -583,4 +588,18 @@ class Customer extends Model
             ->orderBy( 'c.name' )->distinct()->get();
     }
 
+    /**
+     * Utility function to provide a count of different customer types as `type => count`
+     * where type is as defined in Entities\Customer::$CUST_TYPES_TEXT
+     *
+     * @return array Number of customers of each customer type as `[type] => count`
+     */
+    public static function getTypeCounts()
+    {
+        return self::selectRaw( 'c.type AS ctype, COUNT( c.type ) AS cnt' )
+            ->from( 'cust AS c' )
+            ->whereRaw( self::SQL_CUST_CURRENT )
+            ->whereRaw(self::SQL_CUST_ACTIVE )
+            ->groupBy( 'c.type' )->get()->keyBy( 'ctype' )->toArray();
+    }
 }
